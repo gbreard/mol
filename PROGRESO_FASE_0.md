@@ -12,32 +12,31 @@
 - [x] **PLAN_TECNICO_MOL_v2.0_COMPLETO.md** - Plan técnico consolidado (7 secciones)
 - [x] **PLAN_TECNICO_MOL_v2.0_COMPLETO.docx** - Versión Word para distribución
 - [x] **PROPUESTA_IMPLEMENTACION_MOL_v2.0.md** - Roadmap de 5 fases en 6 meses
+- [x] **PROGRESO_FASE_0.md** - Documento de seguimiento de progreso (este archivo)
 
-### 2. Control de versiones iniciado
+### 2. Control de versiones completado ✅
 - [x] Git inicializado en `D:\OEDE\Webscrapping`
-- [x] `.gitignore` creado (excluye *.db, logs, credenciales, backups)
+- [x] `.gitignore` creado y configurado:
+  - Excluye: *.db, logs, credenciales, backups
+  - Excluye: carpetas problemáticas (_deprecated_LIMPIEZA_2025/, nul)
 - [x] Git configurado:
   - user.name: "Equipo OEDE"
   - user.email: "oede@trabajo.gob.ar"
+- [x] **Commit inicial exitoso:**
+  - Hash: `6f27ed9`
+  - Archivos: **10,181 archivos** comiteados
+  - Líneas: 6,840,716 insertions
+  - Mensaje: "Initial commit: Sistema MOL v1.0 actual"
+- [x] **Ramas creadas:**
+  - `master` (rama principal)
+  - `development` (desarrollo)
+  - `feature/fase1-fundamentos-datos` (para FASE 1)
 
 ---
 
 ## ⏳ TAREAS EN PROGRESO
 
-### 3. Commit inicial de Git
-- [ ] **BLOQUEADO:** Archivo problemático `_deprecated_LIMPIEZA_2025/nul` causa error
-- **Error detectado:**
-  ```
-  error: open("_deprecated_LIMPIEZA_2025/nul"): No such file or directory
-  error: unable to index file '_deprecated_LIMPIEZA_2025/nul'
-  fatal: adding files failed
-  ```
-
-**Solución propuesta:**
-1. Agregar `_deprecated_LIMPIEZA_2025/` al `.gitignore`
-2. O eliminar el archivo `nul` si es basura de Windows
-3. Reintentar `git add .`
-4. Commit inicial
+Ninguna en este momento
 
 ---
 
@@ -124,11 +123,14 @@
 
 ## 🚧 BLOQUEADORES ACTUALES
 
-### 1. Archivo "nul" en Git
-- **Descripción:** Archivo `_deprecated_LIMPIEZA_2025/nul` causa error al hacer `git add`
-- **Impacto:** No se puede hacer commit inicial
-- **Solución:** Ignorar carpeta `_deprecated_LIMPIEZA_2025/` o eliminar archivo
-- **Status:** Pendiente de resolver
+### ✅ Bloqueador 1 RESUELTO: Archivo "nul" en Git
+- **Descripción:** Archivos `nul` y `logs/nul` causaban error al hacer `git add`
+- **Impacto:** No se podía hacer commit inicial
+- **Solución aplicada:**
+  1. Agregado "nul" y "_deprecated_LIMPIEZA_2025/" al `.gitignore`
+  2. Eliminados archivos problemáticos con `rm -f`
+  3. Commit inicial exitoso con 10,181 archivos
+- **Status:** ✅ RESUELTO
 
 ---
 
@@ -137,10 +139,10 @@
 ```
 FASE 0: PREPARACIÓN Y CONFIGURACIÓN
 ┌────────────────────────────────────────┐
-│ Progreso general: ███░░░░░░░ 30%      │
+│ Progreso general: ████░░░░░░ 40%      │
 ├────────────────────────────────────────┤
 │ Semana 1 (Infraestructura):           │
-│   - Git y control versiones: ████████░ 85% │
+│   - Git y control versiones: ██████████ 100% ✅ │
 │   - Entorno desarrollo:      ░░░░░░░░░ 0%  │
 │   - Backups:                 ░░░░░░░░░ 0%  │
 │                                        │
@@ -151,6 +153,7 @@ FASE 0: PREPARACIÓN Y CONFIGURACIÓN
 └────────────────────────────────────────┘
 
 Documentación base: ████████████████ 100% ✅
+Git y control versiones: ██████████ 100% ✅
 ```
 
 ---
@@ -209,5 +212,56 @@ Documentación base: ████████████████ 100% ✅
 
 ---
 
-**Última actualización:** 14/11/2025 16:00
+## 🎯 RESUMEN EJECUTIVO DE PROGRESO
+
+### Lo que se logró hoy (14/11/2025):
+
+1. ✅ **Documentación completa del proyecto:**
+   - Plan Técnico MOL v2.0 (7 secciones, ~400 KB)
+   - Propuesta de Implementación (5 fases, 6 meses)
+   - Checklist ejecutable de FASE 0
+   - Documento de progreso (este archivo)
+
+2. ✅ **Control de versiones configurado:**
+   - Git inicializado exitosamente
+   - **10,181 archivos** comiteados (6.8M líneas)
+   - 3 ramas creadas (master, development, feature/fase1)
+   - `.gitignore` configurado correctamente
+
+3. ✅ **Fundamentos para no perder contexto:**
+   - Todos los cambios versionados con Git
+   - Documentación exhaustiva de qué, cómo y por qué
+   - Checklist con tareas específicas y comandos
+   - Progreso medible (40% FASE 0 completado)
+
+### Próximos pasos inmediatos:
+
+1. **Mañana (15/11/2025):**
+   - Copiar BD a entorno de desarrollo
+   - Crear carpeta de backups
+   - Comenzar inventario de scripts
+
+2. **Esta semana:**
+   - Completar Semana 1 de FASE 0 (Infraestructura)
+   - Tener entorno de desarrollo funcionando
+   - Backups completos validados
+
+3. **Semana próxima:**
+   - Semana 2 de FASE 0 (Documentación técnica)
+   - Preparar reunión kickoff
+   - Transición a FASE 1
+
+### Confianza en no perder contexto: ✅ ALTA
+
+**Razones:**
+- ✅ Todo está en Git (recuperable)
+- ✅ Documentación detallada de cada paso
+- ✅ Checklists con comandos específicos
+- ✅ Documento de progreso actualizado
+- ✅ Decisiones documentadas con fecha y razón
+
+---
+
+**Última actualización:** 14/11/2025 20:00
 **Próxima revisión:** 15/11/2025
+**Responsable:** Equipo Técnico OEDE + Claude Code
