@@ -1,0 +1,92 @@
+{
+  "descripcion": "Diccionario de keywords para búsqueda en ComputRabajo",
+  "version": "1.0",
+  "ultima_actualizacion": "2025-10-21",
+
+  "estrategias": {
+    "amplia": {
+      "descripcion": "Búsqueda amplia para capturar máximo volumen",
+      "keywords": [
+        "administracion",
+        "ventas",
+        "atencion-al-cliente",
+        "logistica",
+        "recursos-humanos",
+        "marketing",
+        "finanzas",
+        "contabilidad",
+        "legal",
+        "ingenieria",
+        "produccion",
+        "calidad",
+        "mantenimiento",
+        "compras",
+        "comercio-exterior"
+      ]
+    },
+
+    "tecnologia": {
+      "descripcion": "Búsqueda enfocada en IT/Tecnología",
+      "keywords": [
+        "desarrollador",
+        "programador",
+        "python",
+        "java",
+        "javascript",
+        "react",
+        "angular",
+        "node",
+        "fullstack",
+        "frontend",
+        "backend",
+        "devops",
+        "qa",
+        "testing",
+        "data",
+        "analista",
+        "scrum",
+        "agile",
+        "sql",
+        "database"
+      ]
+    },
+
+    "general": {
+      "descripcion": "Búsqueda general por áreas principales",
+      "keywords": [
+        "administrativo",
+        "ventas",
+        "atencion-cliente",
+        "marketing",
+        "logistica",
+        "finanzas",
+        "recursos-humanos",
+        "it",
+        "sistemas",
+        "ingeniero",
+        "tecnico",
+        "operario",
+        "supervisor",
+        "gerente"
+      ]
+    },
+
+    "minima": {
+      "descripcion": "Búsqueda mínima para testing",
+      "keywords": [
+        "python",
+        "java",
+        "ventas",
+        "administrativo"
+      ]
+    }
+  },
+
+  "notas": [
+    "ComputRabajo NO devuelve ofertas en home page sin búsqueda",
+    "Cada keyword debe scrapearse por separado",
+    "URL formato: https://ar.computrabajo.com/trabajo-de-{keyword}",
+    "Puede haber duplicados entre búsquedas diferentes",
+    "La deduplicación se hace por id_oferta en consolidación"
+  ]
+}

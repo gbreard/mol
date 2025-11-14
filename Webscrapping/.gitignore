@@ -1,0 +1,37 @@
+# R y Shiny
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+rsconnect/
+
+# Credenciales y configuración
+.Renviron
+.env
+credentials.R
+config.R
+*_secret.R
+*_token.R
+
+# Datos sensibles (opcional - descomentar si no quieres versionar)
+# ofertas_consolidadas.xlsx
+# *.xlsx
+# *.csv
+
+# Archivos temporales
+*.tmp
+*.bak
+*.swp
+*~
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Versiones antiguas
+deepseek_r_20251022_10594a.r

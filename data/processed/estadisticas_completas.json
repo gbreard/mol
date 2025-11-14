@@ -1,0 +1,150 @@
+{
+  "general": {
+    "total_ofertas": 61,
+    "clasificadas": 60,
+    "sin_clasificar": 1,
+    "tasa_clasificacion": 98.36065573770492
+  },
+  "similitud": {
+    "promedio": 0.5034316666666666,
+    "mediana": 0.48560000000000003,
+    "std": 0.11366100876038968,
+    "min": 0.3,
+    "max": 1.0,
+    "q25": 0.4312,
+    "q75": 0.567325
+  },
+  "ocupaciones": {
+    "total_unicas": 46,
+    "top_10": {
+      "administrativo contable/administrativa contable": 4,
+      "representante comercial": 3,
+      "ayudante de recursos humanos": 2,
+      "analista contable": 2,
+      "vendedor/vendedora": 2,
+      "administrativo de nóminas/administrativa de nóminas": 2,
+      "abogado/abogada": 2,
+      "abogado de empresa/abogada de empresa": 2,
+      "contable": 2,
+      "agente de servicio de atención al cliente": 2
+    },
+    "promedio_ofertas_por_ocupacion": 1.3043478260869565,
+    "mediana_ofertas_por_ocupacion": 1.0
+  },
+  "isco": {
+    "ofertas_con_isco": 60,
+    "codigos_isco_4d_unicos": 38,
+    "codigos_isco_2d_unicos": 21,
+    "codigos_isco_1d_unicos": 8,
+    "distribucion_1d": {
+      "1": 7,
+      "2": 20,
+      "3": 14,
+      "4": 8,
+      "5": 5,
+      "6": 2,
+      "7": 3,
+      "8": 1
+    },
+    "distribucion_2d": {
+      "12.0": 2,
+      "13.0": 2,
+      "14.0": 3,
+      "21.0": 2,
+      "22.0": 2,
+      "23.0": 1,
+      "24.0": 8,
+      "25.0": 2,
+      "26.0": 5,
+      "31.0": 1,
+      "32.0": 3,
+      "33.0": 10,
+      "42.0": 3,
+      "43.0": 3,
+      "44.0": 2,
+      "51.0": 1,
+      "52.0": 4,
+      "61.0": 2,
+      "72.0": 1,
+      "74.0": 2,
+      "81.0": 1
+    },
+    "top_isco_4d": {
+      "2411.0": 4,
+      "3313.0": 4,
+      "2611.0": 4,
+      "1420.0": 3,
+      "3322.0": 3,
+      "4313.0": 2,
+      "2421.0": 2,
+      "4225.0": 2,
+      "3222.0": 2,
+      "4416.0": 2
+    }
+  },
+  "skills": {
+    "ofertas_con_skills": 50,
+    "promedio_skills_esenciales": 2.94,
+    "mediana_skills_esenciales": 2.0,
+    "max_skills_esenciales": 9,
+    "top_skills": {
+      "cumplir las obligaciones estatutarias": 6,
+      "detectar errores contables": 6,
+      "recopilar documentación judicial": 4,
+      "cumplir normas de calidad relativas a la práctica sanitaria": 3,
+      "llevar un registro de las ventas": 3,
+      "gestión de la relación con los clientes": 3,
+      "realizar análisis de ventas": 3,
+      "buscar nuevos contratos regionales": 3,
+      "cuidar de recién nacidos": 2,
+      "aconsejar sobre los embarazos de riesgo": 2,
+      "examinar a un recién nacido": 2,
+      "proporcionar atención posnatal": 2,
+      "supervisar las operaciones contables": 2,
+      "gestionar los informes de nóminas": 2,
+      "mantener un sistema administrativo profesional": 2
+    }
+  },
+  "modalidad": {
+    "distribucion": {
+      "Presencial": 48,
+      "Híbrido": 13
+    }
+  },
+  "geografico": {
+    "localizaciones_unicas": 25,
+    "distribucion_localidades": {
+      "Capital Federal, Buenos Aires": 28,
+      "Buenos Aires, Buenos Aires": 3,
+      "Munro, Buenos Aires": 2,
+      "Caseros, Buenos Aires": 2,
+      "Moreno, Buenos Aires": 2,
+      "AAB, Buenos Aires": 2,
+      "Río Gallegos, Santa Cruz": 2,
+      "Avellaneda, Buenos Aires": 2,
+      "Vicente López, Buenos Aires": 2,
+      "Canning, Buenos Aires": 1
+    },
+    "distribucion_regiones": {
+      "Capital Federal / CABA": 57,
+      "Otras localidades": 4
+    }
+  },
+  "empresas": {
+    "empresas_unicas": 32,
+    "ofertas_confidenciales": 19,
+    "ofertas_con_nombre": 42,
+    "top_10_empresas": {
+      "Confidencial": 19,
+      "Ana Laura Neu": 3,
+      "Fundación H. A. Barceló": 3,
+      "Bumeran": 3,
+      "TALENTO PyME": 3,
+      "STERLING TRADE SRL": 2,
+      "ZyS Factors S.A.": 2,
+      "SELECTA": 2,
+      "San Martin Group": 1,
+      "MEGUI S.A.": 1
+    }
+  }
+}

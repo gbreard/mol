@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir /a \"C:\\Users\\gbrea\\OneDrive\\Documentos\\OEDE\\Webscrapping\")",
+      "Read(//c/Users/gbrea/OneDrive/Documentos/OEDE/**)",
+      "Bash(git ls-tree:*)",
+      "Bash(find:*)",
+      "Bash(git log:*)",
+      "Read(//c/Users/gbrea/expense-tracker/**)",
+      "Bash(python:*)",
+      "Bash(Rscript --version:*)",
+      "Bash(if [ -d \"/c/Program Files/R\" ])",
+      "Bash(then ls \"/c/Program Files/R\")",
+      "Bash(fi)",
+      "Bash(\"/c/Program Files/R/R-4.4.0/bin/Rscript.exe\" --version)",
+      "Bash(\"/c/Program Files/R/R-4.4.0/bin/Rscript.exe\" -e \"paquetes <- c(''shiny'', ''shinydashboard'', ''readxl'', ''dplyr'', ''ggplot2'', ''plotly'', ''lubridate'', ''DT''); instalados <- sapply(paquetes, function(p) requireNamespace(p, quietly = TRUE)); cat(''Paquetes instalados:'', sum(instalados), ''/'', length(paquetes), ''\\n''); if (!all(instalados)) { cat(''Faltantes:'', paste(paquetes[!instalados], collapse='', ''), ''\\n'') }\")",
+      "Bash(\"/c/Program Files/R/R-4.4.0/bin/Rscript.exe\" instalar_dependencias.R)",
+      "Bash(\"/c/Program Files/R/R-4.4.0/bin/Rscript.exe\" instalar_paquetes.R)",
+      "Bash(\"/c/Program Files/R/R-4.4.0/bin/Rscript.exe\" -e \"options(repos = c(CRAN = ''https://cloud.r-project.org'')); shiny::runApp(''app.R'', host = ''0.0.0.0'', port = 3838, launch.browser = FALSE)\")",
+      "Bash(curl:*)",
+      "Bash(\"/c/Program Files/R/R-4.4.0/bin/Rscript.exe\" instalar_paquetes_avanzados.R)",
+      "WebSearch",
+      "Bash(\"/c/Program Files/R/R-4.4.0/bin/Rscript.exe\" -e \"if (!requireNamespace(''rsconnect'', quietly = TRUE)) install.packages(''rsconnect'', repos=''https://cloud.r-project.org'')\")",
+      "Bash(\"/c/Program Files/R/R-4.4.0/bin/Rscript.exe\" instalar_rsconnect.R)",
+      "Bash(\"/c/Program Files/R/R-4.4.0/bin/Rscript.exe\" configurar_y_deployar.R)",
+      "Bash(\"/c/Program Files/R/R-4.4.0/bin/Rscript.exe\" -e \"rsconnect::setAccountInfo(name=''dos1tv-gerardo-breard'', token=''45DB90EA461FAD11B32AEBEE28454644'', secret=''/qJ1pA35CIQRQeosn7x4LalIWPVxMjQAh+gEzmBd''); rsconnect::deployApp(appName=''ofertas-dashboard'', forceUpdate=TRUE, launch.browser=FALSE)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

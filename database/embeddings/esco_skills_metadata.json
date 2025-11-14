@@ -1,0 +1,26 @@
+[
+  {
+    "uri": "http://data.europa.eu/esco/skill/426ceaba-6867-481c-bb6b-aee3933da7d2",
+    "label": "seguridad de las tecnologías de la información y de las comunicaciones"
+  },
+  {
+    "uri": "http://data.europa.eu/esco/skill/574257ea-7b64-4100-b7b6-e27c233fe143",
+    "label": "comunicación y colaboración digitales"
+  },
+  {
+    "uri": "http://data.europa.eu/esco/skill/629685b8-5f9e-4522-8cff-b3e2c4ec625a",
+    "label": "tratamiento digital de los datos"
+  },
+  {
+    "uri": "http://data.europa.eu/esco/skill/7e5147d1-60b1-4a68-804b-1f5cb0396b91",
+    "label": "resolución de problemas con herramientas digitales"
+  },
+  {
+    "uri": "http://data.europa.eu/esco/skill/d4fd1061-eb6a-46d6-9aed-374cb0a80a9a",
+    "label": "entorno de trabajo"
+  },
+  {
+    "uri": "http://data.europa.eu/esco/skill/f5369f2f-e52b-43d8-8d31-79a6c11188d8",
+    "label": "creación de contenidos digitales"
+  }
+]

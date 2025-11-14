@@ -1,0 +1,28 @@
+# Dependencias para Web Scraping de ZonaJobs
+
+# Opción 1: Selenium Wire (interceptar requests con Selenium)
+selenium>=4.15.0
+selenium-wire>=5.1.0
+webdriver-manager>=4.0.1
+
+# Opción 2: Playwright (más moderno y rápido)
+playwright>=1.40.0
+
+# Utilidades generales
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.3
+
+# Análisis y procesamiento de datos
+pandas>=2.1.0
+openpyxl>=3.1.2  # Para exportar a Excel
+
+# Rate limiting y manejo de requests
+ratelimit>=2.2.1
+
+# Logging y configuración
+python-dotenv>=1.0.0
+
+# Opcional: Base de datos
+# sqlalchemy>=2.0.0
+# psycopg2-binary>=2.9.0  # Para PostgreSQL

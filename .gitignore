@@ -1,0 +1,39 @@
+# Bases de datos
+*.db
+*.db-journal
+*.sqlite
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.env
+
+# R
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+
+# Logs
+*.log
+logs/
+
+# Archivos temporales
+*.tmp
+*.bak
+*~
+
+# Datos grandes
+*.rds
+
+# Credenciales
+credentials.json
+.secrets/
+
+# Backups
+backups/
+_deprecated_LIMPIEZA_2025/
+nul

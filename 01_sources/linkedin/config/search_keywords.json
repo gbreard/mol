@@ -1,0 +1,82 @@
+{
+  "descripcion": "Diccionario de keywords para búsqueda en LinkedIn Jobs",
+  "version": "1.0",
+  "ultima_actualizacion": "2025-10-21",
+
+  "estrategias": {
+    "minima": {
+      "descripcion": "Búsqueda mínima para testing",
+      "keywords": [
+        "python developer",
+        "data analyst",
+        "software engineer"
+      ]
+    },
+
+    "tecnologia": {
+      "descripcion": "Búsqueda enfocada en IT/Tecnología",
+      "keywords": [
+        "python developer",
+        "java developer",
+        "javascript developer",
+        "react developer",
+        "fullstack developer",
+        "frontend developer",
+        "backend developer",
+        "data analyst",
+        "data scientist",
+        "devops engineer",
+        "qa engineer",
+        "software engineer",
+        "machine learning",
+        "data engineer",
+        "cloud engineer"
+      ]
+    },
+
+    "general": {
+      "descripcion": "Búsqueda general por áreas principales",
+      "keywords": [
+        "software engineer",
+        "data analyst",
+        "project manager",
+        "product manager",
+        "sales",
+        "marketing",
+        "human resources",
+        "accountant",
+        "financial analyst",
+        "customer service",
+        "operations",
+        "business analyst"
+      ]
+    },
+
+    "amplia": {
+      "descripcion": "Búsqueda amplia para máxima cobertura",
+      "keywords": [
+        "engineer",
+        "developer",
+        "analyst",
+        "manager",
+        "coordinator",
+        "specialist",
+        "consultant",
+        "administrator",
+        "technician",
+        "assistant",
+        "representative",
+        "designer",
+        "architect",
+        "lead"
+      ]
+    }
+  },
+
+  "notas": [
+    "LinkedIn usa búsqueda global + filtro de location",
+    "Puede haber duplicados entre keywords (se deduplican por ID)",
+    "Rate limiting después de ~200 ofertas con mismo IP",
+    "Usar delay de 3-5s entre keywords para evitar bloqueos"
+  ]
+}

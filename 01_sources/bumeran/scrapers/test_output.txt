@@ -1,0 +1,451 @@
+2025-10-30 23:45:01,394 - bumeran_scraper - INFO - Rate limiter adaptativo habilitado (0.5s - 10.0s)
+2025-10-30 23:45:01,394 - bumeran_scraper - INFO - Circuit breaker habilitado (max_failures=5, timeout=30s)
+2025-10-30 23:45:01,394 - bumeran_scraper - INFO - Sistema de alertas habilitado
+2025-10-30 23:45:01,394 - bumeran_scraper - INFO - Scraper inicializado con session token: ee3b5576-8ba9-4077-9784-e6be7c91d777
+2025-10-30 23:45:01,394 - bumeran_scraper - INFO - Delay inicial entre requests: 1.5s
+2025-10-30 23:45:01,394 - __main__ - INFO - Cargadas 4 keywords de estrategia 'minima' (diccionario MAESTRO)
+2025-10-30 23:45:01,394 - __main__ - INFO - ======================================================================
+2025-10-30 23:45:01,402 - __main__ - INFO - SCRAPING MULTI-KEYWORD - BUMERAN
+2025-10-30 23:45:01,402 - __main__ - INFO - ======================================================================
+2025-10-30 23:45:01,402 - __main__ - INFO - Keywords a scrapear: 4
+2025-10-30 23:45:01,402 - __main__ - INFO - Max paginas por keyword: 1
+2025-10-30 23:45:01,402 - __main__ - INFO - Max resultados por keyword: Ilimitado
+2025-10-30 23:45:01,402 - __main__ - INFO - Page size: 20
+2025-10-30 23:45:01,402 - __main__ - INFO - Delay entre keywords: 3.0s
+2025-10-30 23:45:01,402 - __main__ - INFO - Modo: Full
+2025-10-30 23:45:01,402 - __main__ - INFO - Ventana temporal: 7 días
+2025-10-30 23:45:01,402 - __main__ - INFO - 
+2025-10-30 23:45:01,402 - __main__ - INFO - 
+[1/4] Scrapeando keyword: 'python'
+2025-10-30 23:45:01,402 - bumeran_scraper - INFO - ======================================================================
+2025-10-30 23:45:01,402 - bumeran_scraper - INFO - INICIANDO SCRAPING DE BUMERAN
+2025-10-30 23:45:01,402 - bumeran_scraper - INFO - ======================================================================
+2025-10-30 23:45:01,402 - bumeran_scraper - INFO - Parametros:
+2025-10-30 23:45:01,402 - bumeran_scraper - INFO -   Max paginas: 1
+2025-10-30 23:45:01,402 - bumeran_scraper - INFO -   Max resultados: Ilimitado
+2025-10-30 23:45:01,402 - bumeran_scraper - INFO -   Page size: 20
+2025-10-30 23:45:01,402 - bumeran_scraper - INFO -   Query: python
+2025-10-30 23:45:01,402 - bumeran_scraper - INFO -   Modo: Full
+2025-10-30 23:45:01,403 - bumeran_scraper - INFO - 
+2025-10-30 23:45:01,403 - bumeran_scraper - INFO - Sistema de métricas activado
+2025-10-30 23:45:01,403 - bumeran_scraper - INFO - Scrapeando página 0 (pageSize=20)
+2025-10-30 23:45:02,066 - bumeran_scraper - INFO -   OK - 17 ofertas | Total: 17
+2025-10-30 23:45:02,066 - bumeran_scraper - INFO -   Validación: 17/17 ofertas válidas (100.0%)
+2025-10-30 23:45:02,066 - bumeran_scraper - INFO -   Página 0: 17 ofertas
+2025-10-30 23:45:02,066 - bumeran_scraper - INFO - Scrapeadas todas las ofertas disponibles
+2025-10-30 23:45:02,066 - bumeran_scraper - INFO - 
+2025-10-30 23:45:02,066 - bumeran_scraper - INFO - ======================================================================
+2025-10-30 23:45:02,066 - bumeran_scraper - INFO - SCRAPING COMPLETADO: 17 ofertas
+2025-10-30 23:45:02,067 - bumeran_scraper - INFO - ======================================================================
+2025-10-30 23:45:02,067 - scraping_metrics - INFO - Reporte guardado en: D:\OEDE\Webscrapping\01_sources\bumeran\data\metrics\metrics_20251030_234502.json
+2025-10-30 23:45:02,067 - bumeran_scraper - INFO - Métricas guardadas en: D:\OEDE\Webscrapping\01_sources\bumeran\data\metrics\metrics_20251030_234502.json
+2025-10-30 23:45:02,067 - __main__ - INFO -   OK - 17 ofertas encontradas
+2025-10-30 23:45:05,067 - __main__ - INFO - 
+[2/4] Scrapeando keyword: 'ventas'
+2025-10-30 23:45:05,068 - bumeran_scraper - INFO - ======================================================================
+2025-10-30 23:45:05,068 - bumeran_scraper - INFO - INICIANDO SCRAPING DE BUMERAN
+2025-10-30 23:45:05,068 - bumeran_scraper - INFO - ======================================================================
+2025-10-30 23:45:05,068 - bumeran_scraper - INFO - Parametros:
+2025-10-30 23:45:05,068 - bumeran_scraper - INFO -   Max paginas: 1
+2025-10-30 23:45:05,068 - bumeran_scraper - INFO -   Max resultados: Ilimitado
+2025-10-30 23:45:05,068 - bumeran_scraper - INFO -   Page size: 20
+2025-10-30 23:45:05,068 - bumeran_scraper - INFO -   Query: ventas
+2025-10-30 23:45:05,068 - bumeran_scraper - INFO -   Modo: Full
+2025-10-30 23:45:05,068 - bumeran_scraper - INFO - 
+2025-10-30 23:45:05,068 - bumeran_scraper - INFO - Sistema de métricas activado
+2025-10-30 23:45:05,068 - bumeran_scraper - INFO - Scrapeando página 0 (pageSize=20)
+2025-10-30 23:45:05,613 - bumeran_scraper - INFO -   OK - 20 ofertas | Total: 631
+2025-10-30 23:45:05,614 - bumeran_scraper - INFO -   Validación: 20/20 ofertas válidas (100.0%)
+2025-10-30 23:45:05,614 - bumeran_scraper - INFO -   Página 0: 20 ofertas
+2025-10-30 23:45:05,614 - bumeran_scraper - INFO - 
+2025-10-30 23:45:05,614 - bumeran_scraper - INFO - ======================================================================
+2025-10-30 23:45:05,615 - bumeran_scraper - INFO - SCRAPING COMPLETADO: 20 ofertas
+2025-10-30 23:45:05,615 - bumeran_scraper - INFO - ======================================================================
+2025-10-30 23:45:05,616 - scraping_metrics - INFO - Reporte guardado en: D:\OEDE\Webscrapping\01_sources\bumeran\data\metrics\metrics_20251030_234505.json
+2025-10-30 23:45:05,616 - bumeran_scraper - INFO - Métricas guardadas en: D:\OEDE\Webscrapping\01_sources\bumeran\data\metrics\metrics_20251030_234505.json
+2025-10-30 23:45:05,616 - __main__ - INFO -   OK - 20 ofertas encontradas
+2025-10-30 23:45:08,617 - __main__ - INFO - 
+[3/4] Scrapeando keyword: 'administrativo'
+2025-10-30 23:45:08,617 - bumeran_scraper - INFO - ======================================================================
+2025-10-30 23:45:08,617 - bumeran_scraper - INFO - INICIANDO SCRAPING DE BUMERAN
+2025-10-30 23:45:08,617 - bumeran_scraper - INFO - ======================================================================
+2025-10-30 23:45:08,617 - bumeran_scraper - INFO - Parametros:
+2025-10-30 23:45:08,617 - bumeran_scraper - INFO -   Max paginas: 1
+2025-10-30 23:45:08,617 - bumeran_scraper - INFO -   Max resultados: Ilimitado
+2025-10-30 23:45:08,617 - bumeran_scraper - INFO -   Page size: 20
+2025-10-30 23:45:08,617 - bumeran_scraper - INFO -   Query: administrativo
+2025-10-30 23:45:08,617 - bumeran_scraper - INFO -   Modo: Full
+2025-10-30 23:45:08,617 - bumeran_scraper - INFO - 
+2025-10-30 23:45:08,617 - bumeran_scraper - INFO - Sistema de métricas activado
+2025-10-30 23:45:08,617 - bumeran_scraper - INFO - Scrapeando página 0 (pageSize=20)
+2025-10-30 23:45:09,150 - bumeran_scraper - INFO -   OK - 20 ofertas | Total: 861
+2025-10-30 23:45:09,150 - bumeran_scraper - INFO -   Validación: 20/20 ofertas válidas (100.0%)
+2025-10-30 23:45:09,150 - bumeran_scraper - INFO -   Página 0: 20 ofertas
+2025-10-30 23:45:09,150 - bumeran_scraper - INFO - 
+2025-10-30 23:45:09,150 - bumeran_scraper - INFO - ======================================================================
+2025-10-30 23:45:09,150 - bumeran_scraper - INFO - SCRAPING COMPLETADO: 20 ofertas
+2025-10-30 23:45:09,150 - bumeran_scraper - INFO - ======================================================================
+2025-10-30 23:45:09,151 - scraping_metrics - INFO - Reporte guardado en: D:\OEDE\Webscrapping\01_sources\bumeran\data\metrics\metrics_20251030_234509.json
+2025-10-30 23:45:09,151 - bumeran_scraper - INFO - Métricas guardadas en: D:\OEDE\Webscrapping\01_sources\bumeran\data\metrics\metrics_20251030_234509.json
+2025-10-30 23:45:09,151 - __main__ - INFO -   OK - 20 ofertas encontradas
+2025-10-30 23:45:12,151 - __main__ - INFO - 
+[4/4] Scrapeando keyword: 'operario'
+2025-10-30 23:45:12,151 - bumeran_scraper - INFO - ======================================================================
+2025-10-30 23:45:12,151 - bumeran_scraper - INFO - INICIANDO SCRAPING DE BUMERAN
+2025-10-30 23:45:12,151 - bumeran_scraper - INFO - ======================================================================
+2025-10-30 23:45:12,151 - bumeran_scraper - INFO - Parametros:
+2025-10-30 23:45:12,151 - bumeran_scraper - INFO -   Max paginas: 1
+2025-10-30 23:45:12,151 - bumeran_scraper - INFO -   Max resultados: Ilimitado
+2025-10-30 23:45:12,151 - bumeran_scraper - INFO -   Page size: 20
+2025-10-30 23:45:12,151 - bumeran_scraper - INFO -   Query: operario
+2025-10-30 23:45:12,151 - bumeran_scraper - INFO -   Modo: Full
+2025-10-30 23:45:12,151 - bumeran_scraper - INFO - 
+2025-10-30 23:45:12,151 - bumeran_scraper - INFO - Sistema de métricas activado
+2025-10-30 23:45:12,151 - bumeran_scraper - INFO - Scrapeando página 0 (pageSize=20)
+2025-10-30 23:45:12,550 - bumeran_scraper - INFO -   OK - 20 ofertas | Total: 444
+2025-10-30 23:45:12,552 - bumeran_scraper - INFO -   Validación: 20/20 ofertas válidas (100.0%)
+2025-10-30 23:45:12,552 - bumeran_scraper - INFO -   Página 0: 20 ofertas
+2025-10-30 23:45:12,552 - bumeran_scraper - INFO - 
+2025-10-30 23:45:12,552 - bumeran_scraper - INFO - ======================================================================
+2025-10-30 23:45:12,552 - bumeran_scraper - INFO - SCRAPING COMPLETADO: 20 ofertas
+2025-10-30 23:45:12,552 - bumeran_scraper - INFO - ======================================================================
+2025-10-30 23:45:12,553 - scraping_metrics - INFO - Reporte guardado en: D:\OEDE\Webscrapping\01_sources\bumeran\data\metrics\metrics_20251030_234512.json
+2025-10-30 23:45:12,554 - bumeran_scraper - INFO - Métricas guardadas en: D:\OEDE\Webscrapping\01_sources\bumeran\data\metrics\metrics_20251030_234512.json
+2025-10-30 23:45:12,554 - __main__ - INFO -   OK - 20 ofertas encontradas
+2025-10-30 23:45:12,554 - __main__ - INFO - 
+======================================================================
+2025-10-30 23:45:12,554 - __main__ - INFO - CONSOLIDANDO RESULTADOS
+2025-10-30 23:45:12,554 - __main__ - INFO - ======================================================================
+2025-10-30 23:45:12,554 - __main__ - INFO - Ofertas totales (con duplicados): 77
+2025-10-30 23:45:12,557 - __main__ - INFO - Ofertas únicas (sin duplicados): 77
+2025-10-30 23:45:12,557 - __main__ - INFO - Duplicados removidos: 0
+2025-10-30 23:45:12,557 - __main__ - INFO - 
+Aplicando filtro temporal: últimos 7 días
+2025-10-30 23:45:12,557 - date_filter - ERROR - Columna 'fecha_publicacion' no encontrada en DataFrame
+2025-10-30 23:45:12,557 - date_filter - INFO - Columnas disponibles: ['id', 'titulo', 'detalle', 'aptoDiscapacitado', 'idEmpresa', 'empresa', 'confidencial', 'logoURL', 'validada', 'empresaPro', 'fechaHoraPublicacion', 'fechaPublicacion', 'fechaModificado', 'planPublicacion', 'portal', 'tipoTrabajo', 'idPais', 'idArea', 'idSubarea', 'leido', 'visitadoPorPostulante', 'localizacion', 'cantidadVacantes', 'guardado', 'gptwUrl', 'promedioEmpresa', 'modalidadTrabajo', 'tienePreguntas', 'salarioObligatorio', 'altaRevisionPerfiles', 'tipoAviso', 'keyword_busqueda']
+2025-10-30 23:45:12,557 - __main__ - INFO - 
+======================================================================
+2025-10-30 23:45:12,557 - __main__ - INFO - ESTADISTICAS FINALES
+2025-10-30 23:45:12,557 - __main__ - INFO - ======================================================================
+2025-10-30 23:45:12,557 - __main__ - INFO -   keywords_procesadas: 4
+2025-10-30 23:45:12,557 - __main__ - INFO -   keywords_exitosas: 4
+2025-10-30 23:45:12,557 - __main__ - INFO -   keywords_sin_resultados: 0
+2025-10-30 23:45:12,557 - __main__ - INFO -   ofertas_totales_brutas: 77
+2025-10-30 23:45:12,557 - __main__ - INFO -   ofertas_despues_dedup: 77
+2025-10-30 23:45:12,557 - __main__ - INFO -   ofertas_despues_filtro_fecha: 77
+2025-10-30 23:45:12,557 - __main__ - INFO - 
+Keywords más productivas:
+2025-10-30 23:45:12,558 - __main__ - INFO -   - 'ventas': 20 ofertas
+2025-10-30 23:45:12,558 - __main__ - INFO -   - 'administrativo': 20 ofertas
+2025-10-30 23:45:12,558 - __main__ - INFO -   - 'operario': 20 ofertas
+2025-10-30 23:45:12,558 - __main__ - INFO -   - 'python': 17 ofertas
+2025-10-30 23:45:12,558 - __main__ - INFO - 
+======================================================================
+2025-10-30 23:45:12,558 - __main__ - INFO - METRICAS DE CALIDAD
+2025-10-30 23:45:12,558 - __main__ - INFO - ======================================================================
+2025-10-30 23:45:12,558 - __main__ - INFO -   Eficiencia de deduplicacion: 100.00%
+2025-10-30 23:45:12,558 - __main__ - INFO -   Promedio ofertas unicas por keyword: 19.2
+2025-10-30 23:45:12,558 - __main__ - INFO -   Ratio de overlap entre keywords: 0.0%
+2025-10-30 23:45:12,558 - __main__ - INFO - 
+Guardando resultados...
+2025-10-30 23:45:12,560 - bumeran_scraper - INFO - Guardando en todos los formatos...
+2025-10-30 23:45:12,560 - bumeran_scraper - INFO - Procesando ofertas...
+2025-10-30 23:45:12,566 - bumeran_scraper - INFO - OK - 77 ofertas procesadas con 38 campos
+2025-10-30 23:45:12,569 - bumeran_scraper - INFO - Guardado CSV: D:\OEDE\Webscrapping\01_sources\bumeran\data\raw\bumeran_multi_20251030_234512.csv
+2025-10-30 23:45:12,571 - bumeran_scraper - INFO - Guardado JSON: D:\OEDE\Webscrapping\01_sources\bumeran\data\raw\bumeran_multi_20251030_234512.json
+2025-10-30 23:45:12,571 - bumeran_scraper - INFO - Procesando ofertas...
+2025-10-30 23:45:12,575 - bumeran_scraper - INFO - OK - 77 ofertas procesadas con 38 campos
+2025-10-30 23:45:12,719 - bumeran_scraper - INFO - Guardado Excel: D:\OEDE\Webscrapping\01_sources\bumeran\data\raw\bumeran_multi_20251030_234512.xlsx
+2025-10-30 23:45:12,719 - __main__ - INFO - Archivos guardados:
+2025-10-30 23:45:12,719 - __main__ - INFO -   CSV: D:\OEDE\Webscrapping\01_sources\bumeran\data\raw\bumeran_multi_20251030_234512.csv
+2025-10-30 23:45:12,719 - __main__ - INFO -   JSON: D:\OEDE\Webscrapping\01_sources\bumeran\data\raw\bumeran_multi_20251030_234512.json
+2025-10-30 23:45:12,719 - __main__ - INFO -   EXCEL: D:\OEDE\Webscrapping\01_sources\bumeran\data\raw\bumeran_multi_20251030_234512.xlsx
+======================================================================
+BUMERAN - SCRAPER MULTI-KEYWORD
+======================================================================
+
+Estrategias disponibles:
+  - maxima: ~100 keywords (primera ejecución completa)
+  - completa: ~55 keywords (incremental balanceada)
+  - general: ~30 keywords (quick mix)
+  - minima: ~4 keywords (testing)
+
+[EJEMPLO] Usando estrategia 'minima' (4 keywords para test)
+Con ventana temporal de 7 días
+
+
+
+======================================================================
+REPORTE DE METRICAS - SCRAPING
+======================================================================
+
+TIEMPO:
+   Inicio:       2025-10-30T23:45:01.403018
+   Fin:          2025-10-30T23:45:02.067018
+   Duracion:     00:00
+
+PAGINAS:
+   Exitosas:     1
+   Fallidas:     0
+   Total:        1
+   Tasa exito:   100.0%
+   Tiempo/pag:   0.66s
+
+OFERTAS:
+   Total:        17
+   Nuevas:       17
+   Duplicadas:   0
+   Velocidad:    25.6 ofertas/s
+
+VALIDACION:
+   Promedio:     100.0%
+   Minimo:       100.0%
+   Maximo:       100.0%
+
+======================================================================
+
+
+============================================================
+CIRCUIT BREAKER - BumeranAPI
+============================================================
+Estado:               CLOSED
+Fallos consecutivos:  0/5
+
+Total calls:          1
+  Exitosos:           1
+  Fallidos:           0
+  Rechazados:         0
+Tasa de exito:        100.0%
+
+Veces abierto:        0
+============================================================
+
+
+============================================================
+ADAPTIVE RATE LIMITER - ESTADISTICAS
+============================================================
+Delay actual:         1.5s
+Rango:                0.5s - 10.0s
+
+Total requests:       1
+  Exitosos:           1
+  Errores:            0
+  Rate limits (429):  0
+Tasa de exito:        100.0%
+
+Consecutivos:
+  Exitos:             1
+  Errores:            0
+
+Historial de delays (ultimos 10):
+  1. 1.50s
+============================================================
+
+
+
+======================================================================
+REPORTE DE METRICAS - SCRAPING
+======================================================================
+
+TIEMPO:
+   Inicio:       2025-10-30T23:45:05.068472
+   Fin:          2025-10-30T23:45:05.615081
+   Duracion:     00:00
+
+PAGINAS:
+   Exitosas:     1
+   Fallidas:     0
+   Total:        1
+   Tasa exito:   100.0%
+   Tiempo/pag:   0.55s
+
+OFERTAS:
+   Total:        20
+   Nuevas:       20
+   Duplicadas:   0
+   Velocidad:    36.59 ofertas/s
+
+VALIDACION:
+   Promedio:     100.0%
+   Minimo:       100.0%
+   Maximo:       100.0%
+
+======================================================================
+
+
+============================================================
+CIRCUIT BREAKER - BumeranAPI
+============================================================
+Estado:               CLOSED
+Fallos consecutivos:  0/5
+
+Total calls:          2
+  Exitosos:           2
+  Fallidos:           0
+  Rechazados:         0
+Tasa de exito:        100.0%
+
+Veces abierto:        0
+============================================================
+
+
+============================================================
+ADAPTIVE RATE LIMITER - ESTADISTICAS
+============================================================
+Delay actual:         1.5s
+Rango:                0.5s - 10.0s
+
+Total requests:       2
+  Exitosos:           2
+  Errores:            0
+  Rate limits (429):  0
+Tasa de exito:        100.0%
+
+Consecutivos:
+  Exitos:             2
+  Errores:            0
+
+Historial de delays (ultimos 10):
+  1. 1.50s
+============================================================
+
+
+
+======================================================================
+REPORTE DE METRICAS - SCRAPING
+======================================================================
+
+TIEMPO:
+   Inicio:       2025-10-30T23:45:08.617811
+   Fin:          2025-10-30T23:45:09.150608
+   Duracion:     00:00
+
+PAGINAS:
+   Exitosas:     1
+   Fallidas:     0
+   Total:        1
+   Tasa exito:   100.0%
+   Tiempo/pag:   0.53s
+
+OFERTAS:
+   Total:        20
+   Nuevas:       20
+   Duplicadas:   0
+   Velocidad:    37.54 ofertas/s
+
+VALIDACION:
+   Promedio:     100.0%
+   Minimo:       100.0%
+   Maximo:       100.0%
+
+======================================================================
+
+
+============================================================
+CIRCUIT BREAKER - BumeranAPI
+============================================================
+Estado:               CLOSED
+Fallos consecutivos:  0/5
+
+Total calls:          3
+  Exitosos:           3
+  Fallidos:           0
+  Rechazados:         0
+Tasa de exito:        100.0%
+
+Veces abierto:        0
+============================================================
+
+
+============================================================
+ADAPTIVE RATE LIMITER - ESTADISTICAS
+============================================================
+Delay actual:         1.5s
+Rango:                0.5s - 10.0s
+
+Total requests:       3
+  Exitosos:           3
+  Errores:            0
+  Rate limits (429):  0
+Tasa de exito:        100.0%
+
+Consecutivos:
+  Exitos:             3
+  Errores:            0
+
+Historial de delays (ultimos 10):
+  1. 1.50s
+============================================================
+
+
+
+======================================================================
+REPORTE DE METRICAS - SCRAPING
+======================================================================
+
+TIEMPO:
+   Inicio:       2025-10-30T23:45:12.151832
+   Fin:          2025-10-30T23:45:12.552630
+   Duracion:     00:00
+
+PAGINAS:
+   Exitosas:     1
+   Fallidas:     0
+   Total:        1
+   Tasa exito:   100.0%
+   Tiempo/pag:   0.4s
+
+OFERTAS:
+   Total:        20
+   Nuevas:       20
+   Duplicadas:   0
+   Velocidad:    49.9 ofertas/s
+
+VALIDACION:
+   Promedio:     100.0%
+   Minimo:       100.0%
+   Maximo:       100.0%
+
+======================================================================
+
+
+============================================================
+CIRCUIT BREAKER - BumeranAPI
+============================================================
+Estado:               CLOSED
+Fallos consecutivos:  0/5
+
+Total calls:          4
+  Exitosos:           4
+  Fallidos:           0
+  Rechazados:         0
+Tasa de exito:        100.0%
+
+Veces abierto:        0
+============================================================
+
+
+============================================================
+ADAPTIVE RATE LIMITER - ESTADISTICAS
+============================================================
+Delay actual:         1.5s
+Rango:                0.5s - 10.0s
+
+Total requests:       4
+  Exitosos:           4
+  Errores:            0
+  Rate limits (429):  0
+Tasa de exito:        100.0%
+
+Consecutivos:
+  Exitos:             4
+  Errores:            0
+
+Historial de delays (ultimos 10):
+  1. 1.50s
+============================================================
+
+
+======================================================================
+SCRAPING COMPLETADO EXITOSAMENTE
+======================================================================

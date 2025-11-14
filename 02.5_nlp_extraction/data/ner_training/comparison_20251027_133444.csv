@@ -1,0 +1,4 @@
+Método,Experiencia,Educación,Skills Técnicas,Soft Skills,Idiomas,Experiencia %,Educación %,Skills Técnicas %,Soft Skills %,Idiomas %
+Fase 1 (Regex),44,44,37,55,5,44.0,44.0,37.0,55.0,5.0
+Fase 2 (NER),65,33,47,4,5,65.0,33.0,47.0,4.0,5.0
+Fase 3 (LLM),53,54,42,84,4,53.0,54.0,42.0,84.0,4.0

@@ -1,0 +1,22 @@
+{
+  "start_time": "2025-11-03T10:43:40.108939",
+  "end_time": "2025-11-03T10:43:40.492604",
+  "total_time_seconds": 0.38,
+  "total_time_formatted": "00:00",
+  "pages_scraped": 1,
+  "pages_failed": 0,
+  "pages_total": 1,
+  "success_rate": 100.0,
+  "avg_time_per_page": 0.38,
+  "offers_total": 6,
+  "offers_new": 6,
+  "offers_duplicates": 0,
+  "offers_per_second": 15.64,
+  "validation_rate_avg": 100.0,
+  "validation_rate_min": 100.0,
+  "validation_rate_max": 100.0,
+  "errors_count": 0,
+  "warnings_count": 0,
+  "errors": [],
+  "warnings": []
+}
