@@ -55,6 +55,19 @@
   - Archivo: `docs/schema_bd.sql`
   - Incluye: CREATE TABLE + conteo de registros por tabla
 
+### 5. Documentación técnica completada ✅
+- [x] **20 scripts principales documentados**
+  - Archivo: `docs/INVENTARIO_SCRIPTS_PRINCIPALES.md`
+  - 7 grupos funcionales: Pipeline, Scraping (5), Consolidación (3), NLP (3), ESCO (2), BD (3), Dashboards (2)
+  - Incluye: propósito, inputs/outputs, frecuencia, dependencias
+  - Tabla resumen + flujo típico de ejecución
+- [x] **Diagrama de arquitectura creado**
+  - Archivo: `docs/ARQUITECTURA_SISTEMA.md`
+  - Diagrama Mermaid end-to-end (Internet → Dashboards)
+  - 6 fases detalladas: Scraping, Consolidación, NLP, ESCO, BD, Visualización
+  - Volumetría actual + objetivos v2.0
+  - Roadmap de 5 fases en 6 meses
+
 ---
 
 ## ⏳ TAREAS EN PROGRESO
@@ -82,8 +95,8 @@ Ninguna en este momento
 ### 7. Mapeo de arquitectura actual
 - [x] Listar todos los scripts Python ✅
 - [x] Listar todos los scripts R ✅
-- [ ] Documentar propósito de cada script principal (top 20)
-- [ ] Crear diagrama de flujo del sistema actual
+- [x] Documentar propósito de cada script principal (top 20) ✅
+- [x] Crear diagrama de flujo del sistema actual ✅
 - [x] Inventario de tablas de BD ✅
 - [x] Documentar schema de tablas principales ✅
 
@@ -151,7 +164,7 @@ Ninguna en este momento
 ```
 FASE 0: PREPARACIÓN Y CONFIGURACIÓN
 ┌────────────────────────────────────────┐
-│ Progreso general: ████████░░ 80%      │
+│ Progreso general: █████████░ 90%      │
 ├────────────────────────────────────────┤
 │ Semana 1 (Infraestructura):           │
 │   - Git y control versiones: ██████████ 100% ✅ │
@@ -159,16 +172,17 @@ FASE 0: PREPARACIÓN Y CONFIGURACIÓN
 │   - Backups:                 ██████████ 100% ✅ │
 │                                        │
 │ Semana 2 (Documentación):             │
-│   - Mapeo arquitectura:      ███████░░ 70% ⏳│
-│   - Plan testing:            ░░░░░░░░░ 0%  │
-│   - Comunicación equipo:     ░░░░░░░░░ 0%  │
+│   - Mapeo arquitectura:      ██████████ 100% ✅│
+│   - Plan testing:            ░░░░░░░░░ 0% (SKIP)│
+│   - Comunicación equipo:     ░░░░░░░░░ 0% (SKIP)│
 └────────────────────────────────────────┘
 
-Documentación base:      ████████████████ 100% ✅
-Git y control versiones: ████████████████ 100% ✅
-Entorno de desarrollo:   ████████████████ 100% ✅
-Backups:                 ████████████████ 100% ✅
-Inventario de scripts:   ████████████████ 100% ✅
+Documentación base:         ████████████████ 100% ✅
+Git y control versiones:    ████████████████ 100% ✅
+Entorno de desarrollo:      ████████████████ 100% ✅
+Backups:                    ████████████████ 100% ✅
+Inventario de scripts:      ████████████████ 100% ✅
+Documentación técnica:      ████████████████ 100% ✅
 ```
 
 ---
@@ -258,11 +272,19 @@ Inventario de scripts:   ████████████████ 100% �
    - **35 scripts R** documentados en `docs/inventario_scripts_R.txt`
    - Schema de BD: 32 tablas documentadas en `docs/schema_bd.sql`
 
-6. ✅ **Fundamentos para no perder contexto:**
-   - Todos los cambios versionados con Git
+6. ✅ **Documentación técnica detallada:**
+   - **20 scripts principales** documentados en `docs/INVENTARIO_SCRIPTS_PRINCIPALES.md`
+   - 7 grupos funcionales con propósito, inputs/outputs, frecuencia
+   - Flujo típico de ejecución (pipeline completo)
+   - **Diagrama de arquitectura** completo en `docs/ARQUITECTURA_SISTEMA.md`
+   - Flujo end-to-end con Mermaid (Internet → Dashboards)
+   - 6 fases detalladas + volumetría + roadmap v2.0
+
+7. ✅ **Fundamentos para no perder contexto:**
+   - Todos los cambios versionados con Git (3 commits)
    - Documentación exhaustiva de qué, cómo y por qué
    - Checklist con tareas específicas y comandos
-   - Progreso medible (**80% FASE 0 completado**)
+   - Progreso medible (**90% FASE 0 completado**)
 
 ### Próximos pasos inmediatos:
 
@@ -293,7 +315,8 @@ Inventario de scripts:   ████████████████ 100% �
 
 ---
 
-**Última actualización:** 14/11/2025 21:30
+**Última actualización:** 14/11/2025 22:00
 **Próxima revisión:** 15/11/2025
 **Responsable:** Equipo Técnico OEDE + Claude Code
-**Progreso FASE 0:** 80% completado (Semana 1 infraestructura: 100% ✅)
+**Progreso FASE 0:** 90% completado
+**Status:** ✅ CASI COMPLETO - Listo para transición a FASE 1
