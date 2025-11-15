@@ -1,0 +1,39 @@
+INVENTARIO DE SCRIPTS R
+Total: 35 archivos
+Generado: 2025-11-14
+
+D:/OEDE/Webscrapping\Visual--\app.R
+D:/OEDE/Webscrapping\Visual--\app_minimal_working.R
+D:/OEDE/Webscrapping\Visual--\backup\app_backup.R
+D:/OEDE/Webscrapping\Visual--\backup\app_mejorado.R
+D:/OEDE/Webscrapping\Visual--\backup\app_v2.0_pre-mejoras.R
+D:/OEDE/Webscrapping\Visual--\backup\app_v3.R
+D:/OEDE/Webscrapping\Visual--\configure_and_deploy.R
+D:/OEDE/Webscrapping\Visual--\credentials.R
+D:/OEDE/Webscrapping\Visual--\scripts\analizar_requisitos.R
+D:/OEDE/Webscrapping\Visual--\scripts\check_account.R
+D:/OEDE/Webscrapping\Visual--\scripts\check_skills.R
+D:/OEDE/Webscrapping\Visual--\scripts\configurar_y_deployar.R
+D:/OEDE/Webscrapping\Visual--\scripts\deploy_app.R
+D:/OEDE/Webscrapping\Visual--\scripts\deploy_direct.R
+D:/OEDE/Webscrapping\Visual--\scripts\deploy_to_shinyapps.R
+D:/OEDE/Webscrapping\Visual--\scripts\eliminar_app_antigua.R
+D:/OEDE/Webscrapping\Visual--\scripts\instalar_dependencias.R
+D:/OEDE/Webscrapping\Visual--\scripts\instalar_paquetes.R
+D:/OEDE/Webscrapping\Visual--\scripts\instalar_paquetes_avanzados.R
+D:/OEDE/Webscrapping\Visual--\scripts\instalar_rsconnect.R
+D:/OEDE/Webscrapping\Visual--\scripts\setup_and_deploy.R
+D:/OEDE/Webscrapping\Visual--\scripts\test_grafico_skills.R
+D:/OEDE/Webscrapping\Visual--\scripts\test_packages.R
+D:/OEDE/Webscrapping\Visual--\temp\codigo_modal_feedback.R
+D:/OEDE/Webscrapping\Webscrapping\app.R
+D:/OEDE/Webscrapping\Webscrapping\app_backup.R
+D:/OEDE/Webscrapping\Webscrapping\app_mejorado.R
+D:/OEDE/Webscrapping\Webscrapping\app_v3.R
+D:/OEDE/Webscrapping\Webscrapping\codigo_modal_feedback.R
+D:/OEDE/Webscrapping\Webscrapping\configurar_y_deployar.R
+D:/OEDE/Webscrapping\Webscrapping\deploy_app.R
+D:/OEDE/Webscrapping\Webscrapping\instalar_dependencias.R
+D:/OEDE/Webscrapping\Webscrapping\instalar_paquetes.R
+D:/OEDE/Webscrapping\Webscrapping\instalar_paquetes_avanzados.R
+D:/OEDE/Webscrapping\Webscrapping\instalar_rsconnect.R
