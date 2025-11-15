@@ -341,49 +341,65 @@ class ESCOPopulator:
         print(f"  [OK] {self.stats['alt_labels_skills']:,} alternative labels")
 
     def procesar_associations(self):
-        """Procesa relaciones ocupaci[U+00F3]n-skill"""
-        print("\n[LINK] PROCESANDO ASSOCIATIONS (Ocupaci[U+00F3]n-Skill)")
+        """Procesa relaciones ocupación-skill"""
+        print("\n[LINK] PROCESANDO ASSOCIATIONS (Ocupación-Skill)")
         print("=" * 70)
 
         cursor = self.conn.cursor()
 
-        # Obtener associations
-        query = """
-        SELECT ?assoc ?occ ?skill ?relType WHERE {
-            ?assoc a <http://data.europa.eu/esco/model#Association> .
-            ?assoc <http://data.europa.eu/esco/model#associationOccupation> ?occ .
-            ?assoc <http://data.europa.eu/esco/model#associationSkill> ?skill .
-            ?assoc <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?relType .
+        # Query CORREGIDA: usar predicados REALES de ESCO
+        # Los predicados correctos son relatedEssentialSkill y relatedOptionalSkill
+
+        # Essential skills
+        query_essential = """
+        SELECT ?occ ?skill WHERE {
+            ?occ <http://data.europa.eu/esco/model#relatedEssentialSkill> ?skill .
         }
         """
-        results = list(self.graph.query(query))
-        print(f"  -> {len(results):,} associations encontradas")
 
-        iterator = tqdm(results, desc="Associations", unit="assoc") if tqdm else results
+        # Optional skills
+        query_optional = """
+        SELECT ?occ ?skill WHERE {
+            ?occ <http://data.europa.eu/esco/model#relatedOptionalSkill> ?skill .
+        }
+        """
 
-        for (assoc_uri, occ_uri, skill_uri, rel_type) in iterator:
+        print("  [1/2] Buscando essential skills...")
+        essential_results = list(self.graph.query(query_essential))
+        print(f"  -> {len(essential_results):,} essential skills encontradas")
+
+        print("  [2/2] Buscando optional skills...")
+        optional_results = list(self.graph.query(query_optional))
+        print(f"  -> {len(optional_results):,} optional skills encontradas")
+
+        total_results = len(essential_results) + len(optional_results)
+        print(f"  -> TOTAL: {total_results:,} associations encontradas")
+
+        # Procesar essential skills
+        iterator = tqdm(essential_results, desc="Essential", unit="assoc") if tqdm else essential_results
+        for (occ_uri, skill_uri) in iterator:
             try:
-                # Determinar tipo de relaci[U+00F3]n (essential vs optional)
-                rel_type_str = str(rel_type)
-                relation_type = None
-
-                if 'essential' in rel_type_str.lower():
-                    relation_type = 'essential'
-                elif 'optional' in rel_type_str.lower():
-                    relation_type = 'optional'
-                else:
-                    continue  # Skip si no es essential u optional
-
                 cursor.execute("""
                     INSERT OR IGNORE INTO esco_associations (
                         association_uri, occupation_uri, skill_uri, relation_type
                     ) VALUES (?, ?, ?, ?)
-                """, (str(assoc_uri), str(occ_uri), str(skill_uri), relation_type))
-
+                """, (f"{occ_uri}#{skill_uri}", str(occ_uri), str(skill_uri), 'essential'))
                 self.stats['associations'] += 1
-
             except Exception as e:
-                self.stats['errores'].append(f"Association {assoc_uri}: {e}")
+                self.stats['errores'].append(f"Essential {occ_uri}->{skill_uri}: {e}")
+
+        # Procesar optional skills
+        iterator = tqdm(optional_results, desc="Optional", unit="assoc") if tqdm else optional_results
+        for (occ_uri, skill_uri) in iterator:
+            try:
+                cursor.execute("""
+                    INSERT OR IGNORE INTO esco_associations (
+                        association_uri, occupation_uri, skill_uri, relation_type
+                    ) VALUES (?, ?, ?, ?)
+                """, (f"{occ_uri}#{skill_uri}", str(occ_uri), str(skill_uri), 'optional'))
+                self.stats['associations'] += 1
+            except Exception as e:
+                self.stats['errores'].append(f"Optional {occ_uri}->{skill_uri}: {e}")
 
         self.conn.commit()
         print(f"  [OK] {self.stats['associations']:,} associations procesadas")
