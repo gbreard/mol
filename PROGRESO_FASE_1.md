@@ -48,11 +48,34 @@ Enriquecer y normalizar datos SIN cambiar dashboards:
   - **Nota:** Objetivo de >90% con conf>=85% NO cumplido (requiere mejorar algoritmo lingüístico)
   - **Mejora futura:** Agregar más verbos de acción y keywords específicos
 
+### 4. Tarea 3: Extender NLP a v6.0 (Día 2-3 - 15-16/11/2025)
+- [ ] **EN PROGRESO: NLP v6.0 con 24 campos (25% completado)**
+  - Prompt creado: `extraction_prompt_v6.py` (480+ líneas)
+  - 6 campos nuevos agregados:
+    * `experiencia_cargo_previo` - Cargo/título previo específico
+    * `tecnologias_stack_list` - Stack tecnológico completo (IT/Tech)
+    * `sector_industria` - Sector/industria del puesto
+    * `nivel_seniority` - Nivel de senioridad (trainee/junior/senior/manager/director)
+    * `modalidad_contratacion` - Modalidad de trabajo (remoto/presencial/híbrido)
+    * `disponibilidad_viajes` - Disponibilidad para viajar
+  - Plan detallado: `PLAN_TAREA_3_NLP_V6.md` (410+ líneas)
+  - Pendientes:
+    * Copiar y actualizar pipeline (`process_nlp_from_db_v6.py`)
+    * Crear script de testing (`test_nlp_v6.py`)
+    * Validar con 10 ofertas diversas
+    * Ajustar prompt según resultados
+
 ---
 
 ## ⏳ TAREAS EN PROGRESO
 
-Ninguna tarea en progreso actualmente.
+### Tarea 3: Extender NLP a v6.0 (25% completado)
+- [x] Investigación del sistema NLP actual (v5.1.0)
+- [x] Creación de `extraction_prompt_v6.py` con instrucciones para 6 campos nuevos
+- [x] Documentación del plan de implementación
+- [ ] Actualizar pipeline de procesamiento
+- [ ] Testing con ofertas diversas
+- [ ] Validación y ajustes
 
 ---
 
@@ -189,14 +212,15 @@ SELECT COUNT(DISTINCT provincia_normalizada) FROM ofertas;
 ```
 FASE 1: FUNDAMENTOS DE DATOS
 ┌────────────────────────────────────────┐
-│ Progreso general: █████░░░░░ 50%      │
+│ Progreso general: ██████░░░░ 56%      │
 ├────────────────────────────────────────┤
 │ Semana 1-2 (ESCO):                    │
 │   - Asociaciones 135K:   ██████████ 100% ✅│
 │   - Clasificación skills: ██████████ 100% ✅│
 │                                        │
 │ Semana 3 (NLP v6.0):                  │
-│   - Extender campos:     ░░░░░░░░░  0%  │
+│   - Prompt v6 creado:    ██████████ 100% ✅│
+│   - Pipeline v6:         ░░░░░░░░░  0%  │
 │   - Testing:             ░░░░░░░░░  0%  │
 │                                        │
 │ Semana 4 (Territorial):               │
@@ -207,17 +231,14 @@ FASE 1: FUNDAMENTOS DE DATOS
 Setup Git:               ████████████████ 100% ✅
 Carga ESCO associations: ████████████████ 100% ✅
 Clasificacion skills:    ████████████████ 100% ✅ (52.8% alta confianza)
+Tarea 3 NLP v6.0:        ██████░░░░░░░░░  25% ⏳ (prompt creado)
 ```
 
 ---
 
 ## 🚧 BLOQUEADORES ACTUALES
 
-### Bloqueador 1: Script ESCO corriendo (NORMAL)
-- **Descripción:** `populate_esco_from_rdf.py` está procesando RDF de 1.3 GB
-- **Impacto:** Esperando resultado para validar carga
-- **ETA:** 5-10 minutos
-- **Status:** ⏳ En progreso
+No hay bloqueadores actualmente.
 
 ---
 
@@ -229,25 +250,32 @@ Clasificacion skills:    ████████████████ 100% �
 **Razón:** Es más rápido de resolver y desbloquea toda la cadena de valor ESCO
 **Aprobado por:** Equipo técnico
 
+### Decisión 2: Estrategia NLP v6.0 - LLM First
+**Fecha:** 15/11/2025
+**Decisión:** Usar solo LLM (sin regex baseline) para los 6 nuevos campos
+**Razón:** Campos requieren inferencia contextual compleja que LLM maneja mejor
+**Trade-off:** Menor precisión vs rapidez de implementación
+**Aprobado por:** Equipo técnico
+
 ---
 
 ## 🔄 PRÓXIMOS PASOS INMEDIATOS
 
-### Hoy (14/11/2025):
-1. ⏳ **Esperar resultado de carga ESCO** (en progreso)
-2. Verificar 240K registros en `esco_associations`
-3. Si falla, debuggear query SPARQL
-4. Commit de avances
+### Hoy (15/11/2025):
+1. ✅ Creado `extraction_prompt_v6.py` con 6 campos nuevos
+2. ✅ Creado `PLAN_TAREA_3_NLP_V6.md` con roadmap detallado
+3. ⏳ **Commit de avances Tarea 3** (en progreso)
+4. Copiar y actualizar `process_nlp_from_db_v6.py`
 
-### Mañana (15/11/2025):
-1. Empezar clasificación de skills (Tarea 2)
-2. Crear script `clasificar_skills_esco.py`
-3. Análisis de campo `skillType` en ESCO
+### Mañana (16/11/2025):
+1. Continuar con PASO 2: Actualizar pipeline NLP v6
+2. PASO 3: Crear script de testing `test_nlp_v6.py`
+3. PASO 4: Validar con 10 ofertas diversas
 
 ### Esta semana:
-- Completar ESCO (Tareas 1 y 2)
-- Preparar schema para NLP v6.0
-- Obtener archivo de códigos INDEC
+- Completar Tarea 3 (NLP v6.0)
+- Empezar Tarea 4 (códigos INDEC)
+- Objetivo: 75% de FASE 1 completado
 
 ---
 
@@ -255,7 +283,7 @@ Clasificacion skills:    ████████████████ 100% �
 
 **Responsable FASE 1:** Equipo Técnico OEDE
 **Fecha estimada fin:** 12/12/2025 (4 semanas desde inicio)
-**Status:** ⏳ En progreso (10% completado)
+**Status:** ⏳ En progreso (56% completado)
 
 ---
 
@@ -263,12 +291,13 @@ Clasificacion skills:    ████████████████ 100% �
 
 1. `PROGRESO_FASE_0.md` - Fase anterior (90% completada)
 2. `PROPUESTA_IMPLEMENTACION_MOL_v2.0.md` - Roadmap completo
-3. `docs/ARQUITECTURA_SISTEMA.md` - Arquitectura del proyecto
-4. `docs/INVENTARIO_SCRIPTS_PRINCIPALES.md` - Scripts críticos
+3. `PLAN_TAREA_3_NLP_V6.md` - Plan detallado Tarea 3 (NLP v6.0)
+4. `docs/ARQUITECTURA_SISTEMA.md` - Arquitectura del proyecto
+5. `docs/INVENTARIO_SCRIPTS_PRINCIPALES.md` - Scripts críticos
 
 ---
 
-**Última actualización:** 15/11/2025 18:00
+**Última actualización:** 15/11/2025 22:00
 **Próxima revisión:** 16/11/2025
 **Responsable:** Equipo Técnico OEDE + Claude Code
-**Progreso FASE 1:** 50% completado (Día 2 - Tareas 1 y 2 completadas)
+**Progreso FASE 1:** 56% completado (Día 2 - Tareas 1 y 2 completas, Tarea 3 al 25%)
