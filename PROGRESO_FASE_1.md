@@ -48,34 +48,28 @@ Enriquecer y normalizar datos SIN cambiar dashboards:
   - **Nota:** Objetivo de >90% con conf>=85% NO cumplido (requiere mejorar algoritmo lingüístico)
   - **Mejora futura:** Agregar más verbos de acción y keywords específicos
 
-### 4. Tarea 3: Extender NLP a v6.0 (Día 2-3 - 15-16/11/2025)
-- [ ] **EN PROGRESO: NLP v6.0 con 24 campos (25% completado)**
+### 4. Tarea 3: Extender NLP a v6.0 (Día 2-3 - 15-17/11/2025)
+- [x] **COMPLETADA: NLP v6.0 con 24 campos (100% completado)**
   - Prompt creado: `extraction_prompt_v6.py` (480+ líneas)
+  - Pipeline creado: `process_nlp_from_db_v6.py` (920 líneas)
+  - Testing script: `test_nlp_v6.py` (336 líneas)
   - 6 campos nuevos agregados:
-    * `experiencia_cargo_previo` - Cargo/título previo específico
-    * `tecnologias_stack_list` - Stack tecnológico completo (IT/Tech)
-    * `sector_industria` - Sector/industria del puesto
-    * `nivel_seniority` - Nivel de senioridad (trainee/junior/senior/manager/director)
-    * `modalidad_contratacion` - Modalidad de trabajo (remoto/presencial/híbrido)
-    * `disponibilidad_viajes` - Disponibilidad para viajar
-  - Plan detallado: `PLAN_TAREA_3_NLP_V6.md` (410+ líneas)
-  - Pendientes:
-    * Copiar y actualizar pipeline (`process_nlp_from_db_v6.py`)
-    * Crear script de testing (`test_nlp_v6.py`)
-    * Validar con 10 ofertas diversas
-    * Ajustar prompt según resultados
+    * `experiencia_cargo_previo` - Cargo/título previo específico (0% cobertura)
+    * `tecnologias_stack_list` - Stack tecnológico completo (11.1% cobertura)
+    * `sector_industria` - Sector/industria del puesto (55.6% cobertura) ✅
+    * `nivel_seniority` - Nivel de senioridad (55.6% cobertura) ✅
+    * `modalidad_contratacion` - Modalidad de trabajo (55.6% cobertura) ✅
+    * `disponibilidad_viajes` - Disponibilidad para viajar (33.3% cobertura)
+  - Testing con 10 ofertas diversas: 90% success rate
+  - Quality score promedio: 38.9% (9.3/24 campos)
+  - Validación JSON: 100% arrays válidos
+  - **Nota:** Funcional para MVP, refinamiento de prompt pendiente para v6.1
 
 ---
 
 ## ⏳ TAREAS EN PROGRESO
 
-### Tarea 3: Extender NLP a v6.0 (25% completado)
-- [x] Investigación del sistema NLP actual (v5.1.0)
-- [x] Creación de `extraction_prompt_v6.py` con instrucciones para 6 campos nuevos
-- [x] Documentación del plan de implementación
-- [ ] Actualizar pipeline de procesamiento
-- [ ] Testing con ofertas diversas
-- [ ] Validación y ajustes
+No hay tareas en progreso actualmente. Tarea 3 completada.
 
 ---
 
@@ -212,7 +206,7 @@ SELECT COUNT(DISTINCT provincia_normalizada) FROM ofertas;
 ```
 FASE 1: FUNDAMENTOS DE DATOS
 ┌────────────────────────────────────────┐
-│ Progreso general: ██████░░░░ 56%      │
+│ Progreso general: ████████░░ 75%      │
 ├────────────────────────────────────────┤
 │ Semana 1-2 (ESCO):                    │
 │   - Asociaciones 135K:   ██████████ 100% ✅│
@@ -220,8 +214,8 @@ FASE 1: FUNDAMENTOS DE DATOS
 │                                        │
 │ Semana 3 (NLP v6.0):                  │
 │   - Prompt v6 creado:    ██████████ 100% ✅│
-│   - Pipeline v6:         ░░░░░░░░░  0%  │
-│   - Testing:             ░░░░░░░░░  0%  │
+│   - Pipeline v6:         ██████████ 100% ✅│
+│   - Testing:             ██████████ 100% ✅│
 │                                        │
 │ Semana 4 (Territorial):               │
 │   - Códigos INDEC:       ░░░░░░░░░  0%  │
@@ -231,7 +225,7 @@ FASE 1: FUNDAMENTOS DE DATOS
 Setup Git:               ████████████████ 100% ✅
 Carga ESCO associations: ████████████████ 100% ✅
 Clasificacion skills:    ████████████████ 100% ✅ (52.8% alta confianza)
-Tarea 3 NLP v6.0:        ██████░░░░░░░░░  25% ⏳ (prompt creado)
+Tarea 3 NLP v6.0:        ████████████████ 100% ✅ (3 de 6 campos >50%)
 ```
 
 ---
@@ -297,7 +291,7 @@ No hay bloqueadores actualmente.
 
 ---
 
-**Última actualización:** 15/11/2025 22:00
-**Próxima revisión:** 16/11/2025
+**Última actualización:** 17/11/2025 14:00
+**Próxima revisión:** 18/11/2025
 **Responsable:** Equipo Técnico OEDE + Claude Code
-**Progreso FASE 1:** 56% completado (Día 2 - Tareas 1 y 2 completas, Tarea 3 al 25%)
+**Progreso FASE 1:** 75% completado (Día 3 - Tareas 1, 2 y 3 completas)

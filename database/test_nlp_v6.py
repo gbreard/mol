@@ -216,7 +216,7 @@ def main():
 
         # Ejecutar extracción
         try:
-            result = extractor.extract(id_o, titulo, descripcion)
+            result = extractor.process_oferta(id_o, titulo, descripcion)
 
             if result:
                 global_stats["total_success"] += 1
