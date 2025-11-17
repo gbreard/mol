@@ -69,7 +69,14 @@ Enriquecer y normalizar datos SIN cambiar dashboards:
 
 ## ⏳ TAREAS EN PROGRESO
 
-No hay tareas en progreso actualmente. Tarea 3 completada.
+### Tarea 4: Normalización Territorial (10% completado)
+- [x] Investigación de datos de ubicación existentes
+- [x] Análisis del campo `localizacion` (99.7% cobertura)
+- [x] Definición de estrategia simplificada
+- [x] Documentación de plan detallado
+- [ ] Creación de tablas INDEC
+- [ ] Script de normalización
+- [ ] Validación >80% cobertura
 
 ---
 
