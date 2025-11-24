@@ -48,7 +48,7 @@ class NLPExtractorV6:
 
     VERSION = "6.0.0"
     EXTRACTION_METHOD = "hybrid_rag_llm"
-    OLLAMA_MODEL = "llama3.1:8b"
+    OLLAMA_MODEL = "hermes3:8b"  # Especializado en JSON estructurado (84% accuracy)
     OLLAMA_URL = "http://localhost:11434/api/generate"
 
     def __init__(self, db_path: str = None, verbose: bool = False):
@@ -122,7 +122,7 @@ class NLPExtractorV6:
 
         return self._rag_context_cache
 
-    def _call_ollama_llm(self, prompt: str, timeout: int = 120) -> Optional[Dict[str, Any]]:
+    def _call_ollama_llm(self, prompt: str, timeout: int = 300) -> Optional[Dict[str, Any]]:
         """
         Llama a Ollama LLM local
 
@@ -145,9 +145,10 @@ class NLPExtractorV6:
                 "model": self.OLLAMA_MODEL,
                 "prompt": prompt,
                 "stream": False,
+                "format": "json",  # Forzar output JSON (Hermes 3 native JSON mode)
                 "options": {
                     "temperature": 0.1,  # Baja temperatura para respuestas consistentes
-                    "num_predict": 2048,  # Suficiente para JSON completo (~500 tokens típico)
+                    "num_predict": 8192,  # Máximo para evitar JSON truncado
                     "num_ctx": 8192,  # Ventana de contexto (para prompts largos con RAG)
                 }
             }
@@ -742,7 +743,7 @@ class NLPExtractorV6:
                 AND NOT EXISTS (
                     SELECT 1 FROM ofertas_nlp_history h
                     WHERE h.id_oferta = o.id_oferta
-                      AND h.nlp_version = '5.0.0'
+                      AND h.nlp_version = '6.0.0'
                 )
             """
 
@@ -873,7 +874,7 @@ def main():
 
     # Inicializar extractor
     try:
-        extractor = NLPExtractorV5(db_path=args.db)
+        extractor = NLPExtractorV6(db_path=args.db)
     except FileNotFoundError as e:
         print(f"[ERROR] {e}")
         return 1

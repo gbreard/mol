@@ -5,12 +5,17 @@ Test Script para NLP v6.0
 
 Script de testing para validar la extracción NLP v6.0 con 6 campos nuevos.
 
-Testing con 10 ofertas diversas:
-- 3 IT/Tech (tecnologias_stack_list)
-- 2 Gerenciales (nivel_seniority: manager/director)
-- 2 Junior/Trainee (nivel_seniority: junior/trainee)
-- 2 Remoto/Híbrido (modalidad_contratacion)
-- 1 Con viajes (disponibilidad_viajes)
+Testing EXTENDIDO con 100 ofertas estratégicamente seleccionadas:
+- 15 IT Backend (Python/Java/.NET/Node)
+- 10 IT Frontend (React/Angular/Vue)
+- 10 IT Fullstack
+- 8 DevOps/QA/Infraestructura
+- 12 Gerenciales/Liderazgo
+- 10 Junior/Trainee/Pasantías
+- 10 Senior/Experto
+- 10 Remoto/Híbrido
+- 8 Comercial/Ventas
+- 7 Finanzas/Contabilidad
 
 Uso:
     python test_nlp_v6.py
@@ -28,27 +33,19 @@ sys.path.insert(0, str(Path(__file__).parent))
 from process_nlp_from_db_v6 import NLPExtractorV6
 
 
-# IDs de ofertas seleccionadas para testing
+# IDs de ofertas seleccionadas para testing (100 ofertas estratégicas)
+# Generado por: select_strategic_offers.py
 TEST_OFFER_IDS = [
-    # IT/Tech (3)
-    1118010700,  # Programador/a de Centro de mecanizado zona Bernal
-    1118031067,  # Programador Fullstack (Vue.js y .NET)
-    2166883,     # Programador Backend
-
-    # Gerenciales (2)
-    1117973662,  # Gerente Operaciones IT
-    2167230,     # JEFE de MICROBIOLOGIA
-
-    # Junior/Trainee (2)
-    1117961335,  # Creador/a de Contenido junior
-    1118007574,  # COMMUNITY MANGER JUNIORS CON O SIN EXPERIENCIA
-
-    # Remoto/Híbrido (2)
-    1118006225,  # Analista Contable Ssr.
-    1117972836,  # Representante de Ventas (Importaciones) - REMOTO
-
-    # Con viajes (1)
-    2164468,     # Promotor Técnico Comercial (Lab. Veterinario)
+    2157405, 2162477, 2163289, 2163314, 2163768, 2163987, 2164340, 2164365, 2164920, 2165059,
+    2165170, 2165394, 2165945, 2166204, 2166572, 2167698, 2167844, 1117881181, 1117928810, 1117941245,
+    1117942606, 1117947639, 1117947690, 1117949821, 1117951568, 1117951965, 1117952023, 1117954926, 1117958199, 1117959738,
+    1117965415, 1117968008, 1117968882, 1117971352, 1117971468, 1117972256, 1117974065, 1117974741, 1117974745, 1117980370,
+    1117981864, 1117983013, 1117983014, 1117983086, 1117985472, 1117985908, 1117987296, 1117988532, 1117990457, 1117992260,
+    1117997428, 1117997884, 1117999065, 1117999834, 1118000684, 1118000738, 1118005251, 1118005752, 1118007244, 1118008131,
+    1118008440, 1118010316, 1118010580, 1118010785, 1118012494, 1118014402, 1118015287, 1118016102, 1118016962, 1118016967,
+    1118019755, 1118020747, 1118022410, 1118022885, 1118024749, 1118024902, 1118024906, 1118024942, 1118025062, 1118026907,
+    1118026908, 1118028057, 1118028271, 1118028663, 1118031118, 1118032081, 1118032180, 1118032737, 1118032845, 1118033649,
+    1118034021, 1118035833, 1118036737, 1118037066, 1118037360, 1118037362, 1118038095, 1118039379, 1118040267, 1118040538,
 ]
 
 
