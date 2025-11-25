@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-NLP Extractor v6.0 - Hybrid RAG System (24 campos)
+NLP Extractor v6.1 - Hybrid RAG System (24 campos)
 ===================================================
 
 Sistema híbrido de extracción que combina:
 - Regex v3.7 (baseline)
 - RAG Context (ESCO + ejemplos + stats)
-- Ollama LLM (llama3.1:8b)
+- Ollama LLM (hermes3:8b)
 - Post-validación
 
 NOVEDAD v6.0: Agregados 6 campos nuevos (24 totales)
@@ -16,6 +16,12 @@ NOVEDAD v6.0: Agregados 6 campos nuevos (24 totales)
 - nivel_seniority
 - modalidad_contratacion
 - disponibilidad_viajes
+
+MEJORAS v6.1: Prompts refinados para mejorar coverage
+- experiencia_max_anios: Instrucciones más agresivas para detectar rangos
+- experiencia_min_anios: Inferencia reforzada desde nivel_seniority
+- experiencia_cargo_previo: Criterios más permisivos para incluir roles
+- disponibilidad_viajes: Más patrones de búsqueda
 
 Uso:
     python process_nlp_from_db_v6.py --mode test --limit 10
@@ -44,9 +50,9 @@ from prompts.extraction_prompt_v6 import generate_extraction_prompt_v6
 
 
 class NLPExtractorV6:
-    """Extractor híbrido NLP v6.0 con RAG + LLM + Inferencia Contextual (24 campos)"""
+    """Extractor híbrido NLP v6.1 con RAG + LLM + Inferencia Contextual (24 campos)"""
 
-    VERSION = "6.0.0"
+    VERSION = "6.1.0"  # v6.1: Prompts refinados para mejorar coverage de campos críticos
     EXTRACTION_METHOD = "hybrid_rag_llm"
     OLLAMA_MODEL = "hermes3:8b"  # Especializado en JSON estructurado (84% accuracy)
     OLLAMA_URL = "http://localhost:11434/api/generate"
@@ -743,7 +749,7 @@ class NLPExtractorV6:
                 AND NOT EXISTS (
                     SELECT 1 FROM ofertas_nlp_history h
                     WHERE h.id_oferta = o.id_oferta
-                      AND h.nlp_version = '6.0.0'
+                      AND h.nlp_version = '6.1.0'
                 )
             """
 
@@ -764,7 +770,7 @@ class NLPExtractorV6:
         conn.close()
 
         total_ofertas = len(ofertas)
-        print(f"\n[BATCH] Procesando {total_ofertas} ofertas con NLP v5.0")
+        print(f"\n[BATCH] Procesando {total_ofertas} ofertas con NLP v{self.VERSION}")
         print(f"[BATCH] Modelo: {self.OLLAMA_MODEL}")
         print()
 
@@ -844,7 +850,7 @@ def check_ollama_status():
 
 
 def main():
-    parser = argparse.ArgumentParser(description="NLP Extractor v5.0 - Hybrid RAG System")
+    parser = argparse.ArgumentParser(description="NLP Extractor v6.1 - Hybrid RAG System")
     parser.add_argument("--mode", choices=["test", "production"], default="test",
                        help="Modo de ejecución (test=10 ofertas, production=batch completo)")
     parser.add_argument("--limit", type=int, default=100,
@@ -859,7 +865,7 @@ def main():
     args = parser.parse_args()
 
     print("=" * 70)
-    print("NLP EXTRACTOR v5.0 - HYBRID RAG SYSTEM")
+    print("NLP EXTRACTOR v6.1 - HYBRID RAG SYSTEM")
     print("=" * 70)
     print(f"Modo: {args.mode.upper()}")
     print(f"Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")

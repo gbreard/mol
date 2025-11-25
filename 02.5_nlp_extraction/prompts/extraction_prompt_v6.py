@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-Extraction Prompt Template - NLP v6.0
+Extraction Prompt Template - NLP v6.1
 ======================================
 
 Template de prompt para extracción híbrida con RAG.
 NOVEDAD v6.0: Agrega 6 campos nuevos (24 campos totales)
+MEJORAS v6.1: Prompts refinados para mejorar coverage de campos críticos
 
 Campos nuevos:
 - experiencia_cargo_previo
@@ -13,6 +14,12 @@ Campos nuevos:
 - nivel_seniority
 - modalidad_contratacion
 - disponibilidad_viajes
+
+Mejoras v6.1 (coverage optimization):
+- experiencia_max_anios: Instrucciones más agresivas para buscar rangos
+- experiencia_min_anios: Inferencia reforzada desde nivel_seniority
+- experiencia_cargo_previo: Ejemplos más claros y menos restricciones
+- disponibilidad_viajes: Más patrones de búsqueda
 """
 
 from typing import Dict, Any, Optional
@@ -75,11 +82,28 @@ Extrae la información en formato JSON con los siguientes campos:
 
 **1. EXPERIENCIA:**
 - `experiencia_min_anios` (número o null): Años mínimos de experiencia requeridos
+  - BUSCAR ACTIVAMENTE: "X años", "mínimo X", "al menos X", "desde X", etc.
+  - INFERIR de nivel seniority si no se menciona explícitamente (ver REGLA 4 más abajo)
+  - Ejemplos: "3 años mínimo" → 3, "Junior" → 0, "Senior" → 4
+
 - `experiencia_max_anios` (número o null): Años máximos de experiencia
+  - CRÍTICO: Buscar RANGOS en el texto ("X a Y años", "entre X y Y", "X-Y años")
+  - Si hay mínimo, BUSCAR máximo activamente
+  - Patrones: "3 a 5 años" → max:5, "hasta 10 años" → max:10
+  - Si solo dice "Junior" o "Trainee" → inferir max:2
+  - Si solo dice "Semi-senior" → inferir max:4
+  - **OBJETIVO: NUNCA dejar null si hay evidencia de rango o nivel**
+
 - `experiencia_cargo_previo` (string o null): **NUEVO v6.0** - Cargo/título previo específico requerido
-  - Ejemplos: "Gerente de Ventas", "Desarrollador Backend", "Analista de Datos"
-  - Solo incluir si se menciona un cargo específico previo
-  - NO incluir si solo dice "experiencia en el área"
+  - BUSCAR: "experiencia como...", "haber trabajado de...", "ex ...", "proveniente de..."
+  - Incluir ROLES mencionados explícitamente (no genéricos)
+  - Ejemplos VÁLIDOS:
+    * "experiencia como Gerente de Ventas" → "Gerente de Ventas"
+    * "buscamos Desarrollador con exp. en Backend" → "Desarrollador Backend"
+    * "haber trabajado de Analista" → "Analista de Datos"
+  - Ejemplos INVÁLIDOS:
+    * "experiencia en el área" → null (muy genérico)
+    * "conocimiento del rubro" → null (no es cargo específico)
 
 **2. EDUCACIÓN:**
 - `nivel_educativo` (string): Uno de: "primario", "secundario", "terciario", "universitario", "posgrado", null
@@ -136,6 +160,9 @@ Extrae la información en formato JSON con los siguientes campos:
   - 1 si requiere disponibilidad para viajar (nacional o internacional)
   - 0 si explícitamente NO requiere viajes
   - null si no se menciona
+  - BUSCAR PATRONES: "disponibilidad para viajar", "viajes frecuentes", "viajes al interior",
+    "viajes internacionales", "movilidad", "traslados", "desplazamientos"
+  - También positivo: "zona de cobertura", "visitas a clientes", "recorrer territorio"
 
 **9. CONTEXTO DEL PUESTO:**
 - `sector_industria` (string o null): **NUEVO v6.0** - Sector/industria del puesto
@@ -169,16 +196,31 @@ Extrae la información en formato JSON con los siguientes campos:
    - Validar que estén dentro de rangos razonables (usar estadísticas del contexto)
    - Si dice "competitivo", "a convenir", "según experiencia" → null
 
-4. **Experiencia:**
-   - Extraer números exactos cuando aparezcan
-   - "Junior" → 0-2 años
-   - "Semi-senior" → 2-4 años
-   - "Senior" → 4+ años
+4. **Experiencia (CRÍTICO - MEJORADO v6.1):**
+   - PRIORIDAD 1: Buscar rangos explícitos ("3 a 5 años", "entre 2 y 4")
+   - PRIORIDAD 2: Buscar mínimos/máximos por separado ("mínimo 3 años", "hasta 10 años")
+   - PRIORIDAD 3: Inferir de nivel seniority:
+     * "Trainee/Pasante" → min:0, max:1
+     * "Junior" → min:0, max:2
+     * "Semi-senior" → min:2, max:4
+     * "Senior" → min:4, max:null (no hay máximo claro)
+   - **REGLA DE ORO**: Si tienes experiencia_min, BUSCA experiencia_max activamente
+   - **NUNCA** dejes experiencia_max_anios en null si el puesto es Trainee/Junior/Semi-senior
 
-5. **Cargo Previo (NUEVO v6.0):**
-   - Solo si menciona cargo/título específico previo
-   - Ejemplos: "buscamos ex Gerente de...", "experiencia previa como..."
-   - NO incluir descripciones genéricas de experiencia
+5. **Cargo Previo (NUEVO v6.0 - MEJORADO v6.1):**
+   - INCLUIR si menciona un ROL/CARGO específico previo
+   - Patrones a buscar:
+     * "experiencia como [CARGO]"
+     * "haber trabajado de [CARGO]"
+     * "proveniente de [CARGO]"
+     * "[CARGO] con X años de experiencia"
+   - Ejemplos VÁLIDOS (más permisivo que v6.0):
+     * "Desarrollador con experiencia en Backend" → "Desarrollador Backend"
+     * "Vendedor con experiencia en retail" → "Vendedor Retail"
+     * "Analista de datos" → "Analista de Datos"
+   - Ejemplos INVÁLIDOS:
+     * "experiencia en el área" → null
+     * "conocimiento del rubro" → null
 
 6. **Sector Industria (NUEVO v6.0):**
    - Inferir del contexto general de la oferta
