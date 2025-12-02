@@ -1,143 +1,213 @@
-# STATUS.md - MOL Monitor Ofertas Laborales
+# MOL - Estado del Proyecto
 
-> **Ultima actualizacion:** 2025-12-02
-> **Branch activo:** feature/fase1-fundamentos-datos
+> **Última actualización:** 2025-12-02  
 > **Linear:** https://linear.app/molar/project/mol-monitor-ofertas-laborales-2a9662bfa15f
 
 ---
 
-## ESTADO ACTUAL DEL PROYECTO
+## 🎯 Versiones Activas
 
-### Versiones Activas
+### Pipeline NLP (v8.0)
+```
+Capa 0: regex_patterns_v4.py      → 60-70% campos con 100% precisión
+Capa 1: extraction_prompt_v8.py   → Qwen2.5:14b, anti-alucinación
+Capa 2: process_nlp_from_db_v7.py → Post-validación 3 capas
+```
 
-| Componente | Version | Archivo Principal |
-|------------|---------|-------------------|
-| **Matching Rules** | v8.3 | database/matching_rules_v83.py |
-| **NLP Pipeline** | v8.0 | database/process_nlp_from_db_v7.py |
-| **Regex Patterns** | v4.0 | 02.5_nlp_extraction/scripts/patterns/regex_patterns_v4.py |
-| **Prompts LLM** | v8.0 | 02.5_nlp_extraction/prompts/extraction_prompt_v8.py |
+| Archivo | Versión | Modelo | Descripción |
+|---------|---------|--------|-------------|
+| `regex_patterns_v4.py` | v4.0 | - | 7 clases, 200+ oficios argentinos |
+| `extraction_prompt_v8.py` | v8.0 | Qwen2.5:14b | Ultra-conservador, ejemplos negativos |
+| `process_nlp_from_db_v7.py` | v8.0 | Qwen2.5:14b | Pipeline principal activo |
 
-### Metricas Actuales
+### Pipeline Matching ESCO (v8.3)
+```
+Paso 1: match_ofertas_multicriteria.py → Título(50%) + Skills(40%) + Descripción(10%)
+Paso 2: matching_rules_v83.py          → 6 familias funcionales + 10 reglas never_confirm
+```
 
-| Metrica | Valor | Meta | Medicion |
-|---------|-------|------|----------|
-| **Precision ESCO** | ~80% | >85% | python database/test_gold_set_manual.py |
-| **Gold Set** | 19 casos | 50+ | database/gold_set_manual_v1.json |
-| **Cobertura NLP** | 60-70% | >75% | regex v4 capa 0 |
-
-### Errores Conocidos (Gold Set 19)
-
-Total: 8 errores de 19 casos (42.1%)
-
-Por tipo:
-- sector_funcion:     4 casos (50%) <- PRIORIDAD
-- nivel_jerarquico:   2 casos (25%)
-- tipo_ocupacion:     1 caso
-- programa_general:   1 caso
+| Archivo | Versión | Descripción |
+|---------|---------|-------------|
+| `match_ofertas_multicriteria.py` | v8.1 | Algoritmo 4 pasos, BGE-M3 + ESCO-XLM |
+| `matching_rules_v83.py` | v8.3 | Familias funcionales + tareas 5-8 |
 
 ---
 
-## ESTRUCTURA DEL PROYECTO
+## 📊 Métricas Actuales
 
-D:\OEDE\Webscrapping- 01_sources/          # Scrapers (Bumeran, ZonaJobs, Indeed, LinkedIn, ComputRabajo)
-- 02_consolidation/    # Normalizacion y deduplicacion
-- 02.5_nlp_extraction/ # Pipeline NLP (prompts, patterns, extractors)
-- 03_esco_matching/    # Matching semantico ESCO/ISCO
-- 04_analysis/         # Analisis estadistico
-- 05_products/         # Productos finales
-- Visual--/            # Dashboard Shiny (produccion)
-- database/            # SQLite + ChromaDB + scripts de matching
-- shared/              # Schema unificado y utilidades
+### Matching ESCO
+| Métrica | Valor | Objetivo |
+|---------|-------|----------|
+| Precisión (Gold Set 19) | ~80% (v8.3) | >85% |
+| Gold Set Size | 19 casos | 50+ casos |
+| Familias funcionales | 6 | 10+ |
+| Reglas never_confirm | 10 | Según necesidad |
 
----
+### Distribución de Errores (Gold Set)
+| Tipo Error | Casos | % |
+|------------|-------|---|
+| sector_funcion | 4 | 50% |
+| nivel_jerarquico | 2 | 25% |
+| tipo_ocupacion | 1 | 12.5% |
+| programa_general | 1 | 12.5% |
 
-## PIPELINE DE MATCHING ESCO (v8.3)
+### NLP Pipeline
+| Métrica | Valor | Objetivo |
+|---------|-------|----------|
+| Cobertura Regex | 60-70% | 75% |
+| Modelo activo | Qwen2.5:14b | - |
+| Capas anti-alucinación | 3 | Mantener |
 
-Oferta -> match_ofertas_multicriteria.py
-         - Titulo (50%): BGE-M3 + ESCO-XLM
-         - Skills (40%): SQL lookup esco_associations
-         - Descripcion (10%): BGE-M3 embeddings
-         - Ajustes v8.3: matching_rules_v83.py
-           - 6 familias funcionales
-           - never_confirm para casos problematicos
-           - Reglas especificas (vehiculos, barista, abogados, jerarquia)
-
-### Sistema never_confirm
-
-Casos que NUNCA se auto-confirman:
-- Admin -> Analista de negocios
-- Comercial -> No-comercial
-- Farmaceutico -> Ingeniero
-- Pasantias -> Cualquier ocupacion especifica
-- Servicios/Vendedor -> Director
-- Operario -> Negocios
-- Ventas vehiculos -> Repuestos
-- Barista -> Comercio internacional cafe
-- Abogado -> Administrativo juridico
-- Junior -> Director/Gerente
+### Base de Datos
+| Tabla | Registros |
+|-------|-----------|
+| ofertas | 6,521 |
+| ofertas_nlp | 5,479 (84%) |
+| ofertas_esco_matching | 6,521 |
+| esco_occupations | 3,045 |
+| esco_associations | 134,805 |
 
 ---
 
-## PIPELINE NLP (v8.0)
+## 📁 Archivos Clave
 
-Descripcion -> Capa 0: regex_patterns_v4.py (60-70% precision 100%)
-            -> Capa 1: extraction_prompt_v8.py + Qwen2.5:14b
-            -> Capa 2: process_nlp_from_db_v7.py (post-validacion anti-alucinacion)
+### Matching (database/)
+```
+matching_rules_v83.py     ← ACTIVO (reglas de ajuste)
+matching_rules_v82.py     ← Anterior
+matching_rules_v81.py     ← Anterior
+match_ofertas_multicriteria.py ← ACTIVO (algoritmo principal)
+match_ofertas_to_esco.py  ← LEGACY (no usar)
+gold_set_manual_v1.json   ← Gold set 19 casos
+```
+
+### NLP (02.5_nlp_extraction/)
+```
+prompts/extraction_prompt_v8.py  ← ACTIVO
+prompts/extraction_prompt_v7.py  ← Anterior
+prompts/extraction_prompt_v6.py  ← Anterior
+scripts/patterns/regex_patterns_v4.py ← ACTIVO
+```
+
+### Procesadores (database/)
+```
+process_nlp_from_db_v7.py  ← ACTIVO (Qwen2.5:14b)
+process_nlp_from_db_v6.py  ← ANTERIOR (Hermes 3:8b)
+```
+
+### Validación (database/)
+```
+test_gold_set_manual.py           ← Benchmark principal
+test_esco_matching_regression.py  ← Tests de regresión
+apply_v82_rules_gold19.py         ← Aplicar reglas a gold set
+simulate_v81_gold19.py            ← Simular sin modificar DB
+```
 
 ---
 
-## BACKLOG LINEAR (Prioridades)
+## 🔄 Flujo de Optimización
 
-### Alta Prioridad
-- **MOL-5:** [v8.4] Resolver errores sector_funcion (4 casos)
-- **MOL-6:** Expandir Gold Set de 19 a 50+ casos
+### Para mejorar Matching (v8.X → v8.X+1)
+```
+1. Identificar errores en batch CSV
+2. Diseñar reglas (keywords, detectores)
+3. Implementar en matching_rules_v8X.py
+4. Validar: python test_gold_set_manual.py
+5. Batch piloto: python run_batch_pilot_v8.py --rules v8.X --limit 100
+6. Si mejora → deploy
+```
 
-### Media Prioridad
-- **MOL-7:** Agregar metricas de Recall al benchmark
-- **MOL-8:** Resolver casos bilingues
-- **MOL-10:** Regex v4.1: Abreviaciones argentinas
-- **MOL-11:** Mejorar deteccion niveles jerarquicos
-
-### Baja Prioridad
-- **MOL-9:** CI/CD test automatico gold set
-- **MOL-12:** Consolidar pipeline NLP v6+v7
-- **MOL-15:** Limpieza JSONs duplicados
+### Criterios de Éxito
+```python
+CRITERIOS = {
+    "precision_minima": 50.0,
+    "top_3_match": True,
+    "isco_correcto": True,
+    "no_absurdos": True,
+    "score_rango": (0.40, 0.95)
+}
+```
 
 ---
 
-## COMANDOS UTILES
+## 📋 Linear - Todos los Issues (18 total)
 
-# Correr test de gold set
+### 🔴 Prioridad Alta (3)
+| ID | Issue | Carril |
+|----|-------|--------|
+| MOL-5 | [v8.4] Resolver errores sector_funcion (4 casos) | B: Optimización |
+| MOL-6 | Expandir Gold Set de 19 a 50+ casos | B: Optimización |
+| MOL-18 | Automatizar scrapers faltantes (4 fuentes) | A: Construcción |
+
+### 🟡 Prioridad Media (7)
+| ID | Issue | Carril |
+|----|-------|--------|
+| MOL-7 | Agregar métricas de Recall al benchmark | B: Optimización |
+| MOL-8 | Resolver casos bilingües | B: Optimización |
+| MOL-10 | Regex v4.1: Abreviaciones argentinas | B: Optimización |
+| MOL-11 | Mejorar detección niveles jerárquicos | B: Optimización |
+| MOL-14 | Implementar envío de alertas (email/Slack) | A: Construcción |
+| MOL-16 | Resolver conflicto shinyTree (árbol ESCO) | A: Construcción |
+| MOL-19 | Automatizar pipeline completo post-scraping | A: Construcción |
+
+### ⚪ Prioridad Baja (8)
+| ID | Issue | Carril |
+|----|-------|--------|
+| MOL-9 | CI/CD: Test automático de gold set | B: Optimización |
+| MOL-12 | Consolidar pipeline NLP v6 + v7 | B: Optimización |
+| MOL-13 | Crear panel de administración centralizado | A: Construcción |
+| MOL-15 | Limpieza de JSONs duplicados (10,800) | A: Construcción |
+| MOL-17 | Rehabilitar autenticación shinymanager | A: Construcción |
+| MOL-20 | Centralizar sistema de logs | A: Construcción |
+| MOL-21 | Deprecar y limpiar dashboards antiguos | A: Construcción |
+| MOL-22 | Documentar APIs internas de scrapers | A: Construcción |
+
+---
+
+## 🚀 Comandos Frecuentes
+
+```bash
+# Correr benchmark de matching
 python database/test_gold_set_manual.py
 
-# Test de regresion completo
-python database/test_esco_matching_regression.py --gold19
+# Procesar NLP (batch)
+python database/process_nlp_from_db_v7.py --limit 100
 
-# Aplicar reglas v8.3 a gold set
-python database/apply_v82_rules_gold19.py
+# Matching ESCO (batch)
+python database/match_ofertas_multicriteria.py --limit 100
 
-# Batch de matching
-python database/run_batch_pilot_v8.py --rules v8.3 --limit 100
+# Simular reglas nuevas
+python database/simulate_v81_gold19.py
 
----
-
-## ARCHIVOS CLAVE
-
-| Proposito | Archivo |
-|-----------|---------|
-| Gold Set | database/gold_set_manual_v1.json |
-| Reglas Matching | database/matching_rules_v83.py |
-| Matcher Principal | database/match_ofertas_multicriteria.py |
-| NLP Pipeline | database/process_nlp_from_db_v7.py |
-| Test Benchmark | database/test_gold_set_manual.py |
-| Prompts LLM | 02.5_nlp_extraction/prompts/extraction_prompt_v8.py |
-| Regex Patterns | 02.5_nlp_extraction/scripts/patterns/regex_patterns_v4.py |
-| Dashboard | Visual--/app.R |
+# Dashboard validación (puerto 3853)
+Rscript -e "shiny::runApp('Visual--/validacion_pipeline_app_v3.R', port=3853)"
+```
 
 ---
 
-## NOTAS PARA PROXIMA SESION
+## ⚠️ NO TOCAR SIN BACKUP
 
-1. **Prioridad 1:** Resolver MOL-5 (errores sector_funcion) creando matching_rules_v84.py
-2. **Prioridad 2:** Expandir gold set a 50+ casos (MOL-6)
-3. **Pendiente:** Auditoria detallada de Infraestructura Base y Dashboard v3
+1. **Base de datos:** `database/bumeran_scraping.db`
+2. **Gold set:** `database/gold_set_manual_v1.json`
+3. **Reglas activas:** `database/matching_rules_v83.py`
+4. **Pipeline activo:** `database/process_nlp_from_db_v7.py`
+
+---
+
+## 📝 Historial de Versiones
+
+| Fecha | Componente | Cambio |
+|-------|------------|--------|
+| 2025-11-28 | Matching v8.3 | Familias funcionales + tareas 5-8 |
+| 2025-11-28 | Matching v8.2 | 6 familias + never_confirm |
+| 2025-11-28 | Matching v8.1 | Reglas basadas en gold set 19 |
+| 2025-11-27 | NLP v8.0 | Qwen2.5:14b + anti-alucinación 3 capas |
+| 2025-11-27 | Regex v4.0 | 7 clases nuevas, 60-70% precisión |
+
+---
+
+## 🔗 Links
+
+- **Linear:** https://linear.app/molar/project/mol-monitor-ofertas-laborales-2a9662bfa15f
+- **GitHub:** https://github.com/gbreard/mol
+- **Dashboard Shiny:** [shinyapps.io URL]
