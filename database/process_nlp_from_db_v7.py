@@ -1,0 +1,1273 @@
+#!/usr/bin/env python3
+"""
+NLP Extractor v8.0 - Pipeline Anti-Alucinación de 3 Capas
+=========================================================
+
+VERSION: 8.0.0
+FECHA: 2025-11-27
+MODELO: Qwen2.5:14b
+
+CAMBIO v8.0: Migración a Qwen2.5:14b + prompt ultra-conservador.
+  - Modelo más grande y preciso (14B params vs 8B)
+  - Temperatura 0.0 para máxima determinismo
+  - top_p 0.1 para reducir alucinaciones
+  - Prompt v8 con ejemplos negativos explícitos (Excel/Excelentes)
+  - Énfasis en COPIA LITERAL y NO INVENTAR
+
+CAMBIO v7.5: Preproceso de headers pegados + matching mejorado.
+  - Preproceso de descripción: agrega espacios después de ":", "-", etc.
+  - Permite matchear "Requisitos:3 años" como "Requisitos: 3 años"
+  - Matching con variantes de acentos (ó/o, í/i, etc.)
+  - Mejor tolerancia a pequeñas diferencias de formato
+
+CAMBIO v7.4: Mejoras críticas de verificación anti-alucinación.
+  - Word boundary check para skills técnicas (evita "Excel" en "Excelentes")
+  - Doble normalización: con espacios + sin espacios (matchea "relaciones interpersonales" vs "relacionesinterpersonales")
+  - Verificación especial para campos skills_tecnicas_list
+
+CAMBIO v7.3: Unificación de requisitos + mejoras de matching.
+  - requisitos_list único (Python clasifica excluyente/deseable después)
+  - Normalización robusta con unicodedata.normalize("NFKC")
+  - Detección de tecnologías por diccionario (TEC_KEYWORDS)
+  - Clasificación heurística de requisitos (PALABRAS_DESEABLE)
+
+CAMBIO v7.2: Post-procesamiento de prefijos contaminantes.
+  - Nuevo: limpiar_prefijos() elimina "Requisito ", "Beneficio ", etc.
+  - La limpieza se aplica ANTES de la verificación de substring
+  - Esto permite recuperar items legítimos que el LLM contamina con prefijos
+
+CAMBIO v7.1: Fix anti-contaminación de spans.
+  - Prompt reforzado para que texto_original sea LITERAL
+  - Prohibición explícita de prefijos "Requisito", "Beneficio", etc.
+
+ARQUITECTURA DE 3 CAPAS:
+========================
+CAPA 0 - Regex Determinístico (70% campos):
+  - EdadPatterns, LicenciaPatterns, ContratacionPatterns
+  - IndexacionPatterns, EmpresaPatterns, HeaderPatterns
+  - BeneficiosPatterns, ViajesPatterns
+  - + Patrones v3 (Experiencia, Educacion, Idiomas, Skills, Salario, Jornada)
+
+CAPA 1 - LLM Restringido (8 campos semánticos):
+  - skills_tecnicas_list
+  - soft_skills_list
+  - requisitos_excluyentes_list
+  - requisitos_deseables_list
+  - beneficios_list
+  - responsabilidades_list
+  - tecnologias_stack_list
+  - certificaciones_list
+
+CAPA 2 - Verificación Anti-Alucinación:
+  - Cada item del LLM debe incluir "texto_original"
+  - Verificación con substring EXACTO (no fuzzy)
+  - Si texto_original no está en descripción → DESCARTADO
+
+Uso:
+    python process_nlp_from_db_v7.py --mode test --limit 10
+    python process_nlp_from_db_v7.py --mode production --batch 100
+"""
+
+import sys
+import sqlite3
+import json
+import time
+import requests
+import re
+import unicodedata
+from pathlib import Path
+from datetime import datetime
+from typing import Dict, Any, List, Optional, Tuple
+import argparse
+
+# Agregar paths para imports
+scripts_dir = Path(__file__).parent.parent / "02.5_nlp_extraction" / "scripts"
+nlp_dir = Path(__file__).parent.parent / "02.5_nlp_extraction"
+patterns_dir = scripts_dir / "patterns"
+prompts_dir = nlp_dir / "prompts"
+
+sys.path.insert(0, str(scripts_dir))
+sys.path.insert(0, str(nlp_dir))
+sys.path.insert(0, str(patterns_dir))
+sys.path.insert(0, str(prompts_dir))
+
+# Importar módulos
+from patterns.regex_patterns_v4 import extract_all as extract_regex_v4, StructureDetector
+from prompts.extraction_prompt_v8 import build_prompt
+
+# Campos que extrae el LLM (7 campos semánticos - v7.3)
+# Nota: requisitos_list es único, Python separa en excluyentes/deseables
+CAMPOS_LLM = [
+    "skills_tecnicas_list",
+    "soft_skills_list",
+    "requisitos_list",
+    "beneficios_list",
+    "responsabilidades_list",
+    "tecnologias_stack_list",
+    "certificaciones_list"
+]
+
+# Campos de salida finales (incluye separación de requisitos)
+CAMPOS_OUTPUT = [
+    "skills_tecnicas_list",
+    "soft_skills_list",
+    "requisitos_excluyentes_list",
+    "requisitos_deseables_list",
+    "beneficios_list",
+    "responsabilidades_list",
+    "tecnologias_stack_list",
+    "certificaciones_list"
+]
+
+# PREFIJOS CONTAMINANTES (v7.2)
+# El LLM Hermes3:8b a veces agrega estos prefijos al texto_original,
+# lo cual hace que la verificación de substring falle.
+# Los limpiamos ANTES de verificar.
+PREFIJOS_BASURA = [
+    r"Requisito\s+",
+    r"Requisitos\s*[:\-]\s*",
+    r"Responsabilidad\s+",
+    r"Responsabilidades\s*[:\-]\s*",
+    r"Beneficio\s+",
+    r"Beneficios\s*[:\-]\s*",
+    r"Skill\s+",
+    r"Skills\s*[:\-]\s*",
+    r"Habilidad\s+",
+    r"Habilidades\s*[:\-]\s*",
+    r"Tarea\s+",
+    r"Tareas\s*[:\-]\s*",
+    r"Funcion\s+",
+    r"Funciones\s*[:\-]\s*",
+    r"Certificacion\s+",
+    r"Certificaciones\s*[:\-]\s*",
+    r"Tecnologia\s+",
+    r"Tecnologias\s*[:\-]\s*",
+]
+
+# PALABRAS QUE INDICAN REQUISITO DESEABLE (v7.3)
+# Si la frase contiene alguna de estas palabras, se clasifica como deseable
+PALABRAS_DESEABLE = [
+    "valorado", "valoramos", "se valorará", "valorable",
+    "deseable", "preferentemente", "preferible",
+    "plus", "suma puntos", "suma",
+    "no excluyente", "no es excluyente",
+    "idealmente", "ideal",
+    "opcional", "opcionalmente",
+]
+
+# TECNOLOGÍAS CONOCIDAS PARA DETECCIÓN POR DICCIONARIO (v7.3)
+# Si el texto de la oferta menciona alguna de estas, se agrega a tecnologias_stack
+TEC_KEYWORDS = {
+    # Lenguajes
+    "python", "javascript", "typescript", "java", "go", "golang", "rust",
+    "c#", "c++", "ruby", "php", "scala", "kotlin", "swift", "r",
+    # Frameworks backend
+    "fastapi", "django", "flask", "express", "nest.js", "nestjs",
+    "spring", "spring boot", ".net", "rails", "laravel",
+    # Frameworks frontend
+    "react", "angular", "vue", "vue.js", "svelte", "next.js", "nextjs",
+    "nuxt", "remix", "gatsby",
+    # Bases de datos relacionales
+    "sql server", "postgresql", "postgres", "mysql", "oracle", "sqlite",
+    "mariadb",
+    # Bases de datos NoSQL
+    "mongodb", "redis", "cassandra", "dynamodb", "elasticsearch",
+    "couchbase",
+    # Vector databases / AI
+    "pinecone", "qdrant", "faiss", "chroma", "weaviate", "milvus",
+    "langchain", "openai", "llm", "rag", "transformers", "huggingface",
+    # DevOps / Cloud
+    "docker", "kubernetes", "k8s", "aws", "azure", "gcp",
+    "terraform", "ansible", "jenkins", "github actions", "gitlab ci",
+    "circleci",
+    # Data / ETL
+    "airflow", "n8n", "spark", "hadoop", "databricks", "snowflake",
+    "dbt", "pandas", "numpy",
+    # Otros
+    "git", "linux", "nginx", "graphql", "rest api", "api rest",
+    "microservicios", "microservices", "kafka", "rabbitmq",
+}
+
+
+class NLPExtractorV7:
+    """
+    Extractor NLP v7.0 con arquitectura anti-alucinación de 3 capas
+
+    CAPA 0: Regex determinístico → 100% precisión
+    CAPA 1: LLM solo para 8 campos semánticos
+    CAPA 2: Verificación con substring exacto
+    """
+
+    VERSION = "8.0.0"
+    EXTRACTION_METHOD = "pipeline_3_capas_v8_qwen"
+    OLLAMA_MODEL = "qwen2.5:14b"
+    OLLAMA_URL = "http://localhost:11434/api/generate"
+
+    def __init__(self, db_path: str = None, verbose: bool = False):
+        """
+        Args:
+            db_path: Path a la base de datos SQLite
+            verbose: Si True, imprime información de debug
+        """
+        if db_path is None:
+            db_path = Path(__file__).parent / "bumeran_scraping.db"
+
+        self.db_path = Path(db_path)
+        if not self.db_path.exists():
+            raise FileNotFoundError(f"Base de datos no encontrada: {self.db_path}")
+
+        self.verbose = verbose
+
+        # Estadísticas de procesamiento
+        self.stats = {
+            "total_processed": 0,
+            "total_success": 0,
+            "total_errors": 0,
+            "total_time_ms": 0,
+            "llm_calls": 0,
+            "llm_errors": 0,
+            "items_verificados": 0,
+            "items_descartados": 0
+        }
+
+        # Asegurar que la tabla validacion_v7 existe
+        self._ensure_validacion_v7_table()
+
+    def _get_connection(self):
+        """Retorna conexión a la base de datos"""
+        return sqlite3.connect(self.db_path)
+
+    def _ensure_validacion_v7_table(self):
+        """
+        Asegura que la tabla validacion_v7 existe con todas las columnas necesarias.
+        Incluye las nuevas columnas de coverage (v8.1).
+        """
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        try:
+            # Crear tabla si no existe
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS validacion_v7 (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id_oferta TEXT NOT NULL,
+                    titulo TEXT,
+                    empresa TEXT,
+                    resultado_capa0 TEXT,
+                    resultado_capa1_raw TEXT,
+                    resultado_capa1_verificado TEXT,
+                    items_verificados INTEGER DEFAULT 0,
+                    items_descartados INTEGER DEFAULT 0,
+                    confidence_score REAL DEFAULT 0.0,
+                    coverage_score REAL DEFAULT 1.0,
+                    items_esperados INTEGER DEFAULT 0,
+                    items_extraidos INTEGER DEFAULT 0,
+                    estructura_detectada TEXT,
+                    validacion_humana TEXT DEFAULT 'pendiente',
+                    nlp_version TEXT,
+                    processing_time_ms INTEGER DEFAULT 0,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+
+            # Agregar columnas nuevas si no existen (migración)
+            cursor.execute("PRAGMA table_info(validacion_v7)")
+            columns = [col[1] for col in cursor.fetchall()]
+
+            if 'coverage_score' not in columns:
+                cursor.execute("ALTER TABLE validacion_v7 ADD COLUMN coverage_score REAL DEFAULT 1.0")
+            if 'items_esperados' not in columns:
+                cursor.execute("ALTER TABLE validacion_v7 ADD COLUMN items_esperados INTEGER DEFAULT 0")
+            if 'items_extraidos' not in columns:
+                cursor.execute("ALTER TABLE validacion_v7 ADD COLUMN items_extraidos INTEGER DEFAULT 0")
+            if 'estructura_detectada' not in columns:
+                cursor.execute("ALTER TABLE validacion_v7 ADD COLUMN estructura_detectada TEXT")
+
+            conn.commit()
+            if self.verbose:
+                print("[DB] Tabla validacion_v7 verificada/creada")
+
+        except Exception as e:
+            print(f"[DB ERROR] Error al crear/verificar tabla validacion_v7: {e}")
+            conn.rollback()
+        finally:
+            conn.close()
+
+    # =========================================================================
+    # CAPA 0: REGEX DETERMINÍSTICO
+    # =========================================================================
+
+    def _extract_capa0_regex(self, descripcion: str, titulo: str = "", empresa: str = "") -> Dict[str, Any]:
+        """
+        CAPA 0: Extracción con regex determinístico (100% precisión)
+
+        Args:
+            descripcion: Texto de la descripción
+            titulo: Título de la oferta
+            empresa: Nombre de la empresa
+
+        Returns:
+            Dict con todos los campos extraídos por regex
+        """
+        if self.verbose:
+            print("[CAPA 0] Ejecutando regex_patterns_v4.extract_all()...")
+
+        # Ejecutar extractor v4 (incluye v3 + clases nuevas)
+        resultado = extract_regex_v4(descripcion, titulo, empresa)
+
+        if self.verbose:
+            campos_con_valor = sum(1 for v in resultado.values() if v is not None)
+            print(f"[CAPA 0] Campos extraídos: {campos_con_valor}")
+
+        return resultado
+
+    # =========================================================================
+    # CAPA 1: LLM RESTRINGIDO (8 campos)
+    # =========================================================================
+
+    def _extract_capa1_llm(self, descripcion: str, timeout: int = 180) -> Optional[Dict[str, Any]]:
+        """
+        CAPA 1: Extracción con LLM solo para 8 campos semánticos
+
+        Args:
+            descripcion: Texto de la descripción
+            timeout: Timeout en segundos
+
+        Returns:
+            Dict con los 8 campos o None si error
+        """
+        if self.verbose:
+            print("[CAPA 1] Llamando a LLM para campos semánticos...")
+
+        try:
+            self.stats["llm_calls"] += 1
+
+            # Construir prompt v7 (reducido a 8 campos)
+            prompt = build_prompt(descripcion)
+
+            # Debug: longitud del prompt
+            if self.verbose:
+                prompt_tokens_approx = len(prompt) / 4
+                print(f"[CAPA 1] Prompt length: {len(prompt):,} chars (~{prompt_tokens_approx:,.0f} tokens)")
+
+            payload = {
+                "model": self.OLLAMA_MODEL,
+                "prompt": prompt,
+                "stream": False,
+                "format": "json",
+                "options": {
+                    "temperature": 0.0,   # v8.0: 0 para máximo determinismo
+                    "top_p": 0.1,         # v8.0: muy restrictivo para evitar alucinaciones
+                    "num_predict": 4096,  # Suficiente para 7 campos
+                    "num_ctx": 8192,      # v8.0: más contexto para Qwen 14b
+                }
+            }
+
+            response = requests.post(
+                self.OLLAMA_URL,
+                json=payload,
+                timeout=timeout
+            )
+
+            if response.status_code != 200:
+                print(f"[CAPA 1 ERROR] Status {response.status_code}: {response.text[:200]}")
+                self.stats["llm_errors"] += 1
+                return None
+
+            # Parsear respuesta
+            response_data = response.json()
+            llm_output = response_data.get("response", "").strip()
+
+            # Extraer JSON
+            json_start = llm_output.find("{")
+            json_end = llm_output.rfind("}") + 1
+
+            if json_start == -1 or json_end == 0:
+                print(f"[CAPA 1 ERROR] No se encontró JSON en respuesta")
+                if self.verbose:
+                    print(f"Respuesta: {llm_output[:300]}")
+                self.stats["llm_errors"] += 1
+                return None
+
+            json_str = llm_output[json_start:json_end]
+
+            # Parsear JSON
+            try:
+                extracted = json.loads(json_str)
+                if self.verbose:
+                    print(f"[CAPA 1] JSON parseado OK")
+                return extracted
+            except json.JSONDecodeError as e:
+                print(f"[CAPA 1 ERROR] JSON inválido: {e}")
+                self.stats["llm_errors"] += 1
+                return None
+
+        except requests.exceptions.Timeout:
+            print(f"[CAPA 1 ERROR] Timeout después de {timeout}s")
+            self.stats["llm_errors"] += 1
+            return None
+        except requests.exceptions.ConnectionError:
+            print(f"[CAPA 1 ERROR] No se pudo conectar a Ollama")
+            self.stats["llm_errors"] += 1
+            return None
+        except Exception as e:
+            print(f"[CAPA 1 ERROR] Error inesperado: {e}")
+            self.stats["llm_errors"] += 1
+            return None
+
+    # =========================================================================
+    # CAPA 2: VERIFICACIÓN ANTI-ALUCINACIÓN
+    # =========================================================================
+
+    def _normalizar_para_match(self, texto: str) -> str:
+        """
+        Normalización ROBUSTA para matching de texto (v7.3)
+
+        Maneja:
+        - Caracteres invisibles (NBSP \u00a0, zero-width \u200b, word joiner \u2060)
+        - Unicode NFKC normalization (ﬁ → fi, etc.)
+        - Lowercase
+        - Espacios múltiples
+
+        Args:
+            texto: Texto a normalizar
+
+        Returns:
+            Texto normalizado para comparación
+        """
+        if not texto:
+            return ""
+        # NFKC: Normaliza compatibilidad Unicode (ﬁ→fi, superscripts, etc.)
+        s = unicodedata.normalize("NFKC", texto)
+        s = s.lower()
+        # Reemplazar caracteres invisibles comunes por espacio
+        s = re.sub(r'[\u200b\u00a0\u2060\ufeff]', ' ', s)
+        # Normalizar espacios múltiples
+        s = re.sub(r'\s+', ' ', s)
+        return s.strip()
+
+    def _normalizar_texto(self, texto: str) -> str:
+        """
+        Normaliza texto para comparación (usa _normalizar_para_match)
+        """
+        return self._normalizar_para_match(texto)
+
+    def _normalizar_sin_espacios(self, texto: str) -> str:
+        """
+        Normalización SIN ESPACIOS para matching flexible (v7.4)
+
+        Permite matchear textos donde los espacios están pegados o faltan.
+        Ejemplo: "relaciones interpersonales" matchea "relacionesinterpersonales"
+
+        Args:
+            texto: Texto a normalizar
+
+        Returns:
+            Texto normalizado sin ningún espacio
+        """
+        if not texto:
+            return ""
+        # Primero normalizar con NFKC
+        s = unicodedata.normalize("NFKC", texto)
+        s = s.lower()
+        # Eliminar TODOS los espacios y caracteres whitespace
+        s = re.sub(r'\s+', '', s)
+        return s
+
+    def _contiene_palabra_completa(self, texto: str, palabra: str) -> bool:
+        """
+        Verifica si una palabra aparece como palabra COMPLETA en el texto (v7.4)
+
+        Usa word boundaries (\\b) para evitar falsos positivos como:
+        - "Excel" matcheando en "Excelentes"
+        - "SAP" matcheando en "SAPO"
+
+        Args:
+            texto: Texto donde buscar
+            palabra: Palabra a buscar
+
+        Returns:
+            True si la palabra aparece como palabra completa
+        """
+        if not texto or not palabra:
+            return False
+
+        # Normalizar ambos
+        texto_norm = self._normalizar_para_match(texto)
+        palabra_norm = self._normalizar_para_match(palabra)
+
+        # Buscar con word boundaries
+        # Escapar caracteres especiales en la palabra (ej: C++, C#)
+        pattern = rf'\b{re.escape(palabra_norm)}\b'
+        return bool(re.search(pattern, texto_norm))
+
+    def _limpiar_prefijos(self, texto: str) -> str:
+        """
+        Elimina prefijos contaminantes que el LLM agrega incorrectamente (v7.2)
+
+        El LLM Hermes3:8b a veces agrega prefijos semánticos como "Requisito" o
+        "Responsabilidad" al texto_original, causando que la verificación falle.
+
+        Ejemplo:
+            Input:  "Requisito Título universitario"
+            Output: "Título universitario"
+
+        Args:
+            texto: texto_original del LLM (posiblemente contaminado)
+
+        Returns:
+            Texto limpio sin prefijos
+        """
+        if not texto:
+            return ""
+
+        resultado = texto.strip()
+
+        # Intentar remover cada prefijo
+        for prefijo in PREFIJOS_BASURA:
+            resultado = re.sub(rf"^{prefijo}", "", resultado, flags=re.IGNORECASE)
+
+        return resultado.strip()
+
+    def _preprocesar_descripcion(self, descripcion: str) -> str:
+        """
+        Preprocesa la descripción para mejorar el matching (v7.5)
+
+        Normaliza separadores pegados para que el LLM y la verificación
+        puedan matchear mejor. Por ejemplo:
+        - "Requisitos:3 años" -> "Requisitos: 3 años"
+        - "Beneficios-Prepaga" -> "Beneficios - Prepaga"
+
+        Args:
+            descripcion: Texto original de la descripción
+
+        Returns:
+            Descripción preprocesada
+        """
+        if not descripcion:
+            return ""
+
+        resultado = descripcion
+
+        # Agregar espacio después de ":" si no hay (pero no en URLs http://)
+        resultado = re.sub(r':(?!//|[0-9]{2}[:\s]|\s)', ': ', resultado)
+
+        # Agregar espacio alrededor de "-" cuando está pegado a palabras
+        # Pero no en emails, URLs, o fechas tipo 2025-11-27
+        resultado = re.sub(r'(?<=[a-zA-ZáéíóúÁÉÍÓÚñÑ])-(?=[a-zA-ZáéíóúÁÉÍÓÚñÑ])', ' - ', resultado)
+
+        # Limpiar espacios múltiples
+        resultado = re.sub(r' +', ' ', resultado)
+
+        return resultado.strip()
+
+    def _normalizar_con_variantes(self, texto: str) -> List[str]:
+        """
+        Genera variantes del texto para matching flexible (v7.5)
+
+        Genera versiones con/sin acentos para tolerar diferencias.
+
+        Args:
+            texto: Texto a normalizar
+
+        Returns:
+            Lista de variantes normalizadas
+        """
+        if not texto:
+            return [""]
+
+        # Variante base normalizada
+        base = self._normalizar_texto(texto)
+        variantes = [base]
+
+        # Variante sin acentos (para tolerancia)
+        sin_acentos = base
+        reemplazos = [
+            ('á', 'a'), ('é', 'e'), ('í', 'i'), ('ó', 'o'), ('ú', 'u'),
+            ('ü', 'u'), ('ñ', 'n')
+        ]
+        for acento, sin in reemplazos:
+            sin_acentos = sin_acentos.replace(acento, sin)
+
+        if sin_acentos != base:
+            variantes.append(sin_acentos)
+
+        return variantes
+
+    def _verificar_substring(self, texto_original: str, descripcion: str) -> bool:
+        """
+        Verifica que texto_original existe como substring en descripcion (v7.5)
+
+        REGLA CRÍTICA: Solo acepta si hay match EXACTO (normalizado)
+        NO usar fuzzy matching - demasiado permisivo para alucinaciones
+
+        v7.5: Matching con variantes de acentos + descripción preprocesada.
+        Permite matchear "Conciliación" vs "Conciliacion" (diferencia de tilde).
+
+        v7.4: Doble normalización - intenta con espacios y sin espacios.
+        Esto permite matchear "relaciones interpersonales" vs "relacionesinterpersonales"
+
+        v7.2: Ahora limpia prefijos contaminantes antes de verificar.
+        Si el LLM dice "Requisito Título universitario" pero el texto solo
+        tiene "Título universitario", la verificación pasa tras limpiar.
+
+        Args:
+            texto_original: Texto citado por el LLM (posiblemente con prefijos)
+            descripcion: Texto completo de la oferta
+
+        Returns:
+            True si texto_original (limpio) está en descripcion
+        """
+        if not texto_original or not descripcion:
+            return False
+
+        # v7.2: Limpiar prefijos contaminantes ANTES de normalizar
+        texto_limpio = self._limpiar_prefijos(texto_original)
+
+        # v7.5: Preprocesar descripción para separar headers pegados
+        desc_preprocesada = self._preprocesar_descripcion(descripcion)
+
+        # v7.4: DOBLE NORMALIZACIÓN
+
+        # Intento 1: Normalización con espacios (estándar)
+        texto_norm = self._normalizar_texto(texto_limpio)
+        desc_norm = self._normalizar_texto(desc_preprocesada)
+
+        if texto_norm in desc_norm:
+            return True
+
+        # Intento 2: También probar con descripción original (sin preprocesar)
+        desc_orig_norm = self._normalizar_texto(descripcion)
+        if texto_norm in desc_orig_norm:
+            return True
+
+        # Intento 3: Normalización SIN espacios (para textos pegados)
+        texto_no_space = self._normalizar_sin_espacios(texto_limpio)
+        desc_no_space = self._normalizar_sin_espacios(descripcion)
+
+        if texto_no_space in desc_no_space:
+            return True
+
+        # Intento 4: Matching con variantes sin acentos (v7.5)
+        variantes_texto = self._normalizar_con_variantes(texto_limpio)
+        variantes_desc = self._normalizar_con_variantes(descripcion)
+
+        for var_texto in variantes_texto:
+            for var_desc in variantes_desc:
+                if var_texto in var_desc:
+                    return True
+
+        return False
+
+    def _clasificar_requisito(self, frase: str, texto_original: str = "") -> str:
+        """
+        Clasifica un requisito como 'excluyente' o 'deseable' (v7.3)
+
+        Analiza el texto buscando palabras clave que indican que es deseable.
+        Por defecto, se asume excluyente.
+
+        Args:
+            frase: El valor extraído (ej: "3 años de experiencia")
+            texto_original: El contexto original donde aparece (puede tener más info)
+
+        Returns:
+            "deseable" o "excluyente"
+        """
+        # Combinar ambos textos para análisis
+        texto_completo = f"{frase} {texto_original}".lower()
+
+        # Buscar palabras que indican deseable
+        for palabra in PALABRAS_DESEABLE:
+            if palabra in texto_completo:
+                return "deseable"
+
+        # Por defecto es excluyente
+        return "excluyente"
+
+    def _detectar_tecnologias(self, descripcion: str) -> List[str]:
+        """
+        Detecta tecnologías mencionadas en la descripción por diccionario (v7.3)
+
+        Busca cada tecnología del diccionario TEC_KEYWORDS en el texto.
+        Esto complementa la extracción del LLM cuando este falla en detectar
+        tecnologías que están explícitamente mencionadas.
+
+        Args:
+            descripcion: Texto de la descripción de la oferta
+
+        Returns:
+            Lista de tecnologías encontradas
+        """
+        desc_norm = self._normalizar_para_match(descripcion)
+        encontradas = []
+
+        for tec in TEC_KEYWORDS:
+            # Buscar como palabra completa (evitar matches parciales)
+            # Ej: "go" no debe matchear "category"
+            pattern = rf'\b{re.escape(tec)}\b'
+            if re.search(pattern, desc_norm):
+                encontradas.append(tec)
+
+        return sorted(set(encontradas))
+
+    def _verify_capa2(self, llm_output: Dict[str, Any], descripcion: str) -> Dict[str, Any]:
+        """
+        CAPA 2: Verificación anti-alucinación con substring exacto (v7.4)
+
+        Para cada item del LLM:
+        - Verificar que "texto_original" existe en la descripción
+        - Si no existe → DESCARTAR (alucinación)
+
+        Cambios v7.4:
+        - Verificación especial para skills_tecnicas_list con word boundary
+          (evita "Excel" matcheando en "Excelentes")
+
+        Cambios v7.3:
+        - requisitos_list se procesa y separa en excluyentes/deseables
+        - tecnologias_stack se complementa con detección por diccionario
+
+        Args:
+            llm_output: Output del LLM (7 campos)
+            descripcion: Texto original de la oferta
+
+        Returns:
+            Dict con items verificados + requisitos separados + tecnologías detectadas
+        """
+        if self.verbose:
+            print("[CAPA 2] Verificando items contra descripción original...")
+
+        verified = {}
+        requisitos_excluyentes = []
+        requisitos_deseables = []
+
+        for campo in CAMPOS_LLM:
+            items_originales = llm_output.get(campo, [])
+            items_verificados = []
+
+            if not isinstance(items_originales, list):
+                verified[campo] = []
+                continue
+
+            for item in items_originales:
+                if not isinstance(item, dict):
+                    continue
+
+                valor = item.get("valor", "")
+                texto_original = item.get("texto_original", "")
+
+                # v7.4: Para skills_tecnicas_list, usar verificación con word boundary
+                # Esto evita que "Excel" matchee en "Excelentes habilidades"
+                if campo == "skills_tecnicas_list":
+                    # Verificar que el valor de la skill aparece como palabra completa
+                    if self._contiene_palabra_completa(descripcion, valor):
+                        self.stats["items_verificados"] += 1
+                        items_verificados.append(valor)
+                        if self.verbose:
+                            print(f"  [OK] {campo}: '{valor}' (word boundary OK)")
+                    else:
+                        self.stats["items_descartados"] += 1
+                        if self.verbose:
+                            print(f"  [DESCARTADO] {campo}: '{valor}' - no encontrado como palabra completa")
+                    continue
+
+                # Para otros campos: verificar que texto_original existe en descripción
+                if self._verificar_substring(texto_original, descripcion):
+                    self.stats["items_verificados"] += 1
+
+                    # v7.3: Si es requisitos_list, clasificar
+                    if campo == "requisitos_list":
+                        tipo = self._clasificar_requisito(valor, texto_original)
+                        if tipo == "deseable":
+                            requisitos_deseables.append(valor)
+                            if self.verbose:
+                                print(f"  [OK] {campo}: '{valor}' -> DESEABLE")
+                        else:
+                            requisitos_excluyentes.append(valor)
+                            if self.verbose:
+                                print(f"  [OK] {campo}: '{valor}' -> EXCLUYENTE")
+                    else:
+                        items_verificados.append(valor)
+                        if self.verbose:
+                            print(f"  [OK] {campo}: '{valor}' (verificado)")
+                else:
+                    self.stats["items_descartados"] += 1
+                    if self.verbose:
+                        print(f"  [DESCARTADO] {campo}: '{valor}' - texto_original no encontrado")
+
+            # Guardar como JSON string (excepto requisitos_list que se separa)
+            if campo != "requisitos_list":
+                verified[campo] = json.dumps(items_verificados, ensure_ascii=False) if items_verificados else None
+
+        # v7.3: Agregar requisitos separados
+        verified["requisitos_excluyentes_list"] = json.dumps(requisitos_excluyentes, ensure_ascii=False) if requisitos_excluyentes else None
+        verified["requisitos_deseables_list"] = json.dumps(requisitos_deseables, ensure_ascii=False) if requisitos_deseables else None
+
+        # v7.3: Complementar tecnologias_stack con detección por diccionario
+        tec_llm = json.loads(verified.get("tecnologias_stack_list", "[]") or "[]")
+        tec_dict = self._detectar_tecnologias(descripcion)
+        tec_combined = sorted(set(tec_llm + tec_dict))
+        if tec_combined:
+            verified["tecnologias_stack_list"] = json.dumps(tec_combined, ensure_ascii=False)
+            if self.verbose and tec_dict:
+                print(f"  [DICT] Tecnologías detectadas por diccionario: {tec_dict}")
+
+        if self.verbose:
+            print(f"[CAPA 2] Items verificados: {self.stats['items_verificados']}, descartados: {self.stats['items_descartados']}")
+            print(f"[CAPA 2] Requisitos: {len(requisitos_excluyentes)} excluyentes, {len(requisitos_deseables)} deseables")
+
+        return verified
+
+    # =========================================================================
+    # PIPELINE PRINCIPAL
+    # =========================================================================
+
+    def process_oferta(self,
+                      id_oferta: str,
+                      descripcion: str,
+                      titulo: str = "",
+                      empresa: str = "") -> Optional[Dict[str, Any]]:
+        """
+        Procesa una oferta con el pipeline de 3 capas
+
+        Args:
+            id_oferta: ID de la oferta
+            descripcion: Texto completo de la descripción
+            titulo: Título de la oferta
+            empresa: Nombre de la empresa
+
+        Returns:
+            Dict con datos extraídos o None si error
+        """
+        start_time = time.time()
+
+        try:
+            # =============================================
+            # CAPA 0: REGEX DETERMINÍSTICO
+            # =============================================
+            regex_data = self._extract_capa0_regex(descripcion, titulo, empresa)
+
+            # =============================================
+            # CAPA 1: LLM RESTRINGIDO (8 campos)
+            # =============================================
+            llm_data = self._extract_capa1_llm(descripcion)
+
+            # =============================================
+            # CAPA 2: VERIFICACIÓN ANTI-ALUCINACIÓN
+            # =============================================
+            verified_llm = {}
+            if llm_data:
+                verified_llm = self._verify_capa2(llm_data, descripcion)
+
+            # =============================================
+            # MERGE: Combinar CAPA 0 + CAPA 2
+            # =============================================
+            # Prioridad: regex (100% precisión) > LLM verificado
+            final_data = {}
+
+            # Agregar todos los campos de regex
+            final_data.update(regex_data)
+
+            # Sobrescribir/agregar campos del LLM verificado
+            # Solo si tienen datos (no vacíos)
+            for campo in CAMPOS_LLM:
+                valor_llm = verified_llm.get(campo)
+                if valor_llm is not None:
+                    final_data[campo] = valor_llm
+
+            # Calcular quality score (campos no-null)
+            quality_score = sum(1 for v in final_data.values() if v is not None)
+
+            # Calcular confidence score
+            # Penalizar por items descartados
+            total_items = self.stats["items_verificados"] + self.stats["items_descartados"]
+            if total_items > 0:
+                confidence = self.stats["items_verificados"] / total_items
+            else:
+                confidence = 1.0 if llm_data is None else 0.5
+
+            # ============================================================
+            # NUEVO: Calcular coverage score (v8.1)
+            # coverage = items_extraidos / items_esperados (según estructura)
+            # ============================================================
+            estructura = StructureDetector.detectar_estructura(descripcion)
+            items_esperados = estructura['total_items_esperados']
+
+            # Contar items extraídos por el LLM (solo campos de lista)
+            items_extraidos = 0
+            for campo in ['requisitos_list', 'responsabilidades_list', 'beneficios_list',
+                         'skills_tecnicas_list', 'soft_skills_list', 'tecnologias_stack_list']:
+                if campo in verified_llm and verified_llm[campo]:
+                    items_extraidos += len(verified_llm[campo])
+
+            coverage_score = StructureDetector.calcular_coverage(items_extraidos, items_esperados)
+
+            processing_time_ms = int((time.time() - start_time) * 1000)
+
+            result = {
+                "id_oferta": id_oferta,
+                "nlp_version": self.VERSION,
+                "extracted_data": final_data,
+                "quality_score": quality_score,
+                "confidence_score": round(confidence, 2),
+                "coverage_score": coverage_score,  # NUEVO v8.1
+                "items_esperados": items_esperados,  # NUEVO v8.1
+                "items_extraidos": items_extraidos,  # NUEVO v8.1
+                "processing_time_ms": processing_time_ms,
+                "extraction_method": self.EXTRACTION_METHOD,
+                "items_verificados": self.stats["items_verificados"],
+                "items_descartados": self.stats["items_descartados"],
+                "error_message": None,
+                # Datos por capa para validacion_v7
+                "capa0_data": regex_data,
+                "capa1_raw": llm_data if llm_data else {},
+                "capa1_verificado": verified_llm,
+                "estructura_detectada": estructura  # NUEVO v8.1
+            }
+
+            self.stats["total_success"] += 1
+            self.stats["total_time_ms"] += processing_time_ms
+
+            return result
+
+        except Exception as e:
+            print(f"[ERROR] {id_oferta}: {e}")
+            import traceback
+            traceback.print_exc()
+            self.stats["total_errors"] += 1
+            return {
+                "id_oferta": id_oferta,
+                "nlp_version": self.VERSION,
+                "extracted_data": {},
+                "quality_score": 0,
+                "confidence_score": 0.0,
+                "processing_time_ms": int((time.time() - start_time) * 1000),
+                "extraction_method": self.EXTRACTION_METHOD,
+                "items_verificados": 0,
+                "items_descartados": 0,
+                "error_message": str(e)
+            }
+
+    def save_to_history(self, result: Dict[str, Any]):
+        """
+        Guarda resultado en ofertas_nlp_history
+
+        Args:
+            result: Resultado del procesamiento
+        """
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute("""
+                INSERT INTO ofertas_nlp_history (
+                    id_oferta,
+                    nlp_version,
+                    processed_at,
+                    extracted_data,
+                    quality_score,
+                    confidence_score,
+                    processing_time_ms,
+                    is_active,
+                    extraction_method,
+                    error_message
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                result["id_oferta"],
+                result["nlp_version"],
+                datetime.now().isoformat(),
+                json.dumps(result["extracted_data"], ensure_ascii=False),
+                result["quality_score"],
+                result["confidence_score"],
+                result["processing_time_ms"],
+                0,  # No activar automáticamente
+                result["extraction_method"],
+                result["error_message"]
+            ))
+
+            conn.commit()
+
+        except Exception as e:
+            print(f"[DB ERROR] No se pudo guardar {result['id_oferta']}: {e}")
+            conn.rollback()
+        finally:
+            conn.close()
+
+    def save_to_validacion_v7(self, result: Dict[str, Any], titulo: str = "", empresa: str = ""):
+        """
+        Guarda resultado detallado en validacion_v7 para validación humana
+
+        Guarda los resultados de cada capa por separado para que el usuario
+        pueda ver qué extrajo cada etapa del pipeline.
+
+        Args:
+            result: Resultado del procesamiento (incluye datos por capa)
+            titulo: Título de la oferta
+            empresa: Nombre de la empresa
+        """
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute("""
+                INSERT INTO validacion_v7 (
+                    id_oferta,
+                    titulo,
+                    empresa,
+                    resultado_capa0,
+                    resultado_capa1_raw,
+                    resultado_capa1_verificado,
+                    items_verificados,
+                    items_descartados,
+                    confidence_score,
+                    coverage_score,
+                    items_esperados,
+                    items_extraidos,
+                    estructura_detectada,
+                    validacion_humana,
+                    nlp_version,
+                    processing_time_ms
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                result["id_oferta"],
+                titulo,
+                empresa,
+                json.dumps(result.get("capa0_data", {}), ensure_ascii=False),
+                json.dumps(result.get("capa1_raw", {}), ensure_ascii=False),
+                json.dumps(result.get("capa1_verificado", {}), ensure_ascii=False),
+                result.get("items_verificados", 0),
+                result.get("items_descartados", 0),
+                result.get("confidence_score", 0.0),
+                result.get("coverage_score", 1.0),
+                result.get("items_esperados", 0),
+                result.get("items_extraidos", 0),
+                json.dumps(result.get("estructura_detectada", {}), ensure_ascii=False),
+                "pendiente",  # Status inicial
+                result.get("nlp_version", self.VERSION),
+                result.get("processing_time_ms", 0)
+            ))
+
+            conn.commit()
+            if self.verbose:
+                print(f"[DB] Guardado en validacion_v7: {result['id_oferta']}")
+
+        except Exception as e:
+            print(f"[DB ERROR] No se pudo guardar en validacion_v7 {result['id_oferta']}: {e}")
+            conn.rollback()
+        finally:
+            conn.close()
+
+    def process_batch(self,
+                     limit: int = 100,
+                     only_empty: bool = False,
+                     ids_especificos: List[str] = None) -> Dict[str, Any]:
+        """
+        Procesa un batch de ofertas
+
+        Args:
+            limit: Cantidad máxima de ofertas a procesar
+            only_empty: Solo procesar ofertas sin versión 7.0.0
+            ids_especificos: Lista de IDs específicos a procesar
+
+        Returns:
+            Dict con estadísticas del batch
+        """
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        if ids_especificos:
+            # Procesar IDs específicos
+            placeholders = ",".join("?" * len(ids_especificos))
+            query = f"""
+                SELECT o.id_oferta, o.descripcion, o.titulo, o.empresa
+                FROM ofertas o
+                WHERE o.id_oferta IN ({placeholders})
+                  AND o.descripcion IS NOT NULL
+                  AND LENGTH(o.descripcion) > 100
+            """
+            cursor.execute(query, ids_especificos)
+        else:
+            # Construir query
+            query = """
+                SELECT o.id_oferta, o.descripcion, o.titulo, o.empresa
+                FROM ofertas o
+                WHERE o.descripcion IS NOT NULL
+                  AND LENGTH(o.descripcion) > 100
+            """
+
+            if only_empty:
+                query += f"""
+                    AND NOT EXISTS (
+                        SELECT 1 FROM ofertas_nlp_history h
+                        WHERE h.id_oferta = o.id_oferta
+                          AND h.nlp_version = '{self.VERSION}'
+                    )
+                """
+
+            query += f" ORDER BY o.fecha_publicacion_datetime DESC LIMIT {limit}"
+            cursor.execute(query)
+
+        ofertas = cursor.fetchall()
+        conn.close()
+
+        total_ofertas = len(ofertas)
+        print(f"\n[BATCH] Procesando {total_ofertas} ofertas con NLP v{self.VERSION}")
+        print(f"[BATCH] Arquitectura: Pipeline de 3 capas anti-alucinación")
+        print(f"[BATCH] Modelo LLM: {self.OLLAMA_MODEL}")
+        print()
+
+        # Reset stats por oferta
+        for i, (id_oferta, descripcion, titulo, empresa) in enumerate(ofertas, 1):
+            # Reset contadores por oferta
+            self.stats["items_verificados"] = 0
+            self.stats["items_descartados"] = 0
+
+            print(f"[{i}/{total_ofertas}] Procesando {id_oferta}...", end=" ")
+
+            result = self.process_oferta(
+                id_oferta=id_oferta,
+                descripcion=descripcion,
+                titulo=titulo or "",
+                empresa=empresa or ""
+            )
+
+            if result and result.get("error_message") is None:
+                self.save_to_history(result)
+                self.save_to_validacion_v7(result, titulo=titulo or "", empresa=empresa or "")
+                print(f"OK (Q:{result['quality_score']}, C:{result['confidence_score']:.2f}, "
+                      f"Cov:{result['coverage_score']:.2f}, "
+                      f"V:{result['items_verificados']}/D:{result['items_descartados']}, "
+                      f"T:{result['processing_time_ms']}ms)")
+            else:
+                print("ERROR")
+
+            self.stats["total_processed"] += 1
+
+            # Pausa breve
+            time.sleep(0.3)
+
+        # Estadísticas finales
+        avg_time = self.stats["total_time_ms"] / max(1, self.stats["total_success"])
+        success_rate = (self.stats["total_success"] / max(1, self.stats["total_processed"])) * 100
+
+        print()
+        print("=" * 70)
+        print("ESTADÍSTICAS DEL BATCH")
+        print("=" * 70)
+        print(f"Total procesadas:     {self.stats['total_processed']}")
+        print(f"Éxitos:               {self.stats['total_success']} ({success_rate:.1f}%)")
+        print(f"Errores:              {self.stats['total_errors']}")
+        print(f"Llamadas LLM:         {self.stats['llm_calls']}")
+        print(f"Errores LLM:          {self.stats['llm_errors']}")
+        print(f"Tiempo promedio:      {avg_time:.0f}ms")
+        print(f"Tiempo total:         {self.stats['total_time_ms']/1000:.1f}s")
+        print("=" * 70)
+
+        return self.stats
+
+
+def check_ollama_status():
+    """Verifica que Ollama esté corriendo con el modelo correcto"""
+    try:
+        response = requests.get("http://localhost:11434/api/tags", timeout=5)
+        if response.status_code == 200:
+            models = response.json().get("models", [])
+            model_names = [m.get("name", "") for m in models]
+            print(f"[OK] Ollama está corriendo")
+            print(f"[OK] Modelos disponibles: {', '.join(model_names[:5])}")
+
+            if "qwen2.5:14b" not in model_names:
+                print(f"[WARNING] Modelo qwen2.5:14b no encontrado")
+                print(f"[WARNING] Ejecuta: ollama pull qwen2.5:14b")
+                return False
+
+            return True
+        else:
+            print(f"[ERROR] Ollama responde con status {response.status_code}")
+            return False
+    except requests.exceptions.ConnectionError:
+        print(f"[ERROR] No se puede conectar a Ollama en localhost:11434")
+        print(f"[ERROR] Inicia Ollama con: ollama serve")
+        return False
+    except Exception as e:
+        print(f"[ERROR] Error al verificar Ollama: {e}")
+        return False
+
+
+def main():
+    parser = argparse.ArgumentParser(description="NLP Extractor v7.0 - Pipeline 3 Capas Anti-Alucinación")
+    parser.add_argument("--mode", choices=["test", "production"], default="test",
+                       help="Modo de ejecución (test=IDs específicos, production=batch)")
+    parser.add_argument("--limit", type=int, default=100,
+                       help="Cantidad de ofertas a procesar (default: 100)")
+    parser.add_argument("--only-empty", action="store_true",
+                       help="Solo procesar ofertas sin versión 7.0.0")
+    parser.add_argument("--ids", type=str, nargs="+",
+                       help="IDs específicos a procesar (solo modo test)")
+    parser.add_argument("--db", type=str,
+                       help="Path a la base de datos")
+    parser.add_argument("--verbose", "-v", action="store_true",
+                       help="Modo verbose con debug detallado")
+
+    args = parser.parse_args()
+
+    print("=" * 70)
+    print("NLP EXTRACTOR v7.0 - PIPELINE 3 CAPAS ANTI-ALUCINACIÓN")
+    print("=" * 70)
+    print(f"Modo: {args.mode.upper()}")
+    print(f"Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print()
+    print("ARQUITECTURA:")
+    print("  CAPA 0: Regex determinístico (regex_patterns_v4)")
+    print("  CAPA 1: LLM restringido (8 campos semánticos)")
+    print("  CAPA 2: Verificación substring exacto")
+    print()
+
+    # Verificar Ollama
+    if not check_ollama_status():
+        print("\n[ERROR] Ollama no está disponible. Abortando.")
+        return 1
+
+    print()
+
+    # Inicializar extractor
+    try:
+        extractor = NLPExtractorV7(db_path=args.db, verbose=args.verbose)
+    except FileNotFoundError as e:
+        print(f"[ERROR] {e}")
+        return 1
+
+    # Determinar qué procesar
+    if args.mode == "test":
+        # IDs de test por defecto (ofertas problemáticas conocidas)
+        test_ids = args.ids or ["2163782", "2154549"]
+        print(f"[TEST MODE] Procesando {len(test_ids)} ofertas de prueba: {test_ids}")
+
+        try:
+            stats = extractor.process_batch(ids_especificos=test_ids)
+            print("\n[OK] Test completado")
+            return 0
+        except Exception as e:
+            print(f"[ERROR] {e}")
+            return 1
+    else:
+        print(f"[PRODUCTION MODE] Procesando hasta {args.limit} ofertas")
+
+        try:
+            stats = extractor.process_batch(
+                limit=args.limit,
+                only_empty=args.only_empty
+            )
+            print("\n[OK] Procesamiento completado")
+            return 0
+        except KeyboardInterrupt:
+            print("\n\n[!] Interrumpido por usuario")
+            return 130
+        except Exception as e:
+            print(f"[ERROR] {e}")
+            import traceback
+            traceback.print_exc()
+            return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

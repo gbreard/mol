@@ -1,0 +1,106 @@
+====================================================================================================
+EXPLORACION COMPLETA: BASE DE DATOS SQLite BUMERAN SCRAPING
+====================================================================================================
+Ruta: D:\OEDE\Webscrapping\databaseumeran_scraping.db
+Tamaño: 202.08 MB
+
+====================================================================================================
+OBJETIVO 1: TABLA CON MATCHES ESCO
+====================================================================================================
+
+TABLA IDENTIFICADA: ofertas_esco_matching
+Registros: 6,521 (uno por cada oferta)
+Relacion: Conecta ofertas con esco_occupations
+
+====================================================================================================
+OBJETIVO 2: COLUMNAS CON SCORES
+====================================================================================================
+
+1. OCCUPATION_MATCH_SCORE
+   Rango: 0.4241 - 0.9785
+   Promedio: 0.5832
+   Metodo: bge-m3+esco-xlm
+   Disponibilidad: 100%
+
+2. RERANK_SCORE
+   Rango: 0.9773 - 0.9974
+   Promedio: 0.9903
+   Interpretacion: Score normalizado (bajo poder discriminativo)
+   Disponibilidad: 100%
+
+3. CONFIDENCE_SCORE
+   Estado: NO TIENE DATOS (NULL en todos registros)
+
+4. INFORMACION DE OCUPACION
+   - esco_occupation_uri
+   - esco_occupation_label
+   - titulo_esco_code
+
+5. INFORMACION DE SKILLS (JSON)
+   - esco_skills_esenciales_json
+   - esco_skills_opcionales_json
+   - skills_sin_match_json
+   NOTA: Sin datos actualmente
+
+====================================================================================================
+OBJETIVO 3: RELACION CON TABLA OFERTAS
+====================================================================================================
+
+JOIN: ofertas.id_oferta (INTEGER) = ofertas_esco_matching.id_oferta (TEXT)
+Cobertura: 100% de 6,521 ofertas tienen matching
+
+====================================================================================================
+OBJETIVO 4: DATOS DISPONIBLES EN OFERTAS
+====================================================================================================
+
+[IDENTIFICACION]
+  id_oferta, id_empresa, empresa, portal
+
+[CONTENIDO]
+  titulo, descripcion, descripcion_utf8, cantidad_vacantes
+
+[UBICACION]
+  localizacion, provincia_normalizada, codigo_provincia_indec
+  localidad_normalizada, codigo_localidad_indec, id_pais
+
+[CATEGORIZACION]
+  id_area, id_subarea
+
+[CONDICIONES]
+  modalidad_trabajo, tipo_trabajo, confidencial
+
+[FECHAS]
+  fecha_publicacion_iso, fecha_hora_publicacion_iso
+  fecha_modificado_iso, scrapeado_en
+
+[REQUISITOS]
+  salario_obligatorio, apto_discapacitado, tiene_preguntas
+
+[EMPRESA INFO]
+  empresa_validada, empresa_pro, promedio_empresa
+  logo_url, url_oferta
+
+====================================================================================================
+ESTADISTICAS DE COBERTURA
+====================================================================================================
+
+Ofertas: 6,521
+  Con titulo: 6,521 (100%)
+  Con descripcion: 6,521 (100%)
+  Con provincia normalizada: 6,502 (99%)
+
+====================================================================================================
+TABLAS COMPLEMENTARIAS
+====================================================================================================
+
+esco_occupations: 3,045 registros
+  Contiene: occupation_uri, esco_code, isco_code, preferred_label_es
+
+esco_skills: 14,247 registros
+  Contiene: skill_uri, esco_code, preferred_label_es
+
+esco_associations: 134,805 registros
+  Relaciona: occupation_uri con skill_uri
+
+ofertas_nlp: 5,479 registros (84% cobertura)
+  Extrae: skills, experiencia, educacion, salarios, idiomas

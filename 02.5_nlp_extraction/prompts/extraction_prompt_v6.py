@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """
-Extraction Prompt Template - NLP v6.1
-======================================
+Extraction Prompt Template - NLP v6.2.1
+=======================================
 
 Template de prompt para extracción híbrida con RAG.
 NOVEDAD v6.0: Agrega 6 campos nuevos (24 campos totales)
 MEJORAS v6.1: Prompts refinados para mejorar coverage de campos críticos
+MEJORAS v6.2: 10 campos nuevos (34 campos totales) basados en validación iterativa
+CORRECCIÓN v6.2.1 (2025-11-27): Anti-hallucination - evitar que el LLM copie datos del ejemplo
 
-Campos nuevos:
+Campos v6.0:
 - experiencia_cargo_previo
 - tecnologias_stack_list
 - sector_industria
@@ -20,6 +22,18 @@ Mejoras v6.1 (coverage optimization):
 - experiencia_min_anios: Inferencia reforzada desde nivel_seniority
 - experiencia_cargo_previo: Ejemplos más claros y menos restricciones
 - disponibilidad_viajes: Más patrones de búsqueda
+
+Campos NUEVOS v6.2 (basados en análisis de ofertas reales):
+- responsabilidades_list: Lista de tareas discretas del puesto
+- empresa_publicadora: Consultora/portal que publica (si difiere)
+- empresa_contratante: Empresa real que contrata
+- empresa_descripcion: Descripción breve del negocio de la empresa
+- licencia_conducir_requerida: Boolean si requiere registro
+- licencia_conducir_categoria: Categoría mínima (B1, C, D, etc.)
+- indexacion_salarial: Objeto {tiene: bool, indice: str, frecuencia: str}
+- contratacion_inmediata: Boolean si es incorporación inmediata
+- edad_min: Edad mínima requerida (tolerar espacios: "1 8" → 18)
+- edad_max: Edad máxima requerida
 """
 
 from typing import Dict, Any, Optional
@@ -31,7 +45,15 @@ def build_extraction_prompt_v6(
     regex_baseline: Optional[Dict[str, Any]] = None
 ) -> str:
     """
-    Construye prompt completo para extracción NLP v6.0 con RAG
+    Construye prompt completo para extracción NLP v6.2 con RAG
+
+    v6.2 incluye 34 campos (10 nuevos sobre v6.1):
+    - empresa_publicadora, empresa_contratante, empresa_descripcion
+    - responsabilidades_list
+    - edad_min, edad_max
+    - licencia_conducir_requerida, licencia_conducir_categoria
+    - contratacion_inmediata
+    - indexacion_salarial
 
     Args:
         job_description: Descripción completa de la oferta laboral
@@ -66,6 +88,18 @@ IMPORTANTE: La extracción baseline puede contener errores. Tu tarea es:
 
 Tu tarea es analizar la siguiente descripción de oferta laboral y extraer información estructurada.
 
+### REGLA CRÍTICA: NO INVENTAR DATOS
+
+**IMPORTANTE:** Extraer ÚNICAMENTE información que aparece EXPLÍCITAMENTE en la descripción.
+- Si un campo no tiene información en el texto → devolver null
+- NUNCA copiar valores del ejemplo de formato (es solo para mostrar la ESTRUCTURA)
+- NUNCA inferir skills técnicas que no estén mencionadas explícitamente
+- Si la oferta es de Contador/Administrativo → NO devolver Python/Django/tecnologías IT
+- Si la oferta es de Ventas/Marketing → NO devolver stacks de programación
+- Cada oferta tiene sus PROPIOS datos - extraer del texto, NO del ejemplo
+
+**CONSECUENCIA:** Si inventas datos que no están en el texto, el sistema falla completamente.
+
 {baseline_section}
 
 ### CONTEXTO PARA VALIDACIÓN
@@ -76,7 +110,7 @@ Tu tarea es analizar la siguiente descripción de oferta laboral y extraer infor
 {job_description}
 ```
 
-### INSTRUCCIONES DE EXTRACCIÓN (NLP v6.0 - 24 campos)
+### INSTRUCCIONES DE EXTRACCIÓN (NLP v6.2 - 34 campos)
 
 Extrae la información en formato JSON con los siguientes campos:
 
@@ -107,8 +141,26 @@ Extrae la información en formato JSON con los siguientes campos:
 
 **2. EDUCACIÓN:**
 - `nivel_educativo` (string): Uno de: "primario", "secundario", "terciario", "universitario", "posgrado", null
+  - **NORMALIZACIÓN OBLIGATORIA - Ejemplos:**
+    * "Estudiante avanzado de Licenciatura" → "universitario"
+    * "Graduado/Licenciado/Ingeniero" → "universitario"
+    * "Estudiante o graduado universitario" → "universitario"
+    * "Técnico Superior en..." → "terciario"
+    * "Tecnicatura en..." → "terciario"
+    * "Secundario completo excluyente" → "secundario"
+  - USAR el nivel más alto mencionado
+
 - `estado_educativo` (string): Uno de: "en_curso", "completo", "incompleto", null
-- `carrera_especifica` (string o null): Nombre específico de la carrera (ej: "Ingeniería Industrial")
+  - **SOLO el estado, NO la carrera:**
+    * "Estudiante avanzado" → "en_curso"
+    * "Graduado/Licenciado/Recibido" → "completo"
+    * "Con o sin título" → "incompleto" (aceptan sin completar)
+  - NO poner nombre de carrera aquí (va en carrera_especifica)
+
+- `carrera_especifica` (string o null): Nombre específico de la carrera
+  - Ejemplos: "Administración de Empresas", "Ingeniería Industrial", "Lic. en Comercialización"
+  - Si dice "carreras afines a comercio" → "Comercio/afines"
+  - **SIEMPRE extraer si se menciona carrera**
 
 **3. IDIOMAS:**
 - `idioma_principal` (string o null): Idioma principal requerido (ej: "inglés", "español")
@@ -118,9 +170,13 @@ Extrae la información en formato JSON con los siguientes campos:
 - `skills_tecnicas_list` (string JSON array): Lista de habilidades técnicas como JSON string
   - VALIDAR contra el diccionario ESCO provisto
   - Incluir solo skills reales y relevantes
+  - **CRÍTICO: DIFERENCIAR de responsabilidades_list:**
+    * Skills = herramientas, tecnologías, conocimientos (sustantivos)
+    * Responsabilidades = tareas, funciones, actividades (verbos)
   - NO incluir: responsabilidades del puesto, requisitos genéricos, o descripciones largas
-  - Ejemplos CORRECTOS: ["Python", "SQL", "Excel", "AutoCAD"]
-  - Ejemplos INCORRECTOS: ["Responsable", "Gestión de proyectos completos", "toda la descripción"]
+  - Ejemplos CORRECTOS: ["Excel", "KPIs", "análisis de ventas", "liquidación de comisiones"]
+  - Ejemplos INCORRECTOS: ["Diseñar plan comercial", "Definir objetivos", "Gestionar equipo"]
+  - Si dice "diseñar y gestionar KPIs" → skill es "KPIs", NO "diseñar y gestionar KPIs"
 
 - `tecnologias_stack_list` (string JSON array o null): **NUEVO v6.0** - Stack tecnológico completo
   - Incluir lenguajes, frameworks, herramientas, plataformas
@@ -176,6 +232,72 @@ Extrae la información en formato JSON con los siguientes campos:
     * Términos explícitos en título/descripción
     * Años de experiencia requeridos (0-1: trainee, 1-2: junior, 2-4: semi-senior, 4+: senior)
     * Responsabilidades (gestión de equipo → manager/director)
+
+**10. INFORMACIÓN DE LA EMPRESA (NUEVO v6.2):**
+- `empresa_publicadora` (string o null): Consultora o portal que publica la oferta
+  - Si la oferta es de una consultora de RRHH buscando para otra empresa
+  - **LISTA DE CONSULTORAS CONOCIDAS (detectar automáticamente):**
+    * Zivot, Randstad, Manpower, Adecco, Grupo Gestión, Be Part, MCV, GI GROUP
+    * Job Solutions, Ghidini Rodil, PageGroup, Michael Page, Hays, Robert Half
+    * Experis, Kelly Services, Tempo, Bayton, Mia RRHH, Nexo RRHH
+    * Términos clave: "Consultora", "RRHH", "Recursos Humanos", "Selección de Personal"
+  - Si el nombre contiene alguna de estas → ES empresa_publicadora
+  - Ejemplos: "Zivot Consultora en RH" → empresa_publicadora = "Zivot"
+  - Si la empresa publica directamente (sin consultora) → null
+
+- `empresa_contratante` (string o null): Empresa real que contrata al empleado
+  - La empresa final donde trabajará el candidato
+  - Si la consultora menciona el cliente → extraer el nombre
+  - Ejemplos: "Toyota", "Banco Macro", "importante empresa del rubro automotriz"
+  - Si publica directamente (sin consultora) → null (ya está en otro campo)
+
+- `empresa_descripcion` (string o null): Descripción breve del negocio de la empresa
+  - Rubro o actividad principal de la empresa contratante
+  - Ejemplos: "Fábrica de productos plásticos", "Empresa de logística", "Fintech de pagos"
+  - Extraer de menciones como "somos una empresa de...", "dedicada a...", etc.
+
+**11. RESPONSABILIDADES DEL PUESTO (NUEVO v6.2):**
+- `responsabilidades_list` (string JSON array o null): Lista de tareas discretas del puesto
+  - Extraer como tareas individuales y específicas
+  - NO incluir requisitos ni skills (eso va en otros campos)
+  - Formato: verbos en infinitivo cuando sea posible
+  - Ejemplo: '["Realizar mantenimiento preventivo", "Operar maquinaria CNC", "Reportar a supervisor"]'
+  - Máximo 10 responsabilidades más relevantes
+
+**12. REQUISITOS DEMOGRÁFICOS (NUEVO v6.2):**
+- `edad_min` (número o null): Edad mínima requerida
+  - Buscar: "mayor de X", "desde X años", "mínimo X años de edad"
+  - IMPORTANTE: Tolerar espacios en OCR defectuoso: "1 8" → 18, "2 5" → 25
+  - En Argentina no es legal discriminar por edad, pero algunas ofertas lo incluyen
+
+- `edad_max` (número o null): Edad máxima requerida
+  - Buscar: "hasta X años", "máximo X años", "menor de X"
+  - Tolerar espacios: "4 5" → 45, "5 5" → 55
+
+**13. LICENCIA DE CONDUCIR (NUEVO v6.2):**
+- `licencia_conducir_requerida` (0 o 1 o null): Si requiere registro de conducir
+  - 1 si menciona "registro de conducir", "carnet de conducir", "licencia", etc.
+  - 0 si explícitamente dice "no requiere"
+  - null si no se menciona
+
+- `licencia_conducir_categoria` (string o null): Categoría mínima requerida
+  - En Argentina: A (motos), B1/B2 (autos), C (camiones), D (transporte pasajeros), E (articulados)
+  - Buscar: "registro B", "carnet tipo C", "licencia profesional"
+  - Si solo dice "registro" sin especificar → "B1" (asumir particular)
+
+**14. CONDICIONES CONTRACTUALES ADICIONALES (NUEVO v6.2):**
+- `contratacion_inmediata` (0 o 1 o null): Si es incorporación inmediata
+  - 1 si menciona: "incorporación inmediata", "urgente", "disponibilidad inmediata"
+  - 0 si menciona fecha futura específica
+  - null si no se menciona
+
+- `indexacion_salarial` (string JSON object o null): Información de ajuste salarial
+  - **CRÍTICO: SOLO extraer si hay mención EXPLÍCITA de indexación/ajuste**
+  - Objeto JSON con estructura: {{"tiene": true/false, "indice": "IPC"/"UVA"/otro, "frecuencia": "mensual"/"trimestral"/etc.}}
+  - Palabras clave OBLIGATORIAS: "indexado", "ajuste", "IPC", "UVA", "actualización salarial", "paritarias"
+  - **NO INFERIR** - Si no menciona explícitamente → null
+  - Ejemplo CORRECTO: "salario con ajuste trimestral por IPC" → '{{"tiene": true, "indice": "IPC", "frecuencia": "trimestral"}}'
+  - Ejemplo INCORRECTO: No dice nada de ajuste → null (NO inventar {{"tiene": true}})
 
 ### REGLAS CRÍTICAS DE VALIDACIÓN
 
@@ -248,6 +370,37 @@ Extrae la información en formato JSON con los siguientes campos:
     - Usar null (no "null" string) cuando no haya información EXPLÍCITA
     - EXCEPCIÓN: Aplicar REGLAS DE INFERENCIA CONTEXTUAL (ver sección 11)
 
+12. **Empresa Publicadora vs Contratante (NUEVO v6.2):**
+    - Si una consultora (Randstad, Manpower, etc.) publica para una empresa cliente:
+      * empresa_publicadora = nombre de la consultora
+      * empresa_contratante = nombre de la empresa cliente (si se menciona)
+    - Si la empresa publica directamente:
+      * empresa_publicadora = null
+      * empresa_contratante = null (el nombre ya está en el título/datos de la oferta)
+    - CLAVE: Identificar frases como "para importante cliente", "empresa del rubro...", "seleccionamos para..."
+
+13. **Responsabilidades (NUEVO v6.2):**
+    - Extraer SOLO tareas del puesto, NO requisitos
+    - Formato preferido: verbos en infinitivo
+    - Si el texto mezcla responsabilidades con requisitos, separar cuidadosamente
+    - Máximo 10 ítems
+
+14. **Licencia de Conducir (NUEVO v6.2):**
+    - Si solo dice "registro de conducir" sin categoría → asumir "B1"
+    - Si dice "registro profesional" → buscar contexto (C para camiones, D para pasajeros)
+    - licencia_conducir_requerida y licencia_conducir_categoria deben ser consistentes
+
+15. **Edad (NUEVO v6.2):**
+    - CRÍTICO: Tolerar espacios en números (OCR defectuoso): "1 8" → 18, "2 5" → 25
+    - Unir dígitos separados por espacio si tienen sentido como edad (18-65)
+    - Si dice "mayor de edad" sin número → edad_min = 18
+
+16. **Indexación Salarial (NUEVO v6.2):**
+    - Solo extraer si hay mención EXPLÍCITA de indexación/ajuste
+    - Índices comunes en Argentina: IPC, UVA, paritarias
+    - Frecuencias comunes: mensual, trimestral, semestral, anual
+    - Si no hay mención → null (NO inferir)
+
 11. **REGLAS DE INFERENCIA CONTEXTUAL** (para COMPLETITUD de datos):
 
    **Nivel Educativo** (si NO se menciona explícitamente):
@@ -294,35 +447,52 @@ Extrae la información en formato JSON con los siguientes campos:
 
 Responde ÚNICAMENTE con un objeto JSON válido, sin explicaciones adicionales.
 
-Ejemplo de salida (NLP v6.0 - 24 campos):
+**ADVERTENCIA CRÍTICA sobre el ejemplo:**
+El siguiente ejemplo muestra SOLO la ESTRUCTURA del JSON esperado.
+Los valores son PLACEHOLDERS - NO los copies. Extrae los valores REALES del texto de la oferta.
+Si un campo no tiene información en la oferta → usa null.
+
+Ejemplo de ESTRUCTURA (NO copiar estos valores):
 ```json
 {{
-  "experiencia_min_anios": 2,
-  "experiencia_max_anios": 4,
-  "experiencia_cargo_previo": "Desarrollador Backend",
-  "nivel_educativo": "universitario",
-  "estado_educativo": "completo",
-  "carrera_especifica": "Ingeniería en Sistemas",
-  "idioma_principal": "ingles",
-  "nivel_idioma_principal": "intermedio",
-  "skills_tecnicas_list": "[\"Python\", \"Django\", \"PostgreSQL\", \"Docker\"]",
-  "tecnologias_stack_list": "[\"Python\", \"Django\", \"PostgreSQL\", \"Docker\", \"Redis\", \"Celery\", \"AWS\", \"Kubernetes\"]",
-  "soft_skills_list": "[\"trabajo en equipo\", \"comunicación\", \"proactivo\"]",
+  "experiencia_min_anios": null,
+  "experiencia_max_anios": null,
+  "experiencia_cargo_previo": null,
+  "nivel_educativo": null,
+  "estado_educativo": null,
+  "carrera_especifica": null,
+  "idioma_principal": null,
+  "nivel_idioma_principal": null,
+  "skills_tecnicas_list": null,
+  "tecnologias_stack_list": null,
+  "soft_skills_list": null,
   "certificaciones_list": null,
-  "salario_min": 800000,
-  "salario_max": 1200000,
-  "moneda": "ARS",
-  "beneficios_list": "[\"prepaga\", \"dia de cumpleaños\", \"home office\"]",
-  "requisitos_excluyentes_list": "[\"titulo universitario\", \"ingles intermedio\"]",
-  "requisitos_deseables_list": "[\"experiencia en startups\", \"conocimiento de AWS\"]",
-  "jornada_laboral": "full_time",
-  "horario_flexible": 1,
-  "modalidad_contratacion": "hibrido",
-  "disponibilidad_viajes": 0,
-  "sector_industria": "IT/Tecnología",
-  "nivel_seniority": "semi-senior"
+  "salario_min": null,
+  "salario_max": null,
+  "moneda": null,
+  "beneficios_list": null,
+  "requisitos_excluyentes_list": null,
+  "requisitos_deseables_list": null,
+  "jornada_laboral": null,
+  "horario_flexible": null,
+  "modalidad_contratacion": null,
+  "disponibilidad_viajes": null,
+  "sector_industria": null,
+  "nivel_seniority": null,
+  "empresa_publicadora": null,
+  "empresa_contratante": null,
+  "empresa_descripcion": null,
+  "responsabilidades_list": null,
+  "edad_min": null,
+  "edad_max": null,
+  "licencia_conducir_requerida": null,
+  "licencia_conducir_categoria": null,
+  "contratacion_inmediata": null,
+  "indexacion_salarial": null
 }}
 ```
+
+RECUERDA: Cada campo debe extraerse DEL TEXTO de la oferta. Si no está mencionado → null.
 
 Ahora procede con la extracción:
 """
@@ -332,7 +502,7 @@ Ahora procede con la extracción:
 
 def build_simple_extraction_prompt_v6(job_description: str) -> str:
     """
-    Versión simplificada del prompt v6.0 sin RAG (para testing)
+    Versión simplificada del prompt v6.2 sin RAG (para testing)
 
     Args:
         job_description: Descripción de la oferta
@@ -340,7 +510,7 @@ def build_simple_extraction_prompt_v6(job_description: str) -> str:
     Returns:
         Prompt simplificado
     """
-    return f"""Extrae información estructurada de esta oferta laboral en formato JSON (NLP v6.0 - 24 campos).
+    return f"""Extrae información estructurada de esta oferta laboral en formato JSON (NLP v6.2 - 34 campos).
 
 Descripción:
 {job_description}
@@ -356,6 +526,12 @@ Campos a extraer:
 - jornada_laboral, horario_flexible
 - modalidad_contratacion (remoto/presencial/hibrido), disponibilidad_viajes (0/1)
 - sector_industria, nivel_seniority
+- empresa_publicadora (consultora que publica), empresa_contratante (empresa real), empresa_descripcion
+- responsabilidades_list (tareas discretas como JSON array)
+- edad_min, edad_max (tolerar espacios en OCR: "1 8" → 18)
+- licencia_conducir_requerida (0/1), licencia_conducir_categoria (B1/C/D/etc)
+- contratacion_inmediata (0/1)
+- indexacion_salarial (JSON object: {{"tiene": bool, "indice": str, "frecuencia": str}})
 
 Responde solo con JSON válido, sin explicaciones.
 """
@@ -389,9 +565,12 @@ def generate_extraction_prompt_v6(
 
 
 if __name__ == '__main__':
-    # Test del prompt v6.0
+    # Test del prompt v6.2
     test_description = """
+    Randstad selecciona para importante empresa del rubro automotriz:
+
     Buscamos Desarrollador Python Senior con 3-5 años de experiencia para trabajo híbrido.
+    Incorporación inmediata.
 
     Requisitos:
     - Universitario completo en Ingeniería/Sistemas
@@ -399,9 +578,17 @@ if __name__ == '__main__':
     - Experiencia previa como Desarrollador Backend
     - Stack: Python, Django, PostgreSQL, Docker, AWS, Redis
     - Git, CI/CD, Kubernetes
+    - Edad: 25-45 años
+    - Registro de conducir tipo B
+
+    Responsabilidades:
+    - Desarrollar y mantener APIs REST
+    - Diseñar arquitectura de microservicios
+    - Realizar code reviews
+    - Mentorear desarrolladores junior
 
     Ofrecemos:
-    - Salario: $800.000 - $1.200.000
+    - Salario: $800.000 - $1.200.000 (con ajuste trimestral por IPC)
     - OSDE
     - 2 días home office, 3 presencial
     - Día de cumpleaños libre
@@ -411,7 +598,7 @@ if __name__ == '__main__':
 
     # Prompt simple
     simple = build_simple_extraction_prompt_v6(test_description)
-    print("=== PROMPT SIMPLE v6.0 ===")
+    print("=== PROMPT SIMPLE v6.2 ===")
     print(simple[:500])
     print(f"\n... (total: {len(simple)} caracteres)\n")
 
@@ -423,6 +610,6 @@ if __name__ == '__main__':
     }
 
     full = build_extraction_prompt_v6(test_description, mock_rag, mock_baseline)
-    print("=== PROMPT COMPLETO v6.0 CON RAG ===")
+    print("=== PROMPT COMPLETO v6.2 CON RAG ===")
     print(full[:500])
     print(f"\n... (total: {len(full)} caracteres)")
