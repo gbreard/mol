@@ -66,13 +66,10 @@ except ImportError:
         RULES_AVAILABLE = False
         RULES_VERSION = None
 
-try:
-    import torch
-    from transformers import AutoModel, AutoTokenizer
-    RERANKER_AVAILABLE = True
-except ImportError:
-    print("WARNING: transformers/torch no disponible. Re-ranking deshabilitado.")
-    RERANKER_AVAILABLE = False
+# NOTA: ESCO-XLM Reranker eliminado en limpieza de código zombi (2025-12-09)
+# Spike MOL-49 demostró que sin reranker hay +31.6% mejor precisión y 4.4x más rápido
+# Ver: metrics/spike_reranker_summary.json
+RERANKER_AVAILABLE = False
 
 # Experiment logger para timing (MOL-48)
 try:
@@ -92,11 +89,6 @@ except ImportError:
 # Configuración
 DB_PATH = Path(__file__).parent / 'bumeran_scraping.db'
 EMBEDDINGS_DIR = Path(__file__).parent / 'embeddings'
-
-# Flag para habilitar/deshabilitar reranker (MOL-49 spike)
-# RESULTADO SPIKE: Sin reranker tiene +31.6% mejor precision y 4.4x mas rapido
-# Documentado en metrics/spike_reranker_summary.json
-USE_RERANKER = False  # Cambiado a False despues del spike MOL-49
 
 # Pesos del algoritmo (PLAN_TECNICO Sección 5.6)
 # Pesos BASE - se ajustan dinámicamente según coverage_score
@@ -161,62 +153,8 @@ def normalizar_embeddings(embeddings):
     return embeddings / norms
 
 
-class ESCOReranker:
-    """Re-ranker usando ESCO-XLM-RoBERTa-Large"""
-
-    def __init__(self, model_name='jjzha/esco-xlm-roberta-large'):
-        self.model_name = model_name
-        self.model = None
-        self.tokenizer = None
-        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-    def cargar(self):
-        print(f"  [RERANKER] Cargando ESCO-XLM... (device: {self.device})")
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-        self.model = AutoModel.from_pretrained(self.model_name)
-        self.model.to(self.device)
-        self.model.eval()
-        print("  [OK] Reranker cargado")
-        return True
-
-    def _get_embedding(self, text):
-        inputs = self.tokenizer(
-            text, return_tensors="pt", truncation=True,
-            max_length=512, padding=True
-        ).to(self.device)
-
-        with torch.no_grad():
-            outputs = self.model(**inputs)
-            attention_mask = inputs['attention_mask']
-            hidden_states = outputs.last_hidden_state
-            mask_expanded = attention_mask.unsqueeze(-1).expand(hidden_states.size()).float()
-            sum_embeddings = torch.sum(hidden_states * mask_expanded, dim=1)
-            sum_mask = torch.clamp(mask_expanded.sum(dim=1), min=1e-9)
-            embedding = sum_embeddings / sum_mask
-
-        return embedding.cpu().numpy()[0]
-
-    def rerank(self, oferta_texto, candidatos_esco, top_k=3):
-        # Timing del reranker (MOL-48)
-        import time
-        start = time.perf_counter()
-
-        oferta_embedding = self._get_embedding(oferta_texto[:500])
-        oferta_embedding = oferta_embedding / np.linalg.norm(oferta_embedding)
-
-        for candidato in candidatos_esco:
-            candidato_embedding = self._get_embedding(candidato['label'])
-            candidato_embedding = candidato_embedding / np.linalg.norm(candidato_embedding)
-            candidato['rerank_score'] = float(np.dot(oferta_embedding, candidato_embedding))
-
-        result = sorted(candidatos_esco, key=lambda x: x['rerank_score'], reverse=True)[:top_k]
-
-        # Log timing si disponible
-        if LOGGER_AVAILABLE:
-            duration_ms = (time.perf_counter() - start) * 1000
-            get_logger().log_timing("reranker", duration_ms, {"candidates": len(candidatos_esco)})
-
-        return result
+# NOTA: Clase ESCOReranker eliminada en limpieza de código zombi (2025-12-09)
+# Código archivado en: database/archive_old_versions/evaluadores_old/spike_reranker_eval.py
 
 
 class MultiCriteriaMatcher:
@@ -253,15 +191,7 @@ class MultiCriteriaMatcher:
         print("  -> Cargando BGE-M3...")
         self.embedding_model = SentenceTransformer('BAAI/bge-m3')
         print("  [OK] BGE-M3 cargado")
-
-        # ESCO-XLM (opcional)
-        if RERANKER_AVAILABLE:
-            self.reranker = ESCOReranker()
-            try:
-                self.reranker.cargar()
-            except Exception as e:
-                print(f"  [!] Error cargando reranker: {e}")
-                self.reranker = None
+        # NOTA: ESCO-XLM reranker eliminado (ver spike MOL-49)
 
     def cargar_embeddings_esco(self):
         print("\n[2] CARGANDO EMBEDDINGS ESCO")
@@ -810,16 +740,8 @@ class MultiCriteriaMatcher:
                     if NORMALIZACION_ARG_AVAILABLE:
                         candidatos = obtener_boost_isco(titulo, candidatos, self.conn)
 
-                    # Re-ranking con ESCO-XLM (si disponible y habilitado)
-                    # USE_RERANKER flag permite deshabilitar para experimentos (MOL-49)
-                    if USE_RERANKER and self.reranker:
-                        try:
-                            candidatos = self.reranker.rerank(texto_oferta, candidatos, top_k=3)
-                        except:
-                            pass
-                    elif not USE_RERANKER:
-                        # Sin reranker: tomar top 3 directo de BGE-M3
-                        candidatos = candidatos[:3]
+                    # Top 3 candidatos de BGE-M3 (ESCO-XLM reranker eliminado - MOL-49)
+                    candidatos = candidatos[:3]
 
                     # Procesar con algoritmo multicriteria (con pesos dinámicos según coverage)
                     resultado = self.procesar_oferta(oferta, candidatos, coverage_score=coverage)
