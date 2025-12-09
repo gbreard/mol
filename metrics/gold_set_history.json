@@ -159,5 +159,24 @@
       "sector_especifico": 2
     },
     "notes": ""
+  },
+  {
+    "timestamp": "2025-12-09T16:56:09.882186",
+    "version": "v8.1_esco_multicriterio_validado",
+    "precision": 72.0,
+    "correct": 36,
+    "incorrect": 14,
+    "total": 50,
+    "errors_by_type": {
+      "programa_general": 1,
+      "tipo_ocupacion": 1,
+      "nivel_jerarquico": 3,
+      "sector_funcion": 2,
+      "nivel_profesional": 1,
+      "tipo_funcion": 3,
+      "termino_similar": 1,
+      "sector_especifico": 2
+    },
+    "notes": ""
   }
 ]
