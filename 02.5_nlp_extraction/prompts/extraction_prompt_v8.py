@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-Prompt de Extraccion NLP v8.0 - QWEN 14B ULTRA-CONSERVADOR
+Prompt de Extraccion NLP v8.1 - QWEN 14B ULTRA-CONSERVADOR
 ==========================================================
 
-VERSION: 8.0
-FECHA: 2025-11-27
+VERSION: 8.1
+FECHA: 2025-12-08
 MODELO: Qwen2.5:14b
+
+CAMBIOS v8.1:
+  - Agregados ejemplos 5 y 6 para skills en prosa (MOL-54)
+  - Patrones: "uso de", "manejo de", "conocimiento de/en", "experiencia en"
+  - Clarificacion: "Excel" en "manejo de Excel" SI se extrae
+  - Ejemplo negativo mejorado: "Excelentes" vs "Excel" real
 
 CAMBIOS v8.0:
   - Prompt rediseñado para Qwen2.5:14b con ejemplos negativos explicitos
@@ -58,8 +64,12 @@ Es mejor una lista vacia [] que inventar datos.
 
 ### skills_tecnicas_list
 Lenguajes, herramientas, tecnologias que aparezcan EXPLICITAMENTE.
-- Solo si el nombre aparece textual: "Python", "Excel", "SAP", "SQL Server"
-- NO conviertas adjetivos en tecnologias
+- Solo si el nombre aparece textual: "Python", "Excel", "SAP", "SQL Server", "CRM"
+- NO conviertas adjetivos en tecnologias ("Excelentes" NO es "Excel")
+- SI extraer cuando aparecen en frases como:
+  * "uso de [X]", "manejo de [X]", "conocimiento de/en [X]"
+  * "experiencia en [X]", "dominio de [X]"
+  * Ejemplo: "manejo de Excel" -> extraer "Excel"
 
 ### soft_skills_list
 Habilidades blandas: "trabajo en equipo", "liderazgo", "proactivo"
@@ -138,6 +148,33 @@ CORRECTO:
   {{"valor": "Python", "texto_original": "Python y/o Node.js (al menos uno a nivel productivo)."}},
   {{"valor": "Node.js", "texto_original": "Python y/o Node.js (al menos uno a nivel productivo)."}}
 ]
+
+### Ejemplo 5: Skills en prosa (SI EXTRAER)
+Texto: "El candidato debera tener conocimiento en Excel avanzado, uso de CRM para seguimiento de clientes y experiencia en SAP."
+
+CORRECTO:
+"skills_tecnicas_list": [
+  {{"valor": "Excel", "texto_original": "conocimiento en Excel avanzado"}},
+  {{"valor": "CRM", "texto_original": "uso de CRM para seguimiento de clientes"}},
+  {{"valor": "SAP", "texto_original": "experiencia en SAP"}}
+]
+
+Explicacion: Aunque esten en prosa, los nombres de herramientas (Excel, CRM, SAP) aparecen TEXTUALMENTE. Estos SI deben extraerse.
+
+### Ejemplo 6: Distinguir "Excel" real vs "Excelentes"
+Texto 1: "Buscamos persona con excelentes habilidades y manejo de Excel."
+
+CORRECTO para Texto 1:
+"skills_tecnicas_list": [
+  {{"valor": "Excel", "texto_original": "manejo de Excel"}}
+]
+Explicacion: "Excel" SI aparece textualmente en "manejo de Excel".
+
+Texto 2: "Persona con excelentes habilidades de comunicacion."
+
+CORRECTO para Texto 2:
+"skills_tecnicas_list": []
+Explicacion: "Excel" NO aparece. Solo dice "excelentes" que es un adjetivo.
 
 ## FORMATO DE SALIDA
 

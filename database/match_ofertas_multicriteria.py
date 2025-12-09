@@ -5,7 +5,14 @@ match_ofertas_multicriteria.py
 ==============================
 Matching multicriteria ESCO según PLAN_TECNICO_MOL_v2.0 Sección 5.6
 
-VERSION: v8.1 (2025-11-28)
+VERSION: v8.2 (2025-12-09)
+- Integración de diccionario argentino (normalizacion_arg.py)
+- BUSQUEDA HIBRIDA: titulo + esco_preferred_label del diccionario
+- Boost/Penalty ISCO basado en términos locales (Mozo->5131, etc)
+- Usa titulo_limpio de ofertas_nlp cuando está disponible
+- Reglas v8.4 con penalizaciones por sector/función incorrectos
+
+v8.1 (2025-11-28):
 - Integración de reglas de validación basadas en gold set de 19 casos
 - Ajustes por nivel jerárquico, familia funcional, casos especiales
 - Revisión forzada para programas de pasantías/trainee
@@ -24,6 +31,7 @@ import sqlite3
 import json
 import sys
 import os
+import argparse
 from pathlib import Path
 from datetime import datetime
 
@@ -36,16 +44,27 @@ except ImportError as e:
     print("Instalar con: pip install sentence-transformers numpy tqdm")
     sys.exit(1)
 
-# Importar reglas de validación v8.1
+# Importar reglas de validación v8.4
 try:
-    from matching_rules_v81 import (
-        calcular_ajustes_v81,
-        requiere_revision_forzada
+    from matching_rules_v84 import (
+        calcular_ajustes_v84 as calcular_ajustes_v83,  # Alias para compatibilidad
+        es_oferta_programa_pasantia
     )
-    RULES_V81_AVAILABLE = True
+    RULES_AVAILABLE = True
+    RULES_VERSION = "v8.4"
 except ImportError:
-    print("WARNING: matching_rules_v81 no disponible. Reglas v8.1 deshabilitadas.")
-    RULES_V81_AVAILABLE = False
+    try:
+        # Fallback a v8.3
+        from matching_rules_v83 import (
+            calcular_ajustes_v83,
+            es_oferta_programa_pasantia
+        )
+        RULES_AVAILABLE = True
+        RULES_VERSION = "v8.3"
+    except ImportError:
+        print("WARNING: matching_rules no disponible. Reglas deshabilitadas.")
+        RULES_AVAILABLE = False
+        RULES_VERSION = None
 
 try:
     import torch
@@ -55,9 +74,29 @@ except ImportError:
     print("WARNING: transformers/torch no disponible. Re-ranking deshabilitado.")
     RERANKER_AVAILABLE = False
 
+# Experiment logger para timing (MOL-48)
+try:
+    from experiment_logger import get_logger
+    LOGGER_AVAILABLE = True
+except ImportError:
+    LOGGER_AVAILABLE = False
+
+# Normalizacion argentina (diccionario arg -> ESCO)
+try:
+    from normalizacion_arg import obtener_boost_isco, normalizar_termino_argentino
+    NORMALIZACION_ARG_AVAILABLE = True
+except ImportError:
+    print("WARNING: normalizacion_arg no disponible. Boost argentino deshabilitado.")
+    NORMALIZACION_ARG_AVAILABLE = False
+
 # Configuración
 DB_PATH = Path(__file__).parent / 'bumeran_scraping.db'
 EMBEDDINGS_DIR = Path(__file__).parent / 'embeddings'
+
+# Flag para habilitar/deshabilitar reranker (MOL-49 spike)
+# RESULTADO SPIKE: Sin reranker tiene +31.6% mejor precision y 4.4x mas rapido
+# Documentado en metrics/spike_reranker_summary.json
+USE_RERANKER = False  # Cambiado a False despues del spike MOL-49
 
 # Pesos del algoritmo (PLAN_TECNICO Sección 5.6)
 # Pesos BASE - se ajustan dinámicamente según coverage_score
@@ -158,6 +197,10 @@ class ESCOReranker:
         return embedding.cpu().numpy()[0]
 
     def rerank(self, oferta_texto, candidatos_esco, top_k=3):
+        # Timing del reranker (MOL-48)
+        import time
+        start = time.perf_counter()
+
         oferta_embedding = self._get_embedding(oferta_texto[:500])
         oferta_embedding = oferta_embedding / np.linalg.norm(oferta_embedding)
 
@@ -166,7 +209,14 @@ class ESCOReranker:
             candidato_embedding = candidato_embedding / np.linalg.norm(candidato_embedding)
             candidato['rerank_score'] = float(np.dot(oferta_embedding, candidato_embedding))
 
-        return sorted(candidatos_esco, key=lambda x: x['rerank_score'], reverse=True)[:top_k]
+        result = sorted(candidatos_esco, key=lambda x: x['rerank_score'], reverse=True)[:top_k]
+
+        # Log timing si disponible
+        if LOGGER_AVAILABLE:
+            duration_ms = (time.perf_counter() - start) * 1000
+            get_logger().log_timing("reranker", duration_ms, {"candidates": len(candidatos_esco)})
+
+        return result
 
 
 class MultiCriteriaMatcher:
@@ -387,14 +437,61 @@ class MultiCriteriaMatcher:
         Returns:
             Dict con resultado del matching
         """
-        # PASO 1: Score de título (ya calculado en candidatos)
-        # Combinar similarity BGE-M3 con rerank ESCO-XLM
-        mejor_candidato = esco_candidatos[0]
-        score_titulo = mejor_candidato['similarity_score']
-        if 'rerank_score' in mejor_candidato:
-            # Promediar similarity y rerank
-            score_titulo = (mejor_candidato['similarity_score'] * 0.7 +
-                          mejor_candidato['rerank_score'] * 0.3)
+        # v8.4: Evaluar top-K candidatos y elegir el mejor que pase las reglas
+        TOP_K_CANDIDATOS = 10  # Evaluar los primeros 10 candidatos
+        titulo_oferta = oferta.get('titulo', '')
+        descripcion_oferta = oferta.get('descripcion', '')
+
+        mejor_candidato = None
+        mejor_score_titulo = 0.0
+        mejor_ajustes = {}
+        mejor_never_confirm = True  # Asumir el peor caso
+
+        # Evaluar top-K candidatos con reglas
+        for candidato in esco_candidatos[:TOP_K_CANDIDATOS]:
+            # Calcular score de título
+            score_titulo_cand = candidato['similarity_score']
+            if 'rerank_score' in candidato:
+                score_titulo_cand = (candidato['similarity_score'] * 0.7 +
+                                    candidato['rerank_score'] * 0.3)
+
+            # Aplicar reglas v8.3 a este candidato
+            if RULES_AVAILABLE:
+                ajuste_total, ajustes_detalle, never_confirm_cand = calcular_ajustes_v83(
+                    titulo_oferta, descripcion_oferta, candidato['label']
+                )
+            else:
+                ajuste_total, ajustes_detalle, never_confirm_cand = 0.0, {}, False
+
+            # Si este candidato NO activa never_confirm, preferirlo
+            if not never_confirm_cand:
+                # Encontramos un candidato válido
+                mejor_candidato = candidato
+                mejor_score_titulo = score_titulo_cand
+                mejor_ajustes = ajustes_detalle
+                mejor_never_confirm = False
+                break  # Usar el primer candidato que pase las reglas
+
+            # Si todos activan never_confirm, guardar el de mejor score ajustado
+            score_ajustado = score_titulo_cand + ajuste_total
+            if mejor_candidato is None or score_ajustado > (mejor_score_titulo + sum(mejor_ajustes.values() if mejor_ajustes else [0])):
+                mejor_candidato = candidato
+                mejor_score_titulo = score_titulo_cand
+                mejor_ajustes = ajustes_detalle
+                mejor_never_confirm = never_confirm_cand
+
+        # Fallback: si no hay candidato seleccionado, usar el primero
+        if mejor_candidato is None:
+            mejor_candidato = esco_candidatos[0]
+            mejor_score_titulo = mejor_candidato['similarity_score']
+            if 'rerank_score' in mejor_candidato:
+                mejor_score_titulo = (mejor_candidato['similarity_score'] * 0.7 +
+                                     mejor_candidato['rerank_score'] * 0.3)
+            mejor_ajustes = {}
+            mejor_never_confirm = False
+
+        # Usar el candidato seleccionado
+        score_titulo = mejor_score_titulo
 
         # PASO 2: Score de skills
         skills_esco = self.obtener_skills_ocupacion(mejor_candidato['uri'])
@@ -455,30 +552,30 @@ class MultiCriteriaMatcher:
             score_descripcion * peso_desc
         )
 
-        # PASO 4b: Aplicar ajustes v8.1 (reglas de validación)
-        ajustes_v81 = {}
-        if RULES_V81_AVAILABLE:
-            titulo = oferta.get('titulo', '')
-            descripcion = oferta.get('descripcion', '')
-            ajuste_total, ajustes_v81 = calcular_ajustes_v81(
-                titulo, descripcion, mejor_candidato['label']
-            )
-            # Aplicar ajuste (clamped a 0-1)
+        # PASO 4b: Usar ajustes v8.3 calculados en la selección de candidatos
+        # (ya calculados durante la evaluación top-K)
+        ajustes_reglas = mejor_ajustes
+        never_confirm = mejor_never_confirm
+
+        # Aplicar ajuste al score final si hay penalización
+        if ajustes_reglas:
+            ajuste_total = sum(ajustes_reglas.values())
             score_final = max(0.0, min(1.0, score_final + ajuste_total))
 
-        # Determinar estado del match (v8.1: score + coverage + reglas)
-        # CONFIRMADO: score >= 0.60 AND coverage >= 0.40 (y no es pasantía/trainee)
-        # REVISION: 0.50 <= score < 0.60, O es pasantía/trainee
+        # Determinar estado del match (v8.3: score + coverage + reglas + never_confirm)
+        # CONFIRMADO: score >= 0.60 AND coverage >= 0.40 (y no es pasantía/never_confirm)
+        # REVISION: 0.50 <= score < 0.60, O es pasantía/trainee, O never_confirm
         # RECHAZADO: score < 0.50 OR coverage < 0.40
 
-        # v8.1: Revisión forzada para programas de pasantías/trainee
-        forzar_revision = False
-        if RULES_V81_AVAILABLE:
+        # v8.3: Revisión forzada para programas de pasantías/trainee O never_confirm
+        forzar_revision = never_confirm  # never_confirm de las reglas v8.3
+        if RULES_AVAILABLE:
             titulo = oferta.get('titulo', '')
-            forzar_revision = requiere_revision_forzada(titulo)
+            if es_oferta_programa_pasantia(titulo, ''):
+                forzar_revision = True
 
         if forzar_revision:
-            # Nunca auto-confirmar programas de pasantías/trainee
+            # Nunca auto-confirmar si hay flag never_confirm o es pasantía
             match_confirmado = 0
             requiere_revision = 1
         elif score_final >= THRESHOLD_CONFIRMADO_SCORE and coverage_score >= THRESHOLD_CONFIRMADO_COVERAGE:
@@ -491,19 +588,38 @@ class MultiCriteriaMatcher:
             match_confirmado = 0
             requiere_revision = 0
 
-        # Obtener ISCO
+        # Obtener ISCO code y label
         cursor = self.conn.cursor()
         cursor.execute("""
             SELECT isco_code FROM esco_occupations
             WHERE occupation_uri = ?
         """, (mejor_candidato['uri'],))
         isco_row = cursor.fetchone()
-        isco_code = isco_row['isco_code'] if isco_row else None
+        isco_code_raw = isco_row['isco_code'] if isco_row else None
+        # Limpiar prefijo "C" del código ISCO (C5223 -> 5223)
+        isco_code = isco_code_raw.lstrip('C') if isco_code_raw else None
+
+        # Obtener ISCO label desde hierarchy (usa código con prefijo C)
+        isco_label = None
+        if isco_code_raw:
+            cursor.execute("""
+                SELECT preferred_label_es FROM esco_isco_hierarchy
+                WHERE isco_code = ?
+            """, (isco_code_raw,))
+            label_row = cursor.fetchone()
+            isco_label = label_row['preferred_label_es'] if label_row else None
+            # Capitalizar primera letra
+            if isco_label:
+                isco_label = isco_label[0].upper() + isco_label[1:]
 
         # Asegurar que todos los valores sean float nativos de Python (no numpy.float64)
+        # Capitalizar label ESCO (primera letra mayúscula)
+        esco_label = mejor_candidato['label']
+        esco_label = esco_label[0].upper() + esco_label[1:] if esco_label else esco_label
+
         return {
             'esco_occupation_uri': mejor_candidato['uri'],
-            'esco_occupation_label': mejor_candidato['label'],
+            'esco_occupation_label': esco_label,
             'occupation_match_score': float(mejor_candidato['similarity_score']),
             'rerank_score': float(mejor_candidato['rerank_score']) if mejor_candidato.get('rerank_score') else None,
             'score_titulo': float(score_titulo),
@@ -517,18 +633,25 @@ class MultiCriteriaMatcher:
             'match_confirmado': match_confirmado,
             'requiere_revision': requiere_revision,
             'isco_code': isco_code,
-            'isco_nivel1': isco_code[1] if isco_code and len(isco_code) > 1 else None,
-            'isco_nivel2': isco_code[1:3] if isco_code and len(isco_code) > 2 else None,
+            'isco_nivel1': isco_code[0] if isco_code and len(isco_code) > 0 else None,
+            'isco_nivel2': isco_code[0:2] if isco_code and len(isco_code) > 1 else None,
+            'isco_label': isco_label,
             'peso_usado': peso_usado,  # 'normal' o 'fallback'
             'coverage_score': float(coverage_score),  # v8.0: guardar para análisis
         }
 
-    def ejecutar(self):
-        """Ejecuta matching multicriteria en todas las ofertas"""
+    def ejecutar(self, filter_ids=None):
+        """Ejecuta matching multicriteria en todas las ofertas
+
+        Args:
+            filter_ids: Lista de IDs a procesar (opcional). Si None, procesa todas.
+        """
         print("\n" + "=" * 70)
         print("MATCHING MULTICRITERIA ESCO")
         print("Algoritmo: Título (50%) + Skills (40%) + Descripción (10%)")
         print(f"Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        if filter_ids:
+            print(f"FILTRO: Solo {len(filter_ids)} IDs específicos")
         print("=" * 70)
 
         self.conectar()
@@ -544,16 +667,31 @@ class MultiCriteriaMatcher:
         cursor = self.conn.cursor()
         # Usar ofertas_nlp_latest que prioriza validacion_v7 > ofertas_nlp
         # Incluye coverage_score para ajuste dinámico de pesos
-        cursor.execute("""
+
+        # Query base - v8.2: incluye titulo_limpio de ofertas_nlp
+        query = """
             SELECT
-                o.id_oferta, o.titulo, o.descripcion_utf8,
+                o.id_oferta, o.titulo,
+                COALESCE(o.descripcion_utf8, o.descripcion) as descripcion_utf8,
                 n.skills_tecnicas_list, n.soft_skills_list,
-                n.source_table, n.nlp_version, n.coverage_score
+                n.source_table, n.nlp_version, n.coverage_score,
+                nlp.titulo_limpio
             FROM ofertas o
             LEFT JOIN ofertas_nlp_latest n ON CAST(o.id_oferta AS TEXT) = n.id_oferta
+            LEFT JOIN ofertas_nlp nlp ON CAST(o.id_oferta AS TEXT) = nlp.id_oferta
             WHERE o.titulo IS NOT NULL
-            ORDER BY o.id_oferta
-        """)
+        """
+
+        # Agregar filtro de IDs si se especifica
+        if filter_ids:
+            placeholders = ','.join(['?' for _ in filter_ids])
+            query += f" AND CAST(o.id_oferta AS TEXT) IN ({placeholders})"
+            query += " ORDER BY o.id_oferta"
+            cursor.execute(query, filter_ids)
+        else:
+            query += " ORDER BY o.id_oferta"
+            cursor.execute(query)
+
         ofertas = cursor.fetchall()
         print(f"  -> {len(ofertas):,} ofertas a procesar")
 
@@ -564,7 +702,9 @@ class MultiCriteriaMatcher:
 
             for row in batch:
                 id_oferta = row['id_oferta']
-                titulo = row['titulo']
+                titulo_original = row['titulo']
+                titulo_limpio = row['titulo_limpio'] or titulo_original  # v8.2: usar titulo_limpio si existe
+                titulo = titulo_limpio
                 descripcion = row['descripcion_utf8'] or ''
                 coverage = row['coverage_score'] or 1.0  # Default a 1.0 si no hay
 
@@ -598,6 +738,9 @@ class MultiCriteriaMatcher:
 
                 try:
                     # PASO 1: Obtener candidatos por título (BGE-M3)
+                    import time
+                    bge_start = time.perf_counter()
+
                     texto_oferta = f"{titulo}. {' '.join(descripcion.split()[:200])}"
                     oferta_embedding = self.embedding_model.encode([texto_oferta])[0]
                     oferta_embedding = oferta_embedding / np.linalg.norm(oferta_embedding)
@@ -605,14 +748,51 @@ class MultiCriteriaMatcher:
                     similarities = np.dot(self.esco_embeddings, oferta_embedding)
                     top_indices = np.argsort(similarities)[-10:][::-1]
 
+                    # Log timing BGE-M3 (MOL-48)
+                    if LOGGER_AVAILABLE:
+                        bge_duration = (time.perf_counter() - bge_start) * 1000
+                        get_logger().log_timing("bge_m3_retrieval", bge_duration)
+
                     candidatos = []
                     for idx in top_indices:
                         candidatos.append({
                             'uri': self.esco_metadata[idx]['uri'],
                             'label': self.esco_metadata[idx]['label'],
                             'similarity_score': float(similarities[idx]),
-                            'isco_code': self.esco_metadata[idx].get('isco_code')
+                            'isco_code': self.esco_metadata[idx].get('isco_code'),
+                            'search_source': 'titulo'  # v8.2: marcar origen
                         })
+
+                    # v8.2: BUSQUEDA HIBRIDA con diccionario argentino
+                    # Si hay match en diccionario, hacer segunda búsqueda con esco_preferred_label
+                    if NORMALIZACION_ARG_AVAILABLE:
+                        termino, isco_target, esco_label, _ = normalizar_termino_argentino(titulo, self.conn)
+                        if esco_label:
+                            # Segunda búsqueda con el label ESCO del diccionario
+                            texto_esco = esco_label
+                            esco_embedding = self.embedding_model.encode([texto_esco])[0]
+                            esco_embedding = esco_embedding / np.linalg.norm(esco_embedding)
+
+                            similarities_esco = np.dot(self.esco_embeddings, esco_embedding)
+                            top_indices_esco = np.argsort(similarities_esco)[-10:][::-1]
+
+                            # Agregar candidatos de búsqueda ESCO (evitar duplicados)
+                            uris_existentes = {c['uri'] for c in candidatos}
+                            for idx in top_indices_esco:
+                                uri = self.esco_metadata[idx]['uri']
+                                if uri not in uris_existentes:
+                                    candidatos.append({
+                                        'uri': uri,
+                                        'label': self.esco_metadata[idx]['label'],
+                                        'similarity_score': float(similarities_esco[idx]),
+                                        'isco_code': self.esco_metadata[idx].get('isco_code'),
+                                        'search_source': 'diccionario_esco'  # v8.2: marcar origen
+                                    })
+                                    uris_existentes.add(uri)
+
+                            # Reordenar candidatos combinados por score
+                            candidatos.sort(key=lambda x: x['similarity_score'], reverse=True)
+                            candidatos = candidatos[:15]  # Mantener top-15 combinados
 
                     # FILTRO ISCO: Restringir candidatos según keywords del título
                     grupos_permitidos = obtener_grupos_isco_permitidos(titulo)
@@ -626,12 +806,20 @@ class MultiCriteriaMatcher:
                         if candidatos_filtrados:
                             candidatos = candidatos_filtrados
 
-                    # Re-ranking con ESCO-XLM (si disponible)
-                    if self.reranker:
+                    # BOOST ARGENTINO: Aplicar boost basado en diccionario arg->ESCO
+                    if NORMALIZACION_ARG_AVAILABLE:
+                        candidatos = obtener_boost_isco(titulo, candidatos, self.conn)
+
+                    # Re-ranking con ESCO-XLM (si disponible y habilitado)
+                    # USE_RERANKER flag permite deshabilitar para experimentos (MOL-49)
+                    if USE_RERANKER and self.reranker:
                         try:
                             candidatos = self.reranker.rerank(texto_oferta, candidatos, top_k=3)
                         except:
                             pass
+                    elif not USE_RERANKER:
+                        # Sin reranker: tomar top 3 directo de BGE-M3
+                        candidatos = candidatos[:3]
 
                     # Procesar con algoritmo multicriteria (con pesos dinámicos según coverage)
                     resultado = self.procesar_oferta(oferta, candidatos, coverage_score=coverage)
@@ -656,6 +844,7 @@ class MultiCriteriaMatcher:
                             isco_code = ?,
                             isco_nivel1 = ?,
                             isco_nivel2 = ?,
+                            isco_label = ?,
                             occupation_match_method = 'v8.1_multicriterio_validado',
                             matching_version = 'v8.1_esco_multicriterio_validado',
                             matching_timestamp = datetime('now')
@@ -678,6 +867,7 @@ class MultiCriteriaMatcher:
                         resultado['isco_code'],
                         resultado['isco_nivel1'],
                         resultado['isco_nivel2'],
+                        resultado['isco_label'],
                         str(id_oferta)
                     ))
 
@@ -738,5 +928,20 @@ class MultiCriteriaMatcher:
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Matching multicriteria ESCO')
+    parser.add_argument('--ids', nargs='+', type=str,
+                        help='IDs específicos a procesar')
+    parser.add_argument('--ids-file', type=str,
+                        help='Archivo con IDs a procesar (uno por línea)')
+    args = parser.parse_args()
+
+    # Cargar IDs si se especifica archivo
+    filter_ids = None
+    if args.ids:
+        filter_ids = args.ids
+    elif args.ids_file:
+        with open(args.ids_file, 'r') as f:
+            filter_ids = [line.strip() for line in f if line.strip()]
+
     matcher = MultiCriteriaMatcher()
-    matcher.ejecutar()
+    matcher.ejecutar(filter_ids=filter_ids)

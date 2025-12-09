@@ -32,6 +32,12 @@ logs/
 # Credenciales
 credentials.json
 .secrets/
+config/aws_credentials.json
+config/linear_config.json
+*.pem
+
+# Linear cache (sincronizado localmente)
+.linear/
 
 # Backups
 backups/

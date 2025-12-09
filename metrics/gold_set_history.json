@@ -1,0 +1,144 @@
+[
+  {
+    "timestamp": "2025-12-07T22:54:50.732859",
+    "version": "v8.3_test",
+    "precision": 78.9,
+    "correct": 15,
+    "incorrect": 4,
+    "total": 19,
+    "errors_by_type": {
+      "sector_funcion": 4
+    },
+    "notes": ""
+  },
+  {
+    "timestamp": "2025-12-07T22:55:55.337536",
+    "version": "v8.3_esco_familias_funcionales",
+    "precision": 78.94736842105263,
+    "correct": 15,
+    "incorrect": 4,
+    "total": 19,
+    "errors_by_type": {
+      "programa_general": 1,
+      "tipo_ocupacion": 1,
+      "nivel_jerarquico": 2
+    },
+    "notes": "Test integracion MOL-48"
+  },
+  {
+    "timestamp": "2025-12-07T23:02:50.424267",
+    "version": "v8.3_esco_familias_funcionales",
+    "precision": 78.94736842105263,
+    "correct": 15,
+    "incorrect": 4,
+    "total": 19,
+    "errors_by_type": {
+      "programa_general": 1,
+      "tipo_ocupacion": 1,
+      "nivel_jerarquico": 2
+    },
+    "notes": "Post-spike MOL-49: USE_RERANKER=False"
+  },
+  {
+    "timestamp": "2025-12-07T23:28:11.555455",
+    "version": "v8.3_esco_familias_funcionales",
+    "precision": 78.94736842105263,
+    "correct": 15,
+    "incorrect": 4,
+    "total": 19,
+    "errors_by_type": {
+      "programa_general": 1,
+      "tipo_ocupacion": 1,
+      "nivel_jerarquico": 2
+    },
+    "notes": ""
+  },
+  {
+    "timestamp": "2025-12-09T15:42:07.250852",
+    "version": "v8.1_esco_multicriterio_validado",
+    "precision": 84.21052631578947,
+    "correct": 16,
+    "incorrect": 3,
+    "total": 19,
+    "errors_by_type": {
+      "programa_general": 1,
+      "tipo_ocupacion": 1,
+      "nivel_jerarquico": 1
+    },
+    "notes": "v8.2 busqueda hibrida + titulo_limpio"
+  },
+  {
+    "timestamp": "2025-12-09T15:43:06.386618",
+    "version": "v8.1_esco_multicriterio_validado",
+    "precision": 72.0,
+    "correct": 36,
+    "incorrect": 14,
+    "total": 50,
+    "errors_by_type": {
+      "programa_general": 1,
+      "tipo_ocupacion": 1,
+      "nivel_jerarquico": 3,
+      "sector_funcion": 3,
+      "nivel_profesional": 1,
+      "tipo_funcion": 3,
+      "sector_especifico": 2
+    },
+    "notes": "v8.2 busqueda hibrida + titulo_limpio (50 casos)"
+  },
+  {
+    "timestamp": "2025-12-09T15:43:47.749557",
+    "version": "v8.1_esco_multicriterio_validado",
+    "precision": 74.0,
+    "correct": 37,
+    "incorrect": 13,
+    "total": 50,
+    "errors_by_type": {
+      "programa_general": 1,
+      "tipo_ocupacion": 1,
+      "nivel_jerarquico": 3,
+      "sector_funcion": 2,
+      "nivel_profesional": 1,
+      "tipo_funcion": 3,
+      "sector_especifico": 2
+    },
+    "notes": "v8.2 post-correccion Mozo"
+  },
+  {
+    "timestamp": "2025-12-09T15:44:15.570074",
+    "version": "v8.1_esco_multicriterio_validado",
+    "precision": 72.0,
+    "correct": 36,
+    "incorrect": 14,
+    "total": 50,
+    "errors_by_type": {
+      "programa_general": 1,
+      "tipo_ocupacion": 1,
+      "nivel_jerarquico": 3,
+      "sector_funcion": 2,
+      "nivel_profesional": 1,
+      "tipo_funcion": 3,
+      "termino_similar": 1,
+      "sector_especifico": 2
+    },
+    "notes": "v8.2 final - correcciones gold set"
+  },
+  {
+    "timestamp": "2025-12-09T15:54:22.587475",
+    "version": "v8.1_esco_multicriterio_validado",
+    "precision": 72.0,
+    "correct": 36,
+    "incorrect": 14,
+    "total": 50,
+    "errors_by_type": {
+      "programa_general": 1,
+      "tipo_ocupacion": 1,
+      "nivel_jerarquico": 3,
+      "sector_funcion": 2,
+      "nivel_profesional": 1,
+      "tipo_funcion": 3,
+      "termino_similar": 1,
+      "sector_especifico": 2
+    },
+    "notes": ""
+  }
+]

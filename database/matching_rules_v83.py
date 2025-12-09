@@ -179,7 +179,18 @@ KEYWORDS_COMERCIAL_VENTAS_ESCO = [
     "vendedor", "vendedora", "ejecutivo de cuentas", "ejecutiva de cuentas",
     "dependiente", "dependienta", "promotor de ventas", "promotora de ventas",
     "empleado de ventanilla", "teleoperador", "teleoperadora",
-    "agente de call center"
+    "agente de call center",
+    # v8.4: Expandido para cubrir mas casos de ventas
+    "representante tecnico de ventas", "representante técnico de ventas",
+    "director de ventas", "directora de ventas",
+    "director comercial", "directora comercial",
+    "gestor de cuentas", "gestora de cuentas",
+    "asistente de ventas", "asistente de departamento de ventas",
+    "vendedor especializado", "vendedora especializada",
+    "asesor comercial", "asesora comercial",
+    "agente de ventas", "comercial de",
+    "jefe de ventas", "jefa de ventas",
+    "key account", "account manager"
 ]
 
 KEYWORDS_DIRECTIVO_COMERCIAL_ESCO = [

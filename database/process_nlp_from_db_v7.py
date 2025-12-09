@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 """
-NLP Extractor v8.0 - Pipeline Anti-Alucinación de 3 Capas
+NLP Extractor v8.1 - Pipeline Anti-Alucinación de 3 Capas
 =========================================================
 
-VERSION: 8.0.0
-FECHA: 2025-11-27
+VERSION: 8.1.0
+FECHA: 2025-12-08
 MODELO: Qwen2.5:14b
+
+CAMBIO v8.1 (MOL-54): Mejora extracción de skills en prosa.
+  - Agregados ejemplos 5 y 6 para skills embebidos en oraciones
+  - Patrones: "uso de", "manejo de", "conocimiento de/en", "experiencia en"
+  - Clarificación: "Excel" en "manejo de Excel" SÍ se extrae
+  - Ejemplo negativo mejorado: distinguir "Excelentes" vs "Excel" real
 
 CAMBIO v8.0: Migración a Qwen2.5:14b + prompt ultra-conservador.
   - Modelo más grande y preciso (14B params vs 8B)
@@ -198,8 +204,8 @@ class NLPExtractorV7:
     CAPA 2: Verificación con substring exacto
     """
 
-    VERSION = "8.0.0"
-    EXTRACTION_METHOD = "pipeline_3_capas_v8_qwen"
+    VERSION = "8.1.0"
+    EXTRACTION_METHOD = "pipeline_3_capas_v8.1_qwen"
     OLLAMA_MODEL = "qwen2.5:14b"
     OLLAMA_URL = "http://localhost:11434/api/generate"
 

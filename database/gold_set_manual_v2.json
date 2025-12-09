@@ -1,0 +1,266 @@
+[
+  {
+    "id_oferta": "1118026700",
+    "esco_ok": true,
+    "comentario": "Match correcto. Vendedor de repuestos -> vendedor de piezas de repuesto de automoviles."
+  },
+  {
+    "id_oferta": "1118026729",
+    "esco_ok": true,
+    "comentario": "Match correcto. Responsable de deposito -> encargado de almacen / deposito."
+  },
+  {
+    "id_oferta": "1118027188",
+    "esco_ok": false,
+    "tipo_error": "programa_general",
+    "comentario": "Programa de pasantias general, no es especificamente disenador de interiores."
+  },
+  {
+    "id_oferta": "1118027243",
+    "esco_ok": true,
+    "comentario": "Match correcto. Abogado/a de impuestos -> ocupacion general abogado/abogada."
+  },
+  {
+    "id_oferta": "1118027261",
+    "esco_ok": true,
+    "comentario": "Match correcto. Supervisor de limpieza -> supervisor de servicio de limpieza."
+  },
+  {
+    "id_oferta": "1118027276",
+    "esco_ok": true,
+    "comentario": "v8.4: Ejecutivo de cuentas -> representante tecnico de ventas (familia correcta: ventas). Antes: tecnico de contadores electricos."
+  },
+  {
+    "id_oferta": "1118027662",
+    "esco_ok": false,
+    "tipo_error": "tipo_ocupacion",
+    "comentario": "Farmaceutico/a de farmacia minorista mapeado a ingeniero farmaceutico (nivel y ambito distintos)."
+  },
+  {
+    "id_oferta": "1118027834",
+    "esco_ok": true,
+    "comentario": "v8.3: Corregido. Vendedora digital -> vendedor/vendedora (antes: director de comercializacion - nivel jerarquico excesivo)."
+  },
+  {
+    "id_oferta": "1118027941",
+    "esco_ok": true,
+    "comentario": "Match correcto. Dibujante tecnico -> dibujante tecnico."
+  },
+  {
+    "id_oferta": "1118028027",
+    "esco_ok": true,
+    "comentario": "Match correcto. Operador de autoelevadores -> operador de carretilla elevadora."
+  },
+  {
+    "id_oferta": "1118028038",
+    "esco_ok": false,
+    "tipo_error": "nivel_jerarquico",
+    "comentario": "Ejecutivo/a comercial de cuentas mapeado a director comercial (nivel jerarquico excesivo)."
+  },
+  {
+    "id_oferta": "1118028201",
+    "esco_ok": true,
+    "comentario": "Match correcto. Operarios industria alimenticia -> operario de produccion de alimentos."
+  },
+  {
+    "id_oferta": "1118028376",
+    "esco_ok": true,
+    "comentario": "v8.4: Analista administrativo -> empleado administrativo (CORRECTO). Antes: analista de negocios."
+  },
+  {
+    "id_oferta": "1118028657",
+    "esco_ok": true,
+    "comentario": "Match correcto. Recepcionista -> recepcionista."
+  },
+  {
+    "id_oferta": "1118028681",
+    "esco_ok": true,
+    "comentario": "Match correcto. Administrativa/o -> empleado administrativo."
+  },
+  {
+    "id_oferta": "1118028828",
+    "esco_ok": true,
+    "comentario": "Match correcto. Modelista textil -> disenador de modelos para moldes (patronista)."
+  },
+  {
+    "id_oferta": "1118028833",
+    "esco_ok": true,
+    "comentario": "v8.4: Asesor comercial plan ahorro -> comercial de alquiler de camiones (familia comercial correcta). Antes: agente de alquiler de coches."
+  },
+  {
+    "id_oferta": "1118028887",
+    "esco_ok": true,
+    "comentario": "v8.4: Account Executive (Hunter) -> asistente de departamento de ventas (familia ventas correcta). Antes: agente de empleo (RRHH)."
+  },
+  {
+    "id_oferta": "1118028891",
+    "esco_ok": true,
+    "comentario": "Match correcto. Auxiliar contable -> administrativo contable."
+  },
+  {
+    "id_oferta": "2162667",
+    "esco_ok": true,
+    "comentario": "Match correcto. Gerente de operaciones = Director de operaciones."
+  },
+  {
+    "id_oferta": "1118022146",
+    "esco_ok": false,
+    "tipo_error": "nivel_jerarquico",
+    "comentario": "Community Manager no es Responsable/Director de marketing. Deberia ser especialista en redes sociales."
+  },
+  {
+    "id_oferta": "1118025212",
+    "esco_ok": true,
+    "comentario": "Match correcto. Familia de ventas tecnicas correcta."
+  },
+  {
+    "id_oferta": "1117984105",
+    "esco_ok": false,
+    "tipo_error": "nivel_jerarquico",
+    "comentario": "Gerente de Ventas no es Representante. Nivel jerarquico excesivo hacia abajo."
+  },
+  {
+    "id_oferta": "1117960588",
+    "esco_ok": false,
+    "tipo_error": "sector_funcion",
+    "comentario": "No es recaudacion de fondos, es publicidad. Deberia ser asistente administrativo general."
+  },
+  {
+    "id_oferta": "1118009739",
+    "esco_ok": true,
+    "comentario": "Match correcto. Ocupacion general administrativa."
+  },
+  {
+    "id_oferta": "1118000814",
+    "esco_ok": true,
+    "comentario": "Match exacto."
+  },
+  {
+    "id_oferta": "1118020225",
+    "esco_ok": true,
+    "comentario": "Match aceptable. Familia de atencion al cliente correcta."
+  },
+  {
+    "id_oferta": "1118003709",
+    "esco_ok": true,
+    "comentario": "Match correcto."
+  },
+  {
+    "id_oferta": "1118017586",
+    "esco_ok": false,
+    "tipo_error": "nivel_profesional",
+    "comentario": "Medica/Dermatologa no es Esteticista. Diferencia enorme en nivel educativo y profesional."
+  },
+  {
+    "id_oferta": "1118025956",
+    "esco_ok": true,
+    "comentario": "Match correcto."
+  },
+  {
+    "id_oferta": "2164100",
+    "esco_ok": true,
+    "comentario": "v8.2 CORREGIDO: Mozo -> Camarero/camarera (busqueda hibrida funciono). Antes: vinedos/agricultura."
+  },
+  {
+    "id_oferta": "2165052",
+    "esco_ok": true,
+    "comentario": "Match exacto."
+  },
+  {
+    "id_oferta": "2165301",
+    "esco_ok": false,
+    "tipo_error": "tipo_funcion",
+    "comentario": "Administracion de autos usados (ventas) no es mantenimiento de vehiculos."
+  },
+  {
+    "id_oferta": "1116898892",
+    "esco_ok": true,
+    "comentario": "Match exacto."
+  },
+  {
+    "id_oferta": "1118023904",
+    "esco_ok": false,
+    "tipo_error": "tipo_funcion",
+    "comentario": "Picking (preparacion de pedidos) no es embalaje. Deberia ser operario de almacen/logistica."
+  },
+  {
+    "id_oferta": "1117980907",
+    "esco_ok": true,
+    "comentario": "Match exacto."
+  },
+  {
+    "id_oferta": "1117990944",
+    "esco_ok": false,
+    "tipo_error": "termino_similar",
+    "comentario": "ERROR: Repositor mapeado a Repetidor (broadcasting ISCO 2652). Correcto: reponedor/reponedora (ISCO 9334). Homonimia lexica."
+  },
+  {
+    "id_oferta": "1117961954",
+    "esco_ok": false,
+    "tipo_error": "sector_funcion",
+    "comentario": "Asistente General no es especificamente recaudacion de fondos."
+  },
+  {
+    "id_oferta": "1117982053",
+    "esco_ok": true,
+    "comentario": "Match correcto. Angular es framework web."
+  },
+  {
+    "id_oferta": "1118018461",
+    "esco_ok": true,
+    "comentario": "Match correcto. Familia educacion."
+  },
+  {
+    "id_oferta": "1118018714",
+    "esco_ok": true,
+    "comentario": "Match correcto."
+  },
+  {
+    "id_oferta": "1118031991",
+    "esco_ok": false,
+    "tipo_error": "sector_especifico",
+    "comentario": "Ventas directas genericas no es especificamente energia solar."
+  },
+  {
+    "id_oferta": "1116884561",
+    "esco_ok": true,
+    "comentario": "Match correcto."
+  },
+  {
+    "id_oferta": "1117995368",
+    "esco_ok": true,
+    "comentario": "Match correcto."
+  },
+  {
+    "id_oferta": "2170124",
+    "esco_ok": false,
+    "tipo_error": "tipo_funcion",
+    "comentario": "Analista de Cultivo (agricultura/agronomia) no es Analista de alimentos. Diferente especialidad."
+  },
+  {
+    "id_oferta": "1117975249",
+    "esco_ok": true,
+    "comentario": "Match correcto."
+  },
+  {
+    "id_oferta": "1118028777",
+    "esco_ok": true,
+    "comentario": "Match correcto."
+  },
+  {
+    "id_oferta": "1117977340",
+    "esco_ok": true,
+    "comentario": "Match correcto."
+  },
+  {
+    "id_oferta": "1118028048",
+    "esco_ok": false,
+    "tipo_error": "sector_especifico",
+    "comentario": "Asesor de ventas generico no implica cosmetica. Deberia ser vendedor generico."
+  },
+  {
+    "id_oferta": "1118009703",
+    "esco_ok": true,
+    "comentario": "Match correcto. E-commerce es ventas en red."
+  }
+]

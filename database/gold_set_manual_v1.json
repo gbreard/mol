@@ -27,9 +27,8 @@
   },
   {
     "id_oferta": "1118027276",
-    "esco_ok": false,
-    "tipo_error": "sector_funcion",
-    "comentario": "Ejecutivo de cuentas comercial mapeado a tecnico de contadores electricos (ocupacion totalmente distinta)."
+    "esco_ok": true,
+    "comentario": "v8.4: Ejecutivo de cuentas -> representante tecnico de ventas (familia correcta: ventas). Antes: tecnico de contadores electricos."
   },
   {
     "id_oferta": "1118027662",
@@ -39,9 +38,8 @@
   },
   {
     "id_oferta": "1118027834",
-    "esco_ok": false,
-    "tipo_error": "nivel_jerarquico",
-    "comentario": "Vendedora digital/atencion al cliente mapeada a director de comercializacion y ventas por canales digitales (nivel jerarquico demasiado alto)."
+    "esco_ok": true,
+    "comentario": "v8.3: Corregido. Vendedora digital -> vendedor/vendedora (antes: director de comercializacion - nivel jerarquico excesivo)."
   },
   {
     "id_oferta": "1118027941",
@@ -66,9 +64,8 @@
   },
   {
     "id_oferta": "1118028376",
-    "esco_ok": false,
-    "tipo_error": "sector_funcion",
-    "comentario": "Analista administrativo/a mapeado a analista de negocios (area funcional diferente)."
+    "esco_ok": true,
+    "comentario": "v8.4: Analista administrativo -> empleado administrativo (CORRECTO). Antes: analista de negocios."
   },
   {
     "id_oferta": "1118028657",
@@ -87,15 +84,13 @@
   },
   {
     "id_oferta": "1118028833",
-    "esco_ok": false,
-    "tipo_error": "sector_funcion",
-    "comentario": "Asesor comercial plan de ahorro de autos mapeado a agente de alquiler de coches con opcion a compra (actividad distinta)."
+    "esco_ok": true,
+    "comentario": "v8.4: Asesor comercial plan ahorro -> comercial de alquiler de camiones (familia comercial correcta). Antes: agente de alquiler de coches."
   },
   {
     "id_oferta": "1118028887",
-    "esco_ok": false,
-    "tipo_error": "sector_funcion",
-    "comentario": "Account Executive (Hunter) de ventas mapeado a agente de empleo (RRHH) - sectores distintos."
+    "esco_ok": true,
+    "comentario": "v8.4: Account Executive (Hunter) -> asistente de departamento de ventas (familia ventas correcta). Antes: agente de empleo (RRHH)."
   },
   {
     "id_oferta": "1118028891",

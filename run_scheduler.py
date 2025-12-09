@@ -33,6 +33,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from scrapear_con_diccionario import BumeranMultiSearch
 from database.config import SCHEDULER_CONFIG, SCRAPING_CONFIG, DB_CONFIG
 from database.db_manager import DatabaseManager
+from scripts.backup_database import create_backup, cleanup_old_backups
 
 # =====================================================================
 # LOGGING
@@ -122,6 +123,21 @@ def ejecutar_scraping():
             # Verificar total en DB
             total_ofertas_db = db.get_ofertas_count()
             logger.info(f"Total ofertas en DB: {total_ofertas_db:,}")
+
+        # 6. Crear backup de la BD
+        logger.info("Creando backup de la base de datos...")
+        try:
+            backup_path = create_backup()
+            if backup_path:
+                logger.info(f"Backup creado: {backup_path.name}")
+                # Limpiar backups antiguos (>30 días)
+                deleted = cleanup_old_backups(30)
+                if deleted > 0:
+                    logger.info(f"Backups antiguos eliminados: {deleted}")
+            else:
+                logger.warning("No se pudo crear el backup")
+        except Exception as e:
+            logger.error(f"Error en backup: {e}")
 
         # Fin
         end_time = datetime.now()

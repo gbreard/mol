@@ -4,8 +4,8 @@
 Test de Validacion con Gold Set Manual
 =======================================
 
-VERSION: 1.0
-FECHA: 2025-11-28
+VERSION: 1.1
+FECHA: 2025-12-07
 
 OBJETIVO:
   Evaluar la precision del matching ESCO usando un gold set
@@ -17,16 +17,29 @@ METRICAS:
 
 EJECUCION:
   python test_gold_set_manual.py
+  python test_gold_set_manual.py --no-save  # Sin guardar en historial
+
+CAMBIOS v1.1:
+  - Integracion con experiment_logger.py (MOL-48)
+  - Guarda resultados automaticamente en metrics/gold_set_history.json
 """
 
 import sqlite3
 import json
 import struct
+import argparse
 from pathlib import Path
 from datetime import datetime
 
+# Import experiment logger
+try:
+    from experiment_logger import get_logger
+    LOGGER_AVAILABLE = True
+except ImportError:
+    LOGGER_AVAILABLE = False
+
 DB_PATH = Path(__file__).parent / 'bumeran_scraping.db'
-GOLD_SET_PATH = Path(__file__).parent / 'gold_set_manual_v1.json'
+GOLD_SET_PATH = Path(__file__).parent / 'gold_set_manual_v2.json'
 
 
 def parse_score(value):
@@ -167,18 +180,48 @@ def run_validation():
 
     print("=" * 70)
 
+    # Obtener version del matching (de la primera oferta con version)
+    matching_version = "unknown"
+    for match in current_matches.values():
+        if match.get('version'):
+            matching_version = match['version']
+            break
+
     # Retornar metricas para uso programatico
     return {
         'precision': precision,
         'correct': correct,
         'incorrect': incorrect,
         'total': total,
-        'errors_by_type': errors_by_type
+        'errors_by_type': errors_by_type,
+        'matching_version': matching_version
     }
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Test de validacion con Gold Set Manual")
+    parser.add_argument("--no-save", action="store_true",
+                        help="No guardar resultados en historial")
+    parser.add_argument("--notes", type=str, default="",
+                        help="Notas adicionales para el run")
+    args = parser.parse_args()
+
     results = run_validation()
+
+    # Guardar en historial (si logger disponible y no --no-save)
+    if LOGGER_AVAILABLE and not args.no_save:
+        logger = get_logger()
+        logger.log_gold_set_run(
+            precision=results['precision'],
+            correct=results['correct'],
+            incorrect=results['incorrect'],
+            total=results['total'],
+            errors_by_type=results['errors_by_type'],
+            version=results['matching_version'],
+            notes=args.notes
+        )
+    elif not LOGGER_AVAILABLE:
+        print("[!] experiment_logger no disponible, resultados no guardados")
 
     # Exit code basado en precision minima esperada
     MIN_PRECISION = 50.0  # Umbral minimo aceptable

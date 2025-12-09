@@ -1,6 +1,6 @@
 # MOL - Estado del Proyecto
 
-> **Última actualización:** 2025-12-02  
+> **Última actualización:** 2025-12-04  
 > **Linear:** https://linear.app/molar/project/mol-monitor-ofertas-laborales-2a9662bfa15f
 
 ---
@@ -130,37 +130,65 @@ CRITERIOS = {
 
 ---
 
-## 📋 Linear - Todos los Issues (18 total)
+## 📁 Estructura por Épicas
 
-### 🔴 Prioridad Alta (3)
-| ID | Issue | Carril |
-|----|-------|--------|
-| MOL-5 | [v8.4] Resolver errores sector_funcion (4 casos) | B: Optimización |
-| MOL-6 | Expandir Gold Set de 19 a 50+ casos | B: Optimización |
-| MOL-18 | Automatizar scrapers faltantes (4 fuentes) | A: Construcción |
+| Épica | Issues | Descripción |
+|-------|--------|-------------|
+| 1. Scraping y Captura | 3 | Extracción de portales de empleo |
+| 2. Normalización y NLP | 4 | Parseo y estructuración de ofertas |
+| 3. Matching ESCO | 4 | Clasificación ocupacional |
+| 4. Dashboards | 4 | Visualización para usuarios y admin |
+| 5. Evaluación de Calidad | 3 | Gold set, métricas, CI/CD |
+| 6. Infraestructura | 7 | Backups, logs, alertas, versionado |
 
-### 🟡 Prioridad Media (7)
-| ID | Issue | Carril |
-|----|-------|--------|
-| MOL-7 | Agregar métricas de Recall al benchmark | B: Optimización |
-| MOL-8 | Resolver casos bilingües | B: Optimización |
-| MOL-10 | Regex v4.1: Abreviaciones argentinas | B: Optimización |
-| MOL-11 | Mejorar detección niveles jerárquicos | B: Optimización |
-| MOL-14 | Implementar envío de alertas (email/Slack) | A: Construcción |
-| MOL-16 | Resolver conflicto shinyTree (árbol ESCO) | A: Construcción |
-| MOL-19 | Automatizar pipeline completo post-scraping | A: Construcción |
+**Total:** 29 issues (26 features + 3 spikes)
 
-### ⚪ Prioridad Baja (8)
-| ID | Issue | Carril |
-|----|-------|--------|
-| MOL-9 | CI/CD: Test automático de gold set | B: Optimización |
-| MOL-12 | Consolidar pipeline NLP v6 + v7 | B: Optimización |
-| MOL-13 | Crear panel de administración centralizado | A: Construcción |
-| MOL-15 | Limpieza de JSONs duplicados (10,800) | A: Construcción |
-| MOL-17 | Rehabilitar autenticación shinymanager | A: Construcción |
-| MOL-20 | Centralizar sistema de logs | A: Construcción |
-| MOL-21 | Deprecar y limpiar dashboards antiguos | A: Construcción |
-| MOL-22 | Documentar APIs internas de scrapers | A: Construcción |
+### Tipos de Issues
+- `feature`: Funcionalidad nueva → va a producción
+- `spike`: Experimento → termina en decisión Go/NoGo
+- `bug`: Corrección de error
+- `refactor`: Mejora sin cambiar funcionalidad
+
+---
+
+## 📋 Linear - Todos los Issues (29 total)
+
+### 🔴 Prioridad Alta (5)
+| ID | Issue | Épica |
+|----|-------|-------|
+| MOL-5 | [v8.4] Resolver errores sector_funcion (4 casos) | 3: Matching ESCO |
+| MOL-6 | Expandir Gold Set de 19 a 50+ casos | 5: Evaluación |
+| MOL-18 | Automatizar scrapers faltantes (4 fuentes) | 1: Scraping |
+| MOL-23 | Backup automático de SQLite | 6: Infraestructura |
+| MOL-24 | Versionado de datos (gold sets, snapshots) | 6: Infraestructura |
+
+### 🟡 Prioridad Media (10)
+| ID | Issue | Épica |
+|----|-------|-------|
+| MOL-7 | Agregar métricas de Recall al benchmark | 5: Evaluación |
+| MOL-8 | Resolver casos bilingües | 3: Matching ESCO |
+| MOL-14 | Implementar envío de alertas (email/Slack) | 6: Infraestructura |
+| MOL-16 | Resolver conflicto shinyTree (árbol ESCO) | 4: Dashboards |
+| MOL-19 | Automatizar pipeline completo post-scraping | 6: Infraestructura |
+| MOL-25 | Entity Resolution cross-source | 6: Infraestructura |
+| MOL-26 | Drift Detection (anomalías scraping) | 1: Scraping |
+| MOL-27 | **Spike:** embeddings multilingual-e5 | 3: Matching ESCO |
+| MOL-28 | **Spike:** NER spaCy vs regex | 2: NLP |
+| MOL-29 | **Spike:** prompt engineering LLM | 3: Matching ESCO |
+
+### ⚪ Prioridad Baja (10)
+| ID | Issue | Épica |
+|----|-------|-------|
+| MOL-9 | CI/CD: Test automático de gold set | 5: Evaluación |
+| MOL-10 | Regex v4.1: Abreviaciones argentinas | 2: NLP |
+| MOL-11 | Mejorar detección niveles jerárquicos | 2: NLP |
+| MOL-12 | Consolidar pipeline NLP v6 + v7 | 2: NLP |
+| MOL-13 | Crear panel de administración centralizado | 4: Dashboards |
+| MOL-15 | Limpieza de JSONs duplicados (10,800) | 6: Infraestructura |
+| MOL-17 | Rehabilitar autenticación shinymanager | 4: Dashboards |
+| MOL-20 | Centralizar sistema de logs | 6: Infraestructura |
+| MOL-21 | Deprecar y limpiar dashboards antiguos | 4: Dashboards |
+| MOL-22 | Documentar APIs internas de scrapers | 1: Scraping |
 
 ---
 
