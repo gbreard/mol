@@ -3,12 +3,79 @@
 ## Descripcion
 Sistema de monitoreo del mercado laboral argentino para OEDE. Scrapea ofertas de empleo, extrae informacion con NLP, clasifica segun taxonomia ESCO, y provee dashboards para analistas.
 
-## Estado Actual (2025-12-07)
+## Estado Actual (2025-12-10)
 - 9,564 ofertas en BD
 - 10,223 IDs en tracking
 - 89% cobertura de scraping
-- NLP v8.0 (~90% precision)
-- Matching v8.3 (78.9% precision)
+- NLP v10.0 (153 campos, ~90% precision)
+- Matching v2.1.1 BGE-M3 (100% precision Gold Set, filtros ISCO contextuales)
+
+---
+
+## VERSIONES ACTUALES - USAR SIEMPRE ESTAS
+
+### NLP Pipeline
+
+| Componente | Archivo ACTUAL | NO USAR |
+|------------|----------------|---------|
+| Pipeline NLP | `database/process_nlp_from_db_v10.py` | v7, v8, v9 |
+| Prompt | `02.5_nlp_extraction/prompts/extraction_prompt_v10.py` | v8, v9 |
+| Schema | 153 columnas (NLP Schema v5) | schemas anteriores |
+| Normalizador | `database/normalize_nlp_values.py` | - |
+
+### Matching Pipeline v2.1.1 BGE-M3
+
+| Componente | Archivo ACTUAL | NO USAR |
+|------------|----------------|---------|
+| Pipeline Matching | `database/match_ofertas_v2.py` | match_ofertas_multicriteria.py, v8.x |
+| Version | **v2.1.1** | v2.0, v8.x |
+| Precision Gold Set | **100% (49/49)** | - |
+| Modelo Embeddings | **BAAI/bge-m3** | - |
+| Estrategia v2 | `docs/MATCHING_STRATEGY_V2.md` | - |
+| Config principal | `config/matching_config.json` | valores hardcodeados |
+| Config area | `config/area_funcional_esco_map.json` | - |
+| Config seniority | `config/nivel_seniority_esco_map.json` | - |
+| Config sector | `config/sector_isco_compatibilidad.json` | - |
+
+### Tests
+
+| Componente | Ubicacion |
+|------------|-----------|
+| Tests NLP | `tests/nlp/test_extraction.py` |
+| Tests Matching | `tests/matching/` (por crear) |
+| Gold Set NLP | `tests/nlp/gold_set.json` (49 casos) |
+| Gold Set Matching | `database/gold_set_manual_v2.json` (49 casos) |
+
+### Configuracion
+
+| Archivo | Proposito |
+|---------|-----------|
+| `config/matching_config.json` | Config principal matching v2 (pesos, umbrales, penalizaciones) |
+| `config/area_funcional_esco_map.json` | Mapeo area_funcional → codigos ISCO |
+| `config/nivel_seniority_esco_map.json` | Mapeo seniority → ISCO + matriz penalizacion |
+| `config/sector_isco_compatibilidad.json` | Compatibilidad sector empresa ↔ ISCO |
+
+---
+
+## ARCHIVOS DEPRECADOS - NO USAR
+
+Los siguientes archivos estan en `database/archive_old_versions/` y NO deben usarse:
+
+**NLP:**
+- `process_nlp_from_db_v*.py` (v1-v9) → usar v10
+- `extraction_prompt_v*.py` (v1-v9) → usar v10
+
+**Matching:**
+- `matching_rules_v*.py` (v81-v84) → archivados, usar match_ofertas_v2.py
+- `match_ofertas_multicriteria.py` → archivado, usar match_ofertas_v2.py
+- Scripts de matching antiguos
+
+**Tests sueltos:**
+- Cualquier `check_*.py`, `debug_*.py`, `test_*.py` fuera de `tests/`
+
+Ver `database/archive_old_versions/DEPRECATED.md` para lista completa.
+
+---
 
 ## Documentacion
 
@@ -100,6 +167,55 @@ python scripts/linear_queue.py process  # Al final de la sesion
 5. **UI:** Dashboard produccion SIN siglas tecnicas (CIUO, ESCO)
 6. **Linear:** Usar sistema de cache, NUNCA MCP directo
 
+## Convenciones del Proyecto
+
+### Estructura de Codigo
+
+| Tipo de archivo | Ubicacion | Ejemplo |
+|-----------------|-----------|---------|
+| Tests pytest | `tests/` | `tests/nlp/test_extraction.py` |
+| Migraciones BD | `database/migrations/` | `001_initial.sql` |
+| Prompts LLM | `02.5_nlp_extraction/prompts/` | `extraction_prompt_v9.py` |
+| Configuracion | `config/` | `matching_config.json` |
+| Scripts one-time | `scripts/` | `fix_descripcion_nulls.py` |
+| Archivos obsoletos | `database/archive_old_versions/` | Versiones antiguas |
+
+### Tests
+
+- **SIEMPRE** crear tests en `tests/`, nunca en `database/` u otras carpetas
+- Estructura: `tests/{modulo}/test_{funcionalidad}.py`
+- Gold sets van en `tests/{modulo}/gold_set.json` o `database/gold_set_*.json`
+- Usar pytest: `python -m pytest tests/ -v`
+- Fixtures compartidos: `tests/conftest.py`
+
+### Versionado de Archivos
+
+| Componente | Patron | Version ACTIVA |
+|------------|--------|----------------|
+| Prompts | `extraction_prompt_v{N}.py` | **v10** |
+| Procesos NLP | `process_nlp_from_db_v{N}.py` | **v10** |
+| Matching Rules | `matching_rules_v{NN}.py` | **v84** |
+| Configs | Campo `"version"` interno | matching_config v2.0 |
+
+### Scripts Temporales
+
+- Si es debugging/one-time -> crear en `scripts/` con fecha: `2025-12-09_fix_xyz.py`
+- Si es test -> crear en `tests/`
+- **NUNCA** crear `check_*.py`, `debug_*.py` o `test_*.py` sueltos en `database/`
+- Scripts obsoletos -> mover a `database/archive_old_versions/`
+
+### Gold Sets
+
+| Gold Set | Ubicacion | Casos |
+|----------|-----------|-------|
+| Matching ESCO | `database/gold_set_manual_v2.json` | 49 casos |
+| NLP Extraction | `tests/nlp/gold_set.json` | 20+ casos |
+
+### Commits
+
+- Usar conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`
+- Incluir issue Linear si aplica: `feat(MOL-XX): descripcion`
+
 ## Estructura del Proyecto
 
 ```
@@ -137,11 +253,11 @@ MOL/
 | Metrica | Actual | Objetivo |
 |---------|--------|----------|
 | Precision NLP | ~90% | >= 90% |
-| Precision Matching | 78.9% | >= 95% |
+| Precision Matching | **100%** | >= 95% |
 | Gold Set NLP | 0 | 200+ |
-| Gold Set Matching | 19 | 200+ |
+| Gold Set Matching | **49** | 200+ |
 | Portales | 1 | 5 |
 
 ---
 
-> **Ultima actualizacion:** 2025-12-07
+> **Ultima actualizacion:** 2025-12-10

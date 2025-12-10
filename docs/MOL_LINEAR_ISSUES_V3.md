@@ -1,8 +1,24 @@
 # MOL - Issues Linear v3.0
 
-> **Fecha:** 2025-12-07
-> **Estado:** Actualizado con estado real del sistema
+> **Fecha:** 2025-12-10
+> **Estado:** Actualizado con Matching v2.1.1 BGE-M3 (100% precisión)
 > **Propósito:** Issues detallados para implementación con Claude Code
+
+---
+
+## Hitos Completados (2025-12-10)
+
+| Issue | Descripción | Estado |
+|-------|-------------|--------|
+| MOL-62 | NLP Schema v5 - campos estructurados | ✅ Completado |
+| MOL-34 | Gold Set Matching expandido | ✅ 49 casos validados |
+| MOL-63 | Matching v2.1.1 BGE-M3 | ✅ **100% precisión** |
+
+### Matching v2.1.1 BGE-M3 (Producción)
+- **Modelo:** BAAI/bge-m3 (embeddings semánticos)
+- **Precisión Gold Set:** 100% (49/49 correctos)
+- **Archivo principal:** `database/match_ofertas_v2.py`
+- **Caso crítico corregido:** ID 1117984105 "Gerente de Ventas" → Director de ventas (ISCO 1221)
 
 ---
 
@@ -2284,6 +2300,94 @@ Nota: ESCO-XLM reranker REMOVIDO (MOL-49 demostró que perjudicaba precisión)
 
 ---
 
+---
+
+## MOL-62: Implementar NLP Schema v5 - Campos Críticos
+
+### Contexto
+Gap Analysis reveló:
+- Schema diseñado (NLP_SCHEMA_V5.md): 147 campos en 16 bloques
+- Implementado actual: 12 campos (8.2%)
+- Campos críticos faltantes impactan directamente el matching ESCO
+
+**Campos más críticos faltantes:**
+| Campo | Bloque | Impacto Matching |
+|-------|--------|------------------|
+| tareas[] | Rol y Tareas | ★★★★★ Confirma ocupación |
+| area_funcional | Condiciones | ★★★★★ Contexto sector |
+| nivel_seniority | Condiciones | ★★★★★ Nivel jerárquico |
+| tiene_gente_cargo | Rol y Tareas | ★★★★☆ Jefe vs IC |
+| tipo_oferta | Metadatos NLP | ★★★☆☆ Filtrar basura |
+
+### Objetivo
+Implementar extracción de campos críticos según NLP_SCHEMA_V5.md para mejorar matching.
+
+### Fases de Implementación
+
+#### Fase 1: Campos Críticos para Matching (Este Issue)
+| Campo | Bloque | Tipo |
+|-------|--------|------|
+| tareas_explicitas | Rol y Tareas | [string] |
+| tareas_inferidas | Rol y Tareas | [string] |
+| tiene_gente_cargo | Rol y Tareas | boolean |
+| area_funcional | Condiciones | string |
+| nivel_seniority | Condiciones | string |
+| sector_empresa | Empresa | string |
+| tecnologias_list | Skills | [string] |
+| tipo_oferta | Metadatos | string |
+| licencia_conducir | Licencias | boolean |
+
+#### Fase 2: Campos Importantes
+- experiencia_nivel_previo
+- producto_servicio
+- titulo_requerido
+- conocimientos_especificos[]
+- tipo_contrato
+
+#### Fase 3: Calidad y Flags
+- tiene_requisitos_discriminatorios
+- calidad_redaccion
+- requisito_edad_min/max
+
+#### Fase 4: Resto de Bloques
+- Compensación completa
+- Beneficios detallados
+- Ubicación/Movilidad
+- Certificaciones
+
+### Archivos a Crear/Modificar
+
+```
+database/migrations/
+└── 002_add_nlp_schema_v5_columns.sql   # CREAR
+
+02.5_nlp_extraction/prompts/
+└── extraction_prompt_v9.py              # CREAR (expandir v8)
+
+database/
+├── process_nlp_from_db_v7.py           # ACTUALIZAR schema
+└── ofertas_nlp                         # MIGRAR tabla
+```
+
+### Criterios de Aceptación
+
+- [ ] Migración ejecutada (9 columnas nuevas)
+- [ ] Prompt v9 creado con campos nuevos
+- [ ] process_nlp actualizado para v9
+- [ ] Test con 5 ofertas muestra extracción correcta
+- [ ] Gold Set verificado post-migración
+
+### Prioridad: 🔴 Alta
+
+### Labels: `nlp`, `schema`, `feature`
+
+### Estimación: 8h
+
+### Dependencias
+- Gap Analysis completado ✅
+
+---
+
 *Documento generado: 2025-12-07*
-*Última actualización: 2025-12-08*
+*Última actualización: 2025-12-09*
 *Para Linear: Copiar cada issue con su contexto completo*

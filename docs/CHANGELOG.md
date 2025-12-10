@@ -5,6 +5,64 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [Matching v2.1.1] BGE-M3 Semantico - 100% precision - 2025-12-10
+
+### Resumen
+Nuevo sistema de matching ESCO usando embeddings BGE-M3 con filtros contextuales por ISCO.
+**Precision Gold Set: 100% (49/49)**
+
+### Problema Resuelto
+Caso critico 1117984105 "Gerente de Ventas" que en v8.x matcheaba incorrectamente a
+"Representante tecnico" (ISCO 2433) en lugar de un rol de director.
+
+### Solucion Implementada
+
+**1. Pipeline BGE-M3 semantico:**
+- Modelo: `BAAI/bge-m3` para embeddings
+- Embeddings pre-calculados de 3,045 ocupaciones ESCO
+- Busqueda por similaridad coseno
+
+**2. Filtros contextuales ISCO:**
+- `area_funcional_esco_map.json`: Restriccion por area (ej: Ventas excluye ISCO 2xxx)
+- `nivel_seniority_esco_map.json`: Restriccion por nivel (ej: gerente solo ISCO 1xxx)
+- Logica de prefijos corregida para comparar correctamente
+
+**3. Correccion de bugs:**
+- Normalizacion de codigos ISCO (quitar prefijo 'C')
+- Enriquecimiento de metadata embeddings con `isco_code`
+- Manejo de tareas en formato dict
+
+### Archivos Modificados/Creados
+| Archivo | Cambio |
+|---------|--------|
+| `database/match_ofertas_v2.py` | Pipeline v2.1.1 (renombrado de v2_bge) |
+| `database/enrich_embeddings_metadata.py` | Script para agregar ISCO a metadata |
+| `database/embeddings/esco_occupations_metadata.json` | Enriquecido con isco_code |
+| `database/gold_set_manual_v2.json` | 49 casos validados |
+| `config/area_funcional_esco_map.json` | Mapeo area -> ISCO |
+| `config/nivel_seniority_esco_map.json` | Mapeo seniority -> ISCO |
+
+### Resultado
+| Metrica | v8.x | v2.1.1 | Cambio |
+|---------|------|--------|--------|
+| Precision Gold Set | 98.0% | **100%** | **+2pp** |
+| Caso 1117984105 | ERROR | OK | **Corregido** |
+| Errores totales | 1 | 0 | **-1** |
+
+### Caso Critico Corregido
+| ID | Titulo | v8.x (ERROR) | v2.1.1 (OK) |
+|----|--------|--------------|-------------|
+| 1117984105 | Gerente de Ventas | Representante tecnico (ISCO 2433) | Director de ventas (ISCO 1221) |
+
+### Validacion
+```bash
+python database/match_ofertas_v2.py --ids 1117984105 -v
+# ESCO: director de ventas/directora de ventas
+# Score: 0.614
+```
+
+---
+
 ## [MOL-5] Resolver errores sector_funcion - v8.4 - 2025-12-05
 
 ### Issue

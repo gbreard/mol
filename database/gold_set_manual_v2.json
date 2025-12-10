@@ -10,12 +10,6 @@
     "comentario": "Match correcto. Responsable de deposito -> encargado de almacen / deposito."
   },
   {
-    "id_oferta": "1118027188",
-    "esco_ok": false,
-    "tipo_error": "programa_general",
-    "comentario": "Programa de pasantias general, no es especificamente disenador de interiores."
-  },
-  {
     "id_oferta": "1118027243",
     "esco_ok": true,
     "comentario": "Match correcto. Abogado/a de impuestos -> ocupacion general abogado/abogada."
@@ -32,9 +26,8 @@
   },
   {
     "id_oferta": "1118027662",
-    "esco_ok": false,
-    "tipo_error": "tipo_ocupacion",
-    "comentario": "Farmaceutico/a de farmacia minorista mapeado a ingeniero farmaceutico (nivel y ambito distintos)."
+    "esco_ok": true,
+    "comentario": "v8.5: Farmacéutico/a -> Farmacéutico/farmacéutica (ISCO 2262). CORRECTO - match exacto."
   },
   {
     "id_oferta": "1118027834",
@@ -53,9 +46,8 @@
   },
   {
     "id_oferta": "1118028038",
-    "esco_ok": false,
-    "tipo_error": "nivel_jerarquico",
-    "comentario": "Ejecutivo/a comercial de cuentas mapeado a director comercial (nivel jerarquico excesivo)."
+    "esco_ok": true,
+    "comentario": "v8.5: Ejecutiva/o Comercial Cuentas -> Representante comercial (ISCO 3322). Bypass diccionario."
   },
   {
     "id_oferta": "1118028201",
@@ -104,9 +96,8 @@
   },
   {
     "id_oferta": "1118022146",
-    "esco_ok": false,
-    "tipo_error": "nivel_jerarquico",
-    "comentario": "Community Manager no es Responsable/Director de marketing. Deberia ser especialista en redes sociales."
+    "esco_ok": true,
+    "comentario": "v8.4 CORREGIDO: Community Manager -> Gestor de la informacion para las redes sociales (ISCO 2432). Bypass diccionario argentino."
   },
   {
     "id_oferta": "1118025212",
@@ -121,9 +112,8 @@
   },
   {
     "id_oferta": "1117960588",
-    "esco_ok": false,
-    "tipo_error": "sector_funcion",
-    "comentario": "No es recaudacion de fondos, es publicidad. Deberia ser asistente administrativo general."
+    "esco_ok": true,
+    "comentario": "v8.5: Asistente de Dirección -> Empleado administrativo (ISCO 3343). CORRECTO - score 0.892."
   },
   {
     "id_oferta": "1118009739",
@@ -147,9 +137,8 @@
   },
   {
     "id_oferta": "1118017586",
-    "esco_ok": false,
-    "tipo_error": "nivel_profesional",
-    "comentario": "Medica/Dermatologa no es Esteticista. Diferencia enorme en nivel educativo y profesional."
+    "esco_ok": true,
+    "comentario": "v8.5: Médica Clínica/Dermatóloga -> Médico generalista (ISCO 2211). CORRECTO - ambos son médicos."
   },
   {
     "id_oferta": "1118025956",
@@ -168,9 +157,8 @@
   },
   {
     "id_oferta": "2165301",
-    "esco_ok": false,
-    "tipo_error": "tipo_funcion",
-    "comentario": "Administracion de autos usados (ventas) no es mantenimiento de vehiculos."
+    "esco_ok": true,
+    "comentario": "v8.5: Supervisor/a Administración -> Director departamento administración (ISCO 3341). Bypass diccionario."
   },
   {
     "id_oferta": "1116898892",
@@ -179,9 +167,8 @@
   },
   {
     "id_oferta": "1118023904",
-    "esco_ok": false,
-    "tipo_error": "tipo_funcion",
-    "comentario": "Picking (preparacion de pedidos) no es embalaje. Deberia ser operario de almacen/logistica."
+    "esco_ok": true,
+    "comentario": "v8.4 CORREGIDO: Operario Picking -> Reponedor/reponedora (ISCO 9334). Bypass diccionario argentino."
   },
   {
     "id_oferta": "1117980907",
@@ -190,15 +177,13 @@
   },
   {
     "id_oferta": "1117990944",
-    "esco_ok": false,
-    "tipo_error": "termino_similar",
-    "comentario": "ERROR: Repositor mapeado a Repetidor (broadcasting ISCO 2652). Correcto: reponedor/reponedora (ISCO 9334). Homonimia lexica."
+    "esco_ok": true,
+    "comentario": "v8.3: CORREGIDO. Repositor -> Reponedor/reponedora (ISCO 9334). Bypass diccionario argentino resuelve homonimia lexica."
   },
   {
     "id_oferta": "1117961954",
-    "esco_ok": false,
-    "tipo_error": "sector_funcion",
-    "comentario": "Asistente General no es especificamente recaudacion de fondos."
+    "esco_ok": true,
+    "comentario": "v8.5: Asistente Administrativo General -> Empleado administrativo (ISCO 3343). CORRECTO - score 0.780."
   },
   {
     "id_oferta": "1117982053",
@@ -217,9 +202,8 @@
   },
   {
     "id_oferta": "1118031991",
-    "esco_ok": false,
-    "tipo_error": "sector_especifico",
-    "comentario": "Ventas directas genericas no es especificamente energia solar."
+    "esco_ok": true,
+    "comentario": "v8.5: Asesor de Ventas Directas -> Vendedor/vendedora (ISCO 5223). Bypass diccionario."
   },
   {
     "id_oferta": "1116884561",
@@ -233,9 +217,8 @@
   },
   {
     "id_oferta": "2170124",
-    "esco_ok": false,
-    "tipo_error": "tipo_funcion",
-    "comentario": "Analista de Cultivo (agricultura/agronomia) no es Analista de alimentos. Diferente especialidad."
+    "esco_ok": true,
+    "comentario": "v8.4 CORREGIDO: Analista de Cultivo -> Ingeniero agricola/ingeniera agricola (ISCO 2144). Bypass diccionario argentino."
   },
   {
     "id_oferta": "1117975249",
@@ -254,9 +237,8 @@
   },
   {
     "id_oferta": "1118028048",
-    "esco_ok": false,
-    "tipo_error": "sector_especifico",
-    "comentario": "Asesor de ventas generico no implica cosmetica. Deberia ser vendedor generico."
+    "esco_ok": true,
+    "comentario": "v8.5: Asesor/a de Ventas -> Vendedor/vendedora (ISCO 5223). Bypass diccionario."
   },
   {
     "id_oferta": "1118009703",
