@@ -5,12 +5,13 @@ normalizacion_arg.py
 ====================
 Normaliza terminos argentinos usando diccionario_arg_esco.
 
-VERSION: v1.0 (2025-12-09)
+VERSION: v1.1 (2025-12-09) - Integración con config_loader
 
 Integracion con match_ofertas_multicriteria.py:
 - Busca terminos argentinos en el titulo de la oferta
 - Retorna el ISCO target y label ESCO preferido
 - Usado para dar hint/boost a candidatos correctos
+- Carga valores de boost desde config/normalizacion_boost.json
 """
 
 import re
@@ -18,7 +19,25 @@ import sqlite3
 from pathlib import Path
 from functools import lru_cache
 
+# Intentar cargar configuración externalizada
+try:
+    from config_loader import get_boost_config, get_boost_isco
+    CONFIG_LOADER_AVAILABLE = True
+except ImportError:
+    CONFIG_LOADER_AVAILABLE = False
+
 DB_PATH = Path(__file__).parent / 'bumeran_scraping.db'
+
+# Cargar valores de boost desde config o usar defaults
+if CONFIG_LOADER_AVAILABLE:
+    BOOST_EXACT_ISCO = get_boost_isco('exact_isco')
+    BOOST_ISCO_GROUP = get_boost_isco('isco_group')
+    PENALTY_WRONG_ISCO = get_boost_isco('wrong_isco')
+else:
+    # Fallback a valores hardcodeados
+    BOOST_EXACT_ISCO = 0.20
+    BOOST_ISCO_GROUP = 0.12
+    PENALTY_WRONG_ISCO = -0.15
 
 # Cache del diccionario en memoria
 _DICCIONARIO_CACHE = None
@@ -134,10 +153,7 @@ def obtener_boost_isco(titulo: str, candidatos: list, conn=None) -> list:
     if not isco_target:
         return candidatos  # Sin cambios
 
-    BOOST_EXACT_ISCO = 0.20    # Boost para ISCO exacto (4 digitos)
-    BOOST_ISCO_GROUP = 0.12   # Boost para mismo grupo ISCO (1er digito)
-    PENALTY_WRONG_ISCO = -0.15  # Penalizacion para ISCO diferente
-
+    # Usar constantes del módulo (cargadas desde config o hardcodeadas)
     candidatos_boosted = []
     for cand in candidatos:
         cand_copy = cand.copy()
@@ -173,6 +189,79 @@ def obtener_boost_isco(titulo: str, candidatos: list, conn=None) -> list:
     return candidatos_boosted
 
 
+def buscar_match_diccionario_directo(titulo: str, conn=None) -> dict | None:
+    """
+    Busca match DIRECTO en diccionario argentino y retorna ocupación ESCO completa.
+
+    BYPASS SEMANTICO: Si hay match exacto en diccionario, retorna el resultado
+    directamente sin pasar por la búsqueda semántica BGE-M3.
+
+    Args:
+        titulo: Título de la oferta laboral
+        conn: Conexión a DB (opcional)
+
+    Returns:
+        dict con datos ESCO si hay match, None si no hay match
+        {
+            'occupation_uri': '...',
+            'occupation_label': '...',
+            'isco_code': '...',
+            'termino_argentino': '...',
+            'match_method': 'diccionario_argentino'
+        }
+    """
+    termino, isco_target, esco_label_dict, _ = normalizar_termino_argentino(titulo, conn)
+
+    if not isco_target or not esco_label_dict:
+        return None
+
+    # Buscar ocupación ESCO que coincida con el label del diccionario
+    close_conn = False
+    if conn is None:
+        conn = sqlite3.connect(DB_PATH)
+        close_conn = True
+
+    cursor = conn.cursor()
+
+    # Buscar por preferred_label_es (match exacto)
+    cursor.execute("""
+        SELECT occupation_uri, preferred_label_es, isco_code
+        FROM esco_occupations
+        WHERE LOWER(preferred_label_es) = LOWER(?)
+    """, (esco_label_dict,))
+
+    row = cursor.fetchone()
+
+    if not row:
+        # Fallback: buscar ocupación con ISCO target que contenga el label
+        cursor.execute("""
+            SELECT occupation_uri, preferred_label_es, isco_code
+            FROM esco_occupations
+            WHERE isco_code LIKE ?
+            AND LOWER(preferred_label_es) LIKE ?
+            LIMIT 1
+        """, (f'%{isco_target}%', f'%{esco_label_dict.split("/")[0].lower()}%'))
+        row = cursor.fetchone()
+
+    if close_conn:
+        conn.close()
+
+    if not row:
+        return None
+
+    # Limpiar ISCO code (quitar prefijo C)
+    isco_clean = row[2].lstrip('C') if row[2] else isco_target
+
+    return {
+        'occupation_uri': row[0],
+        'occupation_label': row[1],
+        'isco_code': isco_clean,
+        'termino_argentino': termino,
+        'esco_label_dict': esco_label_dict,
+        'match_method': 'diccionario_argentino'
+    }
+
+
 def get_stats():
     """Retorna estadisticas del diccionario"""
     diccionario = _cargar_diccionario()
@@ -184,8 +273,12 @@ def get_stats():
         isco_groups[grupo] = isco_groups.get(grupo, 0) + 1
 
     return {
+        'config_loader_activo': CONFIG_LOADER_AVAILABLE,
         'total_terminos': len(diccionario),
-        'por_grupo_isco': dict(sorted(isco_groups.items()))
+        'por_grupo_isco': dict(sorted(isco_groups.items())),
+        'boost_exact_isco': BOOST_EXACT_ISCO,
+        'boost_isco_group': BOOST_ISCO_GROUP,
+        'penalty_wrong_isco': PENALTY_WRONG_ISCO
     }
 
 

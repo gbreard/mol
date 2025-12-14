@@ -1,0 +1,247 @@
+{
+  "_meta": {
+    "version": "8.4",
+    "description": "Reglas de validación de familias funcionales para matching ESCO",
+    "updated": "2025-12-09"
+  },
+
+  "familias": {
+    "admin_contable": {
+      "keywords_oferta": [
+        "administrativo", "administrativa", "auxiliar administrativo",
+        "auxiliar contable", "facturacion", "cuentas a pagar",
+        "cuentas a cobrar", "registro contable", "liquidacion",
+        "archivo", "secretaria", "recepcionista", "data entry",
+        "ingreso de datos", "back office", "asistente de oficina"
+      ],
+      "keywords_esco": [
+        "empleado administrativo", "auxiliar contable", "empleado de oficina",
+        "recepcionista", "secretario", "secretaria", "oficinista",
+        "empleado de archivo", "archivista", "asistente administrativo"
+      ]
+    },
+
+    "comercial_ventas": {
+      "keywords_oferta": [
+        "vendedor", "vendedora", "ejecutivo de cuentas", "ejecutiva de cuentas",
+        "ejecutivo comercial", "ejecutiva comercial", "account executive",
+        "asesor comercial", "asesora comercial", "sales", "ventas",
+        "representante comercial", "representante de ventas", "hunter",
+        "business development", "desarrollo de negocios", "kam",
+        "key account", "account manager", "plan de ahorro"
+      ],
+      "keywords_esco": [
+        "representante comercial", "representante de ventas", "agente comercial",
+        "vendedor", "vendedora", "ejecutivo de cuentas", "ejecutiva de cuentas",
+        "dependiente", "dependienta", "promotor de ventas", "promotora de ventas",
+        "empleado de ventanilla", "teleoperador", "teleoperadora",
+        "agente de call center", "representante tecnico de ventas",
+        "director de ventas", "directora de ventas", "director comercial",
+        "directora comercial", "gestor de cuentas", "gestora de cuentas",
+        "asistente de ventas", "asistente de departamento de ventas",
+        "vendedor especializado", "vendedora especializada",
+        "asesor comercial", "asesora comercial", "agente de ventas",
+        "comercial de", "jefe de ventas", "jefa de ventas",
+        "key account", "account manager"
+      ]
+    },
+
+    "servicios_atencion": {
+      "keywords_oferta": [
+        "atencion al cliente", "customer service", "soporte tecnico",
+        "help desk", "call center", "telefonista", "operador telefonico",
+        "recepcion", "front desk", "mesero", "mozo", "camarero",
+        "servicio al cliente", "asistencia al cliente"
+      ]
+    },
+
+    "operario_produccion": {
+      "keywords_oferta": [
+        "operario", "operaria", "operador", "operadora", "produccion",
+        "manufactura", "planta", "fabrica", "almacen", "deposito",
+        "logistica", "chofer", "conductor", "camionero", "repartidor",
+        "repositor", "repositora", "picking", "packing", "montacargas"
+      ]
+    },
+
+    "salud_farmacia": {
+      "keywords_oferta": [
+        "farmaceutico", "farmaceutica", "farmacia", "farmacias",
+        "enfermero", "enfermera", "medico", "medica", "doctor", "doctora",
+        "kinesiologo", "fisioterapeuta", "nutricionista", "psicologo",
+        "odontologo", "laboratorio clinico", "bioquimico"
+      ]
+    },
+
+    "programa_pasantia": {
+      "keywords_oferta": [
+        "pasantia", "pasantias", "programa de pasantias",
+        "trainee", "jovenes profesionales", "joven profesional",
+        "primer empleo", "sin experiencia previa", "graduate program",
+        "young professionals", "programa de insercion"
+      ]
+    },
+
+    "ventas_vehiculos": {
+      "keywords_oferta": [
+        "0km", "0 km", "okm", "concesionaria", "concesionario",
+        "autos", "automotor", "automotriz", "vehiculos", "vehiculo",
+        "motos", "motocicletas", "motovehiculos", "automoviles", "automovil"
+      ],
+      "keywords_exclusion": ["repuesto", "repuestos", "autopartes", "piezas"]
+    },
+
+    "barista_gastronomia": {
+      "keywords_oferta": [
+        "barista", "cafeteria", "cafe de especialidad",
+        "barman", "bartender", "coctelero", "servicio de bebidas"
+      ]
+    },
+
+    "profesional_juridico": {
+      "keywords_oferta": [
+        "abogado", "abogada", "abog.", "letrado", "letrada",
+        "litigios", "litigante", "derecho penal", "derecho civil",
+        "derecho comercial", "derecho laboral", "derecho", "jurista",
+        "juridico profesional"
+      ]
+    },
+
+    "negocios": {
+      "keywords_esco": [
+        "analista de negocios", "business analyst", "consultor de negocios",
+        "analista de inteligencia de negocios", "business development",
+        "consultor empresarial", "analista de gestion"
+      ]
+    },
+
+    "directivo_comercial": {
+      "keywords_esco": [
+        "director comercial", "director de comercializacion",
+        "director de ventas", "jefe de ventas", "gerente comercial",
+        "gerente de ventas", "director de comercializacion y ventas",
+        "director de mercadeo"
+      ]
+    },
+
+    "repuestos": {
+      "keywords_esco": [
+        "repuestos", "piezas de repuesto", "recambios",
+        "taller", "servicio de reparacion", "mecanico"
+      ]
+    },
+
+    "comercio_cafe": {
+      "keywords_esco": [
+        "especialista en importacion y exportacion de cafe",
+        "importacion y exportacion de cafe, te, cacao",
+        "importacion de cafe", "exportacion de cafe",
+        "comercio internacional de alimentos", "comercio de cafe"
+      ]
+    },
+
+    "administrativo_juridico": {
+      "keywords_esco": [
+        "empleado administrativo en el ambito juridico",
+        "auxiliar juridico", "asistente juridico",
+        "secretario juridico", "secretaria juridica",
+        "administrativo legal"
+      ]
+    },
+
+    "abogado_esco": {
+      "keywords_esco": [
+        "abogado", "abogada", "jurista",
+        "asesor juridico", "asesora juridica",
+        "letrado", "letrada", "fiscal"
+      ]
+    }
+  },
+
+  "reglas": {
+    "admin_vs_negocios": {
+      "condicion_oferta": "admin_contable",
+      "condicion_esco": "negocios",
+      "penalizacion": -0.20,
+      "never_confirm": true,
+      "descripcion": "Oferta admin/contable matcheada con analista de negocios"
+    },
+    "admin_match": {
+      "condicion_oferta": "admin_contable",
+      "condicion_esco": "admin_contable",
+      "penalizacion": 0.05,
+      "never_confirm": false,
+      "descripcion": "Oferta admin matchea con ESCO admin (bonus)"
+    },
+    "comercial_mismatch": {
+      "condicion_oferta": "comercial_ventas",
+      "condicion_esco_negativo": "comercial_ventas",
+      "penalizacion": -0.20,
+      "never_confirm": true,
+      "descripcion": "Oferta comercial/ventas no matchea con ESCO comercial"
+    },
+    "comercial_match": {
+      "condicion_oferta": "comercial_ventas",
+      "condicion_esco": "comercial_ventas",
+      "penalizacion": 0.05,
+      "never_confirm": false,
+      "descripcion": "Oferta comercial matchea con ESCO comercial (bonus)"
+    },
+    "farmacia_vs_ingeniero": {
+      "condicion_oferta": "salud_farmacia",
+      "condicion_esco_contiene": "ingeniero",
+      "penalizacion": -0.20,
+      "never_confirm": true,
+      "descripcion": "Oferta farmacia matcheada con ingeniero farmacéutico"
+    },
+    "pasantia_revision": {
+      "condicion_oferta": "programa_pasantia",
+      "penalizacion": 0.0,
+      "never_confirm": true,
+      "descripcion": "Programas de pasantías siempre requieren revisión"
+    },
+    "servicios_vs_directivo": {
+      "condicion_oferta": ["servicios_atencion", "comercial_ventas"],
+      "condicion_esco": "directivo_comercial",
+      "penalizacion": -0.15,
+      "never_confirm": true,
+      "descripcion": "Servicios/comercial matcheado con directivo comercial"
+    },
+    "operario_vs_negocios": {
+      "condicion_oferta": "operario_produccion",
+      "condicion_esco": "negocios",
+      "penalizacion": -0.20,
+      "never_confirm": true,
+      "descripcion": "Operario matcheado con analista de negocios"
+    },
+    "vehiculos_vs_repuestos": {
+      "condicion_oferta": "ventas_vehiculos",
+      "condicion_esco": "repuestos",
+      "penalizacion": -0.15,
+      "never_confirm": true,
+      "descripcion": "Ventas de vehículos 0km matcheado con repuestos"
+    },
+    "barista_vs_comercio_cafe": {
+      "condicion_oferta": "barista_gastronomia",
+      "condicion_esco": "comercio_cafe",
+      "penalizacion": -0.15,
+      "never_confirm": true,
+      "descripcion": "Barista matcheado con comercio internacional de café"
+    },
+    "abogado_vs_admin_juridico": {
+      "condicion_oferta": "profesional_juridico",
+      "condicion_esco": "administrativo_juridico",
+      "condicion_esco_negativo": "abogado_esco",
+      "penalizacion": -0.15,
+      "never_confirm": true,
+      "descripcion": "Abogado matcheado con administrativo jurídico"
+    },
+    "abogado_match": {
+      "condicion_oferta": "profesional_juridico",
+      "condicion_esco": "abogado_esco",
+      "penalizacion": 0.05,
+      "never_confirm": false,
+      "descripcion": "Abogado matchea con ESCO abogado (bonus)"
+    }
+  }
+}

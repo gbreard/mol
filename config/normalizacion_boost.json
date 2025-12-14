@@ -1,0 +1,25 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "description": "Configuración de boost/penalización para normalización argentina",
+    "updated": "2025-12-09"
+  },
+
+  "boost": {
+    "exact_isco": {
+      "valor": 0.20,
+      "descripcion": "Boost para ISCO exacto (4 dígitos coinciden)"
+    },
+    "isco_group": {
+      "valor": 0.12,
+      "descripcion": "Boost para mismo grupo ISCO (1er dígito coincide)"
+    }
+  },
+
+  "penalizacion": {
+    "wrong_isco": {
+      "valor": -0.15,
+      "descripcion": "Penalización para ISCO diferente al esperado"
+    }
+  }
+}

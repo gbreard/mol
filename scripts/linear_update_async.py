@@ -88,12 +88,12 @@ def main():
     result = run_update_background(args)
 
     if result is True:
-        print(f"✓ Update {identifier} enviado a background")
+        print(f"[OK] Update {identifier} enviado a background")
         print(f"  Log: {LOG_FILE}")
     else:
         error = result[1] if isinstance(result, tuple) else "Error desconocido"
         log_update(identifier, args[1:], "ERROR", error)
-        print(f"✗ Error enviando update: {error}")
+        print(f"[ERROR] Error enviando update: {error}")
         sys.exit(1)
 
 

@@ -1,0 +1,64 @@
+{
+  "version": "1.0.0",
+  "descripcion": "Mapeo de nivel_seniority NLP a codigos ISCO validos",
+  "fecha_actualizacion": "2025-12-10",
+
+  "mappings": {
+    "trainee": {
+      "descripcion": "Pasante, practicante, sin experiencia",
+      "permitir": ["2", "3", "4", "5", "6", "7", "8", "9"],
+      "excluir": ["1"],
+      "notas": "No puede ser directivo ni gerente"
+    },
+
+    "junior": {
+      "descripcion": "0-2 anios de experiencia",
+      "permitir": ["2", "3", "4", "5", "6", "7", "8", "9"],
+      "excluir": ["1"],
+      "notas": "No puede ser directivo ni gerente"
+    },
+
+    "semisenior": {
+      "descripcion": "2-5 anios de experiencia",
+      "permitir": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+      "excluir": [],
+      "notas": "Puede ser cualquier nivel, incluso supervisor"
+    },
+
+    "senior": {
+      "descripcion": "5+ anios de experiencia",
+      "permitir": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+      "excluir": [],
+      "notas": "Puede ser cualquier nivel"
+    },
+
+    "lead/manager": {
+      "descripcion": "Lider tecnico, supervisor, gerente",
+      "permitir": ["1", "2", "3"],
+      "excluir": ["4", "5", "6", "7", "8", "9"],
+      "boost_isco": ["1"],
+      "notas": "Preferir roles de supervision y direccion"
+    }
+  },
+
+  "matriz_penalizacion": {
+    "descripcion": "Penalizaciones por mismatch seniority -> ISCO",
+    "pares": {
+      "trainee_a_director": {
+        "seniority": ["trainee"],
+        "isco": ["11", "12"],
+        "penalizacion": -0.25
+      },
+      "junior_a_gerente": {
+        "seniority": ["junior"],
+        "isco": ["11", "12", "13"],
+        "penalizacion": -0.20
+      },
+      "manager_a_operario": {
+        "seniority": ["lead/manager"],
+        "isco": ["7", "8", "9"],
+        "penalizacion": -0.15
+      }
+    }
+  }
+}

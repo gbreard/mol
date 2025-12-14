@@ -1,0 +1,127 @@
+{
+  "version": "1.0.0",
+  "descripcion": "Mapeo de area_funcional NLP a codigos ISCO validos",
+  "fecha_actualizacion": "2025-12-10",
+
+  "mappings": {
+    "IT/Sistemas": {
+      "descripcion": "Tecnologia de la informacion y sistemas",
+      "isco_primarios": ["251", "252", "351", "352"],
+      "isco_secundarios": ["133", "216", "243"],
+      "excluir": [],
+      "notas": "Incluye desarrollo, analisis, soporte tecnico, direccion IT"
+    },
+
+    "Ventas/Comercial": {
+      "descripcion": "Ventas, comercial y desarrollo de negocios",
+      "isco_primarios": ["122", "332", "524", "521"],
+      "isco_secundarios": ["243", "333", "523"],
+      "excluir": ["2", "7", "8", "9"],
+      "notas": "Excluye profesionales tecnicos y operarios"
+    },
+
+    "Administracion/Finanzas": {
+      "descripcion": "Administracion, contabilidad y finanzas",
+      "isco_primarios": ["241", "331", "411", "412", "431"],
+      "isco_secundarios": ["121", "334"],
+      "excluir": ["5", "6", "7", "8", "9"],
+      "notas": "Contadores, administrativos, cajeros, auxiliares"
+    },
+
+    "RRHH": {
+      "descripcion": "Recursos humanos y gestion de personas",
+      "isco_primarios": ["242", "333"],
+      "isco_secundarios": ["121", "441"],
+      "excluir": ["5", "6", "7", "8", "9"],
+      "notas": "Analistas RRHH, selectores, capacitadores"
+    },
+
+    "Operaciones/Logistica": {
+      "descripcion": "Operaciones, logistica y supply chain",
+      "isco_primarios": ["132", "432", "933", "834", "833"],
+      "isco_secundarios": ["314", "832", "931"],
+      "excluir": [],
+      "notas": "Jefes de almacen, operarios, choferes, despachantes"
+    },
+
+    "Produccion/Manufactura": {
+      "descripcion": "Produccion industrial y manufactura",
+      "isco_primarios": ["312", "313", "721", "722", "723", "741", "751", "811", "812", "813"],
+      "isco_secundarios": ["132", "314"],
+      "excluir": ["1", "2", "4"],
+      "notas": "Tecnicos, operarios calificados, maquinistas"
+    },
+
+    "Marketing": {
+      "descripcion": "Marketing, publicidad y comunicacion",
+      "isco_primarios": ["122", "243", "264"],
+      "isco_secundarios": ["216", "343", "265"],
+      "excluir": ["7", "8", "9"],
+      "notas": "Marketing digital, disenadores, community managers"
+    },
+
+    "Salud": {
+      "descripcion": "Salud y servicios medicos",
+      "isco_primarios": ["221", "222", "226", "321", "322", "325"],
+      "isco_secundarios": ["532", "134"],
+      "excluir": ["7", "8", "9"],
+      "notas": "Medicos, enfermeros, tecnicos de salud"
+    },
+
+    "Educacion": {
+      "descripcion": "Educacion y capacitacion",
+      "isco_primarios": ["231", "232", "233", "234", "235"],
+      "isco_secundarios": ["263", "341", "531"],
+      "excluir": ["7", "8", "9"],
+      "notas": "Profesores, instructores, capacitadores"
+    },
+
+    "Legal": {
+      "descripcion": "Servicios legales y juridicos",
+      "isco_primarios": ["261", "335"],
+      "isco_secundarios": ["334", "411"],
+      "excluir": ["5", "6", "7", "8", "9"],
+      "notas": "Abogados, escribanos, asistentes legales"
+    },
+
+    "Atencion al Cliente": {
+      "descripcion": "Atencion al cliente y call center",
+      "isco_primarios": ["422", "523", "524"],
+      "isco_secundarios": ["333", "962", "521"],
+      "excluir": ["1", "2", "7", "8"],
+      "notas": "Operadores call center, recepcionistas, vendedores"
+    },
+
+    "Consultoria": {
+      "descripcion": "Consultoria y servicios profesionales",
+      "isco_primarios": ["241", "242", "243", "251", "252"],
+      "isco_secundarios": ["121", "122", "263"],
+      "excluir": ["6", "7", "8", "9"],
+      "notas": "Consultores de negocio, IT, RRHH, finanzas"
+    },
+
+    "Gastronomia/Hoteleria": {
+      "descripcion": "Gastronomia, hoteleria y turismo",
+      "isco_primarios": ["512", "513", "514", "515", "941"],
+      "isco_secundarios": ["141", "422", "343"],
+      "excluir": ["2", "7", "8"],
+      "notas": "Cocineros, mozos, recepcionistas hotel, hoteleria"
+    },
+
+    "Ingenieria": {
+      "descripcion": "Ingenieria y servicios tecnicos",
+      "isco_primarios": ["214", "215", "216"],
+      "isco_secundarios": ["132", "311", "312", "313"],
+      "excluir": [],
+      "notas": "Ingenieros civiles, mecanicos, electricos, quimicos"
+    },
+
+    "Otros": {
+      "descripcion": "Sin area especifica o no clasificable",
+      "isco_primarios": [],
+      "isco_secundarios": [],
+      "excluir": [],
+      "notas": "Sin filtro - usar todas las ocupaciones"
+    }
+  }
+}

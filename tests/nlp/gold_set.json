@@ -1,0 +1,1658 @@
+[
+  {
+    "id_oferta": "1116884561",
+    "titulo_original": "Representante Comercial (Consumo Masivo / Grandes Cuentas)",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": null,
+      "modalidad": "presencial",
+      "area_funcional": "Ventas/Comercial",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": null,
+      "experiencia_min_anios": 0,
+      "experiencia_max_anios": 2,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 1,
+      "sector_empresa": "Retail/Comercio",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": [
+        "negociación",
+        "planificación, organización y coordinación",
+        "capacidad analítica",
+        "trabajo en equipo y buenas relaciones interpersonales",
+        "comunicación asertiva",
+        "adaptación"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Atención/fidelización de la cartera de clientes actuales y captación de nuevos clientes para incrementar los revenues en la cartera existente",
+      "idioma_principal": "ingles"
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1116898892",
+    "titulo_original": "Chofer - Repartidor",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "Benavidez",
+      "modalidad": "presencial",
+      "area_funcional": "Operaciones/Logistica",
+      "nivel_seniority": null,
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 2,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Alimentacion",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "mantenimiento y cuidado de vehículos"
+      ],
+      "soft_skills_list": [
+        "actitud responsable",
+        "puntualidad",
+        "capacidad para gestionar las entregas de manera eficiente y autónoma"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Realizar entregas de productos y mantener el vehículo en óptimas condiciones",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1117960588",
+    "titulo_original": "Asistente de Dirección / Administrativo con experiencia en Publicidad y Medios",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": null,
+      "localidad": null,
+      "modalidad": "hibrido",
+      "area_funcional": "Administracion/Finanzas",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Publicidad/Medios",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "Office",
+        "planillas",
+        "excel avanzado"
+      ],
+      "soft_skills_list": [
+        "habilidades de comunicación",
+        "atención al cliente"
+      ],
+      "herramientas_list": [
+        "Office",
+        "planillas",
+        "excel avanzado"
+      ],
+      "mision_rol": "Asistir a la Dirección y coordinar tareas vinculadas a publicidad y medios",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1117961954",
+    "titulo_original": "Asistente Administrativo General",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": null,
+      "localidad": null,
+      "modalidad": null,
+      "area_funcional": "Administracion/Finanzas",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": null,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": null,
+      "es_tercerizado": 0,
+      "sector_empresa": null,
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "media",
+      "skills_tecnicas_list": [
+        "Microsoft Office Suite"
+      ],
+      "soft_skills_list": [
+        "proactiva",
+        "organizada"
+      ],
+      "herramientas_list": [
+        "Word",
+        "Excel",
+        "PowerPoint"
+      ],
+      "mision_rol": "Brindar soporte administrativo a varios departamentos",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1117975249",
+    "titulo_original": "Gerente General para Maderera (PYME)",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "[\"San Martín\", \"CABA\", \"Luján\"]",
+      "modalidad": "presencial",
+      "area_funcional": "Operaciones/Logistica",
+      "nivel_seniority": "lead/manager",
+      "tiene_gente_cargo": 1,
+      "experiencia_min_anios": 10,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": "indeterminado",
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Manufactura/Industria",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": [
+        "visión estratégica",
+        "capacidad de organización"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Liderar y supervisar la gestión integral de la empresa",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1117977340",
+    "titulo_original": "RECEPCIONISTA ADMINISTRATIVO",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "CABA",
+      "localidad": "Palermo",
+      "modalidad": "hibrido",
+      "area_funcional": "Administracion/Finanzas",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 0,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Servicios Financieros",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "Tango"
+      ],
+      "soft_skills_list": [
+        "proactivo"
+      ],
+      "herramientas_list": [
+        "Tango"
+      ],
+      "mision_rol": "Dar asistencia a los socios y a la responsable de administración en tareas variadas",
+      "idioma_principal": "ingles"
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1117980907",
+    "titulo_original": "Operario de Almacén/Logística Z/Escobar",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "Escobar",
+      "modalidad": "presencial",
+      "area_funcional": "Operaciones/Logistica",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "secundario",
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Manufactura/Industria",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": null,
+      "herramientas_list": null,
+      "mision_rol": "Operario de almacén /logística",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1117982053",
+    "titulo_original": "Desarrollador Angular Senior",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": null,
+      "localidad": null,
+      "modalidad": "remoto",
+      "area_funcional": "IT/Sistemas",
+      "nivel_seniority": "senior",
+      "tiene_gente_cargo": 1,
+      "experiencia_min_anios": 4,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "terciario",
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Tecnologia/Software",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "Angular",
+        "Webpack"
+      ],
+      "soft_skills_list": null,
+      "herramientas_list": null,
+      "mision_rol": "Desarrollador Angular Senior",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1117984105",
+    "titulo_original": "Venado Tuerto -Gerente de Ventas importante Concesionario Oficial Maquinaria Agr{icola",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Santa Fe",
+      "localidad": "Venado Tuerto",
+      "modalidad": "presencial",
+      "area_funcional": "Ventas/Comercial",
+      "nivel_seniority": "lead/manager",
+      "tiene_gente_cargo": 1,
+      "experiencia_min_anios": 35,
+      "experiencia_max_anios": 50,
+      "nivel_educativo": "terciario",
+      "tipo_contrato": null,
+      "jornada_laboral": null,
+      "es_tercerizado": 0,
+      "sector_empresa": "Manufactura/Industria",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "media",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": [
+        "disposición para liderar en equipo",
+        "proactivo y responsable"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Liderar equipo de ventas en concesionario oficial",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1117990944",
+    "titulo_original": "Repositor/a Externo/a (Eventual) Moreno",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "Moreno",
+      "modalidad": "presencial",
+      "area_funcional": "Operaciones/Logistica",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "secundario",
+      "tipo_contrato": "eventual",
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Retail/Comercio",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": null,
+      "herramientas_list": null,
+      "mision_rol": "Repositor externo en PDV",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1117995368",
+    "titulo_original": "ASESOR TÉCNICO NUTRICIÓN ANIMAL RUMIANTES",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": null,
+      "modalidad": "presencial",
+      "area_funcional": "Salud",
+      "nivel_seniority": "senior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 7,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "universitario",
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Salud/Farmaceutica",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": [
+        "disposición para viajar"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Asesor Técnico con comprobada experiencia en rumiantes",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118000814",
+    "titulo_original": "Asistente Administrativo de Ventas",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": null,
+      "localidad": null,
+      "modalidad": "presencial",
+      "area_funcional": "Administracion/Finanzas",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 2,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "terciario",
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": null,
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "Excel avanzado"
+      ],
+      "soft_skills_list": [
+        "autonomía y proactividad",
+        "orden y precisión administrativa",
+        "orientación a resultados y al cliente interno",
+        "capacidad analítica y atención al detalle",
+        "trabajo en equipo y comunicación efectiva"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Brindar soporte administrativo y operativo al área de ventas",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118003709",
+    "titulo_original": "CAJERO/ENCARGADO",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "Adrogue",
+      "modalidad": "presencial",
+      "area_funcional": "Operaciones/Logistica",
+      "nivel_seniority": null,
+      "tiene_gente_cargo": 1,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Alimentacion",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": null,
+      "herramientas_list": [
+        "Office",
+        "Excel"
+      ],
+      "mision_rol": "Manejar las transacciones diarias y coordinar al equipo del turno",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118009703",
+    "titulo_original": "Asesor Comercial E Commerce - Manager de redes sociales",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "CABA",
+      "localidad": null,
+      "modalidad": "presencial",
+      "area_funcional": "Ventas/Comercial",
+      "nivel_seniority": "lead/manager",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 10,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Servicios",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "Paquete Office",
+        "CRM Hubspot",
+        "Photoshop o afín",
+        "Canva o afín"
+      ],
+      "soft_skills_list": [
+        "Manejo de prioridades, tiempos y seguimientos",
+        "Manejo de presupuestos",
+        "Toleración a la presión del resultado y medición por objetivos",
+        "Adaptabilidad y flexibilidad",
+        "Trabajo en equipo y colaboración"
+      ],
+      "herramientas_list": [
+        "Mercado Libre",
+        "Tienda web y Market Place",
+        "Meta y Google Adwords"
+      ],
+      "mision_rol": "Asesoramiento comercial y manejo de ventas",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118009739",
+    "titulo_original": "Administrativa Comercio Exterior (req199380) Eventual",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "CABA",
+      "localidad": null,
+      "modalidad": "hibrido",
+      "area_funcional": "Administracion/Finanzas",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 0,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "terciario",
+      "tipo_contrato": "eventual",
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 1,
+      "sector_empresa": "Retail/Comercio",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": null,
+      "herramientas_list": null,
+      "mision_rol": "Administrativo para área de Comex",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118017586",
+    "titulo_original": "Médica Clínica o Dermatóloga – Especialista en tratamientos estéticos inyectables",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "Quilmes",
+      "modalidad": "presencial",
+      "area_funcional": "Salud",
+      "nivel_seniority": "semisenior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "universitario",
+      "tipo_contrato": null,
+      "jornada_laboral": "part_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Salud/Farmaceutica",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "tratamientos con tecnología láser"
+      ],
+      "soft_skills_list": [
+        "excelente trato interpersonal",
+        "orientación al paciente"
+      ],
+      "herramientas_list": [
+        "Ultraformer/HIFU"
+      ],
+      "mision_rol": "Realizar procedimientos inyectables y aplicar tratamientos con tecnología láser",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118018461",
+    "titulo_original": "Asesor/a de Admisiones",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "CABA",
+      "localidad": null,
+      "modalidad": "hibrido",
+      "area_funcional": "Administracion/Finanzas",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 0,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Educacion",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "paquete Office",
+        "herramientas de Google"
+      ],
+      "soft_skills_list": [
+        "dinámica",
+        "proactiva",
+        "resolutiva",
+        "vocación de servicio",
+        "atenta a los detalles",
+        "excelente comunicación oral y escrita"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Acompañar a los postulantes en su proceso de admisión y asesorarlos en la elección de carrera",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118018714",
+    "titulo_original": "Diseñador Gráfico E-commerce",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": null,
+      "localidad": null,
+      "modalidad": null,
+      "area_funcional": "Marketing",
+      "nivel_seniority": null,
+      "tiene_gente_cargo": null,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": null,
+      "es_tercerizado": 0,
+      "sector_empresa": "Tecnologia/Software",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "Photoshop",
+        "Illustrator"
+      ],
+      "soft_skills_list": [
+        "creativo"
+      ],
+      "herramientas_list": [
+        "Photoshop",
+        "Illustrator"
+      ],
+      "mision_rol": "Responsable de mejorar la presentación visual de los productos en plataformas de e-commerce",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118020225",
+    "titulo_original": "Representante de atención al cliente",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "Munro",
+      "modalidad": "hibrido",
+      "area_funcional": "Atencion al Cliente",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 7,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "universitario",
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Servicios Financieros",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "herramientas de CRM",
+        "plataformas de mensajería como WhatsApp"
+      ],
+      "soft_skills_list": [
+        "vocación al cliente",
+        "habilidades interpersonales y de comunicación excepcionales",
+        "habilidades para resolver problemas"
+      ],
+      "herramientas_list": [
+        "CRM",
+        "WhatsApp"
+      ],
+      "mision_rol": "Brindar un servicio de atención al cliente excepcional",
+      "idioma_principal": "ingles"
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118022146",
+    "titulo_original": "Community manager",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "Tigre",
+      "modalidad": "presencial",
+      "area_funcional": "Marketing",
+      "nivel_seniority": "lead/manager",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 7,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "universitario",
+      "tipo_contrato": null,
+      "jornada_laboral": "freelance",
+      "es_tercerizado": 0,
+      "sector_empresa": "Construcción",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "SEO",
+        "Google Ads",
+        "Meta Ads"
+      ],
+      "soft_skills_list": [
+        "creatividad",
+        "atencion al detalle",
+        "proactividad"
+      ],
+      "herramientas_list": [
+        "CapCut",
+        "Premiere",
+        "Canva",
+        "Photoshop / Illustrator"
+      ],
+      "mision_rol": "Construir y expandir las marcas del grupo fuera de Mercado Libre",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118023904",
+    "titulo_original": "Operario Picking Zona Norte",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "[\"Escobar\", \"El Talar\", \"Pilar\"]",
+      "modalidad": "presencial",
+      "area_funcional": "Operaciones/Logistica",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 20,
+      "experiencia_max_anios": 45,
+      "nivel_educativo": "secundario",
+      "tipo_contrato": "eventual",
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Transporte/Logistica",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "media",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": null,
+      "herramientas_list": [
+        "RF"
+      ],
+      "mision_rol": "Operario y Pickeador en operaciones logísticas",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118025212",
+    "titulo_original": "Representante Técnico/a Comercial",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": null,
+      "localidad": null,
+      "modalidad": null,
+      "area_funcional": "Ventas/Comercial",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 0,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "terciario",
+      "tipo_contrato": null,
+      "jornada_laboral": null,
+      "es_tercerizado": 0,
+      "sector_empresa": null,
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "media",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": [
+        "vocación comercial",
+        "orientación a resultados"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Comercialización de agro insumos y servicios",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118025956",
+    "titulo_original": "Jardinero",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": null,
+      "localidad": null,
+      "modalidad": "presencial",
+      "area_funcional": "Operaciones/Logistica",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": null,
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "media",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": null,
+      "herramientas_list": null,
+      "mision_rol": "Realizar el corte y mantenimiento del césped",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118026700",
+    "titulo_original": "VENDEDOR DE REPUESTOS AUTOMOTOR",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": null,
+      "localidad": null,
+      "modalidad": null,
+      "area_funcional": null,
+      "nivel_seniority": null,
+      "tiene_gente_cargo": null,
+      "experiencia_min_anios": null,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": null,
+      "es_tercerizado": 0,
+      "sector_empresa": "Automotriz",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "media",
+      "skills_tecnicas_list": [
+        "paquete office",
+        "canales de venta online",
+        "computación en general"
+      ],
+      "soft_skills_list": [
+        "trabajo en equipo",
+        "comunicacion"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "vendedor automotor y repuestero",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118026729",
+    "titulo_original": "Responsable de Deposito",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "Capital Federal",
+      "modalidad": "presencial",
+      "area_funcional": "Operaciones/Logistica",
+      "nivel_seniority": null,
+      "tiene_gente_cargo": 1,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Manufactura/Industria",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "inventarios",
+        "facturación",
+        "cierres administrativos"
+      ],
+      "soft_skills_list": [
+        "liderar y motivar equipos",
+        "buenas capacidades de comunicación",
+        "autogestivo"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Encargado/a de Depósito para la apertura de su nuevo local y centro de distribución en Argentina",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118027243",
+    "titulo_original": "Abogado/a - Impuestos",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "CABA",
+      "localidad": "Retiro",
+      "modalidad": "hibrido",
+      "area_funcional": "Legal",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": null,
+      "experiencia_min_anios": 4,
+      "experiencia_max_anios": 4,
+      "nivel_educativo": "universitario",
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Legal",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": null,
+      "herramientas_list": null,
+      "mision_rol": null,
+      "idioma_principal": "ingles"
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118027261",
+    "titulo_original": "Supervisor de Limpieza",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "San Fernando",
+      "modalidad": "presencial",
+      "area_funcional": "Operaciones/Logistica",
+      "nivel_seniority": null,
+      "tiene_gente_cargo": 1,
+      "experiencia_min_anios": 2,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "secundario",
+      "tipo_contrato": null,
+      "jornada_laboral": null,
+      "es_tercerizado": 0,
+      "sector_empresa": "Manufactura/Industria",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "paquete office"
+      ],
+      "soft_skills_list": null,
+      "herramientas_list": null,
+      "mision_rol": "Supervisar y coordinar tareas de limpieza",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118027276",
+    "titulo_original": "Ejecutivo de Cuentas SSR/SR - Presencial",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "Munro",
+      "modalidad": "presencial",
+      "area_funcional": "Ventas/Comercial",
+      "nivel_seniority": "semisenior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 3,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "terciario",
+      "tipo_contrato": "indeterminado",
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 1,
+      "sector_empresa": "Tecnologia/Software",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "CRM",
+        "Táctica Soft"
+      ],
+      "soft_skills_list": [
+        "comunicación",
+        "autonomía"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Captar y desarrollar cuentas industriales medianas y grandes",
+      "idioma_principal": "ingles"
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118027662",
+    "titulo_original": "Farmacéutico/a para farmacias en Rio Cuarto",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Cordoba",
+      "localidad": "Rio Cuarto",
+      "modalidad": "presencial",
+      "area_funcional": "Salud",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 0,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "universitario",
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Salud/Farmaceutica",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": [
+        "vocación de servicio",
+        "compromiso con la excelencia y el cuidado del paciente"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "farmacéutico/a en Farmacity",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118027834",
+    "titulo_original": "Vendedora Digital / Atención al Cliente",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "Lanus o Lomas de Zamora",
+      "modalidad": "presencial",
+      "area_funcional": "Ventas/Comercial",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 0,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": null,
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "herramientas informáticas",
+        "sistema CRM"
+      ],
+      "soft_skills_list": [
+        "comunicación",
+        "negociación",
+        "resolución de problemas"
+      ],
+      "herramientas_list": [
+        "WhatsApp",
+        "correo electrónico",
+        "redes sociales"
+      ],
+      "mision_rol": "Brindar asesoramiento y seguimiento de pedidos a través de medios digitales",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118027941",
+    "titulo_original": "Dibujante Tecnico",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": null,
+      "localidad": null,
+      "modalidad": "presencial",
+      "area_funcional": "Operaciones/Logistica",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 0,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "universitario",
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Manufactura/Industria",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "media",
+      "skills_tecnicas_list": [
+        "AutoCAD",
+        "Solidworks 2D y 3D"
+      ],
+      "soft_skills_list": null,
+      "herramientas_list": [
+        "AutoCAD",
+        "Solidworks 2D y 3D"
+      ],
+      "mision_rol": "Realización de planos de piezas propias y relevamiento de piezas varias",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118028027",
+    "titulo_original": "OPERADOR DE AUTOELEVADORES",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "Villa Luzuriaga",
+      "modalidad": "presencial",
+      "area_funcional": "Operaciones/Logistica",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 0,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "secundario",
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Transporte/Logistica",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "media",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": null,
+      "herramientas_list": null,
+      "mision_rol": "Operador de autoelevadores",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118028038",
+    "titulo_original": "Ejecutiva/o Comercial de Cuentas - GBA Norte",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "GBA Norte",
+      "modalidad": "presencial",
+      "area_funcional": "Ventas/Comercial",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "secundario",
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Tecnologia/Software",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "MS Office"
+      ],
+      "soft_skills_list": [
+        "trabajo en equipo",
+        "comunicacion"
+      ],
+      "herramientas_list": [
+        "Tango o equivalente"
+      ],
+      "mision_rol": "Desarrollar el segmento corporativo en directa y para su red de Distribuidores a nivel nacional",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118028048",
+    "titulo_original": "Asesor/a de Ventas y Atención al Cliente",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": null,
+      "localidad": null,
+      "modalidad": "presencial",
+      "area_funcional": "Ventas/Comercial",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Retail/Comercio",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "POS"
+      ],
+      "soft_skills_list": [
+        "proactividad",
+        "adaptabilidad",
+        "sociabilidad natural",
+        "empatía",
+        "autoconfianza"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Atender y asesorar a los clientes, ofreciendo un servicio personalizado y de alta calidad",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118028201",
+    "titulo_original": "671SI Operarios ind. ALIMENTICIA c/ Tit. secundario - pres 31/10 de 10 a 1130 NUEVA Suc. SAN ISIDRO",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "San Isidro",
+      "modalidad": "presencial",
+      "area_funcional": "Produccion/Manufactura",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "secundario",
+      "tipo_contrato": "eventual",
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 1,
+      "sector_empresa": "Alimentacion",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "BPM"
+      ],
+      "soft_skills_list": null,
+      "herramientas_list": null,
+      "mision_rol": "Asistir en la producción y manipulación de alimentos",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118028376",
+    "titulo_original": "Analista administrativo/a",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "CABA",
+      "localidad": "Nuñez",
+      "modalidad": "hibrido",
+      "area_funcional": "Administracion/Finanzas",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "universitario",
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 1,
+      "sector_empresa": "Servicios Financieros",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "Excel"
+      ],
+      "soft_skills_list": null,
+      "herramientas_list": [
+        "MS Office"
+      ],
+      "mision_rol": "Analizar y controlar los costos operativos de importación/exportación",
+      "idioma_principal": "ingles"
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118028657",
+    "titulo_original": "Recepcionista zona CABA (Eventual)",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": null,
+      "localidad": "Puerto Madero",
+      "modalidad": "presencial",
+      "area_funcional": "Atencion al Cliente",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 0,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": "eventual",
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": null,
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": null,
+      "herramientas_list": null,
+      "mision_rol": "Atención personalizada a clientes y proveedores",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118028681",
+    "titulo_original": "ADMINISTRATIVA/O",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "Canning",
+      "modalidad": "presencial",
+      "area_funcional": "Administracion/Finanzas",
+      "nivel_seniority": "semisenior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 5,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Alimentacion",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "Paquete Office"
+      ],
+      "soft_skills_list": null,
+      "herramientas_list": null,
+      "mision_rol": "Responsable del ingreso de mercadería al sistema, actualizar costos y precios de venta de los productos en el sistema, actualizar los precios de los productos en diferentes plataformas e-commerce, pago a proveedores, generar pedidos a proveedores, liquidación de sueldos",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118028777",
+    "titulo_original": "Vendedor con Experiencia (Corredor)",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": null,
+      "localidad": null,
+      "modalidad": null,
+      "area_funcional": "Ventas/Comercial",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": null,
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "media",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": [
+        "habilidades de comunicación",
+        "negociación"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Gestionar y ampliar cartera de clientes",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118028828",
+    "titulo_original": "Búsqueda Laboral: Modelista – Vicente López (Florida Oeste)",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "Vicente López",
+      "modalidad": "presencial",
+      "area_funcional": "Produccion/Manufactura",
+      "nivel_seniority": "semisenior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 3,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "terciario",
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": null,
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "Lectra"
+      ],
+      "soft_skills_list": [
+        "trabajo en equipo"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Desarrollar la moldería, prototipo y muestras de los productos de nuestras colecciones",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118028833",
+    "titulo_original": "Asesor Comercial Plan de Ahorro - Volkswagen",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": null,
+      "localidad": null,
+      "modalidad": "presencial",
+      "area_funcional": "Ventas/Comercial",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 0,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "secundario",
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Automotriz",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": [
+        "iniciativa",
+        "orientación al resultado",
+        "excelencia en lo que hacemos",
+        "orientación al cliente",
+        "trabajo en equipo"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Asesor de ventas en concesionario automotriz",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118028887",
+    "titulo_original": "Account Executive (Hunter)",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Capital Federal",
+      "localidad": "Capital Federal",
+      "modalidad": "hibrido",
+      "area_funcional": "Ventas/Comercial",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 0,
+      "experiencia_max_anios": 2,
+      "nivel_educativo": "universitario",
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Tecnologia/Software",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": [
+        "mentalidad orientada a resultados",
+        "habilidades de negociación"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Prospección y captación de nuevos clientes",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118028891",
+    "titulo_original": "auxiliar contable",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "Munro",
+      "modalidad": "hibrido",
+      "area_funcional": "Administracion/Finanzas",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 2,
+      "experiencia_max_anios": 2,
+      "nivel_educativo": "universitario",
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": null,
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": [
+        "proactivo",
+        "iniciativa"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Administrativo Contable",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "1118031991",
+    "titulo_original": "ASESOR DE VENTAS DIRECTAS",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": null,
+      "localidad": null,
+      "modalidad": "remoto",
+      "area_funcional": "Ventas/Comercial",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Retail/Comercio",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "media",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": [
+        "trabajo en equipo"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Promocionar y vender productos de cocina de alta gama relacionados con la salud",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "2162667",
+    "titulo_original": "Gerente de Operaciones - Gastronomía corporativa y Facility management",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": null,
+      "localidad": null,
+      "modalidad": null,
+      "area_funcional": "Operaciones/Logistica",
+      "nivel_seniority": "lead/manager",
+      "tiene_gente_cargo": 1,
+      "experiencia_min_anios": 10,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "universitario",
+      "tipo_contrato": null,
+      "jornada_laboral": null,
+      "es_tercerizado": 0,
+      "sector_empresa": null,
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": [
+        "habilidades de liderazgo"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Dirigir la gestión operativa de todas las áreas de servicio",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "2164100",
+    "titulo_original": "Mozo/Moza",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Mendoza",
+      "localidad": "Valle de Uco, Tunuyán",
+      "modalidad": "presencial",
+      "area_funcional": "Atencion al Cliente",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": null,
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Turismo/Hospitalidad",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": null,
+      "soft_skills_list": [
+        "vocación de servicio",
+        "actitud cordial"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Ser parte de un equipo que brinda experiencias de primer nivel a nuestros huéspedes",
+      "idioma_principal": "ingles"
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "2165052",
+    "titulo_original": "Electricista Industrial",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": null,
+      "localidad": null,
+      "modalidad": null,
+      "area_funcional": "Operaciones/Logistica",
+      "nivel_seniority": "semisenior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "secundario",
+      "tipo_contrato": null,
+      "jornada_laboral": null,
+      "es_tercerizado": 0,
+      "sector_empresa": null,
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "media",
+      "skills_tecnicas_list": [
+        "mantenimiento preventivo y correctivo",
+        "interpretación de planos eléctricos",
+        "dimensionamiento de instalaciones eléctricas",
+        "montaje de canalizaciones eléctricas",
+        "diseño y armado de tableros eléctricos"
+      ],
+      "soft_skills_list": null,
+      "herramientas_list": null,
+      "mision_rol": "Realizar el mantenimiento preventivo y correctivo de equipos e instalaciones eléctricas",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "2165301",
+    "titulo_original": "Supervisor/a Administración Autos usados",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "Tortuguitas",
+      "modalidad": "presencial",
+      "area_funcional": "Administracion/Finanzas",
+      "nivel_seniority": "semisenior",
+      "tiene_gente_cargo": 1,
+      "experiencia_min_anios": 1,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "secundario",
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Automotriz",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "manejo avanzado de paquete Office"
+      ],
+      "soft_skills_list": [
+        "habilidad en liderazgo y coordinación de equipos"
+      ],
+      "herramientas_list": null,
+      "mision_rol": "Liderar equipos administrativos y asegurar el cumplimiento de plazos para la disponibilidad de las unidades",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  },
+  {
+    "id_oferta": "2170124",
+    "titulo_original": "Analista de Cultivo - Roque Pérez - BA",
+    "nlp_version": "10.0.0",
+    "expected": {
+      "provincia": "Buenos Aires",
+      "localidad": "Roque Pérez",
+      "modalidad": "presencial",
+      "area_funcional": "Operaciones/Logistica",
+      "nivel_seniority": "junior",
+      "tiene_gente_cargo": 0,
+      "experiencia_min_anios": 7,
+      "experiencia_max_anios": null,
+      "nivel_educativo": "universitario",
+      "tipo_contrato": null,
+      "jornada_laboral": "full_time",
+      "es_tercerizado": 0,
+      "sector_empresa": "Manufactura/Industria",
+      "tipo_oferta": "demanda_real",
+      "calidad_texto": "alta",
+      "skills_tecnicas_list": [
+        "SAP/Cencerro",
+        "SIMA",
+        "Paquete Office"
+      ],
+      "soft_skills_list": null,
+      "herramientas_list": null,
+      "mision_rol": "Analista de Cultivo",
+      "idioma_principal": null
+    },
+    "verified": false,
+    "notes": ""
+  }
+]

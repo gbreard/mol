@@ -28,7 +28,7 @@ TIMING_LOGS_PATH = BASE_DIR / "metrics" / "timing_logs.jsonl"
 EXPORTS_DIR = BASE_DIR / "exports"
 
 # Scripts paths
-NLP_SCRIPT = BASE_DIR / "database" / "process_nlp_from_db_v7.py"
+NLP_SCRIPT = BASE_DIR / "database" / "process_nlp_from_db_v10.py"
 TEST_SCRIPT = BASE_DIR / "database" / "test_gold_set_manual.py"
 
 st.set_page_config(
@@ -509,7 +509,7 @@ with tab2:
         if st.button("🟢 Procesar NLP",
                      disabled=st.session_state.process_running,
                      use_container_width=True,
-                     help=f"Ejecuta process_nlp_from_db_v7.py --limit {limit}"):
+                     help=f"Ejecuta process_nlp_from_db_v10.py --limit {limit}"):
             with st.spinner(f"Procesando {limit} ofertas con NLP..."):
                 code, output = run_command_sync(
                     [sys.executable, str(NLP_SCRIPT), "--limit", str(limit)]

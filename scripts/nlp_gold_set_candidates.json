@@ -1,0 +1,135 @@
+{
+  "total": 20,
+  "ids": [
+    "1118068467",
+    "1118050760",
+    "1118035458",
+    "1118023519",
+    "2162788",
+    "2168689",
+    "1117992822",
+    "1118046624",
+    "1118034477",
+    "2162494",
+    "1118025830",
+    "2167340",
+    "1118013695",
+    "1118055451",
+    "2169451",
+    "2169073",
+    "1117979626",
+    "1118049659",
+    "1118063776",
+    "1118062860"
+  ],
+  "by_category": {
+    "ventas": [
+      {
+        "id_oferta": "1118068467",
+        "titulo": "Vendedor/a para Venta de Neumáticos y Atención en Taller Mecánico",
+        "desc_len": 996
+      },
+      {
+        "id_oferta": "1118050760",
+        "titulo": "VENDEDOR TÉCNICO SR. - RUBRO AUTOMOTRIZ",
+        "desc_len": 1210
+      },
+      {
+        "id_oferta": "1118035458",
+        "titulo": "Supervisor - VENTAS MAYORISTA",
+        "desc_len": 1038
+      },
+      {
+        "id_oferta": "1118023519",
+        "titulo": "Ejecutivo de Ventas para empresa de equipos médicos",
+        "desc_len": 1770
+      },
+      {
+        "id_oferta": "2162788",
+        "titulo": "Comercial de Ventas Especialista en Telecomunicaciones",
+        "desc_len": 1474
+      }
+    ],
+    "it": [
+      {
+        "id_oferta": "2168689",
+        "titulo": "Auditor/a Interno Semi Senior",
+        "desc_len": 2259
+      },
+      {
+        "id_oferta": "1117992822",
+        "titulo": "Responsable de Marketing Digital con manejo de Tango y CRM. Zona Sarandí",
+        "desc_len": 1315
+      },
+      {
+        "id_oferta": "1118046624",
+        "titulo": "Guía turístico (Capital Federal)",
+        "desc_len": 1197
+      },
+      {
+        "id_oferta": "1118034477",
+        "titulo": "Repositor Externo - Pilar - Eventual",
+        "desc_len": 854
+      },
+      {
+        "id_oferta": "2162494",
+        "titulo": "Analista de Networking - Mix (On site - Remoto) - Rosario - 1678",
+        "desc_len": 3340
+      }
+    ],
+    "admin": [
+      {
+        "id_oferta": "1118025830",
+        "titulo": "Asistente de Servicio Técnico - GBA Sur",
+        "desc_len": 1534
+      },
+      {
+        "id_oferta": "2167340",
+        "titulo": "Analista de RRHH Zonal Norte",
+        "desc_len": 2717
+      },
+      {
+        "id_oferta": "1118013695",
+        "titulo": "Coordinador/a Administrativo/a de RRHH - MDQ (req199581) - Permanente",
+        "desc_len": 1805
+      },
+      {
+        "id_oferta": "1118055451",
+        "titulo": "RESPONSABLE DE RECURSOS HUMANOS",
+        "desc_len": 1963
+      },
+      {
+        "id_oferta": "2169451",
+        "titulo": "Senior Contable - Rubro: Alquiler de autos",
+        "desc_len": 3228
+      }
+    ],
+    "produccion": [
+      {
+        "id_oferta": "2169073",
+        "titulo": "Operario Ayudante de Maquinista",
+        "desc_len": 872
+      },
+      {
+        "id_oferta": "1117979626",
+        "titulo": "Lider de Mantenimiento",
+        "desc_len": 1460
+      },
+      {
+        "id_oferta": "1118049659",
+        "titulo": "Operario de Logística- Eventual- General Pacheco",
+        "desc_len": 681
+      },
+      {
+        "id_oferta": "1118063776",
+        "titulo": "ELECTRICISTA / ELECTRONICO / EMPALMADOR / INGENIERO TECNICO PARA AREA TECNICO COMERCIAL",
+        "desc_len": 676
+      },
+      {
+        "id_oferta": "1118062860",
+        "titulo": "OPERARIOS DE LABORATORIO - HAEDO",
+        "desc_len": 313
+      }
+    ]
+  }
+}
