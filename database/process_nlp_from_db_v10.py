@@ -412,7 +412,12 @@ class NLPExtractorV10:
                     final_data[campo] = valor
 
             # CAPA 3: POSTPROCESAMIENTO (correcciones validacion humana)
-            final_data = self.postprocessor.postprocess(final_data, descripcion)
+            # Extraer skills_regex de Capa 0 para fusionar con LLM
+            skills_regex = {
+                "skills_tecnicas_regex": regex_data.get("skills_tecnicas_regex", []),
+                "soft_skills_regex": regex_data.get("soft_skills_regex", []),
+            }
+            final_data = self.postprocessor.postprocess(final_data, descripcion, skills_regex)
             pp_stats = self.postprocessor.get_stats()
             if self.verbose:
                 print(f"[POSTPROC] {pp_stats}")
