@@ -36,6 +36,10 @@ config/aws_credentials.json
 config/linear_config.json
 *.pem
 
+# Claude Code settings (contiene API keys)
+.claude/settings.local.json
+.mcp.json
+
 # Linear cache (sincronizado localmente)
 .linear/
 
