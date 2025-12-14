@@ -79,6 +79,51 @@ Sistema de monitoreo del mercado laboral argentino para OEDE. Scrapea ofertas de
 
 ---
 
+## Regla de Versionado de Componentes
+
+**OBLIGATORIO:** Cuando se crea una nueva version de cualquier componente:
+
+### Paso 1: Crear nueva version
+```bash
+# Ejemplo: match_ofertas_v2.py, process_nlp_v11.py
+```
+
+### Paso 2: INMEDIATAMENTE archivar la version anterior
+
+| Tipo de componente | Mover a |
+|--------------------|---------|
+| Matching (match_*.py) | database/archive_old_versions/matching/ |
+| NLP processors (process_nlp_*.py) | database/archive_old_versions/nlp_processors/ |
+| Regex patterns (regex_patterns_*.py) | archive/patterns_old/ |
+| Prompts (extraction_prompt_*.py) | archive/prompts_old/ |
+| Extractors | archive/extractors_old/ |
+| Scripts one-time (fix_*, debug_*) | archive/scripts_historical/ |
+
+### Paso 3: Verificar que nada importe el archivo archivado
+```bash
+grep -rn "from archivo_viejo import" --include="*.py" .
+grep -rn "import archivo_viejo" --include="*.py" .
+```
+
+### Paso 4: Actualizar CLAUDE.md
+- Cambiar version en tabla de componentes
+- Agregar al CHANGELOG si es cambio significativo
+
+### REGLA ESTRICTA
+NUNCA dejar dos versiones del mismo componente activas en el mismo directorio.
+Si existe `component_v8.py` y creas `component_v9.py`, el v8 debe archivarse en el mismo commit.
+
+### Ejemplo de commit correcto
+```
+feat: NLP v11 con nuevo campo X
+
+- Crear database/process_nlp_from_db_v11.py
+- Archivar database/process_nlp_from_db_v10.py -> archive_old_versions/nlp_processors/
+- Actualizar CLAUDE.md
+```
+
+---
+
 ## ARCHIVOS DEPRECADOS - NO USAR
 
 Los siguientes archivos estan en `database/archive_old_versions/` y NO deben usarse:
