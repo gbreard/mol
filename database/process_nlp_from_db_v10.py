@@ -52,6 +52,9 @@ sys.path.insert(0, str(prompts_dir))
 from patterns.regex_patterns_v4 import extract_all as extract_regex_v4, StructureDetector
 from prompts.extraction_prompt_v10 import build_prompt, flatten_response, CAMPOS_DB_MAPPING
 
+# Postprocesador NLP (correcciones validacion humana)
+from nlp_postprocessor import NLPPostprocessor
+
 
 class NLPExtractorV10:
     """
@@ -72,6 +75,10 @@ class NLPExtractorV10:
             raise FileNotFoundError(f"Base de datos no encontrada: {self.db_path}")
 
         self.verbose = verbose
+
+        # Inicializar postprocesador (correcciones validacion humana)
+        self.postprocessor = NLPPostprocessor(verbose=verbose)
+
         self.stats = {
             "total_processed": 0,
             "total_success": 0,
@@ -355,14 +362,29 @@ class NLPExtractorV10:
     # =========================================================================
 
     def process_oferta(self, id_oferta: str, descripcion: str,
-                      titulo: str = "", empresa: str = "") -> Optional[Dict[str, Any]]:
-        """Procesa una oferta con el pipeline de 3 capas"""
+                      titulo: str = "", empresa: str = "",
+                      ubicacion: str = "") -> Optional[Dict[str, Any]]:
+        """
+        Procesa una oferta con el pipeline de 3 capas + postprocesamiento
+
+        Pipeline:
+          CAPA 0: Regex deterministico
+          CAPA 1: LLM (16 bloques)
+          CAPA 2: Verificacion anti-alucinacion
+          CAPA 3: Postprocesamiento (validacion humana)
+        """
         start_time = time.time()
 
         try:
             # Reset contadores
             self.stats["items_verificados"] = 0
             self.stats["items_descartados"] = 0
+
+            # PREPROCESO: Extraer campos estructurados del scraping
+            row_data = {"ubicacion": ubicacion, "empresa": empresa, "titulo": titulo}
+            pre_data = self.postprocessor.preprocess(row_data)
+            if self.verbose and pre_data:
+                print(f"[PREPROC] Campos extraidos: {list(pre_data.keys())}")
 
             # CAPA 0: REGEX
             regex_data = self._extract_capa0_regex(descripcion, titulo, empresa)
@@ -383,6 +405,17 @@ class NLPExtractorV10:
             for campo, valor in regex_data.items():
                 if valor is not None:
                     final_data[campo] = valor
+
+            # Agregar campos preprocesados (solo si no existen)
+            for campo, valor in pre_data.items():
+                if final_data.get(campo) is None and valor is not None:
+                    final_data[campo] = valor
+
+            # CAPA 3: POSTPROCESAMIENTO (correcciones validacion humana)
+            final_data = self.postprocessor.postprocess(final_data, descripcion)
+            pp_stats = self.postprocessor.get_stats()
+            if self.verbose:
+                print(f"[POSTPROC] {pp_stats}")
 
             # Calcular métricas
             processing_time_ms = int((time.time() - start_time) * 1000)
@@ -420,7 +453,7 @@ class NLPExtractorV10:
         if ids_especificos:
             placeholders = ",".join("?" * len(ids_especificos))
             query = f"""
-                SELECT o.id_oferta, o.descripcion, o.titulo, o.empresa
+                SELECT o.id_oferta, o.descripcion, o.titulo, o.empresa, o.localizacion
                 FROM ofertas o
                 WHERE o.id_oferta IN ({placeholders})
                   AND o.descripcion IS NOT NULL
@@ -429,7 +462,7 @@ class NLPExtractorV10:
             cursor.execute(query, ids_especificos)
         else:
             query = f"""
-                SELECT o.id_oferta, o.descripcion, o.titulo, o.empresa
+                SELECT o.id_oferta, o.descripcion, o.titulo, o.empresa, o.localizacion
                 FROM ofertas o
                 WHERE o.descripcion IS NOT NULL
                   AND LENGTH(o.descripcion) > 100
@@ -446,10 +479,13 @@ class NLPExtractorV10:
         print(f"[BATCH] Schema v5 completo: 143 columnas")
         print()
 
-        for i, (id_oferta, descripcion, titulo, empresa) in enumerate(ofertas, 1):
+        for i, (id_oferta, descripcion, titulo, empresa, localizacion) in enumerate(ofertas, 1):
             print(f"[{i}/{total}] {id_oferta}...", end=" ")
 
-            result = self.process_oferta(id_oferta, descripcion, titulo or "", empresa or "")
+            result = self.process_oferta(
+                id_oferta, descripcion,
+                titulo or "", empresa or "", localizacion or ""
+            )
 
             if result:
                 print(f"OK (C:{result['confidence_score']:.2f}, "

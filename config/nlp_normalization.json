@@ -1,0 +1,135 @@
+{
+  "_version": "1.0",
+  "_descripcion": "Normalizacion de valores extraidos",
+  "_fecha": "2025-12-14",
+
+  "provincia": {
+    "_descripcion": "Normalizar nombres de provincias argentinas",
+    "mapeo": {
+      "CABA": "Capital Federal",
+      "Ciudad Autonoma de Buenos Aires": "Capital Federal",
+      "Ciudad de Buenos Aires": "Capital Federal",
+      "C.A.B.A.": "Capital Federal",
+      "Bs As": "Buenos Aires",
+      "Bs. As.": "Buenos Aires",
+      "BsAs": "Buenos Aires",
+      "Pcia. Buenos Aires": "Buenos Aires",
+      "Provincia de Buenos Aires": "Buenos Aires",
+      "GBA": "Buenos Aires",
+      "Gran Buenos Aires": "Buenos Aires",
+      "Cba": "Cordoba",
+      "Cba.": "Cordoba",
+      "Sta Fe": "Santa Fe",
+      "Sta. Fe": "Santa Fe",
+      "Mza": "Mendoza",
+      "Mza.": "Mendoza",
+      "Tuc": "Tucuman",
+      "Tuc.": "Tucuman",
+      "Sgo del Estero": "Santiago del Estero",
+      "Sgo. del Estero": "Santiago del Estero",
+      "Nqn": "Neuquen",
+      "Nqn.": "Neuquen",
+      "RN": "Rio Negro",
+      "R.N.": "Rio Negro",
+      "TdF": "Tierra del Fuego",
+      "T. del Fuego": "Tierra del Fuego"
+    },
+    "valores_validos": [
+      "Buenos Aires",
+      "Capital Federal",
+      "Catamarca",
+      "Chaco",
+      "Chubut",
+      "Cordoba",
+      "Corrientes",
+      "Entre Rios",
+      "Formosa",
+      "Jujuy",
+      "La Pampa",
+      "La Rioja",
+      "Mendoza",
+      "Misiones",
+      "Neuquen",
+      "Rio Negro",
+      "Salta",
+      "San Juan",
+      "San Luis",
+      "Santa Cruz",
+      "Santa Fe",
+      "Santiago del Estero",
+      "Tierra del Fuego",
+      "Tucuman"
+    ]
+  },
+
+  "localidad": {
+    "_descripcion": "Normalizacion de localidades comunes",
+    "mapeo": {
+      "Microcentro": "Capital Federal",
+      "Centro": null,
+      "Zona Norte": null,
+      "Zona Sur": null,
+      "Zona Oeste": null
+    },
+    "limpiar_prefijos": ["Partido de ", "Ciudad de ", "Localidad de "]
+  },
+
+  "modalidad": {
+    "_descripcion": "Normalizar modalidad de trabajo",
+    "mapeo": {
+      "remote": "remoto",
+      "on-site": "presencial",
+      "on site": "presencial",
+      "hybrid": "hibrido",
+      "home office": "remoto",
+      "homeoffice": "remoto",
+      "teletrabajo": "remoto",
+      "semi-presencial": "hibrido",
+      "semipresencial": "hibrido"
+    },
+    "valores_validos": ["presencial", "remoto", "hibrido"]
+  },
+
+  "nivel_seniority": {
+    "_descripcion": "Normalizar nivel de seniority",
+    "mapeo": {
+      "jr": "junior",
+      "jr.": "junior",
+      "ssr": "semisenior",
+      "semi-senior": "semisenior",
+      "semi senior": "semisenior",
+      "sr": "senior",
+      "sr.": "senior",
+      "lead": "senior",
+      "jefe": "manager",
+      "gerente": "manager",
+      "director": "manager",
+      "coordinador": "manager"
+    },
+    "valores_validos": ["trainee", "junior", "semisenior", "senior", "manager"]
+  },
+
+  "jornada": {
+    "_descripcion": "Normalizar tipo de jornada",
+    "mapeo": {
+      "full time": "full-time",
+      "fulltime": "full-time",
+      "tiempo completo": "full-time",
+      "part time": "part-time",
+      "parttime": "part-time",
+      "medio tiempo": "part-time",
+      "por horas": "part-time"
+    },
+    "valores_validos": ["full-time", "part-time", "flexible"]
+  },
+
+  "texto": {
+    "_descripcion": "Limpieza general de texto",
+    "remover": ["\\n", "\\r", "\\t"],
+    "strip_whitespace": true,
+    "max_length": {
+      "titulo_limpio": 200,
+      "descripcion": 10000
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "_version": "1.0",
+  "_descripcion": "Valores default para campos no extraidos",
+  "_fecha": "2025-12-14",
+
+  "campos_booleanos": {
+    "_descripcion": "Default 0 (False) si no se menciona explicita el requisito",
+    "tiene_gente_cargo": {
+      "default": 0,
+      "nota": "Solo 1 si dice explicitamente 'a cargo de equipo', 'personal a cargo'"
+    },
+    "requiere_movilidad_propia": {
+      "default": 0,
+      "nota": "Solo 1 si dice 'movilidad propia', 'vehiculo propio', 'auto propio'"
+    },
+    "requiere_licencia_conducir": {
+      "default": 0,
+      "nota": "Solo 1 si dice 'licencia de conducir', 'registro de conducir'"
+    },
+    "disponibilidad_viajar": {
+      "default": 0,
+      "nota": "Solo 1 si dice 'disponibilidad para viajar', 'viajes frecuentes'"
+    },
+    "discapacidad_apto": {
+      "default": 0,
+      "nota": "Solo 1 si dice 'apto discapacidad', 'inclusivo', 'ley de discapacidad'"
+    },
+    "requiere_registro_conducir": {
+      "default": 0,
+      "nota": "Alias de requiere_licencia_conducir"
+    }
+  },
+
+  "campos_numericos": {
+    "vacantes": {
+      "default": 1,
+      "nota": "Si no especifica cantidad, asumir 1 vacante"
+    },
+    "experiencia_min_anios": {
+      "default": null,
+      "nota": "No asumir experiencia si no se menciona"
+    },
+    "experiencia_max_anios": {
+      "default": null,
+      "nota": "No asumir experiencia maxima"
+    }
+  },
+
+  "campos_texto": {
+    "moneda_salario": {
+      "default": "ARS",
+      "nota": "Asumir pesos argentinos si no especifica"
+    },
+    "tipo_salario": {
+      "default": null,
+      "nota": "bruto, neto, o null si no especifica"
+    }
+  },
+
+  "aplicar_defaults_cuando": {
+    "_descripcion": "Condiciones para aplicar defaults",
+    "campo_null": true,
+    "campo_vacio": true,
+    "campo_boolean_invalido": true
+  }
+}

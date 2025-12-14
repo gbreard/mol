@@ -1,0 +1,56 @@
+{
+  "_version": "1.0",
+  "_descripcion": "Validacion de tipos - corrige errores ID 1118027243, 1118026729",
+  "_fecha": "2025-12-14",
+
+  "rechazo_booleanos": {
+    "_descripcion": "Si LLM retorna TRUE/FALSE/true/false en campo texto, convertir a null",
+    "campos_texto": [
+      "provincia",
+      "localidad",
+      "modalidad",
+      "nivel_seniority",
+      "area_funcional",
+      "titulo_limpio",
+      "tipo_contrato",
+      "jornada",
+      "industria",
+      "nivel_educativo",
+      "idiomas"
+    ],
+    "valores_rechazados": ["TRUE", "FALSE", "true", "false", "True", "False", "VERDADERO", "FALSO"],
+    "accion": "convertir_a_null"
+  },
+
+  "validacion_rangos": {
+    "_descripcion": "Rangos validos para campos numericos",
+    "experiencia_min_anios": {"min": 0, "max": 30, "accion_fuera_rango": "null"},
+    "experiencia_max_anios": {"min": 0, "max": 40, "accion_fuera_rango": "null"},
+    "salario_min": {"min": 10000, "max": 50000000, "accion_fuera_rango": "null"},
+    "salario_max": {"min": 10000, "max": 100000000, "accion_fuera_rango": "null"},
+    "edad_min": {"min": 16, "max": 70, "accion_fuera_rango": "null"},
+    "edad_max": {"min": 16, "max": 70, "accion_fuera_rango": "null"},
+    "vacantes": {"min": 1, "max": 500, "accion_fuera_rango": "null"}
+  },
+
+  "validacion_consistencia": {
+    "_descripcion": "Validaciones cruzadas entre campos",
+    "reglas": [
+      {
+        "nombre": "experiencia_min_menor_max",
+        "condicion": "experiencia_min_anios > experiencia_max_anios",
+        "accion": "swap_valores"
+      },
+      {
+        "nombre": "salario_min_menor_max",
+        "condicion": "salario_min > salario_max",
+        "accion": "swap_valores"
+      },
+      {
+        "nombre": "edad_min_menor_max",
+        "condicion": "edad_min > edad_max",
+        "accion": "swap_valores"
+      }
+    ]
+  }
+}

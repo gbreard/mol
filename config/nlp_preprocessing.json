@@ -1,0 +1,24 @@
+{
+  "_version": "1.0",
+  "_descripcion": "Campos estructurados del scraping - extraer ANTES del LLM",
+  "_origen": "Excel validacion Gold Set - Error ID 1118026700",
+  "_fecha": "2025-12-14",
+
+  "campos_estructurados": {
+    "ubicacion": {
+      "campo_origen": "ubicacion",
+      "separador": ",",
+      "campos_destino": ["localidad", "provincia"],
+      "orden": ["localidad", "provincia"],
+      "regex_alternativo": "^(.+),\\s*(.+)$",
+      "notas": "Formato esperado: 'Localidad, Provincia' - si no tiene coma, asumir provincia"
+    }
+  },
+
+  "campos_directos": {
+    "_descripcion": "Campos que ya vienen del scraping y no requieren LLM",
+    "fecha_publicacion": "fecha_publicacion",
+    "empresa": "empresa",
+    "titulo_original": "titulo"
+  }
+}
