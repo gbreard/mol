@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-NLP Postprocessor v1.0 - Correcciones post-LLM basadas en validacion humana
-==========================================================================
+NLP Postprocessor v1.1 - Correcciones post-LLM + merge skills regex
+====================================================================
 
-VERSION: 1.0.0
+VERSION: 1.1.0
 FECHA: 2025-12-14
-ORIGEN: Excel validacion Gold Set 49 ofertas
+ORIGEN: Excel validacion Gold Set 49 ofertas + skills_database.json
 
 ERRORES CORREGIDOS:
   - ID 1118027243: Campos retornan TRUE en lugar de texto
@@ -45,7 +45,7 @@ class NLPPostprocessor:
     Postprocesador NLP basado en configs JSON
     """
 
-    VERSION = "1.0.0"
+    VERSION = "1.1.0"
 
     def __init__(self, config_dir: str = None, verbose: bool = False):
         if config_dir is None:
@@ -64,6 +64,7 @@ class NLPPostprocessor:
             "experiencia_corregida": 0,
             "campos_inferidos": 0,
             "campos_normalizados": 0,
+            "skills_regex_agregadas": 0,
             "defaults_aplicados": 0,
         }
 
@@ -425,7 +426,76 @@ class NLPPostprocessor:
         return data
 
     # =========================================================================
-    # PASO 6: DEFAULTS
+    # PASO 6: MERGE SKILLS REGEX (NUEVO v1.1)
+    # =========================================================================
+
+    def _merge_skills_regex(self, data: Dict[str, Any], skills_regex: Dict[str, List[str]]) -> Dict[str, Any]:
+        """
+        Combina skills extraidas por regex (diccionario) con skills del LLM
+
+        Args:
+            data: Dict con campos del LLM
+            skills_regex: Dict con skills_tecnicas_regex y soft_skills_regex
+
+        Returns:
+            Dict con skills combinadas (sin duplicados)
+        """
+        if not skills_regex:
+            return data
+
+        # Skills tecnicas: combinar regex + LLM
+        skills_tecnicas_regex = skills_regex.get("skills_tecnicas_regex", [])
+        skills_tecnicas_llm = data.get("skills_tecnicas_list", [])
+        tecnologias_llm = data.get("tecnologias_list", [])
+
+        # Normalizar formato (puede ser lista de strings o lista de dicts)
+        def extract_valores(lista):
+            valores = []
+            for item in lista or []:
+                if isinstance(item, dict):
+                    valores.append(item.get("valor", "").lower())
+                elif isinstance(item, str):
+                    valores.append(item.lower())
+            return valores
+
+        skills_llm_norm = set(extract_valores(skills_tecnicas_llm) + extract_valores(tecnologias_llm))
+
+        # Agregar skills del regex que no estan en LLM
+        nuevas_skills = []
+        for skill in skills_tecnicas_regex:
+            if skill.lower() not in skills_llm_norm:
+                nuevas_skills.append({"valor": skill, "texto_original": f"[regex] {skill}"})
+                if self.verbose:
+                    print(f"[SKILLS] Agregado de regex: {skill}")
+
+        if nuevas_skills:
+            if not isinstance(skills_tecnicas_llm, list):
+                skills_tecnicas_llm = []
+            data["skills_tecnicas_list"] = skills_tecnicas_llm + nuevas_skills
+            self.stats["skills_regex_agregadas"] = len(nuevas_skills)
+
+        # Soft skills: combinar regex + LLM
+        soft_skills_regex = skills_regex.get("soft_skills_regex", [])
+        soft_skills_llm = data.get("soft_skills_list", [])
+
+        soft_llm_norm = set(extract_valores(soft_skills_llm))
+
+        nuevas_soft = []
+        for skill in soft_skills_regex:
+            if skill.lower() not in soft_llm_norm:
+                nuevas_soft.append({"valor": skill, "texto_original": f"[regex] {skill}"})
+                if self.verbose:
+                    print(f"[SKILLS] Soft agregado de regex: {skill}")
+
+        if nuevas_soft:
+            if not isinstance(soft_skills_llm, list):
+                soft_skills_llm = []
+            data["soft_skills_list"] = soft_skills_llm + nuevas_soft
+
+        return data
+
+    # =========================================================================
+    # PASO 7: DEFAULTS
     # =========================================================================
 
     def _apply_defaults(self, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -475,13 +545,15 @@ class NLPPostprocessor:
     # PIPELINE COMPLETO
     # =========================================================================
 
-    def postprocess(self, data: Dict[str, Any], descripcion: str = "") -> Dict[str, Any]:
+    def postprocess(self, data: Dict[str, Any], descripcion: str = "",
+                    skills_regex: Dict[str, List[str]] = None) -> Dict[str, Any]:
         """
         Aplica todas las correcciones post-LLM
 
         Args:
             data: Dict con campos extraidos por el LLM
             descripcion: Texto original de la oferta
+            skills_regex: Dict con skills_tecnicas_regex y soft_skills_regex de Capa 0
 
         Returns:
             Dict con campos corregidos
@@ -502,7 +574,11 @@ class NLPPostprocessor:
         # Paso 5: Normalizacion
         data = self._normalize(data)
 
-        # Paso 6: Defaults
+        # Paso 6: Merge skills regex (NUEVO v1.1)
+        if skills_regex:
+            data = self._merge_skills_regex(data, skills_regex)
+
+        # Paso 7: Defaults
         data = self._apply_defaults(data)
 
         if self.verbose:
@@ -511,7 +587,7 @@ class NLPPostprocessor:
         return data
 
     def process_complete(self, row: Dict[str, Any], llm_output: Dict[str, Any],
-                        descripcion: str) -> Dict[str, Any]:
+                        descripcion: str, skills_regex: Dict[str, List[str]] = None) -> Dict[str, Any]:
         """
         Pipeline completo: preprocesamiento + postprocesamiento
 
@@ -519,6 +595,7 @@ class NLPPostprocessor:
             row: Fila original de ofertas (para campos estructurados)
             llm_output: Output del LLM
             descripcion: Texto de la descripcion
+            skills_regex: Dict con skills_tecnicas_regex y soft_skills_regex de Capa 0
 
         Returns:
             Dict final con todos los campos corregidos
@@ -526,8 +603,8 @@ class NLPPostprocessor:
         # Preprocesar (campos estructurados)
         pre_data = self.preprocess(row)
 
-        # Postprocesar (correcciones)
-        post_data = self.postprocess(llm_output.copy(), descripcion)
+        # Postprocesar (correcciones + merge skills)
+        post_data = self.postprocess(llm_output.copy(), descripcion, skills_regex)
 
         # Merge: preprocesados tienen prioridad si LLM no extrajo
         for campo, valor in pre_data.items():

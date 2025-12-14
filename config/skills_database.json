@@ -1,0 +1,235 @@
+{
+  "version": "1.1.0",
+  "last_updated": "2025-10-25",
+  "description": "Base de datos expandida de skills técnicas para detección NLP",
+  "total_skills": 215,
+
+  "categorias": {
+    "lenguajes_programacion": {
+      "skills": [
+        "python", "java", "javascript", "typescript", "c\\+\\+", "c#", "csharp",
+        "ruby", "php", "go", "golang", "rust", "kotlin", "swift", "scala",
+        "r", "matlab", "perl", "bash", "shell", "powershell",
+        "dart", "elixir", "haskell", "lua", "groovy", "objective-c"
+      ]
+    },
+
+    "frameworks_web": {
+      "skills": [
+        "django", "flask", "fastapi", "spring", "spring boot", "react",
+        "angular", "vue", "vuejs", "svelte", "next\\.?js", "nuxt",
+        "express", "nest\\.?js", "laravel", "symfony", "rails",
+        "asp\\.?net", "blazor", "jquery", "bootstrap", "tailwind",
+        "material ui", "chakra ui"
+      ]
+    },
+
+    "bases_datos": {
+      "skills": [
+        "postgresql", "postgres", "mysql", "oracle", "sql server", "sqlserver",
+        "mongo\\s?db", "mongodb", "redis", "cassandra", "dynamodb",
+        "elasticsearch", "neo4j", "mariadb", "sqlite", "couchdb",
+        "firebase", "supabase", "cockroachdb", "timescaledb"
+      ]
+    },
+
+    "cloud_devops": {
+      "skills": [
+        "aws", "amazon web services", "azure", "microsoft azure", "gcp",
+        "google cloud", "docker", "kubernetes", "k8s", "jenkins",
+        "gitlab ci", "github actions", "circleci", "travis ci",
+        "terraform", "ansible", "chef", "puppet", "vagrant",
+        "helm", "argocd", "prometheus", "grafana", "datadog",
+        "new relic", "cloudwatch", "cloudformation"
+      ]
+    },
+
+    "data_science_ml": {
+      "skills": [
+        "pandas", "numpy", "scikit-learn", "sklearn", "tensorflow",
+        "keras", "pytorch", "spark", "pyspark", "hadoop",
+        "tableau", "power bi", "powerbi", "qlik", "looker",
+        "jupyter", "r studio", "matplotlib", "seaborn", "plotly",
+        "airflow", "dbt", "kafka", "flink", "storm"
+      ]
+    },
+
+    "testing_qa": {
+      "skills": [
+        "selenium", "cypress", "playwright", "jest", "mocha",
+        "pytest", "junit", "testng", "cucumber", "postman",
+        "jmeter", "gatling", "robot framework", "appium",
+        "karma", "jasmine", "chai"
+      ]
+    },
+
+    "herramientas_desarrollo": {
+      "skills": [
+        "git", "github", "gitlab", "bitbucket", "svn",
+        "jira", "confluence", "trello", "asana", "notion",
+        "slack", "teams", "zoom", "vscode", "intellij",
+        "pycharm", "eclipse", "netbeans", "vim", "emacs",
+        "postman", "insomnia", "swagger", "figma", "sketch",
+        "adobe xd", "invision"
+      ]
+    },
+
+    "mobile": {
+      "skills": [
+        "android", "ios", "react native", "flutter", "xamarin",
+        "ionic", "cordova", "swift ui", "jetpack compose"
+      ]
+    },
+
+    "blockchain_web3": {
+      "skills": [
+        "solidity", "ethereum", "bitcoin", "blockchain", "web3",
+        "smart contracts", "nft", "defi", "truffle", "hardhat"
+      ]
+    },
+
+    "erp_crm": {
+      "skills": [
+        "sap", "oracle erp", "salesforce", "dynamics 365", "crm",
+        "sap hana", "sap s/4hana", "sap fico", "sap mm", "sap sd",
+        "sap abap", "sap basis", "hubspot", "zoho"
+      ]
+    },
+
+    "office_productividad": {
+      "skills": [
+        "excel", "word", "power\\s?point", "powerpoint", "office",
+        "microsoft office", "google sheets", "google docs",
+        "google slides", "outlook", "sharepoint", "onedrive"
+      ]
+    },
+
+    "cms_ecommerce": {
+      "skills": [
+        "wordpress", "drupal", "joomla", "magento", "shopify",
+        "woocommerce", "prestashop", "opencart", "vtex"
+      ]
+    },
+
+    "seguridad": {
+      "skills": [
+        "ciberseguridad", "cybersecurity", "pentesting", "ethical hacking",
+        "owasp", "burp suite", "metasploit", "nmap", "wireshark",
+        "kali linux", "splunk", "siem", "iam", "sso",
+        "oauth", "jwt", "ssl", "tls", "vpn"
+      ]
+    },
+
+    "metodologias_agile": {
+      "skills": [
+        "agile", "scrum", "kanban", "lean", "safe", "xp",
+        "devops", "ci/cd", "continuous integration", "continuous delivery",
+        "tdd", "bdd", "pair programming"
+      ]
+    },
+
+    "api_integracion": {
+      "skills": [
+        "rest", "restful", "rest api", "graphql", "soap", "grpc",
+        "websocket", "api gateway", "microservicios", "microservices",
+        "event driven", "message queue", "rabbitmq", "activemq"
+      ]
+    },
+
+    "frontend_ui": {
+      "skills": [
+        "html", "html5", "css", "css3", "sass", "scss", "less",
+        "webpack", "vite", "babel", "typescript", "responsive design",
+        "ui/ux", "ux/ui", "material design", "atomic design"
+      ]
+    },
+
+    "backend_arquitectura": {
+      "skills": [
+        "microservicios", "monolith", "serverless", "lambda",
+        "clean architecture", "ddd", "domain driven design",
+        "cqrs", "event sourcing", "hexagonal architecture"
+      ]
+    },
+
+    "bi_analytics": {
+      "skills": [
+        "power bi", "tableau", "qlik sense", "looker", "metabase",
+        "redash", "superset", "dax", "m language", "sql",
+        "data warehouse", "etl", "data pipeline", "big data"
+      ]
+    }
+  },
+
+  "soft_skills_expanded": {
+    "comunicacion": [
+      "comunicación", "comunicacion efectiva", "comunicacion clara",
+      "habilidades comunicativas", "comunicacion oral", "comunicacion escrita"
+    ],
+    "trabajo_equipo": [
+      "trabajo en equipo", "colaboracion", "colaboración",
+      "espíritu de equipo", "espiritu de equipo", "team work"
+    ],
+    "liderazgo": [
+      "liderazgo", "capacidad de liderazgo", "lider", "líder",
+      "management", "gestión de equipos", "gestion de equipos"
+    ],
+    "proactividad": [
+      "proactivo", "proactiva", "proactividad", "iniciativa",
+      "autodidacta", "autónomo", "autonomo"
+    ],
+    "resolucion_problemas": [
+      "resolución de problemas", "resolucion de problemas",
+      "problem solving", "pensamiento crítico", "pensamiento critico",
+      "analítico", "analitico", "capacidad analítica", "capacidad analitica"
+    ],
+    "adaptabilidad": [
+      "adaptabilidad", "flexibilidad", "flexible", "adaptable",
+      "aprendizaje rápido", "aprendizaje rapido", "fast learner"
+    ],
+    "creatividad": [
+      "creatividad", "creativo", "creativa", "innovacion", "innovación",
+      "pensamiento creativo"
+    ],
+    "organizacion": [
+      "organización", "organizacion", "planificación", "planificacion",
+      "gestión del tiempo", "gestion del tiempo", "time management"
+    ],
+    "orientacion_resultados": [
+      "orientación a resultados", "orientacion a resultados",
+      "orientado a objetivos", "goal oriented", "enfoque en resultados"
+    ],
+    "atencion_detalle": [
+      "atención al detalle", "atencion al detalle", "detallista",
+      "meticuloso", "precisión", "precision"
+    ]
+  },
+
+  "certificaciones_comunes": [
+    "aws certified", "azure certified", "google cloud certified",
+    "pmp", "prince2", "itil", "scrum master", "csm", "psm",
+    "product owner", "cisco", "ccna", "ccnp",
+    "comptia", "security\\+", "network\\+",
+    "ceh", "cissp", "cisa", "cism",
+    "oracle certified", "microsoft certified",
+    "salesforce certified", "red hat certified"
+  ],
+
+  "idiomas_tech": {
+    "ingles": ["inglés", "ingles", "english"],
+    "portugues": ["portugués", "portugues", "portuguese"],
+    "aleman": ["alemán", "aleman", "german", "deutsch"],
+    "frances": ["francés", "frances", "french", "français"],
+    "italiano": ["italiano", "italian"],
+    "chino": ["chino", "mandarin", "chinese"],
+    "japones": ["japonés", "japones", "japanese"]
+  },
+
+  "niveles_idioma": {
+    "basico": ["básico", "basico", "basic", "elementary", "a1", "a2"],
+    "intermedio": ["intermedio", "intermediate", "b1", "b2"],
+    "avanzado": ["avanzado", "advanced", "fluent", "fluido", "c1", "c2"],
+    "nativo": ["nativo", "native", "mother tongue", "lengua materna"],
+    "bilingue": ["bilingüe", "bilingue", "bilingual"]
+  }
+}

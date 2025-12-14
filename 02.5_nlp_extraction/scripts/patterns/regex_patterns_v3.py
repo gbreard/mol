@@ -515,9 +515,10 @@ class SkillsPatterns:
 
     @classmethod
     def _load_skills_database(cls):
-        """Carga la base de datos de skills desde JSON"""
+        """Carga la base de datos de skills desde JSON (ubicación: config/skills_database.json)"""
         if cls._skills_db is None:
-            config_dir = Path(__file__).parent.parent.parent / "config"
+            # Ruta al config/ en la raíz del proyecto (4 niveles arriba desde patterns/)
+            config_dir = Path(__file__).parent.parent.parent.parent / "config"
             skills_file = config_dir / "skills_database.json"
 
             with open(skills_file, 'r', encoding='utf-8') as f:

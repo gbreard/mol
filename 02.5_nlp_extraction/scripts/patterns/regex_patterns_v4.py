@@ -710,6 +710,10 @@ def extract_all(texto: str, titulo: str = "", empresa: str = "") -> Dict[str, An
                 seniority = "lead/manager"
             break
 
+    # 15. Skills técnicas desde diccionario (ACTIVADO v4.1)
+    skills_tecnicas_regex = SkillsPatterns.extract_technical_skills(texto_completo)
+    soft_skills_regex = SkillsPatterns.extract_soft_skills(texto_completo)
+
     return {
         # === CAMPOS DE v3 ===
         "experiencia_min_anios": exp_min,
@@ -753,6 +757,10 @@ def extract_all(texto: str, titulo: str = "", empresa: str = "") -> Dict[str, An
         "header_ubicacion": header.get("ubicacion"),
         "header_modalidad": header.get("modalidad"),
         "header_salario": header.get("salario"),
+
+        # === SKILLS desde diccionario (ACTIVADO v4.1) ===
+        "skills_tecnicas_regex": skills_tecnicas_regex,
+        "soft_skills_regex": soft_skills_regex,
     }
 
 
