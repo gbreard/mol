@@ -55,6 +55,28 @@ Sistema de monitoreo del mercado laboral argentino para OEDE. Scrapea ofertas de
 | `config/nivel_seniority_esco_map.json` | Mapeo seniority → ISCO + matriz penalizacion |
 | `config/sector_isco_compatibilidad.json` | Compatibilidad sector empresa ↔ ISCO |
 
+### Diccionarios de Extraccion
+
+| Archivo | Proposito | Items |
+|---------|-----------|-------|
+| `config/skills_database.json` | Skills tecnicas, LATAM, logistica, contables | ~320 |
+| `config/oficios_arg.json` | Oficios y ocupaciones argentinas | ~170 |
+| `config/nlp_preprocessing.json` | Preprocesamiento ubicacion | - |
+| `config/nlp_validation.json` | Validacion tipos (rechazo booleanos) | - |
+| `config/nlp_extraction_patterns.json` | Patterns regex experiencia | - |
+| `config/nlp_inference_rules.json` | Inferencia modalidad/seniority/area | - |
+| `config/nlp_defaults.json` | Valores default campos | - |
+| `config/nlp_normalization.json` | Normalizacion provincias (CABA) | - |
+
+**Agregar nuevas skills:**
+```python
+# Editar config/skills_database.json, categoria correspondiente
+# NO hardcodear en codigo Python
+# Categorias disponibles: lenguajes_programacion, frameworks_web, bases_datos,
+# cloud_devops, plataformas_latam, skills_logistica, skills_contables,
+# skills_operativas_retail, skills_gastronomia, certificaciones_arg
+```
+
 ---
 
 ## ARCHIVOS DEPRECADOS - NO USAR

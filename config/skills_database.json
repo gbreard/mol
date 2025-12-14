@@ -1,8 +1,8 @@
 {
-  "version": "1.1.0",
-  "last_updated": "2025-10-25",
-  "description": "Base de datos expandida de skills técnicas para detección NLP",
-  "total_skills": 215,
+  "version": "2.0.0",
+  "last_updated": "2025-12-14",
+  "description": "Base de datos expandida de skills técnicas, operativas y LATAM para detección NLP",
+  "total_skills": 320,
 
   "categorias": {
     "lenguajes_programacion": {
@@ -158,7 +158,79 @@
         "redash", "superset", "dax", "m language", "sql",
         "data warehouse", "etl", "data pipeline", "big data"
       ]
+    },
+
+    "plataformas_latam": {
+      "_descripcion": "Plataformas y fintechs de Latinoamérica",
+      "skills": [
+        "rappi", "pedidosya", "glovo", "mercado libre", "mercadolibre",
+        "mercado pago", "mercadopago", "mercado envios", "mercadoenvios",
+        "despegar", "tiendanube", "vtex", "ualá", "uala",
+        "naranja x", "modo", "cuenta dni", "brubank", "reba"
+      ]
+    },
+
+    "skills_logistica": {
+      "_descripcion": "Skills de logística, depósito y distribución",
+      "skills": [
+        "picking", "packing", "shipping", "rf", "radiofrecuencia",
+        "wms", "tms", "autoelevador", "zorras", "transpaleta",
+        "apilador", "cross docking", "cross-docking", "fifo", "lifo",
+        "sap wm", "sap ewm", "carga y descarga", "expedición", "expedicion",
+        "inventario", "stock", "almacén", "almacen", "depósito", "deposito"
+      ]
+    },
+
+    "skills_contables": {
+      "_descripcion": "Skills contables, impositivas y administrativas argentinas",
+      "skills": [
+        "conciliación bancaria", "conciliacion bancaria", "arqueo de caja",
+        "balance", "estado de resultados", "liquidación de sueldos", "liquidacion de sueldos",
+        "cargas sociales", "afip", "arca", "monotributo",
+        "cuentas por pagar", "cuentas por cobrar", "facturación electrónica", "facturacion electronica",
+        "iva", "iibb", "ingresos brutos", "ganancias", "impuesto a las ganancias",
+        "tango", "tango gestión", "bejerman", "colppy", "xubio",
+        "libro diario", "libro mayor", "asientos contables",
+        "retenciones", "percepciones", "siradig", "sicore"
+      ]
+    },
+
+    "skills_operativas_retail": {
+      "_descripcion": "Skills operativas de retail y comercio",
+      "skills": [
+        "reposición", "reposicion", "góndola", "gondola", "planograma",
+        "pop", "pdv", "punto de venta", "vencimientos", "merma", "quiebre",
+        "caja registradora", "pos", "apertura de local", "cierre de local",
+        "arqueo", "atención al cliente", "atencion al cliente",
+        "manejo de dinero", "devoluciones", "cambios",
+        "inventario físico", "inventario fisico", "etiquetado", "control de stock"
+      ]
+    },
+
+    "skills_gastronomia": {
+      "_descripcion": "Skills gastronómicas y de servicio",
+      "skills": [
+        "mise en place", "servicio de salón", "servicio de salon", "comanda",
+        "cocina caliente", "cocina fría", "cocina fria", "pastelería", "pasteleria",
+        "parrilla", "cafetería", "cafeteria", "barismo", "barista",
+        "coctelería", "cocteleria", "sommelier",
+        "manipulación de alimentos", "manipulacion de alimentos",
+        "bromatología", "bromatologia", "haccp", "fifo cocina"
+      ]
     }
+  },
+
+  "certificaciones_arg": {
+    "_descripcion": "Certificaciones y habilitaciones argentinas",
+    "items": [
+      "carnet de autoelevador", "carnet autoelevador",
+      "libreta sanitaria", "carnet de manipulación de alimentos",
+      "matrícula profesional", "matricula profesional",
+      "licencia de conducir", "registro de conducir",
+      "habilitación municipal", "habilitacion municipal",
+      "curso manipulación de alimentos", "curso manipulacion de alimentos",
+      "rcp", "primeros auxilios", "trabajo en altura", "espacios confinados"
+    ]
   },
 
   "soft_skills_expanded": {

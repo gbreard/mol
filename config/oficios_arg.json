@@ -1,0 +1,156 @@
+{
+  "_version": "1.0.0",
+  "_descripcion": "Oficios y ocupaciones argentinas para extracción regex",
+  "_migrado_de": "regex_patterns_v3.py líneas 541-707",
+  "_fecha_migracion": "2025-12-14",
+  "_total_items": 170,
+
+  "oficios": {
+    "construccion_mantenimiento": {
+      "_descripcion": "Oficios de construcción y mantenimiento edilicio",
+      "items": [
+        "refrigeración", "refrigeracion", "refrigeración industrial",
+        "electricidad", "electricista",
+        "soldadura", "soldador",
+        "carpintería", "carpinteria", "carpintero",
+        "plomería", "plomeria", "plomero",
+        "gasista", "gas natural",
+        "albañilería", "albañileria", "albañil",
+        "pintura", "pintor",
+        "yeso", "yesero",
+        "colocación de pisos", "colocador",
+        "herrería", "herreria", "herrero",
+        "tornería", "torneria", "tornero",
+        "mecánica", "mecanica", "mecánico", "mecanico",
+        "mecánica automotriz", "mecanica automotriz",
+        "mecánica industrial", "mecanica industrial",
+        "mantenimiento industrial", "mantenimiento edilicio", "mantenimiento general"
+      ]
+    },
+
+    "servicios_generales": {
+      "_descripcion": "Servicios de atención, limpieza y seguridad",
+      "items": [
+        "atención al cliente", "atencion al cliente",
+        "ventas", "venta", "vendedor",
+        "cajero", "cajera",
+        "reposición", "reposicion", "reponedor",
+        "limpieza", "limpieza industrial", "limpieza profunda",
+        "seguridad", "vigilancia", "guardia de seguridad",
+        "portería", "porteria", "portero", "sereno",
+        "jardinería", "jardineria", "jardinero"
+      ]
+    },
+
+    "logistica_transporte": {
+      "_descripcion": "Logística, almacén y transporte",
+      "items": [
+        "logística", "logistica",
+        "almacén", "almacen", "almacenero",
+        "depósito", "deposito",
+        "operación de maquinaria",
+        "manejo de montacargas", "montacargas", "autoelevador",
+        "chofer", "conductor",
+        "repartidor", "delivery",
+        "mensajería", "mensajeria", "cadete"
+      ]
+    },
+
+    "gastronomia": {
+      "_descripcion": "Cocina, pastelería y servicio gastronómico",
+      "items": [
+        "cocina", "cocinero", "chef",
+        "pastelería", "pasteleria",
+        "panadería", "panaderia",
+        "barista", "bartender",
+        "mozo", "camarero", "maitre"
+      ]
+    },
+
+    "salud": {
+      "_descripcion": "Enfermería y cuidado de personas",
+      "items": [
+        "enfermería", "enfermeria", "enfermero",
+        "auxiliar de enfermería",
+        "cuidado de adultos mayores", "cuidado de ancianos", "cuidado de pacientes",
+        "cuidador",
+        "asistente geriátrico", "asistente geriatrico"
+      ]
+    },
+
+    "belleza_estetica": {
+      "_descripcion": "Peluquería, estética y cuidado personal",
+      "items": [
+        "peluquería", "peluqueria", "peluquero",
+        "estética", "estetica",
+        "manicura", "pedicura",
+        "maquillaje", "maquillador"
+      ]
+    },
+
+    "administracion_oficina": {
+      "_descripcion": "Administración, secretariado y oficina",
+      "items": [
+        "administración", "administracion",
+        "secretariado", "secretaria",
+        "recepción", "recepcion", "recepcionista",
+        "asistente administrativo",
+        "data entry", "carga de datos",
+        "archivo"
+      ]
+    },
+
+    "contabilidad_finanzas": {
+      "_descripcion": "Contabilidad, impuestos y finanzas",
+      "items": [
+        "contabilidad",
+        "liquidación de sueldos", "liquidacion de sueldos",
+        "impuestos", "art",
+        "nómina", "nomina",
+        "tesorería", "tesoreria"
+      ]
+    },
+
+    "recursos_humanos": {
+      "_descripcion": "RRHH, selección y capacitación",
+      "items": [
+        "selección de personal", "seleccion de personal",
+        "reclutamiento",
+        "capacitación", "capacitacion",
+        "relaciones laborales"
+      ]
+    },
+
+    "marketing_ventas": {
+      "_descripcion": "Marketing digital y publicidad",
+      "items": [
+        "marketing digital",
+        "redes sociales", "community manager",
+        "seo", "sem",
+        "google analytics", "google ads", "facebook ads"
+      ]
+    },
+
+    "tecnologia_soporte": {
+      "_descripcion": "Soporte técnico y help desk",
+      "items": [
+        "soporte técnico", "soporte tecnico",
+        "mesa de ayuda", "help desk",
+        "reparación de pc", "reparacion de pc",
+        "reparación de computadoras", "reparacion de computadoras",
+        "redes informáticas", "redes informaticas"
+      ]
+    },
+
+    "produccion": {
+      "_descripcion": "Operarios y producción industrial",
+      "items": [
+        "operario de producción", "operario de produccion",
+        "operario de maquina", "operario de linea",
+        "control de calidad",
+        "inspección", "inspeccion",
+        "ensamblaje", "embalaje", "packing"
+      ]
+    }
+  }
+}
