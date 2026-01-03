@@ -1,0 +1,100 @@
+[
+  {
+    "id_oferta": "1118026700",
+    "esco_ok": true,
+    "comentario": "Match correcto. Vendedor de repuestos -> vendedor de piezas de repuesto de automoviles."
+  },
+  {
+    "id_oferta": "1118026729",
+    "esco_ok": true,
+    "comentario": "Match correcto. Responsable de deposito -> encargado de almacen / deposito."
+  },
+  {
+    "id_oferta": "1118027188",
+    "esco_ok": false,
+    "tipo_error": "programa_general",
+    "comentario": "Programa de pasantias general, no es especificamente disenador de interiores."
+  },
+  {
+    "id_oferta": "1118027243",
+    "esco_ok": true,
+    "comentario": "Match correcto. Abogado/a de impuestos -> ocupacion general abogado/abogada."
+  },
+  {
+    "id_oferta": "1118027261",
+    "esco_ok": true,
+    "comentario": "Match correcto. Supervisor de limpieza -> supervisor de servicio de limpieza."
+  },
+  {
+    "id_oferta": "1118027276",
+    "esco_ok": true,
+    "comentario": "v8.4: Ejecutivo de cuentas -> representante tecnico de ventas (familia correcta: ventas). Antes: tecnico de contadores electricos."
+  },
+  {
+    "id_oferta": "1118027662",
+    "esco_ok": false,
+    "tipo_error": "tipo_ocupacion",
+    "comentario": "Farmaceutico/a de farmacia minorista mapeado a ingeniero farmaceutico (nivel y ambito distintos)."
+  },
+  {
+    "id_oferta": "1118027834",
+    "esco_ok": true,
+    "comentario": "v8.3: Corregido. Vendedora digital -> vendedor/vendedora (antes: director de comercializacion - nivel jerarquico excesivo)."
+  },
+  {
+    "id_oferta": "1118027941",
+    "esco_ok": true,
+    "comentario": "Match correcto. Dibujante tecnico -> dibujante tecnico."
+  },
+  {
+    "id_oferta": "1118028027",
+    "esco_ok": true,
+    "comentario": "Match correcto. Operador de autoelevadores -> operador de carretilla elevadora."
+  },
+  {
+    "id_oferta": "1118028038",
+    "esco_ok": false,
+    "tipo_error": "nivel_jerarquico",
+    "comentario": "Ejecutivo/a comercial de cuentas mapeado a director comercial (nivel jerarquico excesivo)."
+  },
+  {
+    "id_oferta": "1118028201",
+    "esco_ok": true,
+    "comentario": "Match correcto. Operarios industria alimenticia -> operario de produccion de alimentos."
+  },
+  {
+    "id_oferta": "1118028376",
+    "esco_ok": true,
+    "comentario": "v8.4: Analista administrativo -> empleado administrativo (CORRECTO). Antes: analista de negocios."
+  },
+  {
+    "id_oferta": "1118028657",
+    "esco_ok": true,
+    "comentario": "Match correcto. Recepcionista -> recepcionista."
+  },
+  {
+    "id_oferta": "1118028681",
+    "esco_ok": true,
+    "comentario": "Match correcto. Administrativa/o -> empleado administrativo."
+  },
+  {
+    "id_oferta": "1118028828",
+    "esco_ok": true,
+    "comentario": "Match correcto. Modelista textil -> disenador de modelos para moldes (patronista)."
+  },
+  {
+    "id_oferta": "1118028833",
+    "esco_ok": true,
+    "comentario": "v8.4: Asesor comercial plan ahorro -> comercial de alquiler de camiones (familia comercial correcta). Antes: agente de alquiler de coches."
+  },
+  {
+    "id_oferta": "1118028887",
+    "esco_ok": true,
+    "comentario": "v8.4: Account Executive (Hunter) -> asistente de departamento de ventas (familia ventas correcta). Antes: agente de empleo (RRHH)."
+  },
+  {
+    "id_oferta": "1118028891",
+    "esco_ok": true,
+    "comentario": "Match correcto. Auxiliar contable -> administrativo contable."
+  }
+]

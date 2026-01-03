@@ -1,0 +1,67 @@
+{
+  "test_experiment": {
+    "id": "95f767cf",
+    "name": "test_experiment",
+    "timestamp": "2025-12-07T22:54:50.732557",
+    "metrics": {
+      "precision": 0.85,
+      "recall": 0.8
+    },
+    "config": {
+      "test": true
+    },
+    "description": "",
+    "tags": [
+      "test"
+    ],
+    "session_timings": {
+      "test_component": [
+        100.58500012382865
+      ]
+    }
+  },
+  "spike_reranker_baseline": {
+    "id": "ced13d10",
+    "name": "spike_reranker_baseline",
+    "timestamp": "2025-12-07T23:02:17.998488",
+    "metrics": {
+      "precision": 26.31578947368421,
+      "correct": 5,
+      "total": 19,
+      "avg_timing_ms": 175.6082631304468
+    },
+    "config": {
+      "use_reranker": true,
+      "top_k": 3
+    },
+    "description": "Baseline con ESCO-XLM reranker",
+    "tags": [
+      "spike",
+      "reranker",
+      "baseline"
+    ],
+    "session_timings": {}
+  },
+  "spike_reranker_sin": {
+    "id": "7619f3be",
+    "name": "spike_reranker_sin",
+    "timestamp": "2025-12-07T23:02:18.759136",
+    "metrics": {
+      "precision": 57.89473684210527,
+      "correct": 11,
+      "total": 19,
+      "avg_timing_ms": 39.857757865990465
+    },
+    "config": {
+      "use_reranker": false,
+      "top_k": 3
+    },
+    "description": "Experimento sin reranker (solo BGE-M3)",
+    "tags": [
+      "spike",
+      "reranker",
+      "experiment"
+    ],
+    "session_timings": {}
+  }
+}

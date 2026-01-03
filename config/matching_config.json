@@ -1,0 +1,161 @@
+{
+  "version": "2.1.0",
+  "descripcion": "Configuracion del pipeline de matching ESCO v2.1 con BGE-M3 semantico",
+  "fecha_actualizacion": "2025-12-10",
+
+  "scoring": {
+    "metodo": "bge_m3_semantico",
+    "modelo": "BAAI/bge-m3",
+    "embeddings_path": "database/embeddings",
+    "usar_cache_embeddings": true
+  },
+
+  "filtros": {
+    "tipo_oferta_validos": ["demanda_real"],
+    "calidad_texto_minima": ["alta", "media", "baja"],
+    "score_minimo_final": 0.50,
+    "usar_filtro_area": true,
+    "usar_filtro_seniority": true,
+    "usar_filtro_supervision": true
+  },
+
+  "bypass_diccionario": {
+    "habilitado": true,
+    "score_asignado": 0.99,
+    "tabla": "diccionario_arg_esco",
+    "usar_fuzzy": true,
+    "umbral_fuzzy": 0.85
+  },
+
+  "pesos_base": {
+    "_nota": "En v2.1 BGE-M3, estos pesos se usan para construir query semantica",
+    "titulo": 0.40,
+    "tareas": 0.30,
+    "skills": 0.20,
+    "descripcion": 0.10
+  },
+
+  "pesos_dinamicos": {
+    "tareas_ricas": {
+      "condicion": "len(tareas_explicitas) >= 3",
+      "pesos": {
+        "titulo": 0.30,
+        "tareas": 0.40,
+        "skills": 0.20,
+        "descripcion": 0.10
+      }
+    },
+    "skills_ricas": {
+      "condicion": "len(tecnologias_list) >= 5",
+      "pesos": {
+        "titulo": 0.35,
+        "tareas": 0.25,
+        "skills": 0.30,
+        "descripcion": 0.10
+      }
+    },
+    "solo_titulo": {
+      "condicion": "len(tareas_explicitas) == 0 and len(skills_tecnicas_list) == 0",
+      "pesos": {
+        "titulo": 0.85,
+        "tareas": 0.00,
+        "skills": 0.00,
+        "descripcion": 0.15
+      }
+    },
+    "datos_completos": {
+      "condicion": "len(tareas_explicitas) >= 3 and len(tecnologias_list) >= 3",
+      "pesos": {
+        "titulo": 0.25,
+        "tareas": 0.35,
+        "skills": 0.30,
+        "descripcion": 0.10
+      }
+    }
+  },
+
+  "penalizaciones": {
+    "seniority_mismatch_fuerte": {
+      "valor": -0.20,
+      "descripcion": "junior/trainee matched a gerente/director",
+      "pares": [
+        ["trainee", "1"],
+        ["junior", "11"],
+        ["junior", "12"]
+      ]
+    },
+    "seniority_mismatch_leve": {
+      "valor": -0.10,
+      "descripcion": "junior matched a senior sin supervision",
+      "pares": [
+        ["trainee", "2"],
+        ["junior", "13"]
+      ]
+    },
+    "sector_cruzado": {
+      "valor": -0.25,
+      "descripcion": "Sector empresa incompatible con ocupacion",
+      "usar_mapeo": "config/sector_isco_compatibilidad.json"
+    },
+    "gente_cargo_mismatch": {
+      "valor": -0.10,
+      "descripcion": "tiene_gente_cargo=false pero matched a rol de supervision"
+    }
+  },
+
+  "boosts": {
+    "sector_exacto": {
+      "valor": 0.10,
+      "descripcion": "sector_empresa coincide exactamente con sector ESCO"
+    },
+    "diccionario_isco_match": {
+      "valor": 0.05,
+      "descripcion": "ISCO del candidato esta en diccionario argentino"
+    },
+    "licencia_conducir_match": {
+      "valor": 0.05,
+      "descripcion": "licencia_conducir=true y rol es chofer/conductor"
+    },
+    "gente_cargo_match": {
+      "valor": 0.05,
+      "descripcion": "tiene_gente_cargo=true y rol es supervision/direccion"
+    }
+  },
+
+  "similitud": {
+    "_nota_v21": "En v2.1 se usa BGE-M3 para scoring semantico unificado",
+    "algoritmo_principal": "bge_m3_cosine",
+    "algoritmo_fallback": "fuzzy_ratio",
+    "usar_embeddings": true,
+    "modelo_embeddings": "BAAI/bge-m3",
+    "embeddings_precalculados": true
+  },
+
+  "thresholds": {
+    "confirmado_score": 0.60,
+    "confirmado_coverage": 0.40,
+    "revision": 0.50,
+    "similarity_skills": 0.50,
+    "_comentario": "Score >= confirmado_score AND coverage >= confirmado_coverage = CONFIRMADO"
+  },
+
+  "busqueda": {
+    "top_k_candidatos": 10,
+    "top_k_final": 3,
+    "batch_size": 20
+  },
+
+  "output": {
+    "incluir_alternativas": true,
+    "max_alternativas": 3,
+    "incluir_scores_componentes": true,
+    "incluir_metadata_debug": false
+  },
+
+  "logging": {
+    "nivel": "INFO",
+    "log_file": "logs/matching_v2.log",
+    "log_cada_oferta": false,
+    "log_resumen_batch": true
+  }
+}

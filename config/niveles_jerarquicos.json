@@ -1,0 +1,117 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "description": "Configuración de niveles jerárquicos para matching",
+    "updated": "2025-12-09"
+  },
+
+  "niveles": {
+    "director": {
+      "valor": 6,
+      "keywords": [
+        "director", "directora", "ceo", "cfo", "cto", "coo", "cio",
+        "chief", "presidente", "presidenta", "vp", "vicepresidente"
+      ]
+    },
+    "gerente": {
+      "valor": 5,
+      "keywords": [
+        "gerente", "gerenta", "manager", "gerencial", "general manager",
+        "country manager", "regional manager"
+      ]
+    },
+    "jefe": {
+      "valor": 4,
+      "keywords": [
+        "jefe", "jefa", "head of", "head", "responsable de area",
+        "lider de equipo", "team lead", "team leader"
+      ]
+    },
+    "supervisor": {
+      "valor": 3.5,
+      "keywords": [
+        "supervisor", "supervisora", "encargado", "encargada",
+        "capataz", "responsable"
+      ]
+    },
+    "coordinador": {
+      "valor": 3,
+      "keywords": [
+        "coordinador", "coordinadora", "coord."
+      ]
+    },
+    "ejecutivo": {
+      "valor": 2.5,
+      "keywords": [
+        "ejecutivo", "ejecutiva", "account executive", "key account",
+        "ejecutivo de cuentas", "ejecutiva de cuentas"
+      ]
+    },
+    "especialista": {
+      "valor": 2.5,
+      "keywords": [
+        "especialista", "senior", "sr.", "sr ", "ssr", "semi senior",
+        "profesional", "experto", "experta"
+      ]
+    },
+    "analista": {
+      "valor": 2,
+      "keywords": [
+        "analista", "analyst"
+      ]
+    },
+    "representante": {
+      "valor": 1.5,
+      "keywords": [
+        "representante", "rep.", "agente", "promotor", "promotora",
+        "asesor comercial", "asesora comercial", "vendedor", "vendedora"
+      ]
+    },
+    "tecnico": {
+      "valor": 1.5,
+      "keywords": [
+        "tecnico", "tecnica", "tecnologo", "tecnologa", "technician"
+      ]
+    },
+    "asistente": {
+      "valor": 1,
+      "keywords": [
+        "asistente", "auxiliar", "ayudante", "junior", "jr.", "jr ",
+        "trainee", "pasante", "practicante", "administrativo", "administrativa"
+      ]
+    },
+    "operario": {
+      "valor": 0.5,
+      "keywords": [
+        "operario", "operaria", "operador", "operadora", "peon",
+        "obrero", "obrera", "mozo", "moza", "repositor", "repositora"
+      ]
+    }
+  },
+
+  "excepciones_no_gerente": {
+    "_comentario": "Términos que contienen 'manager' pero NO son gerentes",
+    "community manager": "especialista",
+    "social media manager": "especialista",
+    "content manager": "especialista",
+    "account manager": "ejecutivo",
+    "project manager": "coordinador",
+    "product manager": "coordinador",
+    "case manager": "especialista"
+  },
+
+  "penalizaciones": {
+    "severa": {
+      "diferencia_minima": 2.5,
+      "valor": -0.25
+    },
+    "moderada": {
+      "diferencia_minima": 1.5,
+      "valor": -0.12
+    },
+    "leve": {
+      "diferencia_minima": 1.0,
+      "valor": -0.05
+    }
+  }
+}

@@ -1,0 +1,48 @@
+[
+  {
+    "experiment_id": "nlp_v81_skills_prosa",
+    "issue": "MOL-54",
+    "date": "2025-12-09T10:15:21.110732",
+    "description": "Test NLP v8.1 - Mejora extraccion skills en prosa",
+    "changes": [
+      "Agregados ejemplos 5 y 6 al prompt para skills en prosa",
+      "Patrones: uso de, manejo de, conocimiento de/en, experiencia en",
+      "Ejemplo negativo: Excel vs Excelentes"
+    ],
+    "config": {
+      "model": "qwen2.5:14b",
+      "prompt_version": "8.1",
+      "nlp_pipeline_version": "8.1.0",
+      "temperature": 0.0,
+      "top_p": 0.1
+    },
+    "results": {
+      "ofertas_procesadas": 50,
+      "tasa_exito": 100.0,
+      "ofertas_con_skills": 11,
+      "pct_con_skills": 37.0,
+      "skills_promedio": 2.3,
+      "quality_score_promedio": 19.5,
+      "confidence_promedio": 0.98,
+      "tiempo_promedio_ms": 39514
+    },
+    "skills_unicos_detectados": [
+      "Excel",
+      "SAP",
+      "Power BI",
+      "Microsoft Office",
+      "Paquete Office",
+      "CRM",
+      "AutoCAD",
+      "SIMA",
+      "Mercado Libre",
+      "5s",
+      "herramientas de reporting",
+      "modelizacion financiera",
+      "gestion documental",
+      "sistemas ERP"
+    ],
+    "conclusion": "NLP v8.1 extrae skills en prosa correctamente. 37% de ofertas muestran skills tecnicos (vs baseline esperado ~25-30% en v8.0). Skills como Excel, SAP, Power BI detectados en contextos narrativos.",
+    "status": "success"
+  }
+]

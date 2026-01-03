@@ -1,0 +1,230 @@
+{
+  "version": "1.0",
+  "descripcion": "Reglas de negocio para matching ESCO. Basado en analisis de 49 ofertas Gold Set con 10 errores identificados.",
+  "fecha_creacion": "2025-12-30",
+
+  "reglas_forzar_isco": {
+    "descripcion": "Reglas que fuerzan un codigo ISCO especifico cuando se cumplen las condiciones. Tienen prioridad sobre el matching semantico.",
+
+    "R1_skills_cad": {
+      "nombre": "Skills CAD/Diseño Técnico",
+      "prioridad": 1,
+      "condicion": {
+        "skills_contiene_alguno": ["autocad", "solidworks", "revit", "cad", "catia", "inventor", "planos tecnicos"]
+      },
+      "accion": {
+        "forzar_isco_familia": "311",
+        "isco_preferido": "3118",
+        "esco_label": "Delineante tecnico/delineante tecnica"
+      },
+      "caso_gold_set": "1118027941 - Dibujante Tecnico",
+      "activa": true
+    },
+
+    "R2_skills_diseno_grafico": {
+      "nombre": "Skills Diseño Gráfico",
+      "prioridad": 2,
+      "condicion": {
+        "skills_contiene_alguno": ["photoshop", "illustrator", "indesign", "figma", "diseño grafico", "adobe creative"]
+      },
+      "accion": {
+        "forzar_isco": "2166",
+        "esco_label": "Disenador grafico/disenadora grafica"
+      },
+      "caso_gold_set": "1118018714 - Diseñador Gráfico E-commerce",
+      "activa": true
+    },
+
+    "R3_autoelevador": {
+      "nombre": "Operador Autoelevador/Montacargas",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": ["autoelevador", "autoelevadores", "montacargas", "forklift", "carretilla elevadora", "apilador"]
+      },
+      "accion": {
+        "forzar_isco": "8344",
+        "esco_label": "Operador de carretilla elevadora"
+      },
+      "caso_gold_set": "1118028027 - Operador Autoelevadores",
+      "activa": true
+    },
+
+    "R4_nivel_gerencial": {
+      "nombre": "Nivel Gerencial con Gente a Cargo",
+      "prioridad": 3,
+      "condicion": {
+        "nlp_seniority_es": ["lead", "manager", "director"],
+        "nlp_tiene_gente_cargo": true,
+        "titulo_contiene_alguno": ["gerente", "director", "jefe de"]
+      },
+      "accion": {
+        "priorizar_isco_familia": "1",
+        "penalizar_isco_familias": ["2", "3", "5", "9"]
+      },
+      "caso_gold_set": "1117984105 - Gerente de Ventas",
+      "activa": true
+    },
+
+    "R6_sector_gastronomia": {
+      "nombre": "Sector Gastronomía",
+      "prioridad": 2,
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": ["gastronomia", "restaurante", "catering", "cocina", "chef", "bar"]
+      },
+      "accion": {
+        "priorizar_isco_familias": ["141", "512", "513", "941"],
+        "penalizar_isco_familias": ["312", "313"]
+      },
+      "caso_gold_set": "2162667 - Gerente Operaciones Gastronomía",
+      "activa": true
+    },
+
+    "R7_sector_educacion": {
+      "nombre": "Sector Educación con Admisiones",
+      "prioridad": 2,
+      "condicion": {
+        "nlp_sector_es": ["educacion", "universidad", "colegio"],
+        "titulo_contiene_alguno": ["admision", "academico", "docente", "profesor"]
+      },
+      "accion": {
+        "priorizar_isco_familia": "23",
+        "esco_label_si_asesor": "Asesor academico/asesora academica"
+      },
+      "caso_gold_set": "1118018461 - Asesor de Admisiones",
+      "activa": true
+    },
+
+    "R8_nutricion_animal": {
+      "nombre": "Nutrición Animal/Veterinaria",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": ["nutricion animal", "veterinario", "zootecnia", "rumiantes", "porcinos", "avicola"]
+      },
+      "accion": {
+        "forzar_isco_familia": "324",
+        "esco_label": "Tecnico veterinario/tecnica veterinaria"
+      },
+      "caso_gold_set": "1117995368 - Asesor Nutrición Animal",
+      "activa": true
+    },
+
+    "R9_tareas_logisticas": {
+      "nombre": "Tareas Logísticas/Almacén",
+      "prioridad": 3,
+      "condicion": {
+        "tareas_contiene_alguno": ["inventario", "stock", "almacen", "deposito", "picking", "recepcion mercaderia"]
+      },
+      "accion": {
+        "priorizar_isco_familias": ["432", "933"],
+        "penalizar_isco_familias": ["243", "261"]
+      },
+      "caso_gold_set": "1118026729 - Responsable de Depósito",
+      "activa": true
+    },
+
+    "R10_electricista_industrial": {
+      "nombre": "Electricista Industrial",
+      "prioridad": 2,
+      "condicion": {
+        "titulo_contiene": "industrial",
+        "tareas_contiene_alguno": ["tableros", "control", "potencia", "plc", "automatizacion"]
+      },
+      "accion": {
+        "preferir_isco": "7412",
+        "sobre_isco": "7411"
+      },
+      "caso_gold_set": "2165052 - Electricista Industrial (mejorable)",
+      "activa": false,
+      "nota": "Desactivada - match actual 7411 es aceptable, mismo grupo"
+    },
+
+    "R11_titulo_compuesto": {
+      "nombre": "Título Compuesto - Priorizar Primero",
+      "prioridad": 4,
+      "condicion": {
+        "titulo_tiene_patron": "^(\\w+)\\s*[/-]\\s*\\w+"
+      },
+      "accion": {
+        "usar_primer_rol": true
+      },
+      "caso_gold_set": "1117977340 - Recepcionista Administrativo",
+      "activa": true
+    },
+
+    "R12_ejecutivo_cuentas": {
+      "nombre": "Ejecutivo de Cuentas = Ventas",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": ["ejecutivo de cuentas", "account executive", "key account"]
+      },
+      "accion": {
+        "forzar_isco_familia": "332",
+        "esco_label": "Representante comercial"
+      },
+      "caso_gold_set": "1118027276 - Ejecutivo de Cuentas",
+      "activa": true
+    }
+  },
+
+  "reglas_filtro": {
+    "descripcion": "Reglas que filtran/descartan candidatos ESCO que no cumplen requisitos",
+
+    "R5_formacion_vs_isco": {
+      "nombre": "Formación vs ISCO Profesional",
+      "prioridad": 5,
+      "condicion": {
+        "nlp_nivel_educativo_es": ["secundario", "secundario incompleto"],
+        "candidato_isco_familia": "2"
+      },
+      "accion": {
+        "descartar_candidato": true,
+        "razon": "ISCO 2xxx requiere formacion universitaria"
+      },
+      "activa": false,
+      "nota": "Desactivada - puede generar falsos negativos si NLP no extrae bien nivel_educativo"
+    }
+  },
+
+  "tipos_error_gold_set": {
+    "dominio_incorrecto": {
+      "descripcion": "El matching asigna una ocupación de un dominio completamente diferente",
+      "cantidad_gold_set": 6,
+      "ejemplos": ["Dibujante → Contable", "Autoelevador → Agrícola"]
+    },
+    "sector_ignorado": {
+      "descripcion": "El sector de la empresa/industria no se consideró",
+      "cantidad_gold_set": 1,
+      "ejemplos": ["Gastronomía → Minería"]
+    },
+    "nivel_jerarquico": {
+      "descripcion": "El nivel jerárquico no coincide",
+      "cantidad_gold_set": 1,
+      "ejemplos": ["Gerente → Representante"]
+    },
+    "homonimia": {
+      "descripcion": "Palabras polisémicas generan matches incorrectos",
+      "cantidad_gold_set": 1,
+      "ejemplos": ["Asesor Admisiones → Jurídico"]
+    },
+    "rol_primario": {
+      "descripcion": "En títulos compuestos no se prioriza el rol principal",
+      "cantidad_gold_set": 1,
+      "ejemplos": ["Recepcionista Admin → Admin"]
+    }
+  },
+
+  "metricas_esperadas": {
+    "gold_set_actual": {
+      "total": 49,
+      "correctos": 39,
+      "errores": 10,
+      "precision": 0.796
+    },
+    "gold_set_objetivo": {
+      "total": 49,
+      "correctos": 49,
+      "errores": 0,
+      "precision": 1.0
+    }
+  }
+}

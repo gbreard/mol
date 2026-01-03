@@ -32,8 +32,35 @@ logs/
 # Credenciales
 credentials.json
 .secrets/
+config/aws_credentials.json
+config/linear_config.json
+*.pem
+
+# Claude Code settings (contiene API keys)
+.claude/settings.local.json
+.mcp.json
+
+# Linear cache (sincronizado localmente)
+.linear/
 
 # Backups
 backups/
 _deprecated_LIMPIEZA_2025/
 nul
+
+# Datos de ofertas (no versionar)
+01_sources/*/data/raw/*.json
+01_sources/*/data/raw/*.csv
+01_sources/*/data/raw/*.xlsx
+01_sources/*/data/metrics/*.json
+02_consolidation/data/*.json
+
+# ChromaDB vectors (grandes)
+database/esco_vectors/
+
+# Archivos de tracking y backups
+data/tracking/*.bak*
+*.bak_*
+database/*.csv
+database/*.txt
+database/embeddings/

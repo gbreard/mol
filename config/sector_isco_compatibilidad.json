@@ -1,0 +1,67 @@
+{
+  "version": "1.0.0",
+  "descripcion": "Compatibilidad entre sector_empresa e ISCO para detectar sector cruzado",
+  "fecha_actualizacion": "2025-12-10",
+
+  "sectores": {
+    "Tecnologia": {
+      "isco_compatibles": ["13", "21", "25", "35"],
+      "isco_incompatibles": ["6", "92", "93"],
+      "penalizacion_cruzado": -0.25
+    },
+
+    "Retail": {
+      "isco_compatibles": ["14", "33", "42", "52"],
+      "isco_incompatibles": ["22", "23", "25"],
+      "penalizacion_cruzado": -0.20
+    },
+
+    "Salud": {
+      "isco_compatibles": ["13", "22", "32", "53"],
+      "isco_incompatibles": ["7", "8", "6"],
+      "penalizacion_cruzado": -0.25
+    },
+
+    "Industria": {
+      "isco_compatibles": ["13", "31", "7", "8"],
+      "isco_incompatibles": ["22", "23", "26"],
+      "penalizacion_cruzado": -0.20
+    },
+
+    "Agro": {
+      "isco_compatibles": ["13", "6", "83", "92"],
+      "isco_incompatibles": ["25", "26", "24"],
+      "penalizacion_cruzado": -0.25
+    },
+
+    "Gastronomia": {
+      "isco_compatibles": ["14", "34", "51", "94"],
+      "isco_incompatibles": ["25", "22", "26"],
+      "penalizacion_cruzado": -0.20
+    },
+
+    "Finanzas": {
+      "isco_compatibles": ["12", "24", "33", "41"],
+      "isco_incompatibles": ["6", "7", "8", "9"],
+      "penalizacion_cruzado": -0.25
+    },
+
+    "Construccion": {
+      "isco_compatibles": ["13", "31", "71", "72", "93"],
+      "isco_incompatibles": ["22", "25", "26"],
+      "penalizacion_cruzado": -0.20
+    },
+
+    "Educacion": {
+      "isco_compatibles": ["13", "23", "34"],
+      "isco_incompatibles": ["7", "8", "6"],
+      "penalizacion_cruzado": -0.20
+    },
+
+    "Servicios": {
+      "isco_compatibles": ["12", "24", "33", "41", "42", "52"],
+      "isco_incompatibles": ["6", "92"],
+      "penalizacion_cruzado": -0.15
+    }
+  }
+}

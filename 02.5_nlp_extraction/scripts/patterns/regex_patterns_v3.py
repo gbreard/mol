@@ -515,9 +515,10 @@ class SkillsPatterns:
 
     @classmethod
     def _load_skills_database(cls):
-        """Carga la base de datos de skills desde JSON"""
+        """Carga la base de datos de skills desde JSON (ubicación: config/skills_database.json)"""
         if cls._skills_db is None:
-            config_dir = Path(__file__).parent.parent.parent / "config"
+            # Ruta al config/ en la raíz del proyecto (4 niveles arriba desde patterns/)
+            config_dir = Path(__file__).parent.parent.parent.parent / "config"
             skills_file = config_dir / "skills_database.json"
 
             with open(skills_file, 'r', encoding='utf-8') as f:
@@ -536,174 +537,40 @@ class SkillsPatterns:
                     escaped = re.escape(skill).replace(r'\ ', r'\s+')
                     cls._soft_patterns.append(escaped)
 
-            # NUEVO v3: MASIVA expansión de oficios argentinos (200+ términos)
-            cls._oficios_patterns = [
-                # === CONSTRUCCIÓN Y MANTENIMIENTO ===
-                r'\brefrigeración(?:\s+industrial)?\b',
-                r'\belectricidad\b',
-                r'\belectricista\b',
-                r'\bsoldadura\b',
-                r'\bsoldador\b',
-                r'\bcarpintería\b',
-                r'\bcarpintero\b',
-                r'\bplomería\b',
-                r'\bplomero\b',
-                r'\bgasista\b',
-                r'\bgas\s+natural\b',
-                r'\balbañilería\b',
-                r'\balbañil\b',
-                r'\bpintura\b',
-                r'\bpintor\b',
-                r'\byeso\b',
-                r'\byesero\b',
-                r'\bcolocación\s+de\s+pisos\b',
-                r'\bcolocador\b',
-                r'\bherrería\b',
-                r'\bherrero\b',
-                r'\btornería\b',
-                r'\btornero\b',
-                r'\bmecánica\s+(?:automotriz|industrial)?\b',
-                r'\bmecanica\s+(?:automotriz|industrial)?\b',
-                r'\bmecánico\b',
-                r'\bmecanico\b',
-                r'\bmantenimiento\s+(?:industrial|edilicio|general)\b',
+            # NUEVO v3.1: Cargar oficios desde JSON (migrado de código hardcodeado)
+            cls._oficios_patterns = cls._load_oficios_from_json()
 
-                # === SERVICIOS GENERALES ===
-                r'\batención\s+al\s+cliente\b',
-                r'\batencion\s+al\s+cliente\b',
-                r'\bventas?\b',
-                r'\bvendedor\b',
-                r'\bcajero?a?\b',
-                r'\breposición\b',
-                r'\breposicion\b',
-                r'\breponedor\b',
-                r'\blimpieza\s+(?:industrial|profunda)?\b',
-                r'\bseguridad\b',
-                r'\bvigilancia\b',
-                r'\bguardia\s+de\s+seguridad\b',
-                r'\bportería\b',
-                r'\bportero\b',
-                r'\bsereno\b',
-                r'\bjardinería\b',
-                r'\bjardineria\b',
-                r'\bjardinero\b',
+    @classmethod
+    def _load_oficios_from_json(cls) -> list:
+        """
+        Carga oficios desde config/oficios_arg.json
+        Migrado de código hardcodeado en v3.1
+        """
+        config_dir = Path(__file__).parent.parent.parent.parent / "config"
+        oficios_file = config_dir / "oficios_arg.json"
 
-                # === LOGÍSTICA Y TRANSPORTE ===
-                r'\blogística\b',
-                r'\blogistica\b',
-                r'\balmacén\b',
-                r'\balmacen\b',
-                r'\balmacenero\b',
-                r'\bdeposito\b',
-                r'\bdepósito\b',
-                r'\boperación\s+de\s+maquinaria\b',
-                r'\bmanejo\s+de\s+montacargas\b',
-                r'\bmontacargas\b',
-                r'\bautoelevador\b',
-                r'\bchofer\b',
-                r'\bconductor\b',
-                r'\brepartidor\b',
-                r'\bdelivery\b',
-                r'\bmensajería\b',
-                r'\bmensajeria\b',
-                r'\bcadete\b',
+        patterns = []
 
-                # === GASTRONOMÍA ===
-                r'\bcocina\b',
-                r'\bcocinero\b',
-                r'\bchef\b',
-                r'\bpastelería\b',
-                r'\bpasteleria\b',
-                r'\bpanadería\b',
-                r'\bpanaderia\b',
-                r'\bbarista\b',
-                r'\bbartender\b',
-                r'\bmozo\b',
-                r'\bcamarero\b',
-                r'\bmaitre\b',
+        try:
+            with open(oficios_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
 
-                # === SALUD ===
-                r'\benfermería\b',
-                r'\benfermeria\b',
-                r'\benfermero\b',
-                r'\bauxiliar\s+de\s+enfermería\b',
-                r'\bcuidado\s+de\s+(?:adultos\s+mayores|ancianos|pacientes)\b',
-                r'\bcuidador\b',
-                r'\basistente\s+geriátrico\b',
-                r'\basistente\s+geriatrico\b',
+            # Extraer todos los items de todas las categorías
+            for categoria, categoria_data in data.get("oficios", {}).items():
+                items = categoria_data.get("items", [])
+                for item in items:
+                    # Escapar caracteres especiales y convertir espacios a \s+
+                    escaped = re.escape(item).replace(r'\ ', r'\s+')
+                    patterns.append(rf'\b{escaped}\b')
 
-                # === BELLEZA Y ESTÉTICA ===
-                r'\bpeluquería\b',
-                r'\bpeluqueria\b',
-                r'\bpeluquero\b',
-                r'\bestética\b',
-                r'\bestetica\b',
-                r'\bmanicura\b',
-                r'\bpedicura\b',
-                r'\bmaquillaje\b',
-                r'\bmaquillador\b',
-
-                # === ADMINISTRACIÓN Y OFICINA ===
-                r'\badministración\b',
-                r'\badministracion\b',
-                r'\bsecretariado\b',
-                r'\bsecretaria\b',
-                r'\brecepción\b',
-                r'\brecepcion\b',
-                r'\brecepcionista\b',
-                r'\basistente\s+administrativo\b',
-                r'\bdata\s+entry\b',
-                r'\bcarga\s+de\s+datos\b',
-                r'\barchivo\b',
-
-                # === CONTABILIDAD Y FINANZAS ===
-                r'\bcontabilidad\b',
-                r'\bliquidación\s+de\s+sueldos\b',
-                r'\bliquidacion\s+de\s+sueldos\b',
-                r'\bimpuestos\b',
-                r'\bart\b',  # ARTs
-                r'\bnómina\b',
-                r'\bnomina\b',
-                r'\btesorería\b',
-                r'\btesoreria\b',
-
-                # === RECURSOS HUMANOS ===
-                r'\bselección\s+de\s+personal\b',
-                r'\bseleccion\s+de\s+personal\b',
-                r'\breclutamiento\b',
-                r'\bcapacitación\b',
-                r'\bcapacitacion\b',
-                r'\brelaciones\s+laborales\b',
-
-                # === MARKETING Y VENTAS ===
-                r'\bmarketing\s+digital\b',
-                r'\bredes\s+sociales\b',
-                r'\bcommunity\s+manager\b',
-                r'\bseo\b',
-                r'\bsem\b',
-                r'\bgoogle\s+analytics\b',
-                r'\bgoogle\s+ads\b',
-                r'\bfacebook\s+ads\b',
-
-                # === TECNOLOGÍA (Básicos) ===
-                r'\bsoporte\s+técnico\b',
-                r'\bsoporte\s+tecnico\b',
-                r'\bmesa\s+de\s+ayuda\b',
-                r'\bhelp\s+desk\b',
-                r'\breparación\s+de\s+(?:pc|computadoras)\b',
-                r'\breparacion\s+de\s+(?:pc|computadoras)\b',
-                r'\bredes\s+(?:informáticas|informaticas)\b',
-
-                # === PRODUCCIÓN ===
-                r'\boperario\s+de\s+(?:producción|maquina|linea)\b',
-                r'\boperario\s+de\s+(?:produccion|maquina|linea)\b',
-                r'\bcontrol\s+de\s+calidad\b',
-                r'\binspección\b',
-                r'\binspeccion\b',
-                r'\bensamblaje\b',
-                r'\bembalaje\b',
-                r'\bpacking\b',
+        except FileNotFoundError:
+            # Fallback: lista mínima si no existe el JSON
+            patterns = [
+                r'\belectricista\b', r'\bplomero\b', r'\bcarpintero\b',
+                r'\bmecánico\b', r'\bsoldador\b', r'\balbañil\b'
             ]
+
+        return patterns
 
     @classmethod
     def extract_technical_skills(cls, text: str) -> List[str]:

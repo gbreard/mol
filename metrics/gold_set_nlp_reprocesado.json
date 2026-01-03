@@ -1,0 +1,81 @@
+{
+  "fecha": "2025-12-14T16:20:06.958168",
+  "metricas_nlp": {
+    "total": 49,
+    "provincia": {
+      "count": 33,
+      "pct": 67.3
+    },
+    "localidad": {
+      "count": 29,
+      "pct": 59.2
+    },
+    "modalidad": {
+      "count": 42,
+      "pct": 85.7
+    },
+    "nivel_seniority": {
+      "count": 43,
+      "pct": 87.8
+    }
+  },
+  "metricas_skills": {
+    "skills_tecnicas": {
+      "count": 47,
+      "pct": 95.9,
+      "total_items": 185
+    },
+    "soft_skills": {
+      "count": 48,
+      "pct": 98.0,
+      "total_items": 195
+    }
+  },
+  "caso_angular": {
+    "id_oferta": 1117982053,
+    "titulo": "Desarrollador Angular Senior",
+    "empresa": "Cultura RRHH",
+    "skills_extraidas": [
+      "typescript",
+      "react",
+      "angular",
+      "vue",
+      "svelte",
+      "aws",
+      "cloudformation",
+      "webpack",
+      "selección de personal"
+    ],
+    "soft_skills_extraidas": [
+      "comunicación",
+      "liderazgo",
+      "lider",
+      "proactividad",
+      "flexibilidad",
+      "Autonomía",
+      "Responsabilidad"
+    ],
+    "tecnologias_esperadas": 14,
+    "encontradas": [
+      "angular",
+      "typescript"
+    ],
+    "faltantes": [
+      "javascript",
+      "html",
+      "css",
+      "scss",
+      "sass",
+      "git",
+      "rest",
+      "api",
+      "agile",
+      "scrum",
+      "rxjs",
+      "ngrx"
+    ],
+    "cobertura": "2/14",
+    "nlp_modalidad": null,
+    "nlp_seniority": null
+  }
+}

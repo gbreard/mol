@@ -1,0 +1,12 @@
+{
+  "timestamp": "2025-12-07T23:02:18.768414",
+  "decision": "GO",
+  "precision_con_reranker": 26.31578947368421,
+  "precision_sin_reranker": 57.89473684210527,
+  "precision_diff": 31.57894736842106,
+  "timing_con_reranker_ms": 175.6082631304468,
+  "timing_sin_reranker_ms": 39.857757865990465,
+  "speedup": 4.4058741016209675,
+  "recomendacion": "REMOVER el reranker ESCO-XLM",
+  "razon": "Sin reranker es IGUAL o MEJOR (+31.6%)"
+}

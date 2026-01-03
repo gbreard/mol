@@ -1,0 +1,23 @@
+{
+  "versions": [
+    {
+      "version": "3.2",
+      "date": "2025-10-31",
+      "author": "sistema",
+      "description": "Version inicial documentada. Expansion v3.1: +267 terminos basados en analisis de 3,484 ofertas reales",
+      "changes": {
+        "added": 267,
+        "removed": 0,
+        "modified": 0
+      },
+      "metrics_post": {
+        "total_keywords": 1148,
+        "sin_resultados": null,
+        "muy_genericos": null,
+        "ofertas_promedio": null
+      }
+    }
+  ],
+  "current_version": "3.2",
+  "last_updated": "2025-12-08"
+}

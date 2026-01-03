@@ -1,0 +1,1392 @@
+[
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "Hipótesis: Las empresas saben QUÉ HACER (tareas) pero no articulan CON QUÉ HACERLO (competencias)",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "METODOLOGÍA",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "1. Selección de 8 ofertas piloto con tareas ricas y detalladas",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "2. Mapeo manual: Tarea → Skills ESCO implícitas necesarias para ejecutarla",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "3. Comparación con skills declaradas por el empleador en la oferta original",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "4. Identificación de GAP (skills necesarias no declaradas)",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "HALLAZGOS PRINCIPALES",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "✅ HIPÓTESIS CONFIRMADA:",
+    "Unnamed: 1": "Las tareas revelan 5-15 skills implícitas por oferta que NO fueron declaradas por el empleador",
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "📊 Ratio promedio:",
+    "Unnamed: 1": "Por cada 1 skill técnica declarada, las tareas revelan ~8 skills implícitas adicionales",
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "🚨 Caso extremo:",
+    "Unnamed: 1": "Ofertas con 0 skills técnicas declaradas pero 12-15 competencias requeridas según tareas",
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "🔍 Patrón detectado:",
+    "Unnamed: 1": "Skills declaradas tienden a ser genéricas (soft skills), mientras que tareas revelan skills técnicas específicas",
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "ID",
+    "Unnamed: 1": "Título Oferta",
+    "Unnamed: 2": "# Tareas",
+    "Unnamed: 3": "Skills Técnicas Declaradas",
+    "Unnamed: 4": "Soft Skills Declaradas",
+    "Unnamed: 5": "Skills Implícitas (desde Tareas)",
+    "Unnamed: 6": "GAP",
+    "Unnamed: 7": "Nivel de Gap"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118028891,
+    "Unnamed: 1": "Auxiliar Contable",
+    "Unnamed: 2": 7,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 2,
+    "Unnamed: 5": 15,
+    "Unnamed: 6": 15,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1117990944,
+    "Unnamed: 1": "Repositor/a Externo/a",
+    "Unnamed: 2": 8,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 0,
+    "Unnamed: 5": 12,
+    "Unnamed: 6": 12,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1117975249,
+    "Unnamed: 1": "Gerente General Maderera",
+    "Unnamed: 2": 8,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 2,
+    "Unnamed: 5": 14,
+    "Unnamed: 6": 14,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1117977340,
+    "Unnamed: 1": "Recepcionista Administrativo",
+    "Unnamed: 2": 9,
+    "Unnamed: 3": 1,
+    "Unnamed: 4": 1,
+    "Unnamed: 5": 11,
+    "Unnamed: 6": 10,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118000814,
+    "Unnamed: 1": "Asistente Admin. Ventas",
+    "Unnamed: 2": 8,
+    "Unnamed: 3": 1,
+    "Unnamed: 4": 5,
+    "Unnamed: 5": 10,
+    "Unnamed: 6": 9,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118026729,
+    "Unnamed: 1": "Responsable de Depósito",
+    "Unnamed: 2": 7,
+    "Unnamed: 3": 3,
+    "Unnamed: 4": 3,
+    "Unnamed: 5": 12,
+    "Unnamed: 6": 9,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 2170124,
+    "Unnamed: 1": "Analista de Cultivo",
+    "Unnamed: 2": 8,
+    "Unnamed: 3": 3,
+    "Unnamed: 4": 0,
+    "Unnamed: 5": 14,
+    "Unnamed: 6": 11,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118009703,
+    "Unnamed: 1": "Asesor Comercial E-Commerce",
+    "Unnamed: 2": 7,
+    "Unnamed: 3": 4,
+    "Unnamed: 4": 5,
+    "Unnamed: 5": 12,
+    "Unnamed: 6": 8,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "TOTALES",
+    "Unnamed: 1": null,
+    "Unnamed: 2": 62,
+    "Unnamed: 3": 12,
+    "Unnamed: 4": 18,
+    "Unnamed: 5": 100,
+    "Unnamed: 6": 88,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "ESTADÍSTICAS CLAVE",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "Total Skills Técnicas Declaradas:",
+    "Unnamed: 1": 51,
+    "Unnamed: 2": "vs",
+    "Unnamed: 3": "Skills Implícitas desde Tareas:",
+    "Unnamed: 4": 387,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "Ratio Implícitas/Declaradas:",
+    "Unnamed: 1": "7.6:1",
+    "Unnamed: 2": "skills implícitas por cada declarada",
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "GAP Total (skills no declaradas):",
+    "Unnamed: 1": 336,
+    "Unnamed: 2": "competencias que las empresas necesitan pero NO articularon",
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "% de Skills NO declaradas:",
+    "Unnamed: 1": 0.868,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "DETALLE: MAPEO TAREA → SKILLS IMPLÍCITAS (Casos Representativos)",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "ID",
+    "Unnamed: 1": "Título",
+    "Unnamed: 2": "Tarea Explícita",
+    "Unnamed: 3": "Skill Implícita ESCO",
+    "Unnamed: 4": "Tipo Skill",
+    "Unnamed: 5": "¿Declarada?",
+    "Unnamed: 6": "GAP?",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118028891,
+    "Unnamed: 1": "Auxiliar Contable",
+    "Unnamed: 2": "Gestión integral de caja diaria y fondos fijos",
+    "Unnamed: 3": "llevar la contabilidad",
+    "Unnamed: 4": "Técnica",
+    "Unnamed: 5": "NO",
+    "Unnamed: 6": "✅ GAP",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118028891,
+    "Unnamed: 1": "Auxiliar Contable",
+    "Unnamed: 2": "Gestión integral de caja diaria y fondos fijos",
+    "Unnamed: 3": "gestionar caja registradora",
+    "Unnamed: 4": "Técnica",
+    "Unnamed: 5": "NO",
+    "Unnamed: 6": "✅ GAP",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118028891,
+    "Unnamed: 1": "Auxiliar Contable",
+    "Unnamed: 2": "Conciliaciones bancarias",
+    "Unnamed: 3": "utilizar software de hojas de cálculo",
+    "Unnamed: 4": "Digital",
+    "Unnamed: 5": "NO",
+    "Unnamed: 6": "✅ GAP",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118028891,
+    "Unnamed: 1": "Auxiliar Contable",
+    "Unnamed: 2": "Análisis de cuentas contables para cierres",
+    "Unnamed: 3": "realizar análisis financiero",
+    "Unnamed: 4": "Técnica",
+    "Unnamed: 5": "NO",
+    "Unnamed: 6": "✅ GAP",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118028891,
+    "Unnamed: 1": "Auxiliar Contable",
+    "Unnamed: 2": "Control y registro de facturas",
+    "Unnamed: 3": "procesar facturas",
+    "Unnamed: 4": "Técnica",
+    "Unnamed: 5": "NO",
+    "Unnamed: 6": "✅ GAP",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1117990944,
+    "Unnamed: 1": "Repositor/a",
+    "Unnamed: 2": "Armado de exhibiciones según Planogramas",
+    "Unnamed: 3": "interpretar instrucciones visuales",
+    "Unnamed: 4": "Técnica",
+    "Unnamed: 5": "NO",
+    "Unnamed: 6": "✅ GAP",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1117990944,
+    "Unnamed: 1": "Repositor/a",
+    "Unnamed: 2": "Control quiebres y falsos stocks",
+    "Unnamed: 3": "gestionar inventario",
+    "Unnamed: 4": "Gestión",
+    "Unnamed: 5": "NO",
+    "Unnamed: 6": "✅ GAP",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1117990944,
+    "Unnamed: 1": "Repositor/a",
+    "Unnamed: 2": "Colocación material POP",
+    "Unnamed: 3": "gestionar material promocional",
+    "Unnamed: 4": "Marketing",
+    "Unnamed: 5": "NO",
+    "Unnamed: 6": "✅ GAP",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1117990944,
+    "Unnamed: 1": "Repositor/a",
+    "Unnamed: 2": "Control de mermas y Calidad",
+    "Unnamed: 3": "controlar calidad de productos",
+    "Unnamed: 4": "Técnica",
+    "Unnamed: 5": "NO",
+    "Unnamed: 6": "✅ GAP",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1117975249,
+    "Unnamed: 1": "Gerente General",
+    "Unnamed: 2": "Analizar indicadores de gestión y reportes",
+    "Unnamed: 3": "utilizar software de análisis (Excel/BI)",
+    "Unnamed: 4": "Digital",
+    "Unnamed: 5": "NO",
+    "Unnamed: 6": "✅ GAP",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1117975249,
+    "Unnamed: 1": "Gerente General",
+    "Unnamed: 2": "Analizar indicadores de gestión y reportes",
+    "Unnamed: 3": "analizar datos de rendimiento (KPIs)",
+    "Unnamed: 4": "Gestión",
+    "Unnamed: 5": "NO",
+    "Unnamed: 6": "✅ GAP",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1117975249,
+    "Unnamed: 1": "Gerente General",
+    "Unnamed: 2": "Implementar procesos de mejora continua",
+    "Unnamed: 3": "aplicar metodologías de mejora continua",
+    "Unnamed: 4": "Gestión",
+    "Unnamed: 5": "NO",
+    "Unnamed: 6": "✅ GAP",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1117975249,
+    "Unnamed: 1": "Gerente General",
+    "Unnamed: 2": "Representar empresa ante proveedores",
+    "Unnamed: 3": "negociar contratos comerciales",
+    "Unnamed: 4": "Soft Skill",
+    "Unnamed: 5": "NO",
+    "Unnamed: 6": "✅ GAP",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118000814,
+    "Unnamed: 1": "Asistente Admin Ventas",
+    "Unnamed: 2": "Elaborar reportes de ventas mediante Excel",
+    "Unnamed: 3": "utilizar software de hojas de cálculo",
+    "Unnamed: 4": "Digital",
+    "Unnamed: 5": "SÍ",
+    "Unnamed: 6": "No Gap",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118000814,
+    "Unnamed: 1": "Asistente Admin Ventas",
+    "Unnamed: 2": "Mantener base de datos de clientes",
+    "Unnamed: 3": "gestionar bases de datos",
+    "Unnamed: 4": "Digital",
+    "Unnamed: 5": "NO",
+    "Unnamed: 6": "✅ GAP",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118000814,
+    "Unnamed: 1": "Asistente Admin Ventas",
+    "Unnamed: 2": "Seguimiento de cobranzas",
+    "Unnamed: 3": "gestionar cuentas por cobrar",
+    "Unnamed: 4": "Técnica",
+    "Unnamed: 5": "NO",
+    "Unnamed: 6": "✅ GAP",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118000814,
+    "Unnamed: 1": "Asistente Admin Ventas",
+    "Unnamed: 2": "Preparar presentaciones comerciales",
+    "Unnamed: 3": "utilizar software de presentaciones",
+    "Unnamed: 4": "Digital",
+    "Unnamed: 5": "NO",
+    "Unnamed: 6": "✅ GAP",
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "CONCLUSIONES DEL ESTUDIO",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1,
+    "Unnamed: 1": "HIPÓTESIS CONFIRMADA: Las tareas son mejor predictor de skills requeridas que las skills declaradas",
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 2,
+    "Unnamed: 1": "El 78.6% de las skills necesarias NO son articuladas por los empleadores",
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 3,
+    "Unnamed: 1": "Ratio 8:1 - Por cada skill declarada, las tareas revelan 8 competencias implícitas adicionales",
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 4,
+    "Unnamed: 1": "Las skills declaradas tienden a ser genéricas/soft, mientras las implícitas son técnicas/específicas",
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 5,
+    "Unnamed: 1": "El matching ESCO desde skills declaradas subestima la demanda real de competencias técnicas",
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "RECOMENDACIÓN: Complementar el análisis de skills ESCO con extracción de competencias implícitas desde tareas",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "FASE 1: OFERTAS ADICIONALES (12 ofertas)",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "ID",
+    "Unnamed: 1": "Título Oferta",
+    "Unnamed: 2": "# Tareas",
+    "Unnamed: 3": "Skills Téc Declaradas",
+    "Unnamed: 4": "Soft Skills Declaradas",
+    "Unnamed: 5": "Skills Implícitas",
+    "Unnamed: 6": "GAP",
+    "Unnamed: 7": "Nivel de Gap"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118026700,
+    "Unnamed: 1": "VENDEDOR DE REPUESTOS AUTOMOTOR",
+    "Unnamed: 2": 3,
+    "Unnamed: 3": 3,
+    "Unnamed: 4": 2,
+    "Unnamed: 5": 7,
+    "Unnamed: 6": 4,
+    "Unnamed: 7": "🟡 MEDIO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118027243,
+    "Unnamed: 1": "Abogado/a - Impuestos",
+    "Unnamed: 2": 0,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 0,
+    "Unnamed: 5": 5,
+    "Unnamed: 6": 5,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118027261,
+    "Unnamed: 1": "Supervisor de Limpieza",
+    "Unnamed: 2": 5,
+    "Unnamed: 3": 1,
+    "Unnamed: 4": 0,
+    "Unnamed: 5": 8,
+    "Unnamed: 6": 7,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118027276,
+    "Unnamed: 1": "Ejecutivo de Cuentas SSR/SR",
+    "Unnamed: 2": 7,
+    "Unnamed: 3": 2,
+    "Unnamed: 4": 2,
+    "Unnamed: 5": 9,
+    "Unnamed: 6": 7,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118027662,
+    "Unnamed: 1": "Farmacéutico/a",
+    "Unnamed: 2": 3,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 2,
+    "Unnamed: 5": 7,
+    "Unnamed: 6": 7,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118027834,
+    "Unnamed: 1": "Vendedora Digital / Atención al Cliente",
+    "Unnamed: 2": 4,
+    "Unnamed: 3": 2,
+    "Unnamed: 4": 3,
+    "Unnamed: 5": 7,
+    "Unnamed: 6": 5,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118027941,
+    "Unnamed: 1": "Dibujante Técnico",
+    "Unnamed: 2": 2,
+    "Unnamed: 3": 2,
+    "Unnamed: 4": 0,
+    "Unnamed: 5": 7,
+    "Unnamed: 6": 5,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118028027,
+    "Unnamed: 1": "OPERADOR DE AUTOELEVADORES",
+    "Unnamed: 2": 2,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 0,
+    "Unnamed: 5": 5,
+    "Unnamed: 6": 5,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118028038,
+    "Unnamed: 1": "Ejecutiva/o Comercial de Cuentas",
+    "Unnamed: 2": 3,
+    "Unnamed: 3": 1,
+    "Unnamed: 4": 2,
+    "Unnamed: 5": 7,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118028201,
+    "Unnamed: 1": "Operarios Industria Alimenticia",
+    "Unnamed: 2": 5,
+    "Unnamed: 3": 1,
+    "Unnamed: 4": 0,
+    "Unnamed: 5": 7,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118028376,
+    "Unnamed: 1": "Analista Administrativo/a",
+    "Unnamed: 2": 2,
+    "Unnamed: 3": 1,
+    "Unnamed: 4": 0,
+    "Unnamed: 5": 7,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118028657,
+    "Unnamed: 1": "Recepcionista",
+    "Unnamed: 2": 3,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 0,
+    "Unnamed: 5": 6,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "SUBTOTAL FASE 1",
+    "Unnamed: 1": "12 ofertas",
+    "Unnamed: 2": 39,
+    "Unnamed: 3": 13,
+    "Unnamed: 4": 11,
+    "Unnamed: 5": 82,
+    "Unnamed: 6": 69,
+    "Unnamed: 7": "4 críticos"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "FASE 2: OFERTAS ADICIONALES (12 ofertas)",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "ID",
+    "Unnamed: 1": "Título Oferta",
+    "Unnamed: 2": "# Tareas",
+    "Unnamed: 3": "Skills Téc Declaradas",
+    "Unnamed: 4": "Soft Skills Declaradas",
+    "Unnamed: 5": "Skills Implícitas",
+    "Unnamed: 6": "GAP",
+    "Unnamed: 7": "Nivel de Gap"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118028681,
+    "Unnamed: 1": "ADMINISTRATIVA/O",
+    "Unnamed: 2": 6,
+    "Unnamed: 3": 1,
+    "Unnamed: 4": 0,
+    "Unnamed: 5": 8,
+    "Unnamed: 6": 7,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118028828,
+    "Unnamed: 1": "Modelista",
+    "Unnamed: 2": 8,
+    "Unnamed: 3": 1,
+    "Unnamed: 4": 1,
+    "Unnamed: 5": 9,
+    "Unnamed: 6": 8,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118028833,
+    "Unnamed: 1": "Asesor Comercial Plan de Ahorro",
+    "Unnamed: 2": 3,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 5,
+    "Unnamed: 5": 6,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118028887,
+    "Unnamed: 1": "Account Executive (Hunter)",
+    "Unnamed: 2": 3,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 2,
+    "Unnamed: 5": 6,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 2162667,
+    "Unnamed: 1": "Gerente de Operaciones",
+    "Unnamed: 2": 7,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 1,
+    "Unnamed: 5": 10,
+    "Unnamed: 6": 10,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118022146,
+    "Unnamed: 1": "Community Manager",
+    "Unnamed: 2": 7,
+    "Unnamed: 3": 3,
+    "Unnamed: 4": 3,
+    "Unnamed: 5": 10,
+    "Unnamed: 6": 7,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118025212,
+    "Unnamed: 1": "Representante Técnico/a Comercial",
+    "Unnamed: 2": 2,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 2,
+    "Unnamed: 5": 6,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1117984105,
+    "Unnamed: 1": "Líder de Ventas (Venado Tuerto)",
+    "Unnamed: 2": 2,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 2,
+    "Unnamed: 5": 6,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1117960588,
+    "Unnamed: 1": "Asistente de Dirección / Administrativo",
+    "Unnamed: 2": 4,
+    "Unnamed: 3": 3,
+    "Unnamed: 4": 2,
+    "Unnamed: 5": 7,
+    "Unnamed: 6": 4,
+    "Unnamed: 7": "🟡 MEDIO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118009739,
+    "Unnamed: 1": "Administrativa Comercio Exterior",
+    "Unnamed: 2": 2,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 0,
+    "Unnamed: 5": 6,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118020225,
+    "Unnamed: 1": "Representante de Atención al Cliente",
+    "Unnamed: 2": 5,
+    "Unnamed: 3": 2,
+    "Unnamed: 4": 3,
+    "Unnamed: 5": 7,
+    "Unnamed: 6": 5,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118003709,
+    "Unnamed: 1": "CAJERO/ENCARGADO",
+    "Unnamed: 2": 4,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 0,
+    "Unnamed: 5": 6,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "SUBTOTAL FASE 2",
+    "Unnamed: 1": "12 ofertas",
+    "Unnamed: 2": 53,
+    "Unnamed: 3": 10,
+    "Unnamed: 4": 21,
+    "Unnamed: 5": 87,
+    "Unnamed: 6": 77,
+    "Unnamed: 7": "7 críticos"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "FASE 3: OFERTAS ADICIONALES (12 ofertas)",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "ID",
+    "Unnamed: 1": "Título Oferta",
+    "Unnamed: 2": "# Tareas",
+    "Unnamed: 3": "Skills Téc Declaradas",
+    "Unnamed: 4": "Soft Skills Declaradas",
+    "Unnamed: 5": "Skills Implícitas",
+    "Unnamed: 6": "GAP",
+    "Unnamed: 7": "Nivel de Gap"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118017586,
+    "Unnamed: 1": "Médica Clínica/Dermatóloga - Estética",
+    "Unnamed: 2": 2,
+    "Unnamed: 3": 1,
+    "Unnamed: 4": 2,
+    "Unnamed: 5": 7,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118025956,
+    "Unnamed: 1": "Jardinero",
+    "Unnamed: 2": 2,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 0,
+    "Unnamed: 5": 6,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 2164100,
+    "Unnamed: 1": "Mozo/Moza",
+    "Unnamed: 2": 2,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 2,
+    "Unnamed: 5": 6,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 2165052,
+    "Unnamed: 1": "Electricista Industrial",
+    "Unnamed: 2": 4,
+    "Unnamed: 3": 5,
+    "Unnamed: 4": 0,
+    "Unnamed: 5": 8,
+    "Unnamed: 6": 3,
+    "Unnamed: 7": "🟡 MEDIO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 2165301,
+    "Unnamed: 1": "Supervisor/a Administración Autos Usados",
+    "Unnamed: 2": 2,
+    "Unnamed: 3": 1,
+    "Unnamed: 4": 1,
+    "Unnamed: 5": 7,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1116898892,
+    "Unnamed: 1": "Chofer - Repartidor",
+    "Unnamed: 2": 4,
+    "Unnamed: 3": 1,
+    "Unnamed: 4": 3,
+    "Unnamed: 5": 7,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118023904,
+    "Unnamed: 1": "Operario Picking",
+    "Unnamed: 2": 4,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 0,
+    "Unnamed: 5": 7,
+    "Unnamed: 6": 7,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1117980907,
+    "Unnamed: 1": "Operario de Almacén/Logística",
+    "Unnamed: 2": 4,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 0,
+    "Unnamed: 5": 7,
+    "Unnamed: 6": 7,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1117961954,
+    "Unnamed: 1": "Asistente Administrativo General",
+    "Unnamed: 2": 4,
+    "Unnamed: 3": 1,
+    "Unnamed: 4": 2,
+    "Unnamed: 5": 7,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1117982053,
+    "Unnamed: 1": "Desarrollador Angular Senior",
+    "Unnamed: 2": 5,
+    "Unnamed: 3": 2,
+    "Unnamed: 4": 0,
+    "Unnamed: 5": 9,
+    "Unnamed: 6": 7,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118018461,
+    "Unnamed: 1": "Asesor/a de Admisiones",
+    "Unnamed: 2": 6,
+    "Unnamed: 3": 2,
+    "Unnamed: 4": 6,
+    "Unnamed: 5": 8,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118018714,
+    "Unnamed: 1": "Diseñador Gráfico E-commerce",
+    "Unnamed: 2": 5,
+    "Unnamed: 3": 2,
+    "Unnamed: 4": 1,
+    "Unnamed: 5": 8,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "SUBTOTAL FASE 3",
+    "Unnamed: 1": "12 ofertas",
+    "Unnamed: 2": 44,
+    "Unnamed: 3": 15,
+    "Unnamed: 4": 17,
+    "Unnamed: 5": 87,
+    "Unnamed: 6": 72,
+    "Unnamed: 7": "4 críticos"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "FASE 4 (FINAL): ÚLTIMAS OFERTAS (5 ofertas)",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "ID",
+    "Unnamed: 1": "Título Oferta",
+    "Unnamed: 2": "# Tareas",
+    "Unnamed: 3": "Skills Téc Declaradas",
+    "Unnamed: 4": "Soft Skills Declaradas",
+    "Unnamed: 5": "Skills Implícitas",
+    "Unnamed: 6": "GAP",
+    "Unnamed: 7": "Nivel de Gap"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118031991,
+    "Unnamed: 1": "Vendedor Productos Cocina (remoto)",
+    "Unnamed: 2": 1,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 1,
+    "Unnamed: 5": 5,
+    "Unnamed: 6": 5,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1116884561,
+    "Unnamed: 1": "Ejecutivo Comercial (Retail)",
+    "Unnamed: 2": 4,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 6,
+    "Unnamed: 5": 8,
+    "Unnamed: 6": 8,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1117995368,
+    "Unnamed: 1": "Asesor Técnico Nutrición Animal",
+    "Unnamed: 2": 1,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 1,
+    "Unnamed: 5": 6,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118028777,
+    "Unnamed: 1": "Vendedor/a (sin título)",
+    "Unnamed: 2": 3,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 2,
+    "Unnamed: 5": 6,
+    "Unnamed: 6": 6,
+    "Unnamed: 7": "🔴 CRÍTICO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": 1118028048,
+    "Unnamed: 1": "Vendedor/a Retail (presencial)",
+    "Unnamed: 2": 3,
+    "Unnamed: 3": 1,
+    "Unnamed: 4": 5,
+    "Unnamed: 5": 6,
+    "Unnamed: 6": 5,
+    "Unnamed: 7": "🟠 ALTO"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "SUBTOTAL FASE 4",
+    "Unnamed: 1": "5 ofertas",
+    "Unnamed: 2": 12,
+    "Unnamed: 3": 1,
+    "Unnamed: 4": 15,
+    "Unnamed: 5": 31,
+    "Unnamed: 6": 30,
+    "Unnamed: 7": "4 críticos"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "🏆 CONSOLIDACIÓN TOTAL - 49 OFERTAS ANALIZADAS",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "TOTAL GENERAL",
+    "Unnamed: 1": "49 ofertas",
+    "Unnamed: 2": 210,
+    "Unnamed: 3": 51,
+    "Unnamed: 4": 67,
+    "Unnamed: 5": 387,
+    "Unnamed: 6": 336,
+    "Unnamed: 7": "23 críticos"
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "📊 ESTADÍSTICAS FINALES",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "Métrica",
+    "Unnamed: 1": "Valor",
+    "Unnamed: 2": "Interpretación",
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "Ratio Implícitas/Declaradas",
+    "Unnamed: 1": "7.6:1",
+    "Unnamed: 2": "Por cada skill declarada, las tareas revelan 7.6 skills adicionales",
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "% Skills NO declaradas",
+    "Unnamed: 1": 0.868,
+    "Unnamed: 2": "Casi 9 de cada 10 skills requeridas NO son articuladas",
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "Casos CRÍTICOS (0 skills téc)",
+    "Unnamed: 1": "23 de 49",
+    "Unnamed: 2": "46.9% de ofertas sin NINGUNA skill técnica declarada",
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "Promedio skills implícitas/oferta",
+    "Unnamed: 1": 7.9,
+    "Unnamed: 2": "Cada oferta requiere ~8 competencias técnicas implícitas",
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "Promedio skills declaradas/oferta",
+    "Unnamed: 1": 1.04,
+    "Unnamed: 2": "Las empresas solo declaran ~1 skill técnica por oferta",
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "💡 CONCLUSIÓN PRINCIPAL",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "HIPÓTESIS CONFIRMADA con 49 ofertas:",
+    "Unnamed: 1": "Las empresas saben QUÉ HACER (tareas detalladas) pero NO articulan CON QUÉ HACERLO (competencias técnicas)",
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  },
+  {
+    "🔬 ESTUDIO: SKILLS IMPLÍCITAS EN TAREAS vs SKILLS DECLARADAS": "IMPLICACIÓN:",
+    "Unnamed: 1": "El matching ESCO basado solo en skills declaradas SUBESTIMA drásticamente la demanda real de competencias del mercado laboral",
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null,
+    "Unnamed: 6": null,
+    "Unnamed: 7": null
+  }
+]

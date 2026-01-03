@@ -1,0 +1,306 @@
+{
+  "_version": "1.0",
+  "_descripcion": "Reglas de inferencia cuando LLM no extrae el campo",
+  "_fecha": "2025-12-14",
+
+  "modalidad": {
+    "_gap_actual": "16% ofertas sin modalidad detectada",
+    "_objetivo": ">95% cobertura",
+
+    "reglas": [
+      {
+        "prioridad": 1,
+        "contiene_cualquiera": ["100% remoto", "full remoto", "trabajo remoto", "remote work", "teletrabajo"],
+        "resultado": "remoto"
+      },
+      {
+        "prioridad": 2,
+        "contiene_cualquiera": ["home office", "desde casa", "desde tu casa"],
+        "resultado": "remoto"
+      },
+      {
+        "prioridad": 3,
+        "contiene_cualquiera": ["hibrido", "hibrida", "semi presencial", "semipresencial", "dias presenciales", "dias en oficina"],
+        "resultado": "hibrido"
+      },
+      {
+        "prioridad": 4,
+        "contiene_cualquiera": ["presencial", "en oficina", "en planta", "en sucursal"],
+        "resultado": "presencial"
+      },
+      {
+        "prioridad": 5,
+        "_descripcion": "Indicadores implicitos de presencialidad",
+        "contiene_cualquiera": [
+          "comedor en planta",
+          "taller",
+          "deposito",
+          "almacen",
+          "fabrica",
+          "obra",
+          "local comercial",
+          "atencion al publico",
+          "recepcion",
+          "mostrador"
+        ],
+        "resultado": "presencial"
+      }
+    ],
+    "default": "presencial",
+    "nota_default": "Si no hay indicadores de remoto/hibrido, asumir presencial"
+  },
+
+  "nivel_seniority": {
+    "_gap_actual": "12% ofertas sin seniority",
+    "_objetivo": ">95% cobertura",
+
+    "reglas": [
+      {
+        "prioridad": 1,
+        "contiene_cualquiera": ["trainee", "pasante", "pasantia", "primer empleo", "sin experiencia", "recien egresado", "recien graduado"],
+        "resultado": "trainee"
+      },
+      {
+        "prioridad": 2,
+        "contiene_cualquiera": ["junior", "jr", "jr.", "hasta 1 ano", "hasta 2 anos"],
+        "resultado": "junior"
+      },
+      {
+        "prioridad": 3,
+        "contiene_cualquiera": ["semi senior", "semi-senior", "semisenior", "ssr", "2 a 4 anos", "3 anos de experiencia", "experiencia comprobable"],
+        "resultado": "semisenior"
+      },
+      {
+        "prioridad": 4,
+        "contiene_cualquiera": ["senior", "sr", "sr.", "amplia experiencia", "5 anos", "mas de 5 anos", "solida experiencia"],
+        "resultado": "senior"
+      },
+      {
+        "prioridad": 5,
+        "contiene_cualquiera": ["gerente", "manager", "director", "jefe de", "a cargo de equipo", "lider de", "responsable de area", "coordinador"],
+        "resultado": "manager"
+      }
+    ],
+
+    "inferencia_por_experiencia": {
+      "_descripcion": "Si no hay keywords, inferir de experiencia_min_anios",
+      "rangos": [
+        {"exp_min": 0, "exp_max": 0, "resultado": "trainee"},
+        {"exp_min": 1, "exp_max": 1, "resultado": "junior"},
+        {"exp_min": 2, "exp_max": 4, "resultado": "semisenior"},
+        {"exp_min": 5, "exp_max": 99, "resultado": "senior"}
+      ]
+    },
+
+    "default": null,
+    "nota_default": "No inferir seniority si no hay suficiente informacion"
+  },
+
+  "area_funcional": {
+    "_gap_actual": "4% ofertas sin area funcional",
+    "_objetivo": ">98% cobertura",
+
+    "diccionario_keywords": {
+      "Ventas/Comercial": ["vendedor", "ventas", "comercial", "ejecutivo de cuentas", "asesor comercial", "key account"],
+      "IT/Sistemas": ["desarrollador", "programador", "developer", "devops", "frontend", "backend", "fullstack", "sistemas", "soporte tecnico", "help desk", "infraestructura"],
+      "Administracion": ["administrativo", "administracion", "facturacion", "cuentas a pagar", "tesoreria", "secretaria"],
+      "Recursos Humanos": ["rrhh", "recursos humanos", "seleccion", "reclutamiento", "capacitacion", "nominas", "payroll"],
+      "Finanzas/Contabilidad": ["contador", "contable", "finanzas", "analista financiero", "auditoria", "impuestos"],
+      "Marketing": ["marketing", "publicidad", "community manager", "social media", "branding", "comunicacion"],
+      "Logistica/Operaciones": ["logistica", "operaciones", "supply chain", "deposito", "almacen", "distribucion", "transporte"],
+      "Produccion/Manufactura": ["produccion", "manufactura", "planta", "operario", "maquinista", "mantenimiento"],
+      "Atencion al Cliente": ["atencion al cliente", "customer service", "call center", "soporte", "reclamos"],
+      "Ingenieria": ["ingeniero", "ingenieria", "proyecto", "calidad", "procesos"]
+    },
+
+    "default": null,
+    "nota_default": "No inferir area si no hay keywords claros"
+  },
+
+  "tipo_contrato": {
+    "reglas": [
+      {
+        "contiene_cualquiera": ["efectivo", "planta permanente", "relacion de dependencia", "tiempo indeterminado"],
+        "resultado": "efectivo"
+      },
+      {
+        "contiene_cualquiera": ["contrato", "plazo fijo", "temporal", "a termino"],
+        "resultado": "contrato"
+      },
+      {
+        "contiene_cualquiera": ["monotributo", "factura", "freelance", "autonomo"],
+        "resultado": "monotributo"
+      },
+      {
+        "contiene_cualquiera": ["pasantia", "beca"],
+        "resultado": "pasantia"
+      }
+    ],
+    "default": null
+  },
+
+  "tareas_explicitas": {
+    "_descripcion": "Extraccion de tareas cuando LLM no detecta bullets",
+    "_gap_actual": "46% ofertas sin tareas",
+    "_regla_excel": "🟢7 - No depender solo de bullet points",
+
+    "patrones_inicio_frase": [
+      "sera responsable de",
+      "seras responsable de",
+      "sus funciones incluyen",
+      "tus funciones incluyen",
+      "funciones principales",
+      "principales funciones",
+      "principales tareas",
+      "tareas principales",
+      "actividades principales",
+      "responsabilidades principales",
+      "debera",
+      "deberas",
+      "tendra a cargo",
+      "tendras a cargo",
+      "a cargo de",
+      "se encargara de",
+      "te encargaras de",
+      "entre sus tareas",
+      "entre tus tareas",
+      "el puesto implica",
+      "el rol implica",
+      "buscamos que",
+      "esperamos que"
+    ],
+
+    "patrones_regex": [
+      {
+        "patron": "(?:sera|seras|debera|deberas)\\s+(?:responsable\\s+de\\s+)?([^.;\\n]{10,100})",
+        "descripcion": "Sera responsable de X"
+      },
+      {
+        "patron": "(?:funciones|tareas|responsabilidades)\\s*(?:principales)?\\s*:?\\s*([^.;]{10,200})",
+        "descripcion": "Funciones: X"
+      },
+      {
+        "patron": "(?:a\\s+cargo\\s+de|encargarse\\s+de)\\s+([^.;\\n]{10,100})",
+        "descripcion": "A cargo de X"
+      }
+    ],
+
+    "separadores_lista": ["-", "•", "*", "\\d+\\.", "\\d+\\)"],
+    "max_tareas": 10
+  },
+
+  "sector_empresa": {
+    "_descripcion": "Extraccion del rubro/sector de la empresa",
+    "_gap_actual": "30% ofertas sin sector",
+    "_regla_excel": "🟢9 - Buscar frases descriptivas de empresa",
+
+    "patrones_inicio": [
+      "somos una empresa de",
+      "somos una empresa dedicada a",
+      "empresa dedicada a",
+      "empresa lider en",
+      "lideres en",
+      "especialistas en",
+      "especializados en",
+      "dedicados a",
+      "nos dedicamos a",
+      "trabajamos en",
+      "del rubro",
+      "del sector",
+      "industria de"
+    ],
+
+    "diccionario_sectores": {
+      "Tecnologia": ["software", "tecnologia", "sistemas", "informatica", "digital", "IT", "tech"],
+      "Retail/Comercio": ["retail", "comercio", "tienda", "local comercial", "supermercado", "mayorista", "minorista"],
+      "Manufactura": ["fabrica", "manufactura", "industria", "produccion", "planta industrial"],
+      "Alimentos": ["alimentos", "alimenticia", "consumo masivo", "bebidas", "lacteos", "frigorificos"],
+      "Salud": ["salud", "clinica", "hospital", "farmaceutica", "laboratorio", "medicina"],
+      "Finanzas": ["banco", "financiera", "seguros", "fintech", "creditos"],
+      "Logistica": ["logistica", "transporte", "distribucion", "courier", "almacenamiento"],
+      "Construccion": ["construccion", "inmobiliaria", "real estate", "arquitectura"],
+      "Automotriz": ["automotriz", "concesionario", "autopartes", "vehiculos"],
+      "Servicios": ["consultora", "servicios", "outsourcing", "tercerizacion"],
+      "Educacion": ["educacion", "universidad", "instituto", "colegio", "capacitacion"],
+      "Gastronomia": ["gastronomia", "restaurante", "catering", "hoteleria", "turismo"],
+      "Agro": ["agro", "agricola", "campo", "agroindustria", "semillas", "fertilizantes"]
+    }
+  },
+
+  "limpieza_tareas": {
+    "_descripcion": "Patrones para limpiar tareas_explicitas despues de extraccion",
+    "_fecha": "2025-12-30",
+
+    "prefijos_eliminar": [
+      "a realizar:",
+      "a desarrollar:",
+      "del puesto",
+      "seran:",
+      "serán:",
+      "incluiran:",
+      "incluirán:",
+      "principales:",
+      "generales en",
+      "similares en",
+      "correspondientes a"
+    ],
+
+    "patrones_regex_eliminar": [
+      {"patron": "^:\\s*", "descripcion": "Dos puntos al inicio"},
+      {"patron": "^\\d+\\.\\s*", "descripcion": "Numero con punto al inicio (1. 2.)"},
+      {"patron": "^\\d+\\)\\s*", "descripcion": "Numero con parentesis (1) 2))"},
+      {"patron": "^[-•●\\*\\?]\\s*", "descripcion": "Bullets al inicio"},
+      {"patron": "\\s*[-•●\\*]\\s*$", "descripcion": "Bullets al final"},
+      {"patron": "^[A-Z\\s\\-]+:\\s*", "descripcion": "Etiquetas mayusculas (CONTABLES:)"}
+    ],
+
+    "reemplazos": [
+      {"buscar": "  ", "reemplazo": " ", "descripcion": "Espacios dobles"},
+      {"buscar": "; ;", "reemplazo": ";", "descripcion": "Punto y coma doble"},
+      {"buscar": ";;", "reemplazo": ";", "descripcion": "Punto y coma pegado"}
+    ],
+
+    "min_longitud_tarea": 5,
+    "max_tareas": 10
+  },
+
+  "limpieza_skills": {
+    "_descripcion": "Patrones para limpiar skills_tecnicas_list y soft_skills_list",
+    "_fecha": "2025-12-30",
+
+    "prefijos_eliminar": [
+      "[regex]",
+      "[llm]",
+      "[dict]"
+    ],
+
+    "normalizacion_duplicados": {
+      "_descripcion": "Mapeo para unificar variantes de la misma skill",
+      "lider": ["líder", "lider"],
+      "liderazgo": ["Liderazgo"],
+      "proactivo": ["proactiva", "Proactividad", "proactividad"],
+      "responsabilidad": ["Responsabilidad", "Responsable", "responsable"],
+      "comunicacion": ["comunicación", "Comunicación"],
+      "organizacion": ["organización", "Organización", "Organizado", "organizada"],
+      "trabajo en equipo": ["Trabajo en equipo", "Trabajo En Equipo"],
+      "compromiso": ["Compromiso"],
+      "planificacion": ["planificación", "Planificación"],
+      "autonomia": ["autonomía", "Autonomía"],
+      "analitico": ["analítico", "capacidad analítica", "Capacidad Analítica"],
+      "atencion al detalle": ["atención al detalle", "Atención al detalle", "detallista"],
+      "flexibilidad": ["Flexibilidad", "flexible"],
+      "resolucion de problemas": ["resolución de problemas", "Resolución de problemas"],
+      "negociacion": ["negociación", "Capacidad De Negociacion", "Capacidad De Negociación"],
+      "colaboracion": ["colaboración", "Colaboración"],
+      "innovacion": ["innovación", "Innovación"],
+      "creatividad": ["Creatividad", "creativo"],
+      "adaptabilidad": ["Adaptabilidad"],
+      "iniciativa": ["Iniciativa"],
+      "precision": ["precisión", "Precisión"]
+    },
+
+    "min_longitud_skill": 2,
+    "max_skills": 15,
+    "separador_salida": ", "
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "_version": "1.0",
+  "_descripcion": "Patrones regex - corrige errores ID 1117984105, 1118023904 (confusion edad/experiencia)",
+  "_fecha": "2025-12-14",
+
+  "experiencia": {
+    "_descripcion": "Extraccion de anos de experiencia requerida",
+    "_errores_corregidos": ["35 anos (era edad 35-50)", "20 anos (era edad 20-45)"],
+
+    "patrones_excluir": [
+      {
+        "patron": "edad\\s*(?:minima?|maxima?)?\\s*:?\\s*\\d+",
+        "ejemplo": "edad minima: 35",
+        "caso": "requisito de edad"
+      },
+      {
+        "patron": "\\d+\\s*anos\\s*de\\s*edad",
+        "ejemplo": "35 anos de edad",
+        "caso": "edad explicita"
+      },
+      {
+        "patron": "entre\\s*(\\d+)\\s*y\\s*(\\d+)\\s*anos(?:\\s*de\\s*edad)?",
+        "ejemplo": "entre 35 y 50 anos",
+        "caso": "rango de edad"
+      },
+      {
+        "patron": "mayores?\\s*de\\s*(\\d+)\\s*anos(?!\\s*(?:de\\s+)?experiencia)",
+        "ejemplo": "mayor de 25 anos",
+        "caso": "edad minima"
+      },
+      {
+        "patron": "hasta\\s*(\\d+)\\s*anos(?!\\s*(?:de\\s+)?experiencia)",
+        "ejemplo": "hasta 45 anos",
+        "caso": "edad maxima"
+      },
+      {
+        "patron": "rango\\s*(?:etario|de\\s*edad)\\s*:?\\s*(\\d+)\\s*[-a]\\s*(\\d+)",
+        "ejemplo": "rango etario: 25-40",
+        "caso": "rango etario"
+      },
+      {
+        "patron": "(?:tener|contar\\s*con)\\s*(\\d+)\\s*anos",
+        "ejemplo": "tener 25 anos",
+        "caso": "edad requerida verbo"
+      },
+      {
+        "patron": "(?:de|desde)\\s*(\\d+)\\s*a\\s*(\\d+)\\s*anos(?!\\s*(?:de\\s+)?exp)",
+        "ejemplo": "de 20 a 35 anos",
+        "caso": "rango edad sin exp"
+      },
+      {
+        "patron": "(\\d{2})\\s*[-/]\\s*(\\d{2})\\s*anos",
+        "ejemplo": "25-40 anos",
+        "caso": "rango edad formato corto"
+      }
+    ],
+
+    "patrones_validos": [
+      {
+        "patron": "(?:experiencia|exp\\.?)\\s*(?:de\\s+)?(?:minima?\\s+)?(?:de\\s+)?(\\d+)\\s*(?:anos?|a\\b)",
+        "ejemplo": "experiencia minima de 3 anos",
+        "grupo_captura": 1,
+        "prioridad": 1
+      },
+      {
+        "patron": "(\\d+)\\s*(?:anos?|a)\\s*(?:de\\s+)?experiencia",
+        "ejemplo": "3 anos de experiencia",
+        "grupo_captura": 1,
+        "prioridad": 2
+      },
+      {
+        "patron": "(?:minimo|al menos)\\s*(\\d+)\\s*(?:anos?|a)\\s*(?:de\\s+)?(?:experiencia)?",
+        "ejemplo": "minimo 2 anos",
+        "grupo_captura": 1,
+        "prioridad": 3
+      },
+      {
+        "patron": "experiencia\\s*(?:comprobable|demostrable|previa)",
+        "ejemplo": "experiencia comprobable",
+        "valor_default": 1,
+        "prioridad": 4,
+        "nota": "Si dice experiencia comprobable sin numero, asumir 1 ano"
+      }
+    ],
+
+    "flujo_extraccion": [
+      "1. Buscar patrones_excluir y marcar esas regiones como NO-EXTRAER",
+      "2. En texto restante, buscar patrones_validos en orden de prioridad",
+      "3. Validar que valor este en rango 0-30",
+      "4. Si no encuentra nada explicito, buscar 'experiencia comprobable' -> 1"
+    ]
+  },
+
+  "edad": {
+    "_descripcion": "Extraccion de requisitos de edad (para campos edad_min, edad_max)",
+    "patrones_validos": [
+      {
+        "patron": "edad\\s*(?:minima?)?\\s*:?\\s*(\\d+)",
+        "campo": "edad_min"
+      },
+      {
+        "patron": "edad\\s*(?:maxima?)?\\s*:?\\s*(\\d+)",
+        "campo": "edad_max"
+      },
+      {
+        "patron": "entre\\s*(\\d+)\\s*y\\s*(\\d+)\\s*anos(?:\\s*de\\s*edad)?",
+        "campos": ["edad_min", "edad_max"]
+      },
+      {
+        "patron": "mayores?\\s*de\\s*(\\d+)\\s*anos",
+        "campo": "edad_min"
+      }
+    ]
+  },
+
+  "salario": {
+    "_descripcion": "Extraccion de rangos salariales",
+    "patrones_validos": [
+      {
+        "patron": "\\$\\s*([\\d.,]+)(?:\\s*[-a]\\s*\\$?\\s*([\\d.,]+))?",
+        "campos": ["salario_min", "salario_max"],
+        "normalizar": "remover_puntos_comas"
+      },
+      {
+        "patron": "(?:sueldo|remuneracion|salario)\\s*(?:de)?\\s*\\$?\\s*([\\d.,]+)",
+        "campo": "salario_min"
+      }
+    ],
+    "moneda_default": "ARS"
+  }
+}
