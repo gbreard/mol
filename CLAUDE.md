@@ -252,6 +252,72 @@ python scripts/linear_queue.py process  # Al final de la sesion
 5. **UI:** Dashboard produccion SIN siglas tecnicas (CIUO, ESCO)
 6. **Linear:** Usar sistema de cache, NUNCA MCP directo
 
+---
+
+## Flujo de Branches (Git Flow Simplificado)
+
+### Estructura de Branches
+
+```
+main                              ◄── Producción ESTABLE
+  │                                   - Pipeline probado y validado
+  │                                   - Solo se actualiza via PR
+  │
+  └── develop                     ◄── Integración
+        │                             - Cambios que pasaron Gold Set
+        │                             - Pre-producción
+        │
+        ├── feature/optimization-nlp      ◄── Optimización NLP
+        │                                     - Regex, prompts, postprocessor
+        │
+        └── feature/optimization-matching ◄── Optimización Matching
+                                              - Embeddings, configs
+```
+
+### Reglas del Flujo
+
+| Regla | Descripción |
+|-------|-------------|
+| **NUNCA** push directo a `main` | Siempre via PR desde develop |
+| **SIEMPRE** Gold Set antes de merge | `python database/test_gold_set_v211.py` |
+| **Registrar métricas** | Antes/después en `metrics/gold_set_history.json` |
+| **Features se borran** | Después de merge a develop |
+| **Commits en features** | Pueden ser "wip" |
+| **Commits en develop/main** | Deben ser limpios |
+
+### Flujo de Trabajo para Optimización
+
+```bash
+# 1. Ir al branch de optimización
+git checkout feature/optimization-nlp
+
+# 2. Hacer cambios experimentales
+# - Modificar configs, regex, prompts
+# - Probar con Gold Set
+
+# 3. Correr Gold Set test
+python database/test_gold_set_v211.py
+
+# 4. Si mejora métricas → merge a develop
+git checkout develop
+git merge feature/optimization-nlp
+
+# 5. Si develop está estable → PR a main
+# (via GitHub para review)
+```
+
+### Archivos Críticos por Branch
+
+**En `main` (NO tocar directamente):**
+- `database/process_nlp_from_db_v10.py`
+- `database/match_ofertas_v2.py`
+- `database/nlp_postprocessor.py`
+- `config/*.json`
+
+**En `feature/optimization-*` (libre para experimentar):**
+- Los mismos archivos, modificables
+- Deben pasar Gold Set antes de merge
+
 ## Convenciones del Proyecto
 
 ### Estructura de Codigo
