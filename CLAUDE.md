@@ -3,12 +3,12 @@
 ## Descripcion
 Sistema de monitoreo del mercado laboral argentino para OEDE. Scrapea ofertas de empleo, extrae informacion con NLP, clasifica segun taxonomia ESCO, y provee dashboards para analistas.
 
-## Estado Actual (2025-12-10)
-- 9,564 ofertas en BD
-- 10,223 IDs en tracking
-- 89% cobertura de scraping
+## Estado Actual (2026-01-03)
+- 11,001 ofertas en BD
 - NLP v10.0 (153 campos, ~90% precision)
 - Matching v2.1.1 BGE-M3 (100% precision Gold Set, filtros ISCO contextuales)
+- Documentacion reorganizada en docs/ (current/, guides/, planning/, reference/)
+- Tests organizados en tests/ (nlp/, matching/, scraping/, database/, integration/)
 
 ---
 
@@ -42,9 +42,17 @@ Sistema de monitoreo del mercado laboral argentino para OEDE. Scrapea ofertas de
 | Componente | Ubicacion |
 |------------|-----------|
 | Tests NLP | `tests/nlp/test_extraction.py` |
-| Tests Matching | `tests/matching/` (por crear) |
+| Tests Matching | `tests/matching/test_precision.py` |
+| Tests Scraping | `tests/scraping/` |
+| Tests Database | `tests/database/` |
+| Tests Integracion | `tests/integration/test_pipeline_completo.py` |
 | Gold Set NLP | `tests/nlp/gold_set.json` (49 casos) |
 | Gold Set Matching | `database/gold_set_manual_v2.json` (49 casos) |
+
+**Ejecutar tests:**
+```bash
+python -m pytest tests/ -v
+```
 
 ### Configuracion
 
@@ -146,15 +154,25 @@ Ver `database/archive_old_versions/DEPRECATED.md` para lista completa.
 
 ## Documentacion
 
+La documentacion esta organizada en `docs/`:
+
+| Carpeta | Contenido |
+|---------|-----------|
+| `docs/current/` | Documentos activos y actualizados |
+| `docs/guides/` | Guias de uso (quickstart, flujos) |
+| `docs/planning/` | Planificacion, issues Linear |
+| `docs/reference/` | Referencia tecnica, APIs |
+| `docs/archive/` | Documentos historicos |
+
+**Documentos clave:**
 | Documento | Descripcion |
 |-----------|-------------|
-| `docs/MOL_CONTEXT_MASTER.md` | Contexto completo del sistema |
-| `docs/MOL_LINEAR_ISSUES_V3.md` | Issues pendientes con specs detalladas |
-| `docs/MOL_CLAUDE_CODE_PROMPT.md` | Resumen rapido para inicio de sesion |
-| `docs/SISTEMA_VALIDACION_V2.md` | Arquitectura de validacion |
-| `docs/DASHBOARD_WIREFRAMES.md` | Disenos de UI |
-| `docs/SCRAPERS_INVENTARIO.md` | Inventario de scrapers |
-| `docs/NLP_SCHEMA_V5.md` | Schema de campos NLP |
+| `docs/current/MOL_CONTEXT_MASTER.md` | Contexto completo del sistema |
+| `docs/current/NLP_SCHEMA_V5.md` | Schema de 153 campos NLP |
+| `docs/current/MATCHING_STRATEGY_V2.md` | Estrategia Matching v2.1.1 |
+| `docs/current/CHANGELOG.md` | Historial de cambios |
+| `docs/planning/MOL_LINEAR_ISSUES_V3.md` | Issues con specs detalladas |
+| `docs/guides/QUICKSTART_BUMERAN.md` | Inicio rapido scraping |
 
 ## Comandos Clave
 
@@ -283,26 +301,140 @@ python scripts/linear_queue.py process  # Al final de la sesion
 - Usar conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`
 - Incluir issue Linear si aplica: `feat(MOL-XX): descripcion`
 
+## Dashboard R Shiny (Produccion)
+
+El dashboard R Shiny esta en `Visual--/` y **esta en produccion**.
+
+| Componente | Ubicacion |
+|------------|-----------|
+| App principal | `Visual--/app.R` |
+| Documentacion | `Visual--/docs/` |
+| Deploy config | `Visual--/rsconnect/` |
+| Datos CSV | `Visual--/ofertas_esco_*.csv` |
+
+**NO modificar Visual--/** sin coordinacion con el equipo.
+
+---
+
 ## Estructura del Proyecto
 
 ```
 MOL/
 ├── 01_sources/bumeran/scrapers/    # Scrapers
-├── database/                        # BD, matching, tests
-├── nlp/                            # Pipeline NLP
+├── 02.5_nlp_extraction/            # Pipeline NLP
+├── database/                        # BD principal, matching, NLP processors
 ├── data/tracking/                  # IDs vistos
+├── Visual--/                       # Dashboard R Shiny (PRODUCCION)
 ├── dashboards/                     # Dashboards nuevos
 │   ├── admin/                      # Streamlit (por crear)
 │   ├── optimization/               # Next.js Vercel (por crear)
 │   └── production/                 # Next.js Vercel (por crear)
-├── exports/                        # Scripts export
-├── scripts/                        # Linear cache, utilidades
-├── config/                         # Configuracion
+├── tests/                          # Tests pytest
+│   ├── nlp/                        # Tests NLP
+│   ├── matching/                   # Tests matching
+│   ├── scraping/                   # Tests scraping
+│   ├── database/                   # Tests BD
+│   └── integration/                # Tests E2E
+├── scripts/                        # Utilidades
+│   ├── db/                         # Scripts BD (check_db, etc.)
+│   ├── analysis/                   # Analisis de datos
+│   ├── exploration/                # Investigacion APIs
+│   ├── windows/                    # Scripts .ps1/.bat Windows
+│   └── linear_*.py                 # Integracion Linear
+├── config/                         # Configuracion JSON
+├── docs/                           # Documentacion organizada
+│   ├── current/                    # Docs activos
+│   ├── guides/                     # Guias de uso
+│   ├── planning/                   # Planificacion
+│   ├── reference/                  # Referencia tecnica
+│   └── archive/                    # Historico
+├── archive/                        # Archivos historicos
+│   ├── dashboards_old/             # Dashboard v1-v3 archivados
+│   └── legacy_dashboard_oct2024/   # Dashboard R antiguo
+├── backups/                        # Backups BD
+├── logs/                           # Logs del sistema
+├── exports/                        # Exportaciones
 ├── .linear/                        # Cache de Linear (no commitear)
-├── docs/                           # Documentacion
 ├── run_scheduler.py                # PUNTO DE ENTRADA SCRAPING
+├── dashboard_scraping_v4.py        # Dashboard Dash (en transicion)
 └── CLAUDE.md                       # Este archivo
 ```
+
+## Arquitectura del Pipeline
+
+### Pipeline ACTUAL (1 portal - Bumeran)
+
+```
+run_scheduler.py
+    |
+    v
+01_sources/bumeran/ (scraping)
+    |
+    v
+database/bumeran_scraping.db
+    |
+    v
+database/process_nlp_from_db_v10.py (NLP)
+    |
+    v
+database/match_ofertas_v2.py (Matching)
+    |
+    v
+Visual--/ (Dashboard R Shiny)
+```
+
+### Pipeline FUTURO (5 portales)
+
+```
+01_sources/* (Bumeran, ZonaJobs, Computrabajo, LinkedIn, Indeed)
+    |
+    v
+02_consolidation/ (merge multi-fuente)
+    |
+    v
+02.5_nlp_extraction/ (NLP modular)
+    |
+    v
+03_esco_matching/ (matching modular)
+    |
+    v
+04_analysis/ (analisis automatizado)
+    |
+    v
+05_products/ (exports finales)
+```
+
+### Estado de Carpetas Numeradas
+
+| Carpeta | Estado | Cuando se usa |
+|---------|--------|---------------|
+| `01_sources/` | ACTIVO | Ahora (Bumeran) |
+| `02_consolidation/` | RESERVADO | Con 2+ portales |
+| `02.5_nlp_extraction/` | PARCIAL | Solo prompts usados |
+| `03_esco_matching/` | LEGACY | Codigo en database/ |
+| `04_analysis/` | RESERVADO | Post-produccion |
+| `05_products/` | PLACEHOLDER | Post-produccion |
+
+> **Nota**: Ver STATUS.md en cada carpeta para detalles.
+
+## Carpetas de Soporte
+
+| Carpeta | Proposito | Documentacion |
+|---------|-----------|---------------|
+| `backups/` | Backups de BD y datos historicos | backups/README.md |
+| `exports/` | Gold sets y exports Excel | exports/README.md |
+| `logs/` | Logs del scheduler | logs/README.md |
+| `metrics/` | Tracking de experimentos | metrics/README.md |
+
+### Dashboards (aclaracion)
+
+| Carpeta | Proposito | Estado |
+|---------|-----------|--------|
+| `dashboard/` | Modulo Python de utilidades (data_loaders, components) | ACTIVO |
+| `dashboards/` | Ubicacion para nuevos dashboards (admin/, optimization/) | RESERVADO |
+| `Visual--/` | Dashboard R Shiny produccion | PRODUCCION |
+
+> **Nota**: `dashboard/` es un paquete Python usado por `dashboard_scraping_v4.py`, NO es un dashboard de usuario.
 
 ## Epicas Activas
 
@@ -327,4 +459,53 @@ MOL/
 
 ---
 
-> **Ultima actualizacion:** 2025-12-10
+> **Ultima actualizacion:** 2026-01-03
+
+---
+
+## AI Platform Local
+
+Este proyecto usa la plataforma de IA local en `D:\AI_Platform`.
+
+### Antes de cualquier tarea de IA
+
+1. **Leer aprendizajes globales:** `D:\AI_Platform\learnings\global.yaml`
+2. **Leer aprendizajes del proyecto:** `.ai/learnings.yaml`
+3. **Aplicar lo aprendido** antes de decidir modelo o enfoque
+
+### Conexión
+
+```python
+import httpx
+GATEWAY = "http://localhost:8080"
+```
+
+### Endpoints disponibles
+
+| Endpoint | Descripción |
+|----------|-------------|
+| `POST /v1/chat/completions` | LLM (modelos: fast, smart, reasoning, agent) |
+| `POST /v1/embeddings` | Embeddings (e5-large, bge-m3) |
+| `POST /v1/ocr` | OCR de imágenes/PDFs |
+| `POST /v1/parse/legal` | Parser documentos legales |
+| `POST /v1/parse/job` | Parser ofertas laborales |
+| `POST /v1/rag/query` | RAG completo |
+| `POST /v1/transcribe` | Audio a texto |
+| `POST /v1/rerank` | Reordenar por relevancia |
+
+### Verificar servicios
+
+```python
+response = httpx.get("http://localhost:8080/health")
+```
+
+### Documentación
+
+- Swagger UI: http://localhost:8080/docs
+- Monitor: http://localhost:8501
+- Guía completa: `D:\AI_Platform\CLAUDE.md`
+
+### Cuando descubras algo útil
+
+- Aplica a ESTE proyecto → Agregar a `.ai/learnings.yaml`
+- Aplica a TODOS → Agregar a `D:\AI_Platform\learnings\global.yaml`

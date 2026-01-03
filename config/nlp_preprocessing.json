@@ -6,12 +6,12 @@
 
   "campos_estructurados": {
     "ubicacion": {
-      "campo_origen": "ubicacion",
+      "campo_origen": "localizacion",
       "separador": ",",
       "campos_destino": ["localidad", "provincia"],
       "orden": ["localidad", "provincia"],
       "regex_alternativo": "^(.+),\\s*(.+)$",
-      "notas": "Formato esperado: 'Localidad, Provincia' - si no tiene coma, asumir provincia"
+      "notas": "Formato esperado: 'Localidad, Provincia' - campo BD es 'localizacion'"
     }
   },
 

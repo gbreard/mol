@@ -137,5 +137,170 @@
       }
     ],
     "default": null
+  },
+
+  "tareas_explicitas": {
+    "_descripcion": "Extraccion de tareas cuando LLM no detecta bullets",
+    "_gap_actual": "46% ofertas sin tareas",
+    "_regla_excel": "🟢7 - No depender solo de bullet points",
+
+    "patrones_inicio_frase": [
+      "sera responsable de",
+      "seras responsable de",
+      "sus funciones incluyen",
+      "tus funciones incluyen",
+      "funciones principales",
+      "principales funciones",
+      "principales tareas",
+      "tareas principales",
+      "actividades principales",
+      "responsabilidades principales",
+      "debera",
+      "deberas",
+      "tendra a cargo",
+      "tendras a cargo",
+      "a cargo de",
+      "se encargara de",
+      "te encargaras de",
+      "entre sus tareas",
+      "entre tus tareas",
+      "el puesto implica",
+      "el rol implica",
+      "buscamos que",
+      "esperamos que"
+    ],
+
+    "patrones_regex": [
+      {
+        "patron": "(?:sera|seras|debera|deberas)\\s+(?:responsable\\s+de\\s+)?([^.;\\n]{10,100})",
+        "descripcion": "Sera responsable de X"
+      },
+      {
+        "patron": "(?:funciones|tareas|responsabilidades)\\s*(?:principales)?\\s*:?\\s*([^.;]{10,200})",
+        "descripcion": "Funciones: X"
+      },
+      {
+        "patron": "(?:a\\s+cargo\\s+de|encargarse\\s+de)\\s+([^.;\\n]{10,100})",
+        "descripcion": "A cargo de X"
+      }
+    ],
+
+    "separadores_lista": ["-", "•", "*", "\\d+\\.", "\\d+\\)"],
+    "max_tareas": 10
+  },
+
+  "sector_empresa": {
+    "_descripcion": "Extraccion del rubro/sector de la empresa",
+    "_gap_actual": "30% ofertas sin sector",
+    "_regla_excel": "🟢9 - Buscar frases descriptivas de empresa",
+
+    "patrones_inicio": [
+      "somos una empresa de",
+      "somos una empresa dedicada a",
+      "empresa dedicada a",
+      "empresa lider en",
+      "lideres en",
+      "especialistas en",
+      "especializados en",
+      "dedicados a",
+      "nos dedicamos a",
+      "trabajamos en",
+      "del rubro",
+      "del sector",
+      "industria de"
+    ],
+
+    "diccionario_sectores": {
+      "Tecnologia": ["software", "tecnologia", "sistemas", "informatica", "digital", "IT", "tech"],
+      "Retail/Comercio": ["retail", "comercio", "tienda", "local comercial", "supermercado", "mayorista", "minorista"],
+      "Manufactura": ["fabrica", "manufactura", "industria", "produccion", "planta industrial"],
+      "Alimentos": ["alimentos", "alimenticia", "consumo masivo", "bebidas", "lacteos", "frigorificos"],
+      "Salud": ["salud", "clinica", "hospital", "farmaceutica", "laboratorio", "medicina"],
+      "Finanzas": ["banco", "financiera", "seguros", "fintech", "creditos"],
+      "Logistica": ["logistica", "transporte", "distribucion", "courier", "almacenamiento"],
+      "Construccion": ["construccion", "inmobiliaria", "real estate", "arquitectura"],
+      "Automotriz": ["automotriz", "concesionario", "autopartes", "vehiculos"],
+      "Servicios": ["consultora", "servicios", "outsourcing", "tercerizacion"],
+      "Educacion": ["educacion", "universidad", "instituto", "colegio", "capacitacion"],
+      "Gastronomia": ["gastronomia", "restaurante", "catering", "hoteleria", "turismo"],
+      "Agro": ["agro", "agricola", "campo", "agroindustria", "semillas", "fertilizantes"]
+    }
+  },
+
+  "limpieza_tareas": {
+    "_descripcion": "Patrones para limpiar tareas_explicitas despues de extraccion",
+    "_fecha": "2025-12-30",
+
+    "prefijos_eliminar": [
+      "a realizar:",
+      "a desarrollar:",
+      "del puesto",
+      "seran:",
+      "serán:",
+      "incluiran:",
+      "incluirán:",
+      "principales:",
+      "generales en",
+      "similares en",
+      "correspondientes a"
+    ],
+
+    "patrones_regex_eliminar": [
+      {"patron": "^:\\s*", "descripcion": "Dos puntos al inicio"},
+      {"patron": "^\\d+\\.\\s*", "descripcion": "Numero con punto al inicio (1. 2.)"},
+      {"patron": "^\\d+\\)\\s*", "descripcion": "Numero con parentesis (1) 2))"},
+      {"patron": "^[-•●\\*\\?]\\s*", "descripcion": "Bullets al inicio"},
+      {"patron": "\\s*[-•●\\*]\\s*$", "descripcion": "Bullets al final"},
+      {"patron": "^[A-Z\\s\\-]+:\\s*", "descripcion": "Etiquetas mayusculas (CONTABLES:)"}
+    ],
+
+    "reemplazos": [
+      {"buscar": "  ", "reemplazo": " ", "descripcion": "Espacios dobles"},
+      {"buscar": "; ;", "reemplazo": ";", "descripcion": "Punto y coma doble"},
+      {"buscar": ";;", "reemplazo": ";", "descripcion": "Punto y coma pegado"}
+    ],
+
+    "min_longitud_tarea": 5,
+    "max_tareas": 10
+  },
+
+  "limpieza_skills": {
+    "_descripcion": "Patrones para limpiar skills_tecnicas_list y soft_skills_list",
+    "_fecha": "2025-12-30",
+
+    "prefijos_eliminar": [
+      "[regex]",
+      "[llm]",
+      "[dict]"
+    ],
+
+    "normalizacion_duplicados": {
+      "_descripcion": "Mapeo para unificar variantes de la misma skill",
+      "lider": ["líder", "lider"],
+      "liderazgo": ["Liderazgo"],
+      "proactivo": ["proactiva", "Proactividad", "proactividad"],
+      "responsabilidad": ["Responsabilidad", "Responsable", "responsable"],
+      "comunicacion": ["comunicación", "Comunicación"],
+      "organizacion": ["organización", "Organización", "Organizado", "organizada"],
+      "trabajo en equipo": ["Trabajo en equipo", "Trabajo En Equipo"],
+      "compromiso": ["Compromiso"],
+      "planificacion": ["planificación", "Planificación"],
+      "autonomia": ["autonomía", "Autonomía"],
+      "analitico": ["analítico", "capacidad analítica", "Capacidad Analítica"],
+      "atencion al detalle": ["atención al detalle", "Atención al detalle", "detallista"],
+      "flexibilidad": ["Flexibilidad", "flexible"],
+      "resolucion de problemas": ["resolución de problemas", "Resolución de problemas"],
+      "negociacion": ["negociación", "Capacidad De Negociacion", "Capacidad De Negociación"],
+      "colaboracion": ["colaboración", "Colaboración"],
+      "innovacion": ["innovación", "Innovación"],
+      "creatividad": ["Creatividad", "creativo"],
+      "adaptabilidad": ["Adaptabilidad"],
+      "iniciativa": ["Iniciativa"],
+      "precision": ["precisión", "Precisión"]
+    },
+
+    "min_longitud_skill": 2,
+    "max_skills": 15,
+    "separador_salida": ", "
   }
 }

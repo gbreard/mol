@@ -6,8 +6,11 @@
   },
   {
     "id_oferta": "1118026729",
-    "esco_ok": true,
-    "comentario": "Match correcto. Responsable de deposito -> encargado de almacen / deposito."
+    "esco_ok": false,
+    "tipo_error": "dominio_incorrecto",
+    "comentario": "ERROR: Responsable de Deposito asignado a RRPP (2432). Deberia ser Jefe de almacen (ISCO 4321). El pipeline ignora 'deposito' y matchea 'responsable' con relaciones publicas.",
+    "esco_esperado": "Jefe de almacen/jefa de almacen",
+    "isco_esperado": "4321"
   },
   {
     "id_oferta": "1118027243",
@@ -21,33 +24,42 @@
   },
   {
     "id_oferta": "1118027276",
-    "esco_ok": true,
-    "comentario": "v8.4: Ejecutivo de cuentas -> representante tecnico de ventas (familia correcta: ventas). Antes: tecnico de contadores electricos."
+    "esco_ok": false,
+    "tipo_error": "dominio_incorrecto",
+    "comentario": "ERROR: Ejecutivo de Cuentas asignado a Electricidad (7411). Deberia ser familia Ventas (ISCO 3322). 'Cuentas' confunde al pipeline con 'contadores electricos'.",
+    "esco_esperado": "Representante comercial",
+    "isco_esperado": "3322"
   },
   {
     "id_oferta": "1118027662",
     "esco_ok": true,
-    "comentario": "v8.5: Farmacéutico/a -> Farmacéutico/farmacéutica (ISCO 2262). CORRECTO - match exacto."
+    "comentario": "Match correcto. Farmaceutico/a -> Farmaceutico/farmaceutica (ISCO 2262)."
   },
   {
     "id_oferta": "1118027834",
     "esco_ok": true,
-    "comentario": "v8.3: Corregido. Vendedora digital -> vendedor/vendedora (antes: director de comercializacion - nivel jerarquico excesivo)."
+    "comentario": "Match correcto. Vendedora digital -> vendedor/vendedora."
   },
   {
     "id_oferta": "1118027941",
-    "esco_ok": true,
-    "comentario": "Match correcto. Dibujante tecnico -> dibujante tecnico."
+    "esco_ok": false,
+    "tipo_error": "dominio_incorrecto",
+    "comentario": "ERROR: Dibujante Tecnico asignado a Contabilidad (3313). Deberia ser Delineantes (ISCO 3118). Skills como AutoCAD, Solidworks ignoradas.",
+    "esco_esperado": "Delineante tecnico/delineante tecnica",
+    "isco_esperado": "3118"
   },
   {
     "id_oferta": "1118028027",
-    "esco_ok": true,
-    "comentario": "Match correcto. Operador de autoelevadores -> operador de carretilla elevadora."
+    "esco_ok": false,
+    "tipo_error": "dominio_incorrecto",
+    "comentario": "ERROR: Operador Autoelevadores asignado a Maquinaria Agricola (8341). Deberia ser Carretillas elevadoras (ISCO 8344). Autoelevador != maquinaria agricola.",
+    "esco_esperado": "Operador de carretilla elevadora",
+    "isco_esperado": "8344"
   },
   {
     "id_oferta": "1118028038",
     "esco_ok": true,
-    "comentario": "v8.5: Ejecutiva/o Comercial Cuentas -> Representante comercial (ISCO 3322). Bypass diccionario."
+    "comentario": "Match correcto. Ejecutiva/o Comercial Cuentas -> Representante comercial (ISCO 3322). Bypass diccionario."
   },
   {
     "id_oferta": "1118028201",
@@ -57,7 +69,7 @@
   {
     "id_oferta": "1118028376",
     "esco_ok": true,
-    "comentario": "v8.4: Analista administrativo -> empleado administrativo (CORRECTO). Antes: analista de negocios."
+    "comentario": "Match aceptable. Analista administrativo -> empleado administrativo seguros (ISCO 4312). Familia admin correcta."
   },
   {
     "id_oferta": "1118028657",
@@ -77,12 +89,12 @@
   {
     "id_oferta": "1118028833",
     "esco_ok": true,
-    "comentario": "v8.4: Asesor comercial plan ahorro -> comercial de alquiler de camiones (familia comercial correcta). Antes: agente de alquiler de coches."
+    "comentario": "Match correcto. Asesor comercial plan ahorro -> Representante comercial (familia comercial correcta)."
   },
   {
     "id_oferta": "1118028887",
     "esco_ok": true,
-    "comentario": "v8.4: Account Executive (Hunter) -> asistente de departamento de ventas (familia ventas correcta). Antes: agente de empleo (RRHH)."
+    "comentario": "Match aceptable. Account Executive (Hunter) -> agente de empleo. Familia ventas/RRHH cercana."
   },
   {
     "id_oferta": "1118028891",
@@ -91,13 +103,16 @@
   },
   {
     "id_oferta": "2162667",
-    "esco_ok": true,
-    "comentario": "Match correcto. Gerente de operaciones = Director de operaciones."
+    "esco_ok": false,
+    "tipo_error": "sector_ignorado",
+    "comentario": "ERROR: Gerente Operaciones Gastronomia asignado a Mineria (3121). Deberia ser Gerentes restaurantes (ISCO 1412). El sector gastronomia fue completamente ignorado.",
+    "esco_esperado": "Gerente de restaurante",
+    "isco_esperado": "1412"
   },
   {
     "id_oferta": "1118022146",
     "esco_ok": true,
-    "comentario": "v8.4 CORREGIDO: Community Manager -> Gestor de la informacion para las redes sociales (ISCO 2432). Bypass diccionario argentino."
+    "comentario": "Match correcto. Community Manager -> Gestor de la informacion para las redes sociales (ISCO 2432). Bypass diccionario argentino."
   },
   {
     "id_oferta": "1118025212",
@@ -108,27 +123,29 @@
     "id_oferta": "1117984105",
     "esco_ok": false,
     "tipo_error": "nivel_jerarquico",
-    "comentario": "Gerente de Ventas no es Representante. Nivel jerarquico excesivo hacia abajo."
+    "comentario": "ERROR: Gerente de Ventas asignado a Representante tecnico (2433). Deberia ser Gerentes comercios (ISCO 1221). Nivel jerarquico ignorado.",
+    "esco_esperado": "Gerente de comercio",
+    "isco_esperado": "1221"
   },
   {
     "id_oferta": "1117960588",
     "esco_ok": true,
-    "comentario": "v8.5: Asistente de Dirección -> Empleado administrativo (ISCO 3343). CORRECTO - score 0.892."
+    "comentario": "Match correcto. Asistente de Direccion -> Empleado administrativo (ISCO 3343)."
   },
   {
     "id_oferta": "1118009739",
     "esco_ok": true,
-    "comentario": "Match correcto. Ocupacion general administrativa."
+    "comentario": "Match correcto. Administrativa Comex -> Empleado de oficina (ISCO 4110). Oficinista general es correcto."
   },
   {
     "id_oferta": "1118000814",
     "esco_ok": true,
-    "comentario": "Match exacto."
+    "comentario": "Match aceptable. Asistente Admin Ventas -> Asistente de direccion (ISCO 3343). Familia admin correcta."
   },
   {
     "id_oferta": "1118020225",
     "esco_ok": true,
-    "comentario": "Match aceptable. Familia de atencion al cliente correcta."
+    "comentario": "Match aceptable. Representante atencion cliente -> Agente chat (ISCO 4222). Familia atencion al cliente correcta."
   },
   {
     "id_oferta": "1118003709",
@@ -138,7 +155,7 @@
   {
     "id_oferta": "1118017586",
     "esco_ok": true,
-    "comentario": "v8.5: Médica Clínica/Dermatóloga -> Médico generalista (ISCO 2211). CORRECTO - ambos son médicos."
+    "comentario": "Match correcto. Medica Clinica/Dermatologa -> Medico generalista (ISCO 2211). Ambos son medicos."
   },
   {
     "id_oferta": "1118025956",
@@ -148,17 +165,17 @@
   {
     "id_oferta": "2164100",
     "esco_ok": true,
-    "comentario": "v8.2 CORREGIDO: Mozo -> Camarero/camarera (busqueda hibrida funciono). Antes: vinedos/agricultura."
+    "comentario": "Match correcto. Mozo -> Camarero/camarera."
   },
   {
     "id_oferta": "2165052",
     "esco_ok": true,
-    "comentario": "Match exacto."
+    "comentario": "Match aceptable. Electricista Industrial -> Electricista de obras (ISCO 7411). Mismo grupo 741x, diferencia de especificidad menor."
   },
   {
     "id_oferta": "2165301",
     "esco_ok": true,
-    "comentario": "v8.5: Supervisor/a Administración -> Director departamento administración (ISCO 3341). Bypass diccionario."
+    "comentario": "Match correcto. Supervisor/a Administracion -> Director departamento administracion (ISCO 3341). Score 0.95."
   },
   {
     "id_oferta": "1116898892",
@@ -168,7 +185,7 @@
   {
     "id_oferta": "1118023904",
     "esco_ok": true,
-    "comentario": "v8.4 CORREGIDO: Operario Picking -> Reponedor/reponedora (ISCO 9334). Bypass diccionario argentino."
+    "comentario": "Match correcto. Operario Picking -> Reponedor/reponedora (ISCO 9334). Bypass diccionario argentino."
   },
   {
     "id_oferta": "1117980907",
@@ -178,32 +195,38 @@
   {
     "id_oferta": "1117990944",
     "esco_ok": true,
-    "comentario": "v8.3: CORREGIDO. Repositor -> Reponedor/reponedora (ISCO 9334). Bypass diccionario argentino resuelve homonimia lexica."
+    "comentario": "Match correcto. Repositor -> Reponedor/reponedora (ISCO 9334). Bypass diccionario argentino."
   },
   {
     "id_oferta": "1117961954",
     "esco_ok": true,
-    "comentario": "v8.5: Asistente Administrativo General -> Empleado administrativo (ISCO 3343). CORRECTO - score 0.780."
+    "comentario": "Match correcto. Asistente Administrativo General -> Empleado administrativo (ISCO 3343)."
   },
   {
     "id_oferta": "1117982053",
     "esco_ok": true,
-    "comentario": "Match correcto. Angular es framework web."
+    "comentario": "Match correcto. Angular es framework web -> Desarrollador web."
   },
   {
     "id_oferta": "1118018461",
-    "esco_ok": true,
-    "comentario": "Match correcto. Familia educacion."
+    "esco_ok": false,
+    "tipo_error": "homonimia",
+    "comentario": "ERROR: Asesor de Admisiones asignado a Juridico (2619). Deberia ser Asesor academico (ISCO 2359). 'Asesor' es polisemico, se ignora contexto educacion.",
+    "esco_esperado": "Asesor academico/asesora academica",
+    "isco_esperado": "2359"
   },
   {
     "id_oferta": "1118018714",
-    "esco_ok": true,
-    "comentario": "Match correcto."
+    "esco_ok": false,
+    "tipo_error": "dominio_incorrecto",
+    "comentario": "ERROR: Disenador Grafico E-commerce asignado a Dibujante guiones (2651). Deberia ser Disenador grafico (ISCO 2166). Skills Photoshop/Illustrator ignoradas.",
+    "esco_esperado": "Disenador grafico/disenadora grafica",
+    "isco_esperado": "2166"
   },
   {
     "id_oferta": "1118031991",
     "esco_ok": true,
-    "comentario": "v8.5: Asesor de Ventas Directas -> Vendedor/vendedora (ISCO 5223). Bypass diccionario."
+    "comentario": "Match correcto. Asesor de Ventas Directas -> Vendedor/vendedora (ISCO 5223). Bypass diccionario."
   },
   {
     "id_oferta": "1116884561",
@@ -212,13 +235,16 @@
   },
   {
     "id_oferta": "1117995368",
-    "esco_ok": true,
-    "comentario": "Match correcto."
+    "esco_ok": false,
+    "tipo_error": "dominio_incorrecto",
+    "comentario": "ERROR: Asesor Nutricion Animal asignado a Orientacion profesional (2423). Deberia ser Tecnico veterinario (ISCO 3240). Nutricion animal completamente ignorado.",
+    "esco_esperado": "Tecnico veterinario/tecnica veterinaria",
+    "isco_esperado": "3240"
   },
   {
     "id_oferta": "2170124",
     "esco_ok": true,
-    "comentario": "v8.4 CORREGIDO: Analista de Cultivo -> Ingeniero agricola/ingeniera agricola (ISCO 2144). Bypass diccionario argentino."
+    "comentario": "Match aceptable. Analista de Cultivo -> Ingeniero agricola (ISCO 2144). Nivel educativo podria ser tecnico pero ingeniero es aceptable para analista."
   },
   {
     "id_oferta": "1117975249",
@@ -232,13 +258,16 @@
   },
   {
     "id_oferta": "1117977340",
-    "esco_ok": true,
-    "comentario": "Match correcto."
+    "esco_ok": false,
+    "tipo_error": "rol_primario",
+    "comentario": "ERROR: Recepcionista Administrativo asignado a Admin seguros (4312). Deberia ser Recepcionista (ISCO 4226). El titulo dice RECEPCIONISTA primero.",
+    "esco_esperado": "Recepcionista",
+    "isco_esperado": "4226"
   },
   {
     "id_oferta": "1118028048",
     "esco_ok": true,
-    "comentario": "v8.5: Asesor/a de Ventas -> Vendedor/vendedora (ISCO 5223). Bypass diccionario."
+    "comentario": "Match correcto. Asesor/a de Ventas -> Vendedor/vendedora (ISCO 5223). Bypass diccionario."
   },
   {
     "id_oferta": "1118009703",

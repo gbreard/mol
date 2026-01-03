@@ -1,0 +1,76 @@
+{
+  "_version": "1.0",
+  "_descripcion": "Patrones para limpiar titulos de ofertas - eliminar ruido geografico/empresarial",
+  "_fecha": "2025-12-30",
+
+  "ciudades_inicio": {
+    "_descripcion": "Ciudades que aparecen AL INICIO del titulo y deben eliminarse",
+    "lista": [
+      "Venado Tuerto", "Mar del Plata", "San Miguel", "San Isidro",
+      "La Plata", "Villa Maria", "Rio Cuarto", "San Juan",
+      "Bahia Blanca", "San Fernando", "Vicente Lopez", "Pilar",
+      "Tigre", "Quilmes", "Lomas de Zamora", "Avellaneda",
+      "San Martin", "Tres de Febrero", "Moron", "Merlo"
+    ]
+  },
+
+  "codigos_referencia": {
+    "_descripcion": "Patrones de codigos internos a eliminar",
+    "patrones": [
+      {"patron": "\\(req\\d+\\)", "ejemplo": "(req199380)"},
+      {"patron": "\\[REF[^\\]]+\\]", "ejemplo": "[REF-123]"},
+      {"patron": "#\\d{4,}", "ejemplo": "#12345"}
+    ]
+  },
+
+  "modalidad_final": {
+    "_descripcion": "Palabras de modalidad al final del titulo",
+    "palabras": ["Eventual", "Part-time", "Part time", "Full-time", "Full time",
+                 "Remoto", "Hibrido", "Hibrida", "Presencial", "Temporal", "Freelance"]
+  },
+
+  "zonas_ubicaciones": {
+    "_descripcion": "Patrones de ubicacion al final",
+    "patrones": [
+      {"patron": "\\s*[Zz]/[\\w]+$", "ejemplo": "Z/Escobar"},
+      {"patron": "\\s*[Zz]ona\\s+[\\w/]+$", "ejemplo": "zona CABA"},
+      {"patron": "\\s*-\\s*(BA|CABA|GBA|Bs\\.?\\s*As\\.?|Buenos\\s+Aires|Capital|Cordoba|Mendoza|Rosario|Santa\\s+Fe)$", "ejemplo": "- Buenos Aires"},
+      {"patron": "\\s*-\\s*[\\w\\s]+\\s*-\\s*(BA|GBA|CABA)$", "ejemplo": "- Roque Perez - BA"},
+      {"patron": "\\s+Zona\\s+(Norte|Sur|Oeste|Este)$", "ejemplo": "Zona Norte"}
+    ]
+  },
+
+  "contexto_empresarial": {
+    "_descripcion": "Palabras que indican contexto empresarial (eliminar despues de guion)",
+    "palabras": [
+      "importante", "empresa", "compania", "grupo", "consultora",
+      "gastronomia", "facility", "corporativo", "corporativa", "industria",
+      "concesionario", "maquinaria", "automotriz", "multinacional",
+      "pyme", "startup", "holding"
+    ]
+  },
+
+  "parentesis_eliminar": {
+    "_descripcion": "Patrones de parentesis a eliminar",
+    "patrones": [
+      {"patron": "\\s*\\([^)]{15,}\\)$", "ejemplo": "(Consumo Masivo / Grandes Cuentas)", "razon": "parentesis largo al final"},
+      {"patron": "\\s*\\(PYME\\)$", "ejemplo": "(PYME)"},
+      {"patron": "\\s*\\(para\\s+[^)]+\\)$", "ejemplo": "(para cliente bancario)"},
+      {"patron": "\\s*\\(Eventual\\)$", "ejemplo": "(Eventual)"},
+      {"patron": "\\s*\\(Corredor\\)$", "ejemplo": "(Corredor)"},
+      {"patron": "\\s*\\(Externo/?a?\\)$", "ejemplo": "(Externo/a)"},
+      {"patron": "\\s*\\(Temporal\\)$", "ejemplo": "(Temporal)"},
+      {"patron": "\\s*\\(Reemplazo\\)$", "ejemplo": "(Reemplazo)"},
+      {"patron": "\\s*\\(Part[- ]?time\\)$", "ejemplo": "(Part time)"},
+      {"patron": "\\s*\\(Full[- ]?time\\)$", "ejemplo": "(Full time)"}
+    ]
+  },
+
+  "limpieza_final": {
+    "_descripcion": "Patrones de limpieza al final del proceso",
+    "patrones": [
+      {"patron": "\\s+", "reemplazo": " ", "descripcion": "espacios multiples"},
+      {"patron": "[\\s\\-/]+$", "reemplazo": "", "descripcion": "guiones/barras sueltos al final"}
+    ]
+  }
+}

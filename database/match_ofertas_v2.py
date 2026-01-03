@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-Matching ESCO v2.1.1 - Pipeline en cascada con BGE-M3 Semantico
+Matching ESCO v2.2 - Pipeline en cascada con BGE-M3 Semantico
 ================================================================
 
 Combina:
 - Filtros v2.0 (area_funcional, seniority, sector, bypass diccionario)
+- Reglas de negocio v2.2 (config/matching_rules_business.json)
 - Scoring BGE-M3 semantico (como v8.3)
+
+VERSION: v2.2 (2025-12-30)
+- NEW: Nivel 1.5 - Reglas de negocio que fuerzan ISCO específico
+- NEW: 10 reglas (R1-R12) basadas en análisis de 49 ofertas Gold Set
+- NEW: Archivo config/matching_rules_business.json configurable
 
 VERSION: v2.1.1 (2025-12-10)
 - Fix: Corregida lógica de filtros ISCO para usar prefijos correctamente
@@ -324,6 +330,221 @@ def nivel_1_bypass_diccionario(
             logger.debug(f"Error en fuzzy: {e}")
 
     return None
+
+
+# ============================================================================
+# NIVEL 1.5: REGLAS DE NEGOCIO (NUEVO v2.2)
+# ============================================================================
+
+def cargar_reglas_negocio() -> Dict:
+    """Carga reglas de negocio desde config/matching_rules_business.json"""
+    filepath = CONFIG_DIR / "matching_rules_business.json"
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        logger.debug(f"Archivo de reglas no encontrado: {filepath}")
+        return {}
+    except json.JSONDecodeError as e:
+        logger.warning(f"Error parseando reglas de negocio: {e}")
+        return {}
+
+
+def _normalizar_lista(valor) -> List[str]:
+    """Convierte un valor a lista de strings en minúsculas."""
+    if not valor:
+        return []
+    if isinstance(valor, str):
+        try:
+            valor = json.loads(valor)
+        except:
+            return [valor.lower()]
+    if isinstance(valor, list):
+        return [str(v).lower() for v in valor if v]
+    return []
+
+
+def _texto_contiene_alguno(texto: str, terminos: List[str]) -> bool:
+    """Verifica si el texto contiene alguno de los términos."""
+    if not texto or not terminos:
+        return False
+    texto_lower = texto.lower()
+    return any(t.lower() in texto_lower for t in terminos)
+
+
+def nivel_1_5_reglas_negocio(
+    oferta_nlp: Dict,
+    db_conn: sqlite3.Connection
+) -> Optional[Dict]:
+    """
+    Aplica reglas de negocio que fuerzan ISCO específico.
+
+    Estas reglas tienen prioridad sobre el matching semántico
+    porque detectan casos específicos donde el contexto es claro.
+
+    Returns:
+        Dict con resultado si alguna regla aplica, None si no.
+    """
+    reglas = cargar_reglas_negocio()
+    if not reglas:
+        return None
+
+    reglas_forzar = reglas.get("reglas_forzar_isco", {})
+
+    # Preparar datos de la oferta
+    titulo = (oferta_nlp.get("titulo_limpio") or oferta_nlp.get("titulo") or "").lower()
+    skills = _normalizar_lista(oferta_nlp.get("skills_tecnicas_list"))
+    tareas_raw = oferta_nlp.get("tareas_explicitas")
+    tareas_str = ""
+    if tareas_raw:
+        if isinstance(tareas_raw, str):
+            tareas_str = tareas_raw.lower()
+        elif isinstance(tareas_raw, list):
+            tareas_str = " ".join(str(t) for t in tareas_raw).lower()
+
+    seniority = (oferta_nlp.get("nivel_seniority") or "").lower()
+    tiene_gente = oferta_nlp.get("tiene_gente_cargo")
+    sector = (oferta_nlp.get("sector_empresa") or "").lower()
+    mision = (oferta_nlp.get("mision_rol") or "").lower()
+
+    # Texto combinado para búsquedas amplias
+    texto_completo = f"{titulo} {tareas_str} {mision}"
+
+    # R1: Skills CAD/Diseño Técnico
+    r1 = reglas_forzar.get("R1_skills_cad", {})
+    if r1.get("activa", False):
+        cad_terms = r1.get("condicion", {}).get("skills_contiene_alguno", [])
+        if any(term.lower() in " ".join(skills) for term in cad_terms):
+            logger.info(f"Regla R1 aplicada: Skills CAD detectadas")
+            isco = r1.get("accion", {}).get("isco_preferido", "3118")
+            label = r1.get("accion", {}).get("esco_label", "Delineante tecnico")
+            return _crear_resultado_regla("R1_skills_cad", isco, label, db_conn)
+
+    # R2: Skills Diseño Gráfico
+    r2 = reglas_forzar.get("R2_skills_diseno_grafico", {})
+    if r2.get("activa", False):
+        design_terms = r2.get("condicion", {}).get("skills_contiene_alguno", [])
+        if any(term.lower() in " ".join(skills) for term in design_terms):
+            logger.info(f"Regla R2 aplicada: Skills diseño gráfico detectadas")
+            isco = r2.get("accion", {}).get("forzar_isco", "2166")
+            label = r2.get("accion", {}).get("esco_label", "Disenador grafico")
+            return _crear_resultado_regla("R2_skills_diseno_grafico", isco, label, db_conn)
+
+    # R3: Autoelevador/Montacargas
+    r3 = reglas_forzar.get("R3_autoelevador", {})
+    if r3.get("activa", False):
+        auto_terms = r3.get("condicion", {}).get("titulo_contiene_alguno", [])
+        if _texto_contiene_alguno(titulo, auto_terms):
+            logger.info(f"Regla R3 aplicada: Autoelevador detectado en título")
+            isco = r3.get("accion", {}).get("forzar_isco", "8344")
+            label = r3.get("accion", {}).get("esco_label", "Operador carretilla elevadora")
+            return _crear_resultado_regla("R3_autoelevador", isco, label, db_conn)
+
+    # R4: Nivel Gerencial con gente a cargo
+    r4 = reglas_forzar.get("R4_nivel_gerencial", {})
+    if r4.get("activa", False):
+        # Caso específico: Gerente de Ventas
+        if _texto_contiene_alguno(titulo, ["gerente de ventas", "director de ventas", "jefe de ventas"]):
+            logger.info(f"Regla R4 aplicada: Gerente de Ventas -> ISCO 1221")
+            return _crear_resultado_regla("R4_nivel_gerencial", "1221", "Gerente de comercio", db_conn)
+
+        # Caso general: otros gerentes con gente a cargo
+        seniority_reqs = r4.get("condicion", {}).get("nlp_seniority_es", [])
+        titulo_reqs = r4.get("condicion", {}).get("titulo_contiene_alguno", [])
+        gente_req = r4.get("condicion", {}).get("nlp_tiene_gente_cargo", False)
+
+        if (seniority in [s.lower() for s in seniority_reqs] and
+            tiene_gente == gente_req and
+            _texto_contiene_alguno(titulo, titulo_reqs)):
+            logger.info(f"Regla R4 aplicada: Nivel gerencial con gente a cargo")
+            # Para otros gerentes, forzar familia 1xxx
+            return _crear_resultado_regla("R4_nivel_gerencial", "1219", "Director de administracion", db_conn)
+
+    # R6: Sector Gastronomía
+    r6 = reglas_forzar.get("R6_sector_gastronomia", {})
+    if r6.get("activa", False):
+        gastro_terms = ["gastronomia", "gastronómica", "restaurante", "catering", "cocina", "chef", "bar", "facility management"]
+        if _texto_contiene_alguno(texto_completo, gastro_terms):
+            # Si es gerente + gastronomía = ISCO 1412
+            if _texto_contiene_alguno(titulo, ["gerente", "director", "jefe"]):
+                logger.info(f"Regla R6 aplicada: Gerente gastronomía")
+                return _crear_resultado_regla("R6_sector_gastronomia", "1412", "Gerente de restaurante", db_conn)
+
+    # R7: Sector Educación con Admisiones
+    r7 = reglas_forzar.get("R7_sector_educacion", {})
+    if r7.get("activa", False):
+        edu_titulo_terms = r7.get("condicion", {}).get("titulo_contiene_alguno", [])
+        if _texto_contiene_alguno(titulo, edu_titulo_terms):
+            if _texto_contiene_alguno(titulo, ["admision", "admisiones"]):
+                logger.info(f"Regla R7 aplicada: Asesor de admisiones educación")
+                return _crear_resultado_regla("R7_sector_educacion", "2359", "Asesor academico", db_conn)
+
+    # R8: Nutrición Animal
+    r8 = reglas_forzar.get("R8_nutricion_animal", {})
+    if r8.get("activa", False):
+        nutri_terms = r8.get("condicion", {}).get("titulo_o_tareas_contiene_alguno", [])
+        if _texto_contiene_alguno(texto_completo, nutri_terms):
+            logger.info(f"Regla R8 aplicada: Nutrición animal detectada")
+            isco = r8.get("accion", {}).get("forzar_isco_familia", "324") + "0"
+            label = r8.get("accion", {}).get("esco_label", "Tecnico veterinario")
+            return _crear_resultado_regla("R8_nutricion_animal", isco, label, db_conn)
+
+    # R9: Tareas Logísticas (Responsable de Depósito)
+    r9 = reglas_forzar.get("R9_tareas_logisticas", {})
+    if r9.get("activa", False):
+        logistica_terms = r9.get("condicion", {}).get("tareas_contiene_alguno", [])
+        if _texto_contiene_alguno(titulo, ["responsable", "encargado", "jefe"]) and \
+           _texto_contiene_alguno(titulo + " " + tareas_str, ["deposito", "almacen", "stock", "inventario"]):
+            logger.info(f"Regla R9 aplicada: Responsable logística/depósito")
+            return _crear_resultado_regla("R9_tareas_logisticas", "4321", "Empleado de almacen", db_conn)
+
+    # R12: Ejecutivo de Cuentas = Ventas
+    r12 = reglas_forzar.get("R12_ejecutivo_cuentas", {})
+    if r12.get("activa", False):
+        ejecutivo_terms = r12.get("condicion", {}).get("titulo_contiene_alguno", [])
+        if _texto_contiene_alguno(titulo, ejecutivo_terms):
+            logger.info(f"Regla R12 aplicada: Ejecutivo de cuentas = Ventas")
+            isco = r12.get("accion", {}).get("forzar_isco_familia", "332") + "2"
+            label = r12.get("accion", {}).get("esco_label", "Representante comercial")
+            return _crear_resultado_regla("R12_ejecutivo_cuentas", isco, label, db_conn)
+
+    # R11: Título Compuesto - Priorizar primer rol (Recepcionista Admin)
+    r11 = reglas_forzar.get("R11_titulo_compuesto", {})
+    if r11.get("activa", False):
+        import re
+        # Detectar patrón "ROL1 ROL2" o "ROL1/ROL2" o "ROL1 - ROL2"
+        match = re.match(r'^(recepcionista)\s+', titulo)
+        if match:
+            logger.info(f"Regla R11 aplicada: Título compuesto, priorizando 'recepcionista'")
+            return _crear_resultado_regla("R11_titulo_compuesto", "4226", "Recepcionista", db_conn)
+
+    return None
+
+
+def _crear_resultado_regla(
+    nombre_regla: str,
+    isco_code: str,
+    esco_label: str,
+    db_conn: sqlite3.Connection
+) -> Dict:
+    """Crea resultado estructurado para una regla de negocio."""
+    cursor = db_conn.cursor()
+
+    # Buscar URI de ESCO para el código ISCO
+    cursor.execute("""
+        SELECT occupation_uri FROM esco_occupations
+        WHERE isco_code = ? LIMIT 1
+    """, (isco_code,))
+    uri_row = cursor.fetchone()
+    esco_uri = uri_row[0] if uri_row else None
+
+    return {
+        "esco_uri": esco_uri,
+        "esco_label": esco_label,
+        "isco_code": isco_code,
+        "score": 0.98,  # Score alto para reglas de negocio
+        "metodo": f"regla_negocio_{nombre_regla}"
+    }
 
 
 # ============================================================================
@@ -648,6 +869,22 @@ def match_oferta_v2_bge(
             nivel_match=1, metodo=bypass["metodo"],
             candidatos_considerados=1, alternativas=[],
             metadata={"titulo_buscado": titulo_limpio}
+        )
+
+    # NIVEL 1.5: Reglas de negocio (v2.2)
+    regla_negocio = nivel_1_5_reglas_negocio(oferta_nlp, db_conn)
+
+    if regla_negocio:
+        return MatchResult(
+            status=MatchStatus.SUCCESS.value,
+            esco_uri=regla_negocio["esco_uri"],
+            esco_label=regla_negocio["esco_label"],
+            isco_code=regla_negocio["isco_code"],
+            score=regla_negocio["score"],
+            score_components={"regla_negocio": 1.0},
+            nivel_match=1, metodo=regla_negocio["metodo"],
+            candidatos_considerados=1, alternativas=[],
+            metadata={"regla_aplicada": regla_negocio["metodo"]}
         )
 
     # NIVEL 2: Obtener filtros ISCO

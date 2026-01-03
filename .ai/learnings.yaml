@@ -1,0 +1,59 @@
+# Proyecto: Webscrapping
+# Aprendizajes específicos de este proyecto
+# Claude Code lee esto automáticamente
+
+# ============================================
+# CONTEXTO DEL PROYECTO
+# ============================================
+project:
+  name: "Webscrapping"
+  description: "[qué hace este proyecto]"
+  main_tasks:
+    - "[tarea 1]"
+    - "[tarea 2]"
+
+# ============================================
+# CONFIGURACIÓN PREFERIDA
+# ============================================
+config:
+  default_llm: smart          # o fast, reasoning
+  default_embeddings: e5-large
+  default_ocr: auto
+  
+# ============================================
+# APRENDIZAJES DE ESTE PROYECTO
+# ============================================
+learnings:
+
+  # Ejemplo:
+  # - context: "Parseo de CVs en este proyecto"
+  #   learning: "Los CVs tienen formato X, usar regex para extraer email primero"
+  #   date: 2025-01-15
+  
+  # - context: "Matching de ocupaciones"
+  #   learning: "Normalizar quitando acentos mejora el match con ESCO"
+  #   date: 2025-01-14
+
+# ============================================
+# DECISIONES TOMADAS
+# ============================================
+decisions:
+
+  # Ejemplo:
+  # - decision: "Usar chunking por párrafos"
+  #   reason: "Los documentos tienen estructura clara con headers"
+  #   date: 2025-01-13
+  
+  # - decision: "Modelo 'fast' para clasificación inicial"
+  #   reason: "Suficiente precisión y 3x más rápido"
+  #   date: 2025-01-12
+
+# ============================================
+# COSAS QUE NO FUNCIONARON
+# ============================================
+failures:
+
+  # Ejemplo:
+  # - attempt: "Usar bge-m3 para embeddings"
+  #   problem: "Muy lento y no mejoró resultados para este caso"
+  #   date: 2025-01-10

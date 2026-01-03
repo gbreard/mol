@@ -1,0 +1,186 @@
+[
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": "Campo",
+    "Unnamed: 1": "Correctos",
+    "Unnamed: 2": "Vacíos",
+    "Unnamed: 3": "Errores",
+    "Unnamed: 4": "% Gap",
+    "Unnamed: 5": "Prioridad"
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": "provincia",
+    "Unnamed: 1": 31,
+    "Unnamed: 2": 16,
+    "Unnamed: 3": 2,
+    "Unnamed: 4": 0.367,
+    "Unnamed: 5": "🔴 ALTA"
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": "localidad",
+    "Unnamed: 1": 25,
+    "Unnamed: 2": 22,
+    "Unnamed: 3": 2,
+    "Unnamed: 4": 0.49,
+    "Unnamed: 5": "🔴 ALTA"
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": "modalidad",
+    "Unnamed: 1": 41,
+    "Unnamed: 2": 7,
+    "Unnamed: 3": 1,
+    "Unnamed: 4": 0.163,
+    "Unnamed: 5": "🟡 MEDIA"
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": "area_funcional",
+    "Unnamed: 1": 47,
+    "Unnamed: 2": 1,
+    "Unnamed: 3": 1,
+    "Unnamed: 4": 0.041,
+    "Unnamed: 5": "🟢 BAJA"
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": "nivel_seniority",
+    "Unnamed: 1": 43,
+    "Unnamed: 2": 6,
+    "Unnamed: 3": 0,
+    "Unnamed: 4": 0.122,
+    "Unnamed: 5": "🟡 MEDIA"
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": "experiencia_min_anios",
+    "Unnamed: 1": 46,
+    "Unnamed: 2": 1,
+    "Unnamed: 3": 2,
+    "Unnamed: 4": 0.061,
+    "Unnamed: 5": "🟢 BAJA"
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": "ERRORES CRÍTICOS DETECTADOS",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": "ID",
+    "Unnamed: 1": "Tipo Error",
+    "Unnamed: 2": "Campo Afectado",
+    "Unnamed: 3": "Descripción",
+    "Unnamed: 4": null,
+    "Unnamed: 5": null
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": 1118027243,
+    "Unnamed: 1": "valores_booleanos",
+    "Unnamed: 2": "provincia, localidad, modalidad, area_funcional",
+    "Unnamed: 3": "Todos los campos retornan TRUE en lugar del valor de texto",
+    "Unnamed: 4": null,
+    "Unnamed: 5": null
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": 1118026729,
+    "Unnamed: 1": "valores_booleanos",
+    "Unnamed: 2": "provincia, localidad",
+    "Unnamed: 3": "provincia='FALSO\\nCapital Federal', localidad=FALSE",
+    "Unnamed: 4": null,
+    "Unnamed: 5": null
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": 1117984105,
+    "Unnamed: 1": "parseo_numerico",
+    "Unnamed: 2": "experiencia_min_anios",
+    "Unnamed: 3": "Extrae 35 años cuando debería ser 2 (confunde rango edad 35-50 con experiencia)",
+    "Unnamed: 4": null,
+    "Unnamed: 5": null
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": 1118023904,
+    "Unnamed: 1": "parseo_numerico",
+    "Unnamed: 2": "experiencia_min_anios",
+    "Unnamed: 3": "Extrae 20 años (confunde rango edad 20-45 con experiencia)",
+    "Unnamed: 4": null,
+    "Unnamed: 5": null
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": 1118026700,
+    "Unnamed: 1": "campo_estructurado_ignorado",
+    "Unnamed: 2": "provincia, localidad, modalidad, area_funcional",
+    "Unnamed: 3": "No lee campos ya estructurados de la oferta original",
+    "Unnamed: 4": null,
+    "Unnamed: 5": null
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": "IDs CON CAMPOS VACÍOS (PRINCIPALES)",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": "Campo",
+    "Unnamed: 1": "IDs afectados (16 vacios provincia, 22 localidad)",
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": "provincia (16 vacíos)",
+    "Unnamed: 1": "1118026700, 1118027941, 1118028657, 1118028833, 2162667, 1118025212, 1117960588, 1118000814, 1118025956, 2165052, 1117961954, 1117982053, 1118018714, 1118031991, 1118028777, 1118028048",
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null
+  },
+  {
+    "ANÁLISIS DE COBERTURA NLP - 49 OFERTAS": "localidad (22 vacíos)",
+    "Unnamed: 1": "1118026700, 1118027941, 1118028833, 2162667, 1118025212, 1117960588, 1118009739, 1118000814, 1118025956, 2165052, 1118023904, 1117961954, 1117982053, 1118018461, 1118018714, 1118031991, 1116884561, 1117995368, 1117975249, 1118028777, 1118028048, 1118009703",
+    "Unnamed: 2": null,
+    "Unnamed: 3": null,
+    "Unnamed: 4": null,
+    "Unnamed: 5": null
+  }
+]

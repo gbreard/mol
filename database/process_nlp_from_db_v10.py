@@ -55,6 +55,9 @@ from prompts.extraction_prompt_v10 import build_prompt, flatten_response, CAMPOS
 # Postprocesador NLP (correcciones validacion humana)
 from nlp_postprocessor import NLPPostprocessor
 
+# Limpieza de titulos (elimina ruido: ubicaciones, empresas, codigos)
+from limpiar_titulos import limpiar_titulo
+
 
 class NLPExtractorV10:
     """
@@ -421,6 +424,12 @@ class NLPExtractorV10:
             pp_stats = self.postprocessor.get_stats()
             if self.verbose:
                 print(f"[POSTPROC] {pp_stats}")
+
+            # CAPA 4: TITULO LIMPIO (elimina ruido para matching)
+            if titulo:
+                final_data["titulo_limpio"] = limpiar_titulo(titulo)
+                if self.verbose and final_data["titulo_limpio"] != titulo:
+                    print(f"[TITULO] '{titulo[:40]}...' -> '{final_data['titulo_limpio'][:40]}...'")
 
             # Calcular métricas
             processing_time_ms = int((time.time() - start_time) * 1000)

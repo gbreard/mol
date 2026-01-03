@@ -37,6 +37,21 @@
         "patron": "rango\\s*(?:etario|de\\s*edad)\\s*:?\\s*(\\d+)\\s*[-a]\\s*(\\d+)",
         "ejemplo": "rango etario: 25-40",
         "caso": "rango etario"
+      },
+      {
+        "patron": "(?:tener|contar\\s*con)\\s*(\\d+)\\s*anos",
+        "ejemplo": "tener 25 anos",
+        "caso": "edad requerida verbo"
+      },
+      {
+        "patron": "(?:de|desde)\\s*(\\d+)\\s*a\\s*(\\d+)\\s*anos(?!\\s*(?:de\\s+)?exp)",
+        "ejemplo": "de 20 a 35 anos",
+        "caso": "rango edad sin exp"
+      },
+      {
+        "patron": "(\\d{2})\\s*[-/]\\s*(\\d{2})\\s*anos",
+        "ejemplo": "25-40 anos",
+        "caso": "rango edad formato corto"
       }
     ],
 

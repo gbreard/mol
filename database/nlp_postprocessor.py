@@ -63,6 +63,8 @@ class NLPPostprocessor:
             "booleanos_rechazados": 0,
             "experiencia_corregida": 0,
             "campos_inferidos": 0,
+            "tareas_extraidas": 0,
+            "sector_extraido": 0,
             "campos_normalizados": 0,
             "skills_regex_agregadas": 0,
             "defaults_aplicados": 0,
@@ -384,6 +386,275 @@ class NLPPostprocessor:
         return data
 
     # =========================================================================
+    # PASO 4.5: EXTRACCION TAREAS (cuando LLM no detecta)
+    # =========================================================================
+
+    def _extract_tareas(self, descripcion: str, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Extrae tareas explicitas cuando el LLM no las detectó.
+        Busca frases como "será responsable de", "sus funciones incluyen", etc.
+        """
+        # Solo procesar si no hay tareas
+        tareas_actuales = data.get("tareas_explicitas")
+        if tareas_actuales and str(tareas_actuales).strip() not in ["", "null", "None", "[]"]:
+            return data
+
+        config = self.configs.get("inference_rules", {}).get("tareas_explicitas", {})
+        if not config or not descripcion:
+            return data
+
+        texto = descripcion.lower()
+        tareas_encontradas = []
+
+        # Buscar patrones de inicio de frase
+        patrones_inicio = config.get("patrones_inicio_frase", [])
+        for patron in patrones_inicio:
+            patron_lower = patron.lower()
+            idx = texto.find(patron_lower)
+            if idx != -1:
+                # Extraer texto después del patrón hasta punto o salto de línea
+                inicio = idx + len(patron_lower)
+                fin = inicio + 200  # Max 200 caracteres
+                resto = descripcion[inicio:fin]
+
+                # Cortar en punto, punto y coma, o salto de línea
+                for sep in ['. ', '.\n', ';', '\n\n']:
+                    pos = resto.find(sep)
+                    if pos > 10:  # Al menos 10 caracteres
+                        resto = resto[:pos]
+                        break
+
+                resto = resto.strip()
+                if len(resto) > 10 and resto not in tareas_encontradas:
+                    tareas_encontradas.append(resto)
+                    if self.verbose:
+                        print(f"[TAREAS] Encontrado: '{resto[:50]}...'")
+
+                if len(tareas_encontradas) >= config.get("max_tareas", 10):
+                    break
+
+        # Buscar patrones regex
+        patrones_regex = config.get("patrones_regex", [])
+        for patron_info in patrones_regex:
+            patron = patron_info.get("patron", "")
+            if patron and len(tareas_encontradas) < config.get("max_tareas", 10):
+                try:
+                    matches = re.findall(patron, descripcion, re.IGNORECASE)
+                    for match in matches[:3]:  # Max 3 por patrón
+                        if isinstance(match, tuple):
+                            match = match[0]
+                        match = match.strip()
+                        if len(match) > 10 and match not in tareas_encontradas:
+                            tareas_encontradas.append(match)
+                except re.error:
+                    pass
+
+        if tareas_encontradas:
+            # Formatear como lista separada por punto y coma
+            data["tareas_explicitas"] = "; ".join(tareas_encontradas[:5])
+            self.stats["tareas_extraidas"] += 1
+            if self.verbose:
+                print(f"[TAREAS] Total: {len(tareas_encontradas)} tareas extraídas")
+
+        return data
+
+    # =========================================================================
+    # PASO 4.6: EXTRACCION SECTOR EMPRESA (cuando LLM no detecta)
+    # =========================================================================
+
+    def _extract_sector(self, descripcion: str, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Extrae sector/rubro de la empresa cuando el LLM no lo detectó.
+        Busca frases como "somos una empresa de", "dedicados a", etc.
+        """
+        # Solo procesar si no hay sector
+        sector_actual = data.get("sector_empresa")
+        if sector_actual and str(sector_actual).strip() not in ["", "null", "None"]:
+            return data
+
+        config = self.configs.get("inference_rules", {}).get("sector_empresa", {})
+        if not config or not descripcion:
+            return data
+
+        texto = descripcion.lower()
+
+        # Buscar por diccionario de sectores (keywords directos)
+        diccionario = config.get("diccionario_sectores", {})
+        for sector, keywords in diccionario.items():
+            for keyword in keywords:
+                if keyword.lower() in texto:
+                    data["sector_empresa"] = sector
+                    self.stats["sector_extraido"] += 1
+                    if self.verbose:
+                        print(f"[SECTOR] Encontrado: '{sector}' (keyword: '{keyword}')")
+                    return data
+
+        return data
+
+    # =========================================================================
+    # PASO 4d: LIMPIEZA TAREAS (eliminar prefijos, bullets, etc.)
+    # =========================================================================
+
+    def _limpiar_tareas(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Limpia tareas_explicitas: elimina prefijos, bullets, etiquetas.
+        Lee patrones desde config/nlp_inference_rules.json -> limpieza_tareas
+        """
+        tareas = data.get("tareas_explicitas")
+        if not tareas or not isinstance(tareas, str):
+            return data
+
+        config = self.configs.get("inference_rules", {}).get("limpieza_tareas", {})
+        if not config:
+            return data
+
+        # Separar tareas por punto y coma
+        lista_tareas = [t.strip() for t in tareas.split(";")]
+        tareas_limpias = []
+
+        for tarea in lista_tareas:
+            if not tarea:
+                continue
+
+            # 1. Eliminar prefijos conocidos
+            tarea_lower = tarea.lower()
+            for prefijo in config.get("prefijos_eliminar", []):
+                if tarea_lower.startswith(prefijo.lower()):
+                    tarea = tarea[len(prefijo):].strip()
+                    tarea_lower = tarea.lower()
+
+            # 2. Aplicar patrones regex
+            for patron_info in config.get("patrones_regex_eliminar", []):
+                patron = patron_info.get("patron", "")
+                if patron:
+                    try:
+                        tarea = re.sub(patron, "", tarea).strip()
+                    except re.error:
+                        pass
+
+            # 3. Aplicar reemplazos
+            for reemplazo_info in config.get("reemplazos", []):
+                buscar = reemplazo_info.get("buscar", "")
+                reemplazo = reemplazo_info.get("reemplazo", "")
+                if buscar:
+                    tarea = tarea.replace(buscar, reemplazo)
+
+            # 4. Validar longitud minima
+            min_len = config.get("min_longitud_tarea", 5)
+            if len(tarea) >= min_len:
+                tareas_limpias.append(tarea.strip())
+
+        # Limitar cantidad
+        max_tareas = config.get("max_tareas", 10)
+        tareas_limpias = tareas_limpias[:max_tareas]
+
+        if tareas_limpias:
+            nuevo_valor = "; ".join(tareas_limpias)
+            if nuevo_valor != tareas:
+                data["tareas_explicitas"] = nuevo_valor
+                self.stats["tareas_limpiadas"] = self.stats.get("tareas_limpiadas", 0) + 1
+                if self.verbose:
+                    print(f"[TAREAS] Limpiado: '{tareas[:50]}' -> '{nuevo_valor[:50]}'")
+
+        return data
+
+    # =========================================================================
+    # PASO 4e: LIMPIEZA SKILLS (JSON a texto, deduplicar, normalizar)
+    # =========================================================================
+
+    def _limpiar_skills(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Limpia skills_tecnicas_list y soft_skills_list:
+        - Convierte JSON a texto plano
+        - Elimina prefijos [regex], [llm]
+        - Deduplica y normaliza variantes
+        """
+        config = self.configs.get("inference_rules", {}).get("limpieza_skills", {})
+        if not config:
+            return data
+
+        campos_skills = ["skills_tecnicas_list", "soft_skills_list"]
+
+        for campo in campos_skills:
+            valor = data.get(campo)
+            if not valor:
+                continue
+
+            skills_limpias = []
+            skills_vistas = set()  # Para deduplicar
+
+            # Intentar parsear como JSON
+            try:
+                if isinstance(valor, str) and valor.startswith("["):
+                    lista = json.loads(valor)
+                elif isinstance(valor, list):
+                    lista = valor
+                else:
+                    # Ya es texto, separar por comas
+                    lista = [s.strip() for s in valor.split(",")]
+            except json.JSONDecodeError:
+                # Si falla, tratar como texto separado por comas
+                lista = [s.strip() for s in valor.split(",")]
+
+            # Procesar cada skill
+            for item in lista:
+                skill = None
+
+                if isinstance(item, dict):
+                    # Extraer valor del objeto JSON
+                    skill = item.get("valor") or item.get("texto_original") or ""
+                elif isinstance(item, str):
+                    skill = item
+                else:
+                    continue
+
+                if not skill:
+                    continue
+
+                # Eliminar prefijos
+                for prefijo in config.get("prefijos_eliminar", []):
+                    skill = skill.replace(prefijo, "").strip()
+
+                # Validar longitud minima
+                min_len = config.get("min_longitud_skill", 2)
+                if len(skill) < min_len:
+                    continue
+
+                # Normalizar duplicados
+                skill_lower = skill.lower().strip()
+                normalizacion = config.get("normalizacion_duplicados", {})
+
+                skill_normalizada = skill_lower
+                for forma_canonica, variantes in normalizacion.items():
+                    if skill_lower in [v.lower() for v in variantes] or skill_lower == forma_canonica:
+                        skill_normalizada = forma_canonica
+                        break
+
+                # Deduplicar
+                if skill_normalizada not in skills_vistas:
+                    skills_vistas.add(skill_normalizada)
+                    # Usar la forma original si no fue normalizada, sino la canonica
+                    if skill_normalizada != skill_lower:
+                        skills_limpias.append(skill_normalizada)
+                    else:
+                        skills_limpias.append(skill.strip())
+
+            # Limitar cantidad
+            max_skills = config.get("max_skills", 15)
+            skills_limpias = skills_limpias[:max_skills]
+
+            if skills_limpias:
+                separador = config.get("separador_salida", ", ")
+                nuevo_valor = separador.join(skills_limpias)
+                if nuevo_valor != valor:
+                    data[campo] = nuevo_valor
+                    self.stats["skills_limpiadas"] = self.stats.get("skills_limpiadas", 0) + 1
+                    if self.verbose:
+                        print(f"[SKILLS] {campo}: limpiado ({len(skills_limpias)} skills)")
+
+        return data
+
+    # =========================================================================
     # PASO 5: NORMALIZACION
     # =========================================================================
 
@@ -570,6 +841,18 @@ class NLPPostprocessor:
 
         # Paso 4: Inferencia
         data = self._infer_fields(descripcion, data)
+
+        # Paso 4b: Extraccion tareas explicitas (si LLM no detecto)
+        data = self._extract_tareas(descripcion, data)
+
+        # Paso 4c: Extraccion sector empresa (si LLM no detecto)
+        data = self._extract_sector(descripcion, data)
+
+        # Paso 4d: Limpieza tareas (prefijos, bullets, etc.)
+        data = self._limpiar_tareas(data)
+
+        # Paso 4e: Limpieza skills (JSON a texto, deduplicar)
+        data = self._limpiar_skills(data)
 
         # Paso 5: Normalizacion
         data = self._normalize(data)

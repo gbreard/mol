@@ -1,0 +1,472 @@
+[
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Columna",
+    "Unnamed: 1": "Definición",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "ESCO Skill",
+    "Unnamed: 1": "Competencia o habilidad estandarizada según la taxonomía ESCO (European Skills, Competences, Qualifications and Occupations). Es la traducción de la skill original extraída por NLP a un término normalizado de ESCO en español. Permite comparabilidad entre ofertas y con estándares europeos.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "ESCO Grupo L1",
+    "Unnamed: 1": "Clasificación de primer nivel (Level 1) de la skill según la jerarquía ESCO. Agrupa las competencias en grandes familias: S1-Comunicación, S3-Asistencia, S4-Gestión, S5-Digital, S6-Técnicas, T-Transversales, K-Conocimientos. Facilita análisis agregados por tipo de competencia.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Categoría",
+    "Unnamed: 1": "Subcategoría temática que agrupa skills similares dentro de un mismo dominio funcional. Es una clasificación intermedia entre el Grupo L1 y la skill específica. Ejemplo: 'Software Ofimático' agrupa Excel, Word, PowerPoint, etc.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Es Digital",
+    "Unnamed: 1": "Indicador binario (Sí/No) que identifica si la skill corresponde a una competencia digital según la definición de ESCO. Las competencias digitales incluyen uso de software, programación, marketing digital, e-commerce, cloud computing, etc. ESCO identifica 1,201 competencias digitales oficiales.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Tipo Skill",
+    "Unnamed: 1": "Clasificación del tipo de competencia: Técnica (conocimientos específicos de un área), Soft Skill (habilidades blandas/transversales), Gestión (competencias administrativas), Servicio (orientación al cliente/paciente), Herramienta (uso de herramientas específicas), Tecnología (plataformas tecnológicas).",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "VALORES POSIBLES POR COLUMNA",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "1. ESCO Grupo L1",
+    "Unnamed: 1": "Descripción",
+    "Unnamed: 2": "Ejemplos de Skills"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "S1 - Comunicación",
+    "Unnamed: 1": "Competencias relacionadas con la comunicación interpersonal y digital",
+    "Unnamed: 2": "Comunicación digital, mensajería, correo electrónico"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "S3 - Asistencia",
+    "Unnamed: 1": "Competencias de servicio y atención a clientes/pacientes",
+    "Unnamed: 2": "Atención al cliente, atención al paciente, ventas"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "S4 - Gestión",
+    "Unnamed: 1": "Competencias de gestión administrativa y operativa",
+    "Unnamed: 2": "Gestión inventarios, facturación, cierres contables, presupuestos"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "S5 - Digital",
+    "Unnamed: 1": "Competencias digitales y tecnológicas (uso de ordenadores)",
+    "Unnamed: 2": "Software ofimático, CRM, CAD, programación, e-commerce, cloud"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "S6 - Técnicas",
+    "Unnamed: 1": "Competencias técnicas especializadas de oficios",
+    "Unnamed: 2": "Electricidad, mantenimiento, equipos médicos"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "T - Transversales",
+    "Unnamed: 1": "Competencias blandas aplicables a cualquier ocupación",
+    "Unnamed: 2": "Trabajo en equipo, liderazgo, comunicación, iniciativa"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "K - Conocimientos",
+    "Unnamed: 1": "Conocimientos teóricos específicos de un área",
+    "Unnamed: 2": "Interpretación de planos técnicos"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": null,
+    "Unnamed: 1": "No aplica (ofertas sin skills identificadas)",
+    "Unnamed: 2": "-"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "2. Categoría",
+    "Unnamed: 1": "Grupo L1 asociado",
+    "Unnamed: 2": "Skills incluidas"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Software Ofimático",
+    "Unnamed: 1": "S5 - Digital",
+    "Unnamed: 2": "Office, Excel, Word, PowerPoint, hojas de cálculo"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Informática General",
+    "Unnamed: 1": "S5 - Digital",
+    "Unnamed: 2": "Herramientas informáticas, computación, Google tools"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Sistemas CRM",
+    "Unnamed: 1": "S5 - Digital",
+    "Unnamed: 2": "CRM, HubSpot, Táctica Soft, Salesforce"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Diseño CAD",
+    "Unnamed: 1": "S5 - Digital",
+    "Unnamed: 2": "AutoCAD, Solidworks 2D/3D"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Diseño Gráfico",
+    "Unnamed: 1": "S5 - Digital",
+    "Unnamed: 2": "Photoshop, Illustrator, Canva"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Edición Video",
+    "Unnamed: 1": "S5 - Digital",
+    "Unnamed: 2": "CapCut, Premiere"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Marketing Digital",
+    "Unnamed: 1": "S5 - Digital",
+    "Unnamed: 2": "SEO, Google Ads, Meta Ads, redes sociales"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "E-commerce",
+    "Unnamed: 1": "S5 - Digital",
+    "Unnamed: 2": "TiendaNube, Mercado Libre, Shopify, canales venta online"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Programación",
+    "Unnamed: 1": "S5 - Digital",
+    "Unnamed: 2": "Angular, Webpack, lenguajes de programación"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "ERP/Gestión",
+    "Unnamed: 1": "S5 - Digital",
+    "Unnamed: 2": "SAP, Tango, SIMA, sistemas ERP"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Cloud Computing",
+    "Unnamed: 1": "S5 - Digital",
+    "Unnamed: 2": "AWS, CloudFront, CloudFormation"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Punto de Venta",
+    "Unnamed: 1": "S5 - Digital",
+    "Unnamed: 2": "POS, sistemas de cobro"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Comunicación Digital",
+    "Unnamed: 1": "S1 - Comunicación",
+    "Unnamed: 2": "WhatsApp, correo electrónico, plataformas mensajería"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Gestión Logística",
+    "Unnamed: 1": "S4 - Gestión",
+    "Unnamed: 2": "Inventarios, gestión de almacén"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Administración",
+    "Unnamed: 1": "S4 - Gestión",
+    "Unnamed: 2": "Facturación, cierres contables"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Gestión Procesos",
+    "Unnamed: 1": "S4 - Gestión",
+    "Unnamed: 2": "BPM, gestión de procesos de negocio"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Gestión Financiera",
+    "Unnamed: 1": "S4 - Gestión",
+    "Unnamed: 2": "Presupuestos, análisis financiero"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Electricidad",
+    "Unnamed: 1": "S6 - Técnicas",
+    "Unnamed: 2": "Instalaciones eléctricas, tableros, canalizaciones"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Mantenimiento",
+    "Unnamed: 1": "S6 - Técnicas",
+    "Unnamed: 2": "Mantenimiento preventivo/correctivo, vehículos"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Tecnología Médica",
+    "Unnamed: 1": "S6 - Técnicas",
+    "Unnamed: 2": "Tratamientos láser, equipos médicos estéticos"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Software Textil",
+    "Unnamed: 1": "S5 - Digital",
+    "Unnamed: 2": "Lectra, diseño de patrones"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Colaboración",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Trabajo en equipo"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Comunicación",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Comunicación efectiva, asertiva, interpersonal"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Liderazgo",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Liderar equipos, demostrar liderazgo"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Iniciativa",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Proactividad, iniciativa, dinámica"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Autonomía",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Trabajo autónomo, autogestión"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Orientación Resultados",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Orientación a resultados, trabajo bajo presión"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Organización",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Gestión del tiempo, planificación, puntualidad"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Adaptabilidad",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Adaptarse al cambio, flexibilidad"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Pensamiento Analítico",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Capacidad analítica, resolver problemas"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Pensamiento Estratégico",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Visión estratégica"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Creatividad",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Pensar creativamente"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Atención Detalle",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Prestar atención al detalle"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Negociación",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Técnicas de negociación"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Relaciones Interpersonales",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Trato interpersonal, sociabilidad"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Inteligencia Emocional",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Empatía, autoconfianza"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Actitud Positiva",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Actitud cordial"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Responsabilidad",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Actitud responsable"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Excelencia",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Búsqueda de excelencia"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Disponibilidad",
+    "Unnamed: 1": "T - Transversales",
+    "Unnamed: 2": "Disposición para viajar"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Orientación Cliente",
+    "Unnamed: 1": "S3 - Asistencia",
+    "Unnamed: 2": "Atención al cliente, vocación de servicio"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Atención Paciente",
+    "Unnamed: 1": "S3 - Asistencia",
+    "Unnamed: 2": "Orientación al paciente, cuidado del paciente"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": null,
+    "Unnamed: 1": "-",
+    "Unnamed: 2": "No aplica (ofertas sin skills identificadas)"
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "3. Es Digital",
+    "Unnamed: 1": "Descripción",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Sí",
+    "Unnamed: 1": "La skill es una competencia digital según ESCO. Incluye: software, programación, marketing digital, e-commerce, cloud, comunicación digital, diseño gráfico digital, etc.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "No",
+    "Unnamed: 1": "La skill NO es digital. Incluye: soft skills (trabajo en equipo, comunicación interpersonal, liderazgo), competencias técnicas manuales (electricidad, mantenimiento), servicio al cliente presencial.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": null,
+    "Unnamed: 1": "No aplica (ofertas sin skills identificadas)",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "4. Tipo Skill",
+    "Unnamed: 1": "Descripción",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Técnica",
+    "Unnamed: 1": "Conocimientos y habilidades específicas de un área técnica. Ejemplos: software, programación, diseño, marketing digital, contabilidad, electricidad.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Soft Skill",
+    "Unnamed: 1": "Habilidades blandas/transversales aplicables a cualquier puesto. Ejemplos: trabajo en equipo, comunicación, liderazgo, proactividad, adaptabilidad.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Gestión",
+    "Unnamed: 1": "Competencias relacionadas con la gestión administrativa y operativa. Ejemplos: inventarios, facturación, presupuestos, gestión de procesos.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Servicio",
+    "Unnamed: 1": "Competencias orientadas al servicio y atención. Ejemplos: atención al cliente, vocación de servicio, atención al paciente.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Herramienta",
+    "Unnamed: 1": "Uso de herramientas específicas (no software completo). Ejemplos: WhatsApp, correo electrónico, equipos RF.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Tecnología",
+    "Unnamed: 1": "Conocimiento de plataformas tecnológicas específicas. Ejemplos: AWS, Mercado Libre, TiendaNube.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": null,
+    "Unnamed: 1": "No aplica (ofertas sin skills identificadas)",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "SOBRE ESCO",
+    "Unnamed: 1": null,
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": null,
+    "Unnamed: 1": null,
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "¿Qué es ESCO?",
+    "Unnamed: 1": "European Skills, Competences, Qualifications and Occupations. Es la clasificación europea multilingüe de aptitudes, competencias, cualificaciones y ocupaciones.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Objetivo",
+    "Unnamed: 1": "Proporcionar un lenguaje común para describir competencias y ocupaciones, facilitando la movilidad laboral y la comparabilidad entre países.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Estructura",
+    "Unnamed: 1": "ESCO contiene: 3,008 ocupaciones, 13,890 skills/competencias (de las cuales 1,201 son digitales), y múltiples cualificaciones.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Relación con ISCO",
+    "Unnamed: 1": "ESCO se basa en ISCO-08 (Clasificación Internacional Uniforme de Ocupaciones) de la OIT. Cada ocupación ESCO tiene un código ISCO de 4 dígitos.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Skills Digitales",
+    "Unnamed: 1": "ESCO identifica 1,201 competencias digitales oficiales, marcadas con un indicador especial. En nuestro análisis representan ~45% del total de skills mapeadas.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Idiomas",
+    "Unnamed: 1": "ESCO está disponible en 27 idiomas de la UE. Los labels en esta hoja están en español.",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "URL Oficial",
+    "Unnamed: 1": "https://esco.ec.europa.eu/",
+    "Unnamed: 2": null
+  },
+  {
+    "DICCIONARIO DE COLUMNAS ESCO - Skills": "Versión",
+    "Unnamed: 1": "ESCO v1.1.1 (2022)",
+    "Unnamed: 2": null
+  }
+]
