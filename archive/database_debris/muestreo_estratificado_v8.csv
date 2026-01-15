@@ -1,0 +1,61 @@
+grupo,id_oferta,titulo,esco_label,isco_code,isco_nivel1,score_final,coverage,confirmado,revision
+CONFIRMADO,1118028864,"Analista Administrativo/a – Facturación, Cobros y Pagos (Par",empleado administrativo/empleada administrati,C3343,3,0.6235348582267761,,1,0
+CONFIRMADO,1118028887,Account Executive (Hunter),agente de empleo,C3333,3,0.6042782068252563,,1,0
+CONFIRMADO,1118026609,Pintor Especializado en cabina de pintura.,vendedor especializado en ferretería y pintur,C5223,5,0.6323844194412231,,1,0
+CONFIRMADO,1118027581,Responsable RRHH,responsable de recursos humanos,C2423,2,0.6495960354804993,,1,0
+CONFIRMADO,1118028231,Recepción de Materiales - Área de Calidad,inspector de control de calidad de productos ,C7543,7,0.6567064523696899,,1,0
+CONFIRMADO,1118027278,Cocinera/o,cocinero/cocinera,C5120,5,0.7017185091972351,,1,0
+CONFIRMADO,1118028674,Operaria/o,operario de lavandería/operaria de lavandería,C8157,8,0.6488620042800903,,1,0
+CONFIRMADO,1118028047,Desarrollador Mobile,desarrollador de aplicaciones móviles/desarro,C2514,2,0.6682253479957581,,1,0
+CONFIRMADO,1118028376,Analista administrativo/a,analista de negocios,C2421,2,0.6301083564758301,,1,0
+CONFIRMADO,1118027622,Analista de Compras,analista de estudios de mercado,C2431,2,0.6247066855430603,,1,0
+CONFIRMADO,1118028038,Ejecutiva/o Comercial de Cuentas - GBA Norte,director comercial/directora comercial,C1221,1,0.6459153294563293,,1,0
+CONFIRMADO,1118028828,Búsqueda Laboral: Modelista – Vicente López (Florida Oeste),diseñador de modelos para moldes/diseñadora d,C7222,7,0.6301376819610596,,1,0
+CONFIRMADO,1118028165,Responsable de RRHH Call Center Cobranzas,responsable de recursos humanos,C2423,2,0.6678867936134338,,1,0
+CONFIRMADO,1118027163,Analista de RRHH Zonal Norte,analista de negocios,C2421,2,0.6081636548042297,,1,0
+CONFIRMADO,1118027828,Vendedores/as de Playa y Tienda para Importante Empresa de E,vendedor/vendedora,C5223,5,0.69523024559021,,1,0
+CONFIRMADO,1118027834,Vendedora Digital / Atención al Cliente,director de comercialización y ventas por can,C1221,1,0.6622101664543152,,1,0
+CONFIRMADO,1118028681,ADMINISTRATIVA/O,empleado administrativo/empleada administrati,C3343,3,0.6101318597793579,,1,0
+CONFIRMADO,1118026628,Responsable de Producción,supervisor de producción/supervisora de produ,C3122,3,0.6180052757263184,,1,0
+CONFIRMADO,1118028684,Analista de compras,analista de estudios de mercado,C2431,2,0.6320279240608215,,1,0
+CONFIRMADO,1118028201,671SI Operarios ind. ALIMENTICIA c/ Tit. secundario - pres 3,operario de producción de alimentos/operaria ,C8160,8,0.626321017742157,,1,0
+REVISION,1118027188,"Programa de pasantías ""Crear Futuro""",diseñador de interiores/diseñadora de interio,C3432,3,0.5848844647407532,,0,1
+REVISION,1118028653,Administrativo de Guardia,quiropráctico especializado/quiropráctica esp,C2269,2,0.5423123240470886,,0,1
+REVISION,1118026779,Analista de Cuentas a Cobrar (Boulogne) - Req199985 - Eventu,auditor de cuentas/auditora de cuentas,C2411,2,0.5572811961174011,,0,1
+REVISION,1118028202,Analista Sr de Estabilidades y Validaciones (req200052) - Pe,analista de pruebas,C2519,2,0.5414119958877563,,0,1
+REVISION,1118028833,Asesor Comercial Plan de Ahorro - Volkswagen,agente de alquiler de coches con opción a com,C5223,5,0.568526566028595,,0,1
+REVISION,1118027440,VENTA TELEFONICA,vendedor especializado en telefonía y comunic,C5223,5,0.5792991518974304,,0,1
+REVISION,1118028891,auxiliar contable,administrativo contable/administrativa contab,C3313,3,0.579161524772644,,0,1
+REVISION,1118026907,Desarrollador FullStack,desarrollador web/desarrolladora web,C2513,2,0.5823657512664795,,0,1
+REVISION,1118027807,Cajera con Experiencia,cajero/cajera,C5230,5,0.5626208782196045,,0,1
+REVISION,1118028645,Tecnico de caliidad Sr,técnico de laboratorio para el control de cal,C3119,3,0.5219713449478149,,0,1
+REVISION,1118027657,Vendedor telefonico,vendedor especializado en telefonía y comunic,C5223,5,0.5918565988540649,,0,1
+REVISION,1118026729,Responsable de Deposito,encargado de almacén de materias primas/encar,C4321,4,0.5665422081947327,,0,1
+REVISION,1118026700,VENDEDOR DE REPUESTOS AUTOMOTOR,vendedor de piezas de repuesto de automóviles,C5223,5,0.5921158790588379,,0,1
+REVISION,1118027460,VENDEDOR PRODUCTOS DE SEGURIDAD ELECTRONICA,representante técnico de ventas de equipo ele,C2434,2,0.5509323477745056,,0,1
+REVISION,1118028821,Vendedor Sr técnico industrial B2B Córdoba,representante técnico de ventas de maquinaria,C2433,2,0.5127089023590088,,0,1
+REVISION,1118028120,Ingeniero,ingeniero especializado en combustibles alter,C2149,2,0.5586073398590088,,0,1
+REVISION,1118028190,ASESOR VENTA ONLINE,asistente de departamento de ventas,C4311,4,0.5739878416061401,,0,1
+REVISION,1118028815,Vendedor Sr técnico industrial B2B Buenos Aires,representante técnico de ventas de maquinaria,C2433,2,0.5136240720748901,,0,1
+REVISION,1118028386,Jefe de Obra (en LOBOS_Pcia de Bs As),jefe de bomberos/jefa de bomberos,C1112,1,0.5244730114936829,,0,1
+REVISION,1118028874,Búsqueda Laboral: Coordinador de Tráfico – Zona Tortuguitas,coordinador de transporte/coordinadora de tra,C4323,4,0.5691201090812683,,0,1
+RECHAZADO,1118027941,Dibujante Tecnico,dibujante técnico/dibujante técnica,C3118,3,0.697555422782898,,0,0
+RECHAZADO,1118028799,Ingeniero de Procesos Autopartista (San Martín),ingeniero de procesos/ingeniera de procesos,C2141,2,0.6687769293785095,,0,0
+RECHAZADO,1118027261,Supervisor de Limpieza,supervisor de servicio de limpieza/supervisor,C5151,5,0.6823419332504272,,0,0
+RECHAZADO,1118028839,Asesor Comercial Plan de Ahorro,asesor de seguros/asesora de seguros,C3321,3,0.4763484597206116,,0,0
+RECHAZADO,1118026660,Pasante Administración,acompañante remunerado/acompañante remunerada,C5169,5,0.48780012130737305,,0,0
+RECHAZADO,1118027684,CAJERO POLIVALENTE ZONA VICENTE LOPEZ,cajero/cajera,C5230,5,0.4425037205219269,,0,0
+RECHAZADO,1118028034,Analista de Laboratorio,analista de pruebas,C2519,2,0.6099194884300232,,0,0
+RECHAZADO,1118027276,Ejecutivo de Cuentas SSR/SR - Presencial,técnico de contadores eléctricos/técnica de c,C7411,7,0.4946718215942383,,0,0
+RECHAZADO,1118026791,Vendedor Tecnico,representante técnico de ventas de maquinaria,C2433,2,0.4947327971458435,,0,0
+RECHAZADO,1118028657,Recepcionista zona CABA (Eventual),recepcionista,C4226,4,0.6493617296218872,,0,0
+RECHAZADO,1118028027,OPERADOR DE AUTOELEVADORES,operador de carretilla elevadora/operadora de,C8344,8,0.6199095249176025,,0,0
+RECHAZADO,1118028876,Analista SSr de Comunicación Copywriter,asesor de seguros/asesora de seguros,C3321,3,0.47404003143310547,,0,0
+RECHAZADO,1118028898,Analista Contable,analista contable,C2411,2,0.636540949344635,,0,0
+RECHAZADO,1118027295,Maestranza part time - turno tarde,asistente de matrona,C3222,3,0.49389880895614624,,0,0
+RECHAZADO,1118027231,Operario de Granja (req199978) MERCEDES - Permanente,operario de explotación ganadera/operaria de ,C9212,9,0.6586045026779175,,0,0
+RECHAZADO,1118027243,Abogado/a - Impuestos,abogado/abogada,C2611,2,0.6452983021736145,,0,0
+RECHAZADO,1118028955,Analista Ssr. Planeamiento y Control de Gestión,analista de logística,C2421,2,0.4653874337673187,,0,0
+RECHAZADO,1118027220,Gerente de Comunicaciones Integradas- Córdoba Capital,especialista en ciencias de la comunicación,C2632,2,0.48748141527175903,,0,0
+RECHAZADO,1118028290,Analista de Prensa y Relaciones Institucionales,analista de negocios,C2421,2,0.45028018951416016,,0,0
+RECHAZADO,1118027662,Farmacéutico/a para farmacias en Rio Cuarto,ingeniero farmacéutico/ingeniera farmacéutica,C2145,2,0.4969886466860771,,0,0

@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 # Agregar path para importar incremental_tracker y keywords_loader
 project_root = Path(__file__).parent.parent.parent.parent
 consolidation_scripts = project_root / "02_consolidation" / "scripts"
-config_dir = project_root / "data" / "config"
+config_dir = project_root / "config" / "scraping"
 
 for path in [consolidation_scripts, config_dir]:
     if str(path) not in sys.path:

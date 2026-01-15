@@ -1,0 +1,466 @@
+{
+  "general": {
+    "total_ofertas": 268,
+    "con_esco_id": "268",
+    "con_isco_code": "268",
+    "score_promedio": 75.51119402985074,
+    "score_mediana": 85.0,
+    "score_min": "29",
+    "score_max": "85",
+    "overlap_promedio": 0.0
+  },
+  "confianza": {
+    "alta": {
+      "count": 156,
+      "pct": 58.2089552238806
+    },
+    "baja": {
+      "count": 68,
+      "pct": 25.37313432835821
+    },
+    "media": {
+      "count": 44,
+      "pct": 16.417910447761194
+    }
+  },
+  "top_ocupaciones": [
+    {
+      "ocupacion": "coordinador de operaciones portuarias/coordinadora de operaciones portuarias",
+      "count": 56,
+      "pct": 20.8955223880597
+    },
+    {
+      "ocupacion": "técnico de sonido/técnica de sonido",
+      "count": 42,
+      "pct": 15.671641791044777
+    },
+    {
+      "ocupacion": "operador de calderas/operadora de calderas",
+      "count": 28,
+      "pct": 10.44776119402985
+    },
+    {
+      "ocupacion": "analista de logística",
+      "count": 25,
+      "pct": 9.328358208955224
+    },
+    {
+      "ocupacion": "asesor de inversiones/asesora de inversiones",
+      "count": 21,
+      "pct": 7.835820895522389
+    },
+    {
+      "ocupacion": "analista de presupuestos",
+      "count": 17,
+      "pct": 6.343283582089552
+    },
+    {
+      "ocupacion": "responsable de marketing digital",
+      "count": 15,
+      "pct": 5.597014925373134
+    },
+    {
+      "ocupacion": "vendedor ambulante/vendedora ambulante",
+      "count": 10,
+      "pct": 3.731343283582089
+    },
+    {
+      "ocupacion": "asistente de departamento de ventas",
+      "count": 9,
+      "pct": 3.3582089552238807
+    },
+    {
+      "ocupacion": "operador de planta de tratamiento de gas/operadora de planta de tratamiento de gas",
+      "count": 8,
+      "pct": 2.9850746268656714
+    },
+    {
+      "ocupacion": "mecánico naval/mecánica naval",
+      "count": 6,
+      "pct": 2.2388059701492535
+    },
+    {
+      "ocupacion": "especialista en importación y exportación de residuos y chatarra",
+      "count": 6,
+      "pct": 2.2388059701492535
+    },
+    {
+      "ocupacion": "operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías",
+      "count": 6,
+      "pct": 2.2388059701492535
+    },
+    {
+      "ocupacion": "operario forestal/operaria forestal",
+      "count": 4,
+      "pct": 1.4925373134328357
+    },
+    {
+      "ocupacion": "operador de canteadora/operadora de canteadora",
+      "count": 3,
+      "pct": 1.1194029850746268
+    },
+    {
+      "ocupacion": "metalúrgico/metalúrgica",
+      "count": 2,
+      "pct": 0.7462686567164178
+    },
+    {
+      "ocupacion": "vendedor a domicilio",
+      "count": 2,
+      "pct": 0.7462686567164178
+    },
+    {
+      "ocupacion": "gerente de salón de juegos",
+      "count": 1,
+      "pct": 0.3731343283582089
+    },
+    {
+      "ocupacion": "director comercial regional/directora comercial regional",
+      "count": 1,
+      "pct": 0.3731343283582089
+    },
+    {
+      "ocupacion": "ayudante de recursos humanos",
+      "count": 1,
+      "pct": 0.3731343283582089
+    }
+  ],
+  "isco": {
+    "isco_1digit": {
+      "2": {
+        "label": "Profesionales científicos e intelectuales",
+        "count": 67,
+        "pct": 25.0
+      },
+      "4": {
+        "label": "Personal de apoyo administrativo",
+        "count": 67,
+        "pct": 25.0
+      },
+      "3": {
+        "label": "Técnicos y profesionales de nivel medio",
+        "count": 56,
+        "pct": 20.8955223880597
+      },
+      "8": {
+        "label": "Operadores de instalaciones y máquinas",
+        "count": 31,
+        "pct": 11.567164179104477
+      },
+      "1": {
+        "label": "Directores y gerentes",
+        "count": 18,
+        "pct": 6.7164179104477615
+      },
+      "9": {
+        "label": "Ocupaciones elementales",
+        "count": 15,
+        "pct": 5.597014925373134
+      },
+      "7": {
+        "label": "Oficiales, operarios y artesanos",
+        "count": 12,
+        "pct": 4.477611940298507
+      },
+      "5": {
+        "label": "Trabajadores de servicios y vendedores",
+        "count": 2,
+        "pct": 0.7462686567164178
+      }
+    },
+    "top_isco": [
+      {
+        "codigo": "4323.11",
+        "count": 56,
+        "pct": 20.8955223880597
+      },
+      {
+        "codigo": "3435.3",
+        "count": 42,
+        "pct": 15.671641791044777
+      },
+      {
+        "codigo": "8182.1",
+        "count": 28,
+        "pct": 10.44776119402985
+      },
+      {
+        "codigo": "2421.5",
+        "count": 25,
+        "pct": 9.328358208955224
+      },
+      {
+        "codigo": "2412.6",
+        "count": 21,
+        "pct": 7.835820895522389
+      },
+      {
+        "codigo": "2411.1.4",
+        "count": 17,
+        "pct": 6.343283582089552
+      },
+      {
+        "codigo": "1221.5",
+        "count": 15,
+        "pct": 5.597014925373134
+      },
+      {
+        "codigo": "9520.1",
+        "count": 10,
+        "pct": 3.731343283582089
+      },
+      {
+        "codigo": "4311.2",
+        "count": 9,
+        "pct": 3.3582089552238807
+      },
+      {
+        "codigo": "3134.2",
+        "count": 8,
+        "pct": 2.9850746268656714
+      },
+      {
+        "codigo": "7215.2.1",
+        "count": 6,
+        "pct": 2.2388059701492535
+      },
+      {
+        "codigo": "3331.2.1.33",
+        "count": 6,
+        "pct": 2.2388059701492535
+      },
+      {
+        "codigo": "7126.7",
+        "count": 6,
+        "pct": 2.2388059701492535
+      },
+      {
+        "codigo": "9215.1",
+        "count": 4,
+        "pct": 1.4925373134328357
+      },
+      {
+        "codigo": "8189.1",
+        "count": 3,
+        "pct": 1.1194029850746268
+      }
+    ]
+  },
+  "skills": {
+    "promedio": 0.0,
+    "mediana": 0.0,
+    "max": 0.0,
+    "distribucion": {
+      "sin_overlap": 268,
+      "bajo": 0,
+      "medio": 0,
+      "alto": 0
+    }
+  },
+  "ejemplos_alta": [
+    {
+      "titulo": "Asesor Comercial para Venta de Sillones y Muebles",
+      "esco_label": "asesor de inversiones/asesora de inversiones",
+      "isco": "2412.6",
+      "score": 85.0,
+      "confianza": "alta"
+    },
+    {
+      "titulo": "Coordinador de operaciones (req199724)- Eventual - TORTUGUITAS",
+      "esco_label": "coordinador de operaciones portuarias/coordinadora de operaciones portuarias",
+      "isco": "4323.11",
+      "score": 85.0,
+      "confianza": "alta"
+    },
+    {
+      "titulo": "Líder Comercial Ssr de Canal B2B - Eventual - GARÍN",
+      "esco_label": "director comercial regional/directora comercial regional",
+      "isco": "1420.6",
+      "score": 85.0,
+      "confianza": "alta"
+    },
+    {
+      "titulo": "OPERARIO CENTRAL DE PESADA",
+      "esco_label": "operador de calderas/operadora de calderas",
+      "isco": "8182.1",
+      "score": 85.0,
+      "confianza": "alta"
+    },
+    {
+      "titulo": "PROMOVENDEDORES ZONA CABA",
+      "esco_label": "vendedor a domicilio",
+      "isco": "5243.1",
+      "score": 85.0,
+      "confianza": "alta"
+    },
+    {
+      "titulo": "Chofer para empresa Avicola Zona Norte (BECCAR)",
+      "esco_label": "capturador avícola/capturadora avícola",
+      "isco": "9212.1",
+      "score": 85.0,
+      "confianza": "alta"
+    },
+    {
+      "titulo": "Soldador MIG / Operario Metalúrgico",
+      "esco_label": "metalúrgico/metalúrgica",
+      "isco": "2146.5",
+      "score": 85.0,
+      "confianza": "alta"
+    },
+    {
+      "titulo": "Administrativo de depósito y logística",
+      "esco_label": "técnico administrativo de gestión/técnica administrativa de gestión",
+      "isco": "4312.2",
+      "score": 85.0,
+      "confianza": "alta"
+    },
+    {
+      "titulo": "Asistente de Marketing Digital y Ventas - Zona Ciudadela",
+      "esco_label": "asistente de departamento de ventas",
+      "isco": "4311.2",
+      "score": 85.0,
+      "confianza": "alta"
+    },
+    {
+      "titulo": "OPERADOR PLANTA DE TRATAMIENTO DE EFLUENTES",
+      "esco_label": "operador de planta de tratamiento de gas/operadora de planta de tratamiento de gas",
+      "isco": "3134.2",
+      "score": 85.0,
+      "confianza": "alta"
+    }
+  ],
+  "ejemplos_baja": [
+    {
+      "titulo": "PROMOVENDEDORES ZONA NORTE",
+      "esco_label": "director de seguridad en la zona de operaciones aéreas/directora de seguridad en la zona de operaciones aéreas",
+      "isco": "1349.1",
+      "score": 29.0,
+      "soft_skills": "proactivo",
+      "skills_tecnicas": NaN
+    },
+    {
+      "titulo": "VENDEDOR/AR DE PLAN DE AHORRO",
+      "esco_label": "vendedor a domicilio",
+      "isco": "5243.1",
+      "score": 53.0,
+      "soft_skills": "Buena comunicación, Buena presencia, comunicación, líder",
+      "skills_tecnicas": NaN
+    },
+    {
+      "titulo": "Medio Oficial de Mantenimiento- Rubro Plástico. Zona Villa Soldati",
+      "esco_label": "operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías",
+      "isco": "7126.7",
+      "score": 55.0,
+      "soft_skills": NaN,
+      "skills_tecnicas": NaN
+    },
+    {
+      "titulo": "Medio Oficial de Mantenimiento- Rubro Plástico. Zona Villa Soldati",
+      "esco_label": "operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías",
+      "isco": "7126.7",
+      "score": 55.0,
+      "soft_skills": "trabajo en equipo",
+      "skills_tecnicas": NaN
+    },
+    {
+      "titulo": "Medio Oficial de Mantenimiento- Rubro Plástico. Zona Villa Soldati",
+      "esco_label": "operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías",
+      "isco": "7126.7",
+      "score": 55.0,
+      "soft_skills": "liderazgo, trabajo en equipo",
+      "skills_tecnicas": NaN
+    },
+    {
+      "titulo": "Medio Oficial de Mantenimiento- Rubro Plástico. Zona Villa Soldati",
+      "esco_label": "operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías",
+      "isco": "7126.7",
+      "score": 55.0,
+      "soft_skills": "Mantenimiento edilicio General: Control luminaria/electricidad/tableros eléctricos bajo normas, Montar, Puesta a punto de máquinas inyectoras, Revisar planes de mantenimiento, control, dejarlos en correcto estado, desmontar equipos/moldes/instalaciones, extrusoras, reparación de las mismas",
+      "skills_tecnicas": NaN
+    },
+    {
+      "titulo": "Medio Oficial de Mantenimiento- Rubro Plástico. Zona Villa Soldati",
+      "esco_label": "operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías",
+      "isco": "7126.7",
+      "score": 55.0,
+      "soft_skills": "control, desmontar equipos/moldes/instalaciones, montar, puesta a punto de máquinas inyectoras, reparación de las mismas, revisar planes de mantenimiento",
+      "skills_tecnicas": NaN
+    },
+    {
+      "titulo": "Vendedora/ Asistente Administrativo",
+      "esco_label": "vendedor ambulante/vendedora ambulante",
+      "isco": "9520.1",
+      "score": 56.0,
+      "soft_skills": "comunicación, comunicación interpersonal, gestión del tiempo, organización, orientación al detalle, proactiva, proactividad",
+      "skills_tecnicas": "office"
+    },
+    {
+      "titulo": "Vendedora/ Asistente Administrativo",
+      "esco_label": "vendedor ambulante/vendedora ambulante",
+      "isco": "9520.1",
+      "score": 56.0,
+      "soft_skills": "comunicación, excelentes habilidades de comunicación interpersonal, gestión del tiempo, organización, orientación al detalle, proactiva, proactividad",
+      "skills_tecnicas": "office"
+    },
+    {
+      "titulo": "Vendedora/ Asistente Administrativo",
+      "esco_label": "vendedor ambulante/vendedora ambulante",
+      "isco": "9520.1",
+      "score": 56.0,
+      "soft_skills": "capacidad de organización, comunicación, excelentes habilidades de comunicación interpersonal, gestión del tiempo, organización, orientación al detalle, proactiva, proactividad",
+      "skills_tecnicas": "office"
+    },
+    {
+      "titulo": "Vendedora/ Asistente Administrativo",
+      "esco_label": "vendedor ambulante/vendedora ambulante",
+      "isco": "9520.1",
+      "score": 56.0,
+      "soft_skills": "comunicación, gestión del tiempo, organización, orientación al detalle, proactiva, proactividad",
+      "skills_tecnicas": "office"
+    },
+    {
+      "titulo": "Vendedora/ Asistente Administrativo",
+      "esco_label": "vendedor ambulante/vendedora ambulante",
+      "isco": "9520.1",
+      "score": 56.0,
+      "soft_skills": "comunicación, gestión del tiempo, organización, proactiva, proactividad",
+      "skills_tecnicas": "office"
+    },
+    {
+      "titulo": "Vendedora/ Asistente Administrativo",
+      "esco_label": "vendedor ambulante/vendedora ambulante",
+      "isco": "9520.1",
+      "score": 56.0,
+      "soft_skills": "Capacidad de organización, Excelentes habilidades de comunicación interpersonal, Proactividad, comunicación, gestión del tiempo, organización, orientación al detalle, proactiva, proactividad",
+      "skills_tecnicas": "office"
+    },
+    {
+      "titulo": "Vendedora/ Asistente Administrativo",
+      "esco_label": "vendedor ambulante/vendedora ambulante",
+      "isco": "9520.1",
+      "score": 56.0,
+      "soft_skills": "comunicación, comunicación interpersonal, gestión del tiempo, organización, proactiva, proactividad",
+      "skills_tecnicas": "office"
+    },
+    {
+      "titulo": "Vendedora/ Asistente Administrativo",
+      "esco_label": "vendedor ambulante/vendedora ambulante",
+      "isco": "9520.1",
+      "score": 56.0,
+      "soft_skills": "capacidad de organización, comunicación, gestión del tiempo, organización, orientación al detalle, proactiva, proactividad",
+      "skills_tecnicas": "office"
+    }
+  ],
+  "fuentes": {
+    "bumeran": {
+      "count": 265,
+      "pct": 98.88059701492537,
+      "avg_score": 75.56603773584905
+    },
+    "zonajobs": {
+      "count": 3,
+      "pct": 1.1194029850746268,
+      "avg_score": 70.66666666666667
+    }
+  }
+}

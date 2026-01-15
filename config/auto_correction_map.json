@@ -1,0 +1,220 @@
+{
+  "version": "1.0",
+  "descripcion": "Mapeo diagnostico -> accion de correccion. Define QUE hacer cuando se detecta cada tipo de error.",
+  "fecha_creacion": "2026-01-14",
+
+  "_arquitectura": {
+    "flujo": "Diagnostico (de diagnostic_patterns.json) -> Buscar aqui -> Ejecutar accion",
+    "tipos_accion": [
+      "auto_corregir: Aplicar correccion automatica sin cambiar configs",
+      "aplicar_config: Buscar regla existente en config y aplicar",
+      "escalar_claude: Agrupar errores similares para que Claude proponga regla nueva"
+    ]
+  },
+
+  "correcciones": {
+    "ubicacion_exterior": {
+      "tipo_accion": "auto_corregir",
+      "descripcion": "Marcar provincia como exterior automaticamente",
+      "ejecutar": {
+        "funcion": "set_campo",
+        "campo": "provincia",
+        "valor_template": "{pais_detectado} (exterior)"
+      },
+      "reprocesar": false,
+      "_nota": "No requiere reprocesar NLP, es una correccion directa"
+    },
+
+    "error_nlp_tipo": {
+      "tipo_accion": "auto_corregir",
+      "descripcion": "Convertir booleanos texto a null",
+      "ejecutar": {
+        "funcion": "limpiar_booleanos",
+        "campos": ["tiene_gente_cargo", "requiere_licencia", "requiere_movilidad"],
+        "valores_invalidos": ["TRUE", "FALSE", "VERDADERO", "FALSO", "true", "false"]
+      },
+      "reprocesar": false
+    },
+
+    "error_limpieza": {
+      "tipo_accion": "aplicar_config",
+      "descripcion": "Buscar patron de limpieza existente o escalar",
+      "config": "config/nlp_titulo_limpieza.json",
+      "buscar_en": "patrones_eliminar",
+      "si_existe": {
+        "accion": "reprocesar_nlp",
+        "componente": "limpiar_titulos.py"
+      },
+      "si_no_existe": {
+        "accion": "escalar_claude",
+        "datos_para_claude": ["titulo_original", "titulo_limpio", "patron_detectado"]
+      }
+    },
+
+    "error_nlp_ubicacion": {
+      "tipo_accion": "aplicar_config",
+      "descripcion": "Buscar regla de parsing ubicacion o escalar",
+      "config": "config/nlp_preprocessing.json",
+      "buscar_en": "campos_estructurados.ubicacion",
+      "si_existe": {
+        "accion": "reprocesar_nlp",
+        "componente": "nlp_postprocessor.py"
+      },
+      "si_no_existe": {
+        "accion": "escalar_claude",
+        "datos_para_claude": ["ubicacion_scraping", "provincia", "localidad"]
+      }
+    },
+
+    "error_nlp_seniority": {
+      "tipo_accion": "aplicar_config",
+      "descripcion": "Buscar keyword de seniority o escalar",
+      "config": "config/nlp_inference_rules.json",
+      "buscar_en": "nivel_seniority.reglas",
+      "si_existe": {
+        "accion": "reprocesar_nlp",
+        "componente": "nlp_postprocessor.py"
+      },
+      "si_no_existe": {
+        "accion": "escalar_claude",
+        "datos_para_claude": ["titulo_limpio", "descripcion_snippet", "nivel_seniority"]
+      }
+    },
+
+    "error_nlp_area": {
+      "tipo_accion": "aplicar_config",
+      "descripcion": "Buscar keyword de area funcional o escalar",
+      "config": "config/nlp_inference_rules.json",
+      "buscar_en": "area_funcional.reglas",
+      "si_existe": {
+        "accion": "reprocesar_nlp",
+        "componente": "nlp_postprocessor.py"
+      },
+      "si_no_existe": {
+        "accion": "escalar_claude",
+        "datos_para_claude": ["titulo_limpio", "sector_empresa", "area_funcional"]
+      }
+    },
+
+    "error_nlp_modalidad": {
+      "tipo_accion": "aplicar_config",
+      "descripcion": "Buscar keyword de modalidad o escalar",
+      "config": "config/nlp_inference_rules.json",
+      "buscar_en": "modalidad.reglas",
+      "si_existe": {
+        "accion": "reprocesar_nlp",
+        "componente": "nlp_postprocessor.py"
+      },
+      "si_no_existe": {
+        "accion": "escalar_claude",
+        "datos_para_claude": ["titulo_limpio", "descripcion_snippet", "modalidad"]
+      }
+    },
+
+    "error_nlp_sector": {
+      "tipo_accion": "aplicar_config",
+      "descripcion": "Buscar correccion de sector o escalar",
+      "config": "config/nlp_inference_rules.json",
+      "buscar_en": "correccion_sector.reglas",
+      "si_existe": {
+        "accion": "reprocesar_nlp",
+        "componente": "nlp_postprocessor.py"
+      },
+      "si_no_existe": {
+        "accion": "escalar_claude",
+        "datos_para_claude": ["titulo_limpio", "sector_empresa"]
+      }
+    },
+
+    "error_nlp_experiencia": {
+      "tipo_accion": "aplicar_config",
+      "descripcion": "Buscar patron de extraccion de experiencia o escalar",
+      "config": "config/nlp_extraction_patterns.json",
+      "buscar_en": "experiencia.patterns",
+      "si_existe": {
+        "accion": "reprocesar_nlp",
+        "componente": "nlp_postprocessor.py"
+      },
+      "si_no_existe": {
+        "accion": "escalar_claude",
+        "datos_para_claude": ["descripcion_snippet", "experiencia_min_anios", "experiencia_max_anios"]
+      }
+    },
+
+    "error_nlp_skills": {
+      "tipo_accion": "aplicar_config",
+      "descripcion": "Ajustar umbral de skills o agregar skills al diccionario",
+      "config": "config/skills_weights.json",
+      "buscar_en": "fallback_config",
+      "si_existe": {
+        "accion": "reprocesar_skills",
+        "componente": "skills_implicit_extractor.py",
+        "parametros": {"usar_fallback": true}
+      },
+      "si_no_existe": {
+        "accion": "escalar_claude",
+        "datos_para_claude": ["titulo_limpio", "tareas_explicitas", "skills_extraidas", "skills_count"]
+      }
+    },
+
+    "error_matching": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Siempre escalar a Claude para proponer regla de negocio",
+      "config": "config/matching_rules_business.json",
+      "buscar_en": "reglas",
+      "datos_para_claude": [
+        "id_oferta",
+        "titulo_limpio",
+        "area_funcional",
+        "nivel_seniority",
+        "skills_extraidas",
+        "isco_code",
+        "esco_label",
+        "match_score"
+      ],
+      "_nota": "Matching incorrecto requiere analisis humano/Claude para crear regla"
+    },
+
+    "error_matching_confianza": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Match con baja confianza requiere revision",
+      "config": "config/matching_rules_business.json",
+      "buscar_en": "reglas",
+      "datos_para_claude": [
+        "id_oferta",
+        "titulo_limpio",
+        "isco_code",
+        "esco_label",
+        "match_score",
+        "alternativas"
+      ],
+      "umbral_agrupacion": 3,
+      "_nota": "Agrupar 3+ casos similares antes de escalar"
+    }
+  },
+
+  "config_reprocesamiento": {
+    "nlp_completo": {
+      "script": "database/process_nlp_from_db_v11.py",
+      "parametros": ["--ids", "{ids}"]
+    },
+    "nlp_postprocessor": {
+      "script": "database/nlp_postprocessor.py",
+      "funcion": "apply_postprocessing"
+    },
+    "skills": {
+      "script": "database/skills_implicit_extractor.py",
+      "funcion": "extract_skills"
+    },
+    "matching": {
+      "script": "database/match_ofertas_v3.py",
+      "funcion": "run_matching_pipeline"
+    }
+  },
+
+  "umbrales_escalamiento": {
+    "minimo_casos_para_patron": 3,
+    "minimo_casos_para_regla": 2,
+    "_nota": "No escalar a Claude hasta tener N casos similares agrupados"
+  }
+}

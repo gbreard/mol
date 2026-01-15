@@ -1,0 +1,45 @@
+======================================================================
+TEST: Gold Set v3 - Skills First Pipeline
+======================================================================
+
+Gold Set: 49 casos
+
+Inicializando MatcherV3...
+
+----------------------------------------------------------------------
+
+======================================================================
+RESUMEN
+======================================================================
+Total casos evaluados: 49
+Sin datos en BD: 0
+
+Correctos v3: 49/49 (100.0%)
+Errores v2.1 originales: 9
+  - Corregidos por v3: 9
+  - Persisten en v3: 0
+Nuevos errores v3 (regresiones): 0
+
+Mejora en casos problematicos: 9/9 (100.0%)
+
+----------------------------------------------------------------------
+CASOS CORREGIDOS POR V3:
+----------------------------------------------------------------------
+  1118026729: Responsable de Deposito
+    ISCO: 4321 -> 4321 (regla_negocio_R23_responsable_deposito)
+  1118027276: Ejecutivo de Cuentas SSR/SR
+    ISCO: 3322 -> 3322 (regla_negocio_R12_ejecutivo_cuentas)
+  1118027941: Dibujante Tecnico
+    ISCO: 3118 -> 3118 (skills_first_v3)
+  1118028027: OPERADOR DE AUTOELEVADORES
+    ISCO: 8344 -> 8344 (regla_negocio_R3_autoelevador)
+  1117984105: Gerente de Ventas importante Concesionar
+    ISCO: 1221 -> 1221 (regla_negocio_R24_gerente_ventas)
+  1118018461: Asesor/a de Admisiones
+    ISCO: 2359 -> 2359 (regla_negocio_R27_asesor_admisiones)
+  1118018714: Diseñador Gráfico E-commerce
+    ISCO: 2166 -> 2166 (regla_negocio_R35_disenador_grafico_titulo)
+  1117995368: ASESOR TÉCNICO NUTRICIÓN ANIMAL RUMIANTE
+    ISCO: 3240 -> 3240 (regla_negocio_R8_nutricion_animal)
+  1117977340: RECEPCIONISTA ADMINISTRATIVO
+    ISCO: 4226 -> 4226 (regla_negocio_R26_recepcionista)

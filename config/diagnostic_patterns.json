@@ -1,0 +1,228 @@
+{
+  "version": "1.0",
+  "descripcion": "Patrones de diagnostico automatico. Identifica el punto de falla cuando una oferta no pasa validacion.",
+  "fecha_creacion": "2026-01-14",
+
+  "_arquitectura": {
+    "flujo": "Error detectado (validation_rules) -> Buscar patron aqui -> Diagnostico + config sugerido",
+    "objetivo": "Sistema identifica QUE config modificar sin intervencion humana"
+  },
+
+  "patrones_diagnostico": [
+    {
+      "id": "D01_limpieza_codigo_interno",
+      "descripcion": "Titulo contiene codigo interno no removido",
+      "condicion": {
+        "campo": "titulo_limpio",
+        "patron_regex": "^[A-Z0-9]{2,6}[\\s-]"
+      },
+      "diagnostico": "error_limpieza",
+      "config_afectado": "config/nlp_titulo_limpieza.json",
+      "seccion": "patrones_eliminar",
+      "accion_sugerida": "Agregar patron regex para eliminar codigo",
+      "ejemplos_conocidos": ["671SI", "ABC123", "REF-456", "PY001"]
+    },
+    {
+      "id": "D02_limpieza_fecha_horario",
+      "descripcion": "Titulo contiene fecha u horario no removido",
+      "condicion": {
+        "campo": "titulo_limpio",
+        "patron_regex": "\\d{1,2}/\\d{1,2}|\\d{1,2}hs|\\d{1,2}:\\d{2}"
+      },
+      "diagnostico": "error_limpieza",
+      "config_afectado": "config/nlp_titulo_limpieza.json",
+      "seccion": "patrones_eliminar",
+      "accion_sugerida": "Agregar patron regex para fecha/horario"
+    },
+    {
+      "id": "D03_ubicacion_no_parseada",
+      "descripcion": "Ubicacion no se parseo correctamente en provincia/localidad",
+      "condicion": {
+        "logica": "OR",
+        "condiciones": [
+          {"campo": "provincia", "operador": "is_null"},
+          {"campo": "provincia", "operador": "eq", "valor": ""},
+          {"campo": "localidad", "patron_regex": ","}
+        ]
+      },
+      "diagnostico": "error_nlp_ubicacion",
+      "config_afectado": "config/nlp_preprocessing.json",
+      "seccion": "campos_estructurados.ubicacion",
+      "accion_sugerida": "Agregar separador o patron de parsing"
+    },
+    {
+      "id": "D04_seniority_no_inferido",
+      "descripcion": "Nivel seniority no se infiere del titulo/descripcion",
+      "condicion": {
+        "logica": "AND",
+        "condiciones": [
+          {"campo": "nivel_seniority", "operador": "is_null"},
+          {"campo": "titulo_limpio", "patron_regex": "(?i)(jr|sr|senior|junior|trainee|lead|manager|director|jefe|gerente)"}
+        ]
+      },
+      "diagnostico": "error_nlp_seniority",
+      "config_afectado": "config/nlp_inference_rules.json",
+      "seccion": "nivel_seniority.reglas",
+      "accion_sugerida": "Agregar keyword que mapea a seniority",
+      "keywords_comunes": {
+        "trainee": ["pasante", "practicante", "aprendiz"],
+        "junior": ["jr", "sin experiencia", "recien egresado"],
+        "senior": ["sr", "con experiencia", "5+ años"],
+        "manager": ["jefe", "supervisor", "encargado"],
+        "director": ["gerente", "director", "responsable"]
+      }
+    },
+    {
+      "id": "D05_area_no_inferida",
+      "descripcion": "Area funcional no se infiere del titulo/descripcion",
+      "condicion": {
+        "campo": "area_funcional",
+        "operador": "is_null"
+      },
+      "diagnostico": "error_nlp_area",
+      "config_afectado": "config/nlp_inference_rules.json",
+      "seccion": "area_funcional.reglas",
+      "accion_sugerida": "Agregar keyword que mapea a area funcional",
+      "areas_disponibles": ["IT", "Ventas", "RRHH", "Finanzas", "Marketing", "Operaciones", "Logistica", "Legal", "Administracion"]
+    },
+    {
+      "id": "D06_modalidad_no_inferida",
+      "descripcion": "Modalidad de trabajo no detectada",
+      "condicion": {
+        "logica": "AND",
+        "condiciones": [
+          {"campo": "modalidad", "operador": "is_null"},
+          {"campo": "descripcion", "patron_regex": "(?i)(remoto|home\\s*office|hibrido|presencial|oficina)"}
+        ]
+      },
+      "diagnostico": "error_nlp_modalidad",
+      "config_afectado": "config/nlp_inference_rules.json",
+      "seccion": "modalidad.reglas",
+      "accion_sugerida": "Agregar keyword para modalidad"
+    },
+    {
+      "id": "D07_skills_pocas_extraidas",
+      "descripcion": "Se extrajeron muy pocas skills del texto",
+      "condicion": {
+        "logica": "AND",
+        "condiciones": [
+          {"campo": "skills_count", "operador": "lt", "valor": 3},
+          {"campo": "descripcion", "operador": "length_gt", "valor": 200}
+        ]
+      },
+      "diagnostico": "error_nlp_skills",
+      "config_afectado": "config/skills_weights.json",
+      "seccion": "fallback_config",
+      "accion_sugerida": "Bajar umbral de similitud para ofertas con pocas skills",
+      "alternativas": [
+        {"config": "config/skills_database.json", "accion": "Agregar skills especificas del dominio"}
+      ]
+    },
+    {
+      "id": "D08_matching_score_bajo",
+      "descripcion": "Match ESCO con score muy bajo indica titulo ambiguo",
+      "condicion": {
+        "logica": "AND",
+        "condiciones": [
+          {"campo": "isco_code", "operador": "is_not_null"},
+          {"campo": "match_score", "operador": "lt", "valor": 0.4}
+        ]
+      },
+      "diagnostico": "error_matching_confianza",
+      "config_afectado": "config/matching_rules_business.json",
+      "seccion": "reglas",
+      "accion_sugerida": "Agregar regla de bypass si el titulo es comun",
+      "requiere_revision": true
+    },
+    {
+      "id": "D09_matching_sin_resultado",
+      "descripcion": "No se encontro match ESCO para la oferta",
+      "condicion": {
+        "logica": "AND",
+        "condiciones": [
+          {"campo": "isco_code", "operador": "is_null"},
+          {"campo": "titulo_limpio", "operador": "is_not_empty"}
+        ]
+      },
+      "diagnostico": "error_matching",
+      "config_afectado": "config/matching_rules_business.json",
+      "seccion": "reglas",
+      "accion_sugerida": "Agregar regla titulo_contiene -> forzar_isco"
+    },
+    {
+      "id": "D10_sector_incorrecto",
+      "descripcion": "Sector empresa inferido incorrectamente",
+      "condicion": {
+        "logica": "AND",
+        "condiciones": [
+          {"campo": "sector_empresa", "operador": "is_not_null"},
+          {"campo": "titulo_limpio", "patron_regex": "(?i)(modelista|costurera|textil)"},
+          {"campo": "sector_empresa", "operador": "neq", "valor": "Textil"}
+        ]
+      },
+      "diagnostico": "error_nlp_sector",
+      "config_afectado": "config/nlp_inference_rules.json",
+      "seccion": "correccion_sector.reglas",
+      "accion_sugerida": "Agregar bypass titulo -> sector correcto"
+    },
+    {
+      "id": "D11_experiencia_mal_extraida",
+      "descripcion": "Experiencia confundida con edad u otro numero",
+      "condicion": {
+        "logica": "AND",
+        "condiciones": [
+          {"campo": "experiencia_min_anios", "operador": "gt", "valor": 15},
+          {"campo": "descripcion", "patron_regex": "(?i)(edad|años de edad|18 a|25 a)"}
+        ]
+      },
+      "diagnostico": "error_nlp_experiencia",
+      "config_afectado": "config/nlp_extraction_patterns.json",
+      "seccion": "experiencia.patterns",
+      "accion_sugerida": "Agregar exclusion para contexto edad"
+    },
+    {
+      "id": "D12_ubicacion_exterior",
+      "descripcion": "Oferta para pais extranjero detectada",
+      "condicion": {
+        "campo": "localidad",
+        "operador": "contains_any",
+        "valores": ["Paraguay", "Uruguay", "Chile", "Bolivia", "Peru", "Brasil", "Mexico", "Colombia"]
+      },
+      "diagnostico": "ubicacion_exterior",
+      "config_afectado": "config/nlp_inference_rules.json",
+      "seccion": "ubicacion_exterior",
+      "accion_sugerida": "Auto-corregir provincia a '{pais} (exterior)'",
+      "auto_corregible": true
+    },
+    {
+      "id": "D13_booleano_como_texto",
+      "descripcion": "Campo booleano contiene texto TRUE/FALSE/VERDADERO",
+      "condicion": {
+        "campos": ["tiene_gente_cargo", "requiere_licencia", "requiere_movilidad"],
+        "patron_regex": "(?i)^(true|false|verdadero|falso)$"
+      },
+      "diagnostico": "error_nlp_tipo",
+      "config_afectado": "config/nlp_validation.json",
+      "seccion": "rechazo_valores",
+      "accion_sugerida": "Agregar valor a lista de rechazo",
+      "auto_corregible": true
+    }
+  ],
+
+  "prioridad_diagnostico": [
+    "error_limpieza",
+    "error_nlp_ubicacion",
+    "error_nlp_tipo",
+    "error_nlp_experiencia",
+    "error_nlp_sector",
+    "error_nlp_area",
+    "error_nlp_seniority",
+    "error_nlp_modalidad",
+    "error_nlp_skills",
+    "error_matching",
+    "error_matching_confianza",
+    "ubicacion_exterior"
+  ],
+
+  "_nota": "Si multiples diagnosticos aplican, usar el de mayor prioridad (menor indice)"
+}

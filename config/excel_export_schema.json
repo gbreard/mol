@@ -1,0 +1,184 @@
+{
+  "version": "2.0.0",
+  "descripcion": "Schema de columnas para exportacion Excel de validacion por etapa - Orden segun pipeline real",
+  "pipeline_orden": "SCRAPING → NLP → SKILLS → MATCHING",
+  "columnas": {
+    "scraping": [
+      "id_oferta",
+      "id_empresa",
+      "titulo",
+      "empresa",
+      "descripcion",
+      "confidencial",
+      "localizacion",
+      "modalidad_trabajo",
+      "tipo_trabajo",
+      "fecha_publicacion_original",
+      "fecha_hora_publicacion_original",
+      "fecha_modificado_original",
+      "fecha_publicacion_iso",
+      "fecha_hora_publicacion_iso",
+      "fecha_modificado_iso",
+      "fecha_publicacion_datetime",
+      "fecha_hora_publicacion_datetime",
+      "fecha_modificado_datetime",
+      "cantidad_vacantes",
+      "apto_discapacitado",
+      "id_area",
+      "id_subarea",
+      "id_pais",
+      "logo_url",
+      "empresa_validada",
+      "empresa_pro",
+      "promedio_empresa",
+      "plan_publicacion_id",
+      "plan_publicacion_nombre",
+      "portal",
+      "tipo_aviso",
+      "tiene_preguntas",
+      "salario_obligatorio",
+      "alta_revision_perfiles",
+      "guardado",
+      "gptw_url",
+      "url_oferta",
+      "scrapeado_en",
+      "descripcion_utf8",
+      "provincia_normalizada",
+      "codigo_provincia_indec",
+      "localidad_normalizada",
+      "codigo_localidad_indec",
+      "estado_oferta",
+      "fecha_ultimo_visto",
+      "fecha_baja",
+      "dias_publicada",
+      "veces_vista",
+      "categoria_permanencia"
+    ],
+    "nlp": [
+      "id_oferta",
+      "url_oferta",
+      "descripcion_utf8",
+      "titulo_limpio",
+      "provincia",
+      "localidad",
+      "sector_empresa",
+      "area_funcional",
+      "nivel_seniority",
+      "experiencia_min_anios",
+      "experiencia_max_anios",
+      "nivel_educativo",
+      "titulo_requerido",
+      "modalidad",
+      "jornada_laboral",
+      "tareas_explicitas",
+      "skills_tecnicas_list",
+      "soft_skills_list",
+      "tools_digitales_list",
+      "requerimiento_sexo",
+      "requerimiento_edad"
+    ],
+    "skills_resumen": [
+      "id_oferta",
+      "skills_count",
+      "skills_digitales",
+      "categorias_L1",
+      "top_5_skills"
+    ],
+    "skills_detalle": [
+      "id_oferta",
+      "skill_esco",
+      "score",
+      "origen",
+      "L1",
+      "L1_nombre",
+      "L2",
+      "L2_nombre",
+      "es_digital"
+    ],
+    "matching": [
+      "id_oferta",
+      "isco_code",
+      "isco_label",
+      "esco_code",
+      "esco_label",
+      "esco_uri",
+      "match_score",
+      "match_method",
+      "alt1_isco",
+      "alt1_label",
+      "alt1_score",
+      "alt2_isco",
+      "alt2_label",
+      "alt2_score",
+      "alt3_isco",
+      "alt3_label",
+      "alt3_score"
+    ],
+    "validacion_nlp": [
+      "id_oferta",
+      "nlp_correcto",
+      "nlp_comentario"
+    ],
+    "validacion_skills": [
+      "id_oferta",
+      "skills_correcto",
+      "skills_comentario"
+    ],
+    "validacion_matching": [
+      "id_oferta",
+      "isco_esperado",
+      "esco_esperado",
+      "estado",
+      "matching_correcto",
+      "matching_comentario"
+    ]
+  },
+  "etapas": {
+    "nlp": {
+      "nombre_archivo": "NLP_validacion_{timestamp}.xlsx",
+      "descripcion": "Validacion de extraccion NLP",
+      "sheets": {
+        "1_Scraping": "scraping",
+        "2_NLP": "nlp",
+        "Validacion_NLP": "validacion_nlp"
+      }
+    },
+    "skills": {
+      "nombre_archivo": "Skills_validacion_{timestamp}.xlsx",
+      "descripcion": "Validacion de extraccion de skills (antes de matching)",
+      "sheets": {
+        "1_Scraping": "scraping",
+        "2_NLP": "nlp",
+        "3_Skills_Resumen": "skills_resumen",
+        "4_Skills_Detalle": "skills_detalle",
+        "Validacion_Skills": "validacion_skills"
+      }
+    },
+    "matching": {
+      "nombre_archivo": "Matching_validacion_{timestamp}.xlsx",
+      "descripcion": "Validacion de matching ESCO (usa skills como input)",
+      "sheets": {
+        "1_Scraping": "scraping",
+        "2_NLP": "nlp",
+        "3_Skills_Resumen": "skills_resumen",
+        "4_Matching": "matching",
+        "Validacion_Matching": "validacion_matching"
+      }
+    },
+    "completo": {
+      "nombre_archivo": "Pipeline_completo_validacion_{timestamp}.xlsx",
+      "descripcion": "Validacion de todo el pipeline",
+      "sheets": {
+        "1_Scraping": "scraping",
+        "2_NLP": "nlp",
+        "3_Skills_Resumen": "skills_resumen",
+        "4_Skills_Detalle": "skills_detalle",
+        "5_Matching": "matching",
+        "Validacion_NLP": "validacion_nlp",
+        "Validacion_Skills": "validacion_skills",
+        "Validacion_Matching": "validacion_matching"
+      }
+    }
+  },
+  "output_dir": "exports/validation"
+}

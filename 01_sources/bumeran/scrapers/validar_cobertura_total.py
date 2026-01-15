@@ -18,7 +18,7 @@ from datetime import datetime
 
 # Agregar paths para imports
 project_root = Path(__file__).parent.parent.parent.parent
-tracking_path = project_root / "data" / "tracking"
+tracking_path = project_root / "01_sources" / "bumeran" / "tracking"
 
 sys.path.insert(0, str(project_root / "02_consolidation" / "scripts"))
 

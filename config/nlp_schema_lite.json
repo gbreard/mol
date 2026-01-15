@@ -1,0 +1,150 @@
+{
+  "_version": "1.1",
+  "_descripcion": "Schema NLP Lite - 20 campos (15 NLP + 5 Matching ESCO)",
+  "_fecha": "2026-01-03",
+  "_autor": "MOL Team",
+
+  "campos": {
+    "titulo_ocupacion": {
+      "tipo": "str",
+      "taxonomia": "ESCO",
+      "descripcion": "Titulo limpio de la ocupacion para matching ESCO"
+    },
+    "provincia": {
+      "tipo": "str",
+      "taxonomia": "INDEC",
+      "descripcion": "Provincia argentina (normalizar a codigo INDEC)"
+    },
+    "localidad": {
+      "tipo": "str",
+      "taxonomia": "INDEC",
+      "descripcion": "Localidad/ciudad (normalizar a codigo INDEC)"
+    },
+    "sector_empresa": {
+      "tipo": "str",
+      "taxonomia": "CIIU",
+      "descripcion": "Sector economico de la empresa (normalizar a CIIU/CLAE)"
+    },
+    "tareas_explicitas": {
+      "tipo": "str",
+      "taxonomia": "ESCO",
+      "descripcion": "Lista de tareas separadas por punto y coma"
+    },
+    "skills_tecnicas_list": {
+      "tipo": "list",
+      "taxonomia": "ESCO",
+      "descripcion": "Skills tecnicas especificas del puesto"
+    },
+    "soft_skills_list": {
+      "tipo": "list",
+      "taxonomia": "ESCO",
+      "descripcion": "Habilidades blandas requeridas"
+    },
+    "tecnologias_list": {
+      "tipo": "list",
+      "taxonomia": "ESCO",
+      "descripcion": "Tecnologias especificas (lenguajes, frameworks, plataformas)"
+    },
+    "herramientas_list": {
+      "tipo": "list",
+      "taxonomia": "ESCO",
+      "descripcion": "Herramientas de trabajo (software, equipos)"
+    },
+    "experiencia_min_anios": {
+      "tipo": "int",
+      "min": 0,
+      "max": 15,
+      "descripcion": "Anios minimos de experiencia requeridos"
+    },
+    "experiencia_max_anios": {
+      "tipo": "int",
+      "min": 0,
+      "max": 20,
+      "descripcion": "Anios maximos de experiencia (si se especifica rango)"
+    },
+    "nivel_educativo": {
+      "tipo": "str",
+      "taxonomia": "CINE",
+      "valores_permitidos": ["primario", "secundario", "terciario", "universitario", "posgrado"],
+      "descripcion": "Nivel educativo minimo requerido (CINE UNESCO)"
+    },
+    "titulo_requerido": {
+      "tipo": "str",
+      "taxonomia": "CINE",
+      "descripcion": "Carrera o titulo especifico requerido"
+    },
+    "requerimiento_edad": {
+      "tipo": "int",
+      "valores_permitidos": [0, 1, 2, 3, 4, 5],
+      "mapeo": {
+        "0": "sin_requisito",
+        "1": "18-25",
+        "2": "25-35",
+        "3": "35-45",
+        "4": "45+",
+        "5": "ambiguo"
+      },
+      "descripcion": "Rango etario requerido (0=sin requisito)"
+    },
+    "requerimiento_sexo": {
+      "tipo": "int",
+      "valores_permitidos": [0, 1, 2],
+      "mapeo": {
+        "0": "sin_requisito",
+        "1": "masculino",
+        "2": "femenino"
+      },
+      "descripcion": "Sexo requerido (0=sin requisito)"
+    },
+
+    "_grupo_matching": "Campos adicionales para Matching ESCO v2.1.1",
+
+    "area_funcional": {
+      "tipo": "str",
+      "valores_permitidos": ["IT", "Ventas", "Operaciones", "RRHH", "Administracion", "Salud", "Produccion", "Logistica", "Marketing", "Legal", "Finanzas", "Otro"],
+      "descripcion": "Area funcional del puesto para filtro contextual ISCO"
+    },
+    "nivel_seniority": {
+      "tipo": "str",
+      "valores_permitidos": ["trainee", "junior", "semisenior", "senior", "lead", "manager", "director"],
+      "descripcion": "Nivel de seniority para filtro y penalizacion ISCO"
+    },
+    "tiene_gente_cargo": {
+      "tipo": "bool",
+      "descripcion": "Indica si el puesto supervisa personal (boost ocupaciones directivas)"
+    },
+    "mision_rol": {
+      "tipo": "str",
+      "descripcion": "Objetivo principal del puesto en una oracion (para query semantica)"
+    },
+    "tipo_oferta": {
+      "tipo": "str",
+      "valores_permitidos": ["demanda_real", "pasantia", "becario", "freelance"],
+      "descripcion": "Tipo de contratacion (filtro nivel 0)"
+    }
+  },
+
+  "taxonomias": {
+    "ESCO": {
+      "descripcion": "European Skills, Competences, Qualifications and Occupations",
+      "uso": "Matching ocupaciones y skills"
+    },
+    "INDEC": {
+      "descripcion": "Instituto Nacional de Estadistica y Censos Argentina",
+      "uso": "Codigos geograficos provincias/localidades"
+    },
+    "CIIU": {
+      "descripcion": "Clasificacion Industrial Internacional Uniforme (CLAE Argentina)",
+      "uso": "Sectores economicos"
+    },
+    "CINE": {
+      "descripcion": "Clasificacion Internacional Normalizada de la Educacion (UNESCO)",
+      "uso": "Niveles educativos"
+    }
+  },
+
+  "campos_regex_capa0": {
+    "_nota": "Estos campos se extraen con regex en CAPA 0, no requieren LLM",
+    "campos": ["salario_min", "salario_max", "moneda", "jornada_laboral", "modalidad"]
+  }
+}

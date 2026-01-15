@@ -1,0 +1,80 @@
+{
+  "2163782": {
+    "titulo": "Analista de Investigación de Mercado",
+    "extraccion": {
+      "id_oferta": "2163782",
+      "nlp_version": "6.1.0",
+      "extracted_data": {
+        "experiencia_min_anios": 1,
+        "experiencia_max_anios": 3,
+        "nivel_educativo": "universitario",
+        "estado_educativo": null,
+        "carrera_especifica": null,
+        "idioma_principal": "español",
+        "nivel_idioma_principal": "nativo",
+        "skills_tecnicas_list": "[\"Python\", \"SQL\", \"Power BI\"]",
+        "soft_skills_list": "[\"trabajo en equipo\", \"liderazgo\", \"comunicación\"]",
+        "certificaciones_list": null,
+        "beneficios_list": "[\"pago por proyecto\", \"horario flexible\"]",
+        "requisitos_excluyentes_list": "[\"experiencia en retail\", \"conocimientos en machine learning\"]",
+        "requisitos_deseables_list": "[\"habilidades de análisis\", \"buenos conocimientos estadísticos\"]",
+        "salario_min": null,
+        "salario_max": null,
+        "moneda": null,
+        "jornada_laboral": null,
+        "horario_flexible": 1,
+        "experiencia_cargo_previo": "Analista de datos",
+        "tecnologias_stack_list": "[\"Tableau\", \"AWS\", \"Cloud\"]",
+        "sector_industria": "Retail",
+        "nivel_seniority": "junior",
+        "modalidad_contratacion": "remoto",
+        "disponibilidad_viajes": null
+      },
+      "quality_score": 16,
+      "confidence_score": 1.0,
+      "processing_time_ms": 23622,
+      "extraction_method": "hybrid_rag_llm",
+      "error_message": null
+    },
+    "status": "OK"
+  },
+  "2154549": {
+    "titulo": "Contador/a para Sector Auditoría",
+    "extraccion": {
+      "id_oferta": "2154549",
+      "nlp_version": "6.1.0",
+      "extracted_data": {
+        "experiencia_min_anios": 1,
+        "experiencia_max_anios": 3,
+        "nivel_educativo": "universitario",
+        "estado_educativo": null,
+        "carrera_especifica": "Ingeniería en Computación",
+        "idioma_principal": "español",
+        "nivel_idioma_principal": "nativo",
+        "skills_tecnicas_list": "[\"Python\", \"SQL\", \"Power BI\"]",
+        "soft_skills_list": "[\"Trabajo en equipo\", \"Comunicación efectiva\", \"Resolución de problemas\"]",
+        "certificaciones_list": null,
+        "beneficios_list": "[\"Seguro médico\", \"Plan de pensiones\", \"Horarios flexibles\"]",
+        "requisitos_excluyentes_list": "[\"Nivel básico de Python y SQL\", \"Experiencia en análisis preditivo\"]",
+        "requisitos_deseables_list": "[\"Certificación en ciencias de datos\", \"Conocimientos en machine learning\"]",
+        "salario_min": null,
+        "salario_max": null,
+        "moneda": null,
+        "jornada_laboral": null,
+        "horario_flexible": 1,
+        "experiencia_cargo_previo": "Analista de datos",
+        "tecnologias_stack_list": "[\"TensorFlow\", \"Keras\", \"PyTorch\"]",
+        "sector_industria": "Finanzas",
+        "nivel_seniority": "junior",
+        "modalidad_contratacion": "remoto",
+        "disponibilidad_viajes": null
+      },
+      "quality_score": 17,
+      "confidence_score": 1.0,
+      "processing_time_ms": 22566,
+      "extraction_method": "hybrid_rag_llm",
+      "error_message": null
+    },
+    "status": "OK"
+  }
+}

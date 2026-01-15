@@ -1,0 +1,1790 @@
+{
+  "version": "1.8",
+  "descripcion": "Reglas de negocio para matching ESCO. 94 reglas: 42 Gold Set + 10 IT + 15 FASE 4 + 8 FASE 5 + 4 Validacion v1.0.",
+  "fecha_creacion": "2025-12-30",
+  "fecha_actualizacion": "2026-01-14",
+  "_cambios_v11": "Agregadas R43-R47: DevOps, Architect, SAP, Integraciones, Data Engineer",
+  "_cambios_v12": "Agregadas R48-R52: Secretaria, Jefe generico, Back office, Carpintero, Ingeniero IA",
+  "_cambios_v13": "Agregadas R68-R82: Gastronomía, Financiero, Retail, Aluminio, Product Manager, Ventas, Vigilador, Compras, etc.",
+  "_cambios_v14": "Agregadas R83-R90: Calidad Servicios, Acondicionamiento, Supervisor Ops, Subencargado, Ecommerce, Product Manager, Diseñador, Supervisor Ventas. Fix R59 excluye ingeniero.",
+  "reglas_forzar_isco": {
+    "descripcion": "Reglas que fuerzan un codigo ISCO especifico cuando se cumplen las condiciones. Tienen prioridad sobre el matching semantico.",
+    "R1_skills_cad": {
+      "nombre": "Skills CAD/Diseño Técnico",
+      "prioridad": 1,
+      "condicion": {
+        "skills_contiene_alguno": [
+          "autocad",
+          "solidworks",
+          "revit",
+          "catia",
+          "autodesk inventor",
+          "planos tecnicos"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3118",
+        "esco_label": "Delineante tecnico/delineante tecnica"
+      },
+      "caso_gold_set": "1118027941 - Dibujante Tecnico",
+      "activa": true
+    },
+    "R2_skills_diseno_grafico": {
+      "nombre": "Skills Diseño Gráfico",
+      "prioridad": 2,
+      "condicion": {
+        "skills_contiene_alguno": [
+          "photoshop",
+          "illustrator",
+          "indesign",
+          "figma",
+          "diseño grafico",
+          "adobe creative"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2166",
+        "esco_label": "Disenador grafico/disenadora grafica"
+      },
+      "caso_gold_set": "1118018714 - Diseñador Gráfico E-commerce",
+      "activa": true
+    },
+    "R3_autoelevador": {
+      "nombre": "Operador Autoelevador/Montacargas",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "autoelevador",
+          "autoelevadores",
+          "montacargas",
+          "forklift",
+          "carretilla elevadora",
+          "apilador"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8344",
+        "esco_label": "Operador de carretilla elevadora"
+      },
+      "caso_gold_set": "1118028027 - Operador Autoelevadores",
+      "activa": true
+    },
+    "R4_nivel_gerencial": {
+      "nombre": "Nivel Gerencial con Gente a Cargo",
+      "prioridad": 3,
+      "condicion": {
+        "nlp_seniority_es": [
+          "lead",
+          "manager",
+          "director"
+        ],
+        "nlp_tiene_gente_cargo": true,
+        "titulo_contiene_alguno": [
+          "gerente",
+          "director",
+          "jefe de"
+        ]
+      },
+      "accion": {
+        "priorizar_isco_familia": "1",
+        "penalizar_isco_familias": [
+          "2",
+          "3",
+          "5",
+          "9"
+        ]
+      },
+      "caso_gold_set": "1117984105 - Gerente de Ventas",
+      "activa": true
+    },
+    "R6_sector_gastronomia": {
+      "nombre": "Sector Gastronomía",
+      "prioridad": 2,
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": [
+          "gastronomia",
+          "restaurante",
+          "catering",
+          "cocina",
+          "chef",
+          "bar"
+        ]
+      },
+      "accion": {
+        "priorizar_isco_familias": [
+          "141",
+          "512",
+          "513",
+          "941"
+        ],
+        "penalizar_isco_familias": [
+          "312",
+          "313"
+        ]
+      },
+      "caso_gold_set": "2162667 - Gerente Operaciones Gastronomía",
+      "activa": true
+    },
+    "R7_sector_educacion": {
+      "nombre": "Sector Educación con Admisiones",
+      "prioridad": 2,
+      "condicion": {
+        "nlp_sector_es": [
+          "educacion",
+          "universidad",
+          "colegio"
+        ],
+        "titulo_contiene_alguno": [
+          "admision",
+          "academico",
+          "docente",
+          "profesor"
+        ]
+      },
+      "accion": {
+        "priorizar_isco_familia": "23",
+        "esco_label_si_asesor": "Asesor academico/asesora academica"
+      },
+      "caso_gold_set": "1118018461 - Asesor de Admisiones",
+      "activa": true
+    },
+    "R8_nutricion_animal": {
+      "nombre": "Nutrición Animal/Veterinaria",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": [
+          "nutricion animal",
+          "nutrición animal",
+          "veterinario",
+          "zootecnia",
+          "rumiantes",
+          "porcinos",
+          "avicola"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3240",
+        "esco_label": "Tecnico veterinario/tecnica veterinaria"
+      },
+      "caso_gold_set": "1117995368 - Asesor Nutrición Animal",
+      "activa": true
+    },
+    "R9_tareas_logisticas": {
+      "nombre": "Tareas Logísticas/Almacén",
+      "prioridad": 3,
+      "condicion": {
+        "tareas_contiene_alguno": [
+          "inventario",
+          "stock",
+          "almacen",
+          "deposito",
+          "picking",
+          "recepcion mercaderia"
+        ]
+      },
+      "accion": {
+        "priorizar_isco_familias": [
+          "432",
+          "933"
+        ],
+        "penalizar_isco_familias": [
+          "243",
+          "261"
+        ]
+      },
+      "caso_gold_set": "1118026729 - Responsable de Depósito",
+      "activa": true
+    },
+    "R10_electricista_industrial": {
+      "nombre": "Electricista Industrial",
+      "prioridad": 2,
+      "condicion": {
+        "titulo_contiene": "industrial",
+        "tareas_contiene_alguno": [
+          "tableros",
+          "control",
+          "potencia",
+          "plc",
+          "automatizacion"
+        ]
+      },
+      "accion": {
+        "preferir_isco": "7412",
+        "sobre_isco": "7411"
+      },
+      "caso_gold_set": "2165052 - Electricista Industrial (mejorable)",
+      "activa": false,
+      "nota": "Desactivada - match actual 7411 es aceptable, mismo grupo"
+    },
+    "R11_titulo_compuesto": {
+      "nombre": "Título Compuesto - Priorizar Primero",
+      "prioridad": 4,
+      "condicion": {
+        "titulo_tiene_patron": "^(\\w+)\\s*[/-]\\s*\\w+"
+      },
+      "accion": {
+        "usar_primer_rol": true
+      },
+      "caso_gold_set": "1117977340 - Recepcionista Administrativo",
+      "activa": true
+    },
+    "R12_ejecutivo_cuentas": {
+      "nombre": "Ejecutivo de Cuentas = Ventas",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "ejecutivo de cuentas",
+          "account executive",
+          "key account"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3322",
+        "esco_label": "Representante comercial"
+      },
+      "caso_gold_set": "1118027276 - Ejecutivo de Cuentas",
+      "activa": true
+    },
+    "R13_enfermero": {
+      "nombre": "Enfermero/Enfermera",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "enfermero",
+          "enfermera",
+          "enfermeria",
+          "enfermería",
+          "nurse",
+          "nursing"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2221",
+        "esco_label": "Enfermero/enfermera"
+      },
+      "caso_diagnostico": "2154046 - Enfermeros para atencion domiciliaria",
+      "activa": true
+    },
+    "R14_contador_auditor": {
+      "nombre": "Contador/Auditor (financiero, no médico)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "contador",
+          "contadora",
+          "contable",
+          "auditor",
+          "auditoria",
+          "auditoría"
+        ],
+        "titulo_no_contiene_alguno": [
+          "médico",
+          "medico",
+          "médica",
+          "medica",
+          "clínico",
+          "clinico"
+        ],
+        "sector_no_es": [
+          "Salud"
+        ],
+        "area_funcional_no_es": [
+          "Salud"
+        ]
+      },
+      "accion": {
+        "forzar_isco_familia": "241",
+        "esco_label": "Contador/contadora"
+      },
+      "caso_diagnostico": "2154549 - Contador para Sector Auditoria",
+      "fix_aplicado": "2026-01-12 - Excluir auditor médico (1118105872)",
+      "activa": true
+    },
+    "R14b_auditor_medico": {
+      "nombre": "Auditor Médico (profesional de salud)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_todos": [
+          "auditor",
+          "médico"
+        ],
+        "sector_es": "Salud"
+      },
+      "accion": {
+        "forzar_isco": "2212",
+        "esco_label": "Médico especialista"
+      },
+      "caso_diagnostico": "1118105872 - Auditor Médico Swiss Medical",
+      "fecha_creacion": "2026-01-12",
+      "activa": true
+    },
+    "R14c_auditor_medico_alt": {
+      "nombre": "Auditor Médico (variante sin acento)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_todos": [
+          "auditor",
+          "medico"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2212",
+        "esco_label": "Médico especialista"
+      },
+      "caso_diagnostico": "1118105872 - Auditor Médico Swiss Medical",
+      "fecha_creacion": "2026-01-12",
+      "activa": true
+    },
+    "R15_customer_care": {
+      "nombre": "Customer Care/Atencion al Cliente",
+      "prioridad": 2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "customer care",
+          "customer service",
+          "atencion al cliente",
+          "atención al cliente",
+          "call center"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4222",
+        "esco_label": "Telefonista de centro de contacto"
+      },
+      "caso_diagnostico": "2149320 - Customer Care Professional",
+      "activa": true
+    },
+    "R16_barista_heladero": {
+      "nombre": "Barista/Heladero/Cafeteria",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "barista",
+          "heladero",
+          "heladera",
+          "heladeria",
+          "cafeteria",
+          "cafe especialidad"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5132",
+        "esco_label": "Barista"
+      },
+      "caso_diagnostico": "2155040 - ENCARGADAS/OS - HELADERAS/OS - BARISTAS",
+      "activa": true
+    },
+    "R17_compliance_legal": {
+      "nombre": "Compliance/Legal",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "compliance",
+          "legales",
+          "legal",
+          "abogado",
+          "abogada",
+          "juridico",
+          "jurídico"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2611",
+        "esco_label": "Abogado/abogada"
+      },
+      "caso_diagnostico": "1118027243 - Responsable de Legales, 2151075 - Asistente Compliance",
+      "activa": true
+    },
+    "R18_payroll_nominas": {
+      "nombre": "Payroll/Liquidacion de Sueldos",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "liquidacion de sueldos",
+          "liquidación de sueldos",
+          "payroll",
+          "nominas",
+          "nóminas",
+          "sueldos y jornales"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4313",
+        "esco_label": "Empleado de nominas"
+      },
+      "caso_diagnostico": "2145263 - Consultor Junior de Liquidacion de Sueldos",
+      "activa": true
+    },
+    "R19_project_manager": {
+      "nombre": "Project Manager/Jefe de Proyectos",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "project manager",
+          "jefe de proyecto",
+          "jefa de proyecto",
+          "gerente de proyecto",
+          "lider de proyecto",
+          "líder de proyecto",
+          "pm it",
+          "project lead"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1213",
+        "esco_label": "Director de proyectos"
+      },
+      "caso_diagnostico": "1118026719 - Project Manager IT",
+      "activa": true
+    },
+    "R20_vendedor_ferreteria": {
+      "nombre": "Vendedor Ferreteria/Electricidad/Mostrador",
+      "prioridad": 2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "venta mostrador",
+          "vendedor mostrador",
+          "vendedora mostrador",
+          "casa de electricidad",
+          "ferreteria",
+          "ferretería",
+          "pintureria",
+          "pinturería"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5223",
+        "esco_label": "Vendedor especializado en ferreteria y pintura"
+      },
+      "caso_diagnostico": "2130257 - EMPLEADA/O VENTA MOSTRADOR PARA CASA DE ELECTRICIDAD",
+      "activa": true
+    },
+    "R21_lider_atencion_cliente": {
+      "nombre": "Lider/Supervisor Atencion al Cliente",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "lider atencion",
+          "líder atención",
+          "supervisor atencion",
+          "supervisor atención",
+          "coordinador atencion",
+          "coordinador atención",
+          "jefe atencion",
+          "jefe atención",
+          "lider customer",
+          "líder customer"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4222",
+        "esco_label": "Supervisor de centro de contacto"
+      },
+      "caso_diagnostico": "2156388 - Lider de Atencion al Cliente",
+      "activa": true
+    },
+    "R22_instalaciones_mantenimiento": {
+      "nombre": "Coordinador/Tecnico Instalaciones",
+      "prioridad": 2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "coordinador instalaciones",
+          "coordinador de instalaciones",
+          "tecnico instalaciones",
+          "técnico instalaciones",
+          "mantenimiento edilicio",
+          "mantenimiento de edificios",
+          "facility"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7126",
+        "esco_label": "Tecnico de mantenimiento de instalaciones"
+      },
+      "caso_diagnostico": "1118028168 - Coordinador de Instalaciones",
+      "activa": true
+    },
+    "R23_responsable_deposito": {
+      "nombre": "Responsable/Jefe de Deposito/Almacen",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "responsable de deposito",
+          "responsable deposito",
+          "jefe de deposito",
+          "jefe deposito",
+          "encargado de deposito",
+          "encargado deposito",
+          "supervisor de deposito",
+          "responsable de almacen",
+          "jefe de almacen"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4321",
+        "esco_label": "Jefe de almacen/jefa de almacen"
+      },
+      "caso_gold_set": "1118026729 - Responsable de Deposito",
+      "activa": true
+    },
+    "R24_gerente_ventas": {
+      "nombre": "Gerente de Ventas/Comercial",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "gerente de ventas",
+          "gerente ventas",
+          "gerente comercial",
+          "director de ventas",
+          "director comercial",
+          "jefe de ventas"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1221",
+        "esco_label": "Director de comercios/directora de comercios"
+      },
+      "caso_gold_set": "1117984105 - Gerente de Ventas",
+      "activa": true
+    },
+    "R25_gerente_gastronomia": {
+      "nombre": "Gerente Restaurante/Bar/Gastronomia",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "gerente de restaurante",
+          "gerente restaurante",
+          "gerente de bar",
+          "gerente bar",
+          "gerente gastronomico",
+          "gerente gastronómico",
+          "encargado de restaurante",
+          "encargado restaurante"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1412",
+        "esco_label": "Gerente de restaurante"
+      },
+      "caso_gold_set": "Casos con titulo explicito de restaurante/bar",
+      "activa": true,
+      "nota": "Solo aplica si titulo menciona restaurante/bar/gastronomia explicitamente"
+    },
+    "R26_recepcionista": {
+      "nombre": "Recepcionista (rol primario)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "recepcionista"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4226",
+        "esco_label": "Recepcionista"
+      },
+      "caso_gold_set": "1117977340 - Recepcionista Administrativo",
+      "activa": true
+    },
+    "R27_asesor_admisiones": {
+      "nombre": "Asesor Admisiones/Academico",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "asesor de admision",
+          "asesor admision",
+          "asesor de admisiones",
+          "asesor/a de admisiones",
+          "asesora de admision",
+          "asesora de admisiones",
+          "consejero academico",
+          "orientador academico"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2359",
+        "esco_label": "Asesor academico/asesora academica"
+      },
+      "caso_gold_set": "1118018461 - Asesor de Admisiones",
+      "activa": true
+    },
+    "R28_comercial_cuentas": {
+      "nombre": "Comercial de Cuentas/Account Manager",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "comercial de cuentas",
+          "comercial cuentas",
+          "account manager",
+          "gerente de cuentas",
+          "gestor de cuentas"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3322",
+        "esco_label": "Representante comercial"
+      },
+      "caso_gold_set": "1118028038 - Ejecutiva/o Comercial de Cuentas",
+      "activa": true
+    },
+    "R29_modelista_textil": {
+      "nombre": "Modelista/Patronista Textil",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "modelista",
+          "patronista",
+          "molderia",
+          "moldería",
+          "modista",
+          "sastre",
+          "sastreria",
+          "sastrería"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7531",
+        "esco_label": "Sastre/sastra"
+      },
+      "caso_gold_set": "1118028828 - Modelista textil",
+      "activa": true
+    },
+    "R30_community_manager": {
+      "nombre": "Community Manager/Social Media",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "community manager",
+          "social media manager",
+          "gestor de redes",
+          "gestora de redes",
+          "social media specialist"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2432",
+        "esco_label": "Gestor de la informacion para las redes sociales"
+      },
+      "caso_gold_set": "1118022146 - Community manager",
+      "activa": true
+    },
+    "R31_mozo_camarero": {
+      "nombre": "Mozo/Camarero/Mesero",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "mozo",
+          "moza",
+          "camarero",
+          "camarera",
+          "mesero",
+          "mesera",
+          "barman",
+          "barmaid",
+          "bartender"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5131",
+        "esco_label": "Camarero/camarera"
+      },
+      "caso_gold_set": "2164100 - Mozo/Moza",
+      "activa": true
+    },
+    "R32_operario_picking": {
+      "nombre": "Operario Picking/Preparador Pedidos (Almacén)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "operario picking",
+          "operario de picking",
+          "picker",
+          "preparador de pedidos",
+          "preparadora de pedidos",
+          "armador de pedidos",
+          "pickeador"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9333",
+        "esco_label": "mozo de almacén/moza de almacén"
+      },
+      "caso_gold_set": "1118023904 - Operario Picking Zona Norte",
+      "activa": true,
+      "nota": "Picking en deposito/almacen es 9333, NO repositor de gondola (9334)"
+    },
+    "R33_desarrollador_software": {
+      "nombre": "Desarrollador/Programador Software",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "desarrollador",
+          "desarrolladora",
+          "developer",
+          "programador",
+          "programadora",
+          "software engineer",
+          "ingeniero de software",
+          "frontend",
+          "backend",
+          "fullstack",
+          "full stack",
+          "full-stack"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2512",
+        "esco_label": "Desarrollador de software"
+      },
+      "caso_gold_set": "1117982053 - Desarrollador Angular Senior",
+      "activa": true
+    },
+    "R34_cajero": {
+      "nombre": "Cajero/Cajera",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "cajero",
+          "cajera",
+          "cajeros",
+          "cajeras"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5230",
+        "esco_label": "Cajero/cajera"
+      },
+      "caso_gold_set": "2123908 - CAJEROS",
+      "activa": true
+    },
+    "R35_disenador_grafico_titulo": {
+      "nombre": "Diseñador Gráfico (por título)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "disenador grafico",
+          "diseñador grafico",
+          "diseñador gráfico",
+          "disenadora grafica",
+          "diseñadora grafica",
+          "diseñadora gráfica",
+          "graphic designer",
+          "disenador visual",
+          "diseñador visual"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2166",
+        "esco_label": "Diseñador grafico/diseñadora grafica"
+      },
+      "caso_gold_set": "1118018714 - Diseñador Gráfico E-commerce",
+      "activa": true
+    },
+    "R36_operario_almacen": {
+      "nombre": "Operario de Almacén/Depósito (no jefe)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "operario de almacen",
+          "operario almacen",
+          "operario de deposito",
+          "operario deposito",
+          "operario de logistica",
+          "operario logistica",
+          "operario almacén",
+          "operario depósito",
+          "operario logística"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9333",
+        "esco_label": "Mozo de almacen/moza de almacen"
+      },
+      "caso_gold_set": "1117980907 - Operario de Almacen/Logistica",
+      "activa": true
+    },
+    "R37_operario_alimentos": {
+      "nombre": "Operario Producción de Alimentos (genérico)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "operario alimenticia",
+          "operarios alimenticia",
+          "operario alimentos",
+          "operarios alimentos",
+          "operario de produccion alimenticia",
+          "operario produccion alimentos",
+          "industria alimenticia",
+          "produccion alimenticia",
+          "producción alimenticia",
+          "operario de produccion de alimentos",
+          "produccion de alimentos"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8160",
+        "esco_label": "operador de máquinas para elaborar alimentos/operadora de máquinas para elaborar alimentos"
+      },
+      "caso_gold_set": "2131827 - Operario de Producción de Alimentos (genérico)",
+      "activa": true,
+      "nota": "ISCO 8160 para operarios de alimentos genéricos. ISCO 7511 solo si menciona carne explícitamente."
+    },
+    "R38_comercio_exterior": {
+      "nombre": "Comercio Exterior / Importación-Exportación",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": [
+          "comercio exterior",
+          "comercio internacional",
+          "importacion",
+          "importación",
+          "exportacion",
+          "exportación",
+          "import export",
+          "comex",
+          "trade compliance"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3331",
+        "esco_label": "especialista en importación y exportación"
+      },
+      "caso_gold_set": "1118028376 - Analista administrativo (tareas comex)",
+      "activa": true,
+      "nota": "Detecta por tareas aunque título sea genérico"
+    },
+    "R39_supervisor_administracion": {
+      "nombre": "Supervisor de Administración",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_todos": [
+          "supervisor",
+          "administracion"
+        ],
+        "area_funcional_es": "Administracion"
+      },
+      "accion": {
+        "forzar_isco": "3341",
+        "esco_label": "supervisor de oficina/supervisora de oficina"
+      },
+      "caso_gold_set": "2165301 - Supervisor/a Administración Autos usados",
+      "activa": true,
+      "nota": "Evita que supervisor admin vaya a ingeniero industrial por skills de optimización"
+    },
+    "R40_asesor_comercial": {
+      "nombre": "Asesor Comercial / Vendedor / Corredor",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "asesor comercial",
+          "asesora comercial",
+          "asesor de ventas",
+          "asesora de ventas",
+          "vendedor",
+          "vendedora",
+          "corredor de ventas",
+          "corredor comercial"
+        ],
+        "area_funcional_es": "Ventas",
+        "titulo_no_contiene_alguno": [
+          "ambulante"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3322",
+        "esco_label": "representante comercial"
+      },
+      "caso_gold_set": "1118028833 - Asesor Comercial Plan de Ahorro Volkswagen",
+      "activa": true,
+      "nota": "Corredor en Argentina = vendedor que recorre clientes (no apuestas)"
+    },
+    "R41_chofer_repartidor": {
+      "nombre": "Chofer Repartidor / Delivery",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "chofer repartidor",
+          "chofer de reparto",
+          "conductor repartidor",
+          "repartidor",
+          "delivery",
+          "distribuidor"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8322",
+        "esco_label": "conductor de camión ligero/conductora de camión ligero"
+      },
+      "caso_gold_set": "2091347 - CHOFER REPARTIDOR (huevos en Kangoo)",
+      "activa": true,
+      "nota": "Chofer repartidor con vehiculo ligero (camioneta/furgoneta) es ISCO 8322"
+    },
+    "R42_gerente_operaciones": {
+      "nombre": "Gerente de Operaciones",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "gerente de operaciones",
+          "gerente operaciones",
+          "director de operaciones",
+          "director operaciones"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1321",
+        "esco_label": "director de fabricación/directora de fabricación"
+      },
+      "caso_gold_set": "2162667 - Gerente Operaciones Facility/Catering",
+      "activa": true,
+      "nota": "ISCO 1321 cubre directores que gestionan operaciones de fabricación/producción/servicios"
+    },
+    "R43_IT_devops": {
+      "nombre": "DevOps Engineer/SRE",
+      "prioridad": 95,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "devops",
+          "dev ops",
+          "sre",
+          "site reliability",
+          "devsecops"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2512",
+        "esco_label": "desarrollador de software/desarrolladora de software"
+      },
+      "caso_revision_100": "2172191 - DevOps Engineer mal clasificado como operador centro datos",
+      "activa": true,
+      "nota": "FASE 2 v3.2.1 - DevOps requiere ISCO 2523 (redes) o 2512 (desarrollador)"
+    },
+    "R44_IT_architect": {
+      "nombre": "Arquitecto Software",
+      "prioridad": 95,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "architect",
+          "arquitecto"
+        ],
+        "titulo_contiene_todos": [],
+        "titulo_o_tareas_contiene_alguno": [
+          "java",
+          "software",
+          ".net",
+          "cloud",
+          "soluciones",
+          "aws",
+          "azure",
+          "solution"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2512",
+        "esco_label": "desarrollador de software/desarrolladora de software"
+      },
+      "caso_revision_100": "2172192 - JAVA Architect mal clasificado como gestor TIC",
+      "activa": true,
+      "nota": "FASE 2 v3.2.1 - Arquitecto software = desarrollador senior"
+    },
+    "R45_IT_analista_sap": {
+      "nombre": "Analista SAP/ERP/Funcional",
+      "prioridad": 95,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "sap",
+          "erp",
+          "oracle",
+          "salesforce",
+          "dynamics"
+        ],
+        "titulo_o_tareas_contiene_alguno": [
+          "analista",
+          "funcional",
+          "consultor",
+          "consultant"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2511",
+        "esco_label": "analista de sistemas"
+      },
+      "caso_revision_100": "2172152 - Analista SAP Jr mal clasificado como técnico baterías",
+      "activa": true,
+      "nota": "FASE 2 v3.2.1 - Roles SAP/ERP son analistas de sistemas"
+    },
+    "R46_IT_integraciones": {
+      "nombre": "Analista de Integraciones",
+      "prioridad": 90,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "integracion",
+          "integrador",
+          "api",
+          "middleware",
+          "integraciones"
+        ],
+        "area_funcional_es": "IT"
+      },
+      "accion": {
+        "forzar_isco": "2511",
+        "esco_label": "analista de sistemas"
+      },
+      "caso_revision_100": "2172151 - Analista Integraciones mal clasificado",
+      "activa": true,
+      "nota": "FASE 2 v3.2.1 - Integraciones IT = analista sistemas"
+    },
+    "R47_IT_data_engineer": {
+      "nombre": "Data Engineer/ETL",
+      "prioridad": 95,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "data engineer",
+          "ingeniero de datos",
+          "etl",
+          "pipeline",
+          "data platform"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2521",
+        "esco_label": "administrador de bases de datos"
+      },
+      "caso_revision_100": "2172159 - Data Engineer Sr",
+      "activa": true,
+      "nota": "FASE 2 v3.2.1 - Data Engineers trabajan con bases de datos y pipelines"
+    },
+    "R48_secretaria_admin": {
+      "nombre": "Secretaria/Asistente Administrativo",
+      "prioridad": 80,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "secretaria",
+          "asistente administrativ",
+          "asistente ejecutiv"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4120",
+        "esco_label": "secretario/secretaria"
+      },
+      "activa": true,
+      "nota": "FASE 3 v3.2.3 - Secretarias van a ISCO 4120"
+    },
+    "R49_jefe_generico": {
+      "nombre": "Jefe/Encargado Genérico",
+      "prioridad": 70,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "jefe de",
+          "encargado de",
+          "responsable de"
+        ],
+        "titulo_no_contiene_alguno": [
+          "deposito",
+          "almacen",
+          "turno",
+          "cocina",
+          "salon",
+          "campo",
+          "ganadero",
+          "capataz",
+          "delegación",
+          "delegacion",
+          "sucursal",
+          "agencia"
+        ]
+      },
+      "accion": {
+        "priorizar_isco_familia": "1",
+        "forzar_isco": "1219",
+        "esco_label": "director general/directora general"
+      },
+      "activa": true,
+      "nota": "FASE 3 v3.2.3 - Jefes genericos van a ISCO 1xxx"
+    },
+    "R50_back_office": {
+      "nombre": "Back Office/Operaciones Administrativas",
+      "prioridad": 85,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "back office",
+          "backoffice",
+          "operaciones administrativas"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4312",
+        "esco_label": "auxiliar administrativo"
+      },
+      "activa": true,
+      "nota": "FASE 3 v3.2.3 - Back office es trabajo administrativo"
+    },
+    "R51_carpintero": {
+      "nombre": "Carpintero/Oficial Carpinteria",
+      "prioridad": 90,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "carpintero",
+          "carpinteria",
+          "ebanista"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7522",
+        "esco_label": "ebanista"
+      },
+      "activa": true,
+      "nota": "FASE 3 v3.2.3 - Carpinteros van a ISCO 7522"
+    },
+    "R52_ingeniero_ia_ml": {
+      "nombre": "Ingeniero IA/ML/Data Science",
+      "prioridad": 95,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "ingeniero ia",
+          "ingeniero de ia",
+          "machine learning",
+          "ml engineer",
+          "data scientist"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2512",
+        "esco_label": "desarrollador de software"
+      },
+      "activa": true,
+      "nota": "FASE 3 v3.2.3 - Ingenieros IA/ML son desarrolladores"
+    },
+    "R53_operario_plastico": {
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "industria plástica",
+          "industria plastica",
+          "inyección",
+          "soplado",
+          "moldeo"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8142"
+      },
+      "activa": true
+    },
+    "R54_cuidador_adultos": {
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "cuidador",
+          "cuidadora",
+          "acompañante"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5322"
+      },
+      "activa": true
+    },
+    "R55_vendedor_ambulante": {
+      "condicion": {
+        "titulo_contiene_todos": [
+          "vendedor",
+          "ambulante"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9520"
+      },
+      "activa": true
+    },
+    "R56_analista_creditos": {
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista de crédito",
+          "analista de credito",
+          "analista créditos",
+          "analista creditos"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3312"
+      },
+      "activa": true
+    },
+    "R57_encargado_ganadero": {
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "ganadero",
+          "capataz",
+          "encargado de campo"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "6121"
+      },
+      "activa": true
+    },
+    "R58_operador_sim_aduanas": {
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "operador sim",
+          "sistema maría",
+          "despacho aduanero",
+          "despachante"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3331"
+      },
+      "activa": true
+    },
+    "R59_medico_especialista": {
+      "nombre": "Médico Especialista",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "médico",
+          "medico",
+          "traumatólogo",
+          "traumatologo",
+          "cardiólogo",
+          "cardiologo",
+          "pediatra",
+          "ginecólogo",
+          "ginecologo"
+        ],
+        "titulo_no_contiene_alguno": ["ingeniero", "ingeniera", "equipamiento", "técnico", "tecnico", "ventas", "comercial"]
+      },
+      "accion": {
+        "forzar_isco": "2212",
+        "esco_label": "médico/médica especialista"
+      },
+      "activa": true,
+      "nota": "Excluye ingeniero/técnico para evitar falsos positivos con 'equipamiento médico'"
+    },
+    "R60_mecanico_vehiculos": {
+      "nombre": "Mecánico de vehículos/camiones (NO barcos)",
+      "condicion": {
+        "titulo_contiene_alguno": ["mecánico", "mecanico"],
+        "sector_empresa_es_alguno": ["Logistica", "Transporte", "Automotriz"],
+        "titulo_no_contiene_alguno": ["barco", "naval", "marino", "buque"]
+      },
+      "accion": {
+        "forzar_isco": "7231"
+      },
+      "activa": true
+    },
+    "R61_analista_qa_farma": {
+      "nombre": "Analista QA/Calidad Farmacéutico",
+      "condicion": {
+        "titulo_contiene_todos": ["analista"],
+        "titulo_contiene_alguno": ["calidad", "qa", "garantía", "garantia"],
+        "titulo_contiene_alguno_2": ["farmac", "laboratorio", "lab "]
+      },
+      "accion": {
+        "forzar_isco": "2145",
+        "esco_label": "ingeniero quimico/ingeniera quimica"
+      },
+      "activa": true
+    },
+    "R62_auditor_medico": {
+      "nombre": "Auditor Médico",
+      "condicion": {
+        "titulo_contiene_todos": ["auditor"],
+        "titulo_contiene_alguno": ["médico", "medico", "salud", "clinica", "clínica"]
+      },
+      "accion": {
+        "forzar_isco": "2212"
+      },
+      "activa": true
+    },
+    "R63_secretaria_educacion": {
+      "nombre": "Secretaria/Asistente Académico",
+      "condicion": {
+        "titulo_contiene_alguno": ["secretaria", "secretario", "asistente"],
+        "titulo_contiene_alguno_2": ["posgrado", "universidad", "académico", "academico", "facultad", "instituto"]
+      },
+      "accion": {
+        "forzar_isco": "3343",
+        "esco_label": "secretario de administracion/secretaria de administracion"
+      },
+      "activa": true
+    },
+    "R64_admin_funeraria": {
+      "nombre": "Administrativo Funeraria/Cementerio",
+      "condicion": {
+        "titulo_contiene_alguno": ["administrativo", "administrativa", "admin"],
+        "titulo_contiene_alguno_2": ["funeraria", "cementerio", "sepelio", "velatorio"]
+      },
+      "accion": {
+        "forzar_isco": "4110"
+      },
+      "activa": true
+    },
+    "R65_jefe_delegacion": {
+      "nombre": "Jefe de Delegación/Sucursal",
+      "condicion": {
+        "titulo_contiene_alguno": ["jefe", "gerente", "responsable"],
+        "titulo_contiene_alguno_2": ["delegación", "delegacion", "sucursal", "agencia"]
+      },
+      "accion": {
+        "forzar_isco": "1324"
+      },
+      "activa": true
+    },
+    "R66_arquitecto_software": {
+      "nombre": "Arquitecto de Software",
+      "condicion": {
+        "titulo_contiene_alguno": ["architect", "arquitecto"],
+        "titulo_contiene_alguno_2": ["java", "software", ".net", "cloud", "sistemas", "soluciones"]
+      },
+      "accion": {
+        "forzar_isco": "2512"
+      },
+      "activa": true
+    },
+    "R67_devops_engineer": {
+      "nombre": "DevOps Engineer/Ingeniero DevOps",
+      "condicion": {
+        "titulo_contiene_alguno": ["devops", "dev ops", "sre", "site reliability"]
+      },
+      "accion": {
+        "forzar_isco": "2512"
+      },
+      "activa": true
+    },
+    "R68_gerente_ops_gastronomia": {
+      "nombre": "Gerente/Supervisor Operaciones Gastronomía",
+      "condicion": {
+        "titulo_contiene_alguno": ["gerente de operaciones", "supervisor de operaciones", "director de operaciones"],
+        "titulo_contiene_alguno_2": ["gastronomico", "gastronómico", "gastronomía", "gastronomia", "grupo gastro", "restaurante"]
+      },
+      "accion": {
+        "forzar_isco": "1412",
+        "esco_label": "gerente de restaurante"
+      },
+      "caso_revision_100": "1118091304, 1118097995 - Gerente/Supervisor Operaciones Gastronómico",
+      "activa": true,
+      "nota": "FASE 4 - Operaciones en gastronomía = gerente restaurante, NO director fabricación"
+    },
+    "R69_analista_financiero": {
+      "nombre": "Analista Financiero",
+      "condicion": {
+        "titulo_contiene_alguno": ["analista financiero", "analista de finanzas", "financial analyst"]
+      },
+      "accion": {
+        "forzar_isco": "2411",
+        "esco_label": "contador/contadora"
+      },
+      "caso_revision_100": "1118101894, 2172001 - Analista Financiero Junior mal clasificado a inmobiliaria",
+      "activa": true,
+      "nota": "FASE 4 - Analista financiero es contador/contable"
+    },
+    "R70_encargado_gastronomia": {
+      "nombre": "Encargado/Subencargado Gastronomía",
+      "condicion": {
+        "titulo_contiene_alguno": ["encargado", "subencargado", "encargada", "subencargada"],
+        "titulo_contiene_alguno_2": ["gastronomía", "gastronomia", "restaurante", "bar", "cocina"]
+      },
+      "accion": {
+        "forzar_isco": "1412",
+        "esco_label": "gerente de restaurante"
+      },
+      "caso_revision_100": "2172164 - Encargado Senior Gastronomía",
+      "activa": true,
+      "nota": "FASE 4 - Encargado gastronomía = gerente restaurante"
+    },
+    "R71_encargado_local_retail": {
+      "nombre": "Encargado/Subencargado de Local Retail",
+      "condicion": {
+        "titulo_contiene_alguno": ["encargado de local", "subencargado de local", "encargada de local", "subencargada de local", "encargado de tienda", "encargada de tienda"]
+      },
+      "accion": {
+        "forzar_isco": "5222",
+        "esco_label": "supervisor de tienda/supervisora de tienda"
+      },
+      "caso_revision_100": "1118101812 - Subencargado de Local",
+      "activa": true,
+      "nota": "FASE 4 - Encargado local retail = supervisor tienda"
+    },
+    "R72_carpintero_aluminio": {
+      "nombre": "Carpintero de Aluminio/Vidriero",
+      "condicion": {
+        "titulo_contiene_alguno": ["carpintero aluminio", "carpintero de aluminio", "carpintería de aluminio", "vidriero", "cortador vidriero"]
+      },
+      "accion": {
+        "forzar_isco": "7214",
+        "esco_label": "montador de carpintería metálica"
+      },
+      "caso_revision_100": "2172208 - Carpintero de Aluminio / Cortador Vidriero",
+      "activa": true,
+      "nota": "FASE 4 - Carpintero aluminio es carpintería metálica, NO ebanista"
+    },
+    "R73_product_manager": {
+      "nombre": "Product Manager/Jefe de Producto",
+      "condicion": {
+        "titulo_contiene_alguno": ["product manager", "jefe de producto", "jefa de producto", "gerente de producto", "product owner"]
+      },
+      "accion": {
+        "forzar_isco": "1221",
+        "esco_label": "director de ventas/directora de ventas"
+      },
+      "caso_revision_100": "1118105850 - Jefe de Producto",
+      "activa": true,
+      "nota": "FASE 4 - Product Manager es rol de marketing/negocio"
+    },
+    "R74_supervisor_ventas": {
+      "nombre": "Supervisor de Ventas",
+      "condicion": {
+        "titulo_contiene_alguno": ["supervisor de ventas", "supervisora de ventas", "supervisor ventas", "supervisora ventas", "jefe de ventas", "jefa de ventas"]
+      },
+      "accion": {
+        "forzar_isco": "1221",
+        "esco_label": "director de ventas/directora de ventas"
+      },
+      "caso_revision_100": "2172203 - Supervisor de Ventas Servicios Salud",
+      "activa": true,
+      "nota": "FASE 4 - Supervisor ventas = director ventas"
+    },
+    "R75_vigilador": {
+      "nombre": "Vigilador/Guardia de Seguridad",
+      "condicion": {
+        "titulo_contiene_alguno": ["vigilador", "vigiladora", "guardia de seguridad", "guardia seguridad", "seguridad privada", "custodia"]
+      },
+      "accion": {
+        "forzar_isco": "5414",
+        "esco_label": "guardia de seguridad"
+      },
+      "caso_revision_100": "2171959 - Vigilador General",
+      "activa": true,
+      "nota": "FASE 4 - Vigilador genérico = guardia seguridad"
+    },
+    "R76_fonoaudiologo": {
+      "nombre": "Fonoaudiólogo/Logopeda",
+      "condicion": {
+        "titulo_contiene_alguno": ["fonoaudiologo", "fonoaudióloga", "fonoaudiologo", "fonoaudióloga", "logopeda"]
+      },
+      "accion": {
+        "forzar_isco": "2266",
+        "esco_label": "logopeda"
+      },
+      "caso_revision_100": "2171937 - Fonoaudióloga",
+      "activa": true,
+      "nota": "FASE 4 - Fonoaudiólogo = logopeda (ISCO 2266)"
+    },
+    "R77_responsable_compras": {
+      "nombre": "Responsable/Jefe Compras y Logística",
+      "condicion": {
+        "titulo_contiene_alguno": ["responsable de compras", "jefe de compras", "gerente de compras", "responsable compras"]
+      },
+      "accion": {
+        "forzar_isco": "1324",
+        "esco_label": "director de la cadena de suministro"
+      },
+      "caso_revision_100": "2172098 - Responsable Compras y Logística",
+      "activa": true,
+      "nota": "FASE 4 - Responsable compras = director supply chain"
+    },
+    "R78_analista_tecnico_funcional_it": {
+      "nombre": "Analista Técnico Funcional IT (Medios de Pago)",
+      "condicion": {
+        "titulo_contiene_todos": ["analista", "técnico", "funcional"],
+        "area_funcional_es": "IT"
+      },
+      "accion": {
+        "forzar_isco": "2511",
+        "esco_label": "analista de sistemas"
+      },
+      "caso_revision_100": "2172188 - Analista Técnico Funcional Medios de Pago",
+      "activa": true,
+      "nota": "FASE 4 - Técnico funcional IT = analista sistemas"
+    },
+    "R79_ingeniero_industrial_equipos": {
+      "nombre": "Ingeniero Industrial (Equipamiento/Gestión)",
+      "condicion": {
+        "titulo_contiene_alguno": ["ingeniero industrial", "ingeniera industrial", "ingeniero/a industrial"],
+        "titulo_no_contiene_alguno": ["software", "sistemas"]
+      },
+      "accion": {
+        "forzar_isco": "2141",
+        "esco_label": "ingeniero industrial/ingeniera industrial"
+      },
+      "caso_revision_100": "2172199 - Ingeniero Industrial Equipamiento Médico",
+      "activa": true,
+      "nota": "FASE 4 - Ingeniero industrial = ISCO 2141"
+    },
+    "R80_administrativo_almacen": {
+      "nombre": "Administrativo de Almacén/Stock",
+      "condicion": {
+        "titulo_contiene_alguno": ["administrativo", "administrativa"],
+        "titulo_contiene_alguno_2": ["almacen", "almacén", "stock", "inventario", "deposito", "depósito"]
+      },
+      "accion": {
+        "forzar_isco": "4321",
+        "esco_label": "coordinador de inventario"
+      },
+      "caso_revision_100": "2172219 - Administrativo para Almacenes",
+      "activa": true,
+      "nota": "FASE 4 - Administrativo almacén = coordinador inventario"
+    },
+    "R81_monitoreo_alarmas": {
+      "nombre": "Operador Monitoreo de Alarmas",
+      "condicion": {
+        "titulo_contiene_alguno": ["monitoreo", "monitorista", "operador de monitoreo"],
+        "titulo_contiene_alguno_2": ["alarma", "seguridad", "cctv", "camaras", "cámaras"]
+      },
+      "accion": {
+        "forzar_isco": "5414",
+        "esco_label": "operador de monitoreo de seguridad"
+      },
+      "caso_revision_100": "1118102051 - Operadores de Monitoreo de Alarmas",
+      "activa": true,
+      "nota": "FASE 4 - Monitoreo alarmas = seguridad"
+    },
+    "R82_operario_farmaceutico": {
+      "nombre": "Operario Industria Farmacéutica",
+      "condicion": {
+        "titulo_contiene_alguno": ["operario", "operaria"],
+        "titulo_contiene_alguno_2": ["farmaceutico", "farmacéutico", "farmaceutica", "farmacéutica", "laboratorio", "pharma"]
+      },
+      "accion": {
+        "forzar_isco": "8131",
+        "esco_label": "operador de fabricación de productos químicos"
+      },
+      "caso_revision_100": "1118040252 - Operarios pharma mal clasificado a zoológico",
+      "activa": true,
+      "nota": "FASE 4 - Operario pharma = operador productos químicos"
+    },
+    "R83_analista_calidad_servicios": {
+      "nombre": "Analista de Calidad de Servicios",
+      "condicion": {
+        "titulo_contiene_alguno": ["analista de calidad", "analista calidad", "calidad de servicios"]
+      },
+      "accion": {
+        "forzar_isco": "3341",
+        "esco_label": "supervisor de control de calidad"
+      },
+      "caso_revision_100": "1118101077, 1118101058 - Analista Calidad Servicios",
+      "activa": true,
+      "nota": "FASE 5 - Analista calidad servicios = supervisor control calidad"
+    },
+    "R84_operario_acondicionamiento": {
+      "nombre": "Operario Acondicionamiento (Laboratorio/Pharma)",
+      "condicion": {
+        "titulo_contiene_alguno": ["operario", "operaria", "operarios"],
+        "titulo_o_tareas_contiene_alguno": ["acondicionamiento", "acondicionado", "envasado", "blister"]
+      },
+      "accion": {
+        "forzar_isco": "8131",
+        "esco_label": "operador de fabricación de productos químicos"
+      },
+      "caso_revision_100": "1118040252 - Operarios acondicionamiento laboratorio",
+      "activa": true,
+      "nota": "FASE 5 - Acondicionamiento pharma = operador productos químicos"
+    },
+    "R85_supervisor_operaciones": {
+      "nombre": "Supervisor de Operaciones (Gastronómico/Retail)",
+      "condicion": {
+        "titulo_contiene_alguno": ["supervisor de operaciones", "supervisora de operaciones", "supervisor operaciones"],
+        "sector_empresa_es_alguno": ["Gastronómico", "Retail", "Servicios", "Comercio"]
+      },
+      "accion": {
+        "forzar_isco": "5222",
+        "esco_label": "supervisor de tienda"
+      },
+      "caso_revision_100": "1118097995 - Supervisor Operaciones Gastronomia",
+      "activa": true,
+      "nota": "FASE 5 - Supervisor ops gastro/retail = supervisor tienda"
+    },
+    "R86_subencargado_local": {
+      "nombre": "Subencargado/Asistente de Local (Retail)",
+      "condicion": {
+        "titulo_contiene_alguno": ["subencargado", "subencargada", "encargado de local", "encargada de local", "asistente de local", "asistente de tienda"]
+      },
+      "accion": {
+        "forzar_isco": "5222",
+        "esco_label": "supervisor de tienda"
+      },
+      "caso_revision_100": "1118101812 - Subencargado de Local Retail",
+      "activa": true,
+      "nota": "FASE 5 - Subencargado retail = supervisor tienda"
+    },
+    "R87_administrativo_ecommerce": {
+      "nombre": "Administrativo/Analista de E-commerce",
+      "condicion": {
+        "titulo_contiene_alguno": ["administrativo", "administrativa", "analista", "asistente"],
+        "titulo_contiene_alguno_2": ["ecommerce", "e-commerce", "comercio electronico", "marketplace", "mercado libre"]
+      },
+      "accion": {
+        "forzar_isco": "3339",
+        "esco_label": "agente de negocios"
+      },
+      "caso_revision_100": "1118105735 - Administrativo Ecommerce",
+      "activa": true,
+      "nota": "FASE 5 - Admin ecommerce = agente negocios digitales"
+    },
+    "R88_jefe_producto": {
+      "nombre": "Jefe/Gerente de Producto (Product Manager)",
+      "condicion": {
+        "titulo_contiene_alguno": ["jefe de producto", "jefa de producto", "jefe/a de producto", "gerente de producto", "product manager", "product owner"]
+      },
+      "accion": {
+        "forzar_isco": "2421",
+        "esco_label": "analista de gestión y organización"
+      },
+      "caso_revision_100": "1118105850 - Jefe de Producto",
+      "activa": true,
+      "nota": "FASE 5 - Product Manager = analista gestión (closest ISCO)"
+    },
+    "R89_disenador_grafico_senior": {
+      "nombre": "Diseñador Gráfico (con seniority)",
+      "condicion": {
+        "titulo_contiene_alguno": ["diseñador gráfico", "diseñadora gráfica", "diseñador/a gráfico", "diseñador/a gráfico/a", "disenador grafico", "disenadora grafica", "diseñador grafico", "diseñadora grafico"]
+      },
+      "accion": {
+        "forzar_isco": "2166",
+        "esco_label": "diseñador gráfico/diseñadora gráfica"
+      },
+      "caso_revision_100": "2172144 - Diseñador Gráfico Senior",
+      "activa": true,
+      "nota": "FASE 5 - Diseñador gráfico = ISCO 2166 (refuerza R2)"
+    },
+    "R90_supervisor_ventas": {
+      "nombre": "Supervisor de Ventas",
+      "condicion": {
+        "titulo_contiene_alguno": ["supervisor de ventas", "supervisora de ventas", "supervisor/a de ventas", "supervisor ventas", "coordinador de ventas", "coordinadora de ventas", "coordinador/a de ventas"]
+      },
+      "accion": {
+        "forzar_isco": "3322",
+        "esco_label": "representante comercial"
+      },
+      "caso_revision_100": "2172203 - Supervisor de Ventas",
+      "activa": true,
+      "nota": "FASE 5 - Supervisor ventas = representante comercial (supervisión equipo)"
+    },
+    "R91_jefe_mantenimiento": {
+      "nombre": "Jefe/Supervisor de Mantenimiento Industrial",
+      "condicion": {
+        "titulo_contiene_alguno": ["jefe de mantenimiento", "jefa de mantenimiento", "jefe/a de mantenimiento", "supervisor de mantenimiento", "gerente de mantenimiento", "encargado de mantenimiento", "responsable de mantenimiento"]
+      },
+      "accion": {
+        "forzar_isco": "1321",
+        "esco_label": "director de fabricación"
+      },
+      "caso_revision_100": "1117941805 - JEFE/A DE MANTENIMIENTO (rubro alimenticio)",
+      "activa": true,
+      "nota": "Validacion v1.0 - Jefe mantenimiento = director manufactura (gestión planta)"
+    },
+    "R92_jefe_cotizaciones_presupuestos": {
+      "nombre": "Jefe/Responsable de Cotizaciones, Presupuestos y Cómputo de Obras",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": ["cotizaciones", "presupuesto", "presupuestos", "cómputo", "computo", "licitaciones", "jefe de costos", "jefa de costos", "analista de costos", "estimador de costos"]
+      },
+      "accion": {
+        "forzar_isco": "1323",
+        "esco_label": "director de construcción/directora de construcción"
+      },
+      "caso_revision_100": "1118105832 - Jefe/a de Cotizaciones, Cómputo y Presupuesto (instalaciones contra incendios)",
+      "activa": true,
+      "nota": "Validacion v1.0 - Roles de estimación de costos/presupuestos de obras van a director de construcción"
+    },
+    "R93_telemarketer": {
+      "nombre": "Telemarketer / Vendedor telefónico",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": ["telemarketer", "telemarketers", "telemarketing", "vendedor telefonico", "vendedora telefonica", "ventas telefonicas", "call center ventas", "operador de ventas telefonicas"]
+      },
+      "accion": {
+        "forzar_isco": "5244",
+        "esco_label": "vendedor de centros de contacto/vendedora de centros de contacto"
+      },
+      "caso_revision_100": "1117872265 - Telemarketers con experiencia en planes de ahorro",
+      "activa": true,
+      "nota": "Validacion v1.0 - Telemarketers = vendedores telefónicos (5244), no representantes comerciales (3322)"
+    },
+    "R94_jefe_sucursal_financiera": {
+      "nombre": "Jefe/Gerente de Sucursal/Delegación Financiera",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": ["jefe de delegación", "jefe de delegacion", "jefe delegación", "jefe delegacion", "gerente de sucursal", "gerente sucursal", "gerente de agencia", "jefe de sucursal"],
+        "nlp_sector_es": ["Finanzas", "Banca", "Servicios Financieros", "Creditos"]
+      },
+      "accion": {
+        "forzar_isco": "1346",
+        "esco_label": "gerente de servicios financieros de sucursal"
+      },
+      "caso_revision_100": "2172211 - Jefe de Delegación (AMPF - venta de créditos)",
+      "activa": true,
+      "nota": "Validacion v1.0 - Jefe delegación financiera = 1346, prioridad sobre R65 genérica"
+    }
+  },
+  "reglas_filtro": {
+    "descripcion": "Reglas que filtran/descartan candidatos ESCO que no cumplen requisitos",
+    "R5_formacion_vs_isco": {
+      "nombre": "Formación vs ISCO Profesional",
+      "prioridad": 5,
+      "condicion": {
+        "nlp_nivel_educativo_es": [
+          "secundario",
+          "secundario incompleto"
+        ],
+        "candidato_isco_familia": "2"
+      },
+      "accion": {
+        "descartar_candidato": true,
+        "razon": "ISCO 2xxx requiere formacion universitaria"
+      },
+      "activa": false,
+      "nota": "Desactivada - puede generar falsos negativos si NLP no extrae bien nivel_educativo"
+    }
+  },
+  "tipos_error_gold_set": {
+    "dominio_incorrecto": {
+      "descripcion": "El matching asigna una ocupación de un dominio completamente diferente",
+      "cantidad_gold_set": 6,
+      "ejemplos": [
+        "Dibujante → Contable",
+        "Autoelevador → Agrícola"
+      ]
+    },
+    "sector_ignorado": {
+      "descripcion": "El sector de la empresa/industria no se consideró",
+      "cantidad_gold_set": 1,
+      "ejemplos": [
+        "Gastronomía → Minería"
+      ]
+    },
+    "nivel_jerarquico": {
+      "descripcion": "El nivel jerárquico no coincide",
+      "cantidad_gold_set": 1,
+      "ejemplos": [
+        "Gerente → Representante"
+      ]
+    },
+    "homonimia": {
+      "descripcion": "Palabras polisémicas generan matches incorrectos",
+      "cantidad_gold_set": 1,
+      "ejemplos": [
+        "Asesor Admisiones → Jurídico"
+      ]
+    },
+    "rol_primario": {
+      "descripcion": "En títulos compuestos no se prioriza el rol principal",
+      "cantidad_gold_set": 1,
+      "ejemplos": [
+        "Recepcionista Admin → Admin"
+      ]
+    }
+  },
+  "metricas_esperadas": {
+    "gold_set_actual": {
+      "total": 49,
+      "correctos": 39,
+      "errores": 10,
+      "precision": 0.796
+    },
+    "gold_set_objetivo": {
+      "total": 49,
+      "correctos": 49,
+      "errores": 0,
+      "precision": 1.0
+    }
+  }
+}

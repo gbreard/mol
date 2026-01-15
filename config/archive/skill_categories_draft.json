@@ -1,0 +1,458 @@
+{
+  "version": "1.0",
+  "categorias_L1": {
+    "K": "Conocimientos",
+    "S1": "Comunicación",
+    "S3": "Asistencia",
+    "S4": "Gestión",
+    "S5": "Trabajar con ordenadores",
+    "S6": "Técnicas",
+    "T": "Transversales"
+  },
+  "categorias_L2": {
+    "K2.1": "Planos técnicos",
+    "S1.4": "Comunicación digital",
+    "S3.1": "Atención cliente",
+    "S3.2": "Ventas",
+    "S3.3": "Atención paciente",
+    "S4.5": "Gestión inventarios",
+    "S4.6": "Gestión financiera",
+    "S4.7": "Gestión de procesos",
+    "S5.0": "Uso general",
+    "S5.1": "Programación",
+    "S5.2": "Infraestructura IT",
+    "S5.5": "Análisis datos digitales",
+    "S5.6": "Creación contenido digital",
+    "S5.7": "Marketing digital",
+    "S5.8": "Software específico",
+    "S5.9": "E-commerce",
+    "S6.1": "Mantenimiento",
+    "S6.2": "Equipos especializados",
+    "S6.3": "Electricidad",
+    "S6.4": "Equipos médicos",
+    "T1.1": "Colaboración",
+    "T1.2": "Comunicación",
+    "T1.3": "Negociación",
+    "T1.4": "Relaciones",
+    "T2.1": "Liderazgo",
+    "T3.1": "Iniciativa",
+    "T3.2": "Autonomía",
+    "T3.3": "Orientación resultados",
+    "T3.4": "Gestión tiempo",
+    "T3.5": "Adaptabilidad",
+    "T4.1": "Resolución problemas",
+    "T4.2": "Pensamiento analítico",
+    "T4.3": "Pensamiento estratégico",
+    "T4.4": "Creatividad",
+    "T4.5": "Atención detalle",
+    "T5.1": "Actitud",
+    "T5.2": "Responsabilidad",
+    "T5.3": "Excelencia",
+    "T5.4": "Inteligencia emocional",
+    "T6.1": "Disponibilidad"
+  },
+  "mapeo_skills": {
+    "http://data.europa.eu/esco/skill/1973c966-f236-40c9-b2d4-5d71a89019be": {
+      "L1": "S5",
+      "L2": "S5.5",
+      "es_digital": true,
+      "esco_label": "utilizar software de hojas de cálculo"
+    },
+    "http://data.europa.eu/esco/skill/1973c966-office": {
+      "L1": "S5",
+      "L2": "S5.5",
+      "es_digital": true,
+      "esco_label": "utilizar software ofimático"
+    },
+    "http://data.europa.eu/esco/skill/computer-equipment": {
+      "L1": "S5",
+      "L2": "S5.0",
+      "es_digital": true,
+      "esco_label": "utilizar herramientas informáticas"
+    },
+    "http://data.europa.eu/esco/skill/crm-software": {
+      "L1": "S5",
+      "L2": "S5.8",
+      "es_digital": true,
+      "esco_label": "utilizar software CRM"
+    },
+    "http://data.europa.eu/esco/skill/cad-software": {
+      "L1": "S5",
+      "L2": "S5.8",
+      "es_digital": true,
+      "esco_label": "utilizar software CAD"
+    },
+    "http://data.europa.eu/esco/skill/graphics-editing": {
+      "L1": "S5",
+      "L2": "S5.6",
+      "es_digital": true,
+      "esco_label": "utilizar software de edición de imágenes"
+    },
+    "http://data.europa.eu/esco/skill/seo": {
+      "L1": "S5",
+      "L2": "S5.7",
+      "es_digital": true,
+      "esco_label": "realizar optimización en motores de búsqueda"
+    },
+    "http://data.europa.eu/esco/skill/online-advertising": {
+      "L1": "S5",
+      "L2": "S5.7",
+      "es_digital": true,
+      "esco_label": "gestionar publicidad en línea"
+    },
+    "http://data.europa.eu/esco/skill/online-sales": {
+      "L1": "S5",
+      "L2": "S5.9",
+      "es_digital": true,
+      "esco_label": "gestionar canales de venta en línea"
+    },
+    "http://data.europa.eu/esco/skill/programming": {
+      "L1": "S5",
+      "L2": "S5.1",
+      "es_digital": true,
+      "esco_label": "utilizar lenguajes de programación"
+    },
+    "http://data.europa.eu/esco/skill/dev-tools": {
+      "L1": "S5",
+      "L2": "S5.1",
+      "es_digital": true,
+      "esco_label": "utilizar herramientas de desarrollo"
+    },
+    "http://data.europa.eu/esco/skill/erp-systems": {
+      "L1": "S5",
+      "L2": "S5.8",
+      "es_digital": true,
+      "esco_label": "utilizar sistemas ERP"
+    },
+    "http://data.europa.eu/esco/skill/pos-systems": {
+      "L1": "S5",
+      "L2": "S5.8",
+      "es_digital": true,
+      "esco_label": "utilizar sistemas de punto de venta"
+    },
+    "http://data.europa.eu/esco/skill/bpm": {
+      "L1": "S4",
+      "L2": "S4.7",
+      "es_digital": true,
+      "esco_label": "aplicar gestión de procesos de negocio"
+    },
+    "http://data.europa.eu/esco/skill/pattern-design": {
+      "L1": "S5",
+      "L2": "S5.8",
+      "es_digital": true,
+      "esco_label": "utilizar software de diseño de patrones"
+    },
+    "http://data.europa.eu/esco/skill/inventory": {
+      "L1": "S4",
+      "L2": "S4.5",
+      "es_digital": false,
+      "esco_label": "gestionar inventario"
+    },
+    "http://data.europa.eu/esco/skill/invoicing": {
+      "L1": "S4",
+      "L2": "S4.6",
+      "es_digital": false,
+      "esco_label": "procesar facturas"
+    },
+    "http://data.europa.eu/esco/skill/accounting": {
+      "L1": "S4",
+      "L2": "S4.6",
+      "es_digital": false,
+      "esco_label": "realizar cierres contables"
+    },
+    "http://data.europa.eu/esco/skill/technical-plans": {
+      "L1": "K",
+      "L2": "K2.1",
+      "es_digital": false,
+      "esco_label": "interpretar planos técnicos"
+    },
+    "http://data.europa.eu/esco/skill/electrical": {
+      "L1": "S6",
+      "L2": "S6.3",
+      "es_digital": false,
+      "esco_label": "dimensionar instalaciones eléctricas"
+    },
+    "http://data.europa.eu/esco/skill/electrical-panels": {
+      "L1": "S6",
+      "L2": "S6.3",
+      "es_digital": false,
+      "esco_label": "armar tableros eléctricos"
+    },
+    "http://data.europa.eu/esco/skill/electrical-conduits": {
+      "L1": "S6",
+      "L2": "S6.3",
+      "es_digital": false,
+      "esco_label": "instalar canalizaciones eléctricas"
+    },
+    "http://data.europa.eu/esco/skill/maintenance": {
+      "L1": "S6",
+      "L2": "S6.1",
+      "es_digital": false,
+      "esco_label": "realizar mantenimiento de equipos"
+    },
+    "http://data.europa.eu/esco/skill/vehicle-maintenance": {
+      "L1": "S6",
+      "L2": "S6.1",
+      "es_digital": false,
+      "esco_label": "realizar mantenimiento de vehículos"
+    },
+    "http://data.europa.eu/esco/skill/laser-treatments": {
+      "L1": "S6",
+      "L2": "S6.4",
+      "es_digital": true,
+      "esco_label": "aplicar tratamientos con láser"
+    },
+    "http://data.europa.eu/esco/skill/messaging": {
+      "L1": "S1",
+      "L2": "S1.4",
+      "es_digital": true,
+      "esco_label": "utilizar plataformas de mensajería"
+    },
+    "http://data.europa.eu/esco/skill/cloud-services": {
+      "L1": "S5",
+      "L2": "S5.2",
+      "es_digital": true,
+      "esco_label": "utilizar servicios en la nube"
+    },
+    "http://data.europa.eu/esco/skill/ecommerce": {
+      "L1": "S5",
+      "L2": "S5.9",
+      "es_digital": true,
+      "esco_label": "gestionar plataformas e-commerce"
+    },
+    "http://data.europa.eu/esco/skill/commercial-software": {
+      "L1": "S5",
+      "L2": "S5.8",
+      "es_digital": true,
+      "esco_label": "utilizar software de gestión comercial"
+    },
+    "http://data.europa.eu/esco/skill/digital-comm": {
+      "L1": "S1",
+      "L2": "S1.4",
+      "es_digital": true,
+      "esco_label": "utilizar herramientas de comunicación digital"
+    },
+    "http://data.europa.eu/esco/skill/email": {
+      "L1": "S1",
+      "L2": "S1.4",
+      "es_digital": true,
+      "esco_label": "utilizar correo electrónico"
+    },
+    "http://data.europa.eu/esco/skill/social-media": {
+      "L1": "S5",
+      "L2": "S5.7",
+      "es_digital": true,
+      "esco_label": "gestionar redes sociales"
+    },
+    "http://data.europa.eu/esco/skill/video-editing": {
+      "L1": "S5",
+      "L2": "S5.6",
+      "es_digital": true,
+      "esco_label": "utilizar software de edición de video"
+    },
+    "http://data.europa.eu/esco/skill/word-processing": {
+      "L1": "S5",
+      "L2": "S5.5",
+      "es_digital": true,
+      "esco_label": "utilizar procesador de texto"
+    },
+    "http://data.europa.eu/esco/skill/presentations": {
+      "L1": "S5",
+      "L2": "S5.5",
+      "es_digital": true,
+      "esco_label": "utilizar software de presentaciones"
+    },
+    "http://data.europa.eu/esco/skill/rf-equipment": {
+      "L1": "S6",
+      "L2": "S6.2",
+      "es_digital": true,
+      "esco_label": "utilizar equipos de radiofrecuencia"
+    },
+    "http://data.europa.eu/esco/skill/medical-equipment": {
+      "L1": "S6",
+      "L2": "S6.4",
+      "es_digital": true,
+      "esco_label": "operar equipos médicos estéticos"
+    },
+    "http://data.europa.eu/esco/skill/teamwork": {
+      "L1": "T",
+      "L2": "T1.1",
+      "es_digital": false,
+      "esco_label": "trabajar en equipo"
+    },
+    "http://data.europa.eu/esco/skill/communication": {
+      "L1": "T",
+      "L2": "T1.2",
+      "es_digital": false,
+      "esco_label": "comunicarse eficazmente"
+    },
+    "http://data.europa.eu/esco/skill/assertive-comm": {
+      "L1": "T",
+      "L2": "T1.2",
+      "es_digital": false,
+      "esco_label": "comunicarse de forma asertiva"
+    },
+    "http://data.europa.eu/esco/skill/negotiation": {
+      "L1": "T",
+      "L2": "T1.3",
+      "es_digital": false,
+      "esco_label": "aplicar técnicas de negociación"
+    },
+    "http://data.europa.eu/esco/skill/interpersonal": {
+      "L1": "T",
+      "L2": "T1.4",
+      "es_digital": false,
+      "esco_label": "establecer relaciones interpersonales"
+    },
+    "http://data.europa.eu/esco/skill/leadership": {
+      "L1": "T",
+      "L2": "T2.1",
+      "es_digital": false,
+      "esco_label": "demostrar liderazgo"
+    },
+    "http://data.europa.eu/esco/skill/lead-teams": {
+      "L1": "T",
+      "L2": "T2.1",
+      "es_digital": false,
+      "esco_label": "liderar equipos"
+    },
+    "http://data.europa.eu/esco/skill/initiative": {
+      "L1": "T",
+      "L2": "T3.1",
+      "es_digital": false,
+      "esco_label": "mostrar iniciativa"
+    },
+    "http://data.europa.eu/esco/skill/autonomy": {
+      "L1": "T",
+      "L2": "T3.2",
+      "es_digital": false,
+      "esco_label": "trabajar de forma autónoma"
+    },
+    "http://data.europa.eu/esco/skill/results-focus": {
+      "L1": "T",
+      "L2": "T3.3",
+      "es_digital": false,
+      "esco_label": "orientación a resultados"
+    },
+    "http://data.europa.eu/esco/skill/work-pressure": {
+      "L1": "T",
+      "L2": "T3.3",
+      "es_digital": false,
+      "esco_label": "trabajar bajo presión"
+    },
+    "http://data.europa.eu/esco/skill/time-management": {
+      "L1": "T",
+      "L2": "T3.4",
+      "es_digital": false,
+      "esco_label": "gestionar el tiempo"
+    },
+    "http://data.europa.eu/esco/skill/attention-detail": {
+      "L1": "T",
+      "L2": "T3.4",
+      "es_digital": false,
+      "esco_label": "prestar atención al detalle"
+    },
+    "http://data.europa.eu/esco/skill/planning": {
+      "L1": "T",
+      "L2": "T3.4",
+      "es_digital": false,
+      "esco_label": "planificar y organizar"
+    },
+    "http://data.europa.eu/esco/skill/punctuality": {
+      "L1": "T",
+      "L2": "T3.4",
+      "es_digital": false,
+      "esco_label": "ser puntual"
+    },
+    "http://data.europa.eu/esco/skill/adaptability": {
+      "L1": "T",
+      "L2": "T3.5",
+      "es_digital": false,
+      "esco_label": "adaptarse al cambio"
+    },
+    "http://data.europa.eu/esco/skill/problem-solving": {
+      "L1": "T",
+      "L2": "T4.1",
+      "es_digital": false,
+      "esco_label": "resolver problemas"
+    },
+    "http://data.europa.eu/esco/skill/analytical": {
+      "L1": "T",
+      "L2": "T4.2",
+      "es_digital": false,
+      "esco_label": "aplicar pensamiento analítico"
+    },
+    "http://data.europa.eu/esco/skill/strategic-thinking": {
+      "L1": "T",
+      "L2": "T4.3",
+      "es_digital": false,
+      "esco_label": "pensar de forma estratégica"
+    },
+    "http://data.europa.eu/esco/skill/creativity": {
+      "L1": "T",
+      "L2": "T4.4",
+      "es_digital": false,
+      "esco_label": "pensar creativamente"
+    },
+    "http://data.europa.eu/esco/skill/customer-service": {
+      "L1": "S3",
+      "L2": "S3.1",
+      "es_digital": false,
+      "esco_label": "prestar atención al cliente"
+    },
+    "http://data.europa.eu/esco/skill/sales": {
+      "L1": "S3",
+      "L2": "S3.2",
+      "es_digital": false,
+      "esco_label": "aplicar habilidades de venta"
+    },
+    "http://data.europa.eu/esco/skill/patient-care": {
+      "L1": "S3",
+      "L2": "S3.3",
+      "es_digital": false,
+      "esco_label": "prestar atención al paciente"
+    },
+    "http://data.europa.eu/esco/skill/positive-attitude": {
+      "L1": "T",
+      "L2": "T5.1",
+      "es_digital": false,
+      "esco_label": "mantener actitud positiva"
+    },
+    "http://data.europa.eu/esco/skill/responsibility": {
+      "L1": "T",
+      "L2": "T5.2",
+      "es_digital": false,
+      "esco_label": "asumir responsabilidad"
+    },
+    "http://data.europa.eu/esco/skill/excellence": {
+      "L1": "T",
+      "L2": "T5.3",
+      "es_digital": false,
+      "esco_label": "búsqueda de la excelencia"
+    },
+    "http://data.europa.eu/esco/skill/empathy": {
+      "L1": "T",
+      "L2": "T5.4",
+      "es_digital": false,
+      "esco_label": "demostrar empatía"
+    },
+    "http://data.europa.eu/esco/skill/self-confidence": {
+      "L1": "T",
+      "L2": "T5.4",
+      "es_digital": false,
+      "esco_label": "demostrar autoconfianza"
+    },
+    "http://data.europa.eu/esco/skill/budgets": {
+      "L1": "S4",
+      "L2": "S4.6",
+      "es_digital": false,
+      "esco_label": "gestionar presupuestos"
+    },
+    "http://data.europa.eu/esco/skill/travel": {
+      "L1": "T",
+      "L2": "T6.1",
+      "es_digital": false,
+      "esco_label": "disponibilidad para viajar"
+    }
+  }
+}

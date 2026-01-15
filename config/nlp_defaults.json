@@ -54,6 +54,14 @@
     "tipo_salario": {
       "default": null,
       "nota": "bruto, neto, o null si no especifica"
+    },
+    "tipo_oferta": {
+      "default": "demanda_real",
+      "nota": "Si no hay indicadores de pasantia/beca/freelance, asumir demanda real"
+    },
+    "mision_rol": {
+      "default": null,
+      "nota": "Solo extraer del LLM, no inferir"
     }
   },
 

@@ -1,0 +1,39 @@
+﻿================================================================================
+POBLAR ofertas_esco_skills_detalle DESDE MATCHING v8.3
+================================================================================
+Fecha: 2025-12-01 14:58:46
+Modo: SIMULACION
+
+[INFO] Ofertas v8.3 en matching: 219
+[INFO] Registros existentes en skills_detalle (v8.3): 0
+
+[INFO] Procesando 20 ofertas...
+
+================================================================================
+ESTADISTICAS:
+--------------------------------------------------------------------------------
+  Ofertas procesadas:         20
+  Skills essential:           88
+  Skills optional:            40
+  Total mappings:            128
+  ESCO encontrados:          128 (100.0%)
+  ESCO no encontrados:         0
+
+--------------------------------------------------------------------------------
+MUESTRA DE REGISTROS A INSERTAR (primeros 10):
+--------------------------------------------------------------------------------
+  [E] chofer                         -> conducir un veh├¡culo           [OK]
+  [E] responsabilidad                -> conducir un veh├¡culo           [OK]
+  [E] compromiso                     -> cumplir el calendario de traba [OK]
+  [E] organizaci├│n                   -> gesti├│n de residuos            [OK]
+  [E] planificaci├│n                  -> gesti├│n de residuos            [OK]
+  [E] autonom├¡a                      -> conducir un veh├¡culo           [OK]
+  [E] resoluci├│n de problemas        -> gesti├│n de residuos            [OK]
+  [E] atenci├│n al detalle            -> emplear equipos de protecci├│n  [OK]
+  [O] repartidor                     -> recoger residuos industriales  [OK]
+  [O] barista                        -> recibir a hu├®spedes            [OK]
+
+================================================================================
+[!] Modo SIMULACION - cambios NO aplicados
+    Use --apply para aplicar los cambios
+================================================================================

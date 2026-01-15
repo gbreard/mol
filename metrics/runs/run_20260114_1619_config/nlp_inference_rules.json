@@ -1,0 +1,561 @@
+{
+  "_version": "1.0",
+  "_descripcion": "Reglas de inferencia cuando LLM no extrae el campo",
+  "_fecha": "2025-12-14",
+
+  "modalidad": {
+    "_gap_actual": "16% ofertas sin modalidad detectada",
+    "_objetivo": ">95% cobertura",
+
+    "reglas": [
+      {
+        "prioridad": 1,
+        "contiene_cualquiera": ["100% remoto", "full remoto", "trabajo remoto", "remote work", "teletrabajo"],
+        "resultado": "remoto"
+      },
+      {
+        "prioridad": 2,
+        "contiene_cualquiera": ["home office", "desde casa", "desde tu casa"],
+        "resultado": "remoto"
+      },
+      {
+        "prioridad": 3,
+        "contiene_cualquiera": ["hibrido", "hibrida", "semi presencial", "semipresencial", "dias presenciales", "dias en oficina", "formato mixto", "mixto", "presencial/remoto", "presencial y remoto", "remoto/presencial", "modalidad mixta"],
+        "resultado": "hibrido"
+      },
+      {
+        "prioridad": 4,
+        "contiene_cualquiera": ["presencial", "en oficina", "en planta", "en sucursal"],
+        "resultado": "presencial"
+      },
+      {
+        "prioridad": 5,
+        "_descripcion": "Indicadores implicitos de presencialidad",
+        "contiene_cualquiera": [
+          "comedor en planta",
+          "taller",
+          "deposito",
+          "almacen",
+          "fabrica",
+          "obra",
+          "local comercial",
+          "atencion al publico",
+          "recepcion",
+          "mostrador"
+        ],
+        "resultado": "presencial"
+      }
+    ],
+    "default": "presencial",
+    "nota_default": "Si no hay indicadores de remoto/hibrido, asumir presencial"
+  },
+
+  "nivel_seniority": {
+    "_gap_actual": "12% ofertas sin seniority",
+    "_objetivo": ">95% cobertura",
+
+    "reglas": [
+      {
+        "prioridad": 1,
+        "contiene_cualquiera": ["trainee", "pasante", "pasantia", "primer empleo", "sin experiencia", "recien egresado", "recien graduado"],
+        "resultado": "trainee"
+      },
+      {
+        "prioridad": 2,
+        "contiene_cualquiera": ["junior", "jr", "jr.", "hasta 1 ano", "hasta 2 anos"],
+        "resultado": "junior"
+      },
+      {
+        "prioridad": 3,
+        "contiene_cualquiera": ["semi senior", "semi-senior", "semisenior", "ssr", "2 a 4 anos", "3 anos de experiencia", "experiencia comprobable"],
+        "resultado": "semisenior"
+      },
+      {
+        "prioridad": 4,
+        "contiene_cualquiera": ["senior", "sr", "sr.", "amplia experiencia", "5 anos", "mas de 5 anos", "solida experiencia"],
+        "resultado": "senior"
+      },
+      {
+        "prioridad": 5,
+        "contiene_cualquiera": ["gerente", "manager", "director", "jefe de", "jefe/a de", "jefa de", "a cargo de equipo", "lider de", "responsable de area", "coordinador", "supervisor", "encargado de"],
+        "resultado": "manager"
+      }
+    ],
+
+    "inferencia_por_experiencia": {
+      "_descripcion": "Si no hay keywords, inferir de experiencia_min_anios",
+      "rangos": [
+        {"exp_min": 0, "exp_max": 0, "resultado": "trainee"},
+        {"exp_min": 1, "exp_max": 1, "resultado": "junior"},
+        {"exp_min": 2, "exp_max": 4, "resultado": "semisenior"},
+        {"exp_min": 5, "exp_max": 99, "resultado": "senior"}
+      ]
+    },
+
+    "correccion_por_experiencia": {
+      "_descripcion": "Corregir seniority si es inconsistente con experiencia requerida",
+      "_nota": "Se aplica SIEMPRE, incluso si LLM ya asigno un valor",
+      "reglas": [
+        {
+          "seniority_actual": ["trainee", "junior"],
+          "exp_min_mayor_igual": 5,
+          "seniority_correcto": "senior",
+          "_ejemplo": "junior con 7 años exp -> senior"
+        },
+        {
+          "seniority_actual": ["trainee", "junior"],
+          "exp_min_mayor_igual": 2,
+          "seniority_correcto": "semisenior",
+          "_ejemplo": "junior con 3 años exp -> semisenior"
+        },
+        {
+          "seniority_actual": ["trainee"],
+          "exp_min_mayor_igual": 1,
+          "seniority_correcto": "junior",
+          "_ejemplo": "trainee con 1 año exp -> junior"
+        }
+      ]
+    },
+
+    "correccion_sin_experiencia": {
+      "_descripcion": "Si el texto indica que NO se requiere experiencia, forzar exp=0 y seniority=trainee",
+      "_nota": "Corrige alucinaciones del LLM que inventa años de experiencia",
+      "_fecha": "2026-01-05",
+      "frases_sin_experiencia": [
+        "poca experiencia",
+        "primeros trabajos",
+        "primer empleo",
+        "sin experiencia",
+        "no requiere experiencia",
+        "no es necesaria experiencia",
+        "con o sin experiencia",
+        "experiencia no excluyente",
+        "no es excluyente",
+        "recien egresado",
+        "recién egresado",
+        "estudiantes",
+        "jovenes profesionales",
+        "jóvenes profesionales"
+      ],
+      "umbral_exp_alucinacion": 1,
+      "_umbral_nota": "Solo corregir si LLM puso exp > este valor",
+      "seniority_ignorar": ["trainee", "junior"],
+      "_seniority_ignorar_nota": "No corregir seniority si ya es uno de estos",
+      "accion": {
+        "experiencia_min_anios": 0,
+        "nivel_seniority": "trainee"
+      },
+      "_ejemplo": "2123908 decia 'poca experiencia' pero LLM puso 10 años"
+    },
+
+    "default": null,
+    "nota_default": "No inferir seniority si no hay suficiente informacion"
+  },
+
+  "area_funcional": {
+    "_gap_actual": "4% ofertas sin area funcional",
+    "_objetivo": ">98% cobertura",
+
+    "diccionario_keywords": {
+      "Ventas/Comercial": ["vendedor", "ventas", "comercial", "ejecutivo de cuentas", "asesor comercial", "key account"],
+      "IT/Sistemas": ["desarrollador", "programador", "developer", "devops", "frontend", "backend", "fullstack", "sistemas", "soporte tecnico", "help desk", "infraestructura", "data engineer", "architect"],
+      "Administracion": ["administrativo", "administracion", "facturacion", "cuentas a pagar", "tesoreria", "secretaria", "asistente administrativo"],
+      "Recursos Humanos": ["rrhh", "recursos humanos", "seleccion", "reclutamiento", "capacitacion", "nominas", "payroll"],
+      "Finanzas/Contabilidad": ["contador", "contable", "finanzas", "analista financiero", "auditoria", "impuestos", "credito", "creditos", "prestamo", "prestamos", "financiacion", "cobranza", "cobranzas", "analista de creditos", "riesgos crediticios"],
+      "Marketing": ["marketing", "publicidad", "community manager", "social media", "branding", "comunicacion", "diseno grafico", "disenador grafico", "disenador", "creatividad", "arte", "ux", "ui"],
+      "Comercio Exterior": ["comercio exterior", "comercio internacional", "importacion", "exportacion", "aduana", "despachante", "operador sim", "agente de carga", "freight", "forwarding"],
+      "Logistica/Operaciones": ["logistica", "operaciones", "supply chain", "deposito", "almacen", "distribucion", "transporte", "cadena de suministro"],
+      "Produccion/Manufactura": ["produccion", "manufactura", "planta", "operario", "maquinista", "mantenimiento", "fabrica"],
+      "Atencion al Cliente": ["atencion al cliente", "customer service", "call center", "soporte", "reclamos", "telefonista"],
+      "Ingenieria": ["ingeniero", "ingenieria", "proyecto", "calidad", "procesos", "tecnico", "mecanico", "electromecanico", "electrico", "electronico", "instrumentista"],
+      "Gastronomia/Hoteleria": ["camarero", "camarera", "mozo", "moza", "bartender", "barman", "barmaid", "barista", "chef", "cocinero", "cocinera", "pastelero", "panadero", "pizzero", "sushiman", "sommelier", "maitre", "hostess", "recepcionista hotel", "conserje", "mucama", "housekeeping", "ama de llaves", "bachero", "ayudante de cocina", "commis", "gastronomia", "hoteleria", "restaurante", "catering"]
+    },
+    "_cambios_v11": "FASE 3: Agregadas keywords Finanzas (crédito), Marketing (diseño), IT (data engineer)",
+    "_cambios_v12": "Validacion v1.0: Agregada Gastronomia/Hoteleria (camarero, chef, bartender, etc.)",
+
+    "exclusiones": {
+      "_descripcion": "No asignar area si titulo contiene estos keywords (evita falsos positivos)",
+      "_fecha": "2026-01-14",
+      "_v2_nota": "Agregadas reglas para evitar area_funcional=RRHH incorrecto",
+      "Recursos Humanos": {
+        "excluir_si_titulo_contiene": ["tecnic", "mecan", "electro", "ingenier", "operario", "tornero", "soldador", "matricero", "instrumentista", "encargado", "subencargado", "jefe de local", "jefe de producto", "jefe de sucursal", "local comercial", "vendedor", "retail", "tienda", "analista de credito", "analista credito", "producto"]
+      }
+    },
+
+    "prioridad_por_titulo": {
+      "_descripcion": "Forzar area_funcional si el titulo contiene estas keywords (prioridad sobre inferencia general)",
+      "_fecha": "2026-01-14",
+      "_casos_resueltos": ["ID 1118105850 Jefe Producto", "ID 1118101812 Subencargado Local", "ID 2172229 Analista Creditos"],
+      "reglas": [
+        {
+          "titulo_contiene_alguno": ["analista de credito", "analista credito", "analista de prestamo", "riesgos crediticios", "cobranzas", "cobranza"],
+          "forzar_area": "Finanzas/Contabilidad",
+          "_nota": "Analista de créditos es rol financiero, no ventas aunque esté en concesionaria"
+        },
+        {
+          "titulo_contiene_alguno": ["jefe de producto", "product manager", "product owner"],
+          "forzar_area": "Logistica/Operaciones",
+          "_nota": "Jefe de Producto es operaciones/supply chain, no RRHH"
+        },
+        {
+          "titulo_contiene_alguno": ["encargado de local", "subencargado", "encargado local", "jefe de local", "jefe de sucursal", "gerente de tienda"],
+          "forzar_area": "Ventas/Comercial",
+          "_nota": "Roles retail son Ventas, no RRHH"
+        }
+      ]
+    },
+
+    "default": null,
+    "nota_default": "No inferir area si no hay keywords claros"
+  },
+
+  "tipo_contrato": {
+    "reglas": [
+      {
+        "contiene_cualquiera": ["efectivo", "planta permanente", "relacion de dependencia", "tiempo indeterminado"],
+        "resultado": "efectivo"
+      },
+      {
+        "contiene_cualquiera": ["contrato", "plazo fijo", "temporal", "a termino"],
+        "resultado": "contrato"
+      },
+      {
+        "contiene_cualquiera": ["monotributo", "factura", "freelance", "autonomo"],
+        "resultado": "monotributo"
+      },
+      {
+        "contiene_cualquiera": ["pasantia", "beca"],
+        "resultado": "pasantia"
+      }
+    ],
+    "default": null
+  },
+
+  "tipo_oferta": {
+    "_descripcion": "Tipo de oferta para filtro Matching nivel 0",
+    "_valores_validos": ["demanda_real", "pasantia", "becario", "freelance"],
+
+    "reglas": [
+      {
+        "prioridad": 1,
+        "contiene_cualquiera": ["pasantia", "pasante", "pasantes"],
+        "resultado": "pasantia"
+      },
+      {
+        "prioridad": 2,
+        "contiene_cualquiera": ["beca", "becario", "becarios", "programa de jovenes"],
+        "resultado": "becario"
+      },
+      {
+        "prioridad": 3,
+        "contiene_cualquiera": ["freelance", "freelancer", "por proyecto", "autonomo", "independiente"],
+        "resultado": "freelance"
+      }
+    ],
+    "default": "demanda_real",
+    "nota_default": "Si no hay indicadores de pasantia/beca/freelance, es demanda real"
+  },
+
+  "ubicacion_pais_exterior": {
+    "_descripcion": "Detectar ofertas para otros países basado en localidad",
+    "_fecha": "2026-01-14",
+    "_casos_resueltos": ["1118091304 Paraguay", "1118097995 Paraguay"],
+
+    "reglas": [
+      {
+        "localidad_contiene_alguno": ["Paraguay", "Asunción", "Ciudad del Este", "Encarnación"],
+        "accion": {
+          "forzar_provincia": "Paraguay (exterior)",
+          "es_exterior": true
+        }
+      },
+      {
+        "localidad_contiene_alguno": ["Uruguay", "Montevideo", "Punta del Este"],
+        "accion": {
+          "forzar_provincia": "Uruguay (exterior)",
+          "es_exterior": true
+        }
+      },
+      {
+        "localidad_contiene_alguno": ["Chile", "Santiago de Chile"],
+        "accion": {
+          "forzar_provincia": "Chile (exterior)",
+          "es_exterior": true
+        }
+      }
+    ],
+
+    "nota": "Si localidad menciona país extranjero, corregir provincia y marcar como exterior"
+  },
+
+  "tiene_gente_cargo": {
+    "_descripcion": "Inferir si el puesto tiene personal a cargo",
+
+    "reglas": [
+      {
+        "contiene_cualquiera": [
+          "personal a cargo", "gente a cargo", "equipo a cargo",
+          "a cargo de equipo", "a cargo de personal", "a cargo del equipo",
+          "liderando equipo", "coordinar equipo", "supervisar equipo",
+          "supervision de personal", "reportes directos",
+          "liderar un equipo", "conducir equipo"
+        ],
+        "resultado": true
+      },
+      {
+        "contiene_cualquiera": [
+          "gerente", "jefe", "director", "coordinador", "supervisor",
+          "responsable de area", "encargado", "team leader", "team lead"
+        ],
+        "resultado": true
+      }
+    ],
+    "default": false
+  },
+
+  "tareas_explicitas": {
+    "_descripcion": "Extraccion de tareas cuando LLM no detecta bullets",
+    "_gap_actual": "46% ofertas sin tareas",
+    "_regla_excel": "🟢7 - No depender solo de bullet points",
+
+    "patrones_inicio_frase": [
+      "sera responsable de",
+      "seras responsable de",
+      "sus funciones incluyen",
+      "tus funciones incluyen",
+      "funciones principales",
+      "principales funciones",
+      "principales tareas",
+      "tareas principales",
+      "actividades principales",
+      "responsabilidades principales",
+      "debera",
+      "deberas",
+      "tendra a cargo",
+      "tendras a cargo",
+      "a cargo de",
+      "se encargara de",
+      "te encargaras de",
+      "entre sus tareas",
+      "entre tus tareas",
+      "el puesto implica",
+      "el rol implica",
+      "buscamos que",
+      "esperamos que"
+    ],
+
+    "patrones_regex": [
+      {
+        "patron": "(?:sera|seras|debera|deberas)\\s+(?:responsable\\s+de\\s+)?([^.;\\n]{10,100})",
+        "descripcion": "Sera responsable de X"
+      },
+      {
+        "patron": "(?:funciones|tareas|responsabilidades)\\s*(?:principales)?\\s*:?\\s*([^.;]{10,200})",
+        "descripcion": "Funciones: X"
+      },
+      {
+        "patron": "(?:a\\s+cargo\\s+de|encargarse\\s+de)\\s+([^.;\\n]{10,100})",
+        "descripcion": "A cargo de X"
+      }
+    ],
+
+    "patrones_implicitos": {
+      "_descripcion": "Patrones para extraer tareas de texto no estructurado",
+      "educacion_capacitacion": [
+        {
+          "patron": "(?:para\\s+(?:el\\s+)?)?dictado\\s+de\\s+([^.;,]{5,80})",
+          "tarea_formato": "Dictado de {1}",
+          "ejemplo": "para el dictado de cursos regulares -> Dictado de cursos regulares"
+        },
+        {
+          "patron": "capacitaci[oó]n(?:es)?\\s+(?:en|de|a)\\s+([^.;,]{5,60})",
+          "tarea_formato": "Capacitación en {1}",
+          "ejemplo": "capacitaciones en zona sur -> Capacitación en zona sur"
+        },
+        {
+          "patron": "ense[ñn]anza\\s+(?:de|en)\\s+([^.;,]{5,60})",
+          "tarea_formato": "Enseñanza de {1}",
+          "ejemplo": "enseñanza de técnicas de soldadura"
+        },
+        {
+          "patron": "formaci[oó]n\\s+(?:de|en|a)\\s+([^.;,]{5,60})",
+          "tarea_formato": "Formación de {1}",
+          "ejemplo": "formación de personal"
+        },
+        {
+          "patron": "instrucci[oó]n\\s+(?:de|en|a)\\s+([^.;,]{5,60})",
+          "tarea_formato": "Instrucción en {1}",
+          "ejemplo": "instrucción en técnicas de soldadura"
+        }
+      ],
+      "tecnicas_operativas": [
+        {
+          "patron": "manejo\\s+(?:de\\s+)?([A-Za-z0-9,\\s]{3,40})",
+          "tarea_formato": "Manejo de {1}",
+          "ejemplo": "manejo mma, mig, tig"
+        },
+        {
+          "patron": "operaci[oó]n\\s+(?:de\\s+)?([^.;,]{5,50})",
+          "tarea_formato": "Operación de {1}",
+          "ejemplo": "operación de maquinaria"
+        },
+        {
+          "patron": "uso\\s+(?:de\\s+)?([^.;,]{5,50})",
+          "tarea_formato": "Uso de {1}",
+          "ejemplo": "uso de herramientas"
+        }
+      ]
+    },
+
+    "separadores_lista": ["-", "•", "*", "\\d+\\.", "\\d+\\)"],
+    "max_tareas": 10
+  },
+
+  "correccion_sector": {
+    "_descripcion": "Corregir sectores mal clasificados por el LLM basado en keywords del titulo/descripcion",
+    "_fecha": "2026-01-05",
+
+    "reglas": [
+      {
+        "sector_incorrecto": ["Tecnologia", "Servicios", "Otro"],
+        "keywords_titulo": ["importacion", "exportacion", "despachante", "aduana", "operador sim", "comercio exterior", "comercio internacional"],
+        "keywords_descripcion": ["importacion", "importación", "exportacion", "exportación", "aduana", "aduanero", "aduaneras", "despachante", "comercio exterior", "comercio internacional", "oficializacion sim", "sistema malvina", "clasificacion arancelaria"],
+        "sector_correcto": "Comercio Exterior"
+      },
+      {
+        "sector_incorrecto": ["Tecnologia", "Servicios", "Otro"],
+        "keywords_titulo": ["modelista", "molderia", "confeccion", "textil", "costura", "patronaje", "sastreria", "modista"],
+        "keywords_descripcion": ["molderia", "moldería", "confeccion", "confección", "textil", "patronaje", "avios", "avíos", "telas", "generos", "géneros", "prendas", "colecciones", "muestrario"],
+        "sector_correcto": "Textil/Confeccion"
+      },
+      {
+        "sector_incorrecto": ["Tecnologia", "Servicios"],
+        "keywords_titulo": ["carpintero", "ebanista", "mueblero", "tapicero"],
+        "keywords_descripcion": ["madera", "muebles", "carpinteria", "carpintería", "ebanisteria", "tapiceria"],
+        "sector_correcto": "Manufactura"
+      },
+      {
+        "sector_incorrecto": ["Tecnologia", "Servicios"],
+        "keywords_titulo": ["mecanico", "tornero", "soldador", "fresador", "matricero", "calderero", "herreria"],
+        "keywords_descripcion": ["mecanizado cnc", "torno cnc", "fresadora", "soldadura mig", "soldadura tig", "metalurgica", "metalúrgica", "piezas metalicas", "acero inoxidable"],
+        "sector_correcto": "Metalurgica"
+      }
+    ]
+  },
+
+  "sector_empresa": {
+    "_descripcion": "Extraccion del rubro/sector de la empresa",
+    "_gap_actual": "30% ofertas sin sector",
+    "_regla_excel": "🟢9 - Buscar frases descriptivas de empresa",
+
+    "patrones_inicio": [
+      "somos una empresa de",
+      "somos una empresa dedicada a",
+      "empresa dedicada a",
+      "empresa lider en",
+      "lideres en",
+      "especialistas en",
+      "especializados en",
+      "dedicados a",
+      "nos dedicamos a",
+      "trabajamos en",
+      "del rubro",
+      "del sector",
+      "industria de"
+    ],
+
+    "diccionario_sectores": {
+      "Tecnologia": ["software", "tecnologia", "sistemas", "informatica", "digital", "IT", "tech"],
+      "Comercio Exterior": ["comercio exterior", "comercio internacional", "importacion", "exportacion", "aduana", "aduanero", "despachante", "freight forwarder", "forwarding", "agente de carga"],
+      "Retail/Comercio": ["retail", "comercio", "tienda", "local comercial", "supermercado", "mayorista", "minorista"],
+      "Manufactura": ["fabrica", "manufactura", "industria", "produccion", "planta industrial"],
+      "Alimentos": ["alimentos", "alimenticia", "consumo masivo", "bebidas", "lacteos", "frigorificos"],
+      "Salud": ["salud", "clinica", "hospital", "farmaceutica", "laboratorio", "medicina"],
+      "Finanzas": ["banco", "financiera", "seguros", "fintech", "creditos"],
+      "Logistica": ["logistica", "transporte", "distribucion", "courier", "almacenamiento"],
+      "Construccion": ["construccion", "inmobiliaria", "real estate", "arquitectura"],
+      "Automotriz": ["automotriz", "concesionario", "autopartes", "vehiculos"],
+      "Servicios": ["consultora", "servicios", "outsourcing", "tercerizacion"],
+      "Educacion": ["educacion", "universidad", "instituto", "colegio", "capacitacion"],
+      "Gastronomia": ["gastronomia", "restaurante", "catering", "hoteleria", "turismo"],
+      "Agro": ["agro", "agricola", "campo", "agroindustria", "semillas", "fertilizantes"]
+    }
+  },
+
+  "limpieza_tareas": {
+    "_descripcion": "Patrones para limpiar tareas_explicitas despues de extraccion",
+    "_fecha": "2025-12-30",
+
+    "prefijos_eliminar": [
+      "a realizar:",
+      "a desarrollar:",
+      "del puesto",
+      "seran:",
+      "serán:",
+      "incluiran:",
+      "incluirán:",
+      "principales:",
+      "generales en",
+      "similares en",
+      "correspondientes a"
+    ],
+
+    "patrones_regex_eliminar": [
+      {"patron": "^:\\s*", "descripcion": "Dos puntos al inicio"},
+      {"patron": "^\\d+\\.\\s*", "descripcion": "Numero con punto al inicio (1. 2.)"},
+      {"patron": "^\\d+\\)\\s*", "descripcion": "Numero con parentesis (1) 2))"},
+      {"patron": "^[-•●\\*\\?]\\s*", "descripcion": "Bullets al inicio"},
+      {"patron": "\\s*[-•●\\*]\\s*$", "descripcion": "Bullets al final"},
+      {"patron": "^[A-Z\\s\\-]+:\\s*", "descripcion": "Etiquetas mayusculas (CONTABLES:)"}
+    ],
+
+    "reemplazos": [
+      {"buscar": "  ", "reemplazo": " ", "descripcion": "Espacios dobles"},
+      {"buscar": "; ;", "reemplazo": ";", "descripcion": "Punto y coma doble"},
+      {"buscar": ";;", "reemplazo": ";", "descripcion": "Punto y coma pegado"}
+    ],
+
+    "min_longitud_tarea": 5,
+    "max_tareas": 10
+  },
+
+  "limpieza_skills": {
+    "_descripcion": "Patrones para limpiar skills_tecnicas_list y soft_skills_list",
+    "_fecha": "2025-12-30",
+
+    "prefijos_eliminar": [
+      "[regex]",
+      "[llm]",
+      "[dict]"
+    ],
+
+    "normalizacion_duplicados": {
+      "_descripcion": "Mapeo para unificar variantes de la misma skill",
+      "lider": ["líder", "lider"],
+      "liderazgo": ["Liderazgo"],
+      "proactivo": ["proactiva", "Proactividad", "proactividad"],
+      "responsabilidad": ["Responsabilidad", "Responsable", "responsable"],
+      "comunicacion": ["comunicación", "Comunicación"],
+      "organizacion": ["organización", "Organización", "Organizado", "organizada"],
+      "trabajo en equipo": ["Trabajo en equipo", "Trabajo En Equipo"],
+      "compromiso": ["Compromiso"],
+      "planificacion": ["planificación", "Planificación"],
+      "autonomia": ["autonomía", "Autonomía"],
+      "analitico": ["analítico", "capacidad analítica", "Capacidad Analítica"],
+      "atencion al detalle": ["atención al detalle", "Atención al detalle", "detallista"],
+      "flexibilidad": ["Flexibilidad", "flexible"],
+      "resolucion de problemas": ["resolución de problemas", "Resolución de problemas"],
+      "negociacion": ["negociación", "Capacidad De Negociacion", "Capacidad De Negociación"],
+      "colaboracion": ["colaboración", "Colaboración"],
+      "innovacion": ["innovación", "Innovación"],
+      "creatividad": ["Creatividad", "creativo"],
+      "adaptabilidad": ["Adaptabilidad"],
+      "iniciativa": ["Iniciativa"],
+      "precision": ["precisión", "Precisión"]
+    },
+
+    "min_longitud_skill": 2,
+    "max_skills": 15,
+    "separador_salida": ", "
+  }
+}

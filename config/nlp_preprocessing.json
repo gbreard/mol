@@ -19,6 +19,7 @@
     "_descripcion": "Campos que ya vienen del scraping y no requieren LLM",
     "fecha_publicacion": "fecha_publicacion",
     "empresa": "empresa",
-    "titulo_original": "titulo"
+    "titulo_original": "titulo",
+    "modalidad": "modalidad_trabajo"
   }
 }

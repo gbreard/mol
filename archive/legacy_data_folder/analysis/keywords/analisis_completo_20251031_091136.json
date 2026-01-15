@@ -1,0 +1,1733 @@
+{
+  "timestamp": "2025-10-31T09:11:36.637641",
+  "ofertas_analizadas": 3484,
+  "keywords_diccionario": 1434,
+  "terminos_unicos": 2360,
+  "terminos_faltantes": 607,
+  "top_terminos": [
+    {
+      "termino": "caba",
+      "frecuencia": 139,
+      "porcentaje": 3.989667049368542
+    },
+    {
+      "termino": "time",
+      "frecuencia": 65,
+      "porcentaje": 1.8656716417910446
+    },
+    {
+      "termino": "norte",
+      "frecuencia": 58,
+      "porcentaje": 1.6647531572904706
+    },
+    {
+      "termino": "importante",
+      "frecuencia": 57,
+      "porcentaje": 1.6360505166475316
+    },
+    {
+      "termino": "gba",
+      "frecuencia": 56,
+      "porcentaje": 1.6073478760045925
+    },
+    {
+      "termino": "personal",
+      "frecuencia": 55,
+      "porcentaje": 1.5786452353616531
+    },
+    {
+      "termino": "part",
+      "frecuencia": 53,
+      "porcentaje": 1.5212399540757748
+    },
+    {
+      "termino": "atencion",
+      "frecuencia": 53,
+      "porcentaje": 1.5212399540757748
+    },
+    {
+      "termino": "san",
+      "frecuencia": 52,
+      "porcentaje": 1.4925373134328357
+    },
+    {
+      "termino": "cocina",
+      "frecuencia": 51,
+      "porcentaje": 1.4638346727898968
+    },
+    {
+      "termino": "rubro",
+      "frecuencia": 47,
+      "porcentaje": 1.34902411021814
+    },
+    {
+      "termino": "vendedores",
+      "frecuencia": 46,
+      "porcentaje": 1.320321469575201
+    },
+    {
+      "termino": "as",
+      "frecuencia": 45,
+      "porcentaje": 1.2916188289322619
+    },
+    {
+      "termino": "operaciones",
+      "frecuencia": 43,
+      "porcentaje": 1.2342135476463834
+    },
+    {
+      "termino": "obra",
+      "frecuencia": 39,
+      "porcentaje": 1.1194029850746268
+    },
+    {
+      "termino": "publico",
+      "frecuencia": 38,
+      "porcentaje": 1.0907003444316876
+    },
+    {
+      "termino": "center",
+      "frecuencia": 37,
+      "porcentaje": 1.0619977037887485
+    },
+    {
+      "termino": "sur",
+      "frecuencia": 36,
+      "porcentaje": 1.0332950631458095
+    },
+    {
+      "termino": "ayudante",
+      "frecuencia": 35,
+      "porcentaje": 1.0045924225028704
+    },
+    {
+      "termino": "control",
+      "frecuencia": 34,
+      "porcentaje": 0.975889781859931
+    },
+    {
+      "termino": "cuentas",
+      "frecuencia": 31,
+      "porcentaje": 0.8897818599311137
+    },
+    {
+      "termino": "mostrador",
+      "frecuencia": 31,
+      "porcentaje": 0.8897818599311137
+    },
+    {
+      "termino": "rosario",
+      "frecuencia": 30,
+      "porcentaje": 0.8610792192881744
+    },
+    {
+      "termino": "digital",
+      "frecuencia": 30,
+      "porcentaje": 0.8610792192881744
+    },
+    {
+      "termino": "plata",
+      "frecuencia": 30,
+      "porcentaje": 0.8610792192881744
+    },
+    {
+      "termino": "presencial",
+      "frecuencia": 30,
+      "porcentaje": 0.8610792192881744
+    },
+    {
+      "termino": "oeste",
+      "frecuencia": 30,
+      "porcentaje": 0.8610792192881744
+    },
+    {
+      "termino": "sueldos",
+      "frecuencia": 30,
+      "porcentaje": 0.8610792192881744
+    },
+    {
+      "termino": "avanzado",
+      "frecuencia": 30,
+      "porcentaje": 0.8610792192881744
+    },
+    {
+      "termino": "gestion",
+      "frecuencia": 29,
+      "porcentaje": 0.8323765786452353
+    },
+    {
+      "termino": "electronico",
+      "frecuencia": 29,
+      "porcentaje": 0.8323765786452353
+    },
+    {
+      "termino": "comercio",
+      "frecuencia": 28,
+      "porcentaje": 0.8036739380022963
+    },
+    {
+      "termino": "it",
+      "frecuencia": 27,
+      "porcentaje": 0.7749712973593571
+    },
+    {
+      "termino": "general",
+      "frecuencia": 27,
+      "porcentaje": 0.7749712973593571
+    },
+    {
+      "termino": "exp",
+      "frecuencia": 27,
+      "porcentaje": 0.7749712973593571
+    },
+    {
+      "termino": "semi",
+      "frecuencia": 26,
+      "porcentaje": 0.7462686567164178
+    },
+    {
+      "termino": "pilar",
+      "frecuencia": 25,
+      "porcentaje": 0.7175660160734788
+    },
+    {
+      "termino": "customer",
+      "frecuencia": 25,
+      "porcentaje": 0.7175660160734788
+    },
+    {
+      "termino": "administrativa",
+      "frecuencia": 25,
+      "porcentaje": 0.7175660160734788
+    },
+    {
+      "termino": "exterior",
+      "frecuencia": 25,
+      "porcentaje": 0.7175660160734788
+    },
+    {
+      "termino": "higiene",
+      "frecuencia": 25,
+      "porcentaje": 0.7175660160734788
+    },
+    {
+      "termino": "servicios",
+      "frecuencia": 24,
+      "porcentaje": 0.6888633754305395
+    },
+    {
+      "termino": "commerce",
+      "frecuencia": 24,
+      "porcentaje": 0.6888633754305395
+    },
+    {
+      "termino": "office",
+      "frecuencia": 24,
+      "porcentaje": 0.6888633754305395
+    },
+    {
+      "termino": "on",
+      "frecuencia": 23,
+      "porcentaje": 0.6601607347876005
+    },
+    {
+      "termino": "estudiante",
+      "frecuencia": 23,
+      "porcentaje": 0.6601607347876005
+    },
+    {
+      "termino": "cordoba",
+      "frecuencia": 23,
+      "porcentaje": 0.6601607347876005
+    },
+    {
+      "termino": "sociales",
+      "frecuencia": 23,
+      "porcentaje": 0.6601607347876005
+    },
+    {
+      "termino": "turno",
+      "frecuencia": 23,
+      "porcentaje": 0.6601607347876005
+    },
+    {
+      "termino": "cliente",
+      "frecuencia": 23,
+      "porcentaje": 0.6601607347876005
+    },
+    {
+      "termino": "viajes",
+      "frecuencia": 23,
+      "porcentaje": 0.6601607347876005
+    },
+    {
+      "termino": "service",
+      "frecuencia": 23,
+      "porcentaje": 0.6601607347876005
+    },
+    {
+      "termino": "site",
+      "frecuencia": 22,
+      "porcentaje": 0.6314580941446613
+    },
+    {
+      "termino": "desarrollo",
+      "frecuencia": 22,
+      "porcentaje": 0.6314580941446613
+    },
+    {
+      "termino": "vendedora",
+      "frecuencia": 22,
+      "porcentaje": 0.6314580941446613
+    },
+    {
+      "termino": "liquidacion",
+      "frecuencia": 21,
+      "porcentaje": 0.6027554535017221
+    },
+    {
+      "termino": "back",
+      "frecuencia": 20,
+      "porcentaje": 0.5740528128587831
+    },
+    {
+      "termino": "medio",
+      "frecuencia": 20,
+      "porcentaje": 0.5740528128587831
+    },
+    {
+      "termino": "project",
+      "frecuencia": 19,
+      "porcentaje": 0.5453501722158438
+    },
+    {
+      "termino": "obras",
+      "frecuencia": 19,
+      "porcentaje": 0.5453501722158438
+    },
+    {
+      "termino": "martin",
+      "frecuencia": 19,
+      "porcentaje": 0.5453501722158438
+    },
+    {
+      "termino": "telefonico",
+      "frecuencia": 19,
+      "porcentaje": 0.5453501722158438
+    },
+    {
+      "termino": "contenido",
+      "frecuencia": 19,
+      "porcentaje": 0.5453501722158438
+    },
+    {
+      "termino": "estudio",
+      "frecuencia": 19,
+      "porcentaje": 0.5453501722158438
+    },
+    {
+      "termino": "centro",
+      "frecuencia": 19,
+      "porcentaje": 0.5453501722158438
+    },
+    {
+      "termino": "sector",
+      "frecuencia": 18,
+      "porcentaje": 0.5166475315729048
+    },
+    {
+      "termino": "copia",
+      "frecuencia": 18,
+      "porcentaje": 0.5166475315729048
+    },
+    {
+      "termino": "proyectos",
+      "frecuencia": 18,
+      "porcentaje": 0.5166475315729048
+    },
+    {
+      "termino": "comerciales",
+      "frecuencia": 18,
+      "porcentaje": 0.5166475315729048
+    },
+    {
+      "termino": "community",
+      "frecuencia": 18,
+      "porcentaje": 0.5166475315729048
+    },
+    {
+      "termino": "operarios",
+      "frecuencia": 18,
+      "porcentaje": 0.5166475315729048
+    },
+    {
+      "termino": "full",
+      "frecuencia": 17,
+      "porcentaje": 0.4879448909299655
+    },
+    {
+      "termino": "engineer",
+      "frecuencia": 17,
+      "porcentaje": 0.4879448909299655
+    },
+    {
+      "termino": "civil",
+      "frecuencia": 17,
+      "porcentaje": 0.4879448909299655
+    },
+    {
+      "termino": "empleado",
+      "frecuencia": 17,
+      "porcentaje": 0.4879448909299655
+    },
+    {
+      "termino": "servicio",
+      "frecuencia": 16,
+      "porcentaje": 0.4592422502870264
+    },
+    {
+      "termino": "mercado",
+      "frecuencia": 16,
+      "porcentaje": 0.4592422502870264
+    },
+    {
+      "termino": "social",
+      "frecuencia": 16,
+      "porcentaje": 0.4592422502870264
+    },
+    {
+      "termino": "fijo",
+      "frecuencia": 15,
+      "porcentaje": 0.4305396096440872
+    },
+    {
+      "termino": "alimentos",
+      "frecuencia": 15,
+      "porcentaje": 0.4305396096440872
+    },
+    {
+      "termino": "b2b",
+      "frecuencia": 15,
+      "porcentaje": 0.4305396096440872
+    },
+    {
+      "termino": "procesos",
+      "frecuencia": 15,
+      "porcentaje": 0.4305396096440872
+    },
+    {
+      "termino": "taller",
+      "frecuencia": 15,
+      "porcentaje": 0.4305396096440872
+    },
+    {
+      "termino": "talentos",
+      "frecuencia": 14,
+      "porcentaje": 0.4018369690011481
+    },
+    {
+      "termino": "gestor",
+      "frecuencia": 14,
+      "porcentaje": 0.4018369690011481
+    },
+    {
+      "termino": "prestaciones",
+      "frecuencia": 14,
+      "porcentaje": 0.4018369690011481
+    },
+    {
+      "termino": "autos",
+      "frecuencia": 14,
+      "porcentaje": 0.4018369690011481
+    },
+    {
+      "termino": "salud",
+      "frecuencia": 14,
+      "porcentaje": 0.4018369690011481
+    },
+    {
+      "termino": "jornada",
+      "frecuencia": 14,
+      "porcentaje": 0.4018369690011481
+    },
+    {
+      "termino": "avellaneda",
+      "frecuencia": 14,
+      "porcentaje": 0.4018369690011481
+    },
+    {
+      "termino": "encargada",
+      "frecuencia": 14,
+      "porcentaje": 0.4018369690011481
+    },
+    {
+      "termino": "recursos",
+      "frecuencia": 14,
+      "porcentaje": 0.4018369690011481
+    },
+    {
+      "termino": "humanos",
+      "frecuencia": 14,
+      "porcentaje": 0.4018369690011481
+    },
+    {
+      "termino": "sueldo",
+      "frecuencia": 14,
+      "porcentaje": 0.4018369690011481
+    },
+    {
+      "termino": "comisiones",
+      "frecuencia": 14,
+      "porcentaje": 0.4018369690011481
+    },
+    {
+      "termino": "mix",
+      "frecuencia": 13,
+      "porcentaje": 0.3731343283582089
+    },
+    {
+      "termino": "nunez",
+      "frecuencia": 13,
+      "porcentaje": 0.3731343283582089
+    },
+    {
+      "termino": "venta",
+      "frecuencia": 13,
+      "porcentaje": 0.3731343283582089
+    },
+    {
+      "termino": "strategist",
+      "frecuencia": 13,
+      "porcentaje": 0.3731343283582089
+    },
+    {
+      "termino": "capital",
+      "frecuencia": 13,
+      "porcentaje": 0.3731343283582089
+    },
+    {
+      "termino": "interno",
+      "frecuencia": 13,
+      "porcentaje": 0.3731343283582089
+    },
+    {
+      "termino": "medicos",
+      "frecuencia": 13,
+      "porcentaje": 0.3731343283582089
+    },
+    {
+      "termino": "corporativo",
+      "frecuencia": 13,
+      "porcentaje": 0.3731343283582089
+    },
+    {
+      "termino": "constructora",
+      "frecuencia": 13,
+      "porcentaje": 0.3731343283582089
+    },
+    {
+      "termino": "analyst",
+      "frecuencia": 12,
+      "porcentaje": 0.3444316877152698
+    },
+    {
+      "termino": "specialist",
+      "frecuencia": 12,
+      "porcentaje": 0.3444316877152698
+    },
+    {
+      "termino": "tecnica",
+      "frecuencia": 12,
+      "porcentaje": 0.3444316877152698
+    },
+    {
+      "termino": "equipo",
+      "frecuencia": 12,
+      "porcentaje": 0.3444316877152698
+    },
+    {
+      "termino": "designer",
+      "frecuencia": 12,
+      "porcentaje": 0.3444316877152698
+    },
+    {
+      "termino": "contact",
+      "frecuencia": 12,
+      "porcentaje": 0.3444316877152698
+    },
+    {
+      "termino": "forwarder",
+      "frecuencia": 12,
+      "porcentaje": 0.3444316877152698
+    },
+    {
+      "termino": "asesores",
+      "frecuencia": 12,
+      "porcentaje": 0.3444316877152698
+    },
+    {
+      "termino": "isidro",
+      "frecuencia": 12,
+      "porcentaje": 0.3444316877152698
+    },
+    {
+      "termino": "agencia",
+      "frecuencia": 12,
+      "porcentaje": 0.3444316877152698
+    },
+    {
+      "termino": "zarate",
+      "frecuencia": 12,
+      "porcentaje": 0.3444316877152698
+    },
+    {
+      "termino": "electrico",
+      "frecuencia": 12,
+      "porcentaje": 0.3444316877152698
+    },
+    {
+      "termino": "base",
+      "frecuencia": 11,
+      "porcentaje": 0.3157290470723306
+    },
+    {
+      "termino": "inspector",
+      "frecuencia": 11,
+      "porcentaje": 0.3157290470723306
+    },
+    {
+      "termino": "nivel",
+      "frecuencia": 11,
+      "porcentaje": 0.3157290470723306
+    },
+    {
+      "termino": "industria",
+      "frecuencia": 11,
+      "porcentaje": 0.3157290470723306
+    },
+    {
+      "termino": "retiro",
+      "frecuencia": 11,
+      "porcentaje": 0.3157290470723306
+    },
+    {
+      "termino": "editor",
+      "frecuencia": 11,
+      "porcentaje": 0.3157290470723306
+    },
+    {
+      "termino": "externo",
+      "frecuencia": 11,
+      "porcentaje": 0.3157290470723306
+    },
+    {
+      "termino": "ushuaia",
+      "frecuencia": 11,
+      "porcentaje": 0.3157290470723306
+    },
+    {
+      "termino": "pesada",
+      "frecuencia": 11,
+      "porcentaje": 0.3157290470723306
+    },
+    {
+      "termino": "gas",
+      "frecuencia": 10,
+      "porcentaje": 0.28702640642939153
+    },
+    {
+      "termino": "perfil",
+      "frecuencia": 10,
+      "porcentaje": 0.28702640642939153
+    },
+    {
+      "termino": "proyectista",
+      "frecuencia": 10,
+      "porcentaje": 0.28702640642939153
+    },
+    {
+      "termino": "medicas",
+      "frecuencia": 10,
+      "porcentaje": 0.28702640642939153
+    },
+    {
+      "termino": "real",
+      "frecuencia": 10,
+      "porcentaje": 0.28702640642939153
+    },
+    {
+      "termino": "estate",
+      "frecuencia": 10,
+      "porcentaje": 0.28702640642939153
+    },
+    {
+      "termino": "jefatura",
+      "frecuencia": 10,
+      "porcentaje": 0.28702640642939153
+    },
+    {
+      "termino": "pacheco",
+      "frecuencia": 10,
+      "porcentaje": 0.28702640642939153
+    },
+    {
+      "termino": "tarde",
+      "frecuencia": 10,
+      "porcentaje": 0.28702640642939153
+    },
+    {
+      "termino": "palermo",
+      "frecuencia": 10,
+      "porcentaje": 0.28702640642939153
+    },
+    {
+      "termino": "meses",
+      "frecuencia": 10,
+      "porcentaje": 0.28702640642939153
+    },
+    {
+      "termino": "makro",
+      "frecuencia": 10,
+      "porcentaje": 0.28702640642939153
+    },
+    {
+      "termino": "mayor",
+      "frecuencia": 10,
+      "porcentaje": 0.28702640642939153
+    },
+    {
+      "termino": "asuntos",
+      "frecuencia": 10,
+      "porcentaje": 0.28702640642939153
+    },
+    {
+      "termino": "bacheros",
+      "frecuencia": 10,
+      "porcentaje": 0.28702640642939153
+    },
+    {
+      "termino": "sap",
+      "frecuencia": 9,
+      "porcentaje": 0.2583237657864524
+    },
+    {
+      "termino": "ingenieria",
+      "frecuencia": 9,
+      "porcentaje": 0.2583237657864524
+    },
+    {
+      "termino": "mesa",
+      "frecuencia": 9,
+      "porcentaje": 0.2583237657864524
+    },
+    {
+      "termino": "sales",
+      "frecuencia": 9,
+      "porcentaje": 0.2583237657864524
+    },
+    {
+      "termino": "calle",
+      "frecuencia": 9,
+      "porcentaje": 0.2583237657864524
+    },
+    {
+      "termino": "construccion",
+      "frecuencia": 9,
+      "porcentaje": 0.2583237657864524
+    },
+    {
+      "termino": "modalidad",
+      "frecuencia": 9,
+      "porcentaje": 0.2583237657864524
+    },
+    {
+      "termino": "rio",
+      "frecuencia": 9,
+      "porcentaje": 0.2583237657864524
+    },
+    {
+      "termino": "techo",
+      "frecuencia": 9,
+      "porcentaje": 0.2583237657864524
+    },
+    {
+      "termino": "supply",
+      "frecuencia": 9,
+      "porcentaje": 0.2583237657864524
+    }
+  ],
+  "top_bigramas": [
+    {
+      "bigrama": "ejecutivo comercial",
+      "frecuencia": 31
+    },
+    {
+      "bigrama": "on site",
+      "frecuencia": 22
+    },
+    {
+      "bigrama": "semi senior",
+      "frecuencia": 21
+    },
+    {
+      "bigrama": "san martin",
+      "frecuencia": 19
+    },
+    {
+      "bigrama": "ejecutivo ventas",
+      "frecuencia": 19
+    },
+    {
+      "bigrama": "gba sur",
+      "frecuencia": 19
+    },
+    {
+      "bigrama": "analista contable",
+      "frecuencia": 19
+    },
+    {
+      "bigrama": "ingles avanzado",
+      "frecuencia": 19
+    },
+    {
+      "bigrama": "seguridad higiene",
+      "frecuencia": 18
+    },
+    {
+      "bigrama": "analista funcional",
+      "frecuencia": 17
+    },
+    {
+      "bigrama": "analista sr",
+      "frecuencia": 17
+    },
+    {
+      "bigrama": "broker seguros",
+      "frecuencia": 16
+    },
+    {
+      "bigrama": "tecnico comercial",
+      "frecuencia": 15
+    },
+    {
+      "bigrama": "sueldo fijo",
+      "frecuencia": 14
+    },
+    {
+      "bigrama": "fijo comisiones",
+      "frecuencia": 14
+    },
+    {
+      "bigrama": "analista comercio",
+      "frecuencia": 13
+    },
+    {
+      "bigrama": "asesor tecnico",
+      "frecuencia": 13
+    },
+    {
+      "bigrama": "media strategist",
+      "frecuencia": 13
+    },
+    {
+      "bigrama": "contador publico",
+      "frecuencia": 13
+    },
+    {
+      "bigrama": "mix on",
+      "frecuencia": 12
+    },
+    {
+      "bigrama": "site remoto",
+      "frecuencia": 12
+    },
+    {
+      "bigrama": "full time",
+      "frecuencia": 12
+    },
+    {
+      "bigrama": "director tecnico",
+      "frecuencia": 11
+    },
+    {
+      "bigrama": "operarios as",
+      "frecuencia": 11
+    },
+    {
+      "bigrama": "analista impuestos",
+      "frecuencia": 11
+    },
+    {
+      "bigrama": "centro distribucion",
+      "frecuencia": 11
+    },
+    {
+      "bigrama": "base talentos",
+      "frecuencia": 10
+    },
+    {
+      "bigrama": "vendedor tecnico",
+      "frecuencia": 10
+    },
+    {
+      "bigrama": "turno tarde",
+      "frecuencia": 10
+    },
+    {
+      "bigrama": "analista siniestros",
+      "frecuencia": 10
+    },
+    {
+      "bigrama": "liquidador sueldos",
+      "frecuencia": 10
+    },
+    {
+      "bigrama": "concesionario oficial",
+      "frecuencia": 10
+    },
+    {
+      "bigrama": "asistente administrativo",
+      "frecuencia": 9
+    },
+    {
+      "bigrama": "prestaciones medicas",
+      "frecuencia": 9
+    },
+    {
+      "bigrama": "administrativo contable",
+      "frecuencia": 9
+    },
+    {
+      "bigrama": "gba norte",
+      "frecuencia": 9
+    },
+    {
+      "bigrama": "comercial seguros",
+      "frecuencia": 9
+    },
+    {
+      "bigrama": "comisiones techo",
+      "frecuencia": 9
+    },
+    {
+      "bigrama": "techo beneficios",
+      "frecuencia": 9
+    },
+    {
+      "bigrama": "jefe planta",
+      "frecuencia": 9
+    },
+    {
+      "bigrama": "estudio juridico",
+      "frecuencia": 9
+    },
+    {
+      "bigrama": "maritimo ingles",
+      "frecuencia": 9
+    },
+    {
+      "bigrama": "temporal seis",
+      "frecuencia": 9
+    },
+    {
+      "bigrama": "seis meses",
+      "frecuencia": 9
+    },
+    {
+      "bigrama": "remoto nunez",
+      "frecuencia": 8
+    },
+    {
+      "bigrama": "remoto rosario",
+      "frecuencia": 8
+    },
+    {
+      "bigrama": "creador contenido",
+      "frecuencia": 8
+    },
+    {
+      "bigrama": "asesor ventas",
+      "frecuencia": 8
+    },
+    {
+      "bigrama": "analista back",
+      "frecuencia": 8
+    },
+    {
+      "bigrama": "mar plata",
+      "frecuencia": 8
+    }
+  ],
+  "por_categoria": {
+    "ubicacion": [
+      {
+        "termino": "caba",
+        "frecuencia": 139,
+        "porcentaje": 3.989667049368542
+      },
+      {
+        "termino": "gba",
+        "frecuencia": 56,
+        "porcentaje": 1.6073478760045925
+      },
+      {
+        "termino": "rosario",
+        "frecuencia": 30,
+        "porcentaje": 0.8610792192881744
+      },
+      {
+        "termino": "cordoba",
+        "frecuencia": 23,
+        "porcentaje": 0.6601607347876005
+      },
+      {
+        "termino": "capital",
+        "frecuencia": 13,
+        "porcentaje": 0.3731343283582089
+      }
+    ],
+    "modalidad": [
+      {
+        "termino": "time",
+        "frecuencia": 65,
+        "porcentaje": 1.8656716417910446
+      },
+      {
+        "termino": "part",
+        "frecuencia": 53,
+        "porcentaje": 1.5212399540757748
+      },
+      {
+        "termino": "presencial",
+        "frecuencia": 30,
+        "porcentaje": 0.8610792192881744
+      }
+    ],
+    "otro": [
+      {
+        "termino": "norte",
+        "frecuencia": 58,
+        "porcentaje": 1.6647531572904706
+      },
+      {
+        "termino": "importante",
+        "frecuencia": 57,
+        "porcentaje": 1.6360505166475316
+      },
+      {
+        "termino": "personal",
+        "frecuencia": 55,
+        "porcentaje": 1.5786452353616531
+      },
+      {
+        "termino": "atencion",
+        "frecuencia": 53,
+        "porcentaje": 1.5212399540757748
+      },
+      {
+        "termino": "san",
+        "frecuencia": 52,
+        "porcentaje": 1.4925373134328357
+      },
+      {
+        "termino": "cocina",
+        "frecuencia": 51,
+        "porcentaje": 1.4638346727898968
+      },
+      {
+        "termino": "rubro",
+        "frecuencia": 47,
+        "porcentaje": 1.34902411021814
+      },
+      {
+        "termino": "vendedores",
+        "frecuencia": 46,
+        "porcentaje": 1.320321469575201
+      },
+      {
+        "termino": "as",
+        "frecuencia": 45,
+        "porcentaje": 1.2916188289322619
+      },
+      {
+        "termino": "operaciones",
+        "frecuencia": 43,
+        "porcentaje": 1.2342135476463834
+      },
+      {
+        "termino": "obra",
+        "frecuencia": 39,
+        "porcentaje": 1.1194029850746268
+      },
+      {
+        "termino": "publico",
+        "frecuencia": 38,
+        "porcentaje": 1.0907003444316876
+      },
+      {
+        "termino": "center",
+        "frecuencia": 37,
+        "porcentaje": 1.0619977037887485
+      },
+      {
+        "termino": "sur",
+        "frecuencia": 36,
+        "porcentaje": 1.0332950631458095
+      },
+      {
+        "termino": "ayudante",
+        "frecuencia": 35,
+        "porcentaje": 1.0045924225028704
+      },
+      {
+        "termino": "control",
+        "frecuencia": 34,
+        "porcentaje": 0.975889781859931
+      },
+      {
+        "termino": "cuentas",
+        "frecuencia": 31,
+        "porcentaje": 0.8897818599311137
+      },
+      {
+        "termino": "mostrador",
+        "frecuencia": 31,
+        "porcentaje": 0.8897818599311137
+      },
+      {
+        "termino": "digital",
+        "frecuencia": 30,
+        "porcentaje": 0.8610792192881744
+      },
+      {
+        "termino": "plata",
+        "frecuencia": 30,
+        "porcentaje": 0.8610792192881744
+      },
+      {
+        "termino": "oeste",
+        "frecuencia": 30,
+        "porcentaje": 0.8610792192881744
+      },
+      {
+        "termino": "sueldos",
+        "frecuencia": 30,
+        "porcentaje": 0.8610792192881744
+      },
+      {
+        "termino": "gestion",
+        "frecuencia": 29,
+        "porcentaje": 0.8323765786452353
+      },
+      {
+        "termino": "electronico",
+        "frecuencia": 29,
+        "porcentaje": 0.8323765786452353
+      },
+      {
+        "termino": "comercio",
+        "frecuencia": 28,
+        "porcentaje": 0.8036739380022963
+      },
+      {
+        "termino": "it",
+        "frecuencia": 27,
+        "porcentaje": 0.7749712973593571
+      },
+      {
+        "termino": "general",
+        "frecuencia": 27,
+        "porcentaje": 0.7749712973593571
+      },
+      {
+        "termino": "exp",
+        "frecuencia": 27,
+        "porcentaje": 0.7749712973593571
+      },
+      {
+        "termino": "pilar",
+        "frecuencia": 25,
+        "porcentaje": 0.7175660160734788
+      },
+      {
+        "termino": "customer",
+        "frecuencia": 25,
+        "porcentaje": 0.7175660160734788
+      },
+      {
+        "termino": "administrativa",
+        "frecuencia": 25,
+        "porcentaje": 0.7175660160734788
+      },
+      {
+        "termino": "exterior",
+        "frecuencia": 25,
+        "porcentaje": 0.7175660160734788
+      },
+      {
+        "termino": "higiene",
+        "frecuencia": 25,
+        "porcentaje": 0.7175660160734788
+      },
+      {
+        "termino": "servicios",
+        "frecuencia": 24,
+        "porcentaje": 0.6888633754305395
+      },
+      {
+        "termino": "commerce",
+        "frecuencia": 24,
+        "porcentaje": 0.6888633754305395
+      },
+      {
+        "termino": "office",
+        "frecuencia": 24,
+        "porcentaje": 0.6888633754305395
+      },
+      {
+        "termino": "on",
+        "frecuencia": 23,
+        "porcentaje": 0.6601607347876005
+      },
+      {
+        "termino": "estudiante",
+        "frecuencia": 23,
+        "porcentaje": 0.6601607347876005
+      },
+      {
+        "termino": "sociales",
+        "frecuencia": 23,
+        "porcentaje": 0.6601607347876005
+      },
+      {
+        "termino": "turno",
+        "frecuencia": 23,
+        "porcentaje": 0.6601607347876005
+      },
+      {
+        "termino": "cliente",
+        "frecuencia": 23,
+        "porcentaje": 0.6601607347876005
+      },
+      {
+        "termino": "viajes",
+        "frecuencia": 23,
+        "porcentaje": 0.6601607347876005
+      },
+      {
+        "termino": "service",
+        "frecuencia": 23,
+        "porcentaje": 0.6601607347876005
+      },
+      {
+        "termino": "site",
+        "frecuencia": 22,
+        "porcentaje": 0.6314580941446613
+      },
+      {
+        "termino": "desarrollo",
+        "frecuencia": 22,
+        "porcentaje": 0.6314580941446613
+      },
+      {
+        "termino": "vendedora",
+        "frecuencia": 22,
+        "porcentaje": 0.6314580941446613
+      },
+      {
+        "termino": "liquidacion",
+        "frecuencia": 21,
+        "porcentaje": 0.6027554535017221
+      },
+      {
+        "termino": "back",
+        "frecuencia": 20,
+        "porcentaje": 0.5740528128587831
+      },
+      {
+        "termino": "medio",
+        "frecuencia": 20,
+        "porcentaje": 0.5740528128587831
+      },
+      {
+        "termino": "project",
+        "frecuencia": 19,
+        "porcentaje": 0.5453501722158438
+      },
+      {
+        "termino": "obras",
+        "frecuencia": 19,
+        "porcentaje": 0.5453501722158438
+      },
+      {
+        "termino": "martin",
+        "frecuencia": 19,
+        "porcentaje": 0.5453501722158438
+      },
+      {
+        "termino": "telefonico",
+        "frecuencia": 19,
+        "porcentaje": 0.5453501722158438
+      },
+      {
+        "termino": "contenido",
+        "frecuencia": 19,
+        "porcentaje": 0.5453501722158438
+      },
+      {
+        "termino": "estudio",
+        "frecuencia": 19,
+        "porcentaje": 0.5453501722158438
+      },
+      {
+        "termino": "centro",
+        "frecuencia": 19,
+        "porcentaje": 0.5453501722158438
+      },
+      {
+        "termino": "sector",
+        "frecuencia": 18,
+        "porcentaje": 0.5166475315729048
+      },
+      {
+        "termino": "copia",
+        "frecuencia": 18,
+        "porcentaje": 0.5166475315729048
+      },
+      {
+        "termino": "proyectos",
+        "frecuencia": 18,
+        "porcentaje": 0.5166475315729048
+      },
+      {
+        "termino": "comerciales",
+        "frecuencia": 18,
+        "porcentaje": 0.5166475315729048
+      },
+      {
+        "termino": "community",
+        "frecuencia": 18,
+        "porcentaje": 0.5166475315729048
+      },
+      {
+        "termino": "operarios",
+        "frecuencia": 18,
+        "porcentaje": 0.5166475315729048
+      },
+      {
+        "termino": "full",
+        "frecuencia": 17,
+        "porcentaje": 0.4879448909299655
+      },
+      {
+        "termino": "civil",
+        "frecuencia": 17,
+        "porcentaje": 0.4879448909299655
+      },
+      {
+        "termino": "empleado",
+        "frecuencia": 17,
+        "porcentaje": 0.4879448909299655
+      },
+      {
+        "termino": "servicio",
+        "frecuencia": 16,
+        "porcentaje": 0.4592422502870264
+      },
+      {
+        "termino": "mercado",
+        "frecuencia": 16,
+        "porcentaje": 0.4592422502870264
+      },
+      {
+        "termino": "social",
+        "frecuencia": 16,
+        "porcentaje": 0.4592422502870264
+      },
+      {
+        "termino": "fijo",
+        "frecuencia": 15,
+        "porcentaje": 0.4305396096440872
+      },
+      {
+        "termino": "alimentos",
+        "frecuencia": 15,
+        "porcentaje": 0.4305396096440872
+      },
+      {
+        "termino": "b2b",
+        "frecuencia": 15,
+        "porcentaje": 0.4305396096440872
+      },
+      {
+        "termino": "procesos",
+        "frecuencia": 15,
+        "porcentaje": 0.4305396096440872
+      },
+      {
+        "termino": "taller",
+        "frecuencia": 15,
+        "porcentaje": 0.4305396096440872
+      },
+      {
+        "termino": "talentos",
+        "frecuencia": 14,
+        "porcentaje": 0.4018369690011481
+      },
+      {
+        "termino": "gestor",
+        "frecuencia": 14,
+        "porcentaje": 0.4018369690011481
+      },
+      {
+        "termino": "autos",
+        "frecuencia": 14,
+        "porcentaje": 0.4018369690011481
+      },
+      {
+        "termino": "salud",
+        "frecuencia": 14,
+        "porcentaje": 0.4018369690011481
+      },
+      {
+        "termino": "jornada",
+        "frecuencia": 14,
+        "porcentaje": 0.4018369690011481
+      },
+      {
+        "termino": "avellaneda",
+        "frecuencia": 14,
+        "porcentaje": 0.4018369690011481
+      },
+      {
+        "termino": "encargada",
+        "frecuencia": 14,
+        "porcentaje": 0.4018369690011481
+      },
+      {
+        "termino": "recursos",
+        "frecuencia": 14,
+        "porcentaje": 0.4018369690011481
+      },
+      {
+        "termino": "humanos",
+        "frecuencia": 14,
+        "porcentaje": 0.4018369690011481
+      },
+      {
+        "termino": "sueldo",
+        "frecuencia": 14,
+        "porcentaje": 0.4018369690011481
+      },
+      {
+        "termino": "comisiones",
+        "frecuencia": 14,
+        "porcentaje": 0.4018369690011481
+      },
+      {
+        "termino": "mix",
+        "frecuencia": 13,
+        "porcentaje": 0.3731343283582089
+      },
+      {
+        "termino": "nunez",
+        "frecuencia": 13,
+        "porcentaje": 0.3731343283582089
+      },
+      {
+        "termino": "venta",
+        "frecuencia": 13,
+        "porcentaje": 0.3731343283582089
+      },
+      {
+        "termino": "strategist",
+        "frecuencia": 13,
+        "porcentaje": 0.3731343283582089
+      },
+      {
+        "termino": "interno",
+        "frecuencia": 13,
+        "porcentaje": 0.3731343283582089
+      },
+      {
+        "termino": "medicos",
+        "frecuencia": 13,
+        "porcentaje": 0.3731343283582089
+      },
+      {
+        "termino": "corporativo",
+        "frecuencia": 13,
+        "porcentaje": 0.3731343283582089
+      },
+      {
+        "termino": "constructora",
+        "frecuencia": 13,
+        "porcentaje": 0.3731343283582089
+      },
+      {
+        "termino": "specialist",
+        "frecuencia": 12,
+        "porcentaje": 0.3444316877152698
+      },
+      {
+        "termino": "tecnica",
+        "frecuencia": 12,
+        "porcentaje": 0.3444316877152698
+      },
+      {
+        "termino": "designer",
+        "frecuencia": 12,
+        "porcentaje": 0.3444316877152698
+      },
+      {
+        "termino": "contact",
+        "frecuencia": 12,
+        "porcentaje": 0.3444316877152698
+      },
+      {
+        "termino": "forwarder",
+        "frecuencia": 12,
+        "porcentaje": 0.3444316877152698
+      },
+      {
+        "termino": "asesores",
+        "frecuencia": 12,
+        "porcentaje": 0.3444316877152698
+      },
+      {
+        "termino": "isidro",
+        "frecuencia": 12,
+        "porcentaje": 0.3444316877152698
+      },
+      {
+        "termino": "agencia",
+        "frecuencia": 12,
+        "porcentaje": 0.3444316877152698
+      },
+      {
+        "termino": "zarate",
+        "frecuencia": 12,
+        "porcentaje": 0.3444316877152698
+      },
+      {
+        "termino": "electrico",
+        "frecuencia": 12,
+        "porcentaje": 0.3444316877152698
+      },
+      {
+        "termino": "base",
+        "frecuencia": 11,
+        "porcentaje": 0.3157290470723306
+      },
+      {
+        "termino": "inspector",
+        "frecuencia": 11,
+        "porcentaje": 0.3157290470723306
+      },
+      {
+        "termino": "nivel",
+        "frecuencia": 11,
+        "porcentaje": 0.3157290470723306
+      },
+      {
+        "termino": "industria",
+        "frecuencia": 11,
+        "porcentaje": 0.3157290470723306
+      },
+      {
+        "termino": "retiro",
+        "frecuencia": 11,
+        "porcentaje": 0.3157290470723306
+      },
+      {
+        "termino": "editor",
+        "frecuencia": 11,
+        "porcentaje": 0.3157290470723306
+      },
+      {
+        "termino": "externo",
+        "frecuencia": 11,
+        "porcentaje": 0.3157290470723306
+      },
+      {
+        "termino": "ushuaia",
+        "frecuencia": 11,
+        "porcentaje": 0.3157290470723306
+      },
+      {
+        "termino": "pesada",
+        "frecuencia": 11,
+        "porcentaje": 0.3157290470723306
+      },
+      {
+        "termino": "gas",
+        "frecuencia": 10,
+        "porcentaje": 0.28702640642939153
+      },
+      {
+        "termino": "perfil",
+        "frecuencia": 10,
+        "porcentaje": 0.28702640642939153
+      },
+      {
+        "termino": "proyectista",
+        "frecuencia": 10,
+        "porcentaje": 0.28702640642939153
+      },
+      {
+        "termino": "medicas",
+        "frecuencia": 10,
+        "porcentaje": 0.28702640642939153
+      },
+      {
+        "termino": "real",
+        "frecuencia": 10,
+        "porcentaje": 0.28702640642939153
+      },
+      {
+        "termino": "estate",
+        "frecuencia": 10,
+        "porcentaje": 0.28702640642939153
+      },
+      {
+        "termino": "jefatura",
+        "frecuencia": 10,
+        "porcentaje": 0.28702640642939153
+      },
+      {
+        "termino": "pacheco",
+        "frecuencia": 10,
+        "porcentaje": 0.28702640642939153
+      },
+      {
+        "termino": "tarde",
+        "frecuencia": 10,
+        "porcentaje": 0.28702640642939153
+      },
+      {
+        "termino": "palermo",
+        "frecuencia": 10,
+        "porcentaje": 0.28702640642939153
+      },
+      {
+        "termino": "meses",
+        "frecuencia": 10,
+        "porcentaje": 0.28702640642939153
+      },
+      {
+        "termino": "makro",
+        "frecuencia": 10,
+        "porcentaje": 0.28702640642939153
+      },
+      {
+        "termino": "mayor",
+        "frecuencia": 10,
+        "porcentaje": 0.28702640642939153
+      },
+      {
+        "termino": "asuntos",
+        "frecuencia": 10,
+        "porcentaje": 0.28702640642939153
+      },
+      {
+        "termino": "bacheros",
+        "frecuencia": 10,
+        "porcentaje": 0.28702640642939153
+      },
+      {
+        "termino": "sap",
+        "frecuencia": 9,
+        "porcentaje": 0.2583237657864524
+      },
+      {
+        "termino": "ingenieria",
+        "frecuencia": 9,
+        "porcentaje": 0.2583237657864524
+      },
+      {
+        "termino": "mesa",
+        "frecuencia": 9,
+        "porcentaje": 0.2583237657864524
+      },
+      {
+        "termino": "sales",
+        "frecuencia": 9,
+        "porcentaje": 0.2583237657864524
+      },
+      {
+        "termino": "calle",
+        "frecuencia": 9,
+        "porcentaje": 0.2583237657864524
+      },
+      {
+        "termino": "construccion",
+        "frecuencia": 9,
+        "porcentaje": 0.2583237657864524
+      },
+      {
+        "termino": "modalidad",
+        "frecuencia": 9,
+        "porcentaje": 0.2583237657864524
+      },
+      {
+        "termino": "rio",
+        "frecuencia": 9,
+        "porcentaje": 0.2583237657864524
+      },
+      {
+        "termino": "techo",
+        "frecuencia": 9,
+        "porcentaje": 0.2583237657864524
+      },
+      {
+        "termino": "supply",
+        "frecuencia": 9,
+        "porcentaje": 0.2583237657864524
+      }
+    ],
+    "nivel_senioridad": [
+      {
+        "termino": "avanzado",
+        "frecuencia": 30,
+        "porcentaje": 0.8610792192881744
+      },
+      {
+        "termino": "semi",
+        "frecuencia": 26,
+        "porcentaje": 0.7462686567164178
+      }
+    ],
+    "rol_tech": [
+      {
+        "termino": "engineer",
+        "frecuencia": 17,
+        "porcentaje": 0.4879448909299655
+      }
+    ],
+    "tecnologia_web": [
+      {
+        "termino": "prestaciones",
+        "frecuencia": 14,
+        "porcentaje": 0.4018369690011481
+      }
+    ],
+    "rol_general": [
+      {
+        "termino": "analyst",
+        "frecuencia": 12,
+        "porcentaje": 0.3444316877152698
+      }
+    ],
+    "soft_skill": [
+      {
+        "termino": "equipo",
+        "frecuencia": 12,
+        "porcentaje": 0.3444316877152698
+      }
+    ]
+  },
+  "impacto_estimado": {
+    "ofertas_con_terminos_faltantes": 2476,
+    "porcentaje": 71.06773823191733
+  }
+}

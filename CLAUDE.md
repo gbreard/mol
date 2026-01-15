@@ -1,14 +1,235 @@
 # MOL - Monitor de Ofertas Laborales
 
+## LEER PRIMERO: Estado Actual
+
+**ANTES DE HACER CUALQUIER COSA, leer `.ai/learnings.yaml` para el estado actual del trabajo.**
+
+El archivo `learnings.yaml` contiene:
+- `current_state`: Qué estamos haciendo AHORA (ofertas, versiones, próximo paso)
+- `ultimo_trabajo`: Qué se hizo en la última sesión
+- `problemas_conocidos`: Issues actuales
+
+**Comando del usuario: "Guardá estado"** → Actualizar learnings.yaml con el estado actual.
+
+**REGLA: Actualizar `.ai/learnings.yaml` AUTOMATICAMENTE después de cada cambio significativo** (editar archivo, arreglar bug, procesar ofertas, agregar regla). No esperar a que el usuario lo pida.
+
+---
+
 ## Descripcion
 Sistema de monitoreo del mercado laboral argentino para OEDE. Scrapea ofertas de empleo, extrae informacion con NLP, clasifica segun taxonomia ESCO, y provee dashboards para analistas.
 
-## Estado Actual (2026-01-03)
+## Estado Actual (2026-01-14)
 - 11,001 ofertas en BD
-- NLP v10.0 (153 campos, ~90% precision)
-- Matching v2.1.1 BGE-M3 (100% precision Gold Set, filtros ISCO contextuales)
-- Documentacion reorganizada en docs/ (current/, guides/, planning/, reference/)
-- Tests organizados en tests/ (nlp/, matching/, scraping/, database/, integration/)
+- **100 ofertas con matching procesado**, estado `pendiente` (en validación)
+- NLP v11.3 (20 campos + postprocessor + qwen2.5:7b)
+- **Matching v3.3.2** con prioridad: Reglas negocio → Diccionario argentino → Semántico
+- Skills implicitas: 14,247 embeddings ESCO skills pre-calculados
+- **Diccionario argentino**: `config/sinonimos_argentinos_esco.json` (12 ocupaciones)
+- **Auto-validación**: `config/validation_rules.json` (15 reglas)
+
+### Trabajo en Curso
+- Validando 100 ofertas para dashboard (próximo paso: revisión manual)
+- Gold Set de referencia: 49 casos (archivo histórico, la validación real es sobre los 100)
+
+---
+
+## Modelo de 3 Fases
+
+El proyecto se organiza en 3 macro-fases independientes:
+
+| Fase | Descripcion | Ubicacion Principal | Salida |
+|------|-------------|---------------------|--------|
+| 1. Adquisicion | Scraping, deteccion bajas | `01_sources/`, `run_scheduler.py` | BD cruda |
+| 2. Procesamiento | NLP, Skills, Matching, **Validacion** | `database/`, `config/`, `export_validation_excel.py` | Excel validacion + datos validados |
+| 3. Presentacion | Dashboard (solo validados) | `Visual--/`, `sync_to_supabase.py` | Dashboard usuarios finales |
+
+**Para trabajar en una fase especifica**, indicar en `learnings.yaml`:
+```yaml
+fase_actual: "procesamiento"  # adquisicion | procesamiento | presentacion
+```
+
+**REGLA:** Si modificas el pipeline de una fase, actualizar `docs/reference/ARQUITECTURA_3_FASES.md`.
+
+> Arquitectura completa: `docs/reference/ARQUITECTURA_3_FASES.md`
+
+---
+
+## Documentación Extendida
+
+| Tema | Documento | Cuándo leer |
+|------|-----------|-------------|
+| **Arquitectura 3 Fases** | `docs/reference/ARQUITECTURA_3_FASES.md` | Entender macro-estructura |
+| **Colaboracion (multi-dev)** | `docs/guides/COLABORACION.md` | Trabajo en equipo, sync git |
+| Pipeline completo (5 etapas) | `docs/reference/PIPELINE.md` | Entender flujo de datos |
+| Run Tracking y Versionado | `docs/guides/RUN_TRACKING.md` | Comparar corridas |
+| Sistema de Validación | `docs/guides/VALIDACION.md` | Estados, protección datos |
+| Flujos de Optimización | `docs/guides/OPTIMIZACION.md` | Corregir errores NLP/Matching |
+| Sincronización Supabase | `docs/guides/SUPABASE_SYNC.md` | Subir datos al dashboard |
+
+**IMPORTANTE:** Antes de optimizar el pipeline, LEER `docs/guides/OPTIMIZACION.md`.
+
+---
+
+## REGLAS CRÍTICAS - LEER PRIMERO
+
+**ANTES de escribir código o crear archivos:**
+
+1. **LEER este CLAUDE.md COMPLETO** - todo está documentado aquí
+2. **NUNCA crear scripts nuevos** - buscar si ya existe uno para la tarea
+3. **Cambios van en `config/*.json`** - no en código Python
+4. **Si hay que modificar un `.py`**:
+   - Versionar (ej: `v3.py` → `v4.py`)
+   - Archivar versión anterior en `archive_old_versions/`
+   - Actualizar CLAUDE.md
+
+### Entry Points del Sistema (NO crear alternativas)
+
+| Tarea | Comando | NO hacer |
+|-------|---------|----------|
+| **Matching lote** | `run_matching_pipeline(offer_ids=[...])` en `match_ofertas_v3.py` | ⚠️ NUNCA `match_and_persist()` directo |
+| **Export Excel** | `python scripts/exports/export_validation_excel.py --etapa completo --ids X` | Crear export custom |
+| **NLP lote** | `python database/process_nlp_from_db_v11.py --ids X` | Crear script nuevo |
+| **Scraping** | `python run_scheduler.py` | Llamar scrapers directo |
+| **Comparar runs** | `python scripts/compare_runs.py --latest` | Crear comparador custom |
+| **Validar ofertas** | `python scripts/validar_ofertas.py --ids X --estado validado` | UPDATE manual en BD |
+| **Auto-validar** | `python database/auto_validator.py --limit 100` | Queries manuales |
+| **Revisar cadena** | `python scripts/review_offer_chain.py --errores` | Revisar solo matching |
+| **Sync Supabase** | `python scripts/exports/sync_to_supabase.py` | Queries directas a Supabase |
+
+**⚠️ REGLA CRÍTICA - Run Tracking (v3.3.2):**
+- SIEMPRE usar `run_matching_pipeline()` para matching, NUNCA `match_and_persist()` directo
+- `match_and_persist()` sin `run_id` genera WARNING y ofertas quedan sin tracking
+- Si ves ofertas con `run_id = NULL` en BD, es porque alguien llamó `match_and_persist()` directo
+- El código ahora emite un WARNING visible cuando esto pasa
+
+---
+
+## Pipeline de Validación con Aprendizaje (v1.0)
+
+**Principio:** Claude REVISA casos individuales para APRENDER y crear REGLAS en JSONs.
+El sistema luego aplica las reglas automáticamente. Claude NO reemplaza al LLM.
+
+### Cadena de Dependencias
+
+```
+SCRAPING → NLP → SKILLS → MATCHING
+              ↓       ↓         ↓
+           tareas  extraídas  ESCO code
+           ubicación  de tareas+título
+           seniority
+           área
+
+Si NLP extrae mal las tareas → Skills quedan mal → Matching falla
+```
+
+### Flujo de Trabajo Claude
+
+```
+PASO 1: PROCESAR
+────────────────
+python -c "
+from database.match_ofertas_v3 import run_matching_pipeline
+stats = run_matching_pipeline(limit=100, source='optimizacion_v1')
+print(f'Run ID: {stats[\"run_id\"]}')
+"
+
+PASO 2: DETECTAR ERRORES
+────────────────────────
+python database/auto_validator.py --limit 100 --reporte
+
+PASO 3: CLAUDE REVISA UNO POR UNO (cadena completa)
+───────────────────────────────────────────────────
+python scripts/review_offer_chain.py --errores --limit 5
+
+Claude ve TODA la cadena:
+1. SCRAPING: ¿Datos completos?
+2. NLP: ¿Tareas, ubicación, seniority, área correctos?
+3. SKILLS: ¿Coherentes con título y tareas?
+4. MATCHING: ¿ISCO correcto?
+
+Claude identifica DÓNDE falló y crea regla en el JSON correspondiente.
+
+PASO 4: CREAR REGLA
+───────────────────
+Según dónde falló:
+| Falla en | Config a modificar |
+|----------|-------------------|
+| NLP - tareas | prompt o nlp_extraction_patterns.json |
+| NLP - ubicación | config/nlp_preprocessing.json |
+| NLP - seniority | config/nlp_inference_rules.json |
+| NLP - área | config/nlp_inference_rules.json |
+| Skills - faltan | config/skills_database.json |
+| Matching | config/matching_rules_business.json |
+
+PASO 5: REPROCESAR
+──────────────────
+python -c "
+from database.match_ofertas_v3 import run_matching_pipeline
+stats = run_matching_pipeline(offer_ids=['id1','id2'], source='fix_v1')
+"
+
+PASO 6: COMPARAR
+────────────────
+python scripts/compare_runs.py --latest
+
+REPETIR hasta sin errores.
+```
+
+### Archivos del Sistema de Validación
+
+| Archivo | Función |
+|---------|---------|
+| `config/validation_rules.json` | 15 reglas de auto-detección de errores |
+| `config/diagnostic_patterns.json` | Patrones para identificar punto de falla |
+| `config/auto_correction_map.json` | Mapeo diagnóstico → config a modificar |
+| `database/auto_validator.py` | Validador automático |
+| `database/auto_corrector.py` | Corrector automático |
+| `scripts/review_offer_chain.py` | **Revisión UNO POR UNO** (cadena completa) |
+
+### Ejemplo de Revisión Claude
+
+```
+Caso: "Gerente de Ventas" → ISCO 2433 (incorrecto, debería ser 1221)
+
+Claude revisa cadena:
+1. SCRAPING: OK
+2. NLP: nivel_seniority = NULL ❌ (debería ser "manager")
+3. SKILLS: OK
+4. MATCHING: Sin seniority, no priorizó nivel directivo
+
+Diagnóstico: Falla RAÍZ en NLP (seniority no inferido de "Gerente")
+
+Claude crea reglas:
+1. nlp_inference_rules.json: {"keyword": "gerente", "nivel_seniority": "manager"}
+2. matching_rules_business.json: R_GERENTE_VENTAS → forzar_isco 1221
+
+Reprocesar → ISCO correcto
+Próxima vez: Sistema aplica regla automáticamente
+```
+
+→ **Plan completo:** `/home/gerardo/.claude/plans/elegant-crunching-hippo.md`
+→ **Guía optimización:** `docs/guides/OPTIMIZACION.md`
+
+---
+
+### Flujo de Optimización LEGACY (sin revisión Claude)
+
+```
+1. PROCESAR    → run_matching_pipeline(ids, source="gold_set")
+2. EXPORTAR   → export_validation_excel.py --ids X
+3. CORREGIR   → Modificar config/*.json (NO código Python)
+4. COMPARAR   → compare_runs.py --latest
+5. REPETIR    → Pasos 2-4 hasta que esté OK
+6. VALIDAR    → validar_ofertas.py --ids X --estado validado
+```
+
+→ **Detalles:** `docs/guides/VALIDACION.md`
+
+### Protección de Datos Validados
+
+**CRÍTICO:** Una vez que una oferta tiene `estado_validacion = 'validado'`:
+- El pipeline **RECHAZA** reprocesarla (error automático)
+- Para forzar: usar `force=True` (NO recomendado)
 
 ---
 
@@ -18,560 +239,248 @@ Sistema de monitoreo del mercado laboral argentino para OEDE. Scrapea ofertas de
 
 | Componente | Archivo ACTUAL | NO USAR |
 |------------|----------------|---------|
-| Pipeline NLP | `database/process_nlp_from_db_v10.py` | v7, v8, v9 |
-| Prompt | `02.5_nlp_extraction/prompts/extraction_prompt_v10.py` | v8, v9 |
-| Schema | 153 columnas (NLP Schema v5) | schemas anteriores |
+| Pipeline NLP | `database/process_nlp_from_db_v11.py` | v7, v8, v9, v10 |
+| Prompt | `database/prompts/extraction_prompt_lite_v1.py` | v8, v9, v10 |
+| Regex Patterns | `database/patterns/regex_patterns_v4.py` | v1, v2, v3 |
 | Normalizador | `database/normalize_nlp_values.py` | - |
 
-### Matching Pipeline v2.1.1 BGE-M3
+**Arquitectura v11.3:**
+```
+CAPA 0: Regex (salarios, jornada) + Scraping directo (modalidad)
+CAPA 1: LLM Qwen2.5:7b (20 campos)
+CAPA 2: Postprocessor (config/nlp_*.json)
+CAPA 3: Skills implícitas (BGE-M3 + ESCO embeddings)
+```
+
+### Matching Pipeline v3.3.2
 
 | Componente | Archivo ACTUAL | NO USAR |
 |------------|----------------|---------|
-| Pipeline Matching | `database/match_ofertas_v2.py` | match_ofertas_multicriteria.py, v8.x |
-| Version | **v2.1.1** | v2.0, v8.x |
-| Precision Gold Set | **100% (49/49)** | - |
-| Modelo Embeddings | **BAAI/bge-m3** | - |
-| Estrategia v2 | `docs/MATCHING_STRATEGY_V2.md` | - |
-| Config principal | `config/matching_config.json` | valores hardcodeados |
-| Config area | `config/area_funcional_esco_map.json` | - |
-| Config seniority | `config/nivel_seniority_esco_map.json` | - |
-| Config sector | `config/sector_isco_compatibilidad.json` | - |
+| Pipeline Matching | `database/match_ofertas_v3.py` v3.3.2 | v2.py, v8.x |
+| Matcher por Skills | `database/match_by_skills.py` v1.2.0 | - |
+| Skills Extractor | `database/skills_implicit_extractor.py` v2.0 | - |
+| Diccionario Argentino | `config/sinonimos_argentinos_esco.json` (12 ocup) | - |
+| Config reglas negocio | `config/matching_rules_business.json` (52 reglas) | hardcodeados |
+| Config principal | `config/matching_config.json` | - |
 
-### Tests
+**Arquitectura v3.3.2 (orden de prioridad):**
+```
+1. REGLAS DE NEGOCIO (bypass) ← Prioridad máxima, casos específicos
+        ↓ (si no matchea)
+2. DICCIONARIO ARGENTINO ← Vocabulario local → ISCO
+        ↓ (si no matchea)
+3. SEMÁNTICO (BGE-M3) ← Skills 60% + Titulo 40%
+        ↓
+4. PENALIZACIONES (sector, seniority)
+        ↓
+5. PERSISTIR EN BD
+```
 
-| Componente | Ubicacion |
-|------------|-----------|
-| Tests NLP | `tests/nlp/test_extraction.py` |
-| Tests Matching | `tests/matching/test_precision.py` |
-| Tests Scraping | `tests/scraping/` |
-| Tests Database | `tests/database/` |
-| Tests Integracion | `tests/integration/test_pipeline_completo.py` |
-| Gold Set NLP | `tests/nlp/gold_set.json` (49 casos) |
-| Gold Set Matching | `database/gold_set_manual_v2.json` (49 casos) |
+→ **Detalles:** `docs/reference/PIPELINE.md`
 
-**Ejecutar tests:**
+### Tests y Gold Sets
+
+| Conjunto | Ubicación | Casos | Uso |
+|----------|-----------|-------|-----|
+| **Ofertas en validación** | BD `ofertas_esco_matching` | **100** | Validar para dashboard |
+| Gold Set referencia | `database/gold_set_manual_v2.json` | 49 | Test de regresión |
+| NLP Extraction | `tests/nlp/gold_set.json` | 20+ | Test NLP |
+
+**IMPORTANTE:** El trabajo actual es sobre las **100 ofertas en validación**, no el Gold Set de 49.
+
 ```bash
+# Ejecutar tests
 python -m pytest tests/ -v
+
+# Test Gold Set Matching (referencia)
+pytest tests/matching/test_gold_set_manual.py -v
+
+# Ver estado de las 100 ofertas en validación
+python scripts/validar_ofertas.py --status
 ```
 
-### Configuracion
+---
 
-| Archivo | Proposito |
+## Configuración
+
+### Configs NLP (Postprocessor)
+
+| Archivo | Propósito |
 |---------|-----------|
-| `config/matching_config.json` | Config principal matching v2 (pesos, umbrales, penalizaciones) |
-| `config/area_funcional_esco_map.json` | Mapeo area_funcional → codigos ISCO |
-| `config/nivel_seniority_esco_map.json` | Mapeo seniority → ISCO + matriz penalizacion |
-| `config/sector_isco_compatibilidad.json` | Compatibilidad sector empresa ↔ ISCO |
+| `config/nlp_preprocessing.json` | Parsing ubicación |
+| `config/nlp_inference_rules.json` | Inferencia área/seniority/modalidad |
+| `config/nlp_validation.json` | Validación tipos |
+| `config/nlp_extraction_patterns.json` | Regex experiencia |
+| `config/nlp_normalization.json` | CABA → Capital Federal |
 
-### Diccionarios de Extraccion
+### Configs Matching
 
-| Archivo | Proposito | Items |
-|---------|-----------|-------|
-| `config/skills_database.json` | Skills tecnicas, LATAM, logistica, contables | ~320 |
-| `config/oficios_arg.json` | Oficios y ocupaciones argentinas | ~170 |
-| `config/nlp_preprocessing.json` | Preprocesamiento ubicacion | - |
-| `config/nlp_validation.json` | Validacion tipos (rechazo booleanos) | - |
-| `config/nlp_extraction_patterns.json` | Patterns regex experiencia | - |
-| `config/nlp_inference_rules.json` | Inferencia modalidad/seniority/area | - |
-| `config/nlp_defaults.json` | Valores default campos | - |
-| `config/nlp_normalization.json` | Normalizacion provincias (CABA) | - |
-
-**Agregar nuevas skills:**
-```python
-# Editar config/skills_database.json, categoria correspondiente
-# NO hardcodear en codigo Python
-# Categorias disponibles: lenguajes_programacion, frameworks_web, bases_datos,
-# cloud_devops, plataformas_latam, skills_logistica, skills_contables,
-# skills_operativas_retail, skills_gastronomia, certificaciones_arg
-```
-
----
-
-## Regla de Versionado de Componentes
-
-**OBLIGATORIO:** Cuando se crea una nueva version de cualquier componente:
-
-### Paso 1: Crear nueva version
-```bash
-# Ejemplo: match_ofertas_v2.py, process_nlp_v11.py
-```
-
-### Paso 2: INMEDIATAMENTE archivar la version anterior
-
-| Tipo de componente | Mover a |
-|--------------------|---------|
-| Matching (match_*.py) | database/archive_old_versions/matching/ |
-| NLP processors (process_nlp_*.py) | database/archive_old_versions/nlp_processors/ |
-| Regex patterns (regex_patterns_*.py) | archive/patterns_old/ |
-| Prompts (extraction_prompt_*.py) | archive/prompts_old/ |
-| Extractors | archive/extractors_old/ |
-| Scripts one-time (fix_*, debug_*) | archive/scripts_historical/ |
-
-### Paso 3: Verificar que nada importe el archivo archivado
-```bash
-grep -rn "from archivo_viejo import" --include="*.py" .
-grep -rn "import archivo_viejo" --include="*.py" .
-```
-
-### Paso 4: Actualizar CLAUDE.md
-- Cambiar version en tabla de componentes
-- Agregar al CHANGELOG si es cambio significativo
-
-### REGLA ESTRICTA
-NUNCA dejar dos versiones del mismo componente activas en el mismo directorio.
-Si existe `component_v8.py` y creas `component_v9.py`, el v8 debe archivarse en el mismo commit.
-
-### Ejemplo de commit correcto
-```
-feat: NLP v11 con nuevo campo X
-
-- Crear database/process_nlp_from_db_v11.py
-- Archivar database/process_nlp_from_db_v10.py -> archive_old_versions/nlp_processors/
-- Actualizar CLAUDE.md
-```
-
----
-
-## ARCHIVOS DEPRECADOS - NO USAR
-
-Los siguientes archivos estan en `database/archive_old_versions/` y NO deben usarse:
-
-**NLP:**
-- `process_nlp_from_db_v*.py` (v1-v9) → usar v10
-- `extraction_prompt_v*.py` (v1-v9) → usar v10
-
-**Matching:**
-- `matching_rules_v*.py` (v81-v84) → archivados, usar match_ofertas_v2.py
-- `match_ofertas_multicriteria.py` → archivado, usar match_ofertas_v2.py
-- Scripts de matching antiguos
-
-**Tests sueltos:**
-- Cualquier `check_*.py`, `debug_*.py`, `test_*.py` fuera de `tests/`
-
-Ver `database/archive_old_versions/DEPRECATED.md` para lista completa.
-
----
-
-## Documentacion
-
-La documentacion esta organizada en `docs/`:
-
-| Carpeta | Contenido |
+| Archivo | Propósito |
 |---------|-----------|
-| `docs/current/` | Documentos activos y actualizados |
-| `docs/guides/` | Guias de uso (quickstart, flujos) |
-| `docs/planning/` | Planificacion, issues Linear |
-| `docs/reference/` | Referencia tecnica, APIs |
-| `docs/archive/` | Documentos historicos |
+| `config/matching_config.json` | Pesos, umbrales, penalizaciones |
+| `config/matching_rules_business.json` | 52 reglas de negocio |
+| `config/area_funcional_esco_map.json` | Mapeo área → ISCO |
+| `config/sector_isco_compatibilidad.json` | Compatibilidad sector-ISCO |
 
-**Documentos clave:**
-| Documento | Descripcion |
-|-----------|-------------|
-| `docs/current/MOL_CONTEXT_MASTER.md` | Contexto completo del sistema |
-| `docs/current/NLP_SCHEMA_V5.md` | Schema de 153 campos NLP |
-| `docs/current/MATCHING_STRATEGY_V2.md` | Estrategia Matching v2.1.1 |
-| `docs/current/CHANGELOG.md` | Historial de cambios |
-| `docs/planning/MOL_LINEAR_ISSUES_V3.md` | Issues con specs detalladas |
-| `docs/guides/QUICKSTART_BUMERAN.md` | Inicio rapido scraping |
+### Diccionarios
+
+| Archivo | Propósito |
+|---------|-----------|
+| `config/skills_database.json` | ~320 skills técnicas |
+| `config/oficios_arg.json` | ~170 oficios argentinos |
+
+---
 
 ## Comandos Clave
 
 ```bash
-# Scraping (SIEMPRE usar este, NUNCA bumeran_scraper.py directo)
+# === SCRAPING ===
 python run_scheduler.py --test
 
-# Test Matching
-python database/test_gold_set_manual.py
+# === NLP ===
+python database/process_nlp_from_db_v11.py --ids 123,456
 
-# Dashboard Admin (cuando este creado)
-streamlit run dashboards/admin/app.py
+# === MATCHING ===
+pytest tests/matching/test_gold_set_manual.py -v
 
-# Linear - Sincronizar cache
-python scripts/linear_sync.py
+# === VALIDACIÓN ===
+python scripts/validar_ofertas.py --status
+python scripts/compare_runs.py --list
+python scripts/compare_runs.py --latest
+python scripts/validar_ofertas.py --ids 123,456 --estado validado
 
-# Linear - Actualizar issue (no bloqueante)
-python scripts/linear_update_async.py MOL-XX --status=done --comment="..."
+# === EXPORT ===
+python scripts/exports/export_validation_excel.py --etapa completo --ids X
 ```
-
-## Modelos LLM/ML Activos
-
-| Modelo | Tipo | Uso |
-|--------|------|-----|
-| **Qwen2.5:14b** | LLM | NLP: extraccion semantica (30% campos) |
-| **BGE-M3** | Embeddings | Matching: titulo (50%) + descripcion (10%) |
-| **ESCO-XLM-RoBERTa-Large** | Re-ranker | Re-ranking candidatos ESCO |
-| **ChromaDB** | Vector DB | Skills lookup (40%) |
-
-**Requisitos:**
-- Ollama en `localhost:11434` con `qwen2.5:14b`
-- ChromaDB con vectores en `database/esco_vectors/`
-- `sentence-transformers` para BGE-M3
-- `transformers` para ESCO-XLM-RoBERTa
-
-**Pipeline NLP:** Regex (70%) -> Qwen2.5 (30%) -> Anti-alucinacion
-**Pipeline Matching:** Titulo (50%) -> Skills (40%) -> Descripcion (10%) -> Validacion
-
-## Linear (Sistema No Bloqueante)
-
-### Configuracion inicial (1x)
-1. Crear `config/linear_config.json` con tu API key
-2. Ejecutar: `python scripts/linear_sync.py`
-
-### Flujo de trabajo
-
-**INICIO DE SESION:**
-```bash
-python scripts/linear_sync.py
-# Sincroniza issues de Linear a .linear/issues.json
-```
-
-**LEER CONTEXTO DE UN ISSUE:**
-- Leer specs de `docs/MOL_LINEAR_ISSUES_V3.md`
-- Leer estado de `.linear/issues.json`
-- NUNCA usar MCP de Linear (bloquea)
-
-**ACTUALIZAR ISSUE (no bloqueante):**
-```bash
-python scripts/linear_update_async.py MOL-XX --status=done --comment="Completado"
-# Retorna inmediato, Linear se actualiza en background
-```
-
-**MULTIPLES UPDATES:**
-```bash
-python scripts/linear_queue.py add MOL-31 --status=done
-python scripts/linear_queue.py add MOL-32 --status=done
-python scripts/linear_queue.py process  # Al final de la sesion
-```
-
-## Reglas de Desarrollo
-
-1. **Scraping:** SIEMPRE usar `run_scheduler.py`, NUNCA `bumeran_scraper.py` directo
-2. **Tests:** Todo cambio en NLP/Matching debe pasar gold set
-3. **Umbrales:** NLP >= 90%, Matching >= 95%
-4. **S3:** Experimentos van a `/experiment/`, produccion a `/production/`
-5. **UI:** Dashboard produccion SIN siglas tecnicas (CIUO, ESCO)
-6. **Linear:** Usar sistema de cache, NUNCA MCP directo
 
 ---
 
-## Flujo de Branches (Git Flow Simplificado)
+## Guía Rápida: Mapeo Error → Config
 
-### Estructura de Branches
+| Tipo de Error | Config a Editar |
+|---------------|-----------------|
+| Provincia/Localidad mal | `config/nlp_preprocessing.json` |
+| Seniority incorrecto | `config/nlp_inference_rules.json` |
+| Modalidad incorrecta | `config/nlp_inference_rules.json` |
+| Área funcional incorrecta | `config/nlp_inference_rules.json` |
+| ISCO incorrecto para título X | `config/matching_rules_business.json` |
 
-```
-main                              ◄── Producción ESTABLE
-  │                                   - Pipeline probado y validado
-  │                                   - Solo se actualiza via PR
-  │
-  └── develop                     ◄── Integración
-        │                             - Cambios que pasaron Gold Set
-        │                             - Pre-producción
-        │
-        ├── feature/optimization-nlp      ◄── Optimización NLP
-        │                                     - Regex, prompts, postprocessor
-        │
-        └── feature/optimization-matching ◄── Optimización Matching
-                                              - Embeddings, configs
-```
-
-### Reglas del Flujo
-
-| Regla | Descripción |
-|-------|-------------|
-| **NUNCA** push directo a `main` | Siempre via PR desde develop |
-| **SIEMPRE** Gold Set antes de merge | `python database/test_gold_set_v211.py` |
-| **Registrar métricas** | Antes/después en `metrics/gold_set_history.json` |
-| **Features se borran** | Después de merge a develop |
-| **Commits en features** | Pueden ser "wip" |
-| **Commits en develop/main** | Deben ser limpios |
-
-### Flujo de Trabajo para Optimización
-
-```bash
-# 1. Ir al branch de optimización
-git checkout feature/optimization-nlp
-
-# 2. Hacer cambios experimentales
-# - Modificar configs, regex, prompts
-# - Probar con Gold Set
-
-# 3. Correr Gold Set test
-python database/test_gold_set_v211.py
-
-# 4. Si mejora métricas → merge a develop
-git checkout develop
-git merge feature/optimization-nlp
-
-# 5. Si develop está estable → PR a main
-# (via GitHub para review)
-```
-
-### Archivos Críticos por Branch
-
-**En `main` (NO tocar directamente):**
-- `database/process_nlp_from_db_v10.py`
-- `database/match_ofertas_v2.py`
-- `database/nlp_postprocessor.py`
-- `config/*.json`
-
-**En `feature/optimization-*` (libre para experimentar):**
-- Los mismos archivos, modificables
-- Deben pasar Gold Set antes de merge
-
-## Convenciones del Proyecto
-
-### Estructura de Codigo
-
-| Tipo de archivo | Ubicacion | Ejemplo |
-|-----------------|-----------|---------|
-| Tests pytest | `tests/` | `tests/nlp/test_extraction.py` |
-| Migraciones BD | `database/migrations/` | `001_initial.sql` |
-| Prompts LLM | `02.5_nlp_extraction/prompts/` | `extraction_prompt_v9.py` |
-| Configuracion | `config/` | `matching_config.json` |
-| Scripts one-time | `scripts/` | `fix_descripcion_nulls.py` |
-| Archivos obsoletos | `database/archive_old_versions/` | Versiones antiguas |
-
-### Tests
-
-- **SIEMPRE** crear tests en `tests/`, nunca en `database/` u otras carpetas
-- Estructura: `tests/{modulo}/test_{funcionalidad}.py`
-- Gold sets van en `tests/{modulo}/gold_set.json` o `database/gold_set_*.json`
-- Usar pytest: `python -m pytest tests/ -v`
-- Fixtures compartidos: `tests/conftest.py`
-
-### Versionado de Archivos
-
-| Componente | Patron | Version ACTIVA |
-|------------|--------|----------------|
-| Prompts | `extraction_prompt_v{N}.py` | **v10** |
-| Procesos NLP | `process_nlp_from_db_v{N}.py` | **v10** |
-| Matching Rules | `matching_rules_v{NN}.py` | **v84** |
-| Configs | Campo `"version"` interno | matching_config v2.0 |
-
-### Scripts Temporales
-
-- Si es debugging/one-time -> crear en `scripts/` con fecha: `2025-12-09_fix_xyz.py`
-- Si es test -> crear en `tests/`
-- **NUNCA** crear `check_*.py`, `debug_*.py` o `test_*.py` sueltos en `database/`
-- Scripts obsoletos -> mover a `database/archive_old_versions/`
-
-### Gold Sets
-
-| Gold Set | Ubicacion | Casos |
-|----------|-----------|-------|
-| Matching ESCO | `database/gold_set_manual_v2.json` | 49 casos |
-| NLP Extraction | `tests/nlp/gold_set.json` | 20+ casos |
-
-### Commits
-
-- Usar conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`
-- Incluir issue Linear si aplica: `feat(MOL-XX): descripcion`
-
-## Dashboard R Shiny (Produccion)
-
-El dashboard R Shiny esta en `Visual--/` y **esta en produccion**.
-
-| Componente | Ubicacion |
-|------------|-----------|
-| App principal | `Visual--/app.R` |
-| Documentacion | `Visual--/docs/` |
-| Deploy config | `Visual--/rsconnect/` |
-| Datos CSV | `Visual--/ofertas_esco_*.csv` |
-
-**NO modificar Visual--/** sin coordinacion con el equipo.
+→ **Tabla completa:** `docs/guides/OPTIMIZACION.md`
 
 ---
 
-## Estructura del Proyecto
+## Regla de Versionado
+
+**OBLIGATORIO:** Cuando se crea una nueva versión:
+
+1. Crear nueva versión (ej: `v11.py`)
+2. Archivar anterior en `database/archive_old_versions/`
+3. Verificar que nada importe el archivo archivado
+4. Actualizar CLAUDE.md
+
+**NUNCA** dejar dos versiones activas en el mismo directorio.
+
+---
+
+## Ubicación de Scripts
+
+| Si el script es para... | Va en... |
+|-------------------------|----------|
+| Gold Set NLP | `scripts/nlp/gold_set/` |
+| Gold Set Matching | `scripts/matching/gold_set/` |
+| Backup/migrate BD | `scripts/db/` |
+| Exportar (S3, Excel) | `scripts/exports/` |
+| Linear | `scripts/` (raíz) |
+
+**NUNCA** crear `test_*.py` fuera de `tests/`.
+
+---
+
+## Estructura del Proyecto (Resumen)
 
 ```
 MOL/
-├── 01_sources/bumeran/scrapers/    # Scrapers
-├── 02.5_nlp_extraction/            # Pipeline NLP
-├── database/                        # BD principal, matching, NLP processors
-├── data/tracking/                  # IDs vistos
-├── Visual--/                       # Dashboard R Shiny (PRODUCCION)
-├── dashboards/                     # Dashboards nuevos
-│   ├── admin/                      # Streamlit (por crear)
-│   ├── optimization/               # Next.js Vercel (por crear)
-│   └── production/                 # Next.js Vercel (por crear)
-├── tests/                          # Tests pytest
-│   ├── nlp/                        # Tests NLP
-│   ├── matching/                   # Tests matching
-│   ├── scraping/                   # Tests scraping
-│   ├── database/                   # Tests BD
-│   └── integration/                # Tests E2E
-├── scripts/                        # Utilidades
-│   ├── db/                         # Scripts BD (check_db, etc.)
-│   ├── analysis/                   # Analisis de datos
-│   ├── exploration/                # Investigacion APIs
-│   ├── windows/                    # Scripts .ps1/.bat Windows
-│   └── linear_*.py                 # Integracion Linear
-├── config/                         # Configuracion JSON
-├── docs/                           # Documentacion organizada
-│   ├── current/                    # Docs activos
-│   ├── guides/                     # Guias de uso
-│   ├── planning/                   # Planificacion
-│   ├── reference/                  # Referencia tecnica
-│   └── archive/                    # Historico
-├── archive/                        # Archivos historicos
-│   ├── dashboards_old/             # Dashboard v1-v3 archivados
-│   └── legacy_dashboard_oct2024/   # Dashboard R antiguo
-├── backups/                        # Backups BD
-├── logs/                           # Logs del sistema
-├── exports/                        # Exportaciones
-├── .linear/                        # Cache de Linear (no commitear)
-├── run_scheduler.py                # PUNTO DE ENTRADA SCRAPING
-├── dashboard_scraping_v4.py        # Dashboard Dash (en transicion)
-└── CLAUDE.md                       # Este archivo
+├── 01_sources/          # Scraping (bumeran/, zonajobs/, etc.)
+├── database/            # BD, NLP processors, matching
+│   ├── prompts/         # Prompts LLM
+│   ├── patterns/        # Regex patterns
+│   └── archive_old_versions/
+├── config/              # JSONs de configuración
+├── tests/               # Tests pytest
+├── scripts/             # Utilidades
+│   ├── db/              # BD
+│   ├── nlp/gold_set/    # Optimización NLP
+│   ├── matching/        # Optimización Matching
+│   └── exports/         # Exportaciones
+├── docs/                # Documentación
+│   ├── guides/          # RUN_TRACKING, VALIDACION, OPTIMIZACION
+│   └── reference/       # PIPELINE
+├── Visual--/            # Dashboard R Shiny (PRODUCCIÓN)
+└── run_scheduler.py     # Entry point scraping
 ```
-
-## Arquitectura del Pipeline
-
-### Pipeline ACTUAL (1 portal - Bumeran)
-
-```
-run_scheduler.py
-    |
-    v
-01_sources/bumeran/ (scraping)
-    |
-    v
-database/bumeran_scraping.db
-    |
-    v
-database/process_nlp_from_db_v10.py (NLP)
-    |
-    v
-database/match_ofertas_v2.py (Matching)
-    |
-    v
-Visual--/ (Dashboard R Shiny)
-```
-
-### Pipeline FUTURO (5 portales)
-
-```
-01_sources/* (Bumeran, ZonaJobs, Computrabajo, LinkedIn, Indeed)
-    |
-    v
-02_consolidation/ (merge multi-fuente)
-    |
-    v
-02.5_nlp_extraction/ (NLP modular)
-    |
-    v
-03_esco_matching/ (matching modular)
-    |
-    v
-04_analysis/ (analisis automatizado)
-    |
-    v
-05_products/ (exports finales)
-```
-
-### Estado de Carpetas Numeradas
-
-| Carpeta | Estado | Cuando se usa |
-|---------|--------|---------------|
-| `01_sources/` | ACTIVO | Ahora (Bumeran) |
-| `02_consolidation/` | RESERVADO | Con 2+ portales |
-| `02.5_nlp_extraction/` | PARCIAL | Solo prompts usados |
-| `03_esco_matching/` | LEGACY | Codigo en database/ |
-| `04_analysis/` | RESERVADO | Post-produccion |
-| `05_products/` | PLACEHOLDER | Post-produccion |
-
-> **Nota**: Ver STATUS.md en cada carpeta para detalles.
-
-## Carpetas de Soporte
-
-| Carpeta | Proposito | Documentacion |
-|---------|-----------|---------------|
-| `backups/` | Backups de BD y datos historicos | backups/README.md |
-| `exports/` | Gold sets y exports Excel | exports/README.md |
-| `logs/` | Logs del scheduler | logs/README.md |
-| `metrics/` | Tracking de experimentos | metrics/README.md |
-
-### Dashboards (aclaracion)
-
-| Carpeta | Proposito | Estado |
-|---------|-----------|--------|
-| `dashboard/` | Modulo Python de utilidades (data_loaders, components) | ACTIVO |
-| `dashboards/` | Ubicacion para nuevos dashboards (admin/, optimization/) | RESERVADO |
-| `Visual--/` | Dashboard R Shiny produccion | PRODUCCION |
-
-> **Nota**: `dashboard/` es un paquete Python usado por `dashboard_scraping_v4.py`, NO es un dashboard de usuario.
-
-## Epicas Activas
-
-| Epica | Prioridad | Descripcion |
-|-------|-----------|-------------|
-| 1. Scraping | Alta | Dashboard tab, ZonaJobs, deduplicacion |
-| 2. NLP | Alta | Gold set 200+, tests, export S3 |
-| 3. Matching | Alta | sector_funcion v8.4, gold set 200+ |
-| 4. Validacion | Alta | Tests tab, S3 sync, sampling |
-| 5. Dashboards | Media | Admin, Validacion, Produccion |
-| 6. Infraestructura | Baja | Logs, alertas, CI/CD |
-
-## Metricas Objetivo
-
-| Metrica | Actual | Objetivo |
-|---------|--------|----------|
-| Precision NLP | ~90% | >= 90% |
-| Precision Matching | **100%** | >= 95% |
-| Gold Set NLP | 0 | 200+ |
-| Gold Set Matching | **49** | 200+ |
-| Portales | 1 | 5 |
 
 ---
 
-> **Ultima actualizacion:** 2026-01-03
+## Modelos LLM/ML
+
+| Modelo | Uso |
+|--------|-----|
+| **Qwen2.5:7b** | NLP: extracción semántica |
+| **BGE-M3** | Matching: embeddings |
+| **ChromaDB** | Skills lookup |
+
+**Requisitos:**
+- Ollama en `localhost:11434` con `qwen2.5:7b`
+- ChromaDB con vectores en `database/esco_vectors/`
+
+---
+
+## Reglas de Desarrollo
+
+1. **Scraping:** SIEMPRE `run_scheduler.py`, NUNCA scrapers directo
+2. **Tests:** Todo cambio NLP/Matching debe pasar Gold Set
+3. **Umbrales:** NLP >= 90%, Matching >= 95%
+4. **Linear:** Usar cache (`scripts/linear_*.py`), NUNCA MCP directo
+
+---
+
+## Flujo de Branches
+
+```
+main                    ← Producción (solo via PR)
+  └── develop           ← Integración (pasó Gold Set)
+        ├── feature/optimization-nlp
+        └── feature/optimization-matching
+```
+
+**NUNCA** push directo a `main`. **SIEMPRE** Gold Set antes de merge.
+
+---
+
+## Colaboracion Multi-Desarrollador
+
+Este proyecto es trabajado por **multiples personas en distintas fases**.
+
+**LEER:** `docs/guides/COLABORACION.md` para reglas de sync, division de trabajo y referencias a documentacion oficial de Claude Code.
 
 ---
 
 ## AI Platform Local
 
-Este proyecto usa la plataforma de IA local en `D:\AI_Platform`.
-
-### Antes de cualquier tarea de IA
-
-1. **Leer aprendizajes globales:** `D:\AI_Platform\learnings\global.yaml`
-2. **Leer aprendizajes del proyecto:** `.ai/learnings.yaml`
-3. **Aplicar lo aprendido** antes de decidir modelo o enfoque
-
-### Conexión
+Plataforma en `D:\AI_Platform`.
 
 ```python
 import httpx
 GATEWAY = "http://localhost:8080"
 ```
 
-### Endpoints disponibles
-
 | Endpoint | Descripción |
 |----------|-------------|
-| `POST /v1/chat/completions` | LLM (modelos: fast, smart, reasoning, agent) |
-| `POST /v1/embeddings` | Embeddings (e5-large, bge-m3) |
-| `POST /v1/ocr` | OCR de imágenes/PDFs |
-| `POST /v1/parse/legal` | Parser documentos legales |
-| `POST /v1/parse/job` | Parser ofertas laborales |
-| `POST /v1/rag/query` | RAG completo |
-| `POST /v1/transcribe` | Audio a texto |
-| `POST /v1/rerank` | Reordenar por relevancia |
+| `POST /v1/chat/completions` | LLM |
+| `POST /v1/embeddings` | Embeddings |
 
-### Verificar servicios
+Docs: http://localhost:8080/docs
 
-```python
-response = httpx.get("http://localhost:8080/health")
-```
+---
 
-### Documentación
-
-- Swagger UI: http://localhost:8080/docs
-- Monitor: http://localhost:8501
-- Guía completa: `D:\AI_Platform\CLAUDE.md`
-
-### Cuando descubras algo útil
-
-- Aplica a ESTE proyecto → Agregar a `.ai/learnings.yaml`
-- Aplica a TODOS → Agregar a `D:\AI_Platform\learnings\global.yaml`
+> **Última actualización:** 2026-01-14

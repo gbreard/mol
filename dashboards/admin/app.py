@@ -16,20 +16,20 @@ import pandas as pd
 
 # Agregar path para imports locales
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from database.keyword_optimizer import KeywordOptimizer
+from scripts.scraping.keyword_optimizer import KeywordOptimizer
 
 # Configuracion de paths
 BASE_DIR = Path(__file__).parent.parent.parent
 DB_PATH = BASE_DIR / "database" / "bumeran_scraping.db"
-TRACKING_PATH = BASE_DIR / "data" / "tracking" / "bumeran_scraped_ids.json"
-GOLD_SET_PATH = BASE_DIR / "database" / "gold_set_manual_v1.json"
+TRACKING_PATH = BASE_DIR / "01_sources" / "bumeran" / "tracking" / "scraped_ids.json"
+GOLD_SET_PATH = BASE_DIR / "database" / "gold_set_manual_v2.json"
 EXPERIMENTS_PATH = BASE_DIR / "metrics" / "experiments.json"
 TIMING_LOGS_PATH = BASE_DIR / "metrics" / "timing_logs.jsonl"
 EXPORTS_DIR = BASE_DIR / "exports"
 
 # Scripts paths
-NLP_SCRIPT = BASE_DIR / "database" / "process_nlp_from_db_v10.py"
-TEST_SCRIPT = BASE_DIR / "database" / "test_gold_set_manual.py"
+NLP_SCRIPT = BASE_DIR / "database" / "process_nlp_from_db_v11.py"
+TEST_SCRIPT = BASE_DIR / "tests" / "matching" / "test_gold_set_manual.py"
 
 st.set_page_config(
     page_title="MOL Admin",

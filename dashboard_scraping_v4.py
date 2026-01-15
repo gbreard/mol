@@ -28,16 +28,16 @@ from pathlib import Path
 import io
 import base64
 
-# Módulo dashboard (FASE 2.2)
-from dashboard import data_loaders as dl
-from dashboard import components as comp
+# Módulo dashboard_lib (librería de utilidades para dashboards)
+from dashboard_lib import data_loaders as dl
+from dashboard_lib import components as comp
 
 # ============================================================================
 # CONFIGURACIÓN
 # ============================================================================
 
 DB_PATH = Path(__file__).parent / "database" / "bumeran_scraping.db"
-TRACKING_FILE = Path(__file__).parent / "data" / "tracking" / "bumeran_scraped_ids.json"
+TRACKING_FILE = Path(__file__).parent / "01_sources" / "bumeran" / "tracking" / "scraped_ids.json"
 
 # ============================================================================
 # FUNCIONES DE CARGA DE DATOS

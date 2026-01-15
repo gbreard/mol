@@ -1,0 +1,188 @@
+{
+  "version": "1.0",
+  "descripcion": "Reglas de auto-evaluacion para detectar errores en ofertas procesadas",
+  "fecha_creacion": "2026-01-14",
+
+  "operadores_disponibles": [
+    "is_null", "is_empty", "is_not_null", "is_not_empty",
+    "eq", "neq", "lt", "gt", "lte", "gte",
+    "contains", "not_contains", "contains_any", "contains_all",
+    "matches_regex", "in_list", "not_in_list"
+  ],
+
+  "reglas_validacion": [
+    {
+      "id": "V01_titulo_limpio_vacio",
+      "descripcion": "Titulo limpio vacio o nulo indica falla en limpieza",
+      "campo": "titulo_limpio",
+      "operador": "is_empty",
+      "diagnostico": "error_limpieza",
+      "severidad": "critico",
+      "mensaje": "Titulo limpio vacio - revisar nlp_titulo_limpieza.json"
+    },
+    {
+      "id": "V02_isco_nulo_score_bajo",
+      "descripcion": "Sin ISCO y score bajo indica falla en matching",
+      "condiciones": [
+        {"campo": "isco_code", "operador": "is_null"},
+        {"campo": "match_score", "operador": "lt", "valor": 0.5}
+      ],
+      "logica": "AND",
+      "diagnostico": "error_matching",
+      "severidad": "alto",
+      "mensaje": "Sin match ESCO - revisar matching_rules_business.json"
+    },
+    {
+      "id": "V03_skills_insuficientes",
+      "descripcion": "Menos de 3 skills extraidas indica texto pobre o umbral muy alto",
+      "campo": "skills_count",
+      "operador": "lt",
+      "valor": 3,
+      "diagnostico": "error_nlp_skills",
+      "severidad": "medio",
+      "mensaje": "Pocas skills extraidas - revisar skills_weights.json fallback"
+    },
+    {
+      "id": "V04_ubicacion_exterior_paraguay",
+      "descripcion": "Ofertas para Paraguay detectadas por localidad",
+      "campo": "localidad",
+      "operador": "contains_any",
+      "valores": ["Paraguay", "Asuncion", "Asunción", "Ciudad del Este", "Encarnacion", "Encarnación"],
+      "diagnostico": "ubicacion_exterior",
+      "severidad": "info",
+      "mensaje": "Oferta para Paraguay - marcar como exterior",
+      "auto_correccion": {
+        "campo": "provincia",
+        "valor": "Paraguay (exterior)"
+      }
+    },
+    {
+      "id": "V05_ubicacion_exterior_uruguay",
+      "descripcion": "Ofertas para Uruguay detectadas por localidad",
+      "campo": "localidad",
+      "operador": "contains_any",
+      "valores": ["Uruguay", "Montevideo", "Punta del Este", "Colonia"],
+      "diagnostico": "ubicacion_exterior",
+      "severidad": "info",
+      "mensaje": "Oferta para Uruguay - marcar como exterior",
+      "auto_correccion": {
+        "campo": "provincia",
+        "valor": "Uruguay (exterior)"
+      }
+    },
+    {
+      "id": "V06_ubicacion_exterior_chile",
+      "descripcion": "Ofertas para Chile detectadas por localidad",
+      "campo": "localidad",
+      "operador": "contains_any",
+      "valores": ["Chile", "Santiago de Chile", "Valparaiso", "Valparaíso"],
+      "diagnostico": "ubicacion_exterior",
+      "severidad": "info",
+      "mensaje": "Oferta para Chile - marcar como exterior",
+      "auto_correccion": {
+        "campo": "provincia",
+        "valor": "Chile (exterior)"
+      }
+    },
+    {
+      "id": "V07_titulo_codigo_interno",
+      "descripcion": "Titulo contiene codigo interno no limpiado (excluye terminos tecnicos)",
+      "campo": "titulo_limpio",
+      "operador": "matches_regex",
+      "valor": "^(?!(?:IA|IT|AI|ML|UX|UI|QA|PM|HR|SAP|SQL|PHP|NET|AWS|GCP|API|CEO|CFO|COO|CTO|CMO|JAVA|MEAN|MERN|LAMP|SCRUM|AGILE)\\s)[A-Z0-9]{2,6}[\\s-]",
+      "diagnostico": "error_limpieza",
+      "severidad": "medio",
+      "mensaje": "Codigo interno en titulo - agregar patron a nlp_titulo_limpieza.json",
+      "_nota": "Excluye terminos tech: IA, IT, AI, ML, UX, UI, QA, PM, HR, SAP, SQL, PHP, NET, AWS, GCP, API, CEO, CFO, COO, CTO, CMO, JAVA, MEAN, MERN, LAMP, SCRUM, AGILE"
+    },
+    {
+      "id": "V08_area_funcional_nula",
+      "descripcion": "Area funcional no inferida",
+      "campo": "area_funcional",
+      "operador": "is_null",
+      "diagnostico": "error_nlp_area",
+      "severidad": "bajo",
+      "mensaje": "Area funcional no inferida - agregar regla a nlp_inference_rules.json"
+    },
+    {
+      "id": "V09_seniority_nulo",
+      "descripcion": "Nivel seniority no inferido",
+      "campo": "nivel_seniority",
+      "operador": "is_null",
+      "diagnostico": "error_nlp_seniority",
+      "severidad": "bajo",
+      "mensaje": "Seniority no inferido - agregar regla a nlp_inference_rules.json"
+    },
+    {
+      "id": "V10_match_score_muy_bajo",
+      "descripcion": "Score de matching muy bajo indica posible error",
+      "condiciones": [
+        {"campo": "isco_code", "operador": "is_not_null"},
+        {"campo": "match_score", "operador": "lt", "valor": 0.4}
+      ],
+      "logica": "AND",
+      "diagnostico": "error_matching_confianza",
+      "severidad": "medio",
+      "mensaje": "Match con baja confianza - revisar manualmente"
+    },
+    {
+      "id": "V11_tareas_vacias",
+      "descripcion": "Tareas explicitas vacias indica falla en extraccion NLP",
+      "campo": "tareas_explicitas",
+      "operador": "is_empty",
+      "diagnostico": "error_nlp_tareas",
+      "severidad": "alto",
+      "mensaje": "Tareas no extraidas - afecta skills y matching. Revisar prompt NLP"
+    },
+    {
+      "id": "V12_provincia_vacia",
+      "descripcion": "Provincia vacia indica falla en parsing ubicacion",
+      "campo": "provincia",
+      "operador": "is_empty",
+      "diagnostico": "error_nlp_ubicacion",
+      "severidad": "medio",
+      "mensaje": "Provincia no parseada - revisar nlp_preprocessing.json"
+    },
+    {
+      "id": "V13_skills_sin_origen_tarea",
+      "descripcion": "Skills extraidas pero ninguna viene de tareas (solo titulo)",
+      "campo": "skills_origen_tarea_count",
+      "operador": "eq",
+      "valor": 0,
+      "diagnostico": "error_nlp_tareas",
+      "severidad": "medio",
+      "mensaje": "Skills solo de titulo - revisar extraccion de tareas",
+      "_nota": "Requiere campo calculado en validador"
+    },
+    {
+      "id": "V14_descripcion_muy_corta",
+      "descripcion": "Descripcion original muy corta puede indicar scraping incompleto",
+      "campo": "descripcion_length",
+      "operador": "lt",
+      "valor": 100,
+      "diagnostico": "error_scraping",
+      "severidad": "info",
+      "mensaje": "Descripcion muy corta - verificar scraping"
+    },
+    {
+      "id": "V15_seniority_titulo_mismatch",
+      "descripcion": "Titulo contiene keyword de seniority pero campo esta vacio",
+      "condiciones": [
+        {"campo": "nivel_seniority", "operador": "is_null"},
+        {"campo": "titulo_limpio", "operador": "matches_regex", "valor": "(?i)(gerente|jefe|director|supervisor|lead|senior|sr\\.|jr\\.|junior|trainee)"}
+      ],
+      "logica": "AND",
+      "diagnostico": "error_nlp_seniority",
+      "severidad": "medio",
+      "mensaje": "Titulo sugiere seniority pero no se infiere - agregar regla"
+    }
+  ],
+
+  "severidades": {
+    "critico": {"orden": 1, "auto_rechazar": true},
+    "alto": {"orden": 2, "auto_rechazar": false},
+    "medio": {"orden": 3, "auto_rechazar": false},
+    "bajo": {"orden": 4, "auto_rechazar": false},
+    "info": {"orden": 5, "auto_rechazar": false}
+  }
+}

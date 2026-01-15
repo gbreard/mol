@@ -3,7 +3,7 @@ Test rápido de la función de cobertura evolutiva
 Verifica que los datos históricos se cargan correctamente
 """
 
-from dashboard import data_loaders as dl
+from dashboard_lib import data_loaders as dl
 
 print("="*70)
 print("TEST: Carga de Cobertura Temporal Evolutiva")
