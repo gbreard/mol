@@ -92,13 +92,17 @@ conteos:
   # Métricas de evolución del aprendizaje
   learning_evolution:
     total_runs: 45
-    total_lotes: 5
-    ofertas_unicas: 120  # ofertas distintas con matching
-    procesamientos_totales: 2137  # incluye reprocesos durante optimización
-    ratio_reproceso: "17.8x"  # promedio de veces reprocesada cada oferta
+    ofertas_unicas_con_matching: 120  # ofertas distintas en ofertas_esco_matching
+    # NOTA: ofertas_count en pipeline_runs suma 2137, pero es porque las mismas
+    # ~110 ofertas fueron reprocesadas ~18 veces durante optimización.
+    # El matching SOBRESCRIBE resultados anteriores, no acumula.
+    desglose_ofertas:
+      lote_inicial: 20  # Gold Set original
+      expansion_validacion: 90  # expansión para validación humana
+      lote_nuevo_convergido: 100  # run_20260116_1831 (primer procesamiento)
     reglas_inicio: 22  # 2026-01-13 baseline
     reglas_actual: 118
-    reglas_agregadas: "+96 en 5 lotes"
+    reglas_agregadas: "+96 durante optimización"
     tasa_convergencia: "47% -> 27% -> 2.7% -> 7.5% -> 0%"
     estado: "CONVERGIDO (tasa = 0%)"
     matching_versiones: "3.2.3 -> 3.3.2"
