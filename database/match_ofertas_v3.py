@@ -96,7 +96,7 @@ class MatcherV3:
     Pipeline de matching v3.2.2 - Skills First con penalizaciones sector + seniority.
     """
 
-    VERSION = "3.3.2"  # v3.3.2: Reglas de negocio tienen prioridad sobre diccionario
+    VERSION = "3.3.3"  # v3.3.3: Tracking histórico (ofertas_matching_history + run_ofertas)
 
     # Pesos para combinacion de scores
     ALPHA_SKILLS = 0.6  # Peso para match por skills
@@ -910,6 +910,28 @@ class MatcherV3:
                 run_id,  # v3.2.4: Run tracking
                 'pendiente'  # v3.2.5: Estado validación inicial
             ))
+            # v3.3.3: Tracking histórico
+            # Guardar en ofertas_matching_history (no sobrescribe)
+            self.conn.execute('''
+                INSERT INTO ofertas_matching_history
+                (id_oferta, run_id, isco_code, isco_label, match_method, score)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (
+                str(id_oferta),
+                run_id,
+                result.isco_code,
+                result.esco_label,
+                result.metodo,
+                result.score
+            ))
+
+            # Guardar relación run <-> oferta
+            if run_id:
+                self.conn.execute('''
+                    INSERT OR IGNORE INTO run_ofertas (run_id, id_oferta)
+                    VALUES (?, ?)
+                ''', (run_id, str(id_oferta)))
+
             self.conn.commit()
 
             if self.verbose:
