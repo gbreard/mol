@@ -6,11 +6,22 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-01-15"
+  fecha_actualizacion: "2026-01-16 18:35"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
-  fase_actual: "presentacion"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "Verificar dashboard Next.js consume datos de Supabase"
+  fase_actual: "procesamiento"  # adquisicion | procesamiento | presentacion
+  fase_detalle: "Sistema CONVERGIDO - 100 ofertas nuevas procesadas sin reglas nuevas"
+
+  clae_integration:
+    estado: "Fase 3 completada - catálogo de empresas integrado"
+    nomenclador: "config/clae_nomenclador.json (950 actividades)"
+    keywords_map: "config/clae_keywords_map.json (v1.2 - 50 sectores directos)"
+    empresas_catalogo: "config/empresas_catalogo.json (81 empleadores + 164 intermediarios)"
+    migracion: "migrations/007,008,009 (CLAE + sector_confianza + es_intermediario)"
+    postprocessor: "database/nlp_postprocessor.py - _classify_clae() + _lookup_empresa_catalogo()"
+    validation_rules: "V16-V22 (CLAE + sector sospechoso)"
+    resultados_110: "8 alta confianza (catálogo), 22 intermediarios flaggeados"
+    proximo_paso: "Sync a Supabase con nuevas columnas"
 
   ofertas_bd: 13170  # Total en BD despues de scraping
   ofertas_validadas: 110  # 100 inicial + 10 expansion
@@ -18,7 +29,20 @@ current_state:
 
   matching_version: "v3.3.2"
   matching_arquitectura: "Reglas negocio -> Diccionario argentino -> Semantico"
-  reglas_negocio: 104  # R1-R101 activas
+
+# ============================================
+# CONTEOS OFICIALES (SINGLE SOURCE OF TRUTH)
+# ============================================
+# REGLA: Cuando se modifique un config, actualizar estos conteos.
+# La documentación (CLAUDE.md, PIPELINE.md, etc.) referencia aquí.
+conteos:
+  reglas_negocio: 118           # config/matching_rules_business.json > reglas_forzar_isco (v2.6 actualizado 2026-01-16)
+  reglas_validacion: 22         # config/validation_rules.json > reglas_validacion
+  sinonimos_argentinos: 12      # config/sinonimos_argentinos_esco.json > ocupaciones_titulo
+  empresas_catalogo: 245        # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
+  skills_esco: 14257            # database/embeddings/esco_skills_full.json
+  ocupaciones_esco: 3046        # database/embeddings/esco_occupations_full.json
+  ultima_verificacion: "2026-01-16"
 
   supabase:
     integrado: true
@@ -35,19 +59,84 @@ current_state:
     cobertura_L1: "97.7%"  # skills con categoria L1
 
   ultimo_trabajo:
-    - "Sync inicial Supabase completado: 110 ofertas, 1916 skills, 60 ocupaciones"
-    - "Schema SQL ejecutado en Supabase Dashboard"
-    - "Politicas RLS configuradas (lectura publica, escritura con anon_key)"
-    - "Script corregido para columnas lowercase (l1, l2, l1_nombre, l2_nombre)"
+    - "Pipeline completo 100 ofertas nuevas (run_20260116_1831)"
+    - "NLP v11.3: 100/100 OK (14.5s promedio por oferta)"
+    - "Matching v3.3.2: 100/100 completado"
+    - "  - 81 por reglas de negocio (81%)"
+    - "  - 4 por diccionario argentino (4%)"
+    - "  - 15 por matching semántico (15%)"
+    - "Auto-validación: 21 warnings, 3 errores NLP menores"
+    - "CONVERGENCIA ALCANZADA: 0 reglas nuevas necesarias"
 
-  proximo_paso: "Verificar dashboard Next.js consume datos de Supabase correctamente"
+  proximo_paso: "Validación humana de las 100 nuevas ofertas"
+
+  estadisticas_actuales:
+    ofertas_validadas: 110  # validadas anteriormente
+    ofertas_pendientes: 100  # nuevo lote procesado
+    reglas_negocio: 118
+    tasa_aprendizaje: "0.0% (0 reglas / 100 ofertas)"
+    convergencia: "CONVERGIDO (tasa < 5%)"
+    cobertura_reglas: "85% (81 reglas + 4 diccionario)"
+    fallback_semantico: "15% (15 ofertas)"
+
+  aprendizaje_proceso:
+    problema: "Claude ejecutó matching sin NLP, improvisó pasos del pipeline"
+    causa: "No distinguió entre EJECUTAR pipeline vs INVESTIGAR/DIAGNOSTICAR"
+    solucion: "Sección en CLAUDE.md con reglas claras"
+    reglas:
+      - "EJECUTAR pipeline → SOLO scripts documentados"
+      - "INVESTIGAR/DIAGNOSTICAR → queries manuales OK"
+      - "CREAR REGLAS → necesita ver datos, queries OK"
+    pregunta_clave: "¿Estoy EJECUTANDO o INVESTIGANDO?"
+
+  # Métricas de evolución del aprendizaje
+  learning_evolution:
+    total_runs: 45
+    total_lotes: 5
+    ofertas_unicas: 120  # ofertas distintas con matching
+    procesamientos_totales: 2137  # incluye reprocesos durante optimización
+    ratio_reproceso: "17.8x"  # promedio de veces reprocesada cada oferta
+    reglas_inicio: 22  # 2026-01-13 baseline
+    reglas_actual: 118
+    reglas_agregadas: "+96 en 5 lotes"
+    tasa_convergencia: "47% -> 27% -> 2.7% -> 7.5% -> 0%"
+    estado: "CONVERGIDO (tasa = 0%)"
+    matching_versiones: "3.2.3 -> 3.3.2"
+    ultimo_run: "run_20260116_1831 (100 ofertas nuevas, 0 reglas nuevas)"
+
+    # Sistema de Estados (v2.2)
+    flujo_estados:
+      umbral_convergencia: "5%"  # tasa < 5% = convergido
+      estados_validos:
+        - "optimizacion: Claude iterando, creando reglas"
+        - "listo_validacion: Convergido, esperando humano"
+        - "en_validacion: Humano revisando en Google Sheets"
+        - "validado: Humano aprobó → producción"
+        - "rechazado: Humano pidió más trabajo → volver a optimizar"
+      flujo: "optimizacion → (check_convergence) → listo_validacion → (send_to_human) → en_validacion → (complete_validation) → validado"
+
+    # Comandos
+    comandos:
+      ver_lotes: "python scripts/show_learning_evolution.py --batches"
+      ver_diario: "python scripts/show_learning_evolution.py --daily"
+      ver_timeline: "python scripts/show_learning_evolution.py"
+
+    # Métodos RunTracker (v2.2)
+    metodos_estado:
+      check_convergence: "tracker.check_convergence(lote_id) - verifica tasa y actualiza estado"
+      send_to_human: "tracker.send_to_human_validation(lote_id) - marca para revision humana"
+      complete_validation: "tracker.complete_human_validation(lote_id, aprobado=True/False)"
+      reopen_batch: "tracker.reopen_batch_for_optimization(lote_id) - si fue rechazado"
+      get_state: "tracker.get_batch_state(lote_id) - estado actual con siguiente accion"
 
   integracion_completada:
     - "Supabase sync inicial: 110 ofertas + 1916 skills + 60 ocupaciones ESCO"
     - "skill_categorizer.py v2.0 - sin hardcoding, usa esco_skills_full.json"
     - "Cobertura L1/L2: 97.5% via esco_rdf directo"
-    - "auto_validator.py funcional con 15 reglas"
+    - "auto_validator.py funcional con 22 reglas (V01-V22)"
     - "esco_associations table = 129k relaciones (67k essential + 61k optional)"
+    - "Catálogo de empresas integrado en pipeline NLP (sector alta confianza)"
+    - "Intermediarios flaggeados (es_intermediario=1) para excluir de análisis por sector"
 
   problemas_conocidos:
     - "327 skills (2.3%) sin L1 - son top-level sin broader"
@@ -57,8 +146,13 @@ current_state:
 # ARCHIVOS CLAVE (no buscar, usar estos)
 # ============================================
 archivos_clave:
+  pipeline_completo: "scripts/run_validated_pipeline.py"  # ENTRY POINT PRINCIPAL
   matching: "database/match_ofertas_v3.py"
+  auto_validator: "database/auto_validator.py"
+  auto_corrector: "database/auto_corrector.py"
   export_excel: "scripts/exports/export_validation_excel.py"
+  run_tracking: "scripts/run_tracking.py"  # v2.1.0 con métricas de aprendizaje
+  learning_evolution: "scripts/show_learning_evolution.py"  # visualizar evolución
   reglas_negocio: "config/matching_rules_business.json"
   diccionario_arg: "config/sinonimos_argentinos_esco.json"
   validacion_rules: "config/validation_rules.json"
@@ -73,9 +167,17 @@ archivos_clave:
 # COMANDOS FRECUENTES
 # ============================================
 comandos:
-  reprocesar_matching: "run_matching_pipeline(offer_ids=[...]) en match_ofertas_v3.py"
+  pipeline_completo: "python scripts/run_validated_pipeline.py --limit 100"
+  pipeline_con_markdown: "python scripts/run_validated_pipeline.py --limit 100 --export-markdown"
+  reprocesar_ids: "python scripts/run_validated_pipeline.py --ids X,Y,Z"
   export_excel: "python scripts/exports/export_validation_excel.py --etapa completo --ids X"
   ver_estado: "python scripts/validar_ofertas.py --status"
+  ver_errores_bd: "SELECT * FROM v_errores_pendientes"
+  # Evolución del aprendizaje
+  ver_convergencia: "python scripts/show_learning_evolution.py --batches"
+  ver_evolucion_diaria: "python scripts/show_learning_evolution.py --daily"
+  ver_timeline: "python scripts/show_learning_evolution.py"
+  comparar_runs: "python scripts/compare_runs.py --latest"
 
 # ============================================
 # APRENDIZAJES DEL PROYECTO
@@ -150,6 +252,140 @@ learnings:
       Free tier: ~50k ofertas. Ejecutar schema SQL primero en Supabase Dashboard.
     date: 2026-01-15
 
+  - context: "Clasificacion CLAE sector"
+    learning: |
+      CLAE = Clasificador de Actividades Económicas Argentina (AFIP).
+      Estructura: 6 dígitos (950 actividades) → 3 dígitos (224 grupos) → Letra (20 secciones).
+      Prioridad clasificación: sector_empresa > titulo > descripcion.
+      Keywords genéricos como "sistemas" o "desarrollo" causan falsos positivos con IT.
+      Usar sector_directo en clae_keywords_map.json para mapeo exacto de sector_empresa.
+    date: 2026-01-15
+
+  - context: "Metodología sector_empresa"
+    learning: |
+      CRÍTICO: sector_empresa es el sector del EMPLEADOR, no del puesto.
+      - Banco contrata vigilante → sector=Finanzas (no Seguridad)
+      - Hospital contrata contador → sector=Salud (no Finanzas)
+
+      Niveles de confianza:
+      - alta: Frase explícita "somos empresa de [sector]"
+      - media: LLM extrajo (sin verificar fuente)
+      - baja: Keyword suelto (NO USAR - genera falsos positivos)
+
+      Para análisis de demanda de skills por sector: filtrar sector_confianza IN ('alta','media').
+      Ver docs/guides/METODOLOGIA_SECTOR_EMPRESA.md
+    date: 2026-01-15
+
+  - context: "Catálogo de empresas para sector"
+    learning: |
+      Archivo: config/empresas_catalogo.json
+      - empleadores: empresas conocidas con sector verificable → sector_confianza='alta'
+      - intermediarios: consultoras RRHH (Manpower, Randstad, etc.) → es_intermediario=1
+
+      Flujo en postprocessor:
+      1. _lookup_empresa_catalogo() busca por id_empresa (del scraping)
+      2. Si es empleador conocido → asigna sector + CLAE del catálogo (alta confianza)
+      3. Si es intermediario → flaggea, sector_empresa NO representa al empleador real
+
+      Script para actualización batch: scripts/update_sector_from_catalog.py
+    date: 2026-01-15
+
+  - context: "Reglas ubicación exterior"
+    learning: |
+      Las reglas V04-V06 (Paraguay, Uruguay, Chile) ahora verifican que provincia
+      NO sea una provincia argentina válida antes de marcar como exterior.
+      Evita falsos positivos cuando localidad="Asunción" pero provincia="Buenos Aires".
+    date: 2026-01-16
+
+  - context: "Inferencia área Seguridad"
+    learning: |
+      Agregada regla en nlp_inference_rules.json para forzar area_funcional="Seguridad"
+      cuando titulo contiene: vigilador, vigilante, guardia de seguridad, custodio, sereno.
+      Caso: ID 2171959 "Vigilador General" tenía area=Marketing (error LLM).
+    date: 2026-01-16
+
+  - context: "Seniority oficios técnicos"
+    learning: |
+      Oficios técnicos (mecánico, tornero, soldador, electricista, etc.) sin indicador
+      explícito de seniority → default "semisenior" porque requieren experiencia.
+      Regla en nlp_inference_rules.json > nivel_seniority > prioridad_por_titulo.
+    date: 2026-01-16
+
+  - context: "Excel pestaña Control"
+    learning: |
+      Excel de validación ahora tiene pestaña "Control" con 17 columnas clave para
+      revisión rápida humana. Definida en config/excel_export_schema.json.
+      Columnas: id, titulo, empresa, isco, esco, match_score, ubicación, sector, clae, area, seniority.
+    date: 2026-01-16
+
+  - context: "Feedback Loop via Markdown"
+    learning: |
+      Sistema alternativo al Excel para validación humana versionada en git.
+      1. export_validation_markdown.py genera validation/feedback_*.md
+      2. Humano edita columnas: resultado (OK|ERROR|REVISAR), isco_correcto, comentario
+      3. Claude lee el archivo y crea reglas basadas en errores marcados
+      Ventaja: feedback queda en historial git, visible para todo el equipo en GitHub.
+    date: 2026-01-16
+
+  - context: "Pipeline de validación integrado"
+    learning: |
+      SIEMPRE usar run_validated_pipeline.py como entry point único para procesar ofertas.
+      Ejecuta TODO automáticamente:
+      1. Matching (match_ofertas_v3.py)
+      2. Validación (auto_validator.py) - detecta errores, persiste en tabla validation_errors
+      3. Corrección (auto_corrector.py) - arregla lo que puede, marca corregido=1 en BD
+      4. Reporte (genera cola_claude.json si hay errores escalados)
+      5. Export Markdown (opcional con --export-markdown)
+
+      Errores se persisten en tabla validation_errors con campos:
+      - corregido: 1 si auto_corrector lo arregló
+      - escalado_claude: 1 si requiere regla nueva
+      - resuelto: 1 si se resolvió (auto o manual)
+
+      Vistas útiles: v_errores_pendientes, v_errores_por_tipo
+    date: 2026-01-16
+
+  - context: "Métricas de evolución del aprendizaje"
+    learning: |
+      Cada run ahora registra automáticamente:
+      - reglas_negocio_count: cantidad de reglas en matching_rules_business.json
+      - reglas_validacion_count: cantidad de reglas de validación
+      - sinonimos_count: cantidad de sinónimos argentinos
+      - delta_reglas: diferencia respecto al run anterior
+
+      Comandos útiles:
+      - python scripts/show_learning_evolution.py → timeline completo
+      - python scripts/show_learning_evolution.py --daily → resumen por día
+      - python scripts/show_learning_evolution.py --chart → gráfico ASCII
+
+      Tabla learning_history registra eventos de aprendizaje individuales.
+      Vista v_learning_evolution para queries SQL.
+
+      RunTracker v2.1.0 (scripts/run_tracking.py) calcula métricas automáticamente.
+    date: 2026-01-16
+
+  - context: "Sistema de lotes para medir convergencia"
+    learning: |
+      Lotes agrupan runs relacionados para medir el aprendizaje por iteración.
+
+      Tablas:
+      - learning_batches: lotes con métricas de convergencia
+      - batch_runs: relación lote -> runs
+
+      Métricas clave por lote:
+      - tasa_aprendizaje: reglas_agregadas / ofertas_total (menor = más maduro)
+      - cobertura_estimada: % ofertas cubiertas por reglas existentes
+
+      Umbrales de madurez:
+      - Tasa > 15%: En aprendizaje activo
+      - Tasa 5-15%: Convergiendo
+      - Tasa < 5%: Sistema maduro para producción
+
+      Comando: python scripts/show_learning_evolution.py --batches
+
+      RunTracker métodos: create_batch(), add_run_to_batch(), finalize_batch()
+    date: 2026-01-16
+
 # ============================================
 # DECISIONES TOMADAS
 # ============================================
@@ -166,6 +402,30 @@ decisions:
     reason: "RDF tiene datos completos (skills, jerarquias, relaciones), API es limitada y lenta"
     date: 2026-01-14
 
+  - decision: "CLAE convive con sector_empresa (no reemplaza)"
+    reason: "sector_empresa es texto libre útil para debugging, CLAE es código oficial para agregación"
+    date: 2026-01-15
+
+  - decision: "CLAE usa sector_directo primero, keywords como fallback"
+    reason: "Keywords genéricos causan falsos positivos. sector_empresa ya fue inferido por NLP, es más confiable"
+    date: 2026-01-15
+
+  - decision: "Intermediarios (consultoras) flaggeados pero no excluidos"
+    reason: "El sector de una consultora (ej: Manpower) no representa al empleador real. es_intermediario=1 permite filtrar en análisis por sector sin perder datos"
+    date: 2026-01-15
+
+  - decision: "Catálogo de empresas con id_empresa del scraping"
+    reason: "id_empresa de Bumeran es persistente y permite identificar 81 empleadores conocidos + 164 intermediarios sin depender de parsing de texto"
+    date: 2026-01-15
+
+  - decision: "Pipeline integrado como entry point único (run_validated_pipeline.py)"
+    reason: "Scripts fragmentados (matching → validator → corrector) nunca se ejecutaban completos. Un solo comando garantiza que todo se ejecute y errores se persistan en BD."
+    date: 2026-01-16
+
+  - decision: "Errores de validación persisten en tabla validation_errors"
+    reason: "Errores solo en memoria se perdían entre sesiones. Persistir permite tracking histórico, métricas y feedback loop completo."
+    date: 2026-01-16
+
 # ============================================
 # COSAS QUE NO FUNCIONARON
 # ============================================
@@ -177,3 +437,7 @@ failures:
   - attempt: "Llamar match_and_persist() directo sin run_id"
     problem: "93 ofertas quedaron sin tracking, imposible comparar corridas"
     date: 2026-01-14
+
+  - attempt: "Pipeline fragmentado (matching, validator, corrector como scripts separados)"
+    problem: "Claude nunca ejecutaba el pipeline completo a menos que se pidiera explícitamente. Errores no se persistían en BD."
+    date: 2026-01-16
