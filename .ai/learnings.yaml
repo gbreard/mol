@@ -27,8 +27,18 @@ current_state:
   ofertas_validadas: 110  # 100 inicial + 10 expansion
   estado_ofertas: "validado"  # Listas para produccion
 
-  matching_version: "v3.3.2"
+  matching_version: "v3.3.3"
   matching_arquitectura: "Reglas negocio -> Diccionario argentino -> Semantico"
+
+  # Tracking de convergencia (v3.3.3)
+  tracking_tables:
+    ofertas_matching_history: "Historial de cada matching (no sobrescribe)"
+    run_ofertas: "Relación run <-> ofertas procesadas"
+    ofertas_nlp_history: "Versiones NLP por oferta (ya existía)"
+  tracking_views:
+    v_ofertas_problematicas: "Ofertas con múltiples reprocesos matching"
+    v_matching_timeline: "Historial completo por oferta"
+    v_nlp_convergencia: "Versiones NLP por oferta"
 
 # ============================================
 # CONTEOS OFICIALES (SINGLE SOURCE OF TRUTH)
@@ -333,6 +343,21 @@ learnings:
       2. Humano edita columnas: resultado (OK|ERROR|REVISAR), isco_correcto, comentario
       3. Claude lee el archivo y crea reglas basadas en errores marcados
       Ventaja: feedback queda en historial git, visible para todo el equipo en GitHub.
+    date: 2026-01-16
+
+  - context: "Tracking histórico de matching"
+    learning: |
+      v3.3.3 agrega tracking completo de convergencia:
+      - ofertas_matching_history: INSERT en cada matching (no sobrescribe como ofertas_esco_matching)
+      - run_ofertas: qué ofertas se procesaron en cada run
+
+      Vistas útiles:
+      - v_ofertas_problematicas: ofertas con múltiples ISCOs (las que más costaron)
+      - v_matching_timeline: historial completo por oferta
+      - v_nlp_convergencia: versiones NLP por oferta (97% convergen en 1 intento)
+
+      Query para ofertas difíciles:
+      SELECT * FROM v_ofertas_problematicas ORDER BY veces_procesada DESC;
     date: 2026-01-16
 
   - context: "Pipeline de validación integrado"
