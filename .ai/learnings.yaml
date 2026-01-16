@@ -92,14 +92,18 @@ conteos:
   # Métricas de evolución del aprendizaje
   learning_evolution:
     total_runs: 45
-    ofertas_unicas_con_matching: 120  # ofertas distintas en ofertas_esco_matching
-    # NOTA: ofertas_count en pipeline_runs suma 2137, pero es porque las mismas
-    # ~110 ofertas fueron reprocesadas ~18 veces durante optimización.
-    # El matching SOBRESCRIBE resultados anteriores, no acumula.
-    desglose_ofertas:
-      lote_inicial: 20  # Gold Set original
-      expansion_validacion: 90  # expansión para validación humana
-      lote_nuevo_convergido: 100  # run_20260116_1831 (primer procesamiento)
+    ofertas_con_historial_nlp: 5474  # ofertas en ofertas_nlp_history
+    ofertas_con_matching: 120  # ofertas distintas en ofertas_esco_matching
+
+    # Distribución real de reprocesos (datos de ofertas_nlp_history)
+    distribucion_reprocesos:
+      convergieron_1_intento: 5308  # 97% - funcionaron de una
+      necesitaron_2_intentos: 144   # 3%
+      necesitaron_3_intentos: 11
+      necesitaron_4_intentos: 6
+      necesitaron_5_intentos: 4
+      caso_mas_dificil: "2154549 Contador Auditoría (12 intentos)"
+
     reglas_inicio: 22  # 2026-01-13 baseline
     reglas_actual: 118
     reglas_agregadas: "+96 durante optimización"
