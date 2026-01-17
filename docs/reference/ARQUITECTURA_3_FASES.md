@@ -136,16 +136,18 @@ ofertas (crudo)
 └──────────────────────┬──────────────────────────────┘
                        v
 ┌─────────────────────────────────────────────────────┐
-│ 2.5 MATCHING ESCO (v3.3.2)                          │
+│ 2.5 MATCHING ESCO (v3.3.3)                          │
 │     match_ofertas_v3.py                             │
-│     104 reglas negocio + diccionario arg + semantico│
+│     118 reglas negocio + diccionario arg + semantico│
 │     -> ofertas_esco_matching                        │
+│     -> ofertas_matching_history (tracking)          │
+│     -> run_ofertas (tracking)                       │
 └──────────────────────┬──────────────────────────────┘
                        v
 ┌─────────────────────────────────────────────────────┐
 │ 2.6 VALIDACION AUTOMATICA                           │
 │     auto_validator.py                               │
-│     15 reglas de deteccion de errores               │
+│     22 reglas de deteccion de errores               │
 └──────────────────────┬──────────────────────────────┘
                        v
 ┌─────────────────────────────────────────────────────┐
@@ -184,9 +186,17 @@ ofertas (crudo)
 | Archivo | Proposito |
 |---------|-----------|
 | `config/matching_config.json` | Pesos y umbrales |
-| `config/matching_rules_business.json` | 104 reglas de negocio |
-| `config/sinonimos_argentinos_esco.json` | Diccionario argentino |
+| `config/matching_rules_business.json` | 118 reglas de negocio |
+| `config/sinonimos_argentinos_esco.json` | Diccionario argentino (12 ocupaciones) |
 | `config/area_funcional_esco_map.json` | Mapeo area -> ISCO |
+
+**Tracking (v3.3.3):**
+| Tabla | Proposito |
+|-------|-----------|
+| `ofertas_matching_history` | Historial de cada matching (no sobrescribe) |
+| `run_ofertas` | Qué ofertas se procesaron en cada run |
+| `ofertas_nlp_history` | Versiones NLP por oferta |
+| `validation_errors` | Errores detectados por oferta |
 
 ### Documentacion Relacionada
 - `docs/reference/PIPELINE.md` - Pipeline tecnico detallado
@@ -331,4 +341,4 @@ Ejemplos:
 
 ---
 
-*Ultima actualizacion: 2026-01-15*
+*Ultima actualizacion: 2026-01-16*
