@@ -1,0 +1,5966 @@
+{
+  "version": "2024",
+  "fuente": "https://cdn.produccion.gob.ar/cdn-cep/clae_agg.csv",
+  "descripcion": "Clasificador de Actividades Economicas Argentina (AFIP)",
+  "estadisticas": {
+    "secciones": 20,
+    "grupos": 224,
+    "actividades": 950
+  },
+  "secciones": {
+    "A": {
+      "nombre": "AGRICULTURA, GANADERÍA, CAZA, SILVICULTURA Y PESCA",
+      "clae2": "1"
+    },
+    "B": {
+      "nombre": "EXPLOTACION DE MINAS Y CANTERAS",
+      "clae2": "5"
+    },
+    "C": {
+      "nombre": "INDUSTRIA MANUFACTURERA",
+      "clae2": "10"
+    },
+    "D": {
+      "nombre": "SUMINISTRO DE ELECTRICIDAD, GAS, VAPOR Y AIRE ACONDICIONADO",
+      "clae2": "35"
+    },
+    "E": {
+      "nombre": "SUMINISTRO DE AGUA; CLOACAS; GESTIÓN DE RESIDUOS Y RECUPERACIÓN DE MATERIALES Y SANEAMIENTO PUBLICO",
+      "clae2": "36"
+    },
+    "F": {
+      "nombre": "CONSTRUCCIÓN",
+      "clae2": "41"
+    },
+    "G": {
+      "nombre": "COMERCIO AL POR MAYOR Y AL POR MENOR; REPARACIÓN DE VEHÍCULOS AUTOMOTORES Y MOTOCICLETAS",
+      "clae2": "45"
+    },
+    "H": {
+      "nombre": "SERVICIO DE TRANSPORTE Y ALMACENAMIENTO",
+      "clae2": "49"
+    },
+    "I": {
+      "nombre": "SERVICIOS DE ALOJAMIENTO Y SERVICIOS DE COMIDA",
+      "clae2": "55"
+    },
+    "J": {
+      "nombre": "INFORMACIÓN Y COMUNICACIONES",
+      "clae2": "58"
+    },
+    "K": {
+      "nombre": "INTERMEDIACIÓN FINANCIERA Y SERVICIOS DE SEGUROS",
+      "clae2": "64"
+    },
+    "L": {
+      "nombre": "SERVICIOS INMOBILIARIOS",
+      "clae2": "68"
+    },
+    "M": {
+      "nombre": "SERVICIOS PROFESIONALES, CIENTÍFICOS Y TÉCNICOS",
+      "clae2": "69"
+    },
+    "N": {
+      "nombre": "ACTIVIDADES ADMINISTRATIVAS Y SERVICIOS DE APOYO",
+      "clae2": "77"
+    },
+    "O": {
+      "nombre": "ADMINISTRACION PUBLICA, DEFENSA Y SEGURIDAD SOCIAL OBLIGATORIA",
+      "clae2": "84"
+    },
+    "P": {
+      "nombre": "ENSEÑANZA",
+      "clae2": "85"
+    },
+    "Q": {
+      "nombre": "SALUD HUMANA Y SERVICIOS SOCIALES",
+      "clae2": "86"
+    },
+    "R": {
+      "nombre": "SERVICIOS  ARTÍSTICOS, CULTURALES, DEPORTIVOS  Y DE ESPARCIMIENTO",
+      "clae2": "90"
+    },
+    "S": {
+      "nombre": "SERVICIOS DE ASOCIACIONES Y SERVICIOS PERSONALES",
+      "clae2": "94"
+    },
+    "Z": {
+      "nombre": "OTROS SECTORES",
+      "clae2": "999"
+    }
+  },
+  "grupos": {
+    "101": {
+      "seccion": "C",
+      "nombre": "Producción y procesamiento de carne y productos cárnicos, excepto pescado",
+      "clae2": "10"
+    },
+    "102": {
+      "seccion": "C",
+      "nombre": "Elaboración de pescado y productos de pescado",
+      "clae2": "10"
+    },
+    "103": {
+      "seccion": "C",
+      "nombre": "Preparación de frutas, hortalizas y legumbres",
+      "clae2": "10"
+    },
+    "104": {
+      "seccion": "C",
+      "nombre": "Elaboración de aceites y grasas de origen vegetal",
+      "clae2": "10"
+    },
+    "105": {
+      "seccion": "C",
+      "nombre": "Elaboración de productos lácteos",
+      "clae2": "10"
+    },
+    "106": {
+      "seccion": "C",
+      "nombre": "Elaboración de productos de molinería, almidones y productos derivados del almidón",
+      "clae2": "10"
+    },
+    "107": {
+      "seccion": "C",
+      "nombre": "Elaboración de productos alimenticios ncp",
+      "clae2": "10"
+    },
+    "108": {
+      "seccion": "C",
+      "nombre": "Elaboración de alimentos preparados para animales",
+      "clae2": "10"
+    },
+    "109": {
+      "seccion": "C",
+      "nombre": "Servicios industriales para la elaboración de alimentos y bebidas",
+      "clae2": "10"
+    },
+    "11": {
+      "seccion": "A",
+      "nombre": "Cultivos temporales",
+      "clae2": "1"
+    },
+    "110": {
+      "seccion": "C",
+      "nombre": "Elaboración de bebidas",
+      "clae2": "11"
+    },
+    "12": {
+      "seccion": "A",
+      "nombre": "Cultivos perennes",
+      "clae2": "1"
+    },
+    "120": {
+      "seccion": "C",
+      "nombre": "Elaboración de productos de tabaco",
+      "clae2": "12"
+    },
+    "13": {
+      "seccion": "A",
+      "nombre": "Producción de semillas y de otras formas de propagación de cultivos agrícolas",
+      "clae2": "1"
+    },
+    "131": {
+      "seccion": "C",
+      "nombre": "Fabricación  de hilados y  tejidos, acabado de productos textiles",
+      "clae2": "13"
+    },
+    "139": {
+      "seccion": "C",
+      "nombre": "Fabricación de productos textiles ncp",
+      "clae2": "13"
+    },
+    "14": {
+      "seccion": "A",
+      "nombre": "Cría de animales",
+      "clae2": "1"
+    },
+    "141": {
+      "seccion": "C",
+      "nombre": "Confección de prendas de vestir, excepto prendas de piel",
+      "clae2": "14"
+    },
+    "142": {
+      "seccion": "C",
+      "nombre": "Terminación y teñido de pieles; fabricación de artículos de piel",
+      "clae2": "14"
+    },
+    "143": {
+      "seccion": "C",
+      "nombre": "Fabricación de prendas de vestir de punto",
+      "clae2": "14"
+    },
+    "149": {
+      "seccion": "C",
+      "nombre": "Servicios industriales para la industria confeccionista",
+      "clae2": "14"
+    },
+    "151": {
+      "seccion": "C",
+      "nombre": "Curtido y terminación de cueros; fabricación de artículos de marroquinería y talabartería",
+      "clae2": "15"
+    },
+    "152": {
+      "seccion": "C",
+      "nombre": "Fabricación de calzado y de sus partes",
+      "clae2": "15"
+    },
+    "16": {
+      "seccion": "A",
+      "nombre": "Servicios de apoyo agrícolas y pecuarios",
+      "clae2": "1"
+    },
+    "161": {
+      "seccion": "C",
+      "nombre": "Aserrado y cepillado de madera",
+      "clae2": "16"
+    },
+    "162": {
+      "seccion": "C",
+      "nombre": "Fabricación de productos de madera, corcho, paja y materiales trenzables",
+      "clae2": "16"
+    },
+    "17": {
+      "seccion": "A",
+      "nombre": "Caza, repoblación  de animales de caza y servicios de apoyo",
+      "clae2": "1"
+    },
+    "170": {
+      "seccion": "C",
+      "nombre": "Fabricación de papel y de productos de papel",
+      "clae2": "17"
+    },
+    "181": {
+      "seccion": "C",
+      "nombre": "Impresión y servicios relacionados con la impresión",
+      "clae2": "18"
+    },
+    "182": {
+      "seccion": "C",
+      "nombre": "Reproducción de grabaciones",
+      "clae2": "18"
+    },
+    "191": {
+      "seccion": "C",
+      "nombre": "Fabricación de productos de hornos de coque",
+      "clae2": "19"
+    },
+    "192": {
+      "seccion": "C",
+      "nombre": "Fabricación de productos de la refinación del petróleo",
+      "clae2": "19"
+    },
+    "201": {
+      "seccion": "C",
+      "nombre": "Fabricación de sustancias químicas básicas",
+      "clae2": "20"
+    },
+    "202": {
+      "seccion": "C",
+      "nombre": "Fabricación de productos químicos ncp",
+      "clae2": "20"
+    },
+    "203": {
+      "seccion": "C",
+      "nombre": "Fabricación de fibras manufacturadas",
+      "clae2": "20"
+    },
+    "204": {
+      "seccion": "C",
+      "nombre": "Servicios industriales para la fabricación de sustancias y productos químicos",
+      "clae2": "20"
+    },
+    "21": {
+      "seccion": "A",
+      "nombre": "Silvicultura",
+      "clae2": "2"
+    },
+    "210": {
+      "seccion": "C",
+      "nombre": "Fabricación de productos farmaceúticos, sustancias químicas medicinales y productos botánicos de uso farmaceútico",
+      "clae2": "21"
+    },
+    "22": {
+      "seccion": "A",
+      "nombre": "Extracción de productos forestales",
+      "clae2": "2"
+    },
+    "221": {
+      "seccion": "C",
+      "nombre": "Fabricación de productos de caucho",
+      "clae2": "22"
+    },
+    "222": {
+      "seccion": "C",
+      "nombre": "Fabricación de productos de plástico",
+      "clae2": "22"
+    },
+    "231": {
+      "seccion": "C",
+      "nombre": "Fabricación de vidrio y productos de vidrio",
+      "clae2": "23"
+    },
+    "239": {
+      "seccion": "C",
+      "nombre": "Fabricación de productos minerales no metálicos ncp",
+      "clae2": "23"
+    },
+    "24": {
+      "seccion": "A",
+      "nombre": "Servicios de apoyo a la silvicultura",
+      "clae2": "2"
+    },
+    "241": {
+      "seccion": "C",
+      "nombre": "Industrias básicas de hierro y acero",
+      "clae2": "24"
+    },
+    "242": {
+      "seccion": "C",
+      "nombre": "Fabricación de productos primarios de metales preciosos y metales no ferrosos",
+      "clae2": "24"
+    },
+    "243": {
+      "seccion": "C",
+      "nombre": "Fundición de metales",
+      "clae2": "24"
+    },
+    "251": {
+      "seccion": "C",
+      "nombre": "Fabricación de productos metálicos para uso estructural, tanques, depósitos y generadores de vapor",
+      "clae2": "25"
+    },
+    "252": {
+      "seccion": "C",
+      "nombre": "Fabricación de armas y municiones",
+      "clae2": "25"
+    },
+    "259": {
+      "seccion": "C",
+      "nombre": "Fabricación de productos elaborados de metal ncp; servicios de trabajo de metales",
+      "clae2": "25"
+    },
+    "261": {
+      "seccion": "C",
+      "nombre": "Fabricación de componentes electrónicos",
+      "clae2": "26"
+    },
+    "262": {
+      "seccion": "C",
+      "nombre": "Fabricación de equipos y productos informáticos",
+      "clae2": "26"
+    },
+    "263": {
+      "seccion": "C",
+      "nombre": "Fabricación  de equipos de comunicaciones y transmisores de radio y televisión",
+      "clae2": "26"
+    },
+    "264": {
+      "seccion": "C",
+      "nombre": "Fabricación de receptores de radio y televisión, aparatos de grabación y reproducción de sonido y video, y productos conexos",
+      "clae2": "26"
+    },
+    "265": {
+      "seccion": "C",
+      "nombre": "Fabricación de aparatos e instrumentos para medir, verificar, ensayar, navegar y otros fines, excepto instrumentos de óptica",
+      "clae2": "26"
+    },
+    "266": {
+      "seccion": "C",
+      "nombre": "Fabricación de equipo médico y quirúrgico y de aparatos ortopédicos",
+      "clae2": "26"
+    },
+    "267": {
+      "seccion": "C",
+      "nombre": "Fabricación de instrumentos de óptica y equipo fotográfico",
+      "clae2": "26"
+    },
+    "268": {
+      "seccion": "C",
+      "nombre": "Fabricación de soportes ópticos y magnéticos",
+      "clae2": "26"
+    },
+    "271": {
+      "seccion": "C",
+      "nombre": "Fabricación de motores, generadores y transformadores eléctricos y aparatos de distribución  y control de la energía eléctrica",
+      "clae2": "27"
+    },
+    "272": {
+      "seccion": "C",
+      "nombre": "Fabricación de acumuladores,  pilas y baterías primarias",
+      "clae2": "27"
+    },
+    "273": {
+      "seccion": "C",
+      "nombre": "Fabricación de hilos y cables aislados",
+      "clae2": "27"
+    },
+    "274": {
+      "seccion": "C",
+      "nombre": "Fabricación de lámparas eléctricas y equipo de iluminación",
+      "clae2": "27"
+    },
+    "275": {
+      "seccion": "C",
+      "nombre": "Fabricación de aparatos de uso doméstico ncp",
+      "clae2": "27"
+    },
+    "279": {
+      "seccion": "C",
+      "nombre": "Fabricación  de equipo eléctrico ncp",
+      "clae2": "27"
+    },
+    "281": {
+      "seccion": "C",
+      "nombre": "Fabricación de maquinaria y equipo de uso general",
+      "clae2": "28"
+    },
+    "282": {
+      "seccion": "C",
+      "nombre": "Fabricación de maquinaria y equipo de uso especial",
+      "clae2": "28"
+    },
+    "291": {
+      "seccion": "C",
+      "nombre": "Fabricación de vehículos automotores",
+      "clae2": "29"
+    },
+    "292": {
+      "seccion": "C",
+      "nombre": "Fabricación  de  carrocerías  para  vehículos  automotores;  fabricación de remolques y semirremolques",
+      "clae2": "29"
+    },
+    "293": {
+      "seccion": "C",
+      "nombre": "Fabricación de partes, piezas y accesorios para vehículos automotores y sus motores",
+      "clae2": "29"
+    },
+    "301": {
+      "seccion": "C",
+      "nombre": "Construcción y reparación de buques y embarcaciones",
+      "clae2": "30"
+    },
+    "302": {
+      "seccion": "C",
+      "nombre": "Fabricación y reparación de locomotoras y de material rodante para transporte ferroviario",
+      "clae2": "30"
+    },
+    "303": {
+      "seccion": "C",
+      "nombre": "Fabricación y reparación de aeronaves",
+      "clae2": "30"
+    },
+    "309": {
+      "seccion": "C",
+      "nombre": "Fabricación de equipo de transporte ncp",
+      "clae2": "30"
+    },
+    "31": {
+      "seccion": "A",
+      "nombre": "Pesca y servicios de apoyo",
+      "clae2": "3"
+    },
+    "310": {
+      "seccion": "C",
+      "nombre": "Fabricación de muebles y colchones",
+      "clae2": "31"
+    },
+    "32": {
+      "seccion": "A",
+      "nombre": "Explotación de criaderos de peces, granjas piscícolas y otros frutos acuáticos (acuicultura)",
+      "clae2": "3"
+    },
+    "321": {
+      "seccion": "C",
+      "nombre": "Fabricación de joyas, bijouterie y artículos conexos",
+      "clae2": "32"
+    },
+    "322": {
+      "seccion": "C",
+      "nombre": "Fabricación de instrumentos de música",
+      "clae2": "32"
+    },
+    "323": {
+      "seccion": "C",
+      "nombre": "Fabricación de artículos de deporte",
+      "clae2": "32"
+    },
+    "324": {
+      "seccion": "C",
+      "nombre": "Fabricación de juegos y juguetes",
+      "clae2": "32"
+    },
+    "329": {
+      "seccion": "C",
+      "nombre": "Industrias manufactureras ncp",
+      "clae2": "32"
+    },
+    "331": {
+      "seccion": "C",
+      "nombre": "Reparación y mantenimiento de máquinas y equipo",
+      "clae2": "33"
+    },
+    "332": {
+      "seccion": "C",
+      "nombre": "Instalación de maquinaria y equipos industriales",
+      "clae2": "33"
+    },
+    "351": {
+      "seccion": "D",
+      "nombre": "Generación, transporte y distribución de energía eléctrica",
+      "clae2": "35"
+    },
+    "352": {
+      "seccion": "D",
+      "nombre": "Fabricación y distribución de gas  y de combustibles gaseosos por tuberías",
+      "clae2": "35"
+    },
+    "353": {
+      "seccion": "D",
+      "nombre": "Suministro de vapor y aire acondicionado",
+      "clae2": "35"
+    },
+    "360": {
+      "seccion": "E",
+      "nombre": "Captación, depuración y distribución de agua",
+      "clae2": "36"
+    },
+    "370": {
+      "seccion": "E",
+      "nombre": "Servicios de depuración de aguas residuales, alcantarillado y cloacas",
+      "clae2": "37"
+    },
+    "381": {
+      "seccion": "E",
+      "nombre": "Recolección, transporte, tratamiento y disposición final de residuos",
+      "clae2": "38"
+    },
+    "382": {
+      "seccion": "E",
+      "nombre": "Recuperación de materiales y deshechos",
+      "clae2": "38"
+    },
+    "390": {
+      "seccion": "E",
+      "nombre": "Descontaminación y otros servicios de gestión de residuos",
+      "clae2": "39"
+    },
+    "410": {
+      "seccion": "F",
+      "nombre": "Construcción de edificios y sus partes",
+      "clae2": "41"
+    },
+    "421": {
+      "seccion": "F",
+      "nombre": "Construcción, reforma y reparación de obras de infraestructura para el transporte",
+      "clae2": "42"
+    },
+    "422": {
+      "seccion": "F",
+      "nombre": "Construcción de proyectos de servicios públicos",
+      "clae2": "42"
+    },
+    "429": {
+      "seccion": "F",
+      "nombre": "Obras de ingeniería civil ncp",
+      "clae2": "42"
+    },
+    "431": {
+      "seccion": "F",
+      "nombre": "Demolición, movimiento y preparación de terrenos para obras",
+      "clae2": "43"
+    },
+    "432": {
+      "seccion": "F",
+      "nombre": "Instalaciones para edificios y obras de ingeniería civil",
+      "clae2": "43"
+    },
+    "433": {
+      "seccion": "F",
+      "nombre": "Terminación de edificios",
+      "clae2": "43"
+    },
+    "439": {
+      "seccion": "F",
+      "nombre": "Alquiler de equipo de construcción o demolición dotado de operarios y actividades especializadas de construcción ncp",
+      "clae2": "43"
+    },
+    "451": {
+      "seccion": "G",
+      "nombre": "Venta de vehículos automotores, excepto motocicletas",
+      "clae2": "45"
+    },
+    "452": {
+      "seccion": "G",
+      "nombre": "Mantenimiento y reparación de vehículos automotores, excepto motocicletas",
+      "clae2": "45"
+    },
+    "453": {
+      "seccion": "G",
+      "nombre": "Venta de partes, piezas y accesorios de vehículos automotores",
+      "clae2": "45"
+    },
+    "454": {
+      "seccion": "G",
+      "nombre": "Venta, mantenimiento y reparación de motocicletas y de sus partes, piezas y accesorios",
+      "clae2": "45"
+    },
+    "461": {
+      "seccion": "G",
+      "nombre": "Venta al por mayor en comisión o consignación",
+      "clae2": "46"
+    },
+    "462": {
+      "seccion": "G",
+      "nombre": "Venta al por mayor de materias primas agropecuarias y de animales vivos",
+      "clae2": "46"
+    },
+    "463": {
+      "seccion": "G",
+      "nombre": "Venta al por mayor de alimentos, bebidas y tabaco",
+      "clae2": "46"
+    },
+    "464": {
+      "seccion": "G",
+      "nombre": "Venta al por mayor de artículos de uso doméstico y/o personal",
+      "clae2": "46"
+    },
+    "465": {
+      "seccion": "G",
+      "nombre": "Venta al por mayor de máquinas, equipo y materiales conexos",
+      "clae2": "46"
+    },
+    "466": {
+      "seccion": "G",
+      "nombre": "Venta al por mayor especializada",
+      "clae2": "46"
+    },
+    "469": {
+      "seccion": "G",
+      "nombre": "Venta al por mayor de mercancías ncp",
+      "clae2": "46"
+    },
+    "471": {
+      "seccion": "G",
+      "nombre": "Venta al por menor en comercios no especializados",
+      "clae2": "47"
+    },
+    "472": {
+      "seccion": "G",
+      "nombre": "Venta al por menor de productos alimenticios, bebidas y tabaco en comercios especializados",
+      "clae2": "47"
+    },
+    "473": {
+      "seccion": "G",
+      "nombre": "Venta al por menor de combustible para vehículos automotores y motocicletas",
+      "clae2": "47"
+    },
+    "474": {
+      "seccion": "G",
+      "nombre": "Venta al por menor de equipos, periféricos,  accesorios y programas informáticos;  equipos de telecomunicaciones en comercios especializados",
+      "clae2": "47"
+    },
+    "475": {
+      "seccion": "G",
+      "nombre": "Venta al por menor de equipos de uso doméstico ncp en comercios especializados",
+      "clae2": "47"
+    },
+    "476": {
+      "seccion": "G",
+      "nombre": "Venta al por menor de bienes culturales y recreativos en comercios especializados",
+      "clae2": "47"
+    },
+    "477": {
+      "seccion": "G",
+      "nombre": "Venta al por menor de productos ncp, en comercios especializados",
+      "clae2": "47"
+    },
+    "478": {
+      "seccion": "G",
+      "nombre": "Venta al por menor en puestos móviles y mercados",
+      "clae2": "47"
+    },
+    "479": {
+      "seccion": "G",
+      "nombre": "Venta al por menor no realizada en comercios, puestos o mercados",
+      "clae2": "47"
+    },
+    "491": {
+      "seccion": "H",
+      "nombre": "Servicio de transporte ferroviario",
+      "clae2": "49"
+    },
+    "492": {
+      "seccion": "H",
+      "nombre": "Servicio de transporte automotor",
+      "clae2": "49"
+    },
+    "493": {
+      "seccion": "H",
+      "nombre": "Servicio de transporte por tuberías",
+      "clae2": "49"
+    },
+    "501": {
+      "seccion": "H",
+      "nombre": "Servicio de transporte marítimo",
+      "clae2": "50"
+    },
+    "502": {
+      "seccion": "H",
+      "nombre": "Servicio de transporte fluvial y lacustre",
+      "clae2": "50"
+    },
+    "51": {
+      "seccion": "B",
+      "nombre": "Extracción y aglomeración de carbón",
+      "clae2": "5"
+    },
+    "511": {
+      "seccion": "H",
+      "nombre": "Servicio de transporte aéreo de pasajeros",
+      "clae2": "51"
+    },
+    "512": {
+      "seccion": "H",
+      "nombre": "Servicio de transporte aéreo de cargas",
+      "clae2": "51"
+    },
+    "52": {
+      "seccion": "B",
+      "nombre": "Extracción y aglomeración de lignito",
+      "clae2": "5"
+    },
+    "521": {
+      "seccion": "H",
+      "nombre": "Servicios de manipulación de cargas",
+      "clae2": "52"
+    },
+    "522": {
+      "seccion": "H",
+      "nombre": "Servicios de almacenamiento y depósito",
+      "clae2": "52"
+    },
+    "523": {
+      "seccion": "H",
+      "nombre": "Servicios de gestión y logística para el transporte de mercaderías",
+      "clae2": "52"
+    },
+    "524": {
+      "seccion": "H",
+      "nombre": "Servicios complementarios para el transporte",
+      "clae2": "52"
+    },
+    "530": {
+      "seccion": "H",
+      "nombre": "Servicios de correos y mensajerías",
+      "clae2": "53"
+    },
+    "551": {
+      "seccion": "I",
+      "nombre": "Servicios de alojamiento, excepto en camping",
+      "clae2": "55"
+    },
+    "552": {
+      "seccion": "I",
+      "nombre": "Servicios de alojamiento en campings",
+      "clae2": "55"
+    },
+    "561": {
+      "seccion": "I",
+      "nombre": "Servicios de expendio de comidas y bebidas",
+      "clae2": "56"
+    },
+    "562": {
+      "seccion": "I",
+      "nombre": "Servicios de preparación de comidas para empresas y  servicios de comidas ncp",
+      "clae2": "56"
+    },
+    "581": {
+      "seccion": "J",
+      "nombre": "Edición",
+      "clae2": "58"
+    },
+    "591": {
+      "seccion": "J",
+      "nombre": "Servicios de cinematografía",
+      "clae2": "59"
+    },
+    "592": {
+      "seccion": "J",
+      "nombre": "Servicios de grabación de sonido y edición de música",
+      "clae2": "59"
+    },
+    "601": {
+      "seccion": "J",
+      "nombre": "Emisión y retransmisión de radio",
+      "clae2": "60"
+    },
+    "602": {
+      "seccion": "J",
+      "nombre": "Servicios de televisión",
+      "clae2": "60"
+    },
+    "61": {
+      "seccion": "B",
+      "nombre": "Extracción de petróleo crudo",
+      "clae2": "6"
+    },
+    "611": {
+      "seccion": "J",
+      "nombre": "Servicios de telefonía fija",
+      "clae2": "61"
+    },
+    "612": {
+      "seccion": "J",
+      "nombre": "Servicios de telefonía móvil",
+      "clae2": "61"
+    },
+    "613": {
+      "seccion": "J",
+      "nombre": "Servicios de telecomunicaciones vía satélite, excepto servicios de transmisión de televisión",
+      "clae2": "61"
+    },
+    "614": {
+      "seccion": "J",
+      "nombre": "Servicios de telecomunicación vía internet",
+      "clae2": "61"
+    },
+    "619": {
+      "seccion": "J",
+      "nombre": "Servicios de telecomunicaciones ncp",
+      "clae2": "61"
+    },
+    "62": {
+      "seccion": "B",
+      "nombre": "Extracción de gas natural",
+      "clae2": "6"
+    },
+    "620": {
+      "seccion": "J",
+      "nombre": "Servicios de programación y consultoría informática y actividades conexas",
+      "clae2": "62"
+    },
+    "631": {
+      "seccion": "J",
+      "nombre": "Procesamiento de datos,  hospedaje y actividades conexas; portales web",
+      "clae2": "63"
+    },
+    "639": {
+      "seccion": "J",
+      "nombre": "Servicios de agencias de noticias y servicios de información ncp",
+      "clae2": "63"
+    },
+    "641": {
+      "seccion": "K",
+      "nombre": "Intermediación monetaria",
+      "clae2": "64"
+    },
+    "642": {
+      "seccion": "K",
+      "nombre": "Servicios de sociedades de cartera",
+      "clae2": "64"
+    },
+    "643": {
+      "seccion": "K",
+      "nombre": "Fondos y sociedades de inversión y entidades financieras similares",
+      "clae2": "64"
+    },
+    "649": {
+      "seccion": "K",
+      "nombre": "Servicios financieros excepto los de la banca central y las entidades financieras",
+      "clae2": "64"
+    },
+    "651": {
+      "seccion": "K",
+      "nombre": "Servicios de seguros",
+      "clae2": "65"
+    },
+    "652": {
+      "seccion": "K",
+      "nombre": "Reaseguros",
+      "clae2": "65"
+    },
+    "653": {
+      "seccion": "K",
+      "nombre": "Administración de fondos de pensiones",
+      "clae2": "65"
+    },
+    "661": {
+      "seccion": "K",
+      "nombre": "Servicios auxiliares a la actividad financiera, excepto a los servicios de seguros",
+      "clae2": "66"
+    },
+    "662": {
+      "seccion": "K",
+      "nombre": "Servicios auxiliares a los servicios de seguros",
+      "clae2": "66"
+    },
+    "663": {
+      "seccion": "K",
+      "nombre": "Servicios de gestión de fondos a cambio de una retribución o por contrata",
+      "clae2": "66"
+    },
+    "681": {
+      "seccion": "L",
+      "nombre": "Servicios inmobiliarios realizados por cuenta propia, con bienes propios o arrendados",
+      "clae2": "68"
+    },
+    "682": {
+      "seccion": "L",
+      "nombre": "Servicios inmobiliarios realizados a cambio de una retribución o por contrata",
+      "clae2": "68"
+    },
+    "691": {
+      "seccion": "M",
+      "nombre": "Servicios jurídicos",
+      "clae2": "69"
+    },
+    "692": {
+      "seccion": "M",
+      "nombre": "Servicios de contabilidad, auditoría y asesoría fiscal",
+      "clae2": "69"
+    },
+    "702": {
+      "seccion": "M",
+      "nombre": "Servicios de asesoramiento, dirección y gestión empresarial",
+      "clae2": "70"
+    },
+    "71": {
+      "seccion": "B",
+      "nombre": "Extracción de minerales de hierro",
+      "clae2": "7"
+    },
+    "711": {
+      "seccion": "M",
+      "nombre": "Servicios de arquitectura e ingeniería y servicios técnicos ncp",
+      "clae2": "71"
+    },
+    "712": {
+      "seccion": "M",
+      "nombre": "Ensayos y análisis técnicos",
+      "clae2": "71"
+    },
+    "72": {
+      "seccion": "B",
+      "nombre": "Extracción de minerales metalíferos no ferrosos",
+      "clae2": "7"
+    },
+    "721": {
+      "seccion": "M",
+      "nombre": "Investigación y desarrollo experimental en el campo de la ingeniería y de las ciencias exactas y naturales",
+      "clae2": "72"
+    },
+    "722": {
+      "seccion": "M",
+      "nombre": "Investigación  y desarrollo experimental en el campo de las ciencias sociales y las humanidades",
+      "clae2": "72"
+    },
+    "731": {
+      "seccion": "M",
+      "nombre": "Servicios de publicidad",
+      "clae2": "73"
+    },
+    "732": {
+      "seccion": "M",
+      "nombre": "Estudio de mercado, realización de encuestas de opinión pública",
+      "clae2": "73"
+    },
+    "741": {
+      "seccion": "M",
+      "nombre": "Servicios de diseño especializado",
+      "clae2": "74"
+    },
+    "742": {
+      "seccion": "M",
+      "nombre": "Servicios de fotografía",
+      "clae2": "74"
+    },
+    "749": {
+      "seccion": "M",
+      "nombre": "Actividades profesionales, científicas y técnicas ncp",
+      "clae2": "74"
+    },
+    "750": {
+      "seccion": "M",
+      "nombre": "Servicios veterinarios",
+      "clae2": "75"
+    },
+    "771": {
+      "seccion": "N",
+      "nombre": "Alquiler de vehículos automotores y equipo de transporte sin conductor ni operarios",
+      "clae2": "77"
+    },
+    "772": {
+      "seccion": "N",
+      "nombre": "Alquiler de efectos personales y enseres domésticos",
+      "clae2": "77"
+    },
+    "773": {
+      "seccion": "N",
+      "nombre": "Alquiler de maquinaria y equipo ncp, sin personal",
+      "clae2": "77"
+    },
+    "774": {
+      "seccion": "N",
+      "nombre": "Arrendamiento y gestión de bienes intangibles no financieros",
+      "clae2": "77"
+    },
+    "780": {
+      "seccion": "N",
+      "nombre": "Obtención y dotación de personal",
+      "clae2": "78"
+    },
+    "791": {
+      "seccion": "N",
+      "nombre": "Servicios de agencias de viaje y otras actividades complementarias de apoyo turístico",
+      "clae2": "79"
+    },
+    "801": {
+      "seccion": "N",
+      "nombre": "Servicios de seguridad e investigación",
+      "clae2": "80"
+    },
+    "81": {
+      "seccion": "B",
+      "nombre": "Extracción de piedra, arena y arcillas",
+      "clae2": "8"
+    },
+    "811": {
+      "seccion": "N",
+      "nombre": "Servicio combinado de apoyo a edificios",
+      "clae2": "81"
+    },
+    "812": {
+      "seccion": "N",
+      "nombre": "Servicios de limpieza de edificios",
+      "clae2": "81"
+    },
+    "813": {
+      "seccion": "N",
+      "nombre": "Servicios de jardinería y mantenimiento de espacios verdes",
+      "clae2": "81"
+    },
+    "821": {
+      "seccion": "N",
+      "nombre": "Servicios de apoyo a la administración de oficinas y empresas",
+      "clae2": "82"
+    },
+    "822": {
+      "seccion": "N",
+      "nombre": "Servicios de call center",
+      "clae2": "82"
+    },
+    "823": {
+      "seccion": "N",
+      "nombre": "Servicios de organización de convenciones y exposiciones comerciales, excepto culturales y deportivos",
+      "clae2": "82"
+    },
+    "829": {
+      "seccion": "N",
+      "nombre": "Servicios empresariales ncp",
+      "clae2": "82"
+    },
+    "841": {
+      "seccion": "O",
+      "nombre": "Servicios de la Administración Pública",
+      "clae2": "84"
+    },
+    "842": {
+      "seccion": "O",
+      "nombre": "Prestación pública de servicios a la comunidad en general",
+      "clae2": "84"
+    },
+    "843": {
+      "seccion": "O",
+      "nombre": "Servicios de la seguridad social obligatoria, excepto obras sociales",
+      "clae2": "84"
+    },
+    "851": {
+      "seccion": "P",
+      "nombre": "Enseñanza inicial y primaria",
+      "clae2": "85"
+    },
+    "852": {
+      "seccion": "P",
+      "nombre": "Enseñanza secundaria",
+      "clae2": "85"
+    },
+    "853": {
+      "seccion": "P",
+      "nombre": "Enseñanza superior y formación de posgrado",
+      "clae2": "85"
+    },
+    "854": {
+      "seccion": "P",
+      "nombre": "Servicios de enseñanza ncp",
+      "clae2": "85"
+    },
+    "855": {
+      "seccion": "P",
+      "nombre": "Servicios de apoyo a la educación",
+      "clae2": "85"
+    },
+    "861": {
+      "seccion": "Q",
+      "nombre": "Servicios de hospitales",
+      "clae2": "86"
+    },
+    "862": {
+      "seccion": "Q",
+      "nombre": "Servicios de atención ambulatoria realizados por médicos y odontólogos",
+      "clae2": "86"
+    },
+    "863": {
+      "seccion": "Q",
+      "nombre": "Servicios de prácticas de diagnóstico y tratamiento; servicios integrados de consulta, diagnóstico y tratamiento",
+      "clae2": "86"
+    },
+    "864": {
+      "seccion": "Q",
+      "nombre": "Servicios de emergencias y traslados",
+      "clae2": "86"
+    },
+    "869": {
+      "seccion": "Q",
+      "nombre": "Servicios relacionados con la salud humana ncp",
+      "clae2": "86"
+    },
+    "870": {
+      "seccion": "Q",
+      "nombre": "Servicios sociales con alojamiento",
+      "clae2": "87"
+    },
+    "880": {
+      "seccion": "Q",
+      "nombre": "Servicios sociales sin alojamiento",
+      "clae2": "88"
+    },
+    "89": {
+      "seccion": "B",
+      "nombre": "Explotación de minas y canteras ncp",
+      "clae2": "8"
+    },
+    "900": {
+      "seccion": "R",
+      "nombre": "Servicios artísticos y de espectáculos",
+      "clae2": "90"
+    },
+    "91": {
+      "seccion": "B",
+      "nombre": "Servicios de apoyo para la extracción de petróleo y gas natural",
+      "clae2": "9"
+    },
+    "910": {
+      "seccion": "R",
+      "nombre": "Servicios de bibliotecas, archivos y museos y  servicios culturales ncp",
+      "clae2": "91"
+    },
+    "920": {
+      "seccion": "R",
+      "nombre": "Servicios  relacionados con juegos de azar y apuestas",
+      "clae2": "92"
+    },
+    "931": {
+      "seccion": "R",
+      "nombre": "Servicios para la práctica deportiva",
+      "clae2": "93"
+    },
+    "939": {
+      "seccion": "R",
+      "nombre": "Servicios de esparcimiento ncp",
+      "clae2": "93"
+    },
+    "941": {
+      "seccion": "S",
+      "nombre": "Servicios de organizaciones empresariales, profesionales y de empleadores",
+      "clae2": "94"
+    },
+    "942": {
+      "seccion": "S",
+      "nombre": "Servicios de sindicatos",
+      "clae2": "94"
+    },
+    "949": {
+      "seccion": "S",
+      "nombre": "Servicios de asociaciones ncp",
+      "clae2": "94"
+    },
+    "951": {
+      "seccion": "S",
+      "nombre": "Reparación y mantenimiento de equipos informáticos y equipos de comunicación",
+      "clae2": "95"
+    },
+    "952": {
+      "seccion": "S",
+      "nombre": "Reparación de efectos personales y enseres domésticos",
+      "clae2": "95"
+    },
+    "960": {
+      "seccion": "S",
+      "nombre": "Servicios personales ncp",
+      "clae2": "96"
+    },
+    "99": {
+      "seccion": "B",
+      "nombre": "Servicios de apoyo para la minería, excepto para la extracción de petróleo  y gas natural",
+      "clae2": "9"
+    },
+    "999": {
+      "seccion": "Z",
+      "nombre": "Otros sectores",
+      "clae2": "999"
+    }
+  },
+  "actividades": {
+    "101011": {
+      "grupo": "101",
+      "seccion": "C",
+      "nombre": "Matanza de ganado bovino (Incluye búfalos)"
+    },
+    "101012": {
+      "grupo": "101",
+      "seccion": "C",
+      "nombre": "Procesamiento de carne de ganado bovino"
+    },
+    "101013": {
+      "grupo": "101",
+      "seccion": "C",
+      "nombre": "Saladero y peladero de cueros de ganado bovino"
+    },
+    "101020": {
+      "grupo": "101",
+      "seccion": "C",
+      "nombre": "Producción y procesamiento de carne de aves"
+    },
+    "101030": {
+      "grupo": "101",
+      "seccion": "C",
+      "nombre": "Elaboración de fiambres y embutidos"
+    },
+    "101040": {
+      "grupo": "101",
+      "seccion": "C",
+      "nombre": "Matanza de ganado excepto el bovino y procesamiento de su carne (Incluye ganado ovino, porcino, equino, etc.)"
+    },
+    "101091": {
+      "grupo": "101",
+      "seccion": "C",
+      "nombre": "Fabricación de aceites y grasas de origen animal"
+    },
+    "101099": {
+      "grupo": "101",
+      "seccion": "C",
+      "nombre": "Matanza de animales n.c.p. y procesamiento de su carne, elaboración de subproductos cárnicos n.c.p. (Incluye producción de carne fresca, refrigerada o congelada de liebre, conejo, animales de caza, etc.)"
+    },
+    "102001": {
+      "grupo": "102",
+      "seccion": "C",
+      "nombre": "Elaboración de pescados de mar, crustáceos y  productos marinos"
+    },
+    "102002": {
+      "grupo": "102",
+      "seccion": "C",
+      "nombre": "Elaboración de pescados de ríos y lagunas y otros productos fluviales y lacustres"
+    },
+    "102003": {
+      "grupo": "102",
+      "seccion": "C",
+      "nombre": "Fabricación de aceites, grasas, harinas y productos a base de pescados"
+    },
+    "103011": {
+      "grupo": "103",
+      "seccion": "C",
+      "nombre": "Preparación de conservas de frutas, hortalizas y legumbres"
+    },
+    "103012": {
+      "grupo": "103",
+      "seccion": "C",
+      "nombre": "Elaboración y envasado de dulces, mermeladas y jaleas"
+    },
+    "103020": {
+      "grupo": "103",
+      "seccion": "C",
+      "nombre": "Elaboración de jugos naturales y sus concentrados, de frutas, hortalizas y legumbres (No incluye la elaboración de jugos para diluir o en polvo llamados \"sintéticos\" o de un contenido en jugos naturales inferior al 50% actividad 110492)"
+    },
+    "103030": {
+      "grupo": "103",
+      "seccion": "C",
+      "nombre": "Elaboración de frutas, hortalizas y legumbres congeladas"
+    },
+    "103091": {
+      "grupo": "103",
+      "seccion": "C",
+      "nombre": "Elaboración de hortalizas y legumbres deshidratadas o desecadas, preparación n.c.p. de hortalizas y legumbres (Incluye la elaboración de harina y escamas de papa, sémola de hortalizas y legumbres,  hortalizas y legumbres deshidratadas, etc.)"
+    },
+    "103099": {
+      "grupo": "103",
+      "seccion": "C",
+      "nombre": "Elaboración de frutas deshidratadas o desecadas, preparación n.c.p. de frutas"
+    },
+    "104011": {
+      "grupo": "104",
+      "seccion": "C",
+      "nombre": "Elaboración de aceites y grasas vegetales  sin refinar"
+    },
+    "104012": {
+      "grupo": "104",
+      "seccion": "C",
+      "nombre": "Elaboración de aceite de oliva"
+    },
+    "104013": {
+      "grupo": "104",
+      "seccion": "C",
+      "nombre": "Elaboración de aceites y grasas vegetales refinados (No incluye aceite de oliva -actividad 104012-)"
+    },
+    "104020": {
+      "grupo": "104",
+      "seccion": "C",
+      "nombre": "Elaboración de margarinas y grasas vegetales comestibles similares"
+    },
+    "105010": {
+      "grupo": "105",
+      "seccion": "C",
+      "nombre": "Elaboración de leches y productos lácteos deshidratados (Incluye la obtención de quesos, helados, manteca, postres lácteos, yogur y otros productos lácteos fermentados o coagulados cuando son obtenidos en forma integrada con la producción de leche)"
+    },
+    "105020": {
+      "grupo": "105",
+      "seccion": "C",
+      "nombre": "Elaboración de quesos (Incluye la producción de suero)"
+    },
+    "105030": {
+      "grupo": "105",
+      "seccion": "C",
+      "nombre": "Elaboración industrial de helados"
+    },
+    "105090": {
+      "grupo": "105",
+      "seccion": "C",
+      "nombre": "Elaboración de productos lácteos n.c.p. (Incluye la producción de caseínas, manteca, postres, etc., cuando no son obtenidos e forma integrada con la producción de leche)"
+    },
+    "106110": {
+      "grupo": "106",
+      "seccion": "C",
+      "nombre": "Molienda de trigo"
+    },
+    "106120": {
+      "grupo": "106",
+      "seccion": "C",
+      "nombre": "Preparación de arroz"
+    },
+    "106131": {
+      "grupo": "106",
+      "seccion": "C",
+      "nombre": "Elaboración de alimentos a base de cereales"
+    },
+    "106139": {
+      "grupo": "106",
+      "seccion": "C",
+      "nombre": "Preparación y molienda de legumbres y cereales n.c.p., excepto trigo y arroz y molienda húmeda de maíz"
+    },
+    "106200": {
+      "grupo": "106",
+      "seccion": "C",
+      "nombre": "Elaboración de almidones y productos derivados del almidón, molienda húmeda de maíz (Incluye la elaboración de glucosa y gluten)"
+    },
+    "107110": {
+      "grupo": "107",
+      "seccion": "C",
+      "nombre": "Elaboración de galletitas y bizcochos"
+    },
+    "107121": {
+      "grupo": "107",
+      "seccion": "C",
+      "nombre": "Elaboración industrial de productos de panadería, excepto galletitas y bizcochos (Incluye la elaboración de productos de panadería frescos, congelados y secos)"
+    },
+    "107129": {
+      "grupo": "107",
+      "seccion": "C",
+      "nombre": "Elaboración de productos de panadería n.c.p. (Incluye la elaboración de pan, facturas, churros, pre-pizzas, masas de hojaldre, masas fritas, tortas, tartas, etc), (No incluye la fabricación de sándwich 561040)"
+    },
+    "107200": {
+      "grupo": "107",
+      "seccion": "C",
+      "nombre": "Elaboración de azúcar"
+    },
+    "107301": {
+      "grupo": "107",
+      "seccion": "C",
+      "nombre": "Elaboración de cacao y chocolate"
+    },
+    "107309": {
+      "grupo": "107",
+      "seccion": "C",
+      "nombre": "Elaboración de productos de confitería n.c.p. (Incluye alfajores, caramelos, frutas confitadas, pastillas, gomas de mascar, etc.)"
+    },
+    "107410": {
+      "grupo": "107",
+      "seccion": "C",
+      "nombre": "Elaboración de pastas alimentarias frescas"
+    },
+    "107420": {
+      "grupo": "107",
+      "seccion": "C",
+      "nombre": "Elaboración de pastas alimentarias secas"
+    },
+    "107500": {
+      "grupo": "107",
+      "seccion": "C",
+      "nombre": "Elaboración de comidas preparadas para reventa (Incluye la elaboración de comidas preparadas para reventa en supermercados, kioscos, cafeterías, etc.)"
+    },
+    "107911": {
+      "grupo": "107",
+      "seccion": "C",
+      "nombre": "Tostado, torrado y molienda de café"
+    },
+    "107912": {
+      "grupo": "107",
+      "seccion": "C",
+      "nombre": "Elaboración y molienda de hierbas aromáticas y  especias"
+    },
+    "107920": {
+      "grupo": "107",
+      "seccion": "C",
+      "nombre": "Preparación de hojas de té"
+    },
+    "107930": {
+      "grupo": "107",
+      "seccion": "C",
+      "nombre": "Elaboración de yerba mate"
+    },
+    "107991": {
+      "grupo": "107",
+      "seccion": "C",
+      "nombre": "Elaboración de extractos, jarabes y concentrados"
+    },
+    "107992": {
+      "grupo": "107",
+      "seccion": "C",
+      "nombre": "Elaboración de vinagres"
+    },
+    "107999": {
+      "grupo": "107",
+      "seccion": "C",
+      "nombre": "Elaboración de productos alimenticios n.c.p. (Incluye la elaboración de polvos para preparar postres y gelatinas, levadura, productos para copetín, sopas, sal de mesa, mayonesa, mostaza, etc.)"
+    },
+    "108000": {
+      "grupo": "108",
+      "seccion": "C",
+      "nombre": "Elaboración de alimentos preparados para animales"
+    },
+    "109000": {
+      "grupo": "109",
+      "seccion": "C",
+      "nombre": "Servicios industriales para la elaboración de alimentos y bebidas"
+    },
+    "110100": {
+      "grupo": "110",
+      "seccion": "C",
+      "nombre": "Destilación, rectificación y mezcla de bebidas espiritosas"
+    },
+    "110211": {
+      "grupo": "110",
+      "seccion": "C",
+      "nombre": "Elaboración de mosto"
+    },
+    "110212": {
+      "grupo": "110",
+      "seccion": "C",
+      "nombre": "Elaboración de vinos (Incluye el fraccionamiento)"
+    },
+    "110290": {
+      "grupo": "110",
+      "seccion": "C",
+      "nombre": "Elaboración de sidra y otras bebidas alcohólicas fermentadas"
+    },
+    "110300": {
+      "grupo": "110",
+      "seccion": "C",
+      "nombre": "Elaboración de cerveza, bebidas malteadas y malta"
+    },
+    "110411": {
+      "grupo": "110",
+      "seccion": "C",
+      "nombre": "Embotellado de aguas naturales y minerales"
+    },
+    "110412": {
+      "grupo": "110",
+      "seccion": "C",
+      "nombre": "Fabricación de sodas"
+    },
+    "110420": {
+      "grupo": "110",
+      "seccion": "C",
+      "nombre": "Elaboración de bebidas gaseosas, excepto soda"
+    },
+    "110491": {
+      "grupo": "110",
+      "seccion": "C",
+      "nombre": "Elaboración de hielo"
+    },
+    "110492": {
+      "grupo": "110",
+      "seccion": "C",
+      "nombre": "Elaboración de bebidas no alcohólicas n.c.p. (Incluye los jugos para diluir o en polvo llamados \"sintéticos\" o de un contenido en jugos naturales inferior al 50%), (No incluye a los jugos naturales y sus concentrados, de frutas, hortalizas y legumbres - actividad 103020)"
+    },
+    "11111": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de arroz"
+    },
+    "11112": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de trigo"
+    },
+    "11119": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de cereales n.c.p., excepto los de uso forrajero (Incluye alforfón, cebada cervecera, etc.)"
+    },
+    "11121": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de maíz"
+    },
+    "11129": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de cereales de uso forrajero n.c.p."
+    },
+    "11130": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de pastos de uso forrajero"
+    },
+    "11211": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de soja"
+    },
+    "11291": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de girasol"
+    },
+    "11299": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de oleaginosas n.c.p. excepto soja y girasol (Incluye los cultivos de oleaginosas para aceites comestibles y/o uso industrial: cártamo, colza, jojoba, lino oleaginoso, maní, ricino, sésamo, tung, etc.)"
+    },
+    "11310": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de papa, batata y mandioca"
+    },
+    "11321": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de tomate"
+    },
+    "11329": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de bulbos, brotes, raíces y hortalizas de fruto n.c.p. (Incluye ají, ajo, alcaparra, berenjena, cebolla, calabaza, espárrago, frutilla, melón, pepino, pimiento, sandía, zanahoria, zapallo, zapallito, etc.)"
+    },
+    "11331": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de hortalizas de hoja y de otras hortalizas frescas (Incluye acelga, apio, coles, espinaca, lechuga, perejil, radicheta, repollo, etc.)"
+    },
+    "11341": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de legumbres frescas (Incluye arveja, chaucha, haba, lupino, etc.)"
+    },
+    "11342": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de legumbres secas (Incluye garbanzo, lenteja, poroto, etc.)"
+    },
+    "11400": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de tabaco"
+    },
+    "11501": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de algodón"
+    },
+    "11509": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de plantas para la obtención de fibras n.c.p. (Incluye abacá, cáñamo, formio, lino textil, maíz de Guinea, ramio, yute, etc.)"
+    },
+    "11911": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de flores"
+    },
+    "11912": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivo de plantas ornamentales"
+    },
+    "11990": {
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivos temporales ncp"
+    },
+    "120010": {
+      "grupo": "120",
+      "seccion": "C",
+      "nombre": "Preparación de hojas de tabaco"
+    },
+    "120091": {
+      "grupo": "120",
+      "seccion": "C",
+      "nombre": "Elaboración de cigarrillos"
+    },
+    "120099": {
+      "grupo": "120",
+      "seccion": "C",
+      "nombre": "Elaboración de productos de tabaco n.c.p."
+    },
+    "12110": {
+      "grupo": "12",
+      "seccion": "A",
+      "nombre": "Cultivo de vid para vinificar"
+    },
+    "12121": {
+      "grupo": "12",
+      "seccion": "A",
+      "nombre": "Cultivo de uva de mesa"
+    },
+    "12200": {
+      "grupo": "12",
+      "seccion": "A",
+      "nombre": "Cultivo de frutas cítricas (Incluye bergamota, lima, limón, mandarina, naranja, pomelo, kinoto, etc.)"
+    },
+    "12311": {
+      "grupo": "12",
+      "seccion": "A",
+      "nombre": "Cultivo de manzana y pera"
+    },
+    "12319": {
+      "grupo": "12",
+      "seccion": "A",
+      "nombre": "Cultivo de frutas de pepita n.c.p. (Incluye membrillo, níspero, etc.)"
+    },
+    "12320": {
+      "grupo": "12",
+      "seccion": "A",
+      "nombre": "Cultivo de frutas de carozo (Incluye cereza, ciruela, damasco, durazno, pelón, etc.)"
+    },
+    "12410": {
+      "grupo": "12",
+      "seccion": "A",
+      "nombre": "Cultivo de frutas tropicales y subtropicales (Incluye banana, ananá, mamón, palta, etc.)"
+    },
+    "12420": {
+      "grupo": "12",
+      "seccion": "A",
+      "nombre": "Cultivo de frutas secas (Incluye almendra, avellana, castaña, nuez, pistacho, etc.)"
+    },
+    "12490": {
+      "grupo": "12",
+      "seccion": "A",
+      "nombre": "Cultivo de frutas n.c.p. (Incluye kiwi, arándanos, mora, grosella, etc.)"
+    },
+    "12510": {
+      "grupo": "12",
+      "seccion": "A",
+      "nombre": "Cultivo de caña de azúcar"
+    },
+    "12590": {
+      "grupo": "12",
+      "seccion": "A",
+      "nombre": "Cultivo de plantas sacaríferas n.c.p. (Incluye remolacha azucarera, etc.)"
+    },
+    "12600": {
+      "grupo": "12",
+      "seccion": "A",
+      "nombre": "Cultivo de frutos oleaginosos (Incluye el cultivo de olivo, coco, palma, etc.)"
+    },
+    "12701": {
+      "grupo": "12",
+      "seccion": "A",
+      "nombre": "Cultivo de yerba mate"
+    },
+    "12709": {
+      "grupo": "12",
+      "seccion": "A",
+      "nombre": "Cultivo de té y otras plantas cuyas hojas se utilizan para preparar infusiones"
+    },
+    "12800": {
+      "grupo": "12",
+      "seccion": "A",
+      "nombre": "Cultivo de especias y de plantas aromáticas y medicinales"
+    },
+    "12900": {
+      "grupo": "12",
+      "seccion": "A",
+      "nombre": "Cultivos perennes n.c.p."
+    },
+    "13011": {
+      "grupo": "13",
+      "seccion": "A",
+      "nombre": "Producción de semillas híbridas de cereales y oleaginosas"
+    },
+    "13012": {
+      "grupo": "13",
+      "seccion": "A",
+      "nombre": "Producción de semillas varietales o autofecundadas de cereales, oleaginosas, y forrajeras"
+    },
+    "13013": {
+      "grupo": "13",
+      "seccion": "A",
+      "nombre": "Producción de semillas de hortalizas y legumbres, flores y plantas ornamentales y árboles frutales"
+    },
+    "13019": {
+      "grupo": "13",
+      "seccion": "A",
+      "nombre": "Producción de semillas de cultivos agrícolas n.c.p."
+    },
+    "13020": {
+      "grupo": "13",
+      "seccion": "A",
+      "nombre": "Producción de otras formas de propagación de cultivos agrícolas (Incluye gajos, bulbos, estacas enraizadas o no, esquejes, plantines, etc.)"
+    },
+    "131110": {
+      "grupo": "131",
+      "seccion": "C",
+      "nombre": "Preparación de fibras textiles vegetales, desmotado de algodón (Incluye la preparación de fibras de yute, ramio, cáñamo y lino)"
+    },
+    "131120": {
+      "grupo": "131",
+      "seccion": "C",
+      "nombre": "Preparación de fibras animales de uso textil"
+    },
+    "131131": {
+      "grupo": "131",
+      "seccion": "C",
+      "nombre": "Fabricación de hilados textiles de lana, pelos y sus mezclas"
+    },
+    "131132": {
+      "grupo": "131",
+      "seccion": "C",
+      "nombre": "Fabricación de hilados textiles de algodón y sus mezclas"
+    },
+    "131139": {
+      "grupo": "131",
+      "seccion": "C",
+      "nombre": "Fabricación de hilados textiles n.c.p., excepto de lana  y de algodón"
+    },
+    "131201": {
+      "grupo": "131",
+      "seccion": "C",
+      "nombre": "Fabricación de tejidos (telas) planos de lana y sus mezclas, incluye hilanderías y tejedurías integradas"
+    },
+    "131202": {
+      "grupo": "131",
+      "seccion": "C",
+      "nombre": "Fabricación de tejidos (telas) planos de algodón y sus mezclas, incluye hilanderías y tejedurías integradas"
+    },
+    "131209": {
+      "grupo": "131",
+      "seccion": "C",
+      "nombre": "Fabricación de tejidos (telas) planos de fibras textiles n.c.p., incluye hilanderías y tejedurías integradas"
+    },
+    "131300": {
+      "grupo": "131",
+      "seccion": "C",
+      "nombre": "Acabado de productos textiles"
+    },
+    "139100": {
+      "grupo": "139",
+      "seccion": "C",
+      "nombre": "Fabricación de tejidos de punto"
+    },
+    "139201": {
+      "grupo": "139",
+      "seccion": "C",
+      "nombre": "Fabricación de frazadas, mantas, ponchos, colchas, cobertores, etc."
+    },
+    "139202": {
+      "grupo": "139",
+      "seccion": "C",
+      "nombre": "Fabricación de ropa de cama y mantelería"
+    },
+    "139203": {
+      "grupo": "139",
+      "seccion": "C",
+      "nombre": "Fabricación de artículos de lona y sucedáneos de lona"
+    },
+    "139204": {
+      "grupo": "139",
+      "seccion": "C",
+      "nombre": "Fabricación de bolsas de materiales textiles para productos a granel"
+    },
+    "139209": {
+      "grupo": "139",
+      "seccion": "C",
+      "nombre": "Fabricación de artículos confeccionados de materiales textiles n.c.p., excepto prendas de vestir"
+    },
+    "139300": {
+      "grupo": "139",
+      "seccion": "C",
+      "nombre": "Fabricación de tapices y alfombras"
+    },
+    "139400": {
+      "grupo": "139",
+      "seccion": "C",
+      "nombre": "Fabricación de cuerdas, cordeles, bramantes y redes"
+    },
+    "139900": {
+      "grupo": "139",
+      "seccion": "C",
+      "nombre": "Fabricación de productos textiles n.c.p."
+    },
+    "141110": {
+      "grupo": "141",
+      "seccion": "C",
+      "nombre": "Confección de ropa interior, prendas para dormir y para la playa"
+    },
+    "141120": {
+      "grupo": "141",
+      "seccion": "C",
+      "nombre": "Confección de ropa de trabajo, uniformes y guardapolvos"
+    },
+    "14113": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Cría de ganado bovino, excepto la realizada en cabañas y para la producción de leche (Incluye: ganado bubalino)"
+    },
+    "141130": {
+      "grupo": "141",
+      "seccion": "C",
+      "nombre": "Confección de prendas de vestir para bebés y niños"
+    },
+    "14114": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Invernada  de ganado bovino excepto el engorde en corrales (Feed-Lot)"
+    },
+    "141140": {
+      "grupo": "141",
+      "seccion": "C",
+      "nombre": "Confección de prendas deportivas"
+    },
+    "14115": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Engorde en corrales (Feed-Lot)"
+    },
+    "141191": {
+      "grupo": "141",
+      "seccion": "C",
+      "nombre": "Fabricación de accesorios de vestir excepto de cuero"
+    },
+    "141199": {
+      "grupo": "141",
+      "seccion": "C",
+      "nombre": "Confección de prendas de vestir n.c.p., excepto prendas de piel, cuero y de punto"
+    },
+    "141201": {
+      "grupo": "141",
+      "seccion": "C",
+      "nombre": "Fabricación de accesorios de vestir de cuero"
+    },
+    "141202": {
+      "grupo": "141",
+      "seccion": "C",
+      "nombre": "Confección de prendas de vestir de cuero"
+    },
+    "14121": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Cría de ganado bovino realizada en cabañas (Incluye: ganado bubalino y la producción de semen)"
+    },
+    "142000": {
+      "grupo": "142",
+      "seccion": "C",
+      "nombre": "Terminación y teñido de pieles, fabricación de artículos de piel"
+    },
+    "14211": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Cría de ganado equino, excepto la realizada en haras (Incluye equinos de trabajo, asnos, mulas, burdéganos)"
+    },
+    "14221": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Cría de ganado equino realizada en haras (Incluye la producción de semen)"
+    },
+    "14300": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Cría de camélidos (Incluye alpaca, guanaco, llama, vicuña)"
+    },
+    "143010": {
+      "grupo": "143",
+      "seccion": "C",
+      "nombre": "Fabricación de medias"
+    },
+    "143020": {
+      "grupo": "143",
+      "seccion": "C",
+      "nombre": "Fabricación de prendas de vestir y artículos similares de punto"
+    },
+    "14410": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Cría de ganado ovino -excepto en cabañas y para la  producción de lana y leche-"
+    },
+    "14420": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Cría de ganado ovino realizada en cabañas"
+    },
+    "14430": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Cría de ganado caprino -excepto la realizada en cabañas y para producción de pelos y de leche-"
+    },
+    "14440": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Cría de ganado caprino realizada en cabañas"
+    },
+    "14510": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Cría de ganado porcino, excepto la realizada en cabañas"
+    },
+    "14520": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Cría de ganado porcino realizado en cabañas"
+    },
+    "14610": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Producción de leche bovina (Incluye la cría para la producción de leche de vaca y la producción de leche bubalina)"
+    },
+    "14620": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Producción de leche de oveja y de cabra"
+    },
+    "14710": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Producción de lana y pelo de oveja y cabra (cruda)"
+    },
+    "14720": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Producción de pelos de ganado n.c.p."
+    },
+    "14810": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Cría de aves de corral, excepto para la producción de huevos"
+    },
+    "14820": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Producción de huevos"
+    },
+    "149000": {
+      "grupo": "149",
+      "seccion": "C",
+      "nombre": "Servicios industriales para la industria confeccionista (Incluye procesos de planchado y acondicionamiento de prendas: teñido, gastado a la piedra (stone wash), impermeabilizado, lavaderos y secaderos industriales, etc.)"
+    },
+    "14910": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Apicultura (Incluye la producción de miel, jalea real, polen, propóleo, etc.)"
+    },
+    "14920": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Cunicultura"
+    },
+    "14930": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Cría de animales pelíferos, pilíferos y plumíferos, excepto de las especies ganaderas (Incluye cría de visón, nutria, chinchilla, reptiles, etc.)"
+    },
+    "14990": {
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Cría de animales y obtención de productos de origen animal, n.c.p. (Incluye ciervo, gato, gusano de seda, lombriz, pájaro, perro, rana, animales para experimentación, caracoles vivos, frescos, congelados y secos -excepto marinos-, cera de insectos excepto la de abeja, etc.)"
+    },
+    "151100": {
+      "grupo": "151",
+      "seccion": "C",
+      "nombre": "Curtido y terminación de cueros"
+    },
+    "151200": {
+      "grupo": "151",
+      "seccion": "C",
+      "nombre": "Fabricación de maletas, bolsos de mano y similares, artículos de talabartería y artículos de cuero n.c.p."
+    },
+    "152011": {
+      "grupo": "152",
+      "seccion": "C",
+      "nombre": "Fabricación de calzado de cuero, excepto calzado deportivo y ortopédico"
+    },
+    "152021": {
+      "grupo": "152",
+      "seccion": "C",
+      "nombre": "Fabricación de calzado de materiales n.c.p., excepto calzado deportivo y ortopédico"
+    },
+    "152031": {
+      "grupo": "152",
+      "seccion": "C",
+      "nombre": "Fabricación de calzado deportivo"
+    },
+    "152040": {
+      "grupo": "152",
+      "seccion": "C",
+      "nombre": "Fabricación de partes de calzado"
+    },
+    "161001": {
+      "grupo": "161",
+      "seccion": "C",
+      "nombre": "Aserrado y cepillado de madera  nativa"
+    },
+    "161002": {
+      "grupo": "161",
+      "seccion": "C",
+      "nombre": "Aserrado y cepillado de madera implantada"
+    },
+    "16111": {
+      "grupo": "16",
+      "seccion": "A",
+      "nombre": "Servicios de labranza, siembra, transplante  y  cuidados culturales"
+    },
+    "16112": {
+      "grupo": "16",
+      "seccion": "A",
+      "nombre": "Servicios de pulverización, desinfección y fumigación terrestre"
+    },
+    "16113": {
+      "grupo": "16",
+      "seccion": "A",
+      "nombre": "Servicios de pulverización, desinfección y fumigación aérea"
+    },
+    "16119": {
+      "grupo": "16",
+      "seccion": "A",
+      "nombre": "Servicios de maquinaria agrícola n.c.p., excepto los de cosecha mecánica (Incluye clasificado y/o tamañado, rastrillado, roturación de terreno, etc.)"
+    },
+    "16120": {
+      "grupo": "16",
+      "seccion": "A",
+      "nombre": "Servicios de cosecha mecánica (Incluye la cosecha mecánica de granos, caña de azúcar, algodón, forrajes, el enfardado, enrollado, etc.)"
+    },
+    "16130": {
+      "grupo": "16",
+      "seccion": "A",
+      "nombre": "Servicios de contratistas de mano de obra agrícola (Incluye la poda de árboles, transplante, cosecha manual de citrus, algodón, etc.)"
+    },
+    "16140": {
+      "grupo": "16",
+      "seccion": "A",
+      "nombre": "Servicios de post cosecha (Incluye servicios de lavado de papas,  acondicionamiento, limpieza, etc, de granos antes de ir a los mercados primarios), (Excluye los servicios de procesamiento de semillas para su siembra)"
+    },
+    "16150": {
+      "grupo": "16",
+      "seccion": "A",
+      "nombre": "Servicios de procesamiento de semillas para su siembra (Incluye la selección de semillas)"
+    },
+    "16190": {
+      "grupo": "16",
+      "seccion": "A",
+      "nombre": "Servicios de apoyo agrícolas n.c.p (Incluye  explotación de sistemas de riego, injertos de plantas, construcción y plantación de almácigos, alquiler de colmenas, etc.), (No incluye mantenimiento de jardines, parques y cementerios: actividad 813000, planificación y diseño paisajista: actividad 711009)"
+    },
+    "16210": {
+      "grupo": "16",
+      "seccion": "A",
+      "nombre": "Inseminación artificial y servicios n.c.p. para mejorar la reproducción de los animales y el rendimiento de sus productos"
+    },
+    "162100": {
+      "grupo": "162",
+      "seccion": "C",
+      "nombre": "Fabricación de hojas de madera para enchapado, fabricación de tableros contrachapados, tableros laminados, tableros de partículas y tableros y paneles n.c.p. (Incluye la fabricación de madera terciada y  machimbre)"
+    },
+    "16220": {
+      "grupo": "16",
+      "seccion": "A",
+      "nombre": "Servicios de contratistas de mano de obra pecuaria (Incluye arreo, castración de aves, pasturaje,  etc.)"
+    },
+    "162201": {
+      "grupo": "162",
+      "seccion": "C",
+      "nombre": "Fabricación de aberturas y estructuras de madera para la construcción"
+    },
+    "162202": {
+      "grupo": "162",
+      "seccion": "C",
+      "nombre": "Fabricación de viviendas prefabricadas de madera"
+    },
+    "16230": {
+      "grupo": "16",
+      "seccion": "A",
+      "nombre": "Servicios de esquila de animales"
+    },
+    "162300": {
+      "grupo": "162",
+      "seccion": "C",
+      "nombre": "Fabricación de recipientes de madera"
+    },
+    "162901": {
+      "grupo": "162",
+      "seccion": "C",
+      "nombre": "Fabricación de ataúdes"
+    },
+    "162902": {
+      "grupo": "162",
+      "seccion": "C",
+      "nombre": "Fabricación de artículos de madera en tornerías"
+    },
+    "162903": {
+      "grupo": "162",
+      "seccion": "C",
+      "nombre": "Fabricación de productos de corcho"
+    },
+    "162909": {
+      "grupo": "162",
+      "seccion": "C",
+      "nombre": "Fabricación de productos de madera n.c.p, fabricación de artículos de paja y materiales trenzables (Incluye enmarcado de cuadros, carpintería cuando no explicita especialidad)"
+    },
+    "16291": {
+      "grupo": "16",
+      "seccion": "A",
+      "nombre": "Servicios para el control de plagas, baños parasiticidas, etc."
+    },
+    "16292": {
+      "grupo": "16",
+      "seccion": "A",
+      "nombre": "Albergue y cuidado de  animales de terceros"
+    },
+    "16299": {
+      "grupo": "16",
+      "seccion": "A",
+      "nombre": "Servicios de apoyo pecuarios n.c.p."
+    },
+    "17010": {
+      "grupo": "17",
+      "seccion": "A",
+      "nombre": "Caza y repoblación  de animales de caza (Incluye la caza de animales para obtener carne, pieles y cueros y la captura de animales vivos para zoológicos, animales de compañía, para investigación, etc.)"
+    },
+    "170101": {
+      "grupo": "170",
+      "seccion": "C",
+      "nombre": "Fabricación de pasta de madera"
+    },
+    "170102": {
+      "grupo": "170",
+      "seccion": "C",
+      "nombre": "Fabricación de papel y cartón excepto envases"
+    },
+    "17020": {
+      "grupo": "17",
+      "seccion": "A",
+      "nombre": "Servicios de apoyo para la caza"
+    },
+    "170201": {
+      "grupo": "170",
+      "seccion": "C",
+      "nombre": "Fabricación de papel ondulado y envases de papel"
+    },
+    "170202": {
+      "grupo": "170",
+      "seccion": "C",
+      "nombre": "Fabricación de cartón ondulado y envases de cartón"
+    },
+    "170910": {
+      "grupo": "170",
+      "seccion": "C",
+      "nombre": "Fabricación de artículos de papel y cartón de uso doméstico e higiénico sanitario"
+    },
+    "170990": {
+      "grupo": "170",
+      "seccion": "C",
+      "nombre": "Fabricación de artículos de papel y cartón n.c.p. (No incluye el papel de lija:  239900)"
+    },
+    "181101": {
+      "grupo": "181",
+      "seccion": "C",
+      "nombre": "Impresión de diarios y revistas"
+    },
+    "181109": {
+      "grupo": "181",
+      "seccion": "C",
+      "nombre": "Impresión n.c.p., excepto de diarios y revistas"
+    },
+    "181200": {
+      "grupo": "181",
+      "seccion": "C",
+      "nombre": "Servicios relacionados con la impresión"
+    },
+    "182000": {
+      "grupo": "182",
+      "seccion": "C",
+      "nombre": "Reproducción de grabaciones"
+    },
+    "191000": {
+      "grupo": "191",
+      "seccion": "C",
+      "nombre": "Fabricación de productos de hornos de coque"
+    },
+    "192000": {
+      "grupo": "192",
+      "seccion": "C",
+      "nombre": "Fabricación de productos de la refinación del petróleo"
+    },
+    "201110": {
+      "grupo": "201",
+      "seccion": "C",
+      "nombre": "Fabricación de gases industriales y medicinales comprimidos o licuados"
+    },
+    "201120": {
+      "grupo": "201",
+      "seccion": "C",
+      "nombre": "Fabricación de curtientes naturales y sintéticos"
+    },
+    "201130": {
+      "grupo": "201",
+      "seccion": "C",
+      "nombre": "Fabricación de materias colorantes básicas, excepto pigmentos preparados"
+    },
+    "201140": {
+      "grupo": "201",
+      "seccion": "C",
+      "nombre": "Fabricación de combustible nuclear, sustancias y materiales radiactivos"
+    },
+    "201180": {
+      "grupo": "201",
+      "seccion": "C",
+      "nombre": "Fabricación de materias químicas inorgánicas básicas n.c.p."
+    },
+    "201190": {
+      "grupo": "201",
+      "seccion": "C",
+      "nombre": "Fabricación de materias químicas orgánicas básicas n.c.p. (Incluye la fabricación de alcoholes excepto el etílico,  sustancias químicas para la elaboración de sustancias plásticas, carbón vegetal, etc.)"
+    },
+    "201210": {
+      "grupo": "201",
+      "seccion": "C",
+      "nombre": "Fabricación de alcohol"
+    },
+    "201220": {
+      "grupo": "201",
+      "seccion": "C",
+      "nombre": "Fabricación de biocombustibles excepto alcohol"
+    },
+    "201300": {
+      "grupo": "201",
+      "seccion": "C",
+      "nombre": "Fabricación de abonos y compuestos de nitrógeno"
+    },
+    "201401": {
+      "grupo": "201",
+      "seccion": "C",
+      "nombre": "Fabricación de resinas y cauchos sintéticos"
+    },
+    "201409": {
+      "grupo": "201",
+      "seccion": "C",
+      "nombre": "Fabricación de materias plásticas en formas primarias n.c.p."
+    },
+    "202101": {
+      "grupo": "202",
+      "seccion": "C",
+      "nombre": "Fabricación de insecticidas, plaguicidas y  productos químicos de uso agropecuario"
+    },
+    "202200": {
+      "grupo": "202",
+      "seccion": "C",
+      "nombre": "Fabricación de pinturas, barnices y productos de revestimiento similares, tintas de imprenta y masillas"
+    },
+    "202311": {
+      "grupo": "202",
+      "seccion": "C",
+      "nombre": "Fabricación de preparados para limpieza, pulido y saneamiento"
+    },
+    "202312": {
+      "grupo": "202",
+      "seccion": "C",
+      "nombre": "Fabricación de jabones y detergentes"
+    },
+    "202320": {
+      "grupo": "202",
+      "seccion": "C",
+      "nombre": "Fabricación de cosméticos, perfumes y  productos de higiene y tocador"
+    },
+    "202906": {
+      "grupo": "202",
+      "seccion": "C",
+      "nombre": "Fabricación de explosivos y productos de pirotecnia"
+    },
+    "202907": {
+      "grupo": "202",
+      "seccion": "C",
+      "nombre": "Fabricación de colas, adhesivos, aprestos y cementos excepto los odontológicos obtenidos de sustancias minerales y vegetales"
+    },
+    "202908": {
+      "grupo": "202",
+      "seccion": "C",
+      "nombre": "Fabricación de productos químicos n.c.p. (Incluye la producción de aceites esenciales, tintas excepto para imprenta, etc.)"
+    },
+    "203000": {
+      "grupo": "203",
+      "seccion": "C",
+      "nombre": "Fabricación de fibras manufacturadas"
+    },
+    "204000": {
+      "grupo": "204",
+      "seccion": "C",
+      "nombre": "Servicios industriales para la fabricación de sustancias y productos químicos"
+    },
+    "210010": {
+      "grupo": "210",
+      "seccion": "C",
+      "nombre": "Fabricación de medicamentos de uso humano y productos farmacéuticos"
+    },
+    "210020": {
+      "grupo": "210",
+      "seccion": "C",
+      "nombre": "Fabricación de medicamentos de uso veterinario"
+    },
+    "210030": {
+      "grupo": "210",
+      "seccion": "C",
+      "nombre": "Fabricación de sustancias químicas para la elaboración de medicamentos"
+    },
+    "210090": {
+      "grupo": "210",
+      "seccion": "C",
+      "nombre": "Fabricación de productos de laboratorio y productos botánicos de uso farmaceútico n.c.p."
+    },
+    "21010": {
+      "grupo": "21",
+      "seccion": "A",
+      "nombre": "Plantación de bosques"
+    },
+    "21020": {
+      "grupo": "21",
+      "seccion": "A",
+      "nombre": "Repoblación y conservación de bosques nativos y zonas forestadas"
+    },
+    "21030": {
+      "grupo": "21",
+      "seccion": "A",
+      "nombre": "Explotación de viveros forestales (Incluye propagación de especies forestales)"
+    },
+    "22010": {
+      "grupo": "22",
+      "seccion": "A",
+      "nombre": "Extracción de productos forestales de bosques cultivados (Incluye tala de árboles, desbaste de troncos y producción de madera en bruto, leña, postes)"
+    },
+    "22020": {
+      "grupo": "22",
+      "seccion": "A",
+      "nombre": "Extracción de productos forestales de bosques nativos (Incluye tala de árboles, desbaste de troncos y producción de madera en bruto, leña, postes, la extracción de rodrigones, varas, varillas y la recolección de  gomas naturales, líquenes, musgos, resinas y de rosa mosqueta,etc)"
+    },
+    "221110": {
+      "grupo": "221",
+      "seccion": "C",
+      "nombre": "Fabricación de cubiertas y cámaras"
+    },
+    "221120": {
+      "grupo": "221",
+      "seccion": "C",
+      "nombre": "Recauchutado y renovación de cubiertas"
+    },
+    "221901": {
+      "grupo": "221",
+      "seccion": "C",
+      "nombre": "Fabricación de  autopartes de caucho excepto cámaras y cubiertas"
+    },
+    "221909": {
+      "grupo": "221",
+      "seccion": "C",
+      "nombre": "Fabricación  de productos de caucho n.c.p."
+    },
+    "222010": {
+      "grupo": "222",
+      "seccion": "C",
+      "nombre": "Fabricación de envases plásticos"
+    },
+    "222090": {
+      "grupo": "222",
+      "seccion": "C",
+      "nombre": "Fabricación de productos plásticos en formas básicas y artículos de plástico n.c.p., excepto muebles"
+    },
+    "231010": {
+      "grupo": "231",
+      "seccion": "C",
+      "nombre": "Fabricación de envases de vidrio"
+    },
+    "231020": {
+      "grupo": "231",
+      "seccion": "C",
+      "nombre": "Fabricación y elaboración de vidrio plano"
+    },
+    "231090": {
+      "grupo": "231",
+      "seccion": "C",
+      "nombre": "Fabricación de productos de vidrio n.c.p."
+    },
+    "239100": {
+      "grupo": "239",
+      "seccion": "C",
+      "nombre": "Fabricación de productos de cerámica refractaria"
+    },
+    "239201": {
+      "grupo": "239",
+      "seccion": "C",
+      "nombre": "Fabricación de ladrillos"
+    },
+    "239202": {
+      "grupo": "239",
+      "seccion": "C",
+      "nombre": "Fabricación de revestimientos cerámicos"
+    },
+    "239209": {
+      "grupo": "239",
+      "seccion": "C",
+      "nombre": "Fabricación de productos de arcilla y cerámica no refractaria para uso estructural n.c.p."
+    },
+    "239310": {
+      "grupo": "239",
+      "seccion": "C",
+      "nombre": "Fabricación de artículos sanitarios de cerámica"
+    },
+    "239391": {
+      "grupo": "239",
+      "seccion": "C",
+      "nombre": "Fabricación de objetos cerámicos para uso doméstico excepto artefactos sanitarios"
+    },
+    "239399": {
+      "grupo": "239",
+      "seccion": "C",
+      "nombre": "Fabricación de artículos de cerámica no refractaria para uso no estructural n.c.p."
+    },
+    "239410": {
+      "grupo": "239",
+      "seccion": "C",
+      "nombre": "Elaboración de cemento"
+    },
+    "239421": {
+      "grupo": "239",
+      "seccion": "C",
+      "nombre": "Elaboración de  yeso"
+    },
+    "239422": {
+      "grupo": "239",
+      "seccion": "C",
+      "nombre": "Elaboración de cal"
+    },
+    "239510": {
+      "grupo": "239",
+      "seccion": "C",
+      "nombre": "Fabricación de mosaicos"
+    },
+    "239591": {
+      "grupo": "239",
+      "seccion": "C",
+      "nombre": "Elaboración de hormigón"
+    },
+    "239592": {
+      "grupo": "239",
+      "seccion": "C",
+      "nombre": "Fabricación de premoldeadas para la construcción"
+    },
+    "239593": {
+      "grupo": "239",
+      "seccion": "C",
+      "nombre": "Fabricación de artículos de cemento, fibrocemento y yeso excepto hormigón y mosaicos"
+    },
+    "239600": {
+      "grupo": "239",
+      "seccion": "C",
+      "nombre": "Corte, tallado y acabado de la piedra (Incluye mármoles y granitos, etc.)"
+    },
+    "239900": {
+      "grupo": "239",
+      "seccion": "C",
+      "nombre": "Fabricación de productos minerales no metálicos n.c.p. (Incluye la fabricación de abrasivos, lijas, membranas asfálticas, etc.)"
+    },
+    "24010": {
+      "grupo": "24",
+      "seccion": "A",
+      "nombre": "Servicios forestales para la extracción de madera (Incluye tala de árboles, acarreo y transporte en el interior del bosque, servicios realizados por terceros, etc.)"
+    },
+    "24020": {
+      "grupo": "24",
+      "seccion": "A",
+      "nombre": "Servicios forestales excepto los servicios para la extracción de madera (Incluye protección contra incendios, evaluación de masas forestales en pie, estimación del valor de la madera, etc.)"
+    },
+    "241001": {
+      "grupo": "241",
+      "seccion": "C",
+      "nombre": "Laminación y estirado. Producción de lingotes, planchas o barras fabricadas por operadores independientes"
+    },
+    "241009": {
+      "grupo": "241",
+      "seccion": "C",
+      "nombre": "Fabricación en industrias básicas de productos de hierro y acero n.c.p. (Incluye la producción de hojalata)"
+    },
+    "242010": {
+      "grupo": "242",
+      "seccion": "C",
+      "nombre": "Elaboración de aluminio primario y semielaborados de aluminio"
+    },
+    "242090": {
+      "grupo": "242",
+      "seccion": "C",
+      "nombre": "Fabricación de productos primarios de metales preciosos y metales no ferrosos n.c.p. y sus semielaborados"
+    },
+    "243100": {
+      "grupo": "243",
+      "seccion": "C",
+      "nombre": "Fundición de hierro y acero"
+    },
+    "243200": {
+      "grupo": "243",
+      "seccion": "C",
+      "nombre": "Fundición de metales no ferrosos"
+    },
+    "251101": {
+      "grupo": "251",
+      "seccion": "C",
+      "nombre": "Fabricación de carpintería metálica"
+    },
+    "251102": {
+      "grupo": "251",
+      "seccion": "C",
+      "nombre": "Fabricación de productos metálicos para uso estructural"
+    },
+    "251200": {
+      "grupo": "251",
+      "seccion": "C",
+      "nombre": "Fabricación de tanques, depósitos y recipientes de metal (Incluye la fabricación de silos)"
+    },
+    "251300": {
+      "grupo": "251",
+      "seccion": "C",
+      "nombre": "Fabricación de generadores de vapor"
+    },
+    "252000": {
+      "grupo": "252",
+      "seccion": "C",
+      "nombre": "Fabricación de armas y municiones"
+    },
+    "259100": {
+      "grupo": "259",
+      "seccion": "C",
+      "nombre": "Forjado, prensado, estampado y laminado de metales, pulvimetalurgia"
+    },
+    "259200": {
+      "grupo": "259",
+      "seccion": "C",
+      "nombre": "Tratamiento y revestimiento de metales y trabajos de metales en general"
+    },
+    "259301": {
+      "grupo": "259",
+      "seccion": "C",
+      "nombre": "Fabricación de herramientas manuales y sus accesorios"
+    },
+    "259302": {
+      "grupo": "259",
+      "seccion": "C",
+      "nombre": "Fabricación de artículos de cuchillería y utensillos de mesa y de cocina"
+    },
+    "259309": {
+      "grupo": "259",
+      "seccion": "C",
+      "nombre": "Fabricación de cerraduras, herrajes y artículos de ferretería n.c.p."
+    },
+    "259910": {
+      "grupo": "259",
+      "seccion": "C",
+      "nombre": "Fabricación de envases metálicos"
+    },
+    "259991": {
+      "grupo": "259",
+      "seccion": "C",
+      "nombre": "Fabricación de tejidos de alambre"
+    },
+    "259992": {
+      "grupo": "259",
+      "seccion": "C",
+      "nombre": "Fabricación de cajas de seguridad"
+    },
+    "259993": {
+      "grupo": "259",
+      "seccion": "C",
+      "nombre": "Fabricación de productos metálicos de tornería y/o matricería"
+    },
+    "259999": {
+      "grupo": "259",
+      "seccion": "C",
+      "nombre": "Fabricación de productos elaborados de metal n.c.p."
+    },
+    "261000": {
+      "grupo": "261",
+      "seccion": "C",
+      "nombre": "Fabricación de componentes electrónicos"
+    },
+    "262000": {
+      "grupo": "262",
+      "seccion": "C",
+      "nombre": "Fabricación de equipos y productos informáticos"
+    },
+    "263000": {
+      "grupo": "263",
+      "seccion": "C",
+      "nombre": "Fabricación  de equipos de comunicaciones y transmisores de radio y televisión"
+    },
+    "264000": {
+      "grupo": "264",
+      "seccion": "C",
+      "nombre": "Fabricación de receptores de radio y televisión, aparatos de grabación y reproducción de sonido y video, y productos conexos"
+    },
+    "265101": {
+      "grupo": "265",
+      "seccion": "C",
+      "nombre": "Fabricación de instrumentos y aparatos para medir, verificar, ensayar, navegar y otros fines, excepto el equipo de control de procesos industriales"
+    },
+    "265102": {
+      "grupo": "265",
+      "seccion": "C",
+      "nombre": "Fabricación de equipo de control de procesos industriales"
+    },
+    "265200": {
+      "grupo": "265",
+      "seccion": "C",
+      "nombre": "Fabricación de relojes"
+    },
+    "266010": {
+      "grupo": "266",
+      "seccion": "C",
+      "nombre": "Fabricación de equipo médico y quirúrgico y de aparatos ortopédicos principalmente electrónicos y/o eléctricos (Incluye equipos de laboratorio, esterilizadores, paneles para observación de radiografías, tornos, etc.)"
+    },
+    "266090": {
+      "grupo": "266",
+      "seccion": "C",
+      "nombre": "Fabricación de equipo médico y quirúrgico y de aparatos ortopédicos n.c.p. (Incluye prótesis, aparatos ortopédicos, materiales para fracturas, etc.)"
+    },
+    "267001": {
+      "grupo": "267",
+      "seccion": "C",
+      "nombre": "Fabricación de equipamiento e instrumentos ópticos y sus accesorios"
+    },
+    "267002": {
+      "grupo": "267",
+      "seccion": "C",
+      "nombre": "Fabricación de aparatos y accesorios para fotografía excepto películas, placas y papeles sensibles"
+    },
+    "268000": {
+      "grupo": "268",
+      "seccion": "C",
+      "nombre": "Fabricación de soportes ópticos y magnéticos (Incluye CD, disquetes, cintas magnéticas, tarjetas magnetizadas, etc.)"
+    },
+    "271010": {
+      "grupo": "271",
+      "seccion": "C",
+      "nombre": "Fabricación de motores, generadores y transformadores eléctricos"
+    },
+    "271020": {
+      "grupo": "271",
+      "seccion": "C",
+      "nombre": "Fabricación de aparatos de distribución y control de la energía eléctrica"
+    },
+    "272000": {
+      "grupo": "272",
+      "seccion": "C",
+      "nombre": "Fabricación de acumuladores, pilas y baterías primarias"
+    },
+    "273110": {
+      "grupo": "273",
+      "seccion": "C",
+      "nombre": "Fabricación de cables de fibra óptica"
+    },
+    "273190": {
+      "grupo": "273",
+      "seccion": "C",
+      "nombre": "Fabricación de hilos y cables aislados n.c.p."
+    },
+    "274000": {
+      "grupo": "274",
+      "seccion": "C",
+      "nombre": "Fabricación de lámparas eléctricas y equipo de iluminación"
+    },
+    "275010": {
+      "grupo": "275",
+      "seccion": "C",
+      "nombre": "Fabricación de cocinas, calefones, estufas y calefactores no eléctricos"
+    },
+    "275020": {
+      "grupo": "275",
+      "seccion": "C",
+      "nombre": "Fabricación de heladeras, freezers, lavarropas y secarropas"
+    },
+    "275091": {
+      "grupo": "275",
+      "seccion": "C",
+      "nombre": "Fabricación de ventiladores, extractores de aire, aspiradoras y similares"
+    },
+    "275092": {
+      "grupo": "275",
+      "seccion": "C",
+      "nombre": "Fabricación de planchas, calefactores, hornos eléctricos, tostadoras y otros aparatos generadores de calor"
+    },
+    "275099": {
+      "grupo": "275",
+      "seccion": "C",
+      "nombre": "Fabricación de aparatos de uso doméstico n.c.p. (Incluye enceradoras, pulidoras, batidoras, licuadoras y similares)"
+    },
+    "279000": {
+      "grupo": "279",
+      "seccion": "C",
+      "nombre": "Fabricación  de equipo eléctrico n.c.p."
+    },
+    "281100": {
+      "grupo": "281",
+      "seccion": "C",
+      "nombre": "Fabricación  de  motores  y  turbinas,  excepto  motores  para aeronaves, vehículos automotores   y motocicletas"
+    },
+    "281201": {
+      "grupo": "281",
+      "seccion": "C",
+      "nombre": "Fabricación de bombas"
+    },
+    "281301": {
+      "grupo": "281",
+      "seccion": "C",
+      "nombre": "Fabricación de compresores, grifos y válvulas"
+    },
+    "281400": {
+      "grupo": "281",
+      "seccion": "C",
+      "nombre": "Fabricación de cojinetes, engranajes, trenes de engranaje y piezas de transmisión"
+    },
+    "281500": {
+      "grupo": "281",
+      "seccion": "C",
+      "nombre": "Fabricación de hornos, hogares y quemadores"
+    },
+    "281600": {
+      "grupo": "281",
+      "seccion": "C",
+      "nombre": "Fabricación de maquinaria y equipo de elevación y manipulación (Incluye la fabricación de ascensores, escaleras mecánicas, montacargas, etc.)"
+    },
+    "281700": {
+      "grupo": "281",
+      "seccion": "C",
+      "nombre": "Fabricación de maquinaria y equipo de oficina, excepto equipo informático"
+    },
+    "281900": {
+      "grupo": "281",
+      "seccion": "C",
+      "nombre": "Fabricación de  maquinaria y equipo de uso general n.c.p. (Incluye la fabricación de equipos de aire acondicionado, matafuegos, etc.)"
+    },
+    "282110": {
+      "grupo": "282",
+      "seccion": "C",
+      "nombre": "Fabricación de tractores"
+    },
+    "282120": {
+      "grupo": "282",
+      "seccion": "C",
+      "nombre": "Fabricación de maquinaria y equipo de uso agropecuario y forestal"
+    },
+    "282130": {
+      "grupo": "282",
+      "seccion": "C",
+      "nombre": "Fabricación de implementos de uso agropecuario"
+    },
+    "282200": {
+      "grupo": "282",
+      "seccion": "C",
+      "nombre": "Fabricación de máquinas herramienta"
+    },
+    "282300": {
+      "grupo": "282",
+      "seccion": "C",
+      "nombre": "Fabricación de maquinaria metalúrgica"
+    },
+    "282400": {
+      "grupo": "282",
+      "seccion": "C",
+      "nombre": "Fabricación de maquinaria para la explotación de minas y canteras y para obras de construcción (Incluye la fabricación de máquinas y equipos viales, equipos para la extracción de petróleo y gas, etc.)"
+    },
+    "282500": {
+      "grupo": "282",
+      "seccion": "C",
+      "nombre": "Fabricación de maquinaria para la elaboración de alimentos, bebidas y tabaco"
+    },
+    "282600": {
+      "grupo": "282",
+      "seccion": "C",
+      "nombre": "Fabricación de maquinaria para la elaboración de productos textiles, prendas de vestir y cueros"
+    },
+    "282901": {
+      "grupo": "282",
+      "seccion": "C",
+      "nombre": "Fabricación de maquinaria para la industria del papel y las artes gráficas"
+    },
+    "282909": {
+      "grupo": "282",
+      "seccion": "C",
+      "nombre": "Fabricación de maquinaria y equipo de uso especial n.c.p."
+    },
+    "291000": {
+      "grupo": "291",
+      "seccion": "C",
+      "nombre": "Fabricación de vehículos automotores (Incluye la fabricación de motores para automotores)"
+    },
+    "292000": {
+      "grupo": "292",
+      "seccion": "C",
+      "nombre": "Fabricación de carrocerías para vehículos automotores, fabricación de remolques y semirremolques"
+    },
+    "293011": {
+      "grupo": "293",
+      "seccion": "C",
+      "nombre": "Rectificación de motores"
+    },
+    "293090": {
+      "grupo": "293",
+      "seccion": "C",
+      "nombre": "Fabricación de partes, piezas y accesorios para vehículos automotores y sus motores n.c.p."
+    },
+    "301100": {
+      "grupo": "301",
+      "seccion": "C",
+      "nombre": "Construcción y reparación de buques (Incluye construcción de estructuras flotantes)"
+    },
+    "301200": {
+      "grupo": "301",
+      "seccion": "C",
+      "nombre": "Construcción y reparación de embarcaciones de recreo y deporte"
+    },
+    "302000": {
+      "grupo": "302",
+      "seccion": "C",
+      "nombre": "Fabricación y reparación de locomotoras y de material rodante para transporte ferroviario"
+    },
+    "303000": {
+      "grupo": "303",
+      "seccion": "C",
+      "nombre": "Fabricación y reparación de aeronaves"
+    },
+    "309100": {
+      "grupo": "309",
+      "seccion": "C",
+      "nombre": "Fabricación de motocicletas"
+    },
+    "309200": {
+      "grupo": "309",
+      "seccion": "C",
+      "nombre": "Fabricación de bicicletas y de sillones de ruedas ortopédicos"
+    },
+    "309900": {
+      "grupo": "309",
+      "seccion": "C",
+      "nombre": "Fabricación de equipo de transporte n.c.p."
+    },
+    "310010": {
+      "grupo": "310",
+      "seccion": "C",
+      "nombre": "Fabricación de muebles y partes de muebles, principalmente de madera"
+    },
+    "310020": {
+      "grupo": "310",
+      "seccion": "C",
+      "nombre": "Fabricación de muebles y partes de muebles, excepto los que son principalmente de madera (metal, plástico, etc.)"
+    },
+    "310030": {
+      "grupo": "310",
+      "seccion": "C",
+      "nombre": "Fabricación de somieres y colchones"
+    },
+    "31110": {
+      "grupo": "31",
+      "seccion": "A",
+      "nombre": "Pesca de organismos marinos, excepto cuando es realizada en buques procesadores"
+    },
+    "31120": {
+      "grupo": "31",
+      "seccion": "A",
+      "nombre": "Pesca y elaboración de productos marinos realizada a bordo de buques procesadores"
+    },
+    "31130": {
+      "grupo": "31",
+      "seccion": "A",
+      "nombre": "Recolección de organismos marinos excepto peces, crustáceos y moluscos (Incluye la recolección de algas marinas)"
+    },
+    "31200": {
+      "grupo": "31",
+      "seccion": "A",
+      "nombre": "Pesca continental: fluvial y lacustre"
+    },
+    "31300": {
+      "grupo": "31",
+      "seccion": "A",
+      "nombre": "Servicios de apoyo para la pesca"
+    },
+    "32000": {
+      "grupo": "32",
+      "seccion": "A",
+      "nombre": "Explotación de criaderos de peces, granjas piscícolas y otros frutos acuáticos  (acuicultura)"
+    },
+    "321011": {
+      "grupo": "321",
+      "seccion": "C",
+      "nombre": "Fabricación de joyas finas y artículos conexos"
+    },
+    "321012": {
+      "grupo": "321",
+      "seccion": "C",
+      "nombre": "Fabricación de objetos de platería"
+    },
+    "321020": {
+      "grupo": "321",
+      "seccion": "C",
+      "nombre": "Fabricación de bijouterie (Incluye la fabricación de joyas de fantasía y accesorios similares)"
+    },
+    "322001": {
+      "grupo": "322",
+      "seccion": "C",
+      "nombre": "Fabricación de instrumentos de música"
+    },
+    "323001": {
+      "grupo": "323",
+      "seccion": "C",
+      "nombre": "Fabricación de artículos de deporte (Incluye equipos de deporte para gimnasia y campos de juegos, equipos de pesca y camping, etc., excepto indumentaria deportiva: 141040)"
+    },
+    "324000": {
+      "grupo": "324",
+      "seccion": "C",
+      "nombre": "Fabricación de juegos y juguetes"
+    },
+    "329010": {
+      "grupo": "329",
+      "seccion": "C",
+      "nombre": "Fabricación de lápices, lapiceras,  bolígrafos, sellos y artículos similares para oficinas y artistas"
+    },
+    "329020": {
+      "grupo": "329",
+      "seccion": "C",
+      "nombre": "Fabricación de escobas, cepillos y pinceles"
+    },
+    "329030": {
+      "grupo": "329",
+      "seccion": "C",
+      "nombre": "Fabricación de carteles, señales e indicadores  -eléctricos o no-"
+    },
+    "329040": {
+      "grupo": "329",
+      "seccion": "C",
+      "nombre": "Fabricación de equipo de protección y seguridad, excepto calzado"
+    },
+    "329090": {
+      "grupo": "329",
+      "seccion": "C",
+      "nombre": "Industrias manufactureras n.c.p. (Incluye fabricación de paraguas, termos, pelucas, etc.)"
+    },
+    "331101": {
+      "grupo": "331",
+      "seccion": "C",
+      "nombre": "Reparación y mantenimiento de productos de metal, excepto maquinaria y equipo"
+    },
+    "331210": {
+      "grupo": "331",
+      "seccion": "C",
+      "nombre": "Reparación y mantenimiento de maquinaria de uso general"
+    },
+    "331220": {
+      "grupo": "331",
+      "seccion": "C",
+      "nombre": "Reparación y mantenimiento de maquinaria y equipo de uso agropecuario y forestal"
+    },
+    "331290": {
+      "grupo": "331",
+      "seccion": "C",
+      "nombre": "Reparación y mantenimiento de maquinaria de uso especial n.c.p."
+    },
+    "331301": {
+      "grupo": "331",
+      "seccion": "C",
+      "nombre": "Reparación y mantenimiento de instrumentos médicos, ópticos y de precisión, equipo fotográfico, aparatos para medir, ensayar o navegar, relojes, excepto para uso personal o doméstico"
+    },
+    "331400": {
+      "grupo": "331",
+      "seccion": "C",
+      "nombre": "Reparación y mantenimiento de maquinaria y aparatos eléctricos"
+    },
+    "331900": {
+      "grupo": "331",
+      "seccion": "C",
+      "nombre": "Reparación y mantenimiento de máquinas y equipo n.c.p."
+    },
+    "332000": {
+      "grupo": "332",
+      "seccion": "C",
+      "nombre": "Instalación de maquinaria y equipos industriales"
+    },
+    "351110": {
+      "grupo": "351",
+      "seccion": "D",
+      "nombre": "Generación de energía térmica convencional (Incluye la producción de energía eléctrica mediante máquinas turbo-gas, turbo vapor, ciclo combinado y turbo diesel)"
+    },
+    "351120": {
+      "grupo": "351",
+      "seccion": "D",
+      "nombre": "Generación de energía térmica nuclear (Incluye la producción de energía eléctrica mediante combustible nuclear)"
+    },
+    "351130": {
+      "grupo": "351",
+      "seccion": "D",
+      "nombre": "Generación de energía hidráulica (Incluye la producción de energía eléctrica mediante centrales de bombeo)"
+    },
+    "351190": {
+      "grupo": "351",
+      "seccion": "D",
+      "nombre": "Generación de energía n.c.p. (Incluye la producción de energía eléctrica mediante fuentes de energía solar, biomasa, eólica, geotérmica, mareomotriz, etc.)"
+    },
+    "351201": {
+      "grupo": "351",
+      "seccion": "D",
+      "nombre": "Transporte de energía eléctrica"
+    },
+    "351310": {
+      "grupo": "351",
+      "seccion": "D",
+      "nombre": "Comercio mayorista de energía eléctrica"
+    },
+    "351320": {
+      "grupo": "351",
+      "seccion": "D",
+      "nombre": "Distribución de energía eléctrica"
+    },
+    "352010": {
+      "grupo": "352",
+      "seccion": "D",
+      "nombre": "Fabricación de gas y procesamiento de gas natural"
+    },
+    "352020": {
+      "grupo": "352",
+      "seccion": "D",
+      "nombre": "Distribución de combustibles gaseosos por tuberías (No incluye el transporte por gasoductos)"
+    },
+    "353001": {
+      "grupo": "353",
+      "seccion": "D",
+      "nombre": "Suministro de vapor y aire acondicionado"
+    },
+    "360010": {
+      "grupo": "360",
+      "seccion": "E",
+      "nombre": "Captación, depuración y distribución de agua de fuentes subterráneas"
+    },
+    "360020": {
+      "grupo": "360",
+      "seccion": "E",
+      "nombre": "Captación, depuración y distribución de agua de fuentes superficiales"
+    },
+    "370000": {
+      "grupo": "370",
+      "seccion": "E",
+      "nombre": "Servicios de depuración de aguas residuales, alcantarillado y cloacas"
+    },
+    "381100": {
+      "grupo": "381",
+      "seccion": "E",
+      "nombre": "Recolección, transporte, tratamiento y disposición final de residuos no peligrosos"
+    },
+    "381200": {
+      "grupo": "381",
+      "seccion": "E",
+      "nombre": "Recolección, transporte, tratamiento y disposición final de residuos peligrosos"
+    },
+    "382010": {
+      "grupo": "382",
+      "seccion": "E",
+      "nombre": "Recuperación de materiales y desechos metálicos"
+    },
+    "382020": {
+      "grupo": "382",
+      "seccion": "E",
+      "nombre": "Recuperación de materiales y desechos no metálicos"
+    },
+    "390000": {
+      "grupo": "390",
+      "seccion": "E",
+      "nombre": "Descontaminación y otros servicios de gestión de residuos"
+    },
+    "410011": {
+      "grupo": "410",
+      "seccion": "F",
+      "nombre": "Construcción, reforma y reparación de edificios residenciales (Incluye la construcción, reforma y reparación  de viviendas unifamiliares y multifamiliares, bungaloes, cabañas, casas de campo, departamentos, albergues para ancianos, niños, estudiantes, etc.)"
+    },
+    "410021": {
+      "grupo": "410",
+      "seccion": "F",
+      "nombre": "Construcción, reforma y reparación de edificios no residenciales (Incluye construcción, reforma y reparación de restaurantes, bares, campamentos, bancos, oficinas, galerías comerciales, estaciones de servicio, edificios para tráfico y comunicaciones, garajes, edificios industriales y depósitos, escuelas, etc.)"
+    },
+    "421000": {
+      "grupo": "421",
+      "seccion": "F",
+      "nombre": "Construcción, reforma y reparación de obras de infraestructura para el transporte (Incluye la construcción, reforma y reparación de calles, autopistas, carreteras, puentes, túneles, vías férreas y pistas de aterrizaje, la señalización mediante pintura, etc.)"
+    },
+    "422100": {
+      "grupo": "422",
+      "seccion": "F",
+      "nombre": "Perforación de pozos de agua"
+    },
+    "422200": {
+      "grupo": "422",
+      "seccion": "F",
+      "nombre": "Construcción, reforma y reparación de redes distribución de electricidad, gas, agua, telecomunicaciones y de otros servicios públicos"
+    },
+    "429010": {
+      "grupo": "429",
+      "seccion": "F",
+      "nombre": "Construcción, reforma y reparación de obras hidráulicas (Incluye obras fluviales y canales, acueductos, diques, etc.)"
+    },
+    "429090": {
+      "grupo": "429",
+      "seccion": "F",
+      "nombre": "Construcción de obras de ingeniería civil n.c.p. (Incluye los trabajos generales de construcción para la minería y la industria,  de centrales eléctricas y nucleares, excavaciones de sepulturas, etc.)"
+    },
+    "431100": {
+      "grupo": "431",
+      "seccion": "F",
+      "nombre": "Demolición y voladura de edificios y de sus partes (Incluye los trabajos de limpieza de escombros asociada a la demolición, los derribos y demolición de edificios y obras de ingeniería civil,.los trabajos de voladura y remoción de rocas)"
+    },
+    "431210": {
+      "grupo": "431",
+      "seccion": "F",
+      "nombre": "Movimiento de suelos y preparación de terrenos para obras (Incluye el drenaje, excavación de zanjas para construcciones diversas, el despeje de capas superficiales no contaminadas, movimientos de tierras para hacer terraplenes o desmontes previos a la construcción de vías, carreteras, autopistas, FFCC, etc.)"
+    },
+    "431220": {
+      "grupo": "431",
+      "seccion": "F",
+      "nombre": "Perforación y sondeo, excepto perforación de pozos de petróleo, de gas, de minas e hidráulicos  y prospección de yacimientos de petróleo (Incluye los trabajos de perforación, sondeo y muestreo con fines de construcción o para estudios geofísicos, geológicos u otros similares, las perforaciones horizontales para el paso de cables o cañerías de drenaje, etc.), (No incluye los servicios de perforación relacionados con la extracción de petróleo y gas, activ.091000, ni la perforación de pozos hidráulicos, activ.422100)"
+    },
+    "432110": {
+      "grupo": "432",
+      "seccion": "F",
+      "nombre": "Instalación de sistemas de iluminación, control y señalización eléctrica para el transporte"
+    },
+    "432190": {
+      "grupo": "432",
+      "seccion": "F",
+      "nombre": "Instalación, ejecución y mantenimiento de instalaciones eléctricas, electromecánicas y electrónicas n.c.p. (Incluye la instalación de antenas, pararrayos, sistemas de alarmas contra incendios y robos, sistemas de telecomunicación, etc.)"
+    },
+    "432200": {
+      "grupo": "432",
+      "seccion": "F",
+      "nombre": "Instalaciones de gas, agua, sanitarios y de climatización, con sus artefactos conexos (Incluye la instalación de compactadores, calderas, sistemas de calefacción central, etc.)"
+    },
+    "432910": {
+      "grupo": "432",
+      "seccion": "F",
+      "nombre": "Instalaciones de ascensores, montacargas y  escaleras mecánicas"
+    },
+    "432920": {
+      "grupo": "432",
+      "seccion": "F",
+      "nombre": "Aislamiento térmico, acústico, hídrico y antivibratorio"
+    },
+    "432990": {
+      "grupo": "432",
+      "seccion": "F",
+      "nombre": "Instalaciones para edificios y obras de ingeniería civil n.c.p. (Incluye instalación de puertas automáticas o giratorias)"
+    },
+    "433010": {
+      "grupo": "433",
+      "seccion": "F",
+      "nombre": "Instalaciones de carpintería, herrería de obra y artística (Incluye instalación de puertas y ventanas, carpintería metálica y no metálica, etc.)"
+    },
+    "433020": {
+      "grupo": "433",
+      "seccion": "F",
+      "nombre": "Terminación y revestimiento de paredes y pisos (Incluye yesería, salpicré, el pulido de pisos y la colocación de revestimientos de cerámicas, de piedra tallada, de suelos flexibles, parqué, baldosas, empapelados, etc.)"
+    },
+    "433030": {
+      "grupo": "433",
+      "seccion": "F",
+      "nombre": "Colocación de cristales en obra (Incluye la instalación y revestimiento de vidrio, espejos y otros artículos de vidrio, etc.)"
+    },
+    "433040": {
+      "grupo": "433",
+      "seccion": "F",
+      "nombre": "Pintura y trabajos de decoración"
+    },
+    "433090": {
+      "grupo": "433",
+      "seccion": "F",
+      "nombre": "Terminación de edificios n.c.p. (Incluye trabajos de ornamentación, limpieza exterior de edificios recién construídos, etc.)"
+    },
+    "439100": {
+      "grupo": "439",
+      "seccion": "F",
+      "nombre": "Alquiler de equipo de construcción o demolición dotado de operarios"
+    },
+    "439910": {
+      "grupo": "439",
+      "seccion": "F",
+      "nombre": "Hincado de pilotes, cimentación y otros trabajos de hormigón armado"
+    },
+    "439990": {
+      "grupo": "439",
+      "seccion": "F",
+      "nombre": "Actividades especializadas de construcción n.c.p. (Incluye el alquiler, montaje y desmantelamiento de andamios,  la construcción de chimeneas y hornos industriales, el acorazamiento de cajas fuertes y cámaras frigoríficas, el armado e instalación de compuertas para diques, etc.)"
+    },
+    "451110": {
+      "grupo": "451",
+      "seccion": "G",
+      "nombre": "Venta de autos, camionetas y utilitarios nuevos (Incluye taxis, jeeps, 4x4 y vehículos similares)"
+    },
+    "451190": {
+      "grupo": "451",
+      "seccion": "G",
+      "nombre": "Venta de vehículos automotores nuevos n.c.p. (Incluye casas rodantes, trailers, camiones, remolques, ambulancias, ómnibus, microbuses y similares, cabezas tractoras, etc.)"
+    },
+    "451210": {
+      "grupo": "451",
+      "seccion": "G",
+      "nombre": "Venta de autos, camionetas y utilitarios, usados (Incluye taxis, jeeps, 4x4 y vehículos similares)"
+    },
+    "451290": {
+      "grupo": "451",
+      "seccion": "G",
+      "nombre": "Venta de vehículos automotores usados n.c.p. (Incluye, casas rodantes, trailers, camiones, remolques, ambulancias, ómnibus, microbuses y similares, cabezas tractoras, etc.)"
+    },
+    "452101": {
+      "grupo": "452",
+      "seccion": "G",
+      "nombre": "Lavado automático y manual de vehículos automotores"
+    },
+    "452210": {
+      "grupo": "452",
+      "seccion": "G",
+      "nombre": "Reparación de cámaras y cubiertas (Incluye reparación de llantas)"
+    },
+    "452220": {
+      "grupo": "452",
+      "seccion": "G",
+      "nombre": "Reparación de amortiguadores,  alineación de dirección y balanceo de ruedas"
+    },
+    "452300": {
+      "grupo": "452",
+      "seccion": "G",
+      "nombre": "Instalación y reparación de parabrisas, lunetas y ventanillas, cerraduras no eléctricas y grabado de cristales (Incluye instalación y reparación de aletas, burletes y colisas)"
+    },
+    "452401": {
+      "grupo": "452",
+      "seccion": "G",
+      "nombre": "Reparaciones eléctricas del tablero e instrumental, reparación y recarga de baterías, instalación de alarmas, radios, sistemas de climatización"
+    },
+    "452500": {
+      "grupo": "452",
+      "seccion": "G",
+      "nombre": "Tapizado y retapizado de automotores"
+    },
+    "452600": {
+      "grupo": "452",
+      "seccion": "G",
+      "nombre": "Reparación y pintura de carrocerías, colocación y reparación de guardabarros y protecciones exteriores"
+    },
+    "452700": {
+      "grupo": "452",
+      "seccion": "G",
+      "nombre": "Instalación y reparación de caños de escape y radiadores"
+    },
+    "452800": {
+      "grupo": "452",
+      "seccion": "G",
+      "nombre": "Mantenimiento y reparación de frenos y embragues"
+    },
+    "452910": {
+      "grupo": "452",
+      "seccion": "G",
+      "nombre": "Instalación y reparación de equipos de GNC"
+    },
+    "452990": {
+      "grupo": "452",
+      "seccion": "G",
+      "nombre": "Mantenimiento y reparación del motor n.c.p., mecánica integral (Incluye auxilio y servicios de grúa para automotores)"
+    },
+    "453100": {
+      "grupo": "453",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de partes, piezas y accesorios de vehículos automotores"
+    },
+    "453210": {
+      "grupo": "453",
+      "seccion": "G",
+      "nombre": "Venta al por menor de cámaras y cubiertas"
+    },
+    "453220": {
+      "grupo": "453",
+      "seccion": "G",
+      "nombre": "Venta al por menor de baterías"
+    },
+    "453291": {
+      "grupo": "453",
+      "seccion": "G",
+      "nombre": "Venta al por menor de partes, piezas y accesorios nuevos n.c.p."
+    },
+    "453292": {
+      "grupo": "453",
+      "seccion": "G",
+      "nombre": "Venta al por menor de partes, piezas y accesorios usados n.c.p."
+    },
+    "454010": {
+      "grupo": "454",
+      "seccion": "G",
+      "nombre": "Venta de motocicletas y de sus partes, piezas y accesorios"
+    },
+    "454020": {
+      "grupo": "454",
+      "seccion": "G",
+      "nombre": "Mantenimiento y reparación de motocicletas"
+    },
+    "461011": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Venta al por mayor en comisión o consignación de cereales (incluye arroz), oleaginosas y forrajeras excepto semillas"
+    },
+    "461012": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Venta al por mayor en comisión o consignación de semillas"
+    },
+    "461013": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Venta al por mayor en comisión o consignación de frutas (Incluye acopiadores y receptoras)"
+    },
+    "461014": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Acopio y acondicionamiento en comisión o consignación de cereales (incluye arroz), oleaginosas y forrajeras excepto semillas"
+    },
+    "461019": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Venta al por mayor en comisión o consignación de productos agrícolas n.c.p."
+    },
+    "461021": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Venta al por mayor en comisión o consignación de ganado bovino en pie (Incluye consignatarios de hacienda y ferieros)"
+    },
+    "461022": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Venta al por mayor en comisión o consignación de ganado en pie excepto bovino"
+    },
+    "461029": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Venta al por mayor en comisión o consignación de productos pecuarios n.c.p."
+    },
+    "461031": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Operaciones de intermediación de carne - consignatario directo -"
+    },
+    "461032": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Operaciones de intermediación de carne excepto consignatario directo (Incluye matarifes abastecedores de carne, etc.)"
+    },
+    "461039": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Venta al por mayor en comisión o consignación de alimentos, bebidas y tabaco n.c.p."
+    },
+    "461040": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Venta al por mayor en comisión o consignación de combustibles (No incluye electricidad)"
+    },
+    "461091": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Venta al por mayor en comisión o consignación de productos textiles, prendas de vestir, calzado excepto el ortopédico,  artículos de marroquinería, paraguas y similares y productos de cuero n.c.p."
+    },
+    "461092": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Venta al por mayor en comisión o consignación de  madera y materiales para la construcción"
+    },
+    "461093": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Venta al por mayor en comisión o consignación de minerales, metales y productos químicos industriales"
+    },
+    "461094": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Venta al por mayor en comisión o consignación de  maquinaria, equipo profesional industrial y comercial, embarcaciones y aeronaves"
+    },
+    "461095": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Venta al por mayor en comisión o consignación de papel, cartón, libros, revistas, diarios, materiales de embalaje y artículos de librería"
+    },
+    "461099": {
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Venta al por mayor en comisión o consignación de  mercaderías n.c.p."
+    },
+    "462110": {
+      "grupo": "462",
+      "seccion": "G",
+      "nombre": "Acopio de algodón"
+    },
+    "462120": {
+      "grupo": "462",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de semillas y granos para forrajes"
+    },
+    "462131": {
+      "grupo": "462",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de cereales (incluye arroz), oleaginosas y forrajeras excepto semillas"
+    },
+    "462132": {
+      "grupo": "462",
+      "seccion": "G",
+      "nombre": "Acopio y acondicionamiento de cereales y semillas, excepto de algodón y semillas y granos para forrajes"
+    },
+    "462190": {
+      "grupo": "462",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de materias primas agrícolas y de la silvicultura n.c.p. (Incluye el acopio y venta al por mayor de materiles, desperdicios, subproductos agrícola usados como alimentos para animales)"
+    },
+    "462201": {
+      "grupo": "462",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de lanas, cueros en bruto y productos afines"
+    },
+    "462209": {
+      "grupo": "462",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de materias primas pecuarias n.c.p. incluso animales vivos (Incluye pieles y cueros en bruto)"
+    },
+    "463111": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de productos lácteos"
+    },
+    "463112": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de fiambres y quesos"
+    },
+    "463121": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de carnes rojas y derivados (Incluye abastecedores y distribuidores de carne)"
+    },
+    "463129": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de aves, huevos y productos de granja y de la caza n.c.p. (Incluye la venta al por mayor  de carne de ave fresca, congelada o refrigerada)"
+    },
+    "463130": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de pescado"
+    },
+    "463140": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor y empaque de frutas, de legumbres y hortalizas frescas"
+    },
+    "463151": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de pan, productos de confitería y pastas frescas"
+    },
+    "463152": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de azúcar"
+    },
+    "463153": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de aceites y grasas"
+    },
+    "463154": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de café, té, yerba mate y otras infusiones y especias y condimentos (Incluye la venta de sal)"
+    },
+    "463159": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de productos y subproductos de molinería n.c.p."
+    },
+    "463160": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de chocolates, golosinas y productos para kioscos y polirrubros n.c.p., excepto cigarrillos"
+    },
+    "463170": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de alimentos balanceados para animales"
+    },
+    "463180": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor en supermercados mayoristas de alimentos"
+    },
+    "463191": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de frutas, legumbres y cereales secos y en conserva"
+    },
+    "463199": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de productos alimenticios n.c.p. (Incluye la venta de miel y derivados, productos congelados,  etc.)"
+    },
+    "463211": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de vino"
+    },
+    "463212": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de bebidas espiritosas"
+    },
+    "463219": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de bebidas alcohólicas n.c.p. (Incluye la venta de aperitivos con alcohol, cerveza, sidra, etc.)"
+    },
+    "463220": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de bebidas no alcohólicas (Incluye la venta de aguas, sodas, bebidas refrescantes, jarabes, extractos, concentrados, gaseosas, jugos, etc.)"
+    },
+    "463300": {
+      "grupo": "463",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de cigarrillos y productos de tabaco"
+    },
+    "464111": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de tejidos (telas)"
+    },
+    "464112": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de artículos de mercería (Incluye la venta de puntillas, galones, hombreras, agujas, botones, etc.)"
+    },
+    "464113": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de mantelería, ropa de cama y artículos textiles para el hogar"
+    },
+    "464114": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de tapices y alfombras de materiales textiles"
+    },
+    "464119": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de productos textiles n.c.p."
+    },
+    "464121": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de prendas de vestir de cuero"
+    },
+    "464122": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de medias y prendas de punto"
+    },
+    "464129": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de prendas y accesorios de vestir n.c.p., excepto uniformes y ropa de trabajo"
+    },
+    "464130": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de calzado excepto el ortopédico (Incluye venta de calzado de cuero, tela, plástico, goma, etc.)"
+    },
+    "464141": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de pieles y cueros curtidos y salados"
+    },
+    "464142": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de suelas y afines (Incluye talabarterías, artículos regionales de cuero, almacenes de suelas, etc.)"
+    },
+    "464149": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de artículos de marroquinería,  paraguas y productos similares n.c.p."
+    },
+    "464150": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de uniformes y ropa de trabajo"
+    },
+    "464211": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de libros y publicaciones"
+    },
+    "464212": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de diarios y revistas"
+    },
+    "464221": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de papel y productos de papel y cartón excepto envases"
+    },
+    "464222": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de envases de papel y cartón"
+    },
+    "464223": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de artículos de librería y papelería"
+    },
+    "464310": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de productos farmacéuticos (Incluye venta de medicamentos y kits de diagnóstico como test de embarazo, hemoglucotest, vacunas, etc.)"
+    },
+    "464320": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de productos cosméticos, de tocador y de perfumería (Incluye venta de artículos para peluquería excepto equipamiento)"
+    },
+    "464330": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de instrumental médico y odontológico y artículos ortopédicos (Incluye venta de vaporizadores, nebulizadores, masajeadores, termómetros, prótesis, muletas, plantillas, calzado ortopédico y otros artículos similares de uso personal o doméstico)"
+    },
+    "464340": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de productos veterinarios"
+    },
+    "464410": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de artículos de óptica y de fotografía (Incluye venta de lentes de contacto, líquidos oftalmológicos, armazones, cristales ópticos, películas fotográficas, cámaras y accesorios para fotografía, etc.)"
+    },
+    "464420": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de artículos de relojería, joyería y fantasías"
+    },
+    "464501": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de electrodomésticos y artefactos para el hogar excepto equipos de audio y video"
+    },
+    "464502": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de equipos de audio, video y televisión"
+    },
+    "464610": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de muebles excepto de oficina, artículos de mimbre y corcho, colchones y somieres"
+    },
+    "464620": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de artículos de iluminación"
+    },
+    "464631": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de artículos de vidrio"
+    },
+    "464632": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de artículos de bazar y menaje excepto de vidrio"
+    },
+    "464910": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de CD's y DVD's de audio y video grabados."
+    },
+    "464920": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de materiales y productos de limpieza"
+    },
+    "464930": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de juguetes (Incluye artículos de cotillón)"
+    },
+    "464940": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de bicicletas y rodados similares (Incluye cochecitos y sillas de paseo para bebés, andadores, triciclos, etc.)"
+    },
+    "464950": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de artículos de esparcimiento y deportes (Incluye embarcaciones deportivas, armas y municiones, equipos de pesca, piletas de natación de lona o plástico, etc.)"
+    },
+    "464991": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de flores y plantas naturales y artificiales"
+    },
+    "464999": {
+      "grupo": "464",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de artículos de uso doméstico o personal n.c.p (Incluye artículos de platería excepto los incluidos en talabartería, cuadros y marcos que no sean obra de arte o de colección, sahumerios y artículos de santería, parrillas y hogares, etc.)"
+    },
+    "465100": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de equipos, periféricos, accesorios y programas informáticos"
+    },
+    "465210": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de equipos de telefonía y comunicaciones"
+    },
+    "465220": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de componentes electrónicos"
+    },
+    "465310": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de máquinas, equipos e implementos de uso en los sectores agropecuario, jardinería, silvicultura, pesca y caza (Incluye venta de tractores, cosechadoras, enfardadoras, remolques de carga y descarga automática, motosierras, cortadoras de césped autopropulsadas, etc.)"
+    },
+    "465320": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de máquinas, equipos e implementos de uso en la elaboración de alimentos, bebidas y tabaco (Incluye máquinas para moler, picar y cocer alimentos, fabricadora de pastas, bateas, enfriadoras y envasadoras de bebidas, etc.)"
+    },
+    "465330": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de máquinas, equipos e implementos de uso en la fabricación de textiles, prendas y accesorios de vestir, calzado, artículos de cuero y marroquinería (Incluye venta de máquinas de coser, de cortar tejidos, de tejer, extender telas, robots de corte y otros equipos para la industria textil y confeccionista, etc.)"
+    },
+    "465340": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de máquinas, equipos e implementos de uso en imprentas, artes gráficas y actividades conexas (Incluye venta de máquinas fotocopiadoras - excepto las de uso personal-, copiadoras de planos, máquinas para imprimir, guillotinar, troquelar, encuadernar, etc.)"
+    },
+    "465350": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de máquinas, equipos e implementos de uso médico y paramédico (Incluye venta de equipos de diagnóstico y tratamiento, camillas, cajas de cirugía, jeringas y otros implementos de material descartable, etc.)"
+    },
+    "465360": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de máquinas, equipos e implementos de uso en la industria del plástico y del caucho (Incluye sopladora de envases, laminadora de plásticos, máquinas extrusoras y moldeadoras, etc.)"
+    },
+    "465390": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de máquinas, equipos e implementos de uso especial n.c.p.  (Incluye motoniveladoras, excavadoras, palas mecánicas, perforadoras-percutoras, etc.)"
+    },
+    "465400": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de máquinas - herramienta de uso general"
+    },
+    "465500": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta  al  por  mayor  de  vehículos,  equipos  y  máquinas  para  el transporte ferroviario, aéreo y de navegación"
+    },
+    "465610": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de muebles e instalaciones para oficinas"
+    },
+    "465690": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de muebles e instalaciones para la industria, el comercio y los servicios n.c.p."
+    },
+    "465910": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de máquinas y equipo de control y seguridad"
+    },
+    "465920": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de maquinaria y equipo de oficina, excepto equipo informático"
+    },
+    "465930": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de equipo profesional y científico e instrumentos de medida y de control n.c.p."
+    },
+    "465990": {
+      "grupo": "465",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de máquinas, equipo y materiales conexos n.c.p."
+    },
+    "466110": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de combustibles y lubricantes para automotores"
+    },
+    "466121": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Fraccionamiento y distribución de gas licuado"
+    },
+    "466129": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de combustibles, lubricantes, leña y carbón, excepto gas licuado y combustibles y lubricantes para automotores"
+    },
+    "466200": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de metales y minerales metalíferos"
+    },
+    "466310": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de aberturas (Incluye puertas, ventanas, cortinas de enrollar, madera, aluminio, puertas corredizas, frentes de placard, etc.)"
+    },
+    "466320": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de productos de madera excepto muebles (Incluye placas, varillas, parqué, machimbre, etc.)"
+    },
+    "466330": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de artículos de ferretería y materiales eléctricos (Incluye la venta  de clavos, cerraduras, cable coaxil. etc)"
+    },
+    "466340": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de pinturas y productos conexos"
+    },
+    "466350": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de cristales y espejos"
+    },
+    "466360": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de artículos para plomería, instalación de gas y calefacción"
+    },
+    "466370": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de papeles para pared, revestimiento para pisos de goma, plástico y textiles,  y artículos similares para la decoración"
+    },
+    "466391": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de artículos de loza, cerámica y porcelana de uso en construcción"
+    },
+    "466399": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de artículos para la construcción n.c.p. (No incluye artículos y materiales de demolición: 466990 )"
+    },
+    "466910": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de productos intermedios n.c.p., desperdicios y desechos textiles"
+    },
+    "466920": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de productos intermedios n.c.p., desperdicios y desechos de papel y cartón"
+    },
+    "466931": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de artículos de plástico"
+    },
+    "466932": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de abonos, fertilizantes y plaguicidas"
+    },
+    "466939": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de productos intermedios, desperdicios y desechos de vidrio, caucho, goma y químicos n.c.p."
+    },
+    "466940": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de productos intermedios n.c.p., desperdicios y desechos metálicos (Incluye chatarra, viruta de metales diversos, etc.)"
+    },
+    "466990": {
+      "grupo": "466",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de productos intermedios, desperdicios y desechos n.c.p."
+    },
+    "469010": {
+      "grupo": "469",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de insumos agropecuarios diversos"
+    },
+    "469090": {
+      "grupo": "469",
+      "seccion": "G",
+      "nombre": "Venta al por mayor de mercancías n.c.p."
+    },
+    "471110": {
+      "grupo": "471",
+      "seccion": "G",
+      "nombre": "Venta al por menor en hipermercados"
+    },
+    "471120": {
+      "grupo": "471",
+      "seccion": "G",
+      "nombre": "Venta al por menor en supermercados"
+    },
+    "471130": {
+      "grupo": "471",
+      "seccion": "G",
+      "nombre": "Venta al por menor en minimercados (Incluye mercaditos, autoservicios y establecimientos similares que vendan carnes, verduras y demás productos alimenticios en forma conjunta)"
+    },
+    "471190": {
+      "grupo": "471",
+      "seccion": "G",
+      "nombre": "Venta al por menor en kioscos, polirrubros y comercios no especializados n.c.p."
+    },
+    "471900": {
+      "grupo": "471",
+      "seccion": "G",
+      "nombre": "Venta al por menor en comercios no especializados, sin predominio de productos alimenticios y bebidas"
+    },
+    "472111": {
+      "grupo": "472",
+      "seccion": "G",
+      "nombre": "Venta al por menor de productos lácteos"
+    },
+    "472112": {
+      "grupo": "472",
+      "seccion": "G",
+      "nombre": "Venta al por menor de fiambres y embutidos"
+    },
+    "472120": {
+      "grupo": "472",
+      "seccion": "G",
+      "nombre": "Venta al por menor de productos de almacén y dietética"
+    },
+    "472130": {
+      "grupo": "472",
+      "seccion": "G",
+      "nombre": "Venta al por menor de carnes rojas, menudencias y chacinados frescos"
+    },
+    "472140": {
+      "grupo": "472",
+      "seccion": "G",
+      "nombre": "Venta al por menor de huevos, carne de aves y  productos de granja y de la caza"
+    },
+    "472150": {
+      "grupo": "472",
+      "seccion": "G",
+      "nombre": "Venta al por menor de pescados y  productos de la pesca"
+    },
+    "472160": {
+      "grupo": "472",
+      "seccion": "G",
+      "nombre": "Venta al por menor de frutas, legumbres y hortalizas frescas"
+    },
+    "472171": {
+      "grupo": "472",
+      "seccion": "G",
+      "nombre": "Venta al por menor de pan y productos de panadería"
+    },
+    "472172": {
+      "grupo": "472",
+      "seccion": "G",
+      "nombre": "Venta al por menor de bombones, golosinas y demás productos de confitería"
+    },
+    "472190": {
+      "grupo": "472",
+      "seccion": "G",
+      "nombre": "Venta al por menor de productos alimenticios n.c.p., en comercios especializados"
+    },
+    "472200": {
+      "grupo": "472",
+      "seccion": "G",
+      "nombre": "Venta al por menor de bebidas en comercios especializados"
+    },
+    "472300": {
+      "grupo": "472",
+      "seccion": "G",
+      "nombre": "Venta al por menor de tabaco en comercios especializados"
+    },
+    "473000": {
+      "grupo": "473",
+      "seccion": "G",
+      "nombre": "Venta al por menor de combustible para vehículos automotores y motocicletas (Incluye la venta al por menor de productos lubricantes y refrigerantes)"
+    },
+    "474010": {
+      "grupo": "474",
+      "seccion": "G",
+      "nombre": "Venta al por menor de equipos, periféricos,  accesorios y programas informáticos"
+    },
+    "474020": {
+      "grupo": "474",
+      "seccion": "G",
+      "nombre": "Venta al por menor de aparatos de telefonía y comunicación (Incluye teléfonos, celulares, fax, etc)"
+    },
+    "475110": {
+      "grupo": "475",
+      "seccion": "G",
+      "nombre": "Venta al por menor de hilados, tejidos y artículos de mercería (Incluye mercerías, sederías, comercios de venta de lanas y otros hilados, etc.)"
+    },
+    "475120": {
+      "grupo": "475",
+      "seccion": "G",
+      "nombre": "Venta al por menor de confecciones para el hogar (Incluye la venta al por menor de sábanas, toallas, mantelería, cortinas confeccionadas, colchas, cubrecamas, etc.)"
+    },
+    "475190": {
+      "grupo": "475",
+      "seccion": "G",
+      "nombre": "Venta al por menor de artículos textiles n.c.p. excepto prendas de vestir (Incluye la venta al por menor de tapices, alfombras,  etc.)"
+    },
+    "475210": {
+      "grupo": "475",
+      "seccion": "G",
+      "nombre": "Venta al por menor de aberturas (Incluye puertas, ventanas, cortinas de enrollar de PVC, madera, aluminio, puertas corredizas, frentes de placards, etc.)"
+    },
+    "475220": {
+      "grupo": "475",
+      "seccion": "G",
+      "nombre": "Venta al por menor de maderas y artículos de madera  y corcho, excepto muebles"
+    },
+    "475230": {
+      "grupo": "475",
+      "seccion": "G",
+      "nombre": "Venta al por menor de artículos de ferretería y materiales eléctricos"
+    },
+    "475240": {
+      "grupo": "475",
+      "seccion": "G",
+      "nombre": "Venta al por menor de pinturas y productos conexos"
+    },
+    "475250": {
+      "grupo": "475",
+      "seccion": "G",
+      "nombre": "Venta al por menor de artículos para plomería e instalación de gas"
+    },
+    "475260": {
+      "grupo": "475",
+      "seccion": "G",
+      "nombre": "Venta al por menor de cristales, espejos, mamparas y cerramientos"
+    },
+    "475270": {
+      "grupo": "475",
+      "seccion": "G",
+      "nombre": "Venta al por menor de papeles para pared, revestimientos para pisos y artículos similares para la decoración"
+    },
+    "475290": {
+      "grupo": "475",
+      "seccion": "G",
+      "nombre": "Venta al por menor de materiales de construcción n.c.p."
+    },
+    "475300": {
+      "grupo": "475",
+      "seccion": "G",
+      "nombre": "Venta al por menor  de electrodomésticos, artefactos para el hogar y equipos de audio y video"
+    },
+    "475410": {
+      "grupo": "475",
+      "seccion": "G",
+      "nombre": "Venta al por menor de muebles para el hogar, artículos de mimbre y corcho"
+    },
+    "475420": {
+      "grupo": "475",
+      "seccion": "G",
+      "nombre": "Venta al por menor de colchones y somieres"
+    },
+    "475430": {
+      "grupo": "475",
+      "seccion": "G",
+      "nombre": "Venta al por menor de artículos de iluminación"
+    },
+    "475440": {
+      "grupo": "475",
+      "seccion": "G",
+      "nombre": "Venta al por menor de artículos de bazar y menaje (Incluye venta al por menor de vajilla, cubiertos, etc.)"
+    },
+    "475490": {
+      "grupo": "475",
+      "seccion": "G",
+      "nombre": "Venta al por menor de artículos para el hogar n.c.p. (Incluye perchas, marcos, cuadros, etc.)"
+    },
+    "476110": {
+      "grupo": "476",
+      "seccion": "G",
+      "nombre": "Venta al por menor de libros"
+    },
+    "476120": {
+      "grupo": "476",
+      "seccion": "G",
+      "nombre": "Venta al por menor de diarios y revistas"
+    },
+    "476130": {
+      "grupo": "476",
+      "seccion": "G",
+      "nombre": "Venta al por menor de papel, cartón, materiales de embalaje y artículos de librería"
+    },
+    "476200": {
+      "grupo": "476",
+      "seccion": "G",
+      "nombre": "Venta al por menor de CD's y DVD's de audio y video grabados (Incluye CD's y DVD's vírgenes)"
+    },
+    "476310": {
+      "grupo": "476",
+      "seccion": "G",
+      "nombre": "Venta al por menor de equipos  y artículos deportivos (Incluye la venta y reparación  de bicicletas, la venta  de aparatos de gimnasia y de equipos de camping, etc.)"
+    },
+    "476320": {
+      "grupo": "476",
+      "seccion": "G",
+      "nombre": "Venta al por menor de armas, artículos para la caza y pesca"
+    },
+    "476400": {
+      "grupo": "476",
+      "seccion": "G",
+      "nombre": "Venta al por menor de juguetes, artículos de cotillón y juegos de mesa"
+    },
+    "477110": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de ropa interior, medias, prendas para dormir y para la playa (Incluye corsetería, lencería, camisetas, medias excepto ortopédicas, pijamas, camisones y saltos de cama, salidas de baño, trajes de baño, etc.)"
+    },
+    "477120": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de uniformes escolares y guardapolvos"
+    },
+    "477130": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de indumentaria para bebés y niños"
+    },
+    "477140": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de indumentaria deportiva"
+    },
+    "477150": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de prendas de cuero"
+    },
+    "477190": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de prendas y accesorios de vestir n.c.p."
+    },
+    "477210": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de artículos de talabartería y artículos regionales (Incluye venta de artículos regionales de cuero, plata, alpaca y similares)"
+    },
+    "477220": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de calzado, excepto el ortopédico y el deportivo (No incluye almacenes de suelas 464142)"
+    },
+    "477230": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de calzado deportivo"
+    },
+    "477290": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de artículos de marroquinería, paraguas y similares n.c.p."
+    },
+    "477310": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de productos farmacéuticos y de herboristería"
+    },
+    "477320": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de productos cosméticos, de tocador y de perfumería"
+    },
+    "477330": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de instrumental médico y odontológico y artículos ortopédicos (Incluye venta de vaporizadores, nebulizadores, masajeadores, termómetros, prótesis, muletas, plantillas, calzado ortopédico y otros artículos similares de uso personal o doméstico)"
+    },
+    "477410": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de artículos de óptica y fotografía"
+    },
+    "477420": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de artículos de relojería y joyería"
+    },
+    "477430": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de bijouterie y fantasía"
+    },
+    "477440": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de flores, plantas, semillas, abonos, fertilizantes y otros productos de vivero"
+    },
+    "477450": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de materiales y productos de limpieza"
+    },
+    "477460": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de fuel oil, gas en garrafas, carbón y leña (No incluye las estaciones de servicios que se clasifican en 473000)"
+    },
+    "477470": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de productos veterinarios, animales domésticos y alimento balanceado para mascotas"
+    },
+    "477480": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de obras de arte"
+    },
+    "477490": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de artículos nuevos n.c.p. (Incluye la venta realizada en casas de regalos, de artesanías, pelucas,  de artículos religiosos -santerías-, recarga de matafuegos,  etc.)"
+    },
+    "477810": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de muebles usados"
+    },
+    "477820": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de libros, revistas y similares usados"
+    },
+    "477830": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de antigüedades (Incluye venta de antigüedades en remates)"
+    },
+    "477840": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de oro, monedas, sellos y similares (Incluye la  venta de monedas de colección, estampillas, etc.)"
+    },
+    "477890": {
+      "grupo": "477",
+      "seccion": "G",
+      "nombre": "Venta al por menor de artículos usados n.c.p. excepto+E1155 automotores y motocicletas"
+    },
+    "478010": {
+      "grupo": "478",
+      "seccion": "G",
+      "nombre": "Venta al por menor de alimentos, bebidas y tabaco en puestos móviles y mercados"
+    },
+    "478090": {
+      "grupo": "478",
+      "seccion": "G",
+      "nombre": "Venta al por menor de productos n.c.p. en puestos móviles y mercados"
+    },
+    "479101": {
+      "grupo": "479",
+      "seccion": "G",
+      "nombre": "Venta al por menor por internet"
+    },
+    "479109": {
+      "grupo": "479",
+      "seccion": "G",
+      "nombre": "Venta al por menor por correo, televisión y otros medios de comunicación n.c.p."
+    },
+    "479900": {
+      "grupo": "479",
+      "seccion": "G",
+      "nombre": "Venta al por menor no realizada en establecimientos  n.c.p. (Incluye venta mediante máquinas expendedoras, vendedores ambulantes y vendedores a domicilio)"
+    },
+    "491110": {
+      "grupo": "491",
+      "seccion": "H",
+      "nombre": "Servicio de transporte ferroviario urbano y suburbano de pasajeros (Incluye el servicio de subterráneo y de premetro)"
+    },
+    "491120": {
+      "grupo": "491",
+      "seccion": "H",
+      "nombre": "Servicio de transporte ferroviario interurbano de pasajeros"
+    },
+    "491200": {
+      "grupo": "491",
+      "seccion": "H",
+      "nombre": "Servicio de transporte ferroviario de cargas"
+    },
+    "492110": {
+      "grupo": "492",
+      "seccion": "H",
+      "nombre": "Servicio de transporte automotor urbano y suburbano regular de pasajeros"
+    },
+    "492120": {
+      "grupo": "492",
+      "seccion": "H",
+      "nombre": "Servicios de transporte automotor de pasajeros mediante taxis y remises, alquiler de autos con chofer (Incluye los radiotaxis)"
+    },
+    "492130": {
+      "grupo": "492",
+      "seccion": "H",
+      "nombre": "Servicio de transporte escolar (Incluye el servicio de transporte para colonias de vacaciones y clubes)"
+    },
+    "492140": {
+      "grupo": "492",
+      "seccion": "H",
+      "nombre": "Servicio de transporte automotor urbano y suburbano no regular de pasajeros de oferta libre,  excepto mediante taxis y remises, alquiler de autos con chofer y transporte escolar (Incluye servicios urbanos especiales como charters, servicios contratados, servicios para ámbito portuario o aeroportuario, servicio de hipódromos y espectáculos deportivos y culturales)"
+    },
+    "492150": {
+      "grupo": "492",
+      "seccion": "H",
+      "nombre": "Servicio de transporte automotor interurbano regular de pasajeros, E1203excepto transporte internacional (Incluye los llamados servicios de larga distancia)"
+    },
+    "492160": {
+      "grupo": "492",
+      "seccion": "H",
+      "nombre": "Servicio de transporte automotor interurbano no regular de pasajeros"
+    },
+    "492170": {
+      "grupo": "492",
+      "seccion": "H",
+      "nombre": "Servicio de transporte automotor internacional de pasajeros"
+    },
+    "492180": {
+      "grupo": "492",
+      "seccion": "H",
+      "nombre": "Servicio de transporte automotor turístico de pasajeros"
+    },
+    "492190": {
+      "grupo": "492",
+      "seccion": "H",
+      "nombre": "Servicio de transporte automotor de pasajeros n.c.p."
+    },
+    "492210": {
+      "grupo": "492",
+      "seccion": "H",
+      "nombre": "Servicios de mudanza (Incluye servicios de guardamuebles)"
+    },
+    "492221": {
+      "grupo": "492",
+      "seccion": "H",
+      "nombre": "Servicio de transporte automotor de cereales"
+    },
+    "492229": {
+      "grupo": "492",
+      "seccion": "H",
+      "nombre": "Servicio de transporte automotor de mercaderías a granel n.c.p."
+    },
+    "492230": {
+      "grupo": "492",
+      "seccion": "H",
+      "nombre": "Servicio de transporte automotor de animales"
+    },
+    "492240": {
+      "grupo": "492",
+      "seccion": "H",
+      "nombre": "Servicio de transporte por camión cisterna"
+    },
+    "492250": {
+      "grupo": "492",
+      "seccion": "H",
+      "nombre": "Servicio de transporte automotor de mercaderías y sustancias peligrosas"
+    },
+    "492280": {
+      "grupo": "492",
+      "seccion": "H",
+      "nombre": "Servicio de transporte automotor urbano de carga n.c.p. (Incluye el transporte realizado por fleteros y distribuidores dentro del égido urbano)"
+    },
+    "492290": {
+      "grupo": "492",
+      "seccion": "H",
+      "nombre": "Servicio de transporte automotor de cargas n.c.p. (Incluye  servicios de transporte de carga refrigerada y transporte pesado)"
+    },
+    "493110": {
+      "grupo": "493",
+      "seccion": "H",
+      "nombre": "Servicio de transporte por oleoductos (Incluye estaciones de bombeo y compresión)"
+    },
+    "493120": {
+      "grupo": "493",
+      "seccion": "H",
+      "nombre": "Servicio de transporte por poliductos y fueloductos"
+    },
+    "493200": {
+      "grupo": "493",
+      "seccion": "H",
+      "nombre": "Servicio de transporte por gasoductos (Incluye estaciones de bombeo y compresión)"
+    },
+    "501100": {
+      "grupo": "501",
+      "seccion": "H",
+      "nombre": "Servicio de transporte marítimo de pasajeros"
+    },
+    "501200": {
+      "grupo": "501",
+      "seccion": "H",
+      "nombre": "Servicio de transporte marítimo de carga"
+    },
+    "502101": {
+      "grupo": "502",
+      "seccion": "H",
+      "nombre": "Servicio de transporte fluvial y lacustre de pasajeros"
+    },
+    "502200": {
+      "grupo": "502",
+      "seccion": "H",
+      "nombre": "Servicio de transporte fluvial y lacustre de carga"
+    },
+    "51000": {
+      "grupo": "51",
+      "seccion": "B",
+      "nombre": "Extracción y aglomeración de carbón (Incluye la producción de hulla no aglomerada, antracita, carbón bituminoso no aglomerado, ovoides y combustibles sólidos análogos a base de hulla, etc.)"
+    },
+    "511000": {
+      "grupo": "511",
+      "seccion": "H",
+      "nombre": "Servicio de transporte aéreo de pasajeros"
+    },
+    "512000": {
+      "grupo": "512",
+      "seccion": "H",
+      "nombre": "Servicio de transporte aéreo de cargas"
+    },
+    "52000": {
+      "grupo": "52",
+      "seccion": "B",
+      "nombre": "Extracción y aglomeración de lignito"
+    },
+    "521010": {
+      "grupo": "521",
+      "seccion": "H",
+      "nombre": "Servicios de manipulación de carga en el ámbito terrestre"
+    },
+    "521020": {
+      "grupo": "521",
+      "seccion": "H",
+      "nombre": "Servicios de manipulación de carga en el ámbito portuario"
+    },
+    "521030": {
+      "grupo": "521",
+      "seccion": "H",
+      "nombre": "Servicios de manipulación de carga en el ámbito aéreo"
+    },
+    "522010": {
+      "grupo": "522",
+      "seccion": "H",
+      "nombre": "Servicios de almacenamiento y depósito en silos"
+    },
+    "522020": {
+      "grupo": "522",
+      "seccion": "H",
+      "nombre": "Servicios de almacenamiento y depósito en cámaras frigoríficas"
+    },
+    "522091": {
+      "grupo": "522",
+      "seccion": "H",
+      "nombre": "Servicios de usuarios directos de zona franca"
+    },
+    "522092": {
+      "grupo": "522",
+      "seccion": "H",
+      "nombre": "Servicios de gestión de depósitos fiscales"
+    },
+    "522099": {
+      "grupo": "522",
+      "seccion": "H",
+      "nombre": "Servicios de almacenamiento y depósito n.c.p."
+    },
+    "523011": {
+      "grupo": "523",
+      "seccion": "H",
+      "nombre": "Servicios de gestión aduanera realizados por despachantes de aduana"
+    },
+    "523019": {
+      "grupo": "523",
+      "seccion": "H",
+      "nombre": "Servicios de gestión aduanera para el transporte de mercaderías n.c.p."
+    },
+    "523020": {
+      "grupo": "523",
+      "seccion": "H",
+      "nombre": "Servicios de agencias marítimas para el transporte de mercaderías"
+    },
+    "523031": {
+      "grupo": "523",
+      "seccion": "H",
+      "nombre": "Servicios de gestión de agentes de transporte aduanero excepto agencias marítimas"
+    },
+    "523032": {
+      "grupo": "523",
+      "seccion": "H",
+      "nombre": "Servicios de operadores logísticos seguros (OLS) en el ámbito aduanero"
+    },
+    "523039": {
+      "grupo": "523",
+      "seccion": "H",
+      "nombre": "Servicios de operadores logísticos n.c.p."
+    },
+    "523090": {
+      "grupo": "523",
+      "seccion": "H",
+      "nombre": "Servicios de gestión y logística para el transporte de mercaderías n.c.p. (Incluye las actividades de empresas empaquetadoras para comercio exterior, alquiler de contenedores, etc.)"
+    },
+    "524110": {
+      "grupo": "524",
+      "seccion": "H",
+      "nombre": "Servicios de explotación de infraestructura para el transporte terrestre, peajes y otros derechos"
+    },
+    "524120": {
+      "grupo": "524",
+      "seccion": "H",
+      "nombre": "Servicios  de playas de estacionamiento y garajes"
+    },
+    "524130": {
+      "grupo": "524",
+      "seccion": "H",
+      "nombre": "Servicios de estaciones terminales de ómnibus y ferroviárias"
+    },
+    "524190": {
+      "grupo": "524",
+      "seccion": "H",
+      "nombre": "Servicios complementarios para el transporte terrestre n.c.p. (Incluye servicios de mantenimiento de material ferroviario)"
+    },
+    "524210": {
+      "grupo": "524",
+      "seccion": "H",
+      "nombre": "Servicios de explotación de infraestructura para el transporte marítimo, derechos de puerto"
+    },
+    "524220": {
+      "grupo": "524",
+      "seccion": "H",
+      "nombre": "Servicios de guarderías náuticas"
+    },
+    "524230": {
+      "grupo": "524",
+      "seccion": "H",
+      "nombre": "Servicios para la navegación (Incluye servicios de practicaje y pilotaje, atraque y salvamento)"
+    },
+    "524290": {
+      "grupo": "524",
+      "seccion": "H",
+      "nombre": "Servicios complementarios para el transporte marítimo n.c.p. (Incluye explotación de servicios de terminales como puertos y muelles)"
+    },
+    "524310": {
+      "grupo": "524",
+      "seccion": "H",
+      "nombre": "Servicios de explotación de infraestructura para el transporte aéreo, derechos de aeropuerto"
+    },
+    "524320": {
+      "grupo": "524",
+      "seccion": "H",
+      "nombre": "Servicios de hangares y estacionamiento de aeronaves"
+    },
+    "524330": {
+      "grupo": "524",
+      "seccion": "H",
+      "nombre": "Servicios para la aeronavegación (Incluye remolque de aeronaves y actividades de control de tráfico aéreo, etc.)"
+    },
+    "524390": {
+      "grupo": "524",
+      "seccion": "H",
+      "nombre": "Servicios complementarios para el transporte aéreo n.c.p. (Incluye servicios de prevención y extinción de incendios)"
+    },
+    "530010": {
+      "grupo": "530",
+      "seccion": "H",
+      "nombre": "Servicio de correo postal (Incluye las actividades de correo postal sujetas a la obligación de servicio universal)"
+    },
+    "530090": {
+      "grupo": "530",
+      "seccion": "H",
+      "nombre": "Servicios de mensajerías (Incluye servicios puerta a puerta de correo y mensajería, comisionistas de encomiendas, transporte de documentos  realizados por empresas no sujetas a la obligación de servicio universal)"
+    },
+    "551010": {
+      "grupo": "551",
+      "seccion": "I",
+      "nombre": "Servicios de alojamiento por hora"
+    },
+    "551021": {
+      "grupo": "551",
+      "seccion": "I",
+      "nombre": "Servicios de alojamiento en pensiones"
+    },
+    "551022": {
+      "grupo": "551",
+      "seccion": "I",
+      "nombre": "Servicios de alojamiento en hoteles, hosterías y residenciales similares, excepto por hora, que incluyen servicio de restaurante al público"
+    },
+    "551023": {
+      "grupo": "551",
+      "seccion": "I",
+      "nombre": "Servicios de alojamiento en hoteles, hosterías y residenciales similares, excepto por hora, que no incluyen servicio de restaurante al público"
+    },
+    "551090": {
+      "grupo": "551",
+      "seccion": "I",
+      "nombre": "Servicios de hospedaje temporal n.c.p. (Incluye hospedaje en estancias, residencias para estudiantes y albergues juveniles, apartamentos turísticos, etc.)"
+    },
+    "552000": {
+      "grupo": "552",
+      "seccion": "I",
+      "nombre": "Servicios de alojamiento en campings (Incluye refugios de montaña)"
+    },
+    "561011": {
+      "grupo": "561",
+      "seccion": "I",
+      "nombre": "Servicios de restaurantes y cantinas sin espectáculo"
+    },
+    "561012": {
+      "grupo": "561",
+      "seccion": "I",
+      "nombre": "Servicios de restaurantes y cantinas con espectáculo"
+    },
+    "561013": {
+      "grupo": "561",
+      "seccion": "I",
+      "nombre": "Servicios de \"fast food\" y locales de venta de comidas y bebidas al paso (Incluye el expendio de hamburguesas, productos lácteos excepto helados, etc.)"
+    },
+    "561014": {
+      "grupo": "561",
+      "seccion": "I",
+      "nombre": "Servicios de expendio de bebidas en bares (Incluye: bares, cervecerías, pubs, cafeterías)"
+    },
+    "561019": {
+      "grupo": "561",
+      "seccion": "I",
+      "nombre": "Servicios de expendio de comidas y bebidas en establecimientos con servicio de mesa y/o en mostrador n.c.p."
+    },
+    "561020": {
+      "grupo": "561",
+      "seccion": "I",
+      "nombre": "Servicios de preparación de comidas para llevar (Incluye rotiserías, casas de empanadas, pizzerías sin consumo en el local)"
+    },
+    "561030": {
+      "grupo": "561",
+      "seccion": "I",
+      "nombre": "Servicio de expendio de helados"
+    },
+    "561040": {
+      "grupo": "561",
+      "seccion": "I",
+      "nombre": "Servicios de preparación de comidas realizadas por/para vendedores ambulantes."
+    },
+    "562010": {
+      "grupo": "562",
+      "seccion": "I",
+      "nombre": "Servicios de preparación de comidas para empresas y eventos (Incluye el servicio de catering, el suministro de comidas para banquetes, bodas, fiestas y otras celebraciones, comidas para hospital, etc.)"
+    },
+    "562091": {
+      "grupo": "562",
+      "seccion": "I",
+      "nombre": "Servicios de cantinas con atención exclusiva  a los empleados o estudiantes dentro de empresas o establecimientos educativos (Incluye cantinas deportivas)"
+    },
+    "562099": {
+      "grupo": "562",
+      "seccion": "I",
+      "nombre": "Servicios de comidas n.c.p."
+    },
+    "581100": {
+      "grupo": "581",
+      "seccion": "J",
+      "nombre": "Edición de libros, folletos, y otras publicaciones"
+    },
+    "581200": {
+      "grupo": "581",
+      "seccion": "J",
+      "nombre": "Edición de directorios y listas de correos"
+    },
+    "581300": {
+      "grupo": "581",
+      "seccion": "J",
+      "nombre": "Edición de periódicos, revistas y publicaciones periódicas"
+    },
+    "581900": {
+      "grupo": "581",
+      "seccion": "J",
+      "nombre": "Edición n.c.p."
+    },
+    "591110": {
+      "grupo": "591",
+      "seccion": "J",
+      "nombre": "Producción de filmes y videocintas"
+    },
+    "591120": {
+      "grupo": "591",
+      "seccion": "J",
+      "nombre": "Postproducción de filmes y videocintas"
+    },
+    "591200": {
+      "grupo": "591",
+      "seccion": "J",
+      "nombre": "Distribución de filmes y videocintas"
+    },
+    "591300": {
+      "grupo": "591",
+      "seccion": "J",
+      "nombre": "Exhibición de filmes y videocintas"
+    },
+    "592000": {
+      "grupo": "592",
+      "seccion": "J",
+      "nombre": "Servicios de grabación de sonido y edición de música"
+    },
+    "601000": {
+      "grupo": "601",
+      "seccion": "J",
+      "nombre": "Emisión y retransmisión de radio"
+    },
+    "602100": {
+      "grupo": "602",
+      "seccion": "J",
+      "nombre": "Emisión y retransmisión  de televisión abierta"
+    },
+    "602200": {
+      "grupo": "602",
+      "seccion": "J",
+      "nombre": "Operadores de televisión por suscripción."
+    },
+    "602310": {
+      "grupo": "602",
+      "seccion": "J",
+      "nombre": "Emisión de señales de televisión por suscripción"
+    },
+    "602320": {
+      "grupo": "602",
+      "seccion": "J",
+      "nombre": "Producción de programas de televisión"
+    },
+    "602900": {
+      "grupo": "602",
+      "seccion": "J",
+      "nombre": "Servicios de televisión n.c.p"
+    },
+    "61000": {
+      "grupo": "61",
+      "seccion": "B",
+      "nombre": "Extracción de petróleo crudo (Incluye arenas alquitraníferas, esquistos bituminosos o lutitas, aceites de petróleo y de minerales bituminosos, petróleo, etc.)"
+    },
+    "611010": {
+      "grupo": "611",
+      "seccion": "J",
+      "nombre": "Servicios de locutorios"
+    },
+    "611090": {
+      "grupo": "611",
+      "seccion": "J",
+      "nombre": "Servicios de telefonía fija, excepto locutorios"
+    },
+    "612000": {
+      "grupo": "612",
+      "seccion": "J",
+      "nombre": "Servicios de telefonía móvil"
+    },
+    "613000": {
+      "grupo": "613",
+      "seccion": "J",
+      "nombre": "Servicios de telecomunicaciones vía satélite, excepto servicios de transmisión de televisión"
+    },
+    "614010": {
+      "grupo": "614",
+      "seccion": "J",
+      "nombre": "Servicios de proveedores de acceso a internet"
+    },
+    "614090": {
+      "grupo": "614",
+      "seccion": "J",
+      "nombre": "Servicios de telecomunicación vía internet n.c.p."
+    },
+    "619000": {
+      "grupo": "619",
+      "seccion": "J",
+      "nombre": "Servicios de telecomunicaciones n.c.p. (Incluye el servicio de pagers)"
+    },
+    "62000": {
+      "grupo": "62",
+      "seccion": "B",
+      "nombre": "Extracción de gas natural (Incluye gas natural licuado y gaseoso)"
+    },
+    "620100": {
+      "grupo": "620",
+      "seccion": "J",
+      "nombre": "Servicios de consultores en informática y suministros de programas de informática"
+    },
+    "620200": {
+      "grupo": "620",
+      "seccion": "J",
+      "nombre": "Servicios de consultores en equipo de informática"
+    },
+    "620300": {
+      "grupo": "620",
+      "seccion": "J",
+      "nombre": "Servicios de consultores en tecnología de la información"
+    },
+    "620900": {
+      "grupo": "620",
+      "seccion": "J",
+      "nombre": "Servicios de informática n.c.p."
+    },
+    "631110": {
+      "grupo": "631",
+      "seccion": "J",
+      "nombre": "Procesamiento de datos"
+    },
+    "631120": {
+      "grupo": "631",
+      "seccion": "J",
+      "nombre": "Hospedaje de datos"
+    },
+    "631190": {
+      "grupo": "631",
+      "seccion": "J",
+      "nombre": "Actividades conexas al procesamiento y hospedaje de datos n.c.p."
+    },
+    "631200": {
+      "grupo": "631",
+      "seccion": "J",
+      "nombre": "Portales web"
+    },
+    "639100": {
+      "grupo": "639",
+      "seccion": "J",
+      "nombre": "Agencias de noticias"
+    },
+    "639900": {
+      "grupo": "639",
+      "seccion": "J",
+      "nombre": "Servicios de información n.c.p."
+    },
+    "641100": {
+      "grupo": "641",
+      "seccion": "K",
+      "nombre": "Servicios de la banca central (Incluye las actividades del Banco Central de la República Argentina)"
+    },
+    "641910": {
+      "grupo": "641",
+      "seccion": "K",
+      "nombre": "Servicios de la banca mayorista"
+    },
+    "641920": {
+      "grupo": "641",
+      "seccion": "K",
+      "nombre": "Servicios de la banca de inversión"
+    },
+    "641930": {
+      "grupo": "641",
+      "seccion": "K",
+      "nombre": "Servicios de la banca minorista"
+    },
+    "641941": {
+      "grupo": "641",
+      "seccion": "K",
+      "nombre": "Servicios de intermediación financiera realizada por las compañías financieras"
+    },
+    "641942": {
+      "grupo": "641",
+      "seccion": "K",
+      "nombre": "Servicios de intermediación financiera realizada por sociedades de ahorro y préstamo para la vivienda y otros inmuebles"
+    },
+    "641943": {
+      "grupo": "641",
+      "seccion": "K",
+      "nombre": "Servicios de intermediación financiera realizada por cajas de crédito"
+    },
+    "642000": {
+      "grupo": "642",
+      "seccion": "K",
+      "nombre": "Servicios de sociedades de cartera"
+    },
+    "643001": {
+      "grupo": "643",
+      "seccion": "K",
+      "nombre": "Servicios de fideicomisos"
+    },
+    "643009": {
+      "grupo": "643",
+      "seccion": "K",
+      "nombre": "Fondos y sociedades de inversión y entidades financieras similares n.c.p."
+    },
+    "649100": {
+      "grupo": "649",
+      "seccion": "K",
+      "nombre": "Arrendamiento financiero, leasing"
+    },
+    "649210": {
+      "grupo": "649",
+      "seccion": "K",
+      "nombre": "Actividades de crédito para financiar otras actividades económicas"
+    },
+    "649220": {
+      "grupo": "649",
+      "seccion": "K",
+      "nombre": "Servicios de entidades de tarjeta de compra y/o crédito"
+    },
+    "649290": {
+      "grupo": "649",
+      "seccion": "K",
+      "nombre": "Servicios de crédito n.c.p. (Incluye el otorgamiento de préstamos por entidades que no reciben depósitos y que están fuera del sistema bancario y cuyo destino es financiar el consumo, la vivienda u otros bienes)"
+    },
+    "649910": {
+      "grupo": "649",
+      "seccion": "K",
+      "nombre": "Servicios de agentes de mercado abierto \"puros\" (Incluye las transacciones extrabursátiles - por cuenta propia -)"
+    },
+    "649991": {
+      "grupo": "649",
+      "seccion": "K",
+      "nombre": "Servicios de socios inversores en sociedades regulares según Ley 19.550 - S.R.L., S.C.A, etc, excepto socios inversores en sociedades anónimas incluidos en 649999 (No incluye los servicios de socios miembros  que desarrollan actividades de asesoramiento, dirección y gestión empresarial de sociedades regulares según Ley 19.550: 702091 y 702092)"
+    },
+    "649999": {
+      "grupo": "649",
+      "seccion": "K",
+      "nombre": "Servicios de financiación y actividades financieras n.c.p. (Incluye actividades de inversión en acciones, títulos, la actividad de corredores de bolsa, securitización, mutuales financieras, etc.), (No incluye actividades financieras relacionadas con el otorgamiento de créditos)"
+    },
+    "651110": {
+      "grupo": "651",
+      "seccion": "K",
+      "nombre": "Servicios de seguros de salud (Incluye medicina prepaga y mutuales de salud)"
+    },
+    "651120": {
+      "grupo": "651",
+      "seccion": "K",
+      "nombre": "Servicios de seguros de vida (Incluye los seguros de vida, retiro y sepelio)"
+    },
+    "651130": {
+      "grupo": "651",
+      "seccion": "K",
+      "nombre": "Servicios de seguros personales excepto  los de salud y de vida (Incluye los seguros para viajes)"
+    },
+    "651210": {
+      "grupo": "651",
+      "seccion": "K",
+      "nombre": "Servicios de aseguradoras de riesgo de trabajo (ART)"
+    },
+    "651220": {
+      "grupo": "651",
+      "seccion": "K",
+      "nombre": "Servicios de seguros patrimoniales excepto los de las aseguradoras de riesgo de trabajo (ART)"
+    },
+    "651310": {
+      "grupo": "651",
+      "seccion": "K",
+      "nombre": "Obras Sociales"
+    },
+    "651320": {
+      "grupo": "651",
+      "seccion": "K",
+      "nombre": "Servicios de cajas de previsión social pertenecientes a asociaciones profesionales"
+    },
+    "652000": {
+      "grupo": "652",
+      "seccion": "K",
+      "nombre": "Reaseguros"
+    },
+    "653000": {
+      "grupo": "653",
+      "seccion": "K",
+      "nombre": "Administración de fondos de pensiones, excepto la seguridad social obligatoria"
+    },
+    "661111": {
+      "grupo": "661",
+      "seccion": "K",
+      "nombre": "Servicios de mercados y cajas de valores"
+    },
+    "661121": {
+      "grupo": "661",
+      "seccion": "K",
+      "nombre": "Servicios de mercados a término"
+    },
+    "661131": {
+      "grupo": "661",
+      "seccion": "K",
+      "nombre": "Servicios de bolsas de comercio"
+    },
+    "661910": {
+      "grupo": "661",
+      "seccion": "K",
+      "nombre": "Servicios bursátiles de mediación o por cuenta de terceros (Incluye la actividad de agentes y sociedades de bolsa)"
+    },
+    "661920": {
+      "grupo": "661",
+      "seccion": "K",
+      "nombre": "Servicios de casas y agencias de cambio"
+    },
+    "661930": {
+      "grupo": "661",
+      "seccion": "K",
+      "nombre": "Servicios de sociedades calificadoras de riesgos financieros"
+    },
+    "661991": {
+      "grupo": "661",
+      "seccion": "K",
+      "nombre": "Servicios de envio y recepción de fondos desde y hacia el exterior"
+    },
+    "661992": {
+      "grupo": "661",
+      "seccion": "K",
+      "nombre": "Servicios de administradoras de vales y tickets"
+    },
+    "661999": {
+      "grupo": "661",
+      "seccion": "K",
+      "nombre": "Servicios auxiliares a la intermediación financiera n.c.p. (Incluye asesoría financiera)"
+    },
+    "662010": {
+      "grupo": "662",
+      "seccion": "K",
+      "nombre": "Servicios de evaluación de riesgos y daños"
+    },
+    "662020": {
+      "grupo": "662",
+      "seccion": "K",
+      "nombre": "Servicios de productores  y asesores de seguros"
+    },
+    "662090": {
+      "grupo": "662",
+      "seccion": "K",
+      "nombre": "Servicios auxiliares a los servicios de seguros n.c.p."
+    },
+    "663000": {
+      "grupo": "663",
+      "seccion": "K",
+      "nombre": "Servicios de gestión de fondos a cambio de una retribución o por contrata"
+    },
+    "681010": {
+      "grupo": "681",
+      "seccion": "L",
+      "nombre": "Servicios de alquiler y explotación de inmuebles para fiestas, convenciones y otros eventos similares"
+    },
+    "681020": {
+      "grupo": "681",
+      "seccion": "L",
+      "nombre": "Servicios de alquiler  de consultorios médicos"
+    },
+    "681098": {
+      "grupo": "681",
+      "seccion": "L",
+      "nombre": "Servicios inmobiliarios realizados por cuenta propia, con bienes urbanos propios o arrendados n.c.p."
+    },
+    "681099": {
+      "grupo": "681",
+      "seccion": "L",
+      "nombre": "Servicios inmobiliarios realizados por cuenta propia, con bienes rurales propios o arrendados n.c.p."
+    },
+    "682010": {
+      "grupo": "682",
+      "seccion": "L",
+      "nombre": "Servicios de administración de consorcios de edificios"
+    },
+    "682091": {
+      "grupo": "682",
+      "seccion": "L",
+      "nombre": "Servicios prestados por inmobiliarias"
+    },
+    "682099": {
+      "grupo": "682",
+      "seccion": "L",
+      "nombre": "Servicios inmobiliarios realizados a cambio de una retribución o por contrata n.c.p. (Incluye compra, venta, alquiler, remate, tasación, administración de bienes, etc., realizados a cambio de una retribución o por contrata, y la actividad de administradores, martilleros, rematadores, comisionistas, etc.)"
+    },
+    "691001": {
+      "grupo": "691",
+      "seccion": "M",
+      "nombre": "Servicios jurídicos"
+    },
+    "691002": {
+      "grupo": "691",
+      "seccion": "M",
+      "nombre": "Servicios  notariales"
+    },
+    "692000": {
+      "grupo": "692",
+      "seccion": "M",
+      "nombre": "Servicios de contabilidad, auditoría y asesoría fiscal"
+    },
+    "702010": {
+      "grupo": "702",
+      "seccion": "M",
+      "nombre": "Servicios de gerenciamiento de empresas e instituciones de salud, servicios de auditoria y medicina legal, servicio de asesoramiento farmacéutico"
+    },
+    "702091": {
+      "grupo": "702",
+      "seccion": "M",
+      "nombre": "Servicios de asesoramiento, dirección y gestión empresarial realizados por integrantes de los órganos de administración y/o fiscalización en sociedades anónimas"
+    },
+    "702092": {
+      "grupo": "702",
+      "seccion": "M",
+      "nombre": "Servicios de asesoramiento, dirección y gestión empresarial realizados por integrantes de cuerpos de dirección en sociedades excepto las anónimas"
+    },
+    "702099": {
+      "grupo": "702",
+      "seccion": "M",
+      "nombre": "Servicios de asesoramiento, dirección y gestión empresarial n.c.p."
+    },
+    "71000": {
+      "grupo": "71",
+      "seccion": "B",
+      "nombre": "Extracción de minerales de hierro (Incluye hematitas, limonitas, magnetitas, siderita, etc.)"
+    },
+    "711001": {
+      "grupo": "711",
+      "seccion": "M",
+      "nombre": "Servicios relacionados con la construcción (Incluye los servicios prestados por ingenieros, arquitectos y técnicos)"
+    },
+    "711002": {
+      "grupo": "711",
+      "seccion": "M",
+      "nombre": "Servicios geológicos y de prospección"
+    },
+    "711003": {
+      "grupo": "711",
+      "seccion": "M",
+      "nombre": "Servicios relacionados con la electrónica y las comunicaciones"
+    },
+    "711009": {
+      "grupo": "711",
+      "seccion": "M",
+      "nombre": "Servicios de arquitectura e ingeniería y servicios conexos de asesoramiento técnico n.c.p."
+    },
+    "712000": {
+      "grupo": "712",
+      "seccion": "M",
+      "nombre": "Ensayos y análisis técnicos (Incluye inspección técnica de vehículos, laboratorios de control de calidad, servicios de peritos calígrafos, servicios de bromatología)"
+    },
+    "72100": {
+      "grupo": "72",
+      "seccion": "B",
+      "nombre": "Extracción de minerales y concentrados de uranio y torio"
+    },
+    "721010": {
+      "grupo": "721",
+      "seccion": "M",
+      "nombre": "Investigación  y desarrollo experimental en el campo de la ingeniería y la tecnología"
+    },
+    "721020": {
+      "grupo": "721",
+      "seccion": "M",
+      "nombre": "Investigación  y desarrollo experimental en el campo de las ciencias médicas"
+    },
+    "721030": {
+      "grupo": "721",
+      "seccion": "M",
+      "nombre": "Investigación  y desarrollo experimental en el campo de las ciencias agropecuarias"
+    },
+    "721090": {
+      "grupo": "721",
+      "seccion": "M",
+      "nombre": "Investigación y desarrollo experimental en el campo de las ciencias exactas y naturales n.c.p."
+    },
+    "722010": {
+      "grupo": "722",
+      "seccion": "M",
+      "nombre": "Investigación  y desarrollo experimental en el campo de las ciencias sociales"
+    },
+    "722020": {
+      "grupo": "722",
+      "seccion": "M",
+      "nombre": "Investigación  y desarrollo experimental en el campo de las ciencias humanas"
+    },
+    "72910": {
+      "grupo": "72",
+      "seccion": "B",
+      "nombre": "Extracción de metales preciosos"
+    },
+    "72990": {
+      "grupo": "72",
+      "seccion": "B",
+      "nombre": "Extracción de minerales metalíferos no ferrosos n.c.p., excepto minerales de uranio y torio (Incluye aluminio, cobre, estaño, manganeso, níquel, plomo, volframio, antimonio, bismuto, cinc, molibdeno, titanio, circonio, niobio, tántalo, vanadio, cromo, cobalto)"
+    },
+    "731001": {
+      "grupo": "731",
+      "seccion": "M",
+      "nombre": "Servicios de comercialización de tiempo y espacio publicitario"
+    },
+    "731009": {
+      "grupo": "731",
+      "seccion": "M",
+      "nombre": "Servicios de publicidad n.c.p."
+    },
+    "732000": {
+      "grupo": "732",
+      "seccion": "M",
+      "nombre": "Estudio de mercado, realización de encuestas de opinión pública"
+    },
+    "741000": {
+      "grupo": "741",
+      "seccion": "M",
+      "nombre": "Servicios de diseño especializado (Incluye diseño de indumentaria, diseño gráfico, actividades de decoradores, etc.)"
+    },
+    "742000": {
+      "grupo": "742",
+      "seccion": "M",
+      "nombre": "Servicios de fotografía"
+    },
+    "749001": {
+      "grupo": "749",
+      "seccion": "M",
+      "nombre": "Servicios de traducción e interpretación"
+    },
+    "749002": {
+      "grupo": "749",
+      "seccion": "M",
+      "nombre": "Servicios de representación e intermediación de artistas y modelos"
+    },
+    "749003": {
+      "grupo": "749",
+      "seccion": "M",
+      "nombre": "Servicios de representación e intermediación de deportistas profesionales"
+    },
+    "749009": {
+      "grupo": "749",
+      "seccion": "M",
+      "nombre": "Actividades profesionales, científicas y técnicas n.c.p."
+    },
+    "750000": {
+      "grupo": "750",
+      "seccion": "M",
+      "nombre": "Servicios veterinarios"
+    },
+    "771110": {
+      "grupo": "771",
+      "seccion": "N",
+      "nombre": "Alquiler de automóviles sin conductor"
+    },
+    "771190": {
+      "grupo": "771",
+      "seccion": "N",
+      "nombre": "Alquiler de vehículos automotores n.c.p., sin conductor ni operarios (Incluye: camiones, remolques, etc.)"
+    },
+    "771210": {
+      "grupo": "771",
+      "seccion": "N",
+      "nombre": "Alquiler de equipo de transporte para vía acuática, sin operarios ni tripulación"
+    },
+    "771220": {
+      "grupo": "771",
+      "seccion": "N",
+      "nombre": "Alquiler de equipo de transporte para vía aérea, sin operarios ni tripulación"
+    },
+    "771290": {
+      "grupo": "771",
+      "seccion": "N",
+      "nombre": "Alquiler de equipo de transporte n.c.p. sin conductor ni operarios (Incluye: equipo ferroviario, motocicletas)"
+    },
+    "772010": {
+      "grupo": "772",
+      "seccion": "N",
+      "nombre": "Alquiler de videos y video juegos (Incluye la actividad de los videoclubes)"
+    },
+    "772091": {
+      "grupo": "772",
+      "seccion": "N",
+      "nombre": "Alquiler de prendas de vestir"
+    },
+    "772099": {
+      "grupo": "772",
+      "seccion": "N",
+      "nombre": "Alquiler de efectos personales y enseres domésticos n.c.p. (Incluye alquiler de artículos deportivos)"
+    },
+    "773010": {
+      "grupo": "773",
+      "seccion": "N",
+      "nombre": "Alquiler de maquinaria y equipo agropecuario y forestal, sin operarios"
+    },
+    "773020": {
+      "grupo": "773",
+      "seccion": "N",
+      "nombre": "Alquiler de maquinaria y equipo para la minería, sin operarios"
+    },
+    "773030": {
+      "grupo": "773",
+      "seccion": "N",
+      "nombre": "Alquiler de maquinaria y equipo de construcción e ingeniería civil, sin operarios (Incluye el alquiler de andamios sin montaje ni desmantelamiento)"
+    },
+    "773040": {
+      "grupo": "773",
+      "seccion": "N",
+      "nombre": "Alquiler de maquinaria y equipo de oficina, incluso computadoras"
+    },
+    "773090": {
+      "grupo": "773",
+      "seccion": "N",
+      "nombre": "Alquiler de maquinaria y equipo n.c.p., sin personal"
+    },
+    "774000": {
+      "grupo": "774",
+      "seccion": "N",
+      "nombre": "Arrendamiento y gestión de bienes intangibles no financieros"
+    },
+    "780000": {
+      "grupo": "780",
+      "seccion": "N",
+      "nombre": "Obtención y dotación de personal (Incluye las actividades vinculadas con la búsqueda, selección y colocación de personal, la actividad de casting de actores, etc.)"
+    },
+    "791100": {
+      "grupo": "791",
+      "seccion": "N",
+      "nombre": "Servicios minoristas de agencias de viajes"
+    },
+    "791200": {
+      "grupo": "791",
+      "seccion": "N",
+      "nombre": "Servicios mayoristas de agencias de viajes"
+    },
+    "791901": {
+      "grupo": "791",
+      "seccion": "N",
+      "nombre": "Servicios de turismo aventura"
+    },
+    "791909": {
+      "grupo": "791",
+      "seccion": "N",
+      "nombre": "Servicios complementarios de apoyo turístico n.c.p."
+    },
+    "801010": {
+      "grupo": "801",
+      "seccion": "N",
+      "nombre": "Servicios de transporte de caudales y objetos de valor"
+    },
+    "801020": {
+      "grupo": "801",
+      "seccion": "N",
+      "nombre": "Servicios de sistemas de seguridad"
+    },
+    "801090": {
+      "grupo": "801",
+      "seccion": "N",
+      "nombre": "Servicios de seguridad e investigación n.c.p."
+    },
+    "81100": {
+      "grupo": "81",
+      "seccion": "B",
+      "nombre": "Extracción de rocas ornamentales (Incluye areniscas, cuarcita, dolomita, granito, mármol, piedra laja, pizarra, serpentina, etc.)"
+    },
+    "811000": {
+      "grupo": "811",
+      "seccion": "N",
+      "nombre": "Servicio combinado de apoyo a edificios"
+    },
+    "81200": {
+      "grupo": "81",
+      "seccion": "B",
+      "nombre": "Extracción de piedra caliza y yeso (Incluye caliza, castina, conchilla, riolita, yeso natural, anhidrita, etc.)"
+    },
+    "812010": {
+      "grupo": "812",
+      "seccion": "N",
+      "nombre": "Servicios de limpieza general de edificios"
+    },
+    "812020": {
+      "grupo": "812",
+      "seccion": "N",
+      "nombre": "Servicios de desinfección y exterminio de plagas en el ámbito urbano"
+    },
+    "812090": {
+      "grupo": "812",
+      "seccion": "N",
+      "nombre": "Servicios de limpieza n.c.p."
+    },
+    "81300": {
+      "grupo": "81",
+      "seccion": "B",
+      "nombre": "Extracción de arenas, canto rodado y triturados pétreos (Incluye arena para construcción, arena silícea, otras arenas naturales, canto rodado, dolomita triturada, salto triturado, piedra partida  y  otros triturados pétreos, etc.)"
+    },
+    "813000": {
+      "grupo": "813",
+      "seccion": "N",
+      "nombre": "Servicios de jardinería y mantenimiento de espacios verdes"
+    },
+    "81400": {
+      "grupo": "81",
+      "seccion": "B",
+      "nombre": "Extracción de arcilla y caolín (Incluye andalucita, arcillas, bentonita, caolín, pirofilita, silimanita, mullita, tierra de chamota o de dinas, etc.)"
+    },
+    "821100": {
+      "grupo": "821",
+      "seccion": "N",
+      "nombre": "Servicios combinados de gestión administrativa de oficinas"
+    },
+    "821900": {
+      "grupo": "821",
+      "seccion": "N",
+      "nombre": "Servicios de fotocopiado, preparación de documentos y otros servicios de apoyo de oficina"
+    },
+    "822000": {
+      "grupo": "822",
+      "seccion": "N",
+      "nombre": "Servicios de call center"
+    },
+    "823000": {
+      "grupo": "823",
+      "seccion": "N",
+      "nombre": "Servicios de organización de convenciones y exposiciones comerciales, excepto culturales y deportivos"
+    },
+    "829100": {
+      "grupo": "829",
+      "seccion": "N",
+      "nombre": "Servicios de agencias de cobro y calificación crediticia"
+    },
+    "829200": {
+      "grupo": "829",
+      "seccion": "N",
+      "nombre": "Servicios de envase y empaque"
+    },
+    "829900": {
+      "grupo": "829",
+      "seccion": "N",
+      "nombre": "Servicios empresariales n.c.p."
+    },
+    "841100": {
+      "grupo": "841",
+      "seccion": "O",
+      "nombre": "Servicios generales de la Administración Pública (Incluye el desempeño de funciones ejecutivas y legislativas de administración por parte de las entidades de la administración central, regional y local, la administración y supervisión de asuntos fiscales, la aplicación del presupuesto y la gestión de los fondos públicos y la deuda pública, la gestión administrativa de servicios estadísticos y sociológicos y de planificación social y económica a distintos niveles de la administración)"
+    },
+    "841200": {
+      "grupo": "841",
+      "seccion": "O",
+      "nombre": "Servicios para la regulación de las actividades sanitarias, educativas, culturales, y restantes servicios sociales, excepto seguridad social obligatoria (Incluye  la gestión administrativa de programas destinados a mejorar el bienestar de los ciudadanos)"
+    },
+    "841300": {
+      "grupo": "841",
+      "seccion": "O",
+      "nombre": "Servicios para la regulación de la actividad económica (Incluye la administración pública y la regulación de varios sectores económicos, la gestión administrativa de actividades de carácter laboral, la aplicación de políticas de desarrollo regional)"
+    },
+    "841900": {
+      "grupo": "841",
+      "seccion": "O",
+      "nombre": "Servicios auxiliares para los servicios generales de la Administración Pública (Incluye las actividades de servicios generales y de personal, la administración, dirección y apoyo de servicios generales, compras y suministros, etc. )"
+    },
+    "842100": {
+      "grupo": "842",
+      "seccion": "O",
+      "nombre": "Servicios de asuntos exteriores"
+    },
+    "842200": {
+      "grupo": "842",
+      "seccion": "O",
+      "nombre": "Servicios de defensa"
+    },
+    "842300": {
+      "grupo": "842",
+      "seccion": "O",
+      "nombre": "Servicios para el orden público y la seguridad"
+    },
+    "842400": {
+      "grupo": "842",
+      "seccion": "O",
+      "nombre": "Servicios de justicia"
+    },
+    "842500": {
+      "grupo": "842",
+      "seccion": "O",
+      "nombre": "Servicios de protección civil"
+    },
+    "843000": {
+      "grupo": "843",
+      "seccion": "O",
+      "nombre": "Servicios de la seguridad social obligatoria, excepto obras sociales (Incluye PAMI y ANSES)"
+    },
+    "851010": {
+      "grupo": "851",
+      "seccion": "P",
+      "nombre": "Guarderías y jardines maternales"
+    },
+    "851020": {
+      "grupo": "851",
+      "seccion": "P",
+      "nombre": "Enseñanza inicial, jardín de infantes y primaria"
+    },
+    "852100": {
+      "grupo": "852",
+      "seccion": "P",
+      "nombre": "Enseñanza secundaria de formación general"
+    },
+    "852200": {
+      "grupo": "852",
+      "seccion": "P",
+      "nombre": "Enseñanza secundaria de formación técnica y profesional"
+    },
+    "853100": {
+      "grupo": "853",
+      "seccion": "P",
+      "nombre": "Enseñanza  terciaria"
+    },
+    "853201": {
+      "grupo": "853",
+      "seccion": "P",
+      "nombre": "Enseñanza universitaria excepto formación de posgrado"
+    },
+    "853300": {
+      "grupo": "853",
+      "seccion": "P",
+      "nombre": "Formación de posgrado"
+    },
+    "854910": {
+      "grupo": "854",
+      "seccion": "P",
+      "nombre": "Enseñanza de idiomas"
+    },
+    "854920": {
+      "grupo": "854",
+      "seccion": "P",
+      "nombre": "Enseñanza de cursos relacionados con informática"
+    },
+    "854930": {
+      "grupo": "854",
+      "seccion": "P",
+      "nombre": "Enseñanza para adultos, excepto discapacitados"
+    },
+    "854940": {
+      "grupo": "854",
+      "seccion": "P",
+      "nombre": "Enseñanza especial y para discapacitados"
+    },
+    "854950": {
+      "grupo": "854",
+      "seccion": "P",
+      "nombre": "Enseñanza de gimnasia, deportes y actividades físicas"
+    },
+    "854960": {
+      "grupo": "854",
+      "seccion": "P",
+      "nombre": "Enseñanza artística"
+    },
+    "854990": {
+      "grupo": "854",
+      "seccion": "P",
+      "nombre": "Servicios de enseñanza n.c.p. (Incluye instrucción impartida mediante programas de radio, televisión, correspondencia y otros medios de comunicación, escuelas de manejo, actividades de enseñanza a domicilio y/o particulares, etc.)"
+    },
+    "855000": {
+      "grupo": "855",
+      "seccion": "P",
+      "nombre": "Servicios de apoyo a la educación"
+    },
+    "861010": {
+      "grupo": "861",
+      "seccion": "Q",
+      "nombre": "Servicios de internación excepto instituciones relacionadas con la salud mental"
+    },
+    "861020": {
+      "grupo": "861",
+      "seccion": "Q",
+      "nombre": "Servicios de internación en instituciones relacionadas con la salud mental"
+    },
+    "862110": {
+      "grupo": "862",
+      "seccion": "Q",
+      "nombre": "Servicios de  consulta médica (Incluye las actividades de establecimientos sin internación o cuyos servicios se desarrollen en unidades independientes a las de internación: consultorios médicos, servicios de medicina laboral)"
+    },
+    "862120": {
+      "grupo": "862",
+      "seccion": "Q",
+      "nombre": "Servicios de proveedores de atención médica domiciliaria (Incluye las actividades llevadas a cabo en domicilios de pacientes con alta precoz, y que ofrecen atención por módulo)"
+    },
+    "862130": {
+      "grupo": "862",
+      "seccion": "Q",
+      "nombre": "Servicios de atención médica en dispensarios, salitas, vacunatorios y otros locales de atención primaria de la salud"
+    },
+    "862200": {
+      "grupo": "862",
+      "seccion": "Q",
+      "nombre": "Servicios odontológicos"
+    },
+    "863110": {
+      "grupo": "863",
+      "seccion": "Q",
+      "nombre": "Servicios de prácticas de diagnóstico en laboratorios (Incluye análisis clínicos, bioquímica, anatomía patológica, laboratorio hematológico, etc.)"
+    },
+    "863120": {
+      "grupo": "863",
+      "seccion": "Q",
+      "nombre": "Servicios de prácticas de diagnóstico por imágenes (Incluye radiología, ecografía, resonancia magnética, etc.)"
+    },
+    "863190": {
+      "grupo": "863",
+      "seccion": "Q",
+      "nombre": "Servicios de prácticas de diagnóstico n.c.p."
+    },
+    "863200": {
+      "grupo": "863",
+      "seccion": "Q",
+      "nombre": "Servicios de tratamiento (Incluye hemodiálisis, cobaltoterapia, etc)"
+    },
+    "863300": {
+      "grupo": "863",
+      "seccion": "Q",
+      "nombre": "Servicio médico integrado de consulta, diagnóstico y tratamiento"
+    },
+    "864000": {
+      "grupo": "864",
+      "seccion": "Q",
+      "nombre": "Servicios de emergencias y traslados"
+    },
+    "869010": {
+      "grupo": "869",
+      "seccion": "Q",
+      "nombre": "Servicios de rehabilitación física (Incluye actividades de profesionales excepto médicos: kinesiólogos, fisiatras, etc.)"
+    },
+    "869090": {
+      "grupo": "869",
+      "seccion": "Q",
+      "nombre": "Servicios relacionados con la salud humana n.c.p. (Incluye servicios de psicólogos, fonoaudiólogos, servicios de enfermería, terapia ocupacional, bancos de sangre, de semen,etc.)"
+    },
+    "870100": {
+      "grupo": "870",
+      "seccion": "Q",
+      "nombre": "Servicios de atención a personas con problemas de salud mental o de adicciones, con alojamiento"
+    },
+    "870210": {
+      "grupo": "870",
+      "seccion": "Q",
+      "nombre": "Servicios de atención a ancianos con alojamiento"
+    },
+    "870220": {
+      "grupo": "870",
+      "seccion": "Q",
+      "nombre": "Servicios de atención a personas minusválidas con alojamiento"
+    },
+    "870910": {
+      "grupo": "870",
+      "seccion": "Q",
+      "nombre": "Servicios de atención a niños y adolescentes carenciados con alojamiento"
+    },
+    "870920": {
+      "grupo": "870",
+      "seccion": "Q",
+      "nombre": "Servicios de atención a mujeres con alojamiento"
+    },
+    "870990": {
+      "grupo": "870",
+      "seccion": "Q",
+      "nombre": "Servicios sociales con alojamiento n.c.p."
+    },
+    "880000": {
+      "grupo": "880",
+      "seccion": "Q",
+      "nombre": "Servicios sociales sin alojamiento"
+    },
+    "89110": {
+      "grupo": "89",
+      "seccion": "B",
+      "nombre": "Extracción de minerales para la fabricación de abonos excepto turba (Incluye guano, silvita, silvinita y otras sales de potasio naturales, etc.)"
+    },
+    "89120": {
+      "grupo": "89",
+      "seccion": "B",
+      "nombre": "Extracción de minerales para la fabricación de productos químicos (Incluye azufre, boracita e hidroboracita, calcita, celestina, colemanita, fluorita, litio y sales de litio naturales, sulfato de aluminio, sulfato de hierro, sulfato de magnesio, sulfato de sodio, ocres,  tinkal, ulexita, asfaltita, laterita, etc.)"
+    },
+    "89200": {
+      "grupo": "89",
+      "seccion": "B",
+      "nombre": "Extracción y aglomeración de turba (Incluye la producción de turba utilizada como corrector de suelos)"
+    },
+    "89300": {
+      "grupo": "89",
+      "seccion": "B",
+      "nombre": "Extracción de sal"
+    },
+    "89900": {
+      "grupo": "89",
+      "seccion": "B",
+      "nombre": "Explotación de minas y canteras n.c.p. (Incluye amianto, cuarzo, diatomita, piedra pómez, ágata, agua marina, amatista, cristal de roca, rodocrosita, topacio, corindón, feldespato, mica, zeolita, perlita, granulado volcánico, puzolana, toba, talco, vermiculita, tosca, grafito, etc.)"
+    },
+    "900011": {
+      "grupo": "900",
+      "seccion": "R",
+      "nombre": "Producción de espectáculos teatrales y musicales"
+    },
+    "900021": {
+      "grupo": "900",
+      "seccion": "R",
+      "nombre": "Composición y representación de obras teatrales, musicales y artísticas (Incluye a compositores, actores, músicos, conferencistas, pintores, artistas plásticos etc.)"
+    },
+    "900030": {
+      "grupo": "900",
+      "seccion": "R",
+      "nombre": "Servicios conexos a la producción de espectáculos teatrales y musicales  (Incluye diseño y manejo de escenografía, montaje de iluminación y sonido, etc.)"
+    },
+    "900040": {
+      "grupo": "900",
+      "seccion": "R",
+      "nombre": "Servicios de agencias de ventas de entradas"
+    },
+    "900091": {
+      "grupo": "900",
+      "seccion": "R",
+      "nombre": "Servicios de espectáculos artísticos n.c.p. (Incluye espectáculos circenses, de títeres, mimos, etc.)"
+    },
+    "91000": {
+      "grupo": "91",
+      "seccion": "B",
+      "nombre": "Servicios de apoyo para la extracción de petróleo y gas natural"
+    },
+    "910100": {
+      "grupo": "910",
+      "seccion": "R",
+      "nombre": "Servicios de bibliotecas y archivos"
+    },
+    "910200": {
+      "grupo": "910",
+      "seccion": "R",
+      "nombre": "Servicios de museos y preservación de lugares y edificios históricos"
+    },
+    "910300": {
+      "grupo": "910",
+      "seccion": "R",
+      "nombre": "Servicios de jardines botánicos, zoológicos y de parques nacionales"
+    },
+    "910900": {
+      "grupo": "910",
+      "seccion": "R",
+      "nombre": "Servicios culturales n.c.p. (Incluye actividades sociales, culturales, recreativas y de interés local desarrollado por centros vecinales, barriales, sociedades de fomento, clubes no deportivos, etc.)"
+    },
+    "920001": {
+      "grupo": "920",
+      "seccion": "R",
+      "nombre": "Servicios de recepción de apuestas de quiniela, lotería y similares"
+    },
+    "920009": {
+      "grupo": "920",
+      "seccion": "R",
+      "nombre": "Servicios relacionados con juegos de azar y apuestas n.c.p."
+    },
+    "931010": {
+      "grupo": "931",
+      "seccion": "R",
+      "nombre": "Servicios de organización, dirección y gestión de prácticas deportivas en clubes (Incluye clubes de fútbol, golf, tiro, boxeo, etc.)"
+    },
+    "931020": {
+      "grupo": "931",
+      "seccion": "R",
+      "nombre": "Explotación de instalaciones deportivas, excepto clubes"
+    },
+    "931030": {
+      "grupo": "931",
+      "seccion": "R",
+      "nombre": "Promoción y producción de espectáculos deportivos"
+    },
+    "931041": {
+      "grupo": "931",
+      "seccion": "R",
+      "nombre": "Servicios prestados por deportistas y atletas para la realización de prácticas deportivas"
+    },
+    "931042": {
+      "grupo": "931",
+      "seccion": "R",
+      "nombre": "Servicios prestados por profesionales y técnicos para la realización de prácticas deportivas (Incluye la actividad realizada por entrenadores, instructores, jueces árbitros, cronometradores, etc.)"
+    },
+    "931050": {
+      "grupo": "931",
+      "seccion": "R",
+      "nombre": "Servicios de acondicionamiento físico (Incluye gimnasios de musculación, pilates, yoga, personal trainner, etc.)"
+    },
+    "931090": {
+      "grupo": "931",
+      "seccion": "R",
+      "nombre": "Servicios para la práctica deportiva n.c.p."
+    },
+    "939010": {
+      "grupo": "939",
+      "seccion": "R",
+      "nombre": "Servicios de parques de diversiones y parques temáticos"
+    },
+    "939020": {
+      "grupo": "939",
+      "seccion": "R",
+      "nombre": "Servicios de salones de juegos (Incluye salones de billar, pool, bowling, juegos electrónicos, etc.)"
+    },
+    "939030": {
+      "grupo": "939",
+      "seccion": "R",
+      "nombre": "Servicios de salones de baile, discotecas y similares"
+    },
+    "939090": {
+      "grupo": "939",
+      "seccion": "R",
+      "nombre": "Servicios de entretenimiento n.c.p."
+    },
+    "941100": {
+      "grupo": "941",
+      "seccion": "S",
+      "nombre": "Servicios de organizaciones empresariales y de empleadores"
+    },
+    "941200": {
+      "grupo": "941",
+      "seccion": "S",
+      "nombre": "Servicios de organizaciones profesionales"
+    },
+    "942000": {
+      "grupo": "942",
+      "seccion": "S",
+      "nombre": "Servicios de sindicatos"
+    },
+    "949100": {
+      "grupo": "949",
+      "seccion": "S",
+      "nombre": "Servicios de organizaciones religiosas"
+    },
+    "949200": {
+      "grupo": "949",
+      "seccion": "S",
+      "nombre": "Servicios de organizaciones políticas"
+    },
+    "949910": {
+      "grupo": "949",
+      "seccion": "S",
+      "nombre": "Servicios de mutuales, excepto mutuales de salud y financieras"
+    },
+    "949920": {
+      "grupo": "949",
+      "seccion": "S",
+      "nombre": "Servicios de consorcios de edificios"
+    },
+    "949930": {
+      "grupo": "949",
+      "seccion": "S",
+      "nombre": "Servicios de cooperativas cuando realizan varias actividades"
+    },
+    "949990": {
+      "grupo": "949",
+      "seccion": "S",
+      "nombre": "Servicios de asociaciones n.c.p."
+    },
+    "951100": {
+      "grupo": "951",
+      "seccion": "S",
+      "nombre": "Reparación y mantenimiento de equipos informáticos"
+    },
+    "951200": {
+      "grupo": "951",
+      "seccion": "S",
+      "nombre": "Reparación y mantenimiento de equipos de telefonía y de comunicación"
+    },
+    "952100": {
+      "grupo": "952",
+      "seccion": "S",
+      "nombre": "Reparación de artículos eléctricos y electrónicos de uso doméstico (Incluye  TV, radios, reproductores cd's y dvd's, cámaras de video de uso familiar, heladeras, lavarropas, secarropas, aire acondicionado de menos de 6000 frigorías)"
+    },
+    "952200": {
+      "grupo": "952",
+      "seccion": "S",
+      "nombre": "Reparación de calzado y artículos de marroquinería"
+    },
+    "952300": {
+      "grupo": "952",
+      "seccion": "S",
+      "nombre": "Reparación de tapizados y muebles (Incluye la restauración de muebles)"
+    },
+    "952910": {
+      "grupo": "952",
+      "seccion": "S",
+      "nombre": "Reforma y reparación de cerraduras, duplicación de llaves. Cerrajerías"
+    },
+    "952920": {
+      "grupo": "952",
+      "seccion": "S",
+      "nombre": "Reparación de relojes y joyas. Relojerías"
+    },
+    "952990": {
+      "grupo": "952",
+      "seccion": "S",
+      "nombre": "Reparación de efectos personales y enseres domésticos n.c.p. (Incluye la actividad de arreglos de prendas realizadas por modistas), (No incluye la actividad de sastres y modistas que confeccionan prendas: grupo 141)"
+    },
+    "960101": {
+      "grupo": "960",
+      "seccion": "S",
+      "nombre": "Servicios de limpieza de prendas prestado por tintorerías rápidas"
+    },
+    "960102": {
+      "grupo": "960",
+      "seccion": "S",
+      "nombre": "Lavado y limpieza de artículos de tela, cuero y/o de piel, incluso la limpieza en seco"
+    },
+    "960201": {
+      "grupo": "960",
+      "seccion": "S",
+      "nombre": "Servicios de peluquería"
+    },
+    "960202": {
+      "grupo": "960",
+      "seccion": "S",
+      "nombre": "Servicios de tratamiento de belleza, excepto los de peluquería"
+    },
+    "960300": {
+      "grupo": "960",
+      "seccion": "S",
+      "nombre": "Pompas fúnebres y servicios conexos"
+    },
+    "960910": {
+      "grupo": "960",
+      "seccion": "S",
+      "nombre": "Servicios de centros de estética, spa y similares (Incluye baños turcos, saunas, solarios, centros de masajes y adelgazamiento, etc.)"
+    },
+    "960990": {
+      "grupo": "960",
+      "seccion": "S",
+      "nombre": "Servicios personales n.c.p. (Incluye actividades de astrología y espiritismo, las realizadas con fines sociales como agencias matrimoniales, de investigaciones genealógicas, de contratación de acompañantes, la actividad de lustrabotas, acomodadores de autos, etc.)"
+    },
+    "99000": {
+      "grupo": "99",
+      "seccion": "B",
+      "nombre": "Servicios de apoyo para la minería, excepto para la extracción de petróleo y gas natual"
+    },
+    "999999": {
+      "grupo": "999",
+      "seccion": "Z",
+      "nombre": "Otros sectores"
+    }
+  }
+}

@@ -92,7 +92,7 @@ titulo_limpio + tareas
    └── Persiste en: ofertas_esco_matching
         │
         ▼
-3. Aplicar Reglas de Negocio (52 bypass rules)
+3. Aplicar Reglas de Negocio (ver conteos en .ai/learnings.yaml)
         │
         ▼
 4. Categorizar Skills (L1/L2 + es_digital)

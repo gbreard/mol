@@ -346,6 +346,75 @@ def get_matching_data(conn: sqlite3.Connection, offer_ids: List[str], columns: L
     return rows
 
 
+def get_control_data(conn: sqlite3.Connection, offer_ids: List[str], columns: List[str]) -> List[Dict]:
+    """Obtiene datos combinados para pestaña Control (revision rapida).
+
+    Combina datos de ofertas, ofertas_nlp y ofertas_esco_matching en una sola vista.
+    """
+    # Cargar lookup ESCO para isco_label y esco_code
+    esco_lookup = get_esco_lookup()
+
+    if ESCO_OCCUPATIONS_PATH.exists():
+        with open(ESCO_OCCUPATIONS_PATH, 'r', encoding='utf-8') as f:
+            esco_data = json.load(f)
+        isco_labels = esco_data.get('isco_labels', {})
+    else:
+        isco_labels = {}
+
+    placeholders = ','.join(['?'] * len(offer_ids))
+    query = f"""
+        SELECT
+            m.id_oferta,
+            o.titulo,
+            o.empresa,
+            m.isco_code,
+            m.esco_occupation_uri as esco_uri,
+            m.esco_occupation_label as esco_label,
+            m.occupation_match_score as match_score,
+            n.provincia,
+            n.localidad,
+            n.sector_empresa,
+            n.sector_confianza,
+            n.es_intermediario,
+            n.clae_code,
+            n.clae_seccion,
+            n.area_funcional,
+            n.nivel_seniority
+        FROM ofertas_esco_matching m
+        LEFT JOIN ofertas o ON m.id_oferta = o.id_oferta
+        LEFT JOIN ofertas_nlp n ON m.id_oferta = n.id_oferta
+        WHERE m.id_oferta IN ({placeholders})
+    """
+
+    cur = conn.execute(query, offer_ids)
+    rows = [dict(row) for row in cur.fetchall()]
+
+    # Enriquecer con esco_code e isco_label desde lookup
+    for row in rows:
+        uri = row.get('esco_uri', '')
+        isco_code = row.get('isco_code', '')
+
+        # esco_code desde URI
+        if uri and uri in esco_lookup:
+            row['esco_code'] = esco_lookup[uri].get('esco_code', '')
+        else:
+            row['esco_code'] = ''
+
+        # isco_label desde isco_code
+        if isco_code and isco_code in isco_labels:
+            row['isco_label'] = isco_labels[isco_code]
+        elif uri and uri in esco_lookup:
+            row['isco_label'] = esco_lookup[uri].get('isco_label', '')
+        else:
+            row['isco_label'] = ''
+
+        # Limpiar URI si no está en columns
+        if 'esco_uri' not in columns and 'esco_uri' in row:
+            del row['esco_uri']
+
+    return rows
+
+
 def create_validation_sheet(offer_ids: List[str], validation_type: str) -> List[Dict]:
     """Crea sheet de validación vacía para que humanos completen."""
     schema = load_schema()
@@ -428,6 +497,8 @@ def export_validation(
             data = get_skills_detalle_data(conn, offer_ids, columns)
         elif column_key == 'matching':
             data = get_matching_data(conn, offer_ids, columns)
+        elif column_key == 'control':
+            data = get_control_data(conn, offer_ids, columns)
         elif column_key.startswith('validacion_'):
             val_type = column_key.replace('validacion_', '')
             data = create_validation_sheet(offer_ids, val_type)

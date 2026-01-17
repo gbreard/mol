@@ -196,7 +196,7 @@ python scripts/analyze_error_patterns.py --desde-archivo metrics/cola_claude_*.j
 |---------|----------|
 | `database/match_by_skills.py` | Matching por skills |
 | `config/matching_config.json` | Pesos y umbrales |
-| `config/matching_rules_business.json` | 52 reglas de negocio |
+| `config/matching_rules_business.json` | Reglas de negocio (ver conteos en .ai/learnings.yaml) |
 | `config/area_funcional_esco_map.json` | Mapeo área → ISCO |
 | `config/nivel_seniority_esco_map.json` | Mapeo seniority → ISCO |
 

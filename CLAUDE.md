@@ -8,28 +8,30 @@ El archivo `learnings.yaml` contiene:
 - `current_state`: Qué estamos haciendo AHORA (ofertas, versiones, próximo paso)
 - `ultimo_trabajo`: Qué se hizo en la última sesión
 - `problemas_conocidos`: Issues actuales
+- **`conteos`**: SINGLE SOURCE OF TRUTH para cantidades (reglas, skills, etc.)
 
 **Comando del usuario: "Guardá estado"** → Actualizar learnings.yaml con el estado actual.
 
-**REGLA: Actualizar `.ai/learnings.yaml` AUTOMATICAMENTE después de cada cambio significativo** (editar archivo, arreglar bug, procesar ofertas, agregar regla). No esperar a que el usuario lo pida.
+**REGLA 1: Actualizar `.ai/learnings.yaml` AUTOMATICAMENTE después de cada cambio significativo** (editar archivo, arreglar bug, procesar ofertas, agregar regla). No esperar a que el usuario lo pida.
+
+**REGLA 2: Si se modifica un config (matching_rules, validation_rules, sinonimos, etc.), actualizar la sección `conteos` en learnings.yaml.** La documentación referencia esos conteos, no hardcodea números.
 
 ---
 
 ## Descripcion
 Sistema de monitoreo del mercado laboral argentino para OEDE. Scrapea ofertas de empleo, extrae informacion con NLP, clasifica segun taxonomia ESCO, y provee dashboards para analistas.
 
-## Estado Actual (2026-01-14)
-- 11,001 ofertas en BD
-- **100 ofertas con matching procesado**, estado `pendiente` (en validación)
+## Estado Actual
+
+> **CONTEOS OFICIALES:** Ver `.ai/learnings.yaml` sección `conteos` (single source of truth)
+
 - NLP v11.3 (20 campos + postprocessor + qwen2.5:7b)
 - **Matching v3.3.2** con prioridad: Reglas negocio → Diccionario argentino → Semántico
-- Skills implicitas: 14,247 embeddings ESCO skills pre-calculados
-- **Diccionario argentino**: `config/sinonimos_argentinos_esco.json` (12 ocupaciones)
-- **Auto-validación**: `config/validation_rules.json` (15 reglas)
+- **Conteos dinámicos** (ver `learnings.yaml`): reglas_negocio, reglas_validacion, sinonimos_argentinos
 
 ### Trabajo en Curso
-- Validando 100 ofertas para dashboard (próximo paso: revisión manual)
-- Gold Set de referencia: 49 casos (archivo histórico, la validación real es sobre los 100)
+- Validando 110 ofertas para dashboard (próximo paso: revisión en Google Sheets)
+- Gold Set de referencia: 49 casos (archivo histórico)
 
 ---
 
@@ -70,6 +72,145 @@ fase_actual: "procesamiento"  # adquisicion | procesamiento | presentacion
 
 ---
 
+## Flujo de Optimización → Validación Humana (v2.2)
+
+El sistema tiene dos fases separadas:
+
+```
+FASE 1: OPTIMIZACIÓN (Claude)     FASE 2: VALIDACIÓN (Humano)
+─────────────────────────────     ──────────────────────────
+Claude itera:                     Solo cuando converge:
+- Procesa lote                    - Recibe Excel
+- Detecta errores                 - Revisa en Google Sheets
+- Crea reglas en JSONs            - Marca OK/ERROR
+- Reprocesa                       - Devuelve feedback
+- Repite hasta tasa < 5%          - Aprueba o rechaza
+```
+
+### Estados de un Lote
+
+| Estado | Descripción | Siguiente acción |
+|--------|-------------|------------------|
+| `optimizacion` | Claude iterando | Procesar, detectar errores, crear reglas |
+| `listo_validacion` | Tasa < 5% (convergido) | Enviar a humano |
+| `en_validacion` | Humano revisando | Esperar feedback |
+| `validado` | Humano aprobó | Listo para producción |
+| `rechazado` | Humano pidió más trabajo | Reabrir y continuar |
+
+### Comandos del Flujo
+
+```python
+from scripts.run_tracking import RunTracker
+tracker = RunTracker()
+
+# 1. Crear lote
+lote_id = tracker.create_batch("Lote 100 ofertas", offer_ids=[...])
+
+# 2. Iterar (Claude optimiza)
+while True:
+    stats = run_matching_pipeline(offer_ids, source="optimizacion")
+    tracker.add_run_to_batch(lote_id, stats['run_id'])
+
+    result = tracker.check_convergence(lote_id)
+    if result['convergido']:
+        print(f"CONVERGIDO: Tasa {result['tasa']}% < 5%")
+        break
+    # ... detectar errores, crear reglas, reprocesar ...
+
+# 3. Enviar a humano
+tracker.send_to_human_validation(lote_id)  # Genera Excel
+
+# 4. Después del feedback humano
+tracker.complete_human_validation(lote_id, aprobado=True)  # o False
+
+# Si rechazado, reabrir
+tracker.reopen_batch_for_optimization(lote_id)
+```
+
+### Visualizar Estado
+
+```bash
+python scripts/show_learning_evolution.py --batches
+```
+
+---
+
+## ⛔ PROHIBIDO IMPROVISAR - FLUJO OBLIGATORIO
+
+**Claude: ANTES de ejecutar CUALQUIER comando, verificar este checklist:**
+
+```
+□ 1. ¿Existe un script para esto? → USAR ESE SCRIPT
+□ 2. ¿El script maneja dependencias (NLP antes de Matching)? → CONFIAR EN ÉL
+□ 3. ¿Necesito verificar algo? → EL SCRIPT YA LO HACE
+□ 4. ¿Quiero hacer una query manual? → NO, USAR EL SCRIPT
+```
+
+### Flujo ÚNICO para Optimización (NO hay alternativa)
+
+```bash
+# PASO 1: Procesar ofertas (NLP + Matching + Validación automática)
+python scripts/run_validated_pipeline.py --limit 10
+
+# PASO 2: Ver errores detectados
+python scripts/review_offer_chain.py --errores --limit 5
+
+# PASO 3: Si hay errores, crear regla en config/*.json correspondiente
+
+# PASO 4: Reprocesar SOLO los IDs con error
+python scripts/run_validated_pipeline.py --ids X,Y,Z
+
+# PASO 5: Comparar
+python scripts/compare_runs.py --latest
+
+# PASO 6: Cuando converge, exportar Excel
+python scripts/exports/export_validation_excel.py --etapa completo --ids X,Y,Z
+```
+
+### ❌ PROHIBIDO (durante ejecución del pipeline)
+
+| Acción | Por qué está mal |
+|--------|------------------|
+| Queries manuales a BD para verificar estado | El script ya verifica |
+| Ejecutar matching sin verificar NLP | `run_validated_pipeline` ya lo maneja |
+| Crear scripts "demo" o "test" ad-hoc | Ya existen los scripts |
+| Inventar pasos no documentados | Todo está en CLAUDE.md |
+| Hacer verificaciones "por las dudas" | Confiá en el pipeline |
+
+### ✅ PERMITIDO SIEMPRE
+
+| Acción | Cuándo |
+|--------|--------|
+| Editar `config/*.json` | Para crear reglas nuevas |
+| Leer archivos para entender código | Antes de modificar |
+| Ejecutar scripts documentados | Siempre |
+
+### ✅ PERMITIDO INTERVENIR MANUALMENTE cuando:
+
+| Situación | Qué hacer |
+|-----------|-----------|
+| **Usuario pide ver datos específicos** | Queries a BD para mostrar lo que pide |
+| **Diagnosticar error que el script no resuelve** | Investigar cadena completa (NLP → Skills → Matching) |
+| **Crear regla nueva** | Consultar BD para ver ejemplos similares, entender el patrón |
+| **Entender por qué falló algo** | Leer logs, ver datos de la oferta específica |
+| **Usuario pregunta "¿qué pasó con X?"** | Investigar libremente |
+| **Depurar un bug en el pipeline** | Queries diagnósticas, leer código |
+| **Explorar para planificar** | Antes de ejecutar, entender el estado actual |
+
+### 🔑 REGLA CLAVE
+
+```
+EJECUCIÓN DE PIPELINE → Usar scripts, no improvisar
+DIAGNÓSTICO/INVESTIGACIÓN → Intervenir manualmente está OK
+CREAR REGLAS → Necesito ver datos para entender el patrón
+```
+
+**Preguntarse:** ¿Estoy EJECUTANDO el pipeline o estoy INVESTIGANDO/DIAGNOSTICANDO?
+- Ejecutando → Scripts únicamente
+- Investigando → Queries manuales OK
+
+---
+
 ## REGLAS CRÍTICAS - LEER PRIMERO
 
 **ANTES de escribir código o crear archivos:**
@@ -86,25 +227,23 @@ fase_actual: "procesamiento"  # adquisicion | procesamiento | presentacion
 
 | Tarea | Comando | NO hacer |
 |-------|---------|----------|
-| **Matching lote** | `run_matching_pipeline(offer_ids=[...])` en `match_ofertas_v3.py` | ⚠️ NUNCA `match_and_persist()` directo |
-| **Export Excel** | `python scripts/exports/export_validation_excel.py --etapa completo --ids X` | Crear export custom |
+| **⭐ Pipeline Completo** | `python scripts/run_validated_pipeline.py --limit 100` | Scripts separados |
 | **NLP lote** | `python database/process_nlp_from_db_v11.py --ids X` | Crear script nuevo |
 | **Scraping** | `python run_scheduler.py` | Llamar scrapers directo |
 | **Comparar runs** | `python scripts/compare_runs.py --latest` | Crear comparador custom |
 | **Validar ofertas** | `python scripts/validar_ofertas.py --ids X --estado validado` | UPDATE manual en BD |
-| **Auto-validar** | `python database/auto_validator.py --limit 100` | Queries manuales |
-| **Revisar cadena** | `python scripts/review_offer_chain.py --errores` | Revisar solo matching |
+| **Export Excel** | `python scripts/exports/export_validation_excel.py --etapa completo --ids X` | - |
 | **Sync Supabase** | `python scripts/exports/sync_to_supabase.py` | Queries directas a Supabase |
 
-**⚠️ REGLA CRÍTICA - Run Tracking (v3.3.2):**
-- SIEMPRE usar `run_matching_pipeline()` para matching, NUNCA `match_and_persist()` directo
-- `match_and_persist()` sin `run_id` genera WARNING y ofertas quedan sin tracking
-- Si ves ofertas con `run_id = NULL` en BD, es porque alguien llamó `match_and_persist()` directo
-- El código ahora emite un WARNING visible cuando esto pasa
+**⭐ REGLA CRÍTICA - Pipeline Integrado:**
+- **SIEMPRE** usar `run_validated_pipeline.py` para procesar ofertas
+- Ejecuta TODO automáticamente: Matching → Validación → Corrección → Reporte
+- Errores se persisten en tabla `validation_errors` (no se pierden)
+- Si hay errores que requieren reglas nuevas → genera `metrics/cola_claude_*.json`
 
 ---
 
-## Pipeline de Validación con Aprendizaje (v1.0)
+## Pipeline de Validación con Aprendizaje (v2.0)
 
 **Principio:** Claude REVISA casos individuales para APRENDER y crear REGLAS en JSONs.
 El sistema luego aplica las reglas automáticamente. Claude NO reemplaza al LLM.
@@ -122,23 +261,35 @@ SCRAPING → NLP → SKILLS → MATCHING
 Si NLP extrae mal las tareas → Skills quedan mal → Matching falla
 ```
 
-### Flujo de Trabajo Claude
+### Flujo de Trabajo (UN COMANDO)
 
 ```
-PASO 1: PROCESAR
-────────────────
-python -c "
-from database.match_ofertas_v3 import run_matching_pipeline
-stats = run_matching_pipeline(limit=100, source='optimizacion_v1')
-print(f'Run ID: {stats[\"run_id\"]}')
-"
+COMANDO ÚNICO (hace TODO automáticamente):
+──────────────────────────────────────────
+python scripts/run_validated_pipeline.py --limit 100
 
-PASO 2: DETECTAR ERRORES
-────────────────────────
-python database/auto_validator.py --limit 100 --reporte
+EJECUTA AUTOMÁTICAMENTE:
+  1. MATCHING     → match_ofertas_v3.py
+  2. VALIDACIÓN   → auto_validator.py (detecta errores → BD)
+  3. CORRECCIÓN   → auto_corrector.py (arregla lo que puede → BD)
+  4. REPORTE      → genera cola_claude.json si hay errores escalados
 
-PASO 3: CLAUDE REVISA UNO POR UNO (cadena completa)
-───────────────────────────────────────────────────
+OPCIONES:
+  --limit N          Procesar N ofertas
+  --ids X,Y,Z        Procesar IDs específicos
+  --export-markdown  Generar validation/feedback_*.md para GitHub
+
+RESULTADO:
+  - Errores detectados → tabla validation_errors (persistidos)
+  - Errores corregidos → marcados corregido=1 en BD
+  - Errores escalados → metrics/cola_claude_*.json + escalado_claude=1 en BD
+```
+
+### Si Hay Errores Escalados
+
+```
+CLAUDE REVISA cola_claude_*.json:
+─────────────────────────────────
 python scripts/review_offer_chain.py --errores --limit 5
 
 Claude ve TODA la cadena:
@@ -147,11 +298,7 @@ Claude ve TODA la cadena:
 3. SKILLS: ¿Coherentes con título y tareas?
 4. MATCHING: ¿ISCO correcto?
 
-Claude identifica DÓNDE falló y crea regla en el JSON correspondiente.
-
-PASO 4: CREAR REGLA
-───────────────────
-Según dónde falló:
+CREAR REGLA según dónde falló:
 | Falla en | Config a modificar |
 |----------|-------------------|
 | NLP - tareas | prompt o nlp_extraction_patterns.json |
@@ -161,30 +308,41 @@ Según dónde falló:
 | Skills - faltan | config/skills_database.json |
 | Matching | config/matching_rules_business.json |
 
-PASO 5: REPROCESAR
-──────────────────
-python -c "
-from database.match_ofertas_v3 import run_matching_pipeline
-stats = run_matching_pipeline(offer_ids=['id1','id2'], source='fix_v1')
-"
-
-PASO 6: COMPARAR
-────────────────
-python scripts/compare_runs.py --latest
-
-REPETIR hasta sin errores.
+REPROCESAR IDs afectados:
+python scripts/run_validated_pipeline.py --ids X,Y,Z
 ```
 
 ### Archivos del Sistema de Validación
 
 | Archivo | Función |
 |---------|---------|
-| `config/validation_rules.json` | 15 reglas de auto-detección de errores |
+| `scripts/run_validated_pipeline.py` | **⭐ ENTRY POINT PRINCIPAL** - orquesta todo |
+| `config/validation_rules.json` | Reglas de auto-detección (ver conteos en learnings.yaml) |
 | `config/diagnostic_patterns.json` | Patrones para identificar punto de falla |
 | `config/auto_correction_map.json` | Mapeo diagnóstico → config a modificar |
-| `database/auto_validator.py` | Validador automático |
-| `database/auto_corrector.py` | Corrector automático |
+| `database/auto_validator.py` | Validador automático (persiste en BD) |
+| `database/auto_corrector.py` | Corrector automático (actualiza BD) |
 | `scripts/review_offer_chain.py` | **Revisión UNO POR UNO** (cadena completa) |
+
+### Tablas de Validación en BD
+
+| Tabla | Función |
+|-------|---------|
+| `validation_errors` | Errores detectados por auto_validator (persistidos) |
+| `ofertas_esco_matching` | Estado de matching y validación |
+| `pipeline_runs` | Historial de corridas |
+
+**Consultas útiles:**
+```sql
+-- Errores pendientes (no resueltos)
+SELECT * FROM v_errores_pendientes;
+
+-- Resumen por tipo de error
+SELECT * FROM v_errores_por_tipo;
+
+-- Errores escalados a Claude
+SELECT * FROM validation_errors WHERE escalado_claude = 1 AND resuelto = 0;
+```
 
 ### Ejemplo de Revisión Claude
 
@@ -225,6 +383,21 @@ Próxima vez: Sistema aplica regla automáticamente
 
 → **Detalles:** `docs/guides/VALIDACION.md`
 
+### Feedback Loop via Google Sheets
+
+```
+FLUJO:
+1. Exportar   → python scripts/exports/export_validation_excel.py --etapa completo --ids X
+2. Subir      → Excel a Google Sheets (manual)
+3. Humano     → Edita en Google Sheets (columnas resultado, isco_correcto, comentario)
+4. Claude     → Usuario comparte link/CSV, Claude lee y crea reglas
+```
+
+**Columnas editables por humano:**
+- `resultado`: `OK` | `ERROR` | `REVISAR`
+- `isco_correcto`: ISCO esperado (si es ERROR)
+- `comentario`: Descripción del problema
+
 ### Protección de Datos Validados
 
 **CRÍTICO:** Una vez que una oferta tiene `estado_validacion = 'validado'`:
@@ -260,7 +433,7 @@ CAPA 3: Skills implícitas (BGE-M3 + ESCO embeddings)
 | Matcher por Skills | `database/match_by_skills.py` v1.2.0 | - |
 | Skills Extractor | `database/skills_implicit_extractor.py` v2.0 | - |
 | Diccionario Argentino | `config/sinonimos_argentinos_esco.json` (12 ocup) | - |
-| Config reglas negocio | `config/matching_rules_business.json` (52 reglas) | hardcodeados |
+| Config reglas negocio | `config/matching_rules_business.json` (ver conteos en learnings.yaml) | hardcodeados |
 | Config principal | `config/matching_config.json` | - |
 
 **Arquitectura v3.3.2 (orden de prioridad):**
@@ -318,7 +491,7 @@ python scripts/validar_ofertas.py --status
 | Archivo | Propósito |
 |---------|-----------|
 | `config/matching_config.json` | Pesos, umbrales, penalizaciones |
-| `config/matching_rules_business.json` | 52 reglas de negocio |
+| `config/matching_rules_business.json` | Reglas de negocio (ver conteos en learnings.yaml) |
 | `config/area_funcional_esco_map.json` | Mapeo área → ISCO |
 | `config/sector_isco_compatibilidad.json` | Compatibilidad sector-ISCO |
 
@@ -483,4 +656,4 @@ Docs: http://localhost:8080/docs
 
 ---
 
-> **Última actualización:** 2026-01-14
+> **Última actualización:** 2026-01-16

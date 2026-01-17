@@ -1,0 +1,1243 @@
+{
+  "_version": "1.0",
+  "_fecha": "2026-01-15",
+  "_descripcion": "Catalogo de empresas con sector CLAE conocido",
+  "empleadores": {
+    "1013630": {
+      "nombre": "ACCIONA IT",
+      "sector": "Tecnologia",
+      "ofertas": 123,
+      "clae_code": "620100",
+      "clae_seccion": "J"
+    },
+    "409400": {
+      "nombre": "Swiss Medical",
+      "sector": "Salud",
+      "ofertas": 77,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "13062999": {
+      "nombre": "Sancor Salud",
+      "sector": "Salud",
+      "ofertas": 48,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "580077": {
+      "nombre": "Hipermercado Makro",
+      "sector": "Retail",
+      "ofertas": 30,
+      "clae_code": "471000",
+      "clae_seccion": "G"
+    },
+    "13043316": {
+      "nombre": "Sanatorio del Oeste",
+      "sector": "Salud",
+      "ofertas": 27,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "1587420": {
+      "nombre": "Hotel Faena Buenos Aires",
+      "sector": "Hoteleria",
+      "ofertas": 27,
+      "clae_code": "551000",
+      "clae_seccion": "I"
+    },
+    "334930": {
+      "nombre": "Banco Hipotecario",
+      "sector": "Finanzas",
+      "ofertas": 21,
+      "clae_code": "649290",
+      "clae_seccion": "K"
+    },
+    "613480": {
+      "nombre": "X-28 Alarmas",
+      "sector": "Seguridad",
+      "ofertas": 15,
+      "clae_code": "801000",
+      "clae_seccion": "N"
+    },
+    "13438513": {
+      "nombre": "Laboratorios Elea",
+      "sector": "Salud",
+      "ofertas": 13,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "13092838": {
+      "nombre": "Colegio de Escribanos la plata.",
+      "sector": "Educacion",
+      "ofertas": 12,
+      "clae_code": "854000",
+      "clae_seccion": "P"
+    },
+    "525786": {
+      "nombre": "Faena Hotel Buenos Aires",
+      "sector": "Hoteleria",
+      "ofertas": 12,
+      "clae_code": "551000",
+      "clae_seccion": "I"
+    },
+    "69481": {
+      "nombre": "IRSA Inversiones y Representaciones S.A.",
+      "sector": "Finanzas",
+      "ofertas": 12,
+      "clae_code": "649290",
+      "clae_seccion": "K"
+    },
+    "13187387": {
+      "nombre": "FARMACIA ROMY SA",
+      "sector": "Salud",
+      "ofertas": 11,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "1924090": {
+      "nombre": "Universidad Siglo 21",
+      "sector": "Educacion",
+      "ofertas": 11,
+      "clae_code": "854000",
+      "clae_seccion": "P"
+    },
+    "608654": {
+      "nombre": "Colegio de Escribanos de la Pcia. de Buenos Aires",
+      "sector": "Educacion",
+      "ofertas": 11,
+      "clae_code": "854000",
+      "clae_seccion": "P"
+    },
+    "17250": {
+      "nombre": "Cibic Laboratorios",
+      "sector": "Salud",
+      "ofertas": 10,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "13475894": {
+      "nombre": "Instituto Gastronomico Internacional",
+      "sector": "Gastronomia",
+      "ofertas": 9,
+      "clae_code": "561000",
+      "clae_seccion": "I"
+    },
+    "13239079": {
+      "nombre": "Hanseatica Compañía de Seguros",
+      "sector": "Finanzas",
+      "ofertas": 9,
+      "clae_code": "649290",
+      "clae_seccion": "K"
+    },
+    "2330920": {
+      "nombre": "HELIOS SALUD",
+      "sector": "Salud",
+      "ofertas": 9,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "1499500": {
+      "nombre": "Casa Hospital San Juan de Dios - Ramos Mejia",
+      "sector": "Salud",
+      "ofertas": 9,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "646264": {
+      "nombre": "KOI BAR SRL",
+      "sector": "Gastronomia",
+      "ofertas": 9,
+      "clae_code": "561000",
+      "clae_seccion": "I"
+    },
+    "524125": {
+      "nombre": "Grupo Sancor Seguros",
+      "sector": "Finanzas",
+      "ofertas": 9,
+      "clae_code": "649290",
+      "clae_seccion": "K"
+    },
+    "523525": {
+      "nombre": "SanCor Salud",
+      "sector": "Salud",
+      "ofertas": 9,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "465901": {
+      "nombre": "Swiss Medical",
+      "sector": "Salud",
+      "ofertas": 9,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "204775": {
+      "nombre": "Nefra Medical Care",
+      "sector": "Salud",
+      "ofertas": 9,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "13379212": {
+      "nombre": "Farmacias Central Oeste",
+      "sector": "Salud",
+      "ofertas": 8,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "10112108": {
+      "nombre": "Triunfo Seguros",
+      "sector": "Finanzas",
+      "ofertas": 7,
+      "clae_code": "649290",
+      "clae_seccion": "K"
+    },
+    "659050": {
+      "nombre": "Supermercados Mayoristas YAGUAR SA",
+      "sector": "Retail",
+      "ofertas": 7,
+      "clae_code": "471000",
+      "clae_seccion": "G"
+    },
+    "13451655": {
+      "nombre": "Sanatorio Sagrado Corazón",
+      "sector": "Salud",
+      "ofertas": 6,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "10206611": {
+      "nombre": "MCR LOGISTICA",
+      "sector": "Logistica",
+      "ofertas": 6,
+      "clae_code": "493110",
+      "clae_seccion": "H"
+    },
+    "646279": {
+      "nombre": "La Caja de Ahorro y Seguros S.A.",
+      "sector": "Finanzas",
+      "ofertas": 6,
+      "clae_code": "649290",
+      "clae_seccion": "K"
+    },
+    "632401": {
+      "nombre": "Laboratorios Elea",
+      "sector": "Salud",
+      "ofertas": 6,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "13490713": {
+      "nombre": "Manufactura de Accesorios Plásticos S.A",
+      "sector": "Manufactura",
+      "ofertas": 5,
+      "clae_code": "100000",
+      "clae_seccion": "C"
+    },
+    "13414235": {
+      "nombre": "Moda Point",
+      "sector": "Textil",
+      "ofertas": 5,
+      "clae_code": "131100",
+      "clae_seccion": "C"
+    },
+    "13302727": {
+      "nombre": "Ctel Seguridad",
+      "sector": "Seguridad",
+      "ofertas": 5,
+      "clae_code": "801000",
+      "clae_seccion": "N"
+    },
+    "13207291": {
+      "nombre": "Clinica Privada Pueyrredon S.A.",
+      "sector": "Salud",
+      "ofertas": 5,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "10174044": {
+      "nombre": "Hospital Privado Ntra. Sra. de La Merced S.A.",
+      "sector": "Salud",
+      "ofertas": 5,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "536300": {
+      "nombre": "Laboratorios Bacon SAIC",
+      "sector": "Salud",
+      "ofertas": 5,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "13494665": {
+      "nombre": "F&P CONSTRUCTORA SRL",
+      "sector": "Construccion",
+      "ofertas": 4,
+      "clae_code": "410011",
+      "clae_seccion": "F"
+    },
+    "13492837": {
+      "nombre": "Grupo Médico Escobar",
+      "sector": "Gastronomia",
+      "ofertas": 4,
+      "clae_code": "561000",
+      "clae_seccion": "I"
+    },
+    "13444714": {
+      "nombre": "Esteban Ocampo",
+      "sector": "Agro",
+      "ofertas": 4,
+      "clae_code": "11000",
+      "clae_seccion": "A"
+    },
+    "13384559": {
+      "nombre": "Pro Care Servicios de Salud",
+      "sector": "Salud",
+      "ofertas": 4,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "13339475": {
+      "nombre": "IRSA Inversiones y Representaciones S.A.",
+      "sector": "Finanzas",
+      "ofertas": 4,
+      "clae_code": "649290",
+      "clae_seccion": "K"
+    },
+    "13271655": {
+      "nombre": "Cooperación Seguros",
+      "sector": "Finanzas",
+      "ofertas": 4,
+      "clae_code": "649290",
+      "clae_seccion": "K"
+    },
+    "13236223": {
+      "nombre": "FEMANI MEDICAL S.A.",
+      "sector": "Salud",
+      "ofertas": 4,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "13213988": {
+      "nombre": "Concesionaria RENAULT Clama S.A. Argentina",
+      "sector": "Automotriz",
+      "ofertas": 4,
+      "clae_code": "451110",
+      "clae_seccion": "G"
+    },
+    "13205739": {
+      "nombre": "Datalytics srl",
+      "sector": "Tecnologia",
+      "ofertas": 4,
+      "clae_code": "620100",
+      "clae_seccion": "J"
+    },
+    "10190939": {
+      "nombre": "Imp. Empresa de Transporte Publico de Pasajeros",
+      "sector": "Logistica",
+      "ofertas": 4,
+      "clae_code": "493110",
+      "clae_seccion": "H"
+    },
+    "10123995": {
+      "nombre": "Inmobiliaria O´Keefe",
+      "sector": "Construccion",
+      "ofertas": 4,
+      "clae_code": "410011",
+      "clae_seccion": "F"
+    },
+    "1705630": {
+      "nombre": "Mutual Jerarquicos Salud",
+      "sector": "Salud",
+      "ofertas": 4,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "1426010": {
+      "nombre": "GRUPO FARMACIAS COMERCIALES",
+      "sector": "Salud",
+      "ofertas": 4,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "987530": {
+      "nombre": "Importante Empresa de Calzado e Indumentaria",
+      "sector": "Textil",
+      "ofertas": 4,
+      "clae_code": "131100",
+      "clae_seccion": "C"
+    },
+    "553206": {
+      "nombre": "Hotel Madero",
+      "sector": "Hoteleria",
+      "ofertas": 4,
+      "clae_code": "551000",
+      "clae_seccion": "I"
+    },
+    "475280": {
+      "nombre": "Laboratorios Raffo",
+      "sector": "Salud",
+      "ofertas": 4,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "361040": {
+      "nombre": "Sanatorio Mater Dei",
+      "sector": "Salud",
+      "ofertas": 4,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "13501096": {
+      "nombre": "VTC SEGURIDAD",
+      "sector": "Seguridad",
+      "ofertas": 3,
+      "clae_code": "801000",
+      "clae_seccion": "N"
+    },
+    "13499740": {
+      "nombre": "SOLUCIONES GANADERAS S. CAP I SECC IV",
+      "sector": "Agro",
+      "ofertas": 3,
+      "clae_code": "11000",
+      "clae_seccion": "A"
+    },
+    "13493014": {
+      "nombre": "GASTRONOMIA",
+      "sector": "Gastronomia",
+      "ofertas": 3,
+      "clae_code": "561000",
+      "clae_seccion": "I"
+    },
+    "13491460": {
+      "nombre": "BOLDT SA-SG DIGITAL UK HOLDINGS LIMITED",
+      "sector": "Tecnologia",
+      "ofertas": 3,
+      "clae_code": "620100",
+      "clae_seccion": "J"
+    },
+    "13489465": {
+      "nombre": "Laboratorio Tuteur",
+      "sector": "Salud",
+      "ofertas": 3,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "13456734": {
+      "nombre": "CRONON TECNOLOGIA S R L",
+      "sector": "Tecnologia",
+      "ofertas": 3,
+      "clae_code": "620100",
+      "clae_seccion": "J"
+    },
+    "13436120": {
+      "nombre": "Inmobiliaria Munay",
+      "sector": "Construccion",
+      "ofertas": 3,
+      "clae_code": "410011",
+      "clae_seccion": "F"
+    },
+    "13369776": {
+      "nombre": "FARMACIA VITAL S.A.",
+      "sector": "Salud",
+      "ofertas": 3,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "13358005": {
+      "nombre": "Tienda de Empanadas",
+      "sector": "Retail",
+      "ofertas": 3,
+      "clae_code": "471000",
+      "clae_seccion": "G"
+    },
+    "13314463": {
+      "nombre": "Profitmais Argentina, Busquedas, Tecnologia y Cons",
+      "sector": "Tecnologia",
+      "ofertas": 3,
+      "clae_code": "620100",
+      "clae_seccion": "J"
+    },
+    "13311271": {
+      "nombre": "Container bar",
+      "sector": "Gastronomia",
+      "ofertas": 3,
+      "clae_code": "561000",
+      "clae_seccion": "I"
+    },
+    "13279942": {
+      "nombre": "DIM EMPRESA CONSTRUCTORA S A DIMECSA",
+      "sector": "Construccion",
+      "ofertas": 3,
+      "clae_code": "410011",
+      "clae_seccion": "F"
+    },
+    "13211042": {
+      "nombre": "Clínica Alcla",
+      "sector": "Salud",
+      "ofertas": 3,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "13207503": {
+      "nombre": "HK SEGURIDAD",
+      "sector": "Seguridad",
+      "ofertas": 3,
+      "clae_code": "801000",
+      "clae_seccion": "N"
+    },
+    "13126450": {
+      "nombre": "DepiBAR",
+      "sector": "Gastronomia",
+      "ofertas": 3,
+      "clae_code": "561000",
+      "clae_seccion": "I"
+    },
+    "13124859": {
+      "nombre": "Union Cortadores de la Indumentaria",
+      "sector": "Textil",
+      "ofertas": 3,
+      "clae_code": "131100",
+      "clae_seccion": "C"
+    },
+    "13090588": {
+      "nombre": "d'oro italian bar",
+      "sector": "Gastronomia",
+      "ofertas": 3,
+      "clae_code": "561000",
+      "clae_seccion": "I"
+    },
+    "13036722": {
+      "nombre": "TRANSPORTES EDAR SA",
+      "sector": "Logistica",
+      "ofertas": 3,
+      "clae_code": "493110",
+      "clae_seccion": "H"
+    },
+    "13035323": {
+      "nombre": "FARMACIA DEL PUEBLO",
+      "sector": "Salud",
+      "ofertas": 3,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "10216401": {
+      "nombre": "Di Donato Distribución",
+      "sector": "Logistica",
+      "ofertas": 3,
+      "clae_code": "493110",
+      "clae_seccion": "H"
+    },
+    "10132650": {
+      "nombre": "INSTITUTO TECNOLOGICO DE CAPACITACION AUTOMOTRIZ",
+      "sector": "Tecnologia",
+      "ofertas": 3,
+      "clae_code": "620100",
+      "clae_seccion": "J"
+    },
+    "10120744": {
+      "nombre": "LABORATORIO FARMACEUTICO",
+      "sector": "Salud",
+      "ofertas": 3,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "661035": {
+      "nombre": "Agroempresario.com",
+      "sector": "Agro",
+      "ofertas": 3,
+      "clae_code": "11000",
+      "clae_seccion": "A"
+    },
+    "524045": {
+      "nombre": "Laboratorio Rapela",
+      "sector": "Salud",
+      "ofertas": 3,
+      "clae_code": "869090",
+      "clae_seccion": "Q"
+    },
+    "379198": {
+      "nombre": "Universidad Austral",
+      "sector": "Educacion",
+      "ofertas": 3,
+      "clae_code": "854000",
+      "clae_seccion": "P"
+    },
+    "300320": {
+      "nombre": "Banco Patagonia",
+      "sector": "Finanzas",
+      "ofertas": 3,
+      "clae_code": "649290",
+      "clae_seccion": "K"
+    },
+    "677887": {
+      "nombre": "Aluminio Ibarra",
+      "sector": "Industria",
+      "ofertas": 1,
+      "clae_code": "259100",
+      "clae_seccion": "C"
+    }
+  },
+  "intermediarios": {
+    "444640": {
+      "nombre": "Grupo Gestión",
+      "ofertas": 306
+    },
+    "530430": {
+      "nombre": "Manpower",
+      "ofertas": 283
+    },
+    "10202110": {
+      "nombre": "RH Talentum",
+      "ofertas": 278
+    },
+    "1478000": {
+      "nombre": "CONA CONSULTORES EN RRHH",
+      "ofertas": 206
+    },
+    "319880": {
+      "nombre": "Randstad Argentina",
+      "ofertas": 148
+    },
+    "1282780": {
+      "nombre": "Adecco - Permanent Talent",
+      "ofertas": 146
+    },
+    "1476590": {
+      "nombre": "Zivot Consultora en RH",
+      "ofertas": 137
+    },
+    "1127240": {
+      "nombre": "Adecco Argentina -Región Office",
+      "ofertas": 116
+    },
+    "13024816": {
+      "nombre": "Ceta Capital Humano",
+      "ofertas": 72
+    },
+    "1464270": {
+      "nombre": "Adecco -RPO",
+      "ofertas": 68
+    },
+    "10116908": {
+      "nombre": "MJ Consultores",
+      "ofertas": 56
+    },
+    "13176203": {
+      "nombre": "B&B Consultores",
+      "ofertas": 53
+    },
+    "13181155": {
+      "nombre": "IC Consultora",
+      "ofertas": 52
+    },
+    "13024592": {
+      "nombre": "NUMAN Headhunter Industrial",
+      "ofertas": 45
+    },
+    "1593330": {
+      "nombre": "Adecco - On Site",
+      "ofertas": 41
+    },
+    "13188013": {
+      "nombre": "Be Part RH",
+      "ofertas": 39
+    },
+    "13177485": {
+      "nombre": "Gennera Recursos Humanos",
+      "ofertas": 34
+    },
+    "10221578": {
+      "nombre": "SPEEDWORK RRHH",
+      "ofertas": 33
+    },
+    "2048010": {
+      "nombre": "SM Recursos Humanos",
+      "ofertas": 32
+    },
+    "1111750": {
+      "nombre": "H & F Consultores en RR.HH.",
+      "ofertas": 32
+    },
+    "628677": {
+      "nombre": "B&B Consultores",
+      "ofertas": 31
+    },
+    "13051395": {
+      "nombre": "Saiba Recursos Humanos",
+      "ofertas": 28
+    },
+    "713080": {
+      "nombre": "AS Recursos Humanos",
+      "ofertas": 28
+    },
+    "569454": {
+      "nombre": "MJ Consultores",
+      "ofertas": 28
+    },
+    "570747": {
+      "nombre": "PLC Proyecto Laboral Consultores",
+      "ofertas": 26
+    },
+    "795130": {
+      "nombre": "jl consultores",
+      "ofertas": 25
+    },
+    "170070": {
+      "nombre": "Gestion Compartida S.A.",
+      "ofertas": 24
+    },
+    "13423232": {
+      "nombre": "Cultura RRHH",
+      "ofertas": 23
+    },
+    "615736": {
+      "nombre": "Adecco Argentina",
+      "ofertas": 22
+    },
+    "10117698": {
+      "nombre": "TALENT RECRUITERS",
+      "ofertas": 21
+    },
+    "10068837": {
+      "nombre": "Vinculos Consultores en RRHH",
+      "ofertas": 21
+    },
+    "557270": {
+      "nombre": "GB Consultores - RRHH",
+      "ofertas": 21
+    },
+    "1793410": {
+      "nombre": "Gentile y Asociados Consultores",
+      "ofertas": 20
+    },
+    "1611790": {
+      "nombre": "Silvia Baena Consultora",
+      "ofertas": 19
+    },
+    "597377": {
+      "nombre": "Saiba Recursos Humanos",
+      "ofertas": 19
+    },
+    "205067": {
+      "nombre": "Pandit People Solutions",
+      "ofertas": 19
+    },
+    "13394224": {
+      "nombre": "LC Consultora",
+      "ofertas": 18
+    },
+    "171580": {
+      "nombre": "Generacion Talento",
+      "ofertas": 18
+    },
+    "517210": {
+      "nombre": "de Elizalde - Desarrollo del Talento",
+      "ofertas": 17
+    },
+    "10151193": {
+      "nombre": "RMC Selección de personal Clave",
+      "ofertas": 16
+    },
+    "659010": {
+      "nombre": "Gennera Recursos Humanos",
+      "ofertas": 16
+    },
+    "13081476": {
+      "nombre": "Startia Consultores",
+      "ofertas": 15
+    },
+    "13037589": {
+      "nombre": "Consultora",
+      "ofertas": 15
+    },
+    "10146298": {
+      "nombre": "CARDINAL RRHH",
+      "ofertas": 15
+    },
+    "13074272": {
+      "nombre": "BN Consultoria RH",
+      "ofertas": 14
+    },
+    "13188487": {
+      "nombre": "Texia RRHH",
+      "ofertas": 13
+    },
+    "13145345": {
+      "nombre": "Capital Humano Agro",
+      "ofertas": 13
+    },
+    "13079065": {
+      "nombre": "Consultora Fashion RH",
+      "ofertas": 13
+    },
+    "13483949": {
+      "nombre": "TALENT OWNERS",
+      "ofertas": 12
+    },
+    "13222456": {
+      "nombre": "lcr consultora",
+      "ofertas": 12
+    },
+    "13005587": {
+      "nombre": "Consultora Theorema",
+      "ofertas": 12
+    },
+    "526806": {
+      "nombre": "RMC - Selección de personal",
+      "ofertas": 12
+    },
+    "13490043": {
+      "nombre": "Unique Talent Solutions",
+      "ofertas": 11
+    },
+    "13109558": {
+      "nombre": "BT Consultores - Buscadores de Talentos",
+      "ofertas": 11
+    },
+    "13002813": {
+      "nombre": "VD Consultores",
+      "ofertas": 11
+    },
+    "624800": {
+      "nombre": "Seffino Talento Humano",
+      "ofertas": 11
+    },
+    "13390819": {
+      "nombre": "Fortress Consultora",
+      "ofertas": 10
+    },
+    "13339515": {
+      "nombre": "RM - Consultora",
+      "ofertas": 10
+    },
+    "13334432": {
+      "nombre": "BIG Recursos Humanos",
+      "ofertas": 10
+    },
+    "13181450": {
+      "nombre": "Emplear RH",
+      "ofertas": 10
+    },
+    "10099621": {
+      "nombre": "Kaizen Recursos Humanos",
+      "ofertas": 10
+    },
+    "840010": {
+      "nombre": "BD Capital Humano",
+      "ofertas": 10
+    },
+    "13235404": {
+      "nombre": "Active RRHH",
+      "ofertas": 9
+    },
+    "13207047": {
+      "nombre": "Dialéctica Consultoría Empresarial",
+      "ofertas": 9
+    },
+    "10118800": {
+      "nombre": "People Process Consultores",
+      "ofertas": 9
+    },
+    "617270": {
+      "nombre": "MC Santaliz Capital Humano",
+      "ofertas": 9
+    },
+    "13432235": {
+      "nombre": "activo profile rrhh srl",
+      "ofertas": 8
+    },
+    "13308653": {
+      "nombre": "D&S Consultores",
+      "ofertas": 8
+    },
+    "13141485": {
+      "nombre": "Talent Growers",
+      "ofertas": 8
+    },
+    "13101442": {
+      "nombre": "Chasing Talent",
+      "ofertas": 8
+    },
+    "813440": {
+      "nombre": "ARRIVE RRHH",
+      "ofertas": 8
+    },
+    "625887": {
+      "nombre": "LC Consultora de Recursos Humanos",
+      "ofertas": 8
+    },
+    "517222": {
+      "nombre": "BD Capital Humano",
+      "ofertas": 8
+    },
+    "55446": {
+      "nombre": "Capital Humano",
+      "ofertas": 8
+    },
+    "23690": {
+      "nombre": "GRUPO ABANS – Consultora de RRHH",
+      "ofertas": 8
+    },
+    "13182307": {
+      "nombre": "SP Recursos Humanos",
+      "ofertas": 7
+    },
+    "13060800": {
+      "nombre": "Dinamia Recursos Humanos",
+      "ofertas": 7
+    },
+    "1573730": {
+      "nombre": "PGK Consultores",
+      "ofertas": 7
+    },
+    "664477": {
+      "nombre": "TalentoH",
+      "ofertas": 7
+    },
+    "13462979": {
+      "nombre": "Italentitalentconnection Consultora",
+      "ofertas": 6
+    },
+    "13346720": {
+      "nombre": "Semilla Capital Humano",
+      "ofertas": 6
+    },
+    "13085275": {
+      "nombre": "MODUM Consultora",
+      "ofertas": 6
+    },
+    "13068982": {
+      "nombre": "Desafío Positivo. Gestión en Recursos Humanos",
+      "ofertas": 6
+    },
+    "13056969": {
+      "nombre": "MUNTANER RRHH",
+      "ofertas": 6
+    },
+    "13014619": {
+      "nombre": "AN Consultores",
+      "ofertas": 6
+    },
+    "675031": {
+      "nombre": "TALENTO PyME",
+      "ofertas": 6
+    },
+    "632506": {
+      "nombre": "Active RRHH",
+      "ofertas": 6
+    },
+    "606937": {
+      "nombre": "People Process",
+      "ofertas": 6
+    },
+    "549867": {
+      "nombre": "PILARES RRHH",
+      "ofertas": 6
+    },
+    "10649": {
+      "nombre": "de Elizalde - Desarrollo del Talento",
+      "ofertas": 6
+    },
+    "13387324": {
+      "nombre": "skybird.people",
+      "ofertas": 5
+    },
+    "13194627": {
+      "nombre": "WECROSS BPO",
+      "ofertas": 5
+    },
+    "13142949": {
+      "nombre": "Q&C Consultores, RR.HH",
+      "ofertas": 5
+    },
+    "13127172": {
+      "nombre": "New Talent",
+      "ofertas": 5
+    },
+    "13069185": {
+      "nombre": "Karina Raitman Consultoria",
+      "ofertas": 5
+    },
+    "10116911": {
+      "nombre": "V-Gap Soluciones RRHH",
+      "ofertas": 5
+    },
+    "10109705": {
+      "nombre": "RUBEN CASTRO. Reclutamiento y Selección de RRHH",
+      "ofertas": 5
+    },
+    "10107788": {
+      "nombre": "Adecco -Región GBA Suroeste",
+      "ofertas": 5
+    },
+    "2613870": {
+      "nombre": "Focalizar Capital Humano",
+      "ofertas": 5
+    },
+    "646060": {
+      "nombre": "Sistemas de Gestión",
+      "ofertas": 5
+    },
+    "635982": {
+      "nombre": "Mauro & Hulten - Consultoria en RH",
+      "ofertas": 5
+    },
+    "518308": {
+      "nombre": "Capital RH",
+      "ofertas": 5
+    },
+    "13461510": {
+      "nombre": "LAWARD Recursos Humanos para Abogados",
+      "ofertas": 4
+    },
+    "13461197": {
+      "nombre": "EXPERTAS CONSULTORAS",
+      "ofertas": 4
+    },
+    "13406346": {
+      "nombre": "Gestión Runa",
+      "ofertas": 4
+    },
+    "13398697": {
+      "nombre": "Calabrese Consultores ®",
+      "ofertas": 4
+    },
+    "13386118": {
+      "nombre": "RH Consultores",
+      "ofertas": 4
+    },
+    "13303226": {
+      "nombre": "Cadena de Valor Consultora Integral de Empresas",
+      "ofertas": 4
+    },
+    "13297893": {
+      "nombre": "Idoneus Recursos Humanos",
+      "ofertas": 4
+    },
+    "13277993": {
+      "nombre": "Consultora D'Amelio",
+      "ofertas": 4
+    },
+    "13168828": {
+      "nombre": "MB Consultores H.R.",
+      "ofertas": 4
+    },
+    "13108997": {
+      "nombre": "ACTION HUMAN CAPITAL CONSULTING",
+      "ofertas": 4
+    },
+    "13102297": {
+      "nombre": "Noorten Consultora",
+      "ofertas": 4
+    },
+    "13097610": {
+      "nombre": "Cecilia Demadonna RRHH",
+      "ofertas": 4
+    },
+    "13094552": {
+      "nombre": "TALENTO + RH",
+      "ofertas": 4
+    },
+    "13087367": {
+      "nombre": "AGHR | RRHH|",
+      "ofertas": 4
+    },
+    "13019544": {
+      "nombre": "Vanguardia Consultores RR.HH.",
+      "ofertas": 4
+    },
+    "10179474": {
+      "nombre": "Convocare RH",
+      "ofertas": 4
+    },
+    "10140641": {
+      "nombre": "C Positivo Consultores",
+      "ofertas": 4
+    },
+    "10119244": {
+      "nombre": "SOS RRHH",
+      "ofertas": 4
+    },
+    "10115720": {
+      "nombre": "The Adecco Group",
+      "ofertas": 4
+    },
+    "877710": {
+      "nombre": "ESTUDIO MÜLLER BPO & COBRANZAS",
+      "ofertas": 4
+    },
+    "637357": {
+      "nombre": "SP Recursos Humanos",
+      "ofertas": 4
+    },
+    "637079": {
+      "nombre": "Potenciarnos - Capital Humano",
+      "ofertas": 4
+    },
+    "465760": {
+      "nombre": "V/N GLOBAL BPO",
+      "ofertas": 4
+    },
+    "13493404": {
+      "nombre": "Refe Consultora de RRHH",
+      "ofertas": 3
+    },
+    "13482439": {
+      "nombre": "MS Consultoría en Recursos Humanos",
+      "ofertas": 3
+    },
+    "13481510": {
+      "nombre": "People & Impact",
+      "ofertas": 3
+    },
+    "13481177": {
+      "nombre": "Insel Talent",
+      "ofertas": 3
+    },
+    "13469764": {
+      "nombre": "RH-BP Consultora",
+      "ofertas": 3
+    },
+    "13469662": {
+      "nombre": "Reliable Talent Solutions",
+      "ofertas": 3
+    },
+    "13460843": {
+      "nombre": "Innova Recursos Humanos",
+      "ofertas": 3
+    },
+    "13411060": {
+      "nombre": "Potenciar Talento Recursos Humanos",
+      "ofertas": 3
+    },
+    "13400715": {
+      "nombre": "RC Busqueda y Selección",
+      "ofertas": 3
+    },
+    "13389293": {
+      "nombre": "HQH Consultora",
+      "ofertas": 3
+    },
+    "13364846": {
+      "nombre": "Wave RH",
+      "ofertas": 3
+    },
+    "13312116": {
+      "nombre": "Recruitment Delsurtranslations-Pampa Talents",
+      "ofertas": 3
+    },
+    "13278804": {
+      "nombre": "Consultora de Trabajo Concordia",
+      "ofertas": 3
+    },
+    "13272820": {
+      "nombre": "OTIUM CONSULTORES",
+      "ofertas": 3
+    },
+    "13187747": {
+      "nombre": "Focus HR Consultores",
+      "ofertas": 3
+    },
+    "13179797": {
+      "nombre": "Impacto Talent",
+      "ofertas": 3
+    },
+    "13155336": {
+      "nombre": "Cibet Consultores",
+      "ofertas": 3
+    },
+    "13101163": {
+      "nombre": "MVD Consultoría RRHH",
+      "ofertas": 3
+    },
+    "13086331": {
+      "nombre": "SEL CONSULTORES SOPORTE Y ESTRATEGIA LABORAL",
+      "ofertas": 3
+    },
+    "13082242": {
+      "nombre": "Talent Quality",
+      "ofertas": 3
+    },
+    "13034242": {
+      "nombre": "Umbral Capital Humano",
+      "ofertas": 3
+    },
+    "13021037": {
+      "nombre": "LF -Valor en Recursos Humanos",
+      "ofertas": 3
+    },
+    "10158099": {
+      "nombre": "Orienta RH",
+      "ofertas": 3
+    },
+    "10139917": {
+      "nombre": "Capital Humano",
+      "ofertas": 3
+    },
+    "10128158": {
+      "nombre": "Consultora G&A",
+      "ofertas": 3
+    },
+    "722980": {
+      "nombre": "LM consultora",
+      "ofertas": 3
+    },
+    "678113": {
+      "nombre": "VZ CONSULTORA",
+      "ofertas": 3
+    },
+    "659463": {
+      "nombre": "Fortress Consultora",
+      "ofertas": 3
+    },
+    "655910": {
+      "nombre": "Italentitalentconnection Consultora",
+      "ofertas": 3
+    },
+    "652668": {
+      "nombre": "D&S Consultores",
+      "ofertas": 3
+    },
+    "649859": {
+      "nombre": "Startia Consultores",
+      "ofertas": 3
+    },
+    "645915": {
+      "nombre": "Dialéctica Consultoría Empresarial",
+      "ofertas": 3
+    },
+    "638649": {
+      "nombre": "Recruitment Delsurtranslations-Pampa Talents",
+      "ofertas": 3
+    },
+    "623716": {
+      "nombre": "Wave RH",
+      "ofertas": 3
+    },
+    "539370": {
+      "nombre": "Gestionamos Talentos",
+      "ofertas": 3
+    },
+    "537677": {
+      "nombre": "JL Consultores",
+      "ofertas": 3
+    },
+    "442067": {
+      "nombre": "America RH",
+      "ofertas": 3
+    },
+    "349410": {
+      "nombre": "MCV Gestión y Recursos",
+      "ofertas": 3
+    },
+    "10720": {
+      "nombre": "Generación Talento",
+      "ofertas": 3
+    },
+    "379347": {
+      "nombre": "LG Recursos Humanos",
+      "ofertas": 1
+    }
+  }
+}

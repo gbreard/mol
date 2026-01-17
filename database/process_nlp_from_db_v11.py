@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-NLP Extractor v11.2 - Schema Lite + Postprocessor + Skills Implicitas
+NLP Extractor v11.3 - Schema Lite + Postprocessor + Skills Implicitas
 =====================================================================
 
-VERSION: 11.2.0
-FECHA: 2026-01-05
+VERSION: 11.3.0
+FECHA: 2026-01-15
 MODELO: Qwen2.5:14b (LLM) + BGE-M3 (skills implicitas)
 
+MEJORA vs v11.2: Pasa id_empresa al postprocessor para lookup en catálogo de empresas
 MEJORA vs v11.1: Integra NLPPostprocessor - usa TODOS los JSONs de config/
 MEJORA vs v10: 240s -> ~25s por oferta (10x mas rapido)
 ESTRATEGIA: 20 campos normalizables + skills implicitas via embeddings
@@ -336,7 +337,8 @@ class NLPExtractorV11:
 
     def process_oferta(self, id_oferta: str, descripcion: str,
                        titulo: str = "", empresa: str = "",
-                       ubicacion: str = "", fecha_publicacion: str = None) -> Optional[Dict[str, Any]]:
+                       ubicacion: str = "", fecha_publicacion: str = None,
+                       id_empresa: str = None) -> Optional[Dict[str, Any]]:
         """
         Procesa una oferta con pipeline lite
 
@@ -381,8 +383,8 @@ class NLPExtractorV11:
                 if pre_data.get(key) and not final_data.get(key):
                     final_data[key] = pre_data[key]
 
-            # Postprocesar (inferencia + validación)
-            final_data = self.postprocessor.postprocess(final_data, descripcion)
+            # Postprocesar (inferencia + validación + lookup catálogo empresas)
+            final_data = self.postprocessor.postprocess(final_data, descripcion, id_empresa=id_empresa)
 
             # SKILLS IMPLÍCITAS (desde tareas)
             if self.skills_extractor and final_data.get("tareas_explicitas"):
@@ -514,7 +516,7 @@ class NLPExtractorV11:
             placeholders = ",".join("?" * len(ids_especificos))
             query = f"""
                 SELECT o.id_oferta, o.descripcion, o.titulo, o.empresa, o.localizacion,
-                       o.fecha_publicacion_datetime
+                       o.fecha_publicacion_datetime, o.id_empresa
                 FROM ofertas o
                 WHERE o.id_oferta IN ({placeholders})
                   AND o.descripcion IS NOT NULL
@@ -525,7 +527,7 @@ class NLPExtractorV11:
             # Solo ofertas SIN NLP (no reprocesar las existentes)
             query = f"""
                 SELECT o.id_oferta, o.descripcion, o.titulo, o.empresa, o.localizacion,
-                       o.fecha_publicacion_datetime
+                       o.fecha_publicacion_datetime, o.id_empresa
                 FROM ofertas o
                 LEFT JOIN ofertas_nlp n ON o.id_oferta = n.id_oferta
                 WHERE o.descripcion IS NOT NULL
@@ -550,7 +552,7 @@ class NLPExtractorV11:
         results = []
         times = []
 
-        for i, (id_oferta, descripcion, titulo, empresa, localizacion, fecha_pub) in enumerate(ofertas, 1):
+        for i, (id_oferta, descripcion, titulo, empresa, localizacion, fecha_pub, id_empresa) in enumerate(ofertas, 1):
             print(f"[{i}/{total}] {id_oferta}...", end=" ", flush=True)
 
             result = self.process_oferta(
@@ -559,7 +561,8 @@ class NLPExtractorV11:
                 titulo=titulo or "",
                 empresa=empresa or "",
                 ubicacion=localizacion or "",
-                fecha_publicacion=fecha_pub
+                fecha_publicacion=fecha_pub,
+                id_empresa=str(id_empresa) if id_empresa else None
             )
 
             if result:

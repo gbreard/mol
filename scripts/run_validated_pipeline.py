@@ -3,17 +3,19 @@ Pipeline integrado: Matching + Validación Autónoma
 
 Este script ejecuta el flujo completo:
 1. Matching (match_ofertas_v3.py)
-2. Auto-validación (auto_validator.py)
-3. Auto-corrección (auto_corrector.py)
+2. Auto-validación (auto_validator.py) - persiste errores en BD
+3. Auto-corrección (auto_corrector.py) - actualiza estado en BD
 4. Reporte de patrones para Claude
+5. (Opcional) Export Markdown para feedback humano
 
 Uso:
     python scripts/run_validated_pipeline.py --limit 100
     python scripts/run_validated_pipeline.py --ids 123,456,789
     python scripts/run_validated_pipeline.py --only-pending
+    python scripts/run_validated_pipeline.py --limit 50 --export-markdown
 
-Version: 1.0
-Fecha: 2026-01-14
+Version: 2.0
+Fecha: 2026-01-16
 """
 
 import argparse
@@ -35,6 +37,7 @@ def run_full_pipeline(
     ids: list = None,
     only_pending: bool = False,
     skip_matching: bool = False,
+    export_markdown: bool = False,
     verbose: bool = True
 ) -> dict:
     """
@@ -45,6 +48,7 @@ def run_full_pipeline(
         ids: IDs específicos
         only_pending: Solo ofertas pendientes de matching
         skip_matching: Saltar matching, solo validar
+        export_markdown: Exportar Markdown para feedback humano
         verbose: Mostrar progreso
 
     Returns:
@@ -55,7 +59,8 @@ def run_full_pipeline(
         "matching": None,
         "validacion": None,
         "correccion": None,
-        "patrones_claude": None
+        "patrones_claude": None,
+        "markdown_export": None
     }
 
     # PASO 1: Matching (si no se salta)
@@ -162,6 +167,39 @@ def run_full_pipeline(
         else:
             print("\nEstado: LISTO PARA DASHBOARD")
 
+    # PASO 5: Export Markdown (opcional)
+    if export_markdown:
+        if verbose:
+            print("\n" + "=" * 60)
+            print("PASO 5: EXPORT MARKDOWN")
+            print("=" * 60)
+
+        try:
+            from scripts.exports.export_validation_markdown import export_validation_markdown
+
+            # Usar los IDs procesados o un límite
+            export_ids = ids if ids else None
+            export_limit = limit if not ids else None
+
+            md_path = export_validation_markdown(
+                offer_ids=export_ids,
+                limit=export_limit,
+                output_dir="validation"
+            )
+            resultados["markdown_export"] = str(md_path)
+
+            if verbose:
+                print(f"Markdown exportado: {md_path}")
+                print("\nPara feedback humano:")
+                print("  1. git add validation/")
+                print("  2. git commit -m 'validation: feedback pendiente'")
+                print("  3. git push")
+                print("  4. Editar en GitHub (columnas resultado, isco_correcto, comentario)")
+
+        except Exception as e:
+            print(f"Error exportando Markdown: {e}")
+            resultados["markdown_export"] = f"Error: {e}"
+
     return resultados
 
 
@@ -171,6 +209,7 @@ def main():
     parser.add_argument("--ids", type=str, help="IDs separados por coma")
     parser.add_argument("--only-pending", action="store_true", help="Solo ofertas pendientes")
     parser.add_argument("--skip-matching", action="store_true", help="Saltar matching, solo validar")
+    parser.add_argument("--export-markdown", action="store_true", help="Exportar Markdown para feedback humano")
     parser.add_argument("--quiet", action="store_true", help="Modo silencioso")
 
     args = parser.parse_args()
@@ -182,6 +221,7 @@ def main():
         ids=ids,
         only_pending=args.only_pending,
         skip_matching=args.skip_matching,
+        export_markdown=args.export_markdown,
         verbose=not args.quiet
     )
 

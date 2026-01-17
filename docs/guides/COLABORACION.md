@@ -117,6 +117,67 @@ ollama pull qwen2.5:7b
 
 ---
 
+## Feedback Loop via Markdown
+
+Sistema para que humanos validen ofertas y Claude aprenda de los errores.
+
+### Flujo
+
+```
+1. GENERAR MARKDOWN
+   python scripts/exports/export_validation_markdown.py --limit 50
+
+   → Genera: validation/feedback_YYYYMMDD_HHMM.md
+
+2. PUBLICAR EN GITHUB
+   git add validation/feedback_*.md
+   git commit -m "validation: feedback pendiente"
+   git push
+
+3. HUMANO EDITA EN GITHUB
+   - Abrir validation/feedback_*.md en GitHub
+   - Editar columnas: resultado | isco_correcto | comentario
+   - Valores de resultado: OK | ERROR | REVISAR
+   - Commit cambios
+
+4. CLAUDE LEE Y APRENDE
+   - Lee el archivo editado
+   - Busca filas con ERROR o REVISAR
+   - Crea reglas en config/matching_rules_business.json
+   - Reprocesa ofertas afectadas
+```
+
+### Ejemplo de Edicion Humana
+
+**Antes (generado):**
+```markdown
+| id | titulo | isco | isco_label | score | resultado | isco_correcto | comentario |
+| 2171959 | Vigilador General | 5151 | Supervisor limpieza | 0.65 | | | |
+```
+
+**Despues (editado por humano):**
+```markdown
+| id | titulo | isco | isco_label | score | resultado | isco_correcto | comentario |
+| 2171959 | Vigilador General | 5151 | Supervisor limpieza | 0.65 | ERROR | 5414 | Deberia ser guardia seguridad |
+```
+
+### Archivos
+
+| Archivo | Descripcion |
+|---------|-------------|
+| `scripts/exports/export_validation_markdown.py` | Genera Markdown desde BD |
+| `validation/` | Directorio con archivos de feedback |
+| `validation/feedback_*.md` | Archivos editables por humanos |
+
+### Ventajas
+
+- **Versionado:** Feedback queda en historial git
+- **Colaborativo:** Visible en GitHub para todo el equipo
+- **Asincronico:** Humano edita cuando puede, Claude procesa despues
+- **Complementario:** Excel sigue disponible para detalle
+
+---
+
 ## Notas para Claude
 
 **Si hay dudas sobre colaboracion o configuracion compartida:**
@@ -127,4 +188,4 @@ ollama pull qwen2.5:7b
 
 ---
 
-*Ultima actualizacion: 2026-01-15*
+*Ultima actualizacion: 2026-01-16*

@@ -81,10 +81,18 @@ class NLPPostprocessor:
             "campos_inferidos": 0,
             "tareas_extraidas": 0,
             "sector_extraido": 0,
+            "clae_clasificado": 0,
             "campos_normalizados": 0,
             "skills_regex_agregadas": 0,
             "defaults_aplicados": 0,
         }
+
+        # Cache para CLAE (se carga una vez)
+        self._clae_nomenclador = None
+        self._clae_keywords_map = None
+
+        # Cache para catálogo de empresas (sector alta confianza)
+        self._empresas_catalogo = None
 
     def _load_configs_cached(self) -> Dict[str, Any]:
         """Carga configs usando cache a nivel de clase"""
@@ -1030,32 +1038,72 @@ class NLPPostprocessor:
     # PASO 4.6: EXTRACCION SECTOR EMPRESA (cuando LLM no detecta)
     # =========================================================================
 
-    def _extract_sector(self, descripcion: str, data: Dict[str, Any]) -> Dict[str, Any]:
+    def _extract_sector(self, descripcion: str, data: Dict[str, Any], id_empresa: str = None) -> Dict[str, Any]:
         """
-        Extrae sector/rubro de la empresa cuando el LLM no lo detectó.
-        Busca frases como "somos una empresa de", "dedicados a", etc.
+        Extrae sector/rubro de la empresa con niveles de confianza.
+
+        IMPORTANTE: El sector debe ser del EMPLEADOR, no del PUESTO.
+        - Un banco que contrata un vigilante → sector=Finanzas, NO Seguridad
+        - Un hospital que contrata un contador → sector=Salud, NO Finanzas
+
+        Prioridad de fuentes (de mayor a menor confianza):
+        0. Catálogo de empresas: empresa conocida por id_empresa → confianza=alta
+        1. Frase explícita: "somos una empresa de [sector]" → confianza=alta
+        2. LLM extrajo directamente → confianza=media
+        3. Keyword en descripción general → confianza=baja (NO USAR)
+
+        Ver docs/guides/METODOLOGIA_SECTOR_EMPRESA.md para detalles.
         """
-        # Solo procesar si no hay sector
-        sector_actual = data.get("sector_empresa")
-        if sector_actual and str(sector_actual).strip() not in ["", "null", "None"]:
-            return data
+        import re
+
+        # PASO 0: Buscar en catálogo de empresas (máxima confianza)
+        if id_empresa:
+            data = self._lookup_empresa_catalogo(id_empresa, data)
+            # Si encontró en catálogo con confianza alta, no seguir buscando
+            if data.get("sector_confianza") == "alta":
+                return data
 
         config = self.configs.get("inference_rules", {}).get("sector_empresa", {})
-        if not config or not descripcion:
+        texto = (descripcion or "").lower()
+
+        sector_actual = data.get("sector_empresa")
+        tiene_sector = sector_actual and str(sector_actual).strip() not in ["", "null", "None"]
+
+        # PASO 1: Buscar frase explícita "somos empresa de [sector]"
+        patrones_inicio = config.get("patrones_inicio", [])
+        diccionario = config.get("diccionario_sectores", {})
+
+        for patron in patrones_inicio:
+            patron_lower = patron.lower()
+            if patron_lower in texto:
+                # Encontró patrón, buscar sector en el texto después del patrón
+                idx = texto.find(patron_lower)
+                texto_despues = texto[idx + len(patron_lower):idx + len(patron_lower) + 100]
+
+                for sector, keywords in diccionario.items():
+                    for keyword in keywords:
+                        if keyword.lower() in texto_despues:
+                            data["sector_empresa"] = sector
+                            data["sector_confianza"] = "alta"
+                            data["sector_fuente"] = "frase_explicita"
+                            self.stats["sector_extraido"] += 1
+                            if self.verbose:
+                                print(f"[SECTOR] ALTA confianza: '{sector}' (frase: '{patron}...{keyword}')")
+                            return data
+
+        # PASO 2: Si LLM ya extrajo sector, marcar confianza media
+        if tiene_sector:
+            # El LLM extrajo algo, asumimos confianza media
+            if not data.get("sector_confianza"):
+                data["sector_confianza"] = "media"
+                data["sector_fuente"] = "llm"
+                if self.verbose:
+                    print(f"[SECTOR] MEDIA confianza: '{sector_actual}' (fuente: LLM)")
             return data
 
-        texto = descripcion.lower()
-
-        # Buscar por diccionario de sectores (keywords directos)
-        diccionario = config.get("diccionario_sectores", {})
-        for sector, keywords in diccionario.items():
-            for keyword in keywords:
-                if keyword.lower() in texto:
-                    data["sector_empresa"] = sector
-                    self.stats["sector_extraido"] += 1
-                    if self.verbose:
-                        print(f"[SECTOR] Encontrado: '{sector}' (keyword: '{keyword}')")
-                    return data
+        # PASO 3: NO buscar keywords sueltos - genera falsos positivos
+        # El sector debe venir de: empresa conocida, frase explícita, o LLM
+        # Dejamos sin sector si no hay información confiable
 
         return data
 
@@ -1108,6 +1156,171 @@ class NLPPostprocessor:
                     data["sector_empresa"] = sector_correcto
                     self.stats["sector_corregido"] = self.stats.get("sector_corregido", 0) + 1
                     return data
+
+        return data
+
+    # =========================================================================
+    # PASO 4c3: CLASIFICACION CLAE (sector -> codigo CLAE oficial Argentina)
+    # =========================================================================
+
+    def _load_clae_configs(self):
+        """Carga configs CLAE si no están en cache."""
+        if self._clae_nomenclador is None:
+            nomenclador_path = self.config_dir / "clae_nomenclador.json"
+            if nomenclador_path.exists():
+                with open(nomenclador_path, 'r', encoding='utf-8') as f:
+                    self._clae_nomenclador = json.load(f)
+
+        if self._clae_keywords_map is None:
+            keywords_path = self.config_dir / "clae_keywords_map.json"
+            if keywords_path.exists():
+                with open(keywords_path, 'r', encoding='utf-8') as f:
+                    self._clae_keywords_map = json.load(f)
+
+    def _load_empresas_catalogo(self):
+        """Carga catálogo de empresas si no está en cache."""
+        if self._empresas_catalogo is None:
+            catalogo_path = self.config_dir / "empresas_catalogo.json"
+            if catalogo_path.exists():
+                with open(catalogo_path, 'r', encoding='utf-8') as f:
+                    self._empresas_catalogo = json.load(f)
+                if self.verbose:
+                    empleadores = len(self._empresas_catalogo.get("empleadores", {}))
+                    intermediarios = len(self._empresas_catalogo.get("intermediarios", {}))
+                    print(f"[CATALOGO] Cargado: {empleadores} empleadores, {intermediarios} intermediarios")
+
+    def _lookup_empresa_catalogo(self, id_empresa: str, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Busca empresa en catálogo y asigna sector con alta confianza.
+
+        Si es empleador conocido -> sector del catálogo + confianza=alta
+        Si es intermediario (consultora) -> es_intermediario=true (sector no confiable)
+
+        Args:
+            id_empresa: ID de la empresa (del scraping)
+            data: Dict con datos NLP
+
+        Returns:
+            Dict actualizado con sector/clae si encontró match
+        """
+        if not id_empresa:
+            return data
+
+        self._load_empresas_catalogo()
+        if not self._empresas_catalogo:
+            return data
+
+        id_str = str(id_empresa)
+
+        # Buscar en empleadores (empresas con sector conocido)
+        empleadores = self._empresas_catalogo.get("empleadores", {})
+        if id_str in empleadores:
+            emp = empleadores[id_str]
+            data["sector_empresa"] = emp.get("sector")
+            data["sector_confianza"] = "alta"
+            data["sector_fuente"] = "empresa_conocida"
+            data["es_intermediario"] = False
+
+            # Si tiene CLAE, asignarlo directamente
+            if emp.get("clae_code"):
+                data["clae_code"] = emp["clae_code"]
+                data["clae_grupo"] = emp["clae_code"][:3]
+                data["clae_seccion"] = emp.get("clae_seccion")
+                self.stats["clae_clasificado"] += 1
+
+            if self.verbose:
+                print(f"[CATALOGO] Empleador: {emp.get('nombre')} -> {emp.get('sector')} (ALTA confianza)")
+
+            self.stats["sector_extraido"] += 1
+            return data
+
+        # Buscar en intermediarios (consultoras de RRHH)
+        intermediarios = self._empresas_catalogo.get("intermediarios", {})
+        if id_str in intermediarios:
+            inter = intermediarios[id_str]
+            data["es_intermediario"] = True
+            # NO asignar sector - el intermediario no representa al empleador real
+            if self.verbose:
+                print(f"[CATALOGO] Intermediario: {inter.get('nombre')} (sector no confiable)")
+            return data
+
+        return data
+
+    def _classify_clae(self, data: Dict[str, Any], titulo: str = "", descripcion: str = "") -> Dict[str, Any]:
+        """
+        Clasifica sector_empresa a código CLAE oficial.
+
+        CLAE = Clasificador de Actividades Económicas (AFIP Argentina)
+        Estructura: 6 dígitos (actividad) -> 3 dígitos (grupo) -> letra (sección)
+
+        Prioridad de clasificación:
+        1. sector_empresa (más confiable, ya inferido por NLP)
+        2. titulo (específico del puesto)
+        3. descripcion (puede tener keywords genéricos)
+
+        Los campos se llenan pero NO reemplazan sector_empresa (conviven).
+        """
+        self._load_clae_configs()
+
+        if not self._clae_keywords_map:
+            return data
+
+        sector_texto = data.get("sector_empresa", "") or ""
+        titulo_texto = titulo or data.get("titulo_limpio", "") or ""
+
+        # PASO 1: Buscar en sector_directo (mapeo exacto de sector_empresa)
+        sector_directo = self._clae_keywords_map.get("sector_directo", {})
+
+        # Búsqueda exacta
+        if sector_texto in sector_directo:
+            clae_data = sector_directo[sector_texto]
+            data["clae_code"] = clae_data["clae"]
+            data["clae_grupo"] = clae_data.get("grupo", clae_data["clae"][:3])
+            data["clae_seccion"] = clae_data.get("seccion")
+            self.stats["clae_clasificado"] += 1
+            if self.verbose:
+                print(f"[CLAE] '{sector_texto}' -> {clae_data['clae']} ({clae_data.get('seccion')}) [sector_directo]")
+            return data
+
+        # Búsqueda case-insensitive
+        sector_lower = sector_texto.lower().strip()
+        for key, clae_data in sector_directo.items():
+            if key.lower() == sector_lower:
+                data["clae_code"] = clae_data["clae"]
+                data["clae_grupo"] = clae_data.get("grupo", clae_data["clae"][:3])
+                data["clae_seccion"] = clae_data.get("seccion")
+                self.stats["clae_clasificado"] += 1
+                if self.verbose:
+                    print(f"[CLAE] '{sector_texto}' -> {clae_data['clae']} ({clae_data.get('seccion')}) [sector_directo_ci]")
+                return data
+
+        # PASO 2: Buscar por keywords en titulo (sin descripcion para evitar falsos positivos)
+        texto_busqueda = f"{sector_texto} {titulo_texto}".lower()
+        best_match = None
+        best_score = 0
+
+        for mapping in self._clae_keywords_map.get("mappings", []):
+            score = 0
+            for kw in mapping.get("keywords", []):
+                if kw.lower() in texto_busqueda:
+                    score += len(kw)  # Keywords más largos = más específicos
+
+            if score > best_score:
+                best_score = score
+                best_match = mapping
+
+        if best_match:
+            data["clae_code"] = best_match["clae"]
+            data["clae_grupo"] = best_match.get("grupo", best_match["clae"][:3])
+            data["clae_seccion"] = best_match.get("seccion")
+            self.stats["clae_clasificado"] += 1
+            if self.verbose:
+                print(f"[CLAE] '{sector_texto}' -> {best_match['clae']} ({best_match.get('seccion')}) [keyword]")
+            return data
+
+        # No clasificado - los campos quedan NULL
+        if self.verbose:
+            print(f"[CLAE] '{sector_texto}' -> Sin clasificar")
 
         return data
 
@@ -1620,7 +1833,8 @@ class NLPPostprocessor:
     # =========================================================================
 
     def postprocess(self, data: Dict[str, Any], descripcion: str = "",
-                    skills_regex: Dict[str, List[str]] = None) -> Dict[str, Any]:
+                    skills_regex: Dict[str, List[str]] = None,
+                    id_empresa: str = None) -> Dict[str, Any]:
         """
         Aplica todas las correcciones post-LLM
 
@@ -1628,10 +1842,13 @@ class NLPPostprocessor:
             data: Dict con campos extraidos por el LLM
             descripcion: Texto original de la oferta
             skills_regex: Dict con skills_tecnicas_regex y soft_skills_regex de Capa 0
+            id_empresa: ID de empresa del scraping (para lookup en catálogo)
 
         Returns:
             Dict con campos corregidos
         """
+        # Guardar id_empresa para usarlo en _extract_sector
+        self._current_id_empresa = id_empresa
         # Reset stats
         for key in self.stats:
             self.stats[key] = 0
@@ -1667,10 +1884,15 @@ class NLPPostprocessor:
         data = self._extraer_tareas_implicitas(descripcion, data)
 
         # Paso 4c: Extraccion sector empresa (si LLM no detecto)
-        data = self._extract_sector(descripcion, data)
+        # Incluye lookup en catálogo de empresas para alta confianza
+        data = self._extract_sector(descripcion, data, self._current_id_empresa)
 
         # Paso 4c2: Correccion sector (si LLM clasifico mal)
         data = self._corregir_sector(data, descripcion)
+
+        # Paso 4c3: Clasificacion CLAE (sector -> codigo oficial)
+        titulo_limpio = data.get("titulo_limpio", "")
+        data = self._classify_clae(data, titulo_limpio, descripcion)
 
         # Paso 4d: Limpieza tareas (prefijos, bullets, etc.)
         data = self._limpiar_tareas(data)

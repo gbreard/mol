@@ -1,0 +1,329 @@
+{
+  "version": "1.1",
+  "fecha_creacion": "2026-01-15",
+  "fecha_actualizacion": "2026-01-15",
+  "descripcion": "Mapeo de keywords a códigos CLAE para clasificación híbrida",
+  "uso": "Prioridad: sector_empresa > titulo > descripcion",
+  "notas": "Keywords genéricos como 'sistemas' o 'desarrollo' removidos - causan falsos positivos",
+
+  "mappings": [
+    {
+      "clae": "620100",
+      "grupo": "620",
+      "seccion": "J",
+      "nombre": "Servicios de consultores en informática y suministros de programas",
+      "keywords": ["software", "programación", "programacion", "developer", "IT", "TI", "tecnología", "tecnologia", "informática", "informatica", "backend", "frontend", "fullstack", "devops", "python", "java", "javascript", "react", "angular"],
+      "sector_actual": "Tecnologia"
+    },
+    {
+      "clae": "620300",
+      "grupo": "620",
+      "seccion": "J",
+      "nombre": "Servicios de consultores en tecnología de la información",
+      "keywords": ["consultora IT", "consultora tecnología", "consultoría sistemas", "infraestructura IT", "soporte técnico", "helpdesk"],
+      "sector_actual": "Tecnologia"
+    },
+    {
+      "clae": "631110",
+      "grupo": "631",
+      "seccion": "J",
+      "nombre": "Procesamiento de datos",
+      "keywords": ["procesamiento datos", "data center", "datacenter", "cloud", "nube", "hosting"],
+      "sector_actual": "Tecnologia"
+    },
+    {
+      "clae": "631200",
+      "grupo": "631",
+      "seccion": "J",
+      "nombre": "Portales web",
+      "keywords": ["portal web", "ecommerce", "e-commerce", "marketplace", "plataforma digital", "app", "aplicación móvil"],
+      "sector_actual": "Tecnologia"
+    },
+    {
+      "clae": "822000",
+      "grupo": "822",
+      "seccion": "N",
+      "nombre": "Servicios de call center",
+      "keywords": ["call center", "contact center", "telemarketing", "atención telefónica", "atencion telefonica"],
+      "sector_actual": "Servicios"
+    },
+    {
+      "clae": "641100",
+      "grupo": "641",
+      "seccion": "K",
+      "nombre": "Servicios de la banca central",
+      "keywords": ["banco", "bancario", "banca"],
+      "sector_actual": "Finanzas"
+    },
+    {
+      "clae": "649290",
+      "grupo": "649",
+      "seccion": "K",
+      "nombre": "Servicios de crédito n.c.p.",
+      "keywords": ["financiera", "créditos", "creditos", "préstamos", "prestamos", "fintech"],
+      "sector_actual": "Finanzas"
+    },
+    {
+      "clae": "651000",
+      "grupo": "651",
+      "seccion": "K",
+      "nombre": "Servicios de seguros",
+      "keywords": ["seguros", "aseguradora", "pólizas", "polizas"],
+      "sector_actual": "Finanzas"
+    },
+    {
+      "clae": "861000",
+      "grupo": "861",
+      "seccion": "Q",
+      "nombre": "Servicios de hospitales",
+      "keywords": ["hospital", "clínica", "clinica", "sanatorio", "centro médico", "centro medico"],
+      "sector_actual": "Salud"
+    },
+    {
+      "clae": "869090",
+      "grupo": "869",
+      "seccion": "Q",
+      "nombre": "Servicios relacionados con la salud humana n.c.p.",
+      "keywords": ["salud", "médico", "medico", "medicina", "farmacia", "laboratorio clínico"],
+      "sector_actual": "Salud"
+    },
+    {
+      "clae": "210000",
+      "grupo": "210",
+      "seccion": "C",
+      "nombre": "Fabricación de productos farmacéuticos",
+      "keywords": ["farmacéutica", "farmaceutica", "laboratorio farmacéutico", "medicamentos"],
+      "sector_actual": "Salud"
+    },
+    {
+      "clae": "493110",
+      "grupo": "493",
+      "seccion": "H",
+      "nombre": "Servicio de transporte automotor de cargas",
+      "keywords": ["transporte", "logística", "logistica", "distribución", "distribucion", "fletes"],
+      "sector_actual": "Logistica"
+    },
+    {
+      "clae": "521000",
+      "grupo": "521",
+      "seccion": "H",
+      "nombre": "Servicios de almacenamiento y depósito",
+      "keywords": ["almacenamiento", "depósito", "deposito", "warehouse", "almacén", "almacen"],
+      "sector_actual": "Logistica"
+    },
+    {
+      "clae": "531000",
+      "grupo": "531",
+      "seccion": "H",
+      "nombre": "Servicios de correo",
+      "keywords": ["courier", "correo", "mensajería", "mensajeria", "encomiendas", "paquetería"],
+      "sector_actual": "Logistica"
+    },
+    {
+      "clae": "410011",
+      "grupo": "410",
+      "seccion": "F",
+      "nombre": "Construcción de edificios residenciales",
+      "keywords": ["construcción", "construccion", "constructora", "obra", "edificación"],
+      "sector_actual": "Construccion"
+    },
+    {
+      "clae": "681000",
+      "grupo": "681",
+      "seccion": "L",
+      "nombre": "Servicios inmobiliarios con bienes propios",
+      "keywords": ["inmobiliaria", "real estate", "bienes raíces", "propiedades"],
+      "sector_actual": "Construccion"
+    },
+    {
+      "clae": "853000",
+      "grupo": "853",
+      "seccion": "P",
+      "nombre": "Enseñanza superior y formación de posgrado",
+      "keywords": ["universidad", "facultad", "posgrado", "educación superior"],
+      "sector_actual": "Educacion"
+    },
+    {
+      "clae": "854000",
+      "grupo": "854",
+      "seccion": "P",
+      "nombre": "Servicios de enseñanza n.c.p.",
+      "keywords": ["educación", "educacion", "instituto", "colegio", "capacitación", "capacitacion", "academia"],
+      "sector_actual": "Educacion"
+    },
+    {
+      "clae": "561000",
+      "grupo": "561",
+      "seccion": "I",
+      "nombre": "Servicios de expendio de comidas y bebidas",
+      "keywords": ["restaurante", "gastronomía", "gastronomia", "comida", "bar", "cafetería"],
+      "sector_actual": "Gastronomia"
+    },
+    {
+      "clae": "551000",
+      "grupo": "551",
+      "seccion": "I",
+      "nombre": "Servicios de alojamiento",
+      "keywords": ["hotel", "hotelería", "hoteleria", "alojamiento", "turismo", "hospedaje"],
+      "sector_actual": "Gastronomia"
+    },
+    {
+      "clae": "562010",
+      "grupo": "562",
+      "seccion": "I",
+      "nombre": "Servicios de preparación de comidas para empresas",
+      "keywords": ["catering", "viandas", "comedor industrial"],
+      "sector_actual": "Gastronomia"
+    },
+    {
+      "clae": "11000",
+      "grupo": "11",
+      "seccion": "A",
+      "nombre": "Cultivos temporales",
+      "keywords": ["agro", "agrícola", "agricola", "campo", "cultivo", "siembra", "cosecha"],
+      "sector_actual": "Agro"
+    },
+    {
+      "clae": "14000",
+      "grupo": "14",
+      "seccion": "A",
+      "nombre": "Cría de animales",
+      "keywords": ["ganadería", "ganaderia", "ganado", "tambo", "feedlot"],
+      "sector_actual": "Agro"
+    },
+    {
+      "clae": "471000",
+      "grupo": "471",
+      "seccion": "G",
+      "nombre": "Venta al por menor en comercios no especializados",
+      "keywords": ["retail", "supermercado", "hipermercado", "tienda", "local comercial", "minorista"],
+      "sector_actual": "Retail/Comercio"
+    },
+    {
+      "clae": "461000",
+      "grupo": "461",
+      "seccion": "G",
+      "nombre": "Venta al por mayor en comisión o consignación",
+      "keywords": ["mayorista", "distribuidora", "comercio mayorista"],
+      "sector_actual": "Retail/Comercio"
+    },
+    {
+      "clae": "451110",
+      "grupo": "451",
+      "seccion": "G",
+      "nombre": "Venta de autos, camionetas y utilitarios nuevos",
+      "keywords": ["concesionario", "automotriz", "vehículos", "autos"],
+      "sector_actual": "Automotriz"
+    },
+    {
+      "clae": "453000",
+      "grupo": "453",
+      "seccion": "G",
+      "nombre": "Venta de partes, piezas y accesorios de vehículos",
+      "keywords": ["autopartes", "repuestos automotor"],
+      "sector_actual": "Automotriz"
+    },
+    {
+      "clae": "100000",
+      "grupo": "10",
+      "seccion": "C",
+      "nombre": "Elaboración de productos alimenticios",
+      "keywords": ["alimentos", "alimenticia", "consumo masivo", "bebidas", "lácteos", "lacteos", "frigorífico", "frigorifico"],
+      "sector_actual": "Alimentos"
+    },
+    {
+      "clae": "702099",
+      "grupo": "702",
+      "seccion": "M",
+      "nombre": "Servicios de asesoramiento, dirección y gestión empresarial",
+      "keywords": ["consultora", "consultoría", "consultoria", "outsourcing", "tercerización", "tercerizacion", "BPO"],
+      "sector_actual": "Servicios"
+    },
+    {
+      "clae": "524000",
+      "grupo": "524",
+      "seccion": "H",
+      "nombre": "Servicios de gestión aduanera y comercio exterior",
+      "keywords": ["comercio exterior", "importación", "importacion", "exportación", "exportacion", "aduana", "despachante", "freight forwarder"],
+      "sector_actual": "Comercio Exterior"
+    }
+  ],
+
+  "sector_directo": {
+    "_descripcion": "Mapeo directo de sector_empresa a CLAE (prioridad máxima)",
+    "Comercio": {"clae": "471000", "grupo": "471", "seccion": "G", "nombre": "Comercio minorista"},
+    "Retail": {"clae": "471000", "grupo": "471", "seccion": "G", "nombre": "Comercio minorista"},
+    "Retail/Comercio": {"clae": "471000", "grupo": "471", "seccion": "G", "nombre": "Comercio minorista"},
+    "Alimenticio": {"clae": "100000", "grupo": "10", "seccion": "C", "nombre": "Elaboración de alimentos"},
+    "Alimentos": {"clae": "100000", "grupo": "10", "seccion": "C", "nombre": "Elaboración de alimentos"},
+    "Logistica": {"clae": "493110", "grupo": "493", "seccion": "H", "nombre": "Transporte de cargas"},
+    "Logística": {"clae": "493110", "grupo": "493", "seccion": "H", "nombre": "Transporte de cargas"},
+    "Gastronómico": {"clae": "561000", "grupo": "561", "seccion": "I", "nombre": "Servicios de comidas"},
+    "Gastronomico": {"clae": "561000", "grupo": "561", "seccion": "I", "nombre": "Servicios de comidas"},
+    "Gastronomía": {"clae": "561000", "grupo": "561", "seccion": "I", "nombre": "Servicios de comidas"},
+    "Gastronomia": {"clae": "561000", "grupo": "561", "seccion": "I", "nombre": "Servicios de comidas"},
+    "Salud": {"clae": "869090", "grupo": "869", "seccion": "Q", "nombre": "Servicios de salud"},
+    "Tecnologia": {"clae": "620100", "grupo": "620", "seccion": "J", "nombre": "Servicios informáticos"},
+    "Tecnología": {"clae": "620100", "grupo": "620", "seccion": "J", "nombre": "Servicios informáticos"},
+    "IT": {"clae": "620100", "grupo": "620", "seccion": "J", "nombre": "Servicios informáticos"},
+    "Finanzas": {"clae": "649290", "grupo": "649", "seccion": "K", "nombre": "Servicios financieros"},
+    "Construccion": {"clae": "410011", "grupo": "410", "seccion": "F", "nombre": "Construcción"},
+    "Construcción": {"clae": "410011", "grupo": "410", "seccion": "F", "nombre": "Construcción"},
+    "Educacion": {"clae": "854000", "grupo": "854", "seccion": "P", "nombre": "Servicios de enseñanza"},
+    "Educación": {"clae": "854000", "grupo": "854", "seccion": "P", "nombre": "Servicios de enseñanza"},
+    "Agro": {"clae": "11000", "grupo": "11", "seccion": "A", "nombre": "Agricultura"},
+    "Servicios": {"clae": "702099", "grupo": "702", "seccion": "M", "nombre": "Servicios empresariales"},
+    "Automotriz": {"clae": "451110", "grupo": "451", "seccion": "G", "nombre": "Venta de vehículos"},
+    "Textil": {"clae": "131100", "grupo": "131", "seccion": "C", "nombre": "Fabricación textil"},
+    "Confeccion": {"clae": "141000", "grupo": "141", "seccion": "C", "nombre": "Confección de prendas"},
+    "Confección": {"clae": "141000", "grupo": "141", "seccion": "C", "nombre": "Confección de prendas"},
+    "Textil/Confeccion": {"clae": "141000", "grupo": "141", "seccion": "C", "nombre": "Confección de prendas"},
+    "Textil/Confección": {"clae": "141000", "grupo": "141", "seccion": "C", "nombre": "Confección de prendas"},
+    "Industria": {"clae": "100000", "grupo": "10", "seccion": "C", "nombre": "Manufactura"},
+    "Produccion": {"clae": "100000", "grupo": "10", "seccion": "C", "nombre": "Manufactura"},
+    "Producción": {"clae": "100000", "grupo": "10", "seccion": "C", "nombre": "Manufactura"},
+    "industrial": {"clae": "100000", "grupo": "10", "seccion": "C", "nombre": "Manufactura"},
+    "Industrial": {"clae": "100000", "grupo": "10", "seccion": "C", "nombre": "Manufactura"},
+    "Turismo": {"clae": "551000", "grupo": "551", "seccion": "I", "nombre": "Alojamiento turístico"},
+    "Turismo y viajes": {"clae": "551000", "grupo": "551", "seccion": "I", "nombre": "Alojamiento turístico"},
+    "Hoteleria": {"clae": "551000", "grupo": "551", "seccion": "I", "nombre": "Alojamiento"},
+    "Hotelería": {"clae": "551000", "grupo": "551", "seccion": "I", "nombre": "Alojamiento"},
+    "Servicios corporativos": {"clae": "702099", "grupo": "702", "seccion": "M", "nombre": "Servicios empresariales"},
+    "Consultoria": {"clae": "702099", "grupo": "702", "seccion": "M", "nombre": "Consultoría empresarial"},
+    "Consultoría": {"clae": "702099", "grupo": "702", "seccion": "M", "nombre": "Consultoría empresarial"},
+    "Seguridad": {"clae": "801000", "grupo": "801", "seccion": "N", "nombre": "Servicios de seguridad"},
+    "Seguridad electronica": {"clae": "801000", "grupo": "801", "seccion": "N", "nombre": "Servicios de seguridad"},
+    "Seguridad electrónica": {"clae": "801000", "grupo": "801", "seccion": "N", "nombre": "Servicios de seguridad"},
+    "Moda": {"clae": "141000", "grupo": "141", "seccion": "C", "nombre": "Confección de prendas"},
+    "Indumentaria": {"clae": "141000", "grupo": "141", "seccion": "C", "nombre": "Confección de prendas"},
+    "Legal": {"clae": "691000", "grupo": "691", "seccion": "M", "nombre": "Actividades jurídicas"},
+    "Alimentacion": {"clae": "100000", "grupo": "10", "seccion": "C", "nombre": "Elaboración de alimentos"},
+    "Alimentación": {"clae": "100000", "grupo": "10", "seccion": "C", "nombre": "Elaboración de alimentos"},
+    "Administracion": {"clae": "822000", "grupo": "822", "seccion": "N", "nombre": "Servicios administrativos"},
+    "Administración": {"clae": "822000", "grupo": "822", "seccion": "N", "nombre": "Servicios administrativos"}
+  },
+
+  "fallback_por_seccion": {
+    "_descripcion": "Si no hay match por keywords, usar sección como fallback",
+    "A": "Agro",
+    "B": "Minería",
+    "C": "Manufactura",
+    "D": "Energía",
+    "E": "Servicios Públicos",
+    "F": "Construccion",
+    "G": "Retail/Comercio",
+    "H": "Logistica",
+    "I": "Gastronomia",
+    "J": "Tecnologia",
+    "K": "Finanzas",
+    "L": "Inmobiliaria",
+    "M": "Servicios Profesionales",
+    "N": "Servicios Administrativos",
+    "O": "Administración Pública",
+    "P": "Educacion",
+    "Q": "Salud",
+    "R": "Entretenimiento",
+    "S": "Otros Servicios",
+    "Z": "Otros"
+  }
+}

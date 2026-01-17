@@ -1,8 +1,8 @@
 {
-  "version": "2.2",
-  "descripcion": "Reglas de negocio para matching ESCO. 95 reglas: 42 Gold Set + 10 IT + 15 FASE 4 + 8 FASE 5 + 5 Validacion v1.0.",
+  "version": "2.6",
+  "descripcion": "Reglas de negocio para matching ESCO. 118 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-01-14",
+  "fecha_actualizacion": "2026-01-16",
   "_cambios_v11": "Agregadas R43-R47: DevOps, Architect, SAP, Integraciones, Data Engineer",
   "_cambios_v12": "Agregadas R48-R52: Secretaria, Jefe generico, Back office, Carpintero, Ingeniero IA",
   "_cambios_v13": "Agregadas R68-R82: Gastronomía, Financiero, Retail, Aluminio, Product Manager, Ventas, Vigilador, Compras, etc.",
@@ -293,8 +293,8 @@
         ]
       },
       "accion": {
-        "forzar_isco_familia": "241",
-        "esco_label": "Contador/contadora"
+        "forzar_isco": "2411",
+        "esco_label": "contador/contadora"
       },
       "caso_diagnostico": "2154549 - Contador para Sector Auditoria",
       "fix_aplicado": "2026-01-12 - Excluir auditor médico (1118105872)",
@@ -890,7 +890,7 @@
       "nota": "Evita que supervisor admin vaya a ingeniero industrial por skills de optimización"
     },
     "R40_asesor_comercial": {
-      "nombre": "Asesor Comercial / Vendedor / Corredor",
+      "nombre": "Asesor Comercial / Corredor (B2B)",
       "prioridad": 1,
       "condicion": {
         "titulo_contiene_alguno": [
@@ -898,15 +898,14 @@
           "asesora comercial",
           "asesor de ventas",
           "asesora de ventas",
-          "vendedor",
-          "vendedora",
           "corredor de ventas",
-          "corredor comercial"
+          "corredor comercial",
+          "ejecutivo de ventas",
+          "ejecutivo comercial",
+          "representante comercial",
+          "representante de ventas"
         ],
-        "area_funcional_es": "Ventas",
-        "titulo_no_contiene_alguno": [
-          "ambulante"
-        ]
+        "area_funcional_es": "Ventas"
       },
       "accion": {
         "forzar_isco": "3322",
@@ -914,7 +913,8 @@
       },
       "caso_gold_set": "1118028833 - Asesor Comercial Plan de Ahorro Volkswagen",
       "activa": true,
-      "nota": "Corredor en Argentina = vendedor que recorre clientes (no apuestas)"
+      "nota": "B2B: asesor/corredor/ejecutivo/representante -> 3322. Vendedor generico va a R111",
+      "fix_validacion_humana": "2026-01-16"
     },
     "R41_chofer_repartidor": {
       "nombre": "Chofer Repartidor / Delivery",
@@ -946,6 +946,12 @@
           "gerente operaciones",
           "director de operaciones",
           "director operaciones"
+        ],
+        "titulo_no_contiene_alguno": [
+          "gastronóm",
+          "gastronom",
+          "restaurant",
+          "hotel"
         ]
       },
       "accion": {
@@ -954,7 +960,29 @@
       },
       "caso_gold_set": "2162667 - Gerente Operaciones Facility/Catering",
       "activa": true,
-      "nota": "ISCO 1321 cubre directores que gestionan operaciones de fabricación/producción/servicios"
+      "nota": "ISCO 1321 para ops industriales. Gastronomía va a R116"
+    },
+    "R116_gerente_operaciones_gastronomia": {
+      "nombre": "Gerente/Supervisor de Operaciones Gastronomía",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "operaciones gastronóm",
+          "operaciones gastronom",
+          "grupo gastronóm",
+          "grupo gastronom",
+          "gerente gastronóm",
+          "gerente gastronom"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1412",
+        "esco_label": "gerente de restaurante"
+      },
+      "caso_validacion_humana": "1118091304 - Gerente de Operaciones Grupo Gastronómico",
+      "activa": true,
+      "nota": "Operaciones en gastronomía → 1412",
+      "fix_validacion_humana": "2026-01-16"
     },
     "R43_IT_devops": {
       "nombre": "DevOps Engineer/SRE",
@@ -1109,7 +1137,11 @@
           "delegación",
           "delegacion",
           "sucursal",
-          "agencia"
+          "agencia",
+          "mantenimiento",
+          "compras",
+          "logística",
+          "logistica"
         ]
       },
       "accion": {
@@ -1118,7 +1150,32 @@
         "esco_label": "director general/directora general"
       },
       "activa": true,
-      "nota": "FASE 3 v3.2.3 - Jefes genericos van a ISCO 1xxx"
+      "nota": "FASE 3 v3.2.3 - Jefes genericos van a ISCO 1xxx. Excluye compras/logística"
+    },
+    "R117_responsable_compras": {
+      "nombre": "Responsable/Jefe de Compras y Logística",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "responsable de compras",
+          "jefe de compras",
+          "jefa de compras",
+          "encargado de compras",
+          "encargada de compras",
+          "responsable de logística",
+          "responsable de logistica",
+          "jefe de logística",
+          "jefe de logistica"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3323",
+        "esco_label": "comprador"
+      },
+      "caso_validacion_humana": "2172098 - Responsable de Compras y Logística",
+      "activa": true,
+      "nota": "Responsable de compras es rol operativo de comprador, no directivo",
+      "fix_validacion_humana": "2026-01-16"
     },
     "R50_back_office": {
       "nombre": "Back Office/Operaciones Administrativas",
@@ -1498,12 +1555,13 @@
         ]
       },
       "accion": {
-        "forzar_isco": "2411",
-        "esco_label": "contador/contadora"
+        "forzar_isco": "2413",
+        "esco_label": "analista financiero/analista financiera"
       },
-      "caso_revision_100": "1118101894, 2172001 - Analista Financiero Junior mal clasificado a inmobiliaria",
+      "caso_revision_100": "1118101894, 2172001 - Analista Financiero Junior",
       "activa": true,
-      "nota": "FASE 4 - Analista financiero es contador/contable"
+      "nota": "FASE 4 - Corregido: 2413 (no 2411). Analista financiero != contador",
+      "fix_validacion_humana": "2026-01-16"
     },
     "R70_encargado_gastronomia": {
       "nombre": "Encargado/Subencargado Gastronomía",
@@ -1897,12 +1955,13 @@
         ]
       },
       "accion": {
-        "forzar_isco": "2421",
-        "esco_label": "analista de gestión y organización"
+        "forzar_isco": "1221",
+        "esco_label": "director de ventas y comercializacion"
       },
       "caso_revision_100": "1118105850 - Jefe de Producto",
       "activa": true,
-      "nota": "FASE 5 - Product Manager = analista gestión (closest ISCO)"
+      "nota": "Product Manager con responsabilidades directivas → 1221",
+      "fix_validacion_humana": "2026-01-16"
     },
     "R89_disenador_grafico_senior": {
       "nombre": "Diseñador Gráfico (con seniority)",
@@ -2191,6 +2250,280 @@
         "esco_label": "analista de sistemas informáticos"
       },
       "activa": true
+    },
+    "R105_jefe_mantenimiento": {
+      "nombre": "Jefe de Mantenimiento",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "jefe de mantenimiento",
+          "jefe mantenimiento",
+          "supervisor de mantenimiento",
+          "supervisor mantenimiento",
+          "gerente de mantenimiento",
+          "jefe mantenimiento",
+          "jefe de mantenimiento - "
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1323",
+        "esco_label": "gerente de construcción/gerente de construcción"
+      },
+      "caso_demo": "1118115994 - Jefe de Mantenimiento CABA",
+      "activa": true
+    },
+    "R106_preventista": {
+      "nombre": "Preventista",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "preventista",
+          "pre-ventista",
+          "preventa",
+          "pre venta",
+          "prevendedor"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5243",
+        "esco_label": "vendedor a domicilio/vendedora a domicilio"
+      },
+      "caso_demo": "1118115978 - PREVENTISTA MEDIA JORNADA",
+      "activa": true
+    },
+    "R107_seguridad_higiene": {
+      "nombre": "Seguridad e Higiene",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "seguridad e higiene",
+          "seguridad higiene",
+          "higiene y seguridad",
+          "seguridad industrial",
+          "prevencionista",
+          "tecnico en seguridad"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2263",
+        "esco_label": "especialista en salud ambiental y laboral"
+      },
+      "caso_demo": "1118115976 - Licenciado en Seguridad e Higiene",
+      "activa": true
+    },
+    "R108_jefe_rrhh": {
+      "nombre": "Jefe de RRHH/HR",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "jefe de rrhh",
+          "jefe rrhh",
+          "jefe de recursos humanos",
+          "jefe recursos humanos",
+          "jefe de hr",
+          "jefe hr",
+          "gerente de rrhh",
+          "gerente rrhh",
+          "responsable de rrhh",
+          "head of hr",
+          "hr manager",
+          "hard hr",
+          "jefe/a de hr",
+          "jefe/a hr",
+          "jefa de hr",
+          "jefa hr"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1212",
+        "esco_label": "director de recursos humanos/directora de recursos humanos"
+      },
+      "caso_demo": "1118115922 - Jefe/a de Hard HR",
+      "activa": true
+    },
+    "R109_ejecutivo_ventas": {
+      "nombre": "Ejecutivo de Ventas",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "ejecutivo de ventas",
+          "ejecutiva de ventas",
+          "ejecutivo ventas",
+          "sales executive"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3322",
+        "esco_label": "representante comercial"
+      },
+      "caso_demo": "1118115901 - Ejecutivo de ventas rubro alimenticio",
+      "activa": true
+    },
+    "R110_tecnico_mantenimiento": {
+      "nombre": "Tecnico de Mantenimiento Industrial",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "tecnico de mantenimiento",
+          "tecnico mantenimiento",
+          "tecnico de mantenimiento industrial",
+          "tecnico mantenimiento industrial",
+          "operario de mantenimiento",
+          "técnico de mantenimiento",
+          "técnico mantenimiento",
+          "tecnico de mantenimiento industrial",
+          "técnico de mantenimiento industrial"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7233",
+        "esco_label": "mecanico industrial/mecanica industrial"
+      },
+      "caso_demo": "1118115860 - Tecnico de Mantenimiento Industrial",
+      "activa": true
+    },
+    "R111_vendedor_generico": {
+      "nombre": "Vendedor/Vendedora Genérico (tienda/local)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "vendedor",
+          "vendedora",
+          "vendedor/a",
+          "vendedor de tienda",
+          "vendedora de tienda",
+          "vendedor de local",
+          "vendedora de local"
+        ],
+        "titulo_no_contiene": [
+          "asesor",
+          "ejecutivo",
+          "representante",
+          "corredor",
+          "técnico",
+          "tecnico",
+          "industrial"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5223",
+        "esco_label": "vendedor de tienda/vendedora de tienda"
+      },
+      "nota": "Vendedor genérico → 5223. Los B2B (asesor, ejecutivo, representante) van a R40 → 3322",
+      "fix_validacion_humana": "2026-01-16",
+      "activa": true
+    },
+    "R112_analista_tesoreria": {
+      "nombre": "Analista de Tesorería",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista de tesorería",
+          "analista de tesoreria",
+          "analista tesorería",
+          "analista tesoreria",
+          "tesorero",
+          "tesorera"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2411",
+        "esco_label": "contador/contadora"
+      },
+      "nota": "Analista de tesorería → contador (validación humana)",
+      "fix_validacion_humana": "2026-01-16",
+      "activa": true
+    },
+    "R118_asistente_tesoreria": {
+      "nombre": "Asistente de Tesorería",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "asistente de tesorería",
+          "asistente de tesoreria",
+          "asistente tesorería",
+          "asistente tesoreria",
+          "auxiliar de tesorería",
+          "auxiliar de tesoreria"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4311",
+        "esco_label": "empleado de contabilidad"
+      },
+      "nota": "Asistente de tesorería → empleado contabilidad (validación humana)",
+      "fix_validacion_humana": "2026-01-16",
+      "activa": true
+    },
+    "R113_auditor_medico": {
+      "nombre": "Auditor Médico / Médico Auditor",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "auditor médico",
+          "auditor medico",
+          "médico auditor",
+          "medico auditor",
+          "auditora médica",
+          "auditora medica"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2212",
+        "esco_label": "medico especialista/medica especialista"
+      },
+      "nota": "Auditor médico requiere título de médico → 2212",
+      "fix_validacion_humana": "2026-01-16",
+      "activa": true
+    },
+    "R114_analista_calidad_lab": {
+      "nombre": "Analista de Calidad Laboratorio",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista de calidad",
+          "analista calidad",
+          "control de calidad"
+        ],
+        "titulo_contiene_alguno_adicional": [
+          "laboratorio",
+          "lab",
+          "químico",
+          "quimico",
+          "farmacéutico",
+          "farmaceutico"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3111",
+        "esco_label": "tecnico en ciencias fisicas y quimicas"
+      },
+      "nota": "Calidad en laboratorio → 3111 (técnico químico, no inspector genérico)",
+      "fix_validacion_humana": "2026-01-16",
+      "activa": true
+    },
+    "R115_administrativo_almacen": {
+      "nombre": "Administrativo de Almacén/Depósito",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "administrativo de almacén",
+          "administrativo de almacen",
+          "administrativo almacén",
+          "administrativo almacen",
+          "administrativo de depósito",
+          "administrativo de deposito",
+          "administrativo logística",
+          "administrativo logistica"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4321",
+        "esco_label": "empleado de control de inventario"
+      },
+      "nota": "Administrativo en almacén/depósito → 4321 (inventario, no admin genérico)",
+      "fix_validacion_humana": "2026-01-16",
+      "activa": true
     }
   },
   "reglas_filtro": {
@@ -2264,5 +2597,6 @@
       "errores": 0,
       "precision": 1.0
     }
-  }
+  },
+  "_cambios_v23": "Demo optimizacion: R105-R110 (Jefe Mant, Preventista, Seg Higiene, Jefe RRHH, Ejec Ventas, Tec Mant)"
 }

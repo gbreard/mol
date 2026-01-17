@@ -464,7 +464,55 @@ class AutoValidator:
 
 
 # Funciones de conveniencia
-def validar_ofertas_desde_bd(db_path: str = None, limit: int = None, ids: List[str] = None) -> Dict:
+def _persistir_errores_bd(conn, errores_detalle: List[Dict], run_id: str = None) -> int:
+    """
+    Persiste errores detectados en tabla validation_errors.
+
+    Args:
+        conn: Conexion a BD
+        errores_detalle: Lista de errores del validar_lote()
+        run_id: ID del run actual (opcional)
+
+    Returns:
+        Cantidad de errores insertados
+    """
+    timestamp = datetime.now().isoformat()
+    insertados = 0
+
+    for item in errores_detalle:
+        id_oferta = item["id_oferta"]
+        for error in item["errores"]:
+            try:
+                conn.execute('''
+                    INSERT INTO validation_errors (
+                        id_oferta, run_id, error_id, error_tipo, severidad,
+                        mensaje, campo_afectado, detectado_timestamp
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (
+                    str(id_oferta),
+                    run_id,
+                    error.get("id_regla"),
+                    error.get("diagnostico"),
+                    error.get("severidad"),
+                    error.get("mensaje"),
+                    error.get("campo"),
+                    timestamp
+                ))
+                insertados += 1
+            except Exception as e:
+                print(f"  WARN: Error insertando validation_error para {id_oferta}: {e}")
+
+    conn.commit()
+    return insertados
+
+
+def validar_ofertas_desde_bd(
+    db_path: str = None,
+    limit: int = None,
+    ids: List[str] = None,
+    persist: bool = True,
+    run_id: str = None
+) -> Dict:
     """
     Valida ofertas directamente desde la base de datos.
 
@@ -472,6 +520,8 @@ def validar_ofertas_desde_bd(db_path: str = None, limit: int = None, ids: List[s
         db_path: Path a la BD SQLite
         limit: Limite de ofertas a validar
         ids: IDs especificos a validar
+        persist: Si True, guarda errores en tabla validation_errors
+        run_id: ID del run actual para tracking
 
     Returns:
         Resultados de validacion
@@ -493,12 +543,19 @@ def validar_ofertas_desde_bd(db_path: str = None, limit: int = None, ids: List[s
             n.provincia,
             n.localidad,
             n.sector_empresa,
+            n.sector_confianza,
+            n.sector_fuente,
+            n.es_intermediario,
+            n.clae_code,
+            n.clae_grupo,
+            n.clae_seccion,
             n.area_funcional,
             n.nivel_seniority,
             n.modalidad,
             n.experiencia_min_anios,
             n.experiencia_max_anios,
             n.tareas_explicitas,
+            n.tareas_inferidas,
             m.isco_code,
             m.esco_occupation_label as esco_label,
             m.occupation_match_score as match_score,
@@ -520,11 +577,19 @@ def validar_ofertas_desde_bd(db_path: str = None, limit: int = None, ids: List[s
 
     cursor = conn.execute(query, params)
     ofertas = [dict(row) for row in cursor.fetchall()]
-    conn.close()
 
     # Validar
     validator = AutoValidator()
-    return validator.validar_lote(ofertas)
+    resultados = validator.validar_lote(ofertas)
+
+    # Persistir errores en BD si se solicita
+    if persist and resultados.get("errores_detalle"):
+        insertados = _persistir_errores_bd(conn, resultados["errores_detalle"], run_id)
+        resultados["errores_persistidos"] = insertados
+        print(f"  Errores persistidos en BD: {insertados}")
+
+    conn.close()
+    return resultados
 
 
 if __name__ == "__main__":
@@ -534,13 +599,23 @@ if __name__ == "__main__":
     parser.add_argument("--limit", type=int, help="Limite de ofertas a validar")
     parser.add_argument("--ids", help="IDs separados por coma")
     parser.add_argument("--reporte", action="store_true", help="Generar reporte para Claude")
+    parser.add_argument("--no-persist", action="store_true", help="No persistir errores en BD")
+    parser.add_argument("--run-id", help="ID del run para tracking")
 
     args = parser.parse_args()
 
     ids = args.ids.split(",") if args.ids else None
 
+    # Generar run_id si no se proporciona
+    run_id = args.run_id or f"validation_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+
     print("Ejecutando validacion...")
-    resultados = validar_ofertas_desde_bd(limit=args.limit, ids=ids)
+    resultados = validar_ofertas_desde_bd(
+        limit=args.limit,
+        ids=ids,
+        persist=not args.no_persist,
+        run_id=run_id
+    )
 
     print(f"\nResultados:")
     print(f"  Total: {resultados['total']}")

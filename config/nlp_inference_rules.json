@@ -163,6 +163,12 @@
           "titulo_contiene_alguno": ["supervisor de", "supervisora de", "supervisor/a de", "encargado de", "encargada de", "encargado/a de", "coordinador de", "coordinadora de", "lider de", "líder de", "team lead"],
           "forzar_seniority": "senior",
           "_nota": "Supervisores/coordinadores son senior, no manager"
+        },
+        {
+          "titulo_contiene_alguno": ["mecanico", "mecánico", "tornero", "soldador", "fresador", "matricero", "electromecanico", "electromecánico", "electricista", "plomero", "gasista", "carpintero", "herrero", "calderero", "instrumentista"],
+          "forzar_seniority": "semisenior",
+          "_nota": "Validacion v1.1: Oficios técnicos sin indicador explícito → semisenior (requieren experiencia)",
+          "_caso": "ID 1118105765 Mecanico Mendoza"
         }
       ]
     },
@@ -187,7 +193,8 @@
       "Produccion/Manufactura": ["produccion", "manufactura", "planta", "operario", "maquinista", "mantenimiento", "fabrica"],
       "Atencion al Cliente": ["atencion al cliente", "customer service", "call center", "soporte", "reclamos", "telefonista"],
       "Ingenieria": ["ingeniero", "ingenieria", "proyecto", "calidad", "procesos", "tecnico", "mecanico", "electromecanico", "electrico", "electronico", "instrumentista"],
-      "Gastronomia/Hoteleria": ["camarero", "camarera", "mozo", "moza", "bartender", "barman", "barmaid", "barista", "chef", "cocinero", "cocinera", "pastelero", "panadero", "pizzero", "sushiman", "sommelier", "maitre", "hostess", "recepcionista hotel", "conserje", "mucama", "housekeeping", "ama de llaves", "bachero", "ayudante de cocina", "commis", "gastronomia", "hoteleria", "restaurante", "catering"]
+      "Gastronomia/Hoteleria": ["camarero", "camarera", "mozo", "moza", "bartender", "barman", "barmaid", "barista", "chef", "cocinero", "cocinera", "pastelero", "panadero", "pizzero", "sushiman", "sommelier", "maitre", "hostess", "recepcionista hotel", "conserje", "mucama", "housekeeping", "ama de llaves", "bachero", "ayudante de cocina", "commis", "gastronomia", "hoteleria", "restaurante", "catering"],
+      "Seguridad": ["vigilador", "vigilante", "guardia", "custodio", "sereno", "seguridad", "vigilancia", "cctv", "monitoreo camaras"]
     },
     "_cambios_v11": "FASE 3: Agregadas keywords Finanzas (crédito), Marketing (diseño), IT (data engineer)",
     "_cambios_v12": "Validacion v1.0: Agregada Gastronomia/Hoteleria (camarero, chef, bartender, etc.)",
@@ -226,6 +233,12 @@
           "forzar_area": "Gastronomia/Hoteleria",
           "_nota": "Validacion v1.0: Roles gastronómicos van a Gastronomia, no Ventas",
           "_caso": "ID 1117906124 CAMARERAS Y BARDENTENDERS"
+        },
+        {
+          "titulo_contiene_alguno": ["vigilador", "vigilante", "guardia de seguridad", "custodio", "sereno", "portero seguridad", "agente de seguridad", "oficial de seguridad"],
+          "forzar_area": "Seguridad",
+          "_nota": "Validacion v1.1: Roles de vigilancia van a Seguridad, no Marketing/Ventas",
+          "_caso": "ID 2171959 Vigilador General"
         }
       ]
     },

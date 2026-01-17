@@ -206,6 +206,9 @@ class AutoCorrector:
                     "valor_nuevo": valor,
                     "timestamp": datetime.now().isoformat()
                 })
+
+                # Marcar como corregido en validation_errors
+                self._marcar_error_corregido(id_oferta, error.get("id_regla"))
                 return True
 
             elif funcion == "limpiar_booleanos":
@@ -225,6 +228,9 @@ class AutoCorrector:
                         )
 
                 self.db_conn.commit()
+
+                # Marcar como corregido en validation_errors
+                self._marcar_error_corregido(id_oferta, error.get("id_regla"))
                 return True
 
         except Exception as e:
@@ -232,6 +238,51 @@ class AutoCorrector:
             return False
 
         return False
+
+    def _marcar_error_corregido(self, id_oferta: str, error_id: str):
+        """
+        Marca un error como corregido en la tabla validation_errors.
+
+        Args:
+            id_oferta: ID de la oferta
+            error_id: ID del error (ej: V02_isco_nulo_score_bajo)
+        """
+        if not self.db_conn:
+            return
+
+        try:
+            self.db_conn.execute('''
+                UPDATE validation_errors
+                SET corregido = 1,
+                    corregido_timestamp = ?,
+                    corregido_metodo = 'auto',
+                    resuelto = 1
+                WHERE id_oferta = ? AND error_id = ? AND corregido = 0
+            ''', (datetime.now().isoformat(), str(id_oferta), error_id))
+            self.db_conn.commit()
+        except Exception as e:
+            print(f"  WARN: Error actualizando validation_errors para {id_oferta}: {e}")
+
+    def _marcar_error_escalado(self, id_oferta: str, error_id: str):
+        """
+        Marca un error como escalado a Claude en la tabla validation_errors.
+
+        Args:
+            id_oferta: ID de la oferta
+            error_id: ID del error
+        """
+        if not self.db_conn:
+            return
+
+        try:
+            self.db_conn.execute('''
+                UPDATE validation_errors
+                SET escalado_claude = 1
+                WHERE id_oferta = ? AND error_id = ? AND escalado_claude = 0
+            ''', (str(id_oferta), error_id))
+            self.db_conn.commit()
+        except Exception as e:
+            print(f"  WARN: Error actualizando escalado_claude para {id_oferta}: {e}")
 
     def _buscar_config_existente(self, error: Dict, config: Dict) -> bool:
         """
@@ -323,6 +374,9 @@ class AutoCorrector:
                 pass
 
         self.cola_claude[diagnostico].append(datos)
+
+        # Marcar como escalado en validation_errors
+        self._marcar_error_escalado(id_oferta, error.get("id_regla"))
 
     def _generar_patrones_claude(self) -> List[Dict]:
         """

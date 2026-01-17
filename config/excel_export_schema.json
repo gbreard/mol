@@ -62,6 +62,12 @@
       "provincia",
       "localidad",
       "sector_empresa",
+      "sector_confianza",
+      "sector_fuente",
+      "es_intermediario",
+      "clae_code",
+      "clae_grupo",
+      "clae_seccion",
       "area_funcional",
       "nivel_seniority",
       "experiencia_min_anios",
@@ -114,9 +120,29 @@
       "alt3_label",
       "alt3_score"
     ],
+    "control": [
+      "id_oferta",
+      "titulo",
+      "empresa",
+      "isco_code",
+      "isco_label",
+      "esco_code",
+      "esco_label",
+      "match_score",
+      "provincia",
+      "localidad",
+      "sector_empresa",
+      "sector_confianza",
+      "es_intermediario",
+      "clae_code",
+      "clae_seccion",
+      "area_funcional",
+      "nivel_seniority"
+    ],
     "validacion_nlp": [
       "id_oferta",
       "nlp_correcto",
+      "clae_ok",
       "nlp_comentario"
     ],
     "validacion_skills": [
@@ -167,16 +193,14 @@
     },
     "completo": {
       "nombre_archivo": "Pipeline_completo_validacion_{timestamp}.xlsx",
-      "descripcion": "Validacion de todo el pipeline",
+      "descripcion": "Validacion de todo el pipeline con pestaña Control para revision rapida",
       "sheets": {
+        "Control": "control",
         "1_Scraping": "scraping",
         "2_NLP": "nlp",
         "3_Skills_Resumen": "skills_resumen",
         "4_Skills_Detalle": "skills_detalle",
-        "5_Matching": "matching",
-        "Validacion_NLP": "validacion_nlp",
-        "Validacion_Skills": "validacion_skills",
-        "Validacion_Matching": "validacion_matching"
+        "5_Matching": "matching"
       }
     }
   },

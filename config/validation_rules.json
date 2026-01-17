@@ -2,14 +2,25 @@
   "version": "1.0",
   "descripcion": "Reglas de auto-evaluacion para detectar errores en ofertas procesadas",
   "fecha_creacion": "2026-01-14",
-
   "operadores_disponibles": [
-    "is_null", "is_empty", "is_not_null", "is_not_empty",
-    "eq", "neq", "lt", "gt", "lte", "gte",
-    "contains", "not_contains", "contains_any", "contains_all",
-    "matches_regex", "in_list", "not_in_list"
+    "is_null",
+    "is_empty",
+    "is_not_null",
+    "is_not_empty",
+    "eq",
+    "neq",
+    "lt",
+    "gt",
+    "lte",
+    "gte",
+    "contains",
+    "not_contains",
+    "contains_any",
+    "contains_all",
+    "matches_regex",
+    "in_list",
+    "not_in_list"
   ],
-
   "reglas_validacion": [
     {
       "id": "V01_titulo_limpio_vacio",
@@ -24,8 +35,15 @@
       "id": "V02_isco_nulo_score_bajo",
       "descripcion": "Sin ISCO y score bajo indica falla en matching",
       "condiciones": [
-        {"campo": "isco_code", "operador": "is_null"},
-        {"campo": "match_score", "operador": "lt", "valor": 0.5}
+        {
+          "campo": "isco_code",
+          "operador": "is_null"
+        },
+        {
+          "campo": "match_score",
+          "operador": "lt",
+          "valor": 0.5
+        }
       ],
       "logica": "AND",
       "diagnostico": "error_matching",
@@ -44,45 +62,188 @@
     },
     {
       "id": "V04_ubicacion_exterior_paraguay",
-      "descripcion": "Ofertas para Paraguay detectadas por localidad",
-      "campo": "localidad",
-      "operador": "contains_any",
-      "valores": ["Paraguay", "Asuncion", "Asunción", "Ciudad del Este", "Encarnacion", "Encarnación"],
+      "descripcion": "Ofertas para Paraguay detectadas por localidad (solo si provincia no es argentina)",
+      "condiciones": [
+        {
+          "campo": "localidad",
+          "operador": "contains_any",
+          "valores": [
+            "Paraguay",
+            "Asuncion",
+            "Asunción",
+            "Ciudad del Este",
+            "Encarnacion",
+            "Encarnación"
+          ]
+        },
+        {
+          "campo": "provincia",
+          "operador": "not_in_list",
+          "valores": [
+            "Buenos Aires",
+            "Capital Federal",
+            "CABA",
+            "Córdoba",
+            "Cordoba",
+            "Santa Fe",
+            "Mendoza",
+            "Tucumán",
+            "Tucuman",
+            "Entre Ríos",
+            "Entre Rios",
+            "Salta",
+            "Misiones",
+            "Chaco",
+            "Corrientes",
+            "Santiago del Estero",
+            "San Juan",
+            "Jujuy",
+            "Río Negro",
+            "Rio Negro",
+            "Neuquén",
+            "Neuquen",
+            "Formosa",
+            "Chubut",
+            "San Luis",
+            "Catamarca",
+            "La Rioja",
+            "La Pampa",
+            "Santa Cruz",
+            "Tierra del Fuego"
+          ]
+        }
+      ],
+      "logica": "AND",
       "diagnostico": "ubicacion_exterior",
       "severidad": "info",
       "mensaje": "Oferta para Paraguay - marcar como exterior",
       "auto_correccion": {
         "campo": "provincia",
         "valor": "Paraguay (exterior)"
-      }
+      },
+      "_nota": "Solo aplica si provincia NO es una provincia argentina valida (evita falsos positivos con localidades como Asuncion en Buenos Aires)"
     },
     {
       "id": "V05_ubicacion_exterior_uruguay",
-      "descripcion": "Ofertas para Uruguay detectadas por localidad",
-      "campo": "localidad",
-      "operador": "contains_any",
-      "valores": ["Uruguay", "Montevideo", "Punta del Este", "Colonia"],
+      "descripcion": "Ofertas para Uruguay detectadas por localidad (solo si provincia no es argentina)",
+      "condiciones": [
+        {
+          "campo": "localidad",
+          "operador": "contains_any",
+          "valores": [
+            "Uruguay",
+            "Montevideo",
+            "Punta del Este",
+            "Colonia"
+          ]
+        },
+        {
+          "campo": "provincia",
+          "operador": "not_in_list",
+          "valores": [
+            "Buenos Aires",
+            "Capital Federal",
+            "CABA",
+            "Córdoba",
+            "Cordoba",
+            "Santa Fe",
+            "Mendoza",
+            "Tucumán",
+            "Tucuman",
+            "Entre Ríos",
+            "Entre Rios",
+            "Salta",
+            "Misiones",
+            "Chaco",
+            "Corrientes",
+            "Santiago del Estero",
+            "San Juan",
+            "Jujuy",
+            "Río Negro",
+            "Rio Negro",
+            "Neuquén",
+            "Neuquen",
+            "Formosa",
+            "Chubut",
+            "San Luis",
+            "Catamarca",
+            "La Rioja",
+            "La Pampa",
+            "Santa Cruz",
+            "Tierra del Fuego"
+          ]
+        }
+      ],
+      "logica": "AND",
       "diagnostico": "ubicacion_exterior",
       "severidad": "info",
       "mensaje": "Oferta para Uruguay - marcar como exterior",
       "auto_correccion": {
         "campo": "provincia",
         "valor": "Uruguay (exterior)"
-      }
+      },
+      "_nota": "Solo aplica si provincia NO es una provincia argentina valida"
     },
     {
       "id": "V06_ubicacion_exterior_chile",
-      "descripcion": "Ofertas para Chile detectadas por localidad",
-      "campo": "localidad",
-      "operador": "contains_any",
-      "valores": ["Chile", "Santiago de Chile", "Valparaiso", "Valparaíso"],
+      "descripcion": "Ofertas para Chile detectadas por localidad (solo si provincia no es argentina)",
+      "condiciones": [
+        {
+          "campo": "localidad",
+          "operador": "contains_any",
+          "valores": [
+            "Chile",
+            "Santiago de Chile",
+            "Valparaiso",
+            "Valparaíso"
+          ]
+        },
+        {
+          "campo": "provincia",
+          "operador": "not_in_list",
+          "valores": [
+            "Buenos Aires",
+            "Capital Federal",
+            "CABA",
+            "Córdoba",
+            "Cordoba",
+            "Santa Fe",
+            "Mendoza",
+            "Tucumán",
+            "Tucuman",
+            "Entre Ríos",
+            "Entre Rios",
+            "Salta",
+            "Misiones",
+            "Chaco",
+            "Corrientes",
+            "Santiago del Estero",
+            "San Juan",
+            "Jujuy",
+            "Río Negro",
+            "Rio Negro",
+            "Neuquén",
+            "Neuquen",
+            "Formosa",
+            "Chubut",
+            "San Luis",
+            "Catamarca",
+            "La Rioja",
+            "La Pampa",
+            "Santa Cruz",
+            "Tierra del Fuego"
+          ]
+        }
+      ],
+      "logica": "AND",
       "diagnostico": "ubicacion_exterior",
       "severidad": "info",
       "mensaje": "Oferta para Chile - marcar como exterior",
       "auto_correccion": {
         "campo": "provincia",
         "valor": "Chile (exterior)"
-      }
+      },
+      "_nota": "Solo aplica si provincia NO es una provincia argentina valida"
     },
     {
       "id": "V07_titulo_codigo_interno",
@@ -117,8 +278,15 @@
       "id": "V10_match_score_muy_bajo",
       "descripcion": "Score de matching muy bajo indica posible error",
       "condiciones": [
-        {"campo": "isco_code", "operador": "is_not_null"},
-        {"campo": "match_score", "operador": "lt", "valor": 0.4}
+        {
+          "campo": "isco_code",
+          "operador": "is_not_null"
+        },
+        {
+          "campo": "match_score",
+          "operador": "lt",
+          "valor": 0.4
+        }
       ],
       "logica": "AND",
       "diagnostico": "error_matching_confianza",
@@ -127,12 +295,22 @@
     },
     {
       "id": "V11_tareas_vacias",
-      "descripcion": "Tareas explicitas vacias indica falla en extraccion NLP",
-      "campo": "tareas_explicitas",
-      "operador": "is_empty",
+      "descripcion": "Tareas explicitas e inferidas vacias indica falla en extraccion NLP",
+      "condiciones": [
+        {
+          "campo": "tareas_explicitas",
+          "operador": "is_empty"
+        },
+        {
+          "campo": "tareas_inferidas",
+          "operador": "is_empty"
+        }
+      ],
+      "logica": "AND",
       "diagnostico": "error_nlp_tareas",
       "severidad": "alto",
-      "mensaje": "Tareas no extraidas - afecta skills y matching. Revisar prompt NLP"
+      "mensaje": "Tareas no extraidas - afecta skills y matching. Revisar prompt NLP",
+      "_nota": "Error solo si AMBOS campos vacios. tareas_inferidas se genera cuando descripcion solo tiene requisitos"
     },
     {
       "id": "V12_provincia_vacia",
@@ -168,21 +346,226 @@
       "id": "V15_seniority_titulo_mismatch",
       "descripcion": "Titulo contiene keyword de seniority pero campo esta vacio",
       "condiciones": [
-        {"campo": "nivel_seniority", "operador": "is_null"},
-        {"campo": "titulo_limpio", "operador": "matches_regex", "valor": "(?i)(gerente|jefe|director|supervisor|lead|senior|sr\\.|jr\\.|junior|trainee)"}
+        {
+          "campo": "nivel_seniority",
+          "operador": "is_null"
+        },
+        {
+          "campo": "titulo_limpio",
+          "operador": "matches_regex",
+          "valor": "(?i)(gerente|jefe|director|supervisor|lead|senior|sr\\.|jr\\.|junior|trainee)"
+        }
       ],
       "logica": "AND",
       "diagnostico": "error_nlp_seniority",
       "severidad": "medio",
       "mensaje": "Titulo sugiere seniority pero no se infiere - agregar regla"
+    },
+    {
+      "id": "V16_clae_missing",
+      "descripcion": "Sector empresa existe pero CLAE no fue clasificado",
+      "condiciones": [
+        {
+          "campo": "sector_empresa",
+          "operador": "is_not_empty"
+        },
+        {
+          "campo": "clae_code",
+          "operador": "is_null"
+        },
+        {
+          "campo": "es_intermediario",
+          "operador": "equals",
+          "valor": 0
+        }
+      ],
+      "logica": "AND",
+      "diagnostico": "error_clae_clasificacion",
+      "severidad": "info",
+      "mensaje": "Sector sin clasificar a CLAE - agregar mapeo (excluye intermediarios)"
+    },
+    {
+      "id": "V17_clae_seccion_invalida",
+      "descripcion": "CLAE asignado pero seccion no es valida (debe ser A-U)",
+      "condiciones": [
+        {
+          "campo": "clae_code",
+          "operador": "is_not_null"
+        },
+        {
+          "campo": "clae_seccion",
+          "operador": "not_in_list",
+          "valores": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+            "Q",
+            "R",
+            "S",
+            "T",
+            "U"
+          ]
+        }
+      ],
+      "logica": "AND",
+      "diagnostico": "error_clae_datos",
+      "severidad": "alto",
+      "mensaje": "Seccion CLAE invalida - revisar clae_keywords_map.json"
+    },
+    {
+      "id": "V18_sector_igual_area",
+      "descripcion": "sector_empresa coincide con area_funcional - posible inferencia del puesto",
+      "condiciones": [
+        {
+          "campo": "sector_empresa",
+          "operador": "is_not_empty"
+        },
+        {
+          "campo": "area_funcional",
+          "operador": "is_not_empty"
+        },
+        {
+          "campo": "sector_coincide_area",
+          "operador": "eq",
+          "valor": true
+        }
+      ],
+      "logica": "AND",
+      "diagnostico": "revision_sector_empresa",
+      "severidad": "warning",
+      "mensaje": "Sector coincide con area funcional - verificar si es sector del EMPLEADOR o del PUESTO",
+      "_nota": "Requiere campo calculado en validador: sector_coincide_area"
+    },
+    {
+      "id": "V19_sector_seguridad_no_vigilancia",
+      "descripcion": "sector=Seguridad pero area no es vigilancia - verificar empresa",
+      "condiciones": [
+        {
+          "campo": "sector_empresa",
+          "operador": "eq",
+          "valor": "Seguridad"
+        },
+        {
+          "campo": "area_funcional",
+          "operador": "not_in_list",
+          "valores": [
+            "Seguridad",
+            "Vigilancia"
+          ]
+        }
+      ],
+      "logica": "AND",
+      "diagnostico": "revision_sector_empresa",
+      "severidad": "warning",
+      "mensaje": "Sector Seguridad pero puesto no es de vigilancia - verificar si la EMPRESA es de seguridad"
+    },
+    {
+      "id": "V20_sector_salud_no_sanitario",
+      "descripcion": "sector=Salud pero area no es sanitaria - verificar empresa",
+      "condiciones": [
+        {
+          "campo": "sector_empresa",
+          "operador": "eq",
+          "valor": "Salud"
+        },
+        {
+          "campo": "area_funcional",
+          "operador": "not_in_list",
+          "valores": [
+            "Salud",
+            "Medicina",
+            "Enfermeria"
+          ]
+        }
+      ],
+      "logica": "AND",
+      "diagnostico": "revision_sector_empresa",
+      "severidad": "info",
+      "mensaje": "Sector Salud pero puesto no es sanitario - puede ser correcto (admin en hospital) o error",
+      "_nota": "Info porque hospital puede contratar admin, pero vale revisar"
+    },
+    {
+      "id": "V21_sector_tecnologia_no_it",
+      "descripcion": "sector=Tecnologia pero area no es IT - verificar empresa",
+      "condiciones": [
+        {
+          "campo": "sector_empresa",
+          "operador": "in_list",
+          "valores": [
+            "Tecnologia",
+            "Tecnología",
+            "IT"
+          ]
+        },
+        {
+          "campo": "area_funcional",
+          "operador": "not_in_list",
+          "valores": [
+            "IT",
+            "IT/Sistemas",
+            "Sistemas"
+          ]
+        }
+      ],
+      "logica": "AND",
+      "diagnostico": "revision_sector_empresa",
+      "severidad": "info",
+      "mensaje": "Sector Tecnologia pero puesto no es IT - puede ser correcto o error de clasificacion"
+    },
+    {
+      "id": "V22_empresa_confidencial_con_sector",
+      "descripcion": "Empresa confidencial pero tiene sector asignado - verificar fuente",
+      "condiciones": [
+        {
+          "campo": "empresa",
+          "operador": "contains",
+          "valor": "onfidencial"
+        },
+        {
+          "campo": "sector_empresa",
+          "operador": "is_not_empty"
+        }
+      ],
+      "logica": "AND",
+      "diagnostico": "revision_sector_empresa",
+      "severidad": "info",
+      "mensaje": "Empresa confidencial con sector - verificar si hay frase 'somos empresa de...' en descripcion",
+      "_nota": "Si no hay frase explicita, el sector fue inferido de keywords (baja confianza)"
     }
   ],
-
   "severidades": {
-    "critico": {"orden": 1, "auto_rechazar": true},
-    "alto": {"orden": 2, "auto_rechazar": false},
-    "medio": {"orden": 3, "auto_rechazar": false},
-    "bajo": {"orden": 4, "auto_rechazar": false},
-    "info": {"orden": 5, "auto_rechazar": false}
+    "critico": {
+      "orden": 1,
+      "auto_rechazar": true
+    },
+    "alto": {
+      "orden": 2,
+      "auto_rechazar": false
+    },
+    "medio": {
+      "orden": 3,
+      "auto_rechazar": false
+    },
+    "bajo": {
+      "orden": 4,
+      "auto_rechazar": false
+    },
+    "info": {
+      "orden": 5,
+      "auto_rechazar": false
+    }
   }
 }
