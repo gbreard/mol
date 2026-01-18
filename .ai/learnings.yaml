@@ -6,11 +6,11 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-01-16 18:35"
+  fecha_actualizacion: "2026-01-17 21:11"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "procesamiento"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "Sistema CONVERGIDO - 100 ofertas nuevas procesadas sin reglas nuevas"
+  fase_detalle: "57 errores sin resolver - sistema sugiere Fase 2"
 
   clae_integration:
     estado: "Fase 3 completada - catálogo de empresas integrado"
@@ -35,10 +35,43 @@ current_state:
     ofertas_matching_history: "Historial de cada matching (no sobrescribe)"
     run_ofertas: "Relación run <-> ofertas procesadas"
     ofertas_nlp_history: "Versiones NLP por oferta (ya existía)"
+    learning_history: "Eventos de aprendizaje del sistema (auto-sync)"
   tracking_views:
     v_ofertas_problematicas: "Ofertas con múltiples reprocesos matching"
     v_matching_timeline: "Historial completo por oferta"
     v_nlp_convergencia: "Versiones NLP por oferta"
+
+  # Auto-sync de learnings.yaml + Reporte de Fases + Supabase (v2.1)
+  auto_sync:
+    enabled: true
+    version: "2.1"
+    script: "scripts/sync_learnings.py"
+    hook_session_start: true  # .claude/settings.json configurado
+    triggers:
+      - "Al iniciar sesión Claude Code (SessionStart hook)"
+      - "Al final de run_validated_pipeline.py"
+    output_al_iniciar:
+      - "Reporte de estado de las 3 fases"
+      - "Métricas: ofertas, NLP, matching, validación, errores"
+      - "Sugerencia automática de qué fase necesita atención"
+    logica_sugerencia:
+      prioridad_1: "Errores sin resolver en Fase 2"
+      prioridad_2: "Ofertas pendientes validación > 50"
+      prioridad_3: "Scraping desactualizado > 3 días"
+      prioridad_4: "Ofertas pendientes sync a Supabase"
+      prioridad_5: "Ofertas sin NLP > 100"
+    # Colaboración via Supabase
+    supabase_sync:
+      enabled: true
+      tabla: "sistema_estado"
+      vista: "v_sistema_estado_actual"
+      query_colaborador: "SELECT * FROM v_sistema_estado_actual"
+      proposito: "Compañero puede ver estado de fases sin acceso local"
+    campos_sincronizados:
+      - "conteos.* ← config/*.json"
+      - "estadisticas_actuales ← BD"
+      - "learning_evolution ← BD"
+    eventos_registrados: "learning_history table"
 
 # ============================================
 # CONTEOS OFICIALES (SINGLE SOURCE OF TRUTH)
@@ -46,13 +79,13 @@ current_state:
 # REGLA: Cuando se modifique un config, actualizar estos conteos.
 # La documentación (CLAUDE.md, PIPELINE.md, etc.) referencia aquí.
 conteos:
-  reglas_negocio: 118           # config/matching_rules_business.json > reglas_forzar_isco (v2.6 actualizado 2026-01-16)
-  reglas_validacion: 22         # config/validation_rules.json > reglas_validacion
-  sinonimos_argentinos: 12      # config/sinonimos_argentinos_esco.json > ocupaciones_titulo
-  empresas_catalogo: 245        # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
+  reglas_negocio: 116  # config/matching_rules_business.json > reglas_forzar_isco (v2.6 actualizado 2026-01-16)
+  reglas_validacion: 22  # config/validation_rules.json > reglas_validacion
+  sinonimos_argentinos: 12  # config/sinonimos_argentinos_esco.json > ocupaciones_titulo
+  empresas_catalogo: 247  # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
   skills_esco: 14257            # database/embeddings/esco_skills_full.json
   ocupaciones_esco: 3046        # database/embeddings/esco_occupations_full.json
-  ultima_verificacion: "2026-01-16"
+  ultima_verificacion: 2026-01-17
 
   supabase:
     integrado: true
@@ -81,9 +114,9 @@ conteos:
   proximo_paso: "Validación humana de las 100 nuevas ofertas"
 
   estadisticas_actuales:
-    ofertas_validadas: 110  # validadas anteriormente
-    ofertas_pendientes: 100  # nuevo lote procesado
-    reglas_negocio: 118
+    ofertas_validadas: 120  # validadas anteriormente
+    ofertas_pendientes: 0  # nuevo lote procesado
+    reglas_negocio: 116
     tasa_aprendizaje: "0.0% (0 reglas / 100 ofertas)"
     convergencia: "CONVERGIDO (tasa < 5%)"
     cobertura_reglas: "85% (81 reglas + 4 diccionario)"
@@ -115,7 +148,7 @@ conteos:
       caso_mas_dificil: "2154549 Contador Auditoría (12 intentos)"
 
     reglas_inicio: 22  # 2026-01-13 baseline
-    reglas_actual: 118
+    reglas_actual: 116
     reglas_agregadas: "+96 durante optimización"
     tasa_convergencia: "47% -> 27% -> 2.7% -> 7.5% -> 0%"
     estado: "CONVERGIDO (tasa = 0%)"
@@ -419,6 +452,23 @@ learnings:
       RunTracker métodos: create_batch(), add_run_to_batch(), finalize_batch()
     date: 2026-01-16
 
+  - context: "Auto-sync de learnings.yaml"
+    learning: |
+      El archivo learnings.yaml se actualiza AUTOMATICAMENTE:
+      1. Al ejecutar run_validated_pipeline.py → llama sync_learnings_yaml()
+      2. Al completar un run → save_results() registra en learning_history
+
+      Script: scripts/sync_learnings.py
+      - Lee conteos de config/*.json (reglas, sinónimos, empresas)
+      - Lee métricas de BD (runs, ofertas con matching)
+      - Actualiza secciones: conteos, estadisticas_actuales, learning_evolution
+
+      Tabla learning_history: registra eventos (run_completado, regla_agregada, etc.)
+      Ya NO es necesario que Claude actualice manualmente los conteos.
+
+      Para ejecutar manualmente: python scripts/sync_learnings.py
+    date: 2026-01-17
+
 # ============================================
 # DECISIONES TOMADAS
 # ============================================
@@ -459,6 +509,10 @@ decisions:
     reason: "Errores solo en memoria se perdían entre sesiones. Persistir permite tracking histórico, métricas y feedback loop completo."
     date: 2026-01-16
 
+  - decision: "Auto-sync de learnings.yaml via script"
+    reason: "Las instrucciones para que Claude actualizara manualmente no funcionaban consistentemente. Script automatiza la sincronización de conteos y métricas desde BD/configs."
+    date: 2026-01-17
+
 # ============================================
 # COSAS QUE NO FUNCIONARON
 # ============================================
@@ -470,6 +524,10 @@ failures:
   - attempt: "Llamar match_and_persist() directo sin run_id"
     problem: "93 ofertas quedaron sin tracking, imposible comparar corridas"
     date: 2026-01-14
+
+  - attempt: "Instrucciones en CLAUDE.md para que Claude actualizara learnings.yaml manualmente"
+    problem: "register_learning_event() existía pero nunca se llamaba. learning_history tenía 0 registros. La 'automatización' era solo texto para Claude, no código real."
+    date: 2026-01-17
 
   - attempt: "Pipeline fragmentado (matching, validator, corrector como scripts separados)"
     problem: "Claude nunca ejecutaba el pipeline completo a menos que se pidiera explícitamente. Errores no se persistían en BD."

@@ -30,6 +30,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "database"))
 from database.match_ofertas_v3 import run_matching_pipeline
 from database.auto_validator import AutoValidator, validar_ofertas_desde_bd
 from database.auto_corrector import AutoCorrector, procesar_validacion_completa
+from scripts.sync_learnings import sync_learnings_yaml
 
 
 def run_full_pipeline(
@@ -199,6 +200,19 @@ def run_full_pipeline(
         except Exception as e:
             print(f"Error exportando Markdown: {e}")
             resultados["markdown_export"] = f"Error: {e}"
+
+    # PASO 6: Sincronizar learnings.yaml (automático)
+    if verbose:
+        print("\n" + "=" * 60)
+        print("PASO 6: SYNC LEARNINGS.YAML")
+        print("=" * 60)
+
+    try:
+        sync_learnings_yaml(verbose=verbose)
+        resultados["learnings_sync"] = True
+    except Exception as e:
+        print(f"Warning: Error sincronizando learnings.yaml: {e}")
+        resultados["learnings_sync"] = False
 
     return resultados
 

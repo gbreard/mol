@@ -400,6 +400,30 @@ class RunTracker:
         print(f"[RUN] Resultados guardados en BD: {run_id}")
         if errores_detectados > 0:
             print(f"[RUN] Errores: {errores_detectados} detectados, {errores_corregidos} corregidos, {errores_escalados} escalados")
+
+        # Registrar evento de aprendizaje automáticamente
+        try:
+            learning_counts = self._count_learning_metrics()
+            prev_counts = self._get_previous_run_counts()
+            delta = learning_counts["reglas_negocio"] - prev_counts["reglas_negocio"]
+
+            self.log_learning_event(
+                evento_tipo="run_completado",
+                config_modificado="pipeline_runs",
+                descripcion=f"Run {run_id}: {metricas.get('total', 0)} ofertas procesadas",
+                conteo_antes=prev_counts["reglas_negocio"],
+                conteo_despues=learning_counts["reglas_negocio"],
+                run_id=run_id,
+                detalles={
+                    "ofertas": metricas.get("total", 0),
+                    "errores_detectados": errores_detectados,
+                    "errores_corregidos": errores_corregidos,
+                    "precision": metricas.get("precision")
+                }
+            )
+        except Exception as e:
+            print(f"[RUN] Warning: No se pudo registrar evento learning_history: {e}")
+
         return True
 
     def log_learning_event(

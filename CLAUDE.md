@@ -10,11 +10,17 @@ El archivo `learnings.yaml` contiene:
 - `problemas_conocidos`: Issues actuales
 - **`conteos`**: SINGLE SOURCE OF TRUTH para cantidades (reglas, skills, etc.)
 
-**Comando del usuario: "Guardá estado"** → Actualizar learnings.yaml con el estado actual.
+**Comando del usuario: "Guardá estado"** → Ejecutar `python scripts/sync_learnings.py` + agregar notas en ultimo_trabajo si es necesario.
 
-**REGLA 1: Actualizar `.ai/learnings.yaml` AUTOMATICAMENTE después de cada cambio significativo** (editar archivo, arreglar bug, procesar ofertas, agregar regla). No esperar a que el usuario lo pida.
+**AUTO-SYNC + REPORTE DE FASES (v2.0):** Al iniciar sesión, Claude recibe automáticamente:
+- **Reporte de las 3 fases** con métricas actuales (ofertas, NLP, matching, validación)
+- **Sugerencia de fase** basada en qué necesita atención (errores, pendientes, etc.)
+- **Conteos actualizados** desde configs y BD
 
-**REGLA 2: Si se modifica un config (matching_rules, validation_rules, sinonimos, etc.), actualizar la sección `conteos` en learnings.yaml.** La documentación referencia esos conteos, no hardcodea números.
+Triggers:
+- **Al iniciar sesión** → Hook SessionStart (`.claude/settings.json`)
+- Al ejecutar pipeline → `sync_learnings_yaml()` al final
+- Manual: `python scripts/sync_learnings.py` (con `--human` para formato detallado)
 
 ---
 
@@ -26,8 +32,9 @@ Sistema de monitoreo del mercado laboral argentino para OEDE. Scrapea ofertas de
 > **CONTEOS OFICIALES:** Ver `.ai/learnings.yaml` sección `conteos` (single source of truth)
 
 - NLP v11.3 (20 campos + postprocessor + qwen2.5:7b)
-- **Matching v3.3.2** con prioridad: Reglas negocio → Diccionario argentino → Semántico
+- **Matching v3.3.3** con prioridad: Reglas negocio → Diccionario argentino → Semántico
 - **Conteos dinámicos** (ver `learnings.yaml`): reglas_negocio, reglas_validacion, sinonimos_argentinos
+- **Auto-sync** de learnings.yaml activado (v1.0)
 
 ### Trabajo en Curso
 - Validando 110 ofertas para dashboard (próximo paso: revisión en Google Sheets)
@@ -43,7 +50,7 @@ El proyecto se organiza en 3 macro-fases independientes:
 |------|-------------|---------------------|--------|
 | 1. Adquisicion | Scraping, deteccion bajas | `01_sources/`, `run_scheduler.py` | BD cruda |
 | 2. Procesamiento | NLP, Skills, Matching, **Validacion** | `database/`, `config/`, `export_validation_excel.py` | Excel validacion + datos validados |
-| 3. Presentacion | Dashboard (solo validados) | `Visual--/`, `sync_to_supabase.py` | Dashboard usuarios finales |
+| 3. Presentacion | Dashboard (solo validados) | `fase3_dashboard/`, `Visual--/`, `sync_to_supabase.py` | Dashboard usuarios finales |
 
 **Para trabajar en una fase especifica**, indicar en `learnings.yaml`:
 ```yaml
@@ -588,7 +595,10 @@ MOL/
 ├── docs/                # Documentación
 │   ├── guides/          # RUN_TRACKING, VALIDACION, OPTIMIZACION
 │   └── reference/       # PIPELINE
-├── Visual--/            # Dashboard R Shiny (PRODUCCIÓN)
+├── fase3_dashboard/     # Fase 3: Dashboard y presentación
+│   ├── nextjs/          # Dashboard Next.js (desarrollo)
+│   └── docs/            # Docs específicos Fase 3
+├── Visual--/            # Dashboard R Shiny (legacy)
 └── run_scheduler.py     # Entry point scraping
 ```
 
