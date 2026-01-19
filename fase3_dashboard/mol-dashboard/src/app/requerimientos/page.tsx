@@ -1,7 +1,5 @@
 'use client';
 
-import Filters from '@/components/Filters';
-
 export default function Requerimientos() {
   // Datos de ejemplo para skills
   const topSkills = [
@@ -19,7 +17,6 @@ export default function Requerimientos() {
 
   return (
     <div className="space-y-6">
-      <Filters />
 
       {/* Header */}
       <div>
