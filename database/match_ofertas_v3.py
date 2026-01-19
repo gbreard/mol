@@ -1246,6 +1246,16 @@ def run_matching_pipeline(
                 f"({len(validated)} total). Use force=True para forzar o cambie el estado primero."
             )
 
+    # PROTECCIÓN v3.3.4: Excluir ofertas validadas cuando se usa limit sin offer_ids
+    exclude_validated_clause = ""
+    if not force and not offer_ids:
+        exclude_validated_clause = """
+            AND n.id_oferta NOT IN (
+                SELECT id_oferta FROM ofertas_esco_matching
+                WHERE estado_validacion = 'validado'
+            )
+        """
+
     # Construir query
     if offer_ids:
         placeholders = ','.join(['?'] * len(offer_ids))
@@ -1257,19 +1267,22 @@ def run_matching_pipeline(
         '''
         params = offer_ids
     elif only_pending:
-        query = '''
+        query = f'''
             SELECT n.id_oferta, n.titulo_limpio, n.tareas_explicitas,
                    n.area_funcional, n.nivel_seniority, n.sector_empresa
             FROM ofertas_nlp n
             LEFT JOIN ofertas_esco_matching m ON n.id_oferta = m.id_oferta
             WHERE m.id_oferta IS NULL
+            {exclude_validated_clause}
         '''
         params = []
     else:
-        query = '''
-            SELECT id_oferta, titulo_limpio, tareas_explicitas,
-                   area_funcional, nivel_seniority, sector_empresa
-            FROM ofertas_nlp
+        query = f'''
+            SELECT n.id_oferta, n.titulo_limpio, n.tareas_explicitas,
+                   n.area_funcional, n.nivel_seniority, n.sector_empresa
+            FROM ofertas_nlp n
+            WHERE 1=1
+            {exclude_validated_clause}
         '''
         params = []
 

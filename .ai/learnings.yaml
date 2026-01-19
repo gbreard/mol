@@ -6,7 +6,7 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-01-17 21:11"
+  fecha_actualizacion: "2026-01-19 14:32"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "procesamiento"  # adquisicion | procesamiento | presentacion
@@ -79,13 +79,13 @@ current_state:
 # REGLA: Cuando se modifique un config, actualizar estos conteos.
 # La documentación (CLAUDE.md, PIPELINE.md, etc.) referencia aquí.
 conteos:
-  reglas_negocio: 116  # config/matching_rules_business.json > reglas_forzar_isco (v2.6 actualizado 2026-01-16)
+  reglas_negocio: 119  # config/matching_rules_business.json > reglas_forzar_isco (v2.6 actualizado 2026-01-16)
   reglas_validacion: 22  # config/validation_rules.json > reglas_validacion
   sinonimos_argentinos: 12  # config/sinonimos_argentinos_esco.json > ocupaciones_titulo
   empresas_catalogo: 247  # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
   skills_esco: 14257            # database/embeddings/esco_skills_full.json
   ocupaciones_esco: 3046        # database/embeddings/esco_occupations_full.json
-  ultima_verificacion: 2026-01-17
+  ultima_verificacion: 2026-01-19
 
   supabase:
     integrado: true
@@ -114,9 +114,9 @@ conteos:
   proximo_paso: "Validación humana de las 100 nuevas ofertas"
 
   estadisticas_actuales:
-    ofertas_validadas: 120  # validadas anteriormente
-    ofertas_pendientes: 0  # nuevo lote procesado
-    reglas_negocio: 116
+    ofertas_validadas: 96  # validadas anteriormente
+    ofertas_pendientes: 124  # nuevo lote procesado
+    reglas_negocio: 119
     tasa_aprendizaje: "0.0% (0 reglas / 100 ofertas)"
     convergencia: "CONVERGIDO (tasa < 5%)"
     cobertura_reglas: "85% (81 reglas + 4 diccionario)"
@@ -134,9 +134,9 @@ conteos:
 
   # Métricas de evolución del aprendizaje
   learning_evolution:
-    total_runs: 45
+    total_runs: 48
     ofertas_con_historial_nlp: 5474  # ofertas en ofertas_nlp_history
-    ofertas_con_matching: 120  # ofertas distintas en ofertas_esco_matching
+    ofertas_con_matching: 220  # ofertas distintas en ofertas_esco_matching
 
     # Distribución real de reprocesos (datos de ofertas_nlp_history)
     distribucion_reprocesos:
@@ -148,7 +148,7 @@ conteos:
       caso_mas_dificil: "2154549 Contador Auditoría (12 intentos)"
 
     reglas_inicio: 22  # 2026-01-13 baseline
-    reglas_actual: 116
+    reglas_actual: 119
     reglas_agregadas: "+96 durante optimización"
     tasa_convergencia: "47% -> 27% -> 2.7% -> 7.5% -> 0%"
     estado: "CONVERGIDO (tasa = 0%)"

@@ -7,6 +7,8 @@ Este script ejecuta el flujo completo:
 3. Auto-corrección (auto_corrector.py) - actualiza estado en BD
 4. Reporte de patrones para Claude
 5. (Opcional) Export Markdown para feedback humano
+6. Export Excel validación (automático) - con pestaña Control
+7. Sync learnings.yaml
 
 Uso:
     python scripts/run_validated_pipeline.py --limit 100
@@ -14,8 +16,8 @@ Uso:
     python scripts/run_validated_pipeline.py --only-pending
     python scripts/run_validated_pipeline.py --limit 50 --export-markdown
 
-Version: 2.0
-Fecha: 2026-01-16
+Version: 2.1
+Fecha: 2026-01-19
 """
 
 import argparse
@@ -201,10 +203,34 @@ def run_full_pipeline(
             print(f"Error exportando Markdown: {e}")
             resultados["markdown_export"] = f"Error: {e}"
 
-    # PASO 6: Sincronizar learnings.yaml (automático)
+    # PASO 6: Export Excel para validación humana (automático)
     if verbose:
         print("\n" + "=" * 60)
-        print("PASO 6: SYNC LEARNINGS.YAML")
+        print("PASO 6: EXPORT EXCEL VALIDACIÓN")
+        print("=" * 60)
+
+    try:
+        from scripts.exports.export_validation_excel import export_validation
+
+        # Generar Excel con los IDs procesados o limit
+        excel_path = export_validation(
+            etapa="completo",
+            offer_ids=ids if ids else None,
+            limit=limit if not ids else None
+        )
+        resultados["excel_export"] = str(excel_path)
+
+        if verbose:
+            print(f"Excel exportado: {excel_path}")
+
+    except Exception as e:
+        print(f"Warning: Error exportando Excel: {e}")
+        resultados["excel_export"] = f"Error: {e}"
+
+    # PASO 7: Sincronizar learnings.yaml (automático)
+    if verbose:
+        print("\n" + "=" * 60)
+        print("PASO 7: SYNC LEARNINGS.YAML")
         print("=" * 60)
 
     try:

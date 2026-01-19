@@ -1,12 +1,13 @@
 {
-  "version": "2.6",
-  "descripcion": "Reglas de negocio para matching ESCO. 118 reglas de bypass que fuerzan ISCO específico.",
+  "version": "2.7",
+  "descripcion": "Reglas de negocio para matching ESCO. 121 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-01-16",
+  "fecha_actualizacion": "2026-01-19",
   "_cambios_v11": "Agregadas R43-R47: DevOps, Architect, SAP, Integraciones, Data Engineer",
   "_cambios_v12": "Agregadas R48-R52: Secretaria, Jefe generico, Back office, Carpintero, Ingeniero IA",
   "_cambios_v13": "Agregadas R68-R82: Gastronomía, Financiero, Retail, Aluminio, Product Manager, Ventas, Vigilador, Compras, etc.",
   "_cambios_v14": "Agregadas R83-R90: Calidad Servicios, Acondicionamiento, Supervisor Ops, Subencargado, Ecommerce, Product Manager, Diseñador, Supervisor Ventas. Fix R59 excluye ingeniero.",
+  "_cambios_v27": "Agregadas R119-R121: Operario logístico, Gomero/balanceador, Bioquímico (fix validacion 2026-01-19)",
   "reglas_forzar_isco": {
     "descripcion": "Reglas que fuerzan un codigo ISCO especifico cuando se cumplen las condiciones. Tienen prioridad sobre el matching semantico.",
     "R1_skills_cad": {
@@ -2523,6 +2524,66 @@
       },
       "nota": "Administrativo en almacén/depósito → 4321 (inventario, no admin genérico)",
       "fix_validacion_humana": "2026-01-16",
+      "activa": true
+    },
+    "R119_operario_logistico": {
+      "nombre": "Operario Logístico/Logística",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "operario logístico",
+          "operario logistico",
+          "operarios logísticos",
+          "operarios logisticos",
+          "operario de logística",
+          "operario de logistica"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9321",
+        "esco_label": "embalador manual/embaladora manual"
+      },
+      "nota": "Operario logístico → 9321 (embalador/preparador), no recepcionista",
+      "fix_validacion_humana": "2026-01-19",
+      "activa": true
+    },
+    "R120_gomero_balanceador": {
+      "nombre": "Gomero/Balanceador de Neumáticos",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "gomero",
+          "gomería",
+          "gomeria",
+          "balanceador",
+          "alineador"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7231",
+        "esco_label": "mecánico de vehículos de motor/mecánica de vehículos de motor"
+      },
+      "nota": "Gomero/balanceador → 7231 (mecánico vehículos), no demostrador",
+      "fix_validacion_humana": "2026-01-19",
+      "activa": true
+    },
+    "R121_bioquimico": {
+      "nombre": "Bioquímico/a de Laboratorio",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "bioquímico",
+          "bioquimica",
+          "bioquimico",
+          "bioquímica"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2131",
+        "esco_label": "bioquímico/bioquímica"
+      },
+      "nota": "Bioquímico → 2131 (bioquímico en ESCO), no ingeniero bioquímico (2145)",
+      "fix_validacion_humana": "2026-01-19",
       "activa": true
     }
   },
