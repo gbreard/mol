@@ -1,0 +1,205 @@
+{
+  "descripcion": "Configuración Global de Scraping - Ventana Temporal y Parámetros Optimizados",
+  "version": "1.0",
+  "fecha_creacion": "2025-10-24",
+
+  "ventana_temporal": {
+    "dias": 7,
+    "descripcion": "Solo ofertas de últimos 7 días",
+    "desde_fecha": "2025-10-24",
+    "estrategia": "ventana_movil",
+    "justificacion": [
+      "Permite scraping frecuente (cada 2-3 días) sin saturar servidores",
+      "Reduce duplicados y data histórica irrelevante",
+      "Asegura consistencia temporal cross-source",
+      "Baseline limpio desde HOY en adelante"
+    ]
+  },
+
+  "parametros_scraping": {
+    "sort_strategy": "FECHA",
+    "sort_description": "Ordenar por fecha de publicación (más reciente primero)",
+
+    "max_pages_per_keyword": {
+      "bumeran": 10,
+      "computrabajo": 5,
+      "zonajobs": 10,
+      "linkedin": 15,
+      "indeed": 15,
+      "justificacion": "Con sort por FECHA, primeras páginas = ofertas más recientes"
+    },
+
+    "page_size": {
+      "bumeran": 20,
+      "computrabajo": 20,
+      "zonajobs": 20,
+      "linkedin": 25,
+      "indeed": 50,
+      "descripcion": "Ofertas por página según capacidad de cada API"
+    },
+
+    "delay_between_requests": {
+      "bumeran": 1.5,
+      "computrabajo": 2.0,
+      "zonajobs": 2.0,
+      "linkedin": 2.0,
+      "indeed": 1.5,
+      "unidad": "segundos"
+    },
+
+    "delay_between_keywords": {
+      "bumeran": 2.0,
+      "computrabajo": 2.0,
+      "zonajobs": 3.0,
+      "linkedin": 2.0,
+      "indeed": 2.0,
+      "unidad": "segundos",
+      "descripcion": "Delay entre keywords en scrapeo multi-keyword"
+    }
+  },
+
+  "estrategias_keywords": {
+    "baseline_inicial": {
+      "bumeran": "completa",
+      "computrabajo": "completa",
+      "zonajobs": "general",
+      "linkedin": "general",
+      "indeed": "general",
+      "descripcion": "Primera ejecución para establecer baseline desde HOY"
+    },
+    "incremental_regular": {
+      "bumeran": "completa",
+      "computrabajo": "general",
+      "zonajobs": "general",
+      "linkedin": "general",
+      "indeed": "general",
+      "descripcion": "Ejecuciones diarias/cada-2-3-días post-baseline",
+      "frecuencia_recomendada": "cada 2-3 días"
+    }
+  },
+
+  "enfoque_filtrado": {
+    "tipo": "hibrido",
+    "descripcion": "Sort por FECHA durante scraping + Filtro post-scraping por ventana temporal",
+    "pasos": [
+      "1. Scrapear con sort='FECHA' (más recientes primero)",
+      "2. Limitar a max_pages_per_keyword (ej: 10 páginas)",
+      "3. Deduplicar por ID dentro de fuente",
+      "4. Aplicar filtro por fecha (últimos 7 días)",
+      "5. Guardar resultados filtrados"
+    ],
+    "ventajas": [
+      "Máxima completitud en ventana relevante",
+      "Eficiencia: menos requests al servidor",
+      "Flexibilidad: ajustar ventana post-scraping si necesario"
+    ]
+  },
+
+  "volumenes_esperados": {
+    "bumeran": {
+      "ofertas_7_dias": 600,
+      "tiempo_estimado_min": 10,
+      "keywords": 56
+    },
+    "computrabajo": {
+      "ofertas_7_dias": 400,
+      "tiempo_estimado_min": 8,
+      "keywords": 56
+    },
+    "zonajobs": {
+      "ofertas_7_dias": 40,
+      "tiempo_estimado_min": 5,
+      "keywords": 30
+    },
+    "linkedin": {
+      "ofertas_7_dias": 300,
+      "tiempo_estimado_min": 12,
+      "keywords": 30
+    },
+    "indeed": {
+      "ofertas_7_dias": 800,
+      "tiempo_estimado_min": 15,
+      "keywords": 30
+    },
+    "total_esperado": 2140,
+    "tiempo_total_estimado_min": 50
+  },
+
+  "campos_fecha_por_fuente": {
+    "bumeran": {
+      "campo_principal": "fecha_publicacion",
+      "campo_alternativo": "fecha_hora_publicacion",
+      "formato": "ISO 8601",
+      "notas": "API retorna fechaPublicacion y fechaHoraPublicacion"
+    },
+    "computrabajo": {
+      "campo_principal": "fecha_publicacion",
+      "campo_raw": "fecha_publicacion_raw",
+      "formato": "ISO 8601 (parseado desde texto relativo)",
+      "notas": "Parsea 'Hace X horas/días', 'Hoy', 'Ayer'"
+    },
+    "zonajobs": {
+      "campo_principal": "fecha_publicacion",
+      "formato": "pendiente_verificar",
+      "notas": "Scraping via Playwright, verificar campo de fecha"
+    },
+    "linkedin": {
+      "campo_principal": "fecha_publicacion",
+      "formato": "pendiente_verificar",
+      "notas": "Verificar campo en scraper actual"
+    },
+    "indeed": {
+      "campo_principal": "fecha_publicacion",
+      "formato": "pendiente_verificar",
+      "notas": "Verificar campo en scraper actual"
+    }
+  },
+
+  "workflow_recomendado": {
+    "baseline_inicial": {
+      "descripcion": "Primera ejecución desde HOY",
+      "pasos": [
+        "1. Limpiar datos viejos (mover a /archive)",
+        "2. Ejecutar scraping con ventana de 7 días",
+        "3. Aplicar filtro post-scraping",
+        "4. Guardar baseline clean",
+        "5. Inicializar incremental_tracker con IDs"
+      ],
+      "comando": "python run_full_pipeline.py --full --date-window 7"
+    },
+    "incremental_regular": {
+      "descripcion": "Ejecuciones post-baseline (cada 2-3 días)",
+      "pasos": [
+        "1. Scrapear solo ofertas nuevas (modo incremental)",
+        "2. Aplicar filtro de 7 días",
+        "3. Deduplicar con tracking",
+        "4. Append a dataset existente"
+      ],
+      "comando": "python run_full_pipeline.py --incremental --date-window 7",
+      "frecuencia": "cada 2-3 días"
+    }
+  },
+
+  "notas_implementacion": [
+    "Ventana de 7 días reduce volumen ~80-90% vs scraping sin filtro",
+    "Sort FECHA asegura que primeras páginas contienen ofertas recientes",
+    "Max 10 páginas/keyword con 20 ofertas/página = 200 ofertas max/keyword",
+    "Con 56 keywords, máximo teórico = 11,200 ofertas antes de dedup",
+    "Post-dedup + filtro fecha, esperamos ~600-800 ofertas únicas/fuente",
+    "Tiempo total estimado: 50 min (vs 4-6 horas sin optimización)",
+    "Baseline limpio desde 2025-10-24, sin data histórica"
+  ],
+
+  "changelog": [
+    {
+      "version": "1.0",
+      "fecha": "2025-10-24",
+      "cambios": [
+        "Configuración inicial",
+        "Ventana temporal de 7 días",
+        "Enfoque híbrido: sort + filtro post",
+        "Parámetros optimizados por fuente"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,702 @@
+[
+  {
+    "id": "1118028887",
+    "titulo": "Account Executive",
+    "isco": "3322",
+    "esco": "Representante comercial",
+    "score": 0.98
+  },
+  {
+    "id": "1117977340",
+    "titulo": "RECEPCIONISTA ADMINISTRATIVO",
+    "isco": "4226",
+    "esco": "Recepcionista",
+    "score": 0.98
+  },
+  {
+    "id": "1118026700",
+    "titulo": "VENDEDOR DE REPUESTOS AUTOMOTOR",
+    "isco": "3322",
+    "esco": "representante comercial",
+    "score": 0.98
+  },
+  {
+    "id": "1118009703",
+    "titulo": "Asesor Comercial E Commerce - Manager de",
+    "isco": "3322",
+    "esco": "representante comercial",
+    "score": 0.98
+  },
+  {
+    "id": "1118025956",
+    "titulo": "Jardinero",
+    "isco": "9214",
+    "esco": "peón de jardinería/peona de jardinería",
+    "score": 0.6
+  },
+  {
+    "id": "1118027941",
+    "titulo": "Dibujante Tecnico",
+    "isco": "3118",
+    "esco": "dibujante técnico/dibujante técnica",
+    "score": 0.921830701828003
+  },
+  {
+    "id": "1118027834",
+    "titulo": "Vendedora Digital / Atención al Cliente",
+    "isco": "4222",
+    "esco": "Telefonista de centro de contacto",
+    "score": 0.98
+  },
+  {
+    "id": "1118031991",
+    "titulo": "ASESOR DE VENTAS DIRECTAS",
+    "isco": "3322",
+    "esco": "representante comercial",
+    "score": 0.98
+  },
+  {
+    "id": "1118026729",
+    "titulo": "Responsable de Deposito",
+    "isco": "4321",
+    "esco": "Jefe de almacen/jefa de almacen",
+    "score": 0.98
+  },
+  {
+    "id": "1117990944",
+    "titulo": "Repositor/a Externo/a",
+    "isco": "5223",
+    "esco": "vendedor especializado/vendedora especia",
+    "score": 0.6
+  },
+  {
+    "id": "1116898892",
+    "titulo": "Chofer - Repartidor",
+    "isco": "8322",
+    "esco": "conductor de camión ligero/conductora de",
+    "score": 0.98
+  },
+  {
+    "id": "1118028027",
+    "titulo": "OPERADOR DE AUTOELEVADORES",
+    "isco": "8344",
+    "esco": "Operador de carretilla elevadora",
+    "score": 0.98
+  },
+  {
+    "id": "1118022146",
+    "titulo": "Community manager",
+    "isco": "2432",
+    "esco": "Gestor de la informacion para las redes ",
+    "score": 0.98
+  },
+  {
+    "id": "1118027261",
+    "titulo": "Supervisor de Limpieza",
+    "isco": "5151",
+    "esco": "supervisor de servicio de limpieza/super",
+    "score": 0.9329233169555664
+  },
+  {
+    "id": "1118025212",
+    "titulo": "Representante Técnico/a Comercial",
+    "isco": "2149",
+    "esco": "ingeniero de innovación/ingeniera de inn",
+    "score": 0.6
+  },
+  {
+    "id": "1117984105",
+    "titulo": "Gerente de Ventas importante Concesionar",
+    "isco": "1221",
+    "esco": "Director de comercios/directora de comer",
+    "score": 0.98
+  },
+  {
+    "id": "1118028828",
+    "titulo": "Modelista",
+    "isco": "7531",
+    "esco": "Sastre/sastra",
+    "score": 0.98
+  },
+  {
+    "id": "1118028201",
+    "titulo": "Operarios industria ALIMENTICIA",
+    "isco": "8160",
+    "esco": "operador de máquinas para elaborar alime",
+    "score": 0.98
+  },
+  {
+    "id": "1117961954",
+    "titulo": "Asistente Administrativo General",
+    "isco": "3343",
+    "esco": "asistente de gestión",
+    "score": 0.8832922458648682
+  },
+  {
+    "id": "1118000814",
+    "titulo": "Asistente Administrativo de Ventas",
+    "isco": "2431",
+    "esco": "asistente de promoción de ventas",
+    "score": 0.8647779173215235
+  },
+  {
+    "id": "1118003709",
+    "titulo": "CAJERO/ENCARGADO",
+    "isco": "5230",
+    "esco": "Cajero/cajera",
+    "score": 0.98
+  },
+  {
+    "id": "1118018461",
+    "titulo": "Asesor/a de Admisiones",
+    "isco": "2359",
+    "esco": "Asesor academico/asesora academica",
+    "score": 0.98
+  },
+  {
+    "id": "1118027243",
+    "titulo": "Abogado/a - Impuestos",
+    "isco": "2611",
+    "esco": "Abogado/abogada",
+    "score": 0.98
+  },
+  {
+    "id": "1118028376",
+    "titulo": "Analista administrativo/a",
+    "isco": "3331",
+    "esco": "especialista en importación y exportació",
+    "score": 0.98
+  },
+  {
+    "id": "1117995368",
+    "titulo": "ASESOR TÉCNICO NUTRICIÓN ANIMAL RUMIANTE",
+    "isco": "3240",
+    "esco": "Tecnico veterinario/tecnica veterinaria",
+    "score": 0.98
+  },
+  {
+    "id": "1118028681",
+    "titulo": "ADMINISTRATIVA/O",
+    "isco": "1324",
+    "esco": "director de compras/directora de compras",
+    "score": 0.6
+  },
+  {
+    "id": "1118018714",
+    "titulo": "Diseñador Gráfico E-commerce",
+    "isco": "2166",
+    "esco": "Diseñador grafico/diseñadora grafica",
+    "score": 0.98
+  },
+  {
+    "id": "2170124",
+    "titulo": "Analista de Cultivo",
+    "isco": "6113",
+    "esco": "gestor de cultivos hortícolas/gestora de",
+    "score": 0.6
+  },
+  {
+    "id": "2164100",
+    "titulo": "Mozo/Moza",
+    "isco": "5131",
+    "esco": "Camarero/camarera",
+    "score": 0.98
+  },
+  {
+    "id": "2165052",
+    "titulo": "Electricista Industrial",
+    "isco": "3113",
+    "esco": "ingeniero técnico en electricidad/ingeni",
+    "score": 0.6
+  },
+  {
+    "id": "1118027276",
+    "titulo": "Ejecutivo de Cuentas SSR/SR",
+    "isco": "3322",
+    "esco": "Representante comercial",
+    "score": 0.98
+  },
+  {
+    "id": "1118027662",
+    "titulo": "Farmacéutico/a",
+    "isco": "2262",
+    "esco": "farmacéutico/farmacéutica",
+    "score": 0.9399210214614868
+  },
+  {
+    "id": "2165301",
+    "titulo": "Supervisor/a Administración Autos usados",
+    "isco": "3122",
+    "esco": "supervisor de producción/supervisora de ",
+    "score": 0.6
+  },
+  {
+    "id": "1118028833",
+    "titulo": "Asesor Comercial Plan de Ahorro - Volksw",
+    "isco": "3322",
+    "esco": "representante comercial",
+    "score": 0.98
+  },
+  {
+    "id": "1118028777",
+    "titulo": "Vendedor con Experiencia",
+    "isco": "3322",
+    "esco": "representante comercial",
+    "score": 0.98
+  },
+  {
+    "id": "1118028038",
+    "titulo": "Ejecutiva/o Comercial de Cuentas",
+    "isco": "3322",
+    "esco": "Representante comercial",
+    "score": 0.98
+  },
+  {
+    "id": "1118020225",
+    "titulo": "Representante de atención al cliente",
+    "isco": "4222",
+    "esco": "Telefonista de centro de contacto",
+    "score": 0.98
+  },
+  {
+    "id": "1117982053",
+    "titulo": "Desarrollador Angular Senior",
+    "isco": "2512",
+    "esco": "Desarrollador de software",
+    "score": 0.98
+  },
+  {
+    "id": "1117975249",
+    "titulo": "Gerente General para Maderera",
+    "isco": "1324",
+    "esco": "director de distribución y logística/dir",
+    "score": 0.6
+  },
+  {
+    "id": "1118009739",
+    "titulo": "Administrativa Comercio Exterior",
+    "isco": "3331",
+    "esco": "especialista en importación y exportació",
+    "score": 0.98
+  },
+  {
+    "id": "1118028048",
+    "titulo": "Asesor/a de Ventas y Atención al Cliente",
+    "isco": "4222",
+    "esco": "Telefonista de centro de contacto",
+    "score": 0.98
+  },
+  {
+    "id": "1116884561",
+    "titulo": "Representante Comercial",
+    "isco": "2433",
+    "esco": "representante técnico de ventas/represen",
+    "score": 0.8996552944183349
+  },
+  {
+    "id": "1118028891",
+    "titulo": "auxiliar contable",
+    "isco": "241",
+    "esco": "Contador/contadora",
+    "score": 0.98
+  },
+  {
+    "id": "1118028657",
+    "titulo": "Recepcionista",
+    "isco": "4226",
+    "esco": "Recepcionista",
+    "score": 0.98
+  },
+  {
+    "id": "1118017586",
+    "titulo": "Médica Clínica o Dermatóloga",
+    "isco": "2212",
+    "esco": "médico especialista/médica especialista",
+    "score": 0.7035738051647652
+  },
+  {
+    "id": "2162667",
+    "titulo": "Gerente de Operaciones",
+    "isco": "1321",
+    "esco": "director de fabricación/directora de fab",
+    "score": 0.98
+  },
+  {
+    "id": "1118023904",
+    "titulo": "Operario Picking",
+    "isco": "9333",
+    "esco": "mozo de almacén/moza de almacén",
+    "score": 0.98
+  },
+  {
+    "id": "1117980907",
+    "titulo": "Operario de Almacén/Logística",
+    "isco": "1324",
+    "esco": "jefe de almacén/jefa de almacén",
+    "score": 0.9132294416427612
+  },
+  {
+    "id": "1117960588",
+    "titulo": "Asistente de Dirección / Administrativo ",
+    "isco": "2431",
+    "esco": "asistente de promoción de ventas",
+    "score": 0.8623734712600708
+  },
+  {
+    "id": "2091347",
+    "titulo": "CHOFER REPARTIDOR",
+    "isco": "8322",
+    "esco": "conductor de camión ligero/conductora de",
+    "score": 0.98
+  },
+  {
+    "id": "2131827",
+    "titulo": "Operario de Producción de Alimentos",
+    "isco": "7511",
+    "esco": "operario de preparados cárnicos/operaria",
+    "score": 0.8861822921909849
+  },
+  {
+    "id": "2135143",
+    "titulo": "Operador SIM – Analista de IMPORTACION",
+    "isco": "3331",
+    "esco": "especialista en importación y exportació",
+    "score": 0.98
+  },
+  {
+    "id": "2143169",
+    "titulo": "Operario de Mantenimiento",
+    "isco": "9122",
+    "esco": "operario de limpieza de vehículos/operar",
+    "score": 0.6775274228339223
+  },
+  {
+    "id": "2143478",
+    "titulo": "Instructor de Informática.",
+    "isco": "2166",
+    "esco": "Disenador grafico/disenadora grafica",
+    "score": 0.98
+  },
+  {
+    "id": "2144364",
+    "titulo": "ADMINISTRATIVA CONTABLE",
+    "isco": "241",
+    "esco": "Contador/contadora",
+    "score": 0.98
+  },
+  {
+    "id": "2145271",
+    "titulo": "Técnico Mecánico o Ingeniero para coordi",
+    "isco": "2144",
+    "esco": "ingeniero mecánico/ingeniera mecánica",
+    "score": 0.7069292939985626
+  },
+  {
+    "id": "2145519",
+    "titulo": "Operario de Mantenimiento",
+    "isco": "9622",
+    "esco": "mantenedor/mantenedora",
+    "score": 0.8837912797927856
+  },
+  {
+    "id": "2150503",
+    "titulo": "Asistente Creativo de Diseño y Contenido",
+    "isco": "2166",
+    "esco": "diseñador gráfico/diseñadora gráfica",
+    "score": 0.7671245951408472
+  },
+  {
+    "id": "2152531",
+    "titulo": "Líder de equipo comercial de atención te",
+    "isco": "1349",
+    "esco": "director de servicios para los clientes/",
+    "score": 0.6
+  },
+  {
+    "id": "2152906",
+    "titulo": "Representante Comercial",
+    "isco": "3343",
+    "esco": "asistente de dirección",
+    "score": 0.6
+  },
+  {
+    "id": "2153307",
+    "titulo": "Oficina Tecnica/Empresa Constructora",
+    "isco": "1221",
+    "esco": "director de promoción/directora de promo",
+    "score": 0.6
+  },
+  {
+    "id": "2154046",
+    "titulo": "Enfermeros para atención domiciliaria ge",
+    "isco": "2221",
+    "esco": "Enfermero/enfermera",
+    "score": 0.98
+  },
+  {
+    "id": "2154610",
+    "titulo": "VENDEDOR VIAJANTE DE AUTOS OKM, USADOS",
+    "isco": "3322",
+    "esco": "representante comercial",
+    "score": 0.98
+  },
+  {
+    "id": "2155532",
+    "titulo": "Representante de Ventas - Sector Industr",
+    "isco": "3322",
+    "esco": "representante comercial",
+    "score": 0.7843329145890656
+  },
+  {
+    "id": "2157256",
+    "titulo": "Arquitecto - Lic. en Diseño de Interiore",
+    "isco": "2161",
+    "esco": "arquitecto/arquitecta",
+    "score": 0.6347707660302431
+  },
+  {
+    "id": "2157278",
+    "titulo": "Comprador/a para Cadena de Supermercados",
+    "isco": "3323",
+    "esco": "jefe de compras/jefa de compras",
+    "score": 0.8549952268600464
+  },
+  {
+    "id": "2157405",
+    "titulo": "ANALISTA CONTABLE-IMPOSITIVO Y LIQUIDADO",
+    "isco": "241",
+    "esco": "Contador/contadora",
+    "score": 0.98
+  },
+  {
+    "id": "2157589",
+    "titulo": "OPERARIO ENVASADO",
+    "isco": "8183",
+    "esco": "operario de máquinas de embalaje y llena",
+    "score": 0.8499218940734863
+  },
+  {
+    "id": "2158114",
+    "titulo": "Jefe de Delegación",
+    "isco": "2433",
+    "esco": "ingeniero de ventas/ingeniera de ventas",
+    "score": 0.6
+  },
+  {
+    "id": "2158295",
+    "titulo": "Maquinista Heidelberg Offset 4 COLORES 7",
+    "isco": "7322",
+    "esco": "impresor offset/impresora offset",
+    "score": 0.708541139971669
+  },
+  {
+    "id": "2163123",
+    "titulo": "Desarrollador Web Fullstack / Analista P",
+    "isco": "2512",
+    "esco": "Desarrollador de software",
+    "score": 0.98
+  },
+  {
+    "id": "2163621",
+    "titulo": "CUSTOMER SERVICE LCL & FCL",
+    "isco": "4222",
+    "esco": "Telefonista de centro de contacto",
+    "score": 0.98
+  },
+  {
+    "id": "2165018",
+    "titulo": "Demand Planner",
+    "isco": "4222",
+    "esco": "agente de centro de atención al cliente",
+    "score": 0.6
+  },
+  {
+    "id": "2165042",
+    "titulo": "Analista Cuentas por Cobrar",
+    "isco": "2411",
+    "esco": "analista de presupuestos",
+    "score": 0.7189608621738784
+  },
+  {
+    "id": "2165659",
+    "titulo": "Coordinador/a de Marketing de Emprendimi",
+    "isco": "1221",
+    "esco": "responsable de marketing",
+    "score": 0.73256010781634
+  },
+  {
+    "id": "2165762",
+    "titulo": "Ingeniero Civil para Obra",
+    "isco": "2142",
+    "esco": "ingeniero civil/ingeniera civil",
+    "score": 0.7202206276160378
+  },
+  {
+    "id": "1117931827",
+    "titulo": "Mucamas para Hotel 5 Estrellas",
+    "isco": "9112",
+    "esco": "operario de limpieza de trenes/operaria ",
+    "score": 0.6
+  },
+  {
+    "id": "1117949800",
+    "titulo": "COMMUNITY MANAGER",
+    "isco": "2432",
+    "esco": "Gestor de la informacion para las redes ",
+    "score": 0.98
+  },
+  {
+    "id": "1117953362",
+    "titulo": "Chofer de reparto y tareas generales de ",
+    "isco": "8322",
+    "esco": "conductor de camión ligero/conductora de",
+    "score": 0.98
+  },
+  {
+    "id": "1117957062",
+    "titulo": "Camareros/as para IMPORTANTE EVENTO",
+    "isco": "5131",
+    "esco": "Camarero/camarera",
+    "score": 0.98
+  },
+  {
+    "id": "1117962702",
+    "titulo": "INSTRUCTOR DE HERRERIA Y SOLDADURA",
+    "isco": "7212",
+    "esco": "soldador/soldadora",
+    "score": 0.8346595764160156
+  },
+  {
+    "id": "1117965415",
+    "titulo": "Programador/a PL/SQL – Oracle Forms Repo",
+    "isco": "2512",
+    "esco": "Desarrollador de software",
+    "score": 0.98
+  },
+  {
+    "id": "1117969515",
+    "titulo": "Supervisor de Almacen",
+    "isco": "1324",
+    "esco": "jefe de almacén/jefa de almacén",
+    "score": 0.8182871546158814
+  },
+  {
+    "id": "1117969664",
+    "titulo": "Especialista de Soporte Comercial",
+    "isco": "5223",
+    "esco": "vendedor especializado/vendedora especia",
+    "score": 0.7954473772540698
+  },
+  {
+    "id": "1117970777",
+    "titulo": "Operarios/as de abastecimiento rubro met",
+    "isco": "8160",
+    "esco": "operario de producción de alimentos/oper",
+    "score": 0.7377397902757004
+  },
+  {
+    "id": "1117972289",
+    "titulo": "Cocinero profesional- Finger food",
+    "isco": "5120",
+    "esco": "cocinero/cocinera",
+    "score": 0.6877218931812916
+  },
+  {
+    "id": "1117972443",
+    "titulo": "SUPERVISOR/A DE MICROBIOLOGIA",
+    "isco": "1321",
+    "esco": "director de control de calidad en indust",
+    "score": 0.6
+  },
+  {
+    "id": "1117972858",
+    "titulo": "Vendedor Interno",
+    "isco": "3322",
+    "esco": "representante comercial",
+    "score": 0.98
+  },
+  {
+    "id": "1117973742",
+    "titulo": "Estudiantes de Derecho",
+    "isco": "2611",
+    "esco": "abogado/abogada",
+    "score": 0.8210427223021397
+  },
+  {
+    "id": "1117979171",
+    "titulo": "mozo",
+    "isco": "5131",
+    "esco": "Camarero/camarera",
+    "score": 0.98
+  },
+  {
+    "id": "1117982784",
+    "titulo": "VoIP Engineer",
+    "isco": "3512",
+    "esco": "agente del servicio de asistencia de TIC",
+    "score": 0.6
+  },
+  {
+    "id": "1117990633",
+    "titulo": "Personal de limpieza",
+    "isco": "5142",
+    "esco": "empleado de salón de belleza/empleada de",
+    "score": 0.6
+  },
+  {
+    "id": "1118024613",
+    "titulo": "Jefe de Ingeniería para Equipo de Celula",
+    "isco": "2619",
+    "esco": "gestor de contratos/gestora de contratos",
+    "score": 0.6
+  },
+  {
+    "id": "1118073573",
+    "titulo": "Analista de proyectos electrónicos",
+    "isco": "2149",
+    "esco": "ingeniero especializado en energía eólic",
+    "score": 0.6
+  },
+  {
+    "id": "1118073595",
+    "titulo": "personal para ventas y atención al clien",
+    "isco": "4222",
+    "esco": "Telefonista de centro de contacto",
+    "score": 0.98
+  },
+  {
+    "id": "1118073610",
+    "titulo": "Ejecutiva de Cuentas on line",
+    "isco": "5243",
+    "esco": "vendedor a domicilio",
+    "score": 0.6
+  },
+  {
+    "id": "1118073803",
+    "titulo": "Analista de Cuentas a Pagar",
+    "isco": "1324",
+    "esco": "director de la cadena de suministro/dire",
+    "score": 0.6
+  },
+  {
+    "id": "2123908",
+    "titulo": "CAJEROS",
+    "isco": "5230",
+    "esco": "Cajero/cajera",
+    "score": 0.98
+  },
+  {
+    "id": "2130257",
+    "titulo": "EMPLEADA/O VENTA MOSTRADOR PARA CASA DE ",
+    "isco": "5223",
+    "esco": "Vendedor especializado en ferreteria y p",
+    "score": 0.98
+  },
+  {
+    "id": "2144019",
+    "titulo": "Preventista",
+    "isco": "2131",
+    "esco": "epidemiólogo/epidemióloga",
+    "score": 0.6
+  }
+]

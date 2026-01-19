@@ -1,0 +1,236 @@
+{
+  "version": "3.3",
+  "base_version": "3.2",
+  "created_at": "2025-12-08T15:48:35.594781",
+  "status": "pending",
+  "changes": {
+    "remove": [
+      {
+        "keyword": "abogado-laboral",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "abogado-laboral",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "abogado-litigante",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "abogado-litigante",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "acompañante-terapeutico",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "acompañante-terapeutico",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "administracion-consorcios",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "administracion-consorcios",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "administrador-propiedad",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "administrador-propiedad",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "agencia-viajes",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "agencia-viajes",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "agente-inmobiliario",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "agente-inmobiliario",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "agente-viajes",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "agente-viajes",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "agro-comercio",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "agro-comercio",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "agro-exportacion",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "agro-exportacion",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "agronomia",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "agronomia",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "albanil",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "albanil",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "aleman",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "aleman",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-contable",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-contable",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-creditos",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-creditos",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-datos",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-datos",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-financiero",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-financiero",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-funcional",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-funcional",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-procesos",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-procesos",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-programador",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-programador",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-rrhh",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-rrhh",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-rrhh-senior",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-rrhh-senior",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-siniestros",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-siniestros",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-sistemas",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-sistemas",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-sr",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "analista-sr",
+        "reason": "sin_resultados"
+      },
+      {
+        "keyword": "",
+        "reason": "muy_generico (10,958 ofertas)"
+      },
+      {
+        "keyword": "it",
+        "reason": "muy_generico (10,242 ofertas)"
+      },
+      {
+        "keyword": "bi",
+        "reason": "muy_generico (9,902 ofertas)"
+      }
+    ],
+    "add": [],
+    "modify": []
+  },
+  "justification": [
+    "Eliminar 50 keywords sin resultados para reducir tiempo de scraping",
+    "Eliminar '' por ser demasiado generico",
+    "Eliminar 'it' por ser demasiado generico",
+    "Eliminar 'bi' por ser demasiado generico"
+  ],
+  "expected_impact": {
+    "keywords_eliminados": 53,
+    "keywords_final": 1095,
+    "reduccion_pct": 4.6,
+    "tiempo_estimado_ahorro_min": 26.5
+  }
+}

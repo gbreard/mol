@@ -33,7 +33,8 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from scrapear_con_diccionario import BumeranMultiSearch
 from database.config import SCHEDULER_CONFIG, SCRAPING_CONFIG, DB_CONFIG
 from database.db_manager import DatabaseManager
-from scripts.backup_database import create_backup, cleanup_old_backups
+from scripts.db.backup_database import create_backup, cleanup_old_backups
+from database.detectar_bajas_integrado import DetectorBajasIntegrado
 
 # =====================================================================
 # LOGGING
@@ -138,6 +139,16 @@ def ejecutar_scraping():
                 logger.warning("No se pudo crear el backup")
         except Exception as e:
             logger.error(f"Error en backup: {e}")
+
+        # 7. Detectar ofertas dadas de baja
+        logger.info("Detectando ofertas dadas de baja...")
+        try:
+            with DetectorBajasIntegrado() as detector:
+                stats = detector.ejecutar()
+                logger.info(f"Bajas detectadas: {stats.get('bajas_marcadas', 0)}")
+                logger.info(f"Activas confirmadas: {stats.get('activas_confirmadas', 0)}")
+        except Exception as e:
+            logger.error(f"Error en detección de bajas: {e}")
 
         # Fin
         end_time = datetime.now()

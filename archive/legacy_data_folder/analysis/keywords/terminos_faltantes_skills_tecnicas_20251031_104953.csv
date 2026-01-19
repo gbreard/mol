@@ -1,0 +1,75 @@
+termino,frecuencia,porcentaje
+crm,311,5.92
+sap,255,4.85
+erp,217,4.13
+sql,211,4.02
+python,177,3.37
+word,151,2.87
+excel avanzado,119,2.26
+aws,115,2.19
+autocad,114,2.17
+azure,89,1.69
+tango,87,1.66
+java,80,1.52
+iso 9001,78,1.48
+scrum,74,1.41
+react,73,1.39
+docker,60,1.14
+powerpoint,59,1.12
+git,58,1.1
+oracle,57,1.08
+outlook,54,1.03
+excel intermedio,51,0.97
+gcp,51,0.97
+javascript,42,0.8
+kubernetes,39,0.74
+postgresql,38,0.72
+bejerman,37,0.7
+jenkins,36,0.69
+lean,35,0.67
+kanban,34,0.65
+wms,34,0.65
+angular,33,0.63
+mysql,32,0.61
+agile,30,0.57
+php,27,0.51
+spring,21,0.4
+express,20,0.38
+revit,20,0.38
+mongodb,20,0.38
+typescript,18,0.34
+solidworks,17,0.32
+node.js,16,0.3
+tms,16,0.3
+kaizen,15,0.29
+flask,10,0.19
+google cloud,9,0.17
+iso 14001,8,0.15
+vue,8,0.15
+iso 9712,7,0.13
+siap,7,0.13
+iso 17025,6,0.11
+.net,6,0.11
+django,6,0.11
+iso 27001,5,0.1
+iso 15189,4,0.08
+iso 45001,4,0.08
+iso 9002,3,0.06
+iso 9000,3,0.06
+5 porqués,2,0.04
+ishikawa,2,0.04
+iso 9,2,0.04
+golang,2,0.04
+iso 17065,2,0.04
+iso 17067,2,0.04
+ruby,2,0.04
+dmaic,1,0.02
+5 porque,1,0.02
+iso 6508,1,0.02
+iso 50001,1,0.02
+c#,1,0.02
+iso 22716,1,0.02
+iso 14000,1,0.02
+iso 4,1,0.02
+iso 13485,1,0.02
+excel básico,1,0.02

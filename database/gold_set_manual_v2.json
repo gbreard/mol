@@ -59,7 +59,8 @@
   {
     "id_oferta": "1118028038",
     "esco_ok": true,
-    "comentario": "Match correcto. Ejecutiva/o Comercial Cuentas -> Representante comercial (ISCO 3322). Bypass diccionario."
+    "isco_esperado": "3322",
+    "comentario": "Match correcto. Ejecutiva/o Comercial Cuentas -> Representante comercial (ISCO 3322). Regla R28."
   },
   {
     "id_oferta": "1118028201",
@@ -84,7 +85,8 @@
   {
     "id_oferta": "1118028828",
     "esco_ok": true,
-    "comentario": "Match correcto. Modelista textil -> disenador de modelos para moldes (patronista)."
+    "isco_esperado": "7531",
+    "comentario": "Match correcto. Modelista textil -> Sastre/sastra (ISCO 7531). Regla R29."
   },
   {
     "id_oferta": "1118028833",
@@ -103,16 +105,17 @@
   },
   {
     "id_oferta": "2162667",
-    "esco_ok": false,
-    "tipo_error": "sector_ignorado",
-    "comentario": "ERROR: Gerente Operaciones Gastronomia asignado a Mineria (3121). Deberia ser Gerentes restaurantes (ISCO 1412). El sector gastronomia fue completamente ignorado.",
-    "esco_esperado": "Gerente de restaurante",
-    "isco_esperado": "1412"
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Gerente Operaciones Facility/Catering corporativo, NO restaurante. ISCO 1321 correcto.",
+    "esco_esperado": "Director de operaciones",
+    "isco_esperado": "1321"
   },
   {
     "id_oferta": "1118022146",
     "esco_ok": true,
-    "comentario": "Match correcto. Community Manager -> Gestor de la informacion para las redes sociales (ISCO 2432). Bypass diccionario argentino."
+    "isco_esperado": "2432",
+    "comentario": "Match correcto. Community Manager -> Gestor de la informacion para las redes sociales (ISCO 2432). Regla R30."
   },
   {
     "id_oferta": "1118025212",
@@ -165,7 +168,8 @@
   {
     "id_oferta": "2164100",
     "esco_ok": true,
-    "comentario": "Match correcto. Mozo -> Camarero/camarera."
+    "isco_esperado": "5131",
+    "comentario": "Match correcto. Mozo -> Camarero/camarera (ISCO 5131). Regla R31."
   },
   {
     "id_oferta": "2165052",
@@ -185,7 +189,8 @@
   {
     "id_oferta": "1118023904",
     "esco_ok": true,
-    "comentario": "Match correcto. Operario Picking -> Reponedor/reponedora (ISCO 9334). Bypass diccionario argentino."
+    "isco_esperado": "9333",
+    "comentario": "Operario Picking en almacen logistico -> Mozo de almacen (ISCO 9333). NO es repositor de gondola (9334)."
   },
   {
     "id_oferta": "1117980907",
@@ -205,7 +210,8 @@
   {
     "id_oferta": "1117982053",
     "esco_ok": true,
-    "comentario": "Match correcto. Angular es framework web -> Desarrollador web."
+    "isco_esperado": "2512",
+    "comentario": "Match correcto. Desarrollador Angular -> Desarrollador de software (ISCO 2512). Regla R33."
   },
   {
     "id_oferta": "1118018461",

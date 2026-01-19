@@ -1,7 +1,8 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "descripcion": "Mapeo de area_funcional NLP a codigos ISCO validos",
-  "fecha_actualizacion": "2025-12-10",
+  "fecha_actualizacion": "2026-01-03",
+  "changelog_v1.1.0": "Fix: Ventas/Comercial agrega 522 (vendedores especializados), Operaciones agrega 723 (mantenimiento). Quitadas exclusiones que bloqueaban matches correctos.",
 
   "mappings": {
     "IT/Sistemas": {
@@ -14,10 +15,10 @@
 
     "Ventas/Comercial": {
       "descripcion": "Ventas, comercial y desarrollo de negocios",
-      "isco_primarios": ["122", "332", "524", "521"],
-      "isco_secundarios": ["243", "333", "523"],
-      "excluir": ["2", "7", "8", "9"],
-      "notas": "Excluye profesionales tecnicos y operarios"
+      "isco_primarios": ["122", "332", "522", "523", "524", "521"],
+      "isco_secundarios": ["243", "333", "525"],
+      "excluir": [],
+      "notas": "522=vendedores especializados, 523=cajeros, 524=otros vendedores. Sin exclusiones para permitir vendedores tecnicos"
     },
 
     "Administracion/Finanzas": {
@@ -37,11 +38,11 @@
     },
 
     "Operaciones/Logistica": {
-      "descripcion": "Operaciones, logistica y supply chain",
-      "isco_primarios": ["132", "432", "933", "834", "833"],
-      "isco_secundarios": ["314", "832", "931"],
+      "descripcion": "Operaciones, logistica, supply chain y mantenimiento",
+      "isco_primarios": ["132", "432", "933", "834", "833", "723"],
+      "isco_secundarios": ["314", "832", "931", "741", "962"],
       "excluir": [],
-      "notas": "Jefes de almacen, operarios, choferes, despachantes"
+      "notas": "723=mecanicos/mantenimiento, 432=empleados almacen, 833-834=conductores"
     },
 
     "Produccion/Manufactura": {

@@ -1,0 +1,302 @@
+[FILE] Archivo: ../data/processed/ofertas_esco_isco_llm_20251027_191809.csv
+
+[*] Cargando datos de matching...
+[OK] Cargadas 268 ofertas
+
+================================================================================
+REPORTE DE CALIDAD - MATCHING ESCO/ISCO
+================================================================================
+
+[1] ESTADISTICAS GENERALES
+--------------------------------------------------------------------------------
+  Total ofertas procesadas:            268
+  Con ESCO Occupation ID:              268 (100.0%)
+  Con código ISCO:                     268 (100.0%)
+
+  Score fuzzy matching:
+    - Promedio:                       75.5
+    - Mediana:                        85.0
+    - Mínimo:                         29.0
+    - Máximo:                         85.0
+
+  Skills overlap promedio:             0.0%
+
+[2] DISTRIBUCION POR NIVEL DE CONFIANZA
+--------------------------------------------------------------------------------
+             alta:    156 ( 58.2%)
+             baja:     68 ( 25.4%)
+            media:     44 ( 16.4%)
+
+  Scores por nivel de confianza:
+            alta: avg=84.5, min=80.0, max=85.0
+            baja: avg=56.3, min=29.0, max=61.0
+           media: avg=73.4, min=71.0, max=75.0
+
+[3] TOP 20 OCUPACIONES ESCO MAS FRECUENTES
+--------------------------------------------------------------------------------
+   1. coordinador de operaciones portuarias/coordinadora de operaciones portuarias |   56 (20.9%) | ISCO: 4323.11
+   2. técnico de sonido/técnica de sonido                |   42 (15.7%) | ISCO: 3435.3
+   3. operador de calderas/operadora de calderas         |   28 (10.4%) | ISCO: 8182.1
+   4. analista de logística                              |   25 ( 9.3%) | ISCO: 2421.5
+   5. asesor de inversiones/asesora de inversiones       |   21 ( 7.8%) | ISCO: 2412.6
+   6. analista de presupuestos                           |   17 ( 6.3%) | ISCO: 2411.1.4
+   7. responsable de marketing digital                   |   15 ( 5.6%) | ISCO: 1221.5
+   8. vendedor ambulante/vendedora ambulante             |   10 ( 3.7%) | ISCO: 9520.1
+   9. asistente de departamento de ventas                |    9 ( 3.4%) | ISCO: 4311.2
+  10. operador de planta de tratamiento de gas/operadora de planta de tratamiento de gas |    8 ( 3.0%) | ISCO: 3134.2
+  11. mecánico naval/mecánica naval                      |    6 ( 2.2%) | ISCO: 7215.2.1
+  12. especialista en importación y exportación de residuos y chatarra |    6 ( 2.2%) | ISCO: 3331.2.1.33
+  13. operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías |    6 ( 2.2%) | ISCO: 7126.7
+  14. operario forestal/operaria forestal                |    4 ( 1.5%) | ISCO: 9215.1
+  15. operador de canteadora/operadora de canteadora     |    3 ( 1.1%) | ISCO: 8189.1
+  16. metalúrgico/metalúrgica                            |    2 ( 0.7%) | ISCO: 2146.5
+  17. vendedor a domicilio                               |    2 ( 0.7%) | ISCO: 5243.1
+  18. gerente de salón de juegos                         |    1 ( 0.4%) | ISCO: 1431.2.3
+  19. director comercial regional/directora comercial regional |    1 ( 0.4%) | ISCO: 1420.6
+  20. ayudante de recursos humanos                       |    1 ( 0.4%) | ISCO: 4416.1
+
+[4] DISTRIBUCION POR CODIGO ISCO
+--------------------------------------------------------------------------------
+  Por grandes grupos (1 dígito):
+    2 - Profesionales científicos e intelectuales     |   67 (25.0%)
+    4 - Personal de apoyo administrativo              |   67 (25.0%)
+    3 - Técnicos y profesionales de nivel medio       |   56 (20.9%)
+    8 - Operadores de instalaciones y máquinas        |   31 (11.6%)
+    1 - Directores y gerentes                         |   18 ( 6.7%)
+    9 - Ocupaciones elementales                       |   15 ( 5.6%)
+    7 - Oficiales, operarios y artesanos              |   12 ( 4.5%)
+    5 - Trabajadores de servicios y vendedores        |    2 ( 0.7%)
+
+  Top 15 códigos ISCO completos más frecuentes:
+     1. 4323.11      |   56 (20.9%) | Ej: coordinador de operaciones portuarias/coordin
+     2. 3435.3       |   42 (15.7%) | Ej: técnico de sonido/técnica de sonido
+     3. 8182.1       |   28 (10.4%) | Ej: operador de calderas/operadora de calderas
+     4. 2421.5       |   25 ( 9.3%) | Ej: analista de logística
+     5. 2412.6       |   21 ( 7.8%) | Ej: asesor de inversiones/asesora de inversiones
+     6. 2411.1.4     |   17 ( 6.3%) | Ej: analista de presupuestos
+     7. 1221.5       |   15 ( 5.6%) | Ej: responsable de marketing digital
+     8. 9520.1       |   10 ( 3.7%) | Ej: vendedor ambulante/vendedora ambulante
+     9. 4311.2       |    9 ( 3.4%) | Ej: asistente de departamento de ventas
+    10. 3134.2       |    8 ( 3.0%) | Ej: operador de planta de tratamiento de gas/oper
+    11. 7215.2.1     |    6 ( 2.2%) | Ej: mecánico naval/mecánica naval
+    12. 3331.2.1.33  |    6 ( 2.2%) | Ej: especialista en importación y exportación de 
+    13. 7126.7       |    6 ( 2.2%) | Ej: operario de mantenimiento de tuberías/operari
+    14. 9215.1       |    4 ( 1.5%) | Ej: operario forestal/operaria forestal
+    15. 8189.1       |    3 ( 1.1%) | Ej: operador de canteadora/operadora de canteador
+
+[5] ANALISIS DE SKILLS OVERLAP
+--------------------------------------------------------------------------------
+  Overlap promedio:              0.0%
+  Overlap mediana:               0.0%
+  Overlap maximo:                0.0%
+
+  Distribucion:
+    Sin overlap (0%):            268 (100.0%)
+    Bajo (<30%):                   0 (  0.0%)
+    Medio (30-59%):                0 (  0.0%)
+    Alto (>=60%):                  0 (  0.0%)
+
+  [!] NOTA: El overlap de skills es 0% en todos los casos.
+      Esto puede indicar:
+      - Las ocupaciones matcheadas no tienen relaciones de skills en ESCO
+      - Hay desajuste entre los labels de skills extraídas y ESCO
+      - El fuzzy matching de skills necesita ajuste de umbral
+
+[6] EJEMPLOS DE MATCHES DE ALTA CONFIANZA (Top 10)
+--------------------------------------------------------------------------------
+   1. Score: 85.0 | Confianza: alta
+      Titulo:         Asesor Comercial para Venta de Sillones y Muebles
+      ESCO:           asesor de inversiones/asesora de inversiones
+      ISCO:           2412.6
+
+   2. Score: 85.0 | Confianza: alta
+      Titulo:         Coordinador de operaciones (req199724)- Eventual - TORTUGUIT
+      ESCO:           coordinador de operaciones portuarias/coordinadora de operaciones portuarias
+      ISCO:           4323.11
+
+   3. Score: 85.0 | Confianza: alta
+      Titulo:         Líder Comercial Ssr de Canal B2B - Eventual - GARÍN
+      ESCO:           director comercial regional/directora comercial regional
+      ISCO:           1420.6
+
+   4. Score: 85.0 | Confianza: alta
+      Titulo:         OPERARIO CENTRAL DE PESADA
+      ESCO:           operador de calderas/operadora de calderas
+      ISCO:           8182.1
+
+   5. Score: 85.0 | Confianza: alta
+      Titulo:         PROMOVENDEDORES ZONA CABA
+      ESCO:           vendedor a domicilio
+      ISCO:           5243.1
+
+   6. Score: 85.0 | Confianza: alta
+      Titulo:         Chofer para empresa Avicola Zona Norte (BECCAR)
+      ESCO:           capturador avícola/capturadora avícola
+      ISCO:           9212.1
+
+   7. Score: 85.0 | Confianza: alta
+      Titulo:         Soldador MIG / Operario Metalúrgico
+      ESCO:           metalúrgico/metalúrgica
+      ISCO:           2146.5
+
+   8. Score: 85.0 | Confianza: alta
+      Titulo:         Administrativo de depósito y logística
+      ESCO:           técnico administrativo de gestión/técnica administrativa de gestión
+      ISCO:           4312.2
+
+   9. Score: 85.0 | Confianza: alta
+      Titulo:         Asistente de Marketing Digital y Ventas - Zona Ciudadela
+      ESCO:           asistente de departamento de ventas
+      ISCO:           4311.2
+
+  10. Score: 85.0 | Confianza: alta
+      Titulo:         OPERADOR PLANTA DE TRATAMIENTO DE EFLUENTES
+      ESCO:           operador de planta de tratamiento de gas/operadora de planta de tratamiento de gas
+      ISCO:           3134.2
+
+
+[7] CASOS DE BAJA CONFIANZA PARA REVISION (Top 15)
+--------------------------------------------------------------------------------
+   1. Score: 29.0 (REVISAR)
+      Titulo:         PROMOVENDEDORES ZONA NORTE
+      ESCO asignado:  director de seguridad en la zona de operaciones aéreas/directora de seguridad en la zona de operaciones aéreas
+      ISCO:           1349.1
+      Skills:         proactivo...
+
+   2. Score: 53.0 (REVISAR)
+      Titulo:         VENDEDOR/AR DE PLAN DE AHORRO
+      ESCO asignado:  vendedor a domicilio
+      ISCO:           5243.1
+      Skills:         Buena comunicación,  Buena presencia,  comunicación...
+
+   3. Score: 55.0 (REVISAR)
+      Titulo:         Medio Oficial de Mantenimiento- Rubro Plástico. Zona Villa S
+      ESCO asignado:  operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías
+      ISCO:           7126.7
+
+   4. Score: 55.0 (REVISAR)
+      Titulo:         Medio Oficial de Mantenimiento- Rubro Plástico. Zona Villa S
+      ESCO asignado:  operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías
+      ISCO:           7126.7
+      Skills:         trabajo en equipo...
+
+   5. Score: 55.0 (REVISAR)
+      Titulo:         Medio Oficial de Mantenimiento- Rubro Plástico. Zona Villa S
+      ESCO asignado:  operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías
+      ISCO:           7126.7
+      Skills:         liderazgo,  trabajo en equipo...
+
+   6. Score: 55.0 (REVISAR)
+      Titulo:         Medio Oficial de Mantenimiento- Rubro Plástico. Zona Villa S
+      ESCO asignado:  operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías
+      ISCO:           7126.7
+      Skills:         Mantenimiento edilicio General: Control luminaria/electricid...
+
+   7. Score: 55.0 (REVISAR)
+      Titulo:         Medio Oficial de Mantenimiento- Rubro Plástico. Zona Villa S
+      ESCO asignado:  operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías
+      ISCO:           7126.7
+      Skills:         control,  desmontar equipos/moldes/instalaciones,  montar...
+
+   8. Score: 56.0 (REVISAR)
+      Titulo:         Vendedora/ Asistente Administrativo
+      ESCO asignado:  vendedor ambulante/vendedora ambulante
+      ISCO:           9520.1
+      Skills:         comunicación,  comunicación interpersonal,  gestión del tiem...
+
+   9. Score: 56.0 (REVISAR)
+      Titulo:         Vendedora/ Asistente Administrativo
+      ESCO asignado:  vendedor ambulante/vendedora ambulante
+      ISCO:           9520.1
+      Skills:         comunicación,  excelentes habilidades de comunicación interp...
+
+  10. Score: 56.0 (REVISAR)
+      Titulo:         Vendedora/ Asistente Administrativo
+      ESCO asignado:  vendedor ambulante/vendedora ambulante
+      ISCO:           9520.1
+      Skills:         capacidad de organización,  comunicación,  excelentes habili...
+
+  11. Score: 56.0 (REVISAR)
+      Titulo:         Vendedora/ Asistente Administrativo
+      ESCO asignado:  vendedor ambulante/vendedora ambulante
+      ISCO:           9520.1
+      Skills:         comunicación,  gestión del tiempo,  organización, office...
+
+  12. Score: 56.0 (REVISAR)
+      Titulo:         Vendedora/ Asistente Administrativo
+      ESCO asignado:  vendedor ambulante/vendedora ambulante
+      ISCO:           9520.1
+      Skills:         comunicación,  gestión del tiempo,  organización, office...
+
+  13. Score: 56.0 (REVISAR)
+      Titulo:         Vendedora/ Asistente Administrativo
+      ESCO asignado:  vendedor ambulante/vendedora ambulante
+      ISCO:           9520.1
+      Skills:         Capacidad de organización,  Excelentes habilidades de comuni...
+
+  14. Score: 56.0 (REVISAR)
+      Titulo:         Vendedora/ Asistente Administrativo
+      ESCO asignado:  vendedor ambulante/vendedora ambulante
+      ISCO:           9520.1
+      Skills:         comunicación,  comunicación interpersonal,  gestión del tiem...
+
+  15. Score: 56.0 (REVISAR)
+      Titulo:         Vendedora/ Asistente Administrativo
+      ESCO asignado:  vendedor ambulante/vendedora ambulante
+      ISCO:           9520.1
+      Skills:         capacidad de organización,  comunicación,  gestión del tiemp...
+
+
+[8] DISTRIBUCION POR FUENTE DE DATOS
+--------------------------------------------------------------------------------
+  bumeran              |   265 ( 98.9%) | Score avg: 75.6
+  zonajobs             |     3 (  1.1%) | Score avg: 70.7
+
+[9] RECOMENDACIONES Y PROXIMOS PASOS
+--------------------------------------------------------------------------------
+
+  [!] 1. FUZZY MATCHING: Mejorable (score promedio < 80)
+       - Considerar implementar matching semantico con LLM
+       - Revisar normalizacion de titulos
+
+  [!] 2. CONFIANZA: Mejorable (> 20% baja confianza)
+       - Implementar matching con LLM para casos de score < 70
+       - Considerar usar descripcion ademas de titulo
+
+  [!] 3. SKILLS OVERLAP: Sin validacion
+       - El overlap de skills no esta funcionando
+       - PROXIMOS PASOS:
+         a) Verificar que ocupaciones matcheadas tengan relaciones en ESCO
+         b) Revisar normalizacion de skills extraidas vs ESCO
+         c) Ajustar umbral de fuzzy matching de skills (actual: 80)
+         d) Considerar matching semantico para skills (embeddings)
+
+  [*] 4. PROXIMOS PASOS SUGERIDOS:
+
+     a) Implementar LLM fallback para casos score < 70
+        - Usar Ollama llama3 con prompt estructurado
+        - Incluir descripción + skills en el prompt
+
+     b) Investigar y corregir skills overlap:
+        - Ejecutar script de diagnóstico de relaciones ESCO
+        - Verificar cobertura de ocupaciones en esco_ocupaciones_skills_relaciones.json
+
+     c) Validación manual de muestra:
+        - Revisar 50 casos de baja confianza
+        - Verificar 20-30 casos de alta confianza aleatoriamente
+
+     d) Enriquecimiento de ofertas:
+        - Agregar skills esenciales ESCO a ofertas con pocas skills
+        - Usar el código ISCO para análisis agregados
+
+     e) Integración con datos SIPA:
+        - Cruzar códigos ISCO con clasificaciones de empleo registrado
+        - Comparar demanda (ofertas) vs oferta (trabajadores SIPA)
+
+
+
+[FILE] Reporte JSON guardado: ..\data\processed\esco_quality_report_20251027_202745.json
+
+================================================================================
+[OK] REPORTE COMPLETADO
+================================================================================

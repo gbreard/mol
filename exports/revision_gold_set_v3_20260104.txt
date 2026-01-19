@@ -1,0 +1,1669 @@
+====================================================================================================
+REVISION MANUAL - GOLD SET v3.0 MATCHING
+Fecha: 2026-01-04 11:39
+Total casos: 49
+====================================================================================================
+
+----------------------------------------------------------------------------------------------------
+CASO 1/49 | ID: 1118026700
+----------------------------------------------------------------------------------------------------
+
+TITULO: VENDEDOR DE REPUESTOS AUTOMOTOR
+
+TAREAS: (sin tareas)
+
+CONTEXTO NLP:
+  - Area funcional: Ventas/Comercial
+  - Seniority: semisenior
+  - Sector: Automotriz
+
+RESULTADO MATCHING v3:
+  - ISCO: 5223
+  - Label ESCO: vendedor especializado en vehículos de motor/vendedora especializada en vehículos de motor
+  - Score: 0.86
+  - Metodo: skills_first_v3
+
+  - Skills matched (1): ['vender vehículos']
+  - Alternativas:
+      7231: encargado de la puesta a punto de los ne (score=0.59)
+      5111: tripulante de cabina de pasajeros (score=0.59)
+      5111: sobrecargo (score=0.59)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Vendedor de repuestos -> vendedor de piezas de repuesto de automoviles.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 2/49 | ID: 1118026729
+----------------------------------------------------------------------------------------------------
+
+TITULO: Responsable de Deposito
+
+TAREAS: Organización integral del depósito y del nuevo punto de venta; Control de inventarios y manejo de stocks; Ejecución de rutinas administrativas y financieras (cierres de caja, conciliaciones bancarias,...
+
+CONTEXTO NLP:
+  - Area funcional: Operaciones/Logistica
+  - Seniority: junior
+  - Sector: Manufactura/Industria
+
+RESULTADO MATCHING v3:
+  - ISCO: 4321
+  - Label ESCO: Jefe de almacen/jefa de almacen
+  - Score: 0.98
+  - Metodo: regla_negocio_R23_responsable_deposito
+
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: ERROR en v2.1
+  - ISCO esperado: 4321
+  - Label esperado: coordinador de inventario/coordinadora de inventario
+  - Comentario: ERROR: Responsable de Deposito asignado a RRPP (2432). Deberia ser Jefe de almacen (ISCO 4321). El pipeline ignora 'deposito' y matchea 'responsable' con relaciones publicas.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 3/49 | ID: 1118027243
+----------------------------------------------------------------------------------------------------
+
+TITULO: Abogado/a - Impuestos
+
+TAREAS: litigios y asesoramiento; gestión de casos contencioso-tributarios
+
+CONTEXTO NLP:
+  - Area funcional: Legal
+  - Seniority: junior
+  - Sector: Legal
+
+RESULTADO MATCHING v3:
+  - ISCO: 2611
+  - Label ESCO: Abogado/abogada
+  - Score: 0.98
+  - Metodo: regla_negocio_R17_compliance_legal
+
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Abogado/a de impuestos -> ocupacion general abogado/abogada.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 4/49 | ID: 1118027261
+----------------------------------------------------------------------------------------------------
+
+TITULO: Supervisor de Limpieza
+
+TAREAS: coordinar y supervisar las tareas diarias de limpieza; planificar cronograma de trabajo y limpiezas profundas; asignar tareas y controlar el desempeño del personal a cargo; llevar control de inventari...
+
+CONTEXTO NLP:
+  - Area funcional: Operaciones/Logistica
+  - Seniority: semisenior
+  - Sector: Manufactura/Industria
+
+RESULTADO MATCHING v3:
+  - ISCO: 5151
+  - Label ESCO: supervisor de servicio de limpieza/supervisora de servicio de limpieza
+  - Score: 0.93
+  - Metodo: skills_first_v3
+
+  - Skills matched (3): ['capacitar a empleados', 'preparar un cronograma', 'supervisar las actividades de limpieza']
+  - Alternativas:
+      7215: supervisor de operaciones de movimiento  (score=0.51)
+      7412: oficial de señales luminosas de tierra/o (score=0.42)
+      1431: gerente de salón de juegos (score=0.42)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Supervisor de limpieza -> supervisor de servicio de limpieza.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 5/49 | ID: 1118027276
+----------------------------------------------------------------------------------------------------
+
+TITULO: Ejecutivo de Cuentas SSR/SR
+
+TAREAS: prospección activa de clientes industriales; generación de oportunidades de venta para productos y servicios técnicos; seguimiento del pipeline comercial y actualización del CRM; armado y presentación...
+
+CONTEXTO NLP:
+  - Area funcional: Ventas/Comercial
+  - Seniority: semisenior
+  - Sector: Tecnologia/Software
+
+RESULTADO MATCHING v3:
+  - ISCO: 3322
+  - Label ESCO: Representante comercial
+  - Score: 0.98
+  - Metodo: regla_negocio_R12_ejecutivo_cuentas
+
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: ERROR en v2.1
+  - ISCO esperado: 3322
+  - Label esperado: representante comercial
+  - Comentario: ERROR: Ejecutivo de Cuentas asignado a Electricidad (7411). Deberia ser familia Ventas (ISCO 3322). 'Cuentas' confunde al pipeline con 'contadores electricos'.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 6/49 | ID: 1118027662
+----------------------------------------------------------------------------------------------------
+
+TITULO: Farmacéutico/a para farmacias en Rio Cuarto
+
+TAREAS: dispensa de medicamentos; control y orden de stock; participación en campañas de vacunación
+
+CONTEXTO NLP:
+  - Area funcional: Salud
+  - Seniority: N/A
+  - Sector: Salud/Farmaceutica
+
+RESULTADO MATCHING v3:
+  - ISCO: 2262
+  - Label ESCO: farmacéutico/farmacéutica
+  - Score: 0.83
+  - Metodo: skills_first_v3
+
+  - Skills matched (3): ['dispensar los medicamentos', 'contribuir a las campañas de salud pública', 'supervisar el personal de farmacia']
+  - Alternativas:
+      2262: farmacéutico de hospital/farmacéutica de (score=0.58)
+      2221: enfermero de práctica avanzada/enfermera (score=0.42)
+      2265: dietista (score=0.31)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Farmaceutico/a -> Farmaceutico/farmaceutica (ISCO 2262).
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 7/49 | ID: 1118027834
+----------------------------------------------------------------------------------------------------
+
+TITULO: Vendedora Digital / Atención al Cliente
+
+TAREAS: asesorar y atender consultas de clientes; realizar seguimiento de presupuestos, cotizaciones y pedidos; cargar y actualizar información en el sistema; coordinar internamente con las áreas de logística...
+
+CONTEXTO NLP:
+  - Area funcional: Ventas/Comercial
+  - Seniority: junior
+  - Sector: Tecnologia
+
+RESULTADO MATCHING v3:
+  - ISCO: 4222
+  - Label ESCO: Telefonista de centro de contacto
+  - Score: 0.98
+  - Metodo: regla_negocio_R15_customer_care
+
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Vendedora digital -> vendedor/vendedora.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 8/49 | ID: 1118027941
+----------------------------------------------------------------------------------------------------
+
+TITULO: Dibujante Tecnico
+
+TAREAS: realización de planos; relevamiento de piezas
+
+CONTEXTO NLP:
+  - Area funcional: Operaciones/Logistica
+  - Seniority: junior
+  - Sector: Manufactura/Industria
+
+RESULTADO MATCHING v3:
+  - ISCO: 3118
+  - Label ESCO: técnico en diseño de sistemas eléctricos/técnica en diseño de sistemas eléctricos
+  - Score: 0.60
+  - Metodo: skills_first_v3
+
+  - Skills matched (5): ['elaborar planos', 'planos de proyectos', 'dibujos técnicos', 'utilizar software de dibujo técnico', 'diseñar planos técnicos']
+  - Alternativas:
+      3118: técnico en diseño electrónico/técnica en (score=0.60)
+      3118: arquitecto técnico especializado en dise (score=0.60)
+      3118: ingeniero técnico aeroespacial especiali (score=0.53)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: ERROR en v2.1
+  - ISCO esperado: 3118
+  - Label esperado: operador de diseño de productos asistido por ordenador/operadora de diseño productos asistido por ordenador
+  - Comentario: ERROR: Dibujante Tecnico asignado a Contabilidad (3313). Deberia ser Delineantes (ISCO 3118). Skills como AutoCAD, Solidworks ignoradas.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 9/49 | ID: 1118028027
+----------------------------------------------------------------------------------------------------
+
+TITULO: OPERADOR DE AUTOELEVADORES
+
+TAREAS: (sin tareas)
+
+CONTEXTO NLP:
+  - Area funcional: Operaciones/Logistica
+  - Seniority: junior
+  - Sector: Transporte/Logistica
+
+RESULTADO MATCHING v3:
+  - ISCO: 8344
+  - Label ESCO: Operador de carretilla elevadora
+  - Score: 0.98
+  - Metodo: regla_negocio_R3_autoelevador
+
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: ERROR en v2.1
+  - ISCO esperado: 8344
+  - Label esperado: operador de carretilla elevadora/operadora de carretilla elevadora
+  - Comentario: ERROR: Operador Autoelevadores asignado a Maquinaria Agricola (8341). Deberia ser Carretillas elevadoras (ISCO 8344). Autoelevador != maquinaria agricola.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 10/49 | ID: 1118028038
+----------------------------------------------------------------------------------------------------
+
+TITULO: Ejecutiva/o Comercial de Cuentas - GBA Norte
+
+TAREAS: visitas a las cuentas; trabajo por objetivos mensuales/trimestrales/anuales
+
+CONTEXTO NLP:
+  - Area funcional: Ventas/Comercial
+  - Seniority: junior
+  - Sector: Tecnologia/Software
+
+RESULTADO MATCHING v3:
+  - ISCO: 1211
+  - Label ESCO: director de contabilidad/directora de contabilidad
+  - Score: 0.83
+  - Metodo: skills_first_v3
+
+  - Skills matched (2): ['gestionar cuentas', 'supervisar cuentas financieras']
+  - Alternativas:
+      4311: empleado de contabilidad/empleada de con (score=0.68)
+      2431: gestor de precios/gestora de precios (score=0.58)
+      3411: empleado de tramitación judicial/emplead (score=0.45)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Ejecutiva/o Comercial Cuentas -> Representante comercial (ISCO 3322). Bypass diccionario.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 11/49 | ID: 1118028201
+----------------------------------------------------------------------------------------------------
+
+TITULO: 671SI Operarios ind. ALIMENTICIA c/ Tit. secundario - pres 31/10 de 10 a 1130 NUEVA Suc. SAN ISIDRO
+
+TAREAS: fraccionamiento y envasado de productos; empaque, llenado, cierre y precintado de envases; etiquetado y control de calidad; preparación de pedidos; recepción de mercadería y materia prima
+
+CONTEXTO NLP:
+  - Area funcional: Produccion
+  - Seniority: junior
+  - Sector: Alimentacion
+
+RESULTADO MATCHING v3:
+  - ISCO: 2141
+  - Label ESCO: técnico en envasado de alimentos y bebidas/técnica en envasado de alimentos y bebidas
+  - Score: 0.60
+  - Metodo: skills_first_v3
+
+  - Skills matched (4): ['asegurar el correcto etiquetado de productos', 'requisitos del empaquetado, embalaje y envasado de productos', 'funciones del empaquetado, embalaje y envasado', 'procedimientos de empaquetado']
+  - Alternativas:
+      9321: responsable de empaquetado manual (score=0.59)
+      9333: mozo de almacén/moza de almacén (score=0.58)
+      2141: responsable de producción de sistemas de (score=0.51)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Operarios industria alimenticia -> operario de produccion de alimentos.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 12/49 | ID: 1118028376
+----------------------------------------------------------------------------------------------------
+
+TITULO: Analista administrativo/a
+
+TAREAS: Realizar tareas administrativas, contables, financieras; Colaborar con equipos interdisciplinarios para optimizar la eficiencia de las operaciones comerciales
+
+CONTEXTO NLP:
+  - Area funcional: Administracion/Finanzas
+  - Seniority: junior
+  - Sector: Servicios Financieros
+
+RESULTADO MATCHING v3:
+  - ISCO: 1324
+  - Label ESCO: director de operaciones en el sector del transporte por carretera/directora de operaciones en el sector del transporte por carretera
+  - Score: 0.60
+  - Metodo: skills_first_v3
+
+  - Skills matched (2): ['desarrollar planes para la eficiencia de las operaciones logísticas', 'poner en práctica planes de eficiencia para operaciones logísticas']
+  - Alternativas:
+      4313: administrativo de nóminas/administrativa (score=0.59)
+      3343: asistente de dirección (score=0.54)
+      3341: director de departamento de administraci (score=0.54)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match aceptable. Analista administrativo -> empleado administrativo seguros (ISCO 4312). Familia admin correcta.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 13/49 | ID: 1118028657
+----------------------------------------------------------------------------------------------------
+
+TITULO: Recepcionista
+
+TAREAS: atención personalizada; manejo de documentación; tareas administrativas
+
+CONTEXTO NLP:
+  - Area funcional: Atencion al Cliente
+  - Seniority: junior
+  - Sector: N/A
+
+RESULTADO MATCHING v3:
+  - ISCO: 4226
+  - Label ESCO: Recepcionista
+  - Score: 0.98
+  - Metodo: regla_negocio_R26_recepcionista
+
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Recepcionista -> recepcionista.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 14/49 | ID: 1118028681
+----------------------------------------------------------------------------------------------------
+
+TITULO: ADMINISTRATIVA/O
+
+TAREAS: ingreso de mercadería al sistema; actualizar costos y precios de venta en el sistema; actualizar precios en plataformas e-commerce; pago a proveedores; generar pedidos a proveedores; liquidación de su...
+
+CONTEXTO NLP:
+  - Area funcional: Administracion/Finanzas
+  - Seniority: semisenior
+  - Sector: Alimentacion
+
+RESULTADO MATCHING v3:
+  - ISCO: 3323
+  - Label ESCO: responsable de compras de decoración, utilería y atrezo escénicos
+  - Score: 0.60
+  - Metodo: skills_first_v3
+
+  - Skills matched (2): ['comunicar cambios en los precio', 'identificar proveedores']
+  - Alternativas:
+      3323: comprador de tejidos y material de confe (score=0.60)
+      3323: jefe de compras/jefa de compras (score=0.60)
+      2431: analista de precios (score=0.59)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Administrativa/o -> empleado administrativo.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 15/49 | ID: 1118028828
+----------------------------------------------------------------------------------------------------
+
+TITULO: Búsqueda Laboral: Modelista – Vicente López (Florida Oeste)
+
+TAREAS: desarrollar moldería según la definición del diseño; participar en las pruebas de calce junto al equipo de Producto; realizar ajustes necesarios; desarrollar progresiones de la moldería aprobada; espe...
+
+CONTEXTO NLP:
+  - Area funcional: Producción
+  - Seniority: semisenior
+  - Sector: Tecnologia
+
+RESULTADO MATCHING v3:
+  - ISCO: 3114
+  - Label ESCO: ingeniero técnico en electrónica/ingeniera técnica en electrónica
+  - Score: 0.60
+  - Metodo: skills_first_v3
+
+  - Skills matched (3): ['registrar resultados de ensayos', 'realizar pruebas de rendimiento', 'preparar prototipos de producción']
+  - Alternativas:
+      2152: ingeniero especializado en productos san (score=0.59)
+      3114: ingeniero técnico especializado en produ (score=0.59)
+      3115: especialista en ensayos y control de cal (score=0.41)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Modelista textil -> disenador de modelos para moldes (patronista).
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 16/49 | ID: 1118028833
+----------------------------------------------------------------------------------------------------
+
+TITULO: Asesor Comercial Plan de Ahorro - Volkswagen
+
+TAREAS: optimización de los datos que se brindan para la concreción de la venta; detección de oportunidades de nuevos negocios; cumplimiento de objetivos comerciales
+
+CONTEXTO NLP:
+  - Area funcional: Ventas/Comercial
+  - Seniority: junior
+  - Sector: Automotriz
+
+RESULTADO MATCHING v3:
+  - ISCO: 1221
+  - Label ESCO: director de ventas/directora de ventas
+  - Score: 0.60
+  - Metodo: skills_first_v3
+
+  - Skills matched (4): ['definir objetivos comerciales cuantificables', 'identificar mercados potenciales para empresas', 'prever las ventas a lo largo de períodos de tiempo', 'establecer objetivos de ventas']
+  - Alternativas:
+      2434: gestor de cuentas de TIC/gestora de cuen (score=0.56)
+      1221: responsable de marketing (score=0.52)
+      2431: director de relaciones con los clientes/ (score=0.47)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Asesor comercial plan ahorro -> Representante comercial (familia comercial correcta).
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 17/49 | ID: 1118028887
+----------------------------------------------------------------------------------------------------
+
+TITULO: Account Executive (Hunter)
+
+TAREAS: identificar oportunidades de negocio; elaborar propuestas comerciales; mantener una constante comunicación con los clientes
+
+CONTEXTO NLP:
+  - Area funcional: Ventas/Comercial
+  - Seniority: junior
+  - Sector: Tecnologia
+
+RESULTADO MATCHING v3:
+  - ISCO: 3322
+  - Label ESCO: Representante comercial
+  - Score: 0.98
+  - Metodo: regla_negocio_R12_ejecutivo_cuentas
+
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match aceptable. Account Executive (Hunter) -> agente de empleo. Familia ventas/RRHH cercana.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 18/49 | ID: 1118028891
+----------------------------------------------------------------------------------------------------
+
+TITULO: auxiliar contable
+
+TAREAS: Gestión integral de caja diaria y fondos fijos; Administración de cobranzas, pagos y depósitos bancarios; Control y registro de facturas, proveedores y padrones; Análisis de cuentas contables para cie...
+
+CONTEXTO NLP:
+  - Area funcional: Administracion/Finanzas
+  - Seniority: junior
+  - Sector: Tecnologia
+
+RESULTADO MATCHING v3:
+  - ISCO: 241
+  - Label ESCO: Contador/contadora
+  - Score: 0.98
+  - Metodo: regla_negocio_R14_contador_auditor
+
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Auxiliar contable -> administrativo contable.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 19/49 | ID: 2162667
+----------------------------------------------------------------------------------------------------
+
+TITULO: Gerente de Operaciones
+
+TAREAS: Definir, implementar y supervisar estrategias operativas; Dirigir equipos de coordinadores/as y supervisores/as; Asegurar el cumplimiento de normas de calidad, higiene y seguridad en todas las operaci...
+
+CONTEXTO NLP:
+  - Area funcional: Operaciones/Logistica
+  - Seniority: lead/manager
+  - Sector: Tecnologia
+
+RESULTADO MATCHING v3:
+  - ISCO: 1412
+  - Label ESCO: Gerente de restaurante
+  - Score: 0.98
+  - Metodo: regla_negocio_R25_gerente_gastronomia
+
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: ERROR en v2.1
+  - ISCO esperado: 1412
+  - Label esperado: director de restaurante/directora de restaurante
+  - Comentario: ERROR: Gerente Operaciones Gastronomia asignado a Mineria (3121). Deberia ser Gerentes restaurantes (ISCO 1412). El sector gastronomia fue completamente ignorado.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 20/49 | ID: 1118022146
+----------------------------------------------------------------------------------------------------
+
+TITULO: Community manager
+
+TAREAS: Desarrollar e implementar iniciativas de marketing y branding; Crear contenido para Instagram, Facebook y LinkedIn; Responder mensajes, comentarios y consultas en redes sociales; Armar y mantener actu...
+
+CONTEXTO NLP:
+  - Area funcional: Marketing
+  - Seniority: lead/manager
+  - Sector: Construcción
+
+RESULTADO MATCHING v3:
+  - ISCO: 1221
+  - Label ESCO: director de ventas/directora de ventas
+  - Score: 0.60
+  - Metodo: skills_first_v3
+
+  - Skills matched (4): ['implementar estrategias de ventas', 'colaborar en la elaboración de estrategias de marketing', 'supervisar indicadores clave de rendimiento', 'planificar una campaña de publicidad']
+  - Alternativas:
+      1221: responsable de marketing (score=0.60)
+      2432: gestor de la información para las redes  (score=0.60)
+      2433: representante técnico de ventas de equip (score=0.52)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Community Manager -> Gestor de la informacion para las redes sociales (ISCO 2432). Bypass diccionario argentino.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 21/49 | ID: 1118025212
+----------------------------------------------------------------------------------------------------
+
+TITULO: Representante Técnico/a Comercial
+
+TAREAS: comercialización de agro insumos; asesoramiento técnico a clientes; desarrollo de nuevas oportunidades de negocio
+
+CONTEXTO NLP:
+  - Area funcional: Ventas/Comercial
+  - Seniority: junior
+  - Sector: Tecnologia
+
+RESULTADO MATCHING v3:
+  - ISCO: 6130
+  - Label ESCO: gestor de explotación agrícola/gestora de explotación agrícola
+  - Score: 0.60
+  - Metodo: skills_first_v3
+
+  - Skills matched (2): ['comercializar productos agrícolas', 'gestionar suministros agrícolas']
+  - Alternativas:
+      2149: ingeniero de innovación/ingeniera de inn (score=0.50)
+      1221: director de casa de subastas/directora d (score=0.49)
+      6130: agricultor de producción mixta/agriculto (score=0.44)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Familia de ventas tecnicas correcta.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 22/49 | ID: 1117984105
+----------------------------------------------------------------------------------------------------
+
+TITULO: Gerente de Ventas
+
+TAREAS: (sin tareas)
+
+CONTEXTO NLP:
+  - Area funcional: Ventas/Comercial
+  - Seniority: lead/manager
+  - Sector: Manufactura/Industria
+
+RESULTADO MATCHING v3:
+  - ISCO: 1221
+  - Label ESCO: Director de comercios/directora de comercios
+  - Score: 0.98
+  - Metodo: regla_negocio_R24_gerente_ventas
+
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: ERROR en v2.1
+  - ISCO esperado: 1221
+  - Label esperado: director de marketing/directora de marketing
+  - Comentario: ERROR: Gerente de Ventas asignado a Representante tecnico (2433). Deberia ser Gerentes comercios (ISCO 1221). Nivel jerarquico ignorado.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 23/49 | ID: 1117960588
+----------------------------------------------------------------------------------------------------
+
+TITULO: Asistente de Dirección / Administrativo con experiencia en Publicidad y Medios
+
+TAREAS: Tareas administrativas generales; Atención telefónica y presencial de clientes y proveedores; Coordinación de llamados, correos y comunicaciones institucionales; Apoyo en campañas publicitarias
+
+CONTEXTO NLP:
+  - Area funcional: Administracion/Finanzas
+  - Seniority: junior
+  - Sector: Publicidad/Medios
+
+RESULTADO MATCHING v3:
+  - ISCO: 2431
+  - Label ESCO: asistente de promoción de ventas
+  - Score: 0.78
+  - Metodo: skills_first_v3
+
+  - Skills matched (2): ['ayudar en el desarrollo de campañas de comercialización', 'realizar tareas administrativas']
+  - Alternativas:
+      2431: ayudante de marketing (score=0.78)
+      3322: representante comercial (score=0.60)
+      3339: comercial de espacios publicitarios (score=0.60)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Asistente de Direccion -> Empleado administrativo (ISCO 3343).
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 24/49 | ID: 1118009739
+----------------------------------------------------------------------------------------------------
+
+TITULO: Administrativa Comercio Exterior
+
+TAREAS: Gestión y carga de Facturación de Clientes (FC); Coordinación y ejecución del cierre de ciclos de pago
+
+CONTEXTO NLP:
+  - Area funcional: Administracion/Finanzas
+  - Seniority: junior
+  - Sector: Retail/Comercio
+
+RESULTADO MATCHING v3:
+  - ISCO: 3324
+  - Label ESCO: intermediario de comercio/intermediaria de comercio
+  - Score: 0.65
+  - Metodo: skills_first_v3
+
+  - Skills matched (2): ['efectuar el seguimiento de operaciones financieras', 'comercio internacional']
+  - Alternativas:
+      5131: jefe de sala/jefa de sala (score=0.60)
+      3311: cambista de divisas (score=0.56)
+      3311: agente de cambio (score=0.56)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Administrativa Comex -> Empleado de oficina (ISCO 4110). Oficinista general es correcto.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 25/49 | ID: 1118000814
+----------------------------------------------------------------------------------------------------
+
+TITULO: Asistente Administrativo de Ventas
+
+TAREAS: cargar y actualizar pedidos de venta en el sistema interno; elaborar reportes de ventas, márgenes, rotación y desempeño por producto o vendedor mediante Excel avanzado; controlar y coordinar entregas ...
+
+CONTEXTO NLP:
+  - Area funcional: Administracion/Finanzas
+  - Seniority: junior
+  - Sector: Tecnologia
+
+RESULTADO MATCHING v3:
+  - ISCO: 4311
+  - Label ESCO: asistente de departamento de ventas
+  - Score: 0.82
+  - Metodo: skills_first_v3
+
+  - Skills matched (4): ['implementar estrategias de ventas', 'preparar informes de ventas', 'realizar análisis de ventas', 'actividades de venta']
+  - Alternativas:
+      1221: director de ventas/directora de ventas (score=0.60)
+      1221: responsable de marketing (score=0.54)
+      3322: representante comercial (score=0.51)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match aceptable. Asistente Admin Ventas -> Asistente de direccion (ISCO 3343). Familia admin correcta.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 26/49 | ID: 1118020225
+----------------------------------------------------------------------------------------------------
+
+TITULO: Representante de atención al cliente
+
+TAREAS: manejo de consultas, quejas y solicitudes a través de mails, llamadas telefónicas y mensajes de WhatsApp; Fidelizar al Cliente generando un vínculo duradero en el corto plazo; Detectar oportunidades d...
+
+CONTEXTO NLP:
+  - Area funcional: Atencion al Cliente
+  - Seniority: junior
+  - Sector: Servicios Financieros
+
+RESULTADO MATCHING v3:
+  - ISCO: 4222
+  - Label ESCO: Telefonista de centro de contacto
+  - Score: 0.98
+  - Metodo: regla_negocio_R15_customer_care
+
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match aceptable. Representante atencion cliente -> Agente chat (ISCO 4222). Familia atencion al cliente correcta.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 27/49 | ID: 1118003709
+----------------------------------------------------------------------------------------------------
+
+TITULO: CAJERO/ENCARGADO
+
+TAREAS: manejo de transacciones; arqueo de caja
+
+CONTEXTO NLP:
+  - Area funcional: Operaciones/Logistica
+  - Seniority: semisenior
+  - Sector: Alimentacion
+
+RESULTADO MATCHING v3:
+  - ISCO: 1321
+  - Label ESCO: director de operaciones/directora de operaciones
+  - Score: 0.60
+  - Metodo: skills_first_v3
+
+  - Skills matched (1): ['gestión de operaciones']
+  - Alternativas:
+      1330: gestor de operaciones de TIC/gestora de  (score=0.60)
+      1321: director de producción industrial/direct (score=0.60)
+      1120: director de operaciones/directora de ope (score=0.60)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 28/49 | ID: 1118017586
+----------------------------------------------------------------------------------------------------
+
+TITULO: Médica Clínica o Dermatóloga – Especialista en tratamientos estéticos inyectables
+
+TAREAS: realizar procedimientos inyectables; aplicar tratamientos con tecnología láser
+
+CONTEXTO NLP:
+  - Area funcional: Salud
+  - Seniority: semisenior
+  - Sector: Salud/Farmaceutica
+
+RESULTADO MATCHING v3:
+  - ISCO: 2212
+  - Label ESCO: médico especialista/médica especialista
+  - Score: 0.83
+  - Metodo: skills_first_v3
+
+  - Skills matched (3): ['utilizar terapia de láser para tratar enfermedades cutáneas', 'dermatología', 'practicar cirugía dermatológica']
+  - Alternativas:
+      5142: esteticista (score=0.80)
+      5142: especialista en tratamientos de depilaci (score=0.53)
+      5142: empleado de salón de belleza/empleada de (score=0.30)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Medica Clinica/Dermatologa -> Medico generalista (ISCO 2211). Ambos son medicos.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 29/49 | ID: 1118025956
+----------------------------------------------------------------------------------------------------
+
+TITULO: Jardinero
+
+TAREAS: cuidado general de plantas y flores; mantener el orden y la limpieza de las áreas verdes
+
+CONTEXTO NLP:
+  - Area funcional: Operaciones/Logistica
+  - Seniority: junior
+  - Sector: Tecnologia
+
+RESULTADO MATCHING v3:
+  - ISCO: 6113
+  - Label ESCO: jardinero paisajista/jardinera paisajista
+  - Score: 0.68
+  - Metodo: skills_first_v3
+
+  - Skills matched (3): ['crear espacios verdes', 'cuidar plantas', 'usar equipos de jardinería']
+  - Alternativas:
+      9214: peón de jardinería/peona de jardinería (score=0.60)
+      6113: técnico de mantenimiento de césped/técni (score=0.41)
+      9214: operario de horticultura/operaria de hor (score=0.33)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 30/49 | ID: 2164100
+----------------------------------------------------------------------------------------------------
+
+TITULO: Mozo/Moza
+
+TAREAS: (sin tareas)
+
+CONTEXTO NLP:
+  - Area funcional: Atencion al Cliente
+  - Seniority: junior
+  - Sector: Turismo/Hospitalidad
+
+RESULTADO MATCHING v3:
+  - ISCO: 7512
+  - Label ESCO: pastelero/pastelera
+  - Score: 0.60
+  - Metodo: skills_first_v3
+
+  - Skills matched (1): ['moldear masas']
+  - Alternativas:
+      7512: panadero/panadera (score=0.60)
+      9212: mozo de cuadra/moza de cuadra (score=0.31)
+      9333: mozo de almacén/moza de almacén (score=0.30)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Mozo -> Camarero/camarera.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 31/49 | ID: 2165052
+----------------------------------------------------------------------------------------------------
+
+TITULO: Electricista Industrial
+
+TAREAS: mantenimiento preventivo y correctivo; interpretación de planos eléctricos; dimensionamiento de instalaciones eléctricas; montaje de canalizaciones eléctricas; diseño y armado de tableros eléctricos
+
+CONTEXTO NLP:
+  - Area funcional: Operaciones/Logistica
+  - Seniority: junior
+  - Sector: Tecnologia
+
+RESULTADO MATCHING v3:
+  - ISCO: 7543
+  - Label ESCO: inspector de dispositivos de precisión/inspectora de dispositivos de precisión
+  - Score: 0.60
+  - Metodo: skills_first_v3
+
+  - Skills matched (6): ['interpretar esquemas eléctricos', 'interpretar planos de ingeniería', 'diagrama de una instalación eléctrica', 'medir características eléctricas', 'ingeniería eléctrica']
+  - Alternativas:
+      3113: ingeniero técnico en electromecánica/ing (score=0.54)
+      3113: ingeniero técnico en electricidad/ingeni (score=0.54)
+      7543: supervisor de paneles de control/supervi (score=0.51)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match aceptable. Electricista Industrial -> Electricista de obras (ISCO 7411). Mismo grupo 741x, diferencia de especificidad menor.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 32/49 | ID: 2165301
+----------------------------------------------------------------------------------------------------
+
+TITULO: Supervisor/a Administración Autos usados
+
+TAREAS: optimizar procesos
+
+CONTEXTO NLP:
+  - Area funcional: Administracion/Finanzas
+  - Seniority: semisenior
+  - Sector: Automotriz
+
+RESULTADO MATCHING v3:
+  - ISCO: 7231
+  - Label ESCO: supervisor de mantenimiento de vehículos/supervisora de mantenimiento de vehículos
+  - Score: 0.74
+  - Metodo: skills_first_v3
+
+  - Skills matched (2): ['supervisar la reparación de los vehículos', 'supervisar las actividades de mantenimiento de vehículos']
+  - Alternativas:
+      2141: ingeniero de producción industrial/ingen (score=0.60)
+      2141: ingeniero industrial/ingeniera industria (score=0.60)
+      3122: supervisor de producción/supervisora de  (score=0.45)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Supervisor/a Administracion -> Director departamento administracion (ISCO 3341). Score 0.95.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 33/49 | ID: 1116898892
+----------------------------------------------------------------------------------------------------
+
+TITULO: Chofer - Repartidor
+
+TAREAS: verificación de los pedidos; mantener el vehículo en óptimas condiciones; reportar cualquier inconveniente relacionado con el vehículo o las entregas; colaborar con el equipo logístico para coordinar ...
+
+CONTEXTO NLP:
+  - Area funcional: Operaciones/Logistica
+  - Seniority: semisenior
+  - Sector: Alimentacion
+
+RESULTADO MATCHING v3:
+  - ISCO: 8322
+  - Label ESCO: chófer privado/choferesa privada
+  - Score: 0.86
+  - Metodo: skills_first_v3
+
+  - Skills matched (3): ['mantener el aspecto físico del vehículo', 'garantizar el funcionamiento del vehículo', 'realizar el mantenimiento de un vehículo']
+  - Alternativas:
+      8331: conductor de autobús/conductora de autob (score=0.59)
+      4412: clasificador postal/clasificadora postal (score=0.53)
+      8322: taxista (score=0.49)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match exacto.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 34/49 | ID: 1118023904
+----------------------------------------------------------------------------------------------------
+
+TITULO: Operario Picking
+
+TAREAS: picking con RF; carga y descarga de camiones; conteo de productos; armado de pedidos
+
+CONTEXTO NLP:
+  - Area funcional: Operaciones/Logistica
+  - Seniority: junior
+  - Sector: Transporte/Logistica
+
+RESULTADO MATCHING v3:
+  - ISCO: 9216
+  - Label ESCO: mariscador/mariscadora
+  - Score: 0.60
+  - Metodo: skills_first_v3
+
+  - Skills matched (2): ['capturar peces', 'capturar peces reproductores']
+  - Alternativas:
+      8332: conductor de camión de mudanzas/conducto (score=0.56)
+      9333: mozo de almacén/moza de almacén (score=0.49)
+      9333: operario de logística de almacén/operari (score=0.49)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Operario Picking -> Reponedor/reponedora (ISCO 9334). Bypass diccionario argentino.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 35/49 | ID: 1117980907
+----------------------------------------------------------------------------------------------------
+
+TITULO: Operario de Almacén/Logística
+
+TAREAS: Recepción y verificación de mercadería; Almacenamiento y organización de productos; Preparación de pedidos y despacho de mercadería; Control de inventario y registro en sistema
+
+CONTEXTO NLP:
+  - Area funcional: Operaciones/Logistica
+  - Seniority: junior
+  - Sector: Manufactura/Industria
+
+RESULTADO MATCHING v3:
+  - ISCO: 1324
+  - Label ESCO: jefe de almacén/jefa de almacén
+  - Score: 0.91
+  - Metodo: skills_first_v3
+
+  - Skills matched (5): ['gestionar el inventario', 'planificar el almacenamiento de productos', 'gestionar las operaciones del almacén', 'operaciones en almacenes', 'gestionar la organización del almacén']
+  - Alternativas:
+      4321: encargado de almacén de materias primas/ (score=0.54)
+      4321: almacenero de fábrica textil/almacenera  (score=0.42)
+      4321: coordinador de inventario/coordinadora d (score=0.38)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match exacto.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 36/49 | ID: 1117990944
+----------------------------------------------------------------------------------------------------
+
+TITULO: Repositor/a Externo/a (Eventual) Moreno
+
+TAREAS: Limpieza de góndola y control de fechas de vencimiento; Reposición de los productos asignados; Mantener abastecidos y en orden los freezers y las góndolas de los PDV; Armado de exhibiciones primaria (...
+
+CONTEXTO NLP:
+  - Area funcional: Operaciones/Logistica
+  - Seniority: junior
+  - Sector: Retail/Comercio
+
+RESULTADO MATCHING v3:
+  - ISCO: 5222
+  - Label ESCO: supervisor de tienda/supervisora de tienda
+  - Score: 0.60
+  - Metodo: skills_first_v3
+
+  - Skills matched (3): ['supervisar las actividades de venta', 'supervisar ofertas promocionales', 'control de gastos']
+  - Alternativas:
+      5223: vendedor especializado en artículos de s (score=0.50)
+      5223: vendedor especializado/vendedora especia (score=0.49)
+      5221: comerciante propietario de tienda/comerc (score=0.49)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Repositor -> Reponedor/reponedora (ISCO 9334). Bypass diccionario argentino.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 37/49 | ID: 1117961954
+----------------------------------------------------------------------------------------------------
+
+TITULO: Asistente Administrativo General
+
+TAREAS: Gestionar y organizar documentos y archivos; Coordinar reuniones y eventos; Preparar informes y presentaciones; Realizar tareas de contabilidad básica
+
+CONTEXTO NLP:
+  - Area funcional: Administracion/Finanzas
+  - Seniority: junior
+  - Sector: Tecnologia
+
+RESULTADO MATCHING v3:
+  - ISCO: 3343
+  - Label ESCO: asistente de gestión
+  - Score: 0.88
+  - Metodo: skills_first_v3
+
+  - Skills matched (4): ['coordinar eventos', 'organizar reuniones', 'preparar informes de reuniones', 'realizar contabilidad de costes']
+  - Alternativas:
+      3343: asistente de dirección (score=0.68)
+      3343: empleado administrativo/empleada adminis (score=0.57)
+      1211: director financiero/directora financiera (score=0.48)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Asistente Administrativo General -> Empleado administrativo (ISCO 3343).
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 38/49 | ID: 1117982053
+----------------------------------------------------------------------------------------------------
+
+TITULO: Desarrollador Angular Senior
+
+TAREAS: desarrollar, mantener y escalar funcionalidades del CX Portal; liderar la integración de Module Federation y Lazy Loading; guiar al equipo en la optimización de Webpack
+
+CONTEXTO NLP:
+  - Area funcional: IT/Sistemas
+  - Seniority: senior
+  - Sector: Tecnologia/Software
+
+RESULTADO MATCHING v3:
+  - ISCO: 5223
+  - Label ESCO: vendedor especializado en artículos deportivos/vendedora especializada en artículos deportivos
+  - Score: 0.60
+  - Metodo: skills_first_v3
+
+  - Skills matched (1): ['asesorar sobre equipos deportivos']
+  - Alternativas:
+      2131: biotecnólogo de la industria alimentaria (score=0.60)
+      3257: técnico especialista en legislación alim (score=0.60)
+      2141: ingeniero de producción industrial/ingen (score=0.60)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Angular es framework web -> Desarrollador web.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 39/49 | ID: 1118018461
+----------------------------------------------------------------------------------------------------
+
+TITULO: Asesor/a de Admisiones
+
+TAREAS: asesoramiento personalizado; charlas grupales sobre admisión y oportunidades académicas; atención a consultas por correo electrónico, WhatsApp y teléfono; gestión de actividades y eventos; viajes al i...
+
+CONTEXTO NLP:
+  - Area funcional: Administracion/Finanzas
+  - Seniority: junior
+  - Sector: Educacion
+
+RESULTADO MATCHING v3:
+  - ISCO: 2359
+  - Label ESCO: Asesor academico/asesora academica
+  - Score: 0.98
+  - Metodo: regla_negocio_R27_asesor_admisiones
+
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: ERROR en v2.1
+  - ISCO esperado: 2359
+  - Label esperado: evaluador del aprendizaje previo/evaluadora del aprendizaje previo
+  - Comentario: ERROR: Asesor de Admisiones asignado a Juridico (2619). Deberia ser Asesor academico (ISCO 2359). 'Asesor' es polisemico, se ignora contexto educacion.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 40/49 | ID: 1118018714
+----------------------------------------------------------------------------------------------------
+
+TITULO: Diseñador Gráfico E-commerce
+
+TAREAS: Crear y editar contenido visual para publicaciones de productos; Optimizar títulos y descripciones de productos; Asegurar que las imágenes sean de alta calidad; Gestionar y actualizar publicaciones ex...
+
+CONTEXTO NLP:
+  - Area funcional: Marketing
+  - Seniority: junior
+  - Sector: Tecnologia/Software
+
+RESULTADO MATCHING v3:
+  - ISCO: 2166
+  - Label ESCO: diseñador de medios digitales/diseñadora de medios digitales
+  - Score: 0.70
+  - Metodo: skills_first_v3
+
+  - Skills matched (3): ['garantizar la calidad del contenido', 'creación de contenidos digitales', 'diseñar infografías']
+  - Alternativas:
+      2359: diseñador y desarrollador de aprendizaje (score=0.61)
+      2513: responsable de contenidos web (score=0.60)
+      2166: ilustrador/ilustradora (score=0.47)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: ERROR en v2.1
+  - ISCO esperado: 2166
+  - Label esperado: diseñador de medios digitales/diseñadora de medios digitales
+  - Comentario: ERROR: Disenador Grafico E-commerce asignado a Dibujante guiones (2651). Deberia ser Disenador grafico (ISCO 2166). Skills Photoshop/Illustrator ignoradas.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 41/49 | ID: 1118031991
+----------------------------------------------------------------------------------------------------
+
+TITULO: ASESOR DE VENTAS DIRECTAS
+
+TAREAS: vender a clientes potenciales
+
+CONTEXTO NLP:
+  - Area funcional: Ventas/Comercial
+  - Seniority: junior
+  - Sector: Retail/Comercio
+
+RESULTADO MATCHING v3:
+  - ISCO: 2431
+  - Label ESCO: especialista en ventas en red
+  - Score: 0.86
+  - Metodo: skills_first_v3
+
+  - Skills matched (3): ['vender productos', 'trabajar de forma independiente en ventas', 'realizar ventas activas']
+  - Alternativas:
+      5243: vendedor a domicilio (score=0.62)
+      5142: empleado de centro termal/empleada de ce (score=0.47)
+      5223: vendedor especializado en ropa/vendedora (score=0.41)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Asesor de Ventas Directas -> Vendedor/vendedora (ISCO 5223). Bypass diccionario.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 42/49 | ID: 1116884561
+----------------------------------------------------------------------------------------------------
+
+TITULO: Representante Comercial
+
+TAREAS: atención/gestión de requerimientos/reclamos de clientes; promoción de productos y presentaciones con los clientes; monitoreo y anticipación de situaciones del mercado en cuanto a novedades/tendencia/p...
+
+CONTEXTO NLP:
+  - Area funcional: Ventas/Comercial
+  - Seniority: junior
+  - Sector: Retail/Comercio
+
+RESULTADO MATCHING v3:
+  - ISCO: 4221
+  - Label ESCO: representante en destino de tour operador
+  - Score: 0.60
+  - Metodo: skills_first_v3
+
+  - Skills matched (3): ['gestionar reclamaciones de clientes', 'mejorar las ventas de productos', 'comunicarse con los clientes']
+  - Alternativas:
+      5249: agente de alquiler de vehículos (score=0.50)
+      1211: director financiero/directora financiera (score=0.47)
+      9520: vendedor ambulante/vendedora ambulante (score=0.41)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 43/49 | ID: 1117995368
+----------------------------------------------------------------------------------------------------
+
+TITULO: ASESOR TÉCNICO NUTRICIÓN ANIMAL RUMIANTES
+
+TAREAS: conocer en profundidad todos los productos para rumiantes, clientes y posibilidades de desarrollo futuro
+
+CONTEXTO NLP:
+  - Area funcional: Salud
+  - Seniority: senior
+  - Sector: Salud/Farmaceutica
+
+RESULTADO MATCHING v3:
+  - ISCO: 3240
+  - Label ESCO: Tecnico veterinario/tecnica veterinaria
+  - Score: 0.98
+  - Metodo: regla_negocio_R8_nutricion_animal
+
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: ERROR en v2.1
+  - ISCO esperado: 3240
+  - Label esperado: técnico veterinario/técnica veterinaria
+  - Comentario: ERROR: Asesor Nutricion Animal asignado a Orientacion profesional (2423). Deberia ser Tecnico veterinario (ISCO 3240). Nutricion animal completamente ignorado.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 44/49 | ID: 2170124
+----------------------------------------------------------------------------------------------------
+
+TITULO: Analista de Cultivo - Roque Pérez
+
+TAREAS: Realizar el control, registro y seguimiento de los cultivos; Identificar y gestionar problemas relacionados con malezas, insectos y enfermedades; Garantizar el desarrollo óptimo del cultivo y maximiza...
+
+CONTEXTO NLP:
+  - Area funcional: Operaciones/Logistica
+  - Seniority: junior
+  - Sector: Manufactura/Industria
+
+RESULTADO MATCHING v3:
+  - ISCO: 6113
+  - Label ESCO: gestor de cultivos hortícolas/gestora de cultivos hortícolas
+  - Score: 0.81
+  - Metodo: skills_first_v3
+
+  - Skills matched (4): ['gestionar la producción de cultivos', 'ejecutar actividades de control de enfermedades y plagas', 'garantizar la fertilidad del suelo', 'utilizar sistemas y bases de datos de información agrícola']
+  - Alternativas:
+      6114: responsable de producción agrícola (score=0.53)
+      6111: responsable de equipo de producción agrí (score=0.45)
+      6112: jefe de equipo de producción frutícola/j (score=0.44)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match aceptable. Analista de Cultivo -> Ingeniero agricola (ISCO 2144). Nivel educativo podria ser tecnico pero ingeniero es aceptable para analista.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 45/49 | ID: 1117975249
+----------------------------------------------------------------------------------------------------
+
+TITULO: Gerente General para Maderera
+
+TAREAS: supervisar el funcionamiento de las tres sucursales; coordinar y dirigir las áreas de logística, depósitos y operaciones comerciales; liderar y acompañar a los equipos de trabajo; resolver incidencias...
+
+CONTEXTO NLP:
+  - Area funcional: Operaciones/Logistica
+  - Seniority: lead/manager
+  - Sector: Manufactura/Industria
+
+RESULTADO MATCHING v3:
+  - ISCO: 1324
+  - Label ESCO: director de distribución y logística/directora de distribución y logística
+  - Score: 0.60
+  - Metodo: skills_first_v3
+
+  - Skills matched (4): ['crear un ambiente de trabajo de mejora continua', 'resolver problemas operativos de transporte', 'trabajar en un equipo encargado de la logística', 'dirigir funciones logísticas']
+  - Alternativas:
+      1349: director de servicios para los clientes/ (score=0.53)
+      1213: director de sucursal/directora de sucurs (score=0.46)
+      1439: director de centro de llamadas/directora (score=0.45)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 46/49 | ID: 1118028777
+----------------------------------------------------------------------------------------------------
+
+TITULO: Vendedor con Experiencia
+
+TAREAS: promover y vender productos; realizar seguimiento de ventas y cobranzas; cumplir con objetivos de venta
+
+CONTEXTO NLP:
+  - Area funcional: Ventas/Comercial
+  - Seniority: junior
+  - Sector: Tecnologia
+
+RESULTADO MATCHING v3:
+  - ISCO: 2431
+  - Label ESCO: especialista en ventas en red
+  - Score: 0.87
+  - Metodo: skills_first_v3
+
+  - Skills matched (3): ['cumplir los objetivos de ventas', 'vender productos', 'implementar estrategias de ventas']
+  - Alternativas:
+      2433: ingeniero de ventas/ingeniera de ventas (score=0.77)
+      4221: agente de viajes (score=0.50)
+      2434: gestor de cuentas de TIC/gestora de cuen (score=0.49)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 47/49 | ID: 1117977340
+----------------------------------------------------------------------------------------------------
+
+TITULO: RECEPCIONISTA ADMINISTRATIVO
+
+TAREAS: Realizar las cobranzas del estudio; Dar de alta de proveedores y facturas en Tango; Suplir las licencias de la responsable de administración en tareas de pagos a proveedores, servicios e impuestos; Re...
+
+CONTEXTO NLP:
+  - Area funcional: Administracion/Finanzas
+  - Seniority: junior
+  - Sector: Servicios Financieros
+
+RESULTADO MATCHING v3:
+  - ISCO: 4226
+  - Label ESCO: Recepcionista
+  - Score: 0.98
+  - Metodo: regla_negocio_R26_recepcionista
+
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: ERROR en v2.1
+  - ISCO esperado: 4226
+  - Label esperado: recepcionista
+  - Comentario: ERROR: Recepcionista Administrativo asignado a Admin seguros (4312). Deberia ser Recepcionista (ISCO 4226). El titulo dice RECEPCIONISTA primero.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 48/49 | ID: 1118028048
+----------------------------------------------------------------------------------------------------
+
+TITULO: Asesor/a de Ventas y Atención al Cliente
+
+TAREAS: promocionar y vender productos; mantener el espacio de trabajo limpio y ordenado; manejar el sistema de cobro (POS); resolver consultas y reclamos de los clientes
+
+CONTEXTO NLP:
+  - Area funcional: Ventas/Comercial
+  - Seniority: junior
+  - Sector: Retail/Comercio
+
+RESULTADO MATCHING v3:
+  - ISCO: 4222
+  - Label ESCO: Telefonista de centro de contacto
+  - Score: 0.98
+  - Metodo: regla_negocio_R15_customer_care
+
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. Asesor/a de Ventas -> Vendedor/vendedora (ISCO 5223). Bypass diccionario.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+----------------------------------------------------------------------------------------------------
+CASO 49/49 | ID: 1118009703
+----------------------------------------------------------------------------------------------------
+
+TITULO: Asesor Comercial E Commerce - Manager de redes sociales
+
+TAREAS: Manejo de venta de máquinas automatizadas o tecnología de producción; Creación y actualización de anuncios en e-commerce; Supervisión a la agencia de marketing digital; Manejo de CRM y sistemas de ges...
+
+CONTEXTO NLP:
+  - Area funcional: Ventas/Comercial
+  - Seniority: lead/manager
+  - Sector: Servicios
+
+RESULTADO MATCHING v3:
+  - ISCO: 1221
+  - Label ESCO: responsable de marketing digital
+  - Score: 0.83
+  - Metodo: skills_first_v3
+
+  - Skills matched (3): ['planificar campañas de comercialización en redes sociales', 'aplicar marketing en redes sociales', 'técnicas de comercialización en redes sociales']
+  - Alternativas:
+      2431: gestor de marca empleadora/gestora de ma (score=0.82)
+      2431: especialista en marketing en línea (score=0.65)
+      1221: director de comercialización y ventas po (score=0.64)
+
+VALIDACION GOLD SET ANTERIOR:
+  - Estado: OK (era correcto en v2.1)
+  - Comentario: Match correcto. E-commerce es ventas en red.
+
+VERIFICACION MANUAL:
+  [ ] Correcto
+  [ ] Incorrecto - ISCO esperado: ____
+  [ ] Revision pendiente
+  Comentario: _________________________________
+
+====================================================================================================
+FIN DEL REPORTE
+====================================================================================================

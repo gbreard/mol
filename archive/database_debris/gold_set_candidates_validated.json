@@ -1,0 +1,250 @@
+[
+  {
+    "id_oferta": "2162667",
+    "titulo": "Gerente de Operaciones - Gastronomía",
+    "esco_label": "Director de operaciones",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match correcto. Gerente de operaciones = Director de operaciones."
+  },
+  {
+    "id_oferta": "1118022146",
+    "titulo": "Community manager",
+    "esco_label": "Responsable de marketing",
+    "esco_ok": false,
+    "tipo_error": "nivel_jerarquico",
+    "comentario": "Community Manager no es Responsable/Director de marketing. Deberia ser especialista en redes sociales."
+  },
+  {
+    "id_oferta": "1118025212",
+    "titulo": "Representante Tecnico/a Comercial",
+    "esco_label": "Representante tecnico de ventas maquinaria agricola",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match correcto. Familia de ventas tecnicas correcta."
+  },
+  {
+    "id_oferta": "1117984105",
+    "titulo": "Gerente de Ventas Concesionario Maquinaria Agricola",
+    "esco_label": "Representante tecnico de ventas maquinaria agricola",
+    "esco_ok": false,
+    "tipo_error": "nivel_jerarquico",
+    "comentario": "Gerente de Ventas no es Representante. Nivel jerarquico excesivo hacia abajo."
+  },
+  {
+    "id_oferta": "1117960588",
+    "titulo": "Asistente de Direccion / Administrativo Publicidad",
+    "esco_label": "Asistente administrativo para campanas de recaudacion",
+    "esco_ok": false,
+    "tipo_error": "sector_funcion",
+    "comentario": "No es recaudacion de fondos, es publicidad. Deberia ser asistente administrativo general."
+  },
+  {
+    "id_oferta": "1118009739",
+    "titulo": "Administrativa Comercio Exterior",
+    "esco_label": "Empleado administrativo",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match correcto. Ocupacion general administrativa."
+  },
+  {
+    "id_oferta": "1118000814",
+    "titulo": "Asistente Administrativo de Ventas",
+    "esco_label": "Asistente de departamento de ventas",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match exacto."
+  },
+  {
+    "id_oferta": "1118020225",
+    "titulo": "Representante de atencion al cliente",
+    "esco_label": "Agente de atencion al cliente por chat",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match aceptable. Familia de atencion al cliente correcta."
+  },
+  {
+    "id_oferta": "1118003709",
+    "titulo": "CAJERO/ENCARGADO",
+    "esco_label": "Cajero/cajera",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match correcto."
+  },
+  {
+    "id_oferta": "1118017586",
+    "titulo": "Medica Clinica o Dermatologa - tratamientos esteticos",
+    "esco_label": "Esteticista",
+    "esco_ok": false,
+    "tipo_error": "nivel_profesional",
+    "comentario": "Medica/Dermatologa no es Esteticista. Diferencia enorme en nivel educativo y profesional."
+  },
+  {
+    "id_oferta": "1118025956",
+    "titulo": "Jardinero",
+    "esco_label": "Jardinero paisajista",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match correcto."
+  },
+  {
+    "id_oferta": "2164100",
+    "titulo": "Mozo/Moza",
+    "esco_label": "Supervisor de vinedos",
+    "esco_ok": false,
+    "tipo_error": "sector_funcion",
+    "comentario": "ERROR GRAVE. Mozo es camarero/mesero en gastronomia. No tiene nada que ver con vinedos/agricultura."
+  },
+  {
+    "id_oferta": "2165052",
+    "titulo": "Electricista Industrial",
+    "esco_label": "Electricista industrial",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match exacto."
+  },
+  {
+    "id_oferta": "2165301",
+    "titulo": "Supervisor/a Administracion Autos usados",
+    "esco_label": "Supervisor de mantenimiento de vehiculos",
+    "esco_ok": false,
+    "tipo_error": "tipo_funcion",
+    "comentario": "Administracion de autos usados (ventas) no es mantenimiento de vehiculos."
+  },
+  {
+    "id_oferta": "1116898892",
+    "titulo": "Chofer - Repartidor",
+    "esco_label": "Conductor de vehiculo de reparto",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match exacto."
+  },
+  {
+    "id_oferta": "1118023904",
+    "titulo": "Operario Picking Zona Norte",
+    "esco_label": "Operario de maquinas de embalaje",
+    "esco_ok": false,
+    "tipo_error": "tipo_funcion",
+    "comentario": "Picking (preparacion de pedidos) no es embalaje. Deberia ser operario de almacen/logistica."
+  },
+  {
+    "id_oferta": "1117980907",
+    "titulo": "Operario de Almacen/Logistica",
+    "esco_label": "Operario de logistica de almacen",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match exacto."
+  },
+  {
+    "id_oferta": "1117990944",
+    "titulo": "Repositor/a Externo/a",
+    "esco_label": "Mantenedor/mantenedora",
+    "esco_ok": false,
+    "tipo_error": "tipo_funcion",
+    "comentario": "Repositor repone mercaderia en gondolas. No es mantenedor. Deberia ser reponedor de estantes."
+  },
+  {
+    "id_oferta": "1117961954",
+    "titulo": "Asistente Administrativo General",
+    "esco_label": "Asistente administrativo para campanas de recaudacion",
+    "esco_ok": false,
+    "tipo_error": "sector_funcion",
+    "comentario": "Asistente General no es especificamente recaudacion de fondos."
+  },
+  {
+    "id_oferta": "1117982053",
+    "titulo": "Desarrollador Angular Senior",
+    "esco_label": "Desarrollador web",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match correcto. Angular es framework web."
+  },
+  {
+    "id_oferta": "1118018461",
+    "titulo": "Asesor/a de Admisiones",
+    "esco_label": "Asesor academico",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match correcto. Familia educacion."
+  },
+  {
+    "id_oferta": "1118018714",
+    "titulo": "Disenador Grafico E-commerce",
+    "esco_label": "Disenador grafico",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match correcto."
+  },
+  {
+    "id_oferta": "1118031991",
+    "titulo": "ASESOR DE VENTAS DIRECTAS",
+    "esco_label": "Asesor comercial para venta de energia solar",
+    "esco_ok": false,
+    "tipo_error": "sector_especifico",
+    "comentario": "Ventas directas genericas no es especificamente energia solar."
+  },
+  {
+    "id_oferta": "1116884561",
+    "titulo": "Representante Comercial (Consumo Masivo)",
+    "esco_label": "Representante comercial",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match correcto."
+  },
+  {
+    "id_oferta": "1117995368",
+    "titulo": "ASESOR TECNICO NUTRICION ANIMAL RUMIANTES",
+    "esco_label": "Nutricionista animal",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match correcto."
+  },
+  {
+    "id_oferta": "2170124",
+    "titulo": "Analista de Cultivo",
+    "esco_label": "Analista de alimentos",
+    "esco_ok": false,
+    "tipo_error": "tipo_funcion",
+    "comentario": "Analista de Cultivo (agricultura/agronomia) no es Analista de alimentos. Diferente especialidad."
+  },
+  {
+    "id_oferta": "1117975249",
+    "titulo": "Gerente General para Maderera (PYME)",
+    "esco_label": "Gerente de maderera",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match correcto."
+  },
+  {
+    "id_oferta": "1118028777",
+    "titulo": "Vendedor con Experiencia (Corredor)",
+    "esco_label": "Vendedor/vendedora",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match correcto."
+  },
+  {
+    "id_oferta": "1117977340",
+    "titulo": "RECEPCIONISTA ADMINISTRATIVO",
+    "esco_label": "Recepcionista",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match correcto."
+  },
+  {
+    "id_oferta": "1118028048",
+    "titulo": "Asesor/a de Ventas y Atencion al Cliente",
+    "esco_label": "Vendedor especializado en cosmetica",
+    "esco_ok": false,
+    "tipo_error": "sector_especifico",
+    "comentario": "Asesor de ventas generico no implica cosmetica. Deberia ser vendedor generico."
+  },
+  {
+    "id_oferta": "1118009703",
+    "titulo": "Asesor Comercial E Commerce - Manager redes",
+    "esco_label": "Especialista en ventas en red",
+    "esco_ok": true,
+    "tipo_error": null,
+    "comentario": "Match correcto. E-commerce es ventas en red."
+  }
+]

@@ -1,0 +1,63 @@
+﻿[SKILLS] Cargando modelo BAAI/bge-m3...
+[SKILLS] Cargando embeddings desde D:\OEDE\Webscrapping\database\embeddings\esco_skills_embeddings_full.npy...
+[SKILLS] Inicializado: 14247 skills, umbral=0.55
+[MATCHER] Cargando asociaciones skill -> occupation...
+[MATCHER] Cargadas 134805 asociaciones
+[MATCHER] Cargadas 3045 ocupaciones
+[V3] Cargados 3045 embeddings de ocupaciones
+[V3] Cargadas reglas de negocio desde D:\OEDE\Webscrapping\config\matching_rules_business.json
+
+============================================================
+ID: 1118026729
+Titulo: Responsable de Deposito
+Tareas: Organizaci¾n integral del dep¾sito y del nuevo punto de venta; Control de invent...
+Esperado: 4321
+
+[V3] === Matching: Responsable de Deposito... ===
+[V3] Regla R1_skills_cad aplicada: Skills CAD/Dise±o TÚcnico
+Resultado: ISCO=311, Metodo=regla_negocio_R1_skills_cad
+>>> FALLO (esperado 4321)
+
+============================================================
+ID: 1118027276
+Titulo: Ejecutivo de Cuentas SSR/SR
+Tareas: prospecci¾n activa de clientes industriales; generaci¾n de oportunidades de vent...
+Esperado: 3322
+
+[V3] === Matching: Ejecutivo de Cuentas SSR/SR... ===
+[V3] Regla R12_ejecutivo_cuentas aplicada: Ejecutivo de Cuentas = Ventas
+Resultado: ISCO=332, Metodo=regla_negocio_R12_ejecutivo_cuentas
+>>> FALLO (esperado 3322)
+
+============================================================
+ID: 2162667
+Titulo: Gerente de Operaciones
+Tareas: Definir, implementar y supervisar estrategias operativas; Dirigir equipos de coo...
+Esperado: 1412
+
+[V3] === Matching: Gerente de Operaciones... ===
+[V3] Regla R1_skills_cad aplicada: Skills CAD/Dise±o TÚcnico
+Resultado: ISCO=311, Metodo=regla_negocio_R1_skills_cad
+>>> FALLO (esperado 1412)
+
+============================================================
+ID: 1118018461
+Titulo: Asesor/a de Admisiones
+Tareas: asesoramiento personalizado; charlas grupales sobre admisi¾n y oportunidades aca...
+Esperado: 2359
+
+[V3] === Matching: Asesor/a de Admisiones... ===
+[V3] Regla R1_skills_cad aplicada: Skills CAD/Dise±o TÚcnico
+Resultado: ISCO=311, Metodo=regla_negocio_R1_skills_cad
+>>> FALLO (esperado 2359)
+
+============================================================
+ID: 1117995368
+Titulo: ASESOR T╔CNICO NUTRICIËN ANIMAL RUMIANTES
+Tareas: conocer en profundidad todos los productos para rumiantes, clientes y posibilida...
+Esperado: 3240
+
+[V3] === Matching: ASESOR T╔CNICO NUTRICIËN ANIMAL RUMIANTES... ===
+[V3] Regla R8_nutricion_animal aplicada: Nutrici¾n Animal/Veterinaria
+Resultado: ISCO=324, Metodo=regla_negocio_R8_nutricion_animal
+>>> FALLO (esperado 3240)

@@ -1,0 +1,86 @@
+{
+  "version": "1.0",
+  "descripcion": "Pesos para skills en matching. Skills genericas tienen peso reducido para no dominar sobre skills especificas.",
+  "fecha_creacion": "2026-01-13",
+  "_uso": "Si una skill esta en skills_genericas, su score se multiplica por peso_generico (0.5). Las especificas mantienen peso 1.0.",
+
+  "skills_genericas": {
+    "_descripcion": "Skills comunes a muchos roles que no aportan informacion para clasificar la ocupacion",
+    "lista": [
+      "trabajo en equipo",
+      "teamwork",
+      "comunicacion",
+      "communication",
+      "comunicación",
+      "gestion",
+      "gestión",
+      "management",
+      "liderazgo",
+      "leadership",
+      "resolucion de problemas",
+      "problem solving",
+      "proactividad",
+      "proactive",
+      "organizacion",
+      "organization",
+      "adaptabilidad",
+      "flexibility",
+      "puntualidad",
+      "responsabilidad",
+      "compromiso",
+      "iniciativa",
+      "creatividad",
+      "atencion al detalle",
+      "orientacion a resultados",
+      "capacidad de aprendizaje",
+      "empatia",
+      "pensamiento critico",
+      "toma de decisiones",
+      "resolucion de conflictos",
+      "negociacion",
+      "planificacion",
+      "multitarea",
+      "trabajo bajo presion"
+    ],
+    "peso": 0.5
+  },
+
+  "skills_contextuales": {
+    "_descripcion": "Skills que pueden ser especificas o genericas segun contexto",
+    "reglas": [
+      {
+        "skill": "limpieza",
+        "si_sector_es": ["Limpieza", "Hoteleria"],
+        "entonces_peso": 1.0,
+        "sino_peso": 0.3,
+        "_nota": "Limpieza es especifica en sector limpieza, generica en otros"
+      },
+      {
+        "skill": "gestion de equipo",
+        "si_seniority_es": ["manager", "director", "lead"],
+        "entonces_peso": 1.0,
+        "sino_peso": 0.4,
+        "_nota": "Gestion de equipo es relevante para managers, ruido para operarios"
+      },
+      {
+        "skill": "atencion al cliente",
+        "si_area_es": ["Ventas", "Retail"],
+        "entonces_peso": 1.0,
+        "sino_peso": 0.5,
+        "_nota": "Atencion al cliente es core en ventas, secundaria en otros"
+      }
+    ]
+  },
+
+  "umbrales": {
+    "minimo_score_skill": 0.55,
+    "minimo_score_skill_ponderado": 0.30,
+    "_nota": "Una skill con score 0.55 y peso 0.5 queda en 0.275, bajo el umbral y se excluye"
+  },
+
+  "aplicar_en": {
+    "skills_implicit_extractor": true,
+    "match_by_skills": true,
+    "_nota": "Aplicar pesos tanto en extraccion como en matching"
+  }
+}

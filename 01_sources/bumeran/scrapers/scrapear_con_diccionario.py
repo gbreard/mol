@@ -19,7 +19,7 @@ import logging
 # Agregar paths para imports
 project_root = Path(__file__).parent.parent.parent.parent
 consolidation_scripts = project_root / "02_consolidation" / "scripts"
-config_scripts = project_root / "data" / "config"
+config_scripts = project_root / "config" / "scraping"
 
 for path in [consolidation_scripts, config_scripts]:
     if str(path) not in sys.path:

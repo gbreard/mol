@@ -1,0 +1,17 @@
+﻿================================================================================
+EXPORTAR ofertas_esco_skills_detalle A CSV
+================================================================================
+[INFO] Registros a exportar: 1315
+
+[OK] Exportado a: D:\OEDE\Webscrapping\database\skills_detalle_export_20251201_150945.csv
+     Columnas: 15
+     Registros: 1315
+
+----------------------------------------
+RESUMEN POR TIPO DE SKILL:
+  skill: 1315
+
+  ESSENTIAL: 723
+  OPTIONAL:  592
+
+================================================================================

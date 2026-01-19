@@ -1,0 +1,15 @@
+ERROR: OperationalError: no such column: titulo
+
+Traceback (most recent call last):
+  File "D:\OEDE\Webscrapping\database\test_gold_set_v3_simple.py", line 188, in <module>
+    output, c, t = run_test()
+                   ~~~~~~~~^^
+  File "D:\OEDE\Webscrapping\database\test_gold_set_v3_simple.py", line 89, in run_test
+    oferta = get_oferta_nlp(conn, id_oferta)
+  File "D:\OEDE\Webscrapping\database\test_gold_set_v3_simple.py", line 26, in get_oferta_nlp
+    cur = conn.execute('''
+        SELECT titulo, titulo_limpio, tareas_explicitas, area_funcional,
+    ...<2 lines>...
+        WHERE id_aviso = ?
+    ''', (id_oferta,))
+sqlite3.OperationalError: no such column: titulo

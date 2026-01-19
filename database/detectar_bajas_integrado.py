@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 
 # Rutas
 DB_PATH = Path(__file__).parent / 'bumeran_scraping.db'
-TRACKING_PATH = Path(__file__).parent.parent / 'data' / 'tracking' / 'bumeran_scraped_ids.json'
+TRACKING_PATH = Path(__file__).parent.parent / '01_sources' / 'bumeran' / 'tracking' / 'scraped_ids.json'
 
 
 class DetectorBajasIntegrado:
@@ -458,7 +458,7 @@ def main():
     if not verificar_migracion_aplicada(DB_PATH):
         if args.migrar:
             logger.info("Aplicando migración...")
-            from verificar_ofertas_activas import aplicar_migracion
+            from scripts.scraping.verificar_ofertas_activas import aplicar_migracion
             aplicar_migracion()
         else:
             logger.error("Migración no aplicada. Ejecutar con --migrar primero.")

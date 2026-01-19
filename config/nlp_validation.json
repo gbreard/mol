@@ -24,8 +24,9 @@
 
   "validacion_rangos": {
     "_descripcion": "Rangos validos para campos numericos",
-    "experiencia_min_anios": {"min": 0, "max": 30, "accion_fuera_rango": "null"},
-    "experiencia_max_anios": {"min": 0, "max": 40, "accion_fuera_rango": "null"},
+    "_nota_experiencia": "Max 15 porque valores 18-30 son tipicamente edad, no experiencia",
+    "experiencia_min_anios": {"min": 0, "max": 15, "accion_fuera_rango": "null"},
+    "experiencia_max_anios": {"min": 0, "max": 20, "accion_fuera_rango": "null"},
     "salario_min": {"min": 10000, "max": 50000000, "accion_fuera_rango": "null"},
     "salario_max": {"min": 10000, "max": 100000000, "accion_fuera_rango": "null"},
     "edad_min": {"min": 16, "max": 70, "accion_fuera_rango": "null"},
@@ -34,22 +35,22 @@
   },
 
   "validacion_consistencia": {
-    "_descripcion": "Validaciones cruzadas entre campos",
+    "_descripcion": "Validaciones cruzadas entre campos - swap si min > max",
     "reglas": [
       {
         "nombre": "experiencia_min_menor_max",
-        "condicion": "experiencia_min_anios > experiencia_max_anios",
-        "accion": "swap_valores"
+        "campo_min": "experiencia_min_anios",
+        "campo_max": "experiencia_max_anios"
       },
       {
         "nombre": "salario_min_menor_max",
-        "condicion": "salario_min > salario_max",
-        "accion": "swap_valores"
+        "campo_min": "salario_min",
+        "campo_max": "salario_max"
       },
       {
         "nombre": "edad_min_menor_max",
-        "condicion": "edad_min > edad_max",
-        "accion": "swap_valores"
+        "campo_min": "edad_min",
+        "campo_max": "edad_max"
       }
     ]
   }

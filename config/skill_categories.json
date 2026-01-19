@@ -1,0 +1,264 @@
+{
+  "version": "1.0",
+  "description": "Categorización jerárquica de skills ESCO para dashboards",
+
+  "categorias_L1": {
+    "S1": "Comunicación",
+    "S3": "Asistencia",
+    "S4": "Gestión",
+    "S5": "Trabajar con ordenadores",
+    "S6": "Técnicas",
+    "K": "Conocimientos",
+    "T": "Transversales"
+  },
+
+  "categorias_L2": {
+    "K2.1": "Planos técnicos",
+    "K2.2": "Normativas",
+    "K2.3": "Idiomas",
+    "S1.4": "Comunicación digital",
+    "S3.1": "Atención cliente",
+    "S3.2": "Ventas",
+    "S3.3": "Atención paciente",
+    "S4.5": "Gestión inventarios",
+    "S4.6": "Gestión financiera",
+    "S4.7": "Gestión de procesos",
+    "S5.0": "Uso general",
+    "S5.1": "Programación",
+    "S5.2": "Infraestructura IT",
+    "S5.5": "Análisis datos digitales",
+    "S5.6": "Creación contenido digital",
+    "S5.7": "Marketing digital",
+    "S5.8": "Software específico",
+    "S5.9": "E-commerce",
+    "S6.1": "Mantenimiento",
+    "S6.2": "Equipos especializados",
+    "S6.3": "Electricidad",
+    "S6.4": "Equipos médicos",
+    "T1.1": "Colaboración",
+    "T1.2": "Comunicación",
+    "T1.3": "Negociación",
+    "T1.4": "Relaciones",
+    "T2.1": "Liderazgo",
+    "T3.1": "Iniciativa",
+    "T3.2": "Autonomía",
+    "T3.3": "Orientación resultados",
+    "T3.4": "Gestión tiempo",
+    "T3.5": "Adaptabilidad",
+    "T4.1": "Resolución problemas",
+    "T4.2": "Pensamiento analítico",
+    "T4.3": "Pensamiento estratégico",
+    "T4.4": "Creatividad",
+    "T4.5": "Atención detalle",
+    "T5.1": "Actitud",
+    "T5.2": "Responsabilidad",
+    "T5.3": "Excelencia",
+    "T5.4": "Inteligencia emocional",
+    "T6.1": "Disponibilidad"
+  },
+
+  "heuristicas": {
+    "keywords_digitales": {
+      "L1": "S5",
+      "es_digital": true,
+      "keywords": [
+        "software", "programación", "programar", "código", "desarrollo", "web",
+        "python", "java", "javascript", "sql", "excel", "office", "erp", "crm", "sap",
+        "cloud", "aws", "azure", "api", "base de datos", "datos", "database",
+        "digital", "internet", "online", "app", "aplicación", "sistema",
+        "informático", "computación", "ordenador", "tecnología", "tic",
+        "react", "angular", "vue", "node", "php", "html", "css",
+        "machine learning", "inteligencia artificial", "ia", "ai",
+        "docker", "kubernetes", "devops", "git", "agile", "scrum"
+      ],
+      "L2_subclasificacion": {
+        "S5.1": ["programación", "programar", "código", "python", "java", "javascript", "react", "angular", "vue", "node", "php", "html", "css", "git", "desarrollo"],
+        "S5.2": ["cloud", "aws", "azure", "docker", "kubernetes", "devops", "infraestructura", "servidor", "red", "network"],
+        "S5.5": ["excel", "datos", "análisis", "power bi", "tableau", "estadístic", "sql", "database"],
+        "S5.6": ["diseño", "photoshop", "illustrator", "video", "edición", "contenido", "multimedia"],
+        "S5.7": ["marketing", "seo", "sem", "redes sociales", "publicidad", "google ads", "facebook"],
+        "S5.8": ["erp", "sap", "crm", "salesforce", "sistema", "software"],
+        "S5.9": ["ecommerce", "e-commerce", "tienda online", "marketplace", "shopify"]
+      }
+    },
+
+    "keywords_transversales": {
+      "L1": "T",
+      "es_digital": false,
+      "keywords": [
+        "liderazgo", "liderar", "comunicación", "comunicar", "equipo", "negociación", "negociar",
+        "problema", "resolver", "pensamiento", "crítico", "creativ", "adaptab", "iniciativa",
+        "responsab", "colabor", "interpersonal", "empatía", "asertiv", "autónom",
+        "organiz", "planific", "tiempo", "presión", "flexible", "proactiv"
+      ],
+      "L2_subclasificacion": {
+        "T1.1": ["equipo", "colabor", "cooperar"],
+        "T1.2": ["comunicación", "comunicar", "expresar", "escucha"],
+        "T1.3": ["negociación", "negociar", "persuad"],
+        "T1.4": ["interpersonal", "relacion"],
+        "T2.1": ["liderazgo", "liderar", "dirigir", "coordinar"],
+        "T3.1": ["iniciativa", "proactiv"],
+        "T3.2": ["autónom", "independ"],
+        "T3.3": ["resultado", "objetivo", "meta", "presión"],
+        "T3.4": ["tiempo", "organiz", "planific", "puntual"],
+        "T3.5": ["adaptab", "flexible", "cambio"],
+        "T4.1": ["problema", "resolver", "solución"],
+        "T4.2": ["análisis", "analítico", "crítico"],
+        "T4.3": ["estratég", "visión"],
+        "T4.4": ["creativ", "innovar"],
+        "T4.5": ["detalle", "precisión", "rigor"],
+        "T5.1": ["actitud", "positiv"],
+        "T5.2": ["responsab", "compromiso"],
+        "T5.3": ["excelencia", "calidad"],
+        "T5.4": ["empatía", "emocional", "sensibil"]
+      }
+    },
+
+    "keywords_conocimientos": {
+      "L1": "K",
+      "es_digital": false,
+      "keywords": [
+        "conocimiento de", "principios de", "teoría", "legislación", "normativa",
+        "regulación", "estándar", "metodología", "idioma", "inglés", "portugués",
+        "contabilidad", "finanzas", "derecho", "medicina", "ingeniería",
+        "arquitectura", "química", "física", "matemática", "estadística"
+      ],
+      "L2_subclasificacion": {
+        "K2.1": ["plano", "técnico", "dibujo", "cad"],
+        "K2.2": ["normativa", "legislación", "regulación", "ley", "norma", "iso"],
+        "K2.3": ["idioma", "inglés", "portugués", "francés", "alemán", "lengua"]
+      }
+    },
+
+    "keywords_asistencia": {
+      "L1": "S3",
+      "es_digital": false,
+      "keywords": [
+        "cliente", "atención", "servicio", "venta", "vender", "comercial",
+        "paciente", "salud", "médico", "enferm", "terapia"
+      ],
+      "L2_subclasificacion": {
+        "S3.1": ["cliente", "atención", "servicio", "soporte"],
+        "S3.2": ["venta", "vender", "comercial", "negocio"],
+        "S3.3": ["paciente", "salud", "médico", "enferm", "terapia", "clínic"]
+      }
+    },
+
+    "keywords_gestion": {
+      "L1": "S4",
+      "es_digital": false,
+      "keywords": [
+        "gestión", "gestionar", "administr", "inventario", "stock", "almacén",
+        "contable", "factura", "presupuesto", "finanzas", "proceso", "proyecto"
+      ],
+      "L2_subclasificacion": {
+        "S4.5": ["inventario", "stock", "almacén", "logística"],
+        "S4.6": ["contable", "factura", "presupuesto", "finanza", "fiscal", "impuesto"],
+        "S4.7": ["proceso", "proyecto", "operación", "producción", "calidad"]
+      }
+    },
+
+    "keywords_tecnicas": {
+      "L1": "S6",
+      "es_digital": false,
+      "keywords": [
+        "mantenimiento", "reparar", "reparación", "mecánic", "eléctric", "electrón",
+        "instalación eléctrica", "instalación industrial", "maquinaria", "soldadura",
+        "plomería", "carpintería", "albañil", "tornería", "fresadora", "torno"
+      ],
+      "L2_subclasificacion": {
+        "S6.1": ["mantenimiento", "reparar", "reparación", "arreglar"],
+        "S6.2": ["maquinaria", "tornería", "fresadora", "torno", "operador de"],
+        "S6.3": ["eléctric", "electrón", "cable", "tablero", "circuito"],
+        "S6.4": ["equipos médicos", "laboratorio clínico", "diagnóstico por imagen"]
+      }
+    },
+
+    "keywords_comunicacion": {
+      "L1": "S1",
+      "es_digital": false,
+      "keywords": [
+        "redacción", "redactar", "escribir", "presentación", "oral", "escrit"
+      ],
+      "L2_subclasificacion": {
+        "S1.4": ["email", "correo", "chat", "mensaje", "digital"]
+      }
+    }
+  },
+
+  "mapeo_skills": {
+    "http://data.europa.eu/esco/skill/1973c966-f236-40c9-b2d4-5d71a89019be": {"L1": "S5", "L2": "S5.5", "es_digital": true},
+    "http://data.europa.eu/esco/skill/1973c966-office": {"L1": "S5", "L2": "S5.5", "es_digital": true},
+    "http://data.europa.eu/esco/skill/computer-equipment": {"L1": "S5", "L2": "S5.0", "es_digital": true},
+    "http://data.europa.eu/esco/skill/crm-software": {"L1": "S5", "L2": "S5.8", "es_digital": true},
+    "http://data.europa.eu/esco/skill/cad-software": {"L1": "S5", "L2": "S5.8", "es_digital": true},
+    "http://data.europa.eu/esco/skill/graphics-editing": {"L1": "S5", "L2": "S5.6", "es_digital": true},
+    "http://data.europa.eu/esco/skill/seo": {"L1": "S5", "L2": "S5.7", "es_digital": true},
+    "http://data.europa.eu/esco/skill/online-advertising": {"L1": "S5", "L2": "S5.7", "es_digital": true},
+    "http://data.europa.eu/esco/skill/online-sales": {"L1": "S5", "L2": "S5.9", "es_digital": true},
+    "http://data.europa.eu/esco/skill/programming": {"L1": "S5", "L2": "S5.1", "es_digital": true},
+    "http://data.europa.eu/esco/skill/dev-tools": {"L1": "S5", "L2": "S5.1", "es_digital": true},
+    "http://data.europa.eu/esco/skill/erp-systems": {"L1": "S5", "L2": "S5.8", "es_digital": true},
+    "http://data.europa.eu/esco/skill/pos-systems": {"L1": "S5", "L2": "S5.8", "es_digital": true},
+    "http://data.europa.eu/esco/skill/bpm": {"L1": "S4", "L2": "S4.7", "es_digital": true},
+    "http://data.europa.eu/esco/skill/pattern-design": {"L1": "S5", "L2": "S5.8", "es_digital": true},
+    "http://data.europa.eu/esco/skill/inventory": {"L1": "S4", "L2": "S4.5", "es_digital": false},
+    "http://data.europa.eu/esco/skill/invoicing": {"L1": "S4", "L2": "S4.6", "es_digital": false},
+    "http://data.europa.eu/esco/skill/accounting": {"L1": "S4", "L2": "S4.6", "es_digital": false},
+    "http://data.europa.eu/esco/skill/technical-plans": {"L1": "K", "L2": "K2.1", "es_digital": false},
+    "http://data.europa.eu/esco/skill/electrical": {"L1": "S6", "L2": "S6.3", "es_digital": false},
+    "http://data.europa.eu/esco/skill/electrical-panels": {"L1": "S6", "L2": "S6.3", "es_digital": false},
+    "http://data.europa.eu/esco/skill/electrical-conduits": {"L1": "S6", "L2": "S6.3", "es_digital": false},
+    "http://data.europa.eu/esco/skill/maintenance": {"L1": "S6", "L2": "S6.1", "es_digital": false},
+    "http://data.europa.eu/esco/skill/vehicle-maintenance": {"L1": "S6", "L2": "S6.1", "es_digital": false},
+    "http://data.europa.eu/esco/skill/laser-treatments": {"L1": "S6", "L2": "S6.4", "es_digital": true},
+    "http://data.europa.eu/esco/skill/messaging": {"L1": "S1", "L2": "S1.4", "es_digital": true},
+    "http://data.europa.eu/esco/skill/cloud-services": {"L1": "S5", "L2": "S5.2", "es_digital": true},
+    "http://data.europa.eu/esco/skill/ecommerce": {"L1": "S5", "L2": "S5.9", "es_digital": true},
+    "http://data.europa.eu/esco/skill/commercial-software": {"L1": "S5", "L2": "S5.8", "es_digital": true},
+    "http://data.europa.eu/esco/skill/digital-comm": {"L1": "S1", "L2": "S1.4", "es_digital": true},
+    "http://data.europa.eu/esco/skill/email": {"L1": "S1", "L2": "S1.4", "es_digital": true},
+    "http://data.europa.eu/esco/skill/social-media": {"L1": "S5", "L2": "S5.7", "es_digital": true},
+    "http://data.europa.eu/esco/skill/video-editing": {"L1": "S5", "L2": "S5.6", "es_digital": true},
+    "http://data.europa.eu/esco/skill/word-processing": {"L1": "S5", "L2": "S5.5", "es_digital": true},
+    "http://data.europa.eu/esco/skill/presentations": {"L1": "S5", "L2": "S5.5", "es_digital": true},
+    "http://data.europa.eu/esco/skill/rf-equipment": {"L1": "S6", "L2": "S6.2", "es_digital": true},
+    "http://data.europa.eu/esco/skill/medical-equipment": {"L1": "S6", "L2": "S6.4", "es_digital": true},
+    "http://data.europa.eu/esco/skill/teamwork": {"L1": "T", "L2": "T1.1", "es_digital": false},
+    "http://data.europa.eu/esco/skill/communication": {"L1": "T", "L2": "T1.2", "es_digital": false},
+    "http://data.europa.eu/esco/skill/assertive-comm": {"L1": "T", "L2": "T1.2", "es_digital": false},
+    "http://data.europa.eu/esco/skill/negotiation": {"L1": "T", "L2": "T1.3", "es_digital": false},
+    "http://data.europa.eu/esco/skill/interpersonal": {"L1": "T", "L2": "T1.4", "es_digital": false},
+    "http://data.europa.eu/esco/skill/leadership": {"L1": "T", "L2": "T2.1", "es_digital": false},
+    "http://data.europa.eu/esco/skill/lead-teams": {"L1": "T", "L2": "T2.1", "es_digital": false},
+    "http://data.europa.eu/esco/skill/initiative": {"L1": "T", "L2": "T3.1", "es_digital": false},
+    "http://data.europa.eu/esco/skill/autonomy": {"L1": "T", "L2": "T3.2", "es_digital": false},
+    "http://data.europa.eu/esco/skill/results-focus": {"L1": "T", "L2": "T3.3", "es_digital": false},
+    "http://data.europa.eu/esco/skill/work-pressure": {"L1": "T", "L2": "T3.3", "es_digital": false},
+    "http://data.europa.eu/esco/skill/time-management": {"L1": "T", "L2": "T3.4", "es_digital": false},
+    "http://data.europa.eu/esco/skill/attention-detail": {"L1": "T", "L2": "T4.5", "es_digital": false},
+    "http://data.europa.eu/esco/skill/planning": {"L1": "T", "L2": "T3.4", "es_digital": false},
+    "http://data.europa.eu/esco/skill/punctuality": {"L1": "T", "L2": "T3.4", "es_digital": false},
+    "http://data.europa.eu/esco/skill/adaptability": {"L1": "T", "L2": "T3.5", "es_digital": false},
+    "http://data.europa.eu/esco/skill/problem-solving": {"L1": "T", "L2": "T4.1", "es_digital": false},
+    "http://data.europa.eu/esco/skill/analytical": {"L1": "T", "L2": "T4.2", "es_digital": false},
+    "http://data.europa.eu/esco/skill/strategic-thinking": {"L1": "T", "L2": "T4.3", "es_digital": false},
+    "http://data.europa.eu/esco/skill/creativity": {"L1": "T", "L2": "T4.4", "es_digital": false},
+    "http://data.europa.eu/esco/skill/customer-service": {"L1": "S3", "L2": "S3.1", "es_digital": false},
+    "http://data.europa.eu/esco/skill/sales": {"L1": "S3", "L2": "S3.2", "es_digital": false},
+    "http://data.europa.eu/esco/skill/patient-care": {"L1": "S3", "L2": "S3.3", "es_digital": false},
+    "http://data.europa.eu/esco/skill/positive-attitude": {"L1": "T", "L2": "T5.1", "es_digital": false},
+    "http://data.europa.eu/esco/skill/responsibility": {"L1": "T", "L2": "T5.2", "es_digital": false},
+    "http://data.europa.eu/esco/skill/excellence": {"L1": "T", "L2": "T5.3", "es_digital": false},
+    "http://data.europa.eu/esco/skill/empathy": {"L1": "T", "L2": "T5.4", "es_digital": false},
+    "http://data.europa.eu/esco/skill/self-confidence": {"L1": "T", "L2": "T5.4", "es_digital": false},
+    "http://data.europa.eu/esco/skill/budgets": {"L1": "S4", "L2": "S4.6", "es_digital": false},
+    "http://data.europa.eu/esco/skill/travel": {"L1": "T", "L2": "T6.1", "es_digital": false}
+  },
+
+  "default": {
+    "L1": "T",
+    "L2": null,
+    "es_digital": false
+  }
+}

@@ -1,0 +1,24 @@
+﻿Total ofertas analizadas: 49
+Total skills extraidas: 677
+Promedio por oferta: 13.8
+Minimo: 1
+Maximo: 33
+Mediana: 14
+
+Distribucion:
+  0-5 skills: 4 ofertas (8%)
+  6-10 skills: 15 ofertas (31%)
+  11-20 skills: 21 ofertas (43%)
+  21-50 skills: 9 ofertas (18%)
+  51-100 skills: 0 ofertas (0%)
+
+Ejemplos:
+
+  VENDEDOR DE REPUESTOS AUTOMOTOR...
+  Skills (3): ['vender vehÝculos', 'vender neumßticos', 'vender souvenirs']
+
+  Responsable de Deposito...
+  Skills (24): ['coordinar las actividades oper', 'gestionar pagos de facturas', 'gestionar el material en stock', 'supervisar procedimientos de f', 'controlar inventarios de fluid']
+
+  Abogado/a - Impuestos...
+  Skills (9): ['gesti¾n de causas judiciales', 'asistir en litigios', 'ofrecer asesoramiento jurÝdico', 'gesti¾n de conflictos', 'asesorar sobre servicios jurÝd']

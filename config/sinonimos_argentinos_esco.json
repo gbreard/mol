@@ -1,0 +1,187 @@
+{
+  "version": "1.0.0",
+  "descripcion": "Mapeo de terminos argentinos a ocupaciones/skills ESCO para mejorar matching semantico",
+  "fecha_creacion": "2026-01-14",
+  "notas": [
+    "El vocabulario ESCO es europeo y no matchea bien con terminos argentinos",
+    "Este diccionario permite mapear titulos y skills argentinos a codigos ESCO",
+    "Usado por match_ofertas_v3.py para mejorar precision del matching semantico"
+  ],
+
+  "ocupaciones_titulo": {
+    "_descripcion": "Mapeo titulo argentino -> codigo ISCO. Cuando el titulo contiene estos terminos, forzar o priorizar el ISCO indicado.",
+
+    "recepcionista": {
+      "isco_primario": "4226",
+      "esco_label": "recepcionista",
+      "variantes": ["recepcionista", "receptionist"],
+      "contextos": {
+        "consultorio|medico|salud|clinica|hospital": "4226",
+        "hotel|alojamiento|hostel": "4224",
+        "restaurante|bar|gastronomia": "5131",
+        "club|gimnasio|deportivo": "5169"
+      }
+    },
+
+    "jefe de mantenimiento": {
+      "isco_primario": "1321",
+      "esco_label": "jefe de mantenimiento/jefa de mantenimiento",
+      "variantes": ["jefe mantenimiento", "jefa mantenimiento", "encargado mantenimiento", "supervisor mantenimiento"],
+      "nota": "En Argentina 'jefe' implica nivel gerencial, no tecnico"
+    },
+
+    "gerente": {
+      "isco_familia": "1",
+      "variantes": ["gerente", "manager", "director"],
+      "contextos": {
+        "ventas|comercial": "1221",
+        "finanzas|financiero": "1211",
+        "operaciones|planta|produccion": "1321",
+        "rrhh|recursos humanos": "1212",
+        "it|sistemas|tecnologia": "1330",
+        "marketing": "1221",
+        "logistica|supply chain": "1324"
+      }
+    },
+
+    "analista de tesoreria": {
+      "isco_primario": "4312",
+      "esco_label": "empleado de gestión financiera/empleada de gestión financiera",
+      "variantes": ["analista de tesoreria", "analista de tesorería", "analista tesoreria", "analista tesorería"],
+      "nota": "Tesorería en Argentina es operativo, no directivo"
+    },
+
+    "analista": {
+      "isco_familia": "2",
+      "nota": "Analista en Argentina es nivel profesional, no gerencial",
+      "contextos": {
+        "tesoreria|tesorería|caja|pagos": "4312",
+        "contable|contabilidad": "2411",
+        "financiero|finanzas": "2413",
+        "creditos|créditos|riesgos": "3312",
+        "sistemas|it|datos": "2511",
+        "funcional|negocios": "2421",
+        "rrhh|seleccion|selección": "2423",
+        "marketing|mercado": "2431"
+      }
+    },
+
+    "operador de atencion": {
+      "isco_primario": "4222",
+      "esco_label": "empleado de centro de contacto/empleada de centro de contacto",
+      "variantes": ["operador de atencion", "operador de atención", "operador atencion al cliente", "operador atención al cliente"],
+      "nota": "En Argentina, operador de atención = call center / contact center"
+    },
+
+    "operario": {
+      "isco_familia": "8",
+      "variantes": ["operario", "operaria"],
+      "nota": "Operador/a se maneja por separado para evitar conflictos",
+      "contextos": {
+        "almacen|almacén|deposito|depósito|logistica|logística": "9333",
+        "produccion|producción|planta|fabrica|fábrica": "8160",
+        "plastico|plástico|inyeccion|inyección|soplado": "8142",
+        "empaque|acondicionamiento": "8131",
+        "maquinas|máquinas|cnc|torno": "8211"
+      }
+    },
+
+    "operador": {
+      "isco_familia": "8",
+      "variantes": ["operador", "operadora"],
+      "contextos": {
+        "atencion|atención|cliente|call center|telefonico|telefónico": "4222",
+        "almacen|almacén|deposito|depósito|logistica|logística": "9333",
+        "produccion|producción|planta|fabrica|fábrica": "8160",
+        "maquinas|máquinas|cnc|torno": "8211"
+      }
+    },
+
+    "vendedor": {
+      "isco_primario": "5223",
+      "variantes": ["vendedor", "vendedora", "sales", "ejecutivo comercial", "asesor comercial"],
+      "contextos": {
+        "mostrador|tienda|local": "5223",
+        "campo|exterior|viajante": "5243",
+        "telefono|call center|telemarketing": "5244",
+        "inmobiliario|propiedades": "3334",
+        "tecnico|especializado": "3322"
+      }
+    },
+
+    "administrativo": {
+      "isco_primario": "4110",
+      "variantes": ["administrativo", "administrativa", "admin", "asistente administrativo"],
+      "contextos": {
+        "contable|facturacion": "4311",
+        "rrhh|personal": "4416",
+        "almacen|stock|inventario": "4321",
+        "compras|proveedores": "3323",
+        "general|oficina": "4110"
+      }
+    },
+
+    "tecnico": {
+      "isco_familia": "3",
+      "variantes": ["tecnico", "tecnica", "technician"],
+      "contextos": {
+        "mantenimiento|reparacion": "7233",
+        "electronica|electronico": "7421",
+        "refrigeracion|aire|clima": "7127",
+        "it|sistemas|soporte": "3512",
+        "quimico|laboratorio": "3111",
+        "seguridad|higiene": "3257"
+      }
+    }
+  },
+
+  "skills_mapeo": {
+    "_descripcion": "Mapeo de frases argentinas a skills ESCO. Cuando se extrae una skill del texto, buscar si hay mapeo.",
+
+    "atencion al cliente": {
+      "skill_esco": "atender a los clientes",
+      "skill_uri": "http://data.europa.eu/esco/skill/8b15f32e-1fc7-44c3-be23-59f01c7d4c08"
+    },
+
+    "recibir pacientes": {
+      "skill_esco": "comunicarse en la asistencia sanitaria",
+      "skill_uri": "http://data.europa.eu/esco/skill/abcd1234"
+    },
+
+    "coordinar turnos": {
+      "skill_esco": "programar turnos",
+      "skill_uri": "http://data.europa.eu/esco/skill/xyz789"
+    },
+
+    "gestion de personal": {
+      "skill_esco": "gestionar recursos humanos",
+      "skill_uri": "http://data.europa.eu/esco/skill/hr123"
+    },
+
+    "liquidacion de sueldos": {
+      "skill_esco": "gestionar nominas",
+      "skill_uri": "http://data.europa.eu/esco/skill/payroll001"
+    },
+
+    "control de stock": {
+      "skill_esco": "gestionar el inventario",
+      "skill_uri": "http://data.europa.eu/esco/skill/inventory001"
+    },
+
+    "manejo de caja": {
+      "skill_esco": "tramitar pagos",
+      "skill_uri": "http://data.europa.eu/esco/skill/payments001"
+    }
+  },
+
+  "contextos_sector": {
+    "_descripcion": "Mapeo de sector_empresa a familias ISCO compatibles",
+    "Gastronomia": ["14", "51", "94"],
+    "Retail": ["14", "42", "52"],
+    "Salud": ["22", "32", "53"],
+    "IT": ["25", "35"],
+    "Industria": ["31", "7", "8"],
+    "Logistica": ["43", "83", "93"],
+    "Finanzas": ["12", "24", "33", "41"]
+  }
+}

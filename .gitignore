@@ -34,6 +34,7 @@ credentials.json
 .secrets/
 config/aws_credentials.json
 config/linear_config.json
+config/supabase_config.json
 *.pem
 
 # Claude Code settings (contiene API keys)
@@ -53,7 +54,13 @@ nul
 01_sources/*/data/raw/*.csv
 01_sources/*/data/raw/*.xlsx
 01_sources/*/data/metrics/*.json
+01_sources/*/data/archive/
 02_consolidation/data/*.json
+
+# Exports Excel temporales
+scripts/excel_exports/*.json
+exports/*.xlsx
+exports/*.csv
 
 # ChromaDB vectors (grandes)
 database/esco_vectors/

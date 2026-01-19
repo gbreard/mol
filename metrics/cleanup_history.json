@@ -1,0 +1,50 @@
+[
+  {
+    "timestamp": "2026-01-03T13:52:02.515339",
+    "action": "cleanup_matching_v8x",
+    "dry_run": true,
+    "backup_table": null,
+    "deleted_by_version": {
+      "v8.1_esco_multicriterio_validado": 6577,
+      "v8.3_diccionario_argentino_validated": 10,
+      "v8.4_multicriterio_nivel_validated": 4,
+      "NULL": 30
+    },
+    "total_deleted": 6621
+  },
+  {
+    "timestamp": "2026-01-03T13:52:27.242050",
+    "action": "cleanup_matching_v8x",
+    "dry_run": false,
+    "backup_table": "ofertas_esco_matching_backup_20260103_135227",
+    "deleted_by_version": {
+      "v8.1_esco_multicriterio_validado": 6577,
+      "v8.3_diccionario_argentino_validated": 10,
+      "v8.4_multicriterio_nivel_validated": 4,
+      "NULL": 30
+    },
+    "total_deleted": 6621
+  },
+  {
+    "timestamp": "2026-01-03T14:08:15.085912",
+    "action": "cleanup_nlp_old_versions",
+    "dry_run": true,
+    "backup_table": null,
+    "deleted_by_version": {
+      "v4.0.0": 2910,
+      "3.7.0": 2459
+    },
+    "total_deleted": 5369
+  },
+  {
+    "timestamp": "2026-01-03T14:08:24.137702",
+    "action": "cleanup_nlp_old_versions",
+    "dry_run": false,
+    "backup_table": "ofertas_nlp_backup_oldversions_20260103_140824",
+    "deleted_by_version": {
+      "v4.0.0": 2910,
+      "3.7.0": 2459
+    },
+    "total_deleted": 5369
+  }
+]

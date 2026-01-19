@@ -1,0 +1,23 @@
+﻿Starting test...
+python : Traceback (most recent call last):
+En línea: 1 Carácter: 35
++ cd D:\OEDE\Webscrapping\database; python run_test_v3.py *>&1 | Out-Fi ...
++                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "D:\OEDE\Webscrapping\database\run_test_v3.py", line 21, in <module>
+    correctos, total = test_gold_set()
+                       ~~~~~~~~~~~~~^^
+  File "D:\OEDE\Webscrapping\database\test_gold_set_v3.py", line 57, in test_gold_set
+    print("=" * 70)
+    ~~~~~^^^^^^^^^^
+ValueError: I/O operation on closed file.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\OEDE\Webscrapping\database\run_test_v3.py", line 24, in <module>
+    print(f"ERROR: {type(e).__name__}: {e}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: I/O operation on closed file.
