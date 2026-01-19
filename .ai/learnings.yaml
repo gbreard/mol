@@ -6,7 +6,7 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-01-19 14:32"
+  fecha_actualizacion: "2026-01-19 16:31"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "procesamiento"  # adquisicion | procesamiento | presentacion
@@ -114,10 +114,10 @@ conteos:
   proximo_paso: "Validación humana de las 100 nuevas ofertas"
 
   estadisticas_actuales:
-    ofertas_validadas: 96  # validadas anteriormente
-    ofertas_pendientes: 124  # nuevo lote procesado
+    ofertas_validadas: 120  # validadas anteriormente
+    ofertas_pendientes: 100  # nuevo lote procesado
     reglas_negocio: 119
-    tasa_aprendizaje: "0.0% (0 reglas / 100 ofertas)"
+    tasa_aprendizaje: "0.0% (0 reglas / 5 ofertas)"
     convergencia: "CONVERGIDO (tasa < 5%)"
     cobertura_reglas: "85% (81 reglas + 4 diccionario)"
     fallback_semantico: "15% (15 ofertas)"
@@ -134,7 +134,7 @@ conteos:
 
   # Métricas de evolución del aprendizaje
   learning_evolution:
-    total_runs: 48
+    total_runs: 51
     ofertas_con_historial_nlp: 5474  # ofertas en ofertas_nlp_history
     ofertas_con_matching: 220  # ofertas distintas en ofertas_esco_matching
 

@@ -451,9 +451,40 @@
 
   "correccion_sector": {
     "_descripcion": "Corregir sectores mal clasificados por el LLM basado en keywords del titulo/descripcion",
-    "_fecha": "2026-01-05",
+    "_fecha": "2026-01-19",
+    "_cambios_v2": "Agregadas reglas para logistica, industria, automotriz, construccion (casos consultoras RRHH)",
 
     "reglas": [
+      {
+        "_caso": "ID 1117953276 Coordinador Deposito, ID 1118055470 Operarios Logisticos",
+        "sector_incorrecto": ["Salud", "Tecnologia", "Servicios", "Otro"],
+        "keywords_titulo": ["deposito", "depósito", "logistic", "almacen", "almacén", "supply chain", "cadena de suministro", "distribucion", "distribución"],
+        "sector_correcto": "Logistica"
+      },
+      {
+        "_caso": "ID 1118105856 Operario Industria Plastica, ID 1118105713 Ingeniero electromecanico",
+        "sector_incorrecto": ["Salud", "Tecnologia", "Servicios"],
+        "keywords_titulo": ["operario", "operaria", "industria plastica", "industria plástica", "ingeniero electromecanico", "ingeniero electromecánico", "ingeniero mecanico", "ingeniero mecánico", "mantenimiento industrial", "planta industrial"],
+        "sector_correcto": "Industria"
+      },
+      {
+        "_caso": "ID 1118115994 Jefe de Mantenimiento",
+        "sector_incorrecto": ["Salud"],
+        "keywords_titulo": ["jefe de mantenimiento", "jefa de mantenimiento", "gerente de mantenimiento", "supervisor mantenimiento"],
+        "sector_correcto": "Industria"
+      },
+      {
+        "_caso": "ID 1118115647 Asesor Comercial FIAT",
+        "sector_incorrecto": ["Tecnologia", "Servicios", "Otro"],
+        "keywords_titulo": ["fiat", "volkswagen", "ford", "chevrolet", "renault", "toyota", "peugeot", "citroen", "honda", "automotriz", "concesionario", "concesionaria"],
+        "sector_correcto": "Automotriz"
+      },
+      {
+        "_caso": "ID 1118102629 Estudiante Ing Civil, ID 1118105832 Jefe Cotizaciones",
+        "sector_incorrecto": ["Salud", "Tecnologia"],
+        "keywords_titulo": ["ingenieria civil", "ingeniería civil", "ingeniero civil", "arquitecto", "cotizaciones", "computo y presupuesto", "cómputo y presupuesto", "obra civil"],
+        "sector_correcto": "Construccion"
+      },
       {
         "sector_incorrecto": ["Tecnologia", "Servicios", "Otro"],
         "keywords_titulo": ["importacion", "exportacion", "despachante", "aduana", "operador sim", "comercio exterior", "comercio internacional"],
