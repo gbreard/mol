@@ -33,7 +33,12 @@
       "RN": "Rio Negro",
       "R.N.": "Rio Negro",
       "TdF": "Tierra del Fuego",
-      "T. del Fuego": "Tierra del Fuego"
+      "T. del Fuego": "Tierra del Fuego",
+      "Córdoba": "Cordoba",
+      "Tucumán": "Tucuman",
+      "Neuquén": "Neuquen",
+      "Entre Ríos": "Entre Rios",
+      "Río Negro": "Rio Negro"
     },
     "valores_validos": [
       "Buenos Aires",
