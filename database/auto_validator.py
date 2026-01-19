@@ -483,22 +483,39 @@ def _persistir_errores_bd(conn, errores_detalle: List[Dict], run_id: str = None)
         id_oferta = item["id_oferta"]
         for error in item["errores"]:
             try:
-                conn.execute('''
-                    INSERT INTO validation_errors (
-                        id_oferta, run_id, error_id, error_tipo, severidad,
-                        mensaje, campo_afectado, detectado_timestamp
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                ''', (
-                    str(id_oferta),
-                    run_id,
-                    error.get("id_regla"),
-                    error.get("diagnostico"),
-                    error.get("severidad"),
-                    error.get("mensaje"),
-                    error.get("campo"),
-                    timestamp
-                ))
-                insertados += 1
+                error_tipo = error.get("diagnostico")
+
+                # Verificar si ya existe este error para esta oferta (evitar duplicados)
+                cur = conn.execute('''
+                    SELECT 1 FROM validation_errors
+                    WHERE id_oferta = ? AND error_tipo = ? AND resuelto = 0
+                ''', (str(id_oferta), error_tipo))
+
+                if cur.fetchone():
+                    # Ya existe, actualizar timestamp
+                    conn.execute('''
+                        UPDATE validation_errors
+                        SET run_id = ?, detectado_timestamp = ?
+                        WHERE id_oferta = ? AND error_tipo = ? AND resuelto = 0
+                    ''', (run_id, timestamp, str(id_oferta), error_tipo))
+                else:
+                    # No existe, insertar
+                    conn.execute('''
+                        INSERT INTO validation_errors (
+                            id_oferta, run_id, error_id, error_tipo, severidad,
+                            mensaje, campo_afectado, detectado_timestamp
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    ''', (
+                        str(id_oferta),
+                        run_id,
+                        error.get("id_regla"),
+                        error_tipo,
+                        error.get("severidad"),
+                        error.get("mensaje"),
+                        error.get("campo"),
+                        timestamp
+                    ))
+                    insertados += 1
             except Exception as e:
                 print(f"  WARN: Error insertando validation_error para {id_oferta}: {e}")
 
