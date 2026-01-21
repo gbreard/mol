@@ -99,7 +99,8 @@
 
     "vendedor": {
       "isco_primario": "5223",
-      "variantes": ["vendedor", "vendedora", "sales", "ejecutivo comercial", "asesor comercial"],
+      "variantes": ["vendedor", "vendedora", "sales"],
+      "nota": "IMPORTANTE: 'asesor comercial' y 'ejecutivo comercial' se manejan via reglas de negocio (R40)",
       "contextos": {
         "mostrador|tienda|local": "5223",
         "campo|exterior|viajante": "5243",
@@ -132,6 +133,13 @@
         "quimico|laboratorio": "3111",
         "seguridad|higiene": "3257"
       }
+    },
+
+    "personal para obra": {
+      "isco_primario": "7112",
+      "esco_label": "albañil",
+      "variantes": ["personal para obra", "personal de obra", "personal obra", "obrero de construcción", "obrero construcción", "peón de obra", "peón obra"],
+      "nota": "Término genérico en Argentina para trabajador de construcción"
     }
   },
 

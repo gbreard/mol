@@ -32,13 +32,67 @@ Sistema de monitoreo del mercado laboral argentino para OEDE. Scrapea ofertas de
 > **CONTEOS OFICIALES:** Ver `.ai/learnings.yaml` sección `conteos` (single source of truth)
 
 - NLP v11.3 (20 campos + postprocessor + qwen2.5:7b)
-- **Matching v3.3.3** con prioridad: Reglas negocio → Diccionario argentino → Semántico
+- **Matching v3.4.2 ESCO-FIRST** - ESCO es target, ISCO se deriva
 - **Conteos dinámicos** (ver `learnings.yaml`): reglas_negocio, reglas_validacion, sinonimos_argentinos
 - **Auto-sync** de learnings.yaml activado (v1.0)
+
+### Matching v3.4.2 ESCO-First (2026-01-21)
+```
+PRINCIPIO: ESCO es el TARGET, ISCO es CONSECUENCIA
+
+FLUJO DE PRIORIDAD:
+1. REGLAS DE NEGOCIO (si aplican) → GANAN SIEMPRE
+   - Buscan ocupación ESCO por label exacto
+   - ISCO se deriva de la ocupación encontrada
+
+2. DICCIONARIO ARGENTINO (si no hay regla)
+   - Mapea términos argentinos a ISCO
+
+3. SEMÁNTICO (fallback)
+   - Skills + título embeddings
+
+METADATA GUARDADA:
+- isco_semantico, score_semantico (siempre calculado)
+- isco_regla, regla_aplicada (si aplica regla)
+- dual_coinciden: 1=mismo, 0=difieren, NULL=solo semántico
+- decision_metodo: "regla_prioridad" | "semantico_default"
+```
 
 ### Trabajo en Curso
 - Validando 110 ofertas para dashboard (próximo paso: revisión en Google Sheets)
 - Gold Set de referencia: 49 casos (archivo histórico)
+
+### Sistema de Priorización v1.0 (2026-01-20)
+
+El pipeline procesa ofertas **por prioridad**, no por orden de scraping.
+
+**Criterios de scoring:**
+| Criterio | Peso | Lógica |
+|----------|------|--------|
+| Fecha publicación | 40% | Más reciente = mayor score |
+| Cantidad vacantes | 30% | Más vacantes = mayor impacto |
+| Permanencia | 30% | Baja permanencia = alta demanda |
+
+**Tabla:** `ofertas_prioridad` (estados: pendiente → en_proceso → procesado)
+
+**Comandos:**
+```bash
+# Ver estado de la cola
+python scripts/get_priority_batch.py --queue-status
+
+# Procesar lote de 100 por prioridad
+python scripts/run_validated_pipeline.py --limit 100
+
+# Ver próximo lote sin procesar
+python scripts/get_priority_batch.py --size 100
+```
+
+**Bloqueo por errores:** El sistema **NO avanza** al siguiente lote si hay errores pendientes.
+```
+Lote 1 → 5 errores → [BLOQUEADO] → Resolver errores → [DESBLOQUEADO] → Lote 2
+```
+
+Para forzar (NO recomendado): `--force-new-batch`
 
 ---
 
@@ -405,11 +459,40 @@ FLUJO:
 - `isco_correcto`: ISCO esperado (si es ERROR)
 - `comentario`: Descripción del problema
 
-### Protección de Datos Validados
+### Protección de Datos Validados (v2.0 - 2026-01-20)
 
-**CRÍTICO:** Una vez que una oferta tiene `estado_validacion = 'validado'`:
-- El pipeline **RECHAZA** reprocesarla (error automático)
-- Para forzar: usar `force=True` (NO recomendado)
+**REGLA ABSOLUTA:** Una oferta con `estado_validacion = 'validado'` NUNCA debe:
+- Ser reprocesada por NLP
+- Ser reprocesada por Matching
+- Aparecer en Excel de validación nuevo
+
+**Capas de protección:**
+
+| Capa | Ubicación | Qué hace |
+|------|-----------|----------|
+| Query filtrada | `export_validation_excel.py:476` | Excluye validadas de selección |
+| Query filtrada | `auto_validator.py:590` | Excluye validadas de validación |
+| Error explícito | `match_ofertas_v3.py:1368` | Lanza ValueError si hay validadas |
+| Trigger BD | `migrations/016_*.sql` | Bloquea UPDATE en ofertas validadas |
+
+**Verificar protección:**
+```bash
+python scripts/check_validated_protection.py
+```
+
+**Si NECESITO reprocesar una oferta validada (caso excepcional):**
+```bash
+# 1. Desbloquear con justificación obligatoria
+python scripts/admin_unlock_validated.py --ids 123,456 --motivo "Razón del desbloqueo"
+
+# 2. Reprocesar normalmente
+python scripts/run_validated_pipeline.py --ids 123,456
+```
+
+**NO hacer:**
+- Usar `force=True` en el pipeline (bypasea controles)
+- UPDATE directo a BD sin usar script admin
+- Cambiar estado manualmente a 'pendiente'
 
 ---
 
@@ -432,28 +515,31 @@ CAPA 2: Postprocessor (config/nlp_*.json)
 CAPA 3: Skills implícitas (BGE-M3 + ESCO embeddings)
 ```
 
-### Matching Pipeline v3.3.2
+### Matching Pipeline v3.4.2 ESCO-First
 
 | Componente | Archivo ACTUAL | NO USAR |
 |------------|----------------|---------|
-| Pipeline Matching | `database/match_ofertas_v3.py` v3.3.2 | v2.py, v8.x |
+| Pipeline Matching | `database/match_ofertas_v3.py` v3.4.2 | v2.py, v8.x |
 | Matcher por Skills | `database/match_by_skills.py` v1.2.0 | - |
 | Skills Extractor | `database/skills_implicit_extractor.py` v2.0 | - |
-| Diccionario Argentino | `config/sinonimos_argentinos_esco.json` (12 ocup) | - |
-| Config reglas negocio | `config/matching_rules_business.json` (ver conteos en learnings.yaml) | hardcodeados |
+| Diccionario Argentino | `config/sinonimos_argentinos_esco.json` (13 ocup) | - |
+| Config reglas negocio | `config/matching_rules_business.json` (124 reglas con ESCO válido) | hardcodeados |
 | Config principal | `config/matching_config.json` | - |
 
-**Arquitectura v3.3.2 (orden de prioridad):**
+**Arquitectura v3.4.2 (orden de prioridad):**
 ```
-1. REGLAS DE NEGOCIO (bypass) ← Prioridad máxima, casos específicos
-        ↓ (si no matchea)
+PRINCIPIO: ESCO es TARGET, ISCO es CONSECUENCIA
+
+1. REGLAS DE NEGOCIO (GANAN SIEMPRE si aplican)
+   └── Buscan ESCO label exacto → derivan ISCO
+        ↓ (si no hay regla)
 2. DICCIONARIO ARGENTINO ← Vocabulario local → ISCO
         ↓ (si no matchea)
 3. SEMÁNTICO (BGE-M3) ← Skills 60% + Titulo 40%
         ↓
 4. PENALIZACIONES (sector, seniority)
         ↓
-5. PERSISTIR EN BD
+5. PERSISTIR EN BD (con metadata dual: isco_semantico, isco_regla)
 ```
 
 → **Detalles:** `docs/reference/PIPELINE.md`

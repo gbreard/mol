@@ -6,11 +6,26 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-01-19 16:31"
+  fecha_actualizacion: "2026-01-21 13:42"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "procesamiento"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "57 errores sin resolver - sistema sugiere Fase 2"
+  fase_detalle: "21 errores sin resolver - sistema sugiere Fase 2"
+
+  # Protección de Ofertas Validadas v2.0 (2026-01-20)
+  proteccion_validadas:
+    version: "2.0"
+    estado: "ACTIVO - triggers instalados"
+    ofertas_protegidas: 119
+    capas:
+      - "Query filtrada en export_validation_excel.py:476"
+      - "Query filtrada en auto_validator.py:590"
+      - "Error explícito en match_ofertas_v3.py:1368"
+      - "Triggers BD: protect_validated_matching, protect_validated_status"
+    scripts:
+      verificar: "python scripts/check_validated_protection.py"
+      desbloquear: "python scripts/admin_unlock_validated.py --ids X --motivo 'razón'"
+    migracion: "migrations/016_protect_validated_offers.sql (aplicada)"
 
   clae_integration:
     estado: "Fase 3 completada - catálogo de empresas integrado"
@@ -24,11 +39,17 @@ current_state:
     proximo_paso: "Sync a Supabase con nuevas columnas"
 
   ofertas_bd: 13170  # Total en BD despues de scraping
-  ofertas_validadas: 110  # 100 inicial + 10 expansion
+  ofertas_validadas: 119  # Verificado con check_validated_protection.py
   estado_ofertas: "validado"  # Listas para produccion
 
-  matching_version: "v3.3.3"
-  matching_arquitectura: "Reglas negocio -> Diccionario argentino -> Semantico"
+  matching_version: "v3.4.2"
+  matching_arquitectura: "ESCO-First - ESCO es target, ISCO derivado. Reglas GANAN sobre semantico."
+  matching_cambios_v342:
+    - "ESCO es el target primario, ISCO se deriva del catalogo"
+    - "Reglas de negocio tienen PRIORIDAD sobre semantico"
+    - "124/130 reglas con esco_label valido"
+    - "Labels ESCO exactos del catalogo (no inventados)"
+    - "Funcion _find_occupation_by_esco_label() para busqueda exacta"
 
   # Tracking de convergencia (v3.3.3)
   tracking_tables:
@@ -79,13 +100,13 @@ current_state:
 # REGLA: Cuando se modifique un config, actualizar estos conteos.
 # La documentación (CLAUDE.md, PIPELINE.md, etc.) referencia aquí.
 conteos:
-  reglas_negocio: 119  # config/matching_rules_business.json > reglas_forzar_isco (v2.6 actualizado 2026-01-16)
-  reglas_validacion: 22  # config/validation_rules.json > reglas_validacion
-  sinonimos_argentinos: 12  # config/sinonimos_argentinos_esco.json > ocupaciones_titulo
+  reglas_negocio: 129  # config/matching_rules_business.json > reglas_forzar_isco (v2.6 actualizado 2026-01-16)
+  reglas_validacion: 23  # config/validation_rules.json > reglas_validacion (V23 dual_decision agregada 2026-01-20)
+  sinonimos_argentinos: 13  # config/sinonimos_argentinos_esco.json > ocupaciones_titulo
   empresas_catalogo: 247  # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
   skills_esco: 14257            # database/embeddings/esco_skills_full.json
   ocupaciones_esco: 3046        # database/embeddings/esco_occupations_full.json
-  ultima_verificacion: 2026-01-19
+  ultima_verificacion: 2026-01-21
 
   supabase:
     integrado: true
@@ -114,10 +135,10 @@ conteos:
   proximo_paso: "Validación humana de las 100 nuevas ofertas"
 
   estadisticas_actuales:
-    ofertas_validadas: 120  # validadas anteriormente
-    ofertas_pendientes: 100  # nuevo lote procesado
-    reglas_negocio: 119
-    tasa_aprendizaje: "0.0% (0 reglas / 5 ofertas)"
+    ofertas_validadas: 155  # validadas anteriormente
+    ofertas_pendientes: 78  # nuevo lote procesado
+    reglas_negocio: 129
+    tasa_aprendizaje: "0.0% (0 reglas / 3 ofertas)"
     convergencia: "CONVERGIDO (tasa < 5%)"
     cobertura_reglas: "85% (81 reglas + 4 diccionario)"
     fallback_semantico: "15% (15 ofertas)"
@@ -134,9 +155,9 @@ conteos:
 
   # Métricas de evolución del aprendizaje
   learning_evolution:
-    total_runs: 51
+    total_runs: 78
     ofertas_con_historial_nlp: 5474  # ofertas en ofertas_nlp_history
-    ofertas_con_matching: 220  # ofertas distintas en ofertas_esco_matching
+    ofertas_con_matching: 233  # ofertas distintas en ofertas_esco_matching
 
     # Distribución real de reprocesos (datos de ofertas_nlp_history)
     distribucion_reprocesos:
@@ -148,7 +169,7 @@ conteos:
       caso_mas_dificil: "2154549 Contador Auditoría (12 intentos)"
 
     reglas_inicio: 22  # 2026-01-13 baseline
-    reglas_actual: 119
+    reglas_actual: 129
     reglas_agregadas: "+96 durante optimización"
     tasa_convergencia: "47% -> 27% -> 2.7% -> 7.5% -> 0%"
     estado: "CONVERGIDO (tasa = 0%)"
@@ -469,6 +490,59 @@ learnings:
       Para ejecutar manualmente: python scripts/sync_learnings.py
     date: 2026-01-17
 
+  - context: "Dual Matching v3.4.0"
+    learning: |
+      Sistema de matching ejecuta AMBOS métodos (semántico Y reglas) y guarda ambos resultados.
+
+      Columnas nuevas en ofertas_esco_matching:
+      - isco_regla, isco_semantico, score_semantico
+      - regla_aplicada, dual_coinciden, decision_metodo
+
+      Flujo:
+      1. match() ejecuta semántico completo (diccionario/skills/titulo)
+      2. _evaluate_rule_only() evalúa reglas sin bypass
+      3. Guarda ambos en metadata del MatchResult
+      4. save_matching_result() persiste los 6 campos
+      5. V23_dual_decision detecta cuando dual_coinciden=0
+      6. auto_corrector._aplicar_decidir_dual_match() decide:
+         - score >= 0.75 → semántico gana
+         - regla >= 5 casos validados → regla gana
+         - default → semántico gana
+
+      Vistas de monitoreo:
+      - v_dual_decisions: distribución de decisiones
+      - v_reglas_problematicas: reglas que difieren >50%
+      - v_reglas_efectividad: análisis por regla
+
+      Archivos modificados:
+      - database/match_ofertas_v3.py (v3.4.0)
+      - database/auto_corrector.py (+_aplicar_decidir_dual_match)
+      - config/validation_rules.json (+V23)
+      - config/auto_correction_map.json (+discrepancia_dual)
+      - migrations/015_dual_decision_tracking.sql
+    date: 2026-01-20
+
+  - context: "Protección de ofertas validadas v2.0"
+    learning: |
+      GAP CRÍTICO encontrado: export_validation_excel.py:474 no filtraba por estado_validacion,
+      causando que ofertas YA VALIDADAS volvieran a aparecer en lotes nuevos.
+
+      Solución implementada (4 capas):
+      1. Query filtrada en export_validation_excel.py:476 - excluye validadas de selección
+      2. Query filtrada en auto_validator.py:590 - excluye validadas de validación
+      3. Error explícito en match_ofertas_v3.py:1368 - lanza ValueError si hay validadas
+      4. Triggers BD (migrations/016_protect_validated_offers.sql):
+         - protect_validated_matching: bloquea UPDATE en ofertas validadas
+         - protect_validated_status: solo permite validado → en_revision
+
+      Scripts nuevos:
+      - scripts/check_validated_protection.py: verifica estado de protección
+      - scripts/admin_unlock_validated.py: desbloquea con justificación obligatoria
+
+      REGLA ABSOLUTA: Ofertas con estado_validacion='validado' NUNCA deben aparecer en lotes nuevos.
+      Para desbloquear: python scripts/admin_unlock_validated.py --ids X --motivo "razón"
+    date: 2026-01-20
+
 # ============================================
 # DECISIONES TOMADAS
 # ============================================
@@ -512,6 +586,10 @@ decisions:
   - decision: "Auto-sync de learnings.yaml via script"
     reason: "Las instrucciones para que Claude actualizara manualmente no funcionaban consistentemente. Script automatiza la sincronización de conteos y métricas desde BD/configs."
     date: 2026-01-17
+
+  - decision: "Dual matching v3.4.0 - ejecutar AMBOS métodos siempre"
+    reason: "Usuario pidió enfoque más flexible que 'reglas ganan siempre'. Ahora semántico Y reglas se ejecutan, auto_corrector decide automáticamente basado en score y casos validados. 100% automático sin intervención humana."
+    date: 2026-01-20
 
 # ============================================
 # COSAS QUE NO FUNCIONARON

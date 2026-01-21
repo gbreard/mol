@@ -11,21 +11,45 @@ Este script ejecuta el flujo completo de procesamiento:
 7. Export Excel validacion
 8. Sync learnings.yaml
 
-Uso:
-    python scripts/run_validated_pipeline.py --limit 100
-    python scripts/run_validated_pipeline.py --ids 123,456,789
-    python scripts/run_validated_pipeline.py --only-pending
-    python scripts/run_validated_pipeline.py --skip-nlp  # solo matching
+SISTEMA DE PRIORIDAD (v3.1):
+- Con --limit: Selecciona ofertas por prioridad (fecha + vacantes + permanencia)
+- Persiste estado en tabla ofertas_prioridad
+- Bloquea avance si hay errores pendientes del lote anterior
+- Ver estado: python scripts/get_priority_batch.py --queue-status
 
-Version: 3.0
-Fecha: 2026-01-19
+Uso:
+    python scripts/run_validated_pipeline.py --limit 100           # Por prioridad
+    python scripts/run_validated_pipeline.py --limit 100 --no-priority  # Sin prioridad
+    python scripts/run_validated_pipeline.py --ids 123,456,789     # IDs especificos
+    python scripts/run_validated_pipeline.py --only-pending
+    python scripts/run_validated_pipeline.py --skip-nlp            # Solo matching
+
+Version: 3.1
+Fecha: 2026-01-20
 """
 
 import argparse
 import sys
+import io
 import sqlite3
 from pathlib import Path
 from datetime import datetime
+
+# Fix encoding for Windows subprocess
+try:
+    if hasattr(sys.stdout, 'buffer'):
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+except (ValueError, AttributeError, OSError):
+    pass
+
+
+def safe_print(*args, **kwargs):
+    """Print function that handles closed stdout gracefully."""
+    try:
+        print(*args, **kwargs)
+    except (ValueError, OSError):
+        pass
+
 
 # Agregar paths
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -80,7 +104,7 @@ def run_nlp_for_ids(ids: list, verbose: bool = True) -> dict:
         return {"processed": 0}
 
     if verbose:
-        print(f"Procesando NLP para {len(ids)} ofertas...")
+        safe_print(f"Procesando NLP para {len(ids)} ofertas...")
 
     # Importar y ejecutar NLP usando la clase NLPExtractorV11
     from database.process_nlp_from_db_v11 import NLPExtractorV11
@@ -139,16 +163,16 @@ def run_full_pipeline(
 
         if verbose:
             if nlp_iteration > 1:
-                print("\n" + "=" * 60)
-                print(f"ITERACION {nlp_iteration}")
-                print("=" * 60)
+                safe_print("\n" + "=" * 60)
+                safe_print(f"ITERACION {nlp_iteration}")
+                safe_print("=" * 60)
 
         # PASO 1: NLP (si no se salta)
         if not skip_nlp and nlp_iteration == 1:
             if verbose:
-                print("=" * 60)
-                print("PASO 1: NLP")
-                print("=" * 60)
+                safe_print("=" * 60)
+                safe_print("PASO 1: NLP")
+                safe_print("=" * 60)
 
             # Determinar que ofertas necesitan NLP
             nlp_ids = []
@@ -172,25 +196,25 @@ def run_full_pipeline(
 
             if nlp_ids:
                 if verbose:
-                    print(f"Ofertas sin NLP: {len(nlp_ids)}")
+                    safe_print(f"Ofertas sin NLP: {len(nlp_ids)}")
                 try:
                     nlp_result = run_nlp_for_ids(nlp_ids, verbose=verbose)
                     resultados["nlp"] = nlp_result
                     if verbose:
-                        print(f"NLP completado: {nlp_result.get('processed', 0)} ofertas")
+                        safe_print(f"NLP completado: {nlp_result.get('processed', 0)} ofertas")
                 except Exception as e:
-                    print(f"Error en NLP: {e}")
+                    safe_print(f"Error en NLP: {e}")
                     # Continuar con matching si NLP falla
             else:
                 if verbose:
-                    print("No hay ofertas pendientes de NLP")
+                    safe_print("No hay ofertas pendientes de NLP")
 
         # PASO 2: Matching (si no se salta)
         if not skip_matching:
             if verbose:
-                print("\n" + "=" * 60)
-                print("PASO 2: MATCHING")
-                print("=" * 60)
+                safe_print("\n" + "=" * 60)
+                safe_print("PASO 2: MATCHING")
+                safe_print("=" * 60)
 
             try:
                 stats = run_matching_pipeline(
@@ -206,46 +230,69 @@ def run_full_pipeline(
                     ids_to_process = stats["processed_ids"]
 
                 if verbose:
-                    print(f"\nMatching completado: {stats.get('total_processed', 0)} ofertas")
+                    safe_print(f"\nMatching completado: {stats.get('total_processed', 0)} ofertas")
 
             except Exception as e:
-                print(f"Error en matching: {e}")
+                safe_print(f"Error en matching: {e}")
                 return resultados
 
         # PASO 3: Validacion
         if verbose:
-            print("\n" + "=" * 60)
-            print("PASO 3: VALIDACION")
-            print("=" * 60)
+            safe_print("\n" + "=" * 60)
+            safe_print("PASO 3: VALIDACION")
+            safe_print("=" * 60)
 
-        validacion = validar_ofertas_desde_bd(limit=limit, ids=ids_to_process)
+        # Obtener run_id del matching para tracking
+        current_run_id = resultados.get("matching", {}).get("run_id")
+
+        validacion = validar_ofertas_desde_bd(
+            limit=limit,
+            ids=ids_to_process,
+            run_id=current_run_id
+        )
         resultados["validacion"] = validacion
 
         if verbose:
-            print(f"Total validadas: {validacion['total']}")
-            print(f"Sin errores: {validacion['sin_errores']}")
-            print(f"Con errores: {validacion['con_errores']}")
+            safe_print(f"Total validadas: {validacion['total']}")
+            safe_print(f"Sin errores: {validacion['sin_errores']}")
+            safe_print(f"Con errores: {validacion['con_errores']}")
 
         if validacion['con_errores'] == 0:
             if verbose:
-                print("\nTodas las ofertas pasaron validacion.")
+                safe_print("\nTodas las ofertas pasaron validacion.")
             break  # Salir del loop
 
         # PASO 4: Auto-correccion
         if verbose:
-            print("\n" + "=" * 60)
-            print("PASO 4: AUTO-CORRECCION")
-            print("=" * 60)
+            safe_print("\n" + "=" * 60)
+            safe_print("PASO 4: AUTO-CORRECCION")
+            safe_print("=" * 60)
 
         conn = sqlite3.connect(str(DB_PATH))
         corrector = AutoCorrector(db_conn=conn)
         correccion = corrector.procesar_errores(validacion)
         resultados["correccion"] = correccion
+
+        # Actualizar pipeline_runs con contadores de errores
+        if current_run_id:
+            errores_detectados = validacion.get('con_errores', 0)
+            errores_corregidos = len(correccion.get('auto_corregidos', []))
+            errores_escalados = len(correccion.get('escalados_claude', []))
+
+            conn.execute('''
+                UPDATE pipeline_runs
+                SET errores_detectados = ?,
+                    errores_corregidos = ?,
+                    errores_escalados = ?
+                WHERE run_id = ?
+            ''', (errores_detectados, errores_corregidos, errores_escalados, current_run_id))
+            conn.commit()
+
         conn.close()
 
         if verbose:
-            print(f"Auto-corregidos: {len(correccion['auto_corregidos'])}")
-            print(f"Escalados a Claude: {len(correccion['escalados_claude'])}")
+            safe_print(f"Auto-corregidos: {len(correccion['auto_corregidos'])}")
+            safe_print(f"Escalados a Claude: {len(correccion['escalados_claude'])}")
 
         # PASO 5: Verificar errores NLP para reprocesar
         ids_nlp_errors = get_ids_with_nlp_errors()
@@ -257,13 +304,13 @@ def run_full_pipeline(
 
         if ids_nlp_errors and nlp_iteration < max_nlp_iterations and not skip_nlp:
             if verbose:
-                print(f"\n{len(ids_nlp_errors)} ofertas con errores NLP - reprocesando...")
+                safe_print(f"\n{len(ids_nlp_errors)} ofertas con errores NLP - reprocesando...")
 
             # Reprocesar NLP para estos IDs
             try:
                 nlp_result = run_nlp_for_ids(ids_nlp_errors, verbose=verbose)
                 if verbose:
-                    print(f"NLP reprocesado: {nlp_result.get('processed', 0)} ofertas")
+                    safe_print(f"NLP reprocesado: {nlp_result.get('processed', 0)} ofertas")
 
                 # Marcar errores como resueltos para volver a validar
                 conn = sqlite3.connect(str(DB_PATH))
@@ -284,7 +331,7 @@ def run_full_pipeline(
                 continue
 
             except Exception as e:
-                print(f"Error reprocesando NLP: {e}")
+                safe_print(f"Error reprocesando NLP: {e}")
                 # Continuar sin reprocesar
 
         # Si llegamos aqui, no hay mas errores NLP para reprocesar
@@ -295,9 +342,9 @@ def run_full_pipeline(
     # PASO 6: Generar reporte para Claude (si hay errores)
     if resultados.get("correccion") and resultados["correccion"].get('patrones_para_claude'):
         if verbose:
-            print("\n" + "=" * 60)
-            print("PASO 6: PATRONES PARA CLAUDE")
-            print("=" * 60)
+            safe_print("\n" + "=" * 60)
+            safe_print("PASO 6: PATRONES PARA CLAUDE")
+            safe_print("=" * 60)
 
         resultados["patrones_claude"] = resultados["correccion"]['patrones_para_claude']
 
@@ -307,13 +354,13 @@ def run_full_pipeline(
         conn.close()
 
         if verbose:
-            print(f"Reporte guardado en: {output_path}")
+            safe_print(f"Reporte guardado en: {output_path}")
 
     # Resumen final
     if verbose:
-        print("\n" + "=" * 60)
-        print("RESUMEN FINAL")
-        print("=" * 60)
+        safe_print("\n" + "=" * 60)
+        safe_print("RESUMEN FINAL")
+        safe_print("=" * 60)
 
         if resultados.get("validacion"):
             total = resultados["validacion"]['total']
@@ -321,15 +368,15 @@ def run_full_pipeline(
             if resultados.get("correccion"):
                 ok += len(resultados["correccion"].get('auto_corregidos', []))
 
-            print(f"Total ofertas: {total}")
-            print(f"Listas para dashboard: {ok} ({100*ok/total:.1f}%)" if total > 0 else "")
-            print(f"Iteraciones NLP: {nlp_iteration}")
+            safe_print(f"Total ofertas: {total}")
+            safe_print(f"Listas para dashboard: {ok} ({100*ok/total:.1f}%)" if total > 0 else "")
+            safe_print(f"Iteraciones NLP: {nlp_iteration}")
 
     # PASO 7: Export Excel para validacion humana
     if verbose:
-        print("\n" + "=" * 60)
-        print("PASO 7: EXPORT EXCEL")
-        print("=" * 60)
+        safe_print("\n" + "=" * 60)
+        safe_print("PASO 7: EXPORT EXCEL")
+        safe_print("=" * 60)
 
     try:
         from scripts.exports.export_validation_excel import export_validation
@@ -342,23 +389,23 @@ def run_full_pipeline(
         resultados["excel_export"] = str(excel_path)
 
         if verbose:
-            print(f"Excel exportado: {excel_path}")
+            safe_print(f"Excel exportado: {excel_path}")
 
     except Exception as e:
-        print(f"Warning: Error exportando Excel: {e}")
+        safe_print(f"Warning: Error exportando Excel: {e}")
         resultados["excel_export"] = f"Error: {e}"
 
     # PASO 8: Sincronizar learnings.yaml
     if verbose:
-        print("\n" + "=" * 60)
-        print("PASO 8: SYNC LEARNINGS.YAML")
-        print("=" * 60)
+        safe_print("\n" + "=" * 60)
+        safe_print("PASO 8: SYNC LEARNINGS.YAML")
+        safe_print("=" * 60)
 
     try:
         sync_learnings_yaml(verbose=verbose)
         resultados["learnings_sync"] = True
     except Exception as e:
-        print(f"Warning: Error sincronizando learnings.yaml: {e}")
+        safe_print(f"Warning: Error sincronizando learnings.yaml: {e}")
         resultados["learnings_sync"] = False
 
     return resultados
@@ -375,9 +422,63 @@ def main():
     parser.add_argument("--max-nlp-iterations", type=int, default=2, help="Max iteraciones NLP")
     parser.add_argument("--quiet", action="store_true", help="Modo silencioso")
 
+    # Nuevos argumentos para sistema de prioridad
+    parser.add_argument("--no-priority", action="store_true", help="Desactivar seleccion por prioridad")
+    parser.add_argument("--force-new-batch", action="store_true", help="Forzar nuevo lote ignorando errores pendientes")
+
     args = parser.parse_args()
 
     ids = args.ids.split(",") if args.ids else None
+
+    # === SISTEMA DE PRIORIDAD ===
+    if args.limit and not args.ids and not args.no_priority:
+        from scripts.get_priority_batch import (
+            get_connection as get_priority_conn,
+            refresh_priorities,
+            get_next_batch_from_db,
+            mark_batch_as_processing,
+            mark_batch_as_completed,
+            check_pending_errors_block
+        )
+
+        conn = get_priority_conn()
+
+        # 1. Verificar si hay errores bloqueantes
+        block_info = check_pending_errors_block(conn)
+        if block_info['blocked'] and not args.force_new_batch:
+            safe_print("=" * 60)
+            safe_print(f"[BLOQUEADO] Lote {block_info['lote']} tiene {block_info['errores']} errores sin resolver")
+            safe_print("=" * 60)
+            safe_print(f"\nIDs con error: {','.join(block_info['ids'][:10])}")
+            safe_print(f"\nOpciones:")
+            safe_print(f"  1. Resolver errores: --ids {','.join(block_info['ids'])}")
+            safe_print(f"  2. Forzar nuevo lote: --force-new-batch")
+            conn.close()
+            sys.exit(1)
+
+        # 2. Recalcular prioridades
+        if not args.quiet:
+            safe_print("Recalculando prioridades...")
+        result = refresh_priorities(conn)
+        if not args.quiet:
+            safe_print(f"  Nuevas: {result['nuevas']}, Actualizadas: {result['actualizadas']}")
+
+        # 3. Obtener lote ordenado por prioridad
+        batch = get_next_batch_from_db(conn, size=args.limit)
+        if not batch:
+            safe_print("No hay ofertas pendientes de procesar.")
+            conn.close()
+            sys.exit(0)
+
+        ids = [str(o['id_oferta']) for o in batch]
+        lote_id = f"lote_{datetime.now().strftime('%Y%m%d_%H%M')}"
+
+        # 4. Marcar como en_proceso
+        mark_batch_as_processing(conn, ids, lote_id)
+        if not args.quiet:
+            safe_print(f"Lote {lote_id}: {len(ids)} ofertas (score {batch[0]['score_total']:.3f} - {batch[-1]['score_total']:.3f})")
+
+        conn.close()
 
     resultados = run_full_pipeline(
         limit=args.limit,
@@ -389,6 +490,19 @@ def main():
         max_nlp_iterations=args.max_nlp_iterations,
         verbose=not args.quiet
     )
+
+    # === MARCAR LOTE COMO COMPLETADO ===
+    if args.limit and not args.ids and not args.no_priority:
+        from scripts.get_priority_batch import (
+            get_connection as get_priority_conn,
+            mark_batch_as_completed
+        )
+        conn = get_priority_conn()
+        # ids ya está definido desde el sistema de prioridad
+        mark_batch_as_completed(conn, ids)
+        if not args.quiet:
+            safe_print(f"\nLote marcado como procesado: {len(ids)} ofertas")
+        conn.close()
 
     # Exit code basado en resultado
     if resultados.get("patrones_claude"):

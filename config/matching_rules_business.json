@@ -1,5 +1,5 @@
 {
-  "version": "2.7",
+  "version": "2.8",
   "descripcion": "Reglas de negocio para matching ESCO. 121 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-01-19",
@@ -25,7 +25,7 @@
       },
       "accion": {
         "forzar_isco": "3118",
-        "esco_label": "Delineante tecnico/delineante tecnica"
+        "esco_label": "dibujante técnico/dibujante técnica"
       },
       "caso_gold_set": "1118027941 - Dibujante Tecnico",
       "activa": true
@@ -45,7 +45,7 @@
       },
       "accion": {
         "forzar_isco": "2166",
-        "esco_label": "Disenador grafico/disenadora grafica"
+        "esco_label": "diseñador gráfico/diseñadora gráfica"
       },
       "caso_gold_set": "1118018714 - Diseñador Gráfico E-commerce",
       "activa": true
@@ -65,7 +65,7 @@
       },
       "accion": {
         "forzar_isco": "8344",
-        "esco_label": "Operador de carretilla elevadora"
+        "esco_label": "operador de carretilla elevadora/operadora de carretilla elevadora"
       },
       "caso_gold_set": "1118028027 - Operador Autoelevadores",
       "activa": true
@@ -165,7 +165,7 @@
       },
       "accion": {
         "forzar_isco": "3240",
-        "esco_label": "Tecnico veterinario/tecnica veterinaria"
+        "esco_label": "técnico veterinario/técnica veterinaria"
       },
       "caso_gold_set": "1117995368 - Asesor Nutrición Animal",
       "activa": true
@@ -241,7 +241,7 @@
       },
       "accion": {
         "forzar_isco": "3322",
-        "esco_label": "Representante comercial"
+        "esco_label": "representante comercial"
       },
       "caso_gold_set": "1118027276 - Ejecutivo de Cuentas",
       "activa": true
@@ -261,7 +261,7 @@
       },
       "accion": {
         "forzar_isco": "2221",
-        "esco_label": "Enfermero/enfermera"
+        "esco_label": "enfermero/enfermera"
       },
       "caso_diagnostico": "2154046 - Enfermeros para atencion domiciliaria",
       "activa": true
@@ -295,7 +295,7 @@
       },
       "accion": {
         "forzar_isco": "2411",
-        "esco_label": "contador/contadora"
+        "esco_label": "contable"
       },
       "caso_diagnostico": "2154549 - Contador para Sector Auditoria",
       "fix_aplicado": "2026-01-12 - Excluir auditor médico (1118105872)",
@@ -313,7 +313,7 @@
       },
       "accion": {
         "forzar_isco": "2212",
-        "esco_label": "Médico especialista"
+        "esco_label": "médico especialista/médica especialista"
       },
       "caso_diagnostico": "1118105872 - Auditor Médico Swiss Medical",
       "fecha_creacion": "2026-01-12",
@@ -330,7 +330,7 @@
       },
       "accion": {
         "forzar_isco": "2212",
-        "esco_label": "Médico especialista"
+        "esco_label": "médico especialista/médica especialista"
       },
       "caso_diagnostico": "1118105872 - Auditor Médico Swiss Medical",
       "fecha_creacion": "2026-01-12",
@@ -350,7 +350,7 @@
       },
       "accion": {
         "forzar_isco": "4222",
-        "esco_label": "Telefonista de centro de contacto"
+        "esco_label": "agente de centro de atención al cliente"
       },
       "caso_diagnostico": "2149320 - Customer Care Professional",
       "activa": true
@@ -370,7 +370,7 @@
       },
       "accion": {
         "forzar_isco": "5132",
-        "esco_label": "Barista"
+        "esco_label": "barista"
       },
       "caso_diagnostico": "2155040 - ENCARGADAS/OS - HELADERAS/OS - BARISTAS",
       "activa": true
@@ -391,7 +391,7 @@
       },
       "accion": {
         "forzar_isco": "2611",
-        "esco_label": "Abogado/abogada"
+        "esco_label": "abogado/abogada"
       },
       "caso_diagnostico": "1118027243 - Responsable de Legales, 2151075 - Asistente Compliance",
       "activa": true
@@ -411,7 +411,7 @@
       },
       "accion": {
         "forzar_isco": "4313",
-        "esco_label": "Empleado de nominas"
+        "esco_label": "administrativo de nóminas/administrativa de nóminas"
       },
       "caso_diagnostico": "2145263 - Consultor Junior de Liquidacion de Sueldos",
       "activa": true
@@ -433,7 +433,7 @@
       },
       "accion": {
         "forzar_isco": "1213",
-        "esco_label": "Director de proyectos"
+        "esco_label": "director de empresa/directora de empresa"
       },
       "caso_diagnostico": "1118026719 - Project Manager IT",
       "activa": true
@@ -455,7 +455,7 @@
       },
       "accion": {
         "forzar_isco": "5223",
-        "esco_label": "Vendedor especializado en ferreteria y pintura"
+        "esco_label": "vendedor especializado en ferretería y pintura/vendedora especializada en ferretería y pintura"
       },
       "caso_diagnostico": "2130257 - EMPLEADA/O VENTA MOSTRADOR PARA CASA DE ELECTRICIDAD",
       "activa": true
@@ -479,7 +479,7 @@
       },
       "accion": {
         "forzar_isco": "4222",
-        "esco_label": "Supervisor de centro de contacto"
+        "esco_label": "agente de centro de atención al cliente"
       },
       "caso_diagnostico": "2156388 - Lider de Atencion al Cliente",
       "activa": true
@@ -500,7 +500,7 @@
       },
       "accion": {
         "forzar_isco": "7126",
-        "esco_label": "Tecnico de mantenimiento de instalaciones"
+        "esco_label": "operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías"
       },
       "caso_diagnostico": "1118028168 - Coordinador de Instalaciones",
       "activa": true
@@ -523,7 +523,7 @@
       },
       "accion": {
         "forzar_isco": "4321",
-        "esco_label": "Jefe de almacen/jefa de almacen"
+        "esco_label": "coordinador de inventario/coordinadora de inventario"
       },
       "caso_gold_set": "1118026729 - Responsable de Deposito",
       "activa": true
@@ -543,7 +543,7 @@
       },
       "accion": {
         "forzar_isco": "1221",
-        "esco_label": "Director de comercios/directora de comercios"
+        "esco_label": "director de promoción/directora de promoción"
       },
       "caso_gold_set": "1117984105 - Gerente de Ventas",
       "activa": true
@@ -565,7 +565,7 @@
       },
       "accion": {
         "forzar_isco": "1412",
-        "esco_label": "Gerente de restaurante"
+        "esco_label": "director de restaurante/directora de restaurante"
       },
       "caso_gold_set": "Casos con titulo explicito de restaurante/bar",
       "activa": true,
@@ -581,7 +581,7 @@
       },
       "accion": {
         "forzar_isco": "4226",
-        "esco_label": "Recepcionista"
+        "esco_label": "recepcionista"
       },
       "caso_gold_set": "1117977340 - Recepcionista Administrativo",
       "activa": true
@@ -603,7 +603,7 @@
       },
       "accion": {
         "forzar_isco": "2359",
-        "esco_label": "Asesor academico/asesora academica"
+        "esco_label": "asesor académico/asesora académica"
       },
       "caso_gold_set": "1118018461 - Asesor de Admisiones",
       "activa": true
@@ -622,7 +622,7 @@
       },
       "accion": {
         "forzar_isco": "3322",
-        "esco_label": "Representante comercial"
+        "esco_label": "representante comercial"
       },
       "caso_gold_set": "1118028038 - Ejecutiva/o Comercial de Cuentas",
       "activa": true
@@ -642,7 +642,7 @@
       },
       "accion": {
         "forzar_isco": "7532",
-        "esco_label": "patronista y cortador de tela y cuero/patronista y cortadora de tela y cuero"
+        "esco_label": "patronista de artículos de cuero"
       },
       "caso_gold_set": "1118028828 - Modelista textil, 1118106004 - Modelista/Tizadora Audaces",
       "activa": true,
@@ -682,7 +682,7 @@
       },
       "accion": {
         "forzar_isco": "2432",
-        "esco_label": "Gestor de la informacion para las redes sociales"
+        "esco_label": "gestor de la información para las redes sociales/gestora de la información para las redes sociales"
       },
       "caso_gold_set": "1118022146 - Community manager",
       "activa": true
@@ -705,7 +705,7 @@
       },
       "accion": {
         "forzar_isco": "5131",
-        "esco_label": "Camarero/camarera"
+        "esco_label": "camarero/camarera"
       },
       "caso_gold_set": "2164100 - Mozo/Moza",
       "activa": true
@@ -749,14 +749,24 @@
           "fullstack",
           "full stack",
           "full-stack"
+        ],
+        "titulo_no_contiene_alguno": [
+          "cnc",
+          "mecanizado",
+          "torno",
+          "fresadora",
+          "centro de mecanizado",
+          "maquina herramienta",
+          "máquina herramienta"
         ]
       },
       "accion": {
         "forzar_isco": "2512",
-        "esco_label": "Desarrollador de software"
+        "esco_label": "desarrollador de software/desarrolladora de software"
       },
       "caso_gold_set": "1117982053 - Desarrollador Angular Senior",
-      "activa": true
+      "activa": true,
+      "nota": "Excluye CNC/mecanizado (v2026-01-20)"
     },
     "R34_cajero": {
       "nombre": "Cajero/Cajera",
@@ -771,7 +781,7 @@
       },
       "accion": {
         "forzar_isco": "5230",
-        "esco_label": "Cajero/cajera"
+        "esco_label": "cajero/cajera"
       },
       "caso_gold_set": "2123908 - CAJEROS",
       "activa": true
@@ -794,7 +804,7 @@
       },
       "accion": {
         "forzar_isco": "2166",
-        "esco_label": "Diseñador grafico/diseñadora grafica"
+        "esco_label": "diseñador gráfico/diseñadora gráfica"
       },
       "caso_gold_set": "1118018714 - Diseñador Gráfico E-commerce",
       "activa": true
@@ -817,7 +827,7 @@
       },
       "accion": {
         "forzar_isco": "9333",
-        "esco_label": "Mozo de almacen/moza de almacen"
+        "esco_label": "mozo de almacén/moza de almacén"
       },
       "caso_gold_set": "1117980907 - Operario de Almacen/Logistica",
       "activa": true
@@ -842,7 +852,7 @@
       },
       "accion": {
         "forzar_isco": "8160",
-        "esco_label": "operador de máquinas para elaborar alimentos/operadora de máquinas para elaborar alimentos"
+        "esco_label": "operador de refrigeración de alimentos/operadora de refrigeración de alimentos"
       },
       "caso_gold_set": "2131827 - Operario de Producción de Alimentos (genérico)",
       "activa": true,
@@ -862,6 +872,14 @@
           "import export",
           "comex",
           "trade compliance"
+        ],
+        "titulo_no_contiene_alguno": [
+          "asesor técnico",
+          "asesor tecnico",
+          "asesora técnica",
+          "asesora tecnica",
+          "asesor/a técnico",
+          "asesor/a tecnico"
         ]
       },
       "accion": {
@@ -884,7 +902,7 @@
       },
       "accion": {
         "forzar_isco": "3341",
-        "esco_label": "supervisor de oficina/supervisora de oficina"
+        "esco_label": "supervisor de centro de llamadas/supervisora de centro de llamadas"
       },
       "caso_gold_set": "2165301 - Supervisor/a Administración Autos usados",
       "activa": true,
@@ -932,7 +950,7 @@
       },
       "accion": {
         "forzar_isco": "8322",
-        "esco_label": "conductor de camión ligero/conductora de camión ligero"
+        "esco_label": "conductor de vehículo de reparto/conductora de vehículo de reparto"
       },
       "caso_gold_set": "2091347 - CHOFER REPARTIDOR (huevos en Kangoo)",
       "activa": true,
@@ -973,17 +991,21 @@
           "grupo gastronóm",
           "grupo gastronom",
           "gerente gastronóm",
-          "gerente gastronom"
+          "gerente gastronom",
+          "local gastronóm",
+          "local gastronom",
+          "gerente de local gastronóm",
+          "gerente de local gastronom"
         ]
       },
       "accion": {
         "forzar_isco": "1412",
-        "esco_label": "gerente de restaurante"
+        "esco_label": "director de restaurante/directora de restaurante"
       },
-      "caso_validacion_humana": "1118091304 - Gerente de Operaciones Grupo Gastronómico",
+      "caso_validacion_humana": "1118091304 - Gerente de Operaciones Grupo Gastronómico, 1118115485 - Gerente de Local Gastronómico",
       "activa": true,
-      "nota": "Operaciones en gastronomía → 1412",
-      "fix_validacion_humana": "2026-01-16"
+      "nota": "Operaciones/local en gastronomía → 1412. Ampliado 2026-01-20",
+      "fix_validacion_humana": "2026-01-20"
     },
     "R43_IT_devops": {
       "nombre": "DevOps Engineer/SRE",
@@ -1053,7 +1075,7 @@
       },
       "accion": {
         "forzar_isco": "2511",
-        "esco_label": "analista de sistemas"
+        "esco_label": "analista de sistemas de TIC"
       },
       "caso_revision_100": "2172152 - Analista SAP Jr mal clasificado como técnico baterías",
       "activa": true,
@@ -1074,7 +1096,7 @@
       },
       "accion": {
         "forzar_isco": "2511",
-        "esco_label": "analista de sistemas"
+        "esco_label": "analista de sistemas de TIC"
       },
       "caso_revision_100": "2172151 - Analista Integraciones mal clasificado",
       "activa": true,
@@ -1094,7 +1116,7 @@
       },
       "accion": {
         "forzar_isco": "2521",
-        "esco_label": "administrador de bases de datos"
+        "esco_label": "administrador de bases de datos/administradora de bases de datos"
       },
       "caso_revision_100": "2172159 - Data Engineer Sr",
       "activa": true,
@@ -1148,7 +1170,7 @@
       "accion": {
         "priorizar_isco_familia": "1",
         "forzar_isco": "1219",
-        "esco_label": "director general/directora general"
+        "esco_label": "jefe de departamento/jefa de departamento"
       },
       "activa": true,
       "nota": "FASE 3 v3.2.3 - Jefes genericos van a ISCO 1xxx. Excluye compras/logística"
@@ -1171,7 +1193,7 @@
       },
       "accion": {
         "forzar_isco": "3323",
-        "esco_label": "comprador"
+        "esco_label": "comprador/compradora de café verde"
       },
       "caso_validacion_humana": "2172098 - Responsable de Compras y Logística",
       "activa": true,
@@ -1190,7 +1212,7 @@
       },
       "accion": {
         "forzar_isco": "4312",
-        "esco_label": "auxiliar administrativo"
+        "esco_label": "técnico administrativo de gestión/técnica administrativa de gestión"
       },
       "activa": true,
       "nota": "FASE 3 v3.2.3 - Back office es trabajo administrativo"
@@ -1226,7 +1248,7 @@
       },
       "accion": {
         "forzar_isco": "2512",
-        "esco_label": "desarrollador de software"
+        "esco_label": "desarrollador de software/desarrolladora de software"
       },
       "activa": true,
       "nota": "FASE 3 v3.2.3 - Ingenieros IA/ML son desarrolladores"
@@ -1243,7 +1265,7 @@
       },
       "accion": {
         "forzar_isco": "8142",
-        "esco_label": "operador de máquinas para fabricar productos de plástico/operadora de máquinas para fabricar productos de plástico"
+        "esco_label": "operador de máquinas para la fabricación de muebles de plástico/operadora de máquinas para la fabricación de muebles de plástico"
       },
       "activa": true
     },
@@ -1257,7 +1279,7 @@
       },
       "accion": {
         "forzar_isco": "5322",
-        "esco_label": "trabajador de cuidados personales a domicilio/trabajadora de cuidados personales a domicilio"
+        "esco_label": "técnico de atención sociosanitaria a personas en el domicilio/técnica de atención sociosanitaria a personas en el domicilio"
       },
       "activa": true
     },
@@ -1299,7 +1321,7 @@
       },
       "accion": {
         "forzar_isco": "6121",
-        "esco_label": "criador de ganado/criadora de ganado"
+        "esco_label": "ganadero/ganadera"
       },
       "activa": true
     },
@@ -1314,7 +1336,7 @@
       },
       "accion": {
         "forzar_isco": "3331",
-        "esco_label": "agente de aduanas"
+        "esco_label": "agente y comisionista de aduanas"
       },
       "activa": true
     },
@@ -1344,7 +1366,7 @@
       },
       "accion": {
         "forzar_isco": "2212",
-        "esco_label": "médico/médica especialista"
+        "esco_label": "médico especialista/médica especialista"
       },
       "activa": true,
       "nota": "Excluye ingeniero/técnico para evitar falsos positivos con 'equipamiento médico'"
@@ -1370,7 +1392,7 @@
       },
       "accion": {
         "forzar_isco": "7231",
-        "esco_label": "mecánico de vehículos de motor/mecánica de vehículos de motor"
+        "esco_label": "mecánico de vehículos/mecánica de vehículos"
       },
       "activa": true
     },
@@ -1394,7 +1416,7 @@
       },
       "accion": {
         "forzar_isco": "2145",
-        "esco_label": "ingeniero quimico/ingeniera quimica"
+        "esco_label": "ingeniero químico/ingeniera química"
       },
       "activa": true
     },
@@ -1437,7 +1459,7 @@
       },
       "accion": {
         "forzar_isco": "3343",
-        "esco_label": "secretario de administracion/secretaria de administracion"
+        "esco_label": "empleado administrativo/empleada administrativa"
       },
       "activa": true
     },
@@ -1458,7 +1480,7 @@
       },
       "accion": {
         "forzar_isco": "4110",
-        "esco_label": "empleado de oficina en general/empleada de oficina en general"
+        "esco_label": "empleado de oficina/empleada de oficina"
       },
       "activa": true
     },
@@ -1479,7 +1501,7 @@
       },
       "accion": {
         "forzar_isco": "1324",
-        "esco_label": "director de logística y distribución/directora de logística y distribución"
+        "esco_label": "director de distribución y logística/directora de distribución y logística"
       },
       "activa": true
     },
@@ -1540,7 +1562,7 @@
       },
       "accion": {
         "forzar_isco": "1412",
-        "esco_label": "gerente de restaurante"
+        "esco_label": "director de restaurante/directora de restaurante"
       },
       "caso_revision_100": "1118091304, 1118097995 - Gerente/Supervisor Operaciones Gastronómico",
       "activa": true,
@@ -1583,7 +1605,7 @@
       },
       "accion": {
         "forzar_isco": "1412",
-        "esco_label": "gerente de restaurante"
+        "esco_label": "director de restaurante/directora de restaurante"
       },
       "caso_revision_100": "2172164 - Encargado Senior Gastronomía",
       "activa": true,
@@ -1622,30 +1644,11 @@
       },
       "accion": {
         "forzar_isco": "7214",
-        "esco_label": "montador de carpintería metálica"
+        "esco_label": "carpintero de ribera/carpintera de ribera"
       },
       "caso_revision_100": "2172208 - Carpintero de Aluminio / Cortador Vidriero",
       "activa": true,
       "nota": "FASE 4 - Carpintero aluminio es carpintería metálica, NO ebanista"
-    },
-    "R73_product_manager": {
-      "nombre": "Product Manager/Jefe de Producto",
-      "condicion": {
-        "titulo_contiene_alguno": [
-          "product manager",
-          "jefe de producto",
-          "jefa de producto",
-          "gerente de producto",
-          "product owner"
-        ]
-      },
-      "accion": {
-        "forzar_isco": "1221",
-        "esco_label": "director de ventas/directora de ventas"
-      },
-      "caso_revision_100": "1118105850 - Jefe de Producto",
-      "activa": true,
-      "nota": "FASE 4 - Product Manager es rol de marketing/negocio"
     },
     "R74_supervisor_ventas": {
       "nombre": "Supervisor de Ventas",
@@ -1681,7 +1684,7 @@
       },
       "accion": {
         "forzar_isco": "5414",
-        "esco_label": "guardia de seguridad"
+        "esco_label": "guardia de furgón blindado"
       },
       "caso_revision_100": "2171959 - Vigilador General",
       "activa": true,
@@ -1700,7 +1703,7 @@
       },
       "accion": {
         "forzar_isco": "2266",
-        "esco_label": "logopeda"
+        "esco_label": "audiólogo/audióloga"
       },
       "caso_revision_100": "2171937 - Fonoaudióloga",
       "activa": true,
@@ -1718,7 +1721,7 @@
       },
       "accion": {
         "forzar_isco": "1324",
-        "esco_label": "director de la cadena de suministro"
+        "esco_label": "director de la cadena de suministro/directora de la cadena de suministro"
       },
       "caso_revision_100": "2172098 - Responsable Compras y Logística",
       "activa": true,
@@ -1736,7 +1739,7 @@
       },
       "accion": {
         "forzar_isco": "2511",
-        "esco_label": "analista de sistemas"
+        "esco_label": "analista de sistemas de TIC"
       },
       "caso_revision_100": "2172188 - Analista Técnico Funcional Medios de Pago",
       "activa": true,
@@ -1781,7 +1784,7 @@
       },
       "accion": {
         "forzar_isco": "4321",
-        "esco_label": "coordinador de inventario"
+        "esco_label": "coordinador de inventario/coordinadora de inventario"
       },
       "caso_revision_100": "2172219 - Administrativo para Almacenes",
       "activa": true,
@@ -1805,7 +1808,7 @@
       },
       "accion": {
         "forzar_isco": "5414",
-        "esco_label": "operador de monitoreo de seguridad"
+        "esco_label": "jefe de equipo de seguridad/jefa de equipo de seguridad"
       },
       "caso_revision_100": "1118102051 - Operadores de Monitoreo de Alarmas",
       "activa": true,
@@ -1829,7 +1832,7 @@
       },
       "accion": {
         "forzar_isco": "8131",
-        "esco_label": "operador de fabricación de productos químicos"
+        "esco_label": "operador de control de la fabricación de jabón/operadora de control de la fabricación de jabón"
       },
       "caso_revision_100": "1118040252 - Operarios pharma mal clasificado a zoológico",
       "activa": true,
@@ -1846,7 +1849,7 @@
       },
       "accion": {
         "forzar_isco": "3341",
-        "esco_label": "supervisor de control de calidad"
+        "esco_label": "supervisor de centro de llamadas/supervisora de centro de llamadas"
       },
       "caso_revision_100": "1118101077, 1118101058 - Analista Calidad Servicios",
       "activa": true,
@@ -1869,7 +1872,7 @@
       },
       "accion": {
         "forzar_isco": "8131",
-        "esco_label": "operador de fabricación de productos químicos"
+        "esco_label": "operador de control de la fabricación de jabón/operadora de control de la fabricación de jabón"
       },
       "caso_revision_100": "1118040252 - Operarios acondicionamiento laboratorio",
       "activa": true,
@@ -1892,7 +1895,7 @@
       },
       "accion": {
         "forzar_isco": "5222",
-        "esco_label": "supervisor de tienda"
+        "esco_label": "supervisor de tienda/supervisora de tienda"
       },
       "caso_revision_100": "1118097995 - Supervisor Operaciones Gastronomia",
       "activa": true,
@@ -1912,7 +1915,7 @@
       },
       "accion": {
         "forzar_isco": "5222",
-        "esco_label": "supervisor de tienda"
+        "esco_label": "supervisor de tienda/supervisora de tienda"
       },
       "caso_revision_100": "1118101812 - Subencargado de Local Retail",
       "activa": true,
@@ -1937,7 +1940,7 @@
       },
       "accion": {
         "forzar_isco": "3339",
-        "esco_label": "agente de negocios"
+        "esco_label": "agente de la propiedad intelectual"
       },
       "caso_revision_100": "1118105735 - Administrativo Ecommerce",
       "activa": true,
@@ -1957,12 +1960,12 @@
       },
       "accion": {
         "forzar_isco": "1221",
-        "esco_label": "director de ventas y comercializacion"
+        "esco_label": "director de producto/directora de producto"
       },
       "caso_revision_100": "1118105850 - Jefe de Producto",
       "activa": true,
-      "nota": "Product Manager con responsabilidades directivas → 1221",
-      "fix_validacion_humana": "2026-01-16"
+      "nota": "Product Manager → director de producto (no director de ventas). Corregido 2026-01-20",
+      "fix_validacion_humana": "2026-01-20"
     },
     "R89_disenador_grafico_senior": {
       "nombre": "Diseñador Gráfico (con seniority)",
@@ -2015,18 +2018,17 @@
           "jefa de mantenimiento",
           "jefe/a de mantenimiento",
           "supervisor de mantenimiento",
-          "gerente de mantenimiento",
           "encargado de mantenimiento",
           "responsable de mantenimiento"
         ]
       },
       "accion": {
-        "forzar_isco": "1321",
-        "esco_label": "director de fabricación"
+        "forzar_isco": "3115",
+        "esco_label": "supervisor de mantenimiento industrial/supervisora de mantenimiento industrial"
       },
       "caso_revision_100": "1117941805 - JEFE/A DE MANTENIMIENTO (rubro alimenticio)",
       "activa": true,
-      "nota": "Validacion v1.0 - Jefe mantenimiento = director manufactura (gestión planta)"
+      "nota": "Validacion v2.0 - Jefe mantenimiento en Argentina = supervisor técnico (3115), no director (1321). Corregido 2026-01-20"
     },
     "R92_jefe_cotizaciones_presupuestos": {
       "nombre": "Jefe/Responsable de Cotizaciones, Presupuestos y Cómputo de Obras",
@@ -2047,7 +2049,7 @@
       },
       "accion": {
         "forzar_isco": "1323",
-        "esco_label": "director de construcción/directora de construcción"
+        "esco_label": "director de obra/directora de obra"
       },
       "caso_revision_100": "1118105832 - Jefe/a de Cotizaciones, Cómputo y Presupuesto (instalaciones contra incendios)",
       "activa": true,
@@ -2070,7 +2072,7 @@
       },
       "accion": {
         "forzar_isco": "5244",
-        "esco_label": "vendedor de centros de contacto/vendedora de centros de contacto"
+        "esco_label": "teleoperador/teleoperadora"
       },
       "caso_revision_100": "1117872265 - Telemarketers con experiencia en planes de ahorro",
       "activa": true,
@@ -2099,7 +2101,7 @@
       },
       "accion": {
         "forzar_isco": "1346",
-        "esco_label": "gerente de servicios financieros de sucursal"
+        "esco_label": "gerente de reclamaciones de seguros"
       },
       "caso_revision_100": "2172211 - Jefe de Delegación (AMPF - venta de créditos)",
       "activa": true,
@@ -2174,7 +2176,7 @@
       },
       "accion": {
         "forzar_isco": "4321",
-        "esco_label": "coordinador de inventario"
+        "esco_label": "coordinador de inventario/coordinadora de inventario"
       },
       "caso_validacion": "1117953276 - Coordinador Deposito",
       "activa": true
@@ -2195,7 +2197,7 @@
       },
       "accion": {
         "forzar_isco": "3321",
-        "esco_label": "agente de seguros"
+        "esco_label": "asesor de seguros/asesora de seguros"
       },
       "caso_validacion": "2170807 - Asesor Medicina Prepaga",
       "activa": true
@@ -2232,7 +2234,7 @@
       },
       "accion": {
         "forzar_isco": "9112",
-        "esco_label": "limpiador de hoteles/limpiadora de hoteles"
+        "esco_label": "camarero de pisos/camarera de pisos"
       },
       "activa": true
     },
@@ -2248,29 +2250,8 @@
       },
       "accion": {
         "forzar_isco": "2511",
-        "esco_label": "analista de sistemas informáticos"
+        "esco_label": "analista de sistemas de TIC"
       },
-      "activa": true
-    },
-    "R105_jefe_mantenimiento": {
-      "nombre": "Jefe de Mantenimiento",
-      "prioridad": 0,
-      "condicion": {
-        "titulo_contiene_alguno": [
-          "jefe de mantenimiento",
-          "jefe mantenimiento",
-          "supervisor de mantenimiento",
-          "supervisor mantenimiento",
-          "gerente de mantenimiento",
-          "jefe mantenimiento",
-          "jefe de mantenimiento - "
-        ]
-      },
-      "accion": {
-        "forzar_isco": "1323",
-        "esco_label": "gerente de construcción/gerente de construcción"
-      },
-      "caso_demo": "1118115994 - Jefe de Mantenimiento CABA",
       "activa": true
     },
     "R106_preventista": {
@@ -2287,7 +2268,7 @@
       },
       "accion": {
         "forzar_isco": "5243",
-        "esco_label": "vendedor a domicilio/vendedora a domicilio"
+        "esco_label": "vendedor a domicilio"
       },
       "caso_demo": "1118115978 - PREVENTISTA MEDIA JORNADA",
       "activa": true
@@ -2307,7 +2288,7 @@
       },
       "accion": {
         "forzar_isco": "2263",
-        "esco_label": "especialista en salud ambiental y laboral"
+        "esco_label": "especialista en seguridad alimentaria"
       },
       "caso_demo": "1118115976 - Licenciado en Seguridad e Higiene",
       "activa": true
@@ -2378,7 +2359,7 @@
       },
       "accion": {
         "forzar_isco": "7233",
-        "esco_label": "mecanico industrial/mecanica industrial"
+        "esco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial"
       },
       "caso_demo": "1118115860 - Tecnico de Mantenimiento Industrial",
       "activa": true
@@ -2408,7 +2389,7 @@
       },
       "accion": {
         "forzar_isco": "5223",
-        "esco_label": "vendedor de tienda/vendedora de tienda"
+        "esco_label": "vendedor especializado/vendedora especializada"
       },
       "nota": "Vendedor genérico → 5223. Los B2B (asesor, ejecutivo, representante) van a R40 → 3322",
       "fix_validacion_humana": "2026-01-16",
@@ -2429,10 +2410,10 @@
       },
       "accion": {
         "forzar_isco": "2411",
-        "esco_label": "contador/contadora"
+        "esco_label": "analista contable"
       },
-      "nota": "Analista de tesorería → contador (validación humana)",
-      "fix_validacion_humana": "2026-01-16",
+      "nota": "Analista de tesorería → analista contable (validación humana v2). Corregido 2026-01-20",
+      "fix_validacion_humana": "2026-01-20",
       "activa": true
     },
     "R118_asistente_tesoreria": {
@@ -2450,7 +2431,7 @@
       },
       "accion": {
         "forzar_isco": "4311",
-        "esco_label": "empleado de contabilidad"
+        "esco_label": "empleado de contabilidad/empleada de contabilidad"
       },
       "nota": "Asistente de tesorería → empleado contabilidad (validación humana)",
       "fix_validacion_humana": "2026-01-16",
@@ -2471,7 +2452,7 @@
       },
       "accion": {
         "forzar_isco": "2212",
-        "esco_label": "medico especialista/medica especialista"
+        "esco_label": "médico especialista/médica especialista"
       },
       "nota": "Auditor médico requiere título de médico → 2212",
       "fix_validacion_humana": "2026-01-16",
@@ -2484,9 +2465,11 @@
         "titulo_contiene_alguno": [
           "analista de calidad",
           "analista calidad",
-          "control de calidad"
+          "control de calidad",
+          "garantía de calidad",
+          "garantia de calidad"
         ],
-        "titulo_contiene_alguno_adicional": [
+        "titulo_contiene_alguno_2": [
           "laboratorio",
           "lab",
           "químico",
@@ -2497,10 +2480,10 @@
       },
       "accion": {
         "forzar_isco": "3111",
-        "esco_label": "tecnico en ciencias fisicas y quimicas"
+        "esco_label": "técnico en control de calidad de productos químicos/técnica en control de calidad de productos químicos"
       },
-      "nota": "Calidad en laboratorio → 3111 (técnico químico, no inspector genérico)",
-      "fix_validacion_humana": "2026-01-16",
+      "nota": "Calidad en laboratorio → 3111 (técnico químico, no ingeniero). Corregido 2026-01-20",
+      "fix_validacion_humana": "2026-01-20",
       "activa": true
     },
     "R115_administrativo_almacen": {
@@ -2520,7 +2503,7 @@
       },
       "accion": {
         "forzar_isco": "4321",
-        "esco_label": "empleado de control de inventario"
+        "esco_label": "coordinador de inventario/coordinadora de inventario"
       },
       "nota": "Administrativo en almacén/depósito → 4321 (inventario, no admin genérico)",
       "fix_validacion_humana": "2026-01-16",
@@ -2541,7 +2524,7 @@
       },
       "accion": {
         "forzar_isco": "9321",
-        "esco_label": "embalador manual/embaladora manual"
+        "esco_label": "responsable de empaquetado manual"
       },
       "nota": "Operario logístico → 9321 (embalador/preparador), no recepcionista",
       "fix_validacion_humana": "2026-01-19",
@@ -2561,7 +2544,7 @@
       },
       "accion": {
         "forzar_isco": "7231",
-        "esco_label": "mecánico de vehículos de motor/mecánica de vehículos de motor"
+        "esco_label": "mecánico de vehículos/mecánica de vehículos"
       },
       "nota": "Gomero/balanceador → 7231 (mecánico vehículos), no demostrador",
       "fix_validacion_humana": "2026-01-19",
@@ -2584,6 +2567,281 @@
       },
       "nota": "Bioquímico → 2131 (bioquímico en ESCO), no ingeniero bioquímico (2145)",
       "fix_validacion_humana": "2026-01-19",
+      "activa": true
+    },
+    "R122_personal_obra": {
+      "nombre": "Personal para Obra / Obrero de Construcción",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "personal para obra",
+          "personal de obra",
+          "personal obra",
+          "obrero de construcción",
+          "obrero de construccion",
+          "obrero construcción",
+          "obrero construccion",
+          "peón de obra",
+          "peon de obra",
+          "peón obra",
+          "peon obra"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7112",
+        "esco_label": "albañil"
+      },
+      "nota": "Personal genérico para obra de construcción → Albañiles (7112)",
+      "fix_validacion_humana": "2026-01-20",
+      "activa": true
+    },
+    "R123_asesor_tecnico_comercial": {
+      "nombre": "Asesor Técnico Comercial",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "asesor técnico comercial",
+          "asesor tecnico comercial",
+          "asesora técnica comercial",
+          "asesora tecnica comercial",
+          "asesor/a técnico comercial",
+          "asesor/a tecnico comercial"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2433",
+        "esco_label": "representante técnico de ventas/representante técnica de ventas"
+      },
+      "nota": "REVISADO: regla correcta (2433). Fix: R38 ahora excluye 'asesor técnico' para no interferir. 2026-01-20",
+      "fix_validacion_humana": "2026-01-20",
+      "activa": true
+    },
+    "R124_analista_contable": {
+      "nombre": "Analista Contable",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista contable",
+          "analista de contabilidad",
+          "analista contable sr",
+          "analista contable jr",
+          "analista contable ssr"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2411",
+        "esco_label": "analista contable"
+      },
+      "nota": "Analista contable ≠ contador. La demanda es de analista, no de contador matriculado. Fix validacion 2026-01-20",
+      "fix_validacion_humana": "2026-01-20",
+      "activa": true
+    },
+    "R125_gerente_finanzas": {
+      "nombre": "Gerente/Director de Finanzas",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "gerente de finanzas",
+          "gerente finanzas",
+          "director de finanzas",
+          "director finanzas",
+          "gerente financiero",
+          "director financiero",
+          "cfo"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1211",
+        "esco_label": "director financiero/directora financiera"
+      },
+      "nota": "Gerente/Director de Finanzas → director financiero (no director de contabilidad). Fix validacion 2026-01-20",
+      "fix_validacion_humana": "2026-01-20",
+      "activa": true
+    },
+    "R126_ejecutivo_seguros": {
+      "nombre": "Ejecutivo/Asesor de Seguros",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "ejecutivo venta seguros",
+          "ejecutivo de venta de seguros",
+          "ejecutivo ventas seguros",
+          "ejecutivo de seguros",
+          "asesor de seguros",
+          "asesor seguros",
+          "agente de seguros",
+          "productor de seguros",
+          "corredor de seguros"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3321",
+        "esco_label": "asesor de seguros/asesora de seguros"
+      },
+      "nota": "Venta de seguros → 3321 (asesor de seguros), ESCO 3321.3.1. Fix validacion 2026-01-20",
+      "fix_validacion_humana": "2026-01-20",
+      "activa": true
+    },
+    "R127_gerente_postventa": {
+      "nombre": "Gerente/Director de Postventa/Servicio al Cliente",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "gerente de postventa",
+          "gerente de posventa",
+          "gerente postventa",
+          "gerente posventa",
+          "director de postventa",
+          "director de posventa",
+          "gerente corporativo de postventa",
+          "gerente de servicio al cliente",
+          "director de servicio al cliente",
+          "gerente de servicios al cliente"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1349",
+        "esco_label": "director de servicios para los clientes/directora de servicios para los clientes"
+      },
+      "nota": "Gerente de Postventa/Servicio al cliente → 1349 (director servicios clientes). Fix validacion 2026-01-20",
+      "fix_validacion_humana": "2026-01-20",
+      "activa": true
+    },
+    "R128_programador_cnc": {
+      "nombre": "Programador/Operario CNC/Mecanizado",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "programador cnc",
+          "programador de cnc",
+          "operario cnc",
+          "operador cnc",
+          "tornero cnc",
+          "fresador cnc",
+          "centro de mecanizado",
+          "mecanizado cnc",
+          "programador torno",
+          "programador fresadora"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7223",
+        "esco_label": "operador de torno metalúrgico/operadora de torno metalúrgico"
+      },
+      "nota": "Programador/Operario CNC = operador máquinas herramienta (7223), NO desarrollador software. Fix validacion 2026-01-20",
+      "fix_validacion_humana": "2026-01-20",
+      "activa": true
+    },
+    "R129_coordinador_educacion": {
+      "nombre": "Coordinador de Programas Educativos/Formación",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "coordinador de programas de educación",
+          "coordinador de programas educativos",
+          "coordinador de educación",
+          "coordinador educativo",
+          "coordinadora de programas de educación",
+          "coordinadora de programas educativos",
+          "coordinador de formación",
+          "coordinador de capacitación"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1345",
+        "esco_label": "coordinador de programación educativa/coordinadora de programación educativa"
+      },
+      "nota": "Coordinador educación/formación → 1345 (director servicios educativos). Fix validacion 2026-01-20",
+      "fix_validacion_humana": "2026-01-20",
+      "activa": true
+    },
+    "R130_supervisor_qa_procesos": {
+      "nombre": "Supervisor de QA/Mejora de Procesos",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "supervisor de mejora de procesos",
+          "supervisor de procesos",
+          "supervisor qa",
+          "supervisor de qa",
+          "supervisor de quality assurance",
+          "supervisor de aseguramiento de calidad"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3341",
+        "esco_label": "supervisor de centro de llamadas/supervisora de centro de llamadas"
+      },
+      "nota": "Supervisor QA/procesos → 3341 (supervisor calidad), NO director (1321). Fix validacion 2026-01-20",
+      "fix_validacion_humana": "2026-01-20",
+      "activa": true
+    },
+    "R131_hoteleria_hospitalaria": {
+      "nombre": "Hoteleria Hospitalaria/en Salud",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "hotelería hospitalaria",
+          "hoteleria hospitalaria",
+          "hotelería en salud",
+          "hoteleria en salud",
+          "hotelería sanatorio",
+          "hoteleria sanatorio",
+          "hotelería clínica",
+          "hoteleria clinica",
+          "housekeeping hospitalario",
+          "housekeeping hospital"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5151",
+        "esco_label": "supervisor de servicio de limpieza/supervisora de servicio de limpieza"
+      },
+      "caso_referencia": "2172389 - Tecnico/a de Hoteleria en Salud",
+      "activa": true
+    },
+    "R132_vendedor_medicina_prepaga": {
+      "nombre": "Vendedor/Asesor Medicina Prepaga",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "medicina prepaga",
+          "prepaga",
+          "plan de salud",
+          "planes de salud",
+          "seguro de salud",
+          "cobertura médica",
+          "cobertura medica"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3321",
+        "esco_label": "asesor de seguros/asesora de seguros"
+      },
+      "caso_referencia": "2171880 - Vendedores de medicina prepaga",
+      "activa": true
+    },
+    "R131b_hoteleria_sector_salud": {
+      "nombre": "Hoteleria en sector Salud",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "hotelería",
+          "hoteleria",
+          "housekeeping"
+        ],
+        "sector_empresa_es_alguno": [
+          "Salud",
+          "salud",
+          "Medicina",
+          "medicina"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5151",
+        "esco_label": "supervisor de servicio de limpieza/supervisora de servicio de limpieza"
+      },
+      "caso_referencia": "2172389 - Tecnico/a de Hoteleria (sector Salud)",
       "activa": true
     }
   },
@@ -2659,5 +2917,6 @@
       "precision": 1.0
     }
   },
-  "_cambios_v23": "Demo optimizacion: R105-R110 (Jefe Mant, Preventista, Seg Higiene, Jefe RRHH, Ejec Ventas, Tec Mant)"
+  "_cambios_v23": "Demo optimizacion: R105-R110 (Jefe Mant, Preventista, Seg Higiene, Jefe RRHH, Ejec Ventas, Tec Mant)",
+  "_cambios_v28": "Agregadas R131 hoteleria hospitalaria, R132 medicina prepaga"
 }

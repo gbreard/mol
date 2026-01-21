@@ -4,8 +4,8 @@
 Match Ofertas v3.3.0 - Skills-First Matching Pipeline con Diccionario Argentino
 ================================================================================
 
-VERSION: 3.3.0
-FECHA: 2026-01-14
+VERSION: 3.4.1
+FECHA: 2026-01-20
 MODELO: BGE-M3 (BAAI/bge-m3)
 
 CAMBIO ARQUITECTONICO:
@@ -18,20 +18,21 @@ CAMBIO ARQUITECTONICO:
 - v3.2.3: AND logic entre condiciones multiples en reglas de negocio
 - v3.2.4: INTEGRACION RUN TRACKING - versionado de corridas con snapshot de configs
 - v3.3.0: DICCIONARIO ARGENTINO - vocabulario local ANTES de semantico
+- v3.4.0: DUAL MATCHING - ejecuta reglas Y semantico, guarda ambos resultados
 
-FLUJO v3.3.0:
+FLUJO v3.4.0 (DUAL MATCHING):
 1. Extraer skills desde titulo_limpio + tareas_explicitas (con origen)
-1b. Diccionario argentino - si matchea, retornar directo (score 0.90)
-2. Buscar ocupaciones por skills (esco_associations) con pesos por origen
-3. Match semantico del titulo (como respaldo)
-4. Combinar scores (60% skills + 40% titulo)
-5. Penalizaciones (sector + seniority)
-6. Reglas de negocio como CORRECCION (no bypass)
-7. PERSISTIR resultados en BD
+2. SIEMPRE ejecutar matching semantico completo (skills + titulo + penalizaciones)
+3. SIEMPRE evaluar reglas de negocio (sin bypass, solo evaluacion)
+4. GUARDAR AMBOS resultados en BD:
+   - isco_semantico, score_semantico
+   - isco_regla, regla_aplicada (si aplica)
+   - dual_coinciden (1=mismo ISCO, 0=difieren, NULL=solo semantico)
+5. El auto_corrector decide el ISCO final via regla V23_dual_decision
 
 METODOS DE PERSISTENCIA:
 - match_and_persist(id, oferta): Match + guarda matching + skills
-- save_matching_result(id, result): Guarda solo matching
+- save_matching_result(id, result): Guarda solo matching (incluye dual)
 - save_skills_detalle(id, skills): Guarda solo skills
 
 FUNCION DE PIPELINE (produccion):
@@ -43,6 +44,7 @@ VENTAJAS:
 - Skills y ocupacion quedan coherentes
 - Mejor precision en casos con tareas ricas
 - DATOS SIEMPRE PERSISTIDOS en BD
+- DUAL MATCHING: permite auditar discrepancias regla vs semantico
 """
 
 import sqlite3
@@ -93,10 +95,10 @@ class MatchResult:
 
 class MatcherV3:
     """
-    Pipeline de matching v3.2.2 - Skills First con penalizaciones sector + seniority.
+    Pipeline de matching v3.4.0 - Dual Matching (reglas + semantico).
     """
 
-    VERSION = "3.3.3"  # v3.3.3: Tracking histórico (ofertas_matching_history + run_ofertas)
+    VERSION = "3.4.1"  # v3.4.1: Ordenar reglas por prioridad (menor = mayor prioridad)
 
     # Pesos para combinacion de scores
     ALPHA_SKILLS = 0.6  # Peso para match por skills
@@ -416,46 +418,40 @@ class MatcherV3:
 
     def match(self, oferta_nlp: Dict) -> MatchResult:
         """
-        Pipeline principal de matching v3.
+        Pipeline principal de matching v3.4.0 - DUAL MATCHING.
 
-        v3.3.0: CAMBIO ESTRUCTURAL - Matching semantico PRIMERO, reglas como correccion.
+        v3.4.0: CAMBIO ESTRUCTURAL - Ejecuta AMBOS (semántico Y reglas), guarda ambos.
 
-        Flujo anterior (v3.2.x):
-          1. Reglas de negocio (bypass) -> si aplica, retorna inmediato
-          2. Matching semantico (solo si no hay regla)
-
-        Flujo nuevo (v3.3.0):
-          1. SIEMPRE matching semantico primero
-          2. Reglas de negocio SOLO como correccion si:
-             - Score semantico es bajo (<0.6)
-             - O regla tiene flag "correccion_critica": true
+        Flujo v3.4.0:
+          1. SIEMPRE ejecutar matching semántico completo (diccionario/skills/titulo)
+          2. SIEMPRE evaluar reglas de negocio (sin bypass)
+          3. Guardar AMBOS resultados en metadata:
+             - isco_semantico, score_semantico
+             - isco_regla, regla_aplicada (si hay regla que aplique)
+             - dual_coinciden: 1 si mismo ISCO, 0 si difieren, None si solo semántico
+          4. El isco_code retornado es el semántico (auto_corrector decide el final)
 
         Args:
             oferta_nlp: Dict con campos NLP de la oferta
 
         Returns:
-            MatchResult con ocupacion, skills, score, etc.
+            MatchResult con ocupacion, skills, score, y metadata con dual match info.
         """
         titulo = oferta_nlp.get("titulo_limpio") or oferta_nlp.get("titulo", "")
         tareas = oferta_nlp.get("tareas_explicitas", "")
 
         if self.verbose:
-            print(f"\n[V3.3] === Matching: {titulo[:50]}... ===")
+            print(f"\n[V3.4] === DUAL Matching: {titulo[:50]}... ===")
 
-        # PASO 1: Extraer skills desde titulo + tareas + skills_nlp (v3.2.6)
-        # v3.2.6: Agregamos skills_tecnicas_list del NLP como fuente adicional
-        # Esto es CRÍTICO cuando tareas_explicitas es NULL pero el LLM detectó skills
+        # PASO 1: Extraer skills desde titulo + tareas + skills_nlp
         skills_nlp = oferta_nlp.get("skills_tecnicas_list", [])
         if isinstance(skills_nlp, str):
-            # Si viene como string JSON, parsearlo
             try:
                 import json
                 skills_nlp = json.loads(skills_nlp) if skills_nlp else []
             except:
                 skills_nlp = []
 
-        # v3.2.7: Pasar contexto para ponderación de skills genéricas
-        # v3.2.7: Agregar soft_skills_list también
         soft_skills_nlp = oferta_nlp.get("soft_skills_list", [])
         if isinstance(soft_skills_nlp, str):
             try:
@@ -474,69 +470,148 @@ class MatcherV3:
         )
 
         if self.verbose:
-            print(f"[V3] Skills extraidas: {len(skills_extracted)}")
+            print(f"[V3.4] Skills extraidas: {len(skills_extracted)}")
 
-        # PASO 1b: PRIMERO verificar reglas de negocio especificas (v3.3.2)
-        # Las reglas de negocio tienen prioridad sobre el diccionario argentino
-        # porque son correcciones especificas para casos puntuales
-        rule_result = self._check_business_rules(oferta_nlp, mode="bypass")
-        if rule_result:
-            if self.verbose:
-                print(f"[V3.3.2] Bypass por regla de negocio: ISCO {rule_result.isco_code}")
-            rule_result.skills_extracted = skills_extracted
-            return rule_result
+        # =====================================================================
+        # PASO 2: MATCHING SEMÁNTICO COMPLETO (sin bypass de reglas)
+        # =====================================================================
 
-        # PASO 1c: Intentar match por diccionario argentino (v3.3.0)
-        # Solo si no hay regla de negocio especifica
+        # 2a: Intentar match por diccionario argentino
         dict_match = self._match_by_argentino_dict(oferta_nlp)
+
+        # Variables para resultado semántico
+        semantic_isco = None
+        semantic_score = 0.0
+        semantic_label = ""
+        semantic_metodo = ""
+        semantic_uri = ""
+        semantic_skills_matched = []
+
         if dict_match:
-            isco = dict_match["isco_code"]
-            label = dict_match["esco_label"]
+            # Diccionario argentino matcheó
+            semantic_isco = dict_match["isco_code"]
+            semantic_label = dict_match["esco_label"]
+            semantic_score = dict_match["score"]
+            semantic_metodo = dict_match["metodo"]
             if self.verbose:
-                print(f"[V3.3] Match diccionario argentino: {dict_match['termino_matched']} -> ISCO {isco}")
-
-            return MatchResult(
-                status=MatchStatus.MATCHED.value,
-                esco_uri="",
-                esco_label=label,
-                isco_code=isco,
-                score=dict_match["score"],
-                metodo=dict_match["metodo"],
-                skills_extracted=skills_extracted,
-                skills_matched=[],
-                alternativas=[],
-                metadata={
-                    "diccionario_argentino": True,
-                    "termino_matched": dict_match["termino_matched"]
-                }
-            )
-
-        # PASO 2: Match por skills
-        candidates_by_skills = []
-        if skills_extracted:
-            candidates_by_skills = self.skills_matcher.match(skills_extracted, top_n=10)
-            if self.verbose:
-                print(f"[V3] Candidatos por skills: {len(candidates_by_skills)}")
-
-        # PASO 3: Match semantico del titulo
-        candidates_by_title = self._semantic_match_title(titulo)
-        if self.verbose:
-            print(f"[V3] Candidatos por titulo: {len(candidates_by_title)}")
-
-        # PASO 4: Combinar scores
-        if candidates_by_skills:
-            # Tenemos resultados por skills - usar combinacion
-            final_candidates = self._combine_candidates(
-                candidates_by_skills,
-                candidates_by_title
-            )
-            metodo = "skills_first_v3"
-        elif candidates_by_title:
-            # Solo tenemos semantico - fallback
-            final_candidates = candidates_by_title
-            metodo = "semantic_fallback_v3"
+                print(f"[V3.4] Semántico (diccionario): {dict_match['termino_matched']} -> ISCO {semantic_isco}")
         else:
-            # Sin candidatos
+            # 2b: Match por skills + titulo (embedding)
+            candidates_by_skills = []
+            if skills_extracted:
+                candidates_by_skills = self.skills_matcher.match(skills_extracted, top_n=10)
+                if self.verbose:
+                    print(f"[V3.4] Candidatos por skills: {len(candidates_by_skills)}")
+
+            candidates_by_title = self._semantic_match_title(titulo)
+            if self.verbose:
+                print(f"[V3.4] Candidatos por titulo: {len(candidates_by_title)}")
+
+            # Combinar scores
+            if candidates_by_skills:
+                final_candidates = self._combine_candidates(candidates_by_skills, candidates_by_title)
+                semantic_metodo = "skills_first_v3"
+            elif candidates_by_title:
+                final_candidates = candidates_by_title
+                semantic_metodo = "semantic_fallback_v3"
+            else:
+                # Sin candidatos semánticos - caso especial
+                semantic_isco = None
+                semantic_score = 0.0
+                semantic_metodo = "no_match"
+                final_candidates = []
+
+            if final_candidates:
+                # Aplicar penalizaciones
+                sector_empresa = oferta_nlp.get("sector_empresa", "")
+                if sector_empresa:
+                    final_candidates = self._apply_sector_penalty(final_candidates, sector_empresa)
+
+                nivel_seniority = oferta_nlp.get("nivel_seniority", "")
+                if nivel_seniority:
+                    final_candidates = self._apply_seniority_penalty(final_candidates, nivel_seniority)
+
+                # Seleccionar mejor candidato
+                best = final_candidates[0]
+                semantic_isco = best.get("isco_code", "")
+                if semantic_isco and semantic_isco.startswith("C"):
+                    semantic_isco = semantic_isco[1:]
+                semantic_score = best.get("combined_score", best.get("score", 0))
+                semantic_label = best.get("esco_label", "")
+                semantic_uri = best.get("occupation_uri", "")
+                semantic_skills_matched = best.get("skills_matched", [])
+
+                if self.verbose:
+                    print(f"[V3.4] Semántico (embedding): ISCO {semantic_isco} score={semantic_score:.2f}")
+
+        # =====================================================================
+        # PASO 3: EVALUAR REGLAS DE NEGOCIO (sin bypass, solo evaluación)
+        # =====================================================================
+        rule_info = self._evaluate_rule_only(oferta_nlp)
+
+        regla_isco = None
+        regla_aplicada = None
+        if rule_info:
+            regla_isco = rule_info["isco_code"]
+            regla_aplicada = rule_info["rule_id"]
+            if self.verbose:
+                print(f"[V3.4] Regla aplicable: {regla_aplicada} -> ISCO {regla_isco}")
+
+        # =====================================================================
+        # PASO 4: DETERMINAR dual_coinciden
+        # =====================================================================
+        if regla_isco is not None and semantic_isco is not None:
+            # Comparar los primeros 4 dígitos (nivel ISCO-4)
+            dual_coinciden = 1 if regla_isco[:4] == semantic_isco[:4] else 0
+            if self.verbose:
+                if dual_coinciden:
+                    print(f"[V3.4] DUAL: Coinciden (ISCO {semantic_isco})")
+                else:
+                    print(f"[V3.4] DUAL: DIFIEREN - Semántico={semantic_isco}, Regla={regla_isco}")
+        else:
+            # Solo semántico disponible (no hay regla que aplique)
+            dual_coinciden = None
+            if self.verbose:
+                print(f"[V3.4] DUAL: Solo semántico (sin regla aplicable)")
+
+        # =====================================================================
+        # PASO 5: RETORNAR RESULTADO - REGLAS TIENEN PRIORIDAD (v3.4.2)
+        # =====================================================================
+
+        # v3.4.2: Si hay una regla de negocio aplicable, USAR ESA (no el semántico)
+        if rule_info:
+            # Buscar datos completos de ESCO para la regla
+            rule_occupation = self._find_occupation_by_esco_label(rule_info.get("esco_label", ""))
+
+            if rule_occupation:
+                if self.verbose:
+                    print(f"[V3.4.2] REGLA GANA: {regla_aplicada} -> {rule_occupation['label']}")
+
+                return MatchResult(
+                    status=MatchStatus.BUSINESS_RULE.value,
+                    esco_uri=rule_occupation['uri'],
+                    esco_label=rule_occupation['label'],
+                    isco_code=rule_occupation['isco_code'],  # ISCO derivado de ESCO
+                    score=0.98,
+                    metodo=f"regla_negocio_{regla_aplicada}",
+                    skills_extracted=skills_extracted,
+                    skills_matched=semantic_skills_matched,
+                    alternativas=[],
+                    metadata={
+                        "skills_count": len(skills_extracted),
+                        "skills_matched_count": len(semantic_skills_matched),
+                        # Campos dual matching
+                        "isco_semantico": semantic_isco,
+                        "score_semantico": semantic_score,
+                        "isco_regla": rule_occupation['isco_code'],
+                        "regla_aplicada": regla_aplicada,
+                        "dual_coinciden": dual_coinciden,
+                        "decision_metodo": "regla_prioridad"
+                    }
+                )
+
+        # Si no hay resultado semántico válido, retornar error
+        if semantic_isco is None:
             return MatchResult(
                 status=MatchStatus.ERROR.value,
                 esco_uri=None,
@@ -547,79 +622,43 @@ class MatcherV3:
                 skills_extracted=skills_extracted,
                 skills_matched=[],
                 alternativas=[],
-                metadata={"razon": "Sin candidatos"}
+                metadata={
+                    "razon": "Sin candidatos",
+                    "isco_semantico": None,
+                    "isco_regla": regla_isco,
+                    "regla_aplicada": regla_aplicada,
+                    "dual_coinciden": dual_coinciden
+                }
             )
 
-        # PASO 5: Aplicar penalizacion por sector incompatible (v3.2.1)
-        sector_empresa = oferta_nlp.get("sector_empresa", "")
-        if sector_empresa:
-            final_candidates = self._apply_sector_penalty(final_candidates, sector_empresa)
-            if self.verbose:
-                print(f"[V3] Sector empresa: {sector_empresa}")
-
-        # PASO 6: Aplicar penalizacion por nivel_seniority incompatible (v3.2.2 - FASE 3)
-        nivel_seniority = oferta_nlp.get("nivel_seniority", "")
-        if nivel_seniority:
-            final_candidates = self._apply_seniority_penalty(final_candidates, nivel_seniority)
-            if self.verbose:
-                print(f"[V3] Nivel seniority: {nivel_seniority}")
-
-        # Seleccionar mejor candidato del matching semantico
-        best = final_candidates[0]
-        semantic_score = best.get("combined_score", best.get("score", 0))
-        alternativas = final_candidates[1:4]  # Top 3 alternativas
-
-        # v3.3.0: PASO 7 - Aplicar reglas como CORRECCION (no bypass)
-        # Solo si: score bajo (<0.75) O regla tiene "correccion_critica": true
-        # v3.3.1: Subido umbral de 0.60 a 0.75 porque el semantico aun no es confiable
-        UMBRAL_SCORE_BAJO = 0.75
-        rule_result = None
-
-        if semantic_score < UMBRAL_SCORE_BAJO:
-            # Score bajo - verificar si hay regla que corrija
-            rule_result = self._check_business_rules(oferta_nlp, mode="correccion")
-            if rule_result and self.verbose:
-                print(f"[V3.3] Score bajo ({semantic_score:.2f}), aplicando correccion por regla")
+        # Determinar status según método
+        if "skills" in semantic_metodo:
+            status = MatchStatus.SKILLS_FIRST.value
+        elif "diccionario" in semantic_metodo:
+            status = MatchStatus.MATCHED.value
         else:
-            # Score alto - solo verificar reglas criticas
-            rule_result = self._check_business_rules(oferta_nlp, mode="critica_only")
-            if rule_result and self.verbose:
-                print(f"[V3.3] Regla critica aplicada sobre score semantico {semantic_score:.2f}")
-
-        # Si hay correccion por regla, usarla; sino mantener semantico
-        if rule_result:
-            # Agregar skills extraidas al resultado de regla
-            rule_result.skills_extracted = skills_extracted
-            rule_result.metadata["semantic_score_original"] = semantic_score
-            rule_result.metadata["semantic_isco_original"] = best.get("isco_code", "").lstrip("C")
-            return rule_result
-
-        # Limpiar codigo ISCO (quitar 'C' prefix si existe)
-        isco_code = best.get("isco_code", "")
-        if isco_code and isco_code.startswith("C"):
-            isco_code = isco_code[1:]
+            status = MatchStatus.SEMANTIC.value
 
         return MatchResult(
-            status=MatchStatus.SKILLS_FIRST.value if "skills" in metodo else MatchStatus.SEMANTIC.value,
-            esco_uri=best.get("occupation_uri", ""),
-            esco_label=best.get("esco_label", ""),
-            isco_code=isco_code,
+            status=status,
+            esco_uri=semantic_uri,
+            esco_label=semantic_label,
+            isco_code=semantic_isco,  # ISCO semántico (solo si no hay regla)
             score=semantic_score,
-            metodo=metodo,
+            metodo=semantic_metodo,
             skills_extracted=skills_extracted,
-            skills_matched=best.get("skills_matched", []),
-            alternativas=[
-                {
-                    "esco_uri": a.get("occupation_uri", ""),
-                    "esco_label": a.get("esco_label", ""),
-                    "isco_code": a.get("isco_code", "").lstrip("C"),
-                    "score": a.get("combined_score", a.get("score", 0))
-                }
-                for a in alternativas
-            ],
+            skills_matched=semantic_skills_matched,
+            alternativas=[],
             metadata={
                 "skills_count": len(skills_extracted),
-                "skills_matched_count": len(best.get("skills_matched", []))
+                "skills_matched_count": len(semantic_skills_matched),
+                # Campos dual matching
+                "isco_semantico": semantic_isco,
+                "score_semantico": semantic_score,
+                "isco_regla": regla_isco,
+                "regla_aplicada": regla_aplicada,
+                "dual_coinciden": dual_coinciden,
+                "decision_metodo": "semantico_default"
             }
         )
 
@@ -638,10 +677,20 @@ class MatcherV3:
             return None
 
         titulo = (oferta_nlp.get("titulo_limpio") or oferta_nlp.get("titulo", "")).lower()
+        # v3.3.4: Para exclusiones, usar título ORIGINAL (no limpio) para no perder contexto
+        # Ej: "Gerente de Operaciones – Grupo Gastronómico" limpio queda "Gerente de Operaciones"
+        # pero la exclusión debe ver "gastronómico" del título original
+        titulo_original = (oferta_nlp.get("titulo", "")).lower()
         tareas = (oferta_nlp.get("tareas_explicitas") or "").lower()
         reglas = self.business_rules.get("reglas_forzar_isco", {})
 
-        for rule_id, rule in reglas.items():
+        # v3.4.1: Ordenar reglas por prioridad (menor = mayor prioridad)
+        reglas_ordenadas = sorted(
+            reglas.items(),
+            key=lambda x: x[1].get("prioridad", 99) if isinstance(x[1], dict) else 99
+        )
+
+        for rule_id, rule in reglas_ordenadas:
             # Saltar items que no son reglas (ej: "descripcion")
             if not isinstance(rule, dict):
                 continue
@@ -721,8 +770,9 @@ class MatcherV3:
             # Verificar EXCLUSIONES (si alguna se cumple, la regla NO aplica)
             if condicion_cumplida:
                 # titulo_no_contiene_alguno: excluir si el título contiene alguno de estos
+                # v3.3.4: Usar titulo_original para exclusiones (no titulo_limpio)
                 excluir_titulo = condicion.get("titulo_no_contiene_alguno", [])
-                if excluir_titulo and any(t.lower() in titulo for t in excluir_titulo):
+                if excluir_titulo and any(t.lower() in titulo_original for t in excluir_titulo):
                     condicion_cumplida = False
 
                 # sector_no_es: excluir si el sector es alguno de estos
@@ -738,20 +788,26 @@ class MatcherV3:
                     condicion_cumplida = False
 
             if condicion_cumplida:
-                label = accion.get("esco_label", "")
+                # v3.4.2: ESCO es el target primario, ISCO se deriva
+                esco_label = accion.get("esco_label", "")
+
+                # Buscar ocupación ESCO por label exacto
+                occupation = self._find_occupation_by_esco_label(esco_label)
+
+                if not occupation:
+                    if self.verbose:
+                        print(f"[V3.4.2] WARN: Regla {rule_id} - ESCO label no encontrado: '{esco_label}'")
+                    continue  # Skip esta regla, probar siguiente
 
                 if self.verbose:
                     modo_str = "correccion" if mode == "correccion" else "critica"
-                    print(f"[V3.3] Regla {rule_id} ({modo_str}): {rule.get('nombre', '')}")
-
-                # Buscar URI de la ocupacion
-                esco_uri = self._find_occupation_uri(isco, label)
+                    print(f"[V3.4.2] Regla {rule_id} ({modo_str}): {rule.get('nombre', '')} -> {occupation['label']}")
 
                 return MatchResult(
                     status=MatchStatus.BUSINESS_RULE.value,
-                    esco_uri=esco_uri,
-                    esco_label=label,
-                    isco_code=isco,
+                    esco_uri=occupation['uri'],
+                    esco_label=occupation['label'],  # Label exacto de ESCO
+                    isco_code=occupation['isco_code'],  # ISCO derivado de ESCO
                     score=0.98,
                     metodo=f"regla_negocio_{rule_id}",
                     skills_extracted=[],
@@ -762,8 +818,189 @@ class MatcherV3:
 
         return None
 
+    def _evaluate_rule_only(self, oferta_nlp: Dict) -> Optional[Dict]:
+        """
+        Evalúa si alguna regla de negocio aplica, sin hacer bypass.
+
+        v3.4.0: Usado para dual matching. Solo retorna info de la regla,
+        NO un MatchResult. El match() usa esto para guardar ambos resultados.
+
+        Returns:
+            Dict con {rule_id, isco_code, esco_label} si aplica alguna regla, None si no.
+        """
+        if not self.business_rules:
+            return None
+
+        titulo = (oferta_nlp.get("titulo_limpio") or oferta_nlp.get("titulo", "")).lower()
+        titulo_original = (oferta_nlp.get("titulo", "")).lower()
+        tareas = (oferta_nlp.get("tareas_explicitas") or "").lower()
+        reglas = self.business_rules.get("reglas_forzar_isco", {})
+
+        # v3.4.1: Ordenar reglas por prioridad (menor = mayor prioridad)
+        reglas_ordenadas = sorted(
+            reglas.items(),
+            key=lambda x: x[1].get("prioridad", 99) if isinstance(x[1], dict) else 99
+        )
+
+        for rule_id, rule in reglas_ordenadas:
+            if not isinstance(rule, dict):
+                continue
+            if not rule.get("activa", False):
+                continue
+
+            accion = rule.get("accion", {})
+            isco = accion.get("forzar_isco") or accion.get("forzar_isco_familia", "")
+            if not isco:
+                continue
+
+            condicion = rule.get("condicion", {})
+            condiciones_evaluadas = []
+
+            # titulo_contiene_alguno
+            terminos = condicion.get("titulo_contiene_alguno", [])
+            if terminos:
+                condiciones_evaluadas.append(any(t.lower() in titulo.lower() for t in terminos))
+
+            # titulo_contiene_alguno_2
+            terminos_2 = condicion.get("titulo_contiene_alguno_2", [])
+            if terminos_2:
+                condiciones_evaluadas.append(any(t.lower() in titulo.lower() for t in terminos_2))
+
+            # titulo_contiene_todos
+            terminos_todos = condicion.get("titulo_contiene_todos", [])
+            if terminos_todos:
+                condiciones_evaluadas.append(all(t.lower() in titulo.lower() for t in terminos_todos))
+
+            # titulo_o_tareas_contiene_alguno
+            terminos_ot = condicion.get("titulo_o_tareas_contiene_alguno", [])
+            if terminos_ot:
+                condiciones_evaluadas.append(any(t.lower() in titulo.lower() or t.lower() in tareas.lower() for t in terminos_ot))
+
+            # skills_contiene_alguno
+            terminos_skills = condicion.get("skills_contiene_alguno", [])
+            if terminos_skills:
+                texto_completo = f"{titulo} {tareas}"
+                condiciones_evaluadas.append(any(t.lower() in texto_completo for t in terminos_skills))
+
+            condicion_texto_cumplida = len(condiciones_evaluadas) > 0 and all(condiciones_evaluadas)
+
+            # area_funcional_es
+            area_requerida = condicion.get("area_funcional_es")
+            if condicion_texto_cumplida and area_requerida:
+                condicion_cumplida = oferta_nlp.get("area_funcional", "").lower() == area_requerida.lower()
+            else:
+                condicion_cumplida = condicion_texto_cumplida
+
+            # sector_es
+            sector_requerido = condicion.get("sector_es")
+            if condicion_cumplida and sector_requerido:
+                sector_actual = oferta_nlp.get("sector_empresa", "").lower()
+                condicion_cumplida = sector_actual == sector_requerido.lower()
+
+            # sector_empresa_es_alguno
+            sectores_validos = condicion.get("sector_empresa_es_alguno", [])
+            if condicion_cumplida and sectores_validos:
+                sector_actual = oferta_nlp.get("sector_empresa", "").lower()
+                condicion_cumplida = any(s.lower() == sector_actual for s in sectores_validos)
+
+            # EXCLUSIONES
+            if condicion_cumplida:
+                excluir_titulo = condicion.get("titulo_no_contiene_alguno", [])
+                if excluir_titulo and any(t.lower() in titulo_original for t in excluir_titulo):
+                    condicion_cumplida = False
+
+                excluir_sector = condicion.get("sector_no_es", [])
+                sector_actual = oferta_nlp.get("sector_empresa", "").lower()
+                if excluir_sector and any(s.lower() == sector_actual for s in excluir_sector):
+                    condicion_cumplida = False
+
+                excluir_area = condicion.get("area_funcional_no_es", [])
+                area_actual = oferta_nlp.get("area_funcional", "").lower()
+                if excluir_area and any(a.lower() == area_actual for a in excluir_area):
+                    condicion_cumplida = False
+
+            if condicion_cumplida:
+                # v3.4.2: ESCO es el target, ISCO se deriva
+                esco_label = accion.get("esco_label", "")
+                occupation = self._find_occupation_by_esco_label(esco_label)
+
+                if occupation:
+                    return {
+                        "rule_id": rule_id,
+                        "isco_code": occupation['isco_code'],  # ISCO derivado de ESCO
+                        "esco_label": occupation['label'],  # Label exacto de ESCO
+                        "nombre_regla": rule.get("nombre", "")
+                    }
+                else:
+                    # Si no se encuentra ESCO, continuar con siguiente regla
+                    continue
+
+        return None
+
+    def _find_occupation_by_esco_label(self, esco_label: str) -> Optional[Dict]:
+        """
+        Busca ocupación ESCO por label exacto.
+
+        v3.4.2: ESCO es el target primario, ISCO se deriva.
+
+        Args:
+            esco_label: Label ESCO a buscar (ej: "vendedor de tienda/vendedora de tienda")
+
+        Returns:
+            Dict con {uri, label, isco_code} o None si no se encuentra
+        """
+        if not esco_label:
+            return None
+
+        # 1. Búsqueda exacta (case-insensitive)
+        cur = self.conn.execute('''
+            SELECT occupation_uri, preferred_label_es, isco_code
+            FROM esco_occupations
+            WHERE LOWER(preferred_label_es) = LOWER(?)
+        ''', (esco_label,))
+
+        row = cur.fetchone()
+        if row:
+            return {
+                'uri': row[0],
+                'label': row[1],
+                'isco_code': row[2]
+            }
+
+        # 2. Fallback: búsqueda parcial por primera parte del label
+        # "vendedor de tienda" matchea "vendedor de tienda/vendedora de tienda"
+        label_base = esco_label.split('/')[0].strip()
+        cur = self.conn.execute('''
+            SELECT occupation_uri, preferred_label_es, isco_code
+            FROM esco_occupations
+            WHERE LOWER(preferred_label_es) LIKE LOWER(?)
+            ORDER BY LENGTH(preferred_label_es)
+            LIMIT 1
+        ''', (f"{label_base}%",))
+
+        row = cur.fetchone()
+        if row:
+            if self.verbose:
+                print(f"[V3.4.2] ESCO fallback: '{esco_label}' -> '{row[1]}'")
+            return {
+                'uri': row[0],
+                'label': row[1],
+                'isco_code': row[2]
+            }
+
+        return None
+
     def _find_occupation_uri(self, isco_code: str, label: str) -> str:
-        """Busca el URI de una ocupacion por ISCO y label."""
+        """
+        DEPRECATED: Usar _find_occupation_by_esco_label() en su lugar.
+        Mantenido por compatibilidad.
+        """
+        # Intentar con el nuevo método primero
+        result = self._find_occupation_by_esco_label(label)
+        if result:
+            return result['uri']
+
+        # Fallback al método antiguo
         cur = self.conn.execute('''
             SELECT occupation_uri FROM esco_occupations
             WHERE isco_code LIKE ? OR preferred_label_es LIKE ?
@@ -867,6 +1104,8 @@ class MatcherV3:
         """
         Persiste el resultado del matching en ofertas_esco_matching.
 
+        v3.4.0: Incluye campos de dual matching (isco_regla, isco_semantico, etc.)
+
         Args:
             id_oferta: ID de la oferta
             result: MatchResult del matching
@@ -878,10 +1117,13 @@ class MatcherV3:
         from datetime import datetime
 
         try:
-            # Preparar alternativas como JSON
-            alt1 = result.alternativas[0] if len(result.alternativas) > 0 else {}
-            alt2 = result.alternativas[1] if len(result.alternativas) > 1 else {}
-            alt3 = result.alternativas[2] if len(result.alternativas) > 2 else {}
+            # Extraer campos de dual matching de metadata
+            meta = result.metadata or {}
+            isco_regla = meta.get("isco_regla")
+            isco_semantico = meta.get("isco_semantico")
+            score_semantico = meta.get("score_semantico")
+            regla_aplicada = meta.get("regla_aplicada")
+            dual_coinciden = meta.get("dual_coinciden")
 
             self.conn.execute('''
                 INSERT OR REPLACE INTO ofertas_esco_matching (
@@ -891,8 +1133,10 @@ class MatcherV3:
                     skills_oferta_json, skills_matched_essential,
                     skills_demandados_total, skills_matcheados_esco,
                     matching_timestamp, matching_version, run_id,
-                    estado_validacion
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    estado_validacion,
+                    isco_regla, isco_semantico, score_semantico,
+                    regla_aplicada, dual_coinciden, decision_metodo
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 str(id_oferta),
                 result.esco_uri,
@@ -908,7 +1152,14 @@ class MatcherV3:
                 datetime.now().isoformat(),
                 self.VERSION,
                 run_id,  # v3.2.4: Run tracking
-                'pendiente'  # v3.2.5: Estado validación inicial
+                'pendiente',  # v3.2.5: Estado validación inicial
+                # v3.4.0: Campos dual matching
+                isco_regla,
+                isco_semantico,
+                score_semantico,
+                regla_aplicada,
+                dual_coinciden,
+                None  # decision_metodo será seteado por auto_corrector
             ))
             # v3.3.3: Tracking histórico
             # Guardar en ofertas_matching_history (no sobrescribe)
@@ -935,13 +1186,16 @@ class MatcherV3:
             self.conn.commit()
 
             if self.verbose:
-                print(f"[V3] Matching guardado para {id_oferta}" + (f" (run: {run_id})" if run_id else ""))
+                dual_info = ""
+                if dual_coinciden is not None:
+                    dual_info = f" [DUAL: {'COINCIDEN' if dual_coinciden else 'DIFIEREN'}]"
+                print(f"[V3.4] Matching guardado para {id_oferta}{dual_info}" + (f" (run: {run_id})" if run_id else ""))
             return True
 
         except Exception as e:
             logger.error(f"Error guardando matching para {id_oferta}: {e}")
             if self.verbose:
-                print(f"[V3] ERROR guardando matching: {e}")
+                print(f"[V3.4] ERROR guardando matching: {e}")
             return False
 
     def save_skills_detalle(self, id_oferta: str, skills: List[Dict]) -> int:
@@ -1257,20 +1511,25 @@ def run_matching_pipeline(
         """
 
     # Construir query
+    # v3.3.5: Agregar JOIN con ofertas para obtener titulo_original (necesario para exclusiones)
     if offer_ids:
         placeholders = ','.join(['?'] * len(offer_ids))
         query = f'''
             SELECT n.id_oferta, n.titulo_limpio, n.tareas_explicitas,
-                   n.area_funcional, n.nivel_seniority, n.sector_empresa
+                   n.area_funcional, n.nivel_seniority, n.sector_empresa,
+                   o.titulo as titulo_original
             FROM ofertas_nlp n
+            LEFT JOIN ofertas o ON CAST(n.id_oferta AS INTEGER) = o.id_oferta
             WHERE n.id_oferta IN ({placeholders})
         '''
         params = offer_ids
     elif only_pending:
         query = f'''
             SELECT n.id_oferta, n.titulo_limpio, n.tareas_explicitas,
-                   n.area_funcional, n.nivel_seniority, n.sector_empresa
+                   n.area_funcional, n.nivel_seniority, n.sector_empresa,
+                   o.titulo as titulo_original
             FROM ofertas_nlp n
+            LEFT JOIN ofertas o ON CAST(n.id_oferta AS INTEGER) = o.id_oferta
             LEFT JOIN ofertas_esco_matching m ON n.id_oferta = m.id_oferta
             WHERE m.id_oferta IS NULL
             {exclude_validated_clause}
@@ -1279,8 +1538,10 @@ def run_matching_pipeline(
     else:
         query = f'''
             SELECT n.id_oferta, n.titulo_limpio, n.tareas_explicitas,
-                   n.area_funcional, n.nivel_seniority, n.sector_empresa
+                   n.area_funcional, n.nivel_seniority, n.sector_empresa,
+                   o.titulo as titulo_original
             FROM ofertas_nlp n
+            LEFT JOIN ofertas o ON CAST(n.id_oferta AS INTEGER) = o.id_oferta
             WHERE 1=1
             {exclude_validated_clause}
         '''
@@ -1333,8 +1594,11 @@ def run_matching_pipeline(
     for i, oferta in enumerate(ofertas, 1):
         try:
             id_oferta = str(oferta['id_oferta'])
+            # v3.3.5: Incluir titulo_original para exclusiones en reglas de negocio
+            titulo_original = oferta['titulo_original'] if 'titulo_original' in oferta.keys() else None
             oferta_nlp = {
                 'titulo_limpio': oferta['titulo_limpio'] or '',
+                'titulo': titulo_original or oferta['titulo_limpio'] or '',  # titulo_original para exclusiones
                 'tareas_explicitas': oferta['tareas_explicitas'] or '',
                 'area_funcional': oferta['area_funcional'] or '',
                 'nivel_seniority': oferta['nivel_seniority'] or '',

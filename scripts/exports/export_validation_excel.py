@@ -29,8 +29,20 @@ from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Optional
 
-# Fix encoding for Windows
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+# Fix encoding for Windows (safe wrapper that handles subprocess)
+try:
+    if hasattr(sys.stdout, 'buffer'):
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+except (ValueError, AttributeError, OSError):
+    pass  # stdout already closed or unavailable
+
+
+def safe_print(*args, **kwargs):
+    """Print function that handles closed stdout gracefully."""
+    try:
+        print(*args, **kwargs)
+    except (ValueError, OSError):
+        pass  # stdout closed, ignore
 
 # Paths
 SCRIPT_DIR = Path(__file__).parent
@@ -56,10 +68,10 @@ def get_esco_lookup() -> Dict[str, Dict]:
             with open(ESCO_OCCUPATIONS_PATH, 'r', encoding='utf-8') as f:
                 data = json.load(f)
             _ESCO_LOOKUP = {occ['uri']: occ for occ in data.get('occupations', [])}
-            print(f"  Cargado lookup ESCO: {len(_ESCO_LOOKUP)} ocupaciones")
+            safe_print(f"  Cargado lookup ESCO: {len(_ESCO_LOOKUP)} ocupaciones")
         else:
             _ESCO_LOOKUP = {}
-            print(f"  WARN: No se encontró {ESCO_OCCUPATIONS_PATH}")
+            safe_print(f"  WARN: No se encontro {ESCO_OCCUPATIONS_PATH}")
     return _ESCO_LOOKUP
 
 
@@ -81,6 +93,40 @@ def get_db_connection() -> sqlite3.Connection:
     conn = sqlite3.connect(str(DB_PATH))
     conn.row_factory = sqlite3.Row
     return conn
+
+
+def verificar_y_filtrar_validadas(offer_ids: List[str], conn: sqlite3.Connection) -> List[str]:
+    """
+    Verifica si hay ofertas ya validadas en la lista y las excluye con advertencia.
+
+    Args:
+        offer_ids: Lista de IDs a verificar
+        conn: Conexión a BD
+
+    Returns:
+        Lista de IDs sin las ofertas validadas
+    """
+    if not offer_ids:
+        return offer_ids
+
+    placeholders = ','.join(['?'] * len(offer_ids))
+    cur = conn.execute(f'''
+        SELECT id_oferta FROM ofertas_esco_matching
+        WHERE id_oferta IN ({placeholders})
+        AND estado_validacion = 'validado'
+    ''', offer_ids)
+
+    validadas = [str(row[0]) for row in cur.fetchall()]
+
+    if validadas:
+        safe_print(f"\n  [WARN] Se encontraron {len(validadas)} ofertas YA VALIDADAS en la lista:")
+        safe_print(f"         {validadas[:5]}{'...' if len(validadas) > 5 else ''}")
+        safe_print(f"         Estas ofertas seran EXCLUIDAS del export.\n")
+
+        # Filtrar validadas
+        offer_ids = [oid for oid in offer_ids if oid not in validadas]
+
+    return offer_ids
 
 
 def get_scraping_data(conn: sqlite3.Connection, offer_ids: List[str], columns: List[str]) -> List[Dict]:
@@ -466,24 +512,38 @@ def export_validation(
 
     if use_gold_set:
         offer_ids = load_gold_set_ids()
-        print(f"Usando Gold Set: {len(offer_ids)} ofertas")
+        safe_print(f"Usando Gold Set: {len(offer_ids)} ofertas")
+        # Gold Set siempre se exporta completo (sin filtrar validadas)
     elif offer_ids:
         offer_ids = [str(oid) for oid in offer_ids]
+        # Verificar y filtrar ofertas ya validadas (con advertencia)
+        offer_ids = verificar_y_filtrar_validadas(offer_ids, conn)
     else:
-        # Obtener IDs de ofertas con NLP procesado
-        cur = conn.execute('SELECT id_oferta FROM ofertas_nlp LIMIT ?', (limit or 100,))
+        # Obtener IDs de ofertas con NLP procesado que NO estén validadas ni descartadas
+        # FIX: Antes no filtraba por estado_validacion, causando que ofertas ya validadas
+        # volvieran a aparecer en lotes nuevos
+        cur = conn.execute('''
+            SELECT n.id_oferta
+            FROM ofertas_nlp n
+            LEFT JOIN ofertas_esco_matching m ON n.id_oferta = m.id_oferta
+            WHERE m.estado_validacion IS NULL
+               OR m.estado_validacion NOT IN ('validado', 'descartado')
+            ORDER BY n.id_oferta DESC
+            LIMIT ?
+        ''', (limit or 100,))
         offer_ids = [str(row[0]) for row in cur.fetchall()]
+        safe_print(f"  [PROTECCION] Excluidas ofertas con estado 'validado' o 'descartado'")
 
     if limit:
         offer_ids = offer_ids[:limit]
 
-    print(f"Exportando {len(offer_ids)} ofertas para etapa '{etapa}'...")
+    safe_print(f"Exportando {len(offer_ids)} ofertas para etapa '{etapa}'...")
 
     # Generar datos para cada sheet
     sheets_data = {}
 
     for sheet_name, column_key in etapa_config['sheets'].items():
-        print(f"  Generando sheet: {sheet_name}...")
+        safe_print(f"  Generando sheet: {sheet_name}...")
 
         columns = schema['columnas'].get(column_key, [])
 
@@ -513,9 +573,9 @@ def export_validation(
             extra_cols = [col for col in df.columns if col not in ordered_cols]
             df = df[ordered_cols + extra_cols]
             sheets_data[sheet_name] = df
-            print(f"    -> {len(data)} filas")
+            safe_print(f"    -> {len(data)} filas")
         else:
-            print(f"    -> Sin datos")
+            safe_print(f"    -> Sin datos")
 
     conn.close()
 
@@ -535,8 +595,8 @@ def export_validation(
         for sheet_name, df in sheets_data.items():
             df.to_excel(writer, sheet_name=sheet_name, index=False)
 
-    print(f"\nExcel generado: {output_file}")
-    print(f"Sheets: {list(sheets_data.keys())}")
+    safe_print(f"\nExcel generado: {output_file}")
+    safe_print(f"Sheets: {list(sheets_data.keys())}")
 
     return str(output_file)
 
@@ -582,7 +642,7 @@ Ejemplos:
         output_path=args.output
     )
 
-    print(f"\n¡Listo! Archivo: {output_path}")
+    safe_print(f"\nListo! Archivo: {output_path}")
 
 
 if __name__ == "__main__":
