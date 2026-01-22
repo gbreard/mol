@@ -23,6 +23,7 @@ Fecha: 2026-01-17
 
 import json
 import sqlite3
+import subprocess
 from pathlib import Path
 from datetime import datetime, timedelta
 from typing import Dict, Any, Optional, Tuple
@@ -35,6 +36,65 @@ DB_PATH = BASE_DIR / "database" / "bumeran_scraping.db"
 LEARNINGS_PATH = BASE_DIR / ".ai" / "learnings.yaml"
 CONFIG_DIR = BASE_DIR / "config"
 SUPABASE_CONFIG_PATH = CONFIG_DIR / "supabase_config.json"
+
+
+def get_git_info() -> Dict[str, Any]:
+    """
+    Obtiene informacion del estado de Git.
+
+    Returns:
+        Dict con: branch, cambios_pendientes, ultimo_commit_hash/msg, ahead, behind
+    """
+    info = {
+        "branch": None,
+        "cambios_pendientes": 0,
+        "ultimo_commit_hash": None,
+        "ultimo_commit_msg": None,
+        "ahead": 0,
+        "behind": 0
+    }
+
+    try:
+        # Branch actual
+        result = subprocess.run(
+            ["git", "branch", "--show-current"],
+            capture_output=True, text=True, cwd=str(BASE_DIR)
+        )
+        info["branch"] = result.stdout.strip() or "detached"
+
+        # Cambios pendientes
+        result = subprocess.run(
+            ["git", "status", "--porcelain"],
+            capture_output=True, text=True, cwd=str(BASE_DIR)
+        )
+        info["cambios_pendientes"] = len([l for l in result.stdout.split('\n') if l.strip()])
+
+        # Ultimo commit
+        result = subprocess.run(
+            ["git", "log", "-1", "--format=%h - %s"],
+            capture_output=True, text=True, cwd=str(BASE_DIR)
+        )
+        if result.stdout.strip():
+            parts = result.stdout.strip().split(' - ', 1)
+            info["ultimo_commit_hash"] = parts[0]
+            info["ultimo_commit_msg"] = parts[1][:50] if len(parts) > 1 else ""
+
+        # Ahead/behind de origin (solo si hay branch)
+        if info["branch"] and info["branch"] != "detached":
+            result = subprocess.run(
+                ["git", "rev-list", "--left-right", "--count", f"origin/{info['branch']}...HEAD"],
+                capture_output=True, text=True, cwd=str(BASE_DIR)
+            )
+            if result.returncode == 0 and result.stdout.strip():
+                parts = result.stdout.strip().split('\t')
+                if len(parts) == 2:
+                    info["behind"] = int(parts[0])
+                    info["ahead"] = int(parts[1])
+
+    except Exception as e:
+        info["error"] = str(e)
+
+    return info
 
 
 def load_config_counts() -> Dict[str, int]:
@@ -533,6 +593,38 @@ def determine_suggested_phase(p1: Dict, p2: Dict, p3: Dict) -> Tuple[int, str, s
     return (0, "Ninguna urgente", "Sistema al día")
 
 
+def get_queue_status_for_report() -> dict:
+    """Obtiene estado de la cola de procesamiento para el reporte."""
+    default = {
+        'pendientes': 0,
+        'en_proceso': 0,
+        'procesados': 0,
+        'lotes_creados': 0,
+        'score_promedio': 0,
+        'score_max': 0,
+        'score_min': 0,
+        'bloqueado': False,
+        'lote_bloqueado': None,
+        'errores_bloqueo': 0,
+        'ids_bloqueo': []
+    }
+    try:
+        # Agregar path del proyecto
+        import sys
+        project_root = Path(__file__).parent.parent
+        if str(project_root) not in sys.path:
+            sys.path.insert(0, str(project_root))
+
+        from scripts.get_priority_batch import get_connection, get_queue_status
+        conn = get_connection()
+        status = get_queue_status(conn)
+        conn.close()
+        return status
+    except Exception as e:
+        # Si falla, devolver valores default
+        return default
+
+
 def generate_phase_report(output_for_claude: bool = True) -> str:
     """
     Genera reporte de estado de las 3 fases.
@@ -546,13 +638,29 @@ def generate_phase_report(output_for_claude: bool = True) -> str:
     p1 = get_phase1_metrics()
     p2 = get_phase2_metrics()
     p3 = get_phase3_metrics()
+    queue = get_queue_status_for_report()
+    git = get_git_info()
 
     suggested_phase, phase_name, reason = determine_suggested_phase(p1, p2, p3)
+
+    # Formatear estado git
+    git_estado = "limpio" if git['cambios_pendientes'] == 0 else f"{git['cambios_pendientes']} archivos modificados"
+    if git['ahead'] > 0 and git['behind'] > 0:
+        git_sync = f"{git['ahead']} ahead, {git['behind']} behind"
+    elif git['ahead'] > 0:
+        git_sync = f"{git['ahead']} commits adelante"
+    elif git['behind'] > 0:
+        git_sync = f"{git['behind']} commits atras - hacer git pull!"
+    else:
+        git_sync = "al dia"
 
     if output_for_claude:
         # Formato compacto para contexto de Claude (ASCII)
         report = f"""
 === MOL - ESTADO DE FASES ===
+
+GIT: {git['branch'] or 'N/A'} | {git_estado} | {git_sync}
+Ultimo commit: {git['ultimo_commit_hash'] or 'N/A'} - {git['ultimo_commit_msg'] or 'N/A'}
 
 FASE 1 - ADQUISICION (Scraping)
   Ofertas totales: {p1['ofertas_totales']:,}
@@ -567,6 +675,11 @@ FASE 2 - PROCESAMIENTO (NLP + Matching)
   Reglas negocio: {p2['reglas_negocio']} | Convergencia: {p2['tasa_convergencia']}
   Ultimo run: {p2['ultimo_run'] or 'N/A'}
 
+  COLA DE PROCESAMIENTO:
+  Cola pendiente: {queue['pendientes']:,} | En proceso: {queue['en_proceso']:,} | Procesados: {queue['procesados']:,}
+  Lotes: {queue['lotes_creados']} | Score promedio: {queue['score_promedio']:.3f}
+  Estado: {"BLOQUEADO - " + str(queue['errores_bloqueo']) + " errores en lote " + str(queue['lote_bloqueado']) if queue['bloqueado'] else "LISTO"}
+
 FASE 3 - PRESENTACION (Dashboard)
   Ofertas en Supabase: {p3['ofertas_sincronizadas']:,}
   Dashboard: {p3['dashboard_url']}
@@ -579,6 +692,12 @@ FASE 3 - PRESENTACION (Dashboard)
 ================================================================
               MOL - ESTADO DE LAS 3 FASES
 ================================================================
+
+--- GIT ---
+  Branch:           {git['branch'] or 'N/A':>10}
+  Estado:           {git_estado:>10}
+  Ultimo commit:    {git['ultimo_commit_hash'] or 'N/A'} - {git['ultimo_commit_msg'] or 'N/A'}
+  vs Origin:        {git_sync:>10}
 
 --- FASE 1: ADQUISICION (Scraping) ---
   Ofertas totales:    {p1['ofertas_totales']:>10,}
@@ -597,6 +716,14 @@ FASE 3 - PRESENTACION (Dashboard)
   Reglas negocio:     {p2['reglas_negocio']:>10}
   Convergencia:       {p2['tasa_convergencia']:>10}
   Ultimo run:         {str(p2['ultimo_run'] or 'N/A'):>10}
+
+  COLA DE PROCESAMIENTO:
+  Cola pendiente:     {queue['pendientes']:>10,}
+  En proceso:         {queue['en_proceso']:>10,}
+  Procesados:         {queue['procesados']:>10,}
+  Lotes creados:      {queue['lotes_creados']:>10}
+  Score promedio:     {queue['score_promedio']:>10.3f}
+  Estado cola:        {"BLOQUEADO (" + str(queue['errores_bloqueo']) + " err)" if queue['bloqueado'] else "LISTO":>10}
 
 --- FASE 3: PRESENTACION (Dashboard) ---
   En Supabase:        {p3['ofertas_sincronizadas']:>10,}
@@ -728,6 +855,12 @@ def sync_learnings_yaml(verbose: bool = True) -> bool:
     config_counts = load_config_counts()
     db_metrics = load_db_metrics()
 
+    # Calcular fase_detalle dinámicamente desde BD
+    p1 = get_phase1_metrics()
+    p2 = get_phase2_metrics()
+    p3 = get_phase3_metrics()
+    suggested_phase, phase_name, reason = determine_suggested_phase(p1, p2, p3)
+
     if verbose:
         print(f"[SYNC] Conteos config: {config_counts}")
         print(f"[SYNC] Métricas BD: runs={db_metrics['total_runs']}, matching={db_metrics['ofertas_con_matching']}")
@@ -767,9 +900,10 @@ def sync_learnings_yaml(verbose: bool = True) -> bool:
     }
     content = update_yaml_section(content, "learning_evolution", evolution_updates)
 
-    # Actualizar fecha en current_state
+    # Actualizar fecha y fase_detalle en current_state (calculado desde BD)
     current_updates = {
         "fecha_actualizacion": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "fase_detalle": f"{reason} - sistema sugiere Fase {suggested_phase}",
     }
     content = update_yaml_section(content, "current_state", current_updates)
 

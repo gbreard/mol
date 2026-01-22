@@ -1,8 +1,10 @@
 {
-  "version": "2.8",
-  "descripcion": "Reglas de negocio para matching ESCO. 121 reglas de bypass que fuerzan ISCO específico.",
+  "version": "3.0",
+  "descripcion": "Reglas de negocio para matching ESCO. 132 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-01-19",
+  "fecha_actualizacion": "2026-01-21",
+  "_cambios_v29": "Agregada R133 Steward/Bachero hoteleria -> 9412 ayudante cocina",
+  "_cambios_v30": "Agregadas R134 Commercial Executive, R135 Gestor Liquidaciones",
   "_cambios_v11": "Agregadas R43-R47: DevOps, Architect, SAP, Integraciones, Data Engineer",
   "_cambios_v12": "Agregadas R48-R52: Secretaria, Jefe generico, Back office, Carpintero, Ingeniero IA",
   "_cambios_v13": "Agregadas R68-R82: Gastronomía, Financiero, Retail, Aluminio, Product Manager, Ventas, Vigilador, Compras, etc.",
@@ -2842,6 +2844,62 @@
         "esco_label": "supervisor de servicio de limpieza/supervisora de servicio de limpieza"
       },
       "caso_referencia": "2172389 - Tecnico/a de Hoteleria (sector Salud)",
+      "activa": true
+    },
+    "R133_steward_bachero": {
+      "nombre": "Steward/Bachero hoteleria",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "steward",
+          "bachero",
+          "bacheros"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9412",
+        "esco_label": "ayudante de cocina"
+      },
+      "caso_referencia": "1116740268 - H - Steward - Bacheros - CABA",
+      "activa": true
+    },
+    "R134_commercial_executive": {
+      "nombre": "Commercial Executive area Ventas",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "commercial executive",
+          "ejecutivo comercial"
+        ],
+        "area_funcional_es_alguno": [
+          "Ventas",
+          "ventas",
+          "Comercial",
+          "comercial"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3322",
+        "esco_label": "representante comercial"
+      },
+      "caso_referencia": "2172740 - Commercial Executive",
+      "activa": true
+    },
+    "R135_gestor_liquidaciones": {
+      "nombre": "Gestor de Liquidaciones",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "gestor de liquidaciones",
+          "liquidador",
+          "gestor liquidaciones"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4311",
+        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+      },
+      "caso_referencia": "1118115815 - Gestor de Liquidaciones",
       "activa": true
     }
   },

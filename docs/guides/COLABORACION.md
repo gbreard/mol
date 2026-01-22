@@ -17,12 +17,15 @@ Claude Code debe respetar las politicas de colaboracion.
 
 ## Modelo de Colaboracion MOL
 
-### Division por Fases
+### Modelo de Trabajo
 
-| Persona | Fase | Foco |
-|---------|------|------|
-| Dev 1 | Procesamiento (Fase 2) | NLP, Skills, Matching, Validacion |
-| Dev 2 | Presentacion (Fase 3) | Dashboard, Supabase, Visualizaciones |
+**Ambos desarrolladores trabajan en todas las fases.**
+
+Para evitar conflictos:
+- **Coordinar** antes de editar archivos criticos (configs, CLAUDE.md)
+- **Usar branches** para trabajo no trivial
+- **Commits frecuentes** para minimizar divergencia
+- **Pull antes de empezar** cada sesion
 
 ### Fuente de Verdad
 
@@ -63,6 +66,93 @@ SQLite Local (cada dev)     Supabase (compartido)
 - `.env` - Credenciales (compartir por canal seguro)
 - `database/*.db` - Bases de datos SQLite
 - `.claude/settings.local.json` - Settings personales
+
+---
+
+## Flujo de Branches Git
+
+### Estructura de Branches
+
+```
+main                    <- Produccion (estable)
+  |-- feature/X         <- Features nuevas
+  |-- fix/Y             <- Bug fixes
+  |-- experiment/Z      <- Experimentos (descartar o PR)
+```
+
+### Cuando usar Branches
+
+| Situacion | Branch | Merge a |
+|-----------|--------|---------|
+| Feature nueva (>1 hora) | `feature/nombre-descriptivo` | main (via PR) |
+| Bug fix no trivial | `fix/descripcion-bug` | main (via PR) |
+| Trabajo rapido (<1 hora, bajo riesgo) | main directo | - |
+| Experimento | `experiment/nombre` | descartar o PR |
+| Cambios en config/*.json | main directo | - |
+
+### Workflow Diario
+
+```bash
+# 1. Al empezar sesion
+git pull origin main
+
+# 2. Crear branch para trabajo nuevo (si aplica)
+git checkout -b feature/mi-feature
+
+# 3. Trabajar, commitear frecuente
+git add .
+git commit -m "feat: descripcion"
+
+# 4. Al terminar, push y PR
+git push -u origin feature/mi-feature
+# Crear PR en GitHub
+
+# 5. Despues del merge, limpiar
+git checkout main
+git pull
+git branch -d feature/mi-feature
+```
+
+### Convencion de Branches para Colaboracion
+
+Cuando ambos devs trabajan en todas las fases:
+
+```
+feature/tu-nombre/descripcion
+feature/descripcion-iniciales
+```
+
+Ejemplos:
+- `feature/nlp-fixes-fz` vs `feature/dashboard-cards-gm`
+- `fix/matching-rules-fz` vs `fix/supabase-sync-gm`
+
+### Puntos de Sincronizacion
+
+| Punto | Funcion |
+|-------|---------|
+| **Git (main)** | Codigo estable |
+| **Supabase** | Ofertas validadas (source of truth) |
+| **learnings.yaml** | Estado del sistema |
+
+### Conflictos Comunes
+
+| Archivo | Como resolver |
+|---------|---------------|
+| `learnings.yaml` | Merge manual, combinar estados |
+| `config/*.json` | Coordinar antes de editar reglas |
+| `CLAUDE.md` | PR con revision |
+
+### Ver Estado Git en Reporte
+
+El comando `python scripts/sync_learnings.py --human` ahora muestra:
+
+```
+--- GIT ---
+  Branch:           main
+  Estado:           limpio | X archivos modificados
+  Ultimo commit:    abc1234 - mensaje del commit
+  vs Origin:        al dia | X commits adelante | X commits atras
+```
 
 ---
 
@@ -188,4 +278,4 @@ Sistema para que humanos validen ofertas y Claude aprenda de los errores.
 
 ---
 
-*Ultima actualizacion: 2026-01-16*
+*Ultima actualizacion: 2026-01-21*
