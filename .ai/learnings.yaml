@@ -6,11 +6,11 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-01-21 21:23"
+  fecha_actualizacion: "2026-01-23 14:11"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "procesamiento"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "78 ofertas pendientes validación - sistema sugiere Fase 2"
+  fase_detalle: "158 errores sin resolver - sistema sugiere Fase 2"
 
   # Protección de Ofertas Validadas v2.0 (2026-01-20)
   proteccion_validadas:
@@ -42,14 +42,20 @@ current_state:
   ofertas_validadas: 119  # Verificado con check_validated_protection.py
   estado_ofertas: "validado"  # Listas para produccion
 
-  matching_version: "v3.4.2"
-  matching_arquitectura: "ESCO-First - ESCO es target, ISCO derivado. Reglas GANAN sobre semantico."
-  matching_cambios_v342:
-    - "ESCO es el target primario, ISCO se deriva del catalogo"
-    - "Reglas de negocio tienen PRIORIDAD sobre semantico"
-    - "124/130 reglas con esco_label valido"
-    - "Labels ESCO exactos del catalogo (no inventados)"
-    - "Funcion _find_occupation_by_esco_label() para busqueda exacta"
+  matching_version: "v3.5.2"
+  matching_arquitectura: "ESCO-First + Decisión Inteligente Dual"
+  matching_cambios_v351:
+    - "Lógica de decisión inteligente _decide_dual_match()"
+    - "Campos decision_metodo y decision_razon en BD"
+    - "Vista v_reglas_efectividad para auditoría"
+    - "Métricas de efectividad en sync_learnings.py"
+    - "Script audit_rules_effectiveness.py"
+  decision_types:
+    dual_coinciden: "Regla y semántico coinciden (26%)"
+    semantico_unico: "Sin regla, solo semántico (27%)"
+    regla_revisar: "Score medio 0.55-0.80, revisar (27%)"
+    regla_por_score_bajo: "Score < 0.55, regla prioritaria (10%)"
+    regla_override_semantico_alto: "Score > 0.80, WARNING (10%)"
 
   # Tracking de convergencia (v3.3.3)
   tracking_tables:
@@ -100,13 +106,14 @@ current_state:
 # REGLA: Cuando se modifique un config, actualizar estos conteos.
 # La documentación (CLAUDE.md, PIPELINE.md, etc.) referencia aquí.
 conteos:
-  reglas_negocio: 132  # config/matching_rules_business.json > reglas_forzar_isco (v2.6 actualizado 2026-01-16)
-  reglas_validacion: 23  # config/validation_rules.json > reglas_validacion (V23 dual_decision agregada 2026-01-20)
+  reglas_negocio: 136  # config/matching_rules_business.json > reglas_forzar_isco (v2.6 actualizado 2026-01-16)
+  reglas_validacion: 30  # config/validation_rules.json > reglas_validacion (V24-V30 skills agregadas 2026-01-22)
+  reglas_skills_dual: 25  # config/skills_rules.json > reglas_forzar_skills (v2.0 2026-01-22)
   sinonimos_argentinos: 13  # config/sinonimos_argentinos_esco.json > ocupaciones_titulo
   empresas_catalogo: 247  # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
   skills_esco: 14257            # database/embeddings/esco_skills_full.json
   ocupaciones_esco: 3046        # database/embeddings/esco_occupations_full.json
-  ultima_verificacion: 2026-01-21
+  ultima_verificacion: 2026-01-23
 
   supabase:
     integrado: true
@@ -123,22 +130,27 @@ conteos:
     cobertura_L1: "97.7%"  # skills con categoria L1
 
   ultimo_trabajo:
-    - "Pipeline completo 100 ofertas nuevas (run_20260116_1831)"
-    - "NLP v11.3: 100/100 OK (14.5s promedio por oferta)"
-    - "Matching v3.3.2: 100/100 completado"
-    - "  - 81 por reglas de negocio (81%)"
-    - "  - 4 por diccionario argentino (4%)"
-    - "  - 15 por matching semántico (15%)"
-    - "Auto-validación: 21 warnings, 3 errores NLP menores"
-    - "CONVERGENCIA ALCANZADA: 0 reglas nuevas necesarias"
+    - "Matching v3.5.1: Decisión inteligente dual implementada (2026-01-22)"
+    - "Nueva función _decide_dual_match() basada en score semántico"
+    - "Columna decision_razon agregada a BD"
+    - "Vista v_reglas_efectividad + v_decision_summary creadas"
+    - "Métricas de efectividad en sync_learnings.py"
+    - "Terminología argentina ampliada: 30 términos (logística + salud + marketing)"
+    - "Script audit_rules_effectiveness.py creado"
+    - "238 ofertas reprocesadas con v3.5.1:"
+    - "  - dual_coinciden: 62 (26%)"
+    - "  - semantico_unico: 64 (27%)"
+    - "  - regla_revisar: 64 (27%)"
+    - "  - regla_por_score_bajo: 24 (10%)"
+    - "  - regla_override_semantico_alto: 24 (10%) - REVISAR"
 
-  proximo_paso: "Validación humana de las 100 nuevas ofertas"
+  proximo_paso: "Revisar 24 casos con override semántico alto"
 
   estadisticas_actuales:
-    ofertas_validadas: 155  # validadas anteriormente
-    ofertas_pendientes: 78  # nuevo lote procesado
-    reglas_negocio: 132
-    tasa_aprendizaje: "0.0% (0 reglas / 2 ofertas)"
+    ofertas_validadas: 0  # validadas anteriormente
+    ofertas_pendientes: 238  # nuevo lote procesado
+    reglas_negocio: 136
+    tasa_aprendizaje: "0.0% (0 reglas / 6 ofertas)"
     convergencia: "CONVERGIDO (tasa < 5%)"
     cobertura_reglas: "85% (81 reglas + 4 diccionario)"
     fallback_semantico: "15% (15 ofertas)"
@@ -155,9 +167,9 @@ conteos:
 
   # Métricas de evolución del aprendizaje
   learning_evolution:
-    total_runs: 80
+    total_runs: 96
     ofertas_con_historial_nlp: 5474  # ofertas en ofertas_nlp_history
-    ofertas_con_matching: 233  # ofertas distintas en ofertas_esco_matching
+    ofertas_con_matching: 238  # ofertas distintas en ofertas_esco_matching
 
     # Distribución real de reprocesos (datos de ofertas_nlp_history)
     distribucion_reprocesos:
@@ -169,7 +181,7 @@ conteos:
       caso_mas_dificil: "2154549 Contador Auditoría (12 intentos)"
 
     reglas_inicio: 22  # 2026-01-13 baseline
-    reglas_actual: 132
+    reglas_actual: 136
     reglas_agregadas: "+96 durante optimización"
     tasa_convergencia: "47% -> 27% -> 2.7% -> 7.5% -> 0%"
     estado: "CONVERGIDO (tasa = 0%)"
@@ -228,6 +240,10 @@ archivos_clave:
   reglas_negocio: "config/matching_rules_business.json"
   diccionario_arg: "config/sinonimos_argentinos_esco.json"
   validacion_rules: "config/validation_rules.json"
+  # Skills Dual System v2.3
+  skills_rules: "config/skills_rules.json"  # 25 reglas de skills
+  skills_rules_matcher: "database/skills_rules_matcher.py"
+  skills_extractor: "database/skills_implicit_extractor.py"  # v2.3 con extract_skills_dual()
   # Datos ESCO extraidos del RDF
   esco_ocupaciones: "database/embeddings/esco_occupations_full.json"
   esco_skills: "database/embeddings/esco_skills_full.json"
@@ -543,6 +559,27 @@ learnings:
       Para desbloquear: python scripts/admin_unlock_validated.py --ids X --motivo "razón"
     date: 2026-01-20
 
+  - context: "Skills Dual System v2.3"
+    learning: |
+      Sistema DUAL para skills implementado (mismo patrón que ISCO matching):
+      - config/skills_rules.json: 25 reglas que fuerzan skills específicas
+      - database/skills_rules_matcher.py: Evaluador de reglas
+      - database/skills_implicit_extractor.py v2.3: método extract_skills_dual()
+
+      Columnas nuevas en ofertas_esco_matching:
+      - skills_regla_json: Skills forzadas por regla
+      - skills_semantico_json: Skills de BGE-M3
+      - skills_regla_aplicada: ID de regla (RS01, RS02...)
+      - dual_coinciden_skills: 1=iguales, 0=difieren
+
+      Reglas de validación V24-V30:
+      - V24: Skills no coherentes con ISCO
+      - V27: Divergencia regla vs semántico
+      - V30: Puesto IT sin skills técnicas
+
+      Métricas en sync_learnings.py v2.2: Por regla %, dual coinciden %, skills promedio.
+    date: 2026-01-22
+
 # ============================================
 # DECISIONES TOMADAS
 # ============================================
@@ -590,6 +627,10 @@ decisions:
   - decision: "Dual matching v3.4.0 - ejecutar AMBOS métodos siempre"
     reason: "Usuario pidió enfoque más flexible que 'reglas ganan siempre'. Ahora semántico Y reglas se ejecutan, auto_corrector decide automáticamente basado en score y casos validados. 100% automático sin intervención humana."
     date: 2026-01-20
+
+  - decision: "Skills Dual v2.3 - reglas + semántico para skills"
+    reason: "Mismo patrón exitoso del ISCO matching aplicado a skills. Las reglas fuerzan skills específicas para títulos conocidos (contador→contabilidad), el semántico complementa. Permite medir cobertura de reglas y detectar divergencias."
+    date: 2026-01-22
 
 # ============================================
 # COSAS QUE NO FUNCIONARON

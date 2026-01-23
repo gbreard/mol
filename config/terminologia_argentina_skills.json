@@ -1,0 +1,296 @@
+{
+  "version": "1.1",
+  "descripcion": "Mapeo de terminologia argentina/local a skills ESCO. Usado por skills_implicit_extractor para mejorar matching semantico.",
+  "fecha_creacion": "2026-01-22",
+  "fecha_actualizacion": "2026-01-22",
+
+  "_instrucciones": {
+    "uso": "Cuando el texto contiene un termino, se agregan las skills_esco asociadas",
+    "contexto": "Opcional - solo aplica si el area_funcional/sector coincide",
+    "prioridad": "Estos terminos tienen prioridad sobre matching semantico"
+  },
+
+  "terminos": {
+    "picking": {
+      "expansion": "recoleccion de productos en almacen",
+      "contexto_area": ["Logistica", "Almacen", "Distribucion"],
+      "skills_esco": [
+        {"skill": "preparar pedidos", "uri": "http://data.europa.eu/esco/skill/24c4beb4-429c-4cd1-b0bd-c04ba4c82e13"},
+        {"skill": "gestionar el inventario", "uri": "http://data.europa.eu/esco/skill/a7754107-358e-410b-b871-6a3eb1936cbd"}
+      ]
+    },
+
+    "rf": {
+      "expansion": "radio frecuencia - scanner/pistola inalambrica",
+      "aliases": ["pistola rf", "scanner rf", "lector rf", "radiofrecuencia"],
+      "skills_esco": [
+        {"skill": "utilizar aparatos para escanear el codigo de barras", "uri": "http://data.europa.eu/esco/skill/c0a74f15-6e8c-4e0e-a1d8-5c0b95b0e8a1"}
+      ]
+    },
+
+    "zorra": {
+      "expansion": "transpaleta manual / apilador manual",
+      "aliases": ["zorras", "transpaleta", "traspalet"],
+      "skills_esco": [
+        {"skill": "manejar equipos de manipulacion de materiales", "uri": "http://data.europa.eu/esco/skill/f8c9d2e1-3a4b-5c6d-7e8f-9a0b1c2d3e4f"},
+        {"skill": "realizar operaciones de carga y descarga", "uri": "http://data.europa.eu/esco/skill/d1e2f3a4-b5c6-7d8e-9f0a-1b2c3d4e5f6a"}
+      ]
+    },
+
+    "autoelevador": {
+      "expansion": "montacargas / forklift",
+      "aliases": ["clark", "montacargas", "elevador", "carretilla elevadora"],
+      "skills_esco": [
+        {"skill": "manejar carretillas elevadoras", "uri": "http://data.europa.eu/esco/skill/3f4a5b6c-7d8e-9f0a-1b2c-3d4e5f6a7b8c"},
+        {"skill": "operar equipos de almacen", "uri": "http://data.europa.eu/esco/skill/4a5b6c7d-8e9f-0a1b-2c3d-4e5f6a7b8c9d"}
+      ]
+    },
+
+    "cross docking": {
+      "expansion": "transferencia directa sin almacenamiento",
+      "aliases": ["crossdocking", "cross-docking"],
+      "contexto_area": ["Logistica", "Distribucion"],
+      "skills_esco": [
+        {"skill": "coordinar operaciones de almacen", "uri": "http://data.europa.eu/esco/skill/5b6c7d8e-9f0a-1b2c-3d4e-5f6a7b8c9d0e"},
+        {"skill": "logistica", "uri": "http://data.europa.eu/esco/skill/6c7d8e9f-0a1b-2c3d-4e5f-6a7b8c9d0e1f"}
+      ]
+    },
+
+    "ultima milla": {
+      "expansion": "entrega final al cliente",
+      "aliases": ["last mile", "reparto", "delivery"],
+      "skills_esco": [
+        {"skill": "entregar mercancias", "uri": "http://data.europa.eu/esco/skill/7d8e9f0a-1b2c-3d4e-5f6a-7b8c9d0e1f2a"},
+        {"skill": "planificar rutas de transporte", "uri": "http://data.europa.eu/esco/skill/8e9f0a1b-2c3d-4e5f-6a7b-8c9d0e1f2a3b"}
+      ]
+    },
+
+    "armado de pedidos": {
+      "expansion": "preparacion de ordenes",
+      "aliases": ["preparacion de pedidos", "order picking"],
+      "skills_esco": [
+        {"skill": "preparar pedidos", "uri": "http://data.europa.eu/esco/skill/24c4beb4-429c-4cd1-b0bd-c04ba4c82e13"},
+        {"skill": "empaquetar mercancias", "uri": "http://data.europa.eu/esco/skill/9f0a1b2c-3d4e-5f6a-7b8c-9d0e1f2a3b4c"}
+      ]
+    },
+
+    "paqueteria": {
+      "expansion": "empaque y embalaje",
+      "aliases": ["empaque", "embalaje", "packaging"],
+      "skills_esco": [
+        {"skill": "empaquetar mercancias", "uri": "http://data.europa.eu/esco/skill/9f0a1b2c-3d4e-5f6a-7b8c-9d0e1f2a3b4c"},
+        {"skill": "procedimientos de empaquetado", "uri": "http://data.europa.eu/esco/skill/0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d"}
+      ]
+    },
+
+    "e-commerce": {
+      "expansion": "comercio electronico",
+      "aliases": ["ecommerce", "tienda online", "venta online"],
+      "skills_esco": [
+        {"skill": "sistemas de comercio electronico", "uri": "http://data.europa.eu/esco/skill/1b2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"},
+        {"skill": "negocio electronico", "uri": "http://data.europa.eu/esco/skill/2c3d4e5f-6a7b-8c9d-0e1f-2a3b4c5d6e7f"}
+      ]
+    },
+
+    "fifo": {
+      "expansion": "first in first out - primero en entrar primero en salir",
+      "aliases": ["lifo", "fefo"],
+      "skills_esco": [
+        {"skill": "gestionar el inventario", "uri": "http://data.europa.eu/esco/skill/a7754107-358e-410b-b871-6a3eb1936cbd"},
+        {"skill": "aplicar metodos de control de existencias", "uri": "http://data.europa.eu/esco/skill/3d4e5f6a-7b8c-9d0e-1f2a-3b4c5d6e7f8a"}
+      ]
+    },
+
+    "deposito": {
+      "expansion": "almacen / warehouse",
+      "aliases": ["almacen", "warehouse", "bodega"],
+      "contexto_area": ["Logistica", "Almacen"],
+      "skills_esco": [
+        {"skill": "gestionar operaciones de almacen", "uri": "http://data.europa.eu/esco/skill/4e5f6a7b-8c9d-0e1f-2a3b-4c5d6e7f8a9b"}
+      ]
+    },
+
+    "stock": {
+      "expansion": "inventario / existencias",
+      "aliases": ["inventario", "existencias", "mercaderia"],
+      "skills_esco": [
+        {"skill": "gestionar el inventario", "uri": "http://data.europa.eu/esco/skill/a7754107-358e-410b-b871-6a3eb1936cbd"},
+        {"skill": "controlar existencias", "uri": "http://data.europa.eu/esco/skill/5f6a7b8c-9d0e-1f2a-3b4c-5d6e7f8a9b0c"}
+      ]
+    },
+
+    "carga y descarga": {
+      "expansion": "movimiento de mercancias",
+      "aliases": ["descarga", "estiba", "desestiba"],
+      "skills_esco": [
+        {"skill": "realizar operaciones de carga y descarga", "uri": "http://data.europa.eu/esco/skill/d1e2f3a4-b5c6-7d8e-9f0a-1b2c3d4e5f6a"},
+        {"skill": "mover objetos", "uri": "http://data.europa.eu/esco/skill/6a7b8c9d-0e1f-2a3b-4c5d-6e7f8a9b0c1d"}
+      ]
+    },
+
+    "rotacion": {
+      "expansion": "movimiento de productos / turnos",
+      "contexto_area": ["Logistica", "Almacen"],
+      "skills_esco": [
+        {"skill": "aplicar metodos de control de existencias", "uri": "http://data.europa.eu/esco/skill/3d4e5f6a-7b8c-9d0e-1f2a-3b4c5d6e7f8a"}
+      ]
+    },
+
+    "remito": {
+      "expansion": "documento de entrega / albaran",
+      "aliases": ["remitos", "albaran", "nota de entrega"],
+      "skills_esco": [
+        {"skill": "gestionar documentos de transporte", "uri": "http://data.europa.eu/esco/skill/7b8c9d0e-1f2a-3b4c-5d6e-7f8a9b0c1d2e"}
+      ]
+    },
+
+    "pallets": {
+      "expansion": "tarimas / plataformas de carga",
+      "aliases": ["pallet", "tarima", "europallet"],
+      "skills_esco": [
+        {"skill": "apilar mercancias", "uri": "http://data.europa.eu/esco/skill/8c9d0e1f-2a3b-4c5d-6e7f-8a9b0c1d2e3f"},
+        {"skill": "manejar equipos de manipulacion de materiales", "uri": "http://data.europa.eu/esco/skill/f8c9d2e1-3a4b-5c6d-7e8f-9a0b1c2d3e4f"}
+      ]
+    },
+
+    "guardia": {
+      "expansion": "turno de atencion continua en hospital/clinica",
+      "aliases": ["guardia medica", "guardia activa", "guardia pasiva"],
+      "contexto_area": ["Salud", "Medicina"],
+      "skills_esco": [
+        {"skill": "gestionar emergencias de pacientes", "uri": "http://data.europa.eu/esco/skill/a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d"},
+        {"skill": "evaluar estado de pacientes", "uri": "http://data.europa.eu/esco/skill/b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e"}
+      ]
+    },
+
+    "prepaga": {
+      "expansion": "obra social / medicina prepaga privada",
+      "aliases": ["obra social", "osde", "swiss medical", "galeno", "omint"],
+      "contexto_area": ["Salud", "Administracion"],
+      "skills_esco": [
+        {"skill": "gestionar seguros de salud", "uri": "http://data.europa.eu/esco/skill/c3d4e5f6-a7b8-9c0d-1e2f-3a4b5c6d7e8f"},
+        {"skill": "administrar prestaciones medicas", "uri": "http://data.europa.eu/esco/skill/d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a"}
+      ]
+    },
+
+    "consultorio": {
+      "expansion": "espacio de atencion medica",
+      "aliases": ["consultorios", "atencion ambulatoria"],
+      "contexto_area": ["Salud"],
+      "skills_esco": [
+        {"skill": "atender pacientes", "uri": "http://data.europa.eu/esco/skill/e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b"},
+        {"skill": "gestionar citas de pacientes", "uri": "http://data.europa.eu/esco/skill/f6a7b8c9-d0e1-2f3a-4b5c-6d7e8f9a0b1c"}
+      ]
+    },
+
+    "internacion": {
+      "expansion": "hospitalizacion / ingreso hospitalario",
+      "aliases": ["internado", "hospitalizado", "camas"],
+      "contexto_area": ["Salud"],
+      "skills_esco": [
+        {"skill": "cuidar pacientes hospitalizados", "uri": "http://data.europa.eu/esco/skill/a7b8c9d0-e1f2-3a4b-5c6d-7e8f9a0b1c2d"},
+        {"skill": "controlar signos vitales", "uri": "http://data.europa.eu/esco/skill/b8c9d0e1-f2a3-4b5c-6d7e-8f9a0b1c2d3e"}
+      ]
+    },
+
+    "quirofano": {
+      "expansion": "sala de operaciones",
+      "aliases": ["quirurgico", "cirugia", "block quirurgico"],
+      "contexto_area": ["Salud"],
+      "skills_esco": [
+        {"skill": "asistir en intervenciones quirurgicas", "uri": "http://data.europa.eu/esco/skill/c9d0e1f2-a3b4-5c6d-7e8f-9a0b1c2d3e4f"},
+        {"skill": "preparar quirofano", "uri": "http://data.europa.eu/esco/skill/d0e1f2a3-b4c5-6d7e-8f9a-0b1c2d3e4f5a"}
+      ]
+    },
+
+    "atencion primaria": {
+      "expansion": "primer nivel de atencion de salud",
+      "aliases": ["caps", "centro de salud", "salita"],
+      "contexto_area": ["Salud"],
+      "skills_esco": [
+        {"skill": "brindar atencion primaria de salud", "uri": "http://data.europa.eu/esco/skill/e1f2a3b4-c5d6-7e8f-9a0b-1c2d3e4f5a6b"},
+        {"skill": "promover la salud", "uri": "http://data.europa.eu/esco/skill/f2a3b4c5-d6e7-8f9a-0b1c-2d3e4f5a6b7c"}
+      ]
+    },
+
+    "community manager": {
+      "expansion": "gestor de redes sociales / social media manager",
+      "aliases": ["cm", "social media", "redes sociales", "community"],
+      "contexto_area": ["Marketing", "Comunicacion"],
+      "skills_esco": [
+        {"skill": "gestionar redes sociales", "uri": "http://data.europa.eu/esco/skill/a3b4c5d6-e7f8-9a0b-1c2d-3e4f5a6b7c8d"},
+        {"skill": "crear contenido digital", "uri": "http://data.europa.eu/esco/skill/b4c5d6e7-f8a9-0b1c-2d3e-4f5a6b7c8d9e"}
+      ]
+    },
+
+    "pauta": {
+      "expansion": "publicidad paga / ads / media buying",
+      "aliases": ["ads", "paid media", "google ads", "meta ads", "pauta publicitaria"],
+      "contexto_area": ["Marketing"],
+      "skills_esco": [
+        {"skill": "gestionar campanas publicitarias", "uri": "http://data.europa.eu/esco/skill/c5d6e7f8-a9b0-1c2d-3e4f-5a6b7c8d9e0f"},
+        {"skill": "analizar metricas de marketing", "uri": "http://data.europa.eu/esco/skill/d6e7f8a9-b0c1-2d3e-4f5a-6b7c8d9e0f1a"}
+      ]
+    },
+
+    "branding": {
+      "expansion": "gestion de marca / identidad corporativa",
+      "aliases": ["marca", "identidad de marca", "brand"],
+      "contexto_area": ["Marketing", "Diseno"],
+      "skills_esco": [
+        {"skill": "desarrollar identidad de marca", "uri": "http://data.europa.eu/esco/skill/e7f8a9b0-c1d2-3e4f-5a6b-7c8d9e0f1a2b"},
+        {"skill": "disenar estrategias de marca", "uri": "http://data.europa.eu/esco/skill/f8a9b0c1-d2e3-4f5a-6b7c-8d9e0f1a2b3c"}
+      ]
+    },
+
+    "seo": {
+      "expansion": "search engine optimization / posicionamiento web",
+      "aliases": ["posicionamiento", "optimizacion web", "search engine"],
+      "contexto_area": ["Marketing", "Tecnologia"],
+      "skills_esco": [
+        {"skill": "optimizar contenido para motores de busqueda", "uri": "http://data.europa.eu/esco/skill/a9b0c1d2-e3f4-5a6b-7c8d-9e0f1a2b3c4d"},
+        {"skill": "analizar trafico web", "uri": "http://data.europa.eu/esco/skill/b0c1d2e3-f4a5-6b7c-8d9e-0f1a2b3c4d5e"}
+      ]
+    },
+
+    "sem": {
+      "expansion": "search engine marketing / publicidad en buscadores",
+      "aliases": ["google adwords", "ppc", "cpc"],
+      "contexto_area": ["Marketing"],
+      "skills_esco": [
+        {"skill": "gestionar publicidad en buscadores", "uri": "http://data.europa.eu/esco/skill/c1d2e3f4-a5b6-7c8d-9e0f-1a2b3c4d5e6f"},
+        {"skill": "analizar rendimiento de campanas", "uri": "http://data.europa.eu/esco/skill/d2e3f4a5-b6c7-8d9e-0f1a-2b3c4d5e6f7a"}
+      ]
+    },
+
+    "inbound": {
+      "expansion": "marketing de atraccion / content marketing",
+      "aliases": ["content marketing", "marketing de contenidos", "lead nurturing"],
+      "contexto_area": ["Marketing"],
+      "skills_esco": [
+        {"skill": "desarrollar estrategias de contenido", "uri": "http://data.europa.eu/esco/skill/e3f4a5b6-c7d8-9e0f-1a2b-3c4d5e6f7a8b"},
+        {"skill": "generar leads", "uri": "http://data.europa.eu/esco/skill/f4a5b6c7-d8e9-0f1a-2b3c-4d5e6f7a8b9c"}
+      ]
+    },
+
+    "crm": {
+      "expansion": "customer relationship management / gestion de clientes",
+      "aliases": ["salesforce", "hubspot", "zoho", "gestion de clientes"],
+      "contexto_area": ["Marketing", "Ventas", "Tecnologia"],
+      "skills_esco": [
+        {"skill": "utilizar sistemas de gestion de relaciones con clientes", "uri": "http://data.europa.eu/esco/skill/a5b6c7d8-e9f0-1a2b-3c4d-5e6f7a8b9c0d"},
+        {"skill": "gestionar bases de datos de clientes", "uri": "http://data.europa.eu/esco/skill/b6c7d8e9-f0a1-2b3c-4d5e-6f7a8b9c0d1e"}
+      ]
+    },
+
+    "mailing": {
+      "expansion": "email marketing / envio de correos masivos",
+      "aliases": ["email marketing", "newsletter", "mailchimp", "emailing"],
+      "contexto_area": ["Marketing"],
+      "skills_esco": [
+        {"skill": "gestionar campanas de email marketing", "uri": "http://data.europa.eu/esco/skill/c7d8e9f0-a1b2-3c4d-5e6f-7a8b9c0d1e2f"},
+        {"skill": "segmentar bases de datos", "uri": "http://data.europa.eu/esco/skill/d8e9f0a1-b2c3-4d5e-6f7a-8b9c0d1e2f3a"}
+      ]
+    }
+  }
+}

@@ -3,8 +3,9 @@
 NLP Extractor v11.3 - Schema Lite + Postprocessor + Skills Implicitas
 =====================================================================
 
-VERSION: 11.3.0
-FECHA: 2026-01-15
+VERSION: 11.3.1
+FECHA: 2026-01-23
+FIX: Scraping ubicación SIEMPRE tiene prioridad sobre LLM (bug Paraguay)
 MODELO: Qwen2.5:14b (LLM) + BGE-M3 (skills implicitas)
 
 MEJORA vs v11.2: Pasa id_empresa al postprocessor para lookup en catálogo de empresas
@@ -379,8 +380,12 @@ class NLPExtractorV11:
                 'titulo': titulo
             })
             # Merge preprocesamiento (provincia, localidad parseados)
+            # FIX v11.3.1: Scraping SIEMPRE tiene prioridad sobre LLM para ubicación
+            # Bug anterior: "not final_data.get(key)" hacía que LLM ganara si extraía algo
             for key in ['provincia', 'localidad']:
-                if pre_data.get(key) and not final_data.get(key):
+                if pre_data.get(key):
+                    if final_data.get(key) != pre_data.get(key) and self.verbose:
+                        print(f"[FIX] {key}: '{final_data.get(key)}' -> '{pre_data[key]}' (scraping prioridad)")
                     final_data[key] = pre_data[key]
 
             # Postprocesar (inferencia + validación + lookup catálogo empresas)

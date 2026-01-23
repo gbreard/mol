@@ -1,7 +1,7 @@
 {
-  "_version": "1.0",
-  "_descripcion": "Validacion de tipos - corrige errores ID 1118027243, 1118026729",
-  "_fecha": "2025-12-14",
+  "_version": "1.1",
+  "_descripcion": "Validacion de tipos + ubicacion - corrige errores ID 1118027243, 1118026729, 1118091304",
+  "_fecha": "2026-01-23",
 
   "rechazo_booleanos": {
     "_descripcion": "Si LLM retorna TRUE/FALSE/true/false en campo texto, convertir a null",
@@ -53,5 +53,15 @@
         "campo_max": "edad_max"
       }
     ]
+  },
+
+  "validacion_ubicacion": {
+    "_descripcion": "Valida que localidad/provincia sean de Argentina",
+    "_error_corregido": "1118091304: LLM extrajo 'Asunción, Paraguay' del título ignorando scraping",
+    "diccionario_path": "config/diccionario_localidades_argentina.json",
+    "accion_localidad_invalida": "flag_revisar",
+    "accion_provincia_invalida": "flag_revisar",
+    "paises_rechazados": ["PARAGUAY", "CHILE", "URUGUAY", "BRASIL", "BOLIVIA", "PERU"],
+    "ciudades_extranjeras_rechazadas": ["ASUNCION", "SANTIAGO", "MONTEVIDEO", "SAO PAULO", "LA PAZ", "LIMA"]
   }
 }

@@ -94,6 +94,9 @@ class NLPPostprocessor:
         # Cache para catálogo de empresas (sector alta confianza)
         self._empresas_catalogo = None
 
+        # Cache para diccionario de localidades argentinas (validación ubicación)
+        self._localidades_dict = None
+
     def _load_configs_cached(self) -> Dict[str, Any]:
         """Carga configs usando cache a nivel de clase"""
         if NLPPostprocessor._config_loaded and NLPPostprocessor._config_cache:
@@ -342,6 +345,95 @@ class NLPPostprocessor:
             elif isinstance(tiene_gente, (int, float)):
                 data["tiene_gente_cargo"] = 1 if tiene_gente else 0
 
+        return data
+
+    # =========================================================================
+    # PASO 2c: VALIDACION UBICACION (v1.1 - diccionario localidades)
+    # =========================================================================
+
+    def _validate_ubicacion(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Valida que provincia/localidad sean de Argentina.
+
+        Usa diccionario de 9,244 localidades argentinas.
+        Si detecta ubicación extranjera o inválida, pone flag para revisión.
+
+        Flags agregados:
+          - ubicacion_invalida: True si se detecta problema
+          - ubicacion_razon: descripción del problema
+        """
+        config = self.configs.get("validation", {})
+        ubicacion_config = config.get("validacion_ubicacion", {})
+
+        if not ubicacion_config:
+            return data
+
+        # Cargar diccionario si no está en cache
+        if self._localidades_dict is None:
+            dict_path = self.config_dir / "diccionario_localidades_argentina.json"
+            if dict_path.exists():
+                try:
+                    with open(dict_path, 'r', encoding='utf-8') as f:
+                        self._localidades_dict = json.load(f)
+                    if self.verbose:
+                        print(f"[UBICACION] Diccionario cargado: {self._localidades_dict.get('_total_localidades', 0)} localidades")
+                except Exception as e:
+                    if self.verbose:
+                        print(f"[UBICACION] Error cargando diccionario: {e}")
+                    self._localidades_dict = {}
+            else:
+                self._localidades_dict = {}
+
+        provincia = data.get("provincia", "")
+        localidad = data.get("localidad", "")
+
+        # Normalizar para comparación
+        provincia_upper = (provincia or "").upper().strip()
+        localidad_upper = (localidad or "").upper().strip()
+
+        # Verificar países/ciudades extranjeras rechazadas
+        paises_rechazados = set(ubicacion_config.get("paises_rechazados", []))
+        ciudades_rechazadas = set(ubicacion_config.get("ciudades_extranjeras_rechazadas", []))
+
+        # Detectar país extranjero en localidad
+        for pais in paises_rechazados:
+            if pais.upper() in localidad_upper or pais.upper() in provincia_upper:
+                data["ubicacion_invalida"] = True
+                data["ubicacion_razon"] = f"País extranjero detectado: {pais}"
+                if self.verbose:
+                    print(f"[UBICACION] INVALIDA: país extranjero '{pais}' en ubicación")
+                return data
+
+        # Detectar ciudad extranjera
+        for ciudad in ciudades_rechazadas:
+            if ciudad.upper() in localidad_upper:
+                data["ubicacion_invalida"] = True
+                data["ubicacion_razon"] = f"Ciudad extranjera detectada: {ciudad}"
+                if self.verbose:
+                    print(f"[UBICACION] INVALIDA: ciudad extranjera '{ciudad}' en localidad")
+                return data
+
+        # Validar provincia contra diccionario
+        if provincia_upper and self._localidades_dict:
+            provincias_validas = set(self._localidades_dict.get("provincias_validas", []))
+            if provincia_upper not in provincias_validas:
+                # Intentar normalización básica
+                normalizaciones = {
+                    "CABA": "CAPITAL FEDERAL",
+                    "CIUDAD DE BUENOS AIRES": "CAPITAL FEDERAL",
+                    "CIUDAD AUTONOMA DE BUENOS AIRES": "CAPITAL FEDERAL",
+                }
+                provincia_norm = normalizaciones.get(provincia_upper, provincia_upper)
+
+                if provincia_norm not in provincias_validas:
+                    data["ubicacion_invalida"] = True
+                    data["ubicacion_razon"] = f"Provincia no reconocida: {provincia}"
+                    if self.verbose:
+                        print(f"[UBICACION] INVALIDA: provincia '{provincia}' no está en diccionario")
+                    return data
+
+        # Si llegamos aquí, ubicación es válida (o no hay datos para validar)
+        data["ubicacion_invalida"] = False
         return data
 
     # =========================================================================
@@ -1031,6 +1123,49 @@ class NLPPostprocessor:
             self.stats["tareas_implicitas"] = self.stats.get("tareas_implicitas", 0) + len(tareas_encontradas)
             if self.verbose:
                 print(f"[TAREAS IMPL] Extraídas {len(tareas_encontradas)}: {tareas_encontradas}")
+
+        return data
+
+    # =========================================================================
+    # PASO 4.5c: INFERIR TAREAS DESDE TITULO (cuando descripcion no tiene tareas)
+    # =========================================================================
+
+    def _infer_tareas_from_titulo(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Infiere tareas típicas basadas en el título cuando la descripción no las contiene.
+
+        Se aplica SOLO si tareas_explicitas está vacío después de todos los intentos
+        de extracción. Usa reglas de config/nlp_inference_rules.json > tareas_inferidas_titulo.
+
+        Ejemplo: "Peón de Cocina" sin tareas en descripción → infiere tareas típicas de cocina.
+        """
+        # Solo procesar si no hay tareas
+        tareas_actuales = data.get("tareas_explicitas")
+        if tareas_actuales and str(tareas_actuales).strip() not in ["", "null", "None", "[]"]:
+            return data
+
+        config = self.configs.get("inference_rules", {}).get("tareas_inferidas_titulo", {})
+        if not config:
+            return data
+
+        titulo = data.get("titulo_limpio", "") or data.get("titulo", "")
+        if not titulo:
+            return data
+
+        titulo_lower = titulo.lower()
+        reglas = config.get("reglas", [])
+
+        for regla in reglas:
+            keywords = regla.get("titulo_contiene_alguno", [])
+            for keyword in keywords:
+                if keyword.lower() in titulo_lower:
+                    tareas_inferidas = regla.get("tareas_inferidas", "")
+                    if tareas_inferidas:
+                        data["tareas_explicitas"] = tareas_inferidas
+                        self.stats["tareas_inferidas_titulo"] = self.stats.get("tareas_inferidas_titulo", 0) + 1
+                        if self.verbose:
+                            print(f"[TAREAS TITULO] '{titulo}' -> inferidas desde regla (keyword: '{keyword}')")
+                        return data
 
         return data
 
@@ -1859,6 +1994,9 @@ class NLPPostprocessor:
         # Paso 2b: Validacion campos categoricos (Matching v2.1.1)
         data = self._validate_categoricos(data)
 
+        # Paso 2c: Validacion ubicacion (v1.1 - diccionario localidades)
+        data = self._validate_ubicacion(data)
+
         # Paso 3: Re-extraccion experiencia
         data = self._extract_experiencia(descripcion, data)
 
@@ -1882,6 +2020,9 @@ class NLPPostprocessor:
 
         # Paso 4b3: Extraer tareas implicitas (texto no estructurado)
         data = self._extraer_tareas_implicitas(descripcion, data)
+
+        # Paso 4b4: Inferir tareas desde titulo (si descripcion no tiene tareas)
+        data = self._infer_tareas_from_titulo(data)
 
         # Paso 4c: Extraccion sector empresa (si LLM no detecto)
         # Incluye lookup en catálogo de empresas para alta confianza

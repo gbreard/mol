@@ -50,6 +50,9 @@ from sentence_transformers import SentenceTransformer
 # v2.0: Usa datos ESCO directos del RDF (sin hardcoding)
 from skill_categorizer import get_categorizer
 
+# v2.3: Sistema dual de skills (reglas + semántico)
+from skills_rules_matcher import SkillsRulesMatcher, SkillsRuleResult
+
 
 class SkillsImplicitExtractor:
     """
@@ -58,7 +61,7 @@ class SkillsImplicitExtractor:
     Usa cache a nivel de clase para evitar recargar modelo y embeddings.
     """
 
-    VERSION = "2.2.0"  # v2.2: Ponderación skills genéricas vs específicas
+    VERSION = "2.4.0"  # v2.4: Terminología argentina + Sistema dual (reglas + semántico)
 
     # Configuración por defecto
     DEFAULT_MODEL = "BAAI/bge-m3"
@@ -70,6 +73,7 @@ class SkillsImplicitExtractor:
     _skills_embeddings = None
     _skills_metadata = None
     _skills_weights_config = None  # v2.2: Config de pesos
+    _terminology_config = None  # v2.4: Terminología argentina
     _initialized = False
 
     def __init__(
@@ -145,10 +149,99 @@ class SkillsImplicitExtractor:
 
         self.weights_config = SkillsImplicitExtractor._skills_weights_config
 
+        # v2.4: Cargar terminología argentina
+        if SkillsImplicitExtractor._terminology_config is None:
+            terminology_path = Path(__file__).parent.parent / "config" / "terminologia_argentina_skills.json"
+            if terminology_path.exists():
+                with open(terminology_path, 'r', encoding='utf-8') as f:
+                    SkillsImplicitExtractor._terminology_config = json.load(f)
+                if self.verbose:
+                    terminos = SkillsImplicitExtractor._terminology_config.get('terminos', {})
+                    print(f"[SKILLS] Terminología argentina cargada: {len(terminos)} términos")
+            else:
+                SkillsImplicitExtractor._terminology_config = {"terminos": {}}
+
+        self.terminology_config = SkillsImplicitExtractor._terminology_config
+
         SkillsImplicitExtractor._initialized = True
 
         if self.verbose:
             print(f"[SKILLS] Inicializado: {len(self.metadata)} skills, umbral={self.threshold}")
+
+    def _extract_terminology_skills(
+        self,
+        texto: str,
+        area_funcional: str = None
+    ) -> List[Dict]:
+        """
+        v2.4: Extrae skills basadas en terminología argentina.
+
+        Busca términos locales (picking, zorra, RF, etc.) y retorna
+        las skills ESCO asociadas con alta confianza.
+
+        Args:
+            texto: Texto a analizar (título o tareas)
+            area_funcional: Área funcional para filtrar por contexto
+
+        Returns:
+            Lista de skills con origen='terminologia'
+        """
+        if not texto:
+            return []
+
+        terminos = self.terminology_config.get('terminos', {})
+        if not terminos:
+            return []
+
+        texto_lower = texto.lower()
+        skills_encontradas = []
+        skills_vistas = set()
+
+        for termino, config in terminos.items():
+            # Verificar si el término o sus aliases están en el texto
+            terminos_a_buscar = [termino.lower()]
+            aliases = config.get('aliases', [])
+            terminos_a_buscar.extend([a.lower() for a in aliases])
+
+            encontrado = any(t in texto_lower for t in terminos_a_buscar)
+
+            if not encontrado:
+                continue
+
+            # Verificar contexto de área si está definido
+            contexto_areas = config.get('contexto_area', [])
+            if contexto_areas and area_funcional:
+                area_lower = area_funcional.lower()
+                if not any(ctx.lower() in area_lower or area_lower in ctx.lower()
+                          for ctx in contexto_areas):
+                    continue
+
+            # Agregar skills asociadas
+            for skill_data in config.get('skills_esco', []):
+                skill_label = skill_data.get('skill', '')
+                skill_uri = skill_data.get('uri', '')
+
+                skill_key = skill_label.lower()
+                if skill_key in skills_vistas:
+                    continue
+
+                skills_vistas.add(skill_key)
+
+                skills_encontradas.append({
+                    "skill_esco": skill_label,
+                    "skill_uri": skill_uri,
+                    "score": 0.95,  # Alta confianza para terminología
+                    "score_ponderado": 0.95,
+                    "peso": 1.0,
+                    "origen": "terminologia",
+                    "termino_fuente": termino,
+                    "texto_fuente": texto[:100]
+                })
+
+                if self.verbose:
+                    print(f"[TERM-ARG] '{termino}' -> '{skill_label}' (score=0.95)")
+
+        return skills_encontradas
 
     def extract_from_tasks(
         self,
@@ -321,7 +414,28 @@ class SkillsImplicitExtractor:
         top_k = top_k or self.top_k
         threshold = threshold or self.threshold
 
-        # Preparar textos a procesar
+        # v2.4: PASO 0 - Extraer skills por terminología argentina PRIMERO
+        # Estas tienen prioridad sobre semántico
+        skills_terminologia = []
+        skills_term_vistas = set()
+
+        # Buscar en título
+        if titulo_limpio:
+            term_skills = self._extract_terminology_skills(titulo_limpio, area_funcional)
+            for s in term_skills:
+                if s['skill_esco'].lower() not in skills_term_vistas:
+                    skills_terminologia.append(s)
+                    skills_term_vistas.add(s['skill_esco'].lower())
+
+        # Buscar en tareas
+        if tareas_explicitas:
+            term_skills = self._extract_terminology_skills(tareas_explicitas, area_funcional)
+            for s in term_skills:
+                if s['skill_esco'].lower() not in skills_term_vistas:
+                    skills_terminologia.append(s)
+                    skills_term_vistas.add(s['skill_esco'].lower())
+
+        # Preparar textos a procesar (para semántico)
         textos = []
 
         # 1. Título siempre presente (si existe)
@@ -351,11 +465,12 @@ class SkillsImplicitExtractor:
                 if skill and skill.lower() not in ['null', 'none', '']:
                     textos.append(("soft_skills_nlp", skill))
 
-        if not textos:
+        if not textos and not skills_terminologia:
             return []
 
-        skills_extraidas = []
-        skills_vistas = set()  # Para evitar duplicados
+        # v2.4: Iniciar con skills de terminología (ya encontradas)
+        skills_extraidas = list(skills_terminologia)
+        skills_vistas = set(skills_term_vistas)  # Para evitar duplicados con semántico
 
         for origen, texto in textos:
             # Generar embedding del texto
@@ -472,6 +587,278 @@ class SkillsImplicitExtractor:
     def is_ready(self) -> bool:
         """Verifica si el extractor está listo (tiene embeddings cargados)."""
         return self.embeddings.size > 0 and len(self.metadata) > 0
+
+    def extract_skills_dual(
+        self,
+        titulo_limpio: str,
+        tareas_explicitas: str = None,
+        oferta_nlp: Dict = None,
+        skills_nlp: List[str] = None,
+        soft_skills_nlp: List[str] = None,
+        sector_empresa: str = None,
+        nivel_seniority: str = None,
+        area_funcional: str = None,
+        top_k: int = None,
+        threshold: float = None
+    ) -> Dict:
+        """
+        v2.3: Extracción DUAL de skills: reglas + semántico.
+
+        Patrón idéntico al matching ISCO:
+        1. Evaluar reglas primero (prioridad)
+        2. Extraer semántico (siempre, para comparación)
+        3. Guardar AMBOS resultados
+        4. Determinar si coinciden (dual_coinciden_skills)
+        5. Merge final (regla tiene prioridad, semántico complementa)
+
+        Args:
+            titulo_limpio: Título limpio de la oferta
+            tareas_explicitas: Tareas separadas por ;
+            oferta_nlp: Dict con campos NLP (para evaluación de reglas)
+            skills_nlp: Skills técnicas del NLP
+            soft_skills_nlp: Soft skills del NLP
+            sector_empresa: Sector de la empresa
+            nivel_seniority: Nivel de seniority
+            area_funcional: Área funcional
+            top_k: Override top K
+            threshold: Override threshold
+
+        Returns:
+            {
+                "skills_regla": [...] o None si no hay regla,
+                "skills_semantico": [...],
+                "regla_aplicada": "RS01..." o None,
+                "nombre_regla": "Desarrollador Python" o None,
+                "dual_coinciden_skills": 1/0/None,
+                "skills_final": [...] (merged),
+                "metodo_primario": "regla" o "semantico"
+            }
+        """
+        if oferta_nlp is None:
+            oferta_nlp = {}
+
+        # Construir contexto NLP si no está completo
+        if not sector_empresa:
+            sector_empresa = oferta_nlp.get("sector_empresa", "")
+        if not nivel_seniority:
+            nivel_seniority = oferta_nlp.get("nivel_seniority", "")
+        if not area_funcional:
+            area_funcional = oferta_nlp.get("area_funcional", "")
+
+        # ============================================
+        # PASO 1: Evaluar reglas de skills
+        # ============================================
+        rules_matcher = SkillsRulesMatcher(verbose=self.verbose)
+        regla_result = rules_matcher.evaluate(
+            titulo=titulo_limpio,
+            oferta_nlp=oferta_nlp,
+            tareas=tareas_explicitas or ""
+        )
+
+        skills_regla = None
+        regla_aplicada = None
+        nombre_regla = None
+
+        if regla_result:
+            # Convertir formato de regla a formato de skills extraídas
+            skills_regla = []
+            for skill in regla_result.skills_forzadas:
+                skills_regla.append({
+                    "skill_esco": skill.get("skill_esco", ""),
+                    "skill_uri": skill.get("skill_uri", ""),
+                    "score": 0.99,  # Alta confianza por ser regla
+                    "score_ponderado": 0.99,
+                    "peso": 1.0,
+                    "origen": "regla"
+                })
+
+            # v2.4: Agregar categorías L1/L2 a skills de regla (igual que semántico)
+            try:
+                categorizer = get_categorizer()
+                for skill in skills_regla:
+                    categoria = categorizer.categorize(
+                        skill_uri=skill.get("skill_uri", ""),
+                        skill_label=skill.get("skill_esco", "")
+                    )
+                    skill.update(categoria)
+            except Exception as e:
+                if self.verbose:
+                    print(f"[DUAL] WARN: Error categorizando skills regla: {e}")
+
+            regla_aplicada = regla_result.regla_aplicada
+            nombre_regla = regla_result.nombre_regla
+
+            if self.verbose:
+                print(f"[DUAL] Regla {regla_aplicada} aplicada: {nombre_regla}")
+                print(f"[DUAL] Skills forzadas: {[s['skill_esco'] for s in skills_regla]}")
+
+        # ============================================
+        # PASO 2: Extraer semántico (SIEMPRE)
+        # ============================================
+        skills_semantico = self.extract_skills(
+            titulo_limpio=titulo_limpio,
+            tareas_explicitas=tareas_explicitas,
+            skills_nlp=skills_nlp,
+            soft_skills_nlp=soft_skills_nlp,
+            sector_empresa=sector_empresa,
+            nivel_seniority=nivel_seniority,
+            area_funcional=area_funcional,
+            top_k=top_k,
+            threshold=threshold
+        )
+
+        if self.verbose:
+            print(f"[DUAL] Skills semántico: {len(skills_semantico)} extraídas")
+
+        # ============================================
+        # PASO 3: Determinar dual_coinciden_skills
+        # ============================================
+        dual_coinciden_skills = None
+
+        if skills_regla:
+            # Comparar skills de regla vs semántico
+            # Coinciden si al menos 1 skill de regla está en semántico
+            regla_labels = {s["skill_esco"].lower() for s in skills_regla}
+            semantico_labels = {s["skill_esco"].lower() for s in skills_semantico}
+
+            # Intersección: skills que aparecen en ambos
+            overlap = regla_labels & semantico_labels
+            overlap_ratio = len(overlap) / len(regla_labels) if regla_labels else 0
+
+            # Consideramos que coinciden si hay al menos 50% de overlap
+            # o si al menos 1 skill coincide (para reglas con pocas skills)
+            dual_coinciden_skills = 1 if (overlap_ratio >= 0.5 or len(overlap) >= 1) else 0
+
+            if self.verbose:
+                print(f"[DUAL] Overlap: {len(overlap)}/{len(regla_labels)} ({overlap_ratio:.0%})")
+                print(f"[DUAL] dual_coinciden_skills = {dual_coinciden_skills}")
+
+        # ============================================
+        # PASO 4: Merge final (regla prioridad)
+        # ============================================
+        if skills_regla:
+            # Regla tiene prioridad, agregar semántico que no esté en regla
+            skills_final = list(skills_regla)  # Copiar skills de regla
+            regla_labels = {s["skill_esco"].lower() for s in skills_regla}
+
+            for skill_sem in skills_semantico:
+                if skill_sem["skill_esco"].lower() not in regla_labels:
+                    # Marcar como origen "semantico" para tracking
+                    skill_copy = dict(skill_sem)
+                    skill_copy["origen"] = "semantico"
+                    skills_final.append(skill_copy)
+
+            metodo_primario = "regla"
+        else:
+            # Sin regla, usar solo semántico
+            skills_final = skills_semantico
+            metodo_primario = "semantico"
+
+        # ============================================
+        # PASO 5: Retornar resultado dual
+        # ============================================
+        return {
+            "skills_regla": skills_regla,
+            "skills_semantico": skills_semantico,
+            "regla_aplicada": regla_aplicada,
+            "nombre_regla": nombre_regla,
+            "dual_coinciden_skills": dual_coinciden_skills,
+            "skills_final": skills_final,
+            "metodo_primario": metodo_primario
+        }
+
+    def compare_skills_with_occupation(
+        self,
+        skills_extraidas: List[Dict],
+        isco_code: str,
+        db_path: str = None
+    ) -> Dict:
+        """
+        v2.3: Calcula coherencia entre skills extraídas y skills esperadas para un ISCO.
+
+        Args:
+            skills_extraidas: Lista de skills extraídas (formato extract_skills())
+            isco_code: Código ISCO asignado (ej: "2514")
+            db_path: Path a BD (opcional)
+
+        Returns:
+            {
+                "coherence_ratio": 0.0-1.0,
+                "essential_skills_matched": int,
+                "essential_skills_total": int,
+                "optional_skills_matched": int
+            }
+        """
+        if not skills_extraidas or not isco_code:
+            return {
+                "coherence_ratio": None,
+                "essential_skills_matched": 0,
+                "essential_skills_total": 0,
+                "optional_skills_matched": 0
+            }
+
+        if db_path is None:
+            db_path = self.db_path
+
+        try:
+            conn = sqlite3.connect(str(db_path))
+            cur = conn.cursor()
+
+            # Obtener skills esenciales y opcionales para este ISCO
+            # (desde esco_associations o similar)
+            cur.execute('''
+                SELECT DISTINCT s.preferred_label_es, a.relation_type
+                FROM esco_associations a
+                JOIN esco_skills s ON a.skill_uri = s.skill_uri
+                JOIN esco_occupations o ON a.occupation_uri = o.occupation_uri
+                WHERE o.isco_code LIKE ?
+                AND a.relation_type IN ('essential', 'optional')
+            ''', (isco_code + '%',))
+
+            essential_skills = set()
+            optional_skills = set()
+
+            for row in cur.fetchall():
+                label, rel_type = row
+                if label:
+                    label_lower = label.lower()
+                    if rel_type == 'essential':
+                        essential_skills.add(label_lower)
+                    else:
+                        optional_skills.add(label_lower)
+
+            conn.close()
+
+            # Comparar con skills extraídas
+            extracted_labels = {s["skill_esco"].lower() for s in skills_extraidas}
+
+            essential_matched = len(essential_skills & extracted_labels)
+            optional_matched = len(optional_skills & extracted_labels)
+            total_essential = len(essential_skills)
+
+            # Coherence ratio: proporción de skills esenciales matcheadas
+            if total_essential > 0:
+                coherence_ratio = essential_matched / total_essential
+            else:
+                # Sin skills esenciales definidas, usar proporción de optional
+                coherence_ratio = optional_matched / len(optional_skills) if optional_skills else 1.0
+
+            return {
+                "coherence_ratio": round(coherence_ratio, 4),
+                "essential_skills_matched": essential_matched,
+                "essential_skills_total": total_essential,
+                "optional_skills_matched": optional_matched
+            }
+
+        except Exception as e:
+            if self.verbose:
+                print(f"[WARN] Error calculando coherencia: {e}")
+            return {
+                "coherence_ratio": None,
+                "essential_skills_matched": 0,
+                "essential_skills_total": 0,
+                "optional_skills_matched": 0
+            }
 
 
 def generate_skills_embeddings(

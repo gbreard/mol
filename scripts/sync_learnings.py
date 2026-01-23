@@ -13,12 +13,13 @@ Fuentes de datos:
 - config/matching_rules_business.json → reglas_negocio
 - config/validation_rules.json → reglas_validacion
 - config/sinonimos_argentinos_esco.json → sinonimos_argentinos
+- config/skills_rules.json → reglas_skills_dual
 - BD pipeline_runs → ultimo_run, ofertas procesadas
-- BD ofertas_esco_matching → ofertas_con_matching
+- BD ofertas_esco_matching → ofertas_con_matching, skills_dual_*
 - BD learning_history → eventos recientes
 
-Version: 2.1
-Fecha: 2026-01-17
+Version: 2.2
+Fecha: 2026-01-22
 """
 
 import json
@@ -109,6 +110,7 @@ def load_config_counts() -> Dict[str, int]:
         "reglas_validacion": 0,
         "sinonimos_argentinos": 0,
         "empresas_catalogo": 0,
+        "reglas_skills_dual": 0,
     }
 
     # Reglas de negocio
@@ -149,6 +151,17 @@ def load_config_counts() -> Dict[str, int]:
             empleadores = len(data.get("empleadores", {}))
             intermediarios = len(data.get("intermediarios", {}))
             counts["empresas_catalogo"] = empleadores + intermediarios
+
+    # Reglas de skills dual
+    skills_path = CONFIG_DIR / "skills_rules.json"
+    if skills_path.exists():
+        with open(skills_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            rules = data.get("reglas_forzar_skills", {})
+            counts["reglas_skills_dual"] = sum(
+                1 for r in rules.values()
+                if isinstance(r, dict) and r.get("activa", True)
+            )
 
     return counts
 
@@ -235,6 +248,213 @@ def load_db_metrics() -> Dict[str, Any]:
 
     except Exception as e:
         print(f"[SYNC] Error leyendo BD: {e}")
+
+    return metrics
+
+
+def get_skills_dual_metrics() -> Dict[str, Any]:
+    """
+    Lee métricas del sistema dual de skills desde la BD.
+
+    Returns:
+        Dict con métricas de skills dual
+    """
+    metrics = {
+        "ofertas_con_skills_dual": 0,
+        "por_regla": 0,
+        "por_semantico": 0,
+        "dual_coinciden": 0,
+        "dual_difieren": 0,
+        "pct_regla": 0.0,
+        "pct_coinciden": 0.0,
+        "skills_promedio": 0.0,
+        "reglas_mas_usadas": []
+    }
+
+    try:
+        conn = sqlite3.connect(str(DB_PATH))
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+
+        # Total ofertas con skills dual procesado
+        cur.execute("""
+            SELECT COUNT(*) FROM ofertas_esco_matching
+            WHERE skills_regla_json IS NOT NULL OR skills_semantico_json IS NOT NULL
+        """)
+        metrics["ofertas_con_skills_dual"] = cur.fetchone()[0]
+
+        # Ofertas donde se aplicó regla de skills
+        cur.execute("""
+            SELECT COUNT(*) FROM ofertas_esco_matching
+            WHERE skills_regla_aplicada IS NOT NULL
+        """)
+        metrics["por_regla"] = cur.fetchone()[0]
+
+        # Ofertas solo con semántico (sin regla)
+        cur.execute("""
+            SELECT COUNT(*) FROM ofertas_esco_matching
+            WHERE skills_regla_aplicada IS NULL
+              AND skills_semantico_json IS NOT NULL
+        """)
+        metrics["por_semantico"] = cur.fetchone()[0]
+
+        # Dual coinciden vs difieren
+        cur.execute("""
+            SELECT dual_coinciden_skills, COUNT(*) as cnt
+            FROM ofertas_esco_matching
+            WHERE dual_coinciden_skills IS NOT NULL
+            GROUP BY dual_coinciden_skills
+        """)
+        for row in cur.fetchall():
+            if row["dual_coinciden_skills"] == 1:
+                metrics["dual_coinciden"] = row["cnt"]
+            elif row["dual_coinciden_skills"] == 0:
+                metrics["dual_difieren"] = row["cnt"]
+
+        # Calcular porcentajes
+        total_dual = metrics["por_regla"] + metrics["por_semantico"]
+        if total_dual > 0:
+            metrics["pct_regla"] = (metrics["por_regla"] / total_dual) * 100
+
+        total_comparables = metrics["dual_coinciden"] + metrics["dual_difieren"]
+        if total_comparables > 0:
+            metrics["pct_coinciden"] = (metrics["dual_coinciden"] / total_comparables) * 100
+
+        # Skills promedio por oferta (de skills_final)
+        cur.execute("""
+            SELECT AVG(
+                CASE
+                    WHEN skills_semantico_json IS NOT NULL
+                    THEN json_array_length(skills_semantico_json)
+                    ELSE 0
+                END
+            ) as avg_skills
+            FROM ofertas_esco_matching
+            WHERE skills_semantico_json IS NOT NULL
+        """)
+        row = cur.fetchone()
+        if row and row["avg_skills"]:
+            metrics["skills_promedio"] = round(row["avg_skills"], 1)
+
+        # Reglas de skills más usadas (top 5)
+        cur.execute("""
+            SELECT skills_regla_aplicada, COUNT(*) as cnt
+            FROM ofertas_esco_matching
+            WHERE skills_regla_aplicada IS NOT NULL
+            GROUP BY skills_regla_aplicada
+            ORDER BY cnt DESC
+            LIMIT 5
+        """)
+        metrics["reglas_mas_usadas"] = [
+            {"regla": row["skills_regla_aplicada"], "usos": row["cnt"]}
+            for row in cur.fetchall()
+        ]
+
+        conn.close()
+
+    except Exception as e:
+        metrics["error"] = str(e)
+
+    return metrics
+
+
+def get_rules_effectiveness_metrics() -> Dict[str, Any]:
+    """
+    Lee métricas de efectividad de reglas desde la BD.
+
+    v3.5.1: Usa la nueva vista v_reglas_efectividad.
+
+    Returns:
+        Dict con métricas de efectividad
+    """
+    metrics = {
+        "reglas_usadas": 0,
+        "reglas_problematicas": [],  # Baja coincidencia + score alto
+        "reglas_efectivas": [],  # Alta coincidencia
+        "decision_summary": {},
+        "decision_revisar": 0,
+        "decision_override": 0,
+        "score_promedio": 0.0
+    }
+
+    try:
+        conn = sqlite3.connect(str(DB_PATH))
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+
+        # Total reglas usadas
+        cur.execute("""
+            SELECT COUNT(DISTINCT regla_aplicada)
+            FROM ofertas_esco_matching
+            WHERE regla_aplicada IS NOT NULL
+        """)
+        metrics["reglas_usadas"] = cur.fetchone()[0]
+
+        # Reglas problemáticas (< 30% coincidencia + score alto)
+        cur.execute("""
+            SELECT regla_aplicada, usos_total, pct_coincidencia, score_semantico_promedio
+            FROM v_reglas_efectividad
+            WHERE pct_coincidencia < 30
+              AND score_semantico_promedio > 0.7
+            ORDER BY score_semantico_promedio DESC
+            LIMIT 5
+        """)
+        metrics["reglas_problematicas"] = [
+            {
+                "regla": row["regla_aplicada"],
+                "usos": row["usos_total"],
+                "pct": row["pct_coincidencia"],
+                "score": row["score_semantico_promedio"]
+            }
+            for row in cur.fetchall()
+        ]
+
+        # Reglas efectivas (> 70% coincidencia)
+        cur.execute("""
+            SELECT regla_aplicada, usos_total, pct_coincidencia
+            FROM v_reglas_efectividad
+            WHERE pct_coincidencia > 70
+            ORDER BY pct_coincidencia DESC
+            LIMIT 5
+        """)
+        metrics["reglas_efectivas"] = [
+            {
+                "regla": row["regla_aplicada"],
+                "usos": row["usos_total"],
+                "pct": row["pct_coincidencia"]
+            }
+            for row in cur.fetchall()
+        ]
+
+        # Resumen por tipo de decisión (v3.5.1)
+        cur.execute("""
+            SELECT decision_metodo, COUNT(*) as total
+            FROM ofertas_esco_matching
+            WHERE decision_metodo IS NOT NULL
+            GROUP BY decision_metodo
+        """)
+        for row in cur.fetchall():
+            metodo = row["decision_metodo"]
+            metrics["decision_summary"][metodo] = row["total"]
+            if "revisar" in str(metodo):
+                metrics["decision_revisar"] += row["total"]
+            if "override" in str(metodo):
+                metrics["decision_override"] += row["total"]
+
+        # Score semántico promedio global
+        cur.execute("""
+            SELECT AVG(score_semantico) as avg
+            FROM ofertas_esco_matching
+            WHERE score_semantico IS NOT NULL
+        """)
+        row = cur.fetchone()
+        if row and row["avg"]:
+            metrics["score_promedio"] = round(row["avg"], 3)
+
+        conn.close()
+
+    except Exception as e:
+        metrics["error"] = str(e)
 
     return metrics
 
@@ -418,7 +638,9 @@ def get_phase2_metrics() -> Dict[str, Any]:
         "ultimo_run": None,
         "dias_desde_run": None,
         "tasa_convergencia": "N/A",
-        "reglas_negocio": 0
+        "reglas_negocio": 0,
+        # Skills dual metrics
+        "skills_dual": {}
     }
 
     try:
@@ -495,6 +717,9 @@ def get_phase2_metrics() -> Dict[str, Any]:
         # Reglas de negocio (desde config)
         config_counts = load_config_counts()
         metrics["reglas_negocio"] = config_counts["reglas_negocio"]
+
+        # Skills dual metrics
+        metrics["skills_dual"] = get_skills_dual_metrics()
 
     except Exception as e:
         metrics["error"] = str(e)
@@ -640,6 +865,7 @@ def generate_phase_report(output_for_claude: bool = True) -> str:
     p3 = get_phase3_metrics()
     queue = get_queue_status_for_report()
     git = get_git_info()
+    rules_eff = get_rules_effectiveness_metrics()
 
     suggested_phase, phase_name, reason = determine_suggested_phase(p1, p2, p3)
 
@@ -675,10 +901,20 @@ FASE 2 - PROCESAMIENTO (NLP + Matching)
   Reglas negocio: {p2['reglas_negocio']} | Convergencia: {p2['tasa_convergencia']}
   Ultimo run: {p2['ultimo_run'] or 'N/A'}
 
+  SKILLS DUAL (v2.3):
+  Por regla: {p2['skills_dual'].get('por_regla', 0)} ({p2['skills_dual'].get('pct_regla', 0):.1f}%) | Por semantico: {p2['skills_dual'].get('por_semantico', 0)}
+  Dual coinciden: {p2['skills_dual'].get('dual_coinciden', 0)} ({p2['skills_dual'].get('pct_coinciden', 0):.1f}%) | Difieren: {p2['skills_dual'].get('dual_difieren', 0)}
+  Skills promedio: {p2['skills_dual'].get('skills_promedio', 0):.1f}/oferta
+
   COLA DE PROCESAMIENTO:
   Cola pendiente: {queue['pendientes']:,} | En proceso: {queue['en_proceso']:,} | Procesados: {queue['procesados']:,}
   Lotes: {queue['lotes_creados']} | Score promedio: {queue['score_promedio']:.3f}
   Estado: {"BLOQUEADO - " + str(queue['errores_bloqueo']) + " errores en lote " + str(queue['lote_bloqueado']) if queue['bloqueado'] else "LISTO"}
+
+  EFECTIVIDAD REGLAS (v3.5.1):
+  Reglas usadas: {rules_eff['reglas_usadas']} | Score semantico promedio: {rules_eff['score_promedio']}
+  Decisiones revisar: {rules_eff['decision_revisar']} | Override semantico alto: {rules_eff['decision_override']}
+  Problematicas (score>0.7, coinc<30%): {len(rules_eff['reglas_problematicas'])} | Efectivas (coinc>70%): {len(rules_eff['reglas_efectivas'])}
 
 FASE 3 - PRESENTACION (Dashboard)
   Ofertas en Supabase: {p3['ofertas_sincronizadas']:,}
@@ -717,6 +953,13 @@ FASE 3 - PRESENTACION (Dashboard)
   Convergencia:       {p2['tasa_convergencia']:>10}
   Ultimo run:         {str(p2['ultimo_run'] or 'N/A'):>10}
 
+  SKILLS DUAL (v2.3):
+  Por regla:          {p2['skills_dual'].get('por_regla', 0):>10,}  ({p2['skills_dual'].get('pct_regla', 0):.1f}%)
+  Por semantico:      {p2['skills_dual'].get('por_semantico', 0):>10,}
+  Dual coinciden:     {p2['skills_dual'].get('dual_coinciden', 0):>10,}  ({p2['skills_dual'].get('pct_coinciden', 0):.1f}%)
+  Dual difieren:      {p2['skills_dual'].get('dual_difieren', 0):>10,}
+  Skills promedio:    {p2['skills_dual'].get('skills_promedio', 0):>10.1f}/oferta
+
   COLA DE PROCESAMIENTO:
   Cola pendiente:     {queue['pendientes']:>10,}
   En proceso:         {queue['en_proceso']:>10,}
@@ -724,6 +967,14 @@ FASE 3 - PRESENTACION (Dashboard)
   Lotes creados:      {queue['lotes_creados']:>10}
   Score promedio:     {queue['score_promedio']:>10.3f}
   Estado cola:        {"BLOQUEADO (" + str(queue['errores_bloqueo']) + " err)" if queue['bloqueado'] else "LISTO":>10}
+
+  EFECTIVIDAD REGLAS (v3.5.1):
+  Reglas usadas:      {rules_eff['reglas_usadas']:>10}
+  Score promedio:     {rules_eff['score_promedio']:>10.3f}
+  Decisiones revisar: {rules_eff['decision_revisar']:>10}
+  Override alto:      {rules_eff['decision_override']:>10}
+  Reglas problem.:    {len(rules_eff['reglas_problematicas']):>10}  (score>0.7 + coinc<30%)
+  Reglas efectivas:   {len(rules_eff['reglas_efectivas']):>10}  (coinc>70%)
 
 --- FASE 3: PRESENTACION (Dashboard) ---
   En Supabase:        {p3['ofertas_sincronizadas']:>10,}
