@@ -133,7 +133,8 @@ def extraer_ofertas_validadas(
         Lista de diccionarios con datos desnormalizados
     """
     # Construir WHERE clause
-    where_clauses = ["m.estado_validacion = 'validado'"]
+    # v1.1: Aceptar validado_claude Y validado_humano para poblar dashboard
+    where_clauses = ["m.estado_validacion IN ('validado_claude', 'validado_humano')"]
     params = []
 
     if since:
@@ -503,7 +504,7 @@ def mostrar_stats_local(conn: sqlite3.Connection):
                MIN(validado_timestamp) as primera,
                MAX(validado_timestamp) as ultima
         FROM ofertas_esco_matching
-        WHERE estado_validacion = 'validado'
+        WHERE estado_validacion IN ('validado_claude', 'validado_humano')
     """)
     row = cursor.fetchone()
     print(f"Ofertas validadas: {row['total']}")
@@ -514,7 +515,7 @@ def mostrar_stats_local(conn: sqlite3.Connection):
     cursor = conn.execute("""
         SELECT COUNT(*) FROM ofertas_esco_skills_detalle d
         JOIN ofertas_esco_matching m ON d.id_oferta = m.id_oferta
-        WHERE m.estado_validacion = 'validado'
+        WHERE m.estado_validacion IN ('validado_claude', 'validado_humano')
     """)
     print(f"Skills detalle: {cursor.fetchone()[0]}")
 

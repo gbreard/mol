@@ -6,11 +6,11 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-01-23 14:11"
+  fecha_actualizacion: "2026-01-23 15:44"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "procesamiento"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "158 errores sin resolver - sistema sugiere Fase 2"
+  fase_detalle: "13356 ofertas sin NLP - sistema sugiere Fase 2"
 
   # Protección de Ofertas Validadas v2.0 (2026-01-20)
   proteccion_validadas:
@@ -147,8 +147,8 @@ conteos:
   proximo_paso: "Revisar 24 casos con override semántico alto"
 
   estadisticas_actuales:
-    ofertas_validadas: 0  # validadas anteriormente
-    ofertas_pendientes: 238  # nuevo lote procesado
+    ofertas_validadas: 238  # validadas anteriormente
+    ofertas_pendientes: 0  # nuevo lote procesado
     reglas_negocio: 136
     tasa_aprendizaje: "0.0% (0 reglas / 6 ofertas)"
     convergencia: "CONVERGIDO (tasa < 5%)"

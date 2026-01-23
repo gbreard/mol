@@ -221,10 +221,11 @@ def load_db_metrics() -> Dict[str, Any]:
         """)
         for row in cur.fetchall():
             estado = row["estado_validacion"] or "pendiente"
-            if estado == "validado":
-                metrics["ofertas_validadas"] = row["cnt"]
+            # v1.1: Contar validado_claude y validado_humano como validadas
+            if estado in ("validado", "validado_claude", "validado_humano"):
+                metrics["ofertas_validadas"] += row["cnt"]
             else:
-                metrics["ofertas_pendientes"] = row["cnt"]
+                metrics["ofertas_pendientes"] += row["cnt"]
 
         # Últimos eventos de aprendizaje
         cur.execute("""
@@ -678,8 +679,9 @@ def get_phase2_metrics() -> Dict[str, Any]:
         """)
         for row in cur.fetchall():
             estado = row["estado_validacion"] or "pendiente"
-            if estado == "validado":
-                metrics["ofertas_validadas"] = row["cnt"]
+            # v1.1: Contar validado_claude y validado_humano como validadas
+            if estado in ("validado", "validado_claude", "validado_humano"):
+                metrics["ofertas_validadas"] += row["cnt"]
             else:
                 metrics["ofertas_pendientes_validacion"] += row["cnt"]
 

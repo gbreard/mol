@@ -98,7 +98,7 @@ class MatcherV3:
     Pipeline de matching v3.4.0 - Dual Matching (reglas + semantico).
     """
 
-    VERSION = "3.4.1"  # v3.4.1: Ordenar reglas por prioridad (menor = mayor prioridad)
+    VERSION = "3.5.2"  # v3.5.2: Fix exclusiones titulo_original, R87 ecommerce
 
     # Pesos para combinacion de scores
     ALPHA_SKILLS = 0.6  # Peso para match por skills
@@ -447,21 +447,22 @@ class MatcherV3:
         skills_nlp = oferta_nlp.get("skills_tecnicas_list", [])
         if isinstance(skills_nlp, str):
             try:
-                import json
                 skills_nlp = json.loads(skills_nlp) if skills_nlp else []
-            except:
+            except (json.JSONDecodeError, TypeError):
                 skills_nlp = []
 
         soft_skills_nlp = oferta_nlp.get("soft_skills_list", [])
         if isinstance(soft_skills_nlp, str):
             try:
                 soft_skills_nlp = json.loads(soft_skills_nlp) if soft_skills_nlp else []
-            except:
+            except (json.JSONDecodeError, TypeError):
                 soft_skills_nlp = []
 
-        skills_extracted = self.skills_extractor.extract_skills(
+        # v2.3: Extraccion DUAL de skills (regla + semantico)
+        skills_dual_result = self.skills_extractor.extract_skills_dual(
             titulo_limpio=titulo,
             tareas_explicitas=tareas,
+            oferta_nlp=oferta_nlp,
             skills_nlp=skills_nlp,
             soft_skills_nlp=soft_skills_nlp,
             sector_empresa=oferta_nlp.get("sector_empresa"),
@@ -469,8 +470,20 @@ class MatcherV3:
             area_funcional=oferta_nlp.get("area_funcional")
         )
 
+        # Usar skills_final para el matching (merge de regla + semantico)
+        skills_extracted = skills_dual_result["skills_final"]
+
+        # Guardar info dual para persistencia
+        skills_regla = skills_dual_result.get("skills_regla")
+        skills_semantico = skills_dual_result.get("skills_semantico")
+        skills_regla_aplicada = skills_dual_result.get("regla_aplicada")
+        dual_coinciden_skills = skills_dual_result.get("dual_coinciden_skills")
+        metodo_skills = skills_dual_result.get("metodo_primario", "semantico")
+
         if self.verbose:
-            print(f"[V3.4] Skills extraidas: {len(skills_extracted)}")
+            print(f"[V3.4] Skills extraidas: {len(skills_extracted)} (metodo: {metodo_skills})")
+            if skills_regla_aplicada:
+                print(f"[V3.4] Regla skills: {skills_regla_aplicada}")
 
         # =====================================================================
         # PASO 2: MATCHING SEMÁNTICO COMPLETO (sin bypass de reglas)
@@ -575,43 +588,22 @@ class MatcherV3:
                 print(f"[V3.4] DUAL: Solo semántico (sin regla aplicable)")
 
         # =====================================================================
-        # PASO 5: RETORNAR RESULTADO - REGLAS TIENEN PRIORIDAD (v3.4.2)
+        # PASO 5: DECISIÓN INTELIGENTE - v3.5.1
         # =====================================================================
 
-        # v3.4.2: Si hay una regla de negocio aplicable, USAR ESA (no el semántico)
-        if rule_info:
-            # Buscar datos completos de ESCO para la regla
-            rule_occupation = self._find_occupation_by_esco_label(rule_info.get("esco_label", ""))
+        # v3.5.1: Usar lógica de decisión inteligente
+        isco_final, decision_metodo, decision_razon = self._decide_dual_match(
+            regla_isco=regla_isco,
+            semantic_isco=semantic_isco,
+            semantic_score=semantic_score,
+            regla_id=regla_aplicada
+        )
 
-            if rule_occupation:
-                if self.verbose:
-                    print(f"[V3.4.2] REGLA GANA: {regla_aplicada} -> {rule_occupation['label']}")
+        if self.verbose:
+            print(f"[V3.5.1] Decisión: {decision_metodo} - {decision_razon}")
 
-                return MatchResult(
-                    status=MatchStatus.BUSINESS_RULE.value,
-                    esco_uri=rule_occupation['uri'],
-                    esco_label=rule_occupation['label'],
-                    isco_code=rule_occupation['isco_code'],  # ISCO derivado de ESCO
-                    score=0.98,
-                    metodo=f"regla_negocio_{regla_aplicada}",
-                    skills_extracted=skills_extracted,
-                    skills_matched=semantic_skills_matched,
-                    alternativas=[],
-                    metadata={
-                        "skills_count": len(skills_extracted),
-                        "skills_matched_count": len(semantic_skills_matched),
-                        # Campos dual matching
-                        "isco_semantico": semantic_isco,
-                        "score_semantico": semantic_score,
-                        "isco_regla": rule_occupation['isco_code'],
-                        "regla_aplicada": regla_aplicada,
-                        "dual_coinciden": dual_coinciden,
-                        "decision_metodo": "regla_prioridad"
-                    }
-                )
-
-        # Si no hay resultado semántico válido, retornar error
-        if semantic_isco is None:
+        # Si no hay ISCO final, retornar error
+        if isco_final is None:
             return MatchResult(
                 status=MatchStatus.ERROR.value,
                 esco_uri=None,
@@ -623,15 +615,56 @@ class MatcherV3:
                 skills_matched=[],
                 alternativas=[],
                 metadata={
-                    "razon": "Sin candidatos",
-                    "isco_semantico": None,
+                    "razon": decision_razon,
+                    "isco_semantico": semantic_isco,
                     "isco_regla": regla_isco,
                     "regla_aplicada": regla_aplicada,
-                    "dual_coinciden": dual_coinciden
+                    "dual_coinciden": dual_coinciden,
+                    "decision_metodo": decision_metodo,
+                    "decision_razon": decision_razon,
+                    # Campos dual matching SKILLS (v2.3)
+                    "skills_regla_json": json.dumps(skills_regla) if skills_regla else None,
+                    "skills_semantico_json": json.dumps(skills_semantico) if skills_semantico else None,
+                    "skills_regla_aplicada": skills_regla_aplicada,
+                    "dual_coinciden_skills": dual_coinciden_skills,
+                    "metodo_skills": metodo_skills
                 }
             )
 
-        # Determinar status según método
+        # Determinar qué datos de ocupación usar según la decisión
+        if "regla" in decision_metodo and rule_info:
+            # La decisión es usar la regla
+            rule_occupation = self._find_occupation_by_esco_label(rule_info.get("esco_label", ""))
+            if rule_occupation:
+                return MatchResult(
+                    status=MatchStatus.BUSINESS_RULE.value,
+                    esco_uri=rule_occupation['uri'],
+                    esco_label=rule_occupation['label'],
+                    isco_code=rule_occupation['isco_code'].lstrip("C"),
+                    score=0.98,
+                    metodo=f"regla_negocio_{regla_aplicada}",
+                    skills_extracted=skills_extracted,
+                    skills_matched=semantic_skills_matched,
+                    alternativas=[],
+                    metadata={
+                        "skills_count": len(skills_extracted),
+                        "skills_matched_count": len(semantic_skills_matched),
+                        "isco_semantico": semantic_isco.lstrip("C") if semantic_isco else None,
+                        "score_semantico": semantic_score,
+                        "isco_regla": rule_occupation['isco_code'].lstrip("C"),
+                        "regla_aplicada": regla_aplicada,
+                        "dual_coinciden": dual_coinciden,
+                        "decision_metodo": decision_metodo,
+                        "decision_razon": decision_razon,
+                        "skills_regla_json": json.dumps(skills_regla) if skills_regla else None,
+                        "skills_semantico_json": json.dumps(skills_semantico) if skills_semantico else None,
+                        "skills_regla_aplicada": skills_regla_aplicada,
+                        "dual_coinciden_skills": dual_coinciden_skills,
+                        "metodo_skills": metodo_skills
+                    }
+                )
+
+        # La decisión es usar el semántico (o dual_coinciden donde ambos dan igual)
         if "skills" in semantic_metodo:
             status = MatchStatus.SKILLS_FIRST.value
         elif "diccionario" in semantic_metodo:
@@ -643,7 +676,7 @@ class MatcherV3:
             status=status,
             esco_uri=semantic_uri,
             esco_label=semantic_label,
-            isco_code=semantic_isco,  # ISCO semántico (solo si no hay regla)
+            isco_code=semantic_isco,
             score=semantic_score,
             metodo=semantic_metodo,
             skills_extracted=skills_extracted,
@@ -652,13 +685,18 @@ class MatcherV3:
             metadata={
                 "skills_count": len(skills_extracted),
                 "skills_matched_count": len(semantic_skills_matched),
-                # Campos dual matching
                 "isco_semantico": semantic_isco,
                 "score_semantico": semantic_score,
                 "isco_regla": regla_isco,
                 "regla_aplicada": regla_aplicada,
                 "dual_coinciden": dual_coinciden,
-                "decision_metodo": "semantico_default"
+                "decision_metodo": decision_metodo,
+                "decision_razon": decision_razon,
+                "skills_regla_json": json.dumps(skills_regla) if skills_regla else None,
+                "skills_semantico_json": json.dumps(skills_semantico) if skills_semantico else None,
+                "skills_regla_aplicada": skills_regla_aplicada,
+                "dual_coinciden_skills": dual_coinciden_skills,
+                "metodo_skills": metodo_skills
             }
         )
 
@@ -680,7 +718,8 @@ class MatcherV3:
         # v3.3.4: Para exclusiones, usar título ORIGINAL (no limpio) para no perder contexto
         # Ej: "Gerente de Operaciones – Grupo Gastronómico" limpio queda "Gerente de Operaciones"
         # pero la exclusión debe ver "gastronómico" del título original
-        titulo_original = (oferta_nlp.get("titulo", "")).lower()
+        # v3.5.2: Usar titulo_limpio si titulo no existe (ofertas_nlp no tiene titulo)
+        titulo_original = (oferta_nlp.get("titulo") or oferta_nlp.get("titulo_limpio", "")).lower()
         tareas = (oferta_nlp.get("tareas_explicitas") or "").lower()
         reglas = self.business_rules.get("reglas_forzar_isco", {})
 
@@ -807,7 +846,7 @@ class MatcherV3:
                     status=MatchStatus.BUSINESS_RULE.value,
                     esco_uri=occupation['uri'],
                     esco_label=occupation['label'],  # Label exacto de ESCO
-                    isco_code=occupation['isco_code'],  # ISCO derivado de ESCO
+                    isco_code=occupation['isco_code'].lstrip("C"),  # ISCO derivado, sin prefijo C
                     score=0.98,
                     metodo=f"regla_negocio_{rule_id}",
                     skills_extracted=[],
@@ -832,7 +871,8 @@ class MatcherV3:
             return None
 
         titulo = (oferta_nlp.get("titulo_limpio") or oferta_nlp.get("titulo", "")).lower()
-        titulo_original = (oferta_nlp.get("titulo", "")).lower()
+        # v3.5.2: Usar titulo_limpio si titulo no existe
+        titulo_original = (oferta_nlp.get("titulo") or oferta_nlp.get("titulo_limpio", "")).lower()
         tareas = (oferta_nlp.get("tareas_explicitas") or "").lower()
         reglas = self.business_rules.get("reglas_forzar_isco", {})
 
@@ -927,7 +967,7 @@ class MatcherV3:
                 if occupation:
                     return {
                         "rule_id": rule_id,
-                        "isco_code": occupation['isco_code'],  # ISCO derivado de ESCO
+                        "isco_code": occupation['isco_code'].lstrip("C"),  # ISCO derivado, sin prefijo C
                         "esco_label": occupation['label'],  # Label exacto de ESCO
                         "nombre_regla": rule.get("nombre", "")
                     }
@@ -936,6 +976,61 @@ class MatcherV3:
                     continue
 
         return None
+
+    def _decide_dual_match(
+        self,
+        regla_isco: Optional[str],
+        semantic_isco: Optional[str],
+        semantic_score: float,
+        regla_id: Optional[str]
+    ) -> Tuple[str, str, str]:
+        """
+        Decide cuál ISCO usar basado en confianza de cada método.
+
+        v3.5.1: Lógica de decisión inteligente para matching dual.
+
+        Args:
+            regla_isco: ISCO de la regla de negocio (None si no aplica ninguna)
+            semantic_isco: ISCO del matching semántico
+            semantic_score: Score del matching semántico (0-1)
+            regla_id: ID de la regla aplicada (None si no aplica ninguna)
+
+        Returns:
+            Tuple de (isco_final, decision_metodo, decision_razon)
+        """
+        # Caso 1: Solo semántico disponible (sin regla que aplique)
+        if regla_isco is None:
+            if semantic_isco is None:
+                return (None, "error", "sin match disponible")
+            return (semantic_isco, "semantico_unico", "sin regla aplicable")
+
+        # Caso 2: Sin semántico pero hay regla
+        if semantic_isco is None:
+            return (regla_isco, "regla_unica", "sin match semantico")
+
+        # Caso 3: Ambos disponibles - comparar primeros 4 dígitos (ISCO-4)
+        regla_isco_4 = str(regla_isco)[:4]
+        semantic_isco_4 = str(semantic_isco)[:4]
+
+        if regla_isco_4 == semantic_isco_4:
+            # Coinciden → alta confianza
+            return (regla_isco, "dual_coinciden",
+                    f"regla {regla_id} y semantico coinciden (ISCO {regla_isco_4})")
+
+        # Caso 4: Divergen → decidir según score
+        if semantic_score < 0.55:
+            # Semántico poco confiable → usar regla
+            return (regla_isco, "regla_por_score_bajo",
+                    f"score semantico {semantic_score:.2f} < 0.55, regla {regla_id} prioridad")
+
+        if semantic_score >= 0.80:
+            # Semántico muy confiable → usar regla pero marcar WARNING
+            return (regla_isco, "regla_override_semantico_alto",
+                    f"REVISAR: regla {regla_id} override semantico {semantic_isco} (score {semantic_score:.2f})")
+
+        # Caso 5: Score medio (0.55-0.80) → usar regla pero marcar para revisión
+        return (regla_isco, "regla_revisar",
+                f"score semantico medio {semantic_score:.2f}, regla {regla_id} aplicada, verificar")
 
     def _find_occupation_by_esco_label(self, esco_label: str) -> Optional[Dict]:
         """
@@ -1031,7 +1126,7 @@ class MatcherV3:
             results.append({
                 "occupation_uri": meta.get("uri", ""),
                 "esco_label": meta.get("label", ""),
-                "isco_code": meta.get("isco_code", ""),
+                "isco_code": meta.get("isco_code", "").lstrip("C"),  # Sin prefijo C
                 "score": score,
                 "source": "semantic_title"
             })
@@ -1081,7 +1176,7 @@ class MatcherV3:
             combined.append({
                 "occupation_uri": uri,
                 "esco_label": base.get("esco_label", ""),
-                "isco_code": base.get("isco_code", ""),
+                "isco_code": base.get("isco_code", "").lstrip("C"),  # Sin prefijo C
                 "combined_score": combined_score,
                 "skill_score": skill_score,
                 "title_score": title_score,
@@ -1124,6 +1219,14 @@ class MatcherV3:
             score_semantico = meta.get("score_semantico")
             regla_aplicada = meta.get("regla_aplicada")
             dual_coinciden = meta.get("dual_coinciden")
+            # v3.5.0: Campos dual skills
+            skills_regla_json = meta.get("skills_regla_json")
+            skills_semantico_json = meta.get("skills_semantico_json")
+            skills_regla_aplicada = meta.get("skills_regla_aplicada")
+            dual_coinciden_skills = meta.get("dual_coinciden_skills")
+            # v3.5.1: Decision inteligente
+            decision_metodo = meta.get("decision_metodo")
+            decision_razon = meta.get("decision_razon")
 
             self.conn.execute('''
                 INSERT OR REPLACE INTO ofertas_esco_matching (
@@ -1135,8 +1238,11 @@ class MatcherV3:
                     matching_timestamp, matching_version, run_id,
                     estado_validacion,
                     isco_regla, isco_semantico, score_semantico,
-                    regla_aplicada, dual_coinciden, decision_metodo
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    regla_aplicada, dual_coinciden, decision_metodo,
+                    skills_regla_json, skills_semantico_json,
+                    skills_regla_aplicada, dual_coinciden_skills,
+                    decision_razon
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 str(id_oferta),
                 result.esco_uri,
@@ -1153,13 +1259,19 @@ class MatcherV3:
                 self.VERSION,
                 run_id,  # v3.2.4: Run tracking
                 'pendiente',  # v3.2.5: Estado validación inicial
-                # v3.4.0: Campos dual matching
+                # v3.4.0: Campos dual matching ISCO
                 isco_regla,
                 isco_semantico,
                 score_semantico,
                 regla_aplicada,
                 dual_coinciden,
-                None  # decision_metodo será seteado por auto_corrector
+                decision_metodo,  # v3.5.1: Decision inteligente
+                # v3.5.0: Campos dual skills
+                skills_regla_json,
+                skills_semantico_json,
+                skills_regla_aplicada,
+                dual_coinciden_skills,
+                decision_razon  # v3.5.1: Razon de la decision
             ))
             # v3.3.3: Tracking histórico
             # Guardar en ofertas_matching_history (no sobrescribe)
@@ -1301,31 +1413,33 @@ class MatcherV3:
         skills_nlp = oferta_nlp.get("skills_tecnicas_list", [])
         if isinstance(skills_nlp, str):
             try:
-                import json
                 skills_nlp = json.loads(skills_nlp) if skills_nlp else []
-            except:
+            except (json.JSONDecodeError, TypeError):
                 skills_nlp = []
 
         soft_skills_nlp = oferta_nlp.get("soft_skills_list", [])
         if isinstance(soft_skills_nlp, str):
             try:
-                import json
                 soft_skills_nlp = json.loads(soft_skills_nlp) if soft_skills_nlp else []
-            except:
+            except (json.JSONDecodeError, TypeError):
                 soft_skills_nlp = []
 
-        skills_extracted = self.skills_extractor.extract_skills(
+        # v3.5.0: Usar extraccion dual de skills
+        skills_dual_result = self.skills_extractor.extract_skills_dual(
             titulo_limpio=titulo,
             tareas_explicitas=tareas,
+            oferta_nlp=oferta_nlp,
             skills_nlp=skills_nlp,
             soft_skills_nlp=soft_skills_nlp,
             sector_empresa=oferta_nlp.get("sector_empresa"),
             nivel_seniority=oferta_nlp.get("nivel_seniority"),
             area_funcional=oferta_nlp.get("area_funcional")
         )
+        skills_extracted = skills_dual_result["skills_final"]
 
         if self.verbose:
-            print(f"[V3] Skills extraídas: {len(skills_extracted)}")
+            metodo_skills = skills_dual_result.get("metodo_primario", "semantico")
+            print(f"[V3] Skills extraídas: {len(skills_extracted)} (metodo: {metodo_skills})")
 
         # 2. Ejecutar matching
         result = self.match(oferta_nlp)
@@ -1485,28 +1599,29 @@ def run_matching_pipeline(
     conn = sqlite3.connect(str(db_path))
     conn.row_factory = sqlite3.Row
 
-    # PROTECCIÓN: Verificar que no haya ofertas validadas (a menos que force=True)
+    # PROTECCIÓN: Solo ofertas con validado_humano son inmutables (a menos que force=True)
+    # v3.4.3: validado_claude es reprocesable, validado_humano NO
     if offer_ids and not force:
         cur = conn.execute('''
             SELECT id_oferta FROM ofertas_esco_matching
             WHERE id_oferta IN ({})
-            AND estado_validacion = 'validado'
+            AND estado_validacion = 'validado_humano'
         '''.format(','.join(['?'] * len(offer_ids))), offer_ids)
         validated = [row[0] for row in cur.fetchall()]
         if validated:
             conn.close()
             raise ValueError(
-                f"[ERROR] No se pueden reprocesar ofertas validadas: {validated[:10]}... "
-                f"({len(validated)} total). Use force=True para forzar o cambie el estado primero."
+                f"[ERROR] No se pueden reprocesar ofertas validadas por humano: {validated[:10]}... "
+                f"({len(validated)} total). Use force=True para forzar."
             )
 
-    # PROTECCIÓN v3.3.4: Excluir ofertas validadas cuando se usa limit sin offer_ids
+    # PROTECCIÓN v3.4.3: Solo excluir validado_humano (validado_claude es reprocesable)
     exclude_validated_clause = ""
     if not force and not offer_ids:
         exclude_validated_clause = """
             AND n.id_oferta NOT IN (
                 SELECT id_oferta FROM ofertas_esco_matching
-                WHERE estado_validacion = 'validado'
+                WHERE estado_validacion = 'validado_humano'
             )
         """
 

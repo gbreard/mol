@@ -527,12 +527,12 @@ def export_validation(
             FROM ofertas_nlp n
             LEFT JOIN ofertas_esco_matching m ON n.id_oferta = m.id_oferta
             WHERE m.estado_validacion IS NULL
-               OR m.estado_validacion NOT IN ('validado', 'descartado')
+               OR m.estado_validacion NOT IN ('validado_humano', 'descartado')
             ORDER BY n.id_oferta DESC
             LIMIT ?
         ''', (limit or 100,))
         offer_ids = [str(row[0]) for row in cur.fetchall()]
-        safe_print(f"  [PROTECCION] Excluidas ofertas con estado 'validado' o 'descartado'")
+        safe_print(f"  [PROTECCION] Excluidas ofertas con estado 'validado_humano' o 'descartado'")
 
     if limit:
         offer_ids = offer_ids[:limit]
