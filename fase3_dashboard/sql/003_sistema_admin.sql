@@ -251,7 +251,7 @@ SELECT
     (SELECT COUNT(*) FROM organizaciones) as organizaciones_totales,
     (SELECT COUNT(*) FROM busquedas WHERE created_at > NOW() - INTERVAL '30 days') as busquedas_mes,
     (SELECT COUNT(*) FROM exportaciones WHERE created_at > NOW() - INTERVAL '30 days') as exports_mes,
-    (SELECT COUNT(*) FROM usuarios WHERE last_sign_in_at > NOW() - INTERVAL '7 days') as usuarios_activos_semana;
+    (SELECT COUNT(*) FROM usuarios WHERE ultimo_acceso > NOW() - INTERVAL '7 days') as usuarios_activos_semana;
 
 -- Vista: actividad por usuario (para admin)
 CREATE OR REPLACE VIEW v_actividad_usuarios AS
@@ -261,7 +261,7 @@ SELECT
     u.email,
     u.rol,
     u.organizacion_id,
-    u.last_sign_in_at,
+    u.ultimo_acceso,
     COALESCE(b.total_busquedas, 0) as total_busquedas,
     COALESCE(e.total_exports, 0) as total_exports,
     b.ultima_busqueda,
@@ -293,7 +293,7 @@ SELECT
     o.nombre,
     o.created_at,
     COUNT(DISTINCT u.id) as total_usuarios,
-    COUNT(DISTINCT CASE WHEN u.last_sign_in_at > NOW() - INTERVAL '7 days' THEN u.id END) as usuarios_activos,
+    COUNT(DISTINCT CASE WHEN u.ultimo_acceso > NOW() - INTERVAL '7 days' THEN u.id END) as usuarios_activos,
     COALESCE(SUM(b.busquedas), 0) as busquedas_mes,
     COALESCE(SUM(e.exports), 0) as exports_mes
 FROM organizaciones o
