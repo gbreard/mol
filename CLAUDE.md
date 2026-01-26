@@ -304,6 +304,43 @@ CREAR REGLAS → Necesito ver datos para entender el patrón
 - Errores se persisten en tabla `validation_errors` (no se pierden)
 - Si hay errores que requieren reglas nuevas → genera `metrics/cola_claude_*.json`
 
+### Flujo Completo de Trabajo (v3.4.3)
+
+```
+PASO 1: PROCESAR OFERTAS NUEVAS
+───────────────────────────────
+python scripts/run_validated_pipeline.py --limit 100
+  → NLP → Matching → Validación Automática → Reporte Errores
+
+PASO 2: RESOLVER ERRORES (si hay)
+─────────────────────────────────
+# Ver errores
+python scripts/review_offer_chain.py --errores --limit 5
+
+# Crear reglas según tipo de error:
+│ Error NLP        │ → config/nlp_inference_rules.json
+│ Error Matching   │ → config/matching_rules_business.json
+│ Error Limpieza   │ → config/nlp_titulo_limpieza.json
+
+# Reprocesar IDs con error
+python scripts/run_validated_pipeline.py --ids X,Y,Z
+
+PASO 3: APLICAR REGLAS A VALIDADAS (si se crearon reglas nuevas)
+────────────────────────────────────────────────────────────────
+# Las reglas nuevas pueden afectar ofertas YA validadas
+# Este script las reprocesa SIN perder el estado de validación
+python scripts/reapply_rules_to_validated.py
+
+PASO 4: SINCRONIZAR A SUPABASE
+──────────────────────────────
+python scripts/exports/sync_to_supabase.py
+```
+
+**¿Cuándo usar `reapply_rules_to_validated.py`?**
+- Después de crear reglas nuevas en `matching_rules_business.json`
+- Cuando hay ofertas validadas que podrían beneficiarse de las nuevas reglas
+- El script detecta automáticamente qué ofertas reprocesar (las que tuvieron errores resueltos)
+
 ---
 
 ## Pipeline de Validación con Aprendizaje (v2.0)
