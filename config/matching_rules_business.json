@@ -2,9 +2,10 @@
   "version": "3.0",
   "descripcion": "Reglas de negocio para matching ESCO. 132 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-01-21",
+  "fecha_actualizacion": "2026-01-26",
   "_cambios_v29": "Agregada R133 Steward/Bachero hoteleria -> 9412 ayudante cocina",
   "_cambios_v30": "Agregadas R134 Commercial Executive, R135 Gestor Liquidaciones",
+  "_cambios_v31": "Agregadas R139-R142: Repositor, Mucama hotel, Peón depósito, Bodeguero -> 9333/9112",
   "_cambios_v11": "Agregadas R43-R47: DevOps, Architect, SAP, Integraciones, Data Engineer",
   "_cambios_v12": "Agregadas R48-R52: Secretaria, Jefe generico, Back office, Carpintero, Ingeniero IA",
   "_cambios_v13": "Agregadas R68-R82: Gastronomía, Financiero, Retail, Aluminio, Product Manager, Ventas, Vigilador, Compras, etc.",
@@ -389,6 +390,12 @@
           "abogada",
           "juridico",
           "jurídico"
+        ],
+        "titulo_no_contiene_alguno": [
+          "inmobiliario",
+          "inmobiliaria",
+          "asesor inmobiliario",
+          "agente inmobiliario"
         ]
       },
       "accion": {
@@ -1941,12 +1948,12 @@
         ]
       },
       "accion": {
-        "forzar_isco": "3339",
-        "esco_label": "agente de la propiedad intelectual"
+        "forzar_isco": "2431",
+        "esco_label": "especialista en publicidad"
       },
       "caso_revision_100": "1118105735 - Administrativo Ecommerce",
       "activa": true,
-      "nota": "FASE 5 - Admin ecommerce = agente negocios digitales"
+      "nota": "v3.5.2: Corregido - admin ecommerce es oficinista, no agente propiedad intelectual"
     },
     "R88_jefe_producto": {
       "nombre": "Jefe/Gerente de Producto (Product Manager)",
@@ -2047,6 +2054,12 @@
           "jefa de costos",
           "analista de costos",
           "estimador de costos"
+        ],
+        "titulo_no_contiene_alguno": [
+          "telecomunicaciones",
+          "telecom",
+          "transmision",
+          "transmisión"
         ]
       },
       "accion": {
@@ -2122,8 +2135,7 @@
           "ia engineer",
           "ai engineer",
           "lead developer",
-          "lead developer ia",
-          "data architect"
+          "lead developer ia"
         ],
         "nlp_area_es": [
           "IT",
@@ -2901,6 +2913,554 @@
       },
       "caso_referencia": "1118115815 - Gestor de Liquidaciones",
       "activa": true
+    },
+    "R135_peon_cocina": {
+      "nombre": "Peón/Ayudante de Cocina",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "peón de cocina",
+          "peon de cocina",
+          "ayudante de cocina",
+          "auxiliar de cocina",
+          "bachero",
+          "bachera"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9412",
+        "esco_label": "ayudante/ayudanta de cocina"
+      },
+      "activa": true,
+      "_caso": "ID 1118092879 Peón de Cocina",
+      "_fecha": "2026-01-22"
+    },
+    "R136_personal_deposito": {
+      "nombre": "Personal de Depósito/Almacén (Logística)",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "personal para deposito",
+          "personal para depósito",
+          "personal de deposito",
+          "personal de depósito",
+          "personal deposito",
+          "personal depósito",
+          "personal para almacen",
+          "personal para almacén",
+          "personal de almacen",
+          "personal de almacén"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9333",
+        "esco_label": "mozo de almacén/moza de almacén"
+      },
+      "activa": true,
+      "_caso": "ID 1118092945 Personal para Depósito en Villa Soldati",
+      "_fecha": "2026-01-22",
+      "nota": "Personal genérico de depósito con tareas de picking/logística → 9333 (mozo almacén)"
+    },
+    "R137_tareas_picking_crossdocking": {
+      "nombre": "Tareas Picking/Cross-docking (sin título específico)",
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": [
+          "picking",
+          "cross docking",
+          "armado de pedidos"
+        ],
+        "area_funcional_es": "Logistica"
+      },
+      "accion": {
+        "forzar_isco": "9333",
+        "esco_label": "mozo de almacén/moza de almacén"
+      },
+      "activa": true,
+      "_caso": "ID 1118092945 - tareas picking, cross docking en área logística",
+      "_fecha": "2026-01-22",
+      "nota": "Si tareas o título mencionan picking/cross docking y área es logística → 9333"
+    },
+    "R138_control_gestion": {
+      "nombre": "Analista de Control de Gestión",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "control de gestión",
+          "control de gestion",
+          "controller",
+          "controlling"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2411",
+        "esco_label": "analista de presupuestos"
+      },
+      "activa": true,
+      "_caso": "ID 2172829 - Analista de Control de Gestión - Petrolera Martinez",
+      "_fecha": "2026-01-22"
+    },
+    "R139_repositor": {
+      "nombre": "Repositor/Reponedor",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "repositor",
+          "repositora",
+          "reponedor",
+          "reponedora",
+          "reposicion",
+          "reposición"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9333",
+        "esco_label": "mozo de almacén/moza de almacén"
+      },
+      "activa": true,
+      "_caso": "ID 1118097220 Repositores con experiencia",
+      "_fecha": "2026-01-23"
+    },
+    "R140_mucama_hotel": {
+      "nombre": "Mucama/Camarera de Pisos Hotelería",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "mucama",
+          "mucamas",
+          "mucamo",
+          "mucamos",
+          "camarera de pisos",
+          "camarero de pisos",
+          "housekeeping"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9112",
+        "esco_label": "camarero de pisos/camarera de pisos"
+      },
+      "activa": true,
+      "_caso": "ID 1118005232 Mucamas/os para Hoteles 4* y 5*",
+      "_fecha": "2026-01-23"
+    },
+    "R141_peon_deposito": {
+      "nombre": "Peón de Depósito/Distribución",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "peón de deposito",
+          "peon de deposito",
+          "peón de depósito",
+          "peon de depósito",
+          "peones de deposito",
+          "peones de depósito",
+          "peón distribucion",
+          "peon distribucion"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9333",
+        "esco_label": "mozo de almacén/moza de almacén"
+      },
+      "activa": true,
+      "_caso": "ID 1118009711 Empleado de reposicion, distribucion y deposito",
+      "_fecha": "2026-01-23"
+    },
+    "R142_bodeguero": {
+      "nombre": "Bodeguero/Encargado de Bodega",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "bodeguero",
+          "bodeguera",
+          "bodegueros",
+          "encargado de bodega",
+          "encargada de bodega"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9333",
+        "esco_label": "mozo de almacén/moza de almacén"
+      },
+      "activa": true,
+      "_caso": "ID 1118104232 Peones y Bodegueros",
+      "_fecha": "2026-01-23",
+      "nota": "En Argentina, bodeguero = almacenero (no relacionado a vinos)"
+    },
+    "R143_jefe_cocina": {
+      "nombre": "Jefe/Chef de Cocina",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "jefe de cocina",
+          "jefa de cocina",
+          "chef de cocina",
+          "chef ejecutivo",
+          "jefe cocina",
+          "jefa cocina"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3434",
+        "esco_label": "chef"
+      },
+      "activa": true,
+      "_caso": "ID 1118032379 Jefe/a de cocina - Temperley",
+      "_fecha": "2026-01-23"
+    },
+    "R144_pizzero": {
+      "nombre": "Pizzaiolo/Pizzero/Panadero",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "pizzaiolo",
+          "pizzero",
+          "pizzera",
+          "maestro pizzero",
+          "maestro panadero",
+          "panadero",
+          "panadera"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7512",
+        "esco_label": "panadero/panadera"
+      },
+      "activa": true,
+      "_caso": "ID 2171992 Pizzaiolo/Maestro Pizzero/Panadero",
+      "_fecha": "2026-01-23"
+    },
+    "R145_ejecutivo_ventas": {
+      "nombre": "Ejecutivo de Ventas",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "ejecutivo de ventas",
+          "ejecutiva de ventas",
+          "ejecutivo ventas",
+          "ejecutiva ventas",
+          "ejecutivo comercial",
+          "ejecutiva comercial"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3322",
+        "esco_label": "representante comercial"
+      },
+      "activa": true,
+      "_caso": "ID 2171854 Ejecutivo de Ventas",
+      "_fecha": "2026-01-23"
+    },
+    "R146_data_architect": {
+      "nombre": "Data Architect / Arquitecto de Datos",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "data architect",
+          "arquitecto de datos",
+          "arquitecto datos",
+          "data architecture"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2511",
+        "esco_label": "arquitecto de sistemas de TIC/arquitecta de sistemas de TIC"
+      },
+      "caso_referencia": "1118103686 - Data Architect",
+      "activa": true
+    },
+    "R147_admin_redes_servidores": {
+      "nombre": "Administrador de Redes y Servidores",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "administrador de redes",
+          "administrador de servidores",
+          "admin redes",
+          "administrador redes",
+          "sysadmin",
+          "system administrator",
+          "network administrator"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2522",
+        "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC"
+      },
+      "caso_referencia": "1118103687 - Administrador de Redes y Servidores",
+      "activa": true
+    },
+    "R148_disenador_multimedia": {
+      "nombre": "Diseñador Multimedia / Motion Graphics",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "diseñador multimedia",
+          "disenador multimedia",
+          "diseñadora multimedia",
+          "motion graphics",
+          "motion designer",
+          "multimedia designer"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2166",
+        "esco_label": "diseñador gráfico/diseñadora gráfica"
+      },
+      "caso_referencia": "1118103801 - DISEÑADOR MULTIMEDIA",
+      "activa": true
+    },
+    "R149_ingeniero_telecomunicaciones": {
+      "nombre": "Ingeniero de Telecomunicaciones/Transmisión",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_todos": [
+          "ingeniero"
+        ],
+        "titulo_contiene_alguno": [
+          "telecomunicaciones",
+          "telecom",
+          "transmisión",
+          "transmision",
+          "redes de datos",
+          "infraestructura de red"
+        ],
+        "titulo_no_contiene_alguno": [
+          "civil",
+          "mecanico",
+          "electrico",
+          "quimico",
+          "industrial",
+          "ambiental"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2153",
+        "esco_label": "ingeniero de telecomunicaciones/ingeniera de telecomunicaciones"
+      },
+      "caso_referencia": "1118100726 - Ingeniero de Planificación de Presupuestos de Transmisión",
+      "activa": true
+    },
+    "R150_asesor_plan_ahorro": {
+      "nombre": "Asesor de Plan de Ahorro / Ahorro Previo",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "plan de ahorro",
+          "ahorro previo",
+          "planes de ahorro",
+          "asesor de ahorro"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3322",
+        "esco_label": "representante comercial"
+      },
+      "caso_referencia": "1118095764 - Asesor de Plan de Ahorro - San Martín GBA",
+      "activa": true,
+      "nota": "Planes de ahorro automotor son productos financieros vendidos por representantes comerciales"
+    },
+    "R151_jefe_de_obra": {
+      "nombre": "Jefe de Obra / Encargado de Obra",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "jefe de obra",
+          "jefa de obra",
+          "encargado de obra",
+          "encargada de obra",
+          "supervisor de obra",
+          "supervisora de obra"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1323",
+        "esco_label": "director de obra/directora de obra"
+      },
+      "caso_referencia": "1118096877 - JEFE DE OBRA",
+      "activa": true
+    },
+    "R152_ecommerce_manager": {
+      "nombre": "E-commerce Manager / Responsable Comercio Electrónico",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "e-commerce",
+          "ecommerce",
+          "e commerce",
+          "comercio electronico",
+          "comercio electrónico",
+          "tienda online",
+          "ventas online",
+          "e - commerce"
+        ],
+        "titulo_no_contiene": [
+          "desarrollador",
+          "programador",
+          "developer"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1221",
+        "esco_label": "responsable de marketing digital"
+      },
+      "caso_referencia": "1118069619 - E - COMMERCE",
+      "activa": true,
+      "nota": "Roles de gestión de ventas digitales van a marketing digital, no a desarrollo"
+    },
+    "R153_creador_contenido": {
+      "nombre": "Creador de Contenido / Content Creator",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "creador de contenido",
+          "creadora de contenido",
+          "content creator",
+          "creador contenido",
+          "creador/a de contenido"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2432",
+        "esco_label": "gestor de la información para las redes sociales/gestora de la información para las redes sociales"
+      },
+      "caso_referencia": "1118099884 - Creador/a de Contenido",
+      "activa": true,
+      "nota": "Creadores de contenido para redes sociales = community manager"
+    },
+    "R154_auditor_inventario": {
+      "nombre": "Auditor de Stock / Control de Inventario",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "auditor de stock",
+          "auditores control de stock",
+          "auditor de inventario",
+          "auditor inventario",
+          "control de stock",
+          "auditor de mercaderia",
+          "auditor mercaderia"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4321",
+        "esco_label": "coordinador de inventario/coordinadora de inventario"
+      },
+      "caso_referencia": "1116677957 - Auditores Control de Stock",
+      "activa": true,
+      "nota": "Auditores de stock son control de inventario, no contables"
+    },
+    "R155_asesor_telefonico": {
+      "nombre": "Asesor Comercial Telefónico / Televentas",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "asesor telefonico",
+          "asesor telefónico",
+          "comercial telefonico",
+          "comercial telefónico",
+          "televentas",
+          "telemarketing",
+          "ventas telefonicas",
+          "ventas telefónicas"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4222",
+        "esco_label": "agente de centro de atención al cliente"
+      },
+      "caso_referencia": "1118095110 - Asesor Comercial Telefonico",
+      "activa": true,
+      "nota": "Trabajo telefónico comercial = call center"
+    },
+    "R156_vendedor_viajante": {
+      "nombre": "Vendedor Viajante / Vendedor de Ruta",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "vendedor viajante",
+          "vendedora viajante",
+          "viajante",
+          "vendedor de ruta",
+          "vendedor ruta"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5243",
+        "esco_label": "vendedor a domicilio"
+      },
+      "caso_referencia": "1118095742 - Vendedor/a viajante rubro motos",
+      "activa": true
+    },
+    "R157_jefe_produccion": {
+      "nombre": "Jefe de Producción Industrial",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "jefe de produccion",
+          "jefe de producción",
+          "jefa de produccion",
+          "jefa de producción",
+          "gerente de produccion",
+          "gerente de producción"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1321",
+        "esco_label": "director de producción industrial/directora de producción industrial"
+      },
+      "caso_referencia": "1118103812 - Jefe de Producción",
+      "activa": true
+    },
+    "R158_jefe_operaciones": {
+      "nombre": "Jefe de Operaciones",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "jefe de operaciones",
+          "jefa de operaciones",
+          "gerente de operaciones",
+          "gerente operaciones"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1324",
+        "esco_label": "gestor de la cadena de suministro/gestora de la cadena de suministro"
+      },
+      "caso_referencia": "1118104175 - Jefe de Operaciones",
+      "activa": true
+    },
+    "R159_farmaceutico": {
+      "nombre": "Farmacéutico / Farmacéutica",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "farmaceutico",
+          "farmacéutico",
+          "farmaceutica",
+          "farmacéutica",
+          "farmacia"
+        ],
+        "titulo_no_contiene_alguno": [
+          "auxiliar",
+          "ayudante",
+          "vendedor"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2262",
+        "esco_label": "farmacéutico/farmacéutica"
+      },
+      "caso_referencia": "1118103767 - Farmacéutico/a para el área de Ensayos Clínicos",
+      "activa": true
+    },
+    "R160_tecnico_instalador": {
+      "nombre": "Técnico Instalador Genérico",
+      "prioridad": 2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "tecnico instalador",
+          "técnico instalador",
+          "instalador tecnico",
+          "instalador técnico"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7411",
+        "esco_label": "electricista de edificios"
+      },
+      "caso_referencia": "1118099825 - TECNICO INSTALADOR",
+      "activa": true,
+      "nota": "Default para instalador genérico, reglas específicas tienen prioridad"
     }
   },
   "reglas_filtro": {
@@ -2976,5 +3536,14 @@
     }
   },
   "_cambios_v23": "Demo optimizacion: R105-R110 (Jefe Mant, Preventista, Seg Higiene, Jefe RRHH, Ejec Ventas, Tec Mant)",
-  "_cambios_v28": "Agregadas R131 hoteleria hospitalaria, R132 medicina prepaga"
+  "_cambios_v28": "Agregadas R131 hoteleria hospitalaria, R132 medicina prepaga",
+  "_cambios_v32": "Agregadas R146-R149: Data Architect, Admin Redes, Diseñador Multimedia, Ing Telecomunicaciones (fix IT mal clasificados)",
+  "_cambios_v33": "Fix: R95 removido data architect, R92 excluye telecom, R146 prioridad 0",
+  "_cambios_v34": "R149: Ajustada condición para titulo_contiene_todos + titulo_contiene_alguno",
+  "_cambios_v35": "R150: Asesor de Plan de Ahorro -> 3322 representante comercial",
+  "_cambios_v36": "R151: Jefe de Obra -> 1323 director de obra",
+  "_cambios_v37": "R152: E-commerce -> 1221, R153: Creador Contenido -> 2432",
+  "_cambios_v38": "R154: Auditor stock -> 4321, R155: Asesor telefonico -> 4222, R17 excluye inmobiliario",
+  "_cambios_v39": "R156: Vendedor viajante, R157: Jefe produccion, R158: Jefe operaciones, R87 ajustada",
+  "_cambios_v40": "R159: Farmaceutico -> 2262, R160: Tecnico instalador -> 7411"
 }

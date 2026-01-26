@@ -1,256 +1,681 @@
 {
-  "_version": "2.2",
+  "_version": "2.3",
   "_descripcion": "Patrones para limpiar titulos de ofertas - eliminar ruido geografico/empresarial/administrativo",
   "_fecha": "2026-01-13",
   "_cambios_v22": "Agregados: codigos_final, modalidad_guion, requisitos_edad, más patrones ubicacion",
-
   "codigos_inicio": {
     "_descripcion": "Codigos alfanumericos al INICIO del titulo (ej: 671SI, ABC123)",
     "patrones": [
-      {"patron": "^\\d{2,6}[A-Z]{1,3}\\s+", "ejemplo": "671SI Operarios..."},
-      {"patron": "^[A-Z]{1,3}\\d{2,6}\\s+", "ejemplo": "SI671 Operarios..."},
-      {"patron": "^\\d{3,6}\\s+", "ejemplo": "12345 Vendedor..."},
-      {"patron": "^[A-Z]{2,4}-?\\d{3,6}\\s+", "ejemplo": "REF-12345 Analista..."}
+      {
+        "patron": "^\\d{2,6}[A-Z]{1,3}\\s+",
+        "ejemplo": "671SI Operarios..."
+      },
+      {
+        "patron": "^[A-Z]{1,3}\\d{2,6}\\s+",
+        "ejemplo": "SI671 Operarios..."
+      },
+      {
+        "patron": "^\\d{3,6}\\s+",
+        "ejemplo": "12345 Vendedor..."
+      },
+      {
+        "patron": "^[A-Z]{2,4}-?\\d{3,6}\\s+",
+        "ejemplo": "REF-12345 Analista..."
+      }
     ]
   },
-
   "prefijos_genericos": {
     "_descripcion": "Prefijos genericos al inicio que no aportan informacion (Busqueda Laboral:, etc)",
     "patrones": [
-      {"patron": "^[Bb][úu]squeda\\s+[Ll]aboral\\s*[:\\-–]\\s*", "ejemplo": "Búsqueda Laboral: Modelista..."},
-      {"patron": "^[Bb][úu]squeda\\s*[:\\-–]\\s*", "ejemplo": "Búsqueda: Analista..."},
-      {"patron": "^[Ss]e\\s+[Bb]usca\\s*[:\\-–]?\\s*", "ejemplo": "Se busca: Vendedor..."},
-      {"patron": "^[Bb]uscamos\\s*[:\\-–]?\\s*", "ejemplo": "Buscamos: Desarrollador..."},
-      {"patron": "^[Oo]portunidad\\s*[:\\-–]\\s*", "ejemplo": "Oportunidad: Contador..."},
-      {"patron": "^[Vv]acante\\s*[:\\-–]\\s*", "ejemplo": "Vacante: Recepcionista..."},
-      {"patron": "^[Oo]ferta\\s+[Ll]aboral\\s*[:\\-–]\\s*", "ejemplo": "Oferta Laboral: Cajero..."},
-      {"patron": "^[A-ZÁÉÍÓÚ][A-ZÁÉÍÓÚ\\s]+\\s+[Bb][Uu][Ss][Cc][Aa]\\s+", "ejemplo": "CAFETERIA FAST FOOD BUSCA Cajeros...", "_nota": "EMPRESA EN MAYUS + BUSCA"},
-      {"patron": "^[A-Za-záéíóú]+\\s+(?:de\\s+)?[A-Za-záéíóú]+\\s+[Bb]usca\\s+(?:incorporar\\s+)?", "ejemplo": "Estudio de arquitectura busca dibujante...", "_nota": "Empresa en minusc + busca"}
+      {
+        "patron": "^[Bb][úu]squeda\\s+[Ll]aboral\\s*[:\\-–]\\s*",
+        "ejemplo": "Búsqueda Laboral: Modelista..."
+      },
+      {
+        "patron": "^[Bb][úu]squeda\\s*[:\\-–]\\s*",
+        "ejemplo": "Búsqueda: Analista..."
+      },
+      {
+        "patron": "^[Ss]e\\s+[Bb]usca\\s*[:\\-–]?\\s*",
+        "ejemplo": "Se busca: Vendedor..."
+      },
+      {
+        "patron": "^[Bb]uscamos\\s*[:\\-–]?\\s*",
+        "ejemplo": "Buscamos: Desarrollador..."
+      },
+      {
+        "patron": "^[Oo]portunidad\\s*[:\\-–]\\s*",
+        "ejemplo": "Oportunidad: Contador..."
+      },
+      {
+        "patron": "^[Vv]acante\\s*[:\\-–]\\s*",
+        "ejemplo": "Vacante: Recepcionista..."
+      },
+      {
+        "patron": "^[Oo]ferta\\s+[Ll]aboral\\s*[:\\-–]\\s*",
+        "ejemplo": "Oferta Laboral: Cajero..."
+      },
+      {
+        "patron": "^[A-ZÁÉÍÓÚ][A-ZÁÉÍÓÚ\\s]+\\s+[Bb][Uu][Ss][Cc][Aa]\\s+",
+        "ejemplo": "CAFETERIA FAST FOOD BUSCA Cajeros...",
+        "_nota": "EMPRESA EN MAYUS + BUSCA"
+      },
+      {
+        "patron": "^[A-Za-záéíóú]+\\s+(?:de\\s+)?[A-Za-záéíóú]+\\s+[Bb]usca\\s+(?:incorporar\\s+)?",
+        "ejemplo": "Estudio de arquitectura busca dibujante...",
+        "_nota": "Empresa en minusc + busca"
+      }
     ]
   },
-
   "info_administrativa": {
     "_descripcion": "Informacion administrativa (fechas, horarios, sucursales)",
     "patrones": [
-      {"patron": "\\s*-?\\s*pres\\.?\\s+\\d{1,2}/\\d{1,2}.*$", "ejemplo": "- pres 31/10 de 10 a 1130..."},
-      {"patron": "\\s*-?\\s*presentarse\\s+.*$", "ejemplo": "- presentarse lunes..."},
-      {"patron": "\\s*-?\\s*NUEVA\\s+Suc\\.?.*$", "ejemplo": "- NUEVA Suc. SAN ISIDRO"},
-      {"patron": "\\s*-?\\s*Suc\\.?\\s+[A-Z][A-Za-z\\s]+$", "ejemplo": "- Suc. Palermo"},
-      {"patron": "\\s*-?\\s*Sucursal\\s+[A-Za-z\\s]+$", "ejemplo": "- Sucursal Centro"}
+      {
+        "patron": "\\s*-?\\s*pres\\.?\\s+\\d{1,2}/\\d{1,2}.*$",
+        "ejemplo": "- pres 31/10 de 10 a 1130..."
+      },
+      {
+        "patron": "\\s*-?\\s*presentarse\\s+.*$",
+        "ejemplo": "- presentarse lunes..."
+      },
+      {
+        "patron": "\\s*-?\\s*NUEVA\\s+Suc\\.?.*$",
+        "ejemplo": "- NUEVA Suc. SAN ISIDRO"
+      },
+      {
+        "patron": "\\s*-?\\s*Suc\\.?\\s+[A-Z][A-Za-z\\s]+$",
+        "ejemplo": "- Suc. Palermo"
+      },
+      {
+        "patron": "\\s*-?\\s*Sucursal\\s+[A-Za-z\\s]+$",
+        "ejemplo": "- Sucursal Centro"
+      }
     ]
   },
-
   "abreviaturas_expandir": {
     "_descripcion": "Abreviaturas a expandir o limpiar",
     "patrones": [
-      {"patron": "\\bc/\\s*Tit\\.?\\s*secundario\\b", "reemplazo": "", "ejemplo": "c/ Tit. secundario"},
-      {"patron": "\\bc/\\s*exp\\.?\\b", "reemplazo": "con experiencia", "ejemplo": "c/ exp."},
-      {"patron": "\\bind\\.\\s+", "reemplazo": "industria ", "ejemplo": "ind. alimenticia"},
-      {"patron": "\\bAlim\\.\\b", "reemplazo": "Alimenticia", "ejemplo": "Alim."}
+      {
+        "patron": "\\bc/\\s*Tit\\.?\\s*secundario\\b",
+        "reemplazo": "",
+        "ejemplo": "c/ Tit. secundario"
+      },
+      {
+        "patron": "\\bc/\\s*exp\\.?\\b",
+        "reemplazo": "con experiencia",
+        "ejemplo": "c/ exp."
+      },
+      {
+        "patron": "\\bind\\.\\s+",
+        "reemplazo": "industria ",
+        "ejemplo": "ind. alimenticia"
+      },
+      {
+        "patron": "\\bAlim\\.\\b",
+        "reemplazo": "Alimenticia",
+        "ejemplo": "Alim."
+      }
     ]
   },
-
   "ciudades_inicio": {
     "_descripcion": "Ciudades que aparecen AL INICIO del titulo y deben eliminarse",
     "lista": [
-      "Venado Tuerto", "Mar del Plata", "San Miguel", "San Isidro",
-      "La Plata", "Villa Maria", "Rio Cuarto", "San Juan",
-      "Bahia Blanca", "San Fernando", "Vicente Lopez", "Pilar",
-      "Tigre", "Quilmes", "Lomas de Zamora", "Avellaneda",
-      "San Martin", "Tres de Febrero", "Moron", "Merlo"
+      "Venado Tuerto",
+      "Mar del Plata",
+      "San Miguel",
+      "San Isidro",
+      "La Plata",
+      "Villa Maria",
+      "Rio Cuarto",
+      "San Juan",
+      "Bahia Blanca",
+      "San Fernando",
+      "Vicente Lopez",
+      "Pilar",
+      "Tigre",
+      "Quilmes",
+      "Lomas de Zamora",
+      "Avellaneda",
+      "San Martin",
+      "Tres de Febrero",
+      "Moron",
+      "Merlo"
     ]
   },
-
   "codigos_referencia": {
     "_descripcion": "Patrones de codigos internos a eliminar",
     "patrones": [
-      {"patron": "\\(req\\d+\\)", "ejemplo": "(req199380)"},
-      {"patron": "\\[REF[^\\]]+\\]", "ejemplo": "[REF-123]"},
-      {"patron": "#\\d{4,}", "ejemplo": "#12345"}
+      {
+        "patron": "\\(req\\d+\\)",
+        "ejemplo": "(req199380)"
+      },
+      {
+        "patron": "\\[REF[^\\]]+\\]",
+        "ejemplo": "[REF-123]"
+      },
+      {
+        "patron": "#\\d{4,}",
+        "ejemplo": "#12345"
+      }
     ]
   },
-
   "modalidad_final": {
     "_descripcion": "Palabras de modalidad al final del titulo",
-    "palabras": ["Eventual", "Part-time", "Part time", "Full-time", "Full time",
-                 "Remoto", "Hibrido", "Hibrida", "Presencial", "Temporal", "Freelance"]
+    "palabras": [
+      "Eventual",
+      "Part-time",
+      "Part time",
+      "Full-time",
+      "Full time",
+      "Remoto",
+      "Hibrido",
+      "Hibrida",
+      "Presencial",
+      "Temporal",
+      "Freelance"
+    ]
   },
-
   "zonas_ubicaciones": {
     "_descripcion": "Patrones de ubicacion al final - ORDEN IMPORTANTE: especificos primero",
     "patrones": [
-      {"patron": "\\s*[Zz]/[\\w]+$", "ejemplo": "Z/Escobar"},
-      {"patron": "\\s*[Zz]ona\\s+[\\w/]+$", "ejemplo": "zona CABA"},
-      {"patron": "\\s*-\\s*[\\w\\s]+\\s*-\\s*(BA|GBA|CABA)$", "ejemplo": "- Roque Perez - BA", "_nota": "PRIMERO: patron especifico Localidad - Prov"},
-      {"patron": "\\s*-\\s*GBA\\s+(Norte|Sur|Oeste)$", "ejemplo": "- GBA Norte"},
-      {"patron": "\\s*-\\s*Zona\\s+[A-Z][a-záéíóúü]+(?:\\s+[A-Z]?[a-záéíóúü]+)*$", "ejemplo": "- Zona Rosario"},
-      {"patron": "\\s+Zona\\s+(Norte|Sur|Oeste|Este)$", "ejemplo": "Zona Norte"},
-      {"patron": "\\s*-\\s*(PRESENCIAL|REMOTO|HIBRIDO|HÍBRIDO)\\s+(CABA|GBA|BA|Capital|Buenos\\s*Aires)$", "ejemplo": "- PRESENCIAL CABA", "_nota": "Modalidad + ubicacion"},
-      {"patron": "\\s*-\\s*(BA|CABA|GBA|Bs\\.?\\s*As\\.?|Buenos\\s+Aires|Capital|Cordoba|Córdoba|Mendoza|Rosario|Santa\\s+Fe)$", "ejemplo": "- Buenos Aires", "_nota": "ULTIMO: patron simple provincia"},
-      {"patron": "[,.]?\\s*[Zz]ona\\s+[A-Za-záéíóú]+(?:\\s+[oy]\\s+alrededores)?[.!]?.*$", "ejemplo": ", zona Benavidez o alrededores. Leer requisitos", "_nota": "zona X o alrededores + texto extra"}
+      {
+        "patron": "\\s*[Zz]/[\\w]+$",
+        "ejemplo": "Z/Escobar"
+      },
+      {
+        "patron": "\\s*[Zz]ona\\s+[\\w/]+$",
+        "ejemplo": "zona CABA"
+      },
+      {
+        "patron": "\\s*-\\s*[\\w\\s]+\\s*-\\s*(BA|GBA|CABA)$",
+        "ejemplo": "- Roque Perez - BA",
+        "_nota": "PRIMERO: patron especifico Localidad - Prov"
+      },
+      {
+        "patron": "\\s*-\\s*GBA\\s+(Norte|Sur|Oeste)$",
+        "ejemplo": "- GBA Norte"
+      },
+      {
+        "patron": "\\s*-\\s*Zona\\s+[A-Z][a-záéíóúü]+(?:\\s+[A-Z]?[a-záéíóúü]+)*$",
+        "ejemplo": "- Zona Rosario"
+      },
+      {
+        "patron": "\\s+Zona\\s+(Norte|Sur|Oeste|Este)$",
+        "ejemplo": "Zona Norte"
+      },
+      {
+        "patron": "\\s*-\\s*(PRESENCIAL|REMOTO|HIBRIDO|HÍBRIDO)\\s+(CABA|GBA|BA|Capital|Buenos\\s*Aires)$",
+        "ejemplo": "- PRESENCIAL CABA",
+        "_nota": "Modalidad + ubicacion"
+      },
+      {
+        "patron": "\\s*-\\s*(BA|CABA|GBA|Bs\\.?\\s*As\\.?|Buenos\\s+Aires|Capital|Cordoba|Córdoba|Mendoza|Rosario|Santa\\s+Fe)$",
+        "ejemplo": "- Buenos Aires",
+        "_nota": "ULTIMO: patron simple provincia"
+      },
+      {
+        "patron": "[,.]?\\s*[Zz]ona\\s+[A-Za-záéíóú]+(?:\\s+[oy]\\s+alrededores)?[.!]?.*$",
+        "ejemplo": ", zona Benavidez o alrededores. Leer requisitos",
+        "_nota": "zona X o alrededores + texto extra"
+      }
     ]
   },
-
   "localidades_final": {
     "_descripcion": "Localidades/barrios especificos que se eliminan cuando aparecen al final despues de guion",
     "lista": [
-      "Caballito", "Belgrano", "Palermo", "Recoleta", "Almagro", "Flores", "Villa Crespo",
-      "Nuñez", "Colegiales", "Villa Urquiza", "Saavedra", "Devoto", "Villa del Parque",
-      "Chacarita", "Boedo", "Parque Patricios", "Barracas", "Constitucion", "San Telmo",
-      "Retiro", "Puerto Madero", "Microcentro", "Centro", "Once", "Balvanera",
-      "San Isidro", "Vicente Lopez", "Olivos", "Martinez", "Florida", "Munro",
-      "San Fernando", "Tigre", "Don Torcuato", "Pacheco", "Escobar", "Pilar",
-      "Quilmes", "Bernal", "Berazategui", "Avellaneda", "Lanus", "Banfield", "Lomas de Zamora",
-      "Moron", "Haedo", "Ramos Mejia", "San Justo", "La Matanza", "Ituzaingo",
-      "Merlo", "Moreno", "Hurlingham", "Caseros", "Santos Lugares", "Ciudadela",
-      "San Martin", "Villa Ballester", "Jose Leon Suarez", "Tres de Febrero",
-      "La Plata", "City Bell", "Ensenada", "Berisso", "Gonnet",
-      "Roque Perez", "Roque Pérez", "Cañuelas", "Luján", "Mercedes", "Zárate", "Campana",
-      "Rosario", "Santa Fe", "Cordoba", "Mendoza", "Neuquen", "Bahia Blanca",
-      "Mar del Plata", "Tandil", "Olavarria", "Junin", "Pergamino"
+      "Caballito",
+      "Belgrano",
+      "Palermo",
+      "Recoleta",
+      "Almagro",
+      "Flores",
+      "Villa Crespo",
+      "Nuñez",
+      "Colegiales",
+      "Villa Urquiza",
+      "Saavedra",
+      "Devoto",
+      "Villa del Parque",
+      "Chacarita",
+      "Boedo",
+      "Parque Patricios",
+      "Barracas",
+      "Constitucion",
+      "San Telmo",
+      "Retiro",
+      "Puerto Madero",
+      "Microcentro",
+      "Centro",
+      "Once",
+      "Balvanera",
+      "San Isidro",
+      "Vicente Lopez",
+      "Olivos",
+      "Martinez",
+      "Florida",
+      "Munro",
+      "San Fernando",
+      "Tigre",
+      "Don Torcuato",
+      "Pacheco",
+      "Escobar",
+      "Pilar",
+      "Quilmes",
+      "Bernal",
+      "Berazategui",
+      "Avellaneda",
+      "Lanus",
+      "Banfield",
+      "Lomas de Zamora",
+      "Moron",
+      "Haedo",
+      "Ramos Mejia",
+      "San Justo",
+      "La Matanza",
+      "Ituzaingo",
+      "Merlo",
+      "Moreno",
+      "Hurlingham",
+      "Caseros",
+      "Santos Lugares",
+      "Ciudadela",
+      "San Martin",
+      "Villa Ballester",
+      "Jose Leon Suarez",
+      "Tres de Febrero",
+      "La Plata",
+      "City Bell",
+      "Ensenada",
+      "Berisso",
+      "Gonnet",
+      "Roque Perez",
+      "Roque Pérez",
+      "Cañuelas",
+      "Luján",
+      "Mercedes",
+      "Zárate",
+      "Campana",
+      "Rosario",
+      "Santa Fe",
+      "Cordoba",
+      "Mendoza",
+      "Neuquen",
+      "Bahia Blanca",
+      "Mar del Plata",
+      "Tandil",
+      "Olavarria",
+      "Junin",
+      "Pergamino"
     ]
   },
-
   "contexto_empresarial": {
     "_descripcion": "Palabras que indican contexto empresarial (eliminar despues de guion)",
     "palabras": [
-      "importante", "empresa", "compania", "grupo", "consultora",
-      "gastronomia", "facility", "corporativo", "corporativa", "industria",
-      "concesionario", "maquinaria", "automotriz", "multinacional",
-      "pyme", "startup", "holding"
+      "importante",
+      "empresa",
+      "compania",
+      "grupo",
+      "consultora",
+      "gastronomia",
+      "facility",
+      "corporativo",
+      "corporativa",
+      "industria",
+      "concesionario",
+      "maquinaria",
+      "automotriz",
+      "multinacional",
+      "pyme",
+      "startup",
+      "holding"
     ]
   },
-
   "parentesis_eliminar": {
     "_descripcion": "Patrones de parentesis a eliminar",
     "patrones": [
-      {"patron": "\\s*\\([^)]{15,}\\)$", "ejemplo": "(Consumo Masivo / Grandes Cuentas)", "razon": "parentesis largo al final"},
-      {"patron": "\\s*\\(PYME\\)$", "ejemplo": "(PYME)"},
-      {"patron": "\\s*\\(para\\s+[^)]+\\)$", "ejemplo": "(para cliente bancario)"},
-      {"patron": "\\s*\\(Eventual\\)(\\s+\\w+)?$", "ejemplo": "(Eventual) Moreno"},
-      {"patron": "\\s*\\(Corredor\\)$", "ejemplo": "(Corredor)"},
-      {"patron": "\\s*\\(Externo/?a?\\)$", "ejemplo": "(Externo/a)"},
-      {"patron": "\\s*\\(Temporal\\)$", "ejemplo": "(Temporal)"},
-      {"patron": "\\s*\\(Reemplazo\\)$", "ejemplo": "(Reemplazo)"},
-      {"patron": "\\s*\\(Part[- ]?time\\)$", "ejemplo": "(Part time)"},
-      {"patron": "\\s*\\(Full[- ]?time\\)$", "ejemplo": "(Full time)"},
-      {"patron": "\\s*\\([A-Z][a-záéíóú]+(?:\\s+[A-Z]?[a-záéíóú]+)*\\)$", "ejemplo": "(Florida Oeste)", "razon": "ubicacion en parentesis"}
+      {
+        "patron": "\\s*\\([^)]{15,}\\)$",
+        "ejemplo": "(Consumo Masivo / Grandes Cuentas)",
+        "razon": "parentesis largo al final"
+      },
+      {
+        "patron": "\\s*\\(PYME\\)$",
+        "ejemplo": "(PYME)"
+      },
+      {
+        "patron": "\\s*\\(para\\s+[^)]+\\)$",
+        "ejemplo": "(para cliente bancario)"
+      },
+      {
+        "patron": "\\s*\\(Eventual\\)(\\s+\\w+)?$",
+        "ejemplo": "(Eventual) Moreno"
+      },
+      {
+        "patron": "\\s*\\(Corredor\\)$",
+        "ejemplo": "(Corredor)"
+      },
+      {
+        "patron": "\\s*\\(Externo/?a?\\)$",
+        "ejemplo": "(Externo/a)"
+      },
+      {
+        "patron": "\\s*\\(Temporal\\)$",
+        "ejemplo": "(Temporal)"
+      },
+      {
+        "patron": "\\s*\\(Reemplazo\\)$",
+        "ejemplo": "(Reemplazo)"
+      },
+      {
+        "patron": "\\s*\\(Part[- ]?time\\)$",
+        "ejemplo": "(Part time)"
+      },
+      {
+        "patron": "\\s*\\(Full[- ]?time\\)$",
+        "ejemplo": "(Full time)"
+      },
+      {
+        "patron": "\\s*\\([A-Z][a-záéíóú]+(?:\\s+[A-Z]?[a-záéíóú]+)*\\)$",
+        "ejemplo": "(Florida Oeste)",
+        "razon": "ubicacion en parentesis"
+      }
     ]
   },
-
   "ubicacion_con_guion": {
     "_descripcion": "Ubicaciones precedidas por guion LARGO (– o —) con parentesis opcional",
     "patrones": [
-      {"patron": "\\s*[–—]\\s*[A-Z][a-záéíóú]+(?:\\s+[A-Z]?[a-záéíóú]+)*\\s*\\([^)]+\\)$", "ejemplo": "– Vicente López (Florida Oeste)"},
-      {"patron": "\\s*[–—]\\s*[A-Z][a-záéíóú]+(?:\\s+[A-Z]?[a-záéíóú]+)*$", "ejemplo": "– Vicente López"}
+      {
+        "patron": "\\s*[–—]\\s*[A-Z][a-záéíóú]+(?:\\s+[A-Z]?[a-záéíóú]+)*\\s*\\([^)]+\\)$",
+        "ejemplo": "– Vicente López (Florida Oeste)"
+      },
+      {
+        "patron": "\\s*[–—]\\s*[A-Z][a-záéíóú]+(?:\\s+[A-Z]?[a-záéíóú]+)*$",
+        "ejemplo": "– Vicente López"
+      }
     ]
   },
-
   "contexto_ubicacion": {
     "_descripcion": "Patrones de contexto + ubicacion al final (para X en Ciudad)",
     "patrones": [
-      {"patron": "\\s+para\\s+\\w+\\s+en\\s+[A-Z][a-záéíóú]+(?:\\s+[A-Z]?[a-záéíóú]+)*$", "ejemplo": "para farmacias en Rio Cuarto"},
-      {"patron": "\\s+en\\s+[A-Z][a-záéíóú]+(?:\\s+del?\\s+)?[A-Z]?[a-záéíóú]*$", "ejemplo": "en Mar del Plata"},
-      {"patron": "\\s+para\\s+(?:empresa|compania|cliente)\\s+en\\s+\\w+$", "ejemplo": "para empresa en Cordoba"}
+      {
+        "patron": "\\s+para\\s+\\w+\\s+en\\s+[A-Z][a-záéíóú]+(?:\\s+[A-Z]?[a-záéíóú]+)*$",
+        "ejemplo": "para farmacias en Rio Cuarto"
+      },
+      {
+        "patron": "\\s+en\\s+[A-Z][a-záéíóú]+(?:\\s+del?\\s+)?[A-Z]?[a-záéíóú]*$",
+        "ejemplo": "en Mar del Plata"
+      },
+      {
+        "patron": "\\s+para\\s+(?:empresa|compania|cliente)\\s+en\\s+\\w+$",
+        "ejemplo": "para empresa en Cordoba"
+      }
     ]
   },
-
   "contexto_gestion": {
     "_descripcion": "Patrones de contexto funcional al final (para Gestión de..., para el área de...)",
     "_fecha": "2026-01-14",
-    "_casos_resueltos": ["2172199 Ingeniero Industrial para Gestión de Equipamiento Médico"],
+    "_casos_resueltos": [
+      "2172199 Ingeniero Industrial para Gestión de Equipamiento Médico"
+    ],
     "patrones": [
-      {"patron": "\\s+para\\s+[Gg]esti[oó]n\\s+de\\s+[A-Za-záéíóúÁÉÍÓÚ\\s]+$", "ejemplo": "para Gestión de Equipamiento Médico"},
-      {"patron": "\\s+para\\s+el\\s+[aá]rea\\s+de\\s+[A-Za-záéíóúÁÉÍÓÚ\\s]+$", "ejemplo": "para el área de Finanzas"},
-      {"patron": "\\s+para\\s+sector\\s+[A-Za-záéíóúÁÉÍÓÚ\\s]+$", "ejemplo": "para sector Salud"},
-      {"patron": "\\s+para\\s+[Dd]epartamento\\s+de\\s+[A-Za-záéíóúÁÉÍÓÚ\\s]+$", "ejemplo": "para Departamento de RRHH"}
+      {
+        "patron": "\\s+para\\s+[Gg]esti[oó]n\\s+de\\s+[A-Za-záéíóúÁÉÍÓÚ\\s]+$",
+        "ejemplo": "para Gestión de Equipamiento Médico"
+      },
+      {
+        "patron": "\\s+para\\s+el\\s+[aá]rea\\s+de\\s+[A-Za-záéíóúÁÉÍÓÚ\\s]+$",
+        "ejemplo": "para el área de Finanzas"
+      },
+      {
+        "patron": "\\s+para\\s+sector\\s+[A-Za-záéíóúÁÉÍÓÚ\\s]+$",
+        "ejemplo": "para sector Salud"
+      },
+      {
+        "patron": "\\s+para\\s+[Dd]epartamento\\s+de\\s+[A-Za-záéíóúÁÉÍÓÚ\\s]+$",
+        "ejemplo": "para Departamento de RRHH"
+      }
     ]
   },
-
   "multi_perfil": {
     "_descripcion": "Configuracion para detectar y expandir titulos con multiples perfiles",
-    "separadores": [", ", " y ", " / ", " o "],
+    "separadores": [
+      ", ",
+      " y ",
+      " / ",
+      " o "
+    ],
     "min_perfiles": 2,
     "min_largo_perfil": 5,
     "no_ocupacion": [
-      "zona", "alrededor", "cerca", "barrio", "caba", "gba", "norte", "sur", "oeste", "este",
-      "nuevo", "usados", "okm", "0km", "usado", "nuevos",
-      "leer", "ver", "requisitos", "detalles", "importante",
-      "turno", "mañana", "tarde", "noche", "full", "part"
+      "zona",
+      "alrededor",
+      "cerca",
+      "barrio",
+      "caba",
+      "gba",
+      "norte",
+      "sur",
+      "oeste",
+      "este",
+      "nuevo",
+      "usados",
+      "okm",
+      "0km",
+      "usado",
+      "nuevos",
+      "leer",
+      "ver",
+      "requisitos",
+      "detalles",
+      "importante",
+      "turno",
+      "mañana",
+      "tarde",
+      "noche",
+      "full",
+      "part"
     ],
     "_nota": "Un titulo se considera multi-perfil si tiene 2+ items separados por coma que parecen ocupaciones"
   },
-
   "preposiciones_final": {
     "_descripcion": "Preposiciones que quedan sueltas al final y deben eliminarse",
-    "palabras": ["para", "de", "en", "a", "con", "por"]
+    "palabras": [
+      "para",
+      "de",
+      "en",
+      "a",
+      "con",
+      "por"
+    ]
   },
-
   "limpieza_final": {
     "_descripcion": "Patrones de limpieza al final del proceso",
     "patrones": [
-      {"patron": "\\s+", "reemplazo": " ", "descripcion": "espacios multiples"},
-      {"patron": "[\\s\\-/]+$", "reemplazo": "", "descripcion": "guiones/barras sueltos al final"}
+      {
+        "patron": "\\s+",
+        "reemplazo": " ",
+        "descripcion": "espacios multiples"
+      },
+      {
+        "patron": "[\\s\\-/]+$",
+        "reemplazo": "",
+        "descripcion": "guiones/barras sueltos al final"
+      }
     ]
   },
-
   "codigos_final": {
     "_descripcion": "Codigos numericos al FINAL del titulo (ej: - 1729, - 4521)",
     "_nota": "FASE 1 v2.2 - detectados en revision 100 IDs",
     "patrones": [
-      {"patron": "\\s*-\\s*\\d{4}$", "ejemplo": "DevOps Engineer - Remoto - 1729"},
-      {"patron": "\\s*-\\s*\\d{3,5}$", "ejemplo": "Analista - 12345"},
-      {"patron": "\\s*#\\d{3,5}$", "ejemplo": "Vendedor #1234"},
-      {"patron": "\\s*\\(\\d{4,5}\\)$", "ejemplo": "Contador (12345)"}
+      {
+        "patron": "\\s*-\\s*\\d{4}$",
+        "ejemplo": "DevOps Engineer - Remoto - 1729"
+      },
+      {
+        "patron": "\\s*-\\s*\\d{3,5}$",
+        "ejemplo": "Analista - 12345"
+      },
+      {
+        "patron": "\\s*#\\d{3,5}$",
+        "ejemplo": "Vendedor #1234"
+      },
+      {
+        "patron": "\\s*\\(\\d{4,5}\\)$",
+        "ejemplo": "Contador (12345)"
+      }
     ]
   },
-
   "modalidad_guion": {
     "_descripcion": "Modalidad con guion al final (casos complejos detectados en revision)",
     "_nota": "FASE 1 v2.2 - patron: titulo - modalidad - codigo/ubicacion",
     "patrones": [
-      {"patron": "\\s*-\\s*[Rr]emoto\\s*-.*$", "ejemplo": "DevOps - Remoto - 1729"},
-      {"patron": "\\s*-\\s*[Oo]n\\s*[Ss]ite\\s*-.*$", "ejemplo": "Java Dev - On Site - CABA"},
-      {"patron": "\\s*-\\s*[Mm]ix\\s*\\([^)]+\\).*$", "ejemplo": "Architect - Mix (On Site & Remoto) - Retiro"},
-      {"patron": "\\s*-\\s*[Hh][ií]brido\\s*-.*$", "ejemplo": "Analista - Híbrido - Norte"},
-      {"patron": "\\s*-\\s*[Pp]resencial\\s*-.*$", "ejemplo": "Contador - Presencial - Centro"},
-      {"patron": "\\s*-\\s*(Remoto|On Site|Hibrido|Híbrido|Presencial|Mix)$", "ejemplo": "DevOps - Remoto", "_nota": "modalidad sola al final"}
+      {
+        "patron": "\\s*-\\s*[Rr]emoto\\s*-.*$",
+        "ejemplo": "DevOps - Remoto - 1729"
+      },
+      {
+        "patron": "\\s*-\\s*[Oo]n\\s*[Ss]ite\\s*-.*$",
+        "ejemplo": "Java Dev - On Site - CABA"
+      },
+      {
+        "patron": "\\s*-\\s*[Mm]ix\\s*\\([^)]+\\).*$",
+        "ejemplo": "Architect - Mix (On Site & Remoto) - Retiro"
+      },
+      {
+        "patron": "\\s*-\\s*[Hh][ií]brido\\s*-.*$",
+        "ejemplo": "Analista - Híbrido - Norte"
+      },
+      {
+        "patron": "\\s*-\\s*[Pp]resencial\\s*-.*$",
+        "ejemplo": "Contador - Presencial - Centro"
+      },
+      {
+        "patron": "\\s*-\\s*(Remoto|On Site|Hibrido|Híbrido|Presencial|Mix)$",
+        "ejemplo": "DevOps - Remoto",
+        "_nota": "modalidad sola al final"
+      }
     ]
   },
-
   "requisitos_edad": {
     "_descripcion": "Requisitos de edad al final del titulo",
     "_nota": "FASE 1 v2.2 - detectados en revision. ORDEN IMPORTANTE: rangos antes que simples",
     "patrones": [
-      {"patron": "\\s*\\d{2}\\s*[-a]\\s*\\d{2}\\s*a[ñn]os?\\s*$", "ejemplo": "25-35 años", "_nota": "PRIMERO: rango"},
-      {"patron": "\\s*[Dd]e\\s*\\d{2}\\s*a\\s*\\d{2}\\s*a[ñn]os?\\s*$", "ejemplo": "de 25 a 35 años"},
-      {"patron": "\\s*[Hh]asta\\s*\\d{2}\\s*a[ñn]os?\\s*$", "ejemplo": "hasta 30 años"},
-      {"patron": "\\s*[Mm]ayores?\\s*(?:de\\s*)?\\d{2}\\s*a[ñn]os?\\s*$", "ejemplo": "mayores de 45 años"},
-      {"patron": "\\s*[Mm]enores?\\s*(?:de\\s*)?\\d{2}\\s*a[ñn]os?\\s*$", "ejemplo": "menores de 30 años"},
-      {"patron": "\\s*\\+\\s*\\d{2}\\s*a[ñn]os?\\s*$", "ejemplo": "+45 años", "_nota": "ULTIMO: simple con +"}
+      {
+        "patron": "\\s*\\d{2}\\s*[-a]\\s*\\d{2}\\s*a[ñn]os?\\s*$",
+        "ejemplo": "25-35 años",
+        "_nota": "PRIMERO: rango"
+      },
+      {
+        "patron": "\\s*[Dd]e\\s*\\d{2}\\s*a\\s*\\d{2}\\s*a[ñn]os?\\s*$",
+        "ejemplo": "de 25 a 35 años"
+      },
+      {
+        "patron": "\\s*[Hh]asta\\s*\\d{2}\\s*a[ñn]os?\\s*$",
+        "ejemplo": "hasta 30 años"
+      },
+      {
+        "patron": "\\s*[Mm]ayores?\\s*(?:de\\s*)?\\d{2}\\s*a[ñn]os?\\s*$",
+        "ejemplo": "mayores de 45 años"
+      },
+      {
+        "patron": "\\s*[Mm]enores?\\s*(?:de\\s*)?\\d{2}\\s*a[ñn]os?\\s*$",
+        "ejemplo": "menores de 30 años"
+      },
+      {
+        "patron": "\\s*\\+\\s*\\d{2}\\s*a[ñn]os?\\s*$",
+        "ejemplo": "+45 años",
+        "_nota": "ULTIMO: simple con +"
+      }
     ]
   },
-
   "ubicacion_guion_extendido": {
     "_descripcion": "Ubicaciones despues de guion - extendido para casos detectados",
     "_nota": "FASE 1 v2.2 - complementa zonas_ubicaciones con patrones especificos",
     "patrones": [
-      {"patron": "\\s*-\\s*[Rr]etiro$", "ejemplo": "- Retiro"},
-      {"patron": "\\s*-\\s*[Rr]osario$", "ejemplo": "- Rosario"},
-      {"patron": "\\s*-\\s*[Cc][óo]rdoba$", "ejemplo": "- Córdoba"},
-      {"patron": "\\s*-\\s*[Mm]endoza$", "ejemplo": "- Mendoza"},
-      {"patron": "\\s*-\\s*[Pp]alermo$", "ejemplo": "- Palermo"},
-      {"patron": "\\s*-\\s*[Mm]icrocentro$", "ejemplo": "- Microcentro"},
-      {"patron": "\\s*-\\s*[Pp]uerto\\s*[Mm]adero$", "ejemplo": "- Puerto Madero"},
-      {"patron": "\\s*-\\s*[Cc]entro$", "ejemplo": "- Centro"},
-      {"patron": "\\s*-\\s*[Cc]aballito$", "ejemplo": "- Caballito"},
-      {"patron": "\\s*-\\s*[Bb]elgrano$", "ejemplo": "- Belgrano"},
-      {"patron": "\\s*-\\s*[Nn]u[ñn]ez$", "ejemplo": "- Nuñez"},
-      {"patron": "\\s*-\\s*[Rr]ecoleta$", "ejemplo": "- Recoleta"},
-      {"patron": "\\s*-\\s*CABA$", "ejemplo": "- CABA"},
-      {"patron": "\\s*-\\s*GBA$", "ejemplo": "- GBA"},
-      {"patron": "\\s*-\\s*Capital$", "ejemplo": "- Capital"},
-      {"patron": "\\s*-\\s*Pcia\\.?\\s*Bs\\.?\\s*As\\.?$", "ejemplo": "- Pcia Bs As"}
+      {
+        "patron": "\\s*-\\s*[Rr]etiro$",
+        "ejemplo": "- Retiro"
+      },
+      {
+        "patron": "\\s*-\\s*[Rr]osario$",
+        "ejemplo": "- Rosario"
+      },
+      {
+        "patron": "\\s*-\\s*[Cc][óo]rdoba$",
+        "ejemplo": "- Córdoba"
+      },
+      {
+        "patron": "\\s*-\\s*[Mm]endoza$",
+        "ejemplo": "- Mendoza"
+      },
+      {
+        "patron": "\\s*-\\s*[Pp]alermo$",
+        "ejemplo": "- Palermo"
+      },
+      {
+        "patron": "\\s*-\\s*[Mm]icrocentro$",
+        "ejemplo": "- Microcentro"
+      },
+      {
+        "patron": "\\s*-\\s*[Pp]uerto\\s*[Mm]adero$",
+        "ejemplo": "- Puerto Madero"
+      },
+      {
+        "patron": "\\s*-\\s*[Cc]entro$",
+        "ejemplo": "- Centro"
+      },
+      {
+        "patron": "\\s*-\\s*[Cc]aballito$",
+        "ejemplo": "- Caballito"
+      },
+      {
+        "patron": "\\s*-\\s*[Bb]elgrano$",
+        "ejemplo": "- Belgrano"
+      },
+      {
+        "patron": "\\s*-\\s*[Nn]u[ñn]ez$",
+        "ejemplo": "- Nuñez"
+      },
+      {
+        "patron": "\\s*-\\s*[Rr]ecoleta$",
+        "ejemplo": "- Recoleta"
+      },
+      {
+        "patron": "\\s*-\\s*CABA$",
+        "ejemplo": "- CABA"
+      },
+      {
+        "patron": "\\s*-\\s*GBA$",
+        "ejemplo": "- GBA"
+      },
+      {
+        "patron": "\\s*-\\s*Capital$",
+        "ejemplo": "- Capital"
+      },
+      {
+        "patron": "\\s*-\\s*Pcia\\.?\\s*Bs\\.?\\s*As\\.?$",
+        "ejemplo": "- Pcia Bs As"
+      }
     ]
-  }
+  },
+  "codigos_empresa": {
+    "_descripcion": "Códigos de empresa/consultora al inicio (ej: 631 BE |, BE |)",
+    "_nota": "Detectados en validación 2026-01-26",
+    "patrones": [
+      {
+        "patron": "^\\d{3}\\s*BE\\s*\\|\\s*",
+        "ejemplo": "631 BE | LOBBY OFFICER..."
+      },
+      {
+        "patron": "^BE\\s*\\|\\s*",
+        "ejemplo": "BE | RECEPCIONISTA..."
+      },
+      {
+        "patron": "^\\d{3}\\s*[A-Z]{2,4}\\s*\\|\\s*",
+        "ejemplo": "640 XX | Titulo...",
+        "_nota": "generico num + siglas + pipe"
+      }
+    ]
+  },
+  "_cambios_v23": "Agregado codigos_empresa: BE | y variantes (validación 2026-01-26)"
 }

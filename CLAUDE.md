@@ -294,7 +294,9 @@ CREAR REGLAS → Necesito ver datos para entender el patrón
 | **Comparar runs** | `python scripts/compare_runs.py --latest` | Crear comparador custom |
 | **Validar ofertas** | `python scripts/validar_ofertas.py --ids X --estado validado` | UPDATE manual en BD |
 | **Export Excel** | `python scripts/exports/export_validation_excel.py --etapa completo --ids X` | - |
-| **Sync Supabase** | `python scripts/exports/sync_to_supabase.py` | Queries directas a Supabase |
+| **Sync Supabase** | `python scripts/exports/sync_to_supabase.py` (incremental) | Queries directas a Supabase |
+| **Sync Full** | `python scripts/exports/sync_to_supabase.py --full` | - |
+| **Reapply Rules** | `python scripts/reapply_rules_to_validated.py` | Reprocesar validadas manualmente |
 
 **⭐ REGLA CRÍTICA - Pipeline Integrado:**
 - **SIEMPRE** usar `run_validated_pipeline.py` para procesar ofertas
@@ -521,7 +523,9 @@ CAPA 3: Skills implícitas (BGE-M3 + ESCO embeddings)
 |------------|----------------|---------|
 | Pipeline Matching | `database/match_ofertas_v3.py` v3.4.2 | v2.py, v8.x |
 | Matcher por Skills | `database/match_by_skills.py` v1.2.0 | - |
-| Skills Extractor | `database/skills_implicit_extractor.py` v2.0 | - |
+| Skills Extractor | `database/skills_implicit_extractor.py` v2.3 | - |
+| Skills Rules Config | `config/skills_rules.json` (25 reglas) | - |
+| Skills Rules Matcher | `database/skills_rules_matcher.py` | - |
 | Diccionario Argentino | `config/sinonimos_argentinos_esco.json` (13 ocup) | - |
 | Config reglas negocio | `config/matching_rules_business.json` (124 reglas con ESCO válido) | hardcodeados |
 | Config principal | `config/matching_config.json` | - |
@@ -543,6 +547,58 @@ PRINCIPIO: ESCO es TARGET, ISCO es CONSECUENCIA
 ```
 
 → **Detalles:** `docs/reference/PIPELINE.md`
+
+### Skills Dual System v2.3 (2026-01-22)
+
+Sistema DUAL para extracción de skills (mismo patrón que ISCO matching):
+- **Reglas de skills** (prioridad) + **Semántico BGE-M3** (fallback)
+- Guarda AMBOS resultados para comparación y métricas
+
+| Componente | Archivo | Propósito |
+|------------|---------|-----------|
+| Skills Rules Config | `config/skills_rules.json` | 25 reglas que fuerzan skills específicas |
+| Skills Rules Matcher | `database/skills_rules_matcher.py` | Evaluador de reglas |
+| Skills Extractor | `database/skills_implicit_extractor.py` v2.3 | Método `extract_skills_dual()` |
+
+**Arquitectura Dual:**
+```
+1. Evaluar REGLAS DE SKILLS (skills_rules.json)
+   └── Si matchea → skills_regla (prioridad)
+        ↓
+2. Extraer SEMÁNTICO (BGE-M3 siempre)
+   └── skills_semantico
+        ↓
+3. Comparar ambos
+   └── dual_coinciden_skills: 1=igual, 0=difieren, NULL=solo semántico
+        ↓
+4. Merge final
+   └── skills_final = skills_regla + skills_semantico únicos
+```
+
+**Columnas en BD (`ofertas_esco_matching`):**
+- `skills_regla_json`: Skills forzadas por regla (JSON array)
+- `skills_semantico_json`: Skills de BGE-M3 (JSON array)
+- `skills_regla_aplicada`: ID de regla aplicada (ej: "RS02_contador")
+- `dual_coinciden_skills`: 1=coinciden, 0=difieren, NULL=sin regla
+
+**Reglas de Validación (V24-V30):**
+| Regla | Detecta | Severidad |
+|-------|---------|-----------|
+| V24 | Skills no coherentes con ISCO (< 30%) | alto |
+| V25 | Tareas vacías pero skills presentes | medio |
+| V26 | Formato tareas incorrecto (`,` vs `;`) | medio |
+| V27 | Divergencia regla vs semántico | warning |
+| V28 | Sin skills esenciales del ISCO | alto |
+| V29 | Tareas muy cortas (< 50 chars) | bajo |
+| V30 | Puesto IT sin skills técnicas | alto |
+
+**Métricas en sync_learnings.py:**
+```
+SKILLS DUAL (v2.3):
+  Por regla: 45% | Por semantico: 55%
+  Dual coinciden: 78%
+  Skills promedio: 6.2/oferta
+```
 
 ### Tests y Gold Sets
 

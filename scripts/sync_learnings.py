@@ -759,10 +759,10 @@ def get_phase3_metrics() -> Dict[str, Any]:
         if row:
             metrics["ultimo_sync_supabase"] = row["timestamp"][:10] if row["timestamp"] else None
 
-        # Ofertas validadas (listas para sync)
+        # Ofertas validadas (listas para sync) - incluye validado_claude y validado_humano
         cur.execute("""
             SELECT COUNT(*) FROM ofertas_esco_matching
-            WHERE estado_validacion = 'validado'
+            WHERE estado_validacion IN ('validado_claude', 'validado_humano')
         """)
         metrics["ofertas_sincronizadas"] = cur.fetchone()[0]
 
