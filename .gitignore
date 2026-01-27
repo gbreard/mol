@@ -64,3 +64,13 @@ data/tracking/*.bak*
 database/*.csv
 database/*.txt
 database/embeddings/
+
+# Dashboard Next.js
+dashboards/production/node_modules/
+dashboards/production/.next/
+dashboards/production/.env.local
+dashboards/production/.env*.local
+dashboards/production/.vercel/
+fase3_dashboard/*/node_modules/
+fase3_dashboard/*/.next/
+fase3_dashboard/*/.env.local

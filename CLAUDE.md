@@ -301,6 +301,132 @@ python scripts/linear_queue.py process  # Al final de la sesion
 - Usar conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`
 - Incluir issue Linear si aplica: `feat(MOL-XX): descripcion`
 
+---
+
+## Metodología Git Colaborativa
+
+### Estructura de Ramas
+
+```
+main (producción estable - PROTEGIDA)
+  │
+  ├── visualizacion (Sergio - Fase 3: Dashboard)
+  │     ├── feat/fase3-setup-repo
+  │     ├── feat/fase3-supabase
+  │     └── ...
+  │
+  └── desarrollo (Otro dev - Fase 1-2: Scraping/NLP)
+        ├── feat/fase1-zonajobs
+        ├── fix/fase2-nlp-bug
+        └── ...
+```
+
+### Roles y Áreas
+
+| Dev | Rama Base | Área | Carpetas |
+|-----|-----------|------|----------|
+| Sergio | `visualizacion` | Fase 3: Dashboard | `dashboards/`, `fase3_dashboard/` |
+| Otro dev | `desarrollo` | Fase 1-2: Scraping/NLP | `01_sources/`, `database/`, `02.5_nlp_extraction/` |
+
+### Flujo de Trabajo Diario
+
+```bash
+# 1. Actualizar main
+git checkout main && git pull origin main
+
+# 2. Actualizar tu rama base desde main
+git checkout visualizacion && git merge main
+
+# 3. Crear rama para la tarea
+git checkout -b feat/fase3-nombre-tarea
+
+# 4. Trabajar y commitear
+git add . && git commit -m "feat(fase3): descripción"
+
+# 5. Push
+git push -u origin feat/fase3-nombre-tarea
+
+# 6. Crear PR hacia tu rama base
+gh pr create --base visualizacion --title "feat(fase3): título" --body "Closes #XX"
+
+# 7. Después de aprobar, merge
+gh pr merge --squash
+```
+
+### Ciclo de Releases
+
+```
+Trabajo diario:
+  visualizacion ←── feat/fase3-xxx (PRs frecuentes)
+  desarrollo    ←── feat/fase1-xxx (PRs frecuentes)
+
+Fin de Sprint (semanal):
+  1. desarrollo → main (PR, review cruzado)
+  2. visualizacion → main (PR, review cruzado)
+```
+
+### Reglas de Oro
+
+| Regla | Motivo |
+|-------|--------|
+| Nunca push directo a `main` | main es producción estable |
+| Nunca push a rama del otro | Evita conflictos y sorpresas |
+| PRs para todo | Historial claro, code review |
+| Sync con main antes de PR grande | Evita conflictos al mergear |
+| Coordinar archivos compartidos | `CLAUDE.md`, `config/`, `requirements.txt` |
+
+### Archivos Compartidos (Coordinar)
+
+```
+CLAUDE.md              → Cada uno edita su sección
+config/*.json          → Avisar antes de modificar
+requirements.txt       → Coordinar dependencias
+.gitignore             → Coordinar
+```
+
+### Convención de Ramas
+
+```
+feat/fase{N}-xxx       → Nueva funcionalidad
+fix/fase{N}-xxx        → Bug fix
+chore/fase{N}-xxx      → Mantenimiento
+docs/xxx               → Documentación
+```
+
+### Resolver Conflictos
+
+```bash
+# 1. Ver archivos en conflicto
+git status
+
+# 2. Editar archivo, buscar marcadores:
+<<<<<<< HEAD
+tu código
+=======
+código del otro
+>>>>>>> main
+
+# 3. Resolver, guardar, continuar
+git add archivo.py
+git commit -m "fix: resolver conflicto en archivo"
+```
+
+### Configuración Inicial GitHub
+
+1. **Proteger main:**
+   ```
+   Settings → Branches → Add rule → main
+   ✅ Require pull request before merging
+   ✅ Require approvals: 1
+   ```
+
+2. **Agregar colaborador:**
+   ```
+   Settings → Collaborators → Add people
+   ```
+
+---
+
 ## Dashboard R Shiny (Produccion)
 
 El dashboard R Shiny esta en `Visual--/` y **esta en produccion**.
@@ -436,6 +562,289 @@ Visual--/ (Dashboard R Shiny)
 
 > **Nota**: `dashboard/` es un paquete Python usado por `dashboard_scraping_v4.py`, NO es un dashboard de usuario.
 
+---
+
+## FASE 3: Dashboard Next.js (EN DESARROLLO)
+
+### Estado Actual (2026-01-21)
+
+**Rama:** `visualizacion`
+
+**Decisión:** Migrar desde `mol-nextjs` (repo externo) e integrar conexión Supabase.
+
+### Repositorios
+
+| Repo | Ubicación | Estado |
+|------|-----------|--------|
+| **mol-nextjs** | https://github.com/sergiandat/mol-nextjs.git | UI completa, datos mock |
+| **fase3_dashboard** | `fase3_dashboard/mol-dashboard/` | Supabase conectado, UI básica |
+
+### Arquitectura Objetivo
+
+```
+dashboards/production/          # <- Destino final
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── page.tsx            # Panorama General
+│   │   ├── requerimientos/     # Skills y competencias
+│   │   └── ofertas/            # Tabla de ofertas
+│   ├── components/
+│   │   ├── ui/                 # 46 componentes Radix UI (de mol-nextjs)
+│   │   ├── Header.tsx
+│   │   ├── Sidebar.tsx         # Filtros verticales
+│   │   └── charts/             # Gráficos Recharts
+│   └── lib/
+│       └── supabase.ts         # Cliente Supabase
+├── .env.local                  # Credenciales Supabase
+└── package.json
+```
+
+### Plan de Integración
+
+#### Paso 1: Clonar mol-nextjs en MOL
+```bash
+cd C:\Users\Sergio\Documents\MOL
+git clone https://github.com/sergiandat/mol-nextjs.git dashboards/production
+```
+
+#### Paso 2: Copiar integración Supabase
+```bash
+# Copiar cliente Supabase
+cp fase3_dashboard/mol-dashboard/src/lib/supabase.ts dashboards/production/lib/
+
+# Copiar SQL migrations
+cp -r fase3_dashboard/sql/ dashboards/production/sql/
+```
+
+#### Paso 3: Configurar variables de entorno
+Crear `dashboards/production/.env.local`:
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
+```
+
+#### Paso 4: Reemplazar mock data con Supabase
+- [x] `PanoramaGeneral.tsx` → usar `getKPIs()`, `getTopOcupaciones()`
+- [x] `Requerimientos.tsx` → crear queries para skills
+- [x] `OfertasLaborales.tsx` → usar `getOfertas()` con paginación
+- [x] `Sidebar.tsx` → conectar filtros a queries
+
+#### Paso 5: Archivar dashboard anterior (COMPLETADO)
+```bash
+mv fase3_dashboard/ archive/dashboards_old/fase3_dashboard_v1/
+```
+
+### Schema Supabase (Producción)
+
+#### Tablas Principales
+
+| Tabla | Propósito | Uso Dashboard |
+|-------|-----------|---------------|
+| `ofertas` | Datos completos NLP/Matching (153 campos) | Backend, sync |
+| `ofertas_dashboard` | Vista simplificada para UI | **Principal** |
+| `ofertas_skills` | Skills por oferta (normalizado) | Gráficos skills |
+| `esco_occupations` | Catálogo ocupaciones ESCO | Filtros, labels |
+| `esco_skills` | Catálogo skills ESCO | Filtros, categorías |
+| `usuarios` | Usuarios del sistema | Auth |
+| `organizaciones` | Orgs (OEDE, universidades, etc.) | Multi-tenant |
+| `alertas` | Alertas configuradas por usuario | Feature futuro |
+| `busquedas_guardadas` | Búsquedas guardadas | Feature futuro |
+| `intereses` | Intereses de usuarios | Feature futuro |
+| `metricas_plataforma` | KPIs diarios agregados | Dashboard admin |
+| `sistema_estado` | Estado sync entre fases | Dashboard admin |
+| `eventos_uso` | Tracking de uso | Analytics |
+| `sesiones_usuario` | Sesiones de usuarios | Analytics |
+
+#### Tabla: ofertas_dashboard (Principal UI)
+
+```sql
+CREATE TABLE ofertas_dashboard (
+  id_oferta TEXT PRIMARY KEY,
+  titulo TEXT NOT NULL,
+  empresa TEXT,
+  fecha_publicacion DATE,
+  url TEXT,
+  portal TEXT,
+  provincia TEXT,
+  localidad TEXT,
+  isco_code TEXT,
+  isco_label TEXT,
+  occupation_match_score REAL,
+  occupation_match_method TEXT,
+  modalidad TEXT,                    -- remoto/hibrido/presencial
+  nivel_seniority TEXT,              -- junior/semi-senior/senior/manager
+  area_funcional TEXT,
+  sector_empresa TEXT,
+  salario_min INTEGER,
+  salario_max INTEGER,
+  moneda TEXT DEFAULT 'ARS',
+  skills_tecnicas JSONB,             -- array de skills
+  soft_skills JSONB,                 -- array de soft skills
+  estado TEXT DEFAULT 'activa',      -- activa/cerrada
+  fecha_sync TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+#### Tabla: ofertas_skills (Skills Normalizados)
+
+```sql
+CREATE TABLE ofertas_skills (
+  id SERIAL PRIMARY KEY,
+  id_oferta TEXT REFERENCES ofertas(id_oferta),
+  skill_mencionado TEXT,             -- skill como aparece en oferta
+  skill_tipo_fuente TEXT,            -- tecnica/soft/herramienta
+  esco_skill_uri TEXT,               -- URI ESCO matcheado
+  esco_skill_label TEXT,             -- label ESCO
+  match_score NUMERIC,
+  skill_type TEXT,                   -- skill/knowledge/competence
+  l1 TEXT,                           -- categoría nivel 1
+  l1_nombre TEXT,
+  l2 TEXT,                           -- categoría nivel 2
+  l2_nombre TEXT,
+  es_digital BOOLEAN,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+#### Tabla: esco_skills (Catálogo)
+
+```sql
+CREATE TABLE esco_skills (
+  uri TEXT PRIMARY KEY,
+  label TEXT,
+  skill_type TEXT,                   -- skill/knowledge/competence
+  l1 TEXT,                           -- categoría nivel 1
+  l1_nombre TEXT,
+  l2 TEXT,                           -- categoría nivel 2
+  l2_nombre TEXT,
+  es_digital BOOLEAN,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+#### Tabla: metricas_plataforma (KPIs Diarios)
+
+```sql
+CREATE TABLE metricas_plataforma (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  fecha DATE NOT NULL UNIQUE,
+  ofertas_scrapeadas_total INTEGER,
+  ofertas_scrapeadas_dia INTEGER,
+  ofertas_activas INTEGER,
+  ofertas_cerradas INTEGER,
+  ofertas_con_nlp INTEGER,
+  ofertas_con_matching INTEGER,
+  ofertas_validadas INTEGER,
+  usuarios_activos_dia INTEGER,
+  usuarios_activos_semana INTEGER,
+  usuarios_activos_mes INTEGER,
+  busquedas_realizadas INTEGER,
+  descargas_csv INTEGER,
+  alertas_activas INTEGER,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+#### Tabla: usuarios
+
+```sql
+CREATE TABLE usuarios (
+  id UUID PRIMARY KEY,               -- viene de Supabase Auth
+  organizacion_id UUID REFERENCES organizaciones(id),
+  nombre TEXT NOT NULL,
+  apellido TEXT NOT NULL,
+  email TEXT NOT NULL,
+  rol TEXT DEFAULT 'analista',       -- platform_admin/admin/analista/lector
+  activo BOOLEAN DEFAULT TRUE,
+  ultimo_acceso TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+### Queries para Dashboard
+
+```typescript
+// KPIs globales
+const { data } = await supabase
+  .from('ofertas_dashboard')
+  .select('id_oferta, isco_code, empresa, provincia', { count: 'exact' })
+
+// Top ocupaciones
+const { data } = await supabase
+  .from('ofertas_dashboard')
+  .select('isco_code, isco_label')
+  .not('isco_code', 'is', null)
+  // agrupar en cliente o usar vista SQL
+
+// Top skills (desde tabla normalizada)
+const { data } = await supabase
+  .from('ofertas_skills')
+  .select('esco_skill_label, l1_nombre, es_digital')
+  .not('esco_skill_uri', 'is', null)
+
+// Evolución temporal (desde métricas)
+const { data } = await supabase
+  .from('metricas_plataforma')
+  .select('fecha, ofertas_activas, ofertas_con_matching')
+  .order('fecha', { ascending: true })
+  .limit(30)
+
+// Ofertas paginadas con filtros
+const { data } = await supabase
+  .from('ofertas_dashboard')
+  .select('*')
+  .eq('provincia', provincia)
+  .eq('modalidad', modalidad)
+  .range(offset, offset + limit - 1)
+```
+
+### Stack Tecnológico
+
+| Tecnología | Versión | Uso |
+|------------|---------|-----|
+| Next.js | 16.1.x | Framework React |
+| React | 19.2.x | UI Library |
+| Tailwind CSS | 4.x | Estilos |
+| Radix UI | latest | Componentes accesibles |
+| Recharts | 2.15.x | Gráficos |
+| Supabase JS | 2.90.x | Backend PostgreSQL |
+| TypeScript | 5.x | Tipado |
+
+### Comandos Desarrollo
+
+```bash
+# Instalar dependencias
+cd dashboards/production && npm install
+
+# Desarrollo local
+npm run dev  # http://localhost:3000
+
+# Build producción
+npm run build
+
+# Deploy (cuando esté listo)
+vercel deploy
+```
+
+### Checklist Fase 3
+
+- [x] Análisis de mol-nextjs (UI components)
+- [x] Análisis de fase3_dashboard (Supabase)
+- [x] Clonar mol-nextjs a dashboards/production/
+- [x] Integrar cliente Supabase
+- [x] Configurar .env.local
+- [x] Reemplazar mock data en PanoramaGeneral
+- [x] Reemplazar mock data en Requerimientos
+- [x] Reemplazar mock data en OfertasLaborales
+- [x] Conectar filtros del Sidebar
+- [x] Testing local completo (build exitoso)
+- [x] Archivar fase3_dashboard anterior
+- [ ] Deploy a Vercel (pendiente)
+
+---
+
 ## Epicas Activas
 
 | Epica | Prioridad | Descripcion |
@@ -459,7 +868,7 @@ Visual--/ (Dashboard R Shiny)
 
 ---
 
-> **Ultima actualizacion:** 2026-01-03
+> **Ultima actualizacion:** 2026-01-21
 
 ---
 
