@@ -13,6 +13,7 @@ const TABLA_OFERTAS = 'ofertas'
 export interface OfertaDashboard {
   id_oferta: string
   titulo: string
+  titulo_limpio: string | null
   empresa: string | null
   fecha_publicacion: string | null
   url: string | null
@@ -211,6 +212,7 @@ export async function getOfertas(limit = 50, offset = 0, filters?: DashboardFilt
     .select(`
       id_oferta,
       titulo,
+      titulo_limpio,
       empresa,
       fecha_publicacion_iso,
       url_oferta,
@@ -241,6 +243,7 @@ export async function getOfertas(limit = 50, offset = 0, filters?: DashboardFilt
   const ofertas = (data || []).map(o => ({
     id_oferta: o.id_oferta,
     titulo: o.titulo,
+    titulo_limpio: o.titulo_limpio,
     empresa: o.empresa,
     fecha_publicacion: o.fecha_publicacion_iso,
     url: o.url_oferta,

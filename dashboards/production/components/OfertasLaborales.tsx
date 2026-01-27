@@ -135,9 +135,8 @@ export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
           <Table>
             <TableHeader>
               <TableRow className="bg-gradient-to-r from-gray-50 to-gray-100">
-                <TableHead className="w-[180px] font-bold text-gray-900">Ocupación</TableHead>
-                <TableHead className="w-[250px] font-bold text-gray-900">Título de la oferta</TableHead>
                 <TableHead className="w-[120px] font-bold text-gray-900">Fecha de publicación</TableHead>
+                <TableHead className="w-[250px] font-bold text-gray-900">Título de la oferta</TableHead>
                 <TableHead className="w-[280px] font-bold text-gray-900">Conocimientos</TableHead>
                 <TableHead className="w-[280px] font-bold text-gray-900">Competencias / Capacidades</TableHead>
                 <TableHead className="w-[80px] font-bold text-gray-900">Link</TableHead>
@@ -146,37 +145,36 @@ export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
             <TableBody>
               {filteredOfertas.map((oferta) => (
                   <TableRow key={oferta.id_oferta} className="hover:bg-blue-50 transition-colors">
-                    <TableCell className="font-semibold text-gray-900">{oferta.isco_label || 'Sin clasificar'}</TableCell>
-                    <TableCell className="font-medium">{oferta.titulo}</TableCell>
                     <TableCell className="text-gray-600">
                       {oferta.fecha_publicacion
                         ? new Date(oferta.fecha_publicacion).toLocaleDateString('es-AR')
                         : '-'}
                     </TableCell>
+                    <TableCell className="font-medium text-gray-900">{oferta.titulo_limpio || oferta.titulo}</TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
-                        {(oferta.skills_tecnicas || []).slice(0, 3).map((skill, idx) => (
+                        {(oferta.skills_tecnicas || []).slice(0, 5).map((skill, idx) => (
                           <Badge key={idx} variant="secondary" className="text-xs bg-gradient-to-r from-orange-100 to-orange-200 text-orange-800 border-0 font-medium">
                             {skill}
                           </Badge>
                         ))}
-                        {(oferta.skills_tecnicas || []).length > 3 && (
+                        {(oferta.skills_tecnicas || []).length > 5 && (
                           <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600 border-0">
-                            +{(oferta.skills_tecnicas || []).length - 3}
+                            +{(oferta.skills_tecnicas || []).length - 5}
                           </Badge>
                         )}
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
-                        {(oferta.soft_skills || []).slice(0, 3).map((skill, idx) => (
+                        {(oferta.soft_skills || []).slice(0, 5).map((skill, idx) => (
                           <Badge key={idx} variant="secondary" className="text-xs bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800 border-0 font-medium">
                             {skill}
                           </Badge>
                         ))}
-                        {(oferta.soft_skills || []).length > 3 && (
+                        {(oferta.soft_skills || []).length > 5 && (
                           <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600 border-0">
-                            +{(oferta.soft_skills || []).length - 3}
+                            +{(oferta.soft_skills || []).length - 5}
                           </Badge>
                         )}
                       </div>

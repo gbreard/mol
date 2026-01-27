@@ -88,8 +88,65 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
     loadData();
   }, [filters]);
 
-  const handleDownload = () => {
-    console.log('Descargando CSV...');
+  // Función genérica para descargar CSV
+  const downloadCSV = (data: any[], filename: string, headers: string[]) => {
+    if (!data || data.length === 0) {
+      alert('No hay datos para descargar');
+      return;
+    }
+
+    // Crear contenido CSV
+    const csvContent = [
+      headers.join(','),
+      ...data.map(row =>
+        headers.map(h => {
+          const key = h.toLowerCase().replace(/ /g, '_');
+          const value = row[key] ?? row.name ?? row.value ?? '';
+          // Escapar comas y comillas
+          if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
+            return `"${value.replace(/"/g, '""')}"`;
+          }
+          return value;
+        }).join(',')
+      )
+    ].join('\n');
+
+    // Crear blob y descargar
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleDownloadOcupaciones = () => {
+    const data = occupationData.map(o => ({
+      ocupacion: o.name,
+      cantidad: o.value
+    }));
+    downloadCSV(data, 'ocupaciones_top10', ['Ocupacion', 'Cantidad']);
+  };
+
+  const handleDownloadJurisdicciones = () => {
+    const data = jurisdictionData.map(j => ({
+      jurisdiccion: j.name,
+      cantidad: j.value
+    }));
+    downloadCSV(data, 'distribucion_geografica', ['Jurisdiccion', 'Cantidad']);
+  };
+
+  const handleDownloadKPIs = () => {
+    const data = [{
+      total_ofertas: kpis.totalOfertas,
+      ocupaciones_distintas: kpis.ocupacionesDistintas,
+      empresas_activas: kpis.empresasActivas,
+      provincias: kpis.provincias
+    }];
+    downloadCSV(data, 'kpis_resumen', ['Total_Ofertas', 'Ocupaciones_Distintas', 'Empresas_Activas', 'Provincias']);
   };
 
   if (loading) {
@@ -183,7 +240,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
       {/* Evolution Chart con Insights */}
       <ChartContainer
         title="Evolución de las ofertas laborales"
-        onDownload={handleDownload}
+        onDownload={handleDownloadKPIs}
         insights={
           <InsightList>
             <InsightItem
@@ -238,7 +295,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
       <ChartContainer
         title="Distribución de las ofertas por ocupación"
         subtitle="Top 10 ocupaciones"
-        onDownload={handleDownload}
+        onDownload={handleDownloadOcupaciones}
         insights={
           <InsightList>
             <InsightItem
@@ -286,7 +343,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
       {/* Jurisdiction Distribution con Insights */}
       <ChartContainer
         title="Distribución de las ofertas por jurisdicción"
-        onDownload={handleDownload}
+        onDownload={handleDownloadJurisdicciones}
         insights={
           <InsightList>
             <InsightItem
