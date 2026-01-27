@@ -1,69 +1,68 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Filters from '@/components/Filters';
+import { getOfertas, OfertaTabla } from '@/lib/supabase';
 
 export default function Ofertas() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [ofertas, setOfertas] = useState<OfertaTabla[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [totalOfertas, setTotalOfertas] = useState(0);
 
-  // Datos de ejemplo
-  const ofertas = [
-    {
-      id: '1',
-      titulo: 'Desarrollador Full Stack',
-      empresa: 'TechCorp Argentina',
-      ubicacion: 'CABA',
-      ocupacion: 'Desarrollador de software',
-      modalidad: 'Remoto',
-      seniority: 'Senior',
-      fecha: '2026-01-15',
-    },
-    {
-      id: '2',
-      titulo: 'Contador Senior',
-      empresa: 'Estudio Contable García',
-      ubicacion: 'Buenos Aires',
-      ocupacion: 'Contador',
-      modalidad: 'Híbrido',
-      seniority: 'Senior',
-      fecha: '2026-01-14',
-    },
-    {
-      id: '3',
-      titulo: 'Vendedor Comercial',
-      empresa: 'Distribuidora Norte',
-      ubicacion: 'Córdoba',
-      ocupacion: 'Representante comercial',
-      modalidad: 'Presencial',
-      seniority: 'Semi-senior',
-      fecha: '2026-01-14',
-    },
-    {
-      id: '4',
-      titulo: 'Analista de Sistemas',
-      empresa: 'Banco Nacional',
-      ubicacion: 'CABA',
-      ocupacion: 'Analista de sistemas',
-      modalidad: 'Híbrido',
-      seniority: 'Semi-senior',
-      fecha: '2026-01-13',
-    },
-    {
-      id: '5',
-      titulo: 'Recepcionista',
-      empresa: 'Hotel Palermo',
-      ubicacion: 'CABA',
-      ocupacion: 'Recepcionista',
-      modalidad: 'Presencial',
-      seniority: 'Junior',
-      fecha: '2026-01-13',
-    },
-  ];
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const data = await getOfertas();
+        setOfertas(data);
+        setTotalOfertas(data.length);
+      } catch (error) {
+        console.error('Error loading ofertas:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadData();
+  }, []);
 
   const filteredOfertas = ofertas.filter(o =>
     o.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
     o.empresa.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const formatModalidad = (modalidad: string) => {
+    if (!modalidad) return 'Sin especificar';
+    const m = modalidad.toLowerCase();
+    if (m === 'remoto' || m === 'remote') return 'Remoto';
+    if (m === 'hibrido' || m === 'híbrido' || m === 'hybrid') return 'Híbrido';
+    if (m === 'presencial' || m === 'onsite') return 'Presencial';
+    return modalidad;
+  };
+
+  const getModalidadStyle = (modalidad: string) => {
+    const m = formatModalidad(modalidad);
+    if (m === 'Remoto') return 'bg-green-100 text-green-800';
+    if (m === 'Híbrido') return 'bg-yellow-100 text-yellow-800';
+    return 'bg-gray-100 text-gray-800';
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="animate-pulse">
+          <div className="h-10 w-48 bg-gray-200 rounded mb-4"></div>
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="space-y-3">
+              {[1, 2, 3, 4, 5].map(i => (
+                <div key={i} className="h-12 bg-gray-200 rounded"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -119,39 +118,43 @@ export default function Ofertas() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredOfertas.map((oferta) => (
-                <tr key={oferta.id} className="hover:bg-gray-50 cursor-pointer">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-blue-600 hover:text-blue-800">
-                      {oferta.titulo}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {oferta.empresa}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {oferta.ubicacion}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {oferta.ocupacion}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      oferta.modalidad === 'Remoto' ? 'bg-green-100 text-green-800' :
-                      oferta.modalidad === 'Híbrido' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                      {oferta.modalidad}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {oferta.seniority}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {oferta.fecha}
+              {filteredOfertas.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                    {searchTerm ? 'No se encontraron ofertas con ese criterio' : 'No hay ofertas disponibles'}
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredOfertas.map((oferta) => (
+                  <tr key={oferta.id} className="hover:bg-gray-50 cursor-pointer">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-blue-600 hover:text-blue-800">
+                        {oferta.titulo || 'Sin título'}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {oferta.empresa || 'Sin empresa'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {oferta.ubicacion || 'Sin ubicación'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {oferta.ocupacion || 'Sin clasificar'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${getModalidadStyle(oferta.modalidad)}`}>
+                        {formatModalidad(oferta.modalidad)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {oferta.seniority || 'Sin especificar'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {oferta.fecha || 'Sin fecha'}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -159,22 +162,16 @@ export default function Ofertas() {
         {/* Paginación */}
         <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
           <p className="text-sm text-gray-500">
-            Mostrando {filteredOfertas.length} de 5,890 ofertas
+            Mostrando {filteredOfertas.length} de {totalOfertas} ofertas
           </p>
           <div className="flex gap-2">
-            <button className="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50">
+            <button className="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 disabled:opacity-50" disabled>
               Anterior
             </button>
             <button className="px-3 py-1 bg-blue-600 text-white rounded text-sm">
               1
             </button>
-            <button className="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50">
-              2
-            </button>
-            <button className="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50">
-              3
-            </button>
-            <button className="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50">
+            <button className="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 disabled:opacity-50" disabled>
               Siguiente
             </button>
           </div>
