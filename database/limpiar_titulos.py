@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-limpiar_titulos.py v2.5
+limpiar_titulos.py v2.6
 ========================
 Limpia titulos de ofertas eliminando ruido empresarial/geografico.
 Lee patrones desde config/nlp_titulo_limpieza.json
+
+v2.6 (2026-01-28): Normalización capitalización (Sentence case)
+- Todos los títulos con formato uniforme: "Analista de marketing"
+- Primera letra mayúscula, resto minúsculas
 
 v2.5 (2026-01-28): Fix 60 errores detectados en análisis completo
 - Ubicaciones SIN guión al final (CABA, Tucumán, etc)
@@ -54,6 +58,34 @@ def cargar_config() -> Dict[str, Any]:
 
 # Cargar config una vez al importar
 _CONFIG = cargar_config()
+
+
+def normalizar_capitalizacion(titulo: str) -> str:
+    """
+    Normaliza capitalización a Sentence case.
+    Primera letra mayúscula, resto minúsculas.
+
+    Args:
+        titulo: Título a normalizar
+
+    Returns:
+        Título en Sentence case
+
+    Ejemplos:
+        "OPERARIO/A DE PRODUCCIÓN" -> "Operario/a de producción"
+        "analista de marketing" -> "Analista de marketing"
+        "Gerente De Ventas" -> "Gerente de ventas"
+    """
+    if not titulo:
+        return titulo
+
+    # Convertir todo a minúsculas
+    titulo = titulo.lower()
+
+    # Capitalizar solo la primera letra
+    titulo = titulo[0].upper() + titulo[1:] if len(titulo) > 1 else titulo.upper()
+
+    return titulo
 
 
 def limpiar_titulo(titulo: str, config: Dict[str, Any] = None) -> str:
@@ -234,6 +266,9 @@ def limpiar_titulo(titulo: str, config: Dict[str, Any] = None) -> str:
             titulo = re.sub(patron, reemplazo, titulo)
 
     titulo = titulo.strip()
+
+    # 9. [v2.6] Normalizar capitalización a Sentence case
+    titulo = normalizar_capitalizacion(titulo)
 
     return titulo
 
