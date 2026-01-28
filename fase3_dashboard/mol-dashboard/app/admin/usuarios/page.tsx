@@ -35,10 +35,12 @@ export default function UsuariosPage() {
   const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log('[DEBUG] useEffect iniciado');
     const supabase = createBrowserClient();
 
     // Escuchar cambios de auth para cargar cuando la sesión esté lista
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('[DEBUG] onAuthStateChange:', event, !!session);
       if (session?.access_token) {
         loadUsuarios(session.access_token);
       } else if (event === 'SIGNED_OUT') {
@@ -49,9 +51,11 @@ export default function UsuariosPage() {
 
     // También intentar cargar inmediatamente si ya hay sesión
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('[DEBUG] getSession:', !!session, session?.user?.email);
       if (session?.access_token) {
         loadUsuarios(session.access_token);
       } else {
+        console.log('[DEBUG] No hay sesión, poniendo loading=false');
         setLoading(false);
       }
     });
