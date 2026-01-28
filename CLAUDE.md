@@ -117,6 +117,69 @@ fase_actual: "procesamiento"  # adquisicion | procesamiento | presentacion
 
 ---
 
+## Deploy Dashboard (Fase 3)
+
+**URL producción:** https://mol-nextjs.vercel.app
+
+**Arquitectura:**
+```
+fase3_dashboard/mol-dashboard/  →  Vercel (mol-dashboard)  →  mol-nextjs.vercel.app
+         ↓                                ↓
+    Código local                    Deploy via CLI
+         ↓                                ↓
+   gbreard/mol (GitHub)            Supabase (datos)
+```
+
+**IMPORTANTE:** El deploy NO es automático. No está vinculado a GitHub por limitaciones del plan gratuito de Vercel.
+
+### Flujo de trabajo
+
+1. **Desarrollar** en localhost:
+   ```bash
+   cd fase3_dashboard/mol-dashboard
+   npm run dev
+   # Abrir http://localhost:3000
+   ```
+
+2. **Cuando está listo** → decirle a Claude: "commitear y deployar"
+
+3. **Claude ejecuta:**
+   ```bash
+   # Commit a GitHub
+   git add fase3_dashboard/mol-dashboard/
+   git commit -m "feat(dashboard): descripción del cambio"
+   git push origin main
+
+   # Deploy a Vercel
+   cd fase3_dashboard/mol-dashboard
+   npx vercel --prod --yes
+   ```
+
+### Comandos útiles Vercel
+
+```bash
+# Ver proyectos
+npx vercel ls
+
+# Deploy a producción
+npx vercel --prod --yes
+
+# Ver logs de un deploy
+npx vercel logs [url-del-deploy]
+
+# Login (si expira la sesión)
+npx vercel login
+```
+
+### Variables de entorno (ya configuradas)
+
+| Variable | Valor |
+|----------|-------|
+| NEXT_PUBLIC_SUPABASE_URL | https://uywzoyhjjofsvvsrrnek.supabase.co |
+| NEXT_PUBLIC_SUPABASE_ANON_KEY | (configurada en Vercel) |
+
+---
+
 ## Documentación Extendida
 
 | Tema | Documento | Cuándo leer |
