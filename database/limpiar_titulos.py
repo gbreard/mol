@@ -1,10 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-limpiar_titulos.py v2.2
+limpiar_titulos.py v2.4
 ========================
 Limpia titulos de ofertas eliminando ruido empresarial/geografico.
 Lee patrones desde config/nlp_titulo_limpieza.json
+
+v2.4 (2026-01-28): Fix títulos detectados en dashboard
+- Zona Sur/Norte con punto opcional al final
+- "en Zona Sur." ahora se limpia
+- Playa Grande y otras localidades costeras agregadas
+- contexto_empresarial_sin_guion: "para Empresa de X"
 
 v2.2 (2026-01-13): Agregados patrones FASE 1 optimizacion
 - codigos_final: "DevOps - Remoto - 1729" -> "DevOps"
@@ -141,8 +147,20 @@ def limpiar_titulo(titulo: str, config: Dict[str, Any] = None) -> str:
         # Solo con guion - evitar eliminar contenido valido
         titulo = re.sub(rf'\s*-\s*[^-]*{re.escape(palabra)}[^-]*$', '', titulo, flags=re.IGNORECASE)
 
+    # 6a2. [v2.4] Eliminar contexto empresarial SIN guion (para Empresa de X)
+    for patron_info in config.get("contexto_empresarial_sin_guion", {}).get("patrones", []):
+        patron = patron_info.get("patron", "")
+        if patron:
+            titulo = re.sub(patron, '', titulo, flags=re.IGNORECASE)
+
     # 6c. [v2.2] Eliminar codigos numericos al FINAL (- 1729, - 4521)
     for patron_info in config.get("codigos_final", {}).get("patrones", []):
+        patron = patron_info.get("patron", "")
+        if patron:
+            titulo = re.sub(patron, '', titulo, flags=re.IGNORECASE)
+
+    # 6c2. [v2.4] Eliminar contexto complejo (- Laboratorio X - Turno Y - CABA)
+    for patron_info in config.get("contexto_complejo", {}).get("patrones", []):
         patron = patron_info.get("patron", "")
         if patron:
             titulo = re.sub(patron, '', titulo, flags=re.IGNORECASE)
@@ -698,6 +716,13 @@ if __name__ == '__main__':
         # NO eliminar - son especializaciones, no ubicaciones
         ("Chofer - Repartidor", "Chofer - Repartidor"),
         ("Abogado/a - Impuestos", "Abogado/a - Impuestos"),
+        # Casos v2.4 - detectados en dashboard 2026-01-28
+        ("Administrativa/o para Cementerio en Zona Sur.", "Administrativa/o para Cementerio"),
+        ("Vendedora ambulante Playa Grande - Mar del Plata", "Vendedora ambulante"),
+        ("Encargado/a para Empresa de Limpieza", "Encargado/a"),
+        ("Analista para Consultora de RRHH", "Analista"),
+        ("Operario para Industria Alimenticia", "Operario"),
+        ("Contador para PYME", "Contador"),
     ]
 
     ok = 0

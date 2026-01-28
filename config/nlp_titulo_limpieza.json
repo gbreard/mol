@@ -1,5 +1,5 @@
 {
-  "_version": "2.3",
+  "_version": "2.4",
   "_descripcion": "Patrones para limpiar titulos de ofertas - eliminar ruido geografico/empresarial/administrativo",
   "_fecha": "2026-01-13",
   "_cambios_v22": "Agregados: codigos_final, modalidad_guion, requisitos_edad, más patrones ubicacion",
@@ -200,8 +200,19 @@
         "ejemplo": "- Zona Rosario"
       },
       {
-        "patron": "\\s+Zona\\s+(Norte|Sur|Oeste|Este)$",
-        "ejemplo": "Zona Norte"
+        "patron": "\\s+Zona\\s+(Norte|Sur|Oeste|Este)\\.?$",
+        "ejemplo": "Zona Norte",
+        "_nota": "Acepta punto opcional al final"
+      },
+      {
+        "patron": "\\s+en\\s+Zona\\s+(Norte|Sur|Oeste|Este)\\.?$",
+        "ejemplo": "en Zona Sur.",
+        "_nota": "Patrón con 'en' previo"
+      },
+      {
+        "patron": "\\s+Zon\\s+(Norte|Sur|Oeste|Este)\\.?$",
+        "ejemplo": "Zon Sur",
+        "_nota": "Abreviatura sin 'a'"
       },
       {
         "patron": "\\s*-\\s*(PRESENCIAL|REMOTO|HIBRIDO|HÍBRIDO)\\s+(CABA|GBA|BA|Capital|Buenos\\s*Aires)$",
@@ -209,14 +220,25 @@
         "_nota": "Modalidad + ubicacion"
       },
       {
-        "patron": "\\s*-\\s*(BA|CABA|GBA|Bs\\.?\\s*As\\.?|Buenos\\s+Aires|Capital|Cordoba|Córdoba|Mendoza|Rosario|Santa\\s+Fe)$",
+        "patron": "\\s*-\\s*(BA|CABA|GBA|Bs\\.?\\s*As\\.?|Buenos\\s+Aires|Capital|Cordoba|Córdoba|Mendoza|Rosario|Santa\\s+Fe|Tucum[aá]n|Salta|Jujuy|Neuqu[eé]n|Chubut|R[ií]o\\s+Negro|Chaco|Formosa|Misiones|Corrientes|Entre\\s+R[ií]os|San\\s+Luis|San\\s+Juan|La\\s+Rioja|Catamarca|Santiago)$",
         "ejemplo": "- Buenos Aires",
+        "_nota": "Todas las provincias argentinas principales",
         "_nota": "ULTIMO: patron simple provincia"
       },
       {
         "patron": "[,.]?\\s*[Zz]ona\\s+[A-Za-záéíóú]+(?:\\s+[oy]\\s+alrededores)?[.!]?.*$",
         "ejemplo": ", zona Benavidez o alrededores. Leer requisitos",
         "_nota": "zona X o alrededores + texto extra"
+      },
+      {
+        "patron": "\\s+Playa\\s+Grande\\s*[-–]?\\s*[A-Za-záéíóú\\s]*$",
+        "ejemplo": "Playa Grande - Mar del Plata",
+        "_nota": "Playa Grande con/sin ciudad"
+      },
+      {
+        "patron": "\\s+[A-Z][a-záéíóú]+\\s+Grande\\s*[-–]\\s*[A-Z][a-záéíóú]+(?:\\s+del?\\s+[A-Z][a-záéíóú]+)?$",
+        "ejemplo": "Villa Grande - Mar del Plata",
+        "_nota": "X Grande - Ciudad (genérico)"
       }
     ]
   },
@@ -305,7 +327,15 @@
       "Tandil",
       "Olavarria",
       "Junin",
-      "Pergamino"
+      "Pergamino",
+      "Playa Grande",
+      "Chascomus",
+      "Pinamar",
+      "Villa Gesell",
+      "Necochea",
+      "Miramar",
+      "San Clemente",
+      "Santa Teresita"
     ]
   },
   "contexto_empresarial": {
@@ -328,6 +358,37 @@
       "pyme",
       "startup",
       "holding"
+    ],
+    "_nota_patrones_adicionales": "Los patrones siguientes cubren casos sin guion previo"
+  },
+  "contexto_empresarial_sin_guion": {
+    "_descripcion": "Patrones de contexto empresarial SIN guion previo (para Empresa de X)",
+    "_nota": "v2.4 - detectados en dashboard 2026-01-28",
+    "patrones": [
+      {
+        "patron": "\\s+para\\s+[Ee]mpresa\\s+(?:de\\s+)?[A-Za-záéíóúÁÉÍÓÚ\\s]+$",
+        "ejemplo": "Encargado/a para Empresa de Limpieza"
+      },
+      {
+        "patron": "\\s+para\\s+[Cc]onsultora\\s+(?:de\\s+)?[A-Za-záéíóúÁÉÍÓÚ\\s]*$",
+        "ejemplo": "Analista para Consultora de RRHH"
+      },
+      {
+        "patron": "\\s+para\\s+[Ii]ndustria\\s+[A-Za-záéíóúÁÉÍÓÚ\\s]+$",
+        "ejemplo": "Operario para Industria Alimenticia"
+      },
+      {
+        "patron": "\\s+para\\s+[Cc]adena\\s+(?:de\\s+)?[A-Za-záéíóúÁÉÍÓÚ\\s]+$",
+        "ejemplo": "Cajero para Cadena de Supermercados"
+      },
+      {
+        "patron": "\\s+para\\s+[Pp][Yy][Mm][Ee]\\s*$",
+        "ejemplo": "Contador para PYME"
+      },
+      {
+        "patron": "\\s+para\\s+[Mm]ultinacional\\s*$",
+        "ejemplo": "Analista para Multinacional"
+      }
     ]
   },
   "parentesis_eliminar": {
@@ -402,8 +463,9 @@
         "ejemplo": "para farmacias en Rio Cuarto"
       },
       {
-        "patron": "\\s+en\\s+[A-Z][a-záéíóú]+(?:\\s+del?\\s+)?[A-Z]?[a-záéíóú]*$",
-        "ejemplo": "en Mar del Plata"
+        "patron": "\\s+en\\s+(Mar\\s+del\\s+Plata|Buenos\\s+Aires|Capital\\s+Federal|CABA|GBA|Tucum[aá]n|C[oó]rdoba|Mendoza|Rosario|Santa\\s+Fe|Salta|Neuqu[eé]n|Bahia\\s+Blanca|La\\s+Plata|San\\s+Juan|R[ií]o\\s+Cuarto|Villa\\s+Mar[ií]a|Pilar|Tigre|Quilmes|Mor[oó]n)$",
+        "ejemplo": "en Mar del Plata",
+        "_nota": "Lista explícita de ciudades - evita falsos positivos como 'en Audaces'"
       },
       {
         "patron": "\\s+para\\s+(?:empresa|compania|cliente)\\s+en\\s+\\w+$",
@@ -522,6 +584,28 @@
       {
         "patron": "\\s*\\(\\d{4,5}\\)$",
         "ejemplo": "Contador (12345)"
+      }
+    ]
+  },
+  "contexto_complejo": {
+    "_descripcion": "Patrones complejos: contexto empresarial + turno + ubicación",
+    "_nota": "v2.4 - casos como 'Analista - Laboratorio X - Turno Y - CABA'",
+    "patrones": [
+      {
+        "patron": "\\s*-\\s*[Ll]aboratorio\\s+[^-]+(?:\\s*-\\s*[Tt]urno\\s+[^-]+)?(?:\\s*-\\s*(?:CABA|GBA|Capital))?$",
+        "ejemplo": "- Laboratorio farmacéutico - Turno Central CABA"
+      },
+      {
+        "patron": "\\s*-\\s*[Cc]l[ií]nica\\s+[^-]+(?:\\s*-\\s*[^-]+)*$",
+        "ejemplo": "- Clínica privada - Zona Norte"
+      },
+      {
+        "patron": "\\s*-\\s*[Hh]ospital\\s+[^-]+(?:\\s*-\\s*[^-]+)*$",
+        "ejemplo": "- Hospital público - CABA"
+      },
+      {
+        "patron": "\\s*-\\s*[Ee]studio\\s+[Cc]ontable\\s*(?:\\s*-.*)?$",
+        "ejemplo": "- Estudio Contable - Microcentro"
       }
     ]
   },
@@ -655,6 +739,30 @@
       {
         "patron": "\\s*-\\s*Pcia\\.?\\s*Bs\\.?\\s*As\\.?$",
         "ejemplo": "- Pcia Bs As"
+      },
+      {
+        "patron": "\\s*-\\s*[Tt]ucum[aá]n$",
+        "ejemplo": "- Tucumán"
+      },
+      {
+        "patron": "\\s*-\\s*[Ss]alta$",
+        "ejemplo": "- Salta"
+      },
+      {
+        "patron": "\\s*-\\s*[Jj]ujuy$",
+        "ejemplo": "- Jujuy"
+      },
+      {
+        "patron": "\\s*-\\s*[Nn]euqu[eé]n$",
+        "ejemplo": "- Neuquén"
+      },
+      {
+        "patron": "\\s*-\\s*[Bb]ar[ií]loche$",
+        "ejemplo": "- Bariloche"
+      },
+      {
+        "patron": "\\s*-\\s*[Uu]shuaia$",
+        "ejemplo": "- Ushuaia"
       }
     ]
   },
@@ -677,5 +785,6 @@
       }
     ]
   },
-  "_cambios_v23": "Agregado codigos_empresa: BE | y variantes (validación 2026-01-26)"
+  "_cambios_v23": "Agregado codigos_empresa: BE | y variantes (validación 2026-01-26)",
+  "_cambios_v24": "Fix títulos dashboard 2026-01-28: Zona Sur con punto, Playa Grande, para Empresa de X"
 }
