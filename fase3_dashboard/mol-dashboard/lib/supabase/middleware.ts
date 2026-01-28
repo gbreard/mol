@@ -39,8 +39,11 @@ export async function updateSession(request: NextRequest) {
     request.nextUrl.pathname.startsWith(route)
   );
 
-  // Si no hay usuario y no es ruta pública, redirigir a login
-  if (!user && !isPublicRoute) {
+  // Rutas API manejan su propia autenticación (por header)
+  const isApiRoute = request.nextUrl.pathname.startsWith("/api/");
+
+  // Si no hay usuario y no es ruta pública ni API, redirigir a login
+  if (!user && !isPublicRoute && !isApiRoute) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);

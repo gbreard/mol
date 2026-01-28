@@ -45,6 +45,7 @@ export default function UsuariosPage() {
 
       if (!session?.access_token) {
         setError('No autenticado');
+        setLoading(false);
         return;
       }
 
