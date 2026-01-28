@@ -35,12 +35,10 @@ export default function UsuariosPage() {
   const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log('[DEBUG] useEffect iniciado');
     const supabase = createBrowserClient();
 
     // Escuchar cambios de auth para cargar cuando la sesión esté lista
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('[DEBUG] onAuthStateChange:', event, !!session);
       if (session?.access_token) {
         loadUsuarios(session.access_token);
       } else if (event === 'SIGNED_OUT') {
@@ -51,11 +49,9 @@ export default function UsuariosPage() {
 
     // También intentar cargar inmediatamente si ya hay sesión
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('[DEBUG] getSession:', !!session, session?.user?.email);
       if (session?.access_token) {
         loadUsuarios(session.access_token);
       } else {
-        console.log('[DEBUG] No hay sesión, poniendo loading=false');
         setLoading(false);
       }
     });
@@ -68,16 +64,11 @@ export default function UsuariosPage() {
       setLoading(true);
       setError(null);
 
-      console.log('[DEBUG] Llamando a /api/admin/users...');
-
-      // Llamar al endpoint de admin para obtener TODOS los usuarios
       const response = await fetch('/api/admin/users', {
         headers: {
           'Authorization': `Bearer ${accessToken}`
         }
       });
-
-      console.log('[DEBUG] Response status:', response.status);
 
       if (!response.ok) {
         const data = await response.json();
@@ -85,12 +76,9 @@ export default function UsuariosPage() {
       }
 
       const data = await response.json();
-      console.log('[DEBUG] Usuarios recibidos:', data);
-      console.log('[DEBUG] Cantidad:', data.users?.length);
-
       setUsuarios(data.users || []);
     } catch (err: any) {
-      console.error('[DEBUG] Error cargando usuarios:', err);
+      console.error('Error cargando usuarios:', err);
       setError(err.message || 'Error al cargar usuarios');
     } finally {
       setLoading(false);

@@ -153,7 +153,12 @@ fase3_dashboard/mol-dashboard/  →  Vercel (mol-dashboard)  →  mol-nextjs.ver
    # Deploy a Vercel
    cd fase3_dashboard/mol-dashboard
    npx vercel --prod --yes
+
+   # IMPORTANTE: Actualizar alias (el deploy crea URL nueva cada vez)
+   npx vercel alias [url-del-deploy] mol-nextjs.vercel.app
    ```
+
+   **Nota:** Sin el último comando, `mol-nextjs.vercel.app` queda apuntando al deploy anterior.
 
 ### Comandos útiles Vercel
 
