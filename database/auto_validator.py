@@ -2,8 +2,12 @@
 Auto-validador del pipeline MOL.
 Lee validation_rules.json y evalua ofertas automaticamente.
 
-Version: 1.0
-Fecha: 2026-01-14
+Version: 1.1
+Fecha: 2026-01-28
+
+Cambios v1.1:
+- Validación automática de títulos usando patrones de nlp_titulo_limpieza.json
+- Si un patrón de limpieza matchea en titulo_limpio, se detecta como error
 
 Uso:
     from database.auto_validator import AutoValidator
@@ -40,8 +44,14 @@ class AutoValidator:
         self.diagnostic_patterns = self._load_json("diagnostic_patterns.json")
         self.correction_map = self._load_json("auto_correction_map.json")
 
+        # Cargar patrones de limpieza de títulos (para validar que quedaron limpios)
+        self.titulo_limpieza_config = self._load_json("nlp_titulo_limpieza.json")
+
         # Cache de reglas compiladas (regex)
         self._compiled_patterns = {}
+
+        # Compilar patrones de limpieza de títulos
+        self._titulo_patterns = self._compilar_patrones_titulo()
 
     def _load_json(self, filename: str) -> Dict:
         """Carga un archivo JSON de config."""
@@ -50,6 +60,94 @@ class AutoValidator:
             with open(path, 'r', encoding='utf-8') as f:
                 return json.load(f)
         return {}
+
+    def _compilar_patrones_titulo(self) -> List[Dict]:
+        """
+        Compila patrones de nlp_titulo_limpieza.json para validar títulos.
+
+        Los mismos patrones que se usan para LIMPIAR el título,
+        se usan para VALIDAR que quedó limpio. Si algún patrón
+        matchea en titulo_limpio, significa que la limpieza falló.
+        """
+        patrones = []
+        config = self.titulo_limpieza_config
+
+        # Secciones que contienen patrones de ruido
+        secciones_con_patrones = [
+            'zonas_ubicaciones',
+            'contexto_empresarial_sin_guion',
+            'contexto_complejo',
+            'parentesis_eliminar',
+            'ubicacion_con_guion',
+            'modalidad_guion',
+            'codigos_final',
+            'requisitos_edad',
+            'ubicacion_guion_extendido',
+            'codigos_empresa',
+        ]
+
+        for seccion in secciones_con_patrones:
+            if seccion not in config:
+                continue
+            for patron_info in config[seccion].get('patrones', []):
+                patron = patron_info.get('patron')
+                if patron:
+                    try:
+                        compiled = re.compile(patron, re.IGNORECASE)
+                        patrones.append({
+                            'seccion': seccion,
+                            'patron': patron,
+                            'compiled': compiled,
+                            'ejemplo': patron_info.get('ejemplo', '')
+                        })
+                    except re.error:
+                        pass  # Ignorar patrones inválidos
+
+        # Secciones con listas de palabras (convertir a patrones)
+        if 'localidades_final' in config:
+            for localidad in config['localidades_final'].get('lista', []):
+                patron = rf'\s*[-–—]\s*{re.escape(localidad)}$'
+                try:
+                    compiled = re.compile(patron, re.IGNORECASE)
+                    patrones.append({
+                        'seccion': 'localidades_final',
+                        'patron': patron,
+                        'compiled': compiled,
+                        'ejemplo': f'- {localidad}'
+                    })
+                except re.error:
+                    pass
+
+        return patrones
+
+    def _validar_titulo_limpio(self, titulo_limpio: str) -> List[Dict]:
+        """
+        Valida que el título realmente quedó limpio.
+
+        Usa los patrones de nlp_titulo_limpieza.json.
+        Si alguno matchea, significa que la limpieza falló.
+
+        Returns:
+            Lista de errores encontrados
+        """
+        if not titulo_limpio:
+            return []
+
+        errores = []
+        for patron_info in self._titulo_patterns:
+            if patron_info['compiled'].search(titulo_limpio):
+                errores.append({
+                    'id_regla': f"V_titulo_{patron_info['seccion']}",
+                    'diagnostico': 'error_limpieza_titulo',
+                    'severidad': 'medio',
+                    'mensaje': f"Patrón de ruido '{patron_info['seccion']}' encontrado en título limpio. "
+                              f"Ejemplo: '{patron_info['ejemplo']}'. Agregar patrón a nlp_titulo_limpieza.json",
+                    'campo': 'titulo_limpio',
+                    'patron_encontrado': patron_info['patron'],
+                    'valor_actual': titulo_limpio
+                })
+
+        return errores
 
     def _get_compiled_pattern(self, pattern: str) -> re.Pattern:
         """Compila y cachea patrones regex."""
@@ -245,6 +343,14 @@ class AutoValidator:
                     error["auto_correccion"] = regla["auto_correccion"]
 
                 errores.append(error)
+
+        # Validación automática de título limpio usando patrones de nlp_titulo_limpieza.json
+        titulo_limpio = oferta.get("titulo_limpio")
+        if titulo_limpio:
+            errores_titulo = self._validar_titulo_limpio(titulo_limpio)
+            for error in errores_titulo:
+                error["id_oferta"] = oferta.get("id_oferta") or oferta.get("id")
+            errores.extend(errores_titulo)
 
         return errores
 
