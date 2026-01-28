@@ -431,8 +431,28 @@
   },
   "contexto_empresarial_sin_guion": {
     "_descripcion": "Patrones de contexto empresarial SIN guion previo (para Empresa de X)",
-    "_nota": "v2.5 - ampliado con 9 casos adicionales detectados en análisis completo",
+    "_nota": "v2.6 - ampliado con reconocida cadena, rubro, zona:",
     "patrones": [
+      {
+        "patron": "\\s*-\\s*[Rr]econocida\\s+[Cc]adena\\s+de\\s+[A-Za-záéíóúÁÉÍÓÚ\\s]+$",
+        "ejemplo": "Técnico - reconocida cadena de heladerías",
+        "_nota": "v2.6: reconocida cadena de X"
+      },
+      {
+        "patron": "\\s*-?\\s*[Rr]ubro\\s+[A-Za-záéíóúÁÉÍÓÚ]+(?:\\s+[A-Za-záéíóúÁÉÍÓÚ]+)?$",
+        "ejemplo": "Ejecutivo comercial- rubro textil o rubro motos",
+        "_nota": "v2.6: rubro X (1-2 palabras)"
+      },
+      {
+        "patron": "\\s*-\\s*[Rr]estaurante$",
+        "ejemplo": "Supervisor/a - restaurante",
+        "_nota": "v2.6: - restaurante al final"
+      },
+      {
+        "patron": "\\s*-\\s*[Zz]ona:\\s*[A-Za-záéíóúÁÉÍÓÚ\\s/]+$",
+        "ejemplo": "Asesor - zona: neuquén/río negro",
+        "_nota": "v2.6: zona: X con dos puntos"
+      },
       {
         "patron": "\\s+para\\s+[Ii]mportante\\s+[Ee]mpresa\\s+(?:de\\s+)?[A-Za-záéíóúÁÉÍÓÚ\\s]+$",
         "ejemplo": "Vendedor para Importante Empresa de Energia",
@@ -641,6 +661,26 @@
         "patron": "\\s+(Mor[oó]n|Haedo|Ramos\\s+Mej[ií]a|San\\s+Justo|La\\s+Matanza|Ituzaing[oó]|Merlo|Moreno|Caseros|Ciudadela|San\\s+Mart[ií]n|Villa\\s+Ballester|Hurlingham|Jos[eé]\\s+C\\.?\\s+Paz|Malvinas\\s+Argentinas)$",
         "ejemplo": "Vendedor Morón",
         "_nota": "GBA Oeste"
+      },
+      {
+        "patron": "\\s+(La\\s+Tablada|Tortuguitas|Saavedra|Esteban\\s+Echeverr[ií]a|Ezeiza|Temperley|Florencio\\s+Varela|Monte\\s+Grande|Canning|Luis\\s+Guill[oó]n|Llavallol|Remedios\\s+de\\s+Escalada|Gerli|Dock\\s+Sud|Hudson|Ranelagh|City\\s+Bell|Gonnet|Tolosa)$",
+        "ejemplo": "Promotor técnico la tablada",
+        "_nota": "v2.6: GBA Sur/Oeste adicionales"
+      },
+      {
+        "patron": "[,.]?\\s+(tortuguitas|la\\s+tablada|saavedra|ezeiza|temperley|florencio\\s+varela)$",
+        "ejemplo": "Personal logística, tortuguitas",
+        "_nota": "v2.6: localidades minúsculas con coma"
+      },
+      {
+        "patron": "\\s+(rosario|santa\\s+fe|neuqu[eé]n|r[ií]o\\s+negro|paran[aá])[/]\\s*(santa\\s+fe|rosario|r[ií]o\\s+negro|neuqu[eé]n|paran[aá])$",
+        "ejemplo": "Vendedor rosario/santa fe",
+        "_nota": "v2.6: ubicaciones con barra"
+      },
+      {
+        "patron": "\\s+en\\s+(rosario|santa\\s+fe|neuqu[eé]n|r[ií]o\\s+negro)[/](santa\\s+fe|r[ií]o\\s+negro)$",
+        "ejemplo": "Vendedor en rosario/santa fe",
+        "_nota": "v2.6: en + ubicaciones con barra"
       }
     ]
   },
@@ -754,6 +794,11 @@
         "patron": "[\\s\\-–—/,]+$",
         "reemplazo": "",
         "descripcion": "guiones/barras/comas sueltos al final"
+      },
+      {
+        "patron": "\\s*-\\s*[Zz]ona:\\s*$",
+        "reemplazo": "",
+        "descripcion": "v2.6: zona: suelto al final"
       }
     ]
   },
@@ -971,6 +1016,31 @@
       {
         "patron": "\\s*-\\s*[Uu]shuaia$",
         "ejemplo": "- Ushuaia"
+      },
+      {
+        "patron": "\\s*-\\s*[Ee]zeiza$",
+        "ejemplo": "- Ezeiza",
+        "_nota": "v2.6"
+      },
+      {
+        "patron": "\\s*-\\s*[Tt]emperley$",
+        "ejemplo": "- Temperley",
+        "_nota": "v2.6"
+      },
+      {
+        "patron": "\\s*-\\s*[Ff]lorencio\\s*[Vv]arela$",
+        "ejemplo": "- Florencio Varela",
+        "_nota": "v2.6"
+      },
+      {
+        "patron": "\\s*-\\s*[Ss]anta\\s+[Ff]e\\s*/\\s*[Pp]aran[aá]$",
+        "ejemplo": "- santa fe / paraná",
+        "_nota": "v2.6: provincias con barra"
+      },
+      {
+        "patron": "\\s*-\\s*[Mm]oreno\\s*-\\s*[Cc]on\\s+[Ee]xperiencia$",
+        "ejemplo": "- moreno - con experiencia",
+        "_nota": "v2.6: ubicación + con experiencia"
       }
     ]
   },
