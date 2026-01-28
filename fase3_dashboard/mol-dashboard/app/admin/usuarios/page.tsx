@@ -35,24 +35,39 @@ export default function UsuariosPage() {
   const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
-    loadUsuarios();
+    const supabase = createBrowserClient();
+
+    // Escuchar cambios de auth para cargar cuando la sesión esté lista
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.access_token) {
+        loadUsuarios(session.access_token);
+      } else if (event === 'SIGNED_OUT') {
+        setUsuarios([]);
+        setLoading(false);
+      }
+    });
+
+    // También intentar cargar inmediatamente si ya hay sesión
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.access_token) {
+        loadUsuarios(session.access_token);
+      } else {
+        setLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  async function loadUsuarios() {
+  async function loadUsuarios(accessToken: string) {
     try {
-      const supabase = createBrowserClient();
-      const { data: { session } } = await supabase.auth.getSession();
-
-      if (!session?.access_token) {
-        setError('No autenticado');
-        setLoading(false);
-        return;
-      }
+      setLoading(true);
+      setError(null);
 
       // Llamar al endpoint de admin para obtener TODOS los usuarios
       const response = await fetch('/api/admin/users', {
         headers: {
-          'Authorization': `Bearer ${session.access_token}`
+          'Authorization': `Bearer ${accessToken}`
         }
       });
 
