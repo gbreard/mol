@@ -64,6 +64,8 @@ export default function UsuariosPage() {
       setLoading(true);
       setError(null);
 
+      console.log('[DEBUG] Llamando a /api/admin/users...');
+
       // Llamar al endpoint de admin para obtener TODOS los usuarios
       const response = await fetch('/api/admin/users', {
         headers: {
@@ -71,15 +73,20 @@ export default function UsuariosPage() {
         }
       });
 
+      console.log('[DEBUG] Response status:', response.status);
+
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.error || 'Error al cargar usuarios');
       }
 
-      const { users } = await response.json();
-      setUsuarios(users);
+      const data = await response.json();
+      console.log('[DEBUG] Usuarios recibidos:', data);
+      console.log('[DEBUG] Cantidad:', data.users?.length);
+
+      setUsuarios(data.users || []);
     } catch (err: any) {
-      console.error('Error cargando usuarios:', err);
+      console.error('[DEBUG] Error cargando usuarios:', err);
       setError(err.message || 'Error al cargar usuarios');
     } finally {
       setLoading(false);
