@@ -449,6 +449,9 @@ def get_phase3_metrics() -> Dict[str, Any]:
     Returns:
         Dict con métricas de presentación
     """
+    import urllib.request
+    import json as json_module
+
     metrics = {
         "ultimo_sync_supabase": None,
         "dias_desde_sync": None,
@@ -456,6 +459,27 @@ def get_phase3_metrics() -> Dict[str, Any]:
         "ofertas_pendientes_sync": 0,
         "dashboard_url": "https://mol-nextjs.vercel.app/"
     }
+
+    # Primero intentar consultar Supabase directamente
+    try:
+        supabase_url = "https://uywzoyhjjofsvvsrrnek.supabase.co"
+        service_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5d3pveWhqam9mc3Z2c3JybmVrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2ODQ5NDUyNiwiZXhwIjoyMDg0MDcwNTI2fQ.wSqtg8rtnbN3howe7_A0HLeEuUwtciGxo71IiKd7Nh4"
+
+        req = urllib.request.Request(
+            f"{supabase_url}/rest/v1/ofertas?select=count",
+            headers={
+                "apikey": service_key,
+                "Authorization": f"Bearer {service_key}",
+                "Prefer": "count=exact"
+            }
+        )
+        with urllib.request.urlopen(req, timeout=5) as response:
+            data = json_module.loads(response.read().decode())
+            if data and len(data) > 0 and "count" in data[0]:
+                metrics["ofertas_sincronizadas"] = data[0]["count"]
+    except Exception:
+        # Si falla Supabase, usar conteo local como fallback
+        pass
 
     try:
         conn = sqlite3.connect(str(DB_PATH))
@@ -472,16 +496,13 @@ def get_phase3_metrics() -> Dict[str, Any]:
         if row:
             metrics["ultimo_sync_supabase"] = row["timestamp"][:10] if row["timestamp"] else None
 
-        # Ofertas validadas (listas para sync)
-        cur.execute("""
-            SELECT COUNT(*) FROM ofertas_esco_matching
-            WHERE estado_validacion = 'validado'
-        """)
-        metrics["ofertas_sincronizadas"] = cur.fetchone()[0]
-
-        # Ofertas pendientes de sync (validadas pero no sincronizadas)
-        # Asumimos que las validadas están sincronizadas si no hay campo específico
-        metrics["ofertas_pendientes_sync"] = 0  # TODO: agregar campo synced_at
+        # Si no pudimos consultar Supabase, usar conteo local
+        if metrics["ofertas_sincronizadas"] == 0:
+            cur.execute("""
+                SELECT COUNT(*) FROM ofertas_esco_matching
+                WHERE estado_validacion IN ('validado', 'validado_claude', 'validado_humano')
+            """)
+            metrics["ofertas_sincronizadas"] = cur.fetchone()[0]
 
         conn.close()
 

@@ -6,7 +6,7 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-01-28 17:10"
+  fecha_actualizacion: "2026-01-28 17:13"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "presentacion"  # adquisicion | procesamiento | presentacion
@@ -133,7 +133,7 @@ conteos:
     - "  - David Trajtemberg (DTRAJTEM@trabajo.gob.ar)"
     - "  - Diego Schleser (DSCHLESE@trabajo.gob.ar)"
 
-  proximo_paso: "Sincronizar ofertas validadas a Supabase para poblar dashboard"
+  proximo_paso: "Dashboard ya tiene 538 ofertas en Supabase - continuar con validación o nuevas features"
 
   estadisticas_actuales:
     ofertas_validadas: 0  # validadas anteriormente
