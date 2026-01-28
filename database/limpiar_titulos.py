@@ -88,6 +88,12 @@ def limpiar_titulo(titulo: str, config: Dict[str, Any] = None) -> str:
         if patron:
             titulo = re.sub(patron, '', titulo)
 
+    # 0a1. [v2.5.1] Eliminar codigos de empresa (631 BE |, BE |)
+    for patron_info in config.get("codigos_empresa", {}).get("patrones", []):
+        patron = patron_info.get("patron", "")
+        if patron:
+            titulo = re.sub(patron, '', titulo)
+
     # 0a2. Eliminar prefijos genericos (Busqueda Laboral:, Se busca:, etc)
     for patron_info in config.get("prefijos_genericos", {}).get("patrones", []):
         patron = patron_info.get("patron", "")
@@ -206,6 +212,12 @@ def limpiar_titulo(titulo: str, config: Dict[str, Any] = None) -> str:
     if preposiciones:
         prep_pattern = '|'.join(re.escape(p) for p in preposiciones)
         titulo = re.sub(rf'\s+({prep_pattern})\s*$', '', titulo, flags=re.IGNORECASE)
+
+    # 6b2. [v2.5.1] Eliminar pipes y contenido entre pipes al final
+    for patron_info in config.get("pipes_limpiar", {}).get("patrones", []):
+        patron = patron_info.get("patron", "")
+        if patron:
+            titulo = re.sub(patron, '', titulo, flags=re.IGNORECASE)
 
     # 7. Expandir/eliminar abreviaturas (al final para que no interfiera con contexto_empresarial)
     for patron_info in config.get("abreviaturas_expandir", {}).get("patrones", []):
