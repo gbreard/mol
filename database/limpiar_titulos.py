@@ -189,6 +189,12 @@ def limpiar_titulo(titulo: str, config: Dict[str, Any] = None) -> str:
         if patron:
             titulo = re.sub(patron, '', titulo, flags=re.IGNORECASE)
 
+    # 6e2. [v2.5] Eliminar turno al final (Turno tarde, Turno mañana)
+    for patron_info in config.get("turno_final", {}).get("patrones", []):
+        patron = patron_info.get("patron", "")
+        if patron:
+            titulo = re.sub(patron, '', titulo, flags=re.IGNORECASE)
+
     # 6f. [v2.2] Eliminar ubicaciones con guion - extendido
     for patron_info in config.get("ubicacion_guion_extendido", {}).get("patrones", []):
         patron = patron_info.get("patron", "")

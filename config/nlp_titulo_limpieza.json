@@ -185,6 +185,7 @@
   },
   "modalidad_final": {
     "_descripcion": "Palabras de modalidad al final del titulo",
+    "_nota_v25": "Agregado REMOTO, Híbrido en mayúsculas",
     "palabras": [
       "Eventual",
       "Part-time",
@@ -192,16 +193,41 @@
       "Full-time",
       "Full time",
       "Remoto",
+      "REMOTO",
       "Hibrido",
+      "Híbrido",
+      "HIBRIDO",
+      "HÍBRIDO",
       "Hibrida",
       "Presencial",
+      "PRESENCIAL",
       "Temporal",
       "Freelance"
     ]
   },
+  "turno_final": {
+    "_descripcion": "Patrones de turno al final del titulo",
+    "_nota": "v2.5 - detectados en análisis exhaustivo",
+    "patrones": [
+      {
+        "patron": "\\s+[Tt]urno\\s+(tarde|mañana|noche|ma[ñn]ana|rotativo|central)\\s*$",
+        "ejemplo": "Operador Turno tarde"
+      },
+      {
+        "patron": "\\s+-\\s+[Tt]urno\\s+\\w+\\s*$",
+        "ejemplo": "Vendedor - Turno Tarde"
+      }
+    ]
+  },
   "zonas_ubicaciones": {
     "_descripcion": "Patrones de ubicacion al final - ORDEN IMPORTANTE: especificos primero",
+    "_nota_v25": "Agregado Caba/CABA y Zona X como bloque (debe ir ANTES de Zona X solo)",
     "patrones": [
+      {
+        "patron": "\\s+(CABA|Caba|GBA|Gba)\\s+[Yy]\\s+Zona\\s+(Norte|Sur|Oeste|Este)$",
+        "ejemplo": "Vendedoras Caba y Zona Norte",
+        "_nota": "v2.5: PRIMERO - Caba y Zona X como bloque completo"
+      },
       {
         "patron": "\\s*[Zz]/[\\w]+$",
         "ejemplo": "Z/Escobar"
@@ -449,7 +475,13 @@
   },
   "parentesis_eliminar": {
     "_descripcion": "Patrones de parentesis a eliminar",
+    "_nota_v25": "Agregado paréntesis sin cerrar",
     "patrones": [
+      {
+        "patron": "\\s*\\([^)]*$",
+        "ejemplo": "Vendedor (",
+        "razon": "v2.5: parentesis abierto sin cerrar al final"
+      },
       {
         "patron": "\\s*\\([^)]{15,}\\)$",
         "ejemplo": "(Consumo Masivo / Grandes Cuentas)",
@@ -513,7 +545,13 @@
   },
   "contexto_ubicacion": {
     "_descripcion": "Patrones de contexto + ubicacion al final (para X en Ciudad)",
+    "_nota_v25": "Agregado REMOTO para residentes (debe ir PRIMERO)",
     "patrones": [
+      {
+        "patron": "\\s+(REMOTO|Remoto)\\s+para\\s+residentes\\s+en\\s+[A-Z]+\\s*$",
+        "ejemplo": "REMOTO para residentes en ARGENTINA",
+        "_nota": "v2.5: REMOTO + para residentes - PRIMERO para capturar bloque completo"
+      },
       {
         "patron": "\\s+para\\s+\\w+\\s+en\\s+[A-Z][a-záéíóú]+(?:\\s+[A-Z]?[a-záéíóú]+)*$",
         "ejemplo": "para farmacias en Rio Cuarto"
@@ -533,6 +571,16 @@
     "_descripcion": "Ubicaciones SIN guion al final del titulo (CABA, Tucumán, etc)",
     "_nota": "v2.5 - 23 casos detectados. Lista explícita para evitar falsos positivos",
     "patrones": [
+      {
+        "patron": "\\s+(Asunci[oó]n|Santiago|Montevideo|Lima|Bogot[aá]|Sao\\s+Paulo|Ciudad\\s+de\\s+M[eé]xico)\\s+(Paraguay|Chile|Uruguay|Per[uú]|Colombia|Brasil|M[eé]xico)$",
+        "ejemplo": "Gerente Asuncion Paraguay",
+        "_nota": "v2.5: Ciudades + países extranjeros"
+      },
+      {
+        "patron": "\\s+(Paraguay|Chile|Uruguay|Per[uú]|Colombia|Brasil|M[eé]xico|Bolivia|Ecuador|Venezuela)$",
+        "ejemplo": "Gerente en Paraguay",
+        "_nota": "v2.5: País extranjero solo al final"
+      },
       {
         "patron": "\\s+(CABA|Caba|Capital\\s+Federal|Capital|GBA|Gba|Bs\\.?\\s*As\\.?|Buenos\\s+Aires)\\s+[Yy]\\s+(CABA|Caba|GBA|Gba|Interior)$",
         "ejemplo": "Vendedor CABA Y GBA",
@@ -740,7 +788,23 @@
   "modalidad_guion": {
     "_descripcion": "Modalidad con guion al final (casos complejos detectados en revision)",
     "_nota": "FASE 1 v2.2 - patron: titulo - modalidad - codigo/ubicacion",
+    "_nota_v25": "Agregado // Esquema de trabajo + ubicación",
     "patrones": [
+      {
+        "patron": "\\s*//\\s*[Ee]squema\\s+de\\s+trabajo\\s+[A-Za-záéíóúÁÉÍÓÚ]+\\s*//.*$",
+        "ejemplo": "// Esquema de trabajo Híbrido // Buenos Aires",
+        "_nota": "v2.5: doble barra + esquema + ubicación"
+      },
+      {
+        "patron": "\\s*//\\s*[Ee]squema\\s+de\\s+trabajo\\s+[A-Za-záéíóúÁÉÍÓÚ]+\\s*$",
+        "ejemplo": "// Esquema de trabajo Híbrido",
+        "_nota": "v2.5: doble barra + esquema trabajo solo"
+      },
+      {
+        "patron": "\\s+(REMOTO|Remoto)\\s+para\\s+residentes\\s+en\\s+[A-Z]+\\s*$",
+        "ejemplo": "REMOTO para residentes en ARGENTINA",
+        "_nota": "v2.5: REMOTO + para residentes en PAIS"
+      },
       {
         "patron": "\\s*-\\s*[Rr]emoto\\s*-.*$",
         "ejemplo": "DevOps - Remoto - 1729"
