@@ -21,6 +21,7 @@ interface Usuario {
   created_at: string;
   last_sign_in_at: string | null;
   display_name?: string;
+  email_confirmed?: boolean;
 }
 
 export default function UsuariosPage() {
@@ -40,23 +41,30 @@ export default function UsuariosPage() {
   async function loadUsuarios() {
     try {
       const supabase = createBrowserClient();
+      const { data: { session } } = await supabase.auth.getSession();
 
-      // Por ahora simulamos usuarios desde el usuario actual
-      // En producción se usaría la API de admin de Supabase
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (user) {
-        setUsuarios([{
-          id: user.id,
-          email: user.email || '',
-          role: user.user_metadata?.role || 'admin',
-          created_at: user.created_at,
-          last_sign_in_at: user.last_sign_in_at || null,
-          display_name: user.user_metadata?.display_name || user.email?.split('@')[0]
-        }]);
+      if (!session?.access_token) {
+        setError('No autenticado');
+        return;
       }
-    } catch (err) {
+
+      // Llamar al endpoint de admin para obtener TODOS los usuarios
+      const response = await fetch('/api/admin/users', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Error al cargar usuarios');
+      }
+
+      const { users } = await response.json();
+      setUsuarios(users);
+    } catch (err: any) {
       console.error('Error cargando usuarios:', err);
+      setError(err.message || 'Error al cargar usuarios');
     } finally {
       setLoading(false);
     }
@@ -69,21 +77,33 @@ export default function UsuariosPage() {
 
     try {
       const supabase = createBrowserClient();
+      const { data: { session } } = await supabase.auth.getSession();
 
-      const { data, error: signUpError } = await supabase.auth.signUp({
-        email: newUser.email,
-        password: newUser.password,
-        options: {
-          data: {
-            role: newUser.role,
-            display_name: newUser.display_name || newUser.email.split('@')[0]
-          }
-        }
+      if (!session?.access_token) {
+        throw new Error('No autenticado');
+      }
+
+      // Usar el endpoint de admin que crea usuarios con email confirmado
+      const response = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: newUser.email,
+          password: newUser.password,
+          role: newUser.role,
+          display_name: newUser.display_name || newUser.email.split('@')[0]
+        })
       });
 
-      if (signUpError) throw signUpError;
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Error al crear usuario');
+      }
 
-      setSuccess(`Usuario ${newUser.email} creado exitosamente`);
+      setSuccess(`Usuario ${newUser.email} creado exitosamente (email confirmado automáticamente)`);
       setShowModal(false);
       setNewUser({ email: "", password: "", role: "viewer", display_name: "" });
       loadUsuarios();
@@ -193,7 +213,14 @@ export default function UsuariosPage() {
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">{usuario.display_name}</p>
-                      <p className="text-sm text-gray-500">{usuario.email}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm text-gray-500">{usuario.email}</p>
+                        {usuario.email_confirmed === false && (
+                          <span className="text-xs bg-yellow-100 text-yellow-700 px-1.5 py-0.5 rounded">
+                            Sin confirmar
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </td>
