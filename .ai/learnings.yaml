@@ -6,7 +6,7 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-01-28 17:13"
+  fecha_actualizacion: "2026-01-28 17:14"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "presentacion"  # adquisicion | procesamiento | presentacion
@@ -127,13 +127,14 @@ conteos:
     - "API /api/admin/users con service_role_key para listar/crear usuarios"
     - "Middleware corregido para permitir rutas API sin redirección"
     - "Flujo deploy Vercel actualizado con alias obligatorio"
-    - "Usuarios creados (4 super_admin):"
+    - "Fix sync_learnings.py: consulta Supabase directamente (538 ofertas)"
+    - "Usuarios (4 super_admin):"
     - "  - Gerardo Breard (gbreard@gmail.com)"
     - "  - Sergio Rodriguez (srodriguezunq@gmail.com)"
     - "  - David Trajtemberg (DTRAJTEM@trabajo.gob.ar)"
     - "  - Diego Schleser (DSCHLESE@trabajo.gob.ar)"
 
-  proximo_paso: "Dashboard ya tiene 538 ofertas en Supabase - continuar con validación o nuevas features"
+  proximo_paso: "Continuar con validación humana o nuevas features del dashboard"
 
   estadisticas_actuales:
     ofertas_validadas: 0  # validadas anteriormente
