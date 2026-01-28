@@ -1,10 +1,13 @@
 {
-  "_version": "2.4",
+  "_version": "2.5",
   "_descripcion": "Patrones para limpiar titulos de ofertas - eliminar ruido geografico/empresarial/administrativo",
-  "_fecha": "2026-01-13",
+  "_fecha": "2026-01-28",
+  "_cambios_v25": "Fix 60 errores detectados en análisis completo: ubicaciones sin guión, códigos inicio, contexto empresarial ampliado",
+  "_cambios_v24": "Fix títulos dashboard: Zona Sur con punto, Playa Grande, para Empresa de X",
   "_cambios_v22": "Agregados: codigos_final, modalidad_guion, requisitos_edad, más patrones ubicacion",
   "codigos_inicio": {
     "_descripcion": "Codigos alfanumericos al INICIO del titulo (ej: 671SI, ABC123)",
+    "_nota_v25": "Agregados: H -, 1289CC/, letra-guion, num+letras/",
     "patrones": [
       {
         "patron": "^\\d{2,6}[A-Z]{1,3}\\s+",
@@ -21,11 +24,27 @@
       {
         "patron": "^[A-Z]{2,4}-?\\d{3,6}\\s+",
         "ejemplo": "REF-12345 Analista..."
+      },
+      {
+        "patron": "^[A-Z]\\s*-\\s+",
+        "ejemplo": "H - Vendedor...",
+        "_nota": "v2.5: letra-guion-espacio al inicio"
+      },
+      {
+        "patron": "^\\d{3,6}[A-Z]{1,4}/\\s*",
+        "ejemplo": "1289CC/ Analista...",
+        "_nota": "v2.5: num+letras+barra al inicio"
+      },
+      {
+        "patron": "^[A-Z]{1,4}\\d{3,6}/\\s*",
+        "ejemplo": "CC1289/ Analista...",
+        "_nota": "v2.5: letras+num+barra al inicio"
       }
     ]
   },
   "prefijos_genericos": {
     "_descripcion": "Prefijos genericos al inicio que no aportan informacion (Busqueda Laboral:, etc)",
+    "_nota_v25": "Agregado: Aviso de Empleo:",
     "patrones": [
       {
         "patron": "^[Bb][úu]squeda\\s+[Ll]aboral\\s*[:\\-–]\\s*",
@@ -54,6 +73,11 @@
       {
         "patron": "^[Oo]ferta\\s+[Ll]aboral\\s*[:\\-–]\\s*",
         "ejemplo": "Oferta Laboral: Cajero..."
+      },
+      {
+        "patron": "^[Aa]viso\\s+(?:de\\s+)?[Ee]mpleo\\s*[:\\-–]\\s*",
+        "ejemplo": "Aviso de Empleo: Contador...",
+        "_nota": "v2.5"
       },
       {
         "patron": "^[A-ZÁÉÍÓÚ][A-ZÁÉÍÓÚ\\s]+\\s+[Bb][Uu][Ss][Cc][Aa]\\s+",
@@ -280,6 +304,8 @@
       "Tigre",
       "Don Torcuato",
       "Pacheco",
+      "Boulogne",
+      "Nordelta",
       "Escobar",
       "Pilar",
       "Quilmes",
@@ -363,8 +389,13 @@
   },
   "contexto_empresarial_sin_guion": {
     "_descripcion": "Patrones de contexto empresarial SIN guion previo (para Empresa de X)",
-    "_nota": "v2.4 - detectados en dashboard 2026-01-28",
+    "_nota": "v2.5 - ampliado con 9 casos adicionales detectados en análisis completo",
     "patrones": [
+      {
+        "patron": "\\s+para\\s+[Ii]mportante\\s+[Ee]mpresa\\s+(?:de\\s+)?[A-Za-záéíóúÁÉÍÓÚ\\s]+$",
+        "ejemplo": "Vendedor para Importante Empresa de Energia",
+        "_nota": "v2.5: Importante Empresa de X"
+      },
       {
         "patron": "\\s+para\\s+[Ee]mpresa\\s+(?:de\\s+)?[A-Za-záéíóúÁÉÍÓÚ\\s]+$",
         "ejemplo": "Encargado/a para Empresa de Limpieza"
@@ -388,6 +419,31 @@
       {
         "patron": "\\s+para\\s+[Mm]ultinacional\\s*$",
         "ejemplo": "Analista para Multinacional"
+      },
+      {
+        "patron": "\\s+para\\s+[Ee]studio\\s+(?:[Cc]ontable|[Jj]ur[ií]dico|de\\s+[A-Za-záéíóú]+)\\s*$",
+        "ejemplo": "Contador para Estudio Contable",
+        "_nota": "v2.5: Estudio contable/jurídico"
+      },
+      {
+        "patron": "\\s+para\\s+[Ll]aboratorio\\s+[A-Za-záéíóúÁÉÍÓÚ\\s]*$",
+        "ejemplo": "Bioquímico para Laboratorio farmacéutico",
+        "_nota": "v2.5"
+      },
+      {
+        "patron": "\\s+para\\s+[Hh]otel\\s+[A-Za-záéíóúÁÉÍÓÚ\\s]*$",
+        "ejemplo": "Recepcionista para Hotel 5 estrellas",
+        "_nota": "v2.5"
+      },
+      {
+        "patron": "\\s+para\\s+[Rr]estaurante\\s*$",
+        "ejemplo": "Mozo para Restaurante",
+        "_nota": "v2.5"
+      },
+      {
+        "patron": "\\s+para\\s+[Cc]l[ií]nica\\s+[A-Za-záéíóúÁÉÍÓÚ\\s]*$",
+        "ejemplo": "Enfermero para Clínica privada",
+        "_nota": "v2.5"
       }
     ]
   },
@@ -473,6 +529,57 @@
       }
     ]
   },
+  "ubicacion_sin_guion_final": {
+    "_descripcion": "Ubicaciones SIN guion al final del titulo (CABA, Tucumán, etc)",
+    "_nota": "v2.5 - 23 casos detectados. Lista explícita para evitar falsos positivos",
+    "patrones": [
+      {
+        "patron": "\\s+(CABA|Caba|Capital\\s+Federal|Capital|GBA|Gba|Bs\\.?\\s*As\\.?|Buenos\\s+Aires)\\s+[Yy]\\s+(CABA|Caba|GBA|Gba|Interior)$",
+        "ejemplo": "Vendedor CABA Y GBA",
+        "_nota": "v2.5: CABA Y GBA como bloque completo"
+      },
+      {
+        "patron": "\\s+(CABA|Caba|GBA|Gba)\\s+[Yy]\\s+Zona\\s+(Norte|Sur|Oeste|Este)$",
+        "ejemplo": "Vendedoras Caba y Zona Norte",
+        "_nota": "v2.5: Caba y Zona X como bloque"
+      },
+      {
+        "patron": "\\s+(CABA|Caba|Capital\\s+Federal|Capital|GBA|Gba|Bs\\.?\\s*As\\.?|Buenos\\s+Aires)$",
+        "ejemplo": "Vendedor CABA o Vendedor Caba",
+        "_nota": "CABA/Caba y variantes (case sensitive para evitar falsos positivos)"
+      },
+      {
+        "patron": "\\s+(Tucum[aá]n|C[oó]rdoba|Mendoza|Rosario|Santa\\s+Fe|Salta|Jujuy|Neuqu[eé]n|Chaco|Formosa|Misiones|Corrientes|Chubut|R[ií]o\\s+Negro|La\\s+Pampa|San\\s+Luis|San\\s+Juan|La\\s+Rioja|Catamarca|Santiago(?:\\s+del\\s+Estero)?|Tierra\\s+del\\s+Fuego)$",
+        "ejemplo": "Analista Tucumán",
+        "_nota": "Provincias argentinas"
+      },
+      {
+        "patron": "\\s+(Mar\\s+del\\s+Plata|Bah[ií]a\\s+Blanca|La\\s+Plata|R[ií]o\\s+Cuarto|Villa\\s+Mar[ií]a|San\\s+Miguel|Villa\\s+Gesell|Pinamar|Tandil|Olavarr[ií]a|Jun[ií]n|Pergamino|Campana|Z[aá]rate|Luj[aá]n|Mercedes|Ca[ñn]uelas|Chascom[úu]s)$",
+        "ejemplo": "Mozo Mar del Plata",
+        "_nota": "Ciudades importantes interior"
+      },
+      {
+        "patron": "\\s+(Palermo|Belgrano|Recoleta|Caballito|Flores|Nu[ñn]ez|Villa\\s+Crespo|Almagro|Boedo|Barracas|Retiro|Microcentro|Centro|Once|Puerto\\s+Madero|San\\s+Telmo)$",
+        "ejemplo": "Vendedor Palermo",
+        "_nota": "Barrios CABA"
+      },
+      {
+        "patron": "\\s+(San\\s+Isidro|Vicente\\s+L[oó]pez|Olivos|Mart[ií]nez|Tigre|Pilar|Escobar|San\\s+Fernando|Don\\s+Torcuato|Pacheco|Nordelta|Boulogne|Munro|Florida)$",
+        "ejemplo": "Cajero San Isidro",
+        "_nota": "GBA Norte"
+      },
+      {
+        "patron": "\\s+(Quilmes|Avellaneda|Lan[úu]s|Banfield|Lomas\\s+de\\s+Zamora|Berazategui|Bernal|Wilde|Sarand[ií])$",
+        "ejemplo": "Operario Quilmes",
+        "_nota": "GBA Sur"
+      },
+      {
+        "patron": "\\s+(Mor[oó]n|Haedo|Ramos\\s+Mej[ií]a|San\\s+Justo|La\\s+Matanza|Ituzaing[oó]|Merlo|Moreno|Caseros|Ciudadela|San\\s+Mart[ií]n|Villa\\s+Ballester|Hurlingham|Jos[eé]\\s+C\\.?\\s+Paz|Malvinas\\s+Argentinas)$",
+        "ejemplo": "Vendedor Morón",
+        "_nota": "GBA Oeste"
+      }
+    ]
+  },
   "contexto_gestion": {
     "_descripcion": "Patrones de contexto funcional al final (para Gestión de..., para el área de...)",
     "_fecha": "2026-01-14",
@@ -552,6 +659,7 @@
   },
   "limpieza_final": {
     "_descripcion": "Patrones de limpieza al final del proceso",
+    "_nota_v25": "Ampliado para limpiar residuos (comas, Y sola, /CABA, CABA)",
     "patrones": [
       {
         "patron": "\\s+",
@@ -559,9 +667,29 @@
         "descripcion": "espacios multiples"
       },
       {
-        "patron": "[\\s\\-/]+$",
+        "patron": "\\s+[Yy]\\s*$",
         "reemplazo": "",
-        "descripcion": "guiones/barras sueltos al final"
+        "descripcion": "v2.5: Y sola al final (CABA Y -> CABA)"
+      },
+      {
+        "patron": "/(CABA|Caba|GBA|Gba|Capital)\\s*$",
+        "reemplazo": "",
+        "descripcion": "v2.5: /CABA al final"
+      },
+      {
+        "patron": "/(CABA|Caba|GBA|Gba)(?=/|$)",
+        "reemplazo": "",
+        "descripcion": "v2.5: /CABA en medio de path (ANALISTA/CABA/HIBRIDO)"
+      },
+      {
+        "patron": "\\s+para\\s+(CABA|Caba|GBA|Gba|Capital)\\s*$",
+        "reemplazo": "",
+        "descripcion": "v2.5: para CABA al final"
+      },
+      {
+        "patron": "[\\s\\-–—/,]+$",
+        "reemplazo": "",
+        "descripcion": "guiones/barras/comas sueltos al final"
       }
     ]
   },

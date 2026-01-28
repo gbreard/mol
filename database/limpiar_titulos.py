@@ -1,10 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-limpiar_titulos.py v2.4
+limpiar_titulos.py v2.5
 ========================
 Limpia titulos de ofertas eliminando ruido empresarial/geografico.
 Lee patrones desde config/nlp_titulo_limpieza.json
+
+v2.5 (2026-01-28): Fix 60 errores detectados en análisis completo
+- Ubicaciones SIN guión al final (CABA, Tucumán, etc)
+- Códigos inicio ampliados (H -, 1289CC/)
+- Prefijo "Aviso de Empleo:"
+- Contexto empresarial ampliado
 
 v2.4 (2026-01-28): Fix títulos detectados en dashboard
 - Zona Sur/Norte con punto opcional al final
@@ -131,6 +137,12 @@ def limpiar_titulo(titulo: str, config: Dict[str, Any] = None) -> str:
 
     # 4b. Eliminar contexto + ubicacion (para farmacias en Rio Cuarto)
     for patron_info in config.get("contexto_ubicacion", {}).get("patrones", []):
+        patron = patron_info.get("patron", "")
+        if patron:
+            titulo = re.sub(patron, '', titulo, flags=re.IGNORECASE)
+
+    # 4c. [v2.5] Eliminar ubicaciones SIN guion al final (CABA, Tucumán, etc)
+    for patron_info in config.get("ubicacion_sin_guion_final", {}).get("patrones", []):
         patron = patron_info.get("patron", "")
         if patron:
             titulo = re.sub(patron, '', titulo, flags=re.IGNORECASE)
