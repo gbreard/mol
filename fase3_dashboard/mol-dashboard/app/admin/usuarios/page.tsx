@@ -122,7 +122,10 @@ export default function UsuariosPage() {
       setSuccess(`Usuario ${newUser.email} creado exitosamente (email confirmado automáticamente)`);
       setShowModal(false);
       setNewUser({ email: "", password: "", role: "viewer", display_name: "" });
-      loadUsuarios();
+      // Recargar lista de usuarios
+      if (session?.access_token) {
+        loadUsuarios(session.access_token);
+      }
     } catch (err: any) {
       setError(err.message || 'Error al crear usuario');
     } finally {
