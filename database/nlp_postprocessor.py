@@ -437,6 +437,64 @@ class NLPPostprocessor:
         return data
 
     # =========================================================================
+    # PASO 2d: INFERIR PROVINCIA DESDE LOCALIDAD (v1.2 - 2026-01-29)
+    # =========================================================================
+
+    def _infer_provincia_from_localidad(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Infiere provincia cuando está vacía pero localidad indica ciudad conocida.
+
+        Casos:
+          - localidad="Córdoba Capital" -> provincia="Cordoba"
+          - localidad="Yerba Buena" -> provincia="Tucuman"
+          - localidad="Rosario" -> provincia="Santa Fe"
+        """
+        provincia = data.get("provincia", "")
+        localidad = data.get("localidad", "")
+
+        # Solo aplicar si provincia está vacía y localidad tiene valor
+        if provincia or not localidad:
+            return data
+
+        # Obtener reglas de inferencia
+        inference_config = self.configs.get("inference_rules", {})
+        provincia_rules = inference_config.get("provincia_desde_localidad", {})
+        reglas = provincia_rules.get("reglas", [])
+
+        if not reglas:
+            return data
+
+        localidad_lower = localidad.lower().strip()
+        localidad_norm = localidad.strip()
+
+        for regla in reglas:
+            # Regla por contenido
+            if "localidad_contiene" in regla:
+                patron = regla["localidad_contiene"].lower()
+                if patron in localidad_lower:
+                    provincia_inferida = regla.get("forzar_provincia")
+                    if provincia_inferida:
+                        data["provincia"] = provincia_inferida
+                        self.stats["provincia_inferida_localidad"] = self.stats.get("provincia_inferida_localidad", 0) + 1
+                        if self.verbose:
+                            print(f"[UBICACION] Provincia inferida: '{localidad}' -> provincia='{provincia_inferida}'")
+                        return data
+
+            # Regla por exactitud
+            if "localidad_exacta" in regla:
+                patron = regla["localidad_exacta"]
+                if localidad_norm.lower() == patron.lower():
+                    provincia_inferida = regla.get("forzar_provincia")
+                    if provincia_inferida:
+                        data["provincia"] = provincia_inferida
+                        self.stats["provincia_inferida_localidad"] = self.stats.get("provincia_inferida_localidad", 0) + 1
+                        if self.verbose:
+                            print(f"[UBICACION] Provincia inferida (exacta): '{localidad}' -> provincia='{provincia_inferida}'")
+                        return data
+
+        return data
+
+    # =========================================================================
     # PASO 3: RE-EXTRACCION EXPERIENCIA (excluyendo edad)
     # =========================================================================
 
@@ -1996,6 +2054,9 @@ class NLPPostprocessor:
 
         # Paso 2c: Validacion ubicacion (v1.1 - diccionario localidades)
         data = self._validate_ubicacion(data)
+
+        # Paso 2d: Inferir provincia desde localidad (v1.2 - 2026-01-29)
+        data = self._infer_provincia_from_localidad(data)
 
         # Paso 3: Re-extraccion experiencia
         data = self._extract_experiencia(descripcion, data)

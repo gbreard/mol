@@ -626,5 +626,96 @@
     "min_longitud_skill": 2,
     "max_skills": 15,
     "separador_salida": ", "
+  },
+
+  "provincia_desde_localidad": {
+    "_descripcion": "Inferir provincia cuando está vacía pero localidad indica ciudad capital o conocida",
+    "_fecha": "2026-01-29",
+    "_casos_resueltos": ["1118115511 Córdoba Capital", "1118115544 Yerba Buena"],
+
+    "reglas": [
+      {
+        "localidad_contiene": "Córdoba Capital",
+        "forzar_provincia": "Cordoba"
+      },
+      {
+        "localidad_contiene": "Córdoba capital",
+        "forzar_provincia": "Cordoba"
+      },
+      {
+        "localidad_exacta": "Córdoba",
+        "forzar_provincia": "Cordoba"
+      },
+      {
+        "localidad_contiene": "Yerba Buena",
+        "forzar_provincia": "Tucuman"
+      },
+      {
+        "localidad_contiene": "San Miguel de Tucumán",
+        "forzar_provincia": "Tucuman"
+      },
+      {
+        "localidad_exacta": "Rosario",
+        "forzar_provincia": "Santa Fe"
+      },
+      {
+        "localidad_exacta": "Mendoza",
+        "forzar_provincia": "Mendoza"
+      },
+      {
+        "localidad_exacta": "Mar del Plata",
+        "forzar_provincia": "Buenos Aires"
+      },
+      {
+        "localidad_exacta": "La Plata",
+        "forzar_provincia": "Buenos Aires"
+      },
+      {
+        "localidad_exacta": "Bahía Blanca",
+        "forzar_provincia": "Buenos Aires"
+      },
+      {
+        "localidad_exacta": "San Juan",
+        "forzar_provincia": "San Juan"
+      },
+      {
+        "localidad_exacta": "San Luis",
+        "forzar_provincia": "San Luis"
+      },
+      {
+        "localidad_exacta": "Neuquén",
+        "forzar_provincia": "Neuquen"
+      },
+      {
+        "localidad_exacta": "Salta",
+        "forzar_provincia": "Salta"
+      },
+      {
+        "localidad_exacta": "Corrientes",
+        "forzar_provincia": "Corrientes"
+      },
+      {
+        "localidad_exacta": "Resistencia",
+        "forzar_provincia": "Chaco"
+      },
+      {
+        "localidad_exacta": "Posadas",
+        "forzar_provincia": "Misiones"
+      },
+      {
+        "localidad_exacta": "Paraná",
+        "forzar_provincia": "Entre Rios"
+      },
+      {
+        "localidad_exacta": "Santa Fe",
+        "forzar_provincia": "Santa Fe"
+      },
+      {
+        "localidad_exacta": "Formosa",
+        "forzar_provincia": "Formosa"
+      }
+    ],
+
+    "nota": "Aplicar solo cuando provincia está vacía y localidad es reconocible"
   }
 }
