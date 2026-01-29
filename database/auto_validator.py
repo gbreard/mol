@@ -72,18 +72,38 @@ class AutoValidator:
         patrones = []
         config = self.titulo_limpieza_config
 
-        # Secciones que contienen patrones de ruido
+        # Secciones que contienen patrones de ruido (TODAS las del config)
+        # v2.6.1: Lista completa para evitar que pasen títulos mal limpiados
         secciones_con_patrones = [
+            # Códigos y prefijos (inicio)
+            'codigos_inicio',
+            'prefijos_genericos',
+            'codigos_referencia',
+            'ciudades_inicio',
+            # Ubicaciones
             'zonas_ubicaciones',
+            'ubicacion_con_guion',
+            'ubicacion_guion_extendido',
+            'ubicacion_sin_guion_final',
+            'contexto_ubicacion',
+            # Contexto empresarial
+            'contexto_empresarial',
             'contexto_empresarial_sin_guion',
             'contexto_complejo',
-            'parentesis_eliminar',
-            'ubicacion_con_guion',
+            'contexto_gestion',
+            # Modalidad y turnos
             'modalidad_guion',
+            'turno_final',
+            # Códigos finales
             'codigos_final',
-            'requisitos_edad',
-            'ubicacion_guion_extendido',
             'codigos_empresa',
+            # Otros
+            'parentesis_eliminar',
+            'requisitos_edad',
+            'info_administrativa',
+            'pipes_limpiar',
+            'preposiciones_final',
+            'limpieza_final',
         ]
 
         for seccion in secciones_con_patrones:
@@ -114,6 +134,21 @@ class AutoValidator:
                         'patron': patron,
                         'compiled': compiled,
                         'ejemplo': f'- {localidad}'
+                    })
+                except re.error:
+                    pass
+
+        # modalidad_final: lista de palabras al final del título
+        if 'modalidad_final' in config:
+            for palabra in config['modalidad_final'].get('palabras', []):
+                patron = rf'\s+{re.escape(palabra)}\s*$'
+                try:
+                    compiled = re.compile(patron, re.IGNORECASE)
+                    patrones.append({
+                        'seccion': 'modalidad_final',
+                        'patron': patron,
+                        'compiled': compiled,
+                        'ejemplo': f'... {palabra}'
                     })
                 except re.error:
                     pass
