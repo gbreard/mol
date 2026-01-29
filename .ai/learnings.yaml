@@ -6,7 +6,7 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-01-28 17:14"
+  fecha_actualizacion: "2026-01-29 15:00"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "presentacion"  # adquisicion | procesamiento | presentacion
@@ -106,7 +106,7 @@ conteos:
   empresas_catalogo: 247  # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
   skills_esco: 14257            # database/embeddings/esco_skills_full.json
   ocupaciones_esco: 3046        # database/embeddings/esco_occupations_full.json
-  ultima_verificacion: 2026-01-28
+  ultima_verificacion: 2026-01-29
 
   supabase:
     integrado: true
@@ -123,18 +123,17 @@ conteos:
     cobertura_L1: "97.7%"  # skills con categoria L1
 
   ultimo_trabajo:
-    - "Dashboard Fase 3: Sistema de usuarios completado"
-    - "API /api/admin/users con service_role_key para listar/crear usuarios"
-    - "Middleware corregido para permitir rutas API sin redirección"
-    - "Flujo deploy Vercel actualizado con alias obligatorio"
-    - "Fix sync_learnings.py: consulta Supabase directamente (538 ofertas)"
-    - "Usuarios (4 super_admin):"
-    - "  - Gerardo Breard (gbreard@gmail.com)"
-    - "  - Sergio Rodriguez (srodriguezunq@gmail.com)"
-    - "  - David Trajtemberg (DTRAJTEM@trabajo.gob.ar)"
-    - "  - Diego Schleser (DSCHLESE@trabajo.gob.ar)"
+    - "Sistema de Issues/Feedback en dashboard (2026-01-29)"
+    - "  - FAB flotante con contador de pendientes"
+    - "  - Drawer slide-out para crear issues"
+    - "  - Botón en cada fila de ofertas para reportar errores"
+    - "  - Página /admin/issues para gestión completa"
+    - "  - Tipos: error_isco, error_nlp, error_skill, sugerencia, bug, otro"
+    - "  - Campos tracking: agrupado_con, solucion_aplicada, config_modificada"
+    - "Fix layout Ofertas Laborales: tabla ajustada a ventana sin scroll horizontal"
+    - "Deploy con alias: npx vercel --prod → npx vercel alias [url] mol-nextjs.vercel.app"
 
-  proximo_paso: "Continuar con validación humana o nuevas features del dashboard"
+  proximo_paso: "Validación humana de ofertas o procesar nuevo lote"
 
   estadisticas_actuales:
     ofertas_validadas: 0  # validadas anteriormente
