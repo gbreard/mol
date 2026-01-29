@@ -11,13 +11,15 @@ import {
   Settings,
   Shield,
   ChevronLeft,
-  Loader2
+  Loader2,
+  MessageSquare
 } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase/browser";
 
 const adminNavItems = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
   { href: "/admin/usuarios", label: "Usuarios", icon: Users },
+  { href: "/admin/issues", label: "Issues", icon: MessageSquare },
   { href: "/admin/scraping", label: "Scraping", icon: Database },
   { href: "/admin/metricas", label: "Métricas", icon: BarChart3 },
   { href: "/admin/logs", label: "Logs", icon: FileText },

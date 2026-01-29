@@ -83,18 +83,18 @@ function StackedBar({
   const filteredData = data.filter(d => d.porcentaje >= 3 || d.name !== 'Sin especificar')
 
   return (
-    <div className="py-3 border-b border-gray-100 last:border-0">
-      <div className="flex items-center gap-4">
+    <div className="py-2 border-b border-gray-100 last:border-0">
+      <div className="flex items-center gap-3">
         {/* Label con icono */}
-        <div className="flex items-center gap-2 w-40 flex-shrink-0">
-          <div className="p-1.5 bg-gray-100 rounded-lg">
-            <Icon className="w-4 h-4 text-gray-600" />
+        <div className="flex items-center gap-2 w-32 lg:w-40 flex-shrink-0">
+          <div className="p-1 bg-gray-100 rounded-lg">
+            <Icon className="w-3.5 h-3.5 text-gray-600" />
           </div>
-          <span className="text-sm font-medium text-gray-700">{label}</span>
+          <span className="text-xs lg:text-sm font-medium text-gray-700 truncate">{label}</span>
         </div>
 
         {/* Barra apilada */}
-        <div className="flex-1 flex h-7 rounded-lg overflow-hidden bg-gray-100 relative">
+        <div className="flex-1 flex h-6 rounded-lg overflow-hidden bg-gray-100 relative">
           {filteredData.map((item, index) => (
             <div
               key={item.name}
@@ -127,12 +127,12 @@ function StackedBar({
         </div>
       </div>
 
-      {/* Leyenda debajo de la barra */}
-      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 ml-44">
+      {/* Leyenda debajo de la barra - oculta en móvil para ahorrar espacio */}
+      <div className="hidden lg:flex flex-wrap gap-x-3 gap-y-0.5 mt-1.5 ml-[140px] lg:ml-[168px]">
         {filteredData.map((item) => (
-          <div key={item.name} className="flex items-center gap-1.5 text-xs">
+          <div key={item.name} className="flex items-center gap-1 text-[10px]">
             <div
-              className="w-2.5 h-2.5 rounded-sm flex-shrink-0"
+              className="w-2 h-2 rounded-sm flex-shrink-0"
               style={{ backgroundColor: getColor(item.name) }}
             />
             <span className="text-gray-600">{item.name}</span>
@@ -247,10 +247,10 @@ export function Requerimientos({ filters }: RequerimientosProps) {
   const categoriaOptions = ['Todos', ...allCategoriasL1.map(c => c.name)];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Filtros del tab */}
-      <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-        <div className="flex items-center gap-6 flex-wrap">
+      <div className="bg-white rounded-xl border border-gray-200 p-3 shadow-sm">
+        <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-2 text-gray-500">
             <Filter className="w-4 h-4" />
             <span className="text-sm font-medium">Filtros:</span>
@@ -343,10 +343,10 @@ export function Requerimientos({ filters }: RequerimientosProps) {
 
       {/* Requerimientos - Barras horizontales apiladas al 100% */}
       {requerimientosData && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Distribución de requerimientos</h3>
+        <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+          <h3 className="text-base font-semibold text-gray-800 mb-3">Distribución de requerimientos</h3>
 
-          <div className="space-y-1">
+          <div className="space-y-0">
             <StackedBar
               label="Nivel educativo"
               data={requerimientosData.educacion}
@@ -389,18 +389,18 @@ export function Requerimientos({ filters }: RequerimientosProps) {
       )}
 
       {/* ========== SKILLS CLASIFICADAS (ESCO) ========== */}
-      <div className="border-t border-gray-200 pt-6 mt-6">
-        <div className="flex items-center gap-2 mb-6">
+      <div className="border-t border-gray-200 pt-4 mt-4">
+        <div className="flex items-center gap-2 mb-4">
           <Layers className="w-5 h-5 text-blue-600" />
-          <h2 className="text-lg font-semibold text-gray-800">Análisis de habilidades</h2>
+          <h2 className="text-base font-semibold text-gray-800">Análisis de habilidades</h2>
         </div>
 
-        {/* Grid: Categorías L1 (3/4) + Top 10 Skills tabla (1/4) */}
-        <div className="grid grid-cols-4 gap-6 mb-6" style={{ minHeight: '480px' }}>
-          {/* Distribución por Categoría L1 - 3/4 del ancho */}
-          <div className="col-span-3 bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex flex-col">
+        {/* Grid: Categorías L1 + Top 10 Skills tabla - Responsive */}
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 mb-6">
+          {/* Distribución por Categoría L1 - 3/4 del ancho en xl, full en móvil */}
+          <div className="xl:col-span-3 bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex flex-col min-h-[320px] max-h-[50vh]">
             <h3 className="text-sm font-semibold text-gray-700 mb-4">Distribución por categoría de habilidades</h3>
-            <ResponsiveContainer width="100%" height={420} className="flex-1">
+            <ResponsiveContainer width="100%" height="100%" className="flex-1 min-h-[280px]">
               <BarChart data={categoriasL1} layout="vertical" margin={{ left: 10, right: 30 }} barSize={20}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
                 <XAxis type="number" stroke="#6b7280" style={{ fontSize: '11px' }} />
@@ -455,9 +455,9 @@ export function Requerimientos({ filters }: RequerimientosProps) {
           </div>
 
           {/* Top 10 Skills - Tabla */}
-          <div className="col-span-1 bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex flex-col">
+          <div className="xl:col-span-1 bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex flex-col">
             <h3 className="text-sm font-semibold text-gray-700 mb-4">Top 10 habilidades</h3>
-            <div className="flex-1 flex flex-col justify-between">
+            <div className="flex-1 flex flex-col gap-1 overflow-y-auto">
               {topSkillsTotal.map((skill, index) => {
                 const catIndex = categoriasL1.findIndex(c => c.code === skill.categoria);
                 const color = catIndex >= 0 ? COLORS_L1[catIndex % COLORS_L1.length] : '#6b7280';

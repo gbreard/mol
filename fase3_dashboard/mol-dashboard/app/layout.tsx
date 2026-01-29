@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { IssueWrapper } from "@/components/issues";
 
 export const metadata: Metadata = {
   title: "Mol - Dashboard de Mercado Laboral",
@@ -14,7 +15,9 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className="antialiased font-sans">
-        {children}
+        <IssueWrapper>
+          {children}
+        </IssueWrapper>
       </body>
     </html>
   );

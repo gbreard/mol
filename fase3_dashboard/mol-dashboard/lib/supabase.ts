@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import { DashboardFilters } from './types'
+import { DashboardFilters, Issue, IssueStats } from './types'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -810,4 +810,131 @@ export async function getSkillsCategoriaPorOcupacion(globalFilters?: DashboardFi
     ocupaciones,
     categorias: categorias.map(c => ({ code: c, name: categoriasNombres[c] }))
   }
+}
+
+// ========== FUNCIONES PARA ISSUES/FEEDBACK ==========
+
+// Obtener issues con filtros opcionales
+export async function getIssues(filters?: {
+  estado?: string;
+  tipo?: string;
+  prioridad?: string;
+  id_oferta?: string;
+}): Promise<Issue[]> {
+  let query = supabase
+    .from('issues')
+    .select('*')
+    .order('created_at', { ascending: false })
+
+  if (filters?.estado) {
+    query = query.eq('estado', filters.estado)
+  }
+  if (filters?.tipo) {
+    query = query.eq('tipo', filters.tipo)
+  }
+  if (filters?.prioridad) {
+    query = query.eq('prioridad', filters.prioridad)
+  }
+  if (filters?.id_oferta) {
+    query = query.eq('id_oferta', filters.id_oferta)
+  }
+
+  const { data, error } = await query
+
+  if (error) throw error
+  return data || []
+}
+
+// Obtener issues pendientes (para el badge del FAB)
+export async function getIssuesPendientes(): Promise<Issue[]> {
+  const { data, error } = await supabase
+    .from('issues')
+    .select('*')
+    .in('estado', ['pendiente', 'en_progreso'])
+    .order('prioridad', { ascending: true }) // critica primero
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return data || []
+}
+
+// Crear un issue
+export async function createIssue(issue: {
+  titulo: string;
+  descripcion?: string;
+  tipo: string;
+  prioridad: string;
+  id_oferta?: string;
+  autor_id: string;
+  autor_email: string;
+}): Promise<Issue> {
+  const { data, error } = await supabase
+    .from('issues')
+    .insert([issue])
+    .select()
+    .single()
+
+  if (error) throw error
+  return data
+}
+
+// Actualizar un issue
+export async function updateIssue(
+  id: string,
+  updates: Partial<Omit<Issue, 'id' | 'created_at'>>
+): Promise<Issue> {
+  const updateData = {
+    ...updates,
+    updated_at: new Date().toISOString()
+  }
+
+  // Si se marca como resuelto, agregar fecha
+  if (updates.estado === 'resuelto' && !updates.resuelto_at) {
+    updateData.resuelto_at = new Date().toISOString()
+  }
+
+  const { data, error } = await supabase
+    .from('issues')
+    .update(updateData)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) throw error
+  return data
+}
+
+// Obtener estadísticas de issues
+export async function getIssuesStats(): Promise<IssueStats> {
+  const { data, error } = await supabase
+    .from('issues')
+    .select('estado')
+
+  if (error) throw error
+
+  const stats: IssueStats = {
+    pendientes: 0,
+    en_progreso: 0,
+    resueltos: 0
+  }
+
+  data?.forEach(issue => {
+    if (issue.estado === 'pendiente') stats.pendientes++
+    else if (issue.estado === 'en_progreso') stats.en_progreso++
+    else if (issue.estado === 'resuelto') stats.resueltos++
+  })
+
+  return stats
+}
+
+// Obtener issues de una oferta específica
+export async function getIssuesByOferta(id_oferta: string): Promise<Issue[]> {
+  const { data, error } = await supabase
+    .from('issues')
+    .select('*')
+    .eq('id_oferta', id_oferta)
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return data || []
 }

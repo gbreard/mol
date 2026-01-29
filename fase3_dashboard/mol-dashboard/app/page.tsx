@@ -66,45 +66,49 @@ export default function Home() {
         <Sidebar filters={filters} onFilterChange={handleFilterChange} />
 
         {/* Content */}
-        <main className="flex-1 overflow-y-auto">
-          <div className="p-8">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="w-full h-14 mb-6 bg-white shadow-lg border border-gray-200 p-2 rounded-xl grid grid-cols-3 gap-2">
+        <main className="flex-1 overflow-hidden flex flex-col">
+          <div className="p-4 lg:p-6 flex-1 flex flex-col min-h-0">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full flex-1 flex flex-col min-h-0">
+              <TabsList className="w-full h-12 mb-4 bg-white shadow-lg border border-gray-200 p-1.5 rounded-xl grid grid-cols-3 gap-1.5 flex-shrink-0">
                 <TabsTrigger
                   value="panorama"
-                  className="h-full text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-blue-700 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=inactive]:text-gray-600 data-[state=inactive]:hover:text-blue-600 data-[state=inactive]:hover:bg-blue-50 font-semibold rounded-lg transition-all duration-200 flex items-center gap-2"
+                  className="h-full text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-blue-700 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=inactive]:text-gray-600 data-[state=inactive]:hover:text-blue-600 data-[state=inactive]:hover:bg-blue-50 font-semibold rounded-lg transition-all duration-200 flex items-center gap-1.5"
                 >
-                  <BarChart3 className="w-5 h-5" />
-                  Panorama general
+                  <BarChart3 className="w-4 h-4" />
+                  <span className="hidden sm:inline">Panorama general</span>
+                  <span className="sm:hidden">Panorama</span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="requerimientos"
-                  className="h-full text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-blue-700 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=inactive]:text-gray-600 data-[state=inactive]:hover:text-blue-600 data-[state=inactive]:hover:bg-blue-50 font-semibold rounded-lg transition-all duration-200 flex items-center gap-2"
+                  className="h-full text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-blue-700 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=inactive]:text-gray-600 data-[state=inactive]:hover:text-blue-600 data-[state=inactive]:hover:bg-blue-50 font-semibold rounded-lg transition-all duration-200 flex items-center gap-1.5"
                 >
-                  <Target className="w-5 h-5" />
+                  <Target className="w-4 h-4" />
                   Requerimientos
                 </TabsTrigger>
                 <TabsTrigger
                   value="ofertas"
-                  className="h-full text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-blue-700 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=inactive]:text-gray-600 data-[state=inactive]:hover:text-blue-600 data-[state=inactive]:hover:bg-blue-50 font-semibold rounded-lg transition-all duration-200 flex items-center gap-2"
+                  className="h-full text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-blue-700 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=inactive]:text-gray-600 data-[state=inactive]:hover:text-blue-600 data-[state=inactive]:hover:bg-blue-50 font-semibold rounded-lg transition-all duration-200 flex items-center gap-1.5"
                 >
-                  <Briefcase className="w-5 h-5" />
-                  Ofertas laborales
+                  <Briefcase className="w-4 h-4" />
+                  <span className="hidden sm:inline">Ofertas laborales</span>
+                  <span className="sm:hidden">Ofertas</span>
                 </TabsTrigger>
               </TabsList>
 
               {/* Active Filters */}
-              <ActiveFilters filters={filters} onRemoveFilter={handleRemoveFilter} />
+              <div className="flex-shrink-0">
+                <ActiveFilters filters={filters} onRemoveFilter={handleRemoveFilter} />
+              </div>
 
-              <TabsContent value="panorama" className="mt-0">
+              <TabsContent value="panorama" className="mt-0 flex-1 overflow-y-auto">
                 <PanoramaGeneral filters={filters} />
               </TabsContent>
 
-              <TabsContent value="requerimientos" className="mt-0">
+              <TabsContent value="requerimientos" className="mt-0 flex-1 overflow-y-auto">
                 <Requerimientos filters={filters} />
               </TabsContent>
 
-              <TabsContent value="ofertas" className="mt-0">
+              <TabsContent value="ofertas" className="mt-0 flex-1 flex flex-col min-h-0">
                 <OfertasLaborales filters={filters} />
               </TabsContent>
             </Tabs>
