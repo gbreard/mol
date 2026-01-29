@@ -103,7 +103,7 @@ class AutoValidator:
             'info_administrativa',
             'pipes_limpiar',
             'preposiciones_final',
-            'limpieza_final',
+            # NOTA: 'limpieza_final' EXCLUIDA - son patrones de transformación, no de detección
         ]
 
         for seccion in secciones_con_patrones:
