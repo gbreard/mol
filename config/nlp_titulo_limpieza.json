@@ -1,7 +1,10 @@
 {
-  "_version": "2.5",
+  "_version": "2.6.1",
   "_descripcion": "Patrones para limpiar titulos de ofertas - eliminar ruido geografico/empresarial/administrativo",
-  "_fecha": "2026-01-28",
+  "_fecha": "2026-01-29",
+  "_cambios_v261": "17 ubicaciones GBA adicionales: tortuguitas, ezeiza, temperley, florencio varela, contexto empresarial ampliado",
+  "_cambios_v26": "Normalización Sentence case (441 títulos normalizados)",
+  "_cambios_v251": "req sin paréntesis, turnos con barra, países extranjeros",
   "_cambios_v25": "Fix 60 errores detectados en análisis completo: ubicaciones sin guión, códigos inicio, contexto empresarial ampliado",
   "_cambios_v24": "Fix títulos dashboard: Zona Sur con punto, Playa Grande, para Empresa de X",
   "_cambios_v22": "Agregados: codigos_final, modalidad_guion, requisitos_edad, más patrones ubicacion",
