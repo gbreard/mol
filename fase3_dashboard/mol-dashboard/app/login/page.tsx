@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@/lib/supabase/browser";
 import Image from "next/image";
@@ -11,10 +11,20 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const supabase = createBrowserClient();
+
+  // Create client only on client-side
+  const supabase = useMemo(() => {
+    if (typeof window === 'undefined') return null;
+    return createBrowserClient();
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!supabase) {
+      setError("Sistema no disponible. Recarga la página.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
