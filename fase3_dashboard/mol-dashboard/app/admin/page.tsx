@@ -31,6 +31,12 @@ export default function AdminDashboard() {
   useEffect(() => {
     async function loadStats() {
       try {
+        if (!supabase) {
+          console.warn('Supabase no configurado');
+          setLoading(false);
+          return;
+        }
+
         // Obtener estadísticas de ofertas
         const { count: totalOfertas } = await supabase
           .from('ofertas')

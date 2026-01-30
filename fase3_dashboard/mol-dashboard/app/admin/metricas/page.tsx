@@ -35,6 +35,12 @@ export default function MetricasPage() {
 
   async function loadMetricas() {
     try {
+      if (!supabase) {
+        console.warn('Supabase no configurado');
+        setLoading(false);
+        return;
+      }
+
       // Total ofertas
       const { count: totalOfertas } = await supabase
         .from('ofertas')

@@ -58,6 +58,12 @@ export default function ScrapingPage() {
 
   async function loadData() {
     try {
+      if (!supabase) {
+        console.warn('Supabase no configurado');
+        setLoading(false);
+        return;
+      }
+
       // Estado del sistema
       const { data: estadoData } = await supabase
         .from('sistema_estado')
