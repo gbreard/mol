@@ -1,8 +1,9 @@
 {
-  "version": "3.8",
-  "descripcion": "Reglas de negocio para matching ESCO. 169 reglas de bypass que fuerzan ISCO específico.",
+  "version": "3.9",
+  "descripcion": "Reglas de negocio para matching ESCO. 172 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-01-30",
+  "_cambios_v39": "R169 analista impuestos (2411), R170 asesor comercial (3322), R171 logística entregas (8322) - fix ISCO sobreclasificados",
   "_cambios_v38": "R166 cocinero/planchero (5120), R167 soporte ISP (3512), R168 docente gastronómico (2320)",
   "_cambios_v37": "R164 camarista cámara frío (9333), R165 portero seguridad (5414) - fix ISCO incorrectos",
   "_cambios_v33": "Fix R13_enfermero esco_label, R15 exclusiones, R38 exclusiones, nuevas R161-R163 deposito/edilicio/comex",
@@ -3797,6 +3798,96 @@
       "fecha_creacion": "2026-01-30",
       "activa": true,
       "nota": "Docente gastronomía = formador profesional, NO profesor universitario"
+    },
+    "R169_analista_impuestos": {
+      "nombre": "Analista de impuestos / fiscal",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista de impuestos",
+          "analista impuestos",
+          "analista fiscal",
+          "analista tributario",
+          "analista de tributos"
+        ],
+        "titulo_no_contiene_alguno": [
+          "senior",
+          "sr.",
+          "jefe",
+          "gerente",
+          "director"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2411",
+        "esco_label": "contable"
+      },
+      "caso_diagnostico": "1118101751 - Analista de impuestos (semisenior) - NO es director financiero",
+      "fecha_creacion": "2026-01-30",
+      "activa": true,
+      "nota": "Analista de impuestos = contable especializado, NO director financiero (1211)"
+    },
+    "R170_asesor_comercial": {
+      "nombre": "Asesor comercial / ejecutivo de cuentas",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "asesor comercial",
+          "asesora comercial",
+          "asesor/a comercial",
+          "asesor de ventas",
+          "asesora de ventas",
+          "ejecutivo de cuentas",
+          "ejecutiva de cuentas"
+        ],
+        "titulo_no_contiene_alguno": [
+          "senior",
+          "sr.",
+          "jefe",
+          "gerente",
+          "director",
+          "líder",
+          "lider"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3322",
+        "esco_label": "representante comercial"
+      },
+      "caso_diagnostico": "1118102143 - Asesor/a comercial (semisenior) - NO es director ventas",
+      "fecha_creacion": "2026-01-30",
+      "activa": true,
+      "nota": "Asesor comercial = representante comercial, NO director de ventas (1221)"
+    },
+    "R171_logistica_entregas": {
+      "nombre": "Logística / Repartidor entregas domicilio",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "logística",
+          "logistica",
+          "repartidor",
+          "repartidora",
+          "entregas a domicilio",
+          "entregas domicilio"
+        ],
+        "area_funcional_es": "Logistica",
+        "titulo_no_contiene_alguno": [
+          "jefe",
+          "gerente",
+          "coordinador",
+          "supervisor",
+          "analista"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8322",
+        "esco_label": "conductor de vehículo de reparto/conductora de vehículo de reparto"
+      },
+      "caso_diagnostico": "1118102208 - Logística (trainee) sector salud - entregas equipamiento médico, NO enfermero",
+      "fecha_creacion": "2026-01-30",
+      "activa": true,
+      "nota": "Logística de entregas = conductor de reparto, NO enfermero (3258)"
     }
   },
   "reglas_filtro": {
