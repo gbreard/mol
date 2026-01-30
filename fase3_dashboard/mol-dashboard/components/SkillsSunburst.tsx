@@ -323,7 +323,7 @@ export default function SkillsSunburst({
         })
         .attr('fill-opacity', (d: any) => arcVisible(d.target) ? 1 : 0)
         .attr('pointer-events', (d: any) => arcVisible(d.target) ? 'auto' : 'none')
-        .attrTween('d', (d: any) => () => arc(d.current));
+        .attrTween('d', (d: any) => () => arc(d.current) || '');
 
       label.filter(function(d: any) {
           return !!((this as any).getAttribute('fill-opacity')) || labelVisible(d.target);
