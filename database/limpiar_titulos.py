@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-limpiar_titulos.py v2.6
+limpiar_titulos.py v2.6.2
 ========================
 Limpia titulos de ofertas eliminando ruido empresarial/geografico.
 Lee patrones desde config/nlp_titulo_limpieza.json
+
+v2.6.2 (2026-01-30): Fix 3 errores detectados
+- BUSCAMOS (mayusculas): re.IGNORECASE para prefijos_genericos
+- Capital Federal / Zona Sur: patron expandido
+- Part Time con guion: agregar a modalidad_guion
 
 v2.6 (2026-01-28): Normalización capitalización (Sentence case)
 - Todos los títulos con formato uniforme: "Analista de marketing"
@@ -130,7 +135,7 @@ def limpiar_titulo(titulo: str, config: Dict[str, Any] = None) -> str:
     for patron_info in config.get("prefijos_genericos", {}).get("patrones", []):
         patron = patron_info.get("patron", "")
         if patron:
-            titulo = re.sub(patron, '', titulo)
+            titulo = re.sub(patron, '', titulo, flags=re.IGNORECASE)
 
     # 0b. Eliminar ubicaciones AL INICIO del titulo
     ciudades = config.get("ciudades_inicio", {}).get("lista", [])

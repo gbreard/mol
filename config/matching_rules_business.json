@@ -1,8 +1,10 @@
 {
-  "version": "3.6",
-  "descripcion": "Reglas de negocio para matching ESCO. 164 reglas de bypass que fuerzan ISCO específico.",
+  "version": "3.8",
+  "descripcion": "Reglas de negocio para matching ESCO. 169 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-01-29",
+  "fecha_actualizacion": "2026-01-30",
+  "_cambios_v38": "R166 cocinero/planchero (5120), R167 soporte ISP (3512), R168 docente gastronómico (2320)",
+  "_cambios_v37": "R164 camarista cámara frío (9333), R165 portero seguridad (5414) - fix ISCO incorrectos",
   "_cambios_v33": "Fix R13_enfermero esco_label, R15 exclusiones, R38 exclusiones, nuevas R161-R163 deposito/edilicio/comex",
   "_cambios_v34": "Fix R162 esco_label (electricista de edificios -> electricista de obras), R110 exclusiones edilicio, R22 exclusiones edilicio",
   "_cambios_v35": "R26 exclusiones gastronómicas, R19b PM IT (1330), R17b Compliance financiero (2413), R119 operario logístico (9321->9333)",
@@ -3668,6 +3670,133 @@
       "fecha_creacion": "2026-01-29",
       "activa": true,
       "nota": "Roles administrativos de comex = empleados contables, no despachantes de aduana"
+    },
+    "R164_camarista_camara_frio": {
+      "nombre": "Camarista de cámara de frío (industria alimenticia)",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "camarista",
+          "cámara de frío",
+          "camara de frio",
+          "cámara fría",
+          "camara fria"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9333",
+        "esco_label": "operario de logística de almacén/operaria de logística de almacén"
+      },
+      "caso_diagnostico": "1118101813 - Camarista (Cámara de Frío) zona Santos Lugares - heladería",
+      "fecha_creacion": "2026-01-30",
+      "activa": true,
+      "nota": "Camarista en Argentina = operario de cámara frigorífica, NO cajista tipográfico"
+    },
+    "R165_portero_seguridad": {
+      "nombre": "Portero (edificio/empresa - funciones de seguridad)",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "portero",
+          "portera"
+        ],
+        "titulo_no_contiene_alguno": [
+          "hotel",
+          "discoteca",
+          "club",
+          "futbol",
+          "fútbol"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5414",
+        "esco_label": "vigilante de seguridad"
+      },
+      "caso_diagnostico": "1118102070 - Portero Zona Bernal (empresa metalúrgica, portería y seguridad)",
+      "fecha_creacion": "2026-01-30",
+      "activa": true,
+      "nota": "Portero en Argentina = vigilante/seguridad de edificio, NO repostero"
+    },
+    "R166_cocinero_planchero": {
+      "nombre": "Cocinero / Planchero (gastronomía)",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "cocinero",
+          "cocinera",
+          "planchero",
+          "planchera",
+          "parrillero",
+          "parrillera"
+        ],
+        "titulo_no_contiene_alguno": [
+          "chef",
+          "jefe de cocina",
+          "encargado de cocina",
+          "docente",
+          "instructor"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5120",
+        "esco_label": "cocinero/cocinera"
+      },
+      "caso_diagnostico": "1118098117 - Cocinero / Planchero smash",
+      "fecha_creacion": "2026-01-30",
+      "activa": true,
+      "nota": "Cocinero/planchero = ISCO 5120 cocinero, NO 3434 jefe de cocina"
+    },
+    "R167_soporte_tecnico_isp": {
+      "nombre": "Soporte técnico ISP / Helpdesk",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "soporte técnico isp",
+          "soporte tecnico isp",
+          "soporte isp",
+          "técnico isp",
+          "tecnico isp",
+          "helpdesk",
+          "help desk",
+          "mesa de ayuda"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3512",
+        "esco_label": "agente del servicio de asistencia de TIC"
+      },
+      "caso_diagnostico": "1118101750 - Técnico operativo / soporte técnico isp (2º nivel)",
+      "fecha_creacion": "2026-01-30",
+      "activa": true,
+      "nota": "Soporte ISP = helpdesk TIC, NO supervisor mantenimiento vehículos"
+    },
+    "R168_docente_gastronomico": {
+      "nombre": "Docente gastronómico / Pastelero instructor",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "docente gastronómico",
+          "docente gastronomico",
+          "docente / pastelero",
+          "docente/pastelero",
+          "instructor de cocina",
+          "instructor cocina",
+          "instructor de pastelería",
+          "instructor pasteleria",
+          "profesor de cocina",
+          "profesor cocina",
+          "instructor de gastronomía",
+          "instructor de gastronomia"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2320",
+        "esco_label": "formador en enseñanza profesional/formadora en enseñanza profesional"
+      },
+      "caso_diagnostico": "1118101656 - Docente gastronómico / pastelero",
+      "fecha_creacion": "2026-01-30",
+      "activa": true,
+      "nota": "Docente gastronomía = formador profesional, NO profesor universitario"
     }
   },
   "reglas_filtro": {

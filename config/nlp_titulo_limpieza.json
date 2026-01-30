@@ -1,7 +1,8 @@
 {
-  "_version": "2.6.1",
+  "_version": "2.6.2",
   "_descripcion": "Patrones para limpiar titulos de ofertas - eliminar ruido geografico/empresarial/administrativo",
-  "_fecha": "2026-01-29",
+  "_fecha": "2026-01-30",
+  "_cambios_v262": "Fix 3 errores detectados: BUSCAMOS (mayusculas), - Capital Federal / Zona, - Part Time",
   "_cambios_v261": "17 ubicaciones GBA adicionales: tortuguitas, ezeiza, temperley, florencio varela, contexto empresarial ampliado",
   "_cambios_v26": "Normalización Sentence case (441 títulos normalizados)",
   "_cambios_v251": "req sin paréntesis, turnos con barra, países extranjeros",
@@ -893,6 +894,16 @@
         "patron": "\\s*-\\s*(Remoto|On Site|Hibrido|Híbrido|Presencial|Mix)$",
         "ejemplo": "DevOps - Remoto",
         "_nota": "modalidad sola al final"
+      },
+      {
+        "patron": "\\s*-\\s*[Pp]art[\\s-]?[Tt]ime\\s*$",
+        "ejemplo": "Analista - Part Time",
+        "_nota": "v2.6.2: Part time/Part-time con guión"
+      },
+      {
+        "patron": "\\s*-\\s*[Ff]ull[\\s-]?[Tt]ime\\s*$",
+        "ejemplo": "Analista - Full Time",
+        "_nota": "v2.6.2: Full time/Full-time con guión"
       }
     ]
   },
@@ -987,6 +998,11 @@
       {
         "patron": "\\s*-\\s*GBA$",
         "ejemplo": "- GBA"
+      },
+      {
+        "patron": "\\s*-\\s*Capital\\s+Federal[\\s/]*.*$",
+        "ejemplo": "- Capital Federal / Zona Sur",
+        "_nota": "v2.6.2: Capital Federal con / o texto después"
       },
       {
         "patron": "\\s*-\\s*Capital$",
