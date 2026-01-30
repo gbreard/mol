@@ -319,14 +319,14 @@ export default function SkillsSunburst({
           return (t: number) => d.current = i(t);
         })
         .filter(function(d: any) {
-          return +((this as any).getAttribute('fill-opacity') || 0) || arcVisible(d.target);
+          return !!((this as any).getAttribute('fill-opacity')) || arcVisible(d.target);
         })
         .attr('fill-opacity', (d: any) => arcVisible(d.target) ? 1 : 0)
         .attr('pointer-events', (d: any) => arcVisible(d.target) ? 'auto' : 'none')
         .attrTween('d', (d: any) => () => arc(d.current));
 
       label.filter(function(d: any) {
-          return +((this as any).getAttribute('fill-opacity') || 0) || labelVisible(d.target);
+          return !!((this as any).getAttribute('fill-opacity')) || labelVisible(d.target);
         }).transition(t as any)
         .attr('fill-opacity', (d: any) => +labelVisible(d.target))
         .attrTween('transform', (d: any) => () => labelTransform(d.current));
