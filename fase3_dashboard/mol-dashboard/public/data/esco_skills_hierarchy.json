@@ -1,424 +1,1008 @@
 {
-  "name": "ESCO Skills",
+  "name": "ESCO",
   "children": [
     {
-      "name": "S",
-      "label": "Competencias Técnicas",
+      "name": "K",
+      "label": "K",
       "children": [
         {
-          "name": "S1",
-          "label": "Comunicación y colaboración",
+          "name": "K",
+          "label": "conocimientos",
           "children": [
             {
-              "name": "S1.0",
-              "label": "comunicación, colaboración y creatividad",
+              "name": "K_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 10
+            },
+            {
+              "name": "K_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 3061
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "S1",
+      "label": "Comunicación y colaboración",
+      "children": [
+        {
+          "name": "S1.0",
+          "label": "comunicación, colaboración y creatividad",
+          "children": [
+            {
+              "name": "S1.0_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 8
-            },
+            }
+          ]
+        },
+        {
+          "name": "S1.1",
+          "label": "negociar",
+          "children": [
             {
-              "name": "S1.1",
-              "label": "negociar",
+              "name": "S1.1_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 38
-            },
+            }
+          ]
+        },
+        {
+          "name": "S1.11",
+          "label": "diseñar sistemas y productos",
+          "children": [
             {
-              "name": "S1.11",
-              "label": "diseñar sistemas y productos",
+              "name": "S1.11_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 221
-            },
+            }
+          ]
+        },
+        {
+          "name": "S1.12",
+          "label": "crear materiales artísticos, visuales o docentes",
+          "children": [
             {
-              "name": "S1.12",
-              "label": "crear materiales artísticos, visuales o docentes",
+              "name": "S1.12_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 228
-            },
+            }
+          ]
+        },
+        {
+          "name": "S1.13",
+          "label": "escribir y redactar",
+          "children": [
             {
-              "name": "S1.13",
-              "label": "escribir y redactar",
+              "name": "S1.13_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 98
-            },
+            }
+          ]
+        },
+        {
+          "name": "S1.14",
+          "label": "actuar y entretener",
+          "children": [
             {
-              "name": "S1.14",
-              "label": "actuar y entretener",
+              "name": "S1.14_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 94
-            },
+            }
+          ]
+        },
+        {
+          "name": "S1.15",
+          "label": "utilizar más de una lengua",
+          "children": [
             {
-              "name": "S1.15",
-              "label": "utilizar más de una lengua",
+              "name": "S1.15_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 45
-            },
+            }
+          ]
+        },
+        {
+          "name": "S1.2",
+          "label": "actuar como enlace y crear redes de contactos",
+          "children": [
             {
-              "name": "S1.2",
-              "label": "actuar como enlace y crear redes de contactos",
+              "name": "S1.2_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 200
-            },
+            }
+          ]
+        },
+        {
+          "name": "S1.3",
+          "label": "enseñar y formar",
+          "children": [
             {
-              "name": "S1.3",
-              "label": "enseñar y formar",
+              "name": "S1.3_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 174
-            },
+            }
+          ]
+        },
+        {
+          "name": "S1.4",
+          "label": "presentar información",
+          "children": [
             {
-              "name": "S1.4",
-              "label": "presentar información",
+              "name": "S1.4_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 56
-            },
+            }
+          ]
+        },
+        {
+          "name": "S1.5",
+          "label": "prestar asesoramiento y consultoría",
+          "children": [
             {
-              "name": "S1.5",
-              "label": "prestar asesoramiento y consultoría",
+              "name": "S1.5_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 146
+            }
+          ]
+        },
+        {
+          "name": "S1.6",
+          "label": "promocionar, vender y comprar",
+          "children": [
+            {
+              "name": "S1.6_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 234
             },
             {
-              "name": "S1.6",
-              "label": "promocionar, vender y comprar",
-              "value": 235
-            },
+              "name": "S1.6_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "name": "S1.7",
+          "label": "obtener información verbal",
+          "children": [
             {
-              "name": "S1.7",
-              "label": "obtener información verbal",
+              "name": "S1.7_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 28
-            },
+            }
+          ]
+        },
+        {
+          "name": "S1.8",
+          "label": "trabajar con otros",
+          "children": [
             {
-              "name": "S1.8",
-              "label": "trabajar con otros",
+              "name": "S1.8_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 99
-            },
+            }
+          ]
+        },
+        {
+          "name": "S1.9",
+          "label": "solucionar problemas",
+          "children": [
             {
-              "name": "S1.9",
-              "label": "solucionar problemas",
+              "name": "S1.9_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 48
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "name": "S2",
+      "label": "Competencias de información",
+      "children": [
         {
-          "name": "S2",
-          "label": "Competencias de información",
+          "name": "S2.0",
+          "label": "competencias en materia de información",
           "children": [
             {
-              "name": "S2.0",
-              "label": "competencias en materia de información",
+              "name": "S2.0_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 1
+            }
+          ]
+        },
+        {
+          "name": "S2.1",
+          "label": "realizar estudios, investigaciones y análisis",
+          "children": [
+            {
+              "name": "S2.1_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 282
             },
             {
-              "name": "S2.1",
-              "label": "realizar estudios, investigaciones y análisis",
-              "value": 283
-            },
+              "name": "S2.1_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "name": "S2.2",
+          "label": "documentar y registrar información",
+          "children": [
             {
-              "name": "S2.2",
-              "label": "documentar y registrar información",
+              "name": "S2.2_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 178
-            },
+            }
+          ]
+        },
+        {
+          "name": "S2.3",
+          "label": "gestionar información",
+          "children": [
             {
-              "name": "S2.3",
-              "label": "gestionar información",
+              "name": "S2.3_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 55
-            },
+            }
+          ]
+        },
+        {
+          "name": "S2.4",
+          "label": "procesar información",
+          "children": [
             {
-              "name": "S2.4",
-              "label": "procesar información",
+              "name": "S2.4_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 57
-            },
+            }
+          ]
+        },
+        {
+          "name": "S2.5",
+          "label": "medir propiedades físicas",
+          "children": [
             {
-              "name": "S2.5",
-              "label": "medir propiedades físicas",
+              "name": "S2.5_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 30
-            },
+            }
+          ]
+        },
+        {
+          "name": "S2.6",
+          "label": "calcular y estimar",
+          "children": [
             {
-              "name": "S2.6",
-              "label": "calcular y estimar",
+              "name": "S2.6_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 49
-            },
+            }
+          ]
+        },
+        {
+          "name": "S2.7",
+          "label": "analizar y evaluar información y datos",
+          "children": [
             {
-              "name": "S2.7",
-              "label": "analizar y evaluar información y datos",
+              "name": "S2.7_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 278
-            },
+            }
+          ]
+        },
+        {
+          "name": "S2.8",
+          "label": "realizar seguimiento, inspección y ensayos",
+          "children": [
             {
-              "name": "S2.8",
-              "label": "realizar seguimiento, inspección y ensayos",
+              "name": "S2.8_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 445
-            },
+            }
+          ]
+        },
+        {
+          "name": "S2.9",
+          "label": "realizar seguimiento de avances en el ámbito de especialización",
+          "children": [
             {
-              "name": "S2.9",
-              "label": "realizar seguimiento de avances en el ámbito de especialización",
+              "name": "S2.9_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 52
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "name": "S3",
+      "label": "Asistencia y cuidados",
+      "children": [
         {
-          "name": "S3",
-          "label": "Asistencia y cuidados",
+          "name": "S3.0",
+          "label": "prestar asistencia y cuidados",
           "children": [
             {
-              "name": "S3.0",
-              "label": "prestar asistencia y cuidados",
+              "name": "S3.0_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 4
-            },
+            }
+          ]
+        },
+        {
+          "name": "S3.1",
+          "label": "ofrecer orientación",
+          "children": [
             {
-              "name": "S3.1",
-              "label": "ofrecer orientación",
+              "name": "S3.1_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 44
-            },
+            }
+          ]
+        },
+        {
+          "name": "S3.2",
+          "label": "prestar atención sanitaria o administrar tratamientos médicos",
+          "children": [
             {
-              "name": "S3.2",
-              "label": "prestar atención sanitaria o administrar tratamientos médicos",
+              "name": "S3.2_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 214
+            }
+          ]
+        },
+        {
+          "name": "S3.3",
+          "label": "proteger y velar por el cumplimiento",
+          "children": [
+            {
+              "name": "S3.3_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 363
             },
             {
-              "name": "S3.3",
-              "label": "proteger y velar por el cumplimiento",
-              "value": 364
-            },
+              "name": "S3.3_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "name": "S3.4",
+          "label": "facilitar información y apoyo al público y a los clientes",
+          "children": [
             {
-              "name": "S3.4",
-              "label": "facilitar información y apoyo al público y a los clientes",
+              "name": "S3.4_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 101
-            },
+            }
+          ]
+        },
+        {
+          "name": "S3.5",
+          "label": "preparar y servir alimentos y bebidas",
+          "children": [
             {
-              "name": "S3.5",
-              "label": "preparar y servir alimentos y bebidas",
+              "name": "S3.5_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 63
-            },
+            }
+          ]
+        },
+        {
+          "name": "S3.6",
+          "label": "prestar cuidados personales en general",
+          "children": [
             {
-              "name": "S3.6",
-              "label": "prestar cuidados personales en general",
+              "name": "S3.6_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 72
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "name": "S4",
+      "label": "Competencias de gestión",
+      "children": [
         {
-          "name": "S4",
-          "label": "Competencias de gestión",
+          "name": "S4.0",
+          "label": "competencias de gestión",
           "children": [
             {
-              "name": "S4.0",
-              "label": "competencias de gestión",
+              "name": "S4.0_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 38
-            },
+            }
+          ]
+        },
+        {
+          "name": "S4.1",
+          "label": "desarrollar objetivos y estrategias",
+          "children": [
             {
-              "name": "S4.1",
-              "label": "desarrollar objetivos y estrategias",
+              "name": "S4.1_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 279
+            }
+          ]
+        },
+        {
+          "name": "S4.2",
+          "label": "organizar, planificar y programar trabajo y actividades",
+          "children": [
+            {
+              "name": "S4.2_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 422
             },
             {
-              "name": "S4.2",
-              "label": "organizar, planificar y programar trabajo y actividades",
-              "value": 423
-            },
+              "name": "S4.2_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "name": "S4.3",
+          "label": "asignar y controlar recursos",
+          "children": [
             {
-              "name": "S4.3",
-              "label": "asignar y controlar recursos",
+              "name": "S4.3_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 123
-            },
+            }
+          ]
+        },
+        {
+          "name": "S4.4",
+          "label": "realizar tareas administrativas",
+          "children": [
             {
-              "name": "S4.4",
-              "label": "realizar tareas administrativas",
+              "name": "S4.4_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 82
-            },
+            }
+          ]
+        },
+        {
+          "name": "S4.5",
+          "label": "guiar y motivar",
+          "children": [
             {
-              "name": "S4.5",
-              "label": "guiar y motivar",
+              "name": "S4.5_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 8
-            },
+            }
+          ]
+        },
+        {
+          "name": "S4.6",
+          "label": "crear y desarrollar equipos",
+          "children": [
             {
-              "name": "S4.6",
-              "label": "crear y desarrollar equipos",
+              "name": "S4.6_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 3
-            },
+            }
+          ]
+        },
+        {
+          "name": "S4.7",
+          "label": "reclutar y contratar",
+          "children": [
             {
-              "name": "S4.7",
-              "label": "reclutar y contratar",
+              "name": "S4.7_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 20
-            },
+            }
+          ]
+        },
+        {
+          "name": "S4.8",
+          "label": "supervisar a personas",
+          "children": [
             {
-              "name": "S4.8",
-              "label": "supervisar a personas",
+              "name": "S4.8_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 89
-            },
+            }
+          ]
+        },
+        {
+          "name": "S4.9",
+          "label": "tomar decisiones",
+          "children": [
             {
-              "name": "S4.9",
-              "label": "tomar decisiones",
+              "name": "S4.9_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "S5",
+      "label": "Trabajar con ordenadores",
+      "children": [
+        {
+          "name": "S5.0",
+          "label": "trabajar con ordenadores",
+          "children": [
+            {
+              "name": "S5.0_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 6
             }
           ]
         },
         {
-          "name": "S5",
-          "label": "Trabajar con ordenadores",
+          "name": "S5.1",
+          "label": "programar sistemas informáticos",
           "children": [
             {
-              "name": "S5.0",
-              "label": "trabajar con ordenadores",
-              "value": 6
-            },
-            {
-              "name": "S5.1",
-              "label": "programar sistemas informáticos",
+              "name": "S5.1_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 34
+            }
+          ]
+        },
+        {
+          "name": "S5.2",
+          "label": "configurar y proteger sistemas informáticos",
+          "children": [
+            {
+              "name": "S5.2_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 52
             },
             {
-              "name": "S5.2",
-              "label": "configurar y proteger sistemas informáticos",
-              "value": 53
+              "name": "S5.2_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "name": "S5.5",
+          "label": "acceder a y analizar datos digitales",
+          "children": [
+            {
+              "name": "S5.5_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 116
             },
             {
-              "name": "S5.5",
-              "label": "acceder a y analizar datos digitales",
-              "value": 117
+              "name": "S5.5_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "name": "S5.6",
+          "label": "utilizar herramientas digitales para el trabajo colaborativo, la creación de contenidos y la resolución de problemas",
+          "children": [
+            {
+              "name": "S5.6_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 112
             },
             {
-              "name": "S5.6",
-              "label": "utilizar herramientas digitales para el trabajo colaborativo, la creación de contenidos y la resolución de problemas",
-              "value": 149
-            },
-            {
-              "name": "S5.7",
-              "label": "utilizar herramientas digitales para controlar maquinaria",
+              "name": "S5.6_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
               "value": 37
             }
           ]
         },
         {
-          "name": "S6",
-          "label": "Manipular y mover",
+          "name": "S5.7",
+          "label": "utilizar herramientas digitales para controlar maquinaria",
           "children": [
             {
-              "name": "S6.0",
-              "label": "manipular y mover",
+              "name": "S5.7_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 37
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "S6",
+      "label": "Manipular y mover",
+      "children": [
+        {
+          "name": "S6.0",
+          "label": "manipular y mover",
+          "children": [
+            {
+              "name": "S6.0_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 2
-            },
+            }
+          ]
+        },
+        {
+          "name": "S6.1",
+          "label": "clasificar y envasar, embalar y empaquetar mercancías y materiales",
+          "children": [
             {
-              "name": "S6.1",
-              "label": "clasificar y envasar, embalar y empaquetar mercancías y materiales",
+              "name": "S6.1_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 100
-            },
+            }
+          ]
+        },
+        {
+          "name": "S6.11",
+          "label": "limpiar",
+          "children": [
             {
-              "name": "S6.11",
-              "label": "limpiar",
+              "name": "S6.11_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 120
-            },
+            }
+          ]
+        },
+        {
+          "name": "S6.12",
+          "label": "lavar y mantener textiles y prendas de vestir",
+          "children": [
             {
-              "name": "S6.12",
-              "label": "lavar y mantener textiles y prendas de vestir",
+              "name": "S6.12_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 14
-            },
+            }
+          ]
+        },
+        {
+          "name": "S6.13",
+          "label": "manipular y eliminar residuos y materiales peligrosos",
+          "children": [
             {
-              "name": "S6.13",
-              "label": "manipular y eliminar residuos y materiales peligrosos",
+              "name": "S6.13_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 43
-            },
+            }
+          ]
+        },
+        {
+          "name": "S6.2",
+          "label": "mover y elevar",
+          "children": [
             {
-              "name": "S6.2",
-              "label": "mover y elevar",
+              "name": "S6.2_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 182
-            },
+            }
+          ]
+        },
+        {
+          "name": "S6.3",
+          "label": "transformar y mezclar materiales",
+          "children": [
             {
-              "name": "S6.3",
-              "label": "transformar y mezclar materiales",
+              "name": "S6.3_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 106
+            }
+          ]
+        },
+        {
+          "name": "S6.4",
+          "label": "ocuparse de plantas y cultivos",
+          "children": [
+            {
+              "name": "S6.4_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 61
             },
             {
-              "name": "S6.4",
-              "label": "ocuparse de plantas y cultivos",
-              "value": 62
-            },
+              "name": "S6.4_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "name": "S6.5",
+          "label": "ensamblar y fabricar productos",
+          "children": [
             {
-              "name": "S6.5",
-              "label": "ensamblar y fabricar productos",
+              "name": "S6.5_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 257
-            },
+            }
+          ]
+        },
+        {
+          "name": "S6.6",
+          "label": "elaborar moldes, formas, modelos y patrones",
+          "children": [
             {
-              "name": "S6.6",
-              "label": "elaborar moldes, formas, modelos y patrones",
+              "name": "S6.6_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 52
-            },
+            }
+          ]
+        },
+        {
+          "name": "S6.7",
+          "label": "utilizar herramientas manuales",
+          "children": [
             {
-              "name": "S6.7",
-              "label": "utilizar herramientas manuales",
+              "name": "S6.7_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 180
-            },
+            }
+          ]
+        },
+        {
+          "name": "S6.9",
+          "label": "manipular animales",
+          "children": [
             {
-              "name": "S6.9",
-              "label": "manipular animales",
+              "name": "S6.9_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 188
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "name": "S7",
+      "label": "Construir",
+      "children": [
         {
-          "name": "S7",
-          "label": "Construir",
+          "name": "S7.0",
+          "label": "construir",
           "children": [
             {
-              "name": "S7.0",
-              "label": "construir",
+              "name": "S7.0_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 5
-            },
-            {
-              "name": "S7.1",
-              "label": "construir y repara estructuras",
-              "value": 294
-            },
-            {
-              "name": "S7.2",
-              "label": "instalar infraestructura interior o exterior",
-              "value": 58
-            },
-            {
-              "name": "S7.3",
-              "label": "rematar estructuras interiores o exteriores",
-              "value": 87
             }
           ]
         },
         {
-          "name": "S8",
-          "label": "Maquinaria especializada",
+          "name": "S7.1",
+          "label": "construir y repara estructuras",
           "children": [
             {
-              "name": "S8.0",
-              "label": "trabajar con maquinaria y equipo especializado",
-              "value": 57
-            },
+              "name": "S7.1_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 294
+            }
+          ]
+        },
+        {
+          "name": "S7.2",
+          "label": "instalar infraestructura interior o exterior",
+          "children": [
             {
-              "name": "S8.1",
-              "label": "operar maquinaria móvil",
-              "value": 83
-            },
-            {
-              "name": "S8.2",
-              "label": "conducir vehículos",
+              "name": "S7.2_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 58
-            },
+            }
+          ]
+        },
+        {
+          "name": "S7.3",
+          "label": "rematar estructuras interiores o exteriores",
+          "children": [
             {
-              "name": "S8.3",
-              "label": "operar vehículos acuáticos",
+              "name": "S7.3_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 87
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "S8",
+      "label": "Maquinaria especializada",
+      "children": [
+        {
+          "name": "S8.0",
+          "label": "trabajar con maquinaria y equipo especializado",
+          "children": [
+            {
+              "name": "S8.0_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 57
+            }
+          ]
+        },
+        {
+          "name": "S8.1",
+          "label": "operar maquinaria móvil",
+          "children": [
+            {
+              "name": "S8.1_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 83
+            }
+          ]
+        },
+        {
+          "name": "S8.2",
+          "label": "conducir vehículos",
+          "children": [
+            {
+              "name": "S8.2_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 58
+            }
+          ]
+        },
+        {
+          "name": "S8.3",
+          "label": "operar vehículos acuáticos",
+          "children": [
+            {
+              "name": "S8.3_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 36
-            },
+            }
+          ]
+        },
+        {
+          "name": "S8.4",
+          "label": "operar maquinaria para la extracción y la transformación de materias primas",
+          "children": [
             {
-              "name": "S8.4",
-              "label": "operar maquinaria para la extracción y la transformación de materias primas",
+              "name": "S8.4_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 209
-            },
+            }
+          ]
+        },
+        {
+          "name": "S8.5",
+          "label": "operar maquinaria para la fabricación de productos",
+          "children": [
             {
-              "name": "S8.5",
-              "label": "operar maquinaria para la fabricación de productos",
+              "name": "S8.5_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 415
-            },
+            }
+          ]
+        },
+        {
+          "name": "S8.6",
+          "label": "utilizar instrumentos y equipos de precisión",
+          "children": [
             {
-              "name": "S8.6",
-              "label": "utilizar instrumentos y equipos de precisión",
+              "name": "S8.6_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 198
-            },
+            }
+          ]
+        },
+        {
+          "name": "S8.7",
+          "label": "instalar, mantener y reparar equipos mecánicos",
+          "children": [
             {
-              "name": "S8.7",
-              "label": "instalar, mantener y reparar equipos mecánicos",
+              "name": "S8.7_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 96
-            },
+            }
+          ]
+        },
+        {
+          "name": "S8.8",
+          "label": "instalar, mantener y reparar equipos eléctricos, electrónicos y de precisión",
+          "children": [
             {
-              "name": "S8.8",
-              "label": "instalar, mantener y reparar equipos eléctricos, electrónicos y de precisión",
+              "name": "S8.8_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 117
-            },
+            }
+          ]
+        },
+        {
+          "name": "S8.9",
+          "label": "operar aeronaves",
+          "children": [
             {
-              "name": "S8.9",
-              "label": "operar aeronaves",
+              "name": "S8.9_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 7
             }
           ]
@@ -426,171 +1010,424 @@
       ]
     },
     {
-      "name": "T",
-      "label": "Competencias Transversales",
+      "name": "T1",
+      "label": "Capacidades básicas",
       "children": [
         {
-          "name": "T1",
-          "label": "Capacidades básicas",
+          "name": "T1.1",
+          "label": "dominar idiomas",
           "children": [
             {
-              "name": "T1.1",
-              "label": "dominar idiomas",
-              "value": 353
+              "name": "T1.1_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 279
             },
             {
-              "name": "T1.2",
-              "label": "trabajar con números y medidas",
-              "value": 99
+              "name": "T1.1_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 74
+            }
+          ]
+        },
+        {
+          "name": "T1.2",
+          "label": "trabajar con números y medidas",
+          "children": [
+            {
+              "name": "T1.2_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 97
             },
             {
-              "name": "T1.3",
-              "label": "trabajar con dispositivos y aplicaciones digitales",
+              "name": "T1.2_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "name": "T1.3",
+          "label": "trabajar con dispositivos y aplicaciones digitales",
+          "children": [
+            {
+              "name": "T1.3_skill",
+              "label": "Skills",
+              "type": "skill",
               "value": 15
-            }
-          ]
-        },
-        {
-          "name": "T2",
-          "label": "Razonamiento",
-          "children": [
-            {
-              "name": "T2.1",
-              "label": "procesar información, ideas y conceptos",
-              "value": 250
-            },
-            {
-              "name": "T2.2",
-              "label": "planificar y organizar",
-              "value": 45
-            },
-            {
-              "name": "T2.3",
-              "label": "lidiar con problemas",
-              "value": 18
-            },
-            {
-              "name": "T2.4",
-              "label": "pensar de manera creativa e innovadora",
-              "value": 24
-            }
-          ]
-        },
-        {
-          "name": "T3",
-          "label": "Autogestión",
-          "children": [
-            {
-              "name": "T3.1",
-              "label": "trabajar de manera eficiente",
-              "value": 210
-            },
-            {
-              "name": "T3.2",
-              "label": "adoptar un enfoque proactivo",
-              "value": 89
-            },
-            {
-              "name": "T3.3",
-              "label": "mantener una actitud positiva",
-              "value": 27
-            },
-            {
-              "name": "T3.4",
-              "label": "mostrar voluntad de aprender",
-              "value": 76
-            }
-          ]
-        },
-        {
-          "name": "T4",
-          "label": "Sociales y comunicación",
-          "children": [
-            {
-              "name": "T4.1",
-              "label": "comunicarse",
-              "value": 188
-            },
-            {
-              "name": "T4.2",
-              "label": "ayudar a otras personas",
-              "value": 389
-            },
-            {
-              "name": "T4.3",
-              "label": "colaborar en equipos y redes",
-              "value": 81
-            },
-            {
-              "name": "T4.4",
-              "label": "dirigir a otras personas",
-              "value": 185
-            },
-            {
-              "name": "T4.5",
-              "label": "respetar el código ético de conducta",
-              "value": 17
-            }
-          ]
-        },
-        {
-          "name": "T5",
-          "label": "Físicas y manuales",
-          "children": [
-            {
-              "name": "T5.1",
-              "label": "manipular y controlar objetos y equipos",
-              "value": 14
-            },
-            {
-              "name": "T5.2",
-              "label": "responder a circunstancias físicas",
-              "value": 11
-            }
-          ]
-        },
-        {
-          "name": "T6",
-          "label": "Capacidades para la vida",
-          "children": [
-            {
-              "name": "T6.1",
-              "label": "hacer uso de capacidades y competencias relacionadas con la salud",
-              "value": 118
-            },
-            {
-              "name": "T6.2",
-              "label": "hacer uso de capacidades y competencias medioambientales",
-              "value": 39
-            },
-            {
-              "name": "T6.3",
-              "label": "hacer uso de capacidades y competencias cívicas",
-              "value": 36
-            },
-            {
-              "name": "T6.4",
-              "label": "hacer uso de capacidades y competencias culturales",
-              "value": 25
-            },
-            {
-              "name": "T6.5",
-              "label": "hacer uso de capacidades y competencias empresariales y financieras",
-              "value": 11
-            },
-            {
-              "name": "T6.6",
-              "label": "aplicar conocimientos generales",
-              "value": 38
             }
           ]
         }
       ]
     },
     {
-      "name": "K",
-      "label": "Conocimientos",
-      "value": 3071
+      "name": "T2",
+      "label": "Razonamiento",
+      "children": [
+        {
+          "name": "T2.1",
+          "label": "procesar información, ideas y conceptos",
+          "children": [
+            {
+              "name": "T2.1_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 246
+            },
+            {
+              "name": "T2.1_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 4
+            }
+          ]
+        },
+        {
+          "name": "T2.2",
+          "label": "planificar y organizar",
+          "children": [
+            {
+              "name": "T2.2_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 44
+            },
+            {
+              "name": "T2.2_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "name": "T2.3",
+          "label": "lidiar con problemas",
+          "children": [
+            {
+              "name": "T2.3_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 18
+            }
+          ]
+        },
+        {
+          "name": "T2.4",
+          "label": "pensar de manera creativa e innovadora",
+          "children": [
+            {
+              "name": "T2.4_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "T3",
+      "label": "Autogestión",
+      "children": [
+        {
+          "name": "T3.1",
+          "label": "trabajar de manera eficiente",
+          "children": [
+            {
+              "name": "T3.1_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 207
+            },
+            {
+              "name": "T3.1_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "name": "T3.2",
+          "label": "adoptar un enfoque proactivo",
+          "children": [
+            {
+              "name": "T3.2_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 89
+            }
+          ]
+        },
+        {
+          "name": "T3.3",
+          "label": "mantener una actitud positiva",
+          "children": [
+            {
+              "name": "T3.3_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 26
+            },
+            {
+              "name": "T3.3_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "name": "T3.4",
+          "label": "mostrar voluntad de aprender",
+          "children": [
+            {
+              "name": "T3.4_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 76
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "T4",
+      "label": "Sociales y comunicación",
+      "children": [
+        {
+          "name": "T4.1",
+          "label": "comunicarse",
+          "children": [
+            {
+              "name": "T4.1_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 187
+            },
+            {
+              "name": "T4.1_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "name": "T4.2",
+          "label": "ayudar a otras personas",
+          "children": [
+            {
+              "name": "T4.2_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 386
+            },
+            {
+              "name": "T4.2_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "name": "T4.3",
+          "label": "colaborar en equipos y redes",
+          "children": [
+            {
+              "name": "T4.3_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 78
+            },
+            {
+              "name": "T4.3_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "name": "T4.4",
+          "label": "dirigir a otras personas",
+          "children": [
+            {
+              "name": "T4.4_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 184
+            },
+            {
+              "name": "T4.4_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "name": "T4.5",
+          "label": "respetar el código ético de conducta",
+          "children": [
+            {
+              "name": "T4.5_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 16
+            },
+            {
+              "name": "T4.5_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "T5",
+      "label": "Físicas y manuales",
+      "children": [
+        {
+          "name": "T5.1",
+          "label": "manipular y controlar objetos y equipos",
+          "children": [
+            {
+              "name": "T5.1_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 12
+            },
+            {
+              "name": "T5.1_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "name": "T5.2",
+          "label": "responder a circunstancias físicas",
+          "children": [
+            {
+              "name": "T5.2_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 11
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "T6",
+      "label": "Capacidades para la vida",
+      "children": [
+        {
+          "name": "T6.1",
+          "label": "hacer uso de capacidades y competencias relacionadas con la salud",
+          "children": [
+            {
+              "name": "T6.1_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 115
+            },
+            {
+              "name": "T6.1_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "name": "T6.2",
+          "label": "hacer uso de capacidades y competencias medioambientales",
+          "children": [
+            {
+              "name": "T6.2_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 39
+            }
+          ]
+        },
+        {
+          "name": "T6.3",
+          "label": "hacer uso de capacidades y competencias cívicas",
+          "children": [
+            {
+              "name": "T6.3_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 33
+            },
+            {
+              "name": "T6.3_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "name": "T6.4",
+          "label": "hacer uso de capacidades y competencias culturales",
+          "children": [
+            {
+              "name": "T6.4_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 21
+            },
+            {
+              "name": "T6.4_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 4
+            }
+          ]
+        },
+        {
+          "name": "T6.5",
+          "label": "hacer uso de capacidades y competencias empresariales y financieras",
+          "children": [
+            {
+              "name": "T6.5_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 11
+            }
+          ]
+        },
+        {
+          "name": "T6.6",
+          "label": "aplicar conocimientos generales",
+          "children": [
+            {
+              "name": "T6.6_skill",
+              "label": "Skills",
+              "type": "skill",
+              "value": 33
+            },
+            {
+              "name": "T6.6_knowledge",
+              "label": "Conocimientos",
+              "type": "knowledge",
+              "value": 5
+            }
+          ]
+        }
+      ]
     }
   ]
 }

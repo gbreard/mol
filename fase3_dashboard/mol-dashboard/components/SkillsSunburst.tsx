@@ -6,6 +6,7 @@ import * as d3 from 'd3';
 interface HierarchyNode {
   name: string;
   label?: string;
+  type?: 'skill' | 'knowledge';
   value?: number;
   children?: HierarchyNode[];
 }
@@ -19,30 +20,52 @@ interface SunburstProps {
 // Colores por categoría principal
 const categoryColors: Record<string, string> = {
   'S': '#3b82f6',   // Azul - Competencias Técnicas
+  'S1': '#3b82f6',
+  'S2': '#3b82f6',
+  'S3': '#3b82f6',
+  'S4': '#3b82f6',
+  'S5': '#3b82f6',
+  'S6': '#3b82f6',
+  'S7': '#3b82f6',
+  'S8': '#3b82f6',
   'T': '#10b981',   // Verde - Transversales
-  'K': '#f59e0b',   // Amarillo - Conocimientos
-  'A': '#8b5cf6',   // Violeta - Actitudes
+  'T1': '#10b981',
+  'T2': '#10b981',
+  'T3': '#10b981',
+  'T4': '#10b981',
+  'T5': '#10b981',
+  'T6': '#10b981',
+};
+
+// Colores para tipo (anillo externo)
+const typeColors: Record<string, string> = {
+  'skill': '#6366f1',      // Indigo para skills
+  'knowledge': '#f59e0b',  // Amber para knowledge
 };
 
 type PartitionNode = d3.HierarchyRectangularNode<HierarchyNode>;
 
-// Función para obtener color basado en el código
+// Función para obtener color basado en el nodo
 const getColor = (d: PartitionNode): string => {
   const node = d.data;
   const name = node.name || '';
-
-  // Obtener categoría raíz (S, T, K, A)
-  const rootChar = name.charAt(0);
+  const nodeType = node.type;
 
   // Si es el nodo raíz, usar gris
-  if (name === 'ESCO Skills') return '#e5e7eb';
+  if (name === 'ESCO') return '#e5e7eb';
 
-  // Color base de la categoría
-  const baseColor = categoryColors[rootChar] || '#6b7280';
+  // Si tiene tipo (skill/knowledge), usar color de tipo
+  if (nodeType) {
+    return typeColors[nodeType] || '#6b7280';
+  }
+
+  // Obtener categoría raíz (S o T)
+  const rootChar = name.charAt(0);
+  const baseColor = categoryColors[name] || categoryColors[rootChar] || '#6b7280';
 
   // Calcular luminosidad basada en la profundidad
   const depth = d.depth;
-  const lightness = Math.min(0.9, 0.4 + (depth * 0.15));
+  const lightness = Math.min(0.85, 0.35 + (depth * 0.15));
 
   // Convertir color hex a HSL y ajustar luminosidad
   const color = d3.color(baseColor);
@@ -56,8 +79,8 @@ const getColor = (d: PartitionNode): string => {
 };
 
 export default function SkillsSunburst({
-  width = 700,
-  height = 700,
+  width = 750,
+  height = 750,
   data: externalData
 }: SunburstProps) {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -67,7 +90,7 @@ export default function SkillsSunburst({
     visible: boolean;
     x: number;
     y: number;
-    content: { name: string; label: string; value: number; percentage: string };
+    content: { name: string; label: string; value: number; percentage: string; type?: string };
   }>({ visible: false, x: 0, y: 0, content: { name: '', label: '', value: 0, percentage: '' } });
 
   // Cargar datos si no se proporcionan externamente
@@ -94,7 +117,7 @@ export default function SkillsSunburst({
       .sum(d => d.value || 0)
       .sort((a, b) => (b.value || 0) - (a.value || 0));
 
-    // Crear partición radial - esto transforma los nodos a HierarchyRectangularNode
+    // Crear partición radial
     const partition = d3.partition<HierarchyNode>()
       .size([2 * Math.PI, radius]);
 
@@ -145,7 +168,8 @@ export default function SkillsSunburst({
             name: d.data.name,
             label: d.data.label || d.data.name,
             value,
-            percentage
+            percentage,
+            type: d.data.type
           }
         });
       })
@@ -173,8 +197,8 @@ export default function SkillsSunburst({
         setSelectedPath(path);
       });
 
-    // Etiquetas para niveles principales
-    const labelsData = nodes.filter(d => d.depth === 1 || (d.depth === 2 && (d.x1 - d.x0) > 0.2));
+    // Etiquetas para niveles 1 y 2
+    const labelsData = nodes.filter(d => d.depth <= 2 && (d.x1 - d.x0) > 0.1);
 
     g.selectAll('text.label')
       .data(labelsData)
@@ -194,10 +218,10 @@ export default function SkillsSunburst({
       .style('fill', '#1f2937')
       .style('pointer-events', 'none')
       .text(d => {
-        const name = d.data.name;
+        const name = d.data.label || d.data.name;
         const arcLength = (d.x1 - d.x0) * ((d.y0 + d.y1) / 2);
-        if (arcLength < 30) return '';
-        if (name.length > 8) return name.substring(0, 6) + '..';
+        if (arcLength < 40) return '';
+        if (name.length > 12) return name.substring(0, 10) + '..';
         return name;
       });
 
@@ -212,17 +236,17 @@ export default function SkillsSunburst({
     g.append('text')
       .attr('text-anchor', 'middle')
       .attr('dy', '-0.5em')
-      .style('font-size', '24px')
+      .style('font-size', '28px')
       .style('font-weight', '700')
       .style('fill', '#1f2937')
       .text(total.toLocaleString());
 
     g.append('text')
       .attr('text-anchor', 'middle')
-      .attr('dy', '1em')
+      .attr('dy', '1.2em')
       .style('font-size', '12px')
       .style('fill', '#6b7280')
-      .text('skills ESCO');
+      .text('competencias ESCO');
 
   }, [data, width, height]);
 
@@ -231,7 +255,7 @@ export default function SkillsSunburst({
       {/* Breadcrumb de selección */}
       {selectedPath.length > 0 && (
         <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-          <div className="flex items-center gap-2 text-sm">
+          <div className="flex items-center gap-2 text-sm flex-wrap">
             <span className="text-gray-500">Selección:</span>
             {selectedPath.map((item, i) => (
               <React.Fragment key={i}>
@@ -267,11 +291,17 @@ export default function SkillsSunburst({
             transform: 'translateY(-100%)'
           }}
         >
-          <div className="font-semibold text-gray-900">{tooltip.content.name}</div>
-          <div className="text-sm text-gray-600">{tooltip.content.label}</div>
+          <div className="font-semibold text-gray-900">{tooltip.content.label}</div>
+          {tooltip.content.type && (
+            <div className={`text-xs font-medium mt-1 ${
+              tooltip.content.type === 'skill' ? 'text-indigo-600' : 'text-amber-600'
+            }`}>
+              {tooltip.content.type === 'skill' ? '🔧 Skill (saber hacer)' : '📚 Conocimiento (saber)'}
+            </div>
+          )}
           <div className="mt-1 flex gap-3 text-sm">
             <span className="text-blue-600 font-medium">
-              {tooltip.content.value.toLocaleString()} skills
+              {tooltip.content.value.toLocaleString()}
             </span>
             <span className="text-gray-500">
               ({tooltip.content.percentage}%)
@@ -281,18 +311,29 @@ export default function SkillsSunburst({
       )}
 
       {/* Leyenda */}
-      <div className="mt-4 flex justify-center gap-6 text-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded" style={{ backgroundColor: categoryColors['S'] }}></div>
-          <span>Técnicas</span>
+      <div className="mt-6 flex flex-col items-center gap-4">
+        {/* Categorías */}
+        <div className="flex justify-center gap-6 text-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#3b82f6' }}></div>
+            <span>S - Técnicas</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#10b981' }}></div>
+            <span>T - Transversales</span>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded" style={{ backgroundColor: categoryColors['T'] }}></div>
-          <span>Transversales</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded" style={{ backgroundColor: categoryColors['K'] }}></div>
-          <span>Conocimientos</span>
+
+        {/* Tipos (anillo externo) */}
+        <div className="flex justify-center gap-6 text-sm border-t pt-3">
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#6366f1' }}></div>
+            <span>🔧 Skills (saber hacer)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#f59e0b' }}></div>
+            <span>📚 Conocimientos (saber)</span>
+          </div>
         </div>
       </div>
     </div>
