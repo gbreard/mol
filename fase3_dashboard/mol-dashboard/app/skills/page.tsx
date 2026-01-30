@@ -21,48 +21,38 @@ export default function SkillsPage() {
   });
 
   useEffect(() => {
-    // Cargar estadísticas del JSON
+    // Cargar estadisticas del JSON
     fetch('/data/esco_skills_hierarchy.json')
       .then(res => res.json())
       .then(data => {
-        let total = 0;
         let skills = 0;
         let knowledge = 0;
         let categoriesS = 0;
         let categoriesT = 0;
 
         const countByType = (node: any): void => {
-          if (node.type === 'skill') {
-            skills += node.value || 0;
-          } else if (node.type === 'knowledge') {
-            knowledge += node.value || 0;
+          if (node.type === 'skill' && node.value) {
+            skills += 1;
+          } else if (node.type === 'knowledge' && node.value) {
+            knowledge += 1;
           }
           if (node.children) {
             node.children.forEach(countByType);
           }
         };
 
-        const countByCategory = (node: any): number => {
-          if (node.value) return node.value;
-          if (node.children) {
-            return node.children.reduce((sum: number, child: any) => sum + countByCategory(child), 0);
-          }
-          return 0;
-        };
-
         if (data.children) {
           data.children.forEach((cat: any) => {
-            const count = countByCategory(cat);
             if (cat.name.startsWith('S')) {
-              categoriesS += count;
+              categoriesS += 1;
             } else if (cat.name.startsWith('T')) {
-              categoriesT += count;
+              categoriesT += 1;
             }
             countByType(cat);
           });
         }
 
-        total = skills + knowledge;
+        const total = skills + knowledge;
         setStats({ total, skills, knowledge, categoriesS, categoriesT });
       })
       .catch(console.error);
@@ -74,10 +64,10 @@ export default function SkillsPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
-            Taxonomía de Competencias ESCO
+            Taxonomia de Competencias ESCO
           </h1>
           <p className="mt-2 text-gray-600">
-            Visualización interactiva de la jerarquía de competencias del framework ESCO
+            Visualizacion interactiva de la jerarquia de competencias del framework ESCO
             (European Skills, Competences, Qualifications and Occupations)
           </p>
         </div>
@@ -123,12 +113,9 @@ export default function SkillsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-2xl font-bold text-blue-600">
-                  {stats.categoriesS.toLocaleString()}
+                  {stats.categoriesS}
                 </div>
-                <div className="text-sm text-gray-500 mt-1">Cat. Técnicas (S)</div>
-              </div>
-              <div className="text-lg font-semibold text-blue-400">
-                {stats.total > 0 ? ((stats.categoriesS / stats.total) * 100).toFixed(0) : 0}%
+                <div className="text-sm text-gray-500 mt-1">Cat. Tecnicas (S)</div>
               </div>
             </div>
           </div>
@@ -137,12 +124,9 @@ export default function SkillsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-2xl font-bold text-green-600">
-                  {stats.categoriesT.toLocaleString()}
+                  {stats.categoriesT}
                 </div>
                 <div className="text-sm text-gray-500 mt-1">Cat. Transversales (T)</div>
-              </div>
-              <div className="text-lg font-semibold text-green-400">
-                {stats.total > 0 ? ((stats.categoriesT / stats.total) * 100).toFixed(0) : 0}%
               </div>
             </div>
           </div>
@@ -151,46 +135,45 @@ export default function SkillsPage() {
         {/* Sunburst */}
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Distribución Jerárquica de Competencias
+            Distribucion Jerarquica de Competencias
           </h2>
           <p className="text-sm text-gray-600 mb-6">
-            Haz clic en cualquier segmento para ver detalles. El anillo externo distingue
-            entre <span className="text-indigo-600 font-medium">Skills</span> (saber hacer) y
-            <span className="text-amber-600 font-medium ml-1">Conocimientos</span> (saber).
+            <strong>Click en cualquier segmento</strong> para hacer zoom y ver las competencias individuales.
+            Click en el <strong>centro</strong> para volver al nivel anterior.
           </p>
 
-          <SkillsSunburst width={750} height={750} />
+          <SkillsSunburst width={800} height={800} />
         </div>
 
-        {/* Explicación de la estructura */}
+        {/* Explicacion de la estructura */}
         <div className="mt-8 bg-white rounded-xl shadow-sm p-6 border border-gray-100">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Estructura de la taxonomía ESCO
+            Estructura de la taxonomia ESCO
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Categorías */}
+            {/* Categorias */}
             <div>
               <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-blue-500"></span>
                 <span className="w-3 h-3 rounded-full bg-green-500"></span>
-                Categorías (anillos interiores)
+                Categorias (anillos interiores)
               </h3>
 
               <div className="space-y-4">
                 <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
-                  <div className="font-medium text-blue-900 mb-2">S - Competencias Técnicas</div>
+                  <div className="font-medium text-blue-900 mb-2">S - Competencias Tecnicas</div>
                   <p className="text-sm text-blue-800 mb-2">
-                    Habilidades específicas de un campo profesional.
+                    Habilidades especificas de un campo profesional.
                   </p>
                   <div className="text-xs text-blue-700 grid grid-cols-2 gap-1">
-                    <span>S1: Comunicación</span>
-                    <span>S2: Información</span>
+                    <span>S1: Comunicacion</span>
+                    <span>S2: Informacion</span>
                     <span>S3: Asistencia</span>
-                    <span>S4: Gestión</span>
+                    <span>S4: Gestion</span>
                     <span>S5: Ordenadores</span>
-                    <span>S6: Manipulación</span>
-                    <span>S7: Construcción</span>
+                    <span>S6: Manipulacion</span>
+                    <span>S7: Construccion</span>
                     <span>S8: Maquinaria</span>
                   </div>
                 </div>
@@ -198,14 +181,14 @@ export default function SkillsPage() {
                 <div className="bg-green-50 rounded-lg p-4 border border-green-100">
                   <div className="font-medium text-green-900 mb-2">T - Competencias Transversales</div>
                   <p className="text-sm text-green-800 mb-2">
-                    Capacidades aplicables a cualquier ocupación.
+                    Capacidades aplicables a cualquier ocupacion.
                   </p>
                   <div className="text-xs text-green-700 grid grid-cols-2 gap-1">
-                    <span>T1: Capacidades básicas</span>
+                    <span>T1: Capacidades basicas</span>
                     <span>T2: Razonamiento</span>
-                    <span>T3: Autogestión</span>
+                    <span>T3: Autogestion</span>
                     <span>T4: Sociales</span>
-                    <span>T5: Físicas</span>
+                    <span>T5: Fisicas</span>
                     <span>T6: Para la vida</span>
                   </div>
                 </div>
@@ -217,7 +200,7 @@ export default function SkillsPage() {
               <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-indigo-500"></span>
                 <span className="w-3 h-3 rounded-full bg-amber-500"></span>
-                Tipos (anillo exterior)
+                Tipos de Competencia
               </h3>
 
               <div className="space-y-4">
@@ -230,7 +213,7 @@ export default function SkillsPage() {
                     <p><strong>Ejemplos:</strong></p>
                     <ul className="list-disc list-inside mt-1">
                       <li>Programar en Python</li>
-                      <li>Diseñar bases de datos</li>
+                      <li>Disenar bases de datos</li>
                       <li>Negociar contratos</li>
                       <li>Operar maquinaria CNC</li>
                     </ul>
@@ -240,21 +223,35 @@ export default function SkillsPage() {
                 <div className="bg-amber-50 rounded-lg p-4 border border-amber-100">
                   <div className="font-medium text-amber-900 mb-2">Conocimientos (Saber)</div>
                   <p className="text-sm text-amber-800 mb-2">
-                    Información, teorías y conceptos adquiridos.
+                    Informacion, teorias y conceptos adquiridos.
                   </p>
                   <div className="text-xs text-amber-700">
                     <p><strong>Ejemplos:</strong></p>
                     <ul className="list-disc list-inside mt-1">
                       <li>Lenguaje Python</li>
-                      <li>Teoría de bases de datos SQL</li>
-                      <li>Legislación laboral</li>
-                      <li>Principios de mecánica</li>
+                      <li>Teoria de bases de datos SQL</li>
+                      <li>Legislacion laboral</li>
+                      <li>Principios de mecanica</li>
                     </ul>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Como usar */}
+        <div className="mt-8 bg-blue-50 rounded-xl p-6 border border-blue-100">
+          <h2 className="text-lg font-semibold text-blue-900 mb-3">
+            Como explorar la taxonomia
+          </h2>
+          <ol className="list-decimal list-inside space-y-2 text-sm text-blue-800">
+            <li><strong>Vista general:</strong> Los anillos muestran la jerarquia desde categorias (interior) hasta competencias individuales (exterior)</li>
+            <li><strong>Zoom:</strong> Hace click en cualquier segmento para expandirlo y ver mas detalle</li>
+            <li><strong>Volver:</strong> Click en el circulo central para subir un nivel</li>
+            <li><strong>Tooltip:</strong> Pasa el mouse sobre cualquier segmento para ver el nombre completo y estadisticas</li>
+            <li><strong>Navegar:</strong> El breadcrumb arriba del grafico muestra tu ubicacion actual</li>
+          </ol>
         </div>
 
         {/* Footer info */}
