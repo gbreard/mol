@@ -38,7 +38,7 @@ export default function UsuariosPage() {
     const supabase = createBrowserClient();
 
     // Escuchar cambios de auth para cargar cuando la sesión esté lista
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: string, session: any) => {
       if (session?.access_token) {
         loadUsuarios(session.access_token);
       } else if (event === 'SIGNED_OUT') {
