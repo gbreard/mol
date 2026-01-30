@@ -1,20 +1,37 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
-// Cliente con service_role para acceder a auth.users
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  {
+// Cliente con service_role para acceder a auth.users (lazy initialization)
+let supabaseAdmin: SupabaseClient | null = null;
+
+function getSupabaseAdmin(): SupabaseClient | null {
+  if (supabaseAdmin) return supabaseAdmin;
+
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!url || !key) {
+    console.warn('Supabase admin credentials not configured');
+    return null;
+  }
+
+  supabaseAdmin = createClient(url, key, {
     auth: {
       autoRefreshToken: false,
       persistSession: false
     }
-  }
-);
+  });
+
+  return supabaseAdmin;
+}
 
 export async function GET(request: NextRequest) {
   try {
+    const admin = getSupabaseAdmin();
+    if (!admin) {
+      return NextResponse.json({ error: 'Admin API no configurada' }, { status: 503 });
+    }
+
     // Verificar que el usuario está autenticado (básico)
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
@@ -22,7 +39,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Obtener todos los usuarios de auth
-    const { data: { users }, error } = await supabaseAdmin.auth.admin.listUsers();
+    const { data: { users }, error } = await admin.auth.admin.listUsers();
 
     if (error) {
       console.error('Error listando usuarios:', error);
@@ -49,6 +66,11 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const admin = getSupabaseAdmin();
+    if (!admin) {
+      return NextResponse.json({ error: 'Admin API no configurada' }, { status: 503 });
+    }
+
     const body = await request.json();
     const { email, password, role, display_name } = body;
 
@@ -57,7 +79,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Crear usuario con admin API
-    const { data, error } = await supabaseAdmin.auth.admin.createUser({
+    const { data, error } = await admin.auth.admin.createUser({
       email,
       password,
       email_confirm: true, // Confirmar email automáticamente
