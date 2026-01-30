@@ -1,0 +1,596 @@
+{
+  "name": "ESCO Skills",
+  "children": [
+    {
+      "name": "S",
+      "label": "Competencias Técnicas",
+      "children": [
+        {
+          "name": "S1",
+          "label": "Comunicación y colaboración",
+          "children": [
+            {
+              "name": "S1.0",
+              "label": "comunicación, colaboración y creatividad",
+              "value": 8
+            },
+            {
+              "name": "S1.1",
+              "label": "negociar",
+              "value": 38
+            },
+            {
+              "name": "S1.11",
+              "label": "diseñar sistemas y productos",
+              "value": 221
+            },
+            {
+              "name": "S1.12",
+              "label": "crear materiales artísticos, visuales o docentes",
+              "value": 228
+            },
+            {
+              "name": "S1.13",
+              "label": "escribir y redactar",
+              "value": 98
+            },
+            {
+              "name": "S1.14",
+              "label": "actuar y entretener",
+              "value": 94
+            },
+            {
+              "name": "S1.15",
+              "label": "utilizar más de una lengua",
+              "value": 45
+            },
+            {
+              "name": "S1.2",
+              "label": "actuar como enlace y crear redes de contactos",
+              "value": 200
+            },
+            {
+              "name": "S1.3",
+              "label": "enseñar y formar",
+              "value": 174
+            },
+            {
+              "name": "S1.4",
+              "label": "presentar información",
+              "value": 56
+            },
+            {
+              "name": "S1.5",
+              "label": "prestar asesoramiento y consultoría",
+              "value": 146
+            },
+            {
+              "name": "S1.6",
+              "label": "promocionar, vender y comprar",
+              "value": 235
+            },
+            {
+              "name": "S1.7",
+              "label": "obtener información verbal",
+              "value": 28
+            },
+            {
+              "name": "S1.8",
+              "label": "trabajar con otros",
+              "value": 99
+            },
+            {
+              "name": "S1.9",
+              "label": "solucionar problemas",
+              "value": 48
+            }
+          ]
+        },
+        {
+          "name": "S2",
+          "label": "Competencias de información",
+          "children": [
+            {
+              "name": "S2.0",
+              "label": "competencias en materia de información",
+              "value": 1
+            },
+            {
+              "name": "S2.1",
+              "label": "realizar estudios, investigaciones y análisis",
+              "value": 283
+            },
+            {
+              "name": "S2.2",
+              "label": "documentar y registrar información",
+              "value": 178
+            },
+            {
+              "name": "S2.3",
+              "label": "gestionar información",
+              "value": 55
+            },
+            {
+              "name": "S2.4",
+              "label": "procesar información",
+              "value": 57
+            },
+            {
+              "name": "S2.5",
+              "label": "medir propiedades físicas",
+              "value": 30
+            },
+            {
+              "name": "S2.6",
+              "label": "calcular y estimar",
+              "value": 49
+            },
+            {
+              "name": "S2.7",
+              "label": "analizar y evaluar información y datos",
+              "value": 278
+            },
+            {
+              "name": "S2.8",
+              "label": "realizar seguimiento, inspección y ensayos",
+              "value": 445
+            },
+            {
+              "name": "S2.9",
+              "label": "realizar seguimiento de avances en el ámbito de especialización",
+              "value": 52
+            }
+          ]
+        },
+        {
+          "name": "S3",
+          "label": "Asistencia y cuidados",
+          "children": [
+            {
+              "name": "S3.0",
+              "label": "prestar asistencia y cuidados",
+              "value": 4
+            },
+            {
+              "name": "S3.1",
+              "label": "ofrecer orientación",
+              "value": 44
+            },
+            {
+              "name": "S3.2",
+              "label": "prestar atención sanitaria o administrar tratamientos médicos",
+              "value": 214
+            },
+            {
+              "name": "S3.3",
+              "label": "proteger y velar por el cumplimiento",
+              "value": 364
+            },
+            {
+              "name": "S3.4",
+              "label": "facilitar información y apoyo al público y a los clientes",
+              "value": 101
+            },
+            {
+              "name": "S3.5",
+              "label": "preparar y servir alimentos y bebidas",
+              "value": 63
+            },
+            {
+              "name": "S3.6",
+              "label": "prestar cuidados personales en general",
+              "value": 72
+            }
+          ]
+        },
+        {
+          "name": "S4",
+          "label": "Competencias de gestión",
+          "children": [
+            {
+              "name": "S4.0",
+              "label": "competencias de gestión",
+              "value": 38
+            },
+            {
+              "name": "S4.1",
+              "label": "desarrollar objetivos y estrategias",
+              "value": 279
+            },
+            {
+              "name": "S4.2",
+              "label": "organizar, planificar y programar trabajo y actividades",
+              "value": 423
+            },
+            {
+              "name": "S4.3",
+              "label": "asignar y controlar recursos",
+              "value": 123
+            },
+            {
+              "name": "S4.4",
+              "label": "realizar tareas administrativas",
+              "value": 82
+            },
+            {
+              "name": "S4.5",
+              "label": "guiar y motivar",
+              "value": 8
+            },
+            {
+              "name": "S4.6",
+              "label": "crear y desarrollar equipos",
+              "value": 3
+            },
+            {
+              "name": "S4.7",
+              "label": "reclutar y contratar",
+              "value": 20
+            },
+            {
+              "name": "S4.8",
+              "label": "supervisar a personas",
+              "value": 89
+            },
+            {
+              "name": "S4.9",
+              "label": "tomar decisiones",
+              "value": 6
+            }
+          ]
+        },
+        {
+          "name": "S5",
+          "label": "Trabajar con ordenadores",
+          "children": [
+            {
+              "name": "S5.0",
+              "label": "trabajar con ordenadores",
+              "value": 6
+            },
+            {
+              "name": "S5.1",
+              "label": "programar sistemas informáticos",
+              "value": 34
+            },
+            {
+              "name": "S5.2",
+              "label": "configurar y proteger sistemas informáticos",
+              "value": 53
+            },
+            {
+              "name": "S5.5",
+              "label": "acceder a y analizar datos digitales",
+              "value": 117
+            },
+            {
+              "name": "S5.6",
+              "label": "utilizar herramientas digitales para el trabajo colaborativo, la creación de contenidos y la resolución de problemas",
+              "value": 149
+            },
+            {
+              "name": "S5.7",
+              "label": "utilizar herramientas digitales para controlar maquinaria",
+              "value": 37
+            }
+          ]
+        },
+        {
+          "name": "S6",
+          "label": "Manipular y mover",
+          "children": [
+            {
+              "name": "S6.0",
+              "label": "manipular y mover",
+              "value": 2
+            },
+            {
+              "name": "S6.1",
+              "label": "clasificar y envasar, embalar y empaquetar mercancías y materiales",
+              "value": 100
+            },
+            {
+              "name": "S6.11",
+              "label": "limpiar",
+              "value": 120
+            },
+            {
+              "name": "S6.12",
+              "label": "lavar y mantener textiles y prendas de vestir",
+              "value": 14
+            },
+            {
+              "name": "S6.13",
+              "label": "manipular y eliminar residuos y materiales peligrosos",
+              "value": 43
+            },
+            {
+              "name": "S6.2",
+              "label": "mover y elevar",
+              "value": 182
+            },
+            {
+              "name": "S6.3",
+              "label": "transformar y mezclar materiales",
+              "value": 106
+            },
+            {
+              "name": "S6.4",
+              "label": "ocuparse de plantas y cultivos",
+              "value": 62
+            },
+            {
+              "name": "S6.5",
+              "label": "ensamblar y fabricar productos",
+              "value": 257
+            },
+            {
+              "name": "S6.6",
+              "label": "elaborar moldes, formas, modelos y patrones",
+              "value": 52
+            },
+            {
+              "name": "S6.7",
+              "label": "utilizar herramientas manuales",
+              "value": 180
+            },
+            {
+              "name": "S6.9",
+              "label": "manipular animales",
+              "value": 188
+            }
+          ]
+        },
+        {
+          "name": "S7",
+          "label": "Construir",
+          "children": [
+            {
+              "name": "S7.0",
+              "label": "construir",
+              "value": 5
+            },
+            {
+              "name": "S7.1",
+              "label": "construir y repara estructuras",
+              "value": 294
+            },
+            {
+              "name": "S7.2",
+              "label": "instalar infraestructura interior o exterior",
+              "value": 58
+            },
+            {
+              "name": "S7.3",
+              "label": "rematar estructuras interiores o exteriores",
+              "value": 87
+            }
+          ]
+        },
+        {
+          "name": "S8",
+          "label": "Maquinaria especializada",
+          "children": [
+            {
+              "name": "S8.0",
+              "label": "trabajar con maquinaria y equipo especializado",
+              "value": 57
+            },
+            {
+              "name": "S8.1",
+              "label": "operar maquinaria móvil",
+              "value": 83
+            },
+            {
+              "name": "S8.2",
+              "label": "conducir vehículos",
+              "value": 58
+            },
+            {
+              "name": "S8.3",
+              "label": "operar vehículos acuáticos",
+              "value": 36
+            },
+            {
+              "name": "S8.4",
+              "label": "operar maquinaria para la extracción y la transformación de materias primas",
+              "value": 209
+            },
+            {
+              "name": "S8.5",
+              "label": "operar maquinaria para la fabricación de productos",
+              "value": 415
+            },
+            {
+              "name": "S8.6",
+              "label": "utilizar instrumentos y equipos de precisión",
+              "value": 198
+            },
+            {
+              "name": "S8.7",
+              "label": "instalar, mantener y reparar equipos mecánicos",
+              "value": 96
+            },
+            {
+              "name": "S8.8",
+              "label": "instalar, mantener y reparar equipos eléctricos, electrónicos y de precisión",
+              "value": 117
+            },
+            {
+              "name": "S8.9",
+              "label": "operar aeronaves",
+              "value": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "T",
+      "label": "Competencias Transversales",
+      "children": [
+        {
+          "name": "T1",
+          "label": "Capacidades básicas",
+          "children": [
+            {
+              "name": "T1.1",
+              "label": "dominar idiomas",
+              "value": 353
+            },
+            {
+              "name": "T1.2",
+              "label": "trabajar con números y medidas",
+              "value": 99
+            },
+            {
+              "name": "T1.3",
+              "label": "trabajar con dispositivos y aplicaciones digitales",
+              "value": 15
+            }
+          ]
+        },
+        {
+          "name": "T2",
+          "label": "Razonamiento",
+          "children": [
+            {
+              "name": "T2.1",
+              "label": "procesar información, ideas y conceptos",
+              "value": 250
+            },
+            {
+              "name": "T2.2",
+              "label": "planificar y organizar",
+              "value": 45
+            },
+            {
+              "name": "T2.3",
+              "label": "lidiar con problemas",
+              "value": 18
+            },
+            {
+              "name": "T2.4",
+              "label": "pensar de manera creativa e innovadora",
+              "value": 24
+            }
+          ]
+        },
+        {
+          "name": "T3",
+          "label": "Autogestión",
+          "children": [
+            {
+              "name": "T3.1",
+              "label": "trabajar de manera eficiente",
+              "value": 210
+            },
+            {
+              "name": "T3.2",
+              "label": "adoptar un enfoque proactivo",
+              "value": 89
+            },
+            {
+              "name": "T3.3",
+              "label": "mantener una actitud positiva",
+              "value": 27
+            },
+            {
+              "name": "T3.4",
+              "label": "mostrar voluntad de aprender",
+              "value": 76
+            }
+          ]
+        },
+        {
+          "name": "T4",
+          "label": "Sociales y comunicación",
+          "children": [
+            {
+              "name": "T4.1",
+              "label": "comunicarse",
+              "value": 188
+            },
+            {
+              "name": "T4.2",
+              "label": "ayudar a otras personas",
+              "value": 389
+            },
+            {
+              "name": "T4.3",
+              "label": "colaborar en equipos y redes",
+              "value": 81
+            },
+            {
+              "name": "T4.4",
+              "label": "dirigir a otras personas",
+              "value": 185
+            },
+            {
+              "name": "T4.5",
+              "label": "respetar el código ético de conducta",
+              "value": 17
+            }
+          ]
+        },
+        {
+          "name": "T5",
+          "label": "Físicas y manuales",
+          "children": [
+            {
+              "name": "T5.1",
+              "label": "manipular y controlar objetos y equipos",
+              "value": 14
+            },
+            {
+              "name": "T5.2",
+              "label": "responder a circunstancias físicas",
+              "value": 11
+            }
+          ]
+        },
+        {
+          "name": "T6",
+          "label": "Capacidades para la vida",
+          "children": [
+            {
+              "name": "T6.1",
+              "label": "hacer uso de capacidades y competencias relacionadas con la salud",
+              "value": 118
+            },
+            {
+              "name": "T6.2",
+              "label": "hacer uso de capacidades y competencias medioambientales",
+              "value": 39
+            },
+            {
+              "name": "T6.3",
+              "label": "hacer uso de capacidades y competencias cívicas",
+              "value": 36
+            },
+            {
+              "name": "T6.4",
+              "label": "hacer uso de capacidades y competencias culturales",
+              "value": 25
+            },
+            {
+              "name": "T6.5",
+              "label": "hacer uso de capacidades y competencias empresariales y financieras",
+              "value": 11
+            },
+            {
+              "name": "T6.6",
+              "label": "aplicar conocimientos generales",
+              "value": 38
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "K",
+      "label": "Conocimientos",
+      "value": 3071
+    }
+  ]
+}

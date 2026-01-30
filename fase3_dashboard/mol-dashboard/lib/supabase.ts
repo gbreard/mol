@@ -1,10 +1,22 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import { DashboardFilters, Issue, IssueStats } from './types'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Solo crear cliente si hay credenciales (permite páginas públicas sin Supabase)
+export const supabase: SupabaseClient | null =
+  supabaseUrl && supabaseAnonKey
+    ? createClient(supabaseUrl, supabaseAnonKey)
+    : null
+
+// Helper para verificar si Supabase está disponible
+export function requireSupabase(): SupabaseClient {
+  if (!supabase) {
+    throw new Error('Supabase no está configurado. Verifica las variables de entorno.')
+  }
+  return supabase
+}
 
 // Nombre de la tabla principal con datos
 const TABLA_OFERTAS = 'ofertas'
@@ -98,9 +110,17 @@ function applyFilters(query: any, filters?: DashboardFilters) {
   return query
 }
 
+// Helper para obtener cliente de forma segura (retorna null si no está disponible)
+function getSupabaseClient() {
+  return supabase
+}
+
 // Funciones para obtener datos del dashboard
 export async function getKPIs(filters?: DashboardFilters) {
-  let query = supabase
+  const client = getSupabaseClient()
+  if (!client) return { totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 }
+
+  let query = client
     .from(TABLA_OFERTAS)
     .select('id_oferta, isco_code, empresa, provincia')
 
@@ -120,7 +140,10 @@ export async function getKPIs(filters?: DashboardFilters) {
 }
 
 export async function getOfertasPorProvincia(filters?: DashboardFilters) {
-  let query = supabase
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  let query = client
     .from(TABLA_OFERTAS)
     .select('provincia')
 
@@ -155,7 +178,10 @@ export async function getOfertasPorProvincia(filters?: DashboardFilters) {
 }
 
 export async function getTopOcupaciones(limit = 10, filters?: DashboardFilters) {
-  let query = supabase
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  let query = client
     .from(TABLA_OFERTAS)
     .select('isco_code, isco_label')
 
@@ -185,7 +211,10 @@ export async function getTopOcupaciones(limit = 10, filters?: DashboardFilters) 
 }
 
 export async function getOfertasPorModalidad(filters?: DashboardFilters) {
-  let query = supabase
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  let query = client
     .from(TABLA_OFERTAS)
     .select('modalidad')
 
@@ -207,7 +236,10 @@ export async function getOfertasPorModalidad(filters?: DashboardFilters) {
 }
 
 export async function getOfertas(limit = 50, offset = 0, filters?: DashboardFilters) {
-  let query = supabase
+  const client = getSupabaseClient()
+  if (!client) return { ofertas: [], total: 0 }
+
+  let query = client
     .from(TABLA_OFERTAS)
     .select(`
       id_oferta,
@@ -269,7 +301,10 @@ export async function getOfertas(limit = 50, offset = 0, filters?: DashboardFilt
 
 // Funciones para obtener skills (para Requerimientos)
 export async function getTopSkillsTecnicas(limit = 20, filters?: DashboardFilters) {
-  let query = supabase
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  let query = client
     .from(TABLA_OFERTAS)
     .select('skills_tecnicas_list')
 
@@ -294,7 +329,10 @@ export async function getTopSkillsTecnicas(limit = 20, filters?: DashboardFilter
 }
 
 export async function getTopSoftSkills(limit = 20, filters?: DashboardFilters) {
-  let query = supabase
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  let query = client
     .from(TABLA_OFERTAS)
     .select('soft_skills_list')
 
@@ -322,7 +360,10 @@ export async function getTopSoftSkills(limit = 20, filters?: DashboardFilters) {
 
 // Total de ofertas con filtros aplicados
 export async function getTotalOfertas(filters?: DashboardFilters): Promise<number> {
-  let query = supabase
+  const client = getSupabaseClient()
+  if (!client) return 0
+
+  let query = client
     .from(TABLA_OFERTAS)
     .select('id_oferta', { count: 'exact', head: true })
 
@@ -355,7 +396,10 @@ export interface OcupacionTreeNode {
 }
 
 export async function getOcupacionesTree(filters?: DashboardFilters): Promise<OcupacionTreeNode[]> {
-  let query = supabase
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  let query = client
     .from(TABLA_OFERTAS)
     .select('isco_code, isco_label')
 
@@ -412,7 +456,10 @@ export interface RequerimientosFilters {
 
 // Funciones para obtener distribuciones de requerimientos
 export async function getDistribucionRequerimientos(filters?: DashboardFilters, localFilters?: RequerimientosFilters) {
-  let query = supabase
+  const client = getSupabaseClient()
+  if (!client) return { total: 0, educacion: [], experiencia: [], seniority: [], modalidad: [], genteCargo: [], jornada: [] }
+
+  let query = client
     .from(TABLA_OFERTAS)
     .select('nivel_educativo, experiencia_min_anios, nivel_seniority, modalidad, tiene_gente_cargo, jornada_laboral')
 
@@ -538,6 +585,8 @@ export interface SkillsFilters {
 // Helper: obtener IDs de ofertas que cumplen filtros globales
 // Solo consulta si hay filtros activos, sino retorna null (= sin filtro)
 async function getFilteredOfertaIds(filters?: DashboardFilters): Promise<string[] | null> {
+  const client = getSupabaseClient()
+  if (!client) return null
   if (!filters) return null
 
   const hasGlobalFilter = filters.provincia || filters.fechaDesde || filters.fechaHasta ||
@@ -545,7 +594,7 @@ async function getFilteredOfertaIds(filters?: DashboardFilters): Promise<string[
 
   if (!hasGlobalFilter) return null
 
-  let query = supabase
+  let query = client
     .from(TABLA_OFERTAS)
     .select('id_oferta')
 
@@ -566,9 +615,12 @@ function applyOfertaIdsFilter(query: any, ofertaIds: string[] | null) {
 
 // Distribución por categoría L1
 export async function getSkillsPorCategoriaL1(skillsFilters?: SkillsFilters, globalFilters?: DashboardFilters) {
+  const client = getSupabaseClient()
+  if (!client) return []
+
   const ofertaIds = await getFilteredOfertaIds(globalFilters)
 
-  let query = supabase
+  let query = client
     .from('ofertas_skills')
     .select('l1, l1_nombre, es_digital')
     .not('l1', 'is', null)
@@ -605,9 +657,12 @@ export async function getSkillsPorCategoriaL1(skillsFilters?: SkillsFilters, glo
 
 // Skills digitales vs no digitales
 export async function getSkillsDigitales(skillsFilters?: SkillsFilters, globalFilters?: DashboardFilters) {
+  const client = getSupabaseClient()
+  if (!client) return []
+
   const ofertaIds = await getFilteredOfertaIds(globalFilters)
 
-  let query = supabase
+  let query = client
     .from('ofertas_skills')
     .select('es_digital, l1, l1_nombre')
 
@@ -640,9 +695,12 @@ export async function getSkillsDigitales(skillsFilters?: SkillsFilters, globalFi
 
 // Top skills por categoría L1
 export async function getTopSkillsPorCategoria(limit = 5, skillsFilters?: SkillsFilters, globalFilters?: DashboardFilters) {
+  const client = getSupabaseClient()
+  if (!client) return {}
+
   const ofertaIds = await getFilteredOfertaIds(globalFilters)
 
-  let query = supabase
+  let query = client
     .from('ofertas_skills')
     .select('l1, l1_nombre, esco_skill_label, es_digital')
     .not('l1', 'is', null)
@@ -692,9 +750,12 @@ export async function getTopSkillsPorCategoria(limit = 5, skillsFilters?: Skills
 
 // Top N skills totales con su categoría
 export async function getTopSkillsConCategoria(limit = 10, skillsFilters?: SkillsFilters, globalFilters?: DashboardFilters) {
+  const client = getSupabaseClient()
+  if (!client) return []
+
   const ofertaIds = await getFilteredOfertaIds(globalFilters)
 
-  let query = supabase
+  let query = client
     .from('ofertas_skills')
     .select('l1, l1_nombre, esco_skill_label, es_digital')
     .not('l1', 'is', null)
@@ -740,9 +801,12 @@ export async function getTopSkillsConCategoria(limit = 10, skillsFilters?: Skill
 
 // Heatmap: categorías L1 por ocupación ESCO
 export async function getSkillsCategoriaPorOcupacion(globalFilters?: DashboardFilters) {
+  const client = getSupabaseClient()
+  if (!client) return { data: [], ocupaciones: [], categorias: [] }
+
   const ofertaIds = await getFilteredOfertaIds(globalFilters)
 
-  let query = supabase
+  let query = client
     .from('ofertas_skills')
     .select(`
       l1,
@@ -761,7 +825,7 @@ export async function getSkillsCategoriaPorOcupacion(globalFilters?: DashboardFi
   // Obtener ocupaciones de las ofertas
   const skillOfertaIds = [...new Set(data?.map(s => s.id_oferta) || [])]
 
-  const { data: ofertas, error: err2 } = await supabase
+  const { data: ofertas, error: err2 } = await client
     .from('ofertas')
     .select('id_oferta, isco_label')
     .in('id_oferta', skillOfertaIds.slice(0, 100)) // Limitar para performance
@@ -821,7 +885,10 @@ export async function getIssues(filters?: {
   prioridad?: string;
   id_oferta?: string;
 }): Promise<Issue[]> {
-  let query = supabase
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  let query = client
     .from('issues')
     .select('*')
     .order('created_at', { ascending: false })
@@ -847,7 +914,10 @@ export async function getIssues(filters?: {
 
 // Obtener issues pendientes (para el badge del FAB)
 export async function getIssuesPendientes(): Promise<Issue[]> {
-  const { data, error } = await supabase
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  const { data, error } = await client
     .from('issues')
     .select('*')
     .in('estado', ['pendiente', 'en_progreso'])
@@ -868,7 +938,10 @@ export async function createIssue(issue: {
   autor_id: string;
   autor_email: string;
 }): Promise<Issue> {
-  const { data, error } = await supabase
+  const client = getSupabaseClient()
+  if (!client) throw new Error('Supabase no está configurado')
+
+  const { data, error } = await client
     .from('issues')
     .insert([issue])
     .select()
@@ -883,6 +956,9 @@ export async function updateIssue(
   id: string,
   updates: Partial<Omit<Issue, 'id' | 'created_at'>>
 ): Promise<Issue> {
+  const client = getSupabaseClient()
+  if (!client) throw new Error('Supabase no está configurado')
+
   const updateData = {
     ...updates,
     updated_at: new Date().toISOString()
@@ -893,7 +969,7 @@ export async function updateIssue(
     updateData.resuelto_at = new Date().toISOString()
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await client
     .from('issues')
     .update(updateData)
     .eq('id', id)
@@ -906,7 +982,10 @@ export async function updateIssue(
 
 // Obtener estadísticas de issues
 export async function getIssuesStats(): Promise<IssueStats> {
-  const { data, error } = await supabase
+  const client = getSupabaseClient()
+  if (!client) return { pendientes: 0, en_progreso: 0, resueltos: 0 }
+
+  const { data, error } = await client
     .from('issues')
     .select('estado')
 
@@ -929,7 +1008,10 @@ export async function getIssuesStats(): Promise<IssueStats> {
 
 // Obtener issues de una oferta específica
 export async function getIssuesByOferta(id_oferta: string): Promise<Issue[]> {
-  const { data, error } = await supabase
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  const { data, error } = await client
     .from('issues')
     .select('*')
     .eq('id_oferta', id_oferta)
