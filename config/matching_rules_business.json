@@ -1,8 +1,12 @@
 {
-  "version": "3.0",
-  "descripcion": "Reglas de negocio para matching ESCO. 132 reglas de bypass que fuerzan ISCO específico.",
+  "version": "3.6",
+  "descripcion": "Reglas de negocio para matching ESCO. 164 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-01-26",
+  "fecha_actualizacion": "2026-01-29",
+  "_cambios_v33": "Fix R13_enfermero esco_label, R15 exclusiones, R38 exclusiones, nuevas R161-R163 deposito/edilicio/comex",
+  "_cambios_v34": "Fix R162 esco_label (electricista de edificios -> electricista de obras), R110 exclusiones edilicio, R22 exclusiones edilicio",
+  "_cambios_v35": "R26 exclusiones gastronómicas, R19b PM IT (1330), R17b Compliance financiero (2413), R119 operario logístico (9321->9333)",
+  "_cambios_v32": "Agregadas R14d_administrativo_contable (4311) y R26b_recepcionista_hotel (4224) - fix override semántico alto",
   "_cambios_v29": "Agregada R133 Steward/Bachero hoteleria -> 9412 ayudante cocina",
   "_cambios_v30": "Agregadas R134 Commercial Executive, R135 Gestor Liquidaciones",
   "_cambios_v31": "Agregadas R139-R142: Repositor, Mucama hotel, Peón depósito, Bodeguero -> 9333/9112",
@@ -250,7 +254,7 @@
       "activa": true
     },
     "R13_enfermero": {
-      "nombre": "Enfermero/Enfermera",
+      "nombre": "Enfermero/Enfermera (profesional de salud)",
       "prioridad": 1,
       "condicion": {
         "titulo_contiene_alguno": [
@@ -264,9 +268,10 @@
       },
       "accion": {
         "forzar_isco": "2221",
-        "esco_label": "enfermero/enfermera"
+        "esco_label": "enfermero responsable de cuidados generales/enfermera responsable de cuidados generales"
       },
       "caso_diagnostico": "2154046 - Enfermeros para atencion domiciliaria",
+      "fix_v33": "2026-01-29 - esco_label corregido (antes 'enfermero/enfermera' mapeaba a 5329)",
       "activa": true
     },
     "R14_contador_auditor": {
@@ -339,8 +344,26 @@
       "fecha_creacion": "2026-01-12",
       "activa": true
     },
+    "R14d_administrativo_contable": {
+      "nombre": "Administrativo Contable (empleado, no profesional)",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_todos": [
+          "administrativo",
+          "contable"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4311",
+        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+      },
+      "caso_diagnostico": "1118102043 - Administrativo Contable SR, 1118102117 - Administrativo Contable Part Time",
+      "fecha_creacion": "2026-01-29",
+      "nota": "Más específica que R14. Administrativo Contable = empleado (4311), no Contador profesional (2411)",
+      "activa": true
+    },
     "R15_customer_care": {
-      "nombre": "Customer Care/Atencion al Cliente",
+      "nombre": "Customer Care/Atencion al Cliente (call center)",
       "prioridad": 2,
       "condicion": {
         "titulo_contiene_alguno": [
@@ -349,6 +372,17 @@
           "atencion al cliente",
           "atención al cliente",
           "call center"
+        ],
+        "titulo_no_contiene_alguno": [
+          "merceria",
+          "mercería",
+          "deposito",
+          "depósito",
+          "almacen",
+          "almacén",
+          "tienda",
+          "local",
+          "sucursal"
         ]
       },
       "accion": {
@@ -356,6 +390,7 @@
         "esco_label": "agente de centro de atención al cliente"
       },
       "caso_diagnostico": "2149320 - Customer Care Professional",
+      "fix_v33": "2026-01-29 - Exclusiones para mercería, depósito (son vendedores, no call center)",
       "activa": true
     },
     "R16_barista_heladero": {
@@ -379,7 +414,7 @@
       "activa": true
     },
     "R17_compliance_legal": {
-      "nombre": "Compliance/Legal",
+      "nombre": "Compliance/Legal (no financiero)",
       "prioridad": 1,
       "condicion": {
         "titulo_contiene_alguno": [
@@ -396,13 +431,33 @@
           "inmobiliaria",
           "asesor inmobiliario",
           "agente inmobiliario"
-        ]
+        ],
+        "sector_no_es": ["Finanzas", "Banca", "Seguros"]
       },
       "accion": {
         "forzar_isco": "2611",
         "esco_label": "abogado/abogada"
       },
       "caso_diagnostico": "1118027243 - Responsable de Legales, 2151075 - Asistente Compliance",
+      "activa": true
+    },
+    "R17b_compliance_financiero": {
+      "nombre": "Compliance Financiero (ALyC, Banca, Seguros)",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "compliance",
+          "cumplimiento normativo"
+        ],
+        "sector_empresa_es_alguno": ["Finanzas", "Banca", "Seguros"]
+      },
+      "accion": {
+        "forzar_isco": "2413",
+        "esco_label": "analista financiero/analista financiera"
+      },
+      "caso_diagnostico": "2172825 - Analista de Compliance (ALyC, sector Finanzas)",
+      "fecha_creacion": "2026-01-29",
+      "nota": "Compliance en finanzas = analista financiero (2413), no abogado (2611)",
       "activa": true
     },
     "R18_payroll_nominas": {
@@ -445,6 +500,29 @@
         "esco_label": "director de empresa/directora de empresa"
       },
       "caso_diagnostico": "1118026719 - Project Manager IT",
+      "activa": true
+    },
+    "R19b_project_manager_it": {
+      "nombre": "Project Manager IT/Telecomunicaciones",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "project manager",
+          "jefe de proyecto",
+          "jefa de proyecto",
+          "gerente de proyecto",
+          "pm it",
+          "project lead"
+        ],
+        "area_funcional_es": "IT"
+      },
+      "accion": {
+        "forzar_isco": "1330",
+        "esco_label": "gestor de proyectos de TIC/gestora de proyectos de TIC"
+      },
+      "caso_diagnostico": "2171813 - Project Manager (Sector Tecnologia, Area IT)",
+      "fecha_creacion": "2026-01-29",
+      "nota": "PM de área IT = 1330, PM general = 1213 (R19)",
       "activa": true
     },
     "R20_vendedor_ferreteria": {
@@ -502,9 +580,10 @@
           "coordinador de instalaciones",
           "tecnico instalaciones",
           "técnico instalaciones",
-          "mantenimiento edilicio",
-          "mantenimiento de edificios",
           "facility"
+        ],
+        "titulo_no_contiene_alguno": [
+          "edilicio", "edificio", "edificios"
         ]
       },
       "accion": {
@@ -586,6 +665,10 @@
       "condicion": {
         "titulo_contiene_alguno": [
           "recepcionista"
+        ],
+        "titulo_no_contiene_alguno": [
+          "cocinero", "mozo", "bartender", "barman", "camarero", "mesero",
+          "runner", "bachero", "ayudante de cocina", "chef"
         ]
       },
       "accion": {
@@ -593,6 +676,32 @@
         "esco_label": "recepcionista"
       },
       "caso_gold_set": "1117977340 - Recepcionista Administrativo",
+      "activa": true
+    },
+    "R26b_recepcionista_hotel": {
+      "nombre": "Recepcionista de Hotel/Hotelería",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "recepcionista"
+        ],
+        "titulo_contiene_alguno_2": [
+          "hotel",
+          "hoteles",
+          "hoteleria",
+          "hotelería",
+          "hostel",
+          "apart hotel",
+          "resort"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4224",
+        "esco_label": "recepcionista de alojamientos turísticos"
+      },
+      "caso_diagnostico": "1118102035 - Recepcionista franquero para Hotel (CABA)",
+      "fecha_creacion": "2026-01-29",
+      "nota": "Más específica que R26. Recepcionista de hotel = 4224, no recepcionista general = 4226",
       "activa": true
     },
     "R27_asesor_admisiones": {
@@ -868,7 +977,7 @@
       "nota": "ISCO 8160 para operarios de alimentos genéricos. ISCO 7511 solo si menciona carne explícitamente."
     },
     "R38_comercio_exterior": {
-      "nombre": "Comercio Exterior / Importación-Exportación",
+      "nombre": "Comercio Exterior / Importación-Exportación (despachante)",
       "prioridad": 1,
       "condicion": {
         "titulo_o_tareas_contiene_alguno": [
@@ -888,7 +997,11 @@
           "asesora técnica",
           "asesora tecnica",
           "asesor/a técnico",
-          "asesor/a tecnico"
+          "asesor/a tecnico",
+          "analista",
+          "senior de",
+          "junior de",
+          "administrativo"
         ]
       },
       "accion": {
@@ -896,8 +1009,9 @@
         "esco_label": "especialista en importación y exportación"
       },
       "caso_gold_set": "1118028376 - Analista administrativo (tareas comex)",
+      "fix_v33": "2026-01-29 - Exclusiones para analista/senior/admin (son roles contables, no despachantes)",
       "activa": true,
-      "nota": "Detecta por tareas aunque título sea genérico"
+      "nota": "Detecta por tareas aunque título sea genérico. Excluye roles administrativos."
     },
     "R39_supervisor_administracion": {
       "nombre": "Supervisor de Administración",
@@ -955,6 +1069,10 @@
           "repartidor",
           "delivery",
           "distribuidor"
+        ],
+        "titulo_no_contiene_alguno": [
+          "operario de logística", "operario de logistica", "operario logístico",
+          "operario logistico", "para distribuidora", "en distribuidora"
         ]
       },
       "accion": {
@@ -1370,7 +1488,14 @@
           "técnico",
           "tecnico",
           "ventas",
-          "comercial"
+          "comercial",
+          "recepción",
+          "recepcion",
+          "centro médico",
+          "centro medico",
+          "consultorio",
+          "secretaria",
+          "administrativo"
         ]
       },
       "accion": {
@@ -2369,6 +2494,9 @@
           "técnico mantenimiento",
           "tecnico de mantenimiento industrial",
           "técnico de mantenimiento industrial"
+        ],
+        "titulo_no_contiene_alguno": [
+          "edilicio", "edificio", "edificios"
         ]
       },
       "accion": {
@@ -2537,11 +2665,11 @@
         ]
       },
       "accion": {
-        "forzar_isco": "9321",
-        "esco_label": "responsable de empaquetado manual"
+        "forzar_isco": "9333",
+        "esco_label": "operario de logística de almacén/operaria de logística de almacén"
       },
-      "nota": "Operario logístico → 9321 (embalador/preparador), no recepcionista",
-      "fix_validacion_humana": "2026-01-19",
+      "nota": "Operario logístico → 9333 (mozo almacén: carga, descarga, picking)",
+      "fix_validacion_humana": "2026-01-29",
       "activa": true
     },
     "R120_gomero_balanceador": {
@@ -2673,26 +2801,32 @@
       "activa": true
     },
     "R126_ejecutivo_seguros": {
-      "nombre": "Ejecutivo/Asesor de Seguros",
-      "prioridad": 1,
+      "nombre": "Ejecutivo/Asesor de Seguros/ART",
+      "prioridad": 0,
       "condicion": {
         "titulo_contiene_alguno": [
           "ejecutivo venta seguros",
           "ejecutivo de venta de seguros",
           "ejecutivo ventas seguros",
           "ejecutivo de seguros",
+          "ejecutivo de ventas de seguros",
+          "ejecutivo de ventas de art",
+          "ventas de seguros",
+          "ventas de art",
           "asesor de seguros",
           "asesor seguros",
           "agente de seguros",
           "productor de seguros",
-          "corredor de seguros"
+          "corredor de seguros",
+          "vendedor de seguros",
+          "vendedora de seguros"
         ]
       },
       "accion": {
         "forzar_isco": "3321",
         "esco_label": "asesor de seguros/asesora de seguros"
       },
-      "nota": "Venta de seguros → 3321 (asesor de seguros), ESCO 3321.3.1. Fix validacion 2026-01-20",
+      "nota": "Venta de seguros/ART → 3321 (asesor de seguros). Prioridad 0 para ganar sobre R40.",
       "fix_validacion_humana": "2026-01-20",
       "activa": true
     },
@@ -3461,6 +3595,79 @@
       "caso_referencia": "1118099825 - TECNICO INSTALADOR",
       "activa": true,
       "nota": "Default para instalador genérico, reglas específicas tienen prioridad"
+    },
+    "R161_personal_deposito": {
+      "nombre": "Personal de Depósito/Almacén",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "personal de deposito",
+          "personal de depósito",
+          "personal deposito",
+          "personal depósito",
+          "empleado de deposito",
+          "empleado de depósito",
+          "operario de deposito",
+          "operario de depósito",
+          "auxiliar de deposito",
+          "auxiliar de depósito"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9333",
+        "esco_label": "mozo de almacén/moza de almacén"
+      },
+      "caso_diagnostico": "1118099341 - Personal de Depósito con Atención al Cliente",
+      "fecha_creacion": "2026-01-29",
+      "activa": true,
+      "nota": "Trabajo en almacén = peón de carga, no call center aunque tenga atención al cliente"
+    },
+    "R162_tecnico_mantenimiento_edilicio": {
+      "nombre": "Técnico de Mantenimiento Edilicio/de Edificios",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "mantenimiento edilicio",
+          "mantenimiento de edificio",
+          "mantenimiento de edificios",
+          "mantenimiento edilicia",
+          "tecnico edilicio",
+          "técnico edilicio"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7411",
+        "esco_label": "electricista de obras"
+      },
+      "caso_diagnostico": "1118102093 - Técnico de Mantenimiento Edilicio (San Martín)",
+      "fecha_creacion": "2026-01-29",
+      "activa": true,
+      "nota": "Mantenimiento edilicio = electricidad, plomería, climatización de edificios"
+    },
+    "R163_analista_comex_admin": {
+      "nombre": "Analista/Senior de Comercio Exterior (rol administrativo)",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista de comercio exterior",
+          "analista comercio exterior",
+          "senior de comercio exterior",
+          "senior comercio exterior",
+          "junior de comercio exterior",
+          "administrativo de comercio exterior",
+          "administrativo comercio exterior",
+          "asistente de comercio exterior",
+          "asistente comercio exterior"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4311",
+        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+      },
+      "caso_diagnostico": "1118101825 - Senior de Comercio Exterior (tareas SAP, facturas, KPIs)",
+      "fecha_creacion": "2026-01-29",
+      "activa": true,
+      "nota": "Roles administrativos de comex = empleados contables, no despachantes de aduana"
     }
   },
   "reglas_filtro": {
