@@ -48,7 +48,7 @@ export default function UsuariosPage() {
     });
 
     // También intentar cargar inmediatamente si ya hay sesión
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }: { data: { session: any } }) => {
       if (session?.access_token) {
         loadUsuarios(session.access_token);
       } else {
