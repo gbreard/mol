@@ -138,11 +138,11 @@ export default function SkillsPage() {
             Distribucion Jerarquica de Competencias
           </h2>
           <p className="text-sm text-gray-600 mb-6">
-            <strong>Click en cualquier segmento</strong> para hacer zoom y ver las competencias individuales.
-            Click en el <strong>centro</strong> para volver al nivel anterior.
+            <strong>Click en cualquier segmento</strong> para ver la lista completa de competencias en esa categoria.
+            Se abrira un panel lateral con todas las skills y conocimientos.
           </p>
 
-          <SkillsSunburst width={800} height={800} />
+          <SkillsSunburst width={700} height={700} />
         </div>
 
         {/* Explicacion de la estructura */}
@@ -246,11 +246,11 @@ export default function SkillsPage() {
             Como explorar la taxonomia
           </h2>
           <ol className="list-decimal list-inside space-y-2 text-sm text-blue-800">
-            <li><strong>Vista general:</strong> Los anillos muestran la jerarquia desde categorias (interior) hasta competencias individuales (exterior)</li>
-            <li><strong>Zoom:</strong> Hace click en cualquier segmento para expandirlo y ver mas detalle</li>
-            <li><strong>Volver:</strong> Click en el circulo central para subir un nivel</li>
+            <li><strong>Vista general:</strong> Los anillos muestran la jerarquia desde categorias (interior) hasta subcategorias (exterior)</li>
+            <li><strong>Ver detalle:</strong> Click en cualquier segmento para abrir el panel lateral con la lista completa</li>
+            <li><strong>Buscar:</strong> En el panel podes filtrar por nombre y por tipo (Skill o Conocimiento)</li>
             <li><strong>Tooltip:</strong> Pasa el mouse sobre cualquier segmento para ver el nombre completo y estadisticas</li>
-            <li><strong>Navegar:</strong> El breadcrumb arriba del grafico muestra tu ubicacion actual</li>
+            <li><strong>Cerrar:</strong> Click en la X del panel o fuera del mismo para cerrar</li>
           </ol>
         </div>
 
