@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Map, Briefcase, GitCompare, Target, Loader2 } from 'lucide-react';
+import { Map, Briefcase, GitCompare, Target, Loader2, Search, X } from 'lucide-react';
 import SkillsSunburst from '@/components/SkillsSunburst';
 import OccupationDetail from '@/components/OccupationDetail';
 import OccupationCompare from '@/components/OccupationCompare';
@@ -223,7 +223,12 @@ export default function SkillsPage() {
 
 // ============= Taxonomy Tab =============
 
+type FilterType = 'all' | 'skills' | 'knowledge';
+
 function TaxonomyTab({ stats }: { stats: Stats }) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState<FilterType>('all');
+
   return (
     <>
       {/* Stats Cards */}
@@ -269,11 +274,84 @@ function TaxonomyTab({ stats }: { stats: Stats }) {
         <h2 className="text-xl font-semibold text-gray-900 mb-2">
           Distribucion Jerarquica de Competencias
         </h2>
-        <p className="text-sm text-gray-600 mb-6">
+        <p className="text-sm text-gray-600 mb-4">
           <strong>Click en cualquier segmento</strong> para ver la lista completa de competencias en esa categoria.
         </p>
 
-        <SkillsSunburst width={700} height={700} />
+        {/* Search and Filter Controls */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+          {/* Search */}
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Buscar competencia</label>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Ej: analisis, programacion, gestion..."
+                className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-200 focus:border-blue-500 text-sm"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+            {searchTerm && (
+              <p className="text-xs text-gray-500 mt-1">
+                Los segmentos que coinciden se resaltan en el grafico
+              </p>
+            )}
+          </div>
+
+          {/* Filter Toggle */}
+          <div className="sm:w-64">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Mostrar</label>
+            <div className="flex rounded-lg border border-gray-300 overflow-hidden">
+              <button
+                onClick={() => setFilterType('all')}
+                className={`flex-1 px-3 py-2 text-sm font-medium transition-colors ${
+                  filterType === 'all'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                Todos
+              </button>
+              <button
+                onClick={() => setFilterType('skills')}
+                className={`flex-1 px-3 py-2 text-sm font-medium transition-colors border-l border-gray-300 ${
+                  filterType === 'skills'
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-white text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                Skills
+              </button>
+              <button
+                onClick={() => setFilterType('knowledge')}
+                className={`flex-1 px-3 py-2 text-sm font-medium transition-colors border-l border-gray-300 ${
+                  filterType === 'knowledge'
+                    ? 'bg-amber-600 text-white'
+                    : 'bg-white text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                Conocim.
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <SkillsSunburst
+          width={700}
+          height={700}
+          searchTerm={searchTerm}
+          filterType={filterType}
+        />
       </div>
 
       {/* Legend */}

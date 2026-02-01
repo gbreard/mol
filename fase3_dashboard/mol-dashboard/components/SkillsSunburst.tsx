@@ -18,11 +18,17 @@ interface HighlightConfig {
   optional: Set<string>;
 }
 
+type FilterType = 'all' | 'skills' | 'knowledge';
+
 interface SunburstProps {
   width?: number;
   height?: number;
   data?: HierarchyNode;
   highlightConfig?: HighlightConfig;
+  searchTerm?: string;
+  filterType?: FilterType;
+  onSearchChange?: (term: string) => void;
+  onFilterChange?: (filter: FilterType) => void;
 }
 
 interface SelectedNode {
@@ -126,7 +132,9 @@ export default function SkillsSunburst({
   width = 700,
   height = 700,
   data: externalData,
-  highlightConfig
+  highlightConfig,
+  searchTerm = '',
+  filterType = 'all'
 }: SunburstProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [data, setData] = useState<HierarchyNode | null>(externalData || null);
@@ -136,8 +144,13 @@ export default function SkillsSunburst({
     visible: boolean;
     x: number;
     y: number;
-    content: { name: string; label: string; value: number; percentage: string; type?: string; highlightState?: string };
+    content: { name: string; label: string; value: number; percentage: string; type?: string; highlightState?: string; matchesSearch?: boolean };
   }>({ visible: false, x: 0, y: 0, content: { name: '', label: '', value: 0, percentage: '' } });
+
+  // Normalize search term for matching
+  const normalizedSearch = searchTerm.toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
 
   // Cargar datos si no se proporcionan externamente
   useEffect(() => {
@@ -274,10 +287,44 @@ export default function SkillsSunburst({
     const total = root.value || 1;
 
     // Obtener nodos (excluyendo hojas individuales para mejor rendimiento)
-    const nodes = root.descendants().filter(d => d.depth > 0 && d.depth <= 4);
+    let nodes = root.descendants().filter(d => d.depth > 0 && d.depth <= 4);
+
+    // Apply filter by type (skills vs knowledge)
+    if (filterType !== 'all') {
+      // Keep nodes that:
+      // 1. Don't have a type (categories)
+      // 2. Have the matching type
+      // 3. Have descendants with the matching type
+      const hasMatchingDescendant = (node: PartitionNode): boolean => {
+        if (node.data.type === filterType.slice(0, -1)) return true; // 'skills' -> 'skill'
+        if (node.data.type === filterType) return true;
+        return node.children?.some(child => hasMatchingDescendant(child as PartitionNode)) || false;
+      };
+
+      nodes = nodes.filter(d => {
+        // Root categories and subcategories
+        if (!d.data.type) return hasMatchingDescendant(d);
+        // Leaf nodes
+        const nodeType = d.data.type;
+        if (filterType === 'skills') return nodeType === 'skill';
+        if (filterType === 'knowledge') return nodeType === 'knowledge';
+        return true;
+      });
+    }
+
+    // Function to check if a node or its descendants match the search
+    const matchesSearch = (node: PartitionNode): boolean => {
+      if (!normalizedSearch) return false;
+      const label = (node.data.label || node.data.name || '').toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+      if (label.includes(normalizedSearch)) return true;
+      return node.children?.some(child => matchesSearch(child as PartitionNode)) || false;
+    };
 
     // Determinar si hay highlight activo
     const hasHighlight = !!highlightConfig;
+    const hasSearch = !!normalizedSearch;
 
     // Funcion para obtener el L2 code de un nodo (subiendo en la jerarquia si es necesario)
     const getNodeL2 = (d: PartitionNode): string => {
@@ -322,6 +369,10 @@ export default function SkillsSunburst({
         return 'none';
       })
       .style('opacity', d => {
+        // Search highlighting takes priority
+        if (hasSearch) {
+          return matchesSearch(d) ? 1 : 0.2;
+        }
         if (!hasHighlight) return 1;
         const l2 = getNodeL2(d);
         const state = getHighlightState(l2, highlightConfig);
@@ -330,7 +381,14 @@ export default function SkillsSunburst({
       .on('mouseenter', function(event, d) {
         const nodeL2 = getNodeL2(d);
         const nodeState = getHighlightState(nodeL2, highlightConfig);
-        const hoverOpacity = !hasHighlight ? 0.8 : (nodeState === 'none' ? 0.4 : 0.9);
+        const nodeMatchesSearch = matchesSearch(d);
+
+        let hoverOpacity = 0.8;
+        if (hasSearch) {
+          hoverOpacity = nodeMatchesSearch ? 0.9 : 0.35;
+        } else if (hasHighlight) {
+          hoverOpacity = nodeState === 'none' ? 0.4 : 0.9;
+        }
 
         d3.select(this)
           .style('opacity', hoverOpacity)
@@ -349,7 +407,8 @@ export default function SkillsSunburst({
             value,
             percentage,
             type: d.data.type,
-            highlightState: nodeState !== 'none' ? nodeState : undefined
+            highlightState: nodeState !== 'none' ? nodeState : undefined,
+            matchesSearch: hasSearch ? nodeMatchesSearch : undefined
           }
         });
       })
@@ -363,8 +422,15 @@ export default function SkillsSunburst({
       .on('mouseleave', function(event, d) {
         const leaveL2 = getNodeL2(d);
         const leaveState = getHighlightState(leaveL2, highlightConfig);
+        const nodeMatchesSearch = matchesSearch(d);
 
-        const restoreOpacity = hasHighlight && leaveState === 'none' ? 0.25 : 1;
+        let restoreOpacity = 1;
+        if (hasSearch) {
+          restoreOpacity = nodeMatchesSearch ? 1 : 0.2;
+        } else if (hasHighlight && leaveState === 'none') {
+          restoreOpacity = 0.25;
+        }
+
         let restoreStrokeWidth = '0.5px';
         if (hasHighlight && leaveState !== 'none') {
           restoreStrokeWidth = leaveState === 'optional' ? '2px' : '3px';
@@ -439,7 +505,7 @@ export default function SkillsSunburst({
       .style('fill', '#9ca3af')
       .text('Click para ver detalle');
 
-  }, [data, width, height, handleSegmentClick, highlightConfig]);
+  }, [data, width, height, handleSegmentClick, highlightConfig, filterType, normalizedSearch]);
 
   if (loading) {
     return (
@@ -486,6 +552,11 @@ export default function SkillsSunburst({
               tooltip.content.highlightState === 'essential' ? 'bg-blue-100 text-blue-700' : 'bg-blue-50 text-blue-600'
             }`}>
               {tooltip.content.highlightState === 'essential' ? 'Competencia esencial' : 'Competencia opcional'}
+            </div>
+          )}
+          {tooltip.content.matchesSearch && (
+            <div className="text-xs font-medium mt-1 px-2 py-0.5 rounded inline-block bg-green-100 text-green-700">
+              Coincide con busqueda
             </div>
           )}
           <div className="mt-1 flex gap-3 text-sm">
