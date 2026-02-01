@@ -1,37 +1,58 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { X, Search, ChevronRight } from 'lucide-react';
+import { X, Search, ChevronRight, Star, Circle } from 'lucide-react';
 
 interface Skill {
   name: string;
   type: 'skill' | 'knowledge';
+  isEssential?: boolean;
+  isOptional?: boolean;
 }
 
 interface SkillsPanelProps {
   path: string[];
   skills: Skill[];
   onClose: () => void;
+  occupation?: { label: string; isco?: string };
+  totalInCategory?: number;
+  matchingCount?: number;
 }
 
-export default function SkillsPanel({ path, skills, onClose }: SkillsPanelProps) {
+export default function SkillsPanel({
+  path,
+  skills,
+  onClose,
+  occupation,
+  totalInCategory,
+  matchingCount
+}: SkillsPanelProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState<'all' | 'skill' | 'knowledge'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'essential' | 'optional'>('all');
 
   // Separar y filtrar skills
-  const { filteredSkills, skillCount, knowledgeCount } = useMemo(() => {
+  const { filteredSkills, essentialCount, optionalCount } = useMemo(() => {
     const searchLower = searchTerm.toLowerCase();
 
     const filtered = skills.filter(s => {
       const matchesSearch = !searchTerm || s.name.toLowerCase().includes(searchLower);
-      const matchesTab = activeTab === 'all' || s.type === activeTab;
+      const matchesTab = activeTab === 'all' ||
+        (activeTab === 'essential' && s.isEssential) ||
+        (activeTab === 'optional' && s.isOptional);
       return matchesSearch && matchesTab;
     });
 
+    // Ordenar: esenciales primero, luego por nombre
+    const sorted = filtered.sort((a, b) => {
+      if (a.isEssential && !b.isEssential) return -1;
+      if (!a.isEssential && b.isEssential) return 1;
+      return a.name.localeCompare(b.name);
+    });
+
     return {
-      filteredSkills: filtered.sort((a, b) => a.name.localeCompare(b.name)),
-      skillCount: skills.filter(s => s.type === 'skill').length,
-      knowledgeCount: skills.filter(s => s.type === 'knowledge').length
+      filteredSkills: sorted,
+      essentialCount: skills.filter(s => s.isEssential).length,
+      optionalCount: skills.filter(s => s.isOptional).length
     };
   }, [skills, searchTerm, activeTab]);
 
@@ -62,47 +83,71 @@ export default function SkillsPanel({ path, skills, onClose }: SkillsPanelProps)
           </div>
         </div>
 
-        {/* Contador total */}
-        <div className="px-4 pb-3">
+        {/* Contexto de ocupación si hay */}
+        {occupation && (
+          <div className="px-4 pb-2 bg-blue-50 border-b border-blue-100">
+            <div className="text-xs text-blue-600 font-medium">Ocupacion seleccionada</div>
+            <div className="text-sm font-semibold text-blue-900">{occupation.label}</div>
+            {occupation.isco && (
+              <div className="text-xs text-blue-700">ISCO: {occupation.isco}</div>
+            )}
+          </div>
+        )}
+
+        {/* Contador */}
+        <div className="px-4 py-3">
           <div className="text-2xl font-bold text-gray-900">
             {skills.length.toLocaleString()}
           </div>
-          <div className="text-sm text-gray-500">competencias en esta categoria</div>
+          <div className="text-sm text-gray-500">
+            {occupation
+              ? `competencias de esta ocupacion en la categoria`
+              : 'competencias en esta categoria'}
+            {totalInCategory && totalInCategory !== skills.length && (
+              <span className="text-gray-400 ml-1">
+                (de {totalInCategory} totales)
+              </span>
+            )}
+          </div>
         </div>
 
-        {/* Tabs */}
-        <div className="flex border-b border-gray-200">
-          <button
-            onClick={() => setActiveTab('all')}
-            className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
-              activeTab === 'all'
-                ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-            }`}
-          >
-            Todas ({skills.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('skill')}
-            className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
-              activeTab === 'skill'
-                ? 'text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-            }`}
-          >
-            Skills ({skillCount})
-          </button>
-          <button
-            onClick={() => setActiveTab('knowledge')}
-            className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
-              activeTab === 'knowledge'
-                ? 'text-amber-600 border-b-2 border-amber-600 bg-amber-50'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-            }`}
-          >
-            Conocimientos ({knowledgeCount})
-          </button>
-        </div>
+        {/* Tabs - solo si hay ocupación */}
+        {occupation && (essentialCount > 0 || optionalCount > 0) ? (
+          <div className="flex border-b border-gray-200">
+            <button
+              onClick={() => setActiveTab('all')}
+              className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
+                activeTab === 'all'
+                  ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              Todas ({skills.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('essential')}
+              className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
+                activeTab === 'essential'
+                  ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              Esenciales ({essentialCount})
+            </button>
+            <button
+              onClick={() => setActiveTab('optional')}
+              className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
+                activeTab === 'optional'
+                  ? 'text-blue-400 border-b-2 border-blue-300 bg-blue-50'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              Opcionales ({optionalCount})
+            </button>
+          </div>
+        ) : (
+          <div className="border-b border-gray-200"></div>
+        )}
 
         {/* Busqueda */}
         <div className="p-3 bg-gray-50">
@@ -138,23 +183,40 @@ export default function SkillsPanel({ path, skills, onClose }: SkillsPanelProps)
             {filteredSkills.map((skill, index) => (
               <li
                 key={`${skill.name}-${index}`}
-                className="px-4 py-3 hover:bg-gray-50 transition-colors"
+                className={`px-4 py-3 hover:bg-gray-50 transition-colors ${
+                  skill.isEssential ? 'bg-blue-50/50' : ''
+                }`}
               >
                 <div className="flex items-start gap-3">
-                  <span
-                    className={`flex-shrink-0 w-2 h-2 rounded-full mt-2 ${
-                      skill.type === 'skill' ? 'bg-indigo-500' : 'bg-amber-500'
-                    }`}
-                  />
+                  {/* Indicador de esencial/opcional */}
+                  {skill.isEssential ? (
+                    <Star className="flex-shrink-0 w-4 h-4 mt-1 text-blue-500 fill-blue-500" />
+                  ) : skill.isOptional ? (
+                    <Circle className="flex-shrink-0 w-4 h-4 mt-1 text-blue-300" />
+                  ) : (
+                    <span
+                      className={`flex-shrink-0 w-2 h-2 rounded-full mt-2 ${
+                        skill.type === 'skill' ? 'bg-indigo-500' : 'bg-amber-500'
+                      }`}
+                    />
+                  )}
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-gray-900 leading-relaxed">
                       {skill.name}
                     </p>
-                    <p className={`text-xs mt-0.5 ${
-                      skill.type === 'skill' ? 'text-indigo-600' : 'text-amber-600'
-                    }`}>
-                      {skill.type === 'skill' ? 'Skill' : 'Conocimiento'}
-                    </p>
+                    <div className="flex gap-2 mt-0.5">
+                      <span className={`text-xs ${
+                        skill.type === 'skill' ? 'text-indigo-600' : 'text-amber-600'
+                      }`}>
+                        {skill.type === 'skill' ? 'Skill' : 'Conocimiento'}
+                      </span>
+                      {skill.isEssential && (
+                        <span className="text-xs text-blue-600 font-medium">• Esencial</span>
+                      )}
+                      {skill.isOptional && (
+                        <span className="text-xs text-blue-400">• Opcional</span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </li>

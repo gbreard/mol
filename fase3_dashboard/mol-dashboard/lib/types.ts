@@ -66,3 +66,69 @@ export const ISSUE_PRIORIDAD_LABELS: Record<IssuePrioridad, string> = {
   alta: 'Alta',
   critica: 'Critica'
 };
+
+// ========== SKILLS INTELLIGENCE DASHBOARD ==========
+
+export interface SkillItem {
+  id: string;
+  label: string;
+  L1: string;
+  L2: string;
+}
+
+export interface SimilarOccupation {
+  id: string;
+  label: string;
+  isco: string;
+  jaccard: number;
+  shared: number;
+}
+
+export interface OccupationDetail {
+  label: string;
+  isco: string;
+  skills: {
+    essential: SkillItem[];
+    optional: SkillItem[];
+  };
+  knowledge: {
+    essential: SkillItem[];
+    optional: SkillItem[];
+  };
+  similar: SimilarOccupation[];
+  counts: {
+    skills_essential: number;
+    skills_optional: number;
+    knowledge_essential: number;
+    knowledge_optional: number;
+    total_skills: number;
+    total_knowledge: number;
+    similar: number;
+  };
+}
+
+export interface OccupationFullDetailIndex {
+  [occupationId: string]: OccupationDetail;
+}
+
+export interface SearchableSkill {
+  id: string;
+  label: string;
+  type: 'skill' | 'knowledge';
+  L1: string;
+  L2: string;
+  essential: number;  // count of occupations
+  optional: number;   // count of occupations
+  total: number;
+}
+
+export interface SkillsSearchableIndex {
+  skills: SearchableSkill[];
+  stats: {
+    total: number;
+    skills: number;
+    knowledge: number;
+    with_occupations: number;
+    without_occupations: number;
+  };
+}

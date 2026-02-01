@@ -12,15 +12,25 @@ interface HierarchyNode {
   children?: HierarchyNode[];
 }
 
+interface HighlightConfig {
+  occupation: { id: string; label: string; isco?: string };
+  essential: Set<string>; // L2 codes
+  optional: Set<string>;
+}
+
 interface SunburstProps {
   width?: number;
   height?: number;
   data?: HierarchyNode;
+  highlightConfig?: HighlightConfig;
 }
 
 interface SelectedNode {
   path: string[];
-  skills: Array<{ name: string; type: 'skill' | 'knowledge' }>;
+  skills: Array<{ name: string; type: 'skill' | 'knowledge'; isEssential?: boolean; isOptional?: boolean }>;
+  occupation?: { label: string; isco?: string };
+  totalInCategory: number;
+  matchingCount: number;
 }
 
 // Colores por categoria principal
@@ -41,6 +51,19 @@ const categoryColors: Record<string, string> = {
   'T4': '#10b981',
   'T5': '#10b981',
   'T6': '#10b981',
+  'K': '#8b5cf6',   // Violeta - Conocimientos
+  'K1': '#8b5cf6',  // Tecnologia e Informatica
+  'K2': '#ec4899',  // Medicina y Salud - Rosa
+  'K3': '#6366f1',  // Derecho y Legislacion - Indigo
+  'K4': '#f97316',  // Ingenieria y Construccion - Naranja
+  'K5': '#14b8a6',  // Negocios y Finanzas - Teal
+  'K6': '#22c55e',  // Ciencias Naturales - Verde
+  'K7': '#a855f7',  // Industria y Manufactura - Purpura
+  'K8': '#f43f5e',  // Arte y Comunicacion - Rose
+  'K9': '#0ea5e9',  // Transporte y Logistica - Sky
+  'K10': '#84cc16', // Agricultura y Alimentacion - Lime
+  'K11': '#eab308', // Educacion y Sociedad - Yellow
+  'K12': '#64748b', // Otros Conocimientos - Slate
 };
 
 // Colores para tipo (hojas)
@@ -84,10 +107,26 @@ const getColor = (d: PartitionNode): string => {
   return baseColor;
 };
 
+// Determinar estado de highlight para un nodo
+type HighlightState = 'none' | 'essential' | 'optional';
+
+function getHighlightState(
+  nodeL2: string,
+  config: HighlightConfig | undefined
+): HighlightState {
+  if (!config) return 'none';
+
+  if (config.essential.has(nodeL2)) return 'essential';
+  if (config.optional.has(nodeL2)) return 'optional';
+
+  return 'none';
+}
+
 export default function SkillsSunburst({
   width = 700,
   height = 700,
-  data: externalData
+  data: externalData,
+  highlightConfig
 }: SunburstProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [data, setData] = useState<HierarchyNode | null>(externalData || null);
@@ -97,7 +136,7 @@ export default function SkillsSunburst({
     visible: boolean;
     x: number;
     y: number;
-    content: { name: string; label: string; value: number; percentage: string; type?: string };
+    content: { name: string; label: string; value: number; percentage: string; type?: string; highlightState?: string };
   }>({ visible: false, x: 0, y: 0, content: { name: '', label: '', value: 0, percentage: '' } });
 
   // Cargar datos si no se proporcionan externamente
@@ -128,22 +167,73 @@ export default function SkillsSunburst({
     return path;
   }, []);
 
-  // Funcion para extraer skills de un nodo
-  const extractSkills = useCallback((d: PartitionNode): Array<{ name: string; type: 'skill' | 'knowledge' }> => {
-    return d.descendants()
-      .filter((node: any) => node.data.type && node.data.value)
-      .map((node: any) => ({
+  // Funcion para extraer skills de un nodo (filtrando por ocupación si hay)
+  const extractSkills = useCallback((d: PartitionNode, config?: HighlightConfig): {
+    skills: Array<{ name: string; type: 'skill' | 'knowledge'; isEssential?: boolean; isOptional?: boolean }>;
+    totalInCategory: number;
+    matchingCount: number;
+  } => {
+    const allSkills = d.descendants()
+      .filter((node: any) => node.data.type && node.data.value);
+
+    const totalInCategory = allSkills.length;
+
+    // Si hay ocupación seleccionada, filtrar y marcar
+    if (config) {
+      const matchingSkills = allSkills
+        .filter((node: any) => {
+          // Obtener L2 del nodo
+          let current: PartitionNode | null = node;
+          while (current && current.depth > 2) {
+            current = current.parent as PartitionNode | null;
+          }
+          const l2 = current?.data.name || node.data.name;
+          return config.essential.has(l2) || config.optional.has(l2);
+        })
+        .map((node: any) => {
+          let current: PartitionNode | null = node;
+          while (current && current.depth > 2) {
+            current = current.parent as PartitionNode | null;
+          }
+          const l2 = current?.data.name || node.data.name;
+          return {
+            name: node.data.label || node.data.name,
+            type: node.data.type as 'skill' | 'knowledge',
+            isEssential: config.essential.has(l2),
+            isOptional: config.optional.has(l2)
+          };
+        });
+
+      return {
+        skills: matchingSkills,
+        totalInCategory,
+        matchingCount: matchingSkills.length
+      };
+    }
+
+    // Sin ocupación, devolver todas
+    return {
+      skills: allSkills.map((node: any) => ({
         name: node.data.label || node.data.name,
         type: node.data.type as 'skill' | 'knowledge'
-      }));
+      })),
+      totalInCategory,
+      matchingCount: totalInCategory
+    };
   }, []);
 
   // Handler para click en segmento
-  const handleSegmentClick = useCallback((d: PartitionNode) => {
+  const handleSegmentClick = useCallback((d: PartitionNode, config?: HighlightConfig) => {
     const path = buildPath(d);
-    const skills = extractSkills(d);
+    const { skills, totalInCategory, matchingCount } = extractSkills(d, config);
 
-    setSelectedNode({ path, skills });
+    setSelectedNode({
+      path,
+      skills,
+      occupation: config?.occupation ? { label: config.occupation.label, isco: config.occupation.isco } : undefined,
+      totalInCategory,
+      matchingCount
+    });
   }, [buildPath, extractSkills]);
 
   // Renderizar Sunburst
@@ -186,6 +276,19 @@ export default function SkillsSunburst({
     // Obtener nodos (excluyendo hojas individuales para mejor rendimiento)
     const nodes = root.descendants().filter(d => d.depth > 0 && d.depth <= 4);
 
+    // Determinar si hay highlight activo
+    const hasHighlight = !!highlightConfig;
+
+    // Funcion para obtener el L2 code de un nodo (subiendo en la jerarquia si es necesario)
+    const getNodeL2 = (d: PartitionNode): string => {
+      // El L2 es el nombre del nodo en depth 2, o el padre si estamos mas profundo
+      let current: PartitionNode | null = d;
+      while (current && current.depth > 2) {
+        current = current.parent as PartitionNode | null;
+      }
+      return current?.data.name || d.data.name;
+    };
+
     // Dibujar arcos
     g.selectAll('path')
       .data(nodes)
@@ -193,12 +296,45 @@ export default function SkillsSunburst({
       .attr('fill', d => getColor(d))
       .attr('d', d => arc(d) || '')
       .style('cursor', 'pointer')
-      .style('stroke', '#fff')
-      .style('stroke-width', '0.5px')
+      .style('stroke', d => {
+        if (!hasHighlight) return '#fff';
+        const l2 = getNodeL2(d);
+        const state = getHighlightState(l2, highlightConfig);
+        switch (state) {
+          case 'essential': return '#3b82f6';  // Azul
+          case 'optional': return '#93c5fd';   // Azul claro
+          default: return '#fff';
+        }
+      })
+      .style('stroke-width', d => {
+        if (!hasHighlight) return '0.5px';
+        const l2 = getNodeL2(d);
+        const state = getHighlightState(l2, highlightConfig);
+        if (state === 'none') return '0.5px';
+        if (state === 'optional') return '2px';
+        return '3px';
+      })
+      .style('stroke-dasharray', d => {
+        if (!hasHighlight) return 'none';
+        const l2 = getNodeL2(d);
+        const state = getHighlightState(l2, highlightConfig);
+        if (state === 'optional') return '4,2';
+        return 'none';
+      })
+      .style('opacity', d => {
+        if (!hasHighlight) return 1;
+        const l2 = getNodeL2(d);
+        const state = getHighlightState(l2, highlightConfig);
+        return state === 'none' ? 0.25 : 1;
+      })
       .on('mouseenter', function(event, d) {
+        const nodeL2 = getNodeL2(d);
+        const nodeState = getHighlightState(nodeL2, highlightConfig);
+        const hoverOpacity = !hasHighlight ? 0.8 : (nodeState === 'none' ? 0.4 : 0.9);
+
         d3.select(this)
-          .style('opacity', 0.8)
-          .style('stroke-width', '2px');
+          .style('opacity', hoverOpacity)
+          .style('stroke-width', '3px');
 
         const value = d.value || 0;
         const percentage = ((value / total) * 100).toFixed(1);
@@ -212,7 +348,8 @@ export default function SkillsSunburst({
             label: d.data.label || d.data.name,
             value,
             percentage,
-            type: d.data.type
+            type: d.data.type,
+            highlightState: nodeState !== 'none' ? nodeState : undefined
           }
         });
       })
@@ -223,15 +360,25 @@ export default function SkillsSunburst({
           y: event.pageY
         }));
       })
-      .on('mouseleave', function() {
+      .on('mouseleave', function(event, d) {
+        const leaveL2 = getNodeL2(d);
+        const leaveState = getHighlightState(leaveL2, highlightConfig);
+
+        const restoreOpacity = hasHighlight && leaveState === 'none' ? 0.25 : 1;
+        let restoreStrokeWidth = '0.5px';
+        if (hasHighlight && leaveState !== 'none') {
+          restoreStrokeWidth = leaveState === 'optional' ? '2px' : '3px';
+        }
+
         d3.select(this)
-          .style('opacity', 1)
-          .style('stroke-width', '0.5px');
+          .style('opacity', restoreOpacity)
+          .style('stroke-width', restoreStrokeWidth);
+
         setTooltip(prev => ({ ...prev, visible: false }));
       })
       .on('click', function(event, d) {
         event.stopPropagation();
-        handleSegmentClick(d);
+        handleSegmentClick(d, highlightConfig);
       });
 
     // Etiquetas para niveles 1 y 2
@@ -292,7 +439,7 @@ export default function SkillsSunburst({
       .style('fill', '#9ca3af')
       .text('Click para ver detalle');
 
-  }, [data, width, height, handleSegmentClick]);
+  }, [data, width, height, handleSegmentClick, highlightConfig]);
 
   if (loading) {
     return (
@@ -334,6 +481,13 @@ export default function SkillsSunburst({
               {tooltip.content.type === 'skill' ? 'Skill (saber hacer)' : 'Conocimiento (saber)'}
             </div>
           )}
+          {tooltip.content.highlightState && (
+            <div className={`text-xs font-medium mt-1 px-2 py-0.5 rounded inline-block ${
+              tooltip.content.highlightState === 'essential' ? 'bg-blue-100 text-blue-700' : 'bg-blue-50 text-blue-600'
+            }`}>
+              {tooltip.content.highlightState === 'essential' ? 'Competencia esencial' : 'Competencia opcional'}
+            </div>
+          )}
           <div className="mt-1 flex gap-3 text-sm">
             <span className="text-blue-600 font-medium">
               {tooltip.content.value.toLocaleString()}
@@ -355,7 +509,7 @@ export default function SkillsSunburst({
 
       {/* Leyenda */}
       <div className="mt-6 flex flex-col items-center gap-4">
-        {/* Categorias */}
+        {/* Categorias principales */}
         <div className="flex justify-center gap-6 text-sm">
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded" style={{ backgroundColor: '#3b82f6' }}></div>
@@ -364,6 +518,10 @@ export default function SkillsSunburst({
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded" style={{ backgroundColor: '#10b981' }}></div>
             <span>T - Transversales</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#8b5cf6' }}></div>
+            <span>K - Conocimientos</span>
           </div>
         </div>
 
@@ -386,6 +544,9 @@ export default function SkillsSunburst({
           path={selectedNode.path}
           skills={selectedNode.skills}
           onClose={() => setSelectedNode(null)}
+          occupation={selectedNode.occupation}
+          totalInCategory={selectedNode.totalInCategory}
+          matchingCount={selectedNode.matchingCount}
         />
       )}
     </div>

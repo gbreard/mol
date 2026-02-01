@@ -1,34 +1,81 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Map, Briefcase, GitCompare, Target, Loader2 } from 'lucide-react';
 import SkillsSunburst from '@/components/SkillsSunburst';
+import OccupationDetail from '@/components/OccupationDetail';
+import OccupationCompare from '@/components/OccupationCompare';
+import MySkillsSearch from '@/components/MySkillsSearch';
+import { OccupationFullDetailIndex } from '@/lib/types';
+
+type TabId = 'taxonomy' | 'occupation' | 'compare' | 'myskills';
+
+interface Tab {
+  id: TabId;
+  label: string;
+  icon: React.ReactNode;
+  description: string;
+}
+
+const TABS: Tab[] = [
+  {
+    id: 'taxonomy',
+    label: 'Taxonomia',
+    icon: <Map className="w-5 h-5" />,
+    description: 'Explorar la estructura jerarquica de competencias ESCO'
+  },
+  {
+    id: 'occupation',
+    label: 'Ocupacion',
+    icon: <Briefcase className="w-5 h-5" />,
+    description: 'Ver skills y conocimientos de una ocupacion especifica'
+  },
+  {
+    id: 'compare',
+    label: 'Comparar',
+    icon: <GitCompare className="w-5 h-5" />,
+    description: 'Analizar gaps entre dos ocupaciones'
+  },
+  {
+    id: 'myskills',
+    label: 'Mis Skills',
+    icon: <Target className="w-5 h-5" />,
+    description: 'Encontrar ocupaciones basadas en tus competencias'
+  }
+];
 
 interface Stats {
   total: number;
   skills: number;
   knowledge: number;
-  categoriesS: number;
-  categoriesT: number;
+}
+
+interface OccupationBasicInfo {
+  id: string;
+  label: string;
+  isco: string;
 }
 
 export default function SkillsPage() {
-  const [stats, setStats] = useState<Stats>({
-    total: 0,
-    skills: 0,
-    knowledge: 0,
-    categoriesS: 0,
-    categoriesT: 0
-  });
+  const [activeTab, setActiveTab] = useState<TabId>('taxonomy');
+  const [stats, setStats] = useState<Stats>({ total: 0, skills: 0, knowledge: 0 });
 
+  // Occupation data
+  const [occupationsData, setOccupationsData] = useState<OccupationFullDetailIndex | null>(null);
+  const [occupationsList, setOccupationsList] = useState<OccupationBasicInfo[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // For Tab 3: Compare - pre-selected occupations
+  const [compareOccA, setCompareOccA] = useState<string | null>(null);
+  const [compareOccB, setCompareOccB] = useState<string | null>(null);
+
+  // Load stats for taxonomy tab
   useEffect(() => {
-    // Cargar estadisticas del JSON
     fetch('/data/esco_skills_hierarchy.json')
       .then(res => res.json())
       .then(data => {
         let skills = 0;
         let knowledge = 0;
-        let categoriesS = 0;
-        let categoriesT = 0;
 
         const countByType = (node: any): void => {
           if (node.type === 'skill' && node.value) {
@@ -42,21 +89,57 @@ export default function SkillsPage() {
         };
 
         if (data.children) {
-          data.children.forEach((cat: any) => {
-            if (cat.name.startsWith('S')) {
-              categoriesS += 1;
-            } else if (cat.name.startsWith('T')) {
-              categoriesT += 1;
-            }
-            countByType(cat);
-          });
+          data.children.forEach(countByType);
         }
 
-        const total = skills + knowledge;
-        setStats({ total, skills, knowledge, categoriesS, categoriesT });
+        setStats({ total: skills + knowledge, skills, knowledge });
       })
       .catch(console.error);
   }, []);
+
+  // Load occupation data when switching to occupation/compare/myskills tabs
+  useEffect(() => {
+    if ((activeTab === 'occupation' || activeTab === 'compare' || activeTab === 'myskills') &&
+        !occupationsData && !isLoading) {
+      setIsLoading(true);
+
+      fetch('/data/occupation_full_detail.json')
+        .then(res => res.json())
+        .then((data: OccupationFullDetailIndex) => {
+          setOccupationsData(data);
+
+          // Build occupations list sorted alphabetically
+          const list: OccupationBasicInfo[] = Object.entries(data)
+            .map(([id, occ]) => ({
+              id,
+              label: occ.label,
+              isco: occ.isco
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label));
+
+          setOccupationsList(list);
+          setIsLoading(false);
+        })
+        .catch(err => {
+          console.error('Error loading occupations:', err);
+          setIsLoading(false);
+        });
+    }
+  }, [activeTab, occupationsData, isLoading]);
+
+  // Handler for navigating from occupation detail to compare
+  const handleNavigateToCompare = (occAId: string, occBId: string) => {
+    setCompareOccA(occAId);
+    setCompareOccB(occBId);
+    setActiveTab('compare');
+  };
+
+  // Handler for navigating to occupation detail
+  const handleNavigateToOccupation = (occId: string) => {
+    setActiveTab('occupation');
+    // The OccupationDetail component will need to handle this
+    // For now we just switch tabs - the user can select the occupation manually
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -64,210 +147,179 @@ export default function SkillsPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
-            Taxonomia de Competencias ESCO
+            Skills Intelligence Dashboard
           </h1>
           <p className="mt-2 text-gray-600">
-            Visualizacion interactiva de la jerarquia de competencias del framework ESCO
-            (European Skills, Competences, Qualifications and Occupations)
+            Explora la taxonomia ESCO, analiza ocupaciones y planifica transiciones laborales
           </p>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <div className="text-3xl font-bold text-gray-900">
-              {stats.total.toLocaleString()}
-            </div>
-            <div className="text-sm text-gray-500 mt-1">Total competencias</div>
+        {/* Tabs */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
+          <div className="flex border-b border-gray-200">
+            {TABS.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-1 flex items-center justify-center gap-2 px-4 py-4 font-medium transition-colors ${
+                  activeTab === tab.id
+                    ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                }`}
+              >
+                {tab.icon}
+                <span className="hidden sm:inline">{tab.label}</span>
+              </button>
+            ))}
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold text-indigo-600">
-                  {stats.skills.toLocaleString()}
-                </div>
-                <div className="text-sm text-gray-500 mt-1">Skills (hacer)</div>
-              </div>
-              <div className="text-lg font-semibold text-indigo-400">
-                {stats.total > 0 ? ((stats.skills / stats.total) * 100).toFixed(0) : 0}%
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold text-amber-600">
-                  {stats.knowledge.toLocaleString()}
-                </div>
-                <div className="text-sm text-gray-500 mt-1">Conocimientos (saber)</div>
-              </div>
-              <div className="text-lg font-semibold text-amber-400">
-                {stats.total > 0 ? ((stats.knowledge / stats.total) * 100).toFixed(0) : 0}%
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold text-blue-600">
-                  {stats.categoriesS}
-                </div>
-                <div className="text-sm text-gray-500 mt-1">Cat. Tecnicas (S)</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold text-green-600">
-                  {stats.categoriesT}
-                </div>
-                <div className="text-sm text-gray-500 mt-1">Cat. Transversales (T)</div>
-              </div>
-            </div>
+          {/* Tab description */}
+          <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
+            <p className="text-sm text-gray-600">
+              {TABS.find(t => t.id === activeTab)?.description}
+            </p>
           </div>
         </div>
 
-        {/* Sunburst */}
+        {/* Tab Content */}
+        {activeTab === 'taxonomy' && (
+          <TaxonomyTab stats={stats} />
+        )}
+
+        {activeTab === 'occupation' && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <OccupationDetail
+              occupationsData={occupationsData}
+              occupationsList={occupationsList}
+              onNavigateToCompare={handleNavigateToCompare}
+            />
+          </div>
+        )}
+
+        {activeTab === 'compare' && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <OccupationCompare
+              occupationsData={occupationsData}
+              occupationsList={occupationsList}
+              initialOccA={compareOccA}
+              initialOccB={compareOccB}
+            />
+          </div>
+        )}
+
+        {activeTab === 'myskills' && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <MySkillsSearch
+              occupationsData={occupationsData}
+              occupationsList={occupationsList}
+              onNavigateToOccupation={handleNavigateToOccupation}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ============= Taxonomy Tab =============
+
+function TaxonomyTab({ stats }: { stats: Stats }) {
+  return (
+    <>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Distribucion Jerarquica de Competencias
-          </h2>
-          <p className="text-sm text-gray-600 mb-6">
-            <strong>Click en cualquier segmento</strong> para ver la lista completa de competencias en esa categoria.
-            Se abrira un panel lateral con todas las skills y conocimientos.
-          </p>
-
-          <SkillsSunburst width={700} height={700} />
+          <div className="text-3xl font-bold text-gray-900">
+            {stats.total.toLocaleString()}
+          </div>
+          <div className="text-sm text-gray-500 mt-1">Total competencias ESCO</div>
         </div>
 
-        {/* Explicacion de la estructura */}
-        <div className="mt-8 bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Estructura de la taxonomia ESCO
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Categorias */}
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-blue-500"></span>
-                <span className="w-3 h-3 rounded-full bg-green-500"></span>
-                Categorias (anillos interiores)
-              </h3>
-
-              <div className="space-y-4">
-                <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
-                  <div className="font-medium text-blue-900 mb-2">S - Competencias Tecnicas</div>
-                  <p className="text-sm text-blue-800 mb-2">
-                    Habilidades especificas de un campo profesional.
-                  </p>
-                  <div className="text-xs text-blue-700 grid grid-cols-2 gap-1">
-                    <span>S1: Comunicacion</span>
-                    <span>S2: Informacion</span>
-                    <span>S3: Asistencia</span>
-                    <span>S4: Gestion</span>
-                    <span>S5: Ordenadores</span>
-                    <span>S6: Manipulacion</span>
-                    <span>S7: Construccion</span>
-                    <span>S8: Maquinaria</span>
-                  </div>
-                </div>
-
-                <div className="bg-green-50 rounded-lg p-4 border border-green-100">
-                  <div className="font-medium text-green-900 mb-2">T - Competencias Transversales</div>
-                  <p className="text-sm text-green-800 mb-2">
-                    Capacidades aplicables a cualquier ocupacion.
-                  </p>
-                  <div className="text-xs text-green-700 grid grid-cols-2 gap-1">
-                    <span>T1: Capacidades basicas</span>
-                    <span>T2: Razonamiento</span>
-                    <span>T3: Autogestion</span>
-                    <span>T4: Sociales</span>
-                    <span>T5: Fisicas</span>
-                    <span>T6: Para la vida</span>
-                  </div>
-                </div>
+              <div className="text-2xl font-bold text-indigo-600">
+                {stats.skills.toLocaleString()}
               </div>
+              <div className="text-sm text-gray-500 mt-1">Skills (saber hacer)</div>
             </div>
-
-            {/* Tipos */}
-            <div>
-              <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-indigo-500"></span>
-                <span className="w-3 h-3 rounded-full bg-amber-500"></span>
-                Tipos de Competencia
-              </h3>
-
-              <div className="space-y-4">
-                <div className="bg-indigo-50 rounded-lg p-4 border border-indigo-100">
-                  <div className="font-medium text-indigo-900 mb-2">Skills (Saber Hacer)</div>
-                  <p className="text-sm text-indigo-800 mb-2">
-                    Capacidad para ejecutar tareas y resolver problemas.
-                  </p>
-                  <div className="text-xs text-indigo-700">
-                    <p><strong>Ejemplos:</strong></p>
-                    <ul className="list-disc list-inside mt-1">
-                      <li>Programar en Python</li>
-                      <li>Disenar bases de datos</li>
-                      <li>Negociar contratos</li>
-                      <li>Operar maquinaria CNC</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="bg-amber-50 rounded-lg p-4 border border-amber-100">
-                  <div className="font-medium text-amber-900 mb-2">Conocimientos (Saber)</div>
-                  <p className="text-sm text-amber-800 mb-2">
-                    Informacion, teorias y conceptos adquiridos.
-                  </p>
-                  <div className="text-xs text-amber-700">
-                    <p><strong>Ejemplos:</strong></p>
-                    <ul className="list-disc list-inside mt-1">
-                      <li>Lenguaje Python</li>
-                      <li>Teoria de bases de datos SQL</li>
-                      <li>Legislacion laboral</li>
-                      <li>Principios de mecanica</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
+            <div className="text-lg font-semibold text-indigo-400">
+              {stats.total > 0 ? ((stats.skills / stats.total) * 100).toFixed(0) : 0}%
             </div>
           </div>
         </div>
 
-        {/* Como usar */}
-        <div className="mt-8 bg-blue-50 rounded-xl p-6 border border-blue-100">
-          <h2 className="text-lg font-semibold text-blue-900 mb-3">
-            Como explorar la taxonomia
-          </h2>
-          <ol className="list-decimal list-inside space-y-2 text-sm text-blue-800">
-            <li><strong>Vista general:</strong> Los anillos muestran la jerarquia desde categorias (interior) hasta subcategorias (exterior)</li>
-            <li><strong>Ver detalle:</strong> Click en cualquier segmento para abrir el panel lateral con la lista completa</li>
-            <li><strong>Buscar:</strong> En el panel podes filtrar por nombre y por tipo (Skill o Conocimiento)</li>
-            <li><strong>Tooltip:</strong> Pasa el mouse sobre cualquier segmento para ver el nombre completo y estadisticas</li>
-            <li><strong>Cerrar:</strong> Click en la X del panel o fuera del mismo para cerrar</li>
-          </ol>
-        </div>
-
-        {/* Footer info */}
-        <div className="mt-8 text-center text-sm text-gray-500">
-          <p>
-            Fuente: <a
-              href="https://esco.ec.europa.eu"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
-            >
-              ESCO v1.2.0
-            </a> - European Commission
-          </p>
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-2xl font-bold text-amber-600">
+                {stats.knowledge.toLocaleString()}
+              </div>
+              <div className="text-sm text-gray-500 mt-1">Conocimientos (saber)</div>
+            </div>
+            <div className="text-lg font-semibold text-amber-400">
+              {stats.total > 0 ? ((stats.knowledge / stats.total) * 100).toFixed(0) : 0}%
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Sunburst */}
+      <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          Distribucion Jerarquica de Competencias
+        </h2>
+        <p className="text-sm text-gray-600 mb-6">
+          <strong>Click en cualquier segmento</strong> para ver la lista completa de competencias en esa categoria.
+        </p>
+
+        <SkillsSunburst width={700} height={700} />
+      </div>
+
+      {/* Legend */}
+      <div className="mt-8 bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+          Estructura de la taxonomia ESCO
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
+            <div className="font-medium text-blue-900 mb-2">S - Competencias Tecnicas</div>
+            <p className="text-sm text-blue-800">
+              Habilidades especificas de un campo profesional (S1-S8).
+            </p>
+          </div>
+
+          <div className="bg-green-50 rounded-lg p-4 border border-green-100">
+            <div className="font-medium text-green-900 mb-2">T - Competencias Transversales</div>
+            <p className="text-sm text-green-800">
+              Capacidades aplicables a cualquier ocupacion (T1-T6).
+            </p>
+          </div>
+
+          <div className="bg-violet-50 rounded-lg p-4 border border-violet-100">
+            <div className="font-medium text-violet-900 mb-2">K - Conocimientos</div>
+            <p className="text-sm text-violet-800">
+              Informacion y conceptos teoricos organizados por area.
+            </p>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ============= Coming Soon Tab =============
+
+function ComingSoonTab({ title, description }: { title: string; description: string }) {
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+      <div className="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
+        <Loader2 className="w-8 h-8 text-gray-400" />
+      </div>
+      <h2 className="text-xl font-semibold text-gray-900 mb-2">{title}</h2>
+      <p className="text-gray-600 max-w-md mx-auto mb-6">{description}</p>
+      <p className="text-sm text-gray-500">Proximamente disponible</p>
     </div>
   );
 }
