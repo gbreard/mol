@@ -65,6 +65,9 @@ export default function SkillsPage() {
   const [occupationsList, setOccupationsList] = useState<OccupationBasicInfo[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // For Tab 2: Occupation Detail - pre-selected occupation
+  const [selectedOccupation, setSelectedOccupation] = useState<string | null>(null);
+
   // For Tab 3: Compare - pre-selected occupations
   const [compareOccA, setCompareOccA] = useState<string | null>(null);
   const [compareOccB, setCompareOccB] = useState<string | null>(null);
@@ -136,9 +139,8 @@ export default function SkillsPage() {
 
   // Handler for navigating to occupation detail
   const handleNavigateToOccupation = (occId: string) => {
+    setSelectedOccupation(occId);
     setActiveTab('occupation');
-    // The OccupationDetail component will need to handle this
-    // For now we just switch tabs - the user can select the occupation manually
   };
 
   return (
@@ -192,6 +194,7 @@ export default function SkillsPage() {
               occupationsData={occupationsData}
               occupationsList={occupationsList}
               onNavigateToCompare={handleNavigateToCompare}
+              initialOccupation={selectedOccupation}
             />
           </div>
         )}

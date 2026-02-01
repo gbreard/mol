@@ -16,16 +16,25 @@ interface OccupationDetailProps {
   occupationsData: OccupationFullDetailIndex | null;
   occupationsList: OccupationInfo[];
   onNavigateToCompare?: (occAId: string, occBId: string) => void;
+  initialOccupation?: string | null;
 }
 
 export default function OccupationDetail({
   occupationsData,
   occupationsList,
-  onNavigateToCompare
+  onNavigateToCompare,
+  initialOccupation
 }: OccupationDetailProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // Set initial occupation when prop changes
+  useEffect(() => {
+    if (initialOccupation) {
+      setSelectedId(initialOccupation);
+    }
+  }, [initialOccupation]);
 
   // Get selected occupation detail
   const selectedOccupation = useMemo(() => {
