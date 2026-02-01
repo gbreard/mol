@@ -106,8 +106,15 @@ export default function MySkillsSearch({
     const matches: OccupationMatch[] = [];
 
     for (const [occId, occ] of Object.entries(occupationsData)) {
-      const essentialIds = new Set(occ.skills.essential.map(s => s.id));
-      const optionalIds = new Set(occ.skills.optional.map(s => s.id));
+      // Combine skills AND knowledge for matching
+      const essentialIds = new Set([
+        ...occ.skills.essential.map(s => s.id),
+        ...occ.knowledge.essential.map(s => s.id)
+      ]);
+      const optionalIds = new Set([
+        ...occ.skills.optional.map(s => s.id),
+        ...occ.knowledge.optional.map(s => s.id)
+      ]);
 
       let essentialCovered = 0;
       let optionalCovered = 0;
@@ -117,9 +124,10 @@ export default function MySkillsSearch({
         else if (optionalIds.has(skillId)) optionalCovered++;
       }
 
-      const essentialTotal = occ.skills.essential.length;
+      // Total essential = skills + knowledge essential
+      const essentialTotal = occ.skills.essential.length + occ.knowledge.essential.length;
 
-      // Only include if at least 1 skill matches
+      // Only include if at least 1 skill/knowledge matches
       if (essentialCovered + optionalCovered > 0) {
         const matchScore = essentialTotal > 0
           ? Math.round((essentialCovered / essentialTotal) * 100)
