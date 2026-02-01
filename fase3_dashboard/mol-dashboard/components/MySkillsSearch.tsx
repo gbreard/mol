@@ -230,7 +230,7 @@ export default function MySkillsSearch({
                     className="px-4 py-3 hover:bg-green-50 cursor-pointer border-b border-gray-100 last:border-0"
                   >
                     <div className="flex items-center justify-between">
-                      <div>
+                      <div className="flex-1 min-w-0 pr-2">
                         <div className="font-medium text-sm text-gray-900">{skill.label}</div>
                         <div className="text-xs text-gray-500 flex gap-2">
                           <span className={skill.type === 'knowledge' ? 'text-amber-600' : 'text-indigo-600'}>
@@ -239,8 +239,13 @@ export default function MySkillsSearch({
                           <span>•</span>
                           <span>{skill.total} ocupaciones</span>
                         </div>
+                        {skill.description && (
+                          <p className="mt-1 text-xs text-gray-400 line-clamp-2">
+                            {skill.description}
+                          </p>
+                        )}
                       </div>
-                      <span className="text-green-500 text-sm">+ Agregar</span>
+                      <span className="text-green-500 text-sm flex-shrink-0">+ Agregar</span>
                     </div>
                   </div>
                 ))

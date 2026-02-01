@@ -66,6 +66,9 @@ def main():
         essential_count = len(occ_data.get('essential_for', []))
         optional_count = len(occ_data.get('optional_for', []))
 
+        # Get description (extracted from RDF)
+        description = skill.get('description', '')
+
         # Build record
         record = {
             'id': skill_id,
@@ -75,7 +78,8 @@ def main():
             'L2': l2,
             'essential': essential_count,
             'optional': optional_count,
-            'total': essential_count + optional_count
+            'total': essential_count + optional_count,
+            'description': description
         }
         output_skills.append(record)
 

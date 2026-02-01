@@ -103,12 +103,14 @@ def main():
             skill_type = skill_info.get('type', 'skill')
             l1 = skill_info.get('L1', '')
             l2 = skill_info.get('L2', l1)
+            description = skill_info.get('description', '')
 
             record = {
                 'id': skill_id,
                 'label': skill_label,
                 'L1': l1,
-                'L2': l2
+                'L2': l2,
+                'description': description
             }
 
             if skill_type == 'knowledge':
@@ -124,12 +126,14 @@ def main():
             skill_type = skill_info.get('type', 'skill')
             l1 = skill_info.get('L1', '')
             l2 = skill_info.get('L2', l1)
+            description = skill_info.get('description', '')
 
             record = {
                 'id': skill_id,
                 'label': skill_label,
                 'L1': l1,
-                'L2': l2
+                'L2': l2,
+                'description': description
             }
 
             if skill_type == 'knowledge':

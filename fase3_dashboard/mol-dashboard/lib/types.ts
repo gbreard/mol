@@ -74,6 +74,7 @@ export interface SkillItem {
   label: string;
   L1: string;
   L2: string;
+  description?: string;
 }
 
 export interface SimilarOccupation {
@@ -120,6 +121,7 @@ export interface SearchableSkill {
   essential: number;  // count of occupations
   optional: number;   // count of occupations
   total: number;
+  description?: string;
 }
 
 export interface SkillsSearchableIndex {

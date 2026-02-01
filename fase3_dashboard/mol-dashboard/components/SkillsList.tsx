@@ -23,6 +23,7 @@ export default function SkillsList({
 }: SkillsListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState<'all' | 'essential' | 'optional'>('all');
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const { filteredItems, essentialCount, optionalCount } = useMemo(() => {
     const searchLower = searchTerm.toLowerCase();
@@ -146,31 +147,46 @@ export default function SkillsList({
           </div>
         ) : (
           <ul className="space-y-1">
-            {filteredItems.map((item, index) => (
-              <li
-                key={`${item.id}-${index}`}
-                className={`px-3 py-2 rounded-lg transition-colors ${
-                  item.isEssential ? 'bg-blue-50 hover:bg-blue-100' : 'bg-gray-50 hover:bg-gray-100'
-                }`}
-              >
-                <div className="flex items-start gap-2">
-                  {item.isEssential ? (
-                    <Star className="flex-shrink-0 w-4 h-4 mt-0.5 text-blue-500 fill-blue-500" />
-                  ) : (
-                    <Circle className="flex-shrink-0 w-4 h-4 mt-0.5 text-gray-400" />
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-900">{item.label}</p>
-                    <div className="flex gap-2 mt-0.5 text-xs text-gray-500">
-                      <span className="font-mono">{item.L2 || item.L1}</span>
-                      {item.isEssential && (
-                        <span className="text-blue-600 font-medium">Esencial</span>
+            {filteredItems.map((item, index) => {
+              const isExpanded = expandedId === `${item.id}-${index}`;
+              const hasDescription = item.description && item.description.length > 0;
+
+              return (
+                <li
+                  key={`${item.id}-${index}`}
+                  className={`px-3 py-2 rounded-lg transition-colors ${
+                    item.isEssential ? 'bg-blue-50 hover:bg-blue-100' : 'bg-gray-50 hover:bg-gray-100'
+                  } ${hasDescription ? 'cursor-pointer' : ''}`}
+                  onClick={() => hasDescription && setExpandedId(isExpanded ? null : `${item.id}-${index}`)}
+                >
+                  <div className="flex items-start gap-2">
+                    {item.isEssential ? (
+                      <Star className="flex-shrink-0 w-4 h-4 mt-0.5 text-blue-500 fill-blue-500" />
+                    ) : (
+                      <Circle className="flex-shrink-0 w-4 h-4 mt-0.5 text-gray-400" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-gray-900">{item.label}</p>
+                      <div className="flex gap-2 mt-0.5 text-xs text-gray-500">
+                        <span className="font-mono">{item.L2 || item.L1}</span>
+                        {item.isEssential && (
+                          <span className="text-blue-600 font-medium">Esencial</span>
+                        )}
+                        {hasDescription && !isExpanded && (
+                          <span className="text-gray-400 italic">click para ver definicion</span>
+                        )}
+                      </div>
+                      {/* Description */}
+                      {isExpanded && hasDescription && (
+                        <p className="mt-2 text-sm text-gray-700 bg-white/50 p-2 rounded border border-gray-200">
+                          {item.description}
+                        </p>
                       )}
                     </div>
                   </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>
