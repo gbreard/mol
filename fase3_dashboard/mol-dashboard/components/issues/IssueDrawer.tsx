@@ -52,7 +52,6 @@ export function IssueDrawer() {
             <IssueForm
               onSuccess={handleFormSuccess}
               onCancel={handleFormCancel}
-              compact
             />
           ) : (
             <>
