@@ -1,7 +1,8 @@
 {
-  "_version": "2.6.2",
+  "_version": "2.6.3",
   "_descripcion": "Patrones para limpiar titulos de ofertas - eliminar ruido geografico/empresarial/administrativo",
-  "_fecha": "2026-01-30",
+  "_fecha": "2026-02-02",
+  "_cambios_v263": "Fix 7 errores: eventual+ubicacion, guion largo+modalidad, localidades parentesis minusculas, cadena gastronomica",
   "_cambios_v262": "Fix 3 errores detectados: BUSCAMOS (mayusculas), - Capital Federal / Zona, - Part Time",
   "_cambios_v261": "17 ubicaciones GBA adicionales: tortuguitas, ezeiza, temperley, florencio varela, contexto empresarial ampliado",
   "_cambios_v26": "Normalización Sentence case (441 títulos normalizados)",
@@ -192,6 +193,25 @@
       }
     ]
   },
+  "modalidad_ubicacion_combinado": {
+    "_descripcion": "Modalidad SEGUIDA de ubicación - eliminar como bloque ANTES de modalidad_final",
+    "_nota": "v2.6.3: eventual MAR DEL PLATA, eventual ZONA LA PLATA, etc",
+    "patrones": [
+      {
+        "patron": "\\s+[Ee]ventual\\s+(MAR\\s+DEL\\s+PLATA|LA\\s+PLATA|CABA|GBA|ZONA\\s+[A-Z\\s]+)$",
+        "ejemplo": "Cajero eventual MAR DEL PLATA"
+      },
+      {
+        "patron": "\\s+[Ee]ventual\\s+[A-Z][A-Z\\s]+$",
+        "ejemplo": "Repositor eventual ZONA NORTE"
+      },
+      {
+        "patron": "\\s+-\\s+[Ee]ventual$",
+        "ejemplo": "Operario - Eventual",
+        "_nota": "guion corto + eventual"
+      }
+    ]
+  },
   "modalidad_final": {
     "_descripcion": "Palabras de modalidad al final del titulo",
     "_nota_v25": "Agregado REMOTO, Híbrido en mayúsculas",
@@ -217,7 +237,13 @@
   "turno_final": {
     "_descripcion": "Patrones de turno al final del titulo",
     "_nota": "v2.5 - detectados en análisis exhaustivo",
+    "_nota_v263": "Agregado Turno X sin paréntesis",
     "patrones": [
+      {
+        "patron": "\\s+[Tt]urno\\s+[Mm]a[ñn]ana\\s*$",
+        "ejemplo": "Operador Turno Mañana",
+        "_nota": "v2.6.3: turno mañana sin paréntesis al final"
+      },
       {
         "patron": "\\s*\\(\\s*[Tt]urno\\s+(tarde|mañana|noche|ma[ñn]ana|rotativo|central)\\s*\\)\\s*$",
         "ejemplo": "Mecánico ( Turno tarde)",
@@ -458,6 +484,11 @@
         "_nota": "v2.6: zona: X con dos puntos"
       },
       {
+        "patron": "\\s+para\\s+[Ii]mportante\\s+[Cc]adena\\s+[Gg]astron[oó]mica.*$",
+        "ejemplo": "Encargado para importante cadena gastronómica - Palermo",
+        "_nota": "v2.6.3: importante cadena gastronomica + todo lo que sigue"
+      },
+      {
         "patron": "\\s+para\\s+[Ii]mportante\\s+[Ee]mpresa\\s+(?:de\\s+)?[A-Za-záéíóúÁÉÍÓÚ\\s]+$",
         "ejemplo": "Vendedor para Importante Empresa de Energia",
         "_nota": "v2.5: Importante Empresa de X"
@@ -516,7 +547,43 @@
   "parentesis_eliminar": {
     "_descripcion": "Patrones de parentesis a eliminar",
     "_nota_v25": "Agregado paréntesis sin cerrar",
+    "_nota_v263": "Agregadas localidades en minusculas",
     "patrones": [
+      {
+        "patron": "\\s*\\([Cc][Aa][Bb][Aa]\\)$",
+        "ejemplo": "(caba) o (CABA)",
+        "razon": "v2.6.3: CABA en cualquier case"
+      },
+      {
+        "patron": "\\s*\\([Bb]oulogne\\)\\s*$",
+        "ejemplo": "(boulogne) o (Boulogne)",
+        "razon": "v2.6.3: localidad boulogne"
+      },
+      {
+        "patron": "\\s*\\([Bb]oulogne\\)",
+        "ejemplo": "(Boulogne) en cualquier posición",
+        "razon": "v2.6.3: boulogne sin ancla al final"
+      },
+      {
+        "patron": "\\s*\\([Nn]u[ñn]ez\\)$",
+        "ejemplo": "(nuñez) o (Nuñez)",
+        "razon": "v2.6.3: barrio nuñez"
+      },
+      {
+        "patron": "\\s*\\([Pp]alermo\\)$",
+        "ejemplo": "(palermo)",
+        "razon": "v2.6.3: barrio palermo"
+      },
+      {
+        "patron": "\\s*\\([Bb]elgrano\\)$",
+        "ejemplo": "(belgrano)",
+        "razon": "v2.6.3: barrio belgrano"
+      },
+      {
+        "patron": "\\s*\\([Rr]ecoleta\\)$",
+        "ejemplo": "(recoleta)",
+        "razon": "v2.6.3: barrio recoleta"
+      },
       {
         "patron": "\\s*\\([^)]*$",
         "ejemplo": "Vendedor (",
@@ -573,6 +640,16 @@
   "ubicacion_con_guion": {
     "_descripcion": "Ubicaciones precedidas por guion LARGO (– o —) con parentesis opcional",
     "patrones": [
+      {
+        "patron": "\\s*[–—]\\s*[Mm]odalidad\\s+[Hh][ií]brida(?:\\s*\\|.*)?$",
+        "ejemplo": "– Modalidad Híbrida | CABA",
+        "_nota": "v2.6.3: guion largo + modalidad hibrida + pipe opcional"
+      },
+      {
+        "patron": "\\s*[–—]\\s*[A-Za-záéíóúñÑ]+\\s*\\([Cc][Aa][Bb][Aa]\\).*$",
+        "ejemplo": "– Nuñez (CABA) - Eventual",
+        "_nota": "v2.6.3: guion largo + barrio + (CABA) + resto"
+      },
       {
         "patron": "\\s*[–—]\\s*[A-Z][a-záéíóú]+(?:\\s+[A-Z]?[a-záéíóú]+)*\\s*\\([^)]+\\)$",
         "ejemplo": "– Vicente López (Florida Oeste)"

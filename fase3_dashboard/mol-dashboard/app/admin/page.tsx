@@ -17,7 +17,9 @@ import { supabase } from "@/lib/supabase";
 interface AdminStats {
   totalOfertas: number;
   totalSkills: number;
-  usuariosActivos: number;
+  usuariosActivos24h: number;
+  usuariosActivos7d: number;
+  totalUsuarios: number;
   ultimoScraping: string | null;
   ofertasHoy: number;
   erroresPendientes: number;
@@ -62,10 +64,23 @@ export default function AdminDashboard() {
           .select('*', { count: 'exact', head: true })
           .gte('fecha_publicacion_iso', today);
 
+        // Obtener stats de usuarios activos
+        let userStats = { usuariosActivos24h: 0, usuariosActivos7d: 0, totalUsuarios: 0 };
+        try {
+          const res = await fetch('/api/admin/stats');
+          if (res.ok) {
+            userStats = await res.json();
+          }
+        } catch (e) {
+          console.warn('No se pudieron obtener stats de usuarios');
+        }
+
         setStats({
           totalOfertas: totalOfertas || 0,
           totalSkills: totalSkills || 0,
-          usuariosActivos: 1, // TODO: implementar con auth.users
+          usuariosActivos24h: userStats.usuariosActivos24h,
+          usuariosActivos7d: userStats.usuariosActivos7d,
+          totalUsuarios: userStats.totalUsuarios,
           ultimoScraping: estadoData?.fase1_ultimo_scraping || null,
           ofertasHoy: ofertasHoy || 0,
           erroresPendientes: estadoData?.fase2_errores_sin_resolver || 0
@@ -105,11 +120,11 @@ export default function AdminDashboard() {
       trend: "En base de datos"
     },
     {
-      label: "Usuarios Activos",
-      value: stats?.usuariosActivos.toString() || "0",
+      label: "Usuarios Activos (7d)",
+      value: stats?.usuariosActivos7d.toString() || "0",
       icon: Users,
       color: "bg-purple-500",
-      trend: "Conectados"
+      trend: `${stats?.usuariosActivos24h || 0} en últimas 24h`
     },
     {
       label: "Errores Pendientes",

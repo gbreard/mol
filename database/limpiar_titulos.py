@@ -1,10 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-limpiar_titulos.py v2.6.2
+limpiar_titulos.py v2.6.3
 ========================
 Limpia titulos de ofertas eliminando ruido empresarial/geografico.
 Lee patrones desde config/nlp_titulo_limpieza.json
+
+v2.6.3 (2026-02-02): Fix 7 errores de validación
+- Nueva sección: modalidad_ubicacion_combinado (eventual MAR DEL PLATA)
+- Procesa ANTES de modalidad_final para capturar bloques completos
+- Patrones para guion largo + modalidad (– Modalidad Híbrida)
+- Localidades en paréntesis minúsculas (boulogne, caba, etc)
 
 v2.6.2 (2026-01-30): Fix 3 errores detectados
 - BUSCAMOS (mayusculas): re.IGNORECASE para prefijos_genericos
@@ -150,6 +156,13 @@ def limpiar_titulo(titulo: str, config: Dict[str, Any] = None) -> str:
 
     # 1. Eliminar codigos de referencia
     for patron_info in config.get("codigos_referencia", {}).get("patrones", []):
+        patron = patron_info.get("patron", "")
+        if patron:
+            titulo = re.sub(patron, '', titulo, flags=re.IGNORECASE)
+
+    # 1b. [v2.6.3] Eliminar modalidad + ubicación COMBINADOS (eventual MAR DEL PLATA)
+    # DEBE ejecutarse ANTES de modalidad_final para capturar el bloque completo
+    for patron_info in config.get("modalidad_ubicacion_combinado", {}).get("patrones", []):
         patron = patron_info.get("patron", "")
         if patron:
             titulo = re.sub(patron, '', titulo, flags=re.IGNORECASE)
