@@ -8,9 +8,17 @@ Uso:
     python scripts/exports/sync_to_supabase.py --ids 123,456       # Ofertas específicas
     python scripts/exports/sync_to_supabase.py --dry-run           # Preview sin escribir
     python scripts/exports/sync_to_supabase.py --stats             # Ver estadísticas
+    python scripts/exports/sync_to_supabase.py --full              # Sync completo (todas)
+    python scripts/exports/sync_to_supabase.py --catalogs-only     # Solo catálogos ESCO
 
 Autor: MOL Team
-Versión: 1.0.0
+Versión: 2.0.0 - Soporte skills normalizados + nuevos schemas
+
+Tablas Supabase:
+    - ofertas_dashboard: Ofertas desnormalizadas para queries rápidas
+    - ofertas_skills: Skills normalizados (N:M)
+    - skills: Catálogo ESCO de skills
+    - ocupaciones_esco: Catálogo ESCO de ocupaciones
 """
 
 import argparse
@@ -37,6 +45,12 @@ logger = logging.getLogger(__name__)
 CONFIG_PATH = PROJECT_ROOT / "config" / "supabase_config.json"
 DB_PATH = PROJECT_ROOT / "database" / "bumeran_scraping.db"
 BATCH_SIZE = 100  # Ofertas por batch para evitar timeouts
+
+# Nombres de tablas en Supabase (según fase3_dashboard/sql/)
+TABLE_OFERTAS = 'ofertas_dashboard'
+TABLE_SKILLS = 'ofertas_skills'
+TABLE_SKILLS_CATALOG = 'skills'
+TABLE_OCUPACIONES = 'ocupaciones_esco'
 
 
 def load_config() -> Dict[str, str]:
@@ -345,9 +359,42 @@ def extraer_esco_skills_usadas(
 # UPLOAD A SUPABASE
 # ============================================================
 
+def transform_oferta_for_supabase(oferta: Dict) -> Dict:
+    """
+    Transforma una oferta de SQLite al formato de ofertas_dashboard de Supabase.
+    """
+    return {
+        'id_oferta': str(oferta.get('id_oferta')),
+        'titulo': oferta.get('titulo'),
+        'empresa': oferta.get('empresa'),
+        'fecha_publicacion': oferta.get('fecha_publicacion_iso'),
+        'url': oferta.get('url_oferta'),
+        'portal': oferta.get('portal'),
+        # Ubicación (prioriza NLP sobre scraping)
+        'provincia': oferta.get('provincia') or oferta.get('provincia_normalizada'),
+        'localidad': oferta.get('localidad') or oferta.get('localidad_normalizada'),
+        # ESCO
+        'isco_code': oferta.get('isco_code'),
+        'isco_label': oferta.get('esco_occupation_label') or oferta.get('isco_label'),
+        'occupation_match_score': oferta.get('occupation_match_score'),
+        'occupation_match_method': oferta.get('occupation_match_method'),
+        # NLP
+        'modalidad': oferta.get('modalidad'),
+        'nivel_seniority': oferta.get('nivel_seniority'),
+        'area_funcional': oferta.get('area_funcional'),
+        'sector_empresa': oferta.get('sector_empresa'),
+        # Skills (JSONB para backward compatibility)
+        'skills_tecnicas': oferta.get('skills_tecnicas_list'),
+        'soft_skills': oferta.get('soft_skills_list'),
+        # Estado
+        'estado': oferta.get('estado_oferta', 'activa'),
+        'fecha_sync': datetime.now().isoformat(),
+    }
+
+
 def upsert_ofertas(client, ofertas: List[Dict], dry_run: bool = False) -> int:
     """
-    Upsert ofertas a Supabase.
+    Upsert ofertas a Supabase (tabla ofertas_dashboard).
 
     Returns:
         Número de ofertas procesadas
@@ -355,17 +402,23 @@ def upsert_ofertas(client, ofertas: List[Dict], dry_run: bool = False) -> int:
     if not ofertas:
         return 0
 
+    # Transformar al formato de Supabase
+    ofertas_transformed = [transform_oferta_for_supabase(o) for o in ofertas]
+
     if dry_run:
-        logger.info(f"[DRY-RUN] Upsert {len(ofertas)} ofertas")
-        return len(ofertas)
+        logger.info(f"[DRY-RUN] Upsert {len(ofertas_transformed)} ofertas")
+        return len(ofertas_transformed)
 
     # Procesar en batches
     total = 0
-    for i in range(0, len(ofertas), BATCH_SIZE):
-        batch = ofertas[i:i + BATCH_SIZE]
+    for i in range(0, len(ofertas_transformed), BATCH_SIZE):
+        batch = ofertas_transformed[i:i + BATCH_SIZE]
 
         try:
-            result = client.table('ofertas').upsert(batch).execute()
+            result = client.table(TABLE_OFERTAS).upsert(
+                batch,
+                on_conflict='id_oferta'
+            ).execute()
             total += len(batch)
             logger.info(f"  Batch {i//BATCH_SIZE + 1}: {len(batch)} ofertas")
         except Exception as e:
@@ -375,32 +428,61 @@ def upsert_ofertas(client, ofertas: List[Dict], dry_run: bool = False) -> int:
     return total
 
 
+def transform_skill_for_supabase(skill: Dict) -> Dict:
+    """
+    Transforma un skill de SQLite al formato de ofertas_skills de Supabase.
+    """
+    return {
+        'id_oferta': str(skill.get('id_oferta')),
+        'skill_uri': skill.get('esco_skill_uri') or skill.get('skill_uri'),
+        'preferred_label': skill.get('esco_skill_label') or skill.get('preferred_label'),
+        'L1': skill.get('l1') or skill.get('L1'),
+        'L1_nombre': skill.get('l1_nombre') or skill.get('L1_nombre'),
+        'L2': skill.get('l2') or skill.get('L2'),
+        'L2_nombre': skill.get('l2_nombre') or skill.get('L2_nombre'),
+        'es_digital': skill.get('es_digital', False),
+        'origen': skill.get('skill_tipo_fuente') or skill.get('origen', 'merged'),
+        'score': skill.get('match_score') or skill.get('score'),
+        'es_esencial': skill.get('es_esencial', False),
+    }
+
+
 def upsert_skills(client, skills: List[Dict], dry_run: bool = False) -> int:
-    """Upsert skills a Supabase (con delete previo por oferta)."""
+    """
+    Upsert skills normalizados a Supabase (tabla ofertas_skills).
+
+    Usa delete + insert por oferta para evitar duplicados.
+    """
     if not skills:
         return 0
 
+    # Transformar al formato de Supabase
+    skills_transformed = [transform_skill_for_supabase(s) for s in skills]
+
+    # Filtrar skills sin URI (inválidos)
+    skills_transformed = [s for s in skills_transformed if s.get('skill_uri')]
+
     if dry_run:
-        logger.info(f"[DRY-RUN] Upsert {len(skills)} skills")
-        return len(skills)
+        logger.info(f"[DRY-RUN] Upsert {len(skills_transformed)} skills")
+        return len(skills_transformed)
 
     # Obtener IDs únicos de ofertas
-    offer_ids = list(set(s['id_oferta'] for s in skills))
+    offer_ids = list(set(s['id_oferta'] for s in skills_transformed))
 
     # Eliminar skills existentes para estas ofertas (para evitar duplicados)
     try:
         for oid in offer_ids:
-            client.table('ofertas_skills').delete().eq('id_oferta', oid).execute()
+            client.table(TABLE_SKILLS).delete().eq('id_oferta', oid).execute()
     except Exception as e:
         logger.warning(f"Error eliminando skills existentes: {e}")
 
     # Insertar nuevas
     total = 0
-    for i in range(0, len(skills), BATCH_SIZE):
-        batch = skills[i:i + BATCH_SIZE]
+    for i in range(0, len(skills_transformed), BATCH_SIZE):
+        batch = skills_transformed[i:i + BATCH_SIZE]
 
         try:
-            result = client.table('ofertas_skills').insert(batch).execute()
+            result = client.table(TABLE_SKILLS).insert(batch).execute()
             total += len(batch)
         except Exception as e:
             logger.error(f"Error insertando skills batch {i//BATCH_SIZE + 1}: {e}")
@@ -409,8 +491,22 @@ def upsert_skills(client, skills: List[Dict], dry_run: bool = False) -> int:
     return total
 
 
+def transform_ocupacion_for_supabase(ocupacion: Dict) -> Dict:
+    """
+    Transforma una ocupación al formato de ocupaciones_esco de Supabase.
+    """
+    return {
+        'esco_uri': ocupacion.get('uri'),
+        'isco_code': ocupacion.get('isco_code'),
+        'isco_label': ocupacion.get('isco_label'),
+        'preferred_label_es': ocupacion.get('label'),
+        'preferred_label_en': ocupacion.get('label_en'),
+        'description_es': ocupacion.get('description'),
+    }
+
+
 def upsert_esco_ocupaciones(client, ocupaciones: List[Dict], dry_run: bool = False) -> int:
-    """Upsert ocupaciones ESCO."""
+    """Upsert ocupaciones ESCO (tabla ocupaciones_esco)."""
     if not ocupaciones:
         return 0
 
@@ -418,34 +514,67 @@ def upsert_esco_ocupaciones(client, ocupaciones: List[Dict], dry_run: bool = Fal
     seen = set()
     unique_ocupaciones = []
     for o in ocupaciones:
-        if o['uri'] not in seen:
-            seen.add(o['uri'])
-            unique_ocupaciones.append(o)
+        uri = o.get('uri')
+        if uri and uri not in seen:
+            seen.add(uri)
+            unique_ocupaciones.append(transform_ocupacion_for_supabase(o))
 
     if dry_run:
         logger.info(f"[DRY-RUN] Upsert {len(unique_ocupaciones)} ocupaciones ESCO")
         return len(unique_ocupaciones)
 
     try:
-        result = client.table('esco_occupations').upsert(unique_ocupaciones).execute()
+        result = client.table(TABLE_OCUPACIONES).upsert(
+            unique_ocupaciones,
+            on_conflict='esco_uri'
+        ).execute()
         return len(unique_ocupaciones)
     except Exception as e:
         logger.error(f"Error upserting ocupaciones: {e}")
         raise
 
 
+def transform_skill_catalog_for_supabase(skill: Dict) -> Dict:
+    """
+    Transforma un skill al formato del catálogo skills de Supabase.
+    """
+    return {
+        'skill_uri': skill.get('uri'),
+        'preferred_label_es': skill.get('label'),
+        'preferred_label_en': skill.get('label_en'),
+        'L1': skill.get('l1'),
+        'L1_nombre': skill.get('l1_nombre'),
+        'L2': skill.get('l2'),
+        'L2_nombre': skill.get('l2_nombre'),
+        'es_digital': skill.get('es_digital', False),
+        'skill_type': skill.get('skill_type'),
+    }
+
+
 def upsert_esco_skills(client, skills: List[Dict], dry_run: bool = False) -> int:
-    """Upsert skills ESCO."""
+    """Upsert skills ESCO al catálogo (tabla skills)."""
     if not skills:
         return 0
 
+    # Transformar y eliminar duplicados
+    seen = set()
+    unique_skills = []
+    for s in skills:
+        uri = s.get('uri')
+        if uri and uri not in seen:
+            seen.add(uri)
+            unique_skills.append(transform_skill_catalog_for_supabase(s))
+
     if dry_run:
-        logger.info(f"[DRY-RUN] Upsert {len(skills)} skills ESCO")
-        return len(skills)
+        logger.info(f"[DRY-RUN] Upsert {len(unique_skills)} skills ESCO")
+        return len(unique_skills)
 
     try:
-        result = client.table('esco_skills').upsert(skills).execute()
-        return len(skills)
+        result = client.table(TABLE_SKILLS_CATALOG).upsert(
+            unique_skills,
+            on_conflict='skill_uri'
+        ).execute()
+        return len(unique_skills)
     except Exception as e:
         logger.error(f"Error upserting skills ESCO: {e}")
         raise
@@ -463,29 +592,29 @@ def mostrar_stats_supabase(client):
 
     try:
         # Contar ofertas
-        result = client.table('ofertas').select('id_oferta', count='exact').execute()
+        result = client.table(TABLE_OFERTAS).select('id_oferta', count='exact').execute()
         ofertas_count = result.count if result.count else 0
-        print(f"Ofertas: {ofertas_count}")
+        print(f"Ofertas (ofertas_dashboard): {ofertas_count}")
 
-        # Contar skills
-        result = client.table('ofertas_skills').select('id', count='exact').execute()
+        # Contar skills normalizados
+        result = client.table(TABLE_SKILLS).select('id', count='exact').execute()
         skills_count = result.count if result.count else 0
-        print(f"Skills detalle: {skills_count}")
+        print(f"Skills (ofertas_skills): {skills_count}")
 
         # Contar ocupaciones ESCO
-        result = client.table('esco_occupations').select('uri', count='exact').execute()
+        result = client.table(TABLE_OCUPACIONES).select('esco_uri', count='exact').execute()
         ocu_count = result.count if result.count else 0
         print(f"Ocupaciones ESCO: {ocu_count}")
 
-        # Contar skills ESCO
-        result = client.table('esco_skills').select('uri', count='exact').execute()
+        # Contar skills ESCO (catálogo)
+        result = client.table(TABLE_SKILLS_CATALOG).select('skill_uri', count='exact').execute()
         esco_skills_count = result.count if result.count else 0
-        print(f"Skills ESCO: {esco_skills_count}")
+        print(f"Skills ESCO (catálogo): {esco_skills_count}")
 
         # Última actualización
-        result = client.table('ofertas').select('updated_at').order('updated_at', desc=True).limit(1).execute()
+        result = client.table(TABLE_OFERTAS).select('fecha_sync').order('fecha_sync', desc=True).limit(1).execute()
         if result.data:
-            print(f"Última actualización: {result.data[0]['updated_at']}")
+            print(f"Última sincronización: {result.data[0]['fecha_sync']}")
 
     except Exception as e:
         logger.error(f"Error obteniendo stats: {e}")
@@ -544,6 +673,8 @@ Ejemplos:
     parser.add_argument('--ids', type=str, help='IDs de ofertas separados por coma')
     parser.add_argument('--dry-run', action='store_true', help='Preview sin escribir')
     parser.add_argument('--stats', action='store_true', help='Mostrar estadísticas')
+    parser.add_argument('--full', action='store_true', help='Sync completo (todas las validadas)')
+    parser.add_argument('--catalogs-only', action='store_true', help='Solo sincronizar catálogos ESCO')
     parser.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
 
     args = parser.parse_args()
