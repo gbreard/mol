@@ -63,13 +63,31 @@ def main():
     ofertas = {row['id_oferta']: row for row in ofertas_response.data}
     print(f"   {len(ofertas)} ofertas con ocupacion ESCO")
 
-    # Luego, obtener skills de esas ofertas
-    skills_response = supabase.table('ofertas_skills') \
-        .select('id_oferta, esco_skill_label') \
-        .not_.is_('esco_skill_label', 'null') \
-        .execute()
+    # Luego, obtener skills de esas ofertas (con paginación)
+    all_skills = []
+    page_size = 1000
+    offset = 0
 
-    print(f"   {len(skills_response.data)} registros de skills")
+    while True:
+        skills_response = supabase.table('ofertas_skills') \
+            .select('id_oferta, esco_skill_label') \
+            .not_.is_('esco_skill_label', 'null') \
+            .range(offset, offset + page_size - 1) \
+            .execute()
+
+        if not skills_response.data:
+            break
+
+        all_skills.extend(skills_response.data)
+        print(f"   ... {len(all_skills)} registros de skills cargados")
+
+        if len(skills_response.data) < page_size:
+            break
+
+        offset += page_size
+
+    skills_response_data = all_skills
+    print(f"   {len(skills_response_data)} registros de skills totales")
 
     # 4. Agrupar por ocupacion ESCO
     print("\n4. Agrupando por ocupacion ESCO...")
@@ -77,7 +95,7 @@ def main():
     occupations = {}
     total_skills_count = 0
 
-    for skill_row in skills_response.data:
+    for skill_row in skills_response_data:
         id_oferta = skill_row['id_oferta']
         if id_oferta not in ofertas:
             continue
