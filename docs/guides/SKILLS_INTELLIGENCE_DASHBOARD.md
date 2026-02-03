@@ -74,39 +74,78 @@ Los datos se generan desde el RDF de ESCO y se guardan en `public/data/`:
 | `skills_searchable.json` | 5 MB | 14,257 skills con descripciones |
 | `occupation_similarity.json` | 4.1 MB | Similitud entre ocupaciones |
 
+---
+
+## Estructura de Archivos
+
+```
+fase3_dashboard/mol-dashboard/
+├── app/
+│   ├── admin/skills/page.tsx      # Pagina principal (dentro de Admin Panel)
+│   └── skills/page.tsx            # Pagina publica (legacy, protegida por Vercel)
+├── components/
+│   ├── SkillsSunburst.tsx         # Grafico sunburst D3.js
+│   ├── OccupationDetail.tsx       # Tab detalle de ocupacion
+│   ├── OccupationCompare.tsx      # Tab comparacion
+│   ├── MySkillsSearch.tsx         # Tab matching por skills
+│   ├── SkillsList.tsx             # Lista de skills con descripciones
+│   ├── OccupationSelector.tsx     # Dropdown de seleccion
+│   └── SimilarOccupations.tsx     # Lista de ocupaciones similares
+├── lib/
+│   └── types.ts                   # Interfaces TypeScript
+├── public/data/
+│   ├── esco_skills_hierarchy.json # Arbol para Sunburst (3.2 MB)
+│   ├── occupation_full_detail.json # Detalle ocupaciones (45 MB)
+│   ├── skills_searchable.json     # Skills buscables (5 MB)
+│   └── occupation_similarity.json # Similitud ocupaciones (4.1 MB)
+└── scripts/                       # Scripts de generacion de datos
+    ├── generate_sunburst_data.py
+    ├── generate_occupation_similarity.py
+    ├── generate_occupation_full_detail.py
+    ├── generate_skills_searchable.py
+    └── generate_occupations_skills_index.py
+
+scripts/                           # Scripts generales del proyecto
+└── extract_esco_descriptions.py   # Extrae descripciones del RDF ESCO
+```
+
+---
+
+## Scripts de Generacion de Datos
+
+| Script | Ubicacion | Funcion | Output |
+|--------|-----------|---------|--------|
+| `generate_sunburst_data.py` | `fase3_dashboard/mol-dashboard/scripts/` | Genera arbol jerarquico de skills | `esco_skills_hierarchy.json` |
+| `generate_occupation_similarity.py` | `fase3_dashboard/mol-dashboard/scripts/` | Calcula Jaccard similarity entre ocupaciones | `occupation_similarity.json` |
+| `generate_occupation_full_detail.py` | `fase3_dashboard/mol-dashboard/scripts/` | Genera detalle completo de ocupaciones | `occupation_full_detail.json` |
+| `generate_skills_searchable.py` | `fase3_dashboard/mol-dashboard/scripts/` | Genera indice de skills buscables | `skills_searchable.json` |
+| `extract_esco_descriptions.py` | `scripts/` | Extrae descripciones en espanol del RDF | `database/embeddings/descriptions_es.json` |
+
 ### Regenerar Datos
 
 Si se actualiza ESCO o se agregan descripciones:
 
 ```bash
+# 1. (Opcional) Extraer descripciones del RDF ESCO
+cd /mnt/d/OEDE/Webscrapping
+python scripts/extract_esco_descriptions.py
+# Output: database/embeddings/descriptions_es.json
+
+# 2. Generar JSONs del dashboard
 cd fase3_dashboard/mol-dashboard/scripts
 
-# 1. Generar similitud entre ocupaciones
+# Generar similitud entre ocupaciones
 python generate_occupation_similarity.py
 
-# 2. Generar detalle completo (requiere paso 1)
+# Generar detalle completo (requiere paso anterior)
 python generate_occupation_full_detail.py
 
-# 3. Generar indice de skills buscables
+# Generar indice de skills buscables
 python generate_skills_searchable.py
 
-# 4. (Opcional) Extraer descripciones del RDF
-python ../../scripts/extract_esco_descriptions.py
+# Generar arbol para Sunburst
+python generate_sunburst_data.py
 ```
-
----
-
-## Componentes React
-
-| Componente | Ubicacion | Funcion |
-|------------|-----------|---------|
-| `SkillsSunburst.tsx` | `components/` | Grafico sunburst D3.js |
-| `OccupationDetail.tsx` | `components/` | Tab de detalle de ocupacion |
-| `OccupationCompare.tsx` | `components/` | Tab de comparacion |
-| `MySkillsSearch.tsx` | `components/` | Tab de matching por skills |
-| `SkillsList.tsx` | `components/` | Lista de skills con descripciones |
-| `OccupationSelector.tsx` | `components/` | Dropdown de seleccion |
-| `SimilarOccupations.tsx` | `components/` | Lista de ocupaciones similares |
 
 ---
 
