@@ -144,7 +144,30 @@ Skills Faltantes = ESCO_essential - MOL
 
 ---
 
-### 4. Cobertura Total
+### 4. Skills En Comun (Esenciales + Opcionales)
+
+**Definicion:** Skills que ESCO define (esenciales u opcionales) Y que el mercado argentino efectivamente pide.
+
+**Formula:**
+```
+En Comun Esenciales = MOL ∩ ESCO_essential
+En Comun Opcionales = MOL ∩ ESCO_optional
+```
+
+**Visualizacion:** La columna "En Comun" tiene dos tabs:
+- **Esenciales:** Skills que ESCO marca como esenciales y aparecen en ofertas MOL
+- **Opcionales:** Skills que ESCO marca como opcionales y aparecen en ofertas MOL
+
+Cada skill muestra el porcentaje de ofertas que la mencionan.
+
+**Ejemplo:**
+- ESCO define "Negociacion" como esencial para Representante Comercial
+- 35 de 41 ofertas MOL la mencionan
+- Aparece en tab Esenciales con **85.4%**
+
+---
+
+### 5. Cobertura Total
 
 **Definicion:** Porcentaje de TODAS las skills ESCO (esenciales + opcionales) detectadas en MOL.
 
@@ -167,7 +190,7 @@ Donde:
 
 ---
 
-### 5. Tamano de Muestra (Ofertas)
+### 6. Tamano de Muestra (Ofertas)
 
 **Definicion:** Cantidad de ofertas de empleo usadas para construir el perfil de cada ocupacion.
 
@@ -243,12 +266,14 @@ Donde:
         "coverage_essential": 50.0,
         "coverage_total": 38.5,
         "common_count": 14,
+        "common_optional_count": 8,
         "emerging_count": 180,
         "missing_count": 14,
         "esco_essential_count": 28,
         "esco_optional_count": 15,
         "common_labels": ["gestion de clientes", ...],
-        "emerging_labels": ["crm", "excel", ...],
+        "common_optional_labels": ["crm", "excel", ...],
+        "emerging_labels": ["salesforce", "power bi", ...],
         "missing_labels": ["analisis de mercado", ...]
       }
     }
