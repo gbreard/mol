@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Globe, Search, ChevronDown, X, Loader2, Star, Circle, TrendingUp, AlertCircle, Briefcase } from 'lucide-react';
+import { Globe, Search, ChevronDown, X, Loader2, Star, Circle, TrendingUp, AlertCircle, Briefcase, Users, AlertTriangle } from 'lucide-react';
 import { MOLSkillsProfileIndex, OccupationFullDetailIndex, OccupationMOLProfile, SkillItem } from '@/lib/types';
 
 interface OccupationInfo {
@@ -25,10 +25,16 @@ export default function ArgentinaProfileTab({
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Filter to only occupations with MOL data
+  // Filter to only occupations with MOL data, sorted by offer count (descending)
   const occupationsWithMOL = useMemo(() => {
     if (!molProfileData) return [];
-    return occupationsList.filter(o => molProfileData.occupations[o.id]);
+    return occupationsList
+      .filter(o => molProfileData.occupations[o.id])
+      .sort((a, b) => {
+        const countA = molProfileData.occupations[a.id]?.offer_count || 0;
+        const countB = molProfileData.occupations[b.id]?.offer_count || 0;
+        return countB - countA; // Mayor cantidad primero
+      });
   }, [occupationsList, molProfileData]);
 
   // Get selected occupation profile
@@ -188,15 +194,30 @@ export default function ArgentinaProfileTab({
                     ) : (
                       filteredOccupations.slice(0, 100).map(occ => {
                         const profile = molProfileData.occupations[occ.id];
+                        const offerCount = profile?.offer_count || 0;
+                        const isSmallSample = offerCount < 10;
                         return (
                           <li
                             key={occ.id}
                             onClick={() => handleSelect(occ.id)}
                             className="px-4 py-3 hover:bg-teal-50 cursor-pointer border-b border-gray-100 last:border-0"
                           >
-                            <div className="font-medium text-gray-900">{occ.label}</div>
-                            <div className="text-sm text-gray-500">
-                              ISCO: {occ.isco} | {profile?.offer_count || 0} ofertas | {profile?.comparison.coverage_essential || 0}% cobertura
+                            <div className="flex items-center justify-between">
+                              <div className="font-medium text-gray-900">{occ.label}</div>
+                              <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
+                                isSmallSample ? 'bg-amber-100 text-amber-700' : 'bg-teal-100 text-teal-700'
+                              }`}>
+                                <Users className="w-3 h-3" />
+                                {offerCount}
+                              </div>
+                            </div>
+                            <div className="text-sm text-gray-500 flex items-center gap-2">
+                              <span>ISCO: {occ.isco}</span>
+                              <span>|</span>
+                              <span>{profile?.comparison.coverage_essential || 0}% cobertura</span>
+                              {isSmallSample && (
+                                <span className="text-amber-600 text-xs">(muestra chica)</span>
+                              )}
                             </div>
                           </li>
                         );
@@ -286,7 +307,7 @@ export default function ArgentinaProfileTab({
 // ============= Helper Components =============
 
 function MetricsCards({ profile }: { profile: OccupationMOLProfile }) {
-  const { comparison } = profile;
+  const { comparison, offer_count } = profile;
 
   const getColorClass = (value: number): string => {
     if (value >= 70) return 'text-green-600';
@@ -300,8 +321,29 @@ function MetricsCards({ profile }: { profile: OccupationMOLProfile }) {
     return 'bg-red-500';
   };
 
+  const getSampleQuality = (count: number): { label: string; color: string; bgColor: string } => {
+    if (count >= 30) return { label: 'Muestra representativa', color: 'text-green-600', bgColor: 'bg-green-100' };
+    if (count >= 10) return { label: 'Muestra moderada', color: 'text-yellow-600', bgColor: 'bg-yellow-100' };
+    return { label: 'Muestra chica - interpretar con cuidado', color: 'text-amber-600', bgColor: 'bg-amber-100' };
+  };
+
+  const sampleQuality = getSampleQuality(offer_count);
+
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="space-y-4">
+      {/* Sample Size Alert */}
+      <div className={`flex items-center gap-3 p-4 rounded-xl ${sampleQuality.bgColor}`}>
+        <Users className={`w-6 h-6 ${sampleQuality.color}`} />
+        <div>
+          <div className={`font-bold text-2xl ${sampleQuality.color}`}>{offer_count} ofertas</div>
+          <div className={`text-sm ${sampleQuality.color}`}>{sampleQuality.label}</div>
+        </div>
+        {offer_count < 10 && (
+          <AlertTriangle className="w-5 h-5 text-amber-500 ml-auto" />
+        )}
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {/* Cobertura Esencial */}
       <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
         <div className={`text-3xl font-bold ${getColorClass(comparison.coverage_essential)}`}>
@@ -364,6 +406,7 @@ function MetricsCards({ profile }: { profile: OccupationMOLProfile }) {
         <div className="text-xs text-gray-500 mt-1">
           Incluye esenciales + opcionales
         </div>
+      </div>
       </div>
     </div>
   );
