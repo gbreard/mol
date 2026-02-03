@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Globe, Search, ChevronDown, X, Loader2, Star, Circle, TrendingUp, AlertCircle, Briefcase, Users, AlertTriangle } from 'lucide-react';
-import { MOLSkillsProfileIndex, OccupationFullDetailIndex, OccupationMOLProfile, SkillItem } from '@/lib/types';
+import { Globe, Search, ChevronDown, X, Loader2, Star, Circle, TrendingUp, AlertCircle, Briefcase, Users, AlertTriangle, CheckCircle } from 'lucide-react';
+import { MOLSkillsProfileIndex, OccupationFullDetailIndex, OccupationMOLProfile, SkillItem, MOLSkillItem } from '@/lib/types';
 
 interface OccupationInfo {
   id: string;
@@ -595,10 +595,11 @@ function MOLSkillsColumn({
   molSkills,
   emergingLabels
 }: {
-  molSkills: { label_original: string; label_normalized: string; frequency: number; percentage: number; is_emerging: boolean }[];
+  molSkills: MOLSkillItem[];
   emergingLabels: Set<string>;
 }) {
   const [showOnlyEmerging, setShowOnlyEmerging] = useState(false);
+  const [expandedSkill, setExpandedSkill] = useState<string | null>(null);
 
   const displaySkills = showOnlyEmerging
     ? molSkills.filter(s => s.is_emerging)
@@ -632,28 +633,54 @@ function MOLSkillsColumn({
 
       <ul className="space-y-1 max-h-96 overflow-y-auto">
         {displaySkills.map((skill, idx) => (
-          <li
-            key={`${skill.label_normalized}-${idx}`}
-            className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded text-sm ${
-              skill.is_emerging ? 'bg-teal-50' : 'bg-gray-50'
-            }`}
-          >
-            <div className="flex items-center gap-2 flex-1 min-w-0">
-              {skill.is_emerging && (
-                <TrendingUp className="flex-shrink-0 w-3 h-3 text-teal-500" />
+          <li key={`${skill.label_normalized}-${idx}`}>
+            <div
+              onClick={() => setExpandedSkill(
+                expandedSkill === skill.label_normalized ? null : skill.label_normalized
               )}
-              <span className="truncate">{skill.label_original}</span>
+              className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded text-sm cursor-pointer ${
+                skill.is_emerging ? 'bg-teal-50 hover:bg-teal-100' : 'bg-gray-50 hover:bg-gray-100'
+              }`}
+            >
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                {skill.is_emerging && (
+                  <TrendingUp className="flex-shrink-0 w-3 h-3 text-teal-500" />
+                )}
+                {skill.esco_uri && !skill.is_emerging && (
+                  <CheckCircle className="flex-shrink-0 w-3 h-3 text-blue-400" />
+                )}
+                <span className="truncate">{skill.label_original}</span>
+              </div>
+              <div className="flex-shrink-0 text-right">
+                <span className="text-gray-700 font-medium">{skill.frequency}</span>
+                <span className="text-gray-400 text-xs ml-1">({skill.percentage}%)</span>
+              </div>
             </div>
-            <div className="flex-shrink-0 text-right">
-              <span className="text-gray-700 font-medium">{skill.frequency}</span>
-              <span className="text-gray-400 text-xs ml-1">({skill.percentage}%)</span>
-            </div>
+            {/* Descripcion expandible */}
+            {expandedSkill === skill.label_normalized && skill.description && (
+              <div className="mt-1 mx-2 p-2 bg-gray-100 rounded text-xs text-gray-600 border-l-2 border-teal-400">
+                {skill.L1 && (
+                  <span className="inline-block px-1.5 py-0.5 bg-teal-100 text-teal-700 rounded text-xs mr-2 mb-1">
+                    {skill.L1}
+                  </span>
+                )}
+                {skill.description}
+              </div>
+            )}
+            {expandedSkill === skill.label_normalized && !skill.description && (
+              <div className="mt-1 mx-2 p-2 bg-amber-50 rounded text-xs text-amber-600 border-l-2 border-amber-400">
+                Sin descripcion ESCO disponible
+              </div>
+            )}
           </li>
         ))}
       </ul>
 
       <div className="mt-3 pt-3 border-t text-xs text-gray-500">
         {molSkills.length} skills unicas | {emergingLabels.size} emergentes
+        <div className="text-xs text-gray-400 mt-1">
+          Click en una skill para ver descripcion ESCO
+        </div>
       </div>
     </div>
   );

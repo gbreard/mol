@@ -145,6 +145,10 @@ export interface MOLSkillItem {
   is_esco_essential: boolean;
   is_esco_optional: boolean;
   is_emerging: boolean;
+  esco_uri?: string;
+  description?: string;
+  L1?: string;
+  L2?: string;
 }
 
 export interface OccupationMOLProfile {

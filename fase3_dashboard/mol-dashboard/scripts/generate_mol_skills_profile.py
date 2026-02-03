@@ -5,6 +5,7 @@ LOGICA CLAVE:
 - Agrupa por esco_occupation_uri (no ISCO)
 - Compara skills por label normalizado (no URI)
 - Extrae UUID de URI completa para matchear con occupation_full_detail.json
+- Incluye URIs y descripciones de skills ESCO
 
 Uso:
     python generate_mol_skills_profile.py
@@ -27,6 +28,29 @@ def normalize(label: str) -> str:
     return label.strip().lower()
 
 
+def load_esco_skills_index(base_path: str) -> dict:
+    """Carga índice de skills ESCO por label normalizado."""
+    skills_path = os.path.join(base_path, '..', '..', '..', 'database', 'embeddings', 'esco_skills_full.json')
+
+    with open(skills_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    # Crear índice por label normalizado
+    index = {}
+    for uri, skill_data in data.get('skills', {}).items():
+        label = skill_data.get('label', '')
+        label_norm = normalize(label)
+        if label_norm:
+            index[label_norm] = {
+                'uri': uri,
+                'description': skill_data.get('description', ''),
+                'L1': skill_data.get('L1', ''),
+                'L2': skill_data.get('L2', '')
+            }
+
+    return index
+
+
 def extract_uuid(uri: str) -> str:
     """Extrae UUID de URI ESCO completa."""
     if not uri:
@@ -46,6 +70,11 @@ def main():
     with open(json_path, 'r', encoding='utf-8') as f:
         esco_data = json.load(f)
     print(f"   {len(esco_data)} ocupaciones ESCO cargadas")
+
+    # 1b. Cargar índice de skills ESCO para URIs y descripciones
+    print("\n1b. Cargando indice de skills ESCO...")
+    esco_skills_index = load_esco_skills_index(script_dir)
+    print(f"   {len(esco_skills_index)} skills ESCO indexadas")
 
     # 2. Conectar a Supabase
     print("\n2. Conectando a Supabase...")
@@ -188,9 +217,12 @@ def main():
 
         offer_count = len(mol_occ['offer_ids'])
 
-        # Preparar mol_skills con porcentaje
+        # Preparar mol_skills con porcentaje, URI y descripcion
         mol_skills_list = []
         for label_norm, data in sorted(mol_occ['skills'].items(), key=lambda x: -x[1]['frequency']):
+            # Buscar URI y descripcion en indice ESCO
+            esco_info = esco_skills_index.get(label_norm, {})
+
             mol_skills_list.append({
                 'label_original': data['label_original'],
                 'label_normalized': label_norm,
@@ -198,7 +230,11 @@ def main():
                 'percentage': round(data['frequency'] / offer_count * 100, 1),
                 'is_esco_essential': label_norm in esco_essential_set,
                 'is_esco_optional': label_norm in esco_optional_set,
-                'is_emerging': label_norm in emerging
+                'is_emerging': label_norm in emerging,
+                'esco_uri': esco_info.get('uri', ''),
+                'description': esco_info.get('description', ''),
+                'L1': esco_info.get('L1', ''),
+                'L2': esco_info.get('L2', '')
             })
 
         total_mol_skills += len(mol_skills_list)
