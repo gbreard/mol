@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated_at": "2026-02-03T16:36:13.003602",
+  "generated_at": "2026-02-03T17:30:50.864473",
   "stats": {
     "total_offers": 838,
     "total_occupations_with_mol": 254,
@@ -189,6 +189,11 @@
           "lavar la ropa",
           "supervisar el servicio de lavandería para la clientela"
         ],
+        "common_optional_labels": [
+          "inspeccionar materiales de limpieza en seco",
+          "planchar tejidos",
+          "recoger la ropa para el servicio de lavandería"
+        ],
         "emerging_labels": [
           "garantizar el horario de los trenes",
           "garantizar la disponibilidad de los equipos",
@@ -331,6 +336,9 @@
         "mol_unique_count": 10,
         "common_labels": [
           "ingeniería industrial"
+        ],
+        "common_optional_labels": [
+          "redactar artículos científicos o académicos y documentos técnicos"
         ],
         "emerging_labels": [
           "desarrollar calendario del proyecto",
@@ -1456,6 +1464,12 @@
           "planificar el inventario",
           "supervisar el nivel de las existencias"
         ],
+        "common_optional_labels": [
+          "encargar suministros",
+          "realizar tareas administrativas",
+          "recibir mercancías",
+          "supervisar el control de calidad de las existencias"
+        ],
         "emerging_labels": [
           "almacenar mercancías",
           "analizar procesos de producción para introducir mejoras",
@@ -1786,6 +1800,9 @@
           "buenas prácticas de laboratorio",
           "registrar resultados de ensayos",
           "supervisar el control de calidad"
+        ],
+        "common_optional_labels": [
+          "elaborar procedimientos en caso de defectos"
         ],
         "emerging_labels": [
           "actualizar las instrucciones de procedimiento",
@@ -2198,6 +2215,10 @@
           "mantener la limpieza de la zona de trabajo",
           "mezclar pinturas para vehículos",
           "preparar vehículos para su pintado"
+        ],
+        "common_optional_labels": [
+          "aplicar el diseño decorativo a los vehículos",
+          "mezclar pintura"
         ],
         "emerging_labels": [
           "aplicar pintura corporal",
@@ -2643,6 +2664,10 @@
         "mol_unique_count": 40,
         "common_labels": [
           "realizar la toma de pedidos"
+        ],
+        "common_optional_labels": [
+          "hacer un pedido de productos",
+          "vender muebles"
         ],
         "emerging_labels": [
           "administrar una página web",
@@ -5824,6 +5849,10 @@
           "registrar los datos personales de los clientes",
           "responder a consultas de clientes"
         ],
+        "common_optional_labels": [
+          "hablar diferentes idiomas",
+          "realizar un discurso de venta"
+        ],
         "emerging_labels": [
           "abrir cuentas de banco",
           "acoger delegaciones comerciales",
@@ -6950,6 +6979,11 @@
           "diseñar prototipos",
           "diseño gráfico"
         ],
+        "common_optional_labels": [
+          "crear animaciones",
+          "editar fotografías",
+          "gestión del diseño"
+        ],
         "emerging_labels": [
           "adaptar el estilo de la comunicación al destinatario",
           "análisis de redes sociales",
@@ -7406,6 +7440,10 @@
           "almacenar materias primas alimenticias",
           "limpiar el área de trabajo"
         ],
+        "common_optional_labels": [
+          "fabricación de productos de pastelería",
+          "garantizar la calidad del proceso de producción de alimentos"
+        ],
         "emerging_labels": [
           "asistir a clientes",
           "controlar el cumplimiento de la normativa sobre seguridad alimentaria",
@@ -7789,6 +7827,12 @@
           "llevar a cabo un plan de comercialización",
           "tomar decisiones basadas en datos"
         ],
+        "common_optional_labels": [
+          "analizar datos de la clientela",
+          "estudiar los niveles de venta de los productos",
+          "proponer estrategias de mejora",
+          "realizar análisis de ventas"
+        ],
         "emerging_labels": [
           "analizar datos para la toma de decisiones políticas en el comercio",
           "análisis de datos",
@@ -8044,6 +8088,7 @@
           "supervisar el nivel de las existencias",
           "supervisar la calidad de los alimentos"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "apoyar a los empleados en su formación",
           "comunicar y colaborar con ingenieros sobre diseño de productos y desarrollo de productos nuevos",
@@ -8566,6 +8611,9 @@
           "mantener una base de datos de precios",
           "realizar un análisis de datos"
         ],
+        "common_optional_labels": [
+          "comunicar cambios en los precio"
+        ],
         "emerging_labels": [
           "analizar datos de la clientela",
           "asignar facturas",
@@ -8914,6 +8962,10 @@
           "usar técnicas de acabado culinario",
           "usar técnicas de cocina",
           "usar técnicas de preparación de alimentos"
+        ],
+        "common_optional_labels": [
+          "cocinar platos de carne",
+          "cocinar salsas y sopas"
         ],
         "emerging_labels": [
           "control estadístico de la calidad",
@@ -9377,6 +9429,7 @@
           "supervisar el nivel de las existencias",
           "supervisar el trabajo"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "apoyar a los empleados en su formación",
           "controlar existencias",
@@ -9660,6 +9713,10 @@
           "limpiar el área de trabajo",
           "realizar operaciones precisas de preparación de alimentos",
           "respetar indicaciones de las recetas"
+        ],
+        "common_optional_labels": [
+          "comunicarse con los jefes y directivos",
+          "garantizar la calidad del proceso de producción de alimentos"
         ],
         "emerging_labels": [
           "cocinar salsas y sopas",
@@ -10852,6 +10909,27 @@
           "planificar una estrategia de comercialización",
           "supervisar indicadores clave de rendimiento"
         ],
+        "common_optional_labels": [
+          "ayudar en el desarrollo de campañas de comercialización",
+          "captar la atención de la gente",
+          "derecho comercial",
+          "dirección de marketing",
+          "elaborar estrategias de marketing",
+          "implementar estrategias de ventas",
+          "motivar a los empleados",
+          "negociar mejoras con proveedores",
+          "negociar términos con proveedores",
+          "optimización de motores de búsqueda",
+          "planificar campañas de comercialización en redes sociales",
+          "presentar argumentos de forma persuasiva",
+          "procesos de desarrollo de contenido",
+          "realizar análisis de ventas",
+          "realizar la optimización de los motores de búsqueda",
+          "segmentación de la clientela",
+          "supervisar las actividades de venta",
+          "tomar decisiones empresariales estratégicas",
+          "técnicas para campañas de publicidad en línea"
+        ],
         "emerging_labels": [
           "administrar una página web",
           "analizar las tendencias de la cadena de suministro",
@@ -11533,6 +11611,10 @@
           "servicio al cliente",
           "tramitar pagos"
         ],
+        "common_optional_labels": [
+          "mantener limpia la zona de caja",
+          "supervisar la zona de caja"
+        ],
         "emerging_labels": [
           "almacenar mercancías",
           "arreglar productos de segunda mano para la venta",
@@ -11944,6 +12026,9 @@
           "control de gastos",
           "realizar informes estadísticos y financieros",
           "supervisar la zona de caja"
+        ],
+        "common_optional_labels": [
+          "gestionar el transporte de dinero en efectivo"
         ],
         "emerging_labels": [
           "accionar terminales de pago electrónico",
@@ -12602,6 +12687,10 @@
           "realizar el mantenimiento del equipo instalado",
           "refrigerantes"
         ],
+        "common_optional_labels": [
+          "detectar y corregir errores de las tecnologías de la información y de las comunicaciones",
+          "proporcionar a clientes información sobre reparaciones"
+        ],
         "emerging_labels": [
           "asegurar las instalaciones",
           "asesorar a los clientes sobre la instalación de equipos audiovisuales",
@@ -12866,6 +12955,9 @@
         "common_labels": [
           "organizar la evaluación del personal"
         ],
+        "common_optional_labels": [
+          "evaluar a los empleados"
+        ],
         "emerging_labels": [
           "buscar a personas",
           "desarrollar planes de auditoría",
@@ -13058,6 +13150,7 @@
           "documentar el avance del proyecto",
           "redactar la documentación del proyecto"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "aplicar normas de salud y seguridad",
           "apoyar a compañeros de trabajo",
@@ -13667,6 +13760,11 @@
           "garantizar el cumplimiento de los requisitos legales",
           "supervisar un proyecto de construcción"
         ],
+        "common_optional_labels": [
+          "comunicarse con los clientes",
+          "participar en licitaciones públicas",
+          "realizar una licitación"
+        ],
         "emerging_labels": [
           "calcular el coste de los materiales de construcción",
           "comprar suministros",
@@ -13972,6 +14070,7 @@
           "realizar controles periódicos de maquinaria",
           "realizar el mantenimiento del equipo instalado"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "abordar situaciones que requieren asistencia de emergencia",
           "actuar con un alto nivel de sensibilización en materia de seguridad",
@@ -14545,6 +14644,9 @@
           "realizar vigilancia",
           "supervisar equipos de vigilancia"
         ],
+        "common_optional_labels": [
+          "operar equipos de vigilancia y seguridad"
+        ],
         "emerging_labels": [
           "abordar situaciones que requieren asistencia de emergencia",
           "actuar como guardia de cubierta",
@@ -14903,6 +15005,7 @@
           "realizar inspecciones de cumplimiento de contratos",
           "supervisar el rendimiento de los y las contratistas"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "asesorar a contratistas",
           "asesorar sobre gestión de conflictos",
@@ -15102,6 +15205,10 @@
         "common_labels": [
           "electrónica"
         ],
+        "common_optional_labels": [
+          "ingeniería eléctrica",
+          "reparar componentes electrónicos"
+        ],
         "emerging_labels": [
           "detectar problemas",
           "detectar y corregir errores de las tecnologías de la información y de las comunicaciones",
@@ -15202,6 +15309,7 @@
         "esco_optional_count": 12,
         "mol_unique_count": 4,
         "common_labels": [],
+        "common_optional_labels": [],
         "emerging_labels": [
           "fabricación de productos de uso cotidiano",
           "gestionar actividades de limpieza",
@@ -16786,6 +16894,10 @@
           "tecnología farmacéutica",
           "tener los medicamentos almacenados correctamente"
         ],
+        "common_optional_labels": [
+          "mejorar la seguridad de los medicamentos",
+          "ocuparse de los pacientes con reacciones adversas a medicamentos"
+        ],
         "emerging_labels": [
           "actualizar las instrucciones de procedimiento",
           "actualizar licencias",
@@ -17455,6 +17567,7 @@
           "analizar las tendencias en los hábitos de consumo",
           "negociar precios"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "ampliar la red de proveedores",
           "analizar el consumo de energía",
@@ -18952,6 +19065,12 @@
           "preparar estados financieros",
           "realizar operaciones de balance"
         ],
+        "common_optional_labels": [
+          "colaborar con los auditores",
+          "evaluar presupuestos",
+          "preparar informes de auditorías financieras",
+          "realizar contabilidad de costes"
+        ],
         "emerging_labels": [
           "actividades bancarias",
           "analizar tendencias en el mercado financiero",
@@ -19527,6 +19646,7 @@
           "exigir el pago de deudas de clientes",
           "tramitar pagos"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "adaptar moldes a productos",
           "adaptarse a los cambios en marketing",
@@ -19885,6 +20005,7 @@
           "preparar el instrumental odontológico para su esterilización",
           "relacionarse con los usuarios de la asistencia sanitaria"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "anatomía dental",
           "aplicar procedimientos de seguridad en laboratorios",
@@ -20344,6 +20465,10 @@
           "gestionar nóminas",
           "preparar nóminas"
         ],
+        "common_optional_labels": [
+          "calcular impuestos",
+          "calcular las prestaciones que pueden percibir los empleados"
+        ],
         "emerging_labels": [
           "administrar la medicación prescrita",
           "administrar prestaciones medicas",
@@ -20558,6 +20683,7 @@
           "difundir comunicaciones internas",
           "realizar tareas administrativas"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "asegurar la correcta gestión de documentos",
           "asesorar sobre la gestión del personal",
@@ -20665,6 +20791,7 @@
         "common_labels": [
           "cooperar con los compañeros de trabajo"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "actividades de venta",
           "trabajar de forma organizada",
@@ -20901,6 +21028,9 @@
           "comunicarse por teléfono",
           "garantizar la satisfacción del cliente"
         ],
+        "common_optional_labels": [
+          "responder a las llamadas"
+        ],
         "emerging_labels": [
           "aplicar capacidades de comunicación técnica",
           "asegurar la mercancía",
@@ -21014,6 +21144,7 @@
           "forjado en caliente",
           "procesos de soldadura"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "aplicar técnicas de soldadura",
           "emplear técnicas de soldadura",
@@ -21811,6 +21942,9 @@
           "realizar el relevo de la zona de preparación de alimentos",
           "recibir suministros de cocina",
           "respetar indicaciones de las recetas"
+        ],
+        "common_optional_labels": [
+          "mantener equipos de cocina a la temperatura adecuada"
         ],
         "emerging_labels": [
           "acompañar a personas",
@@ -22693,6 +22827,10 @@
           "dar seguimiento a las cuentas a cobrar",
           "mantener registros de clientes y clientas"
         ],
+        "common_optional_labels": [
+          "evaluar la situación financiera del deudor",
+          "tramitar pagos"
+        ],
         "emerging_labels": [
           "actividades bancarias",
           "actualizar las instrucciones de procedimiento",
@@ -22952,6 +23090,10 @@
         "mol_unique_count": 16,
         "common_labels": [
           "planificar pruebas de software"
+        ],
+        "common_optional_labels": [
+          "desarrollar pruebas de software automatizadas",
+          "herramientas para automatizar las pruebas de tic"
         ],
         "emerging_labels": [
           "colaborar con un equipo de coaching",
@@ -23298,6 +23440,9 @@
           "gestionar actividades de limpieza",
           "supervisar las actividades de limpieza"
         ],
+        "common_optional_labels": [
+          "alentar al personal de limpieza"
+        ],
         "emerging_labels": [
           "actividades hoteleras",
           "ayudar a pacientes con necesidades especiales",
@@ -23575,6 +23720,9 @@
         "mol_unique_count": 23,
         "common_labels": [
           "seguir las instrucciones para el control del stock"
+        ],
+        "common_optional_labels": [
+          "empaquetar mercancías"
         ],
         "emerging_labels": [
           "asegurar el correcto etiquetado de productos",
@@ -24103,6 +24251,10 @@
           "mercado inmobiliario",
           "ofrecer información sobre propiedades inmobiliarias",
           "organizar visitas a los inmuebles en venta o en alquiler"
+        ],
+        "common_optional_labels": [
+          "asesorar sobre el valor de la propiedad",
+          "comunicarse con los clientes"
         ],
         "emerging_labels": [
           "actividades de venta",
@@ -24793,6 +24945,10 @@
           "gestión de causas judiciales",
           "negociar en asuntos jurídicos",
           "recopilar documentación judicial"
+        ],
+        "common_optional_labels": [
+          "consultar con clientes de negocios",
+          "efectuar el seguimiento de operaciones financieras"
         ],
         "emerging_labels": [
           "abogar por otras personas",
@@ -25765,6 +25921,9 @@
           "servir bebidas",
           "servir comida en el servicio de mesa"
         ],
+        "common_optional_labels": [
+          "asesorar a la clientela sobre las variedades de café y té"
+        ],
         "emerging_labels": [
           "actuar discretamente",
           "adaptarse al cambio",
@@ -26031,6 +26190,7 @@
           "presentar informes",
           "realizar un análisis de datos"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "análisis de datos",
           "evaluar datos, informacion y contenido digital",
@@ -26233,6 +26393,9 @@
         "esco_optional_count": 27,
         "mol_unique_count": 17,
         "common_labels": [],
+        "common_optional_labels": [
+          "apoyar a los empleados en su formación"
+        ],
         "emerging_labels": [
           "apoyar a compañeros de trabajo",
           "colaborar con un equipo de coaching",
@@ -26522,6 +26685,11 @@
           "limpiar las zonas públicas",
           "mantener el equipo de limpieza",
           "realizar operaciones de limpieza"
+        ],
+        "common_optional_labels": [
+          "limpiar aseos",
+          "realizar actividades de limpieza en exteriores",
+          "rellenar una ficha descriptiva de las actividades de limpieza"
         ],
         "emerging_labels": [
           "adaptarse a las inclemencias del tiempo",
@@ -28270,6 +28438,13 @@
           "seguir las instrucciones para el control del stock",
           "tipos de empaquetado, embalaje y envasado para envíos industriales"
         ],
+        "common_optional_labels": [
+          "analizar requisitos de embalaje",
+          "cooperar con los compañeros de trabajo",
+          "garantizar el control de la calidad del envasado y el embalaje",
+          "gestionar las devoluciones",
+          "supervisar el control de calidad de las existencias"
+        ],
         "emerging_labels": [
           "almacenamiento de datos",
           "almacenamiento hermético",
@@ -29786,6 +29961,12 @@
           "gestionar las operaciones de mantenimiento",
           "realizar un análisis de datos"
         ],
+        "common_optional_labels": [
+          "analizar procesos de producción para introducir mejoras",
+          "asesorar sobre el mantenimiento de máquinas",
+          "gestionar presupuestos",
+          "mantener maquinaria"
+        ],
         "emerging_labels": [
           "aconsejar a los clientes sobre servicios complementarios para los vehículos",
           "adoptar decisiones críticas de forma oportuna",
@@ -30243,6 +30424,7 @@
           "asistir a clientes",
           "servicio al cliente"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "actividades de venta",
           "asesorar sobre averías de máquinas",
@@ -30900,6 +31082,10 @@
         "esco_optional_count": 16,
         "mol_unique_count": 66,
         "common_labels": [],
+        "common_optional_labels": [
+          "asesorar sobre pólizas de seguro",
+          "crear pólizas de seguro"
+        ],
         "emerging_labels": [
           "aconsejar a los pacientes acerca de cuestiones de salud y estilos de vida",
           "ampliar la red de proveedores",
@@ -31705,6 +31891,9 @@
           "realizar estudios del mercado inmobiliario",
           "redactar un contrato inmobiliario"
         ],
+        "common_optional_labels": [
+          "revisar los trámites de cierre"
+        ],
         "emerging_labels": [
           "acompañar a personas",
           "aconsejar a clientes sobre libros",
@@ -32283,6 +32472,12 @@
           "crear un ambiente de trabajo de mejora continua",
           "garantizar operaciones comerciales lícitas"
         ],
+        "common_optional_labels": [
+          "crear un ambiente de trabajo de mejora continua",
+          "gestionar presupuestos",
+          "gestión de proyectos",
+          "informar sobre la gestión general de una empresa"
+        ],
         "emerging_labels": [
           "apoyar a la comunidad",
           "asegurar la cooperación entre departamentos",
@@ -32526,6 +32721,7 @@
         "esco_optional_count": 18,
         "mol_unique_count": 16,
         "common_labels": [],
+        "common_optional_labels": [],
         "emerging_labels": [
           "asertividad",
           "asesorar a autores",
@@ -32632,6 +32828,7 @@
         "common_labels": [
           "preparar pedidos"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "cirugía general",
           "empaquetar mercancias",
@@ -32940,6 +33137,9 @@
           "preparar un plan financiero",
           "realizar informes estadísticos y financieros"
         ],
+        "common_optional_labels": [
+          "ayudar al desarrollo del presupuesto anual"
+        ],
         "emerging_labels": [
           "apoyar a compañeros de trabajo",
           "asistir con la logística militar",
@@ -33041,6 +33241,7 @@
           "lavar los vehículos",
           "limpiar el exterior del vehículo"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "limpiar vehículos de carretera",
           "utilizar aparatos para escanear el codigo de barras"
@@ -33597,6 +33798,28 @@
           "asesorar sobre asuntos financieros",
           "comunicarse con los jefes y directivos"
         ],
+        "common_optional_labels": [
+          "asesorar sobre cuentas bancarias",
+          "asesorar sobre finanzas públicas",
+          "calcular impuestos",
+          "calcular rentabilidad",
+          "colaborar con los auditores",
+          "controlar los recursos financieros",
+          "coordinar las actividades operacionales",
+          "coordinarse con los accionistas",
+          "desarrollar una cartera de inversiones",
+          "efectuar el seguimiento de operaciones financieras",
+          "ejercer el control del gasto",
+          "gestionar la rentabilidad",
+          "gestionar operaciones financieras",
+          "gestionar reclamaciones de seguro",
+          "oferta pública",
+          "presentar informes",
+          "supervisar las actividades de venta",
+          "supervisar las operaciones contables",
+          "técnicas de valoración del negocio",
+          "vender pólizas de seguro"
+        ],
         "emerging_labels": [
           "asesorar sobre la responsabilidad social de las empresas",
           "asesorar sobre pólizas de seguro",
@@ -33923,6 +34146,9 @@
         "esco_optional_count": 11,
         "mol_unique_count": 29,
         "common_labels": [],
+        "common_optional_labels": [
+          "envasar jabón"
+        ],
         "emerging_labels": [
           "asegurar el correcto etiquetado de productos",
           "desarrollar la línea de producción",
@@ -35443,6 +35669,18 @@
           "sistemas eléctricos de los vehículos",
           "utilizar equipos de diagnóstico de automóviles"
         ],
+        "common_optional_labels": [
+          "ajustar elementos de motores",
+          "desmontar motores",
+          "detectar problemas en el funcionamiento de los motores",
+          "funcionamiento de diferentes motores",
+          "llevar a cabo la reparación de motocicletas",
+          "mantener sistema de frenado",
+          "realizar pequeñas reparaciones a un vehículo",
+          "reparar motores",
+          "sustituir neumáticos",
+          "tener competencias informáticas"
+        ],
         "emerging_labels": [
           "acondicionar neumáticos usados",
           "aconsejar sobre cursos de formación",
@@ -36189,6 +36427,9 @@
         "common_labels": [
           "mecánica"
         ],
+        "common_optional_labels": [
+          "manejar equipos de soldadura"
+        ],
         "emerging_labels": [
           "aleaciones de aluminio",
           "asistir en la operación de máquinas y equipos",
@@ -36363,6 +36604,7 @@
           "supervisar el nivel de las existencias",
           "supervisar personal"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "coordinar actividades de mantenimiento de invernaderos",
           "formar a miembros del equipo",
@@ -36749,6 +36991,9 @@
           "mantener equipos industriales",
           "realizar tareas de mantenimiento de máquinas"
         ],
+        "common_optional_labels": [
+          "reparar equipos industriales"
+        ],
         "emerging_labels": [
           "ajustar la velocidad de operación de las máquinas de producción",
           "aplicar técnicas de soldadura",
@@ -36948,6 +37193,7 @@
         "esco_optional_count": 7,
         "mol_unique_count": 15,
         "common_labels": [],
+        "common_optional_labels": [],
         "emerging_labels": [
           "acondicionar neumáticos usados",
           "ejecutar actividades de control de enfermedades y plagas",
@@ -37105,6 +37351,11 @@
           "realizar pruebas de incendio",
           "sistemas de extinción de incendios"
         ],
+        "common_optional_labels": [
+          "educar al público sobre la seguridad contra incendios",
+          "ingeniería de protección contra los incendios",
+          "realizar inspecciones de seguridad contra incendios"
+        ],
         "emerging_labels": [
           "detectar problemas en sistemas de combustible",
           "formar al personal sobre los procedimientos para garantizar la seguridad",
@@ -37238,6 +37489,10 @@
         "common_labels": [
           "asegurar que la zona de preparación de comidas mantiene el nivel de limpieza adecuado",
           "usar técnicas de preparación de alimentos"
+        ],
+        "common_optional_labels": [
+          "cocinar salsas y sopas",
+          "comidas preparadas"
         ],
         "emerging_labels": [
           "limpiar equipos de cocina",
@@ -37492,6 +37747,14 @@
           "manejar equipos de soldadura",
           "realizar soldaduras mig",
           "realizar soldaduras tig"
+        ],
+        "common_optional_labels": [
+          "aplicar técnicas de soldadura",
+          "comprobar la calidad de trabajos de soldadura",
+          "emplear técnicas de soldadura",
+          "manejar equipos para soldadura",
+          "montar piezas metálicas",
+          "preparar piezas para ensamblaje"
         ],
         "emerging_labels": [
           "controlar el cumplimiento de normas de calidad de fabricación",
@@ -38197,6 +38460,10 @@
           "llevar un registro de las ventas",
           "mantener la relación con los clientes"
         ],
+        "common_optional_labels": [
+          "estrategias de venta",
+          "realizar un análisis de las necesidades de los clientes"
+        ],
         "emerging_labels": [
           "ampliar la presencia regional de una tienda",
           "ampliar la red de proveedores",
@@ -38449,6 +38716,9 @@
           "establecer comunicación con la comunidad interesada",
           "establecer relaciones en la comunidad"
         ],
+        "common_optional_labels": [
+          "gestionar un equipo"
+        ],
         "emerging_labels": [
           "aplicar la gestión de cambios",
           "crear vínculos con las autoridades locales",
@@ -38688,6 +38958,7 @@
           "emitir órdenes de compra",
           "preparar informes de compra"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "coordinar los pedidos de varios proveedores",
           "dar seguimiento a los pedidos de los clientes",
@@ -38783,6 +39054,7 @@
         "common_labels": [
           "diseñar sistemas de energía eléctrica"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "ofrecer formación técnica",
           "proporcionar experiencia técnica",
@@ -38921,6 +39193,9 @@
         "mol_unique_count": 10,
         "common_labels": [
           "controlar los signos básicos de los pacientes"
+        ],
+        "common_optional_labels": [
+          "geriatría"
         ],
         "emerging_labels": [
           "gestionar el mantenimiento de espacios",
@@ -40553,6 +40828,14 @@
           "responder a las llamadas",
           "servicio al cliente"
         ],
+        "common_optional_labels": [
+          "asistir a clientes",
+          "contactar a los clientes por teléfono",
+          "gestión de la relación con los clientes",
+          "hacer el seguimiento de los pedidos de los clientes",
+          "proporcionar a los clientes información sobre los precios",
+          "tramitar pagos"
+        ],
         "emerging_labels": [
           "actuar de enlace con profesionales del sector",
           "animar a los equipos de trabajo a que procuren mejorar continuamente",
@@ -40826,6 +41109,9 @@
         "common_labels": [
           "manejar cajas de admisión"
         ],
+        "common_optional_labels": [
+          "realizar tareas de mantenimiento de máquinas"
+        ],
         "emerging_labels": [
           "adquirir licencias para el uso de armas",
           "gestionar los suministros",
@@ -40990,6 +41276,9 @@
         "mol_unique_count": 13,
         "common_labels": [
           "ayudar a clientes con necesidades especiales"
+        ],
+        "common_optional_labels": [
+          "asistir a clientes"
         ],
         "emerging_labels": [
           "ayudar a clientes en su desarrollo personal",
@@ -41250,6 +41539,7 @@
           "negociar préstamos",
           "prestar asistencia en las solicitudes de préstamo"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "asesorar a la clientela acerca de las posibilidades técnicas",
           "asesorar sobre calificación crediticia",
@@ -42490,6 +42780,7 @@
           "diseñar un sistema de información",
           "interactuar con usuarios para reunir requisitos"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "abordar situaciones que requieren asistencia de emergencia",
           "actuar de enlace con profesionales del sector",
@@ -43024,6 +43315,7 @@
           "filosofías de la mejora continua",
           "gestionar cambios en la producción"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "analizar los avances de los objetivos",
           "analizar problemas para buscar soluciones o posibilidades de mejora",
@@ -43316,6 +43608,9 @@
           "realizar el mantenimiento del equipo instalado",
           "realizar tareas de mantenimiento de máquinas",
           "reemplazar componentes defectuosos"
+        ],
+        "common_optional_labels": [
+          "redactar informes de reparaciones"
         ],
         "emerging_labels": [
           "asesorar a la clientela acerca de las posibilidades técnicas",
@@ -43628,6 +43923,7 @@
           "preparar envíos a tiempo",
           "trabajar en un equipo encargado de la logística"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "asistir en la manipulación de cargas pesadas",
           "conducir un vehiculo",
@@ -43900,6 +44196,10 @@
           "encargar suministros",
           "gestionar el inventario"
         ],
+        "common_optional_labels": [
+          "asegurar la cooperación entre departamentos",
+          "programar el trabajo en base a la entrada de pedidos"
+        ],
         "emerging_labels": [
           "atender las solicitudes de los clientes relacionadas con la mercancía",
           "auditar procedimientos de seguridad alimentaria",
@@ -44064,6 +44364,7 @@
         "common_labels": [
           "actividades de venta"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "asesorar sobre pólizas de seguro",
           "cumplir los compromisos",
@@ -44510,6 +44811,7 @@
           "mantener máquinas para fabricar productos de plástico",
           "operar maquinaria para fabricar plástico"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "aplicar normas de salud y seguridad",
           "buscar a personas",
@@ -44815,6 +45117,9 @@
           "realizar vigilancia",
           "vigilar las medidas de seguridad"
         ],
+        "common_optional_labels": [
+          "operar equipos de vigilancia y seguridad"
+        ],
         "emerging_labels": [
           "aplicar técnicas de primeros auxilios en caso de emergencia",
           "establecer rutinas de seguridad en instalaciones",
@@ -45065,6 +45370,11 @@
           "diseñar sistemas electromecánicos",
           "ingeniería eléctrica",
           "preparar prototipos de producción"
+        ],
+        "common_optional_labels": [
+          "diseñar firmware",
+          "electrónica",
+          "firmware"
         ],
         "emerging_labels": [
           "colaborar con responsables de garantía de calidad",
@@ -45615,6 +45925,7 @@
           "proporcionar productos personalizados",
           "tramitar pagos"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "aplicación de la ley",
           "aplicación de políticas públicas",
@@ -45923,6 +46234,7 @@
         "esco_optional_count": 13,
         "mol_unique_count": 23,
         "common_labels": [],
+        "common_optional_labels": [],
         "emerging_labels": [
           "analizar las necesidades de aseguramiento",
           "analizar procesos de producción para introducir mejoras",
@@ -46136,6 +46448,9 @@
         "common_labels": [
           "mantener el equipo de limpieza",
           "realizar operaciones de limpieza"
+        ],
+        "common_optional_labels": [
+          "realizar actividades de limpieza en exteriores"
         ],
         "emerging_labels": [
           "aplicar normas de salud y seguridad",
@@ -46498,6 +46813,7 @@
         "esco_optional_count": 18,
         "mol_unique_count": 34,
         "common_labels": [],
+        "common_optional_labels": [],
         "emerging_labels": [
           "aplicar estrategias de exportación",
           "controlar el flujo de tráfico",
@@ -48045,6 +48361,9 @@
         "esco_optional_count": 63,
         "mol_unique_count": 163,
         "common_labels": [],
+        "common_optional_labels": [
+          "supervisar indicadores clave de rendimiento"
+        ],
         "emerging_labels": [
           "actualizar el presupuesto",
           "ajustar las prioridades",
@@ -48357,6 +48676,7 @@
           "someter a auditorías a los contratistas",
           "supervisar el rendimiento de los y las contratistas"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "analizar procesos de información",
           "asegurar la correcta gestión de documentos",
@@ -48617,6 +48937,7 @@
           "determinar mejoras de los procesos",
           "proponer estrategias de mejora"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "contestar a las preguntas de los pacientes",
           "controlar signos vitales",
@@ -49123,6 +49444,9 @@
           "determinar mejoras de los procesos",
           "evaluar presupuestos",
           "realizar informes estadísticos y financieros"
+        ],
+        "common_optional_labels": [
+          "gestionar presupuestos"
         ],
         "emerging_labels": [
           "analizar datos experimentales",
@@ -50003,6 +50327,10 @@
           "garantizar el funcionamiento del vehículo",
           "mantener el aspecto físico del vehículo"
         ],
+        "common_optional_labels": [
+          "gestionar paquetes entregados",
+          "realizar el mantenimiento de un vehículo"
+        ],
         "emerging_labels": [
           "ajustar el peso de la mercancía a la capacidad del vehículo de transporte",
           "aplicar la planificación de rutas en los servicios de movilidad inteligente",
@@ -50613,6 +50941,13 @@
           "realizar intervenciones de cirugía vascular",
           "supervisar a los pacientes que han sufrido ataques al corazón"
         ],
+        "common_optional_labels": [
+          "cardiología",
+          "diagnosticar enfermedades cardíacas",
+          "diagnosticar enfermedades del sistema vascular",
+          "llevar a cabo investigaciones científicas",
+          "medicina de urgencias"
+        ],
         "emerging_labels": [
           "administrar la medicación prescrita",
           "asesorar sobre historias clínicas",
@@ -51125,6 +51460,9 @@
           "organizar pedidos de productos para clientes",
           "realizar la toma de pedidos"
         ],
+        "common_optional_labels": [
+          "realizar ventas activas"
+        ],
         "emerging_labels": [
           "aconsejar sobre productos de mercería",
           "actividades de venta",
@@ -51262,6 +51600,7 @@
           "actividades de venta",
           "trabajar de forma independiente en ventas"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "apoyar a los empleados en su formación",
           "colaborar con un equipo de coaching",
@@ -51500,6 +51839,7 @@
           "operar una lavadora extractora",
           "planchar tejidos"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "analizar las necesidades logísticas",
           "asegurarse de que todos los pasajeros pasen por el detector de metales",
@@ -51814,6 +52154,10 @@
           "identificar las necesidades del cliente",
           "realizar un análisis de las necesidades de los clientes"
         ],
+        "common_optional_labels": [
+          "colaborar en la elaboración de estrategias de marketing",
+          "estudiar los niveles de venta de los productos"
+        ],
         "emerging_labels": [
           "analizar las tendencias de la cadena de suministro",
           "asignar vehículos de acuerdo con los requisitos",
@@ -52115,6 +52459,9 @@
           "iniciar el contacto con los compradores",
           "iniciar el contacto con los vendedores",
           "negociar las condiciones de compra"
+        ],
+        "common_optional_labels": [
+          "actividades de venta"
         ],
         "emerging_labels": [
           "abrir cuentas de banco",
@@ -52799,6 +53146,7 @@
         "common_labels": [
           "administración de la oficina"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "abrir cuentas de banco",
           "análisis de datos",
@@ -53045,6 +53393,7 @@
           "comunicarse con los clientes",
           "comunicarse por teléfono"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "contactar a los clientes por teléfono",
           "negociar precios",
@@ -54328,6 +54677,7 @@
           "realizar un análisis de las necesidades de los clientes",
           "sistemas de comercio electrónico"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "adaptarse a los cambios en marketing",
           "analizar las tendencias económicas",
@@ -54548,6 +54898,7 @@
         "common_labels": [
           "responder a reclamaciones de clientes"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "efectuar la rotación de existencias",
           "gestionar los procesos de reclamaciones",
@@ -55063,6 +55414,10 @@
         "common_labels": [
           "obedecer las normas de circulación"
         ],
+        "common_optional_labels": [
+          "organizar el reparto del correo",
+          "preparar documentación para envío de vehículos"
+        ],
         "emerging_labels": [
           "asertividad",
           "asumir la responsabilidad",
@@ -55177,6 +55532,7 @@
         "common_labels": [
           "manejar carretillas elevadoras"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "manejo de aparatos de elevación",
           "operar un vehículo de combate blindado"
@@ -55760,6 +56116,11 @@
           "realizar análisis de ventas",
           "supervisar las actividades de venta"
         ],
+        "common_optional_labels": [
+          "colaborar en la elaboración de estrategias de marketing",
+          "comunicarse con los clientes",
+          "definir zonas geográficas de ventas"
+        ],
         "emerging_labels": [
           "análisis empresarial",
           "apoyar a los gestores y directivos",
@@ -55963,6 +56324,9 @@
         "mol_unique_count": 11,
         "common_labels": [
           "identificar mercados potenciales para empresas"
+        ],
+        "common_optional_labels": [
+          "identificar nuevas oportunidades comerciales"
         ],
         "emerging_labels": [
           "asesorar a la clientela acerca de las posibilidades técnicas",
@@ -56268,6 +56632,7 @@
           "mantener equipos electromecánicos",
           "trabajar de forma ergonómica"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "aplicar normas de salud y seguridad",
           "apoyar a compañeros de trabajo",
@@ -56363,6 +56728,7 @@
         "common_labels": [
           "manejar sistemas de control"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "diseño de sistemas",
           "sistemas de control"
@@ -56584,6 +56950,9 @@
         "mol_unique_count": 18,
         "common_labels": [
           "dar instrucciones al personal de cocina"
+        ],
+        "common_optional_labels": [
+          "cocinar salsas y sopas"
         ],
         "emerging_labels": [
           "aspirar a la excelencia en la fabricación de productos alimenticios",
@@ -57024,6 +57393,7 @@
         "common_labels": [
           "higiene en establecimientos de salud"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "acompañar a personas",
           "administrar la medicación prescrita",
@@ -57788,6 +58158,9 @@
           "ocuparse del correo",
           "organizar los documentos de la empresa"
         ],
+        "common_optional_labels": [
+          "coordinar preparativos de viaje para personal"
+        ],
         "emerging_labels": [
           "acompañar al alumnado a un viaje de estudios",
           "administrar",
@@ -58046,6 +58419,7 @@
           "comunicarse con los clientes",
           "usar técnicas de cocina"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "ampliar la red de proveedores",
           "asegurarse de que los productos cumplen los requisitos legales",
@@ -58269,6 +58643,10 @@
           "electricidad",
           "inspeccionar suministros eléctricos",
           "procedimientos de prueba del equipo y material eléctrico"
+        ],
+        "common_optional_labels": [
+          "medir características eléctricas",
+          "reparar cableado"
         ],
         "emerging_labels": [
           "aplicar técnicas de montaje",
@@ -58867,6 +59245,9 @@
           "aplicar estrategias de exportación",
           "gestionar las licencias de importaciones y exportaciones"
         ],
+        "common_optional_labels": [
+          "exportar materias primas"
+        ],
         "emerging_labels": [
           "actualizar las instrucciones de procedimiento",
           "apoyar a los gestores y directivos",
@@ -59000,6 +59381,9 @@
         "mol_unique_count": 3,
         "common_labels": [
           "realizar operaciones de limpieza"
+        ],
+        "common_optional_labels": [
+          "gestionar actividades de limpieza"
         ],
         "emerging_labels": [
           "realizar tareas de limpieza"
@@ -59163,6 +59547,7 @@
           "garantizar la orientación al cliente",
           "identificar las necesidades del cliente"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "asesorar a la clientela acerca de las posibilidades técnicas",
           "dar instrucciones a los clientes sobre el uso del material y equipo de oficina",
@@ -59301,6 +59686,7 @@
         "esco_optional_count": 9,
         "mol_unique_count": 9,
         "common_labels": [],
+        "common_optional_labels": [],
         "emerging_labels": [
           "conducir camiones astilladores",
           "gestionar el funcionamiento de la maquinaria de una planta de propulsión",
@@ -59475,6 +59861,9 @@
         "common_labels": [
           "mantener la zona de recepción",
           "recibir a huéspedes"
+        ],
+        "common_optional_labels": [
+          "responder a consultas de clientes"
         ],
         "emerging_labels": [
           "asesorar sobre relaciones públicas",
@@ -59693,6 +60082,7 @@
           "analizar la necesidad de recursos técnicos",
           "dar instrucciones al personal"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "asumir el liderazgo",
           "determinar los recursos humanos necesarios",
@@ -59928,6 +60318,7 @@
           "realizar controles periódicos de maquinaria",
           "realizar tareas de mantenimiento de máquinas"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "apoyar a los empleados en su formación",
           "ayudar a desarrollar prácticas que promuevan el bienestar de los trabajadores",
@@ -60299,6 +60690,7 @@
         "common_labels": [
           "capacitar a empleados"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "capacitar a los clientes",
           "coordinar formación",
@@ -60954,6 +61346,10 @@
           "identificar las necesidades del cliente",
           "planificar las visitas a los clientes"
         ],
+        "common_optional_labels": [
+          "establecer buenas relaciones con los clientes",
+          "mantener la relación con los clientes"
+        ],
         "emerging_labels": [
           "almacenar mercancías",
           "asegurar el correcto etiquetado de productos",
@@ -61379,6 +61775,7 @@
           "recibir pedidos de comida y bebida de clientes",
           "trabajar en un equipo de hostelería"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "analizar los requisitos para reubicar los productos",
           "arreglar productos de segunda mano para la venta",
@@ -61631,6 +62028,7 @@
           "implementar estrategias de ventas",
           "responder a consultas de clientes"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "cumplir los objetivos de ventas",
           "dar seguimiento a las cuentas a cobrar",
@@ -61755,6 +62153,7 @@
         "esco_optional_count": 18,
         "mol_unique_count": 7,
         "common_labels": [],
+        "common_optional_labels": [],
         "emerging_labels": [
           "asistir a clientes",
           "asistir al operador multimedia",
@@ -61881,6 +62280,7 @@
           "fabricar productos de chocolate",
           "moldear chocolate"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "desarrollar la línea de producción",
           "elaboración de comidas preparadas refrigeradas",
@@ -62613,6 +63013,27 @@
         "common_labels": [
           "respetar las normas internas de una empresa"
         ],
+        "common_optional_labels": [
+          "comunicarse con los clientes",
+          "coordinar las actividades operacionales",
+          "crear un ambiente de trabajo de mejora continua",
+          "difundir comunicaciones internas",
+          "garantizar el cumplimiento de la normativa empresarial",
+          "garantizar el cumplimiento de las normas de salud, seguridad e higiene",
+          "garantizar la satisfacción del cliente",
+          "gestionar el inventario",
+          "gestionar el trabajo en equipo",
+          "informar sobre la gestión general de una empresa",
+          "mantener la relación con los clientes",
+          "mantener la relación con los proveedores",
+          "planificar el trabajo de empleados en el mantenimiento de vehículos",
+          "planificar turnos de trabajo",
+          "presentar informes",
+          "promover la comunicación organizativa",
+          "supervisar el nivel de las existencias",
+          "supervisar el trabajo diario",
+          "supervisar la prestación de servicios"
+        ],
         "emerging_labels": [
           "almacenar productos",
           "analizar problemas para buscar soluciones o posibilidades de mejora",
@@ -62853,6 +63274,7 @@
           "preparar informes de ventas",
           "realizar un análisis de las necesidades de los clientes"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "ejecutar procesos de apertura y cierre",
           "elaborar planes relacionados con el alta de un cliente",
@@ -63125,6 +63547,7 @@
           "mantener la zona de recepción",
           "tareas administrativas en entornos médicos"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "administrar anestesia a los pacientes",
           "almacenar documentos de archivo",
@@ -63340,6 +63763,12 @@
           "desarrollar proyectos arquitectónicos",
           "diseñar edificios",
           "diseño arquitectónico"
+        ],
+        "common_optional_labels": [
+          "adaptar los diseños existentes a las nuevas circunstancias",
+          "garantizar el cumplimiento de los plazos de construcción",
+          "preparar solicitudes de permiso de construcción",
+          "supervisar un proyecto de construcción"
         ],
         "emerging_labels": [
           "asesorar sobre los procedimientos para solicitar licencias",
@@ -65121,6 +65550,13 @@
           "gestión de proyectos",
           "interpretar los requisitos técnicos"
         ],
+        "common_optional_labels": [
+          "diseñar una interfaz de usuario",
+          "integrar componentes del sistema",
+          "scala",
+          "typescript",
+          "utilizar lenguajes de consulta"
+        ],
         "emerging_labels": [
           "adoptar decisiones críticas de forma oportuna",
           "almacenar datos y sistemas digitales",
@@ -65910,6 +66346,7 @@
           "mantener la relación con los clientes",
           "mantener la relación con los proveedores"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "adquirir antigüedades",
           "analizar propuestas técnicas de tic",
@@ -66167,6 +66604,7 @@
           "controlar inventarios de fluidos",
           "llevar a cabo controles de equipos de plantas de producción"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "analizar materiales de producción",
           "analizar muestras de producción",
@@ -66314,6 +66752,7 @@
           "interpretar planos en 2d",
           "interpretar planos en 3d"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "ajustar estructuras plegadas",
           "instalar equipos mecanizados",
@@ -66908,6 +67347,9 @@
           "supervisar el funcionamiento de los equipos",
           "supervisar operaciones de laboratorio"
         ],
+        "common_optional_labels": [
+          "supervisar el nivel de las existencias"
+        ],
         "emerging_labels": [
           "actualizar firmware",
           "actualizar las instrucciones de procedimiento",
@@ -67198,6 +67640,9 @@
         "esco_optional_count": 22,
         "mol_unique_count": 22,
         "common_labels": [],
+        "common_optional_labels": [
+          "operar equipos de vigilancia y seguridad"
+        ],
         "emerging_labels": [
           "asesorar a los clientes sobre la instalación de equipos audiovisuales",
           "comunicar cuestiones técnicas a los clientes",
@@ -67290,6 +67735,7 @@
         "common_labels": [
           "asesorar sobre asuntos financieros"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "asesorar sobre finanzas públicas",
           "asesorar sobre la participación en mercados financieros"
@@ -67940,6 +68386,11 @@
         "esco_optional_count": 18,
         "mol_unique_count": 67,
         "common_labels": [],
+        "common_optional_labels": [
+          "gestionar el inventario",
+          "planificar una estrategia de comercialización",
+          "supervisar las actividades de venta"
+        ],
         "emerging_labels": [
           "adaptarse a situaciones de cambio",
           "adaptarse al cambio",
@@ -68178,6 +68629,9 @@
           "desarrollar aplicaciones de procesamiento de datos",
           "gestionar arquitecturas de datos informáticos"
         ],
+        "common_optional_labels": [
+          "crear modelos de datos"
+        ],
         "emerging_labels": [
           "arquitectura de la información",
           "ca datacom/db",
@@ -68361,6 +68815,10 @@
           "calcular impuestos",
           "difundir información en materia de legislación fiscal"
         ],
+        "common_optional_labels": [
+          "preparar informes de auditorías financieras",
+          "recaudar impuestos"
+        ],
         "emerging_labels": [
           "herramientas para la gestión de la configuración del software",
           "mantenerse al día de la normativa de aduanas vigente",
@@ -68543,6 +69001,7 @@
           "determinar mejoras de los procesos",
           "garantizar el cumplimiento de las normas de salud, seguridad e higiene"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "analizar problemas para buscar soluciones o posibilidades de mejora",
           "coordinar reparaciones y servicios de mantenimiento de automóviles",
@@ -68723,6 +69182,7 @@
           "organizar cuidados en el hogar para los pacientes",
           "proporcionar atención de enfermería profesional"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "formular un plan de tratamiento personalizado",
           "mantener registros de clientes y clientas",
@@ -69695,6 +70155,7 @@
           "supervisar la calidad de los alimentos",
           "supervisar la prestación de servicios"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "analizar datos de la clientela",
           "animar a los equipos de trabajo a que procuren mejorar continuamente",
@@ -70282,6 +70743,16 @@
           "ingeniería de producción",
           "ingeniería industrial"
         ],
+        "common_optional_labels": [
+          "analizar procesos de producción para introducir mejoras",
+          "desarrollar procedimientos de ensayo de materiales",
+          "desarrollar procedimientos de prueba",
+          "diseñar planos técnicos",
+          "garantizar el mantenimiento de los equipos",
+          "garantizar que el producto final cumpla con las exigencias",
+          "mantener equipos industriales",
+          "preparar informes periódicos"
+        ],
         "emerging_labels": [
           "alinear todos los esfuerzos encaminados al desarrollo de la empresa",
           "analizar la vida útil de los productos",
@@ -70427,6 +70898,10 @@
         "mol_unique_count": 8,
         "common_labels": [
           "diseñar planos técnicos"
+        ],
+        "common_optional_labels": [
+          "coordinarse con los arquitectos",
+          "elaborar planos"
         ],
         "emerging_labels": [
           "colaborar con diseñadores",
@@ -70679,6 +71154,7 @@
           "redactar informes técnicos",
           "técnicas de laboratorio"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "construir prototipos electrónicos",
           "desarrollar procedimientos de calibración",
@@ -70876,6 +71352,7 @@
           "herramientas mecánicas",
           "supervisar el nivel de las existencias"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "coordinar actividades de mantenimiento de invernaderos",
           "dirigir un equipo",
@@ -71469,6 +71946,11 @@
           "supervisar el nivel de las existencias",
           "supervisar personal"
         ],
+        "common_optional_labels": [
+          "colaborar con responsables de garantía de calidad",
+          "gestionar los suministros",
+          "negociar acuerdos con proveedores"
+        ],
         "emerging_labels": [
           "analizar datos",
           "analizar la necesidad de recursos técnicos",
@@ -71961,6 +72443,10 @@
           "facilitar recursos en la nube",
           "resolver problemas de sistemas tic"
         ],
+        "common_optional_labels": [
+          "python (programación informática)",
+          "utilizar lenguajes de consulta"
+        ],
         "emerging_labels": [
           "adaptar la metodología de evaluación",
           "analizar inteligencia de datos",
@@ -72140,6 +72626,9 @@
           "base de datos",
           "supervisar la introducción de datos"
         ],
+        "common_optional_labels": [
+          "mantener requisitos de introducción de datos"
+        ],
         "emerging_labels": [
           "controlar tareas menores de mantenimiento",
           "dar seguimiento a las cuentas a cobrar",
@@ -72310,6 +72799,7 @@
           "realizar una planificación estratégica",
           "sostenibilidad corporativa"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "actividades de venta",
           "ampliar la red de proveedores",
@@ -72494,6 +72984,9 @@
         "mol_unique_count": 14,
         "common_labels": [
           "crear títulos de contenido"
+        ],
+        "common_optional_labels": [
+          "creación de contenidos digitales"
         ],
         "emerging_labels": [
           "ajustar transmisiones de video",
@@ -72720,6 +73213,7 @@
           "cumplir la normativa legal",
           "mantener la limpieza de la zona de trabajo"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "cumplir las normas de seguridad ferroviaria",
           "cumplir normas de seguridad eléctrica",
@@ -72977,6 +73471,10 @@
           "identificar las necesidades del cliente",
           "técnicas de depilación"
         ],
+        "common_optional_labels": [
+          "depilar con cera partes del cuerpo",
+          "utilizar la técnica de depilación del hilo"
+        ],
         "emerging_labels": [
           "aconsejar a clientes sobre el uso de adornos corporales",
           "aconsejar a los clientes sobre el mantenimiento del calzado de piel",
@@ -73202,6 +73700,7 @@
           "registrar información sobre los pacientes que han recibido tratamiento",
           "trabajar en equipos sanitarios multidisciplinarios"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "capacitar a empleados",
           "capacitar a los clientes",
@@ -73527,6 +74026,7 @@
           "hacer de acompañante",
           "necesidades de los adultos mayores"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "asegurar la salud y seguridad en los servicios de acompañamiento",
           "asistir a los servicios de emergencia",
@@ -73738,6 +74238,9 @@
         "mol_unique_count": 17,
         "common_labels": [
           "crear soluciones para problemas"
+        ],
+        "common_optional_labels": [
+          "responder a las llamadas"
         ],
         "emerging_labels": [
           "análisis de las causas fundamentales",
@@ -73958,6 +74461,9 @@
           "mejorar procesos empresariales",
           "realizar informes estadísticos y financieros"
         ],
+        "common_optional_labels": [
+          "ciclo de vida del desarrollo de sistemas"
+        ],
         "emerging_labels": [
           "análisis de datos",
           "comunicación y colaboración digitales",
@@ -74176,6 +74682,7 @@
           "generar confianza",
           "suscribir acuerdos comerciales"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "administrar medios de contraste",
           "asignar deberes",
@@ -74722,6 +75229,10 @@
           "dar soporte a los usuarios de sistemas de tic",
           "diseñar procesos"
         ],
+        "common_optional_labels": [
+          "gestión de proyectos basada en metodologías ágiles",
+          "integrar componentes del sistema"
+        ],
         "emerging_labels": [
           "analizar datos",
           "analizar las tendencias en el rendimiento de las llamadas",
@@ -74947,6 +75458,7 @@
           "establecer estrategias de importación y exportación",
           "gestionar las licencias de importaciones y exportaciones"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "atender las solicitudes de los clientes relacionadas con la mercancía",
           "ayudar al desarrollo del presupuesto anual",
@@ -75139,6 +75651,9 @@
         "esco_optional_count": 30,
         "mol_unique_count": 16,
         "common_labels": [],
+        "common_optional_labels": [
+          "ayudar en el desarrollo de campañas de comercialización"
+        ],
         "emerging_labels": [
           "apoyar a la comunidad",
           "asegurar la correcta gestion de documentos",
@@ -75389,6 +75904,10 @@
         "common_labels": [
           "arreglar la instalación eléctrica de un vehículo",
           "inspeccionar fallos en el sistema eléctrico de un vehículo"
+        ],
+        "common_optional_labels": [
+          "mantener el equipo eléctrico",
+          "reparar la instalación eléctrica de un vehículo"
         ],
         "emerging_labels": [
           "actuar como guardia de cubierta",
@@ -75701,6 +76220,11 @@
           "garantizar el mantenimiento de los equipos",
           "garantizar la disponibilidad de los equipos"
         ],
+        "common_optional_labels": [
+          "gestionar la información de proyectos",
+          "mantener la relación con los proveedores",
+          "mantener registros de información sobre incidentes"
+        ],
         "emerging_labels": [
           "analizar problemas para buscar soluciones o posibilidades de mejora",
           "crear prototipos de soluciones de experiencia de usuario",
@@ -75932,6 +76456,11 @@
         "common_labels": [
           "servicios web"
         ],
+        "common_optional_labels": [
+          "gestionar los datos y el almacenamiento en la nube",
+          "gestionar proyectos",
+          "proveedores de componentes de hardware"
+        ],
         "emerging_labels": [
           "conocimientos básicos sobre medios de comunicación e información",
           "controlar máquinas automáticas",
@@ -76162,6 +76691,10 @@
         "common_labels": [
           "ejecutar pruebas de software"
         ],
+        "common_optional_labels": [
+          "desarrollar pruebas de software automatizadas",
+          "herramientas para automatizar las pruebas de tic"
+        ],
         "emerging_labels": [
           "colaborar utilizando tecnologías digitales",
           "desarrollar procedimientos de ensayo de materiales",
@@ -76293,6 +76826,9 @@
         "common_labels": [
           "dirigir un equipo"
         ],
+        "common_optional_labels": [
+          "mantener las comunicaciones operativas"
+        ],
         "emerging_labels": [
           "desarrollar mejoras en los sistemas eléctricos",
           "garantizar el mantenimiento de los equipos",
@@ -76395,6 +76931,7 @@
           "calcular impuestos",
           "recaudar impuestos"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "inglés",
           "inglés académico",
@@ -76520,6 +77057,7 @@
         "common_labels": [
           "asesorar sobre el valor de la propiedad"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "acompañar a personas",
           "apoyar a personas en términos de cambios nutricionales",
@@ -76786,6 +77324,7 @@
           "organizar la entrega de un automóvil de alquiler",
           "organizar la entrega y recogida de vehículos"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "acordar con los clientes las reparaciones necesarias",
           "asesorar sobre la prestación de servicios sociales",
@@ -77078,6 +77617,7 @@
           "mantener el equipo de laboratorio",
           "mantener el equipo médico de laboratorio"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "asegurar que los materiales cumplen los requisitos",
           "comprobar la compatibilidad de los materiales",
@@ -77369,6 +77909,7 @@
           "análisis empresarial",
           "realizar un análisis empresarial"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "control de gastos",
           "dar seguimiento a las cuentas a cobrar",
@@ -78138,6 +78679,9 @@
         "esco_optional_count": 12,
         "mol_unique_count": 78,
         "common_labels": [],
+        "common_optional_labels": [
+          "ofrecer a los clientes servicios de seguimiento"
+        ],
         "emerging_labels": [
           "analizar las actividades de un centro de atención telefónica",
           "analizar procesos de producción para introducir mejoras",
@@ -78478,6 +79022,10 @@
           "crear modelos de datos",
           "diseñar un sistema de información",
           "diseño de sistemas"
+        ],
+        "common_optional_labels": [
+          "diseñar procesos",
+          "resolver problemas de sistemas tic"
         ],
         "emerging_labels": [
           "analizar procesos de información",
@@ -79042,6 +79590,9 @@
           "diseño de sistemas",
           "supervisar el desarrollo del software"
         ],
+        "common_optional_labels": [
+          "utilizar herramientas de ingeniería de software asistida por ordenador"
+        ],
         "emerging_labels": [
           "analizar metricas de marketing",
           "análisis de datos",
@@ -79391,6 +79942,9 @@
         "common_labels": [
           "proporcionar a clientes información sobre reparaciones",
           "realizar reparaciones menores en equipos"
+        ],
+        "common_optional_labels": [
+          "negociar acuerdos con proveedores"
         ],
         "emerging_labels": [
           "aplicar análisis de peligros y puntos de control crítico",
@@ -79876,6 +80430,10 @@
           "realizar auditorías financieras",
           "revisar registros contables"
         ],
+        "common_optional_labels": [
+          "auditoría interna",
+          "realizar informes estadísticos y financieros"
+        ],
         "emerging_labels": [
           "analizar estados de edificios",
           "asesorar sobre cuentas bancarias",
@@ -80012,6 +80570,9 @@
         "mol_unique_count": 6,
         "common_labels": [
           "cargar la mercancía"
+        ],
+        "common_optional_labels": [
+          "empaquetar mercancías"
         ],
         "emerging_labels": [
           "asesorar a clientes sobre relojes",
@@ -80271,6 +80832,9 @@
         "common_labels": [
           "supervisar cuentas financieras",
           "supervisar las operaciones contables"
+        ],
+        "common_optional_labels": [
+          "sistema de gestión de tesorería"
         ],
         "emerging_labels": [
           "apoyar a los gestores y directivos",
@@ -80587,6 +81151,7 @@
           "garantizar el cumplimiento de los requisitos legales",
           "implementar estrategias de ventas"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "analizar modelos de negocio",
           "asesorar a los clientes sobre materiales de construcción",
@@ -80778,6 +81343,7 @@
         "common_labels": [
           "coordinarse con los arquitectos"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "analizar las necesidades de aseguramiento",
           "aplicar conocimientos científicos, tecnológicos y de ingeniería",
@@ -80930,6 +81496,7 @@
           "evaluar al alumnado",
           "impartir clases en la universidad"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "crear una estructura organizativa",
           "enseñar ciencias de la alimentación",
@@ -81110,6 +81677,7 @@
           "producir productos sostenibles",
           "sostenibilidad corporativa"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "ampliar la red de proveedores",
           "aplicar estrategias de exportación",
@@ -81363,6 +81931,7 @@
           "instalar electrodomésticos",
           "instalar equipos eléctricos y electrónicos"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "asistir a clientes",
           "colocar fibra textil",
@@ -81644,6 +82213,7 @@
         "common_labels": [
           "utilizar sistema de tickets de tic"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "analizar la configuración y el rendimiento de las redes",
           "detectar y corregir errores de las tecnologías de la información y de las comunicaciones",
@@ -81900,6 +82470,9 @@
         "common_labels": [
           "interpretar pruebas psicológicas",
           "psicología"
+        ],
+        "common_optional_labels": [
+          "psicolingüística"
         ],
         "emerging_labels": [
           "administración de la oficina",
@@ -82477,6 +83050,10 @@
           "realizar la toma de pedidos",
           "supervisar el nivel de las existencias"
         ],
+        "common_optional_labels": [
+          "hacer un pedido de productos",
+          "organizar las instalaciones de almacenamiento"
+        ],
         "emerging_labels": [
           "controlar el cumplimiento de normas de calidad de fabricación",
           "controlar existencias",
@@ -82835,6 +83412,7 @@
           "mantener la relación con los proveedores",
           "negociar acuerdos con proveedores"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "asistir a clientes",
           "atender las solicitudes de los clientes relacionadas con la mercancía",
@@ -83178,6 +83756,9 @@
         "common_labels": [
           "análisis de la composición química del agua",
           "realizar procedimientos de análisis de agua"
+        ],
+        "common_optional_labels": [
+          "microbiología y parasitología"
         ],
         "emerging_labels": [
           "analizar muestras",
@@ -83578,6 +84159,9 @@
           "mantener la relación con los proveedores",
           "negociar las condiciones de compra"
         ],
+        "common_optional_labels": [
+          "proveedores de componentes de software"
+        ],
         "emerging_labels": [
           "adquirir antigüedades",
           "adquisición de animales",
@@ -83813,6 +84397,7 @@
           "supervisar la documentación de las transacciones comerciales",
           "supervisar que se sigan los requisitos para el almacenamiento de la mercancía"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "controlar existencias",
           "controlar la documentación relacionada con la producción de alimentos",
@@ -83939,6 +84524,7 @@
         "common_labels": [
           "asistir a los pasajeros con la información de horarios"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "aconsejar en materia de alojamiento",
           "cumplir los horarios",
@@ -84209,6 +84795,7 @@
           "limpiar el área de trabajo",
           "mantener la limpieza de la zona de trabajo"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "cocinar platos de carne",
           "controlar el cumplimiento de la normativa sobre seguridad alimentaria",
@@ -84572,6 +85159,10 @@
           "gestión de recursos humanos",
           "supervisar indicadores clave de rendimiento"
         ],
+        "common_optional_labels": [
+          "derecho laboral",
+          "gestión del personal"
+        ],
         "emerging_labels": [
           "ayudar al desarrollo del presupuesto anual",
           "contratar trabajadores para la empresa",
@@ -84907,6 +85498,7 @@
         "common_labels": [
           "instalar equipos eléctricos y electrónicos"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "componentes de un sistema de aire acondicionado",
           "cumplir los procedimientos de seguridad al efectuar trabajos en altura",
@@ -85285,6 +85877,7 @@
           "organizar una auditoría",
           "preparar informes de auditorías financieras"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "análisis de datos",
           "asegurar la cooperación entre departamentos",
@@ -85420,6 +86013,7 @@
           "actuar de enlace con profesionales del sector",
           "determinar mejoras de los procesos"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "colaborar con los expertos del sector relevante",
           "consultar con profesionales del sector",
@@ -85558,6 +86152,7 @@
         "common_labels": [
           "identificar anomalías"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "detectar imperfecciones en el metal",
           "detectar problemas",
@@ -85787,6 +86382,9 @@
           "revisar registros contables",
           "supervisar las operaciones contables"
         ],
+        "common_optional_labels": [
+          "colaborar con los auditores"
+        ],
         "emerging_labels": [
           "actuar de enlace con profesionales del sector",
           "asegurar la correcta gestión de documentos",
@@ -85980,6 +86578,10 @@
         "common_labels": [
           "crear planos cad"
         ],
+        "common_optional_labels": [
+          "elaborar planos de diseño",
+          "mecánica de los materiales"
+        ],
         "emerging_labels": [
           "ayudar a desarrollar prácticas que promuevan el bienestar de los trabajadores",
           "desarrollar proyectos arquitectónicos",
@@ -86109,6 +86711,7 @@
         "common_labels": [
           "elegir a proveedores de eventos"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "administración de la oficina",
           "gestionar sistemas administrativos",
@@ -86401,6 +87004,7 @@
           "documentar los resultados de análisis",
           "hacer pruebas de laboratorio"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "adecuarse a las exigencias creativas de los artistas",
           "analizar datos experimentales",
@@ -86597,6 +87201,7 @@
           "mejorar procesos empresariales",
           "proponer estrategias de mejora"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "analizar materiales de producción",
           "analizar muestras de productos de papel",
@@ -86827,6 +87432,7 @@
           "mezcla del vino",
           "mezclar bebidas"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "aplicar técnicas de soldadura",
           "gestión del personal",
@@ -87066,6 +87672,9 @@
           "ingeniería de datos",
           "utilizar técnicas de tratamiento de datos"
         ],
+        "common_optional_labels": [
+          "arquitectura de la información"
+        ],
         "emerging_labels": [
           "comunicar y colaborar con ingenieros sobre diseño de productos y desarrollo de productos nuevos",
           "definir la arquitectura del software",
@@ -87280,6 +87889,9 @@
         "common_labels": [
           "efectuar copias de seguridad",
           "gestionar la seguridad del sistema"
+        ],
+        "common_optional_labels": [
+          "ingeniería de redes"
         ],
         "emerging_labels": [
           "colaborar con los expertos del sector relevante",
@@ -87584,6 +88196,7 @@
           "determinar mejoras de los procesos",
           "proponer estrategias de mejora"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "analizar informes escritos relacionados con el trabajo",
           "analizar problemas para buscar soluciones o posibilidades de mejora",
@@ -87945,6 +88558,9 @@
         "common_labels": [
           "cumplir plazos"
         ],
+        "common_optional_labels": [
+          "programar la producción"
+        ],
         "emerging_labels": [
           "animar a los equipos de trabajo a que procuren mejorar continuamente",
           "ayudar a desarrollar prácticas que promuevan el bienestar de los trabajadores",
@@ -88173,6 +88789,7 @@
           "ingeniería de producción",
           "procesos de ingeniería"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "almacenamiento de alimentos",
           "almacenar productos",
@@ -88487,6 +89104,9 @@
           "garantizar el mantenimiento de los equipos",
           "gestionar presupuestos",
           "ofrecer un informe de análisis coste-beneficio"
+        ],
+        "common_optional_labels": [
+          "asesorar sobre medidas para mejorar la eficiencia"
         ],
         "emerging_labels": [
           "aplicar procedimientos de certificación y pago",
@@ -89045,6 +89665,7 @@
         "common_labels": [
           "controlar los signos básicos de los pacientes"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "administrar la medicación prescrita",
           "administrar un tratamiento de radioterapia",
@@ -89201,6 +89822,9 @@
         "common_labels": [
           "llevar a cabo procesos de adquisición",
           "realizar estudios de mercado"
+        ],
+        "common_optional_labels": [
+          "gestionar el inventario"
         ],
         "emerging_labels": [
           "analizar inteligencia de datos",
@@ -89483,6 +90107,10 @@
         "common_labels": [
           "mantener la limpieza de la zona de trabajo"
         ],
+        "common_optional_labels": [
+          "reparar sistemas de fontanería",
+          "reparar sistemas de ventilación"
+        ],
         "emerging_labels": [
           "colocar vallas de seguridad y rodapiés",
           "coordinar el envío de materiales reciclables",
@@ -89686,6 +90314,7 @@
           "interpretar esquemas eléctricos",
           "interpretar planos de ingeniería"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "equipos electrónicos y de telecomunicaciones",
           "hacer cálculos para instalaciones eléctricas",
@@ -89813,6 +90442,7 @@
           "desarrollar una red profesional",
           "hablar diferentes idiomas"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "aplicar normas de calidad a la interacción con los candidatos",
           "gestionar varios pedidos simultáneamente",
@@ -90112,6 +90742,14 @@
         "common_labels": [
           "automatización de edificios",
           "ingeniería mecánica"
+        ],
+        "common_optional_labels": [
+          "analizar procesos de producción para introducir mejoras",
+          "diseñar componentes de automatización",
+          "electromecánica",
+          "ingeniería eléctrica",
+          "investigación y desarrollo industrial",
+          "preparar la lista de materiales"
         ],
         "emerging_labels": [
           "asesorar sobre el mantenimiento de máquinas",
@@ -90419,6 +91057,7 @@
           "especies ganaderas",
           "supervisar el estado del ganado"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "colaborar con los expertos del sector relevante",
           "comunicarse en lenguas extranjeras con los proveedores de servicios sanitarios",
@@ -90737,6 +91376,9 @@
         "common_labels": [
           "gestión de datos sobre productos",
           "planificar la gestión de productos"
+        ],
+        "common_optional_labels": [
+          "realizar el diseño de productos"
         ],
         "emerging_labels": [
           "análisis de riesgos del uso de productos",
@@ -91137,6 +91779,19 @@
         "esco_optional_count": 267,
         "mol_unique_count": 37,
         "common_labels": [],
+        "common_optional_labels": [
+          "analizar materiales de producción",
+          "analizar procesos de producción para introducir mejoras",
+          "determinar mejoras de los procesos",
+          "examinar equipos industriales",
+          "garantizar el cumplimiento de la legislación en materia de seguridad",
+          "garantizar el cumplimiento de las normas de salud, seguridad e higiene",
+          "informar sobre resultados de producción",
+          "mejorar procesos empresariales",
+          "programar la producción",
+          "supervisar la producción de la fábrica",
+          "supervisar operaciones de fábrica"
+        ],
         "emerging_labels": [
           "analizar muestras de producción",
           "comunicar problemas a los superiores",
@@ -91297,6 +91952,7 @@
         "esco_optional_count": 11,
         "mol_unique_count": 11,
         "common_labels": [],
+        "common_optional_labels": [],
         "emerging_labels": [
           "adaptar moldes a productos",
           "conducir prototipos de vehículos de motor",
@@ -91552,6 +92208,7 @@
           "realizar evaluaciones de salud, seguridad y medioambiente",
           "salud y seguridad en el lugar de trabajo"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "actuar de enlace con profesionales del sector",
           "adoptar medidas de prevención de enfermedades",
@@ -91730,6 +92387,7 @@
           "montar piezas metálicas",
           "tramitar órdenes de trabajo del metal"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "fabricar piezas de metal",
           "herramientas metalúrgicas",
@@ -92054,6 +92712,9 @@
         "common_labels": [
           "aportar las herramientas adecuadas a las máquinas"
         ],
+        "common_optional_labels": [
+          "realizar tareas de mantenimiento de máquinas"
+        ],
         "emerging_labels": [
           "ajustar equipos de fabricación",
           "ajustar las máquinas de medición",
@@ -92277,6 +92938,9 @@
         "esco_optional_count": 16,
         "mol_unique_count": 17,
         "common_labels": [],
+        "common_optional_labels": [
+          "coordinar programas educativos"
+        ],
         "emerging_labels": [
           "colaborar con el personal de apoyo educativo",
           "comunicarse con los jefes y directivos",
@@ -92588,6 +93252,12 @@
           "realizar operaciones de limpieza",
           "utilizar aparatos y productos para la limpieza"
         ],
+        "common_optional_labels": [
+          "higiene en establecimientos de salud",
+          "limpiar superficies de madera",
+          "realizar actividades de mantenimiento de instalaciones",
+          "supervisar el trabajo del personal de limpieza"
+        ],
         "emerging_labels": [
           "asegurar la disponibilidad de los repuestos",
           "colocar sanitarios",
@@ -92787,6 +93457,7 @@
           "interpretar planos en 2d",
           "interpretar planos en 3d"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "colaborar con el personal técnico en producciones artísticas",
           "comunicar y colaborar con ingenieros sobre diseño de productos y desarrollo de productos nuevos",
@@ -93020,6 +93691,9 @@
           "planificar el envío de productos",
           "supervisar la ruta de envío"
         ],
+        "common_optional_labels": [
+          "recibir información sobre el empaquetado de la mercancía"
+        ],
         "emerging_labels": [
           "coordinar actividades de mantenimiento de invernaderos",
           "coordinar con los equipos de gestión logística",
@@ -93192,6 +93866,11 @@
         "mol_unique_count": 13,
         "common_labels": [
           "mecánica"
+        ],
+        "common_optional_labels": [
+          "herramientas mecánicas",
+          "ocuparse de fresadoras de control numérico",
+          "ocuparse de tornos"
         ],
         "emerging_labels": [
           "coordinar actividades de mantenimiento de invernaderos",
@@ -93446,6 +94125,9 @@
           "diseñar prototipos",
           "preparar prototipos de producción"
         ],
+        "common_optional_labels": [
+          "someter productos a ensayo"
+        ],
         "emerging_labels": [
           "administración de la oficina",
           "asistir en la operación de máquinas y equipos",
@@ -93692,6 +94374,7 @@
           "manejar una caja registradora",
           "mantener la limpieza de la zona de trabajo"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "asegurar el control de las porciones",
           "ayudar a clientes en su desarrollo personal",
@@ -93773,6 +94456,7 @@
         "common_labels": [
           "odontología"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "enseñar odontología",
           "ortodoncia"
@@ -94218,6 +94902,7 @@
           "construir la estructura de muebles",
           "unir elementos de madera"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "ajustar placas de vidrio",
           "aplicar normas de higiene",
@@ -94485,6 +95170,7 @@
         "esco_optional_count": 39,
         "mol_unique_count": 21,
         "common_labels": [],
+        "common_optional_labels": [],
         "emerging_labels": [
           "analizar muestras",
           "aplicar la gestión de conflictos",
@@ -94713,6 +95399,9 @@
           "mecánica de bicicletas",
           "reparar bicicletas"
         ],
+        "common_optional_labels": [
+          "reparar bicicletas eléctricas"
+        ],
         "emerging_labels": [
           "inspeccionar un estadio deportivo",
           "mantener maquinaria",
@@ -94866,6 +95555,10 @@
         "common_labels": [
           "garantizar la calidad del proceso de producción de alimentos",
           "garantizar que el producto final cumpla con las exigencias"
+        ],
+        "common_optional_labels": [
+          "comunicarse con los compañeros de trabajo",
+          "garantizar el cumplimiento de las normas ambientales en la fabricación de alimentos"
         ],
         "emerging_labels": [
           "animar a los equipos de trabajo a que procuren mejorar continuamente",
@@ -95058,6 +95751,7 @@
           "editar imágenes",
           "software de edición de gráficos"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "crear contenido digital",
           "crear contenidos de noticias en línea",
@@ -95241,6 +95935,7 @@
           "garantizar el cumplimiento de las normas de salud, seguridad e higiene",
           "supervisar el control de calidad"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "aplicar normas de salud y seguridad",
           "control estadístico de la calidad",
@@ -95452,6 +96147,7 @@
           "psicoacústica",
           "supervisar la evolución de pacientes en relación con el tratamiento"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "asesorar a pacientes con dificultades de habla",
           "ayudar a los pacientes con la rehabilitación",
@@ -95864,6 +96560,7 @@
           "negociar las condiciones de compra",
           "preparar informes de compra"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "análisis de riesgos y puntos críticos de control",
           "control de gastos",
@@ -96144,6 +96841,7 @@
           "crear especificaciones de proyectos",
           "proporcionar documentación para el usuario"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "abap",
           "asistir en la implementación de programas de salud laboral",
@@ -96409,6 +97107,7 @@
           "realizar análisis de marca",
           "realizar análisis de ventas"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "analizar el rendimiento financiero de una empresa",
           "analizar modelos de negocio",
@@ -96690,6 +97389,7 @@
           "pintar superficies",
           "preparar superficies para pintar"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "aplicar capas de color",
           "aplicar cromatografía líquida",
@@ -97023,6 +97723,10 @@
         "common_labels": [
           "evaluación de la calidad de los datos",
           "mantener el rendimiento de la base de datos"
+        ],
+        "common_optional_labels": [
+          "diseñar bases de datos en la nube",
+          "ingeniería de datos"
         ],
         "emerging_labels": [
           "aplicar procesos de calidad de datos",
@@ -97392,6 +98096,9 @@
           "evaluar el trabajo de los empleados",
           "supervisar obras de construcción"
         ],
+        "common_optional_labels": [
+          "supervisar el nivel de las existencias"
+        ],
         "emerging_labels": [
           "comunicar cuestiones técnicas a los clientes",
           "coordinar actividades de mantenimiento de invernaderos",
@@ -97616,6 +98323,7 @@
           "automatizar tareas en la nube",
           "devops"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "analizar problemas para buscar soluciones o posibilidades de mejora",
           "analizar procesos de producción para introducir mejoras",
@@ -97834,6 +98542,7 @@
           "reparar motores",
           "utilizar herramientas eléctricas"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "ajustar la velocidad de operación de las máquinas de producción",
           "detectar y corregir errores de las tecnologías de la información y de las comunicaciones",
@@ -98180,6 +98889,7 @@
           "realizar auditorías de calidad",
           "supervisar el control de calidad de las existencias"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "asegurar el correcto etiquetado de productos",
           "asesorar sobre el cumplimiento de las políticas públicas",
@@ -98347,6 +99057,7 @@
           "desarrollar un concepto de diseño",
           "presentar propuestas de diseño artístico"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "establecer buenas relaciones con los clientes",
           "interactuar con un público",
@@ -98614,6 +99325,7 @@
           "python (programación informática)",
           "utilizar técnicas de tratamiento de datos"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "análisis de datos",
           "apoyar la puesta en marcha de sistemas de gestión de la calidad",
@@ -98875,6 +99587,7 @@
           "calcular pagos de indemnizaciones",
           "calcular rentabilidad"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "calcular volumen del yacimiento",
           "coordinar con los equipos de gestión logística",
@@ -98990,6 +99703,7 @@
           "crear títulos de contenido",
           "recopilar contenido"
         ],
+        "common_optional_labels": [],
         "emerging_labels": [
           "aplicar conocimientos de ciencias sociales y humanidades",
           "crear contenidos de noticias en línea",

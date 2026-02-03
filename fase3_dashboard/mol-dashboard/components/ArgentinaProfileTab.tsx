@@ -249,7 +249,8 @@ export default function ArgentinaProfileTab({
             {/* Common Skills Column */}
             <CommonSkillsColumn
               molSkills={selectedProfile.mol_skills}
-              commonLabels={new Set(selectedProfile.comparison.common_labels)}
+              commonEssentialLabels={new Set(selectedProfile.comparison.common_labels)}
+              commonOptionalLabels={new Set(selectedProfile.comparison.common_optional_labels || [])}
             />
 
             {/* MOL Skills Column */}
@@ -500,12 +501,27 @@ function EscoSkillsColumn({
 
 function CommonSkillsColumn({
   molSkills,
-  commonLabels
+  commonEssentialLabels,
+  commonOptionalLabels
 }: {
   molSkills: { label_original: string; label_normalized: string; frequency: number; percentage: number }[];
-  commonLabels: Set<string>;
+  commonEssentialLabels: Set<string>;
+  commonOptionalLabels: Set<string>;
 }) {
-  const commonSkills = molSkills.filter(s => commonLabels.has(s.label_normalized));
+  const [showOptional, setShowOptional] = useState(false);
+
+  const allCommonLabels = new Set([...commonEssentialLabels, ...commonOptionalLabels]);
+  const commonSkills = molSkills
+    .filter(s => allCommonLabels.has(s.label_normalized))
+    .map(s => ({
+      ...s,
+      isEssential: commonEssentialLabels.has(s.label_normalized),
+      isOptional: commonOptionalLabels.has(s.label_normalized)
+    }));
+
+  const essentialSkills = commonSkills.filter(s => s.isEssential);
+  const optionalSkills = commonSkills.filter(s => s.isOptional && !s.isEssential);
+  const displaySkills = showOptional ? optionalSkills : essentialSkills;
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-green-200 p-4 h-fit">
@@ -517,21 +533,49 @@ function CommonSkillsColumn({
       </h3>
 
       <p className="text-sm text-gray-600 mb-3">
-        Skills que ESCO define como esenciales Y el mercado argentino pide
+        Skills que ESCO define Y el mercado argentino pide
       </p>
 
+      <div className="flex gap-2 mb-3">
+        <button
+          onClick={() => setShowOptional(false)}
+          className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+            !showOptional ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-100'
+          }`}
+        >
+          Esenciales ({essentialSkills.length})
+        </button>
+        <button
+          onClick={() => setShowOptional(true)}
+          className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+            showOptional ? 'bg-gray-200 text-gray-700' : 'text-gray-600 hover:bg-gray-100'
+          }`}
+        >
+          Opcionales ({optionalSkills.length})
+        </button>
+      </div>
+
       <ul className="space-y-1 max-h-96 overflow-y-auto">
-        {commonSkills.length === 0 ? (
+        {displaySkills.length === 0 ? (
           <li className="text-sm text-gray-500 py-4 text-center">
-            No hay skills en comun
+            No hay skills {showOptional ? 'opcionales' : 'esenciales'} en comun
           </li>
         ) : (
-          commonSkills.map((skill, idx) => (
+          displaySkills.map((skill, idx) => (
             <li
               key={`${skill.label_normalized}-${idx}`}
-              className="flex items-center justify-between gap-2 px-2 py-1.5 rounded text-sm bg-green-50"
+              className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded text-sm ${
+                skill.isEssential ? 'bg-green-50' : 'bg-gray-50'
+              }`}
             >
-              <span className="flex-1 truncate">{skill.label_original}</span>
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                {skill.isEssential ? (
+                  <Star className="flex-shrink-0 w-3 h-3 text-blue-500 fill-blue-500" />
+                ) : (
+                  <Circle className="flex-shrink-0 w-3 h-3 text-gray-400" />
+                )}
+                <span className="truncate">{skill.label_original}</span>
+              </div>
               <span className="flex-shrink-0 text-green-700 font-medium">
                 {skill.percentage}%
               </span>

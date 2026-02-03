@@ -219,6 +219,7 @@ def main():
                 'esco_optional_count': len(esco_optional_set),
                 'mol_unique_count': len(mol_set),
                 'common_labels': sorted(list(common)),
+                'common_optional_labels': sorted(list(common_optional)),
                 'emerging_labels': sorted(list(emerging)),
                 'missing_labels': sorted(list(missing))
             }

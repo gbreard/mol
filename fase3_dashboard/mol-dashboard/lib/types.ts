@@ -163,6 +163,7 @@ export interface OccupationMOLProfile {
     esco_optional_count: number;
     mol_unique_count: number;
     common_labels: string[];
+    common_optional_labels: string[];
     emerging_labels: string[];
     missing_labels: string[];
   };
