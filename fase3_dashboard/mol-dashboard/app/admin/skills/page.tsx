@@ -1,14 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Map, Briefcase, GitCompare, Target, Loader2, Search, X } from 'lucide-react';
+import { Map, Briefcase, GitCompare, Target, Loader2, Search, X, Globe } from 'lucide-react';
 import SkillsSunburst from '@/components/SkillsSunburst';
 import OccupationDetail from '@/components/OccupationDetail';
 import OccupationCompare from '@/components/OccupationCompare';
 import MySkillsSearch from '@/components/MySkillsSearch';
-import { OccupationFullDetailIndex } from '@/lib/types';
+import ArgentinaProfileTab from '@/components/ArgentinaProfileTab';
+import { OccupationFullDetailIndex, MOLSkillsProfileIndex } from '@/lib/types';
 
-type TabId = 'taxonomy' | 'occupation' | 'compare' | 'myskills';
+type TabId = 'taxonomy' | 'occupation' | 'compare' | 'myskills' | 'argentina';
 
 interface Tab {
   id: TabId;
@@ -41,6 +42,12 @@ const TABS: Tab[] = [
     label: 'Mis Skills',
     icon: <Target className="w-5 h-5" />,
     description: 'Encontrar ocupaciones basadas en tus competencias'
+  },
+  {
+    id: 'argentina',
+    label: 'Perfil Argentina',
+    icon: <Globe className="w-5 h-5" />,
+    description: 'Compara skills ESCO vs demanda real del mercado argentino'
   }
 ];
 
@@ -64,6 +71,10 @@ export default function AdminSkillsPage() {
   const [occupationsData, setOccupationsData] = useState<OccupationFullDetailIndex | null>(null);
   const [occupationsList, setOccupationsList] = useState<OccupationBasicInfo[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  // MOL Profile data (for Argentina tab)
+  const [molProfileData, setMolProfileData] = useState<MOLSkillsProfileIndex | null>(null);
+  const [isMolLoading, setIsMolLoading] = useState(false);
 
   // For Tab 2: Occupation Detail - pre-selected occupation
   const [selectedOccupation, setSelectedOccupation] = useState<string | null>(null);
@@ -100,9 +111,9 @@ export default function AdminSkillsPage() {
       .catch(console.error);
   }, []);
 
-  // Load occupation data when switching to occupation/compare/myskills tabs
+  // Load occupation data when switching to occupation/compare/myskills/argentina tabs
   useEffect(() => {
-    if ((activeTab === 'occupation' || activeTab === 'compare' || activeTab === 'myskills') &&
+    if ((activeTab === 'occupation' || activeTab === 'compare' || activeTab === 'myskills' || activeTab === 'argentina') &&
         !occupationsData && !isLoading) {
       setIsLoading(true);
 
@@ -129,6 +140,23 @@ export default function AdminSkillsPage() {
         });
     }
   }, [activeTab, occupationsData, isLoading]);
+
+  // Load MOL profile data when switching to argentina tab
+  useEffect(() => {
+    if (activeTab === 'argentina' && !molProfileData && !isMolLoading) {
+      setIsMolLoading(true);
+      fetch('/data/mol_skills_profile.json')
+        .then(res => res.json())
+        .then((data: MOLSkillsProfileIndex) => {
+          setMolProfileData(data);
+          setIsMolLoading(false);
+        })
+        .catch(err => {
+          console.error('Error loading MOL profile:', err);
+          setIsMolLoading(false);
+        });
+    }
+  }, [activeTab, molProfileData, isMolLoading]);
 
   // Handler for navigating from occupation detail to compare
   const handleNavigateToCompare = (occAId: string, occBId: string) => {
@@ -216,6 +244,16 @@ export default function AdminSkillsPage() {
             occupationsData={occupationsData}
             occupationsList={occupationsList}
             onNavigateToOccupation={handleNavigateToOccupation}
+          />
+        </div>
+      )}
+
+      {activeTab === 'argentina' && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <ArgentinaProfileTab
+            molProfileData={molProfileData}
+            occupationsData={occupationsData}
+            occupationsList={occupationsList}
           />
         </div>
       )}

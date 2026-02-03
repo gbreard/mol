@@ -134,3 +134,47 @@ export interface SkillsSearchableIndex {
     without_occupations: number;
   };
 }
+
+// ========== PERFIL ARGENTINA (MOL vs ESCO) ==========
+
+export interface MOLSkillItem {
+  label_original: string;
+  label_normalized: string;
+  frequency: number;
+  percentage: number;
+  is_esco_essential: boolean;
+  is_esco_optional: boolean;
+  is_emerging: boolean;
+}
+
+export interface OccupationMOLProfile {
+  esco_uuid: string;
+  esco_label: string;
+  offer_count: number;
+  mol_skills: MOLSkillItem[];
+  comparison: {
+    coverage_essential: number;
+    coverage_total: number;
+    common_count: number;
+    common_optional_count: number;
+    emerging_count: number;
+    missing_count: number;
+    esco_essential_count: number;
+    esco_optional_count: number;
+    mol_unique_count: number;
+    common_labels: string[];
+    emerging_labels: string[];
+    missing_labels: string[];
+  };
+}
+
+export interface MOLSkillsProfileIndex {
+  version: string;
+  generated_at: string;
+  stats: {
+    total_offers: number;
+    total_occupations_with_mol: number;
+    avg_skills_per_offer: number;
+  };
+  occupations: { [esco_uuid: string]: OccupationMOLProfile };
+}
