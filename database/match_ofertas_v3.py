@@ -1333,13 +1333,14 @@ class MatcherV3:
                 self.conn.execute('''
                     INSERT INTO ofertas_esco_skills_detalle (
                         id_oferta, skill_mencionado, skill_tipo_fuente,
-                        esco_skill_label, match_score, match_method,
+                        esco_skill_uri, esco_skill_label, match_score, match_method,
                         esco_skill_type, source_classification
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (
                     str(id_oferta),
                     skill.get('skill_esco', skill.get('skill', '')),
                     skill.get('origen', 'unknown'),
+                    skill.get('skill_uri', ''),  # URI de la skill ESCO
                     skill.get('skill_esco', ''),
                     skill.get('score', 0),
                     'implicit_bge_m3',
