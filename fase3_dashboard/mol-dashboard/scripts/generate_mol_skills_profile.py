@@ -83,13 +83,29 @@ def main():
     # 3. Consultar ofertas con ocupacion ESCO y sus skills
     print("\n3. Consultando ofertas con skills...")
 
-    # Primero, obtener ofertas con esco_occupation_uri
-    ofertas_response = supabase.table('ofertas') \
-        .select('id_oferta, esco_occupation_uri, esco_occupation_label') \
-        .not_.is_('esco_occupation_uri', 'null') \
-        .execute()
+    # Primero, obtener ofertas con esco_occupation_uri (con paginación)
+    all_ofertas = []
+    page_size = 1000
+    offset = 0
 
-    ofertas = {row['id_oferta']: row for row in ofertas_response.data}
+    while True:
+        ofertas_response = supabase.table('ofertas_dashboard') \
+            .select('id_oferta, esco_occupation_uri, esco_occupation_label') \
+            .not_.is_('esco_occupation_uri', 'null') \
+            .range(offset, offset + page_size - 1) \
+            .execute()
+
+        if not ofertas_response.data:
+            break
+
+        all_ofertas.extend(ofertas_response.data)
+
+        if len(ofertas_response.data) < page_size:
+            break
+
+        offset += page_size
+
+    ofertas = {row['id_oferta']: row for row in all_ofertas}
     print(f"   {len(ofertas)} ofertas con ocupacion ESCO")
 
     # Luego, obtener skills de esas ofertas (con paginación)
@@ -99,8 +115,8 @@ def main():
 
     while True:
         skills_response = supabase.table('ofertas_skills') \
-            .select('id_oferta, esco_skill_label') \
-            .not_.is_('esco_skill_label', 'null') \
+            .select('id_oferta, preferred_label') \
+            .not_.is_('preferred_label', 'null') \
             .range(offset, offset + page_size - 1) \
             .execute()
 
@@ -146,11 +162,11 @@ def main():
 
         occupations[esco_uuid]['offer_ids'].add(id_oferta)
 
-        skill_label_norm = normalize(skill_row['esco_skill_label'])
+        skill_label_norm = normalize(skill_row['preferred_label'])
         if skill_label_norm:
             if skill_label_norm not in occupations[esco_uuid]['skills']:
                 occupations[esco_uuid]['skills'][skill_label_norm] = {
-                    'label_original': skill_row['esco_skill_label'],
+                    'label_original': skill_row['preferred_label'],
                     'frequency': 0
                 }
             occupations[esco_uuid]['skills'][skill_label_norm]['frequency'] += 1

@@ -43,7 +43,7 @@ export default function MetricasPage() {
 
       // Total ofertas
       const { count: totalOfertas } = await supabase
-        .from('ofertas')
+        .from('ofertas_dashboard')
         .select('*', { count: 'exact', head: true });
 
       // Total skills
@@ -61,7 +61,7 @@ export default function MetricasPage() {
 
       // Ocupaciones únicas
       const { data: ocupaciones } = await supabase
-        .from('ofertas')
+        .from('ofertas_dashboard')
         .select('isco_code')
         .not('isco_code', 'is', null);
 

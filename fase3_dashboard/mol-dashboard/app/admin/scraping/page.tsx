@@ -97,7 +97,7 @@ export default function ScrapingPage() {
 
       // Ofertas por portal
       const { data: ofertas } = await supabase
-        .from('ofertas')
+        .from('ofertas_dashboard')
         .select('portal');
 
       if (ofertas) {
@@ -121,7 +121,7 @@ export default function ScrapingPage() {
 
       // Ofertas por fecha (últimos 7 días)
       const { data: ofertasFecha } = await supabase
-        .from('ofertas')
+        .from('ofertas_dashboard')
         .select('fecha_publicacion_iso')
         .order('fecha_publicacion_iso', { ascending: false })
         .limit(1000);

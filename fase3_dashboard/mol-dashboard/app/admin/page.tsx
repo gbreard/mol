@@ -41,7 +41,7 @@ export default function AdminDashboard() {
 
         // Obtener estadísticas de ofertas
         const { count: totalOfertas } = await supabase
-          .from('ofertas')
+          .from('ofertas_dashboard')
           .select('*', { count: 'exact', head: true });
 
         // Obtener total de skills
@@ -60,7 +60,7 @@ export default function AdminDashboard() {
         // Ofertas de hoy
         const today = new Date().toISOString().split('T')[0];
         const { count: ofertasHoy } = await supabase
-          .from('ofertas')
+          .from('ofertas_dashboard')
           .select('*', { count: 'exact', head: true })
           .gte('fecha_publicacion_iso', today);
 

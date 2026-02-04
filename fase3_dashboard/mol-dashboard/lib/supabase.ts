@@ -19,7 +19,7 @@ export function requireSupabase(): SupabaseClient {
 }
 
 // Nombre de la tabla principal con datos
-const TABLA_OFERTAS = 'ofertas'
+const TABLA_OFERTAS = 'ofertas_dashboard'
 
 // Tipos para las tablas
 export interface OfertaDashboard {
@@ -90,16 +90,16 @@ function applyFilters(query: any, filters?: DashboardFilters) {
     query = query.eq('provincia', provinciaMap[filters.provincia])
   }
 
-  // Filtro por fecha desde (usa fecha_publicacion_iso)
+  // Filtro por fecha desde
   if (filters.fechaDesde) {
     const fechaDesde = filters.fechaDesde.toISOString().split('T')[0]
-    query = query.gte('fecha_publicacion_iso', fechaDesde)
+    query = query.gte('fecha_publicacion', fechaDesde)
   }
 
   // Filtro por fecha hasta
   if (filters.fechaHasta) {
     const fechaHasta = filters.fechaHasta.toISOString().split('T')[0]
-    query = query.lte('fecha_publicacion_iso', fechaHasta)
+    query = query.lte('fecha_publicacion', fechaHasta)
   }
 
   // Filtro por ocupaciones seleccionadas
@@ -150,11 +150,11 @@ export async function getOfertasPorProvincia(filters?: DashboardFilters) {
   // Para este caso, no filtramos por provincia para mostrar la distribución
   if (filters?.fechaDesde) {
     const fechaDesde = filters.fechaDesde.toISOString().split('T')[0]
-    query = query.gte('fecha_publicacion_iso', fechaDesde)
+    query = query.gte('fecha_publicacion', fechaDesde)
   }
   if (filters?.fechaHasta) {
     const fechaHasta = filters.fechaHasta.toISOString().split('T')[0]
-    query = query.lte('fecha_publicacion_iso', fechaHasta)
+    query = query.lte('fecha_publicacion', fechaHasta)
   }
 
   const { data, error } = await query
@@ -244,10 +244,9 @@ export async function getOfertas(limit = 50, offset = 0, filters?: DashboardFilt
     .select(`
       id_oferta,
       titulo,
-      titulo_limpio,
       empresa,
-      fecha_publicacion_iso,
-      url_oferta,
+      fecha_publicacion,
+      url,
       portal,
       provincia,
       localidad,
@@ -259,14 +258,16 @@ export async function getOfertas(limit = 50, offset = 0, filters?: DashboardFilt
       nivel_seniority,
       area_funcional,
       sector_empresa,
-      skills_tecnicas_list,
-      soft_skills_list
+      salario_min,
+      salario_max,
+      skills_tecnicas,
+      soft_skills
     `, { count: 'exact' })
 
   query = applyFilters(query, filters)
 
   const { data, error, count } = await query
-    .order('fecha_publicacion_iso', { ascending: false })
+    .order('fecha_publicacion', { ascending: false })
     .range(offset, offset + limit - 1)
 
   if (error) throw error
@@ -275,10 +276,10 @@ export async function getOfertas(limit = 50, offset = 0, filters?: DashboardFilt
   const ofertas = (data || []).map(o => ({
     id_oferta: o.id_oferta,
     titulo: o.titulo,
-    titulo_limpio: o.titulo_limpio,
+    titulo_limpio: o.titulo,  // Usamos titulo como fallback
     empresa: o.empresa,
-    fecha_publicacion: o.fecha_publicacion_iso,
-    url: o.url_oferta,
+    fecha_publicacion: o.fecha_publicacion,
+    url: o.url,
     portal: o.portal,
     provincia: o.provincia,
     localidad: o.localidad,
@@ -290,10 +291,10 @@ export async function getOfertas(limit = 50, offset = 0, filters?: DashboardFilt
     nivel_seniority: o.nivel_seniority,
     area_funcional: o.area_funcional,
     sector_empresa: o.sector_empresa,
-    salario_min: null,
-    salario_max: null,
-    skills_tecnicas: parseSkillsList(o.skills_tecnicas_list),
-    soft_skills: parseSkillsList(o.soft_skills_list),
+    salario_min: o.salario_min,
+    salario_max: o.salario_max,
+    skills_tecnicas: parseSkillsList(o.skills_tecnicas),
+    soft_skills: parseSkillsList(o.soft_skills),
   }))
 
   return { ofertas, total: count || 0 }
@@ -306,7 +307,7 @@ export async function getTopSkillsTecnicas(limit = 20, filters?: DashboardFilter
 
   let query = client
     .from(TABLA_OFERTAS)
-    .select('skills_tecnicas_list')
+    .select('skills_tecnicas')
 
   query = applyFilters(query, filters)
 
@@ -316,7 +317,7 @@ export async function getTopSkillsTecnicas(limit = 20, filters?: DashboardFilter
 
   const counts: Record<string, number> = {}
   data?.forEach(o => {
-    const skills = parseSkillsList(o.skills_tecnicas_list)
+    const skills = parseSkillsList(o.skills_tecnicas)
     skills.forEach((skill: string) => {
       counts[skill] = (counts[skill] || 0) + 1
     })
@@ -334,7 +335,7 @@ export async function getTopSoftSkills(limit = 20, filters?: DashboardFilters) {
 
   let query = client
     .from(TABLA_OFERTAS)
-    .select('soft_skills_list')
+    .select('soft_skills')
 
   query = applyFilters(query, filters)
 
@@ -344,7 +345,7 @@ export async function getTopSoftSkills(limit = 20, filters?: DashboardFilters) {
 
   const counts: Record<string, number> = {}
   data?.forEach(o => {
-    const skills = parseSkillsList(o.soft_skills_list)
+    const skills = parseSkillsList(o.soft_skills)
     skills.forEach((skill: string) => {
       counts[skill] = (counts[skill] || 0) + 1
     })
@@ -826,7 +827,7 @@ export async function getSkillsCategoriaPorOcupacion(globalFilters?: DashboardFi
   const skillOfertaIds = [...new Set(data?.map(s => s.id_oferta) || [])]
 
   const { data: ofertas, error: err2 } = await client
-    .from('ofertas')
+    .from('ofertas_dashboard')
     .select('id_oferta, isco_label')
     .in('id_oferta', skillOfertaIds.slice(0, 100)) // Limitar para performance
     .not('isco_label', 'is', null)

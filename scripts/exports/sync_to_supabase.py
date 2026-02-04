@@ -366,6 +366,7 @@ def transform_oferta_for_supabase(oferta: Dict) -> Dict:
     return {
         'id_oferta': str(oferta.get('id_oferta')),
         'titulo': oferta.get('titulo'),
+        'titulo_limpio': oferta.get('titulo_limpio'),
         'empresa': oferta.get('empresa'),
         'fecha_publicacion': oferta.get('fecha_publicacion_iso'),
         'url': oferta.get('url_oferta'),
@@ -373,7 +374,9 @@ def transform_oferta_for_supabase(oferta: Dict) -> Dict:
         # Ubicación (prioriza NLP sobre scraping)
         'provincia': oferta.get('provincia') or oferta.get('provincia_normalizada'),
         'localidad': oferta.get('localidad') or oferta.get('localidad_normalizada'),
-        # ESCO
+        # ESCO - columnas completas para perfil argentino
+        'esco_occupation_uri': oferta.get('esco_occupation_uri'),
+        'esco_occupation_label': oferta.get('esco_occupation_label'),
         'isco_code': oferta.get('isco_code'),
         'isco_label': oferta.get('esco_occupation_label') or oferta.get('isco_label'),
         'occupation_match_score': oferta.get('occupation_match_score'),
@@ -383,6 +386,10 @@ def transform_oferta_for_supabase(oferta: Dict) -> Dict:
         'nivel_seniority': oferta.get('nivel_seniority'),
         'area_funcional': oferta.get('area_funcional'),
         'sector_empresa': oferta.get('sector_empresa'),
+        # Salarios
+        'salario_min': oferta.get('salario_min'),
+        'salario_max': oferta.get('salario_max'),
+        'moneda': oferta.get('moneda'),
         # Skills (JSONB para backward compatibility)
         'skills_tecnicas': oferta.get('skills_tecnicas_list'),
         'soft_skills': oferta.get('soft_skills_list'),
@@ -482,7 +489,10 @@ def upsert_skills(client, skills: List[Dict], dry_run: bool = False) -> int:
         batch = skills_transformed[i:i + BATCH_SIZE]
 
         try:
-            result = client.table(TABLE_SKILLS).insert(batch).execute()
+            result = client.table(TABLE_SKILLS).upsert(
+                batch,
+                on_conflict='id_oferta,skill_uri'
+            ).execute()
             total += len(batch)
         except Exception as e:
             logger.error(f"Error insertando skills batch {i//BATCH_SIZE + 1}: {e}")
