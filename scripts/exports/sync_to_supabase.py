@@ -64,8 +64,8 @@ def load_config() -> Dict[str, str]:
     with open(CONFIG_PATH, 'r') as f:
         config = json.load(f)
 
-    if not config.get('url') or not config.get('anon_key'):
-        raise ValueError("Config incompleto: se requiere 'url' y 'anon_key'")
+    if not config.get('url') or not config.get('service_role_key'):
+        raise ValueError("Config incompleto: se requiere 'url' y 'service_role_key'")
 
     return config
 
@@ -79,7 +79,7 @@ def get_supabase_client():
         sys.exit(1)
 
     config = load_config()
-    client: Client = create_client(config['url'], config['anon_key'])
+    client: Client = create_client(config['url'], config['service_role_key'])
     return client
 
 
@@ -436,10 +436,10 @@ def transform_skill_for_supabase(skill: Dict) -> Dict:
         'id_oferta': str(skill.get('id_oferta')),
         'skill_uri': skill.get('esco_skill_uri') or skill.get('skill_uri'),
         'preferred_label': skill.get('esco_skill_label') or skill.get('preferred_label'),
-        'L1': skill.get('l1') or skill.get('L1'),
-        'L1_nombre': skill.get('l1_nombre') or skill.get('L1_nombre'),
-        'L2': skill.get('l2') or skill.get('L2'),
-        'L2_nombre': skill.get('l2_nombre') or skill.get('L2_nombre'),
+        'l1': skill.get('l1') or skill.get('L1'),
+        'l1_nombre': skill.get('l1_nombre') or skill.get('L1_nombre'),
+        'l2': skill.get('l2') or skill.get('L2'),
+        'l2_nombre': skill.get('l2_nombre') or skill.get('L2_nombre'),
         'es_digital': skill.get('es_digital', False),
         'origen': skill.get('skill_tipo_fuente') or skill.get('origen', 'merged'),
         'score': skill.get('match_score') or skill.get('score'),
@@ -542,10 +542,10 @@ def transform_skill_catalog_for_supabase(skill: Dict) -> Dict:
         'skill_uri': skill.get('uri'),
         'preferred_label_es': skill.get('label'),
         'preferred_label_en': skill.get('label_en'),
-        'L1': skill.get('l1'),
-        'L1_nombre': skill.get('l1_nombre'),
-        'L2': skill.get('l2'),
-        'L2_nombre': skill.get('l2_nombre'),
+        'l1': skill.get('l1'),
+        'l1_nombre': skill.get('l1_nombre'),
+        'l2': skill.get('l2'),
+        'l2_nombre': skill.get('l2_nombre'),
         'es_digital': skill.get('es_digital', False),
         'skill_type': skill.get('skill_type'),
     }
