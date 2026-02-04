@@ -190,6 +190,13 @@
           "_nota": "Validacion v2.0: Roles especializados → senior",
           "_fecha": "2026-02-03",
           "_casos": "Administrador de sistema, Analista Senior COMEX, Cocinero especialista"
+        },
+        {
+          "titulo_contiene_alguno": ["analista"],
+          "forzar_seniority": "junior",
+          "_nota": "Validacion v2.1: Analista (genérico) → junior. DEBE ir después de 'analista senior'",
+          "_fecha": "2026-02-04",
+          "_casos": "Analista de Siniestros, Analista para Laboratorio I+D, Analista de Importaciones"
         }
       ]
     },

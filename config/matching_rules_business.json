@@ -1,15 +1,16 @@
 {
-  "version": "3.9",
-  "descripcion": "Reglas de negocio para matching ESCO. 172 reglas de bypass que fuerzan ISCO específico.",
+  "version": "4.0",
+  "descripcion": "Reglas de negocio para matching ESCO. 175 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-01-30",
-  "_cambios_v39": "R169 analista impuestos (2411), R170 asesor comercial (3322), R171 logística entregas (8322) - fix ISCO sobreclasificados",
-  "_cambios_v38": "R166 cocinero/planchero (5120), R167 soporte ISP (3512), R168 docente gastronómico (2320)",
-  "_cambios_v37": "R164 camarista cámara frío (9333), R165 portero seguridad (5414) - fix ISCO incorrectos",
-  "_cambios_v33": "Fix R13_enfermero esco_label, R15 exclusiones, R38 exclusiones, nuevas R161-R163 deposito/edilicio/comex",
-  "_cambios_v34": "Fix R162 esco_label (electricista de edificios -> electricista de obras), R110 exclusiones edilicio, R22 exclusiones edilicio",
-  "_cambios_v35": "R26 exclusiones gastronómicas, R19b PM IT (1330), R17b Compliance financiero (2413), R119 operario logístico (9321->9333)",
-  "_cambios_v32": "Agregadas R14d_administrativo_contable (4311) y R26b_recepcionista_hotel (4224) - fix override semántico alto",
+  "fecha_actualizacion": "2026-02-04",
+  "_cambios_v40": "R159: Farmaceutico -> 2262, R160: Tecnico instalador -> 7411",
+  "_cambios_v39": "R156: Vendedor viajante, R157: Jefe produccion, R158: Jefe operaciones, R87 ajustada",
+  "_cambios_v38": "R154: Auditor stock -> 4321, R155: Asesor telefonico -> 4222, R17 excluye inmobiliario",
+  "_cambios_v37": "R152: E-commerce -> 1221, R153: Creador Contenido -> 2432",
+  "_cambios_v33": "Fix: R95 removido data architect, R92 excluye telecom, R146 prioridad 0",
+  "_cambios_v34": "R149: Ajustada condición para titulo_contiene_todos + titulo_contiene_alguno",
+  "_cambios_v35": "R150: Asesor de Plan de Ahorro -> 3322 representante comercial",
+  "_cambios_v32": "Agregadas R146-R149: Data Architect, Admin Redes, Diseñador Multimedia, Ing Telecomunicaciones (fix IT mal clasificados)",
   "_cambios_v29": "Agregada R133 Steward/Bachero hoteleria -> 9412 ayudante cocina",
   "_cambios_v30": "Agregadas R134 Commercial Executive, R135 Gestor Liquidaciones",
   "_cambios_v31": "Agregadas R139-R142: Repositor, Mucama hotel, Peón depósito, Bodeguero -> 9333/9112",
@@ -435,7 +436,11 @@
           "asesor inmobiliario",
           "agente inmobiliario"
         ],
-        "sector_no_es": ["Finanzas", "Banca", "Seguros"]
+        "sector_no_es": [
+          "Finanzas",
+          "Banca",
+          "Seguros"
+        ]
       },
       "accion": {
         "forzar_isco": "2611",
@@ -452,7 +457,11 @@
           "compliance",
           "cumplimiento normativo"
         ],
-        "sector_empresa_es_alguno": ["Finanzas", "Banca", "Seguros"]
+        "sector_empresa_es_alguno": [
+          "Finanzas",
+          "Banca",
+          "Seguros"
+        ]
       },
       "accion": {
         "forzar_isco": "2413",
@@ -586,7 +595,9 @@
           "facility"
         ],
         "titulo_no_contiene_alguno": [
-          "edilicio", "edificio", "edificios"
+          "edilicio",
+          "edificio",
+          "edificios"
         ]
       },
       "accion": {
@@ -670,8 +681,16 @@
           "recepcionista"
         ],
         "titulo_no_contiene_alguno": [
-          "cocinero", "mozo", "bartender", "barman", "camarero", "mesero",
-          "runner", "bachero", "ayudante de cocina", "chef"
+          "cocinero",
+          "mozo",
+          "bartender",
+          "barman",
+          "camarero",
+          "mesero",
+          "runner",
+          "bachero",
+          "ayudante de cocina",
+          "chef"
         ]
       },
       "accion": {
@@ -1074,8 +1093,12 @@
           "distribuidor"
         ],
         "titulo_no_contiene_alguno": [
-          "operario de logística", "operario de logistica", "operario logístico",
-          "operario logistico", "para distribuidora", "en distribuidora"
+          "operario de logística",
+          "operario de logistica",
+          "operario logístico",
+          "operario logistico",
+          "para distribuidora",
+          "en distribuidora"
         ]
       },
       "accion": {
@@ -2499,7 +2522,9 @@
           "técnico de mantenimiento industrial"
         ],
         "titulo_no_contiene_alguno": [
-          "edilicio", "edificio", "edificios"
+          "edilicio",
+          "edificio",
+          "edificios"
         ]
       },
       "accion": {
@@ -3888,6 +3913,67 @@
       "fecha_creacion": "2026-01-30",
       "activa": true,
       "nota": "Logística de entregas = conductor de reparto, NO enfermero (3258)"
+    },
+    "R172_analista_siniestros": {
+      "nombre": "Analista de Siniestros / Claims Analyst",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "siniestro",
+          "siniestros",
+          "claims",
+          "reclamaciones"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3321",
+        "esco_label": "asesor de seguros/asesora de seguros"
+      },
+      "caso_diagnostico": "1117981798 - Analista de Siniestros - análisis de reclamos seguros",
+      "fecha_creacion": "2026-02-04",
+      "activa": true,
+      "nota": "Analista de siniestros en aseguradoras = 3321 (no IT/ciberseguridad)"
+    },
+    "R173_analista_lab_id": {
+      "nombre": "Analista Laboratorio I+D / Químico formulaciones",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": [
+          "formulaciones de pintura",
+          "formulaciones de recubrimiento",
+          "desarrollo de pinturas",
+          "optimización de formulaciones",
+          "laboratorio de investigación"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2113",
+        "esco_label": "químico/química"
+      },
+      "caso_diagnostico": "2166968 - Analista para Laboratorio de Investigación y Desarrollo - formulaciones pinturas",
+      "fecha_creacion": "2026-02-04",
+      "activa": true,
+      "nota": "Lab I+D con formulaciones de pinturas/recubrimientos = químico (2113)"
+    },
+    "R174_control_stock": {
+      "nombre": "Responsable Control de Stock / Inventario",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "control de stock",
+          "control stock",
+          "control de inventario",
+          "control inventario"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4321",
+        "esco_label": "coordinador de inventario/coordinadora de inventario"
+      },
+      "caso_diagnostico": "1118100003 - Responsable de Control de Stock",
+      "fecha_creacion": "2026-02-04",
+      "activa": true,
+      "nota": "Confirma match semántico correcto (4321)"
     }
   },
   "reglas_filtro": {
@@ -3964,13 +4050,5 @@
   },
   "_cambios_v23": "Demo optimizacion: R105-R110 (Jefe Mant, Preventista, Seg Higiene, Jefe RRHH, Ejec Ventas, Tec Mant)",
   "_cambios_v28": "Agregadas R131 hoteleria hospitalaria, R132 medicina prepaga",
-  "_cambios_v32": "Agregadas R146-R149: Data Architect, Admin Redes, Diseñador Multimedia, Ing Telecomunicaciones (fix IT mal clasificados)",
-  "_cambios_v33": "Fix: R95 removido data architect, R92 excluye telecom, R146 prioridad 0",
-  "_cambios_v34": "R149: Ajustada condición para titulo_contiene_todos + titulo_contiene_alguno",
-  "_cambios_v35": "R150: Asesor de Plan de Ahorro -> 3322 representante comercial",
-  "_cambios_v36": "R151: Jefe de Obra -> 1323 director de obra",
-  "_cambios_v37": "R152: E-commerce -> 1221, R153: Creador Contenido -> 2432",
-  "_cambios_v38": "R154: Auditor stock -> 4321, R155: Asesor telefonico -> 4222, R17 excluye inmobiliario",
-  "_cambios_v39": "R156: Vendedor viajante, R157: Jefe produccion, R158: Jefe operaciones, R87 ajustada",
-  "_cambios_v40": "R159: Farmaceutico -> 2262, R160: Tecnico instalador -> 7411"
+  "_cambios_v36": "R151: Jefe de Obra -> 1323 director de obra"
 }

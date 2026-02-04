@@ -1,7 +1,8 @@
 {
-  "_version": "2.6.3",
+  "_version": "2.6.4",
   "_descripcion": "Patrones para limpiar titulos de ofertas - eliminar ruido geografico/empresarial/administrativo",
-  "_fecha": "2026-02-02",
+  "_fecha": "2026-02-04",
+  "_cambios_v264": "Normalizar em-dash (–) pegado a texto, agregar Zarate sin acento a parentesis",
   "_cambios_v263": "Fix 7 errores: eventual+ubicacion, guion largo+modalidad, localidades parentesis minusculas, cadena gastronomica",
   "_cambios_v262": "Fix 3 errores detectados: BUSCAMOS (mayusculas), - Capital Federal / Zona, - Part Time",
   "_cambios_v261": "17 ubicaciones GBA adicionales: tortuguitas, ezeiza, temperley, florencio varela, contexto empresarial ampliado",
@@ -846,6 +847,11 @@
     "_descripcion": "Patrones de limpieza al final del proceso",
     "_nota_v25": "Ampliado para limpiar residuos (comas, Y sola, /CABA, CABA)",
     "patrones": [
+      {
+        "patron": "[–—]",
+        "reemplazo": "-",
+        "descripcion": "v2.6.4: em-dash (– —) a guion normal"
+      },
       {
         "patron": "\\s+",
         "reemplazo": " ",
