@@ -3,15 +3,85 @@
 ## Vision General
 
 ```
-┌─────────────────┐         ┌─────────────────────────┐         ┌─────────────────┐
-│   ADQUISICION   │         │     PROCESAMIENTO       │         │  PRESENTACION   │
-│                 │         │                         │         │                 │
-│  Scraping       │────────>│  NLP -> Skills -> Match │────────>│  Dashboard      │
-│  Dedup, Bajas   │         │  + Excel validacion     │         │  (solo validados)│
-│                 │         │  + Validacion humana    │         │                 │
-└─────────────────┘         └─────────────────────────┘         └─────────────────┘
-     Fase 1                        Fase 2                           Fase 3
-   BD cruda                Excel + datos validados              Usuarios finales
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              FASE 1: ADQUISICION                                     │
+│                                                                                      │
+│   Portales ──> run_scheduler.py ──> Scrapers ──> SQLite: ofertas (13K+)             │
+│   (Bumeran, ZonaJobs, Computrabajo)                                                 │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+                                         │
+                                         ▼
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              FASE 2: PROCESAMIENTO                                   │
+│                                                                                      │
+│   ofertas ──────────────────────────────────────────────────────────────────────    │
+│       │                                                                              │
+│       ▼                                                                              │
+│   ┌─────────────────────────────────────┐                                           │
+│   │ 2.1 NLP (Qwen2.5:7b)                │                                           │
+│   │     process_nlp_from_db_v11.py      │                                           │
+│   │     → ofertas_nlp (20 campos)       │                                           │
+│   └─────────────────┬───────────────────┘                                           │
+│                     ▼                                                                │
+│   ┌─────────────────────────────────────┐                                           │
+│   │ 2.2 Skills (BGE-M3 + reglas)        │                                           │
+│   │     skills_implicit_extractor.py    │                                           │
+│   │     → ofertas_esco_skills_detalle   │                                           │
+│   └─────────────────┬───────────────────┘                                           │
+│                     ▼                                                                │
+│   ┌─────────────────────────────────────┐                                           │
+│   │ 2.3 Matching ESCO v3.4.2            │                                           │
+│   │     match_ofertas_v3.py             │                                           │
+│   │     reglas + diccionario argentino  │                                           │
+│   │     → ofertas_esco_matching         │                                           │
+│   └─────────────────┬───────────────────┘                                           │
+│                     ▼                                                                │
+│   ┌─────────────────────────────────────┐                                           │
+│   │ 2.4 Validación                      │                                           │
+│   │     auto_validator.py (22 reglas)   │                                           │
+│   │     + validación humana             │                                           │
+│   │     → estado_validacion='validado'  │                                           │
+│   └─────────────────────────────────────┘                                           │
+│                                                                                      │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+                                         │
+                                         │ Solo validadas (~1K)
+                                         ▼
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              FASE 3: PRESENTACION                                    │
+│                                                                                      │
+│   ┌─────────────────────────────────────────────────────────────────────────────┐   │
+│   │ sync_to_supabase.py                                                          │   │
+│   │                                                                              │   │
+│   │  SQLite (3 tablas)              Supabase (2 tablas)                         │   │
+│   │  ─────────────────              ───────────────────                         │   │
+│   │  ofertas          ─┐                                                        │   │
+│   │  ofertas_nlp      ─┼──JOIN──>  ofertas_dashboard (desnormalizada)          │   │
+│   │  ofertas_esco_    ─┘             - id_oferta, titulo, empresa               │   │
+│   │    matching                      - provincia, localidad, modalidad          │   │
+│   │                                  - esco_occupation_uri, isco_code           │   │
+│   │                                  - nivel_seniority, area_funcional          │   │
+│   │                                  - experiencia_min_anios, nivel_educativo   │   │
+│   │                                  - jornada_laboral, tiene_gente_cargo       │   │
+│   │                                                                              │   │
+│   │  ofertas_esco_    ──────────>  ofertas_skills (normalizada)                 │   │
+│   │    skills_detalle                - id_oferta, skill_uri                     │   │
+│   │                                  - preferred_label                           │   │
+│   │                                  - l1, l1_nombre, l2, l2_nombre             │   │
+│   │                                  - es_digital, score, origen                │   │
+│   └─────────────────────────────────────────────────────────────────────────────┘   │
+│                                         │                                            │
+│                                         ▼                                            │
+│   ┌─────────────────────────────────────────────────────────────────────────────┐   │
+│   │ Dashboard Next.js  →  mol-nextjs.vercel.app                                 │   │
+│   │                                                                              │   │
+│   │  lib/supabase.ts (con paginación fetchAllPaginated)                         │   │
+│   │    - getKPIs(), getOfertasPorProvincia(), getTopOcupaciones()              │   │
+│   │    - getSkillsPorCategoriaL1(), getDistribucionRequerimientos()            │   │
+│   │                                                                              │   │
+│   │  Tabs: Panorama General | Requerimientos | Skills Intelligence | Admin      │   │
+│   └─────────────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Principio:** Cada fase es independiente y tiene responsabilidades claras.
@@ -35,7 +105,7 @@ Capturar ofertas laborales de multiples fuentes y mantener la BD actualizada.
 | BD cruda | `database/bumeran_scraping.db` -> tabla `ofertas` |
 | Config | `config/scraping.ini` |
 
-### Componentes del Pipeline
+### Pipeline Scraping
 
 ```
 Portales de empleo
@@ -60,18 +130,6 @@ Portales de empleo
          v
    tabla: ofertas
 ```
-
-### Documentacion Relacionada
-- `docs/guides/FLUJO_BUMERAN.md` - Flujo especifico Bumeran
-- `01_sources/bumeran/README.md` - Documentacion del scraper
-- `docs/reference/ZONAJOBS_API_DOCUMENTATION.md` - API ZonaJobs
-
-### Complejidades Tipicas
-- Rate limiting / anti-bot de portales
-- Encoding (acentos, ñ) - algunas provincias vienen corruptas
-- Cambios en estructura HTML de portales
-- Deduplicacion cross-source
-- Deteccion de ofertas cerradas vs eliminadas (404)
 
 ### Estados de una Oferta (Scraping)
 
@@ -99,12 +157,16 @@ Esta fase incluye TODO el ciclo hasta que los datos esten **validados**:
 
 | Componente | Ubicacion |
 |------------|-----------|
-| Processors | `database/` |
-| Configs | `config/nlp_*.json`, `config/matching_*.json` |
+| NLP Processor | `database/process_nlp_from_db_v11.py` |
+| Skills Extractor | `database/skills_implicit_extractor.py` |
+| Matching | `database/match_ofertas_v3.py` |
+| Validador | `database/auto_validator.py` |
+| Configs NLP | `config/nlp_*.json` |
+| Configs Matching | `config/matching_*.json` |
 | Export validacion | `scripts/exports/export_validation_excel.py` |
 | Validar ofertas | `scripts/validar_ofertas.py` |
 
-### Pipeline Completo
+### Pipeline Detallado
 
 ```
 ofertas (crudo)
@@ -120,6 +182,7 @@ ofertas (crudo)
 │ 2.2 EXTRACCION NLP (Qwen2.5:7b)                     │
 │     process_nlp_from_db_v11.py                      │
 │     20 campos: ubicacion, requisitos, salario, etc. │
+│     → ofertas_nlp                                   │
 └──────────────────────┬──────────────────────────────┘
                        v
 ┌─────────────────────────────────────────────────────┐
@@ -132,22 +195,20 @@ ofertas (crudo)
 │ 2.4 SKILLS EXTRACTION (BGE-M3)                      │
 │     skills_implicit_extractor.py                    │
 │     14,247 skills ESCO vectorizadas                 │
-│     -> ofertas_esco_skills_detalle                  │
+│     → ofertas_esco_skills_detalle                   │
 └──────────────────────┬──────────────────────────────┘
                        v
 ┌─────────────────────────────────────────────────────┐
-│ 2.5 MATCHING ESCO (v3.3.3)                          │
+│ 2.5 MATCHING ESCO (v3.4.2)                          │
 │     match_ofertas_v3.py                             │
-│     118 reglas negocio + diccionario arg + semantico│
-│     -> ofertas_esco_matching                        │
-│     -> ofertas_matching_history (tracking)          │
-│     -> run_ofertas (tracking)                       │
+│     ~195 reglas negocio + diccionario arg + semant. │
+│     → ofertas_esco_matching                         │
 └──────────────────────┬──────────────────────────────┘
                        v
 ┌─────────────────────────────────────────────────────┐
 │ 2.6 VALIDACION AUTOMATICA                           │
-│     auto_validator.py                               │
-│     22 reglas de deteccion de errores               │
+│     auto_validator.py (22 reglas)                   │
+│     → validation_errors                             │
 └──────────────────────┬──────────────────────────────┘
                        v
 ┌─────────────────────────────────────────────────────┐
@@ -159,17 +220,9 @@ ofertas (crudo)
 ┌─────────────────────────────────────────────────────┐
 │ 2.8 VALIDACION HUMANA                               │
 │     Revision Excel + validar_ofertas.py             │
-│     -> estado_validacion = 'validado'               │
+│     → estado_validacion = 'validado'                │
 └─────────────────────────────────────────────────────┘
 ```
-
-### Salidas de esta Fase
-
-| Salida | Destino | Uso |
-|--------|---------|-----|
-| Datos procesados | BD SQLite | Interno |
-| Excel validacion | Archivo local | Revision humana |
-| Ofertas validadas | BD con estado `validado` | Input para Fase 3 |
 
 ### Configuracion
 
@@ -186,29 +239,17 @@ ofertas (crudo)
 | Archivo | Proposito |
 |---------|-----------|
 | `config/matching_config.json` | Pesos y umbrales |
-| `config/matching_rules_business.json` | 118 reglas de negocio |
-| `config/sinonimos_argentinos_esco.json` | Diccionario argentino (12 ocupaciones) |
-| `config/area_funcional_esco_map.json` | Mapeo area -> ISCO |
+| `config/matching_rules_business.json` | ~195 reglas de negocio |
+| `config/sinonimos_argentinos_esco.json` | Diccionario argentino (13 ocupaciones) |
+| `config/skills_rules.json` | 25 reglas de skills |
 
-**Tracking (v3.3.3):**
+**Tracking:**
 | Tabla | Proposito |
 |-------|-----------|
-| `ofertas_matching_history` | Historial de cada matching (no sobrescribe) |
-| `run_ofertas` | Qué ofertas se procesaron en cada run |
+| `pipeline_runs` | Historial de corridas |
+| `ofertas_matching_history` | Historial de cada matching |
 | `ofertas_nlp_history` | Versiones NLP por oferta |
 | `validation_errors` | Errores detectados por oferta |
-
-### Documentacion Relacionada
-- `docs/reference/PIPELINE.md` - Pipeline tecnico detallado
-- `docs/guides/OPTIMIZACION.md` - Flujo de correccion de errores
-- `docs/guides/VALIDACION.md` - Sistema de validacion
-- `docs/guides/RUN_TRACKING.md` - Comparacion de corridas
-
-### Complejidades Tipicas
-- Cadena de dependencias: NLP -> Skills -> Matching
-- Reglas de negocio para casos argentinos especificos
-- Umbrales de matching (precision vs recall)
-- Ciclo de validacion humana hasta calidad aceptable
 
 ---
 
@@ -218,70 +259,82 @@ ofertas (crudo)
 Presentar datos **YA VALIDADOS** a usuarios finales via dashboard.
 
 ### CRITICO
-Esta fase SOLO recibe datos con `estado_validacion = 'validado'`.
+Esta fase SOLO recibe datos con `estado_validacion IN ('validado_claude', 'validado_humano')`.
 Los Excel de validacion son parte de Fase 2, NO de Fase 3.
 
-### Entrada
-- Ofertas con estado `validado` (pasaron validacion humana en Fase 2)
+### Arquitectura Dual de Datos
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           sync_to_supabase.py                                │
+│                                                                              │
+│  SQLite LOCAL (normalizado)          Supabase CLOUD (desnormalizado)        │
+│  ─────────────────────────          ────────────────────────────────        │
+│                                                                              │
+│  ofertas                 ─┐                                                  │
+│  ofertas_nlp             ─┼─ JOIN ──>  ofertas_dashboard                    │
+│  ofertas_esco_matching   ─┘              (1 tabla plana con todos           │
+│                                           los campos para queries           │
+│                                           rapidas del dashboard)            │
+│                                                                              │
+│  ofertas_esco_skills_detalle ────────>  ofertas_skills                      │
+│                                           (N:M normalizado con              │
+│                                            L1, L2, es_digital)              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
 
 ### Ubicaciones
 
 | Componente | Ubicacion |
 |------------|-----------|
 | Sync Supabase | `scripts/exports/sync_to_supabase.py` |
-| Dashboard | `Visual--/` (Next.js) |
-| BD Produccion | Supabase (cloud) |
+| Dashboard | `fase3_dashboard/mol-dashboard/` |
+| BD Produccion | Supabase (PostgreSQL cloud) |
 | Config | `config/supabase_config.json` |
+| Schema docs | `docs/database/SCHEMA_SUPABASE.md` |
+| Sync docs | `docs/database/SYNC.md` |
 
-### Pipeline
+### Tablas Supabase
 
-```
-ofertas_esco_matching (validadas)
-       │
-       v
-┌─────────────────────────────────────────────────────┐
-│ 3.1 SYNC A SUPABASE                                 │
-│     sync_to_supabase.py                             │
-│     Solo ofertas con estado = 'validado'            │
-└──────────────────────┬──────────────────────────────┘
-                       v
-┌─────────────────────────────────────────────────────┐
-│ 3.2 AGREGACIONES / CALCULOS                         │
-│     - Distribucion por provincia                    │
-│     - Top skills demandadas                         │
-│     - Tendencias temporales                         │
-│     - Indices de digitalizacion                     │
-└──────────────────────┬──────────────────────────────┘
-                       v
-┌─────────────────────────────────────────────────────┐
-│ 3.3 VISTAS POR TIPO DE USUARIO                      │
-│                                                     │
-│  ┌───────────┐ ┌───────────┐ ┌───────────┐         │
-│  │ Analista  │ │ Director  │ │  Publico  │         │
-│  │   OEDE    │ │   OEDE    │ │  General  │         │
-│  ├───────────┤ ├───────────┤ ├───────────┤         │
-│  │ Detalle   │ │ KPIs      │ │ Resumenes │         │
-│  │ Filtros   │ │ Tendencias│ │ Mapas     │         │
-│  │ Export    │ │ Alertas   │ │ Rankings  │         │
-│  └───────────┘ └───────────┘ └───────────┘         │
-└──────────────────────┬──────────────────────────────┘
-                       v
-┌─────────────────────────────────────────────────────┐
-│ 3.4 DASHBOARD NEXT.JS                               │
-│     Visual--/                                       │
-│     https://mol-nextjs.vercel.app/                  │
-└─────────────────────────────────────────────────────┘
-```
+**ofertas_dashboard** (desnormalizada para queries rapidas):
+| Campo | Origen |
+|-------|--------|
+| id_oferta, titulo, empresa, url, portal | ofertas |
+| titulo_limpio, provincia, localidad, modalidad | ofertas_nlp |
+| nivel_seniority, area_funcional, sector_empresa | ofertas_nlp |
+| experiencia_min_anios, nivel_educativo | ofertas_nlp |
+| tiene_gente_cargo, jornada_laboral | ofertas_nlp |
+| esco_occupation_uri, isco_code, isco_label | ofertas_esco_matching |
+| occupation_match_score, occupation_match_method | ofertas_esco_matching |
 
-### Documentacion Relacionada
-- `docs/guides/SUPABASE_SYNC.md` - Sincronizacion con Supabase
-- `docs/guides/COMPARTIR_DASHBOARD_NGROK.md` - Deployment
+**ofertas_skills** (normalizada para queries de skills):
+| Campo | Descripcion |
+|-------|-------------|
+| id_oferta | FK a ofertas_dashboard |
+| skill_uri | URI ESCO del skill |
+| preferred_label | Nombre del skill |
+| l1, l1_nombre | Categoria nivel 1 |
+| l2, l2_nombre | Categoria nivel 2 |
+| es_digital | Boolean |
+| score, origen | Metadata del matching |
 
-### Complejidades Tipicas
-- Sync incremental vs full
-- Vistas diferenciadas por rol de usuario
-- Performance con volumen creciente
-- Calculos de agregacion en tiempo real vs pre-calculados
+### Dashboard Next.js
+
+**URL:** https://mol-nextjs.vercel.app
+
+**Funciones principales** (`lib/supabase.ts`):
+- `fetchAllPaginated()` - Helper para superar limite 1000 filas
+- `getKPIs()` - Metricas generales
+- `getOfertasPorProvincia()` - Distribucion geografica
+- `getTopOcupaciones()` - Ocupaciones mas demandadas
+- `getSkillsPorCategoriaL1()` - Skills agrupados
+- `getDistribucionRequerimientos()` - Educacion, experiencia, jornada
+
+**Tabs:**
+- Panorama General
+- Requerimientos
+- Skills Intelligence (+ Perfil Argentina)
+- Admin (Scraping, Issues)
 
 ---
 
@@ -295,7 +348,7 @@ ofertas_esco_matching (validadas)
 | Exportar Excel validacion | `scripts/exports/export_validation_excel.py` | 2 |
 | Validar ofertas | `scripts/validar_ofertas.py` | 2 |
 | Sync datos validados | `scripts/exports/sync_to_supabase.py` | 3 |
-| Modificar dashboard | `Visual--/` | 3 |
+| Modificar dashboard | `fase3_dashboard/mol-dashboard/` | 3 |
 
 ---
 
@@ -304,16 +357,16 @@ ofertas_esco_matching (validadas)
 ```
 FASE 1              FASE 2                    FASE 3
 ───────             ──────                    ──────
-Scraping    ──>     NLP           ──>         Sync Supabase
+Scraping    ──>     NLP
                       │
                       v
-                    Skills        ──>         (Solo validados)
+                    Skills
                       │
                       v
                     Matching
                       │
                       v
-                    Validacion
+                    Validacion Auto
                       │
                       v
                     Excel (interno)
@@ -322,10 +375,26 @@ Scraping    ──>     NLP           ──>         Sync Supabase
                     Validacion Humana
                       │
                       v
-                    estado='validado' ──────> Dashboard
+                    estado='validado' ──────> Sync Supabase
+                                                    │
+                                                    v
+                                              Dashboard
 ```
 
 **Regla:** Fase 3 NUNCA recibe datos sin validar.
+
+---
+
+## Conteos Actuales (ver learnings.yaml)
+
+| Dato | Cantidad |
+|------|----------|
+| Ofertas SQLite | ~13,824 |
+| Ofertas validadas | ~1,026 |
+| Skills en Supabase | ~15,309 |
+| Reglas de negocio | ~195 |
+| Reglas validacion | 22 |
+| Reglas skills | 25 |
 
 ---
 
@@ -338,7 +407,8 @@ Ejemplos:
 - Se cambia version de NLP -> Actualizar Fase 2
 - Se agrega nuevo export -> Actualizar Fase 2 o 3 segun corresponda
 - Se modifica sync Supabase -> Actualizar Fase 3
+- Se agregan columnas a Supabase -> Actualizar tablas en Fase 3
 
 ---
 
-*Ultima actualizacion: 2026-01-16*
+*Ultima actualizacion: 2026-02-04*
