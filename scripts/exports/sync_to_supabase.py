@@ -955,32 +955,32 @@ Ejemplos:
         if not args.dry_run:
             logger.info("Sincronización completada exitosamente!")
 
-            # Regenerar perfiles MOL vs ESCO si se solicitó
-            if args.regenerate_profiles:
-                logger.info("\n" + "="*60)
-                logger.info("REGENERANDO PERFILES MOL vs ESCO")
-                logger.info("="*60)
-                try:
-                    import subprocess
-                    script_path = PROJECT_ROOT / "fase3_dashboard" / "mol-dashboard" / "scripts" / "generate_mol_skills_profile.py"
-                    if script_path.exists():
-                        result = subprocess.run(
-                            ['python3', str(script_path)],
-                            cwd=str(script_path.parent),
-                            capture_output=True,
-                            text=True
-                        )
-                        if result.returncode == 0:
-                            logger.info("Perfiles MOL regenerados exitosamente")
-                            # Mostrar últimas líneas del output
-                            for line in result.stdout.strip().split('\n')[-5:]:
-                                logger.info(f"  {line}")
-                        else:
-                            logger.error(f"Error regenerando perfiles: {result.stderr}")
+            # Regenerar perfiles MOL vs ESCO automáticamente después de cada sync
+            # (antes era opcional con --regenerate-profiles, ahora siempre se ejecuta)
+            logger.info("\n" + "="*60)
+            logger.info("REGENERANDO PERFILES MOL vs ESCO")
+            logger.info("="*60)
+            try:
+                import subprocess
+                script_path = PROJECT_ROOT / "fase3_dashboard" / "mol-dashboard" / "scripts" / "generate_mol_skills_profile.py"
+                if script_path.exists():
+                    result = subprocess.run(
+                        ['python3', str(script_path)],
+                        cwd=str(script_path.parent),
+                        capture_output=True,
+                        text=True
+                    )
+                    if result.returncode == 0:
+                        logger.info("Perfiles MOL regenerados exitosamente")
+                        # Mostrar últimas líneas del output
+                        for line in result.stdout.strip().split('\n')[-5:]:
+                            logger.info(f"  {line}")
                     else:
-                        logger.warning(f"Script no encontrado: {script_path}")
-                except Exception as e:
-                    logger.error(f"Error ejecutando generador de perfiles: {e}")
+                        logger.error(f"Error regenerando perfiles: {result.stderr}")
+                else:
+                    logger.warning(f"Script no encontrado: {script_path}")
+            except Exception as e:
+                logger.error(f"Error ejecutando generador de perfiles: {e}")
 
     except FileNotFoundError as e:
         logger.error(f"Archivo no encontrado: {e}")
