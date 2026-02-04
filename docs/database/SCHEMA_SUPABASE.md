@@ -30,12 +30,10 @@ URL: `https://uywzoyhjjofsvvsrrnek.supabase.co`
         ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                         CORE                                │
-│  ┌──────────┐     ┌──────────────┐     ┌──────────────┐    │
-│  │ ofertas  │────▶│ofertas_skills│◀────│   skills     │    │
-│  └────┬─────┘     └──────────────┘     └──────────────┘    │
-│       │                                                     │
-│       ├───────────▶ empresas                                │
-│       └───────────▶ ocupaciones_esco                        │
+│  ┌──────────────────┐   ┌──────────────┐   ┌──────────┐    │
+│  │ ofertas_dashboard│──▶│ofertas_skills│◀──│  skills  │    │
+│  └──────────────────┘   └──────────────┘   └──────────┘    │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
         │
         ▼
@@ -104,70 +102,107 @@ CREATE INDEX idx_tenant_users_user ON tenant_users(user_id);
 
 ## Tablas Core
 
-### ofertas
+### ofertas_dashboard
 
 Ofertas validadas (desnormalizadas para dashboard).
 
-```sql
-CREATE TABLE ofertas (
-    -- Identificadores
-    id SERIAL PRIMARY KEY,
-    id_oferta INTEGER UNIQUE NOT NULL,  -- FK lógica a SQLite
+**IMPORTANTE:** Esta tabla recibe datos JOIN de 3 tablas SQLite:
+- `ofertas` (scraping)
+- `ofertas_nlp` (extracción NLP)
+- `ofertas_esco_matching` (matching ESCO)
 
-    -- Datos básicos
+```sql
+CREATE TABLE ofertas_dashboard (
+    -- Identificadores
+    id_oferta TEXT PRIMARY KEY,
+
+    -- Datos básicos (de scraping)
     titulo TEXT NOT NULL,
     titulo_limpio TEXT,
     empresa TEXT,
-    empresa_id INTEGER REFERENCES empresas(id),
-    descripcion TEXT,
+    url TEXT,
+    portal TEXT,
+    fecha_publicacion TIMESTAMPTZ,
 
-    -- Ubicación (flat)
+    -- Ubicación (de NLP)
     provincia TEXT,
     localidad TEXT,
-    modalidad TEXT CHECK (modalidad IN ('presencial', 'remoto', 'hibrido')),
+    modalidad TEXT,  -- presencial, remoto, hibrido
 
-    -- ESCO/ISCO
+    -- ESCO/ISCO (de matching)
+    esco_occupation_uri TEXT,
+    esco_occupation_label TEXT,
     isco_code TEXT,
     isco_label TEXT,
-    esco_uri TEXT REFERENCES ocupaciones_esco(esco_uri),
-    match_score DECIMAL(3,2),
-    match_method TEXT,  -- regla/semantico/diccionario
+    occupation_match_score DECIMAL(3,2),
+    occupation_match_method TEXT,  -- regla_prioridad, semantico_default
 
-    -- Condiciones
+    -- Condiciones laborales (de NLP)
     salario_min INTEGER,
     salario_max INTEGER,
     moneda TEXT DEFAULT 'ARS',
     nivel_seniority TEXT,
-    tipo_contrato TEXT,
-    jornada TEXT,
 
-    -- NLP extraído
-    experiencia_min INTEGER,
-    experiencia_max INTEGER,
+    -- Requerimientos (de NLP)
+    experiencia_min_anios INTEGER,
     nivel_educativo TEXT,
+    tiene_gente_cargo BOOLEAN,
+    jornada_laboral TEXT,  -- full-time, part-time, freelance
     area_funcional TEXT,
-    sector TEXT,
+    sector_empresa TEXT,
 
-    -- Multi-tenant
-    tenant_id UUID NOT NULL REFERENCES tenants(id),
-    visibilidad TEXT NOT NULL DEFAULT 'tenant'
-        CHECK (visibilidad IN ('publico', 'tenant', 'privado')),
+    -- Skills (arrays JSON para backward compatibility)
+    skills_tecnicas JSONB,  -- JSON array
+    soft_skills JSONB,      -- JSON array
 
     -- Metadata
-    fecha_publicacion TIMESTAMPTZ,
-    fecha_sync TIMESTAMPTZ DEFAULT NOW(),
-    validado_en TIMESTAMPTZ,
-    source TEXT DEFAULT 'bumeran'
+    estado TEXT DEFAULT 'activa',
+    fecha_sync TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Índices
-CREATE INDEX idx_ofertas_tenant ON ofertas(tenant_id);
-CREATE INDEX idx_ofertas_visibilidad ON ofertas(visibilidad);
-CREATE INDEX idx_ofertas_isco ON ofertas(isco_code);
-CREATE INDEX idx_ofertas_provincia ON ofertas(provincia);
-CREATE INDEX idx_ofertas_fecha ON ofertas(fecha_publicacion);
-CREATE INDEX idx_ofertas_seniority ON ofertas(nivel_seniority);
-CREATE INDEX idx_ofertas_modalidad ON ofertas(modalidad);
+CREATE INDEX idx_ofertas_dashboard_isco ON ofertas_dashboard(isco_code);
+CREATE INDEX idx_ofertas_dashboard_provincia ON ofertas_dashboard(provincia);
+CREATE INDEX idx_ofertas_dashboard_fecha ON ofertas_dashboard(fecha_publicacion);
+CREATE INDEX idx_ofertas_dashboard_seniority ON ofertas_dashboard(nivel_seniority);
+CREATE INDEX idx_ofertas_dashboard_modalidad ON ofertas_dashboard(modalidad);
+```
+
+### ofertas_skills
+
+Relación N:M entre ofertas y skills (normalizada para queries).
+
+```sql
+CREATE TABLE ofertas_skills (
+    id SERIAL PRIMARY KEY,
+    id_oferta TEXT NOT NULL REFERENCES ofertas_dashboard(id_oferta) ON DELETE CASCADE,
+    skill_uri TEXT NOT NULL,
+
+    -- Datos del skill (desnormalizados para evitar JOINs)
+    preferred_label TEXT,
+
+    -- Categorización ESCO
+    l1 TEXT,             -- Código L1 (ej: "S1")
+    l1_nombre TEXT,      -- Nombre L1 (ej: "Communication")
+    l2 TEXT,             -- Código L2
+    l2_nombre TEXT,      -- Nombre L2
+    es_digital BOOLEAN DEFAULT false,
+
+    -- Metadata matching
+    score DECIMAL(3,2),  -- Confianza 0-1
+    origen TEXT CHECK (origen IN ('titulo', 'tareas', 'descripcion', 'semantico', 'regla', 'llm', 'merged')),
+    es_esencial BOOLEAN DEFAULT false,
+
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+
+    UNIQUE(id_oferta, skill_uri)
+);
+
+-- Índices
+CREATE INDEX idx_ofertas_skills_oferta ON ofertas_skills(id_oferta);
+CREATE INDEX idx_ofertas_skills_skill ON ofertas_skills(skill_uri);
+CREATE INDEX idx_ofertas_skills_l1 ON ofertas_skills(l1);
+CREATE INDEX idx_ofertas_skills_digital ON ofertas_skills(es_digital);
 ```
 
 ### skills
@@ -200,60 +235,6 @@ CREATE INDEX idx_skills_l1 ON skills(L1);
 CREATE INDEX idx_skills_l2 ON skills(L2);
 CREATE INDEX idx_skills_digital ON skills(es_digital);
 CREATE INDEX idx_skills_label ON skills(preferred_label_es);
-```
-
-### ofertas_skills
-
-Relación N:M entre ofertas y skills (normalizada).
-
-```sql
-CREATE TABLE ofertas_skills (
-    id SERIAL PRIMARY KEY,
-    id_oferta INTEGER NOT NULL REFERENCES ofertas(id_oferta) ON DELETE CASCADE,
-    skill_uri TEXT NOT NULL REFERENCES skills(skill_uri) ON DELETE RESTRICT,
-
-    -- Metadata
-    score DECIMAL(3,2),  -- Confianza 0-1
-    origen TEXT CHECK (origen IN ('regla', 'semantico', 'llm', 'merged')),
-    es_esencial BOOLEAN,  -- Si es esencial para la ocupación
-
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-
-    UNIQUE(id_oferta, skill_uri)
-);
-
--- Índices
-CREATE INDEX idx_ofertas_skills_oferta ON ofertas_skills(id_oferta);
-CREATE INDEX idx_ofertas_skills_skill ON ofertas_skills(skill_uri);
-CREATE INDEX idx_ofertas_skills_origen ON ofertas_skills(origen);
-```
-
-### empresas
-
-Catálogo de empresas (normalizado).
-
-```sql
-CREATE TABLE empresas (
-    id SERIAL PRIMARY KEY,
-    nombre TEXT NOT NULL,
-    nombre_normalizado TEXT,  -- lowercase, sin acentos
-
-    -- Clasificación
-    sector TEXT,
-    tamanio TEXT CHECK (tamanio IN ('micro', 'pequena', 'mediana', 'grande')),
-
-    -- Estadísticas
-    ofertas_count INTEGER DEFAULT 0,
-    ofertas_activas INTEGER DEFAULT 0,
-
-    -- Metadata
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Índices
-CREATE INDEX idx_empresas_nombre ON empresas(nombre_normalizado);
-CREATE INDEX idx_empresas_sector ON empresas(sector);
 ```
 
 ### ocupaciones_esco
@@ -292,7 +273,7 @@ CREATE TABLE issues (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
     -- Contexto
-    id_oferta INTEGER REFERENCES ofertas(id_oferta),
+    id_oferta TEXT REFERENCES ofertas_dashboard(id_oferta),
     tenant_id UUID REFERENCES tenants(id),
 
     -- Contenido
@@ -333,51 +314,26 @@ CREATE INDEX idx_issues_oferta ON issues(id_oferta);
 
 ## Row Level Security (RLS)
 
-### Políticas para ofertas
+### Políticas para ofertas_dashboard
 
 ```sql
 -- Habilitar RLS
-ALTER TABLE ofertas ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ofertas_dashboard ENABLE ROW LEVEL SECURITY;
 
--- Política de lectura: tenant ve lo suyo + públicos + OEDE ve todo
-CREATE POLICY "ofertas_select" ON ofertas
-    FOR SELECT USING (
-        -- Mis datos (mismo tenant)
-        tenant_id IN (
-            SELECT tenant_id FROM tenant_users
-            WHERE user_id = auth.uid()
-        )
-        -- O datos públicos
-        OR visibilidad = 'publico'
-        -- O soy OEDE (veo todo)
-        OR EXISTS (
-            SELECT 1 FROM tenant_users tu
-            JOIN tenants t ON tu.tenant_id = t.id
-            WHERE tu.user_id = auth.uid()
-            AND t.tipo = 'oede'
-        )
-    );
+-- Política de lectura: todos pueden leer (datos públicos)
+CREATE POLICY "ofertas_select" ON ofertas_dashboard
+    FOR SELECT USING (true);
 
--- Política de inserción: solo OEDE puede insertar
-CREATE POLICY "ofertas_insert" ON ofertas
+-- Política de inserción: solo service_role puede insertar
+CREATE POLICY "ofertas_insert" ON ofertas_dashboard
     FOR INSERT WITH CHECK (
-        EXISTS (
-            SELECT 1 FROM tenant_users tu
-            JOIN tenants t ON tu.tenant_id = t.id
-            WHERE tu.user_id = auth.uid()
-            AND t.tipo = 'oede'
-        )
+        auth.role() = 'service_role'
     );
 
--- Política de update: solo OEDE puede actualizar
-CREATE POLICY "ofertas_update" ON ofertas
+-- Política de update: solo service_role puede actualizar
+CREATE POLICY "ofertas_update" ON ofertas_dashboard
     FOR UPDATE USING (
-        EXISTS (
-            SELECT 1 FROM tenant_users tu
-            JOIN tenants t ON tu.tenant_id = t.id
-            WHERE tu.user_id = auth.uid()
-            AND t.tipo = 'oede'
-        )
+        auth.role() = 'service_role'
     );
 ```
 
@@ -386,35 +342,13 @@ CREATE POLICY "ofertas_update" ON ofertas
 ```sql
 ALTER TABLE ofertas_skills ENABLE ROW LEVEL SECURITY;
 
--- Hereda permisos de ofertas (si puedo ver la oferta, puedo ver sus skills)
+-- Lectura pública
 CREATE POLICY "ofertas_skills_select" ON ofertas_skills
-    FOR SELECT USING (
-        EXISTS (
-            SELECT 1 FROM ofertas o
-            WHERE o.id_oferta = ofertas_skills.id_oferta
-        )
-    );
-```
+    FOR SELECT USING (true);
 
-### Políticas para tenants
-
-```sql
-ALTER TABLE tenants ENABLE ROW LEVEL SECURITY;
-
--- Usuarios ven solo su tenant (excepto OEDE)
-CREATE POLICY "tenants_select" ON tenants
-    FOR SELECT USING (
-        id IN (
-            SELECT tenant_id FROM tenant_users
-            WHERE user_id = auth.uid()
-        )
-        OR EXISTS (
-            SELECT 1 FROM tenant_users tu
-            JOIN tenants t ON tu.tenant_id = t.id
-            WHERE tu.user_id = auth.uid()
-            AND t.tipo = 'oede'
-        )
-    );
+-- Escritura solo service_role
+CREATE POLICY "ofertas_skills_insert" ON ofertas_skills
+    FOR INSERT WITH CHECK (auth.role() = 'service_role');
 ```
 
 ---
@@ -435,11 +369,7 @@ SELECT
     AVG(salario_max) as salario_promedio_max,
     COUNT(*) FILTER (WHERE modalidad = 'remoto') as ofertas_remotas,
     COUNT(*) FILTER (WHERE fecha_publicacion > NOW() - INTERVAL '7 days') as ofertas_semana
-FROM ofertas
-WHERE visibilidad IN ('publico', 'tenant');
-
--- Refrescar diariamente
--- SELECT cron.schedule('refresh_kpis', '0 6 * * *', 'REFRESH MATERIALIZED VIEW vw_kpis');
+FROM ofertas_dashboard;
 ```
 
 ### vw_skills_demanda
@@ -447,15 +377,14 @@ WHERE visibilidad IN ('publico', 'tenant');
 ```sql
 CREATE MATERIALIZED VIEW vw_skills_demanda AS
 SELECT
-    s.preferred_label_es as skill,
-    s.L1,
-    s.L1_nombre,
-    s.es_digital,
+    os.preferred_label as skill,
+    os.l1,
+    os.l1_nombre,
+    os.es_digital,
     COUNT(*) as ofertas_count,
-    COUNT(*) * 100.0 / (SELECT COUNT(*) FROM ofertas) as porcentaje
+    COUNT(*) * 100.0 / (SELECT COUNT(*) FROM ofertas_dashboard) as porcentaje
 FROM ofertas_skills os
-JOIN skills s ON os.skill_uri = s.skill_uri
-GROUP BY s.skill_uri, s.preferred_label_es, s.L1, s.L1_nombre, s.es_digital
+GROUP BY os.preferred_label, os.l1, os.l1_nombre, os.es_digital
 ORDER BY ofertas_count DESC;
 ```
 
@@ -466,8 +395,8 @@ CREATE MATERIALIZED VIEW vw_distribucion_geografica AS
 SELECT
     provincia,
     COUNT(*) as ofertas_count,
-    COUNT(*) * 100.0 / (SELECT COUNT(*) FROM ofertas) as porcentaje
-FROM ofertas
+    COUNT(*) * 100.0 / (SELECT COUNT(*) FROM ofertas_dashboard) as porcentaje
+FROM ofertas_dashboard
 WHERE provincia IS NOT NULL
 GROUP BY provincia
 ORDER BY ofertas_count DESC;
@@ -508,11 +437,10 @@ $$ LANGUAGE SQL SECURITY DEFINER;
 
 Script de migración en `scripts/exports/sync_to_supabase.py`:
 
-1. **ofertas** ← JOIN de ofertas + ofertas_nlp + ofertas_esco_matching (solo validadas)
-2. **skills** ← esco_skills (catálogo completo)
-3. **ofertas_skills** ← Extraer de skills_oferta_json (JSON → filas)
-4. **empresas** ← SELECT DISTINCT empresa FROM ofertas
-5. **ocupaciones_esco** ← esco_occupations
+1. **ofertas_dashboard** ← JOIN de ofertas + ofertas_nlp + ofertas_esco_matching (solo validadas)
+2. **ofertas_skills** ← Extracción de ofertas_esco_skills_detalle (normalizado)
+3. **skills** (opcional) ← esco_skills (catálogo completo)
+4. **ocupaciones_esco** (opcional) ← esco_occupations
 
 ---
 
@@ -520,4 +448,5 @@ Script de migración en `scripts/exports/sync_to_supabase.py`:
 
 | Fecha | Cambio |
 |-------|--------|
+| 2026-02-04 | Actualizar schema a implementación real (ofertas_dashboard, ofertas_skills con preferred_label) |
 | 2026-02-03 | Versión inicial con multi-tenant |

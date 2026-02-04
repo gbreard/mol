@@ -1,4 +1,4 @@
-# Sincronización SQLite → Supabase
+# Sincronizacion SQLite → Supabase
 
 ## Arquitectura de Datos
 
@@ -24,9 +24,9 @@
 ┌─────────────────────────────────────────────────────────────┐
 │                    SUPABASE CLOUD                            │
 │                                                              │
-│  ofertas (desnormalizada)                                    │
+│  ofertas_dashboard (desnormalizada)                          │
 │      ↓                                                       │
-│  ofertas_skills (normalizada)                                │
+│  ofertas_skills (normalizada, con L1/L2)                     │
 │      ↓                                                       │
 │  Dashboard Next.js                                           │
 └─────────────────────────────────────────────────────────────┘
@@ -41,135 +41,149 @@
 ### Uso
 
 ```bash
-# Sync incremental (solo nuevas/modificadas)
+# Sync todas las validadas
 python scripts/exports/sync_to_supabase.py
 
-# Sync completo (todas las validadas)
+# Sync completo (fuerza recarga)
 python scripts/exports/sync_to_supabase.py --full
 
-# Sync con tenant específico
-python scripts/exports/sync_to_supabase.py --tenant oede
+# Solo ofertas específicas
+python scripts/exports/sync_to_supabase.py --ids 123,456
 
-# Solo catálogos (skills, ocupaciones)
+# Preview sin escribir
+python scripts/exports/sync_to_supabase.py --dry-run
+
+# Ver estadísticas actuales
+python scripts/exports/sync_to_supabase.py --stats
+
+# Solo catálogos ESCO
 python scripts/exports/sync_to_supabase.py --catalogs-only
 ```
 
 ---
 
-## Flujo de Sincronización
+## Flujo de Sincronizacion
 
-### Paso 1: Query SQLite
+### Paso 1: Query SQLite (JOIN 3 tablas)
 
 ```sql
--- Ofertas validadas con todos sus datos
 SELECT
-    -- De ofertas
+    -- De ofertas (scraping)
     o.id_oferta,
     o.titulo,
     o.empresa,
-    o.localizacion,
+    o.url_oferta,
+    o.portal,
     o.fecha_publicacion_iso,
-    o.cantidad_vacantes,
+    o.provincia_normalizada,
+    o.localidad_normalizada,
+    o.estado_oferta,
 
-    -- De ofertas_nlp
+    -- De ofertas_nlp (extracción NLP)
     n.titulo_limpio,
     n.provincia,
     n.localidad,
     n.modalidad,
-    n.salario_min,
-    n.salario_max,
     n.nivel_seniority,
     n.area_funcional,
     n.sector_empresa,
+    n.salario_min,
+    n.salario_max,
     n.experiencia_min_anios,
-    n.experiencia_max_anios,
     n.nivel_educativo,
+    n.tiene_gente_cargo,
+    n.jornada_laboral,
+    n.skills_tecnicas_list,
+    n.soft_skills_list,
 
-    -- De ofertas_esco_matching
+    -- De ofertas_esco_matching (matching)
+    m.esco_occupation_uri,
+    m.esco_occupation_label,
     m.isco_code,
-    m.esco_occupation_label as isco_label,
-    m.esco_occupation_uri as esco_uri,
-    m.occupation_match_score as match_score,
-    m.decision_metodo as match_method,
-    m.skills_oferta_json,
+    m.isco_label,
+    m.occupation_match_score,
+    m.occupation_match_method,
     m.estado_validacion,
     m.validado_timestamp
 
 FROM ofertas o
-JOIN ofertas_nlp n ON o.id_oferta = n.id_oferta
-JOIN ofertas_esco_matching m ON o.id_oferta = m.id_oferta
+INNER JOIN ofertas_nlp n ON o.id_oferta = n.id_oferta
+INNER JOIN ofertas_esco_matching m ON o.id_oferta = m.id_oferta
 WHERE m.estado_validacion IN ('validado_claude', 'validado_humano')
+ORDER BY m.validado_timestamp DESC
 ```
 
-### Paso 2: Transformación
+### Paso 2: Transformación (transform_oferta_for_supabase)
 
 ```python
-def transform_oferta(row: dict, tenant_id: str) -> dict:
-    """Transforma una fila de SQLite a formato Supabase."""
+def transform_oferta_for_supabase(oferta: Dict) -> Dict:
+    """Transforma una oferta de SQLite al formato de ofertas_dashboard."""
     return {
-        # Identificadores
-        'id_oferta': row['id_oferta'],
+        'id_oferta': str(oferta.get('id_oferta')),
+        'titulo': oferta.get('titulo'),
+        'titulo_limpio': oferta.get('titulo_limpio'),
+        'empresa': oferta.get('empresa'),
+        'fecha_publicacion': oferta.get('fecha_publicacion_iso'),
+        'url': oferta.get('url_oferta'),
+        'portal': oferta.get('portal'),
 
-        # Datos básicos
-        'titulo': row['titulo'],
-        'titulo_limpio': row['titulo_limpio'],
-        'empresa': row['empresa'],
+        # Ubicación (prioriza NLP sobre scraping)
+        'provincia': oferta.get('provincia') or oferta.get('provincia_normalizada'),
+        'localidad': oferta.get('localidad') or oferta.get('localidad_normalizada'),
 
-        # Ubicación
-        'provincia': row['provincia'],
-        'localidad': row['localidad'],
-        'modalidad': row['modalidad'],
-
-        # ESCO
-        'isco_code': row['isco_code'],
-        'isco_label': row['isco_label'],
-        'esco_uri': row['esco_uri'],
-        'match_score': row['match_score'],
-        'match_method': row['match_method'],
-
-        # Condiciones
-        'salario_min': row['salario_min'],
-        'salario_max': row['salario_max'],
-        'nivel_seniority': row['nivel_seniority'],
+        # ESCO/ISCO
+        'esco_occupation_uri': oferta.get('esco_occupation_uri'),
+        'esco_occupation_label': oferta.get('esco_occupation_label'),
+        'isco_code': oferta.get('isco_code'),
+        'isco_label': oferta.get('esco_occupation_label') or oferta.get('isco_label'),
+        'occupation_match_score': oferta.get('occupation_match_score'),
+        'occupation_match_method': oferta.get('occupation_match_method'),
 
         # NLP
-        'experiencia_min': row['experiencia_min_anios'],
-        'experiencia_max': row['experiencia_max_anios'],
-        'nivel_educativo': row['nivel_educativo'],
-        'area_funcional': row['area_funcional'],
-        'sector': row['sector_empresa'],
+        'modalidad': oferta.get('modalidad'),
+        'nivel_seniority': oferta.get('nivel_seniority'),
+        'area_funcional': oferta.get('area_funcional'),
+        'sector_empresa': oferta.get('sector_empresa'),
 
-        # Multi-tenant
-        'tenant_id': tenant_id,
-        'visibilidad': 'tenant',  # Por defecto solo visible para el tenant
+        # Salarios
+        'salario_min': oferta.get('salario_min'),
+        'salario_max': oferta.get('salario_max'),
+        'moneda': oferta.get('moneda'),
 
-        # Metadata
-        'fecha_publicacion': row['fecha_publicacion_iso'],
-        'validado_en': row['validado_timestamp'],
-        'fecha_sync': datetime.now().isoformat()
+        # Requerimientos
+        'nivel_educativo': oferta.get('nivel_educativo'),
+        'experiencia_min_anios': oferta.get('experiencia_min_anios'),
+        'tiene_gente_cargo': oferta.get('tiene_gente_cargo'),
+        'jornada_laboral': oferta.get('jornada_laboral'),
+
+        # Skills (JSONB)
+        'skills_tecnicas': oferta.get('skills_tecnicas_list'),
+        'soft_skills': oferta.get('soft_skills_list'),
+
+        # Estado
+        'estado': oferta.get('estado_oferta', 'activa'),
+        'fecha_sync': datetime.now().isoformat(),
     }
 ```
 
-### Paso 3: Extracción de Skills
+### Paso 3: Extracción de Skills (ofertas_esco_skills_detalle)
 
 ```python
-def extract_skills(row: dict) -> list[dict]:
-    """Extrae skills del JSON y los normaliza."""
-    skills = []
-
-    if row['skills_oferta_json']:
-        skills_json = json.loads(row['skills_oferta_json'])
-
-        for skill in skills_json:
-            skills.append({
-                'id_oferta': row['id_oferta'],
-                'skill_uri': skill.get('uri'),
-                'score': skill.get('score'),
-                'origen': skill.get('origen', 'merged'),
-                'es_esencial': skill.get('es_esencial', False)
-            })
-
-    return skills
+def transform_skill_for_supabase(skill: Dict) -> Dict:
+    """Transforma un skill de SQLite al formato de ofertas_skills."""
+    return {
+        'id_oferta': str(skill.get('id_oferta')),
+        'skill_uri': skill.get('esco_skill_uri'),
+        'preferred_label': skill.get('esco_skill_label'),
+        'l1': skill.get('l1'),
+        'l1_nombre': skill.get('l1_nombre'),
+        'l2': skill.get('l2'),
+        'l2_nombre': skill.get('l2_nombre'),
+        'es_digital': skill.get('es_digital', False),
+        'origen': skill.get('skill_tipo_fuente', 'merged'),
+        'score': skill.get('match_score'),
+        'es_esencial': skill.get('es_esencial', False),
+    }
 ```
 
 ### Paso 4: Upsert a Supabase
@@ -179,12 +193,15 @@ def sync_to_supabase(ofertas: list, skills: list):
     """Sincroniza datos a Supabase con upsert."""
 
     # Upsert ofertas (on conflict id_oferta)
-    supabase.table('ofertas').upsert(
+    supabase.table('ofertas_dashboard').upsert(
         ofertas,
         on_conflict='id_oferta'
     ).execute()
 
-    # Upsert skills (on conflict id_oferta, skill_uri)
+    # Para skills: delete + insert por oferta (evita duplicados)
+    for offer_id in offer_ids:
+        supabase.table('ofertas_skills').delete().eq('id_oferta', offer_id).execute()
+
     supabase.table('ofertas_skills').upsert(
         skills,
         on_conflict='id_oferta,skill_uri'
@@ -195,92 +212,99 @@ def sync_to_supabase(ofertas: list, skills: list):
 
 ## Mapeo de Campos
 
-### ofertas (SQLite → Supabase)
+### ofertas_dashboard (SQLite → Supabase)
 
-| SQLite | Supabase | Transformación |
-|--------|----------|----------------|
-| `ofertas.id_oferta` | `id_oferta` | Directo |
+| SQLite | Supabase | Notas |
+|--------|----------|-------|
+| `ofertas.id_oferta` | `id_oferta` | Convertido a TEXT |
 | `ofertas.titulo` | `titulo` | Directo |
 | `ofertas_nlp.titulo_limpio` | `titulo_limpio` | Directo |
 | `ofertas.empresa` | `empresa` | Directo |
-| `ofertas_nlp.provincia` | `provincia` | Directo |
-| `ofertas_nlp.localidad` | `localidad` | Directo |
-| `ofertas_nlp.modalidad` | `modalidad` | Normalizar a minúsculas |
+| `ofertas.url_oferta` | `url` | Renombrado |
+| `ofertas.portal` | `portal` | Directo |
+| `ofertas.fecha_publicacion_iso` | `fecha_publicacion` | Renombrado |
+| `ofertas_nlp.provincia` | `provincia` | Prioriza NLP |
+| `ofertas_nlp.localidad` | `localidad` | Prioriza NLP |
+| `ofertas_nlp.modalidad` | `modalidad` | Directo |
+| `ofertas_esco_matching.esco_occupation_uri` | `esco_occupation_uri` | Directo |
+| `ofertas_esco_matching.esco_occupation_label` | `esco_occupation_label` | Directo |
 | `ofertas_esco_matching.isco_code` | `isco_code` | Directo |
-| `ofertas_esco_matching.esco_occupation_label` | `isco_label` | Directo |
-| `ofertas_esco_matching.esco_occupation_uri` | `esco_uri` | Directo |
-| `ofertas_esco_matching.occupation_match_score` | `match_score` | Directo |
-| `ofertas_esco_matching.decision_metodo` | `match_method` | Directo |
+| `ofertas_esco_matching.esco_occupation_label` | `isco_label` | Usa esco_label |
+| `ofertas_esco_matching.occupation_match_score` | `occupation_match_score` | Directo |
+| `ofertas_esco_matching.occupation_match_method` | `occupation_match_method` | Directo |
 | `ofertas_nlp.salario_min` | `salario_min` | Directo |
 | `ofertas_nlp.salario_max` | `salario_max` | Directo |
+| - | `moneda` | Hardcoded 'ARS' |
 | `ofertas_nlp.nivel_seniority` | `nivel_seniority` | Directo |
-| `ofertas_nlp.experiencia_min_anios` | `experiencia_min` | Directo |
-| `ofertas_nlp.experiencia_max_anios` | `experiencia_max` | Directo |
+| `ofertas_nlp.experiencia_min_anios` | `experiencia_min_anios` | Directo |
 | `ofertas_nlp.nivel_educativo` | `nivel_educativo` | Directo |
+| `ofertas_nlp.tiene_gente_cargo` | `tiene_gente_cargo` | Boolean |
+| `ofertas_nlp.jornada_laboral` | `jornada_laboral` | Directo |
 | `ofertas_nlp.area_funcional` | `area_funcional` | Directo |
-| `ofertas_nlp.sector_empresa` | `sector` | Directo |
-| - | `tenant_id` | Parámetro de sync |
-| - | `visibilidad` | Default 'tenant' |
-| `ofertas.fecha_publicacion_iso` | `fecha_publicacion` | Directo |
-| `ofertas_esco_matching.validado_timestamp` | `validado_en` | Directo |
+| `ofertas_nlp.sector_empresa` | `sector_empresa` | Directo |
+| `ofertas_nlp.skills_tecnicas_list` | `skills_tecnicas` | JSON array |
+| `ofertas_nlp.soft_skills_list` | `soft_skills` | JSON array |
+| `ofertas.estado_oferta` | `estado` | Default 'activa' |
 | - | `fecha_sync` | NOW() |
 
-### ofertas_skills (Extracción de JSON)
+### ofertas_skills (Extracción de ofertas_esco_skills_detalle)
 
-| SQLite JSON | Supabase | Transformación |
-|-------------|----------|----------------|
-| `skills_oferta_json[].uri` | `skill_uri` | Directo |
-| `skills_oferta_json[].score` | `score` | Directo |
-| `skills_oferta_json[].origen` | `origen` | Default 'merged' |
-| `skills_oferta_json[].es_esencial` | `es_esencial` | Default false |
+| SQLite | Supabase | Notas |
+|--------|----------|-------|
+| `id_oferta` | `id_oferta` | TEXT |
+| `esco_skill_uri` | `skill_uri` | URI ESCO |
+| `esco_skill_label` | `preferred_label` | **IMPORTANTE: columna renombrada** |
+| `source_classification.L1` | `l1` | Extraido de JSON |
+| `source_classification.L1_nombre` | `l1_nombre` | Extraido de JSON |
+| `source_classification.L2` | `l2` | Extraido de JSON |
+| `source_classification.L2_nombre` | `l2_nombre` | Extraido de JSON |
+| `source_classification.es_digital` | `es_digital` | Boolean |
+| `skill_tipo_fuente` | `origen` | titulo/tareas/semantico/etc |
+| `match_score` | `score` | Decimal 0-1 |
+| - | `es_esencial` | Default false |
 
 ---
 
-## Sincronización de Catálogos
+## Paginacion en el Dashboard
 
-### skills (esco_skills → skills)
+**IMPORTANTE:** Supabase tiene un límite de 1000 filas por query.
 
-```python
-def sync_skills_catalog():
-    """Sincroniza catálogo de skills de ESCO."""
+El dashboard (`lib/supabase.ts`) usa paginación automática:
 
-    skills = sqlite.query("""
-        SELECT
-            skill_uri,
-            preferred_label_es,
-            description_es,
-            -- Agregar L1/L2 si están disponibles
-            skill_type
-        FROM esco_skills
-    """)
+```typescript
+async function fetchAllPaginated<T>(
+  client: any,
+  table: string,
+  selectFields: string,
+  buildQuery: (query: any) => any
+): Promise<T[]> {
+  const PAGE_SIZE = 1000
+  let allData: T[] = []
+  let offset = 0
+  let hasMore = true
 
-    supabase.table('skills').upsert(
-        skills,
-        on_conflict='skill_uri'
-    ).execute()
-```
+  while (hasMore) {
+    let query = client.from(table).select(selectFields)
+    query = buildQuery(query)
+    query = query.range(offset, offset + PAGE_SIZE - 1)
 
-### ocupaciones_esco (esco_occupations → ocupaciones_esco)
+    const { data, error } = await query
+    if (error) throw error
 
-```python
-def sync_occupations_catalog():
-    """Sincroniza catálogo de ocupaciones ESCO."""
+    if (data && data.length > 0) {
+      allData = allData.concat(data)
+      if (data.length < PAGE_SIZE) {
+        hasMore = false
+      } else {
+        offset += PAGE_SIZE
+      }
+    } else {
+      hasMore = false
+    }
+  }
 
-    ocupaciones = sqlite.query("""
-        SELECT
-            occupation_uri as esco_uri,
-            isco_code,
-            preferred_label_es,
-            description_es,
-            broader_occupation_uri as broader_uri,
-            hierarchy_level
-        FROM esco_occupations
-    """)
-
-    supabase.table('ocupaciones_esco').upsert(
-        ocupaciones,
-        on_conflict='esco_uri'
-    ).execute()
+  return allData
+}
 ```
 
 ---
@@ -298,23 +322,11 @@ def validate_sync():
     """)[0][0]
 
     # Contar en Supabase
-    supabase_count = supabase.table('ofertas').select('count').execute().data[0]['count']
-
-    if sqlite_count != supabase_count:
-        raise ValueError(f"Mismatch: SQLite={sqlite_count}, Supabase={supabase_count}")
-
-    # Validar skills
-    sqlite_skills = sqlite.query("""
-        SELECT COUNT(*) FROM ofertas_esco_skills_detalle
-    """)[0][0]
-
-    supabase_skills = supabase.table('ofertas_skills').select('count').execute().data[0]['count']
+    supabase_count = supabase.table('ofertas_dashboard').select('count').execute().data[0]['count']
 
     return {
         'ofertas_sqlite': sqlite_count,
         'ofertas_supabase': supabase_count,
-        'skills_sqlite': sqlite_skills,
-        'skills_supabase': supabase_skills,
         'match': sqlite_count == supabase_count
     }
 ```
@@ -330,7 +342,8 @@ def validate_sync():
 | `duplicate key value` | Oferta ya existe | Usar upsert en lugar de insert |
 | `foreign key violation` | skill_uri no existe | Sync catálogos primero |
 | `null value in column` | Campo requerido vacío | Agregar defaults o filtrar |
-| `row level security` | Sin permisos | Verificar rol del usuario |
+| `row level security` | Sin permisos | Verificar service_role key |
+| `limit 1000 rows` | Límite por defecto | Usar paginación |
 
 ### Reintentos
 
@@ -339,7 +352,7 @@ def validate_sync():
 def sync_batch(ofertas: list):
     """Sincroniza un batch con reintentos."""
     try:
-        supabase.table('ofertas').upsert(ofertas).execute()
+        supabase.table('ofertas_dashboard').upsert(ofertas).execute()
     except Exception as e:
         log.error(f"Error en sync: {e}")
         raise
@@ -347,7 +360,7 @@ def sync_batch(ofertas: list):
 
 ---
 
-## Programación
+## Programacion
 
 ### Sync Manual
 
@@ -369,15 +382,17 @@ python scripts/exports/sync_to_supabase.py
 ## Logs
 
 El script genera logs en:
-- `metrics/sync_supabase_YYYYMMDD_HHMM.json` - Estadísticas
+- `config/supabase_sync_log.json` - Historial de syncs
 - `stdout` - Progreso en tiempo real
+
+Ejemplo de log:
 
 ```json
 {
-    "timestamp": "2026-02-03T15:30:00",
-    "ofertas_synced": 538,
-    "skills_synced": 4338,
-    "duration_seconds": 12.5,
+    "timestamp": "2026-02-04T15:30:00",
+    "ofertas_synced": 1026,
+    "skills_synced": 15309,
+    "duration_seconds": 45.2,
     "errors": []
 }
 ```
@@ -388,4 +403,5 @@ El script genera logs en:
 
 | Fecha | Cambio |
 |-------|--------|
+| 2026-02-04 | Agregar columnas requerimientos, paginación dashboard, actualizar mapeo real |
 | 2026-02-03 | Documentación inicial |
