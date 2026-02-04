@@ -469,6 +469,20 @@ def upsert_skills(client, skills: List[Dict], dry_run: bool = False) -> int:
     # Filtrar skills sin URI (inválidos)
     skills_transformed = [s for s in skills_transformed if s.get('skill_uri')]
 
+    # Deduplicar por (id_oferta, skill_uri) - quedarse con el primero
+    seen = set()
+    skills_unique = []
+    for s in skills_transformed:
+        key = (s['id_oferta'], s['skill_uri'])
+        if key not in seen:
+            seen.add(key)
+            skills_unique.append(s)
+
+    if len(skills_unique) < len(skills_transformed):
+        logger.warning(f"Se eliminaron {len(skills_transformed) - len(skills_unique)} skills duplicados")
+
+    skills_transformed = skills_unique
+
     if dry_run:
         logger.info(f"[DRY-RUN] Upsert {len(skills_transformed)} skills")
         return len(skills_transformed)
