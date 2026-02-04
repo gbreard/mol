@@ -290,6 +290,49 @@ export default function ConsolidatedProfileTab({
     }
   };
 
+  // Remove an approved skill
+  const handleRemove = async (skillToRemove: ConsolidatedSkill) => {
+    if (!selectedId || !selectedMolProfile || !currentConsolidated) return;
+
+    setIsSaving(true);
+
+    // Filter out the skill to remove
+    const updatedSkills = currentConsolidated.consolidated_skills.filter(
+      s => s.label_normalized !== skillToRemove.label_normalized
+    );
+
+    const updatedProfile: ConsolidatedProfile = {
+      ...currentConsolidated,
+      last_updated: new Date().toISOString(),
+      consolidated_skills: updatedSkills,
+      stats: {
+        ...currentConsolidated.stats,
+        from_mol_approved: Math.max(0, currentConsolidated.stats.from_mol_approved - 1),
+        total_consolidated: Math.max(0, currentConsolidated.stats.total_consolidated - 1)
+      }
+    };
+
+    try {
+      const success = await saveConsolidatedProfile(updatedProfile);
+
+      if (success) {
+        const updatedData: ConsolidatedProfilesIndex = {
+          ...(consolidatedData || { version: '1.0.0', profiles: {} }),
+          generated_at: new Date().toISOString(),
+          profiles: {
+            ...(consolidatedData?.profiles || {}),
+            [selectedId]: updatedProfile
+          }
+        };
+        setConsolidatedData(updatedData);
+      }
+    } catch (err) {
+      console.error('Error removing skill:', err);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   // Loading state
   if (!molProfileData || isLoadingConsolidated) {
     return (
@@ -492,11 +535,23 @@ export default function ConsolidatedProfileTab({
                         )}
                         <span className="truncate">{skill.label_original}</span>
                       </div>
-                      <span className={`flex-shrink-0 font-medium ${
-                        skill.source === 'mol_approved' ? 'text-purple-700' : 'text-green-700'
-                      }`}>
-                        {skill.percentage}%
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className={`flex-shrink-0 font-medium ${
+                          skill.source === 'mol_approved' ? 'text-purple-700' : 'text-green-700'
+                        }`}>
+                          {skill.percentage}%
+                        </span>
+                        {skill.source === 'mol_approved' && (
+                          <button
+                            onClick={() => handleRemove(skill)}
+                            disabled={isSaving}
+                            className="p-0.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded disabled:opacity-50"
+                            title="Quitar skill"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
                     </li>
                   ))
                 )}
