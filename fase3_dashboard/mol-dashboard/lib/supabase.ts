@@ -120,9 +120,20 @@ export async function getKPIs(filters?: DashboardFilters) {
   const client = getSupabaseClient()
   if (!client) return { totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 }
 
+  // 1. Obtener total de ofertas usando count (sin límite de 1000)
+  let countQuery = client
+    .from(TABLA_OFERTAS)
+    .select('id_oferta', { count: 'exact', head: true })
+  countQuery = applyFilters(countQuery, filters)
+  const { count: totalOfertas, error: countError } = await countQuery
+  if (countError) throw countError
+
+  // 2. Obtener datos únicos para las demás métricas
+  // Usamos limit(10000) para evitar truncamiento (default es 1000)
   let query = client
     .from(TABLA_OFERTAS)
-    .select('id_oferta, isco_code, empresa, provincia')
+    .select('isco_code, empresa, provincia')
+    .limit(10000)
 
   query = applyFilters(query, filters)
 
@@ -132,7 +143,7 @@ export async function getKPIs(filters?: DashboardFilters) {
 
   const ofertas = data || []
   return {
-    totalOfertas: ofertas.length,
+    totalOfertas: totalOfertas || 0,
     ocupacionesDistintas: new Set(ofertas.map(o => o.isco_code).filter(Boolean)).size,
     empresasActivas: new Set(ofertas.map(o => o.empresa).filter(Boolean)).size,
     provincias: new Set(ofertas.map(o => o.provincia).filter(Boolean)).size
@@ -143,9 +154,24 @@ export async function getOfertasPorProvincia(filters?: DashboardFilters) {
   const client = getSupabaseClient()
   if (!client) return []
 
+  // Primero obtenemos el total para el porcentaje
+  let countQuery = client
+    .from(TABLA_OFERTAS)
+    .select('id_oferta', { count: 'exact', head: true })
+  if (filters?.fechaDesde) {
+    const fechaDesde = filters.fechaDesde.toISOString().split('T')[0]
+    countQuery = countQuery.gte('fecha_publicacion', fechaDesde)
+  }
+  if (filters?.fechaHasta) {
+    const fechaHasta = filters.fechaHasta.toISOString().split('T')[0]
+    countQuery = countQuery.lte('fecha_publicacion', fechaHasta)
+  }
+  const { count: totalCount } = await countQuery
+
   let query = client
     .from(TABLA_OFERTAS)
     .select('provincia')
+    .limit(10000)  // Supabase default es 1000, aumentamos para evitar truncamiento
 
   // Para este caso, no filtramos por provincia para mostrar la distribución
   if (filters?.fechaDesde) {
@@ -167,7 +193,8 @@ export async function getOfertasPorProvincia(filters?: DashboardFilters) {
     counts[prov] = (counts[prov] || 0) + 1
   })
 
-  const total = data?.length || 1
+  // Usar el total real del count, no del array truncado
+  const total = totalCount || data?.length || 1
   return Object.entries(counts)
     .map(([jurisdiccion, cantidad]) => ({
       jurisdiccion,
@@ -184,6 +211,7 @@ export async function getTopOcupaciones(limit = 10, filters?: DashboardFilters) 
   let query = client
     .from(TABLA_OFERTAS)
     .select('isco_code, isco_label')
+    .limit(10000)  // Evitar truncamiento a 1000
 
   query = applyFilters(query, filters)
 
@@ -217,6 +245,7 @@ export async function getOfertasPorModalidad(filters?: DashboardFilters) {
   let query = client
     .from(TABLA_OFERTAS)
     .select('modalidad')
+    .limit(10000)  // Evitar truncamiento a 1000
 
   query = applyFilters(query, filters)
 

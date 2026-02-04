@@ -124,7 +124,7 @@ export default function ScrapingPage() {
         .from('ofertas_dashboard')
         .select('fecha_publicacion_iso')
         .order('fecha_publicacion_iso', { ascending: false })
-        .limit(1000);
+        .limit(10000);  // Aumentado de 1000 para evitar truncamiento
 
       if (ofertasFecha) {
         const countsByDate: Record<string, number> = {};

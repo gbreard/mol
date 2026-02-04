@@ -605,6 +605,163 @@ def upsert_esco_skills(client, skills: List[Dict], dry_run: bool = False) -> int
 
 
 # ============================================================
+# SINCRONIZACIÓN DE ERRORES (validation_errors → issues)
+# ============================================================
+
+TABLE_ISSUES = 'issues'
+
+# Mapeo de error_id a tipo de issue en Supabase
+ERROR_TYPE_MAP = {
+    'V01_titulo_muy_corto': 'error_nlp',
+    'V02_titulo_no_limpio': 'error_nlp',
+    'V03_skills_insuficientes': 'error_skill',
+    'V04_skills_no_coherentes': 'error_skill',
+    'V05_area_no_matchea': 'error_nlp',
+    'V06_sector_inconsistente': 'error_nlp',
+    'V07_ubicacion_generica': 'error_nlp',
+    'V08_modalidad_inferida': 'error_nlp',
+    'V09_seniority_nulo': 'error_nlp',
+    'V10_match_score_muy_bajo': 'error_isco',
+    'V11_isco_generico': 'error_isco',
+    'V12_dual_difieren': 'error_isco',
+    'V20_sector_salud_no_sanitario': 'sugerencia',
+}
+
+# Mapeo de severidad a prioridad
+SEVERITY_MAP = {
+    'alto': 'alta',
+    'medio': 'media',
+    'bajo': 'baja',
+    'info': 'baja',
+}
+
+
+def extraer_errores_pendientes(conn: sqlite3.Connection, offer_ids: Optional[List[str]] = None) -> List[Dict]:
+    """
+    Extrae errores de validación NO resueltos de SQLite.
+    Solo errores de ofertas que ya están en Supabase.
+    """
+    query = """
+        SELECT
+            ve.id,
+            ve.id_oferta,
+            ve.error_id,
+            ve.severidad,
+            ve.mensaje,
+            ve.campo_afectado,
+            ve.valor_actual,
+            ve.detectado_timestamp,
+            ve.resuelto
+        FROM validation_errors ve
+        WHERE ve.resuelto = 0
+    """
+    params = []
+
+    if offer_ids:
+        placeholders = ','.join(['?' for _ in offer_ids])
+        query += f" AND ve.id_oferta IN ({placeholders})"
+        params.extend(offer_ids)
+
+    cursor = conn.execute(query, params)
+    columns = [desc[0] for desc in cursor.description]
+    return [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+
+def transform_error_to_issue(error: Dict) -> Dict:
+    """
+    Transforma un error de validation_errors al formato de issues de Supabase.
+    """
+    error_id = error.get('error_id', '')
+    tipo = ERROR_TYPE_MAP.get(error_id, 'otro')
+    prioridad = SEVERITY_MAP.get(error.get('severidad', 'medio'), 'media')
+
+    return {
+        'id_oferta': error.get('id_oferta'),
+        'titulo': f"[AUTO] {error.get('mensaje', error_id)}",
+        'descripcion': f"Error detectado automáticamente por el validador.\n\nCódigo: {error_id}\nSeveridad original: {error.get('severidad')}",
+        'tipo': tipo,
+        'prioridad': prioridad,
+        'campo_afectado': error.get('campo_afectado'),
+        'valor_actual': error.get('valor_actual'),
+        'estado': 'pendiente',
+        'autor_email': 'auto-validator@mol.gob.ar',
+    }
+
+
+def sync_validation_errors_to_issues(client, conn: sqlite3.Connection, offer_ids: Optional[List[str]] = None, dry_run: bool = False) -> int:
+    """
+    Sincroniza errores de validación pendientes a la tabla issues en Supabase.
+
+    - Solo sincroniza errores NO resueltos
+    - No duplica issues (verifica si ya existe por id_oferta + titulo)
+    - Marca como resueltos en Supabase los que se resolvieron localmente
+    """
+    # 1. Obtener errores pendientes locales
+    errores_locales = extraer_errores_pendientes(conn, offer_ids)
+    logger.info(f"Errores pendientes locales: {len(errores_locales)}")
+
+    if not errores_locales and not dry_run:
+        # Si no hay errores pendientes, marcar todos como resueltos en Supabase
+        try:
+            client.table(TABLE_ISSUES).update({
+                'estado': 'resuelto',
+                'resuelto_por': 'auto-sync',
+                'solucion_aplicada': 'Resuelto automáticamente (sin errores pendientes)'
+            }).eq('autor_email', 'auto-validator@mol.gob.ar').in_('estado', ['pendiente', 'en_progreso']).execute()
+            logger.info("Marcados como resueltos todos los issues automáticos previos")
+        except Exception as e:
+            logger.warning(f"No se pudieron actualizar issues: {e}")
+        return 0
+
+    if dry_run:
+        logger.info(f"[DRY-RUN] Sincronizaría {len(errores_locales)} errores como issues")
+        return len(errores_locales)
+
+    # 2. Obtener issues automáticos existentes en Supabase
+    try:
+        existing = client.table(TABLE_ISSUES).select('id, id_oferta, titulo, estado').eq('autor_email', 'auto-validator@mol.gob.ar').execute()
+        existing_keys = {(i['id_oferta'], i['titulo']): i for i in (existing.data or [])}
+    except Exception as e:
+        logger.warning(f"No se pudieron obtener issues existentes: {e}")
+        existing_keys = {}
+
+    # 3. Preparar nuevos issues
+    nuevos = []
+    for error in errores_locales:
+        issue = transform_error_to_issue(error)
+        key = (issue['id_oferta'], issue['titulo'])
+        if key not in existing_keys:
+            nuevos.append(issue)
+
+    # 4. Insertar nuevos
+    if nuevos:
+        try:
+            # Insertar en batches
+            for i in range(0, len(nuevos), 50):
+                batch = nuevos[i:i + 50]
+                client.table(TABLE_ISSUES).insert(batch).execute()
+            logger.info(f"Insertados {len(nuevos)} nuevos issues")
+        except Exception as e:
+            logger.error(f"Error insertando issues: {e}")
+
+    # 5. Marcar como resueltos los que ya no están pendientes localmente
+    errores_ids = {e['id_oferta'] for e in errores_locales}
+    for key, existing_issue in existing_keys.items():
+        id_oferta, titulo = key
+        if id_oferta not in errores_ids and existing_issue['estado'] in ('pendiente', 'en_progreso'):
+            try:
+                client.table(TABLE_ISSUES).update({
+                    'estado': 'resuelto',
+                    'resuelto_por': 'auto-sync',
+                    'solucion_aplicada': 'Resuelto automáticamente'
+                }).eq('id', existing_issue['id']).execute()
+            except Exception as e:
+                logger.warning(f"No se pudo marcar issue {existing_issue['id']} como resuelto: {e}")
+
+    return len(nuevos)
+
+
+# ============================================================
 # ESTADÍSTICAS
 # ============================================================
 
@@ -699,6 +856,7 @@ Ejemplos:
     parser.add_argument('--stats', action='store_true', help='Mostrar estadísticas')
     parser.add_argument('--full', action='store_true', help='Sync completo (todas las validadas)')
     parser.add_argument('--catalogs-only', action='store_true', help='Solo sincronizar catálogos ESCO')
+    parser.add_argument('--regenerate-profiles', action='store_true', help='Regenerar perfiles MOL vs ESCO después del sync')
     parser.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
 
     args = parser.parse_args()
@@ -766,6 +924,9 @@ Ejemplos:
         logger.info("Subiendo skills ESCO...")
         n_esco = upsert_esco_skills(client, esco_skills, dry_run=args.dry_run)
 
+        logger.info("Sincronizando errores de validación...")
+        n_issues = sync_validation_errors_to_issues(client, conn, ids_para_sync, dry_run=args.dry_run)
+
         # Resumen
         print("\n" + "="*60)
         print("RESUMEN" + (" [DRY-RUN]" if args.dry_run else ""))
@@ -774,10 +935,38 @@ Ejemplos:
         print(f"Skills detalle:           {n_skills}")
         print(f"Ocupaciones ESCO:         {n_ocup}")
         print(f"Skills ESCO:              {n_esco}")
+        print(f"Issues sincronizados:     {n_issues}")
         print("="*60)
 
         if not args.dry_run:
             logger.info("Sincronización completada exitosamente!")
+
+            # Regenerar perfiles MOL vs ESCO si se solicitó
+            if args.regenerate_profiles:
+                logger.info("\n" + "="*60)
+                logger.info("REGENERANDO PERFILES MOL vs ESCO")
+                logger.info("="*60)
+                try:
+                    import subprocess
+                    script_path = PROJECT_ROOT / "fase3_dashboard" / "mol-dashboard" / "scripts" / "generate_mol_skills_profile.py"
+                    if script_path.exists():
+                        result = subprocess.run(
+                            ['python3', str(script_path)],
+                            cwd=str(script_path.parent),
+                            capture_output=True,
+                            text=True
+                        )
+                        if result.returncode == 0:
+                            logger.info("Perfiles MOL regenerados exitosamente")
+                            # Mostrar últimas líneas del output
+                            for line in result.stdout.strip().split('\n')[-5:]:
+                                logger.info(f"  {line}")
+                        else:
+                            logger.error(f"Error regenerando perfiles: {result.stderr}")
+                    else:
+                        logger.warning(f"Script no encontrado: {script_path}")
+                except Exception as e:
+                    logger.error(f"Error ejecutando generador de perfiles: {e}")
 
     except FileNotFoundError as e:
         logger.error(f"Archivo no encontrado: {e}")
