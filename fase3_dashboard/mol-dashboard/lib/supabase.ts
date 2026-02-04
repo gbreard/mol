@@ -1024,6 +1024,8 @@ export async function getIssuesByOferta(id_oferta: string): Promise<Issue[]> {
 
 // ========== FUNCIONES PARA PERFIL CONSOLIDADO ==========
 
+import { ConsolidatedProfile, ConsolidatedProfilesIndex } from './types'
+
 export interface OfertaConsolidado {
   id_oferta: string
   titulo: string
@@ -1032,6 +1034,65 @@ export interface OfertaConsolidado {
   skills_tecnicas: string | null
   soft_skills: string | null
   descripcion?: string
+}
+
+// Get all consolidated profiles
+export async function getConsolidatedProfiles(): Promise<ConsolidatedProfilesIndex> {
+  const client = getSupabaseClient()
+  if (!client) {
+    return { version: '1.0.0', generated_at: new Date().toISOString(), profiles: {} }
+  }
+
+  const { data, error } = await client
+    .from('consolidated_profiles')
+    .select('*')
+    .order('last_updated', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching consolidated profiles:', error)
+    return { version: '1.0.0', generated_at: new Date().toISOString(), profiles: {} }
+  }
+
+  // Convert array to index
+  const profiles: { [key: string]: ConsolidatedProfile } = {}
+  data?.forEach(row => {
+    profiles[row.esco_uuid] = {
+      esco_uuid: row.esco_uuid,
+      esco_label: row.esco_label,
+      last_updated: row.last_updated,
+      consolidated_skills: row.consolidated_skills || [],
+      stats: row.stats || {}
+    }
+  })
+
+  return {
+    version: '1.0.0',
+    generated_at: new Date().toISOString(),
+    profiles
+  }
+}
+
+// Save or update a consolidated profile
+export async function saveConsolidatedProfile(profile: ConsolidatedProfile): Promise<boolean> {
+  const client = getSupabaseClient()
+  if (!client) return false
+
+  const { error } = await client
+    .from('consolidated_profiles')
+    .upsert({
+      esco_uuid: profile.esco_uuid,
+      esco_label: profile.esco_label,
+      last_updated: new Date().toISOString(),
+      consolidated_skills: profile.consolidated_skills,
+      stats: profile.stats
+    }, { onConflict: 'esco_uuid' })
+
+  if (error) {
+    console.error('Error saving consolidated profile:', error)
+    return false
+  }
+
+  return true
 }
 
 // Obtener ofertas por ocupación ESCO

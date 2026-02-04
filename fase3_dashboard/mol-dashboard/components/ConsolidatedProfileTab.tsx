@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Layers, Search, ChevronDown, X, Loader2, CheckCircle, Plus, FileText, Star, TrendingUp, ChevronRight, ExternalLink, Users } from 'lucide-react';
 import { MOLSkillsProfileIndex, OccupationFullDetailIndex, ConsolidatedProfilesIndex, ConsolidatedProfile, ConsolidatedSkill } from '@/lib/types';
-import { getOfertasByEscoOccupation, OfertaConsolidado } from '@/lib/supabase';
+import { getOfertasByEscoOccupation, getConsolidatedProfiles, saveConsolidatedProfile, OfertaConsolidado } from '@/lib/supabase';
 
 interface OccupationInfo {
   id: string;
@@ -43,17 +43,21 @@ export default function ConsolidatedProfileTab({
   // Saving state
   const [isSaving, setIsSaving] = useState(false);
 
-  // Load consolidated profiles on mount
+  // Load consolidated profiles from Supabase on mount
   useEffect(() => {
     setIsLoadingConsolidated(true);
-    fetch('/api/consolidated-profiles')
-      .then(res => res.json())
+    getConsolidatedProfiles()
       .then(data => {
         setConsolidatedData(data);
         setIsLoadingConsolidated(false);
       })
       .catch(err => {
         console.error('Error loading consolidated profiles:', err);
+        setConsolidatedData({
+          version: '1.0.0',
+          generated_at: new Date().toISOString(),
+          profiles: {}
+        });
         setIsLoadingConsolidated(false);
       });
   }, []);
@@ -262,18 +266,22 @@ export default function ConsolidatedProfileTab({
     };
 
     try {
-      const response = await fetch('/api/consolidated-profiles', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          esco_uuid: selectedId,
-          profile: updatedProfile
-        })
-      });
+      // Save to Supabase
+      const success = await saveConsolidatedProfile(updatedProfile);
 
-      if (response.ok) {
-        const data = await response.json();
-        setConsolidatedData(data);
+      if (success) {
+        // Update local state
+        const updatedData: ConsolidatedProfilesIndex = {
+          ...(consolidatedData || { version: '1.0.0', profiles: {} }),
+          generated_at: new Date().toISOString(),
+          profiles: {
+            ...(consolidatedData?.profiles || {}),
+            [selectedId]: updatedProfile
+          }
+        };
+        setConsolidatedData(updatedData);
+      } else {
+        console.error('Failed to save profile to Supabase');
       }
     } catch (err) {
       console.error('Error saving profile:', err);
