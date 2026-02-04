@@ -927,6 +927,20 @@ Ejemplos:
         logger.info("Sincronizando errores de validación...")
         n_issues = sync_validation_errors_to_issues(client, conn, ids_para_sync, dry_run=args.dry_run)
 
+        # Actualizar sistema_estado con el conteo real de errores pendientes
+        if not args.dry_run:
+            try:
+                errores_count = conn.execute('SELECT COUNT(*) FROM validation_errors WHERE resuelto = 0').fetchone()[0]
+                # Obtener ID del registro más reciente
+                estado_result = client.table('sistema_estado').select('id').order('timestamp', desc=True).limit(1).execute()
+                if estado_result.data:
+                    client.table('sistema_estado').update({
+                        'fase2_errores_sin_resolver': errores_count
+                    }).eq('id', estado_result.data[0]['id']).execute()
+                    logger.info(f"Actualizado sistema_estado.fase2_errores_sin_resolver = {errores_count}")
+            except Exception as e:
+                logger.warning(f"No se pudo actualizar sistema_estado: {e}")
+
         # Resumen
         print("\n" + "="*60)
         print("RESUMEN" + (" [DRY-RUN]" if args.dry_run else ""))
