@@ -169,6 +169,27 @@
           "forzar_seniority": "semisenior",
           "_nota": "Validacion v1.1: Oficios técnicos sin indicador explícito → semisenior (requieren experiencia)",
           "_caso": "ID 1118105765 Mecanico Mendoza"
+        },
+        {
+          "titulo_contiene_alguno": ["operario", "operaria", "auxiliar de", "cajero", "cajera", "heladero", "heladera", "despachante de mostrador", "camarero", "camarera", "mozo", "moza", "mucama", "vigilador", "vigiladora", "runner", "bellboy", "preparador de pedidos", "preparadora de pedidos", "conductor", "conductora", "chofer"],
+          "forzar_seniority": "junior",
+          "_nota": "Validacion v2.0: Roles operativos/entrada → junior",
+          "_fecha": "2026-02-03",
+          "_casos": "Operario técnico, Vigilador General, Conductor Ejecutivo, Camareras"
+        },
+        {
+          "titulo_contiene_alguno": ["ejecutivo", "ejecutiva", "asesor comercial", "asesora comercial", "asesor inmobiliario", "asesora inmobiliaria", "administrativo", "administrativa", "asistente de", "vendedor", "vendedora", "promotor", "promotora", "recepcionista", "dibujante", "proyectista", "técnico de servicio", "tecnico de servicio"],
+          "forzar_seniority": "semisenior",
+          "_nota": "Validacion v2.0: Roles con experiencia requerida → semisenior",
+          "_fecha": "2026-02-03",
+          "_casos": "Ejecutivo/a Call Center, Asesor Comercial, Administrativo Logística"
+        },
+        {
+          "titulo_contiene_alguno": ["administrador de sistema", "administrador de infraestructura", "sysadmin", "analista senior", "cocinero especialista", "cocinera especialista", "perito"],
+          "forzar_seniority": "senior",
+          "_nota": "Validacion v2.0: Roles especializados → senior",
+          "_fecha": "2026-02-03",
+          "_casos": "Administrador de sistema, Analista Senior COMEX, Cocinero especialista"
         }
       ]
     },
