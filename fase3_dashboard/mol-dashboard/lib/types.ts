@@ -183,3 +183,37 @@ export interface MOLSkillsProfileIndex {
   };
   occupations: { [esco_uuid: string]: OccupationMOLProfile };
 }
+
+// ========== PERFIL CONSOLIDADO ==========
+
+export interface ConsolidatedSkill {
+  label_normalized: string;
+  label_original: string;
+  source: 'esco_common' | 'mol_approved';
+  frequency?: number;
+  percentage?: number;
+  esco_uri?: string;
+  description?: string;
+  L1?: string;
+  L2?: string;
+  approved_at?: string;
+}
+
+export interface ConsolidatedProfile {
+  esco_uuid: string;
+  esco_label: string;
+  last_updated: string;
+  consolidated_skills: ConsolidatedSkill[];
+  stats: {
+    total_consolidated: number;
+    from_esco_common: number;
+    from_mol_approved: number;
+    pending_candidates: number;
+  };
+}
+
+export interface ConsolidatedProfilesIndex {
+  version: string;
+  generated_at: string;
+  profiles: { [esco_uuid: string]: ConsolidatedProfile };
+}

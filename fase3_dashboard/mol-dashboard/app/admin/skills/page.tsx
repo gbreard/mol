@@ -7,9 +7,10 @@ import OccupationDetail from '@/components/OccupationDetail';
 import OccupationCompare from '@/components/OccupationCompare';
 import MySkillsSearch from '@/components/MySkillsSearch';
 import ArgentinaProfileTab from '@/components/ArgentinaProfileTab';
+import ConsolidatedProfileTab from '@/components/ConsolidatedProfileTab';
 import { OccupationFullDetailIndex, MOLSkillsProfileIndex } from '@/lib/types';
 
-type TabId = 'taxonomy' | 'occupation' | 'compare' | 'myskills' | 'argentina';
+type TabId = 'taxonomy' | 'occupation' | 'compare' | 'myskills' | 'argentina' | 'consolidated';
 
 interface Tab {
   id: TabId;
@@ -48,6 +49,12 @@ const TABS: Tab[] = [
     label: 'Perfil Argentina',
     icon: <Globe className="w-5 h-5" />,
     description: 'Compara skills ESCO vs demanda real del mercado argentino'
+  },
+  {
+    id: 'consolidated',
+    label: 'Consolidado',
+    icon: <Target className="w-5 h-5" />,
+    description: 'Construye el perfil de skills Argentina aprobando emergentes'
   }
 ];
 
@@ -111,9 +118,9 @@ export default function AdminSkillsPage() {
       .catch(console.error);
   }, []);
 
-  // Load occupation data when switching to occupation/compare/myskills/argentina tabs
+  // Load occupation data when switching to occupation/compare/myskills/argentina/consolidated tabs
   useEffect(() => {
-    if ((activeTab === 'occupation' || activeTab === 'compare' || activeTab === 'myskills' || activeTab === 'argentina') &&
+    if ((activeTab === 'occupation' || activeTab === 'compare' || activeTab === 'myskills' || activeTab === 'argentina' || activeTab === 'consolidated') &&
         !occupationsData && !isLoading) {
       setIsLoading(true);
 
@@ -141,9 +148,9 @@ export default function AdminSkillsPage() {
     }
   }, [activeTab, occupationsData, isLoading]);
 
-  // Load MOL profile data when switching to argentina tab
+  // Load MOL profile data when switching to argentina or consolidated tab
   useEffect(() => {
-    if (activeTab === 'argentina' && !molProfileData && !isMolLoading) {
+    if ((activeTab === 'argentina' || activeTab === 'consolidated') && !molProfileData && !isMolLoading) {
       setIsMolLoading(true);
       fetch('/data/mol_skills_profile.json')
         .then(res => res.json())
@@ -251,6 +258,16 @@ export default function AdminSkillsPage() {
       {activeTab === 'argentina' && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <ArgentinaProfileTab
+            molProfileData={molProfileData}
+            occupationsData={occupationsData}
+            occupationsList={occupationsList}
+          />
+        </div>
+      )}
+
+      {activeTab === 'consolidated' && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <ConsolidatedProfileTab
             molProfileData={molProfileData}
             occupationsData={occupationsData}
             occupationsList={occupationsList}

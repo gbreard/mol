@@ -1021,3 +1021,49 @@ export async function getIssuesByOferta(id_oferta: string): Promise<Issue[]> {
   if (error) throw error
   return data || []
 }
+
+// ========== FUNCIONES PARA PERFIL CONSOLIDADO ==========
+
+export interface OfertaConsolidado {
+  id_oferta: string
+  titulo: string
+  titulo_limpio: string | null
+  empresa: string | null
+  skills_tecnicas: string | null
+  soft_skills: string | null
+  descripcion?: string
+}
+
+// Obtener ofertas por ocupación ESCO
+export async function getOfertasByEscoOccupation(
+  escoUuid: string,
+  limit: number = 20,
+  offset: number = 0
+): Promise<{ ofertas: OfertaConsolidado[], total: number }> {
+  const client = getSupabaseClient()
+  if (!client) return { ofertas: [], total: 0 }
+
+  // Construir URI ESCO completa
+  const escoUri = `http://data.europa.eu/esco/occupation/${escoUuid}`
+
+  const { data, error, count } = await client
+    .from(TABLA_OFERTAS)
+    .select(`
+      id_oferta,
+      titulo,
+      titulo_limpio,
+      empresa,
+      skills_tecnicas,
+      soft_skills
+    `, { count: 'exact' })
+    .eq('esco_occupation_uri', escoUri)
+    .order('fecha_publicacion', { ascending: false })
+    .range(offset, offset + limit - 1)
+
+  if (error) {
+    console.error('Error fetching ofertas by ESCO:', error)
+    return { ofertas: [], total: 0 }
+  }
+
+  return { ofertas: data || [], total: count || 0 }
+}
