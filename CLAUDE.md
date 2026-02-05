@@ -354,9 +354,21 @@ CREAR REGLAS → Necesito ver datos para entender el patrón
 
 ### Entry Points del Sistema (NO crear alternativas)
 
+**⚠️ WSL + Ollama:** Si Ollama corre en Windows y el proyecto en WSL, usar:
+```bash
+OLLAMA_HOST=172.17.0.1 python scripts/run_validated_pipeline.py --limit 500
+```
+
+**⚠️ Lotes grandes (>100):** Correr en BACKGROUND, no esperar:
+```bash
+OLLAMA_HOST=172.17.0.1 python scripts/run_validated_pipeline.py --limit 500 > /tmp/pipeline.log 2>&1 &
+# Verificar progreso:
+tail -f /tmp/pipeline.log
+```
+
 | Tarea | Comando | NO hacer |
 |-------|---------|----------|
-| **⭐ Pipeline Completo** | `python scripts/run_validated_pipeline.py --limit 100` | Scripts separados |
+| **⭐ Pipeline Completo** | `python scripts/run_validated_pipeline.py --limit 500` | Scripts separados |
 | **NLP lote** | `python database/process_nlp_from_db_v11.py --ids X` | Crear script nuevo |
 | **Scraping** | `python run_scheduler.py` | Llamar scrapers directo |
 | **Comparar runs** | `python scripts/compare_runs.py --latest` | Crear comparador custom |
