@@ -732,9 +732,9 @@ export async function getTopSkillsPorCategoria(limit = 5, skillsFilters?: Skills
 
   let query = client
     .from('ofertas_skills')
-    .select('l1, l1_nombre, esco_skill_label, es_digital')
+    .select('l1, l1_nombre, preferred_label, es_digital')
     .not('l1', 'is', null)
-    .not('esco_skill_label', 'is', null)
+    .not('preferred_label', 'is', null)
 
   query = applyOfertaIdsFilter(query, ofertaIds)
 
@@ -756,7 +756,7 @@ export async function getTopSkillsPorCategoria(limit = 5, skillsFilters?: Skills
       porCategoria[s.l1] = {}
       nombreCategoria[s.l1] = s.l1_nombre || s.l1
     }
-    const skill = s.esco_skill_label
+    const skill = s.preferred_label
     porCategoria[s.l1][skill] = (porCategoria[s.l1][skill] || 0) + 1
   })
 
@@ -787,9 +787,9 @@ export async function getTopSkillsConCategoria(limit = 10, skillsFilters?: Skill
 
   let query = client
     .from('ofertas_skills')
-    .select('l1, l1_nombre, esco_skill_label, es_digital')
+    .select('l1, l1_nombre, preferred_label, es_digital')
     .not('l1', 'is', null)
-    .not('esco_skill_label', 'is', null)
+    .not('preferred_label', 'is', null)
 
   query = applyOfertaIdsFilter(query, ofertaIds)
 
@@ -811,7 +811,7 @@ export async function getTopSkillsConCategoria(limit = 10, skillsFilters?: Skill
   const skillCounts: Record<string, { count: number, l1: string, l1_nombre: string }> = {}
 
   data?.forEach(s => {
-    const skill = s.esco_skill_label
+    const skill = s.preferred_label
     if (!skillCounts[skill]) {
       skillCounts[skill] = { count: 0, l1: s.l1, l1_nombre: s.l1_nombre }
     }
