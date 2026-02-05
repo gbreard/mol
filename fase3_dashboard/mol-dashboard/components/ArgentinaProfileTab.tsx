@@ -27,7 +27,30 @@ export default function ArgentinaProfileTab({
 
   // Filter to only occupations with MOL data, sorted by offer count (descending)
   const occupationsWithMOL = useMemo(() => {
-    if (!molProfileData) return [];
+    if (!molProfileData) {
+      console.log('[ARG TAB DEBUG] molProfileData is null');
+      return [];
+    }
+
+    // DEBUG: Check data
+    const molOccupationKeys = Object.keys(molProfileData.occupations);
+    const occupationsListIds = occupationsList.map(o => o.id);
+    const matchingIds = occupationsListIds.filter(id => molProfileData.occupations[id]);
+
+    console.log('[ARG TAB DEBUG] Data check:', {
+      molOccupationKeys_count: molOccupationKeys.length,
+      molOccupationKeys_first5: molOccupationKeys.slice(0, 5),
+      occupationsList_count: occupationsList.length,
+      occupationsList_first5: occupationsListIds.slice(0, 5),
+      matchingIds_count: matchingIds.length,
+      matchingIds_first5: matchingIds.slice(0, 5),
+      first5OfferCounts: matchingIds.slice(0, 5).map(id => ({
+        id,
+        offer_count: molProfileData.occupations[id]?.offer_count,
+        type: typeof molProfileData.occupations[id]?.offer_count
+      }))
+    });
+
     return occupationsList
       .filter(o => molProfileData.occupations[o.id])
       .sort((a, b) => {
@@ -77,12 +100,16 @@ export default function ArgentinaProfileTab({
     setSearchTerm('');
   };
 
-  // Loading state
-  if (!molProfileData) {
+  // Loading state - wait for both molProfileData AND occupationsList
+  if (!molProfileData || occupationsList.length === 0) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-teal-500" />
-        <span className="ml-3 text-gray-600">Cargando datos de perfil argentino...</span>
+        <span className="ml-3 text-gray-600">
+          {!molProfileData
+            ? 'Cargando datos de perfil argentino...'
+            : 'Cargando lista de ocupaciones...'}
+        </span>
       </div>
     );
   }

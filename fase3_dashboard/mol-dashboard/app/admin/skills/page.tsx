@@ -156,6 +156,19 @@ export default function AdminSkillsPage() {
       const res = await fetch('/api/skills-intelligence');
       const apiData = await res.json();
 
+      // DEBUG: Log raw API response
+      console.log('[MOL DEBUG] Raw API response:', {
+        hasStats: !!apiData.stats,
+        stats: apiData.stats,
+        occupationsCount: apiData.occupations?.length,
+        firstOccupation: apiData.occupations?.[0],
+        first5Ocupaciones: apiData.occupations?.slice(0, 5).map((o: any) => ({
+          esco_uri: o.esco_uri,
+          ofertas_count: o.ofertas_count,
+          ofertas_count_type: typeof o.ofertas_count
+        }))
+      });
+
       // Transformar datos del API al formato MOLSkillsProfileIndex
       const transformedData: MOLSkillsProfileIndex = {
         version: '2.0-dynamic',
@@ -169,13 +182,20 @@ export default function AdminSkillsPage() {
       };
 
       // Convertir lista de ocupaciones a objeto indexado
+      let withOfferCount = 0;
+      let withZeroOfferCount = 0;
+
       apiData.occupations?.forEach((occ: any) => {
         const uuid = occ.esco_uri?.split('/').pop() || '';
         if (uuid) {
+          const offerCount = occ.ofertas_count;
+          if (offerCount > 0) withOfferCount++;
+          else withZeroOfferCount++;
+
           transformedData.occupations[uuid] = {
             esco_uuid: uuid,
             esco_label: occ.esco_label,
-            offer_count: occ.ofertas_count,
+            offer_count: offerCount,
             mol_skills: [],  // Se cargará bajo demanda
             comparison: {
               coverage_essential: 0,
@@ -194,6 +214,20 @@ export default function AdminSkillsPage() {
             }
           };
         }
+      });
+
+      // DEBUG: Log transformation result
+      console.log('[MOL DEBUG] Transformation result:', {
+        totalOccupations: Object.keys(transformedData.occupations).length,
+        withOfferCount,
+        withZeroOfferCount,
+        first5Keys: Object.keys(transformedData.occupations).slice(0, 5),
+        first5Values: Object.entries(transformedData.occupations).slice(0, 5).map(([k, v]) => ({
+          uuid: k,
+          label: v.esco_label,
+          offer_count: v.offer_count,
+          offer_count_type: typeof v.offer_count
+        }))
       });
 
       setMolProfileData(transformedData);
