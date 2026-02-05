@@ -1,8 +1,9 @@
 {
-  "version": "4.0",
-  "descripcion": "Reglas de negocio para matching ESCO. 175 reglas de bypass que fuerzan ISCO específico.",
+  "version": "4.1",
+  "descripcion": "Reglas de negocio para matching ESCO. 177 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-02-04",
+  "fecha_actualizacion": "2026-02-05",
+  "_cambios_v41": "R175: Operario limpieza -> 9112, R176: Auditor franquicias -> 2421",
   "_cambios_v40": "R159: Farmaceutico -> 2262, R160: Tecnico instalador -> 7411",
   "_cambios_v39": "R156: Vendedor viajante, R157: Jefe produccion, R158: Jefe operaciones, R87 ajustada",
   "_cambios_v38": "R154: Auditor stock -> 4321, R155: Asesor telefonico -> 4222, R17 excluye inmobiliario",
@@ -3977,6 +3978,38 @@
       "fecha_creacion": "2026-02-04",
       "activa": true,
       "nota": "Confirma match semántico correcto (4321)"
+    },
+    "R175_operario_limpieza": {
+      "nombre": "Operario/a de Limpieza",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_todos": ["limpieza"],
+        "titulo_contiene_alguno": ["operario", "operaria", "operario/a", "personal", "auxiliar"]
+      },
+      "accion": {
+        "forzar_isco": "9112",
+        "esco_label": "limpiador de oficinas y otros establecimientos/limpiadora de oficinas y otros establecimientos"
+      },
+      "caso_diagnostico": "1118101716 - Operario/a de limpieza Zona Oeste",
+      "fecha_creacion": "2026-02-05",
+      "activa": true,
+      "nota": "Fix match incorrecto a extracción fécula (8160)"
+    },
+    "R176_auditor_franquicias": {
+      "nombre": "Auditor de Franquicias / Establecimientos",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_todos": ["auditor"],
+        "titulo_contiene_alguno": ["franquicia", "franquicias", "establecimientos", "locales", "sucursales"]
+      },
+      "accion": {
+        "forzar_isco": "2421",
+        "esco_label": "analista de gestión y organización"
+      },
+      "caso_diagnostico": "1116827375 - Auditor de Franquicias - Grupo Gastronómico",
+      "fecha_creacion": "2026-02-05",
+      "activa": true,
+      "nota": "Auditor que verifica cumplimiento estándares en franquicias"
     }
   },
   "reglas_filtro": {

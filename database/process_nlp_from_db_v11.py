@@ -39,6 +39,7 @@ Uso:
 """
 
 import sys
+import os
 import sqlite3
 import json
 import time
@@ -90,7 +91,9 @@ class NLPExtractorV11:
     EXTRACTION_METHOD = "pipeline_v11_schema_lite_implicit_skills"
     # Modelo optimizado: 7b es suficiente para extracción JSON (3x más rápido que 14b)
     OLLAMA_MODEL = "qwen2.5:7b"
-    OLLAMA_URL = "http://localhost:11434/api/generate"
+    # WSL: usar OLLAMA_HOST=172.17.0.1 para conectar a Windows
+    OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "localhost")
+    OLLAMA_URL = f"http://{OLLAMA_HOST}:11434/api/generate"
 
     # Cache de configs (se cargan una sola vez)
     _config_cache = None

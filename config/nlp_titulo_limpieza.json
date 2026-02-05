@@ -1,7 +1,8 @@
 {
-  "_version": "2.6.4",
+  "_version": "2.6.5",
   "_descripcion": "Patrones para limpiar titulos de ofertas - eliminar ruido geografico/empresarial/administrativo",
-  "_fecha": "2026-02-04",
+  "_fecha": "2026-02-05",
+  "_cambios_v265": "Guiones colgados al final (Pacheco-, Neuquén -)",
   "_cambios_v264": "Normalizar em-dash (–) pegado a texto, agregar Zarate sin acento a parentesis",
   "_cambios_v263": "Fix 7 errores: eventual+ubicacion, guion largo+modalidad, localidades parentesis minusculas, cadena gastronomica",
   "_cambios_v262": "Fix 3 errores detectados: BUSCAMOS (mayusculas), - Capital Federal / Zona, - Part Time",
@@ -1187,6 +1188,18 @@
       }
     ]
   },
+  "guiones_final": {
+    "_descripcion": "Guiones colgados al final del título",
+    "_nota": "v2.6.5 - limpiar guiones sobrantes después de ubicación",
+    "patrones": [
+      {
+        "patron": "\\s*-\\s*$",
+        "ejemplo": "Ayudante de Cocina - Pacheco-",
+        "_nota": "guion (con o sin espacios) al final"
+      }
+    ]
+  },
   "_cambios_v23": "Agregado codigos_empresa: BE | y variantes (validación 2026-01-26)",
-  "_cambios_v24": "Fix títulos dashboard 2026-01-28: Zona Sur con punto, Playa Grande, para Empresa de X"
+  "_cambios_v24": "Fix títulos dashboard 2026-01-28: Zona Sur con punto, Playa Grande, para Empresa de X",
+  "_cambios_v265": "Guiones colgados al final (Pacheco-, Neuquén -)"
 }
