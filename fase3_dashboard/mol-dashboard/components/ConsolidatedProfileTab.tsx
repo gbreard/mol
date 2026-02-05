@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { Layers, Search, ChevronDown, X, Loader2, CheckCircle, Plus, FileText, Star, TrendingUp, ChevronRight, ExternalLink, Users } from 'lucide-react';
+import { Layers, Search, ChevronDown, X, Loader2, CheckCircle, Plus, FileText, Star, TrendingUp, ChevronRight, ExternalLink, Users, RefreshCw } from 'lucide-react';
 import { MOLSkillsProfileIndex, OccupationFullDetailIndex, ConsolidatedProfilesIndex, ConsolidatedProfile, ConsolidatedSkill } from '@/lib/types';
 import { getOfertasByEscoOccupation, getConsolidatedProfiles, saveConsolidatedProfile, OfertaConsolidado } from '@/lib/supabase';
 
@@ -18,11 +18,30 @@ interface ConsolidatedProfileTabProps {
 }
 
 export default function ConsolidatedProfileTab({
-  molProfileData,
+  molProfileData: _molProfileDataFromProps, // No usamos el prop, cargamos JSON directamente
   occupationsData,
   occupationsList
 }: ConsolidatedProfileTabProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  // Cargar MOL profile desde JSON estático (tiene datos completos con is_emerging, percentage, etc.)
+  const [molProfileData, setMolProfileData] = useState<MOLSkillsProfileIndex | null>(null);
+  const [isMolLoading, setIsMolLoading] = useState(false);
+
+  // Cargar JSON estático al montar (necesario para candidateSkills con is_emerging)
+  useEffect(() => {
+    setIsMolLoading(true);
+    fetch('/data/mol_skills_profile.json')
+      .then(res => res.json())
+      .then(data => {
+        setMolProfileData(data);
+        setIsMolLoading(false);
+      })
+      .catch(err => {
+        console.error('Error loading MOL profile JSON:', err);
+        setIsMolLoading(false);
+      });
+  }, []);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -334,7 +353,7 @@ export default function ConsolidatedProfileTab({
   };
 
   // Loading state
-  if (!molProfileData || isLoadingConsolidated) {
+  if (!molProfileData || isLoadingConsolidated || isMolLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
@@ -350,14 +369,43 @@ export default function ConsolidatedProfileTab({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
-          <Layers className="w-7 h-7 text-purple-600" />
-          Perfil Consolidado
-        </h2>
-        <p className="text-gray-600 mt-1">
-          Construye el perfil de skills Argentina para cada ocupacion combinando ESCO + demanda real
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+            <Layers className="w-7 h-7 text-purple-600" />
+            Perfil Consolidado
+          </h2>
+          <p className="text-gray-600 mt-1">
+            Construye el perfil de skills Argentina para cada ocupacion combinando ESCO + demanda real
+          </p>
+          {molProfileData && (
+            <p className="text-xs text-gray-500 mt-1">
+              Datos: {molProfileData.stats.total_offers.toLocaleString()} ofertas |{' '}
+              {Object.keys(molProfileData.occupations).length} ocupaciones |{' '}
+              Generado: {new Date(molProfileData.generated_at).toLocaleDateString()}
+            </p>
+          )}
+        </div>
+        <button
+          onClick={() => {
+            setIsMolLoading(true);
+            fetch('/data/mol_skills_profile.json')
+              .then(res => res.json())
+              .then(data => {
+                setMolProfileData(data);
+                setIsMolLoading(false);
+              })
+              .catch(err => {
+                console.error('Error refreshing:', err);
+                setIsMolLoading(false);
+              });
+          }}
+          disabled={isMolLoading}
+          className="flex items-center gap-2 px-3 py-1.5 text-sm text-purple-600 hover:bg-purple-50 rounded-lg border border-purple-200 disabled:opacity-50"
+        >
+          <RefreshCw className={`w-4 h-4 ${isMolLoading ? 'animate-spin' : ''}`} />
+          Refrescar
+        </button>
       </div>
 
       {/* Occupation Selector */}
