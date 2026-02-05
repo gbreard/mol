@@ -115,6 +115,42 @@ function getSupabaseClient() {
   return supabase
 }
 
+// Helper para paginación - Supabase limita a 1000 filas por query
+// Esta función obtiene TODOS los datos usando paginación automática
+async function fetchAllPaginated<T>(
+  client: SupabaseClient,
+  table: string,
+  selectColumns: string,
+  applyFiltersFunc?: (query: any) => any,
+  pageSize: number = 1000
+): Promise<T[]> {
+  let allData: T[] = []
+  let offset = 0
+
+  while (true) {
+    let query = client
+      .from(table)
+      .select(selectColumns)
+      .range(offset, offset + pageSize - 1)
+
+    if (applyFiltersFunc) {
+      query = applyFiltersFunc(query)
+    }
+
+    const { data, error } = await query
+
+    if (error) throw error
+    if (!data || data.length === 0) break
+
+    allData = allData.concat(data as T[])
+
+    if (data.length < pageSize) break // Última página
+    offset += pageSize
+  }
+
+  return allData
+}
+
 // Funciones para obtener datos del dashboard
 export async function getKPIs(filters?: DashboardFilters) {
   const client = getSupabaseClient()
@@ -128,20 +164,14 @@ export async function getKPIs(filters?: DashboardFilters) {
   const { count: totalOfertas, error: countError } = await countQuery
   if (countError) throw countError
 
-  // 2. Obtener datos únicos para las demás métricas
-  // Usamos limit(10000) para evitar truncamiento (default es 1000)
-  let query = client
-    .from(TABLA_OFERTAS)
-    .select('isco_code, empresa, provincia')
-    .limit(10000)
+  // 2. Obtener datos únicos para las demás métricas con paginación
+  const ofertas = await fetchAllPaginated<{ isco_code: string; empresa: string; provincia: string }>(
+    client,
+    TABLA_OFERTAS,
+    'isco_code, empresa, provincia',
+    (query) => applyFilters(query, filters)
+  )
 
-  query = applyFilters(query, filters)
-
-  const { data, error } = await query
-
-  if (error) throw error
-
-  const ofertas = data || []
   return {
     totalOfertas: totalOfertas || 0,
     ocupacionesDistintas: new Set(ofertas.map(o => o.isco_code).filter(Boolean)).size,
@@ -154,47 +184,33 @@ export async function getOfertasPorProvincia(filters?: DashboardFilters) {
   const client = getSupabaseClient()
   if (!client) return []
 
-  // Primero obtenemos el total para el porcentaje
-  let countQuery = client
-    .from(TABLA_OFERTAS)
-    .select('id_oferta', { count: 'exact', head: true })
-  if (filters?.fechaDesde) {
-    const fechaDesde = filters.fechaDesde.toISOString().split('T')[0]
-    countQuery = countQuery.gte('fecha_publicacion', fechaDesde)
-  }
-  if (filters?.fechaHasta) {
-    const fechaHasta = filters.fechaHasta.toISOString().split('T')[0]
-    countQuery = countQuery.lte('fecha_publicacion', fechaHasta)
-  }
-  const { count: totalCount } = await countQuery
-
-  let query = client
-    .from(TABLA_OFERTAS)
-    .select('provincia')
-    .limit(10000)  // Supabase default es 1000, aumentamos para evitar truncamiento
-
-  // Para este caso, no filtramos por provincia para mostrar la distribución
-  if (filters?.fechaDesde) {
-    const fechaDesde = filters.fechaDesde.toISOString().split('T')[0]
-    query = query.gte('fecha_publicacion', fechaDesde)
-  }
-  if (filters?.fechaHasta) {
-    const fechaHasta = filters.fechaHasta.toISOString().split('T')[0]
-    query = query.lte('fecha_publicacion', fechaHasta)
+  // Usar paginación para obtener TODOS los datos
+  const applyDateFilters = (query: any) => {
+    if (filters?.fechaDesde) {
+      const fechaDesde = filters.fechaDesde.toISOString().split('T')[0]
+      query = query.gte('fecha_publicacion', fechaDesde)
+    }
+    if (filters?.fechaHasta) {
+      const fechaHasta = filters.fechaHasta.toISOString().split('T')[0]
+      query = query.lte('fecha_publicacion', fechaHasta)
+    }
+    return query
   }
 
-  const { data, error } = await query
-
-  if (error) throw error
+  const data = await fetchAllPaginated<{ provincia: string }>(
+    client,
+    TABLA_OFERTAS,
+    'provincia',
+    applyDateFilters
+  )
 
   const counts: Record<string, number> = {}
-  data?.forEach(o => {
+  data.forEach(o => {
     const prov = o.provincia || 'No especificado'
     counts[prov] = (counts[prov] || 0) + 1
   })
 
-  // Usar el total real del count, no del array truncado
-  const total = totalCount || data?.length || 1
+  const total = data.length || 1
   return Object.entries(counts)
     .map(([jurisdiccion, cantidad]) => ({
       jurisdiccion,
@@ -208,19 +224,16 @@ export async function getTopOcupaciones(limit = 10, filters?: DashboardFilters) 
   const client = getSupabaseClient()
   if (!client) return []
 
-  let query = client
-    .from(TABLA_OFERTAS)
-    .select('isco_code, isco_label')
-    .limit(10000)  // Evitar truncamiento a 1000
-
-  query = applyFilters(query, filters)
-
-  const { data, error } = await query
-
-  if (error) throw error
+  // Usar paginación para obtener TODOS los datos
+  const data = await fetchAllPaginated<{ isco_code: string; isco_label: string }>(
+    client,
+    TABLA_OFERTAS,
+    'isco_code, isco_label',
+    (query) => applyFilters(query, filters)
+  )
 
   const counts: Record<string, { label: string, count: number }> = {}
-  data?.forEach(o => {
+  data.forEach(o => {
     if (o.isco_code && o.isco_label) {
       if (!counts[o.isco_code]) {
         counts[o.isco_code] = { label: o.isco_label, count: 0 }
@@ -242,19 +255,16 @@ export async function getOfertasPorModalidad(filters?: DashboardFilters) {
   const client = getSupabaseClient()
   if (!client) return []
 
-  let query = client
-    .from(TABLA_OFERTAS)
-    .select('modalidad')
-    .limit(10000)  // Evitar truncamiento a 1000
-
-  query = applyFilters(query, filters)
-
-  const { data, error } = await query
-
-  if (error) throw error
+  // Usar paginación para obtener TODOS los datos
+  const data = await fetchAllPaginated<{ modalidad: string }>(
+    client,
+    TABLA_OFERTAS,
+    'modalidad',
+    (query) => applyFilters(query, filters)
+  )
 
   const counts: Record<string, number> = {}
-  data?.forEach(o => {
+  data.forEach(o => {
     const mod = o.modalidad || 'No especificado'
     counts[mod] = (counts[mod] || 0) + 1
   })
@@ -334,18 +344,16 @@ export async function getTopSkillsTecnicas(limit = 20, filters?: DashboardFilter
   const client = getSupabaseClient()
   if (!client) return []
 
-  let query = client
-    .from(TABLA_OFERTAS)
-    .select('skills_tecnicas')
-
-  query = applyFilters(query, filters)
-
-  const { data, error } = await query
-
-  if (error) throw error
+  // Usar paginación para obtener TODOS los datos
+  const data = await fetchAllPaginated<{ skills_tecnicas: string }>(
+    client,
+    TABLA_OFERTAS,
+    'skills_tecnicas',
+    (query) => applyFilters(query, filters)
+  )
 
   const counts: Record<string, number> = {}
-  data?.forEach(o => {
+  data.forEach(o => {
     const skills = parseSkillsList(o.skills_tecnicas)
     skills.forEach((skill: string) => {
       counts[skill] = (counts[skill] || 0) + 1
@@ -362,18 +370,16 @@ export async function getTopSoftSkills(limit = 20, filters?: DashboardFilters) {
   const client = getSupabaseClient()
   if (!client) return []
 
-  let query = client
-    .from(TABLA_OFERTAS)
-    .select('soft_skills')
-
-  query = applyFilters(query, filters)
-
-  const { data, error } = await query
-
-  if (error) throw error
+  // Usar paginación para obtener TODOS los datos
+  const data = await fetchAllPaginated<{ soft_skills: string }>(
+    client,
+    TABLA_OFERTAS,
+    'soft_skills',
+    (query) => applyFilters(query, filters)
+  )
 
   const counts: Record<string, number> = {}
-  data?.forEach(o => {
+  data.forEach(o => {
     const skills = parseSkillsList(o.soft_skills)
     skills.forEach((skill: string) => {
       counts[skill] = (counts[skill] || 0) + 1
@@ -429,18 +435,17 @@ export async function getOcupacionesTree(filters?: DashboardFilters): Promise<Oc
   const client = getSupabaseClient()
   if (!client) return []
 
-  let query = client
-    .from(TABLA_OFERTAS)
-    .select('isco_code, isco_label')
-
-  query = applyFilters(query, filters)
-
-  const { data, error } = await query
-  if (error) throw error
+  // Usar paginación para obtener TODOS los datos (Supabase limita a 1000 por query)
+  const data = await fetchAllPaginated<{ isco_code: string; isco_label: string }>(
+    client,
+    TABLA_OFERTAS,
+    'isco_code, isco_label',
+    (query) => applyFilters(query, filters)
+  )
 
   // Agrupar por código ISCO de 4 dígitos
   const detailCounts: Record<string, { label: string; count: number }> = {}
-  data?.forEach(o => {
+  data.forEach(o => {
     if (o.isco_code && o.isco_label) {
       if (!detailCounts[o.isco_code]) {
         detailCounts[o.isco_code] = { label: o.isco_label, count: 0 }
@@ -489,25 +494,30 @@ export async function getDistribucionRequerimientos(filters?: DashboardFilters, 
   const client = getSupabaseClient()
   if (!client) return { total: 0, educacion: [], experiencia: [], seniority: [], modalidad: [], genteCargo: [], jornada: [] }
 
-  let query = client
-    .from(TABLA_OFERTAS)
-    .select('nivel_educativo, experiencia_min_anios, nivel_seniority, modalidad, tiene_gente_cargo, jornada_laboral')
-
-  query = applyFilters(query, filters)
-
-  // Aplicar filtros locales
-  if (localFilters?.educacion && localFilters.educacion !== 'Todos') {
-    query = query.eq('nivel_educativo', localFilters.educacion)
-  }
-  if (localFilters?.modalidad && localFilters.modalidad !== 'Todos') {
-    query = query.eq('modalidad', localFilters.modalidad)
-  }
-
-  const { data, error } = await query
-
-  if (error) throw error
-
-  const ofertas = data || []
+  // Usar paginación para obtener TODOS los datos
+  const ofertas = await fetchAllPaginated<{
+    nivel_educativo: string | null;
+    experiencia_min_anios: number | null;
+    nivel_seniority: string | null;
+    modalidad: string | null;
+    tiene_gente_cargo: boolean | null;
+    jornada_laboral: string | null;
+  }>(
+    client,
+    TABLA_OFERTAS,
+    'nivel_educativo, experiencia_min_anios, nivel_seniority, modalidad, tiene_gente_cargo, jornada_laboral',
+    (query) => {
+      query = applyFilters(query, filters)
+      // Aplicar filtros locales
+      if (localFilters?.educacion && localFilters.educacion !== 'Todos') {
+        query = query.eq('nivel_educativo', localFilters.educacion)
+      }
+      if (localFilters?.modalidad && localFilters.modalidad !== 'Todos') {
+        query = query.eq('modalidad', localFilters.modalidad)
+      }
+      return query
+    }
+  )
   const total = ofertas.length
 
   // Nivel educativo
@@ -624,16 +634,15 @@ async function getFilteredOfertaIds(filters?: DashboardFilters): Promise<string[
 
   if (!hasGlobalFilter) return null
 
-  let query = client
-    .from(TABLA_OFERTAS)
-    .select('id_oferta')
+  // Usar paginación para obtener TODOS los IDs
+  const data = await fetchAllPaginated<{ id_oferta: string }>(
+    client,
+    TABLA_OFERTAS,
+    'id_oferta',
+    (query) => applyFilters(query, filters)
+  )
 
-  query = applyFilters(query, filters)
-
-  const { data, error } = await query
-  if (error) throw error
-
-  return (data || []).map(o => o.id_oferta)
+  return data.map(o => o.id_oferta)
 }
 
 // Helper: aplicar filtro de IDs a una query de ofertas_skills
@@ -650,31 +659,31 @@ export async function getSkillsPorCategoriaL1(skillsFilters?: SkillsFilters, glo
 
   const ofertaIds = await getFilteredOfertaIds(globalFilters)
 
-  let query = client
-    .from('ofertas_skills')
-    .select('l1, l1_nombre, es_digital')
-    .not('l1', 'is', null)
-
-  query = applyOfertaIdsFilter(query, ofertaIds)
-
-  // Filtro por digital
-  if (skillsFilters?.esDigital !== undefined && skillsFilters.esDigital !== null) {
-    query = query.eq('es_digital', skillsFilters.esDigital)
-  }
-
-  const { data, error } = await query
-
-  if (error) throw error
+  // Usar paginación para obtener TODOS los datos
+  const data = await fetchAllPaginated<{ l1: string; l1_nombre: string; es_digital: boolean }>(
+    client,
+    'ofertas_skills',
+    'l1, l1_nombre, es_digital',
+    (query) => {
+      query = query.not('l1', 'is', null)
+      query = applyOfertaIdsFilter(query, ofertaIds)
+      // Filtro por digital
+      if (skillsFilters?.esDigital !== undefined && skillsFilters.esDigital !== null) {
+        query = query.eq('es_digital', skillsFilters.esDigital)
+      }
+      return query
+    }
+  )
 
   const counts: Record<string, { nombre: string, count: number }> = {}
-  data?.forEach(s => {
+  data.forEach(s => {
     if (!counts[s.l1]) {
       counts[s.l1] = { nombre: s.l1_nombre || s.l1, count: 0 }
     }
     counts[s.l1].count++
   })
 
-  const total = data?.length || 1
+  const total = data.length || 1
   return Object.entries(counts)
     .map(([code, { nombre, count }]) => ({
       code,
@@ -692,24 +701,24 @@ export async function getSkillsDigitales(skillsFilters?: SkillsFilters, globalFi
 
   const ofertaIds = await getFilteredOfertaIds(globalFilters)
 
-  let query = client
-    .from('ofertas_skills')
-    .select('es_digital, l1, l1_nombre')
-
-  query = applyOfertaIdsFilter(query, ofertaIds)
-
-  // Filtro por categoría
-  if (skillsFilters?.categoria && skillsFilters.categoria !== 'Todos') {
-    query = query.eq('l1_nombre', skillsFilters.categoria)
-  }
-
-  const { data, error } = await query
-
-  if (error) throw error
+  // Usar paginación para obtener TODOS los datos
+  const data = await fetchAllPaginated<{ es_digital: boolean; l1: string; l1_nombre: string }>(
+    client,
+    'ofertas_skills',
+    'es_digital, l1, l1_nombre',
+    (query) => {
+      query = applyOfertaIdsFilter(query, ofertaIds)
+      // Filtro por categoría
+      if (skillsFilters?.categoria && skillsFilters.categoria !== 'Todos') {
+        query = query.eq('l1_nombre', skillsFilters.categoria)
+      }
+      return query
+    }
+  )
 
   let digitales = 0
   let noDigitales = 0
-  data?.forEach(s => {
+  data.forEach(s => {
     if (s.es_digital) digitales++
     else noDigitales++
   })
@@ -730,28 +739,27 @@ export async function getTopSkillsPorCategoria(limit = 5, skillsFilters?: Skills
 
   const ofertaIds = await getFilteredOfertaIds(globalFilters)
 
-  let query = client
-    .from('ofertas_skills')
-    .select('l1, l1_nombre, preferred_label, es_digital')
-    .not('l1', 'is', null)
-    .not('preferred_label', 'is', null)
-
-  query = applyOfertaIdsFilter(query, ofertaIds)
-
-  // Filtro por digital
-  if (skillsFilters?.esDigital !== undefined && skillsFilters.esDigital !== null) {
-    query = query.eq('es_digital', skillsFilters.esDigital)
-  }
-
-  const { data, error } = await query
-
-  if (error) throw error
+  // Usar paginación para obtener TODOS los datos
+  const data = await fetchAllPaginated<{ l1: string; l1_nombre: string; preferred_label: string; es_digital: boolean }>(
+    client,
+    'ofertas_skills',
+    'l1, l1_nombre, preferred_label, es_digital',
+    (query) => {
+      query = query.not('l1', 'is', null).not('preferred_label', 'is', null)
+      query = applyOfertaIdsFilter(query, ofertaIds)
+      // Filtro por digital
+      if (skillsFilters?.esDigital !== undefined && skillsFilters.esDigital !== null) {
+        query = query.eq('es_digital', skillsFilters.esDigital)
+      }
+      return query
+    }
+  )
 
   // Agrupar por categoría y contar skills
   const porCategoria: Record<string, Record<string, number>> = {}
   const nombreCategoria: Record<string, string> = {}
 
-  data?.forEach(s => {
+  data.forEach(s => {
     if (!porCategoria[s.l1]) {
       porCategoria[s.l1] = {}
       nombreCategoria[s.l1] = s.l1_nombre || s.l1
@@ -785,32 +793,30 @@ export async function getTopSkillsConCategoria(limit = 10, skillsFilters?: Skill
 
   const ofertaIds = await getFilteredOfertaIds(globalFilters)
 
-  let query = client
-    .from('ofertas_skills')
-    .select('l1, l1_nombre, preferred_label, es_digital')
-    .not('l1', 'is', null)
-    .not('preferred_label', 'is', null)
-
-  query = applyOfertaIdsFilter(query, ofertaIds)
-
-  // Filtro por categoría
-  if (skillsFilters?.categoria && skillsFilters.categoria !== 'Todos') {
-    query = query.eq('l1_nombre', skillsFilters.categoria)
-  }
-
-  // Filtro por digital
-  if (skillsFilters?.esDigital !== undefined && skillsFilters.esDigital !== null) {
-    query = query.eq('es_digital', skillsFilters.esDigital)
-  }
-
-  const { data, error } = await query
-
-  if (error) throw error
+  // Usar paginación para obtener TODOS los datos
+  const data = await fetchAllPaginated<{ l1: string; l1_nombre: string; preferred_label: string; es_digital: boolean }>(
+    client,
+    'ofertas_skills',
+    'l1, l1_nombre, preferred_label, es_digital',
+    (query) => {
+      query = query.not('l1', 'is', null).not('preferred_label', 'is', null)
+      query = applyOfertaIdsFilter(query, ofertaIds)
+      // Filtro por categoría
+      if (skillsFilters?.categoria && skillsFilters.categoria !== 'Todos') {
+        query = query.eq('l1_nombre', skillsFilters.categoria)
+      }
+      // Filtro por digital
+      if (skillsFilters?.esDigital !== undefined && skillsFilters.esDigital !== null) {
+        query = query.eq('es_digital', skillsFilters.esDigital)
+      }
+      return query
+    }
+  )
 
   // Contar skills y guardar su categoría
   const skillCounts: Record<string, { count: number, l1: string, l1_nombre: string }> = {}
 
-  data?.forEach(s => {
+  data.forEach(s => {
     const skill = s.preferred_label
     if (!skillCounts[skill]) {
       skillCounts[skill] = { count: 0, l1: s.l1, l1_nombre: s.l1_nombre }
@@ -836,36 +842,32 @@ export async function getSkillsCategoriaPorOcupacion(globalFilters?: DashboardFi
 
   const ofertaIds = await getFilteredOfertaIds(globalFilters)
 
-  let query = client
-    .from('ofertas_skills')
-    .select(`
-      l1,
-      l1_nombre,
-      id_oferta
-    `)
-    .not('l1', 'is', null)
-
-  query = applyOfertaIdsFilter(query, ofertaIds)
-
-  // Obtener skills con su ocupación asociada
-  const { data, error } = await query
-
-  if (error) throw error
+  // Usar paginación para obtener TODOS los datos
+  const data = await fetchAllPaginated<{ l1: string; l1_nombre: string; id_oferta: string }>(
+    client,
+    'ofertas_skills',
+    'l1, l1_nombre, id_oferta',
+    (query) => {
+      query = query.not('l1', 'is', null)
+      query = applyOfertaIdsFilter(query, ofertaIds)
+      return query
+    }
+  )
 
   // Obtener ocupaciones de las ofertas
-  const skillOfertaIds = [...new Set(data?.map(s => s.id_oferta) || [])]
+  const skillOfertaIds = [...new Set(data.map(s => s.id_oferta))]
 
-  const { data: ofertas, error: err2 } = await client
-    .from('ofertas_dashboard')
-    .select('id_oferta, isco_label')
-    .in('id_oferta', skillOfertaIds.slice(0, 100)) // Limitar para performance
-    .not('isco_label', 'is', null)
-
-  if (err2) throw err2
+  // Obtener ocupaciones con paginación también
+  const ofertas = await fetchAllPaginated<{ id_oferta: string; isco_label: string }>(
+    client,
+    'ofertas_dashboard',
+    'id_oferta, isco_label',
+    (query) => query.in('id_oferta', skillOfertaIds).not('isco_label', 'is', null)
+  )
 
   // Crear mapa de oferta -> ocupación
   const ofertaOcupacion: Record<string, string> = {}
-  ofertas?.forEach(o => {
+  ofertas.forEach(o => {
     ofertaOcupacion[o.id_oferta] = o.isco_label
   })
 
@@ -873,7 +875,7 @@ export async function getSkillsCategoriaPorOcupacion(globalFilters?: DashboardFi
   const heatmap: Record<string, Record<string, number>> = {}
   const categoriasNombres: Record<string, string> = {}
 
-  data?.forEach(s => {
+  data.forEach(s => {
     const ocupacion = ofertaOcupacion[s.id_oferta]
     if (!ocupacion) return
 
@@ -1247,19 +1249,23 @@ export async function getOccupationsWithMOLData(): Promise<OccupationWithMOLData
   if (!client) return []
 
   try {
-    // Obtener todas las ofertas con su ocupación ESCO
-    const { data: ofertas, error } = await client
-      .from(TABLA_OFERTAS)
-      .select('esco_occupation_uri, esco_occupation_label, isco_code, isco_label')
-      .not('esco_occupation_uri', 'is', null)
-      .limit(10000)
-
-    if (error) throw error
+    // Obtener todas las ofertas con paginación
+    const ofertas = await fetchAllPaginated<{
+      esco_occupation_uri: string;
+      esco_occupation_label: string;
+      isco_code: string;
+      isco_label: string;
+    }>(
+      client,
+      TABLA_OFERTAS,
+      'esco_occupation_uri, esco_occupation_label, isco_code, isco_label',
+      (query) => query.not('esco_occupation_uri', 'is', null)
+    )
 
     // Agrupar por ocupación
     const grouped: Record<string, OccupationWithMOLData> = {}
 
-    ofertas?.forEach(o => {
+    ofertas.forEach(o => {
       const uri = o.esco_occupation_uri
       if (!uri) return
 
@@ -1276,20 +1282,21 @@ export async function getOccupationsWithMOLData(): Promise<OccupationWithMOLData
       grouped[uri].ofertas_count++
     })
 
-    // Obtener conteo de skills por ocupación (mediante ofertas)
-    const { data: skillsData } = await client
-      .from('ofertas_skills')
-      .select('id_oferta')
-      .limit(50000)
+    // Obtener conteo de skills por ocupación (mediante ofertas) con paginación
+    const skillsData = await fetchAllPaginated<{ id_oferta: string }>(
+      client,
+      'ofertas_skills',
+      'id_oferta'
+    )
 
     // Crear map de skills por oferta
     const skillsPerOferta: Record<string, number> = {}
-    skillsData?.forEach(s => {
+    skillsData.forEach(s => {
       skillsPerOferta[s.id_oferta] = (skillsPerOferta[s.id_oferta] || 0) + 1
     })
 
     // Asociar skills_count a cada ocupación
-    ofertas?.forEach(o => {
+    ofertas.forEach(o => {
       const uri = o.esco_occupation_uri
       if (uri && grouped[uri] && skillsPerOferta[o.esco_occupation_uri]) {
         // Esto es aproximado, contamos skills totales de ofertas de esa ocupación
@@ -1312,36 +1319,40 @@ export async function getOccupationMOLProfile(escoUri: string): Promise<Occupati
   if (!client) return null
 
   try {
-    // 1. Obtener ofertas de esta ocupación
-    const { data: ofertas, error: ofertasError } = await client
-      .from(TABLA_OFERTAS)
-      .select('id_oferta, esco_occupation_label, isco_code')
-      .eq('esco_occupation_uri', escoUri)
-      .limit(1000)
+    // 1. Obtener ofertas de esta ocupación con paginación
+    const ofertas = await fetchAllPaginated<{
+      id_oferta: string;
+      esco_occupation_label: string;
+      isco_code: string;
+    }>(
+      client,
+      TABLA_OFERTAS,
+      'id_oferta, esco_occupation_label, isco_code',
+      (query) => query.eq('esco_occupation_uri', escoUri)
+    )
 
-    if (ofertasError) throw ofertasError
-    if (!ofertas || ofertas.length === 0) return null
+    if (ofertas.length === 0) return null
 
     const ofertaIds = ofertas.map(o => o.id_oferta)
     const firstOferta = ofertas[0]
 
-    // 2. Obtener skills de esas ofertas
-    const { data: skills, error: skillsError } = await client
-      .from('ofertas_skills')
-      .select(`
-        skill_uri,
-        preferred_label,
-        l1,
-        l1_nombre,
-        l2,
-        l2_nombre,
-        es_digital,
-        es_esencial,
-        score
-      `)
-      .in('id_oferta', ofertaIds)
-
-    if (skillsError) throw skillsError
+    // 2. Obtener skills de esas ofertas con paginación
+    const skills = await fetchAllPaginated<{
+      skill_uri: string;
+      preferred_label: string;
+      l1: string;
+      l1_nombre: string;
+      l2: string;
+      l2_nombre: string;
+      es_digital: boolean;
+      es_esencial: boolean;
+      score: number;
+    }>(
+      client,
+      'ofertas_skills',
+      'skill_uri, preferred_label, l1, l1_nombre, l2, l2_nombre, es_digital, es_esencial, score',
+      (query) => query.in('id_oferta', ofertaIds)
+    )
 
     // 3. Agregar skills
     const skillsMap: Record<string, {
@@ -1357,7 +1368,7 @@ export async function getOccupationMOLProfile(escoUri: string): Promise<Occupati
       total_score: number;
     }> = {}
 
-    skills?.forEach(s => {
+    skills.forEach(s => {
       if (!s.skill_uri) return
 
       if (!skillsMap[s.skill_uri]) {
