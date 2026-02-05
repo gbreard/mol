@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Map, Briefcase, GitCompare, Target, Loader2, Search, X, Globe } from 'lucide-react';
+import { Map, Briefcase, GitCompare, Target, Loader2, Search, X, Globe, RefreshCw } from 'lucide-react';
 import SkillsSunburst from '@/components/SkillsSunburst';
 import OccupationDetail from '@/components/OccupationDetail';
 import OccupationCompare from '@/components/OccupationCompare';
@@ -149,19 +149,72 @@ export default function AdminSkillsPage() {
   }, [activeTab, occupationsData, isLoading]);
 
   // Load MOL profile data when switching to argentina or consolidated tab
+  // AHORA CARGA DESDE API (datos dinámicos de Supabase)
+  const loadMOLProfile = async () => {
+    setIsMolLoading(true);
+    try {
+      const res = await fetch('/api/skills-intelligence');
+      const apiData = await res.json();
+
+      // Transformar datos del API al formato MOLSkillsProfileIndex
+      const transformedData: MOLSkillsProfileIndex = {
+        version: '2.0-dynamic',
+        generated_at: apiData.generated_at,
+        stats: {
+          total_offers: apiData.stats?.total_ofertas || 0,
+          total_occupations_with_mol: apiData.stats?.total_ocupaciones || 0,
+          avg_skills_per_offer: apiData.stats?.avg_skills_por_oferta || 0
+        },
+        occupations: {}
+      };
+
+      // Convertir lista de ocupaciones a objeto indexado
+      apiData.occupations?.forEach((occ: any) => {
+        const uuid = occ.esco_uri?.split('/').pop() || '';
+        if (uuid) {
+          transformedData.occupations[uuid] = {
+            esco_uuid: uuid,
+            esco_label: occ.esco_label,
+            offer_count: occ.ofertas_count,
+            mol_skills: [],  // Se cargará bajo demanda
+            comparison: {
+              coverage_essential: 0,
+              coverage_total: 0,
+              common_count: 0,
+              common_optional_count: 0,
+              emerging_count: 0,
+              missing_count: 0,
+              esco_essential_count: 0,
+              esco_optional_count: 0,
+              mol_unique_count: 0,
+              common_labels: [],
+              common_optional_labels: [],
+              emerging_labels: [],
+              missing_labels: []
+            }
+          };
+        }
+      });
+
+      setMolProfileData(transformedData);
+    } catch (err) {
+      console.error('Error loading MOL profile from API:', err);
+      // Fallback al JSON estático
+      try {
+        const fallbackRes = await fetch('/data/mol_skills_profile.json');
+        const fallbackData = await fallbackRes.json();
+        setMolProfileData(fallbackData);
+      } catch (fallbackErr) {
+        console.error('Error loading fallback MOL profile:', fallbackErr);
+      }
+    } finally {
+      setIsMolLoading(false);
+    }
+  };
+
   useEffect(() => {
     if ((activeTab === 'argentina' || activeTab === 'consolidated') && !molProfileData && !isMolLoading) {
-      setIsMolLoading(true);
-      fetch('/data/mol_skills_profile.json')
-        .then(res => res.json())
-        .then((data: MOLSkillsProfileIndex) => {
-          setMolProfileData(data);
-          setIsMolLoading(false);
-        })
-        .catch(err => {
-          console.error('Error loading MOL profile:', err);
-          setIsMolLoading(false);
-        });
+      loadMOLProfile();
     }
   }, [activeTab, molProfileData, isMolLoading]);
 
@@ -178,17 +231,40 @@ export default function AdminSkillsPage() {
     setActiveTab('occupation');
   };
 
+  // Handler para refrescar datos MOL
+  const handleRefreshMOL = () => {
+    setMolProfileData(null);
+    loadMOLProfile();
+  };
+
   return (
     <div className="p-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-          <Target className="w-8 h-8 text-purple-600" />
-          Skills Intelligence Dashboard
-        </h1>
-        <p className="mt-2 text-gray-600">
-          Explora la taxonomia ESCO, analiza ocupaciones y planifica transiciones laborales
-        </p>
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+            <Target className="w-8 h-8 text-purple-600" />
+            Skills Intelligence Dashboard
+          </h1>
+          <p className="mt-2 text-gray-600">
+            Explora la taxonomia ESCO, analiza ocupaciones y planifica transiciones laborales
+          </p>
+          {molProfileData && (
+            <p className="mt-1 text-sm text-gray-500">
+              Datos MOL: {molProfileData.stats.total_offers.toLocaleString()} ofertas |
+              {Object.keys(molProfileData.occupations).length} ocupaciones |
+              Actualizado: {new Date(molProfileData.generated_at).toLocaleString()}
+            </p>
+          )}
+        </div>
+        <button
+          onClick={handleRefreshMOL}
+          disabled={isMolLoading}
+          className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+        >
+          <RefreshCw className={`w-5 h-5 ${isMolLoading ? 'animate-spin' : ''}`} />
+          {isMolLoading ? 'Cargando...' : 'Refrescar datos'}
+        </button>
       </div>
 
       {/* Tabs */}

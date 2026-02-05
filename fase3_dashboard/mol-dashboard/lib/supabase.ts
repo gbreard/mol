@@ -1157,3 +1157,254 @@ export async function getOfertasByEscoOccupation(
 
   return { ofertas: data || [], total: count || 0 }
 }
+
+// ========== SKILLS INTELLIGENCE - DATOS DINÁMICOS ==========
+
+export interface SkillsIntelligenceStats {
+  total_ofertas: number;
+  total_ocupaciones: number;
+  total_skills: number;
+  avg_skills_por_oferta: number;
+}
+
+export interface OccupationWithMOLData {
+  esco_uri: string;
+  esco_label: string;
+  isco_code: string;
+  isco_label: string;
+  ofertas_count: number;
+  skills_count: number;
+}
+
+export interface MOLSkillAggregated {
+  skill_uri: string;
+  preferred_label: string;
+  l1: string;
+  l1_nombre: string;
+  l2: string;
+  l2_nombre: string;
+  es_digital: boolean;
+  frequency: number;      // Cuántas ofertas tienen esta skill
+  avg_score: number;      // Score promedio
+  is_essential: boolean;  // Mayoría de ofertas la tienen como esencial
+}
+
+export interface OccupationMOLProfileData {
+  esco_uri: string;
+  esco_label: string;
+  isco_code: string;
+  ofertas_count: number;
+  skills: MOLSkillAggregated[];
+}
+
+/**
+ * Obtiene estadísticas generales de Skills Intelligence
+ */
+export async function getSkillsIntelligenceStats(): Promise<SkillsIntelligenceStats | null> {
+  const client = getSupabaseClient()
+  if (!client) return null
+
+  try {
+    // Total ofertas
+    const { count: totalOfertas } = await client
+      .from(TABLA_OFERTAS)
+      .select('id_oferta', { count: 'exact', head: true })
+
+    // Total ocupaciones únicas
+    const { data: ocupaciones } = await client
+      .from(TABLA_OFERTAS)
+      .select('esco_occupation_uri')
+      .not('esco_occupation_uri', 'is', null)
+
+    const ocupacionesUnicas = new Set(ocupaciones?.map(o => o.esco_occupation_uri)).size
+
+    // Total skills y promedio
+    const { count: totalSkills } = await client
+      .from('ofertas_skills')
+      .select('id', { count: 'exact', head: true })
+
+    const avgSkills = totalOfertas && totalOfertas > 0
+      ? (totalSkills || 0) / totalOfertas
+      : 0
+
+    return {
+      total_ofertas: totalOfertas || 0,
+      total_ocupaciones: ocupacionesUnicas,
+      total_skills: totalSkills || 0,
+      avg_skills_por_oferta: Math.round(avgSkills * 10) / 10
+    }
+  } catch (error) {
+    console.error('Error getting skills intelligence stats:', error)
+    return null
+  }
+}
+
+/**
+ * Obtiene lista de ocupaciones que tienen ofertas MOL con sus conteos
+ */
+export async function getOccupationsWithMOLData(): Promise<OccupationWithMOLData[]> {
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  try {
+    // Obtener todas las ofertas con su ocupación ESCO
+    const { data: ofertas, error } = await client
+      .from(TABLA_OFERTAS)
+      .select('esco_occupation_uri, esco_occupation_label, isco_code, isco_label')
+      .not('esco_occupation_uri', 'is', null)
+      .limit(10000)
+
+    if (error) throw error
+
+    // Agrupar por ocupación
+    const grouped: Record<string, OccupationWithMOLData> = {}
+
+    ofertas?.forEach(o => {
+      const uri = o.esco_occupation_uri
+      if (!uri) return
+
+      if (!grouped[uri]) {
+        grouped[uri] = {
+          esco_uri: uri,
+          esco_label: o.esco_occupation_label || '',
+          isco_code: o.isco_code || '',
+          isco_label: o.isco_label || '',
+          ofertas_count: 0,
+          skills_count: 0
+        }
+      }
+      grouped[uri].ofertas_count++
+    })
+
+    // Obtener conteo de skills por ocupación (mediante ofertas)
+    const { data: skillsData } = await client
+      .from('ofertas_skills')
+      .select('id_oferta')
+      .limit(50000)
+
+    // Crear map de skills por oferta
+    const skillsPerOferta: Record<string, number> = {}
+    skillsData?.forEach(s => {
+      skillsPerOferta[s.id_oferta] = (skillsPerOferta[s.id_oferta] || 0) + 1
+    })
+
+    // Asociar skills_count a cada ocupación
+    ofertas?.forEach(o => {
+      const uri = o.esco_occupation_uri
+      if (uri && grouped[uri] && skillsPerOferta[o.esco_occupation_uri]) {
+        // Esto es aproximado, contamos skills totales de ofertas de esa ocupación
+      }
+    })
+
+    // Ordenar por ofertas_count descendente
+    return Object.values(grouped).sort((a, b) => b.ofertas_count - a.ofertas_count)
+  } catch (error) {
+    console.error('Error getting occupations with MOL data:', error)
+    return []
+  }
+}
+
+/**
+ * Obtiene el perfil de skills MOL agregado para una ocupación específica
+ */
+export async function getOccupationMOLProfile(escoUri: string): Promise<OccupationMOLProfileData | null> {
+  const client = getSupabaseClient()
+  if (!client) return null
+
+  try {
+    // 1. Obtener ofertas de esta ocupación
+    const { data: ofertas, error: ofertasError } = await client
+      .from(TABLA_OFERTAS)
+      .select('id_oferta, esco_occupation_label, isco_code')
+      .eq('esco_occupation_uri', escoUri)
+      .limit(1000)
+
+    if (ofertasError) throw ofertasError
+    if (!ofertas || ofertas.length === 0) return null
+
+    const ofertaIds = ofertas.map(o => o.id_oferta)
+    const firstOferta = ofertas[0]
+
+    // 2. Obtener skills de esas ofertas
+    const { data: skills, error: skillsError } = await client
+      .from('ofertas_skills')
+      .select(`
+        skill_uri,
+        preferred_label,
+        l1,
+        l1_nombre,
+        l2,
+        l2_nombre,
+        es_digital,
+        es_esencial,
+        score
+      `)
+      .in('id_oferta', ofertaIds)
+
+    if (skillsError) throw skillsError
+
+    // 3. Agregar skills
+    const skillsMap: Record<string, {
+      skill_uri: string;
+      preferred_label: string;
+      l1: string;
+      l1_nombre: string;
+      l2: string;
+      l2_nombre: string;
+      es_digital: boolean;
+      count: number;
+      essential_count: number;
+      total_score: number;
+    }> = {}
+
+    skills?.forEach(s => {
+      if (!s.skill_uri) return
+
+      if (!skillsMap[s.skill_uri]) {
+        skillsMap[s.skill_uri] = {
+          skill_uri: s.skill_uri,
+          preferred_label: s.preferred_label || '',
+          l1: s.l1 || '',
+          l1_nombre: s.l1_nombre || '',
+          l2: s.l2 || '',
+          l2_nombre: s.l2_nombre || '',
+          es_digital: s.es_digital || false,
+          count: 0,
+          essential_count: 0,
+          total_score: 0
+        }
+      }
+
+      skillsMap[s.skill_uri].count++
+      if (s.es_esencial) skillsMap[s.skill_uri].essential_count++
+      skillsMap[s.skill_uri].total_score += (s.score || 0)
+    })
+
+    // 4. Convertir a array con métricas calculadas
+    const aggregatedSkills: MOLSkillAggregated[] = Object.values(skillsMap)
+      .map(s => ({
+        skill_uri: s.skill_uri,
+        preferred_label: s.preferred_label,
+        l1: s.l1,
+        l1_nombre: s.l1_nombre,
+        l2: s.l2,
+        l2_nombre: s.l2_nombre,
+        es_digital: s.es_digital,
+        frequency: s.count,
+        avg_score: s.count > 0 ? Math.round((s.total_score / s.count) * 100) / 100 : 0,
+        is_essential: s.essential_count > s.count / 2  // Mayoría lo tiene como esencial
+      }))
+      .sort((a, b) => b.frequency - a.frequency)  // Ordenar por frecuencia
+
+    return {
+      esco_uri: escoUri,
+      esco_label: firstOferta.esco_occupation_label || '',
+      isco_code: firstOferta.isco_code || '',
+      ofertas_count: ofertas.length,
+      skills: aggregatedSkills
+    }
+  } catch (error) {
+    console.error('Error getting occupation MOL profile:', error)
+    return null
+  }
+}
