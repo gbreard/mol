@@ -63,9 +63,96 @@ El usuario ingresa sus competencias y el sistema encuentra ocupaciones compatibl
 
 ---
 
-## Datos (JSONs)
+## Arquitectura de Datos (v2.0)
 
-Los datos se generan desde el RDF de ESCO y se guardan en `public/data/`:
+A partir de v2.0, Skills Intelligence usa una **arquitectura híbrida**:
+
+### Datos Estáticos (ESCO puro)
+JSONs pre-generados desde el RDF de ESCO. No cambian frecuentemente.
+
+| Archivo | Fuente | Actualización |
+|---------|--------|---------------|
+| `esco_skills_hierarchy.json` | RDF ESCO | Manual (nueva versión ESCO) |
+| `occupation_full_detail.json` | RDF ESCO | Manual |
+| `skills_searchable.json` | RDF ESCO | Manual |
+| `occupation_similarity.json` | RDF ESCO | Manual |
+
+### Datos Dinámicos (Perfil MOL)
+Datos del mercado laboral argentino, consultados en **tiempo real** desde Supabase.
+
+| Endpoint | Datos | Actualización |
+|----------|-------|---------------|
+| `GET /api/skills-intelligence` | Stats + lista ocupaciones con datos MOL | Tiempo real |
+| `GET /api/skills-intelligence/occupation?uri=` | Perfil detallado de una ocupación | Tiempo real |
+
+**Flujo:**
+```
+sync_to_supabase.py → Supabase (ofertas_skills, ofertas_dashboard)
+                            ↓
+                      API Routes (Next.js)
+                            ↓
+                      Skills Intelligence UI
+```
+
+### API Endpoints
+
+#### `GET /api/skills-intelligence`
+Retorna estadísticas generales y lista de ocupaciones con datos MOL.
+
+```typescript
+// Response
+{
+  stats: {
+    total_ofertas: number,
+    total_ocupaciones: number,
+    total_skills: number,
+    avg_skills_per_oferta: number
+  },
+  occupations: [{
+    esco_uri: string,
+    label: string,
+    isco_code: string,
+    ofertas_count: number,
+    skills_count: number
+  }],
+  generated_at: string  // ISO timestamp
+}
+```
+
+#### `GET /api/skills-intelligence/occupation?uri=<esco_uri>`
+Retorna perfil MOL detallado para una ocupación específica.
+
+```typescript
+// Response
+{
+  esco_uri: string,
+  label: string,
+  ofertas_count: number,
+  skills: [{
+    skill_uri: string,
+    preferred_label: string,
+    frequency: number,      // % de ofertas que piden esta skill
+    es_esencial: boolean,
+    es_digital: boolean,
+    l1: string,
+    l1_nombre: string
+  }]
+}
+```
+
+### Funciones Supabase (lib/supabase.ts)
+
+| Función | Propósito |
+|---------|-----------|
+| `getSkillsIntelligenceStats()` | Stats agregados del mercado MOL |
+| `getOccupationsWithMOLData()` | Lista ocupaciones con ofertas |
+| `getOccupationMOLProfile(uri)` | Perfil skills de una ocupación |
+
+---
+
+## Datos Estáticos (JSONs ESCO)
+
+Los datos ESCO se generan desde el RDF y se guardan en `public/data/`:
 
 | Archivo | Tamano | Contenido |
 |---------|--------|-----------|
@@ -210,7 +297,23 @@ Los datos provienen del RDF oficial de ESCO v1.2.0:
 
 | Fecha | Version | Cambios |
 |-------|---------|---------|
+| 2026-02-04 | v2.0 | **Refactor Supabase API** - Datos MOL dinámicos desde BD |
 | 2026-02-02 | v1.1 | Acceso via Admin Panel (auth protegido) |
 | 2026-02-01 | v1.0 | 4 tabs completas + descripciones ESCO |
 | 2026-01-31 | v0.9 | Sunburst + Ocupacion + Comparar |
 | 2026-01-30 | v0.1 | Sunburst inicial |
+
+### Detalle v2.0 (2026-02-04)
+
+**Problema:** El módulo usaba un JSON estático (`mol_skills_profile.json`) que no se actualizaba automáticamente con los syncs a Supabase.
+
+**Solución:** Refactor para leer datos dinámicos desde Supabase via API Routes.
+
+**Cambios:**
+- Nuevos endpoints API: `/api/skills-intelligence`, `/api/skills-intelligence/occupation`
+- Nuevas funciones en `lib/supabase.ts`
+- Botón "Refrescar datos" en la UI
+- Stats dinámicos en header (ofertas, ocupaciones, timestamp)
+- Fallback a JSON estático si la API falla
+
+**Branch:** `refactor/skills-intelligence-supabase` (mergeado a main)

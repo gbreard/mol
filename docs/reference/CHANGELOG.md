@@ -1,6 +1,52 @@
-# Changelog - Base de Datos Bumeran Scraping
+# Changelog - MOL (Monitor de Ofertas Laborales)
 
-Registro cronológico de cambios significativos en la base de datos SQLite.
+Registro cronológico de cambios significativos en el sistema.
+
+---
+
+## [Dashboard v2.6.4] - 2026-02-04
+
+### Skills Intelligence - Refactor Supabase API
+
+**Problema:** El módulo Skills Intelligence usaba un JSON estático (`mol_skills_profile.json`) que no se actualizaba automáticamente cuando se sincronizaban datos a Supabase.
+
+**Solución:** Refactor para leer datos dinámicos desde Supabase en tiempo real.
+
+#### Añadido
+
+- **API Routes (Next.js App Router)**
+  - `GET /api/skills-intelligence` - Stats + lista de ocupaciones con datos MOL
+  - `GET /api/skills-intelligence/occupation?uri=` - Perfil detallado de una ocupación
+
+- **Funciones Supabase (`lib/supabase.ts`)**
+  - `getSkillsIntelligenceStats()` - Estadísticas agregadas
+  - `getOccupationsWithMOLData()` - Ocupaciones con ofertas
+  - `getOccupationMOLProfile(uri)` - Perfil de skills por ocupación
+
+- **UI (`app/admin/skills/page.tsx`)**
+  - Botón "Refrescar datos" con loading state
+  - Stats dinámicos en header (ofertas, ocupaciones, timestamp)
+  - Fallback automático a JSON estático si API falla
+
+#### Modificado
+
+- `app/admin/skills/page.tsx` - Carga datos desde API en lugar de JSON
+- `lib/supabase.ts` - Nuevas funciones para Skills Intelligence
+
+#### Branch
+
+`refactor/skills-intelligence-supabase` → mergeado a `main`
+
+#### Archivos
+
+```
+fase3_dashboard/mol-dashboard/
+├── app/api/skills-intelligence/
+│   ├── route.ts                    # NEW - Stats + ocupaciones
+│   └── occupation/route.ts         # NEW - Perfil detallado
+├── app/admin/skills/page.tsx       # MODIFIED - API loading
+└── lib/supabase.ts                 # MODIFIED - 3 nuevas funciones
+```
 
 ---
 
