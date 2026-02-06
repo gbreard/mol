@@ -179,98 +179,25 @@ export default function AdminSkillsPage() {
   }, [activeTab, occupationsData, occupationsList.length]);
 
   // Load MOL profile data when switching to argentina or consolidated tab
-  // AHORA CARGA DESDE API (datos dinámicos de Supabase)
+  // Usa el JSON pre-generado que tiene TODOS los datos (skills, comparison, etc.)
   const loadMOLProfile = async () => {
     setIsMolLoading(true);
     try {
-      const res = await fetch('/api/skills-intelligence');
-      const apiData = await res.json();
+      // Cargar JSON con datos completos (skills, comparison, etc.)
+      console.log('[MOL DEBUG] Loading mol_skills_profile.json...');
+      const res = await fetch('/data/mol_skills_profile.json');
+      const data = await res.json();
 
-      // DEBUG: Log raw API response
-      console.log('[MOL DEBUG] Raw API response:', {
-        hasStats: !!apiData.stats,
-        stats: apiData.stats,
-        occupationsCount: apiData.occupations?.length,
-        firstOccupation: apiData.occupations?.[0],
-        first5Ocupaciones: apiData.occupations?.slice(0, 5).map((o: any) => ({
-          esco_uri: o.esco_uri,
-          ofertas_count: o.ofertas_count,
-          ofertas_count_type: typeof o.ofertas_count
-        }))
+      console.log('[MOL DEBUG] Loaded mol_skills_profile.json:', {
+        version: data.version,
+        stats: data.stats,
+        occupationsCount: Object.keys(data.occupations || {}).length,
+        sampleOccupation: Object.values(data.occupations || {})[0]
       });
 
-      // Transformar datos del API al formato MOLSkillsProfileIndex
-      const transformedData: MOLSkillsProfileIndex = {
-        version: '2.0-dynamic',
-        generated_at: apiData.generated_at,
-        stats: {
-          total_offers: apiData.stats?.total_ofertas || 0,
-          total_occupations_with_mol: apiData.stats?.total_ocupaciones || 0,
-          avg_skills_per_offer: apiData.stats?.avg_skills_por_oferta || 0
-        },
-        occupations: {}
-      };
-
-      // Convertir lista de ocupaciones a objeto indexado
-      let withOfferCount = 0;
-      let withZeroOfferCount = 0;
-
-      apiData.occupations?.forEach((occ: any) => {
-        const uuid = occ.esco_uri?.split('/').pop() || '';
-        if (uuid) {
-          const offerCount = occ.ofertas_count;
-          if (offerCount > 0) withOfferCount++;
-          else withZeroOfferCount++;
-
-          transformedData.occupations[uuid] = {
-            esco_uuid: uuid,
-            esco_label: occ.esco_label,
-            offer_count: offerCount,
-            mol_skills: [],  // Se cargará bajo demanda
-            comparison: {
-              coverage_essential: 0,
-              coverage_total: 0,
-              common_count: 0,
-              common_optional_count: 0,
-              emerging_count: 0,
-              missing_count: 0,
-              esco_essential_count: 0,
-              esco_optional_count: 0,
-              mol_unique_count: 0,
-              common_labels: [],
-              common_optional_labels: [],
-              emerging_labels: [],
-              missing_labels: []
-            }
-          };
-        }
-      });
-
-      // DEBUG: Log transformation result
-      console.log('[MOL DEBUG] Transformation result:', {
-        totalOccupations: Object.keys(transformedData.occupations).length,
-        withOfferCount,
-        withZeroOfferCount,
-        first5Keys: Object.keys(transformedData.occupations).slice(0, 5),
-        first5Values: Object.entries(transformedData.occupations).slice(0, 5).map(([k, v]) => ({
-          uuid: k,
-          label: v.esco_label,
-          offer_count: v.offer_count,
-          offer_count_type: typeof v.offer_count
-        }))
-      });
-
-      setMolProfileData(transformedData);
+      setMolProfileData(data);
     } catch (err) {
-      console.error('Error loading MOL profile from API:', err);
-      // Fallback al JSON estático
-      try {
-        const fallbackRes = await fetch('/data/mol_skills_profile.json');
-        const fallbackData = await fallbackRes.json();
-        setMolProfileData(fallbackData);
-      } catch (fallbackErr) {
-        console.error('Error loading fallback MOL profile:', fallbackErr);
-      }
+      console.error('[MOL DEBUG] Error loading MOL profile:', err);
     } finally {
       setIsMolLoading(false);
     }
