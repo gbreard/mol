@@ -69,8 +69,10 @@
       "label": "Metricas Pipeline",
       "type": "admin",
       "description": "Metricas detalladas del pipeline de procesamiento",
-      "components": ["MetricsCharts"],
-      "dataSource": []
+      "components": ["MetricCards", "PipelineProgressBars", "TopOcupacionesList", "SkillsCategoryChart"],
+      "dataSource": ["sistema_estado", "ofertas_dashboard", "ofertas_skills", "vw_distribucion_isco"],
+      "status": "funcional",
+      "notes": "Conectado a datos reales. Usa sistema_estado para metricas del pipeline."
     },
     {
       "id": "admin-skills",
@@ -86,9 +88,11 @@
       "path": "/admin/configuracion",
       "label": "Configuracion",
       "type": "admin",
-      "description": "Configuracion general del sistema",
-      "components": ["ConfigForm"],
-      "dataSource": []
+      "description": "Configuracion general del sistema (6 secciones: BD, Supabase, Scraping, Notificaciones, Seguridad, Apariencia)",
+      "components": ["ConfigSidebar", "DatabaseConfig", "SupabaseConfig", "ScrapingConfig", "NotificacionesConfig", "SeguridadConfig", "AparienciaConfig"],
+      "dataSource": [],
+      "status": "funcional",
+      "notes": "Fase 1 implementada: Solo lectura con datos reales de Supabase. Muestra estado sistema, pipeline, conexiones."
     },
     {
       "id": "admin-logs",
@@ -104,9 +108,11 @@
       "path": "/admin/arquitectura",
       "label": "Arquitectura",
       "type": "admin",
-      "description": "Visualizacion de arquitectura y estado del sistema",
+      "description": "Visualizacion de arquitectura y estado del sistema (3 tabs: Mapa Pantallas, Pipeline, Metricas)",
       "components": ["ScreenMapGraph", "PipelineFlow", "PhaseStatusCard"],
-      "dataSource": ["api/admin/architecture-metrics"]
+      "dataSource": ["api/admin/architecture-metrics", "dashboard_architecture.json"],
+      "status": "funcional",
+      "notes": "Plan detallado en velvety-questing-wolf.md. Auto-refresh cada 30s en tabs activos."
     }
   ],
   "apiRoutes": [
@@ -167,12 +173,23 @@
     { "from": "/admin", "to": "/api/admin/stats", "type": "data", "label": "Fetch stats" },
     { "from": "/admin/usuarios", "to": "/api/admin/users", "type": "data", "label": "CRUD users" },
     { "from": "/admin/arquitectura", "to": "/api/admin/architecture-metrics", "type": "data", "label": "Fetch metrics" },
+    { "from": "/admin/metricas", "to": "sistema_estado", "type": "data", "label": "Pipeline metrics" },
+    { "from": "/admin/metricas", "to": "ofertas_dashboard", "type": "data", "label": "Ofertas count" },
+    { "from": "/admin/metricas", "to": "ofertas_skills", "type": "data", "label": "Skills L1" },
+    { "from": "/admin/metricas", "to": "vw_distribucion_isco", "type": "data", "label": "Top ISCO" },
+    { "from": "/admin/scraping", "to": "sistema_estado", "type": "data", "label": "Fase 1 state" },
+    { "from": "/admin/logs", "to": "audit_log", "type": "data", "label": "Audit logs" },
+    { "from": "/admin/logs", "to": "eventos_uso", "type": "data", "label": "Usage events" },
     { "from": "/skills", "to": "/api/skills-intelligence", "type": "data", "label": "Fetch skills" },
     { "from": "/skills", "to": "/api/occupations/search", "type": "data", "label": "Search" },
     { "from": "/", "to": "/api/consolidated-profiles", "type": "data", "label": "Perfiles" },
     { "from": "/admin", "to": "/admin/usuarios", "type": "navigation", "label": "Nav" },
     { "from": "/admin", "to": "/admin/issues", "type": "navigation", "label": "Nav" },
-    { "from": "/admin", "to": "/admin/arquitectura", "type": "navigation", "label": "Nav" }
+    { "from": "/admin", "to": "/admin/arquitectura", "type": "navigation", "label": "Nav" },
+    { "from": "/admin", "to": "/admin/metricas", "type": "navigation", "label": "Nav" },
+    { "from": "/admin", "to": "/admin/scraping", "type": "navigation", "label": "Nav" },
+    { "from": "/admin", "to": "/admin/logs", "type": "navigation", "label": "Nav" },
+    { "from": "/admin", "to": "/admin/configuracion", "type": "navigation", "label": "Nav" }
   ],
   "pipeline": {
     "phases": [
