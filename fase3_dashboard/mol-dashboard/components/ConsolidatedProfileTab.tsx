@@ -1,56 +1,111 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
-import { Layers, Search, ChevronDown, X, Loader2, CheckCircle, Plus, FileText, Star, TrendingUp, ChevronRight, ExternalLink, Users, RefreshCw } from 'lucide-react';
-import { MOLSkillsProfileIndex, OccupationFullDetailIndex, ConsolidatedProfilesIndex, ConsolidatedProfile, ConsolidatedSkill } from '@/lib/types';
-import { getOfertasByEscoOccupation, getConsolidatedProfiles, saveConsolidatedProfile, OfertaConsolidado } from '@/lib/supabase';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { Layers, Search, ChevronDown, X, Loader2, CheckCircle, Plus, FileText, Star, TrendingUp, ChevronRight, Users, RefreshCw, Save, AlertCircle } from 'lucide-react';
+import { getOfertasByEscoOccupation, OfertaConsolidado } from '@/lib/supabase';
 
 interface OccupationInfo {
   id: string;
   label: string;
   isco: string;
+  offer_count?: number;
+}
+
+interface SkillMOL {
+  label_original: string;
+  label_normalized: string;
+  frequency: number;
+  percentage: number;
+  is_esco_essential: boolean;
+  is_esco_optional: boolean;
+  is_emerging: boolean;
+  esco_uri?: string;
+  description?: string;
+  L1?: string;
+  L2?: string;
+}
+
+interface PerfilArgentinaResponse {
+  esco_uuid: string;
+  esco_label: string;
+  isco_code: string;
+  offer_count: number;
+  mol_skills: SkillMOL[];
+  comparison: {
+    coverage_essential: number;
+    coverage_total: number;
+    common_count: number;
+    common_optional_count: number;
+    emerging_count: number;
+    missing_count: number;
+    esco_essential_count: number;
+    esco_optional_count: number;
+    mol_unique_count: number;
+    common_labels: string[];
+    common_optional_labels: string[];
+    emerging_labels: string[];
+    missing_labels: string[];
+  };
+  generated_at: string;
+}
+
+interface SkillConsolidada {
+  label: string;
+  label_normalized: string;
+  uri?: string;
+  source: 'esco_common' | 'argentina_approved';
+  L1?: string;
+  L2?: string;
+  percentage_when_approved?: number;
+  approved_at?: string;
+  approved_by?: string;
+}
+
+interface EscoArgentinoEntry {
+  esco_occupation_uri: string;
+  esco_occupation_label: string;
+  isco_code?: string;
+  skills_consolidadas: SkillConsolidada[];
+  total_skills: number;
+  skills_from_esco: number;
+  skills_from_argentina: number;
+  cobertura_esco_essential?: number;
+  cobertura_esco_total?: number;
+  ofertas_count_snapshot?: number;
+  version: number;
+  updated_at: string;
+  updated_by?: string;
+  notas?: string;
 }
 
 interface ConsolidatedProfileTabProps {
-  molProfileData: MOLSkillsProfileIndex | null;
-  occupationsData: OccupationFullDetailIndex | null;
-  occupationsList: OccupationInfo[];
+  molProfileData?: unknown;
+  occupationsData?: unknown;
+  occupationsList?: OccupationInfo[];
 }
 
 export default function ConsolidatedProfileTab({
-  molProfileData: _molProfileDataFromProps, // No usamos el prop, cargamos JSON directamente
-  occupationsData,
-  occupationsList
+  occupationsList: _occupationsList
 }: ConsolidatedProfileTabProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-
-  // Cargar MOL profile desde JSON estático (tiene datos completos con is_emerging, percentage, etc.)
-  const [molProfileData, setMolProfileData] = useState<MOLSkillsProfileIndex | null>(null);
-  const [isMolLoading, setIsMolLoading] = useState(false);
-
-  // Cargar JSON estático al montar (necesario para candidateSkills con is_emerging)
-  useEffect(() => {
-    setIsMolLoading(true);
-    fetch('/data/mol_skills_profile.json')
-      .then(res => res.json())
-      .then(data => {
-        setMolProfileData(data);
-        setIsMolLoading(false);
-      })
-      .catch(err => {
-        console.error('Error loading MOL profile JSON:', err);
-        setIsMolLoading(false);
-      });
-  }, []);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  // Ocupaciones disponibles (cargadas desde API)
+  const [occupationsList, setOccupationsList] = useState<OccupationInfo[]>([]);
+  const [isLoadingOccupations, setIsLoadingOccupations] = useState(true);
+
+  // Perfil dinámico de Argentina (desde API)
+  const [perfilArgentina, setPerfilArgentina] = useState<PerfilArgentinaResponse | null>(null);
+  const [isLoadingPerfil, setIsLoadingPerfil] = useState(false);
+  const [perfilError, setPerfilError] = useState<string | null>(null);
+
+  // ESCO Argentino consolidado (producto guardado)
+  const [escoArgentino, setEscoArgentino] = useState<EscoArgentinoEntry | null>(null);
+  const [isLoadingEscoArg, setIsLoadingEscoArg] = useState(false);
+
   // Filter state for candidates
   const [minFrequency, setMinFrequency] = useState(30);
-
-  // Consolidated profiles (loaded from API)
-  const [consolidatedData, setConsolidatedData] = useState<ConsolidatedProfilesIndex | null>(null);
-  const [isLoadingConsolidated, setIsLoadingConsolidated] = useState(false);
 
   // Ofertas state
   const [ofertas, setOfertas] = useState<OfertaConsolidado[]>([]);
@@ -62,36 +117,89 @@ export default function ConsolidatedProfileTab({
   // Saving state
   const [isSaving, setIsSaving] = useState(false);
 
-  // Load consolidated profiles from Supabase on mount
+  // Cargar lista de ocupaciones desde API al montar
   useEffect(() => {
-    setIsLoadingConsolidated(true);
-    getConsolidatedProfiles()
+    setIsLoadingOccupations(true);
+    fetch('/api/skills-intelligence')
+      .then(res => res.json())
       .then(data => {
-        setConsolidatedData(data);
-        setIsLoadingConsolidated(false);
+        if (data.occupations) {
+          const occs: OccupationInfo[] = data.occupations.map((o: { esco_uuid: string; label: string; isco_code: string; offer_count: number }) => ({
+            id: o.esco_uuid,
+            label: o.label,
+            isco: o.isco_code,
+            offer_count: o.offer_count
+          }));
+          setOccupationsList(occs.sort((a, b) => (b.offer_count || 0) - (a.offer_count || 0)));
+        }
+        setIsLoadingOccupations(false);
       })
       .catch(err => {
-        console.error('Error loading consolidated profiles:', err);
-        setConsolidatedData({
-          version: '1.0.0',
-          generated_at: new Date().toISOString(),
-          profiles: {}
-        });
-        setIsLoadingConsolidated(false);
+        console.error('Error loading occupations:', err);
+        setIsLoadingOccupations(false);
       });
   }, []);
 
-  // Load ofertas when occupation changes
+  // Función para cargar perfil Argentina dinámico
+  const loadPerfilArgentina = useCallback(async (uuid: string) => {
+    setIsLoadingPerfil(true);
+    setPerfilError(null);
+
+    try {
+      const res = await fetch(`/api/perfil-argentina/${uuid}`);
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || 'Error cargando perfil');
+      }
+      const data = await res.json();
+      setPerfilArgentina(data);
+    } catch (err) {
+      console.error('Error loading perfil argentina:', err);
+      setPerfilError(err instanceof Error ? err.message : 'Error desconocido');
+      setPerfilArgentina(null);
+    } finally {
+      setIsLoadingPerfil(false);
+    }
+  }, []);
+
+  // Función para cargar ESCO Argentino (producto guardado)
+  const loadEscoArgentino = useCallback(async (uuid: string) => {
+    setIsLoadingEscoArg(true);
+    try {
+      const uri = `http://data.europa.eu/esco/occupation/${uuid}`;
+      const res = await fetch(`/api/esco-argentino?occupation=${encodeURIComponent(uri)}`);
+      if (res.ok) {
+        const data = await res.json();
+        setEscoArgentino(data);
+      } else if (res.status === 404) {
+        // No existe aún, está bien
+        setEscoArgentino(null);
+      }
+    } catch (err) {
+      console.error('Error loading esco argentino:', err);
+      setEscoArgentino(null);
+    } finally {
+      setIsLoadingEscoArg(false);
+    }
+  }, []);
+
+  // Cargar datos cuando cambia la ocupación seleccionada
   useEffect(() => {
     if (!selectedId) {
+      setPerfilArgentina(null);
+      setEscoArgentino(null);
       setOfertas([]);
       setOfertasTotal(0);
       return;
     }
 
+    // Cargar ambos en paralelo
+    loadPerfilArgentina(selectedId);
+    loadEscoArgentino(selectedId);
+
+    // Cargar ofertas
     setIsLoadingOfertas(true);
     setOfertasPage(0);
-
     getOfertasByEscoOccupation(selectedId, 10, 0)
       .then(result => {
         setOfertas(result.ofertas);
@@ -102,7 +210,7 @@ export default function ConsolidatedProfileTab({
         console.error('Error loading ofertas:', err);
         setIsLoadingOfertas(false);
       });
-  }, [selectedId]);
+  }, [selectedId, loadPerfilArgentina, loadEscoArgentino]);
 
   // Load more ofertas
   const loadMoreOfertas = async () => {
@@ -122,108 +230,78 @@ export default function ConsolidatedProfileTab({
     }
   };
 
-  // Filter occupations with MOL data
-  const occupationsWithMOL = useMemo(() => {
-    if (!molProfileData) return [];
-    return occupationsList
-      .filter(o => molProfileData.occupations[o.id])
-      .sort((a, b) => {
-        const countA = molProfileData.occupations[a.id]?.offer_count || 0;
-        const countB = molProfileData.occupations[b.id]?.offer_count || 0;
-        return countB - countA;
-      });
-  }, [occupationsList, molProfileData]);
-
-  // Get selected MOL profile
-  const selectedMolProfile = useMemo(() => {
-    if (!selectedId || !molProfileData) return null;
-    return molProfileData.occupations[selectedId] || null;
-  }, [selectedId, molProfileData]);
-
-  // Get current consolidated profile for selected occupation
-  const currentConsolidated = useMemo(() => {
-    if (!selectedId || !consolidatedData) return null;
-    return consolidatedData.profiles[selectedId] || null;
-  }, [selectedId, consolidatedData]);
-
-  // Build consolidated skills list
+  // Build consolidated skills list (from ESCO Argentino + common ESCO)
   const consolidatedSkills = useMemo(() => {
-    if (!selectedMolProfile) return [];
+    if (!perfilArgentina) return [];
 
-    const skills: ConsolidatedSkill[] = [];
+    const skills: SkillConsolidada[] = [];
     const addedLabels = new Set<string>();
 
-    // 1. Add previously approved skills
-    if (currentConsolidated) {
-      currentConsolidated.consolidated_skills.forEach(skill => {
-        if (skill.source === 'mol_approved') {
-          skills.push(skill);
-          addedLabels.add(skill.label_normalized);
-        }
+    // 1. Add previously approved skills from ESCO Argentino
+    if (escoArgentino?.skills_consolidadas) {
+      escoArgentino.skills_consolidadas.forEach(skill => {
+        skills.push(skill);
+        addedLabels.add(skill.label_normalized);
       });
     }
 
-    // 2. Add ESCO common skills (essential + optional)
+    // 2. Add ESCO common skills (essential + optional) that aren't already added
     const commonLabels = new Set([
-      ...selectedMolProfile.comparison.common_labels,
-      ...(selectedMolProfile.comparison.common_optional_labels || [])
+      ...perfilArgentina.comparison.common_labels,
+      ...perfilArgentina.comparison.common_optional_labels
     ]);
 
-    selectedMolProfile.mol_skills
+    perfilArgentina.mol_skills
       .filter(s => commonLabels.has(s.label_normalized) && !addedLabels.has(s.label_normalized))
       .forEach(s => {
         skills.push({
+          label: s.label_original,
           label_normalized: s.label_normalized,
-          label_original: s.label_original,
           source: 'esco_common',
-          frequency: s.frequency,
-          percentage: s.percentage,
-          esco_uri: s.esco_uri,
-          description: s.description,
+          uri: s.esco_uri,
           L1: s.L1,
-          L2: s.L2
+          L2: s.L2,
+          percentage_when_approved: s.percentage
         });
         addedLabels.add(s.label_normalized);
       });
 
-    return skills.sort((a, b) => (b.percentage || 0) - (a.percentage || 0));
-  }, [selectedMolProfile, currentConsolidated]);
+    return skills.sort((a, b) => (b.percentage_when_approved || 0) - (a.percentage_when_approved || 0));
+  }, [perfilArgentina, escoArgentino]);
 
   // Build candidate skills list (emergent, filtered by frequency)
   const candidateSkills = useMemo(() => {
-    if (!selectedMolProfile) return [];
+    if (!perfilArgentina) return [];
 
     const approvedLabels = new Set(
-      consolidatedSkills
-        .filter(s => s.source === 'mol_approved')
-        .map(s => s.label_normalized)
+      consolidatedSkills.map(s => s.label_normalized)
     );
 
-    return selectedMolProfile.mol_skills
+    return perfilArgentina.mol_skills
       .filter(s =>
         s.is_emerging &&
         s.percentage >= minFrequency &&
         !approvedLabels.has(s.label_normalized)
       )
       .sort((a, b) => b.percentage - a.percentage);
-  }, [selectedMolProfile, minFrequency, consolidatedSkills]);
+  }, [perfilArgentina, minFrequency, consolidatedSkills]);
 
   // Filter dropdown
   const filteredOccupations = useMemo(() => {
-    if (!searchTerm.trim()) return occupationsWithMOL;
+    if (!searchTerm.trim()) return occupationsList;
 
     const normalizedSearch = searchTerm.toLowerCase()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
 
-    return occupationsWithMOL.filter(occ => {
+    return occupationsList.filter(occ => {
       const normalizedLabel = occ.label.toLowerCase()
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '');
       return normalizedLabel.includes(normalizedSearch) ||
              occ.isco.toLowerCase().includes(normalizedSearch);
     });
-  }, [occupationsWithMOL, searchTerm]);
+  }, [occupationsList, searchTerm]);
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
@@ -240,111 +318,83 @@ export default function ConsolidatedProfileTab({
     setExpandedOferta(null);
   };
 
-  // Approve a candidate skill
-  const handleApprove = async (skill: typeof candidateSkills[0]) => {
-    if (!selectedId || !selectedMolProfile) return;
+  // Refresh current occupation data
+  const handleRefresh = () => {
+    if (selectedId) {
+      loadPerfilArgentina(selectedId);
+      loadEscoArgentino(selectedId);
+    }
+  };
+
+  // Approve a candidate skill (add to ESCO Argentino)
+  const handleApprove = async (skill: SkillMOL) => {
+    if (!selectedId || !perfilArgentina) return;
 
     setIsSaving(true);
 
-    const newSkill: ConsolidatedSkill = {
-      label_normalized: skill.label_normalized,
-      label_original: skill.label_original,
-      source: 'mol_approved',
-      frequency: skill.frequency,
-      percentage: skill.percentage,
-      esco_uri: skill.esco_uri,
-      description: skill.description,
-      L1: skill.L1,
-      L2: skill.L2,
-      approved_at: new Date().toISOString()
-    };
-
-    // Build new profile
-    const existingProfile = currentConsolidated || {
-      esco_uuid: selectedId,
-      esco_label: selectedMolProfile.esco_label,
-      last_updated: '',
-      consolidated_skills: [],
-      stats: {
-        total_consolidated: 0,
-        from_esco_common: 0,
-        from_mol_approved: 0,
-        pending_candidates: 0
-      }
-    };
-
-    const updatedProfile: ConsolidatedProfile = {
-      ...existingProfile,
-      last_updated: new Date().toISOString(),
-      consolidated_skills: [...existingProfile.consolidated_skills, newSkill],
-      stats: {
-        ...existingProfile.stats,
-        from_mol_approved: existingProfile.stats.from_mol_approved + 1,
-        total_consolidated: existingProfile.stats.total_consolidated + 1
-      }
-    };
-
     try {
-      // Save to Supabase
-      const success = await saveConsolidatedProfile(updatedProfile);
+      const uri = `http://data.europa.eu/esco/occupation/${selectedId}`;
+      const res = await fetch('/api/esco-argentino', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          esco_occupation_uri: uri,
+          esco_occupation_label: perfilArgentina.esco_label,
+          isco_code: perfilArgentina.isco_code,
+          action: 'add_skill',
+          skill: {
+            label: skill.label_original,
+            label_normalized: skill.label_normalized,
+            source: 'argentina_approved',
+            uri: skill.esco_uri,
+            L1: skill.L1,
+            L2: skill.L2,
+            percentage_when_approved: skill.percentage
+          },
+          updated_by: 'dashboard_user'
+        })
+      });
 
-      if (success) {
-        // Update local state
-        const updatedData: ConsolidatedProfilesIndex = {
-          ...(consolidatedData || { version: '1.0.0', profiles: {} }),
-          generated_at: new Date().toISOString(),
-          profiles: {
-            ...(consolidatedData?.profiles || {}),
-            [selectedId]: updatedProfile
-          }
-        };
-        setConsolidatedData(updatedData);
-      } else {
-        console.error('Failed to save profile to Supabase');
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || 'Error guardando');
       }
+
+      const result = await res.json();
+      setEscoArgentino(result.data);
     } catch (err) {
-      console.error('Error saving profile:', err);
+      console.error('Error approving skill:', err);
     } finally {
       setIsSaving(false);
     }
   };
 
-  // Remove an approved skill
-  const handleRemove = async (skillToRemove: ConsolidatedSkill) => {
-    if (!selectedId || !selectedMolProfile || !currentConsolidated) return;
+  // Remove an approved skill from ESCO Argentino
+  const handleRemove = async (skillToRemove: SkillConsolidada) => {
+    if (!selectedId || !escoArgentino) return;
 
     setIsSaving(true);
 
-    // Filter out the skill to remove
-    const updatedSkills = currentConsolidated.consolidated_skills.filter(
-      s => s.label_normalized !== skillToRemove.label_normalized
-    );
-
-    const updatedProfile: ConsolidatedProfile = {
-      ...currentConsolidated,
-      last_updated: new Date().toISOString(),
-      consolidated_skills: updatedSkills,
-      stats: {
-        ...currentConsolidated.stats,
-        from_mol_approved: Math.max(0, currentConsolidated.stats.from_mol_approved - 1),
-        total_consolidated: Math.max(0, currentConsolidated.stats.total_consolidated - 1)
-      }
-    };
-
     try {
-      const success = await saveConsolidatedProfile(updatedProfile);
+      const uri = `http://data.europa.eu/esco/occupation/${selectedId}`;
+      const res = await fetch('/api/esco-argentino', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          esco_occupation_uri: uri,
+          action: 'remove_skill',
+          skill_label_normalized: skillToRemove.label_normalized,
+          updated_by: 'dashboard_user'
+        })
+      });
 
-      if (success) {
-        const updatedData: ConsolidatedProfilesIndex = {
-          ...(consolidatedData || { version: '1.0.0', profiles: {} }),
-          generated_at: new Date().toISOString(),
-          profiles: {
-            ...(consolidatedData?.profiles || {}),
-            [selectedId]: updatedProfile
-          }
-        };
-        setConsolidatedData(updatedData);
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || 'Error removiendo');
       }
+
+      const result = await res.json();
+      setEscoArgentino(result.data);
     } catch (err) {
       console.error('Error removing skill:', err);
     } finally {
@@ -352,18 +402,55 @@ export default function ConsolidatedProfileTab({
     }
   };
 
+  // Save full profile snapshot
+  const handleSaveSnapshot = async () => {
+    if (!selectedId || !perfilArgentina) return;
+
+    setIsSaving(true);
+
+    try {
+      const uri = `http://data.europa.eu/esco/occupation/${selectedId}`;
+      const res = await fetch('/api/esco-argentino', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          esco_occupation_uri: uri,
+          esco_occupation_label: perfilArgentina.esco_label,
+          isco_code: perfilArgentina.isco_code,
+          skills_consolidadas: consolidatedSkills,
+          cobertura_esco_essential: perfilArgentina.comparison.coverage_essential,
+          cobertura_esco_total: perfilArgentina.comparison.coverage_total,
+          ofertas_count_snapshot: perfilArgentina.offer_count,
+          updated_by: 'dashboard_user'
+        })
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || 'Error guardando');
+      }
+
+      const result = await res.json();
+      setEscoArgentino(result.data);
+    } catch (err) {
+      console.error('Error saving snapshot:', err);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   // Loading state
-  if (!molProfileData || isLoadingConsolidated || isMolLoading) {
+  if (isLoadingOccupations) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
-        <span className="ml-3 text-gray-600">Cargando datos...</span>
+        <span className="ml-3 text-gray-600">Cargando ocupaciones...</span>
       </div>
     );
   }
 
   const selectedInfo = occupationsList.find(o => o.id === selectedId);
-  const approvedCount = consolidatedSkills.filter(s => s.source === 'mol_approved').length;
+  const approvedCount = consolidatedSkills.filter(s => s.source === 'argentina_approved').length;
   const escoCommonCount = consolidatedSkills.filter(s => s.source === 'esco_common').length;
 
   return (
@@ -373,39 +460,25 @@ export default function ConsolidatedProfileTab({
         <div>
           <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
             <Layers className="w-7 h-7 text-purple-600" />
-            Perfil Consolidado
+            ESCO Argentino - Perfil Consolidado
           </h2>
           <p className="text-gray-600 mt-1">
-            Construye el perfil de skills Argentina para cada ocupacion combinando ESCO + demanda real
+            Construye el perfil de skills para Argentina combinando ESCO + demanda real del mercado
           </p>
-          {molProfileData && (
-            <p className="text-xs text-gray-500 mt-1">
-              Datos: {molProfileData.stats.total_offers.toLocaleString()} ofertas |{' '}
-              {Object.keys(molProfileData.occupations).length} ocupaciones |{' '}
-              Generado: {new Date(molProfileData.generated_at).toLocaleDateString()}
-            </p>
-          )}
+          <p className="text-xs text-gray-500 mt-1">
+            {occupationsList.length} ocupaciones disponibles | Datos calculados en tiempo real desde Supabase
+          </p>
         </div>
-        <button
-          onClick={() => {
-            setIsMolLoading(true);
-            fetch('/data/mol_skills_profile.json')
-              .then(res => res.json())
-              .then(data => {
-                setMolProfileData(data);
-                setIsMolLoading(false);
-              })
-              .catch(err => {
-                console.error('Error refreshing:', err);
-                setIsMolLoading(false);
-              });
-          }}
-          disabled={isMolLoading}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm text-purple-600 hover:bg-purple-50 rounded-lg border border-purple-200 disabled:opacity-50"
-        >
-          <RefreshCw className={`w-4 h-4 ${isMolLoading ? 'animate-spin' : ''}`} />
-          Refrescar
-        </button>
+        {selectedId && (
+          <button
+            onClick={handleRefresh}
+            disabled={isLoadingPerfil || isLoadingEscoArg}
+            className="flex items-center gap-2 px-3 py-1.5 text-sm text-purple-600 hover:bg-purple-50 rounded-lg border border-purple-200 disabled:opacity-50"
+          >
+            <RefreshCw className={`w-4 h-4 ${isLoadingPerfil ? 'animate-spin' : ''}`} />
+            Refrescar
+          </button>
+        )}
       </div>
 
       {/* Occupation Selector */}
@@ -419,9 +492,15 @@ export default function ConsolidatedProfileTab({
             <div className="flex-1">
               <div className="font-semibold text-purple-900">{selectedInfo.label}</div>
               <div className="text-sm text-purple-700">
-                ISCO: {selectedInfo.isco} | {selectedMolProfile?.offer_count || 0} ofertas |{' '}
+                ISCO: {selectedInfo.isco} |{' '}
+                {perfilArgentina ? `${perfilArgentina.offer_count} ofertas` : 'Cargando...'} |{' '}
                 {consolidatedSkills.length} consolidadas | {candidateSkills.length} candidatas
               </div>
+              {escoArgentino && (
+                <div className="text-xs text-purple-600 mt-1">
+                  ESCO Argentino v{escoArgentino.version} - Actualizado: {new Date(escoArgentino.updated_at).toLocaleDateString()}
+                </div>
+              )}
             </div>
             <button
               onClick={handleClear}
@@ -450,7 +529,7 @@ export default function ConsolidatedProfileTab({
                 />
               ) : (
                 <span className="flex-1 text-gray-500">
-                  Buscar entre {occupationsWithMOL.length} ocupaciones con datos MOL...
+                  Buscar entre {occupationsList.length} ocupaciones con datos MOL...
                 </span>
               )}
               <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -466,7 +545,7 @@ export default function ConsolidatedProfileTab({
                   <div className="px-3 py-2 bg-gray-50 border-b text-sm text-gray-600">
                     {searchTerm
                       ? `${filteredOccupations.length} resultados`
-                      : `${occupationsWithMOL.length} ocupaciones con datos MOL`}
+                      : `${occupationsList.length} ocupaciones con datos MOL`}
                   </div>
                   <ul className="overflow-y-auto max-h-64">
                     {filteredOccupations.length === 0 ? (
@@ -474,35 +553,26 @@ export default function ConsolidatedProfileTab({
                         No se encontraron ocupaciones
                       </li>
                     ) : (
-                      filteredOccupations.slice(0, 100).map(occ => {
-                        const profile = molProfileData.occupations[occ.id];
-                        const hasConsolidated = consolidatedData?.profiles[occ.id];
-                        return (
-                          <li
-                            key={occ.id}
-                            onClick={() => handleSelect(occ.id)}
-                            className="px-4 py-3 hover:bg-purple-50 cursor-pointer border-b border-gray-100 last:border-0"
-                          >
-                            <div className="flex items-center justify-between">
-                              <div className="font-medium text-gray-900 flex items-center gap-2">
-                                {occ.label}
-                                {hasConsolidated && (
-                                  <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">
-                                    Consolidado
-                                  </span>
-                                )}
-                              </div>
-                              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
-                                <Users className="w-3 h-3" />
-                                {profile?.offer_count || 0}
-                              </div>
+                      filteredOccupations.slice(0, 100).map(occ => (
+                        <li
+                          key={occ.id}
+                          onClick={() => handleSelect(occ.id)}
+                          className="px-4 py-3 hover:bg-purple-50 cursor-pointer border-b border-gray-100 last:border-0"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="font-medium text-gray-900">
+                              {occ.label}
                             </div>
-                            <div className="text-sm text-gray-500">
-                              ISCO: {occ.isco}
+                            <div className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+                              <Users className="w-3 h-3" />
+                              {occ.offer_count || 0}
                             </div>
-                          </li>
-                        );
-                      })
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            ISCO: {occ.isco}
+                          </div>
+                        </li>
+                      ))
                     )}
                   </ul>
                 </div>
@@ -512,10 +582,28 @@ export default function ConsolidatedProfileTab({
         )}
       </div>
 
+      {/* Loading/Error states */}
+      {selectedId && isLoadingPerfil && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-purple-500 mx-auto mb-3" />
+          <p className="text-gray-600">Calculando perfil en tiempo real desde Supabase...</p>
+        </div>
+      )}
+
+      {selectedId && perfilError && (
+        <div className="bg-red-50 rounded-xl border border-red-200 p-4 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="font-medium text-red-800">Error cargando perfil</p>
+            <p className="text-sm text-red-600">{perfilError}</p>
+          </div>
+        </div>
+      )}
+
       {/* Content when occupation selected */}
-      {selectedMolProfile && (
+      {perfilArgentina && (
         <>
-          {/* Frequency Filter */}
+          {/* Frequency Filter + Save Button */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -526,17 +614,27 @@ export default function ConsolidatedProfileTab({
                   Solo mostrar skills emergentes que aparecen en al menos este % de ofertas
                 </p>
               </div>
-              <div className="flex items-center gap-4">
-                <input
-                  type="range"
-                  min="5"
-                  max="50"
-                  step="5"
-                  value={minFrequency}
-                  onChange={(e) => setMinFrequency(Number(e.target.value))}
-                  className="w-32"
-                />
-                <span className="text-lg font-bold text-purple-600 w-12 text-right">{minFrequency}%</span>
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-4">
+                  <input
+                    type="range"
+                    min="5"
+                    max="50"
+                    step="5"
+                    value={minFrequency}
+                    onChange={(e) => setMinFrequency(Number(e.target.value))}
+                    className="w-32"
+                  />
+                  <span className="text-lg font-bold text-purple-600 w-12 text-right">{minFrequency}%</span>
+                </div>
+                <button
+                  onClick={handleSaveSnapshot}
+                  disabled={isSaving || consolidatedSkills.length === 0}
+                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Save className="w-4 h-4" />
+                  {isSaving ? 'Guardando...' : 'Guardar ESCO Argentino'}
+                </button>
               </div>
             </div>
           </div>
@@ -550,7 +648,7 @@ export default function ConsolidatedProfileTab({
                 Skills Consolidadas ({consolidatedSkills.length})
               </h3>
               <p className="text-sm text-gray-600 mb-3">
-                Skills validadas: ESCO en comun + aprobadas manualmente
+                Skills validadas: ESCO en comun + aprobadas para Argentina
               </p>
 
               <div className="flex gap-2 mb-3 text-xs">
@@ -558,7 +656,7 @@ export default function ConsolidatedProfileTab({
                   ESCO: {escoCommonCount}
                 </span>
                 <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded">
-                  Aprobadas: {approvedCount}
+                  Argentina: {approvedCount}
                 </span>
               </div>
 
@@ -572,24 +670,24 @@ export default function ConsolidatedProfileTab({
                     <li
                       key={`${skill.label_normalized}-${idx}`}
                       className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded text-sm ${
-                        skill.source === 'mol_approved' ? 'bg-purple-50' : 'bg-green-50'
+                        skill.source === 'argentina_approved' ? 'bg-purple-50' : 'bg-green-50'
                       }`}
                     >
                       <div className="flex items-center gap-2 flex-1 min-w-0">
-                        {skill.source === 'mol_approved' ? (
+                        {skill.source === 'argentina_approved' ? (
                           <Plus className="flex-shrink-0 w-3 h-3 text-purple-500" />
                         ) : (
                           <Star className="flex-shrink-0 w-3 h-3 text-blue-500 fill-blue-500" />
                         )}
-                        <span className="truncate">{skill.label_original}</span>
+                        <span className="truncate">{skill.label}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className={`flex-shrink-0 font-medium ${
-                          skill.source === 'mol_approved' ? 'text-purple-700' : 'text-green-700'
+                          skill.source === 'argentina_approved' ? 'text-purple-700' : 'text-green-700'
                         }`}>
-                          {skill.percentage}%
+                          {skill.percentage_when_approved || 0}%
                         </span>
-                        {skill.source === 'mol_approved' && (
+                        {skill.source === 'argentina_approved' && (
                           <button
                             onClick={() => handleRemove(skill)}
                             disabled={isSaving}
@@ -736,7 +834,7 @@ export default function ConsolidatedProfileTab({
       )}
 
       {/* Empty state */}
-      {!selectedMolProfile && (
+      {!selectedId && (
         <div className="bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 p-12 text-center">
           <Layers className="w-16 h-16 mx-auto text-gray-300 mb-4" />
           <h3 className="text-lg font-medium text-gray-600 mb-2">
@@ -744,7 +842,7 @@ export default function ConsolidatedProfileTab({
           </h3>
           <p className="text-gray-500 max-w-md mx-auto">
             Usa el buscador para encontrar una ocupacion ESCO y construir su perfil
-            consolidado de skills para Argentina.
+            consolidado de skills para Argentina. Los datos se calculan en tiempo real.
           </p>
         </div>
       )}
