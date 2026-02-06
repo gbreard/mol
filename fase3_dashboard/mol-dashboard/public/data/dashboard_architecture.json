@@ -61,7 +61,7 @@
       "type": "admin",
       "description": "Estado de scrapers y ultimas ejecuciones",
       "components": ["ScrapingStatus"],
-      "dataSource": []
+      "dataSource": ["sistema_estado", "ofertas_dashboard"]
     },
     {
       "id": "admin-metricas",
@@ -97,7 +97,7 @@
       "type": "admin",
       "description": "Logs del sistema y errores",
       "components": ["LogsViewer"],
-      "dataSource": []
+      "dataSource": ["audit_log", "eventos_uso"]
     },
     {
       "id": "admin-arquitectura",

@@ -1270,6 +1270,68 @@ export async function getOfertasByMultipleIsco(
   }
 }
 
+// ========== AUDIT LOG - REGISTRAR ACCIONES ==========
+
+/**
+ * Registra una acción en el audit_log
+ * Usar para trackear navegación, exportaciones, etc.
+ */
+export async function logAction(
+  accion: string,
+  recurso: string,
+  recurso_id?: string,
+  detalle?: Record<string, unknown>
+): Promise<void> {
+  const client = getSupabaseClient()
+  if (!client) return
+
+  try {
+    const { data: { user } } = await client.auth.getUser()
+    if (!user) return
+
+    await client
+      .from('audit_log')
+      .insert({
+        usuario_id: user.id,
+        accion,
+        recurso,
+        recurso_id,
+        detalle
+      })
+  } catch (error) {
+    // Silently fail - audit logs shouldn't break the app
+    console.debug('Audit log error:', error)
+  }
+}
+
+/**
+ * Registra un evento de uso (analytics ligero)
+ */
+export async function logEvent(
+  evento: string,
+  categoria: string,
+  metadata?: Record<string, unknown>
+): Promise<void> {
+  const client = getSupabaseClient()
+  if (!client) return
+
+  try {
+    const { data: { user } } = await client.auth.getUser()
+    if (!user) return
+
+    await client
+      .from('eventos_uso')
+      .insert({
+        usuario_id: user.id,
+        evento,
+        categoria,
+        metadata
+      })
+  } catch (error) {
+    console.debug('Event log error:', error)
+  }
+}
+
 // ========== SKILLS INTELLIGENCE - DATOS DINÁMICOS ==========
 
 export interface SkillsIntelligenceStats {
