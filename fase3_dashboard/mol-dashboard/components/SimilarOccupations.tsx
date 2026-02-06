@@ -13,6 +13,17 @@ interface SimilarOccupationsProps {
   showQuantitySelector?: boolean;
 }
 
+// Helper to normalize ISCO code (remove 'C' prefix if present)
+function normalizeIsco(isco: string): string {
+  return isco.startsWith('C') ? isco.substring(1) : isco;
+}
+
+// Helper to get ofertas count with normalized ISCO
+function getOfertasCount(isco: string, countMap: Record<string, number>): number {
+  // Try original format first, then normalized
+  return countMap[isco] || countMap[normalizeIsco(isco)] || 0;
+}
+
 export default function SimilarOccupations({
   occupations,
   ofertasCountMap = {},
@@ -26,7 +37,7 @@ export default function SimilarOccupations({
   const displayed = occupations.slice(0, displayCount);
 
   // Separate occupations with and without offers
-  const withOffers = displayed.filter(occ => (ofertasCountMap[occ.isco] || 0) > 0);
+  const withOffers = displayed.filter(occ => getOfertasCount(occ.isco, ofertasCountMap) > 0);
   const hasOfertasData = Object.keys(ofertasCountMap).length > 0;
 
   if (displayed.length === 0) {
@@ -70,7 +81,7 @@ export default function SimilarOccupations({
         <ul className="space-y-2">
           {displayed.map((occ, index) => {
             const percentMatch = Math.round(occ.jaccard * 100);
-            const ofertasCount = ofertasCountMap[occ.isco] || 0;
+            const ofertasCount = getOfertasCount(occ.isco, ofertasCountMap);
 
             return (
               <li
@@ -144,7 +155,7 @@ export default function SimilarOccupations({
                   {/* Link to offers */}
                   {hasOfertasData && ofertasCount > 0 && (
                     <a
-                      href={`/?tab=ofertas&isco=${occ.isco}`}
+                      href={`/?tab=ofertas&isco=${normalizeIsco(occ.isco)}`}
                       className="text-xs text-green-600 hover:text-green-800 hover:underline flex items-center gap-1"
                     >
                       Ver {ofertasCount} {ofertasCount === 1 ? 'oferta' : 'ofertas'}
@@ -177,7 +188,7 @@ export default function SimilarOccupations({
 
           <ul className="space-y-2">
             {withOffers.slice(0, displayCount).map((occ, index) => {
-              const ofertasCount = ofertasCountMap[occ.isco] || 0;
+              const ofertasCount = getOfertasCount(occ.isco, ofertasCountMap);
               const percentMatch = Math.round(occ.jaccard * 100);
 
               return (
@@ -203,7 +214,7 @@ export default function SimilarOccupations({
                     </div>
 
                     <a
-                      href={`/?tab=ofertas&isco=${occ.isco}`}
+                      href={`/?tab=ofertas&isco=${normalizeIsco(occ.isco)}`}
                       className="flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition-colors"
                     >
                       Ver ofertas

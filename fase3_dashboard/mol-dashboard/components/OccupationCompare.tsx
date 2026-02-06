@@ -5,6 +5,16 @@ import { Search, Loader2, GitCompare, ChevronDown, X, Check, AlertCircle, Star, 
 import { OccupationDetail, OccupationFullDetailIndex, SkillItem } from '@/lib/types';
 import { getOfertasCountByIsco } from '@/lib/supabase';
 
+// Helper to normalize ISCO code (remove 'C' prefix if present)
+function normalizeIsco(isco: string): string {
+  return isco.startsWith('C') ? isco.substring(1) : isco;
+}
+
+// Helper to get ofertas count with normalized ISCO
+function getOfertasCount(isco: string, countMap: Record<string, number>): number {
+  return countMap[isco] || countMap[normalizeIsco(isco)] || 0;
+}
+
 interface OccupationBasicInfo {
   id: string;
   label: string;
@@ -178,7 +188,7 @@ export default function OccupationCompare({
           {/* Banner: Ofertas activas para ocupación objetivo */}
           {(() => {
             const occBInfo = occupationsList.find(o => o.id === selectedBId);
-            const ofertasCount = occBInfo ? ofertasCountMap[occBInfo.isco] || 0 : 0;
+            const ofertasCount = occBInfo ? getOfertasCount(occBInfo.isco, ofertasCountMap) : 0;
             if (ofertasCount === 0) return null;
 
             return (
@@ -197,7 +207,7 @@ export default function OccupationCompare({
                   </div>
                 </div>
                 <a
-                  href={`/?tab=ofertas&isco=${occBInfo?.isco}`}
+                  href={`/?tab=ofertas&isco=${occBInfo ? normalizeIsco(occBInfo.isco) : ''}`}
                   className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
                 >
                   Ver ofertas
