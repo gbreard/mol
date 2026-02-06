@@ -37,7 +37,7 @@
 | - | `/admin/scraping` | ⚠️ Solo lectura | No ejecuta |
 | - | `/admin/metricas` | ✅ Funcional | - |
 | - | `/admin/logs` | ⚠️ Prueba | Datos de prueba |
-| - | `/admin/configuracion` | ⚠️ UI | Sin backend |
+| - | `/admin/configuracion` | ✅ Fase 1 | Solo lectura - [11_CONFIGURACION](./11_CONFIGURACION_ADMIN.md) |
 
 ### Componentes Existentes
 
@@ -145,7 +145,7 @@ MOL Platform
 | P-21 | `/admin/scraping` | [U-ADMIN](./01_MODELO_NEGOCIO.md#u-admin) | ⚠️ Lectura | [admin.md#p-21](./03_WIREFRAMES/admin.md#p-21-scraping) |
 | P-22 | `/admin/metricas` | [U-ADMIN](./01_MODELO_NEGOCIO.md#u-admin) | ✅ Existe | [admin.md#p-22](./03_WIREFRAMES/admin.md#p-22-metricas) |
 | P-23 | `/admin/logs` | [U-ADMIN](./01_MODELO_NEGOCIO.md#u-admin) | ⚠️ Prueba | [admin.md#p-23](./03_WIREFRAMES/admin.md#p-23-logs) |
-| P-24 | `/admin/configuracion` | [U-ADMIN](./01_MODELO_NEGOCIO.md#u-admin) | ⚠️ UI | [admin.md#p-24](./03_WIREFRAMES/admin.md#p-24-configuracion) |
+| P-24 | `/admin/configuracion` | [U-ADMIN](./01_MODELO_NEGOCIO.md#u-admin) | ✅ Fase 1 | [11_CONFIGURACION](./11_CONFIGURACION_ADMIN.md) |
 | P-25 | `/admin/arquitectura` | [U-ADMIN](./01_MODELO_NEGOCIO.md#u-admin) | ✅ Existe | [10_OBSERVABILIDAD](./10_OBSERVABILIDAD.md) |
 
 ---
