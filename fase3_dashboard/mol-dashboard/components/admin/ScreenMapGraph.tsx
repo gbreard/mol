@@ -107,13 +107,18 @@ export default function ScreenMapGraph({ pages, apiRoutes, connections }: Props)
       }))
     ];
 
-    // Create links from connections
-    const links: Link[] = connections.map(c => ({
-      source: c.from,
-      target: c.to,
-      type: c.type,
-      label: c.label
-    }));
+    // Get valid node IDs for filtering connections
+    const nodeIds = new Set(nodes.map(n => n.id));
+
+    // Create links from connections, filtering out references to non-existent nodes (like Supabase tables)
+    const links: Link[] = connections
+      .filter(c => nodeIds.has(c.from) && nodeIds.has(c.to))
+      .map(c => ({
+        source: c.from,
+        target: c.to,
+        type: c.type,
+        label: c.label
+      }));
 
     // Create simulation
     const simulation = d3.forceSimulation(nodes as d3.SimulationNodeDatum[])
