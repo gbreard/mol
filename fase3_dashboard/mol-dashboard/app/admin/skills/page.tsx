@@ -334,7 +334,6 @@ export default function AdminSkillsPage() {
       {activeTab === 'argentina' && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <ArgentinaProfileTab
-            molProfileData={molProfileData}
             occupationsData={occupationsData}
             occupationsList={occupationsList}
           />
