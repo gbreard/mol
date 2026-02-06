@@ -76,7 +76,7 @@ function IssueItem({ issue, compact, showOfertaLink }: { issue: Issue; compact?:
             <IssueBadge variant="tipo" value={issue.tipo} size="sm" />
             <span className="text-xs text-blue-600 flex items-center gap-1">
               <User className="w-3 h-3" />
-              {issue.autor_email.split('@')[0]}
+              {issue.autor_nombre || issue.autor_email.split('@')[0]}
             </span>
             {issue.id_oferta && (
               <span className="text-xs text-gray-500 flex items-center gap-1">
@@ -126,7 +126,7 @@ function IssueItem({ issue, compact, showOfertaLink }: { issue: Issue; compact?:
           <div className="flex items-center gap-4 text-xs text-gray-500">
             <span className="flex items-center gap-1 font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
               <User className="w-3 h-3" />
-              {issue.autor_email}
+              {issue.autor_nombre || issue.autor_email}
             </span>
             <span className="flex items-center gap-1">
               <Clock className="w-3 h-3" />

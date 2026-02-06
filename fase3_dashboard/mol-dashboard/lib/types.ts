@@ -32,6 +32,7 @@ export interface Issue {
   id_oferta?: string;
   autor_id: string;
   autor_email: string;
+  autor_nombre?: string;  // Nombre completo del autor
   created_at: string;
   updated_at: string;
   resuelto_at?: string;

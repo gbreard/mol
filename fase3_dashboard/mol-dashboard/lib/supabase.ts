@@ -969,6 +969,7 @@ export async function createIssue(issue: {
   id_oferta?: string;
   autor_id: string;
   autor_email: string;
+  autor_nombre?: string;
 }): Promise<Issue> {
   const client = getSupabaseClient()
   if (!client) throw new Error('Supabase no está configurado')

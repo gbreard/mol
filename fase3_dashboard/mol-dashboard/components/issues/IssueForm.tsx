@@ -29,16 +29,23 @@ export function IssueForm({ onSuccess, onCancel, compact = false }: IssueFormPro
   const [error, setError] = useState<string | null>(null);
 
   // Usuario actual
-  const [currentUser, setCurrentUser] = useState<{ id: string; email: string } | null>(null);
+  const [currentUser, setCurrentUser] = useState<{ id: string; email: string; nombre: string } | null>(null);
 
   useEffect(() => {
     async function loadUser() {
       const supabase = createBrowserClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        // Obtener nombre de user_metadata o usar email como fallback
+        const displayName = user.user_metadata?.display_name ||
+                           user.user_metadata?.full_name ||
+                           user.user_metadata?.name ||
+                           user.email?.split('@')[0] ||
+                           'Usuario';
         setCurrentUser({
           id: user.id,
-          email: user.email || ""
+          email: user.email || "",
+          nombre: displayName
         });
       }
     }
@@ -70,6 +77,7 @@ export function IssueForm({ onSuccess, onCancel, compact = false }: IssueFormPro
         id_oferta: selectedOferta?.id_oferta,
         autor_id: currentUser.id,
         autor_email: currentUser.email,
+        autor_nombre: currentUser.nombre,
       });
 
       // Reset form
@@ -118,7 +126,7 @@ export function IssueForm({ onSuccess, onCancel, compact = false }: IssueFormPro
         {currentUser && (
           <div className="flex items-center gap-1 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
             <User className="w-3 h-3" />
-            <span>{currentUser.email.split('@')[0]}</span>
+            <span>{currentUser.nombre}</span>
           </div>
         )}
       </div>
