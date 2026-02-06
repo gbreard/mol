@@ -90,7 +90,8 @@ MOL Platform
     ├── /admin/scraping ──── P-21 Scraping
     ├── /admin/metricas ──── P-22 Métricas
     ├── /admin/logs ──────── P-23 Logs
-    └── /admin/configuracion P-24 Configuración
+    ├── /admin/configuracion P-24 Configuración
+    └── /admin/arquitectura  P-25 Arquitectura Sistema
 ```
 
 ---
@@ -145,6 +146,7 @@ MOL Platform
 | P-22 | `/admin/metricas` | [U-ADMIN](./01_MODELO_NEGOCIO.md#u-admin) | ✅ Existe | [admin.md#p-22](./03_WIREFRAMES/admin.md#p-22-metricas) |
 | P-23 | `/admin/logs` | [U-ADMIN](./01_MODELO_NEGOCIO.md#u-admin) | ⚠️ Prueba | [admin.md#p-23](./03_WIREFRAMES/admin.md#p-23-logs) |
 | P-24 | `/admin/configuracion` | [U-ADMIN](./01_MODELO_NEGOCIO.md#u-admin) | ⚠️ UI | [admin.md#p-24](./03_WIREFRAMES/admin.md#p-24-configuracion) |
+| P-25 | `/admin/arquitectura` | [U-ADMIN](./01_MODELO_NEGOCIO.md#u-admin) | ✅ Existe | [10_OBSERVABILIDAD](./10_OBSERVABILIDAD.md) |
 
 ---
 
@@ -156,8 +158,8 @@ MOL Platform
 | Checkout | 3 | 0 | 3 |
 | Suscriptor | 5 | 2 | 3 |
 | Cuenta | 3 | 0 | 3 |
-| Admin | 8 | 8 | 0 |
-| **TOTAL** | **24** | **11** | **13** |
+| Admin | 9 | 9 | 0 |
+| **TOTAL** | **25** | **12** | **13** |
 
 ---
 

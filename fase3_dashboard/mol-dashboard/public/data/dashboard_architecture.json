@@ -1,0 +1,218 @@
+{
+  "pages": [
+    {
+      "id": "home",
+      "path": "/",
+      "label": "Dashboard Principal",
+      "type": "public",
+      "description": "Vista principal con 3 tabs: Panorama, Requerimientos, Skills",
+      "components": ["PanoramaGeneral", "Requerimientos", "SkillsPanel"],
+      "dataSource": ["ofertas_dashboard", "ocupaciones_esco"]
+    },
+    {
+      "id": "login",
+      "path": "/login",
+      "label": "Login",
+      "type": "auth",
+      "description": "Autenticacion de usuarios con Supabase Auth",
+      "components": ["LoginForm"],
+      "dataSource": []
+    },
+    {
+      "id": "skills",
+      "path": "/skills",
+      "label": "Skills Intelligence",
+      "type": "public",
+      "description": "Explorador de skills ESCO con busqueda y comparacion",
+      "components": ["MySkillsSearch", "OccupationDetail", "OccupationCompare"],
+      "dataSource": ["ocupaciones_esco", "ofertas_skills"]
+    },
+    {
+      "id": "admin",
+      "path": "/admin",
+      "label": "Admin Dashboard",
+      "type": "admin",
+      "description": "Panel de administracion con estado del sistema",
+      "components": ["StatsCards", "RecentActivity"],
+      "dataSource": ["api/admin/stats"]
+    },
+    {
+      "id": "admin-usuarios",
+      "path": "/admin/usuarios",
+      "label": "Gestion Usuarios",
+      "type": "admin",
+      "description": "Administracion de usuarios y roles",
+      "components": ["UsersTable", "CreateUserForm"],
+      "dataSource": ["api/admin/users"]
+    },
+    {
+      "id": "admin-issues",
+      "path": "/admin/issues",
+      "label": "Issues/Feedback",
+      "type": "admin",
+      "description": "Gestion de issues reportados por usuarios",
+      "components": ["IssuesTable", "IssueDetail"],
+      "dataSource": ["issues"]
+    },
+    {
+      "id": "admin-scraping",
+      "path": "/admin/scraping",
+      "label": "Scraping Status",
+      "type": "admin",
+      "description": "Estado de scrapers y ultimas ejecuciones",
+      "components": ["ScrapingStatus"],
+      "dataSource": []
+    },
+    {
+      "id": "admin-metricas",
+      "path": "/admin/metricas",
+      "label": "Metricas Pipeline",
+      "type": "admin",
+      "description": "Metricas detalladas del pipeline de procesamiento",
+      "components": ["MetricsCharts"],
+      "dataSource": []
+    },
+    {
+      "id": "admin-skills",
+      "path": "/admin/skills",
+      "label": "Skills Admin",
+      "type": "admin",
+      "description": "Administracion de skills y reglas de extraccion",
+      "components": ["SkillsManager"],
+      "dataSource": ["ofertas_skills"]
+    },
+    {
+      "id": "admin-configuracion",
+      "path": "/admin/configuracion",
+      "label": "Configuracion",
+      "type": "admin",
+      "description": "Configuracion general del sistema",
+      "components": ["ConfigForm"],
+      "dataSource": []
+    },
+    {
+      "id": "admin-logs",
+      "path": "/admin/logs",
+      "label": "Logs",
+      "type": "admin",
+      "description": "Logs del sistema y errores",
+      "components": ["LogsViewer"],
+      "dataSource": []
+    },
+    {
+      "id": "admin-arquitectura",
+      "path": "/admin/arquitectura",
+      "label": "Arquitectura",
+      "type": "admin",
+      "description": "Visualizacion de arquitectura y estado del sistema",
+      "components": ["ScreenMapGraph", "PipelineFlow", "PhaseStatusCard"],
+      "dataSource": ["api/admin/architecture-metrics"]
+    }
+  ],
+  "apiRoutes": [
+    {
+      "id": "api-stats",
+      "path": "/api/admin/stats",
+      "method": "GET",
+      "description": "Estadisticas generales del sistema",
+      "usedBy": ["/admin"]
+    },
+    {
+      "id": "api-users",
+      "path": "/api/admin/users",
+      "method": "GET/POST",
+      "description": "CRUD de usuarios",
+      "usedBy": ["/admin/usuarios"]
+    },
+    {
+      "id": "api-architecture-metrics",
+      "path": "/api/admin/architecture-metrics",
+      "method": "GET",
+      "description": "Metricas de las 3 fases del pipeline",
+      "usedBy": ["/admin/arquitectura"]
+    },
+    {
+      "id": "api-skills-intelligence",
+      "path": "/api/skills-intelligence",
+      "method": "GET",
+      "description": "Datos de skills para ocupaciones",
+      "usedBy": ["/skills"]
+    },
+    {
+      "id": "api-occupations-search",
+      "path": "/api/occupations/search",
+      "method": "GET",
+      "description": "Busqueda de ocupaciones ESCO",
+      "usedBy": ["/skills"]
+    },
+    {
+      "id": "api-occupations-skills",
+      "path": "/api/occupations/skills",
+      "method": "GET",
+      "description": "Skills de una ocupacion especifica",
+      "usedBy": ["/skills"]
+    },
+    {
+      "id": "api-consolidated-profiles",
+      "path": "/api/consolidated-profiles",
+      "method": "GET",
+      "description": "Perfiles consolidados de skills",
+      "usedBy": ["/"]
+    }
+  ],
+  "connections": [
+    { "from": "/", "to": "/login", "type": "navigation", "label": "Si no autenticado" },
+    { "from": "/login", "to": "/", "type": "navigation", "label": "Login exitoso" },
+    { "from": "/", "to": "/skills", "type": "navigation", "label": "Ver skills" },
+    { "from": "/admin", "to": "/api/admin/stats", "type": "data", "label": "Fetch stats" },
+    { "from": "/admin/usuarios", "to": "/api/admin/users", "type": "data", "label": "CRUD users" },
+    { "from": "/admin/arquitectura", "to": "/api/admin/architecture-metrics", "type": "data", "label": "Fetch metrics" },
+    { "from": "/skills", "to": "/api/skills-intelligence", "type": "data", "label": "Fetch skills" },
+    { "from": "/skills", "to": "/api/occupations/search", "type": "data", "label": "Search" },
+    { "from": "/", "to": "/api/consolidated-profiles", "type": "data", "label": "Perfiles" },
+    { "from": "/admin", "to": "/admin/usuarios", "type": "navigation", "label": "Nav" },
+    { "from": "/admin", "to": "/admin/issues", "type": "navigation", "label": "Nav" },
+    { "from": "/admin", "to": "/admin/arquitectura", "type": "navigation", "label": "Nav" }
+  ],
+  "pipeline": {
+    "phases": [
+      {
+        "id": "phase1",
+        "name": "Adquisicion",
+        "description": "Scraping de portales de empleo",
+        "components": [
+          { "id": "scraper-bumeran", "name": "Scraper Bumeran", "type": "scraper" },
+          { "id": "scraper-zonajobs", "name": "Scraper ZonaJobs", "type": "scraper" },
+          { "id": "scraper-computrabajo", "name": "Scraper Computrabajo", "type": "scraper" },
+          { "id": "scheduler", "name": "run_scheduler.py", "type": "orchestrator" }
+        ],
+        "entryPoint": "run_scheduler.py",
+        "output": "ofertas (raw) en SQLite"
+      },
+      {
+        "id": "phase2",
+        "name": "Procesamiento",
+        "description": "NLP, Skills, Matching ESCO",
+        "components": [
+          { "id": "nlp", "name": "NLP Extractor", "type": "processor", "model": "Qwen2.5:7b" },
+          { "id": "skills", "name": "Skills Extractor", "type": "processor", "model": "BGE-M3" },
+          { "id": "matching", "name": "ESCO Matcher", "type": "processor", "model": "BGE-M3" },
+          { "id": "validator", "name": "Auto Validator", "type": "validator" }
+        ],
+        "entryPoint": "run_validated_pipeline.py",
+        "output": "ofertas_nlp, ofertas_esco_matching"
+      },
+      {
+        "id": "phase3",
+        "name": "Presentacion",
+        "description": "Sync a Supabase y Dashboard",
+        "components": [
+          { "id": "sync", "name": "sync_to_supabase.py", "type": "sync" },
+          { "id": "dashboard", "name": "Next.js Dashboard", "type": "frontend" }
+        ],
+        "entryPoint": "sync_to_supabase.py",
+        "output": "ofertas_dashboard en Supabase"
+      }
+    ]
+  }
+}
