@@ -6,7 +6,7 @@
       "label": "Dashboard Principal",
       "type": "public",
       "description": "Vista principal con 3 tabs: Panorama, Requerimientos, Skills",
-      "components": ["PanoramaGeneral", "Requerimientos", "SkillsPanel"],
+      "components": ["PanoramaGeneral", "Requerimientos", "SkillsPanel", "OfertasLaborales", "ExportButton"],
       "dataSource": ["ofertas_dashboard", "ocupaciones_esco"]
     },
     {

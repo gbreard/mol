@@ -1,6 +1,6 @@
 # MOL Dashboard - Documentación de Planificación
 
-> Última actualización: 2026-02-05
+> Última actualización: 2026-02-06
 
 ## Mapa de Documentos
 
@@ -80,12 +80,17 @@
 | **Total issues técnicos** | **47** |
 | **Issues de usuario** | **9** |
 
-### Issues de Usuario Activos (admin@oede.gob.ar)
+### Issues de Usuario (admin@oede.gob.ar)
 
-| Pantalla | Issues | Temas |
-|----------|--------|-------|
-| P-09 Dashboard | 6 | Exports, Filtros, Rediseño |
-| P-10 Skills | 3 | Perfiles, Indicadores mercado |
+| Estado | Cantidad | Detalle |
+|--------|----------|---------|
+| ✅ Resueltos | 3 | #1, #2, #4 (Exports) |
+| ⏳ Pendientes | 6 | Filtros, Rediseños, Indicadores |
+
+| Pantalla | Resueltos | Pendientes |
+|----------|-----------|------------|
+| P-09 Dashboard | 3 (#1,#2,#4) | 3 (#3,#5,#6) |
+| P-10 Skills | 0 | 3 (#7,#8,#9) |
 
 → Ver [ANALISIS_ISSUES_USUARIO](./ANALISIS_ISSUES_USUARIO.md) para detalle
 
