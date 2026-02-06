@@ -4,14 +4,20 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
+// Table names (same as sync_to_supabase.py)
+const TABLE_OFERTAS = 'ofertas_dashboard';
+const TABLE_SKILLS = 'ofertas_skills';
+const TABLE_OCUPACIONES = 'ocupaciones_esco';
+const TABLE_ISSUES = 'issues';
+
 export async function GET() {
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get total and active offers
+    // Get all offers from ofertas_dashboard
     const { data: ofertasData, error: ofertasError } = await supabase
-      .from('ofertas')
-      .select('id, fuente, fecha_publicacion, activa', { count: 'exact' });
+      .from(TABLE_OFERTAS)
+      .select('id_oferta, portal, fecha_publicacion, isco_code, estado');
 
     if (ofertasError) {
       console.error('Error fetching ofertas:', ofertasError);
@@ -19,16 +25,16 @@ export async function GET() {
 
     const ofertas = ofertasData || [];
     const ofertasTotales = ofertas.length;
-    const ofertasActivas = ofertas.filter(o => o.activa).length;
+    const ofertasActivas = ofertas.filter(o => o.estado === 'activa').length;
 
-    // Count by source
+    // Count by source (portal)
     const fuentesCounts: Record<string, number> = {};
     ofertas.forEach(o => {
-      const fuente = o.fuente || 'unknown';
+      const fuente = o.portal || 'unknown';
       fuentesCounts[fuente] = (fuentesCounts[fuente] || 0) + 1;
     });
 
-    // Get last scraping date
+    // Get last sync date
     let ultimoScraping: string | null = null;
     let diasDesdeScraping: number | null = null;
     if (ofertas.length > 0) {
@@ -45,80 +51,67 @@ export async function GET() {
       }
     }
 
-    // Get NLP and matching stats from ofertas_esco_matching view or table
-    const { data: matchingData, error: matchingError } = await supabase
-      .from('ofertas')
-      .select('id, isco, estado_validacion');
+    // Get NLP and matching stats
+    // In Supabase, all synced offers have NLP and matching (only validated ones are synced)
+    const conNlp = ofertas.length;
+    const sinNlp = 0; // Local SQLite has pending, but Supabase only has processed
+    const conMatching = ofertas.filter(o => o.isco_code).length;
+    const validadas = ofertas.length; // All in Supabase are validated
 
-    if (matchingError) {
-      console.error('Error fetching matching data:', matchingError);
-    }
-
-    const matching = matchingData || [];
-    const conNlp = matching.filter(m => m.isco).length;
-    const sinNlp = matching.filter(m => !m.isco).length;
-    const conMatching = matching.filter(m => m.isco).length;
-    const validadas = matching.filter(m => m.estado_validacion === 'validado_claude' || m.estado_validacion === 'validado_humano').length;
-
-    // Get validation errors count
+    // Get issues count (pending errors)
     const { count: erroresCount, error: erroresError } = await supabase
-      .from('validation_errors')
+      .from(TABLE_ISSUES)
       .select('id', { count: 'exact', head: true })
-      .eq('resuelto', false);
+      .eq('estado', 'abierto');
 
     if (erroresError) {
-      console.error('Error fetching validation errors:', erroresError);
+      console.error('Error fetching issues:', erroresError);
     }
 
     const erroresSinResolver = erroresCount || 0;
 
-    // Get rules count (approximation - we'll use a fixed value or config)
-    const reglasNegocio = 140; // From CLAUDE.md - this could be fetched from sistema_estado
-
-    // Get Supabase stats (ofertas in dashboard)
-    const { count: supabaseCount, error: supabaseError } = await supabase
-      .from('ofertas')
-      .select('id', { count: 'exact', head: true });
-
-    if (supabaseError) {
-      console.error('Error counting supabase ofertas:', supabaseError);
+    // Get rules count from sistema_estado if exists, otherwise default
+    let reglasNegocio = 140;
+    const { data: estadoData } = await supabase
+      .from('sistema_estado')
+      .select('reglas_negocio')
+      .single();
+    if (estadoData?.reglas_negocio) {
+      reglasNegocio = estadoData.reglas_negocio;
     }
 
-    const ofertasSupabase = supabaseCount || 0;
+    // Get skills count for additional info
+    const { count: skillsCount } = await supabase
+      .from(TABLE_SKILLS)
+      .select('id', { count: 'exact', head: true });
 
-    // Calculate pending sync (difference between validadas and supabase)
-    const pendientesSync = Math.max(0, validadas - ofertasSupabase);
+    // Get ocupaciones count
+    const { count: ocupacionesCount } = await supabase
+      .from(TABLE_OCUPACIONES)
+      .select('esco_uri', { count: 'exact', head: true });
+
+    // Supabase stats
+    const ofertasSupabase = ofertasTotales;
+    const pendientesSync = 0; // Can't know from Supabase alone
 
     // Determine suggested phase
     let suggested = {
       fase: 3,
       nombre: 'Presentacion',
-      razon: 'Sistema funcionando normalmente'
+      razon: `${ofertasSupabase} ofertas en dashboard, ${skillsCount || 0} skills, ${ocupacionesCount || 0} ocupaciones`
     };
 
     if (erroresSinResolver > 0) {
       suggested = {
         fase: 2,
         nombre: 'Procesamiento',
-        razon: `${erroresSinResolver} errores pendientes de resolver`
-      };
-    } else if (sinNlp > conNlp * 0.1) {
-      suggested = {
-        fase: 2,
-        nombre: 'Procesamiento',
-        razon: `${sinNlp} ofertas pendientes de NLP`
+        razon: `${erroresSinResolver} issues abiertos para resolver`
       };
     } else if (diasDesdeScraping && diasDesdeScraping > 7) {
       suggested = {
         fase: 1,
         nombre: 'Adquisicion',
-        razon: `${diasDesdeScraping} dias sin scraping`
-      };
-    } else if (pendientesSync > 0) {
-      suggested = {
-        fase: 3,
-        nombre: 'Presentacion',
-        razon: `${pendientesSync} ofertas pendientes de sincronizar`
+        razon: `${diasDesdeScraping} dias desde ultima publicacion`
       };
     }
 
@@ -141,7 +134,9 @@ export async function GET() {
       },
       phase3: {
         ofertas_supabase: ofertasSupabase,
-        pendientes_sync: pendientesSync
+        pendientes_sync: pendientesSync,
+        skills_count: skillsCount || 0,
+        ocupaciones_count: ocupacionesCount || 0
       },
       suggested,
       timestamp: new Date().toISOString()
