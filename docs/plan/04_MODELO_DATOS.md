@@ -290,6 +290,55 @@ LEFT JOIN planes p ON s.plan_id = p.id;
 
 ---
 
+### vw_insights_kpis (PENDIENTE)
+
+> Referencia: [12_INSIGHTS_SISTEMA](./12_INSIGHTS_SISTEMA.md)
+
+```sql
+CREATE OR REPLACE VIEW vw_insights_kpis AS
+SELECT
+  COUNT(*) as total_ofertas,
+  COUNT(DISTINCT isco_code) as ocupaciones_distintas,
+  COUNT(DISTINCT empresa) as empresas_activas,
+  COUNT(DISTINCT provincia) as provincias
+FROM ofertas_dashboard;
+```
+
+---
+
+### vw_insights_tendencia (PENDIENTE)
+
+```sql
+CREATE OR REPLACE VIEW vw_insights_tendencia AS
+SELECT
+  DATE_TRUNC('month', fecha_publicacion::date) as mes,
+  COUNT(*) as ofertas,
+  COUNT(DISTINCT empresa) as empresas,
+  COUNT(DISTINCT isco_code) as ocupaciones
+FROM ofertas_dashboard
+GROUP BY DATE_TRUNC('month', fecha_publicacion::date)
+ORDER BY mes DESC
+LIMIT 12;
+```
+
+---
+
+### vw_insights_isco_grupos (PENDIENTE)
+
+```sql
+CREATE OR REPLACE VIEW vw_insights_isco_grupos AS
+SELECT
+  LEFT(isco_code, 1) as grupo,
+  COUNT(*) as total,
+  ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 1) as porcentaje
+FROM ofertas_dashboard
+WHERE isco_code IS NOT NULL
+GROUP BY LEFT(isco_code, 1)
+ORDER BY total DESC;
+```
+
+---
+
 ## Funciones
 
 ### check_feature_limit
@@ -316,6 +365,43 @@ BEGIN
   RETURN v_usado < p_limite;
 END;
 $$ LANGUAGE plpgsql;
+```
+
+---
+
+### get_insights (PENDIENTE)
+
+> Referencia: [12_INSIGHTS_SISTEMA](./12_INSIGHTS_SISTEMA.md) - Resuelve E-16
+
+Función RPC que devuelve todos los insights pre-calculados en una sola llamada.
+
+```sql
+CREATE OR REPLACE FUNCTION get_insights(
+  p_provincia text DEFAULT NULL,
+  p_fecha_desde date DEFAULT NULL,
+  p_fecha_hasta date DEFAULT NULL
+)
+RETURNS json AS $$
+  SELECT json_build_object(
+    'kpis', (SELECT row_to_json(k) FROM vw_insights_kpis k),
+    'top_ocupaciones', (
+      SELECT json_agg(o)
+      FROM (SELECT * FROM vw_insights_isco_grupos LIMIT 5) o
+    ),
+    'tendencia', (SELECT json_agg(t) FROM vw_insights_tendencia t),
+    'concentracion_top3', (
+      SELECT ROUND(SUM(porcentaje), 1)
+      FROM (SELECT porcentaje FROM vw_insights_isco_grupos LIMIT 3) sub
+    )
+  )
+$$ LANGUAGE sql STABLE;
+```
+
+**Uso desde cliente:**
+```typescript
+const { data } = await supabase.rpc('get_insights', {
+  p_provincia: 'Buenos Aires'
+})
 ```
 
 ---

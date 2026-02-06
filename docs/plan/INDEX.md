@@ -122,6 +122,7 @@
 | Planificación | [09_ROADMAP](./09_ROADMAP.md) | Fases, prioridades |
 | Observabilidad | [10_OBSERVABILIDAD](./10_OBSERVABILIDAD.md) | Monitoreo, métricas, arquitectura visual |
 | Configuración Admin | [11_CONFIGURACION_ADMIN](./11_CONFIGURACION_ADMIN.md) | /admin/configuracion - Fases 1-3 |
+| **Insights Sistema** | [12_INSIGHTS_SISTEMA](./12_INSIGHTS_SISTEMA.md) | Performance + ubicación insights |
 | **Issues Usuario** | [ANALISIS_ISSUES_USUARIO](./ANALISIS_ISSUES_USUARIO.md) | Feedback, priorización features |
 
 ### Por Urgencia

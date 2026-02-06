@@ -85,9 +85,12 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 | E-01 | Reemplazar .limit(10000) | CRÍTICO | ⬜ |
 | E-02 | Usar vistas SQL existentes | CRÍTICO | ⬜ |
 | E-03 | Implementar React Query | CRÍTICO | ⬜ |
+| **E-16** | **Insights SQL (no fetchAllPaginated)** | **CRÍTICO** | ⬜ |
 | E-05 | Agregar índices críticos | ALTO | ⬜ |
 | S-05 | Rate limiting en APIs | ALTO | ⬜ |
 | S-06 | Validación con Zod | ALTO | ⬜ |
+
+> **E-16 Detalle:** [12_INSIGHTS_SISTEMA](./12_INSIGHTS_SISTEMA.md) - Crear vistas vw_insights_* y función RPC get_insights()
 
 ### Criterio de Éxito
 

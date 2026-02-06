@@ -24,10 +24,10 @@
 
 | Severidad | Cantidad | Estado |
 |-----------|----------|--------|
-| **CRÍTICO** | 3 | 🔴 Resolver en Fase 1 |
+| **CRÍTICO** | 4 | 🔴 Resolver en Fase 1 |
 | **ALTO** | 5 | 🟠 Resolver en Fase 2 |
 | **MEDIO** | 7 | 🟡 Mejoras futuras |
-| **Total** | **15** | |
+| **Total** | **16** | |
 
 ---
 
@@ -137,6 +137,27 @@ export function useOfertas(filters) {
   });
 }
 ```
+
+---
+
+### E-16: Insights calculados en cliente (fetchAllPaginated)
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🔴 CRÍTICO |
+| **Ubicación** | `lib/supabase.ts` (múltiples funciones) |
+| **Impacto** | Browser congela con >10k ofertas |
+| **Detalle completo** | [12_INSIGHTS_SISTEMA](./12_INSIGHTS_SISTEMA.md) |
+
+**Problema:** Se traen TODAS las ofertas al cliente y se procesan con `forEach()` en JavaScript, cuando deberían ser agregaciones SQL.
+
+**Funciones afectadas:**
+- `getKPIs()` - 3 Set() sobre todos los datos
+- `getOfertasPorProvincia()` - forEach + counts
+- `getTopOcupaciones()` - forEach + counts
+- `getDistribucionModalidad()` - forEach + counts
+
+**Solución:** Crear vistas SQL y función RPC `get_insights()` en Supabase.
 
 ---
 
