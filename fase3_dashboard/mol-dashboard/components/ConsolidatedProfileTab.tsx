@@ -124,12 +124,12 @@ export default function ConsolidatedProfileTab({
       .then(res => res.json())
       .then(data => {
         if (data.occupations) {
-          const occs: OccupationInfo[] = data.occupations.map((o: { esco_uuid: string; label: string; isco_code: string; offer_count: number }) => ({
-            id: o.esco_uuid,
-            label: o.label,
+          const occs: OccupationInfo[] = data.occupations.map((o: { esco_uri: string; esco_label: string; isco_code: string; ofertas_count: number }) => ({
+            id: o.esco_uri?.split('/').pop() || '',
+            label: o.esco_label,
             isco: o.isco_code,
-            offer_count: o.offer_count
-          }));
+            offer_count: o.ofertas_count || 0
+          })).filter((o: OccupationInfo) => o.id && (o.offer_count || 0) > 0);
           setOccupationsList(occs.sort((a, b) => (b.offer_count || 0) - (a.offer_count || 0)));
         }
         setIsLoadingOccupations(false);
