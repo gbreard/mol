@@ -21,6 +21,13 @@ export default function Home() {
     permanencia: [] as string[],
     searchOcupacion: "",
     ocupacionesSeleccionadas: [] as string[],
+    // Filtros de Requerimientos (Issue #5)
+    nivelEducativo: "" as string,
+    experiencia: "" as string,
+    seniority: "" as string,
+    modalidad: "" as string,
+    jornada: "" as string,
+    skillsDigitales: false as boolean,
   });
 
   const handleFilterChange = (filterType: string, value: any) => {
@@ -49,6 +56,35 @@ export default function Home() {
         break;
       case 'ocupaciones':
         setFilters(prev => ({ ...prev, ocupacionesSeleccionadas: [], searchOcupacion: '' }));
+        break;
+      case 'requerimientos':
+        setFilters(prev => ({
+          ...prev,
+          nivelEducativo: '',
+          experiencia: '',
+          seniority: '',
+          modalidad: '',
+          jornada: '',
+          skillsDigitales: false
+        }));
+        break;
+      case 'nivelEducativo':
+        setFilters(prev => ({ ...prev, nivelEducativo: '' }));
+        break;
+      case 'experiencia':
+        setFilters(prev => ({ ...prev, experiencia: '' }));
+        break;
+      case 'seniority':
+        setFilters(prev => ({ ...prev, seniority: '' }));
+        break;
+      case 'modalidad':
+        setFilters(prev => ({ ...prev, modalidad: '' }));
+        break;
+      case 'jornada':
+        setFilters(prev => ({ ...prev, jornada: '' }));
+        break;
+      case 'skillsDigitales':
+        setFilters(prev => ({ ...prev, skillsDigitales: false }));
         break;
       default:
         break;

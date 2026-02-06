@@ -7,6 +7,13 @@ export interface DashboardFilters {
   permanencia: string[];
   searchOcupacion: string;
   ocupacionesSeleccionadas: string[];
+  // Filtros de Requerimientos (Issue #5)
+  nivelEducativo: string;
+  experiencia: string;
+  seniority: string;
+  modalidad: string;
+  jornada: string;
+  skillsDigitales: boolean;
 }
 
 // ========== ISSUES/FEEDBACK SYSTEM ==========

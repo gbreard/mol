@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Search, ChevronRight, ChevronDown, MapPin, Calendar as CalendarIcon, Timer, Briefcase, Filter, X, Loader2 } from "lucide-react";
+import { Search, ChevronRight, ChevronDown, MapPin, Calendar as CalendarIcon, Timer, Briefcase, Filter, X, Loader2, GraduationCap, Clock, Laptop } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,13 @@ interface SidebarProps {
     permanencia: string[];
     searchOcupacion: string;
     ocupacionesSeleccionadas: string[];
+    // Filtros de Requerimientos
+    nivelEducativo: string;
+    experiencia: string;
+    seniority: string;
+    modalidad: string;
+    jornada: string;
+    skillsDigitales: boolean;
   };
   onFilterChange: (filterType: string, value: any) => void;
 }
@@ -103,7 +110,22 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
     (filters.localidad ? 1 : 0) +
     (filters.fechaDesde || filters.fechaHasta ? 1 : 0) +
     filters.permanencia.length +
-    filters.ocupacionesSeleccionadas.length;
+    filters.ocupacionesSeleccionadas.length +
+    (filters.nivelEducativo ? 1 : 0) +
+    (filters.experiencia ? 1 : 0) +
+    (filters.seniority ? 1 : 0) +
+    (filters.modalidad ? 1 : 0) +
+    (filters.jornada ? 1 : 0) +
+    (filters.skillsDigitales ? 1 : 0);
+
+  // Contar filtros de requerimientos activos
+  const requerimientosCount =
+    (filters.nivelEducativo ? 1 : 0) +
+    (filters.experiencia ? 1 : 0) +
+    (filters.seniority ? 1 : 0) +
+    (filters.modalidad ? 1 : 0) +
+    (filters.jornada ? 1 : 0) +
+    (filters.skillsDigitales ? 1 : 0);
 
   const clearAllFilters = () => {
     onFilterChange('territorio', 'nacional');
@@ -114,6 +136,13 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
     onFilterChange('permanencia', []);
     onFilterChange('searchOcupacion', '');
     onFilterChange('ocupacionesSeleccionadas', []);
+    // Limpiar filtros de requerimientos
+    onFilterChange('nivelEducativo', '');
+    onFilterChange('experiencia', '');
+    onFilterChange('seniority', '');
+    onFilterChange('modalidad', '');
+    onFilterChange('jornada', '');
+    onFilterChange('skillsDigitales', false);
   };
 
   const toggleOcupacion = (id: string) => {
@@ -434,6 +463,119 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
                     }}
                   />
                   <Label htmlFor="perm-alta" className="text-sm font-normal cursor-pointer flex-1">Alta (+30 días)</Label>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* Requerimientos */}
+          <AccordionItem value="requerimientos" className="border-b border-gray-200">
+            <AccordionTrigger className="px-4 py-3 hover:bg-gray-50 transition-colors">
+              <div className="flex items-center gap-2">
+                <GraduationCap className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-bold text-gray-900">Requerimientos</span>
+                {requerimientosCount > 0 && (
+                  <Badge variant="secondary" className="text-xs px-1.5 py-0 bg-blue-100 text-blue-700">
+                    {requerimientosCount}
+                  </Badge>
+                )}
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="px-4 pb-4 space-y-4">
+              {/* Nivel Educativo */}
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold text-gray-700">Nivel Educativo</Label>
+                <select
+                  value={filters.nivelEducativo}
+                  onChange={(e) => onFilterChange('nivelEducativo', e.target.value)}
+                  className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-blue-400 transition-colors"
+                >
+                  <option value="">Todos</option>
+                  <option value="primario">Primario</option>
+                  <option value="secundario">Secundario</option>
+                  <option value="terciario">Terciario</option>
+                  <option value="universitario">Universitario</option>
+                  <option value="posgrado">Posgrado</option>
+                </select>
+              </div>
+
+              {/* Experiencia */}
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold text-gray-700">Experiencia</Label>
+                <select
+                  value={filters.experiencia}
+                  onChange={(e) => onFilterChange('experiencia', e.target.value)}
+                  className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-blue-400 transition-colors"
+                >
+                  <option value="">Todas</option>
+                  <option value="sin_experiencia">Sin experiencia</option>
+                  <option value="1_2_anios">1-2 años</option>
+                  <option value="3_5_anios">3-5 años</option>
+                  <option value="5_mas">Más de 5 años</option>
+                </select>
+              </div>
+
+              {/* Seniority */}
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold text-gray-700">Seniority</Label>
+                <select
+                  value={filters.seniority}
+                  onChange={(e) => onFilterChange('seniority', e.target.value)}
+                  className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-blue-400 transition-colors"
+                >
+                  <option value="">Todos</option>
+                  <option value="trainee">Trainee</option>
+                  <option value="junior">Junior</option>
+                  <option value="semi-senior">Semi-Senior</option>
+                  <option value="senior">Senior</option>
+                  <option value="manager">Manager</option>
+                </select>
+              </div>
+
+              {/* Modalidad */}
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold text-gray-700">Modalidad</Label>
+                <select
+                  value={filters.modalidad}
+                  onChange={(e) => onFilterChange('modalidad', e.target.value)}
+                  className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-blue-400 transition-colors"
+                >
+                  <option value="">Todas</option>
+                  <option value="presencial">Presencial</option>
+                  <option value="remoto">Remoto</option>
+                  <option value="hibrido">Híbrido</option>
+                </select>
+              </div>
+
+              {/* Jornada */}
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold text-gray-700">Jornada</Label>
+                <select
+                  value={filters.jornada}
+                  onChange={(e) => onFilterChange('jornada', e.target.value)}
+                  className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-blue-400 transition-colors"
+                >
+                  <option value="">Todas</option>
+                  <option value="full_time">Full-time</option>
+                  <option value="part_time">Part-time</option>
+                  <option value="por_horas">Por horas</option>
+                </select>
+              </div>
+
+              {/* Skills Digitales */}
+              <div className={`flex items-center space-x-2 p-2.5 rounded-lg transition-all duration-200 ${
+                filters.skillsDigitales ? 'bg-blue-50 border border-blue-200' : 'hover:bg-gray-100'
+              }`}>
+                <Checkbox
+                  id="skills-digitales"
+                  checked={filters.skillsDigitales}
+                  onCheckedChange={(checked) => onFilterChange('skillsDigitales', checked)}
+                />
+                <div className="flex items-center gap-2 flex-1">
+                  <Laptop className="w-4 h-4 text-blue-600" />
+                  <Label htmlFor="skills-digitales" className="text-sm font-normal cursor-pointer">
+                    Requiere skills digitales
+                  </Label>
                 </div>
               </div>
             </AccordionContent>
