@@ -1,8 +1,7 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, ExternalLink, Filter, Loader2, AlertCircle, Download } from "lucide-react";
+import { Search, ExternalLink, Loader2, AlertCircle } from "lucide-react";
 import { ExportButton, ExportColumn } from "@/components/ExportButton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -17,9 +16,6 @@ interface OfertasLaboralesProps {
 
 export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [modalidadFilter, setModalidadFilter] = useState('all');
-  const [seniorityFilter, setSeniorityFilter] = useState('all');
-  const [provinciaFilter, setProvinciaFilter] = useState('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [ofertas, setOfertas] = useState<OfertaDashboard[]>([]);
@@ -44,11 +40,11 @@ export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
   }, [filters]);
 
   const filteredOfertas = ofertas.filter(oferta => {
-    const matchesSearch = oferta.titulo?.toLowerCase().includes(searchTerm.toLowerCase()) || false;
-    const matchesModalidad = modalidadFilter === 'all' || oferta.modalidad === modalidadFilter;
-    const matchesSeniority = seniorityFilter === 'all' || oferta.nivel_seniority === seniorityFilter;
-    const matchesProvincia = provinciaFilter === 'all' || oferta.provincia === provinciaFilter;
-    return matchesSearch && matchesModalidad && matchesSeniority && matchesProvincia;
+    if (!searchTerm.trim()) return true;
+    const searchLower = searchTerm.toLowerCase();
+    return (oferta.titulo?.toLowerCase().includes(searchLower) ||
+            oferta.titulo_limpio?.toLowerCase().includes(searchLower) ||
+            false);
   });
 
   // Columnas para exportación
@@ -89,62 +85,17 @@ export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
 
   return (
     <div className="flex flex-col h-full min-h-0 gap-3">
-      {/* Filters Row - más compacto */}
+      {/* Search and Export Row */}
       <div className="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex-shrink-0">
-        <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-blue-600" />
-            <span className="text-sm font-semibold text-gray-900">Filtros:</span>
-          </div>
-          <div className="flex flex-wrap gap-3 flex-1">
-          <Select value={modalidadFilter} onValueChange={setModalidadFilter}>
-            <SelectTrigger className="w-[140px] bg-gray-50 hover:bg-gray-100 transition-colors h-9 text-sm">
-              <SelectValue placeholder="Modalidad" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas</SelectItem>
-              <SelectItem value="presencial">Presencial</SelectItem>
-              <SelectItem value="remoto">Remoto</SelectItem>
-              <SelectItem value="hibrido">Híbrido</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={seniorityFilter} onValueChange={setSeniorityFilter}>
-            <SelectTrigger className="w-[140px] bg-gray-50 hover:bg-gray-100 transition-colors h-9 text-sm">
-              <SelectValue placeholder="Seniority" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="junior">Junior</SelectItem>
-              <SelectItem value="semi-senior">Semi-Senior</SelectItem>
-              <SelectItem value="senior">Senior</SelectItem>
-              <SelectItem value="manager">Manager</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={provinciaFilter} onValueChange={setProvinciaFilter}>
-            <SelectTrigger className="w-[150px] bg-gray-50 hover:bg-gray-100 transition-colors h-9 text-sm">
-              <SelectValue placeholder="Provincia" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas</SelectItem>
-              <SelectItem value="Capital Federal">Capital Federal</SelectItem>
-              <SelectItem value="Buenos Aires">Buenos Aires</SelectItem>
-              <SelectItem value="Córdoba">Córdoba</SelectItem>
-              <SelectItem value="Santa Fe">Santa Fe</SelectItem>
-              <SelectItem value="Mendoza">Mendoza</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <div className="relative min-w-[200px]">
+        <div className="flex items-center gap-4">
+          <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
-              placeholder="Buscar por título"
+              placeholder="Buscar por título..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-9 bg-gray-50 hover:bg-gray-100 transition-colors"
             />
-          </div>
           </div>
           {/* Export Button */}
           <ExportButton
