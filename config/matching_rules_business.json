@@ -1,5 +1,5 @@
 {
-  "version": "4.4",
+  "version": "4.5",
   "descripcion": "Reglas de negocio para matching ESCO. 183 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-02-05",
@@ -4474,6 +4474,98 @@
       },
       "_nota": "v4.4: Personal atención → recepcionista médico (complementa R192)",
       "activa": true
+    },
+    "R198_bell_boy_botones": {
+      "nombre": "Bell Boy / Botones Hotel",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "bell boy",
+          "bellboy",
+          "botones hotel",
+          "botones de hotel"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4229",
+        "esco_label": "conserje de hotel"
+      },
+      "_nota": "v4.5: Bell boy → conserje hotel",
+      "activa": true
+    },
+    "R199_foguista_caldera": {
+      "nombre": "Foguista / Operador de Calderas",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "foguista",
+          "operador de caldera",
+          "operador caldera"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8182",
+        "esco_label": "operador de calderas/operadora de calderas"
+      },
+      "_nota": "v4.5: Foguista → operador calderas",
+      "activa": true
+    },
+    "R200_extraccionista_laboratorio": {
+      "nombre": "Extraccionista de Laboratorio",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "extraccionista",
+          "flebotomista",
+          "toma de muestras"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2269",
+        "esco_label": "técnico en laboratorio clínico y biomédico/técnica en laboratorio clínico y biomédico"
+      },
+      "_nota": "v4.5: Extraccionista → técnico laboratorio clínico",
+      "activa": true
+    },
+    "R201_inspector_industrial": {
+      "nombre": "Inspector Industrial / API / NDT",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "inspector api",
+          "inspector ndt",
+          "inspector industrial",
+          "inspector de soldadura",
+          "inspector qc"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3119",
+        "esco_label": "inspector de instalaciones y de seguridad industrial/inspectora de instalaciones y de seguridad industrial"
+      },
+      "_nota": "v4.5: Inspector API/NDT → inspector industrial",
+      "activa": true
+    },
+    "R202_gestor_cobranzas": {
+      "nombre": "Gestor / Agente de Cobranzas",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "gestor de cobranza",
+          "agente de cobranza",
+          "asesor de cobranza",
+          "cobrador",
+          "recupero de cartera",
+          "mora tardía",
+          "mora temprana"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4214",
+        "esco_label": "cobrador de deudas/cobradora de deudas"
+      },
+      "_nota": "v4.5: Gestor cobranzas → cobrador deudas",
+      "activa": true
     }
   },
   "reglas_filtro": {
@@ -4551,5 +4643,6 @@
   "_cambios_v23": "Demo optimizacion: R105-R110 (Jefe Mant, Preventista, Seg Higiene, Jefe RRHH, Ejec Ventas, Tec Mant)",
   "_cambios_v28": "Agregadas R131 hoteleria hospitalaria, R132 medicina prepaga",
   "_cambios_v36": "R151: Jefe de Obra -> 1323 director de obra",
-  "_cambios_v44": "R183-R197: Bobinador, Carnicero, Guardavidas, Kinesiologo, Aux Farmacia, Aux Seguridad, Business Dev, Auditor, Abastecimiento, Atencion Paciente, Supervisor Ops, Middle Office, Ejecutivo Ventas, Pasante, Personal Atencion"
+  "_cambios_v44": "R183-R197: Bobinador, Carnicero, Guardavidas, Kinesiologo, Aux Farmacia, Aux Seguridad, Business Dev, Auditor, Abastecimiento, Atencion Paciente, Supervisor Ops, Middle Office, Ejecutivo Ventas, Pasante, Personal Atencion",
+  "_cambios_v45": "R198-R202: Bell boy, Foguista, Extraccionista, Inspector API, Gestor cobranzas"
 }
