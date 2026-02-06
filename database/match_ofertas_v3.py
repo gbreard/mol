@@ -632,7 +632,10 @@ class MatcherV3:
             )
 
         # Determinar qué datos de ocupación usar según la decisión
-        if "regla" in decision_metodo and rule_info:
+        # v3.5.3 FIX: También usar regla cuando dual_coinciden=1 (mismo ISCO pero
+        # el label de la regla es más específico, ej: "software developer" vs "blockchain")
+        use_rule_label = ("regla" in decision_metodo or decision_metodo == "dual_coinciden") and rule_info
+        if use_rule_label:
             # La decisión es usar la regla
             rule_occupation = self._find_occupation_by_esco_label(rule_info.get("esco_label", ""))
             if rule_occupation:
