@@ -91,7 +91,7 @@ export default function ArgentinaProfileTab({
           label: o.esco_label || '',
           isco: o.isco_code || '',
           offerCount: o.ofertas_count || 0
-        })).filter((o: OccupationInfo) => o.id && o.offerCount > 0);
+        })).filter((o: OccupationInfo) => o.id && (o.offerCount || 0) > 0);
 
         // Ordenar por cantidad de ofertas (descendente)
         occs.sort((a, b) => (b.offerCount || 0) - (a.offerCount || 0));
