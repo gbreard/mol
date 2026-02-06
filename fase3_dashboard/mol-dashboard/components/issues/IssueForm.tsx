@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import { IssueType, IssuePrioridad, ISSUE_TYPE_LABELS, ISSUE_PRIORIDAD_LABELS } from "@/lib/types";
 import { createIssue } from "@/lib/supabase";
 import { useIssues } from "@/contexts/IssueContext";
-import { Loader2, ArrowLeft, FileText } from "lucide-react";
+import { createBrowserClient } from "@/lib/supabase/browser";
+import { Loader2, ArrowLeft, FileText, User } from "lucide-react";
 
 interface IssueFormProps {
   onSuccess?: () => void;
@@ -27,11 +28,33 @@ export function IssueForm({ onSuccess, onCancel, compact = false }: IssueFormPro
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Usuario actual
+  const [currentUser, setCurrentUser] = useState<{ id: string; email: string } | null>(null);
+
+  useEffect(() => {
+    async function loadUser() {
+      const supabase = createBrowserClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setCurrentUser({
+          id: user.id,
+          email: user.email || ""
+        });
+      }
+    }
+    loadUser();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!titulo.trim()) {
       setError("El titulo es obligatorio");
+      return;
+    }
+
+    if (!currentUser) {
+      setError("Debes estar autenticado para crear un issue");
       return;
     }
 
@@ -45,8 +68,8 @@ export function IssueForm({ onSuccess, onCancel, compact = false }: IssueFormPro
         tipo,
         prioridad,
         id_oferta: selectedOferta?.id_oferta,
-        autor_id: "00000000-0000-0000-0000-000000000000", // TODO: Get from auth
-        autor_email: "admin@oede.gob.ar", // TODO: Get from auth
+        autor_id: currentUser.id,
+        autor_email: currentUser.email,
       });
 
       // Reset form
@@ -76,19 +99,28 @@ export function IssueForm({ onSuccess, onCancel, compact = false }: IssueFormPro
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Header with back button */}
-      <div className="flex items-center gap-2 pb-2 border-b">
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={handleCancel}
-          className="p-1 h-8 w-8"
-        >
-          <ArrowLeft className="w-4 h-4" />
-        </Button>
-        <h3 className="font-semibold text-gray-900">
-          {selectedOferta ? "Issue sobre Oferta" : "Nuevo Issue"}
-        </h3>
+      <div className="flex items-center justify-between pb-2 border-b">
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={handleCancel}
+            className="p-1 h-8 w-8"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <h3 className="font-semibold text-gray-900">
+            {selectedOferta ? "Issue sobre Oferta" : "Nuevo Issue"}
+          </h3>
+        </div>
+        {/* Mostrar quién está creando el issue */}
+        {currentUser && (
+          <div className="flex items-center gap-1 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
+            <User className="w-3 h-3" />
+            <span>{currentUser.email.split('@')[0]}</span>
+          </div>
+        )}
       </div>
 
       {/* Oferta info (if selected) */}
