@@ -118,19 +118,27 @@ export default function AdminSkillsPage() {
       .catch(console.error);
   }, []);
 
-  // Load occupation data when switching to occupation/compare/myskills/argentina/consolidated tabs
+  // Load lightweight occupation INDEX first (fast, ~400KB)
+  // Full detail is loaded on demand when needed
   useEffect(() => {
     if ((activeTab === 'occupation' || activeTab === 'compare' || activeTab === 'myskills' || activeTab === 'argentina' || activeTab === 'consolidated') &&
-        !occupationsData && !isLoading) {
+        occupationsList.length === 0 && !isLoading) {
       setIsLoading(true);
 
-      fetch('/data/occupation_full_detail.json')
+      console.log('[OCCS DEBUG] Loading lightweight occupations_index.json...');
+
+      // First load the lightweight index (~400KB instead of 45MB!)
+      fetch('/data/occupations_index.json')
         .then(res => res.json())
-        .then((data: OccupationFullDetailIndex) => {
-          setOccupationsData(data);
+        .then((indexData: Record<string, { label: string; isco: string }>) => {
+          const keys = Object.keys(indexData);
+          console.log('[OCCS DEBUG] Loaded occupations_index.json:', {
+            totalOccupations: keys.length,
+            first5Keys: keys.slice(0, 5)
+          });
 
           // Build occupations list sorted alphabetically
-          const list: OccupationBasicInfo[] = Object.entries(data)
+          const list: OccupationBasicInfo[] = Object.entries(indexData)
             .map(([id, occ]) => ({
               id,
               label: occ.label,
@@ -138,15 +146,37 @@ export default function AdminSkillsPage() {
             }))
             .sort((a, b) => a.label.localeCompare(b.label));
 
+          console.log('[OCCS DEBUG] Built occupationsList:', {
+            count: list.length,
+            first5: list.slice(0, 5).map(o => ({ id: o.id, label: o.label }))
+          });
+
           setOccupationsList(list);
           setIsLoading(false);
         })
         .catch(err => {
-          console.error('Error loading occupations:', err);
+          console.error('[OCCS DEBUG] Error loading occupations index:', err);
           setIsLoading(false);
         });
     }
-  }, [activeTab, occupationsData, isLoading]);
+  }, [activeTab, occupationsList.length, isLoading]);
+
+  // Load FULL occupation detail when entering tabs that need it
+  // Argentina/Consolidated need it for ESCO skills comparison
+  useEffect(() => {
+    const needsFullDetail = activeTab === 'occupation' || activeTab === 'compare' ||
+                            activeTab === 'argentina' || activeTab === 'consolidated';
+    if (needsFullDetail && !occupationsData && occupationsList.length > 0) {
+      console.log('[OCCS DEBUG] Loading full occupation_full_detail.json on demand...');
+      fetch('/data/occupation_full_detail.json')
+        .then(res => res.json())
+        .then((data: OccupationFullDetailIndex) => {
+          console.log('[OCCS DEBUG] Full detail loaded:', Object.keys(data).length, 'occupations');
+          setOccupationsData(data);
+        })
+        .catch(err => console.error('[OCCS DEBUG] Error loading full detail:', err));
+    }
+  }, [activeTab, occupationsData, occupationsList.length]);
 
   // Load MOL profile data when switching to argentina or consolidated tab
   // AHORA CARGA DESDE API (datos dinámicos de Supabase)

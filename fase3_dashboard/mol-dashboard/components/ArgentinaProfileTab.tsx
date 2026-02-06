@@ -32,10 +32,27 @@ export default function ArgentinaProfileTab({
       return [];
     }
 
+    if (occupationsList.length === 0) {
+      console.log('[ARG TAB DEBUG] occupationsList is empty');
+      return [];
+    }
+
     // DEBUG: Check data
     const molOccupationKeys = Object.keys(molProfileData.occupations);
     const occupationsListIds = occupationsList.map(o => o.id);
     const matchingIds = occupationsListIds.filter(id => molProfileData.occupations[id]);
+
+    // DEBUG: Specific UUID comparison
+    const molFirst = molOccupationKeys[0];
+    const occFirst = occupationsListIds[0];
+    const crossCheck = {
+      molFirstKey: molFirst,
+      molFirstInOccList: occupationsListIds.includes(molFirst),
+      occFirstKey: occFirst,
+      occFirstInMolData: !!molProfileData.occupations[occFirst],
+      molKeyCharCodes: molFirst?.split('').slice(0, 10).map(c => c.charCodeAt(0)),
+      occKeyCharCodes: occFirst?.split('').slice(0, 10).map(c => c.charCodeAt(0))
+    };
 
     console.log('[ARG TAB DEBUG] Data check:', {
       molOccupationKeys_count: molOccupationKeys.length,
@@ -44,6 +61,7 @@ export default function ArgentinaProfileTab({
       occupationsList_first5: occupationsListIds.slice(0, 5),
       matchingIds_count: matchingIds.length,
       matchingIds_first5: matchingIds.slice(0, 5),
+      crossCheck,
       first5OfferCounts: matchingIds.slice(0, 5).map(id => ({
         id,
         offer_count: molProfileData.occupations[id]?.offer_count,
@@ -51,13 +69,24 @@ export default function ArgentinaProfileTab({
       }))
     });
 
-    return occupationsList
+    const result = occupationsList
       .filter(o => molProfileData.occupations[o.id])
       .sort((a, b) => {
         const countA = molProfileData.occupations[a.id]?.offer_count || 0;
         const countB = molProfileData.occupations[b.id]?.offer_count || 0;
         return countB - countA; // Mayor cantidad primero
       });
+
+    console.log('[ARG TAB DEBUG] Final result:', {
+      count: result.length,
+      first5: result.slice(0, 5).map(o => ({
+        id: o.id,
+        label: o.label,
+        offer_count: molProfileData.occupations[o.id]?.offer_count
+      }))
+    });
+
+    return result;
   }, [occupationsList, molProfileData]);
 
   // Get selected occupation profile
@@ -259,6 +288,12 @@ export default function ArgentinaProfileTab({
       </div>
 
       {/* Content when occupation selected */}
+      {selectedProfile && !selectedEsco && (
+        <div className="flex items-center justify-center h-32 bg-gray-50 rounded-xl border border-gray-200">
+          <Loader2 className="w-6 h-6 animate-spin text-teal-500 mr-3" />
+          <span className="text-gray-600">Cargando detalles ESCO de la ocupación...</span>
+        </div>
+      )}
       {selectedProfile && selectedEsco && (
         <>
           {/* Metrics Cards */}
