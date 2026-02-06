@@ -80,26 +80,26 @@
 | **Total issues técnicos** | **47** |
 | **Issues de usuario** | **10** |
 
-### Issues de Usuario (admin@oede.gob.ar) ✅ TODOS COMPLETADOS
+### Issues de Usuario (admin@oede.gob.ar)
 
 | Estado | Cantidad | Detalle |
 |--------|----------|---------|
-| ✅ Resueltos | 10 | Todos los issues de usuario |
-| ⏳ Pendientes | 0 | - |
+| ✅ Resueltos | 6 | Sprint 1 + Sprint 2 |
+| ⏳ Pendientes | 4 | Sprint 3 + Sprint 4 |
 
 | Pantalla | Resueltos | Pendientes |
 |----------|-----------|------------|
-| P-09 Dashboard | 6 (#1,#2,#3,#4,#5,#6) | 0 |
-| P-10 Skills | 4 (#7,#8,#9,#10) | 0 |
+| P-09 Dashboard | 3 (#1,#2,#4) | 3 (#3,#5,#6) |
+| P-10 Skills | 3 (#8,#9,#10) | 1 (#7) |
 
-### Sprints ✅ TODOS COMPLETADOS
+### Sprints
 
-| Sprint | Issues | Estado | Fecha |
-|--------|--------|--------|-------|
-| 1 | #1, #2, #4 | ✅ Completado | 2026-02-06 |
-| 2 | #8, #9, #10 | ✅ Completado | 2026-02-06 |
-| 3 | #3, #5 | ✅ Completado | 2026-02-06 |
-| 4 | #6, #7 | ✅ Completado | 2026-02-06 |
+| Sprint | Issues | Estado |
+|--------|--------|--------|
+| 1 | #1, #2, #4 | ✅ Completado |
+| 2 | #8, #9, #10 | ✅ Completado |
+| 3 | #3, #5 | ⏳ Pendiente validación |
+| 4 | #6, #7 | ⏳ Pendiente validación |
 | 3 | #3, #5 | Pendiente |
 | 4 | #6, #7 | Pendiente |
 

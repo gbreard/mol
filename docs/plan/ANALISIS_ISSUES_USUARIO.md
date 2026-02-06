@@ -14,8 +14,8 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 4. Indicadores de mercado laboral (3 issues)
 
 **Estado actual:**
-- ✅ Completados: 10/10 (todos los sprints)
-- ⏳ Pendientes: 0
+- ✅ Completados: 6 (Sprint 1 + Sprint 2)
+- ⏳ Pendientes: 4 (Sprint 3 + Sprint 4)
 
 ---
 
@@ -45,18 +45,13 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 - **Impacto:** Alto (necesario para análisis offline)
 - **Estado:** ✅ Implementado (2026-02-06) - Botón "Exportar" con CSV y Excel
 
-#### Issue #3: Simplificar Filtros Ofertas ✅ RESUELTO
+#### Issue #3: Simplificar Filtros Ofertas ⏳ PENDIENTE
 - **Sección:** Tab Ofertas
 - **Solicitud:** Reducir filtros, dejar solo "Buscar por título"
 - **Tipo:** UX improvement
 - **Impacto:** Medio (simplifica experiencia pero reduce funcionalidad)
 - **Sprint:** 3
-- **Estado:** ✅ Implementado (2026-02-06)
-
-**Cambios realizados:**
-- Eliminados filtros de Modalidad, Seniority y Provincia
-- Solo queda búsqueda por título
-- Layout simplificado con barra de búsqueda + botón Export
+- **Estado:** ⏳ Pendiente validación usuario
 
 #### Issue #4: Export Archivos Requerimientos ✅ RESUELTO
 - **Sección:** Tab Requerimientos
@@ -65,72 +60,65 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 - **Impacto:** Alto
 - **Estado:** ✅ Implementado (2026-02-06) - Botón "Exportar" con CSV y Excel
 
-#### Issue #5: Filtros Requerimientos en Sidebar Global ✅ RESUELTO
+#### Issue #5: Filtros Requerimientos en Sidebar Global ⏳ PENDIENTE
 - **Sección:** Sidebar
 - **Solicitud:** Incluir en "Filtros" la sección "Requerimientos"
 - **Tipo:** UX improvement
 - **Impacto:** Medio (consistencia de interfaz)
 - **Sprint:** 3
-- **Estado:** ✅ Implementado (2026-02-06)
+- **Estado:** ⏳ Pendiente validación usuario
 
-**Filtros implementados:**
+**Filtros a agregar:**
 
-| Filtro | Tipo | Implementado |
-|--------|------|--------------|
-| Nivel Educativo | Select | ✅ |
-| Experiencia | Select | ✅ |
-| Seniority | Select | ✅ |
-| Modalidad | Select | ✅ |
-| Jornada | Select | ✅ |
-| Skills digitales | Checkbox | ✅ |
+| Filtro | Tipo |
+|--------|------|
+| Nivel Educativo | Select |
+| Experiencia | Select |
+| Seniority | Select |
+| Modalidad | Select |
+| Jornada | Select |
+| Skills digitales | Checkbox |
 
-**Archivos modificados:**
-- `components/Sidebar.tsx` - Nueva sección "Requerimientos" en Accordion
-- `app/page.tsx` - Nuevos campos en estado de filtros
-- `lib/types.ts` - Interfaz DashboardFilters actualizada
-
-#### Issue #6: Rediseño Requerimientos ✅ RESUELTO
+#### Issue #6: Rediseño Requerimientos ⏳ PENDIENTE
 - **Sección:** Tab Requerimientos
 - **Solicitud:** Rediseño completo de la sección
 - **Tipo:** Rediseño funcional
 - **Impacto:** Alto (nuevo caso de uso)
 - **Sprint:** 4
-- **Estado:** ✅ Implementado (2026-02-06)
+- **Estado:** ⏳ Pendiente validación usuario
 
-**Cambios implementados:**
+**Cambios solicitados:**
 
-1. ✅ **Eliminada** sección de filtros inicial
-2. ✅ **Reordenado contenido:**
+1. ❌ **Eliminar** sección de filtros inicial
+2. **Reordenar contenido:**
    - Primero: "Análisis de habilidades"
    - Segundo: "Distribución de los requerimientos"
-3. ✅ **Gráfico "Análisis de habilidades":**
+3. **Gráfico "Análisis de habilidades":**
    - Default: mostrar competencias específicas
    - Selector 1: cantidad de competencias (20, 40, 60, 100)
    - Selector 2: tipo (específica / agregada)
-   - ✅ Eliminado listado de competencias Top 10
-
-**Archivo modificado:** `components/Requerimientos.tsx`
+   - ❌ Eliminar listado de competencias
 
 ---
 
 ### P-10: Skills Intelligence (`/skills`)
 
-#### Issue #7: Rediseño "Mis Skills" para Oficina de Empleo ✅ RESUELTO
+#### Issue #7: Rediseño "Mis Skills" para Oficina de Empleo ⏳ PENDIENTE
 - **Sección:** MySkillsSearch
 - **Solicitud:** Sistema de apoyo a oficina de empleo con perfiles de trabajadores
 - **Tipo:** Rediseño funcional
 - **Impacto:** Muy Alto (nuevo caso de uso estratégico)
 - **Sprint:** 4
-- **Estado:** ✅ Implementado (2026-02-06)
+- **Estado:** ⏳ Pendiente validación usuario
 
-**Flujo implementado:**
+**Flujo completo:**
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  1. REGISTRO                                          ✅    │
+│  1. REGISTRO                                                │
 │     └── Nombre del trabajador/a (para guardar perfil)       │
 ├─────────────────────────────────────────────────────────────┤
-│  2. CONSTRUCCIÓN DEL PERFIL                           ✅    │
+│  2. CONSTRUCCIÓN DEL PERFIL                                 │
 │                                                             │
 │     a) Ingresar ocupaciones de trayectoria laboral          │
 │              ↓                                              │
@@ -142,24 +130,18 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 │              ↓                                              │
 │     e) Mostrar perfil de competencias resultante            │
 ├─────────────────────────────────────────────────────────────┤
-│  3. MATCHING                                          ✅    │
+│  3. MATCHING                                                │
 │     └── Ocupaciones similares al perfil del trabajador      │
 ├─────────────────────────────────────────────────────────────┤
-│  4. PERSISTENCIA                                      ✅    │
-│     └── Guardar/Cargar perfiles en Supabase                 │
+│  4. ACCIONES EXISTENTES                                     │
+│     └── Se mantienen (Comparar, Detalle, etc.)              │
+│     └── "Comparar" aplica cambios de Issue #8               │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Archivos creados:**
-- `app/api/worker-profiles/route.ts` - API CRUD para perfiles
-- `docs/sql/perfiles_trabajadores.sql` - Schema Supabase
-
-**Archivos modificados:**
-- `components/MySkillsSearch.tsx` - UI rediseñada con steps
-
-**Dependencias resueltas:**
-- ✅ Issue #8 (indicador ofertas en Comparar)
-- ✅ Nueva tabla `perfiles_trabajadores` en Supabase
+**Dependencias:**
+- Issue #8 (indicador ofertas en Comparar)
+- Nueva tabla `perfiles_trabajadores` en Supabase
 
 #### Issue #8: Modificación "Comparar Ocupaciones" ✅ RESUELTO
 - **Sección:** OccupationCompare
@@ -247,29 +229,28 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 - Modal OfertasOcupacionModal con export CSV/Excel
 - Links directos a ofertas desde cada ocupación
 
-### Sprint 3: UX Filtros ✅ COMPLETADO
+### Sprint 3: UX Filtros ⏳ PENDIENTE
 **Issues:** #3, #5
-**Estado:** ✅ Implementado (2026-02-06)
+**Razón:** Mejora experiencia sin cambiar funcionalidad core
 
-**Cambios realizados:**
-- ✅ Simplificados filtros en Ofertas (solo búsqueda por título)
-- ✅ Agregados filtros de Requerimientos al Sidebar global
-- ✅ Filtros: Nivel Educativo, Experiencia, Seniority, Modalidad, Jornada, Skills digitales
+**Cambios:**
+- Simplificar filtros en Ofertas
+- Agregar filtros de Requerimientos al Sidebar global
+- Filtros: Nivel Educativo, Experiencia, Seniority, Modalidad, Jornada, Skills digitales
 
-### Sprint 4: Rediseños Mayores ✅ COMPLETADO
+### Sprint 4: Rediseños Mayores ⏳ PENDIENTE
 **Issues:** #6, #7
-**Estado:** ✅ Implementado (2026-02-06)
+**Razón:** Requieren arquitectura nueva y más desarrollo
 
 **Issue #6 - Requerimientos:**
-- ✅ Reordenadas secciones (Análisis primero, Distribución segundo)
-- ✅ Nuevos selectores: cantidad (20/40/60/100) y tipo (específica/agregada)
-- ✅ Eliminada lista Top 10 y filtros iniciales
+- Reordenar secciones
+- Nuevos selectores en gráfico
+- Eliminar elementos
 
 **Issue #7 - Perfiles Trabajadores:**
-- ✅ Nueva tabla `perfiles_trabajadores` en Supabase
-- ✅ API CRUD `/api/worker-profiles`
-- ✅ Flujo completo: Registro → Perfil → Matching
-- ✅ Guardar/Cargar perfiles persistentes
+- Nueva tabla en Supabase
+- Flujo completo de registro y construcción de perfil
+- Matching con ocupaciones
 
 ---
 
@@ -279,16 +260,14 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 |-------|--------|----------|-------------|--------|
 | #1 | 1 | P-09 | Export Excel Panorama | ✅ |
 | #2 | 1 | P-09 | Export CSV/Excel Ofertas | ✅ |
-| #3 | 3 | P-09 | Simplificar filtros Ofertas | ✅ |
+| #3 | 3 | P-09 | Simplificar filtros Ofertas | ⏳ |
 | #4 | 1 | P-09 | Export Requerimientos | ✅ |
-| #5 | 3 | P-09 | Filtros Requerimientos en Sidebar | ✅ |
-| #6 | 4 | P-09 | Rediseño Requerimientos | ✅ |
-| #7 | 4 | P-10 | Rediseño Mis Skills (oficina empleo) | ✅ |
+| #5 | 3 | P-09 | Filtros Requerimientos en Sidebar | ⏳ |
+| #6 | 4 | P-09 | Rediseño Requerimientos | ⏳ |
+| #7 | 4 | P-10 | Rediseño Mis Skills (oficina empleo) | ⏳ |
 | #8 | 2 | P-10 | Banner ofertas en Comparar | ✅ |
 | #9 | 2 | P-10 | Columna ocupaciones con ofertas | ✅ |
 | #10 | 2 | P-10 | Export ofertas desde Skills | ✅ |
-
-**🎉 TODOS LOS ISSUES COMPLETADOS (2026-02-06)**
 
 ---
 
@@ -313,8 +292,8 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 | Exports Excel | Librería xlsx instalada | 1 | ✅ |
 | Ofertas activas por ocupación | Funciones Supabase implementadas | 2 | ✅ |
 | Ocupaciones similares con ofertas | SimilarOccupations + ofertasCountMap | 2 | ✅ |
-| Filtros Requerimientos | Campos en DashboardFilters | 3 | ✅ |
-| Perfiles trabajadores | Tabla `perfiles_trabajadores` + API | 4 | ✅ |
+| Filtros Requerimientos | Campos en ofertas_dashboard | 3 | ⏳ |
+| Perfiles trabajadores | Nueva tabla `perfiles_trabajadores` | 4 | ⏳ |
 
 ---
 
