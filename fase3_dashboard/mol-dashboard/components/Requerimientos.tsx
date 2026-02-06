@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { Filter, Loader2, AlertCircle, GraduationCap, Clock, TrendingUp, MapPin, Users, Briefcase, Cpu, Layers, ChevronDown } from "lucide-react";
+import { Filter, Loader2, AlertCircle, GraduationCap, Clock, TrendingUp, MapPin, Users, Briefcase, Cpu, Layers, ChevronDown, Download } from "lucide-react";
+import { ExportButton, ExportColumn } from "@/components/ExportButton";
 import { getDistribucionRequerimientos, getSkillsPorCategoriaL1, getSkillsDigitales, getTopSkillsConCategoria, getTopSkillsPorCategoria, SkillsFilters, RequerimientosFilters } from "@/lib/supabase";
 import { DashboardFilters } from "@/lib/types";
 
@@ -246,6 +247,58 @@ export function Requerimientos({ filters }: RequerimientosProps) {
   // Opciones de categoría desde los datos cargados (todas las categorías, no filtradas)
   const categoriaOptions = ['Todos', ...allCategoriasL1.map(c => c.name)];
 
+  // Columnas para exportación
+  const exportColumns: ExportColumn[] = [
+    { key: 'categoria', header: 'Categoría' },
+    { key: 'nombre', header: 'Valor' },
+    { key: 'cantidad', header: 'Cantidad' },
+    { key: 'porcentaje', header: 'Porcentaje (%)' },
+  ];
+
+  // Preparar datos para exportación
+  const getExportData = () => {
+    const data: { categoria: string; nombre: string; cantidad: number; porcentaje: number }[] = [];
+
+    if (requerimientosData) {
+      // Distribución de requerimientos
+      requerimientosData.educacion.forEach(item => {
+        data.push({ categoria: 'Nivel educativo', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
+      });
+      requerimientosData.experiencia.forEach(item => {
+        data.push({ categoria: 'Experiencia', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
+      });
+      requerimientosData.seniority.forEach(item => {
+        data.push({ categoria: 'Seniority', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
+      });
+      requerimientosData.modalidad.forEach(item => {
+        data.push({ categoria: 'Modalidad', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
+      });
+      requerimientosData.genteCargo.forEach(item => {
+        data.push({ categoria: 'Personal a cargo', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
+      });
+      requerimientosData.jornada.forEach(item => {
+        data.push({ categoria: 'Jornada', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
+      });
+    }
+
+    // Skills digitales
+    skillsDigitales.forEach(item => {
+      data.push({ categoria: 'Skills digitales', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
+    });
+
+    // Categorías L1
+    categoriasL1.forEach(item => {
+      data.push({ categoria: 'Categoría L1', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
+    });
+
+    // Top skills
+    topSkillsTotal.forEach(item => {
+      data.push({ categoria: `Top Skills (${item.categoriaNombre})`, nombre: item.name, cantidad: item.value, porcentaje: 0 });
+    });
+
+    return data;
+  };
+
   return (
     <div className="space-y-4">
       {/* Filtros del tab */}
@@ -338,6 +391,17 @@ export function Requerimientos({ filters }: RequerimientosProps) {
               Limpiar filtros
             </button>
           )}
+
+          {/* Spacer */}
+          <div className="flex-1" />
+
+          {/* Export Button */}
+          <ExportButton
+            data={getExportData()}
+            columns={exportColumns}
+            filename="requerimientos"
+            showLabel={true}
+          />
         </div>
       </div>
 

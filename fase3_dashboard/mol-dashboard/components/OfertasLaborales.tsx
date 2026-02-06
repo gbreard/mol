@@ -2,7 +2,8 @@
 
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, ExternalLink, Filter, Loader2, AlertCircle } from "lucide-react";
+import { Search, ExternalLink, Filter, Loader2, AlertCircle, Download } from "lucide-react";
+import { ExportButton, ExportColumn } from "@/components/ExportButton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
@@ -49,6 +50,22 @@ export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
     const matchesProvincia = provinciaFilter === 'all' || oferta.provincia === provinciaFilter;
     return matchesSearch && matchesModalidad && matchesSeniority && matchesProvincia;
   });
+
+  // Columnas para exportación
+  const exportColumns: ExportColumn[] = [
+    { key: 'fecha_publicacion', header: 'Fecha', format: (v) => v ? new Date(v).toLocaleDateString('es-AR') : '' },
+    { key: 'titulo_limpio', header: 'Título', format: (v) => v || '' },
+    { key: 'empresa', header: 'Empresa', format: (v) => v || '' },
+    { key: 'provincia', header: 'Provincia', format: (v) => v || '' },
+    { key: 'localidad', header: 'Localidad', format: (v) => v || '' },
+    { key: 'modalidad', header: 'Modalidad', format: (v) => v || '' },
+    { key: 'nivel_seniority', header: 'Seniority', format: (v) => v || '' },
+    { key: 'isco_code', header: 'ISCO', format: (v) => v || '' },
+    { key: 'isco_label', header: 'Ocupación ESCO', format: (v) => v || '' },
+    { key: 'skills_tecnicas', header: 'Conocimientos', format: (v) => Array.isArray(v) ? v.join('; ') : '' },
+    { key: 'soft_skills', header: 'Competencias', format: (v) => Array.isArray(v) ? v.join('; ') : '' },
+    { key: 'url', header: 'URL', format: (v) => v || '' },
+  ];
 
   if (loading) {
     return (
@@ -129,6 +146,13 @@ export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
             />
           </div>
           </div>
+          {/* Export Button */}
+          <ExportButton
+            data={filteredOfertas}
+            columns={exportColumns}
+            filename="ofertas_laborales"
+            showLabel={true}
+          />
         </div>
       </div>
 
