@@ -1160,6 +1160,115 @@ export async function getOfertasByEscoOccupation(
   return { ofertas: data || [], total: count || 0 }
 }
 
+// ========== OFERTAS POR OCUPACIÓN (ISCO) - SPRINT 2 ==========
+
+export interface OfertaPorOcupacion {
+  id_oferta: string;
+  titulo: string;
+  titulo_limpio: string | null;
+  empresa: string | null;
+  fecha_publicacion: string | null;
+  url: string | null;
+  skills_tecnicas: string | null;
+}
+
+export interface OfertasCountByIsco {
+  isco_code: string;
+  isco_label: string;
+  count: number;
+}
+
+/**
+ * Obtiene el conteo de ofertas activas por código ISCO
+ * Retorna un mapa de isco_code -> count
+ */
+export async function getOfertasCountByIsco(): Promise<Record<string, number>> {
+  const client = getSupabaseClient()
+  if (!client) return {}
+
+  try {
+    const data = await fetchAllPaginated<{ isco_code: string }>(
+      client,
+      TABLA_OFERTAS,
+      'isco_code',
+      (query) => query.not('isco_code', 'is', null)
+    )
+
+    const counts: Record<string, number> = {}
+    data.forEach(o => {
+      counts[o.isco_code] = (counts[o.isco_code] || 0) + 1
+    })
+
+    return counts
+  } catch (error) {
+    console.error('Error getting ofertas count by ISCO:', error)
+    return {}
+  }
+}
+
+/**
+ * Obtiene ofertas activas para un código ISCO específico
+ */
+export async function getOfertasByIsco(
+  iscoCode: string,
+  limit: number = 50,
+  offset: number = 0
+): Promise<{ ofertas: OfertaPorOcupacion[], total: number }> {
+  const client = getSupabaseClient()
+  if (!client) return { ofertas: [], total: 0 }
+
+  try {
+    const { data, error, count } = await client
+      .from(TABLA_OFERTAS)
+      .select(`
+        id_oferta,
+        titulo,
+        titulo_limpio,
+        empresa,
+        fecha_publicacion,
+        url,
+        skills_tecnicas
+      `, { count: 'exact' })
+      .eq('isco_code', iscoCode)
+      .order('fecha_publicacion', { ascending: false })
+      .range(offset, offset + limit - 1)
+
+    if (error) throw error
+
+    return {
+      ofertas: data || [],
+      total: count || 0
+    }
+  } catch (error) {
+    console.error('Error getting ofertas by ISCO:', error)
+    return { ofertas: [], total: 0 }
+  }
+}
+
+/**
+ * Obtiene ofertas para múltiples códigos ISCO (para exportar)
+ */
+export async function getOfertasByMultipleIsco(
+  iscoCodes: string[]
+): Promise<OfertaPorOcupacion[]> {
+  const client = getSupabaseClient()
+  if (!client || iscoCodes.length === 0) return []
+
+  try {
+    const data = await fetchAllPaginated<OfertaPorOcupacion>(
+      client,
+      TABLA_OFERTAS,
+      'id_oferta, titulo, titulo_limpio, empresa, fecha_publicacion, url, skills_tecnicas',
+      (query) => query.in('isco_code', iscoCodes).order('fecha_publicacion', { ascending: false })
+    )
+
+    return data
+  } catch (error) {
+    console.error('Error getting ofertas by multiple ISCO:', error)
+    return []
+  }
+}
+
 // ========== SKILLS INTELLIGENCE - DATOS DINÁMICOS ==========
 
 export interface SkillsIntelligenceStats {
