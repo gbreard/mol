@@ -1,8 +1,10 @@
 {
-  "version": "4.1",
-  "descripcion": "Reglas de negocio para matching ESCO. 177 reglas de bypass que fuerzan ISCO específico.",
+  "version": "4.4",
+  "descripcion": "Reglas de negocio para matching ESCO. 183 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-02-05",
+  "_cambios_v43": "R181-R182: Personal mantenimiento -> 7233, Tecnico electromedicina -> 3211",
+  "_cambios_v42": "R177-R180: Gestor cobranzas, QA/Tester, Instalador fibra, Soporte IT",
   "_cambios_v41": "R175: Operario limpieza -> 9112, R176: Auditor franquicias -> 2421",
   "_cambios_v40": "R159: Farmaceutico -> 2262, R160: Tecnico instalador -> 7411",
   "_cambios_v39": "R156: Vendedor viajante, R157: Jefe produccion, R158: Jefe operaciones, R87 ajustada",
@@ -3983,8 +3985,16 @@
       "nombre": "Operario/a de Limpieza",
       "prioridad": 0,
       "condicion": {
-        "titulo_contiene_todos": ["limpieza"],
-        "titulo_contiene_alguno": ["operario", "operaria", "operario/a", "personal", "auxiliar"]
+        "titulo_contiene_todos": [
+          "limpieza"
+        ],
+        "titulo_contiene_alguno": [
+          "operario",
+          "operaria",
+          "operario/a",
+          "personal",
+          "auxiliar"
+        ]
       },
       "accion": {
         "forzar_isco": "9112",
@@ -3999,8 +4009,16 @@
       "nombre": "Auditor de Franquicias / Establecimientos",
       "prioridad": 0,
       "condicion": {
-        "titulo_contiene_todos": ["auditor"],
-        "titulo_contiene_alguno": ["franquicia", "franquicias", "establecimientos", "locales", "sucursales"]
+        "titulo_contiene_todos": [
+          "auditor"
+        ],
+        "titulo_contiene_alguno": [
+          "franquicia",
+          "franquicias",
+          "establecimientos",
+          "locales",
+          "sucursales"
+        ]
       },
       "accion": {
         "forzar_isco": "2421",
@@ -4010,6 +4028,452 @@
       "fecha_creacion": "2026-02-05",
       "activa": true,
       "nota": "Auditor que verifica cumplimiento estándares en franquicias"
+    },
+    "R177_gestor_cobranzas": {
+      "nombre": "Gestor de Cobranzas Telefónicas",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_todos": [
+          "cobranza"
+        ],
+        "titulo_contiene_alguno": [
+          "gestor",
+          "gestora",
+          "telefonico",
+          "telefonica",
+          "agente"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4214",
+        "esco_label": "cobrador de deudas/cobradora de deudas"
+      },
+      "caso_diagnostico": "1118049547 - Gestor de Cobranzas Telefónicas",
+      "fecha_creacion": "2026-02-05",
+      "activa": true
+    },
+    "R178_qa_tester": {
+      "nombre": "QA / Tester de Software",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "qa ",
+          " qa",
+          "tester",
+          "quality assurance",
+          "testing"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2519",
+        "esco_label": "analista de pruebas de TIC"
+      },
+      "caso_diagnostico": "QA Ssr",
+      "fecha_creacion": "2026-02-05",
+      "activa": true
+    },
+    "R179_instalador_fibra": {
+      "nombre": "Técnico Instalador Fibra Óptica",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_todos": [
+          "fibra"
+        ],
+        "titulo_contiene_alguno": [
+          "instalador",
+          "tecnico",
+          "técnico"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7422",
+        "esco_label": "instalador de líneas de telecomunicaciones/instaladora de líneas de telecomunicaciones"
+      },
+      "caso_diagnostico": "1118089284 - Técnico Instalador de Fibra Óptica",
+      "fecha_creacion": "2026-02-05",
+      "activa": true
+    },
+    "R180_soporte_infraestructura": {
+      "nombre": "Soporte / Infraestructura IT",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "soporte",
+          "infraestructura",
+          "helpdesk",
+          "help desk"
+        ],
+        "area_funcional_es": "sistemas"
+      },
+      "accion": {
+        "forzar_isco": "2522",
+        "esco_label": "administrador de sistemas TIC"
+      },
+      "caso_diagnostico": "1118096134 - Especialista en Soporte e Infraestructura",
+      "fecha_creacion": "2026-02-05",
+      "activa": true
+    },
+    "R181_personal_mantenimiento": {
+      "nombre": "Personal de Mantenimiento (edificios/instalaciones)",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "personal de mantenimiento",
+          "mantenimiento general",
+          "encargado de mantenimiento"
+        ],
+        "titulo_no_contiene": [
+          "jefe",
+          "gerente",
+          "supervisor",
+          "industrial",
+          "aeronáutico",
+          "vehiculos"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7233",
+        "esco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial"
+      },
+      "caso_diagnostico": "1118103015 - Personal de Mantenimiento (centro médico)",
+      "fecha_creacion": "2026-02-05",
+      "activa": true
+    },
+    "R182_tecnico_electromedicina": {
+      "nombre": "Técnico en Electromedicina / Equipos Médicos",
+      "prioridad": -1,
+      "_nota_prioridad": "Mayor prioridad que R179 (técnico fibra) para evitar conflicto",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "electromedicina",
+          "electro medicina",
+          "electro-medicina",
+          "equipos médicos",
+          "equipamiento médico",
+          "biomédico",
+          "electro med"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2269",
+        "esco_label": "técnico en imagen para diagnóstico/técnica en imagen para diagnóstico"
+      },
+      "_nota_isco": "2269 (técnico equipos médicos) es lo más cercano a electromedicina en ESCO",
+      "caso_diagnostico": "1118073665 - Técnicos en Electro Medicina",
+      "fecha_creacion": "2026-02-05",
+      "activa": true
+    },
+    "R183_bobinador_transformadores": {
+      "nombre": "Bobinador de Transformadores",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "bobinador",
+          "bobinadora",
+          "rebobinado"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7411",
+        "esco_label": "electricista industrial"
+      },
+      "_nota": "v4.4: Bobinador eléctrico → electricista industrial",
+      "activa": true
+    },
+    "R184_carnicero_depostador": {
+      "nombre": "Carnicero / Depostador",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "carnicero",
+          "carnicera",
+          "depostador",
+          "depostadora",
+          "despostador",
+          "despostadora"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7511",
+        "esco_label": "carnicero/carnicera"
+      },
+      "_nota": "v4.4: Carnicero/Depostador → carnicero",
+      "activa": true
+    },
+    "R185_guardavidas_socorrista": {
+      "nombre": "Guardavidas / Salvavidas",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "guardavida",
+          "guardavidas",
+          "salvavida",
+          "salvavidas",
+          "socorrista"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5419",
+        "esco_label": "socorrista"
+      },
+      "_nota": "v4.4: Guardavidas → socorrista",
+      "activa": true
+    },
+    "R186_kinesiologo_fisioterapeuta": {
+      "nombre": "Kinesiólogo / Fisioterapeuta",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "kinesiólogo",
+          "kinesióloga",
+          "kinesiologo",
+          "kinesiologia",
+          "fisiatra",
+          "fisioterapeuta"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2264",
+        "esco_label": "fisioterapeuta"
+      },
+      "_nota": "v4.4: Kinesiólogo → fisioterapeuta (término argentino)",
+      "activa": true
+    },
+    "R187_auxiliar_farmacia": {
+      "nombre": "Auxiliar de Farmacia",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "auxiliar de farmacia",
+          "asistente de farmacia",
+          "ayudante de farmacia"
+        ],
+        "titulo_no_contiene": [
+          "farmacéutico",
+          "farmaceutico",
+          "bioquímico"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3213",
+        "esco_label": "técnico auxiliar de farmacia/técnica auxiliar de farmacia"
+      },
+      "_nota": "v4.4: Auxiliar farmacia → técnico auxiliar farmacia",
+      "activa": true
+    },
+    "R188_auxiliar_seguridad": {
+      "nombre": "Auxiliar / Agente de Seguridad",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "auxiliar de seguridad",
+          "agente de seguridad",
+          "oficial de seguridad"
+        ],
+        "titulo_no_contiene": [
+          "informática",
+          "informatica",
+          "ciberseguridad",
+          "sistemas",
+          "it"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5414",
+        "esco_label": "vigilante de seguridad"
+      },
+      "_nota": "v4.4: Auxiliar seguridad física → vigilante",
+      "activa": true
+    },
+    "R189_business_development": {
+      "nombre": "Business Development Specialist/Manager",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "business development",
+          "desarrollo de negocios",
+          "desarrollo comercial"
+        ],
+        "titulo_no_contiene": [
+          "director",
+          "gerente",
+          "head"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3322",
+        "esco_label": "representante comercial"
+      },
+      "_nota": "v4.4: Business Development → representante comercial",
+      "activa": true
+    },
+    "R190_auditor_interno": {
+      "nombre": "Auditor Interno / Control Interno",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "auditor interno",
+          "auditora interna",
+          "control interno",
+          "auditoría interna"
+        ],
+        "titulo_no_contiene": [
+          "gerente",
+          "jefe",
+          "director"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2411",
+        "esco_label": "auditor de cuentas/auditora de cuentas"
+      },
+      "_nota": "v4.4: Auditor interno → auditor de cuentas",
+      "activa": true
+    },
+    "R191_analista_abastecimiento": {
+      "nombre": "Analista de Abastecimiento / Compras",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista de abastecimiento",
+          "analista de compras",
+          "analista supply"
+        ],
+        "titulo_no_contiene": [
+          "jefe",
+          "gerente",
+          "director"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3323",
+        "esco_label": "comprador/compradora"
+      },
+      "_nota": "v4.4: Analista abastecimiento → comprador",
+      "activa": true
+    },
+    "R192_atencion_paciente": {
+      "nombre": "Personal Atención al Paciente",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "atención al paciente",
+          "atencion al paciente",
+          "recepción médica",
+          "recepcionista médic"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4226",
+        "esco_label": "recepcionista de consultorio médico"
+      },
+      "_nota": "v4.4: Atención paciente → recepcionista médico",
+      "activa": true
+    },
+    "R193_supervisor_operaciones": {
+      "nombre": "Supervisor de Operaciones (genérico)",
+      "prioridad": 1,
+      "_nota_prioridad": "Prioridad 1 para no interferir con supervisores específicos",
+      "condicion": {
+        "titulo_contiene_todos": [
+          "supervisor"
+        ],
+        "titulo_contiene_alguno": [
+          "operaciones",
+          "operations"
+        ],
+        "titulo_no_contiene": [
+          "logística",
+          "almacén",
+          "producción",
+          "planta",
+          "call center"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3123",
+        "esco_label": "supervisor de construcción/supervisora de construcción"
+      },
+      "_nota": "v4.4: Supervisor operaciones genérico → 3123 (fallback)",
+      "activa": true
+    },
+    "R194_middle_office": {
+      "nombre": "Middle Office / Back Office",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "middle office",
+          "back office",
+          "backoffice"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4311",
+        "esco_label": "auxiliar de contabilidad"
+      },
+      "_nota": "v4.4: Middle/Back Office → auxiliar contabilidad",
+      "activa": true
+    },
+    "R195_ejecutivo_ventas": {
+      "nombre": "Ejecutivo de Ventas (genérico)",
+      "prioridad": 1,
+      "_nota_prioridad": "Prioridad 1 para no interferir con ejecutivos específicos",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "ejecutivo de ventas",
+          "ejecutiva de ventas",
+          "ejecutivo ventas",
+          "ejecutivo/a de ventas"
+        ],
+        "titulo_no_contiene": [
+          "director",
+          "gerente",
+          "head",
+          "jefe"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3322",
+        "esco_label": "representante comercial"
+      },
+      "_nota": "v4.4: Ejecutivo ventas genérico → representante comercial",
+      "activa": true
+    },
+    "R196_pasante_administrativo": {
+      "nombre": "Pasante Administrativo / Contable",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "pasante de adm",
+          "pasante adm",
+          "pasante contab",
+          "practicante adm",
+          "trainee adm"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4110",
+        "esco_label": "auxiliar administrativo/auxiliar administrativa"
+      },
+      "_nota": "v4.4: Pasante administrativo → auxiliar administrativo",
+      "activa": true
+    },
+    "R197_personal_atencion_paciente": {
+      "nombre": "Personal Atención al Paciente (variante)",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "personal para atención",
+          "personal de atención",
+          "personal atencion"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4226",
+        "esco_label": "recepcionista de consultorio médico"
+      },
+      "_nota": "v4.4: Personal atención → recepcionista médico (complementa R192)",
+      "activa": true
     }
   },
   "reglas_filtro": {
@@ -4086,5 +4550,6 @@
   },
   "_cambios_v23": "Demo optimizacion: R105-R110 (Jefe Mant, Preventista, Seg Higiene, Jefe RRHH, Ejec Ventas, Tec Mant)",
   "_cambios_v28": "Agregadas R131 hoteleria hospitalaria, R132 medicina prepaga",
-  "_cambios_v36": "R151: Jefe de Obra -> 1323 director de obra"
+  "_cambios_v36": "R151: Jefe de Obra -> 1323 director de obra",
+  "_cambios_v44": "R183-R197: Bobinador, Carnicero, Guardavidas, Kinesiologo, Aux Farmacia, Aux Seguridad, Business Dev, Auditor, Abastecimiento, Atencion Paciente, Supervisor Ops, Middle Office, Ejecutivo Ventas, Pasante, Personal Atencion"
 }
