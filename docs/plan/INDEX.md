@@ -84,14 +84,13 @@
 
 | Estado | Cantidad | Detalle |
 |--------|----------|---------|
-| ✅ Resueltos | 2 | #2, #4 (Exports tabla) |
-| ⚠️ Parciales | 1 | #1 (Excel formateado pendiente) |
+| ✅ Resueltos | 3 | #1, #2, #4 (Exports completos) |
 | ⏳ Pendientes | 6 | Filtros, Rediseños, Indicadores |
 
-| Pantalla | Resueltos | Parciales | Pendientes |
-|----------|-----------|-----------|------------|
-| P-09 Dashboard | 2 (#2,#4) | 1 (#1) | 3 (#3,#5,#6) |
-| P-10 Skills | 0 | 0 | 3 (#7,#8,#9) |
+| Pantalla | Resueltos | Pendientes |
+|----------|-----------|------------|
+| P-09 Dashboard | 3 (#1,#2,#4) | 3 (#3,#5,#6) |
+| P-10 Skills | 0 | 3 (#7,#8,#9) |
 
 → Ver [ANALISIS_ISSUES_USUARIO](./ANALISIS_ISSUES_USUARIO.md) para detalle
 
