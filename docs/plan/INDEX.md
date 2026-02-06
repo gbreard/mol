@@ -77,7 +77,17 @@
 | Issues críticos | 11 |
 | Issues altos | 17 |
 | Issues medios | 19 |
-| **Total issues** | **47** |
+| **Total issues técnicos** | **47** |
+| **Issues de usuario** | **9** |
+
+### Issues de Usuario Activos (admin@oede.gob.ar)
+
+| Pantalla | Issues | Temas |
+|----------|--------|-------|
+| P-09 Dashboard | 6 | Exports, Filtros, Rediseño |
+| P-10 Skills | 3 | Perfiles, Indicadores mercado |
+
+→ Ver [ANALISIS_ISSUES_USUARIO](./ANALISIS_ISSUES_USUARIO.md) para detalle
 
 ## Quick Links
 
@@ -95,6 +105,7 @@
 | Features | [08_PROPUESTA_VALOR](./08_PROPUESTA_VALOR.md) | Qué falta vs competidores |
 | Planificación | [09_ROADMAP](./09_ROADMAP.md) | Fases, prioridades |
 | Observabilidad | [10_OBSERVABILIDAD](./10_OBSERVABILIDAD.md) | Monitoreo, métricas, arquitectura visual |
+| **Issues Usuario** | [ANALISIS_ISSUES_USUARIO](./ANALISIS_ISSUES_USUARIO.md) | Feedback, priorización features |
 
 ### Por Urgencia
 
@@ -103,6 +114,7 @@
 | **BLOQUEANTE** | [06_SEGURIDAD](./06_SEGURIDAD.md) | S-01 a S-04 |
 | Alta | [07_ESCALABILIDAD](./07_ESCALABILIDAD.md) | E-01 a E-03 |
 | Alta | [08_PROPUESTA_VALOR](./08_PROPUESTA_VALOR.md) | V-01 a V-04 |
+| Alta | [ANALISIS_ISSUES_USUARIO](./ANALISIS_ISSUES_USUARIO.md) | 9 issues de usuario |
 | Media | [09_ROADMAP](./09_ROADMAP.md) | Planificar fases |
 
 ## Sistema de IDs
