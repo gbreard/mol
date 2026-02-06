@@ -53,10 +53,12 @@ interface SkillConsolidada {
   label: string;
   label_normalized: string;
   uri?: string;
-  source: 'esco_common' | 'argentina_approved';
+  source: 'esco_common' | 'argentina_approved' | 'mol_approved';
   L1?: string;
   L2?: string;
   percentage_when_approved?: number;
+  percentage?: number; // Legacy field from migration
+  label_original?: string; // Legacy field from migration
   approved_at?: string;
   approved_by?: string;
 }
@@ -237,11 +239,21 @@ export default function ConsolidatedProfileTab({
     const skills: SkillConsolidada[] = [];
     const addedLabels = new Set<string>();
 
-    // 1. Add previously approved skills from ESCO Argentino
+    // 1. Add previously approved skills from ESCO Argentino (normalize legacy fields)
     if (escoArgentino?.skills_consolidadas) {
       escoArgentino.skills_consolidadas.forEach(skill => {
-        skills.push(skill);
-        addedLabels.add(skill.label_normalized);
+        // Normalize legacy data from migration
+        const normalizedSkill: SkillConsolidada = {
+          ...skill,
+          label: skill.label || skill.label_original || skill.label_normalized || '',
+          label_normalized: skill.label_normalized || skill.label_original?.toLowerCase() || '',
+          percentage_when_approved: skill.percentage_when_approved || skill.percentage || 0,
+          source: skill.source === 'mol_approved' ? 'argentina_approved' : skill.source
+        };
+        if (normalizedSkill.label && normalizedSkill.label_normalized) {
+          skills.push(normalizedSkill);
+          addedLabels.add(normalizedSkill.label_normalized);
+        }
       });
     }
 
@@ -450,7 +462,7 @@ export default function ConsolidatedProfileTab({
   }
 
   const selectedInfo = occupationsList.find(o => o.id === selectedId);
-  const approvedCount = consolidatedSkills.filter(s => s.source === 'argentina_approved').length;
+  const approvedCount = consolidatedSkills.filter(s => s.source === 'argentina_approved' || s.source === 'mol_approved').length;
   const escoCommonCount = consolidatedSkills.filter(s => s.source === 'esco_common').length;
 
   return (
@@ -670,24 +682,24 @@ export default function ConsolidatedProfileTab({
                     <li
                       key={`${skill.label_normalized}-${idx}`}
                       className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded text-sm ${
-                        skill.source === 'argentina_approved' ? 'bg-purple-50' : 'bg-green-50'
+                        skill.source === 'argentina_approved' || skill.source === 'mol_approved' ? 'bg-purple-50' : 'bg-green-50'
                       }`}
                     >
                       <div className="flex items-center gap-2 flex-1 min-w-0">
-                        {skill.source === 'argentina_approved' ? (
+                        {skill.source === 'argentina_approved' || skill.source === 'mol_approved' ? (
                           <Plus className="flex-shrink-0 w-3 h-3 text-purple-500" />
                         ) : (
                           <Star className="flex-shrink-0 w-3 h-3 text-blue-500 fill-blue-500" />
                         )}
-                        <span className="truncate">{skill.label}</span>
+                        <span className="truncate">{skill.label || skill.label_original || skill.label_normalized}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className={`flex-shrink-0 font-medium ${
-                          skill.source === 'argentina_approved' ? 'text-purple-700' : 'text-green-700'
+                          skill.source === 'argentina_approved' || skill.source === 'mol_approved' ? 'text-purple-700' : 'text-green-700'
                         }`}>
-                          {skill.percentage_when_approved || 0}%
+                          {skill.percentage_when_approved || skill.percentage || 0}%
                         </span>
-                        {skill.source === 'argentina_approved' && (
+                        {(skill.source === 'argentina_approved' || skill.source === 'mol_approved') && (
                           <button
                             onClick={() => handleRemove(skill)}
                             disabled={isSaving}
