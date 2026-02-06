@@ -78,19 +78,28 @@
 | Issues altos | 17 |
 | Issues medios | 19 |
 | **Total issues técnicos** | **47** |
-| **Issues de usuario** | **9** |
+| **Issues de usuario** | **10** |
 
 ### Issues de Usuario (admin@oede.gob.ar)
 
 | Estado | Cantidad | Detalle |
 |--------|----------|---------|
-| ✅ Resueltos | 3 | #1, #2, #4 (Exports completos) |
-| ⏳ Pendientes | 6 | Filtros, Rediseños, Indicadores |
+| ✅ Resueltos | 3 | #1, #2, #4 (Exports Dashboard) |
+| ⏳ Pendientes | 7 | Indicadores, Filtros, Rediseños |
 
 | Pantalla | Resueltos | Pendientes |
 |----------|-----------|------------|
 | P-09 Dashboard | 3 (#1,#2,#4) | 3 (#3,#5,#6) |
-| P-10 Skills | 0 | 3 (#7,#8,#9) |
+| P-10 Skills | 0 | 4 (#7,#8,#9,#10) |
+
+### Sprints
+
+| Sprint | Issues | Estado |
+|--------|--------|--------|
+| 1 | #1, #2, #4 | ✅ Completado |
+| 2 | #8, #9, #10 | ⏳ Siguiente |
+| 3 | #3, #5 | Pendiente |
+| 4 | #6, #7 | Pendiente |
 
 → Ver [ANALISIS_ISSUES_USUARIO](./ANALISIS_ISSUES_USUARIO.md) para detalle
 

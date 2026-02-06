@@ -1,23 +1,27 @@
 # Análisis de Issues de Usuario
 
-> Fecha: 2026-02-06
+> Fecha: 2026-02-06 (actualizado)
 > Fuente: Issues de admin@oede.gob.ar en Supabase
 
 ## Resumen Ejecutivo
 
-Se analizaron **9 issues** reportados por el usuario principal. El 67% de los issues (6/9) corresponden al Dashboard Principal (P-09), y el 33% restante (3/9) a Skills Intelligence (P-10).
+Se analizaron **10 issues** reportados por el usuario principal. El 60% de los issues (6/10) corresponden al Dashboard Principal (P-09), y el 40% restante (4/10) a Skills Intelligence (P-10).
 
 **Temas principales:**
 1. Exportación de datos (4 issues)
 2. Simplificación de filtros (2 issues)
 3. Rediseño funcional (2 issues)
-4. Indicadores de mercado laboral (2 issues)
+4. Indicadores de mercado laboral (3 issues)
+
+**Estado actual:**
+- ✅ Completados: 3 (Sprint 1)
+- ⏳ Pendientes: 7
 
 ---
 
 ## Issues Detallados
 
-### P-09: Dashboard Principal (`/dashboard`)
+### P-09: Dashboard Principal (`/`)
 
 #### Issue #1: Export Excel Gráficos Panorama General ✅ RESUELTO
 - **Sección:** Tab Panorama
@@ -39,13 +43,14 @@ Se analizaron **9 issues** reportados por el usuario principal. El 67% de los is
 - **Solicitud:** Descargar tabla de ofertas en formato CSV o Excel
 - **Tipo:** Feature nueva
 - **Impacto:** Alto (necesario para análisis offline)
-- **Estado:** Implementado (2026-02-06) - Botón "Exportar" con CSV y Excel
+- **Estado:** ✅ Implementado (2026-02-06) - Botón "Exportar" con CSV y Excel
 
 #### Issue #3: Simplificar Filtros Ofertas
 - **Sección:** Tab Ofertas
 - **Solicitud:** Reducir filtros, dejar solo "Buscar por título"
 - **Tipo:** UX improvement
 - **Impacto:** Medio (simplifica experiencia pero reduce funcionalidad)
+- **Sprint:** 3
 - **Nota:** Considerar filtros colapsables en lugar de eliminar
 
 #### Issue #4: Export Archivos Requerimientos ✅ RESUELTO
@@ -53,72 +58,207 @@ Se analizaron **9 issues** reportados por el usuario principal. El 67% de los is
 - **Solicitud:** Exportar datos de requerimientos
 - **Tipo:** Feature nueva
 - **Impacto:** Alto
-- **Estado:** Implementado (2026-02-06) - Botón "Exportar" con CSV y Excel
+- **Estado:** ✅ Implementado (2026-02-06) - Botón "Exportar" con CSV y Excel
 
 #### Issue #5: Filtros Requerimientos en Sidebar Global
 - **Sección:** Sidebar
-- **Solicitud:** Los filtros de Requerimientos deben estar en el panel de filtros global
+- **Solicitud:** Incluir en "Filtros" la sección "Requerimientos"
 - **Tipo:** UX improvement
 - **Impacto:** Medio (consistencia de interfaz)
+- **Sprint:** 3
+
+**Filtros a agregar:**
+
+| Filtro | Tipo |
+|--------|------|
+| Nivel Educativo | Select |
+| Experiencia | Select/Range |
+| Seniority | Select |
+| Modalidad | Select |
+| Jornada | Select |
+| Skills digitales | Toggle/Select |
 
 #### Issue #6: Rediseño Requerimientos
 - **Sección:** Tab Requerimientos
-- **Solicitud:** Reordenar contenido, agregar selectores de competencias
+- **Solicitud:** Rediseño completo de la sección
 - **Tipo:** Rediseño funcional
 - **Impacto:** Alto (nuevo caso de uso)
-- **Detalle:** El usuario quiere poder seleccionar competencias específicas y ver qué ocupaciones las requieren
+- **Sprint:** 4
+
+**Cambios solicitados:**
+
+1. ❌ **Eliminar** sección de filtros inicial
+2. **Reordenar contenido:**
+   - Primero: "Análisis de habilidades"
+   - Segundo: "Distribución de los requerimientos"
+3. **Gráfico "Análisis de habilidades":**
+   - Default: mostrar competencias específicas
+   - Selector 1: cantidad de competencias (20, 40, 60, 100)
+   - Selector 2: tipo (específica / agregada)
+   - ❌ Eliminar listado de competencias
 
 ---
 
 ### P-10: Skills Intelligence (`/skills`)
 
-#### Issue #7: Rediseño para Oficina de Empleo
+#### Issue #7: Rediseño "Mis Skills" para Oficina de Empleo
 - **Sección:** MySkillsSearch
-- **Solicitud:** Adaptar para caso de uso de oficina de empleo: perfiles de trabajadores
+- **Solicitud:** Sistema de apoyo a oficina de empleo con perfiles de trabajadores
 - **Tipo:** Rediseño funcional
 - **Impacto:** Muy Alto (nuevo caso de uso estratégico)
-- **Detalle:**
-  - Actualmente: búsqueda de skills genérica
-  - Requerido: crear perfiles de trabajadores con sus skills y sugerir ocupaciones compatibles
-  - Caso de uso: "El trabajador X tiene estas skills, ¿qué ocupaciones puede desempeñar?"
+- **Sprint:** 4
 
-#### Issue #8: Indicador Ofertas Activas en Comparador
+**Flujo completo:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  1. REGISTRO                                                │
+│     └── Nombre del trabajador/a (para guardar perfil)       │
+├─────────────────────────────────────────────────────────────┤
+│  2. CONSTRUCCIÓN DEL PERFIL                                 │
+│                                                             │
+│     a) Ingresar ocupaciones de trayectoria laboral          │
+│              ↓                                              │
+│     b) Sistema despliega competencias vinculadas            │
+│              ↓                                              │
+│     c) Eliminar competencias que NO tiene el trabajador     │
+│              ↓                                              │
+│     d) Agregar competencias via buscador (sin semántica)    │
+│              ↓                                              │
+│     e) Mostrar perfil de competencias resultante            │
+├─────────────────────────────────────────────────────────────┤
+│  3. MATCHING                                                │
+│     └── Ocupaciones similares al perfil del trabajador      │
+├─────────────────────────────────────────────────────────────┤
+│  4. ACCIONES EXISTENTES                                     │
+│     └── Se mantienen (Comparar, Detalle, etc.)              │
+│     └── "Comparar" aplica cambios de Issue #8               │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Dependencias:**
+- Issue #8 (indicador ofertas en Comparar)
+- Nueva tabla `perfiles_trabajadores` en Supabase
+
+#### Issue #8: Modificación "Comparar Ocupaciones"
 - **Sección:** OccupationCompare
-- **Solicitud:** Mostrar si cada ocupación tiene ofertas activas actualmente
+- **Solicitud:** Indicar si la ocupación objetivo tiene ofertas activas
 - **Tipo:** Feature nueva
 - **Impacto:** Alto (conecta skills con mercado real)
-- **Implementación sugerida:** Badge con contador de ofertas activas
+- **Sprint:** 2
 
-#### Issue #9: Ocupaciones Similares con Ofertas
+**Cambios solicitados:**
+
+1. Si la ocupación **objetivo** tiene ofertas activas:
+   - Mostrar cartel: **"Ofertas laborales activas en esta ocupación"**
+   - Incluir **link** que lleva a esas ofertas
+
+#### Issue #9: Modificaciones en "Ocupación" (Detalle)
 - **Sección:** OccupationDetail
-- **Solicitud:** Columna que muestre ocupaciones similares que tienen ofertas activas
+- **Solicitud:** Nueva columna con ocupaciones similares que tienen ofertas
 - **Tipo:** Feature nueva
 - **Impacto:** Alto (ayuda a reorientación laboral)
-- **Implementación sugerida:** Lista de "ocupaciones cercanas con demanda"
+- **Sprint:** 2
+
+**Cambios solicitados:**
+
+| Elemento | Cambio |
+|----------|--------|
+| Nueva columna | "Ocupaciones similares con ofertas laborales activas" (junto a "Ocupaciones similares") |
+| Links | Cada ocupación con ofertas incluye link a las ofertas |
+| Selector cantidad | Mostrar hasta 20 o hasta 30 ocupaciones (ambas columnas) |
+
+#### Issue #10: Export Ofertas desde Skills (NUEVO)
+- **Sección:** Skills → al ver ofertas de una ocupación
+- **Solicitud:** Descargar ofertas vinculadas a ocupación
+- **Tipo:** Feature nueva
+- **Impacto:** Alto
+- **Sprint:** 2
+
+**Archivos a generar:**
+
+| Formato | Contenido |
+|---------|-----------|
+| **CSV** | Título ocupación, fecha, link oferta |
+| **Excel formateado** | Ver estructura abajo |
+
+**Estructura Excel:**
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Título: "Ofertas laborales disponibles activas a la fecha  │
+│         según selección"                                    │
+├─────────────────────────────────────────────────────────────┤
+│ Subtítulo: Fecha extracción + filtros aplicados            │
+├─────────────────────────────────────────────────────────────┤
+│ Título | Fecha | Competencias | Link oferta                │
+│ ────── │ ───── │ ──────────── │ ───────────                │
+│ ...    │ ...   │ ...          │ ...                        │
+├─────────────────────────────────────────────────────────────┤
+│ Fuente: MOL, en base a portales de intermediación laboral  │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## Priorización Sugerida
+## Priorización por Sprints
 
-### Sprint 1: Exports (Issues #1, #2, #4)
-**Razón:** Funcionalidad básica que desbloquea trabajo de analistas
-- Componente compartido: `ExportButton` con opciones CSV/Excel
-- API routes para generación de archivos
+### Sprint 1: Exports Dashboard ✅ COMPLETADO
+**Issues:** #1, #2, #4
+**Estado:** ✅ Implementado (2026-02-06)
 
-### Sprint 2: Indicadores Mercado (Issues #8, #9)
-**Razón:** Alto valor diferencial, implementación acotada
-- Query a ofertas_dashboard por isco_code
-- Badges y listas de sugerencias
+- Componente `ExportButton` con CSV/Excel
+- Función `downloadFormattedExcel()` reutilizable
+- Librería xlsx instalada
 
-### Sprint 3: UX Filtros (Issues #3, #5)
-**Razón:** Mejora experiencia sin cambiar funcionalidad
-- Sidebar unificado
-- Filtros colapsables
+### Sprint 2: Indicadores Mercado
+**Issues:** #8, #9, #10
+**Razón:** Alto valor diferencial, conecta skills con mercado real
 
-### Sprint 4: Rediseños (Issues #6, #7)
-**Razón:** Requieren más análisis y diseño
-- Issue #7 (perfiles trabajadores) es estratégico pero complejo
-- Issue #6 (requerimientos) necesita más detalle del usuario
+**Requisitos técnicos:**
+- Vista SQL: ofertas activas por `isco_code`
+- Query para ocupaciones similares con ofertas
+- Componentes: banner, links, columna adicional
+- Export ofertas desde Skills
+
+### Sprint 3: UX Filtros
+**Issues:** #3, #5
+**Razón:** Mejora experiencia sin cambiar funcionalidad core
+
+**Cambios:**
+- Simplificar filtros en Ofertas
+- Agregar filtros de Requerimientos al Sidebar global
+- Filtros: Nivel Educativo, Experiencia, Seniority, Modalidad, Jornada, Skills digitales
+
+### Sprint 4: Rediseños Mayores
+**Issues:** #6, #7
+**Razón:** Requieren arquitectura nueva y más desarrollo
+
+**Issue #6 - Requerimientos:**
+- Reordenar secciones
+- Nuevos selectores en gráfico
+- Eliminar elementos
+
+**Issue #7 - Perfiles Trabajadores:**
+- Nueva tabla en Supabase
+- Flujo completo de registro y construcción de perfil
+- Matching con ocupaciones
+
+---
+
+## Tabla Resumen
+
+| Issue | Sprint | Pantalla | Descripción | Estado |
+|-------|--------|----------|-------------|--------|
+| #1 | 1 | P-09 | Export Excel Panorama | ✅ |
+| #2 | 1 | P-09 | Export CSV/Excel Ofertas | ✅ |
+| #3 | 3 | P-09 | Simplificar filtros Ofertas | ⏳ |
+| #4 | 1 | P-09 | Export Requerimientos | ✅ |
+| #5 | 3 | P-09 | Filtros Requerimientos en Sidebar | ⏳ |
+| #6 | 4 | P-09 | Rediseño Requerimientos | ⏳ |
+| #7 | 4 | P-10 | Rediseño Mis Skills (oficina empleo) | ⏳ |
+| #8 | 2 | P-10 | Banner ofertas en Comparar | ⏳ |
+| #9 | 2 | P-10 | Columna ocupaciones con ofertas | ⏳ |
+| #10 | 2 | P-10 | Export ofertas desde Skills | ⏳ |
 
 ---
 
@@ -126,23 +266,25 @@ Se analizaron **9 issues** reportados por el usuario principal. El 67% de los is
 
 | Issue | Wireframe | Documento |
 |-------|-----------|-----------|
-| #1-2, #4 | Componente ExportButton | 03_WIREFRAMES/componentes.md |
+| #1-2, #4 | Componente ExportButton | ✅ Implementado |
 | #3, #5 | Sidebar unificado v2 | 03_WIREFRAMES/suscriptor.md |
 | #6 | Requerimientos v2 | 03_WIREFRAMES/suscriptor.md |
 | #7 | Perfil Trabajador | 03_WIREFRAMES/suscriptor.md (nuevo) |
-| #8 | Comparador con badges | 03_WIREFRAMES/suscriptor.md |
-| #9 | Detalle con sugerencias | 03_WIREFRAMES/suscriptor.md |
+| #8 | Comparador con banner | 03_WIREFRAMES/suscriptor.md |
+| #9 | Detalle con columna ofertas | 03_WIREFRAMES/suscriptor.md |
+| #10 | Export desde Skills | 03_WIREFRAMES/suscriptor.md |
 
 ---
 
 ## Dependencias Técnicas
 
-| Feature | Dependencia |
-|---------|-------------|
-| Exports Excel | Librería xlsx o similar |
-| Ofertas activas por ocupación | Vista SQL en Supabase |
-| Ocupaciones similares | ESCO skill overlap ya calculado |
-| Perfiles trabajadores | Nueva tabla `perfiles_trabajadores` |
+| Feature | Dependencia | Sprint |
+|---------|-------------|--------|
+| Exports Excel | ✅ Librería xlsx instalada | 1 |
+| Ofertas activas por ocupación | Vista SQL en Supabase | 2 |
+| Ocupaciones similares con ofertas | Query + ESCO skill overlap | 2 |
+| Filtros Requerimientos | Campos en ofertas_dashboard | 3 |
+| Perfiles trabajadores | Nueva tabla `perfiles_trabajadores` | 4 |
 
 ---
 
