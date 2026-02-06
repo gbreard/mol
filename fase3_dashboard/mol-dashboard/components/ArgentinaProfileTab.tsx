@@ -1,23 +1,65 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { Globe, Search, ChevronDown, X, Loader2, Star, Circle, TrendingUp, AlertCircle, Briefcase, Users, AlertTriangle, CheckCircle } from 'lucide-react';
-import { MOLSkillsProfileIndex, OccupationFullDetailIndex, OccupationMOLProfile, SkillItem, MOLSkillItem } from '@/lib/types';
+import { useState, useMemo, useEffect } from 'react';
+import { Globe, Search, ChevronDown, X, Loader2, Star, Circle, TrendingUp, AlertCircle, Briefcase, Users, AlertTriangle, CheckCircle, RefreshCw } from 'lucide-react';
+import { OccupationFullDetailIndex, SkillItem } from '@/lib/types';
 
 interface OccupationInfo {
   id: string;
   label: string;
   isco: string;
+  offerCount?: number;
 }
 
 interface ArgentinaProfileTabProps {
-  molProfileData: MOLSkillsProfileIndex | null;
   occupationsData: OccupationFullDetailIndex | null;
   occupationsList: OccupationInfo[];
 }
 
+// Tipo para el perfil dinámico desde la API
+interface PerfilArgentinaData {
+  esco_uuid: string;
+  esco_label: string;
+  isco_code: string;
+  offer_count: number;
+  mol_skills: {
+    label_original: string;
+    label_normalized: string;
+    frequency: number;
+    percentage: number;
+    is_esco_essential: boolean;
+    is_esco_optional: boolean;
+    is_emerging: boolean;
+    esco_uri?: string;
+    description?: string;
+    L1?: string;
+    L2?: string;
+  }[];
+  comparison: {
+    coverage_essential: number;
+    coverage_total: number;
+    common_count: number;
+    common_optional_count: number;
+    emerging_count: number;
+    missing_count: number;
+    esco_essential_count: number;
+    esco_optional_count: number;
+    mol_unique_count: number;
+    common_labels: string[];
+    common_optional_labels: string[];
+    emerging_labels: string[];
+    missing_labels: string[];
+  };
+  generated_at: string;
+}
+
+// Tipo para las estadísticas de ocupaciones (desde API ligera)
+interface OccupationsStats {
+  total_ofertas: number;
+  total_ocupaciones: number;
+}
+
 export default function ArgentinaProfileTab({
-  molProfileData,
   occupationsData,
   occupationsList
 }: ArgentinaProfileTabProps) {
@@ -25,77 +67,84 @@ export default function ArgentinaProfileTab({
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Filter to only occupations with MOL data, sorted by offer count (descending)
-  const occupationsWithMOL = useMemo(() => {
-    if (!molProfileData) {
-      console.log('[ARG TAB DEBUG] molProfileData is null');
-      return [];
+  // Estado para lista de ocupaciones con ofertas (carga inicial)
+  const [occupationsWithOffers, setOccupationsWithOffers] = useState<OccupationInfo[]>([]);
+  const [stats, setStats] = useState<OccupationsStats>({ total_ofertas: 0, total_ocupaciones: 0 });
+  const [isLoadingList, setIsLoadingList] = useState(true);
+
+  // Estado para el perfil seleccionado (carga bajo demanda)
+  const [selectedProfile, setSelectedProfile] = useState<PerfilArgentinaData | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
+
+  // Cargar lista de ocupaciones con ofertas al montar
+  useEffect(() => {
+    async function loadOccupationsList() {
+      setIsLoadingList(true);
+      try {
+        const res = await fetch('/api/skills-intelligence');
+        const data = await res.json();
+
+        // Transformar a lista de ocupaciones
+        const occs: OccupationInfo[] = (data.occupations || []).map((o: any) => ({
+          id: o.esco_uri?.split('/').pop() || '',
+          label: o.esco_label || '',
+          isco: o.isco_code || '',
+          offerCount: o.ofertas_count || 0
+        })).filter((o: OccupationInfo) => o.id && (o.offerCount || 0) > 0);
+
+        // Ordenar por cantidad de ofertas (descendente)
+        occs.sort((a, b) => (b.offerCount || 0) - (a.offerCount || 0));
+
+        setOccupationsWithOffers(occs);
+        setStats({
+          total_ofertas: data.stats?.total_ofertas || 0,
+          total_ocupaciones: occs.length
+        });
+      } catch (err) {
+        console.error('Error loading occupations list:', err);
+        setOccupationsWithOffers([]);
+      } finally {
+        setIsLoadingList(false);
+      }
     }
 
-    if (occupationsList.length === 0) {
-      console.log('[ARG TAB DEBUG] occupationsList is empty');
-      return [];
+    loadOccupationsList();
+  }, []);
+
+  // Cargar perfil cuando se selecciona una ocupación
+  useEffect(() => {
+    if (!selectedId) {
+      setSelectedProfile(null);
+      return;
     }
 
-    // DEBUG: Check data
-    const molOccupationKeys = Object.keys(molProfileData.occupations);
-    const occupationsListIds = occupationsList.map(o => o.id);
-    const matchingIds = occupationsListIds.filter(id => molProfileData.occupations[id]);
+    async function loadProfile() {
+      setIsLoadingProfile(true);
+      setProfileError(null);
 
-    // DEBUG: Specific UUID comparison
-    const molFirst = molOccupationKeys[0];
-    const occFirst = occupationsListIds[0];
-    const crossCheck = {
-      molFirstKey: molFirst,
-      molFirstInOccList: occupationsListIds.includes(molFirst),
-      occFirstKey: occFirst,
-      occFirstInMolData: !!molProfileData.occupations[occFirst],
-      molKeyCharCodes: molFirst?.split('').slice(0, 10).map(c => c.charCodeAt(0)),
-      occKeyCharCodes: occFirst?.split('').slice(0, 10).map(c => c.charCodeAt(0))
-    };
+      try {
+        const res = await fetch(`/api/perfil-argentina/${selectedId}`);
 
-    console.log('[ARG TAB DEBUG] Data check:', {
-      molOccupationKeys_count: molOccupationKeys.length,
-      molOccupationKeys_first5: molOccupationKeys.slice(0, 5),
-      occupationsList_count: occupationsList.length,
-      occupationsList_first5: occupationsListIds.slice(0, 5),
-      matchingIds_count: matchingIds.length,
-      matchingIds_first5: matchingIds.slice(0, 5),
-      crossCheck,
-      first5OfferCounts: matchingIds.slice(0, 5).map(id => ({
-        id,
-        offer_count: molProfileData.occupations[id]?.offer_count,
-        type: typeof molProfileData.occupations[id]?.offer_count
-      }))
-    });
+        if (!res.ok) {
+          throw new Error('Error cargando perfil');
+        }
 
-    const result = occupationsList
-      .filter(o => molProfileData.occupations[o.id])
-      .sort((a, b) => {
-        const countA = molProfileData.occupations[a.id]?.offer_count || 0;
-        const countB = molProfileData.occupations[b.id]?.offer_count || 0;
-        return countB - countA; // Mayor cantidad primero
-      });
+        const data = await res.json();
+        setSelectedProfile(data);
+      } catch (err) {
+        console.error('Error loading profile:', err);
+        setProfileError('Error al cargar el perfil. Intenta de nuevo.');
+        setSelectedProfile(null);
+      } finally {
+        setIsLoadingProfile(false);
+      }
+    }
 
-    console.log('[ARG TAB DEBUG] Final result:', {
-      count: result.length,
-      first5: result.slice(0, 5).map(o => ({
-        id: o.id,
-        label: o.label,
-        offer_count: molProfileData.occupations[o.id]?.offer_count
-      }))
-    });
+    loadProfile();
+  }, [selectedId]);
 
-    return result;
-  }, [occupationsList, molProfileData]);
-
-  // Get selected occupation profile
-  const selectedProfile = useMemo(() => {
-    if (!selectedId || !molProfileData) return null;
-    return molProfileData.occupations[selectedId] || null;
-  }, [selectedId, molProfileData]);
-
-  // Get ESCO data for selected occupation
+  // Get ESCO data for selected occupation (para mostrar skills ESCO)
   const selectedEsco = useMemo(() => {
     if (!selectedId || !occupationsData) return null;
     return occupationsData[selectedId] || null;
@@ -103,20 +152,20 @@ export default function ArgentinaProfileTab({
 
   // Filter occupations for dropdown
   const filteredOccupations = useMemo(() => {
-    if (!searchTerm.trim()) return occupationsWithMOL;
+    if (!searchTerm.trim()) return occupationsWithOffers;
 
     const normalizedSearch = searchTerm.toLowerCase()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
 
-    return occupationsWithMOL.filter(occ => {
+    return occupationsWithOffers.filter(occ => {
       const normalizedLabel = occ.label.toLowerCase()
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '');
       return normalizedLabel.includes(normalizedSearch) ||
              occ.isco.toLowerCase().includes(normalizedSearch);
     });
-  }, [occupationsWithMOL, searchTerm]);
+  }, [occupationsWithOffers, searchTerm]);
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
@@ -127,66 +176,87 @@ export default function ArgentinaProfileTab({
   const handleClear = () => {
     setSelectedId(null);
     setSearchTerm('');
+    setSelectedProfile(null);
   };
 
-  // Loading state - wait for both molProfileData AND occupationsList
-  if (!molProfileData || occupationsList.length === 0) {
+  const handleRefresh = () => {
+    if (selectedId) {
+      setSelectedProfile(null);
+      // Trigger reload
+      const tempId = selectedId;
+      setSelectedId(null);
+      setTimeout(() => setSelectedId(tempId), 100);
+    }
+  };
+
+  // Loading state inicial
+  if (isLoadingList) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-teal-500" />
-        <span className="ml-3 text-gray-600">
-          {!molProfileData
-            ? 'Cargando datos de perfil argentino...'
-            : 'Cargando lista de ocupaciones...'}
-        </span>
+        <span className="ml-3 text-gray-600">Cargando ocupaciones con datos MOL...</span>
       </div>
     );
   }
 
-  const stats = molProfileData.stats;
-  const selectedInfo = occupationsList.find(o => o.id === selectedId);
+  const selectedInfo = occupationsWithOffers.find(o => o.id === selectedId);
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
-          <Globe className="w-7 h-7 text-teal-600" />
-          Perfil Argentina
-        </h2>
-        <p className="text-gray-600 mt-1">
-          Compara las skills que pide el mercado argentino vs lo que define ESCO para cada ocupacion
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+            <Globe className="w-7 h-7 text-teal-600" />
+            Perfil Argentina
+          </h2>
+          <p className="text-gray-600 mt-1">
+            Compara las skills que pide el mercado argentino vs lo que define ESCO para cada ocupacion
+          </p>
+          <p className="text-sm text-gray-500 mt-1">
+            Datos: {stats.total_ofertas.toLocaleString()} ofertas | {stats.total_ocupaciones} ocupaciones con datos
+          </p>
+        </div>
+        {selectedProfile && (
+          <button
+            onClick={handleRefresh}
+            disabled={isLoadingProfile}
+            className="flex items-center gap-2 px-3 py-1.5 text-sm text-teal-600 hover:bg-teal-50 rounded-lg border border-teal-200 disabled:opacity-50"
+          >
+            <RefreshCw className={`w-4 h-4 ${isLoadingProfile ? 'animate-spin' : ''}`} />
+            Refrescar
+          </button>
+        )}
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
           <div className="text-3xl font-bold text-gray-900">
-            {stats.total_offers.toLocaleString()}
+            {stats.total_ofertas.toLocaleString()}
           </div>
           <div className="text-sm text-gray-500 mt-1">Ofertas analizadas</div>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
           <div className="text-3xl font-bold text-teal-600">
-            {stats.total_occupations_with_mol}
+            {stats.total_ocupaciones}
           </div>
           <div className="text-sm text-gray-500 mt-1">Ocupaciones con datos MOL</div>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
           <div className="text-3xl font-bold text-purple-600">
-            {stats.avg_skills_per_offer}
+            {selectedProfile ? selectedProfile.mol_skills.length : '-'}
           </div>
-          <div className="text-sm text-gray-500 mt-1">Skills promedio por oferta</div>
+          <div className="text-sm text-gray-500 mt-1">Skills únicas (ocupación seleccionada)</div>
         </div>
       </div>
 
       {/* Occupation Selector */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Ocupacion ESCO (solo ocupaciones con ofertas MOL)
+          Ocupación ESCO (solo ocupaciones con ofertas MOL)
         </label>
 
         {selectedInfo ? (
@@ -194,7 +264,8 @@ export default function ArgentinaProfileTab({
             <div className="flex-1">
               <div className="font-semibold text-teal-900">{selectedInfo.label}</div>
               <div className="text-sm text-teal-700">
-                ISCO: {selectedInfo.isco} | {selectedProfile?.offer_count || 0} ofertas MOL
+                ISCO: {selectedInfo.isco} | {selectedInfo.offerCount} ofertas MOL
+                {selectedProfile && ` | ${selectedProfile.comparison.coverage_essential}% cobertura`}
               </div>
             </div>
             <button
@@ -224,7 +295,7 @@ export default function ArgentinaProfileTab({
                 />
               ) : (
                 <span className="flex-1 text-gray-500">
-                  Buscar entre {occupationsWithMOL.length} ocupaciones con datos MOL...
+                  Buscar entre {occupationsWithOffers.length} ocupaciones con datos MOL...
                 </span>
               )}
               <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -240,7 +311,7 @@ export default function ArgentinaProfileTab({
                   <div className="px-3 py-2 bg-gray-50 border-b text-sm text-gray-600">
                     {searchTerm
                       ? `${filteredOccupations.length} resultados`
-                      : `${occupationsWithMOL.length} ocupaciones con datos MOL`}
+                      : `${occupationsWithOffers.length} ocupaciones con datos MOL`}
                   </div>
                   <ul className="overflow-y-auto max-h-64">
                     {filteredOccupations.length === 0 ? (
@@ -249,9 +320,7 @@ export default function ArgentinaProfileTab({
                       </li>
                     ) : (
                       filteredOccupations.slice(0, 100).map(occ => {
-                        const profile = molProfileData.occupations[occ.id];
-                        const offerCount = profile?.offer_count || 0;
-                        const isSmallSample = offerCount < 10;
+                        const isSmallSample = (occ.offerCount || 0) < 10;
                         return (
                           <li
                             key={occ.id}
@@ -264,13 +333,11 @@ export default function ArgentinaProfileTab({
                                 isSmallSample ? 'bg-amber-100 text-amber-700' : 'bg-teal-100 text-teal-700'
                               }`}>
                                 <Users className="w-3 h-3" />
-                                {offerCount}
+                                {occ.offerCount}
                               </div>
                             </div>
                             <div className="text-sm text-gray-500 flex items-center gap-2">
                               <span>ISCO: {occ.isco}</span>
-                              <span>|</span>
-                              <span>{profile?.comparison.coverage_essential || 0}% cobertura</span>
                               {isSmallSample && (
                                 <span className="text-amber-600 text-xs">(muestra chica)</span>
                               )}
@@ -287,17 +354,31 @@ export default function ArgentinaProfileTab({
         )}
       </div>
 
-      {/* Content when occupation selected */}
-      {selectedProfile && !selectedEsco && (
-        <div className="flex items-center justify-center h-32 bg-gray-50 rounded-xl border border-gray-200">
-          <Loader2 className="w-6 h-6 animate-spin text-teal-500 mr-3" />
-          <span className="text-gray-600">Cargando detalles ESCO de la ocupación...</span>
+      {/* Loading state for profile */}
+      {isLoadingProfile && (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin text-teal-500" />
+          <span className="ml-3 text-gray-600">Calculando perfil en tiempo real...</span>
         </div>
       )}
-      {selectedProfile && selectedEsco && (
+
+      {/* Error state */}
+      {profileError && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+          {profileError}
+        </div>
+      )}
+
+      {/* Content when occupation selected and loaded */}
+      {selectedProfile && selectedEsco && !isLoadingProfile && (
         <>
           {/* Metrics Cards */}
           <MetricsCards profile={selectedProfile} />
+
+          {/* Generated at indicator */}
+          <div className="text-xs text-gray-500 text-right">
+            Datos calculados: {new Date(selectedProfile.generated_at).toLocaleString()}
+          </div>
 
           {/* Three Column Panel */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -351,7 +432,7 @@ export default function ArgentinaProfileTab({
       )}
 
       {/* Empty state */}
-      {!selectedProfile && (
+      {!selectedProfile && !isLoadingProfile && !selectedId && (
         <div className="bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 p-12 text-center">
           <Globe className="w-16 h-16 mx-auto text-gray-300 mb-4" />
           <h3 className="text-lg font-medium text-gray-600 mb-2">
@@ -369,7 +450,7 @@ export default function ArgentinaProfileTab({
 
 // ============= Helper Components =============
 
-function MetricsCards({ profile }: { profile: OccupationMOLProfile }) {
+function MetricsCards({ profile }: { profile: PerfilArgentinaData }) {
   const { comparison, offer_count } = profile;
 
   const getColorClass = (value: number): string => {
@@ -566,7 +647,7 @@ function CommonSkillsColumn({
   commonEssentialLabels,
   commonOptionalLabels
 }: {
-  molSkills: { label_original: string; label_normalized: string; frequency: number; percentage: number }[];
+  molSkills: PerfilArgentinaData['mol_skills'];
   commonEssentialLabels: Set<string>;
   commonOptionalLabels: Set<string>;
 }) {
@@ -657,7 +738,7 @@ function MOLSkillsColumn({
   molSkills,
   emergingLabels
 }: {
-  molSkills: MOLSkillItem[];
+  molSkills: PerfilArgentinaData['mol_skills'];
   emergingLabels: Set<string>;
 }) {
   const [showOnlyEmerging, setShowOnlyEmerging] = useState(false);
