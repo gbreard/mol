@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { Filter, Loader2, AlertCircle, GraduationCap, Clock, TrendingUp, MapPin, Users, Briefcase, Cpu, Layers, ChevronDown, Download } from "lucide-react";
+import { Loader2, AlertCircle, GraduationCap, Clock, TrendingUp, MapPin, Users, Briefcase, Cpu, Layers, ChevronDown } from "lucide-react";
 import { ExportButton, ExportColumn } from "@/components/ExportButton";
-import { getDistribucionRequerimientos, getSkillsPorCategoriaL1, getSkillsDigitales, getTopSkillsConCategoria, getTopSkillsPorCategoria, SkillsFilters, RequerimientosFilters } from "@/lib/supabase";
+import { getDistribucionRequerimientos, getSkillsPorCategoriaL1, getSkillsDigitales, getTopSkillsConCategoria, SkillsFilters } from "@/lib/supabase";
 import { DashboardFilters } from "@/lib/types";
 
 interface RequerimientosProps {
@@ -148,10 +148,14 @@ function StackedBar({
 // Colores para categorías L1
 const COLORS_L1 = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1', '#14b8a6', '#a855f7'];
 
-// Opciones para filtros locales del tab
-const EDUCACION_OPTIONS = ['Todos', 'universitario', 'terciario', 'secundario', 'primario', 'Sin especificar'];
-const MODALIDAD_OPTIONS = ['Todos', 'presencial', 'hibrido', 'remoto', 'Sin especificar'];
-const DIGITAL_OPTIONS = ['Todos', 'Digitales', 'No digitales'];
+// Opciones de cantidad de competencias
+const CANTIDAD_OPTIONS = [20, 40, 60, 100];
+
+// Opciones de tipo de visualización
+const TIPO_OPTIONS = [
+  { value: 'especifica', label: 'Competencias específicas' },
+  { value: 'agregada', label: 'Por categoría (agregado)' }
+];
 
 export function Requerimientos({ filters }: RequerimientosProps) {
   const [loading, setLoading] = useState(true);
@@ -160,59 +164,30 @@ export function Requerimientos({ filters }: RequerimientosProps) {
 
   // Estados para skills clasificadas
   const [categoriasL1, setCategoriasL1] = useState<{code: string, name: string, value: number, porcentaje: number}[]>([]);
-  const [allCategoriasL1, setAllCategoriasL1] = useState<{code: string, name: string, value: number, porcentaje: number}[]>([]);
   const [skillsDigitales, setSkillsDigitales] = useState<{name: string, value: number, porcentaje: number}[]>([]);
   const [topSkillsTotal, setTopSkillsTotal] = useState<{name: string, value: number, categoria: string, categoriaNombre: string}[]>([]);
-  const [topPorCategoria, setTopPorCategoria] = useState<Record<string, {nombre: string, skills: {name: string, value: number}[]}>>({});
 
-  // Filtros locales del tab
-  const [filtroCategoria, setFiltroCategoria] = useState<string>('Todos');
-  const [filtroEducacion, setFiltroEducacion] = useState<string>('Todos');
-  const [filtroModalidad, setFiltroModalidad] = useState<string>('Todos');
-  const [filtroDigital, setFiltroDigital] = useState<string>('Todos');
-
-  // Cargar todas las categorías cuando cambian filtros globales (para el dropdown)
-  useEffect(() => {
-    async function loadAllCategories() {
-      try {
-        const allCats = await getSkillsPorCategoriaL1(undefined, filters);
-        setAllCategoriasL1(allCats);
-      } catch (err) {
-        console.error('Error cargando categorías:', err);
-      }
-    }
-    loadAllCategories();
-  }, [filters]);
+  // Selectores del gráfico de habilidades (Issue #6)
+  const [cantidadCompetencias, setCantidadCompetencias] = useState<number>(20);
+  const [tipoVisualizacion, setTipoVisualizacion] = useState<'especifica' | 'agregada'>('especifica');
 
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
 
-        // Construir filtros locales para requerimientos (distribución)
-        const localFilters: RequerimientosFilters = {
-          educacion: filtroEducacion,
-          modalidad: filtroModalidad
-        };
+        const skillsFilters: SkillsFilters = {};
 
-        // Construir filtros para skills
-        const skillsFilters: SkillsFilters = {
-          categoria: filtroCategoria,
-          esDigital: filtroDigital === 'Todos' ? null : filtroDigital === 'Digitales'
-        };
-
-        const [requerimientos, catL1, digital, topSkills, topCat] = await Promise.all([
-          getDistribucionRequerimientos(filters, localFilters),
+        const [requerimientos, catL1, digital, topSkills] = await Promise.all([
+          getDistribucionRequerimientos(filters, {}),
           getSkillsPorCategoriaL1(skillsFilters, filters),
           getSkillsDigitales(skillsFilters, filters),
-          getTopSkillsConCategoria(10, skillsFilters, filters),
-          getTopSkillsPorCategoria(5, skillsFilters, filters)
+          getTopSkillsConCategoria(100, skillsFilters, filters) // Cargar más para poder filtrar
         ]);
         setRequerimientosData(requerimientos);
         setCategoriasL1(catL1);
         setSkillsDigitales(digital);
         setTopSkillsTotal(topSkills);
-        setTopPorCategoria(topCat);
         setError(null);
       } catch (err) {
         console.error('Error cargando requerimientos:', err);
@@ -222,7 +197,7 @@ export function Requerimientos({ filters }: RequerimientosProps) {
       }
     }
     loadData();
-  }, [filters, filtroCategoria, filtroEducacion, filtroModalidad, filtroDigital]);
+  }, [filters]);
 
   if (loading) {
     return (
@@ -244,8 +219,16 @@ export function Requerimientos({ filters }: RequerimientosProps) {
     );
   }
 
-  // Opciones de categoría desde los datos cargados (todas las categorías, no filtradas)
-  const categoriaOptions = ['Todos', ...allCategoriasL1.map(c => c.name)];
+  // Datos a mostrar según tipo de visualización y cantidad
+  const datosGrafico = tipoVisualizacion === 'agregada'
+    ? categoriasL1.slice(0, cantidadCompetencias)
+    : topSkillsTotal.slice(0, cantidadCompetencias).map((skill, idx) => ({
+        code: skill.categoria,
+        name: skill.name,
+        value: skill.value,
+        porcentaje: 0, // No usado en específicas
+        categoriaNombre: skill.categoriaNombre
+      }));
 
   // Columnas para exportación
   const exportColumns: ExportColumn[] = [
@@ -258,6 +241,17 @@ export function Requerimientos({ filters }: RequerimientosProps) {
   // Preparar datos para exportación
   const getExportData = () => {
     const data: { categoria: string; nombre: string; cantidad: number; porcentaje: number }[] = [];
+
+    // Skills según visualización actual
+    if (tipoVisualizacion === 'agregada') {
+      categoriasL1.slice(0, cantidadCompetencias).forEach(item => {
+        data.push({ categoria: 'Categoría L1', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
+      });
+    } else {
+      topSkillsTotal.slice(0, cantidadCompetencias).forEach(item => {
+        data.push({ categoria: item.categoriaNombre, nombre: item.name, cantidad: item.value, porcentaje: 0 });
+      });
+    }
 
     if (requerimientosData) {
       // Distribución de requerimientos
@@ -281,134 +275,124 @@ export function Requerimientos({ filters }: RequerimientosProps) {
       });
     }
 
-    // Skills digitales
-    skillsDigitales.forEach(item => {
-      data.push({ categoria: 'Skills digitales', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
-    });
-
-    // Categorías L1
-    categoriasL1.forEach(item => {
-      data.push({ categoria: 'Categoría L1', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
-    });
-
-    // Top skills
-    topSkillsTotal.forEach(item => {
-      data.push({ categoria: `Top Skills (${item.categoriaNombre})`, nombre: item.name, cantidad: item.value, porcentaje: 0 });
-    });
-
     return data;
   };
 
   return (
-    <div className="space-y-4">
-      {/* Filtros del tab */}
-      <div className="bg-white rounded-xl border border-gray-200 p-3 shadow-sm">
-        <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-2 text-gray-500">
-            <Filter className="w-4 h-4" />
-            <span className="text-sm font-medium">Filtros:</span>
+    <div className="space-y-6">
+      {/* ========== 1. ANÁLISIS DE HABILIDADES (primero según Issue #6) ========== */}
+      <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Layers className="w-5 h-5 text-blue-600" />
+            <h2 className="text-base font-semibold text-gray-800">Análisis de habilidades</h2>
           </div>
 
-          {/* Filtro Categoría */}
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-gray-500">Categoría skill</label>
-            <div className="relative">
-              <select
-                value={filtroCategoria}
-                onChange={(e) => setFiltroCategoria(e.target.value)}
-                className="appearance-none bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 pr-8 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
-              >
-                {categoriaOptions.map(opt => (
-                  <option key={opt} value={opt}>{opt}</option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          {/* Selectores (Issue #6) */}
+          <div className="flex items-center gap-4">
+            {/* Selector cantidad */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-500">Mostrar:</span>
+              <div className="relative">
+                <select
+                  value={cantidadCompetencias}
+                  onChange={(e) => setCantidadCompetencias(Number(e.target.value))}
+                  className="appearance-none bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 pr-8 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
+                >
+                  {CANTIDAD_OPTIONS.map(opt => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              </div>
             </div>
-          </div>
 
-          {/* Filtro Educación */}
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-gray-500">Educación</label>
-            <div className="relative">
-              <select
-                value={filtroEducacion}
-                onChange={(e) => setFiltroEducacion(e.target.value)}
-                className="appearance-none bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 pr-8 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
-              >
-                {EDUCACION_OPTIONS.map(opt => (
-                  <option key={opt} value={opt}>{opt}</option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            {/* Selector tipo */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-500">Tipo:</span>
+              <div className="relative">
+                <select
+                  value={tipoVisualizacion}
+                  onChange={(e) => setTipoVisualizacion(e.target.value as 'especifica' | 'agregada')}
+                  className="appearance-none bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 pr-8 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
+                >
+                  {TIPO_OPTIONS.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              </div>
             </div>
-          </div>
 
-          {/* Filtro Modalidad */}
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-gray-500">Modalidad</label>
-            <div className="relative">
-              <select
-                value={filtroModalidad}
-                onChange={(e) => setFiltroModalidad(e.target.value)}
-                className="appearance-none bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 pr-8 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
-              >
-                {MODALIDAD_OPTIONS.map(opt => (
-                  <option key={opt} value={opt}>{opt}</option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-            </div>
+            {/* Export Button */}
+            <ExportButton
+              data={getExportData()}
+              columns={exportColumns}
+              filename="requerimientos"
+              showLabel={false}
+            />
           </div>
+        </div>
 
-          {/* Filtro Skills Digitales */}
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-gray-500">Skills digitales</label>
-            <div className="relative">
-              <select
-                value={filtroDigital}
-                onChange={(e) => setFiltroDigital(e.target.value)}
-                className="appearance-none bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 pr-8 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
-              >
-                {DIGITAL_OPTIONS.map(opt => (
-                  <option key={opt} value={opt}>{opt}</option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-            </div>
-          </div>
-
-          {/* Botón limpiar filtros */}
-          {(filtroCategoria !== 'Todos' || filtroEducacion !== 'Todos' || filtroModalidad !== 'Todos' || filtroDigital !== 'Todos') && (
-            <button
-              onClick={() => {
-                setFiltroCategoria('Todos');
-                setFiltroEducacion('Todos');
-                setFiltroModalidad('Todos');
-                setFiltroDigital('Todos');
-              }}
-              className="text-xs text-blue-600 hover:text-blue-800 font-medium mt-4"
+        {/* Gráfico de barras horizontales */}
+        <div className="h-[400px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={datosGrafico}
+              layout="vertical"
+              margin={{ left: 10, right: 30 }}
+              barSize={tipoVisualizacion === 'agregada' ? 20 : 14}
             >
-              Limpiar filtros
-            </button>
-          )}
-
-          {/* Spacer */}
-          <div className="flex-1" />
-
-          {/* Export Button */}
-          <ExportButton
-            data={getExportData()}
-            columns={exportColumns}
-            filename="requerimientos"
-            showLabel={true}
-          />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
+              <XAxis type="number" stroke="#6b7280" style={{ fontSize: '11px' }} />
+              <YAxis
+                type="category"
+                dataKey="name"
+                width={tipoVisualizacion === 'agregada' ? 220 : 280}
+                stroke="#6b7280"
+                tick={{ fontSize: 11, fontWeight: 500 }}
+              />
+              <Tooltip
+                content={({ active, payload }) => {
+                  if (active && payload && payload.length) {
+                    const d = payload[0].payload;
+                    const catIndex = categoriasL1.findIndex(c => c.code === d.code);
+                    const color = catIndex >= 0 ? COLORS_L1[catIndex % COLORS_L1.length] : '#6b7280';
+                    return (
+                      <div className="bg-white px-4 py-3 shadow-xl rounded-lg border border-gray-200 text-sm">
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-3 h-3 rounded" style={{ backgroundColor: color }} />
+                          <p className="font-semibold text-gray-800">{d.name}</p>
+                        </div>
+                        <p className="text-gray-600">{d.value} menciones</p>
+                        {tipoVisualizacion === 'especifica' && d.categoriaNombre && (
+                          <p className="text-xs text-gray-400 mt-1">Categoría: {d.categoriaNombre}</p>
+                        )}
+                        {tipoVisualizacion === 'agregada' && d.porcentaje > 0 && (
+                          <p className="text-xs text-gray-400 mt-1">{d.porcentaje}% del total</p>
+                        )}
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
+              <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                {datosGrafico.map((item, index) => {
+                  const catIndex = categoriasL1.findIndex(c => c.code === item.code);
+                  const color = catIndex >= 0 ? COLORS_L1[catIndex % COLORS_L1.length] : COLORS_L1[index % COLORS_L1.length];
+                  return <Cell key={`cell-${index}`} fill={color} />;
+                })}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
-      {/* Requerimientos - Barras horizontales apiladas al 100% */}
+      {/* ========== 2. DISTRIBUCIÓN DE REQUERIMIENTOS (segundo según Issue #6) ========== */}
       {requerimientosData && (
         <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-          <h3 className="text-base font-semibold text-gray-800 mb-3">Distribución de requerimientos</h3>
+          <h3 className="text-base font-semibold text-gray-800 mb-3">Distribución de los requerimientos</h3>
 
           <div className="space-y-0">
             <StackedBar
@@ -451,107 +435,6 @@ export function Requerimientos({ filters }: RequerimientosProps) {
           </div>
         </div>
       )}
-
-      {/* ========== SKILLS CLASIFICADAS (ESCO) ========== */}
-      <div className="border-t border-gray-200 pt-4 mt-4">
-        <div className="flex items-center gap-2 mb-4">
-          <Layers className="w-5 h-5 text-blue-600" />
-          <h2 className="text-base font-semibold text-gray-800">Análisis de habilidades</h2>
-        </div>
-
-        {/* Grid: Categorías L1 + Top 10 Skills tabla - Responsive */}
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 mb-6">
-          {/* Distribución por Categoría L1 - 3/4 del ancho en xl, full en móvil */}
-          <div className="xl:col-span-3 bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex flex-col min-h-[320px] max-h-[50vh]">
-            <h3 className="text-sm font-semibold text-gray-700 mb-4">Distribución por categoría de habilidades</h3>
-            <ResponsiveContainer width="100%" height="100%" className="flex-1 min-h-[280px]">
-              <BarChart data={categoriasL1} layout="vertical" margin={{ left: 10, right: 30 }} barSize={20}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
-                <XAxis type="number" stroke="#6b7280" style={{ fontSize: '11px' }} />
-                <YAxis
-                  type="category"
-                  dataKey="name"
-                  width={220}
-                  stroke="#6b7280"
-                  tick={{ fontSize: 11, fontWeight: 500 }}
-                />
-                <Tooltip
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      const d = payload[0].payload;
-                      const catData = topPorCategoria[d.code];
-                      const catIndex = categoriasL1.findIndex(c => c.code === d.code);
-                      const color = catIndex >= 0 ? COLORS_L1[catIndex % COLORS_L1.length] : '#6b7280';
-                      return (
-                        <div className="bg-white px-4 py-3 shadow-xl rounded-lg border border-gray-200 text-sm min-w-[200px]">
-                          <div className="flex items-center gap-2 mb-2 pb-2 border-b border-gray-100">
-                            <div className="w-3 h-3 rounded" style={{ backgroundColor: color }} />
-                            <p className="font-semibold text-gray-800">{d.name}</p>
-                          </div>
-                          <p className="text-gray-600 mb-3">{d.value} skills ({d.porcentaje}%)</p>
-                          {catData && catData.skills.length > 0 && (
-                            <div>
-                              <p className="text-xs font-medium text-gray-500 mb-1.5">Top 5 habilidades:</p>
-                              <div className="space-y-1">
-                                {catData.skills.slice(0, 5).map((skill, idx) => (
-                                  <div key={idx} className="flex items-center gap-2">
-                                    <span className="text-xs text-gray-400 w-3">{idx + 1}.</span>
-                                    <span className="text-xs text-gray-700 flex-1 truncate">{skill.name}</span>
-                                    <span className="text-xs text-gray-400">{skill.value}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <Bar dataKey="value" radius={[0, 4, 4, 0]}>
-                  {categoriasL1.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS_L1[index % COLORS_L1.length]} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Top 10 Skills - Tabla */}
-          <div className="xl:col-span-1 bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex flex-col">
-            <h3 className="text-sm font-semibold text-gray-700 mb-4">Top 10 habilidades</h3>
-            <div className="flex-1 flex flex-col gap-1 overflow-y-auto">
-              {topSkillsTotal.map((skill, index) => {
-                const catIndex = categoriasL1.findIndex(c => c.code === skill.categoria);
-                const color = catIndex >= 0 ? COLORS_L1[catIndex % COLORS_L1.length] : '#6b7280';
-                const total = topSkillsTotal.reduce((sum, s) => sum + s.value, 0);
-                const porcentaje = Math.round(skill.value * 100 / total);
-                return (
-                  <div key={index} className="flex items-center gap-2 py-2 border-b border-gray-50 last:border-0">
-                    <div
-                      className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: color }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-gray-800 truncate" title={skill.name}>
-                        {skill.name}
-                      </p>
-                      <p className="text-xs text-gray-400 truncate" title={skill.categoriaNombre}>
-                        {skill.categoriaNombre}
-                      </p>
-                    </div>
-                    <span className="text-sm font-medium text-gray-600 flex-shrink-0">
-                      {porcentaje}%
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-      </div>
     </div>
   );
 }
