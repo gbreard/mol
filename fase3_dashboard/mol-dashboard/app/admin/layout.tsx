@@ -13,12 +13,14 @@ import {
   ChevronLeft,
   Loader2,
   MessageSquare,
-  Target
+  Target,
+  Network
 } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase/browser";
 
 const adminNavItems = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
+  { href: "/admin/arquitectura", label: "Arquitectura", icon: Network },
   { href: "/admin/usuarios", label: "Usuarios", icon: Users },
   { href: "/admin/issues", label: "Issues", icon: MessageSquare },
   { href: "/admin/skills", label: "Skills Intelligence", icon: Target },
