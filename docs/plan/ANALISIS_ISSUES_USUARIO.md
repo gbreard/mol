@@ -14,8 +14,8 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 4. Indicadores de mercado laboral (3 issues)
 
 **Estado actual:**
-- ✅ Completados: 3 (Sprint 1)
-- ⏳ Pendientes: 7
+- ✅ Completados: 6 (Sprint 1 + Sprint 2)
+- ⏳ Pendientes: 4
 
 ---
 
@@ -140,12 +140,13 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 - Issue #8 (indicador ofertas en Comparar)
 - Nueva tabla `perfiles_trabajadores` en Supabase
 
-#### Issue #8: Modificación "Comparar Ocupaciones"
+#### Issue #8: Modificación "Comparar Ocupaciones" ✅ RESUELTO
 - **Sección:** OccupationCompare
 - **Solicitud:** Indicar si la ocupación objetivo tiene ofertas activas
 - **Tipo:** Feature nueva
 - **Impacto:** Alto (conecta skills con mercado real)
 - **Sprint:** 2
+- **Estado:** ✅ Implementado (2026-02-06)
 
 **Cambios solicitados:**
 
@@ -153,12 +154,13 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
    - Mostrar cartel: **"Ofertas laborales activas en esta ocupación"**
    - Incluir **link** que lleva a esas ofertas
 
-#### Issue #9: Modificaciones en "Ocupación" (Detalle)
+#### Issue #9: Modificaciones en "Ocupación" (Detalle) ✅ RESUELTO
 - **Sección:** OccupationDetail
 - **Solicitud:** Nueva columna con ocupaciones similares que tienen ofertas
 - **Tipo:** Feature nueva
 - **Impacto:** Alto (ayuda a reorientación laboral)
 - **Sprint:** 2
+- **Estado:** ✅ Implementado (2026-02-06)
 
 **Cambios solicitados:**
 
@@ -168,12 +170,13 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 | Links | Cada ocupación con ofertas incluye link a las ofertas |
 | Selector cantidad | Mostrar hasta 20 o hasta 30 ocupaciones (ambas columnas) |
 
-#### Issue #10: Export Ofertas desde Skills (NUEVO)
+#### Issue #10: Export Ofertas desde Skills ✅ RESUELTO
 - **Sección:** Skills → al ver ofertas de una ocupación
 - **Solicitud:** Descargar ofertas vinculadas a ocupación
 - **Tipo:** Feature nueva
 - **Impacto:** Alto
 - **Sprint:** 2
+- **Estado:** ✅ Implementado (2026-02-06)
 
 **Archivos a generar:**
 
@@ -210,15 +213,18 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 - Función `downloadFormattedExcel()` reutilizable
 - Librería xlsx instalada
 
-### Sprint 2: Indicadores Mercado
+### Sprint 2: Indicadores Mercado ✅ COMPLETADO
 **Issues:** #8, #9, #10
-**Razón:** Alto valor diferencial, conecta skills con mercado real
+**Estado:** ✅ Implementado (2026-02-06)
 
-**Requisitos técnicos:**
-- Vista SQL: ofertas activas por `isco_code`
-- Query para ocupaciones similares con ofertas
-- Componentes: banner, links, columna adicional
-- Export ofertas desde Skills
+**Implementación realizada:**
+- Funciones Supabase: `getOfertasCountByIsco()`, `getOfertasByIsco()`, `getOfertasByMultipleIsco()`
+- Banner en OccupationCompare cuando ocupación B tiene ofertas activas
+- Badges de ofertas en cada ocupación similar
+- Nueva sección "Ocupaciones Similares con Ofertas Activas"
+- Selector de cantidad (10/20/30) en SimilarOccupations
+- Modal OfertasOcupacionModal con export CSV/Excel
+- Links directos a ofertas desde cada ocupación
 
 ### Sprint 3: UX Filtros
 **Issues:** #3, #5
@@ -256,9 +262,9 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 | #5 | 3 | P-09 | Filtros Requerimientos en Sidebar | ⏳ |
 | #6 | 4 | P-09 | Rediseño Requerimientos | ⏳ |
 | #7 | 4 | P-10 | Rediseño Mis Skills (oficina empleo) | ⏳ |
-| #8 | 2 | P-10 | Banner ofertas en Comparar | ⏳ |
-| #9 | 2 | P-10 | Columna ocupaciones con ofertas | ⏳ |
-| #10 | 2 | P-10 | Export ofertas desde Skills | ⏳ |
+| #8 | 2 | P-10 | Banner ofertas en Comparar | ✅ |
+| #9 | 2 | P-10 | Columna ocupaciones con ofertas | ✅ |
+| #10 | 2 | P-10 | Export ofertas desde Skills | ✅ |
 
 ---
 
@@ -270,9 +276,9 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 | #3, #5 | Sidebar unificado v2 | 03_WIREFRAMES/suscriptor.md |
 | #6 | Requerimientos v2 | 03_WIREFRAMES/suscriptor.md |
 | #7 | Perfil Trabajador | 03_WIREFRAMES/suscriptor.md (nuevo) |
-| #8 | Comparador con banner | 03_WIREFRAMES/suscriptor.md |
-| #9 | Detalle con columna ofertas | 03_WIREFRAMES/suscriptor.md |
-| #10 | Export desde Skills | 03_WIREFRAMES/suscriptor.md |
+| #8 | Comparador con banner | ✅ Implementado |
+| #9 | Detalle con columna ofertas | ✅ Implementado |
+| #10 | Export desde Skills | ✅ Implementado |
 
 ---
 
@@ -281,8 +287,8 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 | Feature | Dependencia | Sprint |
 |---------|-------------|--------|
 | Exports Excel | ✅ Librería xlsx instalada | 1 |
-| Ofertas activas por ocupación | Vista SQL en Supabase | 2 |
-| Ocupaciones similares con ofertas | Query + ESCO skill overlap | 2 |
+| Ofertas activas por ocupación | ✅ Funciones Supabase implementadas | 2 |
+| Ocupaciones similares con ofertas | ✅ SimilarOccupations + ofertasCountMap | 2 |
 | Filtros Requerimientos | Campos en ofertas_dashboard | 3 |
 | Perfiles trabajadores | Nueva tabla `perfiles_trabajadores` | 4 |
 
