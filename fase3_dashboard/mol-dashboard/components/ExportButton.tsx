@@ -16,6 +16,103 @@ export interface ExportColumn {
   format?: (value: any) => string;
 }
 
+export interface FormattedExcelOptions {
+  title: string;
+  subtitle: string;
+  source?: string;
+  data: { name: string; value: number; porcentaje?: number }[];
+  columns: { header: string; key: string }[];
+  filename: string;
+  showPercentage?: boolean;
+}
+
+// Función para exportar Excel formateado con título, subtítulo y fuente
+export async function downloadFormattedExcel(options: FormattedExcelOptions) {
+  const { title, subtitle, source = "MOL, en base a portales de intermediación laboral", data, columns, filename, showPercentage = true } = options;
+
+  if (!data || data.length === 0) {
+    alert('No hay datos para exportar');
+    return;
+  }
+
+  try {
+    const XLSX = await import('xlsx');
+
+    // Calcular total para porcentajes si no vienen calculados
+    const total = data.reduce((sum, item) => sum + item.value, 0);
+
+    // Preparar filas con datos
+    const dataRows = data.map(item => {
+      const row: Record<string, any> = {};
+      columns.forEach(col => {
+        if (col.key === 'name') {
+          row[col.header] = item.name;
+        } else if (col.key === 'value') {
+          row[col.header] = item.value;
+        } else if (col.key === 'porcentaje' && showPercentage) {
+          row[col.header] = item.porcentaje ?? (total > 0 ? Math.round((item.value / total) * 100 * 10) / 10 : 0);
+        }
+      });
+      return row;
+    });
+
+    // Crear worksheet vacío
+    const ws = XLSX.utils.aoa_to_sheet([]);
+
+    // Fila 1: Título (negrita, fusionado)
+    XLSX.utils.sheet_add_aoa(ws, [[title]], { origin: 'A1' });
+
+    // Fila 2: Subtítulo (filtros)
+    XLSX.utils.sheet_add_aoa(ws, [[subtitle]], { origin: 'A2' });
+
+    // Fila 3: vacía
+    XLSX.utils.sheet_add_aoa(ws, [['']], { origin: 'A3' });
+
+    // Fila 4+: Datos con headers
+    const headers = columns.map(c => c.header);
+    XLSX.utils.sheet_add_aoa(ws, [headers], { origin: 'A4' });
+
+    // Agregar datos desde fila 5
+    dataRows.forEach((row, idx) => {
+      const rowData = headers.map(h => row[h] ?? '');
+      XLSX.utils.sheet_add_aoa(ws, [rowData], { origin: `A${5 + idx}` });
+    });
+
+    // Última fila: Fuente
+    const lastDataRow = 5 + dataRows.length;
+    XLSX.utils.sheet_add_aoa(ws, [['']], { origin: `A${lastDataRow}` });
+    XLSX.utils.sheet_add_aoa(ws, [[`Fuente: ${source}`]], { origin: `A${lastDataRow + 1}` });
+
+    // Ajustar ancho de columnas
+    const colWidths = columns.map(col => ({
+      wch: Math.max(
+        col.header.length + 2,
+        ...data.map(row => String(row.name || row.value || '').length + 2).slice(0, 50),
+        20
+      )
+    }));
+    ws['!cols'] = colWidths;
+
+    // Fusionar celdas para título y subtítulo
+    const numCols = columns.length;
+    ws['!merges'] = [
+      { s: { r: 0, c: 0 }, e: { r: 0, c: numCols - 1 } }, // Título
+      { s: { r: 1, c: 0 }, e: { r: 1, c: numCols - 1 } }, // Subtítulo
+      { s: { r: lastDataRow, c: 0 }, e: { r: lastDataRow, c: numCols - 1 } }, // Fuente
+    ];
+
+    // Crear workbook y agregar worksheet
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Datos');
+
+    // Descargar
+    XLSX.writeFile(wb, `${filename}_${new Date().toISOString().split('T')[0]}.xlsx`);
+  } catch (e) {
+    console.error('Error al exportar Excel:', e);
+    alert('Error al exportar. Intente nuevamente.');
+  }
+}
+
 interface ExportButtonProps {
   data: any[];
   columns: ExportColumn[];

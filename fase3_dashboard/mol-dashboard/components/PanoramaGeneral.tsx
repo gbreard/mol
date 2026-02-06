@@ -7,6 +7,7 @@ import { FileText, Briefcase, Lightbulb, Sparkles, TrendingUp, AlertCircle, Awar
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList, Label } from "recharts";
 import { getKPIs, getTopOcupaciones, getOfertasPorProvincia } from "@/lib/supabase";
 import { DashboardFilters } from "@/lib/types";
+import { downloadFormattedExcel } from "@/components/ExportButton";
 
 interface PanoramaGeneralProps {
   filters: DashboardFilters;
@@ -88,65 +89,104 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
     loadData();
   }, [filters]);
 
-  // Función genérica para descargar CSV
-  const downloadCSV = (data: any[], filename: string, headers: string[]) => {
-    if (!data || data.length === 0) {
-      alert('No hay datos para descargar');
-      return;
+  // Función para formatear los filtros aplicados como subtítulo
+  const getFiltersSubtitle = (): string => {
+    const parts: string[] = [];
+
+    if (filters.territorio && filters.territorio !== 'Nacional') {
+      parts.push(`Territorio: ${filters.territorio}`);
+    }
+    if (filters.provincia && filters.provincia !== 'Todas') {
+      parts.push(`Provincia: ${filters.provincia}`);
+    }
+    if (filters.localidad) {
+      parts.push(`Localidad: ${filters.localidad}`);
+    }
+    if (filters.fechaDesde) {
+      parts.push(`Desde: ${filters.fechaDesde.toLocaleDateString('es-AR')}`);
+    }
+    if (filters.fechaHasta) {
+      parts.push(`Hasta: ${filters.fechaHasta.toLocaleDateString('es-AR')}`);
+    }
+    if (filters.ocupacionesSeleccionadas && filters.ocupacionesSeleccionadas.length > 0) {
+      parts.push(`Ocupaciones: ${filters.ocupacionesSeleccionadas.slice(0, 3).join(', ')}${filters.ocupacionesSeleccionadas.length > 3 ? '...' : ''}`);
     }
 
-    // Crear contenido CSV
-    const csvContent = [
-      headers.join(','),
-      ...data.map(row =>
-        headers.map(h => {
-          const key = h.toLowerCase().replace(/ /g, '_');
-          const value = row[key] ?? row.name ?? row.value ?? '';
-          // Escapar comas y comillas
-          if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
-            return `"${value.replace(/"/g, '""')}"`;
-          }
-          return value;
-        }).join(',')
-      )
-    ].join('\n');
-
-    // Crear blob y descargar
-    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    return parts.length > 0 ? `Filtros aplicados: ${parts.join(' | ')}` : 'Sin filtros aplicados (datos totales)';
   };
 
+  // Handler para descargar Excel de Evolución
+  const handleDownloadEvolucion = () => {
+    // Generar datos de evolución (mismo cálculo que en el render)
+    const evolucionData = [
+      { name: 'Sem 1', ofertas: Math.round(kpis.totalOfertas * 0.7) },
+      { name: 'Sem 2', ofertas: Math.round(kpis.totalOfertas * 0.8) },
+      { name: 'Sem 3', ofertas: Math.round(kpis.totalOfertas * 0.9) },
+      { name: 'Actual', ofertas: kpis.totalOfertas },
+    ];
+
+    const data = evolucionData.map(item => ({
+      name: item.name,
+      value: item.ofertas
+    }));
+
+    downloadFormattedExcel({
+      title: 'Evolución de las ofertas laborales',
+      subtitle: getFiltersSubtitle(),
+      data,
+      columns: [
+        { header: 'Período', key: 'name' },
+        { header: 'Ofertas laborales', key: 'value' }
+      ],
+      filename: 'evolucion_ofertas',
+      showPercentage: false
+    });
+  };
+
+  // Handler para descargar Excel de Ocupaciones
   const handleDownloadOcupaciones = () => {
-    const data = occupationData.map(o => ({
-      ocupacion: o.name,
-      cantidad: o.value
+    const total = occupationData.reduce((sum, item) => sum + item.value, 0);
+    const data = occupationData.map(item => ({
+      name: item.name,
+      value: item.value,
+      porcentaje: total > 0 ? Math.round((item.value / total) * 100 * 10) / 10 : 0
     }));
-    downloadCSV(data, 'ocupaciones_top10', ['Ocupacion', 'Cantidad']);
+
+    downloadFormattedExcel({
+      title: 'Distribución de las ofertas por ocupación',
+      subtitle: getFiltersSubtitle(),
+      data,
+      columns: [
+        { header: 'Ocupación', key: 'name' },
+        { header: 'Ofertas laborales', key: 'value' },
+        { header: 'Porcentaje (%)', key: 'porcentaje' }
+      ],
+      filename: 'ocupaciones_top10',
+      showPercentage: true
+    });
   };
 
+  // Handler para descargar Excel de Jurisdicciones
   const handleDownloadJurisdicciones = () => {
-    const data = jurisdictionData.map(j => ({
-      jurisdiccion: j.name,
-      cantidad: j.value
+    const total = jurisdictionData.reduce((sum, item) => sum + item.value, 0);
+    const data = jurisdictionData.map(item => ({
+      name: item.name,
+      value: item.value,
+      porcentaje: total > 0 ? Math.round((item.value / total) * 100 * 10) / 10 : 0
     }));
-    downloadCSV(data, 'distribucion_geografica', ['Jurisdiccion', 'Cantidad']);
-  };
 
-  const handleDownloadKPIs = () => {
-    const data = [{
-      total_ofertas: kpis.totalOfertas,
-      ocupaciones_distintas: kpis.ocupacionesDistintas,
-      empresas_activas: kpis.empresasActivas,
-      provincias: kpis.provincias
-    }];
-    downloadCSV(data, 'kpis_resumen', ['Total_Ofertas', 'Ocupaciones_Distintas', 'Empresas_Activas', 'Provincias']);
+    downloadFormattedExcel({
+      title: 'Distribución de las ofertas por jurisdicción',
+      subtitle: getFiltersSubtitle(),
+      data,
+      columns: [
+        { header: 'Jurisdicción', key: 'name' },
+        { header: 'Ofertas laborales', key: 'value' },
+        { header: 'Porcentaje (%)', key: 'porcentaje' }
+      ],
+      filename: 'distribucion_geografica',
+      showPercentage: true
+    });
   };
 
   if (loading) {
@@ -240,7 +280,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
       {/* Evolution Chart con Insights */}
       <ChartContainer
         title="Evolución de las ofertas laborales"
-        onDownload={handleDownloadKPIs}
+        onDownload={handleDownloadEvolucion}
         insights={
           <InsightList>
             <InsightItem
