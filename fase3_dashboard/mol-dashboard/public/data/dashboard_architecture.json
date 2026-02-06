@@ -92,7 +92,7 @@
       "components": ["ConfigSidebar", "DatabaseConfig", "SupabaseConfig", "ScrapingConfig", "NotificacionesConfig", "SeguridadConfig", "AparienciaConfig"],
       "dataSource": [],
       "status": "funcional",
-      "notes": "Fase 1 implementada: Solo lectura con datos reales de Supabase. Muestra estado sistema, pipeline, conexiones."
+      "notes": "Fase 1 implementada (Solo lectura). Fases 2-3 documentadas en docs/PLAN_CONFIGURACION.md"
     },
     {
       "id": "admin-logs",
