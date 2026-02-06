@@ -19,17 +19,19 @@ Se analizaron **9 issues** reportados por el usuario principal. El 67% de los is
 
 ### P-09: Dashboard Principal (`/dashboard`)
 
-#### Issue #1: Export Excel Gráficos Panorama General
+#### Issue #1: Export Excel Gráficos Panorama General ✅ RESUELTO
 - **Sección:** Tab Panorama
 - **Solicitud:** Poder exportar los gráficos de Panorama General a Excel
 - **Tipo:** Feature nueva
 - **Impacto:** Alto (funcionalidad core para analistas)
+- **Estado:** Ya existía (CSV) - Cada gráfico tiene botón de descarga
 
-#### Issue #2: Export CSV/Excel Ofertas Laborales
+#### Issue #2: Export CSV/Excel Ofertas Laborales ✅ RESUELTO
 - **Sección:** Tab Ofertas
 - **Solicitud:** Descargar tabla de ofertas en formato CSV o Excel
 - **Tipo:** Feature nueva
 - **Impacto:** Alto (necesario para análisis offline)
+- **Estado:** Implementado (2026-02-06) - Botón "Exportar" con CSV y Excel
 
 #### Issue #3: Simplificar Filtros Ofertas
 - **Sección:** Tab Ofertas
@@ -38,11 +40,12 @@ Se analizaron **9 issues** reportados por el usuario principal. El 67% de los is
 - **Impacto:** Medio (simplifica experiencia pero reduce funcionalidad)
 - **Nota:** Considerar filtros colapsables en lugar de eliminar
 
-#### Issue #4: Export Archivos Requerimientos
+#### Issue #4: Export Archivos Requerimientos ✅ RESUELTO
 - **Sección:** Tab Requerimientos
 - **Solicitud:** Exportar datos de requerimientos
 - **Tipo:** Feature nueva
 - **Impacto:** Alto
+- **Estado:** Implementado (2026-02-06) - Botón "Exportar" con CSV y Excel
 
 #### Issue #5: Filtros Requerimientos en Sidebar Global
 - **Sección:** Sidebar
