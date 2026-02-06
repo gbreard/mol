@@ -19,12 +19,20 @@ Se analizaron **9 issues** reportados por el usuario principal. El 67% de los is
 
 ### P-09: Dashboard Principal (`/dashboard`)
 
-#### Issue #1: Export Excel Gráficos Panorama General ✅ RESUELTO
+#### Issue #1: Export Excel Gráficos Panorama General ⚠️ PARCIAL
 - **Sección:** Tab Panorama
-- **Solicitud:** Poder exportar los gráficos de Panorama General a Excel
+- **Solicitud:** Exportar los 3 gráficos de Panorama General a Excel formateado
 - **Tipo:** Feature nueva
 - **Impacto:** Alto (funcionalidad core para analistas)
-- **Estado:** Ya existía (CSV) - Cada gráfico tiene botón de descarga
+- **Estado actual:** CSV simple implementado (sin formato)
+
+**Requisitos detallados del Excel:**
+1. **Datos:** Todas las categorías del gráfico con número de ofertas y porcentajes
+2. **Título:** El mismo que el gráfico correspondiente
+3. **Subtítulo:** Enumeración de filtros aplicados
+4. **Fuente:** "MOL, en base a portales de intermediación laboral"
+
+**Pendiente:** Implementar Excel formateado con estos 4 componentes
 
 #### Issue #2: Export CSV/Excel Ofertas Laborales ✅ RESUELTO
 - **Sección:** Tab Ofertas
