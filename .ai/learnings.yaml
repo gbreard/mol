@@ -6,25 +6,25 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-02-06 21:45"
+  fecha_actualizacion: "2026-02-06 22:15"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "presentacion"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "Dashboard admin mejorado - configuracion read-only + arquitectura visual"
+  fase_detalle: "Dashboard admin mejorado - docs/plan/ consolidado"
 
 ultimo_trabajo:
   fecha: "2026-02-06"
-  sesion: "Mejoras admin dashboard (arquitectura + configuracion)"
+  sesion: "Mejoras admin dashboard + consolidación docs/plan/"
   cambios:
-    - "Creada vista vw_distribucion_isco en Supabase para /admin/metricas"
-    - "/admin/configuracion Fase 1: datos reales Supabase (ofertas, skills, conexiones)"
-    - "Fix bug Tailwind JIT en PhaseStatusCard.tsx (clases dinámicas → estáticas)"
-    - "Nuevo ProgressBar component + mini pipeline flow visualization"
-    - "Actualizado dashboard_architecture.json con dataSources y status"
-    - "Documentación SQL actualizada (INDEX.md, vw_distribucion_isco.sql)"
+    - "Vista vw_distribucion_isco en Supabase para /admin/metricas"
+    - "/admin/configuracion Fase 1: datos reales Supabase"
+    - "Fix Tailwind JIT en PhaseStatusCard.tsx (clases estáticas)"
+    - "Fix ScreenMapGraph.tsx: filtrar conexiones a nodos inexistentes (tablas Supabase)"
+    - "Nuevo 11_CONFIGURACION_ADMIN.md en docs/plan/ (Fases 1-3)"
+    - "Actualizado INDEX.md y 02_ARQUITECTURA_PANTALLAS.md con estados"
   deploy: "https://mol-nextjs.vercel.app - 2,089 ofertas"
-  commit: "18aabc80 - Merge feature/diseño-pantallas-v2 to main"
-  branch: "main (merged from feature/diseño-pantallas-v2)"
+  commit: "868d2346 - docs: actualizar estado P-24 configuracion a Fase 1"
+  branch: "feature/diseño-pantallas-v2 (synced with main)"
   supabase_sync:
     ofertas_dashboard: 2093
     ofertas_skills: 34917
