@@ -162,13 +162,20 @@ MATCHING:
 
 ---
 
-### V-09: Exportación a formatos múltiples
+### V-09: Exportación a formatos múltiples ✅ PARCIAL
 
 | Atributo | Valor |
 |----------|-------|
 | **Severidad** | 🟠 ALTO |
 | **Formatos** | Excel, PDF, CSV |
 | **Plan** | PRO y Enterprise |
+| **Estado** | ✅ CSV/Excel implementado (2026-02-06) |
+| **Pendiente** | PDF |
+
+**Implementado en:**
+- Panorama General: CSV por gráfico
+- Ofertas Laborales: CSV/Excel (12 columnas)
+- Requerimientos: CSV/Excel (distribución + skills)
 
 ---
 
@@ -233,7 +240,7 @@ MATCHING:
 
 ```
 □ V-05: Sistema de alertas por email
-□ V-09: Exportación Excel/PDF
+✅ V-09: Exportación Excel/CSV (PDF pendiente)
 □ V-08: API pública (Enterprise)
 □ V-10: Análisis de skills gap
 ```
