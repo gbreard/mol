@@ -1,7 +1,8 @@
 {
-  "_version": "2.6.5",
+  "_version": "2.6.6",
   "_descripcion": "Patrones para limpiar titulos de ofertas - eliminar ruido geografico/empresarial/administrativo",
   "_fecha": "2026-02-05",
+  "_cambios_v266": "Fix: para importante cadena gastronomica al final sin ubicación",
   "_cambios_v265": "Guiones colgados al final (Pacheco-, Neuquén -)",
   "_cambios_v264": "Normalizar em-dash (–) pegado a texto, agregar Zarate sin acento a parentesis",
   "_cambios_v263": "Fix 7 errores: eventual+ubicacion, guion largo+modalidad, localidades parentesis minusculas, cadena gastronomica",
@@ -489,6 +490,11 @@
         "patron": "\\s+para\\s+[Ii]mportante\\s+[Cc]adena\\s+[Gg]astron[oó]mica.*$",
         "ejemplo": "Encargado para importante cadena gastronómica - Palermo",
         "_nota": "v2.6.3: importante cadena gastronomica + todo lo que sigue"
+      },
+      {
+        "patron": "\\s+para\\s+[Ii]mportante\\s+[Cc]adena\\s+[Gg]astron[oó]mica$",
+        "ejemplo": "Camarero/a para importante cadena gastronómica",
+        "_nota": "v2.6.6: importante cadena gastronomica al final (sin ubicación)"
       },
       {
         "patron": "\\s+para\\s+[Ii]mportante\\s+[Ee]mpresa\\s+(?:de\\s+)?[A-Za-záéíóúÁÉÍÓÚ\\s]+$",
