@@ -6,25 +6,32 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-02-06 22:15"
+  fecha_actualizacion: "2026-02-07 18:30"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "presentacion"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "Dashboard admin mejorado - docs/plan/ consolidado"
+  fase_detalle: "E-16 resuelto - Performance insights optimizado"
 
 ultimo_trabajo:
-  fecha: "2026-02-06"
-  sesion: "Mejoras admin dashboard + consolidación docs/plan/"
+  fecha: "2026-02-07"
+  sesion: "E-16 Performance Fix - Insights via SQL RPC"
   cambios:
-    - "Vista vw_distribucion_isco en Supabase para /admin/metricas"
-    - "/admin/configuracion Fase 1: datos reales Supabase"
-    - "Fix Tailwind JIT en PhaseStatusCard.tsx (clases estáticas)"
-    - "Fix ScreenMapGraph.tsx: filtrar conexiones a nodos inexistentes (tablas Supabase)"
-    - "Nuevo 11_CONFIGURACION_ADMIN.md en docs/plan/ (Fases 1-3)"
-    - "Actualizado INDEX.md y 02_ARQUITECTURA_PANTALLAS.md con estados"
-  deploy: "https://mol-nextjs.vercel.app - 2,089 ofertas"
-  commit: "868d2346 - docs: actualizar estado P-24 configuracion a Fase 1"
-  branch: "feature/diseño-pantallas-v2 (synced with main)"
+    - "E-16 RESUELTO: Insights calculados en SQL en lugar de JS"
+    - "5 vistas SQL creadas en Supabase (vw_insights_*)"
+    - "Función RPC get_insights() con filtros"
+    - "lib/supabase.ts: getInsightsRPC(), getKPIsOptimized()"
+    - "PanoramaGeneral.tsx: usa RPC en lugar de fetches múltiples"
+    - "Docs actualizados: 07_ESCALABILIDAD, 09_ROADMAP, 12_INSIGHTS_SISTEMA"
+  performance_mejora:
+    tiempo_antes: "688ms (3 roundtrips)"
+    tiempo_despues: "238ms (1 RPC)"
+    mejora_tiempo: "65%"
+    datos_antes: "149KB"
+    datos_despues: "2KB"
+    mejora_datos: "99%"
+  deploy: "https://mol-nextjs.vercel.app - 2,093 ofertas"
+  commit: "1aea1621 - perf(dashboard): E-16 resuelto - Insights via SQL RPC"
+  branch: "feature/diseño-pantallas-v2 (merged to main)"
   supabase_sync:
     ofertas_dashboard: 2093
     ofertas_skills: 34917
@@ -137,7 +144,7 @@ conteos:
   empresas_catalogo: 247  # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
   skills_esco: 14257            # database/embeddings/esco_skills_full.json
   ocupaciones_esco: 3046        # database/embeddings/esco_occupations_full.json
-  ultima_verificacion: 2026-02-06
+  ultima_verificacion: 2026-02-07
 
   supabase:
     integrado: true
