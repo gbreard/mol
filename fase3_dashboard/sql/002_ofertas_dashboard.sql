@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS ofertas_dashboard (
     id_oferta TEXT PRIMARY KEY,
     -- Datos básicos
     titulo TEXT NOT NULL,
+    titulo_limpio TEXT,
     empresa TEXT,
     fecha_publicacion DATE,
     url TEXT,
@@ -13,15 +14,22 @@ CREATE TABLE IF NOT EXISTS ofertas_dashboard (
     provincia TEXT,
     localidad TEXT,
     -- Clasificación ESCO
+    esco_occupation_uri TEXT,
+    esco_occupation_label TEXT,
     isco_code TEXT,
     isco_label TEXT,
     occupation_match_score REAL,
     occupation_match_method TEXT,
-    -- Atributos NLP
+    -- Atributos NLP básicos
     modalidad TEXT,
     nivel_seniority TEXT,
     area_funcional TEXT,
     sector_empresa TEXT,
+    -- Requerimientos NLP (para tab Requerimientos)
+    nivel_educativo TEXT,
+    experiencia_min_anios INTEGER,
+    tiene_gente_cargo BOOLEAN DEFAULT FALSE,
+    jornada_laboral TEXT,
     -- Salario
     salario_min INTEGER,
     salario_max INTEGER,
@@ -42,6 +50,9 @@ CREATE INDEX IF NOT EXISTS idx_ofertas_isco ON ofertas_dashboard(isco_code);
 CREATE INDEX IF NOT EXISTS idx_ofertas_fecha ON ofertas_dashboard(fecha_publicacion);
 CREATE INDEX IF NOT EXISTS idx_ofertas_modalidad ON ofertas_dashboard(modalidad);
 CREATE INDEX IF NOT EXISTS idx_ofertas_seniority ON ofertas_dashboard(nivel_seniority);
+CREATE INDEX IF NOT EXISTS idx_ofertas_nivel_educativo ON ofertas_dashboard(nivel_educativo);
+CREATE INDEX IF NOT EXISTS idx_ofertas_jornada ON ofertas_dashboard(jornada_laboral);
+CREATE INDEX IF NOT EXISTS idx_ofertas_esco_uri ON ofertas_dashboard(esco_occupation_uri);
 
 -- Vista para KPIs
 CREATE OR REPLACE VIEW v_kpis_dashboard AS
