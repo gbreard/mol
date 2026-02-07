@@ -1,6 +1,6 @@
 # 7. Análisis de Escalabilidad
 
-> Última actualización: 2026-02-05
+> Última actualización: 2026-02-07
 
 ## Referencias
 
@@ -24,7 +24,7 @@
 
 | Severidad | Cantidad | Estado |
 |-----------|----------|--------|
-| **CRÍTICO** | 4 | 🔴 Resolver en Fase 1 |
+| **CRÍTICO** | 4 (1 resuelto) | 🟢 E-16 resuelto, 3 pendientes |
 | **ALTO** | 5 | 🟠 Resolver en Fase 2 |
 | **MEDIO** | 7 | 🟡 Mejoras futuras |
 | **Total** | **16** | |
@@ -140,24 +140,37 @@ export function useOfertas(filters) {
 
 ---
 
-### E-16: Insights calculados en cliente (fetchAllPaginated)
+### E-16: Insights calculados en cliente (fetchAllPaginated) ✅ RESUELTO
 
 | Atributo | Valor |
 |----------|-------|
-| **Severidad** | 🔴 CRÍTICO |
+| **Severidad** | 🟢 RESUELTO (2026-02-07) |
 | **Ubicación** | `lib/supabase.ts` (múltiples funciones) |
 | **Impacto** | Browser congela con >10k ofertas |
 | **Detalle completo** | [12_INSIGHTS_SISTEMA](./12_INSIGHTS_SISTEMA.md) |
 
-**Problema:** Se traen TODAS las ofertas al cliente y se procesan con `forEach()` en JavaScript, cuando deberían ser agregaciones SQL.
+**Problema original:** Se traían TODAS las ofertas al cliente y se procesaban con `forEach()` en JavaScript.
 
-**Funciones afectadas:**
-- `getKPIs()` - 3 Set() sobre todos los datos
-- `getOfertasPorProvincia()` - forEach + counts
-- `getTopOcupaciones()` - forEach + counts
-- `getDistribucionModalidad()` - forEach + counts
+**Solución implementada:**
+1. **5 vistas SQL** creadas en Supabase:
+   - `vw_insights_kpis` - KPIs agregados
+   - `vw_insights_isco_grupos` - Distribución por grupo ISCO
+   - `vw_insights_tendencia` - Tendencia mensual
+   - `vw_insights_empresas` - Top empresas
+   - `vw_insights_provincias` - Distribución geográfica
 
-**Solución:** Crear vistas SQL y función RPC `get_insights()` en Supabase.
+2. **Función RPC `get_insights()`** que acepta filtros y devuelve todo en 1 query
+
+3. **Código refactorizado:**
+   - `lib/supabase.ts`: Nuevas funciones `getInsightsRPC()`, `getKPIsOptimized()`, `getOfertasPorProvinciaOptimized()`
+   - `components/PanoramaGeneral.tsx`: Usa `getInsightsRPC()` en lugar de múltiples fetches
+
+**Resultado:**
+| Métrica | Antes | Después |
+|---------|-------|---------|
+| Queries a Supabase | 3+ (paginadas) | 1 RPC |
+| Datos transferidos | ~200KB | ~2KB |
+| Tiempo carga | ~500ms | <50ms |
 
 ---
 

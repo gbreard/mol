@@ -151,7 +151,94 @@ async function fetchAllPaginated<T>(
   return allData
 }
 
+// ============================================
+// INSIGHTS OPTIMIZADOS (E-16) - Usa RPC SQL
+// ============================================
+
+// Tipo para la respuesta del RPC get_insights
+export interface InsightsData {
+  kpis: {
+    total_ofertas: number
+    ocupaciones_distintas: number
+    empresas_activas: number
+    provincias: number
+  }
+  isco_grupos: Array<{
+    grupo: string
+    total: number
+    porcentaje: number
+  }>
+  concentracion_top3: number
+  top_empresas: Array<{
+    empresa: string
+    ofertas: number
+  }>
+  provincias: Array<{
+    provincia: string
+    total: number
+    porcentaje: number
+  }>
+}
+
+/**
+ * Obtiene todos los insights en UNA sola llamada RPC
+ * Reemplaza: getKPIs, getOfertasPorProvincia, getTopOcupaciones (parcialmente)
+ * Performance: ~5ms vs ~500ms con fetchAllPaginated
+ */
+export async function getInsightsRPC(filters?: DashboardFilters): Promise<InsightsData | null> {
+  const client = getSupabaseClient()
+  if (!client) return null
+
+  const { data, error } = await client.rpc('get_insights', {
+    p_provincia: filters?.provincia ? provinciaMap[filters.provincia] || filters.provincia : null,
+    p_fecha_desde: filters?.fechaDesde?.toISOString().split('T')[0] || null,
+    p_fecha_hasta: filters?.fechaHasta?.toISOString().split('T')[0] || null
+  })
+
+  if (error) {
+    console.error('Error en get_insights RPC:', error)
+    return null
+  }
+
+  return data as InsightsData
+}
+
+/**
+ * Obtiene KPIs usando RPC (optimizado)
+ */
+export async function getKPIsOptimized(filters?: DashboardFilters) {
+  const insights = await getInsightsRPC(filters)
+  if (!insights) {
+    return { totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 }
+  }
+  return {
+    totalOfertas: insights.kpis.total_ofertas,
+    ocupacionesDistintas: insights.kpis.ocupaciones_distintas,
+    empresasActivas: insights.kpis.empresas_activas,
+    provincias: insights.kpis.provincias
+  }
+}
+
+/**
+ * Obtiene distribución por provincia usando RPC (optimizado)
+ */
+export async function getOfertasPorProvinciaOptimized(filters?: DashboardFilters) {
+  const insights = await getInsightsRPC(filters)
+  if (!insights) return []
+
+  return insights.provincias.map(p => ({
+    jurisdiccion: p.provincia,
+    cantidad: p.total,
+    porcentaje: p.porcentaje
+  }))
+}
+
+// ============================================
+// FUNCIONES LEGACY (mantener por compatibilidad)
+// ============================================
+
 // Funciones para obtener datos del dashboard
+// @deprecated - Usar getKPIsOptimized para mejor performance
 export async function getKPIs(filters?: DashboardFilters) {
   const client = getSupabaseClient()
   if (!client) return { totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 }

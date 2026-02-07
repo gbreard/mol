@@ -40,7 +40,8 @@ Ejecutar estos archivos SQL en **Supabase SQL Editor** en el orden indicado.
 | `add_autor_nombre.sql` | Columna autor_nombre en issues | IssueList, IssueForm | ✅ |
 | `sistema_estado.sql` | Estado del pipeline | /admin/scraping, /admin/arquitectura | ✅ |
 | `audit_logs.sql` | Logs de auditoria | /admin/logs | ✅ |
-| `vw_distribucion_isco.sql` | Vista distribucion ISCO | /admin/metricas | ⏳ Crear |
+| `vw_distribucion_isco.sql` | Vista distribucion ISCO | /admin/metricas | ✅ |
+| `vw_insights_all.sql` | 5 vistas + fn get_insights() | PanoramaGeneral, KPIs | ✅ Ejecutado 2026-02-07 |
 | `perfiles_trabajadores.sql` | Perfiles trabajadores | /perfil-argentino (futuro) | ⏳ |
 
 ---
@@ -100,7 +101,7 @@ El archivo `sync_to_supabase.py` (v2.1.0) actualiza:
 
 ---
 
-## Estado de Tablas (Actualizado 2026-02-06)
+## Estado de Tablas (Actualizado 2026-02-07)
 
 | Tabla | Creada | Datos | Sincronizacion |
 |-------|--------|-------|----------------|

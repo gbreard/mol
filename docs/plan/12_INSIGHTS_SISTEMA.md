@@ -1,7 +1,7 @@
 # 12. Sistema de Insights
 
-> Última actualización: 2026-02-06
-> Estado: PROBLEMA IDENTIFICADO - Requiere refactoring
+> Última actualización: 2026-02-07
+> Estado: ✅ FASE 1-2 IMPLEMENTADAS - Performance corregido
 
 ## Referencias
 
@@ -248,19 +248,21 @@ export async function getInsights(filters?: DashboardFilters) {
 
 ## Plan de Implementación
 
-| Fase | Tarea | Esfuerzo | Dependencia |
-|------|-------|----------|-------------|
-| 1.1 | Crear vistas SQL en Supabase | 2h | - |
-| 1.2 | Crear función RPC get_insights() | 2h | 1.1 |
-| 1.3 | Refactorizar lib/supabase.ts | 3h | 1.2 |
-| 1.4 | Actualizar PanoramaGeneral.tsx | 2h | 1.3 |
-| 2.1 | Agregar insights a Tab Requerimientos | 3h | 1.4 |
-| 2.2 | Agregar insights a Skills Intelligence | 3h | 1.4 |
-| 2.3 | Counts en sidebar de filtros | 2h | 1.4 |
-| 3.1 | Tabla insights_cache | 2h | 2.x |
-| 3.2 | Triggers de invalidación | 2h | 3.1 |
+| Fase | Tarea | Esfuerzo | Estado |
+|------|-------|----------|--------|
+| 1.1 | Crear vistas SQL en Supabase | 2h | ✅ Completado 2026-02-07 |
+| 1.2 | Crear función RPC get_insights() | 2h | ✅ Completado 2026-02-07 |
+| 1.3 | Refactorizar lib/supabase.ts | 3h | ✅ Completado 2026-02-07 |
+| 1.4 | Actualizar PanoramaGeneral.tsx | 2h | ✅ Completado 2026-02-07 |
+| 2.1 | Agregar insights a Tab Requerimientos | 3h | ⏳ Pendiente |
+| 2.2 | Agregar insights a Skills Intelligence | 3h | ⏳ Pendiente |
+| 2.3 | Counts en sidebar de filtros | 2h | ⏳ Pendiente |
+| 3.1 | Tabla insights_cache | 2h | ❌ Descartado (no necesario <50k) |
+| 3.2 | Triggers de invalidación | 2h | ❌ Descartado (no necesario <50k) |
 
-**Total estimado:** 21 horas
+**Completado:** 9h (Fases 1.1-1.4)
+**Pendiente:** 8h (Fases 2.1-2.3)
+**Descartado:** 4h (Fase 3 - overkill para volumen actual)
 
 ---
 
@@ -287,11 +289,13 @@ export async function getInsights(filters?: DashboardFilters) {
 
 ---
 
-## SQL Pendiente de Ejecutar
+## SQL Ejecutado ✅
 
-```sql
--- Ejecutar en Supabase SQL Editor en este orden:
--- 1. fase3_dashboard/mol-dashboard/docs/sql/vw_insights_kpis.sql (crear)
--- 2. fase3_dashboard/mol-dashboard/docs/sql/vw_insights_tendencia.sql (crear)
--- 3. fase3_dashboard/mol-dashboard/docs/sql/fn_get_insights.sql (crear)
-```
+**Archivo:** `fase3_dashboard/mol-dashboard/docs/sql/vw_insights_all.sql`
+**Ejecutado:** 2026-02-07
+
+Contiene:
+- 5 vistas (`vw_insights_kpis`, `vw_insights_isco_grupos`, `vw_insights_tendencia`, `vw_insights_empresas`, `vw_insights_provincias`)
+- 1 función RPC `get_insights(p_provincia, p_fecha_desde, p_fecha_hasta)`
+
+Ver también: `fase3_dashboard/mol-dashboard/docs/sql/INDEX.md`

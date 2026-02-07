@@ -5,7 +5,7 @@ import { KPICard } from "@/components/KPICard";
 import { ChartContainer } from "@/components/ChartContainer";
 import { FileText, Briefcase, Lightbulb, Sparkles, TrendingUp, AlertCircle, Award, Loader2 } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList, Label } from "recharts";
-import { getKPIs, getTopOcupaciones, getOfertasPorProvincia } from "@/lib/supabase";
+import { getInsightsRPC, getTopOcupaciones, InsightsData } from "@/lib/supabase";
 import { DashboardFilters } from "@/lib/types";
 import { downloadFormattedExcel } from "@/components/ExportButton";
 
@@ -69,15 +69,30 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
     async function loadData() {
       try {
         setLoading(true);
-        const [kpiData, ocupaciones, provincias] = await Promise.all([
-          getKPIs(filters),
-          getTopOcupaciones(10, filters),
-          getOfertasPorProvincia(filters)
+        // E-16: Usar RPC optimizado para KPIs y provincias (1 query SQL vs múltiples fetch)
+        const [insights, ocupaciones] = await Promise.all([
+          getInsightsRPC(filters),
+          getTopOcupaciones(10, filters)  // Mantener: necesita isco_label que no está en RPC
         ]);
-        setKpis(kpiData);
-        // Transformar datos para los gráficos (name/value format)
+
+        if (insights) {
+          setKpis({
+            totalOfertas: insights.kpis.total_ofertas,
+            ocupacionesDistintas: insights.kpis.ocupaciones_distintas,
+            empresasActivas: insights.kpis.empresas_activas,
+            provincias: insights.kpis.provincias
+          });
+          // Provincias vienen del RPC, ya ordenadas por total DESC
+          setJurisdictionData(insights.provincias.slice(0, 10).map(p => ({
+            name: p.provincia,
+            value: p.total
+          })));
+        } else {
+          setKpis({ totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 });
+          setJurisdictionData([]);
+        }
+        // Ocupaciones siguen usando función legacy (necesita isco_label para el gráfico)
         setOccupationData(ocupaciones.map(o => ({ name: o.ocupacion, value: o.cantidad })));
-        setJurisdictionData(provincias.slice(0, 10).map(p => ({ name: p.jurisdiccion, value: p.cantidad })));
         setError(null);
       } catch (err) {
         console.error('Error cargando datos:', err);

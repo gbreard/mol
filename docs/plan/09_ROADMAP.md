@@ -1,6 +1,6 @@
 # 9. Roadmap de Implementación
 
-> Última actualización: 2026-02-05
+> Última actualización: 2026-02-07
 
 ## Referencias
 
@@ -75,7 +75,7 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 
 ## Fase 1: Escalabilidad Básica
 
-**Estado:** ⬜ Pendiente (depende de Fase 0)
+**Estado:** 🟡 En progreso (1/7 tareas completadas)
 **Duración estimada:** 1 semana
 
 ### Tareas
@@ -85,12 +85,12 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 | E-01 | Reemplazar .limit(10000) | CRÍTICO | ⬜ |
 | E-02 | Usar vistas SQL existentes | CRÍTICO | ⬜ |
 | E-03 | Implementar React Query | CRÍTICO | ⬜ |
-| **E-16** | **Insights SQL (no fetchAllPaginated)** | **CRÍTICO** | ⬜ |
+| **E-16** | **Insights SQL (no fetchAllPaginated)** | **CRÍTICO** | ✅ Completado 2026-02-07 |
 | E-05 | Agregar índices críticos | ALTO | ⬜ |
 | S-05 | Rate limiting en APIs | ALTO | ⬜ |
 | S-06 | Validación con Zod | ALTO | ⬜ |
 
-> **E-16 Detalle:** [12_INSIGHTS_SISTEMA](./12_INSIGHTS_SISTEMA.md) - Crear vistas vw_insights_* y función RPC get_insights()
+> **E-16 Resuelto:** [12_INSIGHTS_SISTEMA](./12_INSIGHTS_SISTEMA.md) - Vistas SQL + función RPC `get_insights()` implementados
 
 ### Criterio de Éxito
 
