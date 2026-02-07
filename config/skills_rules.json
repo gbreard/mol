@@ -1,0 +1,651 @@
+{
+  "version": "2.0",
+  "descripcion": "Reglas que fuerzan skills especificas segun condiciones del titulo/area. Similar a matching_rules_business.json pero para skills.",
+  "documentacion": "Cada regla tiene: condicion (titulo_contiene_alguno, area_funcional_es) y accion (forzar_skills con URIs ESCO)",
+  "reglas_forzar_skills": {
+    "RS01_desarrollador_python": {
+      "nombre": "Desarrollador Python",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "python",
+          "desarrollador python",
+          "python developer",
+          "backend python",
+          "django",
+          "flask"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "Python (programacion informatica)",
+            "skill_uri": "http://data.europa.eu/esco/skill/ccd0a1d9-afda-43d9-b901-96344886e14d"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS02_contador_contable": {
+      "nombre": "Contador/Contable",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "contador",
+          "contadora",
+          "contable",
+          "analista contable",
+          "auxiliar contable"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "realizar contabilidad de costes",
+            "skill_uri": "http://data.europa.eu/esco/skill/c5b90c0c-3af0-4c8c-a06c-cc3ced02242c"
+          },
+          {
+            "skill_esco": "preparar estados financieros",
+            "skill_uri": "http://data.europa.eu/esco/skill/60f51172-37c0-4933-a27a-cbf55dcd7580"
+          },
+          {
+            "skill_esco": "supervisar procedimientos de facturacion",
+            "skill_uri": "http://data.europa.eu/esco/skill/1be2bb07-dbb2-4a67-b133-30b4ff30b094"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS03_vigilador_seguridad": {
+      "nombre": "Vigilador/Guardia de Seguridad",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "vigilador",
+          "vigilancia",
+          "guardia de seguridad",
+          "seguridad privada",
+          "custodia",
+          "sereno"
+        ],
+        "titulo_no_contiene_alguno": [
+          "enfermero", "enfermería", "médico", "médica", "hospital",
+          "clínica", "salud", "bioquímico", "farmacia", "guardia médica"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "patrullar zonas determinadas",
+            "skill_uri": "http://data.europa.eu/esco/skill/e95dc989-ae49-49c6-bfc4-9aef35e92f35"
+          },
+          {
+            "skill_esco": "operar equipos de vigilancia y seguridad",
+            "skill_uri": "http://data.europa.eu/esco/skill/8d13e6ed-49e8-4c0d-876c-4629d798b2c8"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS04_chofer_conductor": {
+      "nombre": "Chofer/Conductor",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "chofer",
+          "conductor",
+          "driver",
+          "camionero",
+          "repartidor",
+          "transportista"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "conducir un vehiculo",
+            "skill_uri": "http://data.europa.eu/esco/skill/2a82241a-216e-44d8-bb50-6b9a0ef82084"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS05_administrativo": {
+      "nombre": "Administrativo/Asistente",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "administrativo",
+          "administrativa",
+          "asistente administrativo",
+          "auxiliar administrativo",
+          "secretaria",
+          "secretario"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "realizar tareas administrativas",
+            "skill_uri": "http://data.europa.eu/esco/skill/ab986bc4-df92-4351-9ac1-aa75af943cf7"
+          },
+          {
+            "skill_esco": "asegurar la correcta gestion de documentos",
+            "skill_uri": "http://data.europa.eu/esco/skill/c241f5a5-e23f-47bf-ad24-d83ea0010166"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS06_vendedor_comercial": {
+      "nombre": "Vendedor/Comercial",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "vendedor",
+          "vendedora",
+          "asesor comercial",
+          "ejecutivo comercial",
+          "ejecutivo de ventas",
+          "sales"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "implementar estrategias de ventas",
+            "skill_uri": "http://data.europa.eu/esco/skill/b99aa3b8-0066-46b2-a027-30afae444ad8"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS07_recepcionista": {
+      "nombre": "Recepcionista",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "recepcionista",
+          "recepcion",
+          "front desk",
+          "atencion al publico"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "responder a las llamadas",
+            "skill_uri": "http://data.europa.eu/esco/skill/5a0bffcf-4ff6-49cf-a7db-4142e63f5f04"
+          },
+          {
+            "skill_esco": "realizar tareas administrativas",
+            "skill_uri": "http://data.europa.eu/esco/skill/ab986bc4-df92-4351-9ac1-aa75af943cf7"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS08_limpieza": {
+      "nombre": "Personal de Limpieza",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "limpieza",
+          "mucama",
+          "mucamo",
+          "housekeeper",
+          "limpiador"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "gestionar actividades de limpieza",
+            "skill_uri": "http://data.europa.eu/esco/skill/a97353c8-f2a3-47be-86e1-f7c301fca630"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS09_cajero": {
+      "nombre": "Cajero",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "cajero",
+          "cajera",
+          "caja"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "emitir facturas de venta",
+            "skill_uri": "http://data.europa.eu/esco/skill/e3e42d54-78bd-4337-aa87-bb31a7670c9a"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS10_cocinero": {
+      "nombre": "Cocinero/Chef",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "cocinero",
+          "cocinera",
+          "chef",
+          "cook",
+          "ayudante de cocina"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "cocinar salsas y sopas",
+            "skill_uri": "http://data.europa.eu/esco/skill/614478b3-51a2-4a55-b3ef-a932105eaeaf"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS11_gerente_director": {
+      "nombre": "Gerente/Director/Jefe",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "gerente",
+          "director",
+          "jefe de",
+          "jefa de",
+          "head of",
+          "manager"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "liderar a otras personas",
+            "skill_uri": "http://data.europa.eu/esco/skill/75d8e5d9-bef3-418b-9011-01bff9f27207"
+          },
+          {
+            "skill_esco": "gestionar equipos de ventas",
+            "skill_uri": "http://data.europa.eu/esco/skill/0bfb44c7-c412-49ed-aab4-e33d0dd3b265"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS12_analista": {
+      "nombre": "Analista (generico)",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista de",
+          "analyst"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "evaluar datos, informacion y contenido digital",
+            "skill_uri": "http://data.europa.eu/esco/skill/1d6c7de4-350e-4868-a47b-333b4b0d9650"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS13_operario_produccion": {
+      "nombre": "Operario/Operador de Produccion (industrial)",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "operario de produccion",
+          "operaria de produccion",
+          "operador de produccion",
+          "operador de planta",
+          "operario de planta",
+          "operario industrial"
+        ],
+        "titulo_no_contiene_alguno": [
+          "logística", "logistica", "depósito", "deposito",
+          "almacén", "almacen", "picking", "distribución"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "operar maquinaria para fabricar plastico",
+            "skill_uri": "http://data.europa.eu/esco/skill/988871ab-dcad-4217-87d0-4c33307f0981"
+          }
+        ]
+      },
+      "activa": true,
+      "_nota": "v2: Más específico - solo producción industrial, excluye logística. Si dual_coinciden=0, revisar si la regla aplica."
+    },
+    "RS14_medico": {
+      "nombre": "Medico/Doctor",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "medico",
+          "medica",
+          "doctor",
+          "doctora",
+          "traumatologo",
+          "cardiologo",
+          "pediatra"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "diagnosticar enfermedades geneticas",
+            "skill_uri": "http://data.europa.eu/esco/skill/e06f9eaa-004e-4999-a75c-36ed1fdc0a5b"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS15_ingeniero": {
+      "nombre": "Ingeniero",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "ingeniero",
+          "ingeniera",
+          "engineer"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "desarrollar calendario del proyecto",
+            "skill_uri": "http://data.europa.eu/esco/skill/8c6feedd-339f-4dba-b28a-dae84c759853"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS16_supervisor_coordinador": {
+      "nombre": "Supervisor/Coordinador",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "supervisor",
+          "supervisora",
+          "coordinador",
+          "coordinadora",
+          "encargado",
+          "encargada"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "supervisar el nivel de las existencias",
+            "skill_uri": "http://data.europa.eu/esco/skill/44f6a65f-6be7-4818-9a66-73908797283f"
+          },
+          {
+            "skill_esco": "coordinar actividades de mantenimiento de invernaderos",
+            "skill_uri": "http://data.europa.eu/esco/skill/118796d8-28a3-4865-bcd0-d037f4abcc0f"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS17_mecanico": {
+      "nombre": "Mecanico",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "mecanico",
+          "mecanica",
+          "electromecanico"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "coordinar actividades de mantenimiento de invernaderos",
+            "skill_uri": "http://data.europa.eu/esco/skill/118796d8-28a3-4865-bcd0-d037f4abcc0f"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS18_auditor": {
+      "nombre": "Auditor",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "auditor",
+          "auditora"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "auditar procedimientos de seguridad alimentaria",
+            "skill_uri": "http://data.europa.eu/esco/skill/c6f3b73c-bf11-42a1-abd3-e3539d0853bf"
+          },
+          {
+            "skill_esco": "verificar parametros de procesamiento",
+            "skill_uri": "http://data.europa.eu/esco/skill/344d8c63-0bc2-4a70-9fea-cfe3ca5a6ca0"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS19_cuidador": {
+      "nombre": "Cuidador/Acompanante",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "cuidador",
+          "cuidadora",
+          "acompanante",
+          "adultos mayores",
+          "ninos"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "asistir en la identificacion de arboles",
+            "skill_uri": "http://data.europa.eu/esco/skill/ee62e616-b6e9-49c1-888b-1b4e81f3536e"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS20_telemarketing": {
+      "nombre": "Telemarketing/Call Center",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "telemarketing",
+          "call center",
+          "atencion telefonica",
+          "telefonista"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "telemarketing",
+            "skill_uri": "http://data.europa.eu/esco/skill/16132f2b-cf61-4c53-ae8d-9023a8bab90b"
+          },
+          {
+            "skill_esco": "tecnologia del centro de llamada",
+            "skill_uri": "http://data.europa.eu/esco/skill/e13b734a-218c-434a-a7cc-febac6d24ef3"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS21_almacen_deposito": {
+      "nombre": "Almacen/Deposito/Logistica",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "almacen",
+          "deposito",
+          "logistica",
+          "warehouse",
+          "inventario"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "planificar el inventario",
+            "skill_uri": "http://data.europa.eu/esco/skill/05281013-f5ae-4bf2-ad23-d5d6f7573b46"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS22_compras": {
+      "nombre": "Compras/Comprador",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "compras",
+          "comprador",
+          "compradora",
+          "procurement",
+          "buyer"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "elegir a proveedores de eventos",
+            "skill_uri": "http://data.europa.eu/esco/skill/2cf1b872-ada1-4275-b1d3-3cc2d14b458c"
+          },
+          {
+            "skill_esco": "negociar en asuntos juridicos",
+            "skill_uri": "http://data.europa.eu/esco/skill/23b97a3e-dfde-4627-9d97-114a9f3e4cd0"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS23_tesoreria": {
+      "nombre": "Tesoreria/Pagos",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "tesoreria",
+          "tesorero",
+          "tesorera",
+          "pagos"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "exigir el pago de deudas de clientes",
+            "skill_uri": "http://data.europa.eu/esco/skill/c26c7d9d-f9cf-4147-b774-c63e050ebe87"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS24_calidad": {
+      "nombre": "Calidad/QA",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "calidad",
+          "quality",
+          "qa",
+          "control de calidad"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "gestionar la calidad",
+            "skill_uri": "http://data.europa.eu/esco/skill/35ebe444-9ece-4fbc-a55d-e99ea37267ae"
+          },
+          {
+            "skill_esco": "realizar inspecciones de seguridad a equipos",
+            "skill_uri": "http://data.europa.eu/esco/skill/a6433dcd-ba3c-410d-8b55-ad415e3583ec"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS25_inmobiliario": {
+      "nombre": "Inmobiliario/Propiedades",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "inmobiliario",
+          "inmobiliaria",
+          "real estate",
+          "corredor",
+          "propiedades"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "organizar visitas a los inmuebles en venta",
+            "skill_uri": "http://data.europa.eu/esco/skill/f405e179-f6bb-4c19-92f3-023a7254382c"
+          }
+        ]
+      },
+      "activa": true
+    },
+    "RS26_peon_cocina": {
+      "nombre": "Peón/Ayudante de Cocina",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "peón de cocina",
+          "peon de cocina",
+          "ayudante de cocina",
+          "auxiliar de cocina",
+          "bachero",
+          "bachera"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "lavar platos",
+            "skill_uri": "http://data.europa.eu/esco/skill/f2f2f2f2-0000-0000-0000-000000000001"
+          },
+          {
+            "skill_esco": "mantener la limpieza de las zonas de trabajo",
+            "skill_uri": "http://data.europa.eu/esco/skill/1e47a5a8-46e1-4643-a5bc-441a57e6c9c9"
+          },
+          {
+            "skill_esco": "preparar ingredientes",
+            "skill_uri": "http://data.europa.eu/esco/skill/a1a1a1a1-0000-0000-0000-000000000001"
+          }
+        ]
+      },
+      "activa": true,
+      "_caso": "ID 1118092879 Peón de Cocina",
+      "_fecha": "2026-01-22"
+    }
+  },
+  "reglas_validacion_skills": {
+    "_comentario": "Reglas para detectar inconsistencias en skills extraidos. Se usaran en auto_validator.py",
+    "RV01_it_sin_skills_tecnicas": {
+      "nombre": "IT sin skills tecnicas",
+      "condicion": {
+        "area_funcional_es": "IT",
+        "skills_tecnicas_count": {
+          "lt": 2
+        }
+      },
+      "accion": {
+        "escalar": true,
+        "mensaje": "Puesto IT con menos de 2 skills tecnicas"
+      },
+      "activa": true
+    },
+    "RV02_ventas_sin_comercial": {
+      "nombre": "Ventas sin skills comerciales",
+      "condicion": {
+        "area_funcional_es": "Ventas",
+        "skills_contiene_ninguno": [
+          "venta",
+          "comercial",
+          "cliente",
+          "negociacion"
+        ]
+      },
+      "accion": {
+        "escalar": true,
+        "mensaje": "Puesto de ventas sin skills comerciales"
+      },
+      "activa": true
+    }
+  },
+  "metadata": {
+    "creado": "2026-01-21",
+    "ultima_modificacion": "2026-01-22",
+    "total_reglas_forzar": 25,
+    "total_reglas_validacion": 2
+  }
+}
