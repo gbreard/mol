@@ -6,7 +6,7 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-02-07 13:25"
+  fecha_actualizacion: "2026-02-07 13:49"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "presentacion"  # adquisicion | procesamiento | presentacion
@@ -14,24 +14,27 @@ current_state:
 
 ultimo_trabajo:
   fecha: "2026-02-07"
-  sesion: "E-16 Performance Fix - Insights via SQL RPC"
+  sesion: "Commits pendientes + sync main"
   cambios:
-    - "E-16 RESUELTO: Insights calculados en SQL en lugar de JS"
-    - "5 vistas SQL creadas en Supabase (vw_insights_*)"
-    - "Función RPC get_insights() con filtros"
-    - "lib/supabase.ts: getInsightsRPC(), getKPIsOptimized()"
-    - "PanoramaGeneral.tsx: usa RPC en lugar de fetches múltiples"
-    - "Docs actualizados: 07_ESCALABILIDAD, 09_ROADMAP, 12_INSIGHTS_SISTEMA"
-  performance_mejora:
-    tiempo_antes: "688ms (3 roundtrips)"
-    tiempo_despues: "238ms (1 RPC)"
-    mejora_tiempo: "65%"
-    datos_antes: "149KB"
-    datos_despues: "2KB"
-    mejora_datos: "99%"
+    - "8 commits pusheados a main para resolver conflictos"
+    - "feat(sql): columnas ESCO, titulo_limpio, requerimientos NLP"
+    - "feat(skills): sistema dual reglas + semántico v2.0"
+    - "feat(admin): scripts protección datos validados"
+    - "fix(nlp): v2.6.6 cadena gastronómica + remover contexto_gestion"
+    - "data: mol_skills_profile.json actualizado"
+    - "config: priority_criteria.json, skills_rules.json"
+  sesion_anterior:
+    tema: "E-16 Performance Fix - Insights via SQL RPC"
+    performance_mejora:
+      tiempo_antes: "688ms (3 roundtrips)"
+      tiempo_despues: "238ms (1 RPC)"
+      mejora_tiempo: "65%"
+      datos_antes: "149KB"
+      datos_despues: "2KB"
+      mejora_datos: "99%"
   deploy: "https://mol-nextjs.vercel.app - 2,093 ofertas"
-  commit: "1aea1621 - perf(dashboard): E-16 resuelto - Insights via SQL RPC"
-  branch: "feature/diseño-pantallas-v2 (merged to main)"
+  commit: "cc49b842 - feat: migración columnas faltantes + config priorización"
+  branch: "feature/diseño-pantallas-v2 (synced with main)"
   supabase_sync:
     ofertas_dashboard: 2093
     ofertas_skills: 34917
