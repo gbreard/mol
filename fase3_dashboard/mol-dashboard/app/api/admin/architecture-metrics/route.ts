@@ -1,29 +1,37 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-
-// Table names (same as sync_to_supabase.py)
 const TABLE_OFERTAS = 'ofertas_dashboard';
 const TABLE_SKILLS = 'ofertas_skills';
 const TABLE_OCUPACIONES = 'ocupaciones_esco';
 const TABLE_ISSUES = 'issues';
 
 export async function GET() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseServiceKey) {
+    return NextResponse.json(
+      { error: 'Missing Supabase configuration' },
+      { status: 500 }
+    );
+  }
+
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get all offers from ofertas_dashboard
     const { data: ofertasData, error: ofertasError } = await supabase
       .from(TABLE_OFERTAS)
       .select('id_oferta, portal, fecha_publicacion, isco_code, estado');
 
     if (ofertasError) {
-      console.error('Error fetching ofertas:', ofertasError);
+      return NextResponse.json(
+        { error: 'Error fetching ofertas', details: ofertasError.message },
+        { status: 502 }
+      );
     }
 
-    const ofertas = ofertasData || [];
+    const ofertas = ofertasData ?? [];
     const ofertasTotales = ofertas.length;
     const ofertasActivas = ofertas.filter(o => o.estado === 'activa').length;
 
@@ -64,14 +72,9 @@ export async function GET() {
       .select('id', { count: 'exact', head: true })
       .eq('estado', 'abierto');
 
-    if (erroresError) {
-      console.error('Error fetching issues:', erroresError);
-    }
+    const erroresSinResolver = erroresError ? 0 : (erroresCount ?? 0);
 
-    const erroresSinResolver = erroresCount || 0;
-
-    // Get rules count from sistema_estado if exists, otherwise default
-    let reglasNegocio = 140;
+    let reglasNegocio = 0;
     const { data: estadoData } = await supabase
       .from('sistema_estado')
       .select('reglas_negocio')

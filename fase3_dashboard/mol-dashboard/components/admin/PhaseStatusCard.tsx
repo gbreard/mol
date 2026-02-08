@@ -38,11 +38,11 @@ const PHASE_ICONS = {
   3: Cloud
 };
 
-const PHASE_COLORS = {
-  1: 'blue',
-  2: 'purple',
-  3: 'green'
-};
+const PHASE_STYLES = {
+  1: { headerBg: 'bg-blue-50', headerBorder: 'border-blue-100', iconBg: 'bg-blue-100', iconText: 'text-blue-600' },
+  2: { headerBg: 'bg-purple-50', headerBorder: 'border-purple-100', iconBg: 'bg-purple-100', iconText: 'text-purple-600' },
+  3: { headerBg: 'bg-green-50', headerBorder: 'border-green-100', iconBg: 'bg-green-100', iconText: 'text-green-600' },
+} as const;
 
 function getStatus(phase: number, metrics: Metrics): 'healthy' | 'warning' | 'error' {
   if (phase === 1) {
@@ -82,7 +82,7 @@ const StatusBadge = ({ status }: { status: 'healthy' | 'warning' | 'error' }) =>
 
 export default function PhaseStatusCard({ phase, name, metrics, details }: Props) {
   const Icon = PHASE_ICONS[phase];
-  const color = PHASE_COLORS[phase];
+  const styles = PHASE_STYLES[phase];
   const status = getStatus(phase, metrics);
 
   const renderMetrics = () => {
@@ -102,7 +102,7 @@ export default function PhaseStatusCard({ phase, name, metrics, details }: Props
           </div>
           {m.lastRun && (
             <div className="text-xs text-gray-500">
-              Ultimo scraping: {new Date(m.lastRun).toLocaleDateString()}
+              Ultima publicacion: {new Date(m.lastRun).toLocaleDateString()}
               {m.daysSince !== null && (
                 <span className={m.daysSince > 7 ? 'text-yellow-600 font-medium ml-1' : 'ml-1'}>
                   ({m.daysSince} dias)
@@ -197,11 +197,11 @@ export default function PhaseStatusCard({ phase, name, metrics, details }: Props
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
       {/* Header */}
-      <div className={`bg-${color}-50 px-4 py-3 border-b border-${color}-100`}>
+      <div className={`${styles.headerBg} px-4 py-3 border-b ${styles.headerBorder}`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className={`p-2 bg-${color}-100 rounded-lg`}>
-              <Icon className={`w-5 h-5 text-${color}-600`} />
+            <div className={`p-2 ${styles.iconBg} rounded-lg`}>
+              <Icon className={`w-5 h-5 ${styles.iconText}`} />
             </div>
             <div>
               <h3 className="font-semibold text-gray-900">Fase {phase}</h3>
