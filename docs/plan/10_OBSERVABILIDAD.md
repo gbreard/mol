@@ -1,6 +1,6 @@
 # 10. Observabilidad del Sistema
 
-> Última actualización: 2026-02-06
+> Última actualización: 2026-02-08
 
 ## Referencias
 
@@ -231,7 +231,7 @@ interface ArchitectureMetrics {
   phase1: {
     ofertas_totales: number;      // Count exacto de ofertas_dashboard
     ofertas_activas: number;      // Count donde estado = 'activa'
-    ultimo_scraping: string;      // Fecha más reciente
+    ultimo_scraping: string;      // Fecha publicación más reciente (NO fecha de scraping)
     dias_desde_scraping: number;  // Días desde última publicación
     fuentes: Record<string, number>; // Count por portal
   };
@@ -242,7 +242,7 @@ interface ArchitectureMetrics {
     pendientes_matching: number;  // = 0 (en Supabase)
     validadas: number;            // = ofertas_totales (en Supabase)
     errores_sin_resolver: number; // Count issues estado='abierto'
-    reglas_negocio: number;       // De sistema_estado o default 140
+    reglas_negocio: number;       // De sistema_estado (default 0 si no existe)
   };
   phase3: {
     ofertas_supabase: number;     // = ofertas_totales
@@ -269,9 +269,20 @@ interface ArchitectureMetrics {
 | `issues` | Errores sin resolver |
 | `sistema_estado` | Reglas de negocio (opcional) |
 
-### Nota sobre Paginación
+### Validaciones del API
 
-Supabase tiene límite de 1000 registros por query. El API usa `{ count: 'exact', head: true }` para obtener conteos totales sin descargar datos.
+- **Env vars**: Retorna 500 si `NEXT_PUBLIC_SUPABASE_URL` o `SUPABASE_SERVICE_ROLE_KEY` no estan configuradas
+- **Error en ofertas**: Retorna 502 con detalle del error de Supabase (NO falla silenciosamente)
+- **Error en issues/skills/ocupaciones**: Graceful fallback a 0 (tablas opcionales)
+- **reglas_negocio**: Default 0 si tabla `sistema_estado` no existe (antes era hardcoded 140)
+
+### Nota sobre Paginacion
+
+Supabase tiene limite de 1000 registros por query. El API usa `{ count: 'exact', head: true }` para obtener conteos totales sin descargar datos.
+
+### Nota sobre "ultimo scraping"
+
+El campo `ultimo_scraping` en la respuesta usa `fecha_publicacion` de la oferta mas reciente, NO la fecha real de ejecucion del scraper. En el frontend se muestra como "Ultima publicacion" para evitar confusion.
 
 ---
 
@@ -328,10 +339,17 @@ Editar `components/admin/PipelineFlow.tsx`:
 
 ## Issues Conocidos
 
-| ID | Descripción | Estado |
+| ID | Descripcion | Estado |
 |----|-------------|--------|
-| O-01 | Paginación Supabase (límite 1000) | ✅ Resuelto con count exact |
-| O-02 | Archivos no persistían en filesystem | ✅ Resuelto |
+| O-01 | Paginacion Supabase (limite 1000) | ✅ Resuelto con count exact |
+| O-02 | Archivos no persistian en filesystem | ✅ Resuelto |
+| O-03 | Tailwind dynamic classes (`bg-${color}-50`) no compilan en build | ✅ Resuelto - class map estatico |
+| O-04 | Env vars sin validacion (crash en runtime) | ✅ Resuelto - early return 500 |
+| O-05 | Hardcoded 140 reglas de negocio | ✅ Resuelto - default 0, lee de BD |
+| O-06 | Errores Supabase silenciosos (continuaba con data vacia) | ✅ Resuelto - return 502 |
+| O-07 | Entrada duplicada "Arquitectura" en sidebar admin | ✅ Resuelto - removida |
+| O-08 | Label "ultimo scraping" usaba fecha_publicacion | ✅ Resuelto - renombrado a "ultima publicacion" |
+| O-09 | Imports muertos (d3, useEffect, useRef) en PipelineFlow | ✅ Resuelto - eliminados |
 
 ---
 
@@ -339,7 +357,10 @@ Editar `components/admin/PipelineFlow.tsx`:
 
 | Fase | Feature | Prioridad |
 |------|---------|-----------|
-| Actual | 3 tabs funcionando | ✅ Completado |
-| Siguiente | Historial de métricas | Media |
-| Futuro | Alertas automáticas | Baja |
-| Futuro | Export de métricas | Baja |
+| ~~v1.0~~ | 3 tabs funcionando | ✅ Completado |
+| ~~v1.1~~ | Code review + fixes (O-03 a O-09) | ✅ Completado 2026-02-08 |
+| Siguiente | Historial de metricas (time series) | Media |
+| Siguiente | Responsive (PipelineFlow en mobile) | Media |
+| Futuro | Alertas automaticas por degradacion | Baja |
+| Futuro | Export de metricas (CSV/JSON) | Baja |
+| Futuro | Accessibility (ARIA labels en D3 graph) | Baja |
