@@ -1,122 +1,80 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+/**
+ * Architecture metrics API.
+ *
+ * Sources of truth:
+ *   - Phase 1 & 2: sistema_estado (synced from local SQLite by sync_learnings.py)
+ *   - Phase 3: live counts from ofertas_dashboard / ofertas_skills / ocupaciones_esco
+ *   - Issues: live count from issues table
+ */
 
-// Table names (same as sync_to_supabase.py)
 const TABLE_OFERTAS = 'ofertas_dashboard';
 const TABLE_SKILLS = 'ofertas_skills';
 const TABLE_OCUPACIONES = 'ocupaciones_esco';
 const TABLE_ISSUES = 'issues';
+const TABLE_ESTADO = 'sistema_estado';
 
 export async function GET() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    return NextResponse.json(
+      { error: 'Missing Supabase configuration (URL or key)' },
+      { status: 500 }
+    );
+  }
+
   try {
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Use count queries to avoid pagination limits (Supabase default is 1000)
+    // --- sistema_estado: real pipeline metrics (phases 1 & 2) ---
+    // Use array query + [0] instead of .single() to avoid PGRST116 with multiple rows
+    const { data: estadoRows, error: estadoError } = await supabase
+      .from(TABLE_ESTADO)
+      .select('*')
+      .order('timestamp', { ascending: false })
+      .limit(1);
 
-    // Total offers count
-    const { count: ofertasTotales, error: totalError } = await supabase
-      .from(TABLE_OFERTAS)
-      .select('*', { count: 'exact', head: true });
-
-    if (totalError) {
-      console.error('Error counting ofertas:', totalError);
+    if (estadoError || !estadoRows || estadoRows.length === 0) {
+      return NextResponse.json(
+        { error: 'Error fetching sistema_estado', details: estadoError?.message ?? 'no rows' },
+        { status: 502 }
+      );
     }
 
-    // Active offers count
-    const { count: ofertasActivas } = await supabase
-      .from(TABLE_OFERTAS)
-      .select('*', { count: 'exact', head: true })
-      .eq('estado', 'activa');
+    const estadoData = estadoRows[0];
 
-    // Count by portal using multiple queries
-    // Since Supabase doesn't have GROUP BY in REST API, we query each portal
-    const portales = ['bumeran', 'zonajobs', 'computrabajo', 'indeed', 'linkedin'];
-    const fuentesCounts: Record<string, number> = {};
+    // --- Phase 3: live counts from Supabase tables ---
+    const [
+      { count: ofertasSupabase },
+      { count: skillsCount },
+      { count: ocupacionesCount },
+      { count: erroresCount, error: erroresError },
+    ] = await Promise.all([
+      supabase.from(TABLE_OFERTAS).select('id_oferta', { count: 'exact', head: true }),
+      supabase.from(TABLE_SKILLS).select('id', { count: 'exact', head: true }),
+      supabase.from(TABLE_OCUPACIONES).select('esco_uri', { count: 'exact', head: true }),
+      supabase.from(TABLE_ISSUES).select('id', { count: 'exact', head: true }).eq('estado', 'abierto'),
+    ]);
 
-    await Promise.all(portales.map(async (portal) => {
-      const { count } = await supabase
-        .from(TABLE_OFERTAS)
-        .select('*', { count: 'exact', head: true })
-        .eq('portal', portal);
-      if (count && count > 0) {
-        fuentesCounts[portal] = count;
-      }
-    }));
+    const erroresSinResolver = erroresError ? 0 : (erroresCount ?? 0);
 
-    // Get last publication date (order by fecha_publicacion desc, limit 1)
-    let ultimoScraping: string | null = null;
-    let diasDesdeScraping: number | null = null;
-
-    const { data: lastOffer } = await supabase
-      .from(TABLE_OFERTAS)
-      .select('fecha_publicacion')
-      .not('fecha_publicacion', 'is', null)
-      .order('fecha_publicacion', { ascending: false })
-      .limit(1)
-      .single();
-
-    if (lastOffer?.fecha_publicacion) {
-      ultimoScraping = lastOffer.fecha_publicacion;
-      const lastDate = new Date(lastOffer.fecha_publicacion);
-      const today = new Date();
-      diasDesdeScraping = Math.floor((today.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
-    }
-
-    // Get offers with matching (isco_code not null)
-    const { count: conMatching } = await supabase
-      .from(TABLE_OFERTAS)
-      .select('*', { count: 'exact', head: true })
-      .not('isco_code', 'is', null);
-
-    // All synced offers have NLP and are validated
-    const conNlp = ofertasTotales || 0;
-    const sinNlp = 0; // Local SQLite has pending, but Supabase only has processed
-    const validadas = ofertasTotales || 0; // All in Supabase are validated
-
-    // Get issues count (pending errors)
-    const { count: erroresCount, error: erroresError } = await supabase
-      .from(TABLE_ISSUES)
-      .select('id', { count: 'exact', head: true })
-      .eq('estado', 'abierto');
-
-    if (erroresError) {
-      console.error('Error fetching issues:', erroresError);
-    }
-
-    const erroresSinResolver = erroresCount || 0;
-
-    // Get rules count from sistema_estado if exists, otherwise default
-    let reglasNegocio = 140;
-    const { data: estadoData } = await supabase
-      .from('sistema_estado')
-      .select('reglas_negocio')
-      .single();
-    if (estadoData?.reglas_negocio) {
-      reglasNegocio = estadoData.reglas_negocio;
-    }
-
-    // Get skills count for additional info
-    const { count: skillsCount } = await supabase
-      .from(TABLE_SKILLS)
-      .select('id', { count: 'exact', head: true });
-
-    // Get ocupaciones count
-    const { count: ocupacionesCount } = await supabase
-      .from(TABLE_OCUPACIONES)
-      .select('esco_uri', { count: 'exact', head: true });
-
-    // Supabase stats
-    const ofertasSupabase = ofertasTotales;
-    const pendientesSync = 0; // Can't know from Supabase alone
+    // Pendientes sync = validadas locales - sincronizadas en Supabase
+    const validadasLocal = estadoData.fase2_validadas ?? 0;
+    const syncedCount = ofertasSupabase ?? 0;
+    const pendientesSync = Math.max(0, validadasLocal - syncedCount);
 
     // Determine suggested phase
+    const diasScraping = estadoData.fase1_dias_desde_scraping;
+    const sinNlp = estadoData.fase2_sin_nlp ?? 0;
+
     let suggested = {
       fase: 3,
       nombre: 'Presentacion',
-      razon: `${ofertasSupabase} ofertas en dashboard, ${skillsCount || 0} skills, ${ocupacionesCount || 0} ocupaciones`
+      razon: `${syncedCount} ofertas en dashboard, ${skillsCount || 0} skills, ${ocupacionesCount || 0} ocupaciones`
     };
 
     if (erroresSinResolver > 0) {
@@ -125,33 +83,45 @@ export async function GET() {
         nombre: 'Procesamiento',
         razon: `${erroresSinResolver} issues abiertos para resolver`
       };
-    } else if (diasDesdeScraping && diasDesdeScraping > 7) {
+    } else if (sinNlp > 100) {
+      suggested = {
+        fase: 2,
+        nombre: 'Procesamiento',
+        razon: `${sinNlp.toLocaleString()} ofertas sin NLP pendientes`
+      };
+    } else if (pendientesSync > 50) {
+      suggested = {
+        fase: 3,
+        nombre: 'Presentacion',
+        razon: `${pendientesSync} ofertas validadas pendientes de sync a Supabase`
+      };
+    } else if (diasScraping != null && diasScraping > 7) {
       suggested = {
         fase: 1,
         nombre: 'Adquisicion',
-        razon: `${diasDesdeScraping} dias desde ultima publicacion`
+        razon: `${diasScraping} dias desde ultimo scraping`
       };
     }
 
     const metrics = {
       phase1: {
-        ofertas_totales: ofertasTotales,
-        ofertas_activas: ofertasActivas,
-        ultimo_scraping: ultimoScraping,
-        dias_desde_scraping: diasDesdeScraping,
-        fuentes: fuentesCounts
+        ofertas_totales: estadoData.fase1_ofertas_totales ?? 0,
+        ofertas_activas: estadoData.fase1_ofertas_activas ?? 0,
+        ultimo_scraping: estadoData.fase1_ultimo_scraping,
+        dias_desde_scraping: diasScraping,
+        fuentes: estadoData.fase1_fuentes ?? {}
       },
       phase2: {
-        con_nlp: conNlp,
+        con_nlp: estadoData.fase2_con_nlp ?? 0,
         sin_nlp: sinNlp,
-        con_matching: conMatching,
-        pendientes_matching: sinNlp,
-        validadas: validadas,
+        con_matching: estadoData.fase2_con_matching ?? 0,
+        pendientes_matching: estadoData.fase2_pendientes_matching ?? 0,
+        validadas: validadasLocal,
         errores_sin_resolver: erroresSinResolver,
-        reglas_negocio: reglasNegocio
+        reglas_negocio: estadoData.fase2_reglas_negocio ?? 0
       },
       phase3: {
-        ofertas_supabase: ofertasSupabase,
+        ofertas_supabase: syncedCount,
         pendientes_sync: pendientesSync,
         skills_count: skillsCount || 0,
         ocupaciones_count: ocupacionesCount || 0

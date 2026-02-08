@@ -1,0 +1,190 @@
+{
+  "pages": {
+    "/": {
+      "label": "Landing",
+      "description": "Pagina publica principal con CTA de registro",
+      "type": "public"
+    },
+    "/home": {
+      "label": "Home",
+      "description": "Dashboard principal post-login con accesos rapidos segun rol",
+      "type": "authenticated"
+    },
+    "/login": {
+      "label": "Login",
+      "description": "Autenticacion con Supabase Auth",
+      "type": "auth"
+    },
+    "/registro": {
+      "label": "Registro",
+      "description": "Registro de nuevos usuarios",
+      "type": "auth"
+    },
+    "/skills": {
+      "label": "Skills (Publico)",
+      "description": "Explorador de skills ESCO publico",
+      "type": "public"
+    },
+    "/precios": {
+      "label": "Precios",
+      "description": "Planes y precios de suscripcion",
+      "type": "public"
+    },
+    "/informes": {
+      "label": "Informes",
+      "description": "Informes trimestrales del mercado laboral",
+      "type": "public"
+    },
+    "/admin": {
+      "label": "Admin Dashboard",
+      "description": "Estado general del sistema y metricas principales",
+      "type": "admin"
+    },
+    "/admin/arquitectura": {
+      "label": "Arquitectura",
+      "description": "Visualizacion de arquitectura del sistema",
+      "type": "admin"
+    },
+    "/admin/usuarios": {
+      "label": "Usuarios",
+      "description": "Gestion de usuarios y roles",
+      "type": "admin"
+    },
+    "/admin/issues": {
+      "label": "Issues",
+      "description": "Sistema de feedback y reportes de errores",
+      "type": "admin"
+    },
+    "/admin/skills": {
+      "label": "Skills Intelligence",
+      "description": "Analisis avanzado de skills con 6 sub-tabs",
+      "type": "admin"
+    },
+    "/admin/scraping": {
+      "label": "Scraping",
+      "description": "Estado de los scrapers y fuentes de datos",
+      "type": "admin"
+    },
+    "/admin/metricas": {
+      "label": "Metricas",
+      "description": "Metricas detalladas del pipeline",
+      "type": "admin"
+    },
+    "/admin/logs": {
+      "label": "Logs",
+      "description": "Logs de auditoria del sistema",
+      "type": "admin"
+    },
+    "/admin/configuracion": {
+      "label": "Configuracion",
+      "description": "Configuracion del sistema",
+      "type": "admin"
+    },
+    "/dashboard": {
+      "label": "Dashboard",
+      "description": "Tablero de datos del mercado laboral con filtros",
+      "type": "dashboard"
+    },
+    "/dashboard/alertas": {
+      "label": "Alertas",
+      "description": "Sistema de alertas por ocupacion y territorio",
+      "type": "dashboard"
+    },
+    "/dashboard/empresas": {
+      "label": "Empresas",
+      "description": "Analisis de ofertas por empresa",
+      "type": "dashboard"
+    },
+    "/dashboard/reportes": {
+      "label": "Reportes",
+      "description": "Generacion de reportes personalizados",
+      "type": "dashboard"
+    },
+    "/cuenta": {
+      "label": "Mi Cuenta",
+      "description": "Perfil y configuracion de la cuenta",
+      "type": "account"
+    },
+    "/cuenta/suscripcion": {
+      "label": "Suscripcion",
+      "description": "Gestion del plan de suscripcion",
+      "type": "account"
+    },
+    "/cuenta/facturacion": {
+      "label": "Facturacion",
+      "description": "Historial de pagos y facturas",
+      "type": "account"
+    },
+    "/checkout": {
+      "label": "Checkout",
+      "description": "Proceso de pago para suscripcion",
+      "type": "checkout"
+    },
+    "/checkout/exito": {
+      "label": "Checkout Exitoso",
+      "description": "Confirmacion de pago exitoso",
+      "type": "checkout"
+    },
+    "/checkout/cancelado": {
+      "label": "Checkout Cancelado",
+      "description": "Pago cancelado o fallido",
+      "type": "checkout"
+    }
+  },
+  "apiRoutes": {
+    "/api/admin/stats": {
+      "label": "Admin Stats",
+      "description": "Estadisticas generales del sistema"
+    },
+    "/api/admin/users": {
+      "label": "Admin Users",
+      "description": "CRUD de usuarios"
+    },
+    "/api/admin/architecture-metrics": {
+      "label": "Architecture Metrics",
+      "description": "Metricas de arquitectura y estado de fases"
+    },
+    "/api/occupations/search": {
+      "label": "Buscar Ocupaciones",
+      "description": "Busqueda de ocupaciones ESCO"
+    },
+    "/api/occupations/skills": {
+      "label": "Skills por Ocupacion",
+      "description": "Skills de una ocupacion especifica"
+    },
+    "/api/perfil-argentina/[occupation]": {
+      "label": "Perfil Argentina",
+      "description": "Perfil ocupacional argentino con datos MOL"
+    },
+    "/api/skills-intelligence": {
+      "label": "Skills Intelligence",
+      "description": "Analisis de inteligencia de skills"
+    },
+    "/api/skills-intelligence/occupation": {
+      "label": "Skills por Ocupacion (Intelligence)",
+      "description": "Skills especificas por ocupacion via intelligence"
+    },
+    "/api/consolidated-profiles": {
+      "label": "Perfiles Consolidados",
+      "description": "Gestion de perfiles consolidados"
+    },
+    "/api/esco-argentino": {
+      "label": "ESCO Argentino",
+      "description": "Datos ESCO adaptados al mercado argentino"
+    },
+    "/api/worker-profiles": {
+      "label": "Perfiles Trabajador",
+      "description": "Perfiles de trabajadores"
+    },
+    "/auth/callback": {
+      "label": "Auth Callback",
+      "description": "Callback OAuth para Supabase"
+    }
+  },
+  "connections_manual": [
+    { "from": "/login", "to": "/home", "type": "navigation", "label": "Post-login redirect" },
+    { "from": "/", "to": "/login", "type": "navigation", "label": "Login requerido" },
+    { "from": "/checkout/exito", "to": "/home", "type": "navigation", "label": "Volver al home" },
+    { "from": "/checkout/cancelado", "to": "/precios", "type": "navigation", "label": "Reintentar" }
+  ]
+}

@@ -215,7 +215,7 @@ export default function PipelineFlow({ phases, metrics }: Props) {
                               {metrics.phase1.dias_desde_scraping !== null && (
                                 <div className="bg-white/50 p-2 rounded col-span-2">
                                   <div className="font-bold">{metrics.phase1.dias_desde_scraping} dias</div>
-                                  <div className="text-gray-500">Desde ultimo scraping</div>
+                                  <div className="text-gray-500">Desde ultima publicacion</div>
                                 </div>
                               )}
                             </>

@@ -1,6 +1,6 @@
 # MOL Dashboard - Documentación de Planificación
 
-> Última actualización: 2026-02-07
+> Ultima actualizacion: 2026-02-08
 
 ## Mapa de Documentos
 

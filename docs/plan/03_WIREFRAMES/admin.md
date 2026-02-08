@@ -1,6 +1,6 @@
 # Wireframes: Admin
 
-> Última actualización: 2026-02-05
+> Ultima actualizacion: 2026-02-08
 
 ## Referencias
 
@@ -339,9 +339,9 @@
 └────────────────┴────────────────────────────────────────────────────────┘
 ```
 
-### Tabs de Configuración
+### Tabs de Configuracion
 
-| Tab | Descripción | Estado |
+| Tab | Descripcion | Estado |
 |-----|-------------|--------|
 | General | Nombre, URL, mantenimiento | ⚠️ UI only |
 | Scraping | Frecuencia, fuentes activas | ⚠️ UI only |
@@ -349,3 +349,67 @@
 | Matching | Pesos, umbrales | ⚠️ UI only |
 | Email | SMTP, templates | ⚠️ UI only |
 | API | Rate limits, keys | ⚠️ UI only |
+
+---
+
+## P-25: Admin Arquitectura (`/admin/arquitectura`)
+
+**Estado:** ✅ Existe (code review + fixes 2026-02-08)
+
+> Documentacion completa: [10_OBSERVABILIDAD](../10_OBSERVABILIDAD.md)
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  [Logo MOL]  ADMIN                                         [Logout]     │
+├────────────────┬────────────────────────────────────────────────────────┤
+│                │                                                        │
+│  Dashboard     │  Arquitectura del Sistema                              │
+│  Arquitectura●│                                                        │
+│  Usuarios      │  [Mapa Pantallas] [Pipeline Datos] [Metricas Vivo]    │
+│  Issues        │  ══════════════════                                    │
+│  Skills        │                                                        │
+│  Scraping      │  MAPA DE PANTALLAS (tab activo)                       │
+│  Metricas      │                                                        │
+│  Logs          │  ┌────────────────────────────────────────────────┐    │
+│  Config        │  │  Leyenda:                                      │    │
+│                │  │  🔵 Publicas  🟣 Admin  ⚫ Auth  🟢 API       │    │
+│                │  │  --- Navegacion  ─── Datos                      │    │
+│                │  │                                                 │    │
+│                │  │         🔵 Home                                 │    │
+│                │  │        / |  \                                   │    │
+│                │  │       /  |   \                                  │    │
+│                │  │   ⚫Login 🔵Skills  🟣Admin                   │    │
+│                │  │                    / | \ \                      │    │
+│                │  │              🟣Usuarios  🟣Issues              │    │
+│                │  │                    |                             │    │
+│                │  │              🟢API/stats                       │    │
+│                │  │                                                 │    │
+│                │  │  10 paginas | 7 API routes | 9 conexiones       │    │
+│                │  └────────────────────────────────────────────────┘    │
+│                │                                                        │
+│                │  ┌────────────────────────────────────────────────┐    │
+│                │  │ Click: detalle nodo | Drag: mover | Scroll: zoom│   │
+│                │  └────────────────────────────────────────────────┘    │
+│                │                                                        │
+└────────────────┴────────────────────────────────────────────────────────┘
+```
+
+### Tabs
+
+| Tab | Componente | Fuente de datos |
+|-----|-----------|-----------------|
+| Mapa Pantallas | `ScreenMapGraph.tsx` (D3.js force) | `dashboard_architecture.json` (estatico) |
+| Pipeline Datos | `PipelineFlow.tsx` | API `/api/admin/architecture-metrics` |
+| Metricas Vivo | `PhaseStatusCard.tsx` x3 | API `/api/admin/architecture-metrics` |
+
+### Fixes aplicados (2026-02-08)
+
+| Issue | Fix |
+|-------|-----|
+| Tailwind dynamic classes no compilaban | Class map estatico (`PHASE_STYLES`) |
+| Env vars sin validacion | Early return 500 |
+| Hardcoded 140 reglas | Default 0, lee de `sistema_estado` |
+| Errores Supabase silenciosos | Return 502 con detalle |
+| Duplicado "Arquitectura" en sidebar | Entrada removida |
+| Label "ultimo scraping" incorrecto | Renombrado a "ultima publicacion" |
+| Imports muertos en PipelineFlow | `d3`, `useEffect`, `useRef` eliminados |

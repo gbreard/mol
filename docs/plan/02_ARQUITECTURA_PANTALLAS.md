@@ -1,6 +1,6 @@
 # 2. Arquitectura de Pantallas
 
-> Última actualización: 2026-02-07
+> Ultima actualizacion: 2026-02-08
 > Versión: 2.0 — Modelo híbrido (registro libre + acceso gated al tablero)
 
 ## Referencias
@@ -164,7 +164,7 @@ MOL Platform
 | P-23 | `/admin/logs` | U-ADMIN | ⚠️ Prueba | [admin.md#p-23](./03_WIREFRAMES/admin.md#p-23-logs) |
 | P-24 | `/admin/configuracion` | U-ADMIN | ✅ Fase 1 | [11_CONFIGURACION](./11_CONFIGURACION_ADMIN.md) |
 | P-30 | `/admin/contenidos` | U-ADMIN | Por crear | [admin.md#p-30](./03_WIREFRAMES/admin.md#p-30-contenidos) |
-| P-25 | `/admin/arquitectura` | U-ADMIN | ✅ Existe | [10_OBSERVABILIDAD](./10_OBSERVABILIDAD.md) |
+| P-25 | `/admin/arquitectura` | U-ADMIN | ✅ Existe (fixes v1.1) | [10_OBSERVABILIDAD](./10_OBSERVABILIDAD.md), [admin.md#p-25](./03_WIREFRAMES/admin.md#p-25-admin-arquitectura-adminarquitectura) |
 
 ---
 
@@ -314,4 +314,5 @@ app/
 | Fecha | Versión | Cambio |
 |-------|---------|--------|
 | 2026-02-05 | 1.0 | Arquitectura SaaS clásica (Free/Pro/Enterprise), 25 pantallas |
-| 2026-02-07 | 2.0 | Modelo híbrido: nivel REGISTRADO, área `/contenido`, `/solicitar-acceso`, admin `/solicitudes` y `/contenidos` (CMS). Total 30 pantallas |
+| 2026-02-07 | 2.0 | Modelo hibrido: nivel REGISTRADO, area `/contenido`, `/solicitar-acceso`, admin `/solicitudes` y `/contenidos` (CMS). Total 30 pantallas |
+| 2026-02-08 | 2.0.1 | P-25 code review: 7 fixes aplicados (Tailwind, env vars, error handling, sidebar dup, labels, imports) |

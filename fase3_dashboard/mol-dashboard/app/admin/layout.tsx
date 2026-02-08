@@ -20,10 +20,10 @@ import { createBrowserClient } from "@/lib/supabase/browser";
 
 const adminNavItems = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
+  { href: "/admin/arquitectura", label: "Arquitectura", icon: Network },
   { href: "/admin/usuarios", label: "Usuarios", icon: Users },
   { href: "/admin/issues", label: "Issues", icon: MessageSquare },
   { href: "/admin/skills", label: "Skills Intelligence", icon: Target },
-  { href: "/admin/arquitectura", label: "Arquitectura", icon: Network },
   { href: "/admin/scraping", label: "Scraping", icon: Database },
   { href: "/admin/metricas", label: "Métricas", icon: BarChart3 },
   { href: "/admin/logs", label: "Logs", icon: FileText },
@@ -92,10 +92,10 @@ export default function AdminLayout({
 
         <nav className="flex-1 p-4">
           <ul className="space-y-1">
-            {adminNavItems.map((item) => {
+            {adminNavItems.map((item, index) => {
               const isActive = pathname === item.href;
               return (
-                <li key={item.href}>
+                <li key={`${item.href}-${index}`}>
                   <Link
                     href={item.href}
                     className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${

@@ -145,6 +145,9 @@ fase3_dashboard/mol-dashboard/  →  Vercel (mol-dashboard)  →  mol-nextjs.ver
 
 3. **Claude ejecuta:**
    ```bash
+   # Regenerar architecture JSON (si cambiaron pantallas o pipeline)
+   python scripts/generate_architecture_json.py
+
    # Commit a GitHub
    git add fase3_dashboard/mol-dashboard/
    git commit -m "feat(dashboard): descripción del cambio"
@@ -377,6 +380,7 @@ tail -f /tmp/pipeline.log
 | **Sync Supabase** | `python scripts/exports/sync_to_supabase.py` (incremental) | Queries directas a Supabase |
 | **Sync Full** | `python scripts/exports/sync_to_supabase.py --full` | - |
 | **Reapply Rules** | `python scripts/reapply_rules_to_validated.py` | Reprocesar validadas manualmente |
+| **Generar Architecture JSON** | `python scripts/generate_architecture_json.py` | Editar dashboard_architecture.json a mano |
 
 **⭐ REGLA CRÍTICA - Pipeline Integrado:**
 - **SIEMPRE** usar `run_validated_pipeline.py` para procesar ofertas
