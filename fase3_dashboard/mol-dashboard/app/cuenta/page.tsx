@@ -21,6 +21,7 @@ const secciones = [
     icon: CreditCard,
     titulo: "Suscripcion",
     descripcion: "Tu plan actual, upgrade o cancelar",
+    disabled: false,
   },
   {
     href: "#",
@@ -29,7 +30,7 @@ const secciones = [
     descripcion: "Historial de pagos y facturas (proximamente)",
     disabled: true,
   },
-] as const;
+];
 
 export default async function CuentaPage() {
   const supabase = await createServerClient();
