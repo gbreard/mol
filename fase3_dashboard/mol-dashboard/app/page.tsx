@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
   BarChart3,
@@ -9,185 +8,266 @@ import {
   CheckCircle2,
   AlertTriangle,
   Lightbulb,
-  Database,
-  Cpu,
-  GraduationCap,
+  Mail,
 } from "lucide-react";
+import { AnimatedNav } from "./_components/animated-nav";
+import { HeroParticles } from "./_components/hero-particles";
+import { Counter } from "./_components/counter";
+import { ScrollReveal } from "./_components/scroll-reveal";
 
-function LandingHeader() {
-  return (
-    <header className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-3">
-            <Image
-              src="/logo_mol.png"
-              alt="MOL Logo"
-              width={120}
-              height={40}
-              priority
-            />
-          </div>
-
-          <nav className="hidden md:flex items-center gap-8">
-            <a href="#funcionalidades" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
-              Funcionalidades
-            </a>
-            <a href="#numeros" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
-              Datos
-            </a>
-            <a href="#acceso" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
-              Acceso
-            </a>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="text-sm font-semibold text-gray-700 hover:text-blue-600 transition-colors px-4 py-2"
-            >
-              Iniciar Sesi&oacute;n
-            </Link>
-            <Link
-              href="/registro"
-              className="text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 px-5 py-2.5 rounded-lg shadow-lg hover:shadow-xl transition-all"
-            >
-              Registrarse
-            </Link>
-          </div>
-        </div>
-      </div>
-    </header>
-  );
-}
+/* ─── Hero ───────────────────────────────────────────── */
 
 function HeroSection() {
-  return (
-    <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto text-center">
-        <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-8">
-          <Database className="w-4 h-4" />
-          Monitor de Ofertas Laborales
-        </div>
-
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight leading-tight max-w-4xl mx-auto">
-          Inteligencia del mercado laboral argentino en{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-700">
-            tiempo real
-          </span>
-        </h1>
-
-        <p className="mt-6 text-lg sm:text-xl text-gray-500 max-w-3xl mx-auto leading-relaxed">
-          El Monitor de Ofertas Laborales (MOL) analiza miles de avisos de
-          empleo con inteligencia artificial para revelar qu&eacute; busca el mercado:
-          ocupaciones, competencias, requerimientos y tendencias.
-        </p>
-
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link
-            href="/login"
-            className="inline-flex items-center gap-2 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all"
-          >
-            Acceder al tablero
-            <ArrowRight className="w-5 h-5" />
-          </Link>
-          <a
-            href="#funcionalidades"
-            className="inline-flex items-center gap-2 text-base font-semibold text-gray-700 border border-gray-300 hover:border-blue-300 hover:text-blue-600 px-8 py-3.5 rounded-xl transition-all"
-          >
-            Conocer m&aacute;s
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function DesafioSolucion() {
-  return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-red-50 border border-red-100 rounded-2xl p-8">
-            <div className="flex items-center gap-3 mb-6">
-              <AlertTriangle className="w-6 h-6 text-red-500" />
-              <h3 className="text-xl font-bold text-gray-900">El desaf&iacute;o</h3>
-            </div>
-            <ul className="space-y-4 text-gray-600">
-              <li className="flex items-start gap-3">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 flex-shrink-0" />
-                <span>Los datos de demanda laboral est&aacute;n dispersos en m&uacute;ltiples portales sin clasificaci&oacute;n est&aacute;ndar</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 flex-shrink-0" />
-                <span>Sin procesamiento, es imposible identificar patrones de competencias y ocupaciones demandadas</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 flex-shrink-0" />
-                <span>Las decisiones de pol&iacute;tica p&uacute;blica carecen de evidencia actualizada sobre el mercado laboral</span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="bg-green-50 border border-green-100 rounded-2xl p-8">
-            <div className="flex items-center gap-3 mb-6">
-              <Lightbulb className="w-6 h-6 text-green-500" />
-              <h3 className="text-xl font-bold text-gray-900">La soluci&oacute;n MOL</h3>
-            </div>
-            <ul className="space-y-4 text-gray-600">
-              <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                <span>Recopilaci&oacute;n autom&aacute;tica y clasificaci&oacute;n con taxonom&iacute;a internacional ESCO</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                <span>Extracci&oacute;n de competencias, requerimientos y condiciones con NLP avanzado</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                <span>Tablero interactivo con indicadores para investigadores, formadores y decisores</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function NumerosSection() {
-  const stats = [
-    { value: "13.000+", label: "Ofertas analizadas", icon: Database },
-    { value: "300+", label: "Ocupaciones ESCO", icon: Cpu },
-    { value: "1.200+", label: "Competencias identificadas", icon: GraduationCap },
+  const bars = [
+    { label: "Tecnología", pct: 85 },
+    { label: "Comercio", pct: 68 },
+    { label: "Salud", pct: 52 },
+    { label: "Industria", pct: 45 },
+    { label: "Educación", pct: 38 },
   ];
 
   return (
-    <section id="numeros" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-600 to-blue-700">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-bold text-white text-center mb-4">
-          Datos que hablan
-        </h2>
-        <p className="text-blue-100 text-center mb-12 max-w-2xl mx-auto">
-          Informaci&oacute;n estructurada y clasificada a partir de avisos reales del mercado laboral argentino
-        </p>
+    <section
+      className="relative min-h-screen flex items-center px-4 sm:px-6 lg:px-8 overflow-hidden"
+      style={{ backgroundColor: "var(--navy-900)" }}
+    >
+      <HeroParticles count={35} />
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8 text-center"
+      {/* gradient overlay bottom */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-32 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to top, var(--off-white), transparent)",
+        }}
+      />
+
+      <div className="relative max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-12 lg:gap-16 py-32 lg:py-0">
+        {/* Left — text */}
+        <div className="flex flex-col justify-center">
+          <div
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-8 w-fit"
+            style={{
+              backgroundColor: "rgba(43, 127, 212, 0.15)",
+              color: "var(--teal-300)",
+              border: "1px solid rgba(43, 127, 212, 0.3)",
+              animation: "pulse-glow 3s ease-in-out infinite",
+            }}
+          >
+            <span
+              className="w-2 h-2 rounded-full"
+              style={{ backgroundColor: "var(--teal-400)" }}
+            />
+            Sistema en producción
+          </div>
+
+          <h1
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight"
+            style={{ color: "var(--slate-100)" }}
+          >
+            Inteligencia del{" "}
+            <span
+              className="font-[family-name:var(--font-display)] italic"
+              style={{
+                background:
+                  "linear-gradient(135deg, var(--teal-300), var(--teal-400))",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
             >
-              <stat.icon className="w-8 h-8 text-blue-200 mx-auto mb-4" />
-              <div className="text-4xl font-bold text-white mb-2">{stat.value}</div>
-              <div className="text-blue-100 font-medium">{stat.label}</div>
+              Mercado Laboral
+            </span>{" "}
+            Argentino en Tiempo Real
+          </h1>
+
+          <p
+            className="mt-6 text-lg sm:text-xl leading-relaxed max-w-xl"
+            style={{ color: "var(--slate-300)" }}
+          >
+            El MOL analiza miles de avisos de empleo con inteligencia artificial
+            para revelar qué busca el mercado: ocupaciones, competencias,
+            requerimientos y tendencias.
+          </p>
+
+          <div className="mt-10 flex flex-col sm:flex-row gap-4">
+            <Link
+              href="/precios"
+              className="inline-flex items-center justify-center gap-2 text-base font-semibold text-white px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all"
+              style={{
+                background:
+                  "linear-gradient(135deg, var(--teal-500), var(--teal-400))",
+              }}
+            >
+              Explorar Datos
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+            <a
+              href="#funcionalidades"
+              className="inline-flex items-center justify-center gap-2 text-base font-semibold px-8 py-3.5 rounded-xl transition-all"
+              style={{
+                color: "var(--slate-200)",
+                border: "1px solid var(--navy-600)",
+              }}
+            >
+              Conocer más
+            </a>
+          </div>
+        </div>
+
+        {/* Right — chart card */}
+        <div className="flex items-center justify-center">
+          <div
+            className="w-full max-w-md rounded-2xl p-6 shadow-2xl"
+            style={{
+              backgroundColor: "var(--navy-800)",
+              border: "1px solid var(--navy-600)",
+            }}
+          >
+            <h3
+              className="text-sm font-semibold uppercase tracking-wider mb-6"
+              style={{ color: "var(--slate-300)" }}
+            >
+              Ofertas por sector
+            </h3>
+
+            <div className="flex items-end gap-3 h-44 mb-6">
+              {bars.map((bar) => (
+                <div key={bar.label} className="flex-1 flex flex-col items-center gap-2">
+                  <div
+                    className="w-full rounded-t-md origin-bottom"
+                    style={{
+                      height: `${bar.pct}%`,
+                      background: `linear-gradient(to top, var(--teal-500), var(--teal-300))`,
+                      animation: "grow-bar 1s ease-out forwards",
+                    }}
+                  />
+                  <span
+                    className="text-[10px] font-medium text-center leading-tight"
+                    style={{ color: "var(--slate-300)" }}
+                  >
+                    {bar.label}
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}
+
+            {/* Mini stats */}
+            <div
+              className="grid grid-cols-3 gap-4 pt-4"
+              style={{ borderTop: "1px solid var(--navy-600)" }}
+            >
+              {[
+                { value: "48K", label: "ofertas" },
+                { value: "326", label: "ocupaciones" },
+                { value: "5", label: "portales" },
+              ].map((s) => (
+                <div key={s.label} className="text-center">
+                  <div
+                    className="text-lg font-bold"
+                    style={{ color: "var(--teal-300)" }}
+                  >
+                    {s.value}
+                  </div>
+                  <div
+                    className="text-xs"
+                    style={{ color: "var(--slate-300)" }}
+                  >
+                    {s.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
   );
 }
+
+/* ─── Desafío / Solución ─────────────────────────────── */
+
+function DesafioSolucion() {
+  return (
+    <section
+      className="py-20 px-4 sm:px-6 lg:px-8"
+      style={{ backgroundColor: "var(--off-white)" }}
+    >
+      <div className="max-w-7xl mx-auto">
+        <ScrollReveal>
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Desafío */}
+            <div className="bg-red-50 border border-red-100 rounded-2xl p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <AlertTriangle className="w-6 h-6 text-red-500" />
+                <h3 className="text-xl font-bold font-[family-name:var(--font-display)] text-gray-900">
+                  El desafío
+                </h3>
+              </div>
+              <ul className="space-y-4 text-gray-600">
+                <li className="flex items-start gap-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 shrink-0" />
+                  <span>
+                    Los datos de demanda laboral están dispersos en múltiples
+                    portales sin clasificación estándar
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 shrink-0" />
+                  <span>
+                    Sin procesamiento, es imposible identificar patrones de
+                    competencias y ocupaciones demandadas
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 shrink-0" />
+                  <span>
+                    Las decisiones estratégicas carecen de evidencia actualizada
+                    sobre el mercado laboral
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Solución */}
+            <div className="bg-green-50 border border-green-100 rounded-2xl p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <Lightbulb className="w-6 h-6 text-green-500" />
+                <h3 className="text-xl font-bold font-[family-name:var(--font-display)] text-gray-900">
+                  La solución MOL
+                </h3>
+              </div>
+              <ul className="space-y-4 text-gray-600">
+                <li className="flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 shrink-0" />
+                  <span>
+                    Recopilación automática y clasificación con taxonomía
+                    internacional ESCO
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 shrink-0" />
+                  <span>
+                    Extracción de competencias, requerimientos y condiciones con
+                    NLP avanzado
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 shrink-0" />
+                  <span>
+                    Tablero interactivo con indicadores para investigadores,
+                    formadores y decisores
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </ScrollReveal>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Funcionalidades ────────────────────────────────── */
 
 function FuncionalidadesSection() {
   const features = [
@@ -195,56 +275,64 @@ function FuncionalidadesSection() {
       icon: Search,
       title: "Monitoreo continuo",
       description:
-        "Recopilaci\u00f3n autom\u00e1tica de ofertas desde m\u00faltiples portales de empleo argentinos con detecci\u00f3n de duplicados y seguimiento temporal.",
+        "Recopilación automática de ofertas desde múltiples portales de empleo argentinos con detección de duplicados y seguimiento temporal.",
     },
     {
       icon: Brain,
-      title: "Clasificaci\u00f3n inteligente",
+      title: "Clasificación inteligente",
       description:
-        "Cada oferta se clasifica seg\u00fan la taxonom\u00eda ESCO/ISCO con modelos de lenguaje y embeddings sem\u00e1nticos.",
+        "Cada oferta se clasifica según la taxonomía ESCO/ISCO con modelos de lenguaje y embeddings semánticos.",
     },
     {
       icon: BarChart3,
       title: "Tablero interactivo",
       description:
-        "Visualizaciones por ocupaci\u00f3n, territorio, competencias, requerimientos y tendencias con filtros combinables.",
+        "Visualizaciones por ocupación, territorio, competencias, requerimientos y tendencias con filtros combinables.",
     },
     {
       icon: TrendingUp,
-      title: "An\u00e1lisis de competencias",
+      title: "Análisis de competencias",
       description:
-        "Identificaci\u00f3n de skills t\u00e9cnicas y transversales demandadas, con mapeo a la clasificaci\u00f3n ESCO de competencias.",
+        "Identificación de skills técnicas y transversales demandadas, con mapeo a la clasificación ESCO de competencias.",
     },
   ];
 
   return (
-    <section id="funcionalidades" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <section id="funcionalidades" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Funcionalidades principales
-          </h2>
-          <p className="text-gray-500 max-w-2xl mx-auto">
-            Herramientas dise&ntilde;adas para transformar datos dispersos en inteligencia accionable
-          </p>
-        </div>
+        <ScrollReveal>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold font-[family-name:var(--font-display)] text-gray-900 mb-4">
+              Funcionalidades principales
+            </h2>
+            <p className="text-gray-500 max-w-2xl mx-auto">
+              Herramientas diseñadas para transformar datos dispersos en
+              inteligencia accionable
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="grid md:grid-cols-2 gap-8">
-          {features.map((feature) => (
-            <div
-              key={feature.title}
-              className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 hover:shadow-xl transition-shadow"
-            >
-              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-6">
-                <feature.icon className="w-6 h-6 text-blue-600" />
+          {features.map((feature, i) => (
+            <ScrollReveal key={feature.title} delay={i * 0.1}>
+              <div
+                className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow"
+                style={{ border: "1px solid var(--slate-200)" }}
+              >
+                <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-6"
+                  style={{ backgroundColor: "var(--navy-800)" }}
+                >
+                  <feature.icon className="w-6 h-6" style={{ color: "var(--teal-300)" }} />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-500 leading-relaxed">
+                  {feature.description}
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                {feature.title}
-              </h3>
-              <p className="text-gray-500 leading-relaxed">
-                {feature.description}
-              </p>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>
@@ -252,126 +340,381 @@ function FuncionalidadesSection() {
   );
 }
 
-function AccesoSection() {
+/* ─── Stats Banner ───────────────────────────────────── */
+
+function StatsBanner() {
+  const stats = [
+    { target: 120000, suffix: "+", label: "Ofertas analizadas" },
+    { target: 5, suffix: "", label: "Portales monitoreados" },
+    { target: 2800, suffix: "", label: "Ocupaciones ESCO" },
+    { target: 24, suffix: "/7", label: "Monitoreo activo" },
+  ];
+
   return (
-    <section id="acceso" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+    <section
+      id="datos"
+      className="py-20 px-4 sm:px-6 lg:px-8"
+      style={{ backgroundColor: "var(--navy-800)" }}
+    >
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Niveles de acceso
-          </h2>
-          <p className="text-gray-500 max-w-2xl mx-auto">
-            Informaci&oacute;n p&uacute;blica y herramientas avanzadas para diferentes necesidades
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <div className="bg-gray-50 border border-gray-200 rounded-2xl p-8">
-            <div className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2">
-              Gratuito
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Registrado</h3>
-            <p className="text-gray-500 mb-8">
-              Acceso a informes p&uacute;blicos y res&uacute;menes del mercado laboral.
-            </p>
-            <ul className="space-y-3 mb-8">
-              {[
-                "Informes peri\u00f3dicos descargables",
-                "Res\u00famenes por ocupaci\u00f3n",
-                "Datos agregados por territorio",
-              ].map((item) => (
-                <li key={item} className="flex items-center gap-3 text-gray-600">
-                  <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <Link
-              href="/registro"
-              className="block w-full text-center text-sm font-semibold text-blue-600 border border-blue-300 hover:bg-blue-50 px-6 py-3 rounded-xl transition-all"
+        <ScrollReveal>
+          <div className="text-center mb-12">
+            <h2
+              className="text-3xl font-bold font-[family-name:var(--font-display)] mb-4"
+              style={{ color: "var(--slate-100)" }}
             >
-              Crear cuenta gratuita
-            </Link>
-          </div>
-
-          <div className="bg-gradient-to-br from-blue-600 to-blue-700 border border-blue-500 rounded-2xl p-8 text-white relative overflow-hidden">
-            <div className="absolute top-4 right-4 bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full">
-              Completo
-            </div>
-            <div className="text-sm font-semibold text-blue-200 uppercase tracking-wide mb-2">
-              Institucional
-            </div>
-            <h3 className="text-2xl font-bold mb-4">Tablero interactivo</h3>
-            <p className="text-blue-100 mb-8">
-              Acceso completo al tablero de an&aacute;lisis con filtros avanzados y descarga de datos.
-            </p>
-            <ul className="space-y-3 mb-8">
-              {[
-                "Tablero interactivo completo",
-                "Filtros por ocupaci\u00f3n, territorio y skills",
-                "Descarga de datos procesados",
-                "An\u00e1lisis de brechas de competencias",
-              ].map((item) => (
-                <li key={item} className="flex items-center gap-3 text-blue-50">
-                  <CheckCircle2 className="w-5 h-5 text-blue-200 flex-shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <Link
-              href="/registro"
-              className="block w-full text-center text-sm font-semibold text-blue-700 bg-white hover:bg-blue-50 px-6 py-3 rounded-xl transition-all"
+              Datos que hablan
+            </h2>
+            <p
+              className="max-w-2xl mx-auto"
+              style={{ color: "var(--slate-300)" }}
             >
-              Solicitar acceso
-            </Link>
+              Información estructurada y clasificada a partir de avisos reales
+              del mercado laboral argentino
+            </p>
           </div>
+        </ScrollReveal>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {stats.map((stat, i) => (
+            <ScrollReveal key={stat.label} delay={i * 0.1}>
+              <div
+                className="text-center py-6"
+                style={{
+                  borderLeft:
+                    i > 0 ? "1px solid var(--navy-600)" : "none",
+                }}
+              >
+                <div
+                  className="text-4xl lg:text-5xl font-bold mb-2"
+                  style={{ color: "var(--teal-300)" }}
+                >
+                  <Counter target={stat.target} suffix={stat.suffix} />
+                </div>
+                <div
+                  className="text-sm font-medium"
+                  style={{ color: "var(--slate-300)" }}
+                >
+                  {stat.label}
+                </div>
+              </div>
+            </ScrollReveal>
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-function Footer() {
+/* ─── Acceso ─────────────────────────────────────────── */
+
+function AccesoSection() {
   return (
-    <footer className="bg-gray-900 text-gray-400 py-12 px-4 sm:px-6 lg:px-8">
+    <section
+      id="acceso"
+      className="py-20 px-4 sm:px-6 lg:px-8"
+      style={{ backgroundColor: "var(--off-white)" }}
+    >
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <Image
-              src="/logo_mol.png"
-              alt="MOL Logo"
-              width={100}
-              height={33}
-              className="brightness-0 invert opacity-60"
-            />
+        <ScrollReveal>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold font-[family-name:var(--font-display)] text-gray-900 mb-4">
+              Niveles de acceso
+            </h2>
+            <p className="text-gray-500 max-w-2xl mx-auto">
+              Información pública y herramientas avanzadas para diferentes
+              necesidades
+            </p>
           </div>
+        </ScrollReveal>
 
-          <p className="text-sm text-center md:text-left">
-            MOL &mdash; Monitor de Ofertas Laborales
-          </p>
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <ScrollReveal>
+            <div
+              className="bg-white rounded-2xl p-8 h-full"
+              style={{ border: "1px solid var(--slate-200)" }}
+            >
+              <div
+                className="text-sm font-semibold uppercase tracking-wide mb-2"
+                style={{ color: "var(--teal-500)" }}
+              >
+                Gratuito
+              </div>
+              <h3 className="text-2xl font-bold font-[family-name:var(--font-display)] text-gray-900 mb-4">
+                Registrado
+              </h3>
+              <p className="text-gray-500 mb-8">
+                Acceso a informes públicos y resúmenes del mercado laboral.
+              </p>
+              <ul className="space-y-3 mb-8">
+                {[
+                  "Informes periódicos descargables",
+                  "Resúmenes por ocupación",
+                  "Datos agregados por territorio",
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-gray-600">
+                    <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/registro"
+                className="block w-full text-center text-sm font-semibold px-6 py-3 rounded-xl transition-all"
+                style={{
+                  color: "var(--teal-500)",
+                  border: "1px solid var(--teal-400)",
+                }}
+              >
+                Crear cuenta gratuita
+              </Link>
+            </div>
+          </ScrollReveal>
 
-          <div className="flex items-center gap-6">
-            <a href="#" className="text-sm hover:text-white transition-colors">
-              T&eacute;rminos
-            </a>
-            <a href="#" className="text-sm hover:text-white transition-colors">
-              Privacidad
-            </a>
-          </div>
+          <ScrollReveal delay={0.15}>
+            <div
+              className="rounded-2xl p-8 text-white relative overflow-hidden h-full"
+              style={{
+                background:
+                  "linear-gradient(135deg, var(--navy-700), var(--teal-500))",
+              }}
+            >
+              <div
+                className="absolute top-4 right-4 text-xs font-semibold px-3 py-1 rounded-full"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.15)",
+                  color: "white",
+                }}
+              >
+                Completo
+              </div>
+              <div
+                className="text-sm font-semibold uppercase tracking-wide mb-2"
+                style={{ color: "var(--teal-300)" }}
+              >
+                Institucional
+              </div>
+              <h3 className="text-2xl font-bold font-[family-name:var(--font-display)] mb-4">
+                Tablero interactivo
+              </h3>
+              <p className="mb-8" style={{ color: "var(--slate-200)" }}>
+                Acceso completo al tablero de análisis con filtros avanzados y
+                descarga de datos.
+              </p>
+              <ul className="space-y-3 mb-8">
+                {[
+                  "Tablero interactivo completo",
+                  "Filtros por ocupación, territorio y skills",
+                  "Descarga de datos procesados",
+                  "Análisis de brechas de competencias",
+                ].map((item) => (
+                  <li
+                    key={item}
+                    className="flex items-center gap-3"
+                    style={{ color: "var(--slate-100)" }}
+                  >
+                    <CheckCircle2
+                      className="w-5 h-5 shrink-0"
+                      style={{ color: "var(--teal-300)" }}
+                    />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/registro"
+                className="block w-full text-center text-sm font-semibold bg-white px-6 py-3 rounded-xl transition-all"
+                style={{ color: "var(--navy-700)" }}
+              >
+                Solicitar acceso
+              </Link>
+            </div>
+          </ScrollReveal>
         </div>
       </div>
-    </footer>
+    </section>
   );
 }
 
+/* ─── Footer ─────────────────────────────────────────── */
+
+function Footer() {
+  return (
+    <>
+      {/* Wave divider */}
+      <div style={{ backgroundColor: "var(--off-white)" }}>
+        <svg
+          viewBox="0 0 1440 80"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full block"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0 40C240 80 480 0 720 40C960 80 1200 0 1440 40V80H0V40Z"
+            fill="var(--navy-900)"
+          />
+        </svg>
+      </div>
+
+      <footer
+        className="py-16 px-4 sm:px-6 lg:px-8"
+        style={{ backgroundColor: "var(--navy-900)" }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+            {/* Col 1 — Logo */}
+            <div>
+              <div
+                className="text-xl font-bold mb-3"
+                style={{ color: "var(--slate-100)" }}
+              >
+                MOL
+              </div>
+              <p
+                className="text-sm leading-relaxed"
+                style={{ color: "var(--slate-300)" }}
+              >
+                Monitor de Ofertas Laborales. Inteligencia del mercado laboral
+                argentino con clasificación ESCO y análisis de competencias.
+              </p>
+            </div>
+
+            {/* Col 2 — Enlaces */}
+            <div>
+              <h4
+                className="text-sm font-semibold uppercase tracking-wider mb-4"
+                style={{ color: "var(--slate-200)" }}
+              >
+                Enlaces
+              </h4>
+              <ul className="space-y-2">
+                {[
+                  { href: "/", label: "Inicio" },
+                  { href: "#datos", label: "Datos" },
+                  { href: "/informes", label: "Informes" },
+                  { href: "/precios", label: "Precios" },
+                ].map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-sm transition-colors"
+                      style={{ color: "var(--slate-300)" }}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Col 3 — Recursos */}
+            <div>
+              <h4
+                className="text-sm font-semibold uppercase tracking-wider mb-4"
+                style={{ color: "var(--slate-200)" }}
+              >
+                Recursos
+              </h4>
+              <ul className="space-y-2">
+                {[
+                  { label: "Taxonomía ESCO", href: "#" },
+                  { label: "Clasificación ISCO", href: "#" },
+                  { label: "Metodología", href: "#" },
+                ].map((link) => (
+                  <li key={link.label}>
+                    <a
+                      href={link.href}
+                      className="text-sm transition-colors"
+                      style={{ color: "var(--slate-300)" }}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Col 4 — Boletín */}
+            <div>
+              <h4
+                className="text-sm font-semibold uppercase tracking-wider mb-4"
+                style={{ color: "var(--slate-200)" }}
+              >
+                Boletín
+              </h4>
+              <p
+                className="text-sm mb-4"
+                style={{ color: "var(--slate-300)" }}
+              >
+                Recibí novedades del mercado laboral en tu correo.
+              </p>
+              <form className="flex gap-2" action="#">
+                <input
+                  type="email"
+                  placeholder="tu@email.com"
+                  className="flex-1 text-sm px-3 py-2 rounded-lg outline-none focus:ring-1"
+                  style={{
+                    backgroundColor: "var(--navy-800)",
+                    border: "1px solid var(--navy-600)",
+                    color: "var(--slate-200)",
+                  }}
+                />
+                <button
+                  type="submit"
+                  className="px-3 py-2 rounded-lg transition-colors"
+                  style={{
+                    backgroundColor: "var(--teal-500)",
+                    color: "white",
+                  }}
+                >
+                  <Mail className="w-4 h-4" />
+                </button>
+              </form>
+            </div>
+          </div>
+
+          {/* Bottom bar */}
+          <div
+            className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4"
+            style={{ borderTop: "1px solid var(--navy-700)" }}
+          >
+            <p className="text-sm" style={{ color: "var(--slate-300)" }}>
+              &copy; 2026 MOL — Monitor de Ofertas Laborales
+            </p>
+            <div className="flex items-center gap-6">
+              <a
+                href="#"
+                className="text-sm transition-colors"
+                style={{ color: "var(--slate-300)" }}
+              >
+                Términos
+              </a>
+              <a
+                href="#"
+                className="text-sm transition-colors"
+                style={{ color: "var(--slate-300)" }}
+              >
+                Política de datos
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </>
+  );
+}
+
+/* ─── Page ───────────────────────────────────────────── */
+
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <LandingHeader />
+    <div className="min-h-screen">
+      <AnimatedNav />
       <HeroSection />
       <DesafioSolucion />
-      <NumerosSection />
       <FuncionalidadesSection />
+      <StatsBanner />
       <AccesoSection />
       <Footer />
     </div>
