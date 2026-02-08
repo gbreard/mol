@@ -35,6 +35,7 @@ from database.config import SCHEDULER_CONFIG, SCRAPING_CONFIG, DB_CONFIG
 from database.db_manager import DatabaseManager
 from scripts.db.backup_database import create_backup, cleanup_old_backups
 from database.detectar_bajas_integrado import DetectorBajasIntegrado
+from database.detectar_republicaciones import DetectorRepublicaciones
 
 # =====================================================================
 # LOGGING
@@ -74,15 +75,16 @@ def ejecutar_scraping():
 
     start_time = datetime.now()
 
+    # =====================================================================
+    # PASO 1: SCRAPING (si esto falla, no hay nada que hacer)
+    # =====================================================================
     try:
-        # 1. Crear scraper con diccionario v3.2
         logger.info("Inicializando scraper con diccionario v3.2...")
         scraper = BumeranMultiSearch(
             delay_between_requests=SCRAPING_CONFIG['initial_delay'],
             delay_between_keywords=2.0
         )
 
-        # 2. Scrapear ofertas usando estrategia del diccionario (modo incremental)
         logger.info("Iniciando scraping con estrategia ultra_exhaustiva_v3_2...")
         df_ofertas = scraper.scrapear_multiples_keywords(
             estrategia='ultra_exhaustiva_v3_2',
@@ -98,72 +100,92 @@ def ejecutar_scraping():
             logger.warning("No se obtuvieron ofertas nuevas")
             return
 
-        # 3. Guardar en CSV (backup local)
-        logger.info("Guardando CSV de respaldo...")
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        files = scraper.guardar_resultados(df_ofertas, f"bumeran_auto_{timestamp}")
-        logger.info(f"Archivos guardados: {', '.join(files)}")
-
-        # 4. Procesar ofertas (agregar fechas normalizadas y campos adicionales)
-        logger.info("Procesando fechas y campos adicionales...")
-        ofertas_list = df_ofertas.to_dict('records')
-        df_ofertas_procesadas = scraper.scraper.procesar_ofertas(ofertas_list)
-        logger.info(f"Ofertas procesadas con fechas: {len(df_ofertas_procesadas)}")
-
-        # 5. Guardar en SQLite
-        logger.info("Guardando en SQLite...")
-
-        with DatabaseManager(**DB_CONFIG) as db:
-            # Insertar ofertas procesadas (con fechas normalizadas)
-            ofertas_insertadas = db.insert_ofertas(df_ofertas_procesadas)
-            logger.info(f"Ofertas insertadas/actualizadas: {ofertas_insertadas}")
-
-            # TODO: Agregar métricas y alertas cuando BumeranMultiSearch las implemente
-            # Por ahora solo guardamos las ofertas
-
-            # Verificar total en DB
-            total_ofertas_db = db.get_ofertas_count()
-            logger.info(f"Total ofertas en DB: {total_ofertas_db:,}")
-
-        # 6. Crear backup de la BD
-        logger.info("Creando backup de la base de datos...")
-        try:
-            backup_path = create_backup()
-            if backup_path:
-                logger.info(f"Backup creado: {backup_path.name}")
-                # Limpiar backups antiguos (>30 días)
-                deleted = cleanup_old_backups(30)
-                if deleted > 0:
-                    logger.info(f"Backups antiguos eliminados: {deleted}")
-            else:
-                logger.warning("No se pudo crear el backup")
-        except Exception as e:
-            logger.error(f"Error en backup: {e}")
-
-        # 7. Detectar ofertas dadas de baja
-        logger.info("Detectando ofertas dadas de baja...")
-        try:
-            with DetectorBajasIntegrado() as detector:
-                stats = detector.ejecutar()
-                logger.info(f"Bajas detectadas: {stats.get('bajas_marcadas', 0)}")
-                logger.info(f"Activas confirmadas: {stats.get('activas_confirmadas', 0)}")
-        except Exception as e:
-            logger.error(f"Error en detección de bajas: {e}")
-
-        # Fin
-        end_time = datetime.now()
-        duration = (end_time - start_time).total_seconds()
-
-        logger.info("="*80)
-        logger.info(f"SCRAPING COMPLETADO EXITOSAMENTE - {duration/60:.2f} minutos")
-        logger.info("="*80)
-
     except Exception as e:
         logger.error("="*80)
-        logger.error("ERROR DURANTE SCRAPING PROGRAMADO")
+        logger.error("ERROR CRÍTICO EN SCRAPING - Abortando")
         logger.error("="*80)
         logger.error(f"Error: {e}", exc_info=True)
-        logger.error("Scraping fallido, se reintentará en el próximo horario programado")
+        return
+
+    # =====================================================================
+    # PASO 2: INSERTAR EN BD (crítico - va PRIMERO)
+    # =====================================================================
+    ofertas_insertadas = 0
+    try:
+        logger.info("Guardando en SQLite...")
+        with DatabaseManager(**DB_CONFIG) as db:
+            ofertas_insertadas = db.insert_ofertas(df_ofertas)
+            logger.info(f"Ofertas insertadas/actualizadas: {ofertas_insertadas}")
+            total_ofertas_db = db.get_ofertas_count()
+            logger.info(f"Total ofertas en DB: {total_ofertas_db:,}")
+    except Exception as e:
+        logger.error(f"ERROR insertando en BD: {e}", exc_info=True)
+
+    # =====================================================================
+    # PASO 3: GUARDAR CSV/JSON DE RESPALDO (no crítico)
+    # =====================================================================
+    try:
+        logger.info("Guardando CSV de respaldo...")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        csv_path = scraper.scraper.save_to_csv(
+            df_ofertas.to_dict('records'),
+            f"bumeran_auto_{timestamp}.csv"
+        )
+        logger.info(f"CSV guardado: {csv_path}")
+    except Exception as e:
+        logger.warning(f"Error guardando archivos de respaldo (no crítico): {e}")
+
+    # =====================================================================
+    # PASO 4: BACKUP DE BD (no crítico)
+    # =====================================================================
+    try:
+        logger.info("Creando backup de la base de datos...")
+        backup_path = create_backup()
+        if backup_path:
+            logger.info(f"Backup creado: {backup_path.name}")
+            deleted = cleanup_old_backups(30)
+            if deleted > 0:
+                logger.info(f"Backups antiguos eliminados: {deleted}")
+        else:
+            logger.warning("No se pudo crear el backup")
+    except Exception as e:
+        logger.error(f"Error en backup: {e}")
+
+    # =====================================================================
+    # PASO 5: DETECCIÓN DE BAJAS (no crítico)
+    # =====================================================================
+    try:
+        logger.info("Detectando ofertas dadas de baja...")
+        with DetectorBajasIntegrado() as detector:
+            stats = detector.ejecutar(usar_bd_reciente=True, dias_recientes=14)
+            logger.info(f"Bajas detectadas: {stats.get('bajas_marcadas', 0)}")
+            logger.info(f"Activas confirmadas: {stats.get('activas_confirmadas', 0)}")
+    except Exception as e:
+        logger.error(f"Error en detección de bajas: {e}")
+
+    # =====================================================================
+    # PASO 6: DETECCIÓN DE REPUBLICACIONES (no crítico)
+    # =====================================================================
+    try:
+        logger.info("Detectando ofertas republicadas...")
+        with DetectorRepublicaciones() as detector:
+            repub_stats = detector.ejecutar()
+            logger.info(f"Grupos republicados: {repub_stats.get('grupos_detectados', 0)}")
+            logger.info(f"Ofertas republicadas: {repub_stats.get('ofertas_republicadas', 0)}")
+    except Exception as e:
+        logger.error(f"Error en detección de republicaciones: {e}")
+
+    # =====================================================================
+    # RESUMEN FINAL
+    # =====================================================================
+    end_time = datetime.now()
+    duration = (end_time - start_time).total_seconds()
+
+    logger.info("="*80)
+    logger.info(f"SCRAPING COMPLETADO - {duration/60:.2f} minutos")
+    logger.info(f"  Ofertas scrapeadas: {len(df_ofertas)}")
+    logger.info(f"  Ofertas insertadas: {ofertas_insertadas}")
+    logger.info("="*80)
 
 
 # =====================================================================

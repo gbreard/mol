@@ -362,7 +362,29 @@ class DetectorBajasIntegrado:
             ids_vistos = self.obtener_ids_recientes_bd(dias_recientes)
         else:
             tf = tracking_file or TRACKING_PATH
-            ids_vistos = self.obtener_ids_ultimo_scraping(tf)
+            ids_vistos = set()
+
+            # Verificar que el tracking no esté desactualizado (>7 días)
+            if tf.exists():
+                try:
+                    with open(tf, 'r', encoding='utf-8') as f:
+                        tracking_data = json.load(f)
+                    last_update = tracking_data.get('last_update', '')
+                    if last_update:
+                        tracking_date = datetime.fromisoformat(last_update.replace('Z', '+00:00'))
+                        dias_antiguo = (datetime.now(tracking_date.tzinfo) - tracking_date).days if tracking_date.tzinfo else (datetime.now() - tracking_date).days
+                        if dias_antiguo > 7:
+                            logger.warning(
+                                f"Tracking desactualizado ({dias_antiguo} días). "
+                                f"Usando BD reciente como alternativa."
+                            )
+                            ids_vistos = self.obtener_ids_recientes_bd(dias_recientes)
+                except Exception as e:
+                    logger.warning(f"Error leyendo tracking: {e}. Usando BD reciente.")
+                    ids_vistos = self.obtener_ids_recientes_bd(dias_recientes)
+
+            if not ids_vistos:
+                ids_vistos = self.obtener_ids_ultimo_scraping(tf)
 
         if not ids_vistos:
             logger.error("No se encontraron IDs del scraping. Abortando.")
