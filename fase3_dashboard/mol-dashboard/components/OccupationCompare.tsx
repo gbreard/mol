@@ -1,8 +1,19 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Loader2, GitCompare, ChevronDown, X, Check, AlertCircle, Star, Circle } from 'lucide-react';
+import { Search, Loader2, GitCompare, ChevronDown, X, Check, AlertCircle, Star, Circle, Briefcase, ExternalLink } from 'lucide-react';
 import { OccupationDetail, OccupationFullDetailIndex, SkillItem } from '@/lib/types';
+import { getOfertasCountByIsco } from '@/lib/supabase';
+
+// Helper to normalize ISCO code (remove 'C' prefix if present)
+function normalizeIsco(isco: string): string {
+  return isco.startsWith('C') ? isco.substring(1) : isco;
+}
+
+// Helper to get ofertas count with normalized ISCO
+function getOfertasCount(isco: string, countMap: Record<string, number>): number {
+  return countMap[isco] || countMap[normalizeIsco(isco)] || 0;
+}
 
 interface OccupationBasicInfo {
   id: string;
@@ -38,12 +49,23 @@ export default function OccupationCompare({
 }: OccupationCompareProps) {
   const [selectedAId, setSelectedAId] = useState<string | null>(initialOccA || null);
   const [selectedBId, setSelectedBId] = useState<string | null>(initialOccB || null);
+  const [ofertasCountMap, setOfertasCountMap] = useState<Record<string, number>>({});
+  const [showOfertasModal, setShowOfertasModal] = useState(false);
 
   // Update when initial values change
   useEffect(() => {
     if (initialOccA) setSelectedAId(initialOccA);
     if (initialOccB) setSelectedBId(initialOccB);
   }, [initialOccA, initialOccB]);
+
+  // Fetch ofertas count by ISCO on mount
+  useEffect(() => {
+    async function fetchOfertasCount() {
+      const counts = await getOfertasCountByIsco();
+      setOfertasCountMap(counts);
+    }
+    fetchOfertasCount();
+  }, []);
 
   // Get occupation details
   const occA = useMemo(() => {
@@ -163,6 +185,38 @@ export default function OccupationCompare({
       {/* Results */}
       {occA && occB && gapAnalysis && (
         <>
+          {/* Banner: Ofertas activas para ocupación objetivo */}
+          {(() => {
+            const occBInfo = occupationsList.find(o => o.id === selectedBId);
+            const ofertasCount = occBInfo ? getOfertasCount(occBInfo.isco, ofertasCountMap) : 0;
+            if (ofertasCount === 0) return null;
+
+            return (
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="bg-green-100 p-2 rounded-full">
+                    <Briefcase className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-green-800">
+                      Ofertas laborales activas en esta ocupacion
+                    </p>
+                    <p className="text-sm text-green-600">
+                      Hay {ofertasCount} {ofertasCount === 1 ? 'oferta activa' : 'ofertas activas'} para "{occB.label}"
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href={`/?tab=ofertas&isco=${occBInfo ? normalizeIsco(occBInfo.isco) : ''}`}
+                  className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                >
+                  Ver ofertas
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              </div>
+            );
+          })()}
+
           {/* Compatibility Score */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">

@@ -3,7 +3,7 @@
 import { Issue } from "@/lib/types";
 import { IssueBadge } from "./IssueBadge";
 import { Button } from "@/components/ui/button";
-import { Check, Clock, FileText } from "lucide-react";
+import { Check, Clock, FileText, User, Hash } from "lucide-react";
 import { updateIssue } from "@/lib/supabase";
 import { useIssues } from "@/contexts/IssueContext";
 import { useState } from "react";
@@ -47,6 +47,9 @@ function IssueItem({ issue, compact, showOfertaLink }: { issue: Issue; compact?:
     }
   };
 
+  // Short issue number for display
+  const issueNumberShort = issue.id.slice(0, 8).toUpperCase();
+
   if (compact) {
     return (
       <div className="flex items-start gap-3 py-3 px-2 hover:bg-gray-50 rounded-lg transition-colors group">
@@ -63,11 +66,18 @@ function IssueItem({ issue, compact, showOfertaLink }: { issue: Issue; compact?:
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
-            <p className="text-sm font-medium text-gray-900 truncate">{issue.titulo}</p>
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-xs font-mono text-gray-500 flex-shrink-0">#{issueNumberShort}</span>
+              <p className="text-sm font-medium text-gray-900 truncate">{issue.titulo}</p>
+            </div>
             <span className="text-xs text-gray-500 flex-shrink-0">{timeAgo(issue.created_at)}</span>
           </div>
           <div className="flex items-center gap-2 mt-1">
             <IssueBadge variant="tipo" value={issue.tipo} size="sm" />
+            <span className="text-xs text-blue-600 flex items-center gap-1">
+              <User className="w-3 h-3" />
+              {issue.autor_nombre || issue.autor_email.split('@')[0]}
+            </span>
             {issue.id_oferta && (
               <span className="text-xs text-gray-500 flex items-center gap-1">
                 <FileText className="w-3 h-3" />
@@ -91,25 +101,37 @@ function IssueItem({ issue, compact, showOfertaLink }: { issue: Issue; compact?:
   }
 
   // Full version
+
   return (
     <div className="border-b border-gray-100 py-4 last:border-0">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
+          {/* Issue number + badges row */}
+          <div className="flex items-center gap-3 mb-2">
+            <span className="flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-700 rounded font-mono text-xs font-bold">
+              <Hash className="w-3 h-3" />
+              {issueNumberShort}
+            </span>
             <IssueBadge variant="tipo" value={issue.tipo} />
             <IssueBadge variant="prioridad" value={issue.prioridad} />
             <IssueBadge variant="estado" value={issue.estado} />
           </div>
+
           <h4 className="font-medium text-gray-900 mb-1">{issue.titulo}</h4>
           {issue.descripcion && (
             <p className="text-sm text-gray-600 mb-2">{issue.descripcion}</p>
           )}
+
+          {/* Author and metadata row */}
           <div className="flex items-center gap-4 text-xs text-gray-500">
+            <span className="flex items-center gap-1 font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+              <User className="w-3 h-3" />
+              {issue.autor_nombre || issue.autor_email}
+            </span>
             <span className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
               {timeAgo(issue.created_at)}
             </span>
-            <span>{issue.autor_email}</span>
             {issue.id_oferta && showOfertaLink && (
               <span className="flex items-center gap-1">
                 <FileText className="w-3 h-3" />

@@ -899,6 +899,48 @@ main                    ← Producción (solo via PR)
 
 ---
 
+## Sesiones Paralelas de Claude Code
+
+**Problema:** Dos sesiones de Claude en el mismo directorio se pisan los branches.
+**Solución:** Cada sesión usa su propio **worktree** (misma BD git, distinta carpeta).
+
+### Al iniciar una sesión nueva en paralelo
+
+```bash
+# 1. ANTES de abrir Claude, crear worktree para el branch
+./scripts/worktree-session.sh create feature/nombre-del-branch
+
+# 2. Abrir Claude Code en esa carpeta
+cd /mnt/d/OEDE/Webscrapping-nombre-del-branch
+claude
+
+# 3. Si necesitás branch nuevo (se crea desde main)
+./scripts/worktree-session.sh new feature/mi-nuevo-feature
+```
+
+### Al terminar la sesión
+
+```bash
+./scripts/worktree-session.sh remove feature/nombre-del-branch
+```
+
+### Reglas
+
+- **NUNCA** hacer `git checkout` a otro branch si hay otra sesión activa
+- Cada sesión trabaja en su carpeta, su branch, sin interferir
+- Los commits de cualquier worktree son visibles desde todos (mismo repo)
+- `./scripts/worktree-session.sh list` para ver sesiones activas
+
+### Estructura de carpetas
+
+```
+/mnt/d/OEDE/Webscrapping/                      ← Sesión principal
+/mnt/d/OEDE/Webscrapping-admin-arquitectura/    ← Sesión paralela
+/mnt/d/OEDE/Webscrapping-otro-feature/          ← Otra sesión paralela
+```
+
+---
+
 ## Colaboracion Multi-Desarrollador
 
 Este proyecto es trabajado por **multiples personas en distintas fases**.

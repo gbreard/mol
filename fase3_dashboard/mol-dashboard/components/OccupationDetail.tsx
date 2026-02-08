@@ -5,6 +5,7 @@ import { Search, Loader2, Briefcase, ChevronDown, X } from 'lucide-react';
 import SkillsList from './SkillsList';
 import SimilarOccupations from './SimilarOccupations';
 import { OccupationDetail as OccupationDetailType, OccupationFullDetailIndex } from '@/lib/types';
+import { getOfertasCountByIsco } from '@/lib/supabase';
 
 interface OccupationInfo {
   id: string;
@@ -28,6 +29,7 @@ export default function OccupationDetail({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [ofertasCountMap, setOfertasCountMap] = useState<Record<string, number>>({});
 
   // Set initial occupation when prop changes
   useEffect(() => {
@@ -35,6 +37,15 @@ export default function OccupationDetail({
       setSelectedId(initialOccupation);
     }
   }, [initialOccupation]);
+
+  // Fetch ofertas count by ISCO on mount
+  useEffect(() => {
+    async function fetchOfertasCount() {
+      const counts = await getOfertasCountByIsco();
+      setOfertasCountMap(counts);
+    }
+    fetchOfertasCount();
+  }, []);
 
   // Get selected occupation detail
   const selectedOccupation = useMemo(() => {
@@ -233,9 +244,11 @@ export default function OccupationDetail({
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-4">
               <SimilarOccupations
                 occupations={selectedOccupation.similar}
+                ofertasCountMap={ofertasCountMap}
                 onSelect={handleViewSimilar}
                 onCompare={onNavigateToCompare ? handleCompare : undefined}
-                maxItems={8}
+                maxItems={10}
+                showQuantitySelector={true}
               />
             </div>
           </div>

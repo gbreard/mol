@@ -62,6 +62,15 @@
 | Exportar | Deshabilitado | Habilitado |
 | Indicador plan | "FREE - 7 días" | "PRO ✓" |
 
+### Componentes de Exportación (✅ Implementado 2026-02-06)
+
+| Componente | Ubicación | Formatos |
+|------------|-----------|----------|
+| ExportButton | Ofertas Laborales, Requerimientos | CSV, Excel |
+| ChartContainer (onDownload) | Panorama General (gráficos) | CSV |
+
+**Nota:** Actualmente disponible para todos los usuarios. Restricción por plan pendiente.
+
 ---
 
 ## P-10: Skills Intelligence (`/dashboard/skills`)

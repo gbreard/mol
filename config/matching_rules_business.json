@@ -1,5 +1,5 @@
 {
-  "version": "4.5",
+  "version": "4.6",
   "descripcion": "Reglas de negocio para matching ESCO. 183 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-02-05",
@@ -3582,10 +3582,11 @@
       },
       "accion": {
         "forzar_isco": "1324",
-        "esco_label": "gestor de la cadena de suministro/gestora de la cadena de suministro"
+        "esco_label": "director de distribución y logística/directora de distribución y logística"
       },
       "caso_referencia": "1118104175 - Jefe de Operaciones",
-      "activa": true
+      "activa": true,
+      "nota": "FIX v4.6: esco_label corregido"
     },
     "R159_farmaceutico": {
       "nombre": "Farmacéutico / Farmacéutica",
@@ -3624,11 +3625,11 @@
       },
       "accion": {
         "forzar_isco": "7411",
-        "esco_label": "electricista de edificios"
+        "esco_label": "electricista doméstico/electricista doméstica"
       },
       "caso_referencia": "1118099825 - TECNICO INSTALADOR",
       "activa": true,
-      "nota": "Default para instalador genérico, reglas específicas tienen prioridad"
+      "nota": "Default para instalador genérico. FIX v4.6: esco_label corregido"
     },
     "R161_personal_deposito": {
       "nombre": "Personal de Depósito/Almacén",
@@ -3823,12 +3824,12 @@
       },
       "accion": {
         "forzar_isco": "2320",
-        "esco_label": "formador en enseñanza profesional/formadora en enseñanza profesional"
+        "esco_label": "profesor de formación profesional/profesora de formación profesional"
       },
       "caso_diagnostico": "1118101656 - Docente gastronómico / pastelero",
       "fecha_creacion": "2026-01-30",
       "activa": true,
-      "nota": "Docente gastronomía = formador profesional, NO profesor universitario"
+      "nota": "Docente gastronomía = formador profesional, NO profesor universitario. FIX v4.6: esco_label corregido"
     },
     "R169_analista_impuestos": {
       "nombre": "Analista de impuestos / fiscal",
@@ -3998,12 +3999,12 @@
       },
       "accion": {
         "forzar_isco": "9112",
-        "esco_label": "limpiador de oficinas y otros establecimientos/limpiadora de oficinas y otros establecimientos"
+        "esco_label": "operario de limpieza de edificios/operaria de limpieza de edificios"
       },
       "caso_diagnostico": "1118101716 - Operario/a de limpieza Zona Oeste",
       "fecha_creacion": "2026-02-05",
       "activa": true,
-      "nota": "Fix match incorrecto a extracción fécula (8160)"
+      "nota": "Fix match incorrecto a extracción fécula (8160). FIX v4.6: esco_label corregido"
     },
     "R176_auditor_franquicias": {
       "nombre": "Auditor de Franquicias / Establecimientos",
@@ -4022,12 +4023,12 @@
       },
       "accion": {
         "forzar_isco": "2421",
-        "esco_label": "analista de gestión y organización"
+        "esco_label": "consultor empresarial/consultora empresarial"
       },
       "caso_diagnostico": "1116827375 - Auditor de Franquicias - Grupo Gastronómico",
       "fecha_creacion": "2026-02-05",
       "activa": true,
-      "nota": "Auditor que verifica cumplimiento estándares en franquicias"
+      "nota": "Auditor que verifica cumplimiento estándares en franquicias. FIX v4.6: esco_label corregido"
     },
     "R177_gestor_cobranzas": {
       "nombre": "Gestor de Cobranzas Telefónicas",
@@ -4066,11 +4067,12 @@
       },
       "accion": {
         "forzar_isco": "2519",
-        "esco_label": "analista de pruebas de TIC"
+        "esco_label": "probador de software/probadora de software"
       },
       "caso_diagnostico": "QA Ssr",
       "fecha_creacion": "2026-02-05",
-      "activa": true
+      "activa": true,
+      "nota": "FIX v4.6: esco_label corregido"
     },
     "R179_instalador_fibra": {
       "nombre": "Técnico Instalador Fibra Óptica",
@@ -4087,11 +4089,12 @@
       },
       "accion": {
         "forzar_isco": "7422",
-        "esco_label": "instalador de líneas de telecomunicaciones/instaladora de líneas de telecomunicaciones"
+        "esco_label": "técnico reparador de telefonía móvil/técnica reparadora de telefonía móvil"
       },
       "caso_diagnostico": "1118089284 - Técnico Instalador de Fibra Óptica",
       "fecha_creacion": "2026-02-05",
-      "activa": true
+      "activa": true,
+      "nota": "FIX v4.6: esco_label corregido"
     },
     "R180_soporte_infraestructura": {
       "nombre": "Soporte / Infraestructura IT",
@@ -4107,11 +4110,12 @@
       },
       "accion": {
         "forzar_isco": "2522",
-        "esco_label": "administrador de sistemas TIC"
+        "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC"
       },
       "caso_diagnostico": "1118096134 - Especialista en Soporte e Infraestructura",
       "fecha_creacion": "2026-02-05",
-      "activa": true
+      "activa": true,
+      "nota": "FIX v4.6: esco_label corregido"
     },
     "R181_personal_mantenimiento": {
       "nombre": "Personal de Mantenimiento (edificios/instalaciones)",
@@ -4365,10 +4369,11 @@
       },
       "accion": {
         "forzar_isco": "4226",
-        "esco_label": "recepcionista de consultorio médico"
+        "esco_label": "recepcionista de centro de atención médica/recepcionista de centro de atención médica"
       },
       "_nota": "v4.4: Atención paciente → recepcionista médico",
-      "activa": true
+      "activa": true,
+      "nota": "FIX v4.6: esco_label corregido"
     },
     "R193_supervisor_operaciones": {
       "nombre": "Supervisor de Operaciones (genérico)",
@@ -4409,10 +4414,11 @@
       },
       "accion": {
         "forzar_isco": "4311",
-        "esco_label": "auxiliar de contabilidad"
+        "esco_label": "empleado de contabilidad/empleada de contabilidad"
       },
       "_nota": "v4.4: Middle/Back Office → auxiliar contabilidad",
-      "activa": true
+      "activa": true,
+      "nota": "FIX v4.6: esco_label corregido"
     },
     "R195_ejecutivo_ventas": {
       "nombre": "Ejecutivo de Ventas (genérico)",
@@ -4453,10 +4459,11 @@
       },
       "accion": {
         "forzar_isco": "4110",
-        "esco_label": "auxiliar administrativo/auxiliar administrativa"
+        "esco_label": "empleado de oficina/empleada de oficina"
       },
       "_nota": "v4.4: Pasante administrativo → auxiliar administrativo",
-      "activa": true
+      "activa": true,
+      "nota": "FIX v4.6: esco_label corregido"
     },
     "R197_personal_atencion_paciente": {
       "nombre": "Personal Atención al Paciente (variante)",
@@ -4470,10 +4477,11 @@
       },
       "accion": {
         "forzar_isco": "4226",
-        "esco_label": "recepcionista de consultorio médico"
+        "esco_label": "recepcionista de centro de atención médica/recepcionista de centro de atención médica"
       },
       "_nota": "v4.4: Personal atención → recepcionista médico (complementa R192)",
-      "activa": true
+      "activa": true,
+      "nota": "FIX v4.6: esco_label corregido"
     },
     "R198_bell_boy_botones": {
       "nombre": "Bell Boy / Botones Hotel",
@@ -4566,6 +4574,85 @@
       },
       "_nota": "v4.5: Gestor cobranzas → cobrador deudas",
       "activa": true
+    },
+    "R203_analista_pagos_proveedores": {
+      "nombre": "Analista de Pago a Proveedores",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "pago a proveedores",
+          "pagos a proveedores",
+          "analista de pagos",
+          "cuentas por pagar"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4311",
+        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+      },
+      "caso_referencia": "1118099977 - Analista de pago a proveedores",
+      "activa": true,
+      "nota": "v4.6: Analista de pagos/proveedores = contable (4311)"
+    },
+    "R204_operador_retenciones": {
+      "nombre": "Operador de Retenciones / Impuestos",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "operador de retenciones",
+          "retenciones impositivas",
+          "retenciones fiscales",
+          "analista de retenciones"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4311",
+        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+      },
+      "caso_referencia": "1118100573 - Operador de retenciones",
+      "activa": true,
+      "nota": "v4.6: Operador retenciones = contable (4311), área fiscal"
+    },
+    "R205_vendedor_puerta_puerta": {
+      "nombre": "Vendedor Puerta a Puerta / Ambulante",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "puerta a puerta",
+          "door to door",
+          "vendedor ambulante",
+          "venta ambulante"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5243",
+        "esco_label": "vendedor a domicilio"
+      },
+      "caso_referencia": "1118102044 - Vendedor puerta a puerta",
+      "activa": true,
+      "nota": "v4.6: Vendedor puerta a puerta = 5243 vendedor a domicilio"
+    },
+    "R206_tecnico_seguridad_electronica": {
+      "nombre": "Técnico/Instalador Seguridad Electrónica",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "seguridad electronica",
+          "seguridad electrónica",
+          "sistemas de seguridad",
+          "alarmas",
+          "cctv",
+          "camaras de seguridad",
+          "cámaras de seguridad"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7421",
+        "esco_label": "técnico reparador de electrónica de consumo/técnica reparadora de electrónica de consumo"
+      },
+      "caso_referencia": "2171178 - Tecnico e instalador en sistemas de seguridad electronica",
+      "activa": true,
+      "nota": "v4.6: Técnico seguridad electrónica = 7421 electrónica"
     }
   },
   "reglas_filtro": {
@@ -4644,5 +4731,6 @@
   "_cambios_v28": "Agregadas R131 hoteleria hospitalaria, R132 medicina prepaga",
   "_cambios_v36": "R151: Jefe de Obra -> 1323 director de obra",
   "_cambios_v44": "R183-R197: Bobinador, Carnicero, Guardavidas, Kinesiologo, Aux Farmacia, Aux Seguridad, Business Dev, Auditor, Abastecimiento, Atencion Paciente, Supervisor Ops, Middle Office, Ejecutivo Ventas, Pasante, Personal Atencion",
-  "_cambios_v45": "R198-R202: Bell boy, Foguista, Extraccionista, Inspector API, Gestor cobranzas"
+  "_cambios_v45": "R198-R202: Bell boy, Foguista, Extraccionista, Inspector API, Gestor cobranzas",
+  "_cambios_v46": "FIX: 12 reglas con esco_label inválido + R203-R206 nuevas reglas"
 }

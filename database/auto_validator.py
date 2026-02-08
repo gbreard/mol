@@ -90,7 +90,7 @@ class AutoValidator:
             'contexto_empresarial',
             'contexto_empresarial_sin_guion',
             'contexto_complejo',
-            'contexto_gestion',
+            # 'contexto_gestion',  # REMOVIDO v2.6.6: genera falsos positivos (ej: "Ingeniero para gestión de X")
             # Modalidad y turnos
             'modalidad_guion',
             'turno_final',

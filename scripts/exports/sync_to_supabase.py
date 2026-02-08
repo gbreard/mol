@@ -12,13 +12,14 @@ Uso:
     python scripts/exports/sync_to_supabase.py --catalogs-only     # Solo catálogos ESCO
 
 Autor: MOL Team
-Versión: 2.0.0 - Soporte skills normalizados + nuevos schemas
+Versión: 2.1.0 - Sync de sistema_estado para /admin/scraping y /admin/arquitectura
 
 Tablas Supabase:
     - ofertas_dashboard: Ofertas desnormalizadas para queries rápidas
     - ofertas_skills: Skills normalizados (N:M)
     - skills: Catálogo ESCO de skills
     - ocupaciones_esco: Catálogo ESCO de ocupaciones
+    - sistema_estado: Métricas de las 3 fases del pipeline (v2.1)
 """
 
 import argparse
@@ -381,11 +382,16 @@ def transform_oferta_for_supabase(oferta: Dict) -> Dict:
         'isco_label': oferta.get('esco_occupation_label') or oferta.get('isco_label'),
         'occupation_match_score': oferta.get('occupation_match_score'),
         'occupation_match_method': oferta.get('occupation_match_method'),
-        # NLP
+        # NLP - Atributos básicos
         'modalidad': oferta.get('modalidad'),
         'nivel_seniority': oferta.get('nivel_seniority'),
         'area_funcional': oferta.get('area_funcional'),
         'sector_empresa': oferta.get('sector_empresa'),
+        # NLP - Requerimientos (para tab Requerimientos del dashboard)
+        'nivel_educativo': oferta.get('nivel_educativo'),
+        'experiencia_min_anios': oferta.get('experiencia_min_anios'),
+        'tiene_gente_cargo': oferta.get('tiene_gente_cargo'),
+        'jornada_laboral': oferta.get('jornada_laboral'),
         # Salarios
         'salario_min': oferta.get('salario_min'),
         'salario_max': oferta.get('salario_max'),
@@ -762,6 +768,193 @@ def sync_validation_errors_to_issues(client, conn: sqlite3.Connection, offer_ids
 
 
 # ============================================================
+# SINCRONIZACIÓN DE SISTEMA_ESTADO
+# ============================================================
+
+TABLE_SISTEMA_ESTADO = 'sistema_estado'
+
+
+def calcular_estado_sistema(conn: sqlite3.Connection) -> Dict[str, Any]:
+    """
+    Calcula métricas del estado actual del sistema desde SQLite.
+    Estas métricas alimentan /admin/scraping y /admin/arquitectura.
+    """
+    estado = {}
+
+    # === FASE 1: ADQUISICIÓN ===
+    cursor = conn.execute("""
+        SELECT
+            COUNT(*) as total,
+            SUM(CASE WHEN estado_oferta = 'activa' THEN 1 ELSE 0 END) as activas,
+            SUM(CASE WHEN estado_oferta = 'cerrada' THEN 1 ELSE 0 END) as cerradas,
+            MAX(scrapeado_en) as ultimo_scraping
+        FROM ofertas
+    """)
+    row = cursor.fetchone()
+    estado['fase1_ofertas_totales'] = row['total'] or 0
+    estado['fase1_ofertas_activas'] = row['activas'] or 0
+    estado['fase1_ofertas_cerradas'] = row['cerradas'] or 0
+    estado['fase1_ultimo_scraping'] = row['ultimo_scraping']
+
+    # Días desde último scraping
+    if row['ultimo_scraping']:
+        try:
+            from datetime import datetime
+            ultimo = datetime.fromisoformat(row['ultimo_scraping'].replace('Z', '+00:00'))
+            dias = (datetime.now(ultimo.tzinfo) - ultimo).days
+            estado['fase1_dias_desde_scraping'] = max(0, dias)
+        except:
+            estado['fase1_dias_desde_scraping'] = 0
+    else:
+        estado['fase1_dias_desde_scraping'] = 0
+
+    # Ofertas por fuente/portal
+    cursor = conn.execute("""
+        SELECT portal, COUNT(*) as cantidad
+        FROM ofertas
+        WHERE estado_oferta = 'activa'
+        GROUP BY portal
+    """)
+    fuentes = {}
+    for row in cursor.fetchall():
+        if row['portal']:
+            fuentes[row['portal']] = row['cantidad']
+    estado['fase1_fuentes'] = fuentes
+
+    # === FASE 2: PROCESAMIENTO ===
+    # Con NLP
+    cursor = conn.execute("SELECT COUNT(*) FROM ofertas_nlp")
+    estado['fase2_con_nlp'] = cursor.fetchone()[0] or 0
+
+    # Sin NLP
+    cursor = conn.execute("""
+        SELECT COUNT(*) FROM ofertas o
+        WHERE NOT EXISTS (SELECT 1 FROM ofertas_nlp n WHERE n.id_oferta = o.id_oferta)
+    """)
+    estado['fase2_sin_nlp'] = cursor.fetchone()[0] or 0
+
+    # Con matching
+    cursor = conn.execute("SELECT COUNT(*) FROM ofertas_esco_matching")
+    estado['fase2_con_matching'] = cursor.fetchone()[0] or 0
+
+    # Pendientes matching
+    cursor = conn.execute("""
+        SELECT COUNT(*) FROM ofertas_nlp n
+        WHERE NOT EXISTS (SELECT 1 FROM ofertas_esco_matching m WHERE m.id_oferta = n.id_oferta)
+    """)
+    estado['fase2_pendientes_matching'] = cursor.fetchone()[0] or 0
+
+    # Validadas (todos los estados de validación)
+    cursor = conn.execute("""
+        SELECT COUNT(*) FROM ofertas_esco_matching
+        WHERE estado_validacion IN ('validado', 'validado_claude', 'validado_humano')
+    """)
+    estado['fase2_validadas'] = cursor.fetchone()[0] or 0
+
+    # Pendientes validación
+    cursor = conn.execute("""
+        SELECT COUNT(*) FROM ofertas_esco_matching
+        WHERE estado_validacion = 'pendiente' OR estado_validacion IS NULL
+    """)
+    estado['fase2_pendientes_validacion'] = cursor.fetchone()[0] or 0
+
+    # Errores sin resolver
+    cursor = conn.execute("SELECT COUNT(*) FROM validation_errors WHERE resuelto = 0")
+    estado['fase2_errores_sin_resolver'] = cursor.fetchone()[0] or 0
+
+    # Reglas de negocio
+    try:
+        rules_path = PROJECT_ROOT / "config" / "matching_rules_business.json"
+        if rules_path.exists():
+            with open(rules_path) as f:
+                rules = json.load(f)
+                estado['fase2_reglas_negocio'] = len(rules.get('rules', []))
+        else:
+            estado['fase2_reglas_negocio'] = 0
+    except:
+        estado['fase2_reglas_negocio'] = 0
+
+    # Tasa de convergencia y último run
+    cursor = conn.execute("""
+        SELECT run_id, COUNT(*) as ofertas
+        FROM ofertas_esco_matching
+        WHERE run_id IS NOT NULL
+        GROUP BY run_id
+        ORDER BY matching_timestamp DESC
+        LIMIT 1
+    """)
+    last_run = cursor.fetchone()
+    if last_run:
+        estado['fase2_ultimo_run'] = last_run['run_id']
+        # Calcular tasa de errores del último run
+        cursor = conn.execute("""
+            SELECT COUNT(*) FROM validation_errors
+            WHERE resuelto = 0 AND id_oferta IN (
+                SELECT id_oferta FROM ofertas_esco_matching WHERE run_id = ?
+            )
+        """, [last_run['run_id']])
+        errores_run = cursor.fetchone()[0] or 0
+        total_run = last_run['ofertas'] or 1
+        estado['fase2_tasa_convergencia'] = round((1 - errores_run / total_run) * 100, 1)
+    else:
+        estado['fase2_ultimo_run'] = None
+        estado['fase2_tasa_convergencia'] = None
+
+    # === FASE 3: PRESENTACIÓN ===
+    # Esto se calcula después del sync a Supabase
+    estado['fase3_ofertas_supabase'] = estado['fase2_validadas']  # Aproximación
+    estado['fase3_pendientes_sync'] = 0  # Se actualiza después
+
+    # === SUGERENCIA DE FASE ===
+    # Determinar qué fase necesita atención
+    if estado['fase1_dias_desde_scraping'] > 3:
+        estado['fase_sugerida'] = 1
+        estado['fase_sugerida_nombre'] = 'Adquisición'
+        estado['fase_sugerida_razon'] = f"Último scraping hace {estado['fase1_dias_desde_scraping']} días"
+    elif estado['fase2_errores_sin_resolver'] > 10:
+        estado['fase_sugerida'] = 2
+        estado['fase_sugerida_nombre'] = 'Procesamiento'
+        estado['fase_sugerida_razon'] = f"{estado['fase2_errores_sin_resolver']} errores pendientes"
+    elif estado['fase2_pendientes_matching'] > 100:
+        estado['fase_sugerida'] = 2
+        estado['fase_sugerida_nombre'] = 'Procesamiento'
+        estado['fase_sugerida_razon'] = f"{estado['fase2_pendientes_matching']} ofertas sin matching"
+    else:
+        estado['fase_sugerida'] = 3
+        estado['fase_sugerida_nombre'] = 'Presentación'
+        estado['fase_sugerida_razon'] = 'Sistema saludable, continuar sync'
+
+    return estado
+
+
+def sync_sistema_estado(client, conn: sqlite3.Connection, dry_run: bool = False) -> bool:
+    """
+    Sincroniza el estado del sistema a Supabase.
+    Inserta un nuevo registro con el timestamp actual.
+    """
+    estado = calcular_estado_sistema(conn)
+
+    if dry_run:
+        logger.info("[DRY-RUN] Estado del sistema calculado:")
+        for k, v in estado.items():
+            logger.info(f"  {k}: {v}")
+        return True
+
+    try:
+        # Agregar metadata de sync
+        estado['sync_source'] = 'sync_to_supabase.py'
+        estado['sync_version'] = '2.1'
+
+        # Insertar nuevo registro (no upsert - queremos historial)
+        result = client.table(TABLE_SISTEMA_ESTADO).insert(estado).execute()
+        logger.info("Estado del sistema sincronizado a Supabase")
+        return True
+    except Exception as e:
+        logger.error(f"Error sincronizando sistema_estado: {e}")
+        return False
+
+
+# ============================================================
 # ESTADÍSTICAS
 # ============================================================
 
@@ -927,19 +1120,9 @@ Ejemplos:
         logger.info("Sincronizando errores de validación...")
         n_issues = sync_validation_errors_to_issues(client, conn, ids_para_sync, dry_run=args.dry_run)
 
-        # Actualizar sistema_estado con el conteo real de errores pendientes
-        if not args.dry_run:
-            try:
-                errores_count = conn.execute('SELECT COUNT(*) FROM validation_errors WHERE resuelto = 0').fetchone()[0]
-                # Obtener ID del registro más reciente
-                estado_result = client.table('sistema_estado').select('id').order('timestamp', desc=True).limit(1).execute()
-                if estado_result.data:
-                    client.table('sistema_estado').update({
-                        'fase2_errores_sin_resolver': errores_count
-                    }).eq('id', estado_result.data[0]['id']).execute()
-                    logger.info(f"Actualizado sistema_estado.fase2_errores_sin_resolver = {errores_count}")
-            except Exception as e:
-                logger.warning(f"No se pudo actualizar sistema_estado: {e}")
+        # Sincronizar estado del sistema (métricas de las 3 fases)
+        logger.info("Sincronizando estado del sistema...")
+        sync_sistema_estado(client, conn, dry_run=args.dry_run)
 
         # Resumen
         print("\n" + "="*60)

@@ -27,9 +27,10 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 # Configuración
-BASE_DIR = Path(__file__).parent.parent
+# Resolver ruta del proyecto: scripts/db/ → scripts/ → PROJECT_ROOT
+BASE_DIR = Path(__file__).parent.parent.parent
 DB_PATH = BASE_DIR / "database" / "bumeran_scraping.db"
-BACKUP_DIR = BASE_DIR / "backups"
+BACKUP_DIR = BASE_DIR / "database" / "backups"
 DEFAULT_RETENTION_DAYS = 30
 
 # Logging

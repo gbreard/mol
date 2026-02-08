@@ -1,12 +1,13 @@
 # 4. Modelo de Datos
 
-> Última actualización: 2026-02-05
+> Última actualización: 2026-02-07
+> Versión: 2.0 — Modelo híbrido (solicitudes acceso + CMS + pago dual)
 
 ## Referencias
 
 | Documento | Relación |
 |-----------|----------|
-| [01_MODELO_NEGOCIO](./01_MODELO_NEGOCIO.md) | Define planes (T-planes) |
+| [01_MODELO_NEGOCIO](./01_MODELO_NEGOCIO.md) | Define niveles y planes (T-planes) |
 | [02_ARQUITECTURA_PANTALLAS](./02_ARQUITECTURA_PANTALLAS.md) | Pantallas que usan cada tabla |
 | [06_SEGURIDAD](./06_SEGURIDAD.md) | Políticas RLS por tabla |
 
@@ -27,9 +28,13 @@ erDiagram
     auth_users ||--o{ suscripciones : tiene
     auth_users ||--o{ pagos : realiza
     auth_users ||--o{ alertas_config : configura
+    auth_users ||--o{ solicitudes_acceso : solicita
 
     planes ||--o{ suscripciones : define
     suscripciones ||--o{ pagos : genera
+
+    contenidos ||--o{ envios_contenido : distribuye
+    auth_users ||--o{ envios_contenido : recibe
 
     auth_users {
         uuid id PK
@@ -41,9 +46,11 @@ erDiagram
     planes {
         uuid id PK
         string nombre
+        string nombre_display
         decimal precio_mensual
         int dias_historico
         jsonb features
+        string tipo_pago
     }
 
     suscripciones {
@@ -54,6 +61,18 @@ erDiagram
         timestamp fecha_inicio
         timestamp fecha_fin
         string mp_subscription_id
+        string canal_pago
+    }
+
+    solicitudes_acceso {
+        uuid id PK
+        uuid user_id FK
+        string estado
+        timestamp fecha_solicitud
+        uuid aprobado_por FK
+        timestamp fecha_resolucion
+        string motivo
+        text motivo_rechazo
     }
 
     pagos {
@@ -63,6 +82,29 @@ erDiagram
         decimal monto
         string estado
         string mp_payment_id
+        string canal_pago
+    }
+
+    contenidos {
+        uuid id PK
+        string titulo
+        string tipo
+        string slug
+        text contenido_html
+        string archivo_url
+        string estado
+        timestamp fecha_publicacion
+        uuid creado_por FK
+    }
+
+    envios_contenido {
+        uuid id PK
+        uuid contenido_id FK
+        uuid user_id FK
+        string canal
+        string estado
+        timestamp enviado_at
+        timestamp abierto_at
     }
 
     alertas_config {
@@ -73,15 +115,6 @@ erDiagram
         jsonb criterios
         string frecuencia
         boolean activa
-    }
-
-    informes_publicos {
-        uuid id PK
-        string titulo
-        string categoria
-        date fecha_publicacion
-        string archivo_url
-        int descargas
     }
 
     uso_features {
@@ -99,33 +132,35 @@ erDiagram
 
 ### T-planes
 
-Definición de planes de suscripción.
+Definición de niveles de acceso.
 
 ```sql
 CREATE TABLE planes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  nombre VARCHAR(50) NOT NULL,           -- 'free', 'pro', 'enterprise'
-  nombre_display VARCHAR(100) NOT NULL,  -- 'Free', 'Pro', 'Enterprise'
-  precio_mensual DECIMAL(10,2),          -- NULL para free y enterprise
+  nombre VARCHAR(50) NOT NULL,           -- 'registrado', 'trial', 'suscriptor', 'institucional'
+  nombre_display VARCHAR(100) NOT NULL,  -- 'Registrado', 'Trial', 'Suscriptor', 'Institucional'
+  precio_mensual DECIMAL(10,2),          -- NULL para registrado/trial, TBD para suscriptor
   precio_anual DECIMAL(10,2),
   moneda VARCHAR(3) DEFAULT 'ARS',
-  dias_historico INTEGER,                -- 7 para free, NULL para ilimitado
+  dias_historico INTEGER,                -- NULL para registrado (sin tablero), 7 para trial, NULL para ilimitado
   features JSONB,                        -- Array de features incluidas
   limite_exports INTEGER,                -- NULL = ilimitado
   limite_alertas INTEGER,
   tiene_api BOOLEAN DEFAULT FALSE,
+  tipo_pago VARCHAR(30),                 -- 'mercadopago', 'institucional', NULL (gratuito)
   activo BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Datos iniciales
-INSERT INTO planes (nombre, nombre_display, precio_mensual, dias_historico, features, limite_alertas) VALUES
-('free', 'Free', 0, 7, '["dashboard", "skills_basico"]', 0),
-('pro', 'Pro', 15000, NULL, '["dashboard", "skills_full", "exports", "alertas", "empresas"]', 10),
-('enterprise', 'Enterprise', NULL, NULL, '["todo", "api", "soporte_dedicado"]', NULL);
+INSERT INTO planes (nombre, nombre_display, precio_mensual, dias_historico, features, limite_alertas, tipo_pago) VALUES
+('registrado', 'Registrado', 0, NULL, '["contenido", "informes"]', 0, NULL),
+('trial', 'Trial', 0, 7, '["contenido", "dashboard", "skills_basico"]', 0, NULL),
+('suscriptor', 'Suscriptor', NULL, NULL, '["contenido", "dashboard", "skills_full", "exports", "alertas", "empresas"]', 10, 'mercadopago'),
+('institucional', 'Institucional', NULL, NULL, '["todo", "api", "soporte_dedicado", "docs_demanda"]', NULL, 'institucional');
 ```
 
-**Pantallas que usan:** [P-02](./02_ARQUITECTURA_PANTALLAS.md#p-02), [P-06](./02_ARQUITECTURA_PANTALLAS.md#p-06), [P-15](./02_ARQUITECTURA_PANTALLAS.md#p-15)
+**Pantallas que usan:** [P-02](./02_ARQUITECTURA_PANTALLAS.md), [P-06](./02_ARQUITECTURA_PANTALLAS.md), [P-15](./02_ARQUITECTURA_PANTALLAS.md)
 
 ---
 
@@ -138,12 +173,15 @@ CREATE TABLE suscripciones (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   plan_id UUID REFERENCES planes(id),
-  estado VARCHAR(20) NOT NULL,           -- 'activa', 'cancelada', 'vencida', 'trial'
+  estado VARCHAR(30) NOT NULL,           -- 'registrado', 'pendiente_aprobacion', 'trial',
+                                         -- 'activa', 'cancelada', 'vencida'
   fecha_inicio TIMESTAMPTZ NOT NULL,
-  fecha_fin TIMESTAMPTZ,                 -- NULL = indefinida (free)
+  fecha_fin TIMESTAMPTZ,                 -- NULL = indefinida
   fecha_proximo_cobro TIMESTAMPTZ,
-  mp_subscription_id VARCHAR(100),       -- ID de MercadoPago
+  canal_pago VARCHAR(30),                -- 'mercadopago', 'institucional', NULL
+  mp_subscription_id VARCHAR(100),       -- ID de MercadoPago (si aplica)
   mp_payer_id VARCHAR(100),
+  referencia_institucional VARCHAR(200), -- N° orden de compra / expediente (si aplica)
   metadata JSONB,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
@@ -157,13 +195,49 @@ CREATE INDEX idx_suscripciones_estado ON suscripciones(estado);
 CREATE INDEX idx_suscripciones_mp ON suscripciones(mp_subscription_id);
 ```
 
-**Pantallas que usan:** [P-15](./02_ARQUITECTURA_PANTALLAS.md#p-15), [P-18](./02_ARQUITECTURA_PANTALLAS.md#p-18)
+**Pantallas que usan:** [P-15](./02_ARQUITECTURA_PANTALLAS.md), [P-18](./02_ARQUITECTURA_PANTALLAS.md), [P-29](./02_ARQUITECTURA_PANTALLAS.md)
+
+---
+
+### T-solicitudes_acceso (NUEVA)
+
+Solicitudes de acceso al tablero interactivo.
+
+```sql
+CREATE TABLE solicitudes_acceso (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  estado VARCHAR(30) NOT NULL DEFAULT 'pendiente',  -- 'pendiente', 'aprobada', 'rechazada'
+  fecha_solicitud TIMESTAMPTZ DEFAULT NOW(),
+  aprobado_por UUID REFERENCES auth.users(id),       -- Admin que resolvió
+  fecha_resolucion TIMESTAMPTZ,
+  motivo TEXT,                                        -- Por qué quiere acceso (lo llena el usuario)
+  motivo_rechazo TEXT,                                -- Si se rechaza, por qué (lo llena admin)
+  perfil_usuario VARCHAR(50),                         -- Perfil del usuario al momento de solicitar
+  empresa_usuario VARCHAR(200),                       -- Empresa/org al momento de solicitar
+  metadata JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Índices
+CREATE INDEX idx_solicitudes_user ON solicitudes_acceso(user_id);
+CREATE INDEX idx_solicitudes_estado ON solicitudes_acceso(estado);
+CREATE INDEX idx_solicitudes_pendientes ON solicitudes_acceso(estado) WHERE estado = 'pendiente';
+```
+
+**Pantallas que usan:** [P-28](./02_ARQUITECTURA_PANTALLAS.md) (usuario solicita), [P-29](./02_ARQUITECTURA_PANTALLAS.md) (admin gestiona)
+
+**Flujo:**
+1. U-REGISTRADO envía solicitud (P-28) → estado `pendiente`
+2. U-ADMIN ve en P-29 → aprueba o rechaza
+3. Si aprobada → sistema crea suscripción con estado `trial` (7 días)
+4. Si rechazada → usuario recibe email con motivo
 
 ---
 
 ### T-pagos
 
-Historial de pagos.
+Historial de pagos (dual: MercadoPago + institucional).
 
 ```sql
 CREATE TABLE pagos (
@@ -173,10 +247,12 @@ CREATE TABLE pagos (
   monto DECIMAL(10,2) NOT NULL,
   moneda VARCHAR(3) DEFAULT 'ARS',
   estado VARCHAR(20) NOT NULL,           -- 'pendiente', 'aprobado', 'rechazado', 'reembolsado'
-  mp_payment_id VARCHAR(100),
+  canal_pago VARCHAR(30) NOT NULL,       -- 'mercadopago', 'institucional'
+  mp_payment_id VARCHAR(100),            -- Solo para canal mercadopago
   mp_status VARCHAR(50),
   mp_status_detail VARCHAR(100),
-  metodo_pago VARCHAR(50),               -- 'credit_card', 'debit_card', 'bank_transfer'
+  metodo_pago VARCHAR(50),               -- 'credit_card', 'debit_card', 'bank_transfer', 'orden_compra'
+  referencia_institucional VARCHAR(200), -- N° factura / orden de compra
   fecha_pago TIMESTAMPTZ,
   metadata JSONB,
   created_at TIMESTAMPTZ DEFAULT NOW()
@@ -186,9 +262,78 @@ CREATE TABLE pagos (
 CREATE INDEX idx_pagos_user ON pagos(user_id);
 CREATE INDEX idx_pagos_suscripcion ON pagos(suscripcion_id);
 CREATE INDEX idx_pagos_mp ON pagos(mp_payment_id);
+CREATE INDEX idx_pagos_canal ON pagos(canal_pago);
 ```
 
-**Pantallas que usan:** [P-16](./02_ARQUITECTURA_PANTALLAS.md#p-16)
+**Pantallas que usan:** [P-16](./02_ARQUITECTURA_PANTALLAS.md)
+
+---
+
+### T-contenidos (NUEVA — reemplaza T-informes_publicos)
+
+Contenidos publicados via CMS (informes, notas, análisis).
+
+```sql
+CREATE TABLE contenidos (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  titulo VARCHAR(200) NOT NULL,
+  slug VARCHAR(200) NOT NULL UNIQUE,     -- URL-friendly: "informe-mensual-enero-2026"
+  tipo VARCHAR(50) NOT NULL,             -- 'informe', 'nota', 'analisis', 'especial'
+  descripcion TEXT,
+  contenido_html TEXT,                   -- Contenido renderizable (para ver en web)
+  archivo_url TEXT,                      -- URL del PDF en storage (para descarga)
+  miniatura_url TEXT,
+  categoria VARCHAR(50),                 -- 'mensual', 'trimestral', 'especial', 'sector'
+  tags JSONB,                            -- ["tecnología", "salarios", "CABA"]
+  estado VARCHAR(20) NOT NULL DEFAULT 'borrador',  -- 'borrador', 'publicado', 'archivado'
+  fecha_publicacion TIMESTAMPTZ,
+  requiere_registro BOOLEAN DEFAULT TRUE,  -- Si false, visible para visitantes
+  creado_por UUID REFERENCES auth.users(id),
+  descargas INTEGER DEFAULT 0,
+  vistas INTEGER DEFAULT 0,
+  metadata JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Índices
+CREATE INDEX idx_contenidos_slug ON contenidos(slug);
+CREATE INDEX idx_contenidos_estado ON contenidos(estado);
+CREATE INDEX idx_contenidos_fecha ON contenidos(fecha_publicacion DESC);
+CREATE INDEX idx_contenidos_tipo ON contenidos(tipo);
+CREATE INDEX idx_contenidos_publicados ON contenidos(estado, fecha_publicacion DESC)
+  WHERE estado = 'publicado';
+```
+
+**Pantallas que usan:** [P-03](./02_ARQUITECTURA_PANTALLAS.md) (preview), [P-26](./02_ARQUITECTURA_PANTALLAS.md) (lista), [P-27](./02_ARQUITECTURA_PANTALLAS.md) (detalle), [P-30](./02_ARQUITECTURA_PANTALLAS.md) (admin CMS)
+
+---
+
+### T-envios_contenido (NUEVA)
+
+Tracking de distribución de contenido por email.
+
+```sql
+CREATE TABLE envios_contenido (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  contenido_id UUID REFERENCES contenidos(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  canal VARCHAR(20) NOT NULL DEFAULT 'email',  -- 'email', 'notificacion'
+  estado VARCHAR(20) NOT NULL DEFAULT 'pendiente',  -- 'pendiente', 'enviado', 'fallido', 'abierto'
+  enviado_at TIMESTAMPTZ,
+  abierto_at TIMESTAMPTZ,                     -- Tracking de apertura
+  click_at TIMESTAMPTZ,                        -- Tracking de click
+  metadata JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Índices
+CREATE INDEX idx_envios_contenido ON envios_contenido(contenido_id);
+CREATE INDEX idx_envios_user ON envios_contenido(user_id);
+CREATE INDEX idx_envios_estado ON envios_contenido(estado);
+```
+
+**Pantallas que usan:** [P-30](./02_ARQUITECTURA_PANTALLAS.md) (admin ve métricas de envío)
 
 ---
 
@@ -214,35 +359,7 @@ CREATE INDEX idx_alertas_user ON alertas_config(user_id);
 CREATE INDEX idx_alertas_activa ON alertas_config(activa) WHERE activa = true;
 ```
 
-**Pantallas que usan:** [P-13](./02_ARQUITECTURA_PANTALLAS.md#p-13)
-
----
-
-### T-informes_publicos
-
-Informes PDF publicados.
-
-```sql
-CREATE TABLE informes_publicos (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  titulo VARCHAR(200) NOT NULL,
-  descripcion TEXT,
-  categoria VARCHAR(50),                 -- 'mensual', 'trimestral', 'especial'
-  fecha_publicacion DATE NOT NULL,
-  archivo_url TEXT NOT NULL,             -- URL del PDF en storage
-  miniatura_url TEXT,
-  descargas INTEGER DEFAULT 0,
-  activo BOOLEAN DEFAULT TRUE,
-  metadata JSONB,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Índices
-CREATE INDEX idx_informes_fecha ON informes_publicos(fecha_publicacion DESC);
-CREATE INDEX idx_informes_categoria ON informes_publicos(categoria);
-```
-
-**Pantallas que usan:** [P-03](./02_ARQUITECTURA_PANTALLAS.md#p-03)
+**Pantallas que usan:** [P-13](./02_ARQUITECTURA_PANTALLAS.md)
 
 ---
 
@@ -279,13 +396,115 @@ SELECT
   u.email,
   u.raw_user_meta_data->>'nombre' as nombre,
   u.raw_user_meta_data->>'empresa' as empresa,
-  COALESCE(p.nombre, 'free') as plan,
+  u.raw_user_meta_data->>'perfil' as perfil,
+  COALESCE(p.nombre, 'registrado') as nivel,
   s.estado as estado_suscripcion,
   s.fecha_fin,
+  s.canal_pago,
   p.dias_historico
 FROM auth.users u
-LEFT JOIN suscripciones s ON u.id = s.user_id AND s.estado = 'activa'
+LEFT JOIN suscripciones s ON u.id = s.user_id AND s.estado IN ('registrado', 'trial', 'activa')
 LEFT JOIN planes p ON s.plan_id = p.id;
+```
+
+---
+
+### v_solicitudes_pendientes (NUEVA)
+
+```sql
+CREATE VIEW v_solicitudes_pendientes AS
+SELECT
+  sa.id,
+  sa.user_id,
+  u.email,
+  u.raw_user_meta_data->>'nombre' as nombre,
+  u.raw_user_meta_data->>'empresa' as empresa,
+  u.raw_user_meta_data->>'perfil' as perfil,
+  sa.motivo,
+  sa.fecha_solicitud,
+  sa.estado
+FROM solicitudes_acceso sa
+JOIN auth.users u ON sa.user_id = u.id
+WHERE sa.estado = 'pendiente'
+ORDER BY sa.fecha_solicitud ASC;
+```
+
+---
+
+### v_metricas_contenido (NUEVA)
+
+```sql
+CREATE VIEW v_metricas_contenido AS
+SELECT
+  c.id,
+  c.titulo,
+  c.tipo,
+  c.fecha_publicacion,
+  c.descargas,
+  c.vistas,
+  COUNT(ec.id) as total_envios,
+  COUNT(ec.id) FILTER (WHERE ec.estado = 'enviado') as enviados,
+  COUNT(ec.id) FILTER (WHERE ec.abierto_at IS NOT NULL) as abiertos,
+  CASE
+    WHEN COUNT(ec.id) FILTER (WHERE ec.estado = 'enviado') > 0
+    THEN ROUND(
+      COUNT(ec.id) FILTER (WHERE ec.abierto_at IS NOT NULL)::numeric /
+      COUNT(ec.id) FILTER (WHERE ec.estado = 'enviado') * 100, 1
+    )
+    ELSE 0
+  END as tasa_apertura
+FROM contenidos c
+LEFT JOIN envios_contenido ec ON c.id = ec.contenido_id
+GROUP BY c.id, c.titulo, c.tipo, c.fecha_publicacion, c.descargas, c.vistas;
+```
+
+---
+
+### vw_insights_kpis (PENDIENTE)
+
+> Referencia: [12_INSIGHTS_SISTEMA](./12_INSIGHTS_SISTEMA.md)
+
+```sql
+CREATE OR REPLACE VIEW vw_insights_kpis AS
+SELECT
+  COUNT(*) as total_ofertas,
+  COUNT(DISTINCT isco_code) as ocupaciones_distintas,
+  COUNT(DISTINCT empresa) as empresas_activas,
+  COUNT(DISTINCT provincia) as provincias
+FROM ofertas_dashboard;
+```
+
+---
+
+### vw_insights_tendencia (PENDIENTE)
+
+```sql
+CREATE OR REPLACE VIEW vw_insights_tendencia AS
+SELECT
+  DATE_TRUNC('month', fecha_publicacion::date) as mes,
+  COUNT(*) as ofertas,
+  COUNT(DISTINCT empresa) as empresas,
+  COUNT(DISTINCT isco_code) as ocupaciones
+FROM ofertas_dashboard
+GROUP BY DATE_TRUNC('month', fecha_publicacion::date)
+ORDER BY mes DESC
+LIMIT 12;
+```
+
+---
+
+### vw_insights_isco_grupos (PENDIENTE)
+
+```sql
+CREATE OR REPLACE VIEW vw_insights_isco_grupos AS
+SELECT
+  LEFT(isco_code, 1) as grupo,
+  COUNT(*) as total,
+  ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 1) as porcentaje
+FROM ofertas_dashboard
+WHERE isco_code IS NOT NULL
+GROUP BY LEFT(isco_code, 1)
+ORDER BY total DESC;
 ```
 
 ---
@@ -320,6 +539,90 @@ $$ LANGUAGE plpgsql;
 
 ---
 
+### aprobar_solicitud_acceso (NUEVA)
+
+Aprueba una solicitud y crea la suscripción trial automáticamente.
+
+```sql
+CREATE OR REPLACE FUNCTION aprobar_solicitud_acceso(
+  p_solicitud_id UUID,
+  p_admin_id UUID
+) RETURNS void AS $$
+DECLARE
+  v_user_id UUID;
+  v_plan_trial_id UUID;
+BEGIN
+  -- Obtener user_id de la solicitud
+  SELECT user_id INTO v_user_id
+  FROM solicitudes_acceso
+  WHERE id = p_solicitud_id AND estado = 'pendiente';
+
+  IF v_user_id IS NULL THEN
+    RAISE EXCEPTION 'Solicitud no encontrada o ya resuelta';
+  END IF;
+
+  -- Obtener plan trial
+  SELECT id INTO v_plan_trial_id FROM planes WHERE nombre = 'trial';
+
+  -- Aprobar solicitud
+  UPDATE solicitudes_acceso
+  SET estado = 'aprobada',
+      aprobado_por = p_admin_id,
+      fecha_resolucion = NOW()
+  WHERE id = p_solicitud_id;
+
+  -- Crear/actualizar suscripción como trial
+  INSERT INTO suscripciones (user_id, plan_id, estado, fecha_inicio, fecha_fin)
+  VALUES (v_user_id, v_plan_trial_id, 'trial', NOW(), NOW() + INTERVAL '7 days')
+  ON CONFLICT (user_id) DO UPDATE
+  SET plan_id = v_plan_trial_id,
+      estado = 'trial',
+      fecha_inicio = NOW(),
+      fecha_fin = NOW() + INTERVAL '7 days',
+      updated_at = NOW();
+END;
+$$ LANGUAGE plpgsql;
+```
+
+---
+
+### get_insights (PENDIENTE)
+
+> Referencia: [12_INSIGHTS_SISTEMA](./12_INSIGHTS_SISTEMA.md) - Resuelve E-16
+
+Función RPC que devuelve todos los insights pre-calculados en una sola llamada.
+
+```sql
+CREATE OR REPLACE FUNCTION get_insights(
+  p_provincia text DEFAULT NULL,
+  p_fecha_desde date DEFAULT NULL,
+  p_fecha_hasta date DEFAULT NULL
+)
+RETURNS json AS $$
+  SELECT json_build_object(
+    'kpis', (SELECT row_to_json(k) FROM vw_insights_kpis k),
+    'top_ocupaciones', (
+      SELECT json_agg(o)
+      FROM (SELECT * FROM vw_insights_isco_grupos LIMIT 5) o
+    ),
+    'tendencia', (SELECT json_agg(t) FROM vw_insights_tendencia t),
+    'concentracion_top3', (
+      SELECT ROUND(SUM(porcentaje), 1)
+      FROM (SELECT porcentaje FROM vw_insights_isco_grupos LIMIT 3) sub
+    )
+  )
+$$ LANGUAGE sql STABLE;
+```
+
+**Uso desde cliente:**
+```typescript
+const { data } = await supabase.rpc('get_insights', {
+  p_provincia: 'Buenos Aires'
+})
+```
+
+---
+
 ## Tablas Existentes (referencia)
 
 Estas tablas ya existen y son usadas por el dashboard:
@@ -344,7 +647,18 @@ Ver [06_SEGURIDAD](./06_SEGURIDAD.md#rls) para políticas de seguridad a nivel d
 |-------|--------|--------|--------|--------|
 | planes | Todos | Solo admin | Solo admin | Solo admin |
 | suscripciones | Solo propia | Sistema | Sistema | Sistema |
+| solicitudes_acceso | Solo propia + admin todas | Propia | Solo admin | No |
 | pagos | Solo propios | Sistema | Sistema | No |
 | alertas_config | Solo propias | Propias | Propias | Propias |
-| informes_publicos | Todos | Solo admin | Solo admin | Solo admin |
+| contenidos | Publicados: todos registrados. Borrador: solo admin | Solo admin | Solo admin | Solo admin |
+| envios_contenido | Solo propios + admin todos | Sistema | Sistema | No |
 | uso_features | Solo propios | Sistema | Sistema | No |
+
+---
+
+## Historial de Cambios
+
+| Fecha | Versión | Cambio |
+|-------|---------|--------|
+| 2026-02-05 | 1.0 | Modelo SaaS (planes free/pro/enterprise, informes_publicos) |
+| 2026-02-07 | 2.0 | Modelo híbrido: T-solicitudes_acceso, T-contenidos (reemplaza informes_publicos), T-envios_contenido, pago dual en T-pagos y T-suscripciones, nuevas vistas y funciones |

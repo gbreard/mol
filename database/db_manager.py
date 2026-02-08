@@ -134,12 +134,92 @@ class DatabaseManager:
             self.conn.commit()
         self.disconnect()
 
+    def _normalize_api_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Detecta si el DataFrame tiene columnas camelCase de la API
+        y las convierte a snake_case para inserción.
+
+        Si ya tiene columnas snake_case (viene de CSV o procesar_ofertas), no hace nada.
+        """
+        # Detectar formato: usar columnas EXCLUSIVAS de camelCase (no compartidas)
+        # 'titulo' y 'empresa' existen en ambos formatos, no sirven como discriminador
+        camelcase_only = {'idEmpresa', 'fechaPublicacion', 'modalidadTrabajo', 'tipoTrabajo'}
+        has_api_format = bool(camelcase_only & set(df.columns))
+
+        if not has_api_format:
+            return df  # Ya está en formato snake_case
+
+        logger.info("Detectado formato API (camelCase) - normalizando...")
+
+        from bumeran_scraper import normalizar_fecha_iso, limpiar_texto_html
+
+        rows = []
+        for _, row in df.iterrows():
+            fecha_pub = normalizar_fecha_iso(row.get('fechaPublicacion'))
+            fecha_hora = normalizar_fecha_iso(row.get('fechaHoraPublicacion'))
+            fecha_mod = normalizar_fecha_iso(row.get('fechaModificado'))
+
+            plan = row.get('planPublicacion')
+            if isinstance(plan, str):
+                try:
+                    plan = json.loads(plan)
+                except (json.JSONDecodeError, TypeError):
+                    plan = None
+            elif not isinstance(plan, dict):
+                plan = None
+
+            rows.append({
+                'id_oferta': row.get('id'),
+                'id_empresa': row.get('idEmpresa'),
+                'titulo': limpiar_texto_html(row.get('titulo')),
+                'empresa': limpiar_texto_html(row.get('empresa')),
+                'descripcion': limpiar_texto_html(row.get('detalle')),
+                'confidencial': row.get('confidencial'),
+                'localizacion': limpiar_texto_html(row.get('localizacion')),
+                'modalidad_trabajo': row.get('modalidadTrabajo'),
+                'tipo_trabajo': row.get('tipoTrabajo'),
+                'fecha_publicacion_original': fecha_pub['fecha_original'],
+                'fecha_publicacion_iso': fecha_pub['fecha_iso'],
+                'fecha_publicacion_datetime': fecha_pub['fecha_datetime_iso'],
+                'fecha_hora_publicacion_original': fecha_hora['fecha_original'],
+                'fecha_hora_publicacion_iso': fecha_hora['fecha_iso'],
+                'fecha_hora_publicacion_datetime': fecha_hora['fecha_datetime_iso'],
+                'fecha_modificado_original': fecha_mod['fecha_original'],
+                'fecha_modificado_iso': fecha_mod['fecha_iso'],
+                'fecha_modificado_datetime': fecha_mod['fecha_datetime_iso'],
+                'cantidad_vacantes': row.get('cantidadVacantes'),
+                'apto_discapacitado': row.get('aptoDiscapacitado'),
+                'id_area': row.get('idArea'),
+                'id_subarea': row.get('idSubarea'),
+                'id_pais': row.get('idPais'),
+                'logo_url': row.get('logoURL'),
+                'empresa_validada': row.get('validada'),
+                'empresa_pro': row.get('empresaPro'),
+                'promedio_empresa': row.get('promedioEmpresa'),
+                'plan_publicacion_id': plan.get('id') if plan else None,
+                'plan_publicacion_nombre': plan.get('nombre') if plan else None,
+                'portal': row.get('portal'),
+                'tipo_aviso': row.get('tipoAviso'),
+                'tiene_preguntas': row.get('tienePreguntas'),
+                'salario_obligatorio': row.get('salarioObligatorio'),
+                'alta_revision_perfiles': row.get('altaRevisionPerfiles'),
+                'guardado': row.get('guardado'),
+                'gptw_url': row.get('gptwUrl'),
+                'url_oferta': f"https://www.bumeran.com.ar/empleos/{row.get('id')}.html" if row.get('id') else None,
+                'scrapeado_en': datetime.now().isoformat()
+            })
+
+        return pd.DataFrame(rows)
+
     def insert_ofertas(self, ofertas: pd.DataFrame) -> int:
         """
-        Inserta ofertas en la base de datos (upsert)
+        Inserta ofertas en la base de datos (upsert).
+
+        Acepta tanto DataFrames con columnas snake_case (de CSV/procesar_ofertas)
+        como DataFrames raw de la API (camelCase). Detecta el formato automáticamente.
 
         Args:
-            ofertas: DataFrame con ofertas procesadas
+            ofertas: DataFrame con ofertas (cualquier formato)
 
         Returns:
             Número de ofertas insertadas/actualizadas
@@ -147,6 +227,9 @@ class DatabaseManager:
         if ofertas.empty:
             logger.warning("DataFrame vacío, no hay ofertas para insertar")
             return 0
+
+        # Normalizar formato si viene de la API
+        ofertas = self._normalize_api_dataframe(ofertas)
 
         logger.info(f"Insertando {len(ofertas)} ofertas...")
 
@@ -225,9 +308,7 @@ class DatabaseManager:
             if 'tipo_trabajo' not in ofertas.columns or pd.isna(row.get('tipo_trabajo')):
                 campos_criticos_vacios.append('tipo_trabajo')
 
-            # id_empresa
-            if 'id_empresa' not in ofertas.columns or pd.isna(row.get('id_empresa')):
-                campos_criticos_vacios.append('id_empresa')
+            # id_empresa: NO es crítico - ofertas confidenciales no lo traen
 
             # Rechazar si faltan campos críticos
             if campos_criticos_vacios:

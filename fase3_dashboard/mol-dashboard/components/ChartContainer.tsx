@@ -28,7 +28,7 @@ export function ChartContainer({ title, subtitle, children, onDownload, insights
             onClick={onDownload}
           >
             <Download className="w-4 h-4" />
-            <span className="font-medium">CSV</span>
+            <span className="font-medium">Excel</span>
           </Button>
         )}
       </div>

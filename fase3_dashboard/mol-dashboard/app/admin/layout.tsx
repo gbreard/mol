@@ -24,6 +24,7 @@ const adminNavItems = [
   { href: "/admin/usuarios", label: "Usuarios", icon: Users },
   { href: "/admin/issues", label: "Issues", icon: MessageSquare },
   { href: "/admin/skills", label: "Skills Intelligence", icon: Target },
+  { href: "/admin/arquitectura", label: "Arquitectura", icon: Network },
   { href: "/admin/scraping", label: "Scraping", icon: Database },
   { href: "/admin/metricas", label: "Métricas", icon: BarChart3 },
   { href: "/admin/logs", label: "Logs", icon: FileText },
@@ -53,7 +54,7 @@ export default function AdminLayout({
       // Verificar rol de admin
       const role = user.user_metadata?.role || 'admin';
       if (!['super_admin', 'admin'].includes(role)) {
-        router.push("/");
+        router.push("/dashboard");
         return;
       }
 
@@ -115,7 +116,7 @@ export default function AdminLayout({
 
         <div className="p-4 border-t border-slate-700">
           <Link
-            href="/"
+            href="/dashboard"
             className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />

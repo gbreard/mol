@@ -7,6 +7,13 @@ export interface DashboardFilters {
   permanencia: string[];
   searchOcupacion: string;
   ocupacionesSeleccionadas: string[];
+  // Filtros de Requerimientos (Issue #5)
+  nivelEducativo: string;
+  experiencia: string;
+  seniority: string;
+  modalidad: string;
+  jornada: string;
+  skillsDigitales: boolean;
 }
 
 // ========== ISSUES/FEEDBACK SYSTEM ==========
@@ -25,6 +32,7 @@ export interface Issue {
   id_oferta?: string;
   autor_id: string;
   autor_email: string;
+  autor_nombre?: string;  // Nombre completo del autor
   created_at: string;
   updated_at: string;
   resuelto_at?: string;

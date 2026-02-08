@@ -151,7 +151,94 @@ async function fetchAllPaginated<T>(
   return allData
 }
 
+// ============================================
+// INSIGHTS OPTIMIZADOS (E-16) - Usa RPC SQL
+// ============================================
+
+// Tipo para la respuesta del RPC get_insights
+export interface InsightsData {
+  kpis: {
+    total_ofertas: number
+    ocupaciones_distintas: number
+    empresas_activas: number
+    provincias: number
+  }
+  isco_grupos: Array<{
+    grupo: string
+    total: number
+    porcentaje: number
+  }>
+  concentracion_top3: number
+  top_empresas: Array<{
+    empresa: string
+    ofertas: number
+  }>
+  provincias: Array<{
+    provincia: string
+    total: number
+    porcentaje: number
+  }>
+}
+
+/**
+ * Obtiene todos los insights en UNA sola llamada RPC
+ * Reemplaza: getKPIs, getOfertasPorProvincia, getTopOcupaciones (parcialmente)
+ * Performance: ~5ms vs ~500ms con fetchAllPaginated
+ */
+export async function getInsightsRPC(filters?: DashboardFilters): Promise<InsightsData | null> {
+  const client = getSupabaseClient()
+  if (!client) return null
+
+  const { data, error } = await client.rpc('get_insights', {
+    p_provincia: filters?.provincia ? provinciaMap[filters.provincia] || filters.provincia : null,
+    p_fecha_desde: filters?.fechaDesde?.toISOString().split('T')[0] || null,
+    p_fecha_hasta: filters?.fechaHasta?.toISOString().split('T')[0] || null
+  })
+
+  if (error) {
+    console.error('Error en get_insights RPC:', error)
+    return null
+  }
+
+  return data as InsightsData
+}
+
+/**
+ * Obtiene KPIs usando RPC (optimizado)
+ */
+export async function getKPIsOptimized(filters?: DashboardFilters) {
+  const insights = await getInsightsRPC(filters)
+  if (!insights) {
+    return { totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 }
+  }
+  return {
+    totalOfertas: insights.kpis.total_ofertas,
+    ocupacionesDistintas: insights.kpis.ocupaciones_distintas,
+    empresasActivas: insights.kpis.empresas_activas,
+    provincias: insights.kpis.provincias
+  }
+}
+
+/**
+ * Obtiene distribución por provincia usando RPC (optimizado)
+ */
+export async function getOfertasPorProvinciaOptimized(filters?: DashboardFilters) {
+  const insights = await getInsightsRPC(filters)
+  if (!insights) return []
+
+  return insights.provincias.map(p => ({
+    jurisdiccion: p.provincia,
+    cantidad: p.total,
+    porcentaje: p.porcentaje
+  }))
+}
+
+// ============================================
+// FUNCIONES LEGACY (mantener por compatibilidad)
+// ============================================
+
 // Funciones para obtener datos del dashboard
+// @deprecated - Usar getKPIsOptimized para mejor performance
 export async function getKPIs(filters?: DashboardFilters) {
   const client = getSupabaseClient()
   if (!client) return { totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 }
@@ -969,6 +1056,7 @@ export async function createIssue(issue: {
   id_oferta?: string;
   autor_id: string;
   autor_email: string;
+  autor_nombre?: string;
 }): Promise<Issue> {
   const client = getSupabaseClient()
   if (!client) throw new Error('Supabase no está configurado')
@@ -1158,6 +1246,177 @@ export async function getOfertasByEscoOccupation(
   }
 
   return { ofertas: data || [], total: count || 0 }
+}
+
+// ========== OFERTAS POR OCUPACIÓN (ISCO) - SPRINT 2 ==========
+
+export interface OfertaPorOcupacion {
+  id_oferta: string;
+  titulo: string;
+  titulo_limpio: string | null;
+  empresa: string | null;
+  fecha_publicacion: string | null;
+  url: string | null;
+  skills_tecnicas: string | null;
+}
+
+export interface OfertasCountByIsco {
+  isco_code: string;
+  isco_label: string;
+  count: number;
+}
+
+/**
+ * Obtiene el conteo de ofertas activas por código ISCO
+ * Retorna un mapa de isco_code -> count
+ */
+export async function getOfertasCountByIsco(): Promise<Record<string, number>> {
+  const client = getSupabaseClient()
+  if (!client) return {}
+
+  try {
+    const data = await fetchAllPaginated<{ isco_code: string }>(
+      client,
+      TABLA_OFERTAS,
+      'isco_code',
+      (query) => query.not('isco_code', 'is', null)
+    )
+
+    const counts: Record<string, number> = {}
+    data.forEach(o => {
+      counts[o.isco_code] = (counts[o.isco_code] || 0) + 1
+    })
+
+    return counts
+  } catch (error) {
+    console.error('Error getting ofertas count by ISCO:', error)
+    return {}
+  }
+}
+
+/**
+ * Obtiene ofertas activas para un código ISCO específico
+ */
+export async function getOfertasByIsco(
+  iscoCode: string,
+  limit: number = 50,
+  offset: number = 0
+): Promise<{ ofertas: OfertaPorOcupacion[], total: number }> {
+  const client = getSupabaseClient()
+  if (!client) return { ofertas: [], total: 0 }
+
+  try {
+    const { data, error, count } = await client
+      .from(TABLA_OFERTAS)
+      .select(`
+        id_oferta,
+        titulo,
+        titulo_limpio,
+        empresa,
+        fecha_publicacion,
+        url,
+        skills_tecnicas
+      `, { count: 'exact' })
+      .eq('isco_code', iscoCode)
+      .order('fecha_publicacion', { ascending: false })
+      .range(offset, offset + limit - 1)
+
+    if (error) throw error
+
+    return {
+      ofertas: data || [],
+      total: count || 0
+    }
+  } catch (error) {
+    console.error('Error getting ofertas by ISCO:', error)
+    return { ofertas: [], total: 0 }
+  }
+}
+
+/**
+ * Obtiene ofertas para múltiples códigos ISCO (para exportar)
+ */
+export async function getOfertasByMultipleIsco(
+  iscoCodes: string[]
+): Promise<OfertaPorOcupacion[]> {
+  const client = getSupabaseClient()
+  if (!client || iscoCodes.length === 0) return []
+
+  try {
+    const data = await fetchAllPaginated<OfertaPorOcupacion>(
+      client,
+      TABLA_OFERTAS,
+      'id_oferta, titulo, titulo_limpio, empresa, fecha_publicacion, url, skills_tecnicas',
+      (query) => query.in('isco_code', iscoCodes).order('fecha_publicacion', { ascending: false })
+    )
+
+    return data
+  } catch (error) {
+    console.error('Error getting ofertas by multiple ISCO:', error)
+    return []
+  }
+}
+
+// ========== AUDIT LOG - REGISTRAR ACCIONES ==========
+
+/**
+ * Registra una acción en el audit_log
+ * Usar para trackear navegación, exportaciones, etc.
+ */
+export async function logAction(
+  accion: string,
+  recurso: string,
+  recurso_id?: string,
+  detalle?: Record<string, unknown>
+): Promise<void> {
+  const client = getSupabaseClient()
+  if (!client) return
+
+  try {
+    const { data: { user } } = await client.auth.getUser()
+    if (!user) return
+
+    await client
+      .from('audit_log')
+      .insert({
+        usuario_id: user.id,
+        accion,
+        recurso,
+        recurso_id,
+        detalle
+      })
+  } catch (error) {
+    // Silently fail - audit logs shouldn't break the app
+    console.debug('Audit log error:', error)
+  }
+}
+
+/**
+ * Registra un evento de uso (analytics ligero)
+ */
+export async function logEvent(
+  evento: string,
+  categoria: string,
+  metadata?: Record<string, unknown>
+): Promise<void> {
+  const client = getSupabaseClient()
+  if (!client) return
+
+  try {
+    const { data: { user } } = await client.auth.getUser()
+    if (!user) return
+
+    await client
+      .from('eventos_uso')
+      .insert({
+        usuario_id: user.id,
+        evento,
+        categoria,
+        metadata
+      })
+  } catch (error) {
+    console.debug('Event log error:', error)
+  }
 }
 
 // ========== SKILLS INTELLIGENCE - DATOS DINÁMICOS ==========

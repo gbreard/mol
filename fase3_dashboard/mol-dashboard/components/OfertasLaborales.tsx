@@ -1,8 +1,9 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, ExternalLink, Filter, Loader2, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Search, ExternalLink, Loader2, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { ExportButton, ExportColumn } from "@/components/ExportButton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
@@ -10,25 +11,34 @@ import { getOfertas, OfertaDashboard } from "@/lib/supabase";
 import { DashboardFilters } from "@/lib/types";
 import { IssueRowButton } from "@/components/issues";
 
+const PAGE_SIZE = 50;
+
 interface OfertasLaboralesProps {
   filters: DashboardFilters;
 }
 
 export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [modalidadFilter, setModalidadFilter] = useState('all');
-  const [seniorityFilter, setSeniorityFilter] = useState('all');
-  const [provinciaFilter, setProvinciaFilter] = useState('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [ofertas, setOfertas] = useState<OfertaDashboard[]>([]);
   const [total, setTotal] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Calcular totales de paginación
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const offset = (currentPage - 1) * PAGE_SIZE;
+
+  // Reset a página 1 cuando cambian los filtros
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters]);
 
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
-        const { ofertas: data, total: count } = await getOfertas(50, 0, filters);
+        const { ofertas: data, total: count } = await getOfertas(PAGE_SIZE, offset, filters);
         setOfertas(data);
         setTotal(count);
         setError(null);
@@ -40,15 +50,31 @@ export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
       }
     }
     loadData();
-  }, [filters]);
+  }, [filters, currentPage, offset]);
 
   const filteredOfertas = ofertas.filter(oferta => {
-    const matchesSearch = oferta.titulo?.toLowerCase().includes(searchTerm.toLowerCase()) || false;
-    const matchesModalidad = modalidadFilter === 'all' || oferta.modalidad === modalidadFilter;
-    const matchesSeniority = seniorityFilter === 'all' || oferta.nivel_seniority === seniorityFilter;
-    const matchesProvincia = provinciaFilter === 'all' || oferta.provincia === provinciaFilter;
-    return matchesSearch && matchesModalidad && matchesSeniority && matchesProvincia;
+    if (!searchTerm.trim()) return true;
+    const searchLower = searchTerm.toLowerCase();
+    return (oferta.titulo?.toLowerCase().includes(searchLower) ||
+            oferta.titulo_limpio?.toLowerCase().includes(searchLower) ||
+            false);
   });
+
+  // Columnas para exportación
+  const exportColumns: ExportColumn[] = [
+    { key: 'fecha_publicacion', header: 'Fecha', format: (v) => v ? new Date(v).toLocaleDateString('es-AR') : '' },
+    { key: 'titulo_limpio', header: 'Título', format: (v) => v || '' },
+    { key: 'empresa', header: 'Empresa', format: (v) => v || '' },
+    { key: 'provincia', header: 'Provincia', format: (v) => v || '' },
+    { key: 'localidad', header: 'Localidad', format: (v) => v || '' },
+    { key: 'modalidad', header: 'Modalidad', format: (v) => v || '' },
+    { key: 'nivel_seniority', header: 'Seniority', format: (v) => v || '' },
+    { key: 'isco_code', header: 'ISCO', format: (v) => v || '' },
+    { key: 'isco_label', header: 'Ocupación ESCO', format: (v) => v || '' },
+    { key: 'skills_tecnicas', header: 'Conocimientos', format: (v) => Array.isArray(v) ? v.join('; ') : '' },
+    { key: 'soft_skills', header: 'Competencias', format: (v) => Array.isArray(v) ? v.join('; ') : '' },
+    { key: 'url', header: 'URL', format: (v) => v || '' },
+  ];
 
   if (loading) {
     return (
@@ -72,63 +98,25 @@ export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
 
   return (
     <div className="flex flex-col h-full min-h-0 gap-3">
-      {/* Filters Row - más compacto */}
+      {/* Search and Export Row */}
       <div className="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex-shrink-0">
-        <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-blue-600" />
-            <span className="text-sm font-semibold text-gray-900">Filtros:</span>
-          </div>
-          <div className="flex flex-wrap gap-3 flex-1">
-          <Select value={modalidadFilter} onValueChange={setModalidadFilter}>
-            <SelectTrigger className="w-[140px] bg-gray-50 hover:bg-gray-100 transition-colors h-9 text-sm">
-              <SelectValue placeholder="Modalidad" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas</SelectItem>
-              <SelectItem value="presencial">Presencial</SelectItem>
-              <SelectItem value="remoto">Remoto</SelectItem>
-              <SelectItem value="hibrido">Híbrido</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={seniorityFilter} onValueChange={setSeniorityFilter}>
-            <SelectTrigger className="w-[140px] bg-gray-50 hover:bg-gray-100 transition-colors h-9 text-sm">
-              <SelectValue placeholder="Seniority" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="junior">Junior</SelectItem>
-              <SelectItem value="semi-senior">Semi-Senior</SelectItem>
-              <SelectItem value="senior">Senior</SelectItem>
-              <SelectItem value="manager">Manager</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={provinciaFilter} onValueChange={setProvinciaFilter}>
-            <SelectTrigger className="w-[150px] bg-gray-50 hover:bg-gray-100 transition-colors h-9 text-sm">
-              <SelectValue placeholder="Provincia" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas</SelectItem>
-              <SelectItem value="Capital Federal">Capital Federal</SelectItem>
-              <SelectItem value="Buenos Aires">Buenos Aires</SelectItem>
-              <SelectItem value="Córdoba">Córdoba</SelectItem>
-              <SelectItem value="Santa Fe">Santa Fe</SelectItem>
-              <SelectItem value="Mendoza">Mendoza</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <div className="relative min-w-[200px]">
+        <div className="flex items-center gap-4">
+          <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
-              placeholder="Buscar por título"
+              placeholder="Buscar por título..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-9 bg-gray-50 hover:bg-gray-100 transition-colors"
             />
           </div>
-          </div>
+          {/* Export Button */}
+          <ExportButton
+            data={filteredOfertas}
+            columns={exportColumns}
+            filename="ofertas_laborales"
+            showLabel={true}
+          />
         </div>
       </div>
 
@@ -215,9 +203,52 @@ export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
         </div>
       </div>
 
-      {/* Results count - compacto */}
-      <div className="flex-shrink-0 text-xs text-gray-500 px-1">
-        Mostrando <span className="font-semibold text-gray-700">{filteredOfertas.length}</span> de <span className="font-semibold text-gray-700">{total}</span> ofertas
+      {/* Pagination Controls */}
+      <div className="flex-shrink-0 flex items-center justify-between px-1 py-2">
+        <div className="text-xs text-gray-500">
+          Mostrando <span className="font-semibold text-gray-700">{offset + 1}</span>-<span className="font-semibold text-gray-700">{Math.min(offset + PAGE_SIZE, total)}</span> de <span className="font-semibold text-gray-700">{total}</span> ofertas
+        </div>
+
+        {totalPages > 1 && (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1 || loading}
+              className="h-8 px-3"
+            >
+              <ChevronLeft className="w-4 h-4 mr-1" />
+              Anterior
+            </Button>
+
+            <div className="flex items-center gap-1 text-sm">
+              <span className="text-gray-500">Página</span>
+              <select
+                value={currentPage}
+                onChange={(e) => setCurrentPage(Number(e.target.value))}
+                disabled={loading}
+                className="h-8 px-2 border border-gray-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                  <option key={page} value={page}>{page}</option>
+                ))}
+              </select>
+              <span className="text-gray-500">de {totalPages}</span>
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages || loading}
+              className="h-8 px-3"
+            >
+              Siguiente
+              <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

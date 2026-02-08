@@ -1,0 +1,23 @@
+{
+  "weights": {
+    "fecha_publicacion": 0.4,
+    "cantidad_vacantes": 0.3,
+    "permanencia": 0.3
+  },
+  "params": {
+    "fecha": {
+      "max_dias": 90,
+      "decay": "linear"
+    },
+    "vacantes": {
+      "max_vacantes": 20,
+      "boost_multiple": true
+    },
+    "permanencia": {
+      "baja": 1.0,
+      "media": 0.6,
+      "alta": 0.2,
+      "null": 0.1
+    }
+  }
+}
