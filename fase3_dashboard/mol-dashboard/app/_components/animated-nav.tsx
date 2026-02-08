@@ -31,12 +31,11 @@ export function AnimatedNav() {
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-3">
             <Image
-              src="/logo_mol.png"
+              src="/logo_mol_dark.png"
               alt="MOL Logo"
-              width={120}
-              height={40}
+              width={130}
+              height={50}
               priority
-              className="brightness-0 invert"
             />
           </Link>
 
