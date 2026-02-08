@@ -14,8 +14,8 @@ import {
   ArrowRight,
   Calendar,
   User,
-  LogOut,
 } from "lucide-react";
+import { LogoutButton } from "./_components/logout-button";
 
 const ROLE = {
   SUPER_ADMIN: "super_admin",
@@ -120,15 +120,7 @@ export default async function HomePage() {
               <User className="w-4 h-4" />
               Mi cuenta
             </Link>
-            <form action="/auth/signout" method="post">
-              <button
-                type="submit"
-                className="flex items-center gap-2 text-sm text-gray-400 hover:text-red-500 transition-colors"
-              >
-                <LogOut className="w-4 h-4" />
-                Salir
-              </button>
-            </form>
+            <LogoutButton />
           </div>
         </div>
       </header>
