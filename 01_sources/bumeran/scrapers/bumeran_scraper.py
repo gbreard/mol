@@ -822,8 +822,7 @@ class BumeranScraper:
                 campos_criticos_vacios.append('modalidad_trabajo')
             if not procesada.get('tipo_trabajo'):
                 campos_criticos_vacios.append('tipo_trabajo')
-            if not procesada.get('id_empresa'):
-                campos_criticos_vacios.append('id_empresa')
+            # id_empresa: NO es crítico - ofertas confidenciales no lo traen
 
             # Rechazar oferta si faltan campos críticos
             if campos_criticos_vacios:

@@ -34,10 +34,11 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Rutas públicas que no requieren autenticación
-  const publicRoutes = ["/login", "/auth/callback"];
-  const isPublicRoute = publicRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
-  );
+  const publicPrefixes = ["/login", "/auth/callback", "/informes", "/precios", "/registro", "/checkout", "/skills"];
+  const publicExact = ["/"];
+  const isPublicRoute =
+    publicExact.includes(request.nextUrl.pathname) ||
+    publicPrefixes.some((route) => request.nextUrl.pathname.startsWith(route));
 
   // Rutas API manejan su propia autenticación (por header)
   const isApiRoute = request.nextUrl.pathname.startsWith("/api/");
@@ -52,7 +53,7 @@ export async function updateSession(request: NextRequest) {
   // Si hay usuario y está en login, redirigir a home
   if (user && request.nextUrl.pathname === "/login") {
     const url = request.nextUrl.clone();
-    url.pathname = "/";
+    url.pathname = "/home";
     return NextResponse.redirect(url);
   }
 

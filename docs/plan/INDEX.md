@@ -1,6 +1,6 @@
 # MOL Dashboard - Documentación de Planificación
 
-> Última actualización: 2026-02-06
+> Última actualización: 2026-02-07
 
 ## Mapa de Documentos
 
@@ -15,23 +15,29 @@
          ▼                          ▼                          ▼
 ┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
 │ 01_MODELO       │      │ 02_ARQUITECTURA │      │ 03_WIREFRAMES/  │
-│ _NEGOCIO        │◄────►│ _PANTALLAS      │◄────►│ (25 pantallas)  │
+│ _NEGOCIO v2.0   │◄────►│ _PANTALLAS v2.0 │◄────►│ (30 pantallas)  │
 │                 │      │                 │      │                 │
-│ U-FREE, U-PRO   │      │ P-01 a P-25     │      │ publicas.md     │
-│ U-ENTERPRISE    │      │ Rutas, permisos │      │ checkout.md     │
-│ U-ADMIN         │      │                 │      │ suscriptor.md   │
-└────────┬────────┘      └────────┬────────┘      │ cuenta.md       │
-         │                        │               │ admin.md        │
-         │               ┌────────┴────────┐      └─────────────────┘
+│ U-VISITANTE     │      │ P-01 a P-30     │      │ publicas.md     │
+│ U-REGISTRADO    │      │ 4 niveles:      │      │ contenido.md    │
+│ U-TRIAL         │      │ público,        │      │ checkout.md     │
+│ U-SUSCRIPTOR    │      │ registrado,     │      │ suscriptor.md   │
+│ U-INSTITUCIONAL │      │ gated, admin    │      │ cuenta.md       │
+│ U-ADMIN         │      │                 │      │ admin.md        │
+└────────┬────────┘      └────────┬────────┘      └─────────────────┘
+         │                        │
+         │               ┌────────┴────────┐
          │               │                 │
          │               ▼                 ▼
          │      ┌─────────────────┐ ┌─────────────────┐
          │      │ 04_MODELO       │ │ 05_USER_FLOWS   │
-         │      │ _DATOS          │ │                 │
-         │      │                 │ │ F-01 a F-04     │
-         │      │ T-planes        │ │ Registro,       │
-         │      │ T-suscripciones │ │ Checkout,       │
-         │      │ T-pagos         │ │ Dashboard       │
+         │      │ _DATOS v2.0     │ │ v2.0            │
+         │      │                 │ │                 │
+         │      │ T-planes        │ │ F-01 a F-05     │
+         │      │ T-suscripciones │ │ Registro libre, │
+         │      │ T-solicitudes   │ │ Acceso gated,   │
+         │      │ T-contenidos    │ │ Checkout dual,  │
+         │      │ T-envios        │ │ Webhook MP,     │
+         │      │ T-pagos         │ │ CMS             │
          │      └────────┬────────┘ └─────────────────┘
          │               │
          │   ┌───────────┴───────────┐
@@ -52,8 +58,9 @@
                         │ 09_ROADMAP      │
                         │                 │
                         │ Fase 0-4        │
-                        │ Prioridades     │
-                        │ Dependencias    │
+                        │ + CMS           │
+                        │ + Aprobación    │
+                        │ + Pago dual     │
                         └────────┬────────┘
                                  │
                                  ▼
@@ -71,14 +78,25 @@
 
 | Métrica | Valor |
 |---------|-------|
-| Pantallas existentes | 12 |
-| Pantallas por crear | 13 |
-| **Total pantallas** | **25** |
+| Pantallas existentes | 10 |
+| Pantallas por crear | 20 |
+| **Total pantallas** | **30** |
 | Issues críticos | 11 |
 | Issues altos | 17 |
 | Issues medios | 19 |
 | **Total issues técnicos** | **47** |
 | **Issues de usuario** | **10** |
+
+### Modelo de Negocio v2.0
+
+| Componente | Estado |
+|------------|--------|
+| Registro libre | Definido |
+| Acceso gated (solicitud + aprobación) | Definido |
+| Pago dual (MercadoPago + institucional) | Definido |
+| CMS (contenidos + distribución) | Definido |
+| Pricing suscriptor | TBD |
+| Limitaciones trial | TBD |
 
 ### Issues de Usuario (admin@oede.gob.ar)
 
@@ -100,10 +118,8 @@
 | 2 | #8, #9, #10 | ✅ Completado |
 | 3 | #3, #5 | ⏳ Pendiente validación |
 | 4 | #6, #7 | ⏳ Pendiente validación |
-| 3 | #3, #5 | Pendiente |
-| 4 | #6, #7 | Pendiente |
 
-→ Ver [ANALISIS_ISSUES_USUARIO](./ANALISIS_ISSUES_USUARIO.md) para detalle
+> Ver [ANALISIS_ISSUES_USUARIO](./ANALISIS_ISSUES_USUARIO.md) para detalle
 
 ## Quick Links
 
@@ -111,7 +127,7 @@
 
 | Área | Documento | Cuándo usar |
 |------|-----------|-------------|
-| Modelo de negocio | [01_MODELO_NEGOCIO](./01_MODELO_NEGOCIO.md) | Definir usuarios, planes, pricing |
+| Modelo de negocio | [01_MODELO_NEGOCIO](./01_MODELO_NEGOCIO.md) | Definir usuarios, niveles, pricing |
 | Pantallas | [02_ARQUITECTURA_PANTALLAS](./02_ARQUITECTURA_PANTALLAS.md) | Agregar/modificar rutas |
 | Wireframes | [03_WIREFRAMES/](./03_WIREFRAMES/) | Diseñar UI |
 | Base de datos | [04_MODELO_DATOS](./04_MODELO_DATOS.md) | Tablas, SQL |
@@ -139,10 +155,10 @@
 
 | Prefijo | Tipo | Rango | Documento |
 |---------|------|-------|-----------|
-| `P-` | Pantalla | P-01 a P-25 | [02_ARQUITECTURA](./02_ARQUITECTURA_PANTALLAS.md) |
-| `U-` | Usuario | U-FREE, U-PRO, U-ENTERPRISE, U-ADMIN | [01_MODELO](./01_MODELO_NEGOCIO.md) |
-| `T-` | Tabla SQL | T-planes, T-suscripciones, etc. | [04_MODELO](./04_MODELO_DATOS.md) |
-| `F-` | Flujo | F-01 a F-04 | [05_USER_FLOWS](./05_USER_FLOWS.md) |
+| `P-` | Pantalla | P-01 a P-30 | [02_ARQUITECTURA](./02_ARQUITECTURA_PANTALLAS.md) |
+| `U-` | Usuario | U-VISITANTE, U-REGISTRADO, U-TRIAL, U-SUSCRIPTOR, U-INSTITUCIONAL, U-ADMIN | [01_MODELO](./01_MODELO_NEGOCIO.md) |
+| `T-` | Tabla SQL | T-planes, T-suscripciones, T-solicitudes_acceso, T-contenidos, T-envios_contenido, etc. | [04_MODELO](./04_MODELO_DATOS.md) |
+| `F-` | Flujo | F-01 a F-05 | [05_USER_FLOWS](./05_USER_FLOWS.md) |
 | `S-` | Seguridad | S-01 a S-17 | [06_SEGURIDAD](./06_SEGURIDAD.md) |
 | `E-` | Escalabilidad | E-01 a E-15 | [07_ESCALABILIDAD](./07_ESCALABILIDAD.md) |
 | `V-` | Valor | V-01 a V-15 | [08_PROPUESTA](./08_PROPUESTA_VALOR.md) |
@@ -153,7 +169,7 @@
 ### Para Agregar una Pantalla Nueva
 
 1. Definir en [02_ARQUITECTURA_PANTALLAS](./02_ARQUITECTURA_PANTALLAS.md) (asignar P-XX)
-2. Verificar permisos en [01_MODELO_NEGOCIO](./01_MODELO_NEGOCIO.md)
+2. Verificar nivel de acceso en [01_MODELO_NEGOCIO](./01_MODELO_NEGOCIO.md)
 3. Crear wireframe en [03_WIREFRAMES/](./03_WIREFRAMES/) correspondiente
 4. Si usa tablas nuevas, agregar en [04_MODELO_DATOS](./04_MODELO_DATOS.md)
 5. Si tiene flujo especial, agregar en [05_USER_FLOWS](./05_USER_FLOWS.md)

@@ -1,6 +1,7 @@
 # 9. Roadmap de Implementación
 
 > Última actualización: 2026-02-07
+> Versión: 2.0 — Modelo híbrido (acceso gated + CMS + pago dual)
 
 ## Referencias
 
@@ -9,7 +10,7 @@
 | [06_SEGURIDAD](./06_SEGURIDAD.md) | Fase 0 completa |
 | [07_ESCALABILIDAD](./07_ESCALABILIDAD.md) | Fase 1 |
 | [08_PROPUESTA_VALOR](./08_PROPUESTA_VALOR.md) | Fases 2-4 |
-| [01_MODELO_NEGOCIO](./01_MODELO_NEGOCIO.md) | Métricas de negocio |
+| [01_MODELO_NEGOCIO](./01_MODELO_NEGOCIO.md) | Modelo híbrido v2.0 |
 
 ## Matriz de Impacto
 
@@ -31,10 +32,11 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 
 [BLOQUEANTE]    [1 semana]       [2-3 semanas]    [4-6 semanas]   [2-3 meses]
 
-- Tokens        - Paginación     - Backfill NLP   - Alertas       - ML Predict
-- RLS           - Cache          - Validación     - Exports       - Salarios
-- Open Redirect - Vistas SQL     - Salarios       - API           - Personaliz.
-- Roles Admin   - Índices        - Tendencias     - Skills Gap    - Integrac.
+- Tokens        - Paginación     - Backfill NLP   - Registro      - ML Predict
+- RLS           - Cache          - Validación     - Acceso gated  - Salarios
+- Open Redirect - Vistas SQL     - Salarios       - CMS           - Personaliz.
+- Roles Admin   - Índices        - Tendencias     - Checkout dual - Integrac.
+                                                  - Alertas
 ```
 
 ---
@@ -49,10 +51,10 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 
 | ID | Tarea | Prioridad | Estado |
 |----|-------|-----------|--------|
-| S-01 | Rotar tokens expuestos | CRÍTICO | ⬜ |
-| S-02 | Fix open redirect en callback | CRÍTICO | ⬜ |
-| S-03 | Implementar RLS en tablas | CRÍTICO | ⬜ |
-| S-04 | Verificar rol en APIs admin | CRÍTICO | ⬜ |
+| S-01 | Rotar tokens expuestos | CRITICO | ⬜ |
+| S-02 | Fix open redirect en callback | CRITICO | ⬜ |
+| S-03 | Implementar RLS en tablas | CRITICO | ⬜ |
+| S-04 | Verificar rol en APIs admin | CRITICO | ⬜ |
 | S-07 | Headers de seguridad | ALTO | ⬜ |
 
 ### Checklist Pre-Fase-1
@@ -61,7 +63,7 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 □ Tokens de Supabase rotados
 □ .env* en .gitignore
 □ Redirect validado contra whitelist
-□ RLS activo en suscripciones, pagos, alertas
+□ RLS activo en suscripciones, pagos, alertas, solicitudes_acceso, contenidos
 □ Middleware verifica rol admin
 □ Headers de seguridad en next.config.js
 ```
@@ -82,10 +84,10 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 
 | ID | Tarea | Prioridad | Estado |
 |----|-------|-----------|--------|
-| E-01 | Reemplazar .limit(10000) | CRÍTICO | ⬜ |
-| E-02 | Usar vistas SQL existentes | CRÍTICO | ⬜ |
-| E-03 | Implementar React Query | CRÍTICO | ⬜ |
-| **E-16** | **Insights SQL (no fetchAllPaginated)** | **CRÍTICO** | ✅ Completado 2026-02-07 |
+| E-01 | Reemplazar .limit(10000) | CRITICO | ⬜ |
+| E-02 | Usar vistas SQL existentes | CRITICO | ⬜ |
+| E-03 | Implementar React Query | CRITICO | ⬜ |
+| **E-16** | **Insights SQL (no fetchAllPaginated)** | **CRITICO** | ✅ Completado 2026-02-07 |
 | E-05 | Agregar índices críticos | ALTO | ⬜ |
 | S-05 | Rate limiting en APIs | ALTO | ⬜ |
 | S-06 | Validación con Zod | ALTO | ⬜ |
@@ -111,9 +113,9 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 
 | ID | Tarea | Prioridad | Estado |
 |----|-------|-----------|--------|
-| V-02 | Backfill NLP (13k ofertas) | CRÍTICO | ⬜ |
-| V-01 | Acelerar validación | CRÍTICO | ⬜ |
-| V-04 | Habilitar análisis salarios | CRÍTICO | ⬜ |
+| V-02 | Backfill NLP (13k ofertas) | CRITICO | ⬜ |
+| V-01 | Acelerar validación | CRITICO | ⬜ |
+| V-04 | Habilitar análisis salarios | CRITICO | ⬜ |
 | V-07 | Gráficos tendencias | ALTO | ⬜ |
 
 ### Metas de Datos
@@ -126,29 +128,57 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 
 ---
 
-## Fase 3: Features Comerciales
+## Fase 3: Features Comerciales + Modelo Híbrido
 
 **Estado:** ⬜ Pendiente
 **Duración estimada:** 4-6 semanas
 
-### Tareas
+### Tareas — Acceso y Autenticación
+
+| ID | Tarea | Prioridad | Pantalla |
+|----|-------|-----------|----------|
+| - | Registro libre (sin plan) | ALTO | P-05 |
+| - | Área de contenido (registrados) | ALTO | P-26, P-27 |
+| - | Solicitud de acceso al tablero | ALTO | P-28 |
+| - | Gestión solicitudes (admin) | ALTO | P-29 |
+| - | Workflow aprobación + email | ALTO | P-29 → email |
+| - | Activación trial automática (7 días) | ALTO | Función BD |
+
+### Tareas — CMS
+
+| ID | Tarea | Prioridad | Pantalla |
+|----|-------|-----------|----------|
+| - | CRUD de contenidos (admin) | ALTO | P-30 |
+| - | Distribución por email | ALTO | Sistema |
+| - | Métricas de contenido (aperturas, descargas) | MEDIO | P-30 |
+
+### Tareas — Pago Dual
+
+| ID | Tarea | Prioridad | Pantalla |
+|----|-------|-----------|----------|
+| - | Checkout MercadoPago | ALTO | P-06, P-07, P-08 |
+| - | Flujo pago institucional (orden compra) | ALTO | P-06 variante |
+| - | Gestión suscripciones | ALTO | P-15 |
+| - | Webhook MercadoPago (F-04) | ALTO | API |
+
+### Tareas — Features Dashboard
 
 | ID | Tarea | Prioridad | Pantalla |
 |----|-------|-----------|----------|
 | V-05 | Alertas por email | ALTO | P-13 |
 | V-09 | Export Excel/PDF | ALTO | P-12 |
-| V-08 | API pública (Enterprise) | ALTO | Nueva |
+| V-08 | API pública (Institucional) | ALTO | Nueva |
 | V-10 | Skills gap analysis | ALTO | Nueva |
-| - | Checkout MercadoPago | ALTO | P-06, P-07, P-08 |
-| - | Gestión suscripciones | ALTO | P-15 |
 
 ### Criterio de Éxito
 
 | Métrica | Meta |
 |---------|------|
-| Features PRO funcionales | 5 |
-| Usuarios PRO | 10 |
-| MRR | $150k ARS |
+| Usuarios registrados | 200 |
+| Solicitudes de tablero | 50 |
+| Suscriptores activos | 10 |
+| Contenidos publicados | 6 |
+| Tasa apertura emails | > 30% |
 
 ---
 
@@ -165,6 +195,7 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 | V-06 | Comparador salarios | Por ocupación, provincia |
 | V-14 | Dashboard personalizable | Widgets drag & drop |
 | - | Integración LinkedIn | Import de perfil |
+| - | Segmentación de contenido | CMS envía por interés/perfil |
 
 ---
 
@@ -174,7 +205,7 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 graph LR
     F0[Fase 0: Seguridad] --> F1[Fase 1: Escalabilidad]
     F0 --> F2[Fase 2: Datos]
-    F1 --> F3[Fase 3: Features]
+    F1 --> F3[Fase 3: Features + Modelo Híbrido]
     F2 --> F3
     F3 --> F4[Fase 4: Diferenciación]
 ```
@@ -204,13 +235,14 @@ graph LR
 
 ### Release 1.0 (+ Fase 3)
 
-**Meta:** Producto comercializable
+**Meta:** Producto con modelo híbrido funcionando
 
 ```
-✓ MercadoPago integrado
-✓ Planes FREE/PRO funcionando
+✓ Registro libre + acceso gated
+✓ CMS publicando contenido a registrados
+✓ MercadoPago + pago institucional
 ✓ Alertas y exports
-✓ 10 usuarios PRO
+✓ 200 registrados, 10 suscriptores
 ```
 
 ### Release 2.0 (+ Fase 4)
@@ -219,9 +251,9 @@ graph LR
 
 ```
 ✓ Predicciones ML
-✓ API para Enterprise
-✓ 100 usuarios PRO
-✓ 10 clientes Enterprise
+✓ API para Institucional
+✓ 1,000 registrados, 50 suscriptores
+✓ 3 clientes institucionales
 ```
 
 ---
@@ -241,9 +273,11 @@ graph LR
 
 | Métrica | MVP | 6 meses | 1 año |
 |---------|-----|---------|-------|
-| Usuarios registrados | 100 | 1,000 | 5,000 |
-| Usuarios PRO | 10 | 100 | 500 |
-| MRR | $150k | $1.5M | $7.5M |
+| Usuarios registrados | 200 | 1,000 | 5,000 |
+| Suscriptores tablero | 10 | 50 | 200 |
+| Institucionales | 0 | 3 | 10 |
+| Contenidos publicados | 6 | 15 | 30 |
+| Tasa apertura emails | - | > 30% | > 35% |
 | Churn | <10% | <5% | <3% |
 
 ---
@@ -252,16 +286,19 @@ graph LR
 
 **ANTES de crear pantallas nuevas:**
 
-1. ⚠️ **URGENTE:** Rotar tokens de Supabase expuestos en Git
-2. ⚠️ **URGENTE:** Agregar `.env*` a `.gitignore`
-3. ⚠️ **URGENTE:** Fix open redirect en `app/auth/callback/route.ts`
+1. **URGENTE:** Rotar tokens de Supabase expuestos en Git
+2. **URGENTE:** Agregar `.env*` a `.gitignore`
+3. **URGENTE:** Fix open redirect en `app/auth/callback/route.ts`
 
 **DESPUÉS de asegurar:**
 
-1. Implementar RLS básico en tablas
-2. Crear las 13 páginas placeholder
-3. Integrar MercadoPago
-4. Acelerar pipeline de validación
+1. Implementar RLS básico en tablas (incluir nuevas: solicitudes_acceso, contenidos)
+2. Crear las 20 páginas placeholder
+3. Implementar registro libre + área de contenido
+4. Implementar flujo de solicitud de acceso
+5. Integrar CMS básico
+6. Integrar MercadoPago + flujo institucional
+7. Acelerar pipeline de validación
 
 ---
 
@@ -271,3 +308,13 @@ graph LR
 - **Fases pueden solaparse** - Especialmente 2 y 3
 - **Fase 0 es BLOQUEANTE** - No proceder sin completarla
 - **Revisar este documento semanalmente** - Actualizar estados
+- **Pricing pendiente** - El precio del plan suscriptor requiere benchmark (ver [01_MODELO_NEGOCIO](./01_MODELO_NEGOCIO.md#decisiones-pendientes))
+
+---
+
+## Historial de Cambios
+
+| Fecha | Versión | Cambio |
+|-------|---------|--------|
+| 2026-02-05 | 1.0 | Roadmap SaaS (Free/Pro/Enterprise) |
+| 2026-02-07 | 2.0 | Modelo híbrido en Fase 3: acceso gated, CMS, pago dual, workflow aprobación. Métricas actualizadas |
