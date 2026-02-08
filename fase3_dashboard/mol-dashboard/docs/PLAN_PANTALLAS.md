@@ -88,41 +88,64 @@ Plataforma que **vende acceso** a inteligencia del mercado laboral argentino.
 
 ---
 
-## ARQUITECTURA PROPUESTA v2.0
+## ARQUITECTURA ACTUAL v2.1
 
 ```
 MOL Platform
 │
 ├── PÚBLICO (sin auth)
 │   ├── / ────────────────── Landing Page (hero, features, pricing)
-│   ├── /informes ────────── Informes públicos PDF descargables
-│   ├── /precios ─────────── Planes y comparativa
-│   ├── /login ───────────── Login existente
-│   ├── /registro ────────── Registro nuevo usuario
-│   └── /skills ──────────── Skills Intelligence (versión limitada?)
+│   ├── /login ──────────── Login (email/password)
+│   ├── /registro ───────── Registro (nombre/email/password)
+│   ├── /precios ────────── Planes y comparativa
+│   ├── /informes ───────── Informes públicos
+│   ├── /skills ─────────── Skills Intelligence (Sunburst ESCO)
+│   ├── /checkout ───────── Checkout MercadoPago (placeholder)
+│   ├── /checkout/exito ─── Confirmación pago → /home
+│   └── /checkout/cancelado  Pago fallido → /precios
 │
 ├── AUTENTICADO (post-login)
 │   ├── /home ───────────── Hub personalizado (redirect post-login)
-│   │
-│   ├── /dashboard ───────── Tablero con KPIs y resumen
-│   │   ├── Tab: Panorama General
-│   │   ├── Tab: Requerimientos
-│   │   └── Tab: Ofertas Laborales
-│   ├── /empresas ────────── Análisis por empresa/sector
-│   ├── /ocupaciones ─────── Explorador ESCO detallado
-│   ├── /skills ──────────── Skills Intelligence completo
-│   ├── /reportes ────────── Generador de reportes (export)
-│   ├── /alertas ─────────── Configurar alertas por ocupación/skill
-│   ├── /mi-cuenta ───────── Perfil + suscripción + facturación
-│   └── /api-docs ────────── Documentación API (solo Enterprise)
+│   ├── /dashboard ──────── Tablero con 3 tabs (datos reales)
+│   │   ├── /dashboard/empresas ── Análisis empresas (placeholder)
+│   │   ├── /dashboard/reportes ── Generador reportes (placeholder)
+│   │   └── /dashboard/alertas ─── Alertas ocupación (placeholder)
+│   └── /cuenta ─────────── Mi cuenta
+│       ├── /cuenta/suscripcion ── Plan actual (placeholder)
+│       └── /cuenta/facturacion ── Historial pagos (placeholder)
 │
 └── ADMIN OEDE (auth + rol admin)
-    ├── /admin ───────────── Dashboard de sistema (solo lectura)
-    ├── /admin/usuarios ──── Ver usuarios y suscripciones
-    ├── /admin/skills ────── Skills Intelligence interno
-    ├── /admin/metricas ──── Métricas del pipeline
-    ├── /admin/issues ────── Feedback recibido
-    └── /admin/logs ──────── Auditoría
+    ├── /admin ───────────── Estado del sistema (3 fases)
+    ├── /admin/usuarios ──── CRUD usuarios
+    ├── /admin/issues ────── Feedback/errores
+    ├── /admin/skills ────── Skills Intelligence (placeholder)
+    ├── /admin/arquitectura ─ Mapa pantallas + pipeline
+    ├── /admin/scraping ──── Estado scraping
+    ├── /admin/metricas ──── KPIs del pipeline
+    ├── /admin/logs ──────── Audit log + eventos
+    └── /admin/configuracion  Estado sistema (solo lectura)
+```
+
+### Flujo de navegación
+
+```
+VISITANTE
+  / ──→ /login ──→ /home (hub personalizado)
+  / ──→ /registro ──→ confirmar email ──→ /login ──→ /home
+  / ──→ /precios ──→ /checkout ──→ /checkout/exito ──→ /home
+  / ──→ /informes (libre)
+  / ──→ /skills (libre)
+
+AUTENTICADO
+  /home ──→ /dashboard (todos)
+  /home ──→ /admin (solo admin)
+  /home ──→ /cuenta/suscripcion
+  /home ──→ /precios (upgrade, solo free)
+  Logout ──→ / (landing)
+
+MIDDLEWARE
+  Sin auth + ruta protegida ──→ /login
+  Con auth + /login ──→ /home
 ```
 
 ---
@@ -223,66 +246,78 @@ Login OK → /home (SIEMPRE)
 
 ---
 
-## LISTA COMPLETA DE PANTALLAS (22 pantallas)
+## LISTA COMPLETA DE PANTALLAS (25 rutas)
 
-### PÚBLICAS (5)
+> **Leyenda:** Funcional = con lógica real | Placeholder = UI sin backend | Nuevo = recién creado
 
-| # | Pantalla | Ruta | Prioridad | Descripción |
-|---|----------|------|-----------|-------------|
-| 1 | **Landing Page** | `/` | 🔴 ALTA | Hero, features, pricing preview, CTA |
-| 2 | **Precios** | `/precios` | 🔴 ALTA | Comparativa de planes, CTA suscribir |
-| 3 | **Informes Públicos** | `/informes` | 🟡 MEDIA | Lista de PDFs descargables |
-| 4 | **Login** | `/login` | ✅ EXISTE | Ya implementado |
-| 5 | **Registro** | `/registro` | 🔴 ALTA | Form + selección de plan |
+### PÚBLICAS (6)
+
+| # | Pantalla | Ruta | Estado | Descripción |
+|---|----------|------|--------|-------------|
+| 1 | **Landing Page** | `/` | Funcional | Hero, features, stats, CTA |
+| 2 | **Precios** | `/precios` | Funcional | 3 planes (Free, Pro, Enterprise) |
+| 3 | **Informes Públicos** | `/informes` | Funcional (mock) | Lista de informes, descarga pendiente |
+| 4 | **Login** | `/login` | Funcional | Email/password, link a registro |
+| 5 | **Registro** | `/registro` | Funcional | Signup con nombre/email/password |
+| 6 | **Skills Intelligence** | `/skills` | Funcional | Sunburst ESCO, 4 tabs |
 
 ### CHECKOUT (3)
 
-| # | Pantalla | Ruta | Prioridad | Descripción |
-|---|----------|------|-----------|-------------|
-| 6 | **Checkout** | `/checkout` | 🔴 ALTA | MercadoPago integration |
-| 7 | **Éxito** | `/checkout/exito` | 🔴 ALTA | Confirmación + redirect |
-| 8 | **Cancelado** | `/checkout/cancelado` | 🔴 ALTA | Manejo de error |
+| # | Pantalla | Ruta | Estado | Descripción |
+|---|----------|------|--------|-------------|
+| 7 | **Checkout** | `/checkout` | Placeholder | MercadoPago pendiente |
+| 8 | **Éxito** | `/checkout/exito` | Placeholder | Confirmación, redirect a `/home` |
+| 9 | **Cancelado** | `/checkout/cancelado` | Placeholder | Pago fallido |
 
-### SUSCRIPTOR - DASHBOARD (5)
+### AUTENTICADO - HUB (1)
 
-| # | Pantalla | Ruta | Prioridad | Descripción |
-|---|----------|------|-----------|-------------|
-| 9 | **Dashboard** | `/dashboard` | ✅ EXISTE | Actual `/` se mueve acá |
-| 10 | **Skills Intelligence** | `/dashboard/skills` | ✅ EXISTE | Actual `/admin/skills` |
-| 11 | **Análisis Empresas** | `/dashboard/empresas` | 🟡 MEDIA | Top empresas, sectores |
-| 12 | **Reportes** | `/dashboard/reportes` | 🟡 MEDIA | Generar Excel/PDF |
-| 13 | **Alertas** | `/dashboard/alertas` | 🟢 BAJA | Suscribirse a cambios |
+| # | Pantalla | Ruta | Estado | Descripción |
+|---|----------|------|--------|-------------|
+| 10 | **Home (Hub post-login)** | `/home` | Funcional | Hub personalizado por rol/plan |
 
-### SUSCRIPTOR - CUENTA (3)
+### AUTENTICADO - DASHBOARD (4)
 
-| # | Pantalla | Ruta | Prioridad | Descripción |
-|---|----------|------|-----------|-------------|
-| 14 | **Mi Cuenta** | `/cuenta` | 🔴 ALTA | Perfil del usuario |
-| 15 | **Suscripción** | `/cuenta/suscripcion` | 🔴 ALTA | Plan actual, upgrade, cancelar |
-| 16 | **Facturación** | `/cuenta/facturacion` | 🟡 MEDIA | Historial de pagos |
+| # | Pantalla | Ruta | Estado | Descripción |
+|---|----------|------|--------|-------------|
+| 11 | **Dashboard** | `/dashboard` | Funcional | 3 tabs con datos reales de Supabase |
+| 12 | **Análisis Empresas** | `/dashboard/empresas` | Placeholder | Top empresas, sectores |
+| 13 | **Reportes** | `/dashboard/reportes` | Placeholder | Generar Excel/PDF |
+| 14 | **Alertas** | `/dashboard/alertas` | Placeholder | Suscribirse a cambios |
 
-### ADMIN OEDE (6)
+### AUTENTICADO - CUENTA (3)
 
-| # | Pantalla | Ruta | Prioridad | Descripción |
-|---|----------|------|-----------|-------------|
-| 17 | **Admin Dashboard** | `/admin` | ✅ EXISTE | Estado del sistema |
-| 18 | **Admin Usuarios** | `/admin/usuarios` | ✅ EXISTE | Lista usuarios + suscripciones |
-| 19 | **Admin Skills** | `/admin/skills` | ✅ EXISTE | Skills Intelligence interno |
-| 20 | **Admin Métricas** | `/admin/metricas` | ✅ EXISTE | KPIs del pipeline |
-| 21 | **Admin Issues** | `/admin/issues` | ✅ EXISTE | Feedback recibido |
-| 22 | **Admin Logs** | `/admin/logs` | ✅ EXISTE | Auditoría |
+| # | Pantalla | Ruta | Estado | Descripción |
+|---|----------|------|--------|-------------|
+| 15 | **Mi Cuenta** | `/cuenta` | Placeholder | Hub con links a sub-secciones |
+| 16 | **Suscripción** | `/cuenta/suscripcion` | Placeholder | Plan actual, upgrade |
+| 17 | **Facturación** | `/cuenta/facturacion` | Placeholder | Historial de pagos |
+
+### ADMIN OEDE (8)
+
+| # | Pantalla | Ruta | Estado | Descripción |
+|---|----------|------|--------|-------------|
+| 18 | **Admin Dashboard** | `/admin` | Funcional | Estado del sistema, 3 fases |
+| 19 | **Admin Usuarios** | `/admin/usuarios` | Funcional | CRUD usuarios |
+| 20 | **Admin Issues** | `/admin/issues` | Funcional | Feedback/errores |
+| 21 | **Admin Skills** | `/admin/skills` | Placeholder | Skills Intelligence interno |
+| 22 | **Admin Métricas** | `/admin/metricas` | Funcional | KPIs del pipeline |
+| 23 | **Admin Arquitectura** | `/admin/arquitectura` | Funcional | Mapa pantallas + pipeline |
+| 24 | **Admin Logs** | `/admin/logs` | Funcional | Audit log + eventos |
+| 25 | **Admin Configuración** | `/admin/configuracion` | Funcional (solo lectura) | Estado sistema |
 
 ---
 
 ## RESUMEN
 
-| Categoría | Total | Existentes | Por crear |
-|-----------|-------|------------|-----------|
-| Públicas | 5 | 1 | 4 |
+| Categoría | Total | Funcional | Placeholder |
+|-----------|-------|-----------|-------------|
+| Públicas | 6 | 6 | 0 |
 | Checkout | 3 | 0 | 3 |
-| Suscriptor | 8 | 2 | 6 |
-| Admin | 6 | 6 | 0 |
-| **TOTAL** | **22** | **9** | **13** |
+| Hub | 1 | 1 | 0 |
+| Dashboard | 4 | 1 | 3 |
+| Cuenta | 3 | 0 | 3 |
+| Admin | 8 | 7 | 1 |
+| **TOTAL** | **25** | **15** | **10** |
 
 ---
 

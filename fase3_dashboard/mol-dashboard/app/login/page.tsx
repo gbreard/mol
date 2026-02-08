@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@/lib/supabase/browser";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -122,7 +123,14 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="mt-8 text-center text-xs text-gray-400">
+          <div className="mt-6 text-center">
+            <span className="text-sm text-gray-500">¿No tenés cuenta? </span>
+            <Link href="/registro" className="text-sm font-semibold text-blue-600 hover:text-blue-700">
+              Registrate gratis
+            </Link>
+          </div>
+
+          <p className="mt-6 text-center text-xs text-gray-400">
             OEDE - Observatorio de Empleo y Dinámica Empresarial
           </p>
         </div>
