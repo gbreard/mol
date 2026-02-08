@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Map, GitBranch, Activity, Loader2, RefreshCw } from 'lucide-react';
+import { Map, GitBranch, Activity, Loader2, RefreshCw, XCircle } from 'lucide-react';
 import ScreenMapGraph from '@/components/admin/ScreenMapGraph';
 import PipelineFlow from '@/components/admin/PipelineFlow';
 import PhaseStatusCard from '@/components/admin/PhaseStatusCard';
@@ -109,6 +109,7 @@ export default function AdminArchitecturePage() {
   const [activeTab, setActiveTab] = useState<TabId>('screens');
   const [architectureData, setArchitectureData] = useState<ArchitectureData | null>(null);
   const [metrics, setMetrics] = useState<ArchitectureMetrics | null>(null);
+  const [metricsError, setMetricsError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
@@ -135,10 +136,15 @@ export default function AdminArchitecturePage() {
       if (res.ok) {
         const data = await res.json();
         setMetrics(data);
+        setMetricsError(null);
         setLastUpdate(new Date());
+      } else {
+        const body = await res.json().catch(() => ({}));
+        setMetricsError(body.error || `API respondió ${res.status}`);
       }
     } catch (err) {
       console.error('Error loading metrics:', err);
+      setMetricsError('No se pudo conectar con la API de métricas');
     } finally {
       setIsRefreshing(false);
     }
@@ -291,6 +297,18 @@ export default function AdminArchitecturePage() {
                     />
                   </div>
                 </>
+              ) : metricsError ? (
+                <div className="flex flex-col items-center justify-center h-64 text-center">
+                  <XCircle className="w-8 h-8 text-red-400 mb-3" />
+                  <p className="text-gray-700 font-medium">No se pudieron cargar las métricas</p>
+                  <p className="text-sm text-gray-500 mt-1">{metricsError}</p>
+                  <button
+                    onClick={() => loadMetrics(true)}
+                    className="mt-4 px-4 py-2 text-sm bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                  >
+                    Reintentar
+                  </button>
+                </div>
               ) : (
                 <div className="flex items-center justify-center h-64">
                   <Loader2 className="w-8 h-8 animate-spin text-purple-600" />

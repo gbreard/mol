@@ -1,58 +1,37 @@
 {
   "pages": [
     {
-      "id": "home",
-      "path": "/",
-      "label": "Home",
-      "type": "public",
-      "description": "Dashboard principal con 3 tabs: Panorama, Requerimientos, Skills",
-      "components": ["PanoramaGeneral", "Requerimientos", "OfertasLaborales"],
-      "dataSource": ["ofertas_dashboard", "vw_dashboard_kpis"]
-    },
-    {
-      "id": "login",
-      "path": "/login",
-      "label": "Login",
-      "type": "auth",
-      "description": "Autenticación con Supabase",
-      "components": [],
-      "dataSource": ["auth.users"]
-    },
-    {
-      "id": "skills-public",
-      "path": "/skills",
-      "label": "Skills (Público)",
-      "type": "public",
-      "description": "Explorador de skills ESCO público",
-      "components": ["SkillsSunburst"],
-      "dataSource": ["esco_skills_hierarchy.json"]
-    },
-    {
-      "id": "admin",
-      "path": "/admin",
-      "label": "Admin Dashboard",
-      "type": "admin",
-      "description": "Estado general del sistema y métricas principales",
-      "components": ["PhaseStatusCard"],
-      "dataSource": ["/api/admin/stats"]
-    },
-    {
       "id": "admin-arquitectura",
       "path": "/admin/arquitectura",
       "label": "Arquitectura",
       "type": "admin",
-      "description": "Visualización de arquitectura del sistema",
-      "components": ["ScreenMapGraph", "PipelineFlow", "ArchitectureMetrics"],
-      "dataSource": ["/api/admin/architecture-metrics"]
+      "description": "Visualizacion de arquitectura del sistema",
+      "rendering": "client",
+      "components": [
+        "ScreenMapGraph",
+        "PipelineFlow",
+        "PhaseStatusCard"
+      ],
+      "dataSource": [
+        "/data/dashboard_architecture.json",
+        "/api/admin/architecture-metrics"
+      ]
     },
     {
-      "id": "admin-usuarios",
-      "path": "/admin/usuarios",
-      "label": "Usuarios",
+      "id": "admin-configuracion",
+      "path": "/admin/configuracion",
+      "label": "Configuracion",
       "type": "admin",
-      "description": "Gestión de usuarios y roles",
+      "description": "Configuracion del sistema",
+      "rendering": "client",
       "components": [],
-      "dataSource": ["/api/admin/users", "auth.users"]
+      "dataSource": [
+        "ofertas_dashboard",
+        "ofertas_skills",
+        "ocupaciones_esco",
+        "issues",
+        "sistema_estado"
+      ]
     },
     {
       "id": "admin-issues",
@@ -60,17 +39,55 @@
       "label": "Issues",
       "type": "admin",
       "description": "Sistema de feedback y reportes de errores",
-      "components": ["IssuesList"],
-      "dataSource": ["issues"]
+      "rendering": "client",
+      "components": [
+        "IssueList",
+        "IssueBadge"
+      ],
+      "dataSource": []
     },
     {
-      "id": "admin-skills",
-      "path": "/admin/skills",
-      "label": "Skills Intelligence",
+      "id": "admin-logs",
+      "path": "/admin/logs",
+      "label": "Logs",
       "type": "admin",
-      "description": "Análisis avanzado de skills con 6 sub-tabs",
-      "components": ["SkillsSunburst", "OccupationDetail", "OccupationCompare", "MySkillsSearch", "ArgentinaProfileTab", "ConsolidatedProfileTab"],
-      "dataSource": ["occupation_full_detail.json", "mol_skills_profile.json", "/api/skills-intelligence"]
+      "description": "Logs de auditoria del sistema",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "audit_log",
+        "eventos_uso"
+      ]
+    },
+    {
+      "id": "admin-metricas",
+      "path": "/admin/metricas",
+      "label": "Metricas",
+      "type": "admin",
+      "description": "Metricas detalladas del pipeline",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "ofertas_dashboard",
+        "ofertas_skills",
+        "sistema_estado",
+        "vw_distribucion_isco"
+      ]
+    },
+    {
+      "id": "admin",
+      "path": "/admin",
+      "label": "Admin Dashboard",
+      "type": "admin",
+      "description": "Estado general del sistema y metricas principales",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/admin/stats",
+        "ofertas_dashboard",
+        "ofertas_skills",
+        "sistema_estado"
+      ]
     },
     {
       "id": "admin-scraping",
@@ -78,107 +95,471 @@
       "label": "Scraping",
       "type": "admin",
       "description": "Estado de los scrapers y fuentes de datos",
+      "rendering": "client",
       "components": [],
-      "dataSource": ["ofertas"]
+      "dataSource": [
+        "sistema_estado",
+        "ofertas_dashboard"
+      ]
     },
     {
-      "id": "admin-metricas",
-      "path": "/admin/metricas",
-      "label": "Métricas",
+      "id": "admin-skills",
+      "path": "/admin/skills",
+      "label": "Skills Intelligence",
       "type": "admin",
-      "description": "Métricas detalladas del pipeline",
-      "components": [],
-      "dataSource": ["pipeline_runs", "validation_errors"]
+      "description": "Analisis avanzado de skills con 6 sub-tabs",
+      "rendering": "client",
+      "components": [
+        "SkillsSunburst",
+        "OccupationDetail",
+        "OccupationCompare",
+        "MySkillsSearch",
+        "ArgentinaProfileTab",
+        "ConsolidatedProfileTab"
+      ],
+      "dataSource": [
+        "/data/esco_skills_hierarchy.json",
+        "/data/occupations_index.json",
+        "/data/occupation_full_detail.json",
+        "/data/mol_skills_profile.json"
+      ]
     },
     {
-      "id": "admin-logs",
-      "path": "/admin/logs",
-      "label": "Logs",
+      "id": "admin-usuarios",
+      "path": "/admin/usuarios",
+      "label": "Usuarios",
       "type": "admin",
-      "description": "Logs de auditoría del sistema",
+      "description": "Gestion de usuarios y roles",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/admin/users"
+      ]
+    },
+    {
+      "id": "checkout-cancelado",
+      "path": "/checkout/cancelado",
+      "label": "Checkout Cancelado",
+      "type": "checkout",
+      "description": "Pago cancelado o fallido",
+      "rendering": "server",
       "components": [],
       "dataSource": []
     },
     {
-      "id": "admin-configuracion",
-      "path": "/admin/configuracion",
-      "label": "Configuración",
-      "type": "admin",
-      "description": "Configuración del sistema",
+      "id": "checkout-exito",
+      "path": "/checkout/exito",
+      "label": "Checkout Exitoso",
+      "type": "checkout",
+      "description": "Confirmacion de pago exitoso",
+      "rendering": "server",
       "components": [],
       "dataSource": []
     },
     {
-      "id": "auth-callback",
-      "path": "/auth/callback",
-      "label": "Auth Callback",
+      "id": "checkout",
+      "path": "/checkout",
+      "label": "Checkout",
+      "type": "checkout",
+      "description": "Proceso de pago para suscripcion",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "cuenta-facturacion",
+      "path": "/cuenta/facturacion",
+      "label": "Facturacion",
+      "type": "account",
+      "description": "Historial de pagos y facturas",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "cuenta",
+      "path": "/cuenta",
+      "label": "Mi Cuenta",
+      "type": "account",
+      "description": "Perfil y configuracion de la cuenta",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "cuenta-suscripcion",
+      "path": "/cuenta/suscripcion",
+      "label": "Suscripcion",
+      "type": "account",
+      "description": "Gestion del plan de suscripcion",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "dashboard-alertas",
+      "path": "/dashboard/alertas",
+      "label": "Alertas",
+      "type": "dashboard",
+      "description": "Sistema de alertas por ocupacion y territorio",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "dashboard-empresas",
+      "path": "/dashboard/empresas",
+      "label": "Empresas",
+      "type": "dashboard",
+      "description": "Analisis de ofertas por empresa",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "dashboard",
+      "path": "/dashboard",
+      "label": "Dashboard",
+      "type": "dashboard",
+      "description": "Tablero de datos del mercado laboral con filtros",
+      "rendering": "client",
+      "components": [
+        "Header",
+        "Sidebar",
+        "PanoramaGeneral",
+        "Requerimientos",
+        "OfertasLaborales",
+        "ActiveFilters"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "dashboard-reportes",
+      "path": "/dashboard/reportes",
+      "label": "Reportes",
+      "type": "dashboard",
+      "description": "Generacion de reportes personalizados",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "home",
+      "path": "/home",
+      "label": "Home",
+      "type": "authenticated",
+      "description": "Dashboard principal post-login con accesos rapidos segun rol",
+      "rendering": "server",
+      "components": [
+        "LogoutButton"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "informes",
+      "path": "/informes",
+      "label": "Informes",
+      "type": "public",
+      "description": "Informes trimestrales del mercado laboral",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "login",
+      "path": "/login",
+      "label": "Login",
       "type": "auth",
-      "description": "Callback de OAuth para Supabase",
+      "description": "Autenticacion con Supabase Auth",
+      "rendering": "client",
       "components": [],
       "dataSource": []
+    },
+    {
+      "id": "landing",
+      "path": "/",
+      "label": "Landing",
+      "type": "public",
+      "description": "Pagina publica principal con CTA de registro",
+      "rendering": "server",
+      "components": [
+        "AnimatedNav",
+        "HeroParticles",
+        "Counter",
+        "ScrollReveal"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "precios",
+      "path": "/precios",
+      "label": "Precios",
+      "type": "public",
+      "description": "Planes y precios de suscripcion",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "registro",
+      "path": "/registro",
+      "label": "Registro",
+      "type": "auth",
+      "description": "Registro de nuevos usuarios",
+      "rendering": "client",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "skills",
+      "path": "/skills",
+      "label": "Skills (Publico)",
+      "type": "public",
+      "description": "Explorador de skills ESCO publico",
+      "rendering": "client",
+      "components": [
+        "SkillsSunburst",
+        "OccupationDetail",
+        "OccupationCompare",
+        "MySkillsSearch"
+      ],
+      "dataSource": [
+        "/data/esco_skills_hierarchy.json",
+        "/data/occupation_full_detail.json"
+      ]
     }
   ],
   "apiRoutes": [
     {
+      "id": "api-admin-architecture-metrics",
+      "path": "/api/admin/architecture-metrics",
+      "method": "GET",
+      "description": "Metricas de arquitectura y estado de fases",
+      "usedBy": [
+        "/admin/arquitectura"
+      ]
+    },
+    {
       "id": "api-admin-stats",
       "path": "/api/admin/stats",
       "method": "GET",
-      "description": "Estadísticas generales del sistema",
-      "usedBy": ["/admin"]
+      "description": "Estadisticas generales del sistema",
+      "usedBy": [
+        "/admin"
+      ]
     },
     {
       "id": "api-admin-users",
       "path": "/api/admin/users",
       "method": "GET/POST",
       "description": "CRUD de usuarios",
-      "usedBy": ["/admin/usuarios"]
+      "usedBy": [
+        "/admin/usuarios"
+      ]
     },
     {
-      "id": "api-admin-architecture",
-      "path": "/api/admin/architecture-metrics",
-      "method": "GET",
-      "description": "Métricas de arquitectura y estado de fases",
-      "usedBy": ["/admin/arquitectura"]
+      "id": "api-consolidated-profiles",
+      "path": "/api/consolidated-profiles",
+      "method": "GET/POST",
+      "description": "Gestion de perfiles consolidados",
+      "usedBy": []
+    },
+    {
+      "id": "api-esco-argentino",
+      "path": "/api/esco-argentino",
+      "method": "GET/POST/PATCH/DELETE",
+      "description": "Datos ESCO adaptados al mercado argentino",
+      "usedBy": []
     },
     {
       "id": "api-occupations-search",
       "path": "/api/occupations/search",
       "method": "GET",
-      "description": "Búsqueda de ocupaciones ESCO",
-      "usedBy": ["/admin/skills"]
+      "description": "Busqueda de ocupaciones ESCO",
+      "usedBy": []
     },
     {
       "id": "api-occupations-skills",
       "path": "/api/occupations/skills",
       "method": "GET",
-      "description": "Skills de una ocupación específica",
-      "usedBy": ["/admin/skills"]
+      "description": "Skills de una ocupacion especifica",
+      "usedBy": []
+    },
+    {
+      "id": "api-perfil-argentina-occupation",
+      "path": "/api/perfil-argentina/[occupation]",
+      "method": "GET",
+      "description": "Perfil ocupacional argentino con datos MOL",
+      "usedBy": []
+    },
+    {
+      "id": "api-skills-intelligence-occupation",
+      "path": "/api/skills-intelligence/occupation",
+      "method": "GET",
+      "description": "Skills especificas por ocupacion via intelligence",
+      "usedBy": []
     },
     {
       "id": "api-skills-intelligence",
       "path": "/api/skills-intelligence",
-      "method": "POST",
-      "description": "Análisis de inteligencia de skills",
-      "usedBy": ["/admin/skills"]
+      "method": "GET",
+      "description": "Analisis de inteligencia de skills",
+      "usedBy": []
     },
     {
-      "id": "api-consolidated-profiles",
-      "path": "/api/consolidated-profiles",
-      "method": "POST",
-      "description": "Gestión de perfiles consolidados",
-      "usedBy": ["/admin/skills"]
+      "id": "api-worker-profiles",
+      "path": "/api/worker-profiles",
+      "method": "GET/POST/PUT/DELETE",
+      "description": "Perfiles de trabajadores",
+      "usedBy": []
+    },
+    {
+      "id": "auth-callback",
+      "path": "/auth/callback",
+      "method": "GET",
+      "description": "Callback OAuth para Supabase",
+      "usedBy": []
     }
   ],
   "connections": [
-    { "from": "/", "to": "/login", "type": "navigation", "label": "Login requerido" },
-    { "from": "/login", "to": "/", "type": "navigation", "label": "Post-login redirect" },
-    { "from": "/admin", "to": "/api/admin/stats", "type": "data", "label": "Fetch stats" },
-    { "from": "/admin/usuarios", "to": "/api/admin/users", "type": "data", "label": "CRUD usuarios" },
-    { "from": "/admin/arquitectura", "to": "/api/admin/architecture-metrics", "type": "data", "label": "Fetch métricas" },
-    { "from": "/admin/skills", "to": "/api/occupations/search", "type": "data", "label": "Buscar ocupaciones" },
-    { "from": "/admin/skills", "to": "/api/occupations/skills", "type": "data", "label": "Skills por ocupación" },
-    { "from": "/admin/skills", "to": "/api/skills-intelligence", "type": "data", "label": "Análisis skills" },
-    { "from": "/admin/skills", "to": "/api/consolidated-profiles", "type": "data", "label": "Perfiles consolidados" }
+    {
+      "from": "/",
+      "to": "/login",
+      "type": "navigation",
+      "label": "Login requerido"
+    },
+    {
+      "from": "/",
+      "to": "/precios",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/",
+      "to": "/registro",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/admin",
+      "to": "/api/admin/stats",
+      "type": "data",
+      "label": "Fetch stats"
+    },
+    {
+      "from": "/admin/arquitectura",
+      "to": "/api/admin/architecture-metrics",
+      "type": "data",
+      "label": "Fetch architecture-metrics"
+    },
+    {
+      "from": "/admin/usuarios",
+      "to": "/api/admin/users",
+      "type": "data",
+      "label": "Fetch users"
+    },
+    {
+      "from": "/checkout",
+      "to": "/precios",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/checkout/cancelado",
+      "to": "/precios",
+      "type": "navigation",
+      "label": "Reintentar"
+    },
+    {
+      "from": "/checkout/exito",
+      "to": "/home",
+      "type": "navigation",
+      "label": "Volver al home"
+    },
+    {
+      "from": "/cuenta",
+      "to": "/home",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/cuenta/facturacion",
+      "to": "/cuenta",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/cuenta/suscripcion",
+      "to": "/cuenta",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/cuenta/suscripcion",
+      "to": "/precios",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/home",
+      "to": "/admin",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/home",
+      "to": "/cuenta/suscripcion",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/home",
+      "to": "/dashboard",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/home",
+      "to": "/dashboard/alertas",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/home",
+      "to": "/dashboard/reportes",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/home",
+      "to": "/informes",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/home",
+      "to": "/precios",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/login",
+      "to": "/home",
+      "type": "navigation",
+      "label": "Post-login redirect"
+    },
+    {
+      "from": "/login",
+      "to": "/registro",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/registro",
+      "to": "/login",
+      "type": "navigation",
+      "label": ""
+    }
   ],
   "pipeline": {
     "phases": [
@@ -187,11 +568,36 @@
         "name": "Adquisición",
         "description": "Scraping de ofertas laborales",
         "components": [
-          { "id": "bumeran", "name": "Bumeran", "type": "scraper" },
-          { "id": "zonajobs", "name": "ZonaJobs", "type": "scraper" },
-          { "id": "computrabajo", "name": "Computrabajo", "type": "scraper" },
-          { "id": "indeed", "name": "Indeed", "type": "scraper" },
-          { "id": "linkedin", "name": "LinkedIn", "type": "scraper" }
+          {
+            "id": "bumeran",
+            "name": "Bumeran",
+            "type": "scraper",
+            "status": "active"
+          },
+          {
+            "id": "computrabajo",
+            "name": "Computrabajo",
+            "type": "scraper",
+            "status": "inactive"
+          },
+          {
+            "id": "indeed",
+            "name": "Indeed",
+            "type": "scraper",
+            "status": "inactive"
+          },
+          {
+            "id": "linkedin",
+            "name": "LinkedIn",
+            "type": "scraper",
+            "status": "inactive"
+          },
+          {
+            "id": "zonajobs",
+            "name": "ZonaJobs",
+            "type": "scraper",
+            "status": "inactive"
+          }
         ],
         "entryPoint": "run_scheduler.py",
         "output": "ofertas (SQLite)"
@@ -201,10 +607,31 @@
         "name": "Procesamiento",
         "description": "NLP, Skills y Matching ESCO",
         "components": [
-          { "id": "nlp", "name": "NLP v11", "type": "processor", "model": "Qwen2.5:7b" },
-          { "id": "skills", "name": "Skills Extractor", "type": "processor", "model": "BGE-M3" },
-          { "id": "matching", "name": "ESCO Matching v3.4", "type": "processor" },
-          { "id": "validation", "name": "Validación", "type": "processor" }
+          {
+            "id": "nlp",
+            "name": "NLP v11",
+            "type": "processor",
+            "model": "Qwen2.5:7b"
+          },
+          {
+            "id": "skills",
+            "name": "Skills Extractor v2.3",
+            "type": "processor",
+            "model": "BGE-M3",
+            "count": 26
+          },
+          {
+            "id": "matching",
+            "name": "ESCO Matching v3.5.3",
+            "type": "processor",
+            "count": 208
+          },
+          {
+            "id": "validation",
+            "name": "Validación",
+            "type": "processor",
+            "count": 22
+          }
         ],
         "entryPoint": "run_validated_pipeline.py",
         "output": "ofertas_esco_matching"
@@ -214,12 +641,30 @@
         "name": "Presentación",
         "description": "Sync y Dashboard",
         "components": [
-          { "id": "sync", "name": "sync_to_supabase", "type": "sync" },
-          { "id": "dashboard", "name": "Dashboard Next.js", "type": "frontend" }
+          {
+            "id": "sync",
+            "name": "sync_to_supabase",
+            "type": "sync"
+          },
+          {
+            "id": "dashboard",
+            "name": "Dashboard Next.js",
+            "type": "frontend"
+          }
         ],
         "entryPoint": "sync_to_supabase.py",
         "output": "Supabase → Dashboard"
       }
     ]
+  },
+  "_meta": {
+    "generated_at": "2026-02-08T19:53:43",
+    "generator": "scripts/generate_architecture_json.py",
+    "stats": {
+      "pages": 26,
+      "apiRoutes": 12,
+      "connections": 23,
+      "pipeline_phases": 3
+    }
   }
 }
