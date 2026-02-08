@@ -67,7 +67,7 @@ function HeroSection() {
           >
             Inteligencia del{" "}
             <span
-              className="font-[family-name:var(--font-display)] italic"
+              className="font-[family-name:var(--font-display)] italic inline-block pr-2"
               style={{
                 background:
                   "linear-gradient(135deg, var(--teal-300), var(--teal-400))",
