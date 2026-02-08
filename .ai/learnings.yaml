@@ -6,31 +6,38 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-02-08 16:31"
+  fecha_actualizacion: "2026-02-08 18:53"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "procesamiento"  # adquisicion | procesamiento | presentacion
   fase_detalle: "13550 ofertas sin NLP - sistema sugiere Fase 2"
 
 ultimo_trabajo:
-  fecha: "2026-02-07"
-  sesion: "Scraping completo + detección de bajas"
+  fecha: "2026-02-08"
+  sesion: "Review scraping pipeline + republicaciones + limpieza git"
   cambios:
-    - "Scraping Bumeran: 1148 keywords, 4803 únicas, 3953 insertadas en BD"
-    - "Detección de bajas: 2560 ofertas marcadas como baja"
-    - "Activas confirmadas: 12,319"
-    - "Backup BD: database/backups/bumeran_scraping_20260207_182539.db (309.7 MB)"
-    - "Instaladas dependencias faltantes: schedule, openpyxl"
+    - "fix(scraping): pipeline resiliente 6 pasos independientes (BD insertion primero)"
+    - "fix(scraping): normalización auto camelCase/snake_case en db_manager"
+    - "fix(scraping): id_empresa no crítico (ofertas confidenciales aceptadas)"
+    - "fix(scraping): detección tracking desactualizado en bajas (fallback BD)"
+    - "fix(scraping): backup_database.py BASE_DIR corregido"
+    - "feat(scraping): detección republicaciones (1060 grupos, 1731 repubs, 18% BD)"
+    - "feat(scraping): migración 023 + vistas v_republicaciones_resumen, v_puestos_dificiles_cubrir"
+    - "test(scraping): 34 tests nuevos (republicaciones, normalización, backup, bajas)"
+    - "fix(db_manager): bug detector formato camelCase usaba 'titulo' como discriminador"
+    - "feat(scripts): worktree-session.sh para sesiones Claude paralelas"
+    - "docs: worktree flow en CLAUDE.md"
+    - "Limpieza git: 9 branches borrados, 1 worktree eliminado"
+    - "PR #3 mergeado a main"
   sesion_anterior:
-    tema: "Commits pendientes + sync main"
+    tema: "Scraping completo + detección de bajas"
     cambios:
-      - "8 commits pusheados a main para resolver conflictos"
-      - "feat(sql): columnas ESCO, titulo_limpio, requerimientos NLP"
-      - "feat(skills): sistema dual reglas + semántico v2.0"
-      - "feat(admin): scripts protección datos validados"
+      - "Scraping Bumeran: 1148 keywords, 4803 únicas, 3953 insertadas en BD"
+      - "Detección de bajas: 2560 ofertas marcadas como baja"
+      - "Activas confirmadas: 12,319"
   deploy: "https://mol-nextjs.vercel.app - 2,093 ofertas"
-  commit: "cc49b842 - feat: migración columnas faltantes + config priorización"
-  branch: "feature/diseño-pantallas-v2 (synced with main)"
+  commit: "70a6a6d0 - Merge PR #3 feature/landing-redesign"
+  branch: "main (limpio, 2 branches: main + feature/admin-arquitectura)"
   supabase_sync:
     ofertas_dashboard: 2093
     ofertas_skills: 34917
@@ -39,7 +46,7 @@ ultimo_trabajo:
   pendiente:
     - "Procesar 13,550 ofertas sin NLP (Fase 2)"
     - "Sync nuevas ofertas a Supabase después de procesamiento"
-    - "Merge branch fix/resolver-errores-validacion a main"
+    - "Borrar /mnt/d/OEDE/Webscrapping-MOL desde Windows (archivo node_modules trabado)"
 
   # Protección de Ofertas Validadas v2.0 (2026-01-20)
   proteccion_validadas:
