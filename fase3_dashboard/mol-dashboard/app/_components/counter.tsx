@@ -9,11 +9,17 @@ interface CounterProps {
 }
 
 export function Counter({ target, suffix = "", duration = 2000 }: CounterProps) {
-  const [value, setValue] = useState(0);
+  // Start at target so SSR shows the real number, not "0"
+  const [value, setValue] = useState(target);
   const ref = useRef<HTMLSpanElement>(null);
   const animated = useRef(false);
+  const hydrated = useRef(false);
 
   useEffect(() => {
+    // After hydration, reset to 0 so the animation can play
+    hydrated.current = true;
+    setValue(0);
+
     const el = ref.current;
     if (!el) return;
 
@@ -26,7 +32,6 @@ export function Counter({ target, suffix = "", duration = 2000 }: CounterProps) 
           const tick = (now: number) => {
             const elapsed = now - start;
             const progress = Math.min(elapsed / duration, 1);
-            // ease-out quad
             const eased = 1 - (1 - progress) * (1 - progress);
             setValue(Math.floor(eased * target));
 
