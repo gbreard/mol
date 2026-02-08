@@ -141,9 +141,10 @@ class DatabaseManager:
 
         Si ya tiene columnas snake_case (viene de CSV o procesar_ofertas), no hace nada.
         """
-        # Detectar formato: si tiene 'id' o 'titulo' en camelCase es raw de API
-        api_columns = {'id', 'idEmpresa', 'titulo', 'detalle', 'fechaPublicacion'}
-        has_api_format = bool(api_columns & set(df.columns))
+        # Detectar formato: usar columnas EXCLUSIVAS de camelCase (no compartidas)
+        # 'titulo' y 'empresa' existen en ambos formatos, no sirven como discriminador
+        camelcase_only = {'idEmpresa', 'fechaPublicacion', 'modalidadTrabajo', 'tipoTrabajo'}
+        has_api_format = bool(camelcase_only & set(df.columns))
 
         if not has_api_format:
             return df  # Ya está en formato snake_case
