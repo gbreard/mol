@@ -191,7 +191,7 @@ export default function RegistroPage() {
           </div>
 
           <p className="mt-6 text-center text-xs text-gray-400">
-            OEDE - Observatorio de Empleo y Dinámica Empresarial
+            MOL - Monitor de Ofertas Laborales
           </p>
         </div>
       </div>

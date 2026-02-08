@@ -67,7 +67,7 @@ function HeroSection() {
       <div className="max-w-7xl mx-auto text-center">
         <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-8">
           <Database className="w-4 h-4" />
-          Observatorio de Empleo y Din&aacute;mica Empresarial
+          Monitor de Ofertas Laborales
         </div>
 
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight leading-tight max-w-4xl mx-auto">
@@ -347,8 +347,7 @@ function Footer() {
           </div>
 
           <p className="text-sm text-center md:text-left">
-            Observatorio de Empleo y Din&aacute;mica Empresarial (OEDE) &mdash;
-            Ministerio de Trabajo, Empleo y Seguridad Social
+            MOL &mdash; Monitor de Ofertas Laborales
           </p>
 
           <div className="flex items-center gap-6">

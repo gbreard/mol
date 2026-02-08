@@ -74,7 +74,7 @@ MOL Dashboard
 Plataforma que **vende acceso** a inteligencia del mercado laboral argentino.
 - **Público**: Landing + informes PDF gratuitos
 - **Suscriptores**: Dashboard completo (empresas, consultoras, recruiters)
-- **Admin (OEDE)**: Solo visualización del sistema
+- **Admin**: Solo visualización del sistema
 
 ### Tipos de Usuario
 
@@ -84,7 +84,7 @@ Plataforma que **vende acceso** a inteligencia del mercado laboral argentino.
 | Free (registrado) | Dashboard limitado (ej: solo CABA, últimos 7 días) | No |
 | Pro | Dashboard completo + exports | Sí (mensual) |
 | Enterprise | Todo + API + reportes custom | Sí (anual) |
-| Admin OEDE | Panel admin (solo lectura) | No |
+| Admin | Panel admin (solo lectura) | No |
 
 ---
 
@@ -114,7 +114,7 @@ MOL Platform
 │       ├── /cuenta/suscripcion ── Plan actual (placeholder)
 │       └── /cuenta/facturacion ── Historial pagos (placeholder)
 │
-└── ADMIN OEDE (auth + rol admin)
+└── ADMIN (auth + rol admin)
     ├── /admin ───────────── Estado del sistema (3 fases)
     ├── /admin/usuarios ──── CRUD usuarios
     ├── /admin/issues ────── Feedback/errores
@@ -242,7 +242,7 @@ Login OK → /home (SIEMPRE)
 | **Free** | Gratis | Últimos 7 días | Dashboard básico, sin export |
 | **Pro** | $X/mes | Histórico completo | Todo + exports + alertas |
 | **Enterprise** | $X/año | Todo | Todo + API + reportes custom |
-| **Admin OEDE** | Gratis | Todo | Panel admin (solo lectura) |
+| **Admin** | Gratis | Todo | Panel admin (solo lectura) |
 
 ---
 
@@ -292,7 +292,7 @@ Login OK → /home (SIEMPRE)
 | 16 | **Suscripción** | `/cuenta/suscripcion` | Placeholder | Plan actual, upgrade |
 | 17 | **Facturación** | `/cuenta/facturacion` | Placeholder | Historial de pagos |
 
-### ADMIN OEDE (8)
+### ADMIN (8)
 
 | # | Pantalla | Ruta | Estado | Descripción |
 |---|----------|------|--------|-------------|
@@ -444,7 +444,7 @@ app/
 │  └─────────────┘   └─────────────────┘   └─────────────────┘            │
 │                                                                          │
 ├─────────────────────────────────────────────────────────────────────────┤
-│  © 2026 MOL - OEDE                              Términos | Privacidad   │
+│  © 2026 MOL                                     Términos | Privacidad   │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
