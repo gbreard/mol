@@ -2,8 +2,8 @@
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, ExternalLink, Loader2, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
-import { ExportButton, ExportColumn } from "@/components/ExportButton";
+import { Search, ExternalLink, Loader2, AlertCircle, ChevronLeft, ChevronRight, Download } from "lucide-react";
+import { ExportButton, ExportColumn, downloadFormattedExcel } from "@/components/ExportButton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
@@ -60,6 +60,47 @@ export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
             false);
   });
 
+  // Función para formatear los filtros aplicados como subtítulo
+  const getFiltersSubtitle = (): string => {
+    const parts: string[] = [`Fecha de extracción: ${new Date().toLocaleDateString('es-AR')}`];
+    if (filters.territorio && filters.territorio !== 'Nacional') parts.push(`Territorio: ${filters.territorio}`);
+    if (filters.provincia && filters.provincia !== 'Todas') parts.push(`Provincia: ${filters.provincia}`);
+    if (filters.localidad) parts.push(`Localidad: ${filters.localidad}`);
+    if (filters.fechaDesde) parts.push(`Desde: ${filters.fechaDesde.toLocaleDateString('es-AR')}`);
+    if (filters.fechaHasta) parts.push(`Hasta: ${filters.fechaHasta.toLocaleDateString('es-AR')}`);
+    if (filters.ocupacionesSeleccionadas && filters.ocupacionesSeleccionadas.length > 0) {
+      parts.push(`Ocupaciones: ${filters.ocupacionesSeleccionadas.slice(0, 3).join(', ')}${filters.ocupacionesSeleccionadas.length > 3 ? '...' : ''}`);
+    }
+    return parts.join(' | ');
+  };
+
+  // Handler descarga Excel formateado
+  const handleDownloadFormatted = () => {
+    if (filteredOfertas.length === 0) return;
+    const data = filteredOfertas.map(o => ({
+      titulo: o.titulo_limpio || o.titulo || '',
+      fecha: o.fecha_publicacion ? new Date(o.fecha_publicacion).toLocaleDateString('es-AR') : '',
+      competencias: [
+        ...(o.skills_tecnicas || []),
+        ...(o.soft_skills || [])
+      ].join('; '),
+      link: o.url || ''
+    }));
+    downloadFormattedExcel({
+      title: 'Ofertas laborales disponibles activas a la fecha según selección',
+      subtitle: getFiltersSubtitle(),
+      data,
+      columns: [
+        { header: 'Título', key: 'titulo' },
+        { header: 'Fecha', key: 'fecha' },
+        { header: 'Competencias', key: 'competencias' },
+        { header: 'Link', key: 'link' }
+      ],
+      filename: 'ofertas_laborales',
+      showPercentage: false
+    });
+  };
+
   // Columnas para exportación
   const exportColumns: ExportColumn[] = [
     { key: 'fecha_publicacion', header: 'Fecha', format: (v) => v ? new Date(v).toLocaleDateString('es-AR') : '' },
@@ -110,13 +151,23 @@ export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
               className="pl-9 bg-gray-50 hover:bg-gray-100 transition-colors"
             />
           </div>
-          {/* Export Button */}
-          <ExportButton
-            data={filteredOfertas}
-            columns={exportColumns}
-            filename="ofertas_laborales"
-            showLabel={true}
-          />
+          {/* Export: Excel formateado + CSV genérico */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleDownloadFormatted}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-gray-600 hover:text-gray-800"
+              title="Descargar Excel formateado"
+            >
+              <Download className="w-4 h-4" />
+              Excel
+            </button>
+            <ExportButton
+              data={filteredOfertas}
+              columns={exportColumns}
+              filename="ofertas_laborales"
+              showLabel={false}
+            />
+          </div>
         </div>
       </div>
 
