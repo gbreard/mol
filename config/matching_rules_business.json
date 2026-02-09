@@ -2,7 +2,7 @@
   "version": "5.0",
   "descripcion": "Reglas de negocio para matching ESCO. 213 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-02-08",
+  "fecha_actualizacion": "2026-02-09",
   "_cambios_v43": "R181-R182: Personal mantenimiento -> 7233, Tecnico electromedicina -> 3211",
   "_cambios_v42": "R177-R180: Gestor cobranzas, QA/Tester, Instalador fibra, Soporte IT",
   "_cambios_v41": "R175: Operario limpieza -> 9112, R176: Auditor franquicias -> 2421",
@@ -1679,11 +1679,12 @@
         ]
       },
       "accion": {
-        "forzar_isco": "1324",
-        "esco_label": "director de distribución y logística/directora de distribución y logística"
+        "forzar_isco": "1420",
+        "esco_label": "gerente de tienda"
       },
       "activa": true,
-      "prioridad": 0
+      "prioridad": 0,
+      "nota": "Sprint 5 V31: fix ISCO 1324->1420. Jefe sucursal=retail management, no logistica. ID 1117866300."
     },
     "R66_arquitecto_software": {
       "nombre": "Arquitecto de Software",
@@ -2038,9 +2039,10 @@
       "nombre": "Analista de Calidad de Servicios",
       "condicion": {
         "titulo_contiene_alguno": [
-          "analista de calidad",
-          "analista calidad",
-          "calidad de servicios"
+          "calidad de servicios",
+          "calidad de atencion",
+          "calidad de atención",
+          "quality assurance servicio"
         ]
       },
       "accion": {
@@ -2049,7 +2051,7 @@
       },
       "caso_revision_100": "1118101077, 1118101058 - Analista Calidad Servicios",
       "activa": true,
-      "nota": "FASE 5 - Analista calidad servicios = supervisor control calidad",
+      "nota": "Sprint 5 V31: refinada - solo servicios/atencion. ID 1118088708 era falso positivo.",
       "prioridad": 1
     },
     "R84_operario_acondicionamiento": {
@@ -3119,7 +3121,15 @@
           "cross docking",
           "armado de pedidos"
         ],
-        "area_funcional_es": "Logistica"
+        "area_funcional_es": "Logistica",
+        "titulo_no_contiene_alguno": [
+          "maquinista",
+          "apiladora",
+          "autoelevador",
+          "autoelevadorista",
+          "carretilla",
+          "clark"
+        ]
       },
       "accion": {
         "forzar_isco": "9333",
@@ -3128,7 +3138,7 @@
       "activa": true,
       "_caso": "ID 1118092945 - tareas picking, cross docking en área logística",
       "_fecha": "2026-01-22",
-      "nota": "Si tareas o título mencionan picking/cross docking y área es logística → 9333",
+      "nota": "Sprint 5 V31: agregar exclusion maquinista/apiladora (son 8344, no 9333). ID 1118090160.",
       "prioridad": 0
     },
     "R138_control_gestion": {
@@ -4816,6 +4826,119 @@
       "activa": true,
       "_fecha": "2026-02-08",
       "_nota": "Sprint 2: gap cobertura - sector salud"
+    },
+    "R218_pintor_vehiculos": {
+      "nombre": "Pintor de Vehiculos/Automoviles",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "pintor de auto",
+          "pintor de vehiculo",
+          "pintor de vehículo",
+          "pintor automotor",
+          "pintor automotriz",
+          "pintor automóvil",
+          "pintor automovil",
+          "pintor de máquina",
+          "pintor de maquina"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7132",
+        "esco_label": "pintor de vehículos/pintora de vehículos"
+      },
+      "activa": true,
+      "prioridad": 1,
+      "nota": "Sprint 5 V31 - ID 2171804",
+      "_fecha": "2026-02-09"
+    },
+    "R219_vendedor_vehiculos": {
+      "nombre": "Vendedor de Vehiculos OKM/Usados",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "venta de okm",
+          "venta de 0km",
+          "vendedor de auto",
+          "vendedor automotor",
+          "vendedor automotriz",
+          "venta automotor",
+          "venta automotriz",
+          "venta de usados"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5223",
+        "esco_label": "vendedor especializado en vehículos de motor/vendedora especializada en vehículos de motor"
+      },
+      "activa": true,
+      "prioridad": 1,
+      "nota": "Sprint 5 V31 - ID 1118075798",
+      "_fecha": "2026-02-09"
+    },
+    "R220_asesor_inmobiliario": {
+      "nombre": "Asesor Inmobiliario",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "asesor inmobiliario",
+          "asesora inmobiliaria",
+          "asesor inmobiliaria",
+          "agente inmobiliario",
+          "agente inmobiliaria",
+          "corredor inmobiliario",
+          "corredora inmobiliaria"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3334",
+        "esco_label": "agente inmobiliario/agente inmobiliaria"
+      },
+      "activa": true,
+      "prioridad": 1,
+      "nota": "Sprint 5 V31 - IDs 1118089222, 2171269",
+      "_fecha": "2026-02-09"
+    },
+    "R221_analista_calidad_general": {
+      "nombre": "Analista de Calidad General/Productos",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista de calidad",
+          "analista calidad"
+        ],
+        "titulo_no_contiene_alguno": [
+          "calidad de servicios",
+          "calidad de atencion",
+          "calidad de atención",
+          "quality assurance servicio"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7543",
+        "esco_label": "inspector de control de calidad/inspectora de control de calidad"
+      },
+      "activa": true,
+      "prioridad": 1,
+      "nota": "Sprint 5 V31: analista calidad genérico = inspector control calidad. ID 1118088708 (Makro, auditorias BPM/HACCP).",
+      "_fecha": "2026-02-09"
+    },
+    "R222_maquinista_apiladora": {
+      "nombre": "Maquinista Apiladora/Autoelevador",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "maquinista",
+          "apiladora",
+          "autoelevador",
+          "autoelevadorista",
+          "carretillero",
+          "operador de clark"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8344",
+        "esco_label": "operador de carretilla elevadora/operadora de carretilla elevadora"
+      },
+      "activa": true,
+      "prioridad": 1,
+      "nota": "Sprint 5 V31: maquinista apiladora = operador carretilla elevadora. ID 1118090160.",
+      "_fecha": "2026-02-09"
     }
   },
   "reglas_filtro": {
@@ -4896,5 +5019,6 @@
   "_cambios_v44": "R183-R197: Bobinador, Carnicero, Guardavidas, Kinesiologo, Aux Farmacia, Aux Seguridad, Business Dev, Auditor, Abastecimiento, Atencion Paciente, Supervisor Ops, Middle Office, Ejecutivo Ventas, Pasante, Personal Atencion",
   "_cambios_v45": "R198-R202: Bell boy, Foguista, Extraccionista, Inspector API, Gestor cobranzas",
   "_cambios_v46": "FIX: 12 reglas con esco_label inválido + R203-R206 nuevas reglas",
-  "_cambios_v50": "Sprint 2: Fix 10 exclusiones rotas (titulo_no_contiene→titulo_no_contiene_alguno), 51 reglas sin prioridad asignadas, consolidar ISCO 3322 (12→7) y 9333 (10→7), fix R135 key duplicada"
+  "_cambios_v50": "Sprint 2: Fix 10 exclusiones rotas (titulo_no_contiene→titulo_no_contiene_alguno), 51 reglas sin prioridad asignadas, consolidar ISCO 3322 (12→7) y 9333 (10→7), fix R135 key duplicada",
+  "_cambios_v51": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344, R137 excluye maquinista."
 }

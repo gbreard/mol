@@ -2,22 +2,24 @@
 Auto-validador del pipeline MOL.
 Lee validation_rules.json y evalua ofertas automaticamente.
 
-Version: 1.2
-Fecha: 2026-02-08
+Version: 1.3
+Fecha: 2026-02-09
+
+Cambios v1.3 (Sprint 5):
+- V24 RECALIBRADA: Cambia metrica de cobertura ESCO (old: matched/occupation_total < 30%)
+  a coherencia oferta (new: matched_essential/skills_oferta < 20%). Severidad: warning.
+  Motivo: ocupaciones ESCO tienen ~25 essential skills, ofertas argentinas matchean ~3.
+  El 92% fallaba V24 vieja. Nueva metrica mide "de las skills extraidas, cuantas son esenciales".
+- V31 NUEVA: Ocupacion ESCO probablemente incorrecta. Criterio compuesto:
+  score_semantico < 0.50 AND coherencia_esco < 0.15. Severidad: alto.
+  Detecta ~13 casos donde la ocupacion asignada no corresponde a la oferta.
 
 Cambios v1.2:
 - V24: Skills no coherentes con ISCO (< 30% overlap con essential skills)
-- V25: Tareas vacias pero skills presentes (declarativa en validation_rules.json)
-- V26: Formato tareas incorrecto - comas en vez de punto y coma (declarativa)
-- V27: Divergencia regla vs semantico (declarativa)
-- V28: Sin skills esenciales del ISCO (custom logic)
-- V29: Tareas muy cortas < 50 chars (declarativa)
-- V30: Puesto IT sin skills tecnicas (custom logic)
-- Query expandida con campos dual matching, skills JSON, tareas length, essential count
+- V25-V30: Reglas declarativas y custom (skills, tareas, IT)
 
 Cambios v1.1:
 - Validación automática de títulos usando patrones de nlp_titulo_limpieza.json
-- Si un patrón de limpieza matchea en titulo_limpio, se detecta como error
 
 Uso:
     from database.auto_validator import AutoValidator
@@ -414,11 +416,16 @@ class AutoValidator:
 
     def _validar_skills_coherencia(self, oferta: Dict) -> List[Dict]:
         """
-        V24: Skills no coherentes con ISCO (< 30% overlap con essential skills).
+        V24 (recalibrada v1.3): Coherencia skills desde la oferta.
+          Metrica: matched_essential / skills_oferta_count < 20%
+          "De las skills que extraje, cuantas son esenciales para esta ocupacion?"
+          Severidad: warning (informativo, no bloqueante).
+
         V28: Sin skills esenciales del ISCO (0 essential matched).
 
-        Usa skills_matched_essential (JSON array de labels) y
-        occupation_essential_total (count de esco_associations).
+        V31 (nueva v1.3): Ocupacion ESCO probablemente incorrecta.
+          Criterio compuesto: score_semantico < 0.50 AND coherencia_esco < 0.15
+          Severidad: alto (requiere revision).
         """
         errores = []
         skills_essential_raw = oferta.get("skills_matched_essential")
@@ -446,17 +453,54 @@ class AutoValidator:
                 "campo": "skills_matched_essential"
             })
 
-        # V24: Menos de 30% de overlap (solo si tiene >= 5 essential en la ocupacion)
-        elif occupation_essential_total >= 5:
-            ratio = essential_matched_count / occupation_essential_total
-            if ratio < 0.30:
+        # --- V24 recalibrada (v1.3): coherencia desde la oferta ---
+        # Metrica: matched_essential / skills_oferta_count
+        # "De las skills extraidas de la oferta, que porcentaje son esenciales para la ocupacion?"
+        skills_oferta_raw = oferta.get("skills_oferta_json")
+        skills_oferta_count = 0
+        if skills_oferta_raw:
+            try:
+                skills_oferta = json.loads(skills_oferta_raw) if isinstance(skills_oferta_raw, str) else skills_oferta_raw
+                skills_oferta_count = len(skills_oferta) if isinstance(skills_oferta, list) else 0
+            except (json.JSONDecodeError, TypeError):
+                skills_oferta_count = 0
+
+        if skills_oferta_count >= 3:
+            ratio_oferta = essential_matched_count / skills_oferta_count
+            if ratio_oferta < 0.20:
                 errores.append({
                     "id_regla": "V24_skills_baja_coherencia",
-                    "diagnostico": "error_skills_coherencia",
-                    "severidad": "alto",
-                    "mensaje": f"Skills coherencia {ratio:.0%} < 30% ({essential_matched_count}/{occupation_essential_total} esenciales)",
-                    "campo": "skills_matched_essential"
+                    "diagnostico": "warning_skills_coherencia_oferta",
+                    "severidad": "warning",
+                    "mensaje": (
+                        f"Skills coherencia oferta {ratio_oferta:.0%} < 20% "
+                        f"({essential_matched_count}/{skills_oferta_count} de las skills extraidas son esenciales)"
+                    ),
+                    "campo": "skills_oferta_json"
                 })
+
+        # --- V31 nueva (v1.3): Ocupacion ESCO probablemente incorrecta ---
+        # Criterio compuesto: score semantico bajo + coherencia ESCO baja
+        # No excluye ofertas con regla — una regla con score bajo tambien merece revision
+        score_semantico = float(oferta.get("score_semantico") or 0)
+        coherencia_esco = (
+            essential_matched_count / occupation_essential_total
+            if occupation_essential_total > 0
+            else 0
+        )
+
+        if score_semantico < 0.50 and coherencia_esco < 0.15:
+            errores.append({
+                "id_regla": "V31_ocupacion_esco_incorrecta",
+                "diagnostico": "error_ocupacion_esco_incorrecta",
+                "severidad": "alto",
+                "mensaje": (
+                    f"Ocupacion ESCO probablemente incorrecta: "
+                    f"score semantico {score_semantico:.2f} + coherencia ESCO {coherencia_esco:.0%}. "
+                    f"Revisar matching."
+                ),
+                "campo": "esco_occupation_uri"
+            })
 
         return errores
 

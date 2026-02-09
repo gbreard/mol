@@ -597,6 +597,7 @@
       "mensaje": "Tareas muy cortas (< 50 chars) - posible extraccion parcial"
     }
   ],
+  "_nota_V24_V31": "V24 y V31 son reglas custom en auto_validator.py._validar_skills_coherencia(). V24 recalibrada v1.3: matched_essential/skills_oferta < 20% (warning). V31 nueva v1.3: score_semantico < 0.50 AND coherencia_esco < 0.15 (alto). No son declarativas porque requieren logica con multiples campos JSON.",
   "severidades": {
     "critico": {
       "orden": 1,
