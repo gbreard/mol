@@ -14,17 +14,55 @@ import { AnimatedNav } from "./_components/animated-nav";
 import { HeroParticles } from "./_components/hero-particles";
 import { Counter } from "./_components/counter";
 import { ScrollReveal } from "./_components/scroll-reveal";
+import { getLandingData, LandingData } from "@/lib/supabase";
 
 /* ─── Hero ───────────────────────────────────────────── */
 
-function HeroSection() {
-  const bars = [
-    { label: "Tecnología", pct: 85 },
-    { label: "Comercio", pct: 68 },
-    { label: "Salud", pct: 52 },
-    { label: "Industria", pct: 45 },
-    { label: "Educación", pct: 38 },
-  ];
+function HorizontalBars({ items, color }: { items: { label: string; value: number }[]; color: string }) {
+  const max = Math.max(...items.map(i => i.value), 1)
+  return (
+    <div className="space-y-2.5">
+      {items.map((item) => (
+        <div key={item.label} className="flex items-center gap-3">
+          <span
+            className="text-xs font-medium truncate w-40 text-right shrink-0"
+            style={{ color: "var(--slate-300)" }}
+            title={item.label}
+          >
+            {item.label}
+          </span>
+          <div className="flex-1 h-5 rounded-sm overflow-hidden" style={{ backgroundColor: "var(--navy-900)" }}>
+            <div
+              className="h-full rounded-sm"
+              style={{
+                width: `${Math.round((item.value / max) * 100)}%`,
+                background: `linear-gradient(to right, ${color}, var(--teal-300))`,
+                animation: "grow-bar 1s ease-out forwards",
+              }}
+            />
+          </div>
+          <span
+            className="text-xs font-bold w-8 shrink-0"
+            style={{ color: "var(--teal-300)" }}
+          >
+            {item.value}
+          </span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function HeroSection({ data }: { data: LandingData }) {
+  const ocupacionesBars = data.topOcupaciones.map(o => ({
+    label: o.ocupacion,
+    value: o.cantidad,
+  }))
+
+  const skillsBars = data.topSkills.map(s => ({
+    label: s.name,
+    value: s.value,
+  }))
 
   return (
     <section
@@ -117,65 +155,48 @@ function HeroSection() {
         {/* Right — chart card */}
         <div className="flex items-center justify-center">
           <div
-            className="w-full max-w-md rounded-2xl p-6 shadow-2xl"
+            className="w-full max-w-lg rounded-2xl p-6 shadow-2xl"
             style={{
               backgroundColor: "var(--navy-800)",
               border: "1px solid var(--navy-600)",
             }}
           >
             <h3
-              className="text-sm font-semibold uppercase tracking-wider mb-6"
+              className="text-sm font-semibold uppercase tracking-wider mb-1"
               style={{ color: "var(--slate-300)" }}
             >
-              Ofertas por sector
+              Ofertas laborales activas entre {data.rangoSemana}
             </h3>
+            <p
+              className="text-xs mb-5"
+              style={{ color: "var(--slate-400)" }}
+            >
+              Dato actualizado semanalmente
+            </p>
 
-            <div className="flex items-end gap-3 h-44 mb-6">
-              {bars.map((bar) => (
-                <div key={bar.label} className="flex-1 flex flex-col items-center gap-2">
-                  <div
-                    className="w-full rounded-t-md origin-bottom"
-                    style={{
-                      height: `${bar.pct}%`,
-                      background: `linear-gradient(to top, var(--teal-500), var(--teal-300))`,
-                      animation: "grow-bar 1s ease-out forwards",
-                    }}
-                  />
-                  <span
-                    className="text-[10px] font-medium text-center leading-tight"
-                    style={{ color: "var(--slate-300)" }}
-                  >
-                    {bar.label}
-                  </span>
-                </div>
-              ))}
+            {/* Top 5 ocupaciones */}
+            <div className="mb-5">
+              <h4
+                className="text-xs font-semibold uppercase tracking-wider mb-3"
+                style={{ color: "var(--teal-300)" }}
+              >
+                Top 5 ocupaciones
+              </h4>
+              <HorizontalBars items={ocupacionesBars} color="var(--teal-500)" />
             </div>
 
-            {/* Mini stats */}
+            {/* Top 5 competencias */}
             <div
-              className="grid grid-cols-3 gap-4 pt-4"
+              className="pt-4"
               style={{ borderTop: "1px solid var(--navy-600)" }}
             >
-              {[
-                { value: "48K", label: "ofertas" },
-                { value: "326", label: "ocupaciones" },
-                { value: "5", label: "portales" },
-              ].map((s) => (
-                <div key={s.label} className="text-center">
-                  <div
-                    className="text-lg font-bold"
-                    style={{ color: "var(--teal-300)" }}
-                  >
-                    {s.value}
-                  </div>
-                  <div
-                    className="text-xs"
-                    style={{ color: "var(--slate-300)" }}
-                  >
-                    {s.label}
-                  </div>
-                </div>
-              ))}
+              <h4
+                className="text-xs font-semibold uppercase tracking-wider mb-3"
+                style={{ color: "var(--teal-300)" }}
+              >
+                Top 5 competencias
+              </h4>
+              <HorizontalBars items={skillsBars} color="var(--navy-500)" />
             </div>
           </div>
         </div>
@@ -342,9 +363,9 @@ function FuncionalidadesSection() {
 
 /* ─── Stats Banner ───────────────────────────────────── */
 
-function StatsBanner() {
+function StatsBanner({ totalOfertas }: { totalOfertas: number }) {
   const stats = [
-    { target: 120000, suffix: "+", label: "Ofertas analizadas" },
+    { target: totalOfertas || 120000, suffix: "+", label: "Ofertas analizadas" },
     { target: 5, suffix: "", label: "Portales monitoreados" },
     { target: 2800, suffix: "", label: "Ocupaciones ESCO" },
     { target: 24, suffix: "/7", label: "Monitoreo activo" },
@@ -707,14 +728,16 @@ function Footer() {
 
 /* ─── Page ───────────────────────────────────────────── */
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const data = await getLandingData()
+
   return (
     <div className="min-h-screen">
       <AnimatedNav />
-      <HeroSection />
+      <HeroSection data={data} />
       <DesafioSolucion />
       <FuncionalidadesSection />
-      <StatsBanner />
+      <StatsBanner totalOfertas={data.totalOfertas} />
       <AccesoSection />
       <Footer />
     </div>

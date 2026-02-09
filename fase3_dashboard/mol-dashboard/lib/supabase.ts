@@ -1709,6 +1709,45 @@ export async function getOccupationsWithMOLData(): Promise<OccupationWithMOLData
   }
 }
 
+// ========== LANDING PAGE - DATOS DINÁMICOS ==========
+
+export interface LandingData {
+  totalOfertas: number
+  rangoSemana: string
+  topOcupaciones: { ocupacion: string; cantidad: number }[]
+  topSkills: { name: string; value: number }[]
+}
+
+/**
+ * Obtiene datos para la landing page en una sola llamada paralela.
+ * Reutiliza getKPIsOptimized, getTopOcupaciones y getTopSkillsTecnicas.
+ */
+export async function getLandingData(): Promise<LandingData> {
+  const [kpis, topOcupaciones, topSkills] = await Promise.all([
+    getKPIsOptimized(),
+    getTopOcupaciones(5),
+    getTopSkillsTecnicas(5)
+  ])
+
+  // Rango: semana anterior completa (lunes a domingo pasados)
+  const hoy = new Date()
+  const day = hoy.getDay()
+  // Domingo pasado: retroceder day días (si hoy es domingo, 0 → 7 para ir al anterior)
+  const domingoPasado = new Date(hoy)
+  domingoPasado.setDate(hoy.getDate() - (day === 0 ? 7 : day))
+  // Lunes de esa semana: domingo - 6
+  const lunesPasado = new Date(domingoPasado)
+  lunesPasado.setDate(domingoPasado.getDate() - 6)
+  const fmt = (d: Date) => `${d.getDate()}/${d.getMonth() + 1}`
+
+  return {
+    totalOfertas: kpis.totalOfertas,
+    rangoSemana: `${fmt(lunesPasado)} y ${fmt(domingoPasado)}`,
+    topOcupaciones,
+    topSkills
+  }
+}
+
 /**
  * Obtiene el perfil de skills MOL agregado para una ocupación específica
  */

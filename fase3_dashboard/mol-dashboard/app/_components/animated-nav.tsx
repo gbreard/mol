@@ -37,6 +37,12 @@ export function AnimatedNav() {
               height={50}
               priority
             />
+            <span
+              className="text-sm font-semibold hidden lg:inline"
+              style={{ color: "var(--slate-300)" }}
+            >
+              Monitor de Ofertas Laborales
+            </span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
