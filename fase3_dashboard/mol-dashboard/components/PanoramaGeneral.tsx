@@ -5,7 +5,7 @@ import { KPICard } from "@/components/KPICard";
 import { ChartContainer } from "@/components/ChartContainer";
 import { FileText, Briefcase, Lightbulb, Sparkles, TrendingUp, AlertCircle, Award, Loader2 } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList, Label } from "recharts";
-import { getInsightsRPC, getTopOcupaciones, getEvolucionSemanal, InsightsData, EvolucionSemanal } from "@/lib/supabase";
+import { getInsightsRPC, getTopOcupaciones, getEvolucionSemanal, getOfertasPorLocalidad, InsightsData, EvolucionSemanal } from "@/lib/supabase";
 import { DashboardFilters } from "@/lib/types";
 import { downloadFormattedExcel } from "@/components/ExportButton";
 
@@ -81,7 +81,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
   const [evolutionData, setEvolutionData] = useState<EvolucionSemanal[]>([]);
   const [ocupacionesLimit, setOcupacionesLimit] = useState(10);
 
-  // Carga principal: KPIs + provincias + evolución semanal
+  // Carga principal: KPIs + jurisdicción + evolución semanal
   useEffect(() => {
     async function loadData() {
       try {
@@ -98,14 +98,29 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
             empresasActivas: insights.kpis.empresas_activas,
             provincias: insights.kpis.provincias
           });
-          setJurisdictionData(insights.provincias.slice(0, 10).map(p => ({
-            name: p.provincia,
-            value: p.total
-          })));
         } else {
           setKpis({ totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 });
+        }
+
+        // Jurisdicción: por localidad si hay provincia, por provincia si no
+        if (filters.provincia && !filters.localidad) {
+          const localidades = await getOfertasPorLocalidad(filters);
+          setJurisdictionData(localidades.slice(0, 10).map(l => ({
+            name: l.jurisdiccion,
+            value: l.cantidad
+          })));
+        } else if (!filters.provincia) {
+          setJurisdictionData(
+            insights?.provincias.slice(0, 10).map(p => ({
+              name: p.provincia,
+              value: p.total
+            })) || []
+          );
+        } else {
+          // Localidad seleccionada → no se muestra chart
           setJurisdictionData([]);
         }
+
         setEvolutionData(evolucion);
         setError(null);
       } catch (err) {
@@ -205,6 +220,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
 
   // Handler para descargar Excel de Jurisdicciones
   const handleDownloadJurisdicciones = () => {
+    const esPorLocalidad = !!filters.provincia;
     const total = jurisdictionData.reduce((sum, item) => sum + item.value, 0);
     const data = jurisdictionData.map(item => ({
       name: item.name,
@@ -213,15 +229,17 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
     }));
 
     downloadFormattedExcel({
-      title: 'Distribución de las ofertas por jurisdicción',
+      title: esPorLocalidad
+        ? 'Distribución de las ofertas por localidad'
+        : 'Distribución de las ofertas por jurisdicción',
       subtitle: getFiltersSubtitle(),
       data,
       columns: [
-        { header: 'Jurisdicción', key: 'name' },
+        { header: esPorLocalidad ? 'Localidad' : 'Jurisdicción', key: 'name' },
         { header: 'Ofertas laborales', key: 'value' },
         { header: 'Porcentaje (%)', key: 'porcentaje' }
       ],
-      filename: 'distribucion_geografica',
+      filename: esPorLocalidad ? 'distribucion_localidades' : 'distribucion_geografica',
       showPercentage: true
     });
   };
@@ -449,53 +467,67 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
         );
       })()}
 
-      {/* Jurisdiction Distribution con Insights */}
-      <ChartContainer
-        title="Distribución de las ofertas por jurisdicción"
-        onDownload={handleDownloadJurisdicciones}
-        insights={
-          <InsightList>
-            <InsightItem
-              text="CABA y Buenos Aires concentran el 60% de las ofertas nacionales"
-              highlight
-            />
-            <InsightItem
-              text="CABA supera a Buenos Aires por primera vez este año"
-            />
-            <InsightItem
-              text="Mendoza registra el mayor crecimiento regional: +18%"
-            />
-          </InsightList>
-        }
-      >
-        <ResponsiveContainer width="100%" height={340}>
-          <BarChart data={jurisdictionData} layout="vertical" margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
-            <defs>
-              <linearGradient id="colorBar2" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.9}/>
-                <stop offset="100%" stopColor="#2563eb" stopOpacity={1}/>
-              </linearGradient>
-            </defs>
-            <XAxis type="number" hide={true} />
-            <YAxis
-              type="category"
-              dataKey="name"
-              width={140}
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: '#374151', fontSize: 11, fontWeight: 500 }}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="value" fill="url(#colorBar2)" radius={[0, 6, 6, 0]}>
-              <LabelList
-                dataKey="value"
-                position="right"
-                style={{ fill: '#2563eb', fontSize: 12, fontWeight: 700 }}
+      {/* Jurisdiction Distribution — ocultar si hay localidad seleccionada */}
+      {!filters.localidad && jurisdictionData.length > 0 && (
+        <ChartContainer
+          title={filters.provincia
+            ? "Distribución de las ofertas por localidad"
+            : "Distribución de las ofertas por jurisdicción"
+          }
+          subtitle={filters.provincia ? `Top 10 localidades` : `Top 10 provincias`}
+          onDownload={handleDownloadJurisdicciones}
+          insights={
+            jurisdictionData.length >= 2 ? (
+              <InsightList>
+                <InsightItem
+                  text={`${jurisdictionData[0]?.name} lidera con ${jurisdictionData[0]?.value.toLocaleString()} ofertas`}
+                  highlight
+                />
+                {jurisdictionData.length >= 3 && (
+                  <InsightItem
+                    text={`Las 3 principales concentran el ${Math.round(
+                      (jurisdictionData.slice(0, 3).reduce((s, d) => s + d.value, 0) /
+                        jurisdictionData.reduce((s, d) => s + d.value, 0)) * 100
+                    )}% del total`}
+                  />
+                )}
+                <InsightItem
+                  text={`${jurisdictionData.length} ${filters.provincia ? 'localidades' : 'provincias'} con ofertas activas`}
+                />
+              </InsightList>
+            ) : undefined
+          }
+        >
+          <ResponsiveContainer width="100%" height={340}>
+            <BarChart data={jurisdictionData} layout="vertical" margin={{ top: 5, right: 50, left: 10, bottom: 5 }}>
+              <defs>
+                <linearGradient id="colorBar2" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.9}/>
+                  <stop offset="100%" stopColor="#2563eb" stopOpacity={1}/>
+                </linearGradient>
+              </defs>
+              <XAxis type="number" hide={true} />
+              <YAxis
+                type="category"
+                dataKey="name"
+                width={160}
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: '#374151', fontSize: 11, fontWeight: 500 }}
+                tickFormatter={(value: string) => truncateLabel(value, 28)}
               />
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </ChartContainer>
+              <Tooltip content={<CustomTooltip />} />
+              <Bar dataKey="value" fill="url(#colorBar2)" radius={[0, 6, 6, 0]}>
+                <LabelList
+                  dataKey="value"
+                  position="right"
+                  style={{ fill: '#2563eb', fontSize: 12, fontWeight: 700 }}
+                />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartContainer>
+      )}
     </div>
   );
 }

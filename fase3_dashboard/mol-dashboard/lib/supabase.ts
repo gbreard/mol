@@ -559,6 +559,34 @@ export async function getEvolucionSemanal(semanas: number = 5, filters?: Dashboa
   })
 }
 
+// Distribución de ofertas por localidad (para una provincia específica)
+export async function getOfertasPorLocalidad(filters?: DashboardFilters) {
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  const data = await fetchAllPaginated<{ localidad: string }>(
+    client,
+    TABLA_OFERTAS,
+    'localidad',
+    (query) => applyFilters(query, filters)
+  )
+
+  const counts: Record<string, number> = {}
+  data.forEach(o => {
+    const loc = o.localidad || 'No especificado'
+    counts[loc] = (counts[loc] || 0) + 1
+  })
+
+  const total = data.length || 1
+  return Object.entries(counts)
+    .map(([localidad, cantidad]) => ({
+      jurisdiccion: localidad,
+      cantidad,
+      porcentaje: Math.round(cantidad * 1000 / total) / 10
+    }))
+    .sort((a, b) => b.cantidad - a.cantidad)
+}
+
 // Localidades distintas para una provincia dada
 export async function getLocalidadesByProvincia(provinciaKey: string): Promise<string[]> {
   const client = getSupabaseClient()
