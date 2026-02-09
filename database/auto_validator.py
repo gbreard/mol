@@ -530,6 +530,20 @@ class AutoValidator:
             return errores
 
         # Buscar al menos 1 skill técnica/digital
+        # Keywords en español (labels ESCO) e inglés
+        tech_keywords = (
+            # Español (labels ESCO vienen en español)
+            "programación", "bases de datos", "servidor", "servidores",
+            "infraestructura", "redes", "virtualiz", "firewall",
+            "copia de seguridad", "seguridad informática", "seguridad de la información",
+            "desarrollo", "código", "sistema de tic", "sistemas de tic",
+            "integración de sistemas", "trazabilidad",
+            # Inglés (algunos labels vienen en inglés)
+            "programming", "software", "database", "development",
+            "code", "cloud", "devops", "api", "web", "data", "network",
+            # Herramientas específicas (pueden aparecer en labels)
+            "etl", "reporting", "dashboard", "backup",
+        )
         digital_count = 0
         for skill in skills:
             if isinstance(skill, dict):
@@ -543,10 +557,12 @@ class AutoValidator:
                     break
                 # Fallback: buscar keywords técnicos en el label
                 label = (skill.get("skill_esco") or skill.get("label") or "").lower()
-                tech_keywords = ("programación", "programming", "software", "database",
-                                "desarrollo", "development", "código", "code", "cloud",
-                                "devops", "api", "web", "data", "network", "seguridad informática")
                 if any(kw in label for kw in tech_keywords):
+                    digital_count += 1
+                    break
+            elif isinstance(skill, str):
+                # skills_oferta_json contiene strings simples (labels ESCO)
+                if any(kw in skill.lower() for kw in tech_keywords):
                     digital_count += 1
                     break
 

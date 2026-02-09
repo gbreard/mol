@@ -4939,6 +4939,22 @@
       "prioridad": 1,
       "nota": "Sprint 5 V31: maquinista apiladora = operador carretilla elevadora. ID 1118090160.",
       "_fecha": "2026-02-09"
+    },
+    "R223_admin_infraestructura": {
+      "nombre": "Administrador de Infraestructura IT",
+      "condicion": {
+        "titulo_contiene_todos": ["administrador", "infraestructura"],
+        "titulo_no_contiene_alguno": ["edificio", "inmueble", "condominio"]
+      },
+      "accion": {
+        "forzar_isco": "2522",
+        "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC"
+      },
+      "activa": true,
+      "prioridad": 1,
+      "correccion_critica": true,
+      "nota": "Sprint 5b: Admin infraestructura IT = sysadmin. ID 1118094809 estaba como 4110 empleado oficina. Critica porque 'administrador' matchea dict argentino → 4110 con score 0.90.",
+      "_fecha": "2026-02-09"
     }
   },
   "reglas_filtro": {
@@ -5020,5 +5036,6 @@
   "_cambios_v45": "R198-R202: Bell boy, Foguista, Extraccionista, Inspector API, Gestor cobranzas",
   "_cambios_v46": "FIX: 12 reglas con esco_label inválido + R203-R206 nuevas reglas",
   "_cambios_v50": "Sprint 2: Fix 10 exclusiones rotas (titulo_no_contiene→titulo_no_contiene_alguno), 51 reglas sin prioridad asignadas, consolidar ISCO 3322 (12→7) y 9333 (10→7), fix R135 key duplicada",
-  "_cambios_v51": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344, R137 excluye maquinista."
+  "_cambios_v51": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344, R137 excluye maquinista.",
+  "_cambios_v52": "Sprint 5b: R223 Admin infraestructura->2522 sysadmin. V30 keywords expandidos (español)."
 }
