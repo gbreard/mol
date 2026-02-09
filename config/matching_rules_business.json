@@ -1,8 +1,8 @@
 {
-  "version": "4.6",
-  "descripcion": "Reglas de negocio para matching ESCO. 183 reglas de bypass que fuerzan ISCO específico.",
+  "version": "5.0",
+  "descripcion": "Reglas de negocio para matching ESCO. 213 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-02-05",
+  "fecha_actualizacion": "2026-02-09",
   "_cambios_v43": "R181-R182: Personal mantenimiento -> 7233, Tecnico electromedicina -> 3211",
   "_cambios_v42": "R177-R180: Gestor cobranzas, QA/Tester, Instalador fibra, Soporte IT",
   "_cambios_v41": "R175: Operario limpieza -> 9112, R176: Auditor franquicias -> 2421",
@@ -953,19 +953,24 @@
       "activa": true
     },
     "R36_operario_almacen": {
-      "nombre": "Operario de Almacén/Depósito (no jefe)",
+      "nombre": "Operario Almacén/Depósito/Logístico (consolidado R36+R119)",
       "prioridad": 1,
       "condicion": {
         "titulo_contiene_alguno": [
-          "operario de almacen",
           "operario almacen",
-          "operario de deposito",
-          "operario deposito",
-          "operario de logistica",
-          "operario logistica",
           "operario almacén",
+          "operario de almacen",
+          "operario de deposito",
+          "operario de logistica",
+          "operario de logística",
+          "operario deposito",
           "operario depósito",
-          "operario logística"
+          "operario logistica",
+          "operario logistico",
+          "operario logística",
+          "operario logístico",
+          "operarios logisticos",
+          "operarios logísticos"
         ]
       },
       "accion": {
@@ -973,7 +978,8 @@
         "esco_label": "mozo de almacén/moza de almacén"
       },
       "caso_gold_set": "1117980907 - Operario de Almacen/Logistica",
-      "activa": true
+      "activa": true,
+      "_nota": "Sprint 2: merged R119 keywords"
     },
     "R37_operario_alimentos": {
       "nombre": "Operario Producción de Alimentos (genérico)",
@@ -1067,8 +1073,6 @@
           "asesora de ventas",
           "corredor de ventas",
           "corredor comercial",
-          "ejecutivo de ventas",
-          "ejecutivo comercial",
           "representante comercial",
           "representante de ventas"
         ],
@@ -1423,7 +1427,8 @@
         "forzar_isco": "8142",
         "esco_label": "operador de máquinas para la fabricación de muebles de plástico/operadora de máquinas para la fabricación de muebles de plástico"
       },
-      "activa": true
+      "activa": true,
+      "prioridad": 1
     },
     "R54_cuidador_adultos": {
       "condicion": {
@@ -1437,7 +1442,8 @@
         "forzar_isco": "5322",
         "esco_label": "técnico de atención sociosanitaria a personas en el domicilio/técnica de atención sociosanitaria a personas en el domicilio"
       },
-      "activa": true
+      "activa": true,
+      "prioridad": 1
     },
     "R55_vendedor_ambulante": {
       "condicion": {
@@ -1450,7 +1456,8 @@
         "forzar_isco": "9520",
         "esco_label": "vendedor ambulante/vendedora ambulante"
       },
-      "activa": true
+      "activa": true,
+      "prioridad": 0
     },
     "R56_analista_creditos": {
       "condicion": {
@@ -1465,7 +1472,8 @@
         "forzar_isco": "3312",
         "esco_label": "analista de créditos"
       },
-      "activa": true
+      "activa": true,
+      "prioridad": 1
     },
     "R57_encargado_ganadero": {
       "condicion": {
@@ -1479,7 +1487,8 @@
         "forzar_isco": "6121",
         "esco_label": "ganadero/ganadera"
       },
-      "activa": true
+      "activa": true,
+      "prioridad": 1
     },
     "R58_operador_sim_aduanas": {
       "condicion": {
@@ -1494,7 +1503,8 @@
         "forzar_isco": "3331",
         "esco_label": "agente y comisionista de aduanas"
       },
-      "activa": true
+      "activa": true,
+      "prioridad": 1
     },
     "R59_medico_especialista": {
       "nombre": "Médico Especialista",
@@ -1532,7 +1542,8 @@
         "esco_label": "médico especialista/médica especialista"
       },
       "activa": true,
-      "nota": "Excluye ingeniero/técnico para evitar falsos positivos con 'equipamiento médico'"
+      "nota": "Excluye ingeniero/técnico para evitar falsos positivos con 'equipamiento médico'",
+      "prioridad": 1
     },
     "R60_mecanico_vehiculos": {
       "nombre": "Mecánico de vehículos/camiones (NO barcos)",
@@ -1557,7 +1568,8 @@
         "forzar_isco": "7231",
         "esco_label": "mecánico de vehículos/mecánica de vehículos"
       },
-      "activa": true
+      "activa": true,
+      "prioridad": 1
     },
     "R61_analista_qa_farma": {
       "nombre": "Analista QA/Calidad Farmacéutico",
@@ -1581,7 +1593,8 @@
         "forzar_isco": "2145",
         "esco_label": "ingeniero químico/ingeniera química"
       },
-      "activa": true
+      "activa": true,
+      "prioridad": 0
     },
     "R62_auditor_medico": {
       "nombre": "Auditor Médico",
@@ -1601,7 +1614,8 @@
         "forzar_isco": "2212",
         "esco_label": "médico especialista/médica especialista"
       },
-      "activa": true
+      "activa": true,
+      "prioridad": 0
     },
     "R63_secretaria_educacion": {
       "nombre": "Secretaria/Asistente Académico",
@@ -1624,7 +1638,8 @@
         "forzar_isco": "3343",
         "esco_label": "empleado administrativo/empleada administrativa"
       },
-      "activa": true
+      "activa": true,
+      "prioridad": 0
     },
     "R64_admin_funeraria": {
       "nombre": "Administrativo Funeraria/Cementerio",
@@ -1645,7 +1660,8 @@
         "forzar_isco": "4110",
         "esco_label": "empleado de oficina/empleada de oficina"
       },
-      "activa": true
+      "activa": true,
+      "prioridad": 0
     },
     "R65_jefe_delegacion": {
       "nombre": "Jefe de Delegación/Sucursal",
@@ -1663,10 +1679,12 @@
         ]
       },
       "accion": {
-        "forzar_isco": "1324",
-        "esco_label": "director de distribución y logística/directora de distribución y logística"
+        "forzar_isco": "1420",
+        "esco_label": "gerente de tienda"
       },
-      "activa": true
+      "activa": true,
+      "prioridad": 0,
+      "nota": "Sprint 5 V31: fix ISCO 1324->1420. Jefe sucursal=retail management, no logistica. ID 1117866300."
     },
     "R66_arquitecto_software": {
       "nombre": "Arquitecto de Software",
@@ -1688,7 +1706,8 @@
         "forzar_isco": "2512",
         "esco_label": "desarrollador de software/desarrolladora de software"
       },
-      "activa": true
+      "activa": true,
+      "prioridad": 0
     },
     "R67_devops_engineer": {
       "nombre": "DevOps Engineer/Ingeniero DevOps",
@@ -1704,7 +1723,8 @@
         "forzar_isco": "2512",
         "esco_label": "desarrollador de software/desarrolladora de software"
       },
-      "activa": true
+      "activa": true,
+      "prioridad": 1
     },
     "R68_gerente_ops_gastronomia": {
       "nombre": "Gerente/Supervisor Operaciones Gastronomía",
@@ -1729,7 +1749,8 @@
       },
       "caso_revision_100": "1118091304, 1118097995 - Gerente/Supervisor Operaciones Gastronómico",
       "activa": true,
-      "nota": "FASE 4 - Operaciones en gastronomía = gerente restaurante, NO director fabricación"
+      "nota": "FASE 4 - Operaciones en gastronomía = gerente restaurante, NO director fabricación",
+      "prioridad": 0
     },
     "R69_analista_financiero": {
       "nombre": "Analista Financiero",
@@ -1747,7 +1768,8 @@
       "caso_revision_100": "1118101894, 2172001 - Analista Financiero Junior",
       "activa": true,
       "nota": "FASE 4 - Corregido: 2413 (no 2411). Analista financiero != contador",
-      "fix_validacion_humana": "2026-01-16"
+      "fix_validacion_humana": "2026-01-16",
+      "prioridad": 1
     },
     "R70_encargado_gastronomia": {
       "nombre": "Encargado/Subencargado Gastronomía",
@@ -1772,7 +1794,8 @@
       },
       "caso_revision_100": "2172164 - Encargado Senior Gastronomía",
       "activa": true,
-      "nota": "FASE 4 - Encargado gastronomía = gerente restaurante"
+      "nota": "FASE 4 - Encargado gastronomía = gerente restaurante",
+      "prioridad": 0
     },
     "R71_encargado_local_retail": {
       "nombre": "Encargado/Subencargado de Local Retail",
@@ -1792,7 +1815,8 @@
       },
       "caso_revision_100": "1118101812 - Subencargado de Local",
       "activa": true,
-      "nota": "FASE 4 - Encargado local retail = supervisor tienda"
+      "nota": "FASE 4 - Encargado local retail = supervisor tienda",
+      "prioridad": 1
     },
     "R72_carpintero_aluminio": {
       "nombre": "Carpintero de Aluminio/Vidriero",
@@ -1811,7 +1835,8 @@
       },
       "caso_revision_100": "2172208 - Carpintero de Aluminio / Cortador Vidriero",
       "activa": true,
-      "nota": "FASE 4 - Carpintero aluminio es carpintería metálica, NO ebanista"
+      "nota": "FASE 4 - Carpintero aluminio es carpintería metálica, NO ebanista",
+      "prioridad": 1
     },
     "R74_supervisor_ventas": {
       "nombre": "Supervisor de Ventas",
@@ -1831,7 +1856,8 @@
       },
       "caso_revision_100": "2172203 - Supervisor de Ventas Servicios Salud",
       "activa": true,
-      "nota": "FASE 4 - Supervisor ventas = director ventas"
+      "nota": "FASE 4 - Supervisor ventas = director ventas",
+      "prioridad": 1
     },
     "R75_vigilador": {
       "nombre": "Vigilador/Guardia de Seguridad",
@@ -1851,7 +1877,8 @@
       },
       "caso_revision_100": "2171959 - Vigilador General",
       "activa": true,
-      "nota": "FASE 4 - Vigilador genérico = guardia seguridad"
+      "nota": "FASE 4 - Vigilador genérico = guardia seguridad",
+      "prioridad": 1
     },
     "R76_fonoaudiologo": {
       "nombre": "Fonoaudiólogo/Logopeda",
@@ -1870,7 +1897,8 @@
       },
       "caso_revision_100": "2171937 - Fonoaudióloga",
       "activa": true,
-      "nota": "FASE 4 - Fonoaudiólogo = logopeda (ISCO 2266)"
+      "nota": "FASE 4 - Fonoaudiólogo = logopeda (ISCO 2266)",
+      "prioridad": 1
     },
     "R77_responsable_compras": {
       "nombre": "Responsable/Jefe Compras y Logística",
@@ -1888,7 +1916,8 @@
       },
       "caso_revision_100": "2172098 - Responsable Compras y Logística",
       "activa": true,
-      "nota": "FASE 4 - Responsable compras = director supply chain"
+      "nota": "FASE 4 - Responsable compras = director supply chain",
+      "prioridad": 1
     },
     "R78_analista_tecnico_funcional_it": {
       "nombre": "Analista Técnico Funcional IT (Medios de Pago)",
@@ -1906,7 +1935,8 @@
       },
       "caso_revision_100": "2172188 - Analista Técnico Funcional Medios de Pago",
       "activa": true,
-      "nota": "FASE 4 - Técnico funcional IT = analista sistemas"
+      "nota": "FASE 4 - Técnico funcional IT = analista sistemas",
+      "prioridad": 0
     },
     "R79_ingeniero_industrial_equipos": {
       "nombre": "Ingeniero Industrial (Equipamiento/Gestión)",
@@ -1927,7 +1957,8 @@
       },
       "caso_revision_100": "2172199 - Ingeniero Industrial Equipamiento Médico",
       "activa": true,
-      "nota": "FASE 4 - Ingeniero industrial = ISCO 2141"
+      "nota": "FASE 4 - Ingeniero industrial = ISCO 2141",
+      "prioridad": 1
     },
     "R80_administrativo_almacen": {
       "nombre": "Administrativo de Almacén/Stock",
@@ -1951,7 +1982,8 @@
       },
       "caso_revision_100": "2172219 - Administrativo para Almacenes",
       "activa": true,
-      "nota": "FASE 4 - Administrativo almacén = coordinador inventario"
+      "nota": "FASE 4 - Administrativo almacén = coordinador inventario",
+      "prioridad": 0
     },
     "R81_monitoreo_alarmas": {
       "nombre": "Operador Monitoreo de Alarmas",
@@ -1975,7 +2007,8 @@
       },
       "caso_revision_100": "1118102051 - Operadores de Monitoreo de Alarmas",
       "activa": true,
-      "nota": "FASE 4 - Monitoreo alarmas = seguridad"
+      "nota": "FASE 4 - Monitoreo alarmas = seguridad",
+      "prioridad": 0
     },
     "R82_operario_farmaceutico": {
       "nombre": "Operario Industria Farmacéutica",
@@ -1999,15 +2032,17 @@
       },
       "caso_revision_100": "1118040252 - Operarios pharma mal clasificado a zoológico",
       "activa": true,
-      "nota": "FASE 4 - Operario pharma = operador productos químicos"
+      "nota": "FASE 4 - Operario pharma = operador productos químicos",
+      "prioridad": 0
     },
     "R83_analista_calidad_servicios": {
       "nombre": "Analista de Calidad de Servicios",
       "condicion": {
         "titulo_contiene_alguno": [
-          "analista de calidad",
-          "analista calidad",
-          "calidad de servicios"
+          "calidad de servicios",
+          "calidad de atencion",
+          "calidad de atención",
+          "quality assurance servicio"
         ]
       },
       "accion": {
@@ -2016,7 +2051,8 @@
       },
       "caso_revision_100": "1118101077, 1118101058 - Analista Calidad Servicios",
       "activa": true,
-      "nota": "FASE 5 - Analista calidad servicios = supervisor control calidad"
+      "nota": "Sprint 5 V31: refinada - solo servicios/atencion. ID 1118088708 era falso positivo.",
+      "prioridad": 1
     },
     "R84_operario_acondicionamiento": {
       "nombre": "Operario Acondicionamiento (Laboratorio/Pharma)",
@@ -2039,7 +2075,8 @@
       },
       "caso_revision_100": "1118040252 - Operarios acondicionamiento laboratorio",
       "activa": true,
-      "nota": "FASE 5 - Acondicionamiento pharma = operador productos químicos"
+      "nota": "FASE 5 - Acondicionamiento pharma = operador productos químicos",
+      "prioridad": 1
     },
     "R85_supervisor_operaciones": {
       "nombre": "Supervisor de Operaciones (Gastronómico/Retail)",
@@ -2062,7 +2099,8 @@
       },
       "caso_revision_100": "1118097995 - Supervisor Operaciones Gastronomia",
       "activa": true,
-      "nota": "FASE 5 - Supervisor ops gastro/retail = supervisor tienda"
+      "nota": "FASE 5 - Supervisor ops gastro/retail = supervisor tienda",
+      "prioridad": 1
     },
     "R86_subencargado_local": {
       "nombre": "Subencargado/Asistente de Local (Retail)",
@@ -2082,7 +2120,8 @@
       },
       "caso_revision_100": "1118101812 - Subencargado de Local Retail",
       "activa": true,
-      "nota": "FASE 5 - Subencargado retail = supervisor tienda"
+      "nota": "FASE 5 - Subencargado retail = supervisor tienda",
+      "prioridad": 1
     },
     "R87_administrativo_ecommerce": {
       "nombre": "Administrativo/Analista de E-commerce",
@@ -2107,7 +2146,8 @@
       },
       "caso_revision_100": "1118105735 - Administrativo Ecommerce",
       "activa": true,
-      "nota": "v3.5.2: Corregido - admin ecommerce es oficinista, no agente propiedad intelectual"
+      "nota": "v3.5.2: Corregido - admin ecommerce es oficinista, no agente propiedad intelectual",
+      "prioridad": 0
     },
     "R88_jefe_producto": {
       "nombre": "Jefe/Gerente de Producto (Product Manager)",
@@ -2128,7 +2168,8 @@
       "caso_revision_100": "1118105850 - Jefe de Producto",
       "activa": true,
       "nota": "Product Manager → director de producto (no director de ventas). Corregido 2026-01-20",
-      "fix_validacion_humana": "2026-01-20"
+      "fix_validacion_humana": "2026-01-20",
+      "prioridad": 1
     },
     "R89_disenador_grafico_senior": {
       "nombre": "Diseñador Gráfico (con seniority)",
@@ -2150,7 +2191,8 @@
       },
       "caso_revision_100": "2172144 - Diseñador Gráfico Senior",
       "activa": true,
-      "nota": "FASE 5 - Diseñador gráfico = ISCO 2166 (refuerza R2)"
+      "nota": "FASE 5 - Diseñador gráfico = ISCO 2166 (refuerza R2)",
+      "prioridad": 1
     },
     "R90_supervisor_ventas": {
       "nombre": "Supervisor de Ventas",
@@ -2163,6 +2205,11 @@
           "coordinador de ventas",
           "coordinadora de ventas",
           "coordinador/a de ventas"
+        ],
+        "titulo_no_contiene_alguno": [
+          "director",
+          "gerente",
+          "head"
         ]
       },
       "accion": {
@@ -2171,7 +2218,9 @@
       },
       "caso_revision_100": "2172203 - Supervisor de Ventas",
       "activa": true,
-      "nota": "FASE 5 - Supervisor ventas = representante comercial (supervisión equipo)"
+      "nota": "FASE 5 - Supervisor ventas = representante comercial (supervisión equipo)",
+      "prioridad": 1,
+      "_nota": "Sprint 2: agregadas exclusiones gerenciales"
     },
     "R91_jefe_mantenimiento": {
       "nombre": "Jefe/Supervisor de Mantenimiento Industrial",
@@ -2191,7 +2240,8 @@
       },
       "caso_revision_100": "1117941805 - JEFE/A DE MANTENIMIENTO (rubro alimenticio)",
       "activa": true,
-      "nota": "Validacion v2.0 - Jefe mantenimiento en Argentina = supervisor técnico (3115), no director (1321). Corregido 2026-01-20"
+      "nota": "Validacion v2.0 - Jefe mantenimiento en Argentina = supervisor técnico (3115), no director (1321). Corregido 2026-01-20",
+      "prioridad": 1
     },
     "R92_jefe_cotizaciones_presupuestos": {
       "nombre": "Jefe/Responsable de Cotizaciones, Presupuestos y Cómputo de Obras",
@@ -2370,25 +2420,6 @@
       "caso_validacion": "2170807 - Asesor Medicina Prepaga",
       "activa": true
     },
-    "R99_ejecutivo_comercial": {
-      "nombre": "Ejecutivo Comercial / Account Executive",
-      "prioridad": 99,
-      "condicion": {
-        "titulo_contiene_alguno": [
-          "ejecutivo comercial",
-          "ejecutiva comercial",
-          "account executive",
-          "ejecutivo de cuentas",
-          "ejecutiva de cuentas"
-        ]
-      },
-      "accion": {
-        "forzar_isco": "3322",
-        "esco_label": "representante comercial"
-      },
-      "caso_validacion": "1118088036 - Ejecutivo Comercial",
-      "activa": true
-    },
     "R100_mucama_hotel": {
       "nombre": "Mucama/Camarera de Hotel",
       "condicion": {
@@ -2404,7 +2435,8 @@
         "forzar_isco": "9112",
         "esco_label": "camarero de pisos/camarera de pisos"
       },
-      "activa": true
+      "activa": true,
+      "prioridad": 1
     },
     "R101_business_analyst": {
       "nombre": "Business Analyst / Analista de Negocio",
@@ -2420,7 +2452,8 @@
         "forzar_isco": "2511",
         "esco_label": "analista de sistemas de TIC"
       },
-      "activa": true
+      "activa": true,
+      "prioridad": 1
     },
     "R106_preventista": {
       "nombre": "Preventista",
@@ -2492,14 +2525,24 @@
       "activa": true
     },
     "R109_ejecutivo_ventas": {
-      "nombre": "Ejecutivo de Ventas",
+      "nombre": "Ejecutivo de Ventas (consolidado R109+R145+R195)",
       "prioridad": 1,
       "condicion": {
         "titulo_contiene_alguno": [
-          "ejecutivo de ventas",
+          "ejecutiva comercial",
           "ejecutiva de ventas",
+          "ejecutiva ventas",
+          "ejecutivo comercial",
+          "ejecutivo de ventas",
           "ejecutivo ventas",
+          "ejecutivo/a de ventas",
           "sales executive"
+        ],
+        "titulo_no_contiene_alguno": [
+          "director",
+          "gerente",
+          "head",
+          "jefe"
         ]
       },
       "accion": {
@@ -2507,7 +2550,8 @@
         "esco_label": "representante comercial"
       },
       "caso_demo": "1118115901 - Ejecutivo de ventas rubro alimenticio",
-      "activa": true
+      "activa": true,
+      "_nota": "Sprint 2: merged R145+R195 keywords + exclusiones"
     },
     "R110_tecnico_mantenimiento": {
       "nombre": "Tecnico de Mantenimiento Industrial",
@@ -2550,7 +2594,7 @@
           "vendedor de local",
           "vendedora de local"
         ],
-        "titulo_no_contiene": [
+        "titulo_no_contiene_alguno": [
           "asesor",
           "ejecutivo",
           "representante",
@@ -2680,27 +2724,6 @@
       },
       "nota": "Administrativo en almacén/depósito → 4321 (inventario, no admin genérico)",
       "fix_validacion_humana": "2026-01-16",
-      "activa": true
-    },
-    "R119_operario_logistico": {
-      "nombre": "Operario Logístico/Logística",
-      "prioridad": 1,
-      "condicion": {
-        "titulo_contiene_alguno": [
-          "operario logístico",
-          "operario logistico",
-          "operarios logísticos",
-          "operarios logisticos",
-          "operario de logística",
-          "operario de logistica"
-        ]
-      },
-      "accion": {
-        "forzar_isco": "9333",
-        "esco_label": "operario de logística de almacén/operaria de logística de almacén"
-      },
-      "nota": "Operario logístico → 9333 (mozo almacén: carga, descarga, picking)",
-      "fix_validacion_humana": "2026-01-29",
       "activa": true
     },
     "R120_gomero_balanceador": {
@@ -3040,28 +3063,6 @@
       "caso_referencia": "1116740268 - H - Steward - Bacheros - CABA",
       "activa": true
     },
-    "R134_commercial_executive": {
-      "nombre": "Commercial Executive area Ventas",
-      "prioridad": 0,
-      "condicion": {
-        "titulo_contiene_alguno": [
-          "commercial executive",
-          "ejecutivo comercial"
-        ],
-        "area_funcional_es_alguno": [
-          "Ventas",
-          "ventas",
-          "Comercial",
-          "comercial"
-        ]
-      },
-      "accion": {
-        "forzar_isco": "3322",
-        "esco_label": "representante comercial"
-      },
-      "caso_referencia": "2172740 - Commercial Executive",
-      "activa": true
-    },
     "R135_gestor_liquidaciones": {
       "nombre": "Gestor de Liquidaciones",
       "prioridad": 0,
@@ -3079,40 +3080,26 @@
       "caso_referencia": "1118115815 - Gestor de Liquidaciones",
       "activa": true
     },
-    "R135_peon_cocina": {
-      "nombre": "Peón/Ayudante de Cocina",
-      "condicion": {
-        "titulo_contiene_alguno": [
-          "peón de cocina",
-          "peon de cocina",
-          "ayudante de cocina",
-          "auxiliar de cocina",
-          "bachero",
-          "bachera"
-        ]
-      },
-      "accion": {
-        "forzar_isco": "9412",
-        "esco_label": "ayudante/ayudanta de cocina"
-      },
-      "activa": true,
-      "_caso": "ID 1118092879 Peón de Cocina",
-      "_fecha": "2026-01-22"
-    },
     "R136_personal_deposito": {
-      "nombre": "Personal de Depósito/Almacén (Logística)",
+      "nombre": "Personal de Depósito/Almacén (consolidado R136+R161)",
       "condicion": {
         "titulo_contiene_alguno": [
-          "personal para deposito",
-          "personal para depósito",
+          "auxiliar de deposito",
+          "auxiliar de depósito",
+          "empleado de deposito",
+          "empleado de depósito",
+          "operario de deposito",
+          "operario de depósito",
+          "personal de almacen",
+          "personal de almacén",
           "personal de deposito",
           "personal de depósito",
           "personal deposito",
           "personal depósito",
           "personal para almacen",
           "personal para almacén",
-          "personal de almacen",
-          "personal de almacén"
+          "personal para deposito",
+          "personal para depósito"
         ]
       },
       "accion": {
@@ -3122,7 +3109,9 @@
       "activa": true,
       "_caso": "ID 1118092945 Personal para Depósito en Villa Soldati",
       "_fecha": "2026-01-22",
-      "nota": "Personal genérico de depósito con tareas de picking/logística → 9333 (mozo almacén)"
+      "nota": "Personal genérico de depósito con tareas de picking/logística → 9333 (mozo almacén)",
+      "prioridad": 1,
+      "_nota": "Sprint 2: merged R161 keywords"
     },
     "R137_tareas_picking_crossdocking": {
       "nombre": "Tareas Picking/Cross-docking (sin título específico)",
@@ -3132,7 +3121,15 @@
           "cross docking",
           "armado de pedidos"
         ],
-        "area_funcional_es": "Logistica"
+        "area_funcional_es": "Logistica",
+        "titulo_no_contiene_alguno": [
+          "maquinista",
+          "apiladora",
+          "autoelevador",
+          "autoelevadorista",
+          "carretilla",
+          "clark"
+        ]
       },
       "accion": {
         "forzar_isco": "9333",
@@ -3141,7 +3138,8 @@
       "activa": true,
       "_caso": "ID 1118092945 - tareas picking, cross docking en área logística",
       "_fecha": "2026-01-22",
-      "nota": "Si tareas o título mencionan picking/cross docking y área es logística → 9333"
+      "nota": "Sprint 5 V31: agregar exclusion maquinista/apiladora (son 8344, no 9333). ID 1118090160.",
+      "prioridad": 0
     },
     "R138_control_gestion": {
       "nombre": "Analista de Control de Gestión",
@@ -3159,7 +3157,8 @@
       },
       "activa": true,
       "_caso": "ID 2172829 - Analista de Control de Gestión - Petrolera Martinez",
-      "_fecha": "2026-01-22"
+      "_fecha": "2026-01-22",
+      "prioridad": 1
     },
     "R139_repositor": {
       "nombre": "Repositor/Reponedor",
@@ -3179,7 +3178,8 @@
       },
       "activa": true,
       "_caso": "ID 1118097220 Repositores con experiencia",
-      "_fecha": "2026-01-23"
+      "_fecha": "2026-01-23",
+      "prioridad": 1
     },
     "R140_mucama_hotel": {
       "nombre": "Mucama/Camarera de Pisos Hotelería",
@@ -3200,7 +3200,8 @@
       },
       "activa": true,
       "_caso": "ID 1118005232 Mucamas/os para Hoteles 4* y 5*",
-      "_fecha": "2026-01-23"
+      "_fecha": "2026-01-23",
+      "prioridad": 1
     },
     "R141_peon_deposito": {
       "nombre": "Peón de Depósito/Distribución",
@@ -3222,7 +3223,8 @@
       },
       "activa": true,
       "_caso": "ID 1118009711 Empleado de reposicion, distribucion y deposito",
-      "_fecha": "2026-01-23"
+      "_fecha": "2026-01-23",
+      "prioridad": 1
     },
     "R142_bodeguero": {
       "nombre": "Bodeguero/Encargado de Bodega",
@@ -3242,7 +3244,8 @@
       "activa": true,
       "_caso": "ID 1118104232 Peones y Bodegueros",
       "_fecha": "2026-01-23",
-      "nota": "En Argentina, bodeguero = almacenero (no relacionado a vinos)"
+      "nota": "En Argentina, bodeguero = almacenero (no relacionado a vinos)",
+      "prioridad": 1
     },
     "R143_jefe_cocina": {
       "nombre": "Jefe/Chef/Responsable de Cocina",
@@ -3265,7 +3268,8 @@
       },
       "activa": true,
       "_caso": "ID 1118032379 Jefe/a de cocina - Temperley, 1116827130 Responsable de Cocina",
-      "_fecha": "2026-02-04"
+      "_fecha": "2026-02-04",
+      "prioridad": 1
     },
     "R144_pizzero": {
       "nombre": "Pizzaiolo/Pizzero/Panadero",
@@ -3286,27 +3290,8 @@
       },
       "activa": true,
       "_caso": "ID 2171992 Pizzaiolo/Maestro Pizzero/Panadero",
-      "_fecha": "2026-01-23"
-    },
-    "R145_ejecutivo_ventas": {
-      "nombre": "Ejecutivo de Ventas",
-      "condicion": {
-        "titulo_contiene_alguno": [
-          "ejecutivo de ventas",
-          "ejecutiva de ventas",
-          "ejecutivo ventas",
-          "ejecutiva ventas",
-          "ejecutivo comercial",
-          "ejecutiva comercial"
-        ]
-      },
-      "accion": {
-        "forzar_isco": "3322",
-        "esco_label": "representante comercial"
-      },
-      "activa": true,
-      "_caso": "ID 2171854 Ejecutivo de Ventas",
-      "_fecha": "2026-01-23"
+      "_fecha": "2026-01-23",
+      "prioridad": 1
     },
     "R146_data_architect": {
       "nombre": "Data Architect / Arquitecto de Datos",
@@ -3451,7 +3436,7 @@
           "ventas online",
           "e - commerce"
         ],
-        "titulo_no_contiene": [
+        "titulo_no_contiene_alguno": [
           "desarrollador",
           "programador",
           "developer"
@@ -3630,32 +3615,6 @@
       "caso_referencia": "1118099825 - TECNICO INSTALADOR",
       "activa": true,
       "nota": "Default para instalador genérico. FIX v4.6: esco_label corregido"
-    },
-    "R161_personal_deposito": {
-      "nombre": "Personal de Depósito/Almacén",
-      "prioridad": 1,
-      "condicion": {
-        "titulo_contiene_alguno": [
-          "personal de deposito",
-          "personal de depósito",
-          "personal deposito",
-          "personal depósito",
-          "empleado de deposito",
-          "empleado de depósito",
-          "operario de deposito",
-          "operario de depósito",
-          "auxiliar de deposito",
-          "auxiliar de depósito"
-        ]
-      },
-      "accion": {
-        "forzar_isco": "9333",
-        "esco_label": "mozo de almacén/moza de almacén"
-      },
-      "caso_diagnostico": "1118099341 - Personal de Depósito con Atención al Cliente",
-      "fecha_creacion": "2026-01-29",
-      "activa": true,
-      "nota": "Trabajo en almacén = peón de carga, no call center aunque tenga atención al cliente"
     },
     "R162_tecnico_mantenimiento_edilicio": {
       "nombre": "Técnico de Mantenimiento Edilicio/de Edificios",
@@ -4126,7 +4085,7 @@
           "mantenimiento general",
           "encargado de mantenimiento"
         ],
-        "titulo_no_contiene": [
+        "titulo_no_contiene_alguno": [
           "jefe",
           "gerente",
           "supervisor",
@@ -4252,7 +4211,7 @@
           "asistente de farmacia",
           "ayudante de farmacia"
         ],
-        "titulo_no_contiene": [
+        "titulo_no_contiene_alguno": [
           "farmacéutico",
           "farmaceutico",
           "bioquímico"
@@ -4274,7 +4233,7 @@
           "agente de seguridad",
           "oficial de seguridad"
         ],
-        "titulo_no_contiene": [
+        "titulo_no_contiene_alguno": [
           "informática",
           "informatica",
           "ciberseguridad",
@@ -4298,7 +4257,7 @@
           "desarrollo de negocios",
           "desarrollo comercial"
         ],
-        "titulo_no_contiene": [
+        "titulo_no_contiene_alguno": [
           "director",
           "gerente",
           "head"
@@ -4321,7 +4280,7 @@
           "control interno",
           "auditoría interna"
         ],
-        "titulo_no_contiene": [
+        "titulo_no_contiene_alguno": [
           "gerente",
           "jefe",
           "director"
@@ -4343,7 +4302,7 @@
           "analista de compras",
           "analista supply"
         ],
-        "titulo_no_contiene": [
+        "titulo_no_contiene_alguno": [
           "jefe",
           "gerente",
           "director"
@@ -4387,7 +4346,7 @@
           "operaciones",
           "operations"
         ],
-        "titulo_no_contiene": [
+        "titulo_no_contiene_alguno": [
           "logística",
           "almacén",
           "producción",
@@ -4419,31 +4378,6 @@
       "_nota": "v4.4: Middle/Back Office → auxiliar contabilidad",
       "activa": true,
       "nota": "FIX v4.6: esco_label corregido"
-    },
-    "R195_ejecutivo_ventas": {
-      "nombre": "Ejecutivo de Ventas (genérico)",
-      "prioridad": 1,
-      "_nota_prioridad": "Prioridad 1 para no interferir con ejecutivos específicos",
-      "condicion": {
-        "titulo_contiene_alguno": [
-          "ejecutivo de ventas",
-          "ejecutiva de ventas",
-          "ejecutivo ventas",
-          "ejecutivo/a de ventas"
-        ],
-        "titulo_no_contiene": [
-          "director",
-          "gerente",
-          "head",
-          "jefe"
-        ]
-      },
-      "accion": {
-        "forzar_isco": "3322",
-        "esco_label": "representante comercial"
-      },
-      "_nota": "v4.4: Ejecutivo ventas genérico → representante comercial",
-      "activa": true
     },
     "R196_pasante_administrativo": {
       "nombre": "Pasante Administrativo / Contable",
@@ -4653,6 +4587,358 @@
       "caso_referencia": "2171178 - Tecnico e instalador en sistemas de seguridad electronica",
       "activa": true,
       "nota": "v4.6: Técnico seguridad electrónica = 7421 electrónica"
+    },
+    "R207_peon_cocina": {
+      "nombre": "Peón/Ayudante de Cocina",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "peón de cocina",
+          "peon de cocina",
+          "ayudante de cocina",
+          "auxiliar de cocina",
+          "bachero",
+          "bachera"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9412",
+        "esco_label": "ayudante/ayudanta de cocina"
+      },
+      "activa": true,
+      "_caso": "ID 1118092879 Peón de Cocina",
+      "_fecha": "2026-01-22",
+      "prioridad": 1,
+      "_nota": "Sprint 2: renombrada de R135 (key duplicada)"
+    },
+    "R208_analista_compras": {
+      "nombre": "Analista/Responsable de Compras",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista de compras",
+          "analista compras",
+          "comprador",
+          "compradora",
+          "buyer",
+          "procurement analyst"
+        ],
+        "titulo_no_contiene_alguno": [
+          "jefe",
+          "gerente",
+          "director"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3323",
+        "esco_label": "comprador/compradora"
+      },
+      "activa": true,
+      "_fecha": "2026-02-08",
+      "_nota": "Sprint 2: gap cobertura - 5 ofertas sin match"
+    },
+    "R209_personal_maestranza": {
+      "nombre": "Personal de Maestranza",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "maestranza",
+          "personal de maestranza",
+          "auxiliar de maestranza"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9112",
+        "esco_label": "limpiador de oficinas/limpiadora de oficinas"
+      },
+      "activa": true,
+      "_fecha": "2026-02-08",
+      "_nota": "Sprint 2: gap cobertura - 4 ofertas sin match"
+    },
+    "R210_telefonista_ventas": {
+      "nombre": "Operador/a de Venta Telefónica (Telemarketing)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "venta telefónica",
+          "venta telefonica",
+          "telemarketing",
+          "televentas",
+          "operador de venta telefónica",
+          "operadores de venta telefónica"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5244",
+        "esco_label": "vendedor en centro de contacto/vendedora en centro de contacto"
+      },
+      "activa": true,
+      "_fecha": "2026-02-08",
+      "_nota": "Sprint 2: gap cobertura - 4 ofertas sin match"
+    },
+    "R211_soldador": {
+      "nombre": "Soldador",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "soldador",
+          "soldadora",
+          "soldadores",
+          "soldadura",
+          "welder"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7212",
+        "esco_label": "soldador/soldadora"
+      },
+      "activa": true,
+      "_fecha": "2026-02-08",
+      "_nota": "Sprint 2: gap cobertura - 3 ofertas sin match"
+    },
+    "R212_personal_limpieza": {
+      "nombre": "Personal de Limpieza",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "personal de limpieza",
+          "operario de limpieza",
+          "operario/a de limpieza",
+          "auxiliar de limpieza",
+          "limpieza industrial"
+        ],
+        "titulo_no_contiene_alguno": [
+          "jefe",
+          "supervisor",
+          "encargado"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9112",
+        "esco_label": "limpiador de oficinas/limpiadora de oficinas"
+      },
+      "activa": true,
+      "_fecha": "2026-02-08",
+      "_nota": "Sprint 2: gap cobertura - 3 ofertas sin match"
+    },
+    "R213_asistente_comercial": {
+      "nombre": "Asistente Comercial",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "asistente comercial",
+          "asistenta comercial",
+          "asistente de ventas",
+          "asistente del area comercial"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4222",
+        "esco_label": "empleado del centro de contacto de información/empleada del centro de contacto de información"
+      },
+      "activa": true,
+      "_fecha": "2026-02-08",
+      "_nota": "Sprint 2: gap cobertura - 3 ofertas sin match"
+    },
+    "R214_analista_comercial": {
+      "nombre": "Analista Comercial",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista comercial",
+          "analista de ventas",
+          "analista de mercado"
+        ],
+        "titulo_no_contiene_alguno": [
+          "jefe",
+          "gerente",
+          "director",
+          "senior"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2431",
+        "esco_label": "profesional de la publicidad y la comercialización"
+      },
+      "activa": true,
+      "_fecha": "2026-02-08",
+      "_nota": "Sprint 2: gap cobertura - 3 ofertas sin match"
+    },
+    "R215_supervisor_mecanizado": {
+      "nombre": "Supervisor de Mecanizado/Producción",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "supervisor de mecanizado",
+          "supervisor mecanizado",
+          "supervisor de producción",
+          "supervisor producción",
+          "supervisor de produccion",
+          "supervisor produccion"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3122",
+        "esco_label": "supervisor de la industria manufacturera/supervisora de la industria manufacturera"
+      },
+      "activa": true,
+      "_fecha": "2026-02-08",
+      "_nota": "Sprint 2: gap cobertura - sector industria/produccion"
+    },
+    "R216_pastelero": {
+      "nombre": "Pastelero/Panadero",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "pastelero",
+          "pastelera",
+          "repostero",
+          "repostera",
+          "panadero",
+          "panadera",
+          "confitero",
+          "confitera"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7512",
+        "esco_label": "panadero/panadera"
+      },
+      "activa": true,
+      "_fecha": "2026-02-08",
+      "_nota": "Sprint 2: gap cobertura - 2 ofertas sin match"
+    },
+    "R217_kinesiologio": {
+      "nombre": "Kinesiólogo/Fisioterapeuta",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "kinesiólogo",
+          "kinesiologa",
+          "kinesióloga",
+          "kinesiologo",
+          "fisioterapeuta"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2264",
+        "esco_label": "fisioterapeuta"
+      },
+      "activa": true,
+      "_fecha": "2026-02-08",
+      "_nota": "Sprint 2: gap cobertura - sector salud"
+    },
+    "R218_pintor_vehiculos": {
+      "nombre": "Pintor de Vehiculos/Automoviles",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "pintor de auto",
+          "pintor de vehiculo",
+          "pintor de vehículo",
+          "pintor automotor",
+          "pintor automotriz",
+          "pintor automóvil",
+          "pintor automovil",
+          "pintor de máquina",
+          "pintor de maquina"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7132",
+        "esco_label": "pintor de vehículos/pintora de vehículos"
+      },
+      "activa": true,
+      "prioridad": 1,
+      "nota": "Sprint 5 V31 - ID 2171804",
+      "_fecha": "2026-02-09"
+    },
+    "R219_vendedor_vehiculos": {
+      "nombre": "Vendedor de Vehiculos OKM/Usados",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "venta de okm",
+          "venta de 0km",
+          "vendedor de auto",
+          "vendedor automotor",
+          "vendedor automotriz",
+          "venta automotor",
+          "venta automotriz",
+          "venta de usados"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5223",
+        "esco_label": "vendedor especializado en vehículos de motor/vendedora especializada en vehículos de motor"
+      },
+      "activa": true,
+      "prioridad": 1,
+      "nota": "Sprint 5 V31 - ID 1118075798",
+      "_fecha": "2026-02-09"
+    },
+    "R220_asesor_inmobiliario": {
+      "nombre": "Asesor Inmobiliario",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "asesor inmobiliario",
+          "asesora inmobiliaria",
+          "asesor inmobiliaria",
+          "agente inmobiliario",
+          "agente inmobiliaria",
+          "corredor inmobiliario",
+          "corredora inmobiliaria"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3334",
+        "esco_label": "agente inmobiliario/agente inmobiliaria"
+      },
+      "activa": true,
+      "prioridad": 1,
+      "nota": "Sprint 5 V31 - IDs 1118089222, 2171269",
+      "_fecha": "2026-02-09"
+    },
+    "R221_analista_calidad_general": {
+      "nombre": "Analista de Calidad General/Productos",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista de calidad",
+          "analista calidad"
+        ],
+        "titulo_no_contiene_alguno": [
+          "calidad de servicios",
+          "calidad de atencion",
+          "calidad de atención",
+          "quality assurance servicio"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7543",
+        "esco_label": "inspector de control de calidad/inspectora de control de calidad"
+      },
+      "activa": true,
+      "prioridad": 1,
+      "nota": "Sprint 5 V31: analista calidad genérico = inspector control calidad. ID 1118088708 (Makro, auditorias BPM/HACCP).",
+      "_fecha": "2026-02-09"
+    },
+    "R222_maquinista_apiladora": {
+      "nombre": "Maquinista Apiladora/Autoelevador",
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "maquinista",
+          "apiladora",
+          "autoelevador",
+          "autoelevadorista",
+          "carretillero",
+          "operador de clark"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8344",
+        "esco_label": "operador de carretilla elevadora/operadora de carretilla elevadora"
+      },
+      "activa": true,
+      "prioridad": 1,
+      "nota": "Sprint 5 V31: maquinista apiladora = operador carretilla elevadora. ID 1118090160.",
+      "_fecha": "2026-02-09"
     }
   },
   "reglas_filtro": {
@@ -4732,5 +5018,7 @@
   "_cambios_v36": "R151: Jefe de Obra -> 1323 director de obra",
   "_cambios_v44": "R183-R197: Bobinador, Carnicero, Guardavidas, Kinesiologo, Aux Farmacia, Aux Seguridad, Business Dev, Auditor, Abastecimiento, Atencion Paciente, Supervisor Ops, Middle Office, Ejecutivo Ventas, Pasante, Personal Atencion",
   "_cambios_v45": "R198-R202: Bell boy, Foguista, Extraccionista, Inspector API, Gestor cobranzas",
-  "_cambios_v46": "FIX: 12 reglas con esco_label inválido + R203-R206 nuevas reglas"
+  "_cambios_v46": "FIX: 12 reglas con esco_label inválido + R203-R206 nuevas reglas",
+  "_cambios_v50": "Sprint 2: Fix 10 exclusiones rotas (titulo_no_contiene→titulo_no_contiene_alguno), 51 reglas sin prioridad asignadas, consolidar ISCO 3322 (12→7) y 9333 (10→7), fix R135 key duplicada",
+  "_cambios_v51": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344, R137 excluye maquinista."
 }

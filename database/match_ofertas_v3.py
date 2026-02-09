@@ -990,7 +990,7 @@ class MatcherV3:
         """
         Decide cuál ISCO usar basado en confianza de cada método.
 
-        v3.5.1: Lógica de decisión inteligente para matching dual.
+        v3.5.2: Semántico alta confianza (>=0.80) ahora gana sobre regla cuando divergen.
 
         Args:
             regla_isco: ISCO de la regla de negocio (None si no aplica ninguna)
@@ -1012,8 +1012,9 @@ class MatcherV3:
             return (regla_isco, "regla_unica", "sin match semantico")
 
         # Caso 3: Ambos disponibles - comparar primeros 4 dígitos (ISCO-4)
-        regla_isco_4 = str(regla_isco)[:4]
-        semantic_isco_4 = str(semantic_isco)[:4]
+        # zfill(4) evita false negatives con ISCOs de 3 dígitos (ej: "332" vs "3322")
+        regla_isco_4 = str(regla_isco).zfill(4)[:4]
+        semantic_isco_4 = str(semantic_isco).zfill(4)[:4]
 
         if regla_isco_4 == semantic_isco_4:
             # Coinciden → alta confianza
@@ -1027,13 +1028,13 @@ class MatcherV3:
                     f"score semantico {semantic_score:.2f} < 0.55, regla {regla_id} prioridad")
 
         if semantic_score >= 0.80:
-            # Semántico muy confiable → usar regla pero marcar WARNING
-            return (regla_isco, "regla_override_semantico_alto",
-                    f"REVISAR: regla {regla_id} override semantico {semantic_isco} (score {semantic_score:.2f})")
+            # Semántico MUY confiable → gana sobre la regla
+            return (semantic_isco, "semantico_alta_confianza",
+                    f"score {semantic_score:.2f} >= 0.80 override regla {regla_id} (isco_regla={regla_isco})")
 
-        # Caso 5: Score medio (0.55-0.80) → usar regla pero marcar para revisión
-        return (regla_isco, "regla_revisar",
-                f"score semantico medio {semantic_score:.2f}, regla {regla_id} aplicada, verificar")
+        # Caso 5: Score medio (0.55-0.80) → regla gana, warning fuerte
+        return (regla_isco, "regla_zona_gris",
+                f"REVISAR: score {semantic_score:.2f}, regla {regla_id} vs semantico {semantic_isco}")
 
     def _find_occupation_by_esco_label(self, esco_label: str) -> Optional[Dict]:
         """

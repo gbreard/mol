@@ -190,6 +190,54 @@
       ],
       "umbral_agrupacion": 3,
       "_nota": "Agrupar 3+ casos similares antes de escalar"
+    },
+
+    "warning_tareas_skills_inconsistencia": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Sin tareas pero con skills - inconsistencia NLP que requiere analisis",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "tareas_explicitas", "tareas_inferidas", "skills_count"]
+    },
+
+    "error_formato_tareas": {
+      "tipo_accion": "auto_corregir",
+      "descripcion": "Normalizar separador de tareas de comas a punto y coma",
+      "ejecutar": {
+        "funcion": "normalizar_formato_tareas"
+      },
+      "reprocesar": false
+    },
+
+    "warning_divergencia_dual": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Regla y semantico difieren con score alto - revisar regla de negocio",
+      "config": "config/matching_rules_business.json",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "isco_regla", "isco_semantico", "score_semantico", "regla_aplicada"]
+    },
+
+    "warning_tareas_cortas": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Tareas muy cortas requieren analisis de extraccion NLP",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "tareas_explicitas", "tareas_explicitas_length"]
+    },
+
+    "error_skills_coherencia": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Skills no coherentes con ISCO asignado - revisar matching o skills",
+      "config": "config/matching_rules_business.json",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "isco_code", "esco_label", "skills_matched_essential", "occupation_essential_total"]
+    },
+
+    "error_skills_esenciales_faltantes": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Sin skills esenciales del ISCO - posible regla de negocio necesaria",
+      "config": "config/matching_rules_business.json",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "isco_code", "esco_label", "skills_matched_essential"]
+    },
+
+    "warning_it_sin_skills": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Puesto IT sin skills tecnicas - revisar extraccion de skills",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "area_funcional", "skills_oferta_json"]
     }
   },
 

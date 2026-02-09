@@ -2,12 +2,24 @@
 Auto-validador del pipeline MOL.
 Lee validation_rules.json y evalua ofertas automaticamente.
 
-Version: 1.1
-Fecha: 2026-01-28
+Version: 1.3
+Fecha: 2026-02-09
+
+Cambios v1.3 (Sprint 5):
+- V24 RECALIBRADA: Cambia metrica de cobertura ESCO (old: matched/occupation_total < 30%)
+  a coherencia oferta (new: matched_essential/skills_oferta < 20%). Severidad: warning.
+  Motivo: ocupaciones ESCO tienen ~25 essential skills, ofertas argentinas matchean ~3.
+  El 92% fallaba V24 vieja. Nueva metrica mide "de las skills extraidas, cuantas son esenciales".
+- V31 NUEVA: Ocupacion ESCO probablemente incorrecta. Criterio compuesto:
+  score_semantico < 0.50 AND coherencia_esco < 0.15. Severidad: alto.
+  Detecta ~13 casos donde la ocupacion asignada no corresponde a la oferta.
+
+Cambios v1.2:
+- V24: Skills no coherentes con ISCO (< 30% overlap con essential skills)
+- V25-V30: Reglas declarativas y custom (skills, tareas, IT)
 
 Cambios v1.1:
 - Validación automática de títulos usando patrones de nlp_titulo_limpieza.json
-- Si un patrón de limpieza matchea en titulo_limpio, se detecta como error
 
 Uso:
     from database.auto_validator import AutoValidator
@@ -111,7 +123,7 @@ class AutoValidator:
                 continue
             for patron_info in config[seccion].get('patrones', []):
                 patron = patron_info.get('patron')
-                if patron:
+                if patron and not patron_info.get('_skip_validation', False):
                     try:
                         compiled = re.compile(patron, re.IGNORECASE)
                         patrones.append({
@@ -386,6 +398,166 @@ class AutoValidator:
             for error in errores_titulo:
                 error["id_oferta"] = oferta.get("id_oferta") or oferta.get("id")
             errores.extend(errores_titulo)
+
+        # Validaciones custom V24/V28 (skills coherencia) y V30 (IT sin skills técnicas)
+        id_oferta = oferta.get("id_oferta") or oferta.get("id")
+
+        errores_skills = self._validar_skills_coherencia(oferta)
+        for e in errores_skills:
+            e["id_oferta"] = id_oferta
+        errores.extend(errores_skills)
+
+        errores_it = self._validar_it_sin_skills_tecnicas(oferta)
+        for e in errores_it:
+            e["id_oferta"] = id_oferta
+        errores.extend(errores_it)
+
+        return errores
+
+    def _validar_skills_coherencia(self, oferta: Dict) -> List[Dict]:
+        """
+        V24 (recalibrada v1.3): Coherencia skills desde la oferta.
+          Metrica: matched_essential / skills_oferta_count < 20%
+          "De las skills que extraje, cuantas son esenciales para esta ocupacion?"
+          Severidad: warning (informativo, no bloqueante).
+
+        V28: Sin skills esenciales del ISCO (0 essential matched).
+
+        V31 (nueva v1.3): Ocupacion ESCO probablemente incorrecta.
+          Criterio compuesto: score_semantico < 0.50 AND coherencia_esco < 0.15
+          Severidad: alto (requiere revision).
+        """
+        errores = []
+        skills_essential_raw = oferta.get("skills_matched_essential")
+        occupation_essential_total = oferta.get("occupation_essential_total")
+
+        # Si no hay datos suficientes, no evaluar
+        if not skills_essential_raw or occupation_essential_total is None:
+            return errores
+
+        try:
+            essential_matched = json.loads(skills_essential_raw) if isinstance(skills_essential_raw, str) else skills_essential_raw
+            essential_matched_count = len(essential_matched) if isinstance(essential_matched, list) else 0
+        except (json.JSONDecodeError, TypeError):
+            essential_matched_count = 0
+
+        occupation_essential_total = int(occupation_essential_total) if occupation_essential_total else 0
+
+        # V28: Cero skills esenciales matcheadas con ocupacion que tiene >= 3
+        if essential_matched_count == 0 and occupation_essential_total >= 3:
+            errores.append({
+                "id_regla": "V28_sin_skills_esenciales",
+                "diagnostico": "error_skills_esenciales_faltantes",
+                "severidad": "alto",
+                "mensaje": f"Sin skills esenciales matcheadas (ocupacion tiene {occupation_essential_total} esenciales)",
+                "campo": "skills_matched_essential"
+            })
+
+        # --- V24 recalibrada (v1.3): coherencia desde la oferta ---
+        # Metrica: matched_essential / skills_oferta_count
+        # "De las skills extraidas de la oferta, que porcentaje son esenciales para la ocupacion?"
+        skills_oferta_raw = oferta.get("skills_oferta_json")
+        skills_oferta_count = 0
+        if skills_oferta_raw:
+            try:
+                skills_oferta = json.loads(skills_oferta_raw) if isinstance(skills_oferta_raw, str) else skills_oferta_raw
+                skills_oferta_count = len(skills_oferta) if isinstance(skills_oferta, list) else 0
+            except (json.JSONDecodeError, TypeError):
+                skills_oferta_count = 0
+
+        if skills_oferta_count >= 3:
+            ratio_oferta = essential_matched_count / skills_oferta_count
+            if ratio_oferta < 0.20:
+                errores.append({
+                    "id_regla": "V24_skills_baja_coherencia",
+                    "diagnostico": "warning_skills_coherencia_oferta",
+                    "severidad": "warning",
+                    "mensaje": (
+                        f"Skills coherencia oferta {ratio_oferta:.0%} < 20% "
+                        f"({essential_matched_count}/{skills_oferta_count} de las skills extraidas son esenciales)"
+                    ),
+                    "campo": "skills_oferta_json"
+                })
+
+        # --- V31 nueva (v1.3): Ocupacion ESCO probablemente incorrecta ---
+        # Criterio compuesto: score semantico bajo + coherencia ESCO baja
+        # No excluye ofertas con regla — una regla con score bajo tambien merece revision
+        score_semantico = float(oferta.get("score_semantico") or 0)
+        coherencia_esco = (
+            essential_matched_count / occupation_essential_total
+            if occupation_essential_total > 0
+            else 0
+        )
+
+        if score_semantico < 0.50 and coherencia_esco < 0.15:
+            errores.append({
+                "id_regla": "V31_ocupacion_esco_incorrecta",
+                "diagnostico": "error_ocupacion_esco_incorrecta",
+                "severidad": "alto",
+                "mensaje": (
+                    f"Ocupacion ESCO probablemente incorrecta: "
+                    f"score semantico {score_semantico:.2f} + coherencia ESCO {coherencia_esco:.0%}. "
+                    f"Revisar matching."
+                ),
+                "campo": "esco_occupation_uri"
+            })
+
+        return errores
+
+    def _validar_it_sin_skills_tecnicas(self, oferta: Dict) -> List[Dict]:
+        """
+        V30: Puesto IT sin skills técnicas.
+
+        Detecta area_funcional IT/IT Sistemas y verifica que tenga al menos
+        1 skill digital/técnica (is_digital o skillType S2*).
+        """
+        errores = []
+        area = oferta.get("area_funcional")
+        if area not in ("IT", "IT/Sistemas"):
+            return errores
+
+        skills_raw = oferta.get("skills_oferta_json")
+        if not skills_raw:
+            # Sin skills en absoluto — ya lo cubre V03
+            return errores
+
+        try:
+            skills = json.loads(skills_raw) if isinstance(skills_raw, str) else skills_raw
+        except (json.JSONDecodeError, TypeError):
+            return errores
+
+        if not isinstance(skills, list):
+            return errores
+
+        # Buscar al menos 1 skill técnica/digital
+        digital_count = 0
+        for skill in skills:
+            if isinstance(skill, dict):
+                # Chequear is_digital o skill_type que empiece con S2 (ICT skills en ESCO)
+                if skill.get("is_digital"):
+                    digital_count += 1
+                    break
+                skill_uri = skill.get("skill_uri", "")
+                if "/S2" in skill_uri:
+                    digital_count += 1
+                    break
+                # Fallback: buscar keywords técnicos en el label
+                label = (skill.get("skill_esco") or skill.get("label") or "").lower()
+                tech_keywords = ("programación", "programming", "software", "database",
+                                "desarrollo", "development", "código", "code", "cloud",
+                                "devops", "api", "web", "data", "network", "seguridad informática")
+                if any(kw in label for kw in tech_keywords):
+                    digital_count += 1
+                    break
+
+        if digital_count == 0:
+            errores.append({
+                "id_regla": "V30_it_sin_skills_tecnicas",
+                "diagnostico": "warning_it_sin_skills",
+                "severidad": "alto",
+                "mensaje": "Puesto IT sin skills técnicas/digitales detectadas",
+                "campo": "skills_oferta_json"
+            })
 
         return errores
 
@@ -717,7 +889,29 @@ def validar_ofertas_desde_bd(
             m.isco_code,
             m.esco_occupation_label as esco_label,
             m.occupation_match_score as match_score,
-            (SELECT COUNT(*) FROM ofertas_esco_skills_detalle s WHERE s.id_oferta = m.id_oferta) as skills_count
+            (SELECT COUNT(*) FROM ofertas_esco_skills_detalle s WHERE s.id_oferta = m.id_oferta) as skills_count,
+            -- Campos dual matching (V27)
+            m.dual_coinciden,
+            m.isco_regla,
+            m.isco_semantico,
+            m.score_semantico,
+            m.regla_aplicada,
+            m.decision_metodo,
+            -- Campos skills (V24, V28, V30)
+            m.skills_matched_essential,
+            m.skills_semantico_json,
+            m.skills_regla_json,
+            m.skills_demandados_total,
+            m.skills_matcheados_esco,
+            m.skills_oferta_json,
+            m.esco_occupation_uri,
+            -- Campos tareas longitud (V26, V29)
+            LENGTH(COALESCE(n.tareas_explicitas, '')) as tareas_explicitas_length,
+            LENGTH(COALESCE(n.tareas_inferidas, '')) as tareas_inferidas_length,
+            -- Essential skills count de la ocupacion asignada (V24, V28)
+            (SELECT COUNT(*) FROM esco_associations ea
+             WHERE ea.occupation_uri = m.esco_occupation_uri
+             AND ea.relation_type = 'essential') as occupation_essential_total
         FROM ofertas_esco_matching m
         LEFT JOIN ofertas o ON o.id_oferta = m.id_oferta
         LEFT JOIN ofertas_nlp n ON n.id_oferta = m.id_oferta

@@ -2,8 +2,15 @@
 Auto-corrector del pipeline MOL.
 Aplica correcciones automaticas y escala a Claude cuando necesario.
 
-Version: 1.0
-Fecha: 2026-01-14
+Version: 1.1
+Fecha: 2026-02-08
+
+Cambios v1.1:
+- Funcion normalizar_ubicacion: aplica normalization config a provincia/localidad
+- Funcion reinferir_campo: re-evalua inference rules para seniority/area/modalidad
+- Funcion normalizar_formato_tareas: convierte separador comas a punto y coma (V26)
+- Verificacion post-correccion: re-evalua regla antes de marcar corregido=1
+- Helper _cargar_oferta(): recarga oferta con query expandida completa
 
 Uso:
     from database.auto_corrector import AutoCorrector
@@ -207,9 +214,8 @@ class AutoCorrector:
                     "timestamp": datetime.now().isoformat()
                 })
 
-                # Marcar como corregido en validation_errors
-                self._marcar_error_corregido(id_oferta, error.get("id_regla"))
-                return True
+                # Verificar que la corrección resolvió el error
+                return self._verificar_correccion(id_oferta, error.get("id_regla"))
 
             elif funcion == "limpiar_booleanos":
                 campos = ejecutar.get("campos", [])
@@ -229,13 +235,201 @@ class AutoCorrector:
 
                 self.db_conn.commit()
 
-                # Marcar como corregido en validation_errors
-                self._marcar_error_corregido(id_oferta, error.get("id_regla"))
-                return True
+                # Verificar que la corrección resolvió el error
+                return self._verificar_correccion(id_oferta, error.get("id_regla"))
+
+            elif funcion == "normalizar_ubicacion":
+                return self._normalizar_ubicacion(id_oferta, error)
+
+            elif funcion == "reinferir_campo":
+                campo_target = ejecutar.get("campo")
+                return self._reinferir_campo(id_oferta, campo_target)
+
+            elif funcion == "normalizar_formato_tareas":
+                return self._normalizar_formato_tareas(id_oferta, error)
 
         except Exception as e:
             print(f"Error aplicando auto-correccion a {id_oferta}: {e}")
             return False
+
+        return False
+
+    def _normalizar_ubicacion(self, id_oferta: str, error: Dict) -> bool:
+        """
+        Normaliza provincia/localidad usando config/nlp_normalization.json.
+
+        Aplica mapeos de normalización (CABA -> Capital Federal, etc.)
+        e infiere provincia desde localidad cuando falta.
+        """
+        normalization = self._load_json("nlp_normalization.json")
+        if not normalization:
+            return False
+
+        cursor = self.db_conn.execute(
+            "SELECT provincia, localidad FROM ofertas_nlp WHERE id_oferta = ?",
+            (id_oferta,)
+        )
+        row = cursor.fetchone()
+        if not row:
+            return False
+
+        provincia, localidad = row[0], row[1]
+        cambios = {}
+
+        # 1. Normalizar provincia con mapeo
+        prov_mapeo = normalization.get("provincia", {}).get("mapeo", {})
+        if provincia and provincia in prov_mapeo:
+            cambios["provincia"] = prov_mapeo[provincia]
+
+        # 2. Normalizar localidad con mapeo
+        loc_mapeo = normalization.get("localidad", {}).get("mapeo", {})
+        if localidad and localidad in loc_mapeo:
+            cambios["localidad"] = loc_mapeo[localidad]
+
+        # 3. Inferir provincia desde localidad si falta
+        if not provincia and localidad:
+            prov_desde_loc = normalization.get("provincia_desde_localidad", {})
+            # Buscar en reglas
+            for regla in prov_desde_loc.get("reglas", []):
+                localidades_match = regla.get("localidades", [])
+                if localidad.lower() in [l.lower() for l in localidades_match]:
+                    cambios["provincia"] = regla.get("provincia")
+                    break
+
+        # 4. Aplicar reglas de corrección ubicación
+        for regla in normalization.get("correccion_ubicacion", {}).get("reglas", []):
+            condicion = regla.get("condicion", {})
+            matches = True
+            for campo, valor_esperado in condicion.items():
+                actual = provincia if campo == "provincia" else localidad
+                if actual != valor_esperado:
+                    matches = False
+                    break
+            if matches:
+                accion = regla.get("accion", {})
+                cambios.update(accion)
+                break
+
+        if not cambios:
+            return False
+
+        # Aplicar cambios
+        for campo, valor in cambios.items():
+            self.db_conn.execute(
+                f"UPDATE ofertas_nlp SET {campo} = ? WHERE id_oferta = ?",
+                (valor, id_oferta)
+            )
+        self.db_conn.commit()
+
+        self.correcciones_aplicadas.append({
+            "id_oferta": id_oferta,
+            "campo": "ubicacion",
+            "cambios": cambios,
+            "timestamp": datetime.now().isoformat()
+        })
+        return self._verificar_correccion(id_oferta, error.get("id_regla"))
+
+    def _reinferir_campo(self, id_oferta: str, campo: str) -> bool:
+        """
+        Re-evalúa inference rules para un campo específico (seniority, area, modalidad).
+
+        Lee titulo_limpio y evalúa keywords contra reglas de nlp_inference_rules.json.
+        """
+        inference_rules = self._load_json("nlp_inference_rules.json")
+        if not inference_rules or campo not in inference_rules:
+            return False
+
+        cursor = self.db_conn.execute(
+            "SELECT titulo_limpio FROM ofertas_nlp WHERE id_oferta = ?",
+            (id_oferta,)
+        )
+        row = cursor.fetchone()
+        if not row or not row[0]:
+            return False
+
+        titulo = row[0].lower()
+        seccion = inference_rules[campo]
+
+        # Evaluar reglas por keywords
+        valor_inferido = None
+
+        # Patron 1: reglas con contiene_cualquiera
+        for regla in seccion.get("reglas", []):
+            keywords = regla.get("contiene_cualquiera", [])
+            if any(kw.lower() in titulo for kw in keywords):
+                valor_inferido = regla.get("resultado")
+                break
+
+        # Patron 2: diccionario_keywords (para area_funcional)
+        if not valor_inferido and "diccionario_keywords" in seccion:
+            for area, keywords in seccion["diccionario_keywords"].items():
+                if any(kw.lower() in titulo for kw in keywords):
+                    valor_inferido = area
+                    break
+
+        # Patron 3: prioridad_por_titulo (para area_funcional)
+        if not valor_inferido:
+            for regla in seccion.get("prioridad_por_titulo", []):
+                keywords = regla.get("titulo_contiene_alguno", [])
+                if any(kw.lower() in titulo for kw in keywords):
+                    valor_inferido = regla.get("forzar_area", regla.get("resultado"))
+                    break
+
+        if not valor_inferido:
+            return False
+
+        # Actualizar BD
+        col_name = {
+            "nivel_seniority": "nivel_seniority",
+            "area_funcional": "area_funcional",
+            "modalidad": "modalidad"
+        }.get(campo, campo)
+
+        self.db_conn.execute(
+            f"UPDATE ofertas_nlp SET {col_name} = ? WHERE id_oferta = ?",
+            (valor_inferido, id_oferta)
+        )
+        self.db_conn.commit()
+
+        self.correcciones_aplicadas.append({
+            "id_oferta": id_oferta,
+            "campo": col_name,
+            "valor_nuevo": valor_inferido,
+            "timestamp": datetime.now().isoformat()
+        })
+        return True
+
+    def _normalizar_formato_tareas(self, id_oferta: str, error: Dict) -> bool:
+        """
+        Normaliza separador de tareas de comas a punto y coma (V26).
+
+        Reemplaza ', ' por '; ' en tareas_explicitas.
+        """
+        cursor = self.db_conn.execute(
+            "SELECT tareas_explicitas FROM ofertas_nlp WHERE id_oferta = ?",
+            (id_oferta,)
+        )
+        row = cursor.fetchone()
+        if not row or not row[0]:
+            return False
+
+        tareas = row[0]
+        # Solo normalizar si tiene comas pero no punto y coma
+        if "," in tareas and ";" not in tareas:
+            tareas_normalizado = tareas.replace(", ", "; ")
+            self.db_conn.execute(
+                "UPDATE ofertas_nlp SET tareas_explicitas = ? WHERE id_oferta = ?",
+                (tareas_normalizado, id_oferta)
+            )
+            self.db_conn.commit()
+
+            self.correcciones_aplicadas.append({
+                "id_oferta": id_oferta,
+                "campo": "tareas_explicitas",
+                "valor_nuevo": tareas_normalizado[:100] + "...",
+                "timestamp": datetime.now().isoformat()
+            })
+            return self._verificar_correccion(id_oferta, error.get("id_regla"))
 
         return False
 
@@ -283,6 +477,116 @@ class AutoCorrector:
             self.db_conn.commit()
         except Exception as e:
             print(f"  WARN: Error actualizando escalado_claude para {id_oferta}: {e}")
+
+    def _verificar_correccion(self, id_oferta: str, error_id: str) -> bool:
+        """
+        Despues de aplicar correccion, re-evalua la regla que detecto el error.
+        Solo marca corregido=1 si la regla YA NO dispara.
+
+        Args:
+            id_oferta: ID de la oferta
+            error_id: ID de la regla de validacion (ej: V26_formato_tareas_incorrecto)
+
+        Returns:
+            True si la correccion resolvio el error
+        """
+        from database.auto_validator import AutoValidator
+
+        oferta = self._cargar_oferta(id_oferta)
+        if not oferta:
+            # No pudimos recargar — marcamos igualmente para no bloquear
+            self._marcar_error_corregido(id_oferta, error_id)
+            return True
+
+        validator = AutoValidator(config_dir=self.config_dir)
+        errores = validator.validar_oferta(oferta)
+
+        error_resuelto = not any(e.get('id_regla') == error_id for e in errores)
+
+        if error_resuelto:
+            self._marcar_error_corregido(id_oferta, error_id)
+            return True
+        else:
+            # La corrección no resolvió el error
+            try:
+                self.db_conn.execute('''
+                    UPDATE validation_errors
+                    SET notas = COALESCE(notas, '') || ' | Correccion fallida'
+                    WHERE id_oferta = ? AND error_id = ? AND corregido = 0
+                ''', (str(id_oferta), error_id))
+                self.db_conn.commit()
+            except Exception as e:
+                print(f"  WARN: Error actualizando notas para {id_oferta}: {e}")
+            return False
+
+    def _cargar_oferta(self, id_oferta: str) -> Optional[Dict]:
+        """
+        Recarga una oferta desde BD con la misma query expandida del validador.
+
+        Args:
+            id_oferta: ID de la oferta
+
+        Returns:
+            Dict con datos de la oferta o None si no encontrada
+        """
+        if not self.db_conn:
+            return None
+
+        try:
+            self.db_conn.row_factory = sqlite3.Row
+            cursor = self.db_conn.execute("""
+                SELECT
+                    m.id_oferta,
+                    o.titulo,
+                    n.titulo_limpio,
+                    n.provincia,
+                    n.localidad,
+                    n.sector_empresa,
+                    n.sector_confianza,
+                    n.sector_fuente,
+                    n.es_intermediario,
+                    n.clae_code,
+                    n.clae_grupo,
+                    n.clae_seccion,
+                    n.area_funcional,
+                    n.nivel_seniority,
+                    n.modalidad,
+                    n.experiencia_min_anios,
+                    n.experiencia_max_anios,
+                    n.tareas_explicitas,
+                    n.tareas_inferidas,
+                    m.isco_code,
+                    m.esco_occupation_label as esco_label,
+                    m.occupation_match_score as match_score,
+                    (SELECT COUNT(*) FROM ofertas_esco_skills_detalle s WHERE s.id_oferta = m.id_oferta) as skills_count,
+                    m.dual_coinciden,
+                    m.isco_regla,
+                    m.isco_semantico,
+                    m.score_semantico,
+                    m.regla_aplicada,
+                    m.decision_metodo,
+                    m.skills_matched_essential,
+                    m.skills_semantico_json,
+                    m.skills_regla_json,
+                    m.skills_demandados_total,
+                    m.skills_matcheados_esco,
+                    m.skills_oferta_json,
+                    m.esco_occupation_uri,
+                    LENGTH(COALESCE(n.tareas_explicitas, '')) as tareas_explicitas_length,
+                    LENGTH(COALESCE(n.tareas_inferidas, '')) as tareas_inferidas_length,
+                    (SELECT COUNT(*) FROM esco_associations ea
+                     WHERE ea.occupation_uri = m.esco_occupation_uri
+                     AND ea.relation_type = 'essential') as occupation_essential_total
+                FROM ofertas_esco_matching m
+                LEFT JOIN ofertas o ON o.id_oferta = m.id_oferta
+                LEFT JOIN ofertas_nlp n ON n.id_oferta = m.id_oferta
+                WHERE m.id_oferta = ?
+            """, (id_oferta,))
+            row = cursor.fetchone()
+            return dict(row) if row else None
+        except Exception as e:
+            print(f"  WARN: Error cargando oferta {id_oferta}: {e}")
+            return None
 
     def _buscar_config_existente(self, error: Dict, config: Dict) -> bool:
         """

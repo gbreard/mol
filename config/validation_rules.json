@@ -545,7 +545,59 @@
       "mensaje": "Empresa confidencial con sector - verificar si hay frase 'somos empresa de...' en descripcion",
       "_nota": "Si no hay frase explicita, el sector fue inferido de keywords (baja confianza)"
     }
+    ,
+    {
+      "id": "V25_tareas_vacias_con_skills",
+      "descripcion": "Sin tareas pero con skills extraidas - inconsistencia",
+      "condiciones": [
+        {"campo": "tareas_explicitas", "operador": "is_empty"},
+        {"campo": "tareas_inferidas", "operador": "is_empty"},
+        {"campo": "skills_count", "operador": "gt", "valor": 0}
+      ],
+      "logica": "AND",
+      "diagnostico": "warning_tareas_skills_inconsistencia",
+      "severidad": "medio",
+      "mensaje": "Sin tareas pero con skills - revisar extraccion NLP"
+    },
+    {
+      "id": "V26_formato_tareas_incorrecto",
+      "descripcion": "Tareas separadas por comas en vez de punto y coma",
+      "condiciones": [
+        {"campo": "tareas_explicitas", "operador": "is_not_empty"},
+        {"campo": "tareas_explicitas", "operador": "contains", "valor": ","},
+        {"campo": "tareas_explicitas", "operador": "not_contains", "valor": ";"}
+      ],
+      "logica": "AND",
+      "diagnostico": "error_formato_tareas",
+      "severidad": "medio",
+      "mensaje": "Tareas separadas por comas - normalizar a punto y coma"
+    },
+    {
+      "id": "V27_divergencia_dual",
+      "descripcion": "Regla de negocio y semantico asignan ISCO distinto",
+      "condiciones": [
+        {"campo": "dual_coinciden", "operador": "eq", "valor": 0},
+        {"campo": "score_semantico", "operador": "gt", "valor": 0.65}
+      ],
+      "logica": "AND",
+      "diagnostico": "warning_divergencia_dual",
+      "severidad": "warning",
+      "mensaje": "Regla y semantico difieren con score > 0.65 - revisar regla"
+    },
+    {
+      "id": "V29_tareas_muy_cortas",
+      "descripcion": "Tareas extraidas pero extremadamente cortas",
+      "condiciones": [
+        {"campo": "tareas_explicitas", "operador": "is_not_empty"},
+        {"campo": "tareas_explicitas_length", "operador": "lt", "valor": 50}
+      ],
+      "logica": "AND",
+      "diagnostico": "warning_tareas_cortas",
+      "severidad": "bajo",
+      "mensaje": "Tareas muy cortas (< 50 chars) - posible extraccion parcial"
+    }
   ],
+  "_nota_V24_V31": "V24 y V31 son reglas custom en auto_validator.py._validar_skills_coherencia(). V24 recalibrada v1.3: matched_essential/skills_oferta < 20% (warning). V31 nueva v1.3: score_semantico < 0.50 AND coherencia_esco < 0.15 (alto). No son declarativas porque requieren logica con multiples campos JSON.",
   "severidades": {
     "critico": {
       "orden": 1,
@@ -563,8 +615,12 @@
       "orden": 4,
       "auto_rechazar": false
     },
-    "info": {
+    "warning": {
       "orden": 5,
+      "auto_rechazar": false
+    },
+    "info": {
+      "orden": 6,
       "auto_rechazar": false
     }
   }

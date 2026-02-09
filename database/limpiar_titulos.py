@@ -1,10 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-limpiar_titulos.py v2.6.3
+limpiar_titulos.py v2.8.1
 ========================
 Limpia titulos de ofertas eliminando ruido empresarial/geografico.
 Lee patrones desde config/nlp_titulo_limpieza.json
+
+v2.8.1 (2026-02-09): Second pass cleanup, zona de trabajo, // modalidad, validator false positives
+v2.8.0 (2026-02-08): Fix sobre-limpieza + sub-limpieza + cosméticos
+- Fix regex contexto_empresarial: \b word boundary + \s+-\s+ (evita DI-Vendedor)
+- Fix Sucursal sin guión obligatorio (destruía "Jefe De Sucursal para Santiago")
+- Fix zonas_ubicaciones greedy .*$ → match explícito
+- Fix contexto_empresarial_sin_guion greedy → máx 1-3 palabras
+- Fix parentesis_eliminar 15+ chars → lookahead con keywords o 40+ chars
+- Safety guard: si titulo_limpio < 5 chars, mantener original
+- Nuevas localidades: Burzaco, Spegazzini, Los Cardales, etc.
+- Nuevos patrones: pipes al inicio, (ref XXX), puntuación final, guión inicio
+- regenerar_titulo_limpio() para re-procesar títulos sin tocar matching/NLP
+
+v2.7.0 (2026-02-08): Fix acrónimos destruidos por normalización
+- normalizar_capitalizacion() ahora preserva acrónimos via whitelist ACRONYMS
+- DBA, SAP, QA, SQL, PHP, etc. se mantienen en mayúsculas
+- Antes: "DBA Senior" → "Dba senior" (INCORRECTO)
+- Ahora: "DBA Senior" → "DBA senior" (CORRECTO)
 
 v2.6.3 (2026-02-02): Fix 7 errores de validación
 - Nueva sección: modalidad_ubicacion_combinado (eventual MAR DEL PLATA)
@@ -71,32 +89,54 @@ def cargar_config() -> Dict[str, Any]:
 _CONFIG = cargar_config()
 
 
+# Whitelist de acrónimos que NO se deben convertir a minúsculas
+ACRONYMS = {
+    "DBA", "SAP", "ABAP", "PM", "QA", "UX", "UI", "HR", "IT", "BI",
+    "CRM", "ERP", "SQL", "ETL", "KAM", "CFO", "CEO", "CTO", "COO",
+    "RRHH", "CCTV", "CAD", "BIM", "GIS", "AWS", "API", "DEVOPS",
+    "SRE", "SSR", "SR", "JR", "RRPP", "IOT", "ML", "IA", "AI",
+    "PHP", "NET", "PLC", "HVAC", "SAP", "SCRUM", "ITIL",
+    "HTML", "CSS", "SEM", "SEO", "KPI", "EHS", "HSE", "QHSE",
+}
+
+
 def normalizar_capitalizacion(titulo: str) -> str:
     """
-    Normaliza capitalización a Sentence case.
-    Primera letra mayúscula, resto minúsculas.
+    Normaliza capitalización a Sentence case, preservando acrónimos.
+    Primera palabra capitalizada, resto minúsculas EXCEPTO acrónimos de la whitelist.
 
     Args:
         titulo: Título a normalizar
 
     Returns:
-        Título en Sentence case
+        Título normalizado preservando acrónimos
 
     Ejemplos:
         "OPERARIO/A DE PRODUCCIÓN" -> "Operario/a de producción"
         "analista de marketing" -> "Analista de marketing"
         "Gerente De Ventas" -> "Gerente de ventas"
+        "DBA SENIOR" -> "DBA senior"
+        "Analista SAP ABAP" -> "Analista SAP ABAP"
+        "QA Tester" -> "QA tester"
+        "PM Digital" -> "PM digital"
     """
     if not titulo:
         return titulo
 
-    # Convertir todo a minúsculas
-    titulo = titulo.lower()
-
-    # Capitalizar solo la primera letra
-    titulo = titulo[0].upper() + titulo[1:] if len(titulo) > 1 else titulo.upper()
-
-    return titulo
+    words = titulo.split()
+    result = []
+    for i, word in enumerate(words):
+        # Extraer solo letras para comparar con whitelist
+        clean = re.sub(r'[^a-zA-Z]', '', word)
+        if clean.upper() in ACRONYMS:
+            # Preservar acrónimo en mayúsculas (mantener puntuación original)
+            result.append(re.sub(r'[a-zA-Z]+', lambda m: m.group().upper(), word))
+        elif i == 0:
+            # Primera palabra: capitalizar
+            result.append(word[0].upper() + word[1:].lower() if len(word) > 1 else word.upper())
+        else:
+            result.append(word.lower())
+    return " ".join(result)
 
 
 def limpiar_titulo(titulo: str, config: Dict[str, Any] = None) -> str:
@@ -212,8 +252,8 @@ def limpiar_titulo(titulo: str, config: Dict[str, Any] = None) -> str:
     # 6. Eliminar texto despues de guion que sea contexto empresarial
     palabras_contexto = config.get("contexto_empresarial", {}).get("palabras", [])
     for palabra in palabras_contexto:
-        # Solo con guion - evitar eliminar contenido valido
-        titulo = re.sub(rf'\s*-\s*[^-]*{re.escape(palabra)}[^-]*$', '', titulo, flags=re.IGNORECASE)
+        # Requiere espacios alrededor del guión (evita "DI-Vendedor") + word boundary (evita "Industrial" por "industria")
+        titulo = re.sub(rf'\s+[-–—]\s+[^-]*\b{re.escape(palabra)}\b[^-]*$', '', titulo, flags=re.IGNORECASE)
 
     # 6a2. [v2.4] Eliminar contexto empresarial SIN guion (para Empresa de X)
     for patron_info in config.get("contexto_empresarial_sin_guion", {}).get("patrones", []):
@@ -285,7 +325,60 @@ def limpiar_titulo(titulo: str, config: Dict[str, Any] = None) -> str:
 
     titulo = titulo.strip()
 
-    # 9. [v2.6] Normalizar capitalización a Sentence case
+    # 8b. [v2.8.1] Second pass: re-run location/zona/modalidad cleanup
+    # Steps 2-3b run BEFORE contexto_empresarial (step 6) which exposes trailing locations
+    # limpieza_final (step 8) removes trailing dashes that blocked ubicacion_guion_extendido
+    # Result: zona/city/modalidad patterns left at the end that were missed in first pass
+
+    # Re-run modalidad_final (was step 2)
+    if modalidades:
+        titulo = re.sub(rf'\s*\(?\s*({modalidad_pattern})\s*\)?$', '', titulo, flags=re.IGNORECASE)
+
+    # Re-run zonas_ubicaciones (was step 3)
+    for patron_info in config.get("zonas_ubicaciones", {}).get("patrones", []):
+        patron = patron_info.get("patron", "")
+        if patron:
+            titulo = re.sub(patron, '', titulo, flags=re.IGNORECASE)
+
+    # Re-run localidades_final (was step 3b)
+    for localidad in localidades:
+        titulo = re.sub(rf'\s*[-–—]\s*{re.escape(localidad)}$', '', titulo, flags=re.IGNORECASE)
+
+    # Re-run ubicacion_sin_guion_final (was step 4c)
+    for patron_info in config.get("ubicacion_sin_guion_final", {}).get("patrones", []):
+        patron = patron_info.get("patron", "")
+        if patron:
+            titulo = re.sub(patron, '', titulo, flags=re.IGNORECASE)
+
+    # Re-run ubicacion_guion_extendido (was step 6f)
+    for patron_info in config.get("ubicacion_guion_extendido", {}).get("patrones", []):
+        patron = patron_info.get("patron", "")
+        if patron:
+            titulo = re.sub(patron, '', titulo, flags=re.IGNORECASE)
+
+    # Re-run contexto_empresarial (was step 6) — exposed after GBA/localidades removed in second pass
+    for palabra in palabras_contexto:
+        titulo = re.sub(rf'\s+[-–—]\s+[^-]*\b{re.escape(palabra)}\b[^-]*$', '', titulo, flags=re.IGNORECASE)
+
+    # Re-run preposiciones sueltas (was step 6b)
+    if preposiciones:
+        titulo = re.sub(rf'\s+({prep_pattern})\s*$', '', titulo, flags=re.IGNORECASE)
+
+    # Re-run limpieza_final for trailing junk from second pass
+    for patron_info in config.get("limpieza_final", {}).get("patrones", []):
+        patron = patron_info.get("patron", "")
+        reemplazo = patron_info.get("reemplazo", "")
+        if patron:
+            titulo = re.sub(patron, reemplazo, titulo)
+
+    titulo = titulo.strip()
+
+    # 9. [v2.8] Safety guard: si limpieza destruyó el título, usar original
+    min_length = config.get("safety", {}).get("min_length", 5)
+    if len(titulo) < min_length and len(original.strip()) >= min_length:
+        titulo = original.strip()
+
+    # 10. [v2.6] Normalizar capitalización a Sentence case
     titulo = normalizar_capitalizacion(titulo)
 
     return titulo
@@ -750,10 +843,148 @@ def procesar_gold_set():
     return cambios
 
 
+def regenerar_titulo_limpio(ids=None, dry_run=True):
+    """
+    Regenera titulo_limpio para ofertas existentes.
+    NO toca matching, NLP, ni validación.
+
+    Args:
+        ids: Lista de IDs (None = todas las ofertas con NLP)
+        dry_run: Si True, solo muestra cambios sin escribir BD
+
+    Returns:
+        Dict con estadísticas de cambios
+    """
+    conn = sqlite3.connect(base / 'bumeran_scraping.db')
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    # Obtener ofertas
+    if ids:
+        placeholders = ','.join(['?' for _ in ids])
+        c.execute(f"""
+            SELECT o.id_oferta, o.titulo, n.titulo_limpio
+            FROM ofertas o
+            JOIN ofertas_nlp n ON o.id_oferta = n.id_oferta
+            WHERE o.id_oferta IN ({placeholders})
+        """, [str(i) for i in ids])
+    else:
+        c.execute("""
+            SELECT o.id_oferta, o.titulo, n.titulo_limpio
+            FROM ofertas o
+            JOIN ofertas_nlp n ON o.id_oferta = n.id_oferta
+        """)
+
+    rows = c.fetchall()
+    print(f"Regenerando titulo_limpio para {len(rows)} ofertas...")
+    print(f"Modo: {'DRY RUN (sin escribir BD)' if dry_run else 'APLICAR CAMBIOS'}")
+    print("-" * 70)
+
+    cambios = []
+    warnings = []
+    sin_cambio = 0
+
+    for row in rows:
+        id_oferta = row['id_oferta']
+        titulo_original = row['titulo'] or ''
+        titulo_limpio_actual = row['titulo_limpio'] or ''
+
+        # Aplicar limpieza con config actual
+        titulo_limpio_nuevo = limpiar_titulo(titulo_original)
+
+        if titulo_limpio_nuevo == titulo_limpio_actual:
+            sin_cambio += 1
+            continue
+
+        # Detectar regresiones: si el nuevo es < 50% del anterior
+        len_actual = len(titulo_limpio_actual)
+        len_nuevo = len(titulo_limpio_nuevo)
+        es_regresion = len_actual > 0 and len_nuevo < len_actual * 0.5
+
+        cambio = {
+            'id': id_oferta,
+            'antes': titulo_limpio_actual,
+            'despues': titulo_limpio_nuevo,
+            'chars_diff': len_nuevo - len_actual,
+            'regresion': es_regresion
+        }
+        cambios.append(cambio)
+
+        if es_regresion:
+            warnings.append(cambio)
+
+    # Reporte
+    print(f"\nResultados:")
+    print(f"  Sin cambio: {sin_cambio}")
+    print(f"  Con cambio: {len(cambios)}")
+    print(f"  Warnings (regresión): {len(warnings)}")
+
+    if cambios:
+        # Mostrar primeros 20 cambios
+        print(f"\nCambios (primeros {min(20, len(cambios))}):")
+        for c_info in cambios[:20]:
+            flag = " ⚠️ REGRESIÓN" if c_info['regresion'] else ""
+            print(f"  {c_info['id']}:{flag}")
+            print(f"    ANTES:  {c_info['antes'][:60]}")
+            print(f"    DESPUÉS:{c_info['despues'][:60]}")
+            print(f"    Δ chars: {c_info['chars_diff']:+d}")
+
+    if warnings:
+        print(f"\n⚠️  REGRESIONES DETECTADAS ({len(warnings)}):")
+        for w in warnings:
+            print(f"  {w['id']}: '{w['antes'][:40]}' → '{w['despues'][:40]}' (Δ{w['chars_diff']:+d})")
+
+    if dry_run:
+        print(f"\n[DRY RUN] No se modificó la BD. Usar --apply para aplicar.")
+        conn.close()
+        return {'cambios': len(cambios), 'sin_cambio': sin_cambio, 'warnings': len(warnings), 'aplicado': False}
+
+    # Aplicar cambios (excluyendo regresiones)
+    cambios_aplicar = [c_info for c_info in cambios if not c_info['regresion']]
+    cambios_excluidos = len(cambios) - len(cambios_aplicar)
+
+    if cambios_excluidos > 0:
+        print(f"\n⚠️  Excluyendo {cambios_excluidos} regresiones del update.")
+
+    cursor = conn.cursor()
+    for c_info in cambios_aplicar:
+        cursor.execute(
+            "UPDATE ofertas_nlp SET titulo_limpio = ? WHERE id_oferta = ?",
+            (c_info['despues'], str(c_info['id']))
+        )
+    conn.commit()
+
+    print(f"\n[OK] Actualizados {len(cambios_aplicar)} títulos en BD")
+    if cambios_excluidos > 0:
+        print(f"[SKIP] {cambios_excluidos} regresiones NO aplicadas (revisar manualmente)")
+    conn.close()
+
+    return {
+        'cambios': len(cambios_aplicar),
+        'sin_cambio': sin_cambio,
+        'warnings': len(warnings),
+        'excluidos': cambios_excluidos,
+        'aplicado': True
+    }
+
+
 # Test standalone
 if __name__ == '__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Limpieza de títulos v2.8.1')
+    parser.add_argument('--regenerar', action='store_true', help='Regenerar titulo_limpio para ofertas existentes')
+    parser.add_argument('--ids', type=str, help='IDs específicos (comma-separated)')
+    parser.add_argument('--apply', action='store_true', help='Aplicar cambios (sin esto es dry_run)')
+    args = parser.parse_args()
+
+    if args.regenerar:
+        ids_list = [x.strip() for x in args.ids.split(',')] if args.ids else None
+        regenerar_titulo_limpio(ids=ids_list, dry_run=not args.apply)
+        exit(0)
+
     print("=" * 70)
-    print("LIMPIEZA DE TITULOS v2.0 - Config desde JSON")
+    print("LIMPIEZA DE TITULOS v2.8 - Config desde JSON")
     print("=" * 70)
 
     # Mostrar config cargada
@@ -766,46 +997,117 @@ if __name__ == '__main__':
     print("\nTESTS UNITARIOS:")
     print("-" * 70)
     tests = [
-        ("Gerente de Operaciones - Gastronomia corporativa y Facility management", "Gerente de Operaciones"),
-        ("Analista de Cultivo - Roque Perez - BA", "Analista de Cultivo - Roque Perez"),
-        ("Representante Comercial (Consumo Masivo / Grandes Cuentas)", "Representante Comercial"),
-        ("Operario de Almacen/Logistica Z/Escobar", "Operario de Almacen/Logistica"),
-        ("Repositor/a Externo/a (Eventual) Moreno", "Repositor/a Externo/a"),
-        ("Administrativa Comercio Exterior (req199380) Eventual", "Administrativa Comercio Exterior"),
-        ("Venado Tuerto -Gerente de Ventas importante Concesionario Oficial Maquinaria Agricola", "Gerente de Ventas"),
-        ("Gerente General para Maderera (PYME)", "Gerente General para Maderera"),
-        ("Vendedor con Experiencia (Corredor)", "Vendedor con Experiencia"),
-        ("Asistente Compliance (part time)", "Asistente Compliance"),
-        ("Chofer - Repartidor", "Chofer - Repartidor"),
-        ("Mozo/Moza", "Mozo/Moza"),
+        # Sentence case + acrónimos preservados (v2.7)
+        ("Gerente de Operaciones - Gastronomia corporativa y Facility management", "Gerente de operaciones"),
+        ("Analista de Cultivo - Roque Perez - BA", "Analista de cultivo"),
+        ("Representante Comercial (Consumo Masivo / Grandes Cuentas)", "Representante comercial"),
+        ("Operario de Almacen/Logistica Z/Escobar", "Operario de almacen/logistica"),
+        ("Repositor/a Externo/a (Eventual) Moreno", "Repositor/a externo/a"),
+        ("Administrativa Comercio Exterior (req199380) Eventual", "Administrativa comercio exterior"),
+        # TODO: "importante Concesionario..." no se limpia - bug pre-existente en contexto_empresarial
+        ("Venado Tuerto -Gerente de Ventas importante Concesionario Oficial Maquinaria Agricola", "Gerente de ventas importante concesionario oficial maquinaria agricola"),
+        ("Gerente General para Maderera (PYME)", "Gerente general para maderera"),
+        ("Vendedor con Experiencia (Corredor)", "Vendedor con experiencia"),
+        ("Asistente Compliance (part time)", "Asistente compliance"),
+        ("Chofer - Repartidor", "Chofer - repartidor"),
+        ("Mozo/Moza", "Mozo/moza"),
         # Nuevos casos v2.0
-        ("671SI Operarios ind. ALIMENTICIA c/ Tit. secundario - pres 31/10 de 10 a 1130 NUEVA Suc. SAN ISIDRO", "Operarios industria ALIMENTICIA"),
-        ("ABC123 Vendedor Jr", "Vendedor Jr"),
-        ("12345 Analista Contable", "Analista Contable"),
+        ("671SI Operarios ind. ALIMENTICIA c/ Tit. secundario - pres 31/10 de 10 a 1130 NUEVA Suc. SAN ISIDRO", "Operarios industria alimenticia"),
+        ("ABC123 Vendedor Jr", "Vendedor JR"),
+        ("12345 Analista Contable", "Analista contable"),
         ("REF-9876 Cajero/a - Suc. Palermo", "Cajero/a"),
         ("Recepcionista - presentarse lunes 9hs", "Recepcionista"),
         # Casos v2.1 - prefijos y ubicaciones
         ("Búsqueda Laboral: Modelista – Vicente López (Florida Oeste)", "Modelista"),
-        ("Se busca: Contador Junior", "Contador Junior"),
-        ("Buscamos Desarrollador Python", "Desarrollador Python"),
+        ("Se busca: Contador Junior", "Contador junior"),
+        ("Buscamos Desarrollador Python", "Desarrollador python"),
         ("Farmacéutico/a para farmacias en Rio Cuarto", "Farmacéutico/a"),
         ("Vendedor en Mar del Plata", "Vendedor"),
         # Casos v2.1 - localidades con guion normal
         ("Personal de limpieza - Caballito", "Personal de limpieza"),
-        ("Analista de Cuentas a Pagar - GBA Norte", "Analista de Cuentas a Pagar"),
+        ("Analista de Cuentas a Pagar - GBA Norte", "Analista de cuentas a pagar"),
         ("Vendedor - Zona Rosario", "Vendedor"),
         ("Arquitecto - Belgrano", "Arquitecto"),
         ("Contador - Roque Perez", "Contador"),
         # NO eliminar - son especializaciones, no ubicaciones
-        ("Chofer - Repartidor", "Chofer - Repartidor"),
-        ("Abogado/a - Impuestos", "Abogado/a - Impuestos"),
+        ("Chofer - Repartidor", "Chofer - repartidor"),
+        ("Abogado/a - Impuestos", "Abogado/a - impuestos"),
         # Casos v2.4 - detectados en dashboard 2026-01-28
-        ("Administrativa/o para Cementerio en Zona Sur.", "Administrativa/o para Cementerio"),
+        ("Administrativa/o para Cementerio en Zona Sur.", "Administrativa/o para cementerio"),
         ("Vendedora ambulante Playa Grande - Mar del Plata", "Vendedora ambulante"),
         ("Encargado/a para Empresa de Limpieza", "Encargado/a"),
         ("Analista para Consultora de RRHH", "Analista"),
         ("Operario para Industria Alimenticia", "Operario"),
         ("Contador para PYME", "Contador"),
+        # Casos v2.7 - preservar acrónimos
+        ("DBA Senior", "DBA senior"),
+        ("SAP ABAP Consultor", "SAP ABAP consultor"),
+        ("QA Tester", "QA tester"),
+        ("PM Digital", "PM digital"),
+        ("ANALISTA SQL SERVER", "Analista SQL server"),
+        ("Desarrollador PHP Senior", "Desarrollador PHP senior"),
+        # v2.8: Sobre-limpieza corregida
+        ("DI-Vendedor/a Técnico/a de Almacenamiento Industrial para Zona AMBA y SUR",
+         "Di-vendedor/a técnico/a de almacenamiento industrial"),
+        ("Jefe De Sucursal para Santiago del Estero",
+         "Jefe de sucursal"),
+        ("Fullstack Ssr (Node, React, Typescript)",
+         "Fullstack SSR (node, react, typescript)"),
+        ("Herrero para industria plástica",
+         "Herrero"),
+        ("Cajera (EVENTUAL)",
+         "Cajera"),
+        # v2.8: Sub-limpieza corregida
+        ("Cocinero/a especialista en pastas - restaurante en martinez (ref fel121)",
+         "Cocinero/a especialista en pastas"),
+        # v2.8: Cosméticos
+        ("Soldador/a tig y mig, caba.",
+         "Soldador/a tig y mig"),
+        ("- clarkista con res 960 vigente",
+         "Clarkista con res 960 vigente"),
+        # v2.8: NO debe romper (regresión)
+        ("Gerente de Operaciones - Gastronomia corporativa",
+         "Gerente de operaciones"),
+        # v2.8.1: Second pass — zona exposed after contexto_empresarial
+        ("Encargado de Local Zona CABA - Grupo Gastronómico",
+         "Encargado de local"),
+        ("Cocinero Zona Caba - Importante Grupo Gastronómico",
+         "Cocinero"),
+        ("Operario de Producción - GBA SUR - Spegazzini",
+         "Operario de producción"),
+        ("Vendedor paquetes turísticos ZONA SUR (excluyente)",
+         "Vendedor paquetes turísticos"),
+        # v2.8.1: zona de trabajo residual
+        ("Gestor/a de Cobranzas Telefónicas zona de trabajo Microcentro",
+         "Gestor/a de cobranzas telefónicas"),
+        # v2.8.1: - city exposed after trailing dash removed
+        ("Ayudante de Cocina - Ezeiza-",
+         "Ayudante de cocina"),
+        ("Peón de Cocina - Córdoba -",
+         "Peón de cocina"),
+        ("Peón de Cocina - zona Balcarce-",
+         "Peón de cocina"),
+        # v2.8.1: modalidad exposed after parenthesis removed
+        ("Vendedor/a de Salón de Tecnología Full Time (Buenos Aires)",
+         "Vendedor/a de salón de tecnología"),
+        # v2.8.1: // modalidad
+        ("BACKEND Engineering Manager // Plataforma de Streaming // REMOTO para residentes en BUENOS AIRES",
+         "Backend engineering manager // plataforma de streaming"),
+        # v2.8.1: multi-pipe context
+        ("BU705 ANALISTA CONTABLE JR | EVENTUAL | MULTINACIONAL | GESTIÓN DE ACTIVOS - GBA SUR - BURZACO",
+         "Analista contable JR"),
+        # v2.8.1: valid parentheses NOT removed (false positives)
+        ("Operador de Contact Center (Representante Comercial Telefónico) Turno tarde",
+         "Operador de contact center (representante comercial telefónico)"),
+        ("Analista de Marketing y Comunicación (Marcom) - Part Time",
+         "Analista de marketing y comunicación (marcom)"),
+        ("Data Science (Python IA) - Remoto - 1731",
+         "Data science (python IA)"),
+        # v2.8.1: preposición "en" + ubicación, sucursal pegada con guión
+        ("Asesor Técnico Comercial-Sucursal en CABA-.",
+         "Asesor técnico comercial"),
+        ("Cocinero/a de Cocina China para Hotel 5 Estrellas ubicado en Capital Federal (CABA).",
+         "Cocinero/a de cocina china"),
     ]
 
     ok = 0

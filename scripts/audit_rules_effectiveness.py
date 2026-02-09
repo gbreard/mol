@@ -98,7 +98,8 @@ def get_problematic_cases(limit: int = 10) -> List[Dict]:
             m.decision_razon
         FROM ofertas_esco_matching m
         LEFT JOIN ofertas_nlp n ON m.id_oferta = n.id_oferta
-        WHERE m.decision_metodo = 'regla_override_semantico_alto'
+        WHERE m.decision_metodo IN ('semantico_alta_confianza', 'regla_zona_gris',
+                                       'regla_override_semantico_alto', 'regla_revisar')
            OR (m.dual_coinciden = 0 AND m.score_semantico > 0.75)
         ORDER BY m.score_semantico DESC
         LIMIT ?

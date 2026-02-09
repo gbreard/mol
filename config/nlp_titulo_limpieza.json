@@ -1,7 +1,9 @@
 {
-  "_version": "2.6.6",
+  "_version": "2.8.1",
   "_descripcion": "Patrones para limpiar titulos de ofertas - eliminar ruido geografico/empresarial/administrativo",
-  "_fecha": "2026-02-05",
+  "_fecha": "2026-02-09",
+  "_cambios_v281": "Second pass location/zona/modalidad cleanup, zona de trabajo, // modalidad, multi-pipe cleanup, validator false positive fix",
+  "_cambios_v280": "Fix sobre-limpieza: Sucursal sin guion, zonas greedy, contexto_empresarial_sin_guion greedy, parentesis 15+ chars. Nuevas localidades, pipes inicio, refs, puntuación, guión inicio",
   "_cambios_v266": "Fix: para importante cadena gastronomica al final sin ubicación",
   "_cambios_v265": "Guiones colgados al final (Pacheco-, Neuquén -)",
   "_cambios_v264": "Normalizar em-dash (–) pegado a texto, agregar Zarate sin acento a parentesis",
@@ -115,12 +117,19 @@
         "ejemplo": "- NUEVA Suc. SAN ISIDRO"
       },
       {
-        "patron": "\\s*-?\\s*Suc\\.?\\s+[A-Z][A-Za-z\\s]+$",
-        "ejemplo": "- Suc. Palermo"
+        "patron": "\\s+[-–]\\s+Suc\\.?\\s+[A-Z][a-záéíóú]+(?:\\s+[A-Z][a-záéíóú]+)?$",
+        "ejemplo": "- Suc. Palermo",
+        "_nota": "v2.8: guión OBLIGATORIO + máx 2 palabras"
       },
       {
-        "patron": "\\s*-?\\s*Sucursal\\s+[A-Za-z\\s]+$",
-        "ejemplo": "- Sucursal Centro"
+        "patron": "\\s+[-–]\\s+Sucursal\\s+[A-Z][a-záéíóú]+(?:\\s+[A-Z][a-záéíóú]+)?$",
+        "ejemplo": "- Sucursal Centro",
+        "_nota": "v2.8: guión OBLIGATORIO + máx 2 palabras"
+      },
+      {
+        "patron": "[-–][Ss]ucursal\\s+(?:en\\s+)?[A-Za-záéíóúÁÉÍÓÚ]+(?:\\s+[A-Za-záéíóúÁÉÍÓÚ]+){0,2}[-.]*$",
+        "ejemplo": "Comercial-Sucursal en CABA-.",
+        "_nota": "v2.8.1: guión pegado + Sucursal en ubicación"
       }
     ]
   },
@@ -193,6 +202,11 @@
       {
         "patron": "#\\d{4,}",
         "ejemplo": "#12345"
+      },
+      {
+        "patron": "\\s*\\([Rr]ef\\s+[A-Za-z0-9]+\\)",
+        "ejemplo": "(ref fte100)",
+        "_nota": "v2.8: referencia entre paréntesis"
       }
     ]
   },
@@ -273,6 +287,11 @@
     "_nota_v25": "Agregado Caba/CABA y Zona X como bloque (debe ir ANTES de Zona X solo)",
     "patrones": [
       {
+        "patron": "\\s+zona\\s+de\\s+trabajo\\s*$",
+        "ejemplo": "Técnico zona de trabajo",
+        "_nota": "v2.8.1: zona de trabajo residual (sin ciudad)"
+      },
+      {
         "patron": "\\s+(CABA|Caba|GBA|Gba)\\s+[Yy]\\s+Zona\\s+(Norte|Sur|Oeste|Este)$",
         "ejemplo": "Vendedoras Caba y Zona Norte",
         "_nota": "v2.5: PRIMERO - Caba y Zona X como bloque completo"
@@ -325,9 +344,9 @@
         "_nota": "ULTIMO: patron simple provincia"
       },
       {
-        "patron": "[,.]?\\s*[Zz]ona\\s+[A-Za-záéíóú]+(?:\\s+[oy]\\s+alrededores)?[.!]?.*$",
+        "patron": "[,.]?\\s*[Zz]ona\\s+[A-Za-záéíóú]+(?:\\s+(?:de\\s+)?[A-Za-záéíóú]+)?(?:\\s+[oy]\\s+alrededores)?[.!]?(?:\\s+[Ll]eer\\s+[A-Za-záéíóú]+)?\\s*$",
         "ejemplo": ", zona Benavidez o alrededores. Leer requisitos",
-        "_nota": "zona X o alrededores + texto extra"
+        "_nota": "zona X o alrededores + Leer requisitos - NO greedy"
       },
       {
         "patron": "\\s+Playa\\s+Grande\\s*[-–]?\\s*[A-Za-záéíóú\\s]*$",
@@ -436,7 +455,20 @@
       "Necochea",
       "Miramar",
       "San Clemente",
-      "Santa Teresita"
+      "Santa Teresita",
+      "Burzaco",
+      "Ricardo Rojas",
+      "Paternal",
+      "Spegazzini",
+      "Los Cardales",
+      "Marcos Juárez",
+      "Marcos Juarez",
+      "Grand Bourg",
+      "Benavidez",
+      "Martínez",
+      "San Miguel",
+      "General Rodriguez",
+      "General Rodríguez"
     ]
   },
   "contexto_empresarial": {
@@ -497,25 +529,29 @@
         "_nota": "v2.6.6: importante cadena gastronomica al final (sin ubicación)"
       },
       {
-        "patron": "\\s+para\\s+[Ii]mportante\\s+[Ee]mpresa\\s+(?:de\\s+)?[A-Za-záéíóúÁÉÍÓÚ\\s]+$",
+        "patron": "\\s+para\\s+[Ii]mportante\\s+[Ee]mpresa\\s+(?:de\\s+)?[A-Za-záéíóúÁÉÍÓÚ]+(?:\\s+[A-Za-záéíóúÁÉÍÓÚ]+){0,2}$",
         "ejemplo": "Vendedor para Importante Empresa de Energia",
-        "_nota": "v2.5: Importante Empresa de X"
+        "_nota": "v2.8: máx 3 palabras después de Importante Empresa (de)"
       },
       {
-        "patron": "\\s+para\\s+[Ee]mpresa\\s+(?:de\\s+)?[A-Za-záéíóúÁÉÍÓÚ\\s]+$",
-        "ejemplo": "Encargado/a para Empresa de Limpieza"
+        "patron": "\\s+para\\s+[Ee]mpresa\\s+(?:de\\s+)?[A-Za-záéíóúÁÉÍÓÚ]+(?:\\s+[A-Za-záéíóúÁÉÍÓÚ]+){0,2}$",
+        "ejemplo": "Encargado/a para Empresa de Limpieza",
+        "_nota": "v2.8: máx 3 palabras después de Empresa (de)"
       },
       {
-        "patron": "\\s+para\\s+[Cc]onsultora\\s+(?:de\\s+)?[A-Za-záéíóúÁÉÍÓÚ\\s]*$",
-        "ejemplo": "Analista para Consultora de RRHH"
+        "patron": "\\s+para\\s+[Cc]onsultora\\s+(?:de\\s+)?[A-Za-záéíóúÁÉÍÓÚ]+(?:\\s+[A-Za-záéíóúÁÉÍÓÚ]+){0,1}$",
+        "ejemplo": "Analista para Consultora de RRHH",
+        "_nota": "v2.8: máx 2 palabras después de Consultora (de)"
       },
       {
-        "patron": "\\s+para\\s+[Ii]ndustria\\s+[A-Za-záéíóúÁÉÍÓÚ\\s]+$",
-        "ejemplo": "Operario para Industria Alimenticia"
+        "patron": "\\s+para\\s+[Ii]ndustria\\s+[A-Za-záéíóúÁÉÍÓÚ]+(?:\\s+[A-Za-záéíóúÁÉÍÓÚ]+){0,1}$",
+        "ejemplo": "Operario para Industria Alimenticia",
+        "_nota": "v2.8: máx 2 palabras después de Industria"
       },
       {
-        "patron": "\\s+para\\s+[Cc]adena\\s+(?:de\\s+)?[A-Za-záéíóúÁÉÍÓÚ\\s]+$",
-        "ejemplo": "Cajero para Cadena de Supermercados"
+        "patron": "\\s+para\\s+[Cc]adena\\s+(?:de\\s+)?[A-Za-záéíóúÁÉÍÓÚ]+(?:\\s+[A-Za-záéíóúÁÉÍÓÚ]+){0,2}$",
+        "ejemplo": "Cajero para Cadena de Supermercados",
+        "_nota": "v2.8: máx 3 palabras después de Cadena (de)"
       },
       {
         "patron": "\\s+para\\s+[Pp][Yy][Mm][Ee]\\s*$",
@@ -531,14 +567,14 @@
         "_nota": "v2.5: Estudio contable/jurídico"
       },
       {
-        "patron": "\\s+para\\s+[Ll]aboratorio\\s+[A-Za-záéíóúÁÉÍÓÚ\\s]*$",
+        "patron": "\\s+para\\s+[Ll]aboratorio\\s+[A-Za-záéíóúÁÉÍÓÚ]+(?:\\s+[A-Za-záéíóúÁÉÍÓÚ]+){0,1}$",
         "ejemplo": "Bioquímico para Laboratorio farmacéutico",
-        "_nota": "v2.5"
+        "_nota": "v2.8: máx 2 palabras después de Laboratorio"
       },
       {
-        "patron": "\\s+para\\s+[Hh]otel\\s+[A-Za-záéíóúÁÉÍÓÚ\\s]*$",
+        "patron": "\\s+para\\s+[Hh]otel\\s+[A-Za-záéíóúÁÉÍÓÚ0-9]+(?:\\s+[A-Za-záéíóúÁÉÍÓÚ0-9]+){0,1}$",
         "ejemplo": "Recepcionista para Hotel 5 estrellas",
-        "_nota": "v2.5"
+        "_nota": "v2.8: máx 2 palabras después de Hotel"
       },
       {
         "patron": "\\s+para\\s+[Rr]estaurante\\s*$",
@@ -546,9 +582,9 @@
         "_nota": "v2.5"
       },
       {
-        "patron": "\\s+para\\s+[Cc]l[ií]nica\\s+[A-Za-záéíóúÁÉÍÓÚ\\s]*$",
+        "patron": "\\s+para\\s+[Cc]l[ií]nica\\s+[A-Za-záéíóúÁÉÍÓÚ]+(?:\\s+[A-Za-záéíóúÁÉÍÓÚ]+){0,1}$",
         "ejemplo": "Enfermero para Clínica privada",
-        "_nota": "v2.5"
+        "_nota": "v2.8: máx 2 palabras después de Clínica"
       }
     ]
   },
@@ -598,9 +634,14 @@
         "razon": "v2.5: parentesis abierto sin cerrar al final"
       },
       {
-        "patron": "\\s*\\([^)]{15,}\\)$",
+        "patron": "\\s*\\((?=[^)]*(?:[Ee]mpresa|[Rr]ubro|[Mm]asivo|[Cc]uentas|[Pp]yme|[Ee]ventual|[Ss]ucursal|[Cc]onfidencial|[Cc]onsumo|[Gg]randes))[^)]{10,}\\)$",
         "ejemplo": "(Consumo Masivo / Grandes Cuentas)",
-        "razon": "parentesis largo al final"
+        "razon": "v2.8: paréntesis con keywords de contexto empresarial (lookahead)"
+      },
+      {
+        "patron": "\\s*\\([^)]{40,}\\)$",
+        "ejemplo": "(descripción muy larga que probablemente es ruido)",
+        "razon": "v2.8: paréntesis muy largo (40+) — probablemente ruido"
       },
       {
         "patron": "\\s*\\(PYME\\)$",
@@ -641,7 +682,9 @@
       {
         "patron": "\\s*\\([A-Z][a-záéíóú]+(?:\\s+[A-Z]?[a-záéíóú]+)*\\)$",
         "ejemplo": "(Florida Oeste)",
-        "razon": "ubicacion en parentesis"
+        "razon": "ubicacion en parentesis",
+        "_skip_validation": true,
+        "_nota": "v2.8.1: skip validation - too generic, catches valid content like (Marcom), (Python IA)"
       }
     ]
   },
@@ -682,13 +725,18 @@
         "ejemplo": "para farmacias en Rio Cuarto"
       },
       {
-        "patron": "\\s+en\\s+(Mar\\s+del\\s+Plata|Buenos\\s+Aires|Capital\\s+Federal|CABA|GBA|Tucum[aá]n|C[oó]rdoba|Mendoza|Rosario|Santa\\s+Fe|Salta|Neuqu[eé]n|Bahia\\s+Blanca|La\\s+Plata|San\\s+Juan|R[ií]o\\s+Cuarto|Villa\\s+Mar[ií]a|Pilar|Tigre|Quilmes|Mor[oó]n)$",
+        "patron": "\\s+en\\s+(Mar\\s+del\\s+Plata|Buenos\\s+Aires|Capital\\s+Federal|CABA|GBA|Tucum[aá]n|C[oó]rdoba|Mendoza|Rosario|Santa\\s+Fe|Salta|Neuqu[eé]n|Bahia\\s+Blanca|La\\s+Plata|San\\s+Juan|R[ií]o\\s+Cuarto|Villa\\s+Mar[ií]a|Pilar|Tigre|Quilmes|Mor[oó]n|Mart[ií]nez|San\\s+Isidro|Belgrano|Palermo|Caballito)$",
         "ejemplo": "en Mar del Plata",
-        "_nota": "Lista explícita de ciudades - evita falsos positivos como 'en Audaces'"
+        "_nota": "v2.8: lista explícita de ciudades ampliada - evita falsos positivos"
       },
       {
         "patron": "\\s+para\\s+(?:empresa|compania|cliente)\\s+en\\s+\\w+$",
         "ejemplo": "para empresa en Cordoba"
+      },
+      {
+        "patron": "\\s+para\\s+[Zz]ona\\s+[A-Za-záéíóúÁÉÍÓÚ]+(?:\\s+[Yy]\\s+[A-Za-záéíóúÁÉÍÓÚ]+)?$",
+        "ejemplo": "para Zona AMBA y SUR",
+        "_nota": "v2.8: para Zona X [y Y]"
       }
     ]
   },
@@ -717,9 +765,9 @@
         "_nota": "v2.5: Caba y Zona X como bloque"
       },
       {
-        "patron": "\\s+(CABA|Caba|Capital\\s+Federal|Capital|GBA|Gba|Bs\\.?\\s*As\\.?|Buenos\\s+Aires)$",
-        "ejemplo": "Vendedor CABA o Vendedor Caba",
-        "_nota": "CABA/Caba y variantes (case sensitive para evitar falsos positivos)"
+        "patron": "[,.]?\\s+(CABA|Caba|caba|Capital\\s+Federal|Capital|GBA|Gba|Bs\\.?\\s*As\\.?|Buenos\\s+Aires)\\.?$",
+        "ejemplo": "Vendedor CABA o Vendedor, caba.",
+        "_nota": "v2.8: CABA/caba con coma/punto opcionales"
       },
       {
         "patron": "\\s+(Tucum[aá]n|C[oó]rdoba|Mendoza|Rosario|Santa\\s+Fe|Salta|Jujuy|Neuqu[eé]n|Chaco|Formosa|Misiones|Corrientes|Chubut|R[ií]o\\s+Negro|La\\s+Pampa|San\\s+Luis|San\\s+Juan|La\\s+Rioja|Catamarca|Santiago(?:\\s+del\\s+Estero)?|Tierra\\s+del\\s+Fuego)$",
@@ -770,6 +818,16 @@
         "patron": "\\s+en\\s+(rosario|santa\\s+fe|neuqu[eé]n|r[ií]o\\s+negro)[/](santa\\s+fe|r[ií]o\\s+negro)$",
         "ejemplo": "Vendedor en rosario/santa fe",
         "_nota": "v2.6: en + ubicaciones con barra"
+      },
+      {
+        "patron": "\\s+en\\s+(CABA|Caba|caba|Capital\\s+Federal|capital\\s+federal|GBA|gba|Bs\\.?\\s*As\\.?|Buenos\\s+Aires|buenos\\s+aires)\\s*\\.?$",
+        "ejemplo": "Asesor Comercial en CABA",
+        "_nota": "v2.8.1: preposición en + ubicación mayor"
+      },
+      {
+        "patron": "\\s+ubicad[oa]\\s+en\\s+[A-Za-záéíóúÁÉÍÓÚ]+(?:\\s+[A-Za-záéíóúÁÉÍÓÚ]+){0,3}(?:\\s*\\([^)]+\\))?\\s*\\.?$",
+        "ejemplo": "Cocinero ubicado en Capital Federal (CABA)",
+        "_nota": "v2.8.1: ubicado/a en [ciudad] (detalle)"
       }
     ]
   },
@@ -893,6 +951,16 @@
         "patron": "\\s*-\\s*[Zz]ona:\\s*$",
         "reemplazo": "",
         "descripcion": "v2.6: zona: suelto al final"
+      },
+      {
+        "patron": "[.,;:]+\\s*$",
+        "reemplazo": "",
+        "descripcion": "v2.8: puntuación residual al final"
+      },
+      {
+        "patron": "^\\s*[-–—]\\s+",
+        "reemplazo": "",
+        "descripcion": "v2.8: guión suelto al inicio"
       }
     ]
   },
@@ -945,6 +1013,11 @@
     "_nota": "FASE 1 v2.2 - patron: titulo - modalidad - codigo/ubicacion",
     "_nota_v25": "Agregado // Esquema de trabajo + ubicación",
     "patrones": [
+      {
+        "patron": "\\s*//\\s*(Remoto|REMOTO|remoto|H[ií]brido|HIBRIDO|HÍBRIDO|Presencial|PRESENCIAL)\\s*$",
+        "ejemplo": "// Remoto",
+        "_nota": "v2.8.1: doble barra + modalidad sola al final"
+      },
       {
         "patron": "\\s*//\\s*[Ee]squema\\s+de\\s+trabajo\\s+[A-Za-záéíóúÁÉÍÓÚ]+\\s*//.*$",
         "ejemplo": "// Esquema de trabajo Híbrido // Buenos Aires",
@@ -1183,6 +1256,11 @@
     "_nota": "v2.5.1 - para limpiar formatos como TITULO | EVENTUAL | CABA",
     "patrones": [
       {
+        "patron": "\\s*\\|\\s*(?:eventual|multinacional|temporario|confidencial|PYME|startup|importante)(?:\\s*\\|.*)?$",
+        "ejemplo": "| eventual | multinacional | gestión de activos",
+        "_nota": "v2.8.1: pipe + keyword context (chain of pipes)"
+      },
+      {
         "patron": "\\s*\\|\\s*(EVENTUAL|CABA|GBA|REMOTO|PRESENCIAL|HIBRIDO)\\s*\\|?\\s*$",
         "ejemplo": "| EVENTUAL |",
         "_nota": "pipe + modalidad/ubicacion al final"
@@ -1191,6 +1269,11 @@
         "patron": "\\s*\\|\\s*$",
         "ejemplo": "TITULO |",
         "_nota": "pipe suelto al final"
+      },
+      {
+        "patron": "^[A-Za-záéíóúÁÉÍÓÚ.]{2,25}\\s*\\|\\s*",
+        "ejemplo": "Sgo del estero | supervisor producción",
+        "_nota": "v2.8: texto corto (2-25 chars) antes de pipe al inicio (ubicación)"
       }
     ]
   },
@@ -1204,6 +1287,10 @@
         "_nota": "guion (con o sin espacios) al final"
       }
     ]
+  },
+  "safety": {
+    "min_length": 5,
+    "_nota": "Si titulo_limpio < 5 chars tras limpieza, mantener original"
   },
   "_cambios_v23": "Agregado codigos_empresa: BE | y variantes (validación 2026-01-26)",
   "_cambios_v24": "Fix títulos dashboard 2026-01-28: Zona Sur con punto, Playa Grande, para Empresa de X",
