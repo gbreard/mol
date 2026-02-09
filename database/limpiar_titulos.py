@@ -1,10 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-limpiar_titulos.py v2.7.0
+limpiar_titulos.py v2.8.0
 ========================
 Limpia titulos de ofertas eliminando ruido empresarial/geografico.
 Lee patrones desde config/nlp_titulo_limpieza.json
+
+v2.8.0 (2026-02-08): Fix sobre-limpieza + sub-limpieza + cosméticos
+- Fix regex contexto_empresarial: \b word boundary + \s+-\s+ (evita DI-Vendedor)
+- Fix Sucursal sin guión obligatorio (destruía "Jefe De Sucursal para Santiago")
+- Fix zonas_ubicaciones greedy .*$ → match explícito
+- Fix contexto_empresarial_sin_guion greedy → máx 1-3 palabras
+- Fix parentesis_eliminar 15+ chars → lookahead con keywords o 40+ chars
+- Safety guard: si titulo_limpio < 5 chars, mantener original
+- Nuevas localidades: Burzaco, Spegazzini, Los Cardales, etc.
+- Nuevos patrones: pipes al inicio, (ref XXX), puntuación final, guión inicio
+- regenerar_titulo_limpio() para re-procesar títulos sin tocar matching/NLP
 
 v2.7.0 (2026-02-08): Fix acrónimos destruidos por normalización
 - normalizar_capitalizacion() ahora preserva acrónimos via whitelist ACRONYMS
@@ -240,8 +251,8 @@ def limpiar_titulo(titulo: str, config: Dict[str, Any] = None) -> str:
     # 6. Eliminar texto despues de guion que sea contexto empresarial
     palabras_contexto = config.get("contexto_empresarial", {}).get("palabras", [])
     for palabra in palabras_contexto:
-        # Solo con guion - evitar eliminar contenido valido
-        titulo = re.sub(rf'\s*-\s*[^-]*{re.escape(palabra)}[^-]*$', '', titulo, flags=re.IGNORECASE)
+        # Requiere espacios alrededor del guión (evita "DI-Vendedor") + word boundary (evita "Industrial" por "industria")
+        titulo = re.sub(rf'\s+[-–—]\s+[^-]*\b{re.escape(palabra)}\b[^-]*$', '', titulo, flags=re.IGNORECASE)
 
     # 6a2. [v2.4] Eliminar contexto empresarial SIN guion (para Empresa de X)
     for patron_info in config.get("contexto_empresarial_sin_guion", {}).get("patrones", []):
@@ -313,7 +324,12 @@ def limpiar_titulo(titulo: str, config: Dict[str, Any] = None) -> str:
 
     titulo = titulo.strip()
 
-    # 9. [v2.6] Normalizar capitalización a Sentence case
+    # 9. [v2.8] Safety guard: si limpieza destruyó el título, usar original
+    min_length = config.get("safety", {}).get("min_length", 5)
+    if len(titulo) < min_length and len(original.strip()) >= min_length:
+        titulo = original.strip()
+
+    # 10. [v2.6] Normalizar capitalización a Sentence case
     titulo = normalizar_capitalizacion(titulo)
 
     return titulo
@@ -778,10 +794,148 @@ def procesar_gold_set():
     return cambios
 
 
+def regenerar_titulo_limpio(ids=None, dry_run=True):
+    """
+    Regenera titulo_limpio para ofertas existentes.
+    NO toca matching, NLP, ni validación.
+
+    Args:
+        ids: Lista de IDs (None = todas las ofertas con NLP)
+        dry_run: Si True, solo muestra cambios sin escribir BD
+
+    Returns:
+        Dict con estadísticas de cambios
+    """
+    conn = sqlite3.connect(base / 'bumeran_scraping.db')
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    # Obtener ofertas
+    if ids:
+        placeholders = ','.join(['?' for _ in ids])
+        c.execute(f"""
+            SELECT o.id_oferta, o.titulo, n.titulo_limpio
+            FROM ofertas o
+            JOIN ofertas_nlp n ON o.id_oferta = n.id_oferta
+            WHERE o.id_oferta IN ({placeholders})
+        """, [str(i) for i in ids])
+    else:
+        c.execute("""
+            SELECT o.id_oferta, o.titulo, n.titulo_limpio
+            FROM ofertas o
+            JOIN ofertas_nlp n ON o.id_oferta = n.id_oferta
+        """)
+
+    rows = c.fetchall()
+    print(f"Regenerando titulo_limpio para {len(rows)} ofertas...")
+    print(f"Modo: {'DRY RUN (sin escribir BD)' if dry_run else 'APLICAR CAMBIOS'}")
+    print("-" * 70)
+
+    cambios = []
+    warnings = []
+    sin_cambio = 0
+
+    for row in rows:
+        id_oferta = row['id_oferta']
+        titulo_original = row['titulo'] or ''
+        titulo_limpio_actual = row['titulo_limpio'] or ''
+
+        # Aplicar limpieza con config actual
+        titulo_limpio_nuevo = limpiar_titulo(titulo_original)
+
+        if titulo_limpio_nuevo == titulo_limpio_actual:
+            sin_cambio += 1
+            continue
+
+        # Detectar regresiones: si el nuevo es < 50% del anterior
+        len_actual = len(titulo_limpio_actual)
+        len_nuevo = len(titulo_limpio_nuevo)
+        es_regresion = len_actual > 0 and len_nuevo < len_actual * 0.5
+
+        cambio = {
+            'id': id_oferta,
+            'antes': titulo_limpio_actual,
+            'despues': titulo_limpio_nuevo,
+            'chars_diff': len_nuevo - len_actual,
+            'regresion': es_regresion
+        }
+        cambios.append(cambio)
+
+        if es_regresion:
+            warnings.append(cambio)
+
+    # Reporte
+    print(f"\nResultados:")
+    print(f"  Sin cambio: {sin_cambio}")
+    print(f"  Con cambio: {len(cambios)}")
+    print(f"  Warnings (regresión): {len(warnings)}")
+
+    if cambios:
+        # Mostrar primeros 20 cambios
+        print(f"\nCambios (primeros {min(20, len(cambios))}):")
+        for c_info in cambios[:20]:
+            flag = " ⚠️ REGRESIÓN" if c_info['regresion'] else ""
+            print(f"  {c_info['id']}:{flag}")
+            print(f"    ANTES:  {c_info['antes'][:60]}")
+            print(f"    DESPUÉS:{c_info['despues'][:60]}")
+            print(f"    Δ chars: {c_info['chars_diff']:+d}")
+
+    if warnings:
+        print(f"\n⚠️  REGRESIONES DETECTADAS ({len(warnings)}):")
+        for w in warnings:
+            print(f"  {w['id']}: '{w['antes'][:40]}' → '{w['despues'][:40]}' (Δ{w['chars_diff']:+d})")
+
+    if dry_run:
+        print(f"\n[DRY RUN] No se modificó la BD. Usar --apply para aplicar.")
+        conn.close()
+        return {'cambios': len(cambios), 'sin_cambio': sin_cambio, 'warnings': len(warnings), 'aplicado': False}
+
+    # Aplicar cambios (excluyendo regresiones)
+    cambios_aplicar = [c_info for c_info in cambios if not c_info['regresion']]
+    cambios_excluidos = len(cambios) - len(cambios_aplicar)
+
+    if cambios_excluidos > 0:
+        print(f"\n⚠️  Excluyendo {cambios_excluidos} regresiones del update.")
+
+    cursor = conn.cursor()
+    for c_info in cambios_aplicar:
+        cursor.execute(
+            "UPDATE ofertas_nlp SET titulo_limpio = ? WHERE id_oferta = ?",
+            (c_info['despues'], str(c_info['id']))
+        )
+    conn.commit()
+
+    print(f"\n[OK] Actualizados {len(cambios_aplicar)} títulos en BD")
+    if cambios_excluidos > 0:
+        print(f"[SKIP] {cambios_excluidos} regresiones NO aplicadas (revisar manualmente)")
+    conn.close()
+
+    return {
+        'cambios': len(cambios_aplicar),
+        'sin_cambio': sin_cambio,
+        'warnings': len(warnings),
+        'excluidos': cambios_excluidos,
+        'aplicado': True
+    }
+
+
 # Test standalone
 if __name__ == '__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Limpieza de títulos v2.8')
+    parser.add_argument('--regenerar', action='store_true', help='Regenerar titulo_limpio para ofertas existentes')
+    parser.add_argument('--ids', type=str, help='IDs específicos (comma-separated)')
+    parser.add_argument('--apply', action='store_true', help='Aplicar cambios (sin esto es dry_run)')
+    args = parser.parse_args()
+
+    if args.regenerar:
+        ids_list = [x.strip() for x in args.ids.split(',')] if args.ids else None
+        regenerar_titulo_limpio(ids=ids_list, dry_run=not args.apply)
+        exit(0)
+
     print("=" * 70)
-    print("LIMPIEZA DE TITULOS v2.0 - Config desde JSON")
+    print("LIMPIEZA DE TITULOS v2.8 - Config desde JSON")
     print("=" * 70)
 
     # Mostrar config cargada
@@ -843,6 +997,28 @@ if __name__ == '__main__':
         ("PM Digital", "PM digital"),
         ("ANALISTA SQL SERVER", "Analista SQL server"),
         ("Desarrollador PHP Senior", "Desarrollador PHP senior"),
+        # v2.8: Sobre-limpieza corregida
+        ("DI-Vendedor/a Técnico/a de Almacenamiento Industrial para Zona AMBA y SUR",
+         "Di-vendedor/a técnico/a de almacenamiento industrial"),
+        ("Jefe De Sucursal para Santiago del Estero",
+         "Jefe de sucursal"),
+        ("Fullstack Ssr (Node, React, Typescript)",
+         "Fullstack SSR (node, react, typescript)"),
+        ("Herrero para industria plástica",
+         "Herrero"),
+        ("Cajera (EVENTUAL)",
+         "Cajera"),
+        # v2.8: Sub-limpieza corregida
+        ("Cocinero/a especialista en pastas - restaurante en martinez (ref fel121)",
+         "Cocinero/a especialista en pastas"),
+        # v2.8: Cosméticos
+        ("Soldador/a tig y mig, caba.",
+         "Soldador/a tig y mig"),
+        ("- clarkista con res 960 vigente",
+         "Clarkista con res 960 vigente"),
+        # v2.8: NO debe romper (regresión)
+        ("Gerente de Operaciones - Gastronomia corporativa",
+         "Gerente de operaciones"),
     ]
 
     ok = 0
