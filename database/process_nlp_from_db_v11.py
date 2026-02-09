@@ -361,13 +361,30 @@ class NLPExtractorV11:
             llm_data = self._extract_capa1_llm(titulo, empresa, ubicacion, descripcion)
 
             if llm_data is None:
-                print(f"[WARN] {id_oferta}: LLM no retorno datos")
-                llm_data = {}
+                print(f"[WARN] {id_oferta}: LLM fallo, reintentando...")
+                self.stats["llm_retries"] = self.stats.get("llm_retries", 0) + 1
+                llm_data = self._extract_capa1_llm(titulo, empresa, ubicacion, descripcion)
+                if llm_data is None:
+                    print(f"[ERROR] {id_oferta}: LLM fallo 2 veces, solo regex")
+                    self.stats["llm_failures"] = self.stats.get("llm_failures", 0) + 1
+                    llm_data = {}
 
-            # MERGE
+            # MERGE selectivo: regex gana solo para campos numéricos/estructurados
+            # Para el resto, LLM tiene prioridad (inferencia semántica)
+            REGEX_PRIORITY = {"salario_min", "salario_max", "moneda", "jornada_laboral"}
+
             final_data = {}
             final_data.update(llm_data)
-            final_data.update(regex_data)  # regex tiene prioridad
+            for key, value in regex_data.items():
+                if value is not None and value != "":
+                    if key in REGEX_PRIORITY:
+                        final_data[key] = value  # regex gana
+                    elif key not in final_data or not final_data[key]:
+                        final_data[key] = value  # regex como fallback
+
+            # Marcar si LLM no retornó datos (permite downstream awareness)
+            if not llm_data:
+                final_data["_nlp_incomplete"] = True
 
             # Titulo limpio
             if titulo:

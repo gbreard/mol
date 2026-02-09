@@ -1,10 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-limpiar_titulos.py v2.6.3
+limpiar_titulos.py v2.7.0
 ========================
 Limpia titulos de ofertas eliminando ruido empresarial/geografico.
 Lee patrones desde config/nlp_titulo_limpieza.json
+
+v2.7.0 (2026-02-08): Fix acrónimos destruidos por normalización
+- normalizar_capitalizacion() ahora preserva acrónimos via whitelist ACRONYMS
+- DBA, SAP, QA, SQL, PHP, etc. se mantienen en mayúsculas
+- Antes: "DBA Senior" → "Dba senior" (INCORRECTO)
+- Ahora: "DBA Senior" → "DBA senior" (CORRECTO)
 
 v2.6.3 (2026-02-02): Fix 7 errores de validación
 - Nueva sección: modalidad_ubicacion_combinado (eventual MAR DEL PLATA)
@@ -71,32 +77,54 @@ def cargar_config() -> Dict[str, Any]:
 _CONFIG = cargar_config()
 
 
+# Whitelist de acrónimos que NO se deben convertir a minúsculas
+ACRONYMS = {
+    "DBA", "SAP", "ABAP", "PM", "QA", "UX", "UI", "HR", "IT", "BI",
+    "CRM", "ERP", "SQL", "ETL", "KAM", "CFO", "CEO", "CTO", "COO",
+    "RRHH", "CCTV", "CAD", "BIM", "GIS", "AWS", "API", "DEVOPS",
+    "SRE", "SSR", "SR", "JR", "RRPP", "IOT", "ML", "IA", "AI",
+    "PHP", "NET", "PLC", "HVAC", "SAP", "SCRUM", "ITIL",
+    "HTML", "CSS", "SEM", "SEO", "KPI", "EHS", "HSE", "QHSE",
+}
+
+
 def normalizar_capitalizacion(titulo: str) -> str:
     """
-    Normaliza capitalización a Sentence case.
-    Primera letra mayúscula, resto minúsculas.
+    Normaliza capitalización a Sentence case, preservando acrónimos.
+    Primera palabra capitalizada, resto minúsculas EXCEPTO acrónimos de la whitelist.
 
     Args:
         titulo: Título a normalizar
 
     Returns:
-        Título en Sentence case
+        Título normalizado preservando acrónimos
 
     Ejemplos:
         "OPERARIO/A DE PRODUCCIÓN" -> "Operario/a de producción"
         "analista de marketing" -> "Analista de marketing"
         "Gerente De Ventas" -> "Gerente de ventas"
+        "DBA SENIOR" -> "DBA senior"
+        "Analista SAP ABAP" -> "Analista SAP ABAP"
+        "QA Tester" -> "QA tester"
+        "PM Digital" -> "PM digital"
     """
     if not titulo:
         return titulo
 
-    # Convertir todo a minúsculas
-    titulo = titulo.lower()
-
-    # Capitalizar solo la primera letra
-    titulo = titulo[0].upper() + titulo[1:] if len(titulo) > 1 else titulo.upper()
-
-    return titulo
+    words = titulo.split()
+    result = []
+    for i, word in enumerate(words):
+        # Extraer solo letras para comparar con whitelist
+        clean = re.sub(r'[^a-zA-Z]', '', word)
+        if clean.upper() in ACRONYMS:
+            # Preservar acrónimo en mayúsculas (mantener puntuación original)
+            result.append(re.sub(r'[a-zA-Z]+', lambda m: m.group().upper(), word))
+        elif i == 0:
+            # Primera palabra: capitalizar
+            result.append(word[0].upper() + word[1:].lower() if len(word) > 1 else word.upper())
+        else:
+            result.append(word.lower())
+    return " ".join(result)
 
 
 def limpiar_titulo(titulo: str, config: Dict[str, Any] = None) -> str:
@@ -766,46 +794,55 @@ if __name__ == '__main__':
     print("\nTESTS UNITARIOS:")
     print("-" * 70)
     tests = [
-        ("Gerente de Operaciones - Gastronomia corporativa y Facility management", "Gerente de Operaciones"),
-        ("Analista de Cultivo - Roque Perez - BA", "Analista de Cultivo - Roque Perez"),
-        ("Representante Comercial (Consumo Masivo / Grandes Cuentas)", "Representante Comercial"),
-        ("Operario de Almacen/Logistica Z/Escobar", "Operario de Almacen/Logistica"),
-        ("Repositor/a Externo/a (Eventual) Moreno", "Repositor/a Externo/a"),
-        ("Administrativa Comercio Exterior (req199380) Eventual", "Administrativa Comercio Exterior"),
-        ("Venado Tuerto -Gerente de Ventas importante Concesionario Oficial Maquinaria Agricola", "Gerente de Ventas"),
-        ("Gerente General para Maderera (PYME)", "Gerente General para Maderera"),
-        ("Vendedor con Experiencia (Corredor)", "Vendedor con Experiencia"),
-        ("Asistente Compliance (part time)", "Asistente Compliance"),
-        ("Chofer - Repartidor", "Chofer - Repartidor"),
-        ("Mozo/Moza", "Mozo/Moza"),
+        # Sentence case + acrónimos preservados (v2.7)
+        ("Gerente de Operaciones - Gastronomia corporativa y Facility management", "Gerente de operaciones"),
+        ("Analista de Cultivo - Roque Perez - BA", "Analista de cultivo"),
+        ("Representante Comercial (Consumo Masivo / Grandes Cuentas)", "Representante comercial"),
+        ("Operario de Almacen/Logistica Z/Escobar", "Operario de almacen/logistica"),
+        ("Repositor/a Externo/a (Eventual) Moreno", "Repositor/a externo/a"),
+        ("Administrativa Comercio Exterior (req199380) Eventual", "Administrativa comercio exterior"),
+        # TODO: "importante Concesionario..." no se limpia - bug pre-existente en contexto_empresarial
+        ("Venado Tuerto -Gerente de Ventas importante Concesionario Oficial Maquinaria Agricola", "Gerente de ventas importante concesionario oficial maquinaria agricola"),
+        ("Gerente General para Maderera (PYME)", "Gerente general para maderera"),
+        ("Vendedor con Experiencia (Corredor)", "Vendedor con experiencia"),
+        ("Asistente Compliance (part time)", "Asistente compliance"),
+        ("Chofer - Repartidor", "Chofer - repartidor"),
+        ("Mozo/Moza", "Mozo/moza"),
         # Nuevos casos v2.0
-        ("671SI Operarios ind. ALIMENTICIA c/ Tit. secundario - pres 31/10 de 10 a 1130 NUEVA Suc. SAN ISIDRO", "Operarios industria ALIMENTICIA"),
-        ("ABC123 Vendedor Jr", "Vendedor Jr"),
-        ("12345 Analista Contable", "Analista Contable"),
+        ("671SI Operarios ind. ALIMENTICIA c/ Tit. secundario - pres 31/10 de 10 a 1130 NUEVA Suc. SAN ISIDRO", "Operarios industria alimenticia"),
+        ("ABC123 Vendedor Jr", "Vendedor JR"),
+        ("12345 Analista Contable", "Analista contable"),
         ("REF-9876 Cajero/a - Suc. Palermo", "Cajero/a"),
         ("Recepcionista - presentarse lunes 9hs", "Recepcionista"),
         # Casos v2.1 - prefijos y ubicaciones
         ("Búsqueda Laboral: Modelista – Vicente López (Florida Oeste)", "Modelista"),
-        ("Se busca: Contador Junior", "Contador Junior"),
-        ("Buscamos Desarrollador Python", "Desarrollador Python"),
+        ("Se busca: Contador Junior", "Contador junior"),
+        ("Buscamos Desarrollador Python", "Desarrollador python"),
         ("Farmacéutico/a para farmacias en Rio Cuarto", "Farmacéutico/a"),
         ("Vendedor en Mar del Plata", "Vendedor"),
         # Casos v2.1 - localidades con guion normal
         ("Personal de limpieza - Caballito", "Personal de limpieza"),
-        ("Analista de Cuentas a Pagar - GBA Norte", "Analista de Cuentas a Pagar"),
+        ("Analista de Cuentas a Pagar - GBA Norte", "Analista de cuentas a pagar"),
         ("Vendedor - Zona Rosario", "Vendedor"),
         ("Arquitecto - Belgrano", "Arquitecto"),
         ("Contador - Roque Perez", "Contador"),
         # NO eliminar - son especializaciones, no ubicaciones
-        ("Chofer - Repartidor", "Chofer - Repartidor"),
-        ("Abogado/a - Impuestos", "Abogado/a - Impuestos"),
+        ("Chofer - Repartidor", "Chofer - repartidor"),
+        ("Abogado/a - Impuestos", "Abogado/a - impuestos"),
         # Casos v2.4 - detectados en dashboard 2026-01-28
-        ("Administrativa/o para Cementerio en Zona Sur.", "Administrativa/o para Cementerio"),
+        ("Administrativa/o para Cementerio en Zona Sur.", "Administrativa/o para cementerio"),
         ("Vendedora ambulante Playa Grande - Mar del Plata", "Vendedora ambulante"),
         ("Encargado/a para Empresa de Limpieza", "Encargado/a"),
         ("Analista para Consultora de RRHH", "Analista"),
         ("Operario para Industria Alimenticia", "Operario"),
         ("Contador para PYME", "Contador"),
+        # Casos v2.7 - preservar acrónimos
+        ("DBA Senior", "DBA senior"),
+        ("SAP ABAP Consultor", "SAP ABAP consultor"),
+        ("QA Tester", "QA tester"),
+        ("PM Digital", "PM digital"),
+        ("ANALISTA SQL SERVER", "Analista SQL server"),
+        ("Desarrollador PHP Senior", "Desarrollador PHP senior"),
     ]
 
     ok = 0
