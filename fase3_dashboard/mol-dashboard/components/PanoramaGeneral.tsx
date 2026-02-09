@@ -346,54 +346,56 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
         </ResponsiveContainer>
       </ChartContainer>
 
-      {/* Occupation Distribution con Insights */}
-      <ChartContainer
-        title="Distribución de las ofertas por ocupación"
-        subtitle="Top 10 ocupaciones"
-        onDownload={handleDownloadOcupaciones}
-        insights={
-          <InsightList>
-            <InsightItem
-              text="Las 3 ocupaciones principales concentran el 42% del total de ofertas"
-              highlight
-            />
-            <InsightItem
-              text="Técnicos en informática duplicó su demanda en 3 meses"
-            />
-            <InsightItem
-              text="Ocupaciones comerciales representan el 35% de todas las ofertas"
-            />
-          </InsightList>
-        }
-      >
-        <ResponsiveContainer width="100%" height={340}>
-          <BarChart data={occupationData} layout="vertical" margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
-            <defs>
-              <linearGradient id="colorBar1" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#10b981" stopOpacity={0.9}/>
-                <stop offset="100%" stopColor="#059669" stopOpacity={1}/>
-              </linearGradient>
-            </defs>
-            <XAxis type="number" hide={true} />
-            <YAxis
-              type="category"
-              dataKey="name"
-              width={180}
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: '#374151', fontSize: 11, fontWeight: 500 }}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="value" fill="url(#colorBar1)" radius={[0, 6, 6, 0]}>
-              <LabelList
-                dataKey="value"
-                position="right"
-                style={{ fill: '#059669', fontSize: 12, fontWeight: 700 }}
+      {/* Occupation Distribution con Insights - ocultar si se filtró por 1 sola ocupación */}
+      {filters.ocupacionesSeleccionadas.length !== 1 && (
+        <ChartContainer
+          title="Distribución de las ofertas por ocupación"
+          subtitle="Top 10 ocupaciones"
+          onDownload={handleDownloadOcupaciones}
+          insights={
+            <InsightList>
+              <InsightItem
+                text="Las 3 ocupaciones principales concentran el 42% del total de ofertas"
+                highlight
               />
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </ChartContainer>
+              <InsightItem
+                text="Técnicos en informática duplicó su demanda en 3 meses"
+              />
+              <InsightItem
+                text="Ocupaciones comerciales representan el 35% de todas las ofertas"
+              />
+            </InsightList>
+          }
+        >
+          <ResponsiveContainer width="100%" height={340}>
+            <BarChart data={occupationData} layout="vertical" margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
+              <defs>
+                <linearGradient id="colorBar1" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#10b981" stopOpacity={0.9}/>
+                  <stop offset="100%" stopColor="#059669" stopOpacity={1}/>
+                </linearGradient>
+              </defs>
+              <XAxis type="number" hide={true} />
+              <YAxis
+                type="category"
+                dataKey="name"
+                width={180}
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: '#374151', fontSize: 11, fontWeight: 500 }}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Bar dataKey="value" fill="url(#colorBar1)" radius={[0, 6, 6, 0]}>
+                <LabelList
+                  dataKey="value"
+                  position="right"
+                  style={{ fill: '#059669', fontSize: 12, fontWeight: 700 }}
+                />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartContainer>
+      )}
 
       {/* Jurisdiction Distribution con Insights */}
       <ChartContainer

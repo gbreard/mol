@@ -1,11 +1,16 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Loader2, Briefcase, ChevronDown, X } from 'lucide-react';
+import { Search, Loader2, Briefcase, ChevronDown, X, ExternalLink } from 'lucide-react';
 import SkillsList from './SkillsList';
 import SimilarOccupations from './SimilarOccupations';
+import OfertasOcupacionModal from './OfertasOcupacionModal';
 import { OccupationDetail as OccupationDetailType, OccupationFullDetailIndex } from '@/lib/types';
 import { getOfertasCountByIsco } from '@/lib/supabase';
+
+function normalizeIsco(isco: string): string {
+  return isco.startsWith('C') ? isco.substring(1) : isco;
+}
 
 interface OccupationInfo {
   id: string;
@@ -30,6 +35,9 @@ export default function OccupationDetail({
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [ofertasCountMap, setOfertasCountMap] = useState<Record<string, number>>({});
+  const [modalIsco, setModalIsco] = useState('');
+  const [modalLabel, setModalLabel] = useState('');
+  const [showOfertasModal, setShowOfertasModal] = useState(false);
 
   // Set initial occupation when prop changes
   useEffect(() => {
@@ -96,6 +104,12 @@ export default function OccupationDetail({
     }
   };
 
+  const handleViewOfertas = (isco: string, label: string) => {
+    setModalIsco(isco);
+    setModalLabel(label);
+    setShowOfertasModal(true);
+  };
+
   if (!occupationsData) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -129,7 +143,24 @@ export default function OccupationDetail({
           <div className="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <div className="flex-1">
               <div className="font-semibold text-blue-900">{selectedInfo.label}</div>
-              <div className="text-sm text-blue-700">ISCO: {selectedInfo.isco}</div>
+              <div className="text-sm text-blue-700 flex items-center gap-2">
+                ISCO: {selectedInfo.isco}
+                {(() => {
+                  const isco = normalizeIsco(selectedInfo.isco);
+                  const count = ofertasCountMap[isco] || ofertasCountMap[selectedInfo.isco] || 0;
+                  if (count === 0) return null;
+                  return (
+                    <button
+                      onClick={() => handleViewOfertas(isco, selectedInfo.label)}
+                      className="inline-flex items-center gap-1 bg-green-100 hover:bg-green-200 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium transition-colors"
+                    >
+                      <Briefcase className="w-3 h-3" />
+                      {count} {count === 1 ? 'oferta' : 'ofertas'}
+                      <ExternalLink className="w-3 h-3" />
+                    </button>
+                  );
+                })()}
+              </div>
             </div>
             <button
               onClick={handleClear}
@@ -247,6 +278,7 @@ export default function OccupationDetail({
                 ofertasCountMap={ofertasCountMap}
                 onSelect={handleViewSimilar}
                 onCompare={onNavigateToCompare ? handleCompare : undefined}
+                onViewOfertas={handleViewOfertas}
                 maxItems={10}
                 showQuantitySelector={true}
               />
@@ -268,6 +300,14 @@ export default function OccupationDetail({
           </p>
         </div>
       )}
+
+      {/* Modal de ofertas por ocupación */}
+      <OfertasOcupacionModal
+        isOpen={showOfertasModal}
+        onClose={() => setShowOfertasModal(false)}
+        iscoCode={modalIsco}
+        iscoLabel={modalLabel}
+      />
     </div>
   );
 }

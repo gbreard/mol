@@ -20,7 +20,7 @@ export interface FormattedExcelOptions {
   title: string;
   subtitle: string;
   source?: string;
-  data: { name: string; value: number; porcentaje?: number }[];
+  data: Record<string, any>[];
   columns: { header: string; key: string }[];
   filename: string;
   showPercentage?: boolean;
@@ -38,20 +38,11 @@ export async function downloadFormattedExcel(options: FormattedExcelOptions) {
   try {
     const XLSX = await import('xlsx');
 
-    // Calcular total para porcentajes si no vienen calculados
-    const total = data.reduce((sum, item) => sum + item.value, 0);
-
     // Preparar filas con datos
     const dataRows = data.map(item => {
       const row: Record<string, any> = {};
       columns.forEach(col => {
-        if (col.key === 'name') {
-          row[col.header] = item.name;
-        } else if (col.key === 'value') {
-          row[col.header] = item.value;
-        } else if (col.key === 'porcentaje' && showPercentage) {
-          row[col.header] = item.porcentaje ?? (total > 0 ? Math.round((item.value / total) * 100 * 10) / 10 : 0);
-        }
+        row[col.header] = item[col.key] ?? '';
       });
       return row;
     });

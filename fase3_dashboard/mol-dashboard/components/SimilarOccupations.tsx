@@ -9,6 +9,7 @@ interface SimilarOccupationsProps {
   ofertasCountMap?: Record<string, number>;
   onSelect?: (occupationId: string) => void;
   onCompare?: (occupationId: string) => void;
+  onViewOfertas?: (isco: string, label: string) => void;
   maxItems?: number;
   showQuantitySelector?: boolean;
 }
@@ -29,6 +30,7 @@ export default function SimilarOccupations({
   ofertasCountMap = {},
   onSelect,
   onCompare,
+  onViewOfertas,
   maxItems = 10,
   showQuantitySelector = false
 }: SimilarOccupationsProps) {
@@ -154,13 +156,13 @@ export default function SimilarOccupations({
 
                   {/* Link to offers */}
                   {hasOfertasData && ofertasCount > 0 && (
-                    <a
-                      href={`/?tab=ofertas&isco=${normalizeIsco(occ.isco)}`}
+                    <button
+                      onClick={() => onViewOfertas?.(normalizeIsco(occ.isco), occ.label)}
                       className="text-xs text-green-600 hover:text-green-800 hover:underline flex items-center gap-1"
                     >
                       Ver {ofertasCount} {ofertasCount === 1 ? 'oferta' : 'ofertas'}
                       <ExternalLink className="w-3 h-3" />
-                    </a>
+                    </button>
                   )}
                 </div>
               </li>
@@ -213,13 +215,13 @@ export default function SimilarOccupations({
                       </div>
                     </div>
 
-                    <a
-                      href={`/?tab=ofertas&isco=${normalizeIsco(occ.isco)}`}
+                    <button
+                      onClick={() => onViewOfertas?.(normalizeIsco(occ.isco), occ.label)}
                       className="flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition-colors"
                     >
                       Ver ofertas
                       <ExternalLink className="w-3 h-3" />
-                    </a>
+                    </button>
                   </div>
                 </li>
               );

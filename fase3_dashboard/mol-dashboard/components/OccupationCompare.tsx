@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Search, Loader2, GitCompare, ChevronDown, X, Check, AlertCircle, Star, Circle, Briefcase, ExternalLink } from 'lucide-react';
 import { OccupationDetail, OccupationFullDetailIndex, SkillItem } from '@/lib/types';
 import { getOfertasCountByIsco } from '@/lib/supabase';
+import OfertasOcupacionModal from './OfertasOcupacionModal';
 
 // Helper to normalize ISCO code (remove 'C' prefix if present)
 function normalizeIsco(isco: string): string {
@@ -51,6 +52,8 @@ export default function OccupationCompare({
   const [selectedBId, setSelectedBId] = useState<string | null>(initialOccB || null);
   const [ofertasCountMap, setOfertasCountMap] = useState<Record<string, number>>({});
   const [showOfertasModal, setShowOfertasModal] = useState(false);
+  const [modalIsco, setModalIsco] = useState('');
+  const [modalLabel, setModalLabel] = useState('');
 
   // Update when initial values change
   useEffect(() => {
@@ -206,13 +209,19 @@ export default function OccupationCompare({
                     </p>
                   </div>
                 </div>
-                <a
-                  href={`/?tab=ofertas&isco=${occBInfo ? normalizeIsco(occBInfo.isco) : ''}`}
+                <button
+                  onClick={() => {
+                    if (occBInfo) {
+                      setModalIsco(normalizeIsco(occBInfo.isco));
+                      setModalLabel(occB!.label);
+                      setShowOfertasModal(true);
+                    }
+                  }}
                   className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
                 >
                   Ver ofertas
                   <ExternalLink className="w-4 h-4" />
-                </a>
+                </button>
               </div>
             );
           })()}
@@ -377,6 +386,14 @@ export default function OccupationCompare({
           </p>
         </div>
       )}
+
+      {/* Modal de ofertas por ocupación */}
+      <OfertasOcupacionModal
+        isOpen={showOfertasModal}
+        onClose={() => setShowOfertasModal(false)}
+        iscoCode={modalIsco}
+        iscoLabel={modalLabel}
+      />
     </div>
   );
 }

@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { Loader2, AlertCircle, GraduationCap, Clock, TrendingUp, MapPin, Users, Briefcase, Cpu, Layers, ChevronDown } from "lucide-react";
-import { ExportButton, ExportColumn } from "@/components/ExportButton";
+import { Loader2, AlertCircle, GraduationCap, Clock, TrendingUp, MapPin, Users, Briefcase, Cpu, Layers, ChevronDown, Download } from "lucide-react";
+import { downloadFormattedExcel } from "@/components/ExportButton";
 import { getDistribucionRequerimientos, getSkillsPorCategoriaL1, getSkillsDigitales, getTopSkillsConCategoria, SkillsFilters } from "@/lib/supabase";
 import { DashboardFilters } from "@/lib/types";
 
@@ -219,6 +219,99 @@ export function Requerimientos({ filters }: RequerimientosProps) {
     );
   }
 
+  // Función para formatear los filtros aplicados como subtítulo
+  const getFiltersSubtitle = (): string => {
+    const parts: string[] = [];
+    if (filters.territorio && filters.territorio !== 'Nacional') parts.push(`Territorio: ${filters.territorio}`);
+    if (filters.provincia && filters.provincia !== 'Todas') parts.push(`Provincia: ${filters.provincia}`);
+    if (filters.localidad) parts.push(`Localidad: ${filters.localidad}`);
+    if (filters.fechaDesde) parts.push(`Desde: ${filters.fechaDesde.toLocaleDateString('es-AR')}`);
+    if (filters.fechaHasta) parts.push(`Hasta: ${filters.fechaHasta.toLocaleDateString('es-AR')}`);
+    if (filters.ocupacionesSeleccionadas && filters.ocupacionesSeleccionadas.length > 0) {
+      parts.push(`Ocupaciones: ${filters.ocupacionesSeleccionadas.slice(0, 3).join(', ')}${filters.ocupacionesSeleccionadas.length > 3 ? '...' : ''}`);
+    }
+    return parts.length > 0 ? `Filtros aplicados: ${parts.join(' | ')}` : 'Sin filtros aplicados (datos totales)';
+  };
+
+  // Handler descarga: Distribución de requerimientos
+  const handleDownloadRequerimientos = () => {
+    if (!requerimientosData) return;
+    const data: { categoria: string; valor: string; ofertas: number; porcentaje: number }[] = [];
+    const sections: [string, DistribucionItem[]][] = [
+      ['Nivel educativo', requerimientosData.educacion],
+      ['Experiencia', requerimientosData.experiencia],
+      ['Seniority', requerimientosData.seniority],
+      ['Modalidad', requerimientosData.modalidad],
+      ['Personal a cargo', requerimientosData.genteCargo],
+      ['Jornada', requerimientosData.jornada],
+    ];
+    if (skillsDigitales.length > 0) {
+      sections.push(['Skills digitales', skillsDigitales.map(s => ({ name: s.name, value: s.value, porcentaje: s.porcentaje }))]);
+    }
+    for (const [cat, items] of sections) {
+      for (const item of items) {
+        data.push({ categoria: cat, valor: item.name, ofertas: item.value, porcentaje: item.porcentaje });
+      }
+    }
+    downloadFormattedExcel({
+      title: 'Distribución de los requerimientos',
+      subtitle: getFiltersSubtitle(),
+      data,
+      columns: [
+        { header: 'Categoría', key: 'categoria' },
+        { header: 'Valor', key: 'valor' },
+        { header: 'Ofertas laborales', key: 'ofertas' },
+        { header: 'Porcentaje (%)', key: 'porcentaje' }
+      ],
+      filename: 'distribucion_requerimientos',
+      showPercentage: true
+    });
+  };
+
+  // Handler descarga: Análisis de habilidades
+  const handleDownloadHabilidades = () => {
+    if (tipoVisualizacion === 'agregada') {
+      const data = categoriasL1.slice(0, cantidadCompetencias).map(item => ({
+        nombre: item.name,
+        menciones: item.value,
+        porcentaje: item.porcentaje
+      }));
+      downloadFormattedExcel({
+        title: 'Distribución por categoría de habilidades',
+        subtitle: getFiltersSubtitle(),
+        data,
+        columns: [
+          { header: 'Categoría', key: 'nombre' },
+          { header: 'Menciones', key: 'menciones' },
+          { header: 'Porcentaje (%)', key: 'porcentaje' }
+        ],
+        filename: 'habilidades_por_categoria',
+        showPercentage: true
+      });
+    } else {
+      const total = topSkillsTotal.slice(0, cantidadCompetencias).reduce((s, i) => s + i.value, 0);
+      const data = topSkillsTotal.slice(0, cantidadCompetencias).map(item => ({
+        competencia: item.name,
+        categoria: item.categoriaNombre,
+        menciones: item.value,
+        porcentaje: total > 0 ? Math.round((item.value / total) * 100 * 10) / 10 : 0
+      }));
+      downloadFormattedExcel({
+        title: 'Competencias específicas más demandadas',
+        subtitle: getFiltersSubtitle(),
+        data,
+        columns: [
+          { header: 'Competencia', key: 'competencia' },
+          { header: 'Categoría', key: 'categoria' },
+          { header: 'Menciones', key: 'menciones' },
+          { header: 'Porcentaje (%)', key: 'porcentaje' }
+        ],
+        filename: 'competencias_especificas',
+        showPercentage: true
+      });
+    }
+  };
+
   // Datos a mostrar según tipo de visualización y cantidad
   const datosGrafico = tipoVisualizacion === 'agregada'
     ? categoriasL1.slice(0, cantidadCompetencias)
@@ -229,54 +322,6 @@ export function Requerimientos({ filters }: RequerimientosProps) {
         porcentaje: 0, // No usado en específicas
         categoriaNombre: skill.categoriaNombre
       }));
-
-  // Columnas para exportación
-  const exportColumns: ExportColumn[] = [
-    { key: 'categoria', header: 'Categoría' },
-    { key: 'nombre', header: 'Valor' },
-    { key: 'cantidad', header: 'Cantidad' },
-    { key: 'porcentaje', header: 'Porcentaje (%)' },
-  ];
-
-  // Preparar datos para exportación
-  const getExportData = () => {
-    const data: { categoria: string; nombre: string; cantidad: number; porcentaje: number }[] = [];
-
-    // Skills según visualización actual
-    if (tipoVisualizacion === 'agregada') {
-      categoriasL1.slice(0, cantidadCompetencias).forEach(item => {
-        data.push({ categoria: 'Categoría L1', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
-      });
-    } else {
-      topSkillsTotal.slice(0, cantidadCompetencias).forEach(item => {
-        data.push({ categoria: item.categoriaNombre, nombre: item.name, cantidad: item.value, porcentaje: 0 });
-      });
-    }
-
-    if (requerimientosData) {
-      // Distribución de requerimientos
-      requerimientosData.educacion.forEach(item => {
-        data.push({ categoria: 'Nivel educativo', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
-      });
-      requerimientosData.experiencia.forEach(item => {
-        data.push({ categoria: 'Experiencia', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
-      });
-      requerimientosData.seniority.forEach(item => {
-        data.push({ categoria: 'Seniority', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
-      });
-      requerimientosData.modalidad.forEach(item => {
-        data.push({ categoria: 'Modalidad', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
-      });
-      requerimientosData.genteCargo.forEach(item => {
-        data.push({ categoria: 'Personal a cargo', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
-      });
-      requerimientosData.jornada.forEach(item => {
-        data.push({ categoria: 'Jornada', nombre: item.name, cantidad: item.value, porcentaje: item.porcentaje });
-      });
-    }
-
-    return data;
-  };
 
   return (
     <div className="space-y-6">
@@ -324,13 +369,14 @@ export function Requerimientos({ filters }: RequerimientosProps) {
               </div>
             </div>
 
-            {/* Export Button */}
-            <ExportButton
-              data={getExportData()}
-              columns={exportColumns}
-              filename="requerimientos"
-              showLabel={false}
-            />
+            {/* Download formatted Excel */}
+            <button
+              onClick={handleDownloadHabilidades}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-gray-600 hover:text-gray-800"
+              title="Descargar Excel"
+            >
+              <Download className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
@@ -392,7 +438,16 @@ export function Requerimientos({ filters }: RequerimientosProps) {
       {/* ========== 2. DISTRIBUCIÓN DE REQUERIMIENTOS (segundo según Issue #6) ========== */}
       {requerimientosData && (
         <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-          <h3 className="text-base font-semibold text-gray-800 mb-3">Distribución de los requerimientos</h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-base font-semibold text-gray-800">Distribución de los requerimientos</h3>
+            <button
+              onClick={handleDownloadRequerimientos}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-gray-600 hover:text-gray-800"
+              title="Descargar Excel"
+            >
+              <Download className="w-4 h-4" />
+            </button>
+          </div>
 
           <div className="space-y-0">
             <StackedBar
