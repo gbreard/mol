@@ -43,7 +43,7 @@ export default function DashboardPage() {
         setFilters(prev => ({ ...prev, territorio: 'nacional', provincia: '', localidad: '' }));
         break;
       case 'provincia':
-        setFilters(prev => ({ ...prev, provincia: '' }));
+        setFilters(prev => ({ ...prev, provincia: '', localidad: '' }));
         break;
       case 'localidad':
         setFilters(prev => ({ ...prev, localidad: '' }));

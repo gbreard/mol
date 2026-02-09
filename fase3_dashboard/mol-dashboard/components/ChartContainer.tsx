@@ -10,21 +10,25 @@ interface ChartContainerProps {
   children: ReactNode;
   onDownload?: () => void;
   insights?: ReactNode;
+  headerExtra?: ReactNode;
 }
 
-export function ChartContainer({ title, subtitle, children, onDownload, insights }: ChartContainerProps) {
+export function ChartContainer({ title, subtitle, children, onDownload, insights, headerExtra }: ChartContainerProps) {
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
       <div className="flex items-start justify-between mb-6">
-        <div>
-          <h3 className="text-lg font-bold text-gray-900">{title}</h3>
-          {subtitle && <p className="text-sm text-gray-500 mt-1 font-medium">{subtitle}</p>}
+        <div className="flex items-center gap-4 flex-wrap">
+          <div>
+            <h3 className="text-lg font-bold text-gray-900">{title}</h3>
+            {subtitle && <p className="text-sm text-gray-500 mt-1 font-medium">{subtitle}</p>}
+          </div>
+          {headerExtra}
         </div>
         {onDownload && (
           <Button
             variant="outline"
             size="sm"
-            className="gap-2 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 transition-all"
+            className="gap-2 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 transition-all flex-shrink-0"
             onClick={onDownload}
           >
             <Download className="w-4 h-4" />

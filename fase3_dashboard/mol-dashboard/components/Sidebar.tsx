@@ -18,7 +18,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { getTotalOfertas, getOcupacionesTree, OcupacionTreeNode } from "@/lib/supabase";
+import { getTotalOfertas, getOcupacionesTree, getLocalidadesByProvincia, OcupacionTreeNode } from "@/lib/supabase";
 
 interface SidebarProps {
   filters: {
@@ -46,6 +46,8 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
   const [ocupacionesTree, setOcupacionesTree] = useState<OcupacionTreeNode[]>([]);
   const [totalOfertas, setTotalOfertas] = useState<number | null>(null);
   const [loadingTree, setLoadingTree] = useState(true);
+  const [localidades, setLocalidades] = useState<string[]>([]);
+  const [loadingLocalidades, setLoadingLocalidades] = useState(false);
 
   const toggleNode = (nodeId: string) => {
     setExpandedNodes(prev =>
@@ -81,6 +83,27 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
     loadSidebarData();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters.territorio, filters.provincia, filters.localidad, filters.fechaDesde, filters.fechaHasta, filters.permanencia]);
+
+  // Cargar localidades cuando cambia la provincia seleccionada
+  useEffect(() => {
+    if (!filters.provincia) {
+      setLocalidades([]);
+      return;
+    }
+    async function loadLocalidades() {
+      setLoadingLocalidades(true);
+      try {
+        const locs = await getLocalidadesByProvincia(filters.provincia);
+        setLocalidades(locs);
+      } catch (err) {
+        console.error('Error cargando localidades:', err);
+        setLocalidades([]);
+      } finally {
+        setLoadingLocalidades(false);
+      }
+    }
+    loadLocalidades();
+  }, [filters.provincia]);
 
   // Filtrar el árbol por búsqueda de texto
   const filteredTree = useMemo(() => {
@@ -222,7 +245,13 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
               </div>
             </AccordionTrigger>
             <AccordionContent className="px-4 pb-4 space-y-3">
-              <RadioGroup value={filters.territorio} onValueChange={(value) => onFilterChange('territorio', value)}>
+              <RadioGroup value={filters.territorio} onValueChange={(value) => {
+                onFilterChange('territorio', value);
+                if (value === 'nacional') {
+                  onFilterChange('provincia', '');
+                  onFilterChange('localidad', '');
+                }
+              }}>
                 {/* Nacional */}
                 <div className={`flex items-center space-x-2 p-2.5 rounded-lg transition-all duration-200 ${
                   filters.territorio === 'nacional' ? 'bg-blue-50 border border-blue-200' : 'hover:bg-gray-100'
@@ -245,7 +274,10 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
                       <Label className="text-xs text-gray-600">Seleccionar provincia</Label>
                       <select
                         value={filters.provincia}
-                        onChange={(e) => onFilterChange('provincia', e.target.value)}
+                        onChange={(e) => {
+                          onFilterChange('provincia', e.target.value);
+                          onFilterChange('localidad', '');
+                        }}
                         className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-blue-400 transition-colors"
                       >
                         <option value="">Todas las provincias</option>
@@ -274,6 +306,30 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
                         <option value="lapampa">La Pampa</option>
                         <option value="santiago">Santiago del Estero</option>
                       </select>
+
+                      {/* Localidad - aparece cuando hay provincia seleccionada */}
+                      {filters.provincia && (
+                        <div className="mt-3 space-y-1.5 animate-in fade-in slide-in-from-top duration-300">
+                          <Label className="text-xs text-gray-600">Localidad</Label>
+                          {loadingLocalidades ? (
+                            <div className="flex items-center gap-2 p-2 text-xs text-gray-500">
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                              Cargando localidades...
+                            </div>
+                          ) : (
+                            <select
+                              value={filters.localidad}
+                              onChange={(e) => onFilterChange('localidad', e.target.value)}
+                              className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-blue-400 transition-colors"
+                            >
+                              <option value="">Todas las localidades</option>
+                              {localidades.map((loc) => (
+                                <option key={loc} value={loc}>{loc}</option>
+                              ))}
+                            </select>
+                          )}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -309,7 +365,7 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
                       onFilterChange('fechaHasta', hoy);
                     }}
                   >
-                    Semana
+                    Última semana
                   </Button>
                   <Button
                     variant="outline"
@@ -323,7 +379,7 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
                       onFilterChange('fechaHasta', hoy);
                     }}
                   >
-                    Mes
+                    Último mes
                   </Button>
                   <Button
                     variant="outline"
@@ -337,7 +393,7 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
                       onFilterChange('fechaHasta', hoy);
                     }}
                   >
-                    Año
+                    Último año
                   </Button>
                 </div>
               </div>

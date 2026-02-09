@@ -58,22 +58,34 @@ const InsightItem = ({ icon: Icon, text, highlight }: { icon?: any; text: string
   </li>
 );
 
+const OCUPACIONES_LIMIT_OPTIONS = [
+  { value: 10, label: 'Top 10' },
+  { value: 30, label: 'Top 30' },
+  { value: 50, label: 'Top 50' },
+  { value: 100, label: 'Top 100' },
+  { value: 0, label: 'Total' },
+];
+
+// Truncar labels largos para el eje Y
+function truncateLabel(text: string, maxLen: number = 35): string {
+  if (text.length <= maxLen) return text;
+  return text.substring(0, maxLen - 1) + '…';
+}
+
 export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [kpis, setKpis] = useState<KPIData>({ totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 });
   const [occupationData, setOccupationData] = useState<ChartData[]>([]);
   const [jurisdictionData, setJurisdictionData] = useState<ChartData[]>([]);
+  const [ocupacionesLimit, setOcupacionesLimit] = useState(10);
 
+  // Carga principal: KPIs + provincias
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
-        // E-16: Usar RPC optimizado para KPIs y provincias (1 query SQL vs múltiples fetch)
-        const [insights, ocupaciones] = await Promise.all([
-          getInsightsRPC(filters),
-          getTopOcupaciones(10, filters)  // Mantener: necesita isco_label que no está en RPC
-        ]);
+        const insights = await getInsightsRPC(filters);
 
         if (insights) {
           setKpis({
@@ -82,7 +94,6 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
             empresasActivas: insights.kpis.empresas_activas,
             provincias: insights.kpis.provincias
           });
-          // Provincias vienen del RPC, ya ordenadas por total DESC
           setJurisdictionData(insights.provincias.slice(0, 10).map(p => ({
             name: p.provincia,
             value: p.total
@@ -91,8 +102,6 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
           setKpis({ totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 });
           setJurisdictionData([]);
         }
-        // Ocupaciones siguen usando función legacy (necesita isco_label para el gráfico)
-        setOccupationData(ocupaciones.map(o => ({ name: o.ocupacion, value: o.cantidad })));
         setError(null);
       } catch (err) {
         console.error('Error cargando datos:', err);
@@ -103,6 +112,20 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
     }
     loadData();
   }, [filters]);
+
+  // Carga de ocupaciones: se recarga con filtros Y con cambio de límite
+  useEffect(() => {
+    async function loadOcupaciones() {
+      try {
+        const limit = ocupacionesLimit === 0 ? 9999 : ocupacionesLimit;
+        const ocupaciones = await getTopOcupaciones(limit, filters);
+        setOccupationData(ocupaciones.map(o => ({ name: o.ocupacion, value: o.cantidad })));
+      } catch (err) {
+        console.error('Error cargando ocupaciones:', err);
+      }
+    }
+    loadOcupaciones();
+  }, [filters, ocupacionesLimit]);
 
   // Función para formatear los filtros aplicados como subtítulo
   const getFiltersSubtitle = (): string => {
@@ -176,7 +199,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
         { header: 'Ofertas laborales', key: 'value' },
         { header: 'Porcentaje (%)', key: 'porcentaje' }
       ],
-      filename: 'ocupaciones_top10',
+      filename: `ocupaciones_${ocupacionesLimit === 0 ? 'total' : 'top' + ocupacionesLimit}`,
       showPercentage: true
     });
   };
@@ -347,55 +370,76 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
       </ChartContainer>
 
       {/* Occupation Distribution con Insights - ocultar si se filtró por 1 sola ocupación */}
-      {filters.ocupacionesSeleccionadas.length !== 1 && (
-        <ChartContainer
-          title="Distribución de las ofertas por ocupación"
-          subtitle="Top 10 ocupaciones"
-          onDownload={handleDownloadOcupaciones}
-          insights={
-            <InsightList>
-              <InsightItem
-                text="Las 3 ocupaciones principales concentran el 42% del total de ofertas"
-                highlight
-              />
-              <InsightItem
-                text="Técnicos en informática duplicó su demanda en 3 meses"
-              />
-              <InsightItem
-                text="Ocupaciones comerciales representan el 35% de todas las ofertas"
-              />
-            </InsightList>
-          }
-        >
-          <ResponsiveContainer width="100%" height={340}>
-            <BarChart data={occupationData} layout="vertical" margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
-              <defs>
-                <linearGradient id="colorBar1" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#10b981" stopOpacity={0.9}/>
-                  <stop offset="100%" stopColor="#059669" stopOpacity={1}/>
-                </linearGradient>
-              </defs>
-              <XAxis type="number" hide={true} />
-              <YAxis
-                type="category"
-                dataKey="name"
-                width={180}
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: '#374151', fontSize: 11, fontWeight: 500 }}
-              />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="value" fill="url(#colorBar1)" radius={[0, 6, 6, 0]}>
-                <LabelList
-                  dataKey="value"
-                  position="right"
-                  style={{ fill: '#059669', fontSize: 12, fontWeight: 700 }}
+      {filters.ocupacionesSeleccionadas.length !== 1 && (() => {
+        const chartItemCount = occupationData.length;
+        const chartHeight = Math.max(340, chartItemCount * 32);
+        const needsScroll = chartItemCount > 15;
+        const currentLabel = OCUPACIONES_LIMIT_OPTIONS.find(o => o.value === ocupacionesLimit)?.label || 'Top 10';
+
+        return (
+          <ChartContainer
+            title="Distribución de las ofertas por ocupación"
+            subtitle={`${currentLabel} — ${chartItemCount} ocupaciones`}
+            onDownload={handleDownloadOcupaciones}
+            headerExtra={
+              <select
+                value={ocupacionesLimit}
+                onChange={(e) => setOcupacionesLimit(Number(e.target.value))}
+                className="h-8 px-2 text-sm border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-blue-400 transition-colors"
+              >
+                {OCUPACIONES_LIMIT_OPTIONS.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            }
+            insights={
+              <InsightList>
+                <InsightItem
+                  text="Las 3 ocupaciones principales concentran el 42% del total de ofertas"
+                  highlight
                 />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartContainer>
-      )}
+                <InsightItem
+                  text="Técnicos en informática duplicó su demanda en 3 meses"
+                />
+                <InsightItem
+                  text="Ocupaciones comerciales representan el 35% de todas las ofertas"
+                />
+              </InsightList>
+            }
+          >
+            <div className={needsScroll ? "overflow-y-auto max-h-[600px]" : ""}>
+              <ResponsiveContainer width="100%" height={chartHeight}>
+                <BarChart data={occupationData} layout="vertical" margin={{ top: 5, right: 50, left: 10, bottom: 5 }}>
+                  <defs>
+                    <linearGradient id="colorBar1" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#10b981" stopOpacity={0.9}/>
+                      <stop offset="100%" stopColor="#059669" stopOpacity={1}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis type="number" hide={true} />
+                  <YAxis
+                    type="category"
+                    dataKey="name"
+                    width={200}
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#374151', fontSize: 11, fontWeight: 500 }}
+                    tickFormatter={(value: string) => truncateLabel(value, 35)}
+                  />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="value" fill="url(#colorBar1)" radius={[0, 6, 6, 0]}>
+                    <LabelList
+                      dataKey="value"
+                      position="right"
+                      style={{ fill: '#059669', fontSize: 12, fontWeight: 700 }}
+                    />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </ChartContainer>
+        );
+      })()}
 
       {/* Jurisdiction Distribution con Insights */}
       <ChartContainer

@@ -90,6 +90,11 @@ function applyFilters(query: any, filters?: DashboardFilters) {
     query = query.eq('provincia', provinciaMap[filters.provincia])
   }
 
+  // Filtro por localidad
+  if (filters.localidad) {
+    query = query.eq('localidad', filters.localidad)
+  }
+
   // Filtro por fecha desde
   if (filters.fechaDesde) {
     const fechaDesde = filters.fechaDesde.toISOString().split('T')[0]
@@ -495,6 +500,25 @@ export async function getTotalOfertas(filters?: DashboardFilters): Promise<numbe
   const { count, error } = await query
   if (error) throw error
   return count || 0
+}
+
+// Localidades distintas para una provincia dada
+export async function getLocalidadesByProvincia(provinciaKey: string): Promise<string[]> {
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  const provinciaName = provinciaMap[provinciaKey]
+  if (!provinciaName) return []
+
+  const data = await fetchAllPaginated<{ localidad: string }>(
+    client,
+    TABLA_OFERTAS,
+    'localidad',
+    (query) => query.eq('provincia', provinciaName).not('localidad', 'is', null)
+  )
+
+  const unique = [...new Set(data.map(d => d.localidad).filter(Boolean))]
+  return unique.sort((a, b) => a.localeCompare(b, 'es'))
 }
 
 // Árbol de ocupaciones ISCO para el Sidebar (agrupadas por primer dígito)
