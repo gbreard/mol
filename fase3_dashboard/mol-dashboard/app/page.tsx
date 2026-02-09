@@ -83,21 +83,12 @@ function HeroSection({ data }: { data: LandingData }) {
       <div className="relative max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-12 lg:gap-16 py-32 lg:py-0">
         {/* Left — text */}
         <div className="flex flex-col justify-center">
-          <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-8 w-fit"
-            style={{
-              backgroundColor: "rgba(43, 127, 212, 0.15)",
-              color: "var(--teal-300)",
-              border: "1px solid rgba(43, 127, 212, 0.3)",
-              animation: "pulse-glow 3s ease-in-out infinite",
-            }}
+          <p
+            className="text-sm font-semibold uppercase tracking-widest mb-8"
+            style={{ color: "var(--teal-300)" }}
           >
-            <span
-              className="w-2 h-2 rounded-full"
-              style={{ backgroundColor: "var(--teal-400)" }}
-            />
-            Sistema en producción
-          </div>
+            Monitor de Ofertas Laborales
+          </p>
 
           <h1
             className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight"
