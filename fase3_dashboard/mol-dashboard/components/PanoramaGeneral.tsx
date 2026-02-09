@@ -5,7 +5,7 @@ import { KPICard } from "@/components/KPICard";
 import { ChartContainer } from "@/components/ChartContainer";
 import { FileText, Briefcase, Lightbulb, Sparkles, TrendingUp, AlertCircle, Award, Loader2 } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList, Label } from "recharts";
-import { getInsightsRPC, getTopOcupaciones, InsightsData } from "@/lib/supabase";
+import { getInsightsRPC, getTopOcupaciones, getEvolucionSemanal, InsightsData, EvolucionSemanal } from "@/lib/supabase";
 import { DashboardFilters } from "@/lib/types";
 import { downloadFormattedExcel } from "@/components/ExportButton";
 
@@ -78,14 +78,18 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
   const [kpis, setKpis] = useState<KPIData>({ totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 });
   const [occupationData, setOccupationData] = useState<ChartData[]>([]);
   const [jurisdictionData, setJurisdictionData] = useState<ChartData[]>([]);
+  const [evolutionData, setEvolutionData] = useState<EvolucionSemanal[]>([]);
   const [ocupacionesLimit, setOcupacionesLimit] = useState(10);
 
-  // Carga principal: KPIs + provincias
+  // Carga principal: KPIs + provincias + evolución semanal
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
-        const insights = await getInsightsRPC(filters);
+        const [insights, evolucion] = await Promise.all([
+          getInsightsRPC(filters),
+          getEvolucionSemanal(5, filters)
+        ]);
 
         if (insights) {
           setKpis({
@@ -102,6 +106,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
           setKpis({ totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 });
           setJurisdictionData([]);
         }
+        setEvolutionData(evolucion);
         setError(null);
       } catch (err) {
         console.error('Error cargando datos:', err);
@@ -155,17 +160,11 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
 
   // Handler para descargar Excel de Evolución
   const handleDownloadEvolucion = () => {
-    // Generar datos de evolución (mismo cálculo que en el render)
-    const evolucionData = [
-      { name: 'Sem 1', ofertas: Math.round(kpis.totalOfertas * 0.7) },
-      { name: 'Sem 2', ofertas: Math.round(kpis.totalOfertas * 0.8) },
-      { name: 'Sem 3', ofertas: Math.round(kpis.totalOfertas * 0.9) },
-      { name: 'Actual', ofertas: kpis.totalOfertas },
-    ];
+    if (evolutionData.length === 0) return;
 
-    const data = evolucionData.map(item => ({
-      name: item.name,
-      value: item.ofertas
+    const data = evolutionData.map(item => ({
+      periodo: item.label,
+      ofertas: item.ofertas
     }));
 
     downloadFormattedExcel({
@@ -173,8 +172,8 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
       subtitle: getFiltersSubtitle(),
       data,
       columns: [
-        { header: 'Período', key: 'name' },
-        { header: 'Ofertas laborales', key: 'value' }
+        { header: 'Semana (lunes - domingo)', key: 'periodo' },
+        { header: 'Ofertas laborales', key: 'ofertas' }
       ],
       filename: 'evolucion_ofertas',
       showPercentage: false
@@ -247,14 +246,6 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
     );
   }
 
-  // Datos de evolución temporal (placeholder - se puede conectar a métricas históricas)
-  const evolutionData = [
-    { name: 'Sem 1', ofertas: Math.round(kpis.totalOfertas * 0.7) },
-    { name: 'Sem 2', ofertas: Math.round(kpis.totalOfertas * 0.8) },
-    { name: 'Sem 3', ofertas: Math.round(kpis.totalOfertas * 0.9) },
-    { name: 'Actual', ofertas: kpis.totalOfertas },
-  ];
-
   return (
     <div className="space-y-6">
       {/* Hallazgos Clave */}
@@ -318,55 +309,72 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
       {/* Evolution Chart con Insights */}
       <ChartContainer
         title="Evolución de las ofertas laborales"
+        subtitle="Últimas 5 semanas"
         onDownload={handleDownloadEvolucion}
-        insights={
+        insights={evolutionData.length >= 2 ? (
           <InsightList>
-            <InsightItem
-              text="Crecimiento del 15.2% en los últimos 6 meses"
-              highlight
-            />
-            <InsightItem
-              text="28% más ofertas que el mismo período del año anterior"
-            />
-            <InsightItem
-              text="Se proyecta superar las 6,000 ofertas en julio"
-            />
+            {(() => {
+              const last = evolutionData[evolutionData.length - 1]?.ofertas || 0;
+              const prev = evolutionData[evolutionData.length - 2]?.ofertas || 0;
+              const diff = prev > 0 ? Math.round(((last - prev) / prev) * 100) : 0;
+              const total = evolutionData.reduce((s, w) => s + w.ofertas, 0);
+              return (
+                <>
+                  <InsightItem
+                    text={`Última semana: ${last.toLocaleString()} ofertas (${diff >= 0 ? '+' : ''}${diff}% vs semana anterior)`}
+                    highlight
+                  />
+                  <InsightItem
+                    text={`Total en las últimas 5 semanas: ${total.toLocaleString()} ofertas`}
+                  />
+                  <InsightItem
+                    text={`Promedio semanal: ${Math.round(total / evolutionData.length).toLocaleString()} ofertas`}
+                  />
+                </>
+              );
+            })()}
           </InsightList>
-        }
+        ) : undefined}
       >
-        <ResponsiveContainer width="100%" height={260}>
-          <LineChart data={evolutionData} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
-            <defs>
-              <linearGradient id="colorOfertas" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.15}/>
-                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-              </linearGradient>
-            </defs>
-            <XAxis
-              dataKey="name"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: '#6b7280', fontSize: 12, fontWeight: 600 }}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Line
-              type="monotone"
-              dataKey="ofertas"
-              stroke="#3b82f6"
-              strokeWidth={4}
-              dot={{ fill: '#fff', stroke: '#3b82f6', strokeWidth: 3, r: 6 }}
-              activeDot={{ r: 8, fill: '#3b82f6' }}
-              fill="url(#colorOfertas)"
-            >
-              <LabelList
-                dataKey="ofertas"
-                position="top"
-                style={{ fill: '#1e40af', fontSize: 13, fontWeight: 700 }}
-                formatter={(value: number) => value.toLocaleString()}
+        {evolutionData.length > 0 ? (
+          <ResponsiveContainer width="100%" height={260}>
+            <LineChart data={evolutionData} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
+              <defs>
+                <linearGradient id="colorOfertas" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.15}/>
+                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <XAxis
+                dataKey="label"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: '#6b7280', fontSize: 11, fontWeight: 600 }}
               />
-            </Line>
-          </LineChart>
-        </ResponsiveContainer>
+              <Tooltip content={<CustomTooltip />} />
+              <Line
+                type="monotone"
+                dataKey="ofertas"
+                stroke="#3b82f6"
+                strokeWidth={4}
+                dot={{ fill: '#fff', stroke: '#3b82f6', strokeWidth: 3, r: 6 }}
+                activeDot={{ r: 8, fill: '#3b82f6' }}
+                fill="url(#colorOfertas)"
+              >
+                <LabelList
+                  dataKey="ofertas"
+                  position="top"
+                  style={{ fill: '#1e40af', fontSize: 13, fontWeight: 700 }}
+                  formatter={(value: number) => value.toLocaleString()}
+                />
+              </Line>
+            </LineChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="flex items-center justify-center h-[260px] text-gray-400 text-sm">
+            Sin datos de evolución para los filtros seleccionados
+          </div>
+        )}
       </ChartContainer>
 
       {/* Occupation Distribution con Insights - ocultar si se filtró por 1 sola ocupación */}

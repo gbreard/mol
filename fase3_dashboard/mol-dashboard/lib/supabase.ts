@@ -502,6 +502,63 @@ export async function getTotalOfertas(filters?: DashboardFilters): Promise<numbe
   return count || 0
 }
 
+// Evolución semanal de ofertas (últimas N semanas)
+export interface EvolucionSemanal {
+  label: string;       // "27/01 - 02/02"
+  ofertas: number;
+  weekStart: string;   // ISO date for sorting
+}
+
+export async function getEvolucionSemanal(semanas: number = 5, filters?: DashboardFilters): Promise<EvolucionSemanal[]> {
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  const data = await fetchAllPaginated<{ fecha_publicacion: string }>(
+    client,
+    TABLA_OFERTAS,
+    'fecha_publicacion',
+    (query) => {
+      query = applyFilters(query, filters)
+      return query.not('fecha_publicacion', 'is', null)
+    }
+  )
+
+  // Agrupar por semana (lunes a domingo)
+  const weekCounts: Record<string, number> = {}
+
+  data.forEach(o => {
+    if (!o.fecha_publicacion) return
+    const date = new Date(o.fecha_publicacion)
+    // Obtener lunes de esa semana
+    const day = date.getDay()
+    const diff = day === 0 ? -6 : 1 - day  // lunes = 1
+    const monday = new Date(date)
+    monday.setDate(date.getDate() + diff)
+    const key = monday.toISOString().split('T')[0]
+    weekCounts[key] = (weekCounts[key] || 0) + 1
+  })
+
+  // Ordenar por fecha y tomar últimas N semanas
+  const sorted = Object.entries(weekCounts)
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .slice(-semanas)
+
+  // Formatear labels "dd/MM - dd/MM"
+  return sorted.map(([mondayStr, count]) => {
+    const monday = new Date(mondayStr + 'T00:00:00')
+    const sunday = new Date(monday)
+    sunday.setDate(monday.getDate() + 6)
+
+    const fmt = (d: Date) => `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`
+
+    return {
+      label: `${fmt(monday)} - ${fmt(sunday)}`,
+      ofertas: count,
+      weekStart: mondayStr
+    }
+  })
+}
+
 // Localidades distintas para una provincia dada
 export async function getLocalidadesByProvincia(provinciaKey: string): Promise<string[]> {
   const client = getSupabaseClient()
