@@ -1103,6 +1103,11 @@ if __name__ == '__main__':
          "Analista de marketing y comunicación (marcom)"),
         ("Data Science (Python IA) - Remoto - 1731",
          "Data science (python IA)"),
+        # v2.8.1: preposición "en" + ubicación, sucursal pegada con guión
+        ("Asesor Técnico Comercial-Sucursal en CABA-.",
+         "Asesor técnico comercial"),
+        ("Cocinero/a de Cocina China para Hotel 5 Estrellas ubicado en Capital Federal (CABA).",
+         "Cocinero/a de cocina china"),
     ]
 
     ok = 0

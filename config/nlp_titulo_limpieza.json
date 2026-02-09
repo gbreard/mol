@@ -125,6 +125,11 @@
         "patron": "\\s+[-–]\\s+Sucursal\\s+[A-Z][a-záéíóú]+(?:\\s+[A-Z][a-záéíóú]+)?$",
         "ejemplo": "- Sucursal Centro",
         "_nota": "v2.8: guión OBLIGATORIO + máx 2 palabras"
+      },
+      {
+        "patron": "[-–][Ss]ucursal\\s+(?:en\\s+)?[A-Za-záéíóúÁÉÍÓÚ]+(?:\\s+[A-Za-záéíóúÁÉÍÓÚ]+){0,2}[-.]*$",
+        "ejemplo": "Comercial-Sucursal en CABA-.",
+        "_nota": "v2.8.1: guión pegado + Sucursal en ubicación"
       }
     ]
   },
@@ -813,6 +818,16 @@
         "patron": "\\s+en\\s+(rosario|santa\\s+fe|neuqu[eé]n|r[ií]o\\s+negro)[/](santa\\s+fe|r[ií]o\\s+negro)$",
         "ejemplo": "Vendedor en rosario/santa fe",
         "_nota": "v2.6: en + ubicaciones con barra"
+      },
+      {
+        "patron": "\\s+en\\s+(CABA|Caba|caba|Capital\\s+Federal|capital\\s+federal|GBA|gba|Bs\\.?\\s*As\\.?|Buenos\\s+Aires|buenos\\s+aires)\\s*\\.?$",
+        "ejemplo": "Asesor Comercial en CABA",
+        "_nota": "v2.8.1: preposición en + ubicación mayor"
+      },
+      {
+        "patron": "\\s+ubicad[oa]\\s+en\\s+[A-Za-záéíóúÁÉÍÓÚ]+(?:\\s+[A-Za-záéíóúÁÉÍÓÚ]+){0,3}(?:\\s*\\([^)]+\\))?\\s*\\.?$",
+        "ejemplo": "Cocinero ubicado en Capital Federal (CABA)",
+        "_nota": "v2.8.1: ubicado/a en [ciudad] (detalle)"
       }
     ]
   },
