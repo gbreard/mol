@@ -121,7 +121,7 @@ class AutoValidator:
                 continue
             for patron_info in config[seccion].get('patrones', []):
                 patron = patron_info.get('patron')
-                if patron:
+                if patron and not patron_info.get('_skip_validation', False):
                     try:
                         compiled = re.compile(patron, re.IGNORECASE)
                         patrones.append({

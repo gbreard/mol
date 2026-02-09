@@ -1,7 +1,8 @@
 {
-  "_version": "2.8.0",
+  "_version": "2.8.1",
   "_descripcion": "Patrones para limpiar titulos de ofertas - eliminar ruido geografico/empresarial/administrativo",
-  "_fecha": "2026-02-08",
+  "_fecha": "2026-02-09",
+  "_cambios_v281": "Second pass location/zona/modalidad cleanup, zona de trabajo, // modalidad, multi-pipe cleanup, validator false positive fix",
   "_cambios_v280": "Fix sobre-limpieza: Sucursal sin guion, zonas greedy, contexto_empresarial_sin_guion greedy, parentesis 15+ chars. Nuevas localidades, pipes inicio, refs, puntuación, guión inicio",
   "_cambios_v266": "Fix: para importante cadena gastronomica al final sin ubicación",
   "_cambios_v265": "Guiones colgados al final (Pacheco-, Neuquén -)",
@@ -280,6 +281,11 @@
     "_descripcion": "Patrones de ubicacion al final - ORDEN IMPORTANTE: especificos primero",
     "_nota_v25": "Agregado Caba/CABA y Zona X como bloque (debe ir ANTES de Zona X solo)",
     "patrones": [
+      {
+        "patron": "\\s+zona\\s+de\\s+trabajo\\s*$",
+        "ejemplo": "Técnico zona de trabajo",
+        "_nota": "v2.8.1: zona de trabajo residual (sin ciudad)"
+      },
       {
         "patron": "\\s+(CABA|Caba|GBA|Gba)\\s+[Yy]\\s+Zona\\s+(Norte|Sur|Oeste|Este)$",
         "ejemplo": "Vendedoras Caba y Zona Norte",
@@ -671,7 +677,9 @@
       {
         "patron": "\\s*\\([A-Z][a-záéíóú]+(?:\\s+[A-Z]?[a-záéíóú]+)*\\)$",
         "ejemplo": "(Florida Oeste)",
-        "razon": "ubicacion en parentesis"
+        "razon": "ubicacion en parentesis",
+        "_skip_validation": true,
+        "_nota": "v2.8.1: skip validation - too generic, catches valid content like (Marcom), (Python IA)"
       }
     ]
   },
@@ -991,6 +999,11 @@
     "_nota_v25": "Agregado // Esquema de trabajo + ubicación",
     "patrones": [
       {
+        "patron": "\\s*//\\s*(Remoto|REMOTO|remoto|H[ií]brido|HIBRIDO|HÍBRIDO|Presencial|PRESENCIAL)\\s*$",
+        "ejemplo": "// Remoto",
+        "_nota": "v2.8.1: doble barra + modalidad sola al final"
+      },
+      {
         "patron": "\\s*//\\s*[Ee]squema\\s+de\\s+trabajo\\s+[A-Za-záéíóúÁÉÍÓÚ]+\\s*//.*$",
         "ejemplo": "// Esquema de trabajo Híbrido // Buenos Aires",
         "_nota": "v2.5: doble barra + esquema + ubicación"
@@ -1227,6 +1240,11 @@
     "_descripcion": "Pipes y contenido entre pipes al final",
     "_nota": "v2.5.1 - para limpiar formatos como TITULO | EVENTUAL | CABA",
     "patrones": [
+      {
+        "patron": "\\s*\\|\\s*(?:eventual|multinacional|temporario|confidencial|PYME|startup|importante)(?:\\s*\\|.*)?$",
+        "ejemplo": "| eventual | multinacional | gestión de activos",
+        "_nota": "v2.8.1: pipe + keyword context (chain of pipes)"
+      },
       {
         "patron": "\\s*\\|\\s*(EVENTUAL|CABA|GBA|REMOTO|PRESENCIAL|HIBRIDO)\\s*\\|?\\s*$",
         "ejemplo": "| EVENTUAL |",

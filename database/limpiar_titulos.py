@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-limpiar_titulos.py v2.8.0
+limpiar_titulos.py v2.8.1
 ========================
 Limpia titulos de ofertas eliminando ruido empresarial/geografico.
 Lee patrones desde config/nlp_titulo_limpieza.json
 
+v2.8.1 (2026-02-09): Second pass cleanup, zona de trabajo, // modalidad, validator false positives
 v2.8.0 (2026-02-08): Fix sobre-limpieza + sub-limpieza + cosméticos
 - Fix regex contexto_empresarial: \b word boundary + \s+-\s+ (evita DI-Vendedor)
 - Fix Sucursal sin guión obligatorio (destruía "Jefe De Sucursal para Santiago")
@@ -316,6 +317,54 @@ def limpiar_titulo(titulo: str, config: Dict[str, Any] = None) -> str:
             titulo = re.sub(patron, reemplazo, titulo, flags=re.IGNORECASE)
 
     # 8. Limpieza final
+    for patron_info in config.get("limpieza_final", {}).get("patrones", []):
+        patron = patron_info.get("patron", "")
+        reemplazo = patron_info.get("reemplazo", "")
+        if patron:
+            titulo = re.sub(patron, reemplazo, titulo)
+
+    titulo = titulo.strip()
+
+    # 8b. [v2.8.1] Second pass: re-run location/zona/modalidad cleanup
+    # Steps 2-3b run BEFORE contexto_empresarial (step 6) which exposes trailing locations
+    # limpieza_final (step 8) removes trailing dashes that blocked ubicacion_guion_extendido
+    # Result: zona/city/modalidad patterns left at the end that were missed in first pass
+
+    # Re-run modalidad_final (was step 2)
+    if modalidades:
+        titulo = re.sub(rf'\s*\(?\s*({modalidad_pattern})\s*\)?$', '', titulo, flags=re.IGNORECASE)
+
+    # Re-run zonas_ubicaciones (was step 3)
+    for patron_info in config.get("zonas_ubicaciones", {}).get("patrones", []):
+        patron = patron_info.get("patron", "")
+        if patron:
+            titulo = re.sub(patron, '', titulo, flags=re.IGNORECASE)
+
+    # Re-run localidades_final (was step 3b)
+    for localidad in localidades:
+        titulo = re.sub(rf'\s*[-–—]\s*{re.escape(localidad)}$', '', titulo, flags=re.IGNORECASE)
+
+    # Re-run ubicacion_sin_guion_final (was step 4c)
+    for patron_info in config.get("ubicacion_sin_guion_final", {}).get("patrones", []):
+        patron = patron_info.get("patron", "")
+        if patron:
+            titulo = re.sub(patron, '', titulo, flags=re.IGNORECASE)
+
+    # Re-run ubicacion_guion_extendido (was step 6f)
+    for patron_info in config.get("ubicacion_guion_extendido", {}).get("patrones", []):
+        patron = patron_info.get("patron", "")
+        if patron:
+            titulo = re.sub(patron, '', titulo, flags=re.IGNORECASE)
+
+    # Re-run contexto_empresarial (was step 6) — exposed after GBA/localidades removed in second pass
+    for palabra in palabras_contexto:
+        titulo = re.sub(rf'\s+[-–—]\s+[^-]*\b{re.escape(palabra)}\b[^-]*$', '', titulo, flags=re.IGNORECASE)
+
+    # Re-run preposiciones sueltas (was step 6b)
+    if preposiciones:
+        titulo = re.sub(rf'\s+({prep_pattern})\s*$', '', titulo, flags=re.IGNORECASE)
+
+    # Re-run limpieza_final for trailing junk from second pass
     for patron_info in config.get("limpieza_final", {}).get("patrones", []):
         patron = patron_info.get("patron", "")
         reemplazo = patron_info.get("reemplazo", "")
@@ -923,7 +972,7 @@ def regenerar_titulo_limpio(ids=None, dry_run=True):
 if __name__ == '__main__':
     import argparse
 
-    parser = argparse.ArgumentParser(description='Limpieza de títulos v2.8')
+    parser = argparse.ArgumentParser(description='Limpieza de títulos v2.8.1')
     parser.add_argument('--regenerar', action='store_true', help='Regenerar titulo_limpio para ofertas existentes')
     parser.add_argument('--ids', type=str, help='IDs específicos (comma-separated)')
     parser.add_argument('--apply', action='store_true', help='Aplicar cambios (sin esto es dry_run)')
@@ -1019,6 +1068,41 @@ if __name__ == '__main__':
         # v2.8: NO debe romper (regresión)
         ("Gerente de Operaciones - Gastronomia corporativa",
          "Gerente de operaciones"),
+        # v2.8.1: Second pass — zona exposed after contexto_empresarial
+        ("Encargado de Local Zona CABA - Grupo Gastronómico",
+         "Encargado de local"),
+        ("Cocinero Zona Caba - Importante Grupo Gastronómico",
+         "Cocinero"),
+        ("Operario de Producción - GBA SUR - Spegazzini",
+         "Operario de producción"),
+        ("Vendedor paquetes turísticos ZONA SUR (excluyente)",
+         "Vendedor paquetes turísticos"),
+        # v2.8.1: zona de trabajo residual
+        ("Gestor/a de Cobranzas Telefónicas zona de trabajo Microcentro",
+         "Gestor/a de cobranzas telefónicas"),
+        # v2.8.1: - city exposed after trailing dash removed
+        ("Ayudante de Cocina - Ezeiza-",
+         "Ayudante de cocina"),
+        ("Peón de Cocina - Córdoba -",
+         "Peón de cocina"),
+        ("Peón de Cocina - zona Balcarce-",
+         "Peón de cocina"),
+        # v2.8.1: modalidad exposed after parenthesis removed
+        ("Vendedor/a de Salón de Tecnología Full Time (Buenos Aires)",
+         "Vendedor/a de salón de tecnología"),
+        # v2.8.1: // modalidad
+        ("BACKEND Engineering Manager // Plataforma de Streaming // REMOTO para residentes en BUENOS AIRES",
+         "Backend engineering manager // plataforma de streaming"),
+        # v2.8.1: multi-pipe context
+        ("BU705 ANALISTA CONTABLE JR | EVENTUAL | MULTINACIONAL | GESTIÓN DE ACTIVOS - GBA SUR - BURZACO",
+         "Analista contable JR"),
+        # v2.8.1: valid parentheses NOT removed (false positives)
+        ("Operador de Contact Center (Representante Comercial Telefónico) Turno tarde",
+         "Operador de contact center (representante comercial telefónico)"),
+        ("Analista de Marketing y Comunicación (Marcom) - Part Time",
+         "Analista de marketing y comunicación (marcom)"),
+        ("Data Science (Python IA) - Remoto - 1731",
+         "Data science (python IA)"),
     ]
 
     ok = 0
