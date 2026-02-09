@@ -112,6 +112,49 @@ function applyFilters(query: any, filters?: DashboardFilters) {
     query = query.in('isco_code', filters.ocupacionesSeleccionadas)
   }
 
+  // Filtro por nivel educativo
+  if (filters.nivelEducativo) {
+    query = query.eq('nivel_educativo', filters.nivelEducativo)
+  }
+
+  // Filtro por experiencia (rangos)
+  if (filters.experiencia) {
+    switch (filters.experiencia) {
+      case 'sin_experiencia':
+        query = query.eq('experiencia_min_anios', 0)
+        break
+      case '1_2_anios':
+        query = query.gte('experiencia_min_anios', 1).lte('experiencia_min_anios', 2)
+        break
+      case '3_5_anios':
+        query = query.gte('experiencia_min_anios', 3).lte('experiencia_min_anios', 5)
+        break
+      case '5_mas':
+        query = query.gt('experiencia_min_anios', 5)
+        break
+    }
+  }
+
+  // Filtro por seniority
+  if (filters.seniority) {
+    query = query.eq('nivel_seniority', filters.seniority)
+  }
+
+  // Filtro por modalidad
+  if (filters.modalidad) {
+    query = query.eq('modalidad', filters.modalidad)
+  }
+
+  // Filtro por jornada
+  if (filters.jornada) {
+    const jornadaMap: Record<string, string> = {
+      'full_time': 'full-time',
+      'part_time': 'part-time',
+      'por_horas': 'por horas'
+    }
+    query = query.eq('jornada_laboral', jornadaMap[filters.jornada] || filters.jornada)
+  }
+
   return query
 }
 
@@ -276,24 +319,12 @@ export async function getOfertasPorProvincia(filters?: DashboardFilters) {
   const client = getSupabaseClient()
   if (!client) return []
 
-  // Usar paginación para obtener TODOS los datos
-  const applyDateFilters = (query: any) => {
-    if (filters?.fechaDesde) {
-      const fechaDesde = filters.fechaDesde.toISOString().split('T')[0]
-      query = query.gte('fecha_publicacion', fechaDesde)
-    }
-    if (filters?.fechaHasta) {
-      const fechaHasta = filters.fechaHasta.toISOString().split('T')[0]
-      query = query.lte('fecha_publicacion', fechaHasta)
-    }
-    return query
-  }
-
+  // Usar paginación con TODOS los filtros aplicados
   const data = await fetchAllPaginated<{ provincia: string }>(
     client,
     TABLA_OFERTAS,
     'provincia',
-    applyDateFilters
+    (query) => applyFilters(query, filters)
   )
 
   const counts: Record<string, number> = {}
@@ -509,7 +540,7 @@ export interface EvolucionSemanal {
   weekStart: string;   // ISO date for sorting
 }
 
-export async function getEvolucionSemanal(semanas: number = 5, filters?: DashboardFilters): Promise<EvolucionSemanal[]> {
+export async function getEvolucionSemanal(filters?: DashboardFilters): Promise<EvolucionSemanal[]> {
   const client = getSupabaseClient()
   if (!client) return []
 
@@ -538,10 +569,9 @@ export async function getEvolucionSemanal(semanas: number = 5, filters?: Dashboa
     weekCounts[key] = (weekCounts[key] || 0) + 1
   })
 
-  // Ordenar por fecha y tomar últimas N semanas
+  // Ordenar por fecha — TODAS las semanas (sin limit)
   const sorted = Object.entries(weekCounts)
     .sort((a, b) => a[0].localeCompare(b[0]))
-    .slice(-semanas)
 
   // Formatear labels "dd/MM - dd/MM"
   return sorted.map(([mondayStr, count]) => {

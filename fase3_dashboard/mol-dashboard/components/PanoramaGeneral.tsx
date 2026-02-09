@@ -5,7 +5,7 @@ import { KPICard } from "@/components/KPICard";
 import { ChartContainer } from "@/components/ChartContainer";
 import { FileText, Briefcase, Lightbulb, Sparkles, TrendingUp, AlertCircle, Award, Loader2 } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList, Label } from "recharts";
-import { getInsightsRPC, getTopOcupaciones, getEvolucionSemanal, getOfertasPorLocalidad, InsightsData, EvolucionSemanal } from "@/lib/supabase";
+import { getKPIs, getTopOcupaciones, getEvolucionSemanal, getOfertasPorLocalidad, getOfertasPorProvincia, EvolucionSemanal } from "@/lib/supabase";
 import { DashboardFilters } from "@/lib/types";
 import { downloadFormattedExcel } from "@/components/ExportButton";
 
@@ -82,25 +82,17 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
   const [ocupacionesLimit, setOcupacionesLimit] = useState(10);
 
   // Carga principal: KPIs + jurisdicción + evolución semanal
+  // Usa getKPIs (applyFilters) en vez de RPC para respetar TODOS los filtros
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
-        const [insights, evolucion] = await Promise.all([
-          getInsightsRPC(filters),
-          getEvolucionSemanal(5, filters)
+        const [kpisData, evolucion] = await Promise.all([
+          getKPIs(filters),
+          getEvolucionSemanal(filters)
         ]);
 
-        if (insights) {
-          setKpis({
-            totalOfertas: insights.kpis.total_ofertas,
-            ocupacionesDistintas: insights.kpis.ocupaciones_distintas,
-            empresasActivas: insights.kpis.empresas_activas,
-            provincias: insights.kpis.provincias
-          });
-        } else {
-          setKpis({ totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 });
-        }
+        setKpis(kpisData);
 
         // Jurisdicción: por localidad si hay provincia, por provincia si no
         if (filters.provincia && !filters.localidad) {
@@ -110,12 +102,11 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
             value: l.cantidad
           })));
         } else if (!filters.provincia) {
-          setJurisdictionData(
-            insights?.provincias.slice(0, 10).map(p => ({
-              name: p.provincia,
-              value: p.total
-            })) || []
-          );
+          const provincias = await getOfertasPorProvincia(filters);
+          setJurisdictionData(provincias.slice(0, 10).map(p => ({
+            name: p.jurisdiccion,
+            value: p.cantidad
+          })));
         } else {
           // Localidad seleccionada → no se muestra chart
           setJurisdictionData([]);
@@ -325,75 +316,85 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
       </div>
 
       {/* Evolution Chart con Insights */}
-      <ChartContainer
-        title="Evolución de las ofertas laborales"
-        subtitle="Últimas 5 semanas"
-        onDownload={handleDownloadEvolucion}
-        insights={evolutionData.length >= 2 ? (
-          <InsightList>
-            {(() => {
-              const last = evolutionData[evolutionData.length - 1]?.ofertas || 0;
-              const prev = evolutionData[evolutionData.length - 2]?.ofertas || 0;
-              const diff = prev > 0 ? Math.round(((last - prev) / prev) * 100) : 0;
-              const total = evolutionData.reduce((s, w) => s + w.ofertas, 0);
-              return (
-                <>
-                  <InsightItem
-                    text={`Última semana: ${last.toLocaleString()} ofertas (${diff >= 0 ? '+' : ''}${diff}% vs semana anterior)`}
-                    highlight
+      {(() => {
+        const showLabels = evolutionData.length <= 12;
+        const total = evolutionData.reduce((s, w) => s + w.ofertas, 0);
+        return (
+          <ChartContainer
+            title="Evolución de las ofertas laborales"
+            subtitle={`${evolutionData.length} semanas — ${total.toLocaleString()} ofertas`}
+            onDownload={handleDownloadEvolucion}
+            insights={evolutionData.length >= 2 ? (
+              <InsightList>
+                {(() => {
+                  const last = evolutionData[evolutionData.length - 1]?.ofertas || 0;
+                  const prev = evolutionData[evolutionData.length - 2]?.ofertas || 0;
+                  const diff = prev > 0 ? Math.round(((last - prev) / prev) * 100) : 0;
+                  return (
+                    <>
+                      <InsightItem
+                        text={`Última semana: ${last.toLocaleString()} ofertas (${diff >= 0 ? '+' : ''}${diff}% vs semana anterior)`}
+                        highlight
+                      />
+                      <InsightItem
+                        text={`Total período: ${total.toLocaleString()} ofertas`}
+                      />
+                      <InsightItem
+                        text={`Promedio semanal: ${Math.round(total / evolutionData.length).toLocaleString()} ofertas`}
+                      />
+                    </>
+                  );
+                })()}
+              </InsightList>
+            ) : undefined}
+          >
+            {evolutionData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={260}>
+                <LineChart data={evolutionData} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
+                  <defs>
+                    <linearGradient id="colorOfertas" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.15}/>
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis
+                    dataKey="label"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#6b7280', fontSize: showLabels ? 11 : 9, fontWeight: 600 }}
+                    interval={showLabels ? 0 : Math.max(1, Math.floor(evolutionData.length / 10))}
+                    angle={evolutionData.length > 8 ? -45 : 0}
+                    textAnchor={evolutionData.length > 8 ? "end" : "middle"}
                   />
-                  <InsightItem
-                    text={`Total en las últimas 5 semanas: ${total.toLocaleString()} ofertas`}
-                  />
-                  <InsightItem
-                    text={`Promedio semanal: ${Math.round(total / evolutionData.length).toLocaleString()} ofertas`}
-                  />
-                </>
-              );
-            })()}
-          </InsightList>
-        ) : undefined}
-      >
-        {evolutionData.length > 0 ? (
-          <ResponsiveContainer width="100%" height={260}>
-            <LineChart data={evolutionData} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
-              <defs>
-                <linearGradient id="colorOfertas" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.15}/>
-                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <XAxis
-                dataKey="label"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: '#6b7280', fontSize: 11, fontWeight: 600 }}
-              />
-              <Tooltip content={<CustomTooltip />} />
-              <Line
-                type="monotone"
-                dataKey="ofertas"
-                stroke="#3b82f6"
-                strokeWidth={4}
-                dot={{ fill: '#fff', stroke: '#3b82f6', strokeWidth: 3, r: 6 }}
-                activeDot={{ r: 8, fill: '#3b82f6' }}
-                fill="url(#colorOfertas)"
-              >
-                <LabelList
-                  dataKey="ofertas"
-                  position="top"
-                  style={{ fill: '#1e40af', fontSize: 13, fontWeight: 700 }}
-                  formatter={(value: number) => value.toLocaleString()}
-                />
-              </Line>
-            </LineChart>
-          </ResponsiveContainer>
-        ) : (
-          <div className="flex items-center justify-center h-[260px] text-gray-400 text-sm">
-            Sin datos de evolución para los filtros seleccionados
-          </div>
-        )}
-      </ChartContainer>
+                  <Tooltip content={<CustomTooltip />} />
+                  <Line
+                    type="monotone"
+                    dataKey="ofertas"
+                    stroke="#3b82f6"
+                    strokeWidth={showLabels ? 4 : 2}
+                    dot={showLabels ? { fill: '#fff', stroke: '#3b82f6', strokeWidth: 3, r: 6 } : { r: 3, fill: '#3b82f6' }}
+                    activeDot={{ r: 8, fill: '#3b82f6' }}
+                    fill="url(#colorOfertas)"
+                  >
+                    {showLabels && (
+                      <LabelList
+                        dataKey="ofertas"
+                        position="top"
+                        style={{ fill: '#1e40af', fontSize: 13, fontWeight: 700 }}
+                        formatter={(value: number) => value.toLocaleString()}
+                      />
+                    )}
+                  </Line>
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-[260px] text-gray-400 text-sm">
+                Sin datos de evolución para los filtros seleccionados
+              </div>
+            )}
+          </ChartContainer>
+        );
+      })()}
 
       {/* Occupation Distribution con Insights - ocultar si se filtró por 1 sola ocupación */}
       {filters.ocupacionesSeleccionadas.length !== 1 && (() => {
