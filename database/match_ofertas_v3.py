@@ -194,6 +194,9 @@ class MatcherV3:
         # v3.3.0: Cargar diccionario de sinonimos argentinos
         self._load_sinonimos_argentinos()
 
+        # v3.4.3: Cargar mapeo ISCO -> label ESCO preferido
+        self._load_isco_preferred_labels()
+
     def _load_sinonimos_argentinos(self):
         """Carga diccionario de sinonimos argentinos -> ESCO."""
         base_path = Path(__file__).parent
@@ -208,6 +211,21 @@ class MatcherV3:
             self.sinonimos_arg = {}
             if self.verbose:
                 print(f"[V3.3] WARN: No se pudo cargar sinonimos_argentinos: {e}")
+
+    def _load_isco_preferred_labels(self):
+        """Carga mapeo ISCO -> label ESCO preferido desde JSON."""
+        base_path = Path(__file__).parent
+        config_path = base_path.parent / "config" / "isco_preferred_labels.json"
+        try:
+            with open(config_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            self.isco_preferred_labels = data.get("mapeo", {})
+            if self.verbose:
+                print(f"[V3.4.3] Cargado mapeo ISCO preferred labels: {len(self.isco_preferred_labels)} ISCOs")
+        except Exception as e:
+            self.isco_preferred_labels = {}
+            if self.verbose:
+                print(f"[V3.4.3] WARN: No se pudo cargar isco_preferred_labels: {e}")
 
     def _match_by_argentino_dict(self, oferta_nlp: Dict) -> Optional[Dict]:
         """
@@ -250,6 +268,10 @@ class MatcherV3:
                         keywords = patron.split("|")
                         if any(kw in titulo or kw in sector for kw in keywords):
                             isco = isco_ctx
+                            # v3.4.3: Si el contexto cambió el ISCO, invalidar esco_label del padre
+                            # para que se resuelva contra el nuevo ISCO
+                            if esco_label and isco != config.get("isco_primario"):
+                                esco_label = ""
                             if self.verbose:
                                 print(f"[V3.3] Dict argentino: '{termino}' + contexto '{patron}' -> ISCO {isco}")
                             break
@@ -283,7 +305,17 @@ class MatcherV3:
         return None
 
     def _get_esco_label_for_isco(self, isco_code: str) -> str:
-        """Obtiene el label ESCO para un codigo ISCO."""
+        """Obtiene label ESCO para un código ISCO.
+
+        Prioridad: mapeo explícito (isco_preferred_labels.json) > DB fallback.
+        El mapeo explícito evita el problema de LIMIT 1 sin ORDER BY
+        que asignaba labels arbitrarios como 'vendedor de piezas de repuesto'.
+        """
+        # 1. Mapeo explícito (autoritativo)
+        if isco_code in self.isco_preferred_labels:
+            return self.isco_preferred_labels[isco_code]
+
+        # 2. Fallback a BD (para ISCOs no mapeados)
         cur = self.conn.execute('''
             SELECT preferred_label_es FROM esco_occupations
             WHERE isco_code LIKE ? LIMIT 1

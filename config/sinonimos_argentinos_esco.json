@@ -99,8 +99,9 @@
 
     "vendedor": {
       "isco_primario": "5223",
+      "esco_label": "vendedor/vendedora",
       "variantes": ["vendedor", "vendedora", "sales"],
-      "nota": "IMPORTANTE: 'asesor comercial' y 'ejecutivo comercial' se manejan via reglas de negocio (R40)",
+      "nota": "IMPORTANTE: esco_label genérico para evitar que LIMIT 1 asigne 'piezas de repuesto'. Contextos derivan a ESCO específicos. 'asesor comercial' y 'ejecutivo comercial' se manejan via reglas de negocio (R40)",
       "contextos": {
         "mostrador|tienda|local": "5223",
         "campo|exterior|viajante": "5243",
@@ -112,6 +113,7 @@
 
     "administrativo": {
       "isco_primario": "4110",
+      "esco_label": "empleado de oficina/empleada de oficina",
       "variantes": ["administrativo", "administrativa", "admin", "asistente administrativo"],
       "contextos": {
         "contable|facturacion": "4311",
