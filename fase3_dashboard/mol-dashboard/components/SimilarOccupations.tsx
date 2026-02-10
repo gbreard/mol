@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ArrowRight, Users, Briefcase, ExternalLink, ChevronDown } from 'lucide-react';
 import { SimilarOccupation } from '@/lib/types';
+import { capitalize } from '@/lib/utils';
 
 interface SimilarOccupationsProps {
   occupations: SimilarOccupation[];
@@ -97,7 +98,7 @@ export default function SimilarOccupations({
                         {index + 1}.
                       </span>
                       <span className="font-medium text-gray-900 truncate">
-                        {occ.label}
+                        {capitalize(occ.label)}
                       </span>
                       {/* Badge de ofertas */}
                       {hasOfertasData && ofertasCount > 0 && (
@@ -202,7 +203,7 @@ export default function SimilarOccupations({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="font-medium text-gray-900 truncate">
-                          {occ.label}
+                          {capitalize(occ.label)}
                         </span>
                         <span className="inline-flex items-center gap-1 bg-green-200 text-green-800 text-xs px-2 py-0.5 rounded-full font-semibold">
                           <Briefcase className="w-3 h-3" />

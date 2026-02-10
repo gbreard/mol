@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Search, Loader2, GitCompare, ChevronDown, X, Check, AlertCircle, Star, Circle, Briefcase, ExternalLink } from 'lucide-react';
 import { OccupationDetail, OccupationFullDetailIndex, SkillItem } from '@/lib/types';
 import { getOfertasCountByIsco } from '@/lib/supabase';
+import { capitalize } from '@/lib/utils';
 import OfertasOcupacionModal from './OfertasOcupacionModal';
 
 // Helper to normalize ISCO code (remove 'C' prefix if present)
@@ -205,7 +206,7 @@ export default function OccupationCompare({
                       Ofertas laborales activas en esta ocupacion
                     </p>
                     <p className="text-sm text-green-600">
-                      Hay {ofertasCount} {ofertasCount === 1 ? 'oferta activa' : 'ofertas activas'} para "{occB.label}"
+                      Hay {ofertasCount} {ofertasCount === 1 ? 'oferta activa' : 'ofertas activas'} para "{capitalize(occB.label)}"
                     </p>
                   </div>
                 </div>
@@ -229,7 +230,7 @@ export default function OccupationCompare({
           {/* Compatibility Score */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Analisis de Transicion: {occA.label} → {occB.label}
+              Analisis de Transicion: {capitalize(occA.label)} → {capitalize(occB.label)}
             </h3>
 
             <div className="flex items-center gap-6">
@@ -253,7 +254,7 @@ export default function OccupationCompare({
                   />
                 </div>
                 <p className="text-sm text-gray-500 mt-2">
-                  Basado en skills esenciales de {occB.label} que ya tenes
+                  Basado en skills esenciales de {capitalize(occB.label)} que ya tenes
                 </p>
               </div>
 
@@ -475,7 +476,7 @@ function OccupationSelectorCard({
         <div className="bg-white rounded-lg p-4 border border-gray-200">
           <div className="flex items-start justify-between">
             <div>
-              <div className={`font-semibold ${colors.text}`}>{selectedInfo.label}</div>
+              <div className={`font-semibold ${colors.text}`}>{capitalize(selectedInfo.label)}</div>
               <div className="text-sm text-gray-500">ISCO: {selectedInfo.isco}</div>
               <div className="text-xs text-gray-400 mt-1">
                 {selectedOcc.counts.skills_essential} esenciales / {selectedOcc.counts.skills_optional} opcionales
@@ -527,7 +528,7 @@ function OccupationSelectorCard({
                     }}
                     className="px-4 py-2 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0"
                   >
-                    <div className="font-medium text-sm text-gray-900">{occ.label}</div>
+                    <div className="font-medium text-sm text-gray-900">{capitalize(occ.label)}</div>
                     <div className="text-xs text-gray-500">ISCO: {occ.isco}</div>
                   </div>
                 ))}
@@ -594,7 +595,7 @@ function SkillsListCompact({
               }`}
             >
               {icon}
-              <span className="text-gray-800">{skill.label}</span>
+              <span className="text-gray-800">{capitalize(skill.label)}</span>
             </li>
           ))}
         </ul>

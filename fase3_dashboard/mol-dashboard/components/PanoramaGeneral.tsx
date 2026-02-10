@@ -8,6 +8,7 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { getKPIs, getTopOcupaciones, getEvolucionSemanal, getOfertasPorLocalidad, getOfertasPorProvincia, EvolucionSemanal } from "@/lib/supabase";
 import { DashboardFilters } from "@/lib/types";
 import { downloadFormattedExcel } from "@/components/ExportButton";
+import { capitalize } from "@/lib/utils";
 
 interface PanoramaGeneralProps {
   filters: DashboardFilters;
@@ -130,7 +131,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
       try {
         const limit = ocupacionesLimit === 0 ? 9999 : ocupacionesLimit;
         const ocupaciones = await getTopOcupaciones(limit, filters);
-        setOccupationData(ocupaciones.map(o => ({ name: o.ocupacion, value: o.cantidad })));
+        setOccupationData(ocupaciones.map(o => ({ name: capitalize(o.ocupacion), value: o.cantidad })));
       } catch (err) {
         console.error('Error cargando ocupaciones:', err);
       }
@@ -405,7 +406,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
 
         return (
           <ChartContainer
-            title="Distribución de las ofertas por ocupación"
+            title="Ofertas por ocupación"
             subtitle={`${currentLabel} — ${chartItemCount} ocupaciones`}
             onDownload={handleDownloadOcupaciones}
             headerExtra={

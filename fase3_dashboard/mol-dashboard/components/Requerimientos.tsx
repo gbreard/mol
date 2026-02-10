@@ -6,6 +6,7 @@ import { Loader2, AlertCircle, GraduationCap, Clock, TrendingUp, MapPin, Users, 
 import { downloadFormattedExcel } from "@/components/ExportButton";
 import { getDistribucionRequerimientos, getSkillsPorCategoriaL1, getSkillsDigitales, getTopSkillsConCategoria, SkillsFilters } from "@/lib/supabase";
 import { DashboardFilters } from "@/lib/types";
+import { capitalize } from "@/lib/utils";
 
 interface RequerimientosProps {
   filters: DashboardFilters;
@@ -136,7 +137,7 @@ function StackedBar({
               className="w-2 h-2 rounded-sm flex-shrink-0"
               style={{ backgroundColor: getColor(item.name) }}
             />
-            <span className="text-gray-600">{item.name}</span>
+            <span className="text-gray-600">{capitalize(item.name)}</span>
             <span className="text-gray-400">({item.porcentaje}%)</span>
           </div>
         ))}
@@ -314,12 +315,12 @@ export function Requerimientos({ filters }: RequerimientosProps) {
 
   // Datos a mostrar según tipo de visualización y cantidad
   const datosGrafico = tipoVisualizacion === 'agregada'
-    ? categoriasL1.slice(0, cantidadCompetencias)
-    : topSkillsTotal.slice(0, cantidadCompetencias).map((skill, idx) => ({
+    ? categoriasL1.slice(0, cantidadCompetencias).map(c => ({ ...c, name: capitalize(c.name) }))
+    : topSkillsTotal.slice(0, cantidadCompetencias).map((skill) => ({
         code: skill.categoria,
-        name: skill.name,
+        name: capitalize(skill.name),
         value: skill.value,
-        porcentaje: 0, // No usado en específicas
+        porcentaje: 0,
         categoriaNombre: skill.categoriaNombre
       }));
 
@@ -408,11 +409,11 @@ export function Requerimientos({ filters }: RequerimientosProps) {
                       <div className="bg-white px-4 py-3 shadow-xl rounded-lg border border-gray-200 text-sm">
                         <div className="flex items-center gap-2 mb-1">
                           <div className="w-3 h-3 rounded" style={{ backgroundColor: color }} />
-                          <p className="font-semibold text-gray-800">{d.name}</p>
+                          <p className="font-semibold text-gray-800">{capitalize(d.name)}</p>
                         </div>
                         <p className="text-gray-600">{d.value} menciones</p>
                         {tipoVisualizacion === 'especifica' && d.categoriaNombre && (
-                          <p className="text-xs text-gray-400 mt-1">Categoría: {d.categoriaNombre}</p>
+                          <p className="text-xs text-gray-400 mt-1">Categoría: {capitalize(d.categoriaNombre)}</p>
                         )}
                         {tipoVisualizacion === 'agregada' && d.porcentaje > 0 && (
                           <p className="text-xs text-gray-400 mt-1">{d.porcentaje}% del total</p>

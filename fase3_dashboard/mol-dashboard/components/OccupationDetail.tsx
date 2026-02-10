@@ -7,6 +7,7 @@ import SimilarOccupations from './SimilarOccupations';
 import OfertasOcupacionModal from './OfertasOcupacionModal';
 import { OccupationDetail as OccupationDetailType, OccupationFullDetailIndex } from '@/lib/types';
 import { getOfertasCountByIsco } from '@/lib/supabase';
+import { capitalize } from '@/lib/utils';
 
 function normalizeIsco(isco: string): string {
   return isco.startsWith('C') ? isco.substring(1) : isco;
@@ -142,7 +143,7 @@ export default function OccupationDetail({
           // Selected state
           <div className="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <div className="flex-1">
-              <div className="font-semibold text-blue-900">{selectedInfo.label}</div>
+              <div className="font-semibold text-blue-900">{capitalize(selectedInfo.label)}</div>
               <div className="text-sm text-blue-700 flex items-center gap-2">
                 ISCO: {selectedInfo.isco}
                 {(() => {
@@ -224,7 +225,7 @@ export default function OccupationDetail({
                           onClick={() => handleSelect(occ.id)}
                           className="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0"
                         >
-                          <div className="font-medium text-gray-900">{occ.label}</div>
+                          <div className="font-medium text-gray-900">{capitalize(occ.label)}</div>
                           <div className="text-sm text-gray-500">ISCO: {occ.isco}</div>
                         </li>
                       ))

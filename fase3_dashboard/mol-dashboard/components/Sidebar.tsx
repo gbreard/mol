@@ -19,6 +19,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { getTotalOfertas, getOcupacionesTree, getLocalidadesByProvincia, OcupacionTreeNode } from "@/lib/supabase";
+import { capitalize } from "@/lib/utils";
 
 interface SidebarProps {
   filters: {
@@ -691,7 +692,7 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
                             ) : (
                               <ChevronRight className="w-4 h-4 transition-transform" />
                             )}
-                            <span className="font-medium flex-1 text-left text-xs leading-tight">{category.label}</span>
+                            <span className="font-medium flex-1 text-left text-xs leading-tight">{capitalize(category.label)}</span>
                             <Badge variant="outline" className="text-xs px-1.5 py-0 flex-shrink-0">
                               {category.count}
                             </Badge>
@@ -725,7 +726,7 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
                                   htmlFor={`ocup-${child.id}`}
                                   className="text-xs text-gray-600 cursor-pointer flex-1 leading-tight"
                                 >
-                                  {child.label}
+                                  {capitalize(child.label)}
                                 </Label>
                                 <span className="text-xs text-gray-400 flex-shrink-0">{child.count}</span>
                               </div>
