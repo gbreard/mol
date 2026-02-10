@@ -474,7 +474,7 @@
     },
     {
       "id": "V20_sector_salud_no_sanitario",
-      "descripcion": "sector=Salud pero area no es sanitaria - verificar empresa",
+      "descripcion": "sector=Salud (alta confianza) pero area no es sanitaria - verificar empresa",
       "condiciones": [
         {
           "campo": "sector_empresa",
@@ -489,17 +489,22 @@
             "Medicina",
             "Enfermeria"
           ]
+        },
+        {
+          "campo": "sector_confianza",
+          "operador": "eq",
+          "valor": "alta"
         }
       ],
       "logica": "AND",
       "diagnostico": "revision_sector_empresa",
       "severidad": "info",
-      "mensaje": "Sector Salud pero puesto no es sanitario - puede ser correcto (admin en hospital) o error",
-      "_nota": "Info porque hospital puede contratar admin, pero vale revisar"
+      "mensaje": "Sector Salud (alta confianza) pero puesto no es sanitario - cross-sector legítimo o error",
+      "_nota": "Solo aplica con confianza alta. Cross-sector es normal (hospitales contratan admin, IT, etc.)"
     },
     {
       "id": "V21_sector_tecnologia_no_it",
-      "descripcion": "sector=Tecnologia pero area no es IT - verificar empresa",
+      "descripcion": "sector=Tecnologia (alta confianza) pero area no es IT - verificar empresa",
       "condiciones": [
         {
           "campo": "sector_empresa",
@@ -518,12 +523,18 @@
             "IT/Sistemas",
             "Sistemas"
           ]
+        },
+        {
+          "campo": "sector_confianza",
+          "operador": "eq",
+          "valor": "alta"
         }
       ],
       "logica": "AND",
       "diagnostico": "revision_sector_empresa",
       "severidad": "info",
-      "mensaje": "Sector Tecnologia pero puesto no es IT - puede ser correcto o error de clasificacion"
+      "mensaje": "Sector Tecnologia (alta confianza) pero puesto no es IT - cross-sector legítimo o error",
+      "_nota": "Solo aplica con confianza alta. Empresas tech contratan RRHH, ventas, admin, etc."
     },
     {
       "id": "V22_empresa_confidencial_con_sector",

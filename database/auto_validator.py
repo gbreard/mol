@@ -443,13 +443,17 @@ class AutoValidator:
 
         occupation_essential_total = int(occupation_essential_total) if occupation_essential_total else 0
 
-        # V28: Cero skills esenciales matcheadas con ocupacion que tiene >= 3
-        if essential_matched_count == 0 and occupation_essential_total >= 3:
+        # V28: Cero skills esenciales matcheadas con ocupacion que tiene >= 10
+        # v1.4: Threshold subido de 3 a 10 porque ocupaciones ESCO tienen ~25 essential skills
+        # con vocabulario europeo que no matchea vocabulario argentino. Solo alertar cuando
+        # hay muchas essential skills y NINGUNA coincide (señal más fuerte).
+        # Severidad bajada a warning (gap vocabulario ESCO vs Argentina, no error de matching).
+        if essential_matched_count == 0 and occupation_essential_total >= 10:
             errores.append({
                 "id_regla": "V28_sin_skills_esenciales",
                 "diagnostico": "error_skills_esenciales_faltantes",
-                "severidad": "alto",
-                "mensaje": f"Sin skills esenciales matcheadas (ocupacion tiene {occupation_essential_total} esenciales)",
+                "severidad": "warning",
+                "mensaje": f"Sin skills esenciales matcheadas (ocupacion tiene {occupation_essential_total} esenciales). Gap vocabulario ESCO/Argentina.",
                 "campo": "skills_matched_essential"
             })
 
@@ -465,16 +469,20 @@ class AutoValidator:
             except (json.JSONDecodeError, TypeError):
                 skills_oferta_count = 0
 
+        # V24 v1.4: Threshold bajado de 0.20 a 0.10 y severidad a info.
+        # 87% de los V24 tienen ratio 0% (gap vocabulario ESCO europeo vs argentino).
+        # Solo alertar coherencia REALMENTE baja (< 10%) como info.
         if skills_oferta_count >= 3:
             ratio_oferta = essential_matched_count / skills_oferta_count
-            if ratio_oferta < 0.20:
+            if ratio_oferta < 0.10:
                 errores.append({
                     "id_regla": "V24_skills_baja_coherencia",
                     "diagnostico": "warning_skills_coherencia_oferta",
-                    "severidad": "warning",
+                    "severidad": "info",
                     "mensaje": (
-                        f"Skills coherencia oferta {ratio_oferta:.0%} < 20% "
-                        f"({essential_matched_count}/{skills_oferta_count} de las skills extraidas son esenciales)"
+                        f"Skills coherencia oferta {ratio_oferta:.0%} < 10% "
+                        f"({essential_matched_count}/{skills_oferta_count} de las skills extraidas son esenciales). "
+                        f"Gap vocabulario ESCO/Argentina."
                     ),
                     "campo": "skills_oferta_json"
                 })

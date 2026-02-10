@@ -1,5 +1,5 @@
 {
-  "version": "5.0",
+  "version": "4.7",
   "descripcion": "Reglas de negocio para matching ESCO. 213 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-02-09",
@@ -294,12 +294,18 @@
           "auditoría"
         ],
         "titulo_no_contiene_alguno": [
-          "médico",
           "medico",
           "médica",
           "medica",
+          "administrador",
+          "administrativo contable",
+          "clinico",
+          "administrativa contable",
+          "nocturno",
+          "médico",
           "clínico",
-          "clinico"
+          "administradora",
+          "nocturna"
         ],
         "sector_no_es": [
           "Salud"
@@ -314,7 +320,8 @@
       },
       "caso_diagnostico": "2154549 - Contador para Sector Auditoria",
       "fix_aplicado": "2026-01-12 - Excluir auditor médico (1118105872)",
-      "activa": true
+      "activa": true,
+      "nota_v47": "v4.7: Excluir auditor nocturno hotel, administrativa contable (son admin, no contadores)"
     },
     "R14b_auditor_medico": {
       "nombre": "Auditor Médico (profesional de salud)",
@@ -358,6 +365,9 @@
         "titulo_contiene_todos": [
           "administrativo",
           "contable"
+        ],
+        "titulo_no_contiene_alguno": [
+          "analista"
         ]
       },
       "accion": {
@@ -367,7 +377,8 @@
       "caso_diagnostico": "1118102043 - Administrativo Contable SR, 1118102117 - Administrativo Contable Part Time",
       "fecha_creacion": "2026-01-29",
       "nota": "Más específica que R14. Administrativo Contable = empleado (4311), no Contador profesional (2411)",
-      "activa": true
+      "activa": true,
+      "nota_v47": "v4.7: Excluir analista (analista contable SR = profesional 2411, no empleado 4311)"
     },
     "R15_customer_care": {
       "nombre": "Customer Care/Atencion al Cliente (call center)",
@@ -894,13 +905,19 @@
           "full-stack"
         ],
         "titulo_no_contiene_alguno": [
-          "cnc",
-          "mecanizado",
+          "vp of",
+          "cto",
           "torno",
-          "fresadora",
+          "head of",
+          "manager",
+          "máquina herramienta",
           "centro de mecanizado",
+          "director",
           "maquina herramienta",
-          "máquina herramienta"
+          "mecanizado",
+          "lead",
+          "fresadora",
+          "cnc"
         ]
       },
       "accion": {
@@ -909,7 +926,8 @@
       },
       "caso_gold_set": "1117982053 - Desarrollador Angular Senior",
       "activa": true,
-      "nota": "Excluye CNC/mecanizado (v2026-01-20)"
+      "nota": "Excluye CNC/mecanizado (v2026-01-20)",
+      "nota_v47": "v4.7: Excluir manager/director/lead (son IT managers 1330, no developers 2512)"
     },
     "R34_cajero": {
       "nombre": "Cajero/Cajera",
@@ -1032,7 +1050,9 @@
           "analista",
           "senior de",
           "junior de",
-          "administrativo"
+          "administrativo",
+          "supervisor",
+          "marketing"
         ]
       },
       "accion": {
@@ -1042,7 +1062,8 @@
       "caso_gold_set": "1118028376 - Analista administrativo (tareas comex)",
       "fix_v33": "2026-01-29 - Exclusiones para analista/senior/admin (son roles contables, no despachantes)",
       "activa": true,
-      "nota": "Detecta por tareas aunque título sea genérico. Excluye roles administrativos."
+      "nota": "Detecta por tareas aunque título sea genérico. Excluye roles administrativos.",
+      "nota_v47": "v4.7: Excluir supervisor/marketing"
     },
     "R39_supervisor_administracion": {
       "nombre": "Supervisor de Administración",
@@ -1497,6 +1518,13 @@
           "sistema maría",
           "despacho aduanero",
           "despachante"
+        ],
+        "titulo_no_contiene_alguno": [
+          "mostrador",
+          "heladería",
+          "heladeria",
+          "cafetería",
+          "cafeteria"
         ]
       },
       "accion": {
@@ -1504,7 +1532,8 @@
         "esco_label": "agente y comisionista de aduanas"
       },
       "activa": true,
-      "prioridad": 1
+      "prioridad": 1,
+      "nota_v47": "v4.7: Excluir despachante de mostrador/heladería (no es aduanas)"
     },
     "R59_medico_especialista": {
       "nombre": "Médico Especialista",
@@ -1683,8 +1712,8 @@
         "esco_label": "gerente de tienda"
       },
       "activa": true,
-      "prioridad": 0,
-      "nota": "Sprint 5 V31: fix ISCO 1324->1420. Jefe sucursal=retail management, no logistica. ID 1117866300."
+      "prioridad": -1,
+      "nota": "v4.7: prioridad -1 para que semántico gane cuando score > 0.85 (bancario vs retail). 6 V27 fix."
     },
     "R66_arquitecto_software": {
       "nombre": "Arquitecto de Software",
@@ -2138,6 +2167,11 @@
           "comercio electronico",
           "marketplace",
           "mercado libre"
+        ],
+        "titulo_no_contiene_alguno": [
+          "facturación",
+          "facturacion",
+          "ventas"
         ]
       },
       "accion": {
@@ -2147,7 +2181,8 @@
       "caso_revision_100": "1118105735 - Administrativo Ecommerce",
       "activa": true,
       "nota": "v3.5.2: Corregido - admin ecommerce es oficinista, no agente propiedad intelectual",
-      "prioridad": 0
+      "prioridad": 0,
+      "nota_v47": "v4.7: Excluir facturación/ventas (admin facturación MeLi = admin genérico, no analista ecommerce)"
     },
     "R88_jefe_producto": {
       "nombre": "Jefe/Gerente de Producto (Product Manager)",
@@ -2446,6 +2481,9 @@
           "analista de negocio",
           "analista de negocios",
           "analista funcional"
+        ],
+        "titulo_no_contiene_alguno": [
+          "core bancario"
         ]
       },
       "accion": {
@@ -2453,7 +2491,8 @@
         "esco_label": "analista de sistemas de TIC"
       },
       "activa": true,
-      "prioridad": 1
+      "prioridad": 1,
+      "nota_v47": "v4.7: Excluir core bancario (analista funcional core bancario = analista financiero 2413)"
     },
     "R106_preventista": {
       "nombre": "Preventista",
@@ -2595,13 +2634,19 @@
           "vendedora de local"
         ],
         "titulo_no_contiene_alguno": [
+          "telefonica",
+          "industrial",
           "asesor",
-          "ejecutivo",
-          "representante",
-          "corredor",
           "técnico",
-          "tecnico",
-          "industrial"
+          "callcenter",
+          "ejecutivo",
+          "telefónica",
+          "representante",
+          "telefonico",
+          "telefónico",
+          "corredor",
+          "call center",
+          "tecnico"
         ]
       },
       "accion": {
@@ -2610,7 +2655,8 @@
       },
       "nota": "Vendedor genérico → 5223. Los B2B (asesor, ejecutivo, representante) van a R40 → 3322",
       "fix_validacion_humana": "2026-01-16",
-      "activa": true
+      "activa": true,
+      "nota_v47": "v4.7: Excluir telefónico/call center (son vendedores telefónicos 5244, no de tienda 5223)"
     },
     "R112_analista_tesoreria": {
       "nombre": "Analista de Tesorería",
@@ -3282,6 +3328,13 @@
           "maestro panadero",
           "panadero",
           "panadera"
+        ],
+        "titulo_no_contiene_alguno": [
+          "asesor",
+          "representante",
+          "comercial",
+          "técnico",
+          "tecnico"
         ]
       },
       "accion": {
@@ -3291,7 +3344,8 @@
       "activa": true,
       "_caso": "ID 2171992 Pizzaiolo/Maestro Pizzero/Panadero",
       "_fecha": "2026-01-23",
-      "prioridad": 1
+      "prioridad": 1,
+      "nota_v47": "v4.7: Excluir asesor/representante/comercial/técnico (son vendedores técnicos 3322, no panaderos 7512)"
     },
     "R146_data_architect": {
       "nombre": "Data Architect / Arquitecto de Datos",
@@ -3566,12 +3620,13 @@
         ]
       },
       "accion": {
-        "forzar_isco": "1324",
-        "esco_label": "director de distribución y logística/directora de distribución y logística"
+        "forzar_isco": "1321",
+        "esco_label": "director de producción industrial/directora de producción industrial"
       },
       "caso_referencia": "1118104175 - Jefe de Operaciones",
       "activa": true,
-      "nota": "FIX v4.6: esco_label corregido"
+      "nota": "FIX v4.6: esco_label corregido",
+      "nota_v47": "v4.7: ISCO 1324→1321. Gerente operaciones es más amplio que solo logística."
     },
     "R159_farmaceutico": {
       "nombre": "Farmacéutico / Farmacéutica",
@@ -3606,6 +3661,13 @@
           "técnico instalador",
           "instalador tecnico",
           "instalador técnico"
+        ],
+        "titulo_no_contiene_alguno": [
+          "internet",
+          "fibra",
+          "telecomunicaciones",
+          "ict",
+          "soporte"
         ]
       },
       "accion": {
@@ -3614,7 +3676,8 @@
       },
       "caso_referencia": "1118099825 - TECNICO INSTALADOR",
       "activa": true,
-      "nota": "Default para instalador genérico. FIX v4.6: esco_label corregido"
+      "nota": "Default para instalador genérico. FIX v4.6: esco_label corregido",
+      "nota_v47": "v4.7: Excluir internet/fibra/soporte (son técnicos ICT 3512, no electricistas 7411)"
     },
     "R162_tecnico_mantenimiento_edilicio": {
       "nombre": "Técnico de Mantenimiento Edilicio/de Edificios",
@@ -3864,10 +3927,12 @@
         ],
         "area_funcional_es": "Logistica",
         "titulo_no_contiene_alguno": [
-          "jefe",
-          "gerente",
           "coordinador",
           "supervisor",
+          "administrativa",
+          "jefe",
+          "gerente",
+          "administrativo",
           "analista"
         ]
       },
@@ -3878,7 +3943,8 @@
       "caso_diagnostico": "1118102208 - Logística (trainee) sector salud - entregas equipamiento médico, NO enfermero",
       "fecha_creacion": "2026-01-30",
       "activa": true,
-      "nota": "Logística de entregas = conductor de reparto, NO enfermero (3258)"
+      "nota": "Logística de entregas = conductor de reparto, NO enfermero (3258)",
+      "nota_v47": "v4.7: Excluir administrativo/analista logística (son admin 4110, no repartidores 8322)"
     },
     "R172_analista_siniestros": {
       "nombre": "Analista de Siniestros / Claims Analyst",
@@ -3954,6 +4020,12 @@
           "operario/a",
           "personal",
           "auxiliar"
+        ],
+        "titulo_no_contiene_alguno": [
+          "depósito",
+          "deposito",
+          "carga",
+          "descarga"
         ]
       },
       "accion": {
@@ -3963,7 +4035,8 @@
       "caso_diagnostico": "1118101716 - Operario/a de limpieza Zona Oeste",
       "fecha_creacion": "2026-02-05",
       "activa": true,
-      "nota": "Fix match incorrecto a extracción fécula (8160). FIX v4.6: esco_label corregido"
+      "nota": "Fix match incorrecto a extracción fécula (8160). FIX v4.6: esco_label corregido",
+      "nota_v47": "v4.7: Excluir operario depósito/carga (son operarios logística 9333, no limpieza 9112)"
     },
     "R176_auditor_franquicias": {
       "nombre": "Auditor de Franquicias / Establecimientos",
@@ -4002,6 +4075,10 @@
           "telefonico",
           "telefonica",
           "agente"
+        ],
+        "titulo_no_contiene_alguno": [
+          "operadora",
+          "operador"
         ]
       },
       "accion": {
@@ -4010,7 +4087,8 @@
       },
       "caso_diagnostico": "1118049547 - Gestor de Cobranzas Telefónicas",
       "fecha_creacion": "2026-02-05",
-      "activa": true
+      "activa": true,
+      "nota_v47": "v4.7: Excluir operador (operador telefónico cobranzas = 4222 operador teléfono, no 4214 cobrador)"
     },
     "R178_qa_tester": {
       "nombre": "QA / Tester de Software",
@@ -4369,6 +4447,9 @@
           "middle office",
           "back office",
           "backoffice"
+        ],
+        "titulo_no_contiene_alguno": [
+          "analista"
         ]
       },
       "accion": {
@@ -4377,7 +4458,8 @@
       },
       "_nota": "v4.4: Middle/Back Office → auxiliar contabilidad",
       "activa": true,
-      "nota": "FIX v4.6: esco_label corregido"
+      "nota": "FIX v4.6: esco_label corregido",
+      "nota_v47": "v4.7: Excluir analista (analista back office SR = analista financiero 2413, no empleado 4311)"
     },
     "R196_pasante_administrativo": {
       "nombre": "Pasante Administrativo / Contable",
@@ -4511,7 +4593,7 @@
     },
     "R203_analista_pagos_proveedores": {
       "nombre": "Analista de Pago a Proveedores",
-      "prioridad": 1,
+      "prioridad": -1,
       "condicion": {
         "titulo_contiene_alguno": [
           "pago a proveedores",
@@ -4526,7 +4608,8 @@
       },
       "caso_referencia": "1118099977 - Analista de pago a proveedores",
       "activa": true,
-      "nota": "v4.6: Analista de pagos/proveedores = contable (4311)"
+      "nota": "v4.6: Analista de pagos/proveedores = contable (4311)",
+      "nota_v47": "v4.7: prioridad -1 para que semántico gane (pagos internacionales=4312 vs genérico 4311)"
     },
     "R204_operador_retenciones": {
       "nombre": "Operador de Retenciones / Impuestos",
@@ -4929,6 +5012,12 @@
           "autoelevadorista",
           "carretillero",
           "operador de clark"
+        ],
+        "titulo_no_contiene_alguno": [
+          "offset",
+          "impresión",
+          "impresion",
+          "imprenta"
         ]
       },
       "accion": {
@@ -4938,13 +5027,21 @@
       "activa": true,
       "prioridad": 1,
       "nota": "Sprint 5 V31: maquinista apiladora = operador carretilla elevadora. ID 1118090160.",
-      "_fecha": "2026-02-09"
+      "_fecha": "2026-02-09",
+      "nota_v47": "v4.7: Excluir maquinista offset/impresión (son operarios gráficos 8160, no carretilleros 8344)"
     },
     "R223_admin_infraestructura": {
       "nombre": "Administrador de Infraestructura IT",
       "condicion": {
-        "titulo_contiene_todos": ["administrador", "infraestructura"],
-        "titulo_no_contiene_alguno": ["edificio", "inmueble", "condominio"]
+        "titulo_contiene_todos": [
+          "administrador",
+          "infraestructura"
+        ],
+        "titulo_no_contiene_alguno": [
+          "edificio",
+          "inmueble",
+          "condominio"
+        ]
       },
       "accion": {
         "forzar_isco": "2522",
@@ -5037,5 +5134,6 @@
   "_cambios_v46": "FIX: 12 reglas con esco_label inválido + R203-R206 nuevas reglas",
   "_cambios_v50": "Sprint 2: Fix 10 exclusiones rotas (titulo_no_contiene→titulo_no_contiene_alguno), 51 reglas sin prioridad asignadas, consolidar ISCO 3322 (12→7) y 9333 (10→7), fix R135 key duplicada",
   "_cambios_v51": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344, R137 excluye maquinista.",
-  "_cambios_v52": "Sprint 5b: R223 Admin infraestructura->2522 sysadmin. V30 keywords expandidos (español)."
+  "_cambios_v52": "Sprint 5b: R223 Admin infraestructura->2522 sysadmin. V30 keywords expandidos (español).",
+  "_changelog_v47": "Fix 18 reglas con exclusiones/prioridades para resolver 35 V27 divergencias. R65: prioridad -1 (sem gana para gerente bancario vs retail); R14: excluir nocturno, administrativa contable; R14d: excluir analista; R158: ISCO 1324→1321 (manufacturing general); R87: excluir facturación, ventas; R38: excluir supervisor, marketing; R58: excluir mostrador/heladería; R33: excluir manager/director/lead; R171: excluir administrativo; R175: excluir depósito/carga; R222: excluir offset/impresión; R144: excluir asesor/representante/comercial; R111: excluir telefónico/call center; R160: excluir internet/fibra/soporte; R177: excluir operador; R194: excluir analista; R101: excluir core bancario; R203: prioridad -1"
 }

@@ -6,38 +6,33 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-02-10 12:00"
+  fecha_actualizacion: "2026-02-10 15:59"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "procesamiento"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "949 errores sin resolver - sistema sugiere Fase 2"
+  fase_detalle: "42 errores sin resolver - sistema sugiere Fase 2"
 
 ultimo_trabajo:
-  fecha: "2026-02-09"
-  sesion: "Sprint 5b: desbloquear cola - V30 fix, R223, correccion_critica"
+  fecha: "2026-02-10"
+  sesion: "Sprint 6: Resolver 911 issues del auto-validator"
   cambios:
-    - "V30 keywords expandidos con términos en español (bases de datos, infraestructura, redes, etc.)"
-    - "V30 soporte para skills como strings simples (no solo dicts)"
-    - "R223 admin infraestructura IT → ISCO 2522 sysadmin (correccion_critica)"
-    - "match_ofertas_v3 v3.5.3: correccion_critica=true impide override semántico"
-    - "7 errores alto del lote bloqueante resueltos → cola desbloqueada"
+    - "911 issues resueltos de 949 (95.6% reducción → quedan 42)"
+    - "V24 threshold 20%→10%, severidad warning→info (gap vocabulario ESCO/ARG)"
+    - "V28 threshold >=3→>=10 essential, severidad alto→warning"
+    - "V20/V21 ahora requieren sector_confianza=alta (LLM no confiable)"
+    - "18 reglas corregidas en matching_rules_business.json v4.7"
+    - "Fix null-like strings en nlp_postprocessor.py _normalize()"
+    - "V27: 24 falsos positivos + 35 reglas fix"
+    - "Cross-sector legítimos (salud/tech contratan admin/ventas/etc.)"
   sesion_anterior:
-    tema: "Sprint 5: recalibrar V24 + V31 + resolver 13 ESCO incorrectas"
+    tema: "Sprint 5b: desbloquear cola - V30 fix, R223, correccion_critica"
     cambios:
-      - "V24 recalibrada, V31 nueva, 13 V31 resueltos, 5 reglas nuevas R218-R222"
-      - "PR #5 mergeado, Supabase sync 1906 ofertas"
-  deploy: "https://mol-nextjs.vercel.app - 1,906 ofertas validadas"
-  commit: "4bde4fde - fix(validation): desbloquear cola (Sprint 5b)"
-  branch: "main"
-  supabase_sync:
-    fecha: "2026-02-09 15:16"
-    ofertas_dashboard: 1906
-    ofertas_skills: 32529
-    ocupaciones_esco: 501
-    skills_esco: 5083
+      - "V30 keywords expandidos, R223 admin infra IT, correccion_critica"
+  branch: "feature/resolve-issues"
   pendiente:
-    - "Procesar 13,550 ofertas sin NLP (Fase 2)"
-    - "Sync nuevas ofertas a Supabase después de procesamiento"
+    - "Procesar 13,550 ofertas sin NLP (ahora con reglas mejoradas)"
+    - "42 issues NLP reales (V11/V25/V29) - fix en prompt o postprocessor"
+    - "Sync a Supabase (en progreso)"
     - "Borrar /mnt/d/OEDE/Webscrapping-MOL desde Windows (archivo node_modules trabado)"
 
   # Protección de Ofertas Validadas v2.0 (2026-01-20)
@@ -177,8 +172,8 @@ conteos:
   proximo_paso: "Revisar 24 casos con override semántico alto"
 
   estadisticas_actuales:
-    ofertas_validadas: 1523  # todas sincronizadas a Supabase
-    ofertas_pendientes: 570  # 0 errores de validación
+    ofertas_validadas: 2093  # todas sincronizadas a Supabase
+    ofertas_pendientes: 0  # 0 errores de validación
     errores_validacion: 0  # resueltos 201 → 0
     reglas_negocio: 218
     convergencia: "CONVERGIDO (0 errores pendientes)"

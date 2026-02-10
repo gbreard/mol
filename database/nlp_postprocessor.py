@@ -1780,6 +1780,14 @@ class NLPPostprocessor:
         """
         Normaliza valores (Capital Federal -> CABA, etc.)
         """
+        # Limpiar strings literales "null"/"None"/"N/A" del LLM → None real
+        NULL_LIKE = {"null", "none", "n/a", "nan", "undefined", "na", "nil", "[]", "{}"}
+        for key, val in data.items():
+            if isinstance(val, str) and val.strip().lower() in NULL_LIKE:
+                data[key] = None
+                if self.verbose:
+                    print(f"[NORM] {key}: '{val}' -> None (null-like string)")
+
         config = self.configs.get("normalization", {})
 
         # =====================================================================
