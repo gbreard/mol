@@ -6,11 +6,11 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-02-10 15:59"
+  fecha_actualizacion: "2026-02-10 16:20"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "procesamiento"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "42 errores sin resolver - sistema sugiere Fase 2"
+  fase_detalle: "11 errores sin resolver - sistema sugiere Fase 2"
 
 ultimo_trabajo:
   fecha: "2026-02-10"
@@ -172,8 +172,8 @@ conteos:
   proximo_paso: "Revisar 24 casos con override semántico alto"
 
   estadisticas_actuales:
-    ofertas_validadas: 2093  # todas sincronizadas a Supabase
-    ofertas_pendientes: 0  # 0 errores de validación
+    ofertas_validadas: 2089  # todas sincronizadas a Supabase
+    ofertas_pendientes: 4  # 0 errores de validación
     errores_validacion: 0  # resueltos 201 → 0
     reglas_negocio: 218
     convergencia: "CONVERGIDO (0 errores pendientes)"
@@ -191,7 +191,7 @@ conteos:
 
   # Métricas de evolución del aprendizaje
   learning_evolution:
-    total_runs: 219
+    total_runs: 220
     ofertas_con_historial_nlp: 5474  # ofertas en ofertas_nlp_history
     ofertas_con_matching: 2093  # ofertas distintas en ofertas_esco_matching
 
