@@ -319,6 +319,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
       {/* Evolution Chart con Insights */}
       {(() => {
         const showLabels = evolutionData.length <= 12;
+        const isRotated = evolutionData.length > 8;
         const total = evolutionData.reduce((s, w) => s + w.ofertas, 0);
         return (
           <ChartContainer
@@ -350,8 +351,8 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
             ) : undefined}
           >
             {evolutionData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={260}>
-                <LineChart data={evolutionData} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
+              <ResponsiveContainer width="100%" height={isRotated ? 300 : 260}>
+                <LineChart data={evolutionData} margin={{ top: 20, right: 20, left: 20, bottom: isRotated ? 60 : 20 }}>
                   <defs>
                     <linearGradient id="colorOfertas" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.15}/>
@@ -364,8 +365,9 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
                     tickLine={false}
                     tick={{ fill: '#6b7280', fontSize: showLabels ? 11 : 9, fontWeight: 600 }}
                     interval={showLabels ? 0 : Math.max(1, Math.floor(evolutionData.length / 10))}
-                    angle={evolutionData.length > 8 ? -45 : 0}
-                    textAnchor={evolutionData.length > 8 ? "end" : "middle"}
+                    angle={isRotated ? -45 : 0}
+                    textAnchor={isRotated ? "end" : "middle"}
+                    height={isRotated ? 70 : 30}
                   />
                   <Tooltip content={<CustomTooltip />} />
                   <Line
@@ -390,7 +392,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
               </ResponsiveContainer>
             ) : (
               <div className="flex items-center justify-center h-[260px] text-gray-400 text-sm">
-                Sin datos de evolución para los filtros seleccionados
+                Sin datos de evolución para los filtros seleccionados.
               </div>
             )}
           </ChartContainer>
