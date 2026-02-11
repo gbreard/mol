@@ -6,17 +6,17 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-02-10 16:20"
+  fecha_actualizacion: "2026-02-11 12:01"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "procesamiento"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "11 errores sin resolver - sistema sugiere Fase 2"
+  fase_detalle: "Último scraping hace 4 días - sistema sugiere Fase 1"
 
 ultimo_trabajo:
   fecha: "2026-02-10"
   sesion: "Sprint 6: Resolver 911 issues del auto-validator"
   cambios:
-    - "911 issues resueltos de 949 (95.6% reducción → quedan 42)"
+    - "949 issues → 0 (100% resueltos)"
     - "V24 threshold 20%→10%, severidad warning→info (gap vocabulario ESCO/ARG)"
     - "V28 threshold >=3→>=10 essential, severidad alto→warning"
     - "V20/V21 ahora requieren sector_confianza=alta (LLM no confiable)"
@@ -24,6 +24,7 @@ ultimo_trabajo:
     - "Fix null-like strings en nlp_postprocessor.py _normalize()"
     - "V27: 24 falsos positivos + 35 reglas fix"
     - "Cross-sector legítimos (salud/tech contratan admin/ventas/etc.)"
+    - "4 V29 restantes corregidos manualmente (commit 4ad8c547)"
   sesion_anterior:
     tema: "Sprint 5b: desbloquear cola - V30 fix, R223, correccion_critica"
     cambios:
@@ -31,7 +32,6 @@ ultimo_trabajo:
   branch: "feature/resolve-issues"
   pendiente:
     - "Procesar 13,550 ofertas sin NLP (ahora con reglas mejoradas)"
-    - "42 issues NLP reales (V11/V25/V29) - fix en prompt o postprocessor"
     - "Sync a Supabase (en progreso)"
     - "Borrar /mnt/d/OEDE/Webscrapping-MOL desde Windows (archivo node_modules trabado)"
 
@@ -138,7 +138,7 @@ conteos:
   empresas_catalogo: 247  # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
   skills_esco: 14257            # database/embeddings/esco_skills_full.json
   ocupaciones_esco: 3046        # database/embeddings/esco_occupations_full.json
-  ultima_verificacion: 2026-02-10
+  ultima_verificacion: 2026-02-11
 
   supabase:
     integrado: true
