@@ -1,11 +1,11 @@
 # Análisis de Issues de Usuario
 
-> Fecha: 2026-02-06 (actualizado)
+> Fecha: 2026-02-11 (actualizado)
 > Fuente: Issues de admin@oede.gob.ar en Supabase
 
 ## Resumen Ejecutivo
 
-Se analizaron **10 issues** reportados por el usuario principal. El 60% de los issues (6/10) corresponden al Dashboard Principal (P-09), y el 40% restante (4/10) a Skills Intelligence (P-10).
+Se analizaron **12 issues** reportados por los usuarios. El 67% de los issues (8/12) corresponden al Dashboard Principal (P-09), y el 33% restante (4/12) a Skills Intelligence (P-10).
 
 **Temas principales:**
 1. Exportación de datos (4 issues)
@@ -14,7 +14,8 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 4. Indicadores de mercado laboral (3 issues)
 
 **Estado actual:**
-- ✅ Completados: 6 (Sprint 1 + Sprint 2)
+- ✅ Completados: 7 (Sprint 1 + Sprint 2 + Sprint 5)
+- 🔨 En desarrollo: 1 (Sprint 5)
 - ⏳ Pendientes: 4 (Sprint 3 + Sprint 4)
 
 ---
@@ -204,6 +205,30 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 └─────────────────────────────────────────────────────────────┘
 ```
 
+#### Issue #11: Filtro Permanencia no funcionaba ✅ RESUELTO
+- **Sección:** Sidebar (filtros globales)
+- **Reportado por:** Breard
+- **Solicitud:** El filtro de permanencia no filtraba las ofertas — dato no estaba sincronizado a Supabase
+- **Tipo:** Bug fix
+- **Impacto:** Alto (filtro visible pero sin efecto)
+- **Sprint:** 5
+- **Estado:** ✅ Resuelto (2026-02-11) — campo `categoria_permanencia` sincronizado a Supabase (2089 ofertas)
+
+#### Issue #12: Evaluar permanencia como indicador de mercado 🔨 EN DESARROLLO
+- **Sección:** Tab Panorama (P-09)
+- **Reportado por:** Trajtemberg
+- **Solicitud:** Evaluar si la permanencia de las ofertas puede usarse como indicador del mercado laboral (tensión de demanda)
+- **Tipo:** Feature nueva / investigación
+- **Impacto:** Muy Alto (nuevo indicador diferenciador)
+- **Sprint:** 5
+- **Estado:** 🔨 En desarrollo — análisis de datos validó el indicador, derivó en [V-16](./08_PROPUESTA_VALOR.md#v-16-indicador-de-tensión-de-demanda) (Tensión de Demanda). Datos listos, UI pendiente.
+
+**Resultado del análisis:**
+- Combinar permanencia (persistencia) con republicación (insistencia) genera un indicador de 4 cuadrantes
+- Tabla `tension_ocupaciones` pre-calculada por ocupación ISCO
+- Scatter plot diseñado para Panorama General
+- Filtro de cuadrantes en sidebar
+
 ---
 
 ## Priorización por Sprints
@@ -252,6 +277,21 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 - Flujo completo de registro y construcción de perfil
 - Matching con ocupaciones
 
+### Sprint 5: Permanencia e Indicadores 🔨 EN PROGRESO
+**Issues:** #11, #12
+**Razón:** Bug de filtro + solicitud de indicador de mercado laboral
+
+**Issue #11 - Filtro permanencia:**
+- ✅ Sincronizar `categoria_permanencia` a Supabase
+- ✅ Filtro funcional en sidebar (3 checkboxes)
+
+**Issue #12 - Tensión de demanda:**
+- ✅ Análisis de datos y diseño del indicador
+- ✅ Campos republicación sincronizados
+- ⏳ Tabla `tension_ocupaciones` (pendiente crear en Supabase)
+- ⏳ Scatter plot en Panorama General
+- ⏳ Filtro de cuadrantes en sidebar
+
 ---
 
 ## Tabla Resumen
@@ -268,6 +308,8 @@ Se analizaron **10 issues** reportados por el usuario principal. El 60% de los i
 | #8 | 2 | P-10 | Banner ofertas en Comparar | ✅ |
 | #9 | 2 | P-10 | Columna ocupaciones con ofertas | ✅ |
 | #10 | 2 | P-10 | Export ofertas desde Skills | ✅ |
+| #11 | 5 | P-09 | Filtro permanencia (bug sync) | ✅ |
+| #12 | 5 | P-09 | Tensión de demanda (indicador) | 🔨 |
 
 ---
 

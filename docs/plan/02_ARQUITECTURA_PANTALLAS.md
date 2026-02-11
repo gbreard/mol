@@ -1,7 +1,7 @@
 # 2. Arquitectura de Pantallas
 
-> Ultima actualizacion: 2026-02-08
-> Versión: 2.0 — Modelo híbrido (registro libre + acceso gated al tablero)
+> Ultima actualizacion: 2026-02-11
+> Versión: 2.1 — Modelo híbrido + filtros permanencia/tensión de demanda
 
 ## Referencias
 
@@ -42,7 +42,7 @@
 
 ### Componentes Existentes
 
-- **Filtros globales:** Territorio, provincia, fechas, ocupaciones
+- **Filtros globales:** Territorio, provincia, fechas, ocupaciones, permanencia (baja/media/alta), tensión de demanda (4 cuadrantes)
 - **Visualizaciones:** Sunburst ESCO, gráficos Recharts, tablas
 - **Sistema de tabs:** Implementado en Home y Skills
 - **Autenticación:** Supabase Auth con roles
@@ -141,6 +141,17 @@ MOL Platform
 | P-11 | `/dashboard/empresas` | U-SUSCRIPTOR | Por crear | [suscriptor.md#p-11](./03_WIREFRAMES/suscriptor.md#p-11-empresas) |
 | P-12 | `/dashboard/reportes` | U-SUSCRIPTOR | Por crear | [suscriptor.md#p-12](./03_WIREFRAMES/suscriptor.md#p-12-reportes) |
 | P-13 | `/dashboard/alertas` | U-SUSCRIPTOR | Por crear | [suscriptor.md#p-13](./03_WIREFRAMES/suscriptor.md#p-13-alertas) |
+
+**Componentes de P-09 (Dashboard):**
+
+| Área | Componentes |
+|------|-------------|
+| **Sidebar** | Filtros: Territorio, Provincia, Fecha, Ocupación, Permanencia (baja/media/alta), **Tensión de Demanda** (Crítica/Urgente/Pasiva/Fluida) |
+| **Tab Panorama** | KPIs + Evolución + Top Ocupaciones + **Scatter Plot Tensión** + Distribución Geográfica |
+| **Tab Requerimientos** | Sin cambios de layout |
+| **Tab Ofertas** | Sin cambios de layout (filtrado por tensión si activo desde sidebar) |
+
+> **Scatter Plot Tensión:** Eje X = Insistencia, Eje Y = Persistencia, tamaño = total posiciones. Ver [suscriptor.md](./03_WIREFRAMES/suscriptor.md#scatter-plot-tensión-de-demanda) y [V-16](./08_PROPUESTA_VALOR.md#v-16-indicador-de-tensión-de-demanda).
 
 ### Cuenta
 
@@ -316,3 +327,4 @@ app/
 | 2026-02-05 | 1.0 | Arquitectura SaaS clásica (Free/Pro/Enterprise), 25 pantallas |
 | 2026-02-07 | 2.0 | Modelo hibrido: nivel REGISTRADO, area `/contenido`, `/solicitar-acceso`, admin `/solicitudes` y `/contenidos` (CMS). Total 30 pantallas |
 | 2026-02-08 | 2.0.1 | P-25 code review: 7 fixes aplicados (Tailwind, env vars, error handling, sidebar dup, labels, imports) |
+| 2026-02-11 | 2.1 | Filtros permanencia y tensión de demanda en sidebar, componentes P-09 (scatter plot tensión) |

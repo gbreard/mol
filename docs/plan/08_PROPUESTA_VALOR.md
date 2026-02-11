@@ -1,6 +1,6 @@
 # 8. Propuesta de Valor
 
-> Última actualización: 2026-02-05
+> Última actualización: 2026-02-11
 
 ## Referencias
 
@@ -25,9 +25,9 @@
 | Severidad | Cantidad | Descripción |
 |-----------|----------|-------------|
 | **CRÍTICO** | 4 | Gaps que impiden lanzamiento comercial |
-| **ALTO** | 6 | Features que esperan los usuarios |
+| **ALTO** | 7 | Features que esperan los usuarios |
 | **MEDIO** | 5 | Mejoras de UX |
-| **Total** | **15** | |
+| **Total** | **16** | |
 
 ---
 
@@ -201,6 +201,29 @@ MATCHING:
 
 ---
 
+### V-16: Indicador de Tensión de Demanda
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | Indicador compuesto que mide qué ocupaciones cuestan más llenar, combinando persistencia (duración) e insistencia (republicación) |
+| **Componentes** | Persistencia (% posiciones >45d) + Insistencia (% posiciones republicadas) |
+| **Pantalla** | [P-09](./03_WIREFRAMES/suscriptor.md#p-09-dashboard) — Scatter plot en Panorama + Filtro en sidebar |
+| **Tabla** | `tension_ocupaciones` — [04_MODELO_DATOS](./04_MODELO_DATOS.md#t-tension_ocupaciones-nueva--indicador-tensión-de-demanda) |
+| **Diferenciador** | Ningún competidor tiene un indicador que combine permanencia + republicación a nivel ocupación |
+| **Estado** | ⚠️ Parcial — datos disponibles (permanencia + republicación en Supabase), UI pendiente |
+
+**Cuadrantes y su impacto para usuarios:**
+
+| Cuadrante | Significado para analista | Significado para buscador de empleo |
+|-----------|--------------------------|-------------------------------------|
+| CRÍTICO | Ocupaciones donde hay escasez real de candidatos | Alta probabilidad de conseguir empleo |
+| URGENTE | Alta rotación, empleadores necesitan cubrir rápido | Empleos disponibles pero posiblemente inestables |
+| PASIVO | Búsquedas largas sin urgencia, posiblemente perfiles muy específicos | Competencia alta, proceso largo |
+| FLUIDO | Mercado equilibrado, oferta y demanda balanceadas | Condiciones normales de búsqueda |
+
+---
+
 ## Análisis Competitivo
 
 ### Competidores Principales
@@ -214,6 +237,7 @@ MATCHING:
 | Tendencias | ⚠️ | ✓ | ✓ | ✓ |
 | Alertas | ⚠️ | ✓ | ✓ | ✓ |
 | API | ⚠️ | ✓ | ✓ | ✗ |
+| Tensión de demanda | ✓ | ✗ | ✗ | ✗ |
 | Datos oficiales OEDE | ✓ | ✗ | ✗ | ✗ |
 
 ### Diferenciadores Únicos de MOL
@@ -234,6 +258,7 @@ MATCHING:
 □ V-02: Acelerar validación (meta: 1,000/semana)
 □ V-04: Habilitar análisis de salarios
 □ V-07: Gráficos de tendencias históricas
+⚠️ V-16: Tensión de demanda (datos disponibles, UI pendiente)
 ```
 
 ### Fase 3: Features Comerciales (4-6 semanas)

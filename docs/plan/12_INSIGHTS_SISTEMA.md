@@ -1,7 +1,7 @@
 # 12. Sistema de Insights
 
-> Última actualización: 2026-02-07
-> Estado: ✅ FASE 1-2 IMPLEMENTADAS - Performance corregido
+> Última actualización: 2026-02-11
+> Estado: ✅ FASE 1-2 IMPLEMENTADAS - Performance corregido + Tensión de Demanda diseñada
 
 ## Referencias
 
@@ -205,6 +205,72 @@ FOR EACH STATEMENT EXECUTE FUNCTION invalidate_insights_cache();
 | Empresa líder | MAX ofertas por empresa | "X lidera con N ofertas" |
 | Concentración empleadores | Top 10 empresas / total | "10 empresas = X% mercado" |
 | Empresas nuevas | Empresas sin ofertas en últimos 6 meses | "X empresas nuevas contratando" |
+
+### Grupo 5: Tensión de Demanda
+
+> **Referencia:** [04_MODELO_DATOS](./04_MODELO_DATOS.md#t-tension_ocupaciones-nueva--indicador-tensión-de-demanda) — Definición de tabla y cuadrantes
+> **Feature:** [V-16](./08_PROPUESTA_VALOR.md#v-16-indicador-de-tensión-de-demanda)
+
+| Insight | Cálculo | Uso |
+|---------|---------|-----|
+| Persistencia | % posiciones con `ventana_dias` > 45d por ISCO | "X% de posiciones llevan >45 días publicadas" |
+| Insistencia | % posiciones republicadas por ISCO | "X% de posiciones fueron republicadas" |
+| Cuadrante | Combinación persistencia + insistencia (umbral 50%) | "Ocupación X es CRÍTICA" |
+| Distribución | COUNT por cuadrante sobre total ocupaciones | "30% ocupaciones son críticas" |
+
+**Nota:** Este indicador es GLOBAL (no afectado por filtro de fecha). Se recalcula en cada sincronización a Supabase.
+
+**SQL de cálculo completo:**
+
+```sql
+-- Recalcular tabla tension_ocupaciones
+TRUNCATE tension_ocupaciones;
+
+INSERT INTO tension_ocupaciones (
+  isco_code, isco_label, total_posiciones, total_ofertas,
+  persistencia, insistencia, cuadrante
+)
+SELECT
+  isco_code,
+  isco_label,
+  -- total_posiciones: grupos únicos (misma URL = 1 posición)
+  COUNT(DISTINCT grupo_republicacion) AS total_posiciones,
+  -- total_ofertas: registros individuales (incluye republicaciones)
+  COUNT(*) AS total_ofertas,
+  -- persistencia: % posiciones con ventana > 45 días
+  ROUND(
+    COUNT(DISTINCT grupo_republicacion)
+      FILTER (WHERE ventana_dias > 45) * 100.0
+    / NULLIF(COUNT(DISTINCT grupo_republicacion), 0),
+    2
+  ) AS persistencia,
+  -- insistencia: % posiciones republicadas (numero_republicacion > 1)
+  ROUND(
+    COUNT(DISTINCT grupo_republicacion)
+      FILTER (WHERE numero_republicacion > 1) * 100.0
+    / NULLIF(COUNT(DISTINCT grupo_republicacion), 0),
+    2
+  ) AS insistencia,
+  -- cuadrante: combinación de ambos ejes (umbral 50%)
+  CASE
+    WHEN persistencia >= 50 AND insistencia >= 50 THEN 'CRITICO'
+    WHEN persistencia >= 50 AND insistencia <  50 THEN 'PASIVO'
+    WHEN persistencia <  50 AND insistencia >= 50 THEN 'URGENTE'
+    ELSE 'FLUIDO'
+  END AS cuadrante
+FROM ofertas_dashboard
+WHERE isco_code IS NOT NULL
+GROUP BY isco_code, isco_label;
+```
+
+**Cuadrantes:**
+
+| Cuadrante | Persistencia | Insistencia | Interpretación |
+|-----------|-------------|-------------|----------------|
+| CRÍTICO | >= 50% | >= 50% | Difícil de cubrir, empleadores insisten |
+| PASIVO | >= 50% | < 50% | Duran mucho pero sin urgencia percibida |
+| URGENTE | < 50% | >= 50% | Se cubren rápido pero alta rotación/insistencia |
+| FLUIDO | < 50% | < 50% | Mercado sano, se cubren sin fricción |
 
 ---
 

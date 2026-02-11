@@ -1,7 +1,7 @@
 # 4. Modelo de Datos
 
-> Última actualización: 2026-02-07
-> Versión: 2.0 — Modelo híbrido (solicitudes acceso + CMS + pago dual)
+> Última actualización: 2026-02-11
+> Versión: 2.2 — Modelo híbrido + schema ofertas_dashboard + tensión de demanda
 
 ## Referencias
 
@@ -623,9 +623,81 @@ const { data } = await supabase.rpc('get_insights', {
 
 ---
 
-## Tablas Existentes (referencia)
+## Tablas Existentes — Supabase (Dashboard)
 
-Estas tablas ya existen y son usadas por el dashboard:
+Tablas en Supabase que alimentan el dashboard Next.js. Sincronizadas desde SQLite local via `sync_to_supabase.py`.
+
+| Tabla | Descripción | ~Registros |
+|-------|-------------|------------|
+| `ofertas_dashboard` | Ofertas validadas desnormalizadas (~55 campos) | 2089 |
+| `ofertas_skills` | Skills por oferta (1:N) con clasificación ESCO | 35277 |
+| `ocupaciones_esco` | Catálogo ESCO ocupaciones (subset) | 471 |
+| `skills` | Catálogo ESCO skills (subset) | 5228 |
+| `issues` | Feedback/errores reportados por usuarios | - |
+| `tension_ocupaciones` | Tensión de demanda pre-calculada por ocupación | ~100 |
+| `sistema_estado` | Estado del sistema (última sincronización) | 1 |
+
+### Columnas de `ofertas_dashboard`
+
+| Grupo | Campos clave |
+|-------|-------------|
+| **PK** | `id_oferta` |
+| **Scraping** | titulo, empresa, descripcion, localizacion, url_oferta, portal, fecha_publicacion_iso, scrapeado_en, provincia_normalizada, localidad_normalizada, estado_oferta, fecha_ultimo_visto, dias_publicada |
+| **NLP** | titulo_limpio, tareas_explicitas, mision_rol, area_funcional, nivel_seniority, sector_empresa, tipo_oferta, tipo_contrato, provincia, localidad, modalidad, jornada_laboral, nivel_educativo, titulo_requerido, experiencia_min_anios, tiene_gente_cargo, requiere_movilidad_propia, skills_tecnicas_list, soft_skills_list, tecnologias_list, herramientas_list |
+| **Matching** | esco_occupation_uri, esco_occupation_label, isco_code, isco_label, occupation_match_score, occupation_match_method, skills_oferta_json, skills_matched_essential, skills_demandados_total, skills_matcheados_esco, run_id, estado_validacion, validado_timestamp, validado_por |
+| **Indicadores** | `categoria_permanencia` (baja/media/alta), `es_republicacion` (bool), `numero_republicacion` (int), `grupo_republicacion` (text), `ventana_dias` (int) |
+| **Meta** | estado, fecha_sync, created_at, updated_at |
+
+> **Schema SQL completo:** `scripts/exports/supabase_schema.sql`
+> **Guía de sincronización:** `docs/guides/SUPABASE_SYNC.md`
+
+### Definición de Campos de Indicadores
+
+| Campo | Tipo | Cálculo | Origen |
+|-------|------|---------|--------|
+| `categoria_permanencia` | text | `baja` (<7d), `media` (7-29d), `alta` (>=30d) | Derivado de `dias_publicada` en sync |
+| `es_republicacion` | boolean | `true` si misma URL aparece en distinta fecha | Detección en sync por `url_oferta` |
+| `numero_republicacion` | integer | N° de versión dentro del grupo de republicaciones | Orden cronológico dentro del grupo |
+| `grupo_republicacion` | text | Hash que agrupa publicaciones de la misma oferta | Hash de `url_oferta` normalizada |
+| `ventana_dias` | integer | `MAX(dias_publicada)` del grupo de republicaciones | Calculado sobre el grupo completo |
+
+### T-tension_ocupaciones (NUEVA — Indicador Tensión de Demanda)
+
+Tabla pre-calculada con indicadores de tensión por ocupación ISCO. Se recalcula en cada sincronización.
+
+```sql
+CREATE TABLE IF NOT EXISTS tension_ocupaciones (
+  isco_code TEXT PRIMARY KEY,
+  isco_label TEXT,
+  total_posiciones INTEGER NOT NULL,
+  total_ofertas INTEGER NOT NULL,
+  persistencia NUMERIC(5,2) NOT NULL,  -- % posiciones con ventana > 45d
+  insistencia NUMERIC(5,2) NOT NULL,   -- % posiciones republicadas
+  cuadrante TEXT NOT NULL,             -- CRITICO/URGENTE/PASIVO/FLUIDO
+  calculado_en TIMESTAMPTZ DEFAULT NOW(),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+**Cuadrantes de tensión:**
+
+| Cuadrante | Persistencia | Insistencia | Interpretación |
+|-----------|-------------|-------------|----------------|
+| CRÍTICO | >= 50% | >= 50% | Difícil de cubrir, empleadores insisten |
+| PASIVO | >= 50% | < 50% | Duran mucho pero sin urgencia |
+| URGENTE | < 50% | >= 50% | Se cubren rápido pero alta rotación |
+| FLUIDO | < 50% | < 50% | Mercado sano |
+
+**Pantallas que usan:** [P-09](./02_ARQUITECTURA_PANTALLAS.md) (scatter plot + filtro sidebar)
+
+**Referencia:** [12_INSIGHTS_SISTEMA](./12_INSIGHTS_SISTEMA.md#grupo-5-tensión-de-demanda) — SQL de cálculo completo
+
+---
+
+## Tablas Existentes — SQLite Local (Pipeline)
+
+Tablas en SQLite local usadas por el pipeline de procesamiento.
 
 | Tabla | Descripción | Documentación |
 |-------|-------------|---------------|
@@ -633,7 +705,8 @@ Estas tablas ya existen y son usadas por el dashboard:
 | `ofertas_nlp` | Datos NLP extraídos | - |
 | `ofertas_esco_matching` | Matching ISCO/ESCO | - |
 | `skills_detalle` | Skills por oferta | - |
-| `issues` | Feedback/errores reportados | - |
+| `validation_errors` | Errores de validación automática | - |
+| `ofertas_prioridad` | Cola de priorización | - |
 
 ---
 
@@ -652,6 +725,7 @@ Ver [06_SEGURIDAD](./06_SEGURIDAD.md#rls) para políticas de seguridad a nivel d
 | alertas_config | Solo propias | Propias | Propias | Propias |
 | contenidos | Publicados: todos registrados. Borrador: solo admin | Solo admin | Solo admin | Solo admin |
 | envios_contenido | Solo propios + admin todos | Sistema | Sistema | No |
+| tension_ocupaciones | Todos | Solo admin/sistema | Solo admin/sistema | Solo admin |
 | uso_features | Solo propios | Sistema | Sistema | No |
 
 ---
@@ -662,3 +736,5 @@ Ver [06_SEGURIDAD](./06_SEGURIDAD.md#rls) para políticas de seguridad a nivel d
 |-------|---------|--------|
 | 2026-02-05 | 1.0 | Modelo SaaS (planes free/pro/enterprise, informes_publicos) |
 | 2026-02-07 | 2.0 | Modelo híbrido: T-solicitudes_acceso, T-contenidos (reemplaza informes_publicos), T-envios_contenido, pago dual en T-pagos y T-suscripciones, nuevas vistas y funciones |
+| 2026-02-11 | 2.1 | Documentar ofertas_dashboard completa (Supabase vs SQLite), agregar campos indicadores: categoria_permanencia, es_republicacion, numero_republicacion |
+| 2026-02-11 | 2.2 | T-tension_ocupaciones (indicador tensión de demanda por ISCO), campos grupo_republicacion y ventana_dias en indicadores, definición formal de campos |

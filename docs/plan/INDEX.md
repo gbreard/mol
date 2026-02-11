@@ -1,6 +1,6 @@
 # MOL Dashboard - Documentación de Planificación
 
-> Ultima actualizacion: 2026-02-08
+> Ultima actualizacion: 2026-02-11
 
 ## Mapa de Documentos
 
@@ -30,7 +30,7 @@
          │               ▼                 ▼
          │      ┌─────────────────┐ ┌─────────────────┐
          │      │ 04_MODELO       │ │ 05_USER_FLOWS   │
-         │      │ _DATOS v2.0     │ │ v2.0            │
+         │      │ _DATOS v2.2     │ │ v2.0            │
          │      │                 │ │                 │
          │      │ T-planes        │ │ F-01 a F-05     │
          │      │ T-suscripciones │ │ Registro libre, │
@@ -47,7 +47,7 @@
 │ 06_SEGURIDAD    │      │ 07_ESCALABILIDAD│      │ 08_PROPUESTA    │
 │                 │      │                 │      │ _VALOR          │
 │ S-01 a S-17     │      │ E-01 a E-15     │      │                 │
-│ 4 críticos      │      │ 3 críticos      │      │ V-01 a V-15     │
+│ 4 críticos      │      │ 3 críticos      │      │ V-01 a V-16     │
 │ 6 altos         │      │ 5 altos         │      │ 4 críticos      │
 └────────┬────────┘      └────────┬────────┘      └────────┬────────┘
          │                        │                        │
@@ -85,7 +85,7 @@
 | Issues altos | 17 |
 | Issues medios | 19 |
 | **Total issues técnicos** | **47** |
-| **Issues de usuario** | **10** |
+| **Issues de usuario** | **12** |
 
 ### Modelo de Negocio v2.0
 
@@ -102,12 +102,13 @@
 
 | Estado | Cantidad | Detalle |
 |--------|----------|---------|
-| ✅ Resueltos | 6 | Sprint 1 + Sprint 2 |
+| ✅ Resueltos | 7 | Sprint 1 + Sprint 2 + Sprint 5 |
+| 🔨 En desarrollo | 1 | Sprint 5 |
 | ⏳ Pendientes | 4 | Sprint 3 + Sprint 4 |
 
 | Pantalla | Resueltos | Pendientes |
 |----------|-----------|------------|
-| P-09 Dashboard | 3 (#1,#2,#4) | 3 (#3,#5,#6) |
+| P-09 Dashboard | 4 (#1,#2,#4,#11) | 4 (#3,#5,#6,#12) |
 | P-10 Skills | 3 (#8,#9,#10) | 1 (#7) |
 
 ### Sprints
@@ -118,6 +119,7 @@
 | 2 | #8, #9, #10 | ✅ Completado |
 | 3 | #3, #5 | ⏳ Pendiente validación |
 | 4 | #6, #7 | ⏳ Pendiente validación |
+| 5 | #11, #12 | 🔨 En progreso (#11 resuelto, #12 en desarrollo) |
 
 > Ver [ANALISIS_ISSUES_USUARIO](./ANALISIS_ISSUES_USUARIO.md) para detalle
 
@@ -148,7 +150,7 @@
 | **BLOQUEANTE** | [06_SEGURIDAD](./06_SEGURIDAD.md) | S-01 a S-04 |
 | Alta | [07_ESCALABILIDAD](./07_ESCALABILIDAD.md) | E-01 a E-03 |
 | Alta | [08_PROPUESTA_VALOR](./08_PROPUESTA_VALOR.md) | V-01 a V-04 |
-| Alta | [ANALISIS_ISSUES_USUARIO](./ANALISIS_ISSUES_USUARIO.md) | 9 issues de usuario |
+| Alta | [ANALISIS_ISSUES_USUARIO](./ANALISIS_ISSUES_USUARIO.md) | 12 issues de usuario |
 | Media | [09_ROADMAP](./09_ROADMAP.md) | Planificar fases |
 
 ## Sistema de IDs
@@ -157,11 +159,11 @@
 |---------|------|-------|-----------|
 | `P-` | Pantalla | P-01 a P-30 | [02_ARQUITECTURA](./02_ARQUITECTURA_PANTALLAS.md) |
 | `U-` | Usuario | U-VISITANTE, U-REGISTRADO, U-TRIAL, U-SUSCRIPTOR, U-INSTITUCIONAL, U-ADMIN | [01_MODELO](./01_MODELO_NEGOCIO.md) |
-| `T-` | Tabla SQL | T-planes, T-suscripciones, T-solicitudes_acceso, T-contenidos, T-envios_contenido, etc. | [04_MODELO](./04_MODELO_DATOS.md) |
+| `T-` | Tabla SQL | T-planes, T-suscripciones, T-solicitudes_acceso, T-contenidos, T-envios_contenido, T-tension_ocupaciones, etc. | [04_MODELO](./04_MODELO_DATOS.md) |
 | `F-` | Flujo | F-01 a F-05 | [05_USER_FLOWS](./05_USER_FLOWS.md) |
 | `S-` | Seguridad | S-01 a S-17 | [06_SEGURIDAD](./06_SEGURIDAD.md) |
 | `E-` | Escalabilidad | E-01 a E-15 | [07_ESCALABILIDAD](./07_ESCALABILIDAD.md) |
-| `V-` | Valor | V-01 a V-15 | [08_PROPUESTA](./08_PROPUESTA_VALOR.md) |
+| `V-` | Valor | V-01 a V-16 | [08_PROPUESTA](./08_PROPUESTA_VALOR.md) |
 | `O-` | Observabilidad | O-01 a O-XX | [10_OBSERVABILIDAD](./10_OBSERVABILIDAD.md) |
 
 ## Cómo Usar Esta Documentación

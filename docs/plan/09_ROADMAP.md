@@ -1,7 +1,7 @@
 # 9. Roadmap de Implementación
 
-> Última actualización: 2026-02-07
-> Versión: 2.0 — Modelo híbrido (acceso gated + CMS + pago dual)
+> Última actualización: 2026-02-11
+> Versión: 2.1 — Modelo híbrido + tensión de demanda (V-16)
 
 ## Referencias
 
@@ -36,7 +36,7 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 - RLS           - Cache          - Validación     - Acceso gated  - Salarios
 - Open Redirect - Vistas SQL     - Salarios       - CMS           - Personaliz.
 - Roles Admin   - Índices        - Tendencias     - Checkout dual - Integrac.
-                                                  - Alertas
+                                 - Tensión demanda- Alertas
 ```
 
 ---
@@ -117,6 +117,7 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 | V-01 | Acelerar validación | CRITICO | ⬜ |
 | V-04 | Habilitar análisis salarios | CRITICO | ⬜ |
 | V-07 | Gráficos tendencias | ALTO | ⬜ |
+| V-16 | Tensión de demanda (scatter plot + filtro sidebar) | ALTO | ⚠️ Parcial (datos existen, UI pendiente) |
 
 ### Metas de Datos
 
@@ -125,6 +126,7 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 | Ofertas con NLP | 49% | 80% |
 | Ofertas validadas | 1% | 10% |
 | Dashboard con salarios | No | Sí |
+| Tensión demanda en dashboard | Datos listos | Scatter plot + filtro |
 
 ---
 
@@ -318,3 +320,4 @@ graph LR
 |-------|---------|--------|
 | 2026-02-05 | 1.0 | Roadmap SaaS (Free/Pro/Enterprise) |
 | 2026-02-07 | 2.0 | Modelo híbrido en Fase 3: acceso gated, CMS, pago dual, workflow aprobación. Métricas actualizadas |
+| 2026-02-11 | 2.1 | V-16 tensión de demanda en Fase 2 (parcial: datos existen, UI pendiente) |

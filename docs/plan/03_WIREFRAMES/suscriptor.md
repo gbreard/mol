@@ -1,6 +1,6 @@
 # Wireframes: Suscriptor
 
-> Última actualización: 2026-02-05
+> Última actualización: 2026-02-11
 
 ## Referencias
 
@@ -39,20 +39,69 @@
 │  │ Ocupación       │  │  │   /  \    /  \    /\                    │  │ │
 │  │ [Buscar...   ] │  │  │  /    \  /    \  /  \                   │  │ │
 │  │                 │  │  │ /      \/      \/    \                  │  │ │
-│  │ [Aplicar]       │  │  │                                         │  │ │
-│  │ [Limpiar]       │  │  └─────────────────────────────────────────┘  │ │
-│  │                 │  │                                               │ │
-│  │ ─────────────── │  │  ┌──────────────────┐ ┌──────────────────┐   │ │
-│  │                 │  │  │ Top Ocupaciones  │ │ Por Provincia    │   │ │
-│  │ PLAN: PRO ✓     │  │  │ 1. Vendedor 234  │ │ CABA      45%    │   │ │
-│  │ Histórico       │  │  │ 2. Programador   │ │ Buenos A. 30%    │   │ │
-│  │ completo        │  │  │ 3. Contador 89   │ │ Córdoba   10%    │   │ │
-│  │                 │  │  └──────────────────┘ └──────────────────┘   │ │
-│  │                 │  │                                               │ │
+│  │ ─────────────── │  │  │                                         │  │ │
+│  │                 │  │  └─────────────────────────────────────────┘  │ │
+│  │ Permanencia     │  │                                               │ │
+│  │ ☑ Baja (<7d)   │  │  ┌──────────────────┐ ┌──────────────────┐   │ │
+│  │ ☑ Media (7-29d)│  │  │ Top Ocupaciones  │ │ TENSIÓN DEMANDA  │   │ │
+│  │ ☑ Alta (>=30d) │  │  │ 1. Vendedor 234  │ │                  │   │ │
+│  │                 │  │  │ 2. Programador   │ │  ●Crítico ○Pasivo│   │ │
+│  │ Tensión Demanda │  │  │ 3. Contador 89   │ │    ○    ●        │   │ │
+│  │ ☑ Crítica      │  │  └──────────────────┘ │  ● ○  ○ ●        │   │ │
+│  │ ☑ Urgente      │  │                       │   Insistencia →   │   │ │
+│  │ ☑ Pasiva       │  │  ┌──────────────────┐ └──────────────────┘   │ │
+│  │ ☑ Fluida       │  │  │ Por Provincia    │                        │ │
+│  │                 │  │  │ CABA      45%    │                        │ │
+│  │ [Aplicar]       │  │  │ Buenos A. 30%    │                        │ │
+│  │ [Limpiar]       │  │  │ Córdoba   10%    │                        │ │
+│  │                 │  │  └──────────────────┘                        │ │
+│  │ ─────────────── │  │                                               │ │
+│  │ PLAN: PRO ✓     │  │                                               │ │
 │  └─────────────────┘  └───────────────────────────────────────────────┘ │
 │                                                                          │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
+
+### Filtro Permanencia
+
+| Aspecto | Detalle |
+|---------|---------|
+| **Tipo** | Checkbox group (3 opciones) |
+| **Opciones** | Baja (<7d), Media (7-29d), Alta (>=30d) |
+| **Default** | Todas seleccionadas |
+| **Comportamiento** | Filtra ofertas por `categoria_permanencia`. Afecta TODOS los tabs (Panorama, Requerimientos, Ofertas). |
+| **Estado** | ✅ Implementado (2026-02-11) |
+
+### Filtro Tensión de Demanda
+
+| Aspecto | Detalle |
+|---------|---------|
+| **Tipo** | Checkbox group (4 opciones) |
+| **Opciones** | Crítica, Urgente, Pasiva, Fluida |
+| **Colores** | Crítica: rojo, Urgente: naranja, Pasiva: amarillo, Fluida: verde |
+| **Default** | Todas seleccionadas |
+| **Comportamiento** | Filtra ocupaciones por cuadrante de tensión (`tension_ocupaciones.cuadrante`). Cuando un cuadrante se deselecciona, las ofertas de ocupaciones en ese cuadrante se ocultan de TODOS los tabs. |
+| **Interacción con otros filtros** | Se combina con provincia, fecha y ocupación. El scatter plot se actualiza según filtros activos. |
+| **Dato origen** | Tabla `tension_ocupaciones` (pre-calculada, no afectada por filtro de fecha) |
+| **Estado** | ⏳ Pendiente (UI) — datos disponibles |
+
+### Scatter Plot Tensión de Demanda
+
+| Aspecto | Detalle |
+|---------|---------|
+| **Ubicación** | Tab Panorama, al lado de Top Ocupaciones (reemplaza posición de "Por Provincia" que baja) |
+| **Eje X** | Insistencia (% posiciones republicadas) |
+| **Eje Y** | Persistencia (% posiciones con ventana > 45d) |
+| **Tamaño punto** | Proporcional a `total_posiciones` de la ocupación |
+| **Color punto** | Según cuadrante: rojo (Crítico), naranja (Urgente), amarillo (Pasivo), verde (Fluido) |
+| **Líneas de referencia** | Líneas punteadas en X=50% e Y=50% dividiendo los 4 cuadrantes |
+| **Tooltip** | Al hover: nombre ocupación, persistencia, insistencia, total posiciones, cuadrante |
+| **Click** | Al clickear un punto, filtra el dashboard por esa ocupación |
+| **Dato origen** | Tabla `tension_ocupaciones` |
+| **Estado** | ⏳ Pendiente |
+
+> **Referencia técnica:** [12_INSIGHTS_SISTEMA](../12_INSIGHTS_SISTEMA.md#grupo-5-tensión-de-demanda) — SQL de cálculo
+> **Feature:** [V-16](../08_PROPUESTA_VALOR.md#v-16-indicador-de-tensión-de-demanda)
 
 ### Restricciones por Plan
 
