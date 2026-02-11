@@ -190,6 +190,29 @@ npx vercel login
 
 ## Documentación Extendida
 
+### Planificación del Producto (FUENTE DE VERDAD)
+
+**IMPORTANTE:** Toda la planificación del producto está en `docs/plan/`. Es la ÚNICA fuente válida para diseño, roadmap y features.
+
+| Documento | Contenido | Cuándo leer |
+|-----------|-----------|-------------|
+| **`docs/plan/INDEX.md`** | Mapa completo + estado actual | **SIEMPRE al planificar** |
+| `docs/plan/01_MODELO_NEGOCIO.md` | Usuarios, niveles, pricing | Definir accesos y planes |
+| `docs/plan/02_ARQUITECTURA_PANTALLAS.md` | 30 pantallas (P-01 a P-30) | Agregar/modificar rutas |
+| `docs/plan/03_WIREFRAMES/` | Wireframes por área | Diseñar UI |
+| `docs/plan/04_MODELO_DATOS.md` | Tablas SQL, schema | Crear/modificar tablas |
+| `docs/plan/05_USER_FLOWS.md` | Flujos F-01 a F-05 | Implementar journeys |
+| `docs/plan/06_SEGURIDAD.md` | Issues S-01 a S-17 (4 CRITICOS) | **Fase 0 BLOQUEANTE** |
+| `docs/plan/07_ESCALABILIDAD.md` | Issues E-01 a E-15 | Performance, cache, índices |
+| `docs/plan/08_PROPUESTA_VALOR.md` | Features V-01 a V-15 | Qué falta vs competidores |
+| `docs/plan/09_ROADMAP.md` | Fases 0-4 + dependencias | Priorizar trabajo |
+| `docs/plan/10_OBSERVABILIDAD.md` | Monitoreo, métricas, pipeline | Admin dashboard |
+| `docs/plan/11_CONFIGURACION_ADMIN.md` | /admin/configuracion | Panel admin |
+| `docs/plan/12_INSIGHTS_SISTEMA.md` | Performance + ubicación | Insights SQL |
+| `docs/plan/ANALISIS_ISSUES_USUARIO.md` | Feedback usuario, sprints | Issues reportados |
+
+### Documentación Técnica (Pipeline)
+
 | Tema | Documento | Cuándo leer |
 |------|-----------|-------------|
 | **Arquitectura 3 Fases** | `docs/reference/ARQUITECTURA_3_FASES.md` | Entender macro-estructura |
