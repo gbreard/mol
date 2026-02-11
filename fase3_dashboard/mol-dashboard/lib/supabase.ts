@@ -145,6 +145,11 @@ function applyFilters(query: any, filters?: DashboardFilters) {
     query = query.eq('modalidad', filters.modalidad)
   }
 
+  // Filtro por permanencia
+  if (filters.permanencia && filters.permanencia.length > 0) {
+    query = query.in('categoria_permanencia', filters.permanencia)
+  }
+
   // Filtro por jornada
   if (filters.jornada) {
     const jornadaMap: Record<string, string> = {

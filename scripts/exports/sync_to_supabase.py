@@ -171,6 +171,7 @@ def extraer_ofertas_validadas(
         o.modalidad_trabajo, o.url_oferta, o.portal, o.fecha_publicacion_iso,
         o.scrapeado_en, o.provincia_normalizada, o.localidad_normalizada,
         o.estado_oferta, o.fecha_ultimo_visto, o.dias_publicada,
+        o.categoria_permanencia,
         -- NLP
         n.titulo_limpio, n.tareas_explicitas, n.mision_rol,
         n.area_funcional, n.nivel_seniority, n.sector_empresa, n.tipo_oferta,
@@ -401,6 +402,7 @@ def transform_oferta_for_supabase(oferta: Dict) -> Dict:
         'soft_skills': oferta.get('soft_skills_list'),
         # Estado
         'estado': oferta.get('estado_oferta', 'activa'),
+        'categoria_permanencia': oferta.get('categoria_permanencia'),
         'fecha_sync': datetime.now().isoformat(),
     }
 
