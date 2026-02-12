@@ -863,7 +863,7 @@ export interface DepartamentoGroup {
   totalCount: number
 }
 
-export async function getLocalidadesGroupedByDepartamento(provinciaKey: string): Promise<DepartamentoGroup[]> {
+export async function getLocalidadesGroupedByDepartamento(provinciaKey: string, filters?: DashboardFilters): Promise<DepartamentoGroup[]> {
   const client = getSupabaseClient()
   if (!client) return []
 
@@ -874,7 +874,35 @@ export async function getLocalidadesGroupedByDepartamento(provinciaKey: string):
     client,
     TABLA_OFERTAS,
     'localidad, departamento',
-    (query) => query.eq('provincia', provinciaName).not('localidad', 'is', null)
+    (query) => {
+      query = query.eq('provincia', provinciaName).not('localidad', 'is', null)
+      // Aplicar filtros activos (excepto provincia y localidad) para que los counts
+      // sean consistentes con lo que muestra el dashboard
+      if (filters) {
+        if (filters.fechaDesde) {
+          query = query.gte('fecha_publicacion', filters.fechaDesde.toISOString().split('T')[0])
+        }
+        if (filters.fechaHasta) {
+          query = query.lte('fecha_publicacion', filters.fechaHasta.toISOString().split('T')[0])
+        }
+        if (filters.ocupacionesSeleccionadas?.length > 0) {
+          query = query.in('isco_code', filters.ocupacionesSeleccionadas)
+        }
+        if (filters.permanencia?.length > 0) {
+          query = query.in('categoria_permanencia', filters.permanencia)
+        }
+        if (filters.nivelEducativo?.length > 0) {
+          query = query.in('nivel_educativo', filters.nivelEducativo)
+        }
+        if (filters.seniority?.length > 0) {
+          query = query.in('nivel_seniority', filters.seniority)
+        }
+        if (filters.modalidad?.length > 0) {
+          query = query.in('modalidad', filters.modalidad)
+        }
+      }
+      return query
+    }
   )
 
   // Contar por localidad y agrupar por departamento

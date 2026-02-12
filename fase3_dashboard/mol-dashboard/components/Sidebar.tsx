@@ -97,7 +97,7 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
     async function loadLocalidades() {
       setLoadingLocalidades(true);
       try {
-        const groups = await getLocalidadesGroupedByDepartamento(filters.provincia);
+        const groups = await getLocalidadesGroupedByDepartamento(filters.provincia, filters);
         setDepartamentoGroups(groups);
         // Auto-expandir el primer departamento
         if (groups.length > 0) {
@@ -111,7 +111,7 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
       }
     }
     loadLocalidades();
-  }, [filters.provincia]);
+  }, [filters.provincia, filters.fechaDesde, filters.fechaHasta, JSON.stringify(filters.permanencia), JSON.stringify(filters.ocupacionesSeleccionadas), JSON.stringify(filters.nivelEducativo), JSON.stringify(filters.seniority), JSON.stringify(filters.modalidad)]);
 
   // Filtrar el árbol por búsqueda de texto
   const filteredTree = useMemo(() => {
