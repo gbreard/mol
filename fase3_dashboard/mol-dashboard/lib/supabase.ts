@@ -545,6 +545,15 @@ export interface EvolucionSemanal {
   weekStart: string;   // ISO date for sorting
 }
 
+// Evolución por períodos comparativos (BarChart)
+export interface PeriodoEvolucion {
+  label: string            // "27/01 - 02/02" o "Ene 2026"
+  ofertas: number
+  fechaDesde: string       // ISO date
+  fechaHasta: string       // ISO date
+  esPeriodoActual: boolean
+}
+
 export async function getEvolucionSemanal(filters?: DashboardFilters): Promise<EvolucionSemanal[]> {
   const client = getSupabaseClient()
   if (!client) return []
@@ -590,6 +599,206 @@ export async function getEvolucionSemanal(filters?: DashboardFilters): Promise<E
       label: `${fmt(monday)} - ${fmt(sunday)}`,
       ofertas: count,
       weekStart: mondayStr
+    }
+  })
+}
+
+// Helper: aplicar todos los filtros EXCEPTO fechas
+function applyFiltersWithoutDates(query: any, filters?: DashboardFilters) {
+  if (!filters) return query
+
+  if (filters.provincia && provinciaMap[filters.provincia]) {
+    query = query.eq('provincia', provinciaMap[filters.provincia])
+  }
+  if (filters.localidad) {
+    query = query.eq('localidad', filters.localidad)
+  }
+  if (filters.ocupacionesSeleccionadas && filters.ocupacionesSeleccionadas.length > 0) {
+    query = query.in('isco_code', filters.ocupacionesSeleccionadas)
+  }
+  if (filters.nivelEducativo) {
+    query = query.eq('nivel_educativo', filters.nivelEducativo)
+  }
+  if (filters.experiencia) {
+    switch (filters.experiencia) {
+      case 'sin_experiencia':
+        query = query.eq('experiencia_min_anios', 0)
+        break
+      case '1_2_anios':
+        query = query.gte('experiencia_min_anios', 1).lte('experiencia_min_anios', 2)
+        break
+      case '3_5_anios':
+        query = query.gte('experiencia_min_anios', 3).lte('experiencia_min_anios', 5)
+        break
+      case '5_mas':
+        query = query.gt('experiencia_min_anios', 5)
+        break
+    }
+  }
+  if (filters.seniority) {
+    query = query.eq('nivel_seniority', filters.seniority)
+  }
+  if (filters.modalidad) {
+    query = query.eq('modalidad', filters.modalidad)
+  }
+  if (filters.permanencia && filters.permanencia.length > 0) {
+    query = query.in('categoria_permanencia', filters.permanencia)
+  }
+  if (filters.jornada) {
+    const jornadaMap: Record<string, string> = {
+      'full_time': 'full-time',
+      'part_time': 'part-time',
+      'por_horas': 'por horas'
+    }
+    query = query.eq('jornada_laboral', jornadaMap[filters.jornada] || filters.jornada)
+  }
+
+  return query
+}
+
+/**
+ * Evolución por períodos comparativos.
+ * Si hay filtro de fecha: genera N períodos hacia atrás de la misma duración.
+ * Si no hay filtro: agrupa por semana y muestra las últimas N semanas.
+ * Eficiente: una sola query a Supabase, agrupación client-side.
+ */
+export async function getEvolucionPeriodos(
+  filters?: DashboardFilters,
+  cantidadPeriodos: number = 13  // 5, 13, o 0=todo
+): Promise<PeriodoEvolucion[]> {
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  const fmt = (d: Date) =>
+    `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`
+
+  const hasFechaDesde = filters?.fechaDesde != null
+  const hasFechaHasta = filters?.fechaHasta != null
+
+  // Determinar el período actual del usuario
+  const ahora = new Date()
+  const fechaHasta = hasFechaHasta ? new Date(filters!.fechaHasta!) : ahora
+  const fechaDesde = hasFechaDesde
+    ? new Date(filters!.fechaDesde!)
+    : null
+
+  // --- Caso 1: CON filtro de fecha → períodos de misma duración ---
+  if (fechaDesde) {
+    const duracionMs = fechaHasta.getTime() - fechaDesde.getTime()
+    const duracionDias = Math.max(1, Math.round(duracionMs / (1000 * 60 * 60 * 24)))
+
+    // Generar rangos de períodos hacia atrás
+    const periodos: { desde: Date; hasta: Date; esActual: boolean }[] = []
+
+    // Determinar cuántos períodos generar
+    // Si cantidadPeriodos=0 (Todo), query sin límite de fecha para saber cuántos caben
+    const maxPeriodos = cantidadPeriodos > 0 ? cantidadPeriodos : 52 // max ~1 año
+
+    for (let i = 0; i < maxPeriodos; i++) {
+      const hasta = new Date(fechaHasta.getTime() - i * duracionDias * 24 * 60 * 60 * 1000)
+      const desde = new Date(hasta.getTime() - duracionMs)
+      periodos.unshift({ desde, hasta, esActual: i === 0 })
+    }
+
+    // Query: traer TODAS las fechas con filtros aplicados (sin fecha)
+    // Limitar al rango total de todos los períodos
+    const rangoDesde = periodos[0].desde.toISOString().split('T')[0]
+    const rangoHasta = periodos[periodos.length - 1].hasta.toISOString().split('T')[0]
+
+    const data = await fetchAllPaginated<{ fecha_publicacion: string }>(
+      client,
+      TABLA_OFERTAS,
+      'fecha_publicacion',
+      (query) => {
+        query = applyFiltersWithoutDates(query, filters)
+        query = query.not('fecha_publicacion', 'is', null)
+        query = query.gte('fecha_publicacion', rangoDesde)
+        query = query.lte('fecha_publicacion', rangoHasta)
+        return query
+      }
+    )
+
+    // Contar por período
+    const resultado: PeriodoEvolucion[] = periodos.map(p => {
+      const desdeStr = p.desde.toISOString().split('T')[0]
+      const hastaStr = p.hasta.toISOString().split('T')[0]
+      const count = data.filter(d => d.fecha_publicacion >= desdeStr && d.fecha_publicacion <= hastaStr).length
+
+      // Auto-detectar label según duración
+      let label: string
+      if (duracionDias <= 7) {
+        label = `Sem ${fmt(p.desde)}`
+      } else if (duracionDias <= 31) {
+        const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+        // Si el período cabe en un mes, usar nombre del mes
+        if (p.desde.getMonth() === p.hasta.getMonth()) {
+          label = `${meses[p.desde.getMonth()]} ${p.desde.getFullYear()}`
+        } else {
+          label = `${fmt(p.desde)} - ${fmt(p.hasta)}`
+        }
+      } else {
+        label = `${fmt(p.desde)} - ${fmt(p.hasta)}`
+      }
+
+      return {
+        label,
+        ofertas: count,
+        fechaDesde: desdeStr,
+        fechaHasta: hastaStr,
+        esPeriodoActual: p.esActual,
+      }
+    })
+
+    // Si "Todo", filtrar períodos sin ofertas al inicio
+    if (cantidadPeriodos === 0) {
+      const primerConOfertas = resultado.findIndex(p => p.ofertas > 0)
+      return primerConOfertas > 0 ? resultado.slice(primerConOfertas) : resultado
+    }
+
+    return resultado
+  }
+
+  // --- Caso 2: SIN filtro de fecha → agrupar por semana ---
+  const data = await fetchAllPaginated<{ fecha_publicacion: string }>(
+    client,
+    TABLA_OFERTAS,
+    'fecha_publicacion',
+    (query) => {
+      query = applyFiltersWithoutDates(query, filters)
+      return query.not('fecha_publicacion', 'is', null)
+    }
+  )
+
+  // Agrupar por semana (lunes a domingo)
+  const weekCounts: Record<string, number> = {}
+  data.forEach(o => {
+    if (!o.fecha_publicacion) return
+    const date = new Date(o.fecha_publicacion)
+    const day = date.getDay()
+    const diff = day === 0 ? -6 : 1 - day
+    const monday = new Date(date)
+    monday.setDate(date.getDate() + diff)
+    const key = monday.toISOString().split('T')[0]
+    weekCounts[key] = (weekCounts[key] || 0) + 1
+  })
+
+  const sorted = Object.entries(weekCounts)
+    .sort((a, b) => a[0].localeCompare(b[0]))
+
+  // Tomar últimas N semanas (o todas si cantidadPeriodos=0)
+  const weeks = cantidadPeriodos > 0 ? sorted.slice(-cantidadPeriodos) : sorted
+
+  return weeks.map(([mondayStr, count], idx) => {
+    const monday = new Date(mondayStr + 'T00:00:00')
+    const sunday = new Date(monday)
+    sunday.setDate(monday.getDate() + 6)
+
+    return {
+      label: `${fmt(monday)} - ${fmt(sunday)}`,
+      ofertas: count,
+      fechaDesde: mondayStr,
+      fechaHasta: sunday.toISOString().split('T')[0],
+      esPeriodoActual: idx === weeks.length - 1,
     }
   })
 }

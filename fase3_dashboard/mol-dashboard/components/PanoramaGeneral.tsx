@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { KPICard } from "@/components/KPICard";
 import { ChartContainer } from "@/components/ChartContainer";
 import { FileText, Briefcase, Lightbulb, Sparkles, TrendingUp, AlertCircle, Award, Loader2 } from "lucide-react";
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList, Label } from "recharts";
-import { getKPIs, getTopOcupaciones, getEvolucionSemanal, getOfertasPorLocalidad, getOfertasPorProvincia, EvolucionSemanal } from "@/lib/supabase";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList, Cell } from "recharts";
+import { getKPIs, getTopOcupaciones, getEvolucionPeriodos, getOfertasPorLocalidad, getOfertasPorProvincia, PeriodoEvolucion } from "@/lib/supabase";
 import { DashboardFilters } from "@/lib/types";
 import { downloadFormattedExcel } from "@/components/ExportButton";
 import { capitalize } from "@/lib/utils";
@@ -79,20 +79,17 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
   const [kpis, setKpis] = useState<KPIData>({ totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 });
   const [occupationData, setOccupationData] = useState<ChartData[]>([]);
   const [jurisdictionData, setJurisdictionData] = useState<ChartData[]>([]);
-  const [evolutionData, setEvolutionData] = useState<EvolucionSemanal[]>([]);
+  const [evolutionData, setEvolutionData] = useState<PeriodoEvolucion[]>([]);
+  const [periodoComparacion, setPeriodoComparacion] = useState<number>(13);
   const [ocupacionesLimit, setOcupacionesLimit] = useState(10);
 
-  // Carga principal: KPIs + jurisdicción + evolución semanal
+  // Carga principal: KPIs + jurisdicción
   // Usa getKPIs (applyFilters) en vez de RPC para respetar TODOS los filtros
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
-        const [kpisData, evolucion] = await Promise.all([
-          getKPIs(filters),
-          getEvolucionSemanal(filters)
-        ]);
-
+        const kpisData = await getKPIs(filters);
         setKpis(kpisData);
 
         // Jurisdicción: por localidad si hay provincia, por provincia si no
@@ -109,11 +106,9 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
             value: p.cantidad
           })));
         } else {
-          // Localidad seleccionada → no se muestra chart
           setJurisdictionData([]);
         }
 
-        setEvolutionData(evolucion);
         setError(null);
       } catch (err) {
         console.error('Error cargando datos:', err);
@@ -124,6 +119,19 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
     }
     loadData();
   }, [filters]);
+
+  // Carga de evolución: se recarga con filtros Y con cambio de período
+  useEffect(() => {
+    async function loadEvolucion() {
+      try {
+        const evolucion = await getEvolucionPeriodos(filters, periodoComparacion);
+        setEvolutionData(evolucion);
+      } catch (err) {
+        console.error('Error cargando evolución:', err);
+      }
+    }
+    loadEvolucion();
+  }, [filters, periodoComparacion]);
 
   // Carga de ocupaciones: se recarga con filtros Y con cambio de límite
   useEffect(() => {
@@ -171,7 +179,10 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
 
     const data = evolutionData.map(item => ({
       periodo: item.label,
-      ofertas: item.ofertas
+      desde: item.fechaDesde,
+      hasta: item.fechaHasta,
+      ofertas: item.ofertas,
+      actual: item.esPeriodoActual ? 'Sí' : ''
     }));
 
     downloadFormattedExcel({
@@ -179,8 +190,11 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
       subtitle: getFiltersSubtitle(),
       data,
       columns: [
-        { header: 'Semana (lunes - domingo)', key: 'periodo' },
-        { header: 'Ofertas laborales', key: 'ofertas' }
+        { header: 'Período', key: 'periodo' },
+        { header: 'Desde', key: 'desde' },
+        { header: 'Hasta', key: 'hasta' },
+        { header: 'Ofertas laborales', key: 'ofertas' },
+        { header: 'Período actual', key: 'actual' }
       ],
       filename: 'evolucion_ofertas',
       showPercentage: false
@@ -316,33 +330,61 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
         />
       </div>
 
-      {/* Evolution Chart con Insights */}
+      {/* Evolution Chart con Insights — BarChart comparativo */}
       {(() => {
-        const showLabels = evolutionData.length <= 12;
+        const showLabels = evolutionData.length <= 15;
         const isRotated = evolutionData.length > 8;
-        const total = evolutionData.reduce((s, w) => s + w.ofertas, 0);
+        const total = evolutionData.reduce((s, p) => s + p.ofertas, 0);
+        const periodoActual = evolutionData.find(p => p.esPeriodoActual);
+        const periodoAnterior = evolutionData.length >= 2 ? evolutionData[evolutionData.length - 2] : null;
+        const PERIODO_OPTIONS = [
+          { value: 5, label: '5' },
+          { value: 13, label: '13' },
+          { value: 0, label: 'Todo' },
+        ];
+
         return (
           <ChartContainer
             title="Evolución de las ofertas laborales"
-            subtitle={`${evolutionData.length} semanas — ${total.toLocaleString()} ofertas`}
+            subtitle={`${evolutionData.length} períodos — ${total.toLocaleString()} ofertas`}
             onDownload={handleDownloadEvolucion}
+            headerExtra={
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs text-gray-500 font-medium mr-1">Períodos:</span>
+                {PERIODO_OPTIONS.map(opt => (
+                  <button
+                    key={opt.value}
+                    onClick={() => setPeriodoComparacion(opt.value)}
+                    className={`px-3 py-1 text-xs font-semibold rounded-full transition-all ${
+                      periodoComparacion === opt.value
+                        ? 'bg-blue-600 text-white shadow-sm'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            }
             insights={evolutionData.length >= 2 ? (
               <InsightList>
                 {(() => {
-                  const last = evolutionData[evolutionData.length - 1]?.ofertas || 0;
-                  const prev = evolutionData[evolutionData.length - 2]?.ofertas || 0;
-                  const diff = prev > 0 ? Math.round(((last - prev) / prev) * 100) : 0;
+                  const actual = periodoActual?.ofertas || 0;
+                  const anterior = periodoAnterior?.ofertas || 0;
+                  const diff = anterior > 0 ? Math.round(((actual - anterior) / anterior) * 100) : 0;
+                  const promedio = evolutionData.length > 0 ? Math.round(total / evolutionData.length) : 0;
+                  const pico = evolutionData.reduce((max, p) => p.ofertas > max.ofertas ? p : max, evolutionData[0]);
                   return (
                     <>
                       <InsightItem
-                        text={`Última semana: ${last.toLocaleString()} ofertas (${diff >= 0 ? '+' : ''}${diff}% vs semana anterior)`}
+                        text={`Período actual: ${actual.toLocaleString()} ofertas (${diff >= 0 ? '+' : ''}${diff}% vs anterior)`}
                         highlight
                       />
                       <InsightItem
-                        text={`Total período: ${total.toLocaleString()} ofertas`}
+                        text={`Promedio ${evolutionData.length} períodos: ${promedio.toLocaleString()} ofertas`}
                       />
                       <InsightItem
-                        text={`Promedio semanal: ${Math.round(total / evolutionData.length).toLocaleString()} ofertas`}
+                        text={`Pico: ${pico.label} con ${pico.ofertas.toLocaleString()} ofertas`}
                       />
                     </>
                   );
@@ -352,13 +394,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
           >
             {evolutionData.length > 0 ? (
               <ResponsiveContainer width="100%" height={isRotated ? 300 : 260}>
-                <LineChart data={evolutionData} margin={{ top: 20, right: 20, left: 20, bottom: isRotated ? 60 : 20 }}>
-                  <defs>
-                    <linearGradient id="colorOfertas" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.15}/>
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
+                <BarChart data={evolutionData} margin={{ top: 20, right: 20, left: 20, bottom: isRotated ? 60 : 20 }}>
                   <XAxis
                     dataKey="label"
                     axisLine={false}
@@ -369,26 +405,39 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
                     textAnchor={isRotated ? "end" : "middle"}
                     height={isRotated ? 70 : 30}
                   />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Line
-                    type="monotone"
-                    dataKey="ofertas"
-                    stroke="#3b82f6"
-                    strokeWidth={showLabels ? 4 : 2}
-                    dot={showLabels ? { fill: '#fff', stroke: '#3b82f6', strokeWidth: 3, r: 6 } : { r: 3, fill: '#3b82f6' }}
-                    activeDot={{ r: 8, fill: '#3b82f6' }}
-                    fill="url(#colorOfertas)"
-                  >
+                  <Tooltip
+                    content={({ active, payload }) => {
+                      if (!active || !payload?.length) return null;
+                      const d = payload[0].payload as PeriodoEvolucion;
+                      return (
+                        <div className="bg-white px-4 py-3 shadow-lg rounded-lg border border-gray-200">
+                          <p className="font-semibold text-gray-900">{d.label}</p>
+                          <p className="text-xs text-gray-500">{d.fechaDesde} → {d.fechaHasta}</p>
+                          <p className="text-blue-600 font-bold mt-1">{d.ofertas.toLocaleString()} ofertas</p>
+                          {d.esPeriodoActual && (
+                            <p className="text-xs text-blue-500 font-medium mt-1">Período seleccionado</p>
+                          )}
+                        </div>
+                      );
+                    }}
+                  />
+                  <Bar dataKey="ofertas" radius={[4, 4, 0, 0]}>
+                    {evolutionData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={entry.esPeriodoActual ? '#1d4ed8' : '#93c5fd'}
+                      />
+                    ))}
                     {showLabels && (
                       <LabelList
                         dataKey="ofertas"
                         position="top"
-                        style={{ fill: '#1e40af', fontSize: 13, fontWeight: 700 }}
+                        style={{ fill: '#1e40af', fontSize: 12, fontWeight: 700 }}
                         formatter={(value: number) => value.toLocaleString()}
                       />
                     )}
-                  </Line>
-                </LineChart>
+                  </Bar>
+                </BarChart>
               </ResponsiveContainer>
             ) : (
               <div className="flex items-center justify-center h-[260px] text-gray-400 text-sm">
