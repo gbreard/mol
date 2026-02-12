@@ -146,8 +146,16 @@ function StackedBar({
   )
 }
 
-// Colores para categorías L1
-const COLORS_L1 = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1', '#14b8a6', '#a855f7'];
+// Colores para categorías L1 (modo agregado)
+const COLORS_L1 = ['#2563eb', '#059669', '#d97706', '#7c3aed', '#db2777', '#0891b2', '#65a30d', '#ea580c', '#4f46e5', '#0d9488', '#c026d3'];
+
+// Paleta ampliada para skills individuales (modo específica) — 20 colores distintos
+const COLORS_SKILLS = [
+  '#2563eb', '#059669', '#d97706', '#7c3aed', '#db2777',
+  '#0891b2', '#65a30d', '#ea580c', '#4f46e5', '#0d9488',
+  '#c026d3', '#dc2626', '#2dd4bf', '#a3e635', '#fb923c',
+  '#818cf8', '#f472b6', '#38bdf8', '#a78bfa', '#34d399',
+];
 
 // Opciones de cantidad de competencias
 const CANTIDAD_OPTIONS = [20, 40, 60, 100];
@@ -369,59 +377,82 @@ export function Requerimientos({ filters }: RequerimientosProps) {
           </div>
         </div>
 
-        {/* Gráfico de barras horizontales */}
-        <div className="h-[400px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={datosGrafico}
-              layout="vertical"
-              margin={{ left: 10, right: 30 }}
-              barSize={tipoVisualizacion === 'agregada' ? 20 : 14}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
-              <XAxis type="number" stroke="#6b7280" style={{ fontSize: '11px' }} />
-              <YAxis
-                type="category"
-                dataKey="name"
-                width={tipoVisualizacion === 'agregada' ? 220 : 280}
-                stroke="#6b7280"
-                tick={{ fontSize: 11, fontWeight: 500 }}
-              />
-              <Tooltip
-                content={({ active, payload }) => {
-                  if (active && payload && payload.length) {
-                    const d = payload[0].payload;
-                    const catIndex = categoriasL1.findIndex(c => c.code === d.code);
-                    const color = catIndex >= 0 ? COLORS_L1[catIndex % COLORS_L1.length] : '#6b7280';
-                    return (
-                      <div className="bg-white px-4 py-3 shadow-xl rounded-lg border border-gray-200 text-sm">
-                        <div className="flex items-center gap-2 mb-1">
-                          <div className="w-3 h-3 rounded" style={{ backgroundColor: color }} />
-                          <p className="font-semibold text-gray-800">{capitalize(d.name)}</p>
-                        </div>
-                        <p className="text-gray-600">{d.value} menciones</p>
-                        {tipoVisualizacion === 'especifica' && d.categoriaNombre && (
-                          <p className="text-xs text-gray-400 mt-1">Categoría: {capitalize(d.categoriaNombre)}</p>
-                        )}
-                        {tipoVisualizacion === 'agregada' && d.porcentaje > 0 && (
-                          <p className="text-xs text-gray-400 mt-1">{d.porcentaje}% del total</p>
-                        )}
-                      </div>
-                    );
-                  }
-                  return null;
-                }}
-              />
-              <Bar dataKey="value" radius={[0, 4, 4, 0]}>
-                {datosGrafico.map((item, index) => {
-                  const catIndex = categoriasL1.findIndex(c => c.code === item.code);
-                  const color = catIndex >= 0 ? COLORS_L1[catIndex % COLORS_L1.length] : COLORS_L1[index % COLORS_L1.length];
-                  return <Cell key={`cell-${index}`} fill={color} />;
-                })}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        {/* Gráfico de barras horizontales — altura dinámica */}
+        {(() => {
+          const chartHeight = tipoVisualizacion === 'agregada'
+            ? Math.max(400, datosGrafico.length * 35)
+            : Math.max(400, datosGrafico.length * 24);
+          const needsScroll = chartHeight > 600;
+
+          return (
+            <div className={needsScroll ? "overflow-y-auto max-h-[600px]" : ""}>
+              <div style={{ height: chartHeight }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={datosGrafico}
+                    layout="vertical"
+                    margin={{ left: 10, right: 30 }}
+                    barSize={tipoVisualizacion === 'agregada' ? 20 : 14}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
+                    <XAxis type="number" stroke="#6b7280" style={{ fontSize: '11px' }} />
+                    <YAxis
+                      type="category"
+                      dataKey="name"
+                      width={tipoVisualizacion === 'agregada' ? 220 : 280}
+                      stroke="#6b7280"
+                      tick={{ fontSize: 11, fontWeight: 500 }}
+                      tickFormatter={(value: string) => value.length > 42 ? value.substring(0, 41) + '…' : value}
+                    />
+                    <Tooltip
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          const d = payload[0].payload;
+                          const idx = datosGrafico.findIndex(g => g.name === d.name);
+                          let color: string;
+                          if (tipoVisualizacion === 'agregada') {
+                            const catIndex = categoriasL1.findIndex(c => c.code === d.code);
+                            color = catIndex >= 0 ? COLORS_L1[catIndex % COLORS_L1.length] : '#6b7280';
+                          } else {
+                            color = COLORS_SKILLS[idx >= 0 ? idx % COLORS_SKILLS.length : 0];
+                          }
+                          return (
+                            <div className="bg-white px-4 py-3 shadow-xl rounded-lg border border-gray-200 text-sm">
+                              <div className="flex items-center gap-2 mb-1">
+                                <div className="w-3 h-3 rounded" style={{ backgroundColor: color }} />
+                                <p className="font-semibold text-gray-800">{capitalize(d.name)}</p>
+                              </div>
+                              <p className="text-gray-600">{d.value} menciones</p>
+                              {tipoVisualizacion === 'especifica' && d.categoriaNombre && (
+                                <p className="text-xs text-gray-400 mt-1">Categoría: {capitalize(d.categoriaNombre)}</p>
+                              )}
+                              {tipoVisualizacion === 'agregada' && d.porcentaje > 0 && (
+                                <p className="text-xs text-gray-400 mt-1">{d.porcentaje}% del total</p>
+                              )}
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                    <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                      {datosGrafico.map((item, index) => {
+                        let color: string;
+                        if (tipoVisualizacion === 'agregada') {
+                          const catIndex = categoriasL1.findIndex(c => c.code === item.code);
+                          color = catIndex >= 0 ? COLORS_L1[catIndex % COLORS_L1.length] : COLORS_L1[index % COLORS_L1.length];
+                        } else {
+                          color = COLORS_SKILLS[index % COLORS_SKILLS.length];
+                        }
+                        return <Cell key={`cell-${index}`} fill={color} />;
+                      })}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       {/* ========== 2. DISTRIBUCIÓN DE REQUERIMIENTOS (segundo según Issue #6) ========== */}
