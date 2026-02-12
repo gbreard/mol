@@ -319,10 +319,21 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
         const total = evolutionData.reduce((s, p) => s + p.ofertas, 0);
         const periodoActual = evolutionData.find(p => p.esPeriodoActual);
         const periodoAnterior = evolutionData.length >= 2 ? evolutionData[evolutionData.length - 2] : null;
+        // Determinar unidad de período según filtros de fecha
+        const tipoPeriodo = (() => {
+          if (!filters.fechaDesde) return 'semanas'; // sin filtro → siempre semanas
+          const desde = new Date(filters.fechaDesde);
+          const hasta = filters.fechaHasta ? new Date(filters.fechaHasta) : new Date();
+          const dias = Math.round((hasta.getTime() - desde.getTime()) / (1000 * 60 * 60 * 24));
+          if (dias <= 7) return 'semanas';
+          if (dias <= 31) return 'meses';
+          return 'períodos';
+        })();
+        const esFemenino = tipoPeriodo === 'semanas';
         const PERIODO_OPTIONS = [
-          { value: 5, label: '5' },
-          { value: 13, label: '13' },
-          { value: 0, label: 'Todo' },
+          { value: 5, label: `${esFemenino ? 'Últimas' : 'Últimos'} 5 ${tipoPeriodo}` },
+          { value: 13, label: `${esFemenino ? 'Últimas' : 'Últimos'} 13 ${tipoPeriodo}` },
+          { value: 0, label: `${esFemenino ? 'Todas las' : 'Todos los'} ${tipoPeriodo}` },
         ];
 
         return (
@@ -331,8 +342,8 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
             subtitle={`${evolutionData.length} períodos — ${total.toLocaleString()} ofertas`}
             downloadOptions={evolucionDownloadOptions}
             headerExtra={
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs text-gray-500 font-medium mr-1">Períodos:</span>
+              <div className="flex items-center gap-1.5 ml-4">
+                <span className="text-xs text-gray-500 font-medium mr-1">Número de ofertas laborales en:</span>
                 {PERIODO_OPTIONS.map(opt => (
                   <button
                     key={opt.value}
