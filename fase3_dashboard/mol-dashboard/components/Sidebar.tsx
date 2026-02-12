@@ -232,7 +232,7 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        <Accordion type="multiple" defaultValue={[]} className="w-full">
+        <Accordion type="multiple" defaultValue={["periodo"]} className="w-full">
 
           {/* Territorio */}
           <AccordionItem value="territorio" className="border-b border-gray-200">
@@ -350,9 +350,7 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
               </div>
             </AccordionTrigger>
             <AccordionContent className="px-4 pb-4 space-y-4">
-              {/* Opciones rápidas */}
               <div className="space-y-2">
-                <Label className="text-xs font-semibold text-gray-700">Opciones rápidas</Label>
                 <div className="grid grid-cols-3 gap-2">
                   <Button
                     variant="outline"
