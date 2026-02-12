@@ -12,12 +12,17 @@ import { ActiveFilters } from "@/components/ActiveFilters";
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("panorama");
-  const [filters, setFilters] = useState({
+  // Default: "Última semana" preseleccionada
+  const [filters, setFilters] = useState(() => {
+    const hoy = new Date();
+    const semanaAtras = new Date(hoy);
+    semanaAtras.setDate(hoy.getDate() - 7);
+    return {
     territorio: "nacional",
     provincia: "",
     localidad: "",
-    fechaDesde: null as Date | null,
-    fechaHasta: null as Date | null,
+    fechaDesde: semanaAtras as Date | null,
+    fechaHasta: hoy as Date | null,
     permanencia: [] as string[],
     searchOcupacion: "",
     ocupacionesSeleccionadas: [] as string[],
@@ -28,6 +33,7 @@ export default function DashboardPage() {
     modalidad: "" as string,
     jornada: "" as string,
     skillsDigitales: false as boolean,
+  };
   });
 
   const handleFilterChange = (filterType: string, value: any) => {
