@@ -2,8 +2,8 @@
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, ExternalLink, Loader2, AlertCircle, ChevronLeft, ChevronRight, Download } from "lucide-react";
-import { ExportButton, ExportColumn, downloadFormattedExcel } from "@/components/ExportButton";
+import { Search, ExternalLink, Loader2, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChartDownloadButton } from "@/components/ExportButton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
@@ -74,10 +74,11 @@ export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
     return parts.join(' | ');
   };
 
-  // Handler descarga Excel formateado
-  const handleDownloadFormatted = () => {
-    if (filteredOfertas.length === 0) return;
-    const data = filteredOfertas.map(o => ({
+  // Download options para exportación unificada
+  const downloadOptions = filteredOfertas.length > 0 ? {
+    title: 'Ofertas laborales disponibles activas a la fecha según selección',
+    subtitle: getFiltersSubtitle(),
+    data: filteredOfertas.map(o => ({
       titulo: o.titulo_limpio || o.titulo || '',
       fecha: o.fecha_publicacion ? new Date(o.fecha_publicacion).toLocaleDateString('es-AR') : '',
       competencias: [
@@ -85,37 +86,15 @@ export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
         ...(o.soft_skills || [])
       ].join('; '),
       link: o.url || ''
-    }));
-    downloadFormattedExcel({
-      title: 'Ofertas laborales disponibles activas a la fecha según selección',
-      subtitle: getFiltersSubtitle(),
-      data,
-      columns: [
-        { header: 'Título', key: 'titulo' },
-        { header: 'Fecha', key: 'fecha' },
-        { header: 'Competencias', key: 'competencias' },
-        { header: 'Link', key: 'link' }
-      ],
-      filename: 'ofertas_laborales',
-      showPercentage: false
-    });
-  };
-
-  // Columnas para exportación
-  const exportColumns: ExportColumn[] = [
-    { key: 'fecha_publicacion', header: 'Fecha', format: (v) => v ? new Date(v).toLocaleDateString('es-AR') : '' },
-    { key: 'titulo_limpio', header: 'Título', format: (v) => v || '' },
-    { key: 'empresa', header: 'Empresa', format: (v) => v || '' },
-    { key: 'provincia', header: 'Provincia', format: (v) => v || '' },
-    { key: 'localidad', header: 'Localidad', format: (v) => v || '' },
-    { key: 'modalidad', header: 'Modalidad', format: (v) => v || '' },
-    { key: 'nivel_seniority', header: 'Seniority', format: (v) => v || '' },
-    { key: 'isco_code', header: 'ISCO', format: (v) => v || '' },
-    { key: 'isco_label', header: 'Ocupación ESCO', format: (v) => v || '' },
-    { key: 'skills_tecnicas', header: 'Conocimientos', format: (v) => Array.isArray(v) ? v.join('; ') : '' },
-    { key: 'soft_skills', header: 'Competencias', format: (v) => Array.isArray(v) ? v.join('; ') : '' },
-    { key: 'url', header: 'URL', format: (v) => v || '' },
-  ];
+    })),
+    columns: [
+      { header: 'Título', key: 'titulo' },
+      { header: 'Fecha', key: 'fecha' },
+      { header: 'Competencias', key: 'competencias' },
+      { header: 'Link', key: 'link' }
+    ],
+    filename: 'ofertas_laborales',
+  } : undefined;
 
   if (loading) {
     return (
@@ -151,23 +130,7 @@ export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
               className="pl-9 bg-gray-50 hover:bg-gray-100 transition-colors"
             />
           </div>
-          {/* Export: Excel formateado + CSV genérico */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleDownloadFormatted}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-gray-600 hover:text-gray-800"
-              title="Descargar Excel formateado"
-            >
-              <Download className="w-4 h-4" />
-              Excel
-            </button>
-            <ExportButton
-              data={filteredOfertas}
-              columns={exportColumns}
-              filename="ofertas_laborales"
-              showLabel={false}
-            />
-          </div>
+          {downloadOptions && <ChartDownloadButton {...downloadOptions} />}
         </div>
       </div>
 

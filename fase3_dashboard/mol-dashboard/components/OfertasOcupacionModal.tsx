@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Briefcase, ExternalLink, Download, FileSpreadsheet, FileText, Loader2 } from 'lucide-react';
+import { X, Briefcase, ExternalLink, Loader2 } from 'lucide-react';
 import { getOfertasByIsco, OfertaPorOcupacion } from '@/lib/supabase';
-import { downloadFormattedExcel } from './ExportButton';
+import { ChartDownloadButton } from './ExportButton';
 
 interface OfertasOcupacionModalProps {
   isOpen: boolean;
@@ -21,7 +21,6 @@ export default function OfertasOcupacionModal({
   const [ofertas, setOfertas] = useState<OfertaPorOcupacion[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     if (isOpen && iscoCode) {
@@ -42,108 +41,24 @@ export default function OfertasOcupacionModal({
     }
   }
 
-  const handleExportCSV = () => {
-    if (ofertas.length === 0) return;
-
-    const headers = ['Titulo', 'Fecha', 'Link'];
-    const rows = ofertas.map(o => [
-      o.titulo_limpio || o.titulo || '',
-      o.fecha_publicacion || '',
-      o.url || ''
-    ]);
-
-    const csvContent = [
-      headers.join(','),
-      ...rows.map(row => row.map(cell => {
-        const str = String(cell);
-        if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-          return `"${str.replace(/"/g, '""')}"`;
-        }
-        return str;
-      }).join(','))
-    ].join('\n');
-
-    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `ofertas_${iscoCode}_${new Date().toISOString().split('T')[0]}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
-  const handleExportExcel = async () => {
-    if (ofertas.length === 0) return;
-
-    setExporting(true);
-    try {
-      const XLSX = await import('xlsx');
-
-      // Preparar datos
-      const dataRows = ofertas.map(o => ({
-        'Título': o.titulo_limpio || o.titulo || '',
-        'Fecha': o.fecha_publicacion || '',
-        'Competencias': o.skills_tecnicas || '',
-        'Link': o.url || ''
-      }));
-
-      // Crear worksheet vacío
-      const ws = XLSX.utils.aoa_to_sheet([]);
-
-      // Fila 1: Título
-      const title = 'Ofertas laborales disponibles activas a la fecha según selección';
-      XLSX.utils.sheet_add_aoa(ws, [[title]], { origin: 'A1' });
-
-      // Fila 2: Subtítulo (fecha + ocupación)
-      const subtitle = `Fecha de extracción: ${new Date().toLocaleDateString('es-AR')} | Ocupación: ${iscoLabel} (ISCO: ${iscoCode})`;
-      XLSX.utils.sheet_add_aoa(ws, [[subtitle]], { origin: 'A2' });
-
-      // Fila 3: vacía
-      XLSX.utils.sheet_add_aoa(ws, [['']], { origin: 'A3' });
-
-      // Fila 4: Headers
-      const headers = ['Título', 'Fecha', 'Competencias', 'Link'];
-      XLSX.utils.sheet_add_aoa(ws, [headers], { origin: 'A4' });
-
-      // Filas de datos
-      dataRows.forEach((row, idx) => {
-        const rowData = headers.map(h => row[h as keyof typeof row] ?? '');
-        XLSX.utils.sheet_add_aoa(ws, [rowData], { origin: `A${5 + idx}` });
-      });
-
-      // Fuente
-      const lastDataRow = 5 + dataRows.length;
-      XLSX.utils.sheet_add_aoa(ws, [['']], { origin: `A${lastDataRow}` });
-      XLSX.utils.sheet_add_aoa(ws, [['Fuente: MOL, en base a portales de intermediación laboral']], { origin: `A${lastDataRow + 1}` });
-
-      // Ajustar ancho de columnas
-      ws['!cols'] = [
-        { wch: 50 }, // Título
-        { wch: 12 }, // Fecha
-        { wch: 40 }, // Competencias
-        { wch: 60 }  // Link
-      ];
-
-      // Fusionar celdas para título y subtítulo
-      ws['!merges'] = [
-        { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } },
-        { s: { r: 1, c: 0 }, e: { r: 1, c: 3 } },
-        { s: { r: lastDataRow, c: 0 }, e: { r: lastDataRow, c: 3 } }
-      ];
-
-      // Crear workbook y descargar
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Ofertas');
-      XLSX.writeFile(wb, `ofertas_${iscoCode}_${new Date().toISOString().split('T')[0]}.xlsx`);
-    } catch (error) {
-      console.error('Error exporting Excel:', error);
-      alert('Error al exportar. Intente nuevamente.');
-    } finally {
-      setExporting(false);
-    }
-  };
+  // Download options unificado
+  const downloadOptions = ofertas.length > 0 ? {
+    title: 'Ofertas laborales disponibles activas a la fecha según selección',
+    subtitle: `Fecha de extracción: ${new Date().toLocaleDateString('es-AR')} | Ocupación: ${iscoLabel} (ISCO: ${iscoCode})`,
+    data: ofertas.map(o => ({
+      titulo: o.titulo_limpio || o.titulo || '',
+      fecha: o.fecha_publicacion || '',
+      competencias: o.skills_tecnicas || '',
+      link: o.url || ''
+    })),
+    columns: [
+      { header: 'Título', key: 'titulo' },
+      { header: 'Fecha', key: 'fecha' },
+      { header: 'Competencias', key: 'competencias' },
+      { header: 'Link', key: 'link' }
+    ],
+    filename: `ofertas_${iscoCode}`,
+  } : undefined;
 
   if (!isOpen) return null;
 
@@ -174,30 +89,7 @@ export default function OfertasOcupacionModal({
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Export buttons */}
-            {ofertas.length > 0 && (
-              <>
-                <button
-                  onClick={handleExportCSV}
-                  className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <FileText className="w-4 h-4 text-green-600" />
-                  CSV
-                </button>
-                <button
-                  onClick={handleExportExcel}
-                  disabled={exporting}
-                  className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
-                >
-                  {exporting ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <FileSpreadsheet className="w-4 h-4 text-blue-600" />
-                  )}
-                  Excel
-                </button>
-              </>
-            )}
+            {downloadOptions && <ChartDownloadButton {...downloadOptions} />}
 
             <button
               onClick={onClose}

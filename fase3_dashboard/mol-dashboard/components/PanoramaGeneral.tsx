@@ -7,7 +7,6 @@ import { FileText, Briefcase, MapPin, Sparkles, TrendingUp, AlertCircle, Award, 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList, Cell } from "recharts";
 import { getKPIs, getTopOcupaciones, getEvolucionPeriodos, getOfertasPorLocalidad, getOfertasPorProvincia, PeriodoEvolucion } from "@/lib/supabase";
 import { DashboardFilters } from "@/lib/types";
-import { downloadFormattedExcel } from "@/components/ExportButton";
 import { capitalize } from "@/lib/utils";
 
 interface PanoramaGeneralProps {
@@ -173,82 +172,65 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
     return parts.length > 0 ? `Filtros aplicados: ${parts.join(' | ')}` : 'Sin filtros aplicados (datos totales)';
   };
 
-  // Handler para descargar Excel de Evolución
-  const handleDownloadEvolucion = () => {
-    if (evolutionData.length === 0) return;
-
-    const data = evolutionData.map(item => ({
+  // Download options para Evolución
+  const evolucionDownloadOptions = evolutionData.length > 0 ? {
+    title: 'Evolución de las ofertas laborales activas',
+    subtitle: getFiltersSubtitle(),
+    data: evolutionData.map(item => ({
       periodo: item.label,
       desde: item.fechaDesde,
       hasta: item.fechaHasta,
       ofertas: item.ofertas,
       actual: item.esPeriodoActual ? 'Sí' : ''
-    }));
+    })),
+    columns: [
+      { header: 'Período', key: 'periodo' },
+      { header: 'Desde', key: 'desde' },
+      { header: 'Hasta', key: 'hasta' },
+      { header: 'Ofertas laborales', key: 'ofertas' },
+      { header: 'Período actual', key: 'actual' }
+    ],
+    filename: 'evolucion_ofertas',
+  } : undefined;
 
-    downloadFormattedExcel({
-      title: 'Evolución de las ofertas laborales activas',
-      subtitle: getFiltersSubtitle(),
-      data,
-      columns: [
-        { header: 'Período', key: 'periodo' },
-        { header: 'Desde', key: 'desde' },
-        { header: 'Hasta', key: 'hasta' },
-        { header: 'Ofertas laborales', key: 'ofertas' },
-        { header: 'Período actual', key: 'actual' }
-      ],
-      filename: 'evolucion_ofertas',
-      showPercentage: false
-    });
-  };
-
-  // Handler para descargar Excel de Ocupaciones
-  const handleDownloadOcupaciones = () => {
-    const total = occupationData.reduce((sum, item) => sum + item.value, 0);
-    const data = occupationData.map(item => ({
+  // Download options para Ocupaciones
+  const ocupacionesTotal = occupationData.reduce((sum, item) => sum + item.value, 0);
+  const ocupacionesDownloadOptions = occupationData.length > 0 ? {
+    title: 'Ocupaciones en las ofertas laborales activas',
+    subtitle: getFiltersSubtitle(),
+    data: occupationData.map(item => ({
       name: item.name,
       value: item.value,
-      porcentaje: total > 0 ? Math.round((item.value / total) * 100 * 10) / 10 : 0
-    }));
+      porcentaje: ocupacionesTotal > 0 ? Math.round((item.value / ocupacionesTotal) * 100 * 10) / 10 : 0
+    })),
+    columns: [
+      { header: 'Ocupación', key: 'name' },
+      { header: 'Ofertas laborales', key: 'value' },
+      { header: 'Porcentaje (%)', key: 'porcentaje' }
+    ],
+    filename: `ocupaciones_${ocupacionesLimit === 0 ? 'total' : 'top' + ocupacionesLimit}`,
+  } : undefined;
 
-    downloadFormattedExcel({
-      title: 'Ocupaciones en las ofertas laborales activas',
-      subtitle: getFiltersSubtitle(),
-      data,
-      columns: [
-        { header: 'Ocupación', key: 'name' },
-        { header: 'Ofertas laborales', key: 'value' },
-        { header: 'Porcentaje (%)', key: 'porcentaje' }
-      ],
-      filename: `ocupaciones_${ocupacionesLimit === 0 ? 'total' : 'top' + ocupacionesLimit}`,
-      showPercentage: true
-    });
-  };
-
-  // Handler para descargar Excel de Jurisdicciones
-  const handleDownloadJurisdicciones = () => {
-    const esPorLocalidad = !!filters.provincia;
-    const total = jurisdictionData.reduce((sum, item) => sum + item.value, 0);
-    const data = jurisdictionData.map(item => ({
+  // Download options para Jurisdicciones
+  const esPorLocalidad = !!filters.provincia;
+  const jurisdiccionTotal = jurisdictionData.reduce((sum, item) => sum + item.value, 0);
+  const jurisdiccionesDownloadOptions = jurisdictionData.length > 0 ? {
+    title: esPorLocalidad
+      ? 'Distribución de las ofertas laborales por localidad'
+      : 'Distribución de las ofertas laborales por jurisdicción',
+    subtitle: getFiltersSubtitle(),
+    data: jurisdictionData.map(item => ({
       name: item.name,
       value: item.value,
-      porcentaje: total > 0 ? Math.round((item.value / total) * 100 * 10) / 10 : 0
-    }));
-
-    downloadFormattedExcel({
-      title: esPorLocalidad
-        ? 'Distribución de las ofertas laborales por localidad'
-        : 'Distribución de las ofertas laborales por jurisdicción',
-      subtitle: getFiltersSubtitle(),
-      data,
-      columns: [
-        { header: esPorLocalidad ? 'Localidad' : 'Jurisdicción', key: 'name' },
-        { header: 'Ofertas laborales', key: 'value' },
-        { header: 'Porcentaje (%)', key: 'porcentaje' }
-      ],
-      filename: esPorLocalidad ? 'distribucion_localidades' : 'distribucion_geografica',
-      showPercentage: true
-    });
-  };
+      porcentaje: jurisdiccionTotal > 0 ? Math.round((item.value / jurisdiccionTotal) * 100 * 10) / 10 : 0
+    })),
+    columns: [
+      { header: esPorLocalidad ? 'Localidad' : 'Jurisdicción', key: 'name' },
+      { header: 'Ofertas laborales', key: 'value' },
+      { header: 'Porcentaje (%)', key: 'porcentaje' }
+    ],
+    filename: esPorLocalidad ? 'distribucion_localidades' : 'distribucion_geografica',
+  } : undefined;
 
   if (loading) {
     return (
@@ -347,7 +329,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
           <ChartContainer
             title="Evolución de las ofertas laborales activas"
             subtitle={`${evolutionData.length} períodos — ${total.toLocaleString()} ofertas`}
-            onDownload={handleDownloadEvolucion}
+            downloadOptions={evolucionDownloadOptions}
             headerExtra={
               <div className="flex items-center gap-1.5">
                 <span className="text-xs text-gray-500 font-medium mr-1">Períodos:</span>
@@ -459,7 +441,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
           <ChartContainer
             title="Ocupaciones en las ofertas laborales activas"
             subtitle={`${currentLabel} — ${chartItemCount} ocupaciones`}
-            onDownload={handleDownloadOcupaciones}
+            downloadOptions={ocupacionesDownloadOptions}
             headerExtra={
               <select
                 value={ocupacionesLimit}
@@ -528,7 +510,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
             : "Distribución de las ofertas laborales por jurisdicción"
           }
           subtitle={filters.provincia ? `Top 10 localidades` : `Top 10 provincias`}
-          onDownload={handleDownloadJurisdicciones}
+          downloadOptions={jurisdiccionesDownloadOptions}
           insights={
             jurisdictionData.length >= 2 ? (
               <InsightList>

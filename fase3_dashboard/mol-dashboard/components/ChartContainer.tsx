@@ -3,17 +3,19 @@
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ReactNode } from "react";
+import { ChartDownloadButton, FormattedExcelOptions } from "@/components/ExportButton";
 
 interface ChartContainerProps {
   title: string;
   subtitle?: string;
   children: ReactNode;
   onDownload?: () => void;
+  downloadOptions?: FormattedExcelOptions;
   insights?: ReactNode;
   headerExtra?: ReactNode;
 }
 
-export function ChartContainer({ title, subtitle, children, onDownload, insights, headerExtra }: ChartContainerProps) {
+export function ChartContainer({ title, subtitle, children, onDownload, downloadOptions, insights, headerExtra }: ChartContainerProps) {
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
       <div className="flex items-start justify-between mb-6">
@@ -24,7 +26,9 @@ export function ChartContainer({ title, subtitle, children, onDownload, insights
           </div>
           {headerExtra}
         </div>
-        {onDownload && (
+        {downloadOptions ? (
+          <ChartDownloadButton {...downloadOptions} />
+        ) : onDownload ? (
           <Button
             variant="outline"
             size="sm"
@@ -34,7 +38,7 @@ export function ChartContainer({ title, subtitle, children, onDownload, insights
             <Download className="w-4 h-4" />
             <span className="font-medium">Excel</span>
           </Button>
-        )}
+        ) : null}
       </div>
       {insights ? (
         <div className="grid grid-cols-[1.2fr_1fr] gap-6 items-start">

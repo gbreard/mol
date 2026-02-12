@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { Loader2, AlertCircle, GraduationCap, Clock, TrendingUp, MapPin, Users, Briefcase, Cpu, Layers, ChevronDown, Download } from "lucide-react";
-import { downloadFormattedExcel } from "@/components/ExportButton";
+import { Loader2, AlertCircle, GraduationCap, Clock, TrendingUp, MapPin, Users, Briefcase, Cpu, Layers, ChevronDown } from "lucide-react";
+import { ChartDownloadButton, FormattedExcelOptions } from "@/components/ExportButton";
 import { getDistribucionRequerimientos, getSkillsPorCategoriaL1, getSkillsDigitales, getTopSkillsConCategoria, SkillsFilters } from "@/lib/supabase";
 import { DashboardFilters } from "@/lib/types";
 import { capitalize } from "@/lib/utils";
@@ -234,9 +234,9 @@ export function Requerimientos({ filters }: RequerimientosProps) {
     return parts.length > 0 ? `Filtros aplicados: ${parts.join(' | ')}` : 'Sin filtros aplicados (datos totales)';
   };
 
-  // Handler descarga: Distribución de requerimientos
-  const handleDownloadRequerimientos = () => {
-    if (!requerimientosData) return;
+  // Download options: Distribución de requerimientos
+  const requerimientosDownloadOptions: FormattedExcelOptions | undefined = (() => {
+    if (!requerimientosData) return undefined;
     const data: { categoria: string; valor: string; ofertas: number; porcentaje: number }[] = [];
     const sections: [string, DistribucionItem[]][] = [
       ['Nivel educativo', requerimientosData.educacion],
@@ -254,7 +254,7 @@ export function Requerimientos({ filters }: RequerimientosProps) {
         data.push({ categoria: cat, valor: item.name, ofertas: item.value, porcentaje: item.porcentaje });
       }
     }
-    downloadFormattedExcel({
+    return {
       title: 'Otros requerimientos solicitados en las ofertas laborales activas',
       subtitle: getFiltersSubtitle(),
       data,
@@ -265,42 +265,38 @@ export function Requerimientos({ filters }: RequerimientosProps) {
         { header: 'Porcentaje (%)', key: 'porcentaje' }
       ],
       filename: 'distribucion_requerimientos',
-      showPercentage: true
-    });
-  };
+    };
+  })();
 
-  // Handler descarga: Competencias solicitadas en las ofertas laborales activas
-  const handleDownloadHabilidades = () => {
+  // Download options: Competencias solicitadas en las ofertas laborales activas
+  const habilidadesDownloadOptions: FormattedExcelOptions = (() => {
     if (tipoVisualizacion === 'agregada') {
-      const data = categoriasL1.slice(0, cantidadCompetencias).map(item => ({
-        nombre: item.name,
-        menciones: item.value,
-        porcentaje: item.porcentaje
-      }));
-      downloadFormattedExcel({
+      return {
         title: 'Distribución por categoría de habilidades',
         subtitle: getFiltersSubtitle(),
-        data,
+        data: categoriasL1.slice(0, cantidadCompetencias).map(item => ({
+          nombre: item.name,
+          menciones: item.value,
+          porcentaje: item.porcentaje
+        })),
         columns: [
           { header: 'Categoría', key: 'nombre' },
           { header: 'Menciones', key: 'menciones' },
           { header: 'Porcentaje (%)', key: 'porcentaje' }
         ],
         filename: 'habilidades_por_categoria',
-        showPercentage: true
-      });
+      };
     } else {
       const total = topSkillsTotal.slice(0, cantidadCompetencias).reduce((s, i) => s + i.value, 0);
-      const data = topSkillsTotal.slice(0, cantidadCompetencias).map(item => ({
-        competencia: item.name,
-        categoria: item.categoriaNombre,
-        menciones: item.value,
-        porcentaje: total > 0 ? Math.round((item.value / total) * 100 * 10) / 10 : 0
-      }));
-      downloadFormattedExcel({
+      return {
         title: 'Competencias específicas más demandadas',
         subtitle: getFiltersSubtitle(),
-        data,
+        data: topSkillsTotal.slice(0, cantidadCompetencias).map(item => ({
+          competencia: item.name,
+          categoria: item.categoriaNombre,
+          menciones: item.value,
+          porcentaje: total > 0 ? Math.round((item.value / total) * 100 * 10) / 10 : 0
+        })),
         columns: [
           { header: 'Competencia', key: 'competencia' },
           { header: 'Categoría', key: 'categoria' },
@@ -308,10 +304,9 @@ export function Requerimientos({ filters }: RequerimientosProps) {
           { header: 'Porcentaje (%)', key: 'porcentaje' }
         ],
         filename: 'competencias_especificas',
-        showPercentage: true
-      });
+      };
     }
-  };
+  })();
 
   // Datos a mostrar según tipo de visualización y cantidad
   const datosGrafico = tipoVisualizacion === 'agregada'
@@ -370,14 +365,7 @@ export function Requerimientos({ filters }: RequerimientosProps) {
               </div>
             </div>
 
-            {/* Download formatted Excel */}
-            <button
-              onClick={handleDownloadHabilidades}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-gray-600 hover:text-gray-800"
-              title="Descargar Excel"
-            >
-              <Download className="w-4 h-4" />
-            </button>
+            <ChartDownloadButton {...habilidadesDownloadOptions} />
           </div>
         </div>
 
@@ -441,13 +429,7 @@ export function Requerimientos({ filters }: RequerimientosProps) {
         <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-base font-semibold text-gray-800">Otros requerimientos solicitados en las ofertas laborales activas</h3>
-            <button
-              onClick={handleDownloadRequerimientos}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-gray-600 hover:text-gray-800"
-              title="Descargar Excel"
-            >
-              <Download className="w-4 h-4" />
-            </button>
+            {requerimientosDownloadOptions && <ChartDownloadButton {...requerimientosDownloadOptions} />}
           </div>
 
           <div className="space-y-0">

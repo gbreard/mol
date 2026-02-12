@@ -104,6 +104,38 @@ export async function downloadFormattedExcel(options: FormattedExcelOptions) {
   }
 }
 
+// Función para exportar CSV formateado con título, subtítulo y fuente (mismo formato que Excel)
+export function downloadFormattedCSV(options: FormattedExcelOptions) {
+  const { title, subtitle, source = "MOL, en base a portales de intermediación laboral", data, columns, filename } = options;
+
+  if (!data || data.length === 0) {
+    alert('No hay datos para exportar');
+    return;
+  }
+
+  const lines: string[] = [];
+  lines.push(escapeCSV(title));
+  lines.push(escapeCSV(subtitle));
+  lines.push('');
+  lines.push(columns.map(c => escapeCSV(c.header)).join(','));
+  data.forEach(item => {
+    lines.push(columns.map(col => escapeCSV(item[col.key])).join(','));
+  });
+  lines.push('');
+  lines.push(escapeCSV(`Fuente: ${source}`));
+
+  const csvContent = lines.join('\n');
+  const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${filename}_${new Date().toISOString().split('T')[0]}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 interface ExportButtonProps {
   data: any[];
   columns: ExportColumn[];
@@ -282,5 +314,64 @@ export function QuickExportButton({
       <Download className="w-4 h-4" />
       <span className="font-medium">{label}</span>
     </Button>
+  );
+}
+
+// Componente unificado de descarga para charts: dropdown con CSV + Excel formateado
+export function ChartDownloadButton(options: FormattedExcelOptions) {
+  const [loading, setLoading] = useState(false);
+
+  const handleExport = async (format: 'csv' | 'excel') => {
+    if (!options.data || options.data.length === 0) {
+      alert('No hay datos para exportar');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      if (format === 'csv') {
+        downloadFormattedCSV(options);
+      } else {
+        await downloadFormattedExcel(options);
+      }
+    } catch (error) {
+      console.error('Error al exportar:', error);
+      alert('Error al exportar los datos');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Button variant="outline" size="sm" disabled className="gap-2">
+        <Loader2 className="w-4 h-4 animate-spin" />
+      </Button>
+    );
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          className="gap-1.5 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 transition-all"
+        >
+          <Download className="w-4 h-4" />
+          <ChevronDown className="w-3 h-3" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => handleExport('csv')} className="gap-2 cursor-pointer">
+          <FileText className="w-4 h-4 text-green-600" />
+          <span>Descargar CSV</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => handleExport('excel')} className="gap-2 cursor-pointer">
+          <FileSpreadsheet className="w-4 h-4 text-blue-600" />
+          <span>Descargar Excel</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
