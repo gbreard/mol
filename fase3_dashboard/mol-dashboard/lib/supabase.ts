@@ -1216,7 +1216,14 @@ async function getFilteredOfertaIds(filters?: DashboardFilters): Promise<string[
   if (!filters) return null
 
   const hasGlobalFilter = filters.provincia || filters.fechaDesde || filters.fechaHasta ||
-    (filters.ocupacionesSeleccionadas && filters.ocupacionesSeleccionadas.length > 0)
+    (filters.ocupacionesSeleccionadas && filters.ocupacionesSeleccionadas.length > 0) ||
+    (filters.localidad && filters.localidad.length > 0) ||
+    (filters.permanencia && filters.permanencia.length > 0) ||
+    (filters.sector && filters.sector.length > 0) ||
+    (filters.nivelEducativo && filters.nivelEducativo.length > 0) ||
+    (filters.seniority && filters.seniority.length > 0) ||
+    (filters.modalidad && filters.modalidad.length > 0) ||
+    filters.experiencia || filters.jornada
 
   if (!hasGlobalFilter) return null
 
