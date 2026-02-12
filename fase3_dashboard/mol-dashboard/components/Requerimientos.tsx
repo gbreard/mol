@@ -233,7 +233,7 @@ export function Requerimientos({ filters }: RequerimientosProps) {
     const parts: string[] = [];
     if (filters.territorio && filters.territorio !== 'Nacional') parts.push(`Territorio: ${filters.territorio}`);
     if (filters.provincia && filters.provincia !== 'Todas') parts.push(`Provincia: ${filters.provincia}`);
-    if (filters.localidad) parts.push(`Localidad: ${filters.localidad}`);
+    if (filters.localidad?.length > 0) parts.push(`Localidad: ${filters.localidad.length === 1 ? filters.localidad[0] : `${filters.localidad.length} seleccionadas`}`);
     if (filters.fechaDesde) parts.push(`Desde: ${filters.fechaDesde.toLocaleDateString('es-AR')}`);
     if (filters.fechaHasta) parts.push(`Hasta: ${filters.fechaHasta.toLocaleDateString('es-AR')}`);
     if (filters.ocupacionesSeleccionadas && filters.ocupacionesSeleccionadas.length > 0) {

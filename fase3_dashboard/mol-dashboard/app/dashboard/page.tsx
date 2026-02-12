@@ -20,7 +20,7 @@ export default function DashboardPage() {
     return {
     territorio: "nacional",
     provincia: "",
-    localidad: "",
+    localidad: [] as string[],
     fechaDesde: semanaAtras as Date | null,
     fechaHasta: hoy as Date | null,
     permanencia: [] as string[],
@@ -46,13 +46,13 @@ export default function DashboardPage() {
   const handleRemoveFilter = (filterType: string) => {
     switch(filterType) {
       case 'territorio':
-        setFilters(prev => ({ ...prev, territorio: 'nacional', provincia: '', localidad: '' }));
+        setFilters(prev => ({ ...prev, territorio: 'nacional', provincia: '', localidad: [] }));
         break;
       case 'provincia':
-        setFilters(prev => ({ ...prev, provincia: '', localidad: '' }));
+        setFilters(prev => ({ ...prev, provincia: '', localidad: [] }));
         break;
       case 'localidad':
-        setFilters(prev => ({ ...prev, localidad: '' }));
+        setFilters(prev => ({ ...prev, localidad: [] }));
         break;
       case 'fechas':
         setFilters(prev => ({ ...prev, fechaDesde: null, fechaHasta: null }));

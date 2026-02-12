@@ -90,9 +90,9 @@ function applyFilters(query: any, filters?: DashboardFilters) {
     query = query.eq('provincia', provinciaMap[filters.provincia])
   }
 
-  // Filtro por localidad
-  if (filters.localidad) {
-    query = query.eq('localidad', filters.localidad)
+  // Filtro por localidad (multi-select)
+  if (filters.localidad?.length > 0) {
+    query = query.in('localidad', filters.localidad)
   }
 
   // Filtro por fecha desde
@@ -610,8 +610,8 @@ function applyFiltersWithoutDates(query: any, filters?: DashboardFilters) {
   if (filters.provincia && provinciaMap[filters.provincia]) {
     query = query.eq('provincia', provinciaMap[filters.provincia])
   }
-  if (filters.localidad) {
-    query = query.eq('localidad', filters.localidad)
+  if (filters.localidad?.length > 0) {
+    query = query.in('localidad', filters.localidad)
   }
   if (filters.ocupacionesSeleccionadas && filters.ocupacionesSeleccionadas.length > 0) {
     query = query.in('isco_code', filters.ocupacionesSeleccionadas)
@@ -848,6 +848,65 @@ export async function getLocalidadesByProvincia(provinciaKey: string): Promise<s
 
   const unique = [...new Set(data.map(d => d.localidad).filter(Boolean))]
   return unique.sort((a, b) => a.localeCompare(b, 'es'))
+}
+
+// Localidades agrupadas por departamento (para multi-select en Sidebar)
+export interface LocalidadConDepartamento {
+  localidad: string
+  departamento: string | null
+  count: number
+}
+
+export interface DepartamentoGroup {
+  departamento: string
+  localidades: { localidad: string; count: number }[]
+  totalCount: number
+}
+
+export async function getLocalidadesGroupedByDepartamento(provinciaKey: string): Promise<DepartamentoGroup[]> {
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  const provinciaName = provinciaMap[provinciaKey]
+  if (!provinciaName) return []
+
+  const data = await fetchAllPaginated<{ localidad: string; departamento: string | null }>(
+    client,
+    TABLA_OFERTAS,
+    'localidad, departamento',
+    (query) => query.eq('provincia', provinciaName).not('localidad', 'is', null)
+  )
+
+  // Contar por localidad y agrupar por departamento
+  const locCounts: Record<string, { departamento: string | null; count: number }> = {}
+  data.forEach(d => {
+    if (!d.localidad) return
+    if (!locCounts[d.localidad]) {
+      locCounts[d.localidad] = { departamento: d.departamento, count: 0 }
+    }
+    locCounts[d.localidad].count++
+  })
+
+  // Agrupar por departamento
+  const deptGroups: Record<string, { localidades: { localidad: string; count: number }[]; totalCount: number }> = {}
+
+  Object.entries(locCounts).forEach(([localidad, { departamento, count }]) => {
+    const dept = departamento || 'Sin clasificar'
+    if (!deptGroups[dept]) {
+      deptGroups[dept] = { localidades: [], totalCount: 0 }
+    }
+    deptGroups[dept].localidades.push({ localidad, count })
+    deptGroups[dept].totalCount += count
+  })
+
+  // Ordenar: departamentos por cantidad desc, localidades dentro por cantidad desc
+  return Object.entries(deptGroups)
+    .map(([departamento, { localidades, totalCount }]) => ({
+      departamento,
+      localidades: localidades.sort((a, b) => b.count - a.count),
+      totalCount,
+    }))
+    .sort((a, b) => b.totalCount - a.totalCount)
 }
 
 // Árbol de ocupaciones ISCO para el Sidebar (agrupadas por primer dígito)

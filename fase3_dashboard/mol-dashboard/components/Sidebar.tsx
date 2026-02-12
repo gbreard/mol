@@ -18,14 +18,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { getTotalOfertas, getOcupacionesTree, getLocalidadesByProvincia, OcupacionTreeNode } from "@/lib/supabase";
+import { getTotalOfertas, getOcupacionesTree, getLocalidadesGroupedByDepartamento, OcupacionTreeNode, DepartamentoGroup } from "@/lib/supabase";
 import { capitalize } from "@/lib/utils";
 
 interface SidebarProps {
   filters: {
     territorio: string;
     provincia: string;
-    localidad: string;
+    localidad: string[];
     fechaDesde: Date | null;
     fechaHasta: Date | null;
     permanencia: string[];
@@ -47,8 +47,9 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
   const [ocupacionesTree, setOcupacionesTree] = useState<OcupacionTreeNode[]>([]);
   const [totalOfertas, setTotalOfertas] = useState<number | null>(null);
   const [loadingTree, setLoadingTree] = useState(true);
-  const [localidades, setLocalidades] = useState<string[]>([]);
+  const [departamentoGroups, setDepartamentoGroups] = useState<DepartamentoGroup[]>([]);
   const [loadingLocalidades, setLoadingLocalidades] = useState(false);
+  const [expandedDepts, setExpandedDepts] = useState<string[]>([]);
 
   const toggleNode = (nodeId: string) => {
     setExpandedNodes(prev =>
@@ -83,22 +84,28 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
     }
     loadSidebarData();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.territorio, filters.provincia, filters.localidad, filters.fechaDesde, filters.fechaHasta, filters.permanencia]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.territorio, filters.provincia, JSON.stringify(filters.localidad), filters.fechaDesde, filters.fechaHasta, filters.permanencia]);
 
-  // Cargar localidades cuando cambia la provincia seleccionada
+  // Cargar localidades agrupadas por departamento cuando cambia la provincia
   useEffect(() => {
     if (!filters.provincia) {
-      setLocalidades([]);
+      setDepartamentoGroups([]);
+      setExpandedDepts([]);
       return;
     }
     async function loadLocalidades() {
       setLoadingLocalidades(true);
       try {
-        const locs = await getLocalidadesByProvincia(filters.provincia);
-        setLocalidades(locs);
+        const groups = await getLocalidadesGroupedByDepartamento(filters.provincia);
+        setDepartamentoGroups(groups);
+        // Auto-expandir el primer departamento
+        if (groups.length > 0) {
+          setExpandedDepts([groups[0].departamento]);
+        }
       } catch (err) {
         console.error('Error cargando localidades:', err);
-        setLocalidades([]);
+        setDepartamentoGroups([]);
       } finally {
         setLoadingLocalidades(false);
       }
@@ -131,7 +138,7 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
   const activeFiltersCount =
     (filters.territorio !== 'nacional' ? 1 : 0) +
     (filters.provincia ? 1 : 0) +
-    (filters.localidad ? 1 : 0) +
+    (filters.localidad.length > 0 ? 1 : 0) +
     (filters.fechaDesde || filters.fechaHasta ? 1 : 0) +
     filters.permanencia.length +
     filters.ocupacionesSeleccionadas.length +
@@ -154,7 +161,7 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
   const clearAllFilters = () => {
     onFilterChange('territorio', 'nacional');
     onFilterChange('provincia', '');
-    onFilterChange('localidad', '');
+    onFilterChange('localidad', []);
     onFilterChange('fechaDesde', null);
     onFilterChange('fechaHasta', null);
     onFilterChange('permanencia', []);
@@ -250,7 +257,7 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
                 onFilterChange('territorio', value);
                 if (value === 'nacional') {
                   onFilterChange('provincia', '');
-                  onFilterChange('localidad', '');
+                  onFilterChange('localidad', []);
                 }
               }}>
                 {/* Nacional */}
@@ -277,7 +284,7 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
                         value={filters.provincia}
                         onChange={(e) => {
                           onFilterChange('provincia', e.target.value);
-                          onFilterChange('localidad', '');
+                          onFilterChange('localidad', []);
                         }}
                         className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-blue-400 transition-colors"
                       >
@@ -308,26 +315,115 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
                         <option value="santiago">Santiago del Estero</option>
                       </select>
 
-                      {/* Localidad - aparece cuando hay provincia seleccionada */}
+                      {/* Localidad multi-select agrupada por departamento */}
                       {filters.provincia && (
                         <div className="mt-3 space-y-1.5 animate-in fade-in slide-in-from-top duration-300">
-                          <Label className="text-xs text-gray-600">Localidad</Label>
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs text-gray-600">
+                              Localidad
+                              {filters.localidad.length > 0 && (
+                                <Badge variant="secondary" className="ml-1.5 text-xs px-1.5 py-0 bg-blue-100 text-blue-700">
+                                  {filters.localidad.length}
+                                </Badge>
+                              )}
+                            </Label>
+                            {filters.localidad.length > 0 && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => onFilterChange('localidad', [])}
+                                className="h-5 px-1.5 text-xs text-gray-500 hover:text-red-600"
+                              >
+                                Limpiar
+                              </Button>
+                            )}
+                          </div>
                           {loadingLocalidades ? (
                             <div className="flex items-center gap-2 p-2 text-xs text-gray-500">
                               <Loader2 className="w-3 h-3 animate-spin" />
                               Cargando localidades...
                             </div>
                           ) : (
-                            <select
-                              value={filters.localidad}
-                              onChange={(e) => onFilterChange('localidad', e.target.value)}
-                              className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-blue-400 transition-colors"
-                            >
-                              <option value="">Todas las localidades</option>
-                              {localidades.map((loc) => (
-                                <option key={loc} value={loc}>{loc}</option>
-                              ))}
-                            </select>
+                            <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-lg bg-white">
+                              {departamentoGroups.map((group) => {
+                                const deptLocalidades = group.localidades.map(l => l.localidad);
+                                const selectedInDept = deptLocalidades.filter(l => filters.localidad.includes(l)).length;
+                                const allSelectedInDept = selectedInDept === deptLocalidades.length;
+                                const isExpanded = expandedDepts.includes(group.departamento);
+
+                                return (
+                                  <div key={group.departamento} className="border-b border-gray-100 last:border-b-0">
+                                    {/* Departamento header */}
+                                    <div className="flex items-center gap-1 px-2 py-1.5 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                      <button
+                                        onClick={() => setExpandedDepts(prev =>
+                                          prev.includes(group.departamento)
+                                            ? prev.filter(d => d !== group.departamento)
+                                            : [...prev, group.departamento]
+                                        )}
+                                        className="flex items-center gap-1 flex-1 text-left"
+                                      >
+                                        {isExpanded ? (
+                                          <ChevronDown className="w-3 h-3 text-gray-500 flex-shrink-0" />
+                                        ) : (
+                                          <ChevronRight className="w-3 h-3 text-gray-500 flex-shrink-0" />
+                                        )}
+                                        <span className="text-xs font-semibold text-gray-700 truncate">{group.departamento}</span>
+                                        <span className="text-xs text-gray-400 flex-shrink-0">({group.totalCount})</span>
+                                      </button>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => {
+                                          const current = filters.localidad;
+                                          const newSelection = allSelectedInDept
+                                            ? current.filter(l => !deptLocalidades.includes(l))
+                                            : [...new Set([...current, ...deptLocalidades])];
+                                          onFilterChange('localidad', newSelection);
+                                        }}
+                                        className="h-5 px-1.5 text-xs text-blue-600 hover:bg-blue-50 flex-shrink-0"
+                                      >
+                                        {allSelectedInDept ? 'Quitar' : 'Todas'}
+                                      </Button>
+                                    </div>
+                                    {/* Localidades */}
+                                    {isExpanded && (
+                                      <div className="px-1 py-0.5">
+                                        {group.localidades.map(({ localidad, count }) => (
+                                          <div
+                                            key={localidad}
+                                            className={`flex items-center gap-2 px-2 py-1 rounded transition-all ${
+                                              filters.localidad.includes(localidad)
+                                                ? 'bg-blue-50'
+                                                : 'hover:bg-gray-50'
+                                            }`}
+                                          >
+                                            <Checkbox
+                                              id={`loc-${localidad}`}
+                                              checked={filters.localidad.includes(localidad)}
+                                              onCheckedChange={(checked) => {
+                                                const newValue = checked
+                                                  ? [...filters.localidad, localidad]
+                                                  : filters.localidad.filter(l => l !== localidad);
+                                                onFilterChange('localidad', newValue);
+                                              }}
+                                              className="h-3.5 w-3.5"
+                                            />
+                                            <Label htmlFor={`loc-${localidad}`} className="text-xs text-gray-600 cursor-pointer flex-1 truncate">
+                                              {localidad}
+                                            </Label>
+                                            <span className="text-xs text-gray-400 flex-shrink-0">{count}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                              {departamentoGroups.length === 0 && (
+                                <p className="text-xs text-gray-500 text-center py-3">Sin localidades</p>
+                              )}
+                            </div>
                           )}
                         </div>
                       )}

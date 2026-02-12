@@ -7,7 +7,7 @@ interface ActiveFiltersProps {
   filters: {
     territorio: string;
     provincia: string;
-    localidad: string;
+    localidad: string[];
     fechaDesde: Date | null;
     fechaHasta: Date | null;
     permanencia: string[];
@@ -21,10 +21,12 @@ export function ActiveFilters({ filters, onRemoveFilter }: ActiveFiltersProps) {
   const activeFilters = [];
 
   // Territorio
-  if (filters.territorio !== 'nacional' || filters.provincia || filters.localidad) {
+  if (filters.territorio !== 'nacional' || filters.provincia || filters.localidad.length > 0) {
     let label = '';
-    if (filters.localidad) {
-      label = `Localidad: ${filters.localidad}`;
+    if (filters.localidad.length > 0) {
+      label = filters.localidad.length === 1
+        ? `Localidad: ${filters.localidad[0]}`
+        : `Localidades: ${filters.localidad.length} seleccionadas`;
     } else if (filters.provincia) {
       label = `Provincia: ${filters.provincia}`;
     } else {

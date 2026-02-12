@@ -92,7 +92,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
         setKpis(kpisData);
 
         // Jurisdicción: por localidad si hay provincia, por provincia si no
-        if (filters.provincia && !filters.localidad) {
+        if (filters.provincia && filters.localidad.length === 0) {
           const localidades = await getOfertasPorLocalidad(filters);
           setJurisdictionData(localidades.slice(0, 10).map(l => ({
             name: l.jurisdiccion,
@@ -156,8 +156,8 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
     if (filters.provincia && filters.provincia !== 'Todas') {
       parts.push(`Provincia: ${filters.provincia}`);
     }
-    if (filters.localidad) {
-      parts.push(`Localidad: ${filters.localidad}`);
+    if (filters.localidad?.length > 0) {
+      parts.push(`Localidad: ${filters.localidad.length === 1 ? filters.localidad[0] : `${filters.localidad.length} seleccionadas`}`);
     }
     if (filters.fechaDesde) {
       parts.push(`Desde: ${filters.fechaDesde.toLocaleDateString('es-AR')}`);
@@ -514,7 +514,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
       })()}
 
       {/* Jurisdiction Distribution — ocultar si hay localidad seleccionada */}
-      {!filters.localidad && jurisdictionData.length > 0 && (
+      {filters.localidad.length === 0 && jurisdictionData.length > 0 && (
         <ChartContainer
           title={filters.provincia
             ? "Distribución de las ofertas laborales por localidad"
