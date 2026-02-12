@@ -112,9 +112,9 @@ function applyFilters(query: any, filters?: DashboardFilters) {
     query = query.in('isco_code', filters.ocupacionesSeleccionadas)
   }
 
-  // Filtro por nivel educativo
-  if (filters.nivelEducativo) {
-    query = query.eq('nivel_educativo', filters.nivelEducativo)
+  // Filtro por nivel educativo (multi-select)
+  if (filters.nivelEducativo?.length > 0) {
+    query = query.in('nivel_educativo', filters.nivelEducativo)
   }
 
   // Filtro por experiencia (rangos)
@@ -135,14 +135,14 @@ function applyFilters(query: any, filters?: DashboardFilters) {
     }
   }
 
-  // Filtro por seniority
-  if (filters.seniority) {
-    query = query.eq('nivel_seniority', filters.seniority)
+  // Filtro por seniority (multi-select)
+  if (filters.seniority?.length > 0) {
+    query = query.in('nivel_seniority', filters.seniority)
   }
 
-  // Filtro por modalidad
-  if (filters.modalidad) {
-    query = query.eq('modalidad', filters.modalidad)
+  // Filtro por modalidad (multi-select)
+  if (filters.modalidad?.length > 0) {
+    query = query.in('modalidad', filters.modalidad)
   }
 
   // Filtro por permanencia
@@ -616,8 +616,8 @@ function applyFiltersWithoutDates(query: any, filters?: DashboardFilters) {
   if (filters.ocupacionesSeleccionadas && filters.ocupacionesSeleccionadas.length > 0) {
     query = query.in('isco_code', filters.ocupacionesSeleccionadas)
   }
-  if (filters.nivelEducativo) {
-    query = query.eq('nivel_educativo', filters.nivelEducativo)
+  if (filters.nivelEducativo?.length > 0) {
+    query = query.in('nivel_educativo', filters.nivelEducativo)
   }
   if (filters.experiencia) {
     switch (filters.experiencia) {
@@ -635,11 +635,11 @@ function applyFiltersWithoutDates(query: any, filters?: DashboardFilters) {
         break
     }
   }
-  if (filters.seniority) {
-    query = query.eq('nivel_seniority', filters.seniority)
+  if (filters.seniority?.length > 0) {
+    query = query.in('nivel_seniority', filters.seniority)
   }
-  if (filters.modalidad) {
-    query = query.eq('modalidad', filters.modalidad)
+  if (filters.modalidad?.length > 0) {
+    query = query.in('modalidad', filters.modalidad)
   }
   if (filters.permanencia && filters.permanencia.length > 0) {
     query = query.in('categoria_permanencia', filters.permanencia)

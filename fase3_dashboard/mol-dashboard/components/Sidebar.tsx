@@ -32,10 +32,10 @@ interface SidebarProps {
     searchOcupacion: string;
     ocupacionesSeleccionadas: string[];
     // Filtros de Requerimientos
-    nivelEducativo: string;
+    nivelEducativo: string[];
     experiencia: string;
-    seniority: string;
-    modalidad: string;
+    seniority: string[];
+    modalidad: string[];
     jornada: string;
     skillsDigitales: boolean;
   };
@@ -135,19 +135,19 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
     (filters.fechaDesde || filters.fechaHasta ? 1 : 0) +
     filters.permanencia.length +
     filters.ocupacionesSeleccionadas.length +
-    (filters.nivelEducativo ? 1 : 0) +
+    filters.nivelEducativo.length +
     (filters.experiencia ? 1 : 0) +
-    (filters.seniority ? 1 : 0) +
-    (filters.modalidad ? 1 : 0) +
+    filters.seniority.length +
+    filters.modalidad.length +
     (filters.jornada ? 1 : 0) +
     (filters.skillsDigitales ? 1 : 0);
 
   // Contar filtros de requerimientos activos
   const requerimientosCount =
-    (filters.nivelEducativo ? 1 : 0) +
+    filters.nivelEducativo.length +
     (filters.experiencia ? 1 : 0) +
-    (filters.seniority ? 1 : 0) +
-    (filters.modalidad ? 1 : 0) +
+    filters.seniority.length +
+    filters.modalidad.length +
     (filters.jornada ? 1 : 0) +
     (filters.skillsDigitales ? 1 : 0);
 
@@ -161,10 +161,10 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
     onFilterChange('searchOcupacion', '');
     onFilterChange('ocupacionesSeleccionadas', []);
     // Limpiar filtros de requerimientos
-    onFilterChange('nivelEducativo', '');
+    onFilterChange('nivelEducativo', []);
     onFilterChange('experiencia', '');
-    onFilterChange('seniority', '');
-    onFilterChange('modalidad', '');
+    onFilterChange('seniority', []);
+    onFilterChange('modalidad', []);
     onFilterChange('jornada', '');
     onFilterChange('skillsDigitales', false);
   };
@@ -540,18 +540,29 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
               {/* Nivel Educativo */}
               <div className="space-y-2">
                 <Label className="text-xs font-semibold text-gray-700">Nivel Educativo</Label>
-                <select
-                  value={filters.nivelEducativo}
-                  onChange={(e) => onFilterChange('nivelEducativo', e.target.value)}
-                  className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-blue-400 transition-colors"
-                >
-                  <option value="">Todos</option>
-                  <option value="primario">Primario</option>
-                  <option value="secundario">Secundario</option>
-                  <option value="terciario">Terciario</option>
-                  <option value="universitario">Universitario</option>
-                  <option value="posgrado">Posgrado</option>
-                </select>
+                {[
+                  { id: 'edu-primario', value: 'primario', label: 'Primario' },
+                  { id: 'edu-secundario', value: 'secundario', label: 'Secundario' },
+                  { id: 'edu-terciario', value: 'terciario', label: 'Terciario' },
+                  { id: 'edu-universitario', value: 'universitario', label: 'Universitario' },
+                  { id: 'edu-posgrado', value: 'posgrado', label: 'Posgrado' },
+                ].map(opt => (
+                  <div key={opt.id} className={`flex items-center space-x-2 p-2.5 rounded-lg transition-all duration-200 ${
+                    filters.nivelEducativo.includes(opt.value) ? 'bg-blue-50 border border-blue-200' : 'hover:bg-gray-100'
+                  }`}>
+                    <Checkbox
+                      id={opt.id}
+                      checked={filters.nivelEducativo.includes(opt.value)}
+                      onCheckedChange={(checked) => {
+                        const newValue = checked
+                          ? [...filters.nivelEducativo, opt.value]
+                          : filters.nivelEducativo.filter(v => v !== opt.value);
+                        onFilterChange('nivelEducativo', newValue);
+                      }}
+                    />
+                    <Label htmlFor={opt.id} className="text-sm font-normal cursor-pointer flex-1">{opt.label}</Label>
+                  </div>
+                ))}
               </div>
 
               {/* Experiencia */}
@@ -573,33 +584,55 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
               {/* Seniority */}
               <div className="space-y-2">
                 <Label className="text-xs font-semibold text-gray-700">Seniority</Label>
-                <select
-                  value={filters.seniority}
-                  onChange={(e) => onFilterChange('seniority', e.target.value)}
-                  className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-blue-400 transition-colors"
-                >
-                  <option value="">Todos</option>
-                  <option value="trainee">Trainee</option>
-                  <option value="junior">Junior</option>
-                  <option value="semi-senior">Semi-Senior</option>
-                  <option value="senior">Senior</option>
-                  <option value="manager">Manager</option>
-                </select>
+                {[
+                  { id: 'sen-trainee', value: 'trainee', label: 'Trainee' },
+                  { id: 'sen-junior', value: 'junior', label: 'Junior' },
+                  { id: 'sen-semisenior', value: 'semi-senior', label: 'Semi-Senior' },
+                  { id: 'sen-senior', value: 'senior', label: 'Senior' },
+                  { id: 'sen-manager', value: 'manager', label: 'Manager' },
+                ].map(opt => (
+                  <div key={opt.id} className={`flex items-center space-x-2 p-2.5 rounded-lg transition-all duration-200 ${
+                    filters.seniority.includes(opt.value) ? 'bg-blue-50 border border-blue-200' : 'hover:bg-gray-100'
+                  }`}>
+                    <Checkbox
+                      id={opt.id}
+                      checked={filters.seniority.includes(opt.value)}
+                      onCheckedChange={(checked) => {
+                        const newValue = checked
+                          ? [...filters.seniority, opt.value]
+                          : filters.seniority.filter(v => v !== opt.value);
+                        onFilterChange('seniority', newValue);
+                      }}
+                    />
+                    <Label htmlFor={opt.id} className="text-sm font-normal cursor-pointer flex-1">{opt.label}</Label>
+                  </div>
+                ))}
               </div>
 
               {/* Modalidad */}
               <div className="space-y-2">
                 <Label className="text-xs font-semibold text-gray-700">Modalidad</Label>
-                <select
-                  value={filters.modalidad}
-                  onChange={(e) => onFilterChange('modalidad', e.target.value)}
-                  className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-blue-400 transition-colors"
-                >
-                  <option value="">Todas</option>
-                  <option value="presencial">Presencial</option>
-                  <option value="remoto">Remoto</option>
-                  <option value="hibrido">Híbrido</option>
-                </select>
+                {[
+                  { id: 'mod-presencial', value: 'presencial', label: 'Presencial' },
+                  { id: 'mod-remoto', value: 'remoto', label: 'Remoto' },
+                  { id: 'mod-hibrido', value: 'hibrido', label: 'Híbrido' },
+                ].map(opt => (
+                  <div key={opt.id} className={`flex items-center space-x-2 p-2.5 rounded-lg transition-all duration-200 ${
+                    filters.modalidad.includes(opt.value) ? 'bg-blue-50 border border-blue-200' : 'hover:bg-gray-100'
+                  }`}>
+                    <Checkbox
+                      id={opt.id}
+                      checked={filters.modalidad.includes(opt.value)}
+                      onCheckedChange={(checked) => {
+                        const newValue = checked
+                          ? [...filters.modalidad, opt.value]
+                          : filters.modalidad.filter(v => v !== opt.value);
+                        onFilterChange('modalidad', newValue);
+                      }}
+                    />
+                    <Label htmlFor={opt.id} className="text-sm font-normal cursor-pointer flex-1">{opt.label}</Label>
+                  </div>
+                ))}
               </div>
 
               {/* Jornada */}

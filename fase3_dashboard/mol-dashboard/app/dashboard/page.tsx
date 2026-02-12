@@ -27,10 +27,10 @@ export default function DashboardPage() {
     searchOcupacion: "",
     ocupacionesSeleccionadas: [] as string[],
     // Filtros de Requerimientos (Issue #5)
-    nivelEducativo: "" as string,
+    nivelEducativo: [] as string[],
     experiencia: "" as string,
-    seniority: "" as string,
-    modalidad: "" as string,
+    seniority: [] as string[],
+    modalidad: [] as string[],
     jornada: "" as string,
     skillsDigitales: false as boolean,
   };
@@ -66,25 +66,25 @@ export default function DashboardPage() {
       case 'requerimientos':
         setFilters(prev => ({
           ...prev,
-          nivelEducativo: '',
+          nivelEducativo: [],
           experiencia: '',
-          seniority: '',
-          modalidad: '',
+          seniority: [],
+          modalidad: [],
           jornada: '',
           skillsDigitales: false
         }));
         break;
       case 'nivelEducativo':
-        setFilters(prev => ({ ...prev, nivelEducativo: '' }));
+        setFilters(prev => ({ ...prev, nivelEducativo: [] }));
         break;
       case 'experiencia':
         setFilters(prev => ({ ...prev, experiencia: '' }));
         break;
       case 'seniority':
-        setFilters(prev => ({ ...prev, seniority: '' }));
+        setFilters(prev => ({ ...prev, seniority: [] }));
         break;
       case 'modalidad':
-        setFilters(prev => ({ ...prev, modalidad: '' }));
+        setFilters(prev => ({ ...prev, modalidad: [] }));
         break;
       case 'jornada':
         setFilters(prev => ({ ...prev, jornada: '' }));
