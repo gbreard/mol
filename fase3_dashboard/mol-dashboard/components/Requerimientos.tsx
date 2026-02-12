@@ -255,7 +255,7 @@ export function Requerimientos({ filters }: RequerimientosProps) {
       }
     }
     downloadFormattedExcel({
-      title: 'Distribución de los requerimientos',
+      title: 'Otros requerimientos solicitados en las ofertas laborales activas',
       subtitle: getFiltersSubtitle(),
       data,
       columns: [
@@ -269,7 +269,7 @@ export function Requerimientos({ filters }: RequerimientosProps) {
     });
   };
 
-  // Handler descarga: Análisis de habilidades
+  // Handler descarga: Competencias solicitadas en las ofertas laborales activas
   const handleDownloadHabilidades = () => {
     if (tipoVisualizacion === 'agregada') {
       const data = categoriasL1.slice(0, cantidadCompetencias).map(item => ({
@@ -331,7 +331,7 @@ export function Requerimientos({ filters }: RequerimientosProps) {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Layers className="w-5 h-5 text-blue-600" />
-            <h2 className="text-base font-semibold text-gray-800">Análisis de habilidades</h2>
+            <h2 className="text-base font-semibold text-gray-800">Competencias solicitadas en las ofertas laborales activas</h2>
           </div>
 
           {/* Selectores (Issue #6) */}
@@ -440,7 +440,7 @@ export function Requerimientos({ filters }: RequerimientosProps) {
       {requerimientosData && (
         <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-base font-semibold text-gray-800">Distribución de los requerimientos</h3>
+            <h3 className="text-base font-semibold text-gray-800">Otros requerimientos solicitados en las ofertas laborales activas</h3>
             <button
               onClick={handleDownloadRequerimientos}
               className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-gray-600 hover:text-gray-800"
