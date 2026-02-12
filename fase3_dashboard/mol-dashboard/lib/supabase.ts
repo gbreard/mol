@@ -160,6 +160,11 @@ function applyFilters(query: any, filters?: DashboardFilters) {
     query = query.eq('jornada_laboral', jornadaMap[filters.jornada] || filters.jornada)
   }
 
+  // Filtro por sector CLAE (multi-select)
+  if (filters.sector?.length > 0) {
+    query = query.in('clae_descripcion_seccion', filters.sector)
+  }
+
   return query
 }
 
@@ -652,6 +657,9 @@ function applyFiltersWithoutDates(query: any, filters?: DashboardFilters) {
     }
     query = query.eq('jornada_laboral', jornadaMap[filters.jornada] || filters.jornada)
   }
+  if (filters.sector?.length > 0) {
+    query = query.in('clae_descripcion_seccion', filters.sector)
+  }
 
   return query
 }
@@ -935,6 +943,57 @@ export async function getLocalidadesGroupedByDepartamento(provinciaKey: string, 
       totalCount,
     }))
     .sort((a, b) => b.totalCount - a.totalCount)
+}
+
+// Sectores CLAE para el Sidebar
+export interface SectorCount {
+  sector: string
+  count: number
+}
+
+export async function getSectores(filters?: DashboardFilters): Promise<SectorCount[]> {
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  const data = await fetchAllPaginated<{ clae_descripcion_seccion: string | null }>(
+    client,
+    TABLA_OFERTAS,
+    'clae_descripcion_seccion',
+    (query) => {
+      query = query.not('clae_descripcion_seccion', 'is', null)
+      if (filters) {
+        if (filters.provincia && provinciaMap[filters.provincia]) {
+          query = query.eq('provincia', provinciaMap[filters.provincia])
+        }
+        if (filters.localidad?.length > 0) {
+          query = query.in('localidad', filters.localidad)
+        }
+        if (filters.fechaDesde) {
+          query = query.gte('fecha_publicacion', filters.fechaDesde.toISOString().split('T')[0])
+        }
+        if (filters.fechaHasta) {
+          query = query.lte('fecha_publicacion', filters.fechaHasta.toISOString().split('T')[0])
+        }
+        if (filters.ocupacionesSeleccionadas?.length > 0) {
+          query = query.in('isco_code', filters.ocupacionesSeleccionadas)
+        }
+        if (filters.permanencia?.length > 0) {
+          query = query.in('categoria_permanencia', filters.permanencia)
+        }
+      }
+      return query
+    }
+  )
+
+  const counts: Record<string, number> = {}
+  data.forEach(d => {
+    if (!d.clae_descripcion_seccion) return
+    counts[d.clae_descripcion_seccion] = (counts[d.clae_descripcion_seccion] || 0) + 1
+  })
+
+  return Object.entries(counts)
+    .map(([sector, count]) => ({ sector, count }))
+    .sort((a, b) => b.count - a.count)
 }
 
 // Árbol de ocupaciones ISCO para el Sidebar (agrupadas por primer dígito)

@@ -14,6 +14,8 @@ export interface DashboardFilters {
   modalidad: string[];
   jornada: string;
   skillsDigitales: boolean;
+  // Filtro por sector CLAE (Issue E3E291EC)
+  sector: string[];
 }
 
 // ========== ISSUES/FEEDBACK SYSTEM ==========

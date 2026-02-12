@@ -23,6 +23,7 @@ Tablas Supabase:
 """
 
 import argparse
+import difflib
 import json
 import logging
 import sqlite3
@@ -30,6 +31,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Dict, Any
+from unicodedata import normalize as unicode_normalize
 
 # Setup paths
 PROJECT_ROOT = Path(__file__).parent.parent.parent
@@ -46,6 +48,9 @@ logger = logging.getLogger(__name__)
 CONFIG_PATH = PROJECT_ROOT / "config" / "supabase_config.json"
 DB_PATH = PROJECT_ROOT / "database" / "bumeran_scraping.db"
 BATCH_SIZE = 100  # Ofertas por batch para evitar timeouts
+INDEC_PATH = PROJECT_ROOT / "config" / "indec_localidades.json"
+INDEC_CORRECCIONES_PATH = PROJECT_ROOT / "config" / "indec_correcciones.json"
+CLAE_NOMENCLADOR_PATH = PROJECT_ROOT / "config" / "clae_nomenclador.json"
 
 # Nombres de tablas en Supabase (según fase3_dashboard/sql/)
 TABLE_OFERTAS = 'ofertas_dashboard'
@@ -108,7 +113,7 @@ CAMPOS_OFERTAS = [
 
 CAMPOS_NLP = [
     'id_oferta', 'titulo_limpio', 'tareas_explicitas', 'mision_rol',
-    'area_funcional', 'nivel_seniority', 'sector_empresa', 'tipo_oferta',
+    'area_funcional', 'nivel_seniority', 'sector_empresa', 'clae_seccion', 'tipo_oferta',
     'tipo_contrato', 'provincia', 'localidad', 'modalidad', 'jornada_laboral',
     'nivel_educativo', 'titulo_requerido', 'experiencia_min_anios',
     'tiene_gente_cargo', 'requiere_movilidad_propia',
@@ -175,7 +180,7 @@ def extraer_ofertas_validadas(
         o.es_republicacion, o.numero_republicacion,
         -- NLP
         n.titulo_limpio, n.tareas_explicitas, n.mision_rol,
-        n.area_funcional, n.nivel_seniority, n.sector_empresa, n.tipo_oferta,
+        n.area_funcional, n.nivel_seniority, n.sector_empresa, n.clae_seccion, n.tipo_oferta,
         n.tipo_contrato, n.provincia, n.localidad, n.modalidad, n.jornada_laboral,
         n.nivel_educativo, n.titulo_requerido, n.experiencia_min_anios,
         n.tiene_gente_cargo, n.requiere_movilidad_propia,
@@ -359,6 +364,186 @@ def extraer_esco_skills_usadas(
 
 
 # ============================================================
+# LOOKUP DEPARTAMENTO INDEC
+# ============================================================
+
+# Cache global - se carga una sola vez
+_indec_data = None
+_indec_correcciones = None
+_clae_secciones = None
+
+
+def _normalizar_key(texto: str) -> str:
+    """Normaliza texto para lookup: lowercase, sin tildes."""
+    if not texto:
+        return ""
+    nfkd = unicode_normalize('NFKD', texto)
+    sin_tildes = ''.join(c for c in nfkd if not (0x0300 <= ord(c) <= 0x036F))
+    return sin_tildes.strip().lower()
+
+
+def _cargar_indec():
+    """Carga datos INDEC y correcciones (lazy, una sola vez)."""
+    global _indec_data, _indec_correcciones
+
+    if _indec_data is None:
+        if INDEC_PATH.exists():
+            with open(INDEC_PATH, 'r', encoding='utf-8') as f:
+                _indec_data = json.load(f)
+            logger.debug(f"INDEC cargado: {_indec_data.get('_total_localidades_unicas', 0)} localidades")
+        else:
+            logger.warning(f"INDEC no encontrado: {INDEC_PATH}")
+            _indec_data = {"por_provincia": {}}
+
+    if _indec_correcciones is None:
+        if INDEC_CORRECCIONES_PATH.exists():
+            with open(INDEC_CORRECCIONES_PATH, 'r', encoding='utf-8') as f:
+                _indec_correcciones = json.load(f)
+        else:
+            logger.warning(f"Correcciones no encontradas: {INDEC_CORRECCIONES_PATH}")
+            _indec_correcciones = {"correcciones": [], "barrios_caba": [], "meta_areas": [], "multi_localidad": []}
+
+
+def lookup_departamento(localidad: str, provincia: str) -> Optional[str]:
+    """
+    Busca el departamento/partido INDEC para una localidad.
+
+    Orden de prioridad:
+    1. Correcciones manuales (exactas por input + provincia)
+    2. Barrios CABA
+    3. Meta-áreas (Buenos Aires, Gran Buenos Aires)
+    4. Multi-localidad (Wilde, Avellaneda)
+    5. Lookup exacto en INDEC (key normalizada)
+    6. Fuzzy match en INDEC (difflib, cutoff=0.85)
+    7. None si no se encuentra
+
+    Args:
+        localidad: Nombre de localidad (puede ser None)
+        provincia: Nombre de provincia (puede ser None)
+
+    Returns:
+        Departamento/partido o None
+    """
+    _cargar_indec()
+
+    if not localidad:
+        # Sin localidad: si provincia es CABA, departamento es CABA
+        if provincia and _normalizar_key(provincia) == 'caba':
+            return 'CABA'
+        return None
+
+    loc_key = _normalizar_key(localidad)
+    prov_key = _normalizar_key(provincia) if provincia else ""
+
+    # 1. Correcciones manuales
+    for corr in _indec_correcciones.get("correcciones", []):
+        corr_input = _normalizar_key(corr["input"])
+        corr_prov = _normalizar_key(corr.get("provincia", ""))
+
+        if corr_input == loc_key:
+            # Si la corrección tiene provincia, debe coincidir
+            if corr_prov and corr_prov != prov_key:
+                continue
+            return corr.get("departamento")
+
+    # 2. Barrios CABA
+    for barrio in _indec_correcciones.get("barrios_caba", []):
+        if _normalizar_key(barrio["input"]) == loc_key:
+            return barrio.get("departamento", "CABA")
+
+    # 3. Meta-áreas
+    for meta in _indec_correcciones.get("meta_areas", []):
+        meta_prov = _normalizar_key(meta.get("provincia", ""))
+        if _normalizar_key(meta["input"]) == loc_key:
+            if meta_prov and meta_prov != prov_key:
+                continue
+            return meta.get("departamento")  # Puede ser None
+
+    # 4. Multi-localidad
+    for multi in _indec_correcciones.get("multi_localidad", []):
+        if _normalizar_key(multi["input"]) == loc_key:
+            return multi.get("departamento")
+
+    # 5. Provincia CABA sin localidad específica
+    if prov_key == 'caba':
+        return 'CABA'
+
+    # 6. Lookup exacto en INDEC
+    por_provincia = _indec_data.get("por_provincia", {})
+
+    if prov_key in por_provincia:
+        locs = por_provincia[prov_key].get("localidades", {})
+        if loc_key in locs:
+            return locs[loc_key]["departamento"]
+
+    # 7. Fuzzy match en la misma provincia
+    if prov_key in por_provincia:
+        locs = por_provincia[prov_key].get("localidades", {})
+        all_keys = list(locs.keys())
+        matches = difflib.get_close_matches(loc_key, all_keys, n=1, cutoff=0.85)
+        if matches:
+            dept = locs[matches[0]]["departamento"]
+            logger.debug(f"Fuzzy match: '{localidad}' ~ '{locs[matches[0]]['nombre']}' → {dept}")
+            return dept
+
+    # 8. Buscar en todas las provincias (último recurso)
+    for pk, pdata in por_provincia.items():
+        if pk == prov_key:
+            continue
+        locs = pdata.get("localidades", {})
+        if loc_key in locs:
+            logger.debug(f"Cross-province match: '{localidad}' found in {pdata['nombre']} → {locs[loc_key]['departamento']}")
+            return locs[loc_key]["departamento"]
+
+    return None
+
+
+def _get_clae_descripcion_seccion(clae_seccion: str | None) -> str | None:
+    """Devuelve el nombre legible de una sección CLAE (ej: 'G' → 'Comercio')."""
+    global _clae_secciones
+
+    if not clae_seccion:
+        return None
+
+    if _clae_secciones is None:
+        if CLAE_NOMENCLADOR_PATH.exists():
+            with open(CLAE_NOMENCLADOR_PATH, 'r', encoding='utf-8') as f:
+                nomenclador = json.load(f)
+            # Crear mapeo sección → nombre corto (title case, sin detalles)
+            _clae_secciones = {}
+            NOMBRES_CORTOS = {
+                'A': 'Agricultura y Pesca',
+                'B': 'Minería',
+                'C': 'Industria Manufacturera',
+                'D': 'Electricidad y Gas',
+                'E': 'Agua y Saneamiento',
+                'F': 'Construcción',
+                'G': 'Comercio',
+                'H': 'Transporte y Almacenamiento',
+                'I': 'Alojamiento y Gastronomía',
+                'J': 'Tecnología y Comunicaciones',
+                'K': 'Finanzas y Seguros',
+                'L': 'Servicios Inmobiliarios',
+                'M': 'Servicios Profesionales',
+                'N': 'Servicios Administrativos',
+                'O': 'Administración Pública',
+                'P': 'Enseñanza',
+                'Q': 'Salud',
+                'R': 'Arte y Esparcimiento',
+                'S': 'Otros Servicios',
+                'Z': 'Otros Sectores',
+            }
+            for sec in nomenclador.get('secciones', {}):
+                _clae_secciones[sec] = NOMBRES_CORTOS.get(sec, sec)
+            logger.debug(f"CLAE secciones cargadas: {len(_clae_secciones)}")
+        else:
+            logger.warning(f"CLAE nomenclador no encontrado: {CLAE_NOMENCLADOR_PATH}")
+            _clae_secciones = {}
+
+    return _clae_secciones.get(clae_seccion.upper().strip())
+
+
+# ============================================================
 # UPLOAD A SUPABASE
 # ============================================================
 
@@ -377,6 +562,10 @@ def transform_oferta_for_supabase(oferta: Dict) -> Dict:
         # Ubicación (prioriza NLP sobre scraping)
         'provincia': oferta.get('provincia') or oferta.get('provincia_normalizada'),
         'localidad': oferta.get('localidad') or oferta.get('localidad_normalizada'),
+        'departamento': lookup_departamento(
+            oferta.get('localidad') or oferta.get('localidad_normalizada'),
+            oferta.get('provincia') or oferta.get('provincia_normalizada'),
+        ),
         # ESCO - columnas completas para perfil argentino
         'esco_occupation_uri': oferta.get('esco_occupation_uri'),
         'esco_occupation_label': oferta.get('esco_occupation_label'),
@@ -389,6 +578,8 @@ def transform_oferta_for_supabase(oferta: Dict) -> Dict:
         'nivel_seniority': oferta.get('nivel_seniority'),
         'area_funcional': oferta.get('area_funcional'),
         'sector_empresa': oferta.get('sector_empresa'),
+        'clae_seccion': oferta.get('clae_seccion'),
+        'clae_descripcion_seccion': _get_clae_descripcion_seccion(oferta.get('clae_seccion')),
         # NLP - Requerimientos (para tab Requerimientos del dashboard)
         'nivel_educativo': oferta.get('nivel_educativo'),
         'experiencia_min_anios': oferta.get('experiencia_min_anios'),

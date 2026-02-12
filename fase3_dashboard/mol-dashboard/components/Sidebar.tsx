@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Search, ChevronRight, ChevronDown, MapPin, Calendar as CalendarIcon, Timer, Briefcase, Filter, X, Loader2, GraduationCap, Clock, Laptop } from "lucide-react";
+import { Search, ChevronRight, ChevronDown, MapPin, Calendar as CalendarIcon, Timer, Briefcase, Filter, X, Loader2, GraduationCap, Clock, Laptop, Building2 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { getTotalOfertas, getOcupacionesTree, getLocalidadesGroupedByDepartamento, OcupacionTreeNode, DepartamentoGroup } from "@/lib/supabase";
+import { getTotalOfertas, getOcupacionesTree, getLocalidadesGroupedByDepartamento, getSectores, OcupacionTreeNode, DepartamentoGroup, SectorCount } from "@/lib/supabase";
 import { capitalize } from "@/lib/utils";
 
 interface SidebarProps {
@@ -38,6 +38,7 @@ interface SidebarProps {
     modalidad: string[];
     jornada: string;
     skillsDigitales: boolean;
+    sector: string[];
   };
   onFilterChange: (filterType: string, value: any) => void;
 }
@@ -50,6 +51,8 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
   const [departamentoGroups, setDepartamentoGroups] = useState<DepartamentoGroup[]>([]);
   const [loadingLocalidades, setLoadingLocalidades] = useState(false);
   const [expandedDepts, setExpandedDepts] = useState<string[]>([]);
+  const [sectores, setSectores] = useState<SectorCount[]>([]);
+  const [loadingSectores, setLoadingSectores] = useState(false);
 
   const toggleNode = (nodeId: string) => {
     setExpandedNodes(prev =>
@@ -112,6 +115,23 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
     }
     loadLocalidades();
   }, [filters.provincia, filters.fechaDesde, filters.fechaHasta, JSON.stringify(filters.permanencia), JSON.stringify(filters.ocupacionesSeleccionadas), JSON.stringify(filters.nivelEducativo), JSON.stringify(filters.seniority), JSON.stringify(filters.modalidad)]);
+
+  // Cargar sectores CLAE con counts filtrados
+  useEffect(() => {
+    async function loadSectores() {
+      setLoadingSectores(true);
+      try {
+        const data = await getSectores(filters);
+        setSectores(data);
+      } catch (err) {
+        console.error('Error cargando sectores:', err);
+        setSectores([]);
+      } finally {
+        setLoadingSectores(false);
+      }
+    }
+    loadSectores();
+  }, [filters.fechaDesde, filters.fechaHasta, filters.provincia, JSON.stringify(filters.localidad), JSON.stringify(filters.permanencia), JSON.stringify(filters.ocupacionesSeleccionadas)]);
 
   // Filtrar el árbol por búsqueda de texto
   const filteredTree = useMemo(() => {
@@ -616,6 +636,57 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
                   <Label htmlFor="perm-alta" className="text-sm font-normal cursor-pointer flex-1">Alta (+30 días)</Label>
                 </div>
               </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* Sector CLAE */}
+          <AccordionItem value="sector" className="border-b border-gray-200">
+            <AccordionTrigger className="px-4 py-3 hover:bg-gray-50 transition-colors">
+              <div className="flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-bold text-gray-900">Sector</span>
+                {filters.sector.length > 0 && (
+                  <Badge variant="secondary" className="text-xs px-1.5 py-0 bg-blue-100 text-blue-700">
+                    {filters.sector.length}
+                  </Badge>
+                )}
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="px-4 pb-4">
+              {loadingSectores ? (
+                <div className="flex items-center justify-center py-4">
+                  <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+                  <span className="ml-2 text-xs text-gray-500">Cargando...</span>
+                </div>
+              ) : sectores.length === 0 ? (
+                <p className="text-xs text-gray-500 py-2">Sin datos de sector</p>
+              ) : (
+                <div className="space-y-1 max-h-64 overflow-y-auto">
+                  {sectores.map((s) => (
+                    <div
+                      key={s.sector}
+                      className={`flex items-center space-x-2 p-2 rounded-lg transition-all duration-200 ${
+                        filters.sector.includes(s.sector) ? 'bg-blue-50 border border-blue-200' : 'hover:bg-gray-100'
+                      }`}
+                    >
+                      <Checkbox
+                        id={`sector-${s.sector}`}
+                        checked={filters.sector.includes(s.sector)}
+                        onCheckedChange={(checked) => {
+                          const newValue = checked
+                            ? [...filters.sector, s.sector]
+                            : filters.sector.filter(v => v !== s.sector);
+                          onFilterChange('sector', newValue);
+                        }}
+                      />
+                      <Label htmlFor={`sector-${s.sector}`} className="text-xs font-normal cursor-pointer flex-1 truncate">
+                        {s.sector}
+                      </Label>
+                      <span className="text-[10px] text-gray-400 font-medium">{s.count}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </AccordionContent>
           </AccordionItem>
 

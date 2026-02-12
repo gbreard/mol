@@ -1,6 +1,6 @@
 "use client";
 
-import { X, MapPin, Calendar, Timer, Briefcase } from "lucide-react";
+import { X, MapPin, Calendar, Timer, Briefcase, Building2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface ActiveFiltersProps {
@@ -13,6 +13,7 @@ interface ActiveFiltersProps {
     permanencia: string[];
     searchOcupacion: string;
     ocupacionesSeleccionadas: string[];
+    sector: string[];
   };
   onRemoveFilter: (filterType: string) => void;
 }
@@ -69,6 +70,18 @@ export function ActiveFilters({ filters, onRemoveFilter }: ActiveFiltersProps) {
       label: `Ocupaciones: ${filters.ocupacionesSeleccionadas.length} seleccionada${filters.ocupacionesSeleccionadas.length > 1 ? 's' : ''}`,
       icon: Briefcase,
       onRemove: () => onRemoveFilter('ocupaciones')
+    });
+  }
+
+  // Sector
+  if (filters.sector?.length > 0) {
+    activeFilters.push({
+      key: 'sector',
+      label: filters.sector.length === 1
+        ? `Sector: ${filters.sector[0]}`
+        : `Sectores: ${filters.sector.length} seleccionados`,
+      icon: Building2,
+      onRemove: () => onRemoveFilter('sector')
     });
   }
 

@@ -33,6 +33,7 @@ export default function DashboardPage() {
     modalidad: [] as string[],
     jornada: "" as string,
     skillsDigitales: false as boolean,
+    sector: [] as string[],
   };
   });
 
@@ -91,6 +92,9 @@ export default function DashboardPage() {
         break;
       case 'skillsDigitales':
         setFilters(prev => ({ ...prev, skillsDigitales: false }));
+        break;
+      case 'sector':
+        setFilters(prev => ({ ...prev, sector: [] }));
         break;
       default:
         break;
