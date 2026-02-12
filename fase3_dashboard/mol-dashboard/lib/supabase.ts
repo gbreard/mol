@@ -316,7 +316,7 @@ export async function getKPIs(filters?: DashboardFilters) {
     totalOfertas: totalOfertas || 0,
     ocupacionesDistintas: new Set(ofertas.map(o => o.isco_code).filter(Boolean)).size,
     empresasActivas: new Set(ofertas.map(o => o.empresa).filter(Boolean)).size,
-    provincias: new Set(ofertas.map(o => o.provincia).filter(Boolean)).size
+    provincias: new Set(ofertas.map(o => o.provincia).filter(Boolean)).size,
   }
 }
 

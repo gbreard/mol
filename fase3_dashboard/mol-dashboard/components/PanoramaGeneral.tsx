@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { KPICard } from "@/components/KPICard";
 import { ChartContainer } from "@/components/ChartContainer";
-import { FileText, Briefcase, Lightbulb, Sparkles, TrendingUp, AlertCircle, Award, Loader2 } from "lucide-react";
+import { FileText, Briefcase, MapPin, Sparkles, TrendingUp, AlertCircle, Award, Loader2 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList, Cell } from "recharts";
 import { getKPIs, getTopOcupaciones, getEvolucionPeriodos, getOfertasPorLocalidad, getOfertasPorProvincia, PeriodoEvolucion } from "@/lib/supabase";
 import { DashboardFilters } from "@/lib/types";
@@ -186,7 +186,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
     }));
 
     downloadFormattedExcel({
-      title: 'Evolución de las ofertas laborales',
+      title: 'Evolución de las ofertas laborales activas',
       subtitle: getFiltersSubtitle(),
       data,
       columns: [
@@ -211,7 +211,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
     }));
 
     downloadFormattedExcel({
-      title: 'Distribución de las ofertas por ocupación',
+      title: 'Ocupaciones en las ofertas laborales activas',
       subtitle: getFiltersSubtitle(),
       data,
       columns: [
@@ -236,8 +236,8 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
 
     downloadFormattedExcel({
       title: esPorLocalidad
-        ? 'Distribución de las ofertas por localidad'
-        : 'Distribución de las ofertas por jurisdicción',
+        ? 'Distribución de las ofertas laborales por localidad'
+        : 'Distribución de las ofertas laborales por jurisdicción',
       subtitle: getFiltersSubtitle(),
       data,
       columns: [
@@ -279,8 +279,8 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
             <Award className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-gray-900">Datos relevantes del período</h3>
-            <p className="text-sm text-gray-600">Resumen de las ofertas laborales analizadas</p>
+            <h3 className="text-xl font-bold text-gray-900">Datos relevantes del período seleccionado</h3>
+            <p className="text-sm text-gray-600">Resumen de las ofertas laborales activas (publicadas) durante el período seleccionado</p>
           </div>
         </div>
         <div className="grid grid-cols-3 gap-4">
@@ -289,7 +289,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
               <TrendingUp className="w-5 h-5 text-green-600" />
               <span className="text-xs font-semibold text-gray-500 uppercase">Total analizado</span>
             </div>
-            <p className="text-sm text-gray-700 font-medium">Se han procesado <span className="font-bold text-blue-600">{kpis.totalOfertas.toLocaleString()}</span> ofertas laborales</p>
+            <p className="text-sm text-gray-700 font-medium">Se han identificado <span className="font-bold text-blue-600">{kpis.totalOfertas.toLocaleString()}</span> ofertas laborales activas</p>
           </div>
           <div className="bg-white rounded-xl p-4 border border-blue-200 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
@@ -311,21 +311,21 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
       {/* KPIs */}
       <div className="grid grid-cols-3 gap-6">
         <KPICard
-          title="Ofertas analizadas"
+          title="Ofertas laborales"
           value={kpis.totalOfertas}
           icon={FileText}
           color="blue"
         />
         <KPICard
-          title="Ocupaciones identificadas"
+          title="Ocupaciones en ofertas laborales"
           value={kpis.ocupacionesDistintas}
           icon={Briefcase}
           color="green"
         />
         <KPICard
-          title="Empresas activas"
-          value={kpis.empresasActivas}
-          icon={Lightbulb}
+          title="Provincias con demanda"
+          value={kpis.provincias}
+          icon={MapPin}
           color="purple"
         />
       </div>
@@ -345,7 +345,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
 
         return (
           <ChartContainer
-            title="Evolución de las ofertas laborales"
+            title="Evolución de las ofertas laborales activas"
             subtitle={`${evolutionData.length} períodos — ${total.toLocaleString()} ofertas`}
             onDownload={handleDownloadEvolucion}
             headerExtra={
@@ -457,7 +457,7 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
 
         return (
           <ChartContainer
-            title="Ofertas por ocupación"
+            title="Ocupaciones en las ofertas laborales activas"
             subtitle={`${currentLabel} — ${chartItemCount} ocupaciones`}
             onDownload={handleDownloadOcupaciones}
             headerExtra={
@@ -524,8 +524,8 @@ export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
       {!filters.localidad && jurisdictionData.length > 0 && (
         <ChartContainer
           title={filters.provincia
-            ? "Distribución de las ofertas por localidad"
-            : "Distribución de las ofertas por jurisdicción"
+            ? "Distribución de las ofertas laborales por localidad"
+            : "Distribución de las ofertas laborales por jurisdicción"
           }
           subtitle={filters.provincia ? `Top 10 localidades` : `Top 10 provincias`}
           onDownload={handleDownloadJurisdicciones}
