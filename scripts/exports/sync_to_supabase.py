@@ -543,6 +543,64 @@ def _get_clae_descripcion_seccion(clae_seccion: str | None) -> str | None:
     return _clae_secciones.get(clae_seccion.upper().strip())
 
 
+# Normalización de provincias NLP → nombres oficiales
+# CABA es jurisdicción separada de Buenos Aires provincia.
+# "Capital Federal" es nombre viejo → normalizar a CABA.
+_PROVINCIA_NORMALIZACION = {
+    'capital federal': 'CABA',
+    'c.a.b.a.': 'CABA',
+    'ciudad autonoma de buenos aires': 'CABA',
+    'ciudad autónoma de buenos aires': 'CABA',
+    'cordoba': 'Córdoba',
+    'tucuman': 'Tucumán',
+    'neuquen': 'Neuquén',
+    'entre rios': 'Entre Ríos',
+    'rio negro': 'Río Negro',
+}
+
+# Localidades/barrios que indican CABA (cuando scraping dice provincia=Buenos Aires)
+_LOCALIDADES_CABA = {
+    'capital federal', 'caba', 'palermo', 'recoleta', 'retiro',
+    'saavedra', 'mataderos', 'villa pueyrredon', 'puerto madero',
+    'belgrano', 'caballito', 'flores', 'barracas', 'almagro',
+    'san telmo', 'villa crespo', 'colegiales', 'nuñez', 'liniers',
+    'villa urquiza', 'villa devoto', 'boedo', 'san cristobal',
+    'parque patricios', 'la boca', 'monserrat', 'balvanera',
+    'constitucion', 'once', 'congreso', 'microcentro',
+}
+
+
+def _normalizar_ubicacion(provincia: str, localidad: str) -> tuple:
+    """
+    Normaliza provincia y localidad al vocabulario oficial del dashboard.
+
+    Reglas:
+    - CABA es provincia separada de Buenos Aires
+    - Capital Federal (nombre viejo) → CABA
+    - Si scraping dice Buenos Aires + localidad es barrio CABA → provincia=CABA, localidad=None
+    - Localidades de CABA quedan vacías (comunas no se publican)
+    - Tildes: Cordoba→Córdoba, Tucuman→Tucumán, etc.
+    """
+    if not provincia:
+        return provincia, localidad
+
+    key = provincia.strip().lower()
+
+    # 1. Normalizar nombre de provincia (tildes, Capital Federal→CABA)
+    prov_norm = _PROVINCIA_NORMALIZACION.get(key, provincia.strip())
+
+    # 2. Si provincia=Buenos Aires pero localidad es barrio/zona CABA → reclasificar
+    if prov_norm == 'Buenos Aires' and localidad:
+        if localidad.strip().lower() in _LOCALIDADES_CABA:
+            return 'CABA', None
+
+    # 3. Si provincia=CABA → localidad vacía (comunas no se publican)
+    if prov_norm == 'CABA':
+        return 'CABA', None
+
+    return prov_norm, localidad
+
+
 # ============================================================
 # UPLOAD A SUPABASE
 # ============================================================
@@ -551,6 +609,12 @@ def transform_oferta_for_supabase(oferta: Dict) -> Dict:
     """
     Transforma una oferta de SQLite al formato de ofertas_dashboard de Supabase.
     """
+    # Ubicación: NLP primero (99% cobertura), scraping fallback (4%)
+    # Normalizar: CABA separado de Buenos Aires, tildes, Capital Federal→CABA
+    raw_provincia = oferta.get('provincia') or oferta.get('provincia_normalizada')
+    raw_localidad = oferta.get('localidad') or oferta.get('localidad_normalizada')
+    provincia_norm, localidad_norm = _normalizar_ubicacion(raw_provincia, raw_localidad)
+
     return {
         'id_oferta': str(oferta.get('id_oferta')),
         'titulo': oferta.get('titulo'),
@@ -559,13 +623,10 @@ def transform_oferta_for_supabase(oferta: Dict) -> Dict:
         'fecha_publicacion': oferta.get('fecha_publicacion_iso'),
         'url': oferta.get('url_oferta'),
         'portal': oferta.get('portal'),
-        # Ubicación (prioriza NLP sobre scraping)
-        'provincia': oferta.get('provincia') or oferta.get('provincia_normalizada'),
-        'localidad': oferta.get('localidad') or oferta.get('localidad_normalizada'),
-        'departamento': lookup_departamento(
-            oferta.get('localidad') or oferta.get('localidad_normalizada'),
-            oferta.get('provincia') or oferta.get('provincia_normalizada'),
-        ),
+        # Ubicación (NLP + normalización de provincias)
+        'provincia': provincia_norm,
+        'localidad': localidad_norm,
+        'departamento': lookup_departamento(localidad_norm, provincia_norm),
         # ESCO - columnas completas para perfil argentino
         'esco_occupation_uri': oferta.get('esco_occupation_uri'),
         'esco_occupation_label': oferta.get('esco_occupation_label'),
