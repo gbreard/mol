@@ -664,23 +664,23 @@
     "reglas": [
       {
         "localidad_contiene": "Córdoba Capital",
-        "forzar_provincia": "Cordoba"
+        "forzar_provincia": "Córdoba"
       },
       {
         "localidad_contiene": "Córdoba capital",
-        "forzar_provincia": "Cordoba"
+        "forzar_provincia": "Córdoba"
       },
       {
         "localidad_exacta": "Córdoba",
-        "forzar_provincia": "Cordoba"
+        "forzar_provincia": "Córdoba"
       },
       {
         "localidad_contiene": "Yerba Buena",
-        "forzar_provincia": "Tucuman"
+        "forzar_provincia": "Tucumán"
       },
       {
         "localidad_contiene": "San Miguel de Tucumán",
-        "forzar_provincia": "Tucuman"
+        "forzar_provincia": "Tucumán"
       },
       {
         "localidad_exacta": "Rosario",
@@ -712,7 +712,7 @@
       },
       {
         "localidad_exacta": "Neuquén",
-        "forzar_provincia": "Neuquen"
+        "forzar_provincia": "Neuquén"
       },
       {
         "localidad_exacta": "Salta",
@@ -732,7 +732,7 @@
       },
       {
         "localidad_exacta": "Paraná",
-        "forzar_provincia": "Entre Rios"
+        "forzar_provincia": "Entre Ríos"
       },
       {
         "localidad_exacta": "Santa Fe",

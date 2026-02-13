@@ -1,0 +1,143 @@
+{
+  "_version": "1.0",
+  "_descripcion": "Correcciones manuales para localidades que no matchean exacto con INDEC",
+  "_nota": "Se aplican ANTES del lookup INDEC. Prioridad: correcciones > INDEC exacto > fuzzy",
+  "correcciones": [
+    {
+      "_comentario": "INDEC usa nombre formal 'Ciudad del Libertador Gral San Martín'",
+      "input": "San Martin",
+      "provincia": "Buenos Aires",
+      "departamento": "General San Martín"
+    },
+    {
+      "input": "San Martín",
+      "provincia": "Buenos Aires",
+      "departamento": "General San Martín"
+    },
+    {
+      "_comentario": "INDEC lo divide en Don Torcuato Este y Oeste, ambos en Tigre",
+      "input": "Don Torcuato",
+      "provincia": "Buenos Aires",
+      "departamento": "Tigre"
+    },
+    {
+      "_comentario": "INDEC: 'Boulogne Sur Mer'",
+      "input": "Boulogne",
+      "provincia": "Buenos Aires",
+      "departamento": "San Isidro"
+    },
+    {
+      "_comentario": "INDEC: 'Villa Eduardo Madero'",
+      "input": "Villa Madero",
+      "provincia": "Buenos Aires",
+      "departamento": "La Matanza"
+    },
+    {
+      "_comentario": "INDEC: 'Manuel B. Gonnet'",
+      "input": "Gonnet",
+      "provincia": "Buenos Aires",
+      "departamento": "La Plata"
+    },
+    {
+      "_comentario": "INDEC: 'Guillermo Enrique Hudson'",
+      "input": "Guillermo Hudson",
+      "provincia": "Buenos Aires",
+      "departamento": "Berazategui"
+    },
+    {
+      "_comentario": "INDEC: 'Acasusso' (doble s)",
+      "input": "Acassuso",
+      "provincia": "Buenos Aires",
+      "departamento": "San Isidro"
+    },
+    {
+      "input": "Acasuso",
+      "provincia": "Buenos Aires",
+      "departamento": "San Isidro"
+    },
+    {
+      "_comentario": "INDEC: 'Villa José León Suárez'",
+      "input": "José León Suárez",
+      "provincia": "Buenos Aires",
+      "departamento": "General San Martín"
+    },
+    {
+      "_comentario": "INDEC: 'San José de Metán (Est. Metán)'",
+      "input": "Metan",
+      "provincia": "Salta",
+      "departamento": "Metán"
+    },
+    {
+      "_comentario": "INDEC: 'Libertador General San Martín' (nombre completo)",
+      "input": "Libertador Gral. San Martín",
+      "provincia": "Jujuy",
+      "departamento": "Ledesma"
+    },
+    {
+      "_comentario": "INDEC: 'San Pedro' en dpto San Pedro",
+      "input": "San Pedro de Jujuy",
+      "provincia": "Jujuy",
+      "departamento": "San Pedro"
+    },
+    {
+      "input": "Pilar Centro",
+      "provincia": "Buenos Aires",
+      "departamento": "Pilar"
+    },
+    {
+      "_comentario": "INDEC no tiene. Base naval en dpto Bahía Blanca",
+      "input": "Puerto Belgrano",
+      "provincia": "Buenos Aires",
+      "departamento": "Coronel Rosales"
+    },
+    {
+      "_comentario": "Yerba Buena en Tucumán está en dpto Yerba Buena, no Simoca (INDEC tiene homónimo)",
+      "input": "Yerba Buena",
+      "provincia": "Tucumán",
+      "departamento": "Yerba Buena"
+    },
+    {
+      "_comentario": "San Pedro en Buenos Aires está en dpto San Pedro, no Azul",
+      "input": "San Pedro",
+      "provincia": "Buenos Aires",
+      "departamento": "San Pedro"
+    }
+  ],
+  "barrios_caba": [
+    { "input": "Capital Federal", "departamento": "CABA" },
+    { "input": "Recoleta", "departamento": "CABA" },
+    { "input": "Mataderos", "departamento": "CABA" },
+    { "input": "Retiro / Puerto Madero", "departamento": "CABA" },
+    { "input": "San Cristobal", "departamento": "CABA" }
+  ],
+  "multi_localidad": [
+    {
+      "_comentario": "Oferta con dos ciudades, asignar la primera",
+      "input": "Wilde, Avellaneda",
+      "departamento": "Avellaneda"
+    },
+    {
+      "input": "Neuquén, Bariloche",
+      "departamento": null
+    }
+  ],
+  "meta_areas": [
+    {
+      "_comentario": "Provincia como localidad → no asignar departamento",
+      "input": "Buenos Aires",
+      "provincia": "Buenos Aires",
+      "departamento": null
+    },
+    {
+      "input": "Gran Buenos Aires",
+      "provincia": "Buenos Aires",
+      "departamento": null
+    },
+    {
+      "_comentario": "CABA como localidad en provincia Buenos Aires → reclasificar",
+      "input": "CABA",
+      "provincia": "Buenos Aires",
+      "departamento": "CABA"
+    }
+  ]
+}
