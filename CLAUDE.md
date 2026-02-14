@@ -188,6 +188,60 @@ npx vercel login
 
 ---
 
+## Gestión de Issues (Supabase)
+
+Los issues/feedback de usuarios están en la tabla `issues` de Supabase. La **anon key NO tiene permisos de UPDATE** (RLS). Usar siempre el **service role key** via Python.
+
+### Actualizar estado de un issue
+
+```python
+python3 -c "
+import json
+from supabase import create_client
+
+config = json.load(open('config/supabase_config.json'))
+client = create_client(config['url'], config['service_role_key'])
+
+client.table('issues').update({
+    'estado': 'resuelto',
+    'resuelto_at': '2026-02-12T00:00:00Z',
+    'solucion_aplicada': 'Descripción de lo que se hizo',
+    'config_modificada': 'archivos modificados'
+}).eq('id', 'UUID-DEL-ISSUE').execute()
+"
+```
+
+### Listar issues pendientes
+
+```python
+python3 -c "
+import json
+from supabase import create_client
+
+config = json.load(open('config/supabase_config.json'))
+client = create_client(config['url'], config['service_role_key'])
+
+result = client.table('issues').select('id,titulo,estado,prioridad').in_('estado', ['pendiente','en_progreso']).order('created_at', desc=True).execute()
+for i in result.data:
+    print(f\"{i['id'][:8]} | {i['estado']:12} | {i['prioridad']:6} | {i['titulo']}\")
+"
+```
+
+### Campos actualizables
+
+| Campo | Tipo | Cuándo |
+|-------|------|--------|
+| `estado` | `pendiente` / `en_progreso` / `resuelto` / `descartado` | Siempre al cambiar estado |
+| `resuelto_at` | ISO timestamp | Al marcar resuelto |
+| `solucion_aplicada` | string | Al marcar resuelto |
+| `config_modificada` | string | Si se modificaron archivos |
+| `ofertas_afectadas` | number | Si aplica |
+| `sprint` | string | Para tracking |
+
+**Config:** `config/supabase_config.json` (contiene `url` + `service_role_key`)
+
+---
+
 ## Documentación Extendida
 
 ### Planificación del Producto (FUENTE DE VERDAD)
