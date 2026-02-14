@@ -1674,6 +1674,9 @@ def run_matching_pipeline(
             )
         """
 
+    # NLP Gate v1.0: Excluir ofertas bloqueadas por NLP validator
+    nlp_gate_clause = " AND (n.nlp_gate_status IS NULL OR n.nlp_gate_status != 'bloqueado')"
+
     # Construir query
     # v3.3.5: Agregar JOIN con ofertas para obtener titulo_original (necesario para exclusiones)
     if offer_ids:
@@ -1685,6 +1688,7 @@ def run_matching_pipeline(
             FROM ofertas_nlp n
             LEFT JOIN ofertas o ON CAST(n.id_oferta AS INTEGER) = o.id_oferta
             WHERE n.id_oferta IN ({placeholders})
+            {nlp_gate_clause}
         '''
         params = offer_ids
     elif only_pending:
@@ -1697,6 +1701,7 @@ def run_matching_pipeline(
             LEFT JOIN ofertas_esco_matching m ON n.id_oferta = m.id_oferta
             WHERE m.id_oferta IS NULL
             {exclude_validated_clause}
+            {nlp_gate_clause}
         '''
         params = []
     else:
@@ -1708,6 +1713,7 @@ def run_matching_pipeline(
             LEFT JOIN ofertas o ON CAST(n.id_oferta AS INTEGER) = o.id_oferta
             WHERE 1=1
             {exclude_validated_clause}
+            {nlp_gate_clause}
         '''
         params = []
 
