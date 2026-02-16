@@ -745,54 +745,30 @@ def validar_ofertas_desde_bd(
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
 
-    # Construir query - partimos de ofertas_esco_matching para solo validar las procesadas
+    # Query: solo campos que las reglas de matching necesitan
+    # V02/V10: isco_code, match_score
+    # V27: dual_coinciden, score_semantico
+    # V24/V28/V31: skills_matched_essential, skills_oferta_json, score_semantico, occupation_essential_total
+    # V30: area_funcional, skills_oferta_json
     query = """
         SELECT
             m.id_oferta,
-            o.titulo,
-            n.titulo_limpio,
-            n.provincia,
-            n.localidad,
-            n.sector_empresa,
-            n.sector_confianza,
-            n.sector_fuente,
-            n.es_intermediario,
-            n.clae_code,
-            n.clae_grupo,
-            n.clae_seccion,
             n.area_funcional,
-            n.nivel_seniority,
-            n.modalidad,
-            n.experiencia_min_anios,
-            n.experiencia_max_anios,
-            n.tareas_explicitas,
             m.isco_code,
             m.esco_occupation_label as esco_label,
             m.occupation_match_score as match_score,
-            (SELECT COUNT(*) FROM ofertas_esco_skills_detalle s WHERE s.id_oferta = m.id_oferta) as skills_count,
             -- Campos dual matching (V27)
             m.dual_coinciden,
-            m.isco_regla,
-            m.isco_semantico,
             m.score_semantico,
-            m.regla_aplicada,
-            m.decision_metodo,
-            -- Campos skills (V24, V28, V30)
+            -- Campos skills (V24, V28, V30, V31)
             m.skills_matched_essential,
-            m.skills_semantico_json,
-            m.skills_regla_json,
-            m.skills_demandados_total,
-            m.skills_matcheados_esco,
             m.skills_oferta_json,
             m.esco_occupation_uri,
-            -- Campos tareas longitud (V26, V29)
-            LENGTH(COALESCE(n.tareas_explicitas, '')) as tareas_explicitas_length,
-            -- Essential skills count de la ocupacion asignada (V24, V28)
+            -- Essential skills count de la ocupacion asignada (V24, V28, V31)
             (SELECT COUNT(*) FROM esco_associations ea
              WHERE ea.occupation_uri = m.esco_occupation_uri
              AND ea.relation_type = 'essential') as occupation_essential_total
         FROM ofertas_esco_matching m
-        LEFT JOIN ofertas o ON o.id_oferta = m.id_oferta
         LEFT JOIN ofertas_nlp n ON n.id_oferta = m.id_oferta
     """
 

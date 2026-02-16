@@ -548,49 +548,23 @@ class AutoCorrector:
 
         try:
             self.db_conn.row_factory = sqlite3.Row
+            # Solo campos que las reglas de matching necesitan (V02/V10/V24/V27/V28/V30/V31)
             cursor = self.db_conn.execute("""
                 SELECT
                     m.id_oferta,
-                    o.titulo,
-                    n.titulo_limpio,
-                    n.provincia,
-                    n.localidad,
-                    n.sector_empresa,
-                    n.sector_confianza,
-                    n.sector_fuente,
-                    n.es_intermediario,
-                    n.clae_code,
-                    n.clae_grupo,
-                    n.clae_seccion,
                     n.area_funcional,
-                    n.nivel_seniority,
-                    n.modalidad,
-                    n.experiencia_min_anios,
-                    n.experiencia_max_anios,
-                    n.tareas_explicitas,
                     m.isco_code,
                     m.esco_occupation_label as esco_label,
                     m.occupation_match_score as match_score,
-                    (SELECT COUNT(*) FROM ofertas_esco_skills_detalle s WHERE s.id_oferta = m.id_oferta) as skills_count,
                     m.dual_coinciden,
-                    m.isco_regla,
-                    m.isco_semantico,
                     m.score_semantico,
-                    m.regla_aplicada,
-                    m.decision_metodo,
                     m.skills_matched_essential,
-                    m.skills_semantico_json,
-                    m.skills_regla_json,
-                    m.skills_demandados_total,
-                    m.skills_matcheados_esco,
                     m.skills_oferta_json,
                     m.esco_occupation_uri,
-                    LENGTH(COALESCE(n.tareas_explicitas, '')) as tareas_explicitas_length,
                     (SELECT COUNT(*) FROM esco_associations ea
                      WHERE ea.occupation_uri = m.esco_occupation_uri
                      AND ea.relation_type = 'essential') as occupation_essential_total
                 FROM ofertas_esco_matching m
-                LEFT JOIN ofertas o ON o.id_oferta = m.id_oferta
                 LEFT JOIN ofertas_nlp n ON n.id_oferta = m.id_oferta
                 WHERE m.id_oferta = ?
             """, (id_oferta,))
