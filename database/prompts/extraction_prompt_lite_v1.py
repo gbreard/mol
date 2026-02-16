@@ -44,7 +44,7 @@ Devuelve SOLO un JSON con estos 20 campos. Si no encuentras info, usa null o [].
   "titulo_ocupacion": "string - titulo limpio del puesto (sin empresa ni ubicacion)",
   "provincia": "string - provincia argentina",
   "localidad": "string - ciudad o localidad",
-  "sector_empresa": "string - sector economico (tecnologia, salud, comercio, etc)",
+  "sector_empresa": "Agro|Mineria|Energia|Alimentacion|Textil|Industria|Construccion|Comercio|Automotriz|Logistica|Hoteleria|Gastronomia|Tecnologia|Finanzas|Inmobiliaria|Legal|Contabilidad|Consultoria|Marketing|RRHH|Seguridad|Administracion|Educacion|Salud|Otro",
   "tareas_explicitas": "string - lista de tareas separadas por punto y coma",
   "skills_tecnicas_list": ["skill1", "skill2"],
   "soft_skills_list": ["skill1", "skill2"],
@@ -98,7 +98,34 @@ Devuelve SOLO un JSON con estos 20 campos. Si no encuentras info, usa null o [].
    - 1 = masculino
    - 2 = femenino
 
-7. **area_funcional**: Area principal del puesto:
+7. **sector_empresa**: Sector economico de la EMPRESA (no del puesto). Elegir segun el rubro de la empresa:
+   - Agro = agricultura, ganaderia, campo, agroindustria, pesca
+   - Mineria = mineria, canteras, extraccion de minerales
+   - Energia = petroleo, gas, energia, renovables
+   - Alimentacion = industria alimenticia, bebidas, lacteos, frigorificos, consumo masivo
+   - Textil = textil, confeccion, indumentaria, moda
+   - Industria = manufactura, fabrica, produccion industrial, metalurgia, quimica, plasticos
+   - Construccion = construccion, obras civiles, edificacion, infraestructura
+   - Comercio = comercio minorista/mayorista, retail, tiendas, supermercados, e-commerce
+   - Automotriz = concesionarios, autopartes, venta y reparacion de vehiculos
+   - Logistica = logistica, transporte, distribucion, almacenamiento, courier
+   - Hoteleria = hoteles, alojamiento, turismo, agencias de viaje
+   - Gastronomia = restaurantes, bares, catering, comida rapida, parrillas
+   - Tecnologia = software, IT, sistemas, telecomunicaciones, servicios informaticos
+   - Finanzas = bancos, fintech, seguros, inversiones, creditos
+   - Inmobiliaria = inmobiliarias, real estate, compraventa de propiedades
+   - Legal = estudios juridicos, abogados, compliance, propiedad intelectual
+   - Contabilidad = estudios contables, auditoria, impuestos, consultoria tributaria
+   - Consultoria = consultoras de gestion, servicios profesionales, BPO, outsourcing
+   - Marketing = publicidad, comunicacion, medios, marketing digital, redes sociales
+   - RRHH = agencias de empleo, seleccion de personal, recursos humanos
+   - Seguridad = seguridad privada, vigilancia, custodia, seguridad e higiene
+   - Administracion = call center, servicios administrativos, limpieza, mantenimiento
+   - Educacion = colegios, universidades, institutos, capacitacion, formacion
+   - Salud = clinicas, hospitales, laboratorios, farmaceuticas, medicina
+   - Otro = si no encaja en ninguna
+
+8. **area_funcional**: Area principal del PUESTO (no de la empresa):
    - IT = sistemas, desarrollo, soporte tecnico
    - Ventas = comercial, ventas, atencion al cliente
    - Operaciones = produccion, manufactura, calidad
@@ -112,7 +139,7 @@ Devuelve SOLO un JSON con estos 20 campos. Si no encuentras info, usa null o [].
    - Finanzas = contabilidad, finanzas, auditoria
    - Otro = si no encaja en ninguna categoria
 
-8. **nivel_seniority**: Nivel de experiencia requerido:
+9. **nivel_seniority**: Nivel de experiencia requerido:
    - trainee = sin experiencia, primer empleo
    - junior = hasta 2 anios de experiencia
    - semisenior = 2-5 anios de experiencia
@@ -121,11 +148,11 @@ Devuelve SOLO un JSON con estos 20 campos. Si no encuentras info, usa null o [].
    - manager = gerente, jefe de area
    - director = director, C-level
 
-9. **tiene_gente_cargo**: true si supervisa personal, coordina equipos, o tiene reportes directos.
+10. **tiene_gente_cargo**: true si supervisa personal, coordina equipos, o tiene reportes directos.
 
-10. **mision_rol**: Objetivo principal del puesto en UNA oracion corta. Ejemplo: "Liderar el equipo de desarrollo backend y garantizar la calidad del codigo".
+11. **mision_rol**: Objetivo principal del puesto en UNA oracion corta. Ejemplo: "Liderar el equipo de desarrollo backend y garantizar la calidad del codigo".
 
-11. **tipo_oferta**: Tipo de contratacion:
+12. **tipo_oferta**: Tipo de contratacion:
     - demanda_real = empleo formal tradicional
     - pasantia = pasantia universitaria
     - becario = programa de becarios/trainees
@@ -183,6 +210,13 @@ SCHEMA_LITE = {
 VALID_EDAD = {0, 1, 2, 3, 4, 5}
 VALID_SEXO = {0, 1, 2}
 VALID_EDUCACION = {"primario", "secundario", "terciario", "universitario", "posgrado"}
+VALID_SECTOR_EMPRESA = {
+    "Agro", "Mineria", "Energia", "Alimentacion", "Textil", "Industria",
+    "Construccion", "Comercio", "Automotriz", "Logistica", "Hoteleria",
+    "Gastronomia", "Tecnologia", "Finanzas", "Inmobiliaria", "Legal",
+    "Contabilidad", "Consultoria", "Marketing", "RRHH", "Seguridad",
+    "Administracion", "Educacion", "Salud", "Otro"
+}
 VALID_AREA_FUNCIONAL = {
     "IT", "Ventas", "Operaciones", "RRHH", "Administracion",
     "Salud", "Produccion", "Logistica", "Marketing", "Legal", "Finanzas", "Otro"

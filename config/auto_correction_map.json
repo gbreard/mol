@@ -238,6 +238,95 @@
       "tipo_accion": "escalar_claude",
       "descripcion": "Puesto IT sin skills tecnicas - revisar extraccion de skills",
       "datos_para_claude": ["id_oferta", "titulo_limpio", "area_funcional", "skills_oferta_json"]
+    },
+
+    "error_nlp_sector_no_canonico": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Sector no pertenece al vocabulario canonico ni aliases - normalizar",
+      "config": "config/sector_canonico.json",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "sector_empresa", "sector_fuente", "sector_confianza"]
+    },
+
+    "error_nlp_area_invalida": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Area funcional no esta en valores validos - agregar normalizacion",
+      "config": "config/nlp_inference_rules.json",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "area_funcional"]
+    },
+
+    "error_nlp_seniority_invalido": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Seniority no esta en valores validos - agregar normalizacion",
+      "config": "config/nlp_inference_rules.json",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "nivel_seniority"]
+    },
+
+    "error_nlp_tipo_oferta": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Tipo oferta no valido - agregar normalizacion en postprocessor",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "tipo_oferta"]
+    },
+
+    "error_datos_insuficientes": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Sin tareas ni skills - datos insuficientes para matching",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "tareas_explicitas", "tareas_inferidas"]
+    },
+
+    "error_nlp_null_like": {
+      "tipo_accion": "auto_corregir",
+      "descripcion": "Limpiar strings null-like del LLM a NULL real",
+      "ejecutar": {
+        "funcion": "limpiar_booleanos",
+        "campos": ["sector_empresa"],
+        "valores_invalidos": ["null", "None", "none", "NULL", "N/A", "n/a", "undefined", "sin dato", "Sin dato", "no especificado", "No especificado"]
+      },
+      "reprocesar": false
+    },
+
+    "error_nlp_tareas": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Tareas no extraidas - afecta skills y matching",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "tareas_explicitas", "tareas_inferidas"]
+    },
+
+    "error_clae_datos": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Seccion CLAE invalida - revisar clasificacion",
+      "config": "config/clae_keywords_map.json",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "sector_empresa", "clae_code", "clae_seccion"]
+    },
+
+    "error_clae_clasificacion": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Sector sin clasificar a CLAE",
+      "config": "config/clae_keywords_map.json",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "sector_empresa", "clae_code"]
+    },
+
+    "warning_clae_sector_incoherente": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Seccion CLAE no coincide con sector canonico",
+      "config": "config/clae_keywords_map.json",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "sector_empresa", "clae_code", "clae_seccion"]
+    },
+
+    "warning_cross_gente_seniority": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Gente a cargo + seniority trainee/junior - posible inconsistencia",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "tiene_gente_cargo", "nivel_seniority"]
+    },
+
+    "error_scraping": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Descripcion muy corta - posible scraping incompleto",
+      "datos_para_claude": ["id_oferta", "titulo_limpio"]
+    },
+
+    "revision_sector_empresa": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Sector empresa requiere revision manual",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "sector_empresa", "area_funcional", "sector_confianza"]
     }
   },
 

@@ -145,9 +145,7 @@
       "prioridad": 2,
       "condicion": {
         "nlp_sector_es": [
-          "educacion",
-          "universidad",
-          "colegio"
+          "Educacion"
         ],
         "titulo_contiene_alguno": [
           "admision",
@@ -451,9 +449,7 @@
           "agente inmobiliario"
         ],
         "sector_no_es": [
-          "Finanzas",
-          "Banca",
-          "Seguros"
+          "Finanzas"
         ]
       },
       "accion": {
@@ -472,9 +468,7 @@
           "cumplimiento normativo"
         ],
         "sector_empresa_es_alguno": [
-          "Finanzas",
-          "Banca",
-          "Seguros"
+          "Finanzas"
         ]
       },
       "accion": {
@@ -1583,7 +1577,6 @@
         ],
         "sector_empresa_es_alguno": [
           "Logistica",
-          "Transporte",
           "Automotriz"
         ],
         "titulo_no_contiene_alguno": [
@@ -2116,9 +2109,7 @@
           "supervisor operaciones"
         ],
         "sector_empresa_es_alguno": [
-          "Gastronómico",
-          "Retail",
-          "Servicios",
+          "Gastronomia",
           "Comercio"
         ]
       },
@@ -2347,10 +2338,7 @@
           "jefe de sucursal"
         ],
         "nlp_sector_es": [
-          "Finanzas",
-          "Banca",
-          "Servicios Financieros",
-          "Creditos"
+          "Finanzas"
         ]
       },
       "accion": {
@@ -3079,10 +3067,7 @@
           "housekeeping"
         ],
         "sector_empresa_es_alguno": [
-          "Salud",
-          "salud",
-          "Medicina",
-          "medicina"
+          "Salud"
         ]
       },
       "accion": {

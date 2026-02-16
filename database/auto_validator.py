@@ -1,25 +1,19 @@
 """
-Auto-validador del pipeline MOL.
-Lee validation_rules.json y evalua ofertas automaticamente.
+Auto-validador del pipeline MOL - POST-MATCHING.
+Lee validation_rules.json y evalua ofertas DESPUÉS del matching.
 
-Version: 1.3
-Fecha: 2026-02-09
+Version: 2.0
+Fecha: 2026-02-13
+
+Cambios v2.0:
+- Reglas NLP (V01,V03-V09,V11-V22,V25-V26,V29) MIGRADAS a nlp_validator.py (pre-matching gate)
+- Este validador ahora solo evalúa reglas de MATCHING: V02, V10, V27 (declarativas)
+  + V24/V28/V30/V31 (custom Python, dependen de matching output)
+- Removida validación de títulos (ahora en NLP gate)
 
 Cambios v1.3 (Sprint 5):
-- V24 RECALIBRADA: Cambia metrica de cobertura ESCO (old: matched/occupation_total < 30%)
-  a coherencia oferta (new: matched_essential/skills_oferta < 20%). Severidad: warning.
-  Motivo: ocupaciones ESCO tienen ~25 essential skills, ofertas argentinas matchean ~3.
-  El 92% fallaba V24 vieja. Nueva metrica mide "de las skills extraidas, cuantas son esenciales".
-- V31 NUEVA: Ocupacion ESCO probablemente incorrecta. Criterio compuesto:
-  score_semantico < 0.50 AND coherencia_esco < 0.15. Severidad: alto.
-  Detecta ~13 casos donde la ocupacion asignada no corresponde a la oferta.
-
-Cambios v1.2:
-- V24: Skills no coherentes con ISCO (< 30% overlap con essential skills)
-- V25-V30: Reglas declarativas y custom (skills, tareas, IT)
-
-Cambios v1.1:
-- Validación automática de títulos usando patrones de nlp_titulo_limpieza.json
+- V24 RECALIBRADA: coherencia oferta < 20%. Severidad: warning.
+- V31 NUEVA: score_semantico < 0.50 AND coherencia_esco < 0.15. Severidad: alto.
 
 Uso:
     from database.auto_validator import AutoValidator
@@ -44,26 +38,20 @@ class AutoValidator:
 
     def __init__(self, config_dir: Optional[Path] = None):
         """
-        Inicializa el validador cargando configs.
+        Inicializa el validador post-matching cargando configs.
 
         Args:
             config_dir: Directorio de configs. Default: config/
         """
         self.config_dir = config_dir or Path(__file__).parent.parent / "config"
 
-        # Cargar configs
+        # Cargar configs (solo reglas matching: V02, V10, V27)
         self.validation_rules = self._load_json("validation_rules.json")
         self.diagnostic_patterns = self._load_json("diagnostic_patterns.json")
         self.correction_map = self._load_json("auto_correction_map.json")
 
-        # Cargar patrones de limpieza de títulos (para validar que quedaron limpios)
-        self.titulo_limpieza_config = self._load_json("nlp_titulo_limpieza.json")
-
         # Cache de reglas compiladas (regex)
         self._compiled_patterns = {}
-
-        # Compilar patrones de limpieza de títulos
-        self._titulo_patterns = self._compilar_patrones_titulo()
 
     def _load_json(self, filename: str) -> Dict:
         """Carga un archivo JSON de config."""
@@ -72,129 +60,6 @@ class AutoValidator:
             with open(path, 'r', encoding='utf-8') as f:
                 return json.load(f)
         return {}
-
-    def _compilar_patrones_titulo(self) -> List[Dict]:
-        """
-        Compila patrones de nlp_titulo_limpieza.json para validar títulos.
-
-        Los mismos patrones que se usan para LIMPIAR el título,
-        se usan para VALIDAR que quedó limpio. Si algún patrón
-        matchea en titulo_limpio, significa que la limpieza falló.
-        """
-        patrones = []
-        config = self.titulo_limpieza_config
-
-        # Secciones que contienen patrones de ruido (TODAS las del config)
-        # v2.6.1: Lista completa para evitar que pasen títulos mal limpiados
-        secciones_con_patrones = [
-            # Códigos y prefijos (inicio)
-            'codigos_inicio',
-            'prefijos_genericos',
-            'codigos_referencia',
-            'ciudades_inicio',
-            # Ubicaciones
-            'zonas_ubicaciones',
-            'ubicacion_con_guion',
-            'ubicacion_guion_extendido',
-            'ubicacion_sin_guion_final',
-            'contexto_ubicacion',
-            # Contexto empresarial
-            'contexto_empresarial',
-            'contexto_empresarial_sin_guion',
-            'contexto_complejo',
-            # 'contexto_gestion',  # REMOVIDO v2.6.6: genera falsos positivos (ej: "Ingeniero para gestión de X")
-            # Modalidad y turnos
-            'modalidad_guion',
-            'turno_final',
-            # Códigos finales
-            'codigos_final',
-            'codigos_empresa',
-            # Otros
-            'parentesis_eliminar',
-            'requisitos_edad',
-            'info_administrativa',
-            'pipes_limpiar',
-            'preposiciones_final',
-            # NOTA: 'limpieza_final' EXCLUIDA - son patrones de transformación, no de detección
-        ]
-
-        for seccion in secciones_con_patrones:
-            if seccion not in config:
-                continue
-            for patron_info in config[seccion].get('patrones', []):
-                patron = patron_info.get('patron')
-                if patron and not patron_info.get('_skip_validation', False):
-                    try:
-                        compiled = re.compile(patron, re.IGNORECASE)
-                        patrones.append({
-                            'seccion': seccion,
-                            'patron': patron,
-                            'compiled': compiled,
-                            'ejemplo': patron_info.get('ejemplo', '')
-                        })
-                    except re.error:
-                        pass  # Ignorar patrones inválidos
-
-        # Secciones con listas de palabras (convertir a patrones)
-        if 'localidades_final' in config:
-            for localidad in config['localidades_final'].get('lista', []):
-                patron = rf'\s*[-–—]\s*{re.escape(localidad)}$'
-                try:
-                    compiled = re.compile(patron, re.IGNORECASE)
-                    patrones.append({
-                        'seccion': 'localidades_final',
-                        'patron': patron,
-                        'compiled': compiled,
-                        'ejemplo': f'- {localidad}'
-                    })
-                except re.error:
-                    pass
-
-        # modalidad_final: lista de palabras al final del título
-        if 'modalidad_final' in config:
-            for palabra in config['modalidad_final'].get('palabras', []):
-                patron = rf'\s+{re.escape(palabra)}\s*$'
-                try:
-                    compiled = re.compile(patron, re.IGNORECASE)
-                    patrones.append({
-                        'seccion': 'modalidad_final',
-                        'patron': patron,
-                        'compiled': compiled,
-                        'ejemplo': f'... {palabra}'
-                    })
-                except re.error:
-                    pass
-
-        return patrones
-
-    def _validar_titulo_limpio(self, titulo_limpio: str) -> List[Dict]:
-        """
-        Valida que el título realmente quedó limpio.
-
-        Usa los patrones de nlp_titulo_limpieza.json.
-        Si alguno matchea, significa que la limpieza falló.
-
-        Returns:
-            Lista de errores encontrados
-        """
-        if not titulo_limpio:
-            return []
-
-        errores = []
-        for patron_info in self._titulo_patterns:
-            if patron_info['compiled'].search(titulo_limpio):
-                errores.append({
-                    'id_regla': f"V_titulo_{patron_info['seccion']}",
-                    'diagnostico': 'error_limpieza_titulo',
-                    'severidad': 'medio',
-                    'mensaje': f"Patrón de ruido '{patron_info['seccion']}' encontrado en título limpio. "
-                              f"Ejemplo: '{patron_info['ejemplo']}'. Agregar patrón a nlp_titulo_limpieza.json",
-                    'campo': 'titulo_limpio',
-                    'patron_encontrado': patron_info['patron'],
-                    'valor_actual': titulo_limpio
-                })
-
-        return errores
 
     def _get_compiled_pattern(self, pattern: str) -> re.Pattern:
         """Compila y cachea patrones regex."""
@@ -391,15 +256,7 @@ class AutoValidator:
 
                 errores.append(error)
 
-        # Validación automática de título limpio usando patrones de nlp_titulo_limpieza.json
-        titulo_limpio = oferta.get("titulo_limpio")
-        if titulo_limpio:
-            errores_titulo = self._validar_titulo_limpio(titulo_limpio)
-            for error in errores_titulo:
-                error["id_oferta"] = oferta.get("id_oferta") or oferta.get("id")
-            errores.extend(errores_titulo)
-
-        # Validaciones custom V24/V28 (skills coherencia) y V30 (IT sin skills técnicas)
+        # Validaciones custom V24/V28/V31 (skills coherencia) y V30 (IT sin skills técnicas)
         id_oferta = oferta.get("id_oferta") or oferta.get("id")
 
         errores_skills = self._validar_skills_coherencia(oferta)
@@ -888,56 +745,30 @@ def validar_ofertas_desde_bd(
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
 
-    # Construir query - partimos de ofertas_esco_matching para solo validar las procesadas
+    # Query: solo campos que las reglas de matching necesitan
+    # V02/V10: isco_code, match_score
+    # V27: dual_coinciden, score_semantico
+    # V24/V28/V31: skills_matched_essential, skills_oferta_json, score_semantico, occupation_essential_total
+    # V30: area_funcional, skills_oferta_json
     query = """
         SELECT
             m.id_oferta,
-            o.titulo,
-            n.titulo_limpio,
-            n.provincia,
-            n.localidad,
-            n.sector_empresa,
-            n.sector_confianza,
-            n.sector_fuente,
-            n.es_intermediario,
-            n.clae_code,
-            n.clae_grupo,
-            n.clae_seccion,
             n.area_funcional,
-            n.nivel_seniority,
-            n.modalidad,
-            n.experiencia_min_anios,
-            n.experiencia_max_anios,
-            n.tareas_explicitas,
-            n.tareas_inferidas,
             m.isco_code,
             m.esco_occupation_label as esco_label,
             m.occupation_match_score as match_score,
-            (SELECT COUNT(*) FROM ofertas_esco_skills_detalle s WHERE s.id_oferta = m.id_oferta) as skills_count,
             -- Campos dual matching (V27)
             m.dual_coinciden,
-            m.isco_regla,
-            m.isco_semantico,
             m.score_semantico,
-            m.regla_aplicada,
-            m.decision_metodo,
-            -- Campos skills (V24, V28, V30)
+            -- Campos skills (V24, V28, V30, V31)
             m.skills_matched_essential,
-            m.skills_semantico_json,
-            m.skills_regla_json,
-            m.skills_demandados_total,
-            m.skills_matcheados_esco,
             m.skills_oferta_json,
             m.esco_occupation_uri,
-            -- Campos tareas longitud (V26, V29)
-            LENGTH(COALESCE(n.tareas_explicitas, '')) as tareas_explicitas_length,
-            LENGTH(COALESCE(n.tareas_inferidas, '')) as tareas_inferidas_length,
-            -- Essential skills count de la ocupacion asignada (V24, V28)
+            -- Essential skills count de la ocupacion asignada (V24, V28, V31)
             (SELECT COUNT(*) FROM esco_associations ea
              WHERE ea.occupation_uri = m.esco_occupation_uri
              AND ea.relation_type = 'essential') as occupation_essential_total
         FROM ofertas_esco_matching m
-        LEFT JOIN ofertas o ON o.id_oferta = m.id_oferta
         LEFT JOIN ofertas_nlp n ON n.id_oferta = m.id_oferta
     """
 

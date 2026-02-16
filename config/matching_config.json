@@ -12,7 +12,6 @@
 
   "filtros": {
     "tipo_oferta_validos": ["demanda_real"],
-    "calidad_texto_minima": ["alta", "media", "baja"],
     "score_minimo_final": 0.50,
     "usar_filtro_area": true,
     "usar_filtro_seniority": true,

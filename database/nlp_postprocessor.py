@@ -48,13 +48,27 @@ class NLPPostprocessor:
 
     VERSION = "1.3.0"
 
-    # Valores validos para campos categoricos (Matching v2.1.1)
+    # Valores validos para campos categoricos
+    # v1.1: Eliminados aliases compuestos — se normalizan antes de validar
     VALID_AREA_FUNCIONAL = {
-        "IT", "Ventas", "Operaciones", "RRHH", "Administracion",
-        "Salud", "Produccion", "Logistica", "Marketing", "Legal", "Finanzas", "Otro",
-        # Alias desde inference_rules.json
-        "Ventas/Comercial", "IT/Sistemas", "Recursos Humanos", "Finanzas/Contabilidad",
-        "Logistica/Operaciones", "Produccion/Manufactura", "Atencion al Cliente", "Ingenieria"
+        "Administracion", "Comercial", "Contabilidad", "Diseño", "Educacion",
+        "Finanzas", "Gastronomia", "Ingenieria", "IT", "Legal",
+        "Logistica", "Mantenimiento", "Marketing", "Medicina", "Produccion",
+        "RRHH", "Salud", "Seguridad", "Vigilancia", "Atencion al cliente",
+        "Compras", "Calidad", "Medio ambiente", "Comunicacion",
+        "Investigacion", "Ventas", "Operaciones", "Otro",
+    }
+
+    # Normalización de aliases a valores canónicos
+    AREA_FUNCIONAL_NORMALIZATION = {
+        "IT/Sistemas": "IT",
+        "Sistemas": "IT",
+        "Ventas/Comercial": "Comercial",
+        "Recursos Humanos": "RRHH",
+        "Finanzas/Contabilidad": "Contabilidad",
+        "Logistica/Operaciones": "Logistica",
+        "Produccion/Manufactura": "Produccion",
+        "Atencion al Cliente": "Atencion al cliente",
     }
     VALID_SENIORITY = {"trainee", "junior", "semisenior", "senior", "lead", "manager", "director"}
     VALID_TIPO_OFERTA = {"demanda_real", "pasantia", "becario", "freelance"}
@@ -90,6 +104,10 @@ class NLPPostprocessor:
         # Cache para CLAE (se carga una vez)
         self._clae_nomenclador = None
         self._clae_keywords_map = None
+        self._clae_classifier = None  # CLAESemanticClassifier (lazy init)
+
+        # Cache para normalización sector canónico (se carga una vez)
+        self._sector_alias_map = None  # alias_lower → sector_canónico
 
         # Cache para catálogo de empresas (sector alta confianza)
         self._empresas_catalogo = None
@@ -286,8 +304,15 @@ class NLPPostprocessor:
         Valida que los campos categóricos tengan valores permitidos.
         Si el valor no es válido, lo pone en null para que se infiera después.
         """
-        # area_funcional
+        # area_funcional: normalizar aliases antes de validar
         area = data.get("area_funcional")
+        if area and area in self.AREA_FUNCIONAL_NORMALIZATION:
+            canonical = self.AREA_FUNCIONAL_NORMALIZATION[area]
+            if self.verbose:
+                print(f"[NORM] area_funcional '{area}' -> '{canonical}'")
+            data["area_funcional"] = canonical
+            area = canonical
+
         if area and area not in self.VALID_AREA_FUNCIONAL:
             if self.verbose:
                 print(f"[VALID] area_funcional '{area}' no valido -> null")
@@ -1353,6 +1378,60 @@ class NLPPostprocessor:
         return data
 
     # =========================================================================
+    # PASO 4c2b: NORMALIZAR SECTOR A VOCABULARIO CANÓNICO
+    # =========================================================================
+
+    def _normalizar_sector_canonico(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Normaliza sector_empresa a uno de los 25 sectores canónicos.
+        Usa el mapa de aliases de config/sector_canonico.json.
+
+        Se ejecuta DESPUÉS de _extract_sector y _corregir_sector,
+        pero ANTES de _classify_clae (que necesita sector canónico).
+        """
+        sector = data.get("sector_empresa")
+        if not sector or not isinstance(sector, str):
+            return data
+
+        sector = sector.strip()
+        if not sector:
+            return data
+
+        # Cargar mapa de aliases (una sola vez)
+        if self._sector_alias_map is None:
+            self._sector_alias_map = {}
+            canonico_path = self.config_dir / "sector_canonico.json"
+            if canonico_path.exists():
+                with open(canonico_path, 'r', encoding='utf-8') as f:
+                    canonico = json.load(f)
+                sectores = canonico.get("sectores", {})
+                for nombre_canonico, info in sectores.items():
+                    # El nombre canónico se mapea a sí mismo
+                    self._sector_alias_map[nombre_canonico.lower()] = nombre_canonico
+                    # Todos los aliases
+                    for alias in info.get("aliases", []):
+                        self._sector_alias_map[alias.lower()] = nombre_canonico
+            if self.verbose:
+                print(f"[SECTOR] Mapa canónico cargado: {len(self._sector_alias_map)} aliases")
+
+        # Buscar match
+        sector_lower = sector.lower()
+        canonico = self._sector_alias_map.get(sector_lower)
+
+        if canonico and canonico != sector:
+            if self.verbose:
+                print(f"[SECTOR] Normalizado: '{sector}' -> '{canonico}'")
+            data["sector_empresa"] = canonico
+            self.stats["sector_corregido"] = self.stats.get("sector_corregido", 0) + 1
+        elif not canonico and sector not in ("Otro", "otro"):
+            # Sector desconocido, no está en aliases → dejarlo como "Otro"
+            if self.verbose:
+                print(f"[SECTOR] Desconocido: '{sector}' -> 'Otro'")
+            data["sector_empresa"] = "Otro"
+
+        return data
+
+    # =========================================================================
     # PASO 4c3: CLASIFICACION CLAE (sector -> codigo CLAE oficial Argentina)
     # =========================================================================
 
@@ -1441,77 +1520,47 @@ class NLPPostprocessor:
 
     def _classify_clae(self, data: Dict[str, Any], titulo: str = "", descripcion: str = "") -> Dict[str, Any]:
         """
-        Clasifica sector_empresa a código CLAE oficial.
+        Clasifica sector_empresa a código CLAE 6 dígitos (embudo jerárquico).
 
-        CLAE = Clasificador de Actividades Económicas (AFIP Argentina)
-        Estructura: 6 dígitos (actividad) -> 3 dígitos (grupo) -> letra (sección)
+        Cascada (dentro del CLAESemanticClassifier v2):
+        1. Sector canónico → Sección CLAE (letra, siempre correcta)
+        2. Semántico BGE-M3 DENTRO de la sección → código 6 dígitos
+        3. Si score < threshold → código default de la sección
 
-        Prioridad de clasificación:
-        1. sector_empresa (más confiable, ya inferido por NLP)
-        2. titulo (específico del puesto)
-        3. descripcion (puede tener keywords genéricos)
-
-        Los campos se llenan pero NO reemplazan sector_empresa (conviven).
+        Sección y grupo se DERIVAN del código 6 dígitos (nunca hardcodeados).
         """
-        self._load_clae_configs()
-
-        if not self._clae_keywords_map:
-            return data
-
         sector_texto = data.get("sector_empresa", "") or ""
         titulo_texto = titulo or data.get("titulo_limpio", "") or ""
 
-        # PASO 1: Buscar en sector_directo (mapeo exacto de sector_empresa)
-        sector_directo = self._clae_keywords_map.get("sector_directo", {})
-
-        # Búsqueda exacta
-        if sector_texto in sector_directo:
-            clae_data = sector_directo[sector_texto]
-            data["clae_code"] = clae_data["clae"]
-            data["clae_grupo"] = clae_data.get("grupo", clae_data["clae"][:3])
-            data["clae_seccion"] = clae_data.get("seccion")
-            self.stats["clae_clasificado"] += 1
-            if self.verbose:
-                print(f"[CLAE] '{sector_texto}' -> {clae_data['clae']} ({clae_data.get('seccion')}) [sector_directo]")
+        if not sector_texto:
             return data
 
-        # Búsqueda case-insensitive
-        sector_lower = sector_texto.lower().strip()
-        for key, clae_data in sector_directo.items():
-            if key.lower() == sector_lower:
-                data["clae_code"] = clae_data["clae"]
-                data["clae_grupo"] = clae_data.get("grupo", clae_data["clae"][:3])
-                data["clae_seccion"] = clae_data.get("seccion")
-                self.stats["clae_clasificado"] += 1
+        # Inicializar classifier (lazy, una sola vez)
+        if self._clae_classifier is None:
+            try:
+                from clae_semantic_classifier import CLAESemanticClassifier
+                self._clae_classifier = CLAESemanticClassifier(verbose=self.verbose)
+            except Exception as e:
                 if self.verbose:
-                    print(f"[CLAE] '{sector_texto}' -> {clae_data['clae']} ({clae_data.get('seccion')}) [sector_directo_ci]")
+                    print(f"[CLAE] WARNING: No se pudo cargar CLAESemanticClassifier: {e}")
+                self._clae_classifier = False  # Sentinel: no reintentar
+
+        if self._clae_classifier:
+            result = self._clae_classifier.classify(
+                sector_empresa=sector_texto,
+                titulo=titulo_texto,
+                descripcion=descripcion,
+            )
+
+            if result:
+                data["clae_code"] = result["clae_code"]
+                data["clae_grupo"] = result["clae_grupo"]
+                data["clae_seccion"] = result["clae_seccion"]
+                data["clae_score"] = result["clae_score"]
+                data["clae_metodo"] = result["clae_metodo"]
+                self.stats["clae_clasificado"] += 1
                 return data
 
-        # PASO 2: Buscar por keywords en titulo (sin descripcion para evitar falsos positivos)
-        texto_busqueda = f"{sector_texto} {titulo_texto}".lower()
-        best_match = None
-        best_score = 0
-
-        for mapping in self._clae_keywords_map.get("mappings", []):
-            score = 0
-            for kw in mapping.get("keywords", []):
-                if kw.lower() in texto_busqueda:
-                    score += len(kw)  # Keywords más largos = más específicos
-
-            if score > best_score:
-                best_score = score
-                best_match = mapping
-
-        if best_match:
-            data["clae_code"] = best_match["clae"]
-            data["clae_grupo"] = best_match.get("grupo", best_match["clae"][:3])
-            data["clae_seccion"] = best_match.get("seccion")
-            self.stats["clae_clasificado"] += 1
-            if self.verbose:
-                print(f"[CLAE] '{sector_texto}' -> {best_match['clae']} ({best_match.get('seccion')}) [keyword]")
-            return data
-
-        # No clasificado - los campos quedan NULL
         if self.verbose:
             print(f"[CLAE] '{sector_texto}' -> Sin clasificar")
 
@@ -2100,6 +2149,9 @@ class NLPPostprocessor:
         # Paso 4c2: Correccion sector (si LLM clasifico mal)
         data = self._corregir_sector(data, descripcion)
 
+        # Paso 4c2b: Normalizar sector a vocabulario canónico (25 sectores)
+        data = self._normalizar_sector_canonico(data)
+
         # Paso 4c3: Clasificacion CLAE (sector -> codigo oficial)
         titulo_limpio = data.get("titulo_limpio", "")
         data = self._classify_clae(data, titulo_limpio, descripcion)
@@ -2182,17 +2234,125 @@ class NLPPostprocessor:
 
 
 # =========================================================================
-# CLI para testing
+# CLI para testing y reclasificación
 # =========================================================================
+
+def _reclasificar_clae(ids=None, limit=None, verbose=False, apply=False):
+    """
+    Reclasifica CLAE para ofertas existentes en BD.
+
+    Lee sector_empresa + titulo_limpio de ofertas_nlp, ejecuta _classify_clae(),
+    y actualiza los campos clae_* en BD.
+
+    Args:
+        ids: Lista de IDs específicos a reclasificar (None = sin CLAE)
+        limit: Límite de ofertas a procesar
+        verbose: Mostrar detalle
+        apply: True para escribir en BD, False para dry-run
+    """
+    import sqlite3
+
+    db_path = str(Path(__file__).parent / "bumeran_scraping.db")
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+
+    pp = NLPPostprocessor(verbose=verbose)
+
+    # Seleccionar ofertas
+    if ids:
+        placeholders = ",".join(["?" for _ in ids])
+        query = f"""
+            SELECT n.id_oferta, n.sector_empresa, n.titulo_limpio, o.descripcion
+            FROM ofertas_nlp n
+            LEFT JOIN ofertas o ON n.id_oferta = o.id_oferta
+            WHERE n.id_oferta IN ({placeholders})
+        """
+        rows = conn.execute(query, ids).fetchall()
+    else:
+        # Por defecto: ofertas con sector pero sin CLAE
+        query = """
+            SELECT n.id_oferta, n.sector_empresa, n.titulo_limpio, o.descripcion
+            FROM ofertas_nlp n
+            LEFT JOIN ofertas o ON n.id_oferta = o.id_oferta
+            WHERE n.sector_empresa IS NOT NULL
+              AND n.sector_empresa != ''
+              AND (n.clae_code IS NULL OR n.clae_code = '')
+        """
+        if limit:
+            query += f" LIMIT {int(limit)}"
+        rows = conn.execute(query).fetchall()
+
+    total = len(rows)
+    clasificados = 0
+    sin_cambio = 0
+    errores = 0
+
+    print(f"[CLAE] {'DRY-RUN' if not apply else 'APLICANDO'}: {total} ofertas a reclasificar")
+
+    for row in rows:
+        id_oferta = row["id_oferta"]
+        sector = row["sector_empresa"] or ""
+        titulo = row["titulo_limpio"] or ""
+        descripcion = row["descripcion"] or ""
+
+        data = {"sector_empresa": sector, "titulo_limpio": titulo}
+        result = pp._classify_clae(data, titulo=titulo, descripcion=descripcion[:500])
+
+        if result.get("clae_code"):
+            clasificados += 1
+            if verbose:
+                print(f"  {id_oferta}: {sector} -> {result['clae_code']} ({result.get('clae_seccion', '?')})")
+
+            if apply:
+                conn.execute("""
+                    UPDATE ofertas_nlp
+                    SET clae_code = ?, clae_grupo = ?, clae_seccion = ?,
+                        clae_score = ?, clae_metodo = ?
+                    WHERE id_oferta = ?
+                """, (
+                    result["clae_code"], result.get("clae_grupo"),
+                    result.get("clae_seccion"), result.get("clae_score"),
+                    result.get("clae_metodo"), id_oferta
+                ))
+        else:
+            sin_cambio += 1
+            if verbose:
+                print(f"  {id_oferta}: {sector} -> Sin clasificar")
+
+    if apply:
+        conn.commit()
+
+    conn.close()
+
+    print(f"\n[CLAE] Resultado: {clasificados}/{total} clasificados, "
+          f"{sin_cambio} sin cambio, {errores} errores")
+    if not apply and clasificados > 0:
+        print(f"[CLAE] Ejecutar con --apply para escribir en BD")
+
+    return {"total": total, "clasificados": clasificados, "sin_cambio": sin_cambio}
+
 
 def main():
     import argparse
 
-    parser = argparse.ArgumentParser(description="NLP Postprocessor v1.0")
+    parser = argparse.ArgumentParser(description="NLP Postprocessor CLI")
     parser.add_argument("--test", action="store_true", help="Ejecutar tests")
+    parser.add_argument("--reclasificar-clae", action="store_true",
+                        help="Reclasificar CLAE para ofertas sin código")
+    parser.add_argument("--ids", type=str, default=None,
+                        help="IDs específicos (separados por coma)")
+    parser.add_argument("--limit", type=int, default=None,
+                        help="Límite de ofertas a procesar")
+    parser.add_argument("--apply", action="store_true",
+                        help="Aplicar cambios en BD (sin esto es dry-run)")
     parser.add_argument("--verbose", "-v", action="store_true")
 
     args = parser.parse_args()
+
+    if args.reclasificar_clae:
+        ids = [int(x.strip()) for x in args.ids.split(",")] if args.ids else None
+        _reclasificar_clae(ids=ids, limit=args.limit, verbose=args.verbose, apply=args.apply)
+        return
 
     pp = NLPPostprocessor(verbose=args.verbose)
 

@@ -1,186 +1,587 @@
 {
-  "version": "2.0.0",
-  "descripcion": "Compatibilidad entre sector_empresa (NLP) e ISCO para penalizar matches cross-sector",
-  "fecha_actualizacion": "2026-01-13",
-  "_cambios_v2": "Expandido con sectores detectados en revision 100 IDs: Textil, Automotriz, Hoteleria, etc.",
-
+  "version": "3.0.0",
+  "descripcion": "Compatibilidad sector-ISCO. GENERADO desde sector_canonico.json — NO editar manualmente.",
+  "fecha_actualizacion": "2026-02-13",
+  "_fuente": "config/sector_canonico.json",
   "sectores": {
-    "Tecnologia": {
-      "isco_compatibles": ["13", "21", "25", "35"],
-      "isco_incompatibles": ["6", "92", "93", "51", "94"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Directores, ingenieros, desarrolladores, tecnicos TI"
+    "Agro": {
+      "isco_compatibles": [
+        "13",
+        "6",
+        "83",
+        "92"
+      ],
+      "isco_incompatibles": [
+        "25",
+        "26",
+        "24",
+        "51",
+        "52"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "A",
+      "descripcion": "agricultura, ganaderia, campo, agroindustria, pesca"
     },
-
-    "Retail": {
-      "isco_compatibles": ["14", "33", "42", "52", "95"],
-      "isco_incompatibles": ["22", "23", "25", "6"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Gerentes comercio, vendedores, cajeros, reponedores"
+    "Mineria": {
+      "isco_compatibles": [
+        "13",
+        "31",
+        "81",
+        "93"
+      ],
+      "isco_incompatibles": [
+        "22",
+        "23",
+        "51",
+        "52"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "B",
+      "descripcion": "mineria, canteras, extraccion de minerales"
     },
-
-    "Salud": {
-      "isco_compatibles": ["13", "22", "32", "53"],
-      "isco_incompatibles": ["7", "8", "6", "51", "94"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Medicos, enfermeros, tecnicos salud"
+    "Energia": {
+      "isco_compatibles": [
+        "13",
+        "21",
+        "31",
+        "81"
+      ],
+      "isco_incompatibles": [
+        "22",
+        "23",
+        "51",
+        "52"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "B",
+      "descripcion": "petroleo, gas, energia, renovables"
     },
-
-    "Industria": {
-      "isco_compatibles": ["13", "31", "7", "8", "93"],
-      "isco_incompatibles": ["22", "23", "26", "51"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Ingenieros industriales, tecnicos, operarios manufactura"
+    "Alimentacion": {
+      "isco_compatibles": [
+        "13",
+        "31",
+        "75",
+        "81",
+        "93"
+      ],
+      "isco_incompatibles": [
+        "22",
+        "25",
+        "51"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "C",
+      "descripcion": "industria alimenticia, bebidas, lacteos, frigorificos, consumo masivo"
     },
-
-    "Agropecuario": {
-      "isco_compatibles": ["13", "6", "83", "92"],
-      "isco_incompatibles": ["25", "26", "24", "51", "52"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Agricultores, ganaderos, trabajadores forestales"
-    },
-
-    "Gastronomia": {
-      "isco_compatibles": ["14", "34", "51", "94"],
-      "isco_incompatibles": ["25", "22", "26", "7", "8"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Cocineros, mozos, personal gastronomia"
-    },
-
-    "Finanzas": {
-      "isco_compatibles": ["12", "24", "33", "41"],
-      "isco_incompatibles": ["6", "7", "8", "9", "51", "52"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Contadores, analistas financieros, cajeros banco"
-    },
-
-    "Construccion": {
-      "isco_compatibles": ["13", "31", "71", "72", "93"],
-      "isco_incompatibles": ["22", "25", "26", "51", "52"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Albaniles, carpinteros, electricistas construccion"
-    },
-
-    "Educacion": {
-      "isco_compatibles": ["13", "23", "34"],
-      "isco_incompatibles": ["7", "8", "6", "94"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Docentes todos niveles"
-    },
-
-    "Servicios": {
-      "isco_compatibles": ["12", "24", "33", "41", "42", "52"],
-      "isco_incompatibles": ["6", "92", "71", "81"],
-      "penalizacion_cruzado": -0.25,
-      "descripcion": "Administracion, atencion cliente, servicios generales"
-    },
-
     "Textil": {
-      "isco_compatibles": ["13", "75", "81", "93"],
-      "isco_incompatibles": ["22", "25", "51", "6"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Modistas, sastres, operadores maquinas textiles"
+      "isco_compatibles": [
+        "13",
+        "75",
+        "81",
+        "93"
+      ],
+      "isco_incompatibles": [
+        "22",
+        "25",
+        "51",
+        "6"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "C",
+      "descripcion": "textil, confeccion, indumentaria, moda"
     },
-
+    "Industria": {
+      "isco_compatibles": [
+        "13",
+        "21",
+        "31",
+        "7",
+        "8",
+        "93"
+      ],
+      "isco_incompatibles": [
+        "22",
+        "23",
+        "26",
+        "51"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "C",
+      "descripcion": "manufactura, fabrica, produccion industrial, metalurgia, quimica, plasticos"
+    },
+    "Construccion": {
+      "isco_compatibles": [
+        "13",
+        "31",
+        "71",
+        "72",
+        "93"
+      ],
+      "isco_incompatibles": [
+        "22",
+        "25",
+        "26",
+        "51",
+        "52"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "F",
+      "descripcion": "construccion, obras civiles, edificacion, infraestructura"
+    },
+    "Comercio": {
+      "isco_compatibles": [
+        "14",
+        "33",
+        "42",
+        "52",
+        "95"
+      ],
+      "isco_incompatibles": [
+        "22",
+        "23",
+        "25",
+        "6"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "G",
+      "descripcion": "comercio minorista/mayorista, retail, tiendas, supermercados, e-commerce"
+    },
     "Automotriz": {
-      "isco_compatibles": ["13", "72", "82", "52"],
-      "isco_incompatibles": ["22", "23", "26", "51"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Mecanicos, electricistas auto, vendedores autos"
+      "isco_compatibles": [
+        "13",
+        "52",
+        "72",
+        "82"
+      ],
+      "isco_incompatibles": [
+        "22",
+        "23",
+        "26",
+        "51"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "G",
+      "descripcion": "concesionarios, autopartes, venta y reparacion de vehiculos"
     },
-
-    "Hoteleria": {
-      "isco_compatibles": ["14", "42", "51", "91"],
-      "isco_incompatibles": ["25", "22", "7", "8"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Recepcionistas, mozos, housekeeping, conserjes"
-    },
-
     "Logistica": {
-      "isco_compatibles": ["13", "43", "83", "93"],
-      "isco_incompatibles": ["22", "25", "26", "51"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Empleados almacen, conductores, peones carga"
+      "isco_compatibles": [
+        "13",
+        "43",
+        "83",
+        "93"
+      ],
+      "isco_incompatibles": [
+        "22",
+        "25",
+        "26",
+        "51"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "H",
+      "descripcion": "logistica, transporte, distribucion, almacenamiento, courier"
     },
-
-    "Call_Center": {
-      "isco_compatibles": ["42", "52"],
-      "isco_incompatibles": ["7", "8", "6", "22"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Operadores telefonia, televendedores"
+    "Hoteleria": {
+      "isco_compatibles": [
+        "14",
+        "42",
+        "51",
+        "91"
+      ],
+      "isco_incompatibles": [
+        "25",
+        "22",
+        "7",
+        "8"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "I",
+      "descripcion": "hoteles, alojamiento, turismo, agencias de viaje"
     },
-
-    "RRHH": {
-      "isco_compatibles": ["12", "24", "44"],
-      "isco_incompatibles": ["7", "8", "6", "51", "94"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Directores RRHH, especialistas seleccion"
+    "Gastronomia": {
+      "isco_compatibles": [
+        "14",
+        "34",
+        "51",
+        "94"
+      ],
+      "isco_incompatibles": [
+        "25",
+        "22",
+        "26",
+        "7",
+        "8"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "I",
+      "descripcion": "restaurantes, bares, catering, comida rapida, parrillas"
     },
-
-    "Marketing": {
-      "isco_compatibles": ["12", "24", "34"],
-      "isco_incompatibles": ["7", "8", "6", "51", "94"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Publicistas, community managers, disenadores"
+    "Tecnologia": {
+      "isco_compatibles": [
+        "13",
+        "21",
+        "25",
+        "35"
+      ],
+      "isco_incompatibles": [
+        "6",
+        "92",
+        "93",
+        "51",
+        "94"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "J",
+      "descripcion": "software, IT, sistemas, telecomunicaciones, servicios informaticos"
     },
-
+    "Finanzas": {
+      "isco_compatibles": [
+        "12",
+        "24",
+        "33",
+        "41"
+      ],
+      "isco_incompatibles": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "51",
+        "52"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "K",
+      "descripcion": "bancos, fintech, seguros, inversiones, creditos"
+    },
+    "Inmobiliaria": {
+      "isco_compatibles": [
+        "12",
+        "33",
+        "42"
+      ],
+      "isco_incompatibles": [
+        "7",
+        "8",
+        "6",
+        "51",
+        "94"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "L",
+      "descripcion": "inmobiliarias, real estate, compraventa de propiedades"
+    },
     "Legal": {
-      "isco_compatibles": ["26", "34", "41"],
-      "isco_incompatibles": ["7", "8", "6", "51", "94"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Abogados, asistentes legales"
+      "isco_compatibles": [
+        "26",
+        "34",
+        "41"
+      ],
+      "isco_incompatibles": [
+        "7",
+        "8",
+        "6",
+        "51",
+        "94"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "M",
+      "descripcion": "estudios juridicos, abogados, compliance, propiedad intelectual"
     },
-
+    "Contabilidad": {
+      "isco_compatibles": [
+        "12",
+        "24",
+        "33",
+        "41"
+      ],
+      "isco_incompatibles": [
+        "6",
+        "7",
+        "8",
+        "51",
+        "52"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "M",
+      "descripcion": "estudios contables, auditoria, impuestos, consultoria tributaria"
+    },
+    "Consultoria": {
+      "isco_compatibles": [
+        "12",
+        "24",
+        "33",
+        "41",
+        "42"
+      ],
+      "isco_incompatibles": [
+        "6",
+        "7",
+        "8",
+        "92"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "M",
+      "descripcion": "consultoras de gestion, servicios profesionales, BPO, outsourcing"
+    },
+    "Marketing": {
+      "isco_compatibles": [
+        "12",
+        "24",
+        "34",
+        "26"
+      ],
+      "isco_incompatibles": [
+        "7",
+        "8",
+        "6",
+        "51",
+        "94"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "M",
+      "descripcion": "publicidad, comunicacion, medios, marketing digital, redes sociales"
+    },
+    "RRHH": {
+      "isco_compatibles": [
+        "12",
+        "24",
+        "44"
+      ],
+      "isco_incompatibles": [
+        "7",
+        "8",
+        "6",
+        "51",
+        "94"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "N",
+      "descripcion": "agencias de empleo, seleccion de personal, recursos humanos"
+    },
     "Seguridad": {
-      "isco_compatibles": ["54", "91"],
-      "isco_incompatibles": ["22", "25", "26", "7"],
-      "penalizacion_cruzado": -0.30,
-      "descripcion": "Guardias, vigiladores, escoltas"
+      "isco_compatibles": [
+        "54",
+        "91"
+      ],
+      "isco_incompatibles": [
+        "22",
+        "25",
+        "26",
+        "7"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "N",
+      "descripcion": "seguridad privada, vigilancia, custodia, seguridad e higiene"
     },
-
-    "Limpieza": {
-      "isco_compatibles": ["91", "94"],
-      "isco_incompatibles": ["22", "25", "26", "7"],
-      "penalizacion_cruzado": -0.25,
-      "descripcion": "Personal limpieza domestica y comercial"
+    "Administracion": {
+      "isco_compatibles": [
+        "12",
+        "24",
+        "33",
+        "41",
+        "42",
+        "52",
+        "91"
+      ],
+      "isco_incompatibles": [
+        "6",
+        "92",
+        "71",
+        "81"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "N",
+      "descripcion": "call center, servicios administrativos, limpieza, mantenimiento edilicio"
+    },
+    "Educacion": {
+      "isco_compatibles": [
+        "13",
+        "23",
+        "34"
+      ],
+      "isco_incompatibles": [
+        "7",
+        "8",
+        "6",
+        "94"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "P",
+      "descripcion": "colegios, universidades, institutos, capacitacion, formacion"
+    },
+    "Salud": {
+      "isco_compatibles": [
+        "13",
+        "22",
+        "32",
+        "53"
+      ],
+      "isco_incompatibles": [
+        "7",
+        "8",
+        "6",
+        "51",
+        "94"
+      ],
+      "penalizacion_cruzado": -0.3,
+      "clae_seccion": "Q",
+      "descripcion": "clinicas, hospitales, laboratorios, farmaceuticas, medicina"
     }
   },
-
   "isco_genericos": {
-    "_descripcion": "ISCOs que son compatibles con cualquier sector (gerentes generales, administrativos)",
-    "lista": ["11", "12", "41", "42"],
+    "_descripcion": "ISCOs compatibles con CUALQUIER sector (gerentes generales, administrativos generales)",
+    "lista": [
+      "11",
+      "12",
+      "41",
+      "42"
+    ],
     "excluir_penalizacion": true
   },
-
   "aliases": {
-    "_descripcion": "Mapeo de nombres alternativos de sectores",
+    "Agricultura": "Agro",
+    "Ganaderia": "Agro",
+    "Campo": "Agro",
+    "Agropecuario": "Agro",
+    "agropecuario": "Agro",
+    "agro": "Agro",
+    "Agricultura y ganadería": "Agro",
+    "Agrícola y ganadero": "Agro",
+    "Minería": "Mineria",
+    "mineria": "Mineria",
+    "Oil & Gas": "Energia",
+    "Oil&Gas": "Energia",
+    "oil & gas": "Energia",
+    "industria petrolera": "Energia",
+    "energías renovables": "Energia",
+    "Petróleo": "Energia",
+    "Alimenticio": "Alimentacion",
+    "Alimentación": "Alimentacion",
+    "Alimentos": "Alimentacion",
+    "Alimenticia": "Alimentacion",
+    "Alimenticios": "Alimentacion",
+    "alimenticio": "Alimentacion",
+    "Alimentos y bebidas": "Alimentacion",
+    "industria alimentaria": "Alimentacion",
+    "Comercialización y Distribución de Bebidas": "Alimentacion",
+    "Textil/Confeccion": "Textil",
+    "Indumentaria": "Textil",
+    "Moda": "Textil",
+    "textil": "Textil",
+    "Confección": "Textil",
+    "Manufactura": "Industria",
+    "Produccion": "Industria",
+    "Producción": "Industria",
+    "industria": "Industria",
+    "industrial": "Industria",
+    "Industrial": "Industria",
+    "Industria manufacturera": "Industria",
+    "Metalurgica": "Industria",
+    "Metalúrgico": "Industria",
+    "metalúrgico": "Industria",
+    "metalurgica": "Industria",
+    "metalurgico": "Industria",
+    "industria metalúrgica": "Industria",
+    "Industria metalúrgica": "Industria",
+    "industrial metalúrgico": "Industria",
+    "industria metalmecánica": "Industria",
+    "Industria Plástica": "Industria",
+    "Industria química": "Industria",
+    "Química": "Industria",
+    "Industria y packaging": "Industria",
+    "Industria alimenticia": "Industria",
+    "Servicios industriales": "Industria",
+    "constructora": "Industria",
+    "Construcción": "Construccion",
+    "construccion": "Construccion",
+    "Obras y Construcción": "Construccion",
+    "Obras de Infraestructura y Civiles": "Construccion",
+    "Obras y Servicios": "Construccion",
+    "comercio": "Comercio",
+    "Retail/Comercio": "Comercio",
+    "Retail": "Comercio",
+    "Comercial": "Comercio",
+    "Supermercado": "Comercio",
+    "Comercio y Servicios": "Comercio",
+    "Comercio Exterior": "Comercio",
+    "Comercialización": "Comercio",
+    "Concesionario": "Automotriz",
+    "logistica": "Logistica",
+    "Logística": "Logistica",
+    "Transporte": "Logistica",
+    "Transporte y Logística": "Logistica",
+    "Logistica y Transporte": "Logistica",
+    "Servicios logísticos": "Logistica",
+    "Hoteleria": "Hoteleria",
+    "Hotelería": "Hoteleria",
+    "Hotelería y Restaurantes": "Hoteleria",
+    "Hotelería y Gastronomía": "Hoteleria",
+    "Hotelería/Turismo": "Hoteleria",
+    "Turismo": "Hoteleria",
+    "Turismo y viajes": "Hoteleria",
+    "Gastronómico": "Gastronomia",
+    "Gastronomía": "Gastronomia",
+    "Restaurante": "Gastronomia",
+    "Restauración": "Gastronomia",
+    "Alimenticio - Heladero": "Gastronomia",
+    "Tecnología": "Tecnologia",
+    "tecnologia": "Tecnologia",
     "IT": "Tecnologia",
-    "TI": "Tecnologia",
     "Software": "Tecnologia",
-    "Agro": "Agropecuario",
-    "Campo": "Agropecuario",
-    "Comercio": "Retail",
-    "Ventas": "Retail",
+    "Sistemas": "Tecnologia",
+    "Telecomunicaciones": "Tecnologia",
+    "Tecnología de la información": "Tecnologia",
+    "Tecnología de la Información": "Tecnologia",
+    "Tecnología en Instrumentación y Control": "Tecnologia",
+    "Tecnología y Servicios": "Tecnologia",
+    "Bancario": "Finanzas",
+    "Banca": "Finanzas",
+    "Seguros": "Finanzas",
+    "Consultoría y servicios financieros": "Finanzas",
+    "Servicios profesionales/financieros": "Finanzas",
+    "Inmobiliario": "Inmobiliaria",
+    "Marketing digital e inmobiliario": "Inmobiliaria",
+    "Derecho": "Legal",
+    "Abogacía": "Legal",
+    "Consultoría y Asesoramiento Legal e Impositivo": "Legal",
+    "contabilidad": "Contabilidad",
+    "Contabilidad y Finanzas": "Contabilidad",
+    "Contabilidad y auditoría": "Contabilidad",
+    "Contabilidad y finanzas": "Contabilidad",
+    "Consultoría, auditoria": "Contabilidad",
+    "Consultoría": "Consultoria",
+    "Consultoría y servicios": "Consultoria",
+    "Consultoria Freelance": "Consultoria",
+    "Consultoría y gestión humana": "Consultoria",
+    "Consultoría y servicios profesionales": "Consultoria",
+    "Servicios profesionales": "Consultoria",
+    "Servicios corporativos": "Consultoria",
+    "Servicios profesionales y administrativos": "Consultoria",
+    "Servicios profesionales y asesoramiento": "Consultoria",
+    "Servicios profesionales, asesoramiento contable": "Consultoria",
+    "Servicios y BPO": "Consultoria",
+    "Servicios corporativos B2B y medios de pago": "Consultoria",
+    "Servicios corporativos B2B y medios de pagos": "Consultoria",
+    "Consultoría de Recursos Humanos": "Consultoria",
+    "Publicidad": "Marketing",
+    "Comunicación": "Marketing",
+    "Marketing y Comunicación": "Marketing",
+    "Marketing y Publicidad": "Marketing",
+    "Marketing y E-commerce": "Marketing",
+    "Comunicación y Marketing": "Marketing",
+    "Comunicación y Medios": "Marketing",
+    "Recursos Humanos": "RRHH",
+    "Seguridad Privada": "Seguridad",
+    "Seguridad privada": "Seguridad",
+    "Seguridad e Higiene": "Seguridad",
+    "Servicios": "Administracion",
+    "Servicios de mantenimiento": "Administracion",
+    "Servicio técnico especializado": "Administracion",
+    "Terciario": "Administracion",
+    "Educación": "Educacion",
+    "Educacion": "Educacion",
     "Medicina": "Salud",
     "Farmacia": "Salud",
-    "Alimenticia": "Gastronomia",
-    "Restaurantes": "Gastronomia",
-    "Transporte": "Logistica",
-    "Deposito": "Logistica",
-    "Confeccion": "Textil",
-    "Moda": "Textil",
-    "Concesionario": "Automotriz",
-    "Mecanica": "Automotriz",
-    "Turismo": "Hoteleria",
-    "Hoteles": "Hoteleria",
-    "Telefonos": "Call_Center",
-    "BPO": "Call_Center",
-    "Publicidad": "Marketing",
-    "Comunicacion": "Marketing",
-    "Derecho": "Legal",
-    "Abogacia": "Legal",
-    "Manufactura": "Industria",
-    "Fabrica": "Industria",
-    "Produccion": "Industria"
+    "industria farmacéutica": "Salud",
+    "Biotecnología": "Salud"
   }
 }

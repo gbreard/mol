@@ -24,11 +24,22 @@ Uso:
     python scripts/run_validated_pipeline.py --only-pending
     python scripts/run_validated_pipeline.py --skip-nlp            # Solo matching
 
-Version: 3.1
-Fecha: 2026-01-20
+Version: 3.3
+Fecha: 2026-02-13
+
+Cambios v3.3:
+- PASO 1.5b: Auto-correccion + escalamiento Claude para errores NLP gate
+- Flujo completo: Validar NLP → Auto-corregir → Re-validar → Escalar a Claude
+- Misma logica que PASO 3-4 (matching) replicada para NLP pre-matching
+
+Cambios v3.2:
+- PASO 1.5: NLP Validation Gate (nlp_validator.py) entre NLP y Matching
+- Ofertas con errores critico/alto quedan bloqueadas (no entran a matching)
+- Genera extraction_report en metrics/
 """
 
 import argparse
+import json
 import sys
 import io
 import sqlite3
@@ -58,6 +69,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "database"))
 from database.match_ofertas_v3 import run_matching_pipeline
 from database.auto_validator import AutoValidator, validar_ofertas_desde_bd
 from database.auto_corrector import AutoCorrector
+from database.nlp_validator import NLPValidator
 from scripts.sync_learnings import sync_learnings_yaml
 
 DB_PATH = Path(__file__).parent.parent / "database" / "bumeran_scraping.db"
@@ -209,6 +221,122 @@ def run_full_pipeline(
                 if verbose:
                     safe_print("No hay ofertas pendientes de NLP")
 
+        # PASO 1.5: NLP VALIDATION (GATE) + AUTO-CORRECCION + ESCALAMIENTO
+        if verbose:
+            safe_print("\n" + "=" * 60)
+            safe_print("PASO 1.5: NLP VALIDATION (GATE)")
+            safe_print("=" * 60)
+
+        nlp_validator = NLPValidator(verbose=verbose)
+        current_run_id = f"pipeline_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+
+        nlp_validation = nlp_validator.validar_desde_bd(
+            ids=ids_to_process,
+            limit=limit if not ids_to_process else None,
+            persist=True,
+            run_id=current_run_id,
+            update_gate=True
+        )
+        resultados["nlp_validation"] = {
+            "total": nlp_validation["total"],
+            "gate_pass": nlp_validation["gate_pass_count"],
+            "gate_block": nlp_validation["gate_block_count"],
+            "errores_por_severidad": nlp_validation.get("errores_por_severidad", {})
+        }
+
+        if verbose:
+            safe_print(f"NLP Gate: {nlp_validation['gate_pass_count']} aprobados, "
+                       f"{nlp_validation['gate_block_count']} bloqueados")
+
+        # Si no hubo ofertas para validar (ej: skip-nlp con IDs sin NLP), skip gate
+        if nlp_validation["total"] == 0:
+            if verbose:
+                safe_print("Sin ofertas NLP para validar - saltando gate")
+        else:
+            # PASO 1.5b: AUTO-CORRECCION NLP (misma logica que PASO 4 para matching)
+            nlp_errores_count = nlp_validation.get("gate_block_count", 0)
+            if nlp_errores_count > 0:
+                if verbose:
+                    safe_print("\n--- PASO 1.5b: AUTO-CORRECCION NLP ---")
+
+                conn_nlp = sqlite3.connect(str(DB_PATH))
+                nlp_corrector = AutoCorrector(db_conn=conn_nlp, validator=nlp_validator)
+                nlp_correccion = nlp_corrector.procesar_errores(nlp_validation)
+                resultados["nlp_correccion"] = nlp_correccion
+
+                auto_corregidos = len(nlp_correccion.get('auto_corregidos', []))
+                escalados = len(nlp_correccion.get('escalados_claude', []))
+
+                if verbose:
+                    safe_print(f"NLP Auto-corregidos: {auto_corregidos}")
+                    safe_print(f"NLP Escalados a Claude: {escalados}")
+
+                # Re-validar ofertas corregidas para ver si ahora pasan el gate
+                ids_corregidos = list(set(nlp_correccion.get('auto_corregidos', [])))
+                if ids_corregidos:
+                    if verbose:
+                        safe_print(f"Re-validando {len(ids_corregidos)} ofertas corregidas...")
+
+                    re_validation = nlp_validator.validar_desde_bd(
+                        ids=ids_corregidos,
+                        persist=True,
+                        run_id=current_run_id,
+                        update_gate=True
+                    )
+                    desbloqueados = re_validation.get("gate_pass_count", 0)
+                    if verbose and desbloqueados > 0:
+                        safe_print(f"Desbloqueadas por correccion: {desbloqueados}")
+
+                    # Actualizar contadores
+                    resultados["nlp_validation"]["gate_pass"] = (
+                        nlp_validation["gate_pass_count"] + desbloqueados
+                    )
+                    resultados["nlp_validation"]["gate_block"] = (
+                        nlp_validation["gate_block_count"] - desbloqueados
+                    )
+
+                    # Agregar IDs desbloqueados a los aprobados
+                    if re_validation.get("ids_aprobados"):
+                        nlp_validation["ids_aprobados"] = (
+                            nlp_validation.get("ids_aprobados", []) + re_validation["ids_aprobados"]
+                        )
+
+                # Guardar cola Claude para errores NLP (si hay patrones)
+                if nlp_correccion.get('patrones_para_claude'):
+                    resultados["nlp_patrones_claude"] = nlp_correccion['patrones_para_claude']
+                    nlp_cola_path = nlp_corrector.guardar_cola_claude()
+                    if verbose:
+                        safe_print(f"NLP Cola Claude guardada: {nlp_cola_path}")
+
+                conn_nlp.close()
+
+            # Solo aprobados entran a matching
+            if nlp_validation.get("ids_aprobados"):
+                ids_to_process = [str(x) for x in nlp_validation["ids_aprobados"]]
+            elif not ids_to_process:
+                # Si no teníamos IDs específicos, dejar que matching use limit
+                pass
+            else:
+                # Todos bloqueados
+                if verbose:
+                    safe_print("WARN: Todas las ofertas bloqueadas por NLP gate. No hay nada para matching.")
+                break
+
+        # Guardar extraction report
+        if nlp_validation.get("extraction_report"):
+            try:
+                metrics_dir = Path(__file__).parent.parent / "metrics"
+                metrics_dir.mkdir(exist_ok=True)
+                timestamp_str = datetime.now().strftime('%Y%m%d_%H%M')
+                report_path = metrics_dir / f"nlp_extraction_report_{timestamp_str}.json"
+                with open(report_path, 'w', encoding='utf-8') as f:
+                    json.dump(nlp_validation["extraction_report"], f, indent=2, ensure_ascii=False)
+                if verbose:
+                    safe_print(f"Extraction report: {report_path}")
+            except Exception as e:
+                if verbose:
+                    safe_print(f"WARN: Error guardando extraction report: {e}")
+
         # PASO 2: Matching (si no se salta)
         if not skip_matching:
             if verbose:
@@ -243,7 +371,7 @@ def run_full_pipeline(
             safe_print("=" * 60)
 
         # Obtener run_id del matching para tracking
-        current_run_id = resultados.get("matching", {}).get("run_id")
+        current_run_id = (resultados.get("matching") or {}).get("run_id")
 
         validacion = validar_ofertas_desde_bd(
             limit=limit,

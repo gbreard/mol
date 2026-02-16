@@ -9,10 +9,6 @@
       "default": 0,
       "nota": "Solo 1 si dice explicitamente 'a cargo de equipo', 'personal a cargo'"
     },
-    "requiere_movilidad_propia": {
-      "default": 0,
-      "nota": "Solo 1 si dice 'movilidad propia', 'vehiculo propio', 'auto propio'"
-    },
     "requiere_licencia_conducir": {
       "default": 0,
       "nota": "Solo 1 si dice 'licencia de conducir', 'registro de conducir'"

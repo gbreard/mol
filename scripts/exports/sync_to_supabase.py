@@ -113,10 +113,11 @@ CAMPOS_OFERTAS = [
 
 CAMPOS_NLP = [
     'id_oferta', 'titulo_limpio', 'tareas_explicitas', 'mision_rol',
-    'area_funcional', 'nivel_seniority', 'sector_empresa', 'clae_seccion', 'tipo_oferta',
-    'tipo_contrato', 'provincia', 'localidad', 'modalidad', 'jornada_laboral',
+    'area_funcional', 'nivel_seniority', 'sector_empresa',
+    'clae_code', 'clae_grupo', 'clae_seccion', 'clae_score', 'clae_metodo', 'tipo_oferta',
+    'tipo_contrato', 'provincia', 'localidad', 'modalidad',
     'nivel_educativo', 'titulo_requerido', 'experiencia_min_anios',
-    'tiene_gente_cargo', 'requiere_movilidad_propia',
+    'tiene_gente_cargo',
     'skills_tecnicas_list', 'soft_skills_list', 'tecnologias_list',
     'herramientas_list', 'nlp_extraction_timestamp', 'nlp_version'
 ]
@@ -180,10 +181,12 @@ def extraer_ofertas_validadas(
         o.es_republicacion, o.numero_republicacion,
         -- NLP
         n.titulo_limpio, n.tareas_explicitas, n.mision_rol,
-        n.area_funcional, n.nivel_seniority, n.sector_empresa, n.clae_seccion, n.tipo_oferta,
-        n.tipo_contrato, n.provincia, n.localidad, n.modalidad, n.jornada_laboral,
+        n.area_funcional, n.nivel_seniority, n.sector_empresa,
+        n.clae_code, n.clae_grupo, n.clae_seccion, n.clae_score, n.clae_metodo, n.tipo_oferta,
+        n.tipo_contrato, n.provincia, n.localidad, n.modalidad,
+        o.tipo_trabajo,
         n.nivel_educativo, n.titulo_requerido, n.experiencia_min_anios,
-        n.tiene_gente_cargo, n.requiere_movilidad_propia,
+        n.tiene_gente_cargo,
         n.skills_tecnicas_list, n.soft_skills_list, n.tecnologias_list,
         n.herramientas_list, n.nlp_extraction_timestamp, n.nlp_version,
         -- Matching
@@ -218,7 +221,7 @@ def extraer_ofertas_validadas(
                     pass
 
         # Convertir booleanos
-        for campo in ['tiene_gente_cargo', 'requiere_movilidad_propia']:
+        for campo in ['tiene_gente_cargo']:
             if oferta.get(campo) is not None:
                 oferta[campo] = bool(oferta[campo])
 
@@ -639,13 +642,17 @@ def transform_oferta_for_supabase(oferta: Dict) -> Dict:
         'nivel_seniority': oferta.get('nivel_seniority'),
         'area_funcional': oferta.get('area_funcional'),
         'sector_empresa': oferta.get('sector_empresa'),
+        'clae_code': oferta.get('clae_code'),
+        'clae_grupo': oferta.get('clae_grupo'),
         'clae_seccion': oferta.get('clae_seccion'),
         'clae_descripcion_seccion': _get_clae_descripcion_seccion(oferta.get('clae_seccion')),
+        'clae_score': oferta.get('clae_score'),
+        'clae_metodo': oferta.get('clae_metodo'),
         # NLP - Requerimientos (para tab Requerimientos del dashboard)
         'nivel_educativo': oferta.get('nivel_educativo'),
         'experiencia_min_anios': oferta.get('experiencia_min_anios'),
         'tiene_gente_cargo': oferta.get('tiene_gente_cargo'),
-        'jornada_laboral': oferta.get('jornada_laboral'),
+        'jornada_laboral': (oferta.get('tipo_trabajo') or '').lower() or None,
         # Salarios
         'salario_min': oferta.get('salario_min'),
         'salario_max': oferta.get('salario_max'),
@@ -660,6 +667,17 @@ def transform_oferta_for_supabase(oferta: Dict) -> Dict:
         'numero_republicacion': oferta.get('numero_republicacion'),
         'fecha_sync': datetime.now().isoformat(),
     }
+
+
+def _detect_valid_columns(client, table: str) -> set:
+    """Detecta columnas válidas en Supabase probando un SELECT vacío."""
+    try:
+        result = client.table(table).select('*').limit(0).execute()
+        # PostgREST returns column names in the response even with 0 rows
+        # If we have data, extract keys from first row; otherwise return empty (all allowed)
+        return set()  # Can't detect from empty result, allow all
+    except Exception:
+        return set()
 
 
 def upsert_ofertas(client, ofertas: List[Dict], dry_run: bool = False) -> int:
@@ -681,8 +699,14 @@ def upsert_ofertas(client, ofertas: List[Dict], dry_run: bool = False) -> int:
 
     # Procesar en batches
     total = 0
+    invalid_cols = set()  # Columnas que Supabase no reconoce (se detectan al primer error)
+
     for i in range(0, len(ofertas_transformed), BATCH_SIZE):
         batch = ofertas_transformed[i:i + BATCH_SIZE]
+
+        # Filtrar columnas inválidas detectadas previamente
+        if invalid_cols:
+            batch = [{k: v for k, v in row.items() if k not in invalid_cols} for row in batch]
 
         try:
             result = client.table(TABLE_OFERTAS).upsert(
@@ -692,8 +716,36 @@ def upsert_ofertas(client, ofertas: List[Dict], dry_run: bool = False) -> int:
             total += len(batch)
             logger.info(f"  Batch {i//BATCH_SIZE + 1}: {len(batch)} ofertas")
         except Exception as e:
+            error_msg = str(e)
+            # Detectar columnas que no existen en Supabase
+            if 'PGRST204' in error_msg or 'does not exist' in error_msg:
+                import re
+                col_match = re.search(r"'(\w+)' column", error_msg)
+                if col_match:
+                    col_name = col_match.group(1)
+                    invalid_cols.add(col_name)
+                    logger.warning(f"Columna '{col_name}' no existe en Supabase, omitiendo. "
+                                   f"Ejecutar: ALTER TABLE {TABLE_OFERTAS} ADD COLUMN {col_name} TEXT;")
+                    # Reintentar este batch sin la columna inválida
+                    batch = [{k: v for k, v in row.items() if k not in invalid_cols} for row in batch]
+                    try:
+                        result = client.table(TABLE_OFERTAS).upsert(
+                            batch, on_conflict='id_oferta'
+                        ).execute()
+                        total += len(batch)
+                        logger.info(f"  Batch {i//BATCH_SIZE + 1}: {len(batch)} ofertas (sin {invalid_cols})")
+                        continue
+                    except Exception as e2:
+                        logger.error(f"Error en batch {i//BATCH_SIZE + 1} (reintento): {e2}")
+                        raise
             logger.error(f"Error en batch {i//BATCH_SIZE + 1}: {e}")
             raise
+
+    if invalid_cols:
+        logger.warning(f"Columnas omitidas (no existen en Supabase): {invalid_cols}")
+        logger.warning(f"Para agregar, ejecutar en Supabase SQL Editor:")
+        for col in invalid_cols:
+            logger.warning(f"  ALTER TABLE {TABLE_OFERTAS} ADD COLUMN IF NOT EXISTS {col} TEXT;")
 
     return total
 

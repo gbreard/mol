@@ -31,16 +31,21 @@ from collections import defaultdict
 class AutoCorrector:
     """Corrector automatico basado en auto_correction_map.json."""
 
-    def __init__(self, db_conn: Optional[sqlite3.Connection] = None, config_dir: Optional[Path] = None):
+    def __init__(self, db_conn: Optional[sqlite3.Connection] = None, config_dir: Optional[Path] = None,
+                 validator=None):
         """
         Inicializa el corrector.
 
         Args:
             db_conn: Conexion a la base de datos SQLite
             config_dir: Directorio de configs. Default: config/
+            validator: Validador externo para verificar correcciones.
+                       Si None, usa AutoValidator (matching).
+                       Pasar NLPValidator para correcciones pre-matching.
         """
         self.config_dir = config_dir or Path(__file__).parent.parent / "config"
         self.db_conn = db_conn
+        self._external_validator = validator
 
         # Cargar configs
         self.correction_map = self._load_json("auto_correction_map.json")
@@ -483,6 +488,9 @@ class AutoCorrector:
         Despues de aplicar correccion, re-evalua la regla que detecto el error.
         Solo marca corregido=1 si la regla YA NO dispara.
 
+        Usa el validador externo si fue provisto (NLPValidator para errores NLP,
+        AutoValidator para errores matching).
+
         Args:
             id_oferta: ID de la oferta
             error_id: ID de la regla de validacion (ej: V26_formato_tareas_incorrecto)
@@ -490,16 +498,23 @@ class AutoCorrector:
         Returns:
             True si la correccion resolvio el error
         """
-        from database.auto_validator import AutoValidator
-
-        oferta = self._cargar_oferta(id_oferta)
-        if not oferta:
-            # No pudimos recargar — marcamos igualmente para no bloquear
-            self._marcar_error_corregido(id_oferta, error_id)
-            return True
-
-        validator = AutoValidator(config_dir=self.config_dir)
-        errores = validator.validar_oferta(oferta)
+        if self._external_validator:
+            # Usar validador externo (NLPValidator)
+            oferta = self._cargar_oferta_nlp(id_oferta)
+            if not oferta:
+                self._marcar_error_corregido(id_oferta, error_id)
+                return True
+            result = self._external_validator.validar_oferta(oferta)
+            errores = result.get("errores", [])
+        else:
+            # Usar AutoValidator (matching) - comportamiento original
+            from database.auto_validator import AutoValidator
+            oferta = self._cargar_oferta(id_oferta)
+            if not oferta:
+                self._marcar_error_corregido(id_oferta, error_id)
+                return True
+            validator = AutoValidator(config_dir=self.config_dir)
+            errores = validator.validar_oferta(oferta)
 
         error_resuelto = not any(e.get('id_regla') == error_id for e in errores)
 
@@ -507,7 +522,6 @@ class AutoCorrector:
             self._marcar_error_corregido(id_oferta, error_id)
             return True
         else:
-            # La corrección no resolvió el error
             try:
                 self.db_conn.execute('''
                     UPDATE validation_errors
@@ -534,10 +548,51 @@ class AutoCorrector:
 
         try:
             self.db_conn.row_factory = sqlite3.Row
+            # Solo campos que las reglas de matching necesitan (V02/V10/V24/V27/V28/V30/V31)
             cursor = self.db_conn.execute("""
                 SELECT
                     m.id_oferta,
-                    o.titulo,
+                    n.area_funcional,
+                    m.isco_code,
+                    m.esco_occupation_label as esco_label,
+                    m.occupation_match_score as match_score,
+                    m.dual_coinciden,
+                    m.score_semantico,
+                    m.skills_matched_essential,
+                    m.skills_oferta_json,
+                    m.esco_occupation_uri,
+                    (SELECT COUNT(*) FROM esco_associations ea
+                     WHERE ea.occupation_uri = m.esco_occupation_uri
+                     AND ea.relation_type = 'essential') as occupation_essential_total
+                FROM ofertas_esco_matching m
+                LEFT JOIN ofertas_nlp n ON n.id_oferta = m.id_oferta
+                WHERE m.id_oferta = ?
+            """, (id_oferta,))
+            row = cursor.fetchone()
+            return dict(row) if row else None
+        except Exception as e:
+            print(f"  WARN: Error cargando oferta {id_oferta}: {e}")
+            return None
+
+    def _cargar_oferta_nlp(self, id_oferta: str) -> Optional[Dict]:
+        """
+        Recarga una oferta desde BD con datos NLP (sin matching).
+        Se usa cuando el corrector trabaja con NLPValidator.
+
+        Args:
+            id_oferta: ID de la oferta
+
+        Returns:
+            Dict con datos NLP de la oferta o None
+        """
+        if not self.db_conn:
+            return None
+
+        try:
+            self.db_conn.row_factory = sqlite3.Row
+            cursor = self.db_conn.execute("""
+                SELECT
+                    n.id_oferta,
                     n.titulo_limpio,
                     n.provincia,
                     n.localidad,
@@ -551,41 +606,22 @@ class AutoCorrector:
                     n.area_funcional,
                     n.nivel_seniority,
                     n.modalidad,
-                    n.experiencia_min_anios,
-                    n.experiencia_max_anios,
+                    n.tipo_oferta,
                     n.tareas_explicitas,
-                    n.tareas_inferidas,
-                    m.isco_code,
-                    m.esco_occupation_label as esco_label,
-                    m.occupation_match_score as match_score,
-                    (SELECT COUNT(*) FROM ofertas_esco_skills_detalle s WHERE s.id_oferta = m.id_oferta) as skills_count,
-                    m.dual_coinciden,
-                    m.isco_regla,
-                    m.isco_semantico,
-                    m.score_semantico,
-                    m.regla_aplicada,
-                    m.decision_metodo,
-                    m.skills_matched_essential,
-                    m.skills_semantico_json,
-                    m.skills_regla_json,
-                    m.skills_demandados_total,
-                    m.skills_matcheados_esco,
-                    m.skills_oferta_json,
-                    m.esco_occupation_uri,
+                    n.tiene_gente_cargo,
+                    n.skills_tecnicas_list,
+                    n.largo_descripcion,
                     LENGTH(COALESCE(n.tareas_explicitas, '')) as tareas_explicitas_length,
-                    LENGTH(COALESCE(n.tareas_inferidas, '')) as tareas_inferidas_length,
-                    (SELECT COUNT(*) FROM esco_associations ea
-                     WHERE ea.occupation_uri = m.esco_occupation_uri
-                     AND ea.relation_type = 'essential') as occupation_essential_total
-                FROM ofertas_esco_matching m
-                LEFT JOIN ofertas o ON o.id_oferta = m.id_oferta
-                LEFT JOIN ofertas_nlp n ON n.id_oferta = m.id_oferta
-                WHERE m.id_oferta = ?
+                    o.titulo,
+                    o.empresa
+                FROM ofertas_nlp n
+                LEFT JOIN ofertas o ON CAST(n.id_oferta AS INTEGER) = o.id_oferta
+                WHERE n.id_oferta = ?
             """, (id_oferta,))
             row = cursor.fetchone()
             return dict(row) if row else None
         except Exception as e:
-            print(f"  WARN: Error cargando oferta {id_oferta}: {e}")
+            print(f"  WARN: Error cargando oferta NLP {id_oferta}: {e}")
             return None
 
     def _buscar_config_existente(self, error: Dict, config: Dict) -> bool:
@@ -657,8 +693,8 @@ class AutoCorrector:
                         n.nivel_seniority,
                         n.sector_empresa,
                         m.isco_code,
-                        m.esco_label,
-                        m.match_score
+                        m.esco_occupation_label,
+                        m.occupation_match_score
                     FROM ofertas_nlp n
                     LEFT JOIN ofertas_esco_matching m ON n.id_oferta = m.id_oferta
                     WHERE n.id_oferta = ?

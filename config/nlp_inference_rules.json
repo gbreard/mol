@@ -517,25 +517,25 @@
         "sector_incorrecto": ["Tecnologia", "Servicios", "Otro"],
         "keywords_titulo": ["importacion", "exportacion", "despachante", "aduana", "operador sim", "comercio exterior", "comercio internacional"],
         "keywords_descripcion": ["importacion", "importación", "exportacion", "exportación", "aduana", "aduanero", "aduaneras", "despachante", "comercio exterior", "comercio internacional", "oficializacion sim", "sistema malvina", "clasificacion arancelaria"],
-        "sector_correcto": "Comercio Exterior"
+        "sector_correcto": "Comercio"
       },
       {
         "sector_incorrecto": ["Tecnologia", "Servicios", "Otro"],
         "keywords_titulo": ["modelista", "molderia", "confeccion", "textil", "costura", "patronaje", "sastreria", "modista"],
         "keywords_descripcion": ["molderia", "moldería", "confeccion", "confección", "textil", "patronaje", "avios", "avíos", "telas", "generos", "géneros", "prendas", "colecciones", "muestrario"],
-        "sector_correcto": "Textil/Confeccion"
+        "sector_correcto": "Textil"
       },
       {
         "sector_incorrecto": ["Tecnologia", "Servicios"],
         "keywords_titulo": ["carpintero", "ebanista", "mueblero", "tapicero"],
         "keywords_descripcion": ["madera", "muebles", "carpinteria", "carpintería", "ebanisteria", "tapiceria"],
-        "sector_correcto": "Manufactura"
+        "sector_correcto": "Industria"
       },
       {
         "sector_incorrecto": ["Tecnologia", "Servicios"],
         "keywords_titulo": ["mecanico", "tornero", "soldador", "fresador", "matricero", "calderero", "herreria"],
         "keywords_descripcion": ["mecanizado cnc", "torno cnc", "fresadora", "soldadura mig", "soldadura tig", "metalurgica", "metalúrgica", "piezas metalicas", "acero inoxidable"],
-        "sector_correcto": "Metalurgica"
+        "sector_correcto": "Industria"
       }
     ]
   },
@@ -561,21 +561,32 @@
       "industria de"
     ],
 
+    "_nota_diccionario": "Usa sectores canónicos de config/sector_canonico.json",
     "diccionario_sectores": {
-      "Tecnologia": ["software", "tecnologia", "sistemas", "informatica", "digital", "IT", "tech"],
-      "Comercio Exterior": ["comercio exterior", "comercio internacional", "importacion", "exportacion", "aduana", "aduanero", "despachante", "freight forwarder", "forwarding", "agente de carga"],
-      "Retail/Comercio": ["retail", "comercio", "tienda", "local comercial", "supermercado", "mayorista", "minorista"],
-      "Manufactura": ["fabrica", "manufactura", "industria", "produccion", "planta industrial"],
-      "Alimentos": ["alimentos", "alimenticia", "consumo masivo", "bebidas", "lacteos", "frigorificos"],
+      "Tecnologia": ["software", "tecnologia", "sistemas", "informatica", "digital", "IT", "tech", "telecomunicaciones"],
+      "Comercio": ["retail", "comercio", "tienda", "local comercial", "supermercado", "mayorista", "minorista", "comercio exterior", "importacion", "exportacion", "aduana"],
+      "Industria": ["fabrica", "manufactura", "industria", "produccion", "planta industrial", "metalurgia", "metalurgica", "quimica", "plasticos"],
+      "Alimentacion": ["alimentos", "alimenticia", "consumo masivo", "bebidas", "lacteos", "frigorificos"],
       "Salud": ["salud", "clinica", "hospital", "farmaceutica", "laboratorio", "medicina"],
       "Finanzas": ["banco", "financiera", "seguros", "fintech", "creditos"],
       "Logistica": ["logistica", "transporte", "distribucion", "courier", "almacenamiento"],
-      "Construccion": ["construccion", "inmobiliaria", "real estate", "arquitectura"],
+      "Construccion": ["construccion", "obra civil", "edificacion", "arquitectura"],
       "Automotriz": ["automotriz", "concesionario", "autopartes", "vehiculos"],
-      "Servicios": ["consultora", "servicios", "outsourcing", "tercerizacion"],
+      "Consultoria": ["consultora", "servicios profesionales", "outsourcing", "tercerizacion", "BPO"],
       "Educacion": ["educacion", "universidad", "instituto", "colegio", "capacitacion"],
-      "Gastronomia": ["gastronomia", "restaurante", "catering", "hoteleria", "turismo"],
-      "Agro": ["agro", "agricola", "campo", "agroindustria", "semillas", "fertilizantes"]
+      "Gastronomia": ["gastronomia", "restaurante", "catering", "parrilla", "bar"],
+      "Hoteleria": ["hoteleria", "hotel", "turismo", "alojamiento", "agencia de viajes"],
+      "Agro": ["agro", "agricola", "campo", "agroindustria", "semillas", "fertilizantes", "ganaderia"],
+      "Inmobiliaria": ["inmobiliaria", "real estate", "propiedades"],
+      "Textil": ["textil", "confeccion", "indumentaria", "moda"],
+      "Seguridad": ["seguridad privada", "vigilancia", "custodia"],
+      "RRHH": ["recursos humanos", "seleccion de personal", "agencia de empleo"],
+      "Marketing": ["marketing", "publicidad", "comunicacion", "medios"],
+      "Legal": ["estudio juridico", "abogados", "compliance"],
+      "Contabilidad": ["estudio contable", "auditoria", "impuestos"],
+      "Energia": ["petroleo", "gas", "energia", "renovables"],
+      "Mineria": ["mineria", "canteras", "extraccion"],
+      "Administracion": ["call center", "limpieza", "mantenimiento edilicio"]
     }
   },
 
