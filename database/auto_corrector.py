@@ -568,7 +568,6 @@ class AutoCorrector:
                     n.experiencia_min_anios,
                     n.experiencia_max_anios,
                     n.tareas_explicitas,
-                    n.tareas_inferidas,
                     m.isco_code,
                     m.esco_occupation_label as esco_label,
                     m.occupation_match_score as match_score,
@@ -587,7 +586,6 @@ class AutoCorrector:
                     m.skills_oferta_json,
                     m.esco_occupation_uri,
                     LENGTH(COALESCE(n.tareas_explicitas, '')) as tareas_explicitas_length,
-                    LENGTH(COALESCE(n.tareas_inferidas, '')) as tareas_inferidas_length,
                     (SELECT COUNT(*) FROM esco_associations ea
                      WHERE ea.occupation_uri = m.esco_occupation_uri
                      AND ea.relation_type = 'essential') as occupation_essential_total
@@ -636,7 +634,6 @@ class AutoCorrector:
                     n.modalidad,
                     n.tipo_oferta,
                     n.tareas_explicitas,
-                    n.tareas_inferidas,
                     n.tiene_gente_cargo,
                     n.skills_tecnicas_list,
                     n.largo_descripcion,

@@ -448,6 +448,47 @@ class MatcherV3:
         candidates.sort(key=lambda x: x.get("combined_score", x.get("score", 0)), reverse=True)
         return candidates
 
+    def _apply_supervision_penalty(
+        self,
+        candidates: List[Dict],
+        tiene_gente_cargo: Any
+    ) -> List[Dict]:
+        """
+        Penaliza/bonifica candidatos según coherencia con tiene_gente_cargo.
+
+        v3.5.0: Reincorporado desde v2.
+        - tiene_gente=False + ISCO 1xxx (directivos) → penalty -10%
+        - tiene_gente=True + ISCO 1xxx → bonus +5%
+        """
+        if tiene_gente_cargo is None:
+            return candidates
+
+        tiene_gente = bool(tiene_gente_cargo)
+
+        for candidate in candidates:
+            isco_code = candidate.get("isco_code", "").lstrip("C")
+            if not isco_code:
+                continue
+
+            is_directivo = isco_code.startswith("1")
+
+            if not tiene_gente and is_directivo:
+                original = candidate.get("combined_score", 0)
+                candidate["combined_score"] = max(0, original - 0.10)
+                candidate["supervision_penalty"] = -0.10
+                if self.verbose:
+                    print(f"[V3] Penalizacion supervision: ISCO {isco_code} directivo sin gente a cargo (-10%)")
+
+            elif tiene_gente and is_directivo:
+                original = candidate.get("combined_score", 0)
+                candidate["combined_score"] = original + 0.05
+                candidate["supervision_bonus"] = 0.05
+                if self.verbose:
+                    print(f"[V3] Bonus supervision: ISCO {isco_code} directivo con gente a cargo (+5%)")
+
+        candidates.sort(key=lambda x: x.get("combined_score", x.get("score", 0)), reverse=True)
+        return candidates
+
     def match(self, oferta_nlp: Dict) -> MatchResult:
         """
         Pipeline principal de matching v3.4.0 - DUAL MATCHING.
@@ -575,6 +616,11 @@ class MatcherV3:
                 nivel_seniority = oferta_nlp.get("nivel_seniority", "")
                 if nivel_seniority:
                     final_candidates = self._apply_seniority_penalty(final_candidates, nivel_seniority)
+
+                # v3.5.0: Penalización/bonus por tiene_gente_cargo
+                tiene_gente = oferta_nlp.get("tiene_gente_cargo")
+                if tiene_gente is not None:
+                    final_candidates = self._apply_supervision_penalty(final_candidates, tiene_gente)
 
                 # Seleccionar mejor candidato
                 best = final_candidates[0]

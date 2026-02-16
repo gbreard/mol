@@ -115,9 +115,9 @@ CAMPOS_NLP = [
     'id_oferta', 'titulo_limpio', 'tareas_explicitas', 'mision_rol',
     'area_funcional', 'nivel_seniority', 'sector_empresa',
     'clae_code', 'clae_grupo', 'clae_seccion', 'clae_score', 'clae_metodo', 'tipo_oferta',
-    'tipo_contrato', 'provincia', 'localidad', 'modalidad', 'jornada_laboral',
+    'tipo_contrato', 'provincia', 'localidad', 'modalidad',
     'nivel_educativo', 'titulo_requerido', 'experiencia_min_anios',
-    'tiene_gente_cargo', 'requiere_movilidad_propia',
+    'tiene_gente_cargo',
     'skills_tecnicas_list', 'soft_skills_list', 'tecnologias_list',
     'herramientas_list', 'nlp_extraction_timestamp', 'nlp_version'
 ]
@@ -183,9 +183,10 @@ def extraer_ofertas_validadas(
         n.titulo_limpio, n.tareas_explicitas, n.mision_rol,
         n.area_funcional, n.nivel_seniority, n.sector_empresa,
         n.clae_code, n.clae_grupo, n.clae_seccion, n.clae_score, n.clae_metodo, n.tipo_oferta,
-        n.tipo_contrato, n.provincia, n.localidad, n.modalidad, n.jornada_laboral,
+        n.tipo_contrato, n.provincia, n.localidad, n.modalidad,
+        o.tipo_trabajo,
         n.nivel_educativo, n.titulo_requerido, n.experiencia_min_anios,
-        n.tiene_gente_cargo, n.requiere_movilidad_propia,
+        n.tiene_gente_cargo,
         n.skills_tecnicas_list, n.soft_skills_list, n.tecnologias_list,
         n.herramientas_list, n.nlp_extraction_timestamp, n.nlp_version,
         -- Matching
@@ -220,7 +221,7 @@ def extraer_ofertas_validadas(
                     pass
 
         # Convertir booleanos
-        for campo in ['tiene_gente_cargo', 'requiere_movilidad_propia']:
+        for campo in ['tiene_gente_cargo']:
             if oferta.get(campo) is not None:
                 oferta[campo] = bool(oferta[campo])
 
@@ -651,7 +652,7 @@ def transform_oferta_for_supabase(oferta: Dict) -> Dict:
         'nivel_educativo': oferta.get('nivel_educativo'),
         'experiencia_min_anios': oferta.get('experiencia_min_anios'),
         'tiene_gente_cargo': oferta.get('tiene_gente_cargo'),
-        'jornada_laboral': oferta.get('jornada_laboral'),
+        'jornada_laboral': (oferta.get('tipo_trabajo') or '').lower() or None,
         # Salarios
         'salario_min': oferta.get('salario_min'),
         'salario_max': oferta.get('salario_max'),

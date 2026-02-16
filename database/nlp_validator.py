@@ -4,7 +4,7 @@ NLP Validator - Pre-matching quality gate.
 Evalúa la calidad de extracción NLP ANTES de que la oferta entre a matching.
 Severidades critico/alto BLOQUEAN la oferta (no entra a matching).
 
-Version: 1.0.0
+Version: 1.1.0
 Fecha: 2026-02-13
 
 Uso:
@@ -34,7 +34,7 @@ class NLPValidator:
     - Persistencia: validation_errors con error_tipo 'nlp_gate_*' / 'nlp_quality_*'
     """
 
-    VERSION = "1.0.0"
+    VERSION = "1.1.0"
     GATE_SEVERITIES = {'critico', 'alto'}
 
     def __init__(self, config_dir: Optional[Path] = None, verbose: bool = False):
@@ -228,6 +228,17 @@ class NLPValidator:
             and clae_seccion != expected_seccion
         )
 
+        # experiencia_rango_invertido
+        exp_min = enriched.get("experiencia_min_anios")
+        exp_max = enriched.get("experiencia_max_anios")
+        if exp_min is not None and exp_max is not None:
+            try:
+                enriched["experiencia_rango_invertido"] = float(exp_max) < float(exp_min)
+            except (TypeError, ValueError):
+                enriched["experiencia_rango_invertido"] = False
+        elif "experiencia_rango_invertido" not in enriched:
+            enriched["experiencia_rango_invertido"] = False
+
         # tareas_explicitas_length (si no viene de BD)
         if "tareas_explicitas_length" not in enriched:
             tareas = enriched.get("tareas_explicitas") or ""
@@ -396,10 +407,16 @@ class NLPValidator:
                 n.modalidad,
                 n.tipo_oferta,
                 n.tareas_explicitas,
-                n.tareas_inferidas,
                 n.tiene_gente_cargo,
                 n.skills_tecnicas_list,
                 n.largo_descripcion,
+                n.experiencia_min_anios,
+                n.experiencia_max_anios,
+                n.nivel_educativo,
+                n.jornada_laboral,
+                n.tipo_contrato,
+                n.requerimiento_edad,
+                n.requerimiento_sexo,
                 LENGTH(COALESCE(n.tareas_explicitas, '')) as tareas_explicitas_length,
                 o.titulo,
                 o.empresa
@@ -552,7 +569,9 @@ class NLPValidator:
         campos = self.rules_config.get("campos_extraction_report", [
             "titulo_limpio", "provincia", "localidad", "sector_empresa",
             "area_funcional", "nivel_seniority", "modalidad", "tipo_oferta",
-            "tareas_explicitas", "tareas_inferidas", "clae_code", "clae_seccion"
+            "tareas_explicitas", "clae_code", "clae_seccion",
+            "experiencia_min_anios", "experiencia_max_anios",
+            "nivel_educativo", "jornada_laboral", "tipo_contrato"
         ])
 
         # Campos enum para distribución de valores

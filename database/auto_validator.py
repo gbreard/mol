@@ -766,7 +766,6 @@ def validar_ofertas_desde_bd(
             n.experiencia_min_anios,
             n.experiencia_max_anios,
             n.tareas_explicitas,
-            n.tareas_inferidas,
             m.isco_code,
             m.esco_occupation_label as esco_label,
             m.occupation_match_score as match_score,
@@ -788,7 +787,6 @@ def validar_ofertas_desde_bd(
             m.esco_occupation_uri,
             -- Campos tareas longitud (V26, V29)
             LENGTH(COALESCE(n.tareas_explicitas, '')) as tareas_explicitas_length,
-            LENGTH(COALESCE(n.tareas_inferidas, '')) as tareas_inferidas_length,
             -- Essential skills count de la ocupacion asignada (V24, V28)
             (SELECT COUNT(*) FROM esco_associations ea
              WHERE ea.occupation_uri = m.esco_occupation_uri

@@ -48,13 +48,27 @@ class NLPPostprocessor:
 
     VERSION = "1.3.0"
 
-    # Valores validos para campos categoricos (Matching v2.1.1)
+    # Valores validos para campos categoricos
+    # v1.1: Eliminados aliases compuestos — se normalizan antes de validar
     VALID_AREA_FUNCIONAL = {
-        "IT", "Ventas", "Operaciones", "RRHH", "Administracion",
-        "Salud", "Produccion", "Logistica", "Marketing", "Legal", "Finanzas", "Otro",
-        # Alias desde inference_rules.json
-        "Ventas/Comercial", "IT/Sistemas", "Recursos Humanos", "Finanzas/Contabilidad",
-        "Logistica/Operaciones", "Produccion/Manufactura", "Atencion al Cliente", "Ingenieria"
+        "Administracion", "Comercial", "Contabilidad", "Diseño", "Educacion",
+        "Finanzas", "Gastronomia", "Ingenieria", "IT", "Legal",
+        "Logistica", "Mantenimiento", "Marketing", "Medicina", "Produccion",
+        "RRHH", "Salud", "Seguridad", "Vigilancia", "Atencion al cliente",
+        "Compras", "Calidad", "Medio ambiente", "Comunicacion",
+        "Investigacion", "Ventas", "Operaciones", "Otro",
+    }
+
+    # Normalización de aliases a valores canónicos
+    AREA_FUNCIONAL_NORMALIZATION = {
+        "IT/Sistemas": "IT",
+        "Sistemas": "IT",
+        "Ventas/Comercial": "Comercial",
+        "Recursos Humanos": "RRHH",
+        "Finanzas/Contabilidad": "Contabilidad",
+        "Logistica/Operaciones": "Logistica",
+        "Produccion/Manufactura": "Produccion",
+        "Atencion al Cliente": "Atencion al cliente",
     }
     VALID_SENIORITY = {"trainee", "junior", "semisenior", "senior", "lead", "manager", "director"}
     VALID_TIPO_OFERTA = {"demanda_real", "pasantia", "becario", "freelance"}
@@ -290,8 +304,15 @@ class NLPPostprocessor:
         Valida que los campos categóricos tengan valores permitidos.
         Si el valor no es válido, lo pone en null para que se infiera después.
         """
-        # area_funcional
+        # area_funcional: normalizar aliases antes de validar
         area = data.get("area_funcional")
+        if area and area in self.AREA_FUNCIONAL_NORMALIZATION:
+            canonical = self.AREA_FUNCIONAL_NORMALIZATION[area]
+            if self.verbose:
+                print(f"[NORM] area_funcional '{area}' -> '{canonical}'")
+            data["area_funcional"] = canonical
+            area = canonical
+
         if area and area not in self.VALID_AREA_FUNCIONAL:
             if self.verbose:
                 print(f"[VALID] area_funcional '{area}' no valido -> null")

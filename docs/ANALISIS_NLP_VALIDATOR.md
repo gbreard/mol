@@ -66,6 +66,13 @@ El objetivo es recorrer cada grupo de variables, decidir:
 
 **Nota tipo_lugar**: Se verificó con ejemplos reales. Las keywords (planta, oficina, obra, local, depósito) aparecen en contextos ambiguos: "Obra Social" (beneficio), "comedor en planta" (beneficio), "a nivel local" (adjetivo). Regex genera más falsos positivos que detecciones útiles. Requeriría LLM para interpretar contexto, y el prompt lite ya está al límite.
 
+**IMPLEMENTACIÓN Ubicación:**
+- [x] Validar provincia: que sea provincia argentina válida (25 provincias + CABA) — regla nueva
+- [x] Validar modalidad: que esté en {presencial, remoto, híbrido} — regla nueva
+- [x] Eliminar V04/V05/V06 (reglas exterior Paraguay/Uruguay/Chile) de nlp_validation_rules.json
+- [x] Eliminar `requiere_movilidad_propia` de la query del sync_to_supabase.py
+- [ ] No hacer regex nuevos (zona_residencia, viajar, movilidad) — no vale la inversión
+
 ### Grupo: Experiencia
 
 **Campos vivos (2 de 10):**
@@ -97,6 +104,14 @@ Todos 0%. **IGNORAR**.
 
 **Regla propuesta:** `NV_EXP_SENIORITY`: Si experiencia_min ≤ 1 AND seniority IN (senior, manager, director) → warning "Verificar seniority, experiencia baja para ese nivel"
 
+**Llega al dash:** Solo `experiencia_min_anios`. experiencia_max_anios (4.3%) no se sincroniza.
+
+**IMPLEMENTACIÓN Experiencia:**
+- [x] Validar experiencia_min_anios: si tiene valor, numérico >= 0 y <= 30
+- [x] Validar experiencia_max_anios: si tiene valor, >= experiencia_min (no invertidos)
+- [x] Cross-validar NV_EXP_SENIORITY: experiencia_min ≤ 1 + seniority senior/manager/director → warning
+- [ ] No hacer nada con los 8 campos muertos
+
 ### Grupo: Educación
 
 **Campos vivos (2 de 9):**
@@ -116,6 +131,16 @@ Todos 0%. **IGNORAR**.
 **Cross-validation educación × seniority:** Sin inconsistencias (0 primario+manager, 1 secundario+manager).
 
 **Acción:** Limpiar null-like en titulo_requerido (19 casos). `_normalize()` ya limpia null-like pero puede no cubrir este campo.
+
+**Llega al dash:** Solo `nivel_educativo`. titulo_requerido se lee de BD pero no se envía a Supabase.
+
+**titulo_requerido y matching:** No se usa en matching hoy. Podría ser señal fuerte (ej: "Contador Público" → ISCO 2411). Tiene 47.5% cobertura, 793 valores distintos (texto libre). Solución: normalizar con **CINE-F 2013** (UNESCO) — mismo patrón que ESCO/CLAE/ISCO. **Branch separado: `feature/cine-clasificador`**.
+
+**IMPLEMENTACIÓN Educación:**
+- [x] Validar nivel_educativo: que esté en {primario, secundario, terciario, universitario, posgrado}
+- [x] Normalizar titulo_requerido: limpiar 19 null-like → NULL real
+- [ ] No hacer nada con los 7 campos muertos
+- [ ] FUTURO (branch separado): Clasificador CINE-F para titulo_requerido → código internacional + uso en matching
 
 ### Grupo: Idiomas
 
@@ -140,6 +165,17 @@ Todos 0%. **IGNORAR**.
 - `(?:portugués|portugues)\s+(?:avanzado|intermedio)` → idioma=portugués, nivel=X
 - `bilingüe|bilingue` → idioma=inglés, nivel=avanzado
 - Contexto negativo: "clases de inglés" → IGNORAR (es beneficio, no requisito)
+
+**Llega al dash:** Nada de idiomas hoy. Agregar al sync después de implementar regex.
+
+**IMPLEMENTACIÓN Idiomas:**
+- [x] Regex en postprocessor: extraer idioma_principal + nivel_idioma_principal de descripción
+- [x] Regex inglés: `(?:inglés|ingles)\s+(?:avanzado|intermedio|básico|basico|fluido|nativo)` + contexto negativo ("clases de")
+- [x] Regex portugués: `(?:portugués|portugues)\s+(?:avanzado|intermedio)`
+- [x] Regex bilingüe: `bilingüe|bilingue` → inglés avanzado
+- [x] Regex idioma secundario: si ya hay principal y aparece otro idioma con nivel
+- [x] Agregar idioma_principal + nivel_idioma_principal al sync_to_supabase.py
+- [x] Útil para análisis de mercado (% ofertas que piden idioma)
 
 ### Grupo: Skills y Tecnologías
 
@@ -174,7 +210,43 @@ Las skills NLP alimentan al extractor de skills, que produce las skills ESCO usa
 
 **Validación propuesta:** El 5% sin skills_tecnicas es el mismo grupo sin tareas (datos_insuficientes). No necesita regla nueva, V11/NV08 ya lo cubre.
 
-**TODO:** Este grupo requiere trabajo profundo posterior — normalización, calidad de extracción, coherencia con ESCO.
+**PROBLEMA CRÍTICO: Duplicados de skills ESCO en dashboard**
+
+El dashboard muestra skills duplicadas que fragmentan conteos y generan desconfianza del usuario.
+Ejemplo: "trabajo en equipo" (50 ofertas) y "trabajo en equipos" (30 ofertas) aparecen como 2 skills separadas.
+
+**3 tipos de duplicados encontrados:**
+
+| Tipo | Cantidad | Ejemplo | Causa |
+|------|----------|---------|-------|
+| Acento/plural | 15 pares | "trabajo en equipo" vs "trabajo en equipos" | Variantes tipográficas ESCO |
+| Mismo label, distinta URI | 63 grupos | skill con URI_A y URI_B | ESCO tiene skills en distintos contextos |
+| URI = None | Muchas | Skills de rules engine sin URI | `skills_rules_matcher.py` no asigna URI |
+
+**`normalize()` actual** (en API perfil-argentina y script batch): solo hace `trim().toLowerCase()` — NO normaliza acentos ni plurales. Esto causa:
+- `coverage_essential` **deflateada** (skills ESCO "faltantes" que están con variante)
+- `emerging_count` **inflateado** (falsos emergentes que son variantes de ESCO)
+- `frequency` por skill **fragmentada** (conteo partido en 2+)
+
+**Impacto en Perfil Consolidado:**
+- Admin aprueba como "emergentes argentinas" skills que son variantes tipográficas de ESCO
+- La cobertura real de ESCO es MAYOR de lo que se muestra
+- El % de frecuencia está fragmentado → decisiones de aprobación basadas en datos incorrectos
+
+**Solución propuesta (3 capas, en sync layer):**
+1. **Normalización de texto:** Quitar acentos, normalizar plurales en `preferred_label` al sincronizar a Supabase
+2. **Mapeo canónico de URIs:** JSON `config/esco_skill_canonical.json` que mapea URI duplicadas → URI canónica
+3. **Resolver NULL URIs:** Buscar URI correcta para skills del rules engine que llegan sin URI
+
+**Punto de aplicación:** En `sync_to_supabase.py` al armar `ofertas_skills` — así ambas tabs se benefician sin tocar API ni componentes React.
+
+**Branch separado:** `feature/skills-dedup` — es un concern independiente del NLP validator.
+
+**IMPLEMENTACIÓN Skills (NLP validator):**
+- [x] No crear reglas nuevas de validación para skills NLP — V11/NV08 ya cubre los sin tareas/skills
+- [x] Validar skills_count (migrar V03 existente): < 3 skills → medio
+- [ ] BRANCH SEPARADO `feature/skills-dedup`: Deduplicación 3 capas en sync layer
+- [ ] PENDIENTE: Definir canónicos de área funcional (5 pares duplicados, ver grupo Clasificación)
 
 ### Grupo: Salario
 
@@ -214,6 +286,17 @@ Las skills NLP alimentan al extractor de skills, que produce las skills ESCO usa
 
 **tipo_contrato (18.8%):** Aporta valor propio. "Monotributo" (0.9% en desc), "relación de dependencia" (7.8%), "pasantía" (0.6%). Cobertura baja pero dato que no existe en scraping.
 
+**Llega al dash:** `jornada_laboral` SÍ (payload línea 593). `tipo_contrato` NO (se lee de BD pero no entra al payload de Supabase).
+
+**IMPLEMENTACIÓN Condiciones Laborales:**
+- [x] Validar jornada_laboral: si tiene valor, que esté en {full-time, part-time, freelance} — regla nueva
+- [x] Validar tipo_contrato: si tiene valor, que esté en {monotributo, contrato, efectivo, pasantia} — regla nueva
+- [ ] No hacer nada con los 3 campos muertos (horario_flexible, trabajo_nocturno, trabajo_turnos_rotativos)
+- [ ] EVALUAR: Agregar `tipo_contrato` al sync (18.8% cobertura, dato único no disponible en scraping)
+- [x] **CAMBIO DASH**: Reemplazar `jornada_laboral` (NLP, 48%) por `tipo_trabajo` (scraping, 100%) en sync + filtro + gráfico Requerimientos. El filtro actual pierde la mitad de las ofertas porque el NLP no extrajo jornada.
+- [ ] FUTURO: Mejorar extracción `tipo_contrato` (regex: "relación de dependencia", "monotributo", "contrato temporal"). Cobertura actual 18.8%.
+- [ ] FUTURO: Inferir tipo de contratación por combinatoria de variables para el 81% sin dato: tipo_oferta (freelance→monotributo), es_intermediario (consultora→contrato tercerizado), empresa conocida+full-time→efectivo. Objetivo: eliminar "Sin especificar" en el dash.
+
 ### Grupo: Empresa
 
 **Campos vivos (4 de 5):**
@@ -237,6 +320,18 @@ Las skills NLP alimentan al extractor de skills, que produce las skills ESCO usa
 - 103 "Otro": LLM no pudo clasificar en 25 canónicos
 - 29% intermediarios (606): para esas ofertas el sector es del cliente, no de la consultora
 - Validaciones V20/V21 ya filtran cross-sector solo cuando `confianza=alta` (fix sprint 6)
+
+**Llega al dash:** Solo `sector_empresa`. `sector_confianza`, `sector_fuente`, `es_intermediario` NO se sincronizan a Supabase.
+
+**IMPLEMENTACIÓN Empresa:**
+- [x] Validar sector_empresa: que esté en 25 canónicos (ya existe como NV02 en plan) — **alto** gate
+- [x] Validar null-like en sector_empresa (ya existe como NV11): "null", "None", "sin dato" → NULL real
+- [x] Migrar V18 (sector = area_funcional coinciden) → warning
+- [x] Migrar V19 (sector=Seguridad + area no vigilancia) → warning
+- [x] Migrar V20/V21 (cross sector-area con confianza alta) → info
+- [x] Migrar V22 (empresa confidencial + sector) → info
+- [ ] No hacer nada con empresa_tamanio (0%)
+- [ ] EVALUAR: Agregar `es_intermediario` al sync (100% cobertura, dato valioso para filtrar consultoras)
 
 ### Grupo: Clasificación
 
@@ -264,6 +359,17 @@ Las skills NLP alimentan al extractor de skills, que produce las skills ESCO usa
 - **Regla propuesta NV_CROSS:** trainee/junior + tiene_gente_cargo=1 → warning
 
 **48 sin seniority:** Solo 1 tiene gente a cargo. Ofertas donde LLM no pudo inferir nivel.
+
+**Llega al dash:** `area_funcional`, `nivel_seniority`, `tiene_gente_cargo` SÍ. `tipo_oferta` NO (se lee de BD pero no entra al payload Supabase).
+
+**IMPLEMENTACIÓN Clasificación:**
+- [x] Validar area_funcional: que esté en valores válidos (ya existe como NV03 en plan) — **alto** gate
+- [x] Normalizar 5 pares duplicados de area_funcional en postprocessor: Ventas/Comercial→Ventas, IT/Sistemas→IT, Finanzas/Contabilidad→Finanzas, Recursos Humanos→RRHH, Logistica/Operaciones→Logistica
+- [x] Validar nivel_seniority: que esté en 7 valores (ya existe como NV04 en plan) — **alto** gate
+- [x] Validar tipo_oferta: que esté en {demanda_real, freelance, pasantia, becario} (ya existe como NV06 en plan) — medio
+- [x] Cross-validar NV_CROSS: trainee/junior + tiene_gente_cargo=1 → warning (bajo)
+- [x] **CAMBIO MATCHING**: Reincorporar `tiene_gente_cargo` como penalización en matching v3 (como estaba en v2: tiene_gente=0 → penalizar ISCO 1xxx directivos; tiene_gente=1 + ISCO 1xxx → boost)
+- [ ] `tipo_oferta`: NO agregar al dash. "demanda_real" (96%) no aporta al usuario. freelance/pasantia/becario ya cubiertos por `tipo_trabajo` del scraping. Se mantiene como campo interno para validación.
 
 ### Grupo: Tareas
 
@@ -294,6 +400,16 @@ Las skills NLP alimentan al extractor de skills, que produce las skills ESCO usa
 - 101 sin tareas pero con skills = extractor infiere del título como fallback
 - tareas_inferidas casi muerto: solo 4 inferencias del título. No justifica campo separado.
 
+**Llega al dash:** NO. `tareas_explicitas` se lee de BD pero no entra al payload de Supabase. Es insumo interno para el extractor de skills.
+
+**IMPLEMENTACIÓN Tareas:**
+- [x] Migrar V11 (tareas ambas vacías) → **alto** gate
+- [x] Migrar V25 (tareas vacías + skills presentes) → medio
+- [x] Migrar V26 (formato comas en vez de `;`) → medio
+- [x] Migrar V29 (tareas < 50 chars) → bajo
+- [x] **ELIMINAR `tareas_inferidas`**: Campo muerto (4 ofertas), no útil. Sacar del prompt/postprocessor/BD.
+- [ ] No necesita reglas nuevas — las existentes cubren los casos
+
 ### Grupo: CLAE
 
 **Campos:**
@@ -314,6 +430,14 @@ Las skills NLP alimentan al extractor de skills, que produce las skills ESCO usa
 **Cross sector→sección:** Coherente. Comercio→G, Salud→Q, Tecnologia→J, Industria→C. Combinaciones "raras" (J+Industria=15, J+Marketing=12) son empresas de esos sectores publicando puestos IT/marketing — normal.
 
 **Nota score/método:** 94.5% clasificado por mapeo directo (sector→sección→código semántico dentro de sección), sin score ni método. Solo 109 pasaron por clasificación semántica pura.
+
+**Llega al dash:** `clae_code`, `clae_grupo`, `clae_seccion`, `clae_score`, `clae_metodo` + `clae_descripcion_seccion` (derivada). Todo llega.
+
+**IMPLEMENTACIÓN CLAE:**
+- [x] Migrar V17 (sección CLAE inválida, no es letra A-R) → **alto** gate
+- [x] Migrar V16 (sector sin CLAE) → info
+- [ ] 150 sin CLAE = limitación de datos (79 sin sector + 71 sector "Otro"), no se puede hacer más
+- [ ] ~~NV_CLAE cross sector-sección~~: DESCARTADO — sección CLAE se deriva mecánicamente del sector canónico, no puede haber incoherencia
 
 ### Grupo: Títulos
 
@@ -343,6 +467,14 @@ Las skills NLP alimentan al extractor de skills, que produce las skills ESCO usa
 
 **Nota:** Los 85 títulos < 10 chars quedaron genéricos post-limpieza. La limpieza hizo bien en sacar ubicación/empresa, pero el título queda débil para matching.
 
+**Llega al dash:** `titulo` (original) y `titulo_limpio` SÍ.
+
+**IMPLEMENTACIÓN Títulos:**
+- [x] Migrar V01 (titulo_limpio vacío) → **critico** gate
+- [x] Migrar V07 (código interno no limpiado en título) → medio
+- [ ] 85 títulos < 10 chars = warning informativo, no bloqueante
+- [ ] No hacer nada con los 5 campos muertos
+
 ### Grupo: Otros campos vivos
 
 **mision_rol** — 91.0% (1905):
@@ -370,6 +502,12 @@ Las skills NLP alimentan al extractor de skills, que produce las skills ESCO usa
 **calidad_texto** — 1.5% (32):
 - Solo valor: "baja_sin_tareas". Flag del postprocessor cuando no hay tareas extraíbles.
 - Subconjunto de los 124 sin tareas.
+
+**IMPLEMENTACIÓN Otros campos vivos:**
+- [x] **ELIMINAR `calidad_texto`**: Campo huérfano, no se genera en NLP v11, columna siempre vacía. Sacar de BD.
+- [ ] FUTURO DASH: `mision_rol` → descripción corta del puesto (cosmético)
+- [ ] FUTURO DASH: `requerimiento_edad` + `requerimiento_sexo` → análisis de discriminación laboral (variables sensibles, alta importancia para análisis de mercado)
+- [ ] `es_republica` → dato complementario de ubicación, evaluar si agregar al dash
 
 ### Campos muertos no listados (89 columnas)
 

@@ -1,8 +1,10 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "descripcion": "Reglas de validación NLP pre-matching (gate). Evalúa calidad de extracción NLP ANTES de matching.",
   "fecha_creacion": "2026-02-13",
+  "fecha_actualizacion": "2026-02-16",
   "_arquitectura": "Este archivo contiene reglas que validan output NLP. Reemplaza las reglas NLP que estaban en validation_rules.json. Severidades critico/alto BLOQUEAN la oferta (no entra a matching).",
+  "_cambios_v1_1": "Eliminadas V04/V05/V06 (exterior, código muerto) y NV_CLAE (derivación mecánica). Subidas NV02/NV03/NV04 a alto. Agregadas NV_PROV, NV_MOD, NV_EDU, NV_EXP_RANGE, NV_EXP_INV, NV_EXP_SENIORITY, NV_JORNADA, NV_CONTRATO. Removidas refs a tareas_inferidas (campo eliminado).",
 
   "operadores_disponibles": [
     "is_null", "is_empty", "is_not_null", "is_not_empty",
@@ -17,6 +19,7 @@
   "reglas": [
     {
       "id": "V01_titulo_limpio_vacio",
+      "grupo": "titulos",
       "descripcion": "Titulo limpio vacio o nulo indica falla en limpieza",
       "campo": "titulo_limpio",
       "operador": "is_empty",
@@ -27,6 +30,7 @@
     },
     {
       "id": "V03_skills_insuficientes",
+      "grupo": "skills",
       "descripcion": "Menos de 3 skills extraidas indica texto pobre o umbral muy alto",
       "campo": "skills_count",
       "operador": "lt",
@@ -37,94 +41,8 @@
       "_migrado_de": "validation_rules.json"
     },
     {
-      "id": "V04_ubicacion_exterior_paraguay",
-      "descripcion": "Ofertas para Paraguay detectadas por localidad (solo si provincia no es argentina)",
-      "condiciones": [
-        {
-          "campo": "localidad",
-          "operador": "contains_any",
-          "valores": ["Paraguay", "Asuncion", "Asunción", "Ciudad del Este", "Encarnacion", "Encarnación"]
-        },
-        {
-          "campo": "provincia",
-          "operador": "not_in_list",
-          "valores": [
-            "Buenos Aires", "Capital Federal", "CABA", "Córdoba", "Cordoba",
-            "Santa Fe", "Mendoza", "Tucumán", "Tucuman", "Entre Ríos", "Entre Rios",
-            "Salta", "Misiones", "Chaco", "Corrientes", "Santiago del Estero",
-            "San Juan", "Jujuy", "Río Negro", "Rio Negro", "Neuquén", "Neuquen",
-            "Formosa", "Chubut", "San Luis", "Catamarca", "La Rioja", "La Pampa",
-            "Santa Cruz", "Tierra del Fuego"
-          ]
-        }
-      ],
-      "logica": "AND",
-      "diagnostico": "ubicacion_exterior",
-      "severidad": "medio",
-      "mensaje": "Oferta para Paraguay - marcar como exterior",
-      "auto_correccion": {"campo": "provincia", "valor": "Paraguay (exterior)"},
-      "_migrado_de": "validation_rules.json"
-    },
-    {
-      "id": "V05_ubicacion_exterior_uruguay",
-      "descripcion": "Ofertas para Uruguay detectadas por localidad (solo si provincia no es argentina)",
-      "condiciones": [
-        {
-          "campo": "localidad",
-          "operador": "contains_any",
-          "valores": ["Uruguay", "Montevideo", "Punta del Este", "Colonia"]
-        },
-        {
-          "campo": "provincia",
-          "operador": "not_in_list",
-          "valores": [
-            "Buenos Aires", "Capital Federal", "CABA", "Córdoba", "Cordoba",
-            "Santa Fe", "Mendoza", "Tucumán", "Tucuman", "Entre Ríos", "Entre Rios",
-            "Salta", "Misiones", "Chaco", "Corrientes", "Santiago del Estero",
-            "San Juan", "Jujuy", "Río Negro", "Rio Negro", "Neuquén", "Neuquen",
-            "Formosa", "Chubut", "San Luis", "Catamarca", "La Rioja", "La Pampa",
-            "Santa Cruz", "Tierra del Fuego"
-          ]
-        }
-      ],
-      "logica": "AND",
-      "diagnostico": "ubicacion_exterior",
-      "severidad": "medio",
-      "mensaje": "Oferta para Uruguay - marcar como exterior",
-      "auto_correccion": {"campo": "provincia", "valor": "Uruguay (exterior)"},
-      "_migrado_de": "validation_rules.json"
-    },
-    {
-      "id": "V06_ubicacion_exterior_chile",
-      "descripcion": "Ofertas para Chile detectadas por localidad (solo si provincia no es argentina)",
-      "condiciones": [
-        {
-          "campo": "localidad",
-          "operador": "contains_any",
-          "valores": ["Chile", "Santiago de Chile", "Valparaiso", "Valparaíso"]
-        },
-        {
-          "campo": "provincia",
-          "operador": "not_in_list",
-          "valores": [
-            "Buenos Aires", "Capital Federal", "CABA", "Córdoba", "Cordoba",
-            "Santa Fe", "Mendoza", "Tucumán", "Tucuman", "Entre Ríos", "Entre Rios",
-            "Salta", "Misiones", "Chaco", "Corrientes", "Santiago del Estero",
-            "San Juan", "Jujuy", "Río Negro", "Rio Negro", "Neuquén", "Neuquen",
-            "Formosa", "Chubut", "San Luis", "Catamarca", "La Rioja", "La Pampa",
-            "Santa Cruz", "Tierra del Fuego"
-          ]
-        }
-      ],
-      "logica": "AND",
-      "diagnostico": "ubicacion_exterior",
-      "severidad": "medio",
-      "mensaje": "Oferta para Chile - marcar como exterior",
-      "auto_correccion": {"campo": "provincia", "valor": "Chile (exterior)"},
-      "_migrado_de": "validation_rules.json"
-    },
-    {
       "id": "V07_titulo_codigo_interno",
+      "grupo": "titulos",
       "descripcion": "Titulo contiene codigo interno no limpiado (excluye terminos tecnicos)",
       "campo": "titulo_limpio",
       "operador": "matches_regex",
@@ -136,6 +54,7 @@
     },
     {
       "id": "V08_area_funcional_nula",
+      "grupo": "clasificacion",
       "descripcion": "Area funcional no inferida",
       "campo": "area_funcional",
       "operador": "is_null",
@@ -146,6 +65,7 @@
     },
     {
       "id": "V09_seniority_nulo",
+      "grupo": "clasificacion",
       "descripcion": "Nivel seniority no inferido",
       "campo": "nivel_seniority",
       "operador": "is_null",
@@ -156,19 +76,19 @@
     },
     {
       "id": "V11_tareas_vacias",
-      "descripcion": "Tareas explicitas e inferidas vacias indica falla en extraccion NLP",
-      "condiciones": [
-        {"campo": "tareas_explicitas", "operador": "is_empty"},
-        {"campo": "tareas_inferidas", "operador": "is_empty"}
-      ],
-      "logica": "AND",
+      "grupo": "tareas",
+      "descripcion": "Tareas explicitas vacias indica falla en extraccion NLP",
+      "campo": "tareas_explicitas",
+      "operador": "is_empty",
       "diagnostico": "error_nlp_tareas",
       "severidad": "alto",
       "mensaje": "Tareas no extraidas - afecta skills y matching. Revisar prompt NLP",
-      "_migrado_de": "validation_rules.json"
+      "_migrado_de": "validation_rules.json",
+      "_nota": "v1.1: simplificado, tareas_inferidas eliminada del sistema"
     },
     {
       "id": "V12_provincia_vacia",
+      "grupo": "ubicacion",
       "descripcion": "Provincia vacia indica falla en parsing ubicacion",
       "campo": "provincia",
       "operador": "is_empty",
@@ -179,6 +99,7 @@
     },
     {
       "id": "V13_skills_sin_origen_tarea",
+      "grupo": "skills",
       "descripcion": "Skills extraidas pero ninguna viene de tareas (solo titulo)",
       "campo": "skills_origen_tarea_count",
       "operador": "eq",
@@ -191,6 +112,7 @@
     },
     {
       "id": "V14_descripcion_muy_corta",
+      "grupo": "tareas",
       "descripcion": "Descripcion original muy corta puede indicar scraping incompleto",
       "campo": "descripcion_length",
       "operador": "lt",
@@ -202,6 +124,7 @@
     },
     {
       "id": "V15_seniority_titulo_mismatch",
+      "grupo": "clasificacion",
       "descripcion": "Titulo contiene keyword de seniority pero campo esta vacio",
       "condiciones": [
         {"campo": "nivel_seniority", "operador": "is_null"},
@@ -215,6 +138,7 @@
     },
     {
       "id": "V16_clae_missing",
+      "grupo": "clae",
       "descripcion": "Sector empresa existe pero CLAE no fue clasificado",
       "condiciones": [
         {"campo": "sector_empresa", "operador": "is_not_empty"},
@@ -229,6 +153,7 @@
     },
     {
       "id": "V17_clae_seccion_invalida",
+      "grupo": "clae",
       "descripcion": "CLAE asignado pero seccion no es valida (debe ser A-U)",
       "condiciones": [
         {"campo": "clae_code", "operador": "is_not_null"},
@@ -246,6 +171,7 @@
     },
     {
       "id": "V18_sector_igual_area",
+      "grupo": "empresa",
       "descripcion": "sector_empresa coincide con area_funcional - posible inferencia del puesto",
       "condiciones": [
         {"campo": "sector_empresa", "operador": "is_not_empty"},
@@ -261,6 +187,7 @@
     },
     {
       "id": "V19_sector_seguridad_no_vigilancia",
+      "grupo": "empresa",
       "descripcion": "sector=Seguridad pero area no es vigilancia - verificar empresa",
       "condiciones": [
         {"campo": "sector_empresa", "operador": "eq", "valor": "Seguridad"},
@@ -274,6 +201,7 @@
     },
     {
       "id": "V20_sector_salud_no_sanitario",
+      "grupo": "empresa",
       "descripcion": "sector=Salud (alta confianza) pero area no es sanitaria - verificar empresa",
       "condiciones": [
         {"campo": "sector_empresa", "operador": "eq", "valor": "Salud"},
@@ -288,6 +216,7 @@
     },
     {
       "id": "V21_sector_tecnologia_no_it",
+      "grupo": "empresa",
       "descripcion": "sector=Tecnologia (alta confianza) pero area no es IT - verificar empresa",
       "condiciones": [
         {"campo": "sector_empresa", "operador": "in_list", "valores": ["Tecnologia", "Tecnología", "IT"]},
@@ -302,6 +231,7 @@
     },
     {
       "id": "V22_empresa_confidencial_con_sector",
+      "grupo": "empresa",
       "descripcion": "Empresa confidencial pero tiene sector asignado - verificar fuente",
       "condiciones": [
         {"campo": "empresa", "operador": "contains", "valor": "onfidencial"},
@@ -315,20 +245,22 @@
     },
     {
       "id": "V25_tareas_vacias_con_skills",
+      "grupo": "tareas",
       "descripcion": "Sin tareas pero con skills extraidas - inconsistencia",
       "condiciones": [
         {"campo": "tareas_explicitas", "operador": "is_empty"},
-        {"campo": "tareas_inferidas", "operador": "is_empty"},
         {"campo": "skills_count", "operador": "gt", "valor": 0}
       ],
       "logica": "AND",
       "diagnostico": "warning_tareas_skills_inconsistencia",
       "severidad": "medio",
       "mensaje": "Sin tareas pero con skills - revisar extraccion NLP",
-      "_migrado_de": "validation_rules.json"
+      "_migrado_de": "validation_rules.json",
+      "_nota": "v1.1: removida condicion tareas_inferidas (campo eliminado)"
     },
     {
       "id": "V26_formato_tareas_incorrecto",
+      "grupo": "tareas",
       "descripcion": "Tareas separadas por comas en vez de punto y coma",
       "condiciones": [
         {"campo": "tareas_explicitas", "operador": "is_not_empty"},
@@ -343,6 +275,7 @@
     },
     {
       "id": "V29_tareas_muy_cortas",
+      "grupo": "tareas",
       "descripcion": "Tareas extraidas pero extremadamente cortas",
       "condiciones": [
         {"campo": "tareas_explicitas", "operador": "is_not_empty"},
@@ -357,6 +290,7 @@
 
     {
       "id": "NV02_sector_no_canonico",
+      "grupo": "empresa",
       "descripcion": "Sector empresa no pertenece al vocabulario canónico ni a aliases conocidos",
       "condiciones": [
         {"campo": "sector_empresa", "operador": "is_not_empty"},
@@ -383,12 +317,13 @@
       ],
       "logica": "AND",
       "diagnostico": "error_nlp_sector_no_canonico",
-      "severidad": "medio",
-      "mensaje": "Sector no pertenece al vocabulario canónico ni aliases - normalizar en postprocessor",
-      "_nota": "Severidad medio (no bloquea gate). Los aliases deberían ser normalizados por postprocessor."
+      "severidad": "alto",
+      "mensaje": "Sector no pertenece al vocabulario canónico - normalizar en postprocessor",
+      "_nota": "v1.1: subido a alto (gate). Si pasó el postprocessor y sigue sin ser canónico, es un problema real."
     },
     {
       "id": "NV03_area_funcional_invalida",
+      "grupo": "clasificacion",
       "descripcion": "Area funcional no está en valores válidos conocidos",
       "condiciones": [
         {"campo": "area_funcional", "operador": "is_not_empty"},
@@ -397,49 +332,48 @@
           "operador": "not_in_list",
           "valores": [
             "Administracion", "Comercial", "Contabilidad", "Diseño", "Educacion",
-            "Finanzas", "Gastronomia", "Ingenieria", "IT/Sistemas", "IT", "Legal",
+            "Finanzas", "Gastronomia", "Ingenieria", "IT", "Legal",
             "Logistica", "Mantenimiento", "Marketing", "Medicina", "Produccion",
             "RRHH", "Salud", "Seguridad", "Vigilancia", "Atencion al cliente",
             "Compras", "Calidad", "Medio ambiente", "Comunicacion",
-            "Investigacion", "Otro",
-            "Ventas", "Operaciones", "Gastronomia/Hoteleria", "Ventas/Comercial",
-            "Finanzas/Contabilidad", "Recursos Humanos", "Logistica/Operaciones",
-            "Sistemas"
+            "Investigacion", "Ventas", "Operaciones", "Otro"
           ]
         }
       ],
       "logica": "AND",
       "diagnostico": "error_nlp_area_invalida",
-      "severidad": "medio",
-      "mensaje": "Area funcional no válida - normalizar en postprocessor o agregar al prompt",
-      "_nota": "Severidad medio (no bloquea gate). El LLM genera variantes que el postprocessor debería normalizar."
+      "severidad": "alto",
+      "mensaje": "Area funcional no válida - normalizar en postprocessor",
+      "_nota": "v1.1: subido a alto (gate). Eliminados duplicados (Ventas/Comercial, IT/Sistemas, etc.) - se normalizan en postprocessor."
     },
     {
       "id": "NV04_seniority_invalido",
+      "grupo": "clasificacion",
       "descripcion": "Nivel seniority no está en valores válidos conocidos",
       "condiciones": [
         {"campo": "nivel_seniority", "operador": "is_not_empty"},
         {
           "campo": "nivel_seniority",
           "operador": "not_in_list",
-          "valores": ["trainee", "junior", "semi_senior", "semisenior", "senior", "lead", "manager", "director"]
+          "valores": ["trainee", "junior", "semisenior", "senior", "lead", "manager", "director"]
         }
       ],
       "logica": "AND",
       "diagnostico": "error_nlp_seniority_invalido",
-      "severidad": "medio",
+      "severidad": "alto",
       "mensaje": "Seniority no válido - normalizar en postprocessor",
-      "_nota": "semisenior (sin underscore) es variante aceptada en BD actual"
+      "_nota": "v1.1: subido a alto (gate). semi_senior normalizado a semisenior en postprocessor."
     },
     {
       "id": "NV06_tipo_oferta_invalido",
+      "grupo": "clasificacion",
       "descripcion": "Tipo oferta no está en valores válidos",
       "condiciones": [
         {"campo": "tipo_oferta", "operador": "is_not_empty"},
         {
           "campo": "tipo_oferta",
           "operador": "not_in_list",
-          "valores": ["empleo", "demanda_real", "pasantia", "freelance", "temporal", "becario"]
+          "valores": ["demanda_real", "pasantia", "freelance", "becario"]
         }
       ],
       "logica": "AND",
@@ -449,19 +383,21 @@
     },
     {
       "id": "NV08_sin_tareas_ni_skills",
+      "grupo": "tareas",
       "descripcion": "Sin tareas Y sin skills técnicas - datos insuficientes para matching",
       "condiciones": [
         {"campo": "tareas_explicitas", "operador": "is_empty"},
-        {"campo": "tareas_inferidas", "operador": "is_empty"},
         {"campo": "skills_count", "operador": "eq", "valor": 0}
       ],
       "logica": "AND",
       "diagnostico": "error_datos_insuficientes",
       "severidad": "alto",
-      "mensaje": "Sin tareas ni skills - datos insuficientes para matching confiable"
+      "mensaje": "Sin tareas ni skills - datos insuficientes para matching confiable",
+      "_nota": "v1.1: removida condicion tareas_inferidas (campo eliminado)"
     },
     {
       "id": "NV11_sector_null_like",
+      "grupo": "empresa",
       "descripcion": "Sector empresa es string null-like del LLM",
       "condiciones": [
         {"campo": "sector_empresa", "operador": "is_not_empty"},
@@ -477,21 +413,8 @@
       "mensaje": "Sector es string null-like del LLM - fix en postprocessor _normalize()"
     },
     {
-      "id": "NV_CLAE_sector_incoherente",
-      "descripcion": "Sección CLAE no coincide con la esperada para el sector canónico",
-      "condiciones": [
-        {"campo": "sector_empresa", "operador": "is_not_empty"},
-        {"campo": "clae_seccion", "operador": "is_not_empty"},
-        {"campo": "clae_sector_mismatch", "operador": "eq", "valor": true}
-      ],
-      "logica": "AND",
-      "diagnostico": "warning_clae_sector_incoherente",
-      "severidad": "medio",
-      "mensaje": "Sección CLAE no coincide con sector canónico - verificar clasificación",
-      "_nota": "Requiere campo calculado clae_sector_mismatch en validador"
-    },
-    {
       "id": "NV_CROSS_gente_seniority",
+      "grupo": "clasificacion",
       "descripcion": "Tiene gente a cargo pero seniority es trainee/junior",
       "condiciones": [
         {"campo": "tiene_gente_cargo", "operador": "eq", "valor": 1},
@@ -501,6 +424,155 @@
       "diagnostico": "warning_cross_gente_seniority",
       "severidad": "bajo",
       "mensaje": "Gente a cargo + seniority trainee/junior - posible inconsistencia NLP"
+    },
+
+    {
+      "id": "NV_PROV_invalida",
+      "grupo": "ubicacion",
+      "descripcion": "Provincia no es una provincia argentina válida",
+      "condiciones": [
+        {"campo": "provincia", "operador": "is_not_empty"},
+        {
+          "campo": "provincia",
+          "operador": "not_in_list",
+          "valores": [
+            "Buenos Aires", "Capital Federal", "CABA",
+            "Catamarca", "Chaco", "Chubut",
+            "Córdoba", "Cordoba",
+            "Corrientes",
+            "Entre Ríos", "Entre Rios",
+            "Formosa",
+            "Jujuy",
+            "La Pampa", "La Rioja",
+            "Mendoza", "Misiones",
+            "Neuquén", "Neuquen",
+            "Río Negro", "Rio Negro",
+            "Salta", "San Juan", "San Luis",
+            "Santa Cruz", "Santa Fe",
+            "Santiago del Estero",
+            "Tierra del Fuego",
+            "Tucumán", "Tucuman"
+          ]
+        }
+      ],
+      "logica": "AND",
+      "diagnostico": "error_nlp_ubicacion",
+      "severidad": "medio",
+      "mensaje": "Provincia no es argentina válida - revisar parsing ubicación"
+    },
+    {
+      "id": "NV_MOD_invalida",
+      "grupo": "ubicacion",
+      "descripcion": "Modalidad no está en valores válidos",
+      "condiciones": [
+        {"campo": "modalidad", "operador": "is_not_empty"},
+        {
+          "campo": "modalidad",
+          "operador": "not_in_list",
+          "valores": ["presencial", "remoto", "hibrido", "híbrido"]
+        }
+      ],
+      "logica": "AND",
+      "diagnostico": "error_nlp_modalidad",
+      "severidad": "medio",
+      "mensaje": "Modalidad no válida - normalizar en postprocessor"
+    },
+    {
+      "id": "NV_EDU_invalido",
+      "grupo": "educacion",
+      "descripcion": "Nivel educativo no está en valores válidos",
+      "condiciones": [
+        {"campo": "nivel_educativo", "operador": "is_not_empty"},
+        {
+          "campo": "nivel_educativo",
+          "operador": "not_in_list",
+          "valores": ["primario", "secundario", "terciario", "universitario", "posgrado"]
+        }
+      ],
+      "logica": "AND",
+      "diagnostico": "error_nlp_educacion",
+      "severidad": "medio",
+      "mensaje": "Nivel educativo no válido - normalizar en postprocessor"
+    },
+    {
+      "id": "NV_EXP_RANGE",
+      "grupo": "experiencia",
+      "descripcion": "Experiencia mínima fuera de rango razonable",
+      "condiciones": [
+        {"campo": "experiencia_min_anios", "operador": "is_not_null"},
+        {
+          "campo": "experiencia_min_anios",
+          "operador": "gt",
+          "valor": 30
+        }
+      ],
+      "logica": "AND",
+      "diagnostico": "error_nlp_experiencia",
+      "severidad": "medio",
+      "mensaje": "Experiencia mínima > 30 años - probable error de extracción"
+    },
+    {
+      "id": "NV_EXP_INV",
+      "grupo": "experiencia",
+      "descripcion": "Experiencia máxima menor que mínima (rango invertido)",
+      "condiciones": [
+        {"campo": "experiencia_min_anios", "operador": "is_not_null"},
+        {"campo": "experiencia_max_anios", "operador": "is_not_null"},
+        {"campo": "experiencia_rango_invertido", "operador": "eq", "valor": true}
+      ],
+      "logica": "AND",
+      "diagnostico": "error_nlp_experiencia",
+      "severidad": "medio",
+      "mensaje": "Experiencia max < min - rango invertido, revisar extracción",
+      "_nota": "Requiere campo calculado experiencia_rango_invertido en validador"
+    },
+    {
+      "id": "NV_EXP_SENIORITY",
+      "grupo": "experiencia",
+      "descripcion": "Experiencia baja pero seniority alto - posible inconsistencia",
+      "condiciones": [
+        {"campo": "experiencia_min_anios", "operador": "is_not_null"},
+        {"campo": "experiencia_min_anios", "operador": "lte", "valor": 1},
+        {"campo": "nivel_seniority", "operador": "in_list", "valores": ["senior", "manager", "director"]}
+      ],
+      "logica": "AND",
+      "diagnostico": "warning_cross_gente_seniority",
+      "severidad": "warning",
+      "mensaje": "Experiencia <= 1 año + seniority senior/manager/director - verificar seniority"
+    },
+    {
+      "id": "NV_JORNADA_invalida",
+      "grupo": "condiciones_laborales",
+      "descripcion": "Jornada laboral no está en valores válidos",
+      "condiciones": [
+        {"campo": "jornada_laboral", "operador": "is_not_empty"},
+        {
+          "campo": "jornada_laboral",
+          "operador": "not_in_list",
+          "valores": ["full-time", "part-time", "freelance"]
+        }
+      ],
+      "logica": "AND",
+      "diagnostico": "error_nlp_modalidad",
+      "severidad": "medio",
+      "mensaje": "Jornada laboral no válida - normalizar en postprocessor"
+    },
+    {
+      "id": "NV_CONTRATO_invalido",
+      "grupo": "condiciones_laborales",
+      "descripcion": "Tipo contrato no está en valores válidos",
+      "condiciones": [
+        {"campo": "tipo_contrato", "operador": "is_not_empty"},
+        {
+          "campo": "tipo_contrato",
+          "operador": "not_in_list",
+          "valores": ["monotributo", "contrato", "efectivo", "pasantia"]
+        }
+      ],
+      "logica": "AND",
+      "diagnostico": "error_nlp_tipo_oferta",
+      "severidad": "medio",
+      "mensaje": "Tipo contrato no válido - normalizar en postprocessor"
     }
   ],
 
@@ -515,9 +587,10 @@
 
   "campos_extraction_report": [
     "titulo_limpio", "provincia", "localidad", "sector_empresa", "area_funcional",
-    "nivel_seniority", "modalidad", "tipo_oferta", "tareas_explicitas", "tareas_inferidas",
+    "nivel_seniority", "modalidad", "tipo_oferta", "tareas_explicitas",
     "clae_code", "clae_seccion", "sector_confianza", "sector_fuente",
-    "experiencia_min_anios", "jornada_laboral", "tipo_contrato",
-    "tiene_gente_cargo", "es_intermediario"
+    "experiencia_min_anios", "experiencia_max_anios", "jornada_laboral", "tipo_contrato",
+    "tiene_gente_cargo", "es_intermediario", "nivel_educativo",
+    "requerimiento_edad", "requerimiento_sexo"
   ]
 }
