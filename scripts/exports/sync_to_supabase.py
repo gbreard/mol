@@ -31,6 +31,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Dict, Any
+import unicodedata
 from unicodedata import normalize as unicode_normalize
 
 # Setup paths
@@ -784,19 +785,47 @@ def upsert_skills(client, skills: List[Dict], dry_run: bool = False) -> int:
     # Filtrar skills sin URI (inválidos)
     skills_transformed = [s for s in skills_transformed if s.get('skill_uri')]
 
-    # Deduplicar por (id_oferta, skill_uri) - quedarse con el primero
-    seen = set()
-    skills_unique = []
+    # Deduplicar por (id_oferta, skill_uri) - quedarse con mayor score
+    seen = {}
     for s in skills_transformed:
         key = (s['id_oferta'], s['skill_uri'])
-        if key not in seen:
-            seen.add(key)
-            skills_unique.append(s)
+        if key not in seen or (s.get('score') or 0) > (seen[key].get('score') or 0):
+            seen[key] = s
+    skills_unique = list(seen.values())
 
     if len(skills_unique) < len(skills_transformed):
-        logger.warning(f"Se eliminaron {len(skills_transformed) - len(skills_unique)} skills duplicados")
+        logger.warning(f"Se eliminaron {len(skills_transformed) - len(skills_unique)} skills duplicados por URI")
 
-    skills_transformed = skills_unique
+    # Segunda pasada: dedup semántica por label normalizado (sin acentos)
+    # Atrapa variantes como "negocio electronico" vs "negocio electrónico"
+    def _normalize_label(label):
+        if not label:
+            return ''
+        nfkd = unicodedata.normalize('NFKD', label)
+        return ''.join(c for c in nfkd if not unicodedata.combining(c)).lower().strip()
+
+    seen_labels = {}
+    skills_final = []
+    for s in skills_unique:
+        label_key = (s['id_oferta'], _normalize_label(s.get('preferred_label', '')))
+        if label_key[1] == '':
+            # Sin label, no se puede deduplicar semánticamente
+            skills_final.append(s)
+            continue
+        if label_key not in seen_labels:
+            seen_labels[label_key] = s
+            skills_final.append(s)
+        else:
+            existing = seen_labels[label_key]
+            if (s.get('score') or 0) > (existing.get('score') or 0):
+                skills_final.remove(existing)
+                seen_labels[label_key] = s
+                skills_final.append(s)
+
+    if len(skills_final) < len(skills_unique):
+        logger.warning(f"Se eliminaron {len(skills_unique) - len(skills_final)} skills duplicados semánticos (label normalizado)")
+
+    skills_transformed = skills_final
 
     if dry_run:
         logger.info(f"[DRY-RUN] Upsert {len(skills_transformed)} skills")

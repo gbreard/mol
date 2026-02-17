@@ -1422,8 +1422,29 @@ class MatcherV3:
                 (str(id_oferta),)
             )
 
-            count = 0
+            # Dedup: filtrar skills sin URI + deduplicar por URI (mayor score gana)
+            seen_uris = {}
+            skipped_no_uri = 0
             for skill in skills:
+                uri = (skill.get('skill_uri') or '').strip()
+                if not uri:
+                    skipped_no_uri += 1
+                    continue
+                if uri in seen_uris:
+                    if (skill.get('score') or 0) > (seen_uris[uri].get('score') or 0):
+                        seen_uris[uri] = skill
+                else:
+                    seen_uris[uri] = skill
+
+            if skipped_no_uri and self.verbose:
+                print(f"[V3] {skipped_no_uri} skills sin URI filtradas para {id_oferta}")
+
+            deduped = len(skills) - skipped_no_uri - len(seen_uris)
+            if deduped > 0 and self.verbose:
+                print(f"[V3] {deduped} skills duplicadas por URI eliminadas para {id_oferta}")
+
+            count = 0
+            for skill in seen_uris.values():
                 self.conn.execute('''
                     INSERT INTO ofertas_esco_skills_detalle (
                         id_oferta, skill_mencionado, skill_tipo_fuente,
@@ -1434,11 +1455,11 @@ class MatcherV3:
                     str(id_oferta),
                     skill.get('skill_esco', skill.get('skill', '')),
                     skill.get('origen', 'unknown'),
-                    skill.get('skill_uri', ''),  # URI de la skill ESCO
+                    skill.get('skill_uri', ''),
                     skill.get('skill_esco', ''),
                     skill.get('score', 0),
                     'implicit_bge_m3',
-                    skill.get('L1', 'T'),  # Categoría L1
+                    skill.get('L1', 'T'),
                     json.dumps({
                         'L1': skill.get('L1', ''),
                         'L1_nombre': skill.get('L1_nombre', ''),
