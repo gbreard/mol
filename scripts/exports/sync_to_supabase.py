@@ -835,26 +835,50 @@ def upsert_skills(client, skills: List[Dict], dry_run: bool = False) -> int:
     offer_ids = list(set(s['id_oferta'] for s in skills_transformed))
 
     # Eliminar skills existentes para estas ofertas (para evitar duplicados)
-    try:
-        for oid in offer_ids:
-            client.table(TABLE_SKILLS).delete().eq('id_oferta', oid).execute()
-    except Exception as e:
-        logger.warning(f"Error eliminando skills existentes: {e}")
+    # Usar batches de DELETEs para evitar HTTP/2 stream limit (20K)
+    delete_batch_size = 500
+    for di in range(0, len(offer_ids), delete_batch_size):
+        delete_chunk = offer_ids[di:di + delete_batch_size]
+        for oid in delete_chunk:
+            for attempt in range(3):
+                try:
+                    client.table(TABLE_SKILLS).delete().eq('id_oferta', oid).execute()
+                    break
+                except Exception as e:
+                    if attempt < 2:
+                        import time
+                        logger.warning(f"Retry DELETE {oid} (attempt {attempt+1}): {e}")
+                        time.sleep(2)
+                    else:
+                        logger.warning(f"Error eliminando skills {oid} (skip): {e}")
+        if di > 0 and di % 2000 == 0:
+            logger.info(f"  Skills DELETE progress: {di}/{len(offer_ids)}")
 
-    # Insertar nuevas
+    # Insertar nuevas con retry para manejar HTTP/2 connection reset
     total = 0
     for i in range(0, len(skills_transformed), BATCH_SIZE):
         batch = skills_transformed[i:i + BATCH_SIZE]
+        batch_num = i // BATCH_SIZE + 1
 
-        try:
-            result = client.table(TABLE_SKILLS).upsert(
-                batch,
-                on_conflict='id_oferta,skill_uri'
-            ).execute()
-            total += len(batch)
-        except Exception as e:
-            logger.error(f"Error insertando skills batch {i//BATCH_SIZE + 1}: {e}")
-            raise
+        for attempt in range(3):
+            try:
+                result = client.table(TABLE_SKILLS).upsert(
+                    batch,
+                    on_conflict='id_oferta,skill_uri'
+                ).execute()
+                total += len(batch)
+                break
+            except Exception as e:
+                if attempt < 2:
+                    import time
+                    logger.warning(f"Retry skills batch {batch_num} (attempt {attempt+1}): {e}")
+                    time.sleep(3)
+                else:
+                    logger.error(f"Error insertando skills batch {batch_num} after 3 attempts: {e}")
+                    raise
+
+        if batch_num % 50 == 0:
+            logger.info(f"  Skills INSERT progress: {total}/{len(skills_transformed)}")
 
     return total
 

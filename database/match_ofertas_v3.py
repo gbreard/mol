@@ -52,7 +52,7 @@ import logging
 import json
 import numpy as np
 from dataclasses import dataclass, asdict
-from typing import List, Dict, Optional, Tuple
+from typing import Any, List, Dict, Optional, Tuple
 from pathlib import Path
 from enum import Enum
 
