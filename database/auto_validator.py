@@ -344,9 +344,15 @@ class AutoValidator:
                     "campo": "skills_oferta_json"
                 })
 
-        # --- V31 nueva (v1.3): Ocupacion ESCO probablemente incorrecta ---
+        # --- V31 (v1.4): Ocupacion ESCO probablemente incorrecta ---
         # Criterio compuesto: score semantico bajo + coherencia ESCO baja
-        # No excluye ofertas con regla — una regla con score bajo tambien merece revision
+        # v1.4: Excluir matches por regla de negocio — la regla ES el source of truth.
+        # 499 falsos positivos detectados en Sprint 7: reglas correctas (asesor_comercial,
+        # desarrollador_software, repositor, etc.) flaggeadas por score semántico bajo
+        # + coherencia ESCO baja (gap vocabulario europeo vs argentino).
+        match_method = oferta.get("occupation_match_method") or ""
+        is_regla_match = match_method.startswith("regla_negocio")
+
         score_semantico = float(oferta.get("score_semantico") or 0)
         coherencia_esco = (
             essential_matched_count / occupation_essential_total
@@ -354,7 +360,7 @@ class AutoValidator:
             else 0
         )
 
-        if score_semantico < 0.50 and coherencia_esco < 0.15:
+        if score_semantico < 0.50 and coherencia_esco < 0.15 and not is_regla_match:
             errores.append({
                 "id_regla": "V31_ocupacion_esco_incorrecta",
                 "diagnostico": "error_ocupacion_esco_incorrecta",
@@ -371,14 +377,19 @@ class AutoValidator:
 
     def _validar_it_sin_skills_tecnicas(self, oferta: Dict) -> List[Dict]:
         """
-        V30: Puesto IT sin skills técnicas.
+        V30 (v1.1): Puesto IT sin skills técnicas.
 
-        Detecta area_funcional IT/IT Sistemas y verifica que tenga al menos
-        1 skill digital/técnica (is_digital o skillType S2*).
+        v1.1: Usa ISCO code (25xx=ICT profesionales, 35xx=ICT técnicos) en vez de
+        area_funcional del NLP. El NLP clasificaba como "IT" a ingenieros mecánicos,
+        proyectistas eléctricos, etc. — 151 de 201 falsos positivos (75%).
+        Severidad bajada a "bajo" (informativo, no bloqueante): incluso en IT real,
+        la ausencia de tech skills es un gap de extracción, no de matching.
         """
         errores = []
-        area = oferta.get("area_funcional")
-        if area not in ("IT", "IT/Sistemas"):
+        # v1.1: Detectar IT por ISCO code, no por area_funcional del NLP
+        isco = str(oferta.get("isco_code") or "")
+        is_ict = isco.startswith("25") or isco.startswith("35")
+        if not is_ict:
             return errores
 
         skills_raw = oferta.get("skills_oferta_json")
@@ -435,8 +446,8 @@ class AutoValidator:
             errores.append({
                 "id_regla": "V30_it_sin_skills_tecnicas",
                 "diagnostico": "warning_it_sin_skills",
-                "severidad": "alto",
-                "mensaje": "Puesto IT sin skills técnicas/digitales detectadas",
+                "severidad": "bajo",
+                "mensaje": "Puesto IT (ISCO 25xx/35xx) sin skills técnicas/digitales detectadas",
                 "campo": "skills_oferta_json"
             })
 
@@ -749,7 +760,7 @@ def validar_ofertas_desde_bd(
     # V02/V10: isco_code, match_score
     # V27: dual_coinciden, score_semantico
     # V24/V28/V31: skills_matched_essential, skills_oferta_json, score_semantico, occupation_essential_total
-    # V30: area_funcional, skills_oferta_json
+    # V30: isco_code (25xx/35xx), skills_oferta_json
     query = """
         SELECT
             m.id_oferta,
@@ -764,6 +775,7 @@ def validar_ofertas_desde_bd(
             m.skills_matched_essential,
             m.skills_oferta_json,
             m.esco_occupation_uri,
+            m.occupation_match_method,
             -- Essential skills count de la ocupacion asignada (V24, V28, V31)
             (SELECT COUNT(*) FROM esco_associations ea
              WHERE ea.occupation_uri = m.esco_occupation_uri

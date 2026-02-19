@@ -32,8 +32,8 @@
       ],
       "logica": "AND",
       "diagnostico": "error_matching_confianza",
-      "severidad": "medio",
-      "mensaje": "Match con baja confianza - revisar manualmente"
+      "severidad": "bajo",
+      "mensaje": "Match con baja confianza - no bloquea validación"
     },
     {
       "id": "V27_divergencia_dual",

@@ -81,8 +81,8 @@
       "campo": "tareas_explicitas",
       "operador": "is_empty",
       "diagnostico": "error_nlp_tareas",
-      "severidad": "alto",
-      "mensaje": "Tareas no extraidas - afecta skills y matching. Revisar prompt NLP",
+      "severidad": "medio",
+      "mensaje": "Tareas no extraidas - informativo, matching usa título+skills. Revisar prompt NLP",
       "_migrado_de": "validation_rules.json",
       "_nota": "v1.1: simplificado, tareas_inferidas eliminada del sistema"
     },
