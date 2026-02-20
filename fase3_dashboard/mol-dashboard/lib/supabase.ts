@@ -81,9 +81,36 @@ function parseSkillsList(skills: string | null): string[] {
   return skills.split(/[;,]\s*/).map(s => s.trim()).filter(Boolean)
 }
 
+// Helper: obtener IDs de ofertas con skills digitales (cross-table filter)
+// Retorna null si el filtro no está activo (= sin restricción)
+async function resolveSkillsDigitalesIds(filters?: DashboardFilters): Promise<string[] | null> {
+  if (!filters?.skillsDigitales) return null
+  const client = getSupabaseClient()
+  if (!client) return null
+
+  const data = await fetchAllPaginated<{ id_oferta: string }>(
+    client,
+    'ofertas_skills',
+    'id_oferta',
+    (query) => query.eq('es_digital', true)
+  )
+
+  return [...new Set(data.map(d => d.id_oferta))]
+}
+
 // Helper para aplicar filtros a una query
-function applyFilters(query: any, filters?: DashboardFilters) {
+// constrainToIds: IDs pre-filtrados de cross-table queries (ej: skillsDigitales)
+function applyFilters(query: any, filters?: DashboardFilters, constrainToIds?: string[] | null) {
   if (!filters) return query
+
+  // Cross-table filter: restringir a IDs pre-resueltos (ej: skillsDigitales)
+  if (constrainToIds !== undefined && constrainToIds !== null) {
+    if (constrainToIds.length === 0) {
+      query = query.in('id_oferta', ['__none__'])
+    } else {
+      query = query.in('id_oferta', constrainToIds)
+    }
+  }
 
   // Filtro por provincia
   if (filters.provincia && provinciaMap[filters.provincia]) {
@@ -301,11 +328,13 @@ export async function getKPIs(filters?: DashboardFilters) {
   const client = getSupabaseClient()
   if (!client) return { totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 }
 
+  const digitalIds = await resolveSkillsDigitalesIds(filters)
+
   // 1. Obtener total de ofertas usando count (sin límite de 1000)
   let countQuery = client
     .from(TABLA_OFERTAS)
     .select('id_oferta', { count: 'exact', head: true })
-  countQuery = applyFilters(countQuery, filters)
+  countQuery = applyFilters(countQuery, filters, digitalIds)
   const { count: totalOfertas, error: countError } = await countQuery
   if (countError) throw countError
 
@@ -314,7 +343,7 @@ export async function getKPIs(filters?: DashboardFilters) {
     client,
     TABLA_OFERTAS,
     'isco_code, empresa, provincia',
-    (query) => applyFilters(query, filters)
+    (query) => applyFilters(query, filters, digitalIds)
   )
 
   return {
@@ -329,12 +358,14 @@ export async function getOfertasPorProvincia(filters?: DashboardFilters) {
   const client = getSupabaseClient()
   if (!client) return []
 
+  const digitalIds = await resolveSkillsDigitalesIds(filters)
+
   // Usar paginación con TODOS los filtros aplicados
   const data = await fetchAllPaginated<{ provincia: string }>(
     client,
     TABLA_OFERTAS,
     'provincia',
-    (query) => applyFilters(query, filters)
+    (query) => applyFilters(query, filters, digitalIds)
   )
 
   const counts: Record<string, number> = {}
@@ -357,12 +388,14 @@ export async function getTopOcupaciones(limit = 10, filters?: DashboardFilters) 
   const client = getSupabaseClient()
   if (!client) return []
 
+  const digitalIds = await resolveSkillsDigitalesIds(filters)
+
   // Usar paginación para obtener TODOS los datos
   const data = await fetchAllPaginated<{ isco_code: string; isco_label: string }>(
     client,
     TABLA_OFERTAS,
     'isco_code, isco_label',
-    (query) => applyFilters(query, filters)
+    (query) => applyFilters(query, filters, digitalIds)
   )
 
   const counts: Record<string, { label: string, count: number }> = {}
@@ -388,12 +421,14 @@ export async function getOfertasPorModalidad(filters?: DashboardFilters) {
   const client = getSupabaseClient()
   if (!client) return []
 
+  const digitalIds = await resolveSkillsDigitalesIds(filters)
+
   // Usar paginación para obtener TODOS los datos
   const data = await fetchAllPaginated<{ modalidad: string }>(
     client,
     TABLA_OFERTAS,
     'modalidad',
-    (query) => applyFilters(query, filters)
+    (query) => applyFilters(query, filters, digitalIds)
   )
 
   const counts: Record<string, number> = {}
@@ -410,6 +445,8 @@ export async function getOfertasPorModalidad(filters?: DashboardFilters) {
 export async function getOfertas(limit = 50, offset = 0, filters?: DashboardFilters) {
   const client = getSupabaseClient()
   if (!client) return { ofertas: [], total: 0 }
+
+  const digitalIds = await resolveSkillsDigitalesIds(filters)
 
   let query = client
     .from(TABLA_OFERTAS)
@@ -436,7 +473,7 @@ export async function getOfertas(limit = 50, offset = 0, filters?: DashboardFilt
       soft_skills
     `, { count: 'exact' })
 
-  query = applyFilters(query, filters)
+  query = applyFilters(query, filters, digitalIds)
 
   const { data, error, count } = await query
     .order('fecha_publicacion', { ascending: false })
@@ -477,12 +514,14 @@ export async function getTopSkillsTecnicas(limit = 20, filters?: DashboardFilter
   const client = getSupabaseClient()
   if (!client) return []
 
+  const digitalIds = await resolveSkillsDigitalesIds(filters)
+
   // Usar paginación para obtener TODOS los datos
   const data = await fetchAllPaginated<{ skills_tecnicas: string }>(
     client,
     TABLA_OFERTAS,
     'skills_tecnicas',
-    (query) => applyFilters(query, filters)
+    (query) => applyFilters(query, filters, digitalIds)
   )
 
   const counts: Record<string, number> = {}
@@ -503,12 +542,14 @@ export async function getTopSoftSkills(limit = 20, filters?: DashboardFilters) {
   const client = getSupabaseClient()
   if (!client) return []
 
+  const digitalIds = await resolveSkillsDigitalesIds(filters)
+
   // Usar paginación para obtener TODOS los datos
   const data = await fetchAllPaginated<{ soft_skills: string }>(
     client,
     TABLA_OFERTAS,
     'soft_skills',
-    (query) => applyFilters(query, filters)
+    (query) => applyFilters(query, filters, digitalIds)
   )
 
   const counts: Record<string, number> = {}
@@ -532,11 +573,13 @@ export async function getTotalOfertas(filters?: DashboardFilters): Promise<numbe
   const client = getSupabaseClient()
   if (!client) return 0
 
+  const digitalIds = await resolveSkillsDigitalesIds(filters)
+
   let query = client
     .from(TABLA_OFERTAS)
     .select('id_oferta', { count: 'exact', head: true })
 
-  query = applyFilters(query, filters)
+  query = applyFilters(query, filters, digitalIds)
 
   const { count, error } = await query
   if (error) throw error
@@ -563,12 +606,14 @@ export async function getEvolucionSemanal(filters?: DashboardFilters): Promise<E
   const client = getSupabaseClient()
   if (!client) return []
 
+  const digitalIds = await resolveSkillsDigitalesIds(filters)
+
   const data = await fetchAllPaginated<{ fecha_publicacion: string }>(
     client,
     TABLA_OFERTAS,
     'fecha_publicacion',
     (query) => {
-      query = applyFilters(query, filters)
+      query = applyFilters(query, filters, digitalIds)
       return query.not('fecha_publicacion', 'is', null)
     }
   )
@@ -609,8 +654,17 @@ export async function getEvolucionSemanal(filters?: DashboardFilters): Promise<E
 }
 
 // Helper: aplicar todos los filtros EXCEPTO fechas
-function applyFiltersWithoutDates(query: any, filters?: DashboardFilters) {
+function applyFiltersWithoutDates(query: any, filters?: DashboardFilters, constrainToIds?: string[] | null) {
   if (!filters) return query
+
+  // Cross-table filter: restringir a IDs pre-resueltos (ej: skillsDigitales)
+  if (constrainToIds !== undefined && constrainToIds !== null) {
+    if (constrainToIds.length === 0) {
+      query = query.in('id_oferta', ['__none__'])
+    } else {
+      query = query.in('id_oferta', constrainToIds)
+    }
+  }
 
   if (filters.provincia && provinciaMap[filters.provincia]) {
     query = query.eq('provincia', provinciaMap[filters.provincia])
@@ -677,6 +731,8 @@ export async function getEvolucionPeriodos(
   const client = getSupabaseClient()
   if (!client) return []
 
+  const digitalIds = await resolveSkillsDigitalesIds(filters)
+
   const fmt = (d: Date) =>
     `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`
 
@@ -718,7 +774,7 @@ export async function getEvolucionPeriodos(
       TABLA_OFERTAS,
       'fecha_publicacion',
       (query) => {
-        query = applyFiltersWithoutDates(query, filters)
+        query = applyFiltersWithoutDates(query, filters, digitalIds)
         query = query.not('fecha_publicacion', 'is', null)
         query = query.gte('fecha_publicacion', rangoDesde)
         query = query.lte('fecha_publicacion', rangoHasta)
@@ -772,7 +828,7 @@ export async function getEvolucionPeriodos(
     TABLA_OFERTAS,
     'fecha_publicacion',
     (query) => {
-      query = applyFiltersWithoutDates(query, filters)
+      query = applyFiltersWithoutDates(query, filters, digitalIds)
       return query.not('fecha_publicacion', 'is', null)
     }
   )
@@ -816,11 +872,13 @@ export async function getOfertasPorLocalidad(filters?: DashboardFilters) {
   const client = getSupabaseClient()
   if (!client) return []
 
+  const digitalIds = await resolveSkillsDigitalesIds(filters)
+
   const data = await fetchAllPaginated<{ localidad: string }>(
     client,
     TABLA_OFERTAS,
     'localidad',
-    (query) => applyFilters(query, filters)
+    (query) => applyFilters(query, filters, digitalIds)
   )
 
   const counts: Record<string, number> = {}
@@ -878,12 +936,22 @@ export async function getLocalidadesGroupedByDepartamento(provinciaKey: string, 
   const provinciaName = provinciaMap[provinciaKey]
   if (!provinciaName) return []
 
+  const digitalIds = await resolveSkillsDigitalesIds(filters)
+
   const data = await fetchAllPaginated<{ localidad: string; departamento: string | null }>(
     client,
     TABLA_OFERTAS,
     'localidad, departamento',
     (query) => {
       query = query.eq('provincia', provinciaName).not('localidad', 'is', null)
+      // Cross-table filter: skillsDigitales
+      if (digitalIds !== null && digitalIds !== undefined) {
+        if (digitalIds.length === 0) {
+          query = query.in('id_oferta', ['__none__'])
+        } else {
+          query = query.in('id_oferta', digitalIds)
+        }
+      }
       // Aplicar filtros activos (excepto provincia y localidad) para que los counts
       // sean consistentes con lo que muestra el dashboard
       if (filters) {
@@ -902,11 +970,38 @@ export async function getLocalidadesGroupedByDepartamento(provinciaKey: string, 
         if (filters.nivelEducativo?.length > 0) {
           query = query.in('nivel_educativo', filters.nivelEducativo)
         }
+        if (filters.experiencia) {
+          switch (filters.experiencia) {
+            case 'sin_experiencia':
+              query = query.eq('experiencia_min_anios', 0)
+              break
+            case '1_2_anios':
+              query = query.gte('experiencia_min_anios', 1).lte('experiencia_min_anios', 2)
+              break
+            case '3_5_anios':
+              query = query.gte('experiencia_min_anios', 3).lte('experiencia_min_anios', 5)
+              break
+            case '5_mas':
+              query = query.gt('experiencia_min_anios', 5)
+              break
+          }
+        }
         if (filters.seniority?.length > 0) {
           query = query.in('nivel_seniority', filters.seniority)
         }
         if (filters.modalidad?.length > 0) {
           query = query.in('modalidad', filters.modalidad)
+        }
+        if (filters.jornada) {
+          const jornadaMap: Record<string, string> = {
+            'full_time': 'full-time',
+            'part_time': 'part-time',
+            'por_horas': 'por horas'
+          }
+          query = query.eq('jornada_laboral', jornadaMap[filters.jornada] || filters.jornada)
+        }
+        if (filters.sector?.length > 0) {
+          query = query.in('clae_descripcion_seccion', filters.sector)
         }
       }
       return query
@@ -955,12 +1050,22 @@ export async function getSectores(filters?: DashboardFilters): Promise<SectorCou
   const client = getSupabaseClient()
   if (!client) return []
 
+  const digitalIds = await resolveSkillsDigitalesIds(filters)
+
   const data = await fetchAllPaginated<{ clae_descripcion_seccion: string | null }>(
     client,
     TABLA_OFERTAS,
     'clae_descripcion_seccion',
     (query) => {
       query = query.not('clae_descripcion_seccion', 'is', null)
+      // Cross-table filter: skillsDigitales
+      if (digitalIds !== null && digitalIds !== undefined) {
+        if (digitalIds.length === 0) {
+          query = query.in('id_oferta', ['__none__'])
+        } else {
+          query = query.in('id_oferta', digitalIds)
+        }
+      }
       if (filters) {
         if (filters.provincia && provinciaMap[filters.provincia]) {
           query = query.eq('provincia', provinciaMap[filters.provincia])
@@ -979,6 +1084,39 @@ export async function getSectores(filters?: DashboardFilters): Promise<SectorCou
         }
         if (filters.permanencia?.length > 0) {
           query = query.in('categoria_permanencia', filters.permanencia)
+        }
+        if (filters.nivelEducativo?.length > 0) {
+          query = query.in('nivel_educativo', filters.nivelEducativo)
+        }
+        if (filters.experiencia) {
+          switch (filters.experiencia) {
+            case 'sin_experiencia':
+              query = query.eq('experiencia_min_anios', 0)
+              break
+            case '1_2_anios':
+              query = query.gte('experiencia_min_anios', 1).lte('experiencia_min_anios', 2)
+              break
+            case '3_5_anios':
+              query = query.gte('experiencia_min_anios', 3).lte('experiencia_min_anios', 5)
+              break
+            case '5_mas':
+              query = query.gt('experiencia_min_anios', 5)
+              break
+          }
+        }
+        if (filters.seniority?.length > 0) {
+          query = query.in('nivel_seniority', filters.seniority)
+        }
+        if (filters.modalidad?.length > 0) {
+          query = query.in('modalidad', filters.modalidad)
+        }
+        if (filters.jornada) {
+          const jornadaMap: Record<string, string> = {
+            'full_time': 'full-time',
+            'part_time': 'part-time',
+            'por_horas': 'por horas'
+          }
+          query = query.eq('jornada_laboral', jornadaMap[filters.jornada] || filters.jornada)
         }
       }
       return query
@@ -1021,12 +1159,14 @@ export async function getOcupacionesTree(filters?: DashboardFilters): Promise<Oc
   const client = getSupabaseClient()
   if (!client) return []
 
+  const digitalIds = await resolveSkillsDigitalesIds(filters)
+
   // Usar paginación para obtener TODOS los datos (Supabase limita a 1000 por query)
   const data = await fetchAllPaginated<{ isco_code: string; isco_label: string }>(
     client,
     TABLA_OFERTAS,
     'isco_code, isco_label',
-    (query) => applyFilters(query, filters)
+    (query) => applyFilters(query, filters, digitalIds)
   )
 
   // Agrupar por código ISCO de 4 dígitos
@@ -1080,6 +1220,8 @@ export async function getDistribucionRequerimientos(filters?: DashboardFilters, 
   const client = getSupabaseClient()
   if (!client) return { total: 0, educacion: [], experiencia: [], seniority: [], modalidad: [], genteCargo: [], jornada: [] }
 
+  const digitalIds = await resolveSkillsDigitalesIds(filters)
+
   // Usar paginación para obtener TODOS los datos
   const ofertas = await fetchAllPaginated<{
     nivel_educativo: string | null;
@@ -1093,7 +1235,7 @@ export async function getDistribucionRequerimientos(filters?: DashboardFilters, 
     TABLA_OFERTAS,
     'nivel_educativo, experiencia_min_anios, nivel_seniority, modalidad, tiene_gente_cargo, jornada_laboral',
     (query) => {
-      query = applyFilters(query, filters)
+      query = applyFilters(query, filters, digitalIds)
       // Aplicar filtros locales
       if (localFilters?.educacion && localFilters.educacion !== 'Todos') {
         query = query.eq('nivel_educativo', localFilters.educacion)
@@ -1223,16 +1365,18 @@ async function getFilteredOfertaIds(filters?: DashboardFilters): Promise<string[
     (filters.nivelEducativo && filters.nivelEducativo.length > 0) ||
     (filters.seniority && filters.seniority.length > 0) ||
     (filters.modalidad && filters.modalidad.length > 0) ||
-    filters.experiencia || filters.jornada
+    filters.experiencia || filters.jornada || filters.skillsDigitales
 
   if (!hasGlobalFilter) return null
+
+  const digitalIds = await resolveSkillsDigitalesIds(filters)
 
   // Usar paginación para obtener TODOS los IDs
   const data = await fetchAllPaginated<{ id_oferta: string }>(
     client,
     TABLA_OFERTAS,
     'id_oferta',
-    (query) => applyFilters(query, filters)
+    (query) => applyFilters(query, filters, digitalIds)
   )
 
   return data.map(o => o.id_oferta)
