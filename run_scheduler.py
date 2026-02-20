@@ -176,6 +176,21 @@ def ejecutar_scraping():
         logger.error(f"Error en detección de republicaciones: {e}")
 
     # =====================================================================
+    # ENCOLAR OFERTAS NUEVAS EN SISTEMA DE PRIORIDAD
+    # =====================================================================
+    try:
+        logger.info("Actualizando cola de prioridad...")
+        from scripts.get_priority_batch import refresh_priorities
+        import sqlite3
+        prio_conn = sqlite3.connect('database/bumeran_scraping.db', timeout=30)
+        prio_conn.row_factory = sqlite3.Row
+        prio_result = refresh_priorities(prio_conn)
+        prio_conn.close()
+        logger.info(f"Cola actualizada — Nuevas: {prio_result['nuevas']}, Actualizadas: {prio_result['actualizadas']}")
+    except Exception as e:
+        logger.error(f"Error actualizando cola de prioridad: {e}")
+
+    # =====================================================================
     # RESUMEN FINAL
     # =====================================================================
     end_time = datetime.now()
