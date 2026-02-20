@@ -1,8 +1,8 @@
 {
-  "version": "4.7",
+  "version": "4.8",
   "descripcion": "Reglas de negocio para matching ESCO. 213 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-02-09",
+  "fecha_actualizacion": "2026-02-20",
   "_cambios_v43": "R181-R182: Personal mantenimiento -> 7233, Tecnico electromedicina -> 3211",
   "_cambios_v42": "R177-R180: Gestor cobranzas, QA/Tester, Instalador fibra, Soporte IT",
   "_cambios_v41": "R175: Operario limpieza -> 9112, R176: Auditor franquicias -> 2421",
@@ -5037,6 +5037,356 @@
       "correccion_critica": true,
       "nota": "Sprint 5b: Admin infraestructura IT = sysadmin. ID 1118094809 estaba como 4110 empleado oficina. Critica porque 'administrador' matchea dict argentino → 4110 con score 0.90.",
       "_fecha": "2026-02-09"
+    },
+    "R224_supervisor_cocina": {
+      "nombre": "Supervisor/Encargado de cocina",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "supervisor de cocina",
+          "encargado de cocina",
+          "jefe de cocina"
+        ],
+        "titulo_no_contiene_alguno": [
+          "ayudante"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3434",
+        "esco_label": "jefe de cocina/jefa de cocina"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 4 casos"
+    },
+    "R225_comis_pasteleria": {
+      "nombre": "Comis/Ayudante de pastelería",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "comis",
+          "pasteleria",
+          "pastelería",
+          "repostería",
+          "reposteria"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7512",
+        "esco_label": "chocolatero/chocolatera"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 4 casos comis pastelería"
+    },
+    "R226_analista_rrhh": {
+      "nombre": "Analista de RRHH/Empleos/Selección",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista"
+        ],
+        "area_funcional_es": "RRHH"
+      },
+      "accion": {
+        "forzar_isco": "2423",
+        "esco_label": "asesor de orientación profesional/asesora de orientación profesional"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 10 analistas RRHH"
+    },
+    "R227_soporte_tecnico_it": {
+      "nombre": "Soporte técnico IT",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "soporte técnico",
+          "soporte tecnico",
+          "soporte it",
+          "soporte de aplicaciones",
+          "help desk",
+          "helpdesk",
+          "mesa de ayuda"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3512",
+        "esco_label": "técnico de TIC/técnica de TIC"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 7 casos soporte IT"
+    },
+    "R228_analista_contabilidad": {
+      "nombre": "Analista contable/facturación",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista"
+        ],
+        "area_funcional_es": "Contabilidad"
+      },
+      "accion": {
+        "forzar_isco": "4311",
+        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 4 analistas contabilidad"
+    },
+    "R229_analista_comercial": {
+      "nombre": "Analista/Ejecutivo comercial ventas",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista",
+          "ejecutivo",
+          "ejecutiva"
+        ],
+        "area_funcional_es": "Ventas"
+      },
+      "accion": {
+        "forzar_isco": "3322",
+        "esco_label": "representante comercial"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 11 analistas/ejecutivos ventas"
+    },
+    "R230_asesor_comercial": {
+      "nombre": "Asesor comercial/ventas",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "asesor",
+          "asesora"
+        ],
+        "area_funcional_es": "Ventas"
+      },
+      "accion": {
+        "forzar_isco": "3322",
+        "esco_label": "representante comercial"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 6 asesores ventas"
+    },
+    "R231_supervisor_operaciones": {
+      "nombre": "Supervisor de operaciones/producción",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "supervisor",
+          "supervisora"
+        ],
+        "area_funcional_es": "Operaciones",
+        "titulo_no_contiene_alguno": [
+          "cocina",
+          "ventas",
+          "comercial"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3122",
+        "esco_label": "planificador/planificadora de producción de alimentos"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 8 supervisores operaciones"
+    },
+    "R232_coordinador_operaciones": {
+      "nombre": "Coordinador de operaciones/logística",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "coordinador",
+          "coordinadora"
+        ],
+        "area_funcional_es": "Operaciones"
+      },
+      "accion": {
+        "forzar_isco": "1219",
+        "esco_label": "gestor de proyectos/gestora de proyectos"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 7 coordinadores operaciones"
+    },
+    "R233_maestranza": {
+      "nombre": "Maestranza/Mantenimiento edilicio",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "maestranza"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9112",
+        "esco_label": "operario de limpieza de edificios/operaria de limpieza de edificios"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 3 casos maestranza"
+    },
+    "R234_ayudante_panaderia": {
+      "nombre": "Ayudante de panadería",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "ayudante de panadería",
+          "ayudante de panaderia",
+          "ayudante panadería",
+          "ayudante panaderia"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7512",
+        "esco_label": "chocolatero/chocolatera"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 2 casos"
+    },
+    "R235_mecanico": {
+      "nombre": "Mecánico general",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "mecánico",
+          "mecanico"
+        ],
+        "titulo_no_contiene_alguno": [
+          "dental",
+          "drones"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7231",
+        "esco_label": "supervisor de mantenimiento de vehículos/supervisora de mantenimiento de vehículos"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 2 casos mecánico"
+    },
+    "R236_analista_marketing": {
+      "nombre": "Analista de marketing/CRM",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista"
+        ],
+        "area_funcional_es": "Marketing"
+      },
+      "accion": {
+        "forzar_isco": "2431",
+        "esco_label": "director de relaciones con los clientes/directora de relaciones con los clientes"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 7 analistas marketing"
+    },
+    "R237_analista_finanzas": {
+      "nombre": "Analista financiero/inversiones",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista"
+        ],
+        "area_funcional_es": "Finanzas"
+      },
+      "accion": {
+        "forzar_isco": "2413",
+        "esco_label": "técnico analista de administración y sistemas/técnica analista de administración y sistemas"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 5 analistas finanzas"
+    },
+    "R238_analista_it": {
+      "nombre": "Analista IT/Sistemas",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista"
+        ],
+        "area_funcional_es": "IT",
+        "titulo_no_contiene_alguno": [
+          "seguridad",
+          "datos",
+          "data"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2511",
+        "esco_label": "consultor de TIC verdes/consultora de TIC verdes"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 9 analistas IT"
+    },
+    "R239_analista_operaciones": {
+      "nombre": "Analista de operaciones/planificación",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista"
+        ],
+        "area_funcional_es": "Operaciones"
+      },
+      "accion": {
+        "forzar_isco": "2421",
+        "esco_label": "analista de logística"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 12 analistas operaciones"
+    },
+    "R240_operario_produccion": {
+      "nombre": "Operario de producción",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "operario",
+          "operaria"
+        ],
+        "area_funcional_es": "Produccion",
+        "titulo_no_contiene_alguno": [
+          "limpieza",
+          "logistic"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8160",
+        "esco_label": "operario de prensado de fruta/operaria de prensado de fruta"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 6 operarios producción"
+    },
+    "R241_tecnico_it": {
+      "nombre": "Técnico IT genérico",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "técnico",
+          "tecnico",
+          "técnica",
+          "tecnica"
+        ],
+        "area_funcional_es": "IT",
+        "titulo_no_contiene_alguno": [
+          "soporte",
+          "help"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3512",
+        "esco_label": "técnico de TIC/técnica de TIC"
+      },
+      "activa": true,
+      "_fecha": "2026-02-20",
+      "nota": "Sprint 7 V31: 7 técnicos IT (no soporte)"
     }
   },
   "reglas_filtro": {
@@ -5120,5 +5470,6 @@
   "_cambios_v50": "Sprint 2: Fix 10 exclusiones rotas (titulo_no_contiene→titulo_no_contiene_alguno), 51 reglas sin prioridad asignadas, consolidar ISCO 3322 (12→7) y 9333 (10→7), fix R135 key duplicada",
   "_cambios_v51": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344, R137 excluye maquinista.",
   "_cambios_v52": "Sprint 5b: R223 Admin infraestructura->2522 sysadmin. V30 keywords expandidos (español).",
-  "_changelog_v47": "Fix 18 reglas con exclusiones/prioridades para resolver 35 V27 divergencias. R65: prioridad -1 (sem gana para gerente bancario vs retail); R14: excluir nocturno, administrativa contable; R14d: excluir analista; R158: ISCO 1324→1321 (manufacturing general); R87: excluir facturación, ventas; R38: excluir supervisor, marketing; R58: excluir mostrador/heladería; R33: excluir manager/director/lead; R171: excluir administrativo; R175: excluir depósito/carga; R222: excluir offset/impresión; R144: excluir asesor/representante/comercial; R111: excluir telefónico/call center; R160: excluir internet/fibra/soporte; R177: excluir operador; R194: excluir analista; R101: excluir core bancario; R203: prioridad -1"
+  "_changelog_v47": "Fix 18 reglas con exclusiones/prioridades para resolver 35 V27 divergencias. R65: prioridad -1 (sem gana para gerente bancario vs retail); R14: excluir nocturno, administrativa contable; R14d: excluir analista; R158: ISCO 1324→1321 (manufacturing general); R87: excluir facturación, ventas; R38: excluir supervisor, marketing; R58: excluir mostrador/heladería; R33: excluir manager/director/lead; R171: excluir administrativo; R175: excluir depósito/carga; R222: excluir offset/impresión; R144: excluir asesor/representante/comercial; R111: excluir telefónico/call center; R160: excluir internet/fibra/soporte; R177: excluir operador; R194: excluir analista; R101: excluir core bancario; R203: prioridad -1",
+  "_cambios_v48": "Sprint 7 V31: R224-R241 (18 reglas) para 337 errores V31 residuales. Analista por area (RRHH/IT/Contab/Ventas/Mkt/Finanzas/Ops), supervisor cocina/ops, coordinador ops, soporte IT, comis pastelería, maestranza, mecánico, operario prod, técnico IT."
 }

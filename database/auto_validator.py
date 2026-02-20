@@ -360,7 +360,7 @@ class AutoValidator:
             else 0
         )
 
-        if score_semantico < 0.50 and coherencia_esco < 0.15 and not is_regla_match:
+        if score_semantico < 0.40 and coherencia_esco < 0.15 and not is_regla_match:
             errores.append({
                 "id_regla": "V31_ocupacion_esco_incorrecta",
                 "diagnostico": "error_ocupacion_esco_incorrecta",
