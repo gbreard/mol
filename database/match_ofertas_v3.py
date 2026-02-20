@@ -1075,6 +1075,7 @@ class MatcherV3:
 
         v3.5.2: Semántico alta confianza (>=0.80) ahora gana sobre regla cuando divergen.
         v3.5.3: Reglas con correccion_critica=True SIEMPRE ganan (no se overridean).
+        v3.5.4: Threshold subido a >=0.95. Con 0.80 overrideaba 860 reglas correctas.
 
         Args:
             regla_isco: ISCO de la regla de negocio (None si no aplica ninguna)
@@ -1117,14 +1118,18 @@ class MatcherV3:
             return (regla_isco, "regla_por_score_bajo",
                     f"score semantico {semantic_score:.2f} < 0.55, regla {regla_id} prioridad")
 
-        if semantic_score >= 0.80:
-            # Semántico MUY confiable → gana sobre la regla
+        if semantic_score >= 0.95:
+            # Semántico extremadamente confiable → gana sobre la regla
+            # v3.5.4: subido de 0.80 a 0.95. Con 0.80 el semántico overrideaba 860 reglas
+            # correctas (Community Manager→Director TIC, Ejecutivo Ventas→Vendedor, etc.)
+            # porque scores 0.85-0.90 son comunes pero no indican match correcto.
             return (semantic_isco, "semantico_alta_confianza",
-                    f"score {semantic_score:.2f} >= 0.80 override regla {regla_id} (isco_regla={regla_isco})")
+                    f"score {semantic_score:.2f} >= 0.95 override regla {regla_id} (isco_regla={regla_isco})")
 
-        # Caso 5: Score medio (0.55-0.80) → regla gana, warning fuerte
-        return (regla_isco, "regla_zona_gris",
-                f"REVISAR: score {semantic_score:.2f}, regla {regla_id} vs semantico {semantic_isco}")
+        # Caso 5: Score < 0.95 con regla disponible → regla gana
+        # v3.5.4: ampliada zona (antes 0.55-0.80, ahora 0.55-0.95)
+        return (regla_isco, "regla_prioridad",
+                f"regla {regla_id} prioridad (score semantico {semantic_score:.2f} < 0.95, semantico={semantic_isco})")
 
     def _find_occupation_by_esco_label(self, esco_label: str) -> Optional[Dict]:
         """
