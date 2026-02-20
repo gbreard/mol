@@ -60,15 +60,19 @@ class NLPPostprocessor:
     }
 
     # Normalización de aliases a valores canónicos
+    # v1.1: Agregado Gastronomia/Hoteleria (383 casos), Comercio Exterior.
+    #        Corregido Ventas/Comercial → Ventas (Ventas tiene 2358 vs Comercial 2).
     AREA_FUNCIONAL_NORMALIZATION = {
         "IT/Sistemas": "IT",
         "Sistemas": "IT",
-        "Ventas/Comercial": "Comercial",
+        "Ventas/Comercial": "Ventas",
         "Recursos Humanos": "RRHH",
         "Finanzas/Contabilidad": "Contabilidad",
         "Logistica/Operaciones": "Logistica",
         "Produccion/Manufactura": "Produccion",
         "Atencion al Cliente": "Atencion al cliente",
+        "Gastronomia/Hoteleria": "Gastronomia",
+        "Comercio Exterior": "Comercial",
     }
     VALID_SENIORITY = {"trainee", "junior", "semisenior", "senior", "lead", "manager", "director"}
     VALID_TIPO_OFERTA = {"demanda_real", "pasantia", "becario", "freelance"}

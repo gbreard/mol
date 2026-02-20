@@ -342,9 +342,9 @@
       ],
       "logica": "AND",
       "diagnostico": "error_nlp_area_invalida",
-      "severidad": "alto",
-      "mensaje": "Area funcional no válida - normalizar en postprocessor",
-      "_nota": "v1.1: subido a alto (gate). Eliminados duplicados (Ventas/Comercial, IT/Sistemas, etc.) - se normalizan en postprocessor."
+      "severidad": "medio",
+      "mensaje": "Area funcional no válida - normalizar en postprocessor o agregar alias",
+      "_nota": "v1.2: bajado de alto a medio. La normalización en postprocessor cubre los casos comunes (Gastronomia/Hoteleria, Ventas/Comercial, etc.). Si aparece un valor nuevo, es informativo."
     },
     {
       "id": "NV04_seniority_invalido",
@@ -391,9 +391,9 @@
       ],
       "logica": "AND",
       "diagnostico": "error_datos_insuficientes",
-      "severidad": "alto",
-      "mensaje": "Sin tareas ni skills - datos insuficientes para matching confiable",
-      "_nota": "v1.1: removida condicion tareas_inferidas (campo eliminado)"
+      "severidad": "medio",
+      "mensaje": "Sin tareas ni skills - matching usa título solo (calidad reducida)",
+      "_nota": "v1.2: bajado de alto a medio. El matching funciona con solo título+embeddings. Bloquear era excesivo: 294 ofertas que podrían matchear razonablemente."
     },
     {
       "id": "NV11_sector_null_like",

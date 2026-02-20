@@ -4,8 +4,8 @@
 Match Ofertas v3.3.0 - Skills-First Matching Pipeline con Diccionario Argentino
 ================================================================================
 
-VERSION: 3.4.1
-FECHA: 2026-01-20
+VERSION: 3.5.5
+FECHA: 2026-02-19
 MODELO: BGE-M3 (BAAI/bge-m3)
 
 CAMBIO ARQUITECTONICO:
@@ -609,8 +609,13 @@ class MatcherV3:
 
             if final_candidates:
                 # Aplicar penalizaciones
+                # v3.5.5: Solo aplicar penalización de sector cuando confianza=alta.
+                # 84% de los sectores vienen del LLM con confianza=media (10,180 de 12,098).
+                # El LLM frecuentemente copia area_funcional como sector_empresa,
+                # generando penalizaciones incorrectas.
                 sector_empresa = oferta_nlp.get("sector_empresa", "")
-                if sector_empresa:
+                sector_confianza = oferta_nlp.get("sector_confianza", "")
+                if sector_empresa and sector_confianza == "alta":
                     final_candidates = self._apply_sector_penalty(final_candidates, sector_empresa)
 
                 nivel_seniority = oferta_nlp.get("nivel_seniority", "")
