@@ -336,7 +336,8 @@
             "Logistica", "Mantenimiento", "Marketing", "Medicina", "Produccion",
             "RRHH", "Salud", "Seguridad", "Vigilancia", "Atencion al cliente",
             "Compras", "Calidad", "Medio ambiente", "Comunicacion",
-            "Investigacion", "Ventas", "Operaciones", "Otro"
+            "Investigacion", "Ventas", "Operaciones", "Otro",
+            "Comercio Exterior"
           ]
         }
       ],
