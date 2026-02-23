@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireRateLimit } from '@/lib/api-auth'
 import {
   getSkillsIntelligenceStats,
   getOccupationsWithMOLData
@@ -12,6 +13,9 @@ export const revalidate = 0
  * Retorna stats y lista de ocupaciones con datos MOL
  */
 export async function GET(request: NextRequest) {
+  const limited = requireRateLimit(request);
+  if (limited) return limited;
+
   try {
     const [stats, occupations] = await Promise.all([
       getSkillsIntelligenceStats(),

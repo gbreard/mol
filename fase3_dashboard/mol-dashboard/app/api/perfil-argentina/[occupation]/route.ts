@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireRateLimit } from '@/lib/api-auth'
 import { createClient } from '@supabase/supabase-js'
 import fs from 'fs'
 import path from 'path'
@@ -82,6 +83,9 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ occupation: string }> }
 ) {
+  const limited = requireRateLimit(request);
+  if (limited) return limited;
+
   const { occupation } = await params
 
   if (!supabase) {

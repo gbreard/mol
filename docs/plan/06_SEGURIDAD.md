@@ -1,6 +1,6 @@
 # 6. Análisis de Seguridad
 
-> Última actualización: 2026-02-05
+> Última actualización: 2026-02-23
 
 ## Referencias
 
@@ -22,14 +22,18 @@
 
 ## Resumen Ejecutivo
 
-| Severidad | Cantidad | Estado |
-|-----------|----------|--------|
-| **CRÍTICO** | 4 | 🔴 Resolver ANTES de lanzar |
-| **ALTO** | 6 | 🟠 Resolver en Fase 1 |
-| **MEDIO** | 7 | 🟡 Resolver en Fase 2 |
-| **Total** | **17** | |
+| Severidad | Cantidad | Resueltos | Estado |
+|-----------|----------|-----------|--------|
+| **CRÍTICO** | 4 | 4 | ✅ Resueltos |
+| **ALTO** | 6 | 2 | 🟠 Resolver en Fase 1 |
+| **MEDIO** | 7 | 0 | 🟡 Resolver en Fase 2 |
+| **Total** | **17** | **6** | |
 
-**Conclusión:** El sistema NO está listo para producción. Los 4 issues críticos son **bloqueantes**.
+**Fase 0 completada.** Los 4 issues críticos están resueltos:
+- S-01: Tokens limpiados del código (commit `9f904093`) — **pendiente rotar key en Supabase Dashboard**
+- S-02: Open redirect fix con whitelist (`lib/auth-utils.ts`)
+- S-03: RLS + API route auth guards (`lib/api-auth.ts`, migration `014`)
+- S-04: Admin role verification (middleware + `requireAdmin` en API routes)
 
 ---
 
@@ -126,14 +130,15 @@ USING (auth.uid() = user_id);
 
 ---
 
-### S-04: APIs Admin sin verificación de rol
+### S-04: APIs Admin sin verificación de rol — ✅ RESUELTO
 
 | Atributo | Valor |
 |----------|-------|
 | **Severidad** | 🔴 CRÍTICO |
+| **Estado** | ✅ Resuelto (2026-02-23) |
 | **Ubicación** | `app/api/admin/*` |
 | **Impacto** | Cualquier usuario autenticado puede acceder a admin |
-| **Probabilidad** | Alta |
+| **Solución aplicada** | Middleware verifica rol en páginas `/admin/*`, `requireAdmin()` en todas las API routes admin |
 
 **Solución - Middleware:**
 ```typescript
@@ -172,29 +177,26 @@ export async function middleware(req: NextRequest) {
 
 ## Issues ALTOS (S-05 a S-10)
 
-### S-05: Sin rate limiting en APIs
+### S-05: Sin rate limiting en APIs — ✅ RESUELTO
 
 | Atributo | Valor |
 |----------|-------|
 | **Severidad** | 🟠 ALTO |
+| **Estado** | ✅ Resuelto (2026-02-23) |
 | **Impacto** | DDoS, brute force en login |
-| **Solución** | Implementar `@upstash/ratelimit` |
+| **Solución aplicada** | In-memory sliding-window rate limiter (`lib/rate-limit.ts`) integrado en `lib/api-auth.ts`. Las 11 API routes están protegidas. |
 
-```typescript
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+**Tiers:**
 
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(10, "10 s"),
-});
+| Tier | Ventana | Max req | Aplica a |
+|------|---------|---------|----------|
+| `public` | 60s | 30 | GET públicos (search, skills-intelligence, perfil-argentina) |
+| `authenticated` | 60s | 60 | Rutas con `requireAuth` |
+| `admin` | 60s | 120 | Rutas con `requireAdmin` |
 
-// En API route
-const { success } = await ratelimit.limit(ip);
-if (!success) {
-  return new Response("Too many requests", { status: 429 });
-}
-```
+**Limitación conocida:** In-memory pierde estado en cold starts de Vercel y no se comparte entre instancias. Suficiente para uso interno OEDE.
+
+**Para escalar:** Migrar a `@upstash/ratelimit` + Redis. Cambio localizado en `lib/rate-limit.ts`, las API routes no cambian.
 
 ---
 
@@ -225,33 +227,21 @@ if (!result.success) {
 
 ---
 
-### S-07: Sin headers de seguridad
+### S-07: Sin headers de seguridad — ✅ RESUELTO
 
 | Atributo | Valor |
 |----------|-------|
 | **Severidad** | 🟠 ALTO |
+| **Estado** | ✅ Resuelto (2026-02-23) |
 | **Impacto** | Clickjacking, MIME sniffing |
-| **Solución** | Configurar en `next.config.js` |
+| **Solución aplicada** | Headers configurados en `next.config.ts` vía `async headers()` |
 
-```javascript
-// next.config.js
-const securityHeaders = [
-  { key: 'X-Frame-Options', value: 'DENY' },
-  { key: 'X-Content-Type-Options', value: 'nosniff' },
-  { key: 'X-XSS-Protection', value: '1; mode=block' },
-  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-  {
-    key: 'Content-Security-Policy',
-    value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
-  },
-];
+**Headers aplicados a todas las rutas (`/:path*`):**
+- `X-Frame-Options: DENY` — previene clickjacking
+- `X-Content-Type-Options: nosniff` — previene MIME sniffing
+- `Referrer-Policy: strict-origin-when-cross-origin` — controla info de referrer
 
-module.exports = {
-  async headers() {
-    return [{ source: '/:path*', headers: securityHeaders }];
-  },
-};
-```
+**Pendiente para futuro:** CSP (Content-Security-Policy) requiere auditar todos los scripts/estilos inline primero.
 
 ---
 
@@ -328,9 +318,9 @@ CRÍTICOS (Fase 0):
 □ S-04: Verificar rol en APIs admin
 
 ALTOS (Fase 1):
-□ S-05: Rate limiting
+☑ S-05: Rate limiting (in-memory sliding window)
 □ S-06: Validación Zod
-□ S-07: Headers seguridad
+☑ S-07: Headers seguridad (X-Frame-Options, nosniff, Referrer-Policy)
 □ S-08: Audit logging
 □ S-09: Sesiones configurables
 □ S-10: 2FA (opcional inicialmente)

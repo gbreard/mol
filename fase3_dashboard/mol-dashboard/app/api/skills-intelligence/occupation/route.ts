@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireRateLimit } from '@/lib/api-auth'
 import { getOccupationMOLProfile } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
@@ -9,6 +10,9 @@ export const revalidate = 0
  * Retorna perfil de skills MOL para una ocupación específica
  */
 export async function GET(request: NextRequest) {
+  const limited = requireRateLimit(request);
+  if (limited) return limited;
+
   try {
     const searchParams = request.nextUrl.searchParams
     const escoUri = searchParams.get('uri')

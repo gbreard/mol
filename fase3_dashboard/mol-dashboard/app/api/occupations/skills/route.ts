@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { requireRateLimit } from '@/lib/api-auth';
 
 interface Skill {
   skill_uri: string;
@@ -56,6 +57,9 @@ function loadMetadata(): OccupationMetadata[] {
 }
 
 export async function GET(request: NextRequest) {
+  const limited = requireRateLimit(request);
+  if (limited) return limited;
+
   const searchParams = request.nextUrl.searchParams;
   const uri = searchParams.get('uri');
   const id = searchParams.get('id');
