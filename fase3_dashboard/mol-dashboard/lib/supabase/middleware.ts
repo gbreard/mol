@@ -50,12 +50,11 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // S-04 FIX: Rutas /admin/* requieren rol admin en user_metadata
+  // S-04 FIX: Rutas /admin/* requieren rol admin o super_admin en user_metadata
   const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
   if (isAdminRoute && user) {
-    const role = user.user_metadata?.role
-    const isAdmin = role === 'admin'
-    if (!isAdmin) {
+    const role = user.user_metadata?.role as string | undefined
+    if (role !== 'admin' && role !== 'super_admin') {
       const url = request.nextUrl.clone();
       url.pathname = "/dashboard";
       return NextResponse.redirect(url);

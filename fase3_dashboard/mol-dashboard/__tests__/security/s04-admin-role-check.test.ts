@@ -60,4 +60,20 @@ describe('S-04: Admin routes require role verification', () => {
     // Should redirect unauthorized admin access
     expect(content).toContain('redirect')
   })
+
+  it('middleware should accept both admin and super_admin roles', () => {
+    const middlewarePath = path.join(PROJECT_ROOT, 'lib/supabase/middleware.ts')
+    const content = fs.readFileSync(middlewarePath, 'utf-8')
+
+    // Must check for super_admin too, not just admin
+    expect(content).toContain("'super_admin'")
+  })
+
+  it('admin layout should NOT default to admin role when metadata is missing', () => {
+    const layoutPath = path.join(PROJECT_ROOT, 'app/admin/layout.tsx')
+    const content = fs.readFileSync(layoutPath, 'utf-8')
+
+    // Dangerous pattern: || 'admin' gives access to users without role metadata
+    expect(content).not.toMatch(/role.*\|\|\s*['"]admin['"]/)
+  })
 })

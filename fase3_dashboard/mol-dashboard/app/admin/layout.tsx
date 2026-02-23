@@ -50,9 +50,9 @@ export default function AdminLayout({
         return;
       }
 
-      // Verificar rol de admin
-      const role = user.user_metadata?.role || 'admin';
-      if (!['super_admin', 'admin'].includes(role)) {
+      // Verificar rol de admin (sin default — sin metadata = sin acceso)
+      const role = user.user_metadata?.role;
+      if (role !== 'admin' && role !== 'super_admin') {
         router.push("/dashboard");
         return;
       }
