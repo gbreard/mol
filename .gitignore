@@ -61,9 +61,13 @@ nul
 scripts/excel_exports/*.json
 exports/*.xlsx
 exports/*.csv
+exports/validation/
 
 # ChromaDB vectors (grandes)
 database/esco_vectors/
+
+# Metrics (pipeline runs, cola claude, NLP reports)
+metrics/
 
 # Archivos de tracking y backups
 data/tracking/*.bak*
