@@ -6,11 +6,11 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-02-23 18:43"
+  fecha_actualizacion: "2026-02-23 20:08"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "presentacion"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "1451 ofertas sin NLP - sistema sugiere Fase 2"
+  fase_detalle: "11 errores sin resolver - sistema sugiere Fase 2"
 
 ultimo_trabajo:
   fecha: "2026-02-23"
@@ -131,7 +131,7 @@ ultimo_trabajo:
 # REGLA: Cuando se modifique un config, actualizar estos conteos.
 # La documentación (CLAUDE.md, PIPELINE.md, etc.) referencia aquí.
 conteos:
-  reglas_negocio: 236  # config/matching_rules_business.json > reglas_forzar_isco (v3.1 actualizado 2026-01-29)
+  reglas_negocio: 240  # config/matching_rules_business.json > reglas_forzar_isco (v3.1 actualizado 2026-01-29)
   reglas_validacion: 3  # config/validation_rules.json > reglas_validacion (V01-V22 legacy + V25-V29 declarativas Sprint 3)
   reglas_skills_dual: 25  # config/skills_rules.json > reglas_forzar_skills (v2.0 2026-01-22)
   sinonimos_argentinos: 13  # config/sinonimos_argentinos_esco.json > ocupaciones_titulo
@@ -172,10 +172,10 @@ conteos:
   proximo_paso: "Revisar 24 casos con override semántico alto"
 
   estadisticas_actuales:
-    ofertas_validadas: 16136  # todas sincronizadas a Supabase
-    ofertas_pendientes: 0  # 0 errores de validación
+    ofertas_validadas: 16132  # todas sincronizadas a Supabase
+    ofertas_pendientes: 4  # 0 errores de validación
     errores_validacion: 0  # resueltos 201 → 0
-    reglas_negocio: 236
+    reglas_negocio: 240
     convergencia: "CONVERGIDO (0 errores pendientes)"
     supabase_sync: "2,093 ofertas + 34,917 skills"
 
@@ -191,7 +191,7 @@ conteos:
 
   # Métricas de evolución del aprendizaje
   learning_evolution:
-    total_runs: 230
+    total_runs: 231
     ofertas_con_historial_nlp: 5474  # ofertas en ofertas_nlp_history
     ofertas_con_matching: 16136  # ofertas distintas en ofertas_esco_matching
 
@@ -205,7 +205,7 @@ conteos:
       caso_mas_dificil: "2154549 Contador Auditoría (12 intentos)"
 
     reglas_inicio: 22  # 2026-01-13 baseline
-    reglas_actual: 236
+    reglas_actual: 240
     reglas_agregadas: "+96 durante optimización"
     tasa_convergencia: "47% -> 27% -> 2.7% -> 7.5% -> 0%"
     estado: "CONVERGIDO (tasa = 0%)"

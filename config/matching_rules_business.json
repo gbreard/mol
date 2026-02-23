@@ -1,8 +1,8 @@
 {
-  "version": "4.8",
-  "descripcion": "Reglas de negocio para matching ESCO. 213 reglas de bypass que fuerzan ISCO específico.",
+  "version": "4.9",
+  "descripcion": "Reglas de negocio para matching ESCO. 241 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-02-20",
+  "fecha_actualizacion": "2026-02-23",
   "_cambios_v43": "R181-R182: Personal mantenimiento -> 7233, Tecnico electromedicina -> 3211",
   "_cambios_v42": "R177-R180: Gestor cobranzas, QA/Tester, Instalador fibra, Soporte IT",
   "_cambios_v41": "R175: Operario limpieza -> 9112, R176: Auditor franquicias -> 2421",
@@ -5387,6 +5387,96 @@
       "activa": true,
       "_fecha": "2026-02-20",
       "nota": "Sprint 7 V31: 7 técnicos IT (no soporte)"
+    },
+    "R242_asistente_impuestos": {
+      "nombre": "Asistente/Analista de Impuestos",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "impuestos",
+          "impositivo",
+          "impositiva",
+          "tributario",
+          "tributaria",
+          "fiscal"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2411",
+        "esco_label": "analista contable"
+      },
+      "caso_diagnostico": "1117931697 - ASISTENTE EXPERIMENTADO DE IMPUESTOS",
+      "fecha_creacion": "2026-02-23",
+      "activa": true,
+      "nota": "Issue Diego Schleser: impuestos = area contable, no dirección financiera"
+    },
+    "R243_gerente_local": {
+      "nombre": "Gerente de Local/Sucursal",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_todos": [
+          "gerente"
+        ],
+        "titulo_contiene_alguno": [
+          "local",
+          "sucursal",
+          "tienda",
+          "punto de venta"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1420",
+        "esco_label": "gerente de tienda"
+      },
+      "caso_diagnostico": "1116826229 - Gerente de Local - Grupo Gastronómico",
+      "fecha_creacion": "2026-02-23",
+      "activa": true,
+      "nota": "Issue Diego Schleser: gerente de local gastronomico = retail, no IT"
+    },
+    "R244_coordinador_turno_retail": {
+      "nombre": "Coordinador de Turno en retail/entretenimiento",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_todos": [
+          "coordinador",
+          "turno"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1420",
+        "esco_label": "gerente de tienda"
+      },
+      "caso_diagnostico": "1118101649 - Coordinador de Turno - Cadena de Cines",
+      "fecha_creacion": "2026-02-23",
+      "activa": true,
+      "nota": "Issue Diego Schleser: coordinador de turno en cines/retail = gerente tienda"
+    },
+    "R245_analista_cobranzas": {
+      "nombre": "Analista de Cobranzas",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_todos": [
+          "cobranza"
+        ],
+        "titulo_contiene_alguno": [
+          "analista",
+          "responsable",
+          "encargado",
+          "encargada",
+          "jefe",
+          "jefa",
+          "supervisor",
+          "supervisora"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2411",
+        "esco_label": "analista contable"
+      },
+      "caso_diagnostico": "1118095663 - Analista en cobranzas",
+      "fecha_creacion": "2026-02-23",
+      "activa": true,
+      "nota": "Issue Diego Schleser: cobranzas = area financiera/contable, no data analysis"
     }
   },
   "reglas_filtro": {
@@ -5471,5 +5561,6 @@
   "_cambios_v51": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344, R137 excluye maquinista.",
   "_cambios_v52": "Sprint 5b: R223 Admin infraestructura->2522 sysadmin. V30 keywords expandidos (español).",
   "_changelog_v47": "Fix 18 reglas con exclusiones/prioridades para resolver 35 V27 divergencias. R65: prioridad -1 (sem gana para gerente bancario vs retail); R14: excluir nocturno, administrativa contable; R14d: excluir analista; R158: ISCO 1324→1321 (manufacturing general); R87: excluir facturación, ventas; R38: excluir supervisor, marketing; R58: excluir mostrador/heladería; R33: excluir manager/director/lead; R171: excluir administrativo; R175: excluir depósito/carga; R222: excluir offset/impresión; R144: excluir asesor/representante/comercial; R111: excluir telefónico/call center; R160: excluir internet/fibra/soporte; R177: excluir operador; R194: excluir analista; R101: excluir core bancario; R203: prioridad -1",
-  "_cambios_v48": "Sprint 7 V31: R224-R241 (18 reglas) para 337 errores V31 residuales. Analista por area (RRHH/IT/Contab/Ventas/Mkt/Finanzas/Ops), supervisor cocina/ops, coordinador ops, soporte IT, comis pastelería, maestranza, mecánico, operario prod, técnico IT."
+  "_cambios_v48": "Sprint 7 V31: R224-R241 (18 reglas) para 337 errores V31 residuales. Analista por area (RRHH/IT/Contab/Ventas/Mkt/Finanzas/Ops), supervisor cocina/ops, coordinador ops, soporte IT, comis pastelería, maestranza, mecánico, operario prod, técnico IT.",
+  "_cambios_v49": "R242-R245: Issues Diego Schleser — asistente impuestos, gerente local, coord turno, analista cobranzas"
 }
