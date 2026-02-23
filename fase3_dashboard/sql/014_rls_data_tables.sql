@@ -137,7 +137,7 @@ BEGIN
         ON public.perfiles_trabajadores
         FOR SELECT
         USING (
-          auth.uid()::text = created_by
+          auth.uid() = created_by
           OR public.is_platform_admin()
         )
     ';
@@ -156,7 +156,7 @@ BEGIN
         ON public.perfiles_trabajadores
         FOR UPDATE
         USING (
-          auth.uid()::text = created_by
+          auth.uid() = created_by
           OR public.is_platform_admin()
         )
     ';
