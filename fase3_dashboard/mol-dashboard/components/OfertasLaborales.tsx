@@ -204,7 +204,7 @@ export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
       {/* Pagination Controls */}
       <div className="flex-shrink-0 flex items-center justify-between px-1 py-2">
         <div className="text-xs text-gray-500">
-          Mostrando <span className="font-semibold text-gray-700">{offset + 1}</span>-<span className="font-semibold text-gray-700">{Math.min(offset + PAGE_SIZE, total)}</span> de <span className="font-semibold text-gray-700">{total}</span> ofertas
+          Mostrando <span className="font-semibold text-gray-700">{(currentPage - 1) * PAGE_SIZE + 1}</span>-<span className="font-semibold text-gray-700">{Math.min(currentPage * PAGE_SIZE, total)}</span> de <span className="font-semibold text-gray-700">{total}</span> ofertas
         </div>
 
         {totalPages > 1 && (
