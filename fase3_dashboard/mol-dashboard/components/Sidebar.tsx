@@ -18,7 +18,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { getTotalOfertas, getOcupacionesTree, getLocalidadesGroupedByDepartamento, getSectores, OcupacionTreeNode, DepartamentoGroup, SectorCount } from "@/lib/supabase";
+import { OcupacionTreeNode, DepartamentoGroup, SectorCount } from "@/lib/supabase";
+import { useSidebarCounts, useLocalidadesGrouped } from "@/hooks/use-sidebar";
 import { capitalize } from "@/lib/utils";
 
 interface SidebarProps {
@@ -45,14 +46,7 @@ interface SidebarProps {
 
 export function Sidebar({ filters, onFilterChange }: SidebarProps) {
   const [expandedNodes, setExpandedNodes] = useState<string[]>([]);
-  const [ocupacionesTree, setOcupacionesTree] = useState<OcupacionTreeNode[]>([]);
-  const [totalOfertas, setTotalOfertas] = useState<number | null>(null);
-  const [loadingTree, setLoadingTree] = useState(true);
-  const [departamentoGroups, setDepartamentoGroups] = useState<DepartamentoGroup[]>([]);
-  const [loadingLocalidades, setLoadingLocalidades] = useState(false);
   const [expandedDepts, setExpandedDepts] = useState<string[]>([]);
-  const [sectores, setSectores] = useState<SectorCount[]>([]);
-  const [loadingSectores, setLoadingSectores] = useState(false);
 
   const toggleNode = (nodeId: string) => {
     setExpandedNodes(prev =>
@@ -62,76 +56,46 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
     );
   };
 
-  // Cargar total y árbol de ocupaciones cuando cambian filtros relevantes
-  // (excluimos ocupacionesSeleccionadas para no re-cargar el árbol al seleccionar)
-  useEffect(() => {
-    async function loadSidebarData() {
-      try {
-        setLoadingTree(true);
-        const [total, tree] = await Promise.all([
-          getTotalOfertas(filters),
-          getOcupacionesTree(filters)
-        ]);
-        setTotalOfertas(total);
-        setOcupacionesTree(tree);
+  // React Query hooks — replace 3 useEffects + 6 useState
+  const { data: sidebarData, isLoading: loadingTree } = useSidebarCounts(filters);
+  const { data: localidadesData, isLoading: loadingLocalidades } = useLocalidadesGrouped(filters.provincia, filters);
 
-        // Auto-expandir el primer grupo si hay datos
-        if (tree.length > 0 && expandedNodes.length === 0) {
-          setExpandedNodes([tree[0].id]);
-        }
-      } catch (err) {
-        console.error('Error cargando datos sidebar:', err);
-      } finally {
-        setLoadingTree(false);
-      }
-    }
-    loadSidebarData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.territorio, filters.provincia, JSON.stringify(filters.localidad), filters.fechaDesde, filters.fechaHasta, filters.permanencia]);
+  // Derive state from query data
+  const totalOfertas = sidebarData?.total_ofertas ?? null;
+  const sectores = sidebarData?.sectores || [];
+  const loadingSectores = loadingTree;
 
-  // Cargar localidades agrupadas por departamento cuando cambia la provincia
-  useEffect(() => {
-    if (!filters.provincia) {
-      setDepartamentoGroups([]);
-      setExpandedDepts([]);
-      return;
-    }
-    async function loadLocalidades() {
-      setLoadingLocalidades(true);
-      try {
-        const groups = await getLocalidadesGroupedByDepartamento(filters.provincia, filters);
-        setDepartamentoGroups(groups);
-        // Auto-expandir el primer departamento
-        if (groups.length > 0) {
-          setExpandedDepts([groups[0].departamento]);
-        }
-      } catch (err) {
-        console.error('Error cargando localidades:', err);
-        setDepartamentoGroups([]);
-      } finally {
-        setLoadingLocalidades(false);
-      }
-    }
-    loadLocalidades();
-  }, [filters.provincia, filters.fechaDesde, filters.fechaHasta, JSON.stringify(filters.permanencia), JSON.stringify(filters.ocupacionesSeleccionadas), JSON.stringify(filters.nivelEducativo), JSON.stringify(filters.seniority), JSON.stringify(filters.modalidad)]);
+  // Map RPC ocupaciones_tree to OcupacionTreeNode format
+  const ISCO_MAJOR_GROUPS: Record<string, string> = {
+    '1': 'Directores y gerentes',
+    '2': 'Profesionales científicos e intelectuales',
+    '3': 'Técnicos y profesionales de nivel medio',
+    '4': 'Personal de apoyo administrativo',
+    '5': 'Trabajadores de servicios y vendedores',
+    '6': 'Agricultores y trabajadores agropecuarios',
+    '7': 'Oficiales, operarios y artesanos',
+    '8': 'Operadores de instalaciones y máquinas',
+    '9': 'Ocupaciones elementales',
+    '0': 'Ocupaciones militares',
+  };
 
-  // Cargar sectores CLAE con counts filtrados
-  useEffect(() => {
-    async function loadSectores() {
-      setLoadingSectores(true);
-      try {
-        const data = await getSectores(filters);
-        setSectores(data);
-      } catch (err) {
-        console.error('Error cargando sectores:', err);
-        setSectores([]);
-      } finally {
-        setLoadingSectores(false);
-      }
-    }
-    loadSectores();
-  }, [filters.fechaDesde, filters.fechaHasta, filters.provincia, JSON.stringify(filters.localidad), JSON.stringify(filters.permanencia), JSON.stringify(filters.ocupacionesSeleccionadas)]);
+  const ocupacionesTree: OcupacionTreeNode[] = useMemo(() => {
+    if (!sidebarData?.ocupaciones_tree) return [];
+    return sidebarData.ocupaciones_tree.map(g => ({
+      id: `isco-${g.major_group}`,
+      label: ISCO_MAJOR_GROUPS[g.major_group] || `Grupo ${g.major_group}`,
+      count: g.count,
+      children: (g.children || []).map(c => ({
+        id: c.id,
+        label: c.label,
+        count: c.count,
+      }))
+    }));
+  }, [sidebarData?.ocupaciones_tree]);
+
+  const departamentoGroups: DepartamentoGroup[] = useMemo(() => {
+    return localidadesData || [];
+  }, [localidadesData]);
 
   // Filtrar el árbol por búsqueda de texto
   const filteredTree = useMemo(() => {

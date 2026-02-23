@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { Loader2, AlertCircle, GraduationCap, Clock, TrendingUp, MapPin, Users, Briefcase, Cpu, Layers, ChevronDown } from "lucide-react";
 import { ChartDownloadButton, FormattedExcelOptions } from "@/components/ExportButton";
-import { getDistribucionRequerimientos, getSkillsPorCategoriaL1, getSkillsDigitales, getTopSkillsConCategoria, SkillsFilters } from "@/lib/supabase";
+import { SkillsFilters } from "@/lib/supabase";
+import { useRequerimientos } from "@/hooks/use-requerimientos";
+import { useSkills } from "@/hooks/use-skills";
 import { DashboardFilters } from "@/lib/types";
 import { capitalize } from "@/lib/utils";
 
@@ -167,46 +169,29 @@ const TIPO_OPTIONS = [
 ];
 
 export function Requerimientos({ filters }: RequerimientosProps) {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [requerimientosData, setRequerimientosData] = useState<RequerimientosData | null>(null);
-
-  // Estados para skills clasificadas
-  const [categoriasL1, setCategoriasL1] = useState<{code: string, name: string, value: number, porcentaje: number}[]>([]);
-  const [skillsDigitales, setSkillsDigitales] = useState<{name: string, value: number, porcentaje: number}[]>([]);
-  const [topSkillsTotal, setTopSkillsTotal] = useState<{name: string, value: number, categoria: string, categoriaNombre: string}[]>([]);
-
   // Selectores del gráfico de habilidades (Issue #6)
   const [cantidadCompetencias, setCantidadCompetencias] = useState<number>(20);
   const [tipoVisualizacion, setTipoVisualizacion] = useState<'especifica' | 'agregada'>('especifica');
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        setLoading(true);
+  // React Query hooks — replace 1 useEffect + Promise.all(4) + 5 useState
+  const { data: requerimientosData, isLoading: loadingReq, error: reqError } = useRequerimientos(filters);
+  const { data: skillsData, isLoading: loadingSkills } = useSkills(filters);
 
-        const skillsFilters: SkillsFilters = {};
+  const loading = loadingReq || loadingSkills;
+  const error = reqError ? 'Error al cargar los datos de requerimientos.' : null;
 
-        const [requerimientos, catL1, digital, topSkills] = await Promise.all([
-          getDistribucionRequerimientos(filters, {}),
-          getSkillsPorCategoriaL1(skillsFilters, filters),
-          getSkillsDigitales(skillsFilters, filters),
-          getTopSkillsConCategoria(100, skillsFilters, filters) // Cargar más para poder filtrar
-        ]);
-        setRequerimientosData(requerimientos);
-        setCategoriasL1(catL1);
-        setSkillsDigitales(digital);
-        setTopSkillsTotal(topSkills);
-        setError(null);
-      } catch (err) {
-        console.error('Error cargando requerimientos:', err);
-        setError('Error al cargar los datos de requerimientos.');
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadData();
-  }, [filters]);
+  // Derive skills state from skillsData
+  const categoriasL1 = skillsData?.por_l1 || [];
+  const skillsDigitales = (() => {
+    if (!skillsData) return [];
+    const { digitales, no_digitales, total } = skillsData.digitales;
+    if (total === 0) return [];
+    return [
+      { name: 'Digitales', value: digitales, porcentaje: Math.round(digitales * 100 / total) },
+      { name: 'No digitales', value: no_digitales, porcentaje: Math.round(no_digitales * 100 / total) }
+    ];
+  })();
+  const topSkillsTotal = skillsData?.top_skills || [];
 
   if (loading) {
     return (

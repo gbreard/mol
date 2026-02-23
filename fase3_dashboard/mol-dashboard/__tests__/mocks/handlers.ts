@@ -2,6 +2,9 @@ import { http, HttpResponse } from 'msw'
 import { mockOfertas } from './fixtures/ofertas'
 import { mockInsightsRPC } from './fixtures/kpis'
 import { mockOfertasSkills } from './fixtures/skills'
+import { mockPanoramaRPC } from './fixtures/panorama'
+import { mockEvolucionRPC } from './fixtures/evolucion'
+import { mockRequerimientosRPC, mockSkillsResumenRPC, mockSidebarCountsRPC } from './fixtures/requerimientos'
 
 const SUPABASE_URL = 'https://test.supabase.co'
 
@@ -78,9 +81,34 @@ export const handlers = [
     })
   }),
 
-  // RPC: get_insights
+  // RPC: get_insights (legacy)
   http.post(`${SUPABASE_URL}/rest/v1/rpc/get_insights`, () => {
     return HttpResponse.json(mockInsightsRPC)
+  }),
+
+  // RPC: get_panorama
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_panorama`, () => {
+    return HttpResponse.json(mockPanoramaRPC)
+  }),
+
+  // RPC: get_evolucion
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_evolucion`, () => {
+    return HttpResponse.json(mockEvolucionRPC)
+  }),
+
+  // RPC: get_requerimientos
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_requerimientos`, () => {
+    return HttpResponse.json(mockRequerimientosRPC)
+  }),
+
+  // RPC: get_skills_resumen
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_skills_resumen`, () => {
+    return HttpResponse.json(mockSkillsResumenRPC)
+  }),
+
+  // RPC: get_sidebar_counts
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_sidebar_counts`, () => {
+    return HttpResponse.json(mockSidebarCountsRPC)
   }),
 
   // Auth: get current user

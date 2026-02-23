@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
+import { QueryProvider } from "@/lib/query-provider";
 
 export default async function DashboardLayout({
   children,
@@ -13,5 +14,5 @@ export default async function DashboardLayout({
     redirect("/login?next=/dashboard");
   }
 
-  return <>{children}</>;
+  return <QueryProvider>{children}</QueryProvider>;
 }

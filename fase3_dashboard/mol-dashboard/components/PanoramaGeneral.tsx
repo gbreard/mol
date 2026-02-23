@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { KPICard } from "@/components/KPICard";
 import { ChartContainer } from "@/components/ChartContainer";
 import { FileText, Briefcase, MapPin, Sparkles, TrendingUp, AlertCircle, Award, Loader2 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList, Cell } from "recharts";
-import { getKPIs, getTopOcupaciones, getEvolucionPeriodos, getOfertasPorLocalidad, getOfertasPorProvincia, PeriodoEvolucion } from "@/lib/supabase";
+import { PeriodoEvolucion } from "@/lib/supabase";
+import { usePanorama, useEvolucion, useLocalidades } from "@/hooks/use-panorama";
 import { DashboardFilters } from "@/lib/types";
 import { capitalize } from "@/lib/utils";
 
@@ -73,78 +74,45 @@ function truncateLabel(text: string, maxLen: number = 35): string {
 }
 
 export function PanoramaGeneral({ filters }: PanoramaGeneralProps) {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [kpis, setKpis] = useState<KPIData>({ totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 });
-  const [occupationData, setOccupationData] = useState<ChartData[]>([]);
-  const [jurisdictionData, setJurisdictionData] = useState<ChartData[]>([]);
-  const [evolutionData, setEvolutionData] = useState<PeriodoEvolucion[]>([]);
   const [periodoComparacion, setPeriodoComparacion] = useState<number>(13);
   const [ocupacionesLimit, setOcupacionesLimit] = useState(10);
 
-  // Carga principal: KPIs + jurisdicción
-  // Usa getKPIs (applyFilters) en vez de RPC para respetar TODOS los filtros
-  useEffect(() => {
-    async function loadData() {
-      try {
-        setLoading(true);
-        const kpisData = await getKPIs(filters);
-        setKpis(kpisData);
+  // React Query hooks — replace 3 useEffects + 5 useState
+  const { data: panorama, isLoading: loadingPanorama, error: panoramaError } = usePanorama(filters);
+  const { data: evolutionData = [] } = useEvolucion(filters, periodoComparacion);
+  const { data: localidadesData } = useLocalidades(filters);
 
-        // Jurisdicción: por localidad si hay provincia, por provincia si no
-        if (filters.provincia && filters.localidad.length === 0) {
-          const localidades = await getOfertasPorLocalidad(filters);
-          setJurisdictionData(localidades.slice(0, 10).map(l => ({
-            name: l.jurisdiccion,
-            value: l.cantidad
-          })));
-        } else if (!filters.provincia) {
-          const provincias = await getOfertasPorProvincia(filters);
-          setJurisdictionData(provincias.slice(0, 10).map(p => ({
-            name: p.jurisdiccion,
-            value: p.cantidad
-          })));
-        } else {
-          setJurisdictionData([]);
-        }
+  const loading = loadingPanorama;
+  const error = panoramaError ? 'Error al cargar los datos. Verifica la conexión con Supabase.' : null;
 
-        setError(null);
-      } catch (err) {
-        console.error('Error cargando datos:', err);
-        setError('Error al cargar los datos. Verifica la conexión con Supabase.');
-      } finally {
-        setLoading(false);
-      }
+  // Derive KPIs from panorama
+  const kpis: KPIData = panorama ? {
+    totalOfertas: panorama.kpis.total_ofertas,
+    ocupacionesDistintas: panorama.kpis.ocupaciones_distintas,
+    empresasActivas: panorama.kpis.empresas_activas,
+    provincias: panorama.kpis.provincias,
+  } : { totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 };
+
+  // Derive occupation data from panorama (sliced by limit)
+  const occupationData: ChartData[] = useMemo(() => {
+    if (!panorama) return [];
+    const limit = ocupacionesLimit === 0 ? 9999 : ocupacionesLimit;
+    return panorama.top_ocupaciones.slice(0, limit).map(o => ({
+      name: capitalize(o.ocupacion),
+      value: o.cantidad,
+    }));
+  }, [panorama, ocupacionesLimit]);
+
+  // Derive jurisdiction data: localidad if province selected, province if not
+  const jurisdictionData: ChartData[] = useMemo(() => {
+    if (filters.provincia && filters.localidad.length === 0 && localidadesData) {
+      return localidadesData.slice(0, 10).map(l => ({ name: l.jurisdiccion, value: l.cantidad }));
     }
-    loadData();
-  }, [filters]);
-
-  // Carga de evolución: se recarga con filtros Y con cambio de período
-  useEffect(() => {
-    async function loadEvolucion() {
-      try {
-        const evolucion = await getEvolucionPeriodos(filters, periodoComparacion);
-        setEvolutionData(evolucion);
-      } catch (err) {
-        console.error('Error cargando evolución:', err);
-      }
+    if (!filters.provincia && panorama) {
+      return panorama.provincias.slice(0, 10).map(p => ({ name: p.jurisdiccion, value: p.cantidad }));
     }
-    loadEvolucion();
-  }, [filters, periodoComparacion]);
-
-  // Carga de ocupaciones: se recarga con filtros Y con cambio de límite
-  useEffect(() => {
-    async function loadOcupaciones() {
-      try {
-        const limit = ocupacionesLimit === 0 ? 9999 : ocupacionesLimit;
-        const ocupaciones = await getTopOcupaciones(limit, filters);
-        setOccupationData(ocupaciones.map(o => ({ name: capitalize(o.ocupacion), value: o.cantidad })));
-      } catch (err) {
-        console.error('Error cargando ocupaciones:', err);
-      }
-    }
-    loadOcupaciones();
-  }, [filters, ocupacionesLimit]);
+    return [];
+  }, [panorama, localidadesData, filters.provincia, filters.localidad.length]);
 
   // Función para formatear los filtros aplicados como subtítulo
   const getFiltersSubtitle = (): string => {

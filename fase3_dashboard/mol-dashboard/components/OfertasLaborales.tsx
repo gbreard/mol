@@ -7,7 +7,8 @@ import { ChartDownloadButton } from "@/components/ExportButton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
-import { getOfertas, OfertaDashboard } from "@/lib/supabase";
+import { OfertaDashboard } from "@/lib/supabase";
+import { useOfertas } from "@/hooks/use-ofertas";
 import { DashboardFilters } from "@/lib/types";
 import { IssueRowButton } from "@/components/issues";
 
@@ -19,38 +20,21 @@ interface OfertasLaboralesProps {
 
 export function OfertasLaborales({ filters }: OfertasLaboralesProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [ofertas, setOfertas] = useState<OfertaDashboard[]>([]);
-  const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-
-  // Calcular totales de paginación
-  const totalPages = Math.ceil(total / PAGE_SIZE);
-  const offset = (currentPage - 1) * PAGE_SIZE;
 
   // Reset a página 1 cuando cambian los filtros
   useEffect(() => {
     setCurrentPage(1);
   }, [filters]);
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        setLoading(true);
-        const { ofertas: data, total: count } = await getOfertas(PAGE_SIZE, offset, filters);
-        setOfertas(data);
-        setTotal(count);
-        setError(null);
-      } catch (err) {
-        console.error('Error cargando ofertas:', err);
-        setError('Error al cargar las ofertas.');
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadData();
-  }, [filters, currentPage, offset]);
+  // React Query hook — replaces useEffect + 4 useState
+  const { data, isLoading: loading, error: queryError } = useOfertas(currentPage, filters);
+  const ofertas = data?.ofertas || [];
+  const total = data?.total || 0;
+  const error = queryError ? 'Error al cargar las ofertas.' : null;
+
+  // Calcular totales de paginación
+  const totalPages = Math.ceil(total / PAGE_SIZE);
 
   const filteredOfertas = ofertas.filter(oferta => {
     if (!searchTerm.trim()) return true;

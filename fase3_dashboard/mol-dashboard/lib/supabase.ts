@@ -81,6 +81,54 @@ function parseSkillsList(skills: string | null): string[] {
   return skills.split(/[;,]\s*/).map(s => s.trim()).filter(Boolean)
 }
 
+// ============================================
+// FILTER BUILDER — convierte DashboardFilters a JSONB para RPCs
+// ============================================
+
+export function buildRPCFilters(filters?: DashboardFilters): Record<string, unknown> {
+  if (!filters) return {}
+  const f: Record<string, unknown> = {}
+
+  if (filters.provincia && provinciaMap[filters.provincia]) {
+    f.provincia = provinciaMap[filters.provincia]
+  }
+  if (filters.fechaDesde) {
+    f.fecha_desde = filters.fechaDesde.toISOString().split('T')[0]
+  }
+  if (filters.fechaHasta) {
+    f.fecha_hasta = filters.fechaHasta.toISOString().split('T')[0]
+  }
+  if (filters.localidad?.length > 0) {
+    f.localidad = filters.localidad
+  }
+  if (filters.seniority?.length > 0) {
+    f.seniority = filters.seniority
+  }
+  if (filters.modalidad?.length > 0) {
+    f.modalidad = filters.modalidad
+  }
+  if (filters.sector?.length > 0) {
+    f.sector = filters.sector
+  }
+  if (filters.ocupacionesSeleccionadas?.length > 0) {
+    f.ocupaciones = filters.ocupacionesSeleccionadas
+  }
+  if (filters.permanencia?.length > 0) {
+    f.permanencia = filters.permanencia
+  }
+  if (filters.nivelEducativo?.length > 0) {
+    f.nivel_educativo = filters.nivelEducativo
+  }
+  if (filters.experiencia) {
+    f.experiencia = filters.experiencia
+  }
+  if (filters.jornada) {
+    f.jornada = filters.jornada
+  }
+
+  return f
+}
+
 // Helper para aplicar filtros a una query
 function applyFilters(query: any, filters?: DashboardFilters) {
   if (!filters) return query
@@ -295,116 +343,60 @@ export async function getOfertasPorProvinciaOptimized(filters?: DashboardFilters
 // FUNCIONES LEGACY (mantener por compatibilidad)
 // ============================================
 
-// Funciones para obtener datos del dashboard
-// @deprecated - Usar getKPIsOptimized para mejor performance
-export async function getKPIs(filters?: DashboardFilters) {
+// ============================================
+// PANORAMA — single RPC replaces 4 legacy functions
+// ============================================
+
+export interface PanoramaData {
+  kpis: { total_ofertas: number; ocupaciones_distintas: number; empresas_activas: number; provincias: number }
+  top_ocupaciones: { isco_code: string; ocupacion: string; cantidad: number }[]
+  provincias: { jurisdiccion: string; cantidad: number; porcentaje: number }[]
+  modalidad: { modalidad: string; cantidad: number }[]
+}
+
+export async function getPanoramaData(filters?: DashboardFilters): Promise<PanoramaData> {
   const client = getSupabaseClient()
-  if (!client) return { totalOfertas: 0, ocupacionesDistintas: 0, empresasActivas: 0, provincias: 0 }
+  if (!client) return {
+    kpis: { total_ofertas: 0, ocupaciones_distintas: 0, empresas_activas: 0, provincias: 0 },
+    top_ocupaciones: [], provincias: [], modalidad: []
+  }
 
-  // 1. Obtener total de ofertas usando count (sin límite de 1000)
-  let countQuery = client
-    .from(TABLA_OFERTAS)
-    .select('id_oferta', { count: 'exact', head: true })
-  countQuery = applyFilters(countQuery, filters)
-  const { count: totalOfertas, error: countError } = await countQuery
-  if (countError) throw countError
+  const { data, error } = await client.rpc('get_panorama', { p_filters: buildRPCFilters(filters) })
+  if (error) {
+    console.error('Error en get_panorama RPC:', error)
+    return {
+      kpis: { total_ofertas: 0, ocupaciones_distintas: 0, empresas_activas: 0, provincias: 0 },
+      top_ocupaciones: [], provincias: [], modalidad: []
+    }
+  }
 
-  // 2. Obtener datos únicos para las demás métricas con paginación
-  const ofertas = await fetchAllPaginated<{ isco_code: string; empresa: string; provincia: string }>(
-    client,
-    TABLA_OFERTAS,
-    'isco_code, empresa, provincia',
-    (query) => applyFilters(query, filters)
-  )
+  return data as PanoramaData
+}
 
+// Backward-compatible wrapper
+export async function getKPIs(filters?: DashboardFilters) {
+  const panorama = await getPanoramaData(filters)
   return {
-    totalOfertas: totalOfertas || 0,
-    ocupacionesDistintas: new Set(ofertas.map(o => o.isco_code).filter(Boolean)).size,
-    empresasActivas: new Set(ofertas.map(o => o.empresa).filter(Boolean)).size,
-    provincias: new Set(ofertas.map(o => o.provincia).filter(Boolean)).size,
+    totalOfertas: panorama.kpis.total_ofertas,
+    ocupacionesDistintas: panorama.kpis.ocupaciones_distintas,
+    empresasActivas: panorama.kpis.empresas_activas,
+    provincias: panorama.kpis.provincias,
   }
 }
 
 export async function getOfertasPorProvincia(filters?: DashboardFilters) {
-  const client = getSupabaseClient()
-  if (!client) return []
-
-  // Usar paginación con TODOS los filtros aplicados
-  const data = await fetchAllPaginated<{ provincia: string }>(
-    client,
-    TABLA_OFERTAS,
-    'provincia',
-    (query) => applyFilters(query, filters)
-  )
-
-  const counts: Record<string, number> = {}
-  data.forEach(o => {
-    const prov = o.provincia || 'No especificado'
-    counts[prov] = (counts[prov] || 0) + 1
-  })
-
-  const total = data.length || 1
-  return Object.entries(counts)
-    .map(([jurisdiccion, cantidad]) => ({
-      jurisdiccion,
-      cantidad,
-      porcentaje: Math.round(cantidad * 1000 / total) / 10
-    }))
-    .sort((a, b) => b.cantidad - a.cantidad)
+  const panorama = await getPanoramaData(filters)
+  return panorama.provincias
 }
 
 export async function getTopOcupaciones(limit = 10, filters?: DashboardFilters) {
-  const client = getSupabaseClient()
-  if (!client) return []
-
-  // Usar paginación para obtener TODOS los datos
-  const data = await fetchAllPaginated<{ isco_code: string; isco_label: string }>(
-    client,
-    TABLA_OFERTAS,
-    'isco_code, isco_label',
-    (query) => applyFilters(query, filters)
-  )
-
-  const counts: Record<string, { label: string, count: number }> = {}
-  data.forEach(o => {
-    if (o.isco_code && o.isco_label) {
-      if (!counts[o.isco_code]) {
-        counts[o.isco_code] = { label: o.isco_label, count: 0 }
-      }
-      counts[o.isco_code].count++
-    }
-  })
-
-  return Object.entries(counts)
-    .map(([code, { label, count }]) => ({
-      ocupacion: label,
-      cantidad: count
-    }))
-    .sort((a, b) => b.cantidad - a.cantidad)
-    .slice(0, limit)
+  const panorama = await getPanoramaData(filters)
+  return panorama.top_ocupaciones.slice(0, limit)
 }
 
 export async function getOfertasPorModalidad(filters?: DashboardFilters) {
-  const client = getSupabaseClient()
-  if (!client) return []
-
-  // Usar paginación para obtener TODOS los datos
-  const data = await fetchAllPaginated<{ modalidad: string }>(
-    client,
-    TABLA_OFERTAS,
-    'modalidad',
-    (query) => applyFilters(query, filters)
-  )
-
-  const counts: Record<string, number> = {}
-  data.forEach(o => {
-    const mod = o.modalidad || 'No especificado'
-    counts[mod] = (counts[mod] || 0) + 1
-  })
-
-  return Object.entries(counts)
-    .map(([modalidad, cantidad]) => ({ modalidad, cantidad }))
-    .sort((a, b) => b.cantidad - a.cantidad)
+  const panorama = await getPanoramaData(filters)
+  return panorama.modalidad
 }
 
 export async function getOfertas(limit = 50, offset = 0, filters?: DashboardFilters) {
@@ -472,75 +464,25 @@ export async function getOfertas(limit = 50, offset = 0, filters?: DashboardFilt
   return { ofertas, total: count || 0 }
 }
 
-// Funciones para obtener skills (para Requerimientos)
+// Backward-compatible: top skills técnicas (uses skills resumen RPC)
 export async function getTopSkillsTecnicas(limit = 20, filters?: DashboardFilters) {
-  const client = getSupabaseClient()
-  if (!client) return []
-
-  // Usar paginación para obtener TODOS los datos
-  const data = await fetchAllPaginated<{ skills_tecnicas: string }>(
-    client,
-    TABLA_OFERTAS,
-    'skills_tecnicas',
-    (query) => applyFilters(query, filters)
-  )
-
-  const counts: Record<string, number> = {}
-  data.forEach(o => {
-    const skills = parseSkillsList(o.skills_tecnicas)
-    skills.forEach((skill: string) => {
-      counts[skill] = (counts[skill] || 0) + 1
-    })
-  })
-
-  return Object.entries(counts)
-    .map(([name, value]) => ({ name, value }))
-    .sort((a, b) => b.value - a.value)
-    .slice(0, limit)
+  const resumen = await getSkillsResumen(filters)
+  return resumen.top_skills.slice(0, limit).map(s => ({ name: s.name, value: s.value }))
 }
 
-export async function getTopSoftSkills(limit = 20, filters?: DashboardFilters) {
-  const client = getSupabaseClient()
-  if (!client) return []
-
-  // Usar paginación para obtener TODOS los datos
-  const data = await fetchAllPaginated<{ soft_skills: string }>(
-    client,
-    TABLA_OFERTAS,
-    'soft_skills',
-    (query) => applyFilters(query, filters)
-  )
-
-  const counts: Record<string, number> = {}
-  data.forEach(o => {
-    const skills = parseSkillsList(o.soft_skills)
-    skills.forEach((skill: string) => {
-      counts[skill] = (counts[skill] || 0) + 1
-    })
-  })
-
-  return Object.entries(counts)
-    .map(([name, value]) => ({ name, value }))
-    .sort((a, b) => b.value - a.value)
-    .slice(0, limit)
+// getTopSoftSkills — legacy, kept for backward compat
+export async function getTopSoftSkills(limit = 20, _filters?: DashboardFilters) {
+  // Soft skills are not in ofertas_skills table, return empty
+  // This was always a text-parsing function with limited utility
+  return [] as { name: string; value: number }[]
 }
 
 // ========== FUNCIONES PARA SIDEBAR ==========
 
-// Total de ofertas con filtros aplicados
+// Total de ofertas — via panorama RPC
 export async function getTotalOfertas(filters?: DashboardFilters): Promise<number> {
-  const client = getSupabaseClient()
-  if (!client) return 0
-
-  let query = client
-    .from(TABLA_OFERTAS)
-    .select('id_oferta', { count: 'exact', head: true })
-
-  query = applyFilters(query, filters)
-
-  const { count, error } = await query
-  if (error) throw error
-  return count || 0
+  const panorama = await getPanoramaData(filters)
+  return panorama.kpis.total_ofertas
 }
 
 // Evolución semanal de ofertas (últimas N semanas)
@@ -559,53 +501,14 @@ export interface PeriodoEvolucion {
   esPeriodoActual: boolean
 }
 
+// getEvolucionSemanal — deprecated, use getEvolucionPeriodos instead
 export async function getEvolucionSemanal(filters?: DashboardFilters): Promise<EvolucionSemanal[]> {
-  const client = getSupabaseClient()
-  if (!client) return []
-
-  const data = await fetchAllPaginated<{ fecha_publicacion: string }>(
-    client,
-    TABLA_OFERTAS,
-    'fecha_publicacion',
-    (query) => {
-      query = applyFilters(query, filters)
-      return query.not('fecha_publicacion', 'is', null)
-    }
-  )
-
-  // Agrupar por semana (lunes a domingo)
-  const weekCounts: Record<string, number> = {}
-
-  data.forEach(o => {
-    if (!o.fecha_publicacion) return
-    const date = new Date(o.fecha_publicacion)
-    // Obtener lunes de esa semana
-    const day = date.getDay()
-    const diff = day === 0 ? -6 : 1 - day  // lunes = 1
-    const monday = new Date(date)
-    monday.setDate(date.getDate() + diff)
-    const key = monday.toISOString().split('T')[0]
-    weekCounts[key] = (weekCounts[key] || 0) + 1
-  })
-
-  // Ordenar por fecha — TODAS las semanas (sin limit)
-  const sorted = Object.entries(weekCounts)
-    .sort((a, b) => a[0].localeCompare(b[0]))
-
-  // Formatear labels "dd/MM - dd/MM"
-  return sorted.map(([mondayStr, count]) => {
-    const monday = new Date(mondayStr + 'T00:00:00')
-    const sunday = new Date(monday)
-    sunday.setDate(monday.getDate() + 6)
-
-    const fmt = (d: Date) => `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`
-
-    return {
-      label: `${fmt(monday)} - ${fmt(sunday)}`,
-      ofertas: count,
-      weekStart: mondayStr
-    }
-  })
+  const periodos = await getEvolucionPeriodos(filters, 0)
+  return periodos.map(p => ({
+    label: p.label,
+    ofertas: p.ofertas,
+    weekStart: p.fechaDesde,
+  }))
 }
 
 // Helper: aplicar todos los filtros EXCEPTO fechas
@@ -665,150 +568,46 @@ function applyFiltersWithoutDates(query: any, filters?: DashboardFilters) {
 }
 
 /**
- * Evolución por períodos comparativos.
- * Si hay filtro de fecha: genera N períodos hacia atrás de la misma duración.
- * Si no hay filtro: agrupa por semana y muestra las últimas N semanas.
- * Eficiente: una sola query a Supabase, agrupación client-side.
+ * Evolución por períodos — ahora via RPC get_evolucion
  */
 export async function getEvolucionPeriodos(
   filters?: DashboardFilters,
-  cantidadPeriodos: number = 13  // 5, 13, o 0=todo
+  cantidadPeriodos: number = 13
 ): Promise<PeriodoEvolucion[]> {
   const client = getSupabaseClient()
   if (!client) return []
 
-  const fmt = (d: Date) =>
-    `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`
+  const { data, error } = await client.rpc('get_evolucion', {
+    p_filters: buildRPCFilters(filters),
+    p_periodos: cantidadPeriodos || 52
+  })
 
-  const hasFechaDesde = filters?.fechaDesde != null
-  const hasFechaHasta = filters?.fechaHasta != null
-
-  // Determinar el período actual del usuario
-  const ahora = new Date()
-  const fechaHasta = hasFechaHasta ? new Date(filters!.fechaHasta!) : ahora
-  const fechaDesde = hasFechaDesde
-    ? new Date(filters!.fechaDesde!)
-    : null
-
-  // --- Caso 1: CON filtro de fecha → períodos de misma duración ---
-  if (fechaDesde) {
-    const duracionMs = fechaHasta.getTime() - fechaDesde.getTime()
-    const duracionDias = Math.max(1, Math.round(duracionMs / (1000 * 60 * 60 * 24)))
-
-    // Generar rangos de períodos hacia atrás
-    const periodos: { desde: Date; hasta: Date; esActual: boolean }[] = []
-
-    // Determinar cuántos períodos generar
-    // Si cantidadPeriodos=0 (Todo), query sin límite de fecha para saber cuántos caben
-    const maxPeriodos = cantidadPeriodos > 0 ? cantidadPeriodos : 52 // max ~1 año
-
-    for (let i = 0; i < maxPeriodos; i++) {
-      const hasta = new Date(fechaHasta.getTime() - i * duracionDias * 24 * 60 * 60 * 1000)
-      const desde = new Date(hasta.getTime() - duracionMs)
-      periodos.unshift({ desde, hasta, esActual: i === 0 })
-    }
-
-    // Query: traer TODAS las fechas con filtros aplicados (sin fecha)
-    // Limitar al rango total de todos los períodos
-    const rangoDesde = periodos[0].desde.toISOString().split('T')[0]
-    const rangoHasta = periodos[periodos.length - 1].hasta.toISOString().split('T')[0]
-
-    const data = await fetchAllPaginated<{ fecha_publicacion: string }>(
-      client,
-      TABLA_OFERTAS,
-      'fecha_publicacion',
-      (query) => {
-        query = applyFiltersWithoutDates(query, filters)
-        query = query.not('fecha_publicacion', 'is', null)
-        query = query.gte('fecha_publicacion', rangoDesde)
-        query = query.lte('fecha_publicacion', rangoHasta)
-        return query
-      }
-    )
-
-    // Contar por período
-    const resultado: PeriodoEvolucion[] = periodos.map(p => {
-      const desdeStr = p.desde.toISOString().split('T')[0]
-      const hastaStr = p.hasta.toISOString().split('T')[0]
-      const count = data.filter(d => d.fecha_publicacion >= desdeStr && d.fecha_publicacion <= hastaStr).length
-
-      // Auto-detectar label según duración
-      let label: string
-      if (duracionDias <= 7) {
-        label = `Sem ${fmt(p.desde)}`
-      } else if (duracionDias <= 31) {
-        const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
-        // Si el período cabe en un mes, usar nombre del mes
-        if (p.desde.getMonth() === p.hasta.getMonth()) {
-          label = `${meses[p.desde.getMonth()]} ${p.desde.getFullYear()}`
-        } else {
-          label = `${fmt(p.desde)} - ${fmt(p.hasta)}`
-        }
-      } else {
-        label = `${fmt(p.desde)} - ${fmt(p.hasta)}`
-      }
-
-      return {
-        label,
-        ofertas: count,
-        fechaDesde: desdeStr,
-        fechaHasta: hastaStr,
-        esPeriodoActual: p.esActual,
-      }
-    })
-
-    // Si "Todo", filtrar períodos sin ofertas al inicio
-    if (cantidadPeriodos === 0) {
-      const primerConOfertas = resultado.findIndex(p => p.ofertas > 0)
-      return primerConOfertas > 0 ? resultado.slice(primerConOfertas) : resultado
-    }
-
-    return resultado
+  if (error) {
+    console.error('Error en get_evolucion RPC:', error)
+    return []
   }
 
-  // --- Caso 2: SIN filtro de fecha → agrupar por semana ---
-  const data = await fetchAllPaginated<{ fecha_publicacion: string }>(
-    client,
-    TABLA_OFERTAS,
-    'fecha_publicacion',
-    (query) => {
-      query = applyFiltersWithoutDates(query, filters)
-      return query.not('fecha_publicacion', 'is', null)
-    }
-  )
+  const rpcData = data as { periodos: Array<{
+    fecha_desde: string; fecha_hasta: string; ofertas: number;
+    es_periodo_actual: boolean; label: string
+  }>; modo: string }
 
-  // Agrupar por semana (lunes a domingo)
-  const weekCounts: Record<string, number> = {}
-  data.forEach(o => {
-    if (!o.fecha_publicacion) return
-    const date = new Date(o.fecha_publicacion)
-    const day = date.getDay()
-    const diff = day === 0 ? -6 : 1 - day
-    const monday = new Date(date)
-    monday.setDate(date.getDate() + diff)
-    const key = monday.toISOString().split('T')[0]
-    weekCounts[key] = (weekCounts[key] || 0) + 1
-  })
+  // Map RPC response to PeriodoEvolucion format
+  const result = (rpcData?.periodos || []).map(p => ({
+    label: p.label,
+    ofertas: p.ofertas,
+    fechaDesde: p.fecha_desde,
+    fechaHasta: p.fecha_hasta,
+    esPeriodoActual: p.es_periodo_actual,
+  }))
 
-  const sorted = Object.entries(weekCounts)
-    .sort((a, b) => a[0].localeCompare(b[0]))
+  // If "Todo" (cantidadPeriodos=0), filter out empty leading periods
+  if (cantidadPeriodos === 0) {
+    const first = result.findIndex(p => p.ofertas > 0)
+    return first > 0 ? result.slice(first) : result
+  }
 
-  // Tomar últimas N semanas (o todas si cantidadPeriodos=0)
-  const weeks = cantidadPeriodos > 0 ? sorted.slice(-cantidadPeriodos) : sorted
-
-  return weeks.map(([mondayStr, count], idx) => {
-    const monday = new Date(mondayStr + 'T00:00:00')
-    const sunday = new Date(monday)
-    sunday.setDate(monday.getDate() + 6)
-
-    return {
-      label: `${fmt(monday)} - ${fmt(sunday)}`,
-      ofertas: count,
-      fechaDesde: mondayStr,
-      fechaHasta: sunday.toISOString().split('T')[0],
-      esPeriodoActual: idx === weeks.length - 1,
-    }
-  })
+  return result
 }
 
 // Distribución de ofertas por localidad (para una provincia específica)
@@ -951,49 +750,37 @@ export interface SectorCount {
   count: number
 }
 
-export async function getSectores(filters?: DashboardFilters): Promise<SectorCount[]> {
+// ============================================
+// SIDEBAR COUNTS — single RPC replaces getSectores + getOcupacionesTree
+// ============================================
+
+export interface SidebarCountsData {
+  total_ofertas: number
+  sectores: SectorCount[]
+  ocupaciones_tree: Array<{
+    major_group: string; count: number;
+    children: Array<{ id: string; label: string; count: number }>
+  }>
+}
+
+export async function getSidebarCounts(filters?: DashboardFilters): Promise<SidebarCountsData> {
   const client = getSupabaseClient()
-  if (!client) return []
+  if (!client) return { total_ofertas: 0, sectores: [], ocupaciones_tree: [] }
 
-  const data = await fetchAllPaginated<{ clae_descripcion_seccion: string | null }>(
-    client,
-    TABLA_OFERTAS,
-    'clae_descripcion_seccion',
-    (query) => {
-      query = query.not('clae_descripcion_seccion', 'is', null)
-      if (filters) {
-        if (filters.provincia && provinciaMap[filters.provincia]) {
-          query = query.eq('provincia', provinciaMap[filters.provincia])
-        }
-        if (filters.localidad?.length > 0) {
-          query = query.in('localidad', filters.localidad)
-        }
-        if (filters.fechaDesde) {
-          query = query.gte('fecha_publicacion', filters.fechaDesde.toISOString().split('T')[0])
-        }
-        if (filters.fechaHasta) {
-          query = query.lte('fecha_publicacion', filters.fechaHasta.toISOString().split('T')[0])
-        }
-        if (filters.ocupacionesSeleccionadas?.length > 0) {
-          query = query.in('isco_code', filters.ocupacionesSeleccionadas)
-        }
-        if (filters.permanencia?.length > 0) {
-          query = query.in('categoria_permanencia', filters.permanencia)
-        }
-      }
-      return query
-    }
-  )
+  const { data, error } = await client.rpc('get_sidebar_counts', { p_filters: buildRPCFilters(filters) })
 
-  const counts: Record<string, number> = {}
-  data.forEach(d => {
-    if (!d.clae_descripcion_seccion) return
-    counts[d.clae_descripcion_seccion] = (counts[d.clae_descripcion_seccion] || 0) + 1
-  })
+  if (error) {
+    console.error('Error en get_sidebar_counts RPC:', error)
+    return { total_ofertas: 0, sectores: [], ocupaciones_tree: [] }
+  }
 
-  return Object.entries(counts)
-    .map(([sector, count]) => ({ sector, count }))
-    .sort((a, b) => b.count - a.count)
+  return data as SidebarCountsData
+}
+
+// Backward-compatible wrapper
+export async function getSectores(filters?: DashboardFilters): Promise<SectorCount[]> {
+  const sidebar = await getSidebarCounts(filters)
+  return sidebar.sectores
 }
 
 // Árbol de ocupaciones ISCO para el Sidebar (agrupadas por primer dígito)
@@ -1018,55 +805,19 @@ export interface OcupacionTreeNode {
 }
 
 export async function getOcupacionesTree(filters?: DashboardFilters): Promise<OcupacionTreeNode[]> {
-  const client = getSupabaseClient()
-  if (!client) return []
+  const sidebar = await getSidebarCounts(filters)
 
-  // Usar paginación para obtener TODOS los datos (Supabase limita a 1000 por query)
-  const data = await fetchAllPaginated<{ isco_code: string; isco_label: string }>(
-    client,
-    TABLA_OFERTAS,
-    'isco_code, isco_label',
-    (query) => applyFilters(query, filters)
-  )
-
-  // Agrupar por código ISCO de 4 dígitos
-  const detailCounts: Record<string, { label: string; count: number }> = {}
-  data.forEach(o => {
-    if (o.isco_code && o.isco_label) {
-      if (!detailCounts[o.isco_code]) {
-        detailCounts[o.isco_code] = { label: o.isco_label, count: 0 }
-      }
-      detailCounts[o.isco_code].count++
-    }
-  })
-
-  // Agrupar en major groups (primer dígito)
-  const groups: Record<string, { children: Record<string, { label: string; count: number }>, totalCount: number }> = {}
-
-  Object.entries(detailCounts).forEach(([code, { label, count }]) => {
-    const majorDigit = code.charAt(0)
-    if (!groups[majorDigit]) {
-      groups[majorDigit] = { children: {}, totalCount: 0 }
-    }
-    groups[majorDigit].children[code] = { label, count }
-    groups[majorDigit].totalCount += count
-  })
-
-  // Convertir a formato de árbol, ordenado por count descendente
-  return Object.entries(groups)
-    .map(([digit, { children, totalCount }]) => ({
-      id: `isco-${digit}`,
-      label: ISCO_MAJOR_GROUPS[digit] || `Grupo ${digit}`,
-      count: totalCount,
-      children: Object.entries(children)
-        .map(([code, { label, count }]) => ({
-          id: code,
-          label,
-          count,
-        }))
-        .sort((a, b) => b.count - a.count)
+  // Map RPC response to OcupacionTreeNode format
+  return (sidebar.ocupaciones_tree || []).map(g => ({
+    id: `isco-${g.major_group}`,
+    label: ISCO_MAJOR_GROUPS[g.major_group] || `Grupo ${g.major_group}`,
+    count: g.count,
+    children: (g.children || []).map(c => ({
+      id: c.id,
+      label: c.label,
+      count: c.count,
     }))
-    .sort((a, b) => b.count - a.count)
+  }))
 }
 
 // Filtros locales para el tab de requerimientos
@@ -1075,128 +826,40 @@ export interface RequerimientosFilters {
   modalidad?: string;
 }
 
-// Funciones para obtener distribuciones de requerimientos
-export async function getDistribucionRequerimientos(filters?: DashboardFilters, localFilters?: RequerimientosFilters) {
+// Funciones para obtener distribuciones de requerimientos — via RPC
+export async function getDistribucionRequerimientos(filters?: DashboardFilters, _localFilters?: RequerimientosFilters) {
   const client = getSupabaseClient()
   if (!client) return { total: 0, educacion: [], experiencia: [], seniority: [], modalidad: [], genteCargo: [], jornada: [] }
 
-  // Usar paginación para obtener TODOS los datos
-  const ofertas = await fetchAllPaginated<{
-    nivel_educativo: string | null;
-    experiencia_min_anios: number | null;
-    nivel_seniority: string | null;
-    modalidad: string | null;
-    tiene_gente_cargo: boolean | null;
-    jornada_laboral: string | null;
-  }>(
-    client,
-    TABLA_OFERTAS,
-    'nivel_educativo, experiencia_min_anios, nivel_seniority, modalidad, tiene_gente_cargo, jornada_laboral',
-    (query) => {
-      query = applyFilters(query, filters)
-      // Aplicar filtros locales
-      if (localFilters?.educacion && localFilters.educacion !== 'Todos') {
-        query = query.eq('nivel_educativo', localFilters.educacion)
-      }
-      if (localFilters?.modalidad && localFilters.modalidad !== 'Todos') {
-        query = query.eq('modalidad', localFilters.modalidad)
-      }
-      return query
-    }
-  )
-  const total = ofertas.length
+  const { data, error } = await client.rpc('get_requerimientos', { p_filters: buildRPCFilters(filters) })
 
-  // Nivel educativo
-  const educacionCounts: Record<string, number> = {}
-  ofertas.forEach(o => {
-    const nivel = o.nivel_educativo || 'Sin especificar'
-    educacionCounts[nivel] = (educacionCounts[nivel] || 0) + 1
-  })
-
-  // Experiencia (agrupada en rangos)
-  const experienciaCounts: Record<string, number> = {
-    'Sin experiencia': 0,
-    '1-2 años': 0,
-    '3-4 años': 0,
-    '5+ años': 0,
-    'Sin especificar': 0
+  if (error) {
+    console.error('Error en get_requerimientos RPC:', error)
+    return { total: 0, educacion: [], experiencia: [], seniority: [], modalidad: [], genteCargo: [], jornada: [] }
   }
-  ofertas.forEach(o => {
-    const exp = o.experiencia_min_anios
-    if (exp === null || exp === undefined) {
-      experienciaCounts['Sin especificar']++
-    } else if (exp === 0) {
-      experienciaCounts['Sin experiencia']++
-    } else if (exp <= 2) {
-      experienciaCounts['1-2 años']++
-    } else if (exp <= 4) {
-      experienciaCounts['3-4 años']++
-    } else {
-      experienciaCounts['5+ años']++
-    }
-  })
 
-  // Seniority
-  const seniorityCounts: Record<string, number> = {}
-  ofertas.forEach(o => {
-    const nivel = o.nivel_seniority || 'Sin especificar'
-    seniorityCounts[nivel] = (seniorityCounts[nivel] || 0) + 1
-  })
-
-  // Modalidad
-  const modalidadCounts: Record<string, number> = {}
-  ofertas.forEach(o => {
-    const mod = o.modalidad || 'Sin especificar'
-    modalidadCounts[mod] = (modalidadCounts[mod] || 0) + 1
-  })
-
-  // Gente a cargo
-  const genteCargoCounts: Record<string, number> = {
-    'Con gente a cargo': 0,
-    'Sin gente a cargo': 0
+  const rpc = data as {
+    total: number
+    educacion: Array<{ name: string; value: number; porcentaje: number; sort_order: number }>
+    experiencia: Array<{ name: string; value: number; porcentaje: number; sort_order: number }>
+    seniority: Array<{ name: string; value: number; porcentaje: number; sort_order: number }>
+    modalidad: Array<{ name: string; value: number; porcentaje: number; sort_order: number }>
+    jornada: Array<{ name: string; value: number; porcentaje: number; sort_order: number }>
+    gente_cargo: Array<{ name: string; value: number; porcentaje: number }>
   }
-  ofertas.forEach(o => {
-    if (o.tiene_gente_cargo) {
-      genteCargoCounts['Con gente a cargo']++
-    } else {
-      genteCargoCounts['Sin gente a cargo']++
-    }
-  })
 
-  // Jornada laboral
-  const jornadaCounts: Record<string, number> = {}
-  ofertas.forEach(o => {
-    const jornada = o.jornada_laboral || 'Sin especificar'
-    jornadaCounts[jornada] = (jornadaCounts[jornada] || 0) + 1
-  })
-
-  // Formatear para gráficos
-  const formatDistribucion = (counts: Record<string, number>, orden?: string[]) => {
-    const entries = Object.entries(counts)
-    if (orden) {
-      entries.sort((a, b) => {
-        const idxA = orden.indexOf(a[0])
-        const idxB = orden.indexOf(b[0])
-        return (idxA === -1 ? 999 : idxA) - (idxB === -1 ? 999 : idxB)
-      })
-    } else {
-      entries.sort((a, b) => b[1] - a[1])
-    }
-    return entries.map(([name, value]) => ({
-      name,
-      value,
-      porcentaje: total > 0 ? Math.round(value * 100 / total) : 0
-    }))
-  }
+  // Strip sort_order from response (internal to SQL)
+  const strip = (arr: Array<{ name: string; value: number; porcentaje: number; sort_order?: number }>) =>
+    (arr || []).map(({ name, value, porcentaje }) => ({ name, value, porcentaje }))
 
   return {
-    total,
-    educacion: formatDistribucion(educacionCounts, ['universitario', 'terciario', 'secundario', 'primario', 'Sin especificar']),
-    experiencia: formatDistribucion(experienciaCounts, ['Sin experiencia', '1-2 años', '3-4 años', '5+ años', 'Sin especificar']),
-    seniority: formatDistribucion(seniorityCounts, ['trainee', 'junior', 'semisenior', 'senior', 'manager', 'Sin especificar']),
-    modalidad: formatDistribucion(modalidadCounts, ['presencial', 'hibrido', 'remoto', 'Sin especificar']),
-    genteCargo: formatDistribucion(genteCargoCounts),
-    jornada: formatDistribucion(jornadaCounts, ['full-time', 'part-time', 'freelance', 'Sin especificar'])
+    total: rpc.total,
+    educacion: strip(rpc.educacion),
+    experiencia: strip(rpc.experiencia),
+    seniority: strip(rpc.seniority),
+    modalidad: strip(rpc.modalidad),
+    genteCargo: strip(rpc.gente_cargo),
+    jornada: strip(rpc.jornada),
   }
 }
 
@@ -1245,83 +908,45 @@ function applyOfertaIdsFilter(query: any, ofertaIds: string[] | null) {
   return query.in('id_oferta', ofertaIds)
 }
 
-// Distribución por categoría L1
-export async function getSkillsPorCategoriaL1(skillsFilters?: SkillsFilters, globalFilters?: DashboardFilters) {
-  const client = getSupabaseClient()
-  if (!client) return []
+// ============================================
+// SKILLS RESUMEN — single RPC replaces 4 legacy functions
+// ============================================
 
-  const ofertaIds = await getFilteredOfertaIds(globalFilters)
-
-  // Usar paginación para obtener TODOS los datos
-  const data = await fetchAllPaginated<{ l1: string; l1_nombre: string; es_digital: boolean }>(
-    client,
-    'ofertas_skills',
-    'l1, l1_nombre, es_digital',
-    (query) => {
-      query = query.not('l1', 'is', null)
-      query = applyOfertaIdsFilter(query, ofertaIds)
-      // Filtro por digital
-      if (skillsFilters?.esDigital !== undefined && skillsFilters.esDigital !== null) {
-        query = query.eq('es_digital', skillsFilters.esDigital)
-      }
-      return query
-    }
-  )
-
-  const counts: Record<string, { nombre: string, count: number }> = {}
-  data.forEach(s => {
-    if (!counts[s.l1]) {
-      counts[s.l1] = { nombre: s.l1_nombre || s.l1, count: 0 }
-    }
-    counts[s.l1].count++
-  })
-
-  const total = data.length || 1
-  return Object.entries(counts)
-    .map(([code, { nombre, count }]) => ({
-      code,
-      name: nombre,
-      value: count,
-      porcentaje: Math.round(count * 100 / total)
-    }))
-    .sort((a, b) => b.value - a.value)
+export interface SkillsResumenData {
+  por_l1: Array<{ code: string; name: string; value: number; porcentaje: number }>
+  digitales: { digitales: number; no_digitales: number; total: number }
+  top_skills: Array<{ name: string; value: number; categoria: string; categoriaNombre: string; es_digital: boolean }>
 }
 
-// Skills digitales vs no digitales
-export async function getSkillsDigitales(skillsFilters?: SkillsFilters, globalFilters?: DashboardFilters) {
+export async function getSkillsResumen(globalFilters?: DashboardFilters): Promise<SkillsResumenData> {
   const client = getSupabaseClient()
-  if (!client) return []
+  if (!client) return { por_l1: [], digitales: { digitales: 0, no_digitales: 0, total: 0 }, top_skills: [] }
 
-  const ofertaIds = await getFilteredOfertaIds(globalFilters)
+  const { data, error } = await client.rpc('get_skills_resumen', { p_filters: buildRPCFilters(globalFilters) })
 
-  // Usar paginación para obtener TODOS los datos
-  const data = await fetchAllPaginated<{ es_digital: boolean; l1: string; l1_nombre: string }>(
-    client,
-    'ofertas_skills',
-    'es_digital, l1, l1_nombre',
-    (query) => {
-      query = applyOfertaIdsFilter(query, ofertaIds)
-      // Filtro por categoría
-      if (skillsFilters?.categoria && skillsFilters.categoria !== 'Todos') {
-        query = query.eq('l1_nombre', skillsFilters.categoria)
-      }
-      return query
-    }
-  )
+  if (error) {
+    console.error('Error en get_skills_resumen RPC:', error)
+    return { por_l1: [], digitales: { digitales: 0, no_digitales: 0, total: 0 }, top_skills: [] }
+  }
 
-  let digitales = 0
-  let noDigitales = 0
-  data.forEach(s => {
-    if (s.es_digital) digitales++
-    else noDigitales++
-  })
+  return data as SkillsResumenData
+}
 
-  const total = digitales + noDigitales
+// Backward-compatible: distribución por categoría L1
+export async function getSkillsPorCategoriaL1(_skillsFilters?: SkillsFilters, globalFilters?: DashboardFilters) {
+  const resumen = await getSkillsResumen(globalFilters)
+  return resumen.por_l1
+}
+
+// Backward-compatible: skills digitales vs no digitales
+export async function getSkillsDigitales(_skillsFilters?: SkillsFilters, globalFilters?: DashboardFilters) {
+  const resumen = await getSkillsResumen(globalFilters)
+  const { digitales, no_digitales, total } = resumen.digitales
   if (total === 0) return []
 
   return [
     { name: 'Digitales', value: digitales, porcentaje: Math.round(digitales * 100 / total) },
-    { name: 'No digitales', value: noDigitales, porcentaje: Math.round(noDigitales * 100 / total) }
+    { name: 'No digitales', value: no_digitales, porcentaje: Math.round(no_digitales * 100 / total) }
   ]
 }
 
@@ -1379,53 +1004,10 @@ export async function getTopSkillsPorCategoria(limit = 5, skillsFilters?: Skills
   return resultado
 }
 
-// Top N skills totales con su categoría
-export async function getTopSkillsConCategoria(limit = 10, skillsFilters?: SkillsFilters, globalFilters?: DashboardFilters) {
-  const client = getSupabaseClient()
-  if (!client) return []
-
-  const ofertaIds = await getFilteredOfertaIds(globalFilters)
-
-  // Usar paginación para obtener TODOS los datos
-  const data = await fetchAllPaginated<{ l1: string; l1_nombre: string; preferred_label: string; es_digital: boolean }>(
-    client,
-    'ofertas_skills',
-    'l1, l1_nombre, preferred_label, es_digital',
-    (query) => {
-      query = query.not('l1', 'is', null).not('preferred_label', 'is', null)
-      query = applyOfertaIdsFilter(query, ofertaIds)
-      // Filtro por categoría
-      if (skillsFilters?.categoria && skillsFilters.categoria !== 'Todos') {
-        query = query.eq('l1_nombre', skillsFilters.categoria)
-      }
-      // Filtro por digital
-      if (skillsFilters?.esDigital !== undefined && skillsFilters.esDigital !== null) {
-        query = query.eq('es_digital', skillsFilters.esDigital)
-      }
-      return query
-    }
-  )
-
-  // Contar skills y guardar su categoría
-  const skillCounts: Record<string, { count: number, l1: string, l1_nombre: string }> = {}
-
-  data.forEach(s => {
-    const skill = s.preferred_label
-    if (!skillCounts[skill]) {
-      skillCounts[skill] = { count: 0, l1: s.l1, l1_nombre: s.l1_nombre }
-    }
-    skillCounts[skill].count++
-  })
-
-  return Object.entries(skillCounts)
-    .map(([name, { count, l1, l1_nombre }]) => ({
-      name,
-      value: count,
-      categoria: l1,
-      categoriaNombre: l1_nombre
-    }))
-    .sort((a, b) => b.value - a.value)
-    .slice(0, limit)
+// Backward-compatible: top N skills totales con su categoría
+export async function getTopSkillsConCategoria(limit = 10, _skillsFilters?: SkillsFilters, globalFilters?: DashboardFilters) {
+  const resumen = await getSkillsResumen(globalFilters)
+  return resumen.top_skills.slice(0, limit)
 }
 
 // Heatmap: categorías L1 por ocupación ESCO
