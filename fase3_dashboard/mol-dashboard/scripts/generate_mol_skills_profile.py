@@ -13,12 +13,23 @@ Uso:
 
 import json
 import os
+import sys
 from datetime import datetime
+from pathlib import Path
 from supabase import create_client
 
-# Supabase credentials
-SUPABASE_URL = "https://uywzoyhjjofsvvsrrnek.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5d3pveWhqam9mc3Z2c3JybmVrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2ODQ5NDUyNiwiZXhwIjoyMDg0MDcwNTI2fQ.wSqtg8rtnbN3howe7_A0HLeEuUwtciGxo71IiKd7Nh4"
+# Load credentials from config (NEVER hardcode keys)
+_config_path = Path(__file__).resolve().parents[3] / "config" / "supabase_config.json"
+if not _config_path.exists():
+    print(f"ERROR: No se encontró {_config_path}")
+    print("Crear config/supabase_config.json con url + service_role_key")
+    sys.exit(1)
+
+with open(_config_path, 'r') as _f:
+    _config = json.load(_f)
+
+SUPABASE_URL = _config["url"]
+SUPABASE_KEY = _config["service_role_key"]
 
 
 def normalize(label: str) -> str:
