@@ -60,11 +60,11 @@ BEGIN
       ) t
     ),
     'ocupaciones_tree', (
-      SELECT COALESCE(json_agg(row_to_json(g)), '[]'::json)
+      SELECT COALESCE(json_agg(row_to_json(g) ORDER BY g.count DESC), '[]'::json)
       FROM (
         SELECT
-          SUBSTRING(isco_code FROM 1 FOR 1) as major_group,
-          COUNT(*) as count,
+          mg.major_group,
+          mg.count,
           (
             SELECT COALESCE(json_agg(row_to_json(c) ORDER BY c.count DESC), '[]'::json)
             FROM (
@@ -74,14 +74,18 @@ BEGIN
                 COUNT(*) as count
               FROM filtered f2
               WHERE f2.isco_code IS NOT NULL
-                AND SUBSTRING(f2.isco_code FROM 1 FOR 1) = SUBSTRING(f.isco_code FROM 1 FOR 1)
+                AND SUBSTRING(f2.isco_code FROM 1 FOR 1) = mg.major_group
               GROUP BY f2.isco_code, f2.isco_label
             ) c
           ) as children
-        FROM filtered f
-        WHERE isco_code IS NOT NULL
-        GROUP BY SUBSTRING(isco_code FROM 1 FOR 1)
-        ORDER BY count DESC
+        FROM (
+          SELECT
+            SUBSTRING(isco_code FROM 1 FOR 1) as major_group,
+            COUNT(*) as count
+          FROM filtered
+          WHERE isco_code IS NOT NULL
+          GROUP BY SUBSTRING(isco_code FROM 1 FOR 1)
+        ) mg
       ) g
     )
   ) INTO v_result;
