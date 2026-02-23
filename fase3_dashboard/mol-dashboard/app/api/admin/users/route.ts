@@ -62,6 +62,60 @@ export async function GET(request: NextRequest) {
   }
 }
 
+export async function PATCH(request: NextRequest) {
+  const auth = await requireAdmin(request);
+  if (isAuthError(auth)) return auth;
+
+  try {
+    const admin = getSupabaseAdmin();
+    if (!admin) {
+      return NextResponse.json({ error: 'Admin API no configurada' }, { status: 503 });
+    }
+
+    const body = await request.json();
+    const { userId, role, display_name } = body;
+
+    if (!userId) {
+      return NextResponse.json({ error: 'userId requerido' }, { status: 400 });
+    }
+
+    const validRoles = ['viewer', 'analyst', 'admin', 'super_admin'];
+    if (role && !validRoles.includes(role)) {
+      return NextResponse.json({ error: `Rol inválido. Válidos: ${validRoles.join(', ')}` }, { status: 400 });
+    }
+
+    // Build metadata update — updateUserById MERGES metadata (doesn't overwrite unset fields)
+    const metadata: Record<string, string> = {};
+    if (role) metadata.role = role;
+    if (display_name !== undefined) metadata.display_name = display_name;
+
+    if (Object.keys(metadata).length === 0) {
+      return NextResponse.json({ error: 'Nada que actualizar (enviar role y/o display_name)' }, { status: 400 });
+    }
+
+    const { data, error } = await admin.auth.admin.updateUserById(userId, {
+      user_metadata: metadata
+    });
+
+    if (error) {
+      console.error('Error actualizando usuario:', error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({
+      user: {
+        id: data.user.id,
+        email: data.user.email,
+        role: data.user.user_metadata?.role,
+        display_name: data.user.user_metadata?.display_name
+      }
+    });
+  } catch (err: any) {
+    console.error('Error en API update user:', err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}
+
 export async function POST(request: NextRequest) {
   const auth = await requireAdmin(request);
   if (isAuthError(auth)) return auth;

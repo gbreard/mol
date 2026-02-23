@@ -31,6 +31,9 @@ export default function UsuariosPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [newUser, setNewUser] = useState({ email: "", password: "", role: "viewer", display_name: "" });
   const [creating, setCreating] = useState(false);
+  const [editingUser, setEditingUser] = useState<Usuario | null>(null);
+  const [editRole, setEditRole] = useState("");
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -129,6 +132,49 @@ export default function UsuariosPage() {
       setError(err.message || 'Error al crear usuario');
     } finally {
       setCreating(false);
+    }
+  }
+
+  async function handleEditRole(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editingUser) return;
+    setSaving(true);
+    setError(null);
+
+    try {
+      const supabase = createBrowserClient();
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session?.access_token) {
+        throw new Error('No autenticado');
+      }
+
+      const response = await fetch('/api/admin/users', {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userId: editingUser.id,
+          role: editRole
+        })
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Error al actualizar usuario');
+      }
+
+      setSuccess(`Rol de ${editingUser.email} actualizado a ${editRole}`);
+      setEditingUser(null);
+      if (session?.access_token) {
+        loadUsuarios(session.access_token);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Error al actualizar usuario');
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -254,7 +300,14 @@ export default function UsuariosPage() {
                     : 'Nunca'}
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <button className="text-gray-400 hover:text-gray-600">
+                  <button
+                    className="text-gray-400 hover:text-gray-600"
+                    onClick={() => {
+                      setEditingUser(usuario);
+                      setEditRole(usuario.role);
+                    }}
+                    title="Editar usuario"
+                  >
                     <MoreVertical className="w-5 h-5" />
                   </button>
                 </td>
@@ -355,6 +408,66 @@ export default function UsuariosPage() {
                 >
                   {creating && <Loader2 className="w-4 h-4 animate-spin" />}
                   Crear Usuario
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      {/* Modal Editar Usuario */}
+      {editingUser && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">Editar Usuario</h2>
+              <button onClick={() => setEditingUser(null)} className="text-gray-400 hover:text-gray-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-3 mb-6">
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Nombre</label>
+                <p className="text-sm font-medium text-gray-900">{editingUser.display_name || "-"}</p>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Email</label>
+                <p className="text-sm text-gray-700">{editingUser.email}</p>
+              </div>
+            </div>
+
+            <form onSubmit={handleEditRole} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Rol
+                </label>
+                <select
+                  value={editRole}
+                  onChange={(e) => setEditRole(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="viewer">Visualizador</option>
+                  <option value="analyst">Analista</option>
+                  <option value="admin">Administrador</option>
+                  <option value="super_admin">Super Admin</option>
+                </select>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setEditingUser(null)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving || editRole === editingUser.role}
+                  className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+                  Guardar Cambios
                 </button>
               </div>
             </form>

@@ -32,7 +32,7 @@
 | - | `/login` | ✅ Funcional | - |
 | - | `/skills` | ✅ Funcional | 4 tabs |
 | - | `/admin` | ✅ Funcional | Estado sistema |
-| - | `/admin/usuarios` | ⚠️ Básico | Falta editar/eliminar |
+| - | `/admin/usuarios` | ⚠️ Parcial | CRUD: C+R+U (falta eliminar) |
 | - | `/admin/issues` | ✅ Funcional | - |
 | - | `/admin/skills` | ✅ Funcional | 6 tabs |
 | - | `/admin/scraping` | ⚠️ Solo lectura | No ejecuta |
@@ -46,6 +46,7 @@
 - **Visualizaciones:** Sunburst ESCO, gráficos Recharts, tablas
 - **Sistema de tabs:** Implementado en Home y Skills
 - **Autenticación:** Supabase Auth con roles
+- **AnimatedNav auth-aware:** Detecta sesión. Logueado → nombre + "Ir al Dashboard" + "Cerrar Sesión". No logueado → "Iniciar Sesión" + "Registrarse".
 - **Issues/Feedback:** FAB flotante + drawer + página admin
 
 ---
@@ -166,7 +167,7 @@ MOL Platform
 | ID | Ruta | Nivel | Estado | Wireframe |
 |----|------|-------|--------|-----------|
 | P-17 | `/admin` | U-ADMIN | ✅ Existe | [admin.md#p-17](./03_WIREFRAMES/admin.md#p-17-dashboard) |
-| P-18 | `/admin/usuarios` | U-ADMIN | ⚠️ Básico | [admin.md#p-18](./03_WIREFRAMES/admin.md#p-18-usuarios) |
+| P-18 | `/admin/usuarios` | U-ADMIN | ⚠️ Parcial (CRUD: C+R+U) | [admin.md#p-18](./03_WIREFRAMES/admin.md#p-18-usuarios) |
 | P-29 | `/admin/solicitudes` | U-ADMIN | Por crear | [admin.md#p-29](./03_WIREFRAMES/admin.md#p-29-solicitudes) |
 | P-19 | `/admin/issues` | U-ADMIN | ✅ Existe | [admin.md#p-19](./03_WIREFRAMES/admin.md#p-19-issues) |
 | P-20 | `/admin/skills` | U-ADMIN | ✅ Existe | [admin.md#p-20](./03_WIREFRAMES/admin.md#p-20-skills) |
@@ -328,3 +329,4 @@ app/
 | 2026-02-07 | 2.0 | Modelo hibrido: nivel REGISTRADO, area `/contenido`, `/solicitar-acceso`, admin `/solicitudes` y `/contenidos` (CMS). Total 30 pantallas |
 | 2026-02-08 | 2.0.1 | P-25 code review: 7 fixes aplicados (Tailwind, env vars, error handling, sidebar dup, labels, imports) |
 | 2026-02-11 | 2.1 | Filtros permanencia y tensión de demanda en sidebar, componentes P-09 (scatter plot tensión) |
+| 2026-02-23 | 2.2 | AnimatedNav auth-aware (sesión → dashboard/logout), P-18 CRUD: C+R+U (editar rol) |
