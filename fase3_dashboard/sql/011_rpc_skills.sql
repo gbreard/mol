@@ -1,22 +1,23 @@
 -- ============================================================
 -- RPC: get_skills_resumen(p_filters jsonb)
--- Reemplaza: getSkillsPorCategoriaL1, getSkillsDigitales,
---            getTopSkillsConCategoria, getTopSkillsTecnicas
--- Usa tabla ofertas_skills (join con ofertas_dashboard para filtros)
+-- v3: IF/ELSE branches — no CASE WHEN, no IN subquery
+-- Unfiltered: direct scan of ofertas_skills (~296K rows)
+-- Filtered: JOIN ofertas_skills with ofertas_dashboard
 -- ============================================================
 
 CREATE OR REPLACE FUNCTION get_skills_resumen(p_filters jsonb DEFAULT '{}')
 RETURNS json
 LANGUAGE plpgsql
-STABLE
+VOLATILE
 SECURITY DEFINER
+SET statement_timeout = '15s'
 AS $$
 DECLARE
   v_result json;
-  v_has_global_filter boolean;
+  v_has_filter boolean;
+  v_total bigint;
 BEGIN
-  -- Determinar si hay filtros globales que requieren join con ofertas_dashboard
-  v_has_global_filter := (
+  v_has_filter := (
     p_filters->>'provincia' IS NOT NULL
     OR p_filters->>'fecha_desde' IS NOT NULL
     OR p_filters->>'fecha_hasta' IS NOT NULL
@@ -31,87 +32,100 @@ BEGIN
     OR p_filters->>'jornada' IS NOT NULL
   );
 
-  WITH filtered_ofertas AS (
-    -- Solo hacer join si hay filtros globales
-    SELECT id_oferta
-    FROM ofertas_dashboard
+  IF v_has_filter THEN
+    -----------------------------------------------------------
+    -- PATH A: Con filtros — JOIN ofertas_dashboard
+    -----------------------------------------------------------
+    CREATE TEMP TABLE _skill_agg ON COMMIT DROP AS
+    SELECT
+      s.preferred_label,
+      s.l1,
+      s.l1_nombre,
+      s.es_digital,
+      COUNT(*) AS cnt
+    FROM ofertas_skills s
+    JOIN ofertas_dashboard d ON d.id_oferta = s.id_oferta
     WHERE
-      v_has_global_filter = TRUE
-      AND (p_filters->>'provincia' IS NULL OR provincia = p_filters->>'provincia')
-      AND (p_filters->>'fecha_desde' IS NULL OR fecha_publicacion >= (p_filters->>'fecha_desde')::date)
-      AND (p_filters->>'fecha_hasta' IS NULL OR fecha_publicacion <= (p_filters->>'fecha_hasta')::date)
-      AND (p_filters->'localidad' IS NULL OR localidad = ANY(ARRAY(SELECT jsonb_array_elements_text(p_filters->'localidad'))))
-      AND (p_filters->'seniority' IS NULL OR nivel_seniority = ANY(ARRAY(SELECT jsonb_array_elements_text(p_filters->'seniority'))))
-      AND (p_filters->'modalidad' IS NULL OR modalidad = ANY(ARRAY(SELECT jsonb_array_elements_text(p_filters->'modalidad'))))
-      AND (p_filters->'sector' IS NULL OR clae_descripcion_seccion = ANY(ARRAY(SELECT jsonb_array_elements_text(p_filters->'sector'))))
-      AND (p_filters->'ocupaciones' IS NULL OR isco_code = ANY(ARRAY(SELECT jsonb_array_elements_text(p_filters->'ocupaciones'))))
-      AND (p_filters->'permanencia' IS NULL OR categoria_permanencia = ANY(ARRAY(SELECT jsonb_array_elements_text(p_filters->'permanencia'))))
-      AND (p_filters->'nivel_educativo' IS NULL OR nivel_educativo = ANY(ARRAY(SELECT jsonb_array_elements_text(p_filters->'nivel_educativo'))))
+      (p_filters->>'provincia' IS NULL OR d.provincia = p_filters->>'provincia')
+      AND (p_filters->>'fecha_desde' IS NULL OR d.fecha_publicacion >= (p_filters->>'fecha_desde')::date)
+      AND (p_filters->>'fecha_hasta' IS NULL OR d.fecha_publicacion <= (p_filters->>'fecha_hasta')::date)
+      AND (p_filters->'localidad' IS NULL OR d.localidad = ANY(ARRAY(SELECT jsonb_array_elements_text(p_filters->'localidad'))))
+      AND (p_filters->'seniority' IS NULL OR d.nivel_seniority = ANY(ARRAY(SELECT jsonb_array_elements_text(p_filters->'seniority'))))
+      AND (p_filters->'modalidad' IS NULL OR d.modalidad = ANY(ARRAY(SELECT jsonb_array_elements_text(p_filters->'modalidad'))))
+      AND (p_filters->'sector' IS NULL OR d.clae_descripcion_seccion = ANY(ARRAY(SELECT jsonb_array_elements_text(p_filters->'sector'))))
+      AND (p_filters->'ocupaciones' IS NULL OR d.isco_code = ANY(ARRAY(SELECT jsonb_array_elements_text(p_filters->'ocupaciones'))))
+      AND (p_filters->'permanencia' IS NULL OR d.categoria_permanencia = ANY(ARRAY(SELECT jsonb_array_elements_text(p_filters->'permanencia'))))
+      AND (p_filters->'nivel_educativo' IS NULL OR d.nivel_educativo = ANY(ARRAY(SELECT jsonb_array_elements_text(p_filters->'nivel_educativo'))))
       AND (
         p_filters->>'experiencia' IS NULL
-        OR (p_filters->>'experiencia' = 'sin_experiencia' AND experiencia_min_anios = 0)
-        OR (p_filters->>'experiencia' = '1_2_anios' AND experiencia_min_anios BETWEEN 1 AND 2)
-        OR (p_filters->>'experiencia' = '3_5_anios' AND experiencia_min_anios BETWEEN 3 AND 5)
-        OR (p_filters->>'experiencia' = '5_mas' AND experiencia_min_anios > 5)
+        OR (p_filters->>'experiencia' = 'sin_experiencia' AND d.experiencia_min_anios = 0)
+        OR (p_filters->>'experiencia' = '1_2_anios' AND d.experiencia_min_anios BETWEEN 1 AND 2)
+        OR (p_filters->>'experiencia' = '3_5_anios' AND d.experiencia_min_anios BETWEEN 3 AND 5)
+        OR (p_filters->>'experiencia' = '5_mas' AND d.experiencia_min_anios > 5)
       )
       AND (
         p_filters->>'jornada' IS NULL
-        OR jornada_laboral = CASE p_filters->>'jornada'
+        OR d.jornada_laboral = CASE p_filters->>'jornada'
           WHEN 'full_time' THEN 'full-time'
           WHEN 'part_time' THEN 'part-time'
           WHEN 'por_horas' THEN 'por horas'
           ELSE p_filters->>'jornada'
         END
       )
-  ),
-  filtered_skills AS (
-    SELECT s.*
-    FROM ofertas_skills s
-    WHERE
-      CASE
-        WHEN v_has_global_filter THEN s.id_oferta IN (SELECT id_oferta FROM filtered_ofertas)
-        ELSE TRUE
-      END
-  ),
-  total_skills AS (
-    SELECT COUNT(*) AS total FROM filtered_skills
-  )
+    GROUP BY s.preferred_label, s.l1, s.l1_nombre, s.es_digital;
+
+  ELSE
+    -----------------------------------------------------------
+    -- PATH B: Sin filtros — scan directo de ofertas_skills
+    -----------------------------------------------------------
+    CREATE TEMP TABLE _skill_agg ON COMMIT DROP AS
+    SELECT
+      preferred_label,
+      l1,
+      l1_nombre,
+      es_digital,
+      COUNT(*) AS cnt
+    FROM ofertas_skills
+    GROUP BY preferred_label, l1, l1_nombre, es_digital;
+
+  END IF;
+
+  -- Total (de la tabla pre-agregada, ~5K filas)
+  SELECT COALESCE(SUM(cnt), 0) INTO v_total FROM _skill_agg;
+
+  -- Construir JSON de la tabla chica
   SELECT json_build_object(
     'por_l1', (
-      SELECT COALESCE(json_agg(row_to_json(t)), '[]'::json)
+      SELECT COALESCE(json_agg(row_to_json(t) ORDER BY t.value DESC), '[]'::json)
       FROM (
         SELECT
-          l1 as code,
-          COALESCE(l1_nombre, l1) as name,
-          COUNT(*) as value,
-          ROUND(COUNT(*)::numeric / GREATEST((SELECT total FROM total_skills), 1) * 100) as porcentaje
-        FROM filtered_skills
+          l1 AS code,
+          COALESCE(l1_nombre, l1) AS name,
+          SUM(cnt)::bigint AS value,
+          ROUND(SUM(cnt)::numeric / GREATEST(v_total, 1) * 100) AS porcentaje
+        FROM _skill_agg
         WHERE l1 IS NOT NULL
         GROUP BY l1, l1_nombre
-        ORDER BY value DESC
       ) t
     ),
-    'digitales', (
-      SELECT json_build_object(
-        'digitales', COUNT(*) FILTER (WHERE es_digital = TRUE),
-        'no_digitales', COUNT(*) FILTER (WHERE es_digital = FALSE),
-        'total', COUNT(*)
-      )
-      FROM filtered_skills
+    'digitales', json_build_object(
+      'digitales', COALESCE((SELECT SUM(cnt) FROM _skill_agg WHERE es_digital = TRUE), 0),
+      'no_digitales', COALESCE((SELECT SUM(cnt) FROM _skill_agg WHERE es_digital = FALSE), 0),
+      'total', v_total
     ),
     'top_skills', (
-      SELECT COALESCE(json_agg(row_to_json(t)), '[]'::json)
+      SELECT COALESCE(json_agg(row_to_json(t) ORDER BY t.value DESC), '[]'::json)
       FROM (
         SELECT
-          preferred_label as name,
-          COUNT(*) as value,
-          l1 as categoria,
-          COALESCE(l1_nombre, l1) as "categoriaNombre",
-          BOOL_OR(es_digital) as es_digital
-        FROM filtered_skills
+          preferred_label AS name,
+          SUM(cnt)::bigint AS value,
+          l1 AS categoria,
+          COALESCE(l1_nombre, l1) AS "categoriaNombre",
+          BOOL_OR(es_digital) AS es_digital
+        FROM _skill_agg
         WHERE preferred_label IS NOT NULL AND l1 IS NOT NULL
         GROUP BY preferred_label, l1, l1_nombre
-        ORDER BY value DESC
+        ORDER BY SUM(cnt) DESC
         LIMIT 100
       ) t
     )
