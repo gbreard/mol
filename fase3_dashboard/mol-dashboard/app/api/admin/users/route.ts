@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAdmin, isAuthError } from '@/lib/api-auth';
 
 // Cliente con service_role para acceder a auth.users (lazy initialization)
 let supabaseAdmin: SupabaseClient | null = null;
@@ -26,16 +27,13 @@ function getSupabaseAdmin(): SupabaseClient | null {
 }
 
 export async function GET(request: NextRequest) {
+  const auth = await requireAdmin(request);
+  if (isAuthError(auth)) return auth;
+
   try {
     const admin = getSupabaseAdmin();
     if (!admin) {
       return NextResponse.json({ error: 'Admin API no configurada' }, { status: 503 });
-    }
-
-    // Verificar que el usuario está autenticado (básico)
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
     // Obtener todos los usuarios de auth
@@ -65,6 +63,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const auth = await requireAdmin(request);
+  if (isAuthError(auth)) return auth;
+
   try {
     const admin = getSupabaseAdmin();
     if (!admin) {

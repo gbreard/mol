@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAdmin, isAuthError } from '@/lib/api-auth';
 
 let supabaseAdmin: SupabaseClient | null = null;
 
@@ -24,6 +25,9 @@ function getSupabaseAdmin(): SupabaseClient | null {
 }
 
 export async function GET(request: NextRequest) {
+  const auth = await requireAdmin(request);
+  if (isAuthError(auth)) return auth;
+
   try {
     const admin = getSupabaseAdmin();
     if (!admin) {

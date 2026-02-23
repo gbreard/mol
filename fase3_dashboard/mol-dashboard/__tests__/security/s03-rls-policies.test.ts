@@ -1,56 +1,52 @@
 import { describe, it, expect } from 'vitest'
+import * as fs from 'fs'
+import * as path from 'path'
 
 /**
- * S-03: RLS (Row Level Security) verification.
+ * S-03: RLS + API Route Auth verification.
  *
- * These tests verify that the codebase follows patterns consistent with
- * RLS-protected tables. The actual RLS policies must be verified directly
- * in Supabase (these are database-level, not application-level).
+ * Tables WITH correct RLS (verified in migration):
+ * - ofertas_dashboard, ofertas_skills, skills, ocupaciones_esco (public read, service_role write)
+ * - usuarios, busquedas_guardadas, intereses, alertas (user/org-scoped)
+ * - issues, issue_comments, issue_attachments (author+admin scoped)
+ * - esco_argentino (public read, admin/service_role write — fixed in 014)
+ * - sistema_estado (public read, admin/service_role write — fixed in 014)
  *
- * Tables that REQUIRE RLS (user-specific data):
- * - suscripciones (user subscription data)
- * - pagos (user payment data)
- * - alertas_config (user alert configuration)
- * - uso_features (user feature usage tracking)
- *
- * Tables that are OK without RLS (public data):
- * - ofertas_dashboard (public job offers, read-only for all)
- * - ofertas_skills (public skills data, read-only for all)
- *
- * To verify RLS in Supabase:
- * ```sql
- * SELECT tablename, rowsecurity
- * FROM pg_tables
- * WHERE schemaname = 'public';
- * ```
+ * API routes requiring auth:
+ * - /api/esco-argentino POST/PATCH/DELETE → requireAdmin
+ * - /api/admin/* → requireAdmin
+ * - /api/worker-profiles → requireAuth
+ * - /api/consolidated-profiles POST → requireAdmin
  */
 
-const TABLES_REQUIRING_RLS = [
-  'suscripciones',
-  'pagos',
-  'alertas_config',
-  'uso_features',
+const TABLES_WITH_RLS = [
+  'esco_argentino',
+  'sistema_estado',
+  'usuarios',
+  'busquedas_guardadas',
+  'intereses',
+  'alertas',
+  'issues',
+  'issue_comments',
+  'issue_attachments',
 ]
 
 const PUBLIC_READ_ONLY_TABLES = [
   'ofertas_dashboard',
   'ofertas_skills',
-  'issues', // Issues are public within the organization
+  'skills',
+  'ocupaciones_esco',
 ]
 
 describe('S-03: RLS-aware data access patterns', () => {
-  it('should document which tables require RLS', () => {
-    // This test serves as documentation/contract
-    expect(TABLES_REQUIRING_RLS).toContain('suscripciones')
-    expect(TABLES_REQUIRING_RLS).toContain('pagos')
-    expect(TABLES_REQUIRING_RLS).toContain('alertas_config')
+  it('should document which tables have RLS', () => {
+    expect(TABLES_WITH_RLS).toContain('esco_argentino')
+    expect(TABLES_WITH_RLS).toContain('sistema_estado')
+    expect(TABLES_WITH_RLS).toContain('usuarios')
+    expect(TABLES_WITH_RLS).toContain('issues')
   })
 
   it('public tables should be read-only via anon key', () => {
-    // Verify that the supabase.ts data layer only reads from public tables
-    // (never inserts/updates/deletes to ofertas_dashboard)
-    const fs = require('fs')
-    const path = require('path')
     const supabasePath = path.resolve(__dirname, '../../lib/supabase.ts')
     const content = fs.readFileSync(supabasePath, 'utf-8')
 
@@ -62,21 +58,14 @@ describe('S-03: RLS-aware data access patterns', () => {
   })
 
   it('issues table should use authenticated user for inserts', () => {
-    const fs = require('fs')
-    const path = require('path')
     const supabasePath = path.resolve(__dirname, '../../lib/supabase.ts')
     const content = fs.readFileSync(supabasePath, 'utf-8')
 
-    // createIssue should reference auth.getUser() or user context
     expect(content).toContain('createIssue')
-    // Issues are inserted with user attribution
     expect(content).toMatch(/autor_id|autor_email/)
   })
 
-  it('admin API routes should use service_role_key, not anon_key', () => {
-    const fs = require('fs')
-    const path = require('path')
-
+  it('admin API routes should use service_role_key', () => {
     const adminRoutes = [
       path.resolve(__dirname, '../../app/api/admin/stats/route.ts'),
       path.resolve(__dirname, '../../app/api/admin/users/route.ts'),
@@ -85,11 +74,50 @@ describe('S-03: RLS-aware data access patterns', () => {
     adminRoutes.forEach((routePath) => {
       if (fs.existsSync(routePath)) {
         const content = fs.readFileSync(routePath, 'utf-8')
-        // Admin routes should use SUPABASE_SERVICE_ROLE_KEY (server-side only)
         expect(content).toContain('SUPABASE_SERVICE_ROLE_KEY')
-        // Admin routes should NOT use the anon key for privileged operations
         expect(content).not.toMatch(/NEXT_PUBLIC_SUPABASE_ANON_KEY.*admin\.auth/)
       }
     })
+  })
+
+  it('lib/api-auth.ts should exist with requireAuth and requireAdmin', () => {
+    const authPath = path.resolve(__dirname, '../../lib/api-auth.ts')
+    expect(fs.existsSync(authPath)).toBe(true)
+
+    const content = fs.readFileSync(authPath, 'utf-8')
+    expect(content).toContain('export async function requireAuth')
+    expect(content).toContain('export async function requireAdmin')
+    expect(content).toContain('export function isAuthError')
+  })
+
+  it('write API routes should use requireAdmin or requireAuth', () => {
+    const routeChecks: { path: string; guard: string }[] = [
+      { path: '../../app/api/esco-argentino/route.ts', guard: 'requireAdmin' },
+      { path: '../../app/api/admin/users/route.ts', guard: 'requireAdmin' },
+      { path: '../../app/api/admin/stats/route.ts', guard: 'requireAdmin' },
+      { path: '../../app/api/admin/architecture-metrics/route.ts', guard: 'requireAdmin' },
+      { path: '../../app/api/worker-profiles/route.ts', guard: 'requireAuth' },
+      { path: '../../app/api/consolidated-profiles/route.ts', guard: 'requireAdmin' },
+    ]
+
+    routeChecks.forEach(({ path: routeRelPath, guard }) => {
+      const routePath = path.resolve(__dirname, routeRelPath)
+      if (fs.existsSync(routePath)) {
+        const content = fs.readFileSync(routePath, 'utf-8')
+        expect(content).toContain(guard)
+        expect(content).toContain('isAuthError')
+      }
+    })
+  })
+
+  it('SQL migration 014 should fix esco_argentino and sistema_estado RLS', () => {
+    const migrationPath = path.resolve(__dirname, '../../../sql/014_rls_data_tables.sql')
+    expect(fs.existsSync(migrationPath)).toBe(true)
+
+    const content = fs.readFileSync(migrationPath, 'utf-8')
+    expect(content).toContain('esco_argentino')
+    expect(content).toContain('sistema_estado')
+    expect(content).toContain('is_platform_admin')
+    expect(content).toContain('ENABLE ROW LEVEL SECURITY')
   })
 })

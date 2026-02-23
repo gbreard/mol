@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth, isAuthError } from '@/lib/api-auth';
 
 // Cliente con service_role para acceder a tablas (lazy initialization)
 let supabaseAdmin: SupabaseClient | null = null;
@@ -40,6 +41,9 @@ interface WorkerProfile {
 
 // GET - Listar perfiles o obtener uno específico
 export async function GET(request: NextRequest) {
+  const auth = await requireAuth(request);
+  if (isAuthError(auth)) return auth;
+
   try {
     const admin = getSupabaseAdmin();
     if (!admin) {
@@ -92,6 +96,9 @@ export async function GET(request: NextRequest) {
 
 // POST - Crear nuevo perfil
 export async function POST(request: NextRequest) {
+  const auth = await requireAuth(request);
+  if (isAuthError(auth)) return auth;
+
   try {
     const admin = getSupabaseAdmin();
     if (!admin) {
@@ -134,6 +141,9 @@ export async function POST(request: NextRequest) {
 
 // PUT - Actualizar perfil existente
 export async function PUT(request: NextRequest) {
+  const auth = await requireAuth(request);
+  if (isAuthError(auth)) return auth;
+
   try {
     const admin = getSupabaseAdmin();
     if (!admin) {
@@ -177,6 +187,9 @@ export async function PUT(request: NextRequest) {
 
 // DELETE - Eliminar perfil
 export async function DELETE(request: NextRequest) {
+  const auth = await requireAuth(request);
+  if (isAuthError(auth)) return auth;
+
   try {
     const admin = getSupabaseAdmin();
     if (!admin) {

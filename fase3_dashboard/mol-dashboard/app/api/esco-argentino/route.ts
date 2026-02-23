@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireAdmin, isAuthError } from '@/lib/api-auth'
 
 // Supabase client con service role para API
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
@@ -123,6 +124,9 @@ export async function GET(request: NextRequest) {
  * - notas?: string
  */
 export async function POST(request: NextRequest) {
+  const auth = await requireAdmin(request)
+  if (isAuthError(auth)) return auth
+
   if (!supabase) {
     return NextResponse.json(
       { error: 'Supabase no configurado' },
@@ -205,6 +209,9 @@ export async function POST(request: NextRequest) {
  * - updated_by?: string
  */
 export async function PATCH(request: NextRequest) {
+  const auth = await requireAdmin(request)
+  if (isAuthError(auth)) return auth
+
   if (!supabase) {
     return NextResponse.json(
       { error: 'Supabase no configurado' },
@@ -323,6 +330,9 @@ export async function PATCH(request: NextRequest) {
  * - occupation: URI de la ocupación a eliminar
  */
 export async function DELETE(request: NextRequest) {
+  const auth = await requireAdmin(request)
+  if (isAuthError(auth)) return auth
+
   if (!supabase) {
     return NextResponse.json(
       { error: 'Supabase no configurado' },

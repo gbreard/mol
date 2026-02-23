@@ -15,14 +15,13 @@ describe('S-04: Admin routes require role verification', () => {
     expect(content).toMatch(/role.*admin|admin.*role|isAdmin|user_metadata/)
   })
 
-  it('admin API routes should verify auth header', () => {
+  it('admin API routes should use requireAdmin guard', () => {
     const adminUsersRoute = path.join(PROJECT_ROOT, 'app/api/admin/users/route.ts')
     const content = fs.readFileSync(adminUsersRoute, 'utf-8')
 
-    // Should check for authorization header
-    expect(content).toContain('authorization')
-    // Should return 401 for unauthorized requests
-    expect(content).toContain('401')
+    // Should use centralized auth guard (not raw header checks)
+    expect(content).toContain('requireAdmin')
+    expect(content).toContain('isAuthError')
   })
 
   it('admin API routes should verify admin role', () => {

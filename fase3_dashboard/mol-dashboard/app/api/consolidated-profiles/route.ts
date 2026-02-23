@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { ConsolidatedProfilesIndex, ConsolidatedProfile } from '@/lib/types';
+import { requireAdmin, isAuthError } from '@/lib/api-auth';
 
 const DATA_PATH = path.join(process.cwd(), 'public/data/consolidated_profiles.json');
 
@@ -34,7 +35,10 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  const auth = await requireAdmin(request);
+  if (isAuthError(auth)) return auth;
+
   try {
     const body = await request.json();
     const { esco_uuid, profile } = body as {
