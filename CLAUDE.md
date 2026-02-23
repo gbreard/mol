@@ -24,6 +24,19 @@ Triggers:
 
 ---
 
+## PENDIENTE CRITICO: Rotar Supabase service_role_key (S-01)
+
+**La `service_role_key` actual está comprometida** (existe en el historial de git). El código ya fue limpiado (commit `9f904093`) pero la key vieja sigue siendo válida.
+
+**Pasos a realizar (manual):**
+1. Ir a **Supabase Dashboard → Settings → API** → regenerar `service_role_key`
+2. Actualizar `config/supabase_config.json` local con la nueva key
+3. Actualizar `SUPABASE_SERVICE_ROLE_KEY` en **Vercel** (si se usa)
+4. Verificar que `sync_to_supabase.py` y `generate_mol_skills_profile.py` sigan funcionando
+5. **Borrar esta sección de CLAUDE.md** una vez completado
+
+---
+
 ## Descripcion
 Sistema de monitoreo del mercado laboral argentino para OEDE. Scrapea ofertas de empleo, extrae informacion con NLP, clasifica segun taxonomia ESCO, y provee dashboards para analistas.
 

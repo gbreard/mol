@@ -43,7 +43,7 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 
 ## Fase 0: Seguridad (BLOQUEANTE)
 
-**Estado:** 🔴 No iniciado
+**Estado:** 🟡 En progreso (3/5 tareas completadas)
 **Duración estimada:** 2-3 días
 **Requisito:** Completar ANTES de cualquier otra fase
 
@@ -51,20 +51,20 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 
 | ID | Tarea | Prioridad | Estado |
 |----|-------|-----------|--------|
-| S-01 | Rotar tokens expuestos | CRITICO | ⬜ |
-| S-02 | Fix open redirect en callback | CRITICO | ⬜ |
+| S-01 | Rotar tokens expuestos | CRITICO | 🟡 Código limpio, **rotación manual pendiente** |
+| S-02 | Fix open redirect en callback | CRITICO | ✅ Completado 2026-02-22 |
 | S-03 | Implementar RLS en tablas | CRITICO | ⬜ |
-| S-04 | Verificar rol en APIs admin | CRITICO | ⬜ |
+| S-04 | Verificar rol en APIs admin | CRITICO | ✅ Completado 2026-02-22 |
 | S-07 | Headers de seguridad | ALTO | ⬜ |
 
 ### Checklist Pre-Fase-1
 
 ```
-□ Tokens de Supabase rotados
-□ .env* en .gitignore
-□ Redirect validado contra whitelist
+□ Tokens de Supabase rotados (código limpio, rotación manual PENDIENTE)
+✓ .env* en .gitignore
+✓ Redirect validado contra whitelist (S-02)
 □ RLS activo en suscripciones, pagos, alertas, solicitudes_acceso, contenidos
-□ Middleware verifica rol admin
+✓ Middleware verifica rol admin (S-04)
 □ Headers de seguridad en next.config.js
 ```
 
@@ -77,22 +77,22 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 
 ## Fase 1: Escalabilidad Básica
 
-**Estado:** 🟡 En progreso (1/7 tareas completadas)
+**Estado:** 🟢 Completada (5/7 tareas core, 2 mejoras pendientes)
 **Duración estimada:** 1 semana
 
 ### Tareas
 
 | ID | Tarea | Prioridad | Estado |
 |----|-------|-----------|--------|
-| E-01 | Reemplazar .limit(10000) | CRITICO | ⬜ |
-| E-02 | Usar vistas SQL existentes | CRITICO | ⬜ |
-| E-03 | Implementar React Query | CRITICO | ⬜ |
+| E-01 | Reemplazar .limit(10000) | CRITICO | ✅ Completado 2026-02-23 (SQL RPCs) |
+| E-02 | Usar vistas SQL existentes | CRITICO | ✅ Completado 2026-02-23 (5 RPCs) |
+| E-03 | Implementar React Query | CRITICO | ✅ Completado 2026-02-23 |
 | **E-16** | **Insights SQL (no fetchAllPaginated)** | **CRITICO** | ✅ Completado 2026-02-07 |
-| E-05 | Agregar índices críticos | ALTO | ⬜ |
+| E-05 | Agregar índices críticos | ALTO | ✅ Completado 2026-02-23 (3 índices performance) |
 | S-05 | Rate limiting en APIs | ALTO | ⬜ |
 | S-06 | Validación con Zod | ALTO | ⬜ |
 
-> **E-16 Resuelto:** [12_INSIGHTS_SISTEMA](./12_INSIGHTS_SISTEMA.md) - Vistas SQL + función RPC `get_insights()` implementados
+> **E-01/E-02/E-03 Resueltos:** 5 SQL RPCs (`get_panorama`, `get_evolucion`, `get_requerimientos`, `get_skills_resumen`, `get_sidebar_counts`) + React Query hooks + componentes migrados. 153 tests passing.
 
 ### Criterio de Éxito
 

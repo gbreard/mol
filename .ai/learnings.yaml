@@ -6,28 +6,24 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-02-22 21:49"
+  fecha_actualizacion: "2026-02-23 18:43"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "presentacion"  # adquisicion | procesamiento | presentacion
   fase_detalle: "1451 ofertas sin NLP - sistema sugiere Fase 2"
 
 ultimo_trabajo:
-  fecha: "2026-02-22"
-  sesion: "Sprint 8: Pipeline 3839 ofertas + resolución errores + deploy"
+  fecha: "2026-02-23"
+  sesion: "Sprint 8: Seguridad S-05 rate limiting + S-07 security headers"
   cambios:
-    - "Dashboard filter fixes (PR #9): skillsDigitales cross-table, getSectores, getLocalidades"
-    - "Fix run_scheduler.py: refresh_priorities() post-scraping (3462 ofertas en limbo resueltas)"
-    - "Fix row_factory en refresh_priorities (SQLite Row access)"
-    - "Scraping ejecutado (4827 ofertas, último fue 13 días atrás)"
-    - "V31 plan 3 capas: threshold 0.50→0.40 (278), 18 reglas R224-R241 (v4.8), severidad alto→medio"
-    - "Pipeline completo 3839 ofertas nuevas (NLP+Skills+Matching+Validación)"
-    - "NV03 fix: normalización area_funcional compuestas (Gastronomia/Hoteleria→Gastronomia, etc.)"
-    - "Config nlp_inference_rules.json: claves canónicas (Ventas, IT, RRHH, Contabilidad, etc.)"
-    - "8691 errores analizados y resueltos con justificación por tipo"
-    - "16,136 ofertas validadas (7373 validado + 8763 validado_claude)"
-    - "Sync Supabase full: 16136 ofertas, 296852 skills, 1205 ocupaciones"
-    - "Deploy Vercel: mol-nextjs.vercel.app actualizado"
+    - "S-05: In-memory sliding-window rate limiter (lib/rate-limit.ts) — 3 tiers: public 30/min, authenticated 60/min, admin 120/min"
+    - "S-05: Rate limit integrado en api-auth.ts ANTES de Supabase auth (bloquea floods early)"
+    - "S-05: 11 API routes protegidas (5 públicas con requireRateLimit, 6 auth/admin via requireAuth/requireAdmin)"
+    - "S-07: Security headers en next.config.ts — X-Frame-Options: DENY, X-Content-Type-Options: nosniff, Referrer-Policy"
+    - "Tests: 25 nuevos (unit rate-limit + contract s05-rate-limiting + s07-headers) — 192/192 total passing"
+    - "docs/plan/06_SEGURIDAD.md actualizado: S-05 + S-07 marcados resueltos (6/17 total)"
+    - "Deploy Vercel: mol-nextjs.vercel.app — 429 verificado en producción, headers S-07 confirmados"
+    - "Limitación documentada: in-memory pierde estado en cold starts Vercel (suficiente para OEDE interno)"
   sesion_anterior:
     tema: "Sprint 7: Recalibrar validación + sync 10K+ a Supabase"
     cambios:
@@ -142,7 +138,7 @@ conteos:
   empresas_catalogo: 247  # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
   skills_esco: 14257            # database/embeddings/esco_skills_full.json
   ocupaciones_esco: 3046        # database/embeddings/esco_occupations_full.json
-  ultima_verificacion: 2026-02-22
+  ultima_verificacion: 2026-02-23
 
   supabase:
     integrado: true
