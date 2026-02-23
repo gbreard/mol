@@ -81,16 +81,27 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
 
   const ocupacionesTree: OcupacionTreeNode[] = useMemo(() => {
     if (!sidebarData?.ocupaciones_tree) return [];
-    return sidebarData.ocupaciones_tree.map(g => ({
-      id: `isco-${g.major_group}`,
-      label: ISCO_MAJOR_GROUPS[g.major_group] || `Grupo ${g.major_group}`,
-      count: g.count,
-      children: (g.children || []).map(c => ({
-        id: c.id,
-        label: c.label,
-        count: c.count,
-      }))
-    }));
+    return sidebarData.ocupaciones_tree.map(g => {
+      // Aggregate children by ISCO code (multiple ESCO labels share the same ISCO)
+      // RPC returns children ordered by count DESC, so first label per ISCO is the most representative
+      const byIsco = new Map<string, { label: string; count: number }>();
+      for (const c of g.children || []) {
+        const existing = byIsco.get(c.id);
+        if (existing) {
+          existing.count += c.count;
+        } else {
+          byIsco.set(c.id, { label: c.label, count: c.count });
+        }
+      }
+      return {
+        id: `isco-${g.major_group}`,
+        label: ISCO_MAJOR_GROUPS[g.major_group] || `Grupo ${g.major_group}`,
+        count: g.count,
+        children: Array.from(byIsco.entries())
+          .map(([id, { label, count }]) => ({ id, label, count }))
+          .sort((a, b) => b.count - a.count),
+      };
+    });
   }, [sidebarData?.ocupaciones_tree]);
 
   const departamentoGroups: DepartamentoGroup[] = useMemo(() => {
