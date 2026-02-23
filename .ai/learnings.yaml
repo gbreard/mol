@@ -6,28 +6,30 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-02-20 15:16"
+  fecha_actualizacion: "2026-02-22 21:49"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "presentacion"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "9010 errores sin resolver - sistema sugiere Fase 2"
+  fase_detalle: "1451 ofertas sin NLP - sistema sugiere Fase 2"
 
 ultimo_trabajo:
-  fecha: "2026-02-19"
-  sesion: "Sprint 7: Recalibrar validación + sync 10K+ a Supabase"
+  fecha: "2026-02-22"
+  sesion: "Sprint 8: Pipeline 3839 ofertas + resolución errores + deploy"
   cambios:
-    - "V31 v1.4: excluir matches regla_negocio (499 falsos positivos)"
-    - "V30 v1.1: detectar IT por ISCO 25xx/35xx en vez de area_funcional NLP (151 FP)"
-    - "V30 severidad alto→bajo (IT sin skills = informativo)"
-    - "V10 severidad medio→bajo (matching_confianza no bloquea)"
-    - "V11 severidad alto→medio (tareas vacías no implica bad match)"
-    - "Medio no es bloqueante — solo critico/alto bloquean validación"
-    - "10,682 ofertas validadas (8,210 validado + 2,472 validado_claude)"
-    - "612 pendientes = V31 genuinos (bad semantic match, 391 títulos únicos)"
-    - "Skills dedup 3 capas (PR #8 merged)"
-    - "Retry logic sync_to_supabase.py (HTTP/2 stream limit fix)"
+    - "Dashboard filter fixes (PR #9): skillsDigitales cross-table, getSectores, getLocalidades"
+    - "Fix run_scheduler.py: refresh_priorities() post-scraping (3462 ofertas en limbo resueltas)"
+    - "Fix row_factory en refresh_priorities (SQLite Row access)"
+    - "Scraping ejecutado (4827 ofertas, último fue 13 días atrás)"
+    - "V31 plan 3 capas: threshold 0.50→0.40 (278), 18 reglas R224-R241 (v4.8), severidad alto→medio"
+    - "Pipeline completo 3839 ofertas nuevas (NLP+Skills+Matching+Validación)"
+    - "NV03 fix: normalización area_funcional compuestas (Gastronomia/Hoteleria→Gastronomia, etc.)"
+    - "Config nlp_inference_rules.json: claves canónicas (Ventas, IT, RRHH, Contabilidad, etc.)"
+    - "8691 errores analizados y resueltos con justificación por tipo"
+    - "16,136 ofertas validadas (7373 validado + 8763 validado_claude)"
+    - "Sync Supabase full: 16136 ofertas, 296852 skills, 1205 ocupaciones"
+    - "Deploy Vercel: mol-nextjs.vercel.app actualizado"
   sesion_anterior:
-    tema: "Sprint 6: Resolver 911 issues del auto-validator"
+    tema: "Sprint 7: Recalibrar validación + sync 10K+ a Supabase"
     cambios:
       - "949 issues → 0 (100% resueltos)"
       - "V24/V28/V20/V21 recalibradas"
@@ -140,7 +142,7 @@ conteos:
   empresas_catalogo: 247  # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
   skills_esco: 14257            # database/embeddings/esco_skills_full.json
   ocupaciones_esco: 3046        # database/embeddings/esco_occupations_full.json
-  ultima_verificacion: 2026-02-20
+  ultima_verificacion: 2026-02-22
 
   supabase:
     integrado: true
@@ -174,8 +176,8 @@ conteos:
   proximo_paso: "Revisar 24 casos con override semántico alto"
 
   estadisticas_actuales:
-    ofertas_validadas: 11960  # todas sincronizadas a Supabase
-    ofertas_pendientes: 337  # 0 errores de validación
+    ofertas_validadas: 16136  # todas sincronizadas a Supabase
+    ofertas_pendientes: 0  # 0 errores de validación
     errores_validacion: 0  # resueltos 201 → 0
     reglas_negocio: 236
     convergencia: "CONVERGIDO (0 errores pendientes)"
@@ -193,9 +195,9 @@ conteos:
 
   # Métricas de evolución del aprendizaje
   learning_evolution:
-    total_runs: 228
+    total_runs: 230
     ofertas_con_historial_nlp: 5474  # ofertas en ofertas_nlp_history
-    ofertas_con_matching: 12297  # ofertas distintas en ofertas_esco_matching
+    ofertas_con_matching: 16136  # ofertas distintas en ofertas_esco_matching
 
     # Distribución real de reprocesos (datos de ofertas_nlp_history)
     distribucion_reprocesos:
