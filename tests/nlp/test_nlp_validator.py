@@ -120,13 +120,15 @@ class TestValidarOferta:
         assert result["gate_pass"] is False
         assert "V01_titulo_limpio_vacio" in result["gate_blocked_by"]
 
-    def test_tareas_vacias_bloquea_gate(self, validator):
+    def test_tareas_vacias_no_bloquea_gate(self, validator):
+        """NV08 bajó a medio en Sprint 7 — ya no bloquea gate."""
         o = oferta_limpia()
         o["tareas_explicitas"] = ""
         o["skills_count"] = 0
         result = validator.validar_oferta(o)
-        assert result["gate_pass"] is False
-        assert "NV08_sin_tareas_ni_skills" in result["gate_blocked_by"]
+        assert result["gate_pass"] is True
+        errores_ids = [e["id_regla"] for e in result["errores"]]
+        assert "NV08_sin_tareas_ni_skills" in errores_ids
 
     def test_sector_null_like_bloquea(self, validator):
         o = oferta_limpia()
@@ -160,8 +162,7 @@ class TestValidarOferta:
         """Oferta con multiples errores critico/alto."""
         o = oferta_limpia()
         o["titulo_limpio"] = ""  # V01 critico
-        o["tareas_explicitas"] = ""  # V11 alto
-        o["skills_count"] = 0  # NV08 alto
+        o["nivel_seniority"] = "semi_senior"  # NV04 alto
         result = validator.validar_oferta(o)
         assert result["gate_pass"] is False
         assert len(result["gate_blocked_by"]) >= 2

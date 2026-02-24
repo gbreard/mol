@@ -682,12 +682,9 @@ class TestGateSeveridades:
 
     GATE_RULES = {
         "V01_titulo_limpio_vacio": "critico",
-        "V11_tareas_vacias": "alto",
         "V17_clae_seccion_invalida": "alto",
         "NV02_sector_no_canonico": "alto",
-        "NV03_area_funcional_invalida": "alto",
         "NV04_seniority_invalido": "alto",
-        "NV08_sin_tareas_ni_skills": "alto",
         "NV11_sector_null_like": "alto",
     }
 
@@ -697,14 +694,14 @@ class TestGateSeveridades:
                 f'{rule_id}: esperaba severidad "{expected_sev}", tiene "{reglas[rule_id]["severidad"]}"'
 
     def test_gate_rules_count(self, reglas):
-        """Exactamente 8 reglas bloquean el gate."""
+        """Exactamente 5 reglas bloquean el gate (Sprint 7: V11, NV03, NV08 bajaron a medio)."""
         gate_count = sum(1 for r in reglas.values() if r["severidad"] in ("critico", "alto"))
-        assert gate_count == 8, f"Esperaba 8 reglas gate, hay {gate_count}"
+        assert gate_count == 5, f"Esperaba 5 reglas gate, hay {gate_count}"
 
     def test_non_gate_rules_no_bloquean(self, reglas):
         """Reglas medio/bajo/warning/info NO bloquean."""
         non_gate = [r for r in reglas.values() if r["severidad"] not in ("critico", "alto")]
-        assert len(non_gate) == 27, f"Esperaba 27 reglas no-gate, hay {len(non_gate)}"
+        assert len(non_gate) == 30, f"Esperaba 30 reglas no-gate, hay {len(non_gate)}"
 
 
 # ============================================================================

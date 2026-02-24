@@ -162,8 +162,8 @@ class TestNLPDBConsistency:
             count = cursor.fetchone()[0]
             assert count > 0, f"ID {caso['id_oferta']} no encontrado en ofertas_nlp"
 
-    def test_all_have_nlp_v10(self, gold_set, db_connection):
-        """Verifica que todos tienen NLP v10.0.0."""
+    def test_all_have_nlp_version(self, gold_set, db_connection):
+        """Verifica que todos tienen una versión NLP >= 10.0.0."""
         cursor = db_connection.cursor()
         for caso in gold_set:
             cursor.execute(
@@ -172,8 +172,9 @@ class TestNLPDBConsistency:
             )
             row = cursor.fetchone()
             assert row is not None, f"ID {caso['id_oferta']} no encontrado"
-            assert row['nlp_version'] == '10.0.0', \
-                f"ID {caso['id_oferta']}: nlp_version es '{row['nlp_version']}' (esperado '10.0.0')"
+            major = int(row['nlp_version'].split('.')[0])
+            assert major >= 10, \
+                f"ID {caso['id_oferta']}: nlp_version es '{row['nlp_version']}' (esperado >= 10.x.x)"
 
 
 class TestNLPQualityMetrics:

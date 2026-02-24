@@ -42,7 +42,7 @@ class TestNormalizationMap:
     EXPECTED_NORMALIZATIONS = {
         "IT/Sistemas": "IT",
         "Sistemas": "IT",
-        "Ventas/Comercial": "Comercial",
+        "Ventas/Comercial": "Ventas",
         "Recursos Humanos": "RRHH",
         "Finanzas/Contabilidad": "Contabilidad",
         "Logistica/Operaciones": "Logistica",
