@@ -65,6 +65,7 @@ Patrones de ruido:
 - Contexto excesivo: "importante Concesionario Oficial..."
 """
 
+import os
 import re
 import sqlite3
 import json
@@ -466,7 +467,8 @@ def detectar_multi_perfil(titulo: str, config: Dict[str, Any] = None) -> List[st
 
 
 # Configuración LLM para validación multi-perfil
-OLLAMA_URL = "http://localhost:11434/api/generate"
+OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "localhost")
+OLLAMA_URL = f"http://{OLLAMA_HOST}:11434/api/generate"
 # Modelo optimizado: 7b es suficiente para extracción JSON (3x más rápido que 14b)
 OLLAMA_MODEL = "qwen2.5:7b"
 
@@ -586,25 +588,175 @@ Responde SOLO con JSON válido (sin texto adicional):
         }
 
 
+def descomponer_multi_perfil_con_llm(
+    titulo: str,
+    descripcion: str,
+    tareas: str = None,
+    timeout: int = 60
+) -> Dict[str, Any]:
+    """
+    LLM analiza la oferta COMPLETA y descompone en posiciones individuales.
+
+    A diferencia de validar_multi_perfil_con_llm (que confirma candidatos regex),
+    esta función DESCUBRE posiciones desde la descripción.
+
+    Returns:
+        {
+            "es_multi": bool,
+            "posiciones": [
+                {"titulo": "Jefe de Mantenimiento Mecánico", "tareas": "Liderar mant...;Garantizar..."},
+                {"titulo": "Jefe de Calidad", "tareas": "Implementar SGC...;Gestionar cert..."}
+            ],
+            "razon": str,
+            "confianza": float
+        }
+    """
+    desc_truncado = (descripcion or "")[:2000]
+    tareas_texto = f"\nTAREAS EXTRAÍDAS: {tareas[:500]}" if tareas else ""
+
+    prompt = f"""Analiza esta oferta laboral y determina si contiene MÚLTIPLES POSICIONES/PUESTOS DISTINTOS.
+
+TÍTULO: {titulo}
+{tareas_texto}
+
+DESCRIPCIÓN:
+{desc_truncado}
+
+---
+
+INSTRUCCIONES:
+1. Lee toda la descripción buscando puestos/posiciones/roles DIFERENTES
+2. Si hay múltiples posiciones, separá cada una con su título y tareas específicas
+3. Las tareas de cada posición deben estar separadas por punto y coma (;)
+4. Si es UNA SOLA posición (persona polivalente), indicar es_multi=false
+
+CRITERIOS para MÚLTIPLE POSICIÓN:
+- La descripción menciona puestos/cargos distintos explícitamente
+- Hay secciones separadas para cada rol
+- Título tiene separadores (/, y, |) entre cargos de diferente nivel/área
+
+CRITERIOS para posición ÚNICA:
+- Una persona con múltiples tareas/habilidades
+- Especialización dual del mismo rol (ej: "Vendedor Electrónica y Electrodomésticos")
+- Género inclusivo (ej: "Cajero/a")
+
+Responde SOLO con JSON válido:
+{{
+    "es_multi": true o false,
+    "posiciones": [
+        {{"titulo": "Título del puesto 1", "tareas": "tarea1;tarea2;tarea3"}},
+        {{"titulo": "Título del puesto 2", "tareas": "tarea1;tarea2"}}
+    ],
+    "razon": "explicación breve",
+    "confianza": 0.0 a 1.0
+}}
+
+Si es posición única, devolver una sola posición en el array."""
+
+    try:
+        payload = {
+            "model": OLLAMA_MODEL,
+            "prompt": prompt,
+            "stream": False,
+            "options": {
+                "temperature": 0.1,
+                "num_predict": 512,
+            }
+        }
+
+        response = requests.post(OLLAMA_URL, json=payload, timeout=timeout)
+        response.raise_for_status()
+
+        result = response.json()
+        text = result.get("response", "").strip()
+
+        # Buscar JSON en la respuesta (puede tener texto antes/después)
+        # Intentar encontrar el JSON completo con arrays anidados
+        json_start = text.find('{')
+        if json_start >= 0:
+            # Encontrar el cierre correspondiente
+            depth = 0
+            for i in range(json_start, len(text)):
+                if text[i] == '{':
+                    depth += 1
+                elif text[i] == '}':
+                    depth -= 1
+                    if depth == 0:
+                        json_str = text[json_start:i + 1]
+                        break
+            else:
+                json_str = text[json_start:]
+
+            parsed = json.loads(json_str)
+
+            posiciones = parsed.get("posiciones", [])
+            confianza = float(parsed.get("confianza", 0.5))
+
+            # Validar: necesita >= 2 posiciones para ser multi
+            es_multi = parsed.get("es_multi", False) and len(posiciones) >= 2
+
+            return {
+                "es_multi": es_multi,
+                "posiciones": posiciones if es_multi else [{"titulo": titulo, "tareas": tareas or ""}],
+                "razon": parsed.get("razon", ""),
+                "confianza": confianza
+            }
+
+        print(f"[WARN] No se encontró JSON en respuesta LLM decompose: {text[:200]}")
+        return {
+            "es_multi": False,
+            "posiciones": [{"titulo": titulo, "tareas": tareas or ""}],
+            "razon": "No se pudo parsear respuesta LLM",
+            "confianza": 0.0
+        }
+
+    except requests.exceptions.Timeout:
+        print(f"[WARN] Timeout descomponiendo multi-perfil para: {titulo[:50]}")
+        return {
+            "es_multi": False,
+            "posiciones": [{"titulo": titulo, "tareas": tareas or ""}],
+            "razon": "Timeout LLM",
+            "confianza": 0.0
+        }
+    except Exception as e:
+        print(f"[ERROR] Error descomponiendo multi-perfil: {e}")
+        return {
+            "es_multi": False,
+            "posiciones": [{"titulo": titulo, "tareas": tareas or ""}],
+            "razon": f"Error: {str(e)}",
+            "confianza": 0.0
+        }
+
+
 def expandir_ofertas_multi_perfil(ids: List[str] = None, dry_run: bool = True, usar_llm: bool = True):
     """
     Expande ofertas con multiples perfiles en registros separados.
 
+    Detección híbrida:
+    1. Regex en título (detectar_multi_perfil) → candidatos obvios
+    2. Regex en descripción (patrones_descripcion) → candidatos por contenido
+    3. LLM decompose → descubre y descompone posiciones con tareas
+
     Cada perfil genera un nuevo registro con id_oferta derivado:
-    - Original: 2123908
-    - Expandidos: 2123908_1, 2123908_2, etc.
+    - Original: 2123908 (se marca como parent, multi_position_status='expanded')
+    - Expandidos: 2123908_2, 2123908_3, etc. (es_suboferta=1, parent_id_oferta=2123908)
 
     Args:
         ids: Lista de IDs a procesar (None = Gold Set)
         dry_run: Si True, solo muestra qué haría sin modificar BD
-        usar_llm: Si True, valida con LLM antes de expandir (usa descripción)
+        usar_llm: Si True, usa LLM para descomponer posiciones (título + descripción)
 
     Returns:
-        Dict con estadísticas
+        Dict con estadísticas e ids_nuevos
     """
     conn = sqlite3.connect(base / 'bumeran_scraping.db')
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
+
+    multi_config = _CONFIG.get("multi_perfil", {})
+    min_confianza = multi_config.get("llm_decompose", {}).get("min_confianza", 0.7)
+    patrones_desc = multi_config.get("patrones_descripcion", [])
+    patrones_titulo_sosp = multi_config.get("patrones_titulo_sospechoso", [])
 
     # Cargar IDs
     if ids is None:
@@ -619,129 +771,209 @@ def expandir_ofertas_multi_perfil(ids: List[str] = None, dry_run: bool = True, u
                 gold_set = json.load(f)
             ids = [str(x['id_oferta']) for x in gold_set]
 
+    # Filtrar sub-ofertas ya existentes (no reprocesar)
+    ids = [str(i) for i in ids if '_' not in str(i)]
+
     print(f"Buscando ofertas multi-perfil en {len(ids)} ofertas...")
     print(f"Validación LLM: {'ACTIVADA' if usar_llm else 'DESACTIVADA'}")
     print("-" * 70)
 
-    # Obtener datos de ofertas_nlp
+    # Obtener datos de ofertas_nlp (excluir ya expandidas)
     placeholders = ','.join(['?' for _ in ids])
     c.execute(f"""
         SELECT n.*
         FROM ofertas_nlp n
         WHERE n.id_oferta IN ({placeholders})
+        AND (n.multi_position_status IS NULL OR n.multi_position_status NOT IN ('expanded', 'single'))
     """, ids)
 
     rows = c.fetchall()
     columnas = [desc[0] for desc in c.description]
 
-    # Si usar_llm, obtener descripciones de tabla ofertas
+    if not rows:
+        print("No hay ofertas pendientes de evaluación multi-posición.")
+        conn.close()
+        return {'multi_perfil': 0, 'nuevos': 0, 'aplicado': False, 'ids_nuevos': []}
+
+    # Obtener descripciones y tareas de tabla ofertas + ofertas_nlp
     descripciones = {}
-    if usar_llm:
-        c.execute(f"""
-            SELECT id_oferta, descripcion
-            FROM ofertas
-            WHERE id_oferta IN ({placeholders})
-        """, ids)
-        for row in c.fetchall():
-            descripciones[str(row[0])] = row[1] or ""
+    tareas_map = {}
+    c.execute(f"""
+        SELECT o.id_oferta, o.descripcion, n.tareas_explicitas
+        FROM ofertas o
+        LEFT JOIN ofertas_nlp n ON o.id_oferta = n.id_oferta
+        WHERE o.id_oferta IN ({placeholders})
+    """, ids)
+    for row in c.fetchall():
+        descripciones[str(row[0])] = row[1] or ""
+        tareas_map[str(row[0])] = row[2] or ""
 
     ofertas_expandir = []
-    ofertas_rechazadas_llm = []
+    ofertas_single = []
+    ofertas_rechazadas = []
     total_nuevos = 0
+    ids_creados = []
 
     for row in rows:
         row_dict = dict(zip(columnas, row))
-        id_oferta = row_dict['id_oferta']
+        id_oferta = str(row_dict['id_oferta'])
         titulo_limpio = row_dict.get('titulo_limpio') or ''
+        descripcion = descripciones.get(id_oferta, "")
+        tareas = tareas_map.get(id_oferta, "")
 
-        # Paso 1: Detectar candidatos por regex
-        perfiles_candidatos = detectar_multi_perfil(titulo_limpio)
+        # --- Paso 1: Detección por regex en título ---
+        perfiles_regex = detectar_multi_perfil(titulo_limpio)
+        es_candidato_titulo = len(perfiles_regex) > 1
 
-        if len(perfiles_candidatos) > 1:
-            # Paso 2: Validar con LLM si está activado
-            if usar_llm:
-                descripcion = descripciones.get(str(id_oferta), "")
-                resultado_llm = validar_multi_perfil_con_llm(
-                    titulo_limpio, descripcion, perfiles_candidatos
-                )
+        # --- Paso 2: Detección por regex en descripción ---
+        es_candidato_desc = False
+        for patron in patrones_desc:
+            if re.search(patron, descripcion, re.IGNORECASE):
+                es_candidato_desc = True
+                break
 
-                if resultado_llm["es_multiple_perfil"]:
-                    perfiles_finales = resultado_llm["perfiles_confirmados"]
-                    print(f"  {id_oferta}: {len(perfiles_finales)} perfiles [LLM: CONFIRMADO]")
-                    print(f"    Razón: {resultado_llm['razon']}")
-                else:
-                    # LLM dice que NO es multi-perfil
-                    perfiles_finales = [titulo_limpio]
-                    ofertas_rechazadas_llm.append({
-                        'id': id_oferta,
-                        'titulo': titulo_limpio,
-                        'candidatos': perfiles_candidatos,
-                        'razon': resultado_llm['razon']
-                    })
-                    print(f"  {id_oferta}: RECHAZADO por LLM (era candidato: {perfiles_candidatos})")
-                    print(f"    Razón: {resultado_llm['razon']}")
-                    continue  # No expandir
+        # --- Paso 2b: Detección por patrones sospechosos en título ---
+        if not es_candidato_titulo and not es_candidato_desc:
+            for patron in patrones_titulo_sosp:
+                if re.search(patron, titulo_limpio, re.IGNORECASE):
+                    es_candidato_desc = True  # Tratar como candidato para LLM
+                    break
+
+        es_candidato = es_candidato_titulo or es_candidato_desc
+
+        if not es_candidato:
+            ofertas_single.append(id_oferta)
+            continue
+
+        # --- Paso 3: Resolución (regex-only o LLM) ---
+        if usar_llm:
+            # LLM decompose: descubre posiciones desde título + descripción + tareas
+            resultado_llm = descomponer_multi_perfil_con_llm(
+                titulo_limpio, descripcion, tareas
+            )
+
+            if resultado_llm["es_multi"] and resultado_llm["confianza"] >= min_confianza:
+                posiciones = resultado_llm["posiciones"]
+                metodo = "LLM_DECOMPOSE"
+                print(f"  {id_oferta}: {len(posiciones)} posiciones [{metodo}] (conf={resultado_llm['confianza']:.2f})")
+                print(f"    Razón: {resultado_llm['razon']}")
             else:
-                perfiles_finales = perfiles_candidatos
-                print(f"  {id_oferta}: {len(perfiles_finales)} perfiles [REGEX]")
+                # LLM dice NO o baja confianza
+                ofertas_rechazadas.append({
+                    'id': id_oferta,
+                    'titulo': titulo_limpio,
+                    'razon': resultado_llm['razon'],
+                    'confianza': resultado_llm['confianza'],
+                    'fuente': 'titulo' if es_candidato_titulo else 'descripcion'
+                })
+                ofertas_single.append(id_oferta)
+                print(f"  {id_oferta}: SINGLE [{resultado_llm['razon'][:60]}] (conf={resultado_llm['confianza']:.2f})")
+                continue
+        else:
+            if not es_candidato_titulo:
+                # Sin LLM, solo regex en título puede confirmar
+                ofertas_single.append(id_oferta)
+                continue
+            # Usar perfiles del regex como posiciones (sin tareas splitteadas)
+            posiciones = [{"titulo": p, "tareas": tareas} for p in perfiles_regex]
+            metodo = "REGEX"
+            print(f"  {id_oferta}: {len(posiciones)} posiciones [{metodo}]")
 
-            ofertas_expandir.append({
-                'id_original': id_oferta,
-                'perfiles': perfiles_finales,
-                'row_dict': row_dict
-            })
-            total_nuevos += len(perfiles_finales) - 1  # -1 porque el original ya existe
-            for i, p in enumerate(perfiles_finales, 1):
-                print(f"    {id_oferta}_{i}: {p}")
-            print()
+        ofertas_expandir.append({
+            'id_original': id_oferta,
+            'posiciones': posiciones,
+            'row_dict': row_dict,
+            'metodo': metodo
+        })
+        total_nuevos += len(posiciones) - 1  # -1 porque el original ya existe
+        for i, p in enumerate(posiciones, 1):
+            titulo_pos = p.get('titulo', '?')
+            tareas_pos = (p.get('tareas', '') or '')[:50]
+            print(f"    {id_oferta}{'_' + str(i) if i > 1 else ''}: {titulo_pos} | {tareas_pos}...")
+        print()
 
     print(f"\nResumen:")
-    print(f"  Ofertas multi-perfil confirmadas: {len(ofertas_expandir)}")
-    print(f"  Rechazadas por LLM: {len(ofertas_rechazadas_llm)}")
+    print(f"  Ofertas multi-posición confirmadas: {len(ofertas_expandir)}")
+    print(f"  Ofertas single (confirmadas): {len(ofertas_single)}")
+    print(f"  Rechazadas por LLM: {len(ofertas_rechazadas)}")
     print(f"  Registros nuevos a crear: {total_nuevos}")
 
-    if ofertas_rechazadas_llm:
-        print(f"\n  Rechazos LLM (NO son multi-perfil):")
-        for r in ofertas_rechazadas_llm[:5]:
-            print(f"    - {r['id']}: {r['titulo'][:40]}... -> {r['razon']}")
-        if len(ofertas_rechazadas_llm) > 5:
-            print(f"    ... y {len(ofertas_rechazadas_llm) - 5} más")
+    if ofertas_rechazadas:
+        print(f"\n  Rechazos (NO son multi-posición):")
+        for r in ofertas_rechazadas[:5]:
+            print(f"    - {r['id']}: {r['titulo'][:40]}... -> {r['razon'][:50]}")
+        if len(ofertas_rechazadas) > 5:
+            print(f"    ... y {len(ofertas_rechazadas) - 5} más")
 
     if dry_run:
         print(f"\n[DRY RUN] No se modificó la BD. Usar dry_run=False para aplicar.")
         conn.close()
         return {
             'multi_perfil': len(ofertas_expandir),
-            'rechazados_llm': len(ofertas_rechazadas_llm),
+            'rechazados_llm': len(ofertas_rechazadas),
             'nuevos': total_nuevos,
             'aplicado': False,
-            'rechazos_detalle': ofertas_rechazadas_llm
+            'ids_nuevos': [],
+            'rechazos_detalle': ofertas_rechazadas
         }
 
     # Aplicar cambios
     print(f"\nAplicando cambios...")
 
+    # Marcar ofertas single
+    for id_s in ofertas_single:
+        c.execute(
+            "UPDATE ofertas_nlp SET multi_position_status = 'single' WHERE id_oferta = ?",
+            (id_s,)
+        )
+
     for oferta in ofertas_expandir:
         id_original = oferta['id_original']
-        perfiles = oferta['perfiles']
+        posiciones = oferta['posiciones']
         row_dict = oferta['row_dict']
 
-        # Actualizar registro original con primer perfil
-        c.execute("""
-            UPDATE ofertas_nlp SET titulo_limpio = ? WHERE id_oferta = ?
-        """, (perfiles[0], id_original))
+        # Actualizar registro original: primer perfil + marcar como expanded
+        primer_titulo = posiciones[0].get('titulo', row_dict.get('titulo_limpio', ''))
+        primer_tareas = posiciones[0].get('tareas', '')
 
-        # Crear registros nuevos para perfiles adicionales
-        for i, perfil in enumerate(perfiles[1:], 2):
+        update_fields = {
+            'titulo_limpio': primer_titulo,
+            'multi_position_status': 'expanded'
+        }
+        if primer_tareas:
+            update_fields['tareas_explicitas'] = primer_tareas
+
+        set_clause = ', '.join([f"{k} = ?" for k in update_fields.keys()])
+        c.execute(
+            f"UPDATE ofertas_nlp SET {set_clause} WHERE id_oferta = ?",
+            list(update_fields.values()) + [id_original]
+        )
+
+        # Crear registros nuevos para posiciones adicionales
+        for i, pos in enumerate(posiciones[1:], 2):
             nuevo_id = f"{id_original}_{i}"
+            ids_creados.append(nuevo_id)
 
             # Copiar todos los campos del original
             campos = [col for col in columnas]
-            valores = [row_dict[col] if col != 'id_oferta' else nuevo_id for col in campos]
-
-            # Actualizar titulo_limpio con el perfil específico
-            idx_titulo = campos.index('titulo_limpio')
-            valores[idx_titulo] = perfil
+            valores = []
+            for col in campos:
+                if col == 'id_oferta':
+                    valores.append(nuevo_id)
+                elif col == 'titulo_limpio':
+                    valores.append(pos.get('titulo', ''))
+                elif col == 'tareas_explicitas' and pos.get('tareas'):
+                    valores.append(pos['tareas'])
+                elif col == 'parent_id_oferta':
+                    valores.append(str(id_original))
+                elif col == 'es_suboferta':
+                    valores.append(1)
+                elif col == 'numero_suboferta':
+                    valores.append(i)
+                elif col == 'multi_position_status':
+                    valores.append('expanded')
+                else:
+                    valores.append(row_dict[col])
 
             placeholders_insert = ','.join(['?' for _ in campos])
             campos_str = ','.join(campos)
@@ -749,14 +981,26 @@ def expandir_ofertas_multi_perfil(ids: List[str] = None, dry_run: bool = True, u
             try:
                 c.execute(f"INSERT INTO ofertas_nlp ({campos_str}) VALUES ({placeholders_insert})", valores)
             except sqlite3.IntegrityError:
-                # Ya existe, actualizar
-                c.execute("UPDATE ofertas_nlp SET titulo_limpio = ? WHERE id_oferta = ?", (perfil, nuevo_id))
+                # Ya existe, actualizar campos clave
+                c.execute("""
+                    UPDATE ofertas_nlp
+                    SET titulo_limpio = ?, tareas_explicitas = ?,
+                        parent_id_oferta = ?, es_suboferta = 1,
+                        numero_suboferta = ?, multi_position_status = 'expanded'
+                    WHERE id_oferta = ?
+                """, (pos.get('titulo', ''), pos.get('tareas', ''),
+                      str(id_original), i, nuevo_id))
 
     conn.commit()
-    print(f"[OK] Expandidas {len(ofertas_expandir)} ofertas, creados {total_nuevos} registros nuevos")
+    print(f"[OK] Expandidas {len(ofertas_expandir)} ofertas, creados {len(ids_creados)} registros nuevos")
     conn.close()
 
-    return {'multi_perfil': len(ofertas_expandir), 'nuevos': total_nuevos, 'aplicado': True}
+    return {
+        'multi_perfil': len(ofertas_expandir),
+        'nuevos': len(ids_creados),
+        'aplicado': True,
+        'ids_nuevos': ids_creados
+    }
 
 
 def agregar_columna_titulo_limpio():

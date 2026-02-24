@@ -879,20 +879,20 @@ class MatcherV3:
             area_requerida = condicion.get("area_funcional_es")
             if condicion_texto_cumplida and area_requerida:
                 # Si hay condición de área, verificarla
-                condicion_cumplida = oferta_nlp.get("area_funcional", "").lower() == area_requerida.lower()
+                condicion_cumplida = (oferta_nlp.get("area_funcional") or "").lower() == area_requerida.lower()
             else:
                 condicion_cumplida = condicion_texto_cumplida
 
             # Verificar sector_es como filtro adicional (AND con otras condiciones)
             sector_requerido = condicion.get("sector_es")
             if condicion_cumplida and sector_requerido:
-                sector_actual = oferta_nlp.get("sector_empresa", "").lower()
+                sector_actual = (oferta_nlp.get("sector_empresa") or "").lower()
                 condicion_cumplida = sector_actual == sector_requerido.lower()
 
             # Verificar sector_empresa_es_alguno (lista de sectores válidos)
             sectores_validos = condicion.get("sector_empresa_es_alguno", [])
             if condicion_cumplida and sectores_validos:
-                sector_actual = oferta_nlp.get("sector_empresa", "").lower()
+                sector_actual = (oferta_nlp.get("sector_empresa") or "").lower()
                 condicion_cumplida = any(s.lower() == sector_actual for s in sectores_validos)
 
             # Verificar EXCLUSIONES (si alguna se cumple, la regla NO aplica)
@@ -905,13 +905,13 @@ class MatcherV3:
 
                 # sector_no_es: excluir si el sector es alguno de estos
                 excluir_sector = condicion.get("sector_no_es", [])
-                sector_actual = oferta_nlp.get("sector_empresa", "").lower()
+                sector_actual = (oferta_nlp.get("sector_empresa") or "").lower()
                 if excluir_sector and any(s.lower() == sector_actual for s in excluir_sector):
                     condicion_cumplida = False
 
                 # area_funcional_no_es: excluir si el área es alguna de estas
                 excluir_area = condicion.get("area_funcional_no_es", [])
-                area_actual = oferta_nlp.get("area_funcional", "").lower()
+                area_actual = (oferta_nlp.get("area_funcional") or "").lower()
                 if excluir_area and any(a.lower() == area_actual for a in excluir_area):
                     condicion_cumplida = False
 
@@ -1016,20 +1016,20 @@ class MatcherV3:
             # area_funcional_es
             area_requerida = condicion.get("area_funcional_es")
             if condicion_texto_cumplida and area_requerida:
-                condicion_cumplida = oferta_nlp.get("area_funcional", "").lower() == area_requerida.lower()
+                condicion_cumplida = (oferta_nlp.get("area_funcional") or "").lower() == area_requerida.lower()
             else:
                 condicion_cumplida = condicion_texto_cumplida
 
             # sector_es
             sector_requerido = condicion.get("sector_es")
             if condicion_cumplida and sector_requerido:
-                sector_actual = oferta_nlp.get("sector_empresa", "").lower()
+                sector_actual = (oferta_nlp.get("sector_empresa") or "").lower()
                 condicion_cumplida = sector_actual == sector_requerido.lower()
 
             # sector_empresa_es_alguno
             sectores_validos = condicion.get("sector_empresa_es_alguno", [])
             if condicion_cumplida and sectores_validos:
-                sector_actual = oferta_nlp.get("sector_empresa", "").lower()
+                sector_actual = (oferta_nlp.get("sector_empresa") or "").lower()
                 condicion_cumplida = any(s.lower() == sector_actual for s in sectores_validos)
 
             # EXCLUSIONES
@@ -1039,12 +1039,12 @@ class MatcherV3:
                     condicion_cumplida = False
 
                 excluir_sector = condicion.get("sector_no_es", [])
-                sector_actual = oferta_nlp.get("sector_empresa", "").lower()
+                sector_actual = (oferta_nlp.get("sector_empresa") or "").lower()
                 if excluir_sector and any(s.lower() == sector_actual for s in excluir_sector):
                     condicion_cumplida = False
 
                 excluir_area = condicion.get("area_funcional_no_es", [])
-                area_actual = oferta_nlp.get("area_funcional", "").lower()
+                area_actual = (oferta_nlp.get("area_funcional") or "").lower()
                 if excluir_area and any(a.lower() == area_actual for a in excluir_area):
                     condicion_cumplida = False
 

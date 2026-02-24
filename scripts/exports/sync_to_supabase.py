@@ -173,13 +173,15 @@ def extraer_ofertas_validadas(
     # Query principal con JOINs
     query = f"""
     SELECT
-        -- Scraping
-        o.id_oferta, o.titulo, o.empresa, o.descripcion, o.localizacion,
+        -- Scraping (use NLP id_oferta for sub-offers)
+        n.id_oferta, o.titulo, o.empresa, o.descripcion, o.localizacion,
         o.modalidad_trabajo, o.url_oferta, o.portal, o.fecha_publicacion_iso,
         o.scrapeado_en, o.provincia_normalizada, o.localidad_normalizada,
         o.estado_oferta, o.fecha_ultimo_visto, o.dias_publicada,
         o.categoria_permanencia,
         o.es_republicacion, o.numero_republicacion,
+        -- Multi-position lineage
+        n.parent_id_oferta, n.es_suboferta,
         -- NLP
         n.titulo_limpio, n.tareas_explicitas, n.mision_rol,
         n.area_funcional, n.nivel_seniority, n.sector_empresa,
@@ -198,8 +200,10 @@ def extraer_ofertas_validadas(
         m.matching_timestamp, m.matching_version, m.run_id,
         m.estado_validacion, m.validado_timestamp, m.validado_por
     FROM ofertas o
-    INNER JOIN ofertas_nlp n ON o.id_oferta = n.id_oferta
-    INNER JOIN ofertas_esco_matching m ON o.id_oferta = m.id_oferta
+    INNER JOIN ofertas_nlp n ON o.id_oferta = CASE
+        WHEN n.es_suboferta = 1 THEN CAST(n.parent_id_oferta AS INTEGER)
+        ELSE n.id_oferta END
+    INNER JOIN ofertas_esco_matching m ON n.id_oferta = m.id_oferta
     WHERE {where_sql}
     ORDER BY m.validado_timestamp DESC
     """

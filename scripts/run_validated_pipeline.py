@@ -337,6 +337,37 @@ def run_full_pipeline(
                 if verbose:
                     safe_print(f"WARN: Error guardando extraction report: {e}")
 
+        # =========================================================
+        # PASO 1.6: MULTI-POSITION DETECTION
+        # =========================================================
+        if not skip_matching and ids_to_process:
+            if verbose:
+                safe_print("\n" + "=" * 60)
+                safe_print("PASO 1.6: MULTI-POSITION DETECTION")
+                safe_print("=" * 60)
+
+            try:
+                from database.limpiar_titulos import expandir_ofertas_multi_perfil
+
+                mp_result = expandir_ofertas_multi_perfil(
+                    ids=ids_to_process,
+                    dry_run=False,
+                    usar_llm=True
+                )
+                resultados["multi_position"] = mp_result
+
+                # Agregar IDs de sub-ofertas al lote de matching
+                if mp_result.get('ids_nuevos'):
+                    ids_to_process.extend(mp_result['ids_nuevos'])
+
+                if verbose:
+                    detected = mp_result.get('multi_perfil', 0)
+                    nuevos = mp_result.get('nuevos', 0)
+                    safe_print(f"Multi-posición: {detected} detectadas, {nuevos} sub-ofertas creadas")
+
+            except Exception as e:
+                safe_print(f"Warning: Error en multi-position detection: {e}")
+
         # PASO 2: Matching (si no se salta)
         if not skip_matching:
             if verbose:

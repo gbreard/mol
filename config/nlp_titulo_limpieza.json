@@ -898,7 +898,22 @@
       "full",
       "part"
     ],
-    "_nota": "Un titulo se considera multi-perfil si tiene 2+ items separados por coma que parecen ocupaciones"
+    "_nota": "Un titulo se considera multi-perfil si tiene 2+ items separados por coma que parecen ocupaciones",
+    "patrones_descripcion": [
+      "(?:siguientes|distintas?|múltiples|varias)\\s+(?:posiciones|puestos|vacantes)",
+      "(?:buscamos|incorporar|cubrir)\\s+(?:las\\s+)?(?:siguientes)",
+      "posiciones?\\s+(?:clave|disponibles?)"
+    ],
+    "patrones_titulo_sospechoso": [
+      "\\|.*(?:jefe|gerente|supervisor|coordinador)",
+      "(?:jefe|gerente).*(?:y|/).*(?:supervisor|coordinador)"
+    ],
+    "llm_decompose": {
+      "enabled": true,
+      "model": "qwen2.5:7b",
+      "timeout": 60,
+      "min_confianza": 0.7
+    }
   },
   "preposiciones_final": {
     "_descripcion": "Preposiciones que quedan sueltas al final y deben eliminarse",

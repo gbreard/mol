@@ -425,10 +425,14 @@ def get_control_data(conn: sqlite3.Connection, offer_ids: List[str], columns: Li
             n.clae_code,
             n.clae_seccion,
             n.area_funcional,
-            n.nivel_seniority
+            n.nivel_seniority,
+            n.parent_id_oferta,
+            n.es_suboferta
         FROM ofertas_esco_matching m
-        LEFT JOIN ofertas o ON m.id_oferta = o.id_oferta
         LEFT JOIN ofertas_nlp n ON m.id_oferta = n.id_oferta
+        LEFT JOIN ofertas o ON CASE
+            WHEN n.es_suboferta = 1 THEN CAST(n.parent_id_oferta AS INTEGER)
+            ELSE n.id_oferta END = o.id_oferta
         WHERE m.id_oferta IN ({placeholders})
     """
 
