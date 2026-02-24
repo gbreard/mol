@@ -6,24 +6,29 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-02-24 14:35"
+  fecha_actualizacion: "2026-02-24 18:16"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "presentacion"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "23 errores sin resolver - sistema sugiere Fase 2"
+  fase_detalle: "Último scraping hace 4 días - sistema sugiere Fase 1"
 
 ultimo_trabajo:
-  fecha: "2026-02-23"
-  sesion: "Sprint 8: Seguridad S-05 rate limiting + S-07 security headers"
+  fecha: "2026-02-24"
+  sesion: "Sprint 9b: Test suite cleanup + validation errors resolution"
   cambios:
-    - "S-05: In-memory sliding-window rate limiter (lib/rate-limit.ts) — 3 tiers: public 30/min, authenticated 60/min, admin 120/min"
-    - "S-05: Rate limit integrado en api-auth.ts ANTES de Supabase auth (bloquea floods early)"
-    - "S-05: 11 API routes protegidas (5 públicas con requireRateLimit, 6 auth/admin via requireAuth/requireAdmin)"
-    - "S-07: Security headers en next.config.ts — X-Frame-Options: DENY, X-Content-Type-Options: nosniff, Referrer-Policy"
-    - "Tests: 25 nuevos (unit rate-limit + contract s05-rate-limiting + s07-headers) — 192/192 total passing"
-    - "docs/plan/06_SEGURIDAD.md actualizado: S-05 + S-07 marcados resueltos (6/17 total)"
-    - "Deploy Vercel: mol-nextjs.vercel.app — 429 verificado en producción, headers S-07 confirmados"
-    - "Limitación documentada: in-memory pierde estado en cold starts Vercel (suficiente para OEDE interno)"
+    - "fix(tests): Eliminados 13 tests legacy/standalone (imports rotos, scripts disfrazados de tests)"
+    - "fix(tests): Actualizados 4 tests para Sprint 7 config (gate rules 8→5, Ventas/Comercial→Ventas, NLP version >= 10.x)"
+    - "Resultado: 246/246 tests passing, 0 collection errors (antes: 10 fallos + collection errors)"
+    - "Revisados y resueltos 23/23 validation_errors: 9 scraping (dato origen), 4 divergencia_dual (regla correcta), 4 revision_sector (cross-sector legítimo), 3 skills_coherencia + 2 skills_esenciales (gap ESCO/AR), 1 FP tareas_skills"
+    - "Errores sin resolver: 23 → 0. Cola limpia."
+  sesion_anterior:
+    tema: "Sprint 9: Multi-position detector + matching fixes + Supabase sync"
+    cambios_resumen: "Detector multi-posición, Supabase sync 16K ofertas, R246_jefe_calidad"
+  sesion_anterior:
+    tema: "Sprint 8: Seguridad S-05 rate limiting + S-07 security headers"
+    cambios:
+      - "S-05: Rate limiter 3 tiers, S-07: Security headers"
+      - "192/192 tests passing, deploy Vercel verificado"
   sesion_anterior:
     tema: "Sprint 7: Recalibrar validación + sync 10K+ a Supabase"
     cambios:
