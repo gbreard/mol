@@ -670,6 +670,9 @@ def transform_oferta_for_supabase(oferta: Dict) -> Dict:
         'categoria_permanencia': oferta.get('categoria_permanencia'),
         'es_republicacion': bool(oferta.get('es_republicacion')) if oferta.get('es_republicacion') is not None else False,
         'numero_republicacion': oferta.get('numero_republicacion'),
+        # Multi-position lineage
+        'parent_id_oferta': oferta.get('parent_id_oferta'),
+        'es_suboferta': bool(oferta.get('es_suboferta')) if oferta.get('es_suboferta') is not None else False,
         'fecha_sync': datetime.now().isoformat(),
     }
 
