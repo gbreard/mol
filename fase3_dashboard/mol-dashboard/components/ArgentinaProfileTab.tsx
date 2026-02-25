@@ -11,9 +11,16 @@ interface OccupationInfo {
   offerCount?: number;
 }
 
+interface SkillsIntelData {
+  stats: { total_ofertas: number; total_ocupaciones: number };
+  occupations: { esco_uri: string; esco_label: string; isco_code: string; ofertas_count: number }[];
+  generated_at: string;
+}
+
 interface ArgentinaProfileTabProps {
   occupationsData: OccupationFullDetailIndex | null;
   occupationsList: OccupationInfo[];
+  skillsIntelData: SkillsIntelData | null;
 }
 
 // Tipo para el perfil dinámico desde la API
@@ -53,64 +60,37 @@ interface PerfilArgentinaData {
   generated_at: string;
 }
 
-// Tipo para las estadísticas de ocupaciones (desde API ligera)
-interface OccupationsStats {
-  total_ofertas: number;
-  total_ocupaciones: number;
-}
-
 export default function ArgentinaProfileTab({
   occupationsData,
-  occupationsList
+  skillsIntelData
 }: ArgentinaProfileTabProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  // Estado para lista de ocupaciones con ofertas (carga inicial)
-  const [occupationsWithOffers, setOccupationsWithOffers] = useState<OccupationInfo[]>([]);
-  const [stats, setStats] = useState<OccupationsStats>({ total_ofertas: 0, total_ocupaciones: 0 });
-  const [isLoadingList, setIsLoadingList] = useState(true);
 
   // Estado para el perfil seleccionado (carga bajo demanda)
   const [selectedProfile, setSelectedProfile] = useState<PerfilArgentinaData | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
 
-  // Cargar lista de ocupaciones con ofertas al montar
-  useEffect(() => {
-    async function loadOccupationsList() {
-      setIsLoadingList(true);
-      try {
-        const res = await fetch('/api/skills-intelligence');
-        const data = await res.json();
+  // Derive occupations list + stats from shared skillsIntelData (no duplicate fetch)
+  const occupationsWithOffers = useMemo(() => {
+    if (!skillsIntelData) return [];
+    return skillsIntelData.occupations
+      .map(o => ({
+        id: o.esco_uri?.split('/').pop() || '',
+        label: o.esco_label || '',
+        isco: o.isco_code || '',
+        offerCount: o.ofertas_count || 0
+      }))
+      .filter((o): o is OccupationInfo & { offerCount: number } => !!o.id && (o.offerCount || 0) > 0)
+      .sort((a, b) => b.offerCount - a.offerCount);
+  }, [skillsIntelData]);
 
-        // Transformar a lista de ocupaciones
-        const occs: OccupationInfo[] = (data.occupations || []).map((o: any) => ({
-          id: o.esco_uri?.split('/').pop() || '',
-          label: o.esco_label || '',
-          isco: o.isco_code || '',
-          offerCount: o.ofertas_count || 0
-        })).filter((o: OccupationInfo) => o.id && (o.offerCount || 0) > 0);
-
-        // Ordenar por cantidad de ofertas (descendente)
-        occs.sort((a, b) => (b.offerCount || 0) - (a.offerCount || 0));
-
-        setOccupationsWithOffers(occs);
-        setStats({
-          total_ofertas: data.stats?.total_ofertas || 0,
-          total_ocupaciones: occs.length
-        });
-      } catch (err) {
-        console.error('Error loading occupations list:', err);
-        setOccupationsWithOffers([]);
-      } finally {
-        setIsLoadingList(false);
-      }
-    }
-
-    loadOccupationsList();
-  }, []);
+  const stats = useMemo(() => ({
+    total_ofertas: skillsIntelData?.stats.total_ofertas ?? 0,
+    total_ocupaciones: occupationsWithOffers.length
+  }), [skillsIntelData, occupationsWithOffers.length]);
 
   // Cargar perfil cuando se selecciona una ocupación
   useEffect(() => {
@@ -189,8 +169,8 @@ export default function ArgentinaProfileTab({
     }
   };
 
-  // Loading state inicial
-  if (isLoadingList) {
+  // Loading state while parent fetches skills-intelligence data
+  if (!skillsIntelData) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-teal-500" />

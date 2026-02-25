@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Map, Briefcase, GitCompare, Target, Loader2, Search, X, Globe, RefreshCw } from 'lucide-react';
+import { Map, Briefcase, GitCompare, Target, Loader2, Search, X, Globe } from 'lucide-react';
 import SkillsSunburst from '@/components/SkillsSunburst';
 import OccupationDetail from '@/components/OccupationDetail';
 import OccupationCompare from '@/components/OccupationCompare';
 import MySkillsSearch from '@/components/MySkillsSearch';
 import ArgentinaProfileTab from '@/components/ArgentinaProfileTab';
 import ConsolidatedProfileTab from '@/components/ConsolidatedProfileTab';
-import { OccupationFullDetailIndex, MOLSkillsProfileIndex } from '@/lib/types';
+import { OccupationFullDetailIndex } from '@/lib/types';
 
 type TabId = 'taxonomy' | 'occupation' | 'compare' | 'myskills' | 'argentina' | 'consolidated';
 
@@ -79,9 +79,12 @@ export default function AdminSkillsPage() {
   const [occupationsList, setOccupationsList] = useState<OccupationBasicInfo[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // MOL Profile data (for Argentina tab)
-  const [molProfileData, setMolProfileData] = useState<MOLSkillsProfileIndex | null>(null);
-  const [isMolLoading, setIsMolLoading] = useState(false);
+  // Single fetch for /api/skills-intelligence — shared across header + tabs
+  const [skillsIntelData, setSkillsIntelData] = useState<{
+    stats: { total_ofertas: number; total_ocupaciones: number };
+    occupations: { esco_uri: string; esco_label: string; isco_code: string; ofertas_count: number }[];
+    generated_at: string;
+  } | null>(null);
 
   // For Tab 2: Occupation Detail - pre-selected occupation
   const [selectedOccupation, setSelectedOccupation] = useState<string | null>(null);
@@ -178,36 +181,22 @@ export default function AdminSkillsPage() {
     }
   }, [activeTab, occupationsData, occupationsList.length]);
 
-  // Load MOL profile data when switching to argentina or consolidated tab
-  // Usa el JSON pre-generado que tiene TODOS los datos (skills, comparison, etc.)
-  const loadMOLProfile = async () => {
-    setIsMolLoading(true);
-    try {
-      // Cargar JSON con datos completos (skills, comparison, etc.)
-      console.log('[MOL DEBUG] Loading mol_skills_profile.json...');
-      const res = await fetch('/data/mol_skills_profile.json');
-      const data = await res.json();
-
-      console.log('[MOL DEBUG] Loaded mol_skills_profile.json:', {
-        version: data.version,
-        stats: data.stats,
-        occupationsCount: Object.keys(data.occupations || {}).length,
-        sampleOccupation: Object.values(data.occupations || {})[0]
-      });
-
-      setMolProfileData(data);
-    } catch (err) {
-      console.error('[MOL DEBUG] Error loading MOL profile:', err);
-    } finally {
-      setIsMolLoading(false);
-    }
-  };
-
+  // Single fetch for skills-intelligence API — used by header + Argentina + Consolidated tabs
   useEffect(() => {
-    if ((activeTab === 'argentina' || activeTab === 'consolidated') && !molProfileData && !isMolLoading) {
-      loadMOLProfile();
-    }
-  }, [activeTab, molProfileData, isMolLoading]);
+    fetch('/api/skills-intelligence')
+      .then(res => res.json())
+      .then(data => {
+        setSkillsIntelData({
+          stats: {
+            total_ofertas: data.stats?.total_ofertas ?? 0,
+            total_ocupaciones: data.stats?.total_ocupaciones ?? 0,
+          },
+          occupations: data.occupations ?? [],
+          generated_at: data.generated_at ?? new Date().toISOString()
+        });
+      })
+      .catch(err => console.error('[SKILLS-INTEL] Error loading data:', err));
+  }, []);
 
   // Handler for navigating from occupation detail to compare
   const handleNavigateToCompare = (occAId: string, occBId: string) => {
@@ -222,40 +211,24 @@ export default function AdminSkillsPage() {
     setActiveTab('occupation');
   };
 
-  // Handler para refrescar datos MOL
-  const handleRefreshMOL = () => {
-    setMolProfileData(null);
-    loadMOLProfile();
-  };
-
   return (
     <div className="p-8">
       {/* Header */}
-      <div className="mb-8 flex items-start justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <Target className="w-8 h-8 text-purple-600" />
-            Skills Intelligence Dashboard
-          </h1>
-          <p className="mt-2 text-gray-600">
-            Explora la taxonomia ESCO, analiza ocupaciones y planifica transiciones laborales
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+          <Target className="w-8 h-8 text-purple-600" />
+          Skills Intelligence Dashboard
+        </h1>
+        <p className="mt-2 text-gray-600">
+          Explora la taxonomia ESCO, analiza ocupaciones y planifica transiciones laborales
+        </p>
+        {skillsIntelData && (
+          <p className="mt-1 text-sm text-gray-500">
+            Datos MOL: {skillsIntelData.stats.total_ofertas.toLocaleString()} ofertas |{' '}
+            {skillsIntelData.stats.total_ocupaciones.toLocaleString()} ocupaciones |{' '}
+            Actualizado: {new Date(skillsIntelData.generated_at).toLocaleString()}
           </p>
-          {molProfileData && (
-            <p className="mt-1 text-sm text-gray-500">
-              Datos MOL: {molProfileData.stats.total_offers.toLocaleString()} ofertas |
-              {Object.keys(molProfileData.occupations).length} ocupaciones |
-              Actualizado: {new Date(molProfileData.generated_at).toLocaleString()}
-            </p>
-          )}
-        </div>
-        <button
-          onClick={handleRefreshMOL}
-          disabled={isMolLoading}
-          className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
-        >
-          <RefreshCw className={`w-5 h-5 ${isMolLoading ? 'animate-spin' : ''}`} />
-          {isMolLoading ? 'Cargando...' : 'Refrescar datos'}
-        </button>
+        )}
       </div>
 
       {/* Tabs */}
@@ -327,6 +300,7 @@ export default function AdminSkillsPage() {
           <ArgentinaProfileTab
             occupationsData={occupationsData}
             occupationsList={occupationsList}
+            skillsIntelData={skillsIntelData}
           />
         </div>
       )}
@@ -334,9 +308,9 @@ export default function AdminSkillsPage() {
       {activeTab === 'consolidated' && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <ConsolidatedProfileTab
-            molProfileData={molProfileData}
             occupationsData={occupationsData}
             occupationsList={occupationsList}
+            skillsIntelData={skillsIntelData}
           />
         </div>
       )}
