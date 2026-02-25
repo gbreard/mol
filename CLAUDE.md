@@ -467,10 +467,15 @@ tail -f /tmp/pipeline.log
 | **Comparar runs** | `python scripts/compare_runs.py --latest` | Crear comparador custom |
 | **Validar ofertas** | `python scripts/validar_ofertas.py --ids X --estado validado` | UPDATE manual en BD |
 | **Export Excel** | `python scripts/exports/export_validation_excel.py --etapa completo --ids X` | - |
-| **Sync Supabase** | `python scripts/exports/sync_to_supabase.py` (incremental) | Queries directas a Supabase |
+| **Sync Supabase** | `python scripts/exports/sync_to_supabase.py` (incremental auto v2.2) | Queries directas a Supabase |
 | **Sync Full** | `python scripts/exports/sync_to_supabase.py --full` | - |
 | **Reapply Rules** | `python scripts/reapply_rules_to_validated.py` | Reprocesar validadas manualmente |
 | **Generar Architecture JSON** | `python scripts/generate_architecture_json.py` | Editar dashboard_architecture.json a mano |
+
+**Sync incremental (v2.2):** Sin argumentos, solo sincroniza ofertas con
+`matching_timestamp` o `validado_timestamp` posterior al último sync exitoso.
+El timestamp se lee/guarda en `config/supabase_sync_log.json`.
+Usar `--full` para forzar sync completo.
 
 **⭐ REGLA CRÍTICA - Pipeline Integrado:**
 - **SIEMPRE** usar `run_validated_pipeline.py` para procesar ofertas

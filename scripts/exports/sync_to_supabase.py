@@ -3,16 +3,20 @@
 Sincroniza ofertas validadas desde SQLite local hacia Supabase.
 
 Uso:
-    python scripts/exports/sync_to_supabase.py              # Sync todas las validadas
+    python scripts/exports/sync_to_supabase.py              # Incremental automático
+    python scripts/exports/sync_to_supabase.py --full       # Sync completo (todas)
     python scripts/exports/sync_to_supabase.py --since 2026-01-15  # Solo desde fecha
     python scripts/exports/sync_to_supabase.py --ids 123,456       # Ofertas específicas
     python scripts/exports/sync_to_supabase.py --dry-run           # Preview sin escribir
     python scripts/exports/sync_to_supabase.py --stats             # Ver estadísticas
-    python scripts/exports/sync_to_supabase.py --full              # Sync completo (todas)
     python scripts/exports/sync_to_supabase.py --catalogs-only     # Solo catálogos ESCO
 
+Sin argumentos: lee last_sync_timestamp de config/supabase_sync_log.json y solo
+sincroniza ofertas con matching_timestamp o validado_timestamp posterior.
+Usar --full para forzar sync completo de todas las validadas.
+
 Autor: MOL Team
-Versión: 2.1.0 - Sync de sistema_estado para /admin/scraping y /admin/arquitectura
+Versión: 2.2.0 - Sync incremental automático (lee last_sync_timestamp)
 
 Tablas Supabase:
     - ofertas_dashboard: Ofertas desnormalizadas para queries rápidas
@@ -160,8 +164,10 @@ def extraer_ofertas_validadas(
     params = []
 
     if since:
-        where_clauses.append("m.validado_timestamp >= ?")
-        params.append(since)
+        # Incluir ofertas con validado_timestamp O matching_timestamp posterior
+        # (una oferta ya validada puede reprocesarse por regla nueva → matching_timestamp cambia)
+        where_clauses.append("(m.validado_timestamp >= ? OR m.matching_timestamp >= ?)")
+        params.extend([since, since])
 
     if ids:
         placeholders = ','.join(['?' for _ in ids])
@@ -1395,6 +1401,54 @@ def mostrar_stats_local(conn: sqlite3.Connection):
 
 
 # ============================================================
+# SYNC LOG (incremental auto-detection)
+# ============================================================
+
+SYNC_LOG_PATH = PROJECT_ROOT / "config" / "supabase_sync_log.json"
+
+
+def load_last_sync_timestamp() -> Optional[str]:
+    """Lee last_sync_timestamp del log de sync previo."""
+    if SYNC_LOG_PATH.exists():
+        try:
+            with open(SYNC_LOG_PATH, 'r') as f:
+                data = json.load(f)
+            return data.get("last_sync_timestamp")
+        except (json.JSONDecodeError, IOError):
+            return None
+    return None
+
+
+def save_sync_log(n_ofertas: int, n_skills: int):
+    """Guarda timestamp del sync exitoso para auto-detección incremental."""
+    now = datetime.now().isoformat()
+
+    data = {}
+    if SYNC_LOG_PATH.exists():
+        try:
+            with open(SYNC_LOG_PATH, 'r') as f:
+                data = json.load(f)
+        except (json.JSONDecodeError, IOError):
+            data = {}
+
+    # Agregar a history (mantener últimos 20)
+    history = data.get("history", [])
+    history.append({
+        "timestamp": now,
+        "ofertas": n_ofertas,
+        "skills": n_skills
+    })
+    data["history"] = history[-20:]
+    data["last_sync_timestamp"] = now
+    data["last_sync_ofertas"] = n_ofertas
+    data["last_sync_skills"] = n_skills
+
+    with open(SYNC_LOG_PATH, 'w') as f:
+        json.dump(data, f, indent=2)
+    logger.info(f"Sync log guardado: {now}")
+
+
+# ============================================================
 # MAIN
 # ============================================================
 
@@ -1430,6 +1484,16 @@ Ejemplos:
     offer_ids = None
     if args.ids:
         offer_ids = [id.strip() for id in args.ids.split(',')]
+
+    # Auto-detección incremental: si no se pasa --full, --ids ni --since,
+    # leer último timestamp de sync y usar como --since automático
+    if not args.full and not args.ids and not args.since and not args.stats and not args.catalogs_only:
+        last_sync = load_last_sync_timestamp()
+        if last_sync:
+            logger.info(f"Modo INCREMENTAL automático: solo cambios desde {last_sync}")
+            args.since = last_sync
+        else:
+            logger.info("Sin sync previo registrado — ejecutando sync completo")
 
     try:
         # Conectar
@@ -1505,6 +1569,8 @@ Ejemplos:
         print("="*60)
 
         if not args.dry_run:
+            # Guardar timestamp para próximo sync incremental
+            save_sync_log(n_ofertas, n_skills)
             logger.info("Sincronización completada exitosamente!")
 
             # Regenerar perfiles MOL vs ESCO automáticamente después de cada sync
