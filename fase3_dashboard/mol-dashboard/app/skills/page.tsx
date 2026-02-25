@@ -44,6 +44,14 @@ const TABS: Tab[] = [
   }
 ];
 
+interface HierarchyNode {
+  name: string;
+  label?: string;
+  type?: 'skill' | 'knowledge';
+  value?: number;
+  children?: HierarchyNode[];
+}
+
 interface Stats {
   total: number;
   skills: number;
@@ -59,6 +67,11 @@ interface OccupationBasicInfo {
 export default function SkillsPage() {
   const [activeTab, setActiveTab] = useState<TabId>('taxonomy');
   const [stats, setStats] = useState<Stats>({ total: 0, skills: 0, knowledge: 0 });
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [statsError, setStatsError] = useState<string | null>(null);
+
+  // Shared hierarchy data (loaded once, used by stats + sunburst)
+  const [hierarchyData, setHierarchyData] = useState<HierarchyNode | null>(null);
 
   // Occupation data
   const [occupationsData, setOccupationsData] = useState<OccupationFullDetailIndex | null>(null);
@@ -72,15 +85,23 @@ export default function SkillsPage() {
   const [compareOccA, setCompareOccA] = useState<string | null>(null);
   const [compareOccB, setCompareOccB] = useState<string | null>(null);
 
-  // Load stats for taxonomy tab
+  // Load hierarchy data ONCE — used for both stats and sunburst
   useEffect(() => {
+    setStatsLoading(true);
+    setStatsError(null);
+
     fetch('/data/esco_skills_hierarchy.json')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
       .then(data => {
+        setHierarchyData(data);
+
         let skills = 0;
         let knowledge = 0;
 
-        const countByType = (node: any): void => {
+        const countByType = (node: HierarchyNode): void => {
           if (node.type === 'skill' && node.value) {
             skills += 1;
           } else if (node.type === 'knowledge' && node.value) {
@@ -96,8 +117,13 @@ export default function SkillsPage() {
         }
 
         setStats({ total: skills + knowledge, skills, knowledge });
+        setStatsLoading(false);
       })
-      .catch(console.error);
+      .catch(err => {
+        console.error('[SKILLS] Error loading hierarchy:', err);
+        setStatsError(err.message || 'Error cargando datos');
+        setStatsLoading(false);
+      });
   }, []);
 
   // Load occupation data when switching to occupation/compare/myskills tabs
@@ -107,7 +133,10 @@ export default function SkillsPage() {
       setIsLoading(true);
 
       fetch('/data/occupation_full_detail.json')
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
         .then((data: OccupationFullDetailIndex) => {
           setOccupationsData(data);
 
@@ -124,7 +153,7 @@ export default function SkillsPage() {
           setIsLoading(false);
         })
         .catch(err => {
-          console.error('Error loading occupations:', err);
+          console.error('[SKILLS] Error loading occupations:', err);
           setIsLoading(false);
         });
     }
@@ -185,7 +214,7 @@ export default function SkillsPage() {
 
         {/* Tab Content */}
         {activeTab === 'taxonomy' && (
-          <TaxonomyTab stats={stats} />
+          <TaxonomyTab stats={stats} statsLoading={statsLoading} statsError={statsError} hierarchyData={hierarchyData} />
         )}
 
         {activeTab === 'occupation' && (
@@ -228,7 +257,12 @@ export default function SkillsPage() {
 
 type FilterType = 'all' | 'skills' | 'knowledge';
 
-function TaxonomyTab({ stats }: { stats: Stats }) {
+function TaxonomyTab({ stats, statsLoading, statsError, hierarchyData }: {
+  stats: Stats;
+  statsLoading: boolean;
+  statsError: string | null;
+  hierarchyData: HierarchyNode | null;
+}) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<FilterType>('all');
 
@@ -237,18 +271,28 @@ function TaxonomyTab({ stats }: { stats: Stats }) {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-          <div className="text-3xl font-bold text-gray-900">
-            {stats.total.toLocaleString()}
-          </div>
+          {statsLoading ? (
+            <div className="h-9 w-24 bg-gray-200 rounded animate-pulse" />
+          ) : statsError ? (
+            <div className="text-red-500 text-sm">{statsError}</div>
+          ) : (
+            <div className="text-3xl font-bold text-gray-900">
+              {stats.total.toLocaleString()}
+            </div>
+          )}
           <div className="text-sm text-gray-500 mt-1">Total competencias ESCO</div>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-2xl font-bold text-indigo-600">
-                {stats.skills.toLocaleString()}
-              </div>
+              {statsLoading ? (
+                <div className="h-8 w-20 bg-gray-200 rounded animate-pulse" />
+              ) : (
+                <div className="text-2xl font-bold text-indigo-600">
+                  {stats.skills.toLocaleString()}
+                </div>
+              )}
               <div className="text-sm text-gray-500 mt-1">Skills (saber hacer)</div>
             </div>
             <div className="text-lg font-semibold text-indigo-400">
@@ -260,9 +304,13 @@ function TaxonomyTab({ stats }: { stats: Stats }) {
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-2xl font-bold text-amber-600">
-                {stats.knowledge.toLocaleString()}
-              </div>
+              {statsLoading ? (
+                <div className="h-8 w-20 bg-gray-200 rounded animate-pulse" />
+              ) : (
+                <div className="text-2xl font-bold text-amber-600">
+                  {stats.knowledge.toLocaleString()}
+                </div>
+              )}
               <div className="text-sm text-gray-500 mt-1">Conocimientos (saber)</div>
             </div>
             <div className="text-lg font-semibold text-amber-400">
@@ -352,6 +400,7 @@ function TaxonomyTab({ stats }: { stats: Stats }) {
         <SkillsSunburst
           width={700}
           height={700}
+          data={hierarchyData ?? undefined}
           searchTerm={searchTerm}
           filterType={filterType}
         />

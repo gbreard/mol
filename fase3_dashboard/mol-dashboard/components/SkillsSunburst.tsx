@@ -137,8 +137,8 @@ export default function SkillsSunburst({
   filterType = 'all'
 }: SunburstProps) {
   const svgRef = useRef<SVGSVGElement>(null);
-  const [data, setData] = useState<HierarchyNode | null>(externalData || null);
-  const [loading, setLoading] = useState(!externalData);
+  const [internalData, setInternalData] = useState<HierarchyNode | null>(null);
+  const [loading, setLoading] = useState(true);
   const [selectedNode, setSelectedNode] = useState<SelectedNode | null>(null);
   const [tooltip, setTooltip] = useState<{
     visible: boolean;
@@ -147,26 +147,35 @@ export default function SkillsSunburst({
     content: { name: string; label: string; value: number; percentage: string; type?: string; highlightState?: string; matchesSearch?: boolean };
   }>({ visible: false, x: 0, y: 0, content: { name: '', label: '', value: 0, percentage: '' } });
 
+  // Use external data if provided, otherwise use internally fetched data
+  const data = externalData || internalData;
+
   // Normalize search term for matching
   const normalizedSearch = searchTerm.toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
 
-  // Cargar datos si no se proporcionan externamente
+  // Cargar datos solo si no se proporcionan externamente
   useEffect(() => {
-    if (!externalData) {
-      setLoading(true);
-      fetch('/data/esco_skills_hierarchy.json')
-        .then(res => res.json())
-        .then(d => {
-          setData(d);
-          setLoading(false);
-        })
-        .catch(err => {
-          console.error('Error loading data:', err);
-          setLoading(false);
-        });
+    if (externalData) {
+      setLoading(false);
+      return;
     }
+
+    setLoading(true);
+    fetch('/data/esco_skills_hierarchy.json')
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(d => {
+        setInternalData(d);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('[SUNBURST] Error loading data:', err);
+        setLoading(false);
+      });
   }, [externalData]);
 
   // Funcion para construir path del nodo
