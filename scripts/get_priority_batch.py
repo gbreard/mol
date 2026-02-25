@@ -219,7 +219,7 @@ def get_pending_offers_with_scores(conn, weights: dict, params: dict, limit: int
         WHERE NOT EXISTS (
             SELECT 1 FROM ofertas_nlp n WHERE n.id_oferta = o.id_oferta
         )
-        AND o.estado_oferta = 'activa'
+        -- Procesar TODAS las ofertas sin NLP, incluyendo bajas (dato histórico válido)
     """
 
     cur = conn.execute(query)
