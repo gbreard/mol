@@ -71,6 +71,16 @@
                         │ Mapa pantallas  │
                         │ Pipeline 3 fases│
                         │ Métricas vivo   │
+                        └────────┬────────┘
+                                 │
+                                 ▼
+                        ┌─────────────────┐
+                        │ 13_LABORATORIO  │
+                        │ _INDICADORES    │
+                        │                 │
+                        │ I-01 a I-13     │
+                        │ Ciclo de vida   │
+                        │ Priorizacion    │
                         └─────────────────┘
 ```
 

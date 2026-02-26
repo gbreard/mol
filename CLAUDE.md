@@ -276,6 +276,7 @@ for i in result.data:
 | `docs/plan/10_OBSERVABILIDAD.md` | Monitoreo, métricas, pipeline | Admin dashboard |
 | `docs/plan/11_CONFIGURACION_ADMIN.md` | /admin/configuracion | Panel admin |
 | `docs/plan/12_INSIGHTS_SISTEMA.md` | Performance + ubicación | Insights SQL |
+| `docs/plan/13_LABORATORIO_INDICADORES.md` | Indicadores experimentales, ciclo de vida | Agregar/priorizar indicadores |
 | `docs/plan/ANALISIS_ISSUES_USUARIO.md` | Feedback usuario, sprints | Issues reportados |
 
 ### Documentación Técnica (Pipeline)
