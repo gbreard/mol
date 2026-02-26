@@ -62,6 +62,7 @@ TABLE_OFERTAS = 'ofertas_dashboard'
 TABLE_SKILLS = 'ofertas_skills'
 TABLE_SKILLS_CATALOG = 'skills'
 TABLE_OCUPACIONES = 'ocupaciones_esco'
+TABLE_TENSION = 'tension_ocupaciones'
 
 
 def load_config() -> Dict[str, str]:
@@ -1330,6 +1331,144 @@ def sync_sistema_estado(client, conn: sqlite3.Connection, dry_run: bool = False)
 
 
 # ============================================================
+# TENSIÓN DE DEMANDA (V-16)
+# ============================================================
+
+def calcular_tension_ocupaciones(conn: sqlite3.Connection) -> List[Dict[str, Any]]:
+    """
+    Calcula indicadores de tensión de demanda por ocupación ISCO.
+
+    Indicadores:
+    - Persistencia: % de posiciones con ventana de publicación >45 días
+    - Insistencia: % de posiciones que fueron republicadas
+    - Cuadrante: CRITICO (alta-alta), URGENTE (alta-baja), PASIVO (baja-alta), FLUIDO (baja-baja)
+
+    Una "posición" = un grupo_republicacion (ofertas agrupadas que son la misma vacante)
+    Ofertas sin grupo = cada una es su propia posición.
+    """
+    query = """
+    WITH ofertas_validadas AS (
+        SELECT
+            o.id_oferta,
+            m.isco_code,
+            m.isco_label,
+            o.dias_publicada,
+            COALESCE(o.grupo_republicacion, o.id_oferta) AS posicion_id,
+            CASE WHEN o.grupo_republicacion IS NOT NULL THEN 1 ELSE 0 END AS es_republicada
+        FROM ofertas o
+        INNER JOIN ofertas_esco_matching m ON o.id_oferta = m.id_oferta
+        WHERE m.estado_validacion IN ('validado', 'validado_claude', 'validado_humano')
+          AND m.isco_code IS NOT NULL
+    ),
+    posiciones AS (
+        SELECT
+            isco_code,
+            isco_label,
+            posicion_id,
+            MAX(dias_publicada) AS ventana_dias,
+            MAX(es_republicada) AS fue_republicada,
+            COUNT(*) AS ofertas_en_posicion
+        FROM ofertas_validadas
+        GROUP BY isco_code, isco_label, posicion_id
+    ),
+    por_isco AS (
+        SELECT
+            isco_code,
+            MAX(isco_label) AS isco_label,
+            COUNT(DISTINCT posicion_id) AS total_posiciones,
+            SUM(ofertas_en_posicion) AS total_ofertas,
+            ROUND(
+                100.0 * SUM(CASE WHEN ventana_dias > 45 THEN 1 ELSE 0 END) / COUNT(*),
+                2
+            ) AS persistencia,
+            ROUND(
+                100.0 * SUM(CASE WHEN fue_republicada = 1 THEN 1 ELSE 0 END) / COUNT(*),
+                2
+            ) AS insistencia
+        FROM posiciones
+        GROUP BY isco_code
+        HAVING COUNT(DISTINCT posicion_id) >= 1
+    )
+    SELECT
+        isco_code,
+        isco_label,
+        total_posiciones,
+        total_ofertas,
+        persistencia,
+        insistencia,
+        CASE
+            WHEN persistencia >= 50 AND insistencia >= 50 THEN 'CRITICO'
+            WHEN persistencia >= 50 AND insistencia < 50 THEN 'URGENTE'
+            WHEN persistencia < 50 AND insistencia >= 50 THEN 'PASIVO'
+            ELSE 'FLUIDO'
+        END AS cuadrante
+    FROM por_isco
+    ORDER BY total_posiciones DESC
+    """
+
+    cursor = conn.execute(query)
+    rows = cursor.fetchall()
+
+    resultados = []
+    for row in rows:
+        resultados.append({
+            'isco_code': row['isco_code'],
+            'isco_label': row['isco_label'],
+            'total_posiciones': row['total_posiciones'],
+            'total_ofertas': row['total_ofertas'],
+            'persistencia': float(row['persistencia']),
+            'insistencia': float(row['insistencia']),
+            'cuadrante': row['cuadrante'],
+            'calculado_en': datetime.now().isoformat(),
+        })
+
+    logger.info(f"Tensión calculada: {len(resultados)} ocupaciones")
+    cuadrantes = {}
+    for r in resultados:
+        cuadrantes[r['cuadrante']] = cuadrantes.get(r['cuadrante'], 0) + 1
+    for c, n in sorted(cuadrantes.items()):
+        logger.info(f"  {c}: {n}")
+
+    return resultados
+
+
+def sync_tension_ocupaciones(client, conn: sqlite3.Connection, dry_run: bool = False) -> int:
+    """
+    Sincroniza tensión de demanda a Supabase.
+    Trunca y reinserta (datos calculados, no incrementales).
+    """
+    resultados = calcular_tension_ocupaciones(conn)
+
+    if not resultados:
+        logger.warning("No hay datos de tensión para sincronizar")
+        return 0
+
+    if dry_run:
+        logger.info(f"[DRY-RUN] Sync {len(resultados)} ocupaciones de tensión")
+        return len(resultados)
+
+    # Truncar tabla (delete all rows - Supabase workaround)
+    try:
+        client.table(TABLE_TENSION).delete().neq('isco_code', '__none__').execute()
+    except Exception as e:
+        logger.warning(f"Error truncando tension_ocupaciones: {e}")
+
+    # Insertar en batches
+    total = 0
+    for i in range(0, len(resultados), BATCH_SIZE):
+        batch = resultados[i:i + BATCH_SIZE]
+        try:
+            client.table(TABLE_TENSION).insert(batch).execute()
+            total += len(batch)
+        except Exception as e:
+            logger.error(f"Error insertando tensión batch {i // BATCH_SIZE + 1}: {e}")
+            raise
+
+    logger.info(f"Tensión sincronizada: {total} ocupaciones")
+    return total
+
+
+# ============================================================
 # ESTADÍSTICAS
 # ============================================================
 
@@ -1557,6 +1696,10 @@ Ejemplos:
         logger.info("Sincronizando estado del sistema...")
         sync_sistema_estado(client, conn, dry_run=args.dry_run)
 
+        # Tensión de demanda por ocupación (V-16)
+        logger.info("Calculando tensión de demanda...")
+        n_tension = sync_tension_ocupaciones(client, conn, dry_run=args.dry_run)
+
         # Resumen
         print("\n" + "="*60)
         print("RESUMEN" + (" [DRY-RUN]" if args.dry_run else ""))
@@ -1566,6 +1709,7 @@ Ejemplos:
         print(f"Ocupaciones ESCO:         {n_ocup}")
         print(f"Skills ESCO:              {n_esco}")
         print(f"Issues sincronizados:     {n_issues}")
+        print(f"Tensión ocupaciones:      {n_tension}")
         print("="*60)
 
         if not args.dry_run:

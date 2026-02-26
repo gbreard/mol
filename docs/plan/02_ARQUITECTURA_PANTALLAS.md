@@ -1,7 +1,7 @@
 # 2. Arquitectura de Pantallas
 
-> Ultima actualizacion: 2026-02-11
-> Versión: 2.1 — Modelo híbrido + filtros permanencia/tensión de demanda
+> Ultima actualizacion: 2026-02-26
+> Versión: 2.3 — Laboratorio de indicadores experimentales (P-31, P-31a)
 
 ## Referencias
 
@@ -39,6 +39,8 @@
 | - | `/admin/metricas` | ✅ Funcional | - |
 | - | `/admin/logs` | ⚠️ Prueba | Datos de prueba |
 | - | `/admin/configuracion` | ✅ Fase 1 | Solo lectura - [11_CONFIGURACION](./11_CONFIGURACION_ADMIN.md) |
+| P-31 | `/admin/laboratorio` | ✅ Funcional | Landing indicadores experimentales |
+| P-31a | `/admin/laboratorio/tension-demanda` | ✅ Funcional | V-16: scatter chart + tabla + metodología |
 
 ### Componentes Existentes
 
@@ -100,7 +102,9 @@ MOL Platform
     ├── /admin/logs ──────── P-23 Logs
     ├── /admin/configuracion P-24 Configuración
     ├── /admin/contenidos ── P-30 Gestión Contenidos (CMS)
-    └── /admin/arquitectura  P-25 Arquitectura Sistema
+    ├── /admin/arquitectura  P-25 Arquitectura Sistema
+    └── /admin/laboratorio ─ P-31 Laboratorio de Indicadores Experimentales
+        └── /tension-demanda P-31a Detalle Tensión de Demanda (V-16)
 ```
 
 ---
@@ -177,6 +181,8 @@ MOL Platform
 | P-24 | `/admin/configuracion` | U-ADMIN | ✅ Fase 1 | [11_CONFIGURACION](./11_CONFIGURACION_ADMIN.md) |
 | P-30 | `/admin/contenidos` | U-ADMIN | Por crear | [admin.md#p-30](./03_WIREFRAMES/admin.md#p-30-contenidos) |
 | P-25 | `/admin/arquitectura` | U-ADMIN | ✅ Existe (fixes v1.1) | [10_OBSERVABILIDAD](./10_OBSERVABILIDAD.md), [admin.md#p-25](./03_WIREFRAMES/admin.md#p-25-admin-arquitectura-adminarquitectura) |
+| P-31 | `/admin/laboratorio` | U-ADMIN | ✅ Existe | Staging de indicadores experimentales |
+| P-31a | `/admin/laboratorio/tension-demanda` | U-ADMIN | ✅ Existe | Detalle V-16: scatter chart + tabla + metodología |
 
 ---
 
@@ -189,8 +195,8 @@ MOL Platform
 | Checkout | 3 | 0 | 3 |
 | Tablero | 5 | 2 | 3 |
 | Cuenta | 3 | 0 | 3 |
-| Admin | 11 | 7 | 4 |
-| **TOTAL** | **30** | **10** | **20** |
+| Admin | 13 | 9 | 4 |
+| **TOTAL** | **32** | **12** | **20** |
 
 ---
 
@@ -316,7 +322,11 @@ app/
 │   └── facturacion/page.tsx  # P-16
 └── admin/                    # P-17 a P-25 (existente)
     ├── solicitudes/page.tsx  # P-29 (nuevo)
-    └── contenidos/page.tsx   # P-30 (nuevo)
+    ├── contenidos/page.tsx   # P-30 (nuevo)
+    └── laboratorio/
+        ├── page.tsx          # P-31 Landing indicadores experimentales
+        └── tension-demanda/
+            └── page.tsx      # P-31a Detalle V-16
 ```
 
 ---
@@ -330,3 +340,4 @@ app/
 | 2026-02-08 | 2.0.1 | P-25 code review: 7 fixes aplicados (Tailwind, env vars, error handling, sidebar dup, labels, imports) |
 | 2026-02-11 | 2.1 | Filtros permanencia y tensión de demanda en sidebar, componentes P-09 (scatter plot tensión) |
 | 2026-02-23 | 2.2 | AnimatedNav auth-aware (sesión → dashboard/logout), P-18 CRUD: C+R+U (editar rol) |
+| 2026-02-26 | 2.3 | P-31 Laboratorio de Indicadores Experimentales + P-31a Tensión de Demanda (V-16). Staging admin para indicadores antes de dashboard público. Total 32 pantallas |

@@ -14,7 +14,8 @@ import {
   Loader2,
   MessageSquare,
   Target,
-  Network
+  Network,
+  FlaskConical,
 } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase/browser";
 
@@ -24,6 +25,7 @@ const adminNavItems = [
   { href: "/admin/usuarios", label: "Usuarios", icon: Users },
   { href: "/admin/issues", label: "Issues", icon: MessageSquare },
   { href: "/admin/skills", label: "Skills Intelligence", icon: Target },
+  { href: "/admin/laboratorio", label: "Laboratorio", icon: FlaskConical, matchMode: "startsWith" as const },
   { href: "/admin/scraping", label: "Scraping", icon: Database },
   { href: "/admin/metricas", label: "Métricas", icon: BarChart3 },
   { href: "/admin/logs", label: "Logs", icon: FileText },
@@ -93,7 +95,9 @@ export default function AdminLayout({
         <nav className="flex-1 p-4">
           <ul className="space-y-1">
             {adminNavItems.map((item, index) => {
-              const isActive = pathname === item.href;
+              const isActive = item.matchMode === "startsWith"
+                ? pathname.startsWith(item.href)
+                : pathname === item.href;
               return (
                 <li key={`${item.href}-${index}`}>
                   <Link

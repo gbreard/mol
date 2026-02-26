@@ -1229,6 +1229,32 @@ export async function getIssuesByOferta(id_oferta: string): Promise<Issue[]> {
   return data || []
 }
 
+// ========== TENSIÓN DE DEMANDA (V-16) ==========
+
+export interface TensionOcupacion {
+  isco_code: string
+  isco_label: string
+  total_posiciones: number
+  total_ofertas: number
+  persistencia: number
+  insistencia: number
+  cuadrante: string
+}
+
+export async function getTensionOcupaciones(): Promise<TensionOcupacion[]> {
+  const client = getSupabaseClient()
+  if (!client) return []
+  const { data, error } = await client
+    .from('tension_ocupaciones')
+    .select('*')
+    .order('total_posiciones', { ascending: false })
+  if (error) {
+    console.error('Error fetching tension:', error)
+    return []
+  }
+  return data || []
+}
+
 // ========== FUNCIONES PARA PERFIL CONSOLIDADO ==========
 
 import { ConsolidatedProfile, ConsolidatedProfilesIndex } from './types'

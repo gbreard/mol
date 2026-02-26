@@ -211,3 +211,35 @@ COMMENT ON TABLE ofertas IS 'Ofertas laborales validadas del pipeline MOL';
 COMMENT ON TABLE ofertas_skills IS 'Skills extraídas por oferta con clasificación ESCO';
 COMMENT ON TABLE esco_occupations IS 'Catálogo ESCO ocupaciones (subset usado)';
 COMMENT ON TABLE esco_skills IS 'Catálogo ESCO skills (subset usado)';
+
+-- ============================================================
+-- Tensión de Demanda por Ocupación (V-16)
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS tension_ocupaciones (
+    isco_code TEXT PRIMARY KEY,
+    isco_label TEXT,
+    total_posiciones INTEGER NOT NULL,
+    total_ofertas INTEGER NOT NULL,
+    persistencia NUMERIC(5,2) NOT NULL,
+    insistencia NUMERIC(5,2) NOT NULL,
+    cuadrante TEXT NOT NULL,
+    calculado_en TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE tension_ocupaciones ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public read tension" ON tension_ocupaciones;
+CREATE POLICY "Public read tension" ON tension_ocupaciones FOR SELECT USING (true);
+
+CREATE INDEX IF NOT EXISTS idx_tension_cuadrante ON tension_ocupaciones(cuadrante);
+
+DROP TRIGGER IF EXISTS update_tension_updated_at ON tension_ocupaciones;
+CREATE TRIGGER update_tension_updated_at
+    BEFORE UPDATE ON tension_ocupaciones
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+COMMENT ON TABLE tension_ocupaciones IS 'Indicador V-16: Tensión de Demanda por ocupación (persistencia x insistencia)';
