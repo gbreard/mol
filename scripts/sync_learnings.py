@@ -1195,6 +1195,19 @@ def main():
     if not args.report_only and not args.supabase_only:
         sync_learnings_yaml(verbose=False)
 
+    # Sync training pairs (issues resueltos → fine-tuning dataset)
+    if not args.report_only and not args.supabase_only:
+        try:
+            from scripts.exports.generate_training_pairs import generate, save
+            pairs = generate()
+            if pairs:
+                new, updated, total = save(pairs)
+                if not args.quiet:
+                    print(f"[SYNC] Training pairs: {new} nuevos, {updated} actualizados, {total} total")
+        except Exception as e:
+            if not args.quiet:
+                print(f"[SYNC] Training pairs: skip ({e})")
+
     # Sync a Supabase (para colaboración)
     if not args.no_supabase and not args.report_only:
         sync_to_supabase(p1, p2, p3, suggested, verbose=not args.quiet)
