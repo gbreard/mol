@@ -80,22 +80,38 @@ interface EscoArgentinoEntry {
   notas?: string;
 }
 
+interface SkillsIntelData {
+  stats: { total_ofertas: number; total_ocupaciones: number };
+  occupations: { esco_uri: string; esco_label: string; isco_code: string; ofertas_count: number }[];
+  generated_at: string;
+}
+
 interface ConsolidatedProfileTabProps {
-  molProfileData?: unknown;
   occupationsData?: unknown;
   occupationsList?: OccupationInfo[];
+  skillsIntelData: SkillsIntelData | null;
 }
 
 export default function ConsolidatedProfileTab({
-  occupationsList: _occupationsList
+  skillsIntelData
 }: ConsolidatedProfileTabProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Ocupaciones disponibles (cargadas desde API)
-  const [occupationsList, setOccupationsList] = useState<OccupationInfo[]>([]);
-  const [isLoadingOccupations, setIsLoadingOccupations] = useState(true);
+  // Derive occupations list from shared skillsIntelData (no duplicate fetch)
+  const occupationsList = useMemo(() => {
+    if (!skillsIntelData) return [];
+    return skillsIntelData.occupations
+      .map(o => ({
+        id: o.esco_uri?.split('/').pop() || '',
+        label: o.esco_label,
+        isco: o.isco_code,
+        offer_count: o.ofertas_count || 0
+      }))
+      .filter(o => !!o.id && (o.offer_count || 0) > 0)
+      .sort((a, b) => (b.offer_count || 0) - (a.offer_count || 0));
+  }, [skillsIntelData]);
 
   // Perfil dinámico de Argentina (desde API)
   const [perfilArgentina, setPerfilArgentina] = useState<PerfilArgentinaResponse | null>(null);
@@ -118,29 +134,6 @@ export default function ConsolidatedProfileTab({
 
   // Saving state
   const [isSaving, setIsSaving] = useState(false);
-
-  // Cargar lista de ocupaciones desde API al montar
-  useEffect(() => {
-    setIsLoadingOccupations(true);
-    fetch('/api/skills-intelligence')
-      .then(res => res.json())
-      .then(data => {
-        if (data.occupations) {
-          const occs: OccupationInfo[] = data.occupations.map((o: { esco_uri: string; esco_label: string; isco_code: string; ofertas_count: number }) => ({
-            id: o.esco_uri?.split('/').pop() || '',
-            label: o.esco_label,
-            isco: o.isco_code,
-            offer_count: o.ofertas_count || 0
-          })).filter((o: OccupationInfo) => o.id && (o.offer_count || 0) > 0);
-          setOccupationsList(occs.sort((a, b) => (b.offer_count || 0) - (a.offer_count || 0)));
-        }
-        setIsLoadingOccupations(false);
-      })
-      .catch(err => {
-        console.error('Error loading occupations:', err);
-        setIsLoadingOccupations(false);
-      });
-  }, []);
 
   // Función para cargar perfil Argentina dinámico
   const loadPerfilArgentina = useCallback(async (uuid: string) => {
@@ -451,8 +444,8 @@ export default function ConsolidatedProfileTab({
     }
   };
 
-  // Loading state
-  if (isLoadingOccupations) {
+  // Loading state while parent fetches skills-intelligence data
+  if (!skillsIntelData) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
