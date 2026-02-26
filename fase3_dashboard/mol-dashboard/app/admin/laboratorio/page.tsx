@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FlaskConical, Zap, ArrowRight, Database, Calendar } from "lucide-react";
+import { FlaskConical, Zap, PieChart, GraduationCap, Cpu, ArrowRight, Database, Calendar } from "lucide-react";
 
 const INDICATORS = [
   {
@@ -13,6 +13,39 @@ const INDICATORS = [
     href: "/admin/laboratorio/tension-demanda",
     icon: Zap,
     dataSource: "tension_ocupaciones",
+    addedDate: "2026-02",
+  },
+  {
+    slug: "concentracion-ocupacional",
+    title: "Concentracion Ocupacional",
+    description:
+      "Indice HHI de concentracion de ofertas por ocupacion ISCO. Pocas ocupaciones acaparan la demanda?",
+    status: "experimental" as const,
+    href: "/admin/laboratorio/concentracion-ocupacional",
+    icon: PieChart,
+    dataSource: "concentracion_ocupacional",
+    addedDate: "2026-02",
+  },
+  {
+    slug: "brecha-calificacion",
+    title: "Brecha de Calificacion",
+    description:
+      "Skills demandadas vs promedio del mercado por ocupacion. Detecta sobreexigencia y subexigencia.",
+    status: "experimental" as const,
+    href: "/admin/laboratorio/brecha-calificacion",
+    icon: GraduationCap,
+    dataSource: "brecha_calificacion",
+    addedDate: "2026-02",
+  },
+  {
+    slug: "digitalizacion-sector",
+    title: "Digitalizacion por Sector",
+    description:
+      "% de skills digitales sobre total por sector CLAE. Que sectores demandan mas transformacion digital?",
+    status: "experimental" as const,
+    href: "/admin/laboratorio/digitalizacion-sector",
+    icon: Cpu,
+    dataSource: "digitalizacion_sector",
     addedDate: "2026-02",
   },
 ];
@@ -127,7 +160,7 @@ export default function LaboratorioPage() {
       </div>
 
       {/* Empty state hint */}
-      {INDICATORS.length === 1 && (
+      {INDICATORS.length <= 1 && (
         <div className="mt-8 text-center text-sm text-gray-400">
           Nuevos indicadores se agregan aqui antes de promoverlos al dashboard
           publico.

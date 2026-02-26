@@ -1255,6 +1255,84 @@ export async function getTensionOcupaciones(): Promise<TensionOcupacion[]> {
   return data || []
 }
 
+// ========== CONCENTRACIÓN OCUPACIONAL (I-02) ==========
+
+export interface ConcentracionOcupacional {
+  tipo: string            // 'global' | 'mensual' | 'ocupacion'
+  mes: string | null      // '2026-01' (solo tipo=mensual)
+  isco_code: string | null
+  isco_label: string | null
+  ofertas: number
+  share_pct: number       // % del total (solo tipo=ocupacion)
+  hhi: number             // HHI value (tipo=global/mensual)
+  clasificacion: string | null  // 'diversificado'|'moderado'|'concentrado'
+}
+
+export async function getConcentracionOcupacional(): Promise<ConcentracionOcupacional[]> {
+  const client = getSupabaseClient()
+  if (!client) return []
+  const { data, error } = await client
+    .from('concentracion_ocupacional')
+    .select('*')
+    .order('tipo')
+    .order('share_pct', { ascending: false })
+  if (error) {
+    console.error('Error fetching concentracion:', error)
+    return []
+  }
+  return data || []
+}
+
+// ========== BRECHA DE CALIFICACIÓN (I-03) ==========
+
+export interface BrechaCalificacion {
+  isco_code: string
+  isco_label: string
+  total_ofertas: number
+  skills_promedio: number
+  brecha: number          // >1.0 sobreexigente, <1.0 subexigente
+  categoria: string       // 'sobreexigente'|'equilibrado'|'subexigente'
+}
+
+export async function getBrechaCalificacion(): Promise<BrechaCalificacion[]> {
+  const client = getSupabaseClient()
+  if (!client) return []
+  const { data, error } = await client
+    .from('brecha_calificacion')
+    .select('*')
+    .order('brecha', { ascending: false })
+  if (error) {
+    console.error('Error fetching brecha:', error)
+    return []
+  }
+  return data || []
+}
+
+// ========== DIGITALIZACIÓN POR SECTOR (I-05) ==========
+
+export interface DigitalizacionSector {
+  clae_seccion: string
+  total_skills: number
+  skills_digitales: number
+  total_ofertas: number
+  idx_digital: number       // % skills digitales sobre total
+  nivel_digital: string     // 'alto'|'medio'|'bajo'
+}
+
+export async function getDigitalizacionSector(): Promise<DigitalizacionSector[]> {
+  const client = getSupabaseClient()
+  if (!client) return []
+  const { data, error } = await client
+    .from('digitalizacion_sector')
+    .select('*')
+    .order('idx_digital', { ascending: false })
+  if (error) {
+    console.error('Error fetching digitalizacion:', error)
+    return []
+  }
+  return data || []
+}
+
 // ========== FUNCIONES PARA PERFIL CONSOLIDADO ==========
 
 import { ConsolidatedProfile, ConsolidatedProfilesIndex } from './types'

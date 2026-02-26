@@ -6,39 +6,45 @@ import {
   ArrowLeft,
   Loader2,
   AlertCircle,
-  Zap,
-  Users,
-  AlertTriangle,
+  Cpu,
   BarChart3,
+  TrendingUp,
+  TrendingDown,
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
-import { getTensionOcupaciones, TensionOcupacion } from "@/lib/supabase";
+import { getDigitalizacionSector, DigitalizacionSector } from "@/lib/supabase";
 import { ChartContainer } from "@/components/ChartContainer";
 import {
-  TensionDemandaChart,
-  CUADRANTE_COLORS,
-} from "@/components/laboratorio/TensionDemandaChart";
+  DigitalizacionSectorChart,
+  NIVEL_COLORS,
+} from "@/components/laboratorio/DigitalizacionSectorChart";
 import { InsightList, InsightItem } from "@/components/laboratorio/InsightList";
 
-type SortKey = "isco_code" | "isco_label" | "total_posiciones" | "total_ofertas" | "persistencia" | "insistencia" | "cuadrante";
+type SortKey =
+  | "clae_seccion"
+  | "total_skills"
+  | "skills_digitales"
+  | "total_ofertas"
+  | "idx_digital"
+  | "nivel_digital";
 
-export default function TensionDemandaPage() {
-  const [data, setData] = useState<TensionOcupacion[]>([]);
+export default function DigitalizacionSectorPage() {
+  const [data, setData] = useState<DigitalizacionSector[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [sortKey, setSortKey] = useState<SortKey>("total_posiciones");
+  const [sortKey, setSortKey] = useState<SortKey>("idx_digital");
   const [sortDesc, setSortDesc] = useState(true);
 
   useEffect(() => {
     async function load() {
       try {
         setLoading(true);
-        const result = await getTensionOcupaciones();
+        const result = await getDigitalizacionSector();
         setData(result);
       } catch (err) {
-        console.error("Error loading tension data:", err);
-        setError("Error al cargar datos de tension de demanda.");
+        console.error("Error loading digitalizacion data:", err);
+        setError("Error al cargar datos de digitalizacion por sector.");
       } finally {
         setLoading(false);
       }
@@ -46,15 +52,21 @@ export default function TensionDemandaPage() {
     load();
   }, []);
 
-  const cuadranteCounts: Record<string, number> = {};
+  const nivelCounts: Record<string, number> = {};
   data.forEach((d) => {
-    cuadranteCounts[d.cuadrante] = (cuadranteCounts[d.cuadrante] || 0) + 1;
+    nivelCounts[d.nivel_digital] = (nivelCounts[d.nivel_digital] || 0) + 1;
   });
 
-  const totalPosiciones = data.reduce((s, d) => s + d.total_posiciones, 0);
+  const avgDigital =
+    data.length > 0
+      ? (data.reduce((s, d) => s + d.idx_digital, 0) / data.length).toFixed(1)
+      : "0";
+
+  const topSector = data.length > 0 ? data[0] : null;
+  const bottomSector = data.length > 0 ? data[data.length - 1] : null;
 
   const sortedData = useMemo(() => {
-    const sorted = [...data].sort((a, b) => {
+    return [...data].sort((a, b) => {
       const aVal = a[sortKey];
       const bVal = b[sortKey];
       if (typeof aVal === "number" && typeof bVal === "number") {
@@ -64,7 +76,6 @@ export default function TensionDemandaPage() {
         ? String(bVal).localeCompare(String(aVal))
         : String(aVal).localeCompare(String(bVal));
     });
-    return sorted;
   }, [data, sortKey, sortDesc]);
 
   const handleSort = (key: SortKey) => {
@@ -90,7 +101,9 @@ export default function TensionDemandaPage() {
     return (
       <div className="min-h-[400px] flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-        <span className="ml-3 text-gray-600">Cargando datos de tension...</span>
+        <span className="ml-3 text-gray-600">
+          Cargando datos de digitalizacion...
+        </span>
       </div>
     );
   }
@@ -122,7 +135,7 @@ export default function TensionDemandaPage() {
         </Link>
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold text-gray-900">
-            Tension de Demanda
+            Digitalizacion por Sector
           </h1>
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
@@ -130,7 +143,7 @@ export default function TensionDemandaPage() {
           </span>
         </div>
         <p className="text-sm text-gray-500 mt-1">
-          Indicador V-16: Persistencia x Insistencia por ocupacion ISCO
+          Indicador I-05: % de skills digitales sobre total por sector CLAE
         </p>
       </div>
 
@@ -140,73 +153,75 @@ export default function TensionDemandaPage() {
           <div className="flex items-center gap-2 mb-1">
             <BarChart3 className="w-4 h-4 text-blue-600" />
             <span className="text-xs font-semibold text-gray-500 uppercase">
-              Ocupaciones
+              Sectores
             </span>
           </div>
           <p className="text-3xl font-bold text-gray-900">{data.length}</p>
         </div>
-        <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-5 shadow-sm">
+        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-1">
-            <AlertTriangle className="w-4 h-4 text-red-600" />
+            <Cpu className="w-4 h-4 text-green-600" />
             <span className="text-xs font-semibold text-gray-500 uppercase">
-              Critico
+              Promedio digital
             </span>
           </div>
-          <p className="text-3xl font-bold text-red-700">
-            {cuadranteCounts["CRITICO"] || 0}
+          <p className="text-3xl font-bold text-green-700">{avgDigital}%</p>
+        </div>
+        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-5 shadow-sm">
+          <div className="flex items-center gap-2 mb-1">
+            <TrendingUp className="w-4 h-4 text-purple-600" />
+            <span className="text-xs font-semibold text-gray-500 uppercase">
+              Mas digital
+            </span>
+          </div>
+          <p className="text-lg font-bold text-purple-700 truncate" title={topSector?.clae_seccion}>
+            {topSector ? `${topSector.idx_digital}%` : "—"}
+          </p>
+          <p className="text-xs text-gray-500 truncate">
+            {topSector?.clae_seccion || ""}
           </p>
         </div>
         <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-1">
-            <Zap className="w-4 h-4 text-orange-600" />
+            <TrendingDown className="w-4 h-4 text-orange-600" />
             <span className="text-xs font-semibold text-gray-500 uppercase">
-              Urgente
+              Menos digital
             </span>
           </div>
-          <p className="text-3xl font-bold text-orange-700">
-            {cuadranteCounts["URGENTE"] || 0}
+          <p className="text-lg font-bold text-orange-700 truncate" title={bottomSector?.clae_seccion}>
+            {bottomSector ? `${bottomSector.idx_digital}%` : "—"}
           </p>
-        </div>
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-5 shadow-sm">
-          <div className="flex items-center gap-2 mb-1">
-            <Users className="w-4 h-4 text-purple-600" />
-            <span className="text-xs font-semibold text-gray-500 uppercase">
-              Total posiciones
-            </span>
-          </div>
-          <p className="text-3xl font-bold text-gray-900">
-            {totalPosiciones.toLocaleString()}
+          <p className="text-xs text-gray-500 truncate">
+            {bottomSector?.clae_seccion || ""}
           </p>
         </div>
       </div>
 
       {/* Chart with Insights */}
       <ChartContainer
-        title="Tension de demanda por ocupacion"
-        subtitle={`${data.length} ocupaciones — 4 cuadrantes`}
+        title="Indice de digitalizacion por sector CLAE"
+        subtitle={`${data.length} sectores — promedio ${avgDigital}%`}
         insights={
           <InsightList>
-            {cuadranteCounts["CRITICO"] ? (
+            {topSector && (
               <InsightItem
-                text={`${cuadranteCounts["CRITICO"]} ocupaciones en estado critico (alta persistencia + alta insistencia)`}
+                text={`"${topSector.clae_seccion}" lidera con ${topSector.idx_digital}% de skills digitales`}
                 highlight
               />
-            ) : null}
-            {cuadranteCounts["URGENTE"] ? (
-              <InsightItem
-                text={`${cuadranteCounts["URGENTE"]} urgentes: persisten pero no se republican`}
-              />
-            ) : null}
+            )}
             <InsightItem
-              text={`${cuadranteCounts["FLUIDO"] || 0} ocupaciones con demanda fluida (se cubren rapidamente)`}
+              text={`${nivelCounts["alto"] || 0} sectores con digitalizacion alta (>40%)`}
             />
             <InsightItem
-              text={`Umbral: 50% en ambos ejes divide los 4 cuadrantes`}
+              text={`${nivelCounts["bajo"] || 0} sectores con digitalizacion baja (<20%)`}
+            />
+            <InsightItem
+              text={`Promedio general del mercado: ${avgDigital}% de skills digitales`}
             />
           </InsightList>
         }
       >
-        <TensionDemandaChart data={data} />
+        <DigitalizacionSectorChart data={data} />
       </ChartContainer>
 
       {/* Methodology */}
@@ -215,67 +230,71 @@ export default function TensionDemandaPage() {
         <div className="grid grid-cols-2 gap-6 text-sm text-gray-700">
           <div>
             <h4 className="font-semibold text-gray-900 mb-2">
-              Persistencia (eje X)
+              Indice de digitalizacion
             </h4>
             <p>
-              Porcentaje de posiciones cuya ventana de publicacion supera los 45
-              dias. Valores altos indican que las vacantes permanecen abiertas
-              mucho tiempo, sugiriendo dificultad para cubrir la posicion.
+              Porcentaje de skills clasificadas como "digitales" sobre el total
+              de skills extraidas por sector CLAE. Las skills se clasifican
+              automaticamente durante la extraccion usando la taxonomia ESCO.
+            </p>
+            <p className="mt-2 font-mono text-xs bg-gray-50 p-2 rounded">
+              idx_digital = (skills_digitales / total_skills) * 100
             </p>
           </div>
           <div>
             <h4 className="font-semibold text-gray-900 mb-2">
-              Insistencia (eje Y)
+              Niveles de digitalizacion
             </h4>
-            <p>
-              Porcentaje de posiciones que fueron republicadas (mismo aviso
-              publicado multiples veces). Valores altos sugieren que la empresa
-              necesita re-publicar porque no encuentra candidatos.
-            </p>
-          </div>
-          <div className="col-span-2">
-            <h4 className="font-semibold text-gray-900 mb-2">Cuadrantes</h4>
-            <div className="grid grid-cols-4 gap-3">
+            <div className="space-y-2">
               {[
                 {
-                  name: "CRITICO",
-                  desc: "Alta persistencia + alta insistencia. Vacantes dificiles de cubrir que se republican constantemente.",
+                  name: "Alto",
+                  key: "alto",
+                  range: "> 40%",
+                  desc: "Alta demanda de competencias digitales",
                 },
                 {
-                  name: "URGENTE",
-                  desc: "Alta persistencia + baja insistencia. Permanecen abiertas mucho tiempo pero no se re-publican.",
+                  name: "Medio",
+                  key: "medio",
+                  range: "20% - 40%",
+                  desc: "Demanda moderada de skills digitales",
                 },
                 {
-                  name: "PASIVO",
-                  desc: "Baja persistencia + alta insistencia. Se cubren rapido pero se re-publican (alta rotacion).",
+                  name: "Bajo",
+                  key: "bajo",
+                  range: "< 20%",
+                  desc: "Baja penetracion de skills digitales",
                 },
-                {
-                  name: "FLUIDO",
-                  desc: "Baja persistencia + baja insistencia. Mercado funcional: se publican y cubren sin friccion.",
-                },
-              ].map((q) => (
+              ].map((n) => (
                 <div
-                  key={q.name}
-                  className="border rounded-lg p-3"
+                  key={n.key}
+                  className="border rounded-lg p-2"
                   style={{
-                    borderColor:
-                      CUADRANTE_COLORS[q.name] || "#e5e7eb",
+                    borderColor: NIVEL_COLORS[n.key] || "#e5e7eb",
                   }}
                 >
-                  <div className="flex items-center gap-1.5 mb-1">
+                  <div className="flex items-center gap-1.5">
                     <div
-                      className="w-2.5 h-2.5 rounded-full"
+                      className="w-2 h-2 rounded-full"
                       style={{
-                        backgroundColor:
-                          CUADRANTE_COLORS[q.name] || "#6b7280",
+                        backgroundColor: NIVEL_COLORS[n.key] || "#6b7280",
                       }}
                     />
-                    <span className="text-xs font-bold">{q.name}</span>
+                    <span className="text-xs font-bold">
+                      {n.name} ({n.range})
+                    </span>
                   </div>
-                  <p className="text-xs text-gray-600">{q.desc}</p>
+                  <p className="text-xs text-gray-600 mt-1">{n.desc}</p>
                 </div>
               ))}
             </div>
+          </div>
+          <div className="col-span-2">
+            <h4 className="font-semibold text-gray-900 mb-2">Filtros</h4>
+            <p>
+              Solo se incluyen sectores con al menos 10 skills clasificadas
+              para garantizar significancia estadistica.
+            </p>
           </div>
         </div>
       </div>
@@ -284,10 +303,10 @@ export default function TensionDemandaPage() {
       <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-bold text-gray-900">
-            Detalle por ocupacion
+            Detalle por sector
           </h3>
           <p className="text-sm text-gray-500">
-            {data.length} ocupaciones — click en columna para ordenar
+            {data.length} sectores — click en columna para ordenar
           </p>
         </div>
         <div className="overflow-x-auto">
@@ -295,13 +314,15 @@ export default function TensionDemandaPage() {
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
                 {[
-                  { key: "isco_code" as SortKey, label: "ISCO" },
-                  { key: "isco_label" as SortKey, label: "Ocupacion" },
-                  { key: "total_posiciones" as SortKey, label: "Posiciones" },
+                  { key: "clae_seccion" as SortKey, label: "Sector CLAE" },
                   { key: "total_ofertas" as SortKey, label: "Ofertas" },
-                  { key: "persistencia" as SortKey, label: "Persistencia" },
-                  { key: "insistencia" as SortKey, label: "Insistencia" },
-                  { key: "cuadrante" as SortKey, label: "Cuadrante" },
+                  { key: "total_skills" as SortKey, label: "Total Skills" },
+                  {
+                    key: "skills_digitales" as SortKey,
+                    label: "Skills Digitales",
+                  },
+                  { key: "idx_digital" as SortKey, label: "% Digital" },
+                  { key: "nivel_digital" as SortKey, label: "Nivel" },
                 ].map((col) => (
                   <th
                     key={col.key}
@@ -319,44 +340,41 @@ export default function TensionDemandaPage() {
             <tbody className="divide-y divide-gray-100">
               {sortedData.map((row) => (
                 <tr
-                  key={row.isco_code}
+                  key={row.clae_seccion}
                   className="hover:bg-gray-50 transition-colors"
                 >
-                  <td className="px-4 py-3 font-mono text-xs text-gray-500">
-                    {row.isco_code}
-                  </td>
                   <td className="px-4 py-3 font-medium text-gray-900">
-                    {row.isco_label}
-                  </td>
-                  <td className="px-4 py-3 text-right tabular-nums">
-                    {row.total_posiciones}
+                    {row.clae_seccion}
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums">
                     {row.total_ofertas}
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums">
-                    {row.persistencia}%
+                    {row.total_skills}
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums">
-                    {row.insistencia}%
+                    {row.skills_digitales}
+                  </td>
+                  <td className="px-4 py-3 text-right tabular-nums font-semibold">
+                    {row.idx_digital}%
                   </td>
                   <td className="px-4 py-3">
                     <span
-                      className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold"
+                      className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold capitalize"
                       style={{
-                        backgroundColor: `${CUADRANTE_COLORS[row.cuadrante] || "#6b7280"}15`,
+                        backgroundColor: `${NIVEL_COLORS[row.nivel_digital] || "#6b7280"}15`,
                         color:
-                          CUADRANTE_COLORS[row.cuadrante] || "#6b7280",
+                          NIVEL_COLORS[row.nivel_digital] || "#6b7280",
                       }}
                     >
                       <span
                         className="w-1.5 h-1.5 rounded-full"
                         style={{
                           backgroundColor:
-                            CUADRANTE_COLORS[row.cuadrante] || "#6b7280",
+                            NIVEL_COLORS[row.nivel_digital] || "#6b7280",
                         }}
                       />
-                      {row.cuadrante}
+                      {row.nivel_digital}
                     </span>
                   </td>
                 </tr>

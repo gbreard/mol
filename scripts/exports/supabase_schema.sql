@@ -243,3 +243,99 @@ CREATE TRIGGER update_tension_updated_at
     EXECUTE FUNCTION update_updated_at_column();
 
 COMMENT ON TABLE tension_ocupaciones IS 'Indicador V-16: Tensión de Demanda por ocupación (persistencia x insistencia)';
+
+-- ============================================================
+-- CONCENTRACIÓN OCUPACIONAL (I-02) — Índice HHI
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS concentracion_ocupacional (
+    id SERIAL PRIMARY KEY,
+    tipo TEXT NOT NULL,           -- 'global', 'mensual', 'ocupacion'
+    mes TEXT,                     -- '2026-01' (solo mensual)
+    isco_code TEXT,
+    isco_label TEXT,
+    ofertas INTEGER NOT NULL DEFAULT 0,
+    share_pct NUMERIC(7,4) NOT NULL DEFAULT 0,
+    hhi NUMERIC(10,6) NOT NULL DEFAULT 0,
+    clasificacion TEXT,           -- 'diversificado','moderado','concentrado'
+    calculado_en TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE concentracion_ocupacional ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public read concentracion" ON concentracion_ocupacional;
+CREATE POLICY "Public read concentracion" ON concentracion_ocupacional FOR SELECT USING (true);
+
+CREATE INDEX IF NOT EXISTS idx_concentracion_tipo ON concentracion_ocupacional(tipo);
+
+DROP TRIGGER IF EXISTS update_concentracion_updated_at ON concentracion_ocupacional;
+CREATE TRIGGER update_concentracion_updated_at
+    BEFORE UPDATE ON concentracion_ocupacional
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+COMMENT ON TABLE concentracion_ocupacional IS 'Indicador I-02: Concentración Ocupacional (HHI por ISCO)';
+
+-- ============================================================
+-- BRECHA DE CALIFICACIÓN (I-03)
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS brecha_calificacion (
+    isco_code TEXT PRIMARY KEY,
+    isco_label TEXT,
+    total_ofertas INTEGER NOT NULL,
+    skills_promedio NUMERIC(6,2) NOT NULL,
+    brecha NUMERIC(6,2) NOT NULL,
+    categoria TEXT NOT NULL,      -- 'sobreexigente','equilibrado','subexigente'
+    calculado_en TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE brecha_calificacion ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public read brecha" ON brecha_calificacion;
+CREATE POLICY "Public read brecha" ON brecha_calificacion FOR SELECT USING (true);
+
+CREATE INDEX IF NOT EXISTS idx_brecha_categoria ON brecha_calificacion(categoria);
+
+DROP TRIGGER IF EXISTS update_brecha_updated_at ON brecha_calificacion;
+CREATE TRIGGER update_brecha_updated_at
+    BEFORE UPDATE ON brecha_calificacion
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+COMMENT ON TABLE brecha_calificacion IS 'Indicador I-03: Brecha de Calificación por ocupación (skills promedio vs mercado)';
+
+-- ============================================================
+-- DIGITALIZACIÓN POR SECTOR (I-05)
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS digitalizacion_sector (
+    clae_seccion TEXT PRIMARY KEY,
+    total_skills INTEGER NOT NULL,
+    skills_digitales INTEGER NOT NULL,
+    total_ofertas INTEGER NOT NULL,
+    idx_digital NUMERIC(5,2) NOT NULL,
+    nivel_digital TEXT NOT NULL,  -- 'alto','medio','bajo'
+    calculado_en TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE digitalizacion_sector ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public read digitalizacion" ON digitalizacion_sector;
+CREATE POLICY "Public read digitalizacion" ON digitalizacion_sector FOR SELECT USING (true);
+
+CREATE INDEX IF NOT EXISTS idx_digitalizacion_nivel ON digitalizacion_sector(nivel_digital);
+
+DROP TRIGGER IF EXISTS update_digitalizacion_updated_at ON digitalizacion_sector;
+CREATE TRIGGER update_digitalizacion_updated_at
+    BEFORE UPDATE ON digitalizacion_sector
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+COMMENT ON TABLE digitalizacion_sector IS 'Indicador I-05: Digitalización por Sector CLAE (% skills digitales)';

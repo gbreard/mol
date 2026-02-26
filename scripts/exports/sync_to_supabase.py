@@ -63,6 +63,9 @@ TABLE_SKILLS = 'ofertas_skills'
 TABLE_SKILLS_CATALOG = 'skills'
 TABLE_OCUPACIONES = 'ocupaciones_esco'
 TABLE_TENSION = 'tension_ocupaciones'
+TABLE_CONCENTRACION = 'concentracion_ocupacional'
+TABLE_BRECHA = 'brecha_calificacion'
+TABLE_DIGITALIZACION = 'digitalizacion_sector'
 
 
 def load_config() -> Dict[str, str]:
@@ -1469,6 +1472,381 @@ def sync_tension_ocupaciones(client, conn: sqlite3.Connection, dry_run: bool = F
 
 
 # ============================================================
+# CONCENTRACIÓN OCUPACIONAL (I-02) — Índice HHI
+# ============================================================
+
+def calcular_concentracion_ocupacional(conn: sqlite3.Connection) -> List[Dict[str, Any]]:
+    """
+    Calcula el Índice Herfindahl-Hirschman (HHI) de concentración de ofertas por ISCO.
+    Retorna 3 tipos de filas: 'global' (HHI total), 'mensual' (HHI por mes),
+    'ocupacion' (top 15 con share).
+    """
+    query = """
+    WITH ofertas_validadas AS (
+        SELECT o.id_oferta, m.isco_code, m.isco_label,
+               strftime('%Y-%m', o.fecha_publicacion_iso) AS mes
+        FROM ofertas o
+        JOIN ofertas_esco_matching m ON o.id_oferta = m.id_oferta
+        WHERE m.estado_validacion IN ('validado','validado_claude','validado_humano')
+          AND m.isco_code IS NOT NULL
+          AND o.fecha_publicacion_iso IS NOT NULL
+    ),
+    global_total AS (
+        SELECT COUNT(*) AS total FROM ofertas_validadas
+    ),
+    por_isco AS (
+        SELECT isco_code, MAX(isco_label) AS isco_label,
+               COUNT(*) AS ofertas,
+               ROUND(100.0 * COUNT(*) / (SELECT total FROM global_total), 2) AS share_pct
+        FROM ofertas_validadas
+        GROUP BY isco_code
+    ),
+    hhi_global AS (
+        SELECT ROUND(SUM(share_pct * share_pct) / 10000.0, 6) AS hhi
+        FROM por_isco
+    )
+    SELECT 'ocupacion' AS tipo, NULL AS mes, isco_code, isco_label, ofertas, share_pct,
+           0 AS hhi, NULL AS clasificacion
+    FROM por_isco
+    ORDER BY share_pct DESC
+    LIMIT 15
+    """
+
+    cursor = conn.execute(query)
+    rows = cursor.fetchall()
+
+    resultados = []
+    now = datetime.now().isoformat()
+
+    for row in rows:
+        resultados.append({
+            'tipo': 'ocupacion',
+            'mes': None,
+            'isco_code': row['isco_code'],
+            'isco_label': row['isco_label'],
+            'ofertas': row['ofertas'],
+            'share_pct': float(row['share_pct']),
+            'hhi': 0,
+            'clasificacion': None,
+            'calculado_en': now,
+        })
+
+    # HHI global
+    hhi_query = """
+    WITH ofertas_validadas AS (
+        SELECT m.isco_code
+        FROM ofertas o
+        JOIN ofertas_esco_matching m ON o.id_oferta = m.id_oferta
+        WHERE m.estado_validacion IN ('validado','validado_claude','validado_humano')
+          AND m.isco_code IS NOT NULL
+          AND o.fecha_publicacion_iso IS NOT NULL
+    ),
+    global_total AS (
+        SELECT COUNT(*) AS total FROM ofertas_validadas
+    ),
+    por_isco AS (
+        SELECT isco_code, COUNT(*) AS ofertas,
+               ROUND(100.0 * COUNT(*) / (SELECT total FROM global_total), 2) AS share_pct
+        FROM ofertas_validadas
+        GROUP BY isco_code
+    )
+    SELECT ROUND(SUM(share_pct * share_pct) / 10000.0, 6) AS hhi
+    FROM por_isco
+    """
+    hhi_row = conn.execute(hhi_query).fetchone()
+    hhi_val = float(hhi_row['hhi']) if hhi_row and hhi_row['hhi'] else 0
+
+    if hhi_val < 0.15:
+        clasificacion = 'diversificado'
+    elif hhi_val < 0.25:
+        clasificacion = 'moderado'
+    else:
+        clasificacion = 'concentrado'
+
+    resultados.append({
+        'tipo': 'global',
+        'mes': None,
+        'isco_code': None,
+        'isco_label': None,
+        'ofertas': 0,
+        'share_pct': 0,
+        'hhi': hhi_val,
+        'clasificacion': clasificacion,
+        'calculado_en': now,
+    })
+
+    # HHI mensual
+    mensual_query = """
+    WITH ofertas_validadas AS (
+        SELECT m.isco_code,
+               strftime('%Y-%m', o.fecha_publicacion_iso) AS mes
+        FROM ofertas o
+        JOIN ofertas_esco_matching m ON o.id_oferta = m.id_oferta
+        WHERE m.estado_validacion IN ('validado','validado_claude','validado_humano')
+          AND m.isco_code IS NOT NULL
+          AND o.fecha_publicacion_iso IS NOT NULL
+    ),
+    por_mes AS (
+        SELECT mes, COUNT(*) AS total_mes FROM ofertas_validadas GROUP BY mes
+    ),
+    isco_mes AS (
+        SELECT mes, isco_code, COUNT(*) AS ofertas_mes
+        FROM ofertas_validadas GROUP BY mes, isco_code
+    )
+    SELECT im.mes,
+           ROUND(SUM( (100.0 * im.ofertas_mes / pm.total_mes) *
+                      (100.0 * im.ofertas_mes / pm.total_mes) ) / 10000.0, 6) AS hhi
+    FROM isco_mes im
+    JOIN por_mes pm ON im.mes = pm.mes
+    GROUP BY im.mes
+    ORDER BY im.mes
+    """
+    for row in conn.execute(mensual_query).fetchall():
+        resultados.append({
+            'tipo': 'mensual',
+            'mes': row['mes'],
+            'isco_code': None,
+            'isco_label': None,
+            'ofertas': 0,
+            'share_pct': 0,
+            'hhi': float(row['hhi']) if row['hhi'] else 0,
+            'clasificacion': None,
+            'calculado_en': now,
+        })
+
+    logger.info(f"Concentración calculada: {len(resultados)} filas (HHI global={hhi_val:.4f} → {clasificacion})")
+    return resultados
+
+
+def sync_concentracion_ocupacional(client, conn: sqlite3.Connection, dry_run: bool = False) -> int:
+    """Sincroniza concentración ocupacional a Supabase. Trunca y reinserta."""
+    resultados = calcular_concentracion_ocupacional(conn)
+
+    if not resultados:
+        logger.warning("No hay datos de concentración para sincronizar")
+        return 0
+
+    if dry_run:
+        logger.info(f"[DRY-RUN] Sync {len(resultados)} filas de concentración")
+        return len(resultados)
+
+    try:
+        client.table(TABLE_CONCENTRACION).delete().neq('tipo', '__none__').execute()
+    except Exception as e:
+        logger.warning(f"Error truncando {TABLE_CONCENTRACION}: {e}")
+
+    total = 0
+    for i in range(0, len(resultados), BATCH_SIZE):
+        batch = resultados[i:i + BATCH_SIZE]
+        try:
+            client.table(TABLE_CONCENTRACION).insert(batch).execute()
+            total += len(batch)
+        except Exception as e:
+            logger.error(f"Error insertando concentración batch {i // BATCH_SIZE + 1}: {e}")
+            raise
+
+    logger.info(f"Concentración sincronizada: {total} filas")
+    return total
+
+
+# ============================================================
+# BRECHA DE CALIFICACIÓN (I-03)
+# ============================================================
+
+def calcular_brecha_calificacion(conn: sqlite3.Connection) -> List[Dict[str, Any]]:
+    """
+    Calcula la brecha de calificación: skills promedio por ISCO vs promedio de mercado.
+    brecha > 1.0 = sobreexigente, < 1.0 = subexigente.
+    """
+    query = """
+    WITH ofertas_validadas AS (
+        SELECT m.id_oferta, m.isco_code, m.isco_label
+        FROM ofertas_esco_matching m
+        WHERE m.estado_validacion IN ('validado','validado_claude','validado_humano')
+          AND m.isco_code IS NOT NULL
+    ),
+    skills_por_oferta AS (
+        SELECT ov.id_oferta, ov.isco_code, ov.isco_label,
+               COUNT(DISTINCT d.esco_skill_label) AS n_skills
+        FROM ofertas_validadas ov
+        JOIN ofertas_esco_skills_detalle d ON ov.id_oferta = d.id_oferta
+        GROUP BY ov.id_oferta, ov.isco_code, ov.isco_label
+    ),
+    promedio_mercado AS (
+        SELECT ROUND(AVG(n_skills), 2) AS avg_mercado FROM skills_por_oferta
+    ),
+    por_isco AS (
+        SELECT isco_code, MAX(isco_label) AS isco_label,
+               COUNT(*) AS total_ofertas,
+               ROUND(AVG(n_skills), 2) AS skills_promedio,
+               ROUND(AVG(n_skills) / (SELECT avg_mercado FROM promedio_mercado), 2) AS brecha
+        FROM skills_por_oferta
+        GROUP BY isco_code
+        HAVING COUNT(*) >= 5
+    )
+    SELECT isco_code, isco_label, total_ofertas, skills_promedio, brecha,
+           CASE
+               WHEN brecha > 1.3 THEN 'sobreexigente'
+               WHEN brecha < 0.7 THEN 'subexigente'
+               ELSE 'equilibrado'
+           END AS categoria
+    FROM por_isco
+    ORDER BY brecha DESC
+    """
+
+    cursor = conn.execute(query)
+    rows = cursor.fetchall()
+
+    now = datetime.now().isoformat()
+    resultados = []
+    for row in rows:
+        resultados.append({
+            'isco_code': row['isco_code'],
+            'isco_label': row['isco_label'],
+            'total_ofertas': row['total_ofertas'],
+            'skills_promedio': float(row['skills_promedio']),
+            'brecha': float(row['brecha']),
+            'categoria': row['categoria'],
+            'calculado_en': now,
+        })
+
+    cats = {}
+    for r in resultados:
+        cats[r['categoria']] = cats.get(r['categoria'], 0) + 1
+    logger.info(f"Brecha calculada: {len(resultados)} ocupaciones — {cats}")
+    return resultados
+
+
+def sync_brecha_calificacion(client, conn: sqlite3.Connection, dry_run: bool = False) -> int:
+    """Sincroniza brecha de calificación a Supabase. Trunca y reinserta."""
+    resultados = calcular_brecha_calificacion(conn)
+
+    if not resultados:
+        logger.warning("No hay datos de brecha para sincronizar")
+        return 0
+
+    if dry_run:
+        logger.info(f"[DRY-RUN] Sync {len(resultados)} filas de brecha")
+        return len(resultados)
+
+    try:
+        client.table(TABLE_BRECHA).delete().neq('isco_code', '__none__').execute()
+    except Exception as e:
+        logger.warning(f"Error truncando {TABLE_BRECHA}: {e}")
+
+    total = 0
+    for i in range(0, len(resultados), BATCH_SIZE):
+        batch = resultados[i:i + BATCH_SIZE]
+        try:
+            client.table(TABLE_BRECHA).insert(batch).execute()
+            total += len(batch)
+        except Exception as e:
+            logger.error(f"Error insertando brecha batch {i // BATCH_SIZE + 1}: {e}")
+            raise
+
+    logger.info(f"Brecha sincronizada: {total} ocupaciones")
+    return total
+
+
+# ============================================================
+# DIGITALIZACIÓN POR SECTOR (I-05)
+# ============================================================
+
+def calcular_digitalizacion_sector(conn: sqlite3.Connection) -> List[Dict[str, Any]]:
+    """
+    Calcula el índice de digitalización por sector CLAE:
+    % de skills digitales sobre total de skills por sector.
+    """
+    query = """
+    WITH ofertas_validadas AS (
+        SELECT m.id_oferta, n.clae_seccion
+        FROM ofertas_esco_matching m
+        JOIN ofertas_nlp n ON m.id_oferta = n.id_oferta
+        WHERE m.estado_validacion IN ('validado','validado_claude','validado_humano')
+          AND n.clae_seccion IS NOT NULL
+    ),
+    skills_con_digital AS (
+        SELECT ov.id_oferta, ov.clae_seccion,
+               json_extract(d.source_classification, '$.es_digital') AS es_digital
+        FROM ofertas_validadas ov
+        JOIN ofertas_esco_skills_detalle d ON ov.id_oferta = d.id_oferta
+        WHERE d.source_classification IS NOT NULL
+    ),
+    por_sector AS (
+        SELECT clae_seccion,
+               COUNT(*) AS total_skills,
+               SUM(CASE WHEN es_digital = 1 THEN 1 ELSE 0 END) AS skills_digitales,
+               COUNT(DISTINCT id_oferta) AS total_ofertas,
+               ROUND(100.0 * SUM(CASE WHEN es_digital = 1 THEN 1 ELSE 0 END) / COUNT(*), 2) AS idx_digital
+        FROM skills_con_digital
+        GROUP BY clae_seccion
+        HAVING COUNT(*) >= 10
+    )
+    SELECT clae_seccion, total_skills, skills_digitales, total_ofertas, idx_digital,
+           CASE
+               WHEN idx_digital > 40 THEN 'alto'
+               WHEN idx_digital > 20 THEN 'medio'
+               ELSE 'bajo'
+           END AS nivel_digital
+    FROM por_sector
+    ORDER BY idx_digital DESC
+    """
+
+    cursor = conn.execute(query)
+    rows = cursor.fetchall()
+
+    now = datetime.now().isoformat()
+    resultados = []
+    for row in rows:
+        resultados.append({
+            'clae_seccion': row['clae_seccion'],
+            'total_skills': row['total_skills'],
+            'skills_digitales': row['skills_digitales'],
+            'total_ofertas': row['total_ofertas'],
+            'idx_digital': float(row['idx_digital']),
+            'nivel_digital': row['nivel_digital'],
+            'calculado_en': now,
+        })
+
+    niveles = {}
+    for r in resultados:
+        niveles[r['nivel_digital']] = niveles.get(r['nivel_digital'], 0) + 1
+    logger.info(f"Digitalización calculada: {len(resultados)} sectores — {niveles}")
+    return resultados
+
+
+def sync_digitalizacion_sector(client, conn: sqlite3.Connection, dry_run: bool = False) -> int:
+    """Sincroniza digitalización por sector a Supabase. Trunca y reinserta."""
+    resultados = calcular_digitalizacion_sector(conn)
+
+    if not resultados:
+        logger.warning("No hay datos de digitalización para sincronizar")
+        return 0
+
+    if dry_run:
+        logger.info(f"[DRY-RUN] Sync {len(resultados)} filas de digitalización")
+        return len(resultados)
+
+    try:
+        client.table(TABLE_DIGITALIZACION).delete().neq('clae_seccion', '__none__').execute()
+    except Exception as e:
+        logger.warning(f"Error truncando {TABLE_DIGITALIZACION}: {e}")
+
+    total = 0
+    for i in range(0, len(resultados), BATCH_SIZE):
+        batch = resultados[i:i + BATCH_SIZE]
+        try:
+            client.table(TABLE_DIGITALIZACION).insert(batch).execute()
+            total += len(batch)
+        except Exception as e:
+            logger.error(f"Error insertando digitalización batch {i // BATCH_SIZE + 1}: {e}")
+            raise
+
+    logger.info(f"Digitalización sincronizada: {total} sectores")
+    return total
+
+
+# ============================================================
 # ESTADÍSTICAS
 # ============================================================
 
@@ -1700,6 +2078,18 @@ Ejemplos:
         logger.info("Calculando tensión de demanda...")
         n_tension = sync_tension_ocupaciones(client, conn, dry_run=args.dry_run)
 
+        # Concentración ocupacional (I-02)
+        logger.info("Calculando concentración ocupacional...")
+        n_concentracion = sync_concentracion_ocupacional(client, conn, dry_run=args.dry_run)
+
+        # Brecha de calificación (I-03)
+        logger.info("Calculando brecha de calificación...")
+        n_brecha = sync_brecha_calificacion(client, conn, dry_run=args.dry_run)
+
+        # Digitalización por sector (I-05)
+        logger.info("Calculando digitalización por sector...")
+        n_digitalizacion = sync_digitalizacion_sector(client, conn, dry_run=args.dry_run)
+
         # Resumen
         print("\n" + "="*60)
         print("RESUMEN" + (" [DRY-RUN]" if args.dry_run else ""))
@@ -1710,6 +2100,9 @@ Ejemplos:
         print(f"Skills ESCO:              {n_esco}")
         print(f"Issues sincronizados:     {n_issues}")
         print(f"Tensión ocupaciones:      {n_tension}")
+        print(f"Concentración ocupacional: {n_concentracion}")
+        print(f"Brecha calificación:      {n_brecha}")
+        print(f"Digitalización sector:    {n_digitalizacion}")
         print("="*60)
 
         if not args.dry_run:

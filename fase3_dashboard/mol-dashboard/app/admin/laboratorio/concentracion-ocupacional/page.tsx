@@ -6,39 +6,42 @@ import {
   ArrowLeft,
   Loader2,
   AlertCircle,
-  Zap,
-  Users,
-  AlertTriangle,
+  PieChart,
   BarChart3,
+  Hash,
+  TrendingUp,
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
-import { getTensionOcupaciones, TensionOcupacion } from "@/lib/supabase";
+import {
+  getConcentracionOcupacional,
+  ConcentracionOcupacional,
+} from "@/lib/supabase";
 import { ChartContainer } from "@/components/ChartContainer";
 import {
-  TensionDemandaChart,
-  CUADRANTE_COLORS,
-} from "@/components/laboratorio/TensionDemandaChart";
+  ConcentracionOcupacionalChart,
+  CLASIFICACION_COLORS,
+} from "@/components/laboratorio/ConcentracionOcupacionalChart";
 import { InsightList, InsightItem } from "@/components/laboratorio/InsightList";
 
-type SortKey = "isco_code" | "isco_label" | "total_posiciones" | "total_ofertas" | "persistencia" | "insistencia" | "cuadrante";
+type SortKey = "isco_code" | "isco_label" | "ofertas" | "share_pct";
 
-export default function TensionDemandaPage() {
-  const [data, setData] = useState<TensionOcupacion[]>([]);
+export default function ConcentracionOcupacionalPage() {
+  const [data, setData] = useState<ConcentracionOcupacional[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [sortKey, setSortKey] = useState<SortKey>("total_posiciones");
+  const [sortKey, setSortKey] = useState<SortKey>("share_pct");
   const [sortDesc, setSortDesc] = useState(true);
 
   useEffect(() => {
     async function load() {
       try {
         setLoading(true);
-        const result = await getTensionOcupaciones();
+        const result = await getConcentracionOcupacional();
         setData(result);
       } catch (err) {
-        console.error("Error loading tension data:", err);
-        setError("Error al cargar datos de tension de demanda.");
+        console.error("Error loading concentracion data:", err);
+        setError("Error al cargar datos de concentracion ocupacional.");
       } finally {
         setLoading(false);
       }
@@ -46,15 +49,13 @@ export default function TensionDemandaPage() {
     load();
   }, []);
 
-  const cuadranteCounts: Record<string, number> = {};
-  data.forEach((d) => {
-    cuadranteCounts[d.cuadrante] = (cuadranteCounts[d.cuadrante] || 0) + 1;
-  });
+  const ocupaciones = data.filter((d) => d.tipo === "ocupacion");
+  const globalRow = data.find((d) => d.tipo === "global");
+  const hhiGlobal = globalRow?.hhi ?? 0;
+  const clasificacion = globalRow?.clasificacion ?? "desconocido";
 
-  const totalPosiciones = data.reduce((s, d) => s + d.total_posiciones, 0);
-
-  const sortedData = useMemo(() => {
-    const sorted = [...data].sort((a, b) => {
+  const sortedOcupaciones = useMemo(() => {
+    return [...ocupaciones].sort((a, b) => {
       const aVal = a[sortKey];
       const bVal = b[sortKey];
       if (typeof aVal === "number" && typeof bVal === "number") {
@@ -64,8 +65,7 @@ export default function TensionDemandaPage() {
         ? String(bVal).localeCompare(String(aVal))
         : String(aVal).localeCompare(String(bVal));
     });
-    return sorted;
-  }, [data, sortKey, sortDesc]);
+  }, [ocupaciones, sortKey, sortDesc]);
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
@@ -90,7 +90,9 @@ export default function TensionDemandaPage() {
     return (
       <div className="min-h-[400px] flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-        <span className="ml-3 text-gray-600">Cargando datos de tension...</span>
+        <span className="ml-3 text-gray-600">
+          Cargando datos de concentracion...
+        </span>
       </div>
     );
   }
@@ -109,6 +111,8 @@ export default function TensionDemandaPage() {
     );
   }
 
+  const top1 = ocupaciones[0];
+
   return (
     <div className="p-8 max-w-6xl mx-auto space-y-6">
       {/* Header */}
@@ -122,7 +126,7 @@ export default function TensionDemandaPage() {
         </Link>
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold text-gray-900">
-            Tension de Demanda
+            Concentracion Ocupacional
           </h1>
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
@@ -130,7 +134,8 @@ export default function TensionDemandaPage() {
           </span>
         </div>
         <p className="text-sm text-gray-500 mt-1">
-          Indicador V-16: Persistencia x Insistencia por ocupacion ISCO
+          Indicador I-02: Indice HHI de concentracion de ofertas por ocupacion
+          ISCO
         </p>
       </div>
 
@@ -138,75 +143,85 @@ export default function TensionDemandaPage() {
       <div className="grid grid-cols-4 gap-4">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-1">
-            <BarChart3 className="w-4 h-4 text-blue-600" />
+            <PieChart className="w-4 h-4 text-blue-600" />
             <span className="text-xs font-semibold text-gray-500 uppercase">
-              Ocupaciones
+              HHI Global
             </span>
           </div>
-          <p className="text-3xl font-bold text-gray-900">{data.length}</p>
-        </div>
-        <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-5 shadow-sm">
-          <div className="flex items-center gap-2 mb-1">
-            <AlertTriangle className="w-4 h-4 text-red-600" />
-            <span className="text-xs font-semibold text-gray-500 uppercase">
-              Critico
-            </span>
-          </div>
-          <p className="text-3xl font-bold text-red-700">
-            {cuadranteCounts["CRITICO"] || 0}
+          <p className="text-3xl font-bold text-gray-900">
+            {hhiGlobal.toFixed(4)}
           </p>
         </div>
-        <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-5 shadow-sm">
+        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-1">
-            <Zap className="w-4 h-4 text-orange-600" />
+            <BarChart3 className="w-4 h-4 text-green-600" />
             <span className="text-xs font-semibold text-gray-500 uppercase">
-              Urgente
+              Clasificacion
             </span>
           </div>
-          <p className="text-3xl font-bold text-orange-700">
-            {cuadranteCounts["URGENTE"] || 0}
+          <p
+            className="text-2xl font-bold capitalize"
+            style={{
+              color: CLASIFICACION_COLORS[clasificacion] || "#6b7280",
+            }}
+          >
+            {clasificacion}
           </p>
         </div>
         <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-1">
-            <Users className="w-4 h-4 text-purple-600" />
+            <Hash className="w-4 h-4 text-purple-600" />
             <span className="text-xs font-semibold text-gray-500 uppercase">
-              Total posiciones
+              Ocupaciones
             </span>
           </div>
           <p className="text-3xl font-bold text-gray-900">
-            {totalPosiciones.toLocaleString()}
+            {ocupaciones.length}
+          </p>
+        </div>
+        <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-5 shadow-sm">
+          <div className="flex items-center gap-2 mb-1">
+            <TrendingUp className="w-4 h-4 text-orange-600" />
+            <span className="text-xs font-semibold text-gray-500 uppercase">
+              Top 1 Share
+            </span>
+          </div>
+          <p className="text-3xl font-bold text-orange-700">
+            {top1 ? `${top1.share_pct}%` : "—"}
           </p>
         </div>
       </div>
 
       {/* Chart with Insights */}
       <ChartContainer
-        title="Tension de demanda por ocupacion"
-        subtitle={`${data.length} ocupaciones — 4 cuadrantes`}
+        title="Top 10 ocupaciones por concentracion"
+        subtitle={`${ocupaciones.length} ocupaciones analizadas — HHI ${hhiGlobal.toFixed(4)}`}
         insights={
           <InsightList>
-            {cuadranteCounts["CRITICO"] ? (
+            <InsightItem
+              text={`Mercado ${clasificacion}: HHI de ${hhiGlobal.toFixed(4)}`}
+              highlight={clasificacion === "concentrado"}
+            />
+            {top1 && (
               <InsightItem
-                text={`${cuadranteCounts["CRITICO"]} ocupaciones en estado critico (alta persistencia + alta insistencia)`}
+                text={`"${top1.isco_label}" lidera con ${top1.share_pct}% del total`}
                 highlight
               />
-            ) : null}
-            {cuadranteCounts["URGENTE"] ? (
-              <InsightItem
-                text={`${cuadranteCounts["URGENTE"]} urgentes: persisten pero no se republican`}
-              />
-            ) : null}
+            )}
             <InsightItem
-              text={`${cuadranteCounts["FLUIDO"] || 0} ocupaciones con demanda fluida (se cubren rapidamente)`}
+              text="HHI < 0.15 = diversificado, 0.15-0.25 = moderado, > 0.25 = concentrado"
             />
             <InsightItem
-              text={`Umbral: 50% en ambos ejes divide los 4 cuadrantes`}
+              text="Un mercado concentrado indica que pocas ocupaciones acaparan la mayor parte de la demanda"
             />
           </InsightList>
         }
       >
-        <TensionDemandaChart data={data} />
+        <ConcentracionOcupacionalChart
+          topOcupaciones={ocupaciones}
+          hhiGlobal={hhiGlobal}
+          clasificacion={clasificacion}
+        />
       </ChartContainer>
 
       {/* Methodology */}
@@ -215,64 +230,47 @@ export default function TensionDemandaPage() {
         <div className="grid grid-cols-2 gap-6 text-sm text-gray-700">
           <div>
             <h4 className="font-semibold text-gray-900 mb-2">
-              Persistencia (eje X)
+              Indice Herfindahl-Hirschman (HHI)
             </h4>
             <p>
-              Porcentaje de posiciones cuya ventana de publicacion supera los 45
-              dias. Valores altos indican que las vacantes permanecen abiertas
-              mucho tiempo, sugiriendo dificultad para cubrir la posicion.
+              Suma de los cuadrados de las participaciones (share) de cada
+              ocupacion en el total de ofertas. Mide la concentracion del
+              mercado: cuanto mayor el HHI, mas concentrada la demanda en
+              pocas ocupaciones.
+            </p>
+            <p className="mt-2 font-mono text-xs bg-gray-50 p-2 rounded">
+              HHI = Sum(share_i^2) donde share_i = ofertas_i / total
             </p>
           </div>
           <div>
-            <h4 className="font-semibold text-gray-900 mb-2">
-              Insistencia (eje Y)
-            </h4>
-            <p>
-              Porcentaje de posiciones que fueron republicadas (mismo aviso
-              publicado multiples veces). Valores altos sugieren que la empresa
-              necesita re-publicar porque no encuentra candidatos.
-            </p>
-          </div>
-          <div className="col-span-2">
-            <h4 className="font-semibold text-gray-900 mb-2">Cuadrantes</h4>
-            <div className="grid grid-cols-4 gap-3">
+            <h4 className="font-semibold text-gray-900 mb-2">Umbrales</h4>
+            <div className="space-y-2">
               {[
-                {
-                  name: "CRITICO",
-                  desc: "Alta persistencia + alta insistencia. Vacantes dificiles de cubrir que se republican constantemente.",
-                },
-                {
-                  name: "URGENTE",
-                  desc: "Alta persistencia + baja insistencia. Permanecen abiertas mucho tiempo pero no se re-publican.",
-                },
-                {
-                  name: "PASIVO",
-                  desc: "Baja persistencia + alta insistencia. Se cubren rapido pero se re-publican (alta rotacion).",
-                },
-                {
-                  name: "FLUIDO",
-                  desc: "Baja persistencia + baja insistencia. Mercado funcional: se publican y cubren sin friccion.",
-                },
-              ].map((q) => (
+                { name: "Diversificado", range: "HHI < 0.15", desc: "Demanda distribuida entre muchas ocupaciones" },
+                { name: "Moderado", range: "0.15 - 0.25", desc: "Concentracion moderada en algunas ocupaciones" },
+                { name: "Concentrado", range: "HHI > 0.25", desc: "Pocas ocupaciones dominan la demanda" },
+              ].map((u) => (
                 <div
-                  key={q.name}
-                  className="border rounded-lg p-3"
+                  key={u.name}
+                  className="border rounded-lg p-2"
                   style={{
                     borderColor:
-                      CUADRANTE_COLORS[q.name] || "#e5e7eb",
+                      CLASIFICACION_COLORS[u.name.toLowerCase()] || "#e5e7eb",
                   }}
                 >
-                  <div className="flex items-center gap-1.5 mb-1">
+                  <div className="flex items-center gap-1.5">
                     <div
-                      className="w-2.5 h-2.5 rounded-full"
+                      className="w-2 h-2 rounded-full"
                       style={{
                         backgroundColor:
-                          CUADRANTE_COLORS[q.name] || "#6b7280",
+                          CLASIFICACION_COLORS[u.name.toLowerCase()] || "#6b7280",
                       }}
                     />
-                    <span className="text-xs font-bold">{q.name}</span>
+                    <span className="text-xs font-bold">
+                      {u.name} ({u.range})
+                    </span>
                   </div>
-                  <p className="text-xs text-gray-600">{q.desc}</p>
+                  <p className="text-xs text-gray-600 mt-1">{u.desc}</p>
                 </div>
               ))}
             </div>
@@ -284,10 +282,10 @@ export default function TensionDemandaPage() {
       <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-bold text-gray-900">
-            Detalle por ocupacion
+            Top 15 ocupaciones
           </h3>
           <p className="text-sm text-gray-500">
-            {data.length} ocupaciones — click en columna para ordenar
+            {ocupaciones.length} ocupaciones — click en columna para ordenar
           </p>
         </div>
         <div className="overflow-x-auto">
@@ -297,11 +295,8 @@ export default function TensionDemandaPage() {
                 {[
                   { key: "isco_code" as SortKey, label: "ISCO" },
                   { key: "isco_label" as SortKey, label: "Ocupacion" },
-                  { key: "total_posiciones" as SortKey, label: "Posiciones" },
-                  { key: "total_ofertas" as SortKey, label: "Ofertas" },
-                  { key: "persistencia" as SortKey, label: "Persistencia" },
-                  { key: "insistencia" as SortKey, label: "Insistencia" },
-                  { key: "cuadrante" as SortKey, label: "Cuadrante" },
+                  { key: "ofertas" as SortKey, label: "Ofertas" },
+                  { key: "share_pct" as SortKey, label: "Share %" },
                 ].map((col) => (
                   <th
                     key={col.key}
@@ -317,7 +312,7 @@ export default function TensionDemandaPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {sortedData.map((row) => (
+              {sortedOcupaciones.map((row) => (
                 <tr
                   key={row.isco_code}
                   className="hover:bg-gray-50 transition-colors"
@@ -329,35 +324,10 @@ export default function TensionDemandaPage() {
                     {row.isco_label}
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums">
-                    {row.total_posiciones}
+                    {row.ofertas}
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums">
-                    {row.total_ofertas}
-                  </td>
-                  <td className="px-4 py-3 text-right tabular-nums">
-                    {row.persistencia}%
-                  </td>
-                  <td className="px-4 py-3 text-right tabular-nums">
-                    {row.insistencia}%
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold"
-                      style={{
-                        backgroundColor: `${CUADRANTE_COLORS[row.cuadrante] || "#6b7280"}15`,
-                        color:
-                          CUADRANTE_COLORS[row.cuadrante] || "#6b7280",
-                      }}
-                    >
-                      <span
-                        className="w-1.5 h-1.5 rounded-full"
-                        style={{
-                          backgroundColor:
-                            CUADRANTE_COLORS[row.cuadrante] || "#6b7280",
-                        }}
-                      />
-                      {row.cuadrante}
-                    </span>
+                    {row.share_pct}%
                   </td>
                 </tr>
               ))}
