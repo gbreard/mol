@@ -863,6 +863,7 @@
     "_descripcion": "Configuracion para detectar y expandir titulos con multiples perfiles",
     "separadores": [
       ", ",
+      " - ",
       " y ",
       " / ",
       " o "

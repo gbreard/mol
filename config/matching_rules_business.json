@@ -1,8 +1,9 @@
 {
-  "version": "5.0",
-  "descripcion": "Reglas de negocio para matching ESCO. 242 reglas de bypass que fuerzan ISCO específico.",
+  "version": "5.2",
+  "descripcion": "Reglas de negocio para matching ESCO. 255 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-02-23",
+  "fecha_actualizacion": "2026-02-26",
+  "_cambios_v51": "Issues Cynthia: R57 fix (capataz genérico removido), R11 desactivada (multi-position reemplaza), R247-R254 nuevas (capataz_obra, capataz_generico, supervisor_electrico, supervisor_fractura, martillero_publico, hrbp, servicios_funerarios, logistica_liviana)",
   "_cambios_v43": "R181-R182: Personal mantenimiento -> 7233, Tecnico electromedicina -> 3211",
   "_cambios_v42": "R177-R180: Gestor cobranzas, QA/Tester, Instalador fibra, Soporte IT",
   "_cambios_v41": "R175: Operario limpieza -> 9112, R176: Auditor franquicias -> 2421",
@@ -239,7 +240,8 @@
         "usar_primer_rol": true
       },
       "caso_gold_set": "1117977340 - Recepcionista Administrativo",
-      "activa": true
+      "activa": false,
+      "nota": "Desactivada: reemplazada por sistema multi-posición (024_multi_position.sql + limpiar_titulos.py). Sprint issues Cynthia 2026-02-26."
     },
     "R12_ejecutivo_cuentas": {
       "nombre": "Ejecutivo de Cuentas = Ventas",
@@ -1491,11 +1493,14 @@
       "prioridad": 1
     },
     "R57_encargado_ganadero": {
+      "nombre": "Ganadero / Encargado de Campo (agropecuario)",
       "condicion": {
         "titulo_contiene_alguno": [
           "ganadero",
-          "capataz",
-          "encargado de campo"
+          "encargado de campo",
+          "capataz de campo",
+          "capataz ganadero",
+          "capataz de estancia"
         ]
       },
       "accion": {
@@ -1503,7 +1508,8 @@
         "esco_label": "ganadero/ganadera"
       },
       "activa": true,
-      "prioridad": 1
+      "prioridad": 1,
+      "nota": "Sprint issues Cynthia: 'capataz' genérico removido (causaba 13 FP en construcción). Solo términos explícitamente agropecuarios."
     },
     "R58_operador_sim_aduanas": {
       "condicion": {
@@ -5503,6 +5509,302 @@
       "fecha_creacion": "2026-02-24",
       "activa": true,
       "nota": "Jefe/Director calidad = gerencia manufacturera (1321), no tecnico (7543) ni ingeniero (2149)"
+    },
+    "R247_capataz_obra": {
+      "nombre": "Capataz de Obra / Construcción",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "capataz de obra",
+          "capataz de construcción",
+          "capataz de construccion"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3123",
+        "esco_label": "capataz de construcción"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-26",
+      "nota": "Issues Cynthia: 10 ofertas 'capataz de obra' iban a 6121 ganadero por R57 genérica"
+    },
+    "R248_capataz_generico": {
+      "nombre": "Capataz (genérico → construcción por default)",
+      "prioridad": 5,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "capataz"
+        ],
+        "titulo_no_contiene_alguno": [
+          "de campo",
+          "ganadero",
+          "de estancia",
+          "eléctrico",
+          "electrico",
+          "de planta"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3123",
+        "esco_label": "capataz de construcción"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-26",
+      "nota": "Fallback: 'capataz' sin calificador en Argentina es casi siempre construcción. Excluye campo/ganadero (R57), eléctrico (R249), planta (semántico)."
+    },
+    "R249_supervisor_electrico": {
+      "nombre": "Supervisor / Encargado Eléctrico",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "supervisor eléctrico",
+          "supervisor electrico",
+          "encargado eléctrico",
+          "encargado electrico",
+          "capataz eléctrico",
+          "capataz electrico",
+          "supervisor de instalaciones eléctricas",
+          "supervisor de instalaciones electricas"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3123",
+        "esco_label": "supervisor de instalaciones eléctricas/supervisora de instalaciones eléctricas"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-26",
+      "nota": "Issue Cynthia: 1118041226 Supervisor/Encargado Eléctrico iba a ganadero"
+    },
+    "R250_supervisor_fractura": {
+      "nombre": "Supervisor de Fractura (petrolero)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "supervisor de fractura",
+          "supervisora de fractura",
+          "supervisores de fractura",
+          "jefe de fractura"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3121",
+        "esco_label": "supervisor de mina/supervisora de mina"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-26",
+      "nota": "Issue Cynthia: 1118072854 fractura hidráulica en petrolera iba a 6113 horticultura"
+    },
+    "R251_martillero_publico": {
+      "nombre": "Martillero Público (inmobiliario)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "martillero público",
+          "martillero publico",
+          "martillera pública",
+          "martillera publica",
+          "martillero/a público",
+          "martillero/a publico"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3334",
+        "esco_label": "agente inmobiliario/agente inmobiliaria"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-26",
+      "nota": "Issue Cynthia: 2174645 martillero iba a 0110 oficial artillería (similitud fonética)"
+    },
+    "R252_hrbp": {
+      "nombre": "HRBP / HR Business Partner",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "hrbp",
+          "hr business partner",
+          "human resources business partner"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2423",
+        "esco_label": "responsable de recursos humanos"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-26",
+      "nota": "Issue Cynthia: 1118133545 HRBP iba a 6221 estructuras acuícolas"
+    },
+    "R253_servicios_funerarios": {
+      "nombre": "Servicios Funerarios / Cementerio",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "servicios funerarios",
+          "pompas fúnebres",
+          "pompas funebres",
+          "cementerio",
+          "sepelio"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5163",
+        "esco_label": "empleado de pompas fúnebres/empleada de pompas fúnebres"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-26",
+      "nota": "Issue Cynthia: 1118044046 asistente cementerio jardín iba a 6113 horticultura (keyword 'jardín')"
+    },
+    "R254_logistica_liviana": {
+      "nombre": "Empleado Logística Liviana / Tareas Generales",
+      "prioridad": 3,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "logística liviana",
+          "logistica liviana"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8322",
+        "esco_label": "conductor de vehículo de reparto/conductora de vehículo de reparto"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-26",
+      "nota": "Issue Cynthia: 1118153838 logística liviana con utilitario iba a 0110 oficial Ejército del Aire"
+    },
+    "R255_albañil": {
+      "nombre": "Albañil / Oficial Albañil",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "albañil",
+          "albanil",
+          "albañilería",
+          "albanileria",
+          "oficial albañil",
+          "oficial albanil",
+          "medio oficial albañil",
+          "medio oficial albanil",
+          "albañiles"
+        ],
+        "titulo_no_contiene_alguno": [
+          "pintor",
+          "plomero",
+          "electricista"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7112",
+        "esco_label": "albañil"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-26",
+      "nota": "Semántico daba 7115/2133/9622/3113 para albañil. Excluye multi-oficio (esos van a multi-position)."
+    },
+    "R256_plomero": {
+      "nombre": "Plomero / Sanitarista / Gasista",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "plomero",
+          "plomeros",
+          "sanitarista",
+          "sanitaristas",
+          "oficial plomero",
+          "gasista"
+        ],
+        "titulo_no_contiene_alguno": [
+          "albañil",
+          "pintor",
+          "electricista"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7126",
+        "esco_label": "fontanero/fontanera"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-26",
+      "nota": "Semántico daba 8211/8342/2141 para plomero. ESCO usa 'fontanero' para plumber."
+    },
+    "R257_pintor_obra": {
+      "nombre": "Pintor de Obra / Construcción",
+      "prioridad": 2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "pintor",
+          "pintores",
+          "oficial pintor",
+          "oficiales pintores",
+          "medio oficial pintor"
+        ],
+        "titulo_no_contiene_alguno": [
+          "automotor",
+          "automotriz",
+          "automóvil",
+          "automovil",
+          "carrocería",
+          "carroceria",
+          "vehículo",
+          "vehiculo",
+          "cabina de pintura",
+          "mueble",
+          "polvo"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7131",
+        "esco_label": "pintor de obra/pintora de obra"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-26",
+      "nota": "Pintor genérico = obra/construcción. Excluye automotriz (R218) y muebles (7316)."
+    },
+    "R258_ayudante_construccion": {
+      "nombre": "Ayudante de Albañil / Peón Construcción",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "ayudante de albañil",
+          "ayudante de albanil",
+          "ayudante albañil",
+          "ayudante albanil",
+          "peón de construcción",
+          "peon de construccion",
+          "ayudantes de obra",
+          "ayudantes oficiales"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9313",
+        "esco_label": "obrero de la construcción/obrera de la construcción"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-26",
+      "nota": "Ayudante albañil → 9313 peón/obrero. Semántico daba 5142 salón de belleza (!)"
+    },
+    "R259_oficiales_construccion": {
+      "nombre": "Oficiales de Construcción / para Obra",
+      "prioridad": 2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "oficiales de la construcción",
+          "oficiales de la construccion",
+          "oficiales de construcción",
+          "oficiales de construccion",
+          "oficiales para construcción",
+          "oficiales para construccion",
+          "oficiales para obra",
+          "oficiales y ayudantes para construcción",
+          "oficiales y ayudantes para construccion",
+          "oficiales y ayudantes para obra"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7112",
+        "esco_label": "albañil"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-26",
+      "nota": "Ofertas genéricas de construcción → albañil como default (ISCO grupo 711x)."
     }
   },
   "reglas_filtro": {

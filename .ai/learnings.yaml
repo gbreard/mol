@@ -6,11 +6,11 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-02-25 12:36"
+  fecha_actualizacion: "2026-02-26 15:28"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "presentacion"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "Último scraping hace 5 días - sistema sugiere Fase 1"
+  fase_detalle: "155 errores sin resolver - sistema sugiere Fase 2"
 
 ultimo_trabajo:
   fecha: "2026-02-25"
@@ -137,14 +137,14 @@ ultimo_trabajo:
 # REGLA: Cuando se modifique un config, actualizar estos conteos.
 # La documentación (CLAUDE.md, PIPELINE.md, etc.) referencia aquí.
 conteos:
-  reglas_negocio: 241  # config/matching_rules_business.json > reglas_forzar_isco (v3.1 actualizado 2026-01-29)
+  reglas_negocio: 253  # config/matching_rules_business.json > reglas_forzar_isco (v3.1 actualizado 2026-01-29)
   reglas_validacion: 3  # config/validation_rules.json > reglas_validacion (V01-V22 legacy + V25-V29 declarativas Sprint 3)
   reglas_skills_dual: 25  # config/skills_rules.json > reglas_forzar_skills (v2.0 2026-01-22)
-  sinonimos_argentinos: 13  # config/sinonimos_argentinos_esco.json > ocupaciones_titulo
+  sinonimos_argentinos: 17  # config/sinonimos_argentinos_esco.json > ocupaciones_titulo
   empresas_catalogo: 247  # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
   skills_esco: 14257            # database/embeddings/esco_skills_full.json
   ocupaciones_esco: 3046        # database/embeddings/esco_occupations_full.json
-  ultima_verificacion: 2026-02-25
+  ultima_verificacion: 2026-02-26
 
   supabase:
     integrado: true
@@ -178,10 +178,10 @@ conteos:
   proximo_paso: "Revisar 24 casos con override semántico alto"
 
   estadisticas_actuales:
-    ofertas_validadas: 16130  # todas sincronizadas a Supabase
-    ofertas_pendientes: 9  # 0 errores de validación
+    ofertas_validadas: 16084  # todas sincronizadas a Supabase
+    ofertas_pendientes: 61  # 0 errores de validación
     errores_validacion: 0  # resueltos 201 → 0
-    reglas_negocio: 241
+    reglas_negocio: 253
     convergencia: "CONVERGIDO (0 errores pendientes)"
     supabase_sync: "2,093 ofertas + 34,917 skills"
 
@@ -197,9 +197,9 @@ conteos:
 
   # Métricas de evolución del aprendizaje
   learning_evolution:
-    total_runs: 244
+    total_runs: 248
     ofertas_con_historial_nlp: 5474  # ofertas en ofertas_nlp_history
-    ofertas_con_matching: 16139  # ofertas distintas en ofertas_esco_matching
+    ofertas_con_matching: 16145  # ofertas distintas en ofertas_esco_matching
 
     # Distribución real de reprocesos (datos de ofertas_nlp_history)
     distribucion_reprocesos:
@@ -211,7 +211,7 @@ conteos:
       caso_mas_dificil: "2154549 Contador Auditoría (12 intentos)"
 
     reglas_inicio: 22  # 2026-01-13 baseline
-    reglas_actual: 241
+    reglas_actual: 253
     reglas_agregadas: "+96 durante optimización"
     tasa_convergencia: "47% -> 27% -> 2.7% -> 7.5% -> 0%"
     estado: "CONVERGIDO (tasa = 0%)"

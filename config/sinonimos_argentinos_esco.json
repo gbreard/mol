@@ -142,6 +142,38 @@
       "esco_label": "albañil",
       "variantes": ["personal para obra", "personal de obra", "personal obra", "obrero de construcción", "obrero construcción", "peón de obra", "peón obra"],
       "nota": "Término genérico en Argentina para trabajador de construcción"
+    },
+
+    "capataz": {
+      "isco_primario": "3123",
+      "esco_label": "capataz de construcción",
+      "variantes": ["capataz", "capataz de obra"],
+      "contextos": {
+        "campo|estancia|ganadero|rural": "6121",
+        "planta|manufactura|metalúrgica|metalurgica": "3122"
+      },
+      "nota": "En Argentina 'capataz' es casi siempre construcción. Solo es agropecuario con calificador explícito (de campo, ganadero, estancia)."
+    },
+
+    "albañil": {
+      "isco_primario": "7112",
+      "esco_label": "albañil",
+      "variantes": ["albañil", "albanil", "oficial albañil", "oficial albanil", "medio oficial albañil", "albañiles"],
+      "nota": "ESCO usa 'albañil' directo. El semántico fallaba consistentemente (7115, 2133, 9622)."
+    },
+
+    "plomero": {
+      "isco_primario": "7126",
+      "esco_label": "fontanero/fontanera",
+      "variantes": ["plomero", "plomeros", "oficial plomero", "sanitarista", "plomero sanitarista"],
+      "nota": "Argentina usa 'plomero', ESCO usa 'fontanero'. El semántico daba 8211 (montador náutico)."
+    },
+
+    "martillero": {
+      "isco_primario": "3334",
+      "esco_label": "agente inmobiliario/agente inmobiliaria",
+      "variantes": ["martillero", "martillero público", "martillero publico", "martillera"],
+      "nota": "Martillero público = agente inmobiliario matriculado en Argentina. Semántico confundía con 'artillería' (0110)."
     }
   },
 
