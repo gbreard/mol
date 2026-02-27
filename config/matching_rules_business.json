@@ -1,8 +1,9 @@
 {
-  "version": "5.2",
-  "descripcion": "Reglas de negocio para matching ESCO. 255 reglas de bypass que fuerzan ISCO específico.",
+  "version": "5.3",
+  "descripcion": "Reglas de negocio para matching ESCO. 260 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-02-26",
+  "fecha_actualizacion": "2026-02-27",
+  "_cambios_v53": "Issues Cynthia ronda 2: R260-R264 (gestor_operativo, vendimia, pasante_vinedos, operario_limpieza_industrial, lider_almacen)",
   "_cambios_v51": "Issues Cynthia: R57 fix (capataz genérico removido), R11 desactivada (multi-position reemplaza), R247-R254 nuevas (capataz_obra, capataz_generico, supervisor_electrico, supervisor_fractura, martillero_publico, hrbp, servicios_funerarios, logistica_liviana)",
   "_cambios_v43": "R181-R182: Personal mantenimiento -> 7233, Tecnico electromedicina -> 3211",
   "_cambios_v42": "R177-R180: Gestor cobranzas, QA/Tester, Instalador fibra, Soporte IT",
@@ -3165,7 +3166,12 @@
           "autoelevador",
           "autoelevadorista",
           "carretilla",
-          "clark"
+          "clark",
+          "líder",
+          "lider",
+          "supervisor",
+          "jefe",
+          "encargado"
         ]
       },
       "accion": {
@@ -5805,6 +5811,101 @@
       "activa": true,
       "fecha_creacion": "2026-02-26",
       "nota": "Ofertas genéricas de construcción → albañil como default (ISCO grupo 711x)."
+    },
+    "R260_gestor_operativo": {
+      "nombre": "Gestor Operativo (administrativo/contable)",
+      "prioridad": 3,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "gestor operativo",
+          "gestora operativa"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4311",
+        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-27",
+      "nota": "Issue Cynthia: 1118032342 funciones admin/contables en agroindustrial iba a 6130 gestor explotación agrícola"
+    },
+    "R261_vendimia": {
+      "nombre": "Vendimia / Cosecha",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "vendimia",
+          "cosecha de uva",
+          "cosechador"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9213",
+        "esco_label": "operario agrícola/operaria agrícola"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-27",
+      "nota": "Issue Cynthia: 1118028694 'Vendimia 2026' es campaña estacional = peón agrícola"
+    },
+    "R262_pasante_vinedos": {
+      "nombre": "Pasante de Viñedos (administrativo)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "pasante de viñedos",
+          "pasante de viñedo",
+          "pasante viñedos",
+          "pasante viñedo"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4110",
+        "esco_label": "empleado de oficina/empleada de oficina"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-27",
+      "nota": "Issue Cynthia: 1118008954/1118008939 tareas son admin (fichadas, planillas, datos) no supervisión de viñedos"
+    },
+    "R263_operario_limpieza_industrial": {
+      "nombre": "Operario Limpieza Industrial (tanques, cisternas)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "limpieza de tanques",
+          "limpieza de cisternas",
+          "limpieza industrial"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9129",
+        "esco_label": "operario de limpieza de alcantarillado/operaria de limpieza de alcantarillado"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-27",
+      "nota": "Issue Cynthia: 1118164691 limpieza tanques no es limpieza edificios (9112). Título debe ser solo 'Operario de limpieza'"
+    },
+    "R264_lider_almacen": {
+      "nombre": "Líder / Supervisor de Almacén",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "líder de almacén",
+          "lider de almacen",
+          "líder de almacen",
+          "lider de almacén",
+          "supervisor de almacén",
+          "supervisor de almacen",
+          "jefe de almacén",
+          "jefe de almacen"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3122",
+        "esco_label": "supervisor de producción/supervisora de producción"
+      },
+      "activa": true,
+      "fecha_creacion": "2026-02-27",
+      "nota": "Issue Cynthia: 2175371 líder almacén iba a 9333 mozo almacén. Es supervisión, no mozo."
     }
   },
   "reglas_filtro": {

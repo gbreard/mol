@@ -1,7 +1,7 @@
 {
-  "last_sync_timestamp": "2026-02-26T17:44:35.618826",
-  "last_sync_ofertas": 16084,
-  "last_sync_skills": 296168,
+  "last_sync_timestamp": "2026-02-27T16:19:57.748106",
+  "last_sync_ofertas": 9,
+  "last_sync_skills": 122,
   "history": [
     {
       "timestamp": "2026-01-23T18:20:00",
@@ -32,6 +32,11 @@
       "timestamp": "2026-02-26T17:44:35.618826",
       "ofertas": 16084,
       "skills": 296168
+    },
+    {
+      "timestamp": "2026-02-27T16:19:57.748106",
+      "ofertas": 9,
+      "skills": 122
     }
   ]
 }
