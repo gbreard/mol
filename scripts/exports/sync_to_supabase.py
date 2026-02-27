@@ -2031,62 +2031,59 @@ Ejemplos:
         ofertas = extraer_ofertas_validadas(conn, since=args.since, ids=offer_ids)
         logger.info(f"  Encontradas: {len(ofertas)} ofertas")
 
+        n_ofertas = n_skills = n_ocup = n_esco = n_issues = 0
+
         if not ofertas:
-            logger.warning("No hay ofertas para sincronizar")
-            return
+            logger.warning("No hay ofertas nuevas para sincronizar (ofertas/skills sin cambios)")
+        else:
+            # IDs para queries relacionadas
+            ids_para_sync = [o['id_oferta'] for o in ofertas]
 
-        # IDs para queries relacionadas
-        ids_para_sync = [o['id_oferta'] for o in ofertas]
+            logger.info("Extrayendo skills detalle...")
+            skills = extraer_skills_detalle(conn, ids_para_sync)
+            logger.info(f"  Encontradas: {len(skills)} skills")
 
-        logger.info("Extrayendo skills detalle...")
-        skills = extraer_skills_detalle(conn, ids_para_sync)
-        logger.info(f"  Encontradas: {len(skills)} skills")
+            logger.info("Extrayendo ocupaciones ESCO usadas...")
+            ocupaciones = extraer_esco_ocupaciones_usadas(conn, ids_para_sync)
+            logger.info(f"  Encontradas: {len(ocupaciones)} ocupaciones")
 
-        logger.info("Extrayendo ocupaciones ESCO usadas...")
-        ocupaciones = extraer_esco_ocupaciones_usadas(conn, ids_para_sync)
-        logger.info(f"  Encontradas: {len(ocupaciones)} ocupaciones")
+            logger.info("Extrayendo skills ESCO usadas...")
+            esco_skills = extraer_esco_skills_usadas(conn, ids_para_sync)
+            logger.info(f"  Encontradas: {len(esco_skills)} skills ESCO")
 
-        logger.info("Extrayendo skills ESCO usadas...")
-        esco_skills = extraer_esco_skills_usadas(conn, ids_para_sync)
-        logger.info(f"  Encontradas: {len(esco_skills)} skills ESCO")
+            # Upload
+            print("\n" + "="*60)
+            print("SINCRONIZANDO A SUPABASE" + (" [DRY-RUN]" if args.dry_run else ""))
+            print("="*60)
 
-        # Upload
-        print("\n" + "="*60)
-        print("SINCRONIZANDO A SUPABASE" + (" [DRY-RUN]" if args.dry_run else ""))
-        print("="*60)
+            logger.info("Subiendo ofertas...")
+            n_ofertas = upsert_ofertas(client, ofertas, dry_run=args.dry_run)
 
-        logger.info("Subiendo ofertas...")
-        n_ofertas = upsert_ofertas(client, ofertas, dry_run=args.dry_run)
+            logger.info("Subiendo skills detalle...")
+            n_skills = upsert_skills(client, skills, dry_run=args.dry_run)
 
-        logger.info("Subiendo skills detalle...")
-        n_skills = upsert_skills(client, skills, dry_run=args.dry_run)
+            logger.info("Subiendo ocupaciones ESCO...")
+            n_ocup = upsert_esco_ocupaciones(client, ocupaciones, dry_run=args.dry_run)
 
-        logger.info("Subiendo ocupaciones ESCO...")
-        n_ocup = upsert_esco_ocupaciones(client, ocupaciones, dry_run=args.dry_run)
+            logger.info("Subiendo skills ESCO...")
+            n_esco = upsert_esco_skills(client, esco_skills, dry_run=args.dry_run)
 
-        logger.info("Subiendo skills ESCO...")
-        n_esco = upsert_esco_skills(client, esco_skills, dry_run=args.dry_run)
+            logger.info("Sincronizando errores de validación...")
+            n_issues = sync_validation_errors_to_issues(client, conn, ids_para_sync, dry_run=args.dry_run)
 
-        logger.info("Sincronizando errores de validación...")
-        n_issues = sync_validation_errors_to_issues(client, conn, ids_para_sync, dry_run=args.dry_run)
-
-        # Sincronizar estado del sistema (métricas de las 3 fases)
+        # Indicadores calculados — siempre se recalculan (usan TODAS las ofertas validadas)
         logger.info("Sincronizando estado del sistema...")
         sync_sistema_estado(client, conn, dry_run=args.dry_run)
 
-        # Tensión de demanda por ocupación (V-16)
         logger.info("Calculando tensión de demanda...")
         n_tension = sync_tension_ocupaciones(client, conn, dry_run=args.dry_run)
 
-        # Concentración ocupacional (I-02)
         logger.info("Calculando concentración ocupacional...")
         n_concentracion = sync_concentracion_ocupacional(client, conn, dry_run=args.dry_run)
 
-        # Brecha de calificación (I-03)
         logger.info("Calculando brecha de calificación...")
         n_brecha = sync_brecha_calificacion(client, conn, dry_run=args.dry_run)
 
-        # Digitalización por sector (I-05)
         logger.info("Calculando digitalización por sector...")
         n_digitalizacion = sync_digitalizacion_sector(client, conn, dry_run=args.dry_run)
 
