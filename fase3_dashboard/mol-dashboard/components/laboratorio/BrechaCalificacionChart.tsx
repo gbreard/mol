@@ -51,8 +51,17 @@ interface BrechaCalificacionChartProps {
   data: BrechaCalificacion[];
 }
 
+function shortLabel(label: string, max = 30): string {
+  const slash = label.indexOf("/");
+  const clean = slash > 0 ? label.slice(0, slash) : label;
+  return clean.length > max ? clean.slice(0, max - 1) + "…" : clean;
+}
+
 export function BrechaCalificacionChart({ data }: BrechaCalificacionChartProps) {
-  const top30 = data.slice(0, 30);
+  const top30 = data.slice(0, 30).map((d) => ({
+    ...d,
+    short_label: shortLabel(d.isco_label),
+  }));
 
   const maxBrecha = Math.max(...top30.map((d) => d.brecha), 1.5);
   const minBrecha = Math.min(...top30.map((d) => d.brecha), 0.5);
@@ -85,8 +94,8 @@ export function BrechaCalificacionChart({ data }: BrechaCalificacionChartProps) 
           />
           <YAxis
             type="category"
-            dataKey="isco_label"
-            width={135}
+            dataKey="short_label"
+            width={150}
             tick={{ fontSize: 11 }}
           />
           <ReferenceLine x={1.0} stroke="#6b7280" strokeDasharray="5 5" label={{ value: "1.0", position: "top" }} />

@@ -75,6 +75,7 @@ export function DigitalizacionSectorChart({ data }: DigitalizacionSectorChartPro
             tick={{ fontSize: 10 }}
             interval={0}
             height={80}
+            tickFormatter={(v: string) => v.length > 20 ? v.slice(0, 19) + "…" : v}
           />
           <YAxis
             tickFormatter={(v) => `${v}%`}

@@ -43,12 +43,23 @@ interface ConcentracionOcupacionalChartProps {
   clasificacion: string;
 }
 
+function shortLabel(label: string | null, max = 30): string {
+  if (!label) return "";
+  // ESCO inclusive labels: "vendedor de X/vendedora de X" → take first part
+  const slash = label.indexOf("/");
+  const clean = slash > 0 ? label.slice(0, slash) : label;
+  return clean.length > max ? clean.slice(0, max - 1) + "…" : clean;
+}
+
 export function ConcentracionOcupacionalChart({
   topOcupaciones,
   hhiGlobal,
   clasificacion,
 }: ConcentracionOcupacionalChartProps) {
-  const top10 = topOcupaciones.slice(0, 10);
+  const top10 = topOcupaciones.slice(0, 10).map((d) => ({
+    ...d,
+    short_label: shortLabel(d.isco_label),
+  }));
   const color = CLASIFICACION_COLORS[clasificacion] || "#6b7280";
 
   return (
@@ -88,8 +99,8 @@ export function ConcentracionOcupacionalChart({
           />
           <YAxis
             type="category"
-            dataKey="isco_label"
-            width={115}
+            dataKey="short_label"
+            width={150}
             tick={{ fontSize: 11 }}
           />
           <Tooltip content={<ConcentracionTooltip />} />
