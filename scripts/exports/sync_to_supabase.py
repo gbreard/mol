@@ -66,6 +66,9 @@ TABLE_TENSION = 'tension_ocupaciones'
 TABLE_CONCENTRACION = 'concentracion_ocupacional'
 TABLE_BRECHA = 'brecha_calificacion'
 TABLE_DIGITALIZACION = 'digitalizacion_sector'
+TABLE_TRANSICION = 'transicion_skills_ocupacion'
+TABLE_VELOCIDAD = 'velocidad_cobertura'
+TABLE_REMOTO = 'indice_trabajo_remoto'
 
 
 def load_config() -> Dict[str, str]:
@@ -1847,6 +1850,367 @@ def sync_digitalizacion_sector(client, conn: sqlite3.Connection, dry_run: bool =
 
 
 # ============================================================
+# TRANSICIÓN SKILLS-OCUPACIÓN (I-04)
+# ============================================================
+
+def calcular_transicion_skills(conn: sqlite3.Connection) -> List[Dict[str, Any]]:
+    """
+    Calcula mapa de transición skills-ocupación usando Jaccard similarity.
+    Nodos = top 20 ISCOs por volumen. Enlaces = pares con Jaccard >= 0.10.
+    """
+    query = """
+    WITH ofertas_validadas AS (
+        SELECT m.id_oferta, m.isco_code, m.isco_label
+        FROM ofertas_esco_matching m
+        WHERE m.estado_validacion IN ('validado','validado_claude','validado_humano')
+          AND m.isco_code IS NOT NULL
+    ),
+    isco_counts AS (
+        SELECT isco_code, MAX(isco_label) AS isco_label, COUNT(*) AS total_ofertas
+        FROM ofertas_validadas
+        GROUP BY isco_code
+        HAVING COUNT(*) >= 5
+        ORDER BY total_ofertas DESC
+        LIMIT 20
+    ),
+    skills_por_isco AS (
+        SELECT ov.isco_code, d.esco_skill_label AS skill_label
+        FROM ofertas_validadas ov
+        JOIN ofertas_esco_skills_detalle d ON ov.id_oferta = d.id_oferta
+        WHERE ov.isco_code IN (SELECT isco_code FROM isco_counts)
+          AND d.esco_skill_label IS NOT NULL
+        GROUP BY ov.isco_code, d.esco_skill_label
+    )
+    SELECT ic.isco_code, ic.isco_label, ic.total_ofertas,
+           si.skill_label
+    FROM isco_counts ic
+    LEFT JOIN skills_por_isco si ON ic.isco_code = si.isco_code
+    ORDER BY ic.total_ofertas DESC, ic.isco_code
+    """
+
+    rows = conn.execute(query).fetchall()
+
+    # Build skill sets per ISCO
+    isco_info: Dict[str, Dict[str, Any]] = {}
+    skills_by_isco: Dict[str, set] = {}
+
+    for row in rows:
+        code = row['isco_code']
+        if code not in isco_info:
+            isco_info[code] = {
+                'isco_label': row['isco_label'],
+                'total_ofertas': row['total_ofertas'],
+            }
+            skills_by_isco[code] = set()
+        if row['skill_label']:
+            skills_by_isco[code].add(row['skill_label'])
+
+    now = datetime.now().isoformat()
+    resultados = []
+
+    # Nodos
+    for code, info in isco_info.items():
+        resultados.append({
+            'tipo': 'nodo',
+            'isco_code': code,
+            'isco_label': info['isco_label'],
+            'total_ofertas': info['total_ofertas'],
+            'total_skills': len(skills_by_isco.get(code, set())),
+            'source_isco': None,
+            'target_isco': None,
+            'jaccard': None,
+            'shared_skills': None,
+            'union_skills': None,
+            'top_shared_labels': None,
+            'calculado_en': now,
+        })
+
+    # Enlaces — Jaccard para todos los pares
+    codes = list(isco_info.keys())
+    for i in range(len(codes)):
+        for j in range(i + 1, len(codes)):
+            a, b = codes[i], codes[j]
+            set_a = skills_by_isco.get(a, set())
+            set_b = skills_by_isco.get(b, set())
+            intersection = set_a & set_b
+            union = set_a | set_b
+
+            if not union:
+                continue
+
+            jac = len(intersection) / len(union)
+            shared = len(intersection)
+
+            if jac >= 0.10 and shared >= 3:
+                top_shared = sorted(intersection)[:5]
+                resultados.append({
+                    'tipo': 'enlace',
+                    'isco_code': None,
+                    'isco_label': None,
+                    'total_ofertas': None,
+                    'total_skills': None,
+                    'source_isco': a,
+                    'target_isco': b,
+                    'jaccard': round(jac, 4),
+                    'shared_skills': shared,
+                    'union_skills': len(union),
+                    'top_shared_labels': json.dumps(top_shared, ensure_ascii=False),
+                    'calculado_en': now,
+                })
+
+    n_nodos = sum(1 for r in resultados if r['tipo'] == 'nodo')
+    n_enlaces = sum(1 for r in resultados if r['tipo'] == 'enlace')
+    logger.info(f"Transición calculada: {n_nodos} nodos, {n_enlaces} enlaces")
+    return resultados
+
+
+def sync_transicion_skills(client, conn: sqlite3.Connection, dry_run: bool = False) -> int:
+    """Sincroniza transición skills-ocupación a Supabase. Trunca y reinserta."""
+    resultados = calcular_transicion_skills(conn)
+
+    if not resultados:
+        logger.warning("No hay datos de transición para sincronizar")
+        return 0
+
+    if dry_run:
+        logger.info(f"[DRY-RUN] Sync {len(resultados)} filas de transición")
+        return len(resultados)
+
+    try:
+        client.table(TABLE_TRANSICION).delete().neq('tipo', '__none__').execute()
+    except Exception as e:
+        logger.warning(f"Error truncando {TABLE_TRANSICION}: {e}")
+
+    total = 0
+    for i in range(0, len(resultados), BATCH_SIZE):
+        batch = resultados[i:i + BATCH_SIZE]
+        try:
+            client.table(TABLE_TRANSICION).insert(batch).execute()
+            total += len(batch)
+        except Exception as e:
+            logger.error(f"Error insertando transición batch {i // BATCH_SIZE + 1}: {e}")
+            raise
+
+    logger.info(f"Transición sincronizada: {total} filas")
+    return total
+
+
+# ============================================================
+# VELOCIDAD DE COBERTURA (I-06)
+# ============================================================
+
+def calcular_velocidad_cobertura(conn: sqlite3.Connection) -> List[Dict[str, Any]]:
+    """
+    Calcula velocidad de cobertura: mediana de días publicada por ISCO.
+    Solo ofertas dadas de baja (estado_oferta='baja') con fecha conocida.
+    """
+    import statistics
+
+    query = """
+    SELECT m.isco_code, m.isco_label, o.dias_publicada
+    FROM ofertas_esco_matching m
+    JOIN ofertas o ON m.id_oferta = o.id_oferta
+    WHERE m.estado_validacion IN ('validado','validado_claude','validado_humano')
+      AND m.isco_code IS NOT NULL
+      AND o.estado_oferta = 'baja'
+      AND o.dias_publicada IS NOT NULL
+      AND o.dias_publicada > 0
+    """
+
+    rows = conn.execute(query).fetchall()
+
+    # Agrupar días por ISCO
+    dias_por_isco: Dict[str, Dict[str, Any]] = {}
+    for row in rows:
+        code = row['isco_code']
+        if code not in dias_por_isco:
+            dias_por_isco[code] = {
+                'isco_label': row['isco_label'],
+                'dias': [],
+            }
+        dias_por_isco[code]['dias'].append(row['dias_publicada'])
+
+    now = datetime.now().isoformat()
+    resultados = []
+
+    for code, info in dias_por_isco.items():
+        dias = sorted(info['dias'])
+        if len(dias) < 3:
+            continue
+
+        mediana = statistics.median(dias)
+        q1 = statistics.median(dias[:len(dias) // 2]) if len(dias) >= 4 else dias[0]
+        upper_half = dias[(len(dias) + 1) // 2:] if len(dias) >= 4 else dias[-1:]
+        q3 = statistics.median(upper_half) if upper_half else mediana
+
+        if mediana < 15:
+            categoria = 'rapida'
+        elif mediana > 45:
+            categoria = 'lenta'
+        else:
+            categoria = 'normal'
+
+        resultados.append({
+            'isco_code': code,
+            'isco_label': info['isco_label'],
+            'total_ofertas': len(dias),
+            'mediana_dias': round(float(mediana), 1),
+            'q1_dias': round(float(q1), 1),
+            'q3_dias': round(float(q3), 1),
+            'min_dias': min(dias),
+            'max_dias': max(dias),
+            'categoria': categoria,
+            'calculado_en': now,
+        })
+
+    cats = {}
+    for r in resultados:
+        cats[r['categoria']] = cats.get(r['categoria'], 0) + 1
+    logger.info(f"Velocidad calculada: {len(resultados)} ocupaciones — {cats}")
+    return resultados
+
+
+def sync_velocidad_cobertura(client, conn: sqlite3.Connection, dry_run: bool = False) -> int:
+    """Sincroniza velocidad de cobertura a Supabase. Trunca y reinserta."""
+    resultados = calcular_velocidad_cobertura(conn)
+
+    if not resultados:
+        logger.warning("No hay datos de velocidad para sincronizar")
+        return 0
+
+    if dry_run:
+        logger.info(f"[DRY-RUN] Sync {len(resultados)} filas de velocidad")
+        return len(resultados)
+
+    try:
+        client.table(TABLE_VELOCIDAD).delete().neq('isco_code', '__none__').execute()
+    except Exception as e:
+        logger.warning(f"Error truncando {TABLE_VELOCIDAD}: {e}")
+
+    total = 0
+    for i in range(0, len(resultados), BATCH_SIZE):
+        batch = resultados[i:i + BATCH_SIZE]
+        try:
+            client.table(TABLE_VELOCIDAD).insert(batch).execute()
+            total += len(batch)
+        except Exception as e:
+            logger.error(f"Error insertando velocidad batch {i // BATCH_SIZE + 1}: {e}")
+            raise
+
+    logger.info(f"Velocidad sincronizada: {total} ocupaciones")
+    return total
+
+
+# ============================================================
+# ÍNDICE DE TRABAJO REMOTO (I-10)
+# ============================================================
+
+def calcular_indice_remoto(conn: sqlite3.Connection) -> List[Dict[str, Any]]:
+    """
+    Calcula índice de trabajo remoto: evolución mensual de modalidades.
+    Global (clae_seccion=NULL) + por sector.
+    """
+    query = """
+    WITH ofertas_validadas AS (
+        SELECT m.id_oferta,
+               strftime('%Y-%m', o.fecha_publicacion_iso) AS mes,
+               n.modalidad,
+               n.clae_seccion
+        FROM ofertas_esco_matching m
+        JOIN ofertas o ON m.id_oferta = o.id_oferta
+        JOIN ofertas_nlp n ON m.id_oferta = n.id_oferta
+        WHERE m.estado_validacion IN ('validado','validado_claude','validado_humano')
+          AND o.fecha_publicacion_iso IS NOT NULL
+          AND n.modalidad IS NOT NULL
+    ),
+    global_data AS (
+        SELECT mes,
+               NULL AS clae_seccion,
+               COUNT(*) AS total_ofertas,
+               SUM(CASE WHEN modalidad = 'presencial' THEN 1 ELSE 0 END) AS presencial,
+               SUM(CASE WHEN modalidad = 'remoto' THEN 1 ELSE 0 END) AS remoto,
+               SUM(CASE WHEN modalidad = 'hibrido' THEN 1 ELSE 0 END) AS hibrido
+        FROM ofertas_validadas
+        GROUP BY mes
+    ),
+    sector_data AS (
+        SELECT mes,
+               clae_seccion,
+               COUNT(*) AS total_ofertas,
+               SUM(CASE WHEN modalidad = 'presencial' THEN 1 ELSE 0 END) AS presencial,
+               SUM(CASE WHEN modalidad = 'remoto' THEN 1 ELSE 0 END) AS remoto,
+               SUM(CASE WHEN modalidad = 'hibrido' THEN 1 ELSE 0 END) AS hibrido
+        FROM ofertas_validadas
+        WHERE clae_seccion IS NOT NULL
+        GROUP BY mes, clae_seccion
+        HAVING COUNT(*) >= 5
+    )
+    SELECT * FROM global_data
+    UNION ALL
+    SELECT * FROM sector_data
+    ORDER BY mes, clae_seccion NULLS FIRST
+    """
+
+    rows = conn.execute(query).fetchall()
+
+    now = datetime.now().isoformat()
+    resultados = []
+
+    for row in rows:
+        total = row['total_ofertas']
+        if total == 0:
+            continue
+        resultados.append({
+            'mes': row['mes'],
+            'clae_seccion': row['clae_seccion'],
+            'total_ofertas': total,
+            'presencial': row['presencial'],
+            'remoto': row['remoto'],
+            'hibrido': row['hibrido'],
+            'pct_presencial': round(100.0 * row['presencial'] / total, 2),
+            'pct_remoto': round(100.0 * row['remoto'] / total, 2),
+            'pct_hibrido': round(100.0 * row['hibrido'] / total, 2),
+            'calculado_en': now,
+        })
+
+    n_global = sum(1 for r in resultados if r['clae_seccion'] is None)
+    n_sector = len(resultados) - n_global
+    logger.info(f"Índice remoto calculado: {n_global} meses global, {n_sector} filas por sector")
+    return resultados
+
+
+def sync_indice_remoto(client, conn: sqlite3.Connection, dry_run: bool = False) -> int:
+    """Sincroniza índice de trabajo remoto a Supabase. Trunca y reinserta."""
+    resultados = calcular_indice_remoto(conn)
+
+    if not resultados:
+        logger.warning("No hay datos de índice remoto para sincronizar")
+        return 0
+
+    if dry_run:
+        logger.info(f"[DRY-RUN] Sync {len(resultados)} filas de índice remoto")
+        return len(resultados)
+
+    try:
+        client.table(TABLE_REMOTO).delete().neq('mes', '__none__').execute()
+    except Exception as e:
+        logger.warning(f"Error truncando {TABLE_REMOTO}: {e}")
+
+    total = 0
+    for i in range(0, len(resultados), BATCH_SIZE):
+        batch = resultados[i:i + BATCH_SIZE]
+        try:
+            client.table(TABLE_REMOTO).insert(batch).execute()
+            total += len(batch)
+        except Exception as e:
+            logger.error(f"Error insertando índice remoto batch {i // BATCH_SIZE + 1}: {e}")
+            raise
+
+    logger.info(f"Índice remoto sincronizado: {total} filas")
+    return total
+
+
+# ============================================================
 # ESTADÍSTICAS
 # ============================================================
 
@@ -2087,6 +2451,15 @@ Ejemplos:
         logger.info("Calculando digitalización por sector...")
         n_digitalizacion = sync_digitalizacion_sector(client, conn, dry_run=args.dry_run)
 
+        logger.info("Calculando transición skills-ocupación...")
+        n_transicion = sync_transicion_skills(client, conn, dry_run=args.dry_run)
+
+        logger.info("Calculando velocidad de cobertura...")
+        n_velocidad = sync_velocidad_cobertura(client, conn, dry_run=args.dry_run)
+
+        logger.info("Calculando índice de trabajo remoto...")
+        n_remoto = sync_indice_remoto(client, conn, dry_run=args.dry_run)
+
         # Resumen
         print("\n" + "="*60)
         print("RESUMEN" + (" [DRY-RUN]" if args.dry_run else ""))
@@ -2100,6 +2473,9 @@ Ejemplos:
         print(f"Concentración ocupacional: {n_concentracion}")
         print(f"Brecha calificación:      {n_brecha}")
         print(f"Digitalización sector:    {n_digitalizacion}")
+        print(f"Transición skills:        {n_transicion}")
+        print(f"Velocidad cobertura:      {n_velocidad}")
+        print(f"Índice remoto:            {n_remoto}")
         print("="*60)
 
         if not args.dry_run:

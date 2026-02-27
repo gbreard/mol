@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FlaskConical, Zap, PieChart, GraduationCap, Cpu, ArrowRight, Database, Calendar } from "lucide-react";
+import { FlaskConical, Zap, PieChart, GraduationCap, Cpu, ArrowRight, Database, Calendar, Share2, Timer, Wifi } from "lucide-react";
 
 const INDICATORS = [
   {
@@ -46,6 +46,39 @@ const INDICATORS = [
     href: "/admin/laboratorio/digitalizacion-sector",
     icon: Cpu,
     dataSource: "digitalizacion_sector",
+    addedDate: "2026-02",
+  },
+  {
+    slug: "transicion-skills",
+    title: "Transicion Skills-Ocupacion",
+    description:
+      "Mapa de similitud entre ocupaciones basado en skills compartidas (Jaccard). Que ocupaciones comparten competencias?",
+    status: "experimental" as const,
+    href: "/admin/laboratorio/transicion-skills",
+    icon: Share2,
+    dataSource: "transicion_skills_ocupacion",
+    addedDate: "2026-02",
+  },
+  {
+    slug: "velocidad-cobertura",
+    title: "Velocidad de Cobertura",
+    description:
+      "Mediana de dias para cubrir una posicion por ocupacion ISCO. Que puestos son mas dificiles de llenar?",
+    status: "experimental" as const,
+    href: "/admin/laboratorio/velocidad-cobertura",
+    icon: Timer,
+    dataSource: "velocidad_cobertura",
+    addedDate: "2026-02",
+  },
+  {
+    slug: "indice-remoto",
+    title: "Indice de Trabajo Remoto",
+    description:
+      "Evolucion mensual de modalidades (presencial, hibrido, remoto). Como cambia el trabajo remoto en el tiempo?",
+    status: "experimental" as const,
+    href: "/admin/laboratorio/indice-remoto",
+    icon: Wifi,
+    dataSource: "indice_trabajo_remoto",
     addedDate: "2026-02",
   },
 ];

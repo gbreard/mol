@@ -1333,6 +1333,93 @@ export async function getDigitalizacionSector(): Promise<DigitalizacionSector[]>
   return data || []
 }
 
+// ========== TRANSICIÓN SKILLS-OCUPACIÓN (I-04) ==========
+
+export interface TransicionSkillsOcupacion {
+  tipo: string              // 'nodo' | 'enlace'
+  isco_code: string | null
+  isco_label: string | null
+  total_ofertas: number | null
+  total_skills: number | null
+  source_isco: string | null
+  target_isco: string | null
+  jaccard: number | null
+  shared_skills: number | null
+  union_skills: number | null
+  top_shared_labels: string | null  // JSON array
+}
+
+export async function getTransicionSkills(): Promise<TransicionSkillsOcupacion[]> {
+  const client = getSupabaseClient()
+  if (!client) return []
+  const { data, error } = await client
+    .from('transicion_skills_ocupacion')
+    .select('*')
+    .order('tipo')
+    .order('total_ofertas', { ascending: false })
+  if (error) {
+    console.error('Error fetching transicion:', error)
+    return []
+  }
+  return data || []
+}
+
+// ========== VELOCIDAD DE COBERTURA (I-06) ==========
+
+export interface VelocidadCobertura {
+  isco_code: string
+  isco_label: string
+  total_ofertas: number
+  mediana_dias: number
+  q1_dias: number
+  q3_dias: number
+  min_dias: number
+  max_dias: number
+  categoria: string    // 'rapida' | 'normal' | 'lenta'
+}
+
+export async function getVelocidadCobertura(): Promise<VelocidadCobertura[]> {
+  const client = getSupabaseClient()
+  if (!client) return []
+  const { data, error } = await client
+    .from('velocidad_cobertura')
+    .select('*')
+    .order('mediana_dias', { ascending: false })
+  if (error) {
+    console.error('Error fetching velocidad:', error)
+    return []
+  }
+  return data || []
+}
+
+// ========== ÍNDICE DE TRABAJO REMOTO (I-10) ==========
+
+export interface IndiceTrabajoRemoto {
+  mes: string
+  clae_seccion: string | null
+  total_ofertas: number
+  presencial: number
+  remoto: number
+  hibrido: number
+  pct_presencial: number
+  pct_remoto: number
+  pct_hibrido: number
+}
+
+export async function getIndiceRemoto(): Promise<IndiceTrabajoRemoto[]> {
+  const client = getSupabaseClient()
+  if (!client) return []
+  const { data, error } = await client
+    .from('indice_trabajo_remoto')
+    .select('*')
+    .order('mes')
+  if (error) {
+    console.error('Error fetching indice remoto:', error)
+    return []
+  }
+  return data || []
+}
+
 // ========== FUNCIONES PARA PERFIL CONSOLIDADO ==========
 
 import { ConsolidatedProfile, ConsolidatedProfilesIndex } from './types'
