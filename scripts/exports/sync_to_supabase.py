@@ -211,7 +211,8 @@ def extraer_ofertas_validadas(
         m.skills_oferta_json, m.skills_matched_essential,
         m.skills_demandados_total, m.skills_matcheados_esco,
         m.matching_timestamp, m.matching_version, m.run_id,
-        m.estado_validacion, m.validado_timestamp, m.validado_por
+        m.estado_validacion, m.validado_timestamp, m.validado_por,
+        m.decision_metodo, m.regla_aplicada
     FROM ofertas o
     INNER JOIN ofertas_nlp n ON o.id_oferta = CASE
         WHEN n.es_suboferta = 1 THEN CAST(n.parent_id_oferta AS INTEGER)
@@ -686,6 +687,12 @@ def transform_oferta_for_supabase(oferta: Dict) -> Dict:
         # Multi-position lineage
         'parent_id_oferta': oferta.get('parent_id_oferta'),
         'es_suboferta': bool(oferta.get('es_suboferta')) if oferta.get('es_suboferta') is not None else False,
+        # Validación panel — campos para revisión humana
+        'descripcion': oferta.get('descripcion'),
+        'tareas_explicitas': oferta.get('tareas_explicitas'),
+        'mision_rol': oferta.get('mision_rol'),
+        'decision_metodo': oferta.get('decision_metodo'),
+        'regla_aplicada': oferta.get('regla_aplicada'),
         'fecha_sync': datetime.now().isoformat(),
     }
 

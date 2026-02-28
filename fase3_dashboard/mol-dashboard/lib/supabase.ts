@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
-import { DashboardFilters, Issue, IssueStats } from './types'
+import { DashboardFilters, Issue, IssueStats, ConsolidatedProfile, ConsolidatedProfilesIndex, OfertaValidacion, OfertaSkillValidacion, ValidationFiltersState } from './types'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
@@ -1422,7 +1422,7 @@ export async function getIndiceRemoto(): Promise<IndiceTrabajoRemoto[]> {
 
 // ========== FUNCIONES PARA PERFIL CONSOLIDADO ==========
 
-import { ConsolidatedProfile, ConsolidatedProfilesIndex } from './types'
+// ConsolidatedProfile, ConsolidatedProfilesIndex imported above
 
 export interface OfertaConsolidado {
   id_oferta: string
@@ -1994,5 +1994,143 @@ export async function getOccupationMOLProfile(escoUri: string): Promise<Occupati
   } catch (error) {
     console.error('Error getting occupation MOL profile:', error)
     return null
+  }
+}
+
+// ========== PANEL DE VALIDACIÓN (admin/validacion) ==========
+
+// OfertaValidacion, OfertaSkillValidacion, ValidationFiltersState imported above
+
+const VALIDACION_SELECT = `
+  id_oferta, titulo, titulo_limpio, empresa, fecha_publicacion, url, portal,
+  provincia, localidad,
+  isco_code, isco_label, esco_occupation_uri, esco_occupation_label,
+  occupation_match_score, occupation_match_method, decision_metodo, regla_aplicada,
+  descripcion, tareas_explicitas, mision_rol,
+  modalidad, nivel_seniority, area_funcional, sector_empresa,
+  nivel_educativo, experiencia_min_anios, salario_min, salario_max,
+  skills_tecnicas, soft_skills
+`
+
+export async function getOfertasValidacion(
+  filters: Partial<ValidationFiltersState>,
+  limit = 50,
+  offset = 0
+): Promise<{ ofertas: OfertaValidacion[], total: number }> {
+  const client = getSupabaseClient()
+  if (!client) return { ofertas: [], total: 0 }
+
+  let query = client
+    .from(TABLA_OFERTAS)
+    .select(VALIDACION_SELECT, { count: 'exact' })
+
+  // Filters
+  if (filters.iscoGroup) {
+    query = query.like('isco_code', `${filters.iscoGroup}%`)
+  }
+  if (filters.portal) {
+    query = query.eq('portal', filters.portal)
+  }
+  if (filters.provincia) {
+    query = query.eq('provincia', filters.provincia)
+  }
+  if (filters.metodo) {
+    query = query.eq('occupation_match_method', filters.metodo)
+  }
+  if (filters.search) {
+    query = query.or(
+      `titulo_limpio.ilike.%${filters.search}%,titulo.ilike.%${filters.search}%,id_oferta.eq.${filters.search}`
+    )
+  }
+
+  const { data, error, count } = await query
+    .order('fecha_publicacion', { ascending: false })
+    .range(offset, offset + limit - 1)
+
+  if (error) {
+    console.error('Error fetching ofertas validacion:', error)
+    return { ofertas: [], total: 0 }
+  }
+
+  return { ofertas: (data || []) as OfertaValidacion[], total: count || 0 }
+}
+
+export async function getOfertaValidacionById(id: string): Promise<OfertaValidacion | null> {
+  const client = getSupabaseClient()
+  if (!client) return null
+
+  const { data, error } = await client
+    .from(TABLA_OFERTAS)
+    .select(VALIDACION_SELECT)
+    .eq('id_oferta', id)
+    .single()
+
+  if (error) {
+    console.error('Error fetching oferta validacion:', error)
+    return null
+  }
+
+  return data as OfertaValidacion
+}
+
+export async function getSkillsByOferta(idOferta: string): Promise<OfertaSkillValidacion[]> {
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  const { data, error } = await client
+    .from('ofertas_skills')
+    .select('id, id_oferta, preferred_label, l1, l1_nombre, l2, l2_nombre, es_digital, es_esencial, score, origen')
+    .eq('id_oferta', idOferta)
+    .order('es_esencial', { ascending: false })
+    .order('score', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching skills for oferta:', error)
+    return []
+  }
+
+  return (data || []) as OfertaSkillValidacion[]
+}
+
+export async function getValidacionFilterOptions(): Promise<{
+  portales: string[]
+  provincias: string[]
+  metodos: string[]
+  iscoGroups: { code: string; label: string }[]
+}> {
+  const client = getSupabaseClient()
+  if (!client) return { portales: [], provincias: [], metodos: [], iscoGroups: [] }
+
+  // Fetch distinct values in parallel
+  const [portalesRes, provinciasRes, metodosRes, iscoRes] = await Promise.all([
+    client.from(TABLA_OFERTAS).select('portal').not('portal', 'is', null).limit(1000),
+    client.from(TABLA_OFERTAS).select('provincia').not('provincia', 'is', null).limit(1000),
+    client.from(TABLA_OFERTAS).select('occupation_match_method').not('occupation_match_method', 'is', null).limit(1000),
+    client.from(TABLA_OFERTAS).select('isco_code, isco_label').not('isco_code', 'is', null).limit(5000),
+  ])
+
+  const unique = <T extends string>(data: { [k: string]: T | null }[] | null, key: string): string[] => {
+    if (!data) return []
+    const set = new Set<string>()
+    data.forEach(r => { if (r[key]) set.add(r[key] as string) })
+    return [...set].sort()
+  }
+
+  // ISCO groups: first digit → major group name
+  const iscoGroupMap: Record<string, string> = {}
+  iscoRes.data?.forEach(r => {
+    if (r.isco_code) {
+      const g = r.isco_code.charAt(0)
+      if (!iscoGroupMap[g]) iscoGroupMap[g] = ISCO_MAJOR_GROUPS[g] || `Grupo ${g}`
+    }
+  })
+
+  return {
+    portales: unique(portalesRes.data, 'portal'),
+    provincias: unique(provinciasRes.data, 'provincia'),
+    metodos: unique(metodosRes.data, 'occupation_match_method'),
+    iscoGroups: Object.entries(iscoGroupMap)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([code, label]) => ({ code, label: `${code} - ${label}` }))
   }
 }

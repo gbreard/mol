@@ -227,3 +227,63 @@ export interface ConsolidatedProfilesIndex {
   generated_at: string;
   profiles: { [esco_uuid: string]: ConsolidatedProfile };
 }
+
+// ========== PANEL DE VALIDACIÓN (admin/validacion) ==========
+
+export interface OfertaValidacion {
+  id_oferta: string;
+  titulo: string;
+  titulo_limpio: string | null;
+  empresa: string | null;
+  fecha_publicacion: string | null;
+  url: string | null;
+  portal: string | null;
+  provincia: string | null;
+  localidad: string | null;
+  // Matching
+  isco_code: string | null;
+  isco_label: string | null;
+  esco_occupation_uri: string | null;
+  esco_occupation_label: string | null;
+  occupation_match_score: number | null;
+  occupation_match_method: string | null;
+  decision_metodo: string | null;
+  regla_aplicada: string | null;
+  // NLP
+  descripcion: string | null;
+  tareas_explicitas: string | null;
+  mision_rol: string | null;
+  modalidad: string | null;
+  nivel_seniority: string | null;
+  area_funcional: string | null;
+  sector_empresa: string | null;
+  nivel_educativo: string | null;
+  experiencia_min_anios: number | null;
+  salario_min: number | null;
+  salario_max: number | null;
+  // Skills (arrays JSONB)
+  skills_tecnicas: string[] | null;
+  soft_skills: string[] | null;
+}
+
+export interface OfertaSkillValidacion {
+  id: string;
+  id_oferta: string;
+  preferred_label: string;
+  l1: string | null;
+  l1_nombre: string | null;
+  l2: string | null;
+  l2_nombre: string | null;
+  es_digital: boolean;
+  es_esencial: boolean;
+  score: number | null;
+  origen: string | null;
+}
+
+export interface ValidationFiltersState {
+  iscoGroup: string;
+  portal: string;
+  provincia: string;
+  metodo: string;
+  search: string;
+}
