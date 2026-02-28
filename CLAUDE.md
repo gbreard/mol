@@ -470,13 +470,70 @@ tail -f /tmp/pipeline.log
 | **Export Excel** | `python scripts/exports/export_validation_excel.py --etapa completo --ids X` | - |
 | **Sync Supabase** | `python scripts/exports/sync_to_supabase.py` (incremental auto v2.2) | Queries directas a Supabase |
 | **Sync Full** | `python scripts/exports/sync_to_supabase.py --full` | - |
+| **Backfill columnas** | `python scripts/exports/backfill_validation_columns.py` | Solo si se agregan columnas nuevas |
+| **Backfill skills** | `python scripts/exports/backfill_skills.py` | Solo si ofertas_skills está incompleta |
 | **Reapply Rules** | `python scripts/reapply_rules_to_validated.py` | Reprocesar validadas manualmente |
 | **Generar Architecture JSON** | `python scripts/generate_architecture_json.py` | Editar dashboard_architecture.json a mano |
 
-**Sync incremental (v2.2):** Sin argumentos, solo sincroniza ofertas con
-`matching_timestamp` o `validado_timestamp` posterior al último sync exitoso.
-El timestamp se lee/guarda en `config/supabase_sync_log.json`.
-Usar `--full` para forzar sync completo.
+### Sync a Supabase — Cómo funciona internamente
+
+El sync tiene **dos partes independientes** que suben datos a tablas distintas:
+
+```
+SQLite (local)                              Supabase (cloud)
+┌──────────────────┐                        ┌──────────────────┐
+│ ofertas          │                        │ ofertas_dashboard │
+│ ofertas_nlp      │──JOIN + transform──►   │ (16K+ rows)      │
+│ ofertas_esco_    │   upsert x100          │ ~40 columnas      │
+│   matching       │                        └──────────────────┘
+└──────────────────┘
+┌──────────────────┐                        ┌──────────────────┐
+│ ofertas_esco_    │                        │ ofertas_skills    │
+│   skills_detalle │──delete+insert──►      │ (300K+ rows)     │
+│                  │   por oferta            │ ~12 cols          │
+└──────────────────┘                        └──────────────────┘
+```
+
+**Parte 1 — Ofertas (`ofertas_dashboard`):**
+- Query con 3 JOINs: `ofertas` + `ofertas_nlp` + `ofertas_esco_matching`
+- Solo `estado_validacion IN ('validado', 'validado_claude', 'validado_humano')`
+- `transform_oferta_for_supabase()` normaliza: ubicación, CLAE, skills como arrays
+- Upsert por `id_oferta` en batches de 100
+- Rápido: ~2 min para 16K ofertas
+
+**Parte 2 — Skills (`ofertas_skills`):**
+- Por cada oferta: DELETE todas sus skills + INSERT nuevas
+- Parsea `source_classification` JSON → `l1`, `l2`, `es_digital`
+- LENTO: ~300K HTTP requests individuales (~60-90 min)
+- Free tier de Supabase limita a ~15 req/s
+
+**Modos de ejecución:**
+
+| Modo | Comando | Qué hace | Duración |
+|------|---------|----------|----------|
+| Incremental | `sync_to_supabase.py` | Solo ofertas con timestamp > último sync | ~1-5 min |
+| Full | `sync_to_supabase.py --full` | Re-sube TODO (ofertas + skills + indicadores) | ~2.5h |
+
+El timestamp incremental se lee/guarda en `config/supabase_sync_log.json`.
+
+**Backfills (one-time, para cuando se agregan columnas nuevas):**
+
+Si agregás columnas a `ofertas_dashboard` en Supabase:
+1. Crear migration SQL en `fase3_dashboard/sql/`
+2. Ejecutar el ALTER TABLE en Supabase SQL Editor
+3. Agregar campo a `transform_oferta_for_supabase()` en `sync_to_supabase.py`
+4. Backfill con RPC temporal (NO usar `--full`):
+   - Crear función SQL temporal que reciba JSONB y haga UPDATE
+   - Llamar desde Python con batches de 500 vía `client.rpc()`
+   - Ejemplo: `backfill_validation_columns.py` pobló 16K rows en 38 seg
+
+**NUNCA usar `--full` solo para backfill de columnas** — tarda 2.5h innecesariamente.
+
+**Rate limiting (free tier Supabase):**
+- Máximo ~15 req/s sostenido
+- Si se excede: Cloudflare Error 1018 (host not found) = proyecto pausado
+- Solución: agregar `time.sleep(1)` entre chunks en scripts de backfill
+- Si se pausa: ir a Supabase Dashboard → reactivar proyecto
 
 **⭐ REGLA CRÍTICA - Pipeline Integrado:**
 - **SIEMPRE** usar `run_validated_pipeline.py` para procesar ofertas
