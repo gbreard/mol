@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
-import { DashboardFilters, Issue, IssueStats, ConsolidatedProfile, ConsolidatedProfilesIndex, OfertaValidacion, OfertaSkillValidacion, ValidationFiltersState } from './types'
+import { DashboardFilters, Issue, IssueStats, ConsolidatedProfile, ConsolidatedProfilesIndex, OfertaValidacion, OfertaSkillValidacion, ValidationFiltersState, ValidationStats, ValidacionHumana } from './types'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
@@ -2007,9 +2007,10 @@ const VALIDACION_SELECT = `
   isco_code, isco_label, esco_occupation_uri, esco_occupation_label,
   occupation_match_score, occupation_match_method, decision_metodo, regla_aplicada,
   descripcion, tareas_explicitas, mision_rol,
-  modalidad, nivel_seniority, area_funcional, sector_empresa,
+  modalidad, nivel_seniority, area_funcional, sector_empresa, clae_descripcion_seccion,
   nivel_educativo, experiencia_min_anios, salario_min, salario_max,
-  skills_tecnicas, soft_skills
+  skills_tecnicas, soft_skills,
+  validacion_humana, validacion_humana_at, validacion_humana_por, validacion_correcciones
 `
 
 export async function getOfertasValidacion(
@@ -2024,7 +2025,7 @@ export async function getOfertasValidacion(
     .from(TABLA_OFERTAS)
     .select(VALIDACION_SELECT, { count: 'exact' })
 
-  // Filters
+  // Existing filters
   if (filters.iscoGroup) {
     query = query.like('isco_code', `${filters.iscoGroup}%`)
   }
@@ -2035,12 +2036,53 @@ export async function getOfertasValidacion(
     query = query.eq('provincia', filters.provincia)
   }
   if (filters.metodo) {
-    query = query.eq('occupation_match_method', filters.metodo)
+    query = query.eq('decision_metodo', filters.metodo)
   }
   if (filters.search) {
     query = query.or(
       `titulo_limpio.ilike.%${filters.search}%,titulo.ilike.%${filters.search}%,id_oferta.eq.${filters.search}`
     )
+  }
+
+  // New filters
+  if (filters.seniority) {
+    query = query.eq('nivel_seniority', filters.seniority)
+  }
+  if (filters.modalidad) {
+    query = query.eq('modalidad', filters.modalidad)
+  }
+  if (filters.sector) {
+    query = query.eq('clae_descripcion_seccion', filters.sector)
+  }
+  if (filters.nivelEducativo) {
+    query = query.eq('nivel_educativo', filters.nivelEducativo)
+  }
+
+  // Score range filter
+  if (filters.scoreRange) {
+    switch (filters.scoreRange) {
+      case '<0.3':
+        query = query.lt('occupation_match_score', 0.3)
+        break
+      case '0.3-0.5':
+        query = query.gte('occupation_match_score', 0.3).lt('occupation_match_score', 0.5)
+        break
+      case '0.5-0.7':
+        query = query.gte('occupation_match_score', 0.5).lt('occupation_match_score', 0.7)
+        break
+      case '>0.7':
+        query = query.gte('occupation_match_score', 0.7)
+        break
+    }
+  }
+
+  // Estado validación humana
+  if (filters.estadoValidacion) {
+    if (filters.estadoValidacion === 'pendiente') {
+      query = query.is('validacion_humana', null)
+    } else {
+      query = query.eq('validacion_humana', filters.estadoValidacion)
+    }
   }
 
   const { data, error, count } = await query
@@ -2092,21 +2134,34 @@ export async function getSkillsByOferta(idOferta: string): Promise<OfertaSkillVa
   return (data || []) as OfertaSkillValidacion[]
 }
 
-export async function getValidacionFilterOptions(): Promise<{
+export interface ValidacionFilterOptions {
   portales: string[]
   provincias: string[]
   metodos: string[]
   iscoGroups: { code: string; label: string }[]
-}> {
-  const client = getSupabaseClient()
-  if (!client) return { portales: [], provincias: [], metodos: [], iscoGroups: [] }
+  seniorities: string[]
+  modalidades: string[]
+  sectores: string[]
+  nivelesEducativos: string[]
+}
 
-  // Fetch distinct values in parallel
-  const [portalesRes, provinciasRes, metodosRes, iscoRes] = await Promise.all([
+export async function getValidacionFilterOptions(): Promise<ValidacionFilterOptions> {
+  const client = getSupabaseClient()
+  const empty: ValidacionFilterOptions = {
+    portales: [], provincias: [], metodos: [], iscoGroups: [],
+    seniorities: [], modalidades: [], sectores: [], nivelesEducativos: [],
+  }
+  if (!client) return empty
+
+  const [portalesRes, provinciasRes, metodosRes, iscoRes, seniorityRes, modalidadRes, sectorRes, educRes] = await Promise.all([
     client.from(TABLA_OFERTAS).select('portal').not('portal', 'is', null).limit(1000),
     client.from(TABLA_OFERTAS).select('provincia').not('provincia', 'is', null).limit(1000),
-    client.from(TABLA_OFERTAS).select('occupation_match_method').not('occupation_match_method', 'is', null).limit(1000),
+    client.from(TABLA_OFERTAS).select('decision_metodo').not('decision_metodo', 'is', null).limit(1000),
     client.from(TABLA_OFERTAS).select('isco_code, isco_label').not('isco_code', 'is', null).limit(5000),
+    client.from(TABLA_OFERTAS).select('nivel_seniority').not('nivel_seniority', 'is', null).limit(1000),
+    client.from(TABLA_OFERTAS).select('modalidad').not('modalidad', 'is', null).limit(1000),
+    client.from(TABLA_OFERTAS).select('clae_descripcion_seccion').not('clae_descripcion_seccion', 'is', null).limit(1000),
+    client.from(TABLA_OFERTAS).select('nivel_educativo').not('nivel_educativo', 'is', null).limit(1000),
   ])
 
   const unique = <T extends string>(data: { [k: string]: T | null }[] | null, key: string): string[] => {
@@ -2116,7 +2171,6 @@ export async function getValidacionFilterOptions(): Promise<{
     return [...set].sort()
   }
 
-  // ISCO groups: first digit → major group name
   const iscoGroupMap: Record<string, string> = {}
   iscoRes.data?.forEach(r => {
     if (r.isco_code) {
@@ -2128,9 +2182,60 @@ export async function getValidacionFilterOptions(): Promise<{
   return {
     portales: unique(portalesRes.data, 'portal'),
     provincias: unique(provinciasRes.data, 'provincia'),
-    metodos: unique(metodosRes.data, 'occupation_match_method'),
+    metodos: unique(metodosRes.data, 'decision_metodo'),
     iscoGroups: Object.entries(iscoGroupMap)
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([code, label]) => ({ code, label: `${code} - ${label}` }))
+      .map(([code, label]) => ({ code, label: `${code} - ${label}` })),
+    seniorities: unique(seniorityRes.data, 'nivel_seniority'),
+    modalidades: unique(modalidadRes.data, 'modalidad'),
+    sectores: unique(sectorRes.data, 'clae_descripcion_seccion'),
+    nivelesEducativos: unique(educRes.data, 'nivel_educativo'),
   }
+}
+
+// ========== VALIDACIÓN HUMANA ==========
+
+export async function saveValidacion(
+  idOferta: string,
+  resultado: ValidacionHumana,
+  correcciones?: Record<string, string>
+): Promise<boolean> {
+  const client = getSupabaseClient()
+  if (!client) throw new Error('Supabase no configurado')
+
+  const { data, error } = await client.rpc('guardar_validacion_humana', {
+    p_id_oferta: idOferta,
+    p_resultado: resultado,
+    p_correcciones: correcciones || null,
+  })
+
+  if (error) throw error
+  return data as boolean
+}
+
+export async function getValidacionStats(): Promise<ValidationStats> {
+  const client = getSupabaseClient()
+  if (!client) return { total: 0, ok: 0, error: 0, revisar: 0, basura: 0, pendientes: 0 }
+
+  const { data, error } = await client
+    .from(TABLA_OFERTAS)
+    .select('validacion_humana')
+
+  if (error) {
+    console.error('Error fetching validation stats:', error)
+    return { total: 0, ok: 0, error: 0, revisar: 0, basura: 0, pendientes: 0 }
+  }
+
+  const stats: ValidationStats = { total: 0, ok: 0, error: 0, revisar: 0, basura: 0, pendientes: 0 }
+  data?.forEach(r => {
+    stats.total++
+    switch (r.validacion_humana) {
+      case 'ok': stats.ok++; break
+      case 'error': stats.error++; break
+      case 'revisar': stats.revisar++; break
+      case 'basura': stats.basura++; break
+      default: stats.pendientes++
+    }
+  })
+  return stats
 }

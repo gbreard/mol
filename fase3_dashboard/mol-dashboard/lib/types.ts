@@ -230,6 +230,8 @@ export interface ConsolidatedProfilesIndex {
 
 // ========== PANEL DE VALIDACIÓN (admin/validacion) ==========
 
+export type ValidacionHumana = 'ok' | 'error' | 'revisar' | 'basura';
+
 export interface OfertaValidacion {
   id_oferta: string;
   titulo: string;
@@ -257,6 +259,7 @@ export interface OfertaValidacion {
   nivel_seniority: string | null;
   area_funcional: string | null;
   sector_empresa: string | null;
+  clae_descripcion_seccion: string | null;
   nivel_educativo: string | null;
   experiencia_min_anios: number | null;
   salario_min: number | null;
@@ -264,6 +267,11 @@ export interface OfertaValidacion {
   // Skills (arrays JSONB)
   skills_tecnicas: string[] | null;
   soft_skills: string[] | null;
+  // Validación humana
+  validacion_humana: ValidacionHumana | null;
+  validacion_humana_at: string | null;
+  validacion_humana_por: string | null;
+  validacion_correcciones: Record<string, string> | null;
 }
 
 export interface OfertaSkillValidacion {
@@ -286,4 +294,59 @@ export interface ValidationFiltersState {
   provincia: string;
   metodo: string;
   search: string;
+  seniority: string;
+  modalidad: string;
+  sector: string;
+  nivelEducativo: string;
+  scoreRange: string;
+  estadoValidacion: string;
 }
+
+export interface ValidationStats {
+  total: number;
+  ok: number;
+  error: number;
+  revisar: number;
+  basura: number;
+  pendientes: number;
+}
+
+// Labels legibles para decision_metodo
+export const METODO_LABELS: Record<string, { label: string; description: string }> = {
+  semantico_unico: {
+    label: 'Solo semantico',
+    description: 'No habia regla, se eligio por similitud de skills y titulo',
+  },
+  regla_prioridad: {
+    label: 'Regla de negocio',
+    description: 'Una regla manual forzo este ISCO (score semantico < 0.95)',
+  },
+  dual_coinciden: {
+    label: 'Regla + Semantico',
+    description: 'Ambos metodos coincidieron — alta confianza',
+  },
+  regla_por_score_bajo: {
+    label: 'Regla (score bajo)',
+    description: 'Score semantico < 0.55, la regla tiene prioridad',
+  },
+  regla_critica: {
+    label: 'Regla critica',
+    description: 'Correccion critica, nunca se puede overridear',
+  },
+  regla_unica: {
+    label: 'Solo regla',
+    description: 'No hubo match semantico disponible',
+  },
+  semantico_alta_confianza: {
+    label: 'Semantico (override)',
+    description: 'Score >= 0.95, overrideo la regla de negocio',
+  },
+  error: {
+    label: 'Sin match',
+    description: 'No se encontro match por ningun metodo',
+  },
+  regla_zona_gris: {
+    label: 'Regla (zona gris)',
+    description: 'Score semantico entre 0.55 y 0.95, regla gana pero con menor confianza',
+  },
+};
