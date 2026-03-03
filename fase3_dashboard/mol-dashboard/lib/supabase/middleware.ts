@@ -56,7 +56,47 @@ export async function updateSession(request: NextRequest) {
     const role = user.user_metadata?.role as string | undefined
     if (role !== 'admin' && role !== 'super_admin') {
       const url = request.nextUrl.clone();
-      url.pathname = "/dashboard";
+      url.pathname = "/home";
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // Dashboard gating: requiere admin, subscriber, o trial activo
+  const isDashboardRoute = request.nextUrl.pathname.startsWith("/dashboard");
+  if (isDashboardRoute && user) {
+    const role = (user.user_metadata?.role as string) || 'viewer';
+    const plan = (user.user_metadata?.plan as string) || 'free';
+    const trialStartDate = user.user_metadata?.trial_start_date as string | undefined;
+
+    const isAdminUser = role === 'admin' || role === 'super_admin';
+    const isPaidUser = plan === 'pro' || plan === 'enterprise';
+
+    let isTrialActive = false;
+    if (plan === 'trial' && trialStartDate) {
+      const start = new Date(trialStartDate);
+      const diffDays = (Date.now() - start.getTime()) / (1000 * 60 * 60 * 24);
+      isTrialActive = diffDays < 7;
+    }
+
+    if (!isAdminUser && !isPaidUser && !isTrialActive) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/home";
+      if (plan === 'trial') {
+        url.searchParams.set('trial_expired', '1');
+      } else {
+        url.searchParams.set('no_access', '1');
+      }
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // Oficina de Empleo gating: requiere rol oficina_empleo, admin, o super_admin
+  const isOficinaRoute = request.nextUrl.pathname.startsWith("/oficina-empleo");
+  if (isOficinaRoute && user) {
+    const role = (user.user_metadata?.role as string) || 'viewer';
+    if (role !== 'oficina_empleo' && role !== 'admin' && role !== 'super_admin') {
+      const url = request.nextUrl.clone();
+      url.pathname = "/home";
       return NextResponse.redirect(url);
     }
   }

@@ -18,6 +18,24 @@ export interface DashboardFilters {
   sector: string[];
 }
 
+// ========== SOLICITUDES DE ACCESO ==========
+
+export type SolicitudEstado = 'pendiente' | 'aprobada' | 'rechazada';
+
+export interface SolicitudAcceso {
+  id: string;
+  user_id: string;
+  email: string;
+  nombre: string;
+  organizacion: string | null;
+  motivo: string;
+  estado: SolicitudEstado;
+  revisado_por: string | null;
+  revisado_at: string | null;
+  notas_admin: string | null;
+  created_at: string;
+}
+
 // ========== ISSUES/FEEDBACK SYSTEM ==========
 
 export type IssueType = 'error_isco' | 'error_nlp' | 'error_skill' | 'sugerencia' | 'bug' | 'otro';

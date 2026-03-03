@@ -111,6 +111,68 @@ export async function requireAdmin(
 }
 
 /**
+ * Authenticate + verify dashboard access (admin, subscriber, or active trial).
+ * Rate-limited at the `authenticated` tier.
+ * Returns AuthResult on success, NextResponse(401/403/429) on failure.
+ */
+export async function requireSubscriber(
+  request: NextRequest
+): Promise<AuthResult | NextResponse> {
+  const ip = getClientIp(request)
+  const rl = rateLimit(ip, 'authenticated')
+  if (!rl.success) return rateLimitResponse(rl)
+
+  const supabase = createSupabaseServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(_cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
+          // API routes don't need to refresh cookies
+        },
+      },
+    }
+  )
+
+  const { data: { user }, error } = await supabase.auth.getUser()
+
+  if (error || !user) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  }
+
+  const role = (user.user_metadata?.role as string) || 'viewer'
+  const plan = (user.user_metadata?.plan as string) || 'free'
+  const trialStartDate = user.user_metadata?.trial_start_date as string | undefined
+
+  // Admins always pass
+  if (role === 'admin' || role === 'super_admin') {
+    return { user, role }
+  }
+
+  // Paid subscribers pass
+  if (plan === 'pro' || plan === 'enterprise') {
+    return { user, role }
+  }
+
+  // Active trial passes
+  if (plan === 'trial' && trialStartDate) {
+    const start = new Date(trialStartDate)
+    const diffDays = (Date.now() - start.getTime()) / (1000 * 60 * 60 * 24)
+    if (diffDays < 7) {
+      return { user, role }
+    }
+  }
+
+  return NextResponse.json(
+    { error: 'Acceso denegado: se requiere suscripcion activa o trial vigente' },
+    { status: 403 }
+  )
+}
+
+/**
  * Type guard: true when the auth result is an error response.
  */
 export function isAuthError(result: AuthResult | NextResponse): result is NextResponse {

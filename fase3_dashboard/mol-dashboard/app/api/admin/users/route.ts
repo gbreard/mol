@@ -49,6 +49,8 @@ export async function GET(request: NextRequest) {
       id: user.id,
       email: user.email || '',
       role: user.user_metadata?.role || 'viewer',
+      plan: user.user_metadata?.plan || 'free',
+      trial_start_date: user.user_metadata?.trial_start_date || null,
       display_name: user.user_metadata?.display_name || user.email?.split('@')[0] || '',
       created_at: user.created_at,
       last_sign_in_at: user.last_sign_in_at,
@@ -79,15 +81,27 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'userId requerido' }, { status: 400 });
     }
 
-    const validRoles = ['viewer', 'analyst', 'admin', 'super_admin'];
+    const validRoles = ['viewer', 'analyst', 'admin', 'super_admin', 'oficina_empleo'];
     if (role && !validRoles.includes(role)) {
       return NextResponse.json({ error: `Rol inválido. Válidos: ${validRoles.join(', ')}` }, { status: 400 });
+    }
+
+    const { plan } = body;
+    const validPlans = ['free', 'trial', 'pro', 'enterprise'];
+    if (plan && !validPlans.includes(plan)) {
+      return NextResponse.json({ error: `Plan inválido. Válidos: ${validPlans.join(', ')}` }, { status: 400 });
     }
 
     // Build metadata update — updateUserById MERGES metadata (doesn't overwrite unset fields)
     const metadata: Record<string, string> = {};
     if (role) metadata.role = role;
     if (display_name !== undefined) metadata.display_name = display_name;
+    if (plan) {
+      metadata.plan = plan;
+      if (plan === 'trial') {
+        metadata.trial_start_date = new Date().toISOString();
+      }
+    }
 
     if (Object.keys(metadata).length === 0) {
       return NextResponse.json({ error: 'Nada que actualizar (enviar role y/o display_name)' }, { status: 400 });

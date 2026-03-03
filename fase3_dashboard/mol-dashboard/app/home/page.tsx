@@ -8,6 +8,9 @@ import {
   getPlanBadge,
   isAdmin,
   isSubscriber,
+  isTrial,
+  hasTrialExpired,
+  getTrialDaysRemaining,
   PLAN,
 } from "@/lib/user";
 import {
@@ -22,8 +25,12 @@ import {
   ArrowRight,
   Calendar,
   User,
+  Clock,
+  AlertTriangle,
+  Send,
 } from "lucide-react";
 import { LogoutButton } from "./_components/logout-button";
+import { GlobalNav } from "@/components/navigation/GlobalNav";
 
 // --- Informes mock (mismo dato que /informes) ---
 const informesRecientes = [
@@ -39,7 +46,11 @@ const informesRecientes = [
   },
 ];
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ trial_expired?: string; no_access?: string }>;
+}) {
   const supabase = await createServerClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -47,32 +58,47 @@ export default async function HomePage() {
     redirect("/login");
   }
 
+  const params = await searchParams;
   const profile = getUserProfile(user);
   const roleBadge = getRoleBadge(profile.role);
   const planBadge = getPlanBadge(profile.plan);
   const admin = isAdmin(profile.role);
   const subscriber = isSubscriber(profile.plan);
+  const trialActive = isTrial(profile.plan) && !hasTrialExpired(profile.trialStartDate);
+  const trialExpired = isTrial(profile.plan) && hasTrialExpired(profile.trialStartDate);
+  const trialDaysLeft = getTrialDaysRemaining(profile.trialStartDate);
+  const showTrialExpiredBanner = params.trial_expired === "1" || trialExpired;
+  const showNoAccessBanner = params.no_access === "1";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <Image src="/logo_mol.png" alt="MOL" width={120} height={40} priority />
-          <div className="flex items-center gap-4">
-            <Link
-              href="/cuenta/suscripcion"
-              className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              <User className="w-4 h-4" />
-              Mi cuenta
-            </Link>
-            <LogoutButton />
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col">
+      <GlobalNav />
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-1">
+        {/* Banners */}
+        {showTrialExpiredBanner && (
+          <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-lg flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-orange-500 mt-0.5 shrink-0" />
+            <div>
+              <p className="font-medium text-orange-800">Tu periodo de prueba expiro</p>
+              <p className="text-sm text-orange-700 mt-0.5">
+                Contacta a un administrador o consulta los planes disponibles para seguir accediendo al tablero.
+              </p>
+            </div>
+          </div>
+        )}
+        {showNoAccessBanner && !showTrialExpiredBanner && (
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-blue-500 mt-0.5 shrink-0" />
+            <div>
+              <p className="font-medium text-blue-800">Necesitas acceso para ver el tablero</p>
+              <p className="text-sm text-blue-700 mt-0.5">
+                Solicita un periodo de prueba para acceder al dashboard completo.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Welcome */}
         <section className="mb-10">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -170,23 +196,61 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* Quick Access - Free user */}
-        {!admin && !subscriber && (
+        {/* Quick Access - Trial activo */}
+        {!admin && !subscriber && trialActive && (
           <section className="mb-10">
-            <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-4">Dashboard</h2>
+            <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-4">Tu tablero</h2>
             <Link
               href="/dashboard"
-              className="flex items-center gap-4 bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl hover:border-blue-200 transition-all group"
+              className="flex items-center gap-4 bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-all group"
             >
-              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
-                <BarChart3 className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                <LayoutDashboard className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
-                <h3 className="font-bold text-gray-900 group-hover:text-blue-700 transition-colors">Ingresar al tablero</h3>
-                <p className="text-sm text-gray-500">Vista limitada: CABA, últimos 7 días</p>
+                <h3 className="font-bold text-white">Ingresar al Dashboard</h3>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="inline-flex items-center gap-1 bg-white/20 text-white text-xs px-2 py-0.5 rounded-full">
+                    <Clock className="w-3 h-3" />
+                    Te quedan {trialDaysLeft} dia{trialDaysLeft !== 1 ? "s" : ""}
+                  </span>
+                </div>
               </div>
-              <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-blue-400 transition-colors" />
+              <ArrowRight className="w-5 h-5 text-blue-200 group-hover:translate-x-1 transition-transform" />
             </Link>
+            <div className="mt-3 text-center">
+              <Link
+                href="/precios"
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+              >
+                Ver planes para mantener el acceso
+              </Link>
+            </div>
+          </section>
+        )}
+
+        {/* Quick Access - Free / Trial expirado */}
+        {!admin && !subscriber && !trialActive && (
+          <section className="mb-10">
+            <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-4">Dashboard</h2>
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                  <BarChart3 className="w-6 h-6 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900">Tablero de datos del mercado laboral</h3>
+                  <p className="text-sm text-gray-500">Solicita acceso para ver las ocupaciones mas demandadas, skills emergentes y tendencias territoriales.</p>
+                </div>
+              </div>
+              <Link
+                href="/solicitar-acceso"
+                className="flex items-center justify-center gap-2 w-full bg-blue-600 text-white font-medium text-sm px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors"
+              >
+                <Send className="w-4 h-4" />
+                Solicitar acceso al tablero
+              </Link>
+            </div>
           </section>
         )}
 
@@ -223,8 +287,8 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Upgrade CTA - solo Free */}
-        {!admin && !subscriber && (
+        {/* Upgrade CTA - solo Free/Trial expirado */}
+        {!admin && !subscriber && !trialActive && (
           <section className="mb-10">
             <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl shadow-xl p-8 text-center">
               <div className="flex justify-center mb-4">

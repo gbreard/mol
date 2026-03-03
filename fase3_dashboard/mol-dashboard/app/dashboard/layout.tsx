@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
 import { QueryProvider } from "@/lib/query-provider";
 import { GlobalNav } from "@/components/navigation/GlobalNav";
+import { getUserProfile, canAccessDashboard } from "@/lib/user";
 
 export default async function DashboardLayout({
   children,
@@ -13,6 +14,12 @@ export default async function DashboardLayout({
 
   if (!user) {
     redirect("/login?next=/dashboard");
+  }
+
+  // Defense-in-depth: middleware already checks, but verify here too
+  const profile = getUserProfile(user);
+  if (!canAccessDashboard(profile.role, profile.plan, profile.trialStartDate)) {
+    redirect("/home?no_access=1");
   }
 
   return (

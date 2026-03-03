@@ -18,6 +18,8 @@ interface Usuario {
   id: string;
   email: string;
   role: string;
+  plan: string;
+  trial_start_date: string | null;
   created_at: string;
   last_sign_in_at: string | null;
   display_name?: string;
@@ -29,10 +31,11 @@ export default function UsuariosPage() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [newUser, setNewUser] = useState({ email: "", password: "", role: "viewer", display_name: "" });
+  const [newUser, setNewUser] = useState({ email: "", password: "", role: "viewer", plan: "free", display_name: "" });
   const [creating, setCreating] = useState(false);
   const [editingUser, setEditingUser] = useState<Usuario | null>(null);
   const [editRole, setEditRole] = useState("");
+  const [editPlan, setEditPlan] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -123,7 +126,7 @@ export default function UsuariosPage() {
 
       setSuccess(`Usuario ${newUser.email} creado exitosamente (email confirmado automáticamente)`);
       setShowModal(false);
-      setNewUser({ email: "", password: "", role: "viewer", display_name: "" });
+      setNewUser({ email: "", password: "", role: "viewer", plan: "free", display_name: "" });
       // Recargar lista de usuarios
       if (session?.access_token) {
         loadUsuarios(session.access_token);
@@ -149,16 +152,17 @@ export default function UsuariosPage() {
         throw new Error('No autenticado');
       }
 
+      const updateBody: Record<string, string> = { userId: editingUser.id };
+      if (editRole !== editingUser.role) updateBody.role = editRole;
+      if (editPlan !== editingUser.plan) updateBody.plan = editPlan;
+
       const response = await fetch('/api/admin/users', {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          userId: editingUser.id,
-          role: editRole
-        })
+        body: JSON.stringify(updateBody)
       });
 
       if (!response.ok) {
@@ -166,7 +170,7 @@ export default function UsuariosPage() {
         throw new Error(data.error || 'Error al actualizar usuario');
       }
 
-      setSuccess(`Rol de ${editingUser.email} actualizado a ${editRole}`);
+      setSuccess(`Usuario ${editingUser.email} actualizado`);
       setEditingUser(null);
       if (session?.access_token) {
         loadUsuarios(session.access_token);
@@ -183,17 +187,38 @@ export default function UsuariosPage() {
       super_admin: "bg-purple-100 text-purple-800",
       admin: "bg-blue-100 text-blue-800",
       analyst: "bg-green-100 text-green-800",
+      oficina_empleo: "bg-teal-100 text-teal-800",
       viewer: "bg-gray-100 text-gray-800"
     };
     const labels: Record<string, string> = {
       super_admin: "Super Admin",
       admin: "Administrador",
       analyst: "Analista",
+      oficina_empleo: "Oficina de Empleo",
       viewer: "Visualizador"
     };
     return (
       <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[role] || styles.viewer}`}>
         {labels[role] || role}
+      </span>
+    );
+  };
+
+  const getPlanBadgeEl = (plan: string) => {
+    if (plan === "free" || !plan) return null;
+    const styles: Record<string, string> = {
+      trial: "bg-orange-100 text-orange-700",
+      pro: "bg-green-100 text-green-700",
+      enterprise: "bg-amber-100 text-amber-700",
+    };
+    const labels: Record<string, string> = {
+      trial: "Trial",
+      pro: "Pro",
+      enterprise: "Enterprise",
+    };
+    return (
+      <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[plan] || "bg-gray-100 text-gray-700"}`}>
+        {labels[plan] || plan}
       </span>
     );
   };
@@ -260,8 +285,9 @@ export default function UsuariosPage() {
             <tr>
               <th className="text-left px-6 py-4 text-sm font-semibold text-gray-900">Usuario</th>
               <th className="text-left px-6 py-4 text-sm font-semibold text-gray-900">Rol</th>
+              <th className="text-left px-6 py-4 text-sm font-semibold text-gray-900">Plan</th>
               <th className="text-left px-6 py-4 text-sm font-semibold text-gray-900">Creado</th>
-              <th className="text-left px-6 py-4 text-sm font-semibold text-gray-900">Último acceso</th>
+              <th className="text-left px-6 py-4 text-sm font-semibold text-gray-900">Ultimo acceso</th>
               <th className="text-right px-6 py-4 text-sm font-semibold text-gray-900">Acciones</th>
             </tr>
           </thead>
@@ -291,6 +317,11 @@ export default function UsuariosPage() {
                 <td className="px-6 py-4">
                   {getRoleBadge(usuario.role)}
                 </td>
+                <td className="px-6 py-4">
+                  {getPlanBadgeEl(usuario.plan) || (
+                    <span className="text-xs text-gray-400">Free</span>
+                  )}
+                </td>
                 <td className="px-6 py-4 text-sm text-gray-500">
                   {new Date(usuario.created_at).toLocaleDateString()}
                 </td>
@@ -305,6 +336,7 @@ export default function UsuariosPage() {
                     onClick={() => {
                       setEditingUser(usuario);
                       setEditRole(usuario.role);
+                      setEditPlan(usuario.plan || "free");
                     }}
                     title="Editar usuario"
                   >
@@ -388,8 +420,25 @@ export default function UsuariosPage() {
                 >
                   <option value="viewer">Visualizador</option>
                   <option value="analyst">Analista</option>
+                  <option value="oficina_empleo">Oficina de Empleo</option>
                   <option value="admin">Administrador</option>
                   <option value="super_admin">Super Admin</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Plan
+                </label>
+                <select
+                  value={newUser.plan}
+                  onChange={(e) => setNewUser({ ...newUser, plan: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="free">Free</option>
+                  <option value="trial">Trial (7 dias)</option>
+                  <option value="pro">Pro</option>
+                  <option value="enterprise">Enterprise</option>
                 </select>
               </div>
 
@@ -448,8 +497,25 @@ export default function UsuariosPage() {
                 >
                   <option value="viewer">Visualizador</option>
                   <option value="analyst">Analista</option>
+                  <option value="oficina_empleo">Oficina de Empleo</option>
                   <option value="admin">Administrador</option>
                   <option value="super_admin">Super Admin</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Plan
+                </label>
+                <select
+                  value={editPlan}
+                  onChange={(e) => setEditPlan(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="free">Free</option>
+                  <option value="trial">Trial (7 dias)</option>
+                  <option value="pro">Pro</option>
+                  <option value="enterprise">Enterprise</option>
                 </select>
               </div>
 
@@ -463,7 +529,7 @@ export default function UsuariosPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={saving || editRole === editingUser.role}
+                  disabled={saving || (editRole === editingUser.role && editPlan === editingUser.plan)}
                   className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {saving && <Loader2 className="w-4 h-4 animate-spin" />}

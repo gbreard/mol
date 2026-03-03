@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   Users,
+  UserPlus,
   BarChart3,
   Database,
   FileText,
@@ -25,6 +26,7 @@ const adminNavItems = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
   { href: "/admin/arquitectura", label: "Arquitectura", icon: Network },
   { href: "/admin/usuarios", label: "Usuarios", icon: Users },
+  { href: "/admin/solicitudes", label: "Solicitudes", icon: UserPlus },
   { href: "/admin/validacion", label: "Validación", icon: ClipboardCheck, matchMode: "startsWith" as const },
   { href: "/admin/issues", label: "Issues", icon: MessageSquare },
   { href: "/admin/skills", label: "Skills Intelligence", icon: Target },

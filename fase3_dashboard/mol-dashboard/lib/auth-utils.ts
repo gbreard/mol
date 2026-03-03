@@ -12,6 +12,9 @@ export const ALLOWED_REDIRECT_PATHS = [
   '/informes',
   '/checkout',
   '/precios',
+  '/solicitar-acceso',
+  '/contenido',
+  '/oficina-empleo',
 ]
 
 /**

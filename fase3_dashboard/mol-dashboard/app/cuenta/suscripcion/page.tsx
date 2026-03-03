@@ -4,6 +4,9 @@ import { redirect } from "next/navigation";
 import {
   getUserProfile,
   isSubscriber,
+  isTrial,
+  hasTrialExpired,
+  getTrialDaysRemaining,
   PLAN,
   type Plan,
 } from "@/lib/user";
@@ -14,6 +17,7 @@ import {
   Crown,
   Building2,
   ArrowRight,
+  Clock,
 } from "lucide-react";
 
 const PLAN_CONFIG: Record<
@@ -32,9 +36,19 @@ const PLAN_CONFIG: Record<
     colorClass: "bg-gray-50 text-gray-600",
     badgeClass: "bg-gray-100 text-gray-600",
     features: [
-      "Dashboard limitado (ultimos 7 dias)",
-      "Solo CABA",
-      "Visualizaciones basicas",
+      "Sin acceso al dashboard",
+      "Informes publicos",
+    ],
+  },
+  [PLAN.TRIAL]: {
+    label: "Trial (7 dias)",
+    icon: Clock,
+    colorClass: "bg-orange-50 text-orange-600",
+    badgeClass: "bg-orange-100 text-orange-700",
+    features: [
+      "Dashboard completo por 7 dias",
+      "Todos los territorios",
+      "Visualizaciones completas",
     ],
   },
   [PLAN.PRO]: {
@@ -77,6 +91,9 @@ export default async function SuscripcionPage() {
   const profile = getUserProfile(user);
   const config = PLAN_CONFIG[profile.plan];
   const subscriber = isSubscriber(profile.plan);
+  const trial = isTrial(profile.plan);
+  const trialExpired = trial && hasTrialExpired(profile.trialStartDate);
+  const trialDaysLeft = getTrialDaysRemaining(profile.trialStartDate);
   const PlanIcon = config.icon;
 
   return (
@@ -135,6 +152,15 @@ export default async function SuscripcionPage() {
                 Plan activo
               </p>
             </div>
+          ) : trial && !trialExpired ? (
+            <div className="bg-orange-50 border border-orange-200 rounded-xl px-4 py-3">
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-orange-500" />
+                <p className="text-sm font-medium text-orange-700">
+                  Trial activo — te quedan {trialDaysLeft} dia{trialDaysLeft !== 1 ? "s" : ""}
+                </p>
+              </div>
+            </div>
           ) : (
             <Link
               href="/precios"
@@ -147,8 +173,8 @@ export default async function SuscripcionPage() {
           )}
         </div>
 
-        {/* Upgrade banner for free users */}
-        {!subscriber && (
+        {/* Upgrade banner for free/expired users */}
+        {!subscriber && !(trial && !trialExpired) && (
           <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl shadow-xl p-6 text-center">
             <Crown className="w-8 h-8 text-blue-200 mx-auto mb-3" />
             <h3 className="text-lg font-bold text-white mb-1">

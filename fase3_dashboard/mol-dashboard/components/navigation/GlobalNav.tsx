@@ -14,6 +14,7 @@ import {
   ChevronDown,
   Menu,
   Users,
+  UserPlus,
   Database,
   FileText,
   Settings,
@@ -22,6 +23,7 @@ import {
   FlaskConical,
   ClipboardCheck,
   BookOpen,
+  Briefcase,
 } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase/browser";
 import {
@@ -36,6 +38,7 @@ import {
 interface UserInfo {
   email: string;
   role: string;
+  plan: string;
   displayName: string;
 }
 
@@ -44,6 +47,7 @@ interface NavItem {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   roles: "*" | string[];
+  plans?: string[];
   matchMode?: "exact" | "startsWith";
 }
 
@@ -55,7 +59,15 @@ const NAV_ITEMS: NavItem[] = [
     label: "Dashboard",
     href: "/dashboard",
     icon: BarChart3,
-    roles: ["super_admin", "admin"],
+    roles: ["super_admin", "admin", "analyst", "viewer"],
+    plans: ["pro", "enterprise", "trial"],
+    matchMode: "startsWith",
+  },
+  {
+    label: "Contenido",
+    href: "/contenido",
+    icon: BookOpen,
+    roles: ["super_admin", "admin", "analyst", "viewer", "oficina_empleo"],
     matchMode: "startsWith",
   },
   {
@@ -66,9 +78,16 @@ const NAV_ITEMS: NavItem[] = [
     matchMode: "startsWith",
   },
   {
+    label: "Oficina de Empleo",
+    href: "/oficina-empleo",
+    icon: Briefcase,
+    roles: ["super_admin", "admin", "oficina_empleo"],
+    matchMode: "startsWith",
+  },
+  {
     label: "Informes",
     href: "/informes",
-    icon: BookOpen,
+    icon: FileText,
     roles: "*",
     matchMode: "startsWith",
   },
@@ -85,6 +104,7 @@ const ADMIN_SIDEBAR_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: BarChart3, matchMode: "exact" as const },
   { href: "/admin/arquitectura", label: "Arquitectura", icon: Network },
   { href: "/admin/usuarios", label: "Usuarios", icon: Users },
+  { href: "/admin/solicitudes", label: "Solicitudes", icon: UserPlus },
   { href: "/admin/validacion", label: "Validacion", icon: ClipboardCheck, matchMode: "startsWith" as const },
   { href: "/admin/issues", label: "Issues", icon: MessageSquare },
   { href: "/admin/skills", label: "Skills Intelligence", icon: Target },
@@ -121,10 +141,23 @@ function getRoleBadgeColor(role: string) {
   return colors[role] || "bg-gray-100 text-gray-800";
 }
 
-function isItemVisible(item: NavItem, role: string | undefined): boolean {
-  if (item.roles === "*") return true;
+function isItemVisible(item: NavItem, role: string | undefined, plan: string | undefined): boolean {
+  if (item.roles === "*" && !item.plans) return true;
   if (!role) return false;
-  return item.roles.includes(role);
+
+  // Admins bypass plan check
+  const isAdminRole = role === "super_admin" || role === "admin";
+  if (isAdminRole && (item.roles === "*" || item.roles.includes(role))) return true;
+
+  // Check role
+  if (item.roles !== "*" && !item.roles.includes(role)) return false;
+
+  // Check plan (if specified)
+  if (item.plans && !isAdminRole) {
+    if (!plan || !item.plans.includes(plan)) return false;
+  }
+
+  return true;
 }
 
 function isActive(
@@ -159,6 +192,7 @@ export function GlobalNav() {
           setUser({
             email: authUser.email || "",
             role: authUser.user_metadata?.role || "viewer",
+            plan: authUser.user_metadata?.plan || "free",
             displayName:
               authUser.user_metadata?.display_name ||
               authUser.email?.split("@")[0] ||
@@ -183,7 +217,7 @@ export function GlobalNav() {
   };
 
   const visibleItems = NAV_ITEMS.filter((item) =>
-    isItemVisible(item, user?.role)
+    isItemVisible(item, user?.role, user?.plan)
   );
 
   const isInAdmin = pathname.startsWith("/admin");
