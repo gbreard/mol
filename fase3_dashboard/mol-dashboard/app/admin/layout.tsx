@@ -19,6 +19,7 @@ import {
   ClipboardCheck,
 } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase/browser";
+import { GlobalNav } from "@/components/navigation/GlobalNav";
 
 const adminNavItems = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
@@ -81,59 +82,62 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 text-white flex flex-col">
-        <div className="p-6 border-b border-slate-700">
-          <div className="flex items-center gap-3">
-            <Shield className="w-8 h-8 text-purple-400" />
-            <div>
-              <h1 className="font-bold text-lg">Admin Panel</h1>
-              <p className="text-xs text-slate-400">MOL SuperAdmin</p>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <GlobalNav />
+      <div className="flex flex-1">
+        {/* Sidebar — hidden on mobile (GlobalNav Sheet handles it) */}
+        <aside className="hidden md:flex w-64 bg-slate-900 text-white flex-col shrink-0">
+          <div className="p-6 border-b border-slate-700">
+            <div className="flex items-center gap-3">
+              <Shield className="w-8 h-8 text-purple-400" />
+              <div>
+                <h1 className="font-bold text-lg">Admin Panel</h1>
+                <p className="text-xs text-slate-400">MOL SuperAdmin</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <nav className="flex-1 p-4">
-          <ul className="space-y-1">
-            {adminNavItems.map((item, index) => {
-              const isActive = item.matchMode === "startsWith"
-                ? pathname.startsWith(item.href)
-                : pathname === item.href;
-              return (
-                <li key={`${item.href}-${index}`}>
-                  <Link
-                    href={item.href}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                      isActive
-                        ? "bg-purple-600 text-white"
-                        : "text-slate-300 hover:bg-slate-800 hover:text-white"
-                    }`}
-                  >
-                    <item.icon className="w-5 h-5" />
-                    {item.label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
+          <nav className="flex-1 p-4">
+            <ul className="space-y-1">
+              {adminNavItems.map((item, index) => {
+                const isActive = item.matchMode === "startsWith"
+                  ? pathname.startsWith(item.href)
+                  : pathname === item.href;
+                return (
+                  <li key={`${item.href}-${index}`}>
+                    <Link
+                      href={item.href}
+                      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                        isActive
+                          ? "bg-purple-600 text-white"
+                          : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                      }`}
+                    >
+                      <item.icon className="w-5 h-5" />
+                      {item.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
 
-        <div className="p-4 border-t border-slate-700">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Volver al Dashboard
-          </Link>
-        </div>
-      </aside>
+          <div className="p-4 border-t border-slate-700">
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Volver al Dashboard
+            </Link>
+          </div>
+        </aside>
 
-      {/* Main content */}
-      <main className="flex-1 overflow-auto">
-        {children}
-      </main>
+        {/* Main content */}
+        <main className="flex-1 overflow-auto">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

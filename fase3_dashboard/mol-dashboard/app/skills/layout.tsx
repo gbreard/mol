@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GlobalNav } from "@/components/navigation/GlobalNav";
 
 export const metadata: Metadata = {
   title: "Taxonomía ESCO - Skills y Competencias",
@@ -10,10 +11,12 @@ export default function SkillsLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Layout simple - hereda html/body del root layout
   return (
-    <div className="min-h-screen bg-white antialiased font-sans">
-      {children}
+    <div className="min-h-screen bg-white antialiased font-sans flex flex-col">
+      <GlobalNav />
+      <div className="flex-1">
+        {children}
+      </div>
     </div>
   );
 }

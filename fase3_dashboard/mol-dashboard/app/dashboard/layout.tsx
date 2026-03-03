@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
 import { QueryProvider } from "@/lib/query-provider";
+import { GlobalNav } from "@/components/navigation/GlobalNav";
 
 export default async function DashboardLayout({
   children,
@@ -14,5 +15,12 @@ export default async function DashboardLayout({
     redirect("/login?next=/dashboard");
   }
 
-  return <QueryProvider>{children}</QueryProvider>;
+  return (
+    <div className="h-screen flex flex-col overflow-hidden">
+      <GlobalNav />
+      <div className="flex-1 min-h-0">
+        <QueryProvider>{children}</QueryProvider>
+      </div>
+    </div>
+  );
 }

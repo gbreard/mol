@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 import { PanoramaGeneral } from "@/components/PanoramaGeneral";
 import { Requerimientos } from "@/components/Requerimientos";
@@ -102,10 +101,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Header */}
-      <Header />
-
+    <div className="h-full flex flex-col bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Main Content Area */}
       <div className="flex-1 flex overflow-hidden">
         {/* Sidebar */}
