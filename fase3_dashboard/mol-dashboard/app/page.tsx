@@ -59,11 +59,6 @@ function HeroSection({ data }: { data: LandingData }) {
     value: o.cantidad,
   }))
 
-  const skillsBars = data.topSkills.map(s => ({
-    label: s.name,
-    value: s.value,
-  }))
-
   return (
     <section
       className="relative min-h-screen flex items-center px-4 sm:px-6 lg:px-8 overflow-hidden"
@@ -84,7 +79,7 @@ function HeroSection({ data }: { data: LandingData }) {
         {/* Left — text */}
         <div className="flex flex-col justify-center">
           <p
-            className="text-sm font-semibold uppercase tracking-widest mb-8"
+            className="text-sm font-semibold tracking-widest mb-8"
             style={{ color: "var(--teal-300)" }}
           >
             Monitor de Ofertas Laborales
@@ -96,13 +91,8 @@ function HeroSection({ data }: { data: LandingData }) {
           >
             Inteligencia del{" "}
             <span
-              className="font-[family-name:var(--font-display)] italic inline-block pr-2"
-              style={{
-                background:
-                  "linear-gradient(135deg, var(--teal-300), var(--teal-400))",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
+              className="font-[family-name:var(--font-display)] inline-block pr-2"
+              style={{ color: "var(--slate-100)" }}
             >
               Mercado Laboral
             </span>{" "}
@@ -160,7 +150,7 @@ function HeroSection({ data }: { data: LandingData }) {
             </h3>
             <p
               className="text-xs mb-5"
-              style={{ color: "var(--slate-400)" }}
+              style={{ color: "var(--slate-200)" }}
             >
               Dato actualizado semanalmente
             </p>
@@ -187,7 +177,24 @@ function HeroSection({ data }: { data: LandingData }) {
               >
                 Top 5 competencias
               </h4>
-              <HorizontalBars items={skillsBars} color="var(--navy-500)" />
+              <ol className="space-y-2">
+                {data.topSkills.map((s, i) => (
+                  <li key={s.name} className="flex items-baseline gap-2.5">
+                    <span
+                      className="text-xs font-bold shrink-0 w-5 text-right"
+                      style={{ color: "var(--teal-300)" }}
+                    >
+                      {i + 1}.
+                    </span>
+                    <span
+                      className="text-sm"
+                      style={{ color: "var(--slate-300)" }}
+                    >
+                      {s.name}
+                    </span>
+                  </li>
+                ))}
+              </ol>
             </div>
           </div>
         </div>
