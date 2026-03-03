@@ -3,8 +3,8 @@
   "descripcion": "Reglas de negocio para matching ESCO. 260 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-02-27",
-  "_cambios_v53": "Issues Cynthia ronda 2: R260-R264 (gestor_operativo, vendimia, pasante_vinedos, operario_limpieza_industrial, lider_almacen)",
-  "_cambios_v51": "Issues Cynthia: R57 fix (capataz genérico removido), R11 desactivada (multi-position reemplaza), R247-R254 nuevas (capataz_obra, capataz_generico, supervisor_electrico, supervisor_fractura, martillero_publico, hrbp, servicios_funerarios, logistica_liviana)",
+  "_cambios_v53": "Fix R139 repositor 9333→9334, R137 excluir controlador, new R265 controlador logístico→4321. Issues Diego.",
+  "_cambios_v51": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344, R137 excluye maquinista.",
   "_cambios_v43": "R181-R182: Personal mantenimiento -> 7233, Tecnico electromedicina -> 3211",
   "_cambios_v42": "R177-R180: Gestor cobranzas, QA/Tester, Instalador fibra, Soporte IT",
   "_cambios_v41": "R175: Operario limpieza -> 9112, R176: Auditor franquicias -> 2421",
@@ -3171,7 +3171,11 @@
           "lider",
           "supervisor",
           "jefe",
-          "encargado"
+          "encargado",
+          "controlador",
+          "control de stock",
+          "control logístico",
+          "control logistico"
         ]
       },
       "accion": {
@@ -3181,7 +3185,7 @@
       "activa": true,
       "_caso": "ID 1118092945 - tareas picking, cross docking en área logística",
       "_fecha": "2026-01-22",
-      "nota": "Sprint 5 V31: agregar exclusion maquinista/apiladora (son 8344, no 9333). ID 1118090160.",
+      "nota": "Sprint 5 V31 + v53: excluir maquinista/apiladora + controlador logístico. Issue 0dde98f9.",
       "prioridad": 0
     },
     "R138_control_gestion": {
@@ -3216,13 +3220,14 @@
         ]
       },
       "accion": {
-        "forzar_isco": "9333",
-        "esco_label": "mozo de almacén/moza de almacén"
+        "forzar_isco": "9334",
+        "esco_label": "reponedor/reponedora"
       },
       "activa": true,
       "_caso": "ID 1118097220 Repositores con experiencia",
       "_fecha": "2026-01-23",
-      "prioridad": 1
+      "prioridad": 1,
+      "nota": "v53: Corregido ISCO 9333→9334 (reponedor, no mozo almacén). Issue c19933f5."
     },
     "R140_mucama_hotel": {
       "nombre": "Mucama/Camarera de Pisos Hotelería",
@@ -5906,6 +5911,28 @@
       "activa": true,
       "fecha_creacion": "2026-02-27",
       "nota": "Issue Cynthia: 2175371 líder almacén iba a 9333 mozo almacén. Es supervisión, no mozo."
+    },
+    "R265_controlador_logistico": {
+      "nombre": "Controlador logístico / de stock",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "controlador logistico",
+          "controlador logístico",
+          "controlador de stock",
+          "controller de stock",
+          "controlador de inventario"
+        ],
+        "area_funcional_es": "Logistica"
+      },
+      "accion": {
+        "forzar_isco": "4321",
+        "esco_label": "coordinador de inventario/coordinadora de inventario"
+      },
+      "activa": true,
+      "_caso": "ID 1118113712 - Controlador Logistico Zona Pilar. Issue 0dde98f9.",
+      "_fecha": "2026-02-27",
+      "nota": "v54: Fix ESCO label (no existía en BD). Issue 0dde98f9."
     }
   },
   "reglas_filtro": {
@@ -5987,7 +6014,6 @@
   "_cambios_v45": "R198-R202: Bell boy, Foguista, Extraccionista, Inspector API, Gestor cobranzas",
   "_cambios_v46": "FIX: 12 reglas con esco_label inválido + R203-R206 nuevas reglas",
   "_cambios_v50": "Sprint 2: Fix 10 exclusiones rotas (titulo_no_contiene→titulo_no_contiene_alguno), 51 reglas sin prioridad asignadas, consolidar ISCO 3322 (12→7) y 9333 (10→7), fix R135 key duplicada",
-  "_cambios_v51": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344, R137 excluye maquinista.",
   "_cambios_v52": "Sprint 5b: R223 Admin infraestructura->2522 sysadmin. V30 keywords expandidos (español).",
   "_changelog_v47": "Fix 18 reglas con exclusiones/prioridades para resolver 35 V27 divergencias. R65: prioridad -1 (sem gana para gerente bancario vs retail); R14: excluir nocturno, administrativa contable; R14d: excluir analista; R158: ISCO 1324→1321 (manufacturing general); R87: excluir facturación, ventas; R38: excluir supervisor, marketing; R58: excluir mostrador/heladería; R33: excluir manager/director/lead; R171: excluir administrativo; R175: excluir depósito/carga; R222: excluir offset/impresión; R144: excluir asesor/representante/comercial; R111: excluir telefónico/call center; R160: excluir internet/fibra/soporte; R177: excluir operador; R194: excluir analista; R101: excluir core bancario; R203: prioridad -1",
   "_cambios_v48": "Sprint 7 V31: R224-R241 (18 reglas) para 337 errores V31 residuales. Analista por area (RRHH/IT/Contab/Ventas/Mkt/Finanzas/Ops), supervisor cocina/ops, coordinador ops, soporte IT, comis pastelería, maestranza, mecánico, operario prod, técnico IT.",

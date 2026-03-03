@@ -349,5 +349,33 @@
     "errors_by_type": {
       "nivel_jerarquico": 1
     }
+  },
+  {
+    "timestamp": "2026-02-24T17:43:11.081729",
+    "precision": 81.6,
+    "total": 49,
+    "correct": 40,
+    "incorrect": 9,
+    "pending": 0,
+    "errors_by_type": {
+      "dominio_incorrecto": 6,
+      "nivel_jerarquico": 1,
+      "homonimia": 1,
+      "rol_primario": 1
+    }
+  },
+  {
+    "timestamp": "2026-02-24T17:48:16.879499",
+    "precision": 81.6,
+    "total": 49,
+    "correct": 40,
+    "incorrect": 9,
+    "pending": 0,
+    "errors_by_type": {
+      "dominio_incorrecto": 6,
+      "nivel_jerarquico": 1,
+      "homonimia": 1,
+      "rol_primario": 1
+    }
   }
 ]

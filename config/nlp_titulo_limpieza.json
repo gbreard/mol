@@ -1,5 +1,5 @@
 {
-  "_version": "2.8.1",
+  "_version": "2.8.2",
   "_descripcion": "Patrones para limpiar titulos de ofertas - eliminar ruido geografico/empresarial/administrativo",
   "_fecha": "2026-02-09",
   "_cambios_v281": "Second pass location/zona/modalidad cleanup, zona de trabajo, // modalidad, multi-pipe cleanup, validator false positive fix",
@@ -13,7 +13,7 @@
   "_cambios_v26": "Normalización Sentence case (441 títulos normalizados)",
   "_cambios_v251": "req sin paréntesis, turnos con barra, países extranjeros",
   "_cambios_v25": "Fix 60 errores detectados en análisis completo: ubicaciones sin guión, códigos inicio, contexto empresarial ampliado",
-  "_cambios_v24": "Fix títulos dashboard: Zona Sur con punto, Playa Grande, para Empresa de X",
+  "_cambios_v24": "Fix títulos dashboard 2026-01-28: Zona Sur con punto, Playa Grande, para Empresa de X",
   "_cambios_v22": "Agregados: codigos_final, modalidad_guion, requisitos_edad, más patrones ubicacion",
   "codigos_inicio": {
     "_descripcion": "Codigos alfanumericos al INICIO del titulo (ej: 671SI, ABC123)",
@@ -49,6 +49,11 @@
         "patron": "^[A-Z]{1,4}\\d{3,6}/\\s*",
         "ejemplo": "CC1289/ Analista...",
         "_nota": "v2.5: letras+num+barra al inicio"
+      },
+      {
+        "patron": "^[A-Za-z]\\s+(?=[A-Za-z])",
+        "ejemplo": "H Ayudantes de pastelería / H VALET PARKING",
+        "_nota": "v2.8.2: letra sola + espacio al inicio (código de categoría). Issue 8febcccc"
       }
     ]
   },
@@ -340,7 +345,6 @@
       {
         "patron": "\\s*-\\s*(BA|CABA|GBA|Bs\\.?\\s*As\\.?|Buenos\\s+Aires|Capital|Cordoba|Córdoba|Mendoza|Rosario|Santa\\s+Fe|Tucum[aá]n|Salta|Jujuy|Neuqu[eé]n|Chubut|R[ií]o\\s+Negro|Chaco|Formosa|Misiones|Corrientes|Entre\\s+R[ií]os|San\\s+Luis|San\\s+Juan|La\\s+Rioja|Catamarca|Santiago)$",
         "ejemplo": "- Buenos Aires",
-        "_nota": "Todas las provincias argentinas principales",
         "_nota": "ULTIMO: patron simple provincia"
       },
       {
@@ -588,6 +592,11 @@
         "patron": "\\s+para\\s+[Cc]l[ií]nica\\s+[A-Za-záéíóúÁÉÍÓÚ]+(?:\\s+[A-Za-záéíóúÁÉÍÓÚ]+){0,1}$",
         "ejemplo": "Enfermero para Clínica privada",
         "_nota": "v2.8: máx 2 palabras después de Clínica"
+      },
+      {
+        "patron": "\\s+para\\s+(?:hoteler[ií]a|hotel(?:es)?(?:\\s+\\d\\*?(?:\\s+[yY]\\s+\\d\\*?)?)?|restaurante(?:s)?(?:\\s+[A-Za-záéíóúÁÉÍÓÚ]+(?:\\s+[A-Za-záéíóúÁÉÍÓÚ]+)?)?|gastronom[ií]a)\\s*$",
+        "ejemplo": "Guardavidas para hoteleria / Cocinero para hotel 4* y 5*",
+        "_nota": "v2.8.2: sector hotelero/gastro al final. Issue 8febcccc"
       }
     ]
   },
@@ -735,6 +744,21 @@
       {
         "patron": "\\s+para\\s+(?:empresa|compania|cliente)\\s+en\\s+\\w+$",
         "ejemplo": "para empresa en Cordoba"
+      },
+      {
+        "patron": "\\s+para\\s+(?:el\\s+|la\\s+)?(?:noroeste|noreste|sudoeste|sudeste|norte|sur|este|oeste)\\s+(?:de|del)\\s+(?:la\\s+)?(?:AMBA|amba|GBA|gba|CABA|caba|provincia)(?:\\s+(?:de\\s+)?[A-Za-záéíóú]+(?:\\s+[A-Za-záéíóú]+)?)?$",
+        "ejemplo": "para noroeste de amba / para el sur de la provincia",
+        "_nota": "v2.8.2: dirección cardinal + de + zona geográfica. Issue c19933f5"
+      },
+      {
+        "patron": "\\s+para\\s+(?:AMBA|amba|GBA|gba)(?:\\s*\\([^)]*\\))?\\s*$",
+        "ejemplo": "para amba / para amba (zona sur/oeste)",
+        "_nota": "v2.8.2: 'para AMBA' con paréntesis opcional. Issue c19933f5"
+      },
+      {
+        "patron": "\\s+en\\s+(?:noroeste|noreste|sudoeste|sudeste|norte|sur|este|oeste)\\s+(?:de|del)\\s+[A-Za-záéíóúÁÉÍÓÚ]+(?:\\s+[A-Za-záéíóúÁÉÍÓÚ]+){0,2}$",
+        "ejemplo": "en noreste de entre rios",
+        "_nota": "v2.8.2: 'en' + dirección + de + lugar. Issue c19933f5"
       },
       {
         "patron": "\\s+para\\s+[Zz]ona\\s+[A-Za-záéíóúÁÉÍÓÚ]+(?:\\s+[Yy]\\s+[A-Za-záéíóúÁÉÍÓÚ]+)?$",
@@ -1312,6 +1336,5 @@
     "_nota": "Si titulo_limpio < 5 chars tras limpieza, mantener original"
   },
   "_cambios_v23": "Agregado codigos_empresa: BE | y variantes (validación 2026-01-26)",
-  "_cambios_v24": "Fix títulos dashboard 2026-01-28: Zona Sur con punto, Playa Grande, para Empresa de X",
-  "_cambios_v265": "Guiones colgados al final (Pacheco-, Neuquén -)"
+  "_cambios_v282": "Agregados patrones para dirección cardinal + zona geográfica (para noroeste de AMBA, para amba, en noreste de X). Issue c19933f5."
 }
