@@ -1,6 +1,6 @@
 # 6. Análisis de Seguridad
 
-> Última actualización: 2026-02-23
+> Última actualización: 2026-03-03
 
 ## Referencias
 
@@ -25,7 +25,7 @@
 | Severidad | Cantidad | Resueltos | Estado |
 |-----------|----------|-----------|--------|
 | **CRÍTICO** | 4 | 4 | ✅ Resueltos |
-| **ALTO** | 6 | 2 | 🟠 Resolver en Fase 1 |
+| **ALTO** | 6 | 3 (S-05, S-07, S-08 parcial) | 🟠 Resolver en Fase 1 |
 | **MEDIO** | 7 | 0 | 🟡 Resolver en Fase 2 |
 | **Total** | **17** | **6** | |
 
@@ -245,12 +245,14 @@ if (!result.success) {
 
 ---
 
-### S-08: Sin audit logging
+### S-08: Sin audit logging — 🟡 PARCIAL
 
 | Atributo | Valor |
 |----------|-------|
 | **Severidad** | 🟠 ALTO |
+| **Estado** | 🟡 Parcial (2026-03-03) |
 | **Impacto** | Sin trazabilidad de acciones |
+| **Avance** | Validación humana registra `validacion_humana_por` (email) + `validacion_humana_at` (timestamp). Solicitudes de acceso registran `revisado_por` + `revisado_at`. Falta tabla `audit_logs` general. |
 | **Solución** | Tabla `audit_logs` con triggers |
 
 ```sql
@@ -333,12 +335,16 @@ MEDIOS (Fase 2):
 
 ## RLS por Tabla
 
-| Tabla | SELECT | INSERT | UPDATE | DELETE |
-|-------|--------|--------|--------|--------|
-| `planes` | Todos | Solo admin | Solo admin | Solo admin |
-| `suscripciones` | Solo propia | Sistema | Sistema | No |
-| `pagos` | Solo propios | Sistema | Sistema | No |
-| `alertas_config` | Solo propias | Propias | Propias | Propias |
-| `informes_publicos` | Todos | Solo admin | Solo admin | Solo admin |
-| `uso_features` | Solo propios | Sistema | Sistema | No |
-| `ofertas` | Todos | Sistema | Sistema | No |
+| Tabla | SELECT | INSERT | UPDATE | DELETE | Estado |
+|-------|--------|--------|--------|--------|--------|
+| `planes` | Todos | Solo admin | Solo admin | Solo admin | ⬜ Pendiente |
+| `suscripciones` | Solo propia | Sistema | Sistema | No | ⬜ Pendiente |
+| `pagos` | Solo propios | Sistema | Sistema | No | ⬜ Pendiente |
+| `alertas_config` | Solo propias | Propias | Propias | Propias | ⬜ Pendiente |
+| `informes_publicos` | Todos | Solo admin | Solo admin | Solo admin | ⬜ Pendiente |
+| `uso_features` | Solo propios | Sistema | Sistema | No | ⬜ Pendiente |
+| `ofertas` | Todos | Sistema | Sistema | No | ⬜ Pendiente |
+| `solicitudes_acceso` | Propias (user) / Todas (admin) | Propias (via RPC) | Solo admin (via RPC) | No | ✅ Implementado (2026-03-03) |
+| `ofertas_dashboard` | Todos (anon read) | Sistema | Sistema + RPC validación | No | ✅ Parcial (RPC guardar_validacion_humana) |
+
+> **2026-03-03:** Tabla `solicitudes_acceso` implementada con RLS completo (4 políticas) + 3 RPCs SECURITY DEFINER. Ver migration `017_solicitudes_acceso.sql`.

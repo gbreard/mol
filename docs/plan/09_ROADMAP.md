@@ -1,7 +1,7 @@
 # 9. Roadmap de Implementación
 
-> Última actualización: 2026-02-11
-> Versión: 2.1 — Modelo híbrido + tensión de demanda (V-16)
+> Última actualización: 2026-03-03
+> Versión: 2.2 — Acceso gated + oficina empleo wireframes (Sprint 13)
 
 ## Referencias
 
@@ -132,19 +132,25 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 
 ## Fase 3: Features Comerciales + Modelo Híbrido
 
-**Estado:** ⬜ Pendiente
+**Estado:** 🟡 En progreso (acceso gated implementado, CMS y pagos pendientes)
 **Duración estimada:** 4-6 semanas
 
 ### Tareas — Acceso y Autenticación
 
-| ID | Tarea | Prioridad | Pantalla |
-|----|-------|-----------|----------|
-| - | Registro libre (sin plan) | ALTO | P-05 |
-| - | Área de contenido (registrados) | ALTO | P-26, P-27 |
-| - | Solicitud de acceso al tablero | ALTO | P-28 |
-| - | Gestión solicitudes (admin) | ALTO | P-29 |
-| - | Workflow aprobación + email | ALTO | P-29 → email |
-| - | Activación trial automática (7 días) | ALTO | Función BD |
+| ID | Tarea | Prioridad | Pantalla | Estado |
+|----|-------|-----------|----------|--------|
+| - | Registro libre (sin plan) | ALTO | P-05 | ⬜ |
+| - | Área de contenido (registrados) | ALTO | P-26, P-27 | ✅ Placeholder (2026-03-03) |
+| - | Solicitud de acceso al tablero | ALTO | P-28 | ✅ Completado (2026-03-03) |
+| - | Gestión solicitudes (admin) | ALTO | P-29 | ✅ Completado (2026-03-03) |
+| - | Workflow aprobación + email | ALTO | P-29 → email | 🟡 Aprobación OK, email pendiente |
+| - | Activación trial automática (7 días) | ALTO | Función BD | ✅ Completado (2026-03-03) |
+| - | Middleware dashboard gating (trial/suscriptor) | ALTO | middleware.ts | ✅ Completado (2026-03-03) |
+| - | Oficina de Empleo wireframes | MEDIO | /oficina-empleo/* | ✅ Wireframes (2026-03-03) |
+| - | GlobalNav plan-aware | ALTO | GlobalNav.tsx | ✅ Completado (2026-03-03) |
+| - | Home page 4-state CTAs | ALTO | /home | ✅ Completado (2026-03-03) |
+
+> **Sprint 13 (2026-03-03):** Implementado sistema completo de acceso gated: solicitar-acceso → admin aprueba → trial 7 días se activa automáticamente. Middleware protege /dashboard (requiere admin/suscriptor/trial activo). GlobalNav muestra items según rol+plan. Oficina de empleo con wireframes estáticos. Contenido como placeholder. Migration SQL 017 + RLS en solicitudes_acceso.
 
 ### Tareas — CMS
 
@@ -321,3 +327,4 @@ graph LR
 | 2026-02-05 | 1.0 | Roadmap SaaS (Free/Pro/Enterprise) |
 | 2026-02-07 | 2.0 | Modelo híbrido en Fase 3: acceso gated, CMS, pago dual, workflow aprobación. Métricas actualizadas |
 | 2026-02-11 | 2.1 | V-16 tensión de demanda en Fase 2 (parcial: datos existen, UI pendiente) |
+| 2026-03-03 | 2.2 | Fase 3 parcial: acceso gated (solicitar-acceso, trial 7 días, middleware), oficina empleo wireframes, contenido placeholder, GlobalNav plan-aware |

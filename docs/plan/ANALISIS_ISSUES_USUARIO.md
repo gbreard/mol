@@ -1,6 +1,6 @@
 # Análisis de Issues de Usuario
 
-> Fecha: 2026-02-11 (actualizado)
+> Fecha: 2026-03-03 (actualizado)
 > Fuente: Issues de admin@oede.gob.ar en Supabase
 
 ## Resumen Ejecutivo
@@ -15,8 +15,9 @@ Se analizaron **12 issues** reportados por los usuarios. El 67% de los issues (8
 
 **Estado actual:**
 - ✅ Completados: 7 (Sprint 1 + Sprint 2 + Sprint 5)
-- 🔨 En desarrollo: 1 (Sprint 5)
-- ⏳ Pendientes: 4 (Sprint 3 + Sprint 4)
+- 🔨 En desarrollo: 1 (Sprint 5 — tensión demanda UI)
+- 🟡 Parcial: 1 (Issue #7 — wireframes oficina empleo creados, funcionalidad pendiente)
+- ⏳ Pendientes: 3 (Sprint 3 + Sprint 4 parcial)
 
 ---
 
@@ -104,13 +105,15 @@ Se analizaron **12 issues** reportados por los usuarios. El 67% de los issues (8
 
 ### P-10: Skills Intelligence (`/skills`)
 
-#### Issue #7: Rediseño "Mis Skills" para Oficina de Empleo ⏳ PENDIENTE
-- **Sección:** MySkillsSearch
+#### Issue #7: Rediseño "Mis Skills" para Oficina de Empleo 🟡 PARCIAL
+- **Sección:** MySkillsSearch → `/oficina-empleo/*`
 - **Solicitud:** Sistema de apoyo a oficina de empleo con perfiles de trabajadores
 - **Tipo:** Rediseño funcional
 - **Impacto:** Muy Alto (nuevo caso de uso estratégico)
-- **Sprint:** 4
-- **Estado:** ⏳ Pendiente validación usuario
+- **Sprint:** 4 → 13 (wireframes)
+- **Estado:** 🟡 Wireframes creados (2026-03-03), funcionalidad pendiente
+
+> **Sprint 13:** Se creó la sección `/oficina-empleo` con 3 páginas wireframe (hub, perfil trabajador, ofertas coincidentes). El rol `oficina_empleo` está implementado con middleware gating. Falta la funcionalidad real: tabla `perfiles_trabajadores`, matching con ocupaciones, búsqueda de ofertas.
 
 **Flujo completo:**
 
@@ -304,7 +307,7 @@ Se analizaron **12 issues** reportados por los usuarios. El 67% de los issues (8
 | #4 | 1 | P-09 | Export Requerimientos | ✅ |
 | #5 | 3 | P-09 | Filtros Requerimientos en Sidebar | ⏳ |
 | #6 | 4 | P-09 | Rediseño Requerimientos | ⏳ |
-| #7 | 4 | P-10 | Rediseño Mis Skills (oficina empleo) | ⏳ |
+| #7 | 4→13 | P-10→P-32/33/34 | Rediseño Mis Skills (oficina empleo) | 🟡 Wireframes |
 | #8 | 2 | P-10 | Banner ofertas en Comparar | ✅ |
 | #9 | 2 | P-10 | Columna ocupaciones con ofertas | ✅ |
 | #10 | 2 | P-10 | Export ofertas desde Skills | ✅ |

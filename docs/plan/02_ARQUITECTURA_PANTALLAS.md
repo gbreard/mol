@@ -1,7 +1,7 @@
 # 2. Arquitectura de Pantallas
 
-> Ultima actualizacion: 2026-02-26
-> Versión: 2.3 — Laboratorio de indicadores experimentales (P-31, P-31a)
+> Ultima actualizacion: 2026-03-03
+> Versión: 2.4 — Acceso gated, oficina empleo, contenido placeholder
 
 ## Referencias
 
@@ -91,6 +91,11 @@ MOL Platform
 │   ├── /cuenta/suscripcion  P-15 Suscripción
 │   └── /cuenta/facturacion  P-16 Facturación
 │
+├── OFICINA DE EMPLEO (auth + rol oficina_empleo/admin)
+│   ├── /oficina-empleo ─────── P-32 Hub Oficina de Empleo (wireframe)
+│   ├── /oficina-empleo/perfil ─ P-33 Perfil Trabajador (wireframe)
+│   └── /oficina-empleo/ofertas  P-34 Ofertas Coincidentes (wireframe)
+│
 └── ADMIN (auth + rol admin)
     ├── /admin ───────────── P-17 Dashboard Admin
     ├── /admin/usuarios ──── P-18 Usuarios
@@ -125,9 +130,9 @@ MOL Platform
 
 | ID | Ruta | Nivel | Estado | Wireframe |
 |----|------|-------|--------|-----------|
-| P-26 | `/contenido` | U-REGISTRADO | Por crear | [contenido.md#p-26](./03_WIREFRAMES/contenido.md#p-26-informes-y-notas) |
-| P-27 | `/contenido/:slug` | U-REGISTRADO | Por crear | [contenido.md#p-27](./03_WIREFRAMES/contenido.md#p-27-detalle) |
-| P-28 | `/solicitar-acceso` | U-REGISTRADO | Por crear | [contenido.md#p-28](./03_WIREFRAMES/contenido.md#p-28-solicitar-acceso) |
+| P-26 | `/contenido` | U-REGISTRADO | ✅ Placeholder (2026-03-03) | [contenido.md#p-26](./03_WIREFRAMES/contenido.md#p-26-informes-y-notas) |
+| P-27 | `/contenido/:slug` | U-REGISTRADO | Por crear (requiere CMS) | [contenido.md#p-27](./03_WIREFRAMES/contenido.md#p-27-detalle) |
+| P-28 | `/solicitar-acceso` | U-REGISTRADO | ✅ Funcional (2026-03-03) | [contenido.md#p-28](./03_WIREFRAMES/contenido.md#p-28-solicitar-acceso) |
 
 ### Checkout
 
@@ -158,6 +163,16 @@ MOL Platform
 
 > **Scatter Plot Tensión:** Eje X = Insistencia, Eje Y = Persistencia, tamaño = total posiciones. Ver [suscriptor.md](./03_WIREFRAMES/suscriptor.md#scatter-plot-tensión-de-demanda) y [V-16](./08_PROPUESTA_VALOR.md#v-16-indicador-de-tensión-de-demanda).
 
+### Oficina de Empleo
+
+| ID | Ruta | Nivel | Estado | Wireframe |
+|----|------|-------|--------|-----------|
+| P-32 | `/oficina-empleo` | U-OFICINA_EMPLEO | ✅ Wireframe (2026-03-03) | Hub con 3 cards |
+| P-33 | `/oficina-empleo/perfil` | U-OFICINA_EMPLEO | ✅ Wireframe (2026-03-03) | Form deshabilitado + skeleton |
+| P-34 | `/oficina-empleo/ofertas` | U-OFICINA_EMPLEO | ✅ Wireframe (2026-03-03) | Tabla skeleton |
+
+> **Nota:** Las 3 páginas son wireframes estáticos con badge "PRÓXIMAMENTE". La funcionalidad real (perfiles de trabajadores, matching, ofertas coincidentes) está pendiente.
+
 ### Cuenta
 
 | ID | Ruta | Nivel | Estado | Wireframe |
@@ -172,7 +187,7 @@ MOL Platform
 |----|------|-------|--------|-----------|
 | P-17 | `/admin` | U-ADMIN | ✅ Existe | [admin.md#p-17](./03_WIREFRAMES/admin.md#p-17-dashboard) |
 | P-18 | `/admin/usuarios` | U-ADMIN | ⚠️ Parcial (CRUD: C+R+U) | [admin.md#p-18](./03_WIREFRAMES/admin.md#p-18-usuarios) |
-| P-29 | `/admin/solicitudes` | U-ADMIN | Por crear | [admin.md#p-29](./03_WIREFRAMES/admin.md#p-29-solicitudes) |
+| P-29 | `/admin/solicitudes` | U-ADMIN | ✅ Funcional (2026-03-03) | [admin.md#p-29](./03_WIREFRAMES/admin.md#p-29-solicitudes) |
 | P-19 | `/admin/issues` | U-ADMIN | ✅ Existe | [admin.md#p-19](./03_WIREFRAMES/admin.md#p-19-issues) |
 | P-20 | `/admin/skills` | U-ADMIN | ✅ Existe | [admin.md#p-20](./03_WIREFRAMES/admin.md#p-20-skills) |
 | P-21 | `/admin/scraping` | U-ADMIN | ⚠️ Lectura | [admin.md#p-21](./03_WIREFRAMES/admin.md#p-21-scraping) |
@@ -191,12 +206,13 @@ MOL Platform
 | Categoría | Total | Existentes | Por crear |
 |-----------|-------|------------|-----------|
 | Públicas | 5 | 1 | 4 |
-| Contenido | 3 | 0 | 3 |
+| Contenido | 3 | 1 (placeholder) | 2 |
 | Checkout | 3 | 0 | 3 |
 | Tablero | 5 | 2 | 3 |
+| Oficina Empleo | 3 | 3 (wireframes) | 0 (funcionalidad pendiente) |
 | Cuenta | 3 | 0 | 3 |
-| Admin | 13 | 9 | 4 |
-| **TOTAL** | **32** | **12** | **20** |
+| Admin | 13 | 10 | 3 |
+| **TOTAL** | **35** | **17** | **18** |
 
 ---
 
@@ -341,3 +357,4 @@ app/
 | 2026-02-11 | 2.1 | Filtros permanencia y tensión de demanda en sidebar, componentes P-09 (scatter plot tensión) |
 | 2026-02-23 | 2.2 | AnimatedNav auth-aware (sesión → dashboard/logout), P-18 CRUD: C+R+U (editar rol) |
 | 2026-02-26 | 2.3 | P-31 Laboratorio de Indicadores Experimentales + P-31a Tensión de Demanda (V-16). Staging admin para indicadores antes de dashboard público. Total 32 pantallas |
+| 2026-03-03 | 2.4 | P-26 placeholder, P-28+P-29 funcionales, P-32/P-33/P-34 oficina empleo wireframes. Acceso gated implementado. Total 35 pantallas |
