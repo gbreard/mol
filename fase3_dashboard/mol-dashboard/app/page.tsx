@@ -637,18 +637,18 @@ function Footer() {
               </h4>
               <ul className="space-y-2">
                 {[
-                  { label: "Taxonomía ESCO", href: "#" },
-                  { label: "Clasificación ISCO", href: "#" },
-                  { label: "Metodología", href: "#" },
+                  { label: "Oficina de Empleo", href: "/para-oficinas" },
+                  { label: "Mi Futuro Laboral", href: "/mi-futuro-laboral" },
+                  { label: "Metodología", href: "/metodologia" },
                 ].map((link) => (
                   <li key={link.label}>
-                    <a
+                    <Link
                       href={link.href}
                       className="text-sm transition-colors"
                       style={{ color: "var(--slate-300)" }}
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -702,20 +702,20 @@ function Footer() {
               &copy; 2026 MOL — Monitor de Ofertas Laborales
             </p>
             <div className="flex items-center gap-6">
-              <a
-                href="#"
+              <Link
+                href="/terminos"
                 className="text-sm transition-colors"
                 style={{ color: "var(--slate-300)" }}
               >
                 Términos
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                href="/politica-datos"
                 className="text-sm transition-colors"
                 style={{ color: "var(--slate-300)" }}
               >
                 Política de datos
-              </a>
+              </Link>
             </div>
           </div>
         </div>

@@ -149,6 +149,12 @@ Seguridad       Escalabilidad    Valor Datos      Features        Diferenciació
 | - | Oficina de Empleo wireframes | MEDIO | /oficina-empleo/* | ✅ Wireframes (2026-03-03) |
 | - | GlobalNav plan-aware | ALTO | GlobalNav.tsx | ✅ Completado (2026-03-03) |
 | - | Home page 4-state CTAs | ALTO | /home | ✅ Completado (2026-03-03) |
+| - | Landing Oficina de Empleo (pública) | MEDIO | P-35 /para-oficinas | ✅ Completado (2026-03-04) |
+| - | Landing Mi Futuro Laboral (pública) | MEDIO | P-36 /mi-futuro-laboral | ✅ Completado (2026-03-04) |
+| - | Metodología (pública) | MEDIO | P-37 /metodologia | ✅ Completado (2026-03-04) |
+| - | Términos de uso (placeholder) | BAJO | P-38 /terminos | ✅ Completado (2026-03-04) |
+| - | Política de datos (placeholder) | BAJO | P-39 /politica-datos | ✅ Completado (2026-03-04) |
+| - | Footer links → páginas reales | MEDIO | app/page.tsx | ✅ Completado (2026-03-04) |
 
 > **Sprint 13 (2026-03-03):** Implementado sistema completo de acceso gated: solicitar-acceso → admin aprueba → trial 7 días se activa automáticamente. Middleware protege /dashboard (requiere admin/suscriptor/trial activo). GlobalNav muestra items según rol+plan. Oficina de empleo con wireframes estáticos. Contenido como placeholder. Migration SQL 017 + RLS en solicitudes_acceso.
 
