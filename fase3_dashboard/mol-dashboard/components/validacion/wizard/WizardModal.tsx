@@ -112,6 +112,8 @@ export function WizardModal({
 
       await onSave(resultado, correcciones);
       onOpenChange(false);
+    } catch {
+      // Error already handled by parent (toast) — wizard stays open
     } finally {
       setSaving(false);
     }

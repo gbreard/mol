@@ -47,11 +47,12 @@ export function ValidationActions({
     setWizardOpen(false);
   }, [idOferta]);
 
+  /** Returns true on success, false on error */
   const doSave = useCallback(
     async (
       resultado: ValidacionHumana,
       correcciones?: Record<string, unknown>
-    ) => {
+    ): Promise<boolean> => {
       setSaving(true);
       try {
         await saveValidacion(idOferta, resultado, correcciones);
@@ -118,9 +119,13 @@ export function ValidationActions({
         };
         toast.success(`Marcada: ${labels[resultado]}`);
         onEvaluated(resultado);
-      } catch (err) {
-        console.error("Error saving validation:", err);
-        toast.error("Error al guardar validacion");
+        return true;
+      } catch (err: unknown) {
+        const msg =
+          err instanceof Error ? err.message : String(err);
+        console.error("Error saving validation:", msg, err);
+        toast.error(`Error al guardar: ${msg}`, { duration: 8000 });
+        return false;
       } finally {
         setSaving(false);
       }
@@ -194,21 +199,23 @@ export function ValidationActions({
       }
 
       if (resultado) {
-        await doSave(resultado, flatCorrecciones);
+        const ok = await doSave(resultado, flatCorrecciones);
+        if (!ok) throw new Error("save failed");
       } else {
         // "editar" trigger — save corrections without changing validation state
         setSaving(true);
         try {
-          // Save with current validation state (or keep null)
           const currentResult = currentValidacion || "revisar";
           await saveValidacion(idOferta, currentResult, flatCorrecciones);
           toast.success("Correcciones guardadas");
           if (currentValidacion !== currentResult) {
             onEvaluated(currentResult);
           }
-        } catch (err) {
-          console.error("Error saving corrections:", err);
-          toast.error("Error al guardar correcciones");
+        } catch (err: unknown) {
+          const msg = err instanceof Error ? err.message : String(err);
+          console.error("Error saving corrections:", msg, err);
+          toast.error(`Error al guardar: ${msg}`, { duration: 8000 });
+          throw err;
         } finally {
           setSaving(false);
         }
