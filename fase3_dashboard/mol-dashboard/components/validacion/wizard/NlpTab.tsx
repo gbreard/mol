@@ -108,6 +108,7 @@ export function NlpTab({ oferta, value, onChange }: NlpTabProps) {
 
   // Local state for all fields — initialized from oferta
   const [fields, setFields] = useState<Record<FieldKey, string | number | null>>({
+    titulo_limpio: oferta.titulo_limpio,
     area_funcional: oferta.area_funcional,
     nivel_seniority: oferta.nivel_seniority,
     modalidad: oferta.modalidad,
@@ -131,6 +132,7 @@ export function NlpTab({ oferta, value, onChange }: NlpTabProps) {
 
   const getOriginals = useCallback(
     (): Record<FieldKey, string | number | null> => ({
+      titulo_limpio: oferta.titulo_limpio,
       area_funcional: oferta.area_funcional,
       nivel_seniority: oferta.nivel_seniority,
       modalidad: oferta.modalidad,
@@ -393,6 +395,23 @@ export function NlpTab({ oferta, value, onChange }: NlpTabProps) {
 
   return (
     <div className="space-y-6">
+      {/* Titulo limpio — editable */}
+      {fieldWrapper("titulo_limpio", (
+        <>
+          <Label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
+            Titulo limpio
+          </Label>
+          <Input
+            value={fields.titulo_limpio != null ? String(fields.titulo_limpio) : ""}
+            onChange={(e) =>
+              updateField("titulo_limpio", e.target.value === "" ? null : e.target.value)
+            }
+            className="h-9 text-sm font-medium"
+            placeholder="Titulo del puesto..."
+          />
+        </>
+      ))}
+
       {/* CLAE Sector — hierarchical selector */}
       <div
         className={`space-y-3 rounded-md border p-3 ${

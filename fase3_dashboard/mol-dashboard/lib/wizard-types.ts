@@ -9,6 +9,7 @@ export interface OcupacionCorregida {
 
 /** Edited NLP field — only fields that changed are included */
 export interface NlpEditado {
+  titulo_limpio?: string;
   area_funcional?: string;
   nivel_seniority?: string;
   modalidad?: string;

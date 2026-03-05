@@ -5,9 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, X, Search, Loader2 } from "lucide-react";
-import { OfertaValidacion } from "@/lib/types";
+import { OfertaValidacion, OfertaSkillValidacion } from "@/lib/types";
 import type { TareaEditada, SkillAsociada } from "@/lib/wizard-types";
 import { useSkillsSearch } from "@/hooks/useSkillsSearch";
+import { getSkillsByOferta } from "@/lib/supabase";
 
 interface TareasSkillsTabProps {
   oferta: OfertaValidacion;
@@ -23,12 +24,36 @@ function parseTareas(raw: string | null): string[] {
   return raw.split(",").map((t) => t.trim()).filter(Boolean);
 }
 
+/** Convert Supabase skill to SkillAsociada */
+function toSkillAsociada(s: OfertaSkillValidacion): SkillAsociada {
+  return {
+    id: s.id,
+    label: s.preferred_label,
+    type: s.es_esencial ? "skill" : "knowledge",
+  };
+}
+
 export function TareasSkillsTab({
   oferta,
   onTareasChange,
   onSkillsChange,
 }: TareasSkillsTabProps) {
   const { search, isLoading: skillsLoading } = useSkillsSearch();
+
+  // Skills from Supabase (existing LLM classifications)
+  const [existingSkills, setExistingSkills] = useState<OfertaSkillValidacion[]>([]);
+  const [loadingExisting, setLoadingExisting] = useState(true);
+  // Track deleted existing skill IDs
+  const [deletedExistingIds, setDeletedExistingIds] = useState<Set<string>>(new Set());
+
+  // Load existing skills on mount
+  useEffect(() => {
+    setLoadingExisting(true);
+    getSkillsByOferta(oferta.id_oferta)
+      .then(setExistingSkills)
+      .catch(console.error)
+      .finally(() => setLoadingExisting(false));
+  }, [oferta.id_oferta]);
 
   // Initialize tareas from oferta
   const initialTareas = useMemo(() => {
@@ -37,41 +62,52 @@ export function TareasSkillsTab({
   }, [oferta.tareas_explicitas]);
 
   const [tareas, setTareas] = useState<TareaEditada[]>(initialTareas);
-  const [standaloneSkills, setStandaloneSkills] = useState<SkillAsociada[]>([]);
+  // Skills added by the user (not from LLM)
+  const [addedSkills, setAddedSkills] = useState<SkillAsociada[]>([]);
 
-  // Skill search state — tracks which tarea (or "standalone") has search open
-  const [searchTarget, setSearchTarget] = useState<number | "standalone" | null>(
-    null
-  );
+  // Skill search state
+  const [searchTarget, setSearchTarget] = useState<number | "standalone" | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Focus search input when target changes
   useEffect(() => {
     if (searchTarget !== null) {
       searchInputRef.current?.focus();
     }
   }, [searchTarget]);
 
-  // Get all skill IDs currently added (for exclusion)
+  // All skill IDs currently visible (for exclusion in search)
   const addedSkillIds = useMemo(() => {
     const ids = new Set<string>();
     for (const t of tareas) {
       for (const s of t.skills) ids.add(s.id);
     }
-    for (const s of standaloneSkills) ids.add(s.id);
+    for (const s of addedSkills) ids.add(s.id);
+    // Include existing skills that haven't been deleted
+    for (const s of existingSkills) {
+      if (!deletedExistingIds.has(s.id)) ids.add(s.id);
+    }
     return ids;
-  }, [tareas, standaloneSkills]);
+  }, [tareas, addedSkills, existingSkills, deletedExistingIds]);
 
   const searchResults = useMemo(() => {
     if (searchTarget === null || !searchQuery.trim()) return [];
     return search(searchQuery, addedSkillIds);
   }, [search, searchQuery, addedSkillIds, searchTarget]);
 
+  // Visible existing skills (not deleted)
+  const visibleExistingSkills = useMemo(
+    () => existingSkills.filter((s) => !deletedExistingIds.has(s.id)),
+    [existingSkills, deletedExistingIds]
+  );
+
   // Notify parent of changes
   const emitChanges = useCallback(
-    (newTareas: TareaEditada[], newStandalone: SkillAsociada[]) => {
-      // Check if tareas differ from original
+    (
+      newTareas: TareaEditada[],
+      newAdded: SkillAsociada[],
+      newDeleted: Set<string>
+    ) => {
       const originalParsed = parseTareas(oferta.tareas_explicitas);
       const tareasChanged =
         newTareas.length !== originalParsed.length ||
@@ -79,7 +115,24 @@ export function TareasSkillsTab({
           (t, i) => t.texto !== originalParsed[i] || t.skills.length > 0
         );
       onTareasChange(tareasChanged ? newTareas : undefined);
-      onSkillsChange(newStandalone.length > 0 ? newStandalone : undefined);
+
+      // Build skills output: added skills + info about deleted existing
+      const hasSkillChanges = newAdded.length > 0 || newDeleted.size > 0;
+      if (hasSkillChanges) {
+        // Encode both added and deleted in the output
+        const output: SkillAsociada[] = [
+          ...newAdded,
+          // Mark deleted as special entries so the backend knows
+          ...Array.from(newDeleted).map((id) => ({
+            id,
+            label: `__deleted__`,
+            type: "skill" as const,
+          })),
+        ];
+        onSkillsChange(output);
+      } else {
+        onSkillsChange(undefined);
+      }
     },
     [oferta.tareas_explicitas, onTareasChange, onSkillsChange]
   );
@@ -89,25 +142,25 @@ export function TareasSkillsTab({
     const next = [...tareas];
     next[idx] = { ...next[idx], texto };
     setTareas(next);
-    emitChanges(next, standaloneSkills);
+    emitChanges(next, addedSkills, deletedExistingIds);
   };
 
   const removeTarea = (idx: number) => {
     const next = tareas.filter((_, i) => i !== idx);
     setTareas(next);
-    emitChanges(next, standaloneSkills);
+    emitChanges(next, addedSkills, deletedExistingIds);
   };
 
   const addTarea = () => {
     const next = [...tareas, { texto: "", skills: [] }];
     setTareas(next);
-    emitChanges(next, standaloneSkills);
+    emitChanges(next, addedSkills, deletedExistingIds);
   };
 
   // Skill CRUD for tareas
   const addSkillToTarea = (
     tareaIdx: number,
-    skill: { id: string; label: string; type: "skill" | "knowledge" }
+    skill: SkillAsociada
   ) => {
     const next = [...tareas];
     next[tareaIdx] = {
@@ -117,7 +170,7 @@ export function TareasSkillsTab({
     setTareas(next);
     setSearchTarget(null);
     setSearchQuery("");
-    emitChanges(next, standaloneSkills);
+    emitChanges(next, addedSkills, deletedExistingIds);
   };
 
   const removeSkillFromTarea = (tareaIdx: number, skillId: string) => {
@@ -127,26 +180,38 @@ export function TareasSkillsTab({
       skills: next[tareaIdx].skills.filter((s) => s.id !== skillId),
     };
     setTareas(next);
-    emitChanges(next, standaloneSkills);
+    emitChanges(next, addedSkills, deletedExistingIds);
   };
 
-  // Standalone skills CRUD
-  const addStandaloneSkill = (skill: {
-    id: string;
-    label: string;
-    type: "skill" | "knowledge";
-  }) => {
-    const next = [...standaloneSkills, skill];
-    setStandaloneSkills(next);
+  // Added skills CRUD (user-added, not from LLM)
+  const addStandaloneSkill = (skill: SkillAsociada) => {
+    const next = [...addedSkills, skill];
+    setAddedSkills(next);
     setSearchTarget(null);
     setSearchQuery("");
-    emitChanges(tareas, next);
+    emitChanges(tareas, next, deletedExistingIds);
   };
 
-  const removeStandaloneSkill = (skillId: string) => {
-    const next = standaloneSkills.filter((s) => s.id !== skillId);
-    setStandaloneSkills(next);
-    emitChanges(tareas, next);
+  const removeAddedSkill = (skillId: string) => {
+    const next = addedSkills.filter((s) => s.id !== skillId);
+    setAddedSkills(next);
+    emitChanges(tareas, next, deletedExistingIds);
+  };
+
+  // Delete an existing LLM skill
+  const deleteExistingSkill = (skillId: string) => {
+    const next = new Set(deletedExistingIds);
+    next.add(skillId);
+    setDeletedExistingIds(next);
+    emitChanges(tareas, addedSkills, next);
+  };
+
+  // Restore a deleted existing skill
+  const restoreExistingSkill = (skillId: string) => {
+    const next = new Set(deletedExistingIds);
+    next.delete(skillId);
+    setDeletedExistingIds(next);
+    emitChanges(tareas, addedSkills, next);
   };
 
   const openSearch = (target: number | "standalone") => {
@@ -161,8 +226,81 @@ export function TareasSkillsTab({
 
   return (
     <div className="space-y-4">
+      {/* Existing skills from LLM */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Skills clasificadas por el LLM ({visibleExistingSkills.length})
+          </p>
+          {loadingExisting && (
+            <Loader2 className="w-3 h-3 animate-spin text-gray-400" />
+          )}
+        </div>
+        {!loadingExisting && visibleExistingSkills.length === 0 && deletedExistingIds.size === 0 && (
+          <p className="text-xs text-gray-400">Sin skills clasificadas</p>
+        )}
+        <div className="flex flex-wrap gap-1.5 items-center">
+          {visibleExistingSkills.map((skill) => (
+            <Badge
+              key={skill.id}
+              variant="outline"
+              className="text-xs gap-1 pr-1"
+            >
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  skill.es_esencial ? "bg-green-500" : "bg-gray-400"
+                }`}
+              />
+              {skill.preferred_label}
+              {skill.origen && (
+                <span className="text-[9px] text-gray-400 ml-0.5">
+                  {skill.origen}
+                </span>
+              )}
+              {skill.score != null && (
+                <span className="text-[9px] text-gray-400 tabular-nums">
+                  {skill.score.toFixed(2)}
+                </span>
+              )}
+              <button
+                onClick={() => deleteExistingSkill(skill.id)}
+                className="ml-0.5 hover:text-red-500 text-gray-400"
+                title="Eliminar skill"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </Badge>
+          ))}
+        </div>
+
+        {/* Show deleted skills with restore option */}
+        {deletedExistingIds.size > 0 && (
+          <div className="flex flex-wrap gap-1.5 items-center">
+            <span className="text-[10px] text-red-400">Eliminadas:</span>
+            {existingSkills
+              .filter((s) => deletedExistingIds.has(s.id))
+              .map((skill) => (
+                <Badge
+                  key={skill.id}
+                  variant="outline"
+                  className="text-xs gap-1 pr-1 opacity-50 line-through border-red-200"
+                >
+                  {skill.preferred_label}
+                  <button
+                    onClick={() => restoreExistingSkill(skill.id)}
+                    className="ml-0.5 text-blue-500 hover:text-blue-700 no-underline"
+                    title="Restaurar"
+                  >
+                    <Plus className="w-3 h-3" />
+                  </button>
+                </Badge>
+              ))}
+          </div>
+        )}
+      </div>
+
       {/* Tareas list */}
-      <div className="space-y-3">
+      <div className="space-y-3 border-t pt-4">
         <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
           Tareas ({tareas.length})
         </p>
@@ -240,17 +378,17 @@ export function TareasSkillsTab({
         </Button>
       </div>
 
-      {/* Standalone skills (not tied to a task) */}
+      {/* User-added skills (not from LLM) */}
       <div className="space-y-2 border-t pt-4">
         <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-          Skills sin tarea asociada
+          Agregar skills
         </p>
         <div className="flex flex-wrap gap-1.5 items-center">
-          {standaloneSkills.map((skill) => (
+          {addedSkills.map((skill) => (
             <Badge
               key={skill.id}
               variant="secondary"
-              className="text-xs gap-1 pr-1"
+              className="text-xs gap-1 pr-1 bg-blue-50"
             >
               <span
                 className={`w-1.5 h-1.5 rounded-full ${
@@ -259,7 +397,7 @@ export function TareasSkillsTab({
               />
               {skill.label}
               <button
-                onClick={() => removeStandaloneSkill(skill.id)}
+                onClick={() => removeAddedSkill(skill.id)}
                 className="ml-0.5 hover:text-red-500"
               >
                 <X className="w-3 h-3" />
