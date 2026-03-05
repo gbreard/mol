@@ -20,6 +20,20 @@ import type { WizardCorrecciones, WizardTrigger } from "@/lib/wizard-types";
 import { toast } from "sonner";
 import { WizardModal } from "./wizard/WizardModal";
 
+function extractErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  if (typeof err === "object" && err !== null) {
+    const obj = err as Record<string, unknown>;
+    // Supabase errors: { message, code, details, hint }
+    if (typeof obj.message === "string") return obj.message;
+    // PostgrestError
+    if (typeof obj.code === "string" && typeof obj.details === "string")
+      return `${obj.code}: ${obj.details}`;
+    return JSON.stringify(err);
+  }
+  return String(err);
+}
+
 interface ValidationActionsProps {
   idOferta: string;
   tituloOferta: string;
@@ -121,8 +135,7 @@ export function ValidationActions({
         onEvaluated(resultado);
         return true;
       } catch (err: unknown) {
-        const msg =
-          err instanceof Error ? err.message : String(err);
+        const msg = extractErrorMessage(err);
         console.error("Error saving validation:", msg, err);
         toast.error(`Error al guardar: ${msg}`, { duration: 8000 });
         return false;
@@ -212,7 +225,7 @@ export function ValidationActions({
             onEvaluated(currentResult);
           }
         } catch (err: unknown) {
-          const msg = err instanceof Error ? err.message : String(err);
+          const msg = extractErrorMessage(err);
           console.error("Error saving corrections:", msg, err);
           toast.error(`Error al guardar: ${msg}`, { duration: 8000 });
           throw err;
