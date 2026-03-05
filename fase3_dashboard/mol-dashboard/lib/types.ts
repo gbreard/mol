@@ -289,7 +289,7 @@ export interface OfertaValidacion {
   validacion_humana: ValidacionHumana | null;
   validacion_humana_at: string | null;
   validacion_humana_por: string | null;
-  validacion_correcciones: Record<string, string> | null;
+  validacion_correcciones: Record<string, unknown> | null;
 }
 
 export interface OfertaSkillValidacion {

@@ -2198,7 +2198,7 @@ export async function getValidacionFilterOptions(): Promise<ValidacionFilterOpti
 export async function saveValidacion(
   idOferta: string,
   resultado: ValidacionHumana,
-  correcciones?: Record<string, string>
+  correcciones?: Record<string, unknown>
 ): Promise<boolean> {
   const client = getSupabaseClient()
   if (!client) throw new Error('Supabase no configurado')

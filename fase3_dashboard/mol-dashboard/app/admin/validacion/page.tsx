@@ -14,6 +14,7 @@ import { OfertaList } from "@/components/validacion/OfertaList";
 import { PuestoPanel } from "@/components/validacion/PuestoPanel";
 import { ClasificacionPanel } from "@/components/validacion/ClasificacionPanel";
 import { ValidationActions } from "@/components/validacion/ValidationActions";
+import { ListPagination } from "@/components/validacion/ListPagination";
 
 const PAGE_SIZE = 50;
 
@@ -155,7 +156,7 @@ export default function ValidacionPage() {
     <div className="flex flex-col h-[calc(100vh-64px)]">
       {/* Filters bar */}
       <div className="border-b bg-white px-4 py-2 shrink-0">
-        <ValidationFilters filters={filters} onChange={setFilters} stats={stats} />
+        <ValidationFilters filters={filters} onChange={setFilters} stats={stats} ofertas={ofertas} />
       </div>
 
       {/* Main content: 3-panel split */}
@@ -184,6 +185,16 @@ export default function ValidacionPage() {
                     onSelect={handleSelect}
                   />
                 </div>
+                <ListPagination
+                  offset={offset}
+                  pageSize={PAGE_SIZE}
+                  total={total}
+                  onPageChange={(newOffset) => {
+                    setOffset(newOffset);
+                    setSelectedOferta(null);
+                    setCurrentIndex(0);
+                  }}
+                />
               </div>
             </ResizablePanel>
 
@@ -223,6 +234,7 @@ export default function ValidacionPage() {
           tituloOferta={selectedOferta.titulo_limpio || selectedOferta.titulo}
           iscoCode={selectedOferta.isco_code}
           currentValidacion={selectedOferta.validacion_humana}
+          oferta={selectedOferta}
           onEvaluated={handleEvaluated}
         />
       )}
