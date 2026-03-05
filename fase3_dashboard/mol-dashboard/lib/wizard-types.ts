@@ -18,6 +18,16 @@ export interface NlpEditado {
   salario_max?: number;
   provincia?: string;
   localidad?: string;
+  clae_seccion?: string;
+  clae_grupo?: string;
+  clae_code?: string;
+}
+
+/** CLAE nomenclador structure (loaded from JSON) */
+export interface ClaeNomenclador {
+  secciones: Record<string, { nombre: string; clae2: string }>;
+  grupos: Record<string, { seccion: string; nombre: string; clae2: string }>;
+  actividades: Record<string, { grupo: string; seccion: string; nombre: string }>;
 }
 
 /** A single edited task with optional associated skills */

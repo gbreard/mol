@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Loader2, ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 import { OfertaValidacion, ValidacionHumana } from "@/lib/types";
 import type {
   WizardCorrecciones,
@@ -55,6 +56,7 @@ export function WizardModal({
   const [activeTab, setActiveTab] = useState<TabId>(DEFAULT_TAB[trigger]);
   const [nota, setNota] = useState("");
   const [saving, setSaving] = useState(false);
+  const [descExpanded, setDescExpanded] = useState(false);
 
   // Correction state per tab
   const [ocupacionCorregida, setOcupacionCorregida] = useState<
@@ -83,6 +85,7 @@ export function WizardModal({
     if (open) {
       setActiveTab(DEFAULT_TAB[trigger]);
       setNota("");
+      setDescExpanded(false);
       setOcupacionCorregida(undefined);
       setNlpEditado(undefined);
       setTareasEditadas(undefined);
@@ -145,6 +148,64 @@ export function WizardModal({
             </span>
           </DialogTitle>
         </DialogHeader>
+
+        {/* Offer context — always visible */}
+        <div className="rounded-md border bg-gray-50 px-3 py-2 space-y-1.5 shrink-0">
+          <div className="flex items-center gap-2 text-xs text-gray-500 flex-wrap">
+            {oferta.empresa && (
+              <span className="font-medium text-gray-700">{oferta.empresa}</span>
+            )}
+            {oferta.portal && (
+              <Badge variant="outline" className="text-[10px]">
+                {oferta.portal}
+              </Badge>
+            )}
+            {oferta.isco_code && (
+              <Badge variant="outline" className="font-mono text-[10px]">
+                {oferta.isco_code}
+              </Badge>
+            )}
+            {oferta.esco_occupation_label && (
+              <span className="text-gray-500 truncate max-w-[250px]">
+                {oferta.esco_occupation_label}
+              </span>
+            )}
+            {oferta.url && (
+              <a
+                href={oferta.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:text-blue-700 ml-auto shrink-0"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            )}
+          </div>
+
+          {/* Collapsible description */}
+          {oferta.descripcion && (
+            <>
+              <button
+                onClick={() => setDescExpanded(!descExpanded)}
+                className="flex items-center gap-1 text-[11px] text-blue-600 hover:text-blue-800"
+              >
+                {descExpanded ? (
+                  <ChevronUp className="w-3 h-3" />
+                ) : (
+                  <ChevronDown className="w-3 h-3" />
+                )}
+                {descExpanded ? "Ocultar descripcion" : "Ver descripcion"}
+              </button>
+              {descExpanded && (
+                <div className="rounded border bg-white p-2 max-h-[180px] overflow-y-auto">
+                  <p className="text-[11px] text-gray-700 whitespace-pre-wrap leading-relaxed">
+                    {oferta.descripcion}
+                  </p>
+                </div>
+              )}
+            </>
+          )}
+        </div>
 
         <Tabs
           value={activeTab}

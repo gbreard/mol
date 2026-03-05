@@ -278,6 +278,9 @@ export interface OfertaValidacion {
   area_funcional: string | null;
   sector_empresa: string | null;
   clae_descripcion_seccion: string | null;
+  clae_code: string | null;
+  clae_grupo: string | null;
+  clae_seccion: string | null;
   nivel_educativo: string | null;
   experiencia_min_anios: number | null;
   salario_min: number | null;
