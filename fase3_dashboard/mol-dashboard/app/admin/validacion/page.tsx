@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertTriangle } from "lucide-react";
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -15,6 +15,7 @@ import { PuestoPanel } from "@/components/validacion/PuestoPanel";
 import { ClasificacionPanel } from "@/components/validacion/ClasificacionPanel";
 import { ValidationActions } from "@/components/validacion/ValidationActions";
 import { ListPagination } from "@/components/validacion/ListPagination";
+import { createBrowserClient } from "@/lib/supabase/browser";
 
 const PAGE_SIZE = 50;
 
@@ -41,6 +42,16 @@ export default function ValidacionPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [offset, setOffset] = useState(0);
   const [stats, setStats] = useState<ValidationStats | null>(null);
+  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+
+  // Get current user email
+  useEffect(() => {
+    createBrowserClient()
+      .auth.getUser()
+      .then(({ data: { user } }) => {
+        setCurrentUserEmail(user?.email ?? null);
+      });
+  }, []);
 
   // Fetch ofertas
   const fetchOfertas = useCallback(async () => {
@@ -226,6 +237,22 @@ export default function ValidacionPage() {
           </ResizablePanelGroup>
         </div>
       )}
+
+      {/* Already reviewed banner */}
+      {selectedOferta?.validacion_humana &&
+        selectedOferta.validacion_humana_por &&
+        selectedOferta.validacion_humana_por !== currentUserEmail && (
+          <div className="bg-amber-50 border-t border-amber-200 px-4 py-1.5 flex items-center gap-2 text-xs text-amber-800 shrink-0">
+            <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+            <span>
+              Evaluada como <strong>{selectedOferta.validacion_humana.toUpperCase()}</strong> por{" "}
+              <strong>{selectedOferta.validacion_humana_por.split("@")[0]}</strong>
+              {selectedOferta.validacion_humana_at && (
+                <> el {new Date(selectedOferta.validacion_humana_at).toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</>
+              )}
+            </span>
+          </div>
+        )}
 
       {/* Sticky bottom bar: actions */}
       {selectedOferta && (
