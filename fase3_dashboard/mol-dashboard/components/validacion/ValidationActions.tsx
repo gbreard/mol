@@ -213,28 +213,10 @@ export function ValidationActions({
         flatCorrecciones.nota = correcciones.nota;
       }
 
-      if (resultado) {
-        const ok = await doSave(resultado, flatCorrecciones);
-        if (!ok) throw new Error("save failed");
-      } else {
-        // "editar" trigger — save corrections without changing validation state
-        setSaving(true);
-        try {
-          const currentResult = currentValidacion || "revisar";
-          await saveValidacion(idOferta, currentResult, flatCorrecciones);
-          toast.success("Correcciones guardadas");
-          if (currentValidacion !== currentResult) {
-            onEvaluated(currentResult);
-          }
-        } catch (err: unknown) {
-          const msg = extractErrorMessage(err);
-          console.error("Error saving corrections:", msg, err);
-          toast.error(`Error al guardar: ${msg}`, { duration: 8000 });
-          throw err;
-        } finally {
-          setSaving(false);
-        }
-      }
+      // "editar" trigger has no resultado — use current state or default to "revisar"
+      const finalResultado = resultado || currentValidacion || "revisar";
+      const ok = await doSave(finalResultado as ValidacionHumana, flatCorrecciones);
+      if (!ok) throw new Error("save failed");
     },
     [doSave, currentValidacion, idOferta, onEvaluated]
   );
