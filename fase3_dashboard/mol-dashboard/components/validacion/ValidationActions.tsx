@@ -71,13 +71,16 @@ export function ValidationActions({
       try {
         await saveValidacion(idOferta, resultado, correcciones);
 
-        // Create issue for error/revisar (best-effort)
+        // Create issue for error/revisar/editar corrections
         if (resultado === "error" || resultado === "revisar") {
           try {
             const supabase = createBrowserClient();
             const {
               data: { user },
             } = await supabase.auth.getUser();
+            if (!user) {
+              toast.error("Issue no creado: usuario no autenticado", { duration: 6000 });
+            }
             if (user) {
               const tipo =
                 resultado === "error" ? "error_isco" : "sugerencia";
@@ -119,6 +122,7 @@ export function ValidationActions({
                   user.email?.split("@")[0] ||
                   "Validador",
               });
+              toast.success("Issue creado", { duration: 3000 });
             }
           } catch (issueErr: unknown) {
             const issueMsg = extractErrorMessage(issueErr);
