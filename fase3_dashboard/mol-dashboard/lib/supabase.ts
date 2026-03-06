@@ -1146,8 +1146,9 @@ export async function createIssue(issue: {
   autor_email: string;
   autor_nombre?: string;
 }): Promise<Issue> {
-  const client = getSupabaseClient()
-  if (!client) throw new Error('Supabase no está configurado')
+  // Must use browser client (has user session) for RLS: autor_id = auth.uid()
+  const { createBrowserClient } = await import('@/lib/supabase/browser')
+  const client = createBrowserClient()
 
   const { data, error } = await client
     .from('issues')
