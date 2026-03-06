@@ -82,12 +82,15 @@ export function ValidationActions({
               toast.error("Issue no creado: usuario no autenticado", { duration: 6000 });
             }
             if (user) {
+              const hasCorrecciones = correcciones && Object.keys(correcciones).length > 0;
               const tipo =
                 resultado === "error" ? "error_isco" : "sugerencia";
               const titulo =
                 resultado === "error"
                   ? `ISCO incorrecto: ${iscoCode || "?"} en #${idOferta}`
-                  : `Revisar: #${idOferta} - ${tituloOferta.slice(0, 50)}`;
+                  : hasCorrecciones
+                    ? `Correccion: #${idOferta} - ${tituloOferta.slice(0, 50)}`
+                    : `Revisar: #${idOferta} - ${tituloOferta.slice(0, 50)}`;
               const nota =
                 typeof correcciones?.nota === "string"
                   ? correcciones.nota
@@ -99,15 +102,24 @@ export function ValidationActions({
               const ocupCorr = correcciones?.ocupacion_corregida as
                 | { isco_code?: string; esco_label?: string }
                 | undefined;
-              const parts = [
+              const nlpEdit = correcciones?.nlp_editado as
+                | Record<string, unknown>
+                | undefined;
+              const parts: string[] = [
                 nota,
                 iscoCorr ? `ISCO correcto: ${iscoCorr}` : null,
                 ocupCorr
                   ? `ESCO corregido: ${ocupCorr.esco_label} (${ocupCorr.isco_code})`
                   : null,
+                // NLP changes
+                ...(nlpEdit
+                  ? Object.entries(nlpEdit).map(
+                      ([k, v]) => `${k}: ${String(v)}`
+                    )
+                  : []),
                 `Oferta: ${tituloOferta}`,
                 `ISCO actual: ${iscoCode || "sin asignar"}`,
-              ].filter(Boolean);
+              ].filter(Boolean) as string[];
 
               await createIssue({
                 titulo,
