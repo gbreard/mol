@@ -240,9 +240,12 @@ export default function ValidacionPage() {
 
       {/* Already reviewed banner */}
       {selectedOferta?.validacion_humana &&
-        selectedOferta.validacion_humana_por &&
-        selectedOferta.validacion_humana_por !== currentUserEmail && (
-          <div className="bg-amber-50 border-t border-amber-200 px-4 py-1.5 flex items-center gap-2 text-xs text-amber-800 shrink-0">
+        selectedOferta.validacion_humana_por && (
+          <div className={`border-t px-4 py-1.5 flex items-center gap-2 text-xs shrink-0 ${
+            selectedOferta.validacion_humana_por === currentUserEmail
+              ? "bg-blue-50 border-blue-200 text-blue-700"
+              : "bg-amber-50 border-amber-200 text-amber-800"
+          }`}>
             <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
             <span>
               Evaluada como <strong>{selectedOferta.validacion_humana.toUpperCase()}</strong> por{" "}
