@@ -2201,8 +2201,9 @@ export async function saveValidacion(
   resultado: ValidacionHumana,
   correcciones?: Record<string, unknown>
 ): Promise<boolean> {
-  const client = getSupabaseClient()
-  if (!client) throw new Error('Supabase no configurado')
+  // Must use browser client (has user session/JWT) — not the anon client
+  const { createBrowserClient } = await import('@/lib/supabase/browser')
+  const client = createBrowserClient()
 
   const { data, error } = await client.rpc('guardar_validacion_humana', {
     p_id_oferta: idOferta,
