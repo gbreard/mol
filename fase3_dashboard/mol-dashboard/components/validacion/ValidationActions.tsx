@@ -120,8 +120,10 @@ export function ValidationActions({
                   "Validador",
               });
             }
-          } catch {
-            console.error("Could not create issue");
+          } catch (issueErr: unknown) {
+            const issueMsg = extractErrorMessage(issueErr);
+            console.error("Could not create issue:", issueMsg, issueErr);
+            toast.error(`Issue no creado: ${issueMsg}`, { duration: 6000 });
           }
         }
 
