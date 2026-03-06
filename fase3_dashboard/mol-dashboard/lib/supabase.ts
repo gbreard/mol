@@ -1091,6 +1091,7 @@ export async function getIssues(filters?: {
   tipo?: string;
   prioridad?: string;
   id_oferta?: string;
+  autor_email?: string;
 }): Promise<Issue[]> {
   const client = getSupabaseClient()
   if (!client) return []
@@ -1111,6 +1112,9 @@ export async function getIssues(filters?: {
   }
   if (filters?.id_oferta) {
     query = query.eq('id_oferta', filters.id_oferta)
+  }
+  if (filters?.autor_email) {
+    query = query.eq('autor_email', filters.autor_email)
   }
 
   const { data, error } = await query
