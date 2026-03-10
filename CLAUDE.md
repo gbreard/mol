@@ -465,6 +465,7 @@ tail -f /tmp/pipeline.log
 | **⭐ Pipeline Completo** | `python scripts/run_validated_pipeline.py --limit 500` | Scripts separados |
 | **NLP lote** | `python database/process_nlp_from_db_v11.py --ids X` | Crear script nuevo |
 | **Scraping (local)** | `python run_scheduler.py --test` | Llamar scrapers directo |
+| **Scraping ComputRabajo** | `python scripts/scraping/run_computrabajo_vps.py` | Usar scraper directo |
 | **Sync desde VPS** | `python scripts/sync_from_vps.py` (incremental) | Queries manuales al VPS |
 | **Sync Full desde VPS** | `python scripts/sync_from_vps.py --full` | - |
 | **Comparar runs** | `python scripts/compare_runs.py --latest` | Crear comparador custom |
@@ -479,29 +480,76 @@ tail -f /tmp/pipeline.log
 
 ### Scraping — Estado y Dependencias
 
-**Estado actual (2026-03-06):** El scheduler (`run_scheduler.py`) **no está en uso**. El scraping se ejecuta **manualmente**.
+**Estado actual (2026-03-10):** Scraping corre en **VPS** (Hostinger KVM 2, IP 187.124.150.28).
+Cron ejecuta Lun/Jue 08:00 Argentina via `/opt/mol/scripts/scraping/run_scraping_vps.sh`.
 
 **Portales:**
-| Portal | Estado | Integrado al scheduler |
-|--------|--------|----------------------|
-| **Bumeran** | Activo (único en producción) | Sí |
-| ZonaJobs | Scraper desarrollado | No |
-| ComputRabajo | Scraper desarrollado | No |
-| LinkedIn | Scraper desarrollado (JobSpy) | No |
-| Indeed | Scraper desarrollado (JobSpy) | No |
+| Portal | Estado | Ofertas/corrida | Método |
+|--------|--------|----------------|--------|
+| **Bumeran** | Activo en VPS | ~5,000 | API searchV2 + keywords (paginación funciona) |
+| **ZonaJobs** | Activo en VPS | ~5,000 | API searchV2 + keywords (paginación rota, 20/keyword) |
+| **ComputRabajo** | Activo en VPS | ~1,000+ | HTML scraping + keywords (~3-4h con descripción) |
+| LinkedIn | Scraper desarrollado (JobSpy) | - | No integrado |
+| Indeed | Scraper desarrollado (JobSpy) | - | No integrado |
+
+**ZonaJobs - Limitación de API:**
+La API de ZonaJobs (mismo platform Navent que Bumeran) tiene paginación rota:
+el parámetro `page` es ignorado y siempre devuelve las mismas 20 ofertas.
+Workaround: usar `query` keyword para obtener 20 ofertas distintas por keyword.
+Con 1,072 keywords de `config/scraping/master_keywords.json` se obtienen ~5,000 únicas.
+
+**Archivos del scraper ZonaJobs:**
+| Archivo | Ubicación | Función |
+|---------|-----------|---------|
+| Scraper v2 | `01_sources/zonajobs/scrapers/zonajobs_scraper_v2.py` | Scraper API + keywords |
+| Runner VPS | `scripts/scraping/run_zonajobs_vps.py` | Ejecuta scraping + inserta en BD |
+| Script cron | `scripts/scraping/run_scraping_vps.sh` | Bumeran + ZonaJobs + ComputRabajo + export |
+
+**ComputRabajo - Detalles:**
+- HTML scraping con `requests` + `BeautifulSoup` (NO requiere JavaScript)
+- Usa keywords de `config/scraping/master_keywords.json` (mismas que ZonaJobs)
+- `fetch_description=True` por default: 1 request extra por oferta para descripción completa
+- IDs: `data-id` del HTML → convertido a integer con prefijo `5_000_000_000` (evita colisiones)
+- Campos mapeados: título, empresa, ubicación, modalidad, fecha, descripción, URL
+- Campos NULL (no disponibles): id_empresa, id_area, id_subarea, cantidad_vacantes, tipo_trabajo
+- Requiere `beautifulsoup4` instalado en VPS: `pip3 install beautifulsoup4`
+
+**Archivos del scraper ComputRabajo:**
+| Archivo | Ubicación | Función |
+|---------|-----------|---------|
+| Scraper core | `01_sources/computrabajo/scrapers/computrabajo_scraper.py` | HTML parsing + BS4 |
+| Multi-keyword | `01_sources/computrabajo/scrapers/scrapear_con_diccionario.py` | Wrapper legacy multi-keyword |
+| Runner VPS | `scripts/scraping/run_computrabajo_vps.py` | Ejecuta scraping + mapea + inserta en BD |
+
+**VPS - Infraestructura:**
+```
+VPS (187.124.150.28)                      Local (esta máquina)
+/opt/mol/                                  D:\OEDE\Webscrapping\
+  ├── run_scheduler.py (Bumeran)           ├── scripts/sync_from_vps.py
+  ├── scripts/scraping/                    │   (export → SCP → import → bajas)
+  │   ├── run_scraping_vps.sh (cron)       ├── database/bumeran_scraping.db
+  │   ├── run_zonajobs_vps.py              │   (21K+ ofertas: 16K Bum + 5K ZJ + CT)
+  │   └── run_computrabajo_vps.py          └── NLP + Matching + Validación (local)
+  ├── scripts/export_nuevas.py
+  └── database/bumeran_scraping.db
+      (6K+ ofertas: 4K Bum + 2.6K ZJ + CT)
+```
+
+**Sync VPS → Local:**
+```bash
+python scripts/sync_from_vps.py          # Incremental (solo nuevas)
+python scripts/sync_from_vps.py --full   # Full (todas)
+```
 
 **Dependencias críticas del scraper (restauradas 2026-03-06):**
 
-Los scrapers de Bumeran importan módulos desde `02_consolidation/scripts/`:
+Los scrapers importan módulos desde `02_consolidation/scripts/`:
 - `incremental_tracker.py` — Tracking de IDs ya scrapeados (modo incremental)
 - `date_filter.py` — Filtrado por ventana temporal
 
 Estos archivos fueron movidos por error a `archive/legacy_numbered_folders/` y restaurados.
 Si faltan, el scraper sigue funcionando pero **sin modo incremental ni filtrado por fecha**
 (los imports tienen try/except con fallback graceful).
-
-**Problema pendiente del scheduler:** Es un loop infinito con `schedule` + `while True`.
-Si se cierra la terminal, muere. No hay servicio de Windows ni task scheduler configurado.
 
 ### Sync a Supabase — Cómo funciona internamente
 
