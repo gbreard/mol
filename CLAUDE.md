@@ -464,7 +464,9 @@ tail -f /tmp/pipeline.log
 |-------|---------|----------|
 | **⭐ Pipeline Completo** | `python scripts/run_validated_pipeline.py --limit 500` | Scripts separados |
 | **NLP lote** | `python database/process_nlp_from_db_v11.py --ids X` | Crear script nuevo |
-| **Scraping** | `python run_scheduler.py` | Llamar scrapers directo |
+| **Scraping (local)** | `python run_scheduler.py --test` | Llamar scrapers directo |
+| **Sync desde VPS** | `python scripts/sync_from_vps.py` (incremental) | Queries manuales al VPS |
+| **Sync Full desde VPS** | `python scripts/sync_from_vps.py --full` | - |
 | **Comparar runs** | `python scripts/compare_runs.py --latest` | Crear comparador custom |
 | **Validar ofertas** | `python scripts/validar_ofertas.py --ids X --estado validado` | UPDATE manual en BD |
 | **Export Excel** | `python scripts/exports/export_validation_excel.py --etapa completo --ids X` | - |
