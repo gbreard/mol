@@ -358,6 +358,102 @@ python scripts/show_learning_evolution.py --batches
 
 ---
 
+## Pipeline Issue → Training Pairs → Fine-Tuning
+
+**CRÍTICO:** Los issues de usuarios (Supabase) alimentan un dataset de entrenamiento para futuro fine-tuning del modelo de clasificación ESCO. Cada issue resuelto es un dato de entrenamiento valioso.
+
+### Arquitectura
+
+```
+Usuario reporta issue (dashboard)
+    → Supabase tabla `issues` (estado: pendiente)
+        → Claude/dev resuelve (modifica configs, reprocesa)
+            → Issue pasa a `resuelto` con solucion_aplicada
+                → sync_learnings.py se ejecuta
+                    → generate_training_pairs.py (auto-trigger)
+                        → config/training_pairs.json (dataset acumulado)
+```
+
+### Componentes
+
+| Componente | Ubicación | Función |
+|------------|-----------|---------|
+| Generador | `scripts/exports/generate_training_pairs.py` | Convierte issues resueltos en pares de entrenamiento |
+| Dataset | `config/training_pairs.json` | Pares acumulados (583+ al 2026-02) |
+| Auto-trigger | `scripts/sync_learnings.py` | Ejecuta generador automáticamente |
+
+### Estructura de un Training Pair
+
+```json
+{
+  "input": {
+    "titulo": "Peón rural",
+    "descripcion": "...",
+    "tareas": "...",
+    "sector": "...",
+    "area_funcional": "..."
+  },
+  "clasificacion_incorrecta": {"isco": "0110", "label": "Oficial de las fuerzas armadas"},
+  "clasificacion_correcta": {"isco": "6111", "label": "Agricultor"},
+  "justificacion_humana": "Descripción del usuario sobre por qué es incorrecto"
+}
+```
+
+### 3 Enfoques de Fine-Tuning Soportados
+
+| Enfoque | Datos que usa | Para qué |
+|---------|---------------|----------|
+| **Supervised** | input → clasificación_correcta | Entrenamiento directo |
+| **DPO/RLHF** | correcto=chosen, incorrecto=rejected | Preferencia de pares |
+| **Chain-of-Thought** | input + justificación_humana → correcta | Razonamiento paso a paso |
+
+### Comandos
+
+```bash
+# Generar training pairs manualmente
+python scripts/exports/generate_training_pairs.py
+
+# Ver estadísticas del dataset
+python scripts/exports/generate_training_pairs.py --stats
+
+# Solo desde cierta fecha
+python scripts/exports/generate_training_pairs.py --since 2026-03-01
+
+# Dry run (no guarda)
+python scripts/exports/generate_training_pairs.py --dry-run
+```
+
+### Flujo de Trabajo con Issues de Usuarios
+
+```
+PASO 1: Listar issues pendientes
+─────────────────────────────────
+python -c "..." (ver sección Gestión de Issues)
+
+PASO 2: Por cada issue, ver qué corrección pide
+────────────────────────────────────────────────
+- Leer descripcion, valor_actual, valor_esperado
+- Identificar si es error de NLP, Matching, o clasificación
+
+PASO 3: Aplicar corrección
+──────────────────────────
+- Crear/modificar regla en config/*.json correspondiente
+- Reprocesar oferta: python scripts/run_validated_pipeline.py --ids X
+
+PASO 4: Marcar issue como resuelto
+───────────────────────────────────
+- Actualizar en Supabase con solucion_aplicada y config_modificada
+
+PASO 5: Sync → Training pair se genera automáticamente
+──────────────────────────────────────────────────────
+python scripts/sync_learnings.py
+```
+
+**IMPORTANTE:** Cada issue resuelto con buena justificación = mejor dato de entrenamiento.
+Los issues de múltiples aspectos de la misma oferta se deduplicany y mergean justificaciones.
+
+---
+
 ## ⛔ PROHIBIDO IMPROVISAR - FLUJO OBLIGATORIO
 
 **Claude: ANTES de ejecutar CUALQUIER comando, verificar este checklist:**

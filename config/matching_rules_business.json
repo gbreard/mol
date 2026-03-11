@@ -1,8 +1,8 @@
 {
-  "version": "5.3",
+  "version": "5.8",
   "descripcion": "Reglas de negocio para matching ESCO. 260 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-02-27",
+  "fecha_actualizacion": "2026-03-11",
   "_cambios_v53": "Fix R139 repositor 9333→9334, R137 excluir controlador, new R265 controlador logístico→4321. Issues Diego.",
   "_cambios_v51": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344, R137 excluye maquinista.",
   "_cambios_v43": "R181-R182: Personal mantenimiento -> 7233, Tecnico electromedicina -> 3211",
@@ -4969,7 +4969,13 @@
           "agente inmobiliario",
           "agente inmobiliaria",
           "corredor inmobiliario",
-          "corredora inmobiliaria"
+          "corredora inmobiliaria",
+          "asesor bienes raices",
+          "asesor bienes raíces",
+          "asesora bienes raices",
+          "asesora bienes raíces",
+          "asesor de bienes raices",
+          "asesor de bienes raíces"
         ]
       },
       "accion": {
@@ -4978,7 +4984,7 @@
       },
       "activa": true,
       "prioridad": 1,
-      "nota": "Sprint 5 V31 - IDs 1118089222, 2171269",
+      "nota": "Sprint 5 V31 - IDs 1118089222, 2171269 | v5.5: Added bienes raices variants (Issues Cyn #1118010542, #2166218)",
       "_fecha": "2026-02-09"
     },
     "R221_analista_calidad_general": {
@@ -5933,6 +5939,380 @@
       "_caso": "ID 1118113712 - Controlador Logistico Zona Pilar. Issue 0dde98f9.",
       "_fecha": "2026-02-27",
       "nota": "v54: Fix ESCO label (no existía en BD). Issue 0dde98f9."
+    },
+    "R266_despachador_emergencias": {
+      "nombre": "Despachador de emergencias médicas",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "despachador",
+          "despachadora",
+          "dispatcher"
+        ],
+        "sector_empresa_es_alguno": [
+          "Salud",
+          "Emergencias",
+          "Medicina"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3412",
+        "esco_label": "operador de línea telefónica de ayuda de emergencia/operadora de línea telefónica de ayuda de emergencia"
+      },
+      "activa": true,
+      "_caso": "Issue Cyn #1118047224 - Despachador (Neuquén). Despacho ambulancias.",
+      "_fecha": "2026-03-11"
+    },
+    "R267_auxiliar_legal": {
+      "nombre": "Auxiliar legal / Estudiante de abogacía",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "estudiante de abogacia",
+          "estudiante de abogacía",
+          "auxiliar legal",
+          "auxiliar juridico",
+          "auxiliar jurídico",
+          "auxiliar juridica",
+          "auxiliar jurídica",
+          "pasante legal",
+          "pasante abogacia",
+          "pasante abogacía"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3411",
+        "esco_label": "auxiliar judicial"
+      },
+      "activa": true,
+      "_caso": "Issue Cyn #1118059308 - Estudiante de Abogacía. No es abogado sino auxiliar.",
+      "_fecha": "2026-03-11"
+    },
+    "R268_setter_comercial": {
+      "nombre": "Setter comercial / Auxiliar comercial seguros",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "setter",
+          "auxiliar comercial"
+        ],
+        "titulo_no_contiene_alguno": [
+          "gerente",
+          "director",
+          "jefe",
+          "senior",
+          "sr."
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3322",
+        "esco_label": "representante comercial"
+      },
+      "activa": true,
+      "_caso": "Issue Cyn #1118154835 - Auxiliar Comercial Setter de Seguros.",
+      "_fecha": "2026-03-11",
+      "nota": "Setter = rol de contacto inicial con leads, NO es director de relaciones"
+    },
+    "R269_team_leader_reclutamiento": {
+      "nombre": "Team Leader de Reclutamiento / Selección",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_todos": [
+          "reclutamiento"
+        ],
+        "titulo_contiene_alguno": [
+          "team leader",
+          "team lead",
+          "líder",
+          "lider",
+          "responsable",
+          "jefe",
+          "coordinador",
+          "coordinadora"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2423",
+        "esco_label": "responsable de recursos humanos"
+      },
+      "activa": true,
+      "_caso": "Issue Cyn #1118124320 - Team Leader de Reclutamiento.",
+      "_fecha": "2026-03-11",
+      "nota": "Team leader reclutamiento = responsable RRHH, NO inteligencia competitiva"
+    },
+    "R270_tecnico_incidencias": {
+      "nombre": "Técnico de incidencias / soporte plataformas web",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "tecnico de incidencias",
+          "técnico de incidencias",
+          "tecnica de incidencias",
+          "técnica de incidencias",
+          "tecnico incidencias",
+          "técnico incidencias"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3512",
+        "esco_label": "agente del servicio de asistencia de TIC"
+      },
+      "activa": true,
+      "_caso": "Issue Cyn #1118065220 - Técnico de Incidencias maquetación web.",
+      "_fecha": "2026-03-11",
+      "nota": "Soporte/incidencias web/e-learning = helpdesk TIC, NO profesor"
+    },
+    "R271_desarrollador_python": {
+      "nombre": "Desarrollador Python",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "desarrollador python",
+          "desarrolladora python",
+          "developer python",
+          "python developer",
+          "programador python",
+          "programadora python"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2512",
+        "esco_label": "desarrollador de software/desarrolladora de software"
+      },
+      "activa": true,
+      "_caso": "Issue Cyn #1117951568 - Desarrollador Python SR.",
+      "_fecha": "2026-03-11",
+      "nota": "Dev Python = desarrollador de software, NO ingeniero cloud ni IoT"
+    },
+    "R272_analista_operaciones_datacenter": {
+      "nombre": "Analista de operaciones Data Center / Infraestructura",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "data center",
+          "datacenter",
+          "centro de datos"
+        ],
+        "titulo_contiene_alguno_2": [
+          "operaciones",
+          "analista",
+          "infraestructura"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2522",
+        "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC"
+      },
+      "activa": true,
+      "_caso": "Issue Cyn #1117978310 - Analista Corporativo operaciones Data Center.",
+      "_fecha": "2026-03-11",
+      "nota": "Operaciones data center = sysadmin, NO óptico ni call center"
+    },
+    "R273_advisor_soporte_app": {
+      "nombre": "Advisor / Soporte funcional de app",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "advisor"
+        ],
+        "area_funcional_es_alguno": [
+          "RRHH",
+          "Operaciones",
+          "Soporte"
+        ],
+        "titulo_no_contiene_alguno": [
+          "financial",
+          "financiero",
+          "legal",
+          "senior",
+          "sr."
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3512",
+        "esco_label": "agente del servicio de asistencia de TIC"
+      },
+      "activa": true,
+      "_caso": "Issue Gerardo #1117968852 - Advisor soporte app transporte.",
+      "_fecha": "2026-03-11",
+      "nota": "Advisor genérico con tareas de soporte app/onboarding/incidencias = helpdesk TIC"
+    },
+    "R274_coordinador_operaciones_logistica": {
+      "nombre": "Coordinador de operaciones logísticas / almacén",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene": "coordinador",
+        "titulo_contiene_alguno_2": [
+          "operacion",
+          "almacen",
+          "almacén"
+        ],
+        "area_funcional_es_alguno": [
+          "Operaciones",
+          "Logistica",
+          "Logística"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3331",
+        "esco_label": "director de logística/directora de logística"
+      },
+      "activa": true,
+      "_caso": "Issue Diego #1118019336 - Coordinador de operaciones almacenamiento.",
+      "_fecha": "2026-03-11",
+      "nota": "Coordinador operativo de logística/almacén con equipo a cargo = director de logística ESCO 3331.2"
+    },
+    "R275_operario_deposito_almacen": {
+      "nombre": "Operario de depósito / almacén / central de pesada",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "operario de deposito",
+          "operario de depósito",
+          "operaria de deposito",
+          "operaria de depósito",
+          "operario deposito",
+          "operario depósito",
+          "operario de almacen",
+          "operario de almacén",
+          "operario almacen",
+          "operario almacén",
+          "central de pesada",
+          "operario logistica",
+          "operario logística"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9333",
+        "esco_label": "operario de logística de almacén/operaria de logística de almacén"
+      },
+      "activa": true,
+      "_caso": "Issue Diego #1118019322 - Operario central de pesada (depósito farmoquímico).",
+      "_fecha": "2026-03-11",
+      "nota": "En Argentina 'depósito' = 'almacén' (ESCO). Operario de depósito/almacén = peón de carga/almacenamiento ISCO 9333."
+    },
+    "R276_office_host_recepcionista": {
+      "nombre": "Office host / host de coworking / recepcionista de oficina",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "office host",
+          "host de coworking",
+          "host coworking",
+          "recepcionista de oficina",
+          "recepcionista oficina",
+          "recepcionista administrativa",
+          "recepcionista de empresa"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4226",
+        "esco_label": "recepcionista"
+      },
+      "activa": true,
+      "_caso": "Issue Diego #1117955657 - Office host red coworking.",
+      "_fecha": "2026-03-11",
+      "nota": "Office host es anglicismo argentino para recepcionista de oficina/coworking. Punto de contacto, recibe visitantes, gestiona reservas."
+    },
+    "R277_medio_oficial_mantenimiento_industrial": {
+      "nombre": "Medio oficial / técnico de mantenimiento industrial electromecánico",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "medio oficial de mantenimiento",
+          "medio oficial mantenimiento",
+          "tecnico de mantenimiento industrial",
+          "técnico de mantenimiento industrial",
+          "tecnico mantenimiento electromecanico",
+          "técnico mantenimiento electromecánico",
+          "mantenimiento electromecanico",
+          "mantenimiento electromecánico"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7233",
+        "esco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial"
+      },
+      "activa": true,
+      "_caso": "Issue Diego #1118019326 - Medio oficial mantenimiento rubro plástico.",
+      "_fecha": "2026-03-11",
+      "nota": "Medio oficial de mantenimiento en Argentina = técnico de mantenimiento de maquinaria industrial. Incluye inyectoras, extrusoras, neumática, hidráulica."
+    },
+    "R278_analista_oficina_tecnica_construccion": {
+      "nombre": "Analista de oficina técnica / proyectos de construcción",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "oficina tecnica",
+          "oficina técnica",
+          "analista de oficina tecnica",
+          "analista de oficina técnica",
+          "analista oficina tecnica",
+          "analista oficina técnica"
+        ],
+        "sector_empresa_es_alguno": [
+          "Construccion",
+          "Construcción",
+          "Ingenieria",
+          "Ingeniería"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2142",
+        "esco_label": "ingeniero de construcción/ingeniera de construcción"
+      },
+      "activa": true,
+      "_caso": "Issue Diego #1118019485 - Analista oficina técnica constructora.",
+      "_fecha": "2026-03-11",
+      "nota": "Oficina técnica en construcción = ingeniero de construcción. Elabora planos, cómputos, presupuestos, normativas técnicas de obra."
+    },
+    "R279_chofer_recoleccion_residuos": {
+      "nombre": "Chófer / conductor de recolección de residuos",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "chofer recoleccion",
+          "chófer recolección",
+          "chofer recolección",
+          "chófer recoleccion",
+          "conductor recoleccion",
+          "conductor recolección",
+          "chofer recolector",
+          "chófer recolector",
+          "recoleccion de residuos",
+          "recolección de residuos"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8332",
+        "esco_label": "conductor de vehículo de recogida de basura/conductora de vehículo de recogida de basura"
+      },
+      "activa": true,
+      "_caso": "Issue Diego #1118019188 - Chófer recolección residuos Villa Lugano",
+      "_fecha": "2026-03-11",
+      "nota": "Chófer de camión recolector de RSU. Función central: conducir camión pesado, transportar residuos urbanos, operar compactador."
+    },
+    "R280_agente_documentacion": {
+      "nombre": "Agente de documentación / gestión documental",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "agente de documentacion",
+          "agente de documentación",
+          "agente documentacion",
+          "agente documentación",
+          "gestion documental",
+          "gestión documental"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4110",
+        "esco_label": "empleado de oficina/empleada de oficina"
+      },
+      "activa": true,
+      "_caso": "Issue Cyn #1117983846 - Agente documentacion KAVAK",
+      "_fecha": "2026-03-11",
+      "nota": "Puesto administrativo documental: armado legajos, tramites registrales, legalizaciones, seguimiento. No es IT."
     }
   },
   "reglas_filtro": {
@@ -6017,5 +6397,8 @@
   "_cambios_v52": "Sprint 5b: R223 Admin infraestructura->2522 sysadmin. V30 keywords expandidos (español).",
   "_changelog_v47": "Fix 18 reglas con exclusiones/prioridades para resolver 35 V27 divergencias. R65: prioridad -1 (sem gana para gerente bancario vs retail); R14: excluir nocturno, administrativa contable; R14d: excluir analista; R158: ISCO 1324→1321 (manufacturing general); R87: excluir facturación, ventas; R38: excluir supervisor, marketing; R58: excluir mostrador/heladería; R33: excluir manager/director/lead; R171: excluir administrativo; R175: excluir depósito/carga; R222: excluir offset/impresión; R144: excluir asesor/representante/comercial; R111: excluir telefónico/call center; R160: excluir internet/fibra/soporte; R177: excluir operador; R194: excluir analista; R101: excluir core bancario; R203: prioridad -1",
   "_cambios_v48": "Sprint 7 V31: R224-R241 (18 reglas) para 337 errores V31 residuales. Analista por area (RRHH/IT/Contab/Ventas/Mkt/Finanzas/Ops), supervisor cocina/ops, coordinador ops, soporte IT, comis pastelería, maestranza, mecánico, operario prod, técnico IT.",
-  "_cambios_v49": "R242-R245: Issues Diego Schleser — asistente impuestos, gerente local, coord turno, analista cobranzas"
+  "_cambios_v49": "R242-R245: Issues Diego Schleser — asistente impuestos, gerente local, coord turno, analista cobranzas",
+  "_cambios_v55": "Issues Cyn: R220 +bienes raices, R266 despachador emergencias, R267 auxiliar legal, R268 setter comercial, R269 team leader reclutamiento, R270 tecnico incidencias, R271 dev python. 6 nuevas + 1 update.",
+  "_cambios_v56": "Issue Cyn: R272 analista operaciones data center -> 2522 sysadmin",
+  "_cambios_v57": "Issue Gerardo: R273 advisor soporte app -> 3512"
 }

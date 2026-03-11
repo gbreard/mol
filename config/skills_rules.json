@@ -606,6 +606,41 @@
       "activa": true,
       "_caso": "ID 1118092879 Peón de Cocina",
       "_fecha": "2026-01-22"
+    },
+    "RS27_gmp_sop_procedimientos": {
+      "nombre": "Puestos con GMP / SOP / procedimientos operativos estándar",
+      "condicion": {
+        "descripcion_contiene_alguno": [
+          "GMP",
+          "BPF",
+          "BPE",
+          "buenas practicas de fabricacion",
+          "buenas prácticas de fabricación",
+          "buenas practicas de manufactura",
+          "buenas prácticas de manufactura",
+          "procedimientos operativos estandar",
+          "procedimientos operativos estándar",
+          "procedimientos normalizados",
+          "QSHE",
+          "SOP"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "respetar los procedimientos operativos estándar",
+            "skill_uri": "http://data.europa.eu/esco/skill/6d7e3b0c-3995-4953-816d-cf3c5e9ffe34"
+          },
+          {
+            "skill_esco": "controlar el cumplimiento de normas de calidad de fabricación",
+            "skill_uri": "http://data.europa.eu/esco/skill/3edfcb2b-2d0e-4673-87ce-f55c37eb5fca"
+          }
+        ]
+      },
+      "activa": true,
+      "_caso": "Issue Diego #1118019322 - Operario farmoquímico GMP/QSHE/BPE.",
+      "_fecha": "2026-03-11",
+      "nota": "Detecta ofertas con procedimientos operativos estándar (GMP/BPF/BPE/SOP). Común en farmoquímica, alimentos, laboratorios."
     }
   },
   "reglas_validacion_skills": {
@@ -644,8 +679,8 @@
   },
   "metadata": {
     "creado": "2026-01-21",
-    "ultima_modificacion": "2026-01-22",
-    "total_reglas_forzar": 25,
+    "ultima_modificacion": "2026-03-11",
+    "total_reglas_forzar": 27,
     "total_reglas_validacion": 2
   }
 }

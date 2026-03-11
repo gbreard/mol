@@ -152,6 +152,8 @@
 | Configuración Admin | [11_CONFIGURACION_ADMIN](./11_CONFIGURACION_ADMIN.md) | /admin/configuracion - Fases 1-3 |
 | **Insights Sistema** | [12_INSIGHTS_SISTEMA](./12_INSIGHTS_SISTEMA.md) | Performance + ubicación insights |
 | **Issues Usuario** | [ANALISIS_ISSUES_USUARIO](./ANALISIS_ISSUES_USUARIO.md) | Feedback, priorización features |
+| **Lab. Indicadores** | [13_LABORATORIO_INDICADORES](./13_LABORATORIO_INDICADORES.md) | Indicadores experimentales |
+| **Skills Emergentes** | [08_PROPUESTA_VALOR](./08_PROPUESTA_VALOR.md#v-17-skills-emergentes-escomol) | V-17: ESCO+MOL, skills no cubiertas |
 
 ### Por Urgencia
 

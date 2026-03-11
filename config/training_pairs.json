@@ -1,9 +1,9 @@
 {
   "version": "1.0",
   "descripcion": "Pares de entrenamiento para fine-tuning de clasificación ESCO.",
-  "fecha_generacion": "2026-02-26T18:39:14.703168Z",
+  "fecha_generacion": "2026-03-11T20:13:57.750628Z",
   "fuente": "Issues resueltos Supabase + matching_history BD local",
-  "total_pares": 583,
+  "total_pares": 602,
   "notas_fine_tuning": [
     "justificacion_humana: razonamiento experto (chain-of-thought)",
     "clasificacion_incorrecta: output rechazado (para DPO/RLHF)",
@@ -25078,6 +25078,823 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
+      }
+    },
+    {
+      "id_oferta": "1118061127",
+      "issue_id": "114df552-6a9e-419f-9811-cd1abef4830c",
+      "autor": "Cynthia",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #1118061127 - Analista de facturación y cuentas",
+      "resuelto_at": "2026-03-11T16:53:03.79141+00:00",
+      "input": {
+        "titulo_original": "Analista de Facturación y Cuentas Corrientes",
+        "titulo_limpio": "Analista de facturación y cuentas",
+        "empresa": "jl consultores",
+        "descripcion": "Estamos en búsqueda de un candidato con experiencia en la posición, para realizar diversas tareas administrativas.Las principales funciones son las siguientes:Gestión de cobranzas a clientes.Registración en sistema de ingresos por cobranzas.Proceso de facturación periódica a clientes.Colaboración en la elaboración del flujo de efectivo.Proyección por facturación periódica.Garantizar el cumplimiento de todas las normativas legales, reglamentos y políticas internas aplicables a la operación de la empresa, incluyendo aspectos laborales, de seguridad, higiene y medio ambiente.Facturación periódica.Ingresos por Cobranzas.Se requiere disponibilidad para trabajar de manera presencial, de Lunes a Viernes de 8 a 17 hs.Se ofrece estabilidad laboral y contratación directa por empresa.",
+        "tareas_explicitas": "Gestión de cobranzas a clientes; Registración en sistema de ingresos por cobranzas; Proceso de facturación periódica a clientes; Colaboración en la elaboración del flujo de efectivo; Proyección por facturación periódica; Garantizar el cumplimiento de todas las normativas legales, reglamentos y políticas internas aplicables a la operación de la empresa, incluyendo aspectos laborales, de seguridad, higiene y medio ambiente; Se requiere disponibilidad para trabajar de manera presencial, de Lunes a Viernes de 8 a 17 hs; Se ofrece estabilidad laboral y contratación directa por empresa.",
+        "area_funcional": "Contabilidad",
+        "nivel_seniority": "junior",
+        "sector_empresa": "Consultoria",
+        "modalidad": "presencial",
+        "provincia": "CABA"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "2411",
+        "isco_label": "analista de presupuestos",
+        "score": 0.2996694564819336,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "4311",
+        "isco_label": "empleado de contabilidad/empleada de contabilidad",
+        "esco_label": "empleado de contabilidad/empleada de contabilidad",
+        "esco_uri": "http://data.europa.eu/esco/occupation/bafbc672-0ad9-41af-9de8-db0c91a24f9b",
+        "score": 0.98,
+        "metodo": "regla_negocio_R228_analista_contabilidad",
+        "regla": "R228_analista_contabilidad",
+        "decision_metodo": "regla_por_score_bajo",
+        "isco_semantico": "5131",
+        "score_semantico": 0.38767922924341175
+      },
+      "justificacion_humana": "Oferta: Analista de facturación y cuentas\nISCO actual: 2411",
+      "correccion": {
+        "solucion_aplicada": "ISCO 2411->4311 (empleado contabilidad). R228 existente matcheó. Skills: eliminado 10 ruido. Issue original sin corrección específica.",
+        "config_modificada": "Skills corregidas manual"
+      }
+    },
+    {
+      "id_oferta": "1118047224",
+      "issue_id": "4208069e-d128-487b-9da5-4cbc6cdea536",
+      "autor": "Cynthia",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #1118047224 - Despachador",
+      "resuelto_at": "2026-03-11T16:53:03.79141+00:00",
+      "input": {
+        "titulo_original": "Despachador (Neuquén)",
+        "titulo_limpio": "Despachador",
+        "empresa": "Swiss Medical",
+        "descripcion": "En Swiss Medical trabajamos cada día para que las personas vivan más y mejor. Más de 4 millones de personas confían en nosotros y, detrás de cada historia, hay un equipo de más de 15.000 colaboradores que elige todos los días cuidar, acompañar y transformar vidas.Para seguir impactando positivamente en la vida de más personas, buscamos sumar un Despachador para la Unidad de Negocios Ecco Neuquén.🔍 Responsabilidades-Identificar y organizar las solicitudes de servicios.-Corroborar la configuración y la disponibilidad de los efectores.-Contactar al efector que esté disponible y en mayor aptitud para brindar la prestación.-Respetar los procesos definidos para cada tipo de solicitud utilizando la plataforma informática.-Cumplir las Normativas internas del sector y con los procedimientos de la Norma ISO 9001-2015.-Utilizar criterios de costo/beneficio en la asignación del efector.-Informar a sus inmediatos superiores cualquier novedad del servicio que considere relevante.-Realizar el pase de guardia a su relevo, transfiriendo las novedades operativas ocurridas en su turno.-Participar activamente en el proceso de Certificación de Normas ISO.🎯 Requisitos Secundario completo. Muy buen manejo de PC (Word, Excel). Experiencia en puestos similares como radio operador, despachador de emergencias.💫 Beneficios🤝 Posibilidades de desarrollo en una compañía líder, que se encuentra en constante crecimiento y expansión.📚 Descuentos en Universidades.💌 Valores preferenciales en productos propios (Seguros de automotor, caución, hogar, etc )🏋️‍♀️🏋️‍♂️ Acceso a WELLHUB Plataforma de bienestar: fitness, mindfulness, nutrición y mucho más para vos!🎁 Beneficios y descuentos en marcas de primera línea (productos de primera necesidad, electrodomésticos y tecnología)📍 Horario y lugar de trabajo: Diagrama sanidad 12x36, Horario de trabajo 8 a 20 hs Neuquén Capital.🚀 Sumate a una compañía que trabaja todos los días para que millones de personas vivan más y mejor",
+        "tareas_explicitas": "Identificar y organizar las solicitudes de servicios; Corroborar la configuración y la disponibilidad de los efectores; Contactar al efector que esté disponible y en mayor aptitud para brindar la prestación; Respetar los procesos definidos para cada tipo de solicitud utilizando la plataforma informática; Cumplir las Normativas internas del sector y con los procedimientos de la Norma ISO 9001-2015; Utilizar criterios de costo/beneficio en la asignación del efector; Informar a sus inmediatos superiores cualquier novedad del servicio que considere relevante; Realizar el pase de guardia a su relevo, transfiriendo las novedades operativas ocurridas en su turno; Participar activamente en el proceso de Certificación de Normas ISO",
+        "area_funcional": "Operaciones",
+        "nivel_seniority": "trainee",
+        "sector_empresa": "Salud",
+        "modalidad": "presencial",
+        "provincia": "Neuquén"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "2412",
+        "isco_label": "director de banca personalizada/directora de banca personalizada",
+        "score": 0.29849502920229226,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "3412",
+        "isco_label": "operador de línea telefónica de ayuda de emergencia/operadora de línea telefónica de ayuda de emergencia",
+        "esco_label": "operador de línea telefónica de ayuda de emergencia/operadora de línea telefónica de ayuda de emergencia",
+        "esco_uri": "http://data.europa.eu/esco/occupation/92df4ee3-bce3-45f6-a693-597df1b96f43",
+        "score": 0.98,
+        "metodo": "regla_negocio_R266_despachador_emergencias",
+        "regla": "R266_despachador_emergencias",
+        "decision_metodo": "regla_prioridad",
+        "isco_semantico": "2412",
+        "score_semantico": 0.5984950292022923
+      },
+      "justificacion_humana": "En el caso de emergencias médicas  El despachador trabaja en una central operativa y se encarga de:\n\nrecibir pedidos de asistencia\n\nverificar disponibilidad de ambulancias o prestadores\n\ndespachar (enviar) el recurso adecuado\n\nPor eso en tu aviso aparece:\n\nverificar disponibilidad de efectores\n\ncontactar al efector disponible\n\nasignar la prestación\n\nhacer pase de guardia\n\nTodo eso es trabajo de despacho operativo.\nISCO correcto: C3412\nESCO corregido: operador de línea telefónica de ayuda de emergencia/operadora de línea telefónica de ayuda de emergencia (C3412)\nOferta: Despachador\nISCO actual: 2412\n---\nOferta: Despachador\nISCO actual: 2412\n---\nCorregir nombre de la ocupacion: DESPACHADOR por operador de línea telefónica de ayuda de emergencia/operadora de línea telefónica de ayuda de emergencia\nOferta: Despachador\nISCO actual: 2412",
+      "correccion": {
+        "solucion_aplicada": "ISCO 2412->3412 (operador línea emergencia). Regla R266_despachador_emergencias. Skills limpiadas.",
+        "config_modificada": "config/matching_rules_business.json (R266)"
+      }
+    },
+    {
+      "id_oferta": "1118059308",
+      "issue_id": "b0344a9b-33b6-4a0f-a3d7-5e3a577ea6ef",
+      "autor": "Diego Javier Schleser",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #1118059308 - Estudiante de abogacía",
+      "resuelto_at": "2026-03-11T15:14:00+00:00",
+      "input": {
+        "titulo_original": "Estudiante de Abogacía",
+        "titulo_limpio": "Estudiante de abogacía",
+        "empresa": "Estudio Jurídico",
+        "descripcion": "Estudiante de AbogacíaEstudio especializado en Accidentes de Tránsito y ART (parte actora) se encuentra en la búsqueda de un Estudiantes de Abogacía para sumarse a nuestro equipo a mediados del mes de ENERO o principio de FEBRERO.Responsabilidades Procuración y control de presentaciones judiciales. Redacción de escritos e impulso de expedientes. Contacto con los clientes. Asistencia general al área legal.Requisitos Ser estudiante de la carrera de abogacía. Experiencia previa en tareas similares (deseable). Conocimiento de Lex Doctor, MEV y PJN (deseable).Condiciones de contratación Jornada completa: lunes a viernes (full time). Modalidad de trabajo: 4 días presenciales + 1 día home office. Buen ambiente laboral y posibilidades de aprendizaje.",
+        "tareas_explicitas": "Procuración y control de presentaciones judiciales; Redacción de escritos e impulso de expedientes; Contacto con los clientes; Asistencia general al área legal",
+        "area_funcional": "Legal",
+        "nivel_seniority": "trainee",
+        "sector_empresa": "Legal",
+        "modalidad": "remoto",
+        "provincia": "CABA"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "2611",
+        "isco_label": "abogado/abogada",
+        "score": 0.28637583255767823,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "3411",
+        "isco_label": "auxiliar judicial",
+        "esco_label": "auxiliar judicial",
+        "esco_uri": "http://data.europa.eu/esco/occupation/5e175ee2-6b07-4f1d-8f5e-962c36ab7bb6",
+        "score": 0.98,
+        "metodo": "regla_negocio_R267_auxiliar_legal",
+        "regla": "R267_auxiliar_legal",
+        "decision_metodo": "regla_prioridad",
+        "isco_semantico": "2433",
+        "score_semantico": 0.5583061298512877
+      },
+      "justificacion_humana": "Oferta: Estudiante de abogacía\nISCO actual: 2611\n---\nclae_grupo: 691\nclae_code: null\nOferta: Estudiante de abogacía\nISCO actual: 2611\n---\nclae_grupo: 691\nclae_code: null\nOferta: Estudiante de abogacía\nISCO actual: 2611\n---\nOferta: Estudiante de abogacía\nISCO actual: 2611\n---\nEstudiante de Abogacía” Este no es una ocupación, sino un requisito educativo.  La ocupación que corresponde es: AUXILIAR JURIDICO.\nISCO correcto: C3411\nESCO corregido: auxiliar judicial (C3411)\nOferta: Estudiante de abogacía\nISCO actual: 2611",
+      "correccion": {
+        "solucion_aplicada": "Ya resuelto previamente con issue de Cyn. ISCO 2611->3411, ESCO->asistente juridico. Regla R267 creada. CLAE corregido 712->691.",
+        "config_modificada": "config/matching_rules_business.json (R267)"
+      }
+    },
+    {
+      "id_oferta": "1117951568",
+      "issue_id": "0bc4c05f-c48b-42bb-9765-e6154303c957",
+      "autor": "Cynthia",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #1117951568 - Desarrollador python SR para proyectos bancarios",
+      "resuelto_at": "2026-03-11T16:53:03.79141+00:00",
+      "input": {
+        "titulo_original": "Desarrollador PYTHON Sr para Proyectos Bancarios",
+        "titulo_limpio": "Desarrollador python SR para proyectos bancarios",
+        "empresa": "Kaizen Recursos Humanos",
+        "descripcion": "En KaizenRH buscamos Desarrollador PYTHON Srpara trabajar dentro de Compañía líder en desarrollo de software del segmento bancario.RequisitosCon experiencia comprobable de cinco años en adelante en Desarrollo Back End con PYTHON. Es valorado contar con:Experiencia en proyectos con modelos de lenguaje, LangGraph, LangChain o similares. Tareas Diseñar, desarrollar y desplegar aplicaciones robustas basadas en Python. Optimizar flujos de trabajo aplicando buenas prácticas de arquitectura y eficiencia. Implementar estrategias de prompting, ajuste fino y evaluación de LLMs. Integrar APIs de terceros (OpenAI, Hugging Face, etc.) y servicios cloud. Contenerizar aplicaciones Colaborar con equipos técnicos para escalar soluciones, optimizar modelos y mejorar la eficiencia. Acompañar a perfiles junior y promover buenas prácticas de calidad y CI/CD. Trabajar con LangGraph/LangChain en flujos de inteligencia conversacional. BeneficiosRelación de dependencia y continuidad laboralObra social Prepaga para grupo familiarActualizaciones salariales cada tres mesesEsquema de trabajo Hibrido // DOS días de trabajo remotoPrograma de Capacitación // Plataforma propiaDescuentos en instituciones educativasDia de Cumpleaños libreCuatro días libres al año por trámitesClases de InglésDescuentos en Red de Gimnasio de primera líneaNotebookBonificación por gastos de internetZona y horario Laboral: Microcentro, CABA, de Lunes a Viernes de 09 a 18 hs. TRES días de trabajo presencial.",
+        "tareas_explicitas": "Diseñar, desarrollar y desplegar aplicaciones robustas basadas en Python; Optimizar flujos de trabajo aplicando buenas prácticas de arquitectura y eficiencia; Implementar estrategias de prompting, ajuste fino y evaluación de LLMs; Integrar APIs de terceros (OpenAI, Hugging Face, etc.) y servicios cloud; Colaborar con equipos técnicos para escalar soluciones, optimizar modelos y mejorar la eficiencia; Acompañar a perfiles junior y promover buenas prácticas de calidad y CI/CD; Trabajar con LangGraph/LangChain en flujos de inteligencia conversacional",
+        "area_funcional": "IT",
+        "nivel_seniority": "senior",
+        "sector_empresa": "Tecnologia",
+        "modalidad": "remoto",
+        "provincia": "CABA"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "2512",
+        "isco_label": "ingeniero de sistemas en la nube/ingeniera de sistemas en la nube",
+        "score": 0.6,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "2512",
+        "isco_label": "desarrollador de software/desarrolladora de software",
+        "esco_label": "desarrollador de software/desarrolladora de software",
+        "esco_uri": "http://data.europa.eu/esco/occupation/f2b15a0e-e65a-438a-affb-29b9d50b77d1",
+        "score": 0.98,
+        "metodo": "regla_negocio_R271_desarrollador_python",
+        "regla": "R271_desarrollador_python",
+        "decision_metodo": "dual_coinciden",
+        "isco_semantico": "2512",
+        "score_semantico": 0.6
+      },
+      "justificacion_humana": "La geolocalización  CABA no resulta necesaria para la codificación de la ocupación.\nclae_grupo: null\nclae_code: null\nOferta: Desarrollador python SR para proyectos bancarios\nISCO actual: 2512\n---\nOferta: Desarrollador python SR para proyectos bancarios\nISCO actual: 2512\n---\nTítulo del aviso:\nDesarrollador Python SR para proyectos bancarios\n\nOcupación real: Desarrollador de software\nISCO correcto: C2512\nESCO corregido: desarrollador de IdC/desarrolladora de IdC (C2512)\nOferta: Desarrollador python SR para proyectos bancarios\nISCO actual: 2512",
+      "correccion": {
+        "solucion_aplicada": "ISCO 2512 correcto, ESCO label corregido: ingeniero cloud->desarrollador de software. Regla R271_desarrollador_python. CLAE corregido a 620 (programación). Skills limpiadas.",
+        "config_modificada": "config/matching_rules_business.json (R271), ofertas_nlp (CLAE), skills corregidas manual"
+      }
+    },
+    {
+      "id_oferta": "1118154835",
+      "issue_id": "49f473c4-8289-465e-942a-859b6ed23928",
+      "autor": "Cynthia",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #1118154835 - Auxiliar comercial \"setter\" de seguros",
+      "resuelto_at": "2026-03-11T16:53:03.79141+00:00",
+      "input": {
+        "titulo_original": "Auxiliar Comercial \"Setter\" de Seguros - Flores",
+        "titulo_limpio": "Auxiliar comercial \"setter\" de seguros",
+        "empresa": "Silvia Baena Consultora",
+        "descripcion": "Broker de Seguros busca:AUXILIAR COMERCIAL \"SETTER\"Nos orientamos a perfiles comerciales, preferentemente con experiencia en seguros, para contactar futuros clientes, agendar reuniones comerciales y realizar seguimiento de los leads.¿Qué buscamos? Experiencia en Ventas o posiciones comerciales -deseable en rubro de seguros. Perfil Comercial. Residir en CABA o cercanías de Flores.🕓 Horario Lunes a Viernes de 9 a 18hs📌 Zona Flores",
+        "tareas_explicitas": "contactar futuros clientes; agendar reuniones comerciales; realizar seguimiento de los leads",
+        "area_funcional": "Ventas",
+        "nivel_seniority": "trainee",
+        "sector_empresa": "Finanzas",
+        "modalidad": "presencial",
+        "provincia": "CABA"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "2431",
+        "isco_label": "director de relaciones con los clientes/directora de relaciones con los clientes",
+        "score": 0.6,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "3322",
+        "isco_label": "representante comercial",
+        "esco_label": "representante comercial",
+        "esco_uri": "http://data.europa.eu/esco/occupation/14031d4a-6e99-442f-b4fe-18262b6432b2",
+        "score": 0.98,
+        "metodo": "regla_negocio_R268_setter_comercial",
+        "regla": "R268_setter_comercial",
+        "decision_metodo": "regla_prioridad",
+        "isco_semantico": "2431",
+        "score_semantico": 0.6
+      },
+      "justificacion_humana": "La clasificacion, no corresponde a Director sino a Representante comercial, Description los representantes comerciales representan a una empresa en la venta y suministro de información sobre los bienes y servicios a empresas y organizaciones.\nISCO correcto: C3322\nESCO corregido: representante comercial (C3322)\nOferta: Auxiliar comercial \"setter\" de seguros\nISCO actual: 2431\n---\nOferta: Auxiliar comercial \"setter\" de seguros\nISCO actual: 2431",
+      "correccion": {
+        "solucion_aplicada": "ISCO 2431->3322 (representante comercial). Regla R268_setter_comercial.",
+        "config_modificada": "config/matching_rules_business.json (R268)"
+      }
+    },
+    {
+      "id_oferta": "1118124320",
+      "issue_id": "d00e2dff-0399-488d-9c4d-2fed517735ad",
+      "autor": "Cynthia",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #1118124320 - Team leader de reclutamiento",
+      "resuelto_at": "2026-03-11T16:53:03.79141+00:00",
+      "input": {
+        "titulo_original": "Team Leader de Reclutamiento",
+        "titulo_limpio": "Team leader de reclutamiento",
+        "empresa": "Bumeran Selecta",
+        "descripcion": "Verisure es una empresa multinacional líder en seguridad, especialista en alarmas monitoreadas para hogares y comercios, presente en Argentina desde hace unos años, que protege a clientes con tecnología innovadora y un equipo de personas dedicadas, ofreciendo soluciones integrales de protección con cámaras, detectores y respuesta inmediata a emergencias, controlando toda la cadena de valor.Buscamos Team Leader de Reclutamiento: ¡Liderá el Talento en expansión!.Ubicación: Palermo, CABA (Humboldt y Pacífico - Cercano a Subte D)Modalidad: Híbrida (3 días presencial / 2 días Home Office).Cultura: Colaborativa, flexible y orientada a resultados.¿Te apasiona el reclutamiento estratégico y la optimización de procesos a través de la tecnología? Buscamos a un/a líder dinámico/a para ocupar una posición clave. Tu misión será liderar nuestro equipo de Selección, transformando los procesos de atracción de talento en una ventaja competitiva mediante el uso inteligente de datos y sistemas (ATS).El Propósito de tu Rol:Liderar al equipo de reclutamiento asegurando procesos eficientes, medibles y alineados a las necesidades del negocio. Tendrás un fuerte foco en la optimización y seguimiento de sistemas de gestión (ATS) y portales de empleo, garantizando calidad, agilidad y una experiencia excepcional para cada candidato/a.Tus Principales Responsabilidades:Liderazgo y Desarrollo: Coordinar, motivar y potenciar al equipo de reclutadores a tu cargo.Gestión End-to-End: Supervisar el ciclo completo de selección, desde el relevamiento del perfil con los líderes de negocio hasta el cierre de la vacante.Estrategia Digital: Administrar y optimizar el ATS y sistemas de tracking para asegurar la trazabilidad y calidad de la información.Análisis de Datos (KPIs): Reportar y analizar métricas clave (Time to fill, Time to hire, efectividad de fuentes, conversiones y costos).Mejora Continua: Proponer e implementar automatizaciones en el flujo de trabajo y participar en la mejora de procesos dentro de Workday.Socio Estratégico: Trabajar junto a los HRBPs y líderes de área para anticipar necesidades de contratación en un entorno de crecimiento. Requisitos: ¿Qué buscamos en ti?Formación: Lic. en Recursos Humanos, Psicología, Administración o carreras afines.Experiencia: Entre 3 y 5 años en reclutamiento, con al menos 1 o 2 años liderando equipos de selección (preferentemente en entornos de Retail o Consumo Masivo).Experto en Herramientas: Experiencia comprobable en el uso de ATS y gestión de portales de empleo.Deseable: Conocimiento y experiencia en Workday (módulo Recruiting), incluyendo reportes y análisis de datos.Mindset Digital: Dominio de Excel y deseable manejo de Power BI para la interpretación de métricas.Idioma Inglés: Oral nivel intermedio.Tus Competencias Clave:Liderazgo inspirador y capacidad para desarrollar personas.Orientación a resultados y pasión por la mejora de procesos.Excelentes habilidades de comunicación y organización.Capacidad de priorización en entornos dinámicos y exigentes. Beneficios Lo que Ofrecemos:Esquema de trabajo híbrido: 3 días en nuestras oficinas de Palermo y 2 días de Home Office de lunes a viernes de 9 a 18 hs.Desafío Profesional: Ser parte de la creación de un nuevo equipo en una empresa en plena expansión.Ambiente de Trabajo: Una cultura que combina la exigencia de resultados con la colaboración y la flexibilidad.Propuesta de Beneficios de Primer Nivel:Queremos que te sientas motivado/a y cuidado/a, por eso ofrecemos un paquete integral diseñado para tu bienestar y crecimiento:Compensación y Economía:Esquema Salarial: 13 salarios anuales.Bono Anual: 10% de la compensación anual por cumplimiento de objetivos.Almuerzo: Monto diario de $mediante billetera virtual.Descuento Verisure: 70% OFF en productos y servicios de la compañía.Guardería: Beneficio de ley correspondiente.Bienestar y Salud:Prepaga: Cobertura médica de primer nivel con Swiss Medical (Plan SMG20).Actividad Física: Acceso a Wellhub (ex Gympass).En la oficina: Vending de café permanente y frutas frescas.Work-Life Balance (Equilibrio Vida-Trabajo):Esquema Híbrido: 3 días en la oficina y 2 días de Home Office.Viernes de Verano: Jornada reducida hasta las 14 o 15 hs (con compensación semanal optativa).Celebraciones: Medio día libre por tu cumpleaños.Si estás listo/a para dar el siguiente paso en tu carrera y liderar la estrategia de talento de una empresa que sueña en grande, ¡queremos conocerte!",
+        "tareas_explicitas": "Coordinar, motivar y potenciar al equipo de reclutadores a tu cargo; Supervisar el ciclo completo de selección, desde el relevamiento del perfil con los líderes de negocio hasta el cierre de la vacante; Administrar y optimizar el ATS y sistemas de tracking para asegurar la trazabilidad y calidad de la información; Reportar y analizar métricas clave (Time to fill, Time to hire, efectividad de fuentes, conversiones y costos); Proponer e implementar automatizaciones en el flujo de trabajo y participar en la mejora de procesos dentro de Workday; Trabajar junto a los HRBPs y líderes de área para anticipar necesidades de contratación en un entorno de crecimiento",
+        "area_funcional": "RRHH",
+        "nivel_seniority": "senior",
+        "sector_empresa": "RRHH",
+        "modalidad": "remoto",
+        "provincia": "CABA"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "2421",
+        "isco_label": "director de inteligencia competitiva/directora de inteligencia competitiva",
+        "score": 0.6,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "2423",
+        "isco_label": "responsable de recursos humanos",
+        "esco_label": "responsable de recursos humanos",
+        "esco_uri": "http://data.europa.eu/esco/occupation/d3e32e5e-7f24-48e3-b939-e4f800eb62fb",
+        "score": 0.98,
+        "metodo": "regla_negocio_R269_team_leader_reclutamiento",
+        "regla": "R269_team_leader_reclutamiento",
+        "decision_metodo": "regla_prioridad",
+        "isco_semantico": "2421",
+        "score_semantico": 0.6
+      },
+      "justificacion_humana": "Description: \nLos responsables de recursos humanos elaboran y aplican estrategias que ayudan a sus empleadores a seleccionar y a conservar a personal debidamente cualificado en ese sector empresarial. Contratan al personal, preparan anuncios de empleo, entrevistan y preseleccionan personas, negocian con agencias de empleo y establecen condiciones de trabajo. Los responsables de recursos humanos también administran las nóminas, revisan los salarios y asesoran sobre las retribuciones y el derecho de empleo. Organizan oportunidades de formación para mejorar el rendimiento de los empleados.\nEl término “Team leader” describe un rol jerárquico interno pero no es la denominación ocupacional normalizada.\nEn España: España: Responsable de selección / responsable de reclutamiento\nEn Argentina: Jefe de reclutamiento / responsable de selección\nISCO correcto: C2423\nESCO corregido: responsable de recursos humanos (C2423)\nOferta: Team leader de reclutamiento\nISCO actual: 2421\n---\nAgregrar las skills más importantes que faltan son:\n\ngestionar sistemas ATS\n\nanalizar métricas de reclutamiento (KPIs)\n\ngestionar portales de empleo\n\ncoordinar procesos de selección\nOferta: Team leader de reclutamiento\nISCO actual: 2421",
+      "correccion": {
+        "solucion_aplicada": "ISCO 2421->2423 (responsable RRHH). Regla R269_team_leader_reclutamiento. Skills: eliminado 9 ruido, agregado 6 RRHH (evaluar candidatos, gestionar contratación, etc).",
+        "config_modificada": "config/matching_rules_business.json (R269), skills corregidas manual"
+      }
+    },
+    {
+      "id_oferta": "1118065220",
+      "issue_id": "ecc72dba-4cab-4b09-9b1c-9f8385ad1314",
+      "autor": "Cynthia",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #1118065220 - Técnico de incidencias - maquetación web - conteni",
+      "resuelto_at": "2026-03-11T16:53:03.79141+00:00",
+      "input": {
+        "titulo_original": "Técnico de Incidencias - Maquetación Web - Contenido",
+        "titulo_limpio": "Técnico de incidencias - maquetación web - contenido",
+        "empresa": "Evirtual SA",
+        "descripcion": "Somos Evirtual, Compañía de servicio con más de 19 años en el mercado, brindamos atención al Grupo PROEDUCA, lideres de Formación Superior de carácter privado 100% online, en toda LATAM y Europa.Te invitamos a formar parte de nuestro departamento de contenido, Técnico de incidencias - Maquetación WebDescripción del puesto Gestionar las peticiones de los clientes internos, solucionando las incidencias registradas en el gestor o que llegan por correo electrónico. Resolución de pequeñas tareas relacionadas con la configuración de las aulas virtuales y los materiales incorporados en ellas: actividades, test, etc. Dar apoyo a cualquier modificación o actualización que haya que hacer, tanto en formato Word como HTML (cambios de guías docentes, de actividades, programaciones, etc.). Gestión de aulas virtuales.Requisitos previos Estudios terciarios en desarrollo web, backend, etc. habilidades tecnológicas y manejo de paquete Office 365. Experiencia: 1 año de experiencia. Conocimientos: Plataformas E-learning: Canvas, Sakai, Moodle… (se valorará positivamente el conocimiento de alguna de ellas); herramientas FTP; Office 365; conocimientos de HTML, CSS, Photoshop. Competencias: Técnicas; atención al detalle y orientación al servicio; flexibilidad y agilidad para adaptarse y resolver tareas variadas rápidamente; capacidad e interés por aprender herramientas tecnológicas nuevas; organización y capacidad para priorizar.¿QUE OFRECEMOS? Buen clima Laboral Beneficio extra prepaga Medife a partir de los 3 meses. Luego del periodo de capacitación aproximadamente 6 meses, comienza el sistema hibrido. Descuento de hasta un 80 % en las carreras que ofrece el Grupo Proeduca. A partir de los 6 meses.Lugar y horario laboral Lunes a viernes 8 a 17 horas (Horario flex, ½ hora más/menos) Salario Empleado de comercio cct 130/75 Administrativo A",
+        "tareas_explicitas": "Gestionar las peticiones de los clientes internos; Resolución de pequeñas tareas relacionadas con la configuración de las aulas virtuales y los materiales incorporados en ellas; Dar apoyo a cualquier modificación o actualización que haya que hacer, tanto en formato Word como HTML; Gestión de aulas virtuales",
+        "area_funcional": "IT",
+        "nivel_seniority": "junior",
+        "sector_empresa": "Educacion",
+        "modalidad": "hibrido",
+        "provincia": "CABA"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "2356",
+        "isco_label": "profesor de alfabetización digital/profesora de alfabetización digital",
+        "score": 0.6,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "3512",
+        "isco_label": "técnico de TIC/técnica de TIC",
+        "esco_label": "técnico de TIC/técnica de TIC",
+        "esco_uri": "http://data.europa.eu/esco/occupation/3e7bf729-4442-4b9f-ad5e-83111963795c",
+        "score": 0.98,
+        "metodo": "regla_negocio_R241_tecnico_it",
+        "regla": "R241_tecnico_it",
+        "decision_metodo": "regla_prioridad",
+        "isco_semantico": "2356",
+        "score_semantico": 0.6
+      },
+      "justificacion_humana": "Título del aviso:\nTécnico de incidencias - maquetación web - contenido pero la ocupación real es  Técnico de soporte informático / soporte de plataformas digitales. Porque las tareas son: \n\nresolver incidencias\n\ngestionar aulas virtuales\n\nmodificar contenidos HTML\n\ndar soporte a usuarios internos\n\nadministrar plataformas e-learning\n\nNo desarrolla software completo, sino soporte técnico de plataformas web.\nDescripción:\nLos agentes del servicio de asistencia de TIC proporcionan asistencia técnica a los usuarios informáticos, responden a preguntas o resuelven problemas informáticos para los clientes por teléfono o por vía electrónica. Prestan asistencia en relación con la utilización de hardware y software.\nError en el título de la ocupación\n El título mezcla funciones técnicas distintas.\nJustificación ESCO:\nSe corresponde con Técnico de asistencia al usuario de TIC (ISCO-08: 3512) dado que las tareas consisten en gestionar incidencias técnicas, brindar soporte a usuarios internos, administrar plataformas de aprendizaje virtual y realizar ajustes básicos en contenidos web y configuración de aulas virtuales.\nISCO correcto: C3512\nESCO corregido: agente del servicio de asistencia de TIC (C3512)\nOferta: Técnico de incidencias - maquetación web - contenido\nISCO actual: 2356\n---\nSkills que faltarian: Skills.\nHTML;  CSS; gestión de plataformas e-learning (Moodle, Canvas, Sakai); Office 365;  herramientas FTP\nOferta: Técnico de incidencias - maquetación web - contenido\nISCO actual: 2356",
+      "correccion": {
+        "solucion_aplicada": "ISCO 2356->3512 (técnico TIC). Regla R241 existente matcheó. Skills: eliminado 3 ruido, agregado 6 (CSS, Moodle, Canvas, Office, soporte TIC, CMS).",
+        "config_modificada": "Skills corregidas manual"
+      }
+    },
+    {
+      "id_oferta": "1118042070",
+      "issue_id": "edc9a602-296d-4368-955e-dee33c4ab9e3",
+      "autor": "Cynthia",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #1118042070 - Lobos",
+      "resuelto_at": "2026-03-11T16:53:03.79141+00:00",
+      "input": {
+        "titulo_original": "Lobos - Gerente Comercial para Importante Grupo de Concesionarios Oficiales Automotor",
+        "titulo_limpio": "Gerente Comercial",
+        "empresa": "Confidencial",
+        "descripcion": "Importante Grupo Líder en Concesionarios Automotores Primera Marca Internacional - Zona Lobos (PBA)SELECCIONARAGERENTE COMERCIALBuscamos un profesional responsable, muy dinámico y proactivo, de perfil comercial con manejo administrativo, con experiencia comprobable en el rubro y marcada disposición para liderar en equipo. Debe estar fuertemente orientado a resultados, ya que es determinante el logro de objetivos.Requisitos:* Edad entre 35 y 45 años.* Experiencia no inferior a 2 años en el rubro y 1 año en la posición.* Estudios Terciarios Afines (Marketing, Comercialización, etc.)* Amplia Disponibilidad Horaria (EXCLUYENTE)* Gran ductilidad en las relaciones interpersonales* Radicarse permanentemente en localidad de Lobos (PBA) o localidades adyacentes (EXCLUYENTE)Valoramos cuente con movilidad propiaSe ofrece:- Buen ambiente y condiciones de trabajo, dentro de una Marca y un grupo empresario de prestigio.- Remuneración acorde a las responsabilidades.- Oportunidades de desarrollo interno de carrera- Continuidad y estabilidad laboral.Interesados enviar currículum vitae sin omitir foto, referencias ni remuneración pretendida",
+        "tareas_explicitas": "Liderar equipo comercial en concesionaria automotor; Gestionar operaciones comerciales con orientación a resultados; Manejo administrativo comercial; Logro de objetivos de venta",
+        "area_funcional": "Ventas",
+        "nivel_seniority": "semisenior",
+        "sector_empresa": "Automotriz",
+        "modalidad": "presencial",
+        "provincia": "Buenos Aires"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "3214",
+        "isco_label": "ortoprotésicos",
+        "score": 0.0,
+        "metodo": "semantic_fallback_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "1221",
+        "isco_label": "director de promoción/directora de promoción",
+        "esco_label": "director de promoción/directora de promoción",
+        "esco_uri": "http://data.europa.eu/esco/occupation/d954fd71-0e2f-4cf9-85f0-c040fa6cbda9",
+        "score": 0.98,
+        "metodo": "regla_negocio_R24_gerente_ventas",
+        "regla": "R24_gerente_ventas",
+        "decision_metodo": "dual_coinciden",
+        "isco_semantico": "1221",
+        "score_semantico": 0.9
+      },
+      "justificacion_humana": "El título del aviso no indica la ocupación, sino únicamente una localidad. El título correcto debería indicar la ocupación: En este caso seria Gerente Comercial.\nNo especifica las tareas, solamente son  descripciones de beneficios o instrucciones del aviso, Faltan las Tareas.\nOferta: Lobos\nISCO actual: 3214\n---\nEn la descripción del aviso\n\nEl texto dice:\n\n“perfil comercial con manejo administrativo”\n\n“marcada disposición para liderar en equipo”\n\n“fuertemente orientado a resultados”\n\n“determinante el logro de objetivos”\n\nEso describe funciones del puesto, pero no enumera tareas concretas.\nOferta: Lobos\nISCO actual: 3214\n---\nSegún la descripción del puesto, deberían aparecer las siguientes skills: liderazgo de equipos; orientación a resultados; gestión comercial: habilidades interpersonales; manejo administrativo comercial; Estas habilidades se desprenden de frases como:\n“liderar en equipo”\n“perfil comercial”\n“manejo administrativo”\n“orientado a resultados”\nOferta: Lobos\nISCO actual: 3214\n---\nError en la clasificación: Correcta ESCO: Los directores de ventas diseñan estrategias de venta y de fijación de objetivos para empresas. Dirigen equipos de venta, asignan recursos de ventas en función de los planes acordados, priorizan y hacen un seguimiento de las pistas críticas sobre potenciales interesados, desarrollan presentaciones de ventas y las adaptan progresivamente, además de mantener una plataforma de ventas para llevar un registro de todas las ventas y pistas de potenciales interesados.\nDenominación por país: \nArgentina: Gerente comercial - Gerente de ventas\nEspaña: Director comercial - Director de ventas\nISCO correcto: C1221\nESCO corregido: director de ventas/directora de ventas (C1221)\nOferta: Lobos\nISCO actual: 3214",
+      "correccion": {
+        "solucion_aplicada": "ISCO 3214->1221 (director ventas). NLP corregido: titulo_limpio Lobos->Gerente Comercial, tareas reconstruidas. Regla R24 existente matcheó. Skills limpiadas.",
+        "config_modificada": "ofertas_nlp (titulo, tareas), skills corregidas manual"
+      }
+    },
+    {
+      "id_oferta": "1118010542",
+      "issue_id": "7a96a760-9e93-49e8-a705-761335ccf027",
+      "autor": "Cynthia",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #1118010542 - Asesor bienes raices",
+      "resuelto_at": "2026-03-11T16:53:03.79141+00:00",
+      "input": {
+        "titulo_original": "Asesor Bienes Raices",
+        "titulo_limpio": "Asesor bienes raices",
+        "empresa": "Seffino Talento Humano",
+        "descripcion": "Raes Inversiones es una empresa claramente comprometida con el real estate donde las singularidades de su equipo de asesores son la sensatez, confiabilidad, originalidad y solidez a la hora de concretar su inversión.Nuestro objetivo es ofrecerle excelencia en servicios inmobiliarios, bajo este espíritu asumimos desde el inicio un fuerte compromiso con los intereses de nuestros clientes.Apostamos al desarrollo de emprendimientos con visión empresaria y sentido profesional evaluando minuciosamente cada uno de los proyectos, para así desarrollar el plan de negocios que mejor se adapte a las condiciones del mercado actual.Nuestro mayor capital son la tranquilidad y la seguridad del suyo. Sos emprendedor? ¿Te apasiona el sector inmobiliario y quieres marcar la diferencia?Estamos en búsqueda de desarrolladores de negocios, comprometidos y motivados que compartan nuestra visión de generar valor en el mercado inmobiliario.¿Por qué trabajar con nosotros?Contamos con un equipo de trabajo altamente capacitado que se distingue por su sensatez, eficiencia y la capacidad de inspirar confianza. Creemos en el poder del trabajo en equipo y en la importancia de asesorar a nuestros clientes de forma profesional y cuidadosa. Tu rol:Asesorar a nuestros clientes en operaciones inmobiliarias, asegurando que reciban el mejor acompañamiento posible.Evaluar minuciosamente cada proyecto, contribuyendo al desarrollo de emprendimientos con una perspectiva empresarial sólida.Desarrollar planes de negocio que se adapten a las condiciones del mercado actual, ayudando a nuestros clientes a alcanzar sus metas Requisitos: ¿Qué buscamos en ti?Pasión por el sector inmobiliario y un deseo de crecer profesionalmente.Habilidades de comunicación efectivas y capacidad para construir relaciones de confianza.Proactividad y un enfoque orientado a resultados. Beneficios Te ofrecemos!+Un modelo de trabajo basado en comisiones, lo que te permitirá tener un alto potencial de ingresos (no brindamos sueldo fijo, sólo comisiones en USD).+Comisiones pagadas en dólares, brindándote una excelente oportunidad económica, con mínima inversión.+El respaldo de una empresa consolidada, con una trayectoria destacada en el mercado inmobiliario.+Flexibilidad y autonomía en la gestión de tus clientes y proyectos.Si estás listo para dar el siguiente paso en tu carrera y ser parte de un equipo que se esfuerza por alcanzar la excelencia, ¡esperamos recibir tu postulación!",
+        "tareas_explicitas": "Asesorar a nuestros clientes en operaciones inmobiliarias; Evaluar minuciosamente cada proyecto; Contribuir al desarrollo de emprendimientos con una perspectiva empresarial sólida; Desarrollar planes de negocio que se adapten a las condiciones del mercado actual",
+        "area_funcional": "RRHH",
+        "nivel_seniority": "trainee",
+        "sector_empresa": "Inmobiliaria",
+        "modalidad": "presencial",
+        "provincia": "Santa Fe"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "3312",
+        "isco_label": "asesor crediticio/asesora crediticia",
+        "score": 0.2510256052017212,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "3334",
+        "isco_label": "agente inmobiliario/agente inmobiliaria",
+        "esco_label": "agente inmobiliario/agente inmobiliaria",
+        "esco_uri": "http://data.europa.eu/esco/occupation/8ec8df02-e9dd-43b7-b416-5846ae0414ab",
+        "score": 0.98,
+        "metodo": "regla_negocio_R220_asesor_inmobiliario",
+        "regla": "R220_asesor_inmobiliario",
+        "decision_metodo": "regla_por_score_bajo",
+        "isco_semantico": "2514",
+        "score_semantico": 0.4432483087826164
+      },
+      "justificacion_humana": "Skills tecnicas (NLP)\nSkills INCORRECTAS que no corresponden al aviso corresponden más a arquitectura, diseño o tecnología, no a asesoría inmobiliaria.\nasesorar sobre materiales de construcción\naconsejar sobre compra de mobiliario\naconsejar sobre diseño de interiores\nevaluar cada etapa del proceso creativo\nadaptar diseños existentes\nadaptarse a cambios en desarrollo tecnológico\nproponer soluciones tecnológicas.\n\nSkills CORRECTAS y faltantes: negociación inmobiliaria\ncaptación de clientes\ngestión de operaciones inmobiliarias\nanálisis de mercado inmobiliario\nnegociación inmobiliaria.\nOferta: Asesor bienes raices\nISCO actual: 3312\n---\nEvaluación de la ocupación del sistema\n\nOcupación asignada por el sistema: 3312 – Asesor crediticio y es  Incorrecto. El aviso no trata sobre créditos o préstamos, sino sobre operaciones inmobiliarias e inversiones en bienes raíces. \nAGENTE INMOBILIARIO: Los agentes inmobiliarios gestionan en nombre de sus clientes el proceso de venta o arrendamiento de bienes inmuebles residenciales, comerciales o terrenos. Investigan el estado del inmueble y evalúan su valor para ofrecer el mejor precio a sus clientes. Negocian, elaboran un contrato de venta o un contrato de alquiler y se ponen en contacto con terceros para alcanzar los objetivos declarados durante las operaciones. Llevan a cabo investigaciones para determinar la legalidad de la venta de un bien antes de su venta y para asegurarse de que la transacción no está sujeta a ningún tipo de conflicto ni de restricción.\nISCO correcto: C3334\nESCO corregido: agente inmobiliario/agente inmobiliaria (C3334)\nOferta: Asesor bienes raices\nISCO actual: 3312",
+      "correccion": {
+        "solucion_aplicada": "ISCO 3312->3334 (agente inmobiliario). R220 actualizada con variantes bienes raíces. Skills: eliminado 8 ruido, agregado 6 inmobiliarias.",
+        "config_modificada": "config/matching_rules_business.json (R220 update), skills corregidas manual"
+      }
+    },
+    {
+      "id_oferta": "2166218",
+      "issue_id": "411c35c9-cf7b-44da-ad66-6541fd50331a",
+      "autor": "Cynthia",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #2166218 - Asesor bienes raices",
+      "resuelto_at": "2026-03-11T16:53:03.79141+00:00",
+      "input": {
+        "titulo_original": "Asesor Bienes Raices",
+        "titulo_limpio": "Asesor bienes raices",
+        "empresa": "SeffinoRh",
+        "descripcion": "Raes Inversiones es una empresa claramente comprometida con el real estate donde las singularidades de su equipo de asesores son la sensatez, confiabilidad, originalidad y solidez a la hora de concretar su inversión.Nuestro objetivo es ofrecerle excelencia en servicios inmobiliarios, bajo este espíritu asumimos desde el inicio un fuerte compromiso con los intereses de nuestros clientes.Apostamos al desarrollo de emprendimientos con visión empresaria y sentido profesional evaluando minuciosamente cada uno de los proyectos, para así desarrollar el plan de negocios que mejor se adapte a las condiciones del mercado actual.Nuestro mayor capital son la tranquilidad y la seguridad del suyo. Sos emprendedor? ¿Te apasiona el sector inmobiliario y quieres marcar la diferencia?Estamos en búsqueda de desarrolladores de negocios, comprometidos y motivados que compartan nuestra visión de generar valor en el mercado inmobiliario.¿Por qué trabajar con nosotros?Contamos con un equipo de trabajo altamente capacitado que se distingue por su sensatez, eficiencia y la capacidad de inspirar confianza. Creemos en el poder del trabajo en equipo y en la importancia de asesorar a nuestros clientes de forma profesional y cuidadosa. Tu rol:Asesorar a nuestros clientes en operaciones inmobiliarias, asegurando que reciban el mejor acompañamiento posible.Evaluar minuciosamente cada proyecto, contribuyendo al desarrollo de emprendimientos con una perspectiva empresarial sólida.Desarrollar planes de negocio que se adapten a las condiciones del mercado actual, ayudando a nuestros clientes a alcanzar sus metas Requisitos: ¿Qué buscamos en ti?Pasión por el sector inmobiliario y un deseo de crecer profesionalmente.Habilidades de comunicación efectivas y capacidad para construir relaciones de confianza.Proactividad y un enfoque orientado a resultados. Beneficios Te ofrecemos!+Un modelo de trabajo basado en comisiones, lo que te permitirá tener un alto potencial de ingresos (no brindamos sueldo fijo, sólo comisiones en USD).+Comisiones pagadas en dólares, brindándote una excelente oportunidad económica, con mínima inversión.+El respaldo de una empresa consolidada, con una trayectoria destacada en el mercado inmobiliario.+Flexibilidad y autonomía en la gestión de tus clientes y proyectos.Si estás listo para dar el siguiente paso en tu carrera y ser parte de un equipo que se esfuerza por alcanzar la excelencia, ¡esperamos recibir tu postulación!",
+        "tareas_explicitas": "Asesorar a nuestros clientes en operaciones inmobiliarias; Evaluar minuciosamente cada proyecto; Contribuir al desarrollo de emprendimientos con una perspectiva empresarial sólida; Desarrollar planes de negocio que se adapten a las condiciones del mercado actual",
+        "area_funcional": "RRHH",
+        "nivel_seniority": "trainee",
+        "sector_empresa": "Inmobiliaria",
+        "modalidad": "presencial",
+        "provincia": "Santa Fe"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "3312",
+        "isco_label": "asesor crediticio/asesora crediticia",
+        "score": 0.2510256052017212,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "3334",
+        "isco_label": "agente inmobiliario/agente inmobiliaria",
+        "esco_label": "agente inmobiliario/agente inmobiliaria",
+        "esco_uri": "http://data.europa.eu/esco/occupation/8ec8df02-e9dd-43b7-b416-5846ae0414ab",
+        "score": 0.98,
+        "metodo": "regla_negocio_R220_asesor_inmobiliario",
+        "regla": "R220_asesor_inmobiliario",
+        "decision_metodo": "regla_por_score_bajo",
+        "isco_semantico": "2514",
+        "score_semantico": 0.4432483087826164
+      },
+      "justificacion_humana": "Skills que deberían aparecer y no están\n\nasesorar a clientes en operaciones inmobiliarias\n\ngestión de operaciones inmobiliarias\n\nanálisis de proyectos inmobiliarios\n\ndesarrollo de negocios inmobiliarios\n\nanálisis de mercado inmobiliario\n\nnegociación con clientes\nOferta: Asesor bienes raices\nISCO actual: 3312",
+      "correccion": {
+        "solucion_aplicada": "ISCO 3312->3334 (agente inmobiliario). R220 actualizada. Skills: eliminado 8 ruido, agregado 6 inmobiliarias.",
+        "config_modificada": "config/matching_rules_business.json (R220 update), skills corregidas manual"
+      }
+    },
+    {
+      "id_oferta": "1117978310",
+      "issue_id": "55f88e0a-1fd0-46a6-bd25-82358964c700",
+      "autor": "Cynthia",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #1117978310 - Analista corporativo de operaciones - data center",
+      "resuelto_at": "2026-03-11T16:53:03.79141+00:00",
+      "input": {
+        "titulo_original": "Analista Corporativo de operaciones - Data Center (CABA y San Justo)",
+        "titulo_limpio": "Analista Corporativo de Operaciones - Data Center (Puerto Madero)",
+        "empresa": "GI GROUP Argentina",
+        "descripcion": "Tu futuro, nuestra pasión.Somos una consultora de Recursos Humanos de origen italiano con más de 15 años en el país. Aportamos valor en la selección y tercerización responsable de recursos humanos.Trabajamos con empresas de primera línea, generalmente internacionales, buscando perfiles profesionales, técnicos y de alta gerencia. Proveemos servicios de seleccón, personal eventual y tercerización. Somos #SIMPLES / HUMANOS / EXPERTOS VÁLIDO PARA NUESTROS AVISOS EN CIUDAD DE BUENOS AIRES:Búsqueda laboral equitativa. El empleador solo podrá solicitarle la información estrictamente necesaria para el desempeño en el trabajo que se ofrece (Ley 6471). Para nuestro cliente, importante cementera con sedes en diferentes puntos del país, estamos en la búsqueda de un Analista Corporativo de operaciones - Data Center. Este rol tiene como finalidad administrar los servicios informáticos mediante tareas preventivas y/o correctivas, ofreciendo una visión de mejora continua de los procesos acompañando los cambios del negocio y asegurando el normal funcionamiento del DataCenter TIC. La contratación es tercerizada por consultora. Una vacante es para trabajar en las oficinas de Puerto Madero, la otra en San Justo.Responsabilidades: Establecer vínculos de confianza con los clientes internos con el fin de brindar soporte técnico especializado y relevar futuras necesidades corporativas. Atender las peticiones de los usuarios internos proporcionándoles soporte en la correcta utilización de servicios, brindar acceso rápido y relevar nuevos requerimientos de negocio. Analizar el rendimiento de la infraestructura con el objetivo de monitorizar el uso de la capacidad existente. Monitorizar los sucesos importantes que se produzcan en la operación critica para lograr prevenir los problemas, o en su defecto resolverlos. Abordar y resolver cualquier incidente que cause una interrupción en el servicio. Garantizar el cumplimiento de normas de seguridad industrial y protocolos de manipulación de amoníaco. Identificar y solucionar eventos críticos (incidencias) Contribuir a evitar ocurrencias repetitivas del mismo incidente. Resolver aquellos que se transformen en problemas. Ejecutar el plan de contingencia para asegurar la continuidad del servicio en un tiempo predeterminado con el menor impacto posible en los servicios de carácter crítico. Ejecutar la instalación, actualización y mantenimiento de equipos informáticos. Cumplir con los procedimientos de Normas de Calidad y SHT y MA. Participar en proyectos de Ciberseguridad realizando tareas de investigación y desarrollo en función de sus conocimientos y disponibilidad. Requisitos: Estudiantes avanzados o graduados en carreras afines a Ingeniero en Sistemas o programación (Excluyente). Conocimientos de software de base, networking, comunicaciones, virtualización, herramientas de monitoreo y ciberseguridad (Excluyente). 2 años en posiciones similares (Deseable). Aptitudes: Proactivo, con vocación de servicio, comunicación efectiva, trabajo en equipo e iniciativa. Beneficios Ubicación: Puerto Madero una vacante, la otra en San Justo.Jornada laboral: Lunes a Viernes de 9 hs a 18 hs. Modalidad 3x2 (3 presencial y 2 home office)",
+        "tareas_explicitas": "Establecer vínculos de confianza con los clientes internos; Atender las peticiones de los usuarios internos proporcionándoles soporte en la correcta utilización de servicios, brindar acceso rápido y relevar nuevos requerimientos de negocio; Analizar el rendimiento de la infraestructura con el objetivo de monitorizar el uso de la capacidad existente; Monitorizar los sucesos importantes que se produzcan en la operación critica para lograr prevenir los problemas, o en su defecto resolverlos; Abordar y resolver cualquier incidente que cause una interrupción en el servicio; Garantizar el cumplimiento de normas de seguridad industrial y protocolos de manipulación de amonía",
+        "area_funcional": "IT",
+        "nivel_seniority": "junior",
+        "sector_empresa": "Consultoria",
+        "modalidad": "remoto",
+        "provincia": "CABA"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "3341",
+        "isco_label": "analista de datos en centro de llamadas",
+        "score": 0.27851204872131347,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "2522",
+        "isco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC",
+        "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC",
+        "esco_uri": "http://data.europa.eu/esco/occupation/9e2e6e1e-363b-4e1b-a673-7bc0f7343300",
+        "score": 0.98,
+        "metodo": "regla_negocio_R272_analista_operaciones_datacenter",
+        "regla": "R272_analista_operaciones_datacenter",
+        "decision_metodo": "regla_por_score_bajo",
+        "isco_semantico": "3254",
+        "score_semantico": 0.504608675694285
+      },
+      "justificacion_humana": "Skills faltantes: monitorización de infraestructura IT\n\nadministración de data center\n\ninstalación de equipos informáticos\n\nmantenimiento de infraestructura IT\n\nadministración de sistemas\n\ngestión de continuidad del servicio\n\ngestión de ciberseguridad\nOferta: Analista corporativo de operaciones - data center\nISCO actual: 3341\n---\nEl sistema asignó: – Analista de datos en centro de llamadas Incorrecto. El aviso no corresponde a call center ni análisis de datos de clientes, sino a operación de infraestructura IT / data center.\nEl aviso busca una persona que administre y supervise la infraestructura informática del data center, brindando soporte técnico a usuarios internos, monitoreando el funcionamiento de los sistemas y resolviendo incidentes para asegurar que los servicios tecnológicos funcionen correctamente y sin interrupciones. es un rol de operación y administración de infraestructura IT / data center.\nISCO correcto: C2522\nESCO corregido: administrador de sistemas de TIC/administradora de sistemas de TIC (C2522)\nOferta: Analista corporativo de operaciones - data center\nISCO actual: 3341\n---\nNo corresponden al puesto ni al aviso:\n\nsupervisar a los pacientes durante la cirugía\n\nanalizar el consumo de energía\n\ngarantizar cumplimiento de normas de protección contra radiaciones\n\nprevenir robos\n\nEstas pertenecen a medicina, seguridad física o energía, no a operaciones de data center.\nOferta: Analista corporativo de operaciones - data center\nISCO actual: 3341",
+      "correccion": {
+        "solucion_aplicada": "ISCO 3254->2522 (administrador sistemas TIC). Regla R272_analista_operaciones_datacenter. Skills: eliminado 4 ruido (cirugía, energía, etc).",
+        "config_modificada": "config/matching_rules_business.json (R272), skills corregidas manual"
+      }
+    },
+    {
+      "id_oferta": "1118019336",
+      "issue_id": "295b7d68-88f8-4590-b464-fe48813c56d0",
+      "autor": "Diego Javier Schleser",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #1118019336 - Coordinador de operaciones",
+      "resuelto_at": "2026-03-11T15:13:00+00:00",
+      "input": {
+        "titulo_original": "Coordinador de operaciones (req199724)- Eventual - TORTUGUITAS",
+        "titulo_limpio": "Coordinador de operaciones",
+        "empresa": "Manpower",
+        "descripcion": "Buscamos un/a Coordinador de Operaciones de Almacenamiento para incorporarse de manera eventual (3 meses) para importante logística ubicada en TORTUGUITAS.. La posición tiene como objetivo garantizar la eficiencia operativa, el cumplimiento de los procesos de seguridad y la coordinación del equipo de trabajo en las distintas áreas del almacén.Condiciones y beneficios Contrato eventual por 3 meses. Fuera de convenio. Prepaga. Día libre por cumpleaños.Requisitos Formación técnica o universitaria vinculada a logística o gestión operativa. Experiencia mínima de 3 años en posiciones similares, liderando equipos bajo convenio (liderará 3 operarios). Manejo intermedio de Excel. Inglés intermedio. Disponibilidad horaria y flexibilidad (horario habitual: 8 a 17 hs).Responsabilidades principales Asignar, coordinar y hacer seguimiento de las tareas operativas por sector (incluyendo descarga de contenedores). Controlar asistencia y ausentismo del personal. Asegurar el cumplimiento de normas y procedimientos de seguridad, calidad y medio ambiente (QSHE, BPE). Brindar soporte operativo y respuesta a las necesidades del cliente. Gestionar el registro y control de entrega de EPP, vehículos, herramientas y otros recursos operativos. Relevar e informar consumos y requerimientos de insumos necesarios para el funcionamiento diario. Capacitar y acompañar al personal según el plan de formación establecido por la compañía.Al postularte o avanzar en este proceso, aceptás el tratamiento de tus datos personales conforme a nuestra Política de Privacidad, en cumplimiento de la Ley 25.326. ManpowerGroup Argentina tratará tu información exclusivamente con fines de evaluación y contacto en relación con oportunidades laborales. Podés ejercer tus derechos de acceso, rectificación o supresión cuando lo desees.En ManpowerGroup promovemos una cultura inclusiva y diversa basada en el respeto y en la igualdad de oportunidades.",
+        "tareas_explicitas": "Asignar, coordinar y hacer seguimiento de las tareas operativas por sector; Controlar asistencia y ausentismo del personal; Asegurar el cumplimiento de normas y procedimientos de seguridad, calidad y medio ambiente (QSHE, BPE); Brindar soporte operativo y respuesta a las necesidades del cliente; Gestionar el registro y control de entrega de EPP, vehículos, herramientas y otros recursos operativos; Relevar e informar consumos y requerimientos de insumos necesarios para el funcionamiento diario; Capacitar y acompañar al personal según el plan de formación establecido por la compañía",
+        "area_funcional": "Operaciones",
+        "nivel_seniority": "senior",
+        "sector_empresa": "Logistica",
+        "modalidad": "presencial",
+        "provincia": "Buenos Aires"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "4323",
+        "isco_label": "coordinador de operaciones marítimas/coordinadora de operaciones marítimas",
+        "score": 0.30625,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "3331",
+        "isco_label": "director de logística/directora de logística",
+        "esco_label": "director de logística/directora de logística",
+        "esco_uri": "http://data.europa.eu/esco/occupation/39803100-c338-4f01-ad2c-085d488920ca",
+        "score": 0.98,
+        "metodo": "regla_negocio_R274_coordinador_operaciones_logistica",
+        "regla": "R274_coordinador_operaciones_logistica",
+        "decision_metodo": "regla_prioridad",
+        "isco_semantico": "5131",
+        "score_semantico": 0.6
+      },
+      "justificacion_humana": "ISCO correcto: C3331\nESCO corregido: director de logística/directora de logística (C3331)\nOferta: Coordinador de operaciones\nISCO actual: 4323\n---\nOferta: Coordinador de operaciones\nISCO actual: 4323",
+      "correccion": {
+        "solucion_aplicada": "Corregido ISCO 4323->3331, ESCO->director de logistica (3331.2). Regla R274 creada con prioridad 0 para coordinador operaciones en logistica/almacen. Skills limpiadas (7 ruidosas removidas, 6 relevantes agregadas).",
+        "config_modificada": "config/matching_rules_business.json (R274 nueva, v5.8)"
+      }
+    },
+    {
+      "id_oferta": "1117968852",
+      "issue_id": "3d512ee9-7611-4bb8-8aed-e8094f920deb",
+      "autor": "Gerardo Breard",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Revisar: #1117968852 - Advisor",
+      "resuelto_at": "2026-03-11T17:21:04.650721+00:00",
+      "input": {
+        "titulo_original": "Advisor",
+        "titulo_limpio": "Advisor",
+        "empresa": "Adecco Argentina -Región Office",
+        "descripcion": "BUSCAMOS TALENTOS,¡EN ADECCO TE ESTAMOS BUSCANDO!Si te interesa ser Advisor y brindar soporte directo a nuestro IMPORTANTE EMPRESA DE SERVICIO DE TRANSPORTE facilitando el acompañamiento, onboarding, resolución de incidencias y gestión de la comunicación con los usuarios de la app, tanto de forma presencial como virtual. ¡Desafíate a vos mismo y crea tu futuro!¿QUÉ DESAFÍOS TE ESPERAN? Acompañar al líder en el seguimiento de los colaboradores asignados. Realizar onboarding técnico y funcional sobre el uso correcto de la app. Detectar necesidades, dudas o dificultades de los usuarios y canalizarlas al líder. Registrar reclamos, quejas o incidencias en los sistemas internos. Informar a los usuarios sobre nuevas funcionalidades o actualizaciones de la app. Gestionar canales de comunicación como grupos de WhatsApp, manteniendo orden y registro. Detectar insights a partir de las interacciones para mejorar procesos y experiencia. Hacer seguimiento de casos abiertos hasta su resolución. Brindar capacitaciones.¿QUÉ VALORAMOS DE TU PERFIL? Competencias en gestión de personas y seguimiento de indicadores Orientación al cliente y habilidad para adaptarse/responder a diferentes tipos de personalidades. Habilidad para realizar múltiples tareas a la vez, priorizar y gestionar el tiempo de forma eficaz. Excelentes capacidades comunicativas oral y escrita. (Excluyente) Experiencia en posiciones similares (Excluyente)¿QUE TE OFRECEMOS? Modalidad Hibrida 4X1 (Un día virtual) Lugar de trabajo CABA Jornada Laboral: Lunes a Sabado Prepaga¡REGÍSTRATE EN ADECCO EMPLEO Y DA EL PASO QUE NECESITAS!Somos Adecco Argentina una compañía con más de 30 años de experiencia que conecta empresas con talentos, brindando soluciones integrales de Recursos Humanos y buscamos talentos, ¡COMO VOS!Nuestro compromiso, es la #diversidad e #igualdad de oportunidades somos una empresa inclusiva. Cuando sos parte de nuestros procesos, solo cuentan tus méritos, logros y capacidades, lo hacemos pensando en vos como persona.Participar de nuestros procesos de selección no tiene ningún costo para vos candidato/a, trabajar con vos es parte de nuestro compromiso y tarea con la comunidad. Postulate y participa en una oferta de empleo nuestra.El empleador sólo podrá solicitarle la información estrictamente necesaria para el desempeño en el trabajo que se ofrece.",
+        "tareas_explicitas": "Acompañar al líder en el seguimiento de los colaboradores asignados; Realizar onboarding técnico y funcional sobre el uso correcto de la app; Detectar necesidades, dudas o dificultades de los usuarios y canalizarlas al líder; Registrar reclamos, quejas o incidencias en los sistemas internos; Informar a los usuarios sobre nuevas funcionalidades o actualizaciones de la app; Gestionar canales de comunicación como grupos de WhatsApp, manteniendo orden y registro; Detectar insights a partir de las interacciones para mejorar procesos y experiencia; Hacer seguimiento de casos abiertos hasta su resolución; Brindar capacitaciones",
+        "area_funcional": "RRHH",
+        "nivel_seniority": "trainee",
+        "sector_empresa": "Logistica",
+        "modalidad": "hibrido",
+        "provincia": "CABA"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "1211",
+        "isco_label": "director financiero/directora financiera",
+        "score": 0.2857476550899938,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "3512",
+        "isco_label": "agente del servicio de asistencia de TIC",
+        "esco_label": "agente del servicio de asistencia de TIC",
+        "esco_uri": "http://data.europa.eu/esco/occupation/aaeec9a7-dc57-4485-890c-86b3eef735f9",
+        "score": 0.98,
+        "metodo": "regla_negocio_R273_advisor_soporte_app",
+        "regla": "R273_advisor_soporte_app",
+        "decision_metodo": "regla_por_score_bajo",
+        "isco_semantico": "2431",
+        "score_semantico": 0.4970050338608627
+      },
+      "justificacion_humana": "ISCO correcto: C2519\nESCO corregido: probador de software/probadora de software (C2519)\nOferta: Advisor\nISCO actual: 1211\n---\nISCO correcto: C2519\nESCO corregido: probador de software/probadora de software (C2519)\ntitulo_limpio: Testing de aplicaciones\nOferta: Advisor\nISCO actual: 1211",
+      "correccion": {
+        "solucion_aplicada": "ISCO 1211->3512 (agente asistencia TIC). Regla R273_advisor_soporte_app. No es testing (2519) sino soporte funcional de app. Skills: -14 ruido, 16 finales.",
+        "config_modificada": "config/matching_rules_business.json (R273), skills corregidas manual"
+      }
+    },
+    {
+      "id_oferta": "1118019322",
+      "issue_id": "83fe7374-848f-48e6-9164-7783a2705499",
+      "autor": "Diego Javier Schleser",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #1118019322 - Operario central de pesada",
+      "resuelto_at": "2026-03-11T15:42:00+00:00",
+      "input": {
+        "titulo_original": "OPERARIO CENTRAL DE PESADA",
+        "titulo_limpio": "Operario central de pesada",
+        "empresa": "Confidencial",
+        "descripcion": "Empresa multinacional farmoquímica incorpora Operarios/as de Depósito ( cental de pesada)Nos encontramos en la búsqueda de Operario de Depósito para sumarse a una compañía líder en el desarrollo y fabricación de principios activos farmacéuticos (APIs), con presencia global y altos estándares de calidad.Requisitos: Experiencia previa en industria farmacéutica o farmoquímica (excluyente). Conocimiento y manejo de normas GMP (Buenas Prácticas de Manufactura). Formación técnica afín (deseable).Principales responsabilidades: Fraccionar materias primas, materiales de empaque y productos intermedios destinados a la fabricación de APIs, siguiendo lineamientos GMP. Fraccionar productos terminados para despacho a clientes. Registrar todas las operaciones en cuadernos y planillas designadas. Realizar limpieza del área de fraccionamiento según frecuencia establecida. Ubicar materiales según especificaciones de almacenamiento. Realizar limpieza de las áreas de Depósito y Expedición. Recepcionar materiales conforme a procedimientos aprobados. Despachar materiales a empresas de tratamiento de efluentes. Realizar seguimiento de stock y contrastarlo con el sistema de gestión. Revisar periódicamente los stocks de materiales y productos terminados.Condiciones de contratación: Remuneración básica mensual: $1.500.000 (bruto) Cobertura médica OSDE 210 para grupo familiar Transporte por Panamericana Bono anual Comedor en planta sin costo Horario : 7 a 16,30Zona de trabajo: Parque Industrial Pilar Postulaciones: Enviar CV actualizado indicando experiencia en GMP y tareas de depósito en industria farmoquímica.",
+        "tareas_explicitas": "Fraccionar materias primas; Fraccionar productos terminados para despacho a clientes; Registrar operaciones en cuadernos y planillas; Realizar limpieza del área de fraccionamiento; Ubicar materiales según especificaciones de almacenamiento; Realizar limpieza de áreas de Depósito y Expedición; Recepcionar materiales conforme a procedimientos aprobados; Despachar materiales a empresas de tratamiento de efluentes; Realizar seguimiento de stock y contrastarlo con el sistema de gestión; Revisar periódicamente los stocks de materiales y productos terminados",
+        "area_funcional": "Produccion",
+        "nivel_seniority": "junior",
+        "sector_empresa": "Industria",
+        "modalidad": "presencial",
+        "provincia": "Buenos Aires"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "8160",
+        "isco_label": "operario de extracción de fécula/operaria de extracción de fécula",
+        "score": 0.4045156169285238,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "9333",
+        "isco_label": "operario de logística de almacén/operaria de logística de almacén",
+        "esco_label": "operario de logística de almacén/operaria de logística de almacén",
+        "esco_uri": "http://data.europa.eu/esco/occupation/808becc8-5a4e-4e71-a043-c2ea32b56ae3",
+        "score": 0.98,
+        "metodo": "regla_negocio_R275_operario_deposito_almacen",
+        "regla": "R275_operario_deposito_almacen",
+        "decision_metodo": "regla_prioridad",
+        "isco_semantico": "4321",
+        "score_semantico": 0.6
+      },
+      "justificacion_humana": "ISCO correcto: C9333\nESCO corregido: operario de logística de almacén/operaria de logística de almacén (C9333)\nOferta: Operario central de pesada\nISCO actual: 8160",
+      "correccion": {
+        "solucion_aplicada": "Corregido ISCO 8160->9333, ESCO->operario de logistica de almacen (9333.3). Regla R275 creada con prioridad -1. Nota para fine-tuning: en Argentina deposito=almacen (ESCO). Skills limpiadas (8 ruidosas removidas, 2 relevantes agregadas).",
+        "config_modificada": "config/matching_rules_business.json (R275 nueva, v5.8)"
+      }
+    },
+    {
+      "id_oferta": "1117955657",
+      "issue_id": "d70fa43e-5b28-469c-9b88-738b855670de",
+      "autor": "Cynthia",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #1117955657 - Office host - red de espacios de coworking",
+      "resuelto_at": "2026-03-11T16:07:00+00:00",
+      "input": {
+        "titulo_original": "OFFICE HOST - RED DE ESPACIOS DE COWORKING.",
+        "titulo_limpio": "Office host - red de espacios de coworking",
+        "empresa": "Consultora Fashion RH",
+        "descripcion": "✨ Si te apasiona crear experiencias memorables, recibir a personas con una sonrisa y cuidar cada detalle para que todo funcione perfecto, ¡esta propuesta es para vos!🔎 Buscamos a alguien que sea la cara visible del espacio, que reciba, acompañe y haga sentir como en casa a cada persona que ingresa, asegurando al mismo tiempo que la operación del lugar funcione de manera impecable.🚀 ¿Te entusiasma esta oportunidad? Postulate, ¡queremos conocerte!⏰ Horario: Lunes a Viernes de 08:00 a 16:00 hs. 🏙️ Modalidad de trabajo: Presencial.📍 Zona de trabajo: CABA.Ⓘ BENEFICIOS:→ Prepaga.→ Día de cumpleaños libre.→ Descuentos corporativos.Ⓘ REQUISITOS:→ Valoramos estudios en Turismo y Hotelería, Gestión Hotelera, Administración o afines.→ Experiencia en hospitalidad, coworking, gastronomía o espacios de servicio al cliente.→ Inglés intermedio.→ Manejo de Google Suite, paquete Office y sistemas de gestión.→ Actitud servicial, empatía, proactividad y calidez en el trato.Ⓘ TAREAS:→ Ser el principal punto de contacto para miembros, visitantes y proveedores.→ Garantizar que cada interacción sea cálida, profesional y resolutiva.→ Supervisar el estado general del espacio (limpieza, stock de insumos, orden, etc.).→ Gestionar reservas de salas, membresías individuales y consultas operativas.→ Reportar incidencias y coordinar tareas con el Office Assistant y el personal vinculado a la sede para que todo fluya.→ Acompañar eventos y actividades especiales en la sede.→ Manejar la caja chica y registrar gastos menores.→ Confeccionar reportes diarios o semanales.",
+        "tareas_explicitas": "Ser el principal punto de contacto para miembros, visitantes y proveedores; Garantizar que cada interacción sea cálida, profesional y resolutiva; Supervisar el estado general del espacio (limpieza, stock de insumos, orden, etc.); Gestionar reservas de salas, membresías individuales y consultas operativas; Reportar incidencias y coordinar tareas con el Office Assistant y el personal vinculado a la sede para que todo fluya; Acompañar eventos y actividades especiales en la sede; Manejar la caja chica y registrar gastos menores; Confeccionar reportes diarios o semanales",
+        "area_funcional": "Administracion",
+        "nivel_seniority": "trainee",
+        "sector_empresa": "Consultoria",
+        "modalidad": "presencial",
+        "provincia": "CABA"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "3254",
+        "isco_label": "óptico/óptica",
+        "score": 0.29950595984943534,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "4226",
+        "isco_label": "recepcionista",
+        "esco_label": "recepcionista",
+        "esco_uri": "http://data.europa.eu/esco/occupation/f7b04542-d8c7-42db-8475-e63b507cce82",
+        "score": 0.98,
+        "metodo": "regla_negocio_R276_office_host_recepcionista",
+        "regla": "R276_office_host_recepcionista",
+        "decision_metodo": "regla_prioridad",
+        "isco_semantico": "5223",
+        "score_semantico": 0.5995059598494353
+      },
+      "justificacion_humana": "Oferta: Office host - red de espacios de coworking\nISCO actual: 3254\n---\nError en los atributos del puesto; no coincide con lo que dice el aviso.\nEn Area: El aviso no trata de recursos humanos.\nSector:  Consultoría: El aviso es para trabajar en una red de espacios de coworking. NO CONSULTORIA.\nSKILLS incorrectas que NO corresponden al puesto que se busca:\nsupervisar planificación del espacio aéreo\ngestionar consultas de usuarios de bibliotecas\npreparar informes meteorológicos\nclae_grupo: null\nclae_code: null\nOferta: Office host - red de espacios de coworking\nISCO actual: 3254\n---\nError en la clasificacion, 3254, lo solicitado por el aviso coincide con los recepcionistas son responsables de la zona de recepción de una empresa. Responden al teléfono, saludan a los visitantes, transmiten información, responden a las preguntas y dan instrucciones a los visitantes. Son el primer punto de contacto para los clientes. Es un rol de atención al público y gestión operativa del espacio.\nEl titulo: Office host – red de espacios de coworking Observación de normalización del título:\nEl título utiliza un anglicismo (“Office host”) que no corresponde a una denominación ocupacional estandarizada en español. La ocupación se normaliza como Recepcionista.\nDenominacion por pais:\nArgentina:  Recepcionista - Recepcionista administrativa - Recepcionista de oficinas\n España: Recepcionista  - Recepcionista de oficina\nISCO correcto: C4226\nESCO corregido: recepcionista (C4226)\nOferta: Office host - red de espacios de coworking\nISCO actual: 3254",
+      "correccion": {
+        "solucion_aplicada": "Corregido ISCO 3254(optico)->4226(recepcionista). ESCO->recepcionista (4226.1). Regla R276 creada. NLP area corregida RRHH->Administracion. Skills limpiadas (6 ruidosas removidas: espacio aereo, meteorologia, biblioteca; 3 relevantes agregadas: zona recepcion, centralita, asistir visitantes). Office host = recepcionista en Argentina.",
+        "config_modificada": "config/matching_rules_business.json (R276 nueva), ofertas_nlp.area_funcional corregida"
+      }
+    },
+    {
+      "id_oferta": "1118019326",
+      "issue_id": "47d8ccaf-f8ca-4a71-be64-4d5e8fa9e1a5",
+      "autor": "Cynthia",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #1118019326 - Medio oficial de mantenimiento",
+      "resuelto_at": "2026-03-11T16:27:00+00:00",
+      "input": {
+        "titulo_original": "Medio Oficial de Mantenimiento- Rubro Plástico. Zona Villa Soldati",
+        "titulo_limpio": "Medio oficial de mantenimiento",
+        "empresa": "Grupo Gestión",
+        "descripcion": "Importante empresa del rubro plástico se encuentra en la búsqueda de Técnicos para Mantenimiento Electromecánico.La búsqueda se orienta a candidatos que posean formación académica técnica y/o terciarios.Se requiere de 2 años de experiencia como mínimo. Residir en zonas aledañas a la planta.Experiencia requerida:-Puesta a punto de máquinas inyectoras, extrusoras, control y reparación de las mismas, observación de indicadores que llevan a fallas y proceder a solucionarlas. Revisar planes de mantenimiento. Dar a conocer los requerimientos de mejoras y repuestos al Ingeniero de Planta.-Motores Eléctricos/ electricidad/ electrónica/ inyección/extrusión plástica/neumática e hidráulica.-Mantenimiento edilicio General: Control luminaria/electricidad/tableros eléctricos bajo normas. Inspeccionar equipos y maquinarias para garantizar seguridad eléctrica, cambio resistencias, lectores, etc. Control de torres de agua y enfriamiento. (chiller).-Montar y desmontar equipos/moldes/instalaciones y dejarlos en correcto estado (por ejemplo, limpieza, lubricación, reemplazo de piezas, etc), informar de los acontecimientos relevantes que puedan afectar la calidad, productividad y seguridad-Convenio Plástico. Categoría Medio Oficial de Mantenimiento.Jornada Laboral: Lunes a viernes con horarios rotativos: 6:00 a 15:00 hs y de 13:00 a 22:00 hs.Zona de Trabajo: Villa Soldati. CABAAquellos candidatos que se encuentren interesados pueden postularse por este medio",
+        "tareas_explicitas": "Puesta a punto de máquinas inyectoras; Puesta a punto de extrusoras; Control y reparación de máquinas; Observación de indicadores que llevan a fallas y proceder a solucionarlas; Dar a conocer los requerimientos de mejoras y repuestos al Ingeniero de Planta; Motores Eléctricos/ electricidad/ electrónica/ inyección/extrusión plástica/neumática e hidráulica; Mantenimiento edilicio General: Control luminaria/electricidad/tableros eléctricos bajo normas; Inspeccionar equipos y maquinarias para garantizar seguridad eléctrica, cambio resistencias, lectores, etc; Control de torres de agua y enfriamiento. (chiller); Montar y desmontar equipos/moldes/instalaciones y dejarlos en correcto estado (por ejemplo, limpieza, lubricación, reemplazo de piezas, etc)",
+        "area_funcional": "Operaciones",
+        "nivel_seniority": "semisenior",
+        "sector_empresa": "Industria",
+        "modalidad": "presencial",
+        "provincia": "CABA"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "8211",
+        "isco_label": "montador de motores náuticos/montadora de motores náuticos",
+        "score": 0.6,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "7233",
+        "isco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial",
+        "esco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial",
+        "esco_uri": "http://data.europa.eu/esco/occupation/269c47e7-9017-4aa6-bce8-49e89a696a64",
+        "score": 0.98,
+        "metodo": "regla_negocio_R277_medio_oficial_mantenimiento_industrial",
+        "regla": "R277_medio_oficial_mantenimiento_industrial",
+        "decision_metodo": "regla_prioridad",
+        "isco_semantico": "8211",
+        "score_semantico": 0.6
+      },
+      "justificacion_humana": "Skills incorrectas (ruido NLP)\n\nmanejar máquinas de montaje de inserción\n\nocuparse de extrusoras de jabón\n\nocuparse de extrusoras de arcilla\n\ncontrolar maquinaria pesada\n\ndetectar y corregir errores de tecnologías de la información\n\npedido de suministros para reparación de vehículos\n\ncontrolar la torrefacción\n\ncontrolar procesos de congelación\n\ndemostraciones de uso de equipos según fabricante\n\nEstas pertenecen a otros sectores industriales.\nOferta: Medio oficial de mantenimiento\nISCO actual: 8211\n---\nSkills nuevas sugeridas (directamente del aviso)\nMantenimiento electromecánico\nmantenimiento electromecánico industrial\ndiagnostico de fallas en maquinaria industrial\nProcesos de plástico\nmantenimiento de máquinas de inyección plástica\nmantenimiento de máquinas extrusoras\nSistemas industriales\nmantenimiento de sistemas neumáticos\nmantenimiento de sistemas hidráulicos\nMantenimiento eléctrico\nmantenimiento de tableros eléctricos\nmantenimiento eléctrico industrial\nEquipos auxiliares de planta\nmantenimiento de sistemas de enfriamiento industrial (chiller)\nmantenimiento de torres de enfriamiento\nMantenimiento mecánico\nmontaje y desmontaje de moldes industriales\nlubricación de maquinaria industrial\nreemplazo de piezas mecánicas\nGestión de mantenimiento\ncomunicación de requerimientos de repuestos\nreporte de fallas y anomalías de equipos\nOferta: Medio oficial de mantenimiento\nISCO actual: 8211\n---\nJustificación de codificación (ESCO/ISCO):\nLa ocupación corresponde al código ISCO 7233 – Mecánicos y reparadores de maquinaria agrícola e industrial, ya que el puesto realiza tareas de mantenimiento electromecánico, diagnóstico de fallas, reparación y puesta a punto de maquinaria de producción industrial (máquinas inyectoras y extrusoras), así como mantenimiento de motores eléctricos, sistemas neumáticos, hidráulicos y equipos auxiliares de planta.\n\nAunque la descripción general del grupo mencione maquinaria agrícola, el código 7233 también incluye mantenimiento y reparación de maquinaria industrial, lo que se ajusta a las funciones del aviso.\nISCO correcto: C7233\nESCO corregido: técnico de maquinaria agrícola/técnica de maquinaria agrícola (C7233)\nOferta: Medio oficial de mantenimiento\nISCO actual: 8211",
+      "correccion": {
+        "solucion_aplicada": "Corregido ISCO 8211(montador motores nauticos)->7233(mecanico maquinaria industrial). ESCO->mecanico de maquinaria industrial (7233.7). Regla R277 creada. Skills limpiadas: 11 ruidosas removidas (extrusoras jabon/arcilla, torrefaccion, congelacion, etc), 6 relevantes agregadas (diagnosticar motores, sistemas hidraulicos/neumaticos, mantenimiento moldes, lubricacion).",
+        "config_modificada": "config/matching_rules_business.json (R277 nueva)"
+      }
+    },
+    {
+      "id_oferta": "1118019485",
+      "issue_id": "025f713b-5708-484c-bf1d-b5e246eec267",
+      "autor": "Cynthia",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #1118019485 - Analista de oficina técnica",
+      "resuelto_at": "2026-03-11T16:41:00+00:00",
+      "input": {
+        "titulo_original": "Analista de Oficina Técnica",
+        "titulo_limpio": "Analista de oficina técnica",
+        "empresa": "Antonela Quintiero",
+        "descripcion": "Reconocida empresa constructora incorpora un Analista para su Oficina Técnica y de Proyectos.Será responsable de garantizar la correcta elaboración y gestión de la documentación técnica, asegurando el cumplimiento de estándares de calidad, normativas y plazos. Deberá bindar soporte técnico a las distintas áreas de la empresa para la ejecución eficiente de las obras.Serán sus tareas principales:- Coordinar la elaboración de planos, cómputos y presupuestos de los proyectos ejecutivos.- Verificar el cumplimiento de normativas y especificaciones técnicas.- Brindar apoyo técnico a la jefatura de obra y supervisores en obra.- Coordinar con proveedores y contratistas para la obtención de información técnica y cotizaciones.- Participar en la elaboración de informes de avance de obra.Requisitos:- Profesional Arquitecto o Ingeniero.- Experiencia de 3 años en posiciones similares.- Dominio de software de diseño y modelado.- Manejo avanzado de software de cómputo y presupuesto.- Deseable contar con movilidad propia.Se ofrece incorporación directa por la empresa y muy buenas condiciones de contratación.",
+        "tareas_explicitas": "Coordinar la elaboración de planos, cómputos y presupuestos de los proyectos ejecutivos; Verificar el cumplimiento de normativas y especificaciones técnicas; Brindar apoyo técnico a la jefatura de obra y supervisores en obra; Coordinar con proveedores y contratistas para la obtención de información técnica y cotizaciones; Participar en la elaboración de informes de avance de obra",
+        "area_funcional": "Ingenieria",
+        "nivel_seniority": "semisenior",
+        "sector_empresa": "Construccion",
+        "modalidad": "presencial",
+        "provincia": "Buenos Aires"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "3122",
+        "isco_label": "supervisor de operadores de máquinas/supervisora de operadores de máquinas",
+        "score": 0.5034920125230794,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "2142",
+        "isco_label": "ingeniero de construcción/ingeniera de construcción",
+        "esco_label": "ingeniero de construcción/ingeniera de construcción",
+        "esco_uri": "http://data.europa.eu/esco/occupation/2a914d26-42aa-46b5-acf3-097d51ba4617",
+        "score": 0.98,
+        "metodo": "regla_negocio_R278_analista_oficina_tecnica_construccion",
+        "regla": "R278_analista_oficina_tecnica_construccion",
+        "decision_metodo": "regla_prioridad",
+        "isco_semantico": "4322",
+        "score_semantico": 0.6
+      },
+      "justificacion_humana": "Skills parcialmente relacionadas: \nTienen relación con control técnico, pero están mal orientadas hacia fabricación industrial.\ncontrolar el cumplimiento de normas de calidad de fabricación\nverificar las exigencias de fabricación\nEn el aviso el control es sobre normativas de construcción, no fabricación.\nSkills INCORRECTAS (ruido del NLP)\nNo tienen relación con el puesto.\ncoordinar actividades de planificación comercial\ncolaborar con el personal técnico en producciones artísticas\ncoordinarse con los proveedores de equipo deportivo\ncoordinar con los equipos de gestión logística\naprobar informes para un proyecto artístico\nEstas aparecen por errores de extracción semántica del NLP.\nAtributos del aviso\nArea: Administración. Esto no es correcto para el puesto.\nEl aviso corresponde a: proyectos de obra, planos, cómputos y presupuestos, soporte técnico a obra, verificación de normas técnicas. Esto pertenece al área de ingeniería / proyectos / oficina técnica, no a administración.\nOferta: Analista de oficina técnica\nISCO actual: 3122\n---\nSkills nuevas sugeridas:\ncoordinación técnica de proyectos\nelaboración de documentación técnica\ninterpretación de planos técnicos\nelaboración de cómputos métricos\nelaboración de presupuestos de obra\nanálisis de costos de obra\nverificación de normativas técnicas de construcción\ncontrol de especificaciones técnicas\ncoordinación con contratistas\nseguimiento del avance de obra\nelaboración de informes técnicos\nsoporte técnico a obra\nEstas skills salen directamente de las tareas del aviso:\nplanos\ncómputos\npresupuestos\nnormativas\ncoordinación con proveedores/contratistas\napoyo técnico a obra\ninformes de avance.\nOferta: Analista de oficina técnica\nISCO actual: 3122\n---\nEl sistema propuso: \n3122 – Supervisores de operadores de maquinaria\n Incorrecto porque ese código se usa para supervisar operadores de maquinaria industrial, procesos operativos de producción, y el aviso es claramente de gestión técnica de proyectos de construcción.\nISCO correcto: C2142\nESCO corregido: ingeniero civil/ingeniera civil (C2142)\nOferta: Analista de oficina técnica\nISCO actual: 3122",
+      "correccion": {
+        "solucion_aplicada": "Corregido ISCO 3122(supervisor maquinas)->2142(ingeniero construccion). ESCO->ingeniero de construccion (2142.1.2). Regla R278 creada. NLP area corregida Administracion->Ingenieria. Skills: 8 ruidosas removidas (producciones artisticas, equipo deportivo, logistica, fabricacion), 7 relevantes agregadas (coordinar construccion, normativa construccion, documentacion tecnica, especificaciones, archivos construccion).",
+        "config_modificada": "config/matching_rules_business.json (R278 nueva), ofertas_nlp.area_funcional corregida"
+      }
+    },
+    {
+      "id_oferta": "1118019188",
+      "issue_id": "23c0725b-4091-4800-9c53-a6592c548b30",
+      "autor": "Cynthia",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #1118019188 - Chófer con experiencia en recolección de residuos ",
+      "resuelto_at": "2026-03-11T17:00:00+00:00",
+      "input": {
+        "titulo_original": "Chófer con experiencia en recolección de residuos Villa Lugano",
+        "titulo_limpio": "Chófer con experiencia en recolección de residuos villa lugano",
+        "empresa": "Grupo Gestión",
+        "descripcion": "Empresa de servicios incorpora chofer recolector para trabajar en la zona CABA, Villa Lugano.Se encargará de transportar residuos sólidos urbanos en camiones especializados, siguiendo las normativas y protocolos de seguridad establecidos, movimiento de tachos y compactación de basura.Jornada laboral: lun a vier de 6 a 14 y sabados de 6 a 10Lugar de trabajo: CABA, Villa LuganoRequisitos: Experiencia previa en las tareas. Contar con licencia C3/ E1 vigente. Residencia en zonas de cercanías. Disponibilidad para trabajar el turno indicado.Si te interesa la propuesta ¡No dudes en enviar tu cv!",
+        "tareas_explicitas": "transportar residuos sólidos urbanos; seguir normativas y protocolos de seguridad; movimiento de tachos; compactación de basura",
+        "area_funcional": "Logistica",
+        "nivel_seniority": "semisenior",
+        "sector_empresa": "Logistica",
+        "modalidad": "presencial",
+        "provincia": "CABA"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "9312",
+        "isco_label": "obrero de construcción civil/obrera de construcción civil",
+        "score": 0.6,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "8332",
+        "isco_label": "conductor de vehículo de recogida de basura/conductora de vehículo de recogida de basura",
+        "esco_label": "conductor de vehículo de recogida de basura/conductora de vehículo de recogida de basura",
+        "esco_uri": "http://data.europa.eu/esco/occupation/2480f8b0-4c02-4c66-84ad-2677c1548e03",
+        "score": 0.98,
+        "metodo": "regla_negocio_R279_chofer_recoleccion_residuos",
+        "regla": "R279_chofer_recoleccion_residuos",
+        "decision_metodo": "regla_prioridad",
+        "isco_semantico": "9312",
+        "score_semantico": 0.6
+      },
+      "justificacion_humana": "Skills nuevas sugeridas\n\nconducción de camiones recolectores\n\nrecolección de residuos sólidos urbanos\n\noperación de camión compactador\n\nmanipulación de contenedores de residuos\n\ncarga y descarga de residuos\n\noperación de sistemas de compactación de residuos\n\ncumplimiento de protocolos de seguridad en recolección urbana\n\nmanejo seguro de residuos urbanos\n\nconducción profesional con licencia habilitante\n\ncontrol operativo del vehículo recolector\n\ninspección básica del camión recolector\n\nrecolección urbana domiciliaria\nOferta: Chófer con experiencia en recolección de residuos villa lugano\nISCO actual: 9312\n---\nAtributos / Metadatos del aviso (NLP).\nSector: Logística . Podría ser más preciso como servicios urbanos / recolección de residuos.\nExperiencia:  Incorrecto , el aviso pide experiencia previa.\nSkills incorrectas:\ntransportar materiales de construcción\nseguir normas y reglamentos aeroportuarios\npracticar movimientos de danza\ngráficos en movimiento\nocuparse de compactadoras de tornillo\nEstas provienen de otros dominios ocupacionales.\nOferta: Chófer con experiencia en recolección de residuos villa lugano\nISCO actual: 9312\n---\nTITULO:\nChófer con experiencia en recolección de residuos villa lugano. Parcialmente correcto. Justificación\nEl título identifica correctamente la función principal (chofer recolector de residuos), pero incluye información que no corresponde a la ocupación, como ubicación geográfica (Villa Lugano). La ocupación debería referirse solo al puesto de trabajo, no a la localización.\nDenominación ocupacional\nArgentina:\n Chofer recolector de residuos / chofer de camión recolector\nEspaña:\nConductor de camión de recogida de residuos\n\nCómo se justifica en MOL\nAunque el código sea general, lo que importa es la función principal del puesto:\nconducir un camión especializado\ntransportar residuos urbanos\noperar el sistema de compactación del camión\nLa actividad central sigue siendo conducción de camión pesado, por eso corresponde a 8332.\nISCO correcto: C8332\nESCO corregido: conductor de vehículo de carga/conductora de vehículo de carga (C8332)\nOferta: Chófer con experiencia en recolección de residuos villa lugano\nISCO actual: 9312",
+      "correccion": {
+        "solucion_aplicada": "Agregadas 5 skills ESCO: maniobrar camiones pesados, conducir en zonas urbanas, vaciar contenedores basura, normativa recogida residuos, tipos vehiculos recoleccion.",
+        "config_modificada": "database/bumeran_scraping.db (skills_oferta_json oferta 1118019188)"
+      }
+    },
+    {
+      "id_oferta": "1117983846",
+      "issue_id": "c78ef5b3-7880-4061-95eb-15d44d446156",
+      "autor": "Cynthia",
+      "issue_tipo": "sugerencia",
+      "issue_titulo": "Correccion: #1117983846 - Agente de documentacion",
+      "resuelto_at": "2026-03-11T17:15:00+00:00",
+      "input": {
+        "titulo_original": "Agente de documentacion",
+        "titulo_limpio": "Agente de documentacion",
+        "empresa": "KAVAK",
+        "descripcion": "KAVAK es una empresa global con operación en Argentina, Brasil, México y Turquía. Actualmente somos la startup privada de mayor valuación de Latam y el 1er unicornio Mexicano. Invertimos en talento, ideas, infraestructura y tecnología para seguir revolucionando la compra y venta de autos en el mundo.Queremos garantizar que nos rodeamos del mejor talento con un equipo inclusivo. Creemos que en la diversidad y en las diferencias está lo más valioso de KAVAK.Como equipo nos gusta imaginar lo imposible y trabajar juntos para alcanzarlo. Somos disruptivos, proactivos, leales y ambiciosos. Sabemos que solo logrando el éxito de cada uno podemos construir la historia de éxito de KAVAK.¡Unite a nosotros como Agente de documentacionn!¿Qué vas a hacer? Armado de legajos (carpeta, confección 08, validación) Hacer seguimiento de trámites y brindar información en la aplicación de seguimiento interna Controlar Prioridades para la presentación de trámites Armar legalizaciones según prioridades y recorridos Coordinar moto mensajería Realizar control recibo de los trámites presentados y resolución de observaciones Resolver trámites que requieren presentación en su radicación (provincia) Comunicación y cooperación con otros sectores¿Qué buscamos? Secundario completo (Excluyente) 1 a 2 años de experiencia administrativa, con manejo de documentación automotriz (deseable) Conocimientos y manejo de google drive / Salesforce / Office (deseable). Capacidad para cooperar y trabajar en equipo. Ubicacion de trabajo: Kavak TOM / Kavak DOT",
+        "tareas_explicitas": "Armado de legajos; Hacer seguimiento de trámites y brindar información en la aplicación de seguimiento interna; Controlar Prioridades para la presentación de trámites; Armar legalizaciones según prioridades y recorridos; Coordinar moto mensajería; Realizar control recibo de los trámites presentados y resolución de observaciones; Resolver trámites que requieren presentación en su radicación (provincia); Comunicación y cooperación con otros sectores",
+        "area_funcional": "Administracion",
+        "nivel_seniority": "junior",
+        "sector_empresa": "Tecnologia",
+        "modalidad": "presencial",
+        "provincia": "Buenos Aires"
+      },
+      "clasificacion_incorrecta": {
+        "isco_code": "3512",
+        "isco_label": "agente del servicio de asistencia de TIC",
+        "score": 0.6,
+        "metodo": "skills_first_v3"
+      },
+      "clasificacion_correcta": {
+        "isco_code": "4110",
+        "isco_label": "empleado de oficina/empleada de oficina",
+        "esco_label": "empleado de oficina/empleada de oficina",
+        "esco_uri": "http://data.europa.eu/esco/occupation/6c999fc7-c6b7-4ef3-a4b9-af124a1783a2",
+        "score": 0.98,
+        "metodo": "regla_negocio_R280_agente_documentacion",
+        "regla": "R280_agente_documentacion",
+        "decision_metodo": "regla_prioridad",
+        "isco_semantico": "3512",
+        "score_semantico": 0.6
+      },
+      "justificacion_humana": "Skills incorrectas (ruido LLM)\nNo corresponden al puesto:\ncoordinar eventos\nsupervisar procedimientos de facturación\nsupervisar la administración de préstamos\nrealizar seguimiento de actividades relacionadas con eventos\nmontar un arma de fuego\nEstas provienen de otros dominios ocupacionales.\n\nSkills nuevas sugeridas (pertinentes al aviso)\nGestión documental\ngestión de documentación automotriz\narmado de legajos administrativos\norganización de expedientes\nTramitación administrativa\ngestión de trámites administrativos\nseguimiento de expedientes\ncontrol de documentación presentada\nresolución de observaciones en trámites\nProcesos registrales automotrices\ngestión de trámites registrales de vehículos\npreparación de documentación para transferencia de vehículos\nvalidación de formularios automotores\nCoordinación operativa\ncoordinación de mensajería para trámites\ncoordinación de presentación de documentación\nplanificación de prioridades de trámites\nGestión administrativa\ncontrol de legajos\nverificación de documentación administrativa\ngestión de archivos administrativos\nOferta: Agente de documentacion\nISCO actual: 3512\n---\nAtributos / Metadatos del aviso (NLP)\nError: Área: IT El puesto es administrativo/documental, no tecnológico.\nProvincia / Localidad: El aviso menciona Kavak TOM / Kavak DOT, no “El Pato”.\n\nSkills incorrectas (ruido NLP)\n\nmontar un arma de fuego\n\ncoordinar eventos\n\nsupervisar procedimientos de facturación\n\nsupervisar la administración de préstamos\n\nEstas provienen de otros dominios ocupacionales.\nOferta: Agente de documentacion\nISCO actual: 3512",
+      "correccion": {
+        "solucion_aplicada": "Eliminadas 5 skills ruidosas: coordinar eventos, supervisar facturacion, administracion prestamos, seguimiento eventos, montar arma de fuego. Agregadas 4 skills relevantes: archivar documentacion, gestion registros, mantener archivos, documentacion requisitos legales.",
+        "config_modificada": "database/bumeran_scraping.db (skills_oferta_json oferta 1117983846)"
       }
     }
   ]
