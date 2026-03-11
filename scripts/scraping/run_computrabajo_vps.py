@@ -54,40 +54,62 @@ MASTER_KEYWORDS_PATH = BASE_DIR / "config" / "scraping" / "master_keywords.json"
 CT_ID_PREFIX = 5_000_000_000
 
 
-def computrabajo_id_to_int(data_id) -> int:
+def computrabajo_id_to_int(data_id=None, url_oferta=None) -> int:
     """
-    Convierte el data-id de ComputRabajo a un entero para la tabla ofertas.
+    Genera un ID entero estable para una oferta de ComputRabajo.
 
-    Si el data-id ya es numérico, lo usa directo.
-    Si es alfanumérico, genera un hash CRC32 estable + prefijo alto.
+    IMPORTANTE: El data-id del HTML cambia según el keyword de búsqueda
+    para la MISMA oferta (bug confirmado 2026-03-11). Por eso usamos el
+    slug de la URL que es estable:
+      /ofertas-de-trabajo/oferta-de-trabajo-de-TITULO-en-UBICACION-HASH
+
+    Prioridad:
+      1. URL slug (sin hash final de 32 chars) → CRC32 estable
+      2. data-id como fallback (si no hay URL)
 
     Args:
-        data_id: El data-id del artículo HTML (string o int)
+        data_id: El data-id del artículo HTML (fallback)
+        url_oferta: URL completa o relativa de la oferta (preferida)
 
     Returns:
         Integer ID para la tabla ofertas
     """
-    if data_id is None:
-        return None
+    import re
 
-    data_id_str = str(data_id).strip()
+    # Prioridad 1: URL slug (estable entre keywords)
+    if url_oferta:
+        # Quitar fragment (#lc=ListOffers-...)
+        url_clean = url_oferta.split('#')[0]
+        # Quitar query params
+        url_clean = url_clean.split('?')[0]
+        # Extraer el path relativo
+        if '/ofertas-de-trabajo/' in url_clean:
+            slug = url_clean.split('/ofertas-de-trabajo/')[-1]
+        else:
+            slug = url_clean
 
-    # Intentar convertir a int directo
-    try:
-        int_id = int(data_id_str)
-        # Si es un número razonable, usarlo directo
-        # Pero agregar prefijo si está en rango que podría colisionar con Bumeran/ZonaJobs
-        if int_id < 100_000_000:
-            # Número chico, podría colisionar con ZonaJobs (2M range)
-            # Agregar prefijo
-            return CT_ID_PREFIX + int_id
-        return int_id
-    except ValueError:
-        pass
+        # Quitar hash de 32 chars hexadecimales del final del slug
+        # Patrón: -HASH32 al final (ej: -9F9578B2F3C3A91D61373E686DCF3405)
+        slug_clean = re.sub(r'-[A-Fa-f0-9]{32}$', '', slug)
 
-    # Alfanumérico: usar CRC32 (determinístico, 32-bit → ~4 billion valores)
-    crc = zlib.crc32(data_id_str.encode('utf-8')) & 0xFFFFFFFF
-    return CT_ID_PREFIX + crc
+        if slug_clean:
+            crc = zlib.crc32(slug_clean.encode('utf-8')) & 0xFFFFFFFF
+            return CT_ID_PREFIX + crc
+
+    # Fallback: data-id (inestable entre keywords, pero mejor que nada)
+    if data_id is not None:
+        data_id_str = str(data_id).strip()
+        try:
+            int_id = int(data_id_str)
+            if int_id < 100_000_000:
+                return CT_ID_PREFIX + int_id
+            return int_id
+        except ValueError:
+            pass
+        crc = zlib.crc32(data_id_str.encode('utf-8')) & 0xFFFFFFFF
+        return CT_ID_PREFIX + crc
+
+    return None
 
 
 def mapear_oferta_para_bd(oferta_raw: dict) -> dict:
@@ -97,7 +119,10 @@ def mapear_oferta_para_bd(oferta_raw: dict) -> dict:
     ComputRabajo tiene campos diferentes a Bumeran/ZonaJobs (plataforma Navent).
     Los campos que no existen en ComputRabajo se dejan como NULL.
     """
-    id_int = computrabajo_id_to_int(oferta_raw.get('id_oferta'))
+    id_int = computrabajo_id_to_int(
+        data_id=oferta_raw.get('id_oferta'),
+        url_oferta=oferta_raw.get('url_completa') or oferta_raw.get('url_relativa')
+    )
 
     if id_int is None:
         return None
@@ -309,7 +334,19 @@ def scrapear_con_keywords(
         'errores_total': 0,
     }
 
-    ids_vistos = set()  # Deduplicar entre keywords (no hacer request si ya vimos la oferta)
+    slugs_vistos = set()  # Deduplicar entre keywords usando URL slug (estable)
+
+    def _extraer_slug(oferta):
+        """Extrae slug estable de la URL para deduplicación."""
+        url = oferta.get('url_completa') or oferta.get('url_relativa') or ''
+        url_clean = url.split('#')[0].split('?')[0]
+        if '/ofertas-de-trabajo/' in url_clean:
+            slug = url_clean.split('/ofertas-de-trabajo/')[-1]
+        else:
+            slug = url_clean
+        # Quitar hash 32 chars del final
+        import re
+        return re.sub(r'-[A-Fa-f0-9]{32}$', '', slug)
 
     for i, keyword in enumerate(keywords, 1):
         logger.info(f"[{i}/{len(keywords)}] Keyword: '{keyword}'")
@@ -327,12 +364,12 @@ def scrapear_con_keywords(
                 stats_global['keywords_procesadas'] += 1
                 continue
 
-            # Deduplicar contra ofertas ya vistas en este run
+            # Deduplicar contra ofertas ya vistas en este run (por URL slug, no data-id)
             ofertas_nuevas = []
             for oferta in ofertas_raw:
-                oid = oferta.get('id_oferta')
-                if oid and oid not in ids_vistos:
-                    ids_vistos.add(oid)
+                slug = _extraer_slug(oferta)
+                if slug and slug not in slugs_vistos:
+                    slugs_vistos.add(slug)
                     ofertas_nuevas.append(oferta)
 
             logger.info(f"  {len(ofertas_raw)} encontradas, {len(ofertas_nuevas)} nuevas en este run")
