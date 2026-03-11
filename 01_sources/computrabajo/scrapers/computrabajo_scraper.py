@@ -207,12 +207,29 @@ class ComputRabajoScraper:
             logger.warning(f"Error extrayendo oferta: {e}")
             return None
 
+    # Meses en español para parseo de "2 de marzo", "23 de febrero", etc.
+    MESES_ES = {
+        'enero': 1, 'febrero': 2, 'marzo': 3, 'abril': 4,
+        'mayo': 5, 'junio': 6, 'julio': 7, 'agosto': 8,
+        'septiembre': 9, 'octubre': 10, 'noviembre': 11, 'diciembre': 12
+    }
+
     def _parsear_fecha(self, fecha_text: str) -> Optional[str]:
         """
-        Parsea fechas relativas como 'Hace 3 horas' a ISO 8601
+        Parsea fechas de ComputRabajo a ISO 8601.
+
+        Formatos soportados:
+          - "Ahora"
+          - "Hace 1 minuto" / "Hace X minutos"
+          - "Hace X horas"
+          - "Hace X días"
+          - "Hoy"
+          - "Ayer"
+          - "Más de 30 días"
+          - "2 de marzo" / "23 de febrero" (día + mes en español)
 
         Args:
-            fecha_text: Texto de fecha (ej: "Hace 3 horas")
+            fecha_text: Texto de fecha crudo del HTML
 
         Returns:
             Fecha en formato ISO o None
@@ -221,31 +238,65 @@ class ComputRabajoScraper:
             from datetime import timedelta
 
             now = datetime.now()
+            texto = fecha_text.strip().lower()
 
-            # "Hace X horas"
-            if 'hora' in fecha_text.lower():
-                match = re.search(r'(\d+)', fecha_text)
-                if match:
-                    horas = int(match.group(1))
-                    fecha = now - timedelta(hours=horas)
-                    return fecha.isoformat()
-
-            # "Hace X días"
-            elif 'día' in fecha_text.lower() or 'dia' in fecha_text.lower():
-                match = re.search(r'(\d+)', fecha_text)
-                if match:
-                    dias = int(match.group(1))
-                    fecha = now - timedelta(days=dias)
-                    return fecha.isoformat()
+            # "Ahora"
+            if texto == 'ahora':
+                return now.isoformat()
 
             # "Hoy"
-            elif 'hoy' in fecha_text.lower():
+            if 'hoy' in texto:
                 return now.isoformat()
 
             # "Ayer"
-            elif 'ayer' in fecha_text.lower():
-                fecha = now - timedelta(days=1)
-                return fecha.isoformat()
+            if 'ayer' in texto:
+                return (now - timedelta(days=1)).isoformat()
+
+            # "Hace X minutos" / "Hace 1 minuto"
+            if 'minuto' in texto:
+                match = re.search(r'(\d+)', texto)
+                if match:
+                    minutos = int(match.group(1))
+                    return (now - timedelta(minutes=minutos)).isoformat()
+
+            # "Hace X horas"
+            if 'hora' in texto:
+                match = re.search(r'(\d+)', texto)
+                if match:
+                    horas = int(match.group(1))
+                    return (now - timedelta(hours=horas)).isoformat()
+
+            # "Hace X días"
+            if 'día' in texto or 'dia' in texto:
+                match = re.search(r'(\d+)', texto)
+                if match:
+                    dias = int(match.group(1))
+                    return (now - timedelta(days=dias)).isoformat()
+
+            # "Más de 30 días"
+            if 'más de' in texto or 'mas de' in texto:
+                match = re.search(r'(\d+)', texto)
+                if match:
+                    dias = int(match.group(1))
+                    return (now - timedelta(days=dias)).isoformat()
+
+            # "2 de marzo", "23 de febrero" (día + mes en español)
+            match = re.match(r'(\d{1,2})\s+de\s+(\w+)', texto)
+            if match:
+                dia = int(match.group(1))
+                mes_nombre = match.group(2)
+                mes = self.MESES_ES.get(mes_nombre)
+                if mes:
+                    # Usar el año actual; si la fecha resultante es futura,
+                    # asumir que es del año anterior
+                    anio = now.year
+                    try:
+                        fecha = datetime(anio, mes, dia)
+                        if fecha > now:
+                            fecha = datetime(anio - 1, mes, dia)
+                        return fecha.isoformat()
+                    except ValueError:
+                        pass
 
             return None
 
