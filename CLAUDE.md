@@ -562,6 +562,8 @@ tail -f /tmp/pipeline.log
 | **NLP lote** | `python database/process_nlp_from_db_v11.py --ids X` | Crear script nuevo |
 | **Scraping (local)** | `python run_scheduler.py --test` | Llamar scrapers directo |
 | **Scraping ComputRabajo** | `python scripts/scraping/run_computrabajo_vps.py` | Usar scraper directo |
+| **Scraping CABA** | `python scripts/scraping/run_caba_vps.py` | Usar scraper directo |
+| **Scraping Portal Empleo** | `python scripts/scraping/run_portalempleo_vps.py` | Usar scraper directo |
 | **Sync desde VPS** | `python scripts/sync_from_vps.py` (incremental) | Queries manuales al VPS |
 | **Sync Full desde VPS** | `python scripts/sync_from_vps.py --full` | - |
 | **Comparar runs** | `python scripts/compare_runs.py --latest` | Crear comparador custom |
@@ -585,6 +587,8 @@ Cron ejecuta Lun/Jue 08:00 Argentina via `/opt/mol/scripts/scraping/run_scraping
 | **Bumeran** | Activo en VPS | ~5,000 | API searchV2 + keywords (paginación funciona) |
 | **ZonaJobs** | Activo en VPS | ~5,000 | API searchV2 + keywords (paginación rota, 20/keyword) |
 | **ComputRabajo** | Activo en VPS | ~1,000+ | HTML scraping + keywords (~3-4h con descripción) |
+| **CABA** | Activo en VPS | ~10-50 | HTML scraping listado+detalle (~30s total) |
+| **Portal Empleo** | Activo en VPS | ~400-500 | HTML scraping listado+detalle (~13 min) |
 | LinkedIn | Scraper desarrollado (JobSpy) | - | No integrado |
 | Indeed | Scraper desarrollado (JobSpy) | - | No integrado |
 
@@ -599,7 +603,7 @@ Con 1,072 keywords de `config/scraping/master_keywords.json` se obtienen ~5,000 
 |---------|-----------|---------|
 | Scraper v2 | `01_sources/zonajobs/scrapers/zonajobs_scraper_v2.py` | Scraper API + keywords |
 | Runner VPS | `scripts/scraping/run_zonajobs_vps.py` | Ejecuta scraping + inserta en BD |
-| Script cron | `scripts/scraping/run_scraping_vps.sh` | Bumeran + ZonaJobs + ComputRabajo + export |
+| Script cron | `scripts/scraping/run_scraping_vps.sh` | Bumeran + ZonaJobs + ComputRabajo + CABA + Portal Empleo + export |
 
 **ComputRabajo - Detalles:**
 - HTML scraping con `requests` + `BeautifulSoup` (NO requiere JavaScript)
@@ -617,6 +621,36 @@ Con 1,072 keywords de `config/scraping/master_keywords.json` se obtienen ~5,000 
 | Multi-keyword | `01_sources/computrabajo/scrapers/scrapear_con_diccionario.py` | Wrapper legacy multi-keyword |
 | Runner VPS | `scripts/scraping/run_computrabajo_vps.py` | Ejecuta scraping + mapea + inserta en BD |
 
+**CABA Portal de Trabajo - Detalles:**
+- HTML scraping con `requests` + `BeautifulSoup` (NO requiere JavaScript)
+- NO usa keywords: pagina el listado completo con `offset` (8 por página)
+- Detalle: `/anuncios/{id}` con campos MUY ricos (industria, sector, vacantes, educación, IT, idiomas)
+- IDs: `6_000_000_000 + id_anuncio` (evita colisiones)
+- Campos extra (industria, sector, estudios, IT) se embeben en descripción como metadata
+- Portal chico (~10-50 ofertas) pero datos muy estructurados
+- Puede correr local (rápido, ~30s) o en VPS
+
+**Archivos del scraper CABA:**
+| Archivo | Ubicación | Función |
+|---------|-----------|---------|
+| Scraper core | `01_sources/caba/scrapers/caba_scraper.py` | HTML parsing listado + detalle |
+| Runner | `scripts/scraping/run_caba_vps.py` | Ejecuta scraping + mapea + inserta en BD |
+
+**Portal Empleo Nacional - Detalles:**
+- HTML scraping con `requests` + `BeautifulSoup` (NO requiere JavaScript)
+- NO usa keywords: pagina el listado completo con `page-number=N` (10 por página)
+- Detalle: `/OfertasLaborales/Details/{uuid}` con campos ricos (vacantes, salario, tareas, beneficios, ubicación completa, horario, experiencia, estudios)
+- IDs: UUIDs convertidos a integer con CRC32 + prefijo `7_000_000_000` (evita colisiones)
+- Campos estructurados (salario, estudios, experiencia, horario) se embeben en descripción como metadata
+- Portal nacional (~400-500 ofertas) con cobertura de todas las provincias
+- Scrape completo: ~13 min (1.5s delay entre requests)
+
+**Archivos del scraper Portal Empleo:**
+| Archivo | Ubicación | Función |
+|---------|-----------|---------|
+| Scraper core | `01_sources/portalempleo/scrapers/portalempleo_scraper.py` | HTML parsing listado + detalle |
+| Runner VPS | `scripts/scraping/run_portalempleo_vps.py` | Ejecuta scraping + mapea + inserta en BD |
+
 **VPS - Infraestructura:**
 ```
 VPS (187.124.150.28)                      Local (esta máquina)
@@ -624,11 +658,12 @@ VPS (187.124.150.28)                      Local (esta máquina)
   ├── run_scheduler.py (Bumeran)           ├── scripts/sync_from_vps.py
   ├── scripts/scraping/                    │   (export → SCP → import → bajas)
   │   ├── run_scraping_vps.sh (cron)       ├── database/bumeran_scraping.db
-  │   ├── run_zonajobs_vps.py              │   (21K+ ofertas: 16K Bum + 5K ZJ + CT)
-  │   └── run_computrabajo_vps.py          └── NLP + Matching + Validación (local)
+  │   ├── run_zonajobs_vps.py              │   (35K+ ofertas)
+  │   ├── run_computrabajo_vps.py          └── NLP + Matching + Validación (local)
+  │   ├── run_caba_vps.py
+  │   └── run_portalempleo_vps.py
   ├── scripts/export_nuevas.py
   └── database/bumeran_scraping.db
-      (6K+ ofertas: 4K Bum + 2.6K ZJ + CT)
 ```
 
 **Sync VPS → Local:**
