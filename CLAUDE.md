@@ -564,6 +564,7 @@ tail -f /tmp/pipeline.log
 | **Scraping ComputRabajo** | `python scripts/scraping/run_computrabajo_vps.py` | Usar scraper directo |
 | **Scraping CABA** | `python scripts/scraping/run_caba_vps.py` | Usar scraper directo |
 | **Scraping Portal Empleo** | `python scripts/scraping/run_portalempleo_vps.py` | Usar scraper directo |
+| **Scraping Indeed** | `python scripts/scraping/run_indeed_vps.py` | Usar scraper directo |
 | **Sync desde VPS** | `python scripts/sync_from_vps.py` (incremental) | Queries manuales al VPS |
 | **Sync Full desde VPS** | `python scripts/sync_from_vps.py --full` | - |
 | **Comparar runs** | `python scripts/compare_runs.py --latest` | Crear comparador custom |
@@ -589,8 +590,8 @@ Cron ejecuta Lun/Jue 08:00 Argentina via `/opt/mol/scripts/scraping/run_scraping
 | **ComputRabajo** | Activo en VPS | ~1,000+ | HTML scraping + keywords (~3-4h con descripción) |
 | **CABA** | Activo en VPS | ~10-50 | HTML scraping listado+detalle (~30s total) |
 | **Portal Empleo** | Activo en VPS | ~400-500 | HTML scraping listado+detalle (~13 min) |
-| LinkedIn | Scraper desarrollado (JobSpy) | - | No integrado |
-| Indeed | Scraper desarrollado (JobSpy) | - | No integrado |
+| **Indeed** | Activo en VPS | ~2,000-3,000 | curl_cffi + keywords (~2.5h con detalles) |
+| LinkedIn | Scraper legacy (JobSpy) | - | No integrado (0% descripciones) |
 
 **ZonaJobs - Limitación de API:**
 La API de ZonaJobs (mismo platform Navent que Bumeran) tiene paginación rota:
@@ -603,7 +604,7 @@ Con 1,072 keywords de `config/scraping/master_keywords.json` se obtienen ~5,000 
 |---------|-----------|---------|
 | Scraper v2 | `01_sources/zonajobs/scrapers/zonajobs_scraper_v2.py` | Scraper API + keywords |
 | Runner VPS | `scripts/scraping/run_zonajobs_vps.py` | Ejecuta scraping + inserta en BD |
-| Script cron | `scripts/scraping/run_scraping_vps.sh` | Bumeran + ZonaJobs + ComputRabajo + CABA + Portal Empleo + export |
+| Script cron | `scripts/scraping/run_scraping_vps.sh` | Bumeran + ZonaJobs + ComputRabajo + CABA + Portal Empleo + Indeed + export |
 
 **ComputRabajo - Detalles:**
 - HTML scraping con `requests` + `BeautifulSoup` (NO requiere JavaScript)
@@ -651,6 +652,24 @@ Con 1,072 keywords de `config/scraping/master_keywords.json` se obtienen ~5,000 
 | Scraper core | `01_sources/portalempleo/scrapers/portalempleo_scraper.py` | HTML parsing listado + detalle |
 | Runner VPS | `scripts/scraping/run_portalempleo_vps.py` | Ejecuta scraping + mapea + inserta en BD |
 
+**Indeed - Detalles:**
+- Scraper propio con `curl_cffi` + `BeautifulSoup` (SIN JobSpy)
+- `curl_cffi` bypasea Cloudflare via impersonacion TLS Chrome
+- Usa keywords de `config/scraping/master_keywords.json` (mismas que ZonaJobs/CT)
+- Sin paginacion (Indeed redirige a login en pagina 2): ~15 ofertas/keyword
+- Detalle: `/viewjob?jk={job_key}` con JSON-LD estructurado (datePosted, employmentType, baseSalary)
+- IDs: `8_000_000_000 + int(job_key_hex, 16) % 1_000_000_000` (evita colisiones)
+- Descripcion completa del detalle: ~94% success rate
+- Scrape completo: ~2.5h (600 keywords * 2.5s + ~3000 detalles * 2.5s)
+- Requiere `curl_cffi` instalado en VPS: `pip3 install --break-system-packages curl_cffi`
+
+**Archivos del scraper Indeed:**
+| Archivo | Ubicación | Función |
+|---------|-----------|---------|
+| Scraper core | `01_sources/indeed/scrapers/indeed_scraper.py` | curl_cffi + BS4, multi-keyword |
+| Runner VPS | `scripts/scraping/run_indeed_vps.py` | Ejecuta scraping + mapea + inserta en BD |
+| Scraper legacy | `01_sources/indeed/scrapers/archive/indeed_scraper_jobspy.py` | Versión anterior con JobSpy (archivado) |
+
 **VPS - Infraestructura:**
 ```
 VPS (187.124.150.28)                      Local (esta máquina)
@@ -661,7 +680,8 @@ VPS (187.124.150.28)                      Local (esta máquina)
   │   ├── run_zonajobs_vps.py              │   (35K+ ofertas)
   │   ├── run_computrabajo_vps.py          └── NLP + Matching + Validación (local)
   │   ├── run_caba_vps.py
-  │   └── run_portalempleo_vps.py
+  │   ├── run_portalempleo_vps.py
+  │   └── run_indeed_vps.py
   ├── scripts/export_nuevas.py
   └── database/bumeran_scraping.db
 ```
