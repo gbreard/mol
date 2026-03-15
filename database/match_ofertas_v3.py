@@ -865,6 +865,12 @@ class MatcherV3:
             if terminos_ot:
                 condiciones_evaluadas.append(any(t.lower() in titulo.lower() or t.lower() in tareas.lower() for t in terminos_ot))
 
+            # v3.5.4: Verificar titulo_original_contiene_alguno (busca en título SIN limpiar)
+            # Útil cuando NLP elimina siglas/códigos del título (ej: "619BE | HRBP | ROSARIO" -> "Rosario")
+            terminos_orig = condicion.get("titulo_original_contiene_alguno", [])
+            if terminos_orig:
+                condiciones_evaluadas.append(any(t.lower() in titulo_original for t in terminos_orig))
+
             # Verificar skills_contiene_alguno (se procesa en skills extractor)
             terminos_skills = condicion.get("skills_contiene_alguno", [])
             if terminos_skills:
@@ -1004,6 +1010,11 @@ class MatcherV3:
             terminos_ot = condicion.get("titulo_o_tareas_contiene_alguno", [])
             if terminos_ot:
                 condiciones_evaluadas.append(any(t.lower() in titulo.lower() or t.lower() in tareas.lower() for t in terminos_ot))
+
+            # v3.5.4: titulo_original_contiene_alguno (busca en título SIN limpiar)
+            terminos_orig = condicion.get("titulo_original_contiene_alguno", [])
+            if terminos_orig:
+                condiciones_evaluadas.append(any(t.lower() in titulo_original for t in terminos_orig))
 
             # skills_contiene_alguno
             terminos_skills = condicion.get("skills_contiene_alguno", [])

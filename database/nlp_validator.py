@@ -257,6 +257,75 @@ class NLPValidator:
             else:
                 enriched["skills_count"] = 0
 
+        # ─── Campos calculados para reglas de calidad (v1.2) ───
+
+        titulo = (enriched.get("titulo_limpio") or enriched.get("titulo") or "").lower()
+        seniority = (enriched.get("nivel_seniority") or "").lower()
+
+        # seniority_titulo_contradiccion: título dice manager pero seniority dice trainee (o viceversa)
+        keywords_senior = ("gerente", "director", "jefe", "supervisor", "líder", "lider", "coordinador", "responsable")
+        keywords_junior = ("pasante", "aprendiz", "becario", "practicante", "ayudante")
+        enriched["seniority_titulo_senior_pero_junior"] = (
+            any(kw in titulo for kw in keywords_senior)
+            and seniority in ("trainee", "junior")
+        )
+        enriched["seniority_titulo_junior_pero_senior"] = (
+            any(kw in titulo for kw in keywords_junior)
+            and seniority in ("senior", "manager", "director", "lead")
+        )
+
+        # area_titulo_incoherente: área funcional no tiene sentido con el título
+        area = (enriched.get("area_funcional") or "").lower()
+        enriched["area_titulo_incoherente"] = False
+        _area_titulo_map = {
+            "it": ("vendedor", "chofer", "vigilador", "limpieza", "cocinero", "mozo", "albañil", "peón"),
+            "marketing": ("vigilador", "chofer", "soldador", "tornero", "mecánico", "electricista"),
+            "salud": ("vendedor", "programador", "desarrollador", "chofer", "albañil"),
+            "seguridad": ("programador", "desarrollador", "cocinero", "mozo", "contador"),
+        }
+        if area in _area_titulo_map:
+            enriched["area_titulo_incoherente"] = any(kw in titulo for kw in _area_titulo_map[area])
+
+        # modalidad_contradiccion: scraping dice una cosa, NLP otra
+        scraping_mod = (enriched.get("scraping_modalidad") or "").lower().strip()
+        nlp_mod = (enriched.get("modalidad") or "").lower().strip()
+        enriched["modalidad_scraping_difiere"] = (
+            scraping_mod != "" and nlp_mod != ""
+            and scraping_mod != nlp_mod
+            # Normalizar: "Presencial" del scraping vs "presencial" del NLP
+            and scraping_mod.replace("í", "i") != nlp_mod.replace("í", "i")
+        )
+
+        # portal (asegurar que siempre exista)
+        enriched["portal"] = enriched.get("portal") or "desconocido"
+
+        # tiene_metadata_estructurada: portales con bloques --- en descripción
+        portal = enriched["portal"].lower()
+        enriched["es_portal_con_metadata"] = portal in ("caba", "portalempleo", "indeed")
+        enriched["es_portal_sin_metadata"] = portal in ("computrabajo",)
+
+        # descripcion_original_length
+        desc_orig = enriched.get("descripcion_original") or ""
+        enriched["descripcion_original_length"] = len(desc_orig) if isinstance(desc_orig, str) else 0
+
+        # postprocessor_cambios_count: cuántos campos cambió el postprocessor
+        diff_json = enriched.get("postprocessor_diff_json")
+        if diff_json:
+            try:
+                diff = json.loads(diff_json) if isinstance(diff_json, str) else diff_json
+                enriched["postprocessor_cambios_count"] = len(diff)
+            except (json.JSONDecodeError, TypeError):
+                enriched["postprocessor_cambios_count"] = 0
+        else:
+            enriched["postprocessor_cambios_count"] = 0
+
+        # soft_skills_count
+        soft = enriched.get("soft_skills_list") or ""
+        if isinstance(soft, str) and soft.strip():
+            enriched["soft_skills_count"] = len([s for s in soft.split(";") if s.strip()])
+        else:
+            enriched["soft_skills_count"] = 0
+
         return enriched
 
     # ─── Core validation ───
@@ -279,6 +348,10 @@ class NLPValidator:
         reglas = self.rules_config.get("reglas", [])
 
         for regla in reglas:
+            # Saltar entradas de sección (no son reglas)
+            if "id" not in regla and "_seccion" in regla:
+                continue
+
             if "condiciones" in regla:
                 aplica = self._evaluar_condiciones_multiples(enriched, regla)
             else:
@@ -286,12 +359,18 @@ class NLPValidator:
 
             if aplica:
                 severidad = regla.get("severidad", "medio")
+                campo_afectado = regla.get("campo")
+                # Capturar valor actual del campo para auditoría (fine-tuning data)
+                valor_act = self._get_field_value(enriched, campo_afectado) if campo_afectado else None
+                if valor_act is not None:
+                    valor_act = str(valor_act)[:500]  # Truncar para no saturar BD
                 error = {
                     "id_regla": regla.get("id"),
                     "diagnostico": regla.get("diagnostico"),
                     "severidad": severidad,
                     "mensaje": regla.get("mensaje"),
-                    "campo": regla.get("campo"),
+                    "campo": campo_afectado,
+                    "valor_actual": valor_act,
                     "id_oferta": enriched.get("id_oferta") or enriched.get("id")
                 }
                 if "auto_correccion" in regla:
@@ -409,6 +488,7 @@ class NLPValidator:
                 n.tareas_explicitas,
                 n.tiene_gente_cargo,
                 n.skills_tecnicas_list,
+                n.soft_skills_list,
                 n.largo_descripcion,
                 n.experiencia_min_anios,
                 n.experiencia_max_anios,
@@ -417,9 +497,15 @@ class NLPValidator:
                 n.tipo_contrato,
                 n.requerimiento_edad,
                 n.requerimiento_sexo,
+                n.llm_raw_json,
+                n.postprocessor_diff_json,
                 LENGTH(COALESCE(n.tareas_explicitas, '')) as tareas_explicitas_length,
                 o.titulo,
-                o.empresa
+                o.empresa,
+                o.portal,
+                o.modalidad_trabajo as scraping_modalidad,
+                o.tipo_trabajo as scraping_tipo_trabajo,
+                o.descripcion as descripcion_original
             FROM ofertas_nlp n
             LEFT JOIN ofertas o ON CAST(n.id_oferta AS INTEGER) = o.id_oferta
         """
@@ -508,12 +594,13 @@ class NLPValidator:
                         conn.execute('''
                             INSERT INTO validation_errors (
                                 id_oferta, run_id, error_id, error_tipo, severidad,
-                                mensaje, campo_afectado, detectado_timestamp
-                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                                mensaje, campo_afectado, valor_actual, detectado_timestamp
+                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                         ''', (
                             str(id_oferta), run_id, error.get("id_regla"),
                             error_tipo, error.get("severidad"),
-                            error.get("mensaje"), error.get("campo"), timestamp
+                            error.get("mensaje"), error.get("campo"),
+                            error.get("valor_actual"), timestamp
                         ))
                         insertados += 1
                 except Exception as e:

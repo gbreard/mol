@@ -1,8 +1,8 @@
 {
-  "version": "5.8",
-  "descripcion": "Reglas de negocio para matching ESCO. 260 reglas de bypass que fuerzan ISCO específico.",
+  "version": "5.11",
+  "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-03-11",
+  "fecha_actualizacion": "2026-03-12",
   "_cambios_v53": "Fix R139 repositor 9333→9334, R137 excluir controlador, new R265 controlador logístico→4321. Issues Diego.",
   "_cambios_v51": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344, R137 excluye maquinista.",
   "_cambios_v43": "R181-R182: Personal mantenimiento -> 7233, Tecnico electromedicina -> 3211",
@@ -6313,6 +6313,559 @@
       "_caso": "Issue Cyn #1117983846 - Agente documentacion KAVAK",
       "_fecha": "2026-03-11",
       "nota": "Puesto administrativo documental: armado legajos, tramites registrales, legalizaciones, seguimiento. No es IT."
+    },
+    "R281_chofer_camiones": {
+      "nombre": "Chofer / Conductor de camiones",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "chofer de camion",
+          "chofer de camión",
+          "chofer de camiones",
+          "chofer camion",
+          "chofer camión",
+          "chofer camiones",
+          "conductor de camion",
+          "conductor de camión",
+          "conductor de camiones"
+        ],
+        "titulo_no_contiene_alguno": [
+          "instructor",
+          "autoescuela"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8332",
+        "esco_label": "conductor de vehículo de carga/conductora de vehículo de carga"
+      },
+      "activa": true,
+      "_caso": "1117212619 - Chofer de camiones",
+      "_fecha": "2026-03-12",
+      "nota": "Protección fine-tuning: chofer de camiones es conductor pesado (8332), no operario almacén"
+    },
+    "R282_conductor_marca_vehiculo": {
+      "nombre": "Conductor de marca/tipo de vehículo",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "conductor de iveco",
+          "conductor iveco",
+          "chofer de iveco",
+          "chofer iveco",
+          "conductor de scania",
+          "conductor scania",
+          "conductor de mercedes",
+          "conductor de ford",
+          "conductor de volvo"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8332",
+        "esco_label": "conductor de vehículo de carga/conductora de vehículo de carga"
+      },
+      "activa": true,
+      "_caso": "1118040331 - Conductor de IVECO",
+      "_fecha": "2026-03-12",
+      "nota": "Cuando el título menciona marca de vehículo pesado, es conductor de carga"
+    },
+    "R283_subgerente_construccion": {
+      "nombre": "Subgerente / Jefe de Construcción",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "subgerente construccion",
+          "subgerente construcción",
+          "subgerente de construccion",
+          "subgerente de construcción",
+          "jefe de construccion",
+          "jefe de construcción",
+          "jefe construccion",
+          "jefe construcción"
+        ],
+        "titulo_no_contiene_alguno": [
+          "arquitecto"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3123",
+        "esco_label": "supervisor general de construcción/supervisora general de construcción"
+      },
+      "activa": true,
+      "_caso": "1118034511 - Subgerente Construcción para Retail",
+      "_fecha": "2026-03-12",
+      "nota": "Subgerente/Jefe de construcción es supervisor (3123), no arquitecto"
+    },
+    "R284_representante_tecnico_comercial": {
+      "nombre": "Representante Técnico Comercial",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_todos": [
+          "representante"
+        ],
+        "titulo_contiene_alguno": [
+          "tecnico comercial",
+          "técnico comercial"
+        ],
+        "titulo_no_contiene_alguno": [
+          "director",
+          "gerente"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5223",
+        "esco_label": "vendedor especializado/vendedora especializada"
+      },
+      "activa": true,
+      "_caso": "1118129325 - Representante Técnico Comercial",
+      "_fecha": "2026-03-12",
+      "nota": "Representante técnico comercial es vendedor especializado (5223), no director de ventas"
+    },
+    "R285_coordinador_rrhh": {
+      "nombre": "Coordinador/a de Recursos Humanos",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "coordinador de recursos humanos",
+          "coordinadora de recursos humanos",
+          "coordinador/a de recursos humanos",
+          "coordinador de rrhh",
+          "coordinadora de rrhh",
+          "coordinador/a de rrhh",
+          "coordinador rrhh",
+          "coordinadora rrhh",
+          "coordinador recursos humanos",
+          "coordinadora recursos humanos"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1212",
+        "esco_label": "director de recursos humanos/directora de recursos humanos"
+      },
+      "activa": true,
+      "_caso": "1118145945 - Coordinador/a de Recursos Humanos",
+      "_fecha": "2026-03-12",
+      "nota": "Coordinador RRHH es nivel directivo RRHH (1212)"
+    },
+    "R286_auxiliar_rrhh": {
+      "nombre": "Auxiliar de RRHH",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "auxiliar de rrhh",
+          "auxiliar rrhh",
+          "auxiliar de recursos humanos",
+          "auxiliar recursos humanos"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2423",
+        "esco_label": "responsable de recursos humanos"
+      },
+      "activa": true,
+      "_caso": "1118151100 - Auxiliar de RRHH",
+      "_fecha": "2026-03-12",
+      "nota": "Auxiliar RRHH es personal de RRHH (2423). Baseline daba ingeniero industrial (mal)"
+    },
+    "R287_herrero": {
+      "nombre": "Herrero / Plegador",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "herrero",
+          "herrera",
+          "plegador"
+        ],
+        "titulo_no_contiene_alguno": [
+          "cerrajero"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7221",
+        "esco_label": "herrero/herrera"
+      },
+      "activa": true,
+      "_caso": "1118151709 - Plegador/herrero",
+      "_fecha": "2026-03-12",
+      "nota": "Herrero/plegador es 7221, ni cantero (baseline) ni diseñador paisajístico (fine-tuned)"
+    },
+    "R288_ayudante_envasado": {
+      "nombre": "Ayudante / Operario línea de envasado",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "envasado",
+          "envasadora",
+          "embotellado"
+        ],
+        "titulo_no_contiene_alguno": [
+          "responsable",
+          "jefe",
+          "gerente"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8183",
+        "esco_label": "operario de línea de envasado y embotellado/operaria de línea de envasado y embotellado"
+      },
+      "activa": true,
+      "_caso": "1118157163 - Ayudante linea de envasado",
+      "_fecha": "2026-03-12",
+      "nota": "Envasado operativo es 8183, no producción alimentos"
+    },
+    "R289_encargado_limpieza": {
+      "nombre": "Encargado/a de Limpieza",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_todos": [
+          "limpieza"
+        ],
+        "titulo_contiene_alguno": [
+          "encargado",
+          "encargada",
+          "encargado/a",
+          "supervisor",
+          "supervisora",
+          "supervisor/a",
+          "jefe",
+          "jefa"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5151",
+        "esco_label": "supervisor de servicio de limpieza/supervisora de servicio de limpieza"
+      },
+      "activa": true,
+      "_caso": "1118162787 - Encargado Limpieza",
+      "_fecha": "2026-03-12",
+      "nota": "Encargado/supervisor de limpieza es 5151, no vigilante"
+    },
+    "R290_tecnico_electricista": {
+      "nombre": "Técnico electricista",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "tecnico electricista",
+          "técnico electricista",
+          "tecnica electricista",
+          "técnica electricista"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7411",
+        "esco_label": "electricista"
+      },
+      "activa": true,
+      "_caso": "2166530 - Técnico electricista",
+      "_fecha": "2026-03-12",
+      "nota": "Técnico electricista es electricista (7411). Baseline daba productos sanitarios, fine-tuned daba podcast"
+    },
+    "R291_auxiliar_proveedores": {
+      "nombre": "Auxiliar de Proveedores / Compras",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "auxiliar de proveedores",
+          "auxiliar proveedores",
+          "asistente de proveedores",
+          "asistente proveedores"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4311",
+        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+      },
+      "activa": true,
+      "_caso": "2170436 - Auxiliar de Proveedores",
+      "_fecha": "2026-03-12",
+      "nota": "Auxiliar proveedores es administrativo contable (4311)"
+    },
+    "R292_pasante_marketing": {
+      "nombre": "Pasante de Marketing",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_todos": [
+          "marketing"
+        ],
+        "titulo_contiene_alguno": [
+          "pasante",
+          "trainee",
+          "practicante"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2431",
+        "esco_label": "ayudante de marketing"
+      },
+      "activa": true,
+      "_caso": "2171320 - Pasante de Marketing",
+      "_fecha": "2026-03-12",
+      "nota": "Pasante/trainee de marketing es ayudante de marketing (2431), no vendedor"
+    },
+    "R293_asistente_pago": {
+      "nombre": "Asistente de Estado de Pago / Pagos",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "estado de pago",
+          "asistente de pago",
+          "asistente pago",
+          "asistente de pagos",
+          "asistente pagos"
+        ],
+        "titulo_no_contiene_alguno": [
+          "gerente",
+          "director"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4311",
+        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+      },
+      "activa": true,
+      "_caso": "1118040436 - Asistente Estado de Pago",
+      "_fecha": "2026-03-12",
+      "nota": "Asistente de pagos/EDP es administrativo contable (4311). LoRA daba inspector bienes consumo"
+    },
+    "R294_analista_desarrollo_analitico": {
+      "nombre": "Analista de Desarrollo Analítico (laboratorio)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_todos": [
+          "desarrollo",
+          "analítico"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2113",
+        "esco_label": "químico analista/química analista"
+      },
+      "activa": true,
+      "_caso": "1118063792 - Analista de Desarrollo Analítico",
+      "_fecha": "2026-03-12",
+      "nota": "Desarrollo analítico es área de laboratorio químico/farmacéutico (2113). LoRA daba ing electromecánico"
+    },
+    "R295_asistente_facturacion": {
+      "nombre": "Asistente de Facturación y/o Cobranzas",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "facturación",
+          "facturacion",
+          "cobranzas",
+          "cobranza"
+        ],
+        "titulo_contiene_alguno_2": [
+          "asistente",
+          "auxiliar",
+          "analista",
+          "empleado",
+          "empleada",
+          "administrativo",
+          "administrativa"
+        ],
+        "titulo_no_contiene_alguno": [
+          "gerente",
+          "director",
+          "jefe"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4311",
+        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+      },
+      "activa": true,
+      "_caso": "1118068046 - Asistente Facturación y Cobranzas",
+      "_fecha": "2026-03-12",
+      "nota": "Asistente facturación/cobranzas es contable (4311). LoRA daba jefe de sala"
+    },
+    "R296_soporte_infraestructura": {
+      "nombre": "Soporte de Infraestructura IT",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "infraestructure support",
+          "infrastructure support",
+          "soporte infraestructura",
+          "soporte de infraestructura",
+          "infra support"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2522",
+        "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC"
+      },
+      "activa": true,
+      "_caso": "1118100781 - Infraestructure Support Ssr",
+      "_fecha": "2026-03-12",
+      "nota": "Soporte de infraestructura IT es admin sistemas TIC (2522). LoRA daba desarrollador web"
+    },
+    "R297_estudiante_abogacia": {
+      "nombre": "Estudiante de Abogacía / Derecho",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "abogacia",
+          "abogacía",
+          "derecho"
+        ],
+        "titulo_contiene_alguno_2": [
+          "estudiante",
+          "pasante",
+          "trainee"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3411",
+        "esco_label": "asistente jurídico/asistente jurídica"
+      },
+      "activa": true,
+      "_caso": "1118132453 - ESTUDIANTE ABOGACIA para Area Laboral y Civil",
+      "_fecha": "2026-03-12",
+      "nota": "Estudiante/pasante de abogacía es asistente jurídico (3411). LoRA daba repr ventas ferretería"
+    },
+    "R298_mesa_servicio_it": {
+      "nombre": "Mesa de Servicio / Help Desk IT",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "mesa de servicio",
+          "mesa servicio",
+          "help desk",
+          "helpdesk",
+          "service desk"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3512",
+        "esco_label": "gestor de servicio de asistencia de TIC/gestora de servicio de asistencia de TIC"
+      },
+      "activa": true,
+      "_caso": "1118138652 - Coordinador/a de Mesa de Servicio IT",
+      "_fecha": "2026-03-12",
+      "nota": "Mesa de servicio / help desk IT es gestor asistencia TIC (3512). LoRA daba coord inventario"
+    },
+    "R299_jefatura_compras": {
+      "nombre": "Jefatura / Jefe de Compras",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_todos": [
+          "compras"
+        ],
+        "titulo_contiene_alguno": [
+          "jefatura",
+          "jefe",
+          "jefa",
+          "responsable",
+          "gerente",
+          "director"
+        ],
+        "titulo_no_contiene_alguno": [
+          "vendedor",
+          "asistente",
+          "auxiliar"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1324",
+        "esco_label": "director de compras/directora de compras"
+      },
+      "activa": true,
+      "_caso": "1118157618 - Jefatura de Compras Non Food",
+      "_fecha": "2026-03-12",
+      "nota": "Jefatura/jefe de compras es director compras (1324). LoRA daba responsable marketing"
+    },
+    "R300_hrbp": {
+      "nombre": "HRBP / Business Partner RRHH",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_original_contiene_alguno": [
+          "hrbp",
+          "hr business partner",
+          "human resources business partner",
+          "business partner de rrhh"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2423",
+        "esco_label": "responsable de recursos humanos"
+      },
+      "activa": true,
+      "_caso": "1117993174 - 619BE | HRBP | ROSARIO | TELECOMUNICACIONES",
+      "_fecha": "2026-03-12",
+      "nota": "HRBP es responsable de recursos humanos (2423). Usa titulo_original porque NLP limpia la sigla"
+    },
+    "R301_productor_contenido_digital": {
+      "nombre": "Productor de Contenido Digital/Multimedial",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "productor de contenido",
+          "productora de contenido",
+          "productor/a de contenido"
+        ],
+        "titulo_contiene_alguno_2": [
+          "digital",
+          "multimedial",
+          "multimedia",
+          "web",
+          "online"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2513",
+        "esco_label": "responsable de contenidos web"
+      },
+      "activa": true,
+      "_caso": "1118107207 - Productor/a de contenido multimedial/digital",
+      "_fecha": "2026-03-12",
+      "nota": "Productor contenido digital es responsable contenidos web (2513). Combined LoRA daba diseñador didáctico"
+    },
+    "R302_proyectista_ing_civil": {
+      "nombre": "Proyectista / Estudiante Ingeniería Civil",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "proyectista",
+          "ing. civil",
+          "ing civil",
+          "ingenieria civil",
+          "ingeniería civil"
+        ],
+        "titulo_no_contiene_alguno": [
+          "it",
+          "software",
+          "datos",
+          "sistemas"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2142",
+        "esco_label": "ingeniero de construcción/ingeniera de construcción"
+      },
+      "activa": true,
+      "_caso": "1118151137 - Estudiante Ing. Civil - Proyectista",
+      "_fecha": "2026-03-12",
+      "nota": "Proyectista/Ing Civil es ingeniero construcción (2142). Combined LoRA daba supervisor demolición"
+    },
+    "R303_sous_chef": {
+      "nombre": "Sous Chef / Segundo de Cocina",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "sous chef",
+          "sous-chef",
+          "segundo de cocina",
+          "segundo chef"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3434",
+        "esco_label": "chef"
+      },
+      "activa": true,
+      "_caso": "2168722 - Sous Chef - Restaurante en Balneario Reta",
+      "_fecha": "2026-03-12",
+      "nota": "Sous chef es chef (3434). Combined LoRA daba camarero"
     }
   },
   "reglas_filtro": {
@@ -6400,5 +6953,8 @@
   "_cambios_v49": "R242-R245: Issues Diego Schleser — asistente impuestos, gerente local, coord turno, analista cobranzas",
   "_cambios_v55": "Issues Cyn: R220 +bienes raices, R266 despachador emergencias, R267 auxiliar legal, R268 setter comercial, R269 team leader reclutamiento, R270 tecnico incidencias, R271 dev python. 6 nuevas + 1 update.",
   "_cambios_v56": "Issue Cyn: R272 analista operaciones data center -> 2522 sysadmin",
-  "_cambios_v57": "Issue Gerardo: R273 advisor soporte app -> 3512"
+  "_cambios_v57": "Issue Gerardo: R273 advisor soporte app -> 3512",
+  "_cambios_v58": "Fine-tuning protección: R281-R292 (12 reglas) para proteger 13 regresiones detectadas en test 1-epoch. Chofer camiones, conductor marca, subgerente construcción, repr técnico comercial, coordinador RRHH, auxiliar RRHH, herrero, envasado, encargado limpieza, técnico electricista, auxiliar proveedores, pasante marketing.",
+  "_cambios_v59": "R293-R299: 7 reglas para cubrir regresiones del LoRA fine-tuning (asistente pago, desarrollo analítico, facturación, infra support, estudiante abogacía, mesa servicio IT, jefatura compras)",
+  "_cambios_v511": "R300-R303: Protección regresiones combined LoRA (HRBP->RRHH, productor contenido->web, proyectista->ing civil, sous chef->chef)"
 }

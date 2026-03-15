@@ -6,45 +6,32 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-03-03 11:10"
+  fecha_actualizacion: "2026-03-15 01:43"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
-  fase_actual: "presentacion"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "6 errores sin resolver - sistema sugiere Fase 2"
+  fase_actual: "adquisicion"  # adquisicion | procesamiento | presentacion
+  fase_detalle: "1750 errores sin resolver - sistema sugiere Fase 2"
 
 ultimo_trabajo:
-  fecha: "2026-02-28"
-  sesion: "Sprint 11: Panel de Validación para Cynthia (/admin/validacion)"
+  fecha: "2026-03-12"
+  sesion: "Sprint 13: Fix ComputRabajo + VPS cron + Sync"
   cambios:
-    - "feat(dashboard): panel de validación completo — 7 componentes nuevos"
-    - "4 tabs: Original (descripción completa), NLP, Matching, Skills ESCO"
-    - "Filtros: ISCO group, portal, provincia, método, búsqueda"
-    - "UX: flechas navegar, Ctrl+1/2/3 evaluar, auto-next, issues inline"
-    - "SQL migration 015: 5 columnas nuevas (descripcion, tareas, mision, decision_metodo, regla)"
-    - "sync_to_supabase.py: agregados campos a query SQL + transform"
-    - "Backfill RPC: 16K ofertas en 38s (vs 2.5h de --full)"
-    - "Backfill skills: 296K skills en 67min con throttling"
-    - "CLAUDE.md: documentación completa de sync internals"
+    - "fix(scraping): 3 bugs CT - dedup por URL slug, descripción p.mbB, parser fechas completo"
+    - "fix(vps): cron sin permisos ejecución (chmod +x) + stderr a cron_errors.log"
+    - "sync: 13,324 ofertas CT importadas a BD local (total: 35,143)"
+    - "vps: scraping manual lanzado (Bumeran+ZonaJobs+CT, ~10h en background)"
+    - "pendiente: 19K ofertas sin NLP (13K CT + 6K nuevas Bumeran/ZJ)"
   sesion_anterior:
-    tema: "Sprint 10: Sync incremental automático a Supabase v2.2"
-    cambios_resumen: "sync_to_supabase.py v2.2 incremental, 15797 ofertas + 290955 skills"
-  sesion_anterior:
-    tema: "Sprint 9b: Test suite cleanup + validation errors resolution"
-    cambios_resumen: "246/246 tests passing, 23/23 validation_errors resueltos, cola limpia"
-  sesion_anterior:
-    tema: "Sprint 8: Seguridad S-05 rate limiting + S-07 security headers"
-    cambios:
-      - "S-05: Rate limiter 3 tiers, S-07: Security headers"
-      - "192/192 tests passing, deploy Vercel verificado"
-  sesion_anterior:
-    tema: "Sprint 7: Recalibrar validación + sync 10K+ a Supabase"
-    cambios:
-      - "949 issues → 0 (100% resueltos)"
-      - "V24/V28/V20/V21 recalibradas"
-  branch: "main"
+    tema: "Sprint 12: Fix ComputRabajo scraper bugs"
+    cambios_resumen: "3 bugs CT corregidos, deploy VPS, re-scrape 13K, backfill 682 fechas"
+  sesion_anterior_2:
+    tema: "Sprint 11: Panel de Validación para Cynthia (/admin/validacion)"
+    cambios_resumen: "Panel validación 7 componentes, backfill 16K ofertas + 296K skills"
+  branch: "feature/nuevo-vps"
   pendiente:
-    - "612 ofertas con V31 (bad semantic match) - necesitan reglas de negocio o mejora matching"
-    - "Sync a Supabase en progreso"
+    - "19K ofertas sin NLP (13K CT + ~6K nuevas Bumeran/ZJ)"
+    - "Scraping corriendo en VPS (lanzado manual, ~10h)"
+    - "Segundo sync después de que termine el scraping de hoy"
 
   # Protección de Ofertas Validadas v2.0 (2026-01-20)
   proteccion_validadas:
@@ -72,12 +59,14 @@ ultimo_trabajo:
     resultados_110: "8 alta confianza (catálogo), 22 intermediarios flaggeados"
     proximo_paso: "Sync a Supabase con nuevas columnas"
 
-  ofertas_bd: 15643  # Total en BD despues de scraping 2026-02-07
-  ofertas_activas: 12319  # Confirmadas activas
-  ofertas_baja: 2560  # Marcadas como baja
-  ofertas_validadas: 10682  # 8210 validado + 2472 validado_claude
-  ofertas_pendientes: 612  # V31 bad semantic match
-  estado_ofertas: "10682 en Supabase, 612 pendientes V31"
+  ofertas_bd: 35143  # Total en BD despues de sync 2026-03-12
+  ofertas_activas: 20730  # Confirmadas activas
+  ofertas_baja: 14413  # Marcadas como baja/cerradas
+  ofertas_con_nlp: 16146  # Procesadas NLP
+  ofertas_sin_nlp: 19007  # Pendientes NLP (13K CT + nuevas)
+  ofertas_validadas: 15968  # validado + validado_claude + validado_humano
+  ofertas_pendientes: 178  # Pendientes validación
+  estado_ofertas: "35K en BD, 16K procesadas, 19K pendientes NLP"
 
   matching_version: "v3.5.3"
   matching_arquitectura: "ESCO-First + Decisión Inteligente Dual"
@@ -143,14 +132,14 @@ ultimo_trabajo:
 # REGLA: Cuando se modifique un config, actualizar estos conteos.
 # La documentación (CLAUDE.md, PIPELINE.md, etc.) referencia aquí.
 conteos:
-  reglas_negocio: 259  # config/matching_rules_business.json > reglas_forzar_isco (v3.1 actualizado 2026-01-29)
+  reglas_negocio: 297  # config/matching_rules_business.json > reglas_forzar_isco (v3.1 actualizado 2026-01-29)
   reglas_validacion: 3  # config/validation_rules.json > reglas_validacion (V01-V22 legacy + V25-V29 declarativas Sprint 3)
   reglas_skills_dual: 25  # config/skills_rules.json > reglas_forzar_skills (v2.0 2026-01-22)
   sinonimos_argentinos: 17  # config/sinonimos_argentinos_esco.json > ocupaciones_titulo
   empresas_catalogo: 247  # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
   skills_esco: 14257            # database/embeddings/esco_skills_full.json
   ocupaciones_esco: 3046        # database/embeddings/esco_occupations_full.json
-  ultima_verificacion: 2026-03-03
+  ultima_verificacion: 2026-03-15
 
   supabase:
     integrado: true
@@ -184,10 +173,10 @@ conteos:
   proximo_paso: "Revisar 24 casos con override semántico alto"
 
   estadisticas_actuales:
-    ofertas_validadas: 16085  # todas sincronizadas a Supabase
-    ofertas_pendientes: 60  # 0 errores de validación
+    ofertas_validadas: 15968  # todas sincronizadas a Supabase
+    ofertas_pendientes: 858  # 0 errores de validación
     errores_validacion: 0  # resueltos 201 → 0
-    reglas_negocio: 259
+    reglas_negocio: 297
     convergencia: "CONVERGIDO (0 errores pendientes)"
     supabase_sync: "2,093 ofertas + 34,917 skills"
 
@@ -203,9 +192,9 @@ conteos:
 
   # Métricas de evolución del aprendizaje
   learning_evolution:
-    total_runs: 257
+    total_runs: 299
     ofertas_con_historial_nlp: 5474  # ofertas en ofertas_nlp_history
-    ofertas_con_matching: 16145  # ofertas distintas en ofertas_esco_matching
+    ofertas_con_matching: 16826  # ofertas distintas en ofertas_esco_matching
 
     # Distribución real de reprocesos (datos de ofertas_nlp_history)
     distribucion_reprocesos:
@@ -217,7 +206,7 @@ conteos:
       caso_mas_dificil: "2154549 Contador Auditoría (12 intentos)"
 
     reglas_inicio: 22  # 2026-01-13 baseline
-    reglas_actual: 259
+    reglas_actual: 297
     reglas_agregadas: "+96 durante optimización"
     tasa_convergencia: "47% -> 27% -> 2.7% -> 7.5% -> 0%"
     estado: "CONVERGIDO (tasa = 0%)"
@@ -658,6 +647,25 @@ learnings:
 
       Regenerar: python generate_mol_skills_profile.py (semanal/mensual)
     date: 2026-02-03
+
+  - context: "VPS cron permisos ejecución"
+    learning: |
+      El script run_scraping_vps.sh en el VPS necesita permisos de ejecución (+x).
+      Si se sube por SCP, los permisos se pierden (queda 644).
+      Cron falla silenciosamente porque "No MTA installed" descarta stderr.
+      Fix: chmod +x + redirigir stderr a cron_errors.log en el crontab.
+      SIEMPRE verificar permisos después de deploy con SCP.
+    date: 2026-03-12
+
+  - context: "ComputRabajo data-id inestable"
+    learning: |
+      El atributo data-id de ComputRabajo es un hash de 32 chars que CAMBIA
+      según el keyword de búsqueda para la MISMA oferta. No es un ID estable.
+      Fix: usar URL slug (sin el hash final) como identificador estable,
+      hasheado con CRC32 + prefijo 5_000_000_000.
+      La descripción real está en p.mbB (no concatenar todos los <p>).
+      Fechas vienen como texto relativo ("Hace 3 días", "2 de marzo", "Ahora").
+    date: 2026-03-11
 
 # ============================================
 # DECISIONES TOMADAS
