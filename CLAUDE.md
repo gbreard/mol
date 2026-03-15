@@ -44,12 +44,17 @@ Sistema de monitoreo del mercado laboral argentino para OEDE. Scrapea ofertas de
 
 > **CONTEOS OFICIALES:** Ver `.ai/learnings.yaml` sección `conteos` (single source of truth)
 
-- NLP v11.3 (20 campos + postprocessor + qwen2.5:7b)
-- **Matching v3.4.2 ESCO-FIRST** - ESCO es target, ISCO se deriva
+- **NLP v11.4** (20 campos + source-aware pre-fill + postprocessor + qwen2.5:7b)
+- **NLP Gate v1.1** (35+ reglas pre-matching, bloquea critico/alto)
+- **Multi-Position Detection** (regex + LLM, crea sub-ofertas)
+- **Matching v3.5.4 ESCO-FIRST** - ESCO es target, ISCO se deriva
+- **Skills v2.4** - LoRA fine-tuned model (reemplaza BGE-M3 default)
+- **Pipeline v3.3** (8 pasos integrados con NLP Gate + multi-position)
+- **Fine-tuning data** (llm_raw_json + postprocessor_diff + valor_actual/corregido)
 - **Conteos dinámicos** (ver `learnings.yaml`): reglas_negocio, reglas_validacion, sinonimos_argentinos
-- **Auto-sync** de learnings.yaml activado (v1.0)
+- **Auto-sync** de learnings.yaml activado (v2.1)
 
-### Matching v3.4.2 ESCO-First (2026-01-21)
+### Matching v3.5.4 ESCO-First (2026-03-15)
 ```
 PRINCIPIO: ESCO es el TARGET, ISCO es CONSECUENCIA
 
@@ -57,12 +62,13 @@ FLUJO DE PRIORIDAD:
 1. REGLAS DE NEGOCIO (si aplican) → GANAN SIEMPRE
    - Buscan ocupación ESCO por label exacto
    - ISCO se deriva de la ocupación encontrada
+   - titulo_original_contiene_alguno (v3.5.4: busca en título SIN limpiar)
 
 2. DICCIONARIO ARGENTINO (si no hay regla)
    - Mapea términos argentinos a ISCO
 
 3. SEMÁNTICO (fallback)
-   - Skills + título embeddings
+   - Skills + título embeddings (LoRA fine-tuned model)
 
 METADATA GUARDADA:
 - isco_semantico, score_semantico (siempre calculado)
@@ -72,7 +78,8 @@ METADATA GUARDADA:
 ```
 
 ### Trabajo en Curso
-- Validando 110 ofertas para dashboard (próximo paso: revisión en Google Sheets)
+- 19K ofertas pendientes NLP (13K ComputRabajo + ~6K nuevas Bumeran/ZJ)
+- 15,968 ofertas validadas en BD
 - Gold Set de referencia: 49 casos (archivo histórico)
 
 ### Sistema de Priorización v1.0 (2026-01-20)
@@ -559,7 +566,8 @@ tail -f /tmp/pipeline.log
 | Tarea | Comando | NO hacer |
 |-------|---------|----------|
 | **⭐ Pipeline Completo** | `python scripts/run_validated_pipeline.py --limit 500` | Scripts separados |
-| **NLP lote** | `python database/process_nlp_from_db_v11.py --ids X` | Crear script nuevo |
+| **NLP lote background** | `python scripts/launch_nlp_batch.py` (skip-matching, log a archivo) | Crear script nuevo |
+| **NLP IDs específicos** | `python database/process_nlp_from_db_v11.py --ids X` | Crear script nuevo |
 | **Scraping (local)** | `python run_scheduler.py --test` | Llamar scrapers directo |
 | **Scraping ComputRabajo** | `python scripts/scraping/run_computrabajo_vps.py` | Usar scraper directo |
 | **Scraping CABA** | `python scripts/scraping/run_caba_vps.py` | Usar scraper directo |
@@ -815,14 +823,16 @@ El sistema luego aplica las reglas automáticamente. Claude NO reemplaza al LLM.
 ### Cadena de Dependencias
 
 ```
-SCRAPING → NLP → SKILLS → MATCHING
-              ↓       ↓         ↓
-           tareas  extraídas  ESCO code
-           ubicación  de tareas+título
-           seniority
-           área
+SCRAPING → NLP → NLP GATE → MULTI-POS → SKILLS → MATCHING
+  ↓          ↓       ↓           ↓          ↓         ↓
+portal    tareas  bloquea     split      extraídas  ESCO code
+metadata  ubicac  critico/    sub-       de tareas
+embebida  senior  alto        ofertas    +título
+          área
 
-Si NLP extrae mal las tareas → Skills quedan mal → Matching falla
+Source-aware: CABA/Portal Empleo/Indeed embeben metadata → pre-fill NLP
+Si NLP extrae mal → Gate bloquea → Auto-corrige → Escala a Claude
+Si NLP OK → Multi-position split → Skills → Matching
 ```
 
 ### Flujo de Trabajo (UN COMANDO)
@@ -832,21 +842,33 @@ COMANDO ÚNICO (hace TODO automáticamente):
 ──────────────────────────────────────────
 python scripts/run_validated_pipeline.py --limit 100
 
-EJECUTA AUTOMÁTICAMENTE:
-  1. MATCHING     → match_ofertas_v3.py
-  2. VALIDACIÓN   → auto_validator.py (detecta errores → BD)
-  3. CORRECCIÓN   → auto_corrector.py (arregla lo que puede → BD)
-  4. REPORTE      → genera cola_claude.json si hay errores escalados
+EJECUTA AUTOMÁTICAMENTE (v3.3 — 8 pasos):
+  1.   NLP             → process_nlp_from_db_v11.py v11.4 (source-aware)
+  1.5  NLP GATE        → nlp_validator.py v1.1 (35+ reglas, bloquea critico/alto)
+  1.5b NLP AUTO-CORR   → auto_corrector.py (corrige NLP, re-valida, escala a Claude)
+  1.6  MULTI-POSITION  → limpiar_titulos.py (detecta "Vendedor / Cajero", crea sub-ofertas)
+  2.   MATCHING        → match_ofertas_v3.py v3.5.4 (ESCO-First)
+  3.   VALIDACIÓN      → auto_validator.py (detecta errores → BD)
+  4.   AUTO-CORRECCIÓN → auto_corrector.py (arregla lo que puede → BD)
+  5.   NLP RE-PROCESS  → si hay errores NLP → reprocesa → vuelve a paso 1.5 (max 2 iter)
+  6.   REPORTE         → genera cola_claude.json si hay errores escalados
+  7.   EXPORT EXCEL    → Excel para validación humana
+  8.   SYNC LEARNINGS  → actualiza .ai/learnings.yaml
 
 OPCIONES:
-  --limit N          Procesar N ofertas
+  --limit N          Procesar N ofertas (por prioridad)
   --ids X,Y,Z        Procesar IDs específicos
+  --skip-nlp         Saltar NLP (solo matching+validación)
+  --skip-matching    Saltar matching (solo validar)
+  --only-pending     Solo ofertas pendientes de matching
+  --no-priority      Sin sistema de prioridad
   --export-markdown  Generar validation/feedback_*.md para GitHub
 
 RESULTADO:
   - Errores detectados → tabla validation_errors (persistidos)
-  - Errores corregidos → marcados corregido=1 en BD
+  - Errores corregidos → marcados corregido=1 en BD (con valor_corregido)
   - Errores escalados → metrics/cola_claude_*.json + escalado_claude=1 en BD
+  - Fine-tuning data → llm_raw_json + postprocessor_diff_json + valor_actual en BD
 ```
 
 ### Si Hay Errores Escalados
@@ -880,20 +902,25 @@ python scripts/run_validated_pipeline.py --ids X,Y,Z
 
 | Archivo | Función |
 |---------|---------|
-| `scripts/run_validated_pipeline.py` | **⭐ ENTRY POINT PRINCIPAL** - orquesta todo |
-| `config/validation_rules.json` | Reglas de auto-detección (ver conteos en learnings.yaml) |
+| `scripts/run_validated_pipeline.py` | **⭐ ENTRY POINT PRINCIPAL** v3.3 - orquesta 8 pasos |
+| `database/nlp_validator.py` | **NLP Gate** v1.1 - 35+ reglas pre-matching (bloquea critico/alto) |
+| `config/nlp_validation_rules.json` | Reglas NLP: V01-V26, NV02-NV11, NQ01-NQ05 (cross-field) |
+| `config/validation_rules.json` | Reglas matching: auto-detección (ver conteos en learnings.yaml) |
 | `config/diagnostic_patterns.json` | Patrones para identificar punto de falla |
 | `config/auto_correction_map.json` | Mapeo diagnóstico → config a modificar |
-| `database/auto_validator.py` | Validador automático (persiste en BD) |
-| `database/auto_corrector.py` | Corrector automático (actualiza BD) |
+| `database/auto_validator.py` | Validador matching (persiste en BD) |
+| `database/auto_corrector.py` | Corrector automático (con valor_corregido tracking) |
+| `database/limpiar_titulos.py` | v2.8.1 - limpieza títulos + multi-position detection |
 | `scripts/review_offer_chain.py` | **Revisión UNO POR UNO** (cadena completa) |
+| `scripts/launch_nlp_batch.py` | NLP batch en background con logging a archivo |
 
 ### Tablas de Validación en BD
 
 | Tabla | Función |
 |-------|---------|
-| `validation_errors` | Errores detectados por auto_validator (persistidos) |
+| `validation_errors` | Errores detectados (con `valor_actual` y `valor_corregido`) |
 | `ofertas_esco_matching` | Estado de matching y validación |
+| `ofertas_nlp` | Campos NLP + `nlp_gate_status` + `llm_raw_json` + `postprocessor_diff_json` |
 | `pipeline_runs` | Historial de corridas |
 
 **Consultas útiles:**
@@ -1005,42 +1032,57 @@ python scripts/run_validated_pipeline.py --ids 123,456
 
 | Componente | Archivo ACTUAL | NO USAR |
 |------------|----------------|---------|
-| Pipeline NLP | `database/process_nlp_from_db_v11.py` | v7, v8, v9, v10 |
+| Pipeline NLP | `database/process_nlp_from_db_v11.py` v11.4 | v7, v8, v9, v10 |
 | Prompt | `database/prompts/extraction_prompt_lite_v1.py` | v8, v9, v10 |
 | Regex Patterns | `database/patterns/regex_patterns_v4.py` | v1, v2, v3 |
 | Normalizador | `database/normalize_nlp_values.py` | - |
+| Postprocessor | `database/nlp_postprocessor.py` v1.3 | - |
+| NLP Validator (Gate) | `database/nlp_validator.py` v1.1 | - |
+| Limpiador títulos | `database/limpiar_titulos.py` v2.8.1 | - |
+| Batch background | `scripts/launch_nlp_batch.py` | - |
 
-**Arquitectura v11.3:**
+**Arquitectura v11.4 (source-aware):**
 ```
-CAPA 0: Regex (salarios, jornada) + Scraping directo (modalidad)
+CAPA 0: Regex (salarios, jornada) + Scraping directo (modalidad, portal)
 CAPA 1: LLM Qwen2.5:7b (20 campos)
-CAPA 2: Postprocessor (config/nlp_*.json)
-CAPA 3: Skills implícitas (BGE-M3 + ESCO embeddings)
+CAPA 1b: Source-aware pre-fill (CABA/Portal Empleo/Indeed metadata embebida)
+CAPA 2: Postprocessor (config/nlp_*.json) + LLM raw snapshot + diff tracking
+CAPA 3: Skills implícitas (LoRA fine-tuned BGE-M3 + ESCO embeddings)
+
+NLP GATE (pre-matching):
+  nlp_validator.py (35+ reglas) → aprobado/bloqueado
+  Bloqueados → auto-corrección → re-validación → escalar a Claude
 ```
 
-### Matching Pipeline v3.4.2 ESCO-First
+**Campos fine-tuning (v11.4):**
+- `llm_raw_json`: Output original del LLM (antes del postprocessor)
+- `postprocessor_diff_json`: Qué campos cambió el postprocessor y por qué
+- `valor_actual` / `valor_corregido`: En validation_errors, para auditoría
+
+### Matching Pipeline v3.5.4 ESCO-First
 
 | Componente | Archivo ACTUAL | NO USAR |
 |------------|----------------|---------|
-| Pipeline Matching | `database/match_ofertas_v3.py` v3.4.2 | v2.py, v8.x |
+| Pipeline Matching | `database/match_ofertas_v3.py` v3.5.4 | v2.py, v8.x |
 | Matcher por Skills | `database/match_by_skills.py` v1.2.0 | - |
-| Skills Extractor | `database/skills_implicit_extractor.py` v2.3 | - |
+| Skills Extractor | `database/skills_implicit_extractor.py` v2.4 | - |
 | Skills Rules Config | `config/skills_rules.json` (25 reglas) | - |
 | Skills Rules Matcher | `database/skills_rules_matcher.py` | - |
-| Diccionario Argentino | `config/sinonimos_argentinos_esco.json` (13 ocup) | - |
-| Config reglas negocio | `config/matching_rules_business.json` (124 reglas con ESCO válido) | hardcodeados |
+| Diccionario Argentino | `config/sinonimos_argentinos_esco.json` (17 ocup) | - |
+| Config reglas negocio | `config/matching_rules_business.json` (297 reglas) | hardcodeados |
 | Config principal | `config/matching_config.json` | - |
 
-**Arquitectura v3.4.2 (orden de prioridad):**
+**Arquitectura v3.5.4 (orden de prioridad):**
 ```
 PRINCIPIO: ESCO es TARGET, ISCO es CONSECUENCIA
 
 1. REGLAS DE NEGOCIO (GANAN SIEMPRE si aplican)
    └── Buscan ESCO label exacto → derivan ISCO
+   └── titulo_original_contiene_alguno (v3.5.4: busca en título SIN limpiar)
         ↓ (si no hay regla)
 2. DICCIONARIO ARGENTINO ← Vocabulario local → ISCO
         ↓ (si no matchea)
-3. SEMÁNTICO (BGE-M3) ← Skills 60% + Titulo 40%
+3. SEMÁNTICO (LoRA fine-tuned) ← Skills 60% + Titulo 40%
         ↓
 4. PENALIZACIONES (sector, seniority)
         ↓
@@ -1049,24 +1091,25 @@ PRINCIPIO: ESCO es TARGET, ISCO es CONSECUENCIA
 
 → **Detalles:** `docs/reference/PIPELINE.md`
 
-### Skills Dual System v2.3 (2026-01-22)
+### Skills Dual System v2.4 (2026-03-15)
 
 Sistema DUAL para extracción de skills (mismo patrón que ISCO matching):
-- **Reglas de skills** (prioridad) + **Semántico BGE-M3** (fallback)
+- **Reglas de skills** (prioridad) + **LoRA fine-tuned model** (fallback)
 - Guarda AMBOS resultados para comparación y métricas
 
 | Componente | Archivo | Propósito |
 |------------|---------|-----------|
 | Skills Rules Config | `config/skills_rules.json` | 25 reglas que fuerzan skills específicas |
 | Skills Rules Matcher | `database/skills_rules_matcher.py` | Evaluador de reglas |
-| Skills Extractor | `database/skills_implicit_extractor.py` v2.3 | Método `extract_skills_dual()` |
+| Skills Extractor | `database/skills_implicit_extractor.py` v2.4 | Método `extract_skills_dual()` |
+| Modelo | `data/finetuning/matching/model_lora` | LoRA fine-tuned (reemplaza BGE-M3 default) |
 
 **Arquitectura Dual:**
 ```
 1. Evaluar REGLAS DE SKILLS (skills_rules.json)
    └── Si matchea → skills_regla (prioridad)
         ↓
-2. Extraer SEMÁNTICO (BGE-M3 siempre)
+2. Extraer SEMÁNTICO (LoRA fine-tuned siempre)
    └── skills_semantico
         ↓
 3. Comparar ambos
