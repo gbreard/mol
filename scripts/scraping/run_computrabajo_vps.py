@@ -296,6 +296,19 @@ def cargar_keywords(estrategia: str = "exhaustiva") -> list:
     return keywords
 
 
+def _extraer_slug(oferta):
+    """Extrae slug estable de la URL para deduplicación."""
+    import re
+    url = oferta.get('url_completa') or oferta.get('url_relativa') or ''
+    url_clean = url.split('#')[0].split('?')[0]
+    if '/ofertas-de-trabajo/' in url_clean:
+        slug = url_clean.split('/ofertas-de-trabajo/')[-1]
+    else:
+        slug = url_clean
+    # Quitar hash 32 chars del final
+    return re.sub(r'-[A-Fa-f0-9]{32}$', '', slug)
+
+
 def scrapear_con_keywords(
     scraper: ComputRabajoScraper,
     keywords: list,
@@ -305,16 +318,21 @@ def scrapear_con_keywords(
     db_path: str = None
 ) -> dict:
     """
-    Scrapea ComputRabajo keyword por keyword e inserta en BD.
+    Scrapea ComputRabajo en DOS PASADAS:
 
-    A diferencia de ZonaJobs/Bumeran (que retornan todo y luego insertan),
-    aquí insertamos después de cada keyword para no perder datos si falla.
+    PASO 1: Recorrer todos los keywords, scrapear listados (sin descripción).
+            Deduplicar por URL slug. Insertar en BD inmediatamente.
+            Rápido: ~2-3 horas para 1072 keywords.
+
+    PASO 2: Para las ofertas nuevas insertadas, bajar descripción individual.
+            Solo las que no tienen descripción aún.
+            Se hace UPDATE en BD (no se pierde nada si se interrumpe).
 
     Args:
         scraper: Instancia de ComputRabajoScraper
         keywords: Lista de keywords
         max_paginas: Páginas por keyword
-        fetch_description: Si True, obtiene descripción completa (lento)
+        fetch_description: Si True, ejecuta Paso 2 (descripciones)
         delay_keywords: Delay entre keywords (segundos)
         db_path: Ruta a la BD SQLite
 
@@ -335,28 +353,27 @@ def scrapear_con_keywords(
     }
 
     slugs_vistos = set()  # Deduplicar entre keywords usando URL slug (estable)
+    # URLs de ofertas nuevas para Paso 2 (id_oferta → url)
+    ofertas_para_descripcion = {}
 
-    def _extraer_slug(oferta):
-        """Extrae slug estable de la URL para deduplicación."""
-        url = oferta.get('url_completa') or oferta.get('url_relativa') or ''
-        url_clean = url.split('#')[0].split('?')[0]
-        if '/ofertas-de-trabajo/' in url_clean:
-            slug = url_clean.split('/ofertas-de-trabajo/')[-1]
-        else:
-            slug = url_clean
-        # Quitar hash 32 chars del final
-        import re
-        return re.sub(r'-[A-Fa-f0-9]{32}$', '', slug)
+    # ==================================================================
+    # PASO 1: Listar todas las keywords (sin descripciones)
+    # ==================================================================
+    logger.info("")
+    logger.info("=" * 70)
+    logger.info("PASO 1/2: Listado rápido de todas las keywords")
+    logger.info("=" * 70)
+    paso1_start = time.time()
 
     for i, keyword in enumerate(keywords, 1):
         logger.info(f"[{i}/{len(keywords)}] Keyword: '{keyword}'")
 
         try:
-            # Scrapear listado
+            # Scrapear listado (sin descripciones)
             ofertas_raw = scraper.scrapear_todo(
                 max_paginas=max_paginas,
                 query=keyword,
-                fetch_description=False  # Primero el listado rápido
+                fetch_description=False
             )
 
             if not ofertas_raw:
@@ -364,7 +381,7 @@ def scrapear_con_keywords(
                 stats_global['keywords_procesadas'] += 1
                 continue
 
-            # Deduplicar contra ofertas ya vistas en este run (por URL slug, no data-id)
+            # Deduplicar contra ofertas ya vistas en este run (por URL slug)
             ofertas_nuevas = []
             for oferta in ofertas_raw:
                 slug = _extraer_slug(oferta)
@@ -374,26 +391,7 @@ def scrapear_con_keywords(
 
             logger.info(f"  {len(ofertas_raw)} encontradas, {len(ofertas_nuevas)} nuevas en este run")
 
-            # Fetch descriptions solo para las nuevas (si habilitado)
-            if fetch_description and ofertas_nuevas:
-                desc_count = 0
-                for j, oferta in enumerate(ofertas_nuevas, 1):
-                    url = oferta.get('url_completa')
-                    if url:
-                        datos_extra = scraper.scrapear_oferta_individual(url)
-                        if datos_extra:
-                            oferta.update(datos_extra)
-                            desc_count += 1
-                        time.sleep(scraper.delay)
-
-                    # Log progreso cada 10 ofertas
-                    if j % 10 == 0:
-                        logger.info(f"    Descripciones: {j}/{len(ofertas_nuevas)}...")
-
-                stats_global['ofertas_con_descripcion'] += desc_count
-                logger.info(f"  Descripciones obtenidas: {desc_count}/{len(ofertas_nuevas)}")
-
-            # Mapear e insertar en BD
+            # Mapear e insertar en BD (sin descripción todavía)
             ofertas_mapeadas = [mapear_oferta_para_bd(o) for o in ofertas_nuevas]
             ofertas_mapeadas = [o for o in ofertas_mapeadas if o is not None]
 
@@ -403,6 +401,18 @@ def scrapear_con_keywords(
                 stats_global['duplicadas_total'] += bd_stats['duplicadas']
                 stats_global['errores_total'] += bd_stats['errores']
                 logger.info(f"  BD: +{bd_stats['insertadas']} insertadas, {bd_stats['duplicadas']} dup")
+
+                # Guardar URLs de las realmente insertadas para Paso 2
+                if fetch_description and bd_stats['insertadas'] > 0:
+                    for oferta in ofertas_nuevas:
+                        url = oferta.get('url_completa')
+                        if url:
+                            id_int = computrabajo_id_to_int(
+                                data_id=oferta.get('id_oferta'),
+                                url_oferta=url
+                            )
+                            if id_int:
+                                ofertas_para_descripcion[id_int] = url
 
             stats_global['ofertas_scrapeadas'] += len(ofertas_nuevas)
             stats_global['keywords_exitosas'] += 1
@@ -416,6 +426,83 @@ def scrapear_con_keywords(
         # Delay entre keywords (excepto la última)
         if i < len(keywords):
             time.sleep(delay_keywords)
+
+    paso1_elapsed = time.time() - paso1_start
+    logger.info("")
+    logger.info(f"PASO 1 COMPLETADO en {paso1_elapsed:.0f}s ({paso1_elapsed/60:.1f} min)")
+    logger.info(f"  Keywords: {stats_global['keywords_procesadas']}/{stats_global['keywords_total']}")
+    logger.info(f"  Ofertas nuevas scrapeadas: {stats_global['ofertas_scrapeadas']}")
+    logger.info(f"  Insertadas en BD: {stats_global['insertadas_total']}")
+    logger.info(f"  Ofertas pendientes descripción: {len(ofertas_para_descripcion)}")
+
+    # ==================================================================
+    # PASO 2: Bajar descripciones de las ofertas nuevas
+    # ==================================================================
+    if fetch_description and ofertas_para_descripcion:
+        logger.info("")
+        logger.info("=" * 70)
+        logger.info(f"PASO 2/2: Descripciones de {len(ofertas_para_descripcion)} ofertas nuevas")
+        logger.info("=" * 70)
+        paso2_start = time.time()
+
+        # También buscar ofertas sin descripción de corridas anteriores
+        if db_path:
+            try:
+                conn = sqlite3.connect(db_path, timeout=30)
+                cur = conn.cursor()
+                cur.execute("""
+                    SELECT id_oferta, url_oferta FROM ofertas
+                    WHERE portal = 'computrabajo'
+                      AND (descripcion IS NULL OR descripcion = '')
+                      AND url_oferta IS NOT NULL
+                """)
+                for row in cur.fetchall():
+                    if row[0] not in ofertas_para_descripcion:
+                        ofertas_para_descripcion[row[0]] = row[1]
+                conn.close()
+                logger.info(f"  Total con descripciones pendientes (incl. anteriores): {len(ofertas_para_descripcion)}")
+            except Exception as e:
+                logger.warning(f"  No se pudo consultar BD para pendientes: {e}")
+
+        desc_count = 0
+        desc_errors = 0
+        conn = sqlite3.connect(db_path, timeout=30) if db_path else None
+
+        for j, (id_oferta, url) in enumerate(ofertas_para_descripcion.items(), 1):
+            try:
+                datos_extra = scraper.scrapear_oferta_individual(url)
+                if datos_extra and datos_extra.get('descripcion'):
+                    if conn:
+                        conn.execute(
+                            "UPDATE ofertas SET descripcion = ? WHERE id_oferta = ?",
+                            (datos_extra['descripcion'], id_oferta)
+                        )
+                        if j % 50 == 0:
+                            conn.commit()
+                    desc_count += 1
+                time.sleep(scraper.delay)
+            except Exception as e:
+                desc_errors += 1
+                if desc_errors <= 5:
+                    logger.warning(f"  Error descripción {id_oferta}: {e}")
+
+            # Log progreso cada 50 ofertas
+            if j % 50 == 0:
+                logger.info(f"  Descripciones: {j}/{len(ofertas_para_descripcion)} ({desc_count} OK, {desc_errors} err)")
+
+        if conn:
+            conn.commit()
+            conn.close()
+
+        stats_global['ofertas_con_descripcion'] = desc_count
+        paso2_elapsed = time.time() - paso2_start
+        logger.info(f"PASO 2 COMPLETADO en {paso2_elapsed:.0f}s ({paso2_elapsed/60:.1f} min)")
+        logger.info(f"  Descripciones obtenidas: {desc_count}/{len(ofertas_para_descripcion)}")
+        logger.info(f"  Errores: {desc_errors}")
+
+    elif fetch_description:
+        logger.info("")
+        logger.info("PASO 2 OMITIDO: No hay ofertas nuevas que necesiten descripción")
 
     return stats_global
 
