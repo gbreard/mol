@@ -46,7 +46,7 @@
       "descripcion": "Titulo contiene codigo interno no limpiado (excluye terminos tecnicos)",
       "campo": "titulo_limpio",
       "operador": "matches_regex",
-      "valor": "^(?!(?:IA|IT|AI|ML|UX|UI|QA|PM|HR|SAP|SQL|PHP|NET|AWS|GCP|API|CEO|CFO|COO|CTO|CMO|JAVA|MEAN|MERN|LAMP|SCRUM|AGILE)\\s)[A-Z0-9]{2,6}[\\s-]",
+      "valor": "^(?!(?:IA|IT|AI|ML|UX|UI|QA|PM|HR|SAP|SQL|PHP|NET|AWS|GCP|API|CEO|CFO|COO|CTO|CMO|JAVA|MEAN|MERN|LAMP|SCRUM|AGILE|DEVOPS|DBA|SR|SSR|SRE|ERP|CRM|RPA|ETL|BPM|KAM|ABM)\\s)[A-Z0-9]{2,6}[\\s-]",
       "diagnostico": "error_limpieza",
       "severidad": "medio",
       "mensaje": "Codigo interno en titulo - agregar patron a nlp_titulo_limpieza.json",

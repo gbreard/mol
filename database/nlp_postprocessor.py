@@ -451,6 +451,14 @@ class NLPPostprocessor:
                     "CABA": "CAPITAL FEDERAL",
                     "CIUDAD DE BUENOS AIRES": "CAPITAL FEDERAL",
                     "CIUDAD AUTONOMA DE BUENOS AIRES": "CAPITAL FEDERAL",
+                    "BUENOS AIRES-GBA": "BUENOS AIRES",
+                    "GBA": "BUENOS AIRES",
+                    "GRAN BUENOS AIRES": "BUENOS AIRES",
+                    "CÓRDOBA": "CORDOBA",
+                    "TUCUMÁN": "TUCUMAN",
+                    "ENTRE RÍOS": "ENTRE RIOS",
+                    "RÍO NEGRO": "RIO NEGRO",
+                    "NEUQUÉN": "NEUQUEN",
                 }
                 provincia_norm = normalizaciones.get(provincia_upper, provincia_upper)
 
@@ -1650,7 +1658,37 @@ class NLPPostprocessor:
                 if buscar:
                     tarea = tarea.replace(buscar, reemplazo)
 
-            # 4. Validar longitud minima
+            # 4. Descartar tareas que no son tareas (v11.4)
+            tarea_lower = tarea.lower().strip()
+
+            # 4a. Descartar exactos
+            if tarea_lower in [x.lower() for x in config.get("descartar_exactos", [])]:
+                if self.verbose:
+                    print(f"[TAREAS] Descartada (exacto): '{tarea}'")
+                continue
+
+            # 4b. Descartar si contiene patrón
+            descartada = False
+            for patron in config.get("descartar_si_contiene", []):
+                if patron.lower() in tarea_lower:
+                    if self.verbose:
+                        print(f"[TAREAS] Descartada (contiene '{patron}'): '{tarea}'")
+                    descartada = True
+                    break
+            if descartada:
+                continue
+
+            # 4c. Descartar si es requisito/soft skill (no tarea)
+            for req in config.get("descartar_si_es_requisito", []):
+                if tarea_lower == req.lower() or tarea_lower.startswith(req.lower()):
+                    if self.verbose:
+                        print(f"[TAREAS] Descartada (requisito): '{tarea}'")
+                    descartada = True
+                    break
+            if descartada:
+                continue
+
+            # 5. Validar longitud minima
             min_len = config.get("min_longitud_tarea", 5)
             if len(tarea) >= min_len:
                 tareas_limpias.append(tarea.strip())
