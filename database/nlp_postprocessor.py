@@ -2172,6 +2172,16 @@ class NLPPostprocessor:
         # Paso 4a3: Correccion seniority (si inconsistente con experiencia)
         data = self._corregir_seniority(data)
 
+        # Paso 4a4: Corregir exp=0 falso para seniority alto (v11.4)
+        # Si seniority es senior/manager/lead/director y exp_min=0,
+        # el LLM puso 0 porque no encontró dato, no porque sea 0 real.
+        seniority = (data.get("nivel_seniority") or "").lower()
+        exp_min = data.get("experiencia_min_anios")
+        if seniority in ("senior", "manager", "lead", "director") and exp_min == 0:
+            data["experiencia_min_anios"] = None
+            if self.verbose:
+                print(f"[CORR EXP] exp_min 0 -> null (seniority={seniority}, 0 no es creíble)")
+
         # Paso 4b: Extraccion tareas explicitas (si LLM no detecto)
         data = self._extract_tareas(descripcion, data)
 
@@ -2244,7 +2254,7 @@ class NLPPostprocessor:
 
         # Merge: campos de ubicacion del scraping tienen prioridad absoluta
         # porque vienen de datos estructurados, no inferidos del texto
-        campos_prioridad_scraping = {"localidad", "provincia"}
+        campos_prioridad_scraping = {"localidad", "provincia", "modalidad"}
 
         # Normalizar modalidad del scraping antes de mergear
         if "modalidad" in pre_data and pre_data["modalidad"]:
