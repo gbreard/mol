@@ -1534,7 +1534,15 @@
       "básico y comisiones",
       "remuneración",
       "salario",
-      "sueldo"
+      "sueldo",
+      "ganancia aproximada",
+      "postulación",
+      "esperamos tu",
+      "no lo dudes",
+      "registro de conducir",
+      "carnet de conducir",
+      "autos nuevos",
+      "requisito excluyente"
     ],
     "descartar_si_es_requisito": [
       "ser responsable",
@@ -1551,6 +1559,22 @@
       "experiencia en",
       "experiencia previa",
       "excluyente"
+    ],
+    "descartar_si_empieza_con": [
+      "n ",
+      "de ",
+      "del ",
+      "los ",
+      "las ",
+      "con ",
+      "en ",
+      "al ",
+      "a ",
+      "para ",
+      "por ",
+      "seas ",
+      "si ",
+      "similares "
     ]
   },
   "limpieza_skills": {

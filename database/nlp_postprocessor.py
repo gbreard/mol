@@ -1667,6 +1667,17 @@ class NLPPostprocessor:
                     print(f"[TAREAS] Descartada (exacto): '{tarea}'")
                 continue
 
+            # 4a2. Descartar si empieza con fragmento (LLM cortó mal)
+            descartada = False
+            for prefijo in config.get("descartar_si_empieza_con", []):
+                if tarea_lower.startswith(prefijo.lower()):
+                    if self.verbose:
+                        print(f"[TAREAS] Descartada (empieza con '{prefijo}'): '{tarea}'")
+                    descartada = True
+                    break
+            if descartada:
+                continue
+
             # 4b. Descartar si contiene patrón
             descartada = False
             for patron in config.get("descartar_si_contiene", []):
@@ -1704,6 +1715,12 @@ class NLPPostprocessor:
                 self.stats["tareas_limpiadas"] = self.stats.get("tareas_limpiadas", 0) + 1
                 if self.verbose:
                     print(f"[TAREAS] Limpiado: '{tareas[:50]}' -> '{nuevo_valor[:50]}'")
+        elif lista_tareas:
+            # Todas las tareas fueron descartadas → poner null
+            data["tareas_explicitas"] = None
+            self.stats["tareas_limpiadas"] = self.stats.get("tareas_limpiadas", 0) + 1
+            if self.verbose:
+                print(f"[TAREAS] Todas descartadas: '{tareas[:50]}' -> null")
 
         return data
 
