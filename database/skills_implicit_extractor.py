@@ -163,6 +163,21 @@ class SkillsImplicitExtractor:
 
         self.terminology_config = SkillsImplicitExtractor._terminology_config
 
+        # v2.5: Cargar sinónimos argentinos para skills (mapeo directo)
+        if not hasattr(SkillsImplicitExtractor, '_sinonimos_skills') or SkillsImplicitExtractor._sinonimos_skills is None:
+            sinonimos_path = Path(__file__).parent.parent / "config" / "sinonimos_skills_argentinos.json"
+            if sinonimos_path.exists():
+                with open(sinonimos_path, 'r', encoding='utf-8') as f:
+                    SkillsImplicitExtractor._sinonimos_skills = json.load(f)
+                if self.verbose:
+                    tareas = len(SkillsImplicitExtractor._sinonimos_skills.get('tareas_a_skills', {}))
+                    soft = len(SkillsImplicitExtractor._sinonimos_skills.get('soft_skills_argentinas', {}))
+                    print(f"[SKILLS] Sinónimos argentinos cargados: {tareas} tareas + {soft} soft skills")
+            else:
+                SkillsImplicitExtractor._sinonimos_skills = {"tareas_a_skills": {}, "soft_skills_argentinas": {}}
+
+        self.sinonimos_skills = SkillsImplicitExtractor._sinonimos_skills
+
         SkillsImplicitExtractor._initialized = True
 
         if self.verbose:
@@ -275,8 +290,29 @@ class SkillsImplicitExtractor:
         skills_implicitas = []
         skills_vistas = set()  # Para evitar duplicados
 
+        # v2.5: Lookup sinónimos argentinos (prioridad sobre BGE-M3)
+        sinonimos_tareas = self.sinonimos_skills.get('tareas_a_skills', {})
+        sinonimos_soft = self.sinonimos_skills.get('soft_skills_argentinas', {})
+        sinonimos_all = {**sinonimos_tareas, **sinonimos_soft}
+
         for tarea in tareas:
-            # Generar embedding de la tarea
+            # Primero: buscar match directo en sinónimos argentinos
+            tarea_lower = tarea.lower().strip()
+            match_sinonimo = sinonimos_all.get(tarea_lower)
+            if match_sinonimo and match_sinonimo.lower() not in skills_vistas:
+                skills_vistas.add(match_sinonimo.lower())
+                skills_implicitas.append({
+                    'tarea': tarea,
+                    'skill_esco': match_sinonimo,
+                    'skill_uri': None,
+                    'score': 0.99,
+                    'origen': 'sinonimo_argentino'
+                })
+                if self.verbose:
+                    print(f"[SKILLS] '{tarea}' -> '{match_sinonimo}' (sinónimo argentino)")
+                continue
+
+            # Fallback: Generar embedding de la tarea
             tarea_emb = self.model.encode(tarea, normalize_embeddings=True)
 
             # Calcular similitud coseno con todas las skills
