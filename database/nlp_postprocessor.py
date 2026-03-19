@@ -2182,6 +2182,13 @@ class NLPPostprocessor:
             if self.verbose:
                 print(f"[CORR EXP] exp_min 0 -> null (seniority={seniority}, 0 no es creíble)")
 
+        # Paso 4a5: Corregir gente_cargo falso para seniority bajo (v11.4)
+        # Junior/trainee no tienen gente a cargo — LLM lo marca mal
+        if seniority in ("trainee", "junior") and data.get("tiene_gente_cargo") in (True, "True", "1", 1):
+            data["tiene_gente_cargo"] = False
+            if self.verbose:
+                print(f"[CORR] tiene_gente_cargo True -> False (seniority={seniority})")
+
         # Paso 4b: Extraccion tareas explicitas (si LLM no detecto)
         data = self._extract_tareas(descripcion, data)
 

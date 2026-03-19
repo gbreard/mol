@@ -376,6 +376,55 @@
           "_nota": "Validacion v2.1: Analista (genérico) → junior. DEBE ir después de 'analista senior'",
           "_fecha": "2026-02-04",
           "_casos": "Analista de Siniestros, Analista para Laboratorio I+D, Analista de Importaciones"
+        },
+        {
+          "titulo_contiene_alguno": [
+            "médico",
+            "medico",
+            "médica",
+            "medica",
+            "doctor",
+            "doctora",
+            "odontólogo",
+            "odontologo",
+            "odontóloga",
+            "kinesiólogo",
+            "kinesiologa",
+            "kinesióloga",
+            "fonoaudiólogo",
+            "fonoaudiologa",
+            "fonoaudióloga",
+            "psiquiatra",
+            "farmacéutico",
+            "farmaceutico",
+            "farmacéutica",
+            "bioquímico",
+            "bioquimica",
+            "bioquímico",
+            "nutricionista",
+            "psicólogo",
+            "psicologa",
+            "psicóloga",
+            "veterinario",
+            "veterinaria",
+            "enfermero",
+            "enfermera",
+            "enfermero/a",
+            "radiólogo",
+            "radiologo",
+            "traumatólogo",
+            "traumatologo",
+            "cardiólogo",
+            "cardiologo",
+            "pediatra",
+            "obstetra",
+            "anestesiólogo",
+            "anestesiologo",
+            "cirujano",
+            "cirujana"
+          ],
+          "forzar_seniority": "semisenior",
+          "_nota": "Profesionales de salud requieren título habilitante = semisenior mínimo"
         }
       ]
     },
@@ -1151,6 +1200,42 @@
           "acero inoxidable"
         ],
         "sector_correcto": "Industria"
+      },
+      {
+        "sector_incorrecto": [
+          "Seguridad"
+        ],
+        "sector_correcto": "Seguros",
+        "keywords_titulo": [
+          "seguros",
+          "seguro",
+          "póliza",
+          "poliza",
+          "asegurador",
+          "aseguradora",
+          "siniestros",
+          "productor de seguros",
+          "underwriting",
+          "suscripcion",
+          "reaseguro",
+          "actuario",
+          "actuarial"
+        ],
+        "keywords_descripcion": [
+          "compañía de seguros",
+          "empresa de seguros",
+          "aseguradora",
+          "póliza",
+          "poliza",
+          "siniestros",
+          "productor de seguros",
+          "cobertura de seguro",
+          "riesgo asegurado",
+          "prima de seguro",
+          "art ",
+          "aseguradora de riesgos"
+        ],
+        "_nota": "Seguros ≠ Seguridad física. El LLM confunde las dos."
       }
     ]
   },
