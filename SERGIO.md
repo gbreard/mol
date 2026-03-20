@@ -19,10 +19,15 @@
 | API `/api/training-suggestions` GET | ✅ Listo | `425dbf80` | S8: puede conectar directo. Multi-fuente + tendencia temporal |
 
 **Que puede hacer Sergio HOY:**
-- **S1** (P-36 admin versiones) — API lista, puede desarrollar contra ella o mock
-- **S2** (SkillSearchByTask) — catálogo unificado listo (16,633 skills con source). API search pendiente pero puede usar mock con datos del catálogo
-- **S3** (SkillWithDefinition) — puro UI, no depende de nada. El catálogo tiene 'source' (esco/argentina_emerging) para mostrar badges
-- Cascarones de todas las paginas + mocks MSW
+- **S1 a S8** — TODAS las APIs del Bloque 1-4 listas (versiones, search, extract, report, offers, training)
+- **S2-1 a S2-5** (Oficina Empleo) — Bloque 5 listo: multi-tenancy + import CSV + organizaciones API
+- **Todas las tareas** — no queda ninguna API bloqueada
+
+**NUEVO Bloque 5 (OE):**
+- Migration 019: tablas `organizaciones` + `user_organizaciones` (pendiente ejecutar en Supabase)
+- API `/api/organizaciones` GET/POST
+- Parser CSV: `lib/parse-pool-import.ts` (sanitización S-25 incluida)
+- Funciones SQL: `get_user_org()`, `get_perfiles_by_org()`
 
 **Antes de arrancar:** `git pull origin feature/skills-intelligence-v5`
 
