@@ -387,6 +387,144 @@ Admin crea contenido desde datos del dashboard y el sistema lo distribuye a regi
 
 ---
 
+## F-06: Evaluación de Compatibilidad + Reporte para Empresas (NUEVO — V-17)
+
+Flujo completo con dos caminos de entrada (trabajador independiente y gestor de oficina de empleo), captura de competencias con 3 vías, matching contra perfil consolidado argentino, y generación del reporte.
+
+### Dos caminos de entrada
+
+| Camino | Usuario | Entrada | Estado |
+|--------|---------|---------|--------|
+| A. Mi Futuro Laboral | Trabajador independiente | `/mi-futuro-laboral` → `/skills?tab=myskills` | Landing existe, cards de evaluación por crear |
+| B. Oficina de Empleo | Gestor / orientador | `/oficina-empleo` → perfil trabajador | Hub wireframe, funcionalidad por conectar |
+
+Ambos caminos convergen en el mismo motor de matching (`MySkillsSearch`) y producen el mismo reporte.
+
+### Captura de competencias (Paso 2) — 3 vías combinables
+
+| Vía | Pregunta | Cómo funciona | Estado |
+|-----|----------|---------------|--------|
+| 1. Por ocupación | "¿En qué trabajaste?" | Busca ocupación ESCO → extrae competencias del perfil consolidado argentino | ✅ Existe |
+| 2. Por tarea/habilidad | "¿Qué sabés hacer?" | Busca directo en catálogo ESCO + emergentes argentinas (por nombre y definición) | ❌ Nuevo |
+| 3. Texto libre | "Contanos con tus palabras" | Describe experiencia → NLP identifica competencias | ❌ Nuevo |
+
+**Elemento clave:** Cada competencia identificada muestra su **definición ESCO** para que el trabajador confirme (✓), marque como dudoso (?), o descarte (✕). Resuelve el problema de que muchas personas no se identifican con nombres técnicos formales.
+
+### Taxonomía de referencia: Perfil Consolidado Argentino
+
+El matching no usa ESCO genérico sino el **Perfil Consolidado Argentino** (tabla `esco_argentino`), que incluye:
+- Skills ESCO estándar (14,257) marcadas como `esco_common`
+- Skills emergentes del mercado argentino aprobadas por analistas, marcadas como `argentina_approved`
+- Cada ocupación tiene su versión (v1, v2...) que se incrementa con cada aprobación
+- El reporte registra la versión usada (`perfil_consolidado_version`) para reproducibilidad
+
+> Estado: Sistema de perfiles consolidados **ya implementado** (tabla, API CRUD, panel de aprobación en /admin/skills → tab Consolidado).
+
+### Flujo completo
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                                                                          │
+│  1. GESTOR O TRABAJADOR GENERA REPORTE (desde "Mis Skills", paso 3)     │
+│     ┌──────────────────────────────────────────────────────┐            │
+│     │  P-10: /dashboard/skills → Tab "Mis Skills"          │            │
+│     │                                                      │            │
+│     │  Ocupación: Desarrollador de software                │            │
+│     │  Compatibilidad: 78%                                 │            │
+│     │  Skills cubiertas: 7/9 esenciales                    │            │
+│     │                                                      │            │
+│     │  [Generar Reporte para Empresa]                      │            │
+│     └──────────────────┬───────────────────────────────────┘            │
+│                        │                                                 │
+│                        ▼                                                 │
+│  2. CONFIRMAR DATOS DEL REPORTE (modal)                                 │
+│     ┌──────────────────────────────────────────────────────┐            │
+│     │  Nombre del candidato: [Juan Pérez     ]             │            │
+│     │  DNI: [30.123.456         ]                          │            │
+│     │  Vacante: [Desarrollador de software   ]             │            │
+│     │                                                      │            │
+│     │  El reporte estará disponible por 60 días.           │            │
+│     │                                                      │            │
+│     │  [Cancelar]  [Generar Reporte + PDF]                 │            │
+│     └──────────────────┬───────────────────────────────────┘            │
+│                        │                                                 │
+│                        ▼                                                 │
+│  3. REPORTE GENERADO                                                    │
+│     ┌──────────────────────────────────────────────────────┐            │
+│     │  ✓ Reporte creado exitosamente                       │            │
+│     │                                                      │            │
+│     │  [Descargar PDF]  [Copiar link]  [Ver reporte web]   │            │
+│     └──────────────────────────────────────────────────────┘            │
+│                        │                                                 │
+│                        │  (trabajador entrega PDF al reclutador)        │
+│                        ▼                                                 │
+│  4. RECLUTADOR ESCANEA QR                                               │
+│     ┌──────────────────────────────────────────────────────┐            │
+│     │  P-35: /reporte/{token}                              │            │
+│     │                                                      │            │
+│     │  ┌── Datos del Perfil ──────────────────────────┐    │            │
+│     │  │ Candidato: Juan Pérez                        │    │            │
+│     │  │ Vacante: Desarrollador de software           │    │            │
+│     │  │ Compatibilidad: 78% ████████░░ 7/9 esencial. │    │            │
+│     │  └──────────────────────────────────────────────┘    │            │
+│     │                                                      │            │
+│     │  ┌── Mapa de Competencias Requeridas ───────────┐    │            │
+│     │  │ ✓ JavaScript        ✓ Python                 │    │            │
+│     │  │ ✓ SQL               ✓ Testing                │    │            │
+│     │  │ ✓ Git               ✓ Agile                  │    │            │
+│     │  │ ✓ REST APIs         ✗ Docker (gap)           │    │            │
+│     │  │                     ✗ CI/CD (gap)            │    │            │
+│     │  │                                              │    │            │
+│     │  │ [+ Agregar competencia] [✕ Quitar seleccion.] │    │            │
+│     │  │ (recalcula automáticamente al editar)         │    │            │
+│     │  └──────────────────────────────────────────────┘    │            │
+│     │                                                      │            │
+│     │  ┌── Brecha Técnica ────────────────────────────┐    │            │
+│     │  │ Competencias faltantes: Docker, CI/CD        │    │            │
+│     │  └──────────────────────────────────────────────┘    │            │
+│     │                                                      │            │
+│     │  Conocé más sobre el MOL → [mol-nextjs.vercel.app]   │            │
+│     └──────────────────────────────────────────────────────┘            │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### Pasos Detallados
+
+| Paso | Pantalla | Actor | Acción | Siguiente |
+|------|----------|-------|--------|-----------|
+| 0a | /mi-futuro-laboral | Trabajador | Click "Evaluar mi compatibilidad" | P-10 Mis Skills |
+| 0b | /oficina-empleo | Gestor | Accede a perfil trabajador | P-10 Mis Skills |
+| 1 | P-10 paso 1 | Ambos | Ingresa datos del trabajador (nombre, DNI) | Paso 2 |
+| 2 | P-10 paso 2 | Ambos | Captura competencias (3 vías: ocupación, tarea, texto libre) | Paso 3 |
+| 3a | P-10 paso 3, tab Ocupaciones | Ambos | Ve ranking de ocupaciones compatibles | Explora tabs o click "Reporte" |
+| 3b | P-10 paso 3, tab Ofertas | Ambos | Ve ofertas reales que matchean, con gap personalizado | Click "Reporte" (vinculado a oferta) |
+| 3c | P-10 paso 3, tab Capacitación | Ambos | Ve cursos sugeridos para cubrir brechas + transición laboral (por preferencia o por demanda del mercado) | Informativo |
+| 4 | Modal en P-10 | Ambos | Confirma datos candidato + vacante | API genera reporte |
+| 5 | P-10 | Ambos | Descarga PDF / copia link | Entrega |
+| 6 | (fuera del sistema) | Trabajador | Entrega PDF al reclutador | Reclutador escanea |
+| 7 | P-35 | Reclutador | Escanea QR, ve reporte, edita competencias | Fin |
+
+### Tablas Afectadas
+
+- `reportes_compatibilidad` — INSERT con snapshot de matching + token + `perfil_consolidado_version` + `origen`
+- `perfiles_trabajadores` — Lectura/creación del perfil
+- `esco_argentino` — Lectura del perfil consolidado argentino para la ocupación
+- `uso_features` — Tracking de uso (feature: 'reporte_compatibilidad')
+
+### Consideraciones
+
+- **Dos caminos, mismo flujo:** Ambos caminos convergen en MySkillsSearch. La diferencia es narrativa y punto de entrada.
+- **Perfil Consolidado Argentino:** El matching usa `esco_argentino` (ESCO + emergentes), no ESCO genérico. El reporte registra la versión.
+- **3 vías de captura:** El trabajador no necesita conocer su ocupación formal. Puede describir tareas o escribir texto libre.
+- **Definiciones visibles:** Cada competencia muestra su definición ESCO para confirmar/descartar.
+- **Sin autenticación para reclutador:** Accede por token público UUID no adivinable.
+- **Expiración:** 60 días por defecto. Quien generó puede revocar.
+- **Snapshot inmutable:** Los datos se congelan al generar. Cambios posteriores no afectan.
+- **Interactividad:** El reclutador puede editar competencias requeridas y el recálculo es en frontend (no persiste).
+
+---
+
 ## Estados de Suscripción
 
 ```mermaid
@@ -423,3 +561,5 @@ stateDiagram-v2
 |-------|---------|--------|
 | 2026-02-05 | 1.0 | Flujos SaaS: Visitante→Free, Free→Pro, Uso dashboard, Webhook MP |
 | 2026-02-07 | 2.0 | Modelo híbrido: F-01 registro libre, F-02 acceso gated con aprobación, F-03 checkout dual, F-05 CMS. Estados: registrado, pendiente_aprobacion, trial |
+| 2026-03-18 | 2.1 | F-06 Reporte de Compatibilidad Laboral (V-17): flujo gestor genera → PDF con QR → reclutador accede → edita competencias |
+| 2026-03-20 | 2.2 | F-06 ampliado: 2 caminos (S1+S2), 4 vías captura (+ formación/título), 3 tabs resultados, transición dual, ESCO Argentino. Fuente: MOL_Skills_Intelligence.docx v5 |

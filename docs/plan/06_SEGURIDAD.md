@@ -1,6 +1,7 @@
 # 6. Análisis de Seguridad
 
-> Última actualización: 2026-03-03
+> Última actualización: 2026-03-20
+> Versión: 2.0 — Ampliado con issues Skills Intelligence (S-18 a S-25)
 
 ## Referencias
 
@@ -24,10 +25,10 @@
 
 | Severidad | Cantidad | Resueltos | Estado |
 |-----------|----------|-----------|--------|
-| **CRÍTICO** | 4 | 4 | ✅ Resueltos |
-| **ALTO** | 6 | 3 (S-05, S-07, S-08 parcial) | 🟠 Resolver en Fase 1 |
-| **MEDIO** | 7 | 0 | 🟡 Resolver en Fase 2 |
-| **Total** | **17** | **6** | |
+| **CRÍTICO** | 6 | 4 | 🟠 2 nuevos (S-19, S-22 multi-tenancy OE) |
+| **ALTO** | 10 | 3 | 🟠 4 nuevos (S-18, S-20, S-23, S-25) |
+| **MEDIO** | 9 | 0 | 🟡 2 nuevos (S-21, S-24) |
+| **Total** | **25** | **7** | |
 
 **Fase 0 completada.** Los 4 issues críticos están resueltos:
 - S-01: Tokens limpiados del código (commit `9f904093`) — **pendiente rotar key en Supabase Dashboard**
@@ -333,6 +334,169 @@ MEDIOS (Fase 2):
 
 ---
 
+## Issues Skills Intelligence (S-18 a S-25)
+
+> Nuevos issues de seguridad derivados de la arquitectura de 3 servicios.
+> Referencia: [01_MODELO_NEGOCIO v3.0](./01_MODELO_NEGOCIO.md#roles-skills-intelligence-v5)
+
+### S-18: Token QR no adivinable + expiración
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Servicio** | S3 (Empresas) |
+| **Impacto** | Si el token es predecible, cualquiera puede acceder a reportes con datos personales |
+
+**Solución:**
+- Token: UUID v4 (128 bits de entropía) sin guiones → 32 chars hex
+- Expiración: 60 días por defecto, configurable
+- Revocación: quien generó puede revocar en cualquier momento
+- Audit: registrar cada acceso (IP, timestamp, user-agent)
+
+---
+
+### S-19: RLS multi-tenancy OE (aislamiento entre oficinas)
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🔴 CRÍTICO |
+| **Servicio** | S2 (Oficina de Empleo) |
+| **Impacto** | Una OE podría ver datos de trabajadores de otra jurisdicción |
+
+**Solución:**
+```sql
+-- Tabla organizaciones con jurisdicción
+-- RLS: técnico solo ve registros donde organizacion_id = su org
+
+CREATE POLICY "OE solo ve su cartera"
+ON perfiles_trabajadores FOR SELECT
+USING (
+  organizacion_id = (
+    SELECT organizacion_id FROM user_organizaciones
+    WHERE user_id = auth.uid()
+  )
+);
+
+-- Misma lógica para vacantes_oe, cursos_oe, etc.
+```
+
+---
+
+### S-20: Consentimiento opt-in del trabajador
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Servicio** | S1 → S2, S3 |
+| **Impacto** | Sin consentimiento explícito, compartir datos del trabajador con OEs/empresas viola privacidad |
+
+**Solución:**
+- Campo `opt_in_pool` en `perfiles_trabajadores` (boolean, default FALSE)
+- Checkbox claro: "Acepto que mi perfil sea visible en búsquedas de oficinas de empleo y empresas"
+- El trabajador puede revocar en cualquier momento
+- Sin opt-in: perfil invisible para S2 y S3, solo el trabajador lo ve
+
+---
+
+### S-21: Datos personales (DNI) solo en PDF
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟡 MEDIO |
+| **Servicio** | S1, S3 |
+| **Impacto** | El DNI no debería ser visible en una URL accesible por token |
+
+**Solución:**
+- El DNI se incluye en el PDF descargable (documento físico)
+- El reporte web (acceso por QR) muestra nombre pero NO DNI
+- Campo `candidato_dni` no se expone en la API pública del reporte
+
+---
+
+### S-22: Aislamiento de pools por jurisdicción
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🔴 CRÍTICO |
+| **Servicio** | S2 |
+| **Impacto** | Sin aislamiento, una OE de CABA podría ver la cartera de una OE de Córdoba |
+
+**Solución:**
+- Cada OE tiene `jurisdiccion` (provincia/municipio) en tabla `organizaciones`
+- Pool propio: solo datos cargados por la OE (aislamiento total)
+- Pool amplio MOL: ofertas del mercado general filtradas por jurisdicción (lectura)
+- Trabajadores con opt-in: visibles solo si están en la misma jurisdicción (o nacional si el trabajador lo elige)
+
+---
+
+### S-23: Rate limiting APIs públicas S1
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Servicio** | S1 |
+| **Impacto** | Sin rate limit, scraping masivo de ofertas y datos de matching |
+
+**Solución:**
+- Tier `s1_public`: 20 req/min (matching), 10 req/min (generar reporte)
+- Tier `s1_auth`: 60 req/min (usuario registrado)
+- Extender el rate limiter existente (`lib/rate-limit.ts`) con nuevos tiers
+- CAPTCHA opcional en generación de reportes si se detecta abuso
+
+---
+
+### S-24: Audit log de reportes generados
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟡 MEDIO |
+| **Servicio** | S1, S2 |
+| **Impacto** | Sin trazabilidad de quién generó qué reporte para quién |
+
+**Solución:**
+- Tabla `reportes_compatibilidad` ya tiene `created_by`, `origen`, `created_at`
+- Agregar: log de cada acceso al reporte (tabla `reporte_accesos`: token, ip, timestamp, user_agent)
+- Dashboard admin: métricas de reportes generados por servicio (S1 vs S2)
+
+---
+
+### S-25: Validación input en importación Excel/CSV
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Servicio** | S2 |
+| **Impacto** | Inyección de datos maliciosos via archivos de la OE (fórmulas Excel, HTML, SQL) |
+
+**Solución:**
+- Sanitizar todas las celdas: strip fórmulas (=, +, -, @), HTML tags, caracteres de control
+- Validar schema: columnas esperadas, tipos de dato, longitudes máximas
+- Límite de filas por importación (ej: 10,000)
+- Preview antes de confirmar: mostrar primeras 10 filas parseadas
+- Log de importación: quién, cuándo, cuántas filas, errores
+
+---
+
+## Checklist Skills Intelligence
+
+```
+CRÍTICOS:
+□ S-19: RLS multi-tenancy OE (aislamiento entre oficinas)
+□ S-22: Aislamiento de pools por jurisdicción
+
+ALTOS:
+□ S-18: Token QR seguro (UUID v4 + expiración + revocación)
+□ S-20: Consentimiento opt-in del trabajador para pool
+□ S-23: Rate limiting APIs públicas S1
+□ S-25: Validación input importación Excel/CSV
+
+MEDIOS:
+□ S-21: DNI solo en PDF, no en reporte web
+□ S-24: Audit log de reportes generados
+```
+
+---
+
 ## RLS por Tabla
 
 | Tabla | SELECT | INSERT | UPDATE | DELETE | Estado |
@@ -348,3 +512,19 @@ MEDIOS (Fase 2):
 | `ofertas_dashboard` | Todos (anon read) | Sistema | Sistema + RPC validación | No | ✅ Parcial (RPC guardar_validacion_humana) |
 
 > **2026-03-03:** Tabla `solicitudes_acceso` implementada con RLS completo (4 políticas) + 3 RPCs SECURITY DEFINER. Ver migration `017_solicitudes_acceso.sql`.
+
+### RLS — Tablas Skills Intelligence (nuevas)
+
+| Tabla | Trabajador S1 | Técnico OE S2 | Empresa libre S3 | Empresa reg. S3 | Admin | Estado |
+|-------|--------------|---------------|-------------------|-----------------|-------|--------|
+| `perfiles_trabajadores` | Solo propios (created_by) | Su cartera (org_id) | ✗ | ✗ | Todos | ⬜ Ampliar RLS |
+| `reportes_compatibilidad` | Sus reportes | Reportes de su OE | Solo por token (activo) | Sus candidatos | Todos | ⬜ Crear RLS |
+| `organizaciones` | ✗ | Solo su org | ✗ | Solo su org | CRUD | ⬜ Crear |
+| `user_organizaciones` | ✗ | Su org | ✗ | Su org | CRUD | ⬜ Crear |
+| `vacantes_oe` | ✗ | CRUD (su OE) | ✗ | ✗ | Todos | ⬜ Crear |
+| `cursos_oe` | ✗ | CRUD (su OE) | ✗ | ✗ | Todos | ⬜ Crear |
+| `vacantes_empresa` | ✗ | Lectura (pool jurisd.) | ✗ | CRUD (su empresa) | Todos | ⬜ Crear |
+| `esco_argentino` | Lectura | Lectura | Lectura (via reporte) | Lectura | CRUD | ✅ Existe |
+| `reporte_accesos` | ✗ | ✗ | ✗ | ✗ | Lectura | ⬜ Crear |
+
+> **Principio:** La RLS es la primera línea de defensa. Incluso si un usuario construye una query manual contra Supabase, solo ve lo que le corresponde.

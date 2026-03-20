@@ -29,6 +29,9 @@ erDiagram
     auth_users ||--o{ pagos : realiza
     auth_users ||--o{ alertas_config : configura
     auth_users ||--o{ solicitudes_acceso : solicita
+    auth_users ||--o{ reportes_compatibilidad : genera
+    auth_users ||--o{ user_organizaciones : pertenece
+    organizaciones ||--o{ user_organizaciones : tiene
 
     planes ||--o{ suscripciones : define
     suscripciones ||--o{ pagos : genera
@@ -623,6 +626,178 @@ const { data } = await supabase.rpc('get_insights', {
 
 ---
 
+### T-reportes_compatibilidad (NUEVA — V-17 Reporte Compatibilidad Laboral)
+
+Reportes de compatibilidad generados desde "Mis Skills" para entregar a reclutadores.
+
+```sql
+CREATE TABLE reportes_compatibilidad (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  token VARCHAR(64) NOT NULL UNIQUE,          -- Token público para URL del reporte (UUID sin guiones)
+  perfil_id UUID REFERENCES perfiles_trabajadores(id) ON DELETE SET NULL,
+  created_by UUID REFERENCES auth.users(id),  -- Gestor o trabajador que generó el reporte
+  origen VARCHAR(20) NOT NULL DEFAULT 'trabajador',  -- 'trabajador' o 'oficina_empleo'
+
+  -- Datos del candidato (snapshot al momento de generar)
+  candidato_nombre VARCHAR(200) NOT NULL,
+  candidato_dni VARCHAR(20),
+
+  -- Ocupación/vacante analizada
+  ocupacion_uri TEXT NOT NULL,                -- URI ESCO de la ocupación
+  ocupacion_label VARCHAR(200) NOT NULL,      -- Label de la ocupación
+  ocupacion_isco VARCHAR(10),                 -- Código ISCO
+  oferta_id BIGINT,                           -- ID oferta específica (opcional, si se vincula a oferta real)
+  oferta_titulo VARCHAR(300),                 -- Título de la vacante (si aplica)
+
+  -- Snapshot del matching (para que el reporte sea estable en el tiempo)
+  perfil_consolidado_version INTEGER,         -- Versión del perfil argentino usado (reproducibilidad)
+  skills_candidato JSONB NOT NULL,            -- Array de skill URIs del candidato al momento
+  skills_requeridas JSONB NOT NULL,           -- Skills del perfil consolidado argentino (ESCO + emergentes)
+  match_score NUMERIC(5,2) NOT NULL,          -- % compatibilidad al generar
+  skills_cubiertas JSONB NOT NULL,            -- Skills que matchearon (con source: esco_common|argentina_approved)
+  skills_gap JSONB NOT NULL,                  -- Skills faltantes (brecha)
+
+  -- Control
+  estado VARCHAR(20) DEFAULT 'activo',        -- 'activo', 'expirado', 'revocado'
+  expira_at TIMESTAMPTZ NOT NULL,             -- Fecha de expiración (default +60 días)
+  vistas INTEGER DEFAULT 0,                   -- Cuántas veces se accedió al reporte
+  ultima_vista_at TIMESTAMPTZ,
+  pdf_generado BOOLEAN DEFAULT FALSE,         -- Si se descargó el PDF
+
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Índices
+CREATE INDEX idx_reportes_token ON reportes_compatibilidad(token);
+CREATE INDEX idx_reportes_perfil ON reportes_compatibilidad(perfil_id);
+CREATE INDEX idx_reportes_estado ON reportes_compatibilidad(estado) WHERE estado = 'activo';
+CREATE INDEX idx_reportes_expira ON reportes_compatibilidad(expira_at) WHERE estado = 'activo';
+```
+
+**Pantallas que usan:** [P-10](./02_ARQUITECTURA_PANTALLAS.md) (genera reporte), [P-35](./02_ARQUITECTURA_PANTALLAS.md) (visualiza reporte público)
+
+**Campos clave:**
+- `origen`: distingue si lo generó el trabajador ('trabajador') o un gestor ('oficina_empleo'). Útil para métricas de adopción por canal.
+- `perfil_consolidado_version`: registra qué versión del perfil argentino se usó. Garantiza reproducibilidad (si el perfil evoluciona, reportes viejos siguen siendo válidos).
+- `skills_requeridas`: incluye tanto skills ESCO estándar como emergentes argentinas aprobadas, cada una con indicador de source.
+
+**Flujo:**
+1. Trabajador o gestor genera reporte desde "Mis Skills" (P-10, paso 3) → INSERT con token + snapshot del perfil consolidado argentino
+2. Se genera PDF con QR apuntando a `/reporte/{token}`
+3. Reclutador escanea QR → P-35 carga datos del reporte por token
+4. Reclutador puede editar skills requeridas → recalcula en frontend (no persiste)
+5. Expiración automática: cron o check en tiempo de acceso
+
+**RLS:**
+- SELECT con token: público (cualquiera con el token puede ver, si no expiró)
+- SELECT sin token: solo created_by o admin
+- INSERT: solo usuarios autenticados
+- UPDATE: solo created_by o admin (para revocar)
+
+---
+
+### T-organizaciones (NUEVA — Skills Intelligence multi-tenancy)
+
+Organizaciones (OEs y empresas) para aislamiento de datos por tenant.
+
+```sql
+CREATE TABLE organizaciones (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  nombre VARCHAR(200) NOT NULL,
+  tipo VARCHAR(30) NOT NULL,              -- 'oficina_empleo', 'empresa'
+  jurisdiccion VARCHAR(100),              -- provincia/municipio (para OE)
+  sector VARCHAR(100),                    -- sector económico (para empresa)
+  activa BOOLEAN DEFAULT TRUE,
+  metadata JSONB,                         -- datos adicionales flexibles
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_org_tipo ON organizaciones(tipo);
+CREATE INDEX idx_org_jurisdiccion ON organizaciones(jurisdiccion) WHERE tipo = 'oficina_empleo';
+```
+
+**Pantallas que usan:** S2 (todas), S3-registrado (todas)
+
+---
+
+### T-user_organizaciones (NUEVA — relación usuario-organización)
+
+Relaciona usuarios con organizaciones y define su rol dentro de la org.
+
+```sql
+CREATE TABLE user_organizaciones (
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  organizacion_id UUID REFERENCES organizaciones(id) ON DELETE CASCADE,
+  rol_en_org VARCHAR(30) NOT NULL,        -- 'tecnico', 'coordinador', 'rrhh', 'gerente'
+  activo BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  PRIMARY KEY (user_id, organizacion_id)
+);
+
+CREATE INDEX idx_user_org_user ON user_organizaciones(user_id);
+CREATE INDEX idx_user_org_org ON user_organizaciones(organizacion_id);
+```
+
+**Uso en RLS:** Todas las políticas de S2 y S3-registrado consultan esta tabla para determinar a qué organización pertenece el usuario y filtrar datos.
+
+---
+
+### T-perfil_argentino_versiones (NUEVA — versionado global del Perfil Consolidado)
+
+Snapshots del Perfil Consolidado Argentino. Solo una versión activa a la vez. Todo el sistema (matching, búsqueda, reportes) apunta a la versión activa.
+
+```sql
+CREATE TABLE perfil_argentino_versiones (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  version VARCHAR(20) NOT NULL UNIQUE,      -- 'v1.0', 'v2.1', etc.
+  snapshot JSONB NOT NULL,                   -- Snapshot completo: {ocupaciones: {uri: {skills_consolidadas: [...]}}}
+  total_skills INTEGER NOT NULL,             -- Total skills en esta versión
+  total_emergentes_aprobadas INTEGER NOT NULL, -- Cuántas emergentes incluye
+  total_ocupaciones INTEGER NOT NULL,         -- Ocupaciones con perfil
+  nota TEXT,                                  -- Nota del analista al crear el corte
+  creado_por UUID REFERENCES auth.users(id),
+  activa BOOLEAN DEFAULT FALSE,              -- Solo UNA puede ser TRUE
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Constraint: solo una versión activa
+CREATE UNIQUE INDEX idx_perfil_version_activa ON perfil_argentino_versiones(activa) WHERE activa = TRUE;
+CREATE INDEX idx_perfil_version ON perfil_argentino_versiones(version);
+```
+
+**Pantallas que usan:** P-36 (gestión versiones admin), PCA-5 (matching lee versión activa)
+
+**Lógica:**
+1. Al crear corte → INSERT con activa=FALSE → UPDATE activa=TRUE (desactiva anterior)
+2. Matching, búsqueda y reportes consultan: `WHERE activa = TRUE`
+3. Reportes guardan `perfil_consolidado_version` del snapshot usado (inmutable)
+4. Rollback: UPDATE activa en la versión deseada
+
+---
+
+### T-reporte_accesos (NUEVA — audit log de accesos a reportes)
+
+Registro de cada acceso a un reporte de compatibilidad por QR/URL.
+
+```sql
+CREATE TABLE reporte_accesos (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  reporte_token VARCHAR(64) NOT NULL,
+  ip_address VARCHAR(45),
+  user_agent TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_reporte_accesos_token ON reporte_accesos(reporte_token);
+CREATE INDEX idx_reporte_accesos_fecha ON reporte_accesos(created_at);
+```
+
+**Pantallas que usan:** S3-1 (acceso QR), admin (métricas de reportes)
+
+---
+
 ## Tablas Existentes — Supabase (Dashboard)
 
 Tablas en Supabase que alimentan el dashboard Next.js. Sincronizadas desde SQLite local via `sync_to_supabase.py`.
@@ -727,6 +902,7 @@ Ver [06_SEGURIDAD](./06_SEGURIDAD.md#rls) para políticas de seguridad a nivel d
 | envios_contenido | Solo propios + admin todos | Sistema | Sistema | No |
 | tension_ocupaciones | Todos | Solo admin/sistema | Solo admin/sistema | Solo admin |
 | uso_features | Solo propios | Sistema | Sistema | No |
+| reportes_compatibilidad | Por token (público si activo) + propios + admin | Autenticados | Solo creador/admin | No |
 
 ---
 
@@ -738,3 +914,5 @@ Ver [06_SEGURIDAD](./06_SEGURIDAD.md#rls) para políticas de seguridad a nivel d
 | 2026-02-07 | 2.0 | Modelo híbrido: T-solicitudes_acceso, T-contenidos (reemplaza informes_publicos), T-envios_contenido, pago dual en T-pagos y T-suscripciones, nuevas vistas y funciones |
 | 2026-02-11 | 2.1 | Documentar ofertas_dashboard completa (Supabase vs SQLite), agregar campos indicadores: categoria_permanencia, es_republicacion, numero_republicacion |
 | 2026-02-11 | 2.2 | T-tension_ocupaciones (indicador tensión de demanda por ISCO), campos grupo_republicacion y ventana_dias en indicadores, definición formal de campos |
+| 2026-03-18 | 2.3 | T-reportes_compatibilidad (V-17: Reporte de Compatibilidad Laboral), RLS con acceso público por token |
+| 2026-03-20 | 2.4 | Skills Intelligence v5: T-organizaciones (multi-tenancy OE/empresa), T-user_organizaciones (relación usuario-org), T-reporte_accesos (audit log QR). Campos origen + perfil_consolidado_version en reportes |

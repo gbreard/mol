@@ -53,7 +53,88 @@
 
 ---
 
-## Árbol de Navegación Propuesto
+## Arquitectura Skills Intelligence v5
+
+> **Documento fuente:** `docs/MOL_Skills_Intelligence.docx` (v5.0) + `docs/mol_screens_v5.html` (32 wireframes)
+> **Decisión (2026-03-20):** Se adopta la arquitectura de 3 servicios como marco para la evolución de Skills Intelligence. Las pantallas existentes del dashboard (P-01 a P-31a) se mantienen. Las pantallas de Skills Intelligence (S1/S2/S3) se agregan como un módulo paralelo.
+
+### Motor y Capacidades
+
+El sistema se estructura como un **motor con 6 capacidades** expuestas a través de **3 servicios**:
+
+| Capacidad | Descripción | Servicios |
+|-----------|-------------|-----------|
+| Cap. 1 — Diagnóstico | Perfil de skills desde 4 vías (ocupación, tarea, texto libre, formación/título) | S1, S2, S3 |
+| Cap. 2 — Matching oferta-demanda | Cruzar perfiles con vacantes en ambas direcciones | S1, S2, S3 |
+| Cap. 3 — Matching formación | Brechas cruzadas con oferta de cursos, impacto medible | S1, S2, S3 |
+| Cap. 4 — Inteligencia de mercado | Tendencias, escasez, brechas por sector/región/tiempo | S2, S3 |
+| Cap. 5 — Reporte y certificación | PDF+QR → validación OE → certificación MOL (evolución) | S1, S2, S3 |
+| Cap. 6 — Gestión de pools | Bases de personas, vacantes, cursos (propias y terceros) | S1, S2, S3 |
+
+### Tres Servicios (pantallas Skills Intelligence)
+
+| Servicio | Usuario | Pantallas | Estado |
+|----------|---------|-----------|--------|
+| S1 — Mi Futuro Laboral | Trabajador independiente | 9 (MVP) | Landing existe, flujo por crear |
+| S2 — Oficina de Empleo | Técnico/coordinador OE | 11 (MVP) | Hub wireframe, funcionalidad por crear |
+| S3 — Empresas | Reclutador/RRHH | 12 (3 MVP libre, 9 v2) | Reporte QR por crear, resto v2 |
+
+**Wireframes interactivos:** `docs/mol_screens_v5.html` (abrir en navegador para ver las 32 pantallas)
+
+### S1 — Mi Futuro Laboral (9 pantallas)
+
+| # | Pantalla | Capacidad | Estado |
+|---|----------|-----------|--------|
+| S1-1 | Landing | — | ✅ Existe (/mi-futuro-laboral) |
+| S1-2 | Onboarding | — | ⬜ Por crear |
+| S1-3 | Primer trabajo (4 vías captura) | Cap. 1 | ⚠️ Parcial (vía 1 existe) |
+| S1-4 | Skills derivadas | Cap. 1 + 2 | ✅ Existe (MySkillsSearch) |
+| S1-5 | Enriquecer perfil | Cap. 1 | ⬜ Por crear |
+| S1-6 | Resultados (ocupaciones + ofertas) | Cap. 2 | ⚠️ Parcial (ocupaciones existe) |
+| S1-7 | Elegir destino (transición) | Cap. 2 | ⬜ Por crear |
+| S1-8 | Brecha específica + capacitación | Cap. 2 + 3 | ⬜ Por crear |
+| S1-9 | PDF + QR | Cap. 5 | ⬜ Por crear |
+
+### S2 — Oficina de Empleo (11 pantallas)
+
+| # | Pantalla | Capacidad | Estado |
+|---|----------|-----------|--------|
+| S2-1 | Importar datos (Excel/CSV) | Cap. 6 | ⬜ Por crear |
+| S2-2 | Login institucional | — | ⬜ Por crear |
+| S2-3 | Panel de casos | Cap. 2 + 6 | ⬜ Por crear |
+| S2-4 | Perfil del caso (2 cols: datos + tabs) | Cap. 1 + 2 | ⚠️ Wireframe (P-33) |
+| S2-5 | Nota del técnico | Cap. 1 | ⬜ Por crear |
+| S2-6 | Matching con vacantes | Cap. 2 | ⬜ Por crear |
+| S2-7 | Gestión de vacantes (empresa trae puesto) | Cap. 2 | ⬜ Por crear |
+| S2-8 | Formación (catálogo OE + impacto) | Cap. 3 | ⬜ Por crear |
+| S2-9 | Comparar casos | Cap. 2 + 6 | ⬜ Por crear |
+| S2-10 | Inteligencia local | Cap. 4 | ⬜ Por crear (v2) |
+| S2-11 | Exportar diagnóstico (PDF institucional) | Cap. 5 | ⬜ Por crear |
+
+### S3 — Empresas (12 pantallas)
+
+| # | Pantalla | Nivel | Capacidad | Estado |
+|---|----------|-------|-----------|--------|
+| S3-1 | Acceso vía QR | Libre MVP | Cap. 5 | ⬜ Por crear |
+| S3-2 | Reporte de compatibilidad | Libre MVP | Cap. 2 + 5 | ⬜ Por crear (= P-35) |
+| S3-3 | Personalizar competencias | Libre MVP | Cap. 2 | ⬜ Por crear |
+| S3-4 | Landing empresas | Registrado v2 | — | ⬜ Futuro |
+| S3-5 | Dashboard empresa | Registrado v2 | Cap. 6 | ⬜ Futuro |
+| S3-6 | Perfil de puesto | Registrado v2 | Cap. 6 | ⬜ Futuro |
+| S3-7 | Historial candidatos | Registrado v2 | Cap. 6 | ⬜ Futuro |
+| S3-8 | Comparar candidatos | Registrado v2 | Cap. 2 + 6 | ⬜ Futuro |
+| S3-9 | Benchmark del mercado | Registrado v2 | Cap. 4 | ⬜ Futuro |
+| S3-10 | Buscar en pool | Registrado v2 | Cap. 2 + 6 | ⬜ Futuro |
+| S3-11 | Reskilling plantilla | Registrado v2 | Cap. 1 + 3 | ⬜ Futuro |
+| S3-12 | Inteligencia sectorial | Registrado v2 | Cap. 4 | ⬜ Futuro |
+
+> **Pendiente:** Seguridad y perfiles de usuario para los 3 servicios (próximo paso de planificación).
+
+---
+
+## Árbol de Navegación — Dashboard + Plataforma
+
+> Las pantallas del dashboard de análisis (P-01 a P-31a) coexisten con los 3 servicios de Skills Intelligence. El dashboard es para analistas/suscriptores; los servicios S1/S2/S3 son para trabajadores, OEs y empresas.
 
 ```
 MOL Platform
@@ -64,7 +145,36 @@ MOL Platform
 │   ├── /informes ────────── P-03 Informes (preview para visitantes)
 │   ├── /login ───────────── P-04 Login
 │   ├── /registro ────────── P-05 Registro (libre, sin plan)
-│   └── /skills ──────────── (existente, versión pública)
+│   ├── /skills ──────────── (existente, versión pública)
+│   └── /reporte/:token ──── S3-1/S3-2 Reporte Compatibilidad (público, sin auth)
+│
+├── S1 — MI FUTURO LABORAL (público o auth mínima)
+│   ├── /mi-futuro-laboral ──── S1-1 Landing (existe)
+│   ├── /mi-futuro-laboral/onboarding ── S1-2 Onboarding
+│   ├── /mi-futuro-laboral/perfil ────── S1-3 a S1-5 (captura + enriquecer)
+│   ├── /mi-futuro-laboral/resultados ── S1-6 a S1-8 (ocupaciones + ofertas + brecha)
+│   └── /mi-futuro-laboral/reporte ───── S1-9 PDF + QR
+│
+├── S2 — OFICINA DE EMPLEO (auth + rol oficina_empleo)
+│   ├── /oficina-empleo ──────── S2-1 Importar datos / Hub
+│   ├── /oficina-empleo/casos ── S2-3 Panel de casos
+│   ├── /oficina-empleo/caso/:id S2-4/S2-5 Perfil + nota técnico
+│   ├── /oficina-empleo/vacantes S2-6/S2-7 Matching + gestión vacantes
+│   ├── /oficina-empleo/formacion S2-8 Catálogo cursos OE
+│   ├── /oficina-empleo/comparar S2-9 Comparar casos
+│   ├── /oficina-empleo/inteligencia S2-10 Inteligencia local (v2)
+│   └── /oficina-empleo/exportar S2-11 PDF institucional
+│
+├── S3 — EMPRESAS
+│   ├── /reporte/:token ──────── S3-1/S3-2/S3-3 QR + Reporte + Personalizar (libre)
+│   ├── /empresas ────────────── S3-4 Landing empresas (v2)
+│   ├── /empresas/dashboard ──── S3-5 Dashboard (v2)
+│   ├── /empresas/puestos ────── S3-6 Perfiles de puesto (v2)
+│   ├── /empresas/candidatos ─── S3-7/S3-8 Historial + comparar (v2)
+│   ├── /empresas/benchmark ──── S3-9 Benchmark mercado (v2)
+│   ├── /empresas/pool ──────── S3-10 Buscar en pool (v2)
+│   ├── /empresas/reskilling ─── S3-11 Reskilling plantilla (v2)
+│   └── /empresas/inteligencia ─ S3-12 Inteligencia sectorial (v2)
 │
 ├── REGISTRADO (auth, sin acceso a tablero)
 │   ├── /contenido ──────────── P-26 Informes y Notas (contenido completo)
@@ -76,12 +186,12 @@ MOL Platform
 │   ├── /checkout/exito ──── P-07 Éxito
 │   └── /checkout/cancelado  P-08 Cancelado
 │
-├── TABLERO (auth + trial/suscriptor/institucional)
-│   ├── /dashboard ───────── P-09 Dashboard (actual `/`)
+├── TABLERO DE ANÁLISIS (auth + trial/suscriptor/institucional)
+│   ├── /dashboard ───────── P-09 Dashboard
 │   │   ├── Tab: Panorama General
 │   │   ├── Tab: Requerimientos
 │   │   └── Tab: Ofertas Laborales
-│   ├── /dashboard/skills ── P-10 Skills (actual `/admin/skills`)
+│   ├── /dashboard/skills ── P-10 Skills (admin analytics)
 │   ├── /dashboard/empresas  P-11 Análisis Empresas
 │   ├── /dashboard/reportes  P-12 Reportes
 │   └── /dashboard/alertas   P-13 Alertas
@@ -91,17 +201,13 @@ MOL Platform
 │   ├── /cuenta/suscripcion  P-15 Suscripción
 │   └── /cuenta/facturacion  P-16 Facturación
 │
-├── OFICINA DE EMPLEO (auth + rol oficina_empleo/admin)
-│   ├── /oficina-empleo ─────── P-32 Hub Oficina de Empleo (wireframe)
-│   ├── /oficina-empleo/perfil ─ P-33 Perfil Trabajador (wireframe)
-│   └── /oficina-empleo/ofertas  P-34 Ofertas Coincidentes (wireframe)
-│
 └── ADMIN (auth + rol admin)
     ├── /admin ───────────── P-17 Dashboard Admin
     ├── /admin/usuarios ──── P-18 Usuarios
     ├── /admin/solicitudes ─ P-29 Gestión Solicitudes Acceso
     ├── /admin/issues ────── P-19 Issues
-    ├── /admin/skills ────── P-20 Skills Intelligence
+    ├── /admin/skills ────── P-20 Skills Intelligence (admin: Taxonomía + Consolidado)
+    ├── /admin/perfil-argentino ── P-36 Gestión Perfil Consolidado Argentino (versiones)
     ├── /admin/scraping ──── P-21 Scraping
     ├── /admin/metricas ──── P-22 Métricas
     ├── /admin/logs ──────── P-23 Logs
@@ -173,6 +279,27 @@ MOL Platform
 
 > **Nota:** Las 3 páginas son wireframes estáticos con badge "PRÓXIMAMENTE". La funcionalidad real (perfiles de trabajadores, matching, ofertas coincidentes) está pendiente.
 
+### Reporte Compatibilidad (Público)
+
+| ID | Ruta | Nivel | Estado | Wireframe |
+|----|------|-------|--------|-----------|
+| P-35 | `/reporte/:token` | PÚBLICO (sin auth) | ⬜ Por crear | [oficina-empleo.md#p-35](./03_WIREFRAMES/oficina-empleo.md#p-35-reporte-compatibilidad) |
+
+> **V-17:** Página pública accesible via QR desde carta PDF. El reclutador ve mapa de competencias, matriz de afinidad y puede editar competencias para recalcular en tiempo real. Protegida por token UUID con expiración. Ver [08_PROPUESTA_VALOR](./08_PROPUESTA_VALOR.md#v-17-reporte-de-compatibilidad-laboral-para-empresas).
+
+**Modificación P-10 (paso 3 — resultados):** Se rediseña con 3 sub-tabs:
+- **Tab Ocupaciones compatibles:** Ranking por % afinidad + botón "Reporte" por fila (existe parcial, agregar botón).
+- **Tab Ofertas laborales (nuevo):** Ofertas reales de `ofertas_dashboard` filtradas por ocupaciones compatibles, con gap personalizado y botón "Reporte" vinculado a oferta específica.
+- **Tab Capacitación (nuevo):** Cursos sugeridos según brechas técnicas. Fuente: Portal Capacitación CABA (2,255 cursos). Incluye sugerencias de transición laboral.
+
+**Rediseño Paso 2 (captura de competencias):** El paso 2 de "Mis Skills" se rediseña con 3 vías de entrada combinables (por ocupación, por tarea/habilidad, texto libre) y definiciones ESCO visibles. Aplica tanto a P-10 como a P-33. Ver wireframe en [oficina-empleo.md](./03_WIREFRAMES/oficina-empleo.md#captura-de-competencias-paso-2--rediseño-con-3-vias-de-entrada).
+
+**Taxonomía:** La evaluación de compatibilidad usa el **Perfil Consolidado Argentino** (tabla `esco_argentino`: ESCO + emergentes aprobadas), no ESCO genérico. El reporte registra la versión del perfil usado.
+
+**Dos caminos de entrada (V-17):**
+- Camino A: `/mi-futuro-laboral` (existe como hub) → `/skills?tab=myskills` → trabajador se autoevalúa
+- Camino B: `/oficina-empleo` (wireframe) → gestor carga perfil del trabajador
+
 ### Cuenta
 
 | ID | Ruta | Nivel | Estado | Wireframe |
@@ -203,16 +330,28 @@ MOL Platform
 
 ## Resumen
 
+### Pantallas Dashboard + Plataforma (existentes)
+
 | Categoría | Total | Existentes | Por crear |
 |-----------|-------|------------|-----------|
-| Públicas | 5 | 1 | 4 |
+| Públicas | 6 | 1 | 5 |
 | Contenido | 3 | 1 (placeholder) | 2 |
 | Checkout | 3 | 0 | 3 |
-| Tablero | 5 | 2 | 3 |
-| Oficina Empleo | 3 | 3 (wireframes) | 0 (funcionalidad pendiente) |
+| Tablero análisis | 5 | 2 | 3 |
 | Cuenta | 3 | 0 | 3 |
 | Admin | 13 | 10 | 3 |
-| **TOTAL** | **35** | **17** | **18** |
+| **Subtotal dashboard** | **33** | **14** | **19** |
+
+### Pantallas Skills Intelligence v5 (nuevas — 3 servicios)
+
+| Servicio | Total | MVP | v2 | Existente |
+|----------|-------|-----|-----|-----------|
+| S1 — Mi Futuro Laboral | 9 | 9 | 0 | 1 (landing) |
+| S2 — Oficina de Empleo | 11 | 10 | 1 | 0 (wireframes) |
+| S3 — Empresas | 12 | 3 | 9 | 0 |
+| **Subtotal Skills Int.** | **32** | **22** | **10** | **1** |
+
+| **TOTAL PLATAFORMA** | **65** | | | **15 existentes** |
 
 ---
 
@@ -232,7 +371,7 @@ MOL Platform
 ```typescript
 // middleware.ts (propuesto v2.0)
 
-const PUBLIC_ROUTES = ['/', '/precios', '/informes', '/login', '/registro', '/skills'];
+const PUBLIC_ROUTES = ['/', '/precios', '/informes', '/login', '/registro', '/skills', '/reporte'];
 
 const REGISTERED_ROUTES = ['/contenido', '/solicitar-acceso', '/cuenta'];
 
@@ -313,6 +452,8 @@ app/
 │   ├── precios/page.tsx      # P-02
 │   ├── informes/page.tsx     # P-03
 │   └── registro/page.tsx     # P-05
+├── reporte/
+│   └── [token]/page.tsx     # P-35 Reporte Compatibilidad (público)
 ├── login/page.tsx            # P-04 (existente)
 ├── (contenido)/
 │   ├── layout.tsx            # Layout registrados (navbar con cuenta)
@@ -358,3 +499,6 @@ app/
 | 2026-02-23 | 2.2 | AnimatedNav auth-aware (sesión → dashboard/logout), P-18 CRUD: C+R+U (editar rol) |
 | 2026-02-26 | 2.3 | P-31 Laboratorio de Indicadores Experimentales + P-31a Tensión de Demanda (V-16). Staging admin para indicadores antes de dashboard público. Total 32 pantallas |
 | 2026-03-03 | 2.4 | P-26 placeholder, P-28+P-29 funcionales, P-32/P-33/P-34 oficina empleo wireframes. Acceso gated implementado. Total 35 pantallas |
+| 2026-03-18 | 2.5 | P-35 Reporte Compatibilidad (V-17): ruta pública `/reporte/:token`, modificación P-10 (botón generar reporte en Mis Skills). Total 36 pantallas |
+| 2026-03-18 | 2.6 | V-17 ampliado: 2 caminos (Mi Futuro Laboral + Oficina Empleo), rediseño paso 2 (3 vías captura + definiciones), ESCO Argentino como taxonomía de referencia |
+| 2026-03-20 | 3.0 | Skills Intelligence v5: arquitectura de 3 servicios (S1/S2/S3) + 6 capacidades del motor. 32 pantallas nuevas (9+11+12). Árbol de navegación integrado con dashboard existente. Fuente: MOL_Skills_Intelligence.docx + mol_screens_v5.html |
