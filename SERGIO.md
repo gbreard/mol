@@ -474,6 +474,48 @@ type Course = {
 
 **Total: 18 componentes + 10 archivos de test**
 
+## Estilo y diseno
+
+**NO inventes estilos nuevos.** El dashboard ya tiene un sistema de diseno definido. Reutiliza lo que existe:
+
+**Stack UI:**
+- Tailwind CSS (clases utilitarias)
+- Radix UI (componentes base: dialogs, dropdowns, tabs, tooltips)
+- Recharts (graficos)
+- Lucide React (iconos)
+
+**Componentes existentes para reutilizar:**
+- `components/ui/` — botones, inputs, badges, cards (Radix + Tailwind)
+- `components/ChartContainer.tsx` — wrapper de graficos con export
+- `components/ExportButton.tsx` — patron de export
+- `components/OccupationDetail.tsx` — layout de detalle de ocupacion
+- `components/MySkillsSearch.tsx` — referencia de flujo de 3 pasos (897 lineas)
+
+**Colores del sistema:**
+- Primario: azul (`blue-600`, `blue-700`)
+- Exito/detectada: verde (`green-600`, `emerald`)
+- Error/faltante: rojo (`red-600`, `rose`)
+- Warning/dudoso: amarillo (`amber-500`)
+- Backgrounds: `gray-50`, `gray-100`, `white`
+- Texto: `gray-900` (principal), `gray-500` (secundario)
+
+**Patron de pagina:**
+```tsx
+// Todas las paginas admin siguen este patron:
+export default function MiPagina() {
+  return (
+    <div className="p-6 max-w-7xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6">Titulo</h1>
+      {/* contenido */}
+    </div>
+  )
+}
+```
+
+**Antes de crear un componente nuevo:** busca si ya existe algo parecido en `components/`. Si hay algo similar, extiendelo — no dupliques.
+
+---
+
 ## Reglas
 
 1. **No toques Supabase** — Gerardo hace todas las migrations y RLS
