@@ -10,7 +10,8 @@
 | Migration 018: `perfil_argentino_versiones` | ✅ Listo (SQL creado, pendiente ejecutar en Supabase) | `c0d89693` | S1: usar mock hasta que Gerardo ejecute migration |
 | API `/api/perfil-argentino-versiones` GET/POST/PATCH | ✅ Listo | `c0d89693` | S1: desarrollar P-36 contra esta API (o mock) |
 | Test unitario PCA (8 tests passing) | ✅ Listo | `c0d89693` | — |
-| PCA-5: MySkillsSearch lee perfil activo | ⬜ Pendiente | — | S2, S7, S8: usar mocks |
+| PCA-5: MySkillsSearch lee perfil activo | ✅ Listo | `9eede9d2` | Hook usePerfilArgentino + fallback ESCO |
+| A-D3: Catálogo unificado (16,633 skills) | ✅ Listo | `deb161cf` | skills_searchable.json con emergentes argentinas |
 | API `/api/skills-search` | ⬜ Pendiente | — | S2: usar mock |
 | API `/api/skills-extract-from-text` | ⬜ Pendiente | — | S4: usar mock |
 | API `/api/compatibility-report` | ⬜ Pendiente | — | S5, S6: usar mock |
@@ -19,7 +20,8 @@
 
 **Que puede hacer Sergio HOY:**
 - **S1** (P-36 admin versiones) — API lista, puede desarrollar contra ella o mock
-- **S3** (SkillWithDefinition) — puro UI, no depende de nada
+- **S2** (SkillSearchByTask) — catálogo unificado listo (16,633 skills con source). API search pendiente pero puede usar mock con datos del catálogo
+- **S3** (SkillWithDefinition) — puro UI, no depende de nada. El catálogo tiene 'source' (esco/argentina_emerging) para mostrar badges
 - Cascarones de todas las paginas + mocks MSW
 
 **Antes de arrancar:** `git pull origin feature/skills-intelligence-v5`
