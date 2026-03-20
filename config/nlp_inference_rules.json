@@ -654,7 +654,7 @@
             "cobranzas",
             "cobranza"
           ],
-          "forzar_area": "Finanzas/Contabilidad",
+          "forzar_area": "Contabilidad",
           "_nota": "Analista de créditos es rol financiero, no ventas aunque esté en concesionaria"
         },
         {
@@ -663,7 +663,7 @@
             "product manager",
             "product owner"
           ],
-          "forzar_area": "Logistica/Operaciones",
+          "forzar_area": "Logistica",
           "_nota": "Jefe de Producto es operaciones/supply chain, no RRHH"
         },
         {
@@ -675,7 +675,7 @@
             "jefe de sucursal",
             "gerente de tienda"
           ],
-          "forzar_area": "Ventas/Comercial",
+          "forzar_area": "Ventas",
           "_nota": "Roles retail son Ventas, no RRHH"
         },
         {
@@ -699,7 +699,7 @@
             "bachero",
             "ayudante de cocina"
           ],
-          "forzar_area": "Gastronomia/Hoteleria",
+          "forzar_area": "Gastronomia",
           "_nota": "Validacion v1.0: Roles gastronómicos van a Gastronomia, no Ventas",
           "_caso": "ID 1117906124 CAMARERAS Y BARDENTENDERS"
         },
