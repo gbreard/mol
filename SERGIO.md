@@ -3,6 +3,29 @@
 > Branch: `feature/skills-intelligence-v5`
 > Leeme antes de arrancar. Despues lee `docs/plan/09_ROADMAP.md` para el contexto completo.
 
+## Estado del backend (actualizado por Gerardo)
+
+| Componente | Estado | Commit | Sergio puede |
+|-----------|--------|--------|-------------|
+| Migration 018: `perfil_argentino_versiones` | ✅ Listo (SQL creado, pendiente ejecutar en Supabase) | `c0d89693` | S1: usar mock hasta que Gerardo ejecute migration |
+| API `/api/perfil-argentino-versiones` GET/POST/PATCH | ✅ Listo | `c0d89693` | S1: desarrollar P-36 contra esta API (o mock) |
+| Test unitario PCA (8 tests passing) | ✅ Listo | `c0d89693` | — |
+| PCA-5: MySkillsSearch lee perfil activo | ⬜ Pendiente | — | S2, S7, S8: usar mocks |
+| API `/api/skills-search` | ⬜ Pendiente | — | S2: usar mock |
+| API `/api/skills-extract-from-text` | ⬜ Pendiente | — | S4: usar mock |
+| API `/api/compatibility-report` | ⬜ Pendiente | — | S5, S6: usar mock |
+| API `/api/matching-offers` | ⬜ Pendiente | — | S7: usar mock |
+| API `/api/training-suggestions` | ⬜ Pendiente | — | S8: usar mock |
+
+**Que puede hacer Sergio HOY:**
+- **S1** (P-36 admin versiones) — API lista, puede desarrollar contra ella o mock
+- **S3** (SkillWithDefinition) — puro UI, no depende de nada
+- Cascarones de todas las paginas + mocks MSW
+
+**Antes de arrancar:** `git pull origin feature/skills-intelligence-v5`
+
+---
+
 ## Setup inicial
 
 ```bash
