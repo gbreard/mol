@@ -1,0 +1,486 @@
+# Guia para Sergio — Skills Intelligence v5
+
+> Branch: `feature/skills-intelligence-v5`
+> Leeme antes de arrancar. Despues lee `docs/plan/09_ROADMAP.md` para el contexto completo.
+
+## Setup inicial
+
+```bash
+git clone git@github.com:gbreard/mol.git
+cd mol
+git checkout feature/skills-intelligence-v5
+cd fase3_dashboard/mol-dashboard
+npm install
+```
+
+Pedile a Gerardo:
+- `config/supabase_config.json` (credenciales Supabase — no esta en git)
+- `.env.local` para el dashboard (SUPABASE_URL + SUPABASE_ANON_KEY)
+
+Para correr el dashboard en local:
+```bash
+cd fase3_dashboard/mol-dashboard
+npm run dev
+# Abrir http://localhost:3000
+```
+
+Para correr tests:
+```bash
+npm run test          # unit + component
+npm run test:watch    # en modo watch mientras desarrollas
+npm run test:e2e      # e2e con Playwright
+```
+
+## Tu rol
+
+Vos haces **frontend/UI**: componentes React, paginas Next.js, estilos Tailwind, tests de componente.
+Gerardo hace **backend/datos**: Supabase migrations, API routes, motor semantico, matching.
+
+El flujo es:
+1. Gerardo crea la API route y te pasa los tipos TypeScript
+2. Vos creas el componente que consume esa API
+3. Mientras Gerardo no tenga la API lista, vos usas **mocks** (MSW) para desarrollar
+
+## Tu branch
+
+```bash
+# Crear tu branch desde el branch principal
+git checkout -b feature/si-sergio-ui feature/skills-intelligence-v5
+
+# Cuando termines algo, push
+git push -u origin feature/si-sergio-ui
+
+# PR a feature/skills-intelligence-v5 (NO a main)
+```
+
+## Estructura de tests
+
+Tests van en `__tests__/` con esta estructura:
+```
+__tests__/
+  component/    ← tus tests van aca (render + interaccion)
+  unit/         ← Gerardo (logica, calculos)
+  integration/  ← entre los dos
+  security/     ← Gerardo
+  mocks/
+    handlers.ts ← MSW handlers (agregar los nuevos aca)
+    fixtures/   ← datos de prueba
+```
+
+Cada componente nuevo necesita su test. Patron:
+```tsx
+// __tests__/component/mi-componente.test.tsx
+import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, it, expect } from 'vitest'
+import MiComponente from '@/components/MiComponente'
+
+describe('MiComponente', () => {
+  it('renderiza correctamente', () => {
+    render(<MiComponente />)
+    expect(screen.getByText('algo')).toBeInTheDocument()
+  })
+
+  it('responde a interaccion', async () => {
+    render(<MiComponente />)
+    fireEvent.click(screen.getByRole('button'))
+    expect(screen.getByText('resultado')).toBeInTheDocument()
+  })
+})
+```
+
+Antes de pushear: `npm run test` — todos los tests tienen que pasar (los tuyos + los 153 existentes).
+
+---
+
+## Tus tareas — Bloque por bloque
+
+### BLOQUE 1° — Perfil Consolidado (Gerardo lidera, vos haces UI)
+
+**Gerardo hace:** migration SQL `perfil_argentino_versiones`, API `/api/perfil-argentino-versiones`, conectar matching a perfil activo.
+
+**Vos haces:**
+
+#### Tarea S1: Pantalla P-36 — Gestion Perfil Argentino (`/admin/perfil-argentino`)
+
+Wireframe completo en: `docs/plan/03_WIREFRAMES/oficina-empleo.md` → seccion P-36
+
+```
+Archivo a crear: app/admin/perfil-argentino/page.tsx
+Componentes a crear:
+  - components/PerfilArgentinoAdmin.tsx (pantalla principal)
+  - components/VersionHistoryTable.tsx (tabla de versiones)
+  - components/CreateVersionModal.tsx (modal para crear corte)
+```
+
+**Que tiene que hacer la pantalla:**
+- Mostrar version activa con badge
+- Tabla de historial de versiones (version, fecha, skills, emergentes, creado por, activa)
+- Boton "Crear nueva version" que abre modal
+- Modal: version propuesta, nota del corte, emergentes pendientes, boton confirmar
+- Boton rollback (con confirmacion)
+
+**API que va a consumir** (la crea Gerardo):
+```typescript
+// GET /api/perfil-argentino-versiones
+// Retorna: { versiones: PerfilVersion[], activa: PerfilVersion }
+type PerfilVersion = {
+  id: string
+  version: string        // "v1.0", "v2.1"
+  total_skills: number
+  total_emergentes: number
+  total_ocupaciones: number
+  nota: string | null
+  creado_por: string     // email
+  activa: boolean
+  created_at: string
+}
+
+// POST /api/perfil-argentino-versiones
+// Body: { nota: string }
+// Retorna: { version: PerfilVersion }
+
+// PATCH /api/perfil-argentino-versiones
+// Body: { version_id: string, action: 'activar' | 'rollback' }
+```
+
+**Mock para desarrollar sin API** (agregar en `__tests__/mocks/handlers.ts`):
+```typescript
+http.get('/api/perfil-argentino-versiones', () => {
+  return HttpResponse.json({
+    activa: {
+      id: 'uuid-1', version: 'v1.0', total_skills: 14257,
+      total_emergentes: 0, total_ocupaciones: 3046,
+      nota: 'Version base ESCO', creado_por: 'admin@oede.gob.ar',
+      activa: true, created_at: '2026-01-15T00:00:00Z'
+    },
+    versiones: [
+      // ... array de versiones
+    ],
+    estado_actual: {
+      ofertas_desde_ultimo_corte: 2132,
+      emergentes_nuevas: 8,
+      emergentes_pendientes: 3,
+      skills_aprobadas_desde_corte: 5
+    }
+  })
+})
+```
+
+**Test requerido:** `__tests__/component/perfil-argentino-admin.test.tsx`
+- Renderiza historial de versiones
+- Badge "activa" en la version correcta
+- Boton crear version abre modal
+- Confirmar cierra modal y recarga
+- Rollback pide confirmacion
+
+---
+
+### BLOQUE 2° — Motor Semantico (Gerardo lidera, vos haces UI)
+
+**Gerardo hace:** endpoint busqueda semantica, NLP texto libre, catalogo unificado.
+
+**Vos haces:**
+
+#### Tarea S2: Componente busqueda de skills por tarea (Via 2)
+
+```
+Archivo a crear: components/SkillSearchByTask.tsx
+```
+
+**Que tiene que hacer:**
+- Input de busqueda con debounce (300ms)
+- Dropdown de resultados con: label, tipo (skill/knowledge), definicion truncada
+- Click en resultado lo agrega al perfil
+- Cada skill agregada muestra definicion completa + checkbox confirmar/dudar/descartar
+
+**API que va a consumir** (la crea Gerardo):
+```typescript
+// GET /api/skills-search?q=soldar&limit=10
+type SkillSearchResult = {
+  uri: string
+  label: string
+  type: 'skill' | 'knowledge'
+  description: string
+  source: 'esco' | 'argentina_approved'  // origen
+  frequency?: number                      // % en ofertas argentinas
+}
+```
+
+**Test requerido:** `__tests__/component/skill-search-input.test.tsx`
+- Render del input
+- Debounce: no llama API en cada tecla
+- Resultados desplegables con definicion
+- Click agrega al perfil
+- Sin resultados muestra mensaje
+
+#### Tarea S3: Componente skill con definicion (confirmar/dudar/descartar)
+
+```
+Archivo a crear: components/SkillWithDefinition.tsx
+```
+
+**Que tiene que hacer:**
+- Muestra: label + badge tipo (skill/knowledge) + badge origen (ESCO/emergente)
+- Muestra definicion ESCO completa (expandible si es larga)
+- Checkbox de 3 estados: ✓ (confirmo), ? (no estoy seguro), ✗ (descarto)
+- Boton quitar (✕)
+- Tag de via: "via ocupacion", "via busqueda", "via texto libre"
+
+**Test requerido:** `__tests__/component/skill-with-definition.test.tsx`
+- Muestra label + definicion
+- Checkbox cambia entre 3 estados
+- Click quitar dispara onRemove
+- Badge tipo y origen correctos
+
+#### Tarea S4: Componente texto libre (Via 3)
+
+```
+Archivo a crear: components/FreeTextSkillExtractor.tsx
+```
+
+**Que tiene que hacer:**
+- Textarea para texto libre ("Conta con tus palabras...")
+- Boton "Identificar competencias"
+- Loading state mientras procesa
+- Muestra skills identificadas usando SkillWithDefinition (tarea S3)
+- Boton "Agregar todas al perfil" o agregar una por una
+
+**API que va a consumir** (la crea Gerardo):
+```typescript
+// POST /api/skills-extract-from-text
+// Body: { text: string }
+// Retorna: { skills: SkillSearchResult[] }
+```
+
+**Test requerido:** `__tests__/component/free-text-extractor.test.tsx`
+- Render textarea
+- Boton deshabilitado si texto vacio
+- Loading state al procesar
+- Skills identificadas se muestran con definicion
+- Agregar todas funciona
+
+---
+
+### BLOQUE 3° — Report Engine (Gerardo lidera, vos haces UI)
+
+**Gerardo hace:** API reporte, generacion PDF, QR, tabla BD.
+
+**Vos haces:**
+
+#### Tarea S5: Pagina /reporte/[token] (vista reclutador)
+
+Wireframe en: `docs/plan/03_WIREFRAMES/oficina-empleo.md` → seccion P-35
+
+```
+Archivo a crear: app/reporte/[token]/page.tsx
+Componentes a crear:
+  - components/CompatibilityReport.tsx (pantalla completa)
+  - components/SkillsMapEditable.tsx (mapa de competencias editable)
+  - components/AffinityMatrix.tsx (matriz detectadas vs brechas)
+```
+
+**Que tiene que hacer:**
+- Carga datos del reporte por token (API GET)
+- Seccion datos del perfil: candidato, vacante, % compatibilidad con barra
+- Mapa de competencias: tabla con estado (detectada/faltante), boton quitar, boton agregar
+- Al editar: recalcular % en frontend (NO llama API)
+- Boton "Restaurar original"
+- Matriz de afinidad: 2 columnas (detectadas | brechas) con tipo [S]/[K]/[T]
+- Bloque "Sobre el MOL" con link
+- Token expirado: mensaje claro
+- Token invalido: 404
+
+**API que va a consumir** (la crea Gerardo):
+```typescript
+// GET /api/compatibility-report?token=abc123
+type ReportData = {
+  candidato_nombre: string
+  ocupacion_label: string
+  ocupacion_isco: string
+  match_score: number
+  perfil_consolidado_version: string
+  skills_candidato: SkillItem[]
+  skills_requeridas: SkillItem[]
+  skills_cubiertas: SkillItem[]
+  skills_gap: SkillItem[]
+  estado: 'activo' | 'expirado' | 'revocado'
+  created_at: string
+  expira_at: string
+}
+
+type SkillItem = {
+  uri: string
+  label: string
+  type: 'skill' | 'knowledge' | 'transversal'
+  source: 'esco' | 'argentina_approved'
+  description?: string
+}
+```
+
+**Tests requeridos:** `__tests__/component/compatibility-report.test.tsx`
+- Render con datos completos
+- Token expirado muestra mensaje
+- Editar skills recalcula %
+- Restaurar vuelve a original
+- No muestra DNI
+
+`__tests__/component/skills-map-editable.test.tsx`
+- Quitar skill actualiza lista
+- Agregar skill actualiza lista
+- Badge origen visible (ESCO/emergente)
+
+#### Tarea S6: Modal confirmar datos del reporte
+
+```
+Archivo a crear: components/GenerateReportModal.tsx
+```
+
+**Que tiene que hacer:**
+- Campos: nombre candidato (pre-llenado), DNI, titulo vacante (pre-llenado)
+- Nota: "El reporte estara disponible por 60 dias"
+- Botones: Cancelar / Generar Reporte + PDF
+- Loading state al generar
+- Exito: mostrar opciones (Descargar PDF / Copiar link / Ver reporte)
+
+**Test requerido:** `__tests__/component/generate-report-modal.test.tsx`
+- Campos pre-llenados
+- Validacion nombre requerido
+- Boton genera y muestra exito
+- Copiar link funciona
+
+---
+
+### BLOQUE 4° — Tabs de Resultados (Sergio lidera)
+
+**Gerardo hace:** funciones de matching ofertas y cursos (API).
+
+**Vos haces:**
+
+#### Tarea S7: Tab Ofertas Laborales
+
+```
+Archivo a crear: components/OffersTab.tsx
+```
+
+Wireframe en: `docs/plan/03_WIREFRAMES/oficina-empleo.md` → Tab 2
+
+**Que tiene que hacer:**
+- Filtros: provincia, ocupacion, modalidad, ordenar
+- Cards de ofertas con: titulo, empresa, ubicacion, modalidad, fecha
+- Barra de compatibilidad con %
+- Skills que tenes / te faltan
+- Botones: Ver oferta (link externo) + Reporte (genera reporte vinculado a oferta)
+- Paginacion: "Mostrando N de M" + Cargar mas
+- Empty state si no hay ofertas
+
+**API que va a consumir** (la crea Gerardo):
+```typescript
+// GET /api/matching-offers?profile_id=xxx&page=1&provincia=CABA
+type MatchingOffer = {
+  id_oferta: number
+  titulo: string
+  empresa: string
+  provincia: string
+  localidad: string
+  modalidad: string
+  fecha_publicacion: string
+  url_oferta: string
+  match_score: number
+  skills_cubiertas: string[]
+  skills_gap: string[]
+}
+```
+
+**Test requerido:** `__tests__/component/offers-tab.test.tsx`
+- Render cards con datos
+- Filtros cambian resultados
+- Cargar mas agrega cards
+- Empty state
+- Boton ver oferta tiene href correcto
+
+#### Tarea S8: Tab Capacitacion
+
+```
+Archivo a crear: components/TrainingTab.tsx
+Componentes auxiliares:
+  - components/TrainingByGap.tsx (cursos agrupados por brecha)
+  - components/TransitionPreference.tsx (opcion A: elegir destino)
+  - components/TransitionDemand.tsx (opcion B: por demanda mercado)
+```
+
+Wireframe en: `docs/plan/03_WIREFRAMES/oficina-empleo.md` → Tab 3
+
+**Que tiene que hacer:**
+- Seccion cursos por brecha: agrupados por skill faltante, card con nombre/cert/duracion/modalidad/cubre
+- Seccion transicion A (preferencia): input buscar ocupacion destino, mostrar gap + cursos
+- Seccion transicion B (demanda): tabla ocupaciones en crecimiento cercanas al perfil, con tendencia %
+- Cada ocupacion sugerida: compatibilidad, skills faltantes, tiempo estimado, links [Ver cursos] [Ver ofertas]
+- Nota de fuente: "Portal de Capacitacion CABA | 2,255 cursos"
+
+**API que va a consumir** (la crea Gerardo):
+```typescript
+// GET /api/training-suggestions?profile_id=xxx
+type TrainingSuggestions = {
+  by_gap: {
+    skill_label: string
+    courses: Course[]
+  }[]
+  transition_demand: {
+    ocupacion_label: string
+    isco: string
+    trend_pct: number       // +35%
+    match_score: number
+    skills_gap: string[]
+    estimated_months: number
+  }[]
+}
+
+type Course = {
+  id: number
+  name: string
+  certificacion: string
+  duracion: string
+  modalidad: string
+  covers_skills: string[]
+  url?: string
+}
+```
+
+**Tests requeridos:**
+`__tests__/component/training-tab.test.tsx`
+- Render cursos por brecha
+- Switch entre modo A y modo B
+- Cards de cursos con datos
+
+`__tests__/component/transition-demand.test.tsx`
+- Tabla con tendencia %
+- Ordenado por accesibilidad
+- Links funcionales
+
+---
+
+## Resumen de archivos que creas
+
+| # | Componente | Bloque | Test |
+|---|-----------|--------|------|
+| S1 | PerfilArgentinoAdmin + VersionHistoryTable + CreateVersionModal | 1° | perfil-argentino-admin.test.tsx |
+| S2 | SkillSearchByTask | 2° | skill-search-input.test.tsx |
+| S3 | SkillWithDefinition | 2° | skill-with-definition.test.tsx |
+| S4 | FreeTextSkillExtractor | 2° | free-text-extractor.test.tsx |
+| S5 | CompatibilityReport + SkillsMapEditable + AffinityMatrix | 3° | compatibility-report.test.tsx + skills-map-editable.test.tsx |
+| S6 | GenerateReportModal | 3° | generate-report-modal.test.tsx |
+| S7 | OffersTab | 4° | offers-tab.test.tsx |
+| S8 | TrainingTab + TrainingByGap + TransitionPreference + TransitionDemand | 4° | training-tab.test.tsx + transition-demand.test.tsx |
+
+**Total: 18 componentes + 10 archivos de test**
+
+## Reglas
+
+1. **No toques Supabase** — Gerardo hace todas las migrations y RLS
+2. **No toques API routes** — Gerardo las crea, vos las consumes
+3. **Usa mocks (MSW)** para desarrollar sin esperar la API
+4. **Cada componente con su test** — no se pushea sin test
+5. **`npm run test` antes de pushear** — 0 failing
+6. **PR a `feature/skills-intelligence-v5`** — nunca a main
+7. **Commits chicos y frecuentes** — no acumular
+8. **Lee los wireframes** — `docs/plan/03_WIREFRAMES/oficina-empleo.md` tiene el diseno de cada pantalla
