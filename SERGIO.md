@@ -12,8 +12,8 @@
 | Test unitario PCA (8 tests passing) | ✅ Listo | `c0d89693` | — |
 | PCA-5: MySkillsSearch lee perfil activo | ✅ Listo | `9eede9d2` | Hook usePerfilArgentino + fallback ESCO |
 | A-D3: Catálogo unificado (16,633 skills) | ✅ Listo | `deb161cf` | skills_searchable.json con emergentes argentinas |
-| API `/api/skills-search` | ⬜ Pendiente | — | S2: usar mock |
-| API `/api/skills-extract-from-text` | ⬜ Pendiente | — | S4: usar mock |
+| API `/api/skills-search` GET | ✅ Listo | `7469066b` | S2: puede conectar directo (Fase 1 full-text) |
+| API `/api/skills-extract-from-text` POST | ✅ Listo | `7469066b` | S4: puede conectar directo (Fase 1 keywords) |
 | API `/api/compatibility-report` | ⬜ Pendiente | — | S5, S6: usar mock |
 | API `/api/matching-offers` | ⬜ Pendiente | — | S7: usar mock |
 | API `/api/training-suggestions` | ⬜ Pendiente | — | S8: usar mock |
