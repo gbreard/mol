@@ -15,8 +15,8 @@
 | API `/api/skills-search` GET | ✅ Listo | `7469066b` | S2: puede conectar directo (Fase 1 full-text) |
 | API `/api/skills-extract-from-text` POST | ✅ Listo | `7469066b` | S4: puede conectar directo (Fase 1 keywords) |
 | API `/api/compatibility-report` GET/POST/PATCH | ✅ Listo | `c1a44477` | S5, S6: puede conectar directo. PDF generator en lib/generate-report-pdf.ts |
-| API `/api/matching-offers` | ⬜ Pendiente | — | S7: usar mock |
-| API `/api/training-suggestions` | ⬜ Pendiente | — | S8: usar mock |
+| API `/api/matching-offers` GET | ✅ Listo | `425dbf80` | S7: puede conectar directo. Gap personalizado + filtros |
+| API `/api/training-suggestions` GET | ✅ Listo | `425dbf80` | S8: puede conectar directo. Multi-fuente + tendencia temporal |
 
 **Que puede hacer Sergio HOY:**
 - **S1** (P-36 admin versiones) — API lista, puede desarrollar contra ella o mock
