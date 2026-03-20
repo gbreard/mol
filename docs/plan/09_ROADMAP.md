@@ -253,11 +253,11 @@ Cada bloque tiene una capa de UI y una capa de **datos/semántica** que es el co
 
 | # | Tarea datos/semántica | Detalle técnico | Existe |
 |---|----------------------|-----------------|--------|
-| A-D1 | Búsqueda semántica de skills | Endpoint que busca en embeddings de skills (BGE-M3), no solo keyword. "soldar" → skills de soldadura por similitud vectorial | ❌ |
-| A-D2 | NLP texto narrativo → skills | Adaptar prompt NLP v11.4 o usar embeddings para extraer skills de texto libre en español rioplatense | ❌ |
-| A-D3 | Catálogo unificado: ESCO + emergentes argentinas | `skills_searchable.json` debe incluir emergentes aprobadas del perfil consolidado. Regenerar cuando cambia el perfil | ❌ |
+| A-D1 | Búsqueda de skills (2 fases) | **Fase 1 (MVP):** Búsqueda full-text por label + description en catálogo unificado (16,633 skills). Frontend puro, sin infra adicional. **Fase 2 (evolución):** Búsqueda semántica con embeddings pre-calculados — generar vectors de las 16K skills con BGE-M3 offline, almacenar en pgvector (Supabase) o JSON estático, comparar en query time. "soldar" encontraría "unión de piezas metálicas" sin contener la palabra. Requiere pgvector en Supabase (disponible en free tier) | ❌ → Fase 1 primero |
+| A-D2 | NLP texto narrativo → skills (2 fases) | **Fase 1 (MVP):** Extraer keywords del texto + buscar en catálogo con full-text (misma lógica A-D1). **Fase 2 (evolución):** Usar embeddings del texto completo contra embeddings de skills para matching semántico | ❌ → Fase 1 primero |
+| A-D3 | Catálogo unificado: ESCO + emergentes argentinas | `skills_searchable.json` con 16,633 skills (14,257 ESCO + 2,376 emergentes). Campo `source` en cada skill. Script `regenerate_skills_searchable.py` | ✅ `deb161cf` |
 | A-D4 | Matching perfil × ofertas con gap personalizado | Función que cruza skills del trabajador contra skills de cada oferta en `ofertas_dashboard`. Retorna: cubiertas, faltantes, % | ❌ |
-| A-D5 | Matching brechas × cursos CABA | Embeddings de cursos (nombre + desc + plan) O búsqueda full-text contra las 2,255 fichas | ❌ |
+| A-D5 | Matching brechas × cursos CABA | **Fase 1:** Búsqueda full-text de skills faltantes contra nombre + descripción + plan de estudio de los 2,255 cursos. **Fase 2:** Embeddings de cursos para matching semántico | ❌ → Fase 1 primero |
 | A-D6 | Tendencia temporal por ISCO | Query: count ofertas por isco_code en ventana reciente vs anterior. Calcular % crecimiento | ❌ (datos existen) |
 | A-D7 | Distancia entre ocupaciones | Calcular "N skills te separan de X" usando perfil argentino, no solo ESCO puro | ⚠️ Parcial (similarity.json existe pero usa ESCO puro) |
 
