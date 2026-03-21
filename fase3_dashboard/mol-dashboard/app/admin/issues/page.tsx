@@ -22,16 +22,18 @@ export default function AdminIssuesPage() {
   const [autorFilter, setAutorFilter] = useState<string>("all");
   const [autores, setAutores] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [incluirAuto, setIncluirAuto] = useState(false);
 
   const loadData = async () => {
     setLoading(true);
     setError(null);
     try {
-      const filters: Record<string, string> = {};
+      const filters: Record<string, any> = {};
       if (estadoFilter !== "all") filters.estado = estadoFilter;
       if (tipoFilter !== "all") filters.tipo = tipoFilter;
       if (prioridadFilter !== "all") filters.prioridad = prioridadFilter;
       if (autorFilter !== "all") filters.autor_email = autorFilter;
+      if (incluirAuto) filters.incluir_auto = true;
 
       const [issuesData, statsData] = await Promise.all([
         getIssues(Object.keys(filters).length > 0 ? filters : undefined),
@@ -56,7 +58,7 @@ export default function AdminIssuesPage() {
 
   useEffect(() => {
     loadData();
-  }, [estadoFilter, tipoFilter, prioridadFilter, autorFilter]);
+  }, [estadoFilter, tipoFilter, prioridadFilter, autorFilter, incluirAuto]);
 
   // Filter by search term
   const filteredIssues = issues.filter((issue) =>
@@ -177,6 +179,17 @@ export default function AdminIssuesPage() {
               className="pl-9 bg-gray-50"
             />
           </div>
+        </div>
+        <div className="mt-3 flex items-center gap-2">
+          <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={incluirAuto}
+              onChange={(e) => setIncluirAuto(e.target.checked)}
+              className="rounded border-gray-300"
+            />
+            Incluir issues automáticos ({">"}99K)
+          </label>
         </div>
       </div>
 

@@ -1092,6 +1092,7 @@ export async function getIssues(filters?: {
   prioridad?: string;
   id_oferta?: string;
   autor_email?: string;
+  incluir_auto?: boolean;
 }): Promise<Issue[]> {
   const client = getSupabaseClient()
   if (!client) return []
@@ -1100,6 +1101,12 @@ export async function getIssues(filters?: {
     .from('issues')
     .select('*')
     .order('created_at', { ascending: false })
+    .limit(500)
+
+  // Por defecto excluir auto-validator (100K+ issues entierran los humanos)
+  if (!filters?.incluir_auto) {
+    query = query.neq('autor_email', 'auto-validator@mol.gob.ar')
+  }
 
   if (filters?.estado) {
     query = query.eq('estado', filters.estado)
