@@ -764,6 +764,45 @@ WHERE opt_in_pool = TRUE
 
 ---
 
+## F-14: Catalogación de skills y ocupaciones MOL (Bloque G)
+
+```
+Pipeline procesa ofertas → NLP extrae skills y títulos
+    ↓
+Detección automática:
+  - Skills que no matchean con ESCO ni con catálogo MOL existente
+  - Títulos de puesto que no matchean con ocupaciones ESCO/MOL
+    ↓
+Se acumulan en panel admin "No clasificados"
+    ↓
+Analista revisa cada una (cada 2 semanas):
+  "configurar docker" → ¿Es nueva? ¿Es variante? ¿Es ruido?
+    ↓
+  A) Es nueva → Crear ficha MOL:
+     - Escribir definición
+     - Asignar categoría (skill/knowledge/transversal)
+     - Definir relaciones (Docker → contenedores → DevOps)
+     - Vincular a skill ESCO más cercana si existe
+    ↓
+  B) Es variante → Mapear como sinónimo de skill existente
+    ↓
+  C) Es ruido → Descartar
+    ↓
+Skills/ocupaciones catalogadas entran al catálogo MOL
+    ↓
+Se agregan a skills_searchable.json + matching
+    ↓
+Corte de versión del catálogo (changelog público)
+```
+
+### Tablas Afectadas
+
+- `catalogo_mol_skills` — ficha completa de skills propias
+- `catalogo_mol_ocupaciones` — ficha completa de ocupaciones propias
+- `perfil_argentino_versiones` — incluye skills MOL en el snapshot
+
+---
+
 ## F-12: Curación automática del perfil argentino (Bloque 9°)
 
 ```

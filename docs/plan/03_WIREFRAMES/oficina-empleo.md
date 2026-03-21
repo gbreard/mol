@@ -877,6 +877,73 @@ Dashboard de inteligencia del mercado laboral de la jurisdiccion de la OE.
 
 ---
 
+## Panel admin: Catalogo MOL — No clasificados + Editor (Bloque G)
+
+**Estado:** Por crear
+**Nivel:** U-ADMIN
+
+### Panel "No clasificados"
+
+```
++---------------------------------------------------------------------+
+|  Catalogo MOL > No clasificados                                      |
+|                                                                      |
+|  Ultima deteccion: 2026-03-20 (post-sync 2,132 ofertas)            |
+|                                                                      |
+|  [Skills (85)]  [Ocupaciones (12)]                                  |
+|   =============                                                      |
+|                                                                      |
+|  Filtrar: [Frecuencia >= 30% v]  [Ordenar: frecuencia v]           |
+|                                                                      |
+|  +----------------------------------------------------------------+ |
+|  | Label                    | Frecuencia | Ofertas | Accion        | |
+|  |--------------------------|------------|---------|---------------| |
+|  | configurar docker        | 45.2%      | 1,204   | [Catalogar]   | |
+|  | scrum master             | 38.1%      | 1,015   | [Catalogar]   | |
+|  | power bi                 | 35.5%      | 946     | [Catalogar]   | |
+|  | gestion de redes sociales| 32.0%      | 852     | [Es sinonimo] | |
+|  | atencion al publico      | 31.2%      | 831     | [Descartar]   | |
+|  +----------------------------------------------------------------+ |
+|                                                                      |
+|  Mostrando 5 de 85                                                  |
++---------------------------------------------------------------------+
+```
+
+### Editor de ficha MOL (modal al click "Catalogar")
+
+```
++---------------------------------------------------------------------+
+|  Catalogar skill: "configurar docker"                                |
+|                                                                      |
+|  Nombre:      [Configurar Docker                        ]           |
+|                                                                      |
+|  Definicion:  [Crear, gestionar y orquestar contenedores ]           |
+|               [Docker para despliegue de aplicaciones.   ]           |
+|               [Incluye Dockerfiles, docker-compose,      ]           |
+|               [redes y volumenes.                        ]           |
+|                                                                      |
+|  Tipo:        (o) Skill  ( ) Knowledge  ( ) Transversal             |
+|                                                                      |
+|  Categoria:   [S1 v] > [S1.8 - Informatica v]                      |
+|                                                                      |
+|  Skill ESCO mas cercana:                                            |
+|  [Buscar: contenedores...]  → "utilizar software de contenedores"   |
+|                                                                      |
+|  Relaciones:                                                        |
+|  + Kubernetes         [related     v]  [x]                          |
+|  + CI/CD              [related     v]  [x]                          |
+|  + Linux              [prerequisite v]  [x]                          |
+|  [+ Agregar relacion]                                               |
+|                                                                      |
+|  Frecuencia actual: 45.2% (1,204 ofertas)                          |
+|  Primera deteccion: 2026-01-15                                      |
+|                                                                      |
+|  [Cancelar]                    [Guardar al Catalogo MOL]            |
++---------------------------------------------------------------------+
+```
+
+---
+
 ## Onboarding OE: Primer ingreso del tecnico
 
 **Estado:** Por crear

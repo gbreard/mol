@@ -669,7 +669,22 @@ Ademas de S1-S8 y Bloque F, estos wireframes y pantallas te tocan:
 | Formación impacto | S17 | 1 | 1 |
 | S3 registrado | S18-S19 | 2 | 2 |
 | Vía 4 | S20 | 1 | 1 |
-| **Total** | **S1-S20 + F1-F6** | **~30 componentes** | **~30 tests (1 por componente mínimo)** |
+| Catálogo MOL | S21-S22 | 2 | 2 |
+| **Total** | **S1-S22 + F1-F6** | **~32 componentes** | **~32 tests (1 por componente mínimo)** |
+
+### Del Bloque G (Catálogo MOL)
+
+| # | Tarea | Wireframe en | Qué hacer |
+|---|-------|-------------|-----------|
+| S21 | Panel "No clasificados": tabla skills/ocupaciones sin match ESCO, filtros, acciones | `oficina-empleo.md` → "Panel No clasificados" | Tabla con tabs skills/ocupaciones + filtro frecuencia + botones catalogar/sinónimo/descartar |
+| S22 | Editor ficha MOL: modal para crear skill/ocupación con definición, tipo, categoría, relaciones | `oficina-empleo.md` → "Editor de ficha MOL" | Modal form con campos definición, radio tipo, select categoría, búsqueda ESCO parent, lista relaciones |
+
+**APIs que consume (Gerardo las crea):**
+```typescript
+// GET /api/catalogo-mol/no-clasificados?tipo=skills&min_freq=30
+// POST /api/catalogo-mol — crear ficha
+// PATCH /api/catalogo-mol — marcar como sinónimo o descartar
+```
 
 ### Regla de testing obligatoria
 

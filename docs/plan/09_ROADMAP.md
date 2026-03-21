@@ -410,6 +410,123 @@ Post-corte: regenerar skills_searchable.json (script existente)
 | E5 | QR evoluciona a credencial verificable | — | ❌ Futuro |
 | E6 | API pública para portales de empleo de gobiernos | — | ❌ Futuro |
 
+### Bloque G: Catálogo MOL — Taxonomía propia (skills + ocupaciones)
+
+**Dependencia:** Bloque 9° (curación perfil) + datos suficientes (>30K ofertas procesadas)
+**Asignado a:** Gerardo (datos, estructura, curación) + Sergio (UI edición)
+
+> El mercado laboral argentino genera skills y ocupaciones que ESCO no tiene. Hoy las capturamos como "emergentes" pero son un label suelto sin estructura. El Catálogo MOL les da la misma jerarquía que ESCO: definición, categoría, relaciones.
+
+**Diferencia con lo actual:**
+
+| Hoy (emergentes) | Catálogo MOL |
+|-------------------|-------------|
+| Label suelto ("Docker") | Ficha completa: nombre, definición, categoría, tipo |
+| Sin relaciones | Relacionada con otras skills (Docker → contenedores → DevOps) |
+| Solo aprobada/rechazada | Ciclo de vida: detectada → revisada → catalogada → versionada |
+| Solo skills | Skills MOL + Ocupaciones MOL |
+
+**Estructura de una Skill MOL:**
+
+```
+{
+  id: "mol-skill-docker-config",
+  label: "Configurar Docker",
+  label_normalized: "configurar docker",
+  definicion: "Crear, gestionar y orquestar contenedores Docker para
+    despliegue de aplicaciones. Incluye Dockerfiles, docker-compose,
+    redes y volúmenes.",
+  tipo: "skill",                    // skill | knowledge | transversal
+  categoria_L1: "S1",              // Alineada a ESCO si existe equivalente
+  categoria_L2: "S1.8",
+  source: "mol_catalogo",          // mol_catalogo | esco
+  esco_parent_uri: "http://...",   // Skill ESCO más cercana (si existe)
+  relaciones: [
+    { skill: "Kubernetes", tipo: "related" },
+    { skill: "CI/CD", tipo: "related" },
+    { skill: "Linux", tipo: "prerequisite" },
+  ],
+  frecuencia_mercado: 45.2,        // % de ofertas que la mencionan
+  primera_deteccion: "2026-01-15",
+  aprobada_por: "admin@oede.gob.ar",
+  version_catalogo: "v2.0",
+}
+```
+
+**Estructura de una Ocupación MOL:**
+
+```
+{
+  id: "mol-occ-community-manager",
+  label: "Community Manager",
+  definicion: "Gestiona la presencia digital de una organización en
+    redes sociales. Crea contenido, interactúa con la audiencia,
+    analiza métricas de engagement.",
+  isco_parent: "2431",             // Ocupación ISCO más cercana
+  esco_parent_uri: "http://...",   // Ocupación ESCO más cercana
+  source: "mol_catalogo",
+  skills_esenciales: ["marketing digital", "redes sociales", "copywriting"],
+  skills_opcionales: ["diseño gráfico", "analítica web"],
+  frecuencia_mercado: 3.1,         // % de ofertas que piden este título
+  primera_deteccion: "2025-11-20",
+  version_catalogo: "v1.0",
+}
+```
+
+**Ciclo de vida:**
+
+```
+DETECCIÓN AUTOMÁTICA
+  Pipeline procesa ofertas → NLP extrae skills/títulos
+  → algunos no matchean con ESCO
+  → se acumulan como "no clasificados"
+    ↓
+REVISIÓN (analista en UI)
+  Panel muestra: "85 skills no clasificadas, 12 títulos sin ocupación ESCO"
+  Analista revisa cada una:
+  - ¿Es genuinamente nueva? → Crear ficha MOL (definición, categoría, relaciones)
+  - ¿Es variante de algo que existe? → Mapear a skill/ocupación existente (sinónimo)
+  - ¿Es ruido? → Descartar
+    ↓
+CATALOGACIÓN
+  Skill/ocupación nueva → entra al Catálogo MOL con ficha completa
+  Se agrega al catálogo de búsqueda (skills_searchable.json)
+  Se agrega al matching (perfil consolidado)
+    ↓
+VERSIONADO
+  Cada corte del perfil argentino incluye las skills/ocupaciones MOL vigentes
+  Changelog: qué se agregó, qué se modificó, qué se descartó
+    ↓
+ACTUALIZACIÓN PERIÓDICA (cada 2 semanas, como Lightcast)
+  Re-procesar ofertas recientes → detectar nuevas emergentes
+  Analista revisa → cataloga → corte de versión
+```
+
+**Componentes a crear:**
+
+| # | Componente | Tipo | Quién |
+|---|-----------|------|-------|
+| G1 | Tabla `catalogo_mol_skills` (ficha completa con definición, relaciones) | Migration SQL | Gerardo |
+| G2 | Tabla `catalogo_mol_ocupaciones` (ficha completa con skills esenciales) | Migration SQL | Gerardo |
+| G3 | Detección automática de "no clasificados" post-pipeline | RPC Supabase | Gerardo |
+| G4 | API /api/catalogo-mol (CRUD skills + ocupaciones MOL) | API route | Gerardo |
+| G5 | Panel admin: "No clasificados" (skills y títulos sin match ESCO) | UI | Sergio |
+| G6 | Editor de ficha MOL: definición, categoría, relaciones, preview | UI | Sergio |
+| G7 | Changelog público del catálogo (qué cambió en cada versión) | UI + datos | Ambos |
+| G8 | Integrar skills/ocupaciones MOL en matching y búsqueda | Lógica | Gerardo |
+| G9 | Proceso periódico de actualización (cada 2 semanas) | Workflow | Gerardo |
+
+**Tests:**
+
+| Test | Tipo | Qué valida |
+|------|------|------------|
+| `unit/catalogo-mol-skills.test.ts` | Unit | Ficha tiene campos requeridos. Relaciones válidas. Frecuencia calculada. |
+| `unit/catalogo-mol-ocupaciones.test.ts` | Unit | Ocupación MOL tiene ISCO parent. Skills esenciales no vacías. |
+| `unit/deteccion-no-clasificados.test.ts` | Unit | Skills sin match ESCO se detectan. Títulos sin ocupación se detectan. Duplicados filtrados. |
+| `component/catalogo-editor.test.tsx` | Component | Form crear skill MOL. Preview definición. Selector relaciones. |
+
+---
+
 ### Bloque F: Responsive — Mobile y Tablet (Sergio)
 
 **Dependencia:** Bloques C y D (las pantallas tienen que existir primero)

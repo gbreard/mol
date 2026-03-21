@@ -24,10 +24,10 @@
 
 | Severidad | Cantidad | Descripción |
 |-----------|----------|-------------|
-| **CRÍTICO** | 5 | Gaps que impiden lanzamiento (incluye V-19 pools OE) |
+| **CRÍTICO** | 6 | Gaps que impiden lanzamiento (incluye V-19, V-27) |
 | **ALTO** | 15 | Features que esperan los usuarios |
 | **MEDIO** | 6 | Mejoras de UX + S3 v2 |
-| **Total** | **26** | |
+| **Total** | **27** | |
 
 ---
 
@@ -244,6 +244,18 @@ MATCHING:
 | **Severidad** | 🟠 ALTO |
 | **Descripción** | Un solo perfil por trabajador (vinculado por DNI). Opt-in para visibilidad en pool (provincial/nacional, anonimizado). 3 escenarios documentados en F-10 |
 | **Servicios** | S1, S2, S3 registrado |
+| **Estado** | ⬜ Pendiente |
+
+---
+
+### V-27: Catálogo MOL — Taxonomía propia de skills y ocupaciones (Bloque G)
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🔴 CRÍTICO |
+| **Descripción** | El mercado argentino genera skills (ej: "configurar Docker") y ocupaciones (ej: "Community Manager") que ESCO no tiene. Hoy son labels sueltos. El Catálogo MOL les da ficha completa: definición, categoría, relaciones. Actualización cada 2 semanas (como Lightcast). Changelog público |
+| **Diferenciador** | Lightcast tiene 33K skills propias actualizadas cada 2 semanas. MOL tendría su catálogo argentino con la misma filosofía bottom-up: las skills surgen de los datos, no de una taxonomía top-down |
+| **Servicios** | Todos (alimenta matching, búsqueda, perfiles, reportes) |
 | **Estado** | ⬜ Pendiente |
 
 ---

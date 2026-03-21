@@ -914,6 +914,78 @@ CREATE TABLE IF NOT EXISTS tension_ocupaciones (
 
 ---
 
+### T-catalogo_mol_skills (NUEVA — Bloque G: taxonomía propia)
+
+Skills del mercado argentino que no están en ESCO. Ficha completa con definición, categoría y relaciones.
+
+```sql
+CREATE TABLE IF NOT EXISTS catalogo_mol_skills (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  label VARCHAR(300) NOT NULL,
+  label_normalized VARCHAR(300) NOT NULL,
+  definicion TEXT NOT NULL,                    -- Definición propia MOL
+  tipo VARCHAR(20) NOT NULL,                   -- 'skill', 'knowledge', 'transversal'
+  categoria_L1 VARCHAR(10),                    -- Alineada a ESCO si existe (S1, K, T)
+  categoria_L2 VARCHAR(10),
+  esco_parent_uri TEXT,                        -- Skill ESCO más cercana (si existe)
+  relaciones JSONB,                            -- [{skill: "...", tipo: "related|prerequisite|broader"}]
+  frecuencia_mercado NUMERIC(5,2),             -- % de ofertas que la mencionan
+  primera_deteccion TIMESTAMPTZ,
+  estado VARCHAR(20) DEFAULT 'catalogada',     -- 'detectada', 'en_revision', 'catalogada', 'descartada'
+  aprobada_por UUID REFERENCES auth.users(id),
+  version_catalogo VARCHAR(20),                -- Versión del catálogo donde se incluyó
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+
+  UNIQUE(label_normalized)
+);
+
+CREATE INDEX IF NOT EXISTS idx_mol_skills_estado ON catalogo_mol_skills(estado);
+CREATE INDEX IF NOT EXISTS idx_mol_skills_tipo ON catalogo_mol_skills(tipo);
+CREATE INDEX IF NOT EXISTS idx_mol_skills_freq ON catalogo_mol_skills(frecuencia_mercado DESC);
+```
+
+**Pantallas que usan:** Panel admin "No clasificados" (G5), editor ficha MOL (G6), búsqueda skills (A-D1)
+
+---
+
+### T-catalogo_mol_ocupaciones (NUEVA — Bloque G: ocupaciones propias)
+
+Ocupaciones del mercado argentino que no están en ESCO. Con skills esenciales/opcionales propias.
+
+```sql
+CREATE TABLE IF NOT EXISTS catalogo_mol_ocupaciones (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  label VARCHAR(300) NOT NULL,
+  label_normalized VARCHAR(300) NOT NULL,
+  definicion TEXT NOT NULL,
+  isco_parent VARCHAR(10),                     -- ISCO más cercano
+  esco_parent_uri TEXT,                        -- Ocupación ESCO más cercana
+  skills_esenciales JSONB NOT NULL DEFAULT '[]',  -- Array de skill labels
+  skills_opcionales JSONB DEFAULT '[]',
+  frecuencia_mercado NUMERIC(5,2),
+  primera_deteccion TIMESTAMPTZ,
+  estado VARCHAR(20) DEFAULT 'catalogada',
+  aprobada_por UUID REFERENCES auth.users(id),
+  version_catalogo VARCHAR(20),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+
+  UNIQUE(label_normalized)
+);
+
+CREATE INDEX IF NOT EXISTS idx_mol_occ_estado ON catalogo_mol_ocupaciones(estado);
+CREATE INDEX IF NOT EXISTS idx_mol_occ_isco ON catalogo_mol_ocupaciones(isco_parent);
+```
+
+**Pantallas que usan:** Panel admin "No clasificados" (G5), matching de ofertas
+
+**RLS para ambas tablas:**
+- Lectura: todos (es catálogo público)
+- Escritura: solo admin/autenticados
+
+---
+
 ### Campos adicionales en perfiles_trabajadores (Integración S1↔S2)
 
 Campos para vinculación por DNI, opt-in y multi-OE:
