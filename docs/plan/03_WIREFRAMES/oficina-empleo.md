@@ -876,6 +876,89 @@ Dashboard de inteligencia del mercado laboral de la jurisdiccion de la OE.
 
 ---
 
+## Onboarding OE: Primer ingreso del tecnico
+
+**Estado:** Por crear
+**Nivel:** U-TECNICO_OE (primer ingreso)
+
+```
++---------------------------------------------------------------------+
+|  [Logo MOL]                                    maria@avellaneda.gob  |
++---------------------------------------------------------------------+
+|                                                                      |
+|  Bienvenida, Maria!                                                  |
+|  OE Municipal Avellaneda                                             |
+|                                                                      |
+|  Para empezar a usar el sistema, carga tu planilla de personas.     |
+|  Despues podes agregar vacantes y cursos.                            |
+|                                                                      |
+|  +-------------------+  +-------------------+  +-------------------+ |
+|  | 1. PERSONAS       |  | 2. VACANTES       |  | 3. CURSOS         | |
+|  | (minimo para      |  | (opcional)        |  | (opcional)        | |
+|  |  arrancar)        |  |                   |  |                   | |
+|  |                   |  | Vacantes que      |  | Cursos que ofrece | |
+|  | Tu planilla de    |  | empresas locales  |  | tu municipio      | |
+|  | personas          |  | traen a la OE     |  |                   | |
+|  | registradas       |  |                   |  |                   | |
+|  |                   |  | [Descargar        |  | [Descargar        | |
+|  | [Descargar        |  |  template]        |  |  template]        | |
+|  |  template]        |  |                   |  |                   | |
+|  |                   |  | [Subir Excel]     |  | [Subir Excel]     | |
+|  | [Subir Excel]     |  +-------------------+  +-------------------+ |
+|  +-------------------+                                               |
+|                                                                      |
+|  O si preferis, podes empezar cargando casos uno por uno:           |
+|  [Atender primer caso manualmente]                                  |
+|                                                                      |
++---------------------------------------------------------------------+
+```
+
+### Preview de importacion
+
+```
++---------------------------------------------------------------------+
+|  Importar personas > Preview                                         |
+|                                                                      |
+|  Se encontraron 150 personas. 3 sin nombre (se saltan).             |
+|                                                                      |
+|  +----------------------------------------------------------------+ |
+|  | Nombre          | DNI      | Ocupacion    | Skills              | |
+|  |-----------------|----------|--------------|---------------------| |
+|  | Juan Perez      | 30123456 | Albanil      | Soldadura           | |
+|  | Maria Lopez     | 31456789 | Cajera       |                     | |
+|  | Pedro Garcia    | 32789012 | Electricista | Electricidad        | |
+|  | Ana Rodriguez   |          | Costurera    | Costura, patronaje  | |
+|  | ...             |          |              |                     | |
+|  +----------------------------------------------------------------+ |
+|  Mostrando 4 de 150                                                 |
+|                                                                      |
+|  Resumen:                                                           |
+|  - Con ocupacion declarada: 120 (se derivan skills automaticamente) |
+|  - Con skills explicitas: 45                                        |
+|  - Sin datos de ocupacion ni skills: 30                             |
+|  - Sin nombre (se saltan): 3                                        |
+|                                                                      |
+|  [Cancelar]                    [Confirmar importacion de 147]       |
++---------------------------------------------------------------------+
+```
+
+### Post-importacion
+
+```
++---------------------------------------------------------------------+
+|  Importacion completada!                                             |
+|                                                                      |
+|  147 personas importadas                                            |
+|  89 con skills derivadas automaticamente                            |
+|  45 con skills declaradas                                           |
+|  13 sin skills (se pueden completar en la atencion)                 |
+|                                                                      |
+|  [Ir al panel de casos]  [Importar vacantes]  [Importar cursos]     |
++---------------------------------------------------------------------+
+```
+
+---
+
 ## Integracion S1 ↔ S2: Vinculacion y Opt-in
 
 ### Tecnico busca perfil por DNI (S2)

@@ -764,6 +764,157 @@ WHERE opt_in_pool = TRUE
 
 ---
 
+## F-11: Onboarding primera OE — del acuerdo institucional a la primera atención
+
+### Proceso institucional (fuera del sistema)
+
+```
+OEDE contacta municipio/provincia
+    ↓
+Firma convenio de colaboración
+    ↓
+Municipio designa técnicos que van a usar el sistema
+    ↓
+OEDE recibe: nombre OE, jurisdicción, emails de técnicos
+```
+
+### Alta en el sistema (Admin OEDE)
+
+```
+Admin entra a /admin/organizaciones (por crear)
+    ↓
+Crear organización:
+  - Nombre: "OE Municipal Avellaneda"
+  - Tipo: oficina_empleo
+  - Jurisdicción: "Buenos Aires - Avellaneda"
+    ↓
+Asignar usuarios:
+  - maria@avellaneda.gob.ar → rol: coordinador
+  - juan@avellaneda.gob.ar → rol: tecnico
+    ↓
+Sistema envía email a cada técnico:
+  "Fuiste dado de alta en el MOL. Ingresá con tu email."
+```
+
+### Primer ingreso del técnico
+
+```
+Técnico recibe email → entra al link
+    ↓
+Login con email institucional (Supabase Auth)
+    ↓
+Primera vez → ve pantalla de bienvenida:
+  "Bienvenido/a a la OE Municipal Avellaneda"
+  "Para empezar, cargá tu planilla de personas."
+    ↓
+3 opciones (en orden sugerido):
+  1. [Cargar personas]    ← mínimo para arrancar
+  2. [Cargar vacantes]    ← opcional
+  3. [Cargar cursos]      ← opcional
+    ↓
+Descarga template Excel con columnas sugeridas
+```
+
+### Templates Excel descargables
+
+**Template Personas** (mínimo: solo nombre):
+
+| Columna | Obligatoria | Ejemplo | Variantes aceptadas |
+|---------|------------|---------|---------------------|
+| nombre | ✅ | Juan Pérez | nombre_completo, apellido_nombre |
+| dni | Recomendado | 30123456 | documento |
+| telefono | Opcional | 1155667788 | tel, celular |
+| email | Opcional | juan@email.com | correo |
+| ocupacion | Recomendado | Albañil | ocupacion_actual, puesto |
+| skills | Opcional | Soldadura, electricidad | competencias, habilidades |
+| notas | Opcional | Tiene carnet conducir | observaciones |
+
+**Template Vacantes:**
+
+| Columna | Obligatoria | Ejemplo |
+|---------|------------|---------|
+| titulo | ✅ | Desarrollador Python |
+| empresa | ✅ | TechCorp SA |
+| descripcion | Recomendado | Buscamos desarrollador con 2 años... |
+| ubicacion | Opcional | Avellaneda |
+| modalidad | Opcional | Presencial |
+| contacto | Opcional | rrhh@techcorp.com |
+
+**Template Cursos:**
+
+| Columna | Obligatoria | Ejemplo |
+|---------|------------|---------|
+| nombre | ✅ | Introducción a la programación |
+| duracion | Recomendado | 3 meses |
+| modalidad | Opcional | Presencial |
+| certificacion | Opcional | Certificado municipal |
+| institucion | Opcional | CENOF Avellaneda |
+
+### Importación y procesamiento
+
+```
+Técnico sube Excel de personas
+    ↓
+Sistema parsea + sanitiza (parser existente, lib/parse-pool-import.ts)
+    ↓
+Preview: "Se encontraron 150 personas. 3 sin nombre (se saltan)."
+  +----------------------------------------------------------+
+  | Nombre          | DNI      | Ocupación    | Skills       |
+  |-----------------|----------|--------------|--------------|
+  | Juan Pérez      | 30123456 | Albañil      | Soldadura    |
+  | María López     | 31456789 | Cajera       |              |
+  | Pedro García    | 32789012 | Electricista | Electricidad |
+  +----------------------------------------------------------+
+  Mostrando 3 de 150  |  [Cancelar]  [Confirmar importación]
+    ↓
+Confirmar → sistema:
+  1. Crea perfiles_trabajadores con organizacion_id de la OE
+  2. Si tiene "ocupacion" → busca en ESCO → extrae skills automáticamente
+  3. Si tiene "skills" → las agrega como skills declaradas
+    ↓
+"150 personas importadas. 89 con skills derivadas automáticamente."
+    ↓
+Técnico ya puede ver su panel de casos y empezar a atender
+```
+
+### Datos mínimos para que funcione
+
+| Pool | Mínimo para arrancar | Qué habilita |
+|------|---------------------|-------------|
+| **Personas** | ✅ Solo esto alcanza | Panel de casos, matching contra ofertas MOL, reportes |
+| **Vacantes** | ❌ Opcional | Matching bidireccional (empresa trae puesto → ranking cartera) |
+| **Cursos** | ❌ Opcional | Tab capacitación con impacto medible de cursos propios |
+
+Sin vacantes locales, el técnico igual puede matchear contra el pool general de ofertas del MOL en la jurisdicción. Sin cursos propios, puede derivar a cursos de fuentes externas (CABA, nacionales).
+
+### Capacitación del técnico
+
+No requiere capacitación formal. Se le entrega:
+
+1. **PDF de 2 páginas** con capturas de pantalla:
+   - Página 1: Cómo importar tu planilla (3 pasos)
+   - Página 2: Cómo atender un caso (buscar por DNI → ver matching → generar reporte)
+
+2. **Video de 5 minutos** (grabación de pantalla):
+   - Importar personas → ver panel → atender un caso → generar reporte PDF
+
+3. **La UI se explica sola:** cada pantalla tiene texto guía:
+   - "Para empezar, cargá tu planilla de personas"
+   - "Buscá al trabajador por DNI"
+   - "Estas son las ocupaciones compatibles con su perfil"
+
+### Métricas de onboarding exitoso
+
+| Métrica | Objetivo |
+|---------|---------|
+| Tiempo desde alta hasta primera importación | < 1 hora |
+| Personas importadas en primer carga | > 50 |
+| Primera atención con matching | Mismo día del alta |
+| Primer reporte PDF generado | Primera semana |
+| Técnico usa el sistema sin ayuda | Segunda semana |
+
+---
+
 ## Historial de Cambios
 
 | Fecha | Versión | Cambio |
@@ -773,4 +924,5 @@ WHERE opt_in_pool = TRUE
 | 2026-03-18 | 2.1 | F-06 Reporte de Compatibilidad Laboral (V-17): flujo gestor genera → PDF con QR → reclutador accede → edita competencias |
 | 2026-03-21 | 2.3 | F-07 formación con impacto (Bloque 8°), F-08 empresa publica búsqueda (Bloque 11°), F-09 Vía 4 título → skills (Bloque 12°) |
 | 2026-03-21 | 2.4 | F-10 Integración S1↔S2: vinculación por DNI, 3 escenarios, opt-in por jurisdicción, tabla visibilidad, SQL vinculación |
+| 2026-03-21 | 2.5 | F-11 Onboarding primera OE: proceso institucional, alta admin, primer ingreso técnico, templates Excel, importación guiada, datos mínimos, capacitación, métricas |
 | 2026-03-20 | 2.2 | F-06 ampliado: 2 caminos (S1+S2), 4 vías captura (+ formación/título), 3 tabs resultados, transición dual, ESCO Argentino. Fuente: MOL_Skills_Intelligence.docx v5 |

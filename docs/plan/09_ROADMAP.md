@@ -353,7 +353,12 @@ Post-corte: regenerar skills_searchable.json (script existente)
 | B8 | Formación: catálogo OE mapeado a ESCO + impacto medible | S2-8 | ❌ |
 | B9 | Comparar casos para priorizar derivaciones | S2-9 | ❌ |
 | B10 | Exportar diagnóstico PDF institucional (emisor = OE) | S2-11 | ❌ |
-| B11 | Validación input Excel/CSV (S-25) | — | ❌ |
+| B11 | Validación input Excel/CSV (S-25) | — | ✅ `88a52d6e` |
+| B12 | Onboarding OE: pantalla bienvenida + importación guiada | S2-1 | ❌ |
+| B13 | Templates Excel descargables (personas, vacantes, cursos) | S2-1 | ❌ |
+| B14 | Preview importación + confirmación | S2-1 | ❌ |
+| B15 | P-37 Admin: gestión organizaciones (crear OE, asignar usuarios) | /admin/organizaciones | ❌ |
+| B16 | PDF capacitación técnico (2 páginas) + video 5 min | — | ❌ |
 
 ### Bloque C: S1 — Mi Futuro Laboral (trabajador independiente)
 

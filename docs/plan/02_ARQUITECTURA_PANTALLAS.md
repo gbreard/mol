@@ -208,6 +208,7 @@ MOL Platform
     ├── /admin/issues ────── P-19 Issues
     ├── /admin/skills ────── P-20 Skills Intelligence (admin: Taxonomía + Consolidado)
     ├── /admin/perfil-argentino ── P-36 Gestión Perfil Consolidado Argentino (versiones)
+    ├── /admin/organizaciones ─── P-37 Gestión Organizaciones (alta OE/empresa, asignar usuarios)
     ├── /admin/scraping ──── P-21 Scraping
     ├── /admin/metricas ──── P-22 Métricas
     ├── /admin/logs ──────── P-23 Logs
