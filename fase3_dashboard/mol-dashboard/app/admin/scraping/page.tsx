@@ -95,41 +95,35 @@ export default function ScrapingPage() {
         });
       }
 
-      // Ofertas por portal
-      const { data: ofertas } = await supabase
-        .from('ofertas_dashboard')
-        .select('portal');
+      // Ofertas por portal — usar fase1_fuentes de sistema_estado (datos crudos del VPS)
+      if (estadoData?.fase1_fuentes) {
+        const rawFuentes = estadoData.fase1_fuentes;
+        const fuentesObj = typeof rawFuentes === 'string' ? JSON.parse(rawFuentes) : rawFuentes;
+        const totalFuentes = Object.values(fuentesObj as Record<string, number>).reduce((a: number, b: number) => a + b, 0);
 
-      if (ofertas) {
-        const counts: Record<string, number> = {};
-        ofertas.forEach(o => {
-          const portal = o.portal || 'desconocido';
-          counts[portal] = (counts[portal] || 0) + 1;
-        });
-
-        const total = ofertas.length;
-        const portalData = Object.entries(counts)
+        const portalData = Object.entries(fuentesObj as Record<string, number>)
           .map(([portal, cantidad]) => ({
             portal,
-            cantidad,
-            porcentaje: Math.round((cantidad / total) * 100)
+            cantidad: cantidad as number,
+            porcentaje: totalFuentes > 0 ? Math.round(((cantidad as number) / totalFuentes) * 100) : 0
           }))
           .sort((a, b) => b.cantidad - a.cantidad);
 
         setPorPortal(portalData);
       }
 
-      // Ofertas por fecha (últimos 7 días)
+      // Ofertas por fecha de publicación (últimos 14 días)
       const { data: ofertasFecha } = await supabase
         .from('ofertas_dashboard')
-        .select('fecha_publicacion_iso')
-        .order('fecha_publicacion_iso', { ascending: false })
-        .limit(10000);  // Aumentado de 1000 para evitar truncamiento
+        .select('fecha_publicacion')
+        .not('fecha_publicacion', 'is', null)
+        .order('fecha_publicacion', { ascending: false })
+        .limit(1000);
 
       if (ofertasFecha) {
         const countsByDate: Record<string, number> = {};
-        ofertasFecha.forEach(o => {
-          const fecha = o.fecha_publicacion_iso?.split('T')[0] || 'sin fecha';
+        ofertasFecha.forEach((o: any) => {
+          const fecha = o.fecha_publicacion || 'sin fecha';
           countsByDate[fecha] = (countsByDate[fecha] || 0) + 1;
         });
 
@@ -154,6 +148,8 @@ export default function ScrapingPage() {
       zonajobs: 'bg-blue-500',
       computrabajo: 'bg-green-500',
       indeed: 'bg-purple-500',
+      caba: 'bg-amber-500',
+      portalempleo: 'bg-teal-500',
       linkedin: 'bg-sky-500'
     };
     return colors[portal] || 'bg-gray-500';
