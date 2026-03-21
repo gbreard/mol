@@ -30,9 +30,10 @@ const TABS: Tab[] = [
   },
   {
     id: 'metrics',
-    label: 'Métricas en Vivo',
+    label: 'Centro de Control',
     icon: <Activity className="w-5 h-5" />,
-    description: 'Estado actual del sistema con auto-refresh'
+    description: 'Ir al Centro de Control para métricas en vivo',
+    redirect: '/admin/metricas'
   }
 ];
 
@@ -206,7 +207,13 @@ export default function AdminArchitecturePage() {
             {TABS.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  if ((tab as any).redirect) {
+                    window.location.href = (tab as any).redirect;
+                    return;
+                  }
+                  setActiveTab(tab.id);
+                }}
                 className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
                   activeTab === tab.id
                     ? 'border-purple-500 text-purple-600'

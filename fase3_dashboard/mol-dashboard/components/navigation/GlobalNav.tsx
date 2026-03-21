@@ -107,20 +107,41 @@ const NAV_ITEMS: NavItem[] = [
   },
 ];
 
-const ADMIN_SIDEBAR_ITEMS = [
-  { href: "/admin", label: "Dashboard", icon: BarChart3, matchMode: "exact" as const },
-  { href: "/admin/arquitectura", label: "Arquitectura", icon: Network },
-  { href: "/admin/usuarios", label: "Usuarios", icon: Users },
-  { href: "/admin/solicitudes", label: "Solicitudes", icon: UserPlus },
-  { href: "/admin/validacion", label: "Validacion", icon: ClipboardCheck, matchMode: "startsWith" as const },
-  { href: "/admin/issues", label: "Issues", icon: MessageSquare },
-  { href: "/admin/skills", label: "Skills Intelligence", icon: Target },
-  { href: "/admin/laboratorio", label: "Laboratorio", icon: FlaskConical, matchMode: "startsWith" as const },
-  { href: "/admin/scraping", label: "Scraping", icon: Database },
-  { href: "/admin/metricas", label: "Metricas", icon: BarChart3 },
-  { href: "/admin/logs", label: "Logs", icon: FileText },
-  { href: "/admin/configuracion", label: "Configuracion", icon: Settings },
+interface AdminSidebarSection {
+  label: string;
+  items: { href: string; label: string; icon: any; matchMode?: "exact" | "startsWith" }[];
+}
+
+const ADMIN_SIDEBAR_SECTIONS: AdminSidebarSection[] = [
+  {
+    label: "Operaciones",
+    items: [
+      { href: "/admin/metricas", label: "Centro de Control", icon: BarChart3 },
+      { href: "/admin/scraping", label: "Scraping", icon: Database },
+      { href: "/admin/validacion", label: "Validacion", icon: ClipboardCheck, matchMode: "startsWith" },
+      { href: "/admin/issues", label: "Issues", icon: MessageSquare },
+    ],
+  },
+  {
+    label: "Datos",
+    items: [
+      { href: "/admin/skills", label: "Skills Intelligence", icon: Target },
+      { href: "/admin/laboratorio", label: "Laboratorio", icon: FlaskConical, matchMode: "startsWith" },
+    ],
+  },
+  {
+    label: "Administracion",
+    items: [
+      { href: "/admin/usuarios", label: "Usuarios", icon: Users },
+      { href: "/admin/solicitudes", label: "Solicitudes", icon: UserPlus },
+      { href: "/admin/logs", label: "Logs", icon: FileText },
+      { href: "/admin/arquitectura", label: "Arquitectura", icon: Network },
+    ],
+  },
 ];
+
+// Flat list for backward compat (used in rendering)
+const ADMIN_SIDEBAR_ITEMS = ADMIN_SIDEBAR_SECTIONS.flatMap(s => s.items);
 
 /* ─── Helpers ─────────────────────────────────────────── */
 
@@ -400,35 +421,37 @@ export function GlobalNav() {
 
           {/* Admin sub-nav (only when in /admin) */}
           {isInAdmin && (
-            <div className="border-t border-slate-700 p-3">
-              <p className="text-xs text-slate-500 uppercase tracking-wider px-3 mb-2">
-                Admin
-              </p>
-              <div className="space-y-0.5">
-                {ADMIN_SIDEBAR_ITEMS.map((item) => {
-                  const active =
-                    item.matchMode === "startsWith"
-                      ? pathname.startsWith(item.href) && pathname !== "/admin"
-                      : item.matchMode === "exact"
-                        ? pathname === item.href
-                        : pathname === item.href;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setSheetOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                        active
-                          ? "bg-purple-600 text-white"
-                          : "text-slate-400 hover:bg-slate-800 hover:text-white"
-                      }`}
-                    >
-                      <item.icon className="w-4 h-4" />
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </div>
+            <div className="border-t border-slate-700 p-3 space-y-4">
+              {ADMIN_SIDEBAR_SECTIONS.map((section) => (
+                <div key={section.label}>
+                  <p className="text-xs text-slate-500 uppercase tracking-wider px-3 mb-1.5">
+                    {section.label}
+                  </p>
+                  <div className="space-y-0.5">
+                    {section.items.map((item) => {
+                      const active =
+                        item.matchMode === "startsWith"
+                          ? pathname.startsWith(item.href) && pathname !== "/admin"
+                          : pathname === item.href;
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setSheetOpen(false)}
+                          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                            active
+                              ? "bg-purple-600 text-white"
+                              : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                          }`}
+                        >
+                          <item.icon className="w-4 h-4" />
+                          {item.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 

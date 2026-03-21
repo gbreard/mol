@@ -183,62 +183,11 @@ export default function ScrapingPage() {
         </button>
       </div>
 
-      {/* Status Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="bg-blue-100 p-3 rounded-lg">
-              <Database className="w-6 h-6 text-blue-600" />
-            </div>
-            {stats?.fase1_dias_desde_scraping === 0 ? (
-              <CheckCircle className="w-5 h-5 text-green-500" />
-            ) : stats && stats.fase1_dias_desde_scraping > 1 ? (
-              <AlertTriangle className="w-5 h-5 text-amber-500" />
-            ) : (
-              <Clock className="w-5 h-5 text-gray-400" />
-            )}
-          </div>
-          <h3 className="text-2xl font-bold text-gray-900">
-            {stats?.fase1_ofertas_totales.toLocaleString() || '0'}
-          </h3>
-          <p className="text-sm text-gray-500">Ofertas totales</p>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="bg-green-100 p-3 rounded-lg">
-              <CheckCircle className="w-6 h-6 text-green-600" />
-            </div>
-          </div>
-          <h3 className="text-2xl font-bold text-green-600">
-            {stats?.fase1_ofertas_activas.toLocaleString() || '0'}
-          </h3>
-          <p className="text-sm text-gray-500">Ofertas activas</p>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="bg-gray-100 p-3 rounded-lg">
-              <XCircle className="w-6 h-6 text-gray-600" />
-            </div>
-          </div>
-          <h3 className="text-2xl font-bold text-gray-600">
-            {stats?.fase1_ofertas_cerradas.toLocaleString() || '0'}
-          </h3>
-          <p className="text-sm text-gray-500">Ofertas cerradas</p>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className={`p-3 rounded-lg ${stats && stats.fase1_dias_desde_scraping > 1 ? 'bg-amber-100' : 'bg-green-100'}`}>
-              <Calendar className={`w-6 h-6 ${stats && stats.fase1_dias_desde_scraping > 1 ? 'text-amber-600' : 'text-green-600'}`} />
-            </div>
-          </div>
-          <h3 className={`text-2xl font-bold ${stats && stats.fase1_dias_desde_scraping > 1 ? 'text-amber-600' : 'text-green-600'}`}>
-            {stats?.fase1_dias_desde_scraping || '0'} días
-          </h3>
-          <p className="text-sm text-gray-500">Desde último scraping</p>
-        </div>
+      {/* Summary bar */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 flex items-center gap-6 text-sm">
+        <span className="text-gray-500">Ultimo scraping: <strong className="text-gray-900">{stats?.fase1_ultimo_scraping || '-'}</strong></span>
+        <span className="text-gray-500">Hace <strong className={stats && stats.fase1_dias_desde_scraping > 3 ? 'text-amber-600' : 'text-green-600'}>{stats?.fase1_dias_desde_scraping || 0} dias</strong></span>
+        <span className="text-gray-500">Fuentes: <strong className="text-gray-900">{stats?.fase1_fuentes ? (typeof stats.fase1_fuentes === 'object' ? Object.keys(stats.fase1_fuentes).length : stats.fase1_fuentes) : '-'}</strong></span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -299,26 +248,6 @@ export default function ScrapingPage() {
           </div>
         </div>
 
-        {/* Info del Scraping */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:col-span-2">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Información del Sistema</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-sm text-gray-500 mb-1">Último scraping</p>
-              <p className="font-semibold text-gray-900">{stats?.fase1_ultimo_scraping || '-'}</p>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-sm text-gray-500 mb-1">Fuentes activas</p>
-              <p className="font-semibold text-gray-900">{safeString(stats?.fase1_fuentes)}</p>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-sm text-gray-500 mb-1">Tasa de actualización</p>
-              <p className="font-semibold text-gray-900">
-                {porFecha[0]?.cantidad || 0} ofertas/día
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
