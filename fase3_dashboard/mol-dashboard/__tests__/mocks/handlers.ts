@@ -5,6 +5,7 @@ import { mockOfertasSkills } from './fixtures/skills'
 import { mockPanoramaRPC } from './fixtures/panorama'
 import { mockEvolucionRPC } from './fixtures/evolucion'
 import { mockRequerimientosRPC, mockSkillsResumenRPC, mockSidebarCountsRPC } from './fixtures/requerimientos'
+import { mockPipelineStatusRPC } from './fixtures/pipeline-status'
 
 const SUPABASE_URL = 'https://test.supabase.co'
 
@@ -109,6 +110,11 @@ export const handlers = [
   // RPC: get_sidebar_counts
   http.post(`${SUPABASE_URL}/rest/v1/rpc/get_sidebar_counts`, () => {
     return HttpResponse.json(mockSidebarCountsRPC)
+  }),
+
+  // RPC: get_pipeline_status
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_pipeline_status`, () => {
+    return HttpResponse.json(mockPipelineStatusRPC)
   }),
 
   // Auth: get current user
