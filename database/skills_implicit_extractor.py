@@ -64,7 +64,9 @@ class SkillsImplicitExtractor:
     VERSION = "2.4.0"  # v2.4: Terminología argentina + Sistema dual (reglas + semántico)
 
     # Configuración por defecto
-    DEFAULT_MODEL = "BAAI/bge-m3"
+    # LoRA fine-tuned model (merged, no peft dependency needed)
+    _PROJECT_ROOT = str(Path(__file__).parent.parent)
+    DEFAULT_MODEL = str(Path(_PROJECT_ROOT) / "data" / "finetuning" / "matching" / "model_lora")
     DEFAULT_THRESHOLD = 0.60  # Umbral de similitud mínima (v2.2: subido de 0.55)
     DEFAULT_TOP_K = 3  # Top K skills por tarea
 

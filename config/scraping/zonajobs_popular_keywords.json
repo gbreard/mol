@@ -1,0 +1,699 @@
+{
+  "descripcion": "Keywords de ZonaJobs que reportan >50 ofertas (candidatos a combos)",
+  "generado": "2026-03-10 18:18",
+  "total": 173,
+  "keywords": [
+    {
+      "keyword": "encargado",
+      "total_reportado": 1436
+    },
+    {
+      "keyword": "jefe",
+      "total_reportado": 1436
+    },
+    {
+      "keyword": "lider",
+      "total_reportado": 1436
+    },
+    {
+      "keyword": "responsable",
+      "total_reportado": 1436
+    },
+    {
+      "keyword": "supervisor",
+      "total_reportado": 1436
+    },
+    {
+      "keyword": "vendedor",
+      "total_reportado": 1363
+    },
+    {
+      "keyword": "analista",
+      "total_reportado": 1239
+    },
+    {
+      "keyword": "comercial",
+      "total_reportado": 971
+    },
+    {
+      "keyword": "tecnico",
+      "total_reportado": 938
+    },
+    {
+      "keyword": "administracion",
+      "total_reportado": 884
+    },
+    {
+      "keyword": "administrador",
+      "total_reportado": 884
+    },
+    {
+      "keyword": "consultor",
+      "total_reportado": 841
+    },
+    {
+      "keyword": "consultora",
+      "total_reportado": 817
+    },
+    {
+      "keyword": "vendedora",
+      "total_reportado": 808
+    },
+    {
+      "keyword": "vendedores",
+      "total_reportado": 808
+    },
+    {
+      "keyword": "administrativo",
+      "total_reportado": 755
+    },
+    {
+      "keyword": "rrhh",
+      "total_reportado": 605
+    },
+    {
+      "keyword": "ventas",
+      "total_reportado": 574
+    },
+    {
+      "keyword": "asistente",
+      "total_reportado": 552
+    },
+    {
+      "keyword": "auxiliar",
+      "total_reportado": 552
+    },
+    {
+      "keyword": "ayudante",
+      "total_reportado": 552
+    },
+    {
+      "keyword": "asesor",
+      "total_reportado": 492
+    },
+    {
+      "keyword": "operario",
+      "total_reportado": 457
+    },
+    {
+      "keyword": "operarios",
+      "total_reportado": 457
+    },
+    {
+      "keyword": "ejecutivo",
+      "total_reportado": 439
+    },
+    {
+      "keyword": "mantenimiento",
+      "total_reportado": 425
+    },
+    {
+      "keyword": "caba",
+      "total_reportado": 376
+    },
+    {
+      "keyword": "gerente",
+      "total_reportado": 364
+    },
+    {
+      "keyword": "manager",
+      "total_reportado": 364
+    },
+    {
+      "keyword": "personal",
+      "total_reportado": 362
+    },
+    {
+      "keyword": "asesor-comercial",
+      "total_reportado": 354
+    },
+    {
+      "keyword": "contable",
+      "total_reportado": 353
+    },
+    {
+      "keyword": "talent",
+      "total_reportado": 302
+    },
+    {
+      "keyword": "sr",
+      "total_reportado": 263
+    },
+    {
+      "keyword": "servicios",
+      "total_reportado": 246
+    },
+    {
+      "keyword": "logistica",
+      "total_reportado": 244
+    },
+    {
+      "keyword": "experiencia",
+      "total_reportado": 234
+    },
+    {
+      "keyword": "deposito",
+      "total_reportado": 233
+    },
+    {
+      "keyword": "recursos-humanos",
+      "total_reportado": 229
+    },
+    {
+      "keyword": "produccion",
+      "total_reportado": 224
+    },
+    {
+      "keyword": "senior",
+      "total_reportado": 224
+    },
+    {
+      "keyword": "mecanico",
+      "total_reportado": 222
+    },
+    {
+      "keyword": "hr",
+      "total_reportado": 207
+    },
+    {
+      "keyword": "gba",
+      "total_reportado": 202
+    },
+    {
+      "keyword": "operador",
+      "total_reportado": 193
+    },
+    {
+      "keyword": "coordinador",
+      "total_reportado": 191
+    },
+    {
+      "keyword": "ejecutivo-comercial",
+      "total_reportado": 186
+    },
+    {
+      "keyword": "remote",
+      "total_reportado": 182
+    },
+    {
+      "keyword": "remoto",
+      "total_reportado": 182
+    },
+    {
+      "keyword": "marketing",
+      "total_reportado": 179
+    },
+    {
+      "keyword": "analista-contable",
+      "total_reportado": 170
+    },
+    {
+      "keyword": "sur",
+      "total_reportado": 166
+    },
+    {
+      "keyword": "tecnico-mantenimiento",
+      "total_reportado": 166
+    },
+    {
+      "keyword": "part-time",
+      "total_reportado": 162
+    },
+    {
+      "keyword": "industrial",
+      "total_reportado": 155
+    },
+    {
+      "keyword": "ingeniero",
+      "total_reportado": 151
+    },
+    {
+      "keyword": "jr",
+      "total_reportado": 151
+    },
+    {
+      "keyword": "chofer",
+      "total_reportado": 150
+    },
+    {
+      "keyword": "conductor",
+      "total_reportado": 150
+    },
+    {
+      "keyword": "norte",
+      "total_reportado": 150
+    },
+    {
+      "keyword": "estudio",
+      "total_reportado": 148
+    },
+    {
+      "keyword": "analista-rrhh",
+      "total_reportado": 140
+    },
+    {
+      "keyword": "inmobiliaria",
+      "total_reportado": 140
+    },
+    {
+      "keyword": "inmobiliario",
+      "total_reportado": 140
+    },
+    {
+      "keyword": "cuentas",
+      "total_reportado": 138
+    },
+    {
+      "keyword": "ssr",
+      "total_reportado": 137
+    },
+    {
+      "keyword": "oficial",
+      "total_reportado": 136
+    },
+    {
+      "keyword": "medico",
+      "total_reportado": 135
+    },
+    {
+      "keyword": "operaciones",
+      "total_reportado": 135
+    },
+    {
+      "keyword": "electromecanico",
+      "total_reportado": 133
+    },
+    {
+      "keyword": "eventual",
+      "total_reportado": 133
+    },
+    {
+      "keyword": "administrativo-contable",
+      "total_reportado": 130
+    },
+    {
+      "keyword": "compras",
+      "total_reportado": 130
+    },
+    {
+      "keyword": "obra",
+      "total_reportado": 128
+    },
+    {
+      "keyword": "analista-sr",
+      "total_reportado": 127
+    },
+    {
+      "keyword": "cobranzas",
+      "total_reportado": 125
+    },
+    {
+      "keyword": "ejecutivo-ventas",
+      "total_reportado": 123
+    },
+    {
+      "keyword": "seguro",
+      "total_reportado": 118
+    },
+    {
+      "keyword": "seguros",
+      "total_reportado": 118
+    },
+    {
+      "keyword": "seguridad",
+      "total_reportado": 115
+    },
+    {
+      "keyword": "agente",
+      "total_reportado": 112
+    },
+    {
+      "keyword": "cocina",
+      "total_reportado": 112
+    },
+    {
+      "keyword": "laboratorio",
+      "total_reportado": 111
+    },
+    {
+      "keyword": "tecnico-electromecanico",
+      "total_reportado": 111
+    },
+    {
+      "keyword": "atencion-cliente",
+      "total_reportado": 109
+    },
+    {
+      "keyword": "recepcionista",
+      "total_reportado": 109
+    },
+    {
+      "keyword": "asistente-administrativo",
+      "total_reportado": 108
+    },
+    {
+      "keyword": "it",
+      "total_reportado": 108
+    },
+    {
+      "keyword": "junior",
+      "total_reportado": 104
+    },
+    {
+      "keyword": "programador",
+      "total_reportado": 104
+    },
+    {
+      "keyword": "desarrollo",
+      "total_reportado": 103
+    },
+    {
+      "keyword": "especialista",
+      "total_reportado": 103
+    },
+    {
+      "keyword": "representante",
+      "total_reportado": 103
+    },
+    {
+      "keyword": "call",
+      "total_reportado": 101
+    },
+    {
+      "keyword": "limpieza",
+      "total_reportado": 99
+    },
+    {
+      "keyword": "ingles",
+      "total_reportado": 97
+    },
+    {
+      "keyword": "san-martin",
+      "total_reportado": 97
+    },
+    {
+      "keyword": "calidad",
+      "total_reportado": 96
+    },
+    {
+      "keyword": "control",
+      "total_reportado": 96
+    },
+    {
+      "keyword": "mayorista",
+      "total_reportado": 95
+    },
+    {
+      "keyword": "cajera",
+      "total_reportado": 94
+    },
+    {
+      "keyword": "cajero",
+      "total_reportado": 94
+    },
+    {
+      "keyword": "digital",
+      "total_reportado": 93
+    },
+    {
+      "keyword": "electronico",
+      "total_reportado": 91
+    },
+    {
+      "keyword": "pilar",
+      "total_reportado": 91
+    },
+    {
+      "keyword": "distribuidor",
+      "total_reportado": 89
+    },
+    {
+      "keyword": "office",
+      "total_reportado": 87
+    },
+    {
+      "keyword": "gba-sur",
+      "total_reportado": 85
+    },
+    {
+      "keyword": "soporte",
+      "total_reportado": 85
+    },
+    {
+      "keyword": "oeste",
+      "total_reportado": 83
+    },
+    {
+      "keyword": "center",
+      "total_reportado": 82
+    },
+    {
+      "keyword": "ejecutivo-cuentas",
+      "total_reportado": 82
+    },
+    {
+      "keyword": "publico",
+      "total_reportado": 82
+    },
+    {
+      "keyword": "general",
+      "total_reportado": 80
+    },
+    {
+      "keyword": "cordoba",
+      "total_reportado": 78
+    },
+    {
+      "keyword": "cocinera",
+      "total_reportado": 76
+    },
+    {
+      "keyword": "cocinero",
+      "total_reportado": 76
+    },
+    {
+      "keyword": "operario-produccion",
+      "total_reportado": 75
+    },
+    {
+      "keyword": "operarios-produccion",
+      "total_reportado": 75
+    },
+    {
+      "keyword": "planta",
+      "total_reportado": 75
+    },
+    {
+      "keyword": "asesor-ventas",
+      "total_reportado": 74
+    },
+    {
+      "keyword": "tecnico-comercial",
+      "total_reportado": 74
+    },
+    {
+      "keyword": "tecnico-mecanico",
+      "total_reportado": 74
+    },
+    {
+      "keyword": "electricista",
+      "total_reportado": 73
+    },
+    {
+      "keyword": "gastronomico",
+      "total_reportado": 73
+    },
+    {
+      "keyword": "comercio",
+      "total_reportado": 72
+    },
+    {
+      "keyword": "presencial",
+      "total_reportado": 72
+    },
+    {
+      "keyword": "b2b",
+      "total_reportado": 71
+    },
+    {
+      "keyword": "contador",
+      "total_reportado": 71
+    },
+    {
+      "keyword": "arquitecto",
+      "total_reportado": 70
+    },
+    {
+      "keyword": "docente",
+      "total_reportado": 69
+    },
+    {
+      "keyword": "grafico",
+      "total_reportado": 69
+    },
+    {
+      "keyword": "profesor",
+      "total_reportado": 69
+    },
+    {
+      "keyword": "e-commerce",
+      "total_reportado": 68
+    },
+    {
+      "keyword": "facturacion",
+      "total_reportado": 68
+    },
+    {
+      "keyword": "rosario",
+      "total_reportado": 68
+    },
+    {
+      "keyword": "abogada",
+      "total_reportado": 67
+    },
+    {
+      "keyword": "abogado",
+      "total_reportado": 67
+    },
+    {
+      "keyword": "estudiante",
+      "total_reportado": 67
+    },
+    {
+      "keyword": "repositor",
+      "total_reportado": 67
+    },
+    {
+      "keyword": "call-center",
+      "total_reportado": 66
+    },
+    {
+      "keyword": "diseñador",
+      "total_reportado": 66
+    },
+    {
+      "keyword": "sistemas",
+      "total_reportado": 65
+    },
+    {
+      "keyword": "proyectos",
+      "total_reportado": 64
+    },
+    {
+      "keyword": "tecnico-electronico",
+      "total_reportado": 64
+    },
+    {
+      "keyword": "sucursal",
+      "total_reportado": 63
+    },
+    {
+      "keyword": "exterior",
+      "total_reportado": 61
+    },
+    {
+      "keyword": "repositora",
+      "total_reportado": 61
+    },
+    {
+      "keyword": "automotriz",
+      "total_reportado": 60
+    },
+    {
+      "keyword": "finanzas",
+      "total_reportado": 60
+    },
+    {
+      "keyword": "vendedor-caba",
+      "total_reportado": 60
+    },
+    {
+      "keyword": "farmacia",
+      "total_reportado": 58
+    },
+    {
+      "keyword": "impuestos",
+      "total_reportado": 57
+    },
+    {
+      "keyword": "semi-senior",
+      "total_reportado": 57
+    },
+    {
+      "keyword": "comercio-exterior",
+      "total_reportado": 56
+    },
+    {
+      "keyword": "hotel",
+      "total_reportado": 56
+    },
+    {
+      "keyword": "palermo",
+      "total_reportado": 56
+    },
+    {
+      "keyword": "site",
+      "total_reportado": 55
+    },
+    {
+      "keyword": "concesionaria",
+      "total_reportado": 53
+    },
+    {
+      "keyword": "concesionario",
+      "total_reportado": 53
+    },
+    {
+      "keyword": "corporativo",
+      "total_reportado": 53
+    },
+    {
+      "keyword": "encargado-obra",
+      "total_reportado": 53
+    },
+    {
+      "keyword": "jefe-obra",
+      "total_reportado": 53
+    },
+    {
+      "keyword": "on-site",
+      "total_reportado": 53
+    },
+    {
+      "keyword": "supervisor-obra",
+      "total_reportado": 53
+    },
+    {
+      "keyword": "tienda",
+      "total_reportado": 53
+    },
+    {
+      "keyword": "ayudante-cocina",
+      "total_reportado": 52
+    },
+    {
+      "keyword": "buenos-aires",
+      "total_reportado": 52
+    },
+    {
+      "keyword": "taller",
+      "total_reportado": 52
+    },
+    {
+      "keyword": "avanzado",
+      "total_reportado": 51
+    },
+    {
+      "keyword": "importante-empresa",
+      "total_reportado": 51
+    },
+    {
+      "keyword": "mix",
+      "total_reportado": 51
+    },
+    {
+      "keyword": "obras",
+      "total_reportado": 51
+    }
+  ]
+}

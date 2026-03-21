@@ -342,7 +342,8 @@ class NLPExtractorV11:
     def process_oferta(self, id_oferta: str, descripcion: str,
                        titulo: str = "", empresa: str = "",
                        ubicacion: str = "", fecha_publicacion: str = None,
-                       id_empresa: str = None) -> Optional[Dict[str, Any]]:
+                       id_empresa: str = None,
+                       scraping_extra: Dict[str, Any] = None) -> Optional[Dict[str, Any]]:
         """
         Procesa una oferta con pipeline lite
 
@@ -386,22 +387,22 @@ class NLPExtractorV11:
             if not llm_data:
                 final_data["_nlp_incomplete"] = True
 
+            # v11.4: Snapshot del LLM raw output para fine-tuning
+            import copy, json as _json
+            llm_raw_snapshot = copy.deepcopy(final_data)
+
             # Titulo limpio
             if titulo:
                 final_data["titulo_limpio"] = limpiar_titulo(titulo)
 
             # POSTPROCESSOR: Aplica reglas de config/nlp_*.json
-            # - Preprocesa ubicación (parsing provincia/localidad)
-            # - Infiere area_funcional, modalidad, seniority desde título
-            # - Valida campos categóricos
-            # - Aplica exclusiones configuradas
             pre_data = self.postprocessor.preprocess({
                 'localizacion': ubicacion,
-                'titulo': titulo
+                'titulo': titulo,
+                **(scraping_extra or {})
             })
             # Merge preprocesamiento (provincia, localidad parseados)
             # FIX v11.3.1: Scraping SIEMPRE tiene prioridad sobre LLM para ubicación
-            # Bug anterior: "not final_data.get(key)" hacía que LLM ganara si extraía algo
             for key in ['provincia', 'localidad']:
                 if pre_data.get(key):
                     if final_data.get(key) != pre_data.get(key) and self.verbose:
@@ -409,7 +410,34 @@ class NLPExtractorV11:
                     final_data[key] = pre_data[key]
 
             # Postprocesar (inferencia + validación + lookup catálogo empresas)
-            final_data = self.postprocessor.postprocess(final_data, descripcion, id_empresa=id_empresa)
+            final_data = self.postprocessor.postprocess(
+                final_data, descripcion, id_empresa=id_empresa,
+                scraping_extra=scraping_extra
+            )
+
+            # v11.4: Calcular diff postprocessor para fine-tuning
+            TRACK_FIELDS = {
+                'provincia', 'localidad', 'modalidad', 'jornada_laboral', 'sector_empresa',
+                'area_funcional', 'nivel_seniority', 'nivel_educativo', 'experiencia_min_anios',
+                'experiencia_max_anios', 'tareas_explicitas', 'tipo_oferta', 'tiene_gente_cargo',
+                'idioma_principal', 'idioma_secundario', 'salario_min', 'salario_max',
+            }
+            pp_diff = {}
+            for field in TRACK_FIELDS:
+                before = llm_raw_snapshot.get(field)
+                after = final_data.get(field)
+                # Normalizar para comparar
+                b_str = str(before) if before is not None else None
+                a_str = str(after) if after is not None else None
+                if b_str != a_str:
+                    pp_diff[field] = {"before": before, "after": after}
+
+            # Guardar en final_data para persistencia
+            final_data["_llm_raw_json"] = _json.dumps(
+                {k: v for k, v in llm_raw_snapshot.items() if k in TRACK_FIELDS and v is not None},
+                ensure_ascii=False
+            )
+            final_data["_postprocessor_diff_json"] = _json.dumps(pp_diff, ensure_ascii=False) if pp_diff else None
 
             # SKILLS IMPLÍCITAS (desde tareas)
             if self.skills_extractor and final_data.get("tareas_explicitas"):
@@ -486,6 +514,8 @@ class NLPExtractorV11:
             LITE_TO_DB = {
                 "titulo_ocupacion": "titulo_limpio",  # Usar titulo_limpio existente
                 "titulo_limpio": "titulo_limpio",
+                "_llm_raw_json": "llm_raw_json",  # v11.4: fine-tuning data
+                "_postprocessor_diff_json": "postprocessor_diff_json",  # v11.4: fine-tuning data
             }
 
             # Agregar campos extraidos
@@ -536,12 +566,16 @@ class NLPExtractorV11:
         conn = self._get_connection()
         cursor = conn.cursor()
 
+        # v11.4: Agregar campos de scraping para source-awareness
+        select_fields = """o.id_oferta, o.descripcion, o.titulo, o.empresa, o.localizacion,
+                       o.fecha_publicacion_datetime, o.id_empresa,
+                       o.portal, o.modalidad_trabajo, o.tipo_trabajo, o.cantidad_vacantes"""
+
         if ids_especificos:
             # IDs específicos: procesar aunque ya tengan NLP
             placeholders = ",".join("?" * len(ids_especificos))
             query = f"""
-                SELECT o.id_oferta, o.descripcion, o.titulo, o.empresa, o.localizacion,
-                       o.fecha_publicacion_datetime, o.id_empresa
+                SELECT {select_fields}
                 FROM ofertas o
                 WHERE o.id_oferta IN ({placeholders})
                   AND o.descripcion IS NOT NULL
@@ -551,8 +585,7 @@ class NLPExtractorV11:
         else:
             # Solo ofertas SIN NLP (no reprocesar las existentes)
             query = f"""
-                SELECT o.id_oferta, o.descripcion, o.titulo, o.empresa, o.localizacion,
-                       o.fecha_publicacion_datetime, o.id_empresa
+                SELECT {select_fields}
                 FROM ofertas o
                 LEFT JOIN ofertas_nlp n ON o.id_oferta = n.id_oferta
                 WHERE o.descripcion IS NOT NULL
@@ -577,7 +610,14 @@ class NLPExtractorV11:
         results = []
         times = []
 
-        for i, (id_oferta, descripcion, titulo, empresa, localizacion, fecha_pub, id_empresa) in enumerate(ofertas, 1):
+        for i, row in enumerate(ofertas, 1):
+            id_oferta, descripcion, titulo, empresa, localizacion, fecha_pub, id_empresa = row[:7]
+            # v11.4: Campos de scraping para source-awareness
+            portal = row[7] if len(row) > 7 else None
+            modalidad_scraping = row[8] if len(row) > 8 else None
+            tipo_trabajo_scraping = row[9] if len(row) > 9 else None
+            vacantes_scraping = row[10] if len(row) > 10 else None
+
             print(f"[{i}/{total}] {id_oferta}...", end=" ", flush=True)
 
             result = self.process_oferta(
@@ -587,7 +627,13 @@ class NLPExtractorV11:
                 empresa=empresa or "",
                 ubicacion=localizacion or "",
                 fecha_publicacion=fecha_pub,
-                id_empresa=str(id_empresa) if id_empresa else None
+                id_empresa=str(id_empresa) if id_empresa else None,
+                scraping_extra={
+                    'portal': portal,
+                    'modalidad_trabajo': modalidad_scraping,
+                    'tipo_trabajo': tipo_trabajo_scraping,
+                    'cantidad_vacantes': vacantes_scraping,
+                }
             )
 
             if result:

@@ -44,12 +44,17 @@ Sistema de monitoreo del mercado laboral argentino para OEDE. Scrapea ofertas de
 
 > **CONTEOS OFICIALES:** Ver `.ai/learnings.yaml` sección `conteos` (single source of truth)
 
-- NLP v11.3 (20 campos + postprocessor + qwen2.5:7b)
-- **Matching v3.4.2 ESCO-FIRST** - ESCO es target, ISCO se deriva
+- **NLP v11.4** (20 campos + source-aware pre-fill + postprocessor + qwen2.5:7b)
+- **NLP Gate v1.1** (35+ reglas pre-matching, bloquea critico/alto)
+- **Multi-Position Detection** (regex + LLM, crea sub-ofertas)
+- **Matching v3.5.4 ESCO-FIRST** - ESCO es target, ISCO se deriva
+- **Skills v2.4** - LoRA fine-tuned model (reemplaza BGE-M3 default)
+- **Pipeline v3.3** (8 pasos integrados con NLP Gate + multi-position)
+- **Fine-tuning data** (llm_raw_json + postprocessor_diff + valor_actual/corregido)
 - **Conteos dinámicos** (ver `learnings.yaml`): reglas_negocio, reglas_validacion, sinonimos_argentinos
-- **Auto-sync** de learnings.yaml activado (v1.0)
+- **Auto-sync** de learnings.yaml activado (v2.1)
 
-### Matching v3.4.2 ESCO-First (2026-01-21)
+### Matching v3.5.4 ESCO-First (2026-03-15)
 ```
 PRINCIPIO: ESCO es el TARGET, ISCO es CONSECUENCIA
 
@@ -57,12 +62,13 @@ FLUJO DE PRIORIDAD:
 1. REGLAS DE NEGOCIO (si aplican) → GANAN SIEMPRE
    - Buscan ocupación ESCO por label exacto
    - ISCO se deriva de la ocupación encontrada
+   - titulo_original_contiene_alguno (v3.5.4: busca en título SIN limpiar)
 
 2. DICCIONARIO ARGENTINO (si no hay regla)
    - Mapea términos argentinos a ISCO
 
 3. SEMÁNTICO (fallback)
-   - Skills + título embeddings
+   - Skills + título embeddings (LoRA fine-tuned model)
 
 METADATA GUARDADA:
 - isco_semantico, score_semantico (siempre calculado)
@@ -72,7 +78,8 @@ METADATA GUARDADA:
 ```
 
 ### Trabajo en Curso
-- Validando 110 ofertas para dashboard (próximo paso: revisión en Google Sheets)
+- 19K ofertas pendientes NLP (13K ComputRabajo + ~6K nuevas Bumeran/ZJ)
+- 15,968 ofertas validadas en BD
 - Gold Set de referencia: 49 casos (archivo histórico)
 
 ### Sistema de Priorización v1.0 (2026-01-20)
@@ -358,6 +365,102 @@ python scripts/show_learning_evolution.py --batches
 
 ---
 
+## Pipeline Issue → Training Pairs → Fine-Tuning
+
+**CRÍTICO:** Los issues de usuarios (Supabase) alimentan un dataset de entrenamiento para futuro fine-tuning del modelo de clasificación ESCO. Cada issue resuelto es un dato de entrenamiento valioso.
+
+### Arquitectura
+
+```
+Usuario reporta issue (dashboard)
+    → Supabase tabla `issues` (estado: pendiente)
+        → Claude/dev resuelve (modifica configs, reprocesa)
+            → Issue pasa a `resuelto` con solucion_aplicada
+                → sync_learnings.py se ejecuta
+                    → generate_training_pairs.py (auto-trigger)
+                        → config/training_pairs.json (dataset acumulado)
+```
+
+### Componentes
+
+| Componente | Ubicación | Función |
+|------------|-----------|---------|
+| Generador | `scripts/exports/generate_training_pairs.py` | Convierte issues resueltos en pares de entrenamiento |
+| Dataset | `config/training_pairs.json` | Pares acumulados (583+ al 2026-02) |
+| Auto-trigger | `scripts/sync_learnings.py` | Ejecuta generador automáticamente |
+
+### Estructura de un Training Pair
+
+```json
+{
+  "input": {
+    "titulo": "Peón rural",
+    "descripcion": "...",
+    "tareas": "...",
+    "sector": "...",
+    "area_funcional": "..."
+  },
+  "clasificacion_incorrecta": {"isco": "0110", "label": "Oficial de las fuerzas armadas"},
+  "clasificacion_correcta": {"isco": "6111", "label": "Agricultor"},
+  "justificacion_humana": "Descripción del usuario sobre por qué es incorrecto"
+}
+```
+
+### 3 Enfoques de Fine-Tuning Soportados
+
+| Enfoque | Datos que usa | Para qué |
+|---------|---------------|----------|
+| **Supervised** | input → clasificación_correcta | Entrenamiento directo |
+| **DPO/RLHF** | correcto=chosen, incorrecto=rejected | Preferencia de pares |
+| **Chain-of-Thought** | input + justificación_humana → correcta | Razonamiento paso a paso |
+
+### Comandos
+
+```bash
+# Generar training pairs manualmente
+python scripts/exports/generate_training_pairs.py
+
+# Ver estadísticas del dataset
+python scripts/exports/generate_training_pairs.py --stats
+
+# Solo desde cierta fecha
+python scripts/exports/generate_training_pairs.py --since 2026-03-01
+
+# Dry run (no guarda)
+python scripts/exports/generate_training_pairs.py --dry-run
+```
+
+### Flujo de Trabajo con Issues de Usuarios
+
+```
+PASO 1: Listar issues pendientes
+─────────────────────────────────
+python -c "..." (ver sección Gestión de Issues)
+
+PASO 2: Por cada issue, ver qué corrección pide
+────────────────────────────────────────────────
+- Leer descripcion, valor_actual, valor_esperado
+- Identificar si es error de NLP, Matching, o clasificación
+
+PASO 3: Aplicar corrección
+──────────────────────────
+- Crear/modificar regla en config/*.json correspondiente
+- Reprocesar oferta: python scripts/run_validated_pipeline.py --ids X
+
+PASO 4: Marcar issue como resuelto
+───────────────────────────────────
+- Actualizar en Supabase con solucion_aplicada y config_modificada
+
+PASO 5: Sync → Training pair se genera automáticamente
+──────────────────────────────────────────────────────
+python scripts/sync_learnings.py
+```
+
+**IMPORTANTE:** Cada issue resuelto con buena justificación = mejor dato de entrenamiento.
+Los issues de múltiples aspectos de la misma oferta se deduplicany y mergean justificaciones.
+
+---
+
 ## ⛔ PROHIBIDO IMPROVISAR - FLUJO OBLIGATORIO
 
 **Claude: ANTES de ejecutar CUALQUIER comando, verificar este checklist:**
@@ -463,8 +566,15 @@ tail -f /tmp/pipeline.log
 | Tarea | Comando | NO hacer |
 |-------|---------|----------|
 | **⭐ Pipeline Completo** | `python scripts/run_validated_pipeline.py --limit 500` | Scripts separados |
-| **NLP lote** | `python database/process_nlp_from_db_v11.py --ids X` | Crear script nuevo |
-| **Scraping** | `python run_scheduler.py` | Llamar scrapers directo |
+| **NLP lote background** | `python scripts/launch_nlp_batch.py` (skip-matching, log a archivo) | Crear script nuevo |
+| **NLP IDs específicos** | `python database/process_nlp_from_db_v11.py --ids X` | Crear script nuevo |
+| **Scraping (local)** | `python run_scheduler.py --test` | Llamar scrapers directo |
+| **Scraping ComputRabajo** | `python scripts/scraping/run_computrabajo_vps.py` | Usar scraper directo |
+| **Scraping CABA** | `python scripts/scraping/run_caba_vps.py` | Usar scraper directo |
+| **Scraping Portal Empleo** | `python scripts/scraping/run_portalempleo_vps.py` | Usar scraper directo |
+| **Scraping Indeed** | `python scripts/scraping/run_indeed_vps.py` | Usar scraper directo |
+| **Sync desde VPS** | `python scripts/sync_from_vps.py` (incremental) | Queries manuales al VPS |
+| **Sync Full desde VPS** | `python scripts/sync_from_vps.py --full` | - |
 | **Comparar runs** | `python scripts/compare_runs.py --latest` | Crear comparador custom |
 | **Validar ofertas** | `python scripts/validar_ofertas.py --ids X --estado validado` | UPDATE manual en BD |
 | **Export Excel** | `python scripts/exports/export_validation_excel.py --etapa completo --ids X` | - |
@@ -477,29 +587,128 @@ tail -f /tmp/pipeline.log
 
 ### Scraping — Estado y Dependencias
 
-**Estado actual (2026-03-06):** El scheduler (`run_scheduler.py`) **no está en uso**. El scraping se ejecuta **manualmente**.
+**Estado actual (2026-03-10):** Scraping corre en **VPS** (Hostinger KVM 2, IP 187.124.150.28).
+Cron ejecuta Lun/Jue 08:00 Argentina via `/opt/mol/scripts/scraping/run_scraping_vps.sh`.
 
 **Portales:**
-| Portal | Estado | Integrado al scheduler |
-|--------|--------|----------------------|
-| **Bumeran** | Activo (único en producción) | Sí |
-| ZonaJobs | Scraper desarrollado | No |
-| ComputRabajo | Scraper desarrollado | No |
-| LinkedIn | Scraper desarrollado (JobSpy) | No |
-| Indeed | Scraper desarrollado (JobSpy) | No |
+| Portal | Estado | Ofertas/corrida | Método |
+|--------|--------|----------------|--------|
+| **Bumeran** | Activo en VPS | ~5,000 | API searchV2 + keywords (paginación funciona) |
+| **ZonaJobs** | Activo en VPS | ~5,000 | API searchV2 + keywords (paginación rota, 20/keyword) |
+| **ComputRabajo** | Activo en VPS | ~1,000+ | HTML scraping + keywords (~3-4h con descripción) |
+| **CABA** | Activo en VPS | ~10-50 | HTML scraping listado+detalle (~30s total) |
+| **Portal Empleo** | Activo en VPS | ~400-500 | HTML scraping listado+detalle (~13 min) |
+| **Indeed** | Activo en VPS | ~2,000-3,000 | curl_cffi + keywords (~2.5h con detalles) |
+| LinkedIn | Scraper legacy (JobSpy) | - | No integrado (0% descripciones) |
+
+**ZonaJobs - Limitación de API:**
+La API de ZonaJobs (mismo platform Navent que Bumeran) tiene paginación rota:
+el parámetro `page` es ignorado y siempre devuelve las mismas 20 ofertas.
+Workaround: usar `query` keyword para obtener 20 ofertas distintas por keyword.
+Con 1,072 keywords de `config/scraping/master_keywords.json` se obtienen ~5,000 únicas.
+
+**Archivos del scraper ZonaJobs:**
+| Archivo | Ubicación | Función |
+|---------|-----------|---------|
+| Scraper v2 | `01_sources/zonajobs/scrapers/zonajobs_scraper_v2.py` | Scraper API + keywords |
+| Runner VPS | `scripts/scraping/run_zonajobs_vps.py` | Ejecuta scraping + inserta en BD |
+| Script cron | `scripts/scraping/run_scraping_vps.sh` | Bumeran + ZonaJobs + ComputRabajo + CABA + Portal Empleo + Indeed + export |
+
+**ComputRabajo - Detalles:**
+- HTML scraping con `requests` + `BeautifulSoup` (NO requiere JavaScript)
+- Usa keywords de `config/scraping/master_keywords.json` (mismas que ZonaJobs)
+- `fetch_description=True` por default: 1 request extra por oferta para descripción completa
+- IDs: `data-id` del HTML → convertido a integer con prefijo `5_000_000_000` (evita colisiones)
+- Campos mapeados: título, empresa, ubicación, modalidad, fecha, descripción, URL
+- Campos NULL (no disponibles): id_empresa, id_area, id_subarea, cantidad_vacantes, tipo_trabajo
+- Requiere `beautifulsoup4` instalado en VPS: `pip3 install beautifulsoup4`
+
+**Archivos del scraper ComputRabajo:**
+| Archivo | Ubicación | Función |
+|---------|-----------|---------|
+| Scraper core | `01_sources/computrabajo/scrapers/computrabajo_scraper.py` | HTML parsing + BS4 |
+| Multi-keyword | `01_sources/computrabajo/scrapers/scrapear_con_diccionario.py` | Wrapper legacy multi-keyword |
+| Runner VPS | `scripts/scraping/run_computrabajo_vps.py` | Ejecuta scraping + mapea + inserta en BD |
+
+**CABA Portal de Trabajo - Detalles:**
+- HTML scraping con `requests` + `BeautifulSoup` (NO requiere JavaScript)
+- NO usa keywords: pagina el listado completo con `offset` (8 por página)
+- Detalle: `/anuncios/{id}` con campos MUY ricos (industria, sector, vacantes, educación, IT, idiomas)
+- IDs: `6_000_000_000 + id_anuncio` (evita colisiones)
+- Campos extra (industria, sector, estudios, IT) se embeben en descripción como metadata
+- Portal chico (~10-50 ofertas) pero datos muy estructurados
+- Puede correr local (rápido, ~30s) o en VPS
+
+**Archivos del scraper CABA:**
+| Archivo | Ubicación | Función |
+|---------|-----------|---------|
+| Scraper core | `01_sources/caba/scrapers/caba_scraper.py` | HTML parsing listado + detalle |
+| Runner | `scripts/scraping/run_caba_vps.py` | Ejecuta scraping + mapea + inserta en BD |
+
+**Portal Empleo Nacional - Detalles:**
+- HTML scraping con `requests` + `BeautifulSoup` (NO requiere JavaScript)
+- NO usa keywords: pagina el listado completo con `page-number=N` (10 por página)
+- Detalle: `/OfertasLaborales/Details/{uuid}` con campos ricos (vacantes, salario, tareas, beneficios, ubicación completa, horario, experiencia, estudios)
+- IDs: UUIDs convertidos a integer con CRC32 + prefijo `7_000_000_000` (evita colisiones)
+- Campos estructurados (salario, estudios, experiencia, horario) se embeben en descripción como metadata
+- Portal nacional (~400-500 ofertas) con cobertura de todas las provincias
+- Scrape completo: ~13 min (1.5s delay entre requests)
+
+**Archivos del scraper Portal Empleo:**
+| Archivo | Ubicación | Función |
+|---------|-----------|---------|
+| Scraper core | `01_sources/portalempleo/scrapers/portalempleo_scraper.py` | HTML parsing listado + detalle |
+| Runner VPS | `scripts/scraping/run_portalempleo_vps.py` | Ejecuta scraping + mapea + inserta en BD |
+
+**Indeed - Detalles:**
+- Scraper propio con `curl_cffi` + `BeautifulSoup` (SIN JobSpy)
+- `curl_cffi` bypasea Cloudflare via impersonacion TLS Chrome
+- Usa keywords de `config/scraping/master_keywords.json` (mismas que ZonaJobs/CT)
+- Sin paginacion (Indeed redirige a login en pagina 2): ~15 ofertas/keyword
+- Detalle: `/viewjob?jk={job_key}` con JSON-LD estructurado (datePosted, employmentType, baseSalary)
+- IDs: `8_000_000_000 + int(job_key_hex, 16) % 1_000_000_000` (evita colisiones)
+- Descripcion completa del detalle: ~94% success rate
+- Scrape completo: ~2.5h (600 keywords * 2.5s + ~3000 detalles * 2.5s)
+- Requiere `curl_cffi` instalado en VPS: `pip3 install --break-system-packages curl_cffi`
+
+**Archivos del scraper Indeed:**
+| Archivo | Ubicación | Función |
+|---------|-----------|---------|
+| Scraper core | `01_sources/indeed/scrapers/indeed_scraper.py` | curl_cffi + BS4, multi-keyword |
+| Runner VPS | `scripts/scraping/run_indeed_vps.py` | Ejecuta scraping + mapea + inserta en BD |
+| Scraper legacy | `01_sources/indeed/scrapers/archive/indeed_scraper_jobspy.py` | Versión anterior con JobSpy (archivado) |
+
+**VPS - Infraestructura:**
+```
+VPS (187.124.150.28)                      Local (esta máquina)
+/opt/mol/                                  D:\OEDE\Webscrapping\
+  ├── run_scheduler.py (Bumeran)           ├── scripts/sync_from_vps.py
+  ├── scripts/scraping/                    │   (export → SCP → import → bajas)
+  │   ├── run_scraping_vps.sh (cron)       ├── database/bumeran_scraping.db
+  │   ├── run_zonajobs_vps.py              │   (35K+ ofertas)
+  │   ├── run_computrabajo_vps.py          └── NLP + Matching + Validación (local)
+  │   ├── run_caba_vps.py
+  │   ├── run_portalempleo_vps.py
+  │   └── run_indeed_vps.py
+  ├── scripts/export_nuevas.py
+  └── database/bumeran_scraping.db
+```
+
+**Sync VPS → Local:**
+```bash
+python scripts/sync_from_vps.py          # Incremental (solo nuevas)
+python scripts/sync_from_vps.py --full   # Full (todas)
+```
 
 **Dependencias críticas del scraper (restauradas 2026-03-06):**
 
-Los scrapers de Bumeran importan módulos desde `02_consolidation/scripts/`:
+Los scrapers importan módulos desde `02_consolidation/scripts/`:
 - `incremental_tracker.py` — Tracking de IDs ya scrapeados (modo incremental)
 - `date_filter.py` — Filtrado por ventana temporal
 
 Estos archivos fueron movidos por error a `archive/legacy_numbered_folders/` y restaurados.
 Si faltan, el scraper sigue funcionando pero **sin modo incremental ni filtrado por fecha**
 (los imports tienen try/except con fallback graceful).
-
-**Problema pendiente del scheduler:** Es un loop infinito con `schedule` + `while True`.
-Si se cierra la terminal, muere. No hay servicio de Windows ni task scheduler configurado.
 
 ### Sync a Supabase — Cómo funciona internamente
 
@@ -614,14 +823,16 @@ El sistema luego aplica las reglas automáticamente. Claude NO reemplaza al LLM.
 ### Cadena de Dependencias
 
 ```
-SCRAPING → NLP → SKILLS → MATCHING
-              ↓       ↓         ↓
-           tareas  extraídas  ESCO code
-           ubicación  de tareas+título
-           seniority
-           área
+SCRAPING → NLP → NLP GATE → MULTI-POS → SKILLS → MATCHING
+  ↓          ↓       ↓           ↓          ↓         ↓
+portal    tareas  bloquea     split      extraídas  ESCO code
+metadata  ubicac  critico/    sub-       de tareas
+embebida  senior  alto        ofertas    +título
+          área
 
-Si NLP extrae mal las tareas → Skills quedan mal → Matching falla
+Source-aware: CABA/Portal Empleo/Indeed embeben metadata → pre-fill NLP
+Si NLP extrae mal → Gate bloquea → Auto-corrige → Escala a Claude
+Si NLP OK → Multi-position split → Skills → Matching
 ```
 
 ### Flujo de Trabajo (UN COMANDO)
@@ -631,21 +842,33 @@ COMANDO ÚNICO (hace TODO automáticamente):
 ──────────────────────────────────────────
 python scripts/run_validated_pipeline.py --limit 100
 
-EJECUTA AUTOMÁTICAMENTE:
-  1. MATCHING     → match_ofertas_v3.py
-  2. VALIDACIÓN   → auto_validator.py (detecta errores → BD)
-  3. CORRECCIÓN   → auto_corrector.py (arregla lo que puede → BD)
-  4. REPORTE      → genera cola_claude.json si hay errores escalados
+EJECUTA AUTOMÁTICAMENTE (v3.3 — 8 pasos):
+  1.   NLP             → process_nlp_from_db_v11.py v11.4 (source-aware)
+  1.5  NLP GATE        → nlp_validator.py v1.1 (35+ reglas, bloquea critico/alto)
+  1.5b NLP AUTO-CORR   → auto_corrector.py (corrige NLP, re-valida, escala a Claude)
+  1.6  MULTI-POSITION  → limpiar_titulos.py (detecta "Vendedor / Cajero", crea sub-ofertas)
+  2.   MATCHING        → match_ofertas_v3.py v3.5.4 (ESCO-First)
+  3.   VALIDACIÓN      → auto_validator.py (detecta errores → BD)
+  4.   AUTO-CORRECCIÓN → auto_corrector.py (arregla lo que puede → BD)
+  5.   NLP RE-PROCESS  → si hay errores NLP → reprocesa → vuelve a paso 1.5 (max 2 iter)
+  6.   REPORTE         → genera cola_claude.json si hay errores escalados
+  7.   EXPORT EXCEL    → Excel para validación humana
+  8.   SYNC LEARNINGS  → actualiza .ai/learnings.yaml
 
 OPCIONES:
-  --limit N          Procesar N ofertas
+  --limit N          Procesar N ofertas (por prioridad)
   --ids X,Y,Z        Procesar IDs específicos
+  --skip-nlp         Saltar NLP (solo matching+validación)
+  --skip-matching    Saltar matching (solo validar)
+  --only-pending     Solo ofertas pendientes de matching
+  --no-priority      Sin sistema de prioridad
   --export-markdown  Generar validation/feedback_*.md para GitHub
 
 RESULTADO:
   - Errores detectados → tabla validation_errors (persistidos)
-  - Errores corregidos → marcados corregido=1 en BD
+  - Errores corregidos → marcados corregido=1 en BD (con valor_corregido)
   - Errores escalados → metrics/cola_claude_*.json + escalado_claude=1 en BD
+  - Fine-tuning data → llm_raw_json + postprocessor_diff_json + valor_actual en BD
 ```
 
 ### Si Hay Errores Escalados
@@ -679,20 +902,25 @@ python scripts/run_validated_pipeline.py --ids X,Y,Z
 
 | Archivo | Función |
 |---------|---------|
-| `scripts/run_validated_pipeline.py` | **⭐ ENTRY POINT PRINCIPAL** - orquesta todo |
-| `config/validation_rules.json` | Reglas de auto-detección (ver conteos en learnings.yaml) |
+| `scripts/run_validated_pipeline.py` | **⭐ ENTRY POINT PRINCIPAL** v3.3 - orquesta 8 pasos |
+| `database/nlp_validator.py` | **NLP Gate** v1.1 - 35+ reglas pre-matching (bloquea critico/alto) |
+| `config/nlp_validation_rules.json` | Reglas NLP: V01-V26, NV02-NV11, NQ01-NQ05 (cross-field) |
+| `config/validation_rules.json` | Reglas matching: auto-detección (ver conteos en learnings.yaml) |
 | `config/diagnostic_patterns.json` | Patrones para identificar punto de falla |
 | `config/auto_correction_map.json` | Mapeo diagnóstico → config a modificar |
-| `database/auto_validator.py` | Validador automático (persiste en BD) |
-| `database/auto_corrector.py` | Corrector automático (actualiza BD) |
+| `database/auto_validator.py` | Validador matching (persiste en BD) |
+| `database/auto_corrector.py` | Corrector automático (con valor_corregido tracking) |
+| `database/limpiar_titulos.py` | v2.8.1 - limpieza títulos + multi-position detection |
 | `scripts/review_offer_chain.py` | **Revisión UNO POR UNO** (cadena completa) |
+| `scripts/launch_nlp_batch.py` | NLP batch en background con logging a archivo |
 
 ### Tablas de Validación en BD
 
 | Tabla | Función |
 |-------|---------|
-| `validation_errors` | Errores detectados por auto_validator (persistidos) |
+| `validation_errors` | Errores detectados (con `valor_actual` y `valor_corregido`) |
 | `ofertas_esco_matching` | Estado de matching y validación |
+| `ofertas_nlp` | Campos NLP + `nlp_gate_status` + `llm_raw_json` + `postprocessor_diff_json` |
 | `pipeline_runs` | Historial de corridas |
 
 **Consultas útiles:**
@@ -804,42 +1032,57 @@ python scripts/run_validated_pipeline.py --ids 123,456
 
 | Componente | Archivo ACTUAL | NO USAR |
 |------------|----------------|---------|
-| Pipeline NLP | `database/process_nlp_from_db_v11.py` | v7, v8, v9, v10 |
+| Pipeline NLP | `database/process_nlp_from_db_v11.py` v11.4 | v7, v8, v9, v10 |
 | Prompt | `database/prompts/extraction_prompt_lite_v1.py` | v8, v9, v10 |
 | Regex Patterns | `database/patterns/regex_patterns_v4.py` | v1, v2, v3 |
 | Normalizador | `database/normalize_nlp_values.py` | - |
+| Postprocessor | `database/nlp_postprocessor.py` v1.3 | - |
+| NLP Validator (Gate) | `database/nlp_validator.py` v1.1 | - |
+| Limpiador títulos | `database/limpiar_titulos.py` v2.8.1 | - |
+| Batch background | `scripts/launch_nlp_batch.py` | - |
 
-**Arquitectura v11.3:**
+**Arquitectura v11.4 (source-aware):**
 ```
-CAPA 0: Regex (salarios, jornada) + Scraping directo (modalidad)
+CAPA 0: Regex (salarios, jornada) + Scraping directo (modalidad, portal)
 CAPA 1: LLM Qwen2.5:7b (20 campos)
-CAPA 2: Postprocessor (config/nlp_*.json)
-CAPA 3: Skills implícitas (BGE-M3 + ESCO embeddings)
+CAPA 1b: Source-aware pre-fill (CABA/Portal Empleo/Indeed metadata embebida)
+CAPA 2: Postprocessor (config/nlp_*.json) + LLM raw snapshot + diff tracking
+CAPA 3: Skills implícitas (LoRA fine-tuned BGE-M3 + ESCO embeddings)
+
+NLP GATE (pre-matching):
+  nlp_validator.py (35+ reglas) → aprobado/bloqueado
+  Bloqueados → auto-corrección → re-validación → escalar a Claude
 ```
 
-### Matching Pipeline v3.4.2 ESCO-First
+**Campos fine-tuning (v11.4):**
+- `llm_raw_json`: Output original del LLM (antes del postprocessor)
+- `postprocessor_diff_json`: Qué campos cambió el postprocessor y por qué
+- `valor_actual` / `valor_corregido`: En validation_errors, para auditoría
+
+### Matching Pipeline v3.5.4 ESCO-First
 
 | Componente | Archivo ACTUAL | NO USAR |
 |------------|----------------|---------|
-| Pipeline Matching | `database/match_ofertas_v3.py` v3.4.2 | v2.py, v8.x |
+| Pipeline Matching | `database/match_ofertas_v3.py` v3.5.4 | v2.py, v8.x |
 | Matcher por Skills | `database/match_by_skills.py` v1.2.0 | - |
-| Skills Extractor | `database/skills_implicit_extractor.py` v2.3 | - |
+| Skills Extractor | `database/skills_implicit_extractor.py` v2.4 | - |
 | Skills Rules Config | `config/skills_rules.json` (25 reglas) | - |
 | Skills Rules Matcher | `database/skills_rules_matcher.py` | - |
-| Diccionario Argentino | `config/sinonimos_argentinos_esco.json` (13 ocup) | - |
-| Config reglas negocio | `config/matching_rules_business.json` (124 reglas con ESCO válido) | hardcodeados |
+| Diccionario Argentino | `config/sinonimos_argentinos_esco.json` (17 ocup) | - |
+| Config reglas negocio | `config/matching_rules_business.json` (297 reglas) | hardcodeados |
 | Config principal | `config/matching_config.json` | - |
 
-**Arquitectura v3.4.2 (orden de prioridad):**
+**Arquitectura v3.5.4 (orden de prioridad):**
 ```
 PRINCIPIO: ESCO es TARGET, ISCO es CONSECUENCIA
 
 1. REGLAS DE NEGOCIO (GANAN SIEMPRE si aplican)
    └── Buscan ESCO label exacto → derivan ISCO
+   └── titulo_original_contiene_alguno (v3.5.4: busca en título SIN limpiar)
         ↓ (si no hay regla)
 2. DICCIONARIO ARGENTINO ← Vocabulario local → ISCO
         ↓ (si no matchea)
-3. SEMÁNTICO (BGE-M3) ← Skills 60% + Titulo 40%
+3. SEMÁNTICO (LoRA fine-tuned) ← Skills 60% + Titulo 40%
         ↓
 4. PENALIZACIONES (sector, seniority)
         ↓
@@ -848,24 +1091,25 @@ PRINCIPIO: ESCO es TARGET, ISCO es CONSECUENCIA
 
 → **Detalles:** `docs/reference/PIPELINE.md`
 
-### Skills Dual System v2.3 (2026-01-22)
+### Skills Dual System v2.4 (2026-03-15)
 
 Sistema DUAL para extracción de skills (mismo patrón que ISCO matching):
-- **Reglas de skills** (prioridad) + **Semántico BGE-M3** (fallback)
+- **Reglas de skills** (prioridad) + **LoRA fine-tuned model** (fallback)
 - Guarda AMBOS resultados para comparación y métricas
 
 | Componente | Archivo | Propósito |
 |------------|---------|-----------|
 | Skills Rules Config | `config/skills_rules.json` | 25 reglas que fuerzan skills específicas |
 | Skills Rules Matcher | `database/skills_rules_matcher.py` | Evaluador de reglas |
-| Skills Extractor | `database/skills_implicit_extractor.py` v2.3 | Método `extract_skills_dual()` |
+| Skills Extractor | `database/skills_implicit_extractor.py` v2.4 | Método `extract_skills_dual()` |
+| Modelo | `data/finetuning/matching/model_lora` | LoRA fine-tuned (reemplaza BGE-M3 default) |
 
 **Arquitectura Dual:**
 ```
 1. Evaluar REGLAS DE SKILLS (skills_rules.json)
    └── Si matchea → skills_regla (prioridad)
         ↓
-2. Extraer SEMÁNTICO (BGE-M3 siempre)
+2. Extraer SEMÁNTICO (LoRA fine-tuned siempre)
    └── skills_semantico
         ↓
 3. Comparar ambos

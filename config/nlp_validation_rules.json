@@ -574,6 +574,207 @@
       "diagnostico": "error_nlp_tipo_oferta",
       "severidad": "medio",
       "mensaje": "Tipo contrato no válido - normalizar en postprocessor"
+    },
+
+    {
+      "_seccion": "=== REGLAS DE CALIDAD NLP (v1.2) - Cross-field coherencia ==="
+    },
+
+    {
+      "id": "NQ01_seniority_titulo_senior_pero_junior",
+      "grupo": "calidad_cross_field",
+      "descripcion": "Título indica cargo directivo/senior pero seniority dice trainee/junior",
+      "campo": "seniority_titulo_senior_pero_junior",
+      "operador": "eq",
+      "valor": true,
+      "diagnostico": "error_nlp_seniority_titulo",
+      "severidad": "medio",
+      "mensaje": "Título sugiere cargo senior (gerente/director/jefe) pero seniority es trainee/junior - reinferir seniority",
+      "auto_correccion": {
+        "funcion": "reinferir_campo",
+        "campo": "nivel_seniority"
+      }
+    },
+    {
+      "id": "NQ02_seniority_titulo_junior_pero_senior",
+      "grupo": "calidad_cross_field",
+      "descripcion": "Título indica cargo junior/pasante pero seniority dice senior/manager",
+      "campo": "seniority_titulo_junior_pero_senior",
+      "operador": "eq",
+      "valor": true,
+      "diagnostico": "error_nlp_seniority_titulo",
+      "severidad": "medio",
+      "mensaje": "Título sugiere cargo junior (pasante/aprendiz) pero seniority es senior/manager - reinferir seniority",
+      "auto_correccion": {
+        "funcion": "reinferir_campo",
+        "campo": "nivel_seniority"
+      }
+    },
+    {
+      "id": "NQ03_area_titulo_incoherente",
+      "grupo": "calidad_cross_field",
+      "descripcion": "Área funcional no coincide con el tipo de puesto del título",
+      "campo": "area_titulo_incoherente",
+      "operador": "eq",
+      "valor": true,
+      "diagnostico": "error_nlp_area_titulo",
+      "severidad": "medio",
+      "mensaje": "Área funcional incoherente con título (ej: IT para vigilador) - reinferir área",
+      "auto_correccion": {
+        "funcion": "reinferir_campo",
+        "campo": "area_funcional"
+      }
+    },
+    {
+      "id": "NQ04_experiencia_alta_seniority_bajo",
+      "grupo": "calidad_cross_field",
+      "descripcion": "Experiencia >= 5 años pero seniority trainee",
+      "condiciones": [
+        {"campo": "experiencia_min_anios", "operador": "gte", "valor": 5},
+        {"campo": "nivel_seniority", "operador": "eq", "valor": "trainee"}
+      ],
+      "logica": "AND",
+      "diagnostico": "warning_nlp_experiencia_seniority",
+      "severidad": "warning",
+      "mensaje": "Experiencia >= 5 años pero seniority trainee - posible error LLM"
+    },
+    {
+      "id": "NQ05_modalidad_scraping_difiere",
+      "grupo": "calidad_cross_field",
+      "descripcion": "Modalidad del NLP difiere de la del scraping (scraping es fuente primaria)",
+      "campo": "modalidad_scraping_difiere",
+      "operador": "eq",
+      "valor": true,
+      "diagnostico": "error_nlp_modalidad_scraping",
+      "severidad": "medio",
+      "mensaje": "Modalidad NLP difiere del scraping - el postprocessor debería haber usado scraping"
+    },
+    {
+      "id": "NQ06_tareas_copy_paste",
+      "grupo": "calidad_contenido",
+      "descripcion": "Tareas demasiado largas sugieren copy-paste de descripción completa",
+      "condiciones": [
+        {"campo": "tareas_explicitas_length", "operador": "gt", "valor": 1500},
+        {"campo": "tareas_explicitas", "operador": "not_contains", "valor": ";"}
+      ],
+      "logica": "AND",
+      "diagnostico": "warning_nlp_tareas_copypaste",
+      "severidad": "warning",
+      "mensaje": "Tareas > 1500 chars sin separadores - posible copy-paste del LLM"
+    },
+    {
+      "id": "NQ07_educacion_vs_puesto_operativo",
+      "grupo": "calidad_cross_field",
+      "descripcion": "Puesto operativo (peón, limpieza, cadete) con nivel educativo universitario/posgrado",
+      "condiciones": [
+        {"campo": "titulo_limpio", "operador": "matches_regex", "valor": "(?i)(pe[oó]n|limpieza|cadete|repositor|embalador|empaquetador)"},
+        {"campo": "nivel_educativo", "operador": "in_list", "valores": ["universitario", "posgrado"]}
+      ],
+      "logica": "AND",
+      "diagnostico": "warning_nlp_educacion_puesto",
+      "severidad": "warning",
+      "mensaje": "Puesto operativo con educación universitaria/posgrado - verificar extracción LLM"
+    },
+
+    {
+      "_seccion": "=== REGLAS SOURCE-AWARE por portal (v1.2) ==="
+    },
+
+    {
+      "id": "NQ10_portalempleo_sin_prefill",
+      "grupo": "source_aware",
+      "descripcion": "Portal Empleo tiene metadata estructurada pero NLP no la usó",
+      "condiciones": [
+        {"campo": "portal", "operador": "eq", "valor": "portalempleo"},
+        {"campo": "postprocessor_cambios_count", "operador": "eq", "valor": 0},
+        {"campo": "descripcion_original_length", "operador": "gt", "valor": 200}
+      ],
+      "logica": "AND",
+      "diagnostico": "warning_source_prefill_faltante",
+      "severidad": "info",
+      "mensaje": "Portal Empleo: metadata estructurada disponible pero postprocessor no aplicó prefills"
+    },
+    {
+      "id": "NQ11_caba_sin_prefill",
+      "grupo": "source_aware",
+      "descripcion": "CABA tiene metadata rica (industria, sector, IT skills) pero NLP no la usó",
+      "condiciones": [
+        {"campo": "portal", "operador": "eq", "valor": "caba"},
+        {"campo": "postprocessor_cambios_count", "operador": "eq", "valor": 0},
+        {"campo": "descripcion_original_length", "operador": "gt", "valor": 200}
+      ],
+      "logica": "AND",
+      "diagnostico": "warning_source_prefill_faltante",
+      "severidad": "info",
+      "mensaje": "CABA: metadata rica disponible pero postprocessor no aplicó prefills"
+    },
+    {
+      "id": "NQ12_computrabajo_provincia_vacia",
+      "grupo": "source_aware",
+      "descripcion": "ComputRabajo: provincia vacía es común por encoding issues (Córdoba, Tucumán)",
+      "condiciones": [
+        {"campo": "portal", "operador": "eq", "valor": "computrabajo"},
+        {"campo": "provincia", "operador": "is_empty"}
+      ],
+      "logica": "AND",
+      "diagnostico": "error_nlp_ubicacion_portal",
+      "severidad": "medio",
+      "mensaje": "ComputRabajo sin provincia - posible encoding (Córdoba/Tucumán) o parsing fallido"
+    },
+    {
+      "id": "NQ13_indeed_jornada_no_prefilled",
+      "grupo": "source_aware",
+      "descripcion": "Indeed tiene employmentType en JSON-LD pero jornada no fue prefilled",
+      "condiciones": [
+        {"campo": "portal", "operador": "eq", "valor": "indeed"},
+        {"campo": "scraping_tipo_trabajo", "operador": "is_not_empty"},
+        {"campo": "jornada_laboral", "operador": "is_empty"}
+      ],
+      "logica": "AND",
+      "diagnostico": "warning_source_prefill_faltante",
+      "severidad": "warning",
+      "mensaje": "Indeed: tipo_trabajo disponible en scraping pero jornada no fue prefilled"
+    },
+    {
+      "id": "NQ14_bumeran_modalidad_no_prefilled",
+      "grupo": "source_aware",
+      "descripcion": "Bumeran/ZonaJobs tienen modalidad_trabajo en API pero no se usó",
+      "condiciones": [
+        {"campo": "portal", "operador": "in_list", "valores": ["bumeran", "zonajobs"]},
+        {"campo": "scraping_modalidad", "operador": "is_not_empty"},
+        {"campo": "modalidad", "operador": "is_empty"}
+      ],
+      "logica": "AND",
+      "diagnostico": "error_nlp_modalidad_scraping",
+      "severidad": "medio",
+      "mensaje": "Bumeran/ZJ: modalidad disponible en scraping pero NLP no la usó"
+    },
+    {
+      "id": "NQ15_computrabajo_desc_corta",
+      "grupo": "source_aware",
+      "descripcion": "ComputRabajo con descripción muy corta - posible scraping incompleto (p.mbB)",
+      "condiciones": [
+        {"campo": "portal", "operador": "eq", "valor": "computrabajo"},
+        {"campo": "descripcion_original_length", "operador": "lt", "valor": 50}
+      ],
+      "logica": "AND",
+      "diagnostico": "error_scraping_portal",
+      "severidad": "warning",
+      "mensaje": "ComputRabajo: descripción < 50 chars - posible scraping incompleto del campo p.mbB"
+    },
+    {
+      "id": "NQ16_sin_skills_desc_larga",
+      "grupo": "calidad_contenido",
+      "descripcion": "Descripción larga pero sin skills extraídas - LLM no extrajo bien",
+      "condiciones": [
+        {"campo": "descripcion_original_length", "operador": "gt", "valor": 500},
+        {"campo": "skills_count", "operador": "eq", "valor": 0},
+        {"campo": "soft_skills_count", "operador": "eq", "valor": 0}
+      ],
+      "logica": "AND",
+      "diagnostico": "warning_nlp_skills_vacias",
+      "severidad": "warning",
+      "mensaje": "Descripción > 500 chars pero 0 skills - revisar extracción LLM"
     }
   ],
 

@@ -490,3 +490,106 @@ MATCHING:
 | Features PRO | 2 | 5 | 8 |
 | NPS | N/A | > 30 | > 50 |
 | Churn mensual | N/A | < 10% | < 5% |
+
+---
+
+## V-17: Skills Emergentes (ESCO+MOL)
+
+> **Prioridad:** ALTA | **Fase:** 3-4 | **Esfuerzo:** Medio
+
+### Problema
+
+ESCO se actualiza en ciclos de años, pero el mercado laboral tech evoluciona en meses. Skills como "prompt engineering", "LangChain", "fine-tuning de LLMs", "RAG", "Hugging Face" no existen en la taxonomía ESCO. Esto genera:
+- Skills relevantes que se pierden en el matching
+- Ofertas tech con skills genéricas o incorrectas
+- Pérdida de valor analítico para el dashboard
+
+### Estrategia Propuesta: ESCO+MOL (combinación 1+3)
+
+**Componente 1: Taxonomía extendida curada (`config/skills_emergentes.json`)**
+
+```json
+{
+  "prompt_engineering": {
+    "label": "prompt engineering",
+    "label_es": "ingeniería de prompts",
+    "parent_esco": "inteligencia artificial",
+    "parent_esco_uri": "...",
+    "categoria": "AI/ML",
+    "variantes": ["prompting", "prompt design", "estrategias de prompting"],
+    "primera_deteccion": "2026-03-11",
+    "frecuencia_ofertas": 0,
+    "fuente": "issue_cyn_1117951568"
+  }
+}
+```
+
+Estructura por skill:
+- `label` / `label_es`: nombre canónico
+- `parent_esco`: skill ESCO padre más cercana (para reportes compatibles)
+- `categoria`: agrupación temática (AI/ML, Cloud, DevOps, Data, etc.)
+- `variantes`: sinónimos y formas alternativas
+- `primera_deteccion`: cuándo se vio por primera vez
+- `frecuencia_ofertas`: cuántas ofertas la mencionan
+- `fuente`: de dónde surgió (issue, detección automática, etc.)
+
+**Componente 2: Detección automática de candidatos**
+
+Pipeline que corre post-matching:
+1. El LLM extrae skills en texto libre de la oferta
+2. Se intenta matchear contra ESCO (como ahora)
+3. Lo que NO matchea (score < umbral) → candidato a skill emergente
+4. Se acumula frecuencia por término
+5. Si frecuencia > N ofertas → alerta para curación humana
+
+**Almacenamiento en BD:**
+- Columna `skills_emergentes_json` en `ofertas_esco_matching` (las que no matchearon ESCO)
+- Tabla `skills_emergentes_catalogo` (catálogo curado)
+- Tabla `skills_emergentes_frecuencia` (conteos automáticos)
+
+### Integración con Dashboard
+
+- En la vista de oferta: mostrar skills ESCO + skills emergentes (con badge "emergente")
+- En analytics: ranking de skills emergentes más demandadas
+- En filtros: permitir filtrar por skills emergentes
+
+### Flujo de Curación
+
+```
+Detección automática → skills_emergentes_frecuencia (acumulado)
+    → Frecuencia > umbral → alerta admin
+        → Admin revisa y aprueba → skills_emergentes_catalogo
+            → Disponible para matching futuro
+```
+
+### Alimentación desde Issues
+
+Los issues de usuarios (como los de Cyn) que señalan skills faltantes alimentan directamente el catálogo:
+```
+Issue Cyn "faltan LangChain, Hugging Face" → skill emergente candidata
+    → Curación → catálogo → matching
+```
+
+### Dependencias
+
+| Depende de | Para qué |
+|------------|----------|
+| Pipeline NLP v11+ | Extracción de skills en texto libre |
+| Sistema de issues (Supabase) | Alimentación desde feedback usuario |
+| Dashboard admin (P-28) | Interfaz de curación |
+
+### Skills Emergentes Identificadas (semilla inicial)
+
+| Skill | Categoría | Parent ESCO más cercano |
+|-------|-----------|------------------------|
+| prompt engineering | AI/ML | inteligencia artificial |
+| fine-tuning de LLMs | AI/ML | inteligencia artificial |
+| LangChain / LangGraph | AI/ML | desarrollar software |
+| RAG (retrieval augmented generation) | AI/ML | analizar inteligencia de datos |
+| Hugging Face | AI/ML | desarrollar software de fuente abierta |
+| OpenAI API | AI/ML | desarrollar con servicios en la nube |
+| CI/CD | DevOps | gestionar procesos de flujo de trabajo |
+| Terraform | Cloud/DevOps | facilitar recursos en la nube |
+| Kubernetes | Cloud/DevOps | facilitar recursos en la nube |
+| Next.js / React | Frontend | desarrollar software |
+| Figma | Diseño | herramientas de diseño gráfico |

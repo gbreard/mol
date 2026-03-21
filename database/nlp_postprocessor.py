@@ -103,6 +103,15 @@ class NLPPostprocessor:
             "campos_normalizados": 0,
             "skills_regex_agregadas": 0,
             "defaults_aplicados": 0,
+            "prefill_scraping": 0,
+            "skills_limpiadas": 0,
+            "tareas_limpiadas": 0,
+            "seniority_forzado_titulo": 0,
+            "tareas_completadas": 0,
+            "seniority_corregido": 0,
+            "tareas_implicitas": 0,
+            "sector_corregido": 0,
+            "sin_experiencia_corregido": 0,
         }
 
         # Cache para CLAE (se carga una vez)
@@ -212,6 +221,333 @@ class NLPPostprocessor:
                 result[campo_destino] = valor
 
         return result
+
+    # =========================================================================
+    # PASO 1b: SOURCE-AWARE PRE-FILL (v11.4)
+    # =========================================================================
+
+    def _apply_scraping_prefill(self, data: Dict[str, Any], descripcion: str,
+                                 scraping_extra: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Pre-fill campos NLP desde datos del scraping y metadata embebida.
+
+        v11.4: Las fuentes nuevas (CABA, Portal Empleo, Indeed) traen datos
+        estructurados que el LLM no necesita re-extraer.
+
+        Prioridad: scraping > metadata embebida > LLM
+        (solo llena si el campo está vacío, excepto modalidad que scraping gana siempre)
+        """
+        portal = scraping_extra.get('portal', '')
+        prefill_count = 0
+
+        # --- 1. Pre-fill desde campos directos del scraping ---
+
+        # Modalidad: scraping SIEMPRE gana (es dato real, no inferido)
+        modalidad_scraping = scraping_extra.get('modalidad_trabajo')
+        if modalidad_scraping:
+            modalidad_norm = self._normalize_modalidad(modalidad_scraping)
+            if modalidad_norm and modalidad_norm != data.get('modalidad'):
+                if self.verbose:
+                    print(f"[PREFILL] modalidad: '{data.get('modalidad')}' -> '{modalidad_norm}' (scraping)")
+                data['modalidad'] = modalidad_norm
+                prefill_count += 1
+
+        # Jornada/tipo_trabajo: scraping como fallback (de tipo_trabajo o modalidad_trabajo)
+        if not data.get('jornada_laboral'):
+            tipo_trabajo = scraping_extra.get('tipo_trabajo')
+            if tipo_trabajo:
+                jornada_norm = self._normalize_jornada_from_scraping(tipo_trabajo)
+                if jornada_norm:
+                    if self.verbose:
+                        print(f"[PREFILL] jornada_laboral = '{jornada_norm}' (scraping tipo_trabajo)")
+                    data['jornada_laboral'] = jornada_norm
+                    prefill_count += 1
+
+            # Indeed pone jornada en modalidad_trabajo ("Tiempo parcial", "Tiempo completo")
+            if not data.get('jornada_laboral') and modalidad_scraping:
+                jornada_from_modal = self._normalize_jornada_from_scraping(modalidad_scraping)
+                if jornada_from_modal:
+                    if self.verbose:
+                        print(f"[PREFILL] jornada_laboral = '{jornada_from_modal}' (scraping modalidad_trabajo)")
+                    data['jornada_laboral'] = jornada_from_modal
+                    prefill_count += 1
+
+        # --- 2. Extraer metadata embebida del bloque --- ---
+        metadata = self._extract_embedded_metadata(descripcion, portal)
+
+        if metadata:
+            if self.verbose:
+                print(f"[METADATA] {portal}: {len(metadata)} campos extraídos del bloque ---")
+
+            # Mapeo metadata -> campo NLP (solo si campo vacío)
+            METADATA_MAP = {
+                'industria': 'sector_empresa',
+                'sector_area': 'area_funcional',
+                'estudios_requeridos': 'nivel_educativo',
+                'experiencia_requerida': '_metadata_experiencia',
+                'experiencia_excluyente': '_metadata_exp_excluyente',
+                'salario': '_metadata_salario',
+                'dias_laborables': 'dias_trabajo_list',
+                'horario': 'horario_especifico',
+                'residencia_requerida': '_metadata_residencia',
+                'tipo': '_metadata_tipo_empleo',
+            }
+
+            for meta_key, nlp_field in METADATA_MAP.items():
+                meta_value = metadata.get(meta_key)
+                if not meta_value:
+                    continue
+
+                # Campos con prefijo _ requieren procesamiento especial
+                if nlp_field.startswith('_metadata_'):
+                    self._process_special_metadata(data, nlp_field, meta_value)
+                    prefill_count += 1
+                    continue
+
+                # Campos normales: solo llenar si vacío
+                current = data.get(nlp_field)
+                if not current or current in (None, '', 'null', 'None'):
+                    # Normalizar si es necesario
+                    if nlp_field == 'nivel_educativo':
+                        meta_value = self._normalize_nivel_educativo(meta_value)
+                    elif nlp_field == 'area_funcional':
+                        meta_value = self._normalize_area_from_metadata(meta_value)
+                    elif nlp_field == 'sector_empresa':
+                        # Sector de metadata embebida = confianza media-alta
+                        data['sector_confianza'] = 'media'
+                        data['sector_fuente'] = f'metadata_{portal}'
+
+                    if meta_value:
+                        if self.verbose:
+                            print(f"[PREFILL] {nlp_field} = '{meta_value}' (metadata {portal})")
+                        data[nlp_field] = meta_value
+                        prefill_count += 1
+
+            # IT skills de CABA (Office, Programacion, Base de datos, Sistemas contables)
+            it_skills = metadata.get('conocimientos_it')
+            if it_skills and portal == 'caba':
+                existing_skills = data.get('skills_tecnicas_list', '') or ''
+                if isinstance(existing_skills, list):
+                    existing_skills = ', '.join(existing_skills)
+                for skill_name, skill_val in it_skills.items():
+                    if skill_val and skill_val.lower() not in ('no', 'sin datos', ''):
+                        skill_text = f"{skill_name}: {skill_val}"
+                        if skill_name.lower() not in existing_skills.lower():
+                            existing_skills = f"{existing_skills}, {skill_text}" if existing_skills else skill_text
+                            prefill_count += 1
+                if existing_skills:
+                    data['skills_tecnicas_list'] = existing_skills
+
+            # Idiomas de CABA
+            idiomas = metadata.get('idiomas')
+            if idiomas and not data.get('idioma_principal'):
+                idiomas_list = [i.strip() for i in idiomas.split(',')]
+                if idiomas_list:
+                    data['idioma_principal'] = idiomas_list[0]
+                    if len(idiomas_list) > 1:
+                        data['idioma_secundario'] = idiomas_list[1]
+                    prefill_count += 1
+                    if self.verbose:
+                        print(f"[PREFILL] idiomas = {idiomas_list} (metadata {portal})")
+
+        self.stats['prefill_scraping'] = prefill_count
+        return data
+
+    def _extract_embedded_metadata(self, descripcion: str, portal: str) -> Dict[str, Any]:
+        """
+        Parsea el bloque de metadata embebida después del separador ---
+
+        Formatos soportados:
+        - CABA: Industria: X, Sector/Area: Y, Estudios requeridos: Z, ...
+        - Portal Empleo: Estudios requeridos: X, Experiencia requerida: Y, Salario: Z, ...
+        - Indeed: Tipo: FULL_TIME, Salario: ARS min - max (periodo)
+        """
+        if not descripcion or '---' not in descripcion:
+            return {}
+
+        # Buscar el bloque después del último ---
+        parts = descripcion.rsplit('---', 1)
+        if len(parts) < 2:
+            return {}
+
+        metadata_block = parts[1].strip()
+        if not metadata_block:
+            return {}
+
+        result = {}
+
+        # Patrones Key: Value (una línea por campo)
+        # Soporta variaciones de spacing y encoding
+        patterns = {
+            'industria': r'Industria:\s*(.+)',
+            'sector_area': r'Sector/Area:\s*(.+)',
+            'estudios_requeridos': r'Estudios\s+requeridos?:\s*(.+)',
+            'experiencia_excluyente': r'Experiencia\s+excluyente:\s*(.+)',
+            'experiencia_requerida': r'Experiencia\s+requerida:\s*(.+)',
+            'idiomas': r'Idiomas:\s*(.+)',
+            'dias_laborables': r'Dias?\s+laborables?:\s*(.+)',
+            'horario': r'Horario:\s*(.+)',
+            'residencia_requerida': r'Residencia\s+requerida:\s*(.+)',
+            'salario': r'Salario:\s*(.+)',
+            'tipo': r'Tipo:\s*(.+)',
+        }
+
+        for key, pattern in patterns.items():
+            match = re.search(pattern, metadata_block, re.IGNORECASE)
+            if match:
+                value = match.group(1).strip()
+                # Limpiar valores vacíos o placeholder
+                if value and value.lower() not in ('sin datos', 'n/a', 'no aplica', ''):
+                    result[key] = value
+
+        # CABA: Conocimientos IT (formato especial con sub-campos)
+        it_match = re.search(r'Conocimientos\s+IT:\s*(.*?)(?=\n[A-Z]|\Z)', metadata_block,
+                            re.IGNORECASE | re.DOTALL)
+        if it_match:
+            it_block = it_match.group(1)
+            it_skills = {}
+            for skill_pattern in ['Office', r'Sistemas?\s+contables?', 'Programacion', r'Base\s+de\s+datos?']:
+                skill_match = re.search(rf'{skill_pattern}:\s*(.+?)(?=;|\n|$)', it_block, re.IGNORECASE)
+                if skill_match:
+                    skill_name = re.sub(r'\s+', ' ', skill_pattern.replace('\\s+', ' ').replace('\\s*', '')).replace('?', '')
+                    it_skills[skill_name] = skill_match.group(1).strip()
+            if it_skills:
+                result['conocimientos_it'] = it_skills
+
+        return result
+
+    def _process_special_metadata(self, data: Dict[str, Any], field: str, value: str):
+        """Procesa campos metadata que requieren transformación especial"""
+
+        if field == '_metadata_experiencia':
+            # "2 años", "No", "Si"
+            if value.lower() in ('no', 'sin experiencia', 'no requiere'):
+                if not data.get('experiencia_min_anios'):
+                    data['experiencia_min_anios'] = 0
+                    data['experiencia_excluyente'] = 0
+            else:
+                # Extraer número
+                num_match = re.search(r'(\d+)', value)
+                if num_match and not data.get('experiencia_min_anios'):
+                    data['experiencia_min_anios'] = int(num_match.group(1))
+
+        elif field == '_metadata_exp_excluyente':
+            # "Si" / "No"
+            if value.lower() in ('si', 'sí', 'yes'):
+                data['experiencia_excluyente'] = 1
+            elif value.lower() in ('no',):
+                data['experiencia_excluyente'] = 0
+
+        elif field == '_metadata_salario':
+            # "ARS 500000 - 700000 (MONTH)" o "$500.000"
+            # Extraer min/max
+            nums = re.findall(r'[\d,.]+', value.replace('.', ''))
+            if nums and not data.get('salario_min'):
+                try:
+                    data['salario_min'] = float(nums[0].replace(',', ''))
+                    if len(nums) > 1:
+                        data['salario_max'] = float(nums[1].replace(',', ''))
+                    # Detectar moneda
+                    if 'USD' in value.upper() or 'U$S' in value:
+                        data['moneda'] = 'USD'
+                    elif 'ARS' in value.upper() or '$' in value:
+                        data['moneda'] = 'ARS'
+                except ValueError:
+                    pass
+
+        elif field == '_metadata_tipo_empleo':
+            # "FULL_TIME", "PART_TIME", "FULL_TIME, PART_TIME"
+            if not data.get('jornada_laboral'):
+                tipo_map = {
+                    'FULL_TIME': 'full-time',
+                    'PART_TIME': 'part-time',
+                    'TEMPORARY': 'temporal',
+                    'CONTRACT': 'contrato',
+                    'INTERN': 'pasantia',
+                }
+                for key, jornada in tipo_map.items():
+                    if key in value.upper():
+                        data['jornada_laboral'] = jornada
+                        break
+
+        elif field == '_metadata_residencia':
+            # Puede complementar localidad/provincia
+            if not data.get('zona_residencia_req'):
+                data['zona_residencia_req'] = value
+
+    def _normalize_modalidad(self, modalidad_raw: str) -> Optional[str]:
+        """Normaliza modalidad del scraping a valores NLP estándar.
+        
+        Solo mapea valores que realmente indican modalidad de trabajo
+        (presencial/remoto/hibrido). Ignora valores que son tipo de contrato
+        o jornada (ej: 'Relación de Dependencia', 'Tiempo parcial').
+        """
+        if not modalidad_raw:
+            return None
+        m = modalidad_raw.lower().strip()
+        if 'remoto' in m or 'remote' in m:
+            return 'remoto'
+        elif 'híbrido' in m or 'hibrido' in m or 'hybrid' in m:
+            return 'hibrido'
+        elif 'presencial' in m or 'onsite' in m or 'on-site' in m:
+            return 'presencial'
+        # Valores que NO son modalidad (ignorar)
+        # - "Relación de Dependencia" (CABA) = tipo contrato
+        # - "Tiempo parcial/completo" (Indeed) = jornada
+        # - "Fines de semana" = jornada
+        return None
+
+    def _normalize_jornada_from_scraping(self, tipo_trabajo: str) -> Optional[str]:
+        """Normaliza tipo_trabajo del scraping a jornada_laboral"""
+        if not tipo_trabajo:
+            return None
+        t = tipo_trabajo.lower().strip()
+        if 'full' in t or 'completo' in t:
+            return 'full-time'
+        elif 'part' in t or 'parcial' in t:
+            return 'part-time'
+        elif 'pasant' in t or 'intern' in t:
+            return 'pasantia'
+        elif 'temporario' in t or 'temporal' in t:
+            return 'temporal'
+        elif 'por hora' in t:
+            return 'part-time'
+        elif 'nocturno' in t:
+            return 'nocturno'
+        return None
+
+    def _normalize_nivel_educativo(self, nivel_raw: str) -> Optional[str]:
+        """Normaliza nivel educativo de metadata a valores NLP estándar"""
+        if not nivel_raw:
+            return None
+        n = nivel_raw.lower().strip()
+        if 'universit' in n or 'superior' in n:
+            return 'universitario'
+        elif 'terciario' in n or 'tecnic' in n:
+            return 'terciario'
+        elif 'secundario' in n:
+            return 'secundario'
+        elif 'primario' in n:
+            return 'primario'
+        elif 'posgrado' in n or 'master' in n or 'doctorado' in n:
+            return 'posgrado'
+        return nivel_raw
+
+    def _normalize_area_from_metadata(self, area_raw: str) -> Optional[str]:
+        """Normaliza area funcional de metadata"""
+        if not area_raw:
+            return None
+        # Intentar normalizar con el diccionario existente
+        if area_raw in self.AREA_FUNCIONAL_NORMALIZATION:
+            return self.AREA_FUNCIONAL_NORMALIZATION[area_raw]
+        if area_raw in self.VALID_AREA_FUNCIONAL:
+            return area_raw
+        # Buscar match parcial
+        a = area_raw.lower().strip()
+        for valid in self.VALID_AREA_FUNCIONAL:
+            if valid.lower() in a or a in valid.lower():
+                return valid
+        return area_raw
 
     # =========================================================================
     # PASO 2: VALIDACION (rechazar booleanos)
@@ -2143,7 +2479,8 @@ class NLPPostprocessor:
 
     def postprocess(self, data: Dict[str, Any], descripcion: str = "",
                     skills_regex: Dict[str, List[str]] = None,
-                    id_empresa: str = None) -> Dict[str, Any]:
+                    id_empresa: str = None,
+                    scraping_extra: Dict[str, Any] = None) -> Dict[str, Any]:
         """
         Aplica todas las correcciones post-LLM
 
@@ -2152,6 +2489,7 @@ class NLPPostprocessor:
             descripcion: Texto original de la oferta
             skills_regex: Dict con skills_tecnicas_regex y soft_skills_regex de Capa 0
             id_empresa: ID de empresa del scraping (para lookup en catálogo)
+            scraping_extra: Dict con campos del scraping (portal, modalidad, tipo_trabajo, vacantes)
 
         Returns:
             Dict con campos corregidos
@@ -2161,6 +2499,10 @@ class NLPPostprocessor:
         # Reset stats
         for key in self.stats:
             self.stats[key] = 0
+
+        # Paso 1b: Extraer metadata embebida en descripción (CABA, Portal Empleo, Indeed)
+        # y pre-fill campos desde scraping (modalidad, tipo_trabajo, vacantes)
+        data = self._apply_scraping_prefill(data, descripcion, scraping_extra or {})
 
         # Paso 2: Validacion de tipos
         data = self._validate_types(data)

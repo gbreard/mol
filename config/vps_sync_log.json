@@ -1,0 +1,46 @@
+{
+  "last_sync": "2026-03-14T15:23:47.743810",
+  "last_sync_stats": {
+    "ofertas_en_sql": 2136,
+    "nuevas_insertadas": 2124,
+    "ignoradas": 12,
+    "total_bd": 37785
+  },
+  "history": [
+    {
+      "timestamp": "2026-03-10T16:06:29.499154",
+      "nuevas": 488,
+      "total_bd": 20013
+    },
+    {
+      "timestamp": "2026-03-10T16:14:35.912099",
+      "nuevas": 0,
+      "total_bd": 20013
+    },
+    {
+      "timestamp": "2026-03-10T16:15:43.537550",
+      "nuevas": 0,
+      "total_bd": 20013
+    },
+    {
+      "timestamp": "2026-03-10T16:16:22.235982",
+      "nuevas": 0,
+      "total_bd": 20013
+    },
+    {
+      "timestamp": "2026-03-12T10:49:07.666357",
+      "nuevas": 13324,
+      "total_bd": 35143
+    },
+    {
+      "timestamp": "2026-03-12T17:54:31.663846",
+      "nuevas": 506,
+      "total_bd": 35649
+    },
+    {
+      "timestamp": "2026-03-14T15:23:47.743816",
+      "nuevas": 2124,
+      "total_bd": 37785
+    }
+  ]
+}

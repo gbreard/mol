@@ -6,48 +6,32 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-03-21 16:30"
+  fecha_actualizacion: "2026-03-15 01:43"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
-  fase_actual: "presentacion"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "37,776 ofertas sincronizadas a Supabase. Dashboard no muestra datos correctamente."
+  fase_actual: "adquisicion"  # adquisicion | procesamiento | presentacion
+  fase_detalle: "1750 errores sin resolver - sistema sugiere Fase 2"
 
 ultimo_trabajo:
-  fecha: "2026-03-21"
-  sesion: "Sprint 14: NLP 19K + validación + matching + sync Supabase"
+  fecha: "2026-03-12"
+  sesion: "Sprint 13: Fix ComputRabajo + VPS cron + Sync"
   cambios:
-    - "NLP batch: 19,180 ofertas procesadas con Qwen2.5:7b (75h, 14.2s/oferta)"
-    - "NLP validation gate: 37,776 validadas, 0 bloqueadas"
-    - "Fixes NLP: provincias GBA, áreas con /, tareas basura (64 patrones), siglas técnicas"
-    - "Fixes NLP: gente_cargo junior→false, seniority salud→semisenior, seguros≠seguridad"
-    - "Fixes NLP: modalidad scraping prioridad, exp=0→null para senior/manager"
-    - "feat: diccionario sinónimos argentinos para skills (80 tareas + 15 soft skills)"
-    - "Reprocess postprocessor+skills: 37,776 ofertas (1.7h), 28,599 skills actualizadas"
-    - "Matching batch: 20,945 ofertas (3.7h, 0 errores)"
-    - "Matching validation: 30,455 OK, 7,321 con warnings (V27 dual + V30 IT sin skills)"
-    - "Sync Supabase: 37,776 ofertas + skills sincronizadas"
-    - "validation_errors limpiados: 83,682 → 0 pendientes"
-    - "PENDIENTE: dashboard no muestra datos correctamente (filtro fechas?)"
+    - "fix(scraping): 3 bugs CT - dedup por URL slug, descripción p.mbB, parser fechas completo"
+    - "fix(vps): cron sin permisos ejecución (chmod +x) + stderr a cron_errors.log"
+    - "sync: 13,324 ofertas CT importadas a BD local (total: 35,143)"
+    - "vps: scraping manual lanzado (Bumeran+ZonaJobs+CT, ~10h en background)"
+    - "pendiente: 19K ofertas sin NLP (13K CT + 6K nuevas Bumeran/ZJ)"
   sesion_anterior:
-    tema: "Sprint 13: Fix ComputRabajo + VPS cron + Sync"
-    cambios_resumen: "3 bugs CT, chmod +x VPS, 13K CT importadas, scraping manual lanzado"
-  sesion_anterior:
-    tema: "Sprint 9b: Test suite cleanup + validation errors resolution"
-    cambios_resumen: "246/246 tests passing, 23/23 validation_errors resueltos, cola limpia"
-  sesion_anterior:
-    tema: "Sprint 8: Seguridad S-05 rate limiting + S-07 security headers"
-    cambios:
-      - "S-05: Rate limiter 3 tiers, S-07: Security headers"
-      - "192/192 tests passing, deploy Vercel verificado"
-  sesion_anterior:
-    tema: "Sprint 7: Recalibrar validación + sync 10K+ a Supabase"
-    cambios:
-      - "949 issues → 0 (100% resueltos)"
-      - "V24/V28/V20/V21 recalibradas"
-  branch: "main"
+    tema: "Sprint 12: Fix ComputRabajo scraper bugs"
+    cambios_resumen: "3 bugs CT corregidos, deploy VPS, re-scrape 13K, backfill 682 fechas"
+  sesion_anterior_2:
+    tema: "Sprint 11: Panel de Validación para Cynthia (/admin/validacion)"
+    cambios_resumen: "Panel validación 7 componentes, backfill 16K ofertas + 296K skills"
+  branch: "feature/nuevo-vps"
   pendiente:
-    - "612 ofertas con V31 (bad semantic match) - necesitan reglas de negocio o mejora matching"
-    - "Sync a Supabase en progreso"
+    - "19K ofertas sin NLP (13K CT + ~6K nuevas Bumeran/ZJ)"
+    - "Scraping corriendo en VPS (lanzado manual, ~10h)"
+    - "Segundo sync después de que termine el scraping de hoy"
 
   # Protección de Ofertas Validadas v2.0 (2026-01-20)
   proteccion_validadas:
@@ -75,15 +59,55 @@ ultimo_trabajo:
     resultados_110: "8 alta confianza (catálogo), 22 intermediarios flaggeados"
     proximo_paso: "Sync a Supabase con nuevas columnas"
 
-  ofertas_bd: 15643  # Total en BD despues de scraping 2026-02-07
-  ofertas_activas: 12319  # Confirmadas activas
-  ofertas_baja: 2560  # Marcadas como baja
-  ofertas_validadas: 10682  # 8210 validado + 2472 validado_claude
-  ofertas_pendientes: 612  # V31 bad semantic match
-  estado_ofertas: "10682 en Supabase, 612 pendientes V31"
+  ofertas_bd: 35143  # Total en BD despues de sync 2026-03-12
+  ofertas_activas: 20730  # Confirmadas activas
+  ofertas_baja: 14413  # Marcadas como baja/cerradas
+  ofertas_con_nlp: 16146  # Procesadas NLP
+  ofertas_sin_nlp: 19007  # Pendientes NLP (13K CT + nuevas)
+  ofertas_validadas: 15968  # validado + validado_claude + validado_humano
+  ofertas_pendientes: 178  # Pendientes validación
+  estado_ofertas: "35K en BD, 16K procesadas, 19K pendientes NLP"
 
-  matching_version: "v3.5.3"
-  matching_arquitectura: "ESCO-First + Decisión Inteligente Dual"
+  # Pipeline integrado v3.3 (8 pasos)
+  pipeline_version: "v3.3"
+  pipeline_pasos:
+    - "1. NLP v11.4 (source-aware, scraping_extra, llm_raw_json)"
+    - "1.5 NLP Gate v1.1 (35+ reglas, bloquea critico/alto)"
+    - "1.5b NLP Auto-corrección + escalamiento Claude"
+    - "1.6 Multi-Position Detection (regex + LLM, crea sub-ofertas)"
+    - "2. Matching v3.5.4 (ESCO-First, titulo_original_contiene_alguno)"
+    - "3. Validación (auto_validator.py, V01-V31)"
+    - "4. Auto-corrección (valor_corregido tracking)"
+    - "5. NLP Re-process (loop max 2 iter si hay errores NLP)"
+    - "6. Reporte Claude (cola_claude.json)"
+    - "7. Export Excel"
+    - "8. Sync learnings.yaml"
+
+  nlp_version: "v11.4"
+  nlp_cambios_v114:
+    - "Source-aware pre-fill: datos de CABA/Portal Empleo/Indeed sin re-extraer con LLM"
+    - "LLM raw snapshot (llm_raw_json) para fine-tuning"
+    - "Postprocessor diff tracking (postprocessor_diff_json)"
+    - "scraping_extra: portal, modalidad_trabajo, tipo_trabajo, cantidad_vacantes"
+    - "_extract_embedded_metadata() para bloques --- en descripción"
+
+  nlp_gate_version: "v1.1"
+  nlp_gate_reglas: "35+ (V01-V26, NV02-NV11, NQ01-NQ05 cross-field)"
+  nlp_gate_cross_field:
+    - "NQ01: Título senior pero seniority trainee"
+    - "NQ02: Título junior pero seniority senior"
+    - "NQ03: Área incoherente con título"
+    - "NQ04: Experiencia >= 5 años pero seniority trainee"
+    - "NQ05: Modalidad scraping difiere de NLP"
+
+  skills_version: "v2.4"
+  skills_modelo: "LoRA fine-tuned (data/finetuning/matching/model_lora)"
+
+  limpiar_titulos_version: "v2.8.1"
+  multi_position_detection: "Hybrid regex + LLM, crea sub-ofertas"
+
+  matching_version: "v3.5.4"
+  matching_arquitectura: "ESCO-First + Decisión Inteligente Dual + titulo_original_contiene_alguno"
   matching_cambios_v351:
     - "Lógica de decisión inteligente _decide_dual_match()"
     - "Campos decision_metodo y decision_razon en BD"
@@ -146,14 +170,14 @@ ultimo_trabajo:
 # REGLA: Cuando se modifique un config, actualizar estos conteos.
 # La documentación (CLAUDE.md, PIPELINE.md, etc.) referencia aquí.
 conteos:
-  reglas_negocio: 259  # config/matching_rules_business.json > reglas_forzar_isco (v3.1 actualizado 2026-01-29)
+  reglas_negocio: 297  # config/matching_rules_business.json > reglas_forzar_isco (v3.1 actualizado 2026-01-29)
   reglas_validacion: 3  # config/validation_rules.json > reglas_validacion (V01-V22 legacy + V25-V29 declarativas Sprint 3)
   reglas_skills_dual: 25  # config/skills_rules.json > reglas_forzar_skills (v2.0 2026-01-22)
   sinonimos_argentinos: 17  # config/sinonimos_argentinos_esco.json > ocupaciones_titulo
   empresas_catalogo: 247  # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
   skills_esco: 14257            # database/embeddings/esco_skills_full.json
   ocupaciones_esco: 3046        # database/embeddings/esco_occupations_full.json
-  ultima_verificacion: 2026-03-21
+  ultima_verificacion: 2026-03-15
 
   supabase:
     integrado: true
@@ -187,10 +211,10 @@ conteos:
   proximo_paso: "Revisar 24 casos con override semántico alto"
 
   estadisticas_actuales:
-    ofertas_validadas: 37776  # todas sincronizadas a Supabase
-    ofertas_pendientes: 0  # 0 errores de validación
+    ofertas_validadas: 15968  # todas sincronizadas a Supabase
+    ofertas_pendientes: 858  # 0 errores de validación
     errores_validacion: 0  # resueltos 201 → 0
-    reglas_negocio: 259
+    reglas_negocio: 297
     convergencia: "CONVERGIDO (0 errores pendientes)"
     supabase_sync: "2,093 ofertas + 34,917 skills"
 
@@ -206,9 +230,9 @@ conteos:
 
   # Métricas de evolución del aprendizaje
   learning_evolution:
-    total_runs: 342
+    total_runs: 299
     ofertas_con_historial_nlp: 5474  # ofertas en ofertas_nlp_history
-    ofertas_con_matching: 37776  # ofertas distintas en ofertas_esco_matching
+    ofertas_con_matching: 16826  # ofertas distintas en ofertas_esco_matching
 
     # Distribución real de reprocesos (datos de ofertas_nlp_history)
     distribucion_reprocesos:
@@ -220,7 +244,7 @@ conteos:
       caso_mas_dificil: "2154549 Contador Auditoría (12 intentos)"
 
     reglas_inicio: 22  # 2026-01-13 baseline
-    reglas_actual: 259
+    reglas_actual: 297
     reglas_agregadas: "+96 durante optimización"
     tasa_convergencia: "47% -> 27% -> 2.7% -> 7.5% -> 0%"
     estado: "CONVERGIDO (tasa = 0%)"
@@ -661,6 +685,25 @@ learnings:
 
       Regenerar: python generate_mol_skills_profile.py (semanal/mensual)
     date: 2026-02-03
+
+  - context: "VPS cron permisos ejecución"
+    learning: |
+      El script run_scraping_vps.sh en el VPS necesita permisos de ejecución (+x).
+      Si se sube por SCP, los permisos se pierden (queda 644).
+      Cron falla silenciosamente porque "No MTA installed" descarta stderr.
+      Fix: chmod +x + redirigir stderr a cron_errors.log en el crontab.
+      SIEMPRE verificar permisos después de deploy con SCP.
+    date: 2026-03-12
+
+  - context: "ComputRabajo data-id inestable"
+    learning: |
+      El atributo data-id de ComputRabajo es un hash de 32 chars que CAMBIA
+      según el keyword de búsqueda para la MISMA oferta. No es un ID estable.
+      Fix: usar URL slug (sin el hash final) como identificador estable,
+      hasheado con CRC32 + prefijo 5_000_000_000.
+      La descripción real está en p.mbB (no concatenar todos los <p>).
+      Fechas vienen como texto relativo ("Hace 3 días", "2 de marzo", "Ahora").
+    date: 2026-03-11
 
 # ============================================
 # DECISIONES TOMADAS

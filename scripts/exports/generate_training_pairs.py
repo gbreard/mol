@@ -182,7 +182,7 @@ def save(pairs):
     existing_ids = set()
     if OUTPUT_PATH.exists():
         try:
-            data = json.load(open(OUTPUT_PATH))
+            data = json.load(open(OUTPUT_PATH, encoding='utf-8'))
             existing_pairs = data.get("pares", [])
             existing_ids = {p["id_oferta"] for p in existing_pairs}
         except (json.JSONDecodeError, KeyError):
@@ -229,7 +229,7 @@ def show_stats():
         print("No existe training_pairs.json. Correr sin --stats primero.")
         return
 
-    data = json.load(open(OUTPUT_PATH))
+    data = json.load(open(OUTPUT_PATH, encoding='utf-8'))
     pairs = data.get("pares", [])
 
     print(f"Total pares: {len(pairs)}")

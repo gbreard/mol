@@ -241,12 +241,18 @@ class AutoValidator:
                 aplica = self._evaluar_condicion_simple(oferta, regla)
 
             if aplica:
+                campo_afectado = regla.get("campo")
+                # Capturar valor actual del campo para auditoría (fine-tuning data)
+                valor_act = self._get_field_value(oferta, campo_afectado) if campo_afectado else None
+                if valor_act is not None:
+                    valor_act = str(valor_act)[:500]  # Truncar para no saturar BD
                 error = {
                     "id_regla": regla.get("id"),
                     "diagnostico": regla.get("diagnostico"),
                     "severidad": regla.get("severidad", "medio"),
                     "mensaje": regla.get("mensaje"),
-                    "campo": regla.get("campo"),
+                    "campo": campo_afectado,
+                    "valor_actual": valor_act,
                     "id_oferta": oferta.get("id_oferta") or oferta.get("id")
                 }
 
@@ -311,7 +317,8 @@ class AutoValidator:
                 "diagnostico": "error_skills_esenciales_faltantes",
                 "severidad": "warning",
                 "mensaje": f"Sin skills esenciales matcheadas (ocupacion tiene {occupation_essential_total} esenciales). Gap vocabulario ESCO/Argentina.",
-                "campo": "skills_matched_essential"
+                "campo": "skills_matched_essential",
+                "valor_actual": f"0/{occupation_essential_total}"
             })
 
         # --- V24 recalibrada (v1.3): coherencia desde la oferta ---
@@ -341,7 +348,8 @@ class AutoValidator:
                         f"({essential_matched_count}/{skills_oferta_count} de las skills extraidas son esenciales). "
                         f"Gap vocabulario ESCO/Argentina."
                     ),
-                    "campo": "skills_oferta_json"
+                    "campo": "skills_oferta_json",
+                    "valor_actual": f"{ratio_oferta:.0%} ({essential_matched_count}/{skills_oferta_count})"
                 })
 
         # --- V31 (v1.4): Ocupacion ESCO probablemente incorrecta ---
@@ -370,7 +378,8 @@ class AutoValidator:
                     f"score semantico {score_semantico:.2f} + coherencia ESCO {coherencia_esco:.0%}. "
                     f"Revisar matching."
                 ),
-                "campo": "esco_occupation_uri"
+                "campo": "esco_occupation_uri",
+                "valor_actual": str(oferta.get("esco_occupation_uri") or oferta.get("isco_code", ""))[:500]
             })
 
         return errores
@@ -448,7 +457,8 @@ class AutoValidator:
                 "diagnostico": "warning_it_sin_skills",
                 "severidad": "bajo",
                 "mensaje": "Puesto IT (ISCO 25xx/35xx) sin skills técnicas/digitales detectadas",
-                "campo": "skills_oferta_json"
+                "campo": "skills_oferta_json",
+                "valor_actual": str(oferta.get("isco_code", ""))
             })
 
         return errores
@@ -708,8 +718,8 @@ def _persistir_errores_bd(conn, errores_detalle: List[Dict], run_id: str = None)
                     conn.execute('''
                         INSERT INTO validation_errors (
                             id_oferta, run_id, error_id, error_tipo, severidad,
-                            mensaje, campo_afectado, detectado_timestamp
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                            mensaje, campo_afectado, valor_actual, detectado_timestamp
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ''', (
                         str(id_oferta),
                         run_id,
@@ -718,6 +728,7 @@ def _persistir_errores_bd(conn, errores_detalle: List[Dict], run_id: str = None)
                         error.get("severidad"),
                         error.get("mensaje"),
                         error.get("campo"),
+                        error.get("valor_actual"),
                         timestamp
                     ))
                     insertados += 1

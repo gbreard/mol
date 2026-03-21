@@ -1,107 +1,47 @@
 {
-  "last_sync_timestamp": "2026-03-21T15:10:06.430661",
-  "last_sync_ofertas": 76,
-  "last_sync_skills": 130,
+  "last_sync_timestamp": "2026-03-11T17:16:37.781200",
+  "last_sync_ofertas": 7,
+  "last_sync_skills": 104,
   "history": [
     {
-      "timestamp": "2026-03-21T13:03:02.038015",
-      "ofertas": 500,
-      "skills": 1277
+      "timestamp": "2026-01-23T18:20:00",
+      "ofertas": 522,
+      "skills": 9121
     },
     {
-      "timestamp": "2026-03-21T13:09:16.826870",
-      "ofertas": 500,
-      "skills": 1069
+      "timestamp": "2026-01-23T18:30:26.873568",
+      "ofertas": 522,
+      "skills": 9121
     },
     {
-      "timestamp": "2026-03-21T13:15:54.595875",
-      "ofertas": 500,
-      "skills": 1079
+      "timestamp": "2026-01-26T13:51:49.732611",
+      "ofertas": 20,
+      "skills": 283
     },
     {
-      "timestamp": "2026-03-21T13:21:47.820137",
-      "ofertas": 500,
-      "skills": 1193
+      "timestamp": "2026-02-24T20:22:13.842085",
+      "ofertas": 15797,
+      "skills": 290955
     },
     {
-      "timestamp": "2026-03-21T13:28:16.179615",
-      "ofertas": 500,
-      "skills": 1128
+      "timestamp": "2026-02-26T15:46:26.247696",
+      "ofertas": 52,
+      "skills": 587
     },
     {
-      "timestamp": "2026-03-21T13:34:57.881285",
-      "ofertas": 500,
-      "skills": 1199
+      "timestamp": "2026-02-26T17:44:35.618826",
+      "ofertas": 16084,
+      "skills": 296168
     },
     {
-      "timestamp": "2026-03-21T13:42:03.502504",
-      "ofertas": 500,
-      "skills": 1094
+      "timestamp": "2026-02-27T16:19:57.748106",
+      "ofertas": 9,
+      "skills": 122
     },
     {
-      "timestamp": "2026-03-21T13:48:51.241641",
-      "ofertas": 500,
-      "skills": 1172
-    },
-    {
-      "timestamp": "2026-03-21T13:55:12.856560",
-      "ofertas": 500,
-      "skills": 1087
-    },
-    {
-      "timestamp": "2026-03-21T14:01:52.959578",
-      "ofertas": 500,
-      "skills": 1101
-    },
-    {
-      "timestamp": "2026-03-21T14:09:00.932060",
-      "ofertas": 500,
-      "skills": 1207
-    },
-    {
-      "timestamp": "2026-03-21T14:15:40.812366",
-      "ofertas": 500,
-      "skills": 1152
-    },
-    {
-      "timestamp": "2026-03-21T14:22:19.569672",
-      "ofertas": 500,
-      "skills": 1086
-    },
-    {
-      "timestamp": "2026-03-21T14:29:23.519698",
-      "ofertas": 500,
-      "skills": 1158
-    },
-    {
-      "timestamp": "2026-03-21T14:36:04.323463",
-      "ofertas": 500,
-      "skills": 1132
-    },
-    {
-      "timestamp": "2026-03-21T14:43:32.236156",
-      "ofertas": 500,
-      "skills": 1172
-    },
-    {
-      "timestamp": "2026-03-21T14:50:15.415168",
-      "ofertas": 500,
-      "skills": 1124
-    },
-    {
-      "timestamp": "2026-03-21T14:57:33.757661",
-      "ofertas": 500,
-      "skills": 1132
-    },
-    {
-      "timestamp": "2026-03-21T15:04:34.357853",
-      "ofertas": 500,
-      "skills": 1118
-    },
-    {
-      "timestamp": "2026-03-21T15:10:06.430661",
-      "ofertas": 76,
-      "skills": 130
+      "timestamp": "2026-03-11T17:16:37.781200",
+      "ofertas": 7,
+      "skills": 104
     }
   ]
 }

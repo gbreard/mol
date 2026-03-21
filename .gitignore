@@ -35,6 +35,7 @@ credentials.json
 config/aws_credentials.json
 config/linear_config.json
 config/supabase_config.json
+docs/Datos-VPS.txt
 *.pem
 
 # Claude Code settings (contiene API keys)

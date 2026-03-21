@@ -323,6 +323,83 @@
       "datos_para_claude": ["id_oferta", "titulo_limpio"]
     },
 
+    "error_nlp_seniority_titulo": {
+      "tipo_accion": "auto_corregir",
+      "descripcion": "Seniority contradice título - reinferir desde keywords del título",
+      "ejecutar": {
+        "funcion": "reinferir_campo",
+        "campo": "nivel_seniority"
+      },
+      "reprocesar": false
+    },
+
+    "error_nlp_area_titulo": {
+      "tipo_accion": "auto_corregir",
+      "descripcion": "Área funcional incoherente con título - reinferir desde keywords",
+      "ejecutar": {
+        "funcion": "reinferir_campo",
+        "campo": "area_funcional"
+      },
+      "reprocesar": false
+    },
+
+    "warning_nlp_experiencia_seniority": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Experiencia alta + seniority bajo - posible error de seniority",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "experiencia_min_anios", "nivel_seniority"]
+    },
+
+    "error_nlp_modalidad_scraping": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Modalidad NLP difiere del scraping - verificar prefill en postprocessor",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "modalidad", "portal"]
+    },
+
+    "warning_nlp_tareas_copypaste": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Tareas posible copy-paste - revisar prompt NLP",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "tareas_explicitas_length"]
+    },
+
+    "warning_nlp_educacion_puesto": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Educación no coherente con tipo de puesto operativo",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "nivel_educativo"]
+    },
+
+    "warning_source_prefill_faltante": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Portal con metadata estructurada pero prefill no aplicado",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "portal", "postprocessor_cambios_count"]
+    },
+
+    "error_nlp_ubicacion_portal": {
+      "tipo_accion": "aplicar_config",
+      "descripcion": "Ubicación fallida por portal específico - revisar parsing",
+      "config": "config/nlp_preprocessing.json",
+      "buscar_en": "campos_estructurados.ubicacion",
+      "si_existe": {
+        "accion": "reprocesar_nlp",
+        "componente": "nlp_postprocessor.py"
+      },
+      "si_no_existe": {
+        "accion": "escalar_claude",
+        "datos_para_claude": ["id_oferta", "titulo_limpio", "portal", "provincia", "localidad"]
+      }
+    },
+
+    "error_scraping_portal": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Scraping incompleto en portal específico",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "portal", "descripcion_original_length"]
+    },
+
+    "warning_nlp_skills_vacias": {
+      "tipo_accion": "escalar_claude",
+      "descripcion": "Descripción larga sin skills - revisar extracción LLM",
+      "datos_para_claude": ["id_oferta", "titulo_limpio", "descripcion_original_length", "skills_count"]
+    },
+
     "revision_sector_empresa": {
       "tipo_accion": "escalar_claude",
       "descripcion": "Sector empresa requiere revision manual",

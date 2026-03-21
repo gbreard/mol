@@ -207,12 +207,29 @@ class ComputRabajoScraper:
             logger.warning(f"Error extrayendo oferta: {e}")
             return None
 
+    # Meses en español para parseo de "2 de marzo", "23 de febrero", etc.
+    MESES_ES = {
+        'enero': 1, 'febrero': 2, 'marzo': 3, 'abril': 4,
+        'mayo': 5, 'junio': 6, 'julio': 7, 'agosto': 8,
+        'septiembre': 9, 'octubre': 10, 'noviembre': 11, 'diciembre': 12
+    }
+
     def _parsear_fecha(self, fecha_text: str) -> Optional[str]:
         """
-        Parsea fechas relativas como 'Hace 3 horas' a ISO 8601
+        Parsea fechas de ComputRabajo a ISO 8601.
+
+        Formatos soportados:
+          - "Ahora"
+          - "Hace 1 minuto" / "Hace X minutos"
+          - "Hace X horas"
+          - "Hace X días"
+          - "Hoy"
+          - "Ayer"
+          - "Más de 30 días"
+          - "2 de marzo" / "23 de febrero" (día + mes en español)
 
         Args:
-            fecha_text: Texto de fecha (ej: "Hace 3 horas")
+            fecha_text: Texto de fecha crudo del HTML
 
         Returns:
             Fecha en formato ISO o None
@@ -221,31 +238,65 @@ class ComputRabajoScraper:
             from datetime import timedelta
 
             now = datetime.now()
+            texto = fecha_text.strip().lower()
 
-            # "Hace X horas"
-            if 'hora' in fecha_text.lower():
-                match = re.search(r'(\d+)', fecha_text)
-                if match:
-                    horas = int(match.group(1))
-                    fecha = now - timedelta(hours=horas)
-                    return fecha.isoformat()
-
-            # "Hace X días"
-            elif 'día' in fecha_text.lower() or 'dia' in fecha_text.lower():
-                match = re.search(r'(\d+)', fecha_text)
-                if match:
-                    dias = int(match.group(1))
-                    fecha = now - timedelta(days=dias)
-                    return fecha.isoformat()
+            # "Ahora"
+            if texto == 'ahora':
+                return now.isoformat()
 
             # "Hoy"
-            elif 'hoy' in fecha_text.lower():
+            if 'hoy' in texto:
                 return now.isoformat()
 
             # "Ayer"
-            elif 'ayer' in fecha_text.lower():
-                fecha = now - timedelta(days=1)
-                return fecha.isoformat()
+            if 'ayer' in texto:
+                return (now - timedelta(days=1)).isoformat()
+
+            # "Hace X minutos" / "Hace 1 minuto"
+            if 'minuto' in texto:
+                match = re.search(r'(\d+)', texto)
+                if match:
+                    minutos = int(match.group(1))
+                    return (now - timedelta(minutes=minutos)).isoformat()
+
+            # "Hace X horas"
+            if 'hora' in texto:
+                match = re.search(r'(\d+)', texto)
+                if match:
+                    horas = int(match.group(1))
+                    return (now - timedelta(hours=horas)).isoformat()
+
+            # "Hace X días"
+            if 'día' in texto or 'dia' in texto:
+                match = re.search(r'(\d+)', texto)
+                if match:
+                    dias = int(match.group(1))
+                    return (now - timedelta(days=dias)).isoformat()
+
+            # "Más de 30 días"
+            if 'más de' in texto or 'mas de' in texto:
+                match = re.search(r'(\d+)', texto)
+                if match:
+                    dias = int(match.group(1))
+                    return (now - timedelta(days=dias)).isoformat()
+
+            # "2 de marzo", "23 de febrero" (día + mes en español)
+            match = re.match(r'(\d{1,2})\s+de\s+(\w+)', texto)
+            if match:
+                dia = int(match.group(1))
+                mes_nombre = match.group(2)
+                mes = self.MESES_ES.get(mes_nombre)
+                if mes:
+                    # Usar el año actual; si la fecha resultante es futura,
+                    # asumir que es del año anterior
+                    anio = now.year
+                    try:
+                        fecha = datetime(anio, mes, dia)
+                        if fecha > now:
+                            fecha = datetime(anio - 1, mes, dia)
+                        return fecha.isoformat()
+                    except ValueError:
+                        pass
 
             return None
 
@@ -263,10 +314,12 @@ class ComputRabajoScraper:
             Dict con campos adicionales (descripción, requisitos, etc.)
         """
         try:
-            logger.debug(f"  Scrapeando oferta individual: {url_oferta}")
+            # Quitar fragment (#lc=...) antes del request - no se envía al server
+            url_clean = url_oferta.split('#')[0]
+            logger.debug(f"  Scrapeando oferta individual: {url_clean}")
 
             response = self.session.get(
-                url_oferta,
+                url_clean,
                 headers=self.headers,
                 timeout=30
             )
@@ -279,34 +332,55 @@ class ComputRabajoScraper:
 
             datos_extra = {}
 
+            # ================================================================
             # Descripción completa
-            # ComputRabajo usa varios selectores posibles para la descripción
+            # ================================================================
+            # El div.box_detail contiene ~88 párrafos (descripción + reviews +
+            # ofertas similares + legal). La descripción REAL está en p.mbB
+            # dentro de box_detail (primer párrafo con esa clase).
+            #
+            # Estructura HTML de ComputRabajo (verificada 2026-03-11):
+            #   div.box_detail
+            #     p.fs14         → "Ocultaste esta oferta..." (UI noise)
+            #     p.mbB          → DESCRIPCIÓN REAL (incluye requisitos inline)
+            #     p.fwB.fs18     → "Requerimientos" (header)
+            #     p.fc_aux.fs13  → Keywords, fecha
+            #     ...            → Reviews, ofertas similares, legal (RUIDO)
+            # ================================================================
+
             desc_container = soup.find('div', class_='box_detail')
             if desc_container:
-                # Buscar el párrafo principal con la descripción
-                desc_paragraphs = desc_container.find_all('p')
-                if desc_paragraphs:
-                    # Juntar todos los párrafos
-                    descripcion_completa = '\n\n'.join([p.get_text(strip=True) for p in desc_paragraphs if p.get_text(strip=True)])
-                    datos_extra['descripcion'] = descripcion_completa
+                # Método 1: Buscar p.mbB (descripción principal)
+                desc_elem = desc_container.find('p', class_='mbB')
+                if desc_elem:
+                    descripcion = desc_elem.get_text(strip=True)
+                    if descripcion and len(descripcion) > 20:
+                        datos_extra['descripcion'] = descripcion
 
-            # Intentar selector alternativo si no encontró descripción
-            if not datos_extra.get('descripcion'):
-                # Buscar en el contenedor principal
-                main_content = soup.find('article', class_='offerDetail')
-                if main_content:
-                    # Extraer todo el texto, limpiando headers y footers
-                    text_blocks = []
-                    for elem in main_content.find_all(['p', 'li', 'div'], recursive=True):
+                # Método 2: Si p.mbB no tiene la descripción, buscar divs con
+                # contenido largo que no sean reviews ni ofertas similares
+                if not datos_extra.get('descripcion'):
+                    # Buscar el primer div/p con contenido sustancial (>100 chars)
+                    # que NO sea un review ni oferta similar
+                    skip_classes = {'fs13', 'fc_aux', 'result', 'fs50', 'list_dot',
+                                    'fc_ok', 'fw_b', 'fwB', 'box_tooltip', 'group'}
+                    for elem in desc_container.find_all(['p', 'div'], recursive=False):
+                        elem_classes = set(elem.get('class', []))
+                        if elem_classes & skip_classes:
+                            continue
                         text = elem.get_text(strip=True)
-                        if text and len(text) > 20:  # Solo bloques con contenido significativo
-                            text_blocks.append(text)
+                        if text and len(text) > 100:
+                            datos_extra['descripcion'] = text
+                            break
 
-                    if text_blocks:
-                        datos_extra['descripcion'] = '\n'.join(text_blocks[:10])  # Primeros 10 bloques
+            # Método 3: Fallback — buscar meta description
+            if not datos_extra.get('descripcion'):
+                meta_desc = soup.find('meta', attrs={'name': 'description'})
+                if meta_desc and meta_desc.get('content'):
+                    datos_extra['descripcion'] = meta_desc['content']
 
-            # Requisitos (si están separados)
-            requisitos_section = soup.find('div', class_='requisitos') or soup.find('div', string=re.compile('Requisitos', re.IGNORECASE))
+            # Requisitos (si están separados en sección propia)
+            requisitos_section = soup.find('div', class_='requisitos')
             if requisitos_section:
                 requisitos = []
                 for li in requisitos_section.find_all('li'):
@@ -316,23 +390,21 @@ class ComputRabajoScraper:
                 if requisitos:
                     datos_extra['requisitos'] = requisitos
 
-            # Beneficios (si están disponibles)
-            beneficios_section = soup.find('div', class_='beneficios') or soup.find('div', string=re.compile('Beneficios', re.IGNORECASE))
-            if beneficios_section:
-                beneficios = []
-                for li in beneficios_section.find_all('li'):
-                    ben_text = li.get_text(strip=True)
-                    if ben_text:
-                        beneficios.append(ben_text)
-                if beneficios:
-                    datos_extra['beneficios'] = beneficios
+            # Competencias añadidas por la empresa
+            competencias_div = soup.find('div', class_=lambda c: c and 'ptB' in c and 'tc' in c)
+            if competencias_div:
+                spans = competencias_div.find_all('span')
+                competencias = [s.get_text(strip=True) for s in spans if s.get_text(strip=True)]
+                if competencias:
+                    datos_extra['competencias_empresa'] = competencias
 
             # Salario (si está visible)
             salario_elem = soup.find('span', class_='salary') or soup.find('div', class_='salario')
             if salario_elem:
                 datos_extra['salario'] = salario_elem.get_text(strip=True)
 
-            logger.debug(f"  OK - Descripción: {len(datos_extra.get('descripcion', '')) if datos_extra.get('descripcion') else 0} chars")
+            desc_len = len(datos_extra.get('descripcion', '')) if datos_extra.get('descripcion') else 0
+            logger.debug(f"  OK - Descripción: {desc_len} chars")
 
             return datos_extra
 

@@ -220,11 +220,13 @@ class AutoCorrector:
                 })
 
                 # Verificar que la corrección resolvió el error
-                return self._verificar_correccion(id_oferta, error.get("id_regla"))
+                return self._verificar_correccion(id_oferta, error.get("id_regla"),
+                                                  valor_corregido=str(valor)[:500] if valor is not None else None)
 
             elif funcion == "limpiar_booleanos":
                 campos = ejecutar.get("campos", [])
                 valores_invalidos = ejecutar.get("valores_invalidos", [])
+                campos_limpiados = []
 
                 for campo in campos:
                     cursor = self.db_conn.execute(
@@ -237,11 +239,13 @@ class AutoCorrector:
                             f"UPDATE ofertas_nlp SET {campo} = NULL WHERE id_oferta = ?",
                             (id_oferta,)
                         )
+                        campos_limpiados.append(f"{campo}: {row[0]} -> NULL")
 
                 self.db_conn.commit()
 
                 # Verificar que la corrección resolvió el error
-                return self._verificar_correccion(id_oferta, error.get("id_regla"))
+                return self._verificar_correccion(id_oferta, error.get("id_regla"),
+                                                  valor_corregido="; ".join(campos_limpiados) if campos_limpiados else None)
 
             elif funcion == "normalizar_ubicacion":
                 return self._normalizar_ubicacion(id_oferta, error)
@@ -332,7 +336,9 @@ class AutoCorrector:
             "cambios": cambios,
             "timestamp": datetime.now().isoformat()
         })
-        return self._verificar_correccion(id_oferta, error.get("id_regla"))
+        cambios_str = "; ".join(f"{k}: {v}" for k, v in cambios.items())
+        return self._verificar_correccion(id_oferta, error.get("id_regla"),
+                                          valor_corregido=cambios_str[:500])
 
     def _reinferir_campo(self, id_oferta: str, campo: str) -> bool:
         """
@@ -402,6 +408,10 @@ class AutoCorrector:
             "valor_nuevo": valor_inferido,
             "timestamp": datetime.now().isoformat()
         })
+        # Marcar error como corregido con el valor aplicado
+        error_id = f"reinferir_{campo}"
+        self._marcar_error_corregido(id_oferta, error_id,
+                                     valor_corregido=str(valor_inferido)[:500] if valor_inferido else None)
         return True
 
     def _normalizar_formato_tareas(self, id_oferta: str, error: Dict) -> bool:
@@ -434,17 +444,19 @@ class AutoCorrector:
                 "valor_nuevo": tareas_normalizado[:100] + "...",
                 "timestamp": datetime.now().isoformat()
             })
-            return self._verificar_correccion(id_oferta, error.get("id_regla"))
+            return self._verificar_correccion(id_oferta, error.get("id_regla"),
+                                              valor_corregido=tareas_normalizado[:500])
 
         return False
 
-    def _marcar_error_corregido(self, id_oferta: str, error_id: str):
+    def _marcar_error_corregido(self, id_oferta: str, error_id: str, valor_corregido: str = None):
         """
         Marca un error como corregido en la tabla validation_errors.
 
         Args:
             id_oferta: ID de la oferta
             error_id: ID del error (ej: V02_isco_nulo_score_bajo)
+            valor_corregido: Nuevo valor aplicado (para auditoría/fine-tuning)
         """
         if not self.db_conn:
             return
@@ -455,9 +467,10 @@ class AutoCorrector:
                 SET corregido = 1,
                     corregido_timestamp = ?,
                     corregido_metodo = 'auto',
-                    resuelto = 1
+                    resuelto = 1,
+                    valor_corregido = COALESCE(?, valor_corregido)
                 WHERE id_oferta = ? AND error_id = ? AND corregido = 0
-            ''', (datetime.now().isoformat(), str(id_oferta), error_id))
+            ''', (datetime.now().isoformat(), valor_corregido, str(id_oferta), error_id))
             self.db_conn.commit()
         except Exception as e:
             print(f"  WARN: Error actualizando validation_errors para {id_oferta}: {e}")
@@ -483,7 +496,7 @@ class AutoCorrector:
         except Exception as e:
             print(f"  WARN: Error actualizando escalado_claude para {id_oferta}: {e}")
 
-    def _verificar_correccion(self, id_oferta: str, error_id: str) -> bool:
+    def _verificar_correccion(self, id_oferta: str, error_id: str, valor_corregido: str = None) -> bool:
         """
         Despues de aplicar correccion, re-evalua la regla que detecto el error.
         Solo marca corregido=1 si la regla YA NO dispara.
@@ -494,6 +507,7 @@ class AutoCorrector:
         Args:
             id_oferta: ID de la oferta
             error_id: ID de la regla de validacion (ej: V26_formato_tareas_incorrecto)
+            valor_corregido: Nuevo valor aplicado (para auditoría/fine-tuning)
 
         Returns:
             True si la correccion resolvio el error
@@ -502,7 +516,7 @@ class AutoCorrector:
             # Usar validador externo (NLPValidator)
             oferta = self._cargar_oferta_nlp(id_oferta)
             if not oferta:
-                self._marcar_error_corregido(id_oferta, error_id)
+                self._marcar_error_corregido(id_oferta, error_id, valor_corregido)
                 return True
             result = self._external_validator.validar_oferta(oferta)
             errores = result.get("errores", [])
@@ -511,7 +525,7 @@ class AutoCorrector:
             from database.auto_validator import AutoValidator
             oferta = self._cargar_oferta(id_oferta)
             if not oferta:
-                self._marcar_error_corregido(id_oferta, error_id)
+                self._marcar_error_corregido(id_oferta, error_id, valor_corregido)
                 return True
             validator = AutoValidator(config_dir=self.config_dir)
             errores = validator.validar_oferta(oferta)
@@ -519,7 +533,7 @@ class AutoCorrector:
         error_resuelto = not any(e.get('id_regla') == error_id for e in errores)
 
         if error_resuelto:
-            self._marcar_error_corregido(id_oferta, error_id)
+            self._marcar_error_corregido(id_oferta, error_id, valor_corregido)
             return True
         else:
             try:
