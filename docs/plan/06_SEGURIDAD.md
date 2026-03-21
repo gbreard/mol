@@ -535,6 +535,8 @@ MEDIOS:
 □ S-33: Comandos peligrosos (cancelar, reconfigurar) requieren confirmación doble
 □ S-34: Config overrides: solo admin puede editar, changelog de cada cambio
 □ S-35: Preview obligatorio antes de aplicar regla (no se puede saltar)
+□ S-36: Acciones del centro de control: solo admin, confirmación antes de ejecutar
+□ S-37: Reconciliación: no borrar datos, solo agregar faltantes
 ```
 
 ---

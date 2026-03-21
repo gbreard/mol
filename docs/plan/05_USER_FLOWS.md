@@ -764,6 +764,52 @@ WHERE opt_in_pool = TRUE
 
 ---
 
+## F-17: Centro de control — estado del sistema y acciones (Bloque J)
+
+```
+Admin abre /admin (P-17 rediseñado)
+    ↓
+Ve pipeline en vivo: VPS 🟢 → Local 🟡 → Supabase 🟢 → Vercel 🟢
+    ↓
+Local está amarillo: "18K sin matching"
+    ↓
+Click [Lanzar pipeline] → crea comando en scraping_commands
+    ↓
+VPS poller ejecuta → admin ve progreso
+    ↓
+Completado → semáforo Local pasa a 🟢
+    ↓
+Pero ahora Supabase está 🟡: "500 validadas sin subir"
+    ↓
+Click [Sync→Supabase] → ejecuta sync incremental
+    ↓
+Todo 🟢 → sin alertas → sistema al día
+```
+
+### Flujo de reconciliación
+
+```
+Admin click [Verificar] en panel reconciliación
+    ↓
+Sistema compara conteos: VPS vs Local vs Supabase
+    ↓
+Detecta: "2,300 skills en local no están en Supabase"
+    ↓
+Admin click [Sincronizar diferencia]
+    ↓
+Sync incremental solo de las faltantes
+    ↓
+✅ Consistencia restaurada
+```
+
+### Tablas Afectadas
+
+- `scraping_commands` — acciones del admin
+- `sistema_estado` — estado actualizado post-acción
+- `ofertas_dashboard` — conteos para reconciliación
+
+---
+
 ## F-16: Evolución del procesamiento y edición de reglas (Bloque I)
 
 ```

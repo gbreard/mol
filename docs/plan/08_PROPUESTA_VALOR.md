@@ -248,6 +248,18 @@ MATCHING:
 
 ---
 
+### V-30: Centro de control del sistema (Bloque J)
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🔴 CRÍTICO |
+| **Descripción** | P-17 rediseñado como centro de control: pipeline en vivo con semáforos (VPS→Local→Supabase→Vercel), alertas con acciones ("18K sin matching [Lanzar]"), KPIs del día, reconciliación entre sistemas. Elimina la ceguera operativa |
+| **Pantalla** | P-17 rediseñado |
+| **Diferenciador** | Hoy nadie sabe si algo se trabó. Con esto, de un vistazo sabés el estado de todo |
+| **Estado** | ⬜ Pendiente |
+
+---
+
 ### V-29: Panel evolución del procesamiento (Bloque I)
 
 | Atributo | Valor |

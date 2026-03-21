@@ -877,6 +877,85 @@ Dashboard de inteligencia del mercado laboral de la jurisdiccion de la OE.
 
 ---
 
+## P-17 Rediseñado: Centro de Control del Sistema (Bloque J)
+
+**Estado:** P-17 existe con KPIs sueltos. Se rediseña como centro de control.
+**Nivel:** U-ADMIN
+
+```
++---------------------------------------------------------------------+
+|  Centro de Control                                    [admin@oede]  |
++---------------------------------------------------------------------+
+|                                                                      |
+|  PIPELINE EN VIVO                                                    |
+|                                                                      |
+|  VPS         →    Local        →    Supabase     →    Vercel        |
+|  (scraping)       (NLP/match)       (dashboard)       (UI)          |
+|                                                                      |
+|  [🟢 2,132]  →   [🟡 18K pend] →   [🟢 15,968]  →   [🟢 OK]      |
+|  ayer 08:00       run: 13/03        sync: hoy         deploy: 18/03 |
+|                                                                      |
++---------------------------------------------------------------------+
+|                                                                      |
+|  ALERTAS Y ACCIONES                                                 |
+|                                                                      |
+|  🟡 18,529 ofertas con NLP sin matching          [Lanzar pipeline]  |
+|  🟡 2,132 ofertas en VPS sin sincronizar         [Sync VPS→local]   |
+|  🟡 500 validadas sin subir a Supabase           [Sync→Supabase]    |
+|  🟡 8 emergentes pendientes de revision          [Revisar]          |
+|  🔴 Indeed: volumen -56% vs corrida anterior     [Re-lanzar]        |
+|  🟡 Regla editada ayer, ofertas no reprocesadas  [Reprocesar]       |
+|                                                                      |
+|  Sin alertas = todo al dia ✅                                        |
+|                                                                      |
++---------------------------------------------------------------------+
+|                                                                      |
+|  KPIs DEL DIA                                                       |
+|                                                                      |
+|  +----------+ +----------+ +----------+ +----------+               |
+|  | 37,785   | | 15,968   | | 6        | | v1.0     |               |
+|  | Total BD | | Validadas| | Portales | | Perfil   |               |
+|  +----------+ +----------+ +----------+ +----------+               |
+|                                                                      |
++---------------------------------------------------------------------+
+|                                                                      |
+|  ACCESO RAPIDO                                                      |
+|                                                                      |
+|  [Scraping]  [Procesamiento]  [Skills]  [Perfil ARG]  [Catalogo]   |
+|  [Usuarios]  [Issues]  [Contenidos]  [Arquitectura]  [Config]      |
+|                                                                      |
++---------------------------------------------------------------------+
+```
+
+### Semaforos
+
+| Color | Significado | Ejemplo |
+|-------|------------|---------|
+| 🟢 | Al dia, sin pendientes | Supabase sincronizado hace <24h |
+| 🟡 | Hay pendientes, funciona pero atrasado | 18K sin matching, emergentes sin revisar |
+| 🔴 | Error o sin datos >3 dias | Portal sin scraping, sync fallido |
+
+### Reconciliacion (Fase J2)
+
+```
++---------------------------------------------------------------------+
+|  Reconciliacion de sistemas                          [Verificar]    |
+|                                                                      |
+|  Ultima verificacion: hoy 11:30                                     |
+|                                                                      |
+|  Local vs Supabase:                                                 |
+|  ✅ ofertas_dashboard: 15,968 = 15,968 (OK)                         |
+|  ⚠️ ofertas_skills: 296,500 local vs 294,200 Supabase (2,300 diff) |
+|     [Sincronizar diferencia]                                        |
+|                                                                      |
+|  VPS vs Local:                                                      |
+|  ⚠️ 2,132 ofertas en VPS no estan en local                          |
+|     [Sync VPS→local]                                                |
++---------------------------------------------------------------------+
+```
+
+---
+
 ## Admin Procesamiento: Metricas + Editor Reglas (Bloque I)
 
 **Estado:** Por crear

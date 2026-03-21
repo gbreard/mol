@@ -672,6 +672,7 @@ Ademas de S1-S8 y Bloque F, estos wireframes y pantallas te tocan:
 | Catálogo MOL | S21-S22 | 2 | 2 |
 | Scraping admin | S23-S24 | 2 | 2 |
 | Procesamiento | S25-S30 | 6 | 6 |
+| Centro control | S31-S33 | 3 | 3 |
 | **Total** | **S1-S22 + F1-F6** | **~32 componentes** | **~32 tests (1 por componente mínimo)** |
 
 ### Del Bloque G (Catálogo MOL)
@@ -719,6 +720,21 @@ Ademas de S1-S8 y Bloque F, estos wireframes y pantallas te tocan:
 // GET /api/config-editor?key=matching_rules_business — leer config + override
 // PUT /api/config-editor — guardar override con preview
 // GET /api/config-editor/preview — calcular impacto antes de aplicar
+```
+
+### Del Bloque J (Centro de control)
+
+| # | Tarea | Wireframe en | Qué hacer |
+|---|-------|-------------|-----------|
+| S31 | P-17 rediseño sección 1: pipeline visual con semáforos por fase (VPS→Local→Supabase→Vercel) | `oficina-empleo.md` → "P-17 Centro de Control" | 4 nodos con estado + flechas + colores semáforo |
+| S32 | P-17 rediseño sección 2: alertas con botones de acción al lado | `oficina-empleo.md` → "P-17 Centro de Control" | Lista alertas con icono + texto + botón acción. Click crea comando. |
+| S33 | Panel reconciliación: comparación conteos entre sistemas + botón reparar | `oficina-empleo.md` → "Reconciliación" | Tabla comparación + badge OK/diff + botón sync faltantes |
+
+**APIs que consume:**
+```typescript
+// GET /api/pipeline-status — estado fases + alertas + acciones
+// POST /api/scraping-commands — ejecutar acción (misma cola del Bloque H)
+// GET /api/reconciliacion — comparar conteos entre sistemas
 ```
 
 ### Regla de testing obligatoria

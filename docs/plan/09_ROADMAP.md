@@ -410,6 +410,83 @@ Post-corte: regenerar skills_searchable.json (script existente)
 | E5 | QR evoluciona a credencial verificable | — | ❌ Futuro |
 | E6 | API pública para portales de empleo de gobiernos | — | ❌ Futuro |
 
+### Bloque J: Centro de Control — P-17 rediseñado (2 fases)
+
+**Dependencia:** Bloque H2 (cola de comandos en Supabase). Datos ya existen en BD.
+**Asignado a:** Gerardo (RPCs, API alertas, lógica detección) + Sergio (UI rediseño P-17)
+
+> El problema: 4 sistemas desconectados (VPS → SQLite → Supabase → Vercel) y nadie sabe si algo se trabó. P-17 actual tiene KPIs sueltos. El rediseño lo convierte en centro de control único con estado en vivo + acciones.
+
+#### Fase J1 — Pipeline en vivo + alertas con acciones
+
+Conectar datos que ya existen (sistema_estado, pipeline_runs, supabase_sync_log, ofertas_prioridad) en una vista unificada.
+
+| # | Componente | Tipo | Quién |
+|---|-----------|------|-------|
+| J1a | RPC `get_pipeline_status()`: estado de cada fase con conteos | RPC Supabase | Gerardo |
+| J1b | Lógica detección alertas: qué se trabó, qué falta, qué está atrasado | Lógica en RPC | Gerardo |
+| J1c | API /api/pipeline-status: agrega RPC + alertas + acciones disponibles | API route | Gerardo |
+| J1d | Rediseño P-17 sección 1: pipeline visual con semáforos por fase | UI | Sergio |
+| J1e | Rediseño P-17 sección 2: alertas con botones de acción | UI | Sergio |
+| J1f | Rediseño P-17 sección 3: KPIs del día (conectar con datos reales) | UI | Sergio |
+| J1g | Rediseño P-17 sección 4: links rápidos a pantallas admin | UI | Sergio |
+
+**Datos que ya existen y se conectan:**
+
+| Dato | Dónde está | Se conecta a |
+|------|-----------|-------------|
+| `sistema_estado` (Supabase) | Tabla con última sync, métricas | Sección 1: estado Supabase |
+| `v_sistema_estado_actual` (Supabase) | Vista estado 3 fases | Sección 1: semáforos |
+| `supabase_sync_log.json` (local) | Timestamp última sync | Sección 1: estado sync |
+| `pipeline_runs` (SQLite/Supabase) | Historial corridas | Sección 3: KPIs |
+| `ofertas_prioridad` (SQLite) | Cola pendientes | Sección 2: alerta "N sin procesar" |
+| `emergentes_pendientes` (Supabase) | Skills pendientes revisión | Sección 2: alerta "N emergentes" |
+
+**Pipeline visual:**
+```
+VPS (scraping)  →  Local (NLP/matching)  →  Supabase  →  Vercel
+   🟢 2,132          🟡 18K pendientes       🟢 15,968    🟢 OK
+   ayer 08h           último run: 13/03       sync: hoy    deploy: 18/03
+
+Semáforos:
+  🟢 = al día (sin pendientes)
+  🟡 = hay pendientes (funciona pero atrasado)
+  🔴 = error o sin datos hace >3 días
+```
+
+**Alertas con acciones:**
+
+| Tipo alerta | Condición | Acción | Comando |
+|-------------|-----------|--------|---------|
+| Ofertas en VPS sin sync | VPS scrapeó pero local no tiene esas ofertas | [Sync VPS→local] | `sync_vps_local` |
+| Ofertas sin matching | ofertas con NLP pero sin matching > 100 | [Lanzar pipeline] | `lanzar_pipeline` |
+| Validadas sin subir | validadas locales > Supabase count | [Sync→Supabase] | `sync_local_supabase` |
+| Emergentes pendientes | count > 0 en emergentes_pendientes | [Revisar] | Navega a P-36 |
+| No clasificados | skills/títulos sin match > 0 | [Catalogar] | Navega a Catálogo MOL |
+| Portal con error | portal sin datos >3 días o caída >50% | [Re-lanzar] | `lanzar_portal` |
+| Regla editada sin reprocesar | config_overrides.updated_at > último run | [Reprocesar] | `reprocesar_afectadas` |
+| Perfil desactualizado | emergentes aprobadas desde último corte | [Corte versión] | Navega a P-36 |
+
+#### Fase J2 — Reconciliación automática
+
+Proceso que verifica consistencia entre los 4 sistemas periódicamente.
+
+| # | Componente | Tipo | Quién |
+|---|-----------|------|-------|
+| J2a | RPC `reconciliar_sistemas()`: compara conteos VPS vs local vs Supabase | RPC | Gerardo |
+| J2b | Detección de inconsistencias: ofertas en local que no están en Supabase, skills faltantes | Lógica | Gerardo |
+| J2c | Panel de reconciliación en P-17: "3 ofertas en local no están en Supabase" [Reparar] | UI | Sergio |
+
+**Tests:**
+
+| Test | Tipo | Qué valida |
+|------|------|------------|
+| `unit/pipeline-status.test.ts` | Unit | Semáforo correcto por fase. Alertas detectadas. Acciones mapeadas. |
+| `unit/reconciliacion.test.ts` | Unit | Inconsistencias detectadas. Conteos correctos. |
+| `component/centro-control.test.tsx` | Component | Render pipeline visual. Semáforos. Alertas con botones. Click ejecuta comando. |
+
+---
+
 ### Bloque I: Panel Evolución del Procesamiento (3 fases)
 
 **Dependencia:** Datos de pipeline ya existen (pipeline_runs, validation_errors, learning_history, ofertas_esco_matching)
