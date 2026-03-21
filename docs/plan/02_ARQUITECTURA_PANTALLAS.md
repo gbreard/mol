@@ -1,7 +1,7 @@
 # 2. Arquitectura de Pantallas
 
-> Ultima actualizacion: 2026-03-03
-> Versión: 2.4 — Acceso gated, oficina empleo, contenido placeholder
+> Ultima actualizacion: 2026-03-04
+> Versión: 2.5 — 5 páginas públicas (landings + legal)
 
 ## Referencias
 
@@ -64,7 +64,12 @@ MOL Platform
 │   ├── /informes ────────── P-03 Informes (preview para visitantes)
 │   ├── /login ───────────── P-04 Login
 │   ├── /registro ────────── P-05 Registro (libre, sin plan)
-│   └── /skills ──────────── (existente, versión pública)
+│   ├── /skills ──────────── (existente, versión pública)
+│   ├── /para-oficinas ──── P-35 Landing Oficina de Empleo
+│   ├── /mi-futuro-laboral  P-36 Landing Mi Futuro Laboral
+│   ├── /metodologia ────── P-37 Metodología MOL
+│   ├── /terminos ────────── P-38 Términos de Uso
+│   └── /politica-datos ──── P-39 Política de Datos
 │
 ├── REGISTRADO (auth, sin acceso a tablero)
 │   ├── /contenido ──────────── P-26 Informes y Notas (contenido completo)
@@ -125,6 +130,11 @@ MOL Platform
 | P-03 | `/informes` | U-VISITANTE | Por crear | [publicas.md#p-03](./03_WIREFRAMES/publicas.md#p-03-informes) |
 | P-04 | `/login` | U-VISITANTE | ✅ Existe | [publicas.md#p-04](./03_WIREFRAMES/publicas.md#p-04-login) |
 | P-05 | `/registro` | U-VISITANTE | Por crear | [publicas.md#p-05](./03_WIREFRAMES/publicas.md#p-05-registro) |
+| P-35 | `/para-oficinas` | U-VISITANTE | ✅ Funcional (2026-03-04) | Landing hub oficina empleo |
+| P-36 | `/mi-futuro-laboral` | U-VISITANTE | ✅ Funcional (2026-03-04) | Landing exploración laboral |
+| P-37 | `/metodologia` | U-VISITANTE | ✅ Funcional (2026-03-04) | Contenido estático |
+| P-38 | `/terminos` | U-VISITANTE | ✅ Placeholder (2026-03-04) | Pendiente contenido legal |
+| P-39 | `/politica-datos` | U-VISITANTE | ✅ Placeholder (2026-03-04) | Pendiente contenido legal |
 
 ### Contenido (Registrados)
 
@@ -205,14 +215,14 @@ MOL Platform
 
 | Categoría | Total | Existentes | Por crear |
 |-----------|-------|------------|-----------|
-| Públicas | 5 | 1 | 4 |
+| Públicas | 10 | 6 | 4 |
 | Contenido | 3 | 1 (placeholder) | 2 |
 | Checkout | 3 | 0 | 3 |
 | Tablero | 5 | 2 | 3 |
 | Oficina Empleo | 3 | 3 (wireframes) | 0 (funcionalidad pendiente) |
 | Cuenta | 3 | 0 | 3 |
 | Admin | 13 | 10 | 3 |
-| **TOTAL** | **35** | **17** | **18** |
+| **TOTAL** | **40** | **22** | **18** |
 
 ---
 
@@ -232,7 +242,7 @@ MOL Platform
 ```typescript
 // middleware.ts (propuesto v2.0)
 
-const PUBLIC_ROUTES = ['/', '/precios', '/informes', '/login', '/registro', '/skills'];
+const PUBLIC_ROUTES = ['/', '/precios', '/informes', '/login', '/registro', '/skills', '/para-oficinas', '/mi-futuro-laboral', '/metodologia', '/terminos', '/politica-datos'];
 
 const REGISTERED_ROUTES = ['/contenido', '/solicitar-acceso', '/cuenta'];
 

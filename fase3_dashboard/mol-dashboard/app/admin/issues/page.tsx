@@ -19,6 +19,8 @@ export default function AdminIssuesPage() {
   const [estadoFilter, setEstadoFilter] = useState<string>("all");
   const [tipoFilter, setTipoFilter] = useState<string>("all");
   const [prioridadFilter, setPrioridadFilter] = useState<string>("all");
+  const [autorFilter, setAutorFilter] = useState<string>("all");
+  const [autores, setAutores] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   const loadData = async () => {
@@ -29,6 +31,7 @@ export default function AdminIssuesPage() {
       if (estadoFilter !== "all") filters.estado = estadoFilter;
       if (tipoFilter !== "all") filters.tipo = tipoFilter;
       if (prioridadFilter !== "all") filters.prioridad = prioridadFilter;
+      if (autorFilter !== "all") filters.autor_email = autorFilter;
 
       const [issuesData, statsData] = await Promise.all([
         getIssues(Object.keys(filters).length > 0 ? filters : undefined),
@@ -37,6 +40,12 @@ export default function AdminIssuesPage() {
 
       setIssues(issuesData);
       setStats(statsData);
+
+      // Extract unique authors for filter (only on first load or when no autor filter)
+      if (autores.length === 0 && issuesData.length > 0) {
+        const emails = [...new Set(issuesData.map(i => i.autor_email).filter(Boolean))].sort();
+        setAutores(emails);
+      }
     } catch (err) {
       console.error("Error loading issues:", err);
       setError("Error al cargar los issues");
@@ -47,7 +56,7 @@ export default function AdminIssuesPage() {
 
   useEffect(() => {
     loadData();
-  }, [estadoFilter, tipoFilter, prioridadFilter]);
+  }, [estadoFilter, tipoFilter, prioridadFilter, autorFilter]);
 
   // Filter by search term
   const filteredIssues = issues.filter((issue) =>
@@ -108,7 +117,7 @@ export default function AdminIssuesPage() {
           <Filter className="w-5 h-5 text-blue-600" />
           <h3 className="font-bold text-gray-900">Filtros</h3>
         </div>
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-5 gap-4">
           <Select value={estadoFilter} onValueChange={setEstadoFilter}>
             <SelectTrigger className="bg-gray-50">
               <SelectValue placeholder="Estado" />
@@ -141,6 +150,20 @@ export default function AdminIssuesPage() {
               <SelectItem value="all">Todas las prioridades</SelectItem>
               {Object.entries(ISSUE_PRIORIDAD_LABELS).map(([value, label]) => (
                 <SelectItem key={value} value={value}>{label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={autorFilter} onValueChange={setAutorFilter}>
+            <SelectTrigger className="bg-gray-50">
+              <SelectValue placeholder="Usuario" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos los usuarios</SelectItem>
+              {autores.map((email) => (
+                <SelectItem key={email} value={email}>
+                  {email.split("@")[0]}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>

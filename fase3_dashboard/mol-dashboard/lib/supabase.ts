@@ -1091,6 +1091,7 @@ export async function getIssues(filters?: {
   tipo?: string;
   prioridad?: string;
   id_oferta?: string;
+  autor_email?: string;
 }): Promise<Issue[]> {
   const client = getSupabaseClient()
   if (!client) return []
@@ -1111,6 +1112,9 @@ export async function getIssues(filters?: {
   }
   if (filters?.id_oferta) {
     query = query.eq('id_oferta', filters.id_oferta)
+  }
+  if (filters?.autor_email) {
+    query = query.eq('autor_email', filters.autor_email)
   }
 
   const { data, error } = await query
@@ -1146,8 +1150,9 @@ export async function createIssue(issue: {
   autor_email: string;
   autor_nombre?: string;
 }): Promise<Issue> {
-  const client = getSupabaseClient()
-  if (!client) throw new Error('Supabase no está configurado')
+  // Must use browser client (has user session) for RLS: autor_id = auth.uid()
+  const { createBrowserClient } = await import('@/lib/supabase/browser')
+  const client = createBrowserClient()
 
   const { data, error } = await client
     .from('issues')
@@ -2008,6 +2013,7 @@ const VALIDACION_SELECT = `
   occupation_match_score, occupation_match_method, decision_metodo, regla_aplicada,
   descripcion, tareas_explicitas, mision_rol,
   modalidad, nivel_seniority, area_funcional, sector_empresa, clae_descripcion_seccion,
+  clae_code, clae_grupo, clae_seccion,
   nivel_educativo, experiencia_min_anios, salario_min, salario_max,
   skills_tecnicas, soft_skills,
   validacion_humana, validacion_humana_at, validacion_humana_por, validacion_correcciones
@@ -2198,10 +2204,11 @@ export async function getValidacionFilterOptions(): Promise<ValidacionFilterOpti
 export async function saveValidacion(
   idOferta: string,
   resultado: ValidacionHumana,
-  correcciones?: Record<string, string>
+  correcciones?: Record<string, unknown>
 ): Promise<boolean> {
-  const client = getSupabaseClient()
-  if (!client) throw new Error('Supabase no configurado')
+  // Must use browser client (has user session/JWT) — not the anon client
+  const { createBrowserClient } = await import('@/lib/supabase/browser')
+  const client = createBrowserClient()
 
   const { data, error } = await client.rpc('guardar_validacion_humana', {
     p_id_oferta: idOferta,

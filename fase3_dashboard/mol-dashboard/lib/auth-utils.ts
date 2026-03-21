@@ -15,6 +15,11 @@ export const ALLOWED_REDIRECT_PATHS = [
   '/solicitar-acceso',
   '/contenido',
   '/oficina-empleo',
+  '/para-oficinas',
+  '/mi-futuro-laboral',
+  '/metodologia',
+  '/terminos',
+  '/politica-datos',
 ]
 
 /**

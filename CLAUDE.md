@@ -475,6 +475,32 @@ tail -f /tmp/pipeline.log
 | **Reapply Rules** | `python scripts/reapply_rules_to_validated.py` | Reprocesar validadas manualmente |
 | **Generar Architecture JSON** | `python scripts/generate_architecture_json.py` | Editar dashboard_architecture.json a mano |
 
+### Scraping — Estado y Dependencias
+
+**Estado actual (2026-03-06):** El scheduler (`run_scheduler.py`) **no está en uso**. El scraping se ejecuta **manualmente**.
+
+**Portales:**
+| Portal | Estado | Integrado al scheduler |
+|--------|--------|----------------------|
+| **Bumeran** | Activo (único en producción) | Sí |
+| ZonaJobs | Scraper desarrollado | No |
+| ComputRabajo | Scraper desarrollado | No |
+| LinkedIn | Scraper desarrollado (JobSpy) | No |
+| Indeed | Scraper desarrollado (JobSpy) | No |
+
+**Dependencias críticas del scraper (restauradas 2026-03-06):**
+
+Los scrapers de Bumeran importan módulos desde `02_consolidation/scripts/`:
+- `incremental_tracker.py` — Tracking de IDs ya scrapeados (modo incremental)
+- `date_filter.py` — Filtrado por ventana temporal
+
+Estos archivos fueron movidos por error a `archive/legacy_numbered_folders/` y restaurados.
+Si faltan, el scraper sigue funcionando pero **sin modo incremental ni filtrado por fecha**
+(los imports tienen try/except con fallback graceful).
+
+**Problema pendiente del scheduler:** Es un loop infinito con `schedule` + `while True`.
+Si se cierra la terminal, muere. No hay servicio de Windows ni task scheduler configurado.
+
 ### Sync a Supabase — Cómo funciona internamente
 
 El sync tiene **dos partes independientes** que suben datos a tablas distintas:

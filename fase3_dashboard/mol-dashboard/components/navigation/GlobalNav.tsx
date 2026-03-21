@@ -85,6 +85,13 @@ const NAV_ITEMS: NavItem[] = [
     matchMode: "startsWith",
   },
   {
+    label: "Mi Futuro Laboral",
+    href: "/mi-futuro-laboral",
+    icon: Target,
+    roles: "*",
+    matchMode: "startsWith",
+  },
+  {
     label: "Informes",
     href: "/informes",
     icon: FileText,

@@ -16,11 +16,14 @@ const STATUS_DOT: Record<string, string> = {
   basura: "bg-gray-400",
 };
 
-function StatusDot({ validacion }: { validacion: ValidacionHumana | null }) {
+function StatusDot({ validacion, por }: { validacion: ValidacionHumana | null; por?: string | null }) {
+  const tooltip = validacion
+    ? `${validacion}${por ? ` — ${por.split("@")[0]}` : ""}`
+    : "pendiente";
   return (
     <span
       className={`w-2 h-2 rounded-full shrink-0 ${validacion ? STATUS_DOT[validacion] || "bg-gray-200" : "bg-gray-200"}`}
-      title={validacion || "pendiente"}
+      title={tooltip}
     />
   );
 }
@@ -59,7 +62,7 @@ export function OfertaList({ ofertas, selectedId, onSelect }: OfertaListProps) {
                   : "hover:bg-gray-50 border-l-2 border-l-transparent"
               }`}
             >
-              <StatusDot validacion={oferta.validacion_humana} />
+              <StatusDot validacion={oferta.validacion_humana} por={oferta.validacion_humana_por} />
               <span className="truncate flex-1 min-w-0">
                 {oferta.titulo_limpio || oferta.titulo}
               </span>

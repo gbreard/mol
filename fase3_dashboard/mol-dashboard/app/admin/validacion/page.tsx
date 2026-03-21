@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertTriangle } from "lucide-react";
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -14,6 +14,8 @@ import { OfertaList } from "@/components/validacion/OfertaList";
 import { PuestoPanel } from "@/components/validacion/PuestoPanel";
 import { ClasificacionPanel } from "@/components/validacion/ClasificacionPanel";
 import { ValidationActions } from "@/components/validacion/ValidationActions";
+import { ListPagination } from "@/components/validacion/ListPagination";
+import { createBrowserClient } from "@/lib/supabase/browser";
 
 const PAGE_SIZE = 50;
 
@@ -40,6 +42,16 @@ export default function ValidacionPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [offset, setOffset] = useState(0);
   const [stats, setStats] = useState<ValidationStats | null>(null);
+  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+
+  // Get current user email
+  useEffect(() => {
+    createBrowserClient()
+      .auth.getUser()
+      .then(({ data: { user } }) => {
+        setCurrentUserEmail(user?.email ?? null);
+      });
+  }, []);
 
   // Fetch ofertas
   const fetchOfertas = useCallback(async () => {
@@ -155,7 +167,7 @@ export default function ValidacionPage() {
     <div className="flex flex-col h-[calc(100vh-64px)]">
       {/* Filters bar */}
       <div className="border-b bg-white px-4 py-2 shrink-0">
-        <ValidationFilters filters={filters} onChange={setFilters} stats={stats} />
+        <ValidationFilters filters={filters} onChange={setFilters} stats={stats} ofertas={ofertas} />
       </div>
 
       {/* Main content: 3-panel split */}
@@ -184,6 +196,16 @@ export default function ValidacionPage() {
                     onSelect={handleSelect}
                   />
                 </div>
+                <ListPagination
+                  offset={offset}
+                  pageSize={PAGE_SIZE}
+                  total={total}
+                  onPageChange={(newOffset) => {
+                    setOffset(newOffset);
+                    setSelectedOferta(null);
+                    setCurrentIndex(0);
+                  }}
+                />
               </div>
             </ResizablePanel>
 
@@ -216,6 +238,25 @@ export default function ValidacionPage() {
         </div>
       )}
 
+      {/* Already reviewed banner */}
+      {selectedOferta?.validacion_humana &&
+        selectedOferta.validacion_humana_por && (
+          <div className={`border-t px-4 py-1.5 flex items-center gap-2 text-xs shrink-0 ${
+            selectedOferta.validacion_humana_por === currentUserEmail
+              ? "bg-blue-50 border-blue-200 text-blue-700"
+              : "bg-amber-50 border-amber-200 text-amber-800"
+          }`}>
+            <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+            <span>
+              Evaluada como <strong>{selectedOferta.validacion_humana.toUpperCase()}</strong> por{" "}
+              <strong>{selectedOferta.validacion_humana_por.split("@")[0]}</strong>
+              {selectedOferta.validacion_humana_at && (
+                <> el {new Date(selectedOferta.validacion_humana_at).toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</>
+              )}
+            </span>
+          </div>
+        )}
+
       {/* Sticky bottom bar: actions */}
       {selectedOferta && (
         <ValidationActions
@@ -223,6 +264,7 @@ export default function ValidacionPage() {
           tituloOferta={selectedOferta.titulo_limpio || selectedOferta.titulo}
           iscoCode={selectedOferta.isco_code}
           currentValidacion={selectedOferta.validacion_humana}
+          oferta={selectedOferta}
           onEvaluated={handleEvaluated}
         />
       )}

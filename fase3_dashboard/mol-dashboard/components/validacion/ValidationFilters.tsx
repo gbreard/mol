@@ -10,14 +10,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Search, RotateCcw } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Search, RotateCcw, Download } from "lucide-react";
 import { getValidacionFilterOptions, ValidacionFilterOptions } from "@/lib/supabase";
-import { ValidationFiltersState, ValidationStats, METODO_LABELS } from "@/lib/types";
+import { ValidationFiltersState, ValidationStats, METODO_LABELS, OfertaValidacion } from "@/lib/types";
 
 interface ValidationFiltersProps {
   filters: ValidationFiltersState;
   onChange: (filters: ValidationFiltersState) => void;
   stats: ValidationStats | null;
+  ofertas?: OfertaValidacion[];
 }
 
 const EMPTY_FILTERS: ValidationFiltersState = {
@@ -81,7 +88,40 @@ function FilterSelect({
   );
 }
 
-export function ValidationFilters({ filters, onChange, stats }: ValidationFiltersProps) {
+function downloadBlob(content: string, filename: string, mimeType: string) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportCSV(ofertas: OfertaValidacion[]) {
+  const headers = [
+    "id_oferta", "titulo", "titulo_limpio", "empresa", "portal",
+    "isco_code", "isco_label", "esco_occupation_label", "occupation_match_score",
+    "decision_metodo", "area_funcional", "nivel_seniority", "modalidad",
+    "provincia", "localidad", "validacion_humana",
+  ];
+  const escape = (v: unknown) => {
+    const s = v == null ? "" : String(v);
+    return s.includes(",") || s.includes('"') || s.includes("\n")
+      ? `"${s.replace(/"/g, '""')}"`
+      : s;
+  };
+  const rows = ofertas.map((o) =>
+    headers.map((h) => escape((o as unknown as Record<string, unknown>)[h])).join(",")
+  );
+  downloadBlob([headers.join(","), ...rows].join("\n"), "validacion_export.csv", "text/csv");
+}
+
+function exportJSON(ofertas: OfertaValidacion[]) {
+  downloadBlob(JSON.stringify(ofertas, null, 2), "validacion_export.json", "application/json");
+}
+
+export function ValidationFilters({ filters, onChange, stats, ofertas }: ValidationFiltersProps) {
   const [options, setOptions] = useState<ValidacionFilterOptions>({
     portales: [], provincias: [], metodos: [], iscoGroups: [],
     seniorities: [], modalidades: [], sectores: [], nivelesEducativos: [],
@@ -223,6 +263,25 @@ export function ValidationFilters({ filters, onChange, stats }: ValidationFilter
             <RotateCcw className="w-3 h-3 mr-1" />
             Limpiar
           </Button>
+        )}
+
+        {ofertas && ofertas.length > 0 && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="sm" variant="ghost" className="h-7 text-xs text-gray-500 hover:text-gray-700">
+                <Download className="w-3 h-3 mr-1" />
+                Exportar
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem onClick={() => exportCSV(ofertas)}>
+                CSV ({ofertas.length} ofertas)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => exportJSON(ofertas)}>
+                JSON ({ofertas.length} ofertas)
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
 
         {/* Progress bar */}
