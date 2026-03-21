@@ -25,9 +25,9 @@
 | Severidad | Cantidad | Descripción |
 |-----------|----------|-------------|
 | **CRÍTICO** | 5 | Gaps que impiden lanzamiento (incluye V-19 pools OE) |
-| **ALTO** | 11 | Features que esperan los usuarios (incluye V-22 responsive) |
+| **ALTO** | 15 | Features que esperan los usuarios |
 | **MEDIO** | 6 | Mejoras de UX + S3 v2 |
-| **Total** | **22** | |
+| **Total** | **26** | |
 
 ---
 
@@ -209,6 +209,52 @@ MATCHING:
 | **Asignado** | Sergio (puro frontend) |
 | **Dependencia** | Bloques C y D (pantallas tienen que existir primero) |
 | **Detalle** | 3 breakpoints (375px mobile, 768px tablet, 1280px desktop). Touch target 44px WCAG. Tablas → cards. Layout 2 col → stack. Ver wireframes mobile en `03_WIREFRAMES/oficina-empleo.md` |
+| **Estado** | ⬜ Pendiente |
+
+---
+
+### V-23: Cursos OE con impacto medible en empleabilidad (Bloque 8°)
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | El técnico de OE orienta al trabajador a formación mostrando impacto concreto: "si completás este curso, tu match con estas vacantes sube de 61% a 84%". Catálogo de cursos de la OE mapeado a skills ESCO |
+| **Servicios** | S2 |
+| **Pantalla** | S2-8 |
+| **Estado** | ⬜ Pendiente |
+
+---
+
+### V-24: Inteligencia del mercado laboral local (Bloque 10°)
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | Dashboard para la OE con: skills más demandadas vs disponibles en la cartera, brecha estructural de la jurisdicción, cursos que faltan en el territorio. Insumo de política pública |
+| **Servicios** | S2 |
+| **Pantalla** | S2-10 |
+| **Estado** | ⬜ Pendiente (v2) |
+
+---
+
+### V-25: Integración S1↔S2 — Vinculación por DNI + opt-in pool
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | Un solo perfil por trabajador (vinculado por DNI). Opt-in para visibilidad en pool (provincial/nacional, anonimizado). 3 escenarios documentados en F-10 |
+| **Servicios** | S1, S2, S3 registrado |
+| **Estado** | ⬜ Pendiente |
+
+---
+
+### V-26: Onboarding OE con importación guiada
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | La OE carga planillas Excel con templates descargables y preview. Solo personas alcanza para arrancar. Capacitación: PDF 2 págs + video 5 min |
+| **Servicios** | S2 |
 | **Estado** | ⬜ Pendiente |
 
 ---

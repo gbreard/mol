@@ -764,6 +764,65 @@ WHERE opt_in_pool = TRUE
 
 ---
 
+## F-12: Curación automática del perfil argentino (Bloque 9°)
+
+```
+Pipeline procesa ofertas nuevas → sync_to_supabase.py sube a Supabase
+    ↓
+Al final del sync: supabase.rpc('recalcular_emergentes')
+    ↓
+Sistema detecta: "8 skills emergentes nuevas (≥30% frecuencia)"
+    ↓
+Guarda en tabla emergentes_pendientes
+    ↓
+Analista abre P-36 → ve badge "8 pendientes"
+    ↓
+Click → va al panel Consolidado → revisa una por una:
+  - Docker (45% ofertas) → [Aprobar]
+  - Atención al público (32%) → [Aprobar]
+  - Limpieza (35%) → [Rechazar] (no es skill laboral específica)
+    ↓
+Cuando está conforme → vuelve a P-36 → "Crear versión v2.0"
+    ↓
+Sistema congela snapshot → regenera skills_searchable.json
+    ↓
+Todo el matching apunta a v2.0
+```
+
+### Tablas Afectadas
+
+- `emergentes_pendientes` — INSERT automático post-sync, UPDATE manual del analista
+- `esco_argentino` — UPDATE al aprobar emergente
+- `perfil_argentino_versiones` — INSERT al crear corte
+
+---
+
+## F-13: Inteligencia local para la OE (Bloque 10°)
+
+```
+Coordinador de OE abre S2-10 (Inteligencia local)
+    ↓
+Sistema calcula automáticamente:
+  1. Top skills demandadas en ofertas de la jurisdicción
+  2. Top skills disponibles en la cartera de la OE
+  3. Brecha: demandadas - disponibles = gap estructural
+  4. Cursos del catálogo de la OE vs brechas
+    ↓
+Coordinador ve:
+  - "Docker se pide en 78% de ofertas IT pero solo 5% de tu cartera lo tiene"
+  - "No tenés cursos de Docker — recomendamos incorporar formación"
+    ↓
+Puede exportar reporte institucional PDF para presentar al municipio
+```
+
+### Tablas Afectadas
+
+- `ofertas_dashboard` — lectura filtrada por jurisdicción
+- `perfiles_trabajadores` — lectura filtrada por organizacion_id
+- `cursos_oe` — lectura para detectar cursos faltantes
+
+---
+
 ## F-11: Onboarding primera OE — del acuerdo institucional a la primera atención
 
 ### Proceso institucional (fuera del sistema)
@@ -924,5 +983,5 @@ No requiere capacitación formal. Se le entrega:
 | 2026-03-18 | 2.1 | F-06 Reporte de Compatibilidad Laboral (V-17): flujo gestor genera → PDF con QR → reclutador accede → edita competencias |
 | 2026-03-21 | 2.3 | F-07 formación con impacto (Bloque 8°), F-08 empresa publica búsqueda (Bloque 11°), F-09 Vía 4 título → skills (Bloque 12°) |
 | 2026-03-21 | 2.4 | F-10 Integración S1↔S2: vinculación por DNI, 3 escenarios, opt-in por jurisdicción, tabla visibilidad, SQL vinculación |
-| 2026-03-21 | 2.5 | F-11 Onboarding primera OE: proceso institucional, alta admin, primer ingreso técnico, templates Excel, importación guiada, datos mínimos, capacitación, métricas |
+| 2026-03-21 | 2.5 | F-11 Onboarding primera OE. F-12 Curación automática perfil (Bloque 9°). F-13 Inteligencia local OE (Bloque 10°) |
 | 2026-03-20 | 2.2 | F-06 ampliado: 2 caminos (S1+S2), 4 vías captura (+ formación/título), 3 tabs resultados, transición dual, ESCO Argentino. Fuente: MOL_Skills_Intelligence.docx v5 |

@@ -1035,6 +1035,57 @@ CREATE INDEX IF NOT EXISTS idx_resoluciones_tipo ON resoluciones_formacion(tipo)
 
 ---
 
+### Funciones RPC — Inteligencia Local (Bloque 10°)
+
+Funciones para calcular brechas de la jurisdicción de una OE.
+
+```sql
+-- Función: skills más demandadas en la jurisdicción de la OE
+CREATE OR REPLACE FUNCTION get_brechas_jurisdiccion(p_jurisdiccion TEXT)
+RETURNS TABLE (
+  skill_label TEXT,
+  demanda_pct NUMERIC,
+  disponible_pct NUMERIC,
+  gap_pct NUMERIC,
+  cursos_disponibles INTEGER
+) AS $$
+  -- Cruza ofertas_dashboard (filtro jurisdicción) × perfiles cartera OE × cursos_oe
+  -- Retorna: skill, % ofertas que la piden, % cartera que la tiene, gap, cursos locales
+  SELECT
+    s.skill_label,
+    s.demanda_pct,
+    COALESCE(c.disponible_pct, 0),
+    s.demanda_pct - COALESCE(c.disponible_pct, 0),
+    COALESCE(cur.count, 0)
+  FROM (
+    -- Skills demandadas en ofertas de la jurisdicción
+    SELECT skill_label, COUNT(*)::numeric / NULLIF(total, 0) * 100 AS demanda_pct
+    FROM ofertas_skills os
+    JOIN ofertas_dashboard od ON os.id_oferta = od.id_oferta
+    CROSS JOIN (SELECT COUNT(DISTINCT id_oferta) AS total FROM ofertas_dashboard WHERE provincia = p_jurisdiccion) t
+    WHERE od.provincia = p_jurisdiccion
+    GROUP BY skill_label, total
+  ) s
+  LEFT JOIN (
+    -- Skills disponibles en la cartera de la OE
+    -- TODO: implementar cuando perfiles_trabajadores tenga skills indexadas
+    SELECT NULL::text AS skill_label, 0::numeric AS disponible_pct WHERE FALSE
+  ) c ON s.skill_label = c.skill_label
+  LEFT JOIN (
+    -- Cursos disponibles que cubren esa skill
+    SELECT unnest(skills_mapeadas)::text AS skill_label, COUNT(*) AS count
+    FROM cursos_oe
+    GROUP BY 1
+  ) cur ON s.skill_label = cur.skill_label
+  ORDER BY gap_pct DESC
+  LIMIT 20;
+$$ LANGUAGE sql STABLE;
+```
+
+**Nota:** Esta función es un esqueleto. Se refinará cuando haya datos reales de perfiles con skills indexadas por OE.
+
+---
+
 ## Tablas Existentes — SQLite Local (Pipeline)
 
 Tablas en SQLite local usadas por el pipeline de procesamiento.
@@ -1087,3 +1138,4 @@ Ver [06_SEGURIDAD](./06_SEGURIDAD.md#rls) para políticas de seguridad a nivel d
 | 2026-03-20 | 2.4 | Skills Intelligence v5: T-organizaciones (multi-tenancy OE/empresa), T-user_organizaciones (relación usuario-org), T-reporte_accesos (audit log QR). Campos origen + perfil_consolidado_version en reportes |
 | 2026-03-21 | 2.5 | T-emergentes_pendientes (Bloque 9°: curación automática del perfil argentino). Función RPC recalcular_emergentes() post-sync |
 | 2026-03-21 | 2.6 | T-cursos_oe (Bloque 8°), T-vacantes_empresa (Bloque 11°), T-resoluciones_formacion (Bloque 12°). RLS ampliado |
+| 2026-03-21 | 2.7 | Campos DNI + opt-in en perfiles_trabajadores (integración S1↔S2). RPC get_brechas_jurisdiccion (Bloque 10°) |

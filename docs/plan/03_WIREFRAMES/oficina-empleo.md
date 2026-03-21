@@ -575,6 +575,7 @@ Pantalla de administracion para gestionar las versiones del Perfil Consolidado A
 |  Perfil Consolidado Argentino                                        |
 |                                                                      |
 |  Version activa: v2.1 (2026-03-15)    [Crear nueva version]         |
+|                                       [Revisar emergentes (8)] <-- badge rojo si hay pendientes
 |                                                                      |
 |  +----------------------------------------------------------------+ |
 |  |  ESTADO ACTUAL (cambios desde v2.1)                             | |
