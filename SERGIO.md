@@ -570,6 +570,109 @@ Ver detalle completo en `docs/plan/09_ROADMAP.md` → Bloque F.
 
 ---
 
+## Tareas adicionales de UI (de la planificación completa)
+
+Ademas de S1-S8 y Bloque F, estos wireframes y pantallas te tocan:
+
+### De la Integración S1↔S2
+
+| # | Tarea | Wireframe en | Qué hacer |
+|---|-------|-------------|-----------|
+| S9 | UI opt-in en S1: toggle provincial/nacional + explicación anonimización | `oficina-empleo.md` → "Trabajador configura opt-in" | Componente toggle con select provincia, texto explicativo |
+| S10 | Búsqueda por DNI en S2: input + resultado perfil existente + botón vincular | `oficina-empleo.md` → "Técnico busca perfil por DNI" | Componente búsqueda + card resultado + modal confirmación |
+| S11 | Perfil anonimizado en búsqueda pool: card sin nombre, solo skills y match | `oficina-empleo.md` → "Perfil anonimizado en búsqueda" | Componente card anonimizada + botón solicitar contacto |
+
+**APIs que consume (Gerardo las crea):**
+```typescript
+// GET /api/worker-profiles?dni=30123456 — buscar por DNI
+// PATCH /api/worker-profiles — vincular a OE (organizacion_id)
+// GET /api/pool-search?isco=2512&jurisdiccion=CABA — buscar pool anonimizado
+```
+
+### Del Onboarding OE
+
+| # | Tarea | Wireframe en | Qué hacer |
+|---|-------|-------------|-----------|
+| S12 | Pantalla bienvenida primer ingreso: 3 cards (personas/vacantes/cursos) + descargar template | `oficina-empleo.md` → "Onboarding OE" | Página con detección primer ingreso + 3 cards + links descarga |
+| S13 | Preview importación: tabla con primeras filas + resumen + botón confirmar | `oficina-empleo.md` → "Preview de importación" | Componente tabla preview + resumen (válidas/saltadas/errores) |
+| S14 | Post-importación: mensaje éxito + estadísticas + siguientes pasos | `oficina-empleo.md` → "Post-importación" | Componente resultado + 3 botones (panel/vacantes/cursos) |
+
+**API que consume:**
+```typescript
+// POST /api/import-pool — sube CSV, retorna preview
+// POST /api/import-pool/confirm — confirma importación
+```
+
+### Del Bloque 9° (Curación perfil)
+
+| # | Tarea | Wireframe en | Qué hacer |
+|---|-------|-------------|-----------|
+| S15 | Badge emergentes en P-36: número rojo si hay pendientes | `oficina-empleo.md` → P-36 | Badge numérico en botón "Revisar emergentes" |
+
+**API que consume:**
+```typescript
+// GET /api/emergentes-pendientes/count — retorna { count: N }
+```
+
+### Del Bloque 10° (Inteligencia local)
+
+| # | Tarea | Wireframe en | Qué hacer |
+|---|-------|-------------|-----------|
+| S16 | Pantalla S2-10 inteligencia local: 2 paneles (demandadas/disponibles) + tabla brecha + cursos faltantes | `oficina-empleo.md` → S2-10 | Dashboard con 4 secciones + botón exportar PDF |
+
+**API que consume:**
+```typescript
+// GET /api/inteligencia-local?jurisdiccion=CABA — retorna brechas + cursos faltantes
+```
+
+### Del Bloque 8° (Formación con impacto)
+
+| # | Tarea | Wireframe en | Qué hacer |
+|---|-------|-------------|-----------|
+| S17 | Pantalla S2-8 formación: cursos por brecha con delta match % | `oficina-empleo.md` → S2-8 | Cards de cursos agrupados por brecha + caja impacto + botón derivar |
+
+**API que consume:**
+```typescript
+// GET /api/training-impact?profile_id=xxx — retorna cursos con delta match
+```
+
+### Del Bloque 11° (S3 registrado)
+
+| # | Tarea | Wireframe en | Qué hacer |
+|---|-------|-------------|-----------|
+| S18 | S3-6 perfil de puesto: form skills requeridas + guardar/duplicar | `oficina-empleo.md` → S3-6 | Form con búsqueda skills + badges ESCO/emergente + CRUD |
+| S19 | S3-9 benchmark mercado: tabla disponibilidad skills + alertas escasez | `oficina-empleo.md` → S3-9 | Dashboard con tabla + indicadores dificultad |
+
+### Del Bloque 12° (Vía 4)
+
+| # | Tarea | Wireframe en | Qué hacer |
+|---|-------|-------------|-----------|
+| S20 | UI Vía 4 en paso 2: búsqueda título + resultados con skills derivadas + badge verificado | `oficina-empleo.md` → Vía 4 | Input búsqueda + cards resultado con skills + botón agregar |
+
+**API que consume:**
+```typescript
+// GET /api/formacion-search?q=tecnicatura+redes — buscar en resoluciones
+```
+
+---
+
+## Resumen total de tareas Sergio
+
+| Grupo | Tareas | Componentes | Tests |
+|-------|--------|-------------|-------|
+| S1-S8 (Bloques 1-4) | 8 | 18 | 10 |
+| Bloque F (responsive) | F1-F6 | adaptar existentes | 3 |
+| Integración S1↔S2 | S9-S11 | 3 | 3 |
+| Onboarding OE | S12-S14 | 3 | 2 |
+| Curación perfil | S15 | 1 (badge) | 1 |
+| Inteligencia local | S16 | 1 | 1 |
+| Formación impacto | S17 | 1 | 1 |
+| S3 registrado | S18-S19 | 2 | 2 |
+| Vía 4 | S20 | 1 | 1 |
+| **Total** | **S1-S20 + F1-F6** | **~30 componentes** | **~24 tests** |
+
+---
+
 ## Reglas
 
 1. **No toques Supabase** — Gerardo hace todas las migrations y RLS
