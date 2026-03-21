@@ -6,28 +6,31 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-03-03 11:10"
+  fecha_actualizacion: "2026-03-21 16:30"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "presentacion"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "6 errores sin resolver - sistema sugiere Fase 2"
+  fase_detalle: "37,776 ofertas sincronizadas a Supabase. Dashboard no muestra datos correctamente."
 
 ultimo_trabajo:
-  fecha: "2026-02-28"
-  sesion: "Sprint 11: Panel de Validación para Cynthia (/admin/validacion)"
+  fecha: "2026-03-21"
+  sesion: "Sprint 14: NLP 19K + validación + matching + sync Supabase"
   cambios:
-    - "feat(dashboard): panel de validación completo — 7 componentes nuevos"
-    - "4 tabs: Original (descripción completa), NLP, Matching, Skills ESCO"
-    - "Filtros: ISCO group, portal, provincia, método, búsqueda"
-    - "UX: flechas navegar, Ctrl+1/2/3 evaluar, auto-next, issues inline"
-    - "SQL migration 015: 5 columnas nuevas (descripcion, tareas, mision, decision_metodo, regla)"
-    - "sync_to_supabase.py: agregados campos a query SQL + transform"
-    - "Backfill RPC: 16K ofertas en 38s (vs 2.5h de --full)"
-    - "Backfill skills: 296K skills en 67min con throttling"
-    - "CLAUDE.md: documentación completa de sync internals"
+    - "NLP batch: 19,180 ofertas procesadas con Qwen2.5:7b (75h, 14.2s/oferta)"
+    - "NLP validation gate: 37,776 validadas, 0 bloqueadas"
+    - "Fixes NLP: provincias GBA, áreas con /, tareas basura (64 patrones), siglas técnicas"
+    - "Fixes NLP: gente_cargo junior→false, seniority salud→semisenior, seguros≠seguridad"
+    - "Fixes NLP: modalidad scraping prioridad, exp=0→null para senior/manager"
+    - "feat: diccionario sinónimos argentinos para skills (80 tareas + 15 soft skills)"
+    - "Reprocess postprocessor+skills: 37,776 ofertas (1.7h), 28,599 skills actualizadas"
+    - "Matching batch: 20,945 ofertas (3.7h, 0 errores)"
+    - "Matching validation: 30,455 OK, 7,321 con warnings (V27 dual + V30 IT sin skills)"
+    - "Sync Supabase: 37,776 ofertas + skills sincronizadas"
+    - "validation_errors limpiados: 83,682 → 0 pendientes"
+    - "PENDIENTE: dashboard no muestra datos correctamente (filtro fechas?)"
   sesion_anterior:
-    tema: "Sprint 10: Sync incremental automático a Supabase v2.2"
-    cambios_resumen: "sync_to_supabase.py v2.2 incremental, 15797 ofertas + 290955 skills"
+    tema: "Sprint 13: Fix ComputRabajo + VPS cron + Sync"
+    cambios_resumen: "3 bugs CT, chmod +x VPS, 13K CT importadas, scraping manual lanzado"
   sesion_anterior:
     tema: "Sprint 9b: Test suite cleanup + validation errors resolution"
     cambios_resumen: "246/246 tests passing, 23/23 validation_errors resueltos, cola limpia"
@@ -150,7 +153,7 @@ conteos:
   empresas_catalogo: 247  # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
   skills_esco: 14257            # database/embeddings/esco_skills_full.json
   ocupaciones_esco: 3046        # database/embeddings/esco_occupations_full.json
-  ultima_verificacion: 2026-03-03
+  ultima_verificacion: 2026-03-21
 
   supabase:
     integrado: true
@@ -184,8 +187,8 @@ conteos:
   proximo_paso: "Revisar 24 casos con override semántico alto"
 
   estadisticas_actuales:
-    ofertas_validadas: 16085  # todas sincronizadas a Supabase
-    ofertas_pendientes: 60  # 0 errores de validación
+    ofertas_validadas: 37776  # todas sincronizadas a Supabase
+    ofertas_pendientes: 0  # 0 errores de validación
     errores_validacion: 0  # resueltos 201 → 0
     reglas_negocio: 259
     convergencia: "CONVERGIDO (0 errores pendientes)"
@@ -203,9 +206,9 @@ conteos:
 
   # Métricas de evolución del aprendizaje
   learning_evolution:
-    total_runs: 257
+    total_runs: 342
     ofertas_con_historial_nlp: 5474  # ofertas en ofertas_nlp_history
-    ofertas_con_matching: 16145  # ofertas distintas en ofertas_esco_matching
+    ofertas_con_matching: 37776  # ofertas distintas en ofertas_esco_matching
 
     # Distribución real de reprocesos (datos de ofertas_nlp_history)
     distribucion_reprocesos:
