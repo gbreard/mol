@@ -13,6 +13,7 @@ interface Tab {
   label: string;
   icon: React.ReactNode;
   description: string;
+  redirect?: string;
 }
 
 const TABS: Tab[] = [
@@ -208,8 +209,8 @@ export default function AdminArchitecturePage() {
               <button
                 key={tab.id}
                 onClick={() => {
-                  if ((tab as any).redirect) {
-                    window.location.href = (tab as any).redirect;
+                  if (tab.redirect) {
+                    window.location.href = tab.redirect;
                     return;
                   }
                   setActiveTab(tab.id);
