@@ -670,6 +670,7 @@ Ademas de S1-S8 y Bloque F, estos wireframes y pantallas te tocan:
 | S3 registrado | S18-S19 | 2 | 2 |
 | Vía 4 | S20 | 1 | 1 |
 | Catálogo MOL | S21-S22 | 2 | 2 |
+| Scraping admin | S23-S24 | 2 | 2 |
 | **Total** | **S1-S22 + F1-F6** | **~32 componentes** | **~32 tests (1 por componente mínimo)** |
 
 ### Del Bloque G (Catálogo MOL)
@@ -684,6 +685,20 @@ Ademas de S1-S8 y Bloque F, estos wireframes y pantallas te tocan:
 // GET /api/catalogo-mol/no-clasificados?tipo=skills&min_freq=30
 // POST /api/catalogo-mol — crear ficha
 // PATCH /api/catalogo-mol — marcar como sinónimo o descartar
+```
+
+### Del Bloque H (Scraping admin)
+
+| # | Tarea | Wireframe en | Qué hacer |
+|---|-------|-------------|-----------|
+| S23 | Dashboard scraping: KPIs + gráfico temporal + cards por portal con alertas | `oficina-empleo.md` → "H1 Dashboard monitoreo" | Dashboard con Recharts (línea temporal) + cards estado + badge alertas |
+| S24 | Control comandos: botones lanzar/pausar/sync + log en tiempo real + historial | `oficina-empleo.md` → "H2 Control de comandos" | Botones con confirmación + textarea log con polling + tabla historial |
+
+**APIs que consume:**
+```typescript
+// GET /api/scraping-stats — KPIs + historia + alertas
+// GET /api/scraping-commands — listar comandos
+// POST /api/scraping-commands — crear comando (lanzar/pausar/sync)
 ```
 
 ### Regla de testing obligatoria

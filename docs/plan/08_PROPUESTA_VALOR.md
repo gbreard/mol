@@ -25,9 +25,9 @@
 | Severidad | Cantidad | Descripción |
 |-----------|----------|-------------|
 | **CRÍTICO** | 6 | Gaps que impiden lanzamiento (incluye V-19, V-27) |
-| **ALTO** | 15 | Features que esperan los usuarios |
+| **ALTO** | 16 | Features que esperan los usuarios |
 | **MEDIO** | 6 | Mejoras de UX + S3 v2 |
-| **Total** | **27** | |
+| **Total** | **28** | |
 
 ---
 
@@ -244,6 +244,17 @@ MATCHING:
 | **Severidad** | 🟠 ALTO |
 | **Descripción** | Un solo perfil por trabajador (vinculado por DNI). Opt-in para visibilidad en pool (provincial/nacional, anonimizado). 3 escenarios documentados en F-10 |
 | **Servicios** | S1, S2, S3 registrado |
+| **Estado** | ⬜ Pendiente |
+
+---
+
+### V-28: Gestión de scraping desde admin (Bloque H)
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | Dashboard de monitoreo (estado portales, alertas, volúmenes) + control remoto del VPS (lanzar corridas, sync, pausar) + log en tiempo real. Elimina la necesidad de SSH al VPS |
+| **Pantalla** | P-21 ampliado |
 | **Estado** | ⬜ Pendiente |
 
 ---

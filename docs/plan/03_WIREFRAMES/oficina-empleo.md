@@ -877,6 +877,75 @@ Dashboard de inteligencia del mercado laboral de la jurisdiccion de la OE.
 
 ---
 
+## Admin Scraping: Dashboard + Control (Bloque H)
+
+**Estado:** P-21 existe como solo lectura. Se amplía con monitoreo + control.
+**Nivel:** U-ADMIN
+
+### H1 — Dashboard monitoreo
+
+```
++---------------------------------------------------------------------+
+|  Scraping > Monitoreo                                [Lanzar todos] |
+|                                                                      |
+|  KPIs globales:                                                     |
+|  +----------+ +----------+ +----------+ +----------+               |
+|  | 37,785   | | 2,132    | | 6        | | 0        |               |
+|  | Total BD | | Ayer     | | Portales | | Alertas  |               |
+|  +----------+ +----------+ +----------+ +----------+               |
+|                                                                      |
+|  [Grafico: ofertas/dia por portal — ultimos 30 dias]                |
+|  |    ___                                                           |
+|  |   / B \    /Z\                                                   |
+|  |  /    \__/   \__CT___PE___CABA___Indeed                          |
+|  |_/________________________________________________                |
+|  mar-1        mar-10       mar-20                                   |
+|                                                                      |
+|  Portales:                                                          |
+|  +----------------------------------------------------------------+ |
+|  | Portal      | Estado  | Ultima   | Ofertas | Tasa  | Accion    | |
+|  |-------------|---------|----------|---------|-------|-----------|  |
+|  | Bumeran     | ✅ OK   | 20/03 08h| 391     | 98%   | [Lanzar]  | |
+|  | ZonaJobs    | ✅ OK   | 20/03 08h| 254     | 95%   | [Lanzar]  | |
+|  | ComputRabajo| ✅ OK   | 20/03 08h| 335     | 94%   | [Lanzar]  | |
+|  | CABA        | ✅ OK   | 20/03 08h| 344     | 100%  | [Lanzar]  | |
+|  | Portal Emp. | ✅ OK   | 20/03 08h| 347     | 98%   | [Lanzar]  | |
+|  | Indeed      | ⚠️ BAJA | 20/03 08h| 461→201 | 65%   | [Lanzar]  | |
+|  +----------------------------------------------------------------+ |
+|                                                                      |
+|  ⚠️ Indeed: volumen bajo -56% vs corrida anterior                   |
++---------------------------------------------------------------------+
+```
+
+### H2 — Control de comandos
+
+```
++---------------------------------------------------------------------+
+|  Scraping > Comandos                                                |
+|                                                                      |
+|  Comando activo: Lanzar Bumeran (ejecutando desde 08:15)            |
+|  +----------------------------------------------------------------+ |
+|  | > Scrapeando keyword 45/600...                                  | |
+|  | > Ofertas encontradas: 189                                      | |
+|  | > Nuevas: 23, Duplicadas: 166                                   | |
+|  | > ...                                                           | |
+|  +----------------------------------------------------------------+ |
+|  [Cancelar]                                                         |
+|                                                                      |
+|  Historial de comandos:                                             |
+|  +----------------------------------------------------------------+ |
+|  | Comando          | Fecha    | Estado     | Resultado             | |
+|  |------------------|----------|------------|----------------------| |
+|  | Lanzar todos     | 20/03 08h| Completado | 2,132 ofertas, 0 err | |
+|  | Sync VPS→local   | 20/03 10h| Completado | 2,132 importadas     | |
+|  | Sync→Supabase    | 20/03 11h| Completado | 1,890 nuevas         | |
+|  | Lanzar Indeed    | 19/03 14h| Error      | Timeout tras 3h      | |
+|  +----------------------------------------------------------------+ |
++---------------------------------------------------------------------+
+```
+
+---
+
 ## Panel admin: Catalogo MOL — No clasificados + Editor (Bloque G)
 
 **Estado:** Por crear

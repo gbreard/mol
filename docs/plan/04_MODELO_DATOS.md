@@ -914,6 +914,34 @@ CREATE TABLE IF NOT EXISTS tension_ocupaciones (
 
 ---
 
+### T-scraping_commands (NUEVA — Bloque H2: control remoto VPS)
+
+Cola de comandos para controlar el scraping del VPS desde el admin.
+
+```sql
+CREATE TABLE IF NOT EXISTS scraping_commands (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  comando VARCHAR(50) NOT NULL,             -- 'lanzar_portal', 'lanzar_todos', 'pausar', 'reanudar', 'sync_vps_local', 'sync_local_supabase'
+  params JSONB,                              -- {portal: "bumeran"}, {full: true}, etc.
+  estado VARCHAR(20) DEFAULT 'pendiente',    -- 'pendiente', 'ejecutando', 'completado', 'error', 'cancelado'
+  resultado JSONB,                           -- {ofertas: 391, errores: 0, duracion_seg: 3600}
+  log TEXT,                                  -- Progreso y output del comando
+  created_by UUID REFERENCES auth.users(id),
+  ejecutado_at TIMESTAMPTZ,
+  completado_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_scraping_cmd_estado ON scraping_commands(estado);
+CREATE INDEX IF NOT EXISTS idx_scraping_cmd_fecha ON scraping_commands(created_at DESC);
+```
+
+**Flujo:** Admin crea comando (estado pendiente) → VPS poller lee cada 1 min → ejecuta → actualiza estado y resultado.
+**RLS:** Solo admin puede INSERT. Lectura autenticados. UPDATE solo sistema (poller con service_role).
+**Pantallas que usan:** Admin scraping (P-21 ampliado)
+
+---
+
 ### T-catalogo_mol_skills (NUEVA — Bloque G: taxonomía propia)
 
 Skills del mercado argentino que no están en ESCO. Ficha completa con definición, categoría y relaciones.

@@ -764,6 +764,39 @@ WHERE opt_in_pool = TRUE
 
 ---
 
+## F-15: Gestión de scraping desde admin (Bloque H)
+
+```
+Admin abre /admin/scraping
+    ↓
+Ve dashboard: KPIs, gráfico temporal, estado por portal, alertas
+    ↓
+Detecta: Indeed bajó 56% → ⚠️ alerta
+    ↓
+Click "Lanzar Indeed" → confirma
+    ↓
+POST /api/scraping-commands → {comando: "lanzar_portal", params: {portal: "indeed"}}
+    ↓
+VPS poller (cada 1 min) lee comando pendiente
+    ↓
+Ejecuta scraper → actualiza log y progreso en Supabase
+    ↓
+Admin ve log en tiempo real en la UI
+    ↓
+Completado → resultado: {ofertas: 461, errores: 0}
+    ↓
+Admin click "Sync VPS→local" → "Sync→Supabase"
+    ↓
+Datos actualizados en todo el sistema
+```
+
+### Tablas Afectadas
+
+- `scraping_commands` — cola de comandos
+- `ofertas_dashboard` — se actualiza post-sync
+
+---
+
 ## F-14: Catalogación de skills y ocupaciones MOL (Bloque G)
 
 ```

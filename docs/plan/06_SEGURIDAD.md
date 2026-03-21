@@ -531,6 +531,8 @@ MEDIOS:
 □ S-29: Pool anonimizado hasta aceptación del candidato
 □ S-30: Cursos OE: solo técnico de la org puede CRUD (RLS por org_id)
 □ S-31: Onboarding: validar que email del técnico coincida con dominio de la OE
+□ S-32: Scraping commands: solo admin puede crear, poller usa service_role
+□ S-33: Comandos peligrosos (cancelar, reconfigurar) requieren confirmación doble
 ```
 
 ---

@@ -410,6 +410,81 @@ Post-corte: regenerar skills_searchable.json (script existente)
 | E5 | QR evoluciona a credencial verificable | — | ❌ Futuro |
 | E6 | API pública para portales de empleo de gobiernos | — | ❌ Futuro |
 
+### Bloque H: Gestión de Scraping desde Admin (3 fases)
+
+**Dependencia:** Datos de scraping ya existen en BD. VPS operativo con cron.
+**Asignado a:** Gerardo (APIs, queries, VPS poller) + Sergio (UI dashboard)
+
+> Hoy el scraping se gestiona por SSH al VPS. Este bloque lo lleva a la UI del admin.
+
+#### Fase H1 — Monitoreo (sin tocar VPS)
+
+Se calcula todo desde datos que ya existen en `ofertas` (SQLite) u `ofertas_dashboard` (Supabase).
+
+| # | Componente | Tipo | Quién |
+|---|-----------|------|-------|
+| H1a | RPC `get_scraping_stats()`: ofertas por portal, última fecha, volumen diario | RPC Supabase | Gerardo |
+| H1b | RPC `get_scraping_history(days)`: serie temporal ofertas/día por portal | RPC Supabase | Gerardo |
+| H1c | Detección anomalías: portal sin datos >3 días o caída >50% vs corrida anterior | Lógica en RPC | Gerardo |
+| H1d | Pantalla admin scraping: dashboard con KPIs + gráfico temporal + alertas | UI | Sergio |
+| H1e | Cards por portal: estado (activo/alerta/sin datos), última corrida, ofertas, tasa éxito | UI | Sergio |
+
+**Tests:**
+- `unit/scraping-stats.test.ts` — cálculo anomalías, agregación por portal
+- `component/scraping-dashboard.test.tsx` — render cards, gráfico, alertas
+
+#### Fase H2 — Control remoto del VPS (cola de comandos en Supabase)
+
+El admin crea un comando en Supabase. Un poller en el VPS lo lee cada 1 minuto y ejecuta.
+
+| # | Componente | Tipo | Quién |
+|---|-----------|------|-------|
+| H2a | Tabla `scraping_commands`: comando, estado, resultado, timestamps | Migration SQL | Gerardo |
+| H2b | Script poller en VPS: consulta Supabase cada 1 min, ejecuta comandos pendientes | Python (VPS) | Gerardo |
+| H2c | API /api/scraping-commands: POST (crear comando), GET (listar estado) | API route | Gerardo |
+| H2d | Botones en UI: "Lanzar Bumeran", "Lanzar todos", "Pausar portal", "Sync VPS→local" | UI | Sergio |
+| H2e | Log en tiempo real: el poller actualiza progreso en Supabase, la UI lo lee con polling/realtime | UI + datos | Ambos |
+| H2f | Comandos soportados: lanzar_portal, lanzar_todos, pausar, reanudar, sync_vps_local, sync_local_supabase | Lógica VPS | Gerardo |
+
+**Flujo:**
+```
+Admin click "Lanzar Bumeran"
+    ↓
+POST /api/scraping-commands → INSERT {comando: "lanzar_portal", params: {portal: "bumeran"}, estado: "pendiente"}
+    ↓
+VPS poller (cada 1 min) → SELECT * FROM scraping_commands WHERE estado = 'pendiente'
+    ↓
+Ejecuta: python run_scheduler.py --portal bumeran
+    ↓
+UPDATE scraping_commands SET estado = 'ejecutando', log = '...'
+    ↓
+Al terminar: UPDATE SET estado = 'completado', resultado = {ofertas: 391, errores: 0}
+    ↓
+Admin ve en la UI: "Bumeran: completado — 391 ofertas — 0 errores"
+```
+
+**Seguridad:**
+- Solo admin puede crear comandos (requireAdmin en API)
+- El poller en el VPS usa service_role_key (no anon)
+- Comandos peligrosos (cancelar, reconfigurar) requieren confirmación doble
+
+**Tests:**
+- `unit/scraping-commands.test.ts` — crear comando, estados válidos, solo admin
+- `security/scraping-commands-auth.test.ts` — no admin → 403
+
+#### Fase H3 — Configuración (futuro)
+
+| # | Componente | Tipo | Quién |
+|---|-----------|------|-------|
+| H3a | Editar master_keywords.json desde UI | UI + API | Ambos |
+| H3b | Editar frecuencia cron desde UI | UI + API + VPS | Ambos |
+| H3c | Agregar/quitar portales | UI + API | Ambos |
+| H3d | Configurar delays y headers por portal | UI + API | Ambos |
+
+**Nota:** Fase H3 puede esperar. Se cambia poco y el riesgo de error es alto (un keyword mal puede romper un scraper).
+
+---
+
 ### Bloque G: Catálogo MOL — Taxonomía propia (skills + ocupaciones)
 
 **Dependencia:** Bloque 9° (curación perfil) + datos suficientes (>30K ofertas procesadas)
