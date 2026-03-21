@@ -477,6 +477,38 @@ USING (
 
 ---
 
+### S-26: RLS vacantes_empresa (Bloque 11°)
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Servicio** | S3 registrado |
+| **Impacto** | Sin RLS, una empresa podría ver vacantes de otra empresa |
+
+**Solución:**
+- RLS: empresa solo ve sus vacantes (`empresa_id = user.org_id`)
+- OE puede leer vacantes de su jurisdicción (pool amplio, lectura)
+- Admin ve todas
+- Candidatos con opt-in son visibles (perfil anonimizado hasta aceptación)
+
+---
+
+### S-27: Verificación de títulos (Bloque 12°)
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟡 MEDIO |
+| **Servicio** | S1, S2 |
+| **Impacto** | Un trabajador podría declarar un título que no tiene. Las skills derivadas serían falsas |
+
+**Solución:**
+- Distinguir skills "verificadas por formación" (título matchea resolución oficial) de "autodeclaradas"
+- El reporte muestra la distinción al reclutador
+- En v2: validación institucional por el técnico de OE agrega capa de confianza
+- En visión futura: certificación MOL con sello
+
+---
+
 ## Checklist Skills Intelligence
 
 ```
@@ -489,10 +521,12 @@ ALTOS:
 □ S-20: Consentimiento opt-in del trabajador para pool
 □ S-23: Rate limiting APIs públicas S1
 □ S-25: Validación input importación Excel/CSV
+□ S-26: RLS vacantes_empresa (aislamiento entre empresas)
 
 MEDIOS:
 □ S-21: DNI solo en PDF, no en reporte web
 □ S-24: Audit log de reportes generados
+□ S-27: Verificación de títulos (distinguir verificado vs autodeclarado)
 ```
 
 ---
@@ -526,5 +560,7 @@ MEDIOS:
 | `vacantes_empresa` | ✗ | Lectura (pool jurisd.) | ✗ | CRUD (su empresa) | Todos | ⬜ Crear |
 | `esco_argentino` | Lectura | Lectura | Lectura (via reporte) | Lectura | CRUD | ✅ Existe |
 | `reporte_accesos` | ✗ | ✗ | ✗ | ✗ | Lectura | ⬜ Crear |
+| `emergentes_pendientes` | ✗ | Lectura | ✗ | ✗ | CRUD | ⬜ Crear |
+| `resoluciones_formacion` | Lectura | Lectura | ✗ | Lectura | CRUD | ⬜ Crear |
 
 > **Principio:** La RLS es la primera línea de defensa. Incluso si un usuario construye una query manual contra Supabase, solo ve lo que le corresponde.

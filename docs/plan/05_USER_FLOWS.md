@@ -555,6 +555,84 @@ stateDiagram-v2
 
 ---
 
+## F-07: Técnico OE orienta formación con impacto medible (Bloque 8°)
+
+```
+Técnico atiende al trabajador (S2-4)
+    ↓
+Ve brechas del perfil (skills faltantes para ocupaciones compatibles)
+    ↓
+Abre tab Formación (S2-8)
+    ↓
+Ve cursos del catálogo de la OE agrupados por brecha
+    ↓
+Cada curso muestra IMPACTO: "si completa X, su match sube de 61% a 78%"
+    ↓
+Click "Derivar a este curso" → registra derivación en el caso
+    ↓
+Seguimiento: derivado → en curso → completado → perfil actualizado
+```
+
+### Tablas Afectadas
+
+- `cursos_oe` — catálogo de cursos mapeados a skills ESCO
+- `perfiles_trabajadores` — se actualiza skills cuando completa el curso
+
+---
+
+## F-08: Empresa publica búsqueda y preselecciona (Bloque 11°)
+
+```
+Empresa se registra (S3-4)
+    ↓
+Crea perfil de puesto (S3-6): título + skills requeridas (ESCO + emergentes)
+    ↓
+Publica búsqueda → sistema rankea pool de candidatos con opt-in
+    ↓
+Ve candidatos ordenados por match % con brecha específica (S3-10)
+    ↓
+Compara side-by-side con mismo perfil de puesto (S3-8)
+    ↓
+Preselecciona → candidato recibe notificación (si tiene email)
+    ↓
+Historial guardado: candidato, match, fecha, puesto (S3-7)
+```
+
+### Tablas Afectadas
+
+- `vacantes_empresa` — vacante con skills ESCO
+- `perfiles_trabajadores` — candidatos con opt-in
+- `organizaciones` — empresa registrada
+
+---
+
+## F-09: Trabajador carga título → skills automáticas (Bloque 12°)
+
+```
+Trabajador en paso 2 (captura skills) elige Vía 4: "¿Qué estudiaste?"
+    ↓
+Busca su título: "tecnicatura en redes"
+    ↓
+Sistema busca en base de resoluciones oficiales + catálogos academias
+    ↓
+Encuentra: "Tecnicatura Superior en Redes — UTN, Res. ME 1234/2024"
+    ↓
+Muestra skills derivadas con definición ESCO (6 skills)
+    ↓
+Trabajador confirma/descarta cada skill (mismo UI que otras vías)
+    ↓
+Skills verificadas se marcan con badge "Verificado por formación"
+    ↓
+Si no encuentra su título → carga manual (nombre + institución)
+```
+
+### Tablas Afectadas
+
+- `resoluciones_formacion` — base de títulos mapeados a skills
+- `perfiles_trabajadores` — skills derivadas de formación
+
+---
+
 ## Historial de Cambios
 
 | Fecha | Versión | Cambio |
@@ -562,4 +640,5 @@ stateDiagram-v2
 | 2026-02-05 | 1.0 | Flujos SaaS: Visitante→Free, Free→Pro, Uso dashboard, Webhook MP |
 | 2026-02-07 | 2.0 | Modelo híbrido: F-01 registro libre, F-02 acceso gated con aprobación, F-03 checkout dual, F-05 CMS. Estados: registrado, pendiente_aprobacion, trial |
 | 2026-03-18 | 2.1 | F-06 Reporte de Compatibilidad Laboral (V-17): flujo gestor genera → PDF con QR → reclutador accede → edita competencias |
+| 2026-03-21 | 2.3 | F-07 formación con impacto (Bloque 8°), F-08 empresa publica búsqueda (Bloque 11°), F-09 Vía 4 título → skills (Bloque 12°) |
 | 2026-03-20 | 2.2 | F-06 ampliado: 2 caminos (S1+S2), 4 vías captura (+ formación/título), 3 tabs resultados, transición dual, ESCO Argentino. Fuente: MOL_Skills_Intelligence.docx v5 |

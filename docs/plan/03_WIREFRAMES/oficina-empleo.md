@@ -672,6 +672,210 @@ CREATE TABLE perfil_argentino_versiones (
 
 ---
 
+## S2-8: Formacion con impacto medible (Bloque 8°)
+
+**Estado:** Por crear
+**Nivel:** U-TECNICO_OE
+**Feature:** B-D3, B-D4
+
+El tecnico orienta al trabajador con cursos del catalogo de la OE. Cada curso muestra cuanto sube el match si lo completa.
+
+```
++---------------------------------------------------------------------+
+|  Formacion > Juan Perez                                              |
+|                                                                      |
+|  Brechas del perfil: Docker (3 cursos), Testing (2 cursos)          |
+|                                                                      |
+|  -- Brecha: Docker ------------------------------------+             |
+|  |                                                     |             |
+|  |  Introduccion a contenedores                        |             |
+|  |  CENOF Barracas | 3 meses | Presencial              |             |
+|  |  Cubre: Docker, Linux, Redes                        |             |
+|  |                                                     |             |
+|  |  IMPACTO: Si completa este curso:                   |             |
+|  |  +---------------------------------------------+   |             |
+|  |  | Desarrollador SW:  61% --> 78% (+17%)       |   |             |
+|  |  | Administrador BD:  45% --> 58% (+13%)       |   |             |
+|  |  | Ingeniero datos:   52% --> 67% (+15%)       |   |             |
+|  |  +---------------------------------------------+   |             |
+|  |                                                     |             |
+|  |  [Derivar a este curso]                             |             |
+|  +-----------------------------------------------------+             |
+|                                                                      |
+|  -- Brecha: Testing -----------------------------------+             |
+|  |                                                     |             |
+|  |  Testing QA                                         |             |
+|  |  Virtual | 4 meses | Microcredencial                |             |
+|  |  Cubre: Testing funcional, Automatizacion            |             |
+|  |                                                     |             |
+|  |  IMPACTO: Si completa este curso:                   |             |
+|  |  +---------------------------------------------+   |             |
+|  |  | Desarrollador SW:  78% --> 89% (+11%)       |   |             |
+|  |  +---------------------------------------------+   |             |
+|  |                                                     |             |
+|  |  [Derivar a este curso]                             |             |
+|  +-----------------------------------------------------+             |
+|                                                                      |
+|  Catalogo propio: 45 cursos  |  [Importar cursos CSV]               |
++---------------------------------------------------------------------+
+```
+
+**Logica del impacto:** El sistema simula que el trabajador tiene las skills del curso, recalcula matching contra ocupaciones compatibles, y muestra el delta.
+
+---
+
+## S2-10: Inteligencia Local (Bloque 10°)
+
+**Estado:** Por crear (v2)
+**Nivel:** U-TECNICO_OE / U-COORDINADOR
+**Feature:** E-D1, E-D2
+
+Dashboard de inteligencia del mercado laboral de la jurisdiccion de la OE.
+
+```
++---------------------------------------------------------------------+
+|  Inteligencia Local > OE CABA Sur                                    |
+|                                                                      |
+|  +-------------------------------+  +-----------------------------+  |
+|  |  Skills mas demandadas        |  |  Skills menos disponibles   |  |
+|  |  (en ofertas de la zona)      |  |  (en la cartera de la OE)   |  |
+|  |                               |  |                             |  |
+|  |  1. Python          78%      |  |  1. Docker          5%     |  |
+|  |  2. SQL             72%      |  |  2. Kubernetes      3%     |  |
+|  |  3. JavaScript      65%      |  |  3. CI/CD           8%     |  |
+|  |  4. Git             60%      |  |  4. AWS            12%     |  |
+|  |  5. Testing         55%      |  |  5. Scrum          15%     |  |
+|  +-------------------------------+  +-----------------------------+  |
+|                                                                      |
+|  +----------------------------------------------------------------+ |
+|  |  BRECHA ESTRUCTURAL                                             | |
+|  |                                                                 | |
+|  |  Skills que el mercado pide pero tu cartera no tiene:          | |
+|  |                                                                 | |
+|  |  Skill        | Demanda | Disponible | Gap   | Curso local?   | |
+|  |  -------------|---------|------------|-------|----------------| |
+|  |  Docker       | 78%     | 5%         | -73%  | NO - FALTA     | |
+|  |  Kubernetes   | 45%     | 3%         | -42%  | NO - FALTA     | |
+|  |  Testing      | 55%     | 25%        | -30%  | SI (2 cursos)  | |
+|  |  AWS          | 40%     | 12%        | -28%  | NO - FALTA     | |
+|  +----------------------------------------------------------------+ |
+|                                                                      |
+|  +----------------------------------------------------------------+ |
+|  |  CURSOS QUE FALTAN                                              | |
+|  |                                                                 | |
+|  |  Tu catalogo no tiene formacion para estas brechas:            | |
+|  |  - Docker/contenedores (gap -73%, 0 cursos)                    | |
+|  |  - Cloud AWS/GCP (gap -28%, 0 cursos)                          | |
+|  |  - Kubernetes (gap -42%, 0 cursos)                             | |
+|  |                                                                 | |
+|  |  Recomendacion: incorporar formacion en estas areas            | |
+|  +----------------------------------------------------------------+ |
+|                                                                      |
+|  [Exportar reporte institucional PDF]                               |
++---------------------------------------------------------------------+
+```
+
+**Datos:** Cruza ofertas_dashboard (filtradas por jurisdiccion) × perfiles de la cartera de la OE × cursos_oe.
+
+---
+
+## S3 Registrado: Pantallas empresa con cuenta (Bloque 11°)
+
+**Estado:** Por crear (v2, Etapa 3 del roadmap)
+**Nivel:** U-EMPRESA_REGISTRADA
+
+### S3-6: Perfil de puesto reutilizable
+
+```
++---------------------------------------------------------------------+
+|  Perfil de Puesto > Desarrollador Backend                            |
+|                                                                      |
+|  [Guardar]  [Duplicar]  [Eliminar]                                  |
+|                                                                      |
+|  Titulo: [Desarrollador Backend            ]                        |
+|  Ocupacion ESCO: [Desarrollador de software v]                      |
+|                                                                      |
+|  Skills requeridas (del perfil argentino + personalizadas):         |
+|  +----------------------------------------------------------------+ |
+|  | [v] Python                    [esencial] [ESCO]                 | |
+|  | [v] SQL                       [esencial] [ESCO]                 | |
+|  | [v] Docker                    [esencial] [Emergente ARG]        | |
+|  | [v] Git                       [deseable] [ESCO]                 | |
+|  | [ ] Kubernetes                [deseable] [Emergente ARG]        | |
+|  |                                                                 | |
+|  | [+ Agregar skill]  [Cargar desde perfil argentino]              | |
+|  +----------------------------------------------------------------+ |
+|                                                                      |
+|  Procesos activos con este perfil: 3                                |
+|  Candidatos analizados total: 28                                    |
++---------------------------------------------------------------------+
+```
+
+### S3-9: Benchmark del mercado
+
+```
++---------------------------------------------------------------------+
+|  Benchmark > Sector: Tecnologia                                      |
+|                                                                      |
+|  Disponibilidad de skills en el pool:                               |
+|                                                                      |
+|  Skill         | Tu puesto | Pool MOL | Dificultad                  |
+|  --------------|-----------|----------|-----------------------------  |
+|  Python        | Esencial  | 45%      | Media (abundante)            |
+|  Docker        | Esencial  | 12%      | Alta (escaso)                |
+|  Kubernetes    | Deseable  | 5%       | Muy alta (muy escaso)        |
+|  SQL           | Esencial  | 62%      | Baja (muy abundante)         |
+|                                                                      |
+|  Alerta: Docker y Kubernetes tienen tendencia creciente (+35%)      |
+|  pero disponibilidad decreciente. Considerar reskilling interno.    |
+|                                                                      |
+|  [Buscar candidatos con estas skills]                               |
++---------------------------------------------------------------------+
+```
+
+---
+
+## Via 4: Captura por formacion/titulo (Bloque 12°)
+
+**Estado:** Por crear (Etapa 4 del roadmap)
+**Aplica a:** S1-3 y S2-4 (como 4ta via de captura)
+
+```
++---------------------------------------------------------------------+
+|  Via 4: Que estudiaste?                                              |
+|                                                                      |
+|  [Buscar titulo: tecnicatura en redes, lic. administracion...]      |
+|                                                                      |
+|  Resultados:                                                        |
+|  +----------------------------------------------------------------+ |
+|  | Tecnicatura Superior en Redes Informaticas                      | |
+|  | UTN — Res. ME 1234/2024                                         | |
+|  | Skills derivadas: Redes, TCP/IP, Linux, Ciberseguridad,        | |
+|  |   Administracion de servidores, Firewall                       | |
+|  | Cobertura: 6 skills                                            | |
+|  | [Verificado contra resolucion oficial]                          | |
+|  | [Agregar al perfil]                                            | |
+|  +----------------------------------------------------------------+ |
+|  | Tecnicatura en Redes y Telecomunicaciones                      | |
+|  | ISTEEC — Res. ME 5678/2023                                      | |
+|  | Skills derivadas: Redes, Telecomunicaciones, VoIP, Fibra optica| |
+|  | Cobertura: 5 skills                                            | |
+|  | [Verificado]                                                    | |
+|  | [Agregar al perfil]                                            | |
+|  +----------------------------------------------------------------+ |
+|                                                                      |
+|  No encontras tu titulo?                                            |
+|  [Cargar manualmente: nombre del titulo + institucion]              |
++---------------------------------------------------------------------+
+```
+
+**Fuentes de datos:**
+- Resoluciones ministeriales de carreras (scraping)
+- Catalogos de academias locales (Codehouse, Digital House, etc.)
+- Plataformas internacionales (Coursera, edX) — futuro
+
+---
+
 ## Wireframes Mobile (Bloque F)
 
 > Asignado a Sergio. Mobile-first para S1 y S3.

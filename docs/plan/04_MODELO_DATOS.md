@@ -914,6 +914,99 @@ CREATE TABLE IF NOT EXISTS tension_ocupaciones (
 
 ---
 
+### T-cursos_oe (NUEVA — Bloque 8° catálogo de cursos de cada OE)
+
+Catálogo de cursos de cada Oficina de Empleo, mapeados a skills ESCO.
+
+```sql
+CREATE TABLE IF NOT EXISTS cursos_oe (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  organizacion_id UUID REFERENCES organizaciones(id) ON DELETE CASCADE,
+  nombre VARCHAR(300) NOT NULL,
+  descripcion TEXT,
+  duracion VARCHAR(100),
+  modalidad VARCHAR(50),
+  certificacion VARCHAR(100),
+  institucion VARCHAR(200),
+  skills_mapeadas JSONB,                     -- Array de skill labels ESCO mapeadas
+  skills_mapeadas_count INTEGER DEFAULT 0,
+  activo BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_cursos_oe_org ON cursos_oe(organizacion_id);
+```
+
+**Pantallas que usan:** S2-8 (formación), S2-1 (importar cursos)
+**RLS:** Técnico OE solo ve cursos de su organización. Admin ve todos.
+
+---
+
+### T-vacantes_empresa (NUEVA — Bloque 11° vacantes de empresas registradas)
+
+Vacantes publicadas por empresas con cuenta registrada (S3 nivel registrado).
+
+```sql
+CREATE TABLE IF NOT EXISTS vacantes_empresa (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  empresa_id UUID REFERENCES organizaciones(id) ON DELETE CASCADE,
+  titulo VARCHAR(300) NOT NULL,
+  descripcion TEXT,
+  skills_requeridas JSONB,                   -- Skills ESCO derivadas (auto o manual)
+  skills_requeridas_count INTEGER DEFAULT 0,
+  isco_code VARCHAR(10),                     -- Ocupación ESCO asignada
+  esco_occupation_label VARCHAR(200),
+  ubicacion VARCHAR(200),
+  modalidad VARCHAR(50),
+  estado VARCHAR(30) DEFAULT 'activa',       -- 'activa', 'pausada', 'cerrada'
+  contacto VARCHAR(200),
+  candidatos_preseleccionados JSONB,         -- Array de perfil_ids preseleccionados
+  created_by UUID REFERENCES auth.users(id),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_vacantes_empresa ON vacantes_empresa(empresa_id);
+CREATE INDEX IF NOT EXISTS idx_vacantes_isco ON vacantes_empresa(isco_code);
+CREATE INDEX IF NOT EXISTS idx_vacantes_estado ON vacantes_empresa(estado);
+```
+
+**Pantallas que usan:** S3-5 (dashboard empresa), S3-6 (perfil puesto), S3-10 (buscar pool)
+**RLS:** Empresa solo ve sus vacantes. OE puede leer vacantes de su jurisdicción (pool amplio). Admin ve todas.
+
+---
+
+### T-resoluciones_formacion (NUEVA — Bloque 12° Vía 4 títulos → skills)
+
+Base de resoluciones oficiales de carreras argentinas mapeadas a skills ESCO.
+
+```sql
+CREATE TABLE IF NOT EXISTS resoluciones_formacion (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  titulo_formacion VARCHAR(300) NOT NULL,     -- "Tecnicatura Superior en Redes"
+  tipo VARCHAR(50) NOT NULL,                  -- 'pregrado', 'grado', 'posgrado', 'curso', 'certificacion'
+  institucion VARCHAR(300),                   -- "UTN", "UBA", etc.
+  resolucion_oficial VARCHAR(200),            -- "Res. ME 1234/2024"
+  skills_mapeadas JSONB NOT NULL,             -- Array de skill labels ESCO derivadas
+  skills_count INTEGER DEFAULT 0,
+  nivel_cobertura VARCHAR(20),                -- 'basico', 'intermedio', 'avanzado'
+  fuente VARCHAR(100),                        -- 'resolucion_ministerial', 'catalogo_academia', 'manual'
+  verificado BOOLEAN DEFAULT FALSE,           -- TRUE si fue verificado contra resolución oficial
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_resoluciones_titulo ON resoluciones_formacion
+  USING gin(to_tsvector('spanish', titulo_formacion));
+CREATE INDEX IF NOT EXISTS idx_resoluciones_tipo ON resoluciones_formacion(tipo);
+```
+
+**Pantallas que usan:** S1-3 y S2-4 (Vía 4 captura por formación/título)
+**RLS:** Lectura pública (es catálogo). Escritura solo admin/sistema.
+
+---
+
 ## Tablas Existentes — SQLite Local (Pipeline)
 
 Tablas en SQLite local usadas por el pipeline de procesamiento.
@@ -947,6 +1040,10 @@ Ver [06_SEGURIDAD](./06_SEGURIDAD.md#rls) para políticas de seguridad a nivel d
 | tension_ocupaciones | Todos | Solo admin/sistema | Solo admin/sistema | Solo admin |
 | uso_features | Solo propios | Sistema | Sistema | No |
 | reportes_compatibilidad | Por token (público si activo) + propios + admin | Autenticados | Solo creador/admin | No |
+| cursos_oe | Técnico: su org. Admin: todos | Técnico su org | Técnico su org | Técnico su org |
+| vacantes_empresa | Empresa: sus vacantes. OE: lectura jurisdicción | Empresa su org | Empresa su org | Empresa su org |
+| resoluciones_formacion | Todos (catálogo público) | Solo admin/sistema | Solo admin | No |
+| emergentes_pendientes | Autenticados | Solo sistema (RPC) | Admin | No |
 
 ---
 
@@ -961,3 +1058,4 @@ Ver [06_SEGURIDAD](./06_SEGURIDAD.md#rls) para políticas de seguridad a nivel d
 | 2026-03-18 | 2.3 | T-reportes_compatibilidad (V-17: Reporte de Compatibilidad Laboral), RLS con acceso público por token |
 | 2026-03-20 | 2.4 | Skills Intelligence v5: T-organizaciones (multi-tenancy OE/empresa), T-user_organizaciones (relación usuario-org), T-reporte_accesos (audit log QR). Campos origen + perfil_consolidado_version en reportes |
 | 2026-03-21 | 2.5 | T-emergentes_pendientes (Bloque 9°: curación automática del perfil argentino). Función RPC recalcular_emergentes() post-sync |
+| 2026-03-21 | 2.6 | T-cursos_oe (Bloque 8°), T-vacantes_empresa (Bloque 11°), T-resoluciones_formacion (Bloque 12°). RLS ampliado |
