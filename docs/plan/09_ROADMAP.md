@@ -403,27 +403,58 @@ Post-corte: regenerar skills_searchable.json (script existente)
 | E5 | QR evoluciona a credencial verificable | — | ❌ Futuro |
 | E6 | API pública para portales de empleo de gobiernos | — | ❌ Futuro |
 
+### Bloque F: Responsive — Mobile y Tablet (Sergio)
+
+**Dependencia:** Bloques C y D (las pantallas tienen que existir primero)
+**Asignado a:** Sergio (puro frontend — CSS/Tailwind)
+
+> El sistema actual está diseñado desktop-first. Para S1 (Mi Futuro Laboral) y S3 libre (reporte QR) el acceso mobile es crítico: el trabajador entra desde el celular y el reclutador escanea el QR en la entrevista con el teléfono.
+
+| # | Tarea | Pantallas afectadas | Prioridad |
+|---|-------|-------------------|-----------|
+| F1 | Responsive S1: flujo Mi Futuro Laboral completo en mobile | S1-1 a S1-9 | ALTA — el trabajador entra desde el celular |
+| F2 | Responsive S3 libre: reporte QR legible en mobile | S3-1 a S3-3 (reporte + personalizar) | ALTA — el reclutador escanea con el teléfono |
+| F3 | Responsive S2: panel OE usable en tablet | S2-1 a S2-11 | MEDIA — el técnico puede usar tablet en la atención |
+| F4 | Responsive dashboard existente | P-09, P-10, P-17 a P-25 | BAJA — analistas usan desktop |
+| F5 | Touch-friendly: botones, inputs, dropdowns con tamaño mínimo 44px | Todos | ALTA — estándar WCAG |
+| F6 | Test visual en 3 breakpoints (mobile 375px, tablet 768px, desktop 1280px) | Todos | — |
+
+**Criterios:**
+- Mobile-first para S1 y S3 (la mayoría de los usuarios van a entrar desde el celular)
+- Tablet-friendly para S2 (técnico de OE puede usar tablet en la atención presencial)
+- Desktop se mantiene como está para el dashboard de análisis
+- Todos los botones e inputs: mínimo 44x44px (touch target WCAG)
+- Sin scroll horizontal en ningún breakpoint
+- Tablas: se convierten en cards en mobile
+
+**Tests:**
+| Test | Tipo | Qué valida |
+|------|------|------------|
+| `component/responsive-s1-mobile.test.tsx` | Component | S1 renderiza correctamente en viewport 375px |
+| `component/responsive-s3-qr-mobile.test.tsx` | Component | Reporte QR legible en mobile, botones touch-friendly |
+| `e2e/responsive-flow.spec.ts` | E2E (Playwright) | Flujo completo S1 en mobile: onboarding → perfil → resultados → reporte |
+
 ---
 
 ## MAPA DE DEPENDENCIAS
 
 ```
-BLOQUE A (componentes compartidos)
+BLOQUE A (componentes compartidos) ✅
     │
     ├──────────────────────┐
     │                      │
     ▼                      ▼
-BLOQUE B (S2 - OE)    BLOQUE D (S3 libre)
+BLOQUE B (S2 - OE) ✅     BLOQUE D (S3 libre)
     │                  D1, D2, D3 = A6+A7
     │
     ▼
 BLOQUE C (S1 - Trabajador)
     │
-    ├──────────────────────┐
-    │                      │
-    ▼                      ▼
-BLOQUE D (S3 registrado)  BLOQUE E (avanzado)
-D4 a D10                   E1 a E6
+    ├──────────────────────┬──────────────────┐
+    │                      │                  │
+    ▼                      ▼                  ▼
+BLOQUE D (S3 registrado)  BLOQUE E (avanzado) BLOQUE F (responsive)
+D4 a D10                   E1 a E6            F1 a F6 (Sergio)
 ```
 
 ### Orden sugerido de ejecución

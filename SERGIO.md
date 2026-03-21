@@ -546,6 +546,30 @@ export default function MiPagina() {
 
 ---
 
+## Bloque F: Responsive (mobile + tablet) — TU BLOQUE
+
+Ademas de las tareas S1-S8, tenes asignado el **Bloque F** completo: hacer que el sistema funcione en celular y tablet.
+
+**Prioridad:**
+1. **S1 en mobile** (ALTA) — el trabajador entra desde el celular
+2. **S3 reporte QR en mobile** (ALTA) — el reclutador escanea con el teléfono
+3. **S2 en tablet** (MEDIA) — el técnico de OE puede usar tablet en la atención
+
+**Criterios:**
+- Botones e inputs: mínimo 44x44px (touch WCAG)
+- Sin scroll horizontal
+- Tablas → cards en mobile
+- 3 breakpoints: 375px (mobile), 768px (tablet), 1280px (desktop)
+
+**Tests requeridos:**
+- `component/responsive-s1-mobile.test.tsx`
+- `component/responsive-s3-qr-mobile.test.tsx`
+- `e2e/responsive-flow.spec.ts` (Playwright en viewport mobile)
+
+Ver detalle completo en `docs/plan/09_ROADMAP.md` → Bloque F.
+
+---
+
 ## Reglas
 
 1. **No toques Supabase** — Gerardo hace todas las migrations y RLS
