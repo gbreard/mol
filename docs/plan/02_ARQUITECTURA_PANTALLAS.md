@@ -488,6 +488,62 @@ app/
 
 ---
 
+## Responsive — Mobile y Tablet (Bloque F)
+
+> **Estado:** Pendiente. El sistema actual es desktop-first. Para S1 y S3 el acceso mobile es crítico.
+> **Asignado a:** Sergio (puro frontend)
+
+### Estrategia por servicio
+
+| Servicio | Dispositivo principal | Estrategia | Prioridad |
+|----------|----------------------|------------|-----------|
+| S1 — Mi Futuro Laboral | **Mobile** (trabajador en búsqueda) | Mobile-first: diseñar para 375px, escalar a desktop | ALTA |
+| S3 libre — Reporte QR | **Mobile** (reclutador escanea con teléfono) | Mobile-first: reporte legible en pantalla chica | ALTA |
+| S2 — Oficina de Empleo | **Tablet** (técnico en atención presencial) | Tablet-friendly: layout 2 columnas → stack | MEDIA |
+| Dashboard análisis | **Desktop** (analista en oficina) | Mantener como está, mejoras menores | BAJA |
+
+### Breakpoints
+
+| Breakpoint | Ancho | Dispositivo | Tailwind |
+|-----------|-------|-------------|----------|
+| Mobile | 375px | Celular | Default (sin prefijo) |
+| Tablet | 768px | Tablet / iPad | `md:` |
+| Desktop | 1280px | Monitor | `lg:` / `xl:` |
+
+### Reglas de adaptación
+
+| Elemento desktop | En mobile se convierte en |
+|-----------------|--------------------------|
+| Tabla con columnas | Cards apiladas (stack vertical) |
+| Layout 2 columnas | Stack vertical (perfil arriba, datos abajo) |
+| Sidebar filtros | Drawer colapsable (botón "Filtros") |
+| Tabs horizontales | Tabs scrolleables o select dropdown |
+| Gráficos anchos | Scroll horizontal o simplificación |
+| Botones en fila | Stack vertical, ancho completo |
+| Modales anchos | Fullscreen en mobile |
+
+### Criterios de accesibilidad
+
+- Touch target mínimo: **44x44px** (estándar WCAG 2.5.5)
+- Sin scroll horizontal en ningún breakpoint
+- Texto mínimo: **14px** en mobile (legible sin zoom)
+- Contraste: mantener ratios existentes (ya pasan WCAG AA)
+- Focus visible en navegación por teclado (ya implementado via Radix)
+
+### Pantallas prioritarias para mobile
+
+| # | Pantalla | Por qué es crítica en mobile |
+|---|----------|------------------------------|
+| S1-1 | Landing Mi Futuro Laboral | Primera impresión del trabajador |
+| S1-2 | Onboarding | Input de nombre — tiene que ser rápido |
+| S1-3 | Captura skills (4 vías) | La más compleja: búsqueda + resultados + checkboxes |
+| S1-6 | Resultados (3 tabs) | Cards de ocupaciones/ofertas/cursos |
+| S1-9 | PDF + QR | Botón descargar + vista previa |
+| S3-2 | Reporte compatibilidad | Lo ve el reclutador en la entrevista con el celular |
+| S3-3 | Personalizar competencias | Editar skills en pantalla chica |
+
+---
+
 ## Historial de Cambios
 
 | Fecha | Versión | Cambio |

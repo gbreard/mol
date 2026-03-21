@@ -25,9 +25,9 @@
 | Severidad | Cantidad | Descripción |
 |-----------|----------|-------------|
 | **CRÍTICO** | 5 | Gaps que impiden lanzamiento (incluye V-19 pools OE) |
-| **ALTO** | 10 | Features que esperan los usuarios |
+| **ALTO** | 11 | Features que esperan los usuarios (incluye V-22 responsive) |
 | **MEDIO** | 6 | Mejoras de UX + S3 v2 |
-| **Total** | **21** | |
+| **Total** | **22** | |
 
 ---
 
@@ -198,6 +198,18 @@ MATCHING:
 | V-13 | Comparación temporal | Selector "vs período anterior" |
 | V-14 | Dashboard personalizable | Widgets arrastrables |
 | V-15 | Modo offline | PWA con cache de datos recientes |
+
+### V-22: Responsive mobile y tablet
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | El sistema es desktop-first. Para S1 (trabajador entra desde celular) y S3 libre (reclutador escanea QR con teléfono) el acceso mobile es crítico. S2 (técnico OE) puede usar tablet en la atención presencial |
+| **Servicios** | S1 (ALTA), S3 libre (ALTA), S2 (MEDIA), Dashboard (BAJA) |
+| **Asignado** | Sergio (puro frontend) |
+| **Dependencia** | Bloques C y D (pantallas tienen que existir primero) |
+| **Detalle** | 3 breakpoints (375px mobile, 768px tablet, 1280px desktop). Touch target 44px WCAG. Tablas → cards. Layout 2 col → stack. Ver wireframes mobile en `03_WIREFRAMES/oficina-empleo.md` |
+| **Estado** | ⬜ Pendiente |
 
 ---
 
