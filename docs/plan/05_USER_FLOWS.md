@@ -387,6 +387,144 @@ Admin crea contenido desde datos del dashboard y el sistema lo distribuye a regi
 
 ---
 
+## F-06: Evaluación de Compatibilidad + Reporte para Empresas (NUEVO — V-17)
+
+Flujo completo con dos caminos de entrada (trabajador independiente y gestor de oficina de empleo), captura de competencias con 3 vías, matching contra perfil consolidado argentino, y generación del reporte.
+
+### Dos caminos de entrada
+
+| Camino | Usuario | Entrada | Estado |
+|--------|---------|---------|--------|
+| A. Mi Futuro Laboral | Trabajador independiente | `/mi-futuro-laboral` → `/skills?tab=myskills` | Landing existe, cards de evaluación por crear |
+| B. Oficina de Empleo | Gestor / orientador | `/oficina-empleo` → perfil trabajador | Hub wireframe, funcionalidad por conectar |
+
+Ambos caminos convergen en el mismo motor de matching (`MySkillsSearch`) y producen el mismo reporte.
+
+### Captura de competencias (Paso 2) — 3 vías combinables
+
+| Vía | Pregunta | Cómo funciona | Estado |
+|-----|----------|---------------|--------|
+| 1. Por ocupación | "¿En qué trabajaste?" | Busca ocupación ESCO → extrae competencias del perfil consolidado argentino | ✅ Existe |
+| 2. Por tarea/habilidad | "¿Qué sabés hacer?" | Busca directo en catálogo ESCO + emergentes argentinas (por nombre y definición) | ❌ Nuevo |
+| 3. Texto libre | "Contanos con tus palabras" | Describe experiencia → NLP identifica competencias | ❌ Nuevo |
+
+**Elemento clave:** Cada competencia identificada muestra su **definición ESCO** para que el trabajador confirme (✓), marque como dudoso (?), o descarte (✕). Resuelve el problema de que muchas personas no se identifican con nombres técnicos formales.
+
+### Taxonomía de referencia: Perfil Consolidado Argentino
+
+El matching no usa ESCO genérico sino el **Perfil Consolidado Argentino** (tabla `esco_argentino`), que incluye:
+- Skills ESCO estándar (14,257) marcadas como `esco_common`
+- Skills emergentes del mercado argentino aprobadas por analistas, marcadas como `argentina_approved`
+- Cada ocupación tiene su versión (v1, v2...) que se incrementa con cada aprobación
+- El reporte registra la versión usada (`perfil_consolidado_version`) para reproducibilidad
+
+> Estado: Sistema de perfiles consolidados **ya implementado** (tabla, API CRUD, panel de aprobación en /admin/skills → tab Consolidado).
+
+### Flujo completo
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                                                                          │
+│  1. GESTOR O TRABAJADOR GENERA REPORTE (desde "Mis Skills", paso 3)     │
+│     ┌──────────────────────────────────────────────────────┐            │
+│     │  P-10: /dashboard/skills → Tab "Mis Skills"          │            │
+│     │                                                      │            │
+│     │  Ocupación: Desarrollador de software                │            │
+│     │  Compatibilidad: 78%                                 │            │
+│     │  Skills cubiertas: 7/9 esenciales                    │            │
+│     │                                                      │            │
+│     │  [Generar Reporte para Empresa]                      │            │
+│     └──────────────────┬───────────────────────────────────┘            │
+│                        │                                                 │
+│                        ▼                                                 │
+│  2. CONFIRMAR DATOS DEL REPORTE (modal)                                 │
+│     ┌──────────────────────────────────────────────────────┐            │
+│     │  Nombre del candidato: [Juan Pérez     ]             │            │
+│     │  DNI: [30.123.456         ]                          │            │
+│     │  Vacante: [Desarrollador de software   ]             │            │
+│     │                                                      │            │
+│     │  El reporte estará disponible por 60 días.           │            │
+│     │                                                      │            │
+│     │  [Cancelar]  [Generar Reporte + PDF]                 │            │
+│     └──────────────────┬───────────────────────────────────┘            │
+│                        │                                                 │
+│                        ▼                                                 │
+│  3. REPORTE GENERADO                                                    │
+│     ┌──────────────────────────────────────────────────────┐            │
+│     │  ✓ Reporte creado exitosamente                       │            │
+│     │                                                      │            │
+│     │  [Descargar PDF]  [Copiar link]  [Ver reporte web]   │            │
+│     └──────────────────────────────────────────────────────┘            │
+│                        │                                                 │
+│                        │  (trabajador entrega PDF al reclutador)        │
+│                        ▼                                                 │
+│  4. RECLUTADOR ESCANEA QR                                               │
+│     ┌──────────────────────────────────────────────────────┐            │
+│     │  P-35: /reporte/{token}                              │            │
+│     │                                                      │            │
+│     │  ┌── Datos del Perfil ──────────────────────────┐    │            │
+│     │  │ Candidato: Juan Pérez                        │    │            │
+│     │  │ Vacante: Desarrollador de software           │    │            │
+│     │  │ Compatibilidad: 78% ████████░░ 7/9 esencial. │    │            │
+│     │  └──────────────────────────────────────────────┘    │            │
+│     │                                                      │            │
+│     │  ┌── Mapa de Competencias Requeridas ───────────┐    │            │
+│     │  │ ✓ JavaScript        ✓ Python                 │    │            │
+│     │  │ ✓ SQL               ✓ Testing                │    │            │
+│     │  │ ✓ Git               ✓ Agile                  │    │            │
+│     │  │ ✓ REST APIs         ✗ Docker (gap)           │    │            │
+│     │  │                     ✗ CI/CD (gap)            │    │            │
+│     │  │                                              │    │            │
+│     │  │ [+ Agregar competencia] [✕ Quitar seleccion.] │    │            │
+│     │  │ (recalcula automáticamente al editar)         │    │            │
+│     │  └──────────────────────────────────────────────┘    │            │
+│     │                                                      │            │
+│     │  ┌── Brecha Técnica ────────────────────────────┐    │            │
+│     │  │ Competencias faltantes: Docker, CI/CD        │    │            │
+│     │  └──────────────────────────────────────────────┘    │            │
+│     │                                                      │            │
+│     │  Conocé más sobre el MOL → [mol-nextjs.vercel.app]   │            │
+│     └──────────────────────────────────────────────────────┘            │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### Pasos Detallados
+
+| Paso | Pantalla | Actor | Acción | Siguiente |
+|------|----------|-------|--------|-----------|
+| 0a | /mi-futuro-laboral | Trabajador | Click "Evaluar mi compatibilidad" | P-10 Mis Skills |
+| 0b | /oficina-empleo | Gestor | Accede a perfil trabajador | P-10 Mis Skills |
+| 1 | P-10 paso 1 | Ambos | Ingresa datos del trabajador (nombre, DNI) | Paso 2 |
+| 2 | P-10 paso 2 | Ambos | Captura competencias (3 vías: ocupación, tarea, texto libre) | Paso 3 |
+| 3a | P-10 paso 3, tab Ocupaciones | Ambos | Ve ranking de ocupaciones compatibles | Explora tabs o click "Reporte" |
+| 3b | P-10 paso 3, tab Ofertas | Ambos | Ve ofertas reales que matchean, con gap personalizado | Click "Reporte" (vinculado a oferta) |
+| 3c | P-10 paso 3, tab Capacitación | Ambos | Ve cursos sugeridos para cubrir brechas + transición laboral (por preferencia o por demanda del mercado) | Informativo |
+| 4 | Modal en P-10 | Ambos | Confirma datos candidato + vacante | API genera reporte |
+| 5 | P-10 | Ambos | Descarga PDF / copia link | Entrega |
+| 6 | (fuera del sistema) | Trabajador | Entrega PDF al reclutador | Reclutador escanea |
+| 7 | P-35 | Reclutador | Escanea QR, ve reporte, edita competencias | Fin |
+
+### Tablas Afectadas
+
+- `reportes_compatibilidad` — INSERT con snapshot de matching + token + `perfil_consolidado_version` + `origen`
+- `perfiles_trabajadores` — Lectura/creación del perfil
+- `esco_argentino` — Lectura del perfil consolidado argentino para la ocupación
+- `uso_features` — Tracking de uso (feature: 'reporte_compatibilidad')
+
+### Consideraciones
+
+- **Dos caminos, mismo flujo:** Ambos caminos convergen en MySkillsSearch. La diferencia es narrativa y punto de entrada.
+- **Perfil Consolidado Argentino:** El matching usa `esco_argentino` (ESCO + emergentes), no ESCO genérico. El reporte registra la versión.
+- **3 vías de captura:** El trabajador no necesita conocer su ocupación formal. Puede describir tareas o escribir texto libre.
+- **Definiciones visibles:** Cada competencia muestra su definición ESCO para confirmar/descartar.
+- **Sin autenticación para reclutador:** Accede por token público UUID no adivinable.
+- **Expiración:** 60 días por defecto. Quien generó puede revocar.
+- **Snapshot inmutable:** Los datos se congelan al generar. Cambios posteriores no afectan.
+- **Interactividad:** El reclutador puede editar competencias requeridas y el recálculo es en frontend (no persiste).
+
+---
+
 ## Estados de Suscripción
 
 ```mermaid
@@ -417,9 +555,588 @@ stateDiagram-v2
 
 ---
 
+## F-07: Técnico OE orienta formación con impacto medible (Bloque 8°)
+
+```
+Técnico atiende al trabajador (S2-4)
+    ↓
+Ve brechas del perfil (skills faltantes para ocupaciones compatibles)
+    ↓
+Abre tab Formación (S2-8)
+    ↓
+Ve cursos del catálogo de la OE agrupados por brecha
+    ↓
+Cada curso muestra IMPACTO: "si completa X, su match sube de 61% a 78%"
+    ↓
+Click "Derivar a este curso" → registra derivación en el caso
+    ↓
+Seguimiento: derivado → en curso → completado → perfil actualizado
+```
+
+### Tablas Afectadas
+
+- `cursos_oe` — catálogo de cursos mapeados a skills ESCO
+- `perfiles_trabajadores` — se actualiza skills cuando completa el curso
+
+---
+
+## F-08: Empresa publica búsqueda y preselecciona (Bloque 11°)
+
+```
+Empresa se registra (S3-4)
+    ↓
+Crea perfil de puesto (S3-6): título + skills requeridas (ESCO + emergentes)
+    ↓
+Publica búsqueda → sistema rankea pool de candidatos con opt-in
+    ↓
+Ve candidatos ordenados por match % con brecha específica (S3-10)
+    ↓
+Compara side-by-side con mismo perfil de puesto (S3-8)
+    ↓
+Preselecciona → candidato recibe notificación (si tiene email)
+    ↓
+Historial guardado: candidato, match, fecha, puesto (S3-7)
+```
+
+### Tablas Afectadas
+
+- `vacantes_empresa` — vacante con skills ESCO
+- `perfiles_trabajadores` — candidatos con opt-in
+- `organizaciones` — empresa registrada
+
+---
+
+## F-09: Trabajador carga título → skills automáticas (Bloque 12°)
+
+```
+Trabajador en paso 2 (captura skills) elige Vía 4: "¿Qué estudiaste?"
+    ↓
+Busca su título: "tecnicatura en redes"
+    ↓
+Sistema busca en base de resoluciones oficiales + catálogos academias
+    ↓
+Encuentra: "Tecnicatura Superior en Redes — UTN, Res. ME 1234/2024"
+    ↓
+Muestra skills derivadas con definición ESCO (6 skills)
+    ↓
+Trabajador confirma/descarta cada skill (mismo UI que otras vías)
+    ↓
+Skills verificadas se marcan con badge "Verificado por formación"
+    ↓
+Si no encuentra su título → carga manual (nombre + institución)
+```
+
+### Tablas Afectadas
+
+- `resoluciones_formacion` — base de títulos mapeados a skills
+- `perfiles_trabajadores` — skills derivadas de formación
+
+---
+
+## F-10: Integración S1 ↔ S2 — Vinculación trabajador-OE por DNI
+
+### Principio
+
+El trabajador tiene UN solo perfil en todo el sistema. El DNI es el vinculador. El perfil se crea en S1 (trabajador solo) o en S2 (técnico de OE), y se comparte entre ambos cuando hay vínculo.
+
+### Escenario A: Trabajador se autoevaluó en S1, después va a una OE
+
+```
+Trabajador usó S1 → tiene perfil con DNI 30.123.456
+    ↓
+Va a la OE de su barrio
+    ↓
+Técnico pone DNI 30.123.456 en el sistema
+    ↓
+Sistema encuentra perfil existente:
+  "Juan Pérez — 12 skills — 3 ocupaciones compatibles — 1 reporte generado"
+    ↓
+Técnico pregunta: "¿Vinculamos este perfil a nuestra oficina?"
+    ↓
+Trabajador acepta (verbalmente, técnico confirma)
+    ↓
+Perfil queda vinculado: organizacion_id = OE del técnico
+    ↓
+Técnico puede ver skills, resultados, agregar nota, derivar a cursos
+Trabajador sigue viendo todo desde S1 (su perfil no cambia)
+Los reportes que el trabajador generó en S1 siguen siendo privados
+```
+
+### Escenario B: Trabajador atendido en OE, después usa S1 solo
+
+```
+Técnico crea perfil en OE para el trabajador (DNI 30.123.456)
+    ↓
+Trabajador quiere seguir explorando desde su celular
+    ↓
+Entra a S1 (/mi-futuro-laboral) → se registra con email
+    ↓
+Sistema le pide DNI (opcional para evaluar, obligatorio para guardar)
+    ↓
+Pone DNI 30.123.456 → sistema detecta perfil existente (creado por OE)
+    ↓
+"Ya tenés un perfil creado en la OE [nombre]. ¿Querés usarlo?"
+    ↓
+Acepta → ve su perfil completo (skills, resultados)
+    ↓
+Puede enriquecer desde S1 (agregar ocupaciones, skills)
+    ↓
+Lo que agregue también lo ve el técnico de la OE
+```
+
+### Escenario C: Trabajador acepta ser visible en pool
+
+```
+Trabajador en S1 o en OE → toggle "Quiero ser visible para búsquedas"
+    ↓
+Elige alcance:
+  ○ Solo en mi provincia
+  ○ En todo el país
+  ○ No quiero ser visible (default)
+    ↓
+Si es visible → OEs y empresas (S3 registrado) pueden encontrarlo
+    ↓
+En la búsqueda aparece ANONIMIZADO:
+  "Perfil #4523 — CABA — 12 skills — 78% match con Desarrollador SW"
+    ↓
+OE o empresa solicita contacto → trabajador recibe notificación
+    ↓
+Trabajador acepta → se revela nombre y datos de contacto
+```
+
+### Qué ve cada uno
+
+| Dato | Trabajador (S1) | Técnico OE (S2) | Nota |
+|------|-----------------|------------------|------|
+| Skills del perfil | ✅ | ✅ (si vinculado) | Compartido |
+| Ocupaciones compatibles | ✅ | ✅ | Compartido |
+| Reportes generados por trabajador | ✅ | ❌ | Privados del trabajador |
+| Reportes generados por OE | ✅ (los suyos) | ✅ | Los que son para él |
+| Nota del técnico | ❌ | ✅ | Privada de la OE |
+| Derivaciones a cursos | ✅ (ve a qué lo derivaron) | ✅ (estado seguimiento) | — |
+| Historial de atención | ❌ | ✅ | Privado de la OE |
+| Datos personales (DNI, email) | ✅ | ✅ (si vinculado) | — |
+
+### Vinculación técnica
+
+```sql
+-- perfiles_trabajadores tiene:
+-- - created_by: quien lo creó (puede ser el trabajador o el técnico)
+-- - organizacion_id: NULL si solo S1, UUID si vinculado a OE
+-- - dni: vinculador universal
+
+-- Buscar perfil existente por DNI
+SELECT * FROM perfiles_trabajadores WHERE dni = '30123456';
+
+-- Vincular a OE (técnico confirma)
+UPDATE perfiles_trabajadores
+SET organizacion_id = 'uuid-oe'
+WHERE dni = '30123456';
+
+-- El trabajador sigue viendo su perfil via created_by o dni
+-- La OE lo ve via organizacion_id
+```
+
+### Opt-in para pool
+
+```sql
+-- Campos en perfiles_trabajadores:
+-- opt_in_pool: BOOLEAN DEFAULT FALSE
+-- opt_in_alcance: VARCHAR(20) — 'provincial', 'nacional', NULL
+-- opt_in_at: TIMESTAMPTZ — cuándo aceptó
+-- opt_in_provincia: VARCHAR(100) — provincia del trabajador
+
+-- Query de la OE buscando candidatos:
+SELECT * FROM perfiles_trabajadores
+WHERE opt_in_pool = TRUE
+  AND (opt_in_alcance = 'nacional'
+       OR (opt_in_alcance = 'provincial' AND opt_in_provincia = 'CABA'))
+  AND organizacion_id IS DISTINCT FROM 'uuid-mi-oe' -- no mis propios
+```
+
+### Consideraciones de seguridad
+
+- El DNI no se muestra en búsquedas del pool (solo perfil anonimizado)
+- La vinculación requiere que el trabajador acepte (no es automática)
+- Un perfil puede estar vinculado a más de una OE (si el trabajador se atiende en varias)
+- La OE solo ve la nota de su propia atención, no la de otra OE
+- Revocar opt-in: el trabajador puede desactivar la visibilidad en cualquier momento
+
+---
+
+## F-17: Centro de control — estado del sistema y acciones (Bloque J)
+
+```
+Admin abre /admin (P-17 rediseñado)
+    ↓
+Ve pipeline en vivo: VPS 🟢 → Local 🟡 → Supabase 🟢 → Vercel 🟢
+    ↓
+Local está amarillo: "18K sin matching"
+    ↓
+Click [Lanzar pipeline] → crea comando en scraping_commands
+    ↓
+VPS poller ejecuta → admin ve progreso
+    ↓
+Completado → semáforo Local pasa a 🟢
+    ↓
+Pero ahora Supabase está 🟡: "500 validadas sin subir"
+    ↓
+Click [Sync→Supabase] → ejecuta sync incremental
+    ↓
+Todo 🟢 → sin alertas → sistema al día
+```
+
+### Flujo de reconciliación
+
+```
+Admin click [Verificar] en panel reconciliación
+    ↓
+Sistema compara conteos: VPS vs Local vs Supabase
+    ↓
+Detecta: "2,300 skills en local no están en Supabase"
+    ↓
+Admin click [Sincronizar diferencia]
+    ↓
+Sync incremental solo de las faltantes
+    ↓
+✅ Consistencia restaurada
+```
+
+### Tablas Afectadas
+
+- `scraping_commands` — acciones del admin
+- `sistema_estado` — estado actualizado post-acción
+- `ofertas_dashboard` — conteos para reconciliación
+
+---
+
+## F-16: Evolución del procesamiento y edición de reglas (Bloque I)
+
+```
+Admin abre /admin/procesamiento
+    ↓
+Ve dashboards: NLP (92% aprobados), Matching (81% regla), Validación (0 errores)
+    ↓
+Detecta: "tareas_explicitas" tiene 12% de correcciones → campo problemático
+    ↓
+Va a tab Aprendizaje → ve que en los últimos 30 días se crearon 15 reglas
+    ↓
+Va a Reglas de Negocio → quiere agregar regla para "community manager"
+    ↓
+Click "+ Agregar regla" → llena: titulo_contiene, ISCO, ESCO label
+    ↓
+Click "Preview" → ve: "45 ofertas afectadas, 22 cambian de ISCO"
+    ↓
+Revisa las ofertas afectadas → confirma → "Aplicar regla"
+    ↓
+Regla se guarda en config_overrides (Supabase)
+    ↓
+Próximo run del pipeline usa la regla nueva
+    ↓
+Admin va a tab Fine-tuning → ve: "583 pares, 80% IT, falta diversidad salud"
+    ↓
+Decide esperar a tener más diversidad antes de fine-tunear
+```
+
+### Tablas Afectadas
+
+- `config_overrides` — reglas editadas desde UI
+- `pipeline_runs` — métricas por run
+- `validation_errors` — errores y correcciones
+- `learning_history` — historial de aprendizaje
+
+---
+
+## F-15: Gestión de scraping desde admin (Bloque H)
+
+```
+Admin abre /admin/scraping
+    ↓
+Ve dashboard: KPIs, gráfico temporal, estado por portal, alertas
+    ↓
+Detecta: Indeed bajó 56% → ⚠️ alerta
+    ↓
+Click "Lanzar Indeed" → confirma
+    ↓
+POST /api/scraping-commands → {comando: "lanzar_portal", params: {portal: "indeed"}}
+    ↓
+VPS poller (cada 1 min) lee comando pendiente
+    ↓
+Ejecuta scraper → actualiza log y progreso en Supabase
+    ↓
+Admin ve log en tiempo real en la UI
+    ↓
+Completado → resultado: {ofertas: 461, errores: 0}
+    ↓
+Admin click "Sync VPS→local" → "Sync→Supabase"
+    ↓
+Datos actualizados en todo el sistema
+```
+
+### Tablas Afectadas
+
+- `scraping_commands` — cola de comandos
+- `ofertas_dashboard` — se actualiza post-sync
+
+---
+
+## F-14: Catalogación de skills y ocupaciones MOL (Bloque G)
+
+```
+Pipeline procesa ofertas → NLP extrae skills y títulos
+    ↓
+Detección automática:
+  - Skills que no matchean con ESCO ni con catálogo MOL existente
+  - Títulos de puesto que no matchean con ocupaciones ESCO/MOL
+    ↓
+Se acumulan en panel admin "No clasificados"
+    ↓
+Analista revisa cada una (cada 2 semanas):
+  "configurar docker" → ¿Es nueva? ¿Es variante? ¿Es ruido?
+    ↓
+  A) Es nueva → Crear ficha MOL:
+     - Escribir definición
+     - Asignar categoría (skill/knowledge/transversal)
+     - Definir relaciones (Docker → contenedores → DevOps)
+     - Vincular a skill ESCO más cercana si existe
+    ↓
+  B) Es variante → Mapear como sinónimo de skill existente
+    ↓
+  C) Es ruido → Descartar
+    ↓
+Skills/ocupaciones catalogadas entran al catálogo MOL
+    ↓
+Se agregan a skills_searchable.json + matching
+    ↓
+Corte de versión del catálogo (changelog público)
+```
+
+### Tablas Afectadas
+
+- `catalogo_mol_skills` — ficha completa de skills propias
+- `catalogo_mol_ocupaciones` — ficha completa de ocupaciones propias
+- `perfil_argentino_versiones` — incluye skills MOL en el snapshot
+
+---
+
+## F-12: Curación automática del perfil argentino (Bloque 9°)
+
+```
+Pipeline procesa ofertas nuevas → sync_to_supabase.py sube a Supabase
+    ↓
+Al final del sync: supabase.rpc('recalcular_emergentes')
+    ↓
+Sistema detecta: "8 skills emergentes nuevas (≥30% frecuencia)"
+    ↓
+Guarda en tabla emergentes_pendientes
+    ↓
+Analista abre P-36 → ve badge "8 pendientes"
+    ↓
+Click → va al panel Consolidado → revisa una por una:
+  - Docker (45% ofertas) → [Aprobar]
+  - Atención al público (32%) → [Aprobar]
+  - Limpieza (35%) → [Rechazar] (no es skill laboral específica)
+    ↓
+Cuando está conforme → vuelve a P-36 → "Crear versión v2.0"
+    ↓
+Sistema congela snapshot → regenera skills_searchable.json
+    ↓
+Todo el matching apunta a v2.0
+```
+
+### Tablas Afectadas
+
+- `emergentes_pendientes` — INSERT automático post-sync, UPDATE manual del analista
+- `esco_argentino` — UPDATE al aprobar emergente
+- `perfil_argentino_versiones` — INSERT al crear corte
+
+---
+
+## F-13: Inteligencia local para la OE (Bloque 10°)
+
+```
+Coordinador de OE abre S2-10 (Inteligencia local)
+    ↓
+Sistema calcula automáticamente:
+  1. Top skills demandadas en ofertas de la jurisdicción
+  2. Top skills disponibles en la cartera de la OE
+  3. Brecha: demandadas - disponibles = gap estructural
+  4. Cursos del catálogo de la OE vs brechas
+    ↓
+Coordinador ve:
+  - "Docker se pide en 78% de ofertas IT pero solo 5% de tu cartera lo tiene"
+  - "No tenés cursos de Docker — recomendamos incorporar formación"
+    ↓
+Puede exportar reporte institucional PDF para presentar al municipio
+```
+
+### Tablas Afectadas
+
+- `ofertas_dashboard` — lectura filtrada por jurisdicción
+- `perfiles_trabajadores` — lectura filtrada por organizacion_id
+- `cursos_oe` — lectura para detectar cursos faltantes
+
+---
+
+## F-11: Onboarding primera OE — del acuerdo institucional a la primera atención
+
+### Proceso institucional (fuera del sistema)
+
+```
+OEDE contacta municipio/provincia
+    ↓
+Firma convenio de colaboración
+    ↓
+Municipio designa técnicos que van a usar el sistema
+    ↓
+OEDE recibe: nombre OE, jurisdicción, emails de técnicos
+```
+
+### Alta en el sistema (Admin OEDE)
+
+```
+Admin entra a /admin/organizaciones (por crear)
+    ↓
+Crear organización:
+  - Nombre: "OE Municipal Avellaneda"
+  - Tipo: oficina_empleo
+  - Jurisdicción: "Buenos Aires - Avellaneda"
+    ↓
+Asignar usuarios:
+  - maria@avellaneda.gob.ar → rol: coordinador
+  - juan@avellaneda.gob.ar → rol: tecnico
+    ↓
+Sistema envía email a cada técnico:
+  "Fuiste dado de alta en el MOL. Ingresá con tu email."
+```
+
+### Primer ingreso del técnico
+
+```
+Técnico recibe email → entra al link
+    ↓
+Login con email institucional (Supabase Auth)
+    ↓
+Primera vez → ve pantalla de bienvenida:
+  "Bienvenido/a a la OE Municipal Avellaneda"
+  "Para empezar, cargá tu planilla de personas."
+    ↓
+3 opciones (en orden sugerido):
+  1. [Cargar personas]    ← mínimo para arrancar
+  2. [Cargar vacantes]    ← opcional
+  3. [Cargar cursos]      ← opcional
+    ↓
+Descarga template Excel con columnas sugeridas
+```
+
+### Templates Excel descargables
+
+**Template Personas** (mínimo: solo nombre):
+
+| Columna | Obligatoria | Ejemplo | Variantes aceptadas |
+|---------|------------|---------|---------------------|
+| nombre | ✅ | Juan Pérez | nombre_completo, apellido_nombre |
+| dni | Recomendado | 30123456 | documento |
+| telefono | Opcional | 1155667788 | tel, celular |
+| email | Opcional | juan@email.com | correo |
+| ocupacion | Recomendado | Albañil | ocupacion_actual, puesto |
+| skills | Opcional | Soldadura, electricidad | competencias, habilidades |
+| notas | Opcional | Tiene carnet conducir | observaciones |
+
+**Template Vacantes:**
+
+| Columna | Obligatoria | Ejemplo |
+|---------|------------|---------|
+| titulo | ✅ | Desarrollador Python |
+| empresa | ✅ | TechCorp SA |
+| descripcion | Recomendado | Buscamos desarrollador con 2 años... |
+| ubicacion | Opcional | Avellaneda |
+| modalidad | Opcional | Presencial |
+| contacto | Opcional | rrhh@techcorp.com |
+
+**Template Cursos:**
+
+| Columna | Obligatoria | Ejemplo |
+|---------|------------|---------|
+| nombre | ✅ | Introducción a la programación |
+| duracion | Recomendado | 3 meses |
+| modalidad | Opcional | Presencial |
+| certificacion | Opcional | Certificado municipal |
+| institucion | Opcional | CENOF Avellaneda |
+
+### Importación y procesamiento
+
+```
+Técnico sube Excel de personas
+    ↓
+Sistema parsea + sanitiza (parser existente, lib/parse-pool-import.ts)
+    ↓
+Preview: "Se encontraron 150 personas. 3 sin nombre (se saltan)."
+  +----------------------------------------------------------+
+  | Nombre          | DNI      | Ocupación    | Skills       |
+  |-----------------|----------|--------------|--------------|
+  | Juan Pérez      | 30123456 | Albañil      | Soldadura    |
+  | María López     | 31456789 | Cajera       |              |
+  | Pedro García    | 32789012 | Electricista | Electricidad |
+  +----------------------------------------------------------+
+  Mostrando 3 de 150  |  [Cancelar]  [Confirmar importación]
+    ↓
+Confirmar → sistema:
+  1. Crea perfiles_trabajadores con organizacion_id de la OE
+  2. Si tiene "ocupacion" → busca en ESCO → extrae skills automáticamente
+  3. Si tiene "skills" → las agrega como skills declaradas
+    ↓
+"150 personas importadas. 89 con skills derivadas automáticamente."
+    ↓
+Técnico ya puede ver su panel de casos y empezar a atender
+```
+
+### Datos mínimos para que funcione
+
+| Pool | Mínimo para arrancar | Qué habilita |
+|------|---------------------|-------------|
+| **Personas** | ✅ Solo esto alcanza | Panel de casos, matching contra ofertas MOL, reportes |
+| **Vacantes** | ❌ Opcional | Matching bidireccional (empresa trae puesto → ranking cartera) |
+| **Cursos** | ❌ Opcional | Tab capacitación con impacto medible de cursos propios |
+
+Sin vacantes locales, el técnico igual puede matchear contra el pool general de ofertas del MOL en la jurisdicción. Sin cursos propios, puede derivar a cursos de fuentes externas (CABA, nacionales).
+
+### Capacitación del técnico
+
+No requiere capacitación formal. Se le entrega:
+
+1. **PDF de 2 páginas** con capturas de pantalla:
+   - Página 1: Cómo importar tu planilla (3 pasos)
+   - Página 2: Cómo atender un caso (buscar por DNI → ver matching → generar reporte)
+
+2. **Video de 5 minutos** (grabación de pantalla):
+   - Importar personas → ver panel → atender un caso → generar reporte PDF
+
+3. **La UI se explica sola:** cada pantalla tiene texto guía:
+   - "Para empezar, cargá tu planilla de personas"
+   - "Buscá al trabajador por DNI"
+   - "Estas son las ocupaciones compatibles con su perfil"
+
+### Métricas de onboarding exitoso
+
+| Métrica | Objetivo |
+|---------|---------|
+| Tiempo desde alta hasta primera importación | < 1 hora |
+| Personas importadas en primer carga | > 50 |
+| Primera atención con matching | Mismo día del alta |
+| Primer reporte PDF generado | Primera semana |
+| Técnico usa el sistema sin ayuda | Segunda semana |
+
+---
+
 ## Historial de Cambios
 
 | Fecha | Versión | Cambio |
 |-------|---------|--------|
 | 2026-02-05 | 1.0 | Flujos SaaS: Visitante→Free, Free→Pro, Uso dashboard, Webhook MP |
 | 2026-02-07 | 2.0 | Modelo híbrido: F-01 registro libre, F-02 acceso gated con aprobación, F-03 checkout dual, F-05 CMS. Estados: registrado, pendiente_aprobacion, trial |
+| 2026-03-18 | 2.1 | F-06 Reporte de Compatibilidad Laboral (V-17): flujo gestor genera → PDF con QR → reclutador accede → edita competencias |
+| 2026-03-21 | 2.3 | F-07 formación con impacto (Bloque 8°), F-08 empresa publica búsqueda (Bloque 11°), F-09 Vía 4 título → skills (Bloque 12°) |
+| 2026-03-21 | 2.4 | F-10 Integración S1↔S2: vinculación por DNI, 3 escenarios, opt-in por jurisdicción, tabla visibilidad, SQL vinculación |
+| 2026-03-21 | 2.5 | F-11 Onboarding primera OE. F-12 Curación automática perfil (Bloque 9°). F-13 Inteligencia local OE (Bloque 10°) |
+| 2026-03-20 | 2.2 | F-06 ampliado: 2 caminos (S1+S2), 4 vías captura (+ formación/título), 3 tabs resultados, transición dual, ESCO Argentino. Fuente: MOL_Skills_Intelligence.docx v5 |

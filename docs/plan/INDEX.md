@@ -1,6 +1,6 @@
 # MOL Dashboard - Documentación de Planificación
 
-> Ultima actualizacion: 2026-02-11
+> Ultima actualizacion: 2026-03-20
 
 ## Mapa de Documentos
 
@@ -90,11 +90,15 @@
 |---------|-------|
 | Pantallas existentes | 10 |
 | Pantallas por crear | 20 |
-| **Total pantallas** | **30** |
-| Issues críticos | 11 |
-| Issues altos | 17 |
-| Issues medios | 19 |
-| **Total issues técnicos** | **47** |
+| **Pantallas dashboard** | **33** |
+| **Pantallas Skills Intelligence (S1+S2+S3)** | **32** |
+| **Total pantallas plataforma** | **65** |
+| Issues criticos seguridad | 6 (4 resueltos + 2 nuevos S-19, S-22) |
+| Issues altos seguridad | 10 (3 resueltos + 4 nuevos S-18, S-20, S-23, S-25) |
+| Issues medios seguridad | 9 (2 nuevos S-21, S-24) |
+| **Total issues seguridad** | **25** |
+| Issues valor (features) | 21 (V-01 a V-21) |
+| **Total issues tecnicos** | **46 + 25 seguridad** |
 | **Issues de usuario** | **12** |
 
 ### Modelo de Negocio v2.0

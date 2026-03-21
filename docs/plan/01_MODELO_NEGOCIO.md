@@ -1,7 +1,7 @@
 # 1. Modelo de Negocio
 
-> Última actualización: 2026-02-07
-> Versión: 2.0 — Modelo híbrido (registro libre + acceso gated + pago dual)
+> Última actualización: 2026-03-20
+> Versión: 3.0 — Modelo híbrido + Skills Intelligence (3 servicios, roles ampliados)
 
 ## Referencias
 
@@ -25,18 +25,25 @@
 
 ## Visión del Producto
 
-Plataforma de **inteligencia del mercado laboral argentino** que combina acceso libre a contenido con acceso controlado al tablero de datos.
+Plataforma de **inteligencia del mercado laboral argentino** con dos dimensiones:
+1. **Dashboard de análisis** — para analistas, consultoras y organismos que analizan el mercado laboral
+2. **Skills Intelligence** — 3 servicios (trabajador, oficina de empleo, empresa) para conectar competencias con empleo
 
 > "Inteligencia de datos para un mercado de trabajo y un sistema productivo en transformación"
-> — Propuesta narrativa OEDE (2026-02-07)
+> — Propuesta narrativa OEDE
 
-| Segmento | Propuesta |
-|----------|-----------|
-| **Público** | Landing + registro libre |
-| **Registrado** | Informes, notas y contenido generado desde datos |
-| **Suscriptor tablero** | Dashboard completo (previa solicitud + aprobación MOL) |
-| **Institucional** | Todo + documentos a demanda (mecanismo de pago institucional) |
-| **Admin (OEDE)** | Panel admin + gestión de accesos y contenido |
+> **Documento técnico:** `docs/MOL_Skills_Intelligence.docx` v5.0 + `docs/mol_screens_v5.html` (32 wireframes)
+
+| Dimensión | Segmento | Propuesta |
+|-----------|----------|-----------|
+| **Dashboard** | Público | Landing + registro libre |
+| **Dashboard** | Registrado | Informes, notas y contenido por email |
+| **Dashboard** | Suscriptor tablero | Dashboard completo (previa solicitud + aprobación MOL) |
+| **Dashboard** | Institucional | Todo + documentos a demanda |
+| **Dashboard** | Admin (OEDE) | Panel admin + gestión de accesos y contenido |
+| **Skills Int.** | Trabajador (S1) | Evaluar skills, ver ofertas, capacitación, generar reporte |
+| **Skills Int.** | Oficina de Empleo (S2) | Atención al trabajador, gestión vacantes, pools, inteligencia local |
+| **Skills Int.** | Empresa (S3) | Reporte QR (libre) + selección, reskilling, inteligencia (registrada) |
 
 ---
 
@@ -119,6 +126,84 @@ INSTITUCIONAL ──────────── Todo + documentos a demanda
   - Aprobar/rechazar solicitudes de acceso al tablero
   - Publicar contenido (informes, notas) via CMS
   - Monitorear sistema y métricas
+  - Gestionar ESCO Argentino (aprobar skills emergentes)
+
+---
+
+## Roles Skills Intelligence (v5)
+
+> Los roles de Skills Intelligence son paralelos a los tipos de usuario del dashboard. Un usuario puede tener ambos (ej: un registrado que también es trabajador S1).
+
+### U-TRABAJADOR (S1 — Mi Futuro Laboral)
+- **Acceso:** Flujo completo de evaluación: diagnóstico → matching → capacitación → reporte
+- **Auth:** Dos modos:
+  - Anónimo: perfil temporal (no se persiste, pierde al cerrar)
+  - Registro mínimo: email + nombre → perfil persistente + historial de reportes
+- **Paga:** No (servicio gratuito)
+- **Datos propios:** Su perfil de skills, sus reportes generados
+- **Opt-in:** Puede aceptar ser visible en búsquedas de OEs y empresas
+- **No puede:** Ver datos de otros trabajadores, acceder a funciones de OE o empresa
+
+### U-TECNICO_OE (S2 — Oficina de Empleo)
+- **Acceso:** Atención al trabajador, gestión de vacantes, formación, inteligencia local, exportar diagnósticos
+- **Auth:** Login institucional (email de la OE) + rol `oficina_empleo`
+- **Organización:** Pertenece a una OE (tenant). Solo ve datos de su jurisdicción
+- **Paga:** Según acuerdo institucional (OE como cliente)
+- **Datos propios:** Cartera de casos, vacantes locales, catálogo de cursos del territorio
+- **Pool amplio:** Acceso de lectura al pool MOL en su jurisdicción (ofertas del mercado general + trabajadores con opt-in)
+- **Funciones exclusivas:**
+  - Importar pools via Excel/CSV (personas, vacantes, cursos)
+  - Nota del técnico (campos no derivables: carnet, motivación, situación)
+  - Exportar PDF institucional con firma del técnico
+  - Matching bidireccional: empresa trae vacante → ranking cartera por match
+
+### U-EMPRESA_LIBRE (S3 nivel libre)
+- **Acceso:** Solo el reporte específico al que apunta el QR
+- **Auth:** Ninguna — accede por token del QR
+- **Paga:** No
+- **Funciones:**
+  - Ver reporte de compatibilidad del candidato
+  - Personalizar competencias y recalcular (no persiste)
+  - Ver skills validadas por OE vs autodeclaradas (cuando aplique)
+- **No puede:** Buscar candidatos, ver otros reportes, guardar datos
+
+### U-EMPRESA_REGISTRADA (S3 nivel registrado — v2)
+- **Acceso:** Todo de empresa_libre + módulos de selección, reskilling, inteligencia
+- **Auth:** Registro con email empresa + cuenta
+- **Organización:** Pertenece a una empresa (tenant)
+- **Paga:** Según plan (TBD — Etapa 3 del roadmap)
+- **Funciones:**
+  - Publicar búsquedas → recibir candidatos rankeados
+  - Perfiles de puesto reutilizables
+  - Historial y comparación de candidatos
+  - Benchmark del mercado: disponibilidad de skills en el pool
+  - Búsqueda proactiva en pool (trabajadores con opt-in)
+  - Reskilling de plantilla (v2)
+  - Inteligencia sectorial (v2)
+- **Etapa:** Etapa 3-4 del roadmap
+
+### Relación entre roles
+
+```
+Un usuario puede tener MÁS DE UN ROL simultáneamente:
+
+  registrado + trabajador       → analista que también evalúa sus skills
+  institucional + oficina_empleo → OE que también tiene acceso al dashboard
+  suscriptor + empresa_registrada → consultora RRHH con ambos accesos
+  admin + todo                  → OEDE tiene acceso completo
+```
+
+### Multi-tenancy (organizaciones)
+
+Los roles S2 y S3-registrado operan dentro de una organización (OE o empresa). Cada organización es un "tenant" con datos aislados:
+
+| Concepto | OE (S2) | Empresa (S3) |
+|----------|---------|-------------|
+| Identificador | organizacion_id | empresa_id |
+| Aislamiento | Solo ve su jurisdicción | Solo ve sus vacantes y candidatos |
+| Pool propio | Personas + vacantes locales + cursos | Vacantes + plantilla |
+| Pool amplio | Lee pool MOL en su jurisdicción | Lee pool candidatos con opt-in |
+| Roles internos | técnico, coordinador | rrhh, gerente |
 
 ---
 
@@ -146,19 +231,38 @@ INSTITUCIONAL ──────────── Todo + documentos a demanda
 
 ## Features por Nivel (Matriz)
 
+### Dashboard de análisis
+
 | Feature | Registrado | Trial | Suscriptor | Institucional |
 |---------|------------|-------|------------|---------------|
 | Contenido/informes | ✓ | ✓ | ✓ | ✓ |
 | Email con nuevo contenido | ✓ | ✓ | ✓ | ✓ |
 | Dashboard interactivo | ✗ | ✓ (TBD) | ✓ | ✓ |
 | Histórico completo | ✗ | TBD | ✓ | ✓ |
-| Skills Intelligence | ✗ | TBD | ✓ | ✓ |
+| Skills Intelligence (admin) | ✗ | ✗ | ✗ | ✗ (solo admin) |
 | Análisis de empresas | ✗ | ✗ | ✓ | ✓ |
 | Export Excel/PDF | ✗ | ✗ | ✓ | ✓ |
 | Alertas por email | ✗ | ✗ | ✓ (10) | ✓ (∞) |
 | API REST | ✗ | ✗ | ✗ | ✓ |
 | Documentos a demanda | ✗ | ✗ | ✗ | ✓ |
 | Soporte | - | Email | Email | Dedicado |
+
+### Skills Intelligence (3 servicios)
+
+| Feature | Trabajador S1 | Técnico OE S2 | Empresa libre S3 | Empresa reg. S3 |
+|---------|--------------|---------------|-------------------|-----------------|
+| Diagnóstico skills (4 vías) | ✓ (propias) | ✓ (del trabajador) | ✗ | ✗ |
+| Matching ocupaciones | ✓ | ✓ | ✗ | ✗ |
+| Matching ofertas reales | ✓ | ✓ (OE + pool MOL) | ✗ | ✓ (publicar búsqueda) |
+| Matching formación | ✓ | ✓ (catálogo OE) | ✗ | ✓ (reskilling) |
+| Reporte PDF + QR | ✓ (propio) | ✓ (institucional) | ✓ (ver por QR) | ✓ (ver por QR) |
+| Personalizar competencias | ✗ | ✗ | ✓ | ✓ |
+| Gestión de pools | ✗ | ✓ (importar Excel) | ✗ | ✓ (vacantes) |
+| Matching bidireccional | ✗ | ✓ (vacante→cartera) | ✗ | ✓ (búsqueda→pool) |
+| Inteligencia de mercado | ✗ | ✓ (local, v2) | ✗ | ✓ (sectorial, v2) |
+| Nota del técnico | ✗ | ✓ | ✗ | ✗ |
+| Comparar casos/candidatos | ✗ | ✓ | ✗ | ✓ |
+| Opt-in visibilidad pool | ✓ | ✗ (gestiona) | ✗ | ✗ (busca) |
 
 ---
 
@@ -261,3 +365,4 @@ Generar y distribuir contenido a usuarios registrados:
 |-------|---------|--------|
 | 2026-02-05 | 1.0 | Modelo SaaS clásico (Free/Pro/Enterprise) |
 | 2026-02-07 | 2.0 | Modelo híbrido: registro libre + acceso gated + CMS + pago dual. Basado en feedback colegas OEDE |
+| 2026-03-20 | 3.0 | Skills Intelligence v5: 4 roles nuevos (trabajador, técnico OE, empresa libre, empresa registrada), multi-tenancy por organización, relación entre roles, matrices de features por servicio. Fuente: MOL_Skills_Intelligence.docx v5 |

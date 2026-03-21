@@ -24,10 +24,10 @@
 
 | Severidad | Cantidad | Descripción |
 |-----------|----------|-------------|
-| **CRÍTICO** | 4 | Gaps que impiden lanzamiento comercial |
-| **ALTO** | 7 | Features que esperan los usuarios |
-| **MEDIO** | 5 | Mejoras de UX |
-| **Total** | **16** | |
+| **CRÍTICO** | 6 | Gaps que impiden lanzamiento (incluye V-19, V-27) |
+| **ALTO** | 16 | Features que esperan los usuarios |
+| **MEDIO** | 6 | Mejoras de UX + S3 v2 |
+| **Total** | **28** | |
 
 ---
 
@@ -199,6 +199,110 @@ MATCHING:
 | V-14 | Dashboard personalizable | Widgets arrastrables |
 | V-15 | Modo offline | PWA con cache de datos recientes |
 
+### V-22: Responsive mobile y tablet
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | El sistema es desktop-first. Para S1 (trabajador entra desde celular) y S3 libre (reclutador escanea QR con teléfono) el acceso mobile es crítico. S2 (técnico OE) puede usar tablet en la atención presencial |
+| **Servicios** | S1 (ALTA), S3 libre (ALTA), S2 (MEDIA), Dashboard (BAJA) |
+| **Asignado** | Sergio (puro frontend) |
+| **Dependencia** | Bloques C y D (pantallas tienen que existir primero) |
+| **Detalle** | 3 breakpoints (375px mobile, 768px tablet, 1280px desktop). Touch target 44px WCAG. Tablas → cards. Layout 2 col → stack. Ver wireframes mobile en `03_WIREFRAMES/oficina-empleo.md` |
+| **Estado** | ⬜ Pendiente |
+
+---
+
+### V-23: Cursos OE con impacto medible en empleabilidad (Bloque 8°)
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | El técnico de OE orienta al trabajador a formación mostrando impacto concreto: "si completás este curso, tu match con estas vacantes sube de 61% a 84%". Catálogo de cursos de la OE mapeado a skills ESCO |
+| **Servicios** | S2 |
+| **Pantalla** | S2-8 |
+| **Estado** | ⬜ Pendiente |
+
+---
+
+### V-24: Inteligencia del mercado laboral local (Bloque 10°)
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | Dashboard para la OE con: skills más demandadas vs disponibles en la cartera, brecha estructural de la jurisdicción, cursos que faltan en el territorio. Insumo de política pública |
+| **Servicios** | S2 |
+| **Pantalla** | S2-10 |
+| **Estado** | ⬜ Pendiente (v2) |
+
+---
+
+### V-25: Integración S1↔S2 — Vinculación por DNI + opt-in pool
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | Un solo perfil por trabajador (vinculado por DNI). Opt-in para visibilidad en pool (provincial/nacional, anonimizado). 3 escenarios documentados en F-10 |
+| **Servicios** | S1, S2, S3 registrado |
+| **Estado** | ⬜ Pendiente |
+
+---
+
+### V-30: Centro de control del sistema (Bloque J)
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🔴 CRÍTICO |
+| **Descripción** | P-17 rediseñado como centro de control: pipeline en vivo con semáforos (VPS→Local→Supabase→Vercel), alertas con acciones ("18K sin matching [Lanzar]"), KPIs del día, reconciliación entre sistemas. Elimina la ceguera operativa |
+| **Pantalla** | P-17 rediseñado |
+| **Diferenciador** | Hoy nadie sabe si algo se trabó. Con esto, de un vistazo sabés el estado de todo |
+| **Estado** | ⬜ Pendiente |
+
+---
+
+### V-29: Panel evolución del procesamiento (Bloque I)
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | Dashboards de métricas NLP/matching/validación + editor de diccionarios y reglas con preview de impacto + readiness para fine-tuning. Elimina la necesidad de editar JSONs en el repo y correr scripts para ver métricas |
+| **Pantalla** | Admin → Procesamiento (nueva sección) |
+| **Estado** | ⬜ Pendiente |
+
+---
+
+### V-28: Gestión de scraping desde admin (Bloque H)
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | Dashboard de monitoreo (estado portales, alertas, volúmenes) + control remoto del VPS (lanzar corridas, sync, pausar) + log en tiempo real. Elimina la necesidad de SSH al VPS |
+| **Pantalla** | P-21 ampliado |
+| **Estado** | ⬜ Pendiente |
+
+---
+
+### V-27: Catálogo MOL — Taxonomía propia de skills y ocupaciones (Bloque G)
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🔴 CRÍTICO |
+| **Descripción** | El mercado argentino genera skills (ej: "configurar Docker") y ocupaciones (ej: "Community Manager") que ESCO no tiene. Hoy son labels sueltos. El Catálogo MOL les da ficha completa: definición, categoría, relaciones. Actualización cada 2 semanas (como Lightcast). Changelog público |
+| **Diferenciador** | Lightcast tiene 33K skills propias actualizadas cada 2 semanas. MOL tendría su catálogo argentino con la misma filosofía bottom-up: las skills surgen de los datos, no de una taxonomía top-down |
+| **Servicios** | Todos (alimenta matching, búsqueda, perfiles, reportes) |
+| **Estado** | ⬜ Pendiente |
+
+---
+
+### V-26: Onboarding OE con importación guiada
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | La OE carga planillas Excel con templates descargables y preview. Solo personas alcanza para arrancar. Capacitación: PDF 2 págs + video 5 min |
+| **Servicios** | S2 |
+| **Estado** | ⬜ Pendiente |
+
 ---
 
 ### V-16: Indicador de Tensión de Demanda
@@ -221,6 +325,94 @@ MATCHING:
 | URGENTE | Alta rotación, empleadores necesitan cubrir rápido | Empleos disponibles pero posiblemente inestables |
 | PASIVO | Búsquedas largas sin urgencia, posiblemente perfiles muy específicos | Competencia alta, proceso largo |
 | FLUIDO | Mercado equilibrado, oferta y demanda balanceadas | Condiciones normales de búsqueda |
+
+---
+
+### V-17: Reporte de Compatibilidad Laboral para Empresas
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | Genera un reporte de compatibilidad entre un trabajador y una vacante, dirigido al reclutador de la empresa contratante. Incluye carta PDF con QR + reporte web interactivo |
+| **Componentes** | 1) Carta PDF (logo MOL + datos candidato + QR) 2) Reporte web interactivo (mapa competencias + matriz afinidad + edición en tiempo real) |
+| **Pantallas** | Modificación P-10 (botón en "Mis Skills"), P-35 (reporte público `/reporte/[token]`) |
+| **Dependencias** | Motor de matching (MySkillsSearch.tsx), ESCO Argentino (perfiles consolidados), perfiles_trabajadores (Supabase) |
+| **Taxonomía** | Usa el Perfil Consolidado Argentino (ESCO + emergentes aprobadas), no ESCO genérico. El reporte registra la versión del perfil usada |
+| **Captura de competencias** | 3 vías combinables: por ocupación (existe), por tarea/habilidad (nuevo), texto libre (nuevo). Cada skill muestra su definición ESCO para confirmar/descartar |
+| **Diferenciador** | Ningún competidor ofrece un reporte de compatibilidad basado en taxonomía ESCO adaptada al mercado argentino. Transparenta el matching y difunde el MOL entre empresas |
+| **Estado** | ⬜ Pendiente |
+
+**Resultados en 3 tabs (paso 3):**
+
+1. **Ocupaciones compatibles:** Ranking de ocupaciones ESCO ordenadas por % de afinidad con el perfil del trabajador.
+2. **Ofertas laborales:** Ofertas reales del mercado argentino (de `ofertas_dashboard`) filtradas por las ocupaciones compatibles, con gap personalizado por oferta.
+3. **Capacitación sugerida:** Cursos que cubren las brechas técnicas, con dos modos de transición laboral: (A) por preferencia del trabajador ("quiero ser X") y (B) por demanda del mercado (ocupaciones en crecimiento accesibles desde el perfil actual, usando tendencia temporal de ofertas). Fuente inicial: Portal de Capacitación CABA (2,255 cursos).
+
+**Dos entregables (reporte):**
+
+1. **Carta de presentación (PDF):**
+   - Logo MOL + fecha + presentación institucional
+   - Datos del candidato (nombre, DNI) y vacante analizada
+   - Código QR dinámico que apunta al reporte web
+   - Contacto para consultas técnicas
+
+2. **Reporte web interactivo (página pública por token):**
+   - Datos del perfil y título de la vacante
+   - Mapa de competencias requeridas (estándar ESCO)
+   - Matriz de afinidad: competencias detectadas + brechas técnicas (skills gap)
+   - **Interactividad:** reclutador puede eliminar/agregar competencias al mapa y el sistema recalcula en tiempo real
+   - Link a landing page del MOL (difusión)
+
+**Impacto esperado:**
+- Difusión del MOL entre empresas (cada reporte es una puerta de entrada)
+- Los trabajadores obtienen un documento profesional para entrevistas
+- Las empresas acceden a la plataforma para ver el reporte completo
+
+---
+
+### V-18: Vía 4 — Captura de skills por formación/título
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | El trabajador carga su título, certificación o curso completado. El sistema mapea esa formación a skills ESCO usando base de resoluciones oficiales argentinas + catálogo de cursos de academias/plataformas |
+| **Dependencia** | Requiere scraping y análisis de resoluciones oficiales de carreras (pre, grado, posgrado) + catálogos de instituciones de formación |
+| **Servicios** | S1 (trabajador), S2 (técnico OE) |
+| **Estado** | ⬜ Pendiente (requiere base de resoluciones) |
+
+---
+
+### V-19: Gestión de pools para Oficinas de Empleo
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🔴 CRÍTICO (habilitante para lanzamiento) |
+| **Descripción** | Las OEs cargan sus bases existentes (personas, vacantes locales, cursos del territorio) via Excel/CSV. El sistema mapea internamente a ESCO sin que la OE necesite conocer la taxonomía |
+| **Impacto** | Permite lanzamiento inmediato: la OE ya tiene datos, el MOL aporta el motor |
+| **Servicios** | S2 |
+| **Estado** | ⬜ Pendiente |
+
+---
+
+### V-20: Matching bidireccional (vacante → candidatos)
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | Empresa trae una vacante a la OE → sistema la traduce a skills ESCO → rankea automáticamente la cartera de la OE por match → técnico preselecciona |
+| **Servicios** | S2, S3 |
+| **Estado** | ⬜ Pendiente |
+
+---
+
+### V-21: Servicio Empresas (S3) — nivel registrado
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟡 MEDIO (v2) |
+| **Descripción** | Cuenta empresa con: publicar búsquedas, perfiles de puesto reutilizables, historial de candidatos, comparar side-by-side, benchmark del mercado, buscar en pool, reskilling de plantilla, inteligencia sectorial |
+| **Pantallas** | S3-4 a S3-12 (9 pantallas) |
+| **Estado** | ⬜ Futuro (Etapa 3-4 del roadmap) |
 
 ---
 

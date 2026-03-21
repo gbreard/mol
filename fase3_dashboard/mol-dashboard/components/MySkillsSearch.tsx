@@ -6,6 +6,7 @@ import {
   Trash2, User, Briefcase, Plus, Save, FolderOpen, Check, ChevronDown
 } from 'lucide-react';
 import { OccupationFullDetailIndex, SkillsSearchableIndex, SearchableSkill } from '@/lib/types';
+import { usePerfilArgentino, getSkillsConsolidadas } from '@/lib/use-perfil-argentino';
 
 interface OccupationBasicInfo {
   id: string;
@@ -40,6 +41,8 @@ interface OccupationMatch {
   essentialCovered: number;
   optionalCovered: number;
   gapCount: number;
+  /** 'argentino' si usó perfil consolidado, 'esco' si usó ESCO puro */
+  matchSource: 'argentino' | 'esco';
 }
 
 type Step = 'registro' | 'perfil' | 'matching';
@@ -50,6 +53,9 @@ export default function MySkillsSearch({
   onNavigateToOccupation,
   onNavigateToCompare
 }: MySkillsSearchProps) {
+  // Perfil Consolidado Argentino (si hay versión activa, se usa para matching)
+  const perfilArgentino = usePerfilArgentino();
+
   // Current step
   const [currentStep, setCurrentStep] = useState<Step>('registro');
 
@@ -323,31 +329,66 @@ export default function MySkillsSearch({
   }, [occupationsData, selectedOccupations, removedSkillIds, addedSkills]);
 
   // Calculate matching occupations
+  // Si hay perfil argentino activo, usa skills_consolidadas (ESCO + emergentes).
+  // Si no hay perfil argentino para una ocupación, usa ESCO puro como fallback.
   const matchingOccupations = useMemo((): OccupationMatch[] => {
     if (!occupationsData || derivedSkills.length === 0) return [];
 
     const selectedSkillIds = new Set(derivedSkills.map(s => s.id));
+    // También matchear por label normalizado (para emergentes que no tienen URI ESCO)
+    const selectedSkillLabels = new Set(
+      derivedSkills.map(s => s.label.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
+    );
     const matches: OccupationMatch[] = [];
 
     for (const [occId, occ] of Object.entries(occupationsData)) {
-      const essentialIds = new Set([
-        ...occ.skills.essential.map(s => s.id),
-        ...occ.knowledge.essential.map(s => s.id)
-      ]);
-      const optionalIds = new Set([
-        ...occ.skills.optional.map(s => s.id),
-        ...occ.knowledge.optional.map(s => s.id)
-      ]);
+      // Intentar usar perfil argentino primero
+      const skillsArgentinas = getSkillsConsolidadas(
+        perfilArgentino.snapshot,
+        occId  // occId es el URI ESCO de la ocupación
+      );
 
       let essentialCovered = 0;
       let optionalCovered = 0;
+      let essentialTotal = 0;
+      let matchSource: 'argentino' | 'esco' = 'esco';
 
-      for (const skillId of selectedSkillIds) {
-        if (essentialIds.has(skillId)) essentialCovered++;
-        else if (optionalIds.has(skillId)) optionalCovered++;
+      if (skillsArgentinas) {
+        // --- PERFIL ARGENTINO: usa skills_consolidadas ---
+        matchSource = 'argentino';
+        // En el perfil argentino, todas las skills consolidadas se tratan como "requeridas"
+        // (tanto las ESCO comunes como las emergentes aprobadas)
+        essentialTotal = skillsArgentinas.length;
+
+        for (const skillArg of skillsArgentinas) {
+          // Matchear por URI si existe, sino por label normalizado
+          const labelNorm = skillArg.label_normalized ||
+            skillArg.label.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+          if ((skillArg.uri && selectedSkillIds.has(skillArg.uri)) ||
+              selectedSkillLabels.has(labelNorm)) {
+            essentialCovered++;
+          }
+        }
+      } else {
+        // --- FALLBACK ESCO PURO ---
+        matchSource = 'esco';
+        const essentialIds = new Set([
+          ...occ.skills.essential.map(s => s.id),
+          ...occ.knowledge.essential.map(s => s.id)
+        ]);
+        const optionalIds = new Set([
+          ...occ.skills.optional.map(s => s.id),
+          ...occ.knowledge.optional.map(s => s.id)
+        ]);
+
+        essentialTotal = occ.skills.essential.length + occ.knowledge.essential.length;
+
+        for (const skillId of selectedSkillIds) {
+          if (essentialIds.has(skillId)) essentialCovered++;
+          else if (optionalIds.has(skillId)) optionalCovered++;
+        }
       }
-
-      const essentialTotal = occ.skills.essential.length + occ.knowledge.essential.length;
 
       if (essentialCovered + optionalCovered > 0) {
         const matchScore = essentialTotal > 0
@@ -362,7 +403,8 @@ export default function MySkillsSearch({
           essentialTotal,
           essentialCovered,
           optionalCovered,
-          gapCount: essentialTotal - essentialCovered
+          gapCount: essentialTotal - essentialCovered,
+          matchSource,
         });
       }
     }
@@ -377,7 +419,7 @@ export default function MySkillsSearch({
     }
 
     return matches;
-  }, [occupationsData, derivedSkills, sortBy]);
+  }, [occupationsData, derivedSkills, sortBy, perfilArgentino.snapshot]);
 
   const addOccupation = (occ: OccupationBasicInfo) => {
     setSelectedOccupations(prev => [...prev, occ]);
