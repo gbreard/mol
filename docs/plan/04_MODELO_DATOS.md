@@ -914,6 +914,31 @@ CREATE TABLE IF NOT EXISTS tension_ocupaciones (
 
 ---
 
+### T-config_overrides (NUEVA — Bloque I2: edición de diccionarios desde UI)
+
+Overrides de configuración editados desde la UI admin. El pipeline lee primero el override, si no existe usa el JSON local.
+
+```sql
+CREATE TABLE IF NOT EXISTS config_overrides (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  config_key VARCHAR(100) NOT NULL UNIQUE,   -- 'matching_rules_business', 'sinonimos_argentinos', etc.
+  json_value JSONB NOT NULL,                  -- Contenido completo del config
+  version INTEGER DEFAULT 1,                  -- Se incrementa con cada edición
+  updated_by UUID REFERENCES auth.users(id),
+  changelog JSONB,                            -- [{fecha, campo, antes, despues, por}]
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+**Flujo:** Admin edita regla → preview impacto → confirma → INSERT/UPDATE en esta tabla → pipeline lee de acá → fallback al JSON si no existe override.
+
+**RLS:** Solo admin puede leer y escribir.
+
+**Configs soportadas:** matching_rules_business, sinonimos_argentinos_esco, nlp_inference_rules, skills_rules, oficios_arg, nlp_titulo_limpieza
+
+---
+
 ### T-scraping_commands (NUEVA — Bloque H2: control remoto VPS)
 
 Cola de comandos para controlar el scraping del VPS desde el admin.

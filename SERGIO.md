@@ -671,6 +671,7 @@ Ademas de S1-S8 y Bloque F, estos wireframes y pantallas te tocan:
 | Vía 4 | S20 | 1 | 1 |
 | Catálogo MOL | S21-S22 | 2 | 2 |
 | Scraping admin | S23-S24 | 2 | 2 |
+| Procesamiento | S25-S30 | 6 | 6 |
 | **Total** | **S1-S22 + F1-F6** | **~32 componentes** | **~32 tests (1 por componente mínimo)** |
 
 ### Del Bloque G (Catálogo MOL)
@@ -699,6 +700,25 @@ Ademas de S1-S8 y Bloque F, estos wireframes y pantallas te tocan:
 // GET /api/scraping-stats — KPIs + historia + alertas
 // GET /api/scraping-commands — listar comandos
 // POST /api/scraping-commands — crear comando (lanzar/pausar/sync)
+```
+
+### Del Bloque I (Panel procesamiento)
+
+| # | Tarea | Wireframe en | Qué hacer |
+|---|-------|-------------|-----------|
+| S25 | Dashboard NLP: gráficos aprobados/bloqueados, campos problemáticos, por versión | `oficina-empleo.md` → "I1 Dashboard métricas" | Recharts: bar chart gate, line chart versiones, tabla campos |
+| S26 | Dashboard Matching: pie distribución método, evolución dual match, reglas más usadas | — | Recharts: pie + line + tabla reglas |
+| S27 | Dashboard Validación: errores por tipo, resueltos/pendientes, timeline | — | Recharts: bar + donut + line |
+| S28 | Dashboard Aprendizaje + Gold Set: timeline reglas, tasa error, resultados gold set | — | Timeline + tabla comparación |
+| S29 | Editor reglas de negocio: tabla + agregar/editar/desactivar + modal preview impacto | `oficina-empleo.md` → "I2 Editor reglas + Preview" | Tabla editable + modal con diff antes/después |
+| S30 | Editores diccionarios: sinónimos, NLP inference, skills rules, oficios (mismo patrón S29) | — | 5 editores con mismo layout que S29 |
+
+**APIs que consume:**
+```typescript
+// GET /api/processing-metrics — métricas NLP + matching + validación + aprendizaje
+// GET /api/config-editor?key=matching_rules_business — leer config + override
+// PUT /api/config-editor — guardar override con preview
+// GET /api/config-editor/preview — calcular impacto antes de aplicar
 ```
 
 ### Regla de testing obligatoria

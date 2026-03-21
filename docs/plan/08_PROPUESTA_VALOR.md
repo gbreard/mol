@@ -248,6 +248,17 @@ MATCHING:
 
 ---
 
+### V-29: Panel evolución del procesamiento (Bloque I)
+
+| Atributo | Valor |
+|----------|-------|
+| **Severidad** | 🟠 ALTO |
+| **Descripción** | Dashboards de métricas NLP/matching/validación + editor de diccionarios y reglas con preview de impacto + readiness para fine-tuning. Elimina la necesidad de editar JSONs en el repo y correr scripts para ver métricas |
+| **Pantalla** | Admin → Procesamiento (nueva sección) |
+| **Estado** | ⬜ Pendiente |
+
+---
+
 ### V-28: Gestión de scraping desde admin (Bloque H)
 
 | Atributo | Valor |

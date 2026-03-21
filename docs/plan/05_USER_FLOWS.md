@@ -764,6 +764,43 @@ WHERE opt_in_pool = TRUE
 
 ---
 
+## F-16: Evolución del procesamiento y edición de reglas (Bloque I)
+
+```
+Admin abre /admin/procesamiento
+    ↓
+Ve dashboards: NLP (92% aprobados), Matching (81% regla), Validación (0 errores)
+    ↓
+Detecta: "tareas_explicitas" tiene 12% de correcciones → campo problemático
+    ↓
+Va a tab Aprendizaje → ve que en los últimos 30 días se crearon 15 reglas
+    ↓
+Va a Reglas de Negocio → quiere agregar regla para "community manager"
+    ↓
+Click "+ Agregar regla" → llena: titulo_contiene, ISCO, ESCO label
+    ↓
+Click "Preview" → ve: "45 ofertas afectadas, 22 cambian de ISCO"
+    ↓
+Revisa las ofertas afectadas → confirma → "Aplicar regla"
+    ↓
+Regla se guarda en config_overrides (Supabase)
+    ↓
+Próximo run del pipeline usa la regla nueva
+    ↓
+Admin va a tab Fine-tuning → ve: "583 pares, 80% IT, falta diversidad salud"
+    ↓
+Decide esperar a tener más diversidad antes de fine-tunear
+```
+
+### Tablas Afectadas
+
+- `config_overrides` — reglas editadas desde UI
+- `pipeline_runs` — métricas por run
+- `validation_errors` — errores y correcciones
+- `learning_history` — historial de aprendizaje
+
+---
+
 ## F-15: Gestión de scraping desde admin (Bloque H)
 
 ```

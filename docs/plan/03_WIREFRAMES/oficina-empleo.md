@@ -877,6 +877,88 @@ Dashboard de inteligencia del mercado laboral de la jurisdiccion de la OE.
 
 ---
 
+## Admin Procesamiento: Metricas + Editor Reglas (Bloque I)
+
+**Estado:** Por crear
+**Nivel:** U-ADMIN
+
+### I1 — Dashboard métricas procesamiento
+
+```
++---------------------------------------------------------------------+
+|  Procesamiento > Metricas                                            |
+|                                                                      |
+|  [NLP] [Matching] [Validacion] [Aprendizaje] [Gold Set]            |
+|   ====                                                               |
+|                                                                      |
+|  NLP Gate v1.1 — ultimos 30 dias                                    |
+|  +----------+ +----------+ +----------+ +----------+               |
+|  | 92.3%    | | 5.4%     | | 2.3%     | | tareas   |               |
+|  | Aprobados| | Bloqueado| | Corregido| | Campo #1 |               |
+|  +----------+ +----------+ +----------+ +----------+               |
+|                                                                      |
+|  [Grafico: tasa aprobados por version NLP — v11.0 a v11.4]         |
+|  |    ___________                                                   |
+|  |   /           \___                                               |
+|  |  / v11.0  v11.3  v11.4                                          |
+|  |_/________________________________________________                |
+|                                                                      |
+|  Campos mas problematicos:                                          |
+|  1. tareas_explicitas (12% correcciones)                            |
+|  2. nivel_seniority (8% correcciones)                               |
+|  3. area_funcional (5% correcciones)                                |
++---------------------------------------------------------------------+
+```
+
+### I2 — Editor de reglas con preview
+
+```
++---------------------------------------------------------------------+
+|  Procesamiento > Reglas de Negocio                                   |
+|                                                                      |
+|  matching_rules_business.json — 297 reglas    [+ Agregar regla]     |
+|                                                                      |
+|  Filtrar: [Buscar titulo...          ] [Solo activas v]             |
+|                                                                      |
+|  +----------------------------------------------------------------+ |
+|  | ID        | Titulo contiene    | ISCO  | ESCO label    | Act | | |
+|  |-----------|-------------------|-------|---------------|-----|--| |
+|  | R_001     | contador          | 2411  | Contable      | ✅  |[E]| |
+|  | R_002     | soldador          | 7212  | Soldador      | ✅  |[E]| |
+|  | R_003     | community manager | 2431  | Espec. publi. | ✅  |[E]| |
+|  | R_045     | gerente ventas    | 1221  | Dir. ventas   | ❌  |[E]| |
+|  +----------------------------------------------------------------+ |
+|                                                                      |
+|  [E] = Editar                                                       |
++---------------------------------------------------------------------+
+```
+
+### I2 — Preview de impacto (modal al editar/agregar)
+
+```
++---------------------------------------------------------------------+
+|  Preview de impacto                                                  |
+|                                                                      |
+|  Regla: titulo_contiene "community manager" → ISCO 2431             |
+|                                                                      |
+|  Ofertas afectadas: 45                                              |
+|                                                                      |
+|  +----------------------------------------------------------------+ |
+|  | Matching actual           | Con esta regla                      | |
+|  |--------------------------|------------------------------------| |
+|  | 23 ya matchean a 2431    | 45 matchean a 2431                 | |
+|  | 15 matchean a 2642       | 0 matchean a 2642 (cambian)        | |
+|  | 7 matchean a otros       | 0 matchean a otros (cambian)       | |
+|  +----------------------------------------------------------------+ |
+|                                                                      |
+|  22 ofertas cambiarian de ISCO                                      |
+|                                                                      |
+|  [Ver ofertas afectadas]    [Cancelar]    [Aplicar regla]           |
++---------------------------------------------------------------------+
+```
+
+---
+
 ## Admin Scraping: Dashboard + Control (Bloque H)
 
 **Estado:** P-21 existe como solo lectura. Se amplía con monitoreo + control.

@@ -533,6 +533,8 @@ MEDIOS:
 □ S-31: Onboarding: validar que email del técnico coincida con dominio de la OE
 □ S-32: Scraping commands: solo admin puede crear, poller usa service_role
 □ S-33: Comandos peligrosos (cancelar, reconfigurar) requieren confirmación doble
+□ S-34: Config overrides: solo admin puede editar, changelog de cada cambio
+□ S-35: Preview obligatorio antes de aplicar regla (no se puede saltar)
 ```
 
 ---

@@ -410,6 +410,100 @@ Post-corte: regenerar skills_searchable.json (script existente)
 | E5 | QR evoluciona a credencial verificable | — | ❌ Futuro |
 | E6 | API pública para portales de empleo de gobiernos | — | ❌ Futuro |
 
+### Bloque I: Panel Evolución del Procesamiento (3 fases)
+
+**Dependencia:** Datos de pipeline ya existen (pipeline_runs, validation_errors, learning_history, ofertas_esco_matching)
+**Asignado a:** Gerardo (RPCs, APIs, lógica preview) + Sergio (UI dashboards + editor)
+
+> Hoy para saber si el NLP mejoró hay que correr scripts. Para editar una regla hay que abrir un JSON. Para saber si conviene fine-tunear hay que preguntar. Este bloque lo lleva todo a la UI.
+
+#### Fase I1 — Dashboards de métricas (solo lectura)
+
+Datos ya existen en BD. Solo RPCs + UI para mostrarlos.
+
+| # | Componente | Tipo | Quién |
+|---|-----------|------|-------|
+| I1a | RPC `get_nlp_metrics()`: tasa aprobados/bloqueados NLP Gate, campos problemáticos, por versión | RPC Supabase | Gerardo |
+| I1b | RPC `get_matching_metrics()`: distribución método (regla/diccionario/semántico), dual match %, score promedio | RPC Supabase | Gerardo |
+| I1c | RPC `get_validation_metrics()`: errores por tipo, resueltos vs pendientes, evolución temporal | RPC Supabase | Gerardo |
+| I1d | RPC `get_learning_timeline()`: reglas creadas, tasa error por lote, convergencia | RPC Supabase | Gerardo |
+| I1e | RPC `get_gold_set_results()`: resultados actuales vs históricos sobre gold set | RPC Supabase | Gerardo |
+| I1f | API /api/processing-metrics (agrega todas las RPCs) | API route | Gerardo |
+| I1g | Dashboard NLP: gráficos aprobados/bloqueados, campos problemáticos, comparación versiones | UI | Sergio |
+| I1h | Dashboard Matching: pie distribución método, evolución dual match, reglas más/menos usadas | UI | Sergio |
+| I1i | Dashboard Validación: errores por tipo (bar chart), resueltos/pendientes (donut), timeline | UI | Sergio |
+| I1j | Dashboard Aprendizaje: timeline reglas creadas, tasa error temporal, convergencia por lote | UI | Sergio |
+| I1k | Gold Set: tabla resultados actuales, comparación histórica, regresiones detectadas | UI | Sergio |
+
+**Tests:**
+- `unit/processing-metrics.test.ts` — cálculos de métricas, agregaciones
+- `component/nlp-dashboard.test.tsx` — render gráficos, datos correctos
+- `component/matching-dashboard.test.tsx` — render distribución, dual match
+- `component/validation-dashboard.test.tsx` — render errores, timeline
+
+#### Fase I2 — Edición de diccionarios y reglas
+
+**Decisión: Opción C (híbrida).** Los JSONs del repo siguen como fallback. Los cambios desde la UI se guardan en `config_overrides` en Supabase. El pipeline lee primero el override, si no existe usa el JSON local.
+
+| # | Componente | Tipo | Quién |
+|---|-----------|------|-------|
+| I2a | Tabla `config_overrides`: config_key, json_value, version, updated_by | Migration SQL | Gerardo |
+| I2b | API /api/config-editor: GET (leer JSON + override), PUT (guardar override) | API route | Gerardo |
+| I2c | Función `load_config_with_override()`: lee override de Supabase, fallback a JSON local | Python (pipeline) | Gerardo |
+| I2d | Preview de impacto: antes de guardar, calcular "afecta a N ofertas, cambia X→Y" | API route | Gerardo |
+| I2e | Editor reglas de negocio (matching_rules_business.json): tabla + agregar/editar/desactivar + preview | UI | Sergio |
+| I2f | Editor sinónimos argentinos: tabla + agregar/editar + preview | UI | Sergio |
+| I2g | Editor reglas NLP (nlp_inference_rules.json): tabla + agregar/editar | UI | Sergio |
+| I2h | Editor skills rules: tabla + agregar/editar | UI | Sergio |
+| I2i | Editor oficios argentinos: tabla + agregar | UI | Sergio |
+| I2j | Changelog de cambios: quién editó qué, cuándo, diff | UI + datos | Ambos |
+
+**Configs editables desde UI:**
+
+| Config JSON | Reglas actuales | Qué se edita |
+|-------------|----------------|-------------|
+| matching_rules_business.json | 297 reglas | titulo_contiene → forzar_isco + esco_label |
+| sinonimos_argentinos_esco.json | 17 ocupaciones | término argentino → ISCO |
+| nlp_inference_rules.json | ~50 reglas | keyword → seniority/area/modalidad |
+| skills_rules.json | 25 reglas | titulo_contiene → forzar skills |
+| oficios_arg.json | ~170 oficios | oficio → ISCO |
+| nlp_titulo_limpieza.json | ~30 patrones | regex limpiar títulos |
+
+**Preview de impacto (lo más valioso):**
+```
+Antes de guardar regla nueva:
+"titulo_contiene: 'community manager' → forzar_isco: 2431"
+
+Preview:
+  Ofertas afectadas: 45
+  Matching actual: 23 matchean a 2431, 15 a 2642, 7 a otros
+  Con esta regla: 45 matchean a 2431
+  Cambios: 22 ofertas cambian de ISCO
+  [Ver ofertas afectadas]  [Cancelar]  [Aplicar]
+```
+
+**Tests:**
+- `unit/config-override.test.ts` — lee override, fallback JSON, merge correcto
+- `unit/preview-impacto.test.ts` — calcula ofertas afectadas, diff correcto
+- `component/rules-editor.test.tsx` — render tabla, agregar, editar, preview modal
+- `security/config-editor-auth.test.ts` — solo admin puede editar
+
+#### Fase I3 — Fine-tuning readiness
+
+| # | Componente | Tipo | Quién |
+|---|-----------|------|-------|
+| I3a | RPC `get_training_pairs_stats()`: cantidad pares, distribución por ISCO, diversidad | RPC Supabase | Gerardo |
+| I3b | Sugerencia automática: "N pares, X% IT, necesitás más diversidad en Y" | Lógica | Gerardo |
+| I3c | Historial fine-tuning: qué modelo, cuántos datos, qué mejora | Tabla + UI | Ambos |
+| I3d | Comparación pre/post fine-tuning sobre gold set | Lógica + UI | Ambos |
+| I3e | Dashboard fine-tuning readiness: pares acumulados, diversidad, sugerencia, historial | UI | Sergio |
+
+**Tests:**
+- `unit/training-pairs-stats.test.ts` — diversidad calculada, sugerencia correcta
+- `component/finetuning-dashboard.test.tsx` — render métricas, sugerencia
+
+---
+
 ### Bloque H: Gestión de Scraping desde Admin (3 fases)
 
 **Dependencia:** Datos de scraping ya existen en BD. VPS operativo con cron.
