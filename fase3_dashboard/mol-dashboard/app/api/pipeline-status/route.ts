@@ -28,11 +28,18 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
   }
 
-  const { data, error } = await client.rpc('get_pipeline_status');
+  // Fetch both RPCs in parallel
+  const [statusResult, reconResult] = await Promise.all([
+    client.rpc('get_pipeline_status'),
+    client.rpc('reconciliar_sistemas'),
+  ]);
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  if (statusResult.error) {
+    return NextResponse.json({ error: statusResult.error.message }, { status: 500 });
   }
 
-  return NextResponse.json(data);
+  return NextResponse.json({
+    ...statusResult.data,
+    reconciliacion: reconResult.error ? null : reconResult.data,
+  });
 }

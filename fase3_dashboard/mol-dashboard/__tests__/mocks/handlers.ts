@@ -6,6 +6,7 @@ import { mockPanoramaRPC } from './fixtures/panorama'
 import { mockEvolucionRPC } from './fixtures/evolucion'
 import { mockRequerimientosRPC, mockSkillsResumenRPC, mockSidebarCountsRPC } from './fixtures/requerimientos'
 import { mockPipelineStatusRPC } from './fixtures/pipeline-status'
+import { mockReconciliacionWarning } from './fixtures/reconciliacion'
 
 const SUPABASE_URL = 'https://test.supabase.co'
 
@@ -115,6 +116,11 @@ export const handlers = [
   // RPC: get_pipeline_status
   http.post(`${SUPABASE_URL}/rest/v1/rpc/get_pipeline_status`, () => {
     return HttpResponse.json(mockPipelineStatusRPC)
+  }),
+
+  // RPC: reconciliar_sistemas
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/reconciliar_sistemas`, () => {
+    return HttpResponse.json(mockReconciliacionWarning)
   }),
 
   // Auth: get current user
