@@ -7,6 +7,7 @@ import { mockEvolucionRPC } from './fixtures/evolucion'
 import { mockRequerimientosRPC, mockSkillsResumenRPC, mockSidebarCountsRPC } from './fixtures/requerimientos'
 import { mockPipelineStatusRPC } from './fixtures/pipeline-status'
 import { mockReconciliacionWarning } from './fixtures/reconciliacion'
+import { mockScrapingStatsRPC, mockScrapingHistoryRPC } from './fixtures/scraping-stats'
 
 const SUPABASE_URL = 'https://test.supabase.co'
 
@@ -121,6 +122,16 @@ export const handlers = [
   // RPC: reconciliar_sistemas
   http.post(`${SUPABASE_URL}/rest/v1/rpc/reconciliar_sistemas`, () => {
     return HttpResponse.json(mockReconciliacionWarning)
+  }),
+
+  // RPC: get_scraping_stats
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_scraping_stats`, () => {
+    return HttpResponse.json(mockScrapingStatsRPC)
+  }),
+
+  // RPC: get_scraping_history
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_scraping_history`, () => {
+    return HttpResponse.json(mockScrapingHistoryRPC)
   }),
 
   // Auth: get current user

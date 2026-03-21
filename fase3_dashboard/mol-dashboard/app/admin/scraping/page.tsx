@@ -4,137 +4,83 @@ import { useState, useEffect } from "react";
 import {
   Database,
   RefreshCw,
-  CheckCircle,
+  CheckCircle2,
   XCircle,
-  Clock,
   Globe,
   TrendingUp,
   AlertTriangle,
   Loader2,
-  Calendar
+  Info,
+  ExternalLink,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
-interface ScrapingStats {
-  fase1_ofertas_totales: number;
-  fase1_ofertas_activas: number;
-  fase1_ofertas_cerradas: number;
-  fase1_ultimo_scraping: string;
-  fase1_dias_desde_scraping: number;
-  fase1_fuentes: string;
-}
-
-interface OfertasPorPortal {
+interface PortalStats {
   portal: string;
-  cantidad: number;
+  total: number;
+  ultimos_7d: number;
+  hoy: number;
+  ultima_fecha: string;
+  dias_sin_datos: number;
   porcentaje: number;
 }
 
-interface OfertasPorFecha {
-  fecha: string;
-  cantidad: number;
+interface ScrapingData {
+  portales: PortalStats[];
+  totales: {
+    total_ofertas: number;
+    total_activas: number;
+    portales_activos: number;
+    ultima_fecha_global: string;
+    dias_sin_datos_global: number;
+    ofertas_7d: number;
+    ofertas_30d: number;
+  };
+  alertas: { nivel: string; portal: string; mensaje: string; detalle: string }[];
+  history: { fecha: string; total: number; por_portal: Record<string, number> }[];
 }
 
-// Helper para convertir cualquier valor a string seguro para React
-function safeString(value: unknown): string {
-  if (value === null || value === undefined) return '-';
-  if (typeof value === 'string') return value;
-  if (typeof value === 'number') return value.toString();
-  if (typeof value === 'object') {
-    return Object.keys(value).join(', ');
-  }
-  return String(value);
-}
+const PORTAL_COLORS: Record<string, { bg: string; text: string }> = {
+  bumeran: { bg: 'bg-orange-500', text: 'text-orange-600' },
+  zonajobs: { bg: 'bg-blue-500', text: 'text-blue-600' },
+  computrabajo: { bg: 'bg-green-500', text: 'text-green-600' },
+  indeed: { bg: 'bg-purple-500', text: 'text-purple-600' },
+  caba: { bg: 'bg-amber-500', text: 'text-amber-600' },
+  portalempleo: { bg: 'bg-teal-500', text: 'text-teal-600' },
+};
+
+const ALERTA_STYLES: Record<string, string> = {
+  error: 'bg-red-50 border-red-200 text-red-800',
+  warning: 'bg-amber-50 border-amber-200 text-amber-800',
+  info: 'bg-blue-50 border-blue-200 text-blue-800',
+};
+
+const ALERTA_ICONS: Record<string, any> = {
+  error: XCircle,
+  warning: AlertTriangle,
+  info: Info,
+};
 
 export default function ScrapingPage() {
-  const [stats, setStats] = useState<ScrapingStats | null>(null);
-  const [porPortal, setPorPortal] = useState<OfertasPorPortal[]>([]);
-  const [porFecha, setPorFecha] = useState<OfertasPorFecha[]>([]);
+  const [data, setData] = useState<ScrapingData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   async function loadData() {
+    setLoading(true);
     try {
-      if (!supabase) {
-        console.warn('Supabase no configurado');
-        setLoading(false);
-        return;
-      }
+      if (!supabase) return;
 
-      // Estado del sistema
-      const { data: estadoData } = await supabase
-        .from('sistema_estado')
-        .select('*')
-        .order('timestamp', { ascending: false })
-        .limit(1)
-        .single();
+      const [statsResult, historyResult] = await Promise.all([
+        supabase.rpc('get_scraping_stats'),
+        supabase.rpc('get_scraping_history', { p_days: 14 }),
+      ]);
 
-      if (estadoData) {
-        // Convertir fase1_fuentes a string - SIEMPRE
-        let fuentes: string = 'bumeran, zonajobs, computrabajo';
-        const rawFuentes = estadoData.fase1_fuentes;
-        if (rawFuentes) {
-          if (typeof rawFuentes === 'string') {
-            fuentes = rawFuentes;
-          } else if (typeof rawFuentes === 'object' && rawFuentes !== null) {
-            // Es un objeto, extraer las keys
-            fuentes = Object.keys(rawFuentes).join(', ');
-          }
-        }
+      if (statsResult.error) throw statsResult.error;
 
-        setStats({
-          fase1_ofertas_totales: estadoData.fase1_ofertas_totales || 0,
-          fase1_ofertas_activas: estadoData.fase1_ofertas_activas || 0,
-          fase1_ofertas_cerradas: estadoData.fase1_ofertas_cerradas || 0,
-          fase1_ultimo_scraping: estadoData.fase1_ultimo_scraping || '-',
-          fase1_dias_desde_scraping: estadoData.fase1_dias_desde_scraping || 0,
-          fase1_fuentes: fuentes
-        });
-      }
-
-      // Ofertas por portal — usar fase1_fuentes de sistema_estado (datos crudos del VPS)
-      if (estadoData?.fase1_fuentes) {
-        const rawFuentes = estadoData.fase1_fuentes;
-        const fuentesObj = typeof rawFuentes === 'string' ? JSON.parse(rawFuentes) : rawFuentes;
-        const totalFuentes = Object.values(fuentesObj as Record<string, number>).reduce((a: number, b: number) => a + b, 0);
-
-        const portalData = Object.entries(fuentesObj as Record<string, number>)
-          .map(([portal, cantidad]) => ({
-            portal,
-            cantidad: cantidad as number,
-            porcentaje: totalFuentes > 0 ? Math.round(((cantidad as number) / totalFuentes) * 100) : 0
-          }))
-          .sort((a, b) => b.cantidad - a.cantidad);
-
-        setPorPortal(portalData);
-      }
-
-      // Ofertas por fecha de publicación (últimos 14 días)
-      const { data: ofertasFecha } = await supabase
-        .from('ofertas_dashboard')
-        .select('fecha_publicacion')
-        .not('fecha_publicacion', 'is', null)
-        .order('fecha_publicacion', { ascending: false })
-        .limit(1000);
-
-      if (ofertasFecha) {
-        const countsByDate: Record<string, number> = {};
-        ofertasFecha.forEach((o: any) => {
-          const fecha = o.fecha_publicacion || 'sin fecha';
-          countsByDate[fecha] = (countsByDate[fecha] || 0) + 1;
-        });
-
-        const fechaData = Object.entries(countsByDate)
-          .map(([fecha, cantidad]) => ({ fecha, cantidad }))
-          .sort((a, b) => b.fecha.localeCompare(a.fecha))
-          .slice(0, 14);
-
-        setPorFecha(fechaData);
-      }
-
+      setData({
+        ...(statsResult.data as any),
+        history: (historyResult.data as any)?.dias || [],
+      });
     } catch (error) {
       console.error('Error cargando datos:', error);
     } finally {
@@ -142,112 +88,149 @@ export default function ScrapingPage() {
     }
   }
 
-  const getPortalColor = (portal: string) => {
-    const colors: Record<string, string> = {
-      bumeran: 'bg-orange-500',
-      zonajobs: 'bg-blue-500',
-      computrabajo: 'bg-green-500',
-      indeed: 'bg-purple-500',
-      caba: 'bg-amber-500',
-      portalempleo: 'bg-teal-500',
-      linkedin: 'bg-sky-500'
-    };
-    return colors[portal] || 'bg-gray-500';
-  };
-
-  const getPortalIcon = (portal: string) => {
-    return <Globe className="w-4 h-4" />;
-  };
+  useEffect(() => { loadData(); }, []);
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <span className="ml-3 text-gray-600">Cargando datos de scraping...</span>
       </div>
     );
   }
 
+  if (!data) return null;
+
+  const { portales, totales, alertas, history } = data;
+
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Estado del Scraping</h1>
-          <p className="text-gray-500 mt-1">Monitoreo de la adquisición de datos</p>
+          <h1 className="text-2xl font-bold text-gray-900">Scraping — Portales</h1>
+          <p className="text-gray-500 text-sm mt-1">
+            {totales.portales_activos} fuentes activas — {totales.total_ofertas.toLocaleString()} ofertas totales
+            — ultimo dato: {totales.ultima_fecha_global || 'N/A'}
+          </p>
         </div>
         <button
-          onClick={() => { setLoading(true); loadData(); }}
-          className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+          onClick={loadData}
+          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
         >
-          <RefreshCw className="w-5 h-5" />
+          <RefreshCw className="w-4 h-4" />
           Actualizar
         </button>
       </div>
 
-      {/* Summary bar */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 flex items-center gap-6 text-sm">
-        <span className="text-gray-500">Ultimo scraping: <strong className="text-gray-900">{stats?.fase1_ultimo_scraping || '-'}</strong></span>
-        <span className="text-gray-500">Hace <strong className={stats && stats.fase1_dias_desde_scraping > 3 ? 'text-amber-600' : 'text-green-600'}>{stats?.fase1_dias_desde_scraping || 0} dias</strong></span>
-        <span className="text-gray-500">Fuentes: <strong className="text-gray-900">{stats?.fase1_fuentes ? (typeof stats.fase1_fuentes === 'object' ? Object.keys(stats.fase1_fuentes).length : stats.fase1_fuentes) : '-'}</strong></span>
-      </div>
+      {/* Alertas */}
+      {alertas.length > 0 && (
+        <div className="space-y-2">
+          {alertas.map((alerta, idx) => {
+            const AlertIcon = ALERTA_ICONS[alerta.nivel] || Info;
+            const style = ALERTA_STYLES[alerta.nivel] || ALERTA_STYLES.info;
+            return (
+              <div key={idx} className={`flex items-center gap-3 px-4 py-3 rounded-lg border ${style}`}>
+                <AlertIcon className="w-5 h-5 flex-shrink-0" />
+                <div className="flex-1">
+                  <span className="text-sm font-medium">{alerta.mensaje}</span>
+                  {alerta.detalle && <span className="text-xs opacity-70 ml-2">{alerta.detalle}</span>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Ofertas por Portal */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Globe className="w-5 h-5 text-blue-500" />
-            Ofertas por Portal
-          </h2>
-          <div className="space-y-4">
-            {porPortal.map((item) => (
-              <div key={item.portal} className="flex items-center gap-4">
-                <div className={`w-10 h-10 ${getPortalColor(item.portal)} rounded-lg flex items-center justify-center text-white`}>
-                  {getPortalIcon(item.portal)}
+      {/* Cards por portal */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {portales.map((portal) => {
+          const colors = PORTAL_COLORS[portal.portal] || { bg: 'bg-gray-500', text: 'text-gray-600' };
+          const isHealthy = portal.dias_sin_datos <= 3;
+          const statusColor = isHealthy ? 'text-green-600' : portal.dias_sin_datos > 7 ? 'text-red-600' : 'text-amber-600';
+          const StatusIcon = isHealthy ? CheckCircle2 : portal.dias_sin_datos > 7 ? XCircle : AlertTriangle;
+
+          return (
+            <div key={portal.portal} className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+              <div className="flex items-center gap-3 mb-3">
+                <div className={`w-10 h-10 ${colors.bg} rounded-lg flex items-center justify-center text-white`}>
+                  <Globe className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-medium text-gray-900 capitalize">{item.portal}</span>
-                    <span className="text-sm text-gray-500">{item.cantidad.toLocaleString()} ({item.porcentaje}%)</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className={`${getPortalColor(item.portal)} h-2 rounded-full transition-all duration-500`}
-                      style={{ width: `${item.porcentaje}%` }}
-                    />
-                  </div>
+                  <h3 className="font-semibold text-gray-900 capitalize">{portal.portal}</h3>
+                  <p className="text-xs text-gray-500">{portal.porcentaje}% del total</p>
+                </div>
+                <StatusIcon className={`w-5 h-5 ${statusColor}`} />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-center">
+                <div className="bg-gray-50 rounded-lg p-2">
+                  <div className="text-lg font-bold text-gray-900">{portal.total.toLocaleString()}</div>
+                  <div className="text-xs text-gray-500">Total</div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-2">
+                  <div className="text-lg font-bold text-gray-900">{portal.ultimos_7d.toLocaleString()}</div>
+                  <div className="text-xs text-gray-500">7 dias</div>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Ofertas por Fecha */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-green-500" />
-            Ofertas por Fecha (últimos 14 días)
-          </h2>
-          <div className="space-y-2 max-h-80 overflow-y-auto">
-            {porFecha.map((item, idx) => (
-              <div key={item.fecha} className="flex items-center justify-between py-2 border-b border-gray-100">
-                <span className={`text-sm ${idx === 0 ? 'font-semibold text-gray-900' : 'text-gray-600'}`}>
-                  {item.fecha}
+              <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
+                <span>Ultima: {portal.ultima_fecha}</span>
+                <span className={statusColor}>
+                  {portal.dias_sin_datos === 0 ? 'Hoy' : `Hace ${portal.dias_sin_datos}d`}
                 </span>
-                <div className="flex items-center gap-2">
-                  <div className="w-24 bg-gray-200 rounded-full h-2">
-                    <div
-                      className="bg-green-500 h-2 rounded-full"
-                      style={{ width: `${Math.min((item.cantidad / (porFecha[0]?.cantidad || 1)) * 100, 100)}%` }}
-                    />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Historial diario */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <TrendingUp className="w-5 h-5 text-green-500" />
+          Ofertas por dia (ultimos 14 dias)
+        </h2>
+        {history.length > 0 ? (
+          <div className="space-y-2">
+            {history.map((dia, idx) => {
+              const maxTotal = Math.max(...history.map(d => d.total));
+              return (
+                <div key={dia.fecha} className="flex items-center gap-4">
+                  <span className="text-sm text-gray-600 w-24 flex-shrink-0">{dia.fecha}</span>
+                  <div className="flex-1 flex items-center gap-1 h-6">
+                    {Object.entries(dia.por_portal).map(([portal, count]) => {
+                      const pct = (count / maxTotal) * 100;
+                      const color = PORTAL_COLORS[portal]?.bg || 'bg-gray-400';
+                      return pct > 0.5 ? (
+                        <div
+                          key={portal}
+                          className={`${color} h-5 rounded-sm`}
+                          style={{ width: `${pct}%` }}
+                          title={`${portal}: ${count}`}
+                        />
+                      ) : null;
+                    })}
                   </div>
-                  <span className={`text-sm font-medium w-16 text-right ${idx === 0 ? 'text-green-600' : 'text-gray-600'}`}>
-                    {item.cantidad}
+                  <span className="text-sm font-medium text-gray-900 w-16 text-right">
+                    {dia.total.toLocaleString()}
                   </span>
                 </div>
-              </div>
-            ))}
+              );
+            })}
+            {/* Leyenda */}
+            <div className="flex gap-4 mt-3 pt-3 border-t border-gray-100">
+              {Object.entries(PORTAL_COLORS).map(([portal, colors]) => (
+                <div key={portal} className="flex items-center gap-1.5">
+                  <div className={`w-3 h-3 rounded-sm ${colors.bg}`} />
+                  <span className="text-xs text-gray-500 capitalize">{portal}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-
+        ) : (
+          <p className="text-sm text-gray-400">Sin datos en los ultimos 14 dias</p>
+        )}
       </div>
     </div>
   );
