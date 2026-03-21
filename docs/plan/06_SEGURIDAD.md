@@ -527,6 +527,8 @@ MEDIOS:
 □ S-21: DNI solo en PDF, no en reporte web
 □ S-24: Audit log de reportes generados
 □ S-27: Verificación de títulos (distinguir verificado vs autodeclarado)
+□ S-28: Vinculación por DNI requiere aceptación del trabajador
+□ S-29: Pool anonimizado hasta aceptación del candidato
 ```
 
 ---

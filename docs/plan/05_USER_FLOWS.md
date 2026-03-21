@@ -633,6 +633,137 @@ Si no encuentra su título → carga manual (nombre + institución)
 
 ---
 
+## F-10: Integración S1 ↔ S2 — Vinculación trabajador-OE por DNI
+
+### Principio
+
+El trabajador tiene UN solo perfil en todo el sistema. El DNI es el vinculador. El perfil se crea en S1 (trabajador solo) o en S2 (técnico de OE), y se comparte entre ambos cuando hay vínculo.
+
+### Escenario A: Trabajador se autoevaluó en S1, después va a una OE
+
+```
+Trabajador usó S1 → tiene perfil con DNI 30.123.456
+    ↓
+Va a la OE de su barrio
+    ↓
+Técnico pone DNI 30.123.456 en el sistema
+    ↓
+Sistema encuentra perfil existente:
+  "Juan Pérez — 12 skills — 3 ocupaciones compatibles — 1 reporte generado"
+    ↓
+Técnico pregunta: "¿Vinculamos este perfil a nuestra oficina?"
+    ↓
+Trabajador acepta (verbalmente, técnico confirma)
+    ↓
+Perfil queda vinculado: organizacion_id = OE del técnico
+    ↓
+Técnico puede ver skills, resultados, agregar nota, derivar a cursos
+Trabajador sigue viendo todo desde S1 (su perfil no cambia)
+Los reportes que el trabajador generó en S1 siguen siendo privados
+```
+
+### Escenario B: Trabajador atendido en OE, después usa S1 solo
+
+```
+Técnico crea perfil en OE para el trabajador (DNI 30.123.456)
+    ↓
+Trabajador quiere seguir explorando desde su celular
+    ↓
+Entra a S1 (/mi-futuro-laboral) → se registra con email
+    ↓
+Sistema le pide DNI (opcional para evaluar, obligatorio para guardar)
+    ↓
+Pone DNI 30.123.456 → sistema detecta perfil existente (creado por OE)
+    ↓
+"Ya tenés un perfil creado en la OE [nombre]. ¿Querés usarlo?"
+    ↓
+Acepta → ve su perfil completo (skills, resultados)
+    ↓
+Puede enriquecer desde S1 (agregar ocupaciones, skills)
+    ↓
+Lo que agregue también lo ve el técnico de la OE
+```
+
+### Escenario C: Trabajador acepta ser visible en pool
+
+```
+Trabajador en S1 o en OE → toggle "Quiero ser visible para búsquedas"
+    ↓
+Elige alcance:
+  ○ Solo en mi provincia
+  ○ En todo el país
+  ○ No quiero ser visible (default)
+    ↓
+Si es visible → OEs y empresas (S3 registrado) pueden encontrarlo
+    ↓
+En la búsqueda aparece ANONIMIZADO:
+  "Perfil #4523 — CABA — 12 skills — 78% match con Desarrollador SW"
+    ↓
+OE o empresa solicita contacto → trabajador recibe notificación
+    ↓
+Trabajador acepta → se revela nombre y datos de contacto
+```
+
+### Qué ve cada uno
+
+| Dato | Trabajador (S1) | Técnico OE (S2) | Nota |
+|------|-----------------|------------------|------|
+| Skills del perfil | ✅ | ✅ (si vinculado) | Compartido |
+| Ocupaciones compatibles | ✅ | ✅ | Compartido |
+| Reportes generados por trabajador | ✅ | ❌ | Privados del trabajador |
+| Reportes generados por OE | ✅ (los suyos) | ✅ | Los que son para él |
+| Nota del técnico | ❌ | ✅ | Privada de la OE |
+| Derivaciones a cursos | ✅ (ve a qué lo derivaron) | ✅ (estado seguimiento) | — |
+| Historial de atención | ❌ | ✅ | Privado de la OE |
+| Datos personales (DNI, email) | ✅ | ✅ (si vinculado) | — |
+
+### Vinculación técnica
+
+```sql
+-- perfiles_trabajadores tiene:
+-- - created_by: quien lo creó (puede ser el trabajador o el técnico)
+-- - organizacion_id: NULL si solo S1, UUID si vinculado a OE
+-- - dni: vinculador universal
+
+-- Buscar perfil existente por DNI
+SELECT * FROM perfiles_trabajadores WHERE dni = '30123456';
+
+-- Vincular a OE (técnico confirma)
+UPDATE perfiles_trabajadores
+SET organizacion_id = 'uuid-oe'
+WHERE dni = '30123456';
+
+-- El trabajador sigue viendo su perfil via created_by o dni
+-- La OE lo ve via organizacion_id
+```
+
+### Opt-in para pool
+
+```sql
+-- Campos en perfiles_trabajadores:
+-- opt_in_pool: BOOLEAN DEFAULT FALSE
+-- opt_in_alcance: VARCHAR(20) — 'provincial', 'nacional', NULL
+-- opt_in_at: TIMESTAMPTZ — cuándo aceptó
+-- opt_in_provincia: VARCHAR(100) — provincia del trabajador
+
+-- Query de la OE buscando candidatos:
+SELECT * FROM perfiles_trabajadores
+WHERE opt_in_pool = TRUE
+  AND (opt_in_alcance = 'nacional'
+       OR (opt_in_alcance = 'provincial' AND opt_in_provincia = 'CABA'))
+  AND organizacion_id IS DISTINCT FROM 'uuid-mi-oe' -- no mis propios
+```
+
+### Consideraciones de seguridad
+
+- El DNI no se muestra en búsquedas del pool (solo perfil anonimizado)
+- La vinculación requiere que el trabajador acepte (no es automática)
+- Un perfil puede estar vinculado a más de una OE (si el trabajador se atiende en varias)
+- La OE solo ve la nota de su propia atención, no la de otra OE
+- Revocar opt-in: el trabajador puede desactivar la visibilidad en cualquier momento
+
+---
+
 ## Historial de Cambios
 
 | Fecha | Versión | Cambio |
@@ -641,4 +772,5 @@ Si no encuentra su título → carga manual (nombre + institución)
 | 2026-02-07 | 2.0 | Modelo híbrido: F-01 registro libre, F-02 acceso gated con aprobación, F-03 checkout dual, F-05 CMS. Estados: registrado, pendiente_aprobacion, trial |
 | 2026-03-18 | 2.1 | F-06 Reporte de Compatibilidad Laboral (V-17): flujo gestor genera → PDF con QR → reclutador accede → edita competencias |
 | 2026-03-21 | 2.3 | F-07 formación con impacto (Bloque 8°), F-08 empresa publica búsqueda (Bloque 11°), F-09 Vía 4 título → skills (Bloque 12°) |
+| 2026-03-21 | 2.4 | F-10 Integración S1↔S2: vinculación por DNI, 3 escenarios, opt-in por jurisdicción, tabla visibilidad, SQL vinculación |
 | 2026-03-20 | 2.2 | F-06 ampliado: 2 caminos (S1+S2), 4 vías captura (+ formación/título), 3 tabs resultados, transición dual, ESCO Argentino. Fuente: MOL_Skills_Intelligence.docx v5 |

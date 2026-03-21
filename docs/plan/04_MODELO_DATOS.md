@@ -914,6 +914,34 @@ CREATE TABLE IF NOT EXISTS tension_ocupaciones (
 
 ---
 
+### Campos adicionales en perfiles_trabajadores (Integración S1↔S2)
+
+Campos para vinculación por DNI, opt-in y multi-OE:
+
+```sql
+-- Campos ya existentes: nombre, created_by, organizacion_id, nota_tecnico
+
+-- Campos nuevos para integración S1↔S2:
+ALTER TABLE perfiles_trabajadores ADD COLUMN IF NOT EXISTS dni VARCHAR(20);
+ALTER TABLE perfiles_trabajadores ADD COLUMN IF NOT EXISTS opt_in_pool BOOLEAN DEFAULT FALSE;
+ALTER TABLE perfiles_trabajadores ADD COLUMN IF NOT EXISTS opt_in_alcance VARCHAR(20);  -- 'provincial', 'nacional', NULL
+ALTER TABLE perfiles_trabajadores ADD COLUMN IF NOT EXISTS opt_in_at TIMESTAMPTZ;
+ALTER TABLE perfiles_trabajadores ADD COLUMN IF NOT EXISTS opt_in_provincia VARCHAR(100);
+
+-- Índice para búsqueda por DNI (vinculación)
+CREATE UNIQUE INDEX IF NOT EXISTS idx_perfiles_dni ON perfiles_trabajadores(dni) WHERE dni IS NOT NULL;
+
+-- Índice para búsqueda de pool (opt-in)
+CREATE INDEX IF NOT EXISTS idx_perfiles_optin ON perfiles_trabajadores(opt_in_pool, opt_in_alcance, opt_in_provincia)
+  WHERE opt_in_pool = TRUE;
+```
+
+**Vinculación:** El DNI es el vinculador universal. Un perfil puede tener `organizacion_id` (vinculado a OE) y seguir siendo accesible por el trabajador via `created_by` o `dni`. Un perfil puede estar vinculado a más de una OE (tabla intermedia `perfiles_oe` si necesario en el futuro).
+
+**Opt-in:** Default FALSE. El trabajador elige alcance (provincial/nacional). En búsquedas del pool aparece anonimizado. Revocable en cualquier momento.
+
+---
+
 ### T-cursos_oe (NUEVA — Bloque 8° catálogo de cursos de cada OE)
 
 Catálogo de cursos de cada Oficina de Empleo, mapeados a skills ESCO.

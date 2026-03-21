@@ -876,6 +876,97 @@ Dashboard de inteligencia del mercado laboral de la jurisdiccion de la OE.
 
 ---
 
+## Integracion S1 ↔ S2: Vinculacion y Opt-in
+
+### Tecnico busca perfil por DNI (S2)
+
+```
++---------------------------------------------------------------------+
+|  Atencion > Nuevo caso                                               |
+|                                                                      |
+|  DNI del trabajador: [30123456        ] [Buscar]                    |
+|                                                                      |
+|  +----------------------------------------------------------------+ |
+|  |  PERFIL ENCONTRADO                                              | |
+|  |                                                                 | |
+|  |  Juan Perez — DNI 30.123.456                                   | |
+|  |  Creado: 15/03/2026 (por el trabajador en Mi Futuro Laboral)   | |
+|  |  Skills: 12  |  Ocupaciones evaluadas: 3  |  Reportes: 1       | |
+|  |                                                                 | |
+|  |  Queres vincular este perfil a tu oficina?                      | |
+|  |  El trabajador debe aceptar verbalmente.                        | |
+|  |                                                                 | |
+|  |  [Cancelar]  [Vincular a OE CABA Sur]                           | |
+|  +----------------------------------------------------------------+ |
+|                                                                      |
+|  --- O si no se encuentra: ---                                      |
+|                                                                      |
+|  +----------------------------------------------------------------+ |
+|  |  No se encontro perfil con DNI 30.123.456                      | |
+|  |                                                                 | |
+|  |  [Crear nuevo perfil]                                           | |
+|  +----------------------------------------------------------------+ |
++---------------------------------------------------------------------+
+```
+
+### Trabajador configura opt-in (S1)
+
+```
++---------------------------+
+| Mi Perfil                 |
++---------------------------+
+|                           |
+| Visibilidad en busquedas  |
+|                           |
+| Queres que oficinas de    |
+| empleo y empresas puedan  |
+| encontrar tu perfil?      |
+|                           |
+| [OFF] No, mantener        |
+|       privado (actual)    |
+|                           |
+| Al activar, tu perfil     |
+| aparece ANONIMIZADO.      |
+| Solo ven tus skills y     |
+| compatibilidad. Tu nombre |
+| y datos se revelan si     |
+| aceptas el contacto.      |
+|                           |
+| ( ) Solo en mi provincia  |
+|     [Buenos Aires    v]   |
+| ( ) En todo el pais       |
+|                           |
+| [Guardar preferencia]     |
++---------------------------+
+```
+
+### Perfil anonimizado en busqueda del pool
+
+```
++---------------------------------------------------------------------+
+|  Buscar en pool > Desarrollador de software                          |
+|                                                                      |
+|  12 perfiles compatibles encontrados                                |
+|                                                                      |
+|  +----------------------------------------------------------------+ |
+|  |  Perfil #4523  |  CABA  |  Match: 78%                          | |
+|  |  Skills: Python, SQL, Git, Testing, REST APIs, Docker, Agile   | |
+|  |  Trayectoria: 3 ocupaciones previas                            | |
+|  |  [Solicitar contacto]                                          | |
+|  +----------------------------------------------------------------+ |
+|  |  Perfil #2891  |  Buenos Aires  |  Match: 72%                  | |
+|  |  Skills: Python, SQL, Git, Testing, React                      | |
+|  |  Trayectoria: 2 ocupaciones previas                            | |
+|  |  [Solicitar contacto]                                          | |
+|  +----------------------------------------------------------------+ |
+|                                                                      |
+|  Nota: Los perfiles son anonimizados. Al solicitar contacto,        |
+|  el trabajador recibe una notificacion y decide si aceptar.         |
++---------------------------------------------------------------------+
+```
+
+---
+
 ## Wireframes Mobile (Bloque F)
 
 > Asignado a Sergio. Mobile-first para S1 y S3.

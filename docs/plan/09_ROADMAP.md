@@ -370,7 +370,9 @@ Post-corte: regenerar skills_searchable.json (script existente)
 | C7 | Elegir destino: campo libre + sugerencias del sistema | S1-7 | ❌ |
 | C8 | Brecha específica: "N skills te separan" con cursos | S1-8 | ❌ |
 | C9 | PDF + QR (generado por el propio trabajador) | S1-9 | ❌ |
-| C10 | Opt-in para visibilidad en pool (S-20) | — | ❌ |
+| C10 | Opt-in para visibilidad en pool (S-20): toggle provincial/nacional, anonimización, revocable | — | ❌ |
+| C12 | Vinculación S1↔S2 por DNI: buscar perfil existente, vincular a OE con aceptación | — | ❌ |
+| C13 | UI opt-in en S1 (toggle + alcance + explicación anonimización) | — | ❌ |
 | C11 | Rate limiting APIs públicas S1 (S-23) | — | ❌ |
 
 ### Bloque D: S3 — Empresas
