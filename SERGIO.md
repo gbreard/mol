@@ -669,7 +669,42 @@ Ademas de S1-S8 y Bloque F, estos wireframes y pantallas te tocan:
 | Formación impacto | S17 | 1 | 1 |
 | S3 registrado | S18-S19 | 2 | 2 |
 | Vía 4 | S20 | 1 | 1 |
-| **Total** | **S1-S20 + F1-F6** | **~30 componentes** | **~24 tests** |
+| **Total** | **S1-S20 + F1-F6** | **~30 componentes** | **~30 tests (1 por componente mínimo)** |
+
+### Regla de testing obligatoria
+
+```
+CADA COMPONENTE NUEVO = 1 ARCHIVO DE TEST MÍNIMO
+
+El test debe cubrir:
+1. Renderiza sin errores
+2. Muestra los datos que recibe por props
+3. Responde a interacción principal (click, input, toggle)
+4. Maneja estados: loading, error, empty
+5. No rompe los tests existentes (npm run test antes de push)
+
+SIN TEST = NO SE PUSHEA
+```
+
+---
+
+## Division de trabajo clara
+
+| Gerardo hace | Sergio hace |
+|-------------|------------|
+| Supabase: migrations, RLS, funciones SQL | Componentes React (UI) |
+| API routes (Next.js /api/*) | Páginas Next.js (layout, navegación) |
+| Lógica de negocio (matching, cálculos) | Estilos Tailwind + responsive |
+| Integración frontend ↔ backend | Consumir APIs (fetch/React Query) |
+| Tests unitarios (lógica) | Tests de componente (@testing-library) |
+| Tests de seguridad | Tests e2e (Playwright) |
+| Deploy (Vercel + Supabase) | — |
+| Motor semántico (búsqueda, NLP) | — |
+| Perfil Consolidado Argentino | — |
+
+**Sergio NO hace:** APIs, migrations, RLS, deploy, lógica de matching, integración con Supabase directo.
+
+**Sergio SÍ hace:** todo lo que se ve en pantalla + tests de que se ve bien y funciona.
 
 ---
 
