@@ -155,4 +155,45 @@ export const handlers = [
   http.post(`${SUPABASE_URL}/rest/v1/eventos_uso`, () => {
     return HttpResponse.json({}, { status: 201 })
   }),
+
+  // Perfil Argentino Versiones
+  http.get('/api/perfil-argentino-versiones', () => {
+    return HttpResponse.json({
+      activa: {
+        id: 'uuid-1', version: 'v1.0', total_skills: 14257,
+        total_emergentes: 0, total_ocupaciones: 3046,
+        nota: 'Version base ESCO', creado_por: 'admin@oede.gob.ar',
+        activa: true, created_at: '2026-01-15T00:00:00Z',
+      },
+      versiones: [
+        {
+          id: 'uuid-1', version: 'v1.0', total_skills: 14257,
+          total_emergentes: 0, total_ocupaciones: 3046,
+          nota: 'Version base ESCO', creado_por: 'admin@oede.gob.ar',
+          activa: true, created_at: '2026-01-15T00:00:00Z',
+        },
+      ],
+      estado_actual: {
+        ofertas_desde_ultimo_corte: 2132,
+        emergentes_nuevas: 8,
+        emergentes_pendientes: 3,
+        skills_aprobadas_desde_corte: 5,
+      },
+    })
+  }),
+
+  http.post('/api/perfil-argentino-versiones', () => {
+    return HttpResponse.json({
+      version: {
+        id: 'uuid-2', version: 'v1.1', total_skills: 14262,
+        total_emergentes: 5, total_ocupaciones: 3046,
+        nota: 'Nueva version', creado_por: 'admin@oede.gob.ar',
+        activa: true, created_at: '2026-03-21T00:00:00Z',
+      },
+    }, { status: 201 })
+  }),
+
+  http.patch('/api/perfil-argentino-versiones', () => {
+    return HttpResponse.json({ ok: true })
+  }),
 ]
