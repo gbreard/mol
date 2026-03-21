@@ -268,12 +268,56 @@ Cada bloque tiene una capa de UI y una capa de **datos/semántica** que es el co
 | # | Tarea | Detalle | Existe |
 |---|-------|---------|--------|
 | PCA-1 | Corte de versión global + UI admin | Pantalla en /admin/skills o dedicada donde el analista: (1) ve estado actual del perfil (emergentes pendientes, cambios desde último corte), (2) hace click "Crear versión X.Y", (3) el sistema congela un snapshot completo, (4) el sistema apunta a esa versión para todo el matching. Historial de versiones consultable. Posibilidad de rollback | ❌ |
-| PCA-2 | Proceso de curación definido | Workflow: cada N ofertas procesadas → recalcular frecuencias → notificar analista de emergentes nuevas (≥30%) → analista aprueba/rechaza → cuando está conforme → corte de versión desde la UI (PCA-1) | ⚠️ Panel existe, proceso no |
-| PCA-3 | Recálculo automático post-pipeline | Cuando el pipeline procesa ofertas nuevas, actualizar frecuencias de skills en el perfil y detectar emergentes nuevas automáticamente | ❌ |
-| PCA-4 | Regenerar catálogo búsqueda (A-D3) | Trigger: cuando se aprueba/rechaza una emergente → regenerar `skills_searchable.json` incluyendo emergentes | ❌ |
-| PCA-5 | Integrar perfil argentino en matching del trabajador | MySkillsSearch compara contra `occupation_full_detail.json` (ESCO puro). Debe comparar contra perfil consolidado. Impacta matching, brechas, transición | ❌ Clave |
-| PCA-6 | Métricas y monitoreo del perfil | Dashboard admin: ocupaciones con perfil / sin perfil, emergentes pendientes, cobertura promedio, evolución por versión global | ⚠️ Parcial |
+| PCA-2 | Proceso de curación definido | Workflow automatizado en Supabase (ver detalle abajo) | ⚠️ Panel existe, proceso por crear |
+| PCA-3 | Recálculo automático post-sync | Función RPC `recalcular_emergentes()` en Supabase llamada al final de `sync_to_supabase.py`. Recalcula frecuencias y detecta emergentes nuevas | ❌ |
+| PCA-4 | Regenerar catálogo búsqueda (A-D3) | Trigger: cuando se aprueba/rechaza una emergente → regenerar `skills_searchable.json` incluyendo emergentes | ❌ (script existe, falta trigger) |
+| PCA-5 | Integrar perfil argentino en matching del trabajador | MySkillsSearch compara contra perfil consolidado. Hook `usePerfilArgentino` + fallback ESCO puro | ✅ `9eede9d2` |
+| PCA-6 | Métricas y monitoreo del perfil | Badge en P-36 con emergentes pendientes + dashboard métricas | ⚠️ Parcial |
 | PCA-7 | Regenerar reporte contra versión nueva | Si el trabajador quiere, puede regenerar su reporte contra la versión actual del perfil (el original queda como snapshot) | ❌ |
+
+#### Bloque 9° — Workflow curación automática del perfil (detalle PCA-2 + PCA-3)
+
+> **Decisión de diseño:** Función RPC en Supabase (no trigger por fila). Se llama una vez al final del sync. Tabla `emergentes_pendientes` para almacenar resultados. Badge en P-36 para notificar.
+
+**Flujo completo:**
+
+```
+sync_to_supabase.py sube ofertas nuevas a ofertas_dashboard
+    ↓
+Al final del sync: supabase.rpc('recalcular_emergentes')
+    ↓
+La función SQL en Supabase:
+  1. Cruza ofertas_skills × esco_argentino por ocupación
+  2. Calcula frecuencia de cada skill por ISCO (% de ofertas que la mencionan)
+  3. Identifica skills con frecuencia ≥30% que NO están en el perfil consolidado activo
+  4. INSERT/UPDATE en tabla emergentes_pendientes (skill, isco, frecuencia, fecha_deteccion)
+  5. Retorna: { nuevas: N, actualizadas: M }
+    ↓
+P-36 muestra badge: "5 emergentes nuevas para revisar"
+    ↓
+Analista va al panel Consolidado → revisa → aprueba/rechaza
+    ↓
+Cuando está conforme → corte de versión en P-36
+    ↓
+Post-corte: regenerar skills_searchable.json (script existente)
+```
+
+**Componentes a crear:**
+
+| # | Componente | Tipo | Detalle |
+|---|-----------|------|---------|
+| PCA-3a | Tabla `emergentes_pendientes` | Migration SQL | skill_label, skill_uri, isco_code, ocupacion_label, frecuencia_pct, estado (pendiente/aprobada/rechazada), fecha_deteccion, fecha_resolucion |
+| PCA-3b | Función `recalcular_emergentes()` | RPC Supabase | Query: ofertas_skills GROUP BY isco + skill, filtra ≥30%, compara con perfil activo, inserta nuevas en emergentes_pendientes |
+| PCA-3c | Llamada post-sync | Python | Agregar `supabase.rpc('recalcular_emergentes')` al final de `sync_to_supabase.py` |
+| PCA-6a | Badge emergentes en P-36 | UI (Sergio) | GET /api/emergentes-pendientes/count → badge numérico en botón "Revisar emergentes" |
+| PCA-6b | API `/api/emergentes-pendientes` | API route | GET: lista pendientes. PATCH: aprobar/rechazar (actualiza esco_argentino + marca resuelta) |
+
+**Tests:**
+
+| Test | Tipo | Qué valida |
+|------|------|------------|
+| `unit/recalcular-emergentes.test.ts` | Unit | Skills con ≥30% se detectan. Skills ya aprobadas no se duplican. Skills <30% no aparecen. Retorna conteo correcto |
+| `integration/post-sync-emergentes.test.ts` | Integration | Después del sync, emergentes_pendientes tiene datos. Badge muestra número correcto |
 
 #### Bloque B — Datos de pools OE
 

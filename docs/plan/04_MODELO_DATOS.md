@@ -777,6 +777,50 @@ CREATE INDEX idx_perfil_version ON perfil_argentino_versiones(version);
 
 ---
 
+### T-emergentes_pendientes (NUEVA — Bloque 9° curación automática)
+
+Skills emergentes detectadas automáticamente post-sync que requieren revisión del analista.
+
+```sql
+CREATE TABLE IF NOT EXISTS emergentes_pendientes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  skill_label TEXT NOT NULL,
+  skill_label_normalized TEXT NOT NULL,
+  skill_uri TEXT,                              -- URI ESCO si existe
+  isco_code TEXT NOT NULL,                     -- Ocupación donde se detectó
+  ocupacion_label TEXT NOT NULL,
+  frecuencia_pct NUMERIC(5,2) NOT NULL,        -- % de ofertas que la mencionan
+  ofertas_count INTEGER NOT NULL,              -- Cantidad absoluta de ofertas
+  estado VARCHAR(20) DEFAULT 'pendiente',      -- 'pendiente', 'aprobada', 'rechazada'
+  fecha_deteccion TIMESTAMPTZ DEFAULT NOW(),
+  fecha_resolucion TIMESTAMPTZ,
+  resuelta_por UUID REFERENCES auth.users(id),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+
+  UNIQUE(skill_label_normalized, isco_code)    -- No duplicar misma skill+ocupación
+);
+
+CREATE INDEX IF NOT EXISTS idx_emergentes_estado ON emergentes_pendientes(estado);
+CREATE INDEX IF NOT EXISTS idx_emergentes_isco ON emergentes_pendientes(isco_code);
+CREATE INDEX IF NOT EXISTS idx_emergentes_freq ON emergentes_pendientes(frecuencia_pct DESC);
+```
+
+**Pantallas que usan:** P-36 (badge con count pendientes), panel Consolidado (revisar/aprobar)
+
+**Flujo:**
+1. `sync_to_supabase.py` termina de subir ofertas → llama `supabase.rpc('recalcular_emergentes')`
+2. La función cruza `ofertas_skills` × `esco_argentino` por ISCO
+3. Skills con frecuencia ≥30% que no están en el perfil consolidado → INSERT en esta tabla
+4. Analista ve badge en P-36 → va al panel Consolidado → aprueba o rechaza
+5. Al aprobar: se agrega a `esco_argentino`, se marca `estado='aprobada'` acá
+6. Al hacer corte de versión → las aprobadas quedan en el snapshot
+
+**RLS:**
+- SELECT: todos autenticados (analistas necesitan ver)
+- INSERT/UPDATE: solo sistema (función RPC SECURITY DEFINER) y admin
+
+---
+
 ### T-reporte_accesos (NUEVA — audit log de accesos a reportes)
 
 Registro de cada acceso a un reporte de compatibilidad por QR/URL.
@@ -916,3 +960,4 @@ Ver [06_SEGURIDAD](./06_SEGURIDAD.md#rls) para políticas de seguridad a nivel d
 | 2026-02-11 | 2.2 | T-tension_ocupaciones (indicador tensión de demanda por ISCO), campos grupo_republicacion y ventana_dias en indicadores, definición formal de campos |
 | 2026-03-18 | 2.3 | T-reportes_compatibilidad (V-17: Reporte de Compatibilidad Laboral), RLS con acceso público por token |
 | 2026-03-20 | 2.4 | Skills Intelligence v5: T-organizaciones (multi-tenancy OE/empresa), T-user_organizaciones (relación usuario-org), T-reporte_accesos (audit log QR). Campos origen + perfil_consolidado_version en reportes |
+| 2026-03-21 | 2.5 | T-emergentes_pendientes (Bloque 9°: curación automática del perfil argentino). Función RPC recalcular_emergentes() post-sync |
