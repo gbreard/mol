@@ -74,14 +74,43 @@ El flujo es:
 ## Tu branch
 
 ```bash
-# Crear tu branch desde el branch principal
-git checkout -b feature/si-sergio-ui feature/skills-intelligence-v5
+# Crear tu branch desde main
+git checkout -b feature/si-sergio-ui main
 
 # Cuando termines algo, push
 git push -u origin feature/si-sergio-ui
 
-# PR a feature/skills-intelligence-v5 (NO a main)
+# PR a main — Gerardo revisa y mergea
+gh pr create --base main --title "feat(S1): descripcion" --body "que hice"
 ```
+
+## Deploy — REGLAS CRÍTICAS
+
+```
+⛔ NUNCA hacer:
+   npx vercel alias ... mol-nextjs.vercel.app
+
+   mol-nextjs.vercel.app es PRODUCCIÓN. Solo Gerardo deployea ahí.
+   Si lo pisás, se pierde el trabajo de todos.
+
+✅ Para probar tu trabajo:
+   # Opción 1: local (recomendado)
+   npm run dev
+   # Abrir http://localhost:3000
+
+   # Opción 2: deploy a tu URL de dev
+   npx vercel --prod --yes
+   npx vercel alias [tu-deploy-url] mol-dev.vercel.app
+   # Probar en https://mol-dev.vercel.app
+
+✅ Cuando está listo para producción:
+   1. Hacer PR en GitHub (gh pr create)
+   2. Gerardo revisa, mergea y deployea a mol-nextjs.vercel.app
+```
+
+**URLs:**
+- `mol-nextjs.vercel.app` → producción (Gerardo)
+- `mol-dev.vercel.app` → desarrollo (Sergio)
 
 ## Estructura de tests
 
