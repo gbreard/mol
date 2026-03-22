@@ -178,4 +178,228 @@ export const handlers = [
   http.post(`${SUPABASE_URL}/rest/v1/eventos_uso`, () => {
     return HttpResponse.json({}, { status: 201 })
   }),
+
+  // Perfil Argentino Versiones
+  http.get('/api/perfil-argentino-versiones', () => {
+    return HttpResponse.json({
+      activa: {
+        id: 'uuid-1', version: 'v1.0', total_skills: 14257,
+        total_emergentes: 0, total_ocupaciones: 3046,
+        nota: 'Version base ESCO', creado_por: 'admin@oede.gob.ar',
+        activa: true, created_at: '2026-01-15T00:00:00Z',
+      },
+      versiones: [
+        {
+          id: 'uuid-1', version: 'v1.0', total_skills: 14257,
+          total_emergentes: 0, total_ocupaciones: 3046,
+          nota: 'Version base ESCO', creado_por: 'admin@oede.gob.ar',
+          activa: true, created_at: '2026-01-15T00:00:00Z',
+        },
+      ],
+      estado_actual: {
+        ofertas_desde_ultimo_corte: 2132,
+        emergentes_nuevas: 8,
+        emergentes_pendientes: 3,
+        skills_aprobadas_desde_corte: 5,
+      },
+    })
+  }),
+
+  http.post('/api/perfil-argentino-versiones', () => {
+    return HttpResponse.json({
+      version: {
+        id: 'uuid-2', version: 'v1.1', total_skills: 14262,
+        total_emergentes: 5, total_ocupaciones: 3046,
+        nota: 'Nueva version', creado_por: 'admin@oede.gob.ar',
+        activa: true, created_at: '2026-03-21T00:00:00Z',
+      },
+    }, { status: 201 })
+  }),
+
+  http.patch('/api/perfil-argentino-versiones', () => {
+    return HttpResponse.json({ ok: true })
+  }),
+
+  // Training suggestions
+  http.get('/api/training-suggestions', () => {
+    return HttpResponse.json({
+      by_gap: [
+        {
+          skill_label: 'Docker',
+          courses: [
+            {
+              id: 1, name: 'Docker para principiantes', certificacion: 'Certificado CABA',
+              duracion: '40hs', modalidad: 'virtual', covers_skills: ['Docker', 'containers'],
+              url: 'https://capacitacion.example.com/1',
+            },
+          ],
+        },
+        {
+          skill_label: 'Python',
+          courses: [
+            {
+              id: 2, name: 'Python nivel inicial', certificacion: '',
+              duracion: '60hs', modalidad: 'presencial', covers_skills: ['Python'],
+            },
+          ],
+        },
+      ],
+      transition_demand: [
+        {
+          ocupacion_label: 'Analista DevOps',
+          isco: '2511',
+          trend_pct: 35,
+          match_score: 72,
+          skills_gap: ['Kubernetes', 'CI/CD'],
+          estimated_months: 6,
+        },
+        {
+          ocupacion_label: 'Ingeniero de datos',
+          isco: '2529',
+          trend_pct: 28,
+          match_score: 65,
+          skills_gap: ['Spark', 'Airflow', 'dbt'],
+          estimated_months: 9,
+        },
+      ],
+    })
+  }),
+
+  // Matching offers
+  http.get('/api/matching-offers', ({ request }) => {
+    const url = new URL(request.url)
+    const page = Number(url.searchParams.get('page') ?? '1')
+    const provincia = url.searchParams.get('provincia') ?? ''
+    const modalidad = url.searchParams.get('modalidad') ?? ''
+
+    const allOffers = [
+      {
+        id_oferta: 1, titulo: 'Desarrollador React', empresa: 'TechCorp',
+        provincia: 'CABA', localidad: 'Palermo', modalidad: 'remoto',
+        fecha_publicacion: '2026-03-15T00:00:00Z', url_oferta: 'https://example.com/1',
+        match_score: 85, skills_cubiertas: ['JavaScript', 'React'], skills_gap: ['Docker'],
+      },
+      {
+        id_oferta: 2, titulo: 'Analista de Datos', empresa: 'DataCo',
+        provincia: 'Buenos Aires', localidad: 'La Plata', modalidad: 'presencial',
+        fecha_publicacion: '2026-03-10T00:00:00Z', url_oferta: 'https://example.com/2',
+        match_score: 60, skills_cubiertas: ['SQL'], skills_gap: ['Python', 'Power BI'],
+      },
+    ]
+
+    let filtered = allOffers
+    if (provincia) filtered = filtered.filter((o) => o.provincia === provincia)
+    if (modalidad) filtered = filtered.filter((o) => o.modalidad === modalidad)
+
+    const pageSize = 10
+    const start = (page - 1) * pageSize
+    return HttpResponse.json({ offers: filtered.slice(start, start + pageSize), total: filtered.length })
+  }),
+
+  // Compatibility report generate (POST)
+  http.post('/api/compatibility-report', () => {
+    return HttpResponse.json(
+      { token: 'mock-token-abc123', pdfUrl: '/mock/reporte.pdf' },
+      { status: 201 }
+    )
+  }),
+
+  // Compatibility report
+  http.get('/api/compatibility-report', ({ request }) => {
+    const url = new URL(request.url)
+    const token = url.searchParams.get('token')
+    if (token === 'expired-token') {
+      return HttpResponse.json({
+        estado: 'expirado',
+        candidato_nombre: 'Juan Perez',
+        ocupacion_label: '',
+        ocupacion_isco: '',
+        match_score: 0,
+        perfil_consolidado_version: 'v1.0',
+        skills_candidato: [],
+        skills_requeridas: [],
+        skills_cubiertas: [],
+        skills_gap: [],
+        created_at: '2026-01-01T00:00:00Z',
+        expira_at: '2026-02-01T00:00:00Z',
+      })
+    }
+    if (!token || token === 'invalid') {
+      return new HttpResponse(null, { status: 404 })
+    }
+    return HttpResponse.json({
+      candidato_nombre: 'Juan Perez',
+      ocupacion_label: 'Desarrollador de software',
+      ocupacion_isco: '2512',
+      match_score: 78,
+      perfil_consolidado_version: 'v1.0',
+      estado: 'activo',
+      created_at: '2026-03-18T00:00:00Z',
+      expira_at: '2026-05-18T00:00:00Z',
+      skills_candidato: [],
+      skills_requeridas: [
+        { uri: 'esco:001', label: 'JavaScript', type: 'skill', source: 'esco' },
+        { uri: 'esco:002', label: 'Python', type: 'skill', source: 'esco' },
+        { uri: 'esco:003', label: 'Docker', type: 'skill', source: 'esco' },
+      ],
+      skills_cubiertas: [
+        { uri: 'esco:001', label: 'JavaScript', type: 'skill', source: 'esco' },
+        { uri: 'esco:002', label: 'Python', type: 'skill', source: 'esco' },
+      ],
+      skills_gap: [
+        { uri: 'esco:003', label: 'Docker', type: 'skill', source: 'esco' },
+      ],
+    })
+  }),
+
+  // Skills extract from text
+  http.post('/api/skills-extract-from-text', () => {
+    return HttpResponse.json({
+      skills: [
+        {
+          uri: 'http://data.europa.eu/esco/skill/001',
+          label: 'soldadura MIG',
+          type: 'skill',
+          description: 'Capacidad para realizar soldadura por arco metálico con gas inerte.',
+          source: 'esco',
+          frequency: 12,
+        },
+        {
+          uri: 'http://data.europa.eu/esco/skill/003',
+          label: 'operación de torno CNC',
+          type: 'skill',
+          description: 'Manejo y programación de tornos de control numérico computarizado.',
+          source: 'esco',
+          frequency: 7,
+        },
+      ],
+    })
+  }),
+
+  // Skills search
+  http.get('/api/skills-search', ({ request }) => {
+    const url = new URL(request.url)
+    const q = url.searchParams.get('q') ?? ''
+    const results = q
+      ? [
+          {
+            uri: 'http://data.europa.eu/esco/skill/001',
+            label: 'soldadura MIG',
+            type: 'skill',
+            description: 'Capacidad para realizar soldadura por arco metálico con gas inerte.',
+            source: 'esco',
+            frequency: 12,
+          },
+          {
+            uri: 'http://data.europa.eu/esco/skill/002',
+            label: 'lectura de planos técnicos',
+            type: 'knowledge',
+            description: 'Interpretación de planos de ingeniería y diagramas técnicos.',
+            source: 'esco',
+            frequency: 8,
+          },
+        ]
+      : []
+    return HttpResponse.json({ results })
+  }),
 ]
