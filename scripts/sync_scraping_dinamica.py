@@ -2,18 +2,12 @@
 """
 Calcula métricas de dinámica del mercado desde SQLite y sube a Supabase.
 
-Métricas por día:
-  - ofertas_nuevas: ofertas vistas por primera vez ese día
-  - ofertas_bajas: ofertas que dejaron de aparecer ese día
-  - ofertas_republicadas: ofertas detectadas como republicación
-  - ofertas_activas: total activas al cierre del día
-  - vida_media_dias: mediana de días que una oferta permanece activa
-  - tasa_rotacion: bajas / activas
-  - tasa_republicacion: republicadas / total
-  - flujo_neto: nuevas - bajas
+Usa fecha_ultimo_visto como proxy de "día de scraping" y fecha_baja para bajas.
+Republicaciones desde la columna es_republicacion de la tabla ofertas.
+Vida media desde fecha_publicacion hasta fecha_baja (vida real de la oferta).
 
 Uso:
-    python3 scripts/sync_scraping_dinamica.py          # últimos 30 días
+    python3 scripts/sync_scraping_dinamica.py          # últimos 90 días
     python3 scripts/sync_scraping_dinamica.py --all    # todo
 """
 
@@ -36,103 +30,109 @@ def get_supabase_client():
 
 
 def calculate_dinamica(db_path, days=None):
-    """Calcula métricas de dinámica desde SQLite"""
     conn = sqlite3.connect(str(db_path))
 
-    # Obtener todas las ofertas con sus fechas relevantes
-    since = ''
+    since_clause = ""
     if days:
-        since_date = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')
-        since = f"AND (DATE(fecha_ultimo_visto) >= '{since_date}' OR DATE(fecha_baja) >= '{since_date}')"
+        since = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')
+        since_clause = f"AND DATE(fecha_ultimo_visto) >= '{since}'"
 
-    query = f"""
-        SELECT
-            id_oferta,
-            DATE(fecha_ultimo_visto) as fecha_visto,
-            DATE(fecha_baja) as fecha_baja,
-            DATE(fecha_publicacion_iso) as fecha_pub,
-            estado_oferta,
-            COALESCE(portal, 'desconocido') as portal
-        FROM ofertas
-        WHERE 1=1 {since}
-    """
-    rows = conn.execute(query).fetchall()
-
-    # Republicaciones
-    query_repub = """
+    # Nuevas por día (agrupadas por fecha_ultimo_visto = día del scraping)
+    nuevas_query = f"""
         SELECT DATE(fecha_ultimo_visto) as fecha, COUNT(*) as cnt
-        FROM ofertas o
-        JOIN ofertas_nlp n ON o.id = n.id_oferta
-        WHERE n.es_republicacion = 1 AND fecha_ultimo_visto IS NOT NULL
+        FROM ofertas
+        WHERE fecha_ultimo_visto IS NOT NULL {since_clause}
         GROUP BY fecha
+        ORDER BY fecha
     """
-    try:
-        repub_por_dia = dict(conn.execute(query_repub).fetchall())
-    except:
-        repub_por_dia = {}
+    nuevas_por_dia = dict(conn.execute(nuevas_query).fetchall())
 
-    # Permanencia media
-    query_perm = """
+    # Bajas por día
+    bajas_query = f"""
+        SELECT DATE(fecha_baja) as fecha, COUNT(*) as cnt
+        FROM ofertas
+        WHERE fecha_baja IS NOT NULL
+        {'AND DATE(fecha_baja) >= ' + repr(since) if days else ''}
+        GROUP BY fecha
+        ORDER BY fecha
+    """
+    bajas_por_dia = dict(conn.execute(bajas_query).fetchall())
+
+    # Republicaciones por día (desde tabla ofertas, campo es_republicacion)
+    repub_query = f"""
+        SELECT DATE(fecha_ultimo_visto) as fecha, COUNT(*) as cnt
+        FROM ofertas
+        WHERE es_republicacion = 1 AND fecha_ultimo_visto IS NOT NULL {since_clause}
+        GROUP BY fecha
+        ORDER BY fecha
+    """
+    repub_por_dia = dict(conn.execute(repub_query).fetchall())
+
+    # Vida media: usar fecha_publicacion_iso → fecha_baja (vida real de la oferta en el mercado)
+    vida_query = f"""
         SELECT
             DATE(fecha_baja) as fecha,
-            CAST(julianday(fecha_baja) - julianday(fecha_publicacion_iso) AS INTEGER) as dias_activa
+            CAST(julianday(DATE(fecha_baja)) - julianday(DATE(fecha_publicacion_iso)) AS INTEGER) as vida_dias
         FROM ofertas
-        WHERE fecha_baja IS NOT NULL AND fecha_publicacion_iso IS NOT NULL
+        WHERE fecha_baja IS NOT NULL
+          AND fecha_publicacion_iso IS NOT NULL
+          AND julianday(DATE(fecha_baja)) > julianday(DATE(fecha_publicacion_iso))
+        {'AND DATE(fecha_baja) >= ' + repr(since) if days else ''}
     """
-    try:
-        perm_data = conn.execute(query_perm).fetchall()
-    except:
-        perm_data = []
+    vida_por_dia = defaultdict(list)
+    for fecha, vida in conn.execute(vida_query).fetchall():
+        if fecha and vida and 0 < vida < 365:  # filtrar outliers
+            vida_por_dia[fecha].append(vida)
 
-    perm_por_dia = defaultdict(list)
-    for fecha, dias in perm_data:
-        if fecha and dias and dias >= 0:
-            perm_por_dia[fecha].append(dias)
+    # Total activas al día (acumulado)
+    total_activas_query = """
+        SELECT COUNT(*) FROM ofertas
+        WHERE estado_oferta = 'activa' OR (fecha_baja IS NULL AND fecha_ultimo_visto IS NOT NULL)
+    """
+    activas_actual = conn.execute(total_activas_query).fetchone()[0]
 
     conn.close()
 
-    # Agrupar por día
-    nuevas_por_dia = defaultdict(int)
-    bajas_por_dia = defaultdict(int)
-    activas_acum = 0
-    activas_por_dia = {}
-    todas_fechas = set()
+    # Unir todas las fechas
+    todas_fechas = sorted(set(list(nuevas_por_dia.keys()) + list(bajas_por_dia.keys())))
 
-    for _, fecha_visto, fecha_baja, fecha_pub, estado_oferta, portal in rows:
-        if fecha_visto:
-            nuevas_por_dia[fecha_visto] += 1
-            todas_fechas.add(fecha_visto)
-        if fecha_baja:
-            bajas_por_dia[fecha_baja] += 1
-            todas_fechas.add(fecha_baja)
+    UMBRAL_MASIVO = 10000
 
-    # Calcular activas acumuladas por día
-    fechas_ordenadas = sorted(todas_fechas)
-    activas = 0
-    for fecha in fechas_ordenadas:
-        activas += nuevas_por_dia.get(fecha, 0) - bajas_por_dia.get(fecha, 0)
-        activas_por_dia[fecha] = max(activas, 0)
-
-    # Construir registros
     dinamica = []
-    for fecha in fechas_ordenadas:
+
+    for fecha in todas_fechas:
         nuevas = nuevas_por_dia.get(fecha, 0)
         bajas = bajas_por_dia.get(fecha, 0)
-        activas = activas_por_dia.get(fecha, 0)
         repubs = repub_por_dia.get(fecha, 0)
-        perm_list = perm_por_dia.get(fecha, [])
-        vida_media = sorted(perm_list)[len(perm_list) // 2] if perm_list else None
+
+        # Vida media (mediana)
+        vidas = vida_por_dia.get(fecha, [])
+        vida_media = None
+        if vidas:
+            vidas_sorted = sorted(vidas)
+            vida_media = vidas_sorted[len(vidas_sorted) // 2]
+
+        es_masivo = nuevas > UMBRAL_MASIVO or bajas > UMBRAL_MASIVO
+        es_solo_bajas = nuevas == 0 and bajas > 0  # día sin scraping, solo detección de bajas
+
+        # Tasas: solo para días normales con datos suficientes
+        tasa_rot = None
+        tasa_repub = None
+        if not es_masivo and not es_solo_bajas and nuevas > 0:
+            tasa_repub = round(repubs / nuevas, 4)
+            if activas_actual > 0:
+                tasa_rot = round(bajas / activas_actual, 4)
 
         dinamica.append({
             'fecha': fecha,
             'ofertas_nuevas': nuevas,
             'ofertas_bajas': bajas,
             'ofertas_republicadas': repubs,
-            'ofertas_activas': activas,
+            'ofertas_activas': activas_actual,
             'grupos_republicados': 0,
             'vida_media_dias': vida_media,
-            'tasa_rotacion': round(bajas / max(activas, 1), 4),
-            'tasa_republicacion': round(repubs / max(nuevas, 1), 4),
+            'tasa_rotacion': tasa_rot,
+            'tasa_republicacion': tasa_repub,
             'flujo_neto': nuevas - bajas,
         })
 
@@ -141,19 +141,21 @@ def calculate_dinamica(db_path, days=None):
 
 def sync_to_supabase(data):
     client = get_supabase_client()
+    # Limpiar tabla y re-insertar (más simple que upsert con nulls)
+    client.table('scraping_dinamica').delete().neq('fecha', '1900-01-01').execute()
     batch_size = 500
     total = 0
     for i in range(0, len(data), batch_size):
         batch = data[i:i + batch_size]
-        client.table('scraping_dinamica').upsert(batch, on_conflict='fecha').execute()
+        client.table('scraping_dinamica').insert(batch).execute()
         total += len(batch)
-        print(f"  Upsert {total}/{len(data)}")
+        print(f"  Insert {total}/{len(data)}")
     return total
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--days', type=int, default=30)
+    parser.add_argument('--days', type=int, default=90)
     parser.add_argument('--all', action='store_true')
     args = parser.parse_args()
 
@@ -170,10 +172,13 @@ def main():
         print("  Sin datos")
         return
 
-    # Mostrar resumen
-    total_nuevas = sum(d['ofertas_nuevas'] for d in data)
-    total_bajas = sum(d['ofertas_bajas'] for d in data)
-    total_repubs = sum(d['ofertas_republicadas'] for d in data)
+    # Resumen (excluyendo días masivos)
+    normales = [d for d in data if d['ofertas_nuevas'] <= 10000 and d['ofertas_bajas'] <= 10000]
+    total_nuevas = sum(d['ofertas_nuevas'] for d in normales)
+    total_bajas = sum(d['ofertas_bajas'] for d in normales)
+    total_repubs = sum(d['ofertas_republicadas'] for d in normales)
+    masivos = len(data) - len(normales)
+    print(f"  Días normales: {len(normales)} | Días masivos (excluidos de promedios): {masivos}")
     print(f"  Nuevas: {total_nuevas:,} | Bajas: {total_bajas:,} | Repubs: {total_repubs:,}")
 
     total = sync_to_supabase(data)
