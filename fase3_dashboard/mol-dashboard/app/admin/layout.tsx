@@ -71,6 +71,7 @@ const adminSections: MenuSection[] = [
         matchPrefix: "/admin/procesamiento",
         items: [
           { href: "/admin/procesamiento", label: "Metricas", icon: TrendingUp },
+          { href: "/admin/procesamiento/reglas", label: "Reglas", icon: FileText, matchMode: "startsWith" },
           { href: "/admin/validacion", label: "Validacion", icon: ClipboardCheck, matchMode: "startsWith" },
         ],
       },
