@@ -134,6 +134,119 @@ export const handlers = [
     return HttpResponse.json(mockScrapingHistoryRPC)
   }),
 
+  // RPC: get_scraping_daily (usado por /admin/scraping)
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_scraping_daily`, () => {
+    return HttpResponse.json(mockScrapingHistoryRPC)
+  }),
+
+  // RPC: get_scraping_commands
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_scraping_commands`, () => {
+    return HttpResponse.json([
+      {
+        id: 'cmd-1', comando: 'lanzar_portal', params: { portal: 'bumeran' },
+        estado: 'completado', creado_por: 'admin@oede.gob.ar',
+        log_preview: 'Scraping finalizado. 1240 ofertas.', resultado: { nuevas: 1240, duplicadas: 80 },
+        error_mensaje: null, created_at: '2026-03-21T10:00:00Z',
+        started_at: '2026-03-21T10:00:05Z', completed_at: '2026-03-21T11:30:00Z', duracion_seg: 5395,
+      },
+      {
+        id: 'cmd-2', comando: 'sync_vps_local', params: {},
+        estado: 'error', creado_por: 'admin@oede.gob.ar',
+        log_preview: null, resultado: null,
+        error_mensaje: 'Connection refused (VPS offline)', created_at: '2026-03-20T08:00:00Z',
+        started_at: '2026-03-20T08:00:02Z', completed_at: null, duracion_seg: null,
+      },
+    ])
+  }),
+
+  // RPC: get_scraping_schedule
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_scraping_schedule`, () => {
+    return HttpResponse.json([
+      {
+        id: 1, portal: 'bumeran', dias_semana: [1, 4], hora_utc: '11:00',
+        activo: true, updated_by: 'admin@oede.gob.ar', updated_at: '2026-03-15T00:00:00Z',
+      },
+      {
+        id: 2, portal: 'computrabajo', dias_semana: [1, 4], hora_utc: '11:00',
+        activo: false, updated_by: null, updated_at: '2026-03-10T00:00:00Z',
+      },
+    ])
+  }),
+
+  // API: scraping-commands
+  http.post('/api/scraping-commands', () => {
+    return HttpResponse.json({ id: 'cmd-new', estado: 'pendiente' }, { status: 201 })
+  }),
+
+  // API: scraping-schedule
+  http.put('/api/scraping-schedule', () => {
+    return HttpResponse.json({ ok: true })
+  }),
+
+  // API: config-editor (usado por /admin/procesamiento/reglas)
+  http.get('/api/config-editor', () => {
+    return HttpResponse.json({
+      source: 'override',
+      version: 12,
+      updated_by: 'admin@oede.gob.ar',
+      updated_at: '2026-03-20T10:00:00Z',
+      data: {
+        reglas_forzar_isco: {
+          R_GERENTE_VENTAS: {
+            nombre: 'Gerente de Ventas', prioridad: 1,
+            condicion: { titulo_contiene_alguno: ['gerente de ventas', 'jefe de ventas'] },
+            forzar_isco: '1221', esco_label: 'Directores de ventas y comercialización', activa: true,
+          },
+          R_CONTADOR: {
+            nombre: 'Contador Público', prioridad: 2,
+            condicion: { titulo_contiene: 'contador' },
+            forzar_isco: '2411', esco_label: 'Contadores', activa: true,
+          },
+          R_ALBANIL: {
+            nombre: 'Albañil', prioridad: 3,
+            condicion: { titulo_contiene_alguno: ['albañil', 'albanil'] },
+            forzar_isco: '7112', esco_label: 'Albañiles', activa: false,
+          },
+        },
+      },
+    })
+  }),
+
+  http.put('/api/config-editor', () => {
+    return HttpResponse.json({ version: 13, ok: true })
+  }),
+
+  // RPC: get_processing_metrics (usado por /admin/procesamiento)
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_processing_metrics`, () => {
+    return HttpResponse.json({
+      kpis: {
+        nlp: { procesadas: 16146, pendientes: 19007, total: 35153, porcentaje: 46 },
+        matching: { con_matching: 15968, pendientes: 178, validadas: 15968 },
+        sync: { en_supabase: 15800, pendientes: 168 },
+        ultimo_run: '2026-03-21',
+      },
+      errores_por_tipo: [
+        { error_tipo: 'error_isco_incorrecto', total: 320, resueltos: 280, pendientes: 40, severidad_predominante: 'alto' },
+        { error_tipo: 'error_ubicacion_vacia', total: 150, resueltos: 140, pendientes: 10, severidad_predominante: 'medio' },
+        { error_tipo: 'error_seniority_invalido', total: 85, resueltos: 70, pendientes: 15, severidad_predominante: 'bajo' },
+      ],
+      timeline: [
+        {
+          fecha: '2026-03-15', nlp_procesadas: 15000, matching_procesadas: 14000,
+          matching_por_regla: 5600, matching_por_semantico: 8400,
+          matching_dual_coinciden: 7200, matching_dual_difieren: 1200,
+          matching_score_promedio: 0.823,
+        },
+        {
+          fecha: '2026-03-21', nlp_procesadas: 16146, matching_procesadas: 15968,
+          matching_por_regla: 6300, matching_por_semantico: 9668,
+          matching_dual_coinciden: 8100, matching_dual_difieren: 1560,
+          matching_score_promedio: 0.851,
+        },
+      ],
+    })
+  }),
+
   // Auth: get current user
   http.get(`${SUPABASE_URL}/auth/v1/user`, ({ request }) => {
     const auth = request.headers.get('Authorization')
