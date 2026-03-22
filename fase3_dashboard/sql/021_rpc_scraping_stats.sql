@@ -134,7 +134,11 @@ END;
 $$;
 
 -- H1b: Historia diaria por portal
-CREATE OR REPLACE FUNCTION get_scraping_history(p_days int DEFAULT 14)
+-- p_fecha_tipo: 'publicacion' (default) o 'scraping'
+CREATE OR REPLACE FUNCTION get_scraping_history(
+  p_days int DEFAULT 14,
+  p_fecha_tipo text DEFAULT 'publicacion'
+)
 RETURNS json
 LANGUAGE plpgsql
 STABLE
@@ -144,32 +148,65 @@ AS $$
 DECLARE
   v_result json;
 BEGIN
-  SELECT json_build_object(
-    'dias', COALESCE(json_agg(row_to_json(d) ORDER BY d.fecha), '[]'::json),
-    'periodo', json_build_object(
-      'desde', CURRENT_DATE - (p_days || ' days')::interval,
-      'hasta', CURRENT_DATE,
-      'dias', p_days
+  IF p_fecha_tipo = 'scraping' THEN
+    -- Agrupar por fecha de scraping (created_at)
+    SELECT json_build_object(
+      'dias', COALESCE(json_agg(row_to_json(d) ORDER BY d.fecha), '[]'::json),
+      'periodo', json_build_object(
+        'desde', CURRENT_DATE - (p_days || ' days')::interval,
+        'hasta', CURRENT_DATE,
+        'dias', p_days
+      ),
+      'tipo_fecha', 'scraping'
     )
-  )
-  INTO v_result
-  FROM (
-    SELECT
-      fecha_publicacion as fecha,
-      COUNT(*) as total,
-      json_object_agg(COALESCE(portal, 'otro'), cnt) as por_portal
+    INTO v_result
     FROM (
       SELECT
-        fecha_publicacion,
-        portal,
-        COUNT(*) as cnt
-      FROM ofertas_dashboard
-      WHERE fecha_publicacion >= CURRENT_DATE - (p_days || ' days')::interval
-        AND fecha_publicacion IS NOT NULL
-      GROUP BY fecha_publicacion, portal
-    ) detalle
-    GROUP BY fecha_publicacion
-  ) d;
+        fecha,
+        SUM(cnt)::int as total,
+        json_object_agg(portal, cnt) as por_portal
+      FROM (
+        SELECT
+          created_at::date as fecha,
+          COALESCE(portal, 'otro') as portal,
+          COUNT(*)::int as cnt
+        FROM ofertas_dashboard
+        WHERE created_at >= CURRENT_DATE - (p_days || ' days')::interval
+          AND created_at IS NOT NULL
+        GROUP BY created_at::date, portal
+      ) detalle
+      GROUP BY fecha
+    ) d;
+  ELSE
+    -- Agrupar por fecha de publicación (default)
+    SELECT json_build_object(
+      'dias', COALESCE(json_agg(row_to_json(d) ORDER BY d.fecha), '[]'::json),
+      'periodo', json_build_object(
+        'desde', CURRENT_DATE - (p_days || ' days')::interval,
+        'hasta', CURRENT_DATE,
+        'dias', p_days
+      ),
+      'tipo_fecha', 'publicacion'
+    )
+    INTO v_result
+    FROM (
+      SELECT
+        fecha,
+        SUM(cnt)::int as total,
+        json_object_agg(portal, cnt) as por_portal
+      FROM (
+        SELECT
+          fecha_publicacion as fecha,
+          COALESCE(portal, 'otro') as portal,
+          COUNT(*)::int as cnt
+        FROM ofertas_dashboard
+        WHERE fecha_publicacion >= CURRENT_DATE - (p_days || ' days')::interval
+          AND fecha_publicacion IS NOT NULL
+        GROUP BY fecha_publicacion, portal
+      ) detalle
+      GROUP BY fecha
+    ) d;
+  END IF;
 
   RETURN v_result;
 END;

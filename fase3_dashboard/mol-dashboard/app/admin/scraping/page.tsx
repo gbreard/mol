@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Database,
   RefreshCw,
@@ -11,8 +11,8 @@ import {
   AlertTriangle,
   Loader2,
   Info,
-  ExternalLink,
 } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { supabase } from "@/lib/supabase";
 
 interface PortalStats {
@@ -27,6 +27,12 @@ interface PortalStats {
   porcentaje: number;
 }
 
+interface HistoryDay {
+  fecha: string;
+  total: number;
+  por_portal: Record<string, number>;
+}
+
 interface ScrapingData {
   portales: PortalStats[];
   totales: {
@@ -39,16 +45,16 @@ interface ScrapingData {
     ofertas_30d: number;
   };
   alertas: { nivel: string; portal: string; mensaje: string; detalle: string }[];
-  history: { fecha: string; total: number; por_portal: Record<string, number> }[];
 }
 
-const PORTAL_COLORS: Record<string, { bg: string; text: string }> = {
-  bumeran: { bg: 'bg-orange-500', text: 'text-orange-600' },
-  zonajobs: { bg: 'bg-blue-500', text: 'text-blue-600' },
-  computrabajo: { bg: 'bg-green-500', text: 'text-green-600' },
-  indeed: { bg: 'bg-purple-500', text: 'text-purple-600' },
-  caba: { bg: 'bg-amber-500', text: 'text-amber-600' },
-  portalempleo: { bg: 'bg-teal-500', text: 'text-teal-600' },
+const PORTAL_COLORS: Record<string, string> = {
+  bumeran: '#f97316',
+  zonajobs: '#3b82f6',
+  computrabajo: '#22c55e',
+  indeed: '#a855f7',
+  caba: '#f59e0b',
+  portalempleo: '#14b8a6',
+  otro: '#6b7280',
 };
 
 const ALERTA_STYLES: Record<string, string> = {
@@ -58,39 +64,81 @@ const ALERTA_STYLES: Record<string, string> = {
 };
 
 const ALERTA_ICONS: Record<string, any> = {
-  error: XCircle,
-  warning: AlertTriangle,
-  info: Info,
+  error: XCircle, warning: AlertTriangle, info: Info,
 };
+
+const PERIODO_OPTIONS = [
+  { value: 7, label: 'Ultima semana' },
+  { value: 14, label: 'Ultimos 14 dias' },
+  { value: 30, label: 'Ultimo mes' },
+];
 
 export default function ScrapingPage() {
   const [data, setData] = useState<ScrapingData | null>(null);
+  const [history, setHistory] = useState<HistoryDay[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Filtros del gráfico
+  const [periodoOfertas, setPeriodoOfertas] = useState(14);
+  const [fechaTipo, setFechaTipo] = useState<'publicacion' | 'scraping'>('scraping');
+  const [portalesVisibles, setPortalesVisibles] = useState<Set<string>>(new Set());
+
+  // Todos los portales disponibles (del historial)
+  const allPortales = useMemo(() => {
+    const set = new Set<string>();
+    history.forEach(d => Object.keys(d.por_portal).forEach(p => set.add(p)));
+    return Array.from(set).sort();
+  }, [history]);
+
+  // Inicializar portales visibles cuando carguen datos
+  useEffect(() => {
+    if (allPortales.length > 0 && portalesVisibles.size === 0) {
+      setPortalesVisibles(new Set(allPortales));
+    }
+  }, [allPortales]);
+
+  // Datos del gráfico filtrados
+  const chartData = useMemo(() => {
+    return history.map(d => {
+      const row: Record<string, any> = { fecha: d.fecha.slice(5) }; // "03-12"
+      let total = 0;
+      allPortales.forEach(p => {
+        const val = portalesVisibles.has(p) ? (d.por_portal[p] || 0) : 0;
+        row[p] = val;
+        total += val;
+      });
+      row.total = total;
+      return row;
+    });
+  }, [history, portalesVisibles, allPortales]);
+
+  const totalPeriodo = chartData.reduce((s, d) => s + (d.total || 0), 0);
 
   async function loadData() {
     setLoading(true);
     try {
       if (!supabase) return;
-
-      const [statsResult, historyResult] = await Promise.all([
-        supabase.rpc('get_scraping_stats'),
-        supabase.rpc('get_scraping_history', { p_days: 14 }),
-      ]);
-
-      if (statsResult.error) throw statsResult.error;
-
-      setData({
-        ...(statsResult.data as any),
-        history: (historyResult.data as any)?.dias || [],
-      });
+      const { data: statsData, error: statsErr } = await supabase.rpc('get_scraping_stats');
+      if (statsErr) throw statsErr;
+      setData(statsData as any);
     } catch (error) {
-      console.error('Error cargando datos:', error);
+      console.error('Error:', error);
     } finally {
       setLoading(false);
     }
   }
 
+  async function loadHistory() {
+    if (!supabase) return;
+    const { data: histData } = await supabase.rpc('get_scraping_history', {
+      p_days: periodoOfertas,
+      p_fecha_tipo: fechaTipo,
+    });
+    setHistory((histData as any)?.dias || []);
+  }
+
   useEffect(() => { loadData(); }, []);
+  useEffect(() => { loadHistory(); }, [periodoOfertas, fechaTipo]);
 
   if (loading) {
     return (
@@ -102,8 +150,7 @@ export default function ScrapingPage() {
   }
 
   if (!data) return null;
-
-  const { portales, totales, alertas, history } = data;
+  const { portales, totales, alertas } = data;
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
@@ -112,16 +159,11 @@ export default function ScrapingPage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Scraping — Portales</h1>
           <p className="text-gray-500 text-sm mt-1">
-            {totales.portales_activos} fuentes activas — {totales.total_ofertas.toLocaleString()} ofertas totales
-            — ultimo dato: {totales.ultima_fecha_global || 'N/A'}
+            {totales.portales_activos} fuentes — {totales.total_ofertas.toLocaleString()} ofertas totales
           </p>
         </div>
-        <button
-          onClick={loadData}
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
-        >
-          <RefreshCw className="w-4 h-4" />
-          Actualizar
+        <button onClick={loadData} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">
+          <RefreshCw className="w-4 h-4" /> Actualizar
         </button>
       </div>
 
@@ -147,7 +189,7 @@ export default function ScrapingPage() {
       {/* Cards por portal */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {portales.map((portal) => {
-          const colors = PORTAL_COLORS[portal.portal] || { bg: 'bg-gray-500', text: 'text-gray-600' };
+          const color = PORTAL_COLORS[portal.portal] || PORTAL_COLORS.otro;
           const isHealthy = portal.dias_sin_scraping <= 3;
           const statusColor = isHealthy ? 'text-green-600' : portal.dias_sin_scraping > 7 ? 'text-red-600' : 'text-amber-600';
           const StatusIcon = isHealthy ? CheckCircle2 : portal.dias_sin_scraping > 7 ? XCircle : AlertTriangle;
@@ -155,7 +197,7 @@ export default function ScrapingPage() {
           return (
             <div key={portal.portal} className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
               <div className="flex items-center gap-3 mb-3">
-                <div className={`w-10 h-10 ${colors.bg} rounded-lg flex items-center justify-center text-white`}>
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white" style={{ backgroundColor: color }}>
                   <Globe className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
@@ -193,51 +235,107 @@ export default function ScrapingPage() {
         })}
       </div>
 
-      {/* Historial diario */}
+      {/* Gráfico: Ofertas por dia */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-green-500" />
-          Ofertas por dia (ultimos 14 dias)
-        </h2>
-        {history.length > 0 ? (
-          <div className="space-y-2">
-            {history.map((dia, idx) => {
-              const maxTotal = Math.max(...history.map(d => d.total));
-              return (
-                <div key={dia.fecha} className="flex items-center gap-4">
-                  <span className="text-sm text-gray-600 w-24 flex-shrink-0">{dia.fecha}</span>
-                  <div className="flex-1 flex items-center gap-1 h-6">
-                    {Object.entries(dia.por_portal).map(([portal, count]) => {
-                      const pct = (count / maxTotal) * 100;
-                      const color = PORTAL_COLORS[portal]?.bg || 'bg-gray-400';
-                      return pct > 0.5 ? (
-                        <div
-                          key={portal}
-                          className={`${color} h-5 rounded-sm`}
-                          style={{ width: `${pct}%` }}
-                          title={`${portal}: ${count}`}
-                        />
-                      ) : null;
-                    })}
-                  </div>
-                  <span className="text-sm font-medium text-gray-900 w-16 text-right">
-                    {dia.total.toLocaleString()}
-                  </span>
-                </div>
-              );
-            })}
-            {/* Leyenda */}
-            <div className="flex gap-4 mt-3 pt-3 border-t border-gray-100">
-              {Object.entries(PORTAL_COLORS).map(([portal, colors]) => (
-                <div key={portal} className="flex items-center gap-1.5">
-                  <div className={`w-3 h-3 rounded-sm ${colors.bg}`} />
-                  <span className="text-xs text-gray-500 capitalize">{portal}</span>
-                </div>
+        {/* Header con filtros */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">Ofertas por dia</h2>
+            <p className="text-sm text-gray-500">{totalPeriodo.toLocaleString()} ofertas en el periodo</p>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {/* Toggle fecha tipo */}
+            <div className="flex items-center bg-gray-100 rounded-lg p-0.5">
+              <button
+                onClick={() => setFechaTipo('scraping')}
+                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                  fechaTipo === 'scraping' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
+                }`}
+              >
+                Fecha scraping
+              </button>
+              <button
+                onClick={() => setFechaTipo('publicacion')}
+                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                  fechaTipo === 'publicacion' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
+                }`}
+              >
+                Fecha publicacion
+              </button>
+            </div>
+
+            {/* Periodo */}
+            <div className="flex items-center gap-1">
+              {PERIODO_OPTIONS.map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => setPeriodoOfertas(opt.value)}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${
+                    periodoOfertas === opt.value
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  {opt.label}
+                </button>
               ))}
             </div>
           </div>
+        </div>
+
+        {/* Filtro de portales */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {allPortales.map(portal => {
+            const active = portalesVisibles.has(portal);
+            const color = PORTAL_COLORS[portal] || PORTAL_COLORS.otro;
+            return (
+              <button
+                key={portal}
+                onClick={() => {
+                  const next = new Set(portalesVisibles);
+                  if (active) next.delete(portal); else next.add(portal);
+                  setPortalesVisibles(next);
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-colors border ${
+                  active ? 'border-transparent text-white' : 'border-gray-200 text-gray-400 bg-white'
+                }`}
+                style={active ? { backgroundColor: color } : {}}
+              >
+                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: active ? 'white' : color }} />
+                <span className="capitalize">{portal}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Gráfico Recharts */}
+        {chartData.length > 0 ? (
+          <ResponsiveContainer width="100%" height={350}>
+            <BarChart data={chartData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <XAxis dataKey="fecha" tick={{ fontSize: 12 }} />
+              <YAxis tick={{ fontSize: 12 }} />
+              <Tooltip
+                contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: '12px' }}
+                formatter={(value: number, name: string) => [value.toLocaleString(), name]}
+                labelFormatter={(label) => `Fecha: ${label}`}
+              />
+              {allPortales.filter(p => portalesVisibles.has(p)).map(portal => (
+                <Bar
+                  key={portal}
+                  dataKey={portal}
+                  stackId="stack"
+                  fill={PORTAL_COLORS[portal] || PORTAL_COLORS.otro}
+                  name={portal}
+                />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
         ) : (
-          <p className="text-sm text-gray-400">Sin datos en los ultimos 14 dias</p>
+          <div className="flex items-center justify-center h-48 text-gray-400 text-sm">
+            Sin datos en el periodo seleccionado
+          </div>
         )}
       </div>
     </div>
