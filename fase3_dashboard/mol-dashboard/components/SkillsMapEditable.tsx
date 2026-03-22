@@ -73,7 +73,8 @@ export default function SkillsMapEditable({ required, covered, onChange }: Props
         )}
       </p>
 
-      <div className="overflow-hidden rounded-lg border border-gray-100">
+      {/* Tabla — solo en sm+ */}
+      <div className="hidden sm:block overflow-hidden rounded-lg border border-gray-100">
         <table className="w-full text-sm">
           <thead className="bg-gray-50">
             <tr>
@@ -131,6 +132,48 @@ export default function SkillsMapEditable({ required, covered, onChange }: Props
         </table>
       </div>
 
+      {/* Cards — solo en mobile */}
+      <div className="space-y-2 sm:hidden">
+        {essential.map((skill) => {
+          const isDetected = coveredUris.has(skill.uri)
+          return (
+            <div
+              key={skill.uri}
+              className="flex items-center justify-between gap-3 rounded-lg border border-gray-100 px-3 py-2.5"
+            >
+              <span className="min-w-0 flex-1 text-sm text-gray-800 leading-tight">
+                {skill.label}
+              </span>
+              <div className="flex shrink-0 items-center gap-2">
+                <span
+                  className={`rounded px-1.5 py-0.5 text-xs ${
+                    skill.source === 'argentina_approved'
+                      ? 'bg-orange-100 text-orange-700'
+                      : 'bg-gray-100 text-gray-600'
+                  }`}
+                >
+                  {skill.source === 'argentina_approved' ? 'emergente' : 'ESCO'}
+                </span>
+                {isDetected ? (
+                  <span className="rounded bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">✓</span>
+                ) : (
+                  <span className="rounded bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">✗</span>
+                )}
+                {editMode && (
+                  <button
+                    onClick={() => removeSkill(skill.uri)}
+                    aria-label={`Quitar ${skill.label}`}
+                    className="min-h-[44px] min-w-[44px] flex items-center justify-center text-red-400 hover:text-red-600"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
       {editMode && (
         <div className="mt-4 flex gap-2">
           <input
@@ -140,12 +183,12 @@ export default function SkillsMapEditable({ required, covered, onChange }: Props
             onKeyDown={(e) => e.key === 'Enter' && addSkill()}
             placeholder="Agregar competencia al mapa..."
             aria-label="Agregar competencia"
-            className="flex-1 rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none"
+            className="flex-1 rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-blue-500 focus:outline-none"
           />
           <button
             onClick={addSkill}
             disabled={!addInput.trim()}
-            className="rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+            className="min-h-[44px] rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
           >
             + Agregar
           </button>
