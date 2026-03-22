@@ -86,7 +86,8 @@ BEGIN
 
     UNION ALL
 
-    -- Portal con caída >50% vs semana anterior
+    -- Portal con caída >50% vs semana anterior (solo si tiene datos recientes,
+    -- si no ya lo cubre la alerta de "sin datos hace X días")
     SELECT
       'warning',
       portal,
@@ -98,6 +99,7 @@ BEGIN
         COUNT(*) FILTER (WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '7 days') as sem_actual,
         COUNT(*) FILTER (WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '14 days'
                          AND fecha_publicacion < CURRENT_DATE - INTERVAL '7 days') as sem_anterior,
+        (CURRENT_DATE - MAX(fecha_publicacion))::int as dias_inactivo,
         CASE
           WHEN COUNT(*) FILTER (WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '14 days'
                                 AND fecha_publicacion < CURRENT_DATE - INTERVAL '7 days') > 0
@@ -113,7 +115,7 @@ BEGIN
       WHERE portal IS NOT NULL
       GROUP BY portal
     ) cambios
-    WHERE pct_caida > 50 AND sem_anterior > 10
+    WHERE pct_caida > 50 AND pct_caida < 100 AND sem_anterior > 10 AND dias_inactivo <= 3
   ) a;
 
   -- Resultado
