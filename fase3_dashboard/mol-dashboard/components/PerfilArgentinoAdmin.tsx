@@ -19,7 +19,7 @@ import {
 
 type EstadoActual = {
   ofertas_desde_ultimo_corte: number;
-  emergentes_nuevas: number;
+  emergentes_nuevas?: number;
   emergentes_pendientes: number;
   skills_aprobadas_desde_corte: number;
 };
@@ -113,6 +113,28 @@ export function PerfilArgentinoAdmin() {
   const { activa, versiones, estado_actual } = data;
   const versionPropuesta = calcularVersionPropuesta(versiones);
 
+  // Sin versiones aún — estado inicial
+  if (!activa) {
+    return (
+      <div className="space-y-4">
+        <div className="rounded-md border border-blue-200 bg-blue-50 p-4 text-sm text-blue-700">
+          No hay ninguna versión del Perfil Consolidado Argentino todavía.
+          Creá la primera versión para comenzar.
+        </div>
+        <Button onClick={() => setShowCreateModal(true)}>
+          Crear primera versión
+        </Button>
+        <CreateVersionModal
+          open={showCreateModal}
+          versionPropuesta="v1.0"
+          emergentesPendientes={0}
+          onClose={() => setShowCreateModal(false)}
+          onCreate={handleCreate}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -154,7 +176,7 @@ export function PerfilArgentinoAdmin() {
             {estado_actual.ofertas_desde_ultimo_corte.toLocaleString("es-AR")}
           </span>
           <span className="text-gray-500">Emergentes nuevas detectadas (≥30%)</span>
-          <span className="font-medium">{estado_actual.emergentes_nuevas}</span>
+          <span className="font-medium">{estado_actual.emergentes_nuevas ?? 0}</span>
           <span className="text-gray-500">Emergentes pendientes de revisión</span>
           <span className={`font-medium ${estado_actual.emergentes_pendientes > 0 ? "text-amber-600" : ""}`}>
             {estado_actual.emergentes_pendientes}
