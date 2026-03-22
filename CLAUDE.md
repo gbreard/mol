@@ -2,6 +2,8 @@
 
 ## LEER PRIMERO: Estado Actual
 
+**⛔ ANTES DE DEPLOYEAR: leer `DEPLOY_RULES.md` — producción es solo para Gerardo.**
+
 **ANTES DE HACER CUALQUIER COSA, leer `.ai/learnings.yaml` para el estado actual del trabajo.**
 
 El archivo `learnings.yaml` contiene:
