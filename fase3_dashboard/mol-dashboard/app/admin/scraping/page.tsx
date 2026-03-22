@@ -86,8 +86,7 @@ export default function ScrapingPage() {
   const [loading, setLoading] = useState(true);
 
   // Filtros del gráfico
-  const [periodoOfertas, setPeriodoOfertas] = useState(14);
-  const [fechaTipo, setFechaTipo] = useState<'publicacion' | 'scraping'>('scraping');
+  const [periodoOfertas, setPeriodoOfertas] = useState(365);
   const [portalesVisibles, setPortalesVisibles] = useState<Set<string>>(new Set());
 
   // Todos los portales disponibles (del historial)
@@ -137,15 +136,14 @@ export default function ScrapingPage() {
 
   async function loadHistory() {
     if (!supabase) return;
-    const { data: histData } = await supabase.rpc('get_scraping_history', {
+    const { data: dailyData } = await supabase.rpc('get_scraping_daily', {
       p_days: periodoOfertas,
-      p_fecha_tipo: fechaTipo,
     });
-    setHistory((histData as any)?.dias || []);
+    setHistory((dailyData as any)?.dias || []);
   }
 
   useEffect(() => { loadData(); }, []);
-  useEffect(() => { loadHistory(); }, [periodoOfertas, fechaTipo]);
+  useEffect(() => { loadHistory(); }, [periodoOfertas]);
 
   if (loading) {
     return (
@@ -259,26 +257,6 @@ export default function ScrapingPage() {
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Toggle fecha tipo */}
-            <div className="flex items-center bg-gray-100 rounded-lg p-0.5">
-              <button
-                onClick={() => setFechaTipo('scraping')}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                  fechaTipo === 'scraping' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
-                }`}
-              >
-                Fecha scraping
-              </button>
-              <button
-                onClick={() => setFechaTipo('publicacion')}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                  fechaTipo === 'publicacion' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
-                }`}
-              >
-                Fecha publicacion
-              </button>
-            </div>
-
             {/* Periodo */}
             <div className="flex items-center gap-1">
               {PERIODO_OPTIONS.map(opt => (

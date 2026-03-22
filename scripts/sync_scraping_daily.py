@@ -1,0 +1,114 @@
+#!/usr/bin/env python3
+"""
+Sincroniza conteos diarios de scraping (BD local SQLite → Supabase scraping_daily).
+
+Lee la tabla 'ofertas' local y calcula ofertas por día y portal,
+luego hace upsert en scraping_daily de Supabase.
+
+Uso:
+    python3 scripts/sync_scraping_daily.py          # últimos 30 días
+    python3 scripts/sync_scraping_daily.py --days 90 # últimos 90 días
+    python3 scripts/sync_scraping_daily.py --all     # todo el historial
+"""
+
+import json
+import sqlite3
+import sys
+import argparse
+from datetime import datetime, timedelta
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+DB_PATH = BASE_DIR / 'database' / 'bumeran_scraping.db'
+
+
+def get_supabase_client():
+    config_path = BASE_DIR / 'config' / 'supabase_config.json'
+    config = json.loads(config_path.read_text())
+    from supabase import create_client
+    return create_client(config['url'], config['service_role_key'])
+
+
+def get_daily_counts(db_path, days=None):
+    """Lee conteos diarios por portal desde SQLite local"""
+    conn = sqlite3.connect(str(db_path))
+
+    where = ""
+    if days:
+        since = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')
+        where = f"WHERE fecha_publicacion >= '{since}'"
+
+    # Ofertas por día y portal usando fecha_ultimo_visto (= fecha de scraping)
+    query = f"""
+        SELECT
+            DATE(fecha_ultimo_visto) as fecha,
+            COALESCE(portal, 'desconocido') as portal,
+            COUNT(*) as ofertas_nuevas
+        FROM ofertas
+        WHERE fecha_ultimo_visto IS NOT NULL
+        {'AND DATE(fecha_ultimo_visto) >= ' + repr(since) if days else ''}
+        GROUP BY fecha, portal
+        HAVING fecha IS NOT NULL
+        ORDER BY fecha, portal
+    """
+    cursor = conn.execute(query)
+    results = cursor.fetchall()
+
+    # Calcular acumulados
+    acumulados = {}
+    daily = []
+    for fecha, portal, count in results:
+        acumulados[portal] = acumulados.get(portal, 0) + count
+        daily.append({
+            'fecha': fecha,
+            'portal': portal,
+            'ofertas_nuevas': count,
+            'ofertas_acumuladas': acumulados[portal],
+        })
+
+    conn.close()
+    return daily
+
+
+def sync_to_supabase(daily_data):
+    """Upsert conteos diarios a Supabase"""
+    client = get_supabase_client()
+
+    # Upsert en batches de 500
+    batch_size = 500
+    total = 0
+    for i in range(0, len(daily_data), batch_size):
+        batch = daily_data[i:i + batch_size]
+        client.table('scraping_daily').upsert(batch, on_conflict='fecha,portal').execute()
+        total += len(batch)
+        print(f"  Upsert {total}/{len(daily_data)}")
+
+    return total
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Sync scraping daily counts to Supabase')
+    parser.add_argument('--days', type=int, default=30, help='Últimos N días (default: 30)')
+    parser.add_argument('--all', action='store_true', help='Todo el historial')
+    args = parser.parse_args()
+
+    days = None if args.all else args.days
+
+    print(f"=== Sync Scraping Daily ===")
+    print(f"  BD: {DB_PATH}")
+    print(f"  Periodo: {'todo' if days is None else f'últimos {days} días'}")
+
+    daily = get_daily_counts(DB_PATH, days)
+    print(f"  Registros: {len(daily)}")
+
+    if not daily:
+        print("  Sin datos para sincronizar")
+        return
+
+    total = sync_to_supabase(daily)
+    print(f"  Sincronizados: {total}")
+    print(f"=== Completado ===")
+
+
+if __name__ == '__main__':
+    main()
