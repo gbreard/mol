@@ -59,6 +59,7 @@ from enum import Enum
 # Imports locales
 from skills_implicit_extractor import SkillsImplicitExtractor
 from match_by_skills import SkillsBasedMatcher
+from config_loader import load_config
 
 logger = logging.getLogger(__name__)
 
@@ -162,12 +163,11 @@ class MatcherV3:
                 print("[V3] WARN: Embeddings de ocupaciones no encontrados")
 
     def _load_business_rules(self):
-        """Carga reglas de negocio desde JSON."""
+        """Carga reglas de negocio — override de Supabase o JSON local."""
         try:
-            with open(self.config_path, 'r', encoding='utf-8') as f:
-                self.business_rules = json.load(f)
+            self.business_rules = load_config('matching_rules_business')
             if self.verbose:
-                print(f"[V3] Cargadas reglas de negocio desde {self.config_path}")
+                print(f"[V3] Cargadas reglas de negocio (via load_config)")
         except Exception as e:
             self.business_rules = {}
             if self.verbose:
@@ -198,15 +198,12 @@ class MatcherV3:
         self._load_isco_preferred_labels()
 
     def _load_sinonimos_argentinos(self):
-        """Carga diccionario de sinonimos argentinos -> ESCO."""
-        base_path = Path(__file__).parent
-        config_path = base_path.parent / "config" / "sinonimos_argentinos_esco.json"
+        """Carga diccionario de sinonimos argentinos — override de Supabase o JSON local."""
         try:
-            with open(config_path, 'r', encoding='utf-8') as f:
-                self.sinonimos_arg = json.load(f)
+            self.sinonimos_arg = load_config('sinonimos_argentinos_esco')
             if self.verbose:
                 ocups = len(self.sinonimos_arg.get("ocupaciones_titulo", {}))
-                print(f"[V3.3] Cargado diccionario argentino: {ocups} ocupaciones")
+                print(f"[V3.3] Cargado diccionario argentino: {ocups} ocupaciones (via load_config)")
         except Exception as e:
             self.sinonimos_arg = {}
             if self.verbose:

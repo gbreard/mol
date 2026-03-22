@@ -20,8 +20,13 @@ Cambios principales respecto a v2:
 
 import re
 import json
+import sys
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple
+
+# Add database/ to path for config_loader import
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from config_loader import load_config
 
 
 class ExperienciaPatterns:
@@ -543,17 +548,13 @@ class SkillsPatterns:
     @classmethod
     def _load_oficios_from_json(cls) -> list:
         """
-        Carga oficios desde config/oficios_arg.json
+        Carga oficios — override de Supabase o config/oficios_arg.json local.
         Migrado de código hardcodeado en v3.1
         """
-        config_dir = Path(__file__).parent.parent.parent.parent / "config"
-        oficios_file = config_dir / "oficios_arg.json"
-
         patterns = []
 
         try:
-            with open(oficios_file, 'r', encoding='utf-8') as f:
-                data = json.load(f)
+            data = load_config('oficios_arg')
 
             # Extraer todos los items de todas las categorías
             for categoria, categoria_data in data.get("oficios", {}).items():
@@ -563,7 +564,7 @@ class SkillsPatterns:
                     escaped = re.escape(item).replace(r'\ ', r'\s+')
                     patterns.append(rf'\b{escaped}\b')
 
-        except FileNotFoundError:
+        except Exception:
             # Fallback: lista mínima si no existe el JSON
             patterns = [
                 r'\belectricista\b', r'\bplomero\b', r'\bcarpintero\b',
