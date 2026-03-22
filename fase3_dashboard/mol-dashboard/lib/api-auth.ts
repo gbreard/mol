@@ -13,6 +13,16 @@ export interface AuthResult {
   role: string
 }
 
+// Dev bypass: usuario admin mock sin Supabase real
+const DEV_MOCK_USER = {
+  id: 'dev-mock-user-id',
+  email: 'dev@mol.local',
+  user_metadata: { role: 'admin', plan: 'enterprise' },
+  app_metadata: {},
+  aud: 'authenticated',
+  created_at: new Date().toISOString(),
+} as unknown as User
+
 /**
  * Apply rate limit to a public route (no auth required).
  * Returns `null` when the request is allowed, or a 429 NextResponse to return
@@ -36,6 +46,10 @@ export function requireRateLimit(
 export async function requireAuth(
   request: NextRequest
 ): Promise<AuthResult | NextResponse> {
+  if (process.env.DEV_MOCK_AUTH === 'true') {
+    return { user: DEV_MOCK_USER, role: 'admin' }
+  }
+
   // Rate limit first — before any Supabase call
   const ip = getClientIp(request)
   const rl = rateLimit(ip, 'authenticated')
@@ -74,6 +88,10 @@ export async function requireAuth(
 export async function requireAdmin(
   request: NextRequest
 ): Promise<AuthResult | NextResponse> {
+  if (process.env.DEV_MOCK_AUTH === 'true') {
+    return { user: DEV_MOCK_USER, role: 'admin' }
+  }
+
   // Rate limit at admin tier first
   const ip = getClientIp(request)
   const rl = rateLimit(ip, 'admin')
@@ -118,6 +136,10 @@ export async function requireAdmin(
 export async function requireSubscriber(
   request: NextRequest
 ): Promise<AuthResult | NextResponse> {
+  if (process.env.DEV_MOCK_AUTH === 'true') {
+    return { user: DEV_MOCK_USER, role: 'admin' }
+  }
+
   const ip = getClientIp(request)
   const rl = rateLimit(ip, 'authenticated')
   if (!rl.success) return rateLimitResponse(rl)
