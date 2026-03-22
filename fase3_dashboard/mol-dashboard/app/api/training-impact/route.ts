@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { requireAuth, isAuthError } from '@/lib/api-auth';
 
 let supabaseAdmin: SupabaseClient | null = null;
 
@@ -17,6 +18,9 @@ function getSupabaseAdmin(): SupabaseClient | null {
 // GET /api/training-impact?profile_id=xxx
 // Retorna: cursos agrupados por brecha con delta match %
 export async function GET(request: NextRequest) {
+  const auth = await requireAuth(request);
+  if (isAuthError(auth)) return auth;
+
   const profileId = request.nextUrl.searchParams.get('profile_id');
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
