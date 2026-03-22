@@ -47,11 +47,11 @@ def calculate_dinamica(db_path, days=None):
 
     query = f"""
         SELECT
-            id,
+            id_oferta,
             DATE(fecha_ultimo_visto) as fecha_visto,
             DATE(fecha_baja) as fecha_baja,
             DATE(fecha_publicacion_iso) as fecha_pub,
-            estado,
+            estado_oferta,
             COALESCE(portal, 'desconocido') as portal
         FROM ofertas
         WHERE 1=1 {since}
@@ -98,7 +98,7 @@ def calculate_dinamica(db_path, days=None):
     activas_por_dia = {}
     todas_fechas = set()
 
-    for _, fecha_visto, fecha_baja, fecha_pub, estado, portal in rows:
+    for _, fecha_visto, fecha_baja, fecha_pub, estado_oferta, portal in rows:
         if fecha_visto:
             nuevas_por_dia[fecha_visto] += 1
             todas_fechas.add(fecha_visto)
