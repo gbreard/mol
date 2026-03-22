@@ -68,9 +68,11 @@ const ALERTA_ICONS: Record<string, any> = {
 };
 
 const PERIODO_OPTIONS = [
-  { value: 7, label: 'Ultima semana' },
-  { value: 14, label: 'Ultimos 14 dias' },
-  { value: 30, label: 'Ultimo mes' },
+  { value: 7, label: '7 dias' },
+  { value: 14, label: '14 dias' },
+  { value: 30, label: '1 mes' },
+  { value: 90, label: '3 meses' },
+  { value: 365, label: 'Todo' },
 ];
 
 export default function ScrapingPage() {

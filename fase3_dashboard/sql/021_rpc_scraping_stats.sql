@@ -119,6 +119,29 @@ BEGIN
       GROUP BY portal
     ) cambios
     WHERE pct_caida > 50 AND pct_caida < 100 AND sem_anterior > 10 AND dias_inactivo <= 3
+
+    UNION ALL
+
+    -- Portal scrapeado recientemente pero sin ofertas nuevas
+    -- (scraping funciona pero no trae datos — posible bloqueo o scraper roto)
+    SELECT
+      'warning',
+      portal,
+      portal || ': scrapeado pero sin ofertas nuevas (ultima publicacion hace ' || dias_pub || ' dias)',
+      'Ultimo scraping: ' || ultimo_scrape || ' | Ultima publicacion: ' || ultima_pub
+    FROM (
+      SELECT
+        portal,
+        MAX(created_at::date) as ultimo_scrape,
+        MAX(fecha_publicacion) as ultima_pub,
+        (CURRENT_DATE - MAX(created_at::date))::int as dias_scrape,
+        (CURRENT_DATE - MAX(fecha_publicacion))::int as dias_pub
+      FROM ofertas_dashboard
+      WHERE portal IS NOT NULL
+      GROUP BY portal
+    ) brecha
+    -- Scrapeado en los últimos 3 días pero sin publicaciones en los últimos 7
+    WHERE dias_scrape <= 3 AND dias_pub > 7
   ) a;
 
   -- Resultado
