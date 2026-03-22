@@ -61,6 +61,41 @@ COMMAND_MAP = {
 }
 
 
+def check_scheduled_scraping(client):
+    """Verifica si hay scraping programado para ahora según scraping_schedule"""
+    from datetime import datetime
+    now = datetime.utcnow()
+    dia_semana = now.isoweekday()  # 1=lun, 7=dom
+    hora_actual = now.strftime('%H:%M')
+
+    try:
+        result = client.table('scraping_schedule') \
+            .select('*') \
+            .eq('activo', True) \
+            .execute()
+
+        for sched in (result.data or []):
+            if dia_semana in sched.get('dias_semana', []):
+                hora_programada = sched.get('hora_utc', '')[:5]
+                if hora_actual == hora_programada:
+                    portal = sched.get('portal', 'todos')
+                    # Verificar que no hay un comando reciente para evitar duplicados
+                    recientes = client.table('scraping_commands') \
+                        .select('id') \
+                        .gte('created_at', now.strftime('%Y-%m-%dT00:00:00')) \
+                        .eq('comando', 'lanzar_todos' if portal == 'todos' else 'lanzar_portal') \
+                        .execute()
+                    if not recientes.data:
+                        print(f"[{now.isoformat()}] Schedule: lanzando {portal}")
+                        client.table('scraping_commands').insert({
+                            'comando': 'lanzar_todos' if portal == 'todos' else 'lanzar_portal',
+                            'params': {} if portal == 'todos' else {'portal': portal},
+                            'creado_por': 'schedule@mol.gob.ar',
+                        }).execute()
+    except Exception as e:
+        print(f"[{datetime.now().isoformat()}] Error checking schedule: {e}")
+
+
 def run_shell(cmd, timeout=3600):
     """Ejecuta comando shell y retorna (exit_code, output)"""
     try:
@@ -198,6 +233,9 @@ def main():
 
     while True:
         try:
+            # Verificar scraping programado
+            check_scheduled_scraping(client)
+            # Procesar comandos pendientes
             had_work = poll_once(client)
             if had_work:
                 continue  # Si hubo trabajo, buscar más inmediatamente

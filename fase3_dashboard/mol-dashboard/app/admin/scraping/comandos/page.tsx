@@ -13,8 +13,43 @@ import {
   Terminal,
   Cloud,
   Database,
+  Calendar,
+  Save,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+
+interface Schedule {
+  id: number;
+  portal: string;
+  dias_semana: number[];
+  hora_utc: string;
+  activo: boolean;
+  updated_by: string | null;
+  updated_at: string;
+}
+
+const DIAS_SEMANA = [
+  { value: 1, label: 'Lun' },
+  { value: 2, label: 'Mar' },
+  { value: 3, label: 'Mié' },
+  { value: 4, label: 'Jue' },
+  { value: 5, label: 'Vie' },
+  { value: 6, label: 'Sáb' },
+  { value: 7, label: 'Dom' },
+];
+
+// UTC a Argentina (UTC-3)
+function utcToArg(utcTime: string): string {
+  const [h, m] = utcTime.split(':').map(Number);
+  const argH = ((h - 3) + 24) % 24;
+  return `${argH.toString().padStart(2, '0')}:${(m || 0).toString().padStart(2, '0')}`;
+}
+
+function argToUtc(argTime: string): string {
+  const [h, m] = argTime.split(':').map(Number);
+  const utcH = ((h + 3) % 24);
+  return `${utcH.toString().padStart(2, '0')}:${(m || 0).toString().padStart(2, '0')}`;
+}
 
 interface Command {
   id: string;
@@ -49,9 +84,43 @@ const ESTADO_CONFIG: Record<string, { color: string; icon: any; label: string }>
 
 export default function ComandosPage() {
   const [commands, setCommands] = useState<Command[]>([]);
+  const [schedule, setSchedule] = useState<Schedule[]>([]);
+  const [editingSchedule, setEditingSchedule] = useState<Schedule | null>(null);
+  const [savingSchedule, setSavingSchedule] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState<string | null>(null);
   const [expandedLog, setExpandedLog] = useState<string | null>(null);
+
+  async function loadSchedule() {
+    if (!supabase) return;
+    const { data } = await supabase.rpc('get_scraping_schedule');
+    if (data) setSchedule(data as Schedule[]);
+  }
+
+  async function saveSchedule(sched: Schedule) {
+    setSavingSchedule(true);
+    try {
+      const res = await fetch('/api/scraping-schedule', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: sched.id,
+          dias_semana: sched.dias_semana,
+          hora_utc: sched.hora_utc,
+          activo: sched.activo,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        alert(`Error: ${err.error}`);
+        return;
+      }
+      await loadSchedule();
+      setEditingSchedule(null);
+    } finally {
+      setSavingSchedule(false);
+    }
+  }
 
   async function loadCommands() {
     if (!supabase) return;
@@ -61,6 +130,7 @@ export default function ComandosPage() {
   }
 
   useEffect(() => {
+    loadSchedule();
     loadCommands();
     // Auto-refresh cada 30s si hay comandos ejecutando
     const interval = setInterval(() => {
@@ -120,6 +190,125 @@ export default function ComandosPage() {
           <RefreshCw className="w-4 h-4" />
           Actualizar
         </button>
+      </div>
+
+      {/* Calendario de scraping */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Calendar className="w-5 h-5 text-blue-600" />
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Calendario de scraping</h2>
+        </div>
+
+        {schedule.length === 0 ? (
+          <p className="text-sm text-gray-400">Sin calendario configurado</p>
+        ) : (
+          <div className="space-y-3">
+            {schedule.map(sched => {
+              const isEditing = editingSchedule?.id === sched.id;
+              const current = isEditing ? editingSchedule! : sched;
+              const argHora = utcToArg(current.hora_utc);
+
+              return (
+                <div key={sched.id} className={`border rounded-lg p-4 ${sched.activo ? 'border-gray-200' : 'border-gray-100 bg-gray-50 opacity-60'}`}>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-gray-900 capitalize">{sched.portal}</span>
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${sched.activo ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500'}`}>
+                        {sched.activo ? 'Activo' : 'Pausado'}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {isEditing ? (
+                        <>
+                          <button
+                            onClick={() => saveSchedule(current)}
+                            disabled={savingSchedule}
+                            className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs hover:bg-blue-700 disabled:opacity-50"
+                          >
+                            {savingSchedule ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
+                            Guardar
+                          </button>
+                          <button onClick={() => setEditingSchedule(null)} className="text-xs text-gray-500 hover:text-gray-700">
+                            Cancelar
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          onClick={() => setEditingSchedule({ ...sched })}
+                          className="text-xs text-blue-600 hover:underline"
+                        >
+                          Editar
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Días de la semana */}
+                  <div className="flex items-center gap-1 mb-2">
+                    <span className="text-xs text-gray-500 mr-2">Dias:</span>
+                    {DIAS_SEMANA.map(dia => {
+                      const selected = current.dias_semana.includes(dia.value);
+                      return (
+                        <button
+                          key={dia.value}
+                          disabled={!isEditing}
+                          onClick={() => {
+                            if (!isEditing) return;
+                            const next = selected
+                              ? current.dias_semana.filter(d => d !== dia.value)
+                              : [...current.dias_semana, dia.value].sort();
+                            setEditingSchedule({ ...current, dias_semana: next });
+                          }}
+                          className={`w-9 h-9 rounded-lg text-xs font-medium transition-colors ${
+                            selected
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-gray-100 text-gray-400'
+                          } ${isEditing ? 'cursor-pointer hover:opacity-80' : 'cursor-default'}`}
+                        >
+                          {dia.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Hora */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500">Hora (ARG):</span>
+                    {isEditing ? (
+                      <input
+                        type="time"
+                        value={argHora}
+                        onChange={(e) => setEditingSchedule({ ...current, hora_utc: argToUtc(e.target.value) })}
+                        className="text-sm border rounded px-2 py-1"
+                      />
+                    ) : (
+                      <span className="text-sm font-medium text-gray-900">{argHora}hs</span>
+                    )}
+
+                    {/* Toggle activo */}
+                    {isEditing && (
+                      <label className="flex items-center gap-1.5 ml-4 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={current.activo}
+                          onChange={(e) => setEditingSchedule({ ...current, activo: e.target.checked })}
+                          className="rounded"
+                        />
+                        <span className="text-xs text-gray-600">Activo</span>
+                      </label>
+                    )}
+                  </div>
+
+                  {sched.updated_by && (
+                    <p className="text-xs text-gray-400 mt-2">
+                      Editado por {sched.updated_by?.split('@')[0]} — {new Date(sched.updated_at).toLocaleDateString('es-AR')}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Acciones rápidas */}
