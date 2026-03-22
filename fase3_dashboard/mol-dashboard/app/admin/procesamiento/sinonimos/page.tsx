@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Save, Plus, Trash2, X, Edit2, Loader2, RefreshCw, CheckCircle2, AlertTriangle, Search } from "lucide-react";
+import { ConfigChangelog } from "@/components/ConfigChangelog";
 
 interface Sinonimo {
   termino: string;
@@ -22,6 +23,7 @@ export default function SinonimosPage() {
   const [newSin, setNewSin] = useState({ termino: '', isco: '', escoLabel: '', variantes: '' });
   const [editingTermino, setEditingTermino] = useState<string | null>(null);
   const [editFields, setEditFields] = useState({ isco: '', escoLabel: '', variantes: '' });
+  const [configMeta, setConfigMeta] = useState<{ source: string; version: number; updated_by: string | null; updated_at: string | null; changelog: any[] }>({ source: 'local', version: 0, updated_by: null, updated_at: null, changelog: [] });
 
   async function loadConfig() {
     setLoading(true);
@@ -32,9 +34,11 @@ export default function SinonimosPage() {
 
       if (override.source === 'override' && override.data) {
         config = override.data;
+        setConfigMeta({ source: 'override', version: override.version, updated_by: override.updated_by, updated_at: override.updated_at, changelog: override.changelog || [] });
       } else {
         const localRes = await fetch('/data/sinonimos_argentinos_esco.json');
         config = await localRes.json();
+        setConfigMeta({ source: 'local', version: 0, updated_by: null, updated_at: null, changelog: [] });
       }
       setRawConfig(config);
 
@@ -266,6 +270,14 @@ export default function SinonimosPage() {
         </table>
         <div className="px-4 py-2 border-t text-xs text-gray-500">{filtered.length} de {sinonimos.length} sinónimos</div>
       </div>
+
+      <ConfigChangelog
+        changelog={configMeta.changelog}
+        version={configMeta.version}
+        updatedBy={configMeta.updated_by}
+        updatedAt={configMeta.updated_at}
+        source={configMeta.source}
+      />
     </div>
   );
 }

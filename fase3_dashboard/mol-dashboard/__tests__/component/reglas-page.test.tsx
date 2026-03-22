@@ -407,7 +407,7 @@ describe('ReglasPage', () => {
       await waitFor(() => {
         expect(screen.getByText('Test Local')).toBeInTheDocument()
       })
-      expect(screen.getByText(/local/)).toBeInTheDocument()
+      expect(screen.getAllByText(/local/).length).toBeGreaterThanOrEqual(1)
     })
   })
 })

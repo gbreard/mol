@@ -15,6 +15,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { ConfigChangelog } from "@/components/ConfigChangelog";
 
 interface Regla {
   id: string;
@@ -33,6 +34,7 @@ interface ConfigData {
   updated_by: string | null;
   updated_at: string | null;
   reglas: Record<string, any>;
+  changelog: any[];
 }
 
 export default function ReglasPage() {
@@ -67,14 +69,14 @@ export default function ReglasPage() {
       const data = await res.json();
 
       if (data.source === 'override' && data.data) {
-        setConfig({ source: 'override', version: data.version, updated_by: data.updated_by, updated_at: data.updated_at, reglas: data.data.reglas_forzar_isco || {} });
+        setConfig({ source: 'override', version: data.version, updated_by: data.updated_by, updated_at: data.updated_at, reglas: data.data.reglas_forzar_isco || {}, changelog: data.changelog || [] });
         parseReglas(data.data.reglas_forzar_isco || {});
       } else {
         // Load from local JSON
         const localRes = await fetch('/data/matching_rules_business.json');
         if (localRes.ok) {
           const localData = await localRes.json();
-          setConfig({ source: 'local', version: 0, updated_by: null, updated_at: null, reglas: localData.reglas_forzar_isco || {} });
+          setConfig({ source: 'local', version: 0, updated_by: null, updated_at: null, reglas: localData.reglas_forzar_isco || {}, changelog: [] });
           parseReglas(localData.reglas_forzar_isco || {});
         }
       }
@@ -591,6 +593,17 @@ export default function ReglasPage() {
           Mostrando {filteredReglas.length} de {reglas.length} reglas
         </div>
       </div>
+
+      {/* Changelog */}
+      {config && (
+        <ConfigChangelog
+          changelog={config.changelog}
+          version={config.version}
+          updatedBy={config.updated_by}
+          updatedAt={config.updated_at}
+          source={config.source}
+        />
+      )}
     </div>
   );
 }
