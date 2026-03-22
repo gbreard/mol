@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Save, Plus, Trash2, X, Loader2, RefreshCw, CheckCircle2, AlertTriangle, Search } from "lucide-react";
+import { Save, Plus, Trash2, X, Edit2, Loader2, RefreshCw, CheckCircle2, AlertTriangle, Search } from "lucide-react";
 
 interface Sinonimo {
   termino: string;
@@ -20,6 +20,8 @@ export default function SinonimosPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showNewForm, setShowNewForm] = useState(false);
   const [newSin, setNewSin] = useState({ termino: '', isco: '', escoLabel: '', variantes: '' });
+  const [editingTermino, setEditingTermino] = useState<string | null>(null);
+  const [editFields, setEditFields] = useState({ isco: '', escoLabel: '', variantes: '' });
 
   async function loadConfig() {
     setLoading(true);
@@ -75,6 +77,21 @@ export default function SinonimosPage() {
     }]);
     setNewSin({ termino: '', isco: '', escoLabel: '', variantes: '' });
     setShowNewForm(false);
+    setHasChanges(true);
+  }
+
+  function startEditSinonimo(s: Sinonimo) {
+    setEditingTermino(s.termino);
+    setEditFields({ isco: s.isco, escoLabel: s.escoLabel, variantes: s.variantes.join(', ') });
+  }
+
+  function saveEditSinonimo() {
+    if (!editingTermino) return;
+    const variantes = editFields.variantes.split(',').map(v => v.trim().toLowerCase()).filter(Boolean);
+    setSinonimos(prev => prev.map(s => s.termino === editingTermino ? {
+      ...s, isco: editFields.isco, escoLabel: editFields.escoLabel, variantes,
+    } : s));
+    setEditingTermino(null);
     setHasChanges(true);
   }
 
@@ -196,25 +213,55 @@ export default function SinonimosPage() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map(s => (
-              <tr key={s.termino} className="border-b border-gray-100 hover:bg-gray-50">
-                <td className="py-2.5 px-4 font-semibold text-gray-900">{s.termino}</td>
-                <td className="py-2.5 px-4 font-mono font-bold text-blue-700">{s.isco}</td>
-                <td className="py-2.5 px-4 text-gray-600 text-xs">{s.escoLabel}</td>
-                <td className="py-2.5 px-4">
-                  <div className="flex flex-wrap gap-1">
-                    {s.variantes.map(v => (
-                      <span key={v} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{v}</span>
-                    ))}
-                  </div>
-                </td>
-                <td className="py-2.5 px-4 text-center">
-                  <button onClick={() => deleteSinonimo(s.termino)} className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {filtered.map(s => {
+              const isEditing = editingTermino === s.termino;
+              return (
+                <tr key={s.termino} className={`border-b border-gray-100 ${isEditing ? 'bg-blue-50' : 'hover:bg-gray-50'}`}>
+                  <td className="py-2.5 px-4 font-semibold text-gray-900">{s.termino}</td>
+                  <td className="py-2.5 px-4">
+                    {isEditing ? (
+                      <input value={editFields.isco} onChange={e => setEditFields({...editFields, isco: e.target.value})}
+                        className="w-20 border rounded px-2 py-1 text-sm font-mono" />
+                    ) : (
+                      <span className="font-mono font-bold text-blue-700 cursor-pointer hover:underline" onClick={() => startEditSinonimo(s)}>{s.isco}</span>
+                    )}
+                  </td>
+                  <td className="py-2.5 px-4">
+                    {isEditing ? (
+                      <input value={editFields.escoLabel} onChange={e => setEditFields({...editFields, escoLabel: e.target.value})}
+                        className="w-full border rounded px-2 py-1 text-sm" />
+                    ) : (
+                      <span className="text-gray-600 text-xs cursor-pointer hover:underline" onClick={() => startEditSinonimo(s)}>{s.escoLabel}</span>
+                    )}
+                  </td>
+                  <td className="py-2.5 px-4">
+                    {isEditing ? (
+                      <input value={editFields.variantes} onChange={e => setEditFields({...editFields, variantes: e.target.value})}
+                        className="w-full border rounded px-2 py-1 text-sm" placeholder="var1, var2, var3" />
+                    ) : (
+                      <div className="flex flex-wrap gap-1 cursor-pointer" onClick={() => startEditSinonimo(s)}>
+                        {s.variantes.map(v => (
+                          <span key={v} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{v}</span>
+                        ))}
+                      </div>
+                    )}
+                  </td>
+                  <td className="py-2.5 px-4 text-center">
+                    {isEditing ? (
+                      <div className="flex items-center gap-1 justify-center">
+                        <button onClick={saveEditSinonimo} className="p-1 text-green-600 hover:bg-green-100 rounded"><CheckCircle2 className="w-4 h-4" /></button>
+                        <button onClick={() => setEditingTermino(null)} className="p-1 text-gray-400 hover:bg-gray-100 rounded"><X className="w-4 h-4" /></button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1 justify-center">
+                        <button onClick={() => startEditSinonimo(s)} className="p-1 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded"><Edit2 className="w-4 h-4" /></button>
+                        <button onClick={() => deleteSinonimo(s.termino)} className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded"><Trash2 className="w-4 h-4" /></button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
         <div className="px-4 py-2 border-t text-xs text-gray-500">{filtered.length} de {sinonimos.length} sinónimos</div>

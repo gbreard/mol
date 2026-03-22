@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Save, Plus, Trash2, X, Loader2, RefreshCw, CheckCircle2, AlertTriangle, Search } from "lucide-react";
+import { Save, Plus, Trash2, X, Edit2, Loader2, RefreshCw, CheckCircle2, AlertTriangle, Search } from "lucide-react";
 
 interface InferenceRule {
   keyword: string;
@@ -26,6 +26,9 @@ export default function NlpInferencePage() {
   const [activeSection, setActiveSection] = useState('modalidad');
   const [newKeyword, setNewKeyword] = useState("");
   const [newValue, setNewValue] = useState("");
+  const [editingIdx, setEditingIdx] = useState<number | null>(null);
+  const [editKw, setEditKw] = useState("");
+  const [editVal, setEditVal] = useState("");
 
   async function loadConfig() {
     setLoading(true);
@@ -92,6 +95,24 @@ export default function NlpInferencePage() {
     setRules(prev => [...prev, { keyword: newKeyword.toLowerCase().trim(), value: newValue.trim(), section: activeSection }]);
     setNewKeyword("");
     setNewValue("");
+    setHasChanges(true);
+  }
+
+  function startEditRule(idx: number, r: InferenceRule) {
+    setEditingIdx(idx);
+    setEditKw(r.keyword);
+    setEditVal(r.value);
+  }
+
+  function saveEditRule() {
+    if (editingIdx === null) return;
+    const target = filteredRules[editingIdx];
+    setRules(prev => prev.map(r =>
+      r.keyword === target.keyword && r.value === target.value && r.section === activeSection
+        ? { ...r, keyword: editKw.toLowerCase().trim(), value: editVal.trim() }
+        : r
+    ));
+    setEditingIdx(null);
     setHasChanges(true);
   }
 
@@ -227,19 +248,44 @@ export default function NlpInferencePage() {
             </tr>
           </thead>
           <tbody>
-            {filteredRules.map((r, i) => (
-              <tr key={`${r.keyword}-${r.value}-${i}`} className="border-b border-gray-100 hover:bg-gray-50">
-                <td className="py-2.5 px-4 font-mono text-gray-900">{r.keyword}</td>
-                <td className="py-2.5 px-4">
-                  <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">{r.value}</span>
-                </td>
-                <td className="py-2.5 px-4 text-center">
-                  <button onClick={() => deleteRule(r.keyword, r.value)} className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {filteredRules.map((r, i) => {
+              const isEditing = editingIdx === i;
+              return (
+                <tr key={`${r.keyword}-${r.value}-${i}`} className={`border-b border-gray-100 ${isEditing ? 'bg-blue-50' : 'hover:bg-gray-50'}`}>
+                  <td className="py-2.5 px-4">
+                    {isEditing ? (
+                      <input value={editKw} onChange={e => setEditKw(e.target.value)}
+                        className="w-full border rounded px-2 py-1 text-sm font-mono"
+                        onKeyDown={e => { if (e.key === 'Enter') saveEditRule(); if (e.key === 'Escape') setEditingIdx(null); }} />
+                    ) : (
+                      <span className="font-mono text-gray-900 cursor-pointer hover:underline" onClick={() => startEditRule(i, r)}>{r.keyword}</span>
+                    )}
+                  </td>
+                  <td className="py-2.5 px-4">
+                    {isEditing ? (
+                      <input value={editVal} onChange={e => setEditVal(e.target.value)}
+                        className="w-full border rounded px-2 py-1 text-sm"
+                        onKeyDown={e => { if (e.key === 'Enter') saveEditRule(); if (e.key === 'Escape') setEditingIdx(null); }} />
+                    ) : (
+                      <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full cursor-pointer hover:bg-blue-200" onClick={() => startEditRule(i, r)}>{r.value}</span>
+                    )}
+                  </td>
+                  <td className="py-2.5 px-4 text-center">
+                    {isEditing ? (
+                      <div className="flex items-center gap-1 justify-center">
+                        <button onClick={saveEditRule} className="p-1 text-green-600 hover:bg-green-100 rounded"><CheckCircle2 className="w-4 h-4" /></button>
+                        <button onClick={() => setEditingIdx(null)} className="p-1 text-gray-400 hover:bg-gray-100 rounded"><X className="w-4 h-4" /></button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1 justify-center">
+                        <button onClick={() => startEditRule(i, r)} className="p-1 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded"><Edit2 className="w-4 h-4" /></button>
+                        <button onClick={() => deleteRule(r.keyword, r.value)} className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded"><Trash2 className="w-4 h-4" /></button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
         <div className="px-4 py-2 border-t text-xs text-gray-500">
