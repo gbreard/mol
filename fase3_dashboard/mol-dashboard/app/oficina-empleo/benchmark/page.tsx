@@ -24,59 +24,23 @@ interface InteligenciaLocalData {
   cursos_faltantes: CursoFaltante[]
 }
 
-const MOCK_DATA: InteligenciaLocalData = {
-  jurisdiccion: 'CABA',
-  total_ofertas: 5240,
-  total_perfiles: 1830,
-  top_demandadas: [
-    { label: 'Atención al cliente', pct: 71 },
-    { label: 'Excel avanzado', pct: 62 },
-    { label: 'Trabajo en equipo', pct: 58 },
-    { label: 'Python', pct: 45 },
-    { label: 'SQL', pct: 38 },
-  ],
-  top_disponibles: [
-    { label: 'Atención al cliente', pct: 68 },
-    { label: 'Excel avanzado', pct: 54 },
-    { label: 'Trabajo en equipo', pct: 52 },
-    { label: 'Ventas', pct: 41 },
-    { label: 'Cobros y pagos', pct: 38 },
-  ],
-  benchmark: {
-    jurisdiccion: 'CABA',
-    total_ofertas: 5240,
-    total_perfiles: 1830,
-    skills: [
-      { uri: 'e1', label: 'Python',              demanda_pct: 45, disponibilidad_pct: 18, brecha: 27, dificultad: 'alta',  tendencia: 'subiendo' },
-      { uri: 'e2', label: 'SQL',                 demanda_pct: 38, disponibilidad_pct: 22, brecha: 16, dificultad: 'alta',  tendencia: 'subiendo' },
-      { uri: 'e5', label: 'Manejo de CRM',       demanda_pct: 29, disponibilidad_pct: 11, brecha: 18, dificultad: 'alta',  tendencia: 'subiendo' },
-      { uri: 'e3', label: 'Excel avanzado',      demanda_pct: 62, disponibilidad_pct: 54, brecha: 8,  dificultad: 'media', tendencia: 'estable'  },
-      { uri: 'e4', label: 'Atención al cliente', demanda_pct: 71, disponibilidad_pct: 68, brecha: 3,  dificultad: 'baja',  tendencia: 'bajando'  },
-      { uri: 'e6', label: 'Soldadura MIG',       demanda_pct: 15, disponibilidad_pct: 12, brecha: 3,  dificultad: 'baja',  tendencia: 'estable'  },
-    ],
-  },
-  cursos_faltantes: [
-    { skill_label: 'Python', brecha: 27, curso_nombre: 'Python para análisis de datos', duracion: '3 meses', modalidad: 'Online', curso_url: 'https://capacitacion.buenosaires.gob.ar' },
-    { skill_label: 'SQL',    brecha: 16, curso_nombre: 'SQL básico para no programadores', duracion: '4 semanas', modalidad: 'Online' },
-    { skill_label: 'Manejo de CRM', brecha: 18, curso_nombre: 'CRM: Salesforce y Zoho', duracion: '6 semanas', modalidad: 'Presencial' },
-  ],
-}
-
 function InteligenciaContent() {
   const searchParams = useSearchParams()
   const jurisdiccion = searchParams.get('jurisdiccion') ?? 'CABA'
   const [data, setData] = useState<InteligenciaLocalData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     const load = async () => {
       setLoading(true)
+      setError(false)
       try {
         const res = await fetch(`/api/inteligencia-local?jurisdiccion=${jurisdiccion}`)
         if (res.ok) setData(await res.json())
-        else setData({ ...MOCK_DATA, jurisdiccion })
+        else setError(true)
       } catch {
-        setData({ ...MOCK_DATA, jurisdiccion })
+        setError(true)
       } finally {
         setLoading(false)
       }
@@ -84,22 +48,18 @@ function InteligenciaContent() {
     load()
   }, [jurisdiccion])
 
-  const handleExportPDF = () => {
-    // TODO: implementar export PDF con jspdf
-    window.print()
-  }
-
   if (loading) return (
     <div className="space-y-4">
       {[1, 2, 3, 4].map((i) => <div key={i} className="h-32 animate-pulse rounded-xl bg-gray-100" />)}
     </div>
   )
 
-  if (!data) return null
+  if (error || !data) return (
+    <p className="text-sm text-red-500">No se pudo cargar la información de inteligencia local.</p>
+  )
 
   return (
     <div className="space-y-8">
-      {/* Header con botón exportar */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3 text-sm text-gray-500">
           <span>{data.total_ofertas.toLocaleString()} ofertas analizadas</span>
@@ -107,7 +67,7 @@ function InteligenciaContent() {
           <span>{data.total_perfiles.toLocaleString()} perfiles en la zona</span>
         </div>
         <button
-          onClick={handleExportPDF}
+          onClick={() => window.print()}
           aria-label="Exportar PDF"
           className="flex min-h-[44px] items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
         >
@@ -116,9 +76,8 @@ function InteligenciaContent() {
         </button>
       </div>
 
-      {/* Sección 1 y 2: Demandadas vs Disponibles */}
+      {/* Demandadas vs Disponibles */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {/* Top demandadas */}
         <div className="rounded-xl border border-gray-200 bg-white p-4">
           <div className="mb-3 flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-blue-600" />
@@ -126,22 +85,19 @@ function InteligenciaContent() {
           </div>
           <ul className="space-y-2">
             {data.top_demandadas.map((s) => (
-              <li key={s.label} className="flex items-center gap-3">
-                <div className="flex-1">
-                  <div className="flex justify-between text-xs text-gray-700 mb-0.5">
-                    <span>{s.label}</span>
-                    <span className="font-medium">{s.pct}%</span>
-                  </div>
-                  <div className="h-1.5 rounded-full bg-gray-100">
-                    <div className="h-1.5 rounded-full bg-blue-500" style={{ width: `${s.pct}%` }} />
-                  </div>
+              <li key={s.label}>
+                <div className="flex justify-between text-xs text-gray-700 mb-0.5">
+                  <span>{s.label}</span>
+                  <span className="font-medium">{s.pct}%</span>
+                </div>
+                <div className="h-1.5 rounded-full bg-gray-100">
+                  <div className="h-1.5 rounded-full bg-blue-500" style={{ width: `${s.pct}%` }} />
                 </div>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Top disponibles */}
         <div className="rounded-xl border border-gray-200 bg-white p-4">
           <div className="mb-3 flex items-center gap-2">
             <Users className="h-4 w-4 text-green-600" />
@@ -149,15 +105,13 @@ function InteligenciaContent() {
           </div>
           <ul className="space-y-2">
             {data.top_disponibles.map((s) => (
-              <li key={s.label} className="flex items-center gap-3">
-                <div className="flex-1">
-                  <div className="flex justify-between text-xs text-gray-700 mb-0.5">
-                    <span>{s.label}</span>
-                    <span className="font-medium">{s.pct}%</span>
-                  </div>
-                  <div className="h-1.5 rounded-full bg-gray-100">
-                    <div className="h-1.5 rounded-full bg-green-500" style={{ width: `${s.pct}%` }} />
-                  </div>
+              <li key={s.label}>
+                <div className="flex justify-between text-xs text-gray-700 mb-0.5">
+                  <span>{s.label}</span>
+                  <span className="font-medium">{s.pct}%</span>
+                </div>
+                <div className="h-1.5 rounded-full bg-gray-100">
+                  <div className="h-1.5 rounded-full bg-green-500" style={{ width: `${s.pct}%` }} />
                 </div>
               </li>
             ))}
@@ -165,7 +119,7 @@ function InteligenciaContent() {
         </div>
       </div>
 
-      {/* Sección 3: Tabla brecha */}
+      {/* Tabla brecha */}
       <div>
         <div className="mb-3 flex items-center gap-2">
           <AlertTriangle className="h-4 w-4 text-amber-500" />
@@ -174,7 +128,7 @@ function InteligenciaContent() {
         <MarketBenchmark data={data.benchmark} />
       </div>
 
-      {/* Sección 4: Cursos faltantes */}
+      {/* Cursos faltantes */}
       <div>
         <div className="mb-3 flex items-center gap-2">
           <BookOpen className="h-4 w-4 text-violet-600" />

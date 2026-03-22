@@ -8,52 +8,48 @@ import ImportResult, { type ImportStats } from '@/components/ImportResult'
 
 type Step = 'bienvenida' | 'preview' | 'resultado'
 
-// Mock data para demo — en producción viene de POST /api/import-pool
-const MOCK_PREVIEW_ROWS: ImportRow[] = [
-  { nombre: 'Juan Pérez', dni: '30123456', ocupacion: 'Albañil', skills: 'Soldadura' },
-  { nombre: 'María López', dni: '31456789', ocupacion: 'Cajera', skills: null },
-  { nombre: 'Pedro García', dni: '32789012', ocupacion: 'Electricista', skills: 'Electricidad' },
-  { nombre: null, dni: null, ocupacion: 'Costurera', skills: 'Costura, patronaje' },
-]
-
-const MOCK_SUMMARY: ImportSummary = {
-  total: 150,
-  con_ocupacion: 120,
-  con_skills: 45,
-  sin_datos: 30,
-  sin_nombre: 3,
-}
-
-const MOCK_STATS: ImportStats = {
-  total_importados: 147,
-  con_skills_derivadas: 89,
-  con_skills_declaradas: 45,
-  sin_skills: 13,
+interface PreviewData {
+  rows: ImportRow[]
+  summary: ImportSummary
 }
 
 export default function OnboardingPage() {
   const router = useRouter()
   const [step, setStep] = useState<Step>('bienvenida')
   const [loading, setLoading] = useState(false)
+  const [preview, setPreview] = useState<PreviewData | null>(null)
+  const [stats, setStats] = useState<ImportStats | null>(null)
 
-  const handleUploadPersonas = async (_file: File) => {
-    // TODO: POST /api/import-pool con el archivo
-    // Por ahora usa mock data
-    setStep('preview')
-  }
-
-  const handleConfirm = async () => {
+  const handleUploadPersonas = async (file: File) => {
     setLoading(true)
     try {
-      // TODO: POST /api/import-pool/confirm
-      await new Promise((r) => setTimeout(r, 800)) // simula latencia
-      setStep('resultado')
+      const form = new FormData()
+      form.append('file', file)
+      const res = await fetch('/api/import-pool', { method: 'POST', body: form })
+      if (res.ok) {
+        const data = await res.json()
+        setPreview({ rows: data.rows, summary: data.summary })
+        setStep('preview')
+      }
     } finally {
       setLoading(false)
     }
   }
 
-  if (step === 'preview') {
+  const handleConfirm = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/import-pool/confirm', { method: 'POST' })
+      if (res.ok) {
+        setStats(await res.json())
+        setStep('resultado')
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (step === 'preview' && preview) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-8">
         <nav className="mb-6 text-sm text-gray-500">
@@ -62,8 +58,8 @@ export default function OnboardingPage() {
           <span className="font-medium text-gray-800">Preview</span>
         </nav>
         <ImportPreview
-          rows={MOCK_PREVIEW_ROWS}
-          summary={MOCK_SUMMARY}
+          rows={preview.rows}
+          summary={preview.summary}
           loading={loading}
           onConfirm={handleConfirm}
           onCancel={() => setStep('bienvenida')}
@@ -72,10 +68,10 @@ export default function OnboardingPage() {
     )
   }
 
-  if (step === 'resultado') {
+  if (step === 'resultado' && stats) {
     return (
       <ImportResult
-        stats={MOCK_STATS}
+        stats={stats}
         onIrPanel={() => router.push('/oficina-empleo/perfil')}
         onImportarVacantes={() => setStep('bienvenida')}
         onImportarCursos={() => setStep('bienvenida')}
@@ -85,8 +81,7 @@ export default function OnboardingPage() {
 
   return (
     <OEOnboarding
-      nombreOE="OE Municipal Avellaneda"
-      nombreUsuario="María"
+      nombreOE="OE Municipal"
       onUploadPersonas={handleUploadPersonas}
       onAtenderManual={() => router.push('/oficina-empleo/perfil')}
     />

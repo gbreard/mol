@@ -1,24 +1,50 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import UnclassifiedPanel, { type UnclassifiedItem } from '@/components/UnclassifiedPanel'
-import MolFichaEditor from '@/components/MolFichaEditor'
-
-const MOCK_ITEMS: UnclassifiedItem[] = [
-  { id: 'u1', label: 'Manejo de CRM', frecuencia: 342, ejemplos: ['usa CRM Salesforce', 'gestión CRM Zoho'] },
-  { id: 'u2', label: 'Facturación AFIP', frecuencia: 287, ejemplos: ['factura electrónica AFIP', 'comprobantes AFIP'] },
-  { id: 'u3', label: 'Punto de venta Tango', frecuencia: 198, ejemplos: ['sistema Tango POS'] },
-  { id: 'u4', label: 'Atención en caja', frecuencia: 156, ejemplos: ['cajera supermercado', 'cobros y pagos'] },
-  { id: 'u5', label: 'Logística last mile', frecuencia: 89, ejemplos: ['última milla', 'entrega domicilio'] },
-]
+import MolFichaEditor, { type MolFicha } from '@/components/MolFichaEditor'
 
 export default function CatalogoPage() {
   const [showEditor, setShowEditor] = useState(false)
   const [selectedItem, setSelectedItem] = useState<UnclassifiedItem | null>(null)
+  const [items, setItems] = useState<UnclassifiedItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch('/api/unclassified-items')
+        if (res.ok) setItems(await res.json())
+        else setError(true)
+      } catch {
+        setError(true)
+      } finally {
+        setLoading(false)
+      }
+    }
+    load()
+  }, [])
 
   const handleCatalogar = (item: UnclassifiedItem) => {
     setSelectedItem(item)
     setShowEditor(true)
+  }
+
+  const handleSave = async (ficha: MolFicha) => {
+    await fetch('/api/catalog-item', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(ficha) })
+    setShowEditor(false)
+    setItems(prev => prev.filter(i => i.id !== selectedItem?.id))
+  }
+
+  const handleSinonimo = async (item: UnclassifiedItem) => {
+    await fetch('/api/catalog-item/sinonimo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: item.id }) })
+    setItems(prev => prev.filter(i => i.id !== item.id))
+  }
+
+  const handleDescartar = async (item: UnclassifiedItem) => {
+    await fetch('/api/catalog-item/descartar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: item.id }) })
+    setItems(prev => prev.filter(i => i.id !== item.id))
   }
 
   return (
@@ -28,21 +54,26 @@ export default function CatalogoPage() {
         Skills y ocupaciones detectadas en ofertas que no tienen match ESCO. Catalogalas, marcalas como sinónimos o descartarlas.
       </p>
 
-      <UnclassifiedPanel
-        items={MOCK_ITEMS}
-        tipo="skills"
-        onCatalogar={handleCatalogar}
-        onSinonimo={(item) => console.log('Sinónimo:', item.label)}
-        onDescartar={(item) => console.log('Descartado:', item.label)}
-      />
+      {loading ? (
+        <div className="space-y-3">
+          {[1, 2, 3].map(i => <div key={i} className="h-16 animate-pulse rounded-xl bg-gray-100" />)}
+        </div>
+      ) : error ? (
+        <p className="text-sm text-red-500">No se pudo cargar el catálogo de items sin clasificar.</p>
+      ) : (
+        <UnclassifiedPanel
+          items={items}
+          tipo="skills"
+          onCatalogar={handleCatalogar}
+          onSinonimo={handleSinonimo}
+          onDescartar={handleDescartar}
+        />
+      )}
 
       {showEditor && (
         <MolFichaEditor
           initial={{ label: selectedItem?.label ?? '' }}
-          onSave={async (ficha) => {
-            console.log('Guardando ficha:', ficha)
-            setShowEditor(false)
-          }}
+          onSave={handleSave}
           onClose={() => setShowEditor(false)}
         />
       )}

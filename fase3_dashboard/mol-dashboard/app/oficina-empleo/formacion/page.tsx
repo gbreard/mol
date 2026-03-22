@@ -4,71 +4,24 @@ import { Suspense, useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import TrainingImpact, { type TrainingImpactData } from '@/components/TrainingImpact'
 
-const MOCK_DATA: TrainingImpactData = {
-  profile_id: 'demo',
-  current_match: 62,
-  max_potential_match: 89,
-  gap_groups: [
-    {
-      skill_label: 'Programación en Python',
-      courses: [
-        {
-          id: 1,
-          name: 'Python para análisis de datos',
-          certificacion: 'Certificado CABA',
-          duracion: '3 meses',
-          modalidad: 'Online',
-          covers_skills: ['Python', 'Pandas', 'NumPy'],
-          url: 'https://capacitacion.buenosaires.gob.ar',
-          delta_match: 15,
-        },
-        {
-          id: 2,
-          name: 'Introducción a Python',
-          certificacion: '',
-          duracion: '6 semanas',
-          modalidad: 'Presencial',
-          covers_skills: ['Python'],
-          delta_match: 8,
-        },
-      ],
-    },
-    {
-      skill_label: 'Gestión de bases de datos SQL',
-      courses: [
-        {
-          id: 3,
-          name: 'SQL para principiantes',
-          certificacion: 'Certificado MTEySS',
-          duracion: '4 semanas',
-          modalidad: 'Online',
-          covers_skills: ['SQL', 'PostgreSQL'],
-          url: 'https://cursos.trabajo.gob.ar',
-          delta_match: 12,
-        },
-      ],
-    },
-  ],
-}
-
 function FormacionContent() {
   const searchParams = useSearchParams()
-  const profileId = searchParams.get('profile_id') ?? 'demo'
+  const profileId = searchParams.get('profile_id')
   const [data, setData] = useState<TrainingImpactData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
+    if (!profileId) { setLoading(false); return }
     const load = async () => {
       setLoading(true)
+      setError(false)
       try {
         const res = await fetch(`/api/training-impact?profile_id=${profileId}`)
-        if (res.ok) {
-          setData(await res.json())
-        } else {
-          setData(MOCK_DATA)
-        }
+        if (res.ok) setData(await res.json())
+        else setError(true)
       } catch {
-        setData(MOCK_DATA)
+        setError(true)
       } finally {
         setLoading(false)
       }
@@ -76,23 +29,24 @@ function FormacionContent() {
     load()
   }, [profileId])
 
+  if (!profileId) return (
+    <p className="text-sm text-gray-400">Seleccioná un perfil para ver su formación con impacto.</p>
+  )
+  if (loading) return (
+    <div className="space-y-4">
+      {[1, 2].map((i) => <div key={i} className="h-24 animate-pulse rounded-lg bg-gray-100" />)}
+    </div>
+  )
+  if (error) return (
+    <p className="text-sm text-red-500">No se pudo cargar la información de formación.</p>
+  )
+  if (!data) return null
+
   return (
-    <>
-      {loading ? (
-        <div className="space-y-4">
-          {[1, 2].map((i) => (
-            <div key={i} className="h-24 animate-pulse rounded-lg bg-gray-100" />
-          ))}
-        </div>
-      ) : data ? (
-        <TrainingImpact
-          data={data}
-          onDerivar={(id, name) => console.log('Derivado:', id, name)}
-        />
-      ) : (
-        <p className="text-sm text-gray-400">No se pudo cargar la información de formación.</p>
-      )}
-    </>
+    <TrainingImpact
+      data={data}
+      onDerivar={(id, name) => console.log('Derivado:', id, name)}
+    />
   )
 }
 
