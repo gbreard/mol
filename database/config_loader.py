@@ -304,6 +304,76 @@ def get_isco_keywords() -> dict:
     return config.get('isco_keywords', {}).get('grupos', {})
 
 
+# ============================================================
+# SUPABASE OVERRIDE SYSTEM (I2c)
+# Si existe un override en Supabase, lo usa. Sino, JSON local.
+# ============================================================
+
+_override_cache: dict = {}
+_override_loaded = False
+
+
+def _load_overrides():
+    """Carga overrides de Supabase una sola vez"""
+    global _override_cache, _override_loaded
+    if _override_loaded:
+        return
+
+    try:
+        supabase_config_path = CONFIG_DIR / 'supabase_config.json'
+        if not supabase_config_path.exists():
+            _override_loaded = True
+            return
+
+        config = json.loads(supabase_config_path.read_text())
+        from supabase import create_client
+        client = create_client(config['url'], config['service_role_key'])
+
+        result = client.table('config_overrides').select('config_key, json_value, version, updated_at').execute()
+        for row in (result.data or []):
+            _override_cache[row['config_key']] = {
+                'data': row['json_value'],
+                'version': row['version'],
+                'updated_at': row['updated_at'],
+            }
+        _override_loaded = True
+    except Exception as e:
+        print(f"[config_loader] Warning: no se pudo cargar overrides: {e}")
+        _override_loaded = True
+
+
+def load_config(config_key: str, force_local: bool = False) -> dict:
+    """
+    Carga un config JSON. Primero busca override en Supabase, sino usa local.
+
+    Args:
+        config_key: nombre sin extensión (ej: 'matching_rules_business')
+        force_local: si True, ignora Supabase
+
+    Returns:
+        dict con el contenido del config
+    """
+    if not force_local:
+        _load_overrides()
+        override = _override_cache.get(config_key)
+        if override:
+            print(f"[config_loader] {config_key}: override v{override['version']} ({override['updated_at'][:10]})")
+            return override['data']
+
+    local_path = CONFIG_DIR / f'{config_key}.json'
+    if local_path.exists():
+        return json.loads(local_path.read_text())
+
+    raise FileNotFoundError(f"Config no encontrado: {config_key}")
+
+
+def clear_override_cache():
+    """Limpia cache de overrides para forzar recarga"""
+    global _override_cache, _override_loaded
+    _override_cache = {}
+    _override_loaded = False
+
+
 # Funciones de validación
 def validate_config():
     """

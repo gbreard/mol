@@ -53,6 +53,11 @@ export default function ReglasPage() {
     escoLabel: '',
     forzarArea: '',
   });
+  const [preview, setPreview] = useState<any>(null);
+  const [loadingPreview, setLoadingPreview] = useState(false);
+  const [sugerencias, setSugerencias] = useState<any[]>([]);
+  const [showSugerencias, setShowSugerencias] = useState(false);
+  const [loadingSugerencias, setLoadingSugerencias] = useState(false);
 
   async function loadConfig() {
     setLoading(true);
@@ -133,6 +138,51 @@ export default function ReglasPage() {
     if (!confirm(`¿Eliminar regla ${id}?`)) return;
     setReglas(prev => prev.filter(r => r.id !== id));
     setHasChanges(true);
+  }
+
+  async function loadPreview() {
+    if (!newRegla.tituloContiene || !newRegla.forzarIsco) return;
+    setLoadingPreview(true);
+    try {
+      const keywords = newRegla.tituloContiene.split(',').map(k => k.trim()).filter(Boolean);
+      const body = keywords.length === 1
+        ? { titulo_contiene: keywords[0], forzar_isco: newRegla.forzarIsco }
+        : { titulo_contiene_alguno: keywords, forzar_isco: newRegla.forzarIsco };
+      const res = await fetch('/api/config-editor/preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (res.ok) setPreview(await res.json());
+    } catch (e) {
+      console.error('Error preview:', e);
+    } finally {
+      setLoadingPreview(false);
+    }
+  }
+
+  async function loadSugerencias() {
+    setLoadingSugerencias(true);
+    try {
+      const res = await fetch('/api/config-editor/preview');
+      if (res.ok) setSugerencias(await res.json());
+    } catch (e) {
+      console.error('Error sugerencias:', e);
+    } finally {
+      setLoadingSugerencias(false);
+    }
+  }
+
+  function acceptSugerencia(s: any) {
+    setNewRegla({
+      nombre: s.patron_titulo?.slice(0, 40) || '',
+      tituloContiene: s.patron_titulo || '',
+      forzarIsco: s.isco_sugerido || '',
+      escoLabel: '',
+      forzarArea: '',
+    });
+    setShowNewForm(true);
+    setShowSugerencias(false);
   }
 
   function addNewRegla() {
@@ -250,6 +300,13 @@ export default function ReglasPage() {
         </div>
         <div className="flex items-center gap-3">
           <button
+            onClick={() => { setShowSugerencias(!showSugerencias); if (!showSugerencias && sugerencias.length === 0) loadSugerencias(); }}
+            className="flex items-center gap-2 bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 text-sm"
+          >
+            {loadingSugerencias ? <Loader2 className="w-4 h-4 animate-spin" /> : <AlertTriangle className="w-4 h-4" />}
+            Sugerencias
+          </button>
+          <button
             onClick={() => setShowNewForm(true)}
             className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm"
           >
@@ -279,6 +336,45 @@ export default function ReglasPage() {
         }`}>
           {message.type === 'ok' ? <CheckCircle2 className="w-5 h-5" /> : <AlertTriangle className="w-5 h-5" />}
           <span className="text-sm">{message.text}</span>
+        </div>
+      )}
+
+      {/* Sugerencias automáticas */}
+      {showSugerencias && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-amber-900">Reglas sugeridas ({sugerencias.length})</h3>
+            <button onClick={() => setShowSugerencias(false)}><X className="w-5 h-5 text-gray-400" /></button>
+          </div>
+          <p className="text-xs text-amber-700">Basadas en correcciones de analistas y ofertas con matching semántico bajo.</p>
+          {sugerencias.length === 0 ? (
+            <p className="text-sm text-amber-600 py-4 text-center">{loadingSugerencias ? 'Analizando patrones...' : 'Sin sugerencias por ahora'}</p>
+          ) : (
+            <div className="space-y-2">
+              {sugerencias.map((s: any, i: number) => (
+                <div key={i} className="bg-white border border-amber-100 rounded-lg p-3 flex items-start gap-3">
+                  <div className="flex-1">
+                    <div className="text-sm font-medium text-gray-900">
+                      SI titulo contiene <span className="font-mono bg-amber-100 px-1 rounded">"{s.patron_titulo}"</span>
+                      → ISCO <span className="font-mono font-bold text-blue-700">{s.isco_sugerido}</span>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {s.ofertas_afectadas} ofertas afectadas
+                      {s.correcciones > 0 && ` · ${s.correcciones} correcciones de ${s.corregido_por || 'analista'}`}
+                      {s.tipo_sugerencia === 'semantico_bajo' && ' · matching semántico <50%'}
+                    </div>
+                    {s.isco_actual && s.isco_actual !== s.isco_sugerido && (
+                      <div className="text-xs text-red-600 mt-0.5">ISCO actual: {s.isco_actual} ({s.label_actual}) → cambiaría a {s.isco_sugerido}</div>
+                    )}
+                  </div>
+                  <button onClick={() => acceptSugerencia(s)}
+                    className="px-3 py-1.5 bg-amber-500 text-white rounded-lg text-xs hover:bg-amber-600 flex-shrink-0">
+                    Usar
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -317,14 +413,88 @@ export default function ReglasPage() {
             </div>
           </div>
           <div className="flex gap-2">
+            <button onClick={loadPreview} disabled={loadingPreview || !newRegla.tituloContiene || !newRegla.forzarIsco}
+              className="flex items-center gap-2 bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 text-sm disabled:opacity-50">
+              {loadingPreview ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+              Preview impacto
+            </button>
             <button onClick={addNewRegla} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">
               <Plus className="w-4 h-4" /> Agregar regla
             </button>
-            <button onClick={() => setShowNewForm(false)} className="px-4 py-2 text-gray-600 text-sm hover:bg-gray-100 rounded-lg">
+            <button onClick={() => { setShowNewForm(false); setPreview(null); }} className="px-4 py-2 text-gray-600 text-sm hover:bg-gray-100 rounded-lg">
               Cancelar
             </button>
           </div>
-          <p className="text-xs text-blue-700">La regla se agrega a la lista. Hacé click en "Guardar cambios" para que el pipeline la use.</p>
+
+          {/* Preview de impacto */}
+          {preview && (
+            <div className="bg-white border border-blue-200 rounded-lg p-4 space-y-3">
+              <h4 className="font-semibold text-gray-900 text-sm">Impacto de la regla</h4>
+              <div className="grid grid-cols-3 gap-3 text-center">
+                <div className="bg-blue-50 rounded-lg p-3">
+                  <div className="text-2xl font-bold text-blue-700">{preview.total_afectadas}</div>
+                  <div className="text-xs text-blue-600">Ofertas que matchean</div>
+                </div>
+                <div className="bg-amber-50 rounded-lg p-3">
+                  <div className="text-2xl font-bold text-amber-700">{preview.cambiarian}</div>
+                  <div className="text-xs text-amber-600">Cambiarían ISCO</div>
+                </div>
+                <div className="bg-green-50 rounded-lg p-3">
+                  <div className="text-2xl font-bold text-green-700">{preview.ya_correctas}</div>
+                  <div className="text-xs text-green-600">Ya tienen ISCO correcto</div>
+                </div>
+              </div>
+
+              {preview.distribucion_isco_actual?.length > 0 && (
+                <div>
+                  <p className="text-xs text-gray-500 font-medium mb-1">ISCO actual de estas ofertas:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {preview.distribucion_isco_actual.map((d: any, i: number) => (
+                      <span key={i} className={`text-xs px-2 py-1 rounded-full ${d.isco_code === newRegla.forzarIsco ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                        {d.isco_code} ({d.cantidad}) {d.isco_code === newRegla.forzarIsco ? '✓' : '→ cambiaría'}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {preview.ejemplos?.length > 0 && (
+                <div>
+                  <p className="text-xs text-gray-500 font-medium mb-1">Ejemplos (antes → después):</p>
+                  <div className="overflow-x-auto max-h-48 overflow-y-auto">
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-1 pr-2 text-gray-400">Título</th>
+                          <th className="text-center py-1 px-2 text-gray-400">ISCO actual</th>
+                          <th className="text-center py-1 px-2 text-gray-400">→</th>
+                          <th className="text-center py-1 px-2 text-gray-400">ISCO nuevo</th>
+                          <th className="text-center py-1 pl-2 text-gray-400">Estado</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {preview.ejemplos.map((e: any, i: number) => (
+                          <tr key={i} className="border-b border-gray-50">
+                            <td className="py-1.5 pr-2 text-gray-700 max-w-xs truncate">{e.titulo}</td>
+                            <td className="py-1.5 px-2 text-center font-mono">{e.isco_actual || '—'}</td>
+                            <td className="py-1.5 px-2 text-center text-gray-300">→</td>
+                            <td className="py-1.5 px-2 text-center font-mono font-bold text-blue-700">{e.isco_nuevo}</td>
+                            <td className="py-1.5 pl-2 text-center">
+                              <span className={`px-1.5 py-0.5 rounded-full ${e.estado === 'CAMBIA' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>
+                                {e.estado}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          <p className="text-xs text-blue-700">Usá "Preview impacto" para ver qué ofertas se afectan antes de agregar.</p>
         </div>
       )}
 
