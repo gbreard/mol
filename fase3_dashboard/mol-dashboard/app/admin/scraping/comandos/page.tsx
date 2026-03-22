@@ -37,7 +37,6 @@ const COMANDO_LABELS: Record<string, { label: string; icon: any; description: st
   lanzar_portal: { label: 'Lanzar portal', icon: Globe, description: 'Scraping de un portal específico' },
   lanzar_todos: { label: 'Lanzar todos', icon: Play, description: 'Scraping de todos los portales (~6h)' },
   sync_vps_local: { label: 'Sync VPS → Local', icon: Database, description: 'Exportar ofertas nuevas del VPS' },
-  sync_local_supabase: { label: 'Sync Local → Supabase', icon: Cloud, description: 'Sincronizar a Supabase' },
 };
 
 const ESTADO_CONFIG: Record<string, { color: string; icon: any; label: string }> = {

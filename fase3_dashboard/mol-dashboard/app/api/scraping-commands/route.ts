@@ -6,7 +6,6 @@ const COMANDOS_VALIDOS = [
   'lanzar_portal',
   'lanzar_todos',
   'sync_vps_local',
-  'sync_local_supabase',
   'pausar_portal',
 ] as const;
 

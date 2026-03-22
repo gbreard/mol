@@ -5,7 +5,7 @@
 import { describe, it, expect } from 'vitest'
 import { mockScrapingCommandsRPC, mockCreateCommandResponse } from '../mocks/fixtures/scraping-commands'
 
-const VALID_COMMANDS = ['lanzar_portal', 'lanzar_todos', 'sync_vps_local', 'sync_local_supabase', 'pausar_portal'];
+const VALID_COMMANDS = ['lanzar_portal', 'lanzar_todos', 'sync_vps_local', 'pausar_portal'];
 const VALID_STATES = ['pendiente', 'ejecutando', 'completado', 'error', 'cancelado'];
 
 describe('scraping commands', () => {

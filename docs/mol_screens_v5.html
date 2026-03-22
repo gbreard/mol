@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOL Skills Intelligence — Diseño de pantallas v5</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5;color:#1a1a1a;font-size:13px}
+.app-header{background:white;border-bottom:1px solid #e0e0e0;padding:10px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
+.logo{width:28px;height:28px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.app-title{font-size:14px;font-weight:600;color:#1a1a1a;flex:1}
+.app-version{font-size:10px;color:#aaa;background:#f5f5f5;border-radius:20px;padding:2px 8px}
+.svc-nav{display:flex;background:white;border-bottom:2px solid #e0e0e0;padding:0 20px;position:sticky;top:49px;z-index:99;overflow-x:auto}
+.svc-tab{padding:10px 18px;font-size:12px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:#888;white-space:nowrap}
+.svc-tab.at{border-bottom-color:#1D9E75;color:#1D9E75}
+.svc-tab.ab{border-bottom-color:#185FA5;color:#185FA5}
+.svc-tab.ac{border-bottom-color:#D85A30;color:#D85A30}
+.svc-panel{display:none;padding:16px 20px}
+.svc-panel.active{display:block}
+.snav{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.snav-label{font-size:9px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:2px 4px;white-space:nowrap;margin-left:4px}
+.snb{padding:5px 12px;border-radius:20px;font-size:11px;cursor:pointer;border:1px solid #ddd;background:white;color:#666;font-family:inherit;white-space:nowrap;transition:all .15s}
+.snb:hover{border-color:#aaa;color:#333}
+.snb.ot{background:#1D9E75;border-color:#1D9E75;color:white}
+.snb.ob{background:#185FA5;border-color:#185FA5;color:white}
+.snb.oc{background:#D85A30;border-color:#D85A30;color:white}
+.snb.new-tag::after{content:'nuevo';font-size:8px;background:#FAEEDA;color:#633806;border-radius:10px;padding:1px 5px;margin-left:4px;vertical-align:middle}
+.screen{display:none;max-width:820px}
+.screen.active{display:block}
+.screen-label{font-size:9px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.mk{background:white;border:1px solid #e0e0e0;border-radius:12px;overflow:hidden;margin-bottom:10px}
+.tb{padding:9px 14px;border-bottom:1px solid #e8e8e8;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dot-t{width:18px;height:18px;border-radius:50%;background:#1D9E75;flex-shrink:0}
+.dot-b{width:18px;height:18px;border-radius:4px;background:#185FA5;flex-shrink:0}
+.dot-c{width:18px;height:18px;border-radius:4px;background:#D85A30;flex-shrink:0}
+.tb-title{font-size:12px;font-weight:600;flex:1}
+.mb{padding:18px}
+.hl{font-size:18px;font-weight:600;color:#1a1a1a;margin-bottom:4px}
+.sub{font-size:12px;color:#666;margin-bottom:14px;line-height:1.55}
+.btn-t{background:#1D9E75;color:white;border:none;padding:8px 16px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:500}
+.btn-b{background:#185FA5;color:white;border:none;padding:8px 16px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:500}
+.btn-c{background:#D85A30;color:white;border:none;padding:8px 16px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:500}
+.btn-s{background:white;border:1px solid #ddd;color:#666;padding:8px 16px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit}
+.btn-s:hover{border-color:#aaa;color:#333}
+.fl{font-size:10px;color:#666;margin-bottom:3px}
+.fi{padding:7px 10px;border:1px solid #ddd;border-radius:8px;font-size:12px;font-family:inherit;color:#1a1a1a;background:white;width:100%}
+.fi:focus{outline:none;border-color:#1D9E75}
+.card{background:white;border:1px solid #e8e8e8;border-radius:10px;padding:10px 12px;margin-bottom:6px}
+.card:hover{border-color:#ccc}
+.card-t{border-color:#1D9E75!important;border-width:1.5px!important}
+.card-b{border-color:#185FA5!important;border-width:1.5px!important}
+.card-c{border-color:#D85A30!important;border-width:1.5px!important}
+.sk-ok{font-size:10px;background:#E1F5EE;color:#0F6E56;border:1px solid #9FE1CB;border-radius:20px;padding:2px 7px;display:inline-block;margin:2px}
+.sk-gap{font-size:10px;background:#FAECE7;color:#993C1D;border:1px solid #F5C4B3;border-radius:20px;padding:2px 7px;display:inline-block;margin:2px}
+.sk-req{font-size:10px;background:#E6F1FB;color:#185FA5;border:1px solid #B5D4F4;border-radius:20px;padding:2px 7px;display:inline-block;margin:2px;cursor:pointer;transition:all .15s}
+.sk-req.removed{text-decoration:line-through;opacity:.4}
+.pb-track{height:5px;background:#f0f0f0;border-radius:3px}
+.pb-fill-t{height:100%;border-radius:3px;background:#1D9E75}
+.pb-fill-a{height:100%;border-radius:3px;background:#EF9F27}
+.pb-fill-c{height:100%;border-radius:3px;background:#D85A30}
+.pb-fill-b{height:100%;border-radius:3px;background:#185FA5}
+.kpis{display:grid;gap:8px;margin-bottom:14px}
+.k4{grid-template-columns:repeat(4,1fr)}
+.k3{grid-template-columns:repeat(3,1fr)}
+.k2{grid-template-columns:repeat(2,1fr)}
+.kpi{background:#f8f8f8;border-radius:8px;padding:10px;text-align:center}
+.kv{font-size:18px;font-weight:600;line-height:1}
+.kl{font-size:10px;color:#666;margin-top:3px}
+.ctbl{width:100%;border-collapse:collapse}
+.ctbl th{font-size:10px;color:#888;font-weight:600;padding:5px 8px;border-bottom:1px solid #e8e8e8;text-align:left}
+.ctbl td{font-size:11px;padding:7px 8px;border-bottom:1px solid #f0f0f0;vertical-align:middle}
+.ctbl tr:hover td{background:#fafafa;cursor:pointer}
+.badge{font-size:9px;border-radius:20px;padding:1px 7px;display:inline-block}
+.bd-nuevo{background:#E6F1FB;color:#0C447C}
+.bd-proceso{background:#FFF3CD;color:#856404}
+.bd-derivado{background:#E1F5EE;color:#085041}
+.bd-insertado{background:#EEEDFE;color:#534AB7}
+.ib{border-radius:8px;padding:9px 12px;margin-bottom:12px;font-size:11px;line-height:1.5}
+.ib-t{background:#E1F5EE;border:1px solid #9FE1CB;color:#085041}
+.ib-b{background:#E6F1FB;border:1px solid #B5D4F4;color:#0C447C}
+.ib-c{background:#FAECE7;border:1px solid #F5C4B3;color:#712B13}
+.ib-a{background:#FFF3CD;border:1px solid #FFE066;color:#856404}
+.ib-p{background:#EEEDFE;border:1px solid #CECBF6;color:#3C3489}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.chip{font-size:11px;border:1px solid #ddd;border-radius:20px;padding:3px 9px;cursor:pointer;color:#666;background:white;display:inline-block;margin:2px}
+.chip-t{background:#E1F5EE;border-color:#1D9E75;color:#085041}
+.two-col{display:grid;grid-template-columns:190px 1fr;gap:14px}
+.sidebar{border-right:1px solid #f0f0f0;padding-right:14px}
+.tabs{display:flex;border-bottom:1px solid #e8e8e8;margin-bottom:10px}
+.tab{padding:5px 10px;font-size:11px;cursor:pointer;color:#888;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab.on-t{color:#1D9E75;border-bottom-color:#1D9E75;font-weight:600}
+.tab.on-b{color:#185FA5;border-bottom-color:#185FA5;font-weight:600}
+.tab.on-c{color:#D85A30;border-bottom-color:#D85A30;font-weight:600}
+.upload-zone{border:2px dashed #ddd;border-radius:10px;padding:24px;text-align:center;cursor:pointer;background:#fafafa;margin-bottom:10px;transition:all .15s}
+.upload-zone:hover{border-color:#1D9E75;background:#E1F5EE}
+.gauge{display:flex;align-items:center;gap:12px;margin:8px 0}
+.gauge-track{flex:1;height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden}
+.gauge-fill{height:100%;border-radius:4px;transition:width .4s,background .4s}
+.gauge-pct{font-size:20px;font-weight:700;min-width:48px;text-align:right;transition:color .4s}
+.dem-row{display:flex;align-items:center;gap:8px;font-size:11px;color:#666;margin-bottom:5px}
+.dem-track{flex:1;height:4px;background:#f0f0f0;border-radius:2px}
+.dem-fill{height:100%;border-radius:2px}
+.principle{background:#fffbf0;border:1px solid #ffe066;border-radius:8px;padding:9px 12px;font-size:11px;color:#7a6000;line-height:1.5;max-width:820px}
+.principle strong{color:#5a4500}
+.tier-free{background:#E1F5EE;border:1px solid #5DCAA5;border-radius:10px;padding:12px}
+.tier-reg{background:#FAECE7;border:1.5px solid #F0997B;border-radius:10px;padding:12px}
+.add-btn{width:100%;padding:8px;border:2px dashed #ddd;border-radius:8px;font-size:11px;cursor:pointer;color:#888;background:none;font-family:inherit;margin-bottom:8px}
+.status-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px}
+.sd-green{background:#1D9E75}.sd-amber{background:#EF9F27}.sd-red{background:#E24B4A}.sd-gray{background:#aaa}
+.mini-card{background:#f8f8f8;border-radius:8px;padding:7px 9px;margin-bottom:4px}
+.mini-title{font-size:11px;font-weight:600;color:#1a1a1a}
+.mini-sub{font-size:10px;color:#666;margin-top:1px}
+.lv{display:flex;flex-direction:column;gap:2px;margin-bottom:8px}
+.lv-l{font-size:9px;color:#aaa;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.lv-v{font-size:12px;color:#1a1a1a}
+.import-tbl{width:100%;border-collapse:collapse;border-radius:8px;overflow:hidden;border:1px solid #e0e0e0}
+.import-tbl th{font-size:10px;color:#085041;font-weight:600;padding:7px 10px;background:#E1F5EE;text-align:left;border-bottom:1px solid #9FE1CB}
+.import-tbl td{font-size:11px;padding:8px 10px;border-bottom:1px solid #f0f0f0}
+.trend-up{color:#1D9E75;font-size:11px;font-weight:600}
+.trend-dn{color:#E24B4A;font-size:11px;font-weight:600}
+.trend-eq{color:#aaa;font-size:11px;font-weight:600}
+@media(max-width:600px){.g2,.g3,.g4,.two-col,.k4,.k3{grid-template-columns:1fr!important}.kpis.k4{grid-template-columns:1fr 1fr!important}}
+</style>
+</head>
+<body>
+<div class="app-header">
+  <div class="logo"><svg width="12" height="12" fill="white" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div>
+  <div class="app-title">MOL Skills Intelligence — Diseño de pantallas</div>
+  <div class="app-version">v5 · 32 pantallas · 3 servicios · Marzo 2026</div>
+</div>
+<div class="svc-nav">
+  <div class="svc-tab at" onclick="showSvc('s1',this)">S1 — Mi Futuro Laboral (9)</div>
+  <div class="svc-tab" onclick="showSvc('s2',this)">S2 — Oficina de Empleo (11)</div>
+  <div class="svc-tab" onclick="showSvc('s3',this)">S3 — Empresas (12)</div>
+</div>
+<!-- S1 PANEL -->
+<div id="panel-s1" class="svc-panel active">
+<div class="snav">
+  <button class="snb ot" onclick="showScreen('s1',0)">1. Landing</button>
+  <button class="snb" onclick="showScreen('s1',1)">2. Onboarding</button>
+  <button class="snb" onclick="showScreen('s1',2)">3. Primer trabajo</button>
+  <button class="snb" onclick="showScreen('s1',3)">4. Skills derivadas</button>
+  <button class="snb" onclick="showScreen('s1',4)">5. Enriquecer perfil</button>
+  <button class="snb" onclick="showScreen('s1',5)">6. Resultados</button>
+  <button class="snb" onclick="showScreen('s1',6)">7. Elegir destino</button>
+  <button class="snb" onclick="showScreen('s1',7)">8. Brecha</button>
+  <button class="snb" onclick="showScreen('s1',8)">9. PDF + QR</button>
+</div>
+
+<!-- S1-0 LANDING -->
+<div id="s1-0" class="screen active">
+<div class="screen-label">Pantalla 1 — Landing · MVP</div>
+<div class="mk">
+  <div class="tb"><div class="dot-t"></div><div class="tb-title">Mi Futuro Laboral</div><button class="btn-s" style="font-size:10px;padding:4px 10px">Soy orientador →</button></div>
+  <div class="mb">
+    <div style="text-align:center;padding:10px 0 20px">
+      <div style="display:inline-block;font-size:10px;background:#E1F5EE;color:#085041;border-radius:20px;padding:2px 10px;margin-bottom:10px">Basado en el mercado laboral argentino real</div>
+      <div class="hl" style="font-size:22px;margin-bottom:8px">Descubrí qué te separa<br>del trabajo que querés</div>
+      <div class="sub" style="max-width:420px;margin:0 auto 18px">Cargás lo que trabajaste. Te decimos qué competencias tenés, qué ofertas existen para tu perfil hoy, y exactamente qué te falta para llegar más lejos.</div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-bottom:20px">
+        <button class="btn-t" style="font-size:13px;padding:10px 22px">Empezar — es gratis</button>
+        <button class="btn-s" style="font-size:13px;padding:10px 22px">Cómo funciona</button>
+      </div>
+    </div>
+    <div class="g3" style="margin-bottom:14px">
+      <div class="card"><div style="font-size:11px;font-weight:600;margin-bottom:3px">Tu perfil de skills</div><div style="font-size:10px;color:#666;line-height:1.5">Traducimos lo que hiciste en competencias que el mercado entiende — aunque hayas trabajado informalmente.</div></div>
+      <div class="card"><div style="font-size:11px;font-weight:600;margin-bottom:3px">Ofertas reales hoy</div><div style="font-size:10px;color:#666;line-height:1.5">Miles de vacantes activas en Argentina. Ves cuáles son compatibles con tu perfil y con qué brecha.</div></div>
+      <div class="card"><div style="font-size:11px;font-weight:600;margin-bottom:3px">Brecha exacta</div><div style="font-size:10px;color:#666;line-height:1.5">No un porcentaje — skills concretas que te separan del puesto que querés, con su peso en el mercado.</div></div>
+    </div>
+    <div style="display:flex;gap:16px;justify-content:center;padding:10px 0;border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0;margin-bottom:10px">
+      <div style="text-align:center"><div style="font-size:16px;font-weight:600">16.145</div><div style="font-size:9px;color:#888">Ofertas analizadas</div></div>
+      <div style="width:1px;background:#e8e8e8"></div>
+      <div style="text-align:center"><div style="font-size:16px;font-weight:600">3.008</div><div style="font-size:9px;color:#888">Ocupaciones ESCO</div></div>
+      <div style="width:1px;background:#e8e8e8"></div>
+      <div style="text-align:center"><div style="font-size:16px;font-weight:600;color:#1D9E75">100%</div><div style="font-size:9px;color:#888">Gratuito</div></div>
+    </div>
+    <div style="text-align:center;font-size:11px;color:#666">¿Sos orientador laboral? <span style="color:#185FA5;cursor:pointer;text-decoration:underline">Accedé al panel institucional →</span></div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> El headline nombra la promesa, no el producto. CTA anticipa que es gratis. Los números de credibilidad van al pie, no en el hero. Acceso a S2 discreto pero visible.</div>
+</div>
+
+<!-- S1-1 ONBOARDING -->
+<div id="s1-1" class="screen">
+<div class="screen-label">Pantalla 2 — Onboarding · MVP</div>
+<div class="mk">
+  <div class="tb"><div class="dot-t"></div><div class="tb-title">Mi Futuro Laboral</div><div style="font-size:11px;color:#888">Paso 1 de 3</div></div>
+  <div class="mb">
+    <div class="hl">¿Cómo te llamás?</div>
+    <div class="sub">Así personalizamos el perfil. Podés usar solo el nombre.</div>
+    <div style="margin-bottom:14px"><div class="fl">Nombre</div><input class="fi" placeholder="Ej: Juan, María..." style="max-width:260px"></div>
+    <div class="fl" style="margin-bottom:8px">¿Para qué vas a usar el servicio?</div>
+    <div class="g2" style="margin-bottom:14px">
+      <div style="border:2px solid #1D9E75;border-radius:10px;padding:12px;cursor:pointer;background:#E1F5EE"><div style="font-size:12px;font-weight:600;color:#085041;margin-bottom:2px">Quiero crecer o cambiar</div><div style="font-size:10px;color:#0F6E56">Saber mis skills y qué me falta para avanzar.</div></div>
+      <div style="border:2px solid #e8e8e8;border-radius:10px;padding:12px;cursor:pointer"><div style="font-size:12px;font-weight:600;margin-bottom:2px">Quiero reconvertirme</div><div style="font-size:10px;color:#666">Explorar caminos nuevos desde mi experiencia.</div></div>
+    </div>
+    <div class="ib ib-t" style="margin-bottom:14px">
+      <div style="font-weight:600;margin-bottom:5px">Qué vas a hacer en los próximos minutos</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;align-items:center;gap:7px"><div style="width:16px;height:16px;border-radius:50%;background:#1D9E75;color:white;font-size:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>Contás en qué trabajaste — como quieras decirlo</div>
+        <div style="display:flex;align-items:center;gap:7px"><div style="width:16px;height:16px;border-radius:50%;background:#1D9E75;color:white;font-size:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>Ves tus skills, qué ofertas existen para vos y primeras ocupaciones</div>
+        <div style="display:flex;align-items:center;gap:7px"><div style="width:16px;height:16px;border-radius:50%;background:#1D9E75;color:white;font-size:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>Elegís destino y ves la brecha exacta</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn-s">Volver</button><button class="btn-t">Empezar →</button></div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Solo 2 campos. Sin email ni contraseña todavía. El panel de expectativas elimina incertidumbre — el usuario sabe exactamente qué va a pasar y no abandona.</div>
+</div>
+
+<!-- S1-2 PRIMER TRABAJO -->
+<div id="s1-2" class="screen">
+<div class="screen-label">Pantalla 3 — Primer trabajo · MVP</div>
+<div class="mk">
+  <div class="tb"><div class="dot-t"></div><div class="tb-title">Mi Futuro Laboral</div><div style="font-size:11px;color:#888">Paso 1 de 3</div></div>
+  <div class="mb">
+    <div class="hl">¿En qué trabajaste?</div>
+    <div class="sub">Escribilo como quieras. "Cajero", "maestra", "me encargaba del depósito" — como te salga.</div>
+    <div style="margin-bottom:6px">
+      <div class="fl">Vía 1 — Por ocupación: ¿en qué trabajaste?</div>
+      <input class="fi" placeholder="Ej: cajero en supermercado, maestra de primaria..." style="margin-bottom:5px">
+      <div class="ib ib-t" style="margin:0 0 8px">Mapeado a taxonomía: "Cajero/a de comercio" (ISCO D5220) — podés ajustarlo si no coincide.</div>
+    </div>
+    <div style="margin-bottom:8px">
+      <div class="fl">Vía 2 — Por tarea: ¿qué sabías hacer en ese trabajo?</div>
+      <input class="fi" placeholder="Ej: atender clientes, cerrar caja, manejar el stock..." style="margin-bottom:5px">
+    </div>
+    <div style="font-size:11px;color:#888;margin-bottom:8px">O escribí todo junto y el sistema identifica tus competencias automáticamente — Vía 3</div>
+    <div style="margin-bottom:10px">
+      <div class="fl">¿En qué rubro?</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">
+        <span class="chip chip-t">Comercio</span><span class="chip">Tecnología</span><span class="chip">Salud</span><span class="chip">Educación</span><span class="chip">Industria</span><span class="chip">Construcción</span><span class="chip">Estado</span><span class="chip">Agro</span><span class="chip">Logística</span>
+      </div>
+    </div>
+    <div class="g3" style="margin-bottom:14px">
+      <div><div class="fl">Desde</div><select class="fi" style="padding:6px 8px;font-size:11px"><option>2019</option><option>2018</option><option>2020</option></select></div>
+      <div><div class="fl">Hasta</div><select class="fi" style="padding:6px 8px;font-size:11px"><option>Trabajo acá ahora</option><option>2024</option><option>2023</option></select></div>
+      <div><div class="fl">Modalidad</div><select class="fi" style="padding:6px 8px;font-size:11px"><option>Dependencia</option><option>Independiente</option><option>Sin contrato</option></select></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn-s" style="font-size:11px">Omitir por ahora</button><button class="btn-t">Ver mis skills →</button></div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Las 3 vías de captura en una pantalla — el usuario elige su nivel de detalle. ESCO en segundo plano como hint editable, nunca bloqueante. Modalidad "sin contrato" con mismo peso que dependencia.</div>
+</div>
+
+<!-- S1-3 SKILLS DERIVADAS -->
+<div id="s1-3" class="screen">
+<div class="screen-label">Pantalla 4 — Skills derivadas · MVP · Anti-abandono</div>
+<div class="mk">
+  <div class="tb"><div class="dot-t"></div><div class="tb-title">Mi Futuro Laboral</div><div style="font-size:11px;color:#888">Paso 2 de 3</div></div>
+  <div class="mb">
+    <div class="hl">Esto es lo que sabés hacer</div>
+    <div class="sub">Derivamos estas competencias de tu experiencia como cajero/a. Eliminá las que no aplican.</div>
+    <div class="card card-t" style="margin-bottom:10px">
+      <div style="font-size:12px;font-weight:600;margin-bottom:6px">Cajero/a en supermercado <span style="font-weight:400;color:#888;font-size:10px">· Comercio · 2019–actualidad</span></div>
+      <div>
+        <span class="sk-ok">atención al cliente</span><span class="sk-ok">manejo de efectivo</span><span class="sk-ok">sistemas POS</span><span class="sk-ok">cierre de caja</span><span class="sk-ok">resolución de reclamos</span><span class="sk-ok">manejo de stock</span><span style="font-size:10px;background:#f5f5f5;border-radius:20px;padding:2px 7px;margin:2px;display:inline-block">+2 más</span>
+      </div>
+    </div>
+    <div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:11px;color:#666">Completitud del perfil</span><span style="font-size:11px;font-weight:600;color:#1D9E75">38%</span></div>
+      <div class="pb-track"><div class="pb-fill-t" style="width:38%"></div></div>
+    </div>
+    <div style="font-size:11px;color:#666;margin-bottom:10px">Cada trabajo que agregás mejora la precisión de los resultados.</div>
+    <div class="ib ib-t">
+      <div style="font-weight:600;margin-bottom:6px">Vista previa — con este perfil parcial ya encontramos:</div>
+      <div class="card" style="background:white;margin-bottom:5px;display:flex;align-items:center;gap:8px"><div style="flex:1"><div style="font-size:11px;font-weight:600">Repositor/a de comercio</div><div style="font-size:10px;color:#666">72% match · 0 brechas · 48 ofertas activas</div><div class="pb-track" style="margin-top:4px"><div class="pb-fill-t" style="width:72%"></div></div></div><div style="font-size:14px;font-weight:600;color:#1D9E75">72%</div></div>
+      <div class="card" style="background:white;display:flex;align-items:center;gap:8px"><div style="flex:1"><div style="font-size:11px;font-weight:600">Vendedor/a</div><div style="font-size:10px;color:#666">61% match · 3 brechas · 134 ofertas activas</div><div class="pb-track" style="margin-top:4px"><div class="pb-fill-a" style="width:61%"></div></div></div><div style="font-size:14px;font-weight:600;color:#EF9F27">61%</div></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn-s">+ Agregar trabajo</button><button class="btn-t">Ver resultados →</button></div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Valor antes de pedir más. La barra al 38% crea tensión positiva. El preview de ofertas reales ancla el valor — no son ocupaciones abstractas sino vacantes concretas con números.</div>
+</div>
+
+<!-- S1-4 ENRIQUECER -->
+<div id="s1-4" class="screen">
+<div class="screen-label">Pantalla 5 — Enriquecer perfil · MVP</div>
+<div class="mk">
+  <div class="tb"><div class="dot-t"></div><div class="tb-title">Mi Futuro Laboral</div><div style="font-size:11px;color:#888">Paso 2 de 3</div></div>
+  <div class="mb">
+    <div class="card" style="margin-bottom:5px;display:flex;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:#1D9E75;flex-shrink:0;margin-top:3px"></div><div><div style="font-size:12px;font-weight:600">Cajero/a en supermercado</div><div style="font-size:10px;color:#666">Comercio · 2019–actualidad</div><div style="margin-top:4px"><span class="sk-ok">atención al cliente</span><span class="sk-ok">manejo de efectivo</span><span class="sk-ok">sistemas POS</span><span class="sk-ok">+5 más</span></div></div></div>
+    <div class="card" style="margin-bottom:8px;display:flex;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:#1D9E75;flex-shrink:0;margin-top:3px"></div><div><div style="font-size:12px;font-weight:600">Repositor en almacén</div><div style="font-size:10px;color:#666">Logística · 2016–2019 · Sin contrato</div><div style="margin-top:4px"><span class="sk-ok">gestión de stock</span><span class="sk-ok">logística</span><span class="sk-ok">manejo de cargas</span></div></div></div>
+    <button class="add-btn">+ Agregar otro trabajo</button>
+    <div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:11px;color:#666">Completitud</span><span style="font-size:11px;font-weight:600;color:#1D9E75">71%</span></div>
+      <div class="pb-track"><div class="pb-fill-t" style="width:71%"></div></div>
+    </div>
+    <div style="padding-top:12px;border-top:1px solid #f0f0f0">
+      <div style="font-size:12px;font-weight:600;margin-bottom:3px;display:flex;align-items:center;gap:6px">Habilidades fuera del trabajo <span style="font-size:9px;background:#FFF3CD;color:#856404;border-radius:20px;padding:1px 7px">Opcional</span></div>
+      <div style="font-size:10px;color:#666;margin-bottom:8px">Idiomas, herramientas, habilidades de vida. Todo suma al perfil.</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">
+        <span class="chip chip-t">Excel</span><span class="chip chip-t">Manejo de vehículos</span><span class="chip">Inglés</span><span class="chip">Redes sociales</span><span class="chip">Herramientas IA</span><span class="chip">Portugués</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn-s">← Atrás</button><button class="btn-t">Ver ocupaciones compatibles →</button></div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Barra sube de 38% a 71% — el impacto es visible. Skills informales opcionales con presets para perfiles mixtos. Cada adición mejora el resultado, no es obligatoria.</div>
+</div>
+
+<!-- S1-5 RESULTADOS -->
+<div id="s1-5" class="screen">
+<div class="screen-label">Pantalla 6 — Resultados lista · MVP</div>
+<div class="mk">
+  <div class="tb"><div class="dot-t"></div><div class="tb-title">Ocupaciones compatibles</div><button class="btn-s" style="font-size:10px;padding:4px 10px">Editar perfil</button></div>
+  <div class="mb">
+    <div style="font-size:11px;color:#666;margin-bottom:12px">Basado en 14 competencias · 2 trabajos · actualizado hoy</div>
+    <div class="kpis k4" style="margin-bottom:12px">
+      <div class="kpi"><div class="kv">3.241</div><div class="kl">Analizadas</div></div>
+      <div class="kpi"><div class="kv" style="color:#1D9E75">72%</div><div class="kl">Mejor match</div></div>
+      <div class="kpi"><div class="kv">5</div><div class="kl">Brecha ≤4 skills</div></div>
+      <div class="kpi"><div class="kv">134</div><div class="kl">Ofertas activas</div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
+      <select class="fi" style="width:auto;padding:5px 8px;font-size:11px"><option>Mejor match</option><option>Menor brecha</option><option>Más demanda</option></select>
+      <div style="flex:1"></div>
+      <button class="btn-t" style="font-size:11px;padding:6px 12px">Quiero llegar a... →</button>
+    </div>
+    <!-- Primera card expandida -->
+    <div class="card card-t" style="margin-bottom:5px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;margin-bottom:2px">Repositor/a de comercio <span style="font-size:10px;background:#E1F5EE;color:#085041;border-radius:20px;padding:1px 7px;font-weight:500">Alta demanda</span></div>
+          <div style="font-size:10px;color:#666">ISCO C4131 · 7/10 esenciales · 0 brechas · 48 ofertas activas</div>
+          <div class="pb-track" style="margin-top:6px"><div class="pb-fill-t" style="width:72%"></div></div>
+        </div>
+        <div style="font-size:20px;font-weight:700;color:#1D9E75">72%</div>
+      </div>
+      <div class="g3" style="padding-top:8px;border-top:1px solid #f0f0f0">
+        <div><div style="font-size:10px;color:#666;margin-bottom:4px">Lo que tenés (7)</div><span class="sk-ok" style="font-size:9px">gestión de stock</span><span class="sk-ok" style="font-size:9px">logística</span><span class="sk-ok" style="font-size:9px">+5</span></div>
+        <div><div style="font-size:10px;color:#666;margin-bottom:4px">Lo que falta (0)</div><div style="font-size:11px;color:#1D9E75">Sin brechas</div></div>
+        <div><div style="font-size:10px;color:#666;margin-bottom:4px">Ofertas activas</div><div style="font-size:11px;font-weight:600">48 hoy</div></div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:5px;display:flex;align-items:center;gap:8px;cursor:pointer"><div style="flex:1"><div style="font-size:12px;font-weight:600">Vendedor/a <span style="font-size:10px;background:#FFF3CD;color:#856404;border-radius:20px;padding:1px 7px;font-weight:500">3 brechas</span></div><div style="font-size:10px;color:#666">ISCO D5220 · 8/14 esenciales · 134 ofertas</div><div class="pb-track" style="margin-top:4px"><div class="pb-fill-a" style="width:61%"></div></div></div><div style="font-size:16px;font-weight:700;color:#EF9F27">61%</div></div>
+    <div class="card" style="display:flex;align-items:center;gap:8px;cursor:pointer"><div style="flex:1"><div style="font-size:12px;font-weight:600">Supervisor/a de local</div><div style="font-size:10px;color:#666">ISCO D5230 · 5/12 esenciales · 29 ofertas</div><div class="pb-track" style="margin-top:4px"><div class="pb-fill-a" style="width:48%"></div></div></div><div style="font-size:16px;font-weight:700;color:#EF9F27">48%</div></div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Primera card expandida educa sobre el nivel de detalle disponible. Las ofertas activas son el diferenciador clave — no es un análisis abstracto sino vacantes reales hoy. "Quiero llegar a..." para quien ya sabe el destino.</div>
+</div>
+
+<!-- S1-6 ELEGIR DESTINO -->
+<div id="s1-6" class="screen">
+<div class="screen-label">Pantalla 7 — Elegir destino · MVP</div>
+<div class="mk">
+  <div class="tb"><div class="dot-t"></div><div class="tb-title">¿A dónde querés llegar?</div><button class="btn-s" style="font-size:10px;padding:4px 10px">← Volver</button></div>
+  <div class="mb">
+    <div class="sub">Escribí el trabajo al que aspirás. Calculamos exactamente qué te separa de ese puesto — y cuántas ofertas hay ahora mismo.</div>
+    <input class="fi" placeholder="Ej: supervisor de logística, encargado de local, administrativo..." style="margin-bottom:12px">
+    <div class="fl" style="margin-bottom:8px">O elegí entre las más alcanzables desde tu perfil:</div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">
+      <div class="card" style="display:flex;align-items:center;gap:10px;cursor:pointer">
+        <div style="flex:1"><div style="font-size:12px;font-weight:600">Vendedor/a</div><div style="font-size:10px;color:#666">3 skills te faltan · Alta demanda · 134 ofertas activas</div></div>
+        <div style="font-size:14px;font-weight:700;color:#EF9F27">61%</div>
+        <div style="font-size:11px;color:#1D9E75;font-weight:600">Ver brecha →</div>
+      </div>
+      <div class="card" style="display:flex;align-items:center;gap:10px;cursor:pointer">
+        <div style="flex:1"><div style="font-size:12px;font-weight:600">Supervisor/a de local</div><div style="font-size:10px;color:#666">4 skills te faltan · Media demanda · 29 ofertas</div></div>
+        <div style="font-size:14px;font-weight:700;color:#EF9F27">48%</div>
+        <div style="font-size:11px;color:#1D9E75;font-weight:600">Ver brecha →</div>
+      </div>
+      <div class="card" style="display:flex;align-items:center;gap:10px;cursor:pointer">
+        <div style="flex:1"><div style="font-size:12px;font-weight:600">Administrativo/a</div><div style="font-size:10px;color:#666">5 skills te faltan · Alta demanda · 211 ofertas</div></div>
+        <div style="font-size:14px;font-weight:700;color:#EF9F27">44%</div>
+        <div style="font-size:11px;color:#1D9E75;font-weight:600">Ver brecha →</div>
+      </div>
+    </div>
+    <div style="background:#f8f8f8;border-radius:8px;padding:9px 12px;font-size:11px;color:#666">También podés explorar ocupaciones muy distintas — el sistema te muestra qué camino requieren y cuántas ofertas hay.</div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Campo libre para quien ya sabe + sugerencias para quien no. Ambos en la misma pantalla. Las ofertas activas en cada sugerencia anclan la decisión en demanda real, no en aspiraciones abstractas.</div>
+</div>
+
+<!-- S1-7 BRECHA ESPECIFICA -->
+<div id="s1-7" class="screen">
+<div class="screen-label">Pantalla 8 — Brecha específica · MVP · AHA MOMENT</div>
+<div class="mk">
+  <div class="tb"><div class="dot-t"></div><div class="tb-title">Brecha hacia Vendedor/a</div><button class="btn-s" style="font-size:10px;padding:4px 10px">← Volver</button></div>
+  <div class="mb">
+    <div style="background:#E1F5EE;border:1px solid #5DCAA5;border-radius:10px;padding:14px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <div style="font-size:16px;font-weight:600;color:#085041;flex:1">Vendedor/a</div>
+        <div style="font-size:12px;background:#FAEEDA;color:#633806;border:1px solid #EF9F27;border-radius:20px;padding:2px 10px;font-weight:600">3 skills te separan</div>
+      </div>
+      <div style="font-size:11px;color:#0F6E56;margin-bottom:8px">ISCO D5220 · Comercio / Retail · <strong>134 ofertas activas hoy</strong> en Argentina</div>
+      <div class="gauge"><div class="gauge-track"><div class="gauge-fill" style="width:61%;background:#EF9F27"></div></div><div class="gauge-pct" style="color:#EF9F27">61%</div></div>
+    </div>
+    <div style="font-size:12px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:5px"><div class="status-dot sd-green"></div>Lo que ya tenés (8 de 14 esenciales)</div>
+    <div style="margin-bottom:14px"><span class="sk-ok">atención al cliente <small style="opacity:.7">91%</small></span><span class="sk-ok">manejo de efectivo <small style="opacity:.7">73%</small></span><span class="sk-ok">sistemas POS</span><span class="sk-ok">gestión de stock</span><span class="sk-ok">logística</span><span class="sk-ok">+3 más</span></div>
+    <div style="font-size:12px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:5px"><div class="status-dot sd-amber"></div>Lo que te falta — 3 brechas críticas</div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px">
+      <div class="card" style="border-color:#EF9F27"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><div style="font-size:12px;font-weight:600;flex:1">Técnicas de venta</div><div style="font-size:10px;background:#FAEEDA;color:#633806;border-radius:20px;padding:1px 7px">78% de las ofertas</div></div><div style="font-size:11px;color:#666">Cómo cerrarla: curso de ventas 2–4 semanas · práctica en punto de venta</div></div>
+      <div class="card" style="border-color:#EF9F27"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><div style="font-size:12px;font-weight:600;flex:1">Gestión de objeciones</div><div style="font-size:10px;background:#FAEEDA;color:#633806;border-radius:20px;padding:1px 7px">54% de las ofertas</div></div><div style="font-size:11px;color:#666">Cómo cerrarla: práctica con clientes · curso de negociación básica</div></div>
+      <div class="card" style="border-color:#EF9F27"><div style="display:flex;align-items:center;gap=6px;margin-bottom:4px"><div style="font-size:12px;font-weight:600;flex:1">CRM básico</div><div style="font-size:10px;background:#FAEEDA;color:#633806;border-radius:20px;padding:1px 7px">41% de las ofertas</div></div><div style="font-size:11px;color:#666">Cómo cerrarla: WhatsApp Business · planilla de seguimiento · curso introductorio</div></div>
+    </div>
+    <div style="display:flex;gap:8px"><button class="btn-s" style="flex:1;padding:9px">← Resultados</button><button class="btn-t" style="flex:2;padding:9px">Llevar a la entrevista →</button></div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> "3 skills te separan" — cantidad concreta, no porcentaje. Las 134 ofertas activas anclan la decisión en demanda real. Cada brecha tiene % de demanda en el mercado y un camino accionable para cerrarla. Aha moment peak.</div>
+</div>
+
+<!-- S1-8 PDF + QR -->
+<div id="s1-8" class="screen">
+<div class="screen-label">Pantalla 9 — Generar PDF + QR · MVP</div>
+<div class="mk">
+  <div class="tb"><div class="dot-t"></div><div class="tb-title">Generar carta de presentación</div><button class="btn-s" style="font-size:10px;padding:4px 10px">← Volver</button></div>
+  <div class="mb">
+    <div class="ib ib-t" style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <div style="flex:1"><div style="font-weight:600">Vendedor/a · 61% match · 3 skills te separan · 134 ofertas activas</div></div>
+      <div style="font-size:11px;background:#9FE1CB;color:#085041;border-radius:20px;padding:2px 9px;font-weight:600;white-space:nowrap">Pasaporte listo</div>
+    </div>
+    <div style="background:#f8f8f8;border-radius:10px;padding:12px;margin-bottom:14px">
+      <div style="font-size:12px;font-weight:600;margin-bottom:8px">¿Para qué oferta es esta carta?</div>
+      <div class="g2">
+        <div><div class="fl">Empresa (opcional)</div><input class="fi" placeholder="Ej: Supermercados Norte" style="font-size:11px;padding:6px 9px"></div>
+        <div><div class="fl">Puesto (pre-cargado)</div><input class="fi" value="Vendedor/a" style="font-size:11px;padding:6px 9px"></div>
+      </div>
+      <div style="font-size:10px;color:#888;margin-top:6px">La empresa es opcional — podés usar la carta en varias entrevistas.</div>
+    </div>
+    <div style="background:white;border:1px solid #e8e8e8;border-radius:10px;padding:16px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:2px solid #1D9E75;margin-bottom:12px">
+        <div style="width:22px;height:22px;border-radius:50%;background:#1D9E75;flex-shrink:0"></div>
+        <div style="font-size:12px;font-weight:600;color:#1D9E75;flex:1">Monitor de Ofertas Laborales</div>
+        <div style="font-size:10px;color:#aaa">18/03/2026</div>
+      </div>
+      <div style="font-size:12px;color:#333;line-height:1.6;margin-bottom:12px">El MOL evaluó el perfil de <strong>Juan Pérez</strong>, DNI 28.441.230, como alineado con los requerimientos para <strong>Vendedor/a</strong>. El análisis muestra 61% de compatibilidad y 3 skills de brecha. Escaneá el QR para ver el análisis completo.</div>
+      <div style="display:flex;gap:12px;align-items:center;background:#f8f8f8;border-radius:8px;padding:12px">
+        <div style="width:64px;height:64px;background:#e0e0e0;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#666;text-align:center;flex-shrink:0;font-weight:600">QR<br>code</div>
+        <div style="font-size:11px;color:#555;line-height:1.5">Escaneá con la cámara para ver el análisis detallado de compatibilidad técnica en tiempo real.</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:7px">
+      <button class="btn-t" style="width:100%;padding:10px;font-size:13px">Descargar PDF</button>
+      <button class="btn-s" style="width:100%;padding:10px;font-size:12px">Ver reporte como lo vería la empresa →</button>
+    </div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Vista previa del PDF antes de descargar — el trabajador sabe exactamente qué verá la empresa. El PDF es el puente físico entre servicios y el vector de difusión orgánica del MOL hacia empresas.</div>
+</div>
+
+</div><!-- end panel-s1 -->
+<!-- S2 PANEL -->
+<div id="panel-s2" class="svc-panel">
+<div class="snav">
+  <div class="snav-label">nuevo</div>
+  <button class="snb new-tag ob" onclick="showScreen('s2',0)">1. Importar datos</button>
+  <button class="snb" onclick="showScreen('s2',1)">2. Login</button>
+  <button class="snb" onclick="showScreen('s2',2)">3. Panel de casos</button>
+  <button class="snb" onclick="showScreen('s2',3)">4. Perfil del caso</button>
+  <button class="snb" onclick="showScreen('s2',4)">5. Nota técnico</button>
+  <button class="snb" onclick="showScreen('s2',5)">6. Matching vacantes</button>
+  <button class="snb" onclick="showScreen('s2',6)">7. Gestión de vacantes</button>
+  <button class="snb" onclick="showScreen('s2',7)">8. Formación</button>
+  <button class="snb" onclick="showScreen('s2',8)">9. Comparar casos</button>
+  <div class="snav-label">nuevo</div>
+  <button class="snb new-tag" onclick="showScreen('s2',9)">10. Inteligencia local</button>
+  <button class="snb" onclick="showScreen('s2',10)">11. Exportar</button>
+</div>
+
+<!-- S2-0 IMPORTAR DATOS (NUEVA) -->
+<div id="s2-0" class="screen active">
+<div class="screen-label">Pantalla 1 — Importar datos del gobierno · MVP · NUEVA · Pantalla cero del S2</div>
+<div class="mk">
+  <div class="tb"><div class="dot-b"></div><div class="tb-title">Configuración inicial — Oficina de Empleo</div></div>
+  <div class="mb">
+    <div class="hl" style="font-size:16px">Cargá los datos de tu oficina</div>
+    <div class="sub">El sistema procesa tus bases existentes. No necesitás conocer ESCO — el motor hace el mapeo internamente.</div>
+    <div class="g3" style="margin-bottom:16px">
+      <!-- Pool personas -->
+      <div>
+        <div style="font-size:11px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:5px"><div class="status-dot sd-green"></div>Pool 1 — Personas</div>
+        <div class="upload-zone" id="uz1" onclick="markUploaded('uz1','pool1-status','p1-info','p1-preview')">
+          <div style="font-size:24px;margin-bottom:6px">📋</div>
+          <div style="font-size:12px;font-weight:500;margin-bottom:3px">Excel o CSV de personas</div>
+          <div style="font-size:10px;color:#666">Clic para subir o arrastrá acá</div>
+        </div>
+        <div id="pool1-status" style="display:none;background:#E1F5EE;border-radius:8px;padding:7px 10px;font-size:11px;color:#085041;margin-bottom:6px">✓ personas_junio2026.xlsx — 847 registros</div>
+        <div id="p1-info" style="display:none">
+          <div style="font-size:10px;color:#666;margin-bottom:4px">Campos detectados:</div>
+          <div style="font-size:10px;color:#1a1a1a">Nombre · DNI · Edad · Último trabajo · Nivel educativo · Situación</div>
+          <div style="font-size:10px;color:#EF9F27;margin-top:4px">⚠ 23 filas sin nivel educativo — se importan igual</div>
+        </div>
+      </div>
+      <!-- Pool vacantes -->
+      <div>
+        <div style="font-size:11px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:5px"><div class="status-dot sd-green"></div>Pool 2 — Vacantes locales</div>
+        <div class="upload-zone" id="uz2" onclick="markUploaded('uz2','pool2-status','p2-info','p2-preview')">
+          <div style="font-size:24px;margin-bottom:6px">💼</div>
+          <div style="font-size:12px;font-weight:500;margin-bottom:3px">Excel o CSV de vacantes</div>
+          <div style="font-size:10px;color:#666">Puestos que traen las empresas locales</div>
+        </div>
+        <div id="pool2-status" style="display:none;background:#E1F5EE;border-radius:8px;padding:7px 10px;font-size:11px;color:#085041;margin-bottom:6px">✓ vacantes_activas.csv — 34 vacantes</div>
+        <div id="p2-info" style="display:none">
+          <div style="font-size:10px;color:#666;margin-bottom:4px">Campos detectados:</div>
+          <div style="font-size:10px;color:#1a1a1a">Empresa · Puesto · Ubicación · Requisitos · Fecha</div>
+          <div style="font-size:10px;color:#1D9E75;margin-top:4px">✓ Mapeo ESCO completado — 34/34</div>
+        </div>
+      </div>
+      <!-- Pool cursos -->
+      <div>
+        <div style="font-size:11px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:5px"><div class="status-dot sd-amber"></div>Pool 3 — Cursos disponibles</div>
+        <div class="upload-zone" id="uz3" onclick="markUploaded('uz3','pool3-status','p3-info','p3-preview')">
+          <div style="font-size:24px;margin-bottom:6px">📚</div>
+          <div style="font-size:12px;font-weight:500;margin-bottom:3px">Excel o CSV de cursos</div>
+          <div style="font-size:10px;color:#666">Cursos municipales, provinciales y programas activos</div>
+        </div>
+        <div id="pool3-status" style="display:none;background:#E1F5EE;border-radius:8px;padding:7px 10px;font-size:11px;color:#085041;margin-bottom:6px">✓ cursos_disponibles.xlsx — 18 cursos</div>
+        <div id="p3-info" style="display:none">
+          <div style="font-size:10px;color:#666;margin-bottom:4px">Campos detectados:</div>
+          <div style="font-size:10px;color:#1a1a1a">Nombre · Institución · Duración · Modalidad · Cupo</div>
+          <div style="font-size:10px;color:#EF9F27;margin-top:4px">⚠ Mapeo a ESCO en proceso — 12/18</div>
+        </div>
+      </div>
+    </div>
+    <div style="background:#f8f8f8;border-radius:10px;padding:12px;margin-bottom:12px">
+      <div style="font-size:11px;font-weight:600;margin-bottom:6px">Formato esperado — campos mínimos</div>
+      <table class="import-tbl">
+        <thead><tr><th>Pool</th><th>Campos requeridos</th><th>Campos opcionales</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:600">Personas</td><td>Nombre, DNI, último trabajo</td><td>Edad, nivel educativo, situación, programa</td></tr>
+          <tr><td style="font-weight:600">Vacantes</td><td>Empresa, puesto, requisitos</td><td>Ubicación, fecha, modalidad, remuneración</td></tr>
+          <tr><td style="font-weight:600">Cursos</td><td>Nombre, institución, duración</td><td>Modalidad, cupo, fecha inicio, requisitos</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn-s">Descargar plantillas</button>
+      <button class="btn-b" id="btn-procesar" disabled style="opacity:.5">Procesar e importar →</button>
+    </div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> El gobierno aporta datos en el formato que ya tiene — Excel, CSV, planillas del MTEySS. El sistema hace el mapeo ESCO internamente. La oficina no necesita saber nada de la taxonomía. Esta es la "pantalla cero" que habilita todo el S2.</div>
+</div>
+
+<!-- S2-1 LOGIN -->
+<div id="s2-1" class="screen">
+<div class="screen-label">Pantalla 2 — Login institucional · MVP</div>
+<div class="mk">
+  <div class="tb"><div class="dot-b"></div><div class="tb-title">Oficina de Empleo</div></div>
+  <div class="mb">
+    <div class="g2">
+      <div>
+        <div style="font-size:16px;font-weight:600;margin-bottom:4px">Acceso institucional</div>
+        <div class="sub">Para técnicos y coordinadores de oficinas de empleo.</div>
+        <div class="fl">Email institucional</div>
+        <input class="fi" placeholder="tecnico@municipio.gob.ar" style="margin-bottom:7px">
+        <div class="fl">Contraseña</div>
+        <input class="fi" type="password" placeholder="••••••••" style="margin-bottom:12px">
+        <button class="btn-b" style="width:100%;padding:10px;font-size:13px">Ingresar →</button>
+        <div style="text-align:center;font-size:11px;color:#666;margin-top:8px">¿Tu oficina no está configurada? <span style="color:#185FA5;cursor:pointer;text-decoration:underline">Solicitar acceso</span></div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;margin-bottom:8px">Sesión activa</div>
+        <div style="background:#f8f8f8;border-radius:10px;padding:12px;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <div style="width:36px;height:36px;border-radius:50%;background:#B5D4F4;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#0C447C">MR</div>
+            <div><div style="font-size:13px;font-weight:600">M. Rodríguez</div><div style="font-size:10px;color:#666">Orientadora · Oficina Centro · Lanús</div></div>
+          </div>
+          <div class="g2" style="margin-bottom:10px">
+            <div style="background:white;border-radius:8px;padding:8px;text-align:center"><div style="font-size:16px;font-weight:600">847</div><div style="font-size:9px;color:#666">Personas en cartera</div></div>
+            <div style="background:#FFF3CD;border-radius:8px;padding:8px;text-align:center"><div style="font-size:16px;font-weight:600;color:#856404">12</div><div style="font-size:9px;color:#856404">Sin diagnóstico</div></div>
+          </div>
+          <button class="btn-b" style="width:100%;padding:8px;font-size:12px">Ir al panel →</button>
+        </div>
+        <div style="background:#f8f8f8;border-radius:10px;padding:12px">
+          <div style="font-size:11px;font-weight:600;margin-bottom:7px">Con la Oficina de Empleo podés</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:10px;color:#666;display:flex;gap:5px"><div style="width:4px;height:4px;border-radius:50%;background:#185FA5;flex-shrink:0;margin-top:3px"></div>Ver qué trabajo existe hoy para cada persona de tu cartera</div>
+            <div style="font-size:10px;color:#666;display:flex;gap:5px"><div style="width:4px;height:4px;border-radius:50%;background:#185FA5;flex-shrink:0;margin-top:3px"></div>Rankear candidatos automáticamente para vacantes de empresas</div>
+            <div style="font-size:10px;color:#666;display:flex;gap:5px"><div style="width:4px;height:4px;border-radius:50%;background:#185FA5;flex-shrink:0;margin-top:3px"></div>Orientar con cursos que cierran brechas reales</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> 2 columnas — login para quien llega sin sesión, resumen de sesión para el uso cotidiano. El panel muestra la cartera importada como primer contexto.</div>
+</div>
+
+<!-- S2-2 PANEL DE CASOS -->
+<div id="s2-2" class="screen">
+<div class="screen-label">Pantalla 3 — Panel de casos · MVP</div>
+<div class="mk">
+  <div class="tb"><div class="dot-b"></div><div class="tb-title">Panel de casos</div><div style="font-size:10px;color:#888">M. Rodríguez · Oficina Centro · Lanús</div></div>
+  <div class="mb">
+    <div class="kpis k4">
+      <div class="kpi"><div class="kv">847</div><div class="kl">En cartera</div></div>
+      <div class="kpi" style="background:#E6F1FB"><div class="kv" style="color:#0C447C">12</div><div class="kl" style="color:#185FA5">Sin diagnóstico</div></div>
+      <div class="kpi" style="background:#FFF3CD"><div class="kv" style="color:#856404">8</div><div class="kl" style="color:#856404">Derivación pendiente</div></div>
+      <div class="kpi" style="background:#E1F5EE"><div class="kv" style="color:#085041">34</div><div class="kl" style="color:#0F6E56">Insertados</div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+      <input class="fi" placeholder="Buscar por nombre o DNI..." style="flex:1;min-width:140px">
+      <select class="fi" style="width:auto;padding:6px 8px;font-size:11px"><option>Todos</option><option>Sin diagnóstico</option><option>En proceso</option><option>Derivados</option></select>
+      <button class="btn-b">+ Nuevo caso</button>
+    </div>
+    <table class="ctbl">
+      <thead><tr><th>Persona</th><th>Mejor ocupación</th><th>Match</th><th>Brechas</th><th>Ofertas</th><th>Estado</th><th></th></tr></thead>
+      <tbody>
+        <tr><td><div style="font-weight:600">María López</div><div style="font-size:9px;color:#888">26 años · Lanús</div></td><td style="font-size:10px">Repositor/a</td><td><div style="font-size:12px;font-weight:600;color:#1D9E75">84%</div><div class="pb-track" style="width:60px;margin-top:2px"><div class="pb-fill-t" style="width:84%"></div></div></td><td style="color:#1D9E75;font-weight:600">0</td><td style="font-size:11px">48</td><td><span class="badge bd-proceso">En proceso</span></td><td style="font-size:10px;color:#185FA5;cursor:pointer">Ver →</td></tr>
+        <tr><td><div style="font-weight:600">Juan Pérez</div><div style="font-size:9px;color:#888">34 años · Banfield</div></td><td style="font-size:10px">Vendedor/a</td><td><div style="font-size:12px;font-weight:600;color:#EF9F27">61%</div><div class="pb-track" style="width:60px;margin-top:2px"><div class="pb-fill-a" style="width:61%"></div></div></td><td style="color:#856404;font-weight:600">3</td><td style="font-size:11px">134</td><td><span class="badge bd-proceso">En proceso</span></td><td style="font-size:10px;color:#185FA5;cursor:pointer">Ver →</td></tr>
+        <tr><td><div style="font-weight:600">Ana García</div><div style="font-size:9px;color:#888">28 años · Lomas</div></td><td style="font-size:10px">Administrativa</td><td><div style="font-size:12px;font-weight:600;color:#1D9E75">78%</div><div class="pb-track" style="width:60px;margin-top:2px"><div class="pb-fill-t" style="width:78%"></div></div></td><td style="color:#1D9E75;font-weight:600">1</td><td style="font-size:11px">211</td><td><span class="badge bd-derivado">Derivada</span></td><td style="font-size:10px;color:#185FA5;cursor:pointer">Ver →</td></tr>
+        <tr><td><div style="font-weight:600">Carlos Ruiz</div><div style="font-size:9px;color:#888">41 años · Lanús</div></td><td style="color:#aaa;font-size:10px">—</td><td style="color:#aaa;font-size:10px">—</td><td style="color:#aaa">—</td><td style="color:#aaa">—</td><td><span class="badge bd-nuevo">Nuevo</span></td><td style="font-size:10px;color:#185FA5;cursor:pointer">Cargar →</td></tr>
+      </tbody>
+    </table>
+    <div style="display:flex;gap:6px;margin-top:10px;justify-content:flex-end">
+      <button class="btn-s">Comparar casos</button>
+      <button class="btn-s">Exportar resumen</button>
+    </div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Los 4 KPIs dicen qué hacer hoy sin abrir ningún caso. La columna "Ofertas" es nueva — el técnico ve de inmediato cuántas vacantes reales existen para cada persona. Match y brechas visibles en la tabla directamente.</div>
+</div>
+
+<!-- S2-3 PERFIL DEL CASO -->
+<div id="s2-3" class="screen">
+<div class="screen-label">Pantalla 4 — Perfil del caso · MVP</div>
+<div class="mk">
+  <div class="tb"><div class="dot-b"></div><div class="tb-title">Caso: Juan Pérez</div><button class="btn-s" style="font-size:10px;padding:4px 10px">← Panel</button></div>
+  <div class="mb" style="padding-bottom:0">
+    <div class="two-col">
+      <div class="sidebar">
+        <div class="lv"><div class="lv-l">Persona</div><div class="lv-v" style="font-size:14px;font-weight:600">Juan Pérez</div></div>
+        <div class="lv"><div class="lv-l">DNI</div><div class="lv-v">28.441.230</div></div>
+        <div class="lv"><div class="lv-l">Edad</div><div class="lv-v">34 años · Banfield</div></div>
+        <select class="fi" style="margin-bottom:6px;font-size:11px;padding:5px 7px"><option>Sec. completo</option></select>
+        <select class="fi" style="margin-bottom:10px;font-size:11px;padding:5px 7px"><option>Desocupado</option></select>
+        <div style="font-size:9px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px">Trayectoria</div>
+        <div class="mini-card"><div class="mini-title">Cajero en supermercado</div><div class="mini-sub">Comercio · 2019–2024</div><div style="font-size:10px;color:#185FA5;font-style:italic;margin-top:2px">ESCO: Cajero/a de comercio</div></div>
+        <div class="mini-card"><div class="mini-title">Repositor en almacén</div><div class="mini-sub">Logística · 2016–2019 · Sin contrato</div><div style="font-size:10px;color:#185FA5;font-style:italic;margin-top:2px">ESCO: Repositor/a</div></div>
+        <button class="add-btn" style="margin-top:4px">+ Agregar trabajo</button>
+        <div style="font-size:9px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px">Skills informales</div>
+        <div><span style="font-size:9px;background:#FFF3CD;color:#856404;border-radius:20px;padding:1px 6px;margin:1px;display:inline-block">Manejo</span><span style="font-size:9px;background:#FFF3CD;color:#856404;border-radius:20px;padding:1px 6px;margin:1px;display:inline-block">Excel básico</span></div>
+      </div>
+      <div>
+        <div class="tabs">
+          <div class="tab on-b">Diagnóstico</div>
+          <div class="tab">Ofertas (134)</div>
+          <div class="tab">Formación</div>
+          <div class="tab">Historial</div>
+        </div>
+        <div style="font-size:10px;font-weight:600;color:#888;margin-bottom:6px">Ocupaciones compatibles</div>
+        <div class="card" style="margin-bottom:4px;display:flex;align-items:center;gap:7px"><div style="flex:1"><div style="font-size:11px;font-weight:600">Repositor/a · 0 brechas · 48 ofertas</div><div class="pb-track" style="margin-top:3px"><div class="pb-fill-t" style="width:72%"></div></div></div><div style="font-size:13px;font-weight:700;color:#1D9E75">72%</div></div>
+        <div class="card" style="margin-bottom:4px;display:flex;align-items:center;gap:7px"><div style="flex:1"><div style="font-size:11px;font-weight:600">Vendedor/a · 3 brechas · 134 ofertas</div><div class="pb-track" style="margin-top:3px"><div class="pb-fill-a" style="width:61%"></div></div></div><div style="font-size:13px;font-weight:700;color:#EF9F27">61%</div></div>
+        <div class="card" style="margin-bottom:8px;display:flex;align-items:center;gap:7px"><div style="flex:1"><div style="font-size:11px;font-weight:600">Supervisor/a · 4 brechas · 29 ofertas</div><div class="pb-track" style="margin-top:3px"><div class="pb-fill-a" style="width:48%"></div></div></div><div style="font-size:13px;font-weight:700;color:#EF9F27">48%</div></div>
+        <div class="ib ib-b" style="margin-bottom:10px"><div style="font-size:10px;font-weight:600;color:#0C447C;margin-bottom:2px">Nota del técnico</div><div style="font-style:italic">Tiene carnet. Interesado en logística. Evaluar curso de ventas.</div></div>
+        <div style="display:flex;gap:6px;padding-bottom:18px">
+          <button class="btn-s" style="flex:1;padding:7px;font-size:11px">Exportar</button>
+          <button class="btn-b" style="flex:2;padding:7px;font-size:11px">Generar PDF + QR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> 2 columnas — datos del trabajador siempre visibles mientras se navegan los tabs. El tab "Ofertas (134)" es nuevo — muestra las vacantes reales compatibles hoy, no solo las ocupaciones. El técnico ve qué trabajo existe para esa persona sin buscar manualmente.</div>
+</div>
+
+<!-- S2-4 NOTA TECNICO -->
+<div id="s2-4" class="screen">
+<div class="screen-label">Pantalla 5 — Nota del técnico · MVP</div>
+<div class="mk">
+  <div class="tb"><div class="dot-b"></div><div class="tb-title">Nota del técnico — Juan Pérez</div><button class="btn-s" style="font-size:10px;padding:4px 10px">← Caso</button></div>
+  <div class="mb">
+    <div class="sub">Registrá lo que el sistema no puede derivar. Aparece en el diagnóstico exportado junto al análisis automático.</div>
+    <div class="g2" style="margin-bottom:10px">
+      <div style="background:#f8f8f8;border-radius:10px;padding:12px">
+        <div style="font-size:11px;font-weight:600;margin-bottom:7px">Verificaciones rápidas</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" checked style="accent-color:#185FA5"> Carnet de conducir</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" style="accent-color:#185FA5"> Disponibilidad turno tarde</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" style="accent-color:#185FA5"> Movilidad propia</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" style="accent-color:#185FA5"> Inglés básico</label>
+        </div>
+      </div>
+      <div>
+        <div class="fl">Motivación declarada</div>
+        <select class="fi" style="margin-bottom:7px;font-size:11px;padding:6px 8px"><option>Interesado en logística</option><option>Busca estabilidad</option><option>Quiere crecer</option></select>
+        <div class="fl">Situación familiar</div>
+        <select class="fi" style="font-size:11px;padding:6px 8px"><option>Con hijos menores</option><option>Sin dependientes</option></select>
+      </div>
+    </div>
+    <div class="fl">Nota libre del técnico</div>
+    <textarea class="fi" rows="4" style="resize:vertical;line-height:1.5;font-family:inherit">Tiene carnet de conducir. Interesado en logística. Evaluar cursos de técnicas de venta cortos como paso previo a derivación a vacante de vendedor en zona Lanús.</textarea>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="btn-s">Cancelar</button><button class="btn-b">Guardar nota</button></div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> El técnico agrega lo que ESCO no puede derivar — carnet, motivación, situación familiar. Este juicio humano queda documentado junto al análisis automático y aparece en el export institucional.</div>
+</div>
+
+<!-- S2-5 MATCHING VACANTES (NUEVA funcionalidad) -->
+<div id="s2-5" class="screen">
+<div class="screen-label">Pantalla 6 — Matching con vacantes · MVP · Funcionalidad core del S2</div>
+<div class="mk">
+  <div class="tb"><div class="dot-b"></div><div class="tb-title">Ofertas para Juan Pérez — 134 compatibles hoy</div><button class="btn-s" style="font-size:10px;padding:4px 10px">← Caso</button></div>
+  <div class="mb">
+    <div class="ib ib-b" style="margin-bottom:12px">El sistema cruzó el perfil de Juan contra las ofertas del MOL y las vacantes locales. Ordenadas por match descendente.</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+      <select class="fi" style="width:auto;font-size:11px;padding:5px 8px"><option>Todas las fuentes</option><option>Vacantes locales (oficina)</option><option>Ofertas MOL</option></select>
+      <select class="fi" style="width:auto;font-size:11px;padding:5px 8px"><option>Ordenar: Mejor match</option><option>Menor brecha</option><option>Más recientes</option></select>
+    </div>
+    <!-- Vacante local destacada -->
+    <div class="card card-b" style="margin-bottom:6px">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+        <div style="font-size:10px;background:#E6F1FB;color:#0C447C;border-radius:20px;padding:1px 7px;font-weight:500">Vacante local</div>
+        <div style="font-size:10px;color:#888">Empresa de la oficina</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <div style="flex:1"><div style="font-size:12px;font-weight:600">Repositor de depósito — Distribuidora Norte SA</div><div style="font-size:10px;color:#666">Banfield · Tiempo completo · Desde $ 480.000</div></div>
+        <div style="font-size:16px;font-weight:700;color:#1D9E75">84%</div>
+      </div>
+      <div><span class="sk-ok" style="font-size:9px">gestión de stock ✓</span><span class="sk-ok" style="font-size:9px">logística ✓</span><span class="sk-ok" style="font-size:9px">manejo de cargas ✓</span></div>
+      <div style="display:flex;gap:6px;margin-top:8px"><button class="btn-b" style="font-size:10px;padding:5px 10px">Derivar a entrevista</button><button class="btn-s" style="font-size:10px;padding:5px 10px">Generar reporte</button></div>
+    </div>
+    <!-- Ofertas MOL -->
+    <div class="card" style="margin-bottom:5px;display:flex;align-items:center;gap:8px">
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><div style="font-size:9px;background:#f5f5f5;color:#666;border-radius:20px;padding:1px 6px;border:1px solid #ddd">MOL</div><div style="font-size:12px;font-weight:600">Vendedor/a — Textil Belgrano SA</div></div>
+        <div style="font-size:10px;color:#666">CABA · 3 brechas · Publicada hace 2 días</div>
+        <div class="pb-track" style="margin-top:4px"><div class="pb-fill-a" style="width:61%"></div></div>
+      </div>
+      <div style="font-size:15px;font-weight:700;color:#EF9F27">61%</div>
+      <button class="btn-s" style="font-size:10px;padding:4px 8px">Ver →</button>
+    </div>
+    <div class="card" style="margin-bottom:5px;display:flex;align-items:center;gap:8px">
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><div style="font-size:9px;background:#f5f5f5;color:#666;border-radius:20px;padding:1px 6px;border:1px solid #ddd">MOL</div><div style="font-size:12px;font-weight:600">Repositor/a — Carrefour Lomas</div></div>
+        <div style="font-size:10px;color:#666">Lomas de Zamora · 0 brechas · Publicada hoy</div>
+        <div class="pb-track" style="margin-top:4px"><div class="pb-fill-t" style="width:78%"></div></div>
+      </div>
+      <div style="font-size:15px;font-weight:700;color:#1D9E75">78%</div>
+      <button class="btn-s" style="font-size:10px;padding:4px 8px">Ver →</button>
+    </div>
+    <div style="font-size:11px;color:#888;text-align:center;margin-top:8px">Mostrando 3 de 134 ofertas compatibles · <span style="color:#185FA5;cursor:pointer">Ver todas →</span></div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Esta es la funcionalidad core del S2. El técnico ve qué trabajo existe hoy para esa persona sin buscar manualmente. Las vacantes locales (de la oficina) se destacan porque tienen canal directo. Las ofertas del MOL complementan con el mercado amplio.</div>
+</div>
+
+<!-- S2-6 GESTION VACANTES -->
+<div id="s2-6" class="screen">
+<div class="screen-label">Pantalla 7 — Gestión de vacantes (empresa trae puesto) · MVP</div>
+<div class="mk">
+  <div class="tb"><div class="dot-b"></div><div class="tb-title">Gestión de vacantes de empresas</div><button class="btn-s" style="font-size:10px;padding:4px 10px">← Panel</button></div>
+  <div class="mb">
+    <div class="sub">Una empresa local trae una vacante. El sistema rankea la cartera de la oficina por match automáticamente.</div>
+    <!-- Vacante nueva -->
+    <div style="background:#f8f8f8;border-radius:10px;padding:12px;margin-bottom:14px">
+      <div style="font-size:12px;font-weight:600;margin-bottom:8px">Nueva vacante — Distribuidora Norte SA</div>
+      <div class="g2" style="margin-bottom:8px">
+        <div><div class="fl">Empresa</div><input class="fi" value="Distribuidora Norte SA" style="font-size:11px;padding:5px 7px"></div>
+        <div><div class="fl">Puesto</div><input class="fi" value="Repositor/a de depósito" style="font-size:11px;padding:5px 7px"></div>
+      </div>
+      <div class="fl" style="margin-bottom:4px">Requisitos (en lenguaje libre — el sistema los traduce a ESCO)</div>
+      <textarea class="fi" rows="2" style="font-family:inherit;line-height:1.5;resize:none">Experiencia en depósito, manejo de stock, carnet de conducir preferible. Turno mañana.</textarea>
+      <div class="ib ib-t" style="margin-top:8px;margin-bottom:0">Skills ESCO detectadas: gestión de stock · logística · manejo de cargas · <span style="font-size:10px;color:#888">+ editar</span></div>
+    </div>
+    <!-- Ranking cartera -->
+    <div style="font-size:12px;font-weight:600;margin-bottom:6px">Ranking de la cartera — mejor match para este puesto</div>
+    <table class="ctbl" style="margin-bottom:10px">
+      <thead><tr><th>Persona</th><th>Match</th><th>Brechas</th><th>Tiene carnet</th><th></th></tr></thead>
+      <tbody>
+        <tr style="background:#E1F5EE"><td><div style="font-weight:600">María López</div><div style="font-size:9px;color:#666">26 años</div></td><td><div style="font-size:13px;font-weight:700;color:#1D9E75">84%</div></td><td style="color:#1D9E75;font-weight:600">0</td><td><span style="color:#1D9E75;font-size:12px">✓</span></td><td><button class="btn-b" style="font-size:10px;padding:4px 8px">Derivar</button></td></tr>
+        <tr><td><div style="font-weight:600">Juan Pérez</div><div style="font-size:9px;color:#666">34 años</div></td><td><div style="font-size:13px;font-weight:700;color:#1D9E75">78%</div></td><td style="color:#1D9E75;font-weight:600">1</td><td><span style="color:#1D9E75;font-size:12px">✓</span></td><td><button class="btn-s" style="font-size:10px;padding:4px 8px">Ver</button></td></tr>
+        <tr><td><div style="font-weight:600">Carlos Ruiz</div><div style="font-size:9px;color:#666">41 años</div></td><td><div style="font-size:13px;font-weight:700;color:#EF9F27">54%</div></td><td style="color:#856404;font-weight:600">3</td><td><span style="color:#aaa;font-size:12px">—</span></td><td><button class="btn-s" style="font-size:10px;padding:4px 8px">Ver</button></td></tr>
+      </tbody>
+    </table>
+    <div class="ib ib-t">María López — 84% match, 0 brechas, carnet — candidata prioritaria para esta vacante.</div>
+    <div style="font-size:10px;color:#888;margin-top:6px">Benchmark: las skills requeridas están disponibles en el 67% de la cartera de la oficina.</div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> La empresa describe el puesto en lenguaje libre — el sistema traduce a ESCO y rankea la cartera automáticamente. El técnico pasa de buscar manualmente a validar una recomendación automática. El benchmark informa a la empresa si lo que pide existe en el territorio.</div>
+</div>
+
+<!-- S2-7 FORMACION -->
+<div id="s2-7" class="screen">
+<div class="screen-label">Pantalla 8 — Módulo de formación · MVP</div>
+<div class="mk">
+  <div class="tb"><div class="dot-b"></div><div class="tb-title">Orientación a formación — Juan Pérez</div><button class="btn-s" style="font-size:10px;padding:4px 10px">← Caso</button></div>
+  <div class="mb">
+    <div class="ib ib-b" style="margin-bottom:12px">Cursos disponibles ordenados por impacto en empleabilidad. "Si completás este curso, tu match con Vendedor/a sube de 61% a 84%."</div>
+    <div class="fl" style="margin-bottom:8px">Brechas activas de Juan — seleccioná la que querés cerrar</div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px">
+      <span class="chip chip-b">Técnicas de venta (78%)</span>
+      <span class="chip">Gestión de objeciones (54%)</span>
+      <span class="chip">CRM básico (41%)</span>
+    </div>
+    <!-- Cursos para "Técnicas de venta" -->
+    <div style="font-size:12px;font-weight:600;margin-bottom:8px">Cursos disponibles para cerrar "Técnicas de venta"</div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px">
+      <div class="card card-b">
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:4px">
+          <div style="flex:1"><div style="font-size:12px;font-weight:600">Técnicas de venta básicas — GCBA</div><div style="font-size:10px;color:#666">Portal CABA · 4 semanas · Presencial · Gratuito</div></div>
+          <div style="text-align:right"><div style="font-size:10px;color:#666;margin-bottom:2px">Impacto</div><div style="font-size:12px;font-weight:600;color:#1D9E75">+23% match</div></div>
+        </div>
+        <div class="pb-track"><div class="pb-fill-b" style="width:80%"></div></div>
+        <div style="font-size:10px;color:#666;margin-top:4px">Si lo completa: 61% → 84% en Vendedor/a · 10 plazas disponibles</div>
+        <button class="btn-b" style="font-size:10px;padding:5px 10px;margin-top:6px">Derivar a este curso</button>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:flex-start;gap:8px">
+          <div style="flex:1"><div style="font-size:12px;font-weight:600">Ventas y atención al cliente — Municipal</div><div style="font-size:10px;color:#666">Oficina de Empleo Lanús · 2 semanas · Presencial · Gratuito</div></div>
+          <div style="text-align:right"><div style="font-size:10px;color:#666;margin-bottom:2px">Impacto</div><div style="font-size:12px;font-weight:600;color:#EF9F27">+14% match</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:flex-start;gap:8px">
+          <div style="flex:1"><div style="font-size:12px;font-weight:600">Curso de ventas online — Instituto Privado</div><div style="font-size:10px;color:#666">Externo · 3 semanas · Virtual · $ 12.000</div></div>
+          <div style="text-align:right"><div style="font-size:10px;color:#666;margin-bottom:2px">Impacto</div><div style="font-size:12px;font-weight:600;color:#EF9F27">+18% match</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="ib ib-a">No se encontraron cursos para "CRM básico" en el catálogo local. Esta brecha se registra como necesidad de nuevos cursos → ver inteligencia local.</div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Orientación con impacto medible — el técnico no dice "hacé este curso", dice "si completás este curso pasás de 61% a 84% en estas vacantes". El catálogo propio del gobierno se integra como primera fuente. Las brechas sin cobertura alimentan la inteligencia local.</div>
+</div>
+
+<!-- S2-8 COMPARAR -->
+<div id="s2-8" class="screen">
+<div class="screen-label">Pantalla 9 — Comparar casos · MVP</div>
+<div class="mk">
+  <div class="tb"><div class="dot-b"></div><div class="tb-title">Comparar casos</div><button class="btn-s" style="font-size:10px;padding:4px 10px">← Panel</button></div>
+  <div class="mb">
+    <div class="sub">Compará perfiles para priorizar derivaciones cuando los cupos son limitados.</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+      <select class="fi" style="width:auto;font-size:11px;padding:5px 8px"><option>Ocupación: Todas</option><option>Repositor/a</option><option>Vendedor/a</option></select>
+      <select class="fi" style="width:auto;font-size:11px;padding:5px 8px"><option>Ordenar: Mejor match</option><option>Menor brecha</option></select>
+      <div style="flex:1"></div>
+      <button class="btn-b" style="font-size:11px;padding:5px 12px">Exportar comparación</button>
+    </div>
+    <table class="ctbl" style="margin-bottom:10px">
+      <thead><tr><th>Persona</th><th>Mejor ocupación</th><th>Match</th><th>Brechas</th><th>Ofertas</th><th>Estado</th><th></th></tr></thead>
+      <tbody>
+        <tr style="background:#E1F5EE"><td><div style="font-weight:600">María López</div><div style="font-size:9px;color:#888">26 años</div></td><td style="font-size:10px">Repositor/a</td><td><div style="font-size:12px;font-weight:700;color:#1D9E75">84%</div><div class="pb-track" style="width:55px;margin-top:2px"><div class="pb-fill-t" style="width:84%"></div></div></td><td style="color:#1D9E75;font-weight:600">0</td><td style="font-size:11px;font-weight:600">48</td><td><span class="badge bd-proceso">En proceso</span></td><td style="font-size:10px;color:#185FA5;cursor:pointer">Ver →</td></tr>
+        <tr><td><div style="font-weight:600">Ana García</div><div style="font-size:9px;color:#888">28 años</div></td><td style="font-size:10px">Administrativa</td><td><div style="font-size:12px;font-weight:700;color:#1D9E75">78%</div><div class="pb-track" style="width:55px;margin-top:2px"><div class="pb-fill-t" style="width:78%"></div></div></td><td style="color:#1D9E75;font-weight:600">1</td><td style="font-size:11px;font-weight:600">211</td><td><span class="badge bd-derivado">Derivada</span></td><td style="font-size:10px;color:#185FA5;cursor:pointer">Ver →</td></tr>
+        <tr><td><div style="font-weight:600">Juan Pérez</div><div style="font-size:9px;color:#888">34 años</div></td><td style="font-size:10px">Vendedor/a</td><td><div style="font-size:12px;font-weight:700;color:#EF9F27">61%</div><div class="pb-track" style="width:55px;margin-top:2px"><div class="pb-fill-a" style="width:61%"></div></div></td><td style="color:#856404;font-weight:600">3</td><td style="font-size:11px">134</td><td><span class="badge bd-proceso">En proceso</span></td><td style="font-size:10px;color:#185FA5;cursor:pointer">Ver →</td></tr>
+      </tbody>
+    </table>
+    <div class="ib ib-b">María López — 84% match, 0 brechas, 48 ofertas activas — candidata prioritaria para derivación inmediata.</div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> La columna "Ofertas" es clave — prioriza por demanda real del mercado, no solo por match teórico. El banner de recomendación automatiza la decisión de prioridad con datos.</div>
+</div>
+
+<!-- S2-9 INTELIGENCIA LOCAL (NUEVA) -->
+<div id="s2-9" class="screen">
+<div class="screen-label">Pantalla 10 — Inteligencia local · v2 · NUEVA</div>
+<div class="mk">
+  <div class="tb"><div class="dot-b"></div><div class="tb-title">Inteligencia local — Municipio de Lanús</div><div style="font-size:10px;color:#888">Actualizado hoy · Basado en 847 perfiles + 34 vacantes locales</div></div>
+  <div class="mb">
+    <div class="kpis k4">
+      <div class="kpi"><div class="kv">847</div><div class="kl">Perfiles en cartera</div></div>
+      <div class="kpi"><div class="kv">34</div><div class="kl">Vacantes locales activas</div></div>
+      <div class="kpi" style="background:#FFF3CD"><div class="kv" style="color:#856404">23%</div><div class="kl" style="color:#856404">Sin cobertura de formación</div></div>
+      <div class="kpi" style="background:#E1F5EE"><div class="kv" style="color:#085041">67%</div><div class="kl" style="color:#0F6E56">Tasa de matching local</div></div>
+    </div>
+    <div class="g2" style="margin-bottom:12px">
+      <div>
+        <div style="font-size:12px;font-weight:600;margin-bottom:8px">Skills más demandadas por empresas locales</div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <div class="dem-row">atención al cliente<div class="dem-track"><div class="dem-fill" style="width:91%;background:#185FA5"></div></div><span>91%</span></div>
+          <div class="dem-row">gestión de stock<div class="dem-track"><div class="dem-fill" style="width:78%;background:#185FA5"></div></div><span>78%</span></div>
+          <div class="dem-row">técnicas de venta<div class="dem-track"><div class="dem-fill" style="width:65%;background:#185FA5"></div></div><span>65%</span></div>
+          <div class="dem-row">logística<div class="dem-track"><div class="dem-fill" style="width:54%;background:#185FA5"></div></div><span>54%</span></div>
+          <div class="dem-row">manejo de cargas<div class="dem-track"><div class="dem-fill" style="width:41%;background:#185FA5"></div></div><span>41%</span></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;margin-bottom:8px">Brechas más frecuentes en la cartera</div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <div class="dem-row">técnicas de venta<div class="dem-track"><div class="dem-fill" style="width:73%;background:#E24B4A"></div></div><span style="color:#E24B4A">73%</span></div>
+          <div class="dem-row">CRM básico<div class="dem-track"><div class="dem-fill" style="width:61%;background:#E24B4A"></div></div><span style="color:#E24B4A">61%</span></div>
+          <div class="dem-row">gestión de objeciones<div class="dem-track"><div class="dem-fill" style="width:54%;background:#EF9F27"></div></div><span style="color:#EF9F27">54%</span></div>
+          <div class="dem-row">Excel avanzado<div class="dem-track"><div class="dem-fill" style="width:48%;background:#EF9F27"></div></div><span style="color:#EF9F27">48%</span></div>
+          <div class="dem-row">inglés básico<div class="dem-track"><div class="dem-fill" style="width:38%;background:#aaa"></div></div><span>38%</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:12px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:6px"><div class="status-dot sd-red"></div>Cursos que faltan en el territorio</div>
+      <div style="background:#FAECE7;border-radius:8px;padding:10px;font-size:11px;color:#712B13;line-height:1.6">
+        <strong>"Técnicas de venta"</strong> — brecha en 73% de la cartera, sin curso disponible localmente. 65% de las vacantes lo requieren.<br>
+        <strong>"CRM básico"</strong> — brecha en 61% de la cartera, sin curso disponible localmente. 41% de las vacantes lo requieren.
+        <div style="margin-top:6px;font-size:10px;color:#993C1D">Recomendación: gestionar con MTEySS o Portal CABA la apertura de estos cursos en el municipio.</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn-s">Exportar informe para MTEySS</button>
+      <button class="btn-b">Exportar informe municipal</button>
+    </div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Insumo directo de política pública — el coordinador ve qué cursos hacen falta antes de que alguien lo detecte manualmente. "Cursos que faltan" convierte el análisis en una recomendación accionable para el gobierno local.</div>
+</div>
+
+<!-- S2-10 EXPORTAR -->
+<div id="s2-10" class="screen">
+<div class="screen-label">Pantalla 11 — Exportar diagnóstico institucional · MVP</div>
+<div class="mk">
+  <div class="tb"><div class="dot-b"></div><div class="tb-title">Exportar diagnóstico — Juan Pérez</div><button class="btn-s" style="font-size:10px;padding:4px 10px">← Caso</button></div>
+  <div class="mb">
+    <div class="sub">Vista previa del documento institucional. Podés editar la nota antes de exportar.</div>
+    <div style="background:#f8f8f8;border-radius:12px;padding:16px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:8px;padding-bottom:8px;border-bottom:1px solid #e0e0e0;margin-bottom:12px">
+        <div style="width:14px;height:14px;border-radius:3px;background:#185FA5;flex-shrink:0"></div>
+        <div style="font-size:13px;font-weight:600;flex:1">Diagnóstico de competencias — Skills Intelligence / MOL</div>
+        <div style="font-size:10px;color:#888">18/3/2026 · Oficina Centro · Lanús</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <div><div style="font-size:9px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">Persona</div><div style="font-size:12px">Juan Pérez · DNI 28.441.230 · 34 años · Banfield · Sec. completo · Desocupado</div></div>
+        <div><div style="font-size:9px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">Trayectoria</div><div style="font-size:12px">Cajero supermercado (2019–2024) · Repositor almacén (2016–2019, sin contrato)</div></div>
+        <div><div style="font-size:9px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px">Competencias (14)</div><div><span class="sk-ok" style="font-size:9px">atención al cliente</span><span class="sk-ok" style="font-size:9px">manejo de efectivo</span><span class="sk-ok" style="font-size:9px">gestión de stock</span><span class="sk-ok" style="font-size:9px">logística</span><span class="sk-ok" style="font-size:9px">+10 más</span></div></div>
+        <div><div style="font-size:9px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">Ocupación más compatible</div><div style="font-size:12px">Vendedor/a (ISCO D5220) · 61% match · 134 ofertas activas · Brechas: técnicas de venta, gestión de objeciones, CRM</div></div>
+        <div><div style="font-size:9px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">Nota del técnico</div><div style="font-size:12px;font-style:italic">Tiene carnet. Interesado en logística. Se recomienda curso de ventas previo a derivación.</div></div>
+        <div><div style="font-size:9px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">Técnico responsable</div><div style="font-size:12px">M. Rodríguez · Oficina de Empleo Centro · Municipio de Lanús · 18/03/2026</div></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-s" style="flex:1;padding:9px;font-size:12px">Descargar PDF</button>
+      <button class="btn-s" style="flex:1;padding:9px;font-size:12px">Enviar por email</button>
+      <button class="btn-b" style="flex:2;padding:9px;font-size:12px">Registrar derivación →</button>
+    </div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Instrumento institucional con fecha y firma. La nota del técnico aparece junto al análisis automático. "Registrar derivación" es la acción primaria — el export es el paso previo a una acción concreta, no el objetivo en sí.</div>
+</div>
+
+</div><!-- end panel-s2 -->
+<!-- S3 PANEL -->
+<div id="panel-s3" class="svc-panel">
+<div class="snav">
+  <div class="snav-label">nivel libre</div>
+  <button class="snb oc" onclick="showScreen('s3',0)">1. Acceso QR</button>
+  <button class="snb" onclick="showScreen('s3',1)">2. Reporte</button>
+  <button class="snb" onclick="showScreen('s3',2)">3. Personalizar</button>
+  <div class="snav-label">registrado</div>
+  <button class="snb" onclick="showScreen('s3',3)">4. Landing</button>
+  <button class="snb" onclick="showScreen('s3',4)">5. Dashboard</button>
+  <button class="snb" onclick="showScreen('s3',5)">6. Perfil de puesto</button>
+  <button class="snb" onclick="showScreen('s3',6)">7. Historial</button>
+  <button class="snb" onclick="showScreen('s3',7)">8. Comparar</button>
+  <button class="snb" onclick="showScreen('s3',8)">9. Benchmark</button>
+  <button class="snb" onclick="showScreen('s3',9)">10. Buscar pool</button>
+  <div class="snav-label">nuevo</div>
+  <button class="snb new-tag" onclick="showScreen('s3',10)">11. Reskilling</button>
+  <button class="snb new-tag" onclick="showScreen('s3',11)">12. Inteligencia</button>
+</div>
+
+<!-- S3-0 ACCESO QR -->
+<div id="s3-0" class="screen active">
+<div class="screen-label">Pantalla 1 — Acceso vía QR · MVP · Nivel libre</div>
+<div class="mk">
+  <div style="background:#FAECE7;padding:30px 20px;text-align:center;border-radius:12px">
+    <div style="font-size:10px;background:#F5C4B3;color:#4A1B0C;border-radius:20px;padding:2px 10px;display:inline-block;margin-bottom:10px">Acceso vía código QR — sin cuenta requerida</div>
+    <div style="font-size:18px;font-weight:600;color:#4A1B0C;margin-bottom:6px">Abriendo reporte de compatibilidad...</div>
+    <div style="font-size:12px;color:#712B13;margin-bottom:20px">Monitor de Ofertas Laborales · mol.empleo.gov.ar</div>
+    <div style="display:inline-block;padding:16px;background:white;border-radius:12px;margin-bottom:16px">
+      <svg width="80" height="80" viewBox="0 0 52 52">
+        <rect x="2" y="2" width="20" height="20" rx="2" fill="none" stroke="#333" stroke-width="2"/>
+        <rect x="6" y="6" width="12" height="12" rx="1" fill="#333"/>
+        <rect x="30" y="2" width="20" height="20" rx="2" fill="none" stroke="#333" stroke-width="2"/>
+        <rect x="34" y="6" width="12" height="12" rx="1" fill="#333"/>
+        <rect x="2" y="30" width="20" height="20" rx="2" fill="none" stroke="#333" stroke-width="2"/>
+        <rect x="6" y="34" width="12" height="12" rx="1" fill="#333"/>
+        <rect x="30" y="30" width="5" height="5" fill="#333"/>
+        <rect x="38" y="30" width="5" height="5" fill="#333"/>
+        <rect x="34" y="38" width="5" height="5" fill="#333"/>
+        <rect x="46" y="34" width="5" height="5" fill="#333"/>
+      </svg>
+    </div>
+    <div style="font-size:12px;color:#712B13;max-width:300px;margin:0 auto 20px;line-height:1.5">Cada candidato orientado por el MOL lleva este análisis técnico a la entrevista.</div>
+    <button class="btn-c" style="font-size:13px;padding:10px 24px">Ver reporte de Juan Pérez →</button>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> URL única y opaca por reporte. Sin login. Sin fricción — en contexto de entrevista cualquier paso extra mata el uso. Es el puente físico entre el trabajador y la empresa.</div>
+</div>
+
+<!-- S3-1 REPORTE -->
+<div id="s3-1" class="screen">
+<div class="screen-label">Pantalla 2 — Reporte de compatibilidad · MVP · Nivel libre</div>
+<div class="mk">
+  <div class="tb"><div class="dot-c"></div><div class="tb-title">Reporte de compatibilidad — MOL</div><div style="font-size:9px;color:#888">Acceso vía QR · 18/03/2026</div></div>
+  <div class="mb">
+    <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:16px;flex-wrap:wrap">
+      <div style="flex:1;min-width:150px"><div style="font-size:9px;color:#888;margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Candidato</div><div style="font-size:16px;font-weight:600">Juan Pérez</div><div style="font-size:11px;color:#666">DNI 28.441.230</div></div>
+      <div style="font-size:14px;color:#ccc;padding-top:4px">→</div>
+      <div style="flex:1;min-width:150px"><div style="font-size:9px;color:#888;margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Posición analizada</div><div style="font-size:16px;font-weight:600">Vendedor/a</div><div style="font-size:11px;color:#666">ISCO D5220 · Comercio · 134 ofertas activas</div></div>
+    </div>
+    <div style="background:#f8f8f8;border-radius:10px;padding:12px;margin-bottom:14px">
+      <div style="font-size:12px;font-weight:600;margin-bottom:6px">Compatibilidad calculada por el MOL</div>
+      <div class="gauge"><div class="gauge-track"><div class="gauge-fill" style="width:61%;background:#EF9F27"></div></div><div class="gauge-pct" style="color:#EF9F27">61%</div></div>
+      <div style="font-size:11px;color:#666">8 de 13 competencias esenciales cubiertas · 3 brechas técnicas</div>
+    </div>
+    <div style="font-size:12px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:5px"><div class="status-dot sd-green"></div>Competencias que coinciden (8)</div>
+    <div style="margin-bottom:14px"><span class="sk-ok">atención al cliente</span><span class="sk-ok">manejo de efectivo</span><span class="sk-ok">sistemas POS</span><span class="sk-ok">gestión de stock</span><span class="sk-ok">logística</span><span class="sk-ok">+3 más</span></div>
+    <div style="font-size:12px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:5px"><div class="status-dot sd-amber"></div>Brechas técnicas (3)</div>
+    <div style="margin-bottom:14px"><span class="sk-gap">técnicas de venta</span><span class="sk-gap">gestión de objeciones</span><span class="sk-gap">CRM básico</span></div>
+    <div style="padding-top:10px;border-top:1px solid #f0f0f0;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <div style="font-size:10px;color:#888;flex:1">Metodología: Perfil Argentino ESCO v1.2 · Monitor de Ofertas Laborales</div>
+      <button class="btn-c" style="font-size:11px;padding:6px 12px">Personalizar competencias →</button>
+      <button class="btn-s" style="font-size:11px;padding:6px 12px">¿Qué es el MOL?</button>
+    </div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Tono formal — lo ve RRHH. Metodología ESCO explicada para credibilidad. "¿Qué es el MOL?" como vector de adopción institucional orgánica. Sin login, sin cuenta, sin fricción.</div>
+</div>
+
+<!-- S3-2 PERSONALIZAR -->
+<div id="s3-2" class="screen">
+<div class="screen-label">Pantalla 3 — Personalizar competencias · MVP · Nivel libre · Interactivo</div>
+<div class="mk">
+  <div class="tb"><div class="dot-c"></div><div class="tb-title">Personalizar competencias requeridas</div><button class="btn-s" style="font-size:10px;padding:4px 10px">← Volver</button></div>
+  <div class="mb">
+    <div class="sub">Las competencias están basadas en el estándar ESCO. Ajustalas a los requisitos de tu empresa — el match recalcula al instante.</div>
+    <div class="gauge" style="margin-bottom:6px"><div class="gauge-track"><div class="gauge-fill" id="g-fill" style="width:61%;background:#EF9F27"></div></div><div class="gauge-pct" id="g-pct" style="color:#EF9F27">61%</div></div>
+    <div id="g-sub" style="font-size:11px;color:#666;margin-bottom:12px">8 de 13 cubiertas · 3 brechas</div>
+    <div style="font-size:11px;font-weight:600;margin-bottom:6px">Competencias requeridas — hacé clic para quitar:</div>
+    <div id="req-pills" style="margin-bottom:10px">
+      <span class="sk-req" onclick="toggleSkill(this,'técnicas de venta')">técnicas de venta ×</span>
+      <span class="sk-req" onclick="toggleSkill(this,'gestión de objeciones')">gestión de objeciones ×</span>
+      <span class="sk-req" onclick="toggleSkill(this,'CRM básico')">CRM básico ×</span>
+      <span class="sk-req" onclick="toggleSkill(this,'atención al cliente')">atención al cliente ×</span>
+      <span class="sk-req" onclick="toggleSkill(this,'manejo de efectivo')">manejo de efectivo ×</span>
+      <span class="sk-req" onclick="toggleSkill(this,'sistemas POS')">sistemas POS ×</span>
+      <span class="sk-req" onclick="toggleSkill(this,'negociación')">negociación ×</span>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <input id="new-skill" class="fi" placeholder="Agregar competencia específica de tu empresa..." style="flex:1;font-size:11px">
+      <button class="btn-c" style="font-size:11px;padding:7px 14px" onclick="addSkill()">+ Agregar</button>
+    </div>
+    <div id="recalc-msg" style="display:none" class="ib ib-t">Match actualizado en tiempo real</div>
+    <div style="padding-top:10px;border-top:1px solid #f0f0f0;margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <div style="font-size:10px;color:#888;flex:1">Nivel libre: personalización en esta sesión. Registrate para guardar el perfil de puesto y reutilizarlo.</div>
+      <button class="btn-c" style="font-size:11px;padding:6px 12px">Crear cuenta empresa →</button>
+    </div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> El recálculo en tiempo real convierte al reclutador de espectador a participante activo. El gate de registro aparece de forma natural al final — no interrumpe, aparece cuando la necesidad ya existe.</div>
+</div>
+
+<!-- S3-3 LANDING -->
+<div id="s3-3" class="screen">
+<div class="screen-label">Pantalla 4 — Landing Servicios a Empresas · v2</div>
+<div class="mk">
+  <div class="tb"><div class="dot-c"></div><div class="tb-title">Skills Intelligence para Empresas</div></div>
+  <div class="mb">
+    <div style="text-align:center;padding:8px 0 18px">
+      <div style="font-size:10px;background:#FAECE7;color:#4A1B0C;border-radius:20px;padding:2px 10px;display:inline-block;margin-bottom:10px">Para equipos de RRHH y reclutamiento</div>
+      <div style="font-size:20px;font-weight:600;color:#1a1a1a;margin-bottom:8px">Evaluá candidatos con datos,<br>no con intuición</div>
+      <div style="font-size:12px;color:#666;max-width:380px;margin:0 auto 16px;line-height:1.5">El MOL analiza la compatibilidad de skills entre candidatos y tus puestos, basado en demanda laboral real del mercado argentino.</div>
+    </div>
+    <div class="g2" style="margin-bottom:14px">
+      <div class="tier-free">
+        <div style="font-size:9px;background:#9FE1CB;color:#085041;border-radius:20px;padding:1px 8px;display:inline-block;margin-bottom:6px">Libre · Sin registro</div>
+        <div style="font-size:13px;font-weight:600;color:#085041;margin-bottom:8px">Reporte por QR</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="font-size:11px;color:#0F6E56;display:flex;gap:5px"><div style="flex-shrink:0;margin-top:1px">✓</div>Ver reporte de cualquier candidato</div>
+          <div style="font-size:11px;color:#0F6E56;display:flex;gap:5px"><div style="flex-shrink:0;margin-top:1px">✓</div>Personalizar skills requeridas</div>
+          <div style="font-size:11px;color:#0F6E56;display:flex;gap:5px"><div style="flex-shrink:0;margin-top:1px">✓</div>Recalcular match en tiempo real</div>
+        </div>
+      </div>
+      <div class="tier-reg">
+        <div style="font-size:9px;background:#F5C4B3;color:#4A1B0C;border-radius:20px;padding:1px 8px;display:inline-block;margin-bottom:6px">Registrado · Cuenta empresa</div>
+        <div style="font-size:13px;font-weight:600;color:#712B13;margin-bottom:8px">Gestión completa</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="font-size:11px;color:#993C1D;display:flex;gap:5px"><div style="flex-shrink:0;margin-top:1px">✓</div>Todo lo del nivel libre</div>
+          <div style="font-size:11px;color:#993C1D;display:flex;gap:5px"><div style="flex-shrink:0;margin-top:1px">✓</div>Publicar búsquedas y recibir candidatos</div>
+          <div style="font-size:11px;color:#993C1D;display:flex;gap:5px"><div style="flex-shrink:0;margin-top:1px">✓</div>Perfiles de puesto · Historial · Comparar</div>
+          <div style="font-size:11px;color:#993C1D;display:flex;gap:5px"><div style="flex-shrink:0;margin-top:1px">✓</div>Benchmark · Buscar en pool</div>
+          <div style="font-size:11px;color:#993C1D;display:flex;gap:5px"><div style="flex-shrink:0;margin-top:1px">✓</div>Reskilling de plantilla interna</div>
+          <div style="font-size:11px;color:#993C1D;display:flex;gap:5px"><div style="flex-shrink:0;margin-top:1px">✓</div>Inteligencia laboral sectorial</div>
+        </div>
+      </div>
+    </div>
+    <div style="background:#f8f8f8;border-radius:10px;padding:14px">
+      <div style="font-size:12px;font-weight:600;margin-bottom:8px">Crear cuenta empresa</div>
+      <div class="g2" style="margin-bottom:8px">
+        <div><div class="fl">Email corporativo</div><input class="fi" placeholder="rrhh@empresa.com.ar" style="font-size:11px;padding:6px 9px"></div>
+        <div><div class="fl">Empresa</div><input class="fi" placeholder="Nombre de la empresa" style="font-size:11px;padding:6px 9px"></div>
+      </div>
+      <button class="btn-c" style="width:100%;padding:10px;font-size:13px">Crear cuenta gratis →</button>
+    </div>
+    <div style="text-align:center;font-size:11px;color:#666;margin-top:10px">¿Ya tenés cuenta? <span style="color:#D85A30;cursor:pointer;text-decoration:underline">Ingresar</span></div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> La comparación libre vs registrado muestra el valor antes de pedirlo. El nivel registrado incluye ahora reskilling e inteligencia sectorial — módulos de mayor valor unitario que el reclutamiento puro.</div>
+</div>
+
+<!-- S3-4 DASHBOARD -->
+<div id="s3-4" class="screen">
+<div class="screen-label">Pantalla 5 — Dashboard empresa · v2</div>
+<div class="mk">
+  <div class="tb"><div class="dot-c"></div><div class="tb-title">Dashboard empresa</div><div style="font-size:10px;color:#888">Textil Belgrano · RRHH</div></div>
+  <div class="mb">
+    <div class="kpis k4">
+      <div class="kpi"><div class="kv">24</div><div class="kl">Candidatos analizados</div></div>
+      <div class="kpi" style="background:#FAECE7"><div class="kv" style="color:#712B13">3</div><div class="kl" style="color:#993C1D">Procesos activos</div></div>
+      <div class="kpi" style="background:#E1F5EE"><div class="kv" style="color:#085041">8</div><div class="kl" style="color:#0F6E56">Perfiles de puesto</div></div>
+      <div class="kpi" style="background:#EEEDFE"><div class="kv" style="color:#3C3489">67%</div><div class="kl" style="color:#534AB7">Match promedio</div></div>
+    </div>
+    <div class="g2" style="margin-bottom:14px">
+      <div style="background:#f8f8f8;border-radius:10px;padding:12px">
+        <div style="font-size:12px;font-weight:600;margin-bottom:8px">Actividad reciente</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="font-size:11px;color:#666;display:flex;gap:6px;align-items:center"><div class="status-dot sd-red"></div>Juan Pérez — Vendedor/a (61%) · hoy</div>
+          <div style="font-size:11px;color:#666;display:flex;gap:6px;align-items:center"><div class="status-dot sd-red"></div>María López — Repositor/a (84%) · ayer</div>
+          <div style="font-size:11px;color:#666;display:flex;gap:6px;align-items:center"><div class="status-dot sd-red"></div>Carlos Ruiz — Repositor/a (72%) · 15/3</div>
+        </div>
+      </div>
+      <div style="background:#f8f8f8;border-radius:10px;padding:12px">
+        <div style="font-size:12px;font-weight:600;margin-bottom:8px">Skills más demandadas en la empresa</div>
+        <div>
+          <div class="dem-row">atención al cliente<div class="dem-track"><div class="dem-fill" style="width:91%;background:#D85A30"></div></div><span>91%</span></div>
+          <div class="dem-row">técnicas de venta<div class="dem-track"><div class="dem-fill" style="width:78%;background:#D85A30"></div></div><span>78%</span></div>
+          <div class="dem-row">gestión de stock<div class="dem-track"><div class="dem-fill" style="width:65%;background:#D85A30"></div></div><span>65%</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="g3">
+      <button class="btn-c" style="padding:9px;font-size:11px">Ver historial</button>
+      <button class="btn-c" style="padding:9px;font-size:11px">Perfiles de puesto</button>
+      <button class="btn-c" style="padding:9px;font-size:11px">Benchmark del mercado</button>
+    </div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Tablero de control para RRHH — espejo del panel del técnico de la OME. KPIs + acceso rápido a todos los módulos. El dashboard muestra la actividad de la empresa propia, no del sistema en general.</div>
+</div>
+
+<!-- S3-5 PERFIL DE PUESTO -->
+<div id="s3-5" class="screen">
+<div class="screen-label">Pantalla 6 — Perfiles de puesto · v2</div>
+<div class="mk">
+  <div class="tb"><div class="dot-c"></div><div class="tb-title">Perfiles de puesto</div><button class="btn-s" style="font-size:10px;padding:4px 10px">← Dashboard</button></div>
+  <div class="mb">
+    <div class="sub">Guardá el mapa de skills de cada rol para reutilizarlo en todos los candidatos del proceso. No repetís la personalización cada vez.</div>
+    <div class="g2" style="margin-bottom:14px">
+      <div style="background:#f8f8f8;border-radius:10px;padding:12px;cursor:pointer;border:2px solid #D85A30">
+        <div style="font-size:13px;font-weight:600;margin-bottom:3px">Vendedor/a senior B2B</div>
+        <div style="font-size:10px;color:#666;margin-bottom:8px">7 competencias · 3 candidatos evaluados</div>
+        <div><span class="chip-c" style="font-size:9px;background:#FAECE7;color:#712B13;border:1px solid #F0997B;border-radius:20px;padding:1px 6px;display:inline-block;margin:1px">técnicas de venta</span><span class="chip-c" style="font-size:9px;background:#FAECE7;color:#712B13;border:1px solid #F0997B;border-radius:20px;padding:1px 6px;display:inline-block;margin:1px">negociación</span><span class="chip-c" style="font-size:9px;background:#FAECE7;color:#712B13;border:1px solid #F0997B;border-radius:20px;padding:1px 6px;display:inline-block;margin:1px">CRM</span></div>
+      </div>
+      <div style="background:#f8f8f8;border-radius:10px;padding:12px;cursor:pointer">
+        <div style="font-size:13px;font-weight:600;margin-bottom:3px">Repositor de depósito</div>
+        <div style="font-size:10px;color:#666;margin-bottom:8px">5 competencias · 8 candidatos evaluados</div>
+        <div><span style="font-size:9px;background:#FAECE7;color:#712B13;border:1px solid #F0997B;border-radius:20px;padding:1px 6px;display:inline-block;margin:1px">gestión de stock</span><span style="font-size:9px;background:#FAECE7;color:#712B13;border:1px solid #F0997B;border-radius:20px;padding:1px 6px;display:inline-block;margin:1px">logística</span></div>
+      </div>
+    </div>
+    <div style="background:#f8f8f8;border-radius:10px;padding:14px;border:2px dashed #ddd">
+      <div style="font-size:13px;font-weight:600;margin-bottom:10px">Nuevo perfil de puesto</div>
+      <div class="g2" style="margin-bottom:8px">
+        <div><div class="fl">Nombre del puesto</div><input class="fi" placeholder="Ej: Vendedor/a junior" style="font-size:11px;padding:6px 9px"></div>
+        <div><div class="fl">Ocupación ESCO base</div><select class="fi" style="font-size:11px;padding:6px 8px"><option>Buscar ocupación...</option><option>Vendedor/a (D5220)</option><option>Repositor/a (C4131)</option></select></div>
+      </div>
+      <div class="fl">Competencias requeridas (personalizables)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin:6px 0 10px"><span style="font-size:10px;background:#FAECE7;color:#712B13;border:1px solid #F0997B;border-radius:20px;padding:2px 7px;display:inline-block;margin:1px">atención al cliente</span><span style="font-size:10px;background:#FAECE7;color:#712B13;border:1px solid #F0997B;border-radius:20px;padding:2px 7px;display:inline-block;margin:1px">manejo de efectivo</span><span class="chip">+ agregar...</span></div>
+      <button class="btn-c" style="font-size:11px;padding:7px 16px">Guardar perfil de puesto</button>
+    </div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Un perfil por puesto, no por candidato. La empresa no repite la traducción a ESCO en cada entrevista. Este perfil es la base homogénea para comparar candidatos del mismo proceso.</div>
+</div>
+
+<!-- S3-6 HISTORIAL -->
+<div id="s3-6" class="screen">
+<div class="screen-label">Pantalla 7 — Historial de candidatos · v2</div>
+<div class="mk">
+  <div class="tb"><div class="dot-c"></div><div class="tb-title">Historial de candidatos</div><button class="btn-s" style="font-size:10px;padding:4px 10px">← Dashboard</button></div>
+  <div class="mb">
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <input class="fi" placeholder="Buscar candidato..." style="flex:1;min-width:140px;font-size:11px">
+      <select class="fi" style="width:auto;font-size:11px;padding:6px 8px"><option>Todos los puestos</option><option>Vendedor/a senior B2B</option><option>Repositor de depósito</option></select>
+      <button class="btn-c" style="font-size:11px;padding:6px 12px">Comparar seleccionados</button>
+    </div>
+    <table class="ctbl">
+      <thead><tr><th>Candidato</th><th>Puesto evaluado</th><th>Match</th><th>Brechas</th><th>Fecha</th><th></th></tr></thead>
+      <tbody>
+        <tr><td><div style="font-weight:600">María López</div><div style="font-size:9px;color:#888">26 años</div></td><td style="font-size:11px">Repositor de depósito</td><td><div style="font-size:12px;font-weight:700;color:#1D9E75">84%</div><div class="pb-track" style="width:55px;margin-top:2px"><div class="pb-fill-t" style="width:84%"></div></div></td><td style="color:#1D9E75;font-weight:600">0</td><td style="font-size:11px;color:#888">17/3</td><td style="font-size:10px;color:#D85A30;cursor:pointer">Ver →</td></tr>
+        <tr><td><div style="font-weight:600">Juan Pérez</div><div style="font-size:9px;color:#888">34 años</div></td><td style="font-size:11px">Vendedor/a senior B2B</td><td><div style="font-size:12px;font-weight:700;color:#EF9F27">61%</div><div class="pb-track" style="width:55px;margin-top:2px"><div class="pb-fill-a" style="width:61%"></div></div></td><td style="color:#856404;font-weight:600">3</td><td style="font-size:11px;color:#888">18/3</td><td style="font-size:10px;color:#D85A30;cursor:pointer">Ver →</td></tr>
+        <tr><td><div style="font-weight:600">Carlos Ruiz</div><div style="font-size:9px;color:#888">41 años</div></td><td style="font-size:11px">Vendedor/a senior B2B</td><td><div style="font-size:12px;font-weight:700;color:#EF9F27">54%</div><div class="pb-track" style="width:55px;margin-top:2px"><div class="pb-fill-a" style="width:54%"></div></div></td><td style="color:#856404;font-weight:600">4</td><td style="font-size:11px;color:#888">15/3</td><td style="font-size:10px;color:#D85A30;cursor:pointer">Ver →</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Memoria de selección estructurada — sin depender del mail o de un Excel paralelo. Filtro por puesto permite comparar candidatos del mismo proceso con el mismo perfil de referencia.</div>
+</div>
+
+<!-- S3-7 COMPARAR -->
+<div id="s3-7" class="screen">
+<div class="screen-label">Pantalla 8 — Comparar candidatos · v2</div>
+<div class="mk">
+  <div class="tb"><div class="dot-c"></div><div class="tb-title">Comparar — Vendedor/a senior B2B</div><button class="btn-s" style="font-size:10px;padding:4px 10px">← Historial</button></div>
+  <div class="mb">
+    <div class="ib ib-c" style="margin-bottom:14px">Perfil de puesto activo: <strong>Vendedor/a senior B2B</strong> · 7 competencias requeridas — aplicado a todos los candidatos</div>
+    <div class="g2" style="margin-bottom:14px">
+      <div style="background:#f8f8f8;border-radius:10px;padding:12px;border:2px solid #EF9F27">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div style="width:32px;height:32px;border-radius:50%;background:#FAEEDA;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#633806">JP</div>
+          <div><div style="font-size:13px;font-weight:600">Juan Pérez</div><div style="font-size:10px;color:#666">34 años</div></div>
+          <div style="margin-left:auto;font-size:20px;font-weight:700;color:#EF9F27">61%</div>
+        </div>
+        <div style="font-size:10px;color:#666;margin-bottom:4px">Skills que tiene:</div>
+        <div style="margin-bottom:7px"><span class="sk-ok" style="font-size:9px">atención al cliente</span><span class="sk-ok" style="font-size:9px">manejo de efectivo</span><span class="sk-ok" style="font-size:9px">+2 más</span></div>
+        <div style="font-size:10px;color:#666;margin-bottom:4px">Brechas (3):</div>
+        <div><span class="sk-gap" style="font-size:9px">técnicas de venta</span><span class="sk-gap" style="font-size:9px">negociación</span><span class="sk-gap" style="font-size:9px">CRM</span></div>
+      </div>
+      <div style="background:#f8f8f8;border-radius:10px;padding:12px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div style="width:32px;height:32px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#666">CR</div>
+          <div><div style="font-size:13px;font-weight:600">Carlos Ruiz</div><div style="font-size:10px;color:#666">41 años</div></div>
+          <div style="margin-left:auto;font-size:20px;font-weight:700;color:#EF9F27">54%</div>
+        </div>
+        <div style="font-size:10px;color:#666;margin-bottom:4px">Skills que tiene:</div>
+        <div style="margin-bottom:7px"><span class="sk-ok" style="font-size:9px">atención al cliente</span><span class="sk-ok" style="font-size:9px">+1 más</span></div>
+        <div style="font-size:10px;color:#666;margin-bottom:4px">Brechas (4):</div>
+        <div><span class="sk-gap" style="font-size:9px">técnicas de venta</span><span class="sk-gap" style="font-size:9px">negociación</span><span class="sk-gap" style="font-size:9px">CRM</span><span class="sk-gap" style="font-size:9px">manejo de efectivo</span></div>
+      </div>
+    </div>
+    <div class="ib ib-t">Juan Pérez tiene mejor match (61% vs 54%) y 1 brecha menos para este puesto.</div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> El perfil de puesto guardado se aplica a todos los candidatos — comparación homogénea. La empresa decide con datos, no de memoria. La empresa no repite la personalización en cada comparación.</div>
+</div>
+
+<!-- S3-8 BENCHMARK -->
+<div id="s3-8" class="screen">
+<div class="screen-label">Pantalla 9 — Benchmark del mercado · v2</div>
+<div class="mk">
+  <div class="tb"><div class="dot-c"></div><div class="tb-title">Benchmark del mercado</div><button class="btn-s" style="font-size:10px;padding:4px 10px">← Dashboard</button></div>
+  <div class="mb">
+    <div class="sub">Ingresá las skills que necesitás y ves cuántos perfiles del pool las tienen — para calibrar expectativas contra el mercado real.</div>
+    <div style="margin-bottom:14px">
+      <div class="fl">¿Qué skills necesitás?</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px"><span style="font-size:10px;background:#FAECE7;color:#712B13;border:1px solid #F0997B;border-radius:20px;padding:2px 7px;display:inline-block;margin:1px">técnicas de venta</span><span style="font-size:10px;background:#FAECE7;color:#712B13;border:1px solid #F0997B;border-radius:20px;padding:2px 7px;display:inline-block;margin:1px">gestión de objeciones</span><span style="font-size:10px;background:#FAECE7;color:#712B13;border:1px solid #F0997B;border-radius:20px;padding:2px 7px;display:inline-block;margin:1px">CRM básico</span><span class="chip">+ agregar</span></div>
+    </div>
+    <div style="background:#f8f8f8;border-radius:10px;padding:14px;margin-bottom:12px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:12px">Disponibilidad en el pool MOL — Argentina</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:12px;font-weight:500">técnicas de venta</span><span style="font-size:11px;color:#E24B4A;font-weight:600">Escasa · 12%</span></div><div class="pb-track" style="height:6px"><div class="pb-fill-c" style="width:12%;height:100%;border-radius:3px"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:12px;font-weight:500">gestión de objeciones</span><span style="font-size:11px;color:#EF9F27;font-weight:600">Media · 28%</span></div><div class="pb-track" style="height:6px"><div class="pb-fill-a" style="width:28%;height:100%;border-radius:3px"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:12px;font-weight:500">CRM básico</span><span style="font-size:11px;color:#EF9F27;font-weight:600">Media · 31%</span></div><div class="pb-track" style="height:6px"><div class="pb-fill-a" style="width:31%;height:100%;border-radius:3px"></div></div></div>
+      </div>
+    </div>
+    <div class="ib ib-a" style="margin-bottom:12px">"Técnicas de venta" está en solo el 12% del pool. Considerá buscar candidatos con potencial y brindar capacitación interna — o ampliar la búsqueda geográficamente.</div>
+    <div style="display:flex;gap:8px"><button class="btn-c" style="flex:2;padding:9px;font-size:12px">Buscar candidatos con estas skills →</button><button class="btn-s" style="flex:1;padding:9px;font-size:12px">Exportar benchmark</button></div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Inteligencia de mercado — la empresa calibra sus expectativas antes de perder tiempo buscando skills que no existen. Si pide algo escaso, el sistema lo dice con datos y sugiere alternativas concretas.</div>
+</div>
+
+<!-- S3-9 BUSCAR POOL -->
+<div id="s3-9" class="screen">
+<div class="screen-label">Pantalla 10 — Buscar en el pool · v2</div>
+<div class="mk">
+  <div class="tb"><div class="dot-c"></div><div class="tb-title">Buscar en el pool</div><button class="btn-s" style="font-size:10px;padding:4px 10px">← Benchmark</button></div>
+  <div class="mb">
+    <div class="ib ib-a" style="margin-bottom:14px"><strong>Aviso:</strong> Solo se muestran perfiles de trabajadores que dieron su consentimiento explícito (opt-in). No se accede a perfiles sin autorización.</div>
+    <div class="g2" style="margin-bottom:12px">
+      <div><div class="fl">Puesto de referencia</div><select class="fi" style="font-size:11px;padding:6px 8px"><option>Vendedor/a senior B2B (perfil guardado)</option><option>Nuevo puesto...</option></select></div>
+      <div class="g2">
+        <div><div class="fl">Zona</div><select class="fi" style="font-size:11px;padding:6px 8px"><option>Gran Buenos Aires</option><option>Nacional</option></select></div>
+        <div><div class="fl">Disponibilidad</div><select class="fi" style="font-size:11px;padding:6px 8px"><option>Inmediata</option><option>30 días</option></select></div>
+      </div>
+    </div>
+    <div style="font-size:11px;font-weight:600;color:#666;margin-bottom:8px">12 perfiles encontrados · ordenados por match</div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">
+      <div class="card" style="display:flex;align-items:center;gap:8px"><div style="flex:1"><div style="font-size:12px;font-weight:600">Perfil #A291 · 34 años · Lanús</div><div style="font-size:10px;color:#666">Experiencia en ventas + gestión de stock · consentimiento activo</div><div class="pb-track" style="margin-top:4px"><div class="pb-fill-t" style="width:74%"></div></div></div><div style="font-size:14px;font-weight:700;color:#1D9E75">74%</div><button class="btn-c" style="font-size:10px;padding:5px 10px">Contactar →</button></div>
+      <div class="card" style="display:flex;align-items:center;gap:8px"><div style="flex:1"><div style="font-size:12px;font-weight:600">Perfil #B114 · 28 años · CABA</div><div style="font-size:10px;color:#666">Atención al cliente · inglés básico · consentimiento activo</div><div class="pb-track" style="margin-top:4px"><div class="pb-fill-a" style="width:66%"></div></div></div><div style="font-size:14px;font-weight:700;color:#EF9F27">66%</div><button class="btn-c" style="font-size:10px;padding:5px 10px">Contactar →</button></div>
+    </div>
+    <div style="font-size:10px;color:#aaa;text-align:center">Los perfiles son anónimos hasta que el trabajador acepta el contacto.</div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Opt-in explícito del trabajador — la búsqueda no accede a perfiles sin autorización. Los perfiles son anónimos hasta que el trabajador acepta. Integra el perfil de puesto guardado para búsqueda homogénea.</div>
+</div>
+
+<!-- S3-10 RESKILLING (NUEVA) -->
+<div id="s3-10" class="screen">
+<div class="screen-label">Pantalla 11 — Reskilling de plantilla · v2 · NUEVA</div>
+<div class="mk">
+  <div class="tb"><div class="dot-c"></div><div class="tb-title">Reskilling — Plantilla Textil Belgrano</div><div style="font-size:10px;color:#888">34 empleados con perfil activo</div></div>
+  <div class="mb">
+    <div class="ib ib-p" style="margin-bottom:14px">Los empleados cargaron su perfil en el sistema. Ves el mapa de competencias de tu equipo y la brecha con lo que el mercado va a necesitar en 2 años.</div>
+    <div class="tabs">
+      <div class="tab on-c">Mapa actual</div>
+      <div class="tab">Brecha futura</div>
+      <div class="tab">Programa</div>
+      <div class="tab">Seguimiento</div>
+    </div>
+    <!-- Mapa de plantilla actual -->
+    <div class="kpis k3" style="margin-bottom:12px">
+      <div class="kpi"><div class="kv">34</div><div class="kl">Empleados con perfil</div></div>
+      <div class="kpi" style="background:#E1F5EE"><div class="kv" style="color:#085041">78%</div><div class="kl" style="color:#0F6E56">Match promedio con puesto actual</div></div>
+      <div class="kpi" style="background:#FAEEDA"><div class="kv" style="color:#633806">6</div><div class="kl" style="color:#854F0B">Skills críticas por debajo del sector</div></div>
+    </div>
+    <div style="font-size:12px;font-weight:600;margin-bottom:8px">Distribución de skills por área</div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><div style="font-size:12px;font-weight:600;flex:1">Equipo Ventas (12 personas)</div><div style="font-size:11px;color:#EF9F27;font-weight:600">74% match sector</div></div>
+        <div><span class="sk-ok" style="font-size:9px">atención al cliente</span><span class="sk-ok" style="font-size:9px">negociación</span><span class="sk-gap" style="font-size:9px">CRM avanzado</span><span class="sk-gap" style="font-size:9px">ventas digitales</span></div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><div style="font-size:12px;font-weight:600;flex:1">Equipo Depósito (14 personas)</div><div style="font-size:11px;color:#1D9E75;font-weight:600">88% match sector</div></div>
+        <div><span class="sk-ok" style="font-size:9px">gestión de stock</span><span class="sk-ok" style="font-size:9px">logística</span><span class="sk-ok" style="font-size:9px">manejo de cargas</span></div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><div style="font-size:12px;font-weight:600;flex:1">Equipo Admin (8 personas)</div><div style="font-size:11px;color:#EF9F27;font-weight:600">65% match sector</div></div>
+        <div><span class="sk-ok" style="font-size:9px">administración</span><span class="sk-gap" style="font-size:9px">Excel avanzado</span><span class="sk-gap" style="font-size:9px">ERP básico</span></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn-s">Ver brecha futura →</button>
+      <button class="btn-c">Generar programa de reskilling</button>
+    </div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> El reskilling es el módulo de mayor valor unitario — las empresas pagan más por desarrollo de talento que por reclutamiento, y es recurrente. Los empleados cargan su perfil en el S1 y la empresa ve el mapa agregado por área.</div>
+</div>
+
+<!-- S3-11 INTELIGENCIA SECTORIAL (NUEVA) -->
+<div id="s3-11" class="screen">
+<div class="screen-label">Pantalla 12 — Inteligencia laboral sectorial · v2 · NUEVA</div>
+<div class="mk">
+  <div class="tb"><div class="dot-c"></div><div class="tb-title">Inteligencia laboral — Sector Comercio/Retail</div><div style="font-size:10px;color:#888">Datos del MOL · Actualizado 18/03/2026</div></div>
+  <div class="mb">
+    <div class="tabs">
+      <div class="tab on-c">Tendencias</div>
+      <div class="tab">Escasez</div>
+      <div class="tab">Benchmark</div>
+      <div class="tab">Proyección</div>
+    </div>
+    <div class="kpis k4" style="margin-bottom:12px">
+      <div class="kpi"><div class="kv">16.145</div><div class="kl">Ofertas analizadas</div></div>
+      <div class="kpi" style="background:#E1F5EE"><div class="kv" style="color:#085041">+18%</div><div class="kl" style="color:#0F6E56">Skills digitales en 6 meses</div></div>
+      <div class="kpi" style="background:#FAEEDA"><div class="kv" style="color:#633806">12%</div><div class="kl" style="color:#854F0B">Disponibilidad CRM en pool</div></div>
+      <div class="kpi" style="background:#FAECE7"><div class="kv" style="color:#712B13">67%</div><div class="kl" style="color:#993C1D">Tu empresa vs sector</div></div>
+    </div>
+    <div style="font-size:12px;font-weight:600;margin-bottom:8px">Tendencias de demanda — últimos 6 meses</div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px"><div style="flex:1"><div style="font-size:12px;font-weight:600">Ventas digitales / e-commerce</div><div style="font-size:10px;color:#666">Comercio · Argentina</div></div><span class="trend-up">↑ +34% demanda</span></div>
+        <div class="pb-track" style="margin-top:6px"><div class="pb-fill-c" style="width:78%"></div></div>
+        <div style="font-size:10px;color:#E24B4A;margin-top:3px">En tu empresa: 2/34 empleados la tienen · <strong>Alerta crítica</strong></div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px"><div style="flex:1"><div style="font-size:12px;font-weight:600">CRM y gestión de clientes</div><div style="font-size:10px;color:#666">Comercio · Argentina</div></div><span class="trend-up">↑ +22% demanda</span></div>
+        <div class="pb-track" style="margin-top:6px"><div class="pb-fill-c" style="width:61%"></div></div>
+        <div style="font-size:10px;color:#EF9F27;margin-top:3px">En tu empresa: 6/34 empleados la tienen · Brecha moderada</div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px"><div style="flex:1"><div style="font-size:12px;font-weight:600">Atención al cliente presencial</div><div style="font-size:10px;color:#666">Comercio · Argentina</div></div><span class="trend-eq">→ Estable</span></div>
+        <div class="pb-track" style="margin-top:6px"><div class="pb-fill-t" style="width:45%"></div></div>
+        <div style="font-size:10px;color:#1D9E75;margin-top:3px">En tu empresa: 28/34 empleados la tienen · Bien cubierta</div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px"><div style="flex:1"><div style="font-size:12px;font-weight:600">Cajero/a presencial</div><div style="font-size:10px;color:#666">Comercio · Argentina</div></div><span class="trend-dn">↓ -18% demanda</span></div>
+        <div class="pb-track" style="margin-top:6px"><div style="width:20%;height:100%;border-radius:3px;background:#aaa"></div></div>
+        <div style="font-size:10px;color:#aaa;margin-top:3px">Automatización creciente · Considerar reconversión</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn-s">Exportar análisis</button>
+      <button class="btn-c">Ver programa de reskilling recomendado →</button>
+    </div>
+  </div>
+</div>
+<div class="principle"><strong>Principio:</strong> Inteligencia estratégica — la empresa sabe hacia dónde va el mercado antes de que la competencia lo vea. Las alertas ("2/34 empleados tienen esta skill que crece al 34%") conectan la tendencia del mercado con la situación concreta de la empresa.</div>
+</div>
+
+</div><!-- end panel-s3 -->
+
+<script>
+// Service navigation
+function showSvc(svc, tabEl) {
+  document.querySelectorAll('.svc-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.svc-tab').forEach(t => t.classList.remove('at','ab','ac'));
+  document.getElementById('panel-' + svc).classList.add('active');
+  var cls = svc==='s1'?'at':svc==='s2'?'ab':'ac';
+  tabEl.classList.add(cls);
+}
+
+// Screen navigation
+function showScreen(svc, n) {
+  var prefix = svc + '-';
+  document.querySelectorAll('[id^="' + prefix + '"]').forEach(s => s.classList.remove('active'));
+  var target = document.getElementById(svc + '-' + n);
+  if (target) target.classList.add('active');
+  var panel = document.getElementById('panel-' + svc);
+  if (panel) {
+    panel.querySelectorAll('.snb').forEach((b,i) => {
+      b.classList.remove('ot','ob','oc');
+      if (i === n) b.classList.add(svc==='s1'?'ot':svc==='s2'?'ob':'oc');
+    });
+  }
+}
+
+// S2 upload zones
+function markUploaded(zoneId, statusId, infoId) {
+  var zone = document.getElementById(zoneId);
+  if (zone) { zone.style.display = 'none'; }
+  var status = document.getElementById(statusId);
+  if (status) { status.style.display = 'block'; }
+  var info = document.getElementById(infoId);
+  if (info) { info.style.display = 'block'; }
+  // check if all 3 uploaded
+  var btn = document.getElementById('btn-procesar');
+  if (btn) {
+    var allUploaded = ['pool1-status','pool2-status','pool3-status'].every(function(id) {
+      var el = document.getElementById(id);
+      return el && el.style.display !== 'none';
+    });
+    if (allUploaded) { btn.disabled = false; btn.style.opacity = '1'; }
+  }
+}
+
+// S3 skill interactions
+var candidateSkills = ['atención al cliente','manejo de efectivo','sistemas POS','cierre de caja',
+  'resolución de reclamos','gestión de stock','logística','manejo de cargas','Excel básico'];
+
+function toggleSkill(el, skill) {
+  el.classList.toggle('removed');
+  recalcMatch();
+}
+
+function addSkill() {
+  var inp = document.getElementById('new-skill');
+  if (!inp || !inp.value.trim()) return;
+  var v = inp.value.trim();
+  var cont = document.getElementById('req-pills');
+  var sp = document.createElement('span');
+  sp.className = 'sk-req';
+  sp.setAttribute('data-skill', v);
+  sp.textContent = v + ' ×';
+  sp.onclick = function() { sp.classList.toggle('removed'); recalcMatch(); };
+  cont.appendChild(sp);
+  inp.value = '';
+  recalcMatch();
+}
+
+function recalcMatch() {
+  var active = [];
+  document.querySelectorAll('#req-pills .sk-req').forEach(function(el) {
+    if (!el.classList.contains('removed')) {
+      active.push(el.getAttribute('data-skill') || el.textContent.replace(' ×','').trim());
+    }
+  });
+  if (active.length === 0) return;
+  var matched = active.filter(s => candidateSkills.indexOf(s) > -1);
+  var pct = Math.round(matched.length / active.length * 100);
+  var gaps = active.length - matched.length;
+  var fill = document.getElementById('g-fill');
+  var pctEl = document.getElementById('g-pct');
+  var sub = document.getElementById('g-sub');
+  var msg = document.getElementById('recalc-msg');
+  if (fill) { fill.style.width = pct + '%'; fill.style.background = pct >= 70 ? '#1D9E75' : '#EF9F27'; }
+  if (pctEl) { pctEl.textContent = pct + '%'; pctEl.style.color = pct >= 70 ? '#1D9E75' : '#EF9F27'; }
+  if (sub) sub.textContent = matched.length + ' de ' + active.length + ' cubiertas · ' + gaps + ' brechas';
+  if (msg) { msg.style.display = 'block'; msg.textContent = 'Match actualizado: ' + pct + '% (' + matched.length + '/' + active.length + ' requeridas · ' + gaps + ' brechas)'; }
+}
+</script>
+</body>
+</html>

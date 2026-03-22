@@ -57,6 +57,7 @@ COMMAND_MAP = {
     'lanzar_todos': lambda params: run_scraping_todos(),
     'sync_vps_local': lambda params: run_export(),
     'pausar_portal': lambda params: log_only(f"Pausa de {params.get('portal')} no implementada aún"),
+    # sync_local_supabase NO va acá — se ejecuta desde local, después del procesamiento
 }
 
 
