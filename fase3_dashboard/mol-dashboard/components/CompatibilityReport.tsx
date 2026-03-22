@@ -59,7 +59,7 @@ export default function CompatibilityReport({ data }: Props) {
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-4 py-8">
       {/* Header */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <div className="text-2xl font-bold text-blue-700">MOL</div>
         <h1 className="text-lg font-semibold text-gray-700">Reporte de Compatibilidad Laboral</h1>
       </div>
@@ -115,7 +115,7 @@ export default function CompatibilityReport({ data }: Props) {
           {isEdited && (
             <button
               onClick={handleRestore}
-              className="mt-2 text-xs text-blue-500 hover:underline"
+              className="mt-2 inline-flex min-h-[44px] items-center text-xs text-blue-500 hover:underline"
             >
               Restaurar original
             </button>

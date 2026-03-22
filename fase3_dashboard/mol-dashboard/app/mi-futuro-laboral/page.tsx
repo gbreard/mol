@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Search, Lightbulb, ArrowLeftRight, ArrowRight } from "lucide-react";
+import PrivacyOptIn from "@/components/PrivacyOptIn";
 
 const cards = [
   {
@@ -77,6 +78,11 @@ export default function MiFuturoLaboralPage() {
           Explorar Skills
           <ArrowRight className="w-4 h-4" />
         </Link>
+      </div>
+
+      {/* S9: Opt-in privacidad */}
+      <div className="mt-10 max-w-md">
+        <PrivacyOptIn />
       </div>
 
       <div className="mt-8 text-center">

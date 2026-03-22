@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Briefcase, ArrowLeft } from "lucide-react";
+import PoolSearch from "@/components/PoolSearch";
 
 export default function OfertasPage() {
   return (
@@ -9,9 +10,15 @@ export default function OfertasPage() {
         <h1 className="text-2xl font-bold text-gray-900">
           Ofertas Coincidentes
         </h1>
-        <span className="bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-          Proximamente
-        </span>
+      </div>
+
+      {/* S11: Búsqueda en pool anonimizado */}
+      <div className="mb-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h2 className="mb-1 text-base font-semibold text-gray-800">Buscar en pool de trabajadores</h2>
+        <p className="mb-4 text-sm text-gray-500">
+          Perfiles anonimizados disponibles. El nombre se revela solo si el trabajador acepta el contacto.
+        </p>
+        <PoolSearch />
       </div>
 
       <div className="bg-white rounded-2xl border-2 border-dashed border-gray-300 p-8 text-center">

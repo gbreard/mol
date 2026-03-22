@@ -1,4 +1,5 @@
 import { UserSearch } from "lucide-react";
+import DniSearch from "@/components/DniSearch";
 
 export default function PerfilPage() {
   return (
@@ -8,9 +9,17 @@ export default function PerfilPage() {
         <h1 className="text-2xl font-bold text-gray-900">
           Perfil de Trabajador
         </h1>
-        <span className="bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-          Proximamente
-        </span>
+      </div>
+
+      {/* S10: Búsqueda por DNI */}
+      <div className="mb-8 max-w-lg rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h2 className="mb-1 text-base font-semibold text-gray-800">
+          Buscar perfil existente
+        </h2>
+        <p className="mb-4 text-sm text-gray-500">
+          Ingresá el DNI del trabajador para ver si ya tiene un perfil creado en Mi Futuro Laboral.
+        </p>
+        <DniSearch organizacionNombre="OE CABA Sur" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

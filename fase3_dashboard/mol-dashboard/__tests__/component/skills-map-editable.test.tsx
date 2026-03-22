@@ -15,19 +15,19 @@ const covered: ReportSkillItem[] = [
 describe('SkillsMapEditable', () => {
   it('renderiza la tabla de competencias', () => {
     render(<SkillsMapEditable required={required} covered={covered} onChange={vi.fn()} />)
-    expect(screen.getByText('JavaScript')).toBeInTheDocument()
-    expect(screen.getByText('Docker')).toBeInTheDocument()
+    expect(screen.getAllByText('JavaScript').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Docker').length).toBeGreaterThan(0)
   })
 
   it('muestra badges de estado detectada/faltante', () => {
     render(<SkillsMapEditable required={required} covered={covered} onChange={vi.fn()} />)
-    expect(screen.getByText('Detectada')).toBeInTheDocument()
+    expect(screen.getAllByText('Detectada').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Faltante').length).toBeGreaterThan(0)
   })
 
   it('badge origen emergente visible para argentina_approved', () => {
     render(<SkillsMapEditable required={required} covered={covered} onChange={vi.fn()} />)
-    expect(screen.getByText('emergente')).toBeInTheDocument()
+    expect(screen.getAllByText('emergente').length).toBeGreaterThan(0)
   })
 
   it('boton quitar no visible sin modo edicion', () => {
@@ -39,7 +39,7 @@ describe('SkillsMapEditable', () => {
     const onChange = vi.fn()
     render(<SkillsMapEditable required={required} covered={covered} onChange={onChange} />)
     fireEvent.click(screen.getByText('Editar'))
-    fireEvent.click(screen.getByLabelText('Quitar Docker'))
+    fireEvent.click(screen.getAllByLabelText('Quitar Docker')[0])
     expect(onChange).toHaveBeenCalled()
     const [newRequired] = onChange.mock.calls[0]
     expect(newRequired.find((s: ReportSkillItem) => s.uri === 'esco:002')).toBeUndefined()

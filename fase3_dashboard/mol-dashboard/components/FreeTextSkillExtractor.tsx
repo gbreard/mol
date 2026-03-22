@@ -115,18 +115,21 @@ export default function FreeTextSkillExtractor({ onSkillsAdded }: Props) {
           </div>
 
           {extracted.map((skill) => (
-            <div key={skill.uri} className="group relative">
+            <div key={skill.uri} className="space-y-1">
               <SkillWithDefinition
                 skill={skill}
                 onConfidenceChange={handleConfidenceChange}
                 onRemove={handleRemove}
               />
-              <button
-                onClick={() => handleAddOne(skill)}
-                className="absolute right-8 top-2 hidden rounded px-2 py-0.5 text-xs text-blue-600 hover:bg-blue-50 group-hover:block"
-              >
-                agregar
-              </button>
+              <div className="flex justify-end">
+                <button
+                  onClick={() => handleAddOne(skill)}
+                  aria-label={`Agregar ${skill.label} al perfil`}
+                  className="min-h-[44px] rounded px-3 py-1 text-sm text-blue-600 hover:bg-blue-50"
+                >
+                  + Agregar al perfil
+                </button>
+              </div>
             </div>
           ))}
         </div>

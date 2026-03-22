@@ -398,8 +398,6 @@ function TaxonomyTab({ stats, statsLoading, statsError, hierarchyData }: {
         </div>
 
         <SkillsSunburst
-          width={700}
-          height={700}
           data={hierarchyData ?? undefined}
           searchTerm={searchTerm}
           filterType={filterType}
