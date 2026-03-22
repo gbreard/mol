@@ -89,7 +89,7 @@ export async function GET(request: NextRequest) {
     // Get resolved issues (source of training pairs)
     const { data: issues, error: issErr } = await client
       .from('issues')
-      .select('id, titulo, estado, campo, valor_actual, valor_esperado, id_oferta, resuelto_at, created_by')
+      .select('id, titulo, estado, campo_afectado, valor_actual, valor_esperado, id_oferta, resuelto_at, autor_nombre')
       .eq('estado', 'resuelto')
       .not('id_oferta', 'is', null)
       .order('resuelto_at', { ascending: false });
@@ -109,7 +109,7 @@ export async function GET(request: NextRequest) {
         if (!iscoCounts[isco]) iscoCounts[isco] = { count: 0, label: '' };
         iscoCounts[isco].count++;
       }
-      const autor = p.created_by || 'Sistema';
+      const autor = p.autor_nombre || 'Sistema';
       autores[autor] = (autores[autor] || 0) + 1;
     }
 
