@@ -35,8 +35,10 @@ BEGIN
       COUNT(*) as total,
       COUNT(*) FILTER (WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '7 days') as ultimos_7d,
       COUNT(*) FILTER (WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '1 day') as hoy,
-      MAX(fecha_publicacion) as ultima_fecha,
-      (CURRENT_DATE - MAX(fecha_publicacion))::int as dias_sin_datos,
+      MAX(fecha_publicacion) as ultima_publicacion,
+      MAX(created_at::date) as ultimo_scraping,
+      (CURRENT_DATE - MAX(fecha_publicacion))::int as dias_sin_publicacion,
+      (CURRENT_DATE - MAX(created_at::date))::int as dias_sin_scraping,
       ROUND(COUNT(*)::numeric / GREATEST(NULLIF((SELECT COUNT(*) FROM ofertas_dashboard), 0), 1) * 100, 1) as porcentaje
     FROM ofertas_dashboard
     WHERE portal IS NOT NULL
@@ -67,21 +69,22 @@ BEGIN
   ), '[]'::json)
   INTO v_alertas
   FROM (
-    -- Portal sin datos hace más de 3 días
+    -- Portal sin scraping hace más de 3 días
     SELECT
-      CASE WHEN dias_inactivo > 7 THEN 'error' ELSE 'warning' END as nivel,
+      CASE WHEN dias_sin_scrape > 7 THEN 'error' ELSE 'warning' END as nivel,
       portal,
-      portal || ' sin ofertas hace ' || dias_inactivo || ' dias' as mensaje,
-      'Ultima oferta: ' || ultima_fecha as detalle
+      portal || ' sin scraping hace ' || dias_sin_scrape || ' dias' as mensaje,
+      'Ultimo scraping: ' || ultimo_scrape || ' | Ultima publicacion: ' || ultima_pub as detalle
     FROM (
       SELECT
         portal,
-        MAX(fecha_publicacion) as ultima_fecha,
-        (CURRENT_DATE - MAX(fecha_publicacion))::int as dias_inactivo
+        MAX(created_at::date) as ultimo_scrape,
+        MAX(fecha_publicacion) as ultima_pub,
+        (CURRENT_DATE - MAX(created_at::date))::int as dias_sin_scrape
       FROM ofertas_dashboard
       WHERE portal IS NOT NULL
       GROUP BY portal
-      HAVING (CURRENT_DATE - MAX(fecha_publicacion))::int > 3
+      HAVING (CURRENT_DATE - MAX(created_at::date))::int > 3
     ) inactivos
 
     UNION ALL

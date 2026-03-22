@@ -20,8 +20,10 @@ interface PortalStats {
   total: number;
   ultimos_7d: number;
   hoy: number;
-  ultima_fecha: string;
-  dias_sin_datos: number;
+  ultima_publicacion: string;
+  ultimo_scraping: string;
+  dias_sin_publicacion: number;
+  dias_sin_scraping: number;
   porcentaje: number;
 }
 
@@ -146,9 +148,9 @@ export default function ScrapingPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {portales.map((portal) => {
           const colors = PORTAL_COLORS[portal.portal] || { bg: 'bg-gray-500', text: 'text-gray-600' };
-          const isHealthy = portal.dias_sin_datos <= 3;
-          const statusColor = isHealthy ? 'text-green-600' : portal.dias_sin_datos > 7 ? 'text-red-600' : 'text-amber-600';
-          const StatusIcon = isHealthy ? CheckCircle2 : portal.dias_sin_datos > 7 ? XCircle : AlertTriangle;
+          const isHealthy = portal.dias_sin_scraping <= 3;
+          const statusColor = isHealthy ? 'text-green-600' : portal.dias_sin_scraping > 7 ? 'text-red-600' : 'text-amber-600';
+          const StatusIcon = isHealthy ? CheckCircle2 : portal.dias_sin_scraping > 7 ? XCircle : AlertTriangle;
 
           return (
             <div key={portal.portal} className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
@@ -174,11 +176,17 @@ export default function ScrapingPage() {
                 </div>
               </div>
 
-              <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
-                <span>Ultima: {portal.ultima_fecha}</span>
-                <span className={statusColor}>
-                  {portal.dias_sin_datos === 0 ? 'Hoy' : `Hace ${portal.dias_sin_datos}d`}
-                </span>
+              <div className="mt-3 space-y-1 text-xs text-gray-500">
+                <div className="flex justify-between">
+                  <span>Scraping:</span>
+                  <span className={statusColor}>
+                    {portal.ultimo_scraping} ({portal.dias_sin_scraping === 0 ? 'hoy' : `hace ${portal.dias_sin_scraping}d`})
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Publicacion:</span>
+                  <span>{portal.ultima_publicacion} ({portal.dias_sin_publicacion === 0 ? 'hoy' : `hace ${portal.dias_sin_publicacion}d`})</span>
+                </div>
               </div>
             </div>
           );

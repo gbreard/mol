@@ -1,11 +1,11 @@
 export const mockScrapingStatsRPC = {
   portales: [
-    { portal: 'computrabajo', total: 16019, ultimos_7d: 3200, hoy: 0, ultima_fecha: '2026-03-13', dias_sin_datos: 8, porcentaje: 37.8 },
-    { portal: 'bumeran', total: 17530, ultimos_7d: 2800, hoy: 0, ultima_fecha: '2026-03-13', dias_sin_datos: 8, porcentaje: 41.3 },
-    { portal: 'zonajobs', total: 5657, ultimos_7d: 1100, hoy: 0, ultima_fecha: '2026-03-13', dias_sin_datos: 8, porcentaje: 13.3 },
-    { portal: 'indeed', total: 2735, ultimos_7d: 500, hoy: 0, ultima_fecha: '2026-03-13', dias_sin_datos: 8, porcentaje: 6.4 },
-    { portal: 'portalempleo', total: 466, ultimos_7d: 80, hoy: 0, ultima_fecha: '2026-03-13', dias_sin_datos: 8, porcentaje: 1.1 },
-    { portal: 'caba', total: 12, ultimos_7d: 0, hoy: 0, ultima_fecha: '2026-03-01', dias_sin_datos: 20, porcentaje: 0.0 },
+    { portal: 'computrabajo', total: 16019, ultimos_7d: 3200, hoy: 0, ultima_publicacion: '2026-03-12', ultimo_scraping: '2026-03-19', dias_sin_publicacion: 9, dias_sin_scraping: 2, porcentaje: 37.8 },
+    { portal: 'bumeran', total: 17530, ultimos_7d: 2800, hoy: 0, ultima_publicacion: '2026-03-12', ultimo_scraping: '2026-03-19', dias_sin_publicacion: 9, dias_sin_scraping: 2, porcentaje: 41.3 },
+    { portal: 'zonajobs', total: 5657, ultimos_7d: 1100, hoy: 0, ultima_publicacion: '2026-03-12', ultimo_scraping: '2026-03-19', dias_sin_publicacion: 9, dias_sin_scraping: 2, porcentaje: 13.3 },
+    { portal: 'indeed', total: 2735, ultimos_7d: 500, hoy: 0, ultima_publicacion: '2026-03-13', ultimo_scraping: '2026-03-19', dias_sin_publicacion: 8, dias_sin_scraping: 2, porcentaje: 6.4 },
+    { portal: 'portalempleo', total: 466, ultimos_7d: 80, hoy: 0, ultima_publicacion: '2026-03-13', ultimo_scraping: '2026-03-19', dias_sin_publicacion: 8, dias_sin_scraping: 2, porcentaje: 1.1 },
+    { portal: 'caba', total: 12, ultimos_7d: 0, hoy: 0, ultima_publicacion: '2026-03-01', ultimo_scraping: '2026-03-06', dias_sin_publicacion: 20, dias_sin_scraping: 15, porcentaje: 0.0 },
   ],
   totales: {
     total_ofertas: 42419,
@@ -37,8 +37,8 @@ export const mockScrapingHistoryRPC = {
 
 export const mockScrapingStatsAllOK = {
   portales: [
-    { portal: 'bumeran', total: 17530, ultimos_7d: 3500, hoy: 400, ultima_fecha: '2026-03-21', dias_sin_datos: 0, porcentaje: 41.3 },
-    { portal: 'computrabajo', total: 16019, ultimos_7d: 3200, hoy: 350, ultima_fecha: '2026-03-21', dias_sin_datos: 0, porcentaje: 37.8 },
+    { portal: 'bumeran', total: 17530, ultimos_7d: 3500, hoy: 400, ultima_publicacion: '2026-03-21', ultimo_scraping: '2026-03-21', dias_sin_publicacion: 0, dias_sin_scraping: 0, porcentaje: 41.3 },
+    { portal: 'computrabajo', total: 16019, ultimos_7d: 3200, hoy: 350, ultima_publicacion: '2026-03-21', ultimo_scraping: '2026-03-21', dias_sin_publicacion: 0, dias_sin_scraping: 0, porcentaje: 37.8 },
   ],
   totales: {
     total_ofertas: 42419,

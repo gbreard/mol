@@ -26,8 +26,10 @@ describe('get_scraping_stats RPC response', () => {
       expect(portal).toHaveProperty('portal')
       expect(portal).toHaveProperty('total')
       expect(portal).toHaveProperty('ultimos_7d')
-      expect(portal).toHaveProperty('ultima_fecha')
-      expect(portal).toHaveProperty('dias_sin_datos')
+      expect(portal).toHaveProperty('ultima_publicacion')
+      expect(portal).toHaveProperty('ultimo_scraping')
+      expect(portal).toHaveProperty('dias_sin_publicacion')
+      expect(portal).toHaveProperty('dias_sin_scraping')
       expect(portal).toHaveProperty('porcentaje')
     })
 
@@ -74,10 +76,11 @@ describe('get_scraping_stats RPC response', () => {
       expect(totalPct).toBeLessThanOrEqual(101)
     })
 
-    it('dias_sin_datos is non-negative integer', () => {
+    it('dias_sin_scraping and dias_sin_publicacion are non-negative integers', () => {
       for (const portal of mockScrapingStatsRPC.portales) {
-        expect(portal.dias_sin_datos).toBeGreaterThanOrEqual(0)
-        expect(Number.isInteger(portal.dias_sin_datos)).toBe(true)
+        expect(portal.dias_sin_scraping).toBeGreaterThanOrEqual(0)
+        expect(portal.dias_sin_publicacion).toBeGreaterThanOrEqual(0)
+        expect(Number.isInteger(portal.dias_sin_scraping)).toBe(true)
       }
     })
 
