@@ -60,6 +60,7 @@ const adminSections: MenuSection[] = [
         matchPrefix: "/admin/scraping",
         items: [
           { href: "/admin/scraping", label: "Portales", icon: Database },
+          { href: "/admin/scraping/comandos", label: "Comandos", icon: Activity, matchMode: "startsWith" },
         ],
       },
       {
