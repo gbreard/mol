@@ -1,10 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import TrainingImpact, { type TrainingImpactData } from '@/components/TrainingImpact'
 
-// Mock hasta que Gerardo implemente GET /api/training-impact
 const MOCK_DATA: TrainingImpactData = {
   profile_id: 'demo',
   current_match: 62,
@@ -52,7 +51,7 @@ const MOCK_DATA: TrainingImpactData = {
   ],
 }
 
-export default function FormacionPage() {
+function FormacionContent() {
   const searchParams = useSearchParams()
   const profileId = searchParams.get('profile_id') ?? 'demo'
   const [data, setData] = useState<TrainingImpactData | null>(null)
@@ -78,12 +77,7 @@ export default function FormacionPage() {
   }, [profileId])
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
-      <h1 className="mb-1 text-2xl font-bold text-gray-900">Formación con impacto</h1>
-      <p className="mb-6 text-sm text-gray-500">
-        Cursos que mejoran la compatibilidad del perfil con las ocupaciones del mercado.
-      </p>
-
+    <>
       {loading ? (
         <div className="space-y-4">
           {[1, 2].map((i) => (
@@ -98,6 +92,20 @@ export default function FormacionPage() {
       ) : (
         <p className="text-sm text-gray-400">No se pudo cargar la información de formación.</p>
       )}
+    </>
+  )
+}
+
+export default function FormacionPage() {
+  return (
+    <div className="mx-auto max-w-3xl px-4 py-8">
+      <h1 className="mb-1 text-2xl font-bold text-gray-900">Formación con impacto</h1>
+      <p className="mb-6 text-sm text-gray-500">
+        Cursos que mejoran la compatibilidad del perfil con las ocupaciones del mercado.
+      </p>
+      <Suspense fallback={<div className="h-24 animate-pulse rounded-lg bg-gray-100" />}>
+        <FormacionContent />
+      </Suspense>
     </div>
   )
 }
