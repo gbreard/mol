@@ -30,40 +30,48 @@ def get_supabase_client():
 
 
 def get_daily_counts(db_path, days=None):
-    """Lee conteos diarios por portal desde SQLite local"""
+    """Lee conteos diarios por portal desde SQLite local (ambos tipos de fecha)"""
     conn = sqlite3.connect(str(db_path))
 
-    where = ""
+    since_clause = ""
     if days:
         since = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')
-        where = f"WHERE fecha_publicacion >= '{since}'"
+        since_clause = f"AND fecha >= '{since}'"
 
-    # Ofertas por día y portal usando fecha_ultimo_visto (= fecha de scraping)
+    daily = []
+
+    # Tipo 1: por fecha de scraping (fecha_ultimo_visto)
     query = f"""
-        SELECT
-            DATE(fecha_ultimo_visto) as fecha,
-            COALESCE(portal, 'desconocido') as portal,
-            COUNT(*) as ofertas_nuevas
+        SELECT DATE(fecha_ultimo_visto) as fecha, COALESCE(portal, 'desconocido') as portal, COUNT(*) as cnt
         FROM ofertas
-        WHERE fecha_ultimo_visto IS NOT NULL
-        {'AND DATE(fecha_ultimo_visto) >= ' + repr(since) if days else ''}
+        WHERE fecha_ultimo_visto IS NOT NULL {since_clause.replace('fecha', 'DATE(fecha_ultimo_visto)')}
         GROUP BY fecha, portal
         HAVING fecha IS NOT NULL
         ORDER BY fecha, portal
     """
-    cursor = conn.execute(query)
-    results = cursor.fetchall()
-
-    # Calcular acumulados
-    acumulados = {}
-    daily = []
-    for fecha, portal, count in results:
-        acumulados[portal] = acumulados.get(portal, 0) + count
+    acum = {}
+    for fecha, portal, count in conn.execute(query).fetchall():
+        acum[portal] = acum.get(portal, 0) + count
         daily.append({
-            'fecha': fecha,
-            'portal': portal,
-            'ofertas_nuevas': count,
-            'ofertas_acumuladas': acumulados[portal],
+            'fecha': fecha, 'portal': portal, 'fecha_tipo': 'scraping',
+            'ofertas_nuevas': count, 'ofertas_acumuladas': acum[portal],
+        })
+
+    # Tipo 2: por fecha de publicación
+    query = f"""
+        SELECT DATE(fecha_publicacion_iso) as fecha, COALESCE(portal, 'desconocido') as portal, COUNT(*) as cnt
+        FROM ofertas
+        WHERE fecha_publicacion_iso IS NOT NULL {since_clause.replace('fecha', 'DATE(fecha_publicacion_iso)')}
+        GROUP BY fecha, portal
+        HAVING fecha IS NOT NULL
+        ORDER BY fecha, portal
+    """
+    acum = {}
+    for fecha, portal, count in conn.execute(query).fetchall():
+        acum[portal] = acum.get(portal, 0) + count
+        daily.append({
+            'fecha': fecha, 'portal': portal, 'fecha_tipo': 'publicacion',
+            'ofertas_nuevas': count, 'ofertas_acumuladas': acum[portal],
         })
 
     conn.close()
@@ -79,7 +87,7 @@ def sync_to_supabase(daily_data):
     total = 0
     for i in range(0, len(daily_data), batch_size):
         batch = daily_data[i:i + batch_size]
-        client.table('scraping_daily').upsert(batch, on_conflict='fecha,portal').execute()
+        client.table('scraping_daily').upsert(batch, on_conflict='fecha,portal,fecha_tipo').execute()
         total += len(batch)
         print(f"  Upsert {total}/{len(daily_data)}")
 

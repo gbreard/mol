@@ -7,10 +7,11 @@
 CREATE TABLE IF NOT EXISTS scraping_daily (
   fecha DATE NOT NULL,
   portal TEXT NOT NULL,
+  fecha_tipo TEXT NOT NULL DEFAULT 'scraping',  -- 'scraping' o 'publicacion'
   ofertas_nuevas INT NOT NULL DEFAULT 0,
   ofertas_acumuladas INT NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  PRIMARY KEY (fecha, portal)
+  PRIMARY KEY (fecha, portal, fecha_tipo)
 );
 
 -- RLS
@@ -25,7 +26,8 @@ CREATE POLICY "Solo service_role modifica scraping_daily" ON scraping_daily
 -- RPC para leer historial de scraping crudo
 CREATE OR REPLACE FUNCTION get_scraping_daily(
   p_days int DEFAULT 14,
-  p_portal text DEFAULT NULL
+  p_portal text DEFAULT NULL,
+  p_fecha_tipo text DEFAULT 'scraping'
 )
 RETURNS json
 LANGUAGE plpgsql
@@ -43,6 +45,7 @@ BEGIN
       'hasta', CURRENT_DATE,
       'dias', p_days
     ),
+    'tipo_fecha', p_fecha_tipo,
     'fuente', 'scraping_daily (datos crudos BD local)'
   )
   INTO v_result
@@ -53,6 +56,7 @@ BEGIN
       json_object_agg(portal, ofertas_nuevas) as por_portal
     FROM scraping_daily
     WHERE fecha >= CURRENT_DATE - (p_days || ' days')::interval
+      AND fecha_tipo = p_fecha_tipo
       AND (p_portal IS NULL OR portal = p_portal)
     GROUP BY fecha
   ) d;

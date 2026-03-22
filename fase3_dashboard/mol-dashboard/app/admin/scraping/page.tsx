@@ -137,18 +137,11 @@ export default function ScrapingPage() {
 
   async function loadHistory() {
     if (!supabase) return;
-    if (fechaTipo === 'scraping') {
-      // Datos crudos de BD local (scraping_daily)
-      const { data: dailyData } = await supabase.rpc('get_scraping_daily', { p_days: periodoOfertas });
-      setHistory((dailyData as any)?.dias || []);
-    } else {
-      // Fecha publicación — usa ofertas_dashboard (solo procesadas, es lo que hay)
-      const { data: histData } = await supabase.rpc('get_scraping_history', {
-        p_days: periodoOfertas,
-        p_fecha_tipo: 'publicacion',
-      });
-      setHistory((histData as any)?.dias || []);
-    }
+    const { data: dailyData } = await supabase.rpc('get_scraping_daily', {
+      p_days: periodoOfertas,
+      p_fecha_tipo: fechaTipo,
+    });
+    setHistory((dailyData as any)?.dias || []);
   }
 
   useEffect(() => { loadData(); }, []);
