@@ -2,17 +2,14 @@
 -- RPC: get_scraping_stats()
 -- Bloque H1a — estadísticas de scraping por portal
 --
--- Lee ofertas_dashboard para obtener:
---   - Conteo por portal
---   - Última fecha de publicación por portal
---   - Ofertas de los últimos 7 días por portal
---   - Detección de anomalías (portal sin datos >3 días o caída >50%)
+-- FUENTE DE VERDAD: sistema_estado (reflejo de BD local con TODAS las ofertas)
+-- ofertas_dashboard solo tiene las procesadas, NO es la fuente para scraping.
 --
--- RPC: get_scraping_history(p_days int)
--- Bloque H1b — serie temporal de ofertas por día y portal
+-- RPC: get_scraping_history(p_days, p_fecha_tipo)
+-- Bloque H1b — serie temporal (usa ofertas_dashboard porque es lo que hay en Supabase)
 -- ============================================================
 
--- H1a: Stats por portal
+-- H1a: Stats por portal (desde sistema_estado, no ofertas_dashboard)
 CREATE OR REPLACE FUNCTION get_scraping_stats()
 RETURNS json
 LANGUAGE plpgsql
@@ -22,43 +19,77 @@ SET statement_timeout = '8s'
 AS $$
 DECLARE
   v_result json;
+  v_estado record;
   v_portales json;
   v_alertas json;
   v_totales json;
+  v_portal_key text;
+  v_portal_count int;
 BEGIN
-  -- Stats por portal
-  SELECT COALESCE(json_agg(row_to_json(p) ORDER BY p.total DESC), '[]'::json)
+  -- Leer último estado del sistema (viene de BD local, tiene TODAS las ofertas)
+  SELECT * INTO v_estado
+  FROM sistema_estado
+  ORDER BY timestamp DESC
+  LIMIT 1;
+
+  IF v_estado IS NULL THEN
+    RETURN json_build_object('error', 'No hay datos de estado del sistema');
+  END IF;
+
+  -- Portales desde fase1_fuentes (BD local, todas las ofertas scrapeadas)
+  SELECT COALESCE(json_agg(
+    json_build_object(
+      'portal', p.key,
+      'total', p.value::int,
+      'porcentaje', ROUND((p.value::numeric / GREATEST(v_estado.fase1_ofertas_totales, 1)) * 100, 1)
+    ) ORDER BY p.value::int DESC
+  ), '[]'::json)
+  INTO v_portales
+  FROM jsonb_each_text(v_estado.fase1_fuentes::jsonb) p;
+
+  -- Enriquecer portales con datos de ofertas_dashboard (fechas de publicación y scraping)
+  -- para los portales que SÍ tienen ofertas procesadas
+  SELECT COALESCE(json_agg(row_to_json(enriched) ORDER BY enriched.total DESC), '[]'::json)
   INTO v_portales
   FROM (
     SELECT
-      portal,
-      COUNT(*) as total,
-      COUNT(*) FILTER (WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '7 days') as ultimos_7d,
-      COUNT(*) FILTER (WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '1 day') as hoy,
-      MAX(fecha_publicacion) as ultima_publicacion,
-      MAX(created_at::date) as ultimo_scraping,
-      (CURRENT_DATE - MAX(fecha_publicacion))::int as dias_sin_publicacion,
-      (CURRENT_DATE - MAX(created_at::date))::int as dias_sin_scraping,
-      ROUND(COUNT(*)::numeric / GREATEST(NULLIF((SELECT COUNT(*) FROM ofertas_dashboard), 0), 1) * 100, 1) as porcentaje
-    FROM ofertas_dashboard
-    WHERE portal IS NOT NULL
-    GROUP BY portal
-  ) p;
+      p.key as portal,
+      p.value::int as total,
+      ROUND((p.value::numeric / GREATEST(v_estado.fase1_ofertas_totales, 1)) * 100, 1) as porcentaje,
+      COALESCE(od.ultima_publicacion, v_estado.fase1_ultimo_scraping) as ultima_publicacion,
+      COALESCE(od.ultimo_scraping, v_estado.fase1_ultimo_scraping) as ultimo_scraping,
+      COALESCE((CURRENT_DATE - od.ultima_publicacion)::int, v_estado.fase1_dias_desde_scraping) as dias_sin_publicacion,
+      COALESCE((CURRENT_DATE - od.ultimo_scraping)::int, v_estado.fase1_dias_desde_scraping) as dias_sin_scraping,
+      COALESCE(od.ultimos_7d, 0) as ultimos_7d,
+      COALESCE(od.hoy, 0) as hoy,
+      COALESCE(od.en_dashboard, 0) as en_dashboard
+    FROM jsonb_each_text(v_estado.fase1_fuentes::jsonb) p
+    LEFT JOIN (
+      SELECT
+        portal,
+        MAX(fecha_publicacion) as ultima_publicacion,
+        MAX(created_at::date) as ultimo_scraping,
+        COUNT(*) FILTER (WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '7 days') as ultimos_7d,
+        COUNT(*) FILTER (WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '1 day') as hoy,
+        COUNT(*) as en_dashboard
+      FROM ofertas_dashboard
+      WHERE portal IS NOT NULL
+      GROUP BY portal
+    ) od ON od.portal = p.key
+  ) enriched;
 
-  -- Totales generales
-  SELECT json_build_object(
-    'total_ofertas', COUNT(*),
-    'total_activas', COUNT(*) FILTER (WHERE estado = 'activa' OR estado IS NULL),
-    'portales_activos', COUNT(DISTINCT portal),
-    'ultima_fecha_global', MAX(fecha_publicacion),
-    'dias_sin_datos_global', (CURRENT_DATE - MAX(fecha_publicacion))::int,
-    'ofertas_7d', COUNT(*) FILTER (WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '7 days'),
-    'ofertas_30d', COUNT(*) FILTER (WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '30 days')
-  )
-  INTO v_totales
-  FROM ofertas_dashboard;
+  -- Totales (desde sistema_estado, no ofertas_dashboard)
+  v_totales := json_build_object(
+    'total_ofertas', v_estado.fase1_ofertas_totales,
+    'total_activas', v_estado.fase1_ofertas_activas,
+    'portales_activos', (SELECT COUNT(*) FROM jsonb_each_text(v_estado.fase1_fuentes::jsonb)),
+    'ultimo_scraping', v_estado.fase1_ultimo_scraping,
+    'dias_desde_scraping', v_estado.fase1_dias_desde_scraping,
+    'en_dashboard', (SELECT COUNT(*) FROM ofertas_dashboard),
+    'sin_procesar', v_estado.fase2_sin_nlp
+  );
 
-  -- H1c: Detección de anomalías por portal
+  -- Alertas
   SELECT COALESCE(json_agg(
     json_build_object(
       'nivel', a.nivel,
@@ -69,79 +100,44 @@ BEGIN
   ), '[]'::json)
   INTO v_alertas
   FROM (
-    -- Portal sin scraping hace más de 3 días
+    -- Scraping global atrasado
     SELECT
-      CASE WHEN dias_sin_scrape > 7 THEN 'error' ELSE 'warning' END as nivel,
-      portal,
-      portal || ' sin scraping hace ' || dias_sin_scrape || ' dias' as mensaje,
-      'Ultimo scraping: ' || ultimo_scrape || ' | Ultima publicacion: ' || ultima_pub as detalle
-    FROM (
-      SELECT
-        portal,
-        MAX(created_at::date) as ultimo_scrape,
-        MAX(fecha_publicacion) as ultima_pub,
-        (CURRENT_DATE - MAX(created_at::date))::int as dias_sin_scrape
-      FROM ofertas_dashboard
-      WHERE portal IS NOT NULL
-      GROUP BY portal
-      HAVING (CURRENT_DATE - MAX(created_at::date))::int > 3
-    ) inactivos
+      CASE WHEN v_estado.fase1_dias_desde_scraping > 7 THEN 'error' ELSE 'warning' END as nivel,
+      'global' as portal,
+      'Scraping general sin ejecutar hace ' || v_estado.fase1_dias_desde_scraping || ' dias' as mensaje,
+      'Ultimo: ' || v_estado.fase1_ultimo_scraping as detalle
+    WHERE v_estado.fase1_dias_desde_scraping > 3
 
     UNION ALL
 
-    -- Portal con caída >50% vs semana anterior (solo si tiene datos recientes,
-    -- si no ya lo cubre la alerta de "sin datos hace X días")
+    -- Ofertas sin procesar
     SELECT
-      'warning',
-      portal,
-      portal || ': caida del ' || pct_caida || '% vs semana anterior',
-      'Sem actual: ' || sem_actual || ', Sem anterior: ' || sem_anterior
-    FROM (
-      SELECT
-        portal,
-        COUNT(*) FILTER (WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '7 days') as sem_actual,
-        COUNT(*) FILTER (WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '14 days'
-                         AND fecha_publicacion < CURRENT_DATE - INTERVAL '7 days') as sem_anterior,
-        (CURRENT_DATE - MAX(fecha_publicacion))::int as dias_inactivo,
-        CASE
-          WHEN COUNT(*) FILTER (WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '14 days'
-                                AND fecha_publicacion < CURRENT_DATE - INTERVAL '7 days') > 0
-          THEN ROUND(
-            (1 - COUNT(*) FILTER (WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '7 days')::numeric /
-             COUNT(*) FILTER (WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '14 days'
-                              AND fecha_publicacion < CURRENT_DATE - INTERVAL '7 days')
-            ) * 100
-          )
-          ELSE 0
-        END as pct_caida
-      FROM ofertas_dashboard
-      WHERE portal IS NOT NULL
-      GROUP BY portal
-    ) cambios
-    WHERE pct_caida > 50 AND pct_caida < 100 AND sem_anterior > 10 AND dias_inactivo <= 3
+      CASE WHEN v_estado.fase2_sin_nlp > 1000 THEN 'error' ELSE 'warning' END,
+      'pipeline',
+      v_estado.fase2_sin_nlp || ' ofertas scrapeadas sin procesar (NLP pendiente)',
+      'En dashboard: ' || (SELECT COUNT(*) FROM ofertas_dashboard) || ' / ' || v_estado.fase1_ofertas_totales || ' total'
+    WHERE v_estado.fase2_sin_nlp > 0
 
     UNION ALL
 
-    -- Portal scrapeado recientemente pero sin ofertas nuevas
-    -- (scraping funciona pero no trae datos — posible bloqueo o scraper roto)
+    -- Portal con brecha entre scraping y publicación
+    -- (se scrapeó pero no trae ofertas nuevas)
     SELECT
       'warning',
-      portal,
-      portal || ': scrapeado pero sin ofertas nuevas (ultima publicacion hace ' || dias_pub || ' dias)',
-      'Ultimo scraping: ' || ultimo_scrape || ' | Ultima publicacion: ' || ultima_pub
+      od.portal,
+      od.portal || ': ultima publicacion hace ' || (CURRENT_DATE - od.ultima_pub)::int || ' dias pese a scraping reciente',
+      'Ultimo scraping: ' || od.ultimo_scr || ' | Ultima publicacion: ' || od.ultima_pub
     FROM (
       SELECT
         portal,
-        MAX(created_at::date) as ultimo_scrape,
-        MAX(fecha_publicacion) as ultima_pub,
-        (CURRENT_DATE - MAX(created_at::date))::int as dias_scrape,
-        (CURRENT_DATE - MAX(fecha_publicacion))::int as dias_pub
+        MAX(created_at::date) as ultimo_scr,
+        MAX(fecha_publicacion) as ultima_pub
       FROM ofertas_dashboard
       WHERE portal IS NOT NULL
       GROUP BY portal
-    ) brecha
-    -- Scrapeado en los últimos 3 días pero sin publicaciones en los últimos 7
-    WHERE dias_scrape <= 3 AND dias_pub > 7
+    ) od
+    WHERE (CURRENT_DATE - od.ultimo_scr)::int <= 3
+      AND (CURRENT_DATE - od.ultima_pub)::int > 7
   ) a;
 
   -- Resultado
@@ -158,6 +154,7 @@ $$;
 
 -- H1b: Historia diaria por portal
 -- p_fecha_tipo: 'publicacion' (default) o 'scraping'
+-- NOTA: usa ofertas_dashboard (solo procesadas) porque es lo disponible en Supabase
 CREATE OR REPLACE FUNCTION get_scraping_history(
   p_days int DEFAULT 14,
   p_fecha_tipo text DEFAULT 'publicacion'
@@ -172,7 +169,6 @@ DECLARE
   v_result json;
 BEGIN
   IF p_fecha_tipo = 'scraping' THEN
-    -- Agrupar por fecha de scraping (created_at)
     SELECT json_build_object(
       'dias', COALESCE(json_agg(row_to_json(d) ORDER BY d.fecha), '[]'::json),
       'periodo', json_build_object(
@@ -180,7 +176,8 @@ BEGIN
         'hasta', CURRENT_DATE,
         'dias', p_days
       ),
-      'tipo_fecha', 'scraping'
+      'tipo_fecha', 'scraping',
+      'nota', 'Solo ofertas procesadas (en Supabase). Ofertas sin NLP no aparecen.'
     )
     INTO v_result
     FROM (
@@ -201,7 +198,6 @@ BEGIN
       GROUP BY fecha
     ) d;
   ELSE
-    -- Agrupar por fecha de publicación (default)
     SELECT json_build_object(
       'dias', COALESCE(json_agg(row_to_json(d) ORDER BY d.fecha), '[]'::json),
       'periodo', json_build_object(
@@ -209,7 +205,8 @@ BEGIN
         'hasta', CURRENT_DATE,
         'dias', p_days
       ),
-      'tipo_fecha', 'publicacion'
+      'tipo_fecha', 'publicacion',
+      'nota', 'Solo ofertas procesadas (en Supabase). Ofertas sin NLP no aparecen.'
     )
     INTO v_result
     FROM (

@@ -25,6 +25,7 @@ interface PortalStats {
   dias_sin_publicacion: number;
   dias_sin_scraping: number;
   porcentaje: number;
+  en_dashboard: number;
 }
 
 interface HistoryDay {
@@ -43,6 +44,10 @@ interface ScrapingData {
     dias_sin_datos_global: number;
     ofertas_7d: number;
     ofertas_30d: number;
+    en_dashboard: number;
+    sin_procesar: number;
+    ultimo_scraping: string;
+    dias_desde_scraping: number;
   };
   alertas: { nivel: string; portal: string; mensaje: string; detalle: string }[];
 }
@@ -161,7 +166,10 @@ export default function ScrapingPage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Scraping — Portales</h1>
           <p className="text-gray-500 text-sm mt-1">
-            {totales.portales_activos} fuentes — {totales.total_ofertas.toLocaleString()} ofertas totales
+            {totales.portales_activos} fuentes — {totales.total_ofertas.toLocaleString()} ofertas scrapeadas
+            {totales.sin_procesar > 0 && (
+              <span className="text-amber-600 ml-1">({totales.sin_procesar.toLocaleString()} sin procesar)</span>
+            )}
           </p>
         </div>
         <button onClick={loadData} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">
@@ -209,10 +217,14 @@ export default function ScrapingPage() {
                 <StatusIcon className={`w-5 h-5 ${statusColor}`} />
               </div>
 
-              <div className="grid grid-cols-2 gap-3 text-center">
+              <div className="grid grid-cols-3 gap-2 text-center">
                 <div className="bg-gray-50 rounded-lg p-2">
                   <div className="text-lg font-bold text-gray-900">{portal.total.toLocaleString()}</div>
-                  <div className="text-xs text-gray-500">Total</div>
+                  <div className="text-xs text-gray-500">Scrapeadas</div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-2">
+                  <div className="text-lg font-bold text-gray-900">{portal.en_dashboard.toLocaleString()}</div>
+                  <div className="text-xs text-gray-500">Procesadas</div>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-2">
                   <div className="text-lg font-bold text-gray-900">{portal.ultimos_7d.toLocaleString()}</div>
