@@ -119,12 +119,12 @@ def run_scraping_portal(portal):
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     log_file = LOG_DIR / f'cmd_{portal}_{timestamp}.log'
 
-    # Cada portal tiene su propio script en scripts/scraping/
+    # Mismos comandos que usa el cron (run_scraping_vps.sh)
     portal_scripts = {
-        'bumeran': 'python3 01_sources/bumeran/scrapers/run_scraping_completo.py',
-        'zonajobs': 'python3 scripts/scraping/run_zonajobs_vps.py',
-        'computrabajo': 'python3 scripts/scraping/run_computrabajo_vps.py',
-        'indeed': 'python3 scripts/scraping/run_indeed_vps.py',
+        'bumeran': 'python3 run_scheduler.py --test',
+        'zonajobs': 'python3 scripts/scraping/run_zonajobs_vps.py --estrategia exhaustiva',
+        'computrabajo': 'python3 scripts/scraping/run_computrabajo_vps.py --estrategia exhaustiva --max-paginas 5',
+        'indeed': 'python3 scripts/scraping/run_indeed_vps.py --estrategia exhaustiva --fromage 14',
         'portalempleo': 'python3 scripts/scraping/run_portalempleo_vps.py',
         'caba': 'python3 scripts/scraping/run_caba_vps.py',
     }
@@ -135,6 +135,11 @@ def run_scraping_portal(portal):
 
     cmd = f'{script} 2>&1 | tee {log_file}'
     code, output = run_shell(cmd, timeout=7200)  # 2h max
+
+    # Post-scraping: export incremental para que sync lo traiga
+    if code == 0:
+        export_code, export_output = run_shell('python3 scripts/export_nuevas.py', timeout=300)
+        output += f'\n--- Export post-scraping ---\n{export_output}'
 
     # Contar ofertas del output
     ofertas = 0
