@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, RefreshCw, AlertCircle } from "lucide-react";
+import { Loader2, RefreshCw, AlertCircle, CheckCircle2, XCircle, Search, ChevronDown } from "lucide-react";
 import { VersionHistoryTable, PerfilVersion } from "./VersionHistoryTable";
 import { CreateVersionModal } from "./CreateVersionModal";
 import {
@@ -46,6 +46,11 @@ export function PerfilArgentinoAdmin() {
   const [error, setError] = useState<string | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [rollbackTarget, setRollbackTarget] = useState<PerfilVersion | null>(null);
+  const [showEmergentes, setShowEmergentes] = useState(false);
+  const [emergentes, setEmergentes] = useState<any[]>([]);
+  const [loadingEmergentes, setLoadingEmergentes] = useState(false);
+  const [emergentesFilter, setEmergentesFilter] = useState("");
+  const [procesando, setProcesando] = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -87,6 +92,54 @@ export function PerfilArgentinoAdmin() {
     setRollbackTarget(null);
     await loadData();
   };
+
+  const loadEmergentes = useCallback(async () => {
+    setLoadingEmergentes(true);
+    try {
+      const res = await fetch("/api/emergentes-pendientes?estado=pendiente");
+      if (res.ok) {
+        const json = await res.json();
+        setEmergentes(Array.isArray(json) ? json : []);
+      }
+    } catch (e) {
+      console.error("Error cargando emergentes:", e);
+    } finally {
+      setLoadingEmergentes(false);
+    }
+  }, []);
+
+  const handleEmergente = async (id: number, accion: "aprobar" | "rechazar") => {
+    setProcesando(`${id}-${accion}`);
+    try {
+      const res = await fetch("/api/emergentes-pendientes", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, accion }),
+      });
+      if (res.ok) {
+        setEmergentes(prev => prev.filter(e => e.id !== id));
+      }
+    } catch (e) {
+      console.error("Error:", e);
+    } finally {
+      setProcesando(null);
+    }
+  };
+
+  const toggleEmergentes = () => {
+    if (!showEmergentes && emergentes.length === 0) {
+      loadEmergentes();
+    }
+    setShowEmergentes(!showEmergentes);
+  };
+
+  const filteredEmergentes = emergentes.filter(e => {
+    if (!emergentesFilter) return true;
+    const term = emergentesFilter.toLowerCase();
+    return e.skill_label?.toLowerCase().includes(term) ||
+      e.isco_code?.includes(term) ||
+      e.ocupacion_label?.toLowerCase().includes(term);
+  });
 
   if (loading) {
     return (
@@ -151,14 +204,14 @@ export function PerfilArgentinoAdmin() {
           </p>
         </div>
         <div className="flex gap-2">
-          {estado_actual.emergentes_pendientes > 0 && (
-            <Button variant="outline" size="sm" className="relative">
-              Revisar emergentes
+          <Button variant="outline" size="sm" className="relative" onClick={toggleEmergentes}>
+            {showEmergentes ? 'Ocultar' : 'Revisar'} emergentes
+            {estado_actual.emergentes_pendientes > 0 && (
               <Badge className="ml-2 bg-red-500 text-white hover:bg-red-500 text-xs px-1.5 py-0">
-                {estado_actual.emergentes_pendientes}
+                {emergentes.length || estado_actual.emergentes_pendientes}
               </Badge>
-            </Button>
-          )}
+            )}
+          </Button>
           <Button size="sm" onClick={() => setShowCreateModal(true)}>
             Crear nueva versión
           </Button>
@@ -185,6 +238,88 @@ export function PerfilArgentinoAdmin() {
           <span className="font-medium">{estado_actual.skills_aprobadas_desde_corte}</span>
         </div>
       </div>
+
+      {/* Emergentes pendientes */}
+      {showEmergentes && (
+        <div className="rounded-md border border-amber-200 bg-amber-50 p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-amber-800">
+              Skills emergentes pendientes ({emergentes.length})
+            </h3>
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Filtrar..."
+                  value={emergentesFilter}
+                  onChange={e => setEmergentesFilter(e.target.value)}
+                  className="pl-7 pr-3 py-1.5 text-xs border rounded-md w-48"
+                />
+              </div>
+              <Button variant="ghost" size="sm" onClick={loadEmergentes} disabled={loadingEmergentes}>
+                <RefreshCw className={`h-3.5 w-3.5 ${loadingEmergentes ? 'animate-spin' : ''}`} />
+              </Button>
+            </div>
+          </div>
+
+          {loadingEmergentes ? (
+            <div className="flex justify-center py-8">
+              <Loader2 className="h-5 w-5 animate-spin text-amber-600" />
+            </div>
+          ) : filteredEmergentes.length === 0 ? (
+            <p className="text-sm text-amber-700 py-4 text-center">
+              {emergentes.length === 0 ? 'No hay emergentes pendientes' : 'Sin resultados para el filtro'}
+            </p>
+          ) : (
+            <div className="overflow-x-auto max-h-96 overflow-y-auto">
+              <table className="w-full text-sm">
+                <thead className="sticky top-0 bg-amber-50">
+                  <tr className="border-b border-amber-200">
+                    <th className="text-left py-2 pr-3 text-amber-700 font-medium">Skill</th>
+                    <th className="text-left py-2 px-3 text-amber-700 font-medium">ISCO</th>
+                    <th className="text-left py-2 px-3 text-amber-700 font-medium">Ocupacion</th>
+                    <th className="text-right py-2 px-3 text-amber-700 font-medium">Freq.</th>
+                    <th className="text-right py-2 px-3 text-amber-700 font-medium">Ofertas</th>
+                    <th className="text-center py-2 pl-3 text-amber-700 font-medium">Accion</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredEmergentes.map(e => (
+                    <tr key={e.id} className="border-b border-amber-100 hover:bg-amber-100/50">
+                      <td className="py-2 pr-3 text-gray-900 font-medium">{e.skill_label}</td>
+                      <td className="py-2 px-3 font-mono text-xs text-blue-700">{e.isco_code}</td>
+                      <td className="py-2 px-3 text-gray-600 text-xs max-w-xs truncate">{e.ocupacion_label}</td>
+                      <td className="py-2 px-3 text-right font-bold text-amber-700">{e.frecuencia_pct}%</td>
+                      <td className="py-2 px-3 text-right text-gray-600">{e.ofertas_count}/{e.total_ofertas_isco}</td>
+                      <td className="py-2 pl-3 text-center">
+                        <div className="flex items-center justify-center gap-1">
+                          <button
+                            onClick={() => handleEmergente(e.id, 'aprobar')}
+                            disabled={procesando !== null}
+                            className="p-1.5 text-green-600 hover:bg-green-100 rounded-md disabled:opacity-30"
+                            title="Aprobar"
+                          >
+                            {procesando === `${e.id}-aprobar` ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                          </button>
+                          <button
+                            onClick={() => handleEmergente(e.id, 'rechazar')}
+                            disabled={procesando !== null}
+                            className="p-1.5 text-red-400 hover:bg-red-100 rounded-md disabled:opacity-30"
+                            title="Rechazar"
+                          >
+                            {procesando === `${e.id}-rechazar` ? <Loader2 className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Historial */}
       <div className="space-y-2">

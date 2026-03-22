@@ -119,9 +119,27 @@ def run_scraping_portal(portal):
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     log_file = LOG_DIR / f'cmd_{portal}_{timestamp}.log'
 
-    # El scraping de cada portal está en run_scheduler.py
-    cmd = f'python3 run_scheduler.py --portal {portal} 2>&1 | tee {log_file}'
+    # Mismos comandos que usa el cron (run_scraping_vps.sh)
+    portal_scripts = {
+        'bumeran': 'python3 run_scheduler.py --test',
+        'zonajobs': 'python3 scripts/scraping/run_zonajobs_vps.py --estrategia exhaustiva',
+        'computrabajo': 'python3 scripts/scraping/run_computrabajo_vps.py --estrategia exhaustiva --max-paginas 5',
+        'indeed': 'python3 scripts/scraping/run_indeed_vps.py --estrategia exhaustiva --fromage 14',
+        'portalempleo': 'python3 scripts/scraping/run_portalempleo_vps.py',
+        'caba': 'python3 scripts/scraping/run_caba_vps.py',
+    }
+
+    script = portal_scripts.get(portal)
+    if not script:
+        return 1, f"Portal desconocido: {portal}. Válidos: {', '.join(portal_scripts.keys())}", {}
+
+    cmd = f'{script} 2>&1 | tee {log_file}'
     code, output = run_shell(cmd, timeout=7200)  # 2h max
+
+    # Post-scraping: export incremental para que sync lo traiga
+    if code == 0:
+        export_code, export_output = run_shell('python3 scripts/export_nuevas.py', timeout=300)
+        output += f'\n--- Export post-scraping ---\n{export_output}'
 
     # Contar ofertas del output
     ofertas = 0

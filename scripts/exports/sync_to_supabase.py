@@ -2517,6 +2517,21 @@ Ejemplos:
             except Exception as e:
                 logger.error(f"Error ejecutando generador de perfiles: {e}")
 
+            # PCA-3c: Recalcular emergentes después del sync
+            logger.info("\n" + "="*60)
+            logger.info("RECALCULANDO EMERGENTES (Bloque 9°)")
+            logger.info("="*60)
+            try:
+                emergentes_result = client.rpc('recalcular_emergentes').execute()
+                if emergentes_result.data:
+                    r = emergentes_result.data
+                    logger.info(f"  Nuevas/actualizadas: {r.get('nuevas_o_actualizadas', 0)}")
+                    logger.info(f"  Total pendientes: {r.get('total_pendientes', 0)}")
+                    logger.info(f"  Aprobadas: {r.get('total_aprobadas', 0)}")
+                    logger.info(f"  Rechazadas: {r.get('total_rechazadas', 0)}")
+            except Exception as e:
+                logger.warning(f"Error recalculando emergentes (no bloquea): {e}")
+
     except FileNotFoundError as e:
         logger.error(f"Archivo no encontrado: {e}")
         sys.exit(1)

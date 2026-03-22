@@ -45,6 +45,14 @@ export default function ReglasPage() {
   const [editData, setEditData] = useState<Partial<Regla>>({});
   const [hasChanges, setHasChanges] = useState(false);
   const [message, setMessage] = useState<{ type: 'ok' | 'error'; text: string } | null>(null);
+  const [showNewForm, setShowNewForm] = useState(false);
+  const [newRegla, setNewRegla] = useState({
+    nombre: '',
+    tituloContiene: '',
+    forzarIsco: '',
+    escoLabel: '',
+    forzarArea: '',
+  });
 
   async function loadConfig() {
     setLoading(true);
@@ -125,6 +133,31 @@ export default function ReglasPage() {
     if (!confirm(`¿Eliminar regla ${id}?`)) return;
     setReglas(prev => prev.filter(r => r.id !== id));
     setHasChanges(true);
+  }
+
+  function addNewRegla() {
+    if (!newRegla.nombre || !newRegla.tituloContiene || !newRegla.forzarIsco) {
+      alert('Completá nombre, título contiene e ISCO');
+      return;
+    }
+    const id = 'R' + (reglas.length + 1) + '_' + newRegla.nombre.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 30);
+    const keywords = newRegla.tituloContiene.split(',').map(k => k.trim().toLowerCase()).filter(Boolean);
+    const nueva: Regla = {
+      id,
+      nombre: newRegla.nombre,
+      prioridad: Math.max(...reglas.map(r => r.prioridad), 0) + 1,
+      condicion: keywords.length === 1
+        ? { titulo_contiene: keywords[0] }
+        : { titulo_contiene_alguno: keywords },
+      forzar_isco: newRegla.forzarIsco,
+      esco_label: newRegla.escoLabel || undefined,
+      forzar_area: newRegla.forzarArea || undefined,
+      activa: true,
+    };
+    setReglas(prev => [...prev, nueva]);
+    setHasChanges(true);
+    setShowNewForm(false);
+    setNewRegla({ nombre: '', tituloContiene: '', forzarIsco: '', escoLabel: '', forzarArea: '' });
   }
 
   function toggleRegla(id: string) {
@@ -216,6 +249,13 @@ export default function ReglasPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowNewForm(true)}
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm"
+          >
+            <Plus className="w-4 h-4" />
+            Nueva regla
+          </button>
           {hasChanges && (
             <button
               onClick={saveToSupabase}
@@ -239,6 +279,52 @@ export default function ReglasPage() {
         }`}>
           {message.type === 'ok' ? <CheckCircle2 className="w-5 h-5" /> : <AlertTriangle className="w-5 h-5" />}
           <span className="text-sm">{message.text}</span>
+        </div>
+      )}
+
+      {/* New rule form */}
+      {showNewForm && (
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-blue-900">Nueva regla de matching</h3>
+            <button onClick={() => setShowNewForm(false)} className="text-gray-400 hover:text-gray-600"><X className="w-5 h-5" /></button>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs text-gray-600 font-medium block mb-1">Nombre de la regla *</label>
+              <input value={newRegla.nombre} onChange={e => setNewRegla({...newRegla, nombre: e.target.value})}
+                placeholder="Ej: Gerente de Ventas" className="w-full border rounded-lg px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label className="text-xs text-gray-600 font-medium block mb-1">Titulo contiene * (separar con coma para varios)</label>
+              <input value={newRegla.tituloContiene} onChange={e => setNewRegla({...newRegla, tituloContiene: e.target.value})}
+                placeholder="Ej: gerente de ventas, director comercial" className="w-full border rounded-lg px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label className="text-xs text-gray-600 font-medium block mb-1">Forzar ISCO *</label>
+              <input value={newRegla.forzarIsco} onChange={e => setNewRegla({...newRegla, forzarIsco: e.target.value})}
+                placeholder="Ej: 1221" className="w-full border rounded-lg px-3 py-2 text-sm font-mono" />
+            </div>
+            <div>
+              <label className="text-xs text-gray-600 font-medium block mb-1">Label ESCO (opcional)</label>
+              <input value={newRegla.escoLabel} onChange={e => setNewRegla({...newRegla, escoLabel: e.target.value})}
+                placeholder="Ej: director comercial/directora comercial" className="w-full border rounded-lg px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label className="text-xs text-gray-600 font-medium block mb-1">Forzar area (opcional)</label>
+              <input value={newRegla.forzarArea} onChange={e => setNewRegla({...newRegla, forzarArea: e.target.value})}
+                placeholder="Ej: Comercial" className="w-full border rounded-lg px-3 py-2 text-sm" />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button onClick={addNewRegla} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">
+              <Plus className="w-4 h-4" /> Agregar regla
+            </button>
+            <button onClick={() => setShowNewForm(false)} className="px-4 py-2 text-gray-600 text-sm hover:bg-gray-100 rounded-lg">
+              Cancelar
+            </button>
+          </div>
+          <p className="text-xs text-blue-700">La regla se agrega a la lista. Hacé click en "Guardar cambios" para que el pipeline la use.</p>
         </div>
       )}
 
