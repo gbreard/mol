@@ -166,6 +166,66 @@ export const handlers = [
     })
   }),
 
+  // Catálogo MOL tables
+  http.get(`${SUPABASE_URL}/rest/v1/catalogo_mol_skills`, () => {
+    return HttpResponse.json([], { headers: { 'content-range': '0-0/0' } })
+  }),
+
+  http.post(`${SUPABASE_URL}/rest/v1/catalogo_mol_skills`, () => {
+    return HttpResponse.json({ id: 'mol-skill-test', label: 'Test', estado: 'detectada' }, { status: 201 })
+  }),
+
+  http.patch(`${SUPABASE_URL}/rest/v1/catalogo_mol_skills`, () => {
+    return HttpResponse.json({ id: 'mol-skill-test', estado: 'catalogada' })
+  }),
+
+  http.get(`${SUPABASE_URL}/rest/v1/catalogo_mol_ocupaciones`, () => {
+    return HttpResponse.json([], { headers: { 'content-range': '0-0/0' } })
+  }),
+
+  http.post(`${SUPABASE_URL}/rest/v1/catalogo_mol_ocupaciones`, () => {
+    return HttpResponse.json({ id: 'mol-occ-test', label: 'Test', estado: 'detectada' }, { status: 201 })
+  }),
+
+  http.patch(`${SUPABASE_URL}/rest/v1/catalogo_mol_ocupaciones`, () => {
+    return HttpResponse.json({ id: 'mol-occ-test', estado: 'catalogada' })
+  }),
+
+  http.get(`${SUPABASE_URL}/rest/v1/catalogo_mol_versiones`, () => {
+    return HttpResponse.json([])
+  }),
+
+  http.post(`${SUPABASE_URL}/rest/v1/catalogo_mol_versiones`, () => {
+    return HttpResponse.json({ id: 'uuid-v1', version: 'v1.0', total_skills: 0, total_ocupaciones: 0 }, { status: 201 })
+  }),
+
+  // RPC: get_unclassified_items
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_unclassified_items`, () => {
+    return HttpResponse.json({
+      total_ofertas: 15968,
+      unclassified_skills: [
+        { label: 'Docker Compose', frecuencia: 45, pct: 0.28 },
+        { label: 'Terraform', frecuencia: 12, pct: 0.08 },
+      ],
+      unclassified_skills_count: 2,
+      unclassified_titles: [
+        { label: 'Community Manager', frecuencia: 30, pct: 0.19, avg_score: 0.35, isco_mode: '2431' },
+      ],
+      unclassified_titles_count: 1,
+      min_frecuencia: 3,
+    })
+  }),
+
+  // RPC: get_catalogo_stats
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_catalogo_stats`, () => {
+    return HttpResponse.json({
+      skills: { total: 0, catalogadas: 0, en_revision: 0, detectadas: 0, descartadas: 0, por_tipo: {} },
+      ocupaciones: { total: 0, catalogadas: 0, en_revision: 0, detectadas: 0, descartadas: 0 },
+      versiones: [],
+      ultima_version: null,
+    })
+  }),
+
   // Issues table
   http.get(`${SUPABASE_URL}/rest/v1/issues`, () => {
     return HttpResponse.json([])
