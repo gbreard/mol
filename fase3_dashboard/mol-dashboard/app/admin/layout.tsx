@@ -83,6 +83,7 @@ const adminSections: MenuSection[] = [
     defaultOpen: true,
     items: [
       { href: "/admin/skills", label: "Skills Intelligence", icon: Target },
+      { href: "/admin/perfil-argentino", label: "Perfil Argentino", icon: Shield },
       { href: "/admin/laboratorio", label: "Laboratorio", icon: FlaskConical, matchMode: "startsWith" },
     ],
   },
