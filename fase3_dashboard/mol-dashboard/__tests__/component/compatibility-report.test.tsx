@@ -51,7 +51,8 @@ describe('CompatibilityReport', () => {
     // Entrar en modo edición
     fireEvent.click(screen.getByText('Editar'))
     // Quitar Docker (faltante) → required queda con 2 skills, covered 2 → 100%
-    fireEvent.click(screen.getByLabelText('Quitar Docker'))
+    // Desktop + mobile both render the button, pick the first one
+    fireEvent.click(screen.getAllByLabelText('Quitar Docker')[0])
     expect(screen.getByText('100%')).toBeInTheDocument()
     expect(screen.getByText('(recalculada)')).toBeInTheDocument()
   })
@@ -59,7 +60,7 @@ describe('CompatibilityReport', () => {
   it('restaurar vuelve al puntaje original', () => {
     render(<CompatibilityReport data={mockData} />)
     fireEvent.click(screen.getByText('Editar'))
-    fireEvent.click(screen.getByLabelText('Quitar Docker'))
+    fireEvent.click(screen.getAllByLabelText('Quitar Docker')[0])
     // Ahora aparece el botón restaurar
     fireEvent.click(screen.getByText('Restaurar original'))
     expect(screen.getByText('67%')).toBeInTheDocument()

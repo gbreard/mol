@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { requireAuth, isAuthError } from '@/lib/api-auth';
 
 let supabaseAdmin: SupabaseClient | null = null;
 
@@ -17,6 +18,9 @@ function getSupabaseAdmin(): SupabaseClient | null {
 // GET /api/inteligencia-local?jurisdiccion=CABA
 // Retorna: skills más demandadas vs disponibles + brechas + cursos faltantes
 export async function GET(request: NextRequest) {
+  const auth = await requireAuth(request);
+  if (isAuthError(auth)) return auth;
+
   const jurisdiccion = request.nextUrl.searchParams.get('jurisdiccion') || 'Capital Federal';
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });

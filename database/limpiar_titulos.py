@@ -72,18 +72,22 @@ import json
 import requests
 from pathlib import Path
 from typing import Dict, Any, List, Optional
+from config_loader import load_config
 
 base = Path(__file__).parent
 config_dir = base.parent / "config"
 
 
 def cargar_config() -> Dict[str, Any]:
-    """Carga configuracion desde JSON"""
-    config_path = config_dir / "nlp_titulo_limpieza.json"
-    if config_path.exists():
-        with open(config_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {}
+    """Carga config — override de Supabase o JSON local."""
+    try:
+        return load_config('nlp_titulo_limpieza')
+    except Exception:
+        config_path = config_dir / "nlp_titulo_limpieza.json"
+        if config_path.exists():
+            with open(config_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {}
 
 
 # Cargar config una vez al importar

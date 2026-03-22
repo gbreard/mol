@@ -8,6 +8,7 @@ import { mockRequerimientosRPC, mockSkillsResumenRPC, mockSidebarCountsRPC } fro
 import { mockPipelineStatusRPC } from './fixtures/pipeline-status'
 import { mockReconciliacionWarning } from './fixtures/reconciliacion'
 import { mockScrapingStatsRPC, mockScrapingHistoryRPC } from './fixtures/scraping-stats'
+import { mockPreviewImpact, mockSugerencias, mockConfigOverride, mockConfigUpsertResult } from './fixtures/config-editor'
 
 const SUPABASE_URL = 'https://test.supabase.co'
 
@@ -184,14 +185,14 @@ export const handlers = [
     return HttpResponse.json({
       activa: {
         id: 'uuid-1', version: 'v1.0', total_skills: 14257,
-        total_emergentes: 0, total_ocupaciones: 3046,
+        total_emergentes_aprobadas: 0, total_ocupaciones: 3046,
         nota: 'Version base ESCO', creado_por: 'admin@oede.gob.ar',
         activa: true, created_at: '2026-01-15T00:00:00Z',
       },
       versiones: [
         {
           id: 'uuid-1', version: 'v1.0', total_skills: 14257,
-          total_emergentes: 0, total_ocupaciones: 3046,
+          total_emergentes_aprobadas: 0, total_ocupaciones: 3046,
           nota: 'Version base ESCO', creado_por: 'admin@oede.gob.ar',
           activa: true, created_at: '2026-01-15T00:00:00Z',
         },
@@ -209,7 +210,7 @@ export const handlers = [
     return HttpResponse.json({
       version: {
         id: 'uuid-2', version: 'v1.1', total_skills: 14262,
-        total_emergentes: 5, total_ocupaciones: 3046,
+        total_emergentes_aprobadas: 5, total_ocupaciones: 3046,
         nota: 'Nueva version', creado_por: 'admin@oede.gob.ar',
         activa: true, created_at: '2026-03-21T00:00:00Z',
       },
@@ -374,6 +375,32 @@ export const handlers = [
         },
       ],
     })
+  }),
+
+  // RPC: preview_rule_impact
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/preview_rule_impact`, () => {
+    return HttpResponse.json(mockPreviewImpact)
+  }),
+
+  // RPC: get_rule_suggestions
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_rule_suggestions`, () => {
+    return HttpResponse.json(mockSugerencias)
+  }),
+
+  // PostgREST: config_overrides - GET (read override)
+  http.get(`${SUPABASE_URL}/rest/v1/config_overrides`, ({ request }) => {
+    const url = new URL(request.url)
+    const configKeyFilter = url.searchParams.get('config_key')
+    if (configKeyFilter && configKeyFilter.includes('matching_rules_business')) {
+      return HttpResponse.json(mockConfigOverride)
+    }
+    // No override found
+    return HttpResponse.json(null)
+  }),
+
+  // PostgREST: config_overrides - POST/PATCH (upsert)
+  http.post(`${SUPABASE_URL}/rest/v1/config_overrides`, () => {
+    return HttpResponse.json(mockConfigUpsertResult, { status: 201 })
   }),
 
   // Skills search

@@ -26,8 +26,9 @@ describe('TrainingTab', () => {
     render(<TrainingTab profileId="profile-1" />)
     await waitFor(() => screen.getByText('Docker para principiantes'))
     fireEvent.click(screen.getByText('Transición: por demanda'))
-    await waitFor(() => expect(screen.getByText('Analista DevOps')).toBeInTheDocument())
-    expect(screen.getByText('Ingeniero de datos')).toBeInTheDocument()
+    // Desktop + mobile both render the table, pick first match
+    await waitFor(() => expect(screen.getAllByText('Analista DevOps').length).toBeGreaterThanOrEqual(1))
+    expect(screen.getAllByText('Ingeniero de datos').length).toBeGreaterThanOrEqual(1)
   })
 
   it('switch a tab transicion por preferencia muestra input de busqueda', async () => {

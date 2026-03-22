@@ -74,6 +74,7 @@ const adminSections: MenuSection[] = [
           { href: "/admin/procesamiento/reglas", label: "Reglas Matching", icon: FileText },
           { href: "/admin/procesamiento/nlp-inference", label: "NLP Inference", icon: Activity },
           { href: "/admin/procesamiento/sinonimos", label: "Sinonimos ARG", icon: FileText },
+          { href: "/admin/procesamiento/oficios", label: "Oficios ARG", icon: FileText },
           { href: "/admin/procesamiento/editores", label: "Otros Editores", icon: Settings },
           { href: "/admin/validacion", label: "Validacion", icon: ClipboardCheck, matchMode: "startsWith" },
         ],

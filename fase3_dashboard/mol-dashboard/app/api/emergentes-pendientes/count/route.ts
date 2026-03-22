@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { requireAuth, isAuthError } from '@/lib/api-auth';
 
 let supabaseAdmin: SupabaseClient | null = null;
 
@@ -14,7 +15,10 @@ function getSupabaseAdmin(): SupabaseClient | null {
   return supabaseAdmin;
 }
 
-export async function GET(_request: NextRequest) {
+export async function GET(request: NextRequest) {
+  const auth = await requireAuth(request);
+  if (isAuthError(auth)) return auth;
+
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ count: 0 });
 
