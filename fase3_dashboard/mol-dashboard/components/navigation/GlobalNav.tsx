@@ -143,6 +143,7 @@ const ADMIN_SIDEBAR_SECTIONS: AdminSidebarSection[] = [
         matchPrefix: "/admin/scraping",
         items: [
           { href: "/admin/scraping", label: "Portales", icon: Database },
+          { href: "/admin/scraping/dinamica", label: "Dinamica", icon: Target },
           { href: "/admin/scraping/comandos", label: "Comandos", icon: Settings, matchMode: "startsWith" },
         ],
       },

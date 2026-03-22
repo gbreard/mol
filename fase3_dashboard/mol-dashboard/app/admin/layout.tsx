@@ -20,6 +20,7 @@ import {
   FlaskConical,
   ClipboardCheck,
   Activity,
+  TrendingUp,
 } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase/browser";
 import { GlobalNav } from "@/components/navigation/GlobalNav";
@@ -60,6 +61,7 @@ const adminSections: MenuSection[] = [
         matchPrefix: "/admin/scraping",
         items: [
           { href: "/admin/scraping", label: "Portales", icon: Database },
+          { href: "/admin/scraping/dinamica", label: "Dinamica", icon: TrendingUp },
           { href: "/admin/scraping/comandos", label: "Comandos", icon: Activity, matchMode: "startsWith" },
         ],
       },
