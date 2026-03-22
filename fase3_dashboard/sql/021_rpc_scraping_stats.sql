@@ -120,24 +120,28 @@ BEGIN
 
     UNION ALL
 
-    -- Portal con brecha entre scraping y publicación
-    -- (se scrapeó pero no trae ofertas nuevas)
+    -- Portal scrapeado recientemente pero sin ofertas nuevas
+    -- Usa scraping_daily (datos crudos) para detectar portales que no traen datos
     SELECT
       'warning',
-      od.portal,
-      od.portal || ': ultima publicacion hace ' || (CURRENT_DATE - od.ultima_pub)::int || ' dias pese a scraping reciente',
-      'Ultimo scraping: ' || od.ultimo_scr || ' | Ultima publicacion: ' || od.ultima_pub
+      sd.portal,
+      sd.portal || ': scrapeado el ' || sd.ultimo_dia || ' pero trajo solo ' || sd.ofertas_ultimo_dia || ' ofertas',
+      'Promedio diario: ' || sd.promedio_diario || ' | Ultimo dia: ' || sd.ofertas_ultimo_dia
     FROM (
       SELECT
         portal,
-        MAX(created_at::date) as ultimo_scr,
-        MAX(fecha_publicacion) as ultima_pub
-      FROM ofertas_dashboard
-      WHERE portal IS NOT NULL
+        MAX(fecha) as ultimo_dia,
+        (SELECT ofertas_nuevas FROM scraping_daily s2
+         WHERE s2.portal = scraping_daily.portal
+         ORDER BY fecha DESC LIMIT 1) as ofertas_ultimo_dia,
+        ROUND(AVG(ofertas_nuevas)) as promedio_diario
+      FROM scraping_daily
+      WHERE fecha >= CURRENT_DATE - INTERVAL '30 days'
       GROUP BY portal
-    ) od
-    WHERE (CURRENT_DATE - od.ultimo_scr)::int <= 3
-      AND (CURRENT_DATE - od.ultima_pub)::int > 7
+      HAVING MAX(fecha) >= CURRENT_DATE - INTERVAL '3 days'
+    ) sd
+    WHERE sd.ofertas_ultimo_dia = 0
+      OR (sd.promedio_diario > 100 AND sd.ofertas_ultimo_dia < sd.promedio_diario * 0.2)
   ) a;
 
   -- Resultado

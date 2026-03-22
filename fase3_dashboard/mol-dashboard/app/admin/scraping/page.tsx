@@ -87,6 +87,7 @@ export default function ScrapingPage() {
 
   // Filtros del gráfico
   const [periodoOfertas, setPeriodoOfertas] = useState(365);
+  const [fechaTipo, setFechaTipo] = useState<'scraping' | 'publicacion'>('scraping');
   const [portalesVisibles, setPortalesVisibles] = useState<Set<string>>(new Set());
 
   // Todos los portales disponibles (del historial)
@@ -136,14 +137,22 @@ export default function ScrapingPage() {
 
   async function loadHistory() {
     if (!supabase) return;
-    const { data: dailyData } = await supabase.rpc('get_scraping_daily', {
-      p_days: periodoOfertas,
-    });
-    setHistory((dailyData as any)?.dias || []);
+    if (fechaTipo === 'scraping') {
+      // Datos crudos de BD local (scraping_daily)
+      const { data: dailyData } = await supabase.rpc('get_scraping_daily', { p_days: periodoOfertas });
+      setHistory((dailyData as any)?.dias || []);
+    } else {
+      // Fecha publicación — usa ofertas_dashboard (solo procesadas, es lo que hay)
+      const { data: histData } = await supabase.rpc('get_scraping_history', {
+        p_days: periodoOfertas,
+        p_fecha_tipo: 'publicacion',
+      });
+      setHistory((histData as any)?.dias || []);
+    }
   }
 
   useEffect(() => { loadData(); }, []);
-  useEffect(() => { loadHistory(); }, [periodoOfertas]);
+  useEffect(() => { loadHistory(); }, [periodoOfertas, fechaTipo]);
 
   if (loading) {
     return (
@@ -257,6 +266,26 @@ export default function ScrapingPage() {
           </div>
 
           <div className="flex items-center gap-4">
+            {/* Toggle fecha tipo */}
+            <div className="flex items-center bg-gray-100 rounded-lg p-0.5">
+              <button
+                onClick={() => setFechaTipo('scraping')}
+                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                  fechaTipo === 'scraping' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
+                }`}
+              >
+                Fecha scraping
+              </button>
+              <button
+                onClick={() => setFechaTipo('publicacion')}
+                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                  fechaTipo === 'publicacion' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
+                }`}
+              >
+                Fecha publicacion
+              </button>
+            </div>
+
             {/* Periodo */}
             <div className="flex items-center gap-1">
               {PERIODO_OPTIONS.map(opt => (
