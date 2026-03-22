@@ -137,6 +137,20 @@ export default function SkillsSunburst({
   filterType = 'all'
 }: SunburstProps) {
   const svgRef = useRef<SVGSVGElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(width);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect.width;
+      if (w) setContainerWidth(Math.min(w, width));
+    });
+    observer.observe(containerRef.current);
+    // Set initial size
+    setContainerWidth(Math.min(containerRef.current.offsetWidth || width, width));
+    return () => observer.disconnect();
+  }, [width]);
   const [internalData, setInternalData] = useState<HierarchyNode | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedNode, setSelectedNode] = useState<SelectedNode | null>(null);
@@ -265,7 +279,7 @@ export default function SkillsSunburst({
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
-    const radius = Math.min(width, height) / 2;
+    const radius = containerWidth / 2;
 
     // Crear jerarquia
     const hierarchy = d3.hierarchy<HierarchyNode>(data)
@@ -290,7 +304,7 @@ export default function SkillsSunburst({
     // Contenedor centrado
     const g = svg
       .append('g')
-      .attr('transform', `translate(${width / 2},${height / 2})`);
+      .attr('transform', `translate(${containerWidth / 2},${containerWidth / 2})`);
 
     // Total para calcular porcentajes
     const total = root.value || 1;
@@ -514,7 +528,7 @@ export default function SkillsSunburst({
       .style('fill', '#9ca3af')
       .text('Click para ver detalle');
 
-  }, [data, width, height, handleSegmentClick, highlightConfig, filterType, normalizedSearch]);
+  }, [data, containerWidth, handleSegmentClick, highlightConfig, filterType, normalizedSearch]);
 
   if (loading) {
     return (
@@ -529,12 +543,12 @@ export default function SkillsSunburst({
   }
 
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}>
       {/* SVG del Sunburst */}
       <svg
         ref={svgRef}
-        width={width}
-        height={height}
+        width={containerWidth}
+        height={containerWidth}
         className="mx-auto"
       />
 

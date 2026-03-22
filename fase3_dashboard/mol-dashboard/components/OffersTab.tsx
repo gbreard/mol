@@ -244,7 +244,7 @@ export default function OffersTab({ profileId, onGenerateReport }: Props) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Ver oferta: ${offer.titulo}`}
-              className="flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+              className="flex min-h-[44px] items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
             >
               <ExternalLink className="h-3.5 w-3.5" />
               Ver oferta
@@ -252,7 +252,7 @@ export default function OffersTab({ profileId, onGenerateReport }: Props) {
             {onGenerateReport && (
               <button
                 onClick={() => onGenerateReport(offer)}
-                className="flex items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 hover:bg-blue-100"
+                className="flex min-h-[44px] items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-2.5 text-sm font-medium text-blue-700 hover:bg-blue-100"
               >
                 <FileText className="h-3.5 w-3.5" />
                 Reporte

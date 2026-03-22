@@ -15,7 +15,7 @@ export type PerfilVersion = {
   id: string;
   version: string;
   total_skills: number;
-  total_emergentes: number;
+  total_emergentes_aprobadas: number;
   total_ocupaciones: number;
   nota: string | null;
   creado_por: string;
@@ -54,7 +54,7 @@ export function VersionHistoryTable({ versiones, onRollback }: Props) {
                 {v.total_skills.toLocaleString("es-AR")}
               </TableCell>
               <TableCell className="text-right">
-                {v.total_emergentes.toLocaleString("es-AR")} aprob.
+                {v.total_emergentes_aprobadas.toLocaleString("es-AR")} aprob.
               </TableCell>
               <TableCell className="text-gray-500 text-sm">
                 {v.creado_por}

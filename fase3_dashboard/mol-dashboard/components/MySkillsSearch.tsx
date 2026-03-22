@@ -858,15 +858,15 @@ export default function MySkillsSearch({
                   key={occ.id}
                   className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-gray-400 font-mono text-sm w-6">
+                        <span className="text-gray-400 font-mono text-sm w-6 shrink-0">
                           {index + 1}.
                         </span>
                         <span className="font-medium text-gray-900">{occ.label}</span>
                       </div>
-                      <div className="ml-8 mt-1 flex items-center gap-4 text-sm text-gray-500">
+                      <div className="ml-8 mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
                         <span className="font-mono">ISCO: {occ.isco}</span>
                         <span>
                           <Star className="w-3 h-3 inline text-green-500 fill-green-500" /> {occ.essentialCovered}/{occ.essentialTotal} esenciales
@@ -877,7 +877,7 @@ export default function MySkillsSearch({
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 ml-8 sm:ml-0">
                       <div className="text-right">
                         <div className={`text-lg font-bold ${
                           occ.matchScore >= 70 ? 'text-green-600' :

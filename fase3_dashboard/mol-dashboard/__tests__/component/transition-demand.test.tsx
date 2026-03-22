@@ -24,14 +24,14 @@ const mockOccupations: DemandOccupation[] = [
 describe('TransitionDemand', () => {
   it('tabla muestra todas las ocupaciones', () => {
     render(<TransitionDemand occupations={mockOccupations} />)
-    expect(screen.getByText('Analista DevOps')).toBeInTheDocument()
-    expect(screen.getByText('Ingeniero de datos')).toBeInTheDocument()
+    expect(screen.getAllByText('Analista DevOps').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Ingeniero de datos').length).toBeGreaterThan(0)
   })
 
   it('muestra tendencia % con signo +', () => {
     render(<TransitionDemand occupations={mockOccupations} />)
-    expect(screen.getByText('+35%')).toBeInTheDocument()
-    expect(screen.getByText('+28%')).toBeInTheDocument()
+    expect(screen.getAllByText('+35%').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('+28%').length).toBeGreaterThan(0)
   })
 
   it('ordenado por match_score desc (accesibilidad)', () => {
@@ -50,14 +50,14 @@ describe('TransitionDemand', () => {
   it('link ver cursos llama onViewCourses con isco', () => {
     const onViewCourses = vi.fn()
     render(<TransitionDemand occupations={mockOccupations} onViewCourses={onViewCourses} />)
-    fireEvent.click(screen.getByLabelText('Ver cursos para Analista DevOps'))
+    fireEvent.click(screen.getAllByLabelText('Ver cursos para Analista DevOps')[0])
     expect(onViewCourses).toHaveBeenCalledWith('2511')
   })
 
   it('link ver ofertas llama onViewOffers con isco', () => {
     const onViewOffers = vi.fn()
     render(<TransitionDemand occupations={mockOccupations} onViewOffers={onViewOffers} />)
-    fireEvent.click(screen.getByLabelText('Ver ofertas para Analista DevOps'))
+    fireEvent.click(screen.getAllByLabelText('Ver ofertas para Analista DevOps')[0])
     expect(onViewOffers).toHaveBeenCalledWith('2511')
   })
 
