@@ -150,8 +150,9 @@ const ADMIN_SIDEBAR_SECTIONS: AdminSidebarSection[] = [
       {
         label: "Procesamiento",
         icon: Settings,
-        matchPrefix: "/admin/validacion",
+        matchPrefix: "/admin/procesamiento",
         items: [
+          { href: "/admin/procesamiento", label: "Metricas", icon: BarChart3 },
           { href: "/admin/validacion", label: "Validacion", icon: ClipboardCheck, matchMode: "startsWith" },
         ],
       },

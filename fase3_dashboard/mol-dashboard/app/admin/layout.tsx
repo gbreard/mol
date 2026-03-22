@@ -68,8 +68,9 @@ const adminSections: MenuSection[] = [
       {
         label: "Procesamiento",
         icon: Activity,
-        matchPrefix: "/admin/validacion",
+        matchPrefix: "/admin/procesamiento",
         items: [
+          { href: "/admin/procesamiento", label: "Metricas", icon: TrendingUp },
           { href: "/admin/validacion", label: "Validacion", icon: ClipboardCheck, matchMode: "startsWith" },
         ],
       },
@@ -108,7 +109,9 @@ function DesktopAdminSidebar({ pathname }: { pathname: string }) {
     adminSections.forEach(s => {
       s.items.forEach(item => {
         if (isSubMenu(item)) {
-          init[item.label] = pathname.startsWith(item.matchPrefix);
+          init[item.label] = pathname.startsWith(item.matchPrefix) || item.items.some(i => {
+            return i.matchMode === "startsWith" ? pathname.startsWith(i.href) : pathname === i.href;
+          });
         }
       });
     });
