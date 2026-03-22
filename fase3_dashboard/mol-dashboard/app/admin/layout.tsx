@@ -21,6 +21,7 @@ import {
   ClipboardCheck,
   Activity,
   TrendingUp,
+  Zap,
 } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase/browser";
 import { GlobalNav } from "@/components/navigation/GlobalNav";
@@ -75,6 +76,7 @@ const adminSections: MenuSection[] = [
           { href: "/admin/procesamiento/nlp-inference", label: "NLP Inference", icon: Activity },
           { href: "/admin/procesamiento/sinonimos", label: "Sinonimos ARG", icon: FileText },
           { href: "/admin/procesamiento/oficios", label: "Oficios ARG", icon: FileText },
+          { href: "/admin/procesamiento/fine-tuning", label: "Fine-Tuning", icon: Zap },
           { href: "/admin/procesamiento/editores", label: "Otros Editores", icon: Settings },
           { href: "/admin/validacion", label: "Validacion", icon: ClipboardCheck, matchMode: "startsWith" },
         ],
