@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { UserSearch, Briefcase, Target } from "lucide-react";
+import { UserSearch, Briefcase, Target, Sparkles } from "lucide-react";
 
 const cards = [
   {
@@ -60,6 +60,21 @@ export default function OficinaEmpleoPage() {
             </Link>
           );
         })}
+      </div>
+
+      {/* S12: Primer ingreso */}
+      <div className="mt-8 rounded-xl border border-teal-200 bg-teal-50 p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <Sparkles className="h-5 w-5 text-teal-600 shrink-0" />
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium text-teal-900">¿Es tu primer ingreso?</p>
+          <p className="text-xs text-teal-700 mt-0.5">Cargá tu planilla de personas para empezar a usar el sistema.</p>
+        </div>
+        <Link
+          href="/oficina-empleo/onboarding"
+          className="shrink-0 inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700"
+        >
+          Empezar configuración
+        </Link>
       </div>
     </div>
   );
