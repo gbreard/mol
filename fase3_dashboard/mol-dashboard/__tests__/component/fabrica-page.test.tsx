@@ -16,6 +16,20 @@ function setupHandlers() {
     http.get('/api/pipeline-status', () => {
       return HttpResponse.json(mockPipelineStatusRPC)
     }),
+    http.get('/api/pipeline-local-status', () => {
+      return HttpResponse.json({
+        id: 'current', total_ofertas: 42485, nlp_procesadas: 38025, nlp_pendientes: 4460,
+        nlp_aprobados: 37776, nlp_bloqueados: 0, nlp_gate_aprobado_pct: 100,
+        matching_con: 37776, matching_sin: 0, validadas: 37776, errores_pendientes: 0,
+        en_supabase: 37776, pendientes_sync: 0,
+      })
+    }),
+    http.get('/api/scraping-live-stats', () => {
+      return HttpResponse.json({
+        total_ofertas: 29154,
+        portales: { bumeran: { total: 5516 }, computrabajo: { total: 16993 } },
+      })
+    }),
     http.get('/api/pipeline-commands', () => {
       return HttpResponse.json({
         commands: [

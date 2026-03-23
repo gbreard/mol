@@ -45,14 +45,16 @@ export default function FabricaPage() {
   const [loading, setLoading] = useState(true);
   const [executing, setExecuting] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: "ok" | "error"; text: string } | null>(null);
-  const [showLimitModal, setShowLimitModal] = useState<string | null>(null); // comando que espera limit
+  const [showLimitModal, setShowLimitModal] = useState<string | null>(null);
   const [limitInput, setLimitInput] = useState("500");
+  const [scrapingStats, setScrapingStats] = useState<{ total_ofertas: number; portales: Record<string, any>; ultimo_scraping?: string } | null>(null);
 
   const loadData = useCallback(async () => {
     try {
-      const [statusRes, cmdsRes] = await Promise.all([
+      const [statusRes, cmdsRes, scrapingRes] = await Promise.all([
         fetch("/api/pipeline-local-status"),
         fetch("/api/pipeline-commands?limit=10"),
+        fetch("/api/scraping-live-stats"),
       ]);
 
       if (statusRes.ok) {
@@ -63,6 +65,9 @@ export default function FabricaPage() {
       if (cmdsRes.ok) {
         const data = await cmdsRes.json();
         setCommands(data.commands || []);
+      }
+      if (scrapingRes.ok) {
+        setScrapingStats(await scrapingRes.json());
       }
     } catch {} finally {
       setLoading(false);
@@ -166,10 +171,10 @@ export default function FabricaPage() {
         {/* Pipeline nodes */}
         <div className="flex items-start gap-1 overflow-x-auto pb-4">
           <PipelineNode
-            id="scraping" label="SCRAPING" subtitle="6 portales" icon={Globe}
-            status={s?.nlp_pendientes && s.nlp_pendientes > 100 ? "warning" : "ok"}
-            metric={s?.total_ofertas?.toLocaleString("es-AR") || "—"}
-            metricLabel="ofertas"
+            id="scraping" label="SCRAPING" subtitle={`${Object.keys(scrapingStats?.portales || {}).length} portales`} icon={Globe}
+            status={scrapingStats?.total_ofertas ? "ok" : "idle"}
+            metric={scrapingStats?.total_ofertas?.toLocaleString("es-AR") || s?.total_ofertas?.toLocaleString("es-AR") || "—"}
+            metricLabel="ofertas VPS"
             actions={[
               { label: "Lanzar", icon: Play, onClick: () => window.open("/admin/scraping/comandos", "_self"), variant: "primary" },
               { label: "Estado", icon: Settings, onClick: () => window.open("/admin/scraping", "_self") },

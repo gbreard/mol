@@ -279,6 +279,25 @@ export const handlers = [
     })
   }),
 
+  // Scraping live stats
+  http.get(`${SUPABASE_URL}/rest/v1/scraping_live_stats`, () => {
+    return HttpResponse.json({
+      id: 'current', total_ofertas: 29154,
+      portales: { bumeran: { total: 5516 }, computrabajo: { total: 16993 }, zonajobs: { total: 3404 } },
+      ultimo_scraping: '2026-03-23T11:28:18Z',
+    })
+  }),
+
+  // Pipeline local status
+  http.get(`${SUPABASE_URL}/rest/v1/pipeline_local_status`, () => {
+    return HttpResponse.json({
+      id: 'current', total_ofertas: 42485, nlp_procesadas: 38025, nlp_pendientes: 4460,
+      nlp_aprobados: 37776, nlp_bloqueados: 0, nlp_gate_aprobado_pct: 100,
+      matching_con: 37776, matching_sin: 0, validadas: 37776, errores_pendientes: 0,
+      en_supabase: 37776, pendientes_sync: 0,
+    })
+  }),
+
   // Pipeline commands table
   http.get(`${SUPABASE_URL}/rest/v1/pipeline_commands`, () => {
     return HttpResponse.json([
