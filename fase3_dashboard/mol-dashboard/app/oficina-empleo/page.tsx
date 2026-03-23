@@ -59,7 +59,7 @@ export default function OficinaEmpleoPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {cards.map((card) => {
-          const isReady = ["/skills", "/oficina-empleo/formacion", "/oficina-empleo/benchmark", "/oficina-empleo/perfil-puesto"].includes(card.href);
+          const isReady = ["/skills", "/oficina-empleo/perfil", "/oficina-empleo/ofertas", "/oficina-empleo/formacion", "/oficina-empleo/benchmark", "/oficina-empleo/perfil-puesto"].includes(card.href);
           return (
             <Link
               key={card.href}
