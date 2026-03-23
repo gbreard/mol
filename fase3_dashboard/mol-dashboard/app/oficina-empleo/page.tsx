@@ -59,20 +59,12 @@ export default function OficinaEmpleoPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {cards.map((card) => {
-          const isReady = ["/skills", "/oficina-empleo/perfil", "/oficina-empleo/ofertas", "/oficina-empleo/formacion", "/oficina-empleo/benchmark", "/oficina-empleo/perfil-puesto"].includes(card.href);
           return (
             <Link
               key={card.href}
               href={card.href}
-              className={`group relative bg-white rounded-2xl border-2 p-6 hover:shadow-lg transition-all ${
-                isReady ? "border-teal-200 hover:border-teal-400" : "border-dashed border-gray-300 hover:border-teal-400"
-              }`}
+              className="group relative bg-white rounded-2xl border-2 border-teal-200 p-6 hover:border-teal-400 hover:shadow-lg transition-all"
             >
-              <span className={`absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
-                isReady ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
-              }`}>
-                {isReady ? "Disponible" : "Proximamente"}
-              </span>
               <div className="w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center mb-4">
                 <card.icon className="w-5 h-5 text-teal-600" />
               </div>
