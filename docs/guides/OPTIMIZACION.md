@@ -281,3 +281,46 @@ tests/
     ├── test_gold_set_manual.py
     └── test_precision.py
 ```
+
+---
+
+## Optimización en la Fábrica de Dos Líneas (2026-03-22)
+
+El sistema de procesamiento tiene dos líneas de optimización que se alimentan mutuamente:
+
+### Línea 1: Optimización inmediata (fabricación)
+
+Ciclo rápido — se resuelve en minutos:
+1. Pipeline detecta error (Gate NLP o Gate Matching)
+2. Auto-corrector intenta arreglar
+3. Si no puede → escala a cola de Claude
+4. Claude/humano crea regla en Diccionarios
+5. Reprocesa ofertas afectadas
+6. Error resuelto
+
+**Dónde se hace:** Fábrica (cola errores) + Diccionarios (crear reglas)
+
+### Línea 2: Optimización profunda (mejora continua)
+
+Ciclo lento — se acumula con el tiempo:
+1. Errores + correcciones humanas generan issues
+2. Issues resueltos generan training pairs (602+)
+3. Training pairs acumulan diversidad (103 ISCOs, 9/10 grupos)
+4. Cuando hay suficiente → fine-tuning del modelo
+5. Modelo mejorado → mejor clasificación → menos errores
+6. Skills/ocupaciones no clasificadas → Catálogo MOL
+7. Catálogo MOL + métricas → Perfil Argentino versionado
+
+**Dónde se hace:** Validación (correcciones) + Catálogo MOL (curación) + Perfil Argentino (publicación)
+
+### Cuándo usar cada línea
+
+| Situación | Línea | Acción |
+|-----------|-------|--------|
+| Error puntual en una oferta | L1 | Crear regla → reprocesar |
+| Patrón de error repetido (>5 ofertas) | L1 | Crear regla de negocio |
+| Modelo clasifica mal un sector completo | L2 | Acumular training pairs → fine-tune |
+| Skill nueva que ESCO no tiene | L2 | Catalogar en MOL → versionar perfil |
+| Título argentino sin ESCO equivalente | L1+L2 | Regla inmediata + catalogar ocupación MOL |
+
+> Detalle completo: `docs/plan/03_WIREFRAMES/fabrica-procesamiento.md`
