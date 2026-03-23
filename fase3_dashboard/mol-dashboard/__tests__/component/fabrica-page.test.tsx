@@ -100,7 +100,7 @@ describe('FabricaPage', () => {
     it('renders action buttons on nodes', async () => {
       render(<FabricaPage />)
       await waitFor(() => {
-        expect(screen.getByText('NLP 500')).toBeInTheDocument()
+        expect(screen.getByText('Procesar NLP')).toBeInTheDocument()
       })
       expect(screen.getAllByText('Config').length).toBeGreaterThan(0)
       expect(screen.getAllByText('Sync').length).toBeGreaterThan(0)

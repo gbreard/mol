@@ -38,6 +38,8 @@ export default function FabricaPage() {
   const [loading, setLoading] = useState(true);
   const [executing, setExecuting] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: "ok" | "error"; text: string } | null>(null);
+  const [showLimitModal, setShowLimitModal] = useState<string | null>(null); // comando que espera limit
+  const [limitInput, setLimitInput] = useState("500");
 
   const loadData = useCallback(async () => {
     try {
@@ -73,6 +75,18 @@ export default function FabricaPage() {
     return () => clearInterval(interval);
   }, [commands]);
 
+  function askLimit(comando: string) {
+    setShowLimitModal(comando);
+    setLimitInput("500");
+  }
+
+  function confirmLimit() {
+    if (!showLimitModal) return;
+    const limit = parseInt(limitInput) || 500;
+    setShowLimitModal(null);
+    executeCommand(showLimitModal, { limit });
+  }
+
   async function executeCommand(comando: string, params: any = {}) {
     setExecuting(comando);
     setMessage(null);
@@ -84,7 +98,7 @@ export default function FabricaPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      setMessage({ type: "ok", text: `Comando "${comando}" creado. El poller lo ejecutara en <1 min.` });
+      setMessage({ type: "ok", text: `Comando "${comando}" creado (${params.limit ? params.limit + ' ofertas' : ''}). El poller lo ejecutara en <1 min.` });
       loadData();
     } catch (e: any) {
       setMessage({ type: "error", text: e.message });
@@ -160,7 +174,7 @@ export default function FabricaPage() {
               metric={s?.nlp.pendientes?.toLocaleString("es-AR") || "0"}
               metricLabel="pendientes"
               actions={[
-                { label: "NLP 500", icon: Play, onClick: () => executeCommand("run_nlp", { limit: 500 }),
+                { label: "Procesar NLP", icon: Play, onClick: () => askLimit("run_nlp"),
                   variant: "primary", loading: isExecuting("run_nlp"), disabled: hasRunning },
                 { label: "Re-NLP", icon: RotateCw, onClick: () => executeCommand("reprocess_errors"),
                   disabled: hasRunning },
@@ -186,7 +200,7 @@ export default function FabricaPage() {
               metric={s?.matching.con_matching?.toLocaleString("es-AR") || "0"}
               metricLabel="matcheadas"
               actions={[
-                { label: "Match", icon: Play, onClick: () => executeCommand("run_matching", { limit: 500 }),
+                { label: "Match", icon: Play, onClick: () => askLimit("run_matching"),
                   variant: "primary", loading: isExecuting("run_matching"), disabled: hasRunning },
                 { label: "Re-M", icon: RotateCw, onClick: () => executeCommand("reapply_rules"),
                   disabled: hasRunning },
@@ -350,6 +364,47 @@ export default function FabricaPage() {
           </div>
         )}
       </div>
+
+      {/* Modal: cuántas ofertas procesar */}
+      {showLimitModal && (
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center" onClick={() => setShowLimitModal(null)}>
+          <div className="bg-white rounded-xl shadow-xl p-6 w-80" onClick={(e) => e.stopPropagation()}>
+            <h3 className="font-semibold text-gray-900 mb-2">
+              {showLimitModal === "run_nlp" ? "Procesar NLP" : showLimitModal === "run_matching" ? "Ejecutar Matching" : showLimitModal}
+            </h3>
+            <p className="text-sm text-gray-500 mb-4">Cuantas ofertas procesar?</p>
+            <div className="flex gap-2 mb-4">
+              {[100, 500, 1000, 2000].map(n => (
+                <button key={n} onClick={() => setLimitInput(String(n))}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                    limitInput === String(n) ? "bg-teal-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}>
+                  {n}
+                </button>
+              ))}
+            </div>
+            <input
+              type="number"
+              value={limitInput}
+              onChange={(e) => setLimitInput(e.target.value)}
+              className="w-full border rounded-lg px-3 py-2 text-sm mb-4"
+              placeholder="Cantidad personalizada"
+              min={1}
+              max={10000}
+            />
+            <div className="flex gap-2">
+              <button onClick={confirmLimit}
+                className="flex-1 bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal-700">
+                Ejecutar {limitInput} ofertas
+              </button>
+              <button onClick={() => setShowLimitModal(null)}
+                className="px-4 py-2 text-gray-500 text-sm hover:bg-gray-100 rounded-lg">
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
