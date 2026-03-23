@@ -134,14 +134,14 @@ describe('FabricaPage', () => {
       await waitFor(() => {
         expect(screen.getByText('Actividad reciente')).toBeInTheDocument()
       })
-      expect(screen.getByText('run_pipeline')).toBeInTheDocument()
-      expect(screen.getByText('sync_supabase')).toBeInTheDocument()
+      expect(screen.getByText('Pipeline completo')).toBeInTheDocument()
+      expect(screen.getByText('Sync Supabase')).toBeInTheDocument()
     })
 
     it('shows command status and duration', async () => {
       render(<FabricaPage />)
       await waitFor(() => {
-        expect(screen.getAllByText(/completado/).length).toBeGreaterThan(0)
+        expect(screen.getAllByText(/Completado/).length).toBeGreaterThan(0)
       })
     })
   })

@@ -27,6 +27,7 @@ interface Command {
   estado: string;
   log_preview?: string;
   resultado: any;
+  error_message?: string;
   creado_por: string;
   created_at: string;
   duracion_seg: number | null;
@@ -339,28 +340,50 @@ export default function FabricaPage() {
           <p className="text-sm text-gray-400 py-4 text-center">Sin comandos recientes</p>
         ) : (
           <div className="space-y-2">
-            {commands.slice(0, 8).map((cmd) => (
-              <div key={cmd.id} className="flex items-center gap-3 text-sm">
-                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                  cmd.estado === "completado" ? "bg-green-500" :
-                  cmd.estado === "ejecutando" ? "bg-blue-500 animate-pulse" :
-                  cmd.estado === "error" ? "bg-red-500" :
-                  cmd.estado === "pendiente" ? "bg-amber-500" : "bg-gray-300"
-                }`} />
-                <span className="text-gray-400 text-xs w-20 flex-shrink-0">
-                  {formatTime(cmd.created_at)}
-                </span>
-                <span className="font-mono text-xs text-blue-600 w-36 flex-shrink-0">{cmd.comando}</span>
-                <span className="text-gray-600 flex-1 truncate">
-                  {cmd.estado === "ejecutando" && <Loader2 className="w-3 h-3 animate-spin inline mr-1" />}
-                  {cmd.estado}
-                  {cmd.duracion_seg != null && ` · ${cmd.duracion_seg}s`}
-                  {cmd.resultado?.procesadas && ` · ${cmd.resultado.procesadas} procesadas`}
-                  {cmd.resultado?.errores && ` · ${cmd.resultado.errores} errores`}
-                </span>
-                <span className="text-xs text-gray-400 flex-shrink-0">{cmd.creado_por?.split("@")[0]}</span>
-              </div>
-            ))}
+            {commands.slice(0, 8).map((cmd) => {
+              const duration = cmd.duracion_seg != null ? formatDuration(cmd.duracion_seg) : null;
+              const isTimeout = cmd.error_message?.includes("Timeout");
+              return (
+                <div key={cmd.id} className="flex items-start gap-3 text-sm">
+                  <div className={`w-2 h-2 rounded-full flex-shrink-0 mt-1.5 ${
+                    cmd.estado === "completado" ? "bg-green-500" :
+                    cmd.estado === "ejecutando" ? "bg-blue-500 animate-pulse" :
+                    cmd.estado === "error" && isTimeout ? "bg-amber-500" :
+                    cmd.estado === "error" ? "bg-red-500" :
+                    cmd.estado === "pendiente" ? "bg-amber-500" : "bg-gray-300"
+                  }`} />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-400 text-xs">{formatTime(cmd.created_at)}</span>
+                      <span className="font-mono text-xs text-blue-600">{formatComando(cmd.comando)}</span>
+                      {cmd.params?.limit && <span className="text-xs text-gray-400">({cmd.params.limit} ofertas)</span>}
+                      <span className="text-xs text-gray-400 ml-auto">{cmd.creado_por?.split("@")[0]}</span>
+                    </div>
+                    <div className="text-xs mt-0.5">
+                      {cmd.estado === "ejecutando" && (
+                        <span className="text-blue-600"><Loader2 className="w-3 h-3 animate-spin inline mr-1" />Ejecutando...{duration && ` (${duration})`}</span>
+                      )}
+                      {cmd.estado === "completado" && (
+                        <span className="text-green-600">
+                          Completado{duration && ` en ${duration}`}
+                          {cmd.resultado?.procesadas && ` · ${cmd.resultado.procesadas} procesadas`}
+                          {cmd.resultado?.errores ? ` · ${cmd.resultado.errores} errores` : ""}
+                        </span>
+                      )}
+                      {cmd.estado === "pendiente" && (
+                        <span className="text-amber-600">Pendiente — esperando poller</span>
+                      )}
+                      {cmd.estado === "error" && isTimeout && (
+                        <span className="text-amber-600">Timeout ({duration}) — las ofertas procesadas antes del corte se guardaron en BD</span>
+                      )}
+                      {cmd.estado === "error" && !isTimeout && (
+                        <span className="text-red-600">{cmd.error_message || "Error desconocido"}</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
@@ -421,4 +444,30 @@ function formatTime(ts: string): string {
     if (diffH < 24) return `hace ${diffH}h`;
     return d.toLocaleDateString("es-AR", { day: "2-digit", month: "short" });
   } catch { return ts; }
+}
+
+function formatDuration(seconds: number): string {
+  if (seconds < 60) return `${Math.round(seconds)}s`;
+  if (seconds < 3600) return `${Math.round(seconds / 60)}min`;
+  const h = Math.floor(seconds / 3600);
+  const m = Math.round((seconds % 3600) / 60);
+  return `${h}h ${m}min`;
+}
+
+const COMANDO_LABELS: Record<string, string> = {
+  run_pipeline: "Pipeline completo",
+  run_nlp: "Procesar NLP",
+  run_matching: "Matching",
+  reprocess_errors: "Reprocesar errores",
+  revalidate_nlp: "Re-validar NLP",
+  revalidate_matching: "Re-validar Matching",
+  reapply_rules: "Reaplicar reglas",
+  export_excel: "Exportar Excel",
+  sync_supabase: "Sync Supabase",
+  sync_supabase_full: "Sync Full",
+  generate_training: "Generar training",
+};
+
+function formatComando(cmd: string): string {
+  return COMANDO_LABELS[cmd] || cmd;
 }
