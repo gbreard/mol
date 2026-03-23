@@ -45,7 +45,8 @@ describe('ExportButton', () => {
 
   it('alerts when data is empty', async () => {
     const user = userEvent.setup()
-    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {})
+    window.alert = vi.fn()
+    const alertSpy = window.alert as ReturnType<typeof vi.fn>
 
     render(
       <ExportButton data={[]} columns={mockColumns} filename="test" />
@@ -78,7 +79,8 @@ describe('QuickExportButton', () => {
 
   it('alerts when data is empty', async () => {
     const user = userEvent.setup()
-    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {})
+    window.alert = vi.fn()
+    const alertSpy = window.alert as ReturnType<typeof vi.fn>
 
     render(
       <QuickExportButton data={[]} columns={mockColumns} filename="test" />

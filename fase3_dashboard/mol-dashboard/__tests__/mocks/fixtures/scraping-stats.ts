@@ -1,11 +1,11 @@
 export const mockScrapingStatsRPC = {
   portales: [
-    { portal: 'computrabajo', total: 16019, ultimos_7d: 3200, hoy: 0, ultima_publicacion: '2026-03-12', ultimo_scraping: '2026-03-19', dias_sin_publicacion: 9, dias_sin_scraping: 2, porcentaje: 37.8 },
-    { portal: 'bumeran', total: 17530, ultimos_7d: 2800, hoy: 0, ultima_publicacion: '2026-03-12', ultimo_scraping: '2026-03-19', dias_sin_publicacion: 9, dias_sin_scraping: 2, porcentaje: 41.3 },
-    { portal: 'zonajobs', total: 5657, ultimos_7d: 1100, hoy: 0, ultima_publicacion: '2026-03-12', ultimo_scraping: '2026-03-19', dias_sin_publicacion: 9, dias_sin_scraping: 2, porcentaje: 13.3 },
-    { portal: 'indeed', total: 2735, ultimos_7d: 500, hoy: 0, ultima_publicacion: '2026-03-13', ultimo_scraping: '2026-03-19', dias_sin_publicacion: 8, dias_sin_scraping: 2, porcentaje: 6.4 },
-    { portal: 'portalempleo', total: 466, ultimos_7d: 80, hoy: 0, ultima_publicacion: '2026-03-13', ultimo_scraping: '2026-03-19', dias_sin_publicacion: 8, dias_sin_scraping: 2, porcentaje: 1.1 },
-    { portal: 'caba', total: 12, ultimos_7d: 0, hoy: 0, ultima_publicacion: '2026-03-01', ultimo_scraping: '2026-03-06', dias_sin_publicacion: 20, dias_sin_scraping: 15, porcentaje: 0.0 },
+    { portal: 'computrabajo', total: 16019, ultimos_7d: 3200, hoy: 0, ultima_publicacion: '2026-03-12', ultimo_scraping: '2026-03-19', dias_sin_publicacion: 9,  dias_sin_scraping: 2,  porcentaje: 37.8, en_dashboard: 15000 },
+    { portal: 'bumeran',      total: 17530, ultimos_7d: 2800, hoy: 0, ultima_publicacion: '2026-03-12', ultimo_scraping: '2026-03-19', dias_sin_publicacion: 9,  dias_sin_scraping: 2,  porcentaje: 41.3, en_dashboard: 16000 },
+    { portal: 'zonajobs',     total:  5657, ultimos_7d: 1100, hoy: 0, ultima_publicacion: '2026-03-12', ultimo_scraping: '2026-03-19', dias_sin_publicacion: 9,  dias_sin_scraping: 2,  porcentaje: 13.3, en_dashboard:  5000 },
+    { portal: 'indeed',       total:  2735, ultimos_7d:  500, hoy: 0, ultima_publicacion: '2026-03-13', ultimo_scraping: '2026-03-19', dias_sin_publicacion: 8,  dias_sin_scraping: 2,  porcentaje:  6.4, en_dashboard:  2500 },
+    { portal: 'portalempleo', total:   466, ultimos_7d:   80, hoy: 0, ultima_publicacion: '2026-03-13', ultimo_scraping: '2026-03-19', dias_sin_publicacion: 8,  dias_sin_scraping: 2,  porcentaje:  1.1, en_dashboard:   400 },
+    { portal: 'caba',         total:    12, ultimos_7d:    0, hoy: 0, ultima_publicacion: '2026-03-01', ultimo_scraping: '2026-03-06', dias_sin_publicacion: 20, dias_sin_scraping: 15, porcentaje:  0.0, en_dashboard:    10 },
   ],
   totales: {
     total_ofertas: 42419,
@@ -15,6 +15,10 @@ export const mockScrapingStatsRPC = {
     dias_sin_datos_global: 8,
     ofertas_7d: 7680,
     ofertas_30d: 25000,
+    en_dashboard: 38910,
+    sin_procesar: 3509,
+    ultimo_scraping: '2026-03-19',
+    dias_desde_scraping: 2,
   },
   alertas: [
     { nivel: 'error', portal: 'caba', mensaje: 'caba sin ofertas hace 20 dias', detalle: 'Ultima oferta: 2026-03-01' },

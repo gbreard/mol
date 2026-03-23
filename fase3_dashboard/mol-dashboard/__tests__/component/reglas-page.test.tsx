@@ -60,8 +60,10 @@ describe('ReglasPage', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     setupApiHandlers()
-    vi.spyOn(window, 'confirm').mockReturnValue(true)
-    vi.spyOn(window, 'alert').mockImplementation(() => {})
+    if (typeof window !== 'undefined') {
+      window.confirm = vi.fn().mockReturnValue(true)
+      window.alert = vi.fn()
+    }
   })
 
   describe('loading and initial render', () => {

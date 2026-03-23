@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireRateLimit } from '@/lib/api-auth';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { requireAuth, isAuthError } from '@/lib/api-auth';
 
 let supabaseAdmin: SupabaseClient | null = null;
 
@@ -18,8 +18,8 @@ function getSupabaseAdmin(): SupabaseClient | null {
 // GET /api/inteligencia-local?jurisdiccion=CABA
 // Retorna: skills más demandadas vs disponibles + brechas + cursos faltantes
 export async function GET(request: NextRequest) {
-  const auth = await requireAuth(request);
-  if (isAuthError(auth)) return auth;
+  const rateLimited = requireRateLimit(request, 'public')
+  if (rateLimited) return rateLimited
 
   const jurisdiccion = request.nextUrl.searchParams.get('jurisdiccion') || 'Capital Federal';
   const client = getSupabaseAdmin();
