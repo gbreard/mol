@@ -1,44 +1,105 @@
-# Wireframes: Fábrica de Procesamiento
+# Fábrica de Procesamiento — Diseño Completo
 
-> Rediseño del Bloque I (Procesamiento) como fábrica integrada.
-> Fecha: 2026-03-22
-
----
-
-## 1. Reorganización del Menú Sidebar
-
-### ANTES (9 items sueltos):
-```
-Procesamiento
-├── Metricas
-├── Reglas Matching
-├── NLP Inference
-├── Sinonimos ARG
-├── Oficios ARG
-├── Catalogo MOL
-├── Fine-Tuning
-├── Otros Editores
-└── Validacion
-```
-
-### DESPUÉS (4 items agrupados):
-```
-Procesamiento
-├── Fábrica           ← Vista principal: pipeline visual + control + cola
-├── Diccionarios      ← Todos los editores de config en tabs
-├── Catálogo MOL      ← Taxonomía propia (ciclo de vida)
-└── Validación        ← Panel de validación humana + issues
-```
-
-**Lógica:**
-- **Fábrica** = vista de gerente de planta (monitoreo + control + métricas)
-- **Diccionarios** = todos los configs editables en un solo lugar con tabs
-- **Catálogo MOL** = se mantiene aparte (tiene su propio ciclo de vida)
-- **Validación** = se mantiene aparte (es la estación de trabajo del analista)
+> Versión definitiva: 2026-03-22
+> Rediseño del Bloque I+G como fábrica integrada con dos líneas de proceso.
 
 ---
 
-## 2. Wireframe: FÁBRICA (vista principal)
+## 1. Modelo conceptual: Dos líneas de proceso
+
+La fábrica tiene dos procesos que se alimentan mutuamente:
+
+```
+═══════════════════════════════════════════════════════════════════════════
+ LÍNEA DE FABRICACIÓN (producir datos clasificados)
+═══════════════════════════════════════════════════════════════════════════
+
+ [SCRAPING]→[NLP]→[GATE NLP]→[MATCHING]→[GATE MATCHING]→[VALID.]→[SYNC]
+  6 portales  v11.4  35 reglas   v3.5.4     22 reglas     humana  Supabase
+  ▶⏸⚙        ▶🔄⚙   📋🔄⚙      ▶🔄⚙       📋🔄⚙        ▶📊     ▶🔄
+
+                 ↓ errores          ↓ errores      ↓ correcciones
+                 └──────────┬───────┘──────────────┘
+                            ↓
+═══════════════════════════════════════════════════════════════════════════
+ LÍNEA DE MEJORA CONTINUA (mejorar la fábrica)
+═══════════════════════════════════════════════════════════════════════════
+
+ [ERRORES]→[ISSUES]→[TRAINING PAIRS]→[FINE-TUNE]→[CATÁLOGO MOL]→[PERFIL]
+  cola       Claude    602+ pares       modelo      skills/ocup    v1.0
+             +humano                    mejorado    argentinas     v1.1
+  📋         📋📝       📊               📊⚡         📋✅🏷          🏷📊
+
+                                          ↓               ↓
+                                    mejor modelo    nueva taxonomía
+                                          ↓               ↓
+                                    ←←← vuelve a FABRICACIÓN ←←←
+```
+
+### Los 3 actores de la fábrica
+
+| Actor | Rol | Qué hace | Dónde trabaja |
+|-------|-----|----------|---------------|
+| **Pipeline** (automático) | Obrero | Ejecuta NLP, Matching, Gates, detecta errores, escala | Fábrica → Línea fabricación |
+| **Claude** (agente IA) | Operario calificado | Revisa errores, diagnostica raíz, crea reglas, reprocesa | Fábrica → Cola errores + Diccionarios |
+| **Humano** (analista) | Gerente + Inspector QA | Controla fábrica, valida ofertas, corrige, crea issues, aprueba catálogo | Todas las pantallas |
+
+### Cómo se conectan las dos líneas
+
+```
+FABRICACIÓN genera errores → alimentan MEJORA CONTINUA
+MEJORA CONTINUA genera:
+  - Reglas nuevas en configs → mejoran FABRICACIÓN
+  - Modelo fine-tuneado → mejora MATCHING en FABRICACIÓN
+  - Skills/ocupaciones MOL → enriquecen catálogo → publican PERFIL ARGENTINO
+  - Training pairs → acumulan para próximo fine-tuning
+```
+
+---
+
+## 2. Menú Sidebar definitivo
+
+```
+ADMIN
+│
+├── Centro de Control              (J — vista general del sistema)
+│
+├── Scraping                       (H — adquisición de datos)
+│   ├── Dashboard
+│   ├── Comandos
+│   └── Dinámica
+│
+├── Procesamiento                  (I+G — la fábrica completa)
+│   ├── Fábrica                    ← Vista dual: fabricación + mejora continua
+│   ├── Diccionarios               ← 6 tabs: reglas, NLP, sinón, oficios, skills, limpieza
+│   ├── Catálogo MOL               ← Curación de skills/ocupaciones nuevas (input mejora)
+│   ├── Perfil Argentino           ← Publicación versionada (output mejora)
+│   └── Validación                 ← Estación del analista (alimenta ambos procesos)
+│
+├── Laboratorio                    (indicadores experimentales)
+│   └── ... (7 indicadores)
+│
+├── Skills Intelligence
+├── Issues                         (gestión general — bugs + errores pipeline + sugerencias)
+├── Usuarios
+├── Métricas
+├── Configuración
+└── Arquitectura
+```
+
+**Lógica de los 5 items de Procesamiento:**
+
+| Item | Qué es | Para quién | Línea |
+|------|--------|-----------|-------|
+| **Fábrica** | Panel de control con las dos líneas | Gerente de planta | Ambas |
+| **Diccionarios** | Herramientas (configs del pipeline) | Claude + analista | Herramientas compartidas |
+| **Catálogo MOL** | Curación de lo nuevo que se descubre | Analista | Mejora continua (input) |
+| **Perfil Argentino** | Publicación versionada del perfil | Analista | Mejora continua (output) |
+| **Validación** | Revisión de calidad oferta por oferta | Analista | Alimenta ambas líneas |
+
+---
+
+## 3. Wireframe: FÁBRICA (vista principal)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -46,120 +107,183 @@ Procesamiento
 │  Pipeline v3.3 · NLP v11.4 · Matching v3.5.4                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌──────────┐    ┌────────┐  │
-│  │SCRAPING │───▶│  NLP    │───▶│MATCHING │───▶│VALIDACIÓN│───▶│  SYNC  │  │
-│  │ 6 port. │    │ v11.4   │    │ v3.5.4  │    │ 2 gates  │    │Supabase│  │
-│  │         │    │         │    │         │    │          │    │        │  │
-│  │ ✅ 42K  │    │ ⚠ 4.6K  │    │ ✅ 16K  │    │ ✅ 15.9K │    │ ✅ ok  │  │
-│  │ ofertas │    │ pend.   │    │ matched │    │ validadas│    │ 15.9K  │  │
-│  └─────────┘    └────┬────┘    └────┬────┘    └──────────┘    └────────┘  │
+│  ═══ LÍNEA DE FABRICACIÓN ═══════════════════════════════════════════════   │
+│                                                                             │
+│  ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌────────┐  │
+│  │ SCRAPING │──▶│   NLP    │──▶│ MATCHING │──▶│VALIDACIÓN│──▶│  SYNC  │  │
+│  │ 6 port.  │   │  v11.4   │   │  v3.5.4  │   │  humana  │   │Supabase│  │
+│  │          │   │          │   │          │   │          │   │        │  │
+│  │ ✅ 42K   │   │ ⚠ 4.6K   │   │ ✅ 16K   │   │ ✅ 15.9K │   │ ✅ ok  │  │
+│  │ ofertas  │   │ pend.    │   │ matched  │   │ validadas│   │ 15.9K  │  │
+│  │          │   │          │   │          │   │          │   │        │  │
+│  │[▶ Lanzar]│   │[▶ NLP500]│   │[▶ Match] │   │[▶ Valid.]│   │[▶ Sync]│  │
+│  │[⏸ Pausar]│   │[🔄 Re-NLP]│  │[🔄 Re-M] │   │[📊Export]│   │[🔄Full]│  │
+│  │[📋Estado]│   │[⚙ Config]│   │[⚙ Config]│   │[📋Issues]│   │[📋 Log]│  │
+│  └──────────┘   └────┬─────┘   └────┬─────┘   └──────────┘   └────────┘  │
 │                      │              │                                       │
 │                 ┌────┴────┐    ┌────┴────┐                                 │
-│                 │GATE NLP │    │GATE     │                                 │
+│                 │GATE NLP │    │  GATE   │                                 │
 │                 │35 reglas│    │MATCHING │                                 │
 │                 │99% aprob│    │22 reglas│                                 │
 │                 │ 1% bloq │    │ 23 err  │                                 │
+│                 │         │    │         │                                 │
+│                 │[📋 Bloq.]│   │[📋 Errs]│                                 │
+│                 │[🔄Re-val]│   │[🔄Re-val]│                                │
+│                 │[⚙Reglas]│    │[⚙Reglas]│                                 │
 │                 └─────────┘    └─────────┘                                 │
 │                                                                             │
+│  ═══ LÍNEA DE MEJORA CONTINUA ═══════════════════════════════════════════  │
+│                                                                             │
+│  ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌────────┐  │
+│  │ ERRORES  │──▶│  ISSUES  │──▶│ TRAINING │──▶│FINE-TUNE │──▶│CATÁLOGO│  │
+│  │ pipeline │   │ cola     │   │  PAIRS   │   │readiness │   │  MOL   │  │
+│  │          │   │          │   │          │   │          │   │        │  │
+│  │ 🟡 23    │   │ 🟡 5     │   │ 📊 602   │   │ ⚡almost │   │ 0 new  │  │
+│  │ escalados│   │ pendient.│   │ pares    │   │ ready    │   │ skills │  │
+│  │          │   │          │   │          │   │          │   │        │  │
+│  │[📋 Ver]  │   │[📋 Ver]  │   │[📊Stats] │   │[📊 Dash] │   │[📋 Ver]│  │
+│  │[🔄Repro.]│   │[📝Resolver]│ │[🔄Regen.]│   │[▶Entrenar]│  │[+ Cat.]│  │
+│  └──────────┘   └──────────┘   └──────────┘   └──────────┘   └────────┘  │
+│                                                                     │      │
+│                                                              ┌──────┴───┐  │
+│                                                              │ PERFIL   │  │
+│                                                              │ARGENTINO │  │
+│                                                              │  v1.0    │  │
+│                                                              │[🏷Corte] │  │
+│                                                              │[📊 Ver]  │  │
+│                                                              └──────────┘  │
+│                                                                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│  CONTROL                                                                    │
+│  ÚLTIMA ACTIVIDAD                                                           │
 │                                                                             │
-│  [▶ Procesar 500]  [▶ Reprocesar errores]  [▶ Sync Supabase]  [⏸ Pausar] │
-│                                                                             │
-│  Última corrida: run_20260322_1430 · 500 ofertas · 12 errores · 2m 34s    │
-│  Próxima corrida programada: Lun 24/03 08:00                               │
-│                                                                             │
-├─────────────────────────────────────────────────────────────────────────────┤
-│  COLA DE TRABAJO                                           [Ver todo →]     │
-│                                                                             │
-│  🔴 4,653 ofertas sin NLP (requiere Ollama)                                │
-│  🟡 23 errores de matching escalados                                        │
-│  🟡 8 reglas editadas sin reprocesar                     [Reprocesar]       │
-│  🟡 5 issues de analistas pendientes                     [Ver issues →]     │
-│  🟢 0 pendientes de sync a Supabase                                        │
-│                                                                             │
-├──────────────────────────────────┬──────────────────────────────────────────┤
-│  MÉTRICAS DEL PIPELINE           │  INTERVENCIONES RECIENTES               │
-│                                  │                                          │
-│  NLP Gate aprobados:   99.2%     │  hace 2h — Cynthia marcó error ISCO     │
-│  Match por regla:      45%       │            en #4523 → issue creado       │
-│  Match semántico:      55%       │  hace 3h — Claude creó regla R301       │
-│  Dual coinciden:       78%       │            "data engineer" → 2521        │
-│  Errores pendientes:   23        │  hace 5h — Diego validó lote de 50      │
-│  Training pairs:       602       │            ofertas (48 OK, 2 error)      │
-│  Fine-tuning:     ⚡ almost ready│  ayer    — Pipeline procesó 500          │
-│                                  │            ofertas (488 ok, 12 err)      │
-│  [Ver métricas detalladas →]     │                                          │
-│  [Ver fine-tuning readiness →]   │  [Ver historial completo →]             │
-│                                  │                                          │
-└──────────────────────────────────┴──────────────────────────────────────────┘
+│  hace 2h — Cynthia marcó error ISCO en #4523 → issue creado               │
+│  hace 3h — Claude creó regla R301 "data engineer" → 2521                   │
+│  hace 5h — Pipeline procesó 500 ofertas (488 ok, 12 errores)              │
+│  ayer    — Diego validó lote de 50 (48 OK, 2 error)                        │
+│                                                    [Ver historial →]       │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Nodos del pipeline son clickeables:**
-- Click en SCRAPING → va a `/admin/scraping`
-- Click en NLP → muestra detalle NLP (versión, campos, tasa aprobación)
-- Click en GATE NLP → muestra reglas activas y errores bloqueados
-- Click en MATCHING → muestra distribución método, top reglas
-- Click en GATE MATCHING → muestra errores pendientes con detalle
-- Click en VALIDACIÓN → va a `/admin/validacion`
-- Click en SYNC → muestra último sync, pendientes
+**Interacciones por nodo:**
+
+Cada nodo del pipeline es clickeable y tiene 2-3 botones:
+
+| Nodo | Botón 1 (ejecutar) | Botón 2 (re-hacer) | Botón 3 (configurar) |
+|------|-------------------|--------------------|--------------------|
+| SCRAPING | ▶ Lanzar portales | ⏸ Pausar | 📋 Ver estado |
+| NLP | ▶ Procesar 500 | 🔄 Re-NLP errores | ⚙ → Diccionarios tab NLP |
+| GATE NLP | 📋 Ver bloqueados | 🔄 Re-validar | ⚙ → Diccionarios tab reglas NLP |
+| MATCHING | ▶ Match pendientes | 🔄 Re-match errores | ⚙ → Diccionarios tab Reglas |
+| GATE MATCHING | 📋 Ver errores | 🔄 Re-validar | ⚙ → Diccionarios tab Reglas |
+| VALIDACIÓN | ▶ Abrir validación | 📊 Exportar Excel | 📋 Ver issues |
+| SYNC | ▶ Sync incremental | 🔄 Sync full | 📋 Ver log |
+| ERRORES | 📋 Ver cola | 🔄 Reprocesar | — |
+| ISSUES | 📋 Ver pendientes | 📝 Resolver | — |
+| TRAINING | 📊 Ver stats | 🔄 Regenerar | — |
+| FINE-TUNE | 📊 Ver readiness | ▶ Entrenar (futuro) | — |
+| CATÁLOGO | 📋 Ver no clasificados | + Catalogar | — |
+| PERFIL | 📊 Ver actual | 🏷 Crear versión | — |
 
 ---
 
-## 3. Wireframe: DICCIONARIOS (editores unificados)
+## 4. Wireframe: DICCIONARIOS (herramientas compartidas)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │  Diccionarios del Pipeline                                   [⟳ Recargar] │
-│  Editá reglas y configuraciones que el pipeline usa para procesar          │
+│  Reglas y configuraciones que la fábrica usa para procesar                 │
 │                                                                             │
-│  ┌────────┬───────────┬───────────┬──────────┬──────────┬────────────────┐ │
-│  │ Reglas │ NLP       │ Sinónimos │ Oficios  │ Skills   │ Limpieza      │ │
-│  │Matching│ Inference │ ARG       │ ARG      │ Rules    │ Títulos       │ │
-│  │ (300)  │ (~50)     │ (17)      │ (170)    │ (27)     │ (~30)         │ │
-│  ├────────┴───────────┴───────────┴──────────┴──────────┴────────────────┤ │
+│  ┌──────────┬───────────┬───────────┬──────────┬──────────┬──────────────┐ │
+│  │ Reglas   │ NLP       │ Sinónimos │ Oficios  │ Skills   │ Limpieza     │ │
+│  │ Matching │ Inference │ ARG       │ ARG      │ Rules    │ Títulos      │ │
+│  │  (300)   │  (~50)    │  (17)     │  (170)   │  (27)    │  (~30)       │ │
+│  ├──────────┴───────────┴───────────┴──────────┴──────────┴──────────────┤ │
 │  │                                                                        │ │
-│  │  [Tab activo: Reglas Matching]                                         │ │
+│  │  [Tab activo muestra el editor correspondiente]                        │ │
 │  │                                                                        │ │
-│  │  ┌──────────────────────────────────────────────────────────────────┐  │ │
-│  │  │ [🔍 Buscar...]  [+ Nueva regla]  [💡 Sugerencias]  [💾 Guardar] │  │ │
-│  │  ├──────────────────────────────────────────────────────────────────┤  │ │
-│  │  │ # │ ID / Nombre        │ Condición            │ ISCO │ Activa │  │ │
-│  │  │───┤────────────────────┤──────────────────────┤──────┤────────│  │ │
-│  │  │ 1 │ R1_gerente_ventas  │ titulo: "gerente..."│ 1221 │  ✅    │  │ │
-│  │  │ 2 │ R2_contador        │ titulo: "contador"  │ 2411 │  ✅    │  │ │
-│  │  │ 3 │ R3_data_engineer   │ titulo∈["data e.." ]│ 2521 │  ✅    │  │ │
-│  │  │...│ ...                │ ...                  │ ...  │  ...   │  │ │
-│  │  ├──────────────────────────────────────────────────────────────────┤  │ │
-│  │  │ 300 reglas · fuente: override v4 · admin@oede.gob.ar            │  │ │
-│  │  └──────────────────────────────────────────────────────────────────┘  │ │
+│  │  - Buscar, agregar, editar, eliminar, toggle activar                  │ │
+│  │  - Preview de impacto (en Reglas Matching)                            │ │
+│  │  - Sugerencias automáticas (en Reglas Matching)                       │ │
+│  │  - Guardar override a Supabase                                        │ │
+│  │  - Changelog al pie (quién, cuándo, qué cambió)                      │ │
 │  │                                                                        │ │
 │  │  ┌── Historial de cambios ──────────────────────────────────────────┐  │ │
 │  │  │ v4 │ Editado 300 reglas           │ admin@oede  │ 22/mar 15:00 │  │ │
-│  │  │ v3 │ Agregar regla R301           │ admin@oede  │ 22/mar 10:00 │  │ │
-│  │  │ v2 │ Agregar regla contador       │ admin@oede  │ 21/mar 14:00 │  │ │
+│  │  │ v3 │ Claude creó R301             │ claude      │ 22/mar 10:00 │  │ │
+│  │  │ v2 │ Cynthia agregó sinónimo      │ cynthia     │ 21/mar 14:00 │  │ │
 │  │  └──────────────────────────────────────────────────────────────────┘  │ │
-│  │                                                                        │ │
 │  └────────────────────────────────────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Cada tab contiene:**
-- Reglas Matching → tabla de reglas con CRUD + preview impacto + sugerencias
-- NLP Inference → secciones (modalidad, seniority, área) con keywords
-- Sinónimos ARG → tabla término → ISCO con variantes
-- Oficios ARG → categorías colapsables con chips
-- Skills Rules → tabla condición → skills forzadas
-- Limpieza Títulos → patrones regex (readonly por ahora, editable via genérico)
-
-**Todos comparten:**
-- Mismo patrón: carga override de Supabase, fallback a JSON local
-- Changelog al pie (componente `ConfigChangelog`)
-- Botón "Guardar" que upserta en `config_overrides`
+Cada tab reutiliza los editores que ya existen (reglas/page.tsx, sinonimos/page.tsx, etc.)
+pero embebidos como componentes en vez de páginas separadas.
 
 ---
 
-## 4. Wireframe: VALIDACIÓN (estación del analista)
+## 5. Wireframe: CATÁLOGO MOL (curación — input de mejora)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  Catálogo MOL — Taxonomía Argentina                          [⟳ Actualizar]│
+│  Skills y ocupaciones que ESCO no cubre                                    │
+│                                                                             │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐                   │
+│  │ Skills   │  │  Ocup.   │  │  Pend.   │  │ Version. │                   │
+│  │ catalog. │  │ catalog. │  │ revisar  │  │          │                   │
+│  │   45     │  │   12     │  │   85     │  │    3     │                   │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘                   │
+│                                                                             │
+│  ┌─────────────────┬───────────────┬──────────────────┬──────────────────┐ │
+│  │ No clasificados │ Skills MOL    │ Ocupaciones MOL  │ Versiones        │ │
+│  ├─────────────────┴───────────────┴──────────────────┴──────────────────┤ │
+│  │                                                                        │ │
+│  │  [Contenido del tab activo]                                            │ │
+│  │  - No clasificados: skills/títulos sin ESCO, catalogar inline          │ │
+│  │  - Skills MOL: CRUD con workflow (detectada → revisión → catalogada)  │ │
+│  │  - Ocupaciones MOL: CRUD con ISCO parent y skills esenciales          │ │
+│  │  - Versiones: crear cortes, historial con deltas                      │ │
+│  │                                                                        │ │
+│  └────────────────────────────────────────────────────────────────────────┘ │
+│                                                                             │
+│  Ciclo: Detectada → En revisión → Catalogada → Versionada                  │
+│  Las catalogadas alimentan el Perfil Argentino                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 6. Wireframe: PERFIL ARGENTINO (publicación — output de mejora)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  Perfil Consolidado Argentino                                [⟳ Actualizar]│
+│  Snapshot versionado del mercado laboral — ESCO + MOL                      │
+│                                                                             │
+│  ┌── Versión activa ────────────────────────────────────────────────────┐  │
+│  │  v1.0 · 14,257 skills · 3,046 ocupaciones · 0 emergentes aprobadas │  │
+│  │  Creado por: admin@oede.gob.ar · 15/ene/2026                       │  │
+│  │                                                     [Crear v1.1 →]  │  │
+│  └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                             │
+│  ┌── Estado desde último corte ─────────────────────────────────────────┐  │
+│  │  2,132 ofertas nuevas procesadas                                     │  │
+│  │  8 skills emergentes detectadas                                      │  │
+│  │  3 emergentes pendientes de revisión                                 │  │
+│  │  5 skills aprobadas desde v1.0                                       │  │
+│  │                                                                       │  │
+│  │  Recomendación: hay material para un nuevo corte v1.1                │  │
+│  └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                             │
+│  ┌── Historial de versiones ────────────────────────────────────────────┐  │
+│  │  v1.0 │ 14,257 skills │ 3,046 ocup │ Activa │ 15/ene │ [Rollback] │  │
+│  └──────────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 7. Wireframe: VALIDACIÓN (estación del analista)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -172,320 +296,131 @@ Procesamiento
 │  ┌─ Lista ──────┐  ┌─ Puesto ──────────────┐  ┌─ Clasificación ────────┐  │
 │  │              │  │                        │  │                        │  │
 │  │ ▶ #4523     │  │ Gerente de Ventas      │  │ ISCO: 5223            │  │
-│  │   #4524     │  │ Empresa: Acme Corp     │  │ Label: Vendedor       │  │
-│  │   #4525     │  │ Portal: Bumeran        │  │ Score: 0.42           │  │
-│  │   #4526     │  │ Provincia: CABA        │  │ Método: semántico     │  │
-│  │   #4527     │  │                        │  │                        │  │
-│  │   ...       │  │ Descripción:           │  │ Skills:               │  │
-│  │              │  │ Buscamos un gerente... │  │ - ventas (0.89)       │  │
-│  │              │  │                        │  │ - negociación (0.85)  │  │
-│  │ Filtros:    │  │ Tareas:               │  │ - liderazgo (0.78)    │  │
-│  │ [Grupo ISCO]│  │ - Liderar equipo      │  │                        │  │
-│  │ [Portal    ]│  │ - Definir estrategia  │  │ Gate NLP: ✅ aprobado  │  │
-│  │ [Provincia ]│  │ - Reportar a director │  │ Gate Match: ⚠ error   │  │
-│  │ [Score     ]│  │                        │  │   → "ISCO incorrecto  │  │
-│  │ [Estado    ]│  │ NLP:                  │  │     para cargo con     │  │
-│  │              │  │ Seniority: NULL ❌    │  │     gente a cargo"    │  │
-│  │              │  │ Área: Comercial       │  │                        │  │
-│  │              │  │ Modalidad: presencial │  │                        │  │
-│  │              │  │                        │  │                        │  │
+│  │   #4524     │  │ Empresa: Acme Corp     │  │ Score: 0.42           │  │
+│  │   #4525     │  │ Provincia: CABA        │  │ Método: semántico     │  │
+│  │   ...       │  │                        │  │                        │  │
+│  │              │  │ Tareas:               │  │ Gate NLP: ✅ aprobado  │  │
+│  │ Filtros:    │  │ - Liderar equipo      │  │ Gate Match: ⚠ error   │  │
+│  │ [Grupo ISCO]│  │ - Definir estrategia  │  │                        │  │
+│  │ [Portal    ]│  │                        │  │ Skills:               │  │
+│  │ [Score     ]│  │ NLP:                  │  │ - ventas (0.89)       │  │
+│  │ [Estado    ]│  │ Seniority: NULL ❌    │  │ - liderazgo (0.78)    │  │
 │  └──────────────┘  └────────────────────────┘  └────────────────────────┘  │
 │                                                                             │
 │  ┌── Acciones ──────────────────────────────────────────────────────────┐  │
 │  │ [✅ OK Alt+1] [❌ Error Alt+2] [🔍 Revisar Alt+3] [🗑 Basura Alt+4]│  │
-│  │                                                          [✏ Editar] │  │
 │  └──────────────────────────────────────────────────────────────────────┘  │
 │                                                                             │
-│  Al marcar Error/Revisar → abre Wizard:                                    │
-│  ┌── Wizard Corrección ────────────────────────────────────────────────┐  │
-│  │ [Tab NLP] [Tab Tareas/Skills] [Tab Ocupación]                       │  │
-│  │                                                                      │  │
-│  │ Tab Ocupación (activa):                                              │  │
-│  │ ISCO correcto: [1221_____]  Label: director comercial               │  │
-│  │ Justificación: [Título dice "gerente" con gente a cargo,           ]│  │
-│  │                [corresponde a directivo, no vendedor               ]│  │
-│  │                                                                      │  │
-│  │                                   [Cancelar]  [💾 Guardar + Issue]  │  │
-│  └──────────────────────────────────────────────────────────────────────┘  │
-│                                                                             │
-│  → Al guardar: actualiza ofertas_dashboard + auto-crea issue en Supabase   │
-│  → Issue queda en cola para Claude o dev que lo resuelve creando regla     │
-│  → Al resolver issue → genera training pair → alimenta fine-tuning         │
-│                                                                             │
-│  ┌── Issues recientes (de esta sesión) ────────────────────────────────┐  │
-│  │ 🟡 #4523 │ ISCO incorrecto: 5223 → 1221 │ Cynthia │ hace 2 min    │  │
-│  │ 🟢 #4501 │ Seniority NULL → manager      │ Diego   │ hace 1h       │  │
-│  │                                                    [Ver todos →]    │  │
-│  └──────────────────────────────────────────────────────────────────────┘  │
+│  Al marcar Error/Revisar → Wizard (3 tabs: NLP, Tareas/Skills, Ocupación) │
+│  Al guardar → auto-crea issue → cola para Claude/dev                      │
+│  Issue resuelto → training pair → alimenta fine-tuning                    │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 5. Wireframe: CATÁLOGO MOL
+## 8. Gateway local: tabla pipeline_commands
 
+Para que el admin pueda controlar la fábrica sin terminal ni Claude:
+
+```sql
+CREATE TABLE pipeline_commands (
+  id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  comando         TEXT NOT NULL,      -- ver tabla abajo
+  params          JSONB DEFAULT '{}', -- parámetros del comando
+  estado          TEXT DEFAULT 'pendiente'
+                  CHECK (estado IN ('pendiente','ejecutando','completado','error')),
+  log             TEXT,               -- output en tiempo real
+  resultado       JSONB,              -- métricas al terminar
+  creado_por      TEXT,               -- email del admin
+  created_at      TIMESTAMPTZ DEFAULT NOW(),
+  started_at      TIMESTAMPTZ,
+  completed_at    TIMESTAMPTZ
+);
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  Catálogo MOL — Taxonomía Argentina                          [⟳ Actualizar]│
-│  Skills y ocupaciones que ESCO no cubre · Versión actual: v1.0             │
-│                                                                             │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐                   │
-│  │ Skills   │  │  Ocup.   │  │  Pend.   │  │ Version. │                   │
-│  │ catalog. │  │ catalog. │  │ revisar  │  │          │                   │
-│  │   45     │  │   12     │  │   85     │  │    3     │                   │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘                   │
-│                                                                             │
-│  ┌────────────────┬──────────────┬──────────────────┬───────────────────┐  │
-│  │ No clasificados│ Skills MOL   │ Ocupaciones MOL  │ Versiones         │  │
-│  ├────────────────┴──────────────┴──────────────────┴───────────────────┤  │
-│  │                                                                       │  │
-│  │  [Tab: No clasificados]                                               │  │
-│  │                                                                       │  │
-│  │  Frecuencia mín: [5+ ofertas ▾]                                       │  │
-│  │                                                                       │  │
-│  │  ── Skills sin clasificar (23) ──────────────────────────────         │  │
-│  │  │ Docker Compose        │ 45 ofertas │ 0.28% │ [+ Catalogar] │      │  │
-│  │  │ Terraform             │ 12 ofertas │ 0.08% │ [+ Catalogar] │      │  │
-│  │  │ Scrum Master          │  8 ofertas │ 0.05% │ [+ Catalogar] │      │  │
-│  │                                                                       │  │
-│  │  ── Títulos sin ocupación ESCO (12) ─────────────────────────         │  │
-│  │  │ Community Manager     │ 30 of. │ score 0.35 │ [+ Catalogar] │     │  │
-│  │  │ Data Engineer Sr      │ 22 of. │ score 0.41 │ [+ Catalogar] │     │  │
-│  │                                                                       │  │
-│  │  Ciclo: Detectada → En revisión → Catalogada → Versionada            │  │
-│  │                                                                       │  │
-│  └───────────────────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────────────────┘
+
+**Comandos soportados:**
+
+| Comando | Parámetros | Qué ejecuta | Nodo |
+|---------|-----------|-------------|------|
+| `run_pipeline` | `{limit: 500}` | `run_validated_pipeline.py --limit 500` | NLP+Matching |
+| `run_nlp` | `{limit: 500, ids: [...]}` | `process_nlp_from_db_v11.py --limit 500` | NLP |
+| `run_matching` | `{ids: [...]}` | `run_validated_pipeline.py --skip-nlp --ids X` | Matching |
+| `reprocess_errors` | `{}` | `run_validated_pipeline.py --only-errors` | NLP+Matching |
+| `revalidate_nlp` | `{ids: [...]}` | `nlp_validator.py --ids X` | Gate NLP |
+| `revalidate_matching` | `{ids: [...]}` | `auto_validator.py --ids X` | Gate Matching |
+| `reapply_rules` | `{}` | `reapply_rules_to_validated.py` | Matching |
+| `export_excel` | `{ids: [...]}` | `export_validation_excel.py --ids X` | Validación |
+| `sync_supabase` | `{}` | `sync_to_supabase.py` | Sync |
+| `sync_supabase_full` | `{}` | `sync_to_supabase.py --full` | Sync |
+| `generate_training` | `{}` | `generate_training_pairs.py` | Training |
+
+**Poller local (cron cada 1 min):**
 ```
+1. Lee pipeline_commands WHERE estado = 'pendiente' ORDER BY created_at LIMIT 1
+2. Marca estado = 'ejecutando', started_at = NOW()
+3. Ejecuta el comando correspondiente
+4. Actualiza log en tiempo real (cada 5 seg)
+5. Al terminar: estado = 'completado'|'error', resultado = {...}, completed_at
+```
+
+**Mismo patrón que scraping_commands** (ya funciona en producción con systemd en VPS).
 
 ---
 
-## 6. Flujo completo de la fábrica (documentación)
+## 9. Plan de implementación
+
+### Fase 1: Infraestructura (base)
+| # | Tarea | Tipo | Dependencia |
+|---|-------|------|-------------|
+| F1.1 | Migration SQL `031_pipeline_commands.sql` | SQL | — |
+| F1.2 | Ejecutar migration en Supabase | Manual | F1.1 |
+| F1.3 | API `/api/pipeline-commands` (POST crear, GET listar) | API route | F1.1 |
+| F1.4 | Poller local `scripts/pipeline_command_poller.py` | Python | F1.1 |
+| F1.5 | Testear poller manualmente | Manual | F1.4 |
+
+### Fase 2: Vista Fábrica (la pantalla principal)
+| # | Tarea | Tipo | Dependencia |
+|---|-------|------|-------------|
+| F2.1 | Componente `PipelineNode` (nodo visual con estado + botones) | React | — |
+| F2.2 | Componente `PipelineGate` (gate con métricas + errores) | React | — |
+| F2.3 | Componente `MejoraContinuaNode` (nodo de la línea de mejora) | React | — |
+| F2.4 | Página `/admin/procesamiento/fabrica/page.tsx` | React | F2.1-F2.3, F1.3 |
+| F2.5 | Sección "Línea de Fabricación" (6 nodos + 2 gates) | React | F2.4 |
+| F2.6 | Sección "Línea de Mejora Continua" (5 nodos + perfil) | React | F2.4 |
+| F2.7 | Sección "Última actividad" (timeline reciente) | React | F2.4 |
+| F2.8 | Conexión a API pipeline-commands (botones ejecutan comandos) | React | F1.3, F2.4 |
+| F2.9 | Polling estado de comandos (actualiza nodos en tiempo real) | React | F2.8 |
+
+### Fase 3: Diccionarios unificados
+| # | Tarea | Tipo | Dependencia |
+|---|-------|------|-------------|
+| F3.1 | Extraer editores existentes como componentes embebibles | Refactor | — |
+| F3.2 | Página `/admin/procesamiento/diccionarios/page.tsx` con 6 tabs | React | F3.1 |
+| F3.3 | Migrar imports y estado a tabs | React | F3.2 |
+
+### Fase 4: Reorganizar sidebar + limpiar
+| # | Tarea | Tipo | Dependencia |
+|---|-------|------|-------------|
+| F4.1 | Actualizar `layout.tsx` con nuevo menú (5 items) | React | F2.4, F3.2 |
+| F4.2 | Mover Perfil Argentino bajo Procesamiento | React | F4.1 |
+| F4.3 | Eliminar rutas viejas (`/procesamiento/reglas`, etc.) o redirect | React | F3.2 |
+| F4.4 | Actualizar links internos (Centro Control, etc.) | React | F4.3 |
+
+### Fase 5: Tests + Deploy
+| # | Tarea | Tipo | Dependencia |
+|---|-------|------|-------------|
+| F5.1 | Tests API pipeline-commands (auth, crear, listar, estados) | Test | F1.3 |
+| F5.2 | Tests componente PipelineNode + PipelineGate | Test | F2.1-F2.3 |
+| F5.3 | Tests página Fábrica (render, botones, polling) | Test | F2.4 |
+| F5.4 | Tests página Diccionarios (tabs, carga, switch) | Test | F3.2 |
+| F5.5 | Run full suite (debe seguir 700+) | Test | F5.1-F5.4 |
+| F5.6 | Deploy a Vercel | Deploy | F5.5 |
+
+### Orden de ejecución recomendado
 
 ```
-                    FÁBRICA DE PROCESAMIENTO MOL
-                    ═══════════════════════════
-
-    ┌─────────────────── ADQUISICIÓN ───────────────────┐
-    │                                                    │
-    │   VPS (6 portales) ──cron──▶ BD local (42K)       │
-    │   [Admin: /admin/scraping → lanzar/pausar]        │
-    │                                                    │
-    └──────────────────────┬─────────────────────────────┘
-                           │
-    ┌──────────────────────▼─────────────────────────────┐
-    │              PROCESAMIENTO NLP                      │
-    │                                                    │
-    │   Oferta cruda ──▶ NLP v11.4 (Qwen2.5:7b)        │
-    │     - 20 campos extraídos                          │
-    │     - Source-aware pre-fill                         │
-    │     - Postprocessor (configs NLP)                   │
-    │                                                    │
-    │   Configs: nlp_preprocessing, nlp_inference_rules, │
-    │            nlp_extraction_patterns, nlp_normalization│
-    │   [Admin: Diccionarios → tab NLP Inference]        │
-    │                                                    │
-    │        ┌──────────────────────┐                    │
-    │        │    GATE NLP (v1.1)   │                    │
-    │        │    35+ reglas        │                    │
-    │        │                      │                    │
-    │        │  ✅ Aprobado → sigue │                    │
-    │        │  🔴 Bloqueado:       │                    │
-    │        │    → auto-corrección │                    │
-    │        │    → re-validación   │                    │
-    │        │    → escalar a cola  │                    │
-    │        └──────────┬───────────┘                    │
-    │                   │                                │
-    └───────────────────┼────────────────────────────────┘
-                        │
-    ┌───────────────────▼────────────────────────────────┐
-    │              MATCHING v3.5.4                        │
-    │                                                    │
-    │   1. Reglas negocio (300) → GANAN SIEMPRE          │
-    │   2. Diccionario argentino (17 ocup)               │
-    │   3. Semántico (LoRA + título 40% + skills 60%)    │
-    │   4. Penalizaciones (sector, seniority)            │
-    │                                                    │
-    │   Configs: matching_rules_business,                │
-    │            sinonimos_argentinos_esco,               │
-    │            matching_config, skills_rules,           │
-    │            oficios_arg                              │
-    │   [Admin: Diccionarios → tabs Reglas/Sinónimos/    │
-    │           Oficios/Skills]                           │
-    │                                                    │
-    │        ┌──────────────────────┐                    │
-    │        │  GATE MATCHING       │                    │
-    │        │  22 reglas           │                    │
-    │        │                      │                    │
-    │        │  ✅ Aprobado → sigue │                    │
-    │        │  🟡 Errores:         │                    │
-    │        │    → auto-corrección │                    │
-    │        │    → escalar a cola  │                    │
-    │        └──────────┬───────────┘                    │
-    │                   │                                │
-    └───────────────────┼────────────────────────────────┘
-                        │
-    ┌───────────────────▼────────────────────────────────┐
-    │          COLA DE ERRORES                           │
-    │                                                    │
-    │   Errores agrupados por tipo y patrón:             │
-    │                                                    │
-    │   ┌─────────────┐    ┌─────────────────┐          │
-    │   │   CLAUDE     │    │   HUMANO         │          │
-    │   │   (agente)   │    │   (analista)     │          │
-    │   │              │    │                  │          │
-    │   │ • Revisa     │    │ • Valida 1x1    │          │
-    │   │   errores    │    │ • Marca OK/Err  │          │
-    │   │ • Diagnos-   │    │ • Wizard correc │          │
-    │   │   tica raíz  │    │ • Auto-crea     │          │
-    │   │ • Crea       │    │   issue         │          │
-    │   │   reglas     │    │ • Justifica     │          │
-    │   │ • Reprocesa  │    │   (→ training)  │          │
-    │   └──────┬───────┘    └────────┬────────┘          │
-    │          │                     │                    │
-    │          └─────────┬───────────┘                    │
-    │                    ▼                                │
-    │   Reglas actualizadas en configs                    │
-    │   Issues resueltos con solucion_aplicada            │
-    │   Training pairs generados (602+)                   │
-    │   [Admin: Fábrica → ver cola + intervenciones]      │
-    │                                                    │
-    └───────────────────┬────────────────────────────────┘
-                        │
-    ┌───────────────────▼────────────────────────────────┐
-    │              SYNC & PRESENTACIÓN                   │
-    │                                                    │
-    │   Validadas → sync_to_supabase → Dashboard         │
-    │   Training pairs → fine-tuning (cuando ready)      │
-    │   No clasificados → Catálogo MOL                   │
-    │                                                    │
-    │   [Admin: Fábrica → botón Sync Supabase]           │
-    │   [Admin: Catálogo MOL → revisar no clasificados]  │
-    │   [Admin: Fábrica → ver fine-tuning readiness]     │
-    │                                                    │
-    └────────────────────────────────────────────────────┘
+F1 (infraestructura) → F2 (fábrica) → F3 (diccionarios) → F4 (sidebar) → F5 (tests+deploy)
 ```
 
----
-
-## 7. Menú sidebar final
-
-```
-ADMIN
-├── Centro de Control        (J — dashboard general)
-├── Scraping                 (H — portales + comandos)
-│   ├── Dashboard
-│   ├── Comandos
-│   └── Dinámica
-│
-├── Procesamiento            (I + G — la fábrica)
-│   ├── Fábrica              ← NUEVA: vista pipeline + control + cola
-│   ├── Diccionarios         ← NUEVA: 6 tabs unificados
-│   ├── Catálogo MOL         (G — taxonomía propia)
-│   └── Validación           (panel analista + issues)
-│
-├── Laboratorio              (indicadores experimentales)
-│   ├── Tensión Demanda
-│   ├── Brecha Calificación
-│   └── ... (7 indicadores)
-│
-├── Skills Intelligence      (taxonomía ESCO)
-├── Perfil Argentino         (versiones perfil consolidado)
-├── Issues                   (gestión issues)
-├── Usuarios                 (CRUD usuarios)
-├── Métricas                 (analytics)
-├── Configuración            (settings generales)
-└── Arquitectura             (diagrama del sistema)
-```
-
-**Cambios vs actual:**
-- `Metricas` (procesamiento) → absorbido por `Fábrica`
-- `Reglas Matching` → absorbido por `Diccionarios` (tab 1)
-- `NLP Inference` → absorbido por `Diccionarios` (tab 2)
-- `Sinónimos ARG` → absorbido por `Diccionarios` (tab 3)
-- `Oficios ARG` → absorbido por `Diccionarios` (tab 4)
-- `Skills Rules` → absorbido por `Diccionarios` (tab 5)
-- `Limpieza Títulos` → absorbido por `Diccionarios` (tab 6)
-- `Fine-Tuning` → absorbido por `Fábrica` (sección métricas)
-- `Otros Editores` → eliminado (todo está en Diccionarios)
-- `Catálogo MOL` → se mantiene (ciclo de vida propio)
-- `Validación` → se mantiene (estación de trabajo analista)
-
----
-
-## 8. Interacciones clave
-
-### Desde Fábrica (gerente de planta):
-| Acción | Qué hace | Cómo |
-|--------|----------|------|
-| Procesar N | Lanza pipeline para N ofertas nuevas | POST /api/pipeline-commands |
-| Reprocesar errores | Re-procesa ofertas con errores pendientes | POST /api/pipeline-commands |
-| Sync Supabase | Sube validadas a Supabase | POST /api/pipeline-commands |
-| Ver cola | Muestra errores agrupados por tipo | GET /api/pipeline-status |
-| Ver métricas | Abre detalle de métricas (inline o modal) | Datos de get_processing_metrics |
-| Ver fine-tuning | Abre readiness (inline o modal) | GET /api/training-readiness |
-
-### Desde Diccionarios (editor de reglas):
-| Acción | Qué hace |
-|--------|----------|
-| Editar regla | Modifica regla existente |
-| Nueva regla | Formulario + preview impacto |
-| Sugerencias | Reglas sugeridas por correcciones |
-| Guardar | Upsert a config_overrides |
-| Ver changelog | Timeline de cambios |
-
-### Desde Validación (analista):
-| Acción | Qué hace |
-|--------|----------|
-| OK | Marca oferta como correcta |
-| Error | Abre wizard → corrige → auto-crea issue |
-| Revisar | Abre wizard → sugiere corrección → auto-crea issue |
-| Basura | Descarta oferta |
-
-### Desde Catálogo MOL (curación):
-| Acción | Qué hace |
-|--------|----------|
-| Catalogar skill | Detectada → En revisión → Catalogada |
-| Catalogar ocupación | Detectada → En revisión → Catalogada |
-| Crear versión | Corte con snapshot de catalogadas |
-| Descartar | Soft delete |
-
----
-
-## 9. Gateway local (sin Claude)
-
-Para que el admin pueda dar órdenes al pipeline local sin intervención de Claude:
-
-```
-TABLA: pipeline_commands (Supabase)
-─────────────────────────────────────
-id            UUID
-comando       TEXT    (run_pipeline, reprocess_errors, sync_supabase,
-                       reapply_rules, export_excel)
-params        JSONB   ({limit: 500, ids: [1,2,3], skip_nlp: true})
-estado        TEXT    (pendiente, ejecutando, completado, error)
-log           TEXT    (output del proceso, actualizado en tiempo real)
-resultado     JSONB   ({procesadas: 500, errores: 12, duracion: "2m 34s"})
-creado_por    TEXT    (email del admin)
-created_at    TIMESTAMPTZ
-started_at    TIMESTAMPTZ
-completed_at  TIMESTAMPTZ
-
-POLLER LOCAL (cron cada 1 min):
-─────────────────────────────────
-1. Lee pipeline_commands WHERE estado = 'pendiente'
-2. Marca 'ejecutando' + started_at
-3. Ejecuta: python scripts/run_validated_pipeline.py --limit N
-4. Actualiza log en tiempo real
-5. Al terminar: estado = 'completado', resultado = {...}
-
-FLUJO:
-Admin click "Procesar 500"
-  → POST /api/pipeline-commands {comando: "run_pipeline", params: {limit: 500}}
-  → INSERT en pipeline_commands
-  → Poller local lo lee en <1 min
-  → Ejecuta pipeline
-  → Admin ve progreso en la UI (polling cada 5s)
-```
-
-Mismo patrón que `scraping_commands` (ya funciona en producción).
+Cada fase es deployable independientemente. F2 es la más grande (la vista de fábrica).
