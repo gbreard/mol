@@ -166,6 +166,28 @@ export const handlers = [
     })
   }),
 
+  // Pipeline commands table
+  http.get(`${SUPABASE_URL}/rest/v1/pipeline_commands`, () => {
+    return HttpResponse.json([
+      {
+        id: 'cmd-1', comando: 'run_pipeline', params: { limit: 500 },
+        estado: 'completado', log: 'Procesadas 500 ofertas',
+        resultado: { procesadas: 500, errores: 12 },
+        creado_por: 'admin@oede.gob.ar',
+        created_at: '2026-03-22T15:00:00Z',
+        started_at: '2026-03-22T15:00:05Z',
+        completed_at: '2026-03-22T15:02:34Z',
+      },
+    ])
+  }),
+
+  http.post(`${SUPABASE_URL}/rest/v1/pipeline_commands`, () => {
+    return HttpResponse.json({
+      id: 'cmd-new', comando: 'run_pipeline', estado: 'pendiente',
+      creado_por: 'admin@oede.gob.ar', created_at: '2026-03-22T16:00:00Z',
+    }, { status: 201 })
+  }),
+
   // Catálogo MOL tables
   http.get(`${SUPABASE_URL}/rest/v1/catalogo_mol_skills`, () => {
     return HttpResponse.json([], { headers: { 'content-range': '0-0/0' } })
