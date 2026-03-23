@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireRateLimit } from '@/lib/api-auth';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 let supabaseAdmin: SupabaseClient | null = null;
@@ -14,7 +15,9 @@ function getSupabaseAdmin(): SupabaseClient | null {
   return supabaseAdmin;
 }
 
-export async function GET(_request: NextRequest) {
+export async function GET(request: NextRequest) {
+  const rateLimited = requireRateLimit(request, 'public')
+  if (rateLimited) return rateLimited
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ count: 0 });
 

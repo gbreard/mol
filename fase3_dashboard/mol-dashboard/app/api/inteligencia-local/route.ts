@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireRateLimit } from '@/lib/api-auth';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 let supabaseAdmin: SupabaseClient | null = null;
@@ -17,6 +18,8 @@ function getSupabaseAdmin(): SupabaseClient | null {
 // GET /api/inteligencia-local?jurisdiccion=CABA
 // Retorna: skills más demandadas vs disponibles + brechas + cursos faltantes
 export async function GET(request: NextRequest) {
+  const rateLimited = requireRateLimit(request, 'public')
+  if (rateLimited) return rateLimited
   const jurisdiccion = request.nextUrl.searchParams.get('jurisdiccion') || 'Capital Federal';
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
