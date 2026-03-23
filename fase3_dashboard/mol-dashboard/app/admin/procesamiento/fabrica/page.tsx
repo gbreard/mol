@@ -10,14 +10,20 @@ import { PipelineNode, PipelineArrow } from "@/components/fabrica/PipelineNode";
 import { PipelineGate } from "@/components/fabrica/PipelineGate";
 import { MejoraContinuaNode, MejoraArrow } from "@/components/fabrica/MejoraContinuaNode";
 
-interface PipelineStatus {
-  fases: {
-    scraping: { estado: string; ofertas_totales: number; ofertas_activas: number; dias_desde_scraping: number };
-    nlp: { estado: string; procesadas: number; pendientes: number };
-    matching: { estado: string; con_matching: number; pendientes: number; validadas: number; errores_sin_resolver: number; reglas_negocio: number };
-    sync: { estado: string; en_supabase: number; pendientes: number };
-  };
-  resumen: { total_ofertas: number; en_supabase: number; issues_humanos_pendientes: number };
+interface LocalStatus {
+  total_ofertas: number;
+  nlp_procesadas: number;
+  nlp_pendientes: number;
+  nlp_aprobados: number;
+  nlp_bloqueados: number;
+  nlp_gate_aprobado_pct: number;
+  matching_con: number;
+  matching_sin: number;
+  validadas: number;
+  errores_pendientes: number;
+  en_supabase: number;
+  pendientes_sync: number;
+  timestamp: string;
 }
 
 interface Command {
@@ -34,7 +40,7 @@ interface Command {
 }
 
 export default function FabricaPage() {
-  const [status, setStatus] = useState<PipelineStatus | null>(null);
+  const [status, setStatus] = useState<LocalStatus | null>(null);
   const [commands, setCommands] = useState<Command[]>([]);
   const [loading, setLoading] = useState(true);
   const [executing, setExecuting] = useState<string | null>(null);
@@ -45,11 +51,15 @@ export default function FabricaPage() {
   const loadData = useCallback(async () => {
     try {
       const [statusRes, cmdsRes] = await Promise.all([
-        fetch("/api/pipeline-status"),
+        fetch("/api/pipeline-local-status"),
         fetch("/api/pipeline-commands?limit=10"),
       ]);
 
-      if (statusRes.ok) setStatus(await statusRes.json());
+      if (statusRes.ok) {
+        const data = await statusRes.json();
+        if (data.status) setStatus(data.status);
+        else if (data.total_ofertas != null) setStatus(data);
+      }
       if (cmdsRes.ok) {
         const data = await cmdsRes.json();
         setCommands(data.commands || []);
@@ -120,8 +130,7 @@ export default function FabricaPage() {
     );
   }
 
-  const s = status?.fases;
-  const r = status?.resumen;
+  const s = status; // LocalStatus directly
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
@@ -158,8 +167,8 @@ export default function FabricaPage() {
         <div className="flex items-start gap-1 overflow-x-auto pb-4">
           <PipelineNode
             id="scraping" label="SCRAPING" subtitle="6 portales" icon={Globe}
-            status={s?.scraping.estado === "ok" ? "ok" : s?.scraping.estado === "warning" ? "warning" : "error"}
-            metric={s?.scraping.ofertas_totales?.toLocaleString("es-AR") || "—"}
+            status={s?.nlp_pendientes && s.nlp_pendientes > 100 ? "warning" : "ok"}
+            metric={s?.total_ofertas?.toLocaleString("es-AR") || "—"}
             metricLabel="ofertas"
             actions={[
               { label: "Lanzar", icon: Play, onClick: () => window.open("/admin/scraping/comandos", "_self"), variant: "primary" },
@@ -171,8 +180,8 @@ export default function FabricaPage() {
           <div className="flex flex-col gap-2">
             <PipelineNode
               id="nlp" label="NLP" subtitle="v11.4" icon={Cpu}
-              status={s?.nlp.pendientes && s.nlp.pendientes > 100 ? "warning" : "ok"}
-              metric={s?.nlp.pendientes?.toLocaleString("es-AR") || "0"}
+              status={s?.nlp_pendientes && s.nlp_pendientes > 100 ? "warning" : "ok"}
+              metric={s?.nlp_pendientes?.toLocaleString("es-AR") || "0"}
               metricLabel="pendientes"
               actions={[
                 { label: "Procesar NLP", icon: Play, onClick: () => askLimit("run_nlp"),
@@ -184,7 +193,7 @@ export default function FabricaPage() {
             />
             <PipelineGate
               id="gate-nlp" label="GATE NLP"
-              rulesCount={35} approvedPct={99} blockedCount={s?.nlp.pendientes ? 1 : 0} errorsCount={0}
+              rulesCount={35} approvedPct={s?.nlp_gate_aprobado_pct || 99} blockedCount={s?.nlp_bloqueados || 0} errorsCount={0}
               actions={[
                 { label: "Bloq.", icon: ClipboardList, onClick: () => {} },
                 { label: "Re-val", icon: RotateCw, onClick: () => executeCommand("revalidate_nlp") },
@@ -197,8 +206,8 @@ export default function FabricaPage() {
           <div className="flex flex-col gap-2">
             <PipelineNode
               id="matching" label="MATCHING" subtitle="v3.5.4" icon={Target}
-              status={s?.matching.errores_sin_resolver ? "warning" : "ok"}
-              metric={s?.matching.con_matching?.toLocaleString("es-AR") || "0"}
+              status={s?.errores_pendientes ? "warning" : "ok"}
+              metric={s?.matching_con?.toLocaleString("es-AR") || "0"}
               metricLabel="matcheadas"
               actions={[
                 { label: "Match", icon: Play, onClick: () => askLimit("run_matching"),
@@ -210,10 +219,10 @@ export default function FabricaPage() {
             />
             <PipelineGate
               id="gate-matching" label="GATE MATCHING"
-              rulesCount={22} approvedPct={s?.matching.con_matching && s?.matching.errores_sin_resolver
-                ? Math.round((1 - s.matching.errores_sin_resolver / s.matching.con_matching) * 100) : 99}
+              rulesCount={22} approvedPct={s?.matching_con && s?.errores_pendientes
+                ? Math.round((1 - s.errores_pendientes / s.matching_con) * 100) : 99}
               blockedCount={0}
-              errorsCount={s?.matching.errores_sin_resolver || 0}
+              errorsCount={s?.errores_pendientes || 0}
               actions={[
                 { label: "Errs", icon: ClipboardList, onClick: () => {} },
                 { label: "Re-val", icon: RotateCw, onClick: () => executeCommand("revalidate_matching") },
@@ -226,7 +235,7 @@ export default function FabricaPage() {
           <PipelineNode
             id="validacion" label="VALIDACION" subtitle="humana" icon={CheckCircle2}
             status="ok"
-            metric={s?.matching.validadas?.toLocaleString("es-AR") || "0"}
+            metric={s?.validadas?.toLocaleString("es-AR") || "0"}
             metricLabel="validadas"
             actions={[
               { label: "Validar", icon: Play, onClick: () => window.open("/admin/validacion", "_self"), variant: "primary" },
@@ -238,8 +247,8 @@ export default function FabricaPage() {
 
           <PipelineNode
             id="sync" label="SYNC" subtitle="Supabase" icon={Cloud}
-            status={s?.sync.pendientes ? "warning" : "ok"}
-            metric={s?.sync.en_supabase?.toLocaleString("es-AR") || "0"}
+            status={s?.pendientes_sync ? "warning" : "ok"}
+            metric={s?.en_supabase?.toLocaleString("es-AR") || "0"}
             metricLabel="en Supabase"
             actions={[
               { label: "Sync", icon: Play, onClick: () => executeCommand("sync_supabase"),
@@ -259,8 +268,8 @@ export default function FabricaPage() {
         <div className="flex items-start gap-1 overflow-x-auto pb-2">
           <MejoraContinuaNode
             id="errores" label="ERRORES" icon={AlertCircle}
-            status={s?.matching.errores_sin_resolver ? "warning" : "ok"}
-            metric={s?.matching.errores_sin_resolver || 0}
+            status={s?.errores_pendientes ? "warning" : "ok"}
+            metric={s?.errores_pendientes || 0}
             metricLabel="escalados"
             actions={[
               { label: "Ver", icon: ClipboardList, onClick: () => {} },
@@ -271,8 +280,8 @@ export default function FabricaPage() {
 
           <MejoraContinuaNode
             id="issues" label="ISSUES" icon={FileText}
-            status={(r?.issues_humanos_pendientes || 0) > 0 ? "action-needed" : "ok"}
-            metric={r?.issues_humanos_pendientes || 0}
+            status={(0) > 0 ? "action-needed" : "ok"}
+            metric={0}
             metricLabel="pendientes"
             actions={[
               { label: "Ver", icon: ClipboardList, onClick: () => window.open("/admin/issues", "_self") },

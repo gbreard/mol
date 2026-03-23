@@ -233,11 +233,89 @@ def execute_command(client, cmd, dry_run=False):
         return False
 
 
+def sync_local_status(client):
+    """Sube el estado real de SQLite a Supabase para que la Fábrica lo muestre."""
+    db_path = PROJECT_DIR / "database" / "bumeran_scraping.db"
+    sync_log_path = PROJECT_DIR / "config" / "supabase_sync_log.json"
+
+    if not db_path.exists():
+        return
+
+    try:
+        import sqlite3
+        conn = sqlite3.connect(str(db_path))
+
+        total = conn.execute("SELECT COUNT(*) FROM ofertas").fetchone()[0]
+        con_nlp = conn.execute("SELECT COUNT(*) FROM ofertas_nlp").fetchone()[0]
+
+        try:
+            aprobados = conn.execute("SELECT COUNT(*) FROM ofertas_nlp WHERE nlp_gate_status = 'aprobado'").fetchone()[0]
+            bloqueados = conn.execute("SELECT COUNT(*) FROM ofertas_nlp WHERE nlp_gate_status = 'bloqueado'").fetchone()[0]
+        except Exception:
+            aprobados = con_nlp
+            bloqueados = 0
+
+        try:
+            con_matching = conn.execute("SELECT COUNT(*) FROM ofertas_esco_matching").fetchone()[0]
+        except Exception:
+            con_matching = 0
+
+        try:
+            validadas = conn.execute(
+                "SELECT COUNT(*) FROM ofertas_esco_matching WHERE estado_validacion IN ('validado','validado_claude','validado_humano')"
+            ).fetchone()[0]
+        except Exception:
+            validadas = 0
+
+        try:
+            errores = conn.execute("SELECT COUNT(*) FROM validation_errors WHERE resuelto = 0").fetchone()[0]
+        except Exception:
+            errores = 0
+
+        conn.close()
+
+        # Sync log
+        try:
+            sync_log = json.loads(sync_log_path.read_text()) if sync_log_path.exists() else {}
+            en_supabase = sync_log.get("ofertas_synced", sync_log.get("total_synced", 0))
+            ultimo_sync = sync_log.get("last_sync_timestamp", sync_log.get("ultimo_sync"))
+        except Exception:
+            en_supabase = 0
+            ultimo_sync = None
+
+        gate_total = aprobados + bloqueados
+        gate_pct = round(aprobados / gate_total * 100, 1) if gate_total > 0 else 100
+
+        client.table('pipeline_local_status').upsert({
+            'id': 'current',
+            'timestamp': datetime.utcnow().isoformat(),
+            'total_ofertas': total,
+            'nlp_procesadas': con_nlp,
+            'nlp_pendientes': total - con_nlp,
+            'nlp_aprobados': aprobados,
+            'nlp_bloqueados': bloqueados,
+            'nlp_gate_aprobado_pct': gate_pct,
+            'matching_con': con_matching,
+            'matching_sin': max(aprobados - con_matching, 0),
+            'validadas': validadas,
+            'errores_pendientes': errores,
+            'en_supabase': en_supabase,
+            'pendientes_sync': max(validadas - en_supabase, 0),
+            'ultimo_sync': ultimo_sync,
+        }).execute()
+
+    except Exception as e:
+        print(f"[POLLER] WARN: No se pudo sync status local: {e}")
+
+
 def poll_once(dry_run=False):
     """Ejecuta un ciclo de polling."""
     client = get_supabase_client()
     if not client:
         return False
+
+    # Siempre sincronizar status local
+    sync_local_status(client)
 
     cmd = fetch_pending_command(client)
     if not cmd:
