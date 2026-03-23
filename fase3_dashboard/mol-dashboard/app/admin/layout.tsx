@@ -23,6 +23,7 @@ import {
   TrendingUp,
   Zap,
   BookOpen,
+  Tag,
 } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase/browser";
 import { GlobalNav } from "@/components/navigation/GlobalNav";
@@ -72,14 +73,10 @@ const adminSections: MenuSection[] = [
         icon: Activity,
         matchPrefix: "/admin/procesamiento",
         items: [
-          { href: "/admin/procesamiento", label: "Metricas", icon: TrendingUp },
-          { href: "/admin/procesamiento/reglas", label: "Reglas Matching", icon: FileText },
-          { href: "/admin/procesamiento/nlp-inference", label: "NLP Inference", icon: Activity },
-          { href: "/admin/procesamiento/sinonimos", label: "Sinonimos ARG", icon: FileText },
-          { href: "/admin/procesamiento/oficios", label: "Oficios ARG", icon: FileText },
+          { href: "/admin/procesamiento/fabrica", label: "Fabrica", icon: Activity },
+          { href: "/admin/procesamiento/diccionarios", label: "Diccionarios", icon: FileText },
           { href: "/admin/procesamiento/catalogo", label: "Catalogo MOL", icon: BookOpen },
-          { href: "/admin/procesamiento/fine-tuning", label: "Fine-Tuning", icon: Zap },
-          { href: "/admin/procesamiento/editores", label: "Otros Editores", icon: Settings },
+          { href: "/admin/procesamiento/perfil-argentino", label: "Perfil Argentino", icon: Tag },
           { href: "/admin/validacion", label: "Validacion", icon: ClipboardCheck, matchMode: "startsWith" },
         ],
       },
