@@ -4,6 +4,7 @@ import { Suspense, useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Download, TrendingUp, Users, AlertTriangle, BookOpen } from 'lucide-react'
 import MarketBenchmark, { type MarketBenchmarkData } from '@/components/MarketBenchmark'
+import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
 
 interface CursoFaltante {
   skill_label: string
@@ -171,6 +172,7 @@ function InteligenciaContent() {
 export default function InteligenciaLocalPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
+      <OEBreadcrumb items={[{ label: "Benchmark Mercado" }]} />
       <h1 className="mb-1 text-2xl font-bold text-gray-900">Inteligencia local</h1>
       <p className="mb-6 text-sm text-gray-500">
         Análisis de demanda y disponibilidad de skills en el mercado laboral de la jurisdicción.

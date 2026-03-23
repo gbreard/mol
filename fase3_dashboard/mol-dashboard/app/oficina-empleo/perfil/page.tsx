@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { UserSearch, Save, ArrowRight, Loader2, Target, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { UserSearch, Save, ArrowRight, Loader2, Target, ChevronRight, BarChart3, GraduationCap } from "lucide-react";
 import DniSearch from "@/components/DniSearch";
 import { SkillCapturePanel, SkillsPanel, type CapturedSkill } from "@/components/oficina-empleo/SkillCapturePanel";
+import { OEBreadcrumb } from "@/components/oficina-empleo/OEBreadcrumb";
 
 interface WorkerData {
   nombre: string;
@@ -31,6 +33,8 @@ export default function PerfilPage() {
   const [loadingMatches, setLoadingMatches] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [profileId, setProfileId] = useState<string | null>(null);
+  const router = useRouter();
 
   const addSkills = useCallback((newSkills: CapturedSkill[]) => {
     setSkills(prev => {
@@ -105,7 +109,11 @@ export default function PerfilPage() {
           })),
         }),
       });
-      if (res.ok) setSaved(true);
+      if (res.ok) {
+        const data = await res.json();
+        setProfileId(data.id || null);
+        setSaved(true);
+      }
     } catch {} finally {
       setSaving(false);
     }
@@ -115,6 +123,8 @@ export default function PerfilPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
+      <OEBreadcrumb items={[{ label: "Perfil Trabajador" }]} />
+
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <UserSearch className="w-7 h-7 text-teal-600" />
@@ -298,6 +308,22 @@ export default function PerfilPage() {
                     </a>
                   </div>
                 ))}
+
+                {/* Cross-links to other tools */}
+                {matches.length > 0 && (
+                  <div className="px-6 py-4 bg-gray-50 border-t flex flex-wrap gap-3">
+                    {profileId && (
+                      <a href={`/oficina-empleo/formacion?profile_id=${profileId}`}
+                        className="flex items-center gap-1.5 text-sm text-teal-600 hover:text-teal-700 font-medium">
+                        <GraduationCap className="w-4 h-4" /> Formacion con impacto
+                      </a>
+                    )}
+                    <a href={`/oficina-empleo/benchmark?jurisdiccion=${encodeURIComponent(worker.nombre ? "Capital Federal" : "CABA")}`}
+                      className="flex items-center gap-1.5 text-sm text-teal-600 hover:text-teal-700 font-medium">
+                      <BarChart3 className="w-4 h-4" /> Benchmark del mercado
+                    </a>
+                  </div>
+                )}
 
                 {matches.length === 0 && !loadingMatches && (
                   <div className="px-6 py-8 text-center text-gray-400">

@@ -7,6 +7,7 @@ import {
   MapPin, Clock, Building2, ArrowLeft,
 } from "lucide-react";
 import Link from "next/link";
+import { OEBreadcrumb } from "@/components/oficina-empleo/OEBreadcrumb";
 
 type Tab = "ofertas" | "capacitacion";
 
@@ -101,11 +102,13 @@ function OfertasContent() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
+      <OEBreadcrumb items={[
+        { label: "Perfil", href: "/oficina-empleo/perfil" },
+        { label: "Ofertas Coincidentes" },
+      ]} />
+
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <Link href="/oficina-empleo/perfil" className="text-gray-400 hover:text-gray-600">
-          <ArrowLeft className="w-5 h-5" />
-        </Link>
         <Briefcase className="w-7 h-7 text-teal-600" />
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Ofertas Coincidentes</h1>
