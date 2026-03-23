@@ -76,6 +76,7 @@ const adminSections: MenuSection[] = [
           { href: "/admin/procesamiento/fabrica", label: "Fabrica", icon: Activity },
           { href: "/admin/procesamiento/diccionarios", label: "Diccionarios", icon: FileText },
           { href: "/admin/procesamiento/catalogo", label: "Catalogo MOL", icon: BookOpen },
+          { href: "/admin/aprendizaje", label: "Aprendizaje", icon: TrendingUp },
           { href: "/admin/procesamiento/perfil-argentino", label: "Perfil Argentino", icon: Tag },
           { href: "/admin/validacion", label: "Validacion", icon: ClipboardCheck, matchMode: "startsWith" },
         ],

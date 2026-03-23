@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { UserSearch, Briefcase, Target, Sparkles } from "lucide-react";
+import { UserSearch, Briefcase, Target, GraduationCap, BarChart3, FileText, Sparkles } from "lucide-react";
 
 const cards = [
   {
@@ -15,6 +15,27 @@ const cards = [
       "Consulta las ofertas laborales mas relevantes para un perfil registrado.",
     href: "/oficina-empleo/ofertas",
     icon: Briefcase,
+  },
+  {
+    title: "Formacion con Impacto",
+    description:
+      "Cursos que mejoran el match del trabajador con el mercado laboral.",
+    href: "/oficina-empleo/formacion",
+    icon: GraduationCap,
+  },
+  {
+    title: "Perfil de Puesto",
+    description:
+      "Crea perfiles de puestos con skills requeridas y deseables.",
+    href: "/oficina-empleo/perfil-puesto",
+    icon: FileText,
+  },
+  {
+    title: "Benchmark Mercado",
+    description:
+      "Demanda vs disponibilidad de skills por jurisdiccion.",
+    href: "/oficina-empleo/benchmark",
+    icon: BarChart3,
   },
   {
     title: "Taxonomia de Skills",
@@ -38,15 +59,19 @@ export default function OficinaEmpleoPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {cards.map((card) => {
-          const isExternal = card.href === "/skills";
+          const isReady = ["/skills", "/oficina-empleo/formacion", "/oficina-empleo/benchmark", "/oficina-empleo/perfil-puesto"].includes(card.href);
           return (
             <Link
               key={card.href}
               href={card.href}
-              className="group relative bg-white rounded-2xl border-2 border-dashed border-gray-300 p-6 hover:border-teal-400 hover:shadow-lg transition-all"
+              className={`group relative bg-white rounded-2xl border-2 p-6 hover:shadow-lg transition-all ${
+                isReady ? "border-teal-200 hover:border-teal-400" : "border-dashed border-gray-300 hover:border-teal-400"
+              }`}
             >
-              <span className="absolute top-3 right-3 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                {isExternal ? "Disponible" : "Proximamente"}
+              <span className={`absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                isReady ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+              }`}>
+                {isReady ? "Disponible" : "Proximamente"}
               </span>
               <div className="w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center mb-4">
                 <card.icon className="w-5 h-5 text-teal-600" />
