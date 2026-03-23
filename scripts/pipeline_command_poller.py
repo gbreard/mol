@@ -176,7 +176,7 @@ def execute_command(client, cmd, dry_run=False):
             full_cmd,
             capture_output=True,
             text=True,
-            timeout=3600,  # 1 hour max
+            timeout=28800,  # 8 hours max
             cwd=str(PROJECT_DIR),
             env=env,
         )
