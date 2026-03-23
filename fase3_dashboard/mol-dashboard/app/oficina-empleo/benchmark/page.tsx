@@ -2,33 +2,38 @@
 
 import { Suspense, useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Download, TrendingUp, Users, AlertTriangle, BookOpen } from 'lucide-react'
-import MarketBenchmark, { type MarketBenchmarkData } from '@/components/MarketBenchmark'
+import { Download, TrendingUp, Users, AlertTriangle, Loader2 } from 'lucide-react'
 import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
 
-interface CursoFaltante {
-  skill_label: string
-  brecha: number
-  curso_nombre: string
-  curso_url?: string
-  duracion: string
-  modalidad: string
+interface SkillItem {
+  name: string
+  count: number
+  digital: boolean
+  l1: string
 }
 
-interface InteligenciaLocalData {
+interface OcupacionItem {
+  code: string
+  label: string
+  count: number
+}
+
+interface ApiData {
   jurisdiccion: string
-  total_ofertas: number
-  total_perfiles: number
-  top_demandadas: { label: string; pct: number }[]
-  top_disponibles: { label: string; pct: number }[]
-  benchmark: MarketBenchmarkData
-  cursos_faltantes: CursoFaltante[]
+  ofertas_total: number
+  skills_demandadas: SkillItem[]
+  skills_digitales: SkillItem[]
+  ocupaciones_top: OcupacionItem[]
+  brechas: {
+    total_skills_unicas: number
+    skills_digitales_pct: number
+  }
 }
 
-function InteligenciaContent() {
+function BenchmarkContent() {
   const searchParams = useSearchParams()
   const jurisdiccion = searchParams.get('jurisdiccion') ?? 'CABA'
-  const [data, setData] = useState<InteligenciaLocalData | null>(null)
+  const [data, setData] = useState<ApiData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
@@ -50,135 +55,99 @@ function InteligenciaContent() {
   }, [jurisdiccion])
 
   if (loading) return (
-    <div className="space-y-4">
-      {[1, 2, 3, 4].map((i) => <div key={i} className="h-32 animate-pulse rounded-xl bg-gray-100" />)}
+    <div className="py-12 text-center">
+      <Loader2 className="w-8 h-8 animate-spin text-teal-600 mx-auto mb-3" />
+      <p className="text-gray-500">Analizando mercado laboral de {jurisdiccion}...</p>
     </div>
   )
 
   if (error || !data) return (
-    <p className="text-sm text-red-500">No se pudo cargar la información de inteligencia local.</p>
+    <p className="text-sm text-red-500">No se pudo cargar la informacion de inteligencia local.</p>
   )
+
+  const maxCount = Math.max(...data.skills_demandadas.map(s => s.count), 1)
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3 text-sm text-gray-500">
-          <span>{data.total_ofertas.toLocaleString()} ofertas analizadas</span>
-          <span>·</span>
-          <span>{data.total_perfiles.toLocaleString()} perfiles en la zona</span>
+      {/* KPIs */}
+      <div className="grid grid-cols-3 gap-4">
+        <div className="rounded-xl border border-gray-200 bg-white p-4 text-center">
+          <div className="text-2xl font-bold text-gray-900">{data.ofertas_total.toLocaleString("es-AR")}</div>
+          <div className="text-xs text-gray-500">ofertas analizadas</div>
         </div>
+        <div className="rounded-xl border border-gray-200 bg-white p-4 text-center">
+          <div className="text-2xl font-bold text-gray-900">{data.brechas.total_skills_unicas}</div>
+          <div className="text-xs text-gray-500">skills distintas</div>
+        </div>
+        <div className="rounded-xl border border-gray-200 bg-white p-4 text-center">
+          <div className="text-2xl font-bold text-blue-600">{data.brechas.skills_digitales_pct}%</div>
+          <div className="text-xs text-gray-500">digitales</div>
+        </div>
+      </div>
+
+      {/* Top skills demandadas */}
+      <div className="rounded-xl border border-gray-200 bg-white p-5">
+        <div className="mb-4 flex items-center gap-2">
+          <TrendingUp className="h-4 w-4 text-blue-600" />
+          <h2 className="text-sm font-semibold text-gray-800">Top skills demandadas en {data.jurisdiccion}</h2>
+        </div>
+        <div className="space-y-2">
+          {data.skills_demandadas.slice(0, 20).map((s) => (
+            <div key={s.name} className="flex items-center gap-3">
+              <span className="text-xs text-gray-700 w-40 truncate">{s.name}</span>
+              <div className="flex-1 bg-gray-100 rounded-full h-4 overflow-hidden">
+                <div
+                  className={`h-full rounded-full ${s.digital ? 'bg-blue-500' : 'bg-gray-400'}`}
+                  style={{ width: `${Math.max((s.count / maxCount) * 100, 3)}%` }}
+                />
+              </div>
+              <span className="text-xs text-gray-500 w-10 text-right">{s.count}</span>
+              {s.digital && <span className="text-xs bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded">digital</span>}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Top ocupaciones */}
+      <div className="rounded-xl border border-gray-200 bg-white p-5">
+        <div className="mb-4 flex items-center gap-2">
+          <Users className="h-4 w-4 text-green-600" />
+          <h2 className="text-sm font-semibold text-gray-800">Top ocupaciones en {data.jurisdiccion}</h2>
+        </div>
+        <div className="space-y-2">
+          {data.ocupaciones_top.slice(0, 15).map((o) => (
+            <div key={o.code} className="flex items-center gap-3">
+              <span className="text-xs font-mono text-blue-700 w-12">{o.code}</span>
+              <span className="text-xs text-gray-700 flex-1 truncate">{o.label}</span>
+              <span className="text-xs text-gray-500">{o.count} ofertas</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex justify-end">
         <button
           onClick={() => window.print()}
-          aria-label="Exportar PDF"
-          className="flex min-h-[44px] items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
+          className="flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
         >
           <Download className="h-4 w-4" />
           Exportar PDF
         </button>
       </div>
-
-      {/* Demandadas vs Disponibles */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <div className="mb-3 flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-blue-600" />
-            <h2 className="text-sm font-semibold text-gray-800">Top skills demandadas</h2>
-          </div>
-          <ul className="space-y-2">
-            {data.top_demandadas.map((s) => (
-              <li key={s.label}>
-                <div className="flex justify-between text-xs text-gray-700 mb-0.5">
-                  <span>{s.label}</span>
-                  <span className="font-medium">{s.pct}%</span>
-                </div>
-                <div className="h-1.5 rounded-full bg-gray-100">
-                  <div className="h-1.5 rounded-full bg-blue-500" style={{ width: `${s.pct}%` }} />
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <div className="mb-3 flex items-center gap-2">
-            <Users className="h-4 w-4 text-green-600" />
-            <h2 className="text-sm font-semibold text-gray-800">Top skills disponibles</h2>
-          </div>
-          <ul className="space-y-2">
-            {data.top_disponibles.map((s) => (
-              <li key={s.label}>
-                <div className="flex justify-between text-xs text-gray-700 mb-0.5">
-                  <span>{s.label}</span>
-                  <span className="font-medium">{s.pct}%</span>
-                </div>
-                <div className="h-1.5 rounded-full bg-gray-100">
-                  <div className="h-1.5 rounded-full bg-green-500" style={{ width: `${s.pct}%` }} />
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {/* Tabla brecha */}
-      <div>
-        <div className="mb-3 flex items-center gap-2">
-          <AlertTriangle className="h-4 w-4 text-amber-500" />
-          <h2 className="text-sm font-semibold text-gray-800">Brecha de skills</h2>
-        </div>
-        <MarketBenchmark data={data.benchmark} />
-      </div>
-
-      {/* Cursos faltantes */}
-      <div>
-        <div className="mb-3 flex items-center gap-2">
-          <BookOpen className="h-4 w-4 text-violet-600" />
-          <h2 className="text-sm font-semibold text-gray-800">Cursos para cerrar brechas</h2>
-        </div>
-        <ul className="space-y-2">
-          {data.cursos_faltantes.map((c) => (
-            <li key={c.skill_label} className="rounded-xl border border-gray-200 bg-white p-4">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <span className="rounded bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
-                      Brecha {c.brecha}%
-                    </span>
-                    <span className="text-xs text-gray-500">{c.skill_label}</span>
-                  </div>
-                  <p className="font-medium text-gray-900 text-sm">{c.curso_nombre}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{c.duracion} · {c.modalidad}</p>
-                </div>
-                {c.curso_url && (
-                  <a
-                    href={c.curso_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`Ver curso: ${c.curso_nombre}`}
-                    className="flex min-h-[44px] shrink-0 items-center rounded-lg border border-gray-200 px-3 py-2 text-xs text-gray-600 hover:bg-gray-50"
-                  >
-                    Ver curso
-                  </a>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
     </div>
   )
 }
 
-export default function InteligenciaLocalPage() {
+export default function BenchmarkPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       <OEBreadcrumb items={[{ label: "Benchmark Mercado" }]} />
       <h1 className="mb-1 text-2xl font-bold text-gray-900">Inteligencia local</h1>
       <p className="mb-6 text-sm text-gray-500">
-        Análisis de demanda y disponibilidad de skills en el mercado laboral de la jurisdicción.
+        Analisis de demanda y disponibilidad de skills en el mercado laboral por jurisdiccion.
       </p>
-      <Suspense fallback={<div className="h-24 animate-pulse rounded-xl bg-gray-100" />}>
-        <InteligenciaContent />
+      <Suspense fallback={<div className="py-12 text-center"><Loader2 className="w-8 h-8 animate-spin text-teal-600 mx-auto" /></div>}>
+        <BenchmarkContent />
       </Suspense>
     </div>
   )
