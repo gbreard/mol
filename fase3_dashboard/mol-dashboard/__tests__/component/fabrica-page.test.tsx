@@ -1,192 +1,126 @@
 /**
- * Component tests for Fábrica page (F2.4-F2.9)
- * Tests: loading, both pipeline lines, command execution, activity timeline
+ * Component tests for Fábrica page (3 secciones: embudo, performance, controles)
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 import { server } from '../mocks/server'
 import FabricaPage from '../../app/admin/procesamiento/fabrica/page'
-import { mockPipelineStatusRPC } from '../mocks/fixtures/pipeline-status'
 
 vi.mock('@/lib/supabase', () => ({ supabase: null }))
 
 function setupHandlers() {
   server.use(
-    http.get('/api/pipeline-status', () => {
-      return HttpResponse.json(mockPipelineStatusRPC)
-    }),
     http.get('/api/pipeline-local-status', () => {
       return HttpResponse.json({
-        id: 'current', total_ofertas: 42485, nlp_procesadas: 38025, nlp_pendientes: 4460,
-        nlp_aprobados: 37776, nlp_bloqueados: 0, nlp_gate_aprobado_pct: 100,
+        id: 'current', total_ofertas: 44382, nlp_procesadas: 43862, nlp_pendientes: 520,
+        nlp_aprobados: 37776, nlp_bloqueados: 0, nlp_gate_aprobado_pct: 86,
         matching_con: 37776, matching_sin: 0, validadas: 37776, errores_pendientes: 0,
         en_supabase: 37776, pendientes_sync: 0,
       })
     }),
-    http.get('/api/scraping-live-stats', () => {
-      return HttpResponse.json({
-        total_ofertas: 29154,
-        portales: { bumeran: { total: 5516 }, computrabajo: { total: 16993 } },
-      })
-    }),
     http.get('/api/pipeline-commands', () => {
       return HttpResponse.json({
-        commands: [
-          {
-            id: 'cmd-1', comando: 'run_pipeline', params: { limit: 500 },
-            estado: 'completado', resultado: { procesadas: 500, errores: 12 },
-            creado_por: 'admin@oede.gob.ar', created_at: '2026-03-22T15:00:00Z',
-            duracion_seg: 154,
-          },
-          {
-            id: 'cmd-2', comando: 'sync_supabase', params: {},
-            estado: 'completado', resultado: {},
-            creado_por: 'admin@oede.gob.ar', created_at: '2026-03-22T14:00:00Z',
-            duracion_seg: 45,
-          },
-        ],
-        total: 2,
+        commands: [{
+          id: 'cmd-1', comando: 'run_nlp', params: { limit: 1000 },
+          estado: 'completado', resultado: { procesadas: 1000, errores: 24, exit_code: 0 },
+          creado_por: 'admin@oede.gob.ar', created_at: '2026-03-25T15:00:00Z', duracion_seg: 3600,
+        }],
+        total: 1,
       })
     }),
     http.post('/api/pipeline-commands', () => {
-      return HttpResponse.json({
-        id: 'cmd-new', comando: 'sync_supabase', estado: 'pendiente',
-      }, { status: 201 })
+      return HttpResponse.json({ id: 'cmd-new', estado: 'pendiente' }, { status: 201 })
     }),
   )
 }
 
 describe('FabricaPage', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-    setupHandlers()
-  })
+  beforeEach(() => { vi.clearAllMocks(); setupHandlers(); })
 
-  describe('loading and structure', () => {
-    it('shows loading spinner initially', () => {
+  describe('estructura', () => {
+    it('muestra titulo', async () => {
       render(<FabricaPage />)
-      expect(screen.getByText(/Cargando fabrica/)).toBeInTheDocument()
+      await waitFor(() => expect(screen.getByText('Fabrica de Procesamiento')).toBeInTheDocument())
     })
 
-    it('renders page title', async () => {
+    it('muestra las 3 secciones', async () => {
       render(<FabricaPage />)
       await waitFor(() => {
-        expect(screen.getByText('Fabrica de Procesamiento')).toBeInTheDocument()
+        expect(screen.getByText(/Embudo de datos/)).toBeInTheDocument()
       })
-    })
-
-    it('shows pipeline version info', async () => {
-      render(<FabricaPage />)
-      await waitFor(() => {
-        expect(screen.getByText(/Pipeline v3.3/)).toBeInTheDocument()
-      })
+      expect(screen.getByText(/Performance del pipeline/)).toBeInTheDocument()
+      expect(screen.getByText(/Controles/)).toBeInTheDocument()
+      expect(screen.getByText(/Actividad reciente/)).toBeInTheDocument()
     })
   })
 
-  describe('fabrication line', () => {
-    it('renders all fabrication nodes', async () => {
+  describe('embudo', () => {
+    it('muestra todas las etapas del embudo', async () => {
       render(<FabricaPage />)
-      await waitFor(() => {
-        expect(screen.getByText('SCRAPING')).toBeInTheDocument()
-      })
-      expect(screen.getByText('NLP')).toBeInTheDocument()
-      expect(screen.getByText('MATCHING')).toBeInTheDocument()
-      expect(screen.getByText('VALIDACION')).toBeInTheDocument()
-      expect(screen.getByText('SYNC')).toBeInTheDocument()
+      await waitFor(() => expect(screen.getByText('Ofertas totales')).toBeInTheDocument())
+      expect(screen.getByText('Con NLP')).toBeInTheDocument()
+      expect(screen.getByText('Gate aprobado')).toBeInTheDocument()
+      expect(screen.getByText('Con matching')).toBeInTheDocument()
+      expect(screen.getByText('Validadas')).toBeInTheDocument()
+      expect(screen.getByText('En dashboard')).toBeInTheDocument()
     })
 
-    it('renders both gates', async () => {
+    it('muestra verificacion que cierra', async () => {
       render(<FabricaPage />)
-      await waitFor(() => {
-        expect(screen.getByText('GATE NLP')).toBeInTheDocument()
-      })
-      expect(screen.getByText('GATE MATCHING')).toBeInTheDocument()
+      await waitFor(() => expect(screen.getByText(/cierra/)).toBeInTheDocument())
     })
 
-    it('shows Linea de Fabricacion header', async () => {
+    it('muestra pendientes gate como cuello de botella', async () => {
       render(<FabricaPage />)
       await waitFor(() => {
-        expect(screen.getByText('Linea de Fabricacion')).toBeInTheDocument()
-      })
-    })
-
-    it('renders action buttons on nodes', async () => {
-      render(<FabricaPage />)
-      await waitFor(() => {
-        expect(screen.getByText('Procesar NLP')).toBeInTheDocument()
-      })
-      expect(screen.getAllByText('Config').length).toBeGreaterThan(0)
-      expect(screen.getAllByText('Sync').length).toBeGreaterThan(0)
-    })
-  })
-
-  describe('mejora continua line', () => {
-    it('renders all mejora nodes', async () => {
-      render(<FabricaPage />)
-      await waitFor(() => {
-        expect(screen.getByText('ERRORES')).toBeInTheDocument()
-      })
-      expect(screen.getByText('ISSUES')).toBeInTheDocument()
-      expect(screen.getByText('TRAINING')).toBeInTheDocument()
-      expect(screen.getByText('FINE-TUNE')).toBeInTheDocument()
-      expect(screen.getByText('CATALOGO')).toBeInTheDocument()
-      expect(screen.getByText('PERFIL')).toBeInTheDocument()
-    })
-
-    it('shows Linea de Mejora Continua header', async () => {
-      render(<FabricaPage />)
-      await waitFor(() => {
-        expect(screen.getByText('Linea de Mejora Continua')).toBeInTheDocument()
+        expect(screen.getByText(/pendientes gate/i)).toBeInTheDocument()
       })
     })
   })
 
-  describe('activity timeline', () => {
-    it('shows recent commands', async () => {
+  describe('performance', () => {
+    it('muestra KPIs de performance', async () => {
+      render(<FabricaPage />)
+      await waitFor(() => {
+        expect(screen.getByText(/Tasa aprobacion NLP/)).toBeInTheDocument()
+      })
+      expect(screen.getByText(/Errores pendientes/)).toBeInTheDocument()
+    })
+
+    it('linkea a aprendizaje', async () => {
+      render(<FabricaPage />)
+      await waitFor(() => {
+        expect(screen.getByText(/Ver detalle completo/)).toBeInTheDocument()
+      })
+    })
+  })
+
+  describe('controles', () => {
+    it('muestra botones de accion', async () => {
+      render(<FabricaPage />)
+      await waitFor(() => {
+        expect(screen.getByText('Controles')).toBeInTheDocument()
+      })
+      expect(screen.getByText('Matching')).toBeInTheDocument()
+      expect(screen.getByText('Sync Supabase')).toBeInTheDocument()
+    })
+
+    it('muestra badge de pendientes en botones', async () => {
+      render(<FabricaPage />)
+      await waitFor(() => {
+        expect(screen.getAllByText(/520 pend/).length).toBeGreaterThanOrEqual(1)
+      }, { timeout: 3000 })
+    })
+  })
+
+  describe('timeline', () => {
+    it('muestra actividad reciente', async () => {
       render(<FabricaPage />)
       await waitFor(() => {
         expect(screen.getByText('Actividad reciente')).toBeInTheDocument()
       })
-      expect(screen.getByText('Pipeline completo')).toBeInTheDocument()
-      expect(screen.getByText('Sync Supabase')).toBeInTheDocument()
-    })
-
-    it('shows command status and duration', async () => {
-      render(<FabricaPage />)
-      await waitFor(() => {
-        expect(screen.getAllByText(/Completado/).length).toBeGreaterThan(0)
-      })
-    })
-  })
-
-  describe('command execution', () => {
-    it('creates command on button click', async () => {
-      render(<FabricaPage />)
-      await waitFor(() => {
-        expect(screen.getAllByText('Sync').length).toBeGreaterThan(0)
-      })
-
-      // Click the Sync button (first one in the fabrication line)
-      const syncButtons = screen.getAllByText('Sync')
-      fireEvent.click(syncButtons[0])
-
-      await waitFor(() => {
-        expect(screen.getByText(/Comando.*creado/)).toBeInTheDocument()
-      })
-    })
-
-    it('shows empty state when no commands', async () => {
-      server.use(
-        http.get('/api/pipeline-commands', () => {
-          return HttpResponse.json({ commands: [], total: 0 })
-        }),
-      )
-
-      render(<FabricaPage />)
-      await waitFor(() => {
-        expect(screen.getByText('Sin comandos recientes')).toBeInTheDocument()
-      })
+      expect(screen.getAllByText(/Completado/).length).toBeGreaterThanOrEqual(1)
     })
   })
 })
