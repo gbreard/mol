@@ -14,9 +14,11 @@ interface SkillSearchResult {
 
 interface Props {
   onSkillsChange?: (skills: SkillItem[]) => void
+  hideList?: boolean
+  existingUris?: Set<string>
 }
 
-export default function SkillSearchByTask({ onSkillsChange }: Props) {
+export default function SkillSearchByTask({ onSkillsChange, hideList, existingUris }: Props) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<SkillSearchResult[]>([])
   const [loading, setLoading] = useState(false)
@@ -53,7 +55,8 @@ export default function SkillSearchByTask({ onSkillsChange }: Props) {
   }, [query, search])
 
   const addSkill = (result: SkillSearchResult) => {
-    if (addedSkills.some((s) => s.uri === result.uri)) return
+    // Ignorar si ya está en el store global o en la lista interna
+    if (existingUris?.has(result.uri) || addedSkills.some((s) => s.uri === result.uri)) return
     const newSkill: SkillItem = { ...result, confidence: 'confirmed', via: 'busqueda' }
     const updated = [...addedSkills, newSkill]
     setAddedSkills(updated)
@@ -115,7 +118,7 @@ export default function SkillSearchByTask({ onSkillsChange }: Props) {
                 <li
                   key={r.uri}
                   role="option"
-                  aria-selected={addedSkills.some((s) => s.uri === r.uri)}
+                  aria-selected={addedSkills.some((s) => s.uri === r.uri) || existingUris?.has(r.uri)}
                   onMouseDown={() => addSkill(r)}
                   className="flex cursor-pointer items-start gap-2 px-4 py-2.5 hover:bg-blue-50"
                 >
@@ -133,7 +136,7 @@ export default function SkillSearchByTask({ onSkillsChange }: Props) {
                       <p className="mt-0.5 truncate text-xs text-gray-400">{r.description}</p>
                     )}
                   </div>
-                  {addedSkills.some((s) => s.uri === r.uri) && (
+                  {(addedSkills.some((s) => s.uri === r.uri) || existingUris?.has(r.uri)) && (
                     <span className="text-xs text-green-500">✓ agregada</span>
                   )}
                 </li>
@@ -143,8 +146,8 @@ export default function SkillSearchByTask({ onSkillsChange }: Props) {
         )}
       </div>
 
-      {/* Added skills list */}
-      {addedSkills.length > 0 && (
+      {/* Added skills list — oculta cuando el padre ya muestra el acumulador */}
+      {!hideList && addedSkills.length > 0 && (
         <div className="space-y-2">
           <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
             Competencias agregadas ({addedSkills.length})

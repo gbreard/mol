@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
-import { Search, Loader2, Plus, ChevronRight } from 'lucide-react'
+import { useState, useRef, useCallback, useEffect } from 'react'
+import { Search, Loader2, Plus, ChevronRight, CheckCircle } from 'lucide-react'
 import type { SkillItem, SkillConfidence } from '@/components/SkillWithDefinition'
 
 interface OccupationResult {
@@ -21,9 +21,10 @@ interface OccupationSkill {
 
 interface Props {
   onSkillsFound: (skills: SkillItem[]) => void
+  existingUris?: Set<string>
 }
 
-export default function OcupacionSkillsVia({ onSkillsFound }: Props) {
+export default function OcupacionSkillsVia({ onSkillsFound, existingUris }: Props) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<OccupationResult[]>([])
   const [loadingSearch, setLoadingSearch] = useState(false)
@@ -31,6 +32,7 @@ export default function OcupacionSkillsVia({ onSkillsFound }: Props) {
   const [skills, setSkills] = useState<OccupationSkill[]>([])
   const [loadingSkills, setLoadingSkills] = useState(false)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const search = useCallback(async (q: string) => {
     if (!q.trim()) { setResults([]); return }
@@ -84,7 +86,11 @@ export default function OcupacionSkillsVia({ onSkillsFound }: Props) {
     setSelected(null)
     setQuery('')
     setSkills([])
+    // Refocus para que el usuario pueda buscar otra ocupación inmediatamente
+    setTimeout(() => inputRef.current?.focus(), 50)
   }
+
+  const nuevasCount = skills.filter((s) => !existingUris?.has(s.uri)).length
 
   return (
     <div className="space-y-4">
@@ -92,6 +98,7 @@ export default function OcupacionSkillsVia({ onSkillsFound }: Props) {
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
         <input
+          ref={inputRef}
           type="text"
           value={query}
           onChange={(e) => handleQueryChange(e.target.value)}
@@ -137,28 +144,43 @@ export default function OcupacionSkillsVia({ onSkillsFound }: Props) {
             <p className="text-xs font-medium text-gray-600">
               Competencias para <span className="text-blue-700">{selected.label}</span>
             </p>
-            <span className="text-xs text-gray-400">{skills.length} competencias</span>
+            <span className="text-xs text-gray-400">
+              {nuevasCount} nuevas · {skills.length - nuevasCount} ya en tu perfil
+            </span>
           </div>
           <div className="border border-gray-200 rounded-lg divide-y divide-gray-100 overflow-hidden max-h-64 overflow-y-auto mb-3">
-            {skills.map((s) => (
-              <div key={s.uri} className="flex items-center gap-2 px-3 py-2">
-                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${s.essential ? 'bg-blue-500' : 'bg-gray-300'}`} />
-                <span className="text-sm text-gray-800 flex-1">{s.label}</span>
-                {s.essential && (
-                  <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded font-medium">
-                    esencial
-                  </span>
-                )}
-              </div>
-            ))}
+            {skills.map((s) => {
+              const yaEnPerfil = existingUris?.has(s.uri)
+              return (
+                <div key={s.uri} className={`flex items-center gap-2 px-3 py-2 ${yaEnPerfil ? 'opacity-50' : ''}`}>
+                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${s.essential ? 'bg-blue-500' : 'bg-gray-300'}`} />
+                  <span className="text-sm text-gray-800 flex-1">{s.label}</span>
+                  {yaEnPerfil ? (
+                    <CheckCircle className="w-3.5 h-3.5 text-green-400 shrink-0" />
+                  ) : s.essential ? (
+                    <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded font-medium">
+                      esencial
+                    </span>
+                  ) : null}
+                </div>
+              )
+            })}
           </div>
           <button
             onClick={handleAgregar}
-            className="w-full inline-flex items-center justify-center gap-2 bg-blue-600 text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-blue-700 transition-colors"
+            disabled={nuevasCount === 0}
+            className="w-full inline-flex items-center justify-center gap-2 bg-blue-600 text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <Plus className="w-4 h-4" />
-            Agregar estas {skills.length} competencias a mi perfil
+            {nuevasCount > 0
+              ? `Agregar ${nuevasCount} competencia${nuevasCount !== 1 ? 's' : ''} nueva${nuevasCount !== 1 ? 's' : ''}`
+              : 'Todas ya están en tu perfil'}
           </button>
+          {nuevasCount === 0 && (
+            <p className="text-center text-xs text-gray-400 mt-2">
+              Probá buscar otra ocupación para sumar más.
+            </p>
+          )}
         </div>
       )}
 

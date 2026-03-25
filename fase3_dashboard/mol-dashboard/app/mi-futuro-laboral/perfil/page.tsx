@@ -48,6 +48,8 @@ export default function PerfilPage() {
   const { store, addSkills, updateSkill, removeSkill, confirmed } = useS1Store()
   const [viaActiva, setViaActiva] = useState<Via>('ocupacion')
 
+  const existingUris = new Set(store.skills.map((s) => s.uri))
+
   const handleSkillsFromVia = (skills: SkillItem[]) => {
     addSkills(skills)
   }
@@ -117,13 +119,18 @@ export default function PerfilPage() {
             {/* Contenido de cada vía */}
             <div className="bg-white rounded-xl border border-gray-200 p-4">
               {viaActiva === 'ocupacion' && (
-                <OcupacionSkillsVia onSkillsFound={handleSkillsFromVia} />
+                <OcupacionSkillsVia
+                  onSkillsFound={handleSkillsFromVia}
+                  existingUris={existingUris}
+                />
               )}
               {viaActiva === 'tarea' && (
                 <SkillSearchByTask
                   onSkillsChange={(skills) => handleSkillsFromVia(
                     skills.map((s) => ({ ...s, via: 'tarea' as const }))
                   )}
+                  hideList
+                  existingUris={existingUris}
                 />
               )}
               {viaActiva === 'texto' && (
