@@ -17,8 +17,16 @@ async function fetchReport(token: string): Promise<ReportData | null> {
       cache: 'no-store',
     })
     if (res.status === 404) return null
-    if (!res.ok) return null
-    return res.json()
+    if (!res.ok) {
+      // Intentar parsear estado expirado/revocado
+      try {
+        const json = await res.json()
+        if (json.estado) return json as ReportData
+      } catch { /* ignorar */ }
+      return null
+    }
+    const json = await res.json()
+    return (json.report ?? json) as ReportData
   } catch {
     return null
   }
@@ -58,7 +66,7 @@ export default async function ReportePage({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <CompatibilityReport data={data} />
+      <CompatibilityReport data={data} token={token} />
     </main>
   )
 }

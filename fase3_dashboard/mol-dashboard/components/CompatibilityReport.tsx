@@ -21,6 +21,7 @@ export interface ReportData {
 
 interface Props {
   data: ReportData
+  token?: string
 }
 
 function calcScore(required: ReportSkillItem[], covered: ReportSkillItem[]): number {
@@ -30,7 +31,7 @@ function calcScore(required: ReportSkillItem[], covered: ReportSkillItem[]): num
   return Math.round((matched / required.length) * 100)
 }
 
-export default function CompatibilityReport({ data }: Props) {
+export default function CompatibilityReport({ data, token: _token }: Props) {
   const [required, setRequired] = useState<ReportSkillItem[]>(data.skills_requeridas)
   const [covered, setCovered] = useState<ReportSkillItem[]>(data.skills_cubiertas)
   const isEdited =
