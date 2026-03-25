@@ -220,7 +220,7 @@ export default function FabricaPage() {
         </h2>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-          <ActionButton label="Procesar NLP" icon={Cpu} onClick={() => askLimit("run_nlp")}
+          <ActionButton label="NLP + Validacion" icon={Cpu} onClick={() => askLimit("run_nlp")}
             disabled={hasRunning} loading={isExec("run_nlp")} badge={sinNlp > 0 ? `${sinNlp} pend.` : undefined} />
           <ActionButton label="Matching" icon={Target} onClick={() => askLimit("run_matching")}
             disabled={hasRunning} loading={isExec("run_matching")} badge={gatePendiente > 0 ? `${gatePendiente} pend.` : undefined} />
@@ -407,7 +407,7 @@ function formatDuration(seconds: number): string {
 }
 
 const COMANDO_LABELS: Record<string, string> = {
-  run_pipeline: "Pipeline completo", run_nlp: "Procesar NLP", run_matching: "Matching",
+  run_pipeline: "Pipeline completo", run_nlp: "NLP + Validacion", run_matching: "Matching",
   reprocess_errors: "Reprocesar errores", revalidate_nlp: "Re-validar NLP",
   revalidate_matching: "Re-validar Matching", reapply_rules: "Reaplicar reglas",
   export_excel: "Exportar Excel", sync_supabase: "Sync Supabase",

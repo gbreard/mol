@@ -53,8 +53,8 @@ COMMAND_MAP = {
         'build_args': lambda p: ['--limit', str(p.get('limit', 100))] if p.get('limit') else ['--ids', p.get('ids', '')],
     },
     'run_nlp': {
-        'script': 'database/process_nlp_from_db_v11.py',
-        'build_args': lambda p: ['--limit', str(p.get('limit', 100))] if p.get('limit') else ['--ids', p.get('ids', '')],
+        'script': 'scripts/run_validated_pipeline.py',
+        'build_args': lambda p: ['--skip-matching', '--limit', str(p.get('limit', 100))] if p.get('limit') else ['--skip-matching', '--ids', p.get('ids', '')],
     },
     'run_matching': {
         'script': 'scripts/run_validated_pipeline.py',
