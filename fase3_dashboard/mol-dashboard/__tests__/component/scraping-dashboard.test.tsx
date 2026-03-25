@@ -73,10 +73,10 @@ describe('S23 — ScrapingPage (VPS data)', () => {
     expect(screen.getAllByText(/7 dias/).length).toBeGreaterThan(0)
   })
 
-  it('muestra total VPS en header', async () => {
+  it('muestra cadena de datos', async () => {
     render(<ScrapingPage />)
     await waitFor(() => {
-      expect(screen.getByText(/ofertas en VPS/)).toBeInTheDocument()
+      expect(screen.getByText(/Cadena de datos/)).toBeInTheDocument()
     })
   })
 })

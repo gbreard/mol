@@ -61,16 +61,23 @@ export default function ScrapingPage() {
   const [fechaTipo, setFechaTipo] = useState<'scraping' | 'publicacion'>('scraping');
   const [portalesVisibles, setPortalesVisibles] = useState<Set<string>>(new Set());
 
+  const [localStatus, setLocalStatus] = useState<{
+    total_ofertas: number; nlp_procesadas: number; nlp_pendientes: number;
+    matching_con: number; validadas: number; en_supabase: number; pendientes_sync: number;
+  } | null>(null);
+
   async function loadData() {
     setLoading(true);
     try {
       if (!supabase) return;
-      const [vpsResult, statsResult] = await Promise.all([
+      const [vpsResult, statsResult, localResult] = await Promise.all([
         supabase.from('scraping_live_stats').select('*').eq('id', 'current').maybeSingle(),
         supabase.rpc('get_scraping_stats'),
+        supabase.from('pipeline_local_status').select('*').eq('id', 'current').maybeSingle(),
       ]);
 
       if (!vpsResult.error && vpsResult.data) setVps(vpsResult.data);
+      if (!localResult.error && localResult.data) setLocalStatus(localResult.data);
       if (!statsResult.error && statsResult.data) {
         const d = statsResult.data as any;
         setSupabasePortales(d.portales || []);
@@ -181,38 +188,62 @@ export default function ScrapingPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Scraping — Portales</h1>
-          <p className="text-gray-500 text-sm mt-1">
-            {mergedPortales.length} fuentes — {vps?.total_ofertas?.toLocaleString("es-AR") || "?"} ofertas en VPS
-            {supabaseTotals.en_dashboard > 0 && (
-              <span className="text-gray-400 ml-1">
-                ({supabaseTotals.en_dashboard.toLocaleString("es-AR")} en dashboard)
-              </span>
-            )}
-          </p>
-          {vps?.timestamp && (
-            <p className="text-xs text-gray-400 mt-0.5">
-              Datos del VPS: {new Date(vps.timestamp).toLocaleString("es-AR")}
-            </p>
-          )}
+          <p className="text-gray-500 text-sm mt-1">{mergedPortales.length} fuentes activas</p>
         </div>
         <button onClick={loadData} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">
           <RefreshCw className="w-4 h-4" /> Actualizar
         </button>
       </div>
 
-      {/* VPS Health */}
-      {vpsOffline && (
-        <div className="flex items-center gap-3 px-4 py-3 rounded-lg border bg-red-50 border-red-200 text-red-800">
-          <XCircle className="w-5 h-5 flex-shrink-0" />
-          <span className="text-sm">VPS sin datos — los numeros pueden estar desactualizados. Verificar que el VPS este online y que sync_scraping_stats.py corra despues de cada scraping.</span>
+      {/* Pipeline de datos — cadena completa */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold text-gray-700">Cadena de datos</h3>
+          <div className="flex items-center gap-1.5">
+            <div className={`w-2 h-2 rounded-full ${vpsOffline ? 'bg-red-500' : vpsStale ? 'bg-amber-500' : 'bg-green-500'}`} />
+            <span className="text-xs text-gray-500">
+              VPS {vpsOffline ? 'sin datos' : vpsStale ? 'desactualizado' : 'online'}
+              {vps?.timestamp && !vpsOffline && (
+                <span className="text-gray-400 ml-1">
+                  ({new Date(vps.timestamp).toLocaleString("es-AR")})
+                </span>
+              )}
+            </span>
+          </div>
         </div>
-      )}
-      {!vpsOffline && vpsStale && (
-        <div className="flex items-center gap-3 px-4 py-3 rounded-lg border bg-amber-50 border-amber-200 text-amber-800">
-          <AlertTriangle className="w-5 h-5 flex-shrink-0" />
-          <span className="text-sm">Datos del VPS desactualizados (ultima actualizacion: {vps?.timestamp ? new Date(vps.timestamp).toLocaleString("es-AR") : "desconocida"})</span>
+        <div className="flex items-center gap-2 overflow-x-auto">
+          <div className="bg-blue-50 rounded-lg p-3 text-center min-w-[120px]">
+            <div className="text-lg font-bold text-blue-700">{vps?.total_ofertas?.toLocaleString("es-AR") || "?"}</div>
+            <div className="text-xs text-blue-500">VPS (scrapeadas)</div>
+          </div>
+          <div className="text-gray-300 text-lg">→</div>
+          <div className="bg-purple-50 rounded-lg p-3 text-center min-w-[120px]">
+            <div className="text-lg font-bold text-purple-700">{localStatus?.total_ofertas?.toLocaleString("es-AR") || "?"}</div>
+            <div className="text-xs text-purple-500">Local (importadas)</div>
+          </div>
+          <div className="text-gray-300 text-lg">→</div>
+          <div className="bg-teal-50 rounded-lg p-3 text-center min-w-[120px]">
+            <div className="text-lg font-bold text-teal-700">{localStatus?.nlp_procesadas?.toLocaleString("es-AR") || "?"}</div>
+            <div className="text-xs text-teal-500">Con NLP</div>
+          </div>
+          <div className="text-gray-300 text-lg">→</div>
+          <div className="bg-green-50 rounded-lg p-3 text-center min-w-[120px]">
+            <div className="text-lg font-bold text-green-700">{localStatus?.validadas?.toLocaleString("es-AR") || "?"}</div>
+            <div className="text-xs text-green-500">Validadas</div>
+          </div>
+          <div className="text-gray-300 text-lg">→</div>
+          <div className="bg-gray-50 rounded-lg p-3 text-center min-w-[120px]">
+            <div className="text-lg font-bold text-gray-700">{localStatus?.en_supabase?.toLocaleString("es-AR") || supabaseTotals.en_dashboard.toLocaleString("es-AR")}</div>
+            <div className="text-xs text-gray-500">En Dashboard</div>
+          </div>
         </div>
-      )}
+        {(localStatus?.nlp_pendientes || 0) > 0 && (
+          <div className="mt-2 text-xs text-amber-600">
+            {localStatus?.nlp_pendientes?.toLocaleString("es-AR")} ofertas pendientes de NLP
+            {(localStatus?.pendientes_sync || 0) > 0 && ` · ${localStatus?.pendientes_sync?.toLocaleString("es-AR")} pendientes de sync`}
+          </div>
+        )}
+      </div>
 
       {/* Alertas portales */}
       {mergedPortales.some(p => p.dias_sin_scraping > 3) && (
