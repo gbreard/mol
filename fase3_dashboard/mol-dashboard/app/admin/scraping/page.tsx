@@ -63,6 +63,7 @@ export default function ScrapingPage() {
 
   const [localStatus, setLocalStatus] = useState<{
     total_ofertas: number; nlp_procesadas: number; nlp_pendientes: number;
+    nlp_aprobados: number; nlp_bloqueados: number;
     matching_con: number; validadas: number; en_supabase: number; pendientes_sync: number;
   } | null>(null);
 
@@ -237,12 +238,18 @@ export default function ScrapingPage() {
             <div className="text-xs text-gray-500">En Dashboard</div>
           </div>
         </div>
-        {(localStatus?.nlp_pendientes || 0) > 0 && (
-          <div className="mt-2 text-xs text-amber-600">
-            {localStatus?.nlp_pendientes?.toLocaleString("es-AR")} ofertas pendientes de NLP
-            {(localStatus?.pendientes_sync || 0) > 0 && ` · ${localStatus?.pendientes_sync?.toLocaleString("es-AR")} pendientes de sync`}
-          </div>
-        )}
+        {(() => {
+          const pendNlp = localStatus?.nlp_pendientes || 0;
+          const gatePendiente = (localStatus?.nlp_procesadas || 0) - (localStatus?.nlp_aprobados || 0) - (localStatus?.nlp_bloqueados || 0);
+          const pendSync = localStatus?.pendientes_sync || 0;
+          const items: string[] = [];
+          if (pendNlp > 0) items.push(`${pendNlp.toLocaleString("es-AR")} pendientes NLP`);
+          if (gatePendiente > 0) items.push(`${gatePendiente.toLocaleString("es-AR")} pendientes Gate (correr pipeline)`);
+          if (pendSync > 0) items.push(`${pendSync.toLocaleString("es-AR")} pendientes sync`);
+          return items.length > 0 ? (
+            <div className="mt-2 text-xs text-amber-600">{items.join(' · ')}</div>
+          ) : null;
+        })()}
       </div>
 
       {/* Alertas portales */}
