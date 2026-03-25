@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Search, Plus, ChevronRight, Filter } from 'lucide-react'
+import { Search, Plus, ChevronRight, Filter, Loader2 } from 'lucide-react'
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 const MOCK_CASOS = [
@@ -39,9 +39,43 @@ function diasDesde(fecha: string) {
 export default function CarteraCasosPage() {
   const [busqueda, setBusqueda] = useState('')
   const [estadoFiltro, setEstadoFiltro] = useState('todos')
+  const [casos, setCasos] = useState(MOCK_CASOS)
+  const [cargando, setCargando] = useState(false)
 
-  const casosFiltrados = MOCK_CASOS.filter((c) => {
-    const matchBusq = c.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+  useEffect(() => {
+    async function cargar() {
+      setCargando(true)
+      try {
+        const params = new URLSearchParams()
+        if (estadoFiltro !== 'todos') params.set('estado', estadoFiltro)
+        if (busqueda.trim()) params.set('q', busqueda.trim())
+        const res = await fetch(`/api/casos?${params}`)
+        if (res.ok) {
+          const data = await res.json()
+          if (Array.isArray(data) && data.length > 0) {
+            setCasos(data.map((c: any) => ({
+              id: c.id,
+              nombre: c.persona_nombre,
+              dni: c.persona_dni || '',
+              ocupacion: c.objetivo || 'Sin definir',
+              estado: c.estado,
+              match: null,
+              ultima_actividad: c.ultima_atencion || c.created_at,
+              tecnico: '',
+            })))
+          }
+        }
+      } catch { /* usa mock */ } finally {
+        setCargando(false)
+      }
+    }
+    const t = setTimeout(cargar, 300)
+    return () => clearTimeout(t)
+  }, [busqueda, estadoFiltro])
+
+  const casosFiltrados = casos.filter((c) => {
+    const matchBusq = !busqueda.trim() ||
+      c.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
       c.dni.includes(busqueda) ||
       c.ocupacion.toLowerCase().includes(busqueda.toLowerCase())
     const matchEstado = estadoFiltro === 'todos' || c.estado === estadoFiltro
@@ -104,7 +138,12 @@ export default function CarteraCasosPage() {
 
         {/* Lista */}
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          {casosFiltrados.length === 0 ? (
+          {cargando ? (
+            <div className="py-12 flex items-center justify-center gap-2 text-gray-400">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span className="text-sm">Cargando...</span>
+            </div>
+          ) : casosFiltrados.length === 0 ? (
             <div className="py-12 text-center text-gray-400 text-sm">
               No se encontraron casos con ese filtro.
             </div>
