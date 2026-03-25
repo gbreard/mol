@@ -121,13 +121,18 @@ export default function ScrapingPage() {
 
   const totalPeriodo = chartData.reduce((s, d) => s + (d.total || 0), 0);
 
+  const [vpsStats, setVpsStats] = useState<{ total_ofertas: number; portales: Record<string, any>; ultimo_scraping?: string; timestamp?: string } | null>(null);
+
   async function loadData() {
     setLoading(true);
     try {
       if (!supabase) return;
-      const { data: statsData, error: statsErr } = await supabase.rpc('get_scraping_stats');
-      if (statsErr) throw statsErr;
-      setData(statsData as any);
+      const [statsResult, vpsResult] = await Promise.all([
+        supabase.rpc('get_scraping_stats'),
+        supabase.from('scraping_live_stats').select('*').eq('id', 'current').maybeSingle(),
+      ]);
+      if (!statsResult.error) setData(statsResult.data as any);
+      if (!vpsResult.error && vpsResult.data) setVpsStats(vpsResult.data);
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -176,6 +181,37 @@ export default function ScrapingPage() {
           <RefreshCw className="w-4 h-4" /> Actualizar
         </button>
       </div>
+
+      {/* VPS Live Stats */}
+      {vpsStats && vpsStats.total_ofertas > 0 && (
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-blue-900">BD del VPS (datos en tiempo real)</h3>
+            <span className="text-xs text-blue-500">
+              {vpsStats.timestamp ? new Date(vpsStats.timestamp).toLocaleString("es-AR") : ""}
+            </span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+            {Object.entries(vpsStats.portales || {}).sort(([,a]: any, [,b]: any) => b.total - a.total).map(([portal, stats]: [string, any]) => (
+              <div key={portal} className="bg-white rounded-lg p-3 border border-blue-100">
+                <div className="text-xs text-gray-500 capitalize">{portal}</div>
+                <div className="text-lg font-bold" style={{ color: PORTAL_COLORS[portal] || '#6b7280' }}>
+                  {stats.total?.toLocaleString("es-AR")}
+                </div>
+                {stats.ultimo_scraping && (
+                  <div className="text-xs text-gray-400 truncate">
+                    {new Date(stats.ultimo_scraping).toLocaleDateString("es-AR")}
+                  </div>
+                )}
+              </div>
+            ))}
+            <div className="bg-white rounded-lg p-3 border border-blue-200">
+              <div className="text-xs text-blue-600 font-medium">Total VPS</div>
+              <div className="text-lg font-bold text-blue-700">{vpsStats.total_ofertas.toLocaleString("es-AR")}</div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Alertas */}
       {alertas.length > 0 && (

@@ -30,7 +30,7 @@
 │   └─────────────────┬───────────────────┘                                           │
 │                     ▼                                                                │
 │   ┌─────────────────────────────────────┐                                           │
-│   │ 2.3 Matching ESCO v3.4.2            │                                           │
+│   │ 2.3 Matching ESCO v3.5.4 ESCO-First │                                           │
 │   │     match_ofertas_v3.py             │                                           │
 │   │     reglas + diccionario argentino  │                                           │
 │   │     → ofertas_esco_matching         │                                           │
@@ -157,7 +157,9 @@ Esta fase incluye TODO el ciclo hasta que los datos esten **validados**:
 
 | Componente | Ubicacion |
 |------------|-----------|
+| **Orquestador Pipeline v3.3** | `scripts/run_validated_pipeline.py` **(8 pasos, entry point unico)** |
 | NLP Processor | `database/process_nlp_from_db_v11.py` |
+| NLP Gate v1.1 | `database/nlp_validator.py` **(35+ reglas, bloquea critico/alto)** |
 | Skills Extractor | `database/skills_implicit_extractor.py` |
 | Matching | `database/match_ofertas_v3.py` |
 | Validador | `database/auto_validator.py` |
@@ -186,6 +188,13 @@ ofertas (crudo)
 └──────────────────────┬──────────────────────────────┘
                        v
 ┌─────────────────────────────────────────────────────┐
+│ 2.2b NLP GATE v1.1 (pre-matching)                   │
+│     nlp_validator.py (35+ reglas)                   │
+│     Bloquea critico/alto → auto-correccion          │
+│     → nlp_gate_status en ofertas_nlp                │
+└──────────────────────┬──────────────────────────────┘
+                       v
+┌─────────────────────────────────────────────────────┐
 │ 2.3 POSTPROCESSING                                  │
 │     nlp_postprocessor.py                            │
 │     Configs: config/nlp_*.json                      │
@@ -199,9 +208,9 @@ ofertas (crudo)
 └──────────────────────┬──────────────────────────────┘
                        v
 ┌─────────────────────────────────────────────────────┐
-│ 2.5 MATCHING ESCO (v3.4.2)                          │
+│ 2.5 MATCHING ESCO (v3.5.4 ESCO-First)               │
 │     match_ofertas_v3.py                             │
-│     ~195 reglas negocio + diccionario arg + semant. │
+│     ~297 reglas negocio + diccionario arg + semant. │
 │     → ofertas_esco_matching                         │
 └──────────────────────┬──────────────────────────────┘
                        v
@@ -250,6 +259,38 @@ ofertas (crudo)
 | `ofertas_matching_history` | Historial de cada matching |
 | `ofertas_nlp_history` | Versiones NLP por oferta |
 | `validation_errors` | Errores detectados por oferta |
+
+### Fabrica de Procesamiento (Bloques I+G)
+
+El procesamiento se organiza como una fabrica con dos lineas:
+
+**LINEA 1 — FABRICACION** (producir datos clasificados):
+```
+Scraping → NLP v11.4 → Gate NLP (35+ reglas) → Multi-position →
+Matching v3.5.4 → Gate Matching (22 reglas) → Validacion humana → Sync Supabase
+```
+
+**LINEA 2 — MEJORA CONTINUA** (mejorar la fabrica):
+```
+Errores + Correcciones → Issues → Training Pairs (602+) →
+Fine-tuning → Catalogo MOL → Perfil Argentino versionado
+```
+
+Las correcciones de Linea 1 alimentan Linea 2. Las mejoras de Linea 2 vuelven como reglas y modelos mejorados a Linea 1.
+
+**3 actores:**
+- **Pipeline automatico:** ejecuta NLP, Matching, Gates (via `run_validated_pipeline.py` — Pipeline v3.3, 8 pasos)
+- **Claude (agente IA):** revisa errores escalados, crea reglas, reprocesa
+- **Humano (analista):** valida ofertas, corrige con wizard, crea issues
+
+**Admin UI** (`/admin/procesamiento/`):
+- Fabrica: vista dual con control por nodo
+- Diccionarios: 6 configs editables en tabs
+- Catalogo MOL: curacion skills/ocupaciones argentinas
+- Perfil Argentino: publicacion versionada
+- Validacion: estacion del analista
+
+> Wireframes: `docs/plan/03_WIREFRAMES/fabrica-procesamiento.md`
 
 ---
 
@@ -411,4 +452,4 @@ Ejemplos:
 
 ---
 
-*Ultima actualizacion: 2026-02-04*
+*Ultima actualizacion: 2026-03-22*

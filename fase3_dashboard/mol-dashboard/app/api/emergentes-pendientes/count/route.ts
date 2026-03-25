@@ -18,6 +18,7 @@ function getSupabaseAdmin(): SupabaseClient | null {
 export async function GET(request: NextRequest) {
   const rateLimited = requireRateLimit(request, 'public')
   if (rateLimited) return rateLimited
+
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ count: 0 });
 

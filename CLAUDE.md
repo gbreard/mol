@@ -79,9 +79,42 @@ METADATA GUARDADA:
 - decision_metodo: "regla_prioridad" | "semantico_default"
 ```
 
+### Fábrica de Procesamiento (Bloques I+G — 2026-03-22)
+
+El procesamiento se organiza como una fábrica con dos líneas:
+
+**LÍNEA 1 — FABRICACIÓN** (producir datos clasificados):
+```
+Scraping → NLP v11.4 → Gate NLP (35+ reglas) → Matching v3.5.4 → Gate Matching → Validación → Sync
+```
+
+**LÍNEA 2 — MEJORA CONTINUA** (mejorar la fábrica):
+```
+Errores → Issues → Training Pairs (602+) → Fine-tuning → Catálogo MOL → Perfil Argentino
+```
+
+Correcciones de L1 alimentan L2. Mejoras de L2 vuelven como reglas y modelos a L1.
+
+**3 actores:** Pipeline (automático), Claude (operario calificado), Humano (gerente + QA)
+
+**Admin UI** (`/admin/procesamiento/`):
+- **Fábrica**: vista dual con control por nodo (botones ejecutar/reprocesar/configurar por etapa)
+- **Diccionarios**: 6 configs editables en tabs (reglas, NLP, sinónimos, oficios, skills, limpieza)
+- **Catálogo MOL**: curación skills/ocupaciones argentinas (detectada → revisión → catalogada)
+- **Perfil Argentino**: publicación versionada del perfil consolidado
+- **Validación**: estación del analista (OK/Error/Revisar/Basura + wizard + auto-issues)
+
+**Gateway local**: tabla `pipeline_commands` en Supabase + poller local (mismo patrón que scraping_commands). Admin da órdenes desde UI sin terminal ni Claude.
+
+**Configs editables desde UI** (override Supabase → fallback JSON local):
+6 configs via `load_config()` en pipeline Python: matching_rules_business, nlp_inference_rules, sinonimos_argentinos_esco, skills_rules, oficios_arg, nlp_titulo_limpieza.
+
+> Diseño completo: `docs/plan/03_WIREFRAMES/fabrica-procesamiento.md`
+
 ### Trabajo en Curso
-- 19K ofertas pendientes NLP (13K ComputRabajo + ~6K nuevas Bumeran/ZJ)
+- ~4.6K ofertas pendientes NLP (requiere Ollama)
 - 15,968 ofertas validadas en BD
+- 602 training pairs acumulados (103 ISCOs, 9/10 grupos)
 - Gold Set de referencia: 49 casos (archivo histórico)
 
 ### Sistema de Priorización v1.0 (2026-01-20)

@@ -20,6 +20,7 @@ function getSupabaseAdmin(): SupabaseClient | null {
 export async function GET(request: NextRequest) {
   const rateLimited = requireRateLimit(request, 'public')
   if (rateLimited) return rateLimited
+
   const profileId = request.nextUrl.searchParams.get('profile_id');
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });

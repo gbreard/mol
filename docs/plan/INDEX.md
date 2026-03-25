@@ -1,6 +1,6 @@
 # MOL Dashboard - Documentación de Planificación
 
-> Ultima actualizacion: 2026-03-20
+> Ultima actualizacion: 2026-03-22
 
 ## Mapa de Documentos
 
@@ -158,6 +158,7 @@
 | **Issues Usuario** | [ANALISIS_ISSUES_USUARIO](./ANALISIS_ISSUES_USUARIO.md) | Feedback, priorización features |
 | **Lab. Indicadores** | [13_LABORATORIO_INDICADORES](./13_LABORATORIO_INDICADORES.md) | Indicadores experimentales |
 | **Skills Emergentes** | [08_PROPUESTA_VALOR](./08_PROPUESTA_VALOR.md#v-17-skills-emergentes-escomol) | V-17: ESCO+MOL, skills no cubiertas |
+| **Fábrica Procesamiento** | [03_WIREFRAMES/fabrica-procesamiento](./03_WIREFRAMES/fabrica-procesamiento.md) | Wireframes, menú, flujo fábrica integrada |
 
 ### Por Urgencia
 

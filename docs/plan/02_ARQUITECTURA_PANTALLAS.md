@@ -202,21 +202,29 @@ MOL Platform
 │   └── /cuenta/facturacion  P-16 Facturación
 │
 └── ADMIN (auth + rol admin)
-    ├── /admin ───────────── P-17 Dashboard Admin
+    ├── /admin ───────────── P-17 Centro de Control (Bloque J)
+    ├── /admin/scraping ──── P-21 Scraping Admin (Bloque H)
+    │   ├── /comandos        Comandos VPS
+    │   └── /dinamica        Configuración dinámica
+    │
+    ├── /admin/procesamiento ── FÁBRICA DE PROCESAMIENTO (Bloques I+G)
+    │   ├── /fabrica ────── P-42 Fábrica (vista dual: fabricación + mejora continua)
+    │   ├── /diccionarios ─ P-43 Diccionarios (6 tabs: reglas, NLP, sinón, oficios, skills, limpieza)
+    │   ├── /catalogo ───── P-44 Catálogo MOL (curación skills/ocupaciones argentinas)
+    │   ├── /perfil-argentino P-45 Perfil Argentino (publicación versionada)
+    │   └── /validacion ─── P-46 Validación Humana (estación del analista)
+    │
+    ├── /admin/laboratorio ─ P-31 Laboratorio de Indicadores Experimentales
+    │   └── /tension-demanda P-31a Detalle Tensión de Demanda (V-16)
+    ├── /admin/skills ────── P-20 Skills Intelligence
+    ├── /admin/issues ────── P-19 Issues
     ├── /admin/usuarios ──── P-18 Usuarios
     ├── /admin/solicitudes ─ P-29 Gestión Solicitudes Acceso
-    ├── /admin/issues ────── P-19 Issues
-    ├── /admin/skills ────── P-20 Skills Intelligence (admin: Taxonomía + Consolidado)
-    ├── /admin/perfil-argentino ── P-36 Gestión Perfil Consolidado Argentino (versiones)
-    ├── /admin/organizaciones ─── P-37 Gestión Organizaciones (alta OE/empresa, asignar usuarios)
-    ├── /admin/scraping ──── P-21 Scraping
+    ├── /admin/organizaciones P-37 Gestión Organizaciones
     ├── /admin/metricas ──── P-22 Métricas
-    ├── /admin/logs ──────── P-23 Logs
     ├── /admin/configuracion P-24 Configuración
     ├── /admin/contenidos ── P-30 Gestión Contenidos (CMS)
-    ├── /admin/arquitectura  P-25 Arquitectura Sistema
-    └── /admin/laboratorio ─ P-31 Laboratorio de Indicadores Experimentales
-        └── /tension-demanda P-31a Detalle Tensión de Demanda (V-16)
+    └── /admin/arquitectura  P-25 Arquitectura Sistema
 ```
 
 ---
@@ -326,6 +334,11 @@ MOL Platform
 | P-25 | `/admin/arquitectura` | U-ADMIN | ✅ Existe (fixes v1.1) | [10_OBSERVABILIDAD](./10_OBSERVABILIDAD.md), [admin.md#p-25](./03_WIREFRAMES/admin.md#p-25-admin-arquitectura-adminarquitectura) |
 | P-31 | `/admin/laboratorio` | U-ADMIN | ✅ Existe | Staging de indicadores experimentales |
 | P-31a | `/admin/laboratorio/tension-demanda` | U-ADMIN | ✅ Existe | Detalle V-16: scatter chart + tabla + metodología |
+| P-42 | `/admin/procesamiento/fabrica` | U-ADMIN | Planificado | Fábrica: vista dual fabricación + mejora continua. [Wireframe](./03_WIREFRAMES/fabrica-procesamiento.md#3-wireframe-fábrica-vista-principal) |
+| P-43 | `/admin/procesamiento/diccionarios` | U-ADMIN | Planificado | Diccionarios: 6 tabs editores config unificados. [Wireframe](./03_WIREFRAMES/fabrica-procesamiento.md#4-wireframe-diccionarios-herramientas-compartidas) |
+| P-44 | `/admin/procesamiento/catalogo` | U-ADMIN | ✅ Existe | Catálogo MOL: curación skills/ocupaciones argentinas. [Wireframe](./03_WIREFRAMES/fabrica-procesamiento.md#5-wireframe-catálogo-mol-curación--input-de-mejora) |
+| P-45 | `/admin/procesamiento/perfil-argentino` | U-ADMIN | ✅ Existe | Perfil Argentino: publicación versionada. [Wireframe](./03_WIREFRAMES/fabrica-procesamiento.md#6-wireframe-perfil-argentino-publicación--output-de-mejora) |
+| P-46 | `/admin/procesamiento/validacion` | U-ADMIN | ✅ Existe | Validación humana: 3 paneles + wizard + auto-issues. [Wireframe](./03_WIREFRAMES/fabrica-procesamiento.md#7-wireframe-validación-estación-del-analista) |
 
 ---
 

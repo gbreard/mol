@@ -18,6 +18,7 @@ import json
 import os
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
+from config_loader import load_config
 
 
 @dataclass
@@ -65,19 +66,19 @@ class SkillsRulesMatcher:
         self.rules = self._load_rules()
 
     def _load_rules(self) -> Dict[str, Any]:
-        """Carga las reglas desde el archivo JSON"""
+        """Carga las reglas — override de Supabase o JSON local."""
         try:
-            with open(self.config_path, 'r', encoding='utf-8') as f:
-                config = json.load(f)
+            config = load_config('skills_rules')
             return config.get("reglas_forzar_skills", {})
-        except FileNotFoundError:
+        except Exception as e:
             if self.verbose:
-                print(f"[SkillsRulesMatcher] WARN: No se encontro {self.config_path}")
-            return {}
-        except json.JSONDecodeError as e:
-            if self.verbose:
-                print(f"[SkillsRulesMatcher] ERROR: JSON invalido en {self.config_path}: {e}")
-            return {}
+                print(f"[SkillsRulesMatcher] WARN: load_config falló, intentando local: {e}")
+            try:
+                with open(self.config_path, 'r', encoding='utf-8') as f:
+                    config = json.load(f)
+                return config.get("reglas_forzar_skills", {})
+            except Exception:
+                return {}
 
     def reload_rules(self):
         """Recarga las reglas desde el archivo (util para testing)"""

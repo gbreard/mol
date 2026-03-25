@@ -2,7 +2,10 @@
 
 import { Suspense, useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 import TrainingImpact, { type TrainingImpactData } from '@/components/TrainingImpact'
+import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
 
 function FormacionContent() {
   const searchParams = useSearchParams()
@@ -30,7 +33,12 @@ function FormacionContent() {
   }, [profileId])
 
   if (!profileId) return (
-    <p className="text-sm text-gray-400">Seleccioná un perfil para ver su formación con impacto.</p>
+    <div className="text-center py-12 text-gray-400">
+      <p className="text-sm mb-4">Selecciona un perfil para ver su formacion con impacto.</p>
+      <Link href="/oficina-empleo/perfil" className="text-teal-600 text-sm font-medium inline-flex items-center gap-1">
+        <ArrowLeft className="w-4 h-4" /> Ir a Perfil Trabajador
+      </Link>
+    </div>
   )
   if (loading) return (
     <div className="space-y-4">
@@ -38,7 +46,7 @@ function FormacionContent() {
     </div>
   )
   if (error) return (
-    <p className="text-sm text-red-500">No se pudo cargar la información de formación.</p>
+    <p className="text-sm text-red-500">No se pudo cargar la informacion de formacion.</p>
   )
   if (!data) return null
 
@@ -53,7 +61,11 @@ function FormacionContent() {
 export default function FormacionPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
-      <h1 className="mb-1 text-2xl font-bold text-gray-900">Formación con impacto</h1>
+      <OEBreadcrumb items={[
+        { label: "Perfil", href: "/oficina-empleo/perfil" },
+        { label: "Formacion con impacto" },
+      ]} />
+      <h1 className="mb-1 text-2xl font-bold text-gray-900">Formacion con impacto</h1>
       <p className="mb-6 text-sm text-gray-500">
         Cursos que mejoran la compatibilidad del perfil con las ocupaciones del mercado.
       </p>

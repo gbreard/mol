@@ -47,8 +47,9 @@ const noAlertData: MarketBenchmarkData = {
 describe('S19 — MarketBenchmark', () => {
   it('muestra cantidad de ofertas y perfiles', () => {
     const { container } = render(<MarketBenchmark data={mockData} />)
-    expect(container.textContent).toContain('5.200')
-    expect(container.textContent).toContain('1.800')
+    // Locale may render as 5.200 (es-AR) or 5,200 (en-US/happy-dom)
+    expect(container.textContent).toMatch(/5[.,]200/)
+    expect(container.textContent).toMatch(/1[.,]800/)
   })
 
   it('muestra las skills en la tabla', () => {

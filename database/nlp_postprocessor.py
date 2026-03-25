@@ -38,6 +38,7 @@ import json
 import re
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
+from config_loader import load_config
 
 
 class NLPPostprocessor:
@@ -145,7 +146,7 @@ class NLPPostprocessor:
         return configs
 
     def _load_configs_from_disk(self) -> Dict[str, Any]:
-        """Carga todos los archivos de configuracion NLP desde disco"""
+        """Carga configs NLP — override de Supabase para inference_rules, disco para el resto."""
         configs = {}
         config_files = [
             "nlp_preprocessing.json",
@@ -156,11 +157,25 @@ class NLPPostprocessor:
             "nlp_normalization.json",
         ]
 
+        # Configs que pueden tener override en Supabase
+        overrideable = {"nlp_inference_rules.json": "nlp_inference_rules"}
+
         for filename in config_files:
+            key = filename.replace(".json", "").replace("nlp_", "")
+            config_key = overrideable.get(filename)
+
+            if config_key:
+                try:
+                    configs[key] = load_config(config_key)
+                    if self.verbose:
+                        print(f"[CONFIG] Cargado: {filename} (via load_config)")
+                    continue
+                except Exception:
+                    pass  # Fallback a disco
+
             filepath = self.config_dir / filename
             if filepath.exists():
                 with open(filepath, "r", encoding="utf-8") as f:
-                    key = filename.replace(".json", "").replace("nlp_", "")
                     configs[key] = json.load(f)
                     if self.verbose:
                         print(f"[CONFIG] Cargado: {filename}")

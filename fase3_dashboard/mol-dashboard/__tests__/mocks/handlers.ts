@@ -8,6 +8,7 @@ import { mockRequerimientosRPC, mockSkillsResumenRPC, mockSidebarCountsRPC } fro
 import { mockPipelineStatusRPC } from './fixtures/pipeline-status'
 import { mockReconciliacionWarning } from './fixtures/reconciliacion'
 import { mockScrapingStatsRPC, mockScrapingHistoryRPC } from './fixtures/scraping-stats'
+import { mockPreviewImpact, mockSugerencias, mockConfigOverride, mockConfigUpsertResult } from './fixtures/config-editor'
 
 const SUPABASE_URL = 'https://test.supabase.co'
 
@@ -278,6 +279,178 @@ export const handlers = [
     })
   }),
 
+  // Personas
+  http.get(`${SUPABASE_URL}/rest/v1/personas`, () => {
+    return HttpResponse.json([
+      { id: 'p1', nombre: 'María García', dni: '32456789', created_at: '2026-03-25T10:00:00Z',
+        casos: [{ id: 'c1', estado: 'perfil_completo', organizacion_id: 'org1' }] },
+    ])
+  }),
+  http.post(`${SUPABASE_URL}/rest/v1/personas`, () => {
+    return HttpResponse.json({ id: 'p-new', nombre: 'Test', es_nueva: true }, { status: 201 })
+  }),
+
+  // Perfiles
+  http.get(`${SUPABASE_URL}/rest/v1/perfiles`, () => {
+    return HttpResponse.json([{ id: 'pf1', persona_id: 'p1', completitud: 5 }])
+  }),
+  http.post(`${SUPABASE_URL}/rest/v1/perfiles`, () => {
+    return HttpResponse.json({ id: 'pf-new', persona_id: 'p1', completitud: 0 }, { status: 201 })
+  }),
+  http.patch(`${SUPABASE_URL}/rest/v1/perfiles`, () => {
+    return HttpResponse.json({ id: 'pf1', completitud: 5 })
+  }),
+
+  // Perfil_skills
+  http.get(`${SUPABASE_URL}/rest/v1/perfil_skills`, () => {
+    return HttpResponse.json([])
+  }),
+  http.post(`${SUPABASE_URL}/rest/v1/perfil_skills`, () => {
+    return HttpResponse.json({}, { status: 201 })
+  }),
+  http.patch(`${SUPABASE_URL}/rest/v1/perfil_skills`, () => {
+    return HttpResponse.json({})
+  }),
+
+  // Casos
+  http.get(`${SUPABASE_URL}/rest/v1/casos`, () => {
+    return HttpResponse.json([
+      { id: 'c1', estado: 'perfil_completo', persona_id: 'p1', organizacion_id: 'org1',
+        personas: { nombre: 'María García', dni: '32456789' }, updated_at: '2026-03-25T10:00:00Z' },
+    ])
+  }),
+  http.post(`${SUPABASE_URL}/rest/v1/casos`, () => {
+    return HttpResponse.json({ id: 'c-new', estado: 'nuevo' }, { status: 201 })
+  }),
+  http.patch(`${SUPABASE_URL}/rest/v1/casos`, () => {
+    return HttpResponse.json({ id: 'c1', estado: 'en_diagnostico' })
+  }),
+
+  // Derivaciones
+  http.get(`${SUPABASE_URL}/rest/v1/derivaciones`, () => {
+    return HttpResponse.json([])
+  }),
+  http.post(`${SUPABASE_URL}/rest/v1/derivaciones`, () => {
+    return HttpResponse.json({ id: 'd-new', tipo: 'vacante', estado: 'derivado' }, { status: 201 })
+  }),
+  http.patch(`${SUPABASE_URL}/rest/v1/derivaciones`, () => {
+    return HttpResponse.json({})
+  }),
+
+  // Eventos_caso
+  http.get(`${SUPABASE_URL}/rest/v1/eventos_caso`, () => {
+    return HttpResponse.json([])
+  }),
+  http.post(`${SUPABASE_URL}/rest/v1/eventos_caso`, () => {
+    return HttpResponse.json({}, { status: 201 })
+  }),
+
+  // Vacantes_oe
+  http.get(`${SUPABASE_URL}/rest/v1/vacantes_oe`, () => {
+    return HttpResponse.json([])
+  }),
+
+  // Scraping live stats
+  http.get(`${SUPABASE_URL}/rest/v1/scraping_live_stats`, () => {
+    return HttpResponse.json({
+      id: 'current', total_ofertas: 29154,
+      portales: { bumeran: { total: 5516 }, computrabajo: { total: 16993 }, zonajobs: { total: 3404 } },
+      ultimo_scraping: '2026-03-23T11:28:18Z',
+    })
+  }),
+
+  // Pipeline local status
+  http.get(`${SUPABASE_URL}/rest/v1/pipeline_local_status`, () => {
+    return HttpResponse.json({
+      id: 'current', total_ofertas: 42485, nlp_procesadas: 38025, nlp_pendientes: 4460,
+      nlp_aprobados: 37776, nlp_bloqueados: 0, nlp_gate_aprobado_pct: 100,
+      matching_con: 37776, matching_sin: 0, validadas: 37776, errores_pendientes: 0,
+      en_supabase: 37776, pendientes_sync: 0,
+    })
+  }),
+
+  // Pipeline commands table
+  http.get(`${SUPABASE_URL}/rest/v1/pipeline_commands`, () => {
+    return HttpResponse.json([
+      {
+        id: 'cmd-1', comando: 'run_pipeline', params: { limit: 500 },
+        estado: 'completado', log: 'Procesadas 500 ofertas',
+        resultado: { procesadas: 500, errores: 12 },
+        creado_por: 'admin@oede.gob.ar',
+        created_at: '2026-03-22T15:00:00Z',
+        started_at: '2026-03-22T15:00:05Z',
+        completed_at: '2026-03-22T15:02:34Z',
+      },
+    ])
+  }),
+
+  http.post(`${SUPABASE_URL}/rest/v1/pipeline_commands`, () => {
+    return HttpResponse.json({
+      id: 'cmd-new', comando: 'run_pipeline', estado: 'pendiente',
+      creado_por: 'admin@oede.gob.ar', created_at: '2026-03-22T16:00:00Z',
+    }, { status: 201 })
+  }),
+
+  // Catálogo MOL tables
+  http.get(`${SUPABASE_URL}/rest/v1/catalogo_mol_skills`, () => {
+    return HttpResponse.json([], { headers: { 'content-range': '0-0/0' } })
+  }),
+
+  http.post(`${SUPABASE_URL}/rest/v1/catalogo_mol_skills`, () => {
+    return HttpResponse.json({ id: 'mol-skill-test', label: 'Test', estado: 'detectada' }, { status: 201 })
+  }),
+
+  http.patch(`${SUPABASE_URL}/rest/v1/catalogo_mol_skills`, () => {
+    return HttpResponse.json({ id: 'mol-skill-test', estado: 'catalogada' })
+  }),
+
+  http.get(`${SUPABASE_URL}/rest/v1/catalogo_mol_ocupaciones`, () => {
+    return HttpResponse.json([], { headers: { 'content-range': '0-0/0' } })
+  }),
+
+  http.post(`${SUPABASE_URL}/rest/v1/catalogo_mol_ocupaciones`, () => {
+    return HttpResponse.json({ id: 'mol-occ-test', label: 'Test', estado: 'detectada' }, { status: 201 })
+  }),
+
+  http.patch(`${SUPABASE_URL}/rest/v1/catalogo_mol_ocupaciones`, () => {
+    return HttpResponse.json({ id: 'mol-occ-test', estado: 'catalogada' })
+  }),
+
+  http.get(`${SUPABASE_URL}/rest/v1/catalogo_mol_versiones`, () => {
+    return HttpResponse.json([])
+  }),
+
+  http.post(`${SUPABASE_URL}/rest/v1/catalogo_mol_versiones`, () => {
+    return HttpResponse.json({ id: 'uuid-v1', version: 'v1.0', total_skills: 0, total_ocupaciones: 0 }, { status: 201 })
+  }),
+
+  // RPC: get_unclassified_items
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_unclassified_items`, () => {
+    return HttpResponse.json({
+      total_ofertas: 15968,
+      unclassified_skills: [
+        { label: 'Docker Compose', frecuencia: 45, pct: 0.28 },
+        { label: 'Terraform', frecuencia: 12, pct: 0.08 },
+      ],
+      unclassified_skills_count: 2,
+      unclassified_titles: [
+        { label: 'Community Manager', frecuencia: 30, pct: 0.19, avg_score: 0.35, isco_mode: '2431' },
+      ],
+      unclassified_titles_count: 1,
+      min_frecuencia: 3,
+    })
+  }),
+
+  // RPC: get_catalogo_stats
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_catalogo_stats`, () => {
+    return HttpResponse.json({
+      skills: { total: 0, catalogadas: 0, en_revision: 0, detectadas: 0, descartadas: 0, por_tipo: {} },
+      ocupaciones: { total: 0, catalogadas: 0, en_revision: 0, detectadas: 0, descartadas: 0 },
+      versiones: [],
+      ultima_version: null,
+    })
+  }),
+
   // Issues table
   http.get(`${SUPABASE_URL}/rest/v1/issues`, () => {
     return HttpResponse.json([])
@@ -297,14 +470,14 @@ export const handlers = [
     return HttpResponse.json({
       activa: {
         id: 'uuid-1', version: 'v1.0', total_skills: 14257,
-        total_emergentes: 0, total_ocupaciones: 3046,
+        total_emergentes_aprobadas: 0, total_ocupaciones: 3046,
         nota: 'Version base ESCO', creado_por: 'admin@oede.gob.ar',
         activa: true, created_at: '2026-01-15T00:00:00Z',
       },
       versiones: [
         {
           id: 'uuid-1', version: 'v1.0', total_skills: 14257,
-          total_emergentes: 0, total_ocupaciones: 3046,
+          total_emergentes_aprobadas: 0, total_ocupaciones: 3046,
           nota: 'Version base ESCO', creado_por: 'admin@oede.gob.ar',
           activa: true, created_at: '2026-01-15T00:00:00Z',
         },
@@ -322,7 +495,7 @@ export const handlers = [
     return HttpResponse.json({
       version: {
         id: 'uuid-2', version: 'v1.1', total_skills: 14262,
-        total_emergentes: 5, total_ocupaciones: 3046,
+        total_emergentes_aprobadas: 5, total_ocupaciones: 3046,
         nota: 'Nueva version', creado_por: 'admin@oede.gob.ar',
         activa: true, created_at: '2026-03-21T00:00:00Z',
       },
@@ -487,6 +660,32 @@ export const handlers = [
         },
       ],
     })
+  }),
+
+  // RPC: preview_rule_impact
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/preview_rule_impact`, () => {
+    return HttpResponse.json(mockPreviewImpact)
+  }),
+
+  // RPC: get_rule_suggestions
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_rule_suggestions`, () => {
+    return HttpResponse.json(mockSugerencias)
+  }),
+
+  // PostgREST: config_overrides - GET (read override)
+  http.get(`${SUPABASE_URL}/rest/v1/config_overrides`, ({ request }) => {
+    const url = new URL(request.url)
+    const configKeyFilter = url.searchParams.get('config_key')
+    if (configKeyFilter && configKeyFilter.includes('matching_rules_business')) {
+      return HttpResponse.json(mockConfigOverride)
+    }
+    // No override found
+    return HttpResponse.json(null)
+  }),
+
+  // PostgREST: config_overrides - POST/PATCH (upsert)
+  http.post(`${SUPABASE_URL}/rest/v1/config_overrides`, () => {
+    return HttpResponse.json(mockConfigUpsertResult, { status: 201 })
   }),
 
   // Skills search
