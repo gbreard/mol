@@ -48,10 +48,10 @@ export default function MiFuturoLaboralPage() {
             <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
-            href="/oficina-empleo"
+            href="/mi-futuro-laboral/dashboard"
             className="inline-flex items-center justify-center gap-2 bg-white text-gray-700 text-sm font-medium px-6 py-3 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors"
           >
-            Soy técnico de Oficina de Empleo
+            Ya cargué mis competencias →
           </Link>
         </div>
 

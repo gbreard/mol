@@ -2,10 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Briefcase, Target, GraduationCap, ArrowRight, TrendingUp, MapPin, Building2, Clock } from 'lucide-react'
+import { Briefcase, Target, GraduationCap, ArrowRight, TrendingUp, MapPin, Building2, Clock, CheckCircle2 } from 'lucide-react'
 import { useS1Store } from '@/lib/use-s1-store'
 
-// Mock data — se reemplaza con /api/matching-offers y /api/matching-occupations cuando Gerardo entregue las APIs
 const MOCK_OCUPACIONES = [
   { uri: 'esco_3511', label: 'Técnico en sistemas informáticos', isco: '3511', match: 87, gap: 2, ofertas: 124 },
   { uri: 'esco_2512', label: 'Desarrollador de software', isco: '2512', match: 73, gap: 4, ofertas: 312 },
@@ -49,6 +48,32 @@ const MOCK_CURSOS = [
   },
 ]
 
+const COPY_PROPOSITO: Record<string, { titulo: string; subtitulo: string }> = {
+  busco_trabajo: {
+    titulo: 'Ofertas que encajan con tu perfil',
+    subtitulo: 'Ordenadas por compatibilidad con tus competencias.',
+  },
+  cambiar_rubro: {
+    titulo: 'Ocupaciones más cercanas a tu perfil',
+    subtitulo: 'Destinos posibles desde donde estás hoy.',
+  },
+  saber_que_vale: {
+    titulo: 'Así se valorizan tus competencias en el mercado',
+    subtitulo: 'Ocupaciones y ofertas donde tus skills tienen mayor demanda.',
+  },
+  desde_oe: {
+    titulo: 'Tu análisis de competencias',
+    subtitulo: 'Tu técnico de la Oficina de Empleo puede ver estos resultados.',
+  },
+}
+
+const TAB_INICIAL: Record<string, string> = {
+  busco_trabajo: 'ofertas',
+  cambiar_rubro: 'ocupaciones',
+  saber_que_vale: 'ocupaciones',
+  desde_oe: 'ocupaciones',
+}
+
 const TABS = [
   { id: 'ocupaciones', label: 'Ocupaciones', icon: Target },
   { id: 'ofertas', label: 'Ofertas reales', icon: Briefcase },
@@ -71,10 +96,21 @@ function MatchBar({ pct }: { pct: number }) {
 
 export default function ResultadosPage() {
   const router = useRouter()
-  const { store, confirmed } = useS1Store()
-  const [tab, setTab] = useState('ocupaciones')
+  const { store, confirmed, setDestino } = useS1Store()
 
+  const proposito = store.proposito ?? 'busco_trabajo'
+  const tabInicial = TAB_INICIAL[proposito] ?? 'ocupaciones'
+  const [tab, setTab] = useState(tabInicial)
+  const [destinoElegido, setDestinoElegido] = useState<string | null>(store.destino_uri)
+
+  const copy = COPY_PROPOSITO[proposito] ?? COPY_PROPOSITO['busco_trabajo']
   const nombre = store.nombre || 'tu perfil'
+
+  const handleElegirDestino = (uri: string, label: string, match: number) => {
+    setDestino(uri, label, match)
+    setDestinoElegido(uri)
+    router.push(`/mi-futuro-laboral/brecha?uri=${uri}&label=${encodeURIComponent(label)}&match=${match}`)
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -85,13 +121,27 @@ export default function ResultadosPage() {
           <span className="inline-block bg-green-100 text-green-700 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2">
             Paso 3 de 3 — Tus resultados
           </span>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Resultados para {nombre}
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900">{copy.titulo}</h1>
           <p className="text-gray-500 text-sm mt-1">
-            Basado en {confirmed.length} competencias confirmadas.
+            {copy.subtitulo} Basado en {confirmed.length} competencias de {nombre}.
           </p>
         </div>
+
+        {/* Destino elegido anteriormente */}
+        {store.destino_label && (
+          <div className="mb-4 flex items-center gap-2 bg-green-50 border border-green-200 rounded-xl px-4 py-2.5">
+            <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
+            <p className="text-xs text-green-700 flex-1">
+              Destino elegido: <strong>{store.destino_label}</strong>
+            </p>
+            <button
+              onClick={() => router.push(`/mi-futuro-laboral/brecha?uri=${store.destino_uri}&label=${encodeURIComponent(store.destino_label ?? '')}&match=${store.destino_match ?? 0}`)}
+              className="text-xs text-green-700 font-semibold hover:underline shrink-0"
+            >
+              Ver brecha →
+            </button>
+          </div>
+        )}
 
         {/* Tabs */}
         <div className="flex gap-1 bg-white border border-gray-200 rounded-xl p-1 mb-6">
@@ -114,32 +164,48 @@ export default function ResultadosPage() {
         {/* Tab: Ocupaciones */}
         {tab === 'ocupaciones' && (
           <div className="space-y-3">
-            {MOCK_OCUPACIONES.map((o) => (
-              <div key={o.uri} className="bg-white rounded-xl border border-gray-200 p-4">
-                <div className="flex items-start justify-between gap-3 mb-3">
-                  <div>
-                    <h3 className="font-semibold text-gray-900 text-sm">{o.label}</h3>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-xs text-gray-400 font-mono">{o.isco}</span>
-                      <span className="text-xs text-gray-400">·</span>
-                      <span className="text-xs text-gray-500">{o.ofertas} ofertas activas</span>
+            <p className="text-xs text-gray-400 mb-2">
+              Hacé click en "Elegir este destino" para ver exactamente qué te falta y cómo cerrarlo.
+            </p>
+            {MOCK_OCUPACIONES.map((o) => {
+              const esDestino = destinoElegido === o.uri
+              return (
+                <div
+                  key={o.uri}
+                  className={`bg-white rounded-xl border p-4 transition-all ${esDestino ? 'border-green-400 shadow-sm shadow-green-100' : 'border-gray-200'}`}
+                >
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        {esDestino && <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />}
+                        <h3 className="font-semibold text-gray-900 text-sm">{o.label}</h3>
+                      </div>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-xs text-gray-400 font-mono">{o.isco}</span>
+                        <span className="text-xs text-gray-400">·</span>
+                        <span className="text-xs text-gray-500">{o.ofertas} ofertas activas</span>
+                      </div>
                     </div>
+                    <span className="text-xs text-gray-400 shrink-0">
+                      falta{o.gap !== 1 ? 'n' : ''} {o.gap} skill{o.gap !== 1 ? 's' : ''}
+                    </span>
                   </div>
-                  <span className="text-xs text-gray-400 shrink-0">
-                    falta{o.gap !== 1 ? 'n' : ''} {o.gap} skill{o.gap !== 1 ? 's' : ''}
-                  </span>
+                  <MatchBar pct={o.match} />
+                  <div className="mt-3">
+                    <button
+                      onClick={() => handleElegirDestino(o.uri, o.label, o.match)}
+                      className={`w-full text-xs font-semibold rounded-lg py-2 transition-colors ${
+                        esDestino
+                          ? 'bg-green-50 text-green-700'
+                          : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                      }`}
+                    >
+                      {esDestino ? '✓ Destino elegido — ver brecha' : `Elegir este destino → ver qué me falta`}
+                    </button>
+                  </div>
                 </div>
-                <MatchBar pct={o.match} />
-                <div className="mt-3 flex gap-2">
-                  <button
-                    onClick={() => router.push(`/mi-futuro-laboral/brecha?uri=${o.uri}&label=${encodeURIComponent(o.label)}`)}
-                    className="flex-1 text-xs text-blue-600 font-medium bg-blue-50 hover:bg-blue-100 rounded-lg py-2 transition-colors"
-                  >
-                    Ver qué me falta →
-                  </button>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
 
@@ -176,15 +242,12 @@ export default function ResultadosPage() {
                 </div>
                 <div className="mt-3 flex gap-2">
                   <button
-                    onClick={() => router.push(`/mi-futuro-laboral/brecha?oferta=${o.id}&label=${encodeURIComponent(o.titulo)}`)}
+                    onClick={() => router.push(`/mi-futuro-laboral/brecha?oferta=${o.id}&label=${encodeURIComponent(o.titulo)}&match=${o.match}`)}
                     className="flex-1 text-xs text-blue-600 font-medium bg-blue-50 hover:bg-blue-100 rounded-lg py-2 transition-colors"
                   >
                     Ver brecha exacta →
                   </button>
-                  <a
-                    href={o.url}
-                    className="text-xs text-gray-500 font-medium bg-gray-50 hover:bg-gray-100 rounded-lg py-2 px-3 transition-colors"
-                  >
+                  <a href={o.url} className="text-xs text-gray-500 font-medium bg-gray-50 hover:bg-gray-100 rounded-lg py-2 px-3 transition-colors">
                     Ver oferta
                   </a>
                 </div>

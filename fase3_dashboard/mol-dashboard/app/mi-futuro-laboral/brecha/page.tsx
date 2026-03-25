@@ -25,8 +25,8 @@ function BrechaContent() {
   const router = useRouter()
   const params = useSearchParams()
   const label = params.get('label') ?? 'la ocupación seleccionada'
-  const matchActual = 73
-  const matchConTodo = 94
+  const matchActual = Number(params.get('match') ?? 73)
+  const matchConTodo = Math.min(99, matchActual + 21)
 
   return (
     <div className="min-h-screen bg-gray-50">
