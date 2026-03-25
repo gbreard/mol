@@ -1096,6 +1096,175 @@ CREATE INDEX IF NOT EXISTS idx_cursos_oe_org ON cursos_oe(organizacion_id);
 
 ---
 
+### T-personas (NUEVA — Capa de gestión S1/S2/S3, 2026-03-25)
+
+Persona física registrada en el sistema. Puede entrar por S1 (trabajador directo), S2 (OE lo registra) o importación CSV.
+
+```sql
+CREATE TABLE IF NOT EXISTS personas (
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  nombre          TEXT NOT NULL,
+  dni             TEXT,
+  edad            INTEGER,
+  nivel_educativo TEXT,
+  ubicacion       TEXT,
+  telefono        TEXT,
+  email           TEXT,
+  opt_in          BOOLEAN DEFAULT FALSE,
+  origen          TEXT CHECK (origen IN ('S1','S2')),
+  created_at      TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_personas_dni ON personas(dni) WHERE dni IS NOT NULL;
+```
+
+**Reemplaza:** `worker_profiles` (tabla improvisada con skills en JSONB). `personas` + `perfiles` + `perfil_skills` normalizan lo que antes era una sola tabla plana.
+
+---
+
+### T-perfiles (NUEVA — Perfil de skills de una persona)
+
+Un perfil agrupa las skills capturadas de una persona. Una persona puede tener múltiples perfiles (uno por servicio/momento).
+
+```sql
+CREATE TABLE IF NOT EXISTS perfiles (
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  persona_id      UUID REFERENCES personas(id) ON DELETE CASCADE,
+  origen          TEXT CHECK (origen IN ('S1','S2')),
+  completitud     INTEGER DEFAULT 0,
+  nivel_confianza DECIMAL DEFAULT 0,
+  updated_at      TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+---
+
+### T-perfil_skills (NUEVA — Skills individuales dentro de un perfil)
+
+Cada skill es una fila con estado, vía de captura, y confianza. Permite tracking granular.
+
+```sql
+CREATE TABLE IF NOT EXISTS perfil_skills (
+  id                   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  perfil_id            UUID REFERENCES perfiles(id) ON DELETE CASCADE,
+  skill_uri            TEXT NOT NULL,
+  skill_label          TEXT NOT NULL,
+  via_captura          TEXT CHECK (via_captura IN ('ocupacion','tarea','texto','formacion')),
+  estado               TEXT CHECK (estado IN ('confirmada','sugerida','descartada')) DEFAULT 'sugerida',
+  confianza            DECIMAL DEFAULT 0.5,
+  validado_por_tecnico BOOLEAN DEFAULT FALSE,
+  created_at           TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_perfil_skills_perfil ON perfil_skills(perfil_id, estado);
+```
+
+**Pantallas que usan:** S1-3 (captura), S1-4 (validar), S2-5 (vista caso), todas las APIs de matching.
+**Ventaja vs JSONB:** se puede consultar por skill, por estado, por vía; se puede auditar cambios individuales.
+
+---
+
+### T-casos (NUEVA — Gestión de casos OE)
+
+Relación entre una persona y una OE. Tiene máquina de estados.
+
+```sql
+CREATE TABLE IF NOT EXISTS casos (
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  persona_id      UUID REFERENCES personas(id),
+  organizacion_id UUID,
+  estado          TEXT CHECK (estado IN (
+                    'nuevo','en_diagnostico','perfil_completo',
+                    'derivado_vacante','derivado_curso',
+                    'en_seguimiento','insertado','cerrado'
+                  )) DEFAULT 'nuevo',
+  objetivo        TEXT CHECK (objetivo IN ('empleo','formacion')),
+  prioridad       TEXT CHECK (prioridad IN ('normal','urgente')) DEFAULT 'normal',
+  nota_tecnico    TEXT,
+  checkboxes_tecnico JSONB DEFAULT '{}',
+  created_at      TIMESTAMPTZ DEFAULT NOW(),
+  updated_at      TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_casos_org_estado ON casos(organizacion_id, estado);
+CREATE INDEX IF NOT EXISTS idx_casos_persona ON casos(persona_id);
+```
+
+**Transiciones de estado:**
+nuevo → en_diagnostico → perfil_completo → derivado_vacante/derivado_curso → en_seguimiento → insertado/cerrado
+
+---
+
+### T-derivaciones (NUEVA — Envíos de personas a vacantes/cursos)
+
+```sql
+CREATE TABLE IF NOT EXISTS derivaciones (
+  id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  caso_id          UUID REFERENCES casos(id) ON DELETE CASCADE,
+  tipo             TEXT CHECK (tipo IN ('vacante','curso')),
+  destino_id       UUID,
+  estado           TEXT CHECK (estado IN (
+                     'derivado','entrevistado','no_se_presento','rechazado','aceptado'
+                   )) DEFAULT 'derivado',
+  motivo           TEXT,
+  fecha_derivacion TIMESTAMPTZ DEFAULT NOW(),
+  fecha_resultado  TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_derivaciones_caso ON derivaciones(caso_id);
+```
+
+---
+
+### T-eventos_caso (NUEVA — Log de auditoría)
+
+```sql
+CREATE TABLE IF NOT EXISTS eventos_caso (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  entidad     TEXT CHECK (entidad IN ('caso','perfil','vacante','derivacion')),
+  entidad_id  UUID NOT NULL,
+  tipo        TEXT NOT NULL,
+  usuario_id  UUID,
+  payload     JSONB DEFAULT '{}',
+  timestamp   TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_eventos_entidad ON eventos_caso(entidad_id);
+```
+
+**Pantallas que usan:** S2-5 (vista caso — timeline de eventos).
+
+---
+
+### T-vacantes_oe (NUEVA — Pool propio de vacantes de la OE)
+
+```sql
+CREATE TABLE IF NOT EXISTS vacantes_oe (
+  id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  organizacion_id  UUID NOT NULL,
+  titulo           TEXT NOT NULL,
+  empresa          TEXT,
+  descripcion      TEXT,
+  skills_requeridas JSONB DEFAULT '[]',
+  ubicacion        TEXT,
+  estado           TEXT CHECK (estado IN ('activa','en_proceso','cubierta','cerrada')) DEFAULT 'activa',
+  created_at       TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+**Diferencia con `vacantes_empresa`:** `vacantes_oe` son las que la OE carga de empresas que le piden candidatos. `vacantes_empresa` son las que la empresa publica directamente con cuenta propia (S3).
+
+---
+
+### Deprecaciones (2026-03-25)
+
+| Tabla | Estado | Motivo |
+|-------|--------|--------|
+| `worker_profiles` | **Deprecada** — 0 rows, nadie usa en prod | Reemplazada por `personas` + `perfiles` + `perfil_skills` |
+| `perfiles_puesto` | **Se mantiene** — 2 rows | Compatible con el nuevo schema, se puede conectar a `vacantes_oe` |
+
+---
+
 ### T-vacantes_empresa (NUEVA — Bloque 11° vacantes de empresas registradas)
 
 Vacantes publicadas por empresas con cuenta registrada (S3 nivel registrado).

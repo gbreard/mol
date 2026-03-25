@@ -279,6 +279,77 @@ export const handlers = [
     })
   }),
 
+  // Personas
+  http.get(`${SUPABASE_URL}/rest/v1/personas`, () => {
+    return HttpResponse.json([
+      { id: 'p1', nombre: 'María García', dni: '32456789', created_at: '2026-03-25T10:00:00Z',
+        casos: [{ id: 'c1', estado: 'perfil_completo', organizacion_id: 'org1' }] },
+    ])
+  }),
+  http.post(`${SUPABASE_URL}/rest/v1/personas`, () => {
+    return HttpResponse.json({ id: 'p-new', nombre: 'Test', es_nueva: true }, { status: 201 })
+  }),
+
+  // Perfiles
+  http.get(`${SUPABASE_URL}/rest/v1/perfiles`, () => {
+    return HttpResponse.json([{ id: 'pf1', persona_id: 'p1', completitud: 5 }])
+  }),
+  http.post(`${SUPABASE_URL}/rest/v1/perfiles`, () => {
+    return HttpResponse.json({ id: 'pf-new', persona_id: 'p1', completitud: 0 }, { status: 201 })
+  }),
+  http.patch(`${SUPABASE_URL}/rest/v1/perfiles`, () => {
+    return HttpResponse.json({ id: 'pf1', completitud: 5 })
+  }),
+
+  // Perfil_skills
+  http.get(`${SUPABASE_URL}/rest/v1/perfil_skills`, () => {
+    return HttpResponse.json([])
+  }),
+  http.post(`${SUPABASE_URL}/rest/v1/perfil_skills`, () => {
+    return HttpResponse.json({}, { status: 201 })
+  }),
+  http.patch(`${SUPABASE_URL}/rest/v1/perfil_skills`, () => {
+    return HttpResponse.json({})
+  }),
+
+  // Casos
+  http.get(`${SUPABASE_URL}/rest/v1/casos`, () => {
+    return HttpResponse.json([
+      { id: 'c1', estado: 'perfil_completo', persona_id: 'p1', organizacion_id: 'org1',
+        personas: { nombre: 'María García', dni: '32456789' }, updated_at: '2026-03-25T10:00:00Z' },
+    ])
+  }),
+  http.post(`${SUPABASE_URL}/rest/v1/casos`, () => {
+    return HttpResponse.json({ id: 'c-new', estado: 'nuevo' }, { status: 201 })
+  }),
+  http.patch(`${SUPABASE_URL}/rest/v1/casos`, () => {
+    return HttpResponse.json({ id: 'c1', estado: 'en_diagnostico' })
+  }),
+
+  // Derivaciones
+  http.get(`${SUPABASE_URL}/rest/v1/derivaciones`, () => {
+    return HttpResponse.json([])
+  }),
+  http.post(`${SUPABASE_URL}/rest/v1/derivaciones`, () => {
+    return HttpResponse.json({ id: 'd-new', tipo: 'vacante', estado: 'derivado' }, { status: 201 })
+  }),
+  http.patch(`${SUPABASE_URL}/rest/v1/derivaciones`, () => {
+    return HttpResponse.json({})
+  }),
+
+  // Eventos_caso
+  http.get(`${SUPABASE_URL}/rest/v1/eventos_caso`, () => {
+    return HttpResponse.json([])
+  }),
+  http.post(`${SUPABASE_URL}/rest/v1/eventos_caso`, () => {
+    return HttpResponse.json({}, { status: 201 })
+  }),
+
+  // Vacantes_oe
+  http.get(`${SUPABASE_URL}/rest/v1/vacantes_oe`, () => {
+    return HttpResponse.json([])
+  }),
+
   // Scraping live stats
   http.get(`${SUPABASE_URL}/rest/v1/scraping_live_stats`, () => {
     return HttpResponse.json({
