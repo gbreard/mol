@@ -38,17 +38,39 @@ const DIAS_SEMANA = [
   { value: 7, label: 'Dom' },
 ];
 
-// UTC a Argentina (UTC-3)
+// UTC ↔ Argentina usando Intl (maneja DST automáticamente)
 function utcToArg(utcTime: string): string {
-  const [h, m] = utcTime.split(':').map(Number);
-  const argH = ((h - 3) + 24) % 24;
-  return `${argH.toString().padStart(2, '0')}:${(m || 0).toString().padStart(2, '0')}`;
+  try {
+    const [h, m] = utcTime.split(':').map(Number);
+    const now = new Date();
+    const utcDate = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), h, m || 0));
+    const argStr = utcDate.toLocaleTimeString('es-AR', {
+      timeZone: 'America/Argentina/Buenos_Aires',
+      hour: '2-digit', minute: '2-digit', hour12: false,
+    });
+    return argStr;
+  } catch {
+    const [h, m] = utcTime.split(':').map(Number);
+    return `${((h - 3 + 24) % 24).toString().padStart(2, '0')}:${(m || 0).toString().padStart(2, '0')}`;
+  }
 }
 
 function argToUtc(argTime: string): string {
-  const [h, m] = argTime.split(':').map(Number);
-  const utcH = ((h + 3) % 24);
-  return `${utcH.toString().padStart(2, '0')}:${(m || 0).toString().padStart(2, '0')}`;
+  try {
+    const [h, m] = argTime.split(':').map(Number);
+    // Create a date in Argentina timezone and extract UTC hours
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T${String(h).padStart(2, '0')}:${String(m || 0).padStart(2, '0')}:00`;
+    // Get UTC offset for Argentina timezone
+    const argDate = new Date(dateStr);
+    const utcOffset = new Date(argDate.toLocaleString('en-US', { timeZone: 'UTC' })).getTime()
+      - new Date(argDate.toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' })).getTime();
+    const utcDate = new Date(argDate.getTime() + utcOffset);
+    return `${utcDate.getUTCHours().toString().padStart(2, '0')}:${utcDate.getUTCMinutes().toString().padStart(2, '0')}`;
+  } catch {
+    const [h, m] = argTime.split(':').map(Number);
+    return `${((h + 3) % 24).toString().padStart(2, '0')}:${(m || 0).toString().padStart(2, '0')}`;
+  }
 }
 
 interface Command {

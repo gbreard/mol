@@ -11,6 +11,8 @@ import { supabase } from "@/lib/supabase";
 interface VpsPortalStats {
   total: number;
   ultimo_scraping: string;
+  ultimos_7d: number;
+  hoy: number;
 }
 
 interface VpsStats {
@@ -96,9 +98,26 @@ export default function ScrapingPage() {
   useEffect(() => { loadData(); }, []);
   useEffect(() => { loadHistory(); }, [periodoOfertas, fechaTipo]);
 
+  // VPS health check
+  const vpsStale = vps?.timestamp
+    ? (Date.now() - new Date(vps.timestamp).getTime()) > 24 * 3600000
+    : true;
+  const vpsOffline = !vps || !vps.total_ofertas;
+
   // Merge VPS + Supabase data per portal
   const mergedPortales = useMemo(() => {
-    if (!vps) return [];
+    if (!vps || !vps.portales || Object.keys(vps.portales).length === 0) {
+      // Fallback to Supabase data if VPS unavailable
+      return supabasePortales.map(p => ({
+        portal: p.portal,
+        total_vps: p.total,
+        ultimo_scraping: p.ultimo_scraping,
+        dias_sin_scraping: p.dias_sin_scraping,
+        procesadas: p.en_dashboard,
+        ultimos_7d: p.ultimos_7d,
+        hoy: 0,
+      }));
+    }
     return Object.entries(vps.portales)
       .sort(([, a], [, b]) => b.total - a.total)
       .map(([portal, stats]) => {
@@ -112,7 +131,8 @@ export default function ScrapingPage() {
           ultimo_scraping: stats.ultimo_scraping,
           dias_sin_scraping: daysSinceScraping,
           procesadas: sbData?.en_dashboard || 0,
-          ultimos_7d: sbData?.ultimos_7d || 0,
+          ultimos_7d: stats.ultimos_7d || 0,
+          hoy: stats.hoy || 0,
         };
       });
   }, [vps, supabasePortales]);
@@ -180,7 +200,21 @@ export default function ScrapingPage() {
         </button>
       </div>
 
-      {/* Alertas */}
+      {/* VPS Health */}
+      {vpsOffline && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-lg border bg-red-50 border-red-200 text-red-800">
+          <XCircle className="w-5 h-5 flex-shrink-0" />
+          <span className="text-sm">VPS sin datos — los numeros pueden estar desactualizados. Verificar que el VPS este online y que sync_scraping_stats.py corra despues de cada scraping.</span>
+        </div>
+      )}
+      {!vpsOffline && vpsStale && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-lg border bg-amber-50 border-amber-200 text-amber-800">
+          <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+          <span className="text-sm">Datos del VPS desactualizados (ultima actualizacion: {vps?.timestamp ? new Date(vps.timestamp).toLocaleString("es-AR") : "desconocida"})</span>
+        </div>
+      )}
+
+      {/* Alertas portales */}
       {mergedPortales.some(p => p.dias_sin_scraping > 3) && (
         <div className="flex items-center gap-3 px-4 py-3 rounded-lg border bg-amber-50 border-amber-200 text-amber-800">
           <AlertTriangle className="w-5 h-5 flex-shrink-0" />
@@ -212,18 +246,22 @@ export default function ScrapingPage() {
                 <StatusIcon className={`w-5 h-5 ${statusColor}`} />
               </div>
 
-              <div className="grid grid-cols-3 gap-2 text-center">
+              <div className="grid grid-cols-4 gap-2 text-center">
                 <div className="bg-blue-50 rounded-lg p-2">
                   <div className="text-lg font-bold text-blue-700">{portal.total_vps.toLocaleString("es-AR")}</div>
-                  <div className="text-xs text-blue-500">En VPS</div>
+                  <div className="text-xs text-blue-500">Total VPS</div>
+                </div>
+                <div className="bg-green-50 rounded-lg p-2">
+                  <div className="text-lg font-bold text-green-700">{portal.ultimos_7d.toLocaleString("es-AR")}</div>
+                  <div className="text-xs text-green-500">7 dias</div>
+                </div>
+                <div className="bg-amber-50 rounded-lg p-2">
+                  <div className="text-lg font-bold text-amber-700">{portal.hoy.toLocaleString("es-AR")}</div>
+                  <div className="text-xs text-amber-500">Hoy</div>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-2">
-                  <div className="text-lg font-bold text-gray-900">{portal.procesadas.toLocaleString("es-AR")}</div>
-                  <div className="text-xs text-gray-500">Procesadas</div>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-2">
-                  <div className="text-lg font-bold text-gray-900">{portal.ultimos_7d.toLocaleString("es-AR")}</div>
-                  <div className="text-xs text-gray-500">7 dias</div>
+                  <div className="text-lg font-bold text-gray-600">{portal.procesadas.toLocaleString("es-AR")}</div>
+                  <div className="text-xs text-gray-400">En Dashboard</div>
                 </div>
               </div>
 

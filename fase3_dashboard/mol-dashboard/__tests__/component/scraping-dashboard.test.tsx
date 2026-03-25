@@ -28,9 +28,9 @@ describe('S23 — ScrapingPage (VPS data)', () => {
   it('muestra cards con datos del VPS', async () => {
     render(<ScrapingPage />)
     await waitFor(() => {
-      expect(screen.getAllByText(/En VPS/).length).toBeGreaterThanOrEqual(1)
+      expect(screen.getAllByText(/Total VPS/).length).toBeGreaterThanOrEqual(1)
     }, { timeout: 3000 })
-    expect(screen.getAllByText(/Procesadas/).length).toBeGreaterThan(0)
+    expect(screen.getAllByText(/En Dashboard/).length).toBeGreaterThan(0)
   })
 
   it('boton Actualizar recarga datos', async () => {
@@ -64,12 +64,12 @@ describe('S23 — ScrapingPage (VPS data)', () => {
     expect(screen.getByRole('button', { name: /Todo/i })).toBeInTheDocument()
   })
 
-  it('cards muestran En VPS / Procesadas / 7 dias', async () => {
+  it('cards muestran Total VPS / 7 dias / Hoy / En Dashboard', async () => {
     render(<ScrapingPage />)
     await waitFor(() => {
-      expect(screen.getAllByText(/En VPS/).length).toBeGreaterThan(0)
+      expect(screen.getAllByText(/Total VPS/).length).toBeGreaterThan(0)
     })
-    expect(screen.getAllByText(/Procesadas/).length).toBeGreaterThan(0)
+    expect(screen.getAllByText(/En Dashboard/).length).toBeGreaterThan(0)
     expect(screen.getAllByText(/7 dias/).length).toBeGreaterThan(0)
   })
 
