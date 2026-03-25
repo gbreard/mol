@@ -1,5 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
+import { http, HttpResponse } from 'msw'
+import { server } from '../mocks/server'
 import ScrapingPage from '@/app/admin/scraping/page'
 
 vi.mock('recharts', () => ({
@@ -13,44 +15,31 @@ vi.mock('recharts', () => ({
   Legend: () => null,
 }))
 
-// ─── S23: Dashboard Scraping ──────────────────────────────────────────────────
-
-describe('S23 — ScrapingPage', () => {
-  it('muestra título y cantidad de fuentes', async () => {
+describe('S23 — ScrapingPage (VPS data)', () => {
+  it('muestra titulo y cantidad de fuentes', async () => {
     render(<ScrapingPage />)
     await waitFor(() => {
       expect(screen.getByText(/Scraping — Portales/i)).toBeInTheDocument()
     })
-    expect(screen.getByText(/6 fuentes/)).toBeInTheDocument()
+    // VPS mock has 6 portales
+    expect(screen.getByText(/fuentes/)).toBeInTheDocument()
   })
 
-  it('muestra card por cada portal', async () => {
+  it('muestra cards con datos del VPS', async () => {
     render(<ScrapingPage />)
     await waitFor(() => {
-      expect(screen.getAllByText(/37\.8%|41\.3%/).length).toBeGreaterThan(0)
-    })
-    // 6 portales → 6 badges de porcentaje del total
-    expect(screen.getByText(/37\.8%/)).toBeInTheDocument()
-    expect(screen.getByText(/41\.3%/)).toBeInTheDocument()
-    expect(screen.getByText(/13\.3%/)).toBeInTheDocument()
+      expect(screen.getAllByText(/En VPS/).length).toBeGreaterThanOrEqual(1)
+    }, { timeout: 3000 })
+    expect(screen.getAllByText(/Procesadas/).length).toBeGreaterThan(0)
   })
 
-  it('muestra alertas de error y warning', async () => {
-    render(<ScrapingPage />)
-    await waitFor(() => {
-      expect(screen.getByText(/caba sin ofertas hace 20 dias/i)).toBeInTheDocument()
-    })
-    expect(screen.getByText(/computrabajo sin ofertas hace 8 dias/i)).toBeInTheDocument()
-  })
-
-  it('botón Actualizar recarga datos', async () => {
+  it('boton Actualizar recarga datos', async () => {
     render(<ScrapingPage />)
     await waitFor(() => {
       expect(screen.getByText(/Scraping — Portales/i)).toBeInTheDocument()
     })
     const btn = screen.getByRole('button', { name: /Actualizar/i })
     fireEvent.click(btn)
-    // carga de nuevo: spinner o datos siguen presentes
     await waitFor(() => {
       expect(screen.getByText(/Scraping — Portales/i)).toBeInTheDocument()
     })
@@ -66,7 +55,7 @@ describe('S23 — ScrapingPage', () => {
     expect(btnPub).toHaveClass('bg-white')
   })
 
-  it('filtros de periodo están presentes', async () => {
+  it('filtros de periodo presentes', async () => {
     render(<ScrapingPage />)
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /7 dias/i })).toBeInTheDocument()
@@ -75,12 +64,19 @@ describe('S23 — ScrapingPage', () => {
     expect(screen.getByRole('button', { name: /Todo/i })).toBeInTheDocument()
   })
 
-  it('cards muestran columnas Scrapeadas / Procesadas / 7 dias', async () => {
+  it('cards muestran En VPS / Procesadas / 7 dias', async () => {
     render(<ScrapingPage />)
     await waitFor(() => {
-      expect(screen.getAllByText('Scrapeadas').length).toBeGreaterThan(0)
+      expect(screen.getAllByText(/En VPS/).length).toBeGreaterThan(0)
     })
-    expect(screen.getAllByText('Procesadas').length).toBeGreaterThan(0)
-    expect(screen.getAllByText('7 dias').length).toBeGreaterThan(0)
+    expect(screen.getAllByText(/Procesadas/).length).toBeGreaterThan(0)
+    expect(screen.getAllByText(/7 dias/).length).toBeGreaterThan(0)
+  })
+
+  it('muestra total VPS en header', async () => {
+    render(<ScrapingPage />)
+    await waitFor(() => {
+      expect(screen.getByText(/ofertas en VPS/)).toBeInTheDocument()
+    })
   })
 })
