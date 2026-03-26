@@ -50,7 +50,8 @@ Sistema de monitoreo del mercado laboral argentino para OEDE. Scrapea ofertas de
 - **NLP Gate v1.1** (35+ reglas pre-matching, bloquea critico/alto)
 - **Multi-Position Detection** (regex + LLM, crea sub-ofertas)
 - **Matching v3.5.4 ESCO-FIRST** - ESCO es target, ISCO se deriva
-- **Skills v2.4** - LoRA fine-tuned model (reemplaza BGE-M3 default)
+- **Skills v2.5** - BGE-M3 base (LoRA fine-tuned NO disponible — model_lora no existe en disco, umbral 0.40)
+- **Canonización planificada** - Reducir 14,247 skills ESCO a ~3,000 canónicas (ver `docs/plan/14_CANONIZACION_SKILLS_TAREAS.md`)
 - **Pipeline v3.3** (8 pasos integrados con NLP Gate + multi-position)
 - **Fine-tuning data** (llm_raw_json + postprocessor_diff + valor_actual/corregido)
 - **Conteos dinámicos** (ver `learnings.yaml`): reglas_negocio, reglas_validacion, sinonimos_argentinos

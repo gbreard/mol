@@ -424,3 +424,128 @@ F1 (infraestructura) → F2 (fábrica) → F3 (diccionarios) → F4 (sidebar) �
 ```
 
 Cada fase es deployable independientemente. F2 es la más grande (la vista de fábrica).
+
+---
+
+## 10. Páginas de detalle del pipeline (Bloque K, 2026-03-26)
+
+> Actualización: cada etapa del embudo de la Fábrica tiene su propia página de detalle.
+> Plan completo: `docs/plan/14_CANONIZACION_SKILLS_TAREAS.md`
+
+### P-47: Detalle NLP (`/fabrica/nlp`)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  NLP — Detalle del extractor                    [Actualizar]│
+│                                                             │
+│  ┌── Estado del modelo ─────────────────────────────────┐  │
+│  │ Modelo: Qwen2.5:7b via Ollama   Estado: ● Operativo │  │
+│  │ Host: 172.17.0.1:11434          Versión: v11.4       │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                                                             │
+│  ┌── Métricas ──────────────────────────────────────────┐  │
+│  │ Procesadas: 44,151 / 44,920 (98.3%)                  │  │
+│  │ Pendientes: 769                                       │  │
+│  │ Último run: run_20260320 · 500 ofertas · 3h 55m      │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                                                             │
+│  ┌── Completitud por campo ─────────────────────────────┐  │
+│  │ titulo_limpio   ████████████████████ 100%             │  │
+│  │ provincia       ████████████████████  99%             │  │
+│  │ tareas          ██████████████████░░  95%             │  │
+│  │ area_funcional  █████████████████░░░  92%             │  │
+│  │ seniority       ████████████████░░░░  88%             │  │
+│  │ jornada_laboral █████░░░░░░░░░░░░░░░  35%             │  │
+│  └──────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### P-48: Gate NLP (`/fabrica/validacion-nlp`)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Validación NLP — Gate de calidad               [Actualizar]│
+│                                                             │
+│  51 reglas activas · 100% aprobación · 0 bloqueadas        │
+│                                                             │
+│  ┌── Errores por severidad ─────────────────────────────┐  │
+│  │ info     ████████████████████  12,589 (56%)          │  │
+│  │ medio    ██████████████░░░░░░   8,960 (40%)          │  │
+│  │ warning  █░░░░░░░░░░░░░░░░░░░     713 (3%)           │  │
+│  │ bajo     ░░░░░░░░░░░░░░░░░░░░     258 (1%)           │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                                                             │
+│  ┌── Top errores ───────────────────────────────────────┐  │
+│  │ error_scraping         info   6,385  (desc corta)    │  │
+│  │ error_nlp_skills       medio  6,374  (pocas skills)  │  │
+│  │ error_clae             info   5,888  (sector dudoso) │  │
+│  │ error_nlp_ubicacion    medio  1,132  (ubic mal)      │  │
+│  └──────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### P-49: Skills (`/fabrica/skills`)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Skills — Monitor del extractor                 [Actualizar]│
+│                                                             │
+│  Modelo: BAAI/bge-m3 (base)    LoRA: ✗ No disponible      │
+│  Catálogo: 14,247 ESCO → planificado ~3,000 canónicas     │
+│  Umbral: 0.40                                               │
+│                                                             │
+│  Con skills:  42,636 (96.6%)  ████████████████████████████  │
+│  Sin skills:   1,515 (3.4%)   ░                            │
+│    Sin tareas: 1,276 · No matcheó: 239                     │
+│                                                             │
+│  [Ver canonización →]  [Re-extraer pendientes]              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### P-50: Matching (`/fabrica/matching`)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Matching — Clasificación ESCO                  [Actualizar]│
+│                                                             │
+│  Versión: v3.5.4 ESCO-First                                │
+│  Con matching: 37,776 · Pendientes: 6,375                  │
+│                                                             │
+│  ┌── Método de decisión ────────────────────────────────┐  │
+│  │ Regla de negocio  ████████████  45%  (299 reglas)    │  │
+│  │ Semántico         ██████████░░  55%                   │  │
+│  │ Diccionario ARG   ░░░░░░░░░░░   2%  (17 ocup)       │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                                                             │
+│  Dual coinciden: 78% · Score promedio: 0.72                │
+│  [Ver reglas →]  [Lanzar matching →]                        │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### P-51: Gate Matching (`/fabrica/validacion-matching`)
+
+Similar a P-48 pero con errores de matching (divergencia dual, skills incoherentes, etc.)
+
+### P-52: Tareas (`/fabrica/tareas`)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Tareas — Canonización                          [Actualizar]│
+│                                                             │
+│  Tareas únicas extraídas: ~35,000                          │
+│  Canónicas aprobadas: 0 (pendiente implementación)         │
+│                                                             │
+│  ┌── Top tareas más frecuentes ─────────────────────────┐  │
+│  │ 1. Atención al cliente              3,450 ofertas    │  │
+│  │ 2. Gestión de ventas                2,100            │  │
+│  │ 3. Mantenimiento preventivo         1,890            │  │
+│  │ 4. Liquidación de sueldos           1,650            │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                                                             │
+│  [Iniciar clustering →]  [Ver plan canonización →]          │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### P-53: Editor Canonización (`/fabrica/canonizacion`)
+
+Ver wireframe detallado en `docs/plan/14_CANONIZACION_SKILLS_TAREAS.md` sección 5.2.

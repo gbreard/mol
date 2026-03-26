@@ -1256,6 +1256,65 @@ CREATE TABLE IF NOT EXISTS vacantes_oe (
 
 ---
 
+### T-skills_canonical (NUEVA — Canonización de skills ESCO, 2026-03-26)
+
+Agrupa las 14,247 skills ESCO en ~3,000 canónicas. Cada canónica tiene un label argentino y agrupa múltiples skills ESCO que son variaciones del mismo concepto.
+
+```sql
+CREATE TABLE IF NOT EXISTS skills_canonical (
+  id TEXT PRIMARY KEY,
+  label_canonico TEXT NOT NULL,
+  label_canonico_normalizado TEXT NOT NULL,
+  tipo TEXT CHECK (tipo IN ('skill', 'knowledge', 'transversal')),
+  skills_esco_uris JSONB DEFAULT '[]',
+  skills_esco_labels JSONB DEFAULT '[]',
+  sinonimos_argentinos JSONB DEFAULT '[]',
+  embedding_index INTEGER,
+  frecuencia_mercado NUMERIC(5,2) DEFAULT 0,
+  estado TEXT DEFAULT 'auto' CHECK (estado IN ('auto', 'revisado', 'aprobado')),
+  aprobado_por TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+**Pantallas:** `/fabrica/skills`, `/fabrica/canonizacion`
+**Relación:** Reemplaza la búsqueda directa contra 14,247 embeddings ESCO por ~3,000 canónicas.
+
+---
+
+### T-tareas_canonical (NUEVA — Canonización de tareas extraídas, 2026-03-26)
+
+Agrupa variaciones de la misma tarea extraída por NLP en un label canónico.
+
+```sql
+CREATE TABLE IF NOT EXISTS tareas_canonical (
+  id TEXT PRIMARY KEY,
+  label_canonico TEXT NOT NULL,
+  variantes JSONB DEFAULT '[]',
+  skills_asociadas JSONB DEFAULT '[]',
+  frecuencia_mercado NUMERIC(5,2) DEFAULT 0,
+  estado TEXT DEFAULT 'auto' CHECK (estado IN ('auto', 'revisado', 'aprobado')),
+  aprobado_por TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+**Pantallas:** `/fabrica/tareas`, `/fabrica/canonizacion`
+**Pipeline:** Nueva etapa entre Gate NLP y Skills. Cada oferta recibe `tareas_canonicas` (metadata adicional, no reemplaza la original).
+
+---
+
+### Columnas nuevas en ofertas_nlp (2026-03-26)
+
+```sql
+ALTER TABLE ofertas_nlp ADD COLUMN tareas_canonicas JSONB;
+ALTER TABLE ofertas_nlp ADD COLUMN skills_canonicas JSONB;
+ALTER TABLE ofertas_nlp ADD COLUMN skills_canonicas_detalle JSONB;
+```
+
+---
+
 ### Deprecaciones (2026-03-25)
 
 | Tabla | Estado | Motivo |
