@@ -50,6 +50,7 @@ export default function EquivalenciasPage() {
   const [message, setMessage] = useState<{ type: "ok" | "error"; text: string } | null>(null);
   const [page, setPage] = useState(0);
   const pageSize = 30;
+  const [descriptions, setDescriptions] = useState<Record<string, string>>({});
 
   async function loadData() {
     setLoading(true);
@@ -72,6 +73,20 @@ export default function EquivalenciasPage() {
   }
 
   useEffect(() => { loadData(); }, [estadoFilter, page]);
+
+  // Load descriptions from skills_searchable.json (once)
+  useEffect(() => {
+    fetch("/data/skills_searchable.json")
+      .then(r => r.json())
+      .then(data => {
+        const map: Record<string, string> = {};
+        for (const s of (data.skills || [])) {
+          if (s.label && s.description) map[s.label.toLowerCase()] = s.description;
+        }
+        setDescriptions(map);
+      })
+      .catch(() => {});
+  }, []);
 
   function doSearch() { setPage(0); loadData(); }
 
@@ -270,17 +285,25 @@ export default function EquivalenciasPage() {
 
               {/* Members */}
               {isExpanded && !isEditing && (
-                <div className="px-4 py-2 border-t border-gray-100 bg-gray-50">
-                  <div className="text-xs text-gray-500 mb-1">Skills ESCO equivalentes:</div>
-                  {eq.miembros.map((m, i) => (
-                    <div key={i} className="flex items-center gap-2 text-xs py-0.5">
-                      <span className="text-gray-400 w-12 text-right">{m.frecuencia}</span>
-                      <span className={`text-gray-700 ${m.label === eq.label_representante ? "font-medium" : ""}`}>
-                        {m.label}
-                        {m.label === eq.label_representante && <span className="text-blue-500 ml-1">(representante)</span>}
-                      </span>
-                    </div>
-                  ))}
+                <div className="px-4 py-3 border-t border-gray-100 bg-gray-50 space-y-2">
+                  <div className="text-xs text-gray-500">Skills ESCO equivalentes:</div>
+                  {eq.miembros.map((m, i) => {
+                    const desc = descriptions[m.label?.toLowerCase()];
+                    return (
+                      <div key={i} className="bg-white rounded-lg p-2 border border-gray-100">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-gray-400 w-12 text-right flex-shrink-0">{m.frecuencia}</span>
+                          <span className={`text-sm ${m.label === eq.label_representante ? "font-medium text-blue-700" : "text-gray-700"}`}>
+                            {m.label}
+                            {m.label === eq.label_representante && <span className="text-xs text-blue-400 ml-1">(representante)</span>}
+                          </span>
+                        </div>
+                        {desc && (
+                          <p className="text-xs text-gray-400 mt-1 ml-14 line-clamp-2">{desc}</p>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
