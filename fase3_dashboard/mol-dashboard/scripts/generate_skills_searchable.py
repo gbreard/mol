@@ -3,19 +3,23 @@
 Genera JSON optimizado para busqueda de skills en frontend.
 
 Combina esco_skills_full.json con conteos de demanda por ocupaciones.
+v2: Colapsa skills equivalentes en una sola entrada con alt_labels.
 
 Output: public/data/skills_searchable.json (~3 MB)
 """
 
 import json
+import sys
 from pathlib import Path
 from collections import defaultdict
 
 # Paths
 BASE_PATH = Path(__file__).parent.parent.parent.parent / "database/embeddings"
+PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 SKILLS_FULL_FILE = BASE_PATH / "esco_skills_full.json"
 SKILL_TO_OCCUPATIONS_FILE = BASE_PATH / "esco_skill_to_occupations.json"
 OUTPUT_FILE = Path(__file__).parent.parent / "public/data/skills_searchable.json"
+SUPABASE_CONFIG = PROJECT_ROOT / "config" / "supabase_config.json"
 
 
 def get_skill_id(uri: str) -> str:
@@ -94,8 +98,115 @@ def main():
         else:
             stats['without_occupations'] += 1
 
+    # 4. Load equivalences and collapse groups
+    print("\n4. Cargando equivalencias y colapsando grupos...")
+    equiv_groups = {}  # eq_id -> {label_representante, member_uris: set}
+    uri_to_eq = {}     # skill_uri -> eq_id
+
+    try:
+        sys.path.insert(0, str(PROJECT_ROOT))
+        config = json.load(open(SUPABASE_CONFIG))
+        from supabase import create_client
+        client = create_client(config['url'], config['service_role_key'])
+
+        # Load lookup
+        offset = 0
+        while True:
+            batch = client.table('skill_equivalence_lookup').select(
+                'skill_uri,equivalence_id'
+            ).range(offset, offset + 999).execute()
+            if not batch.data:
+                break
+            for row in batch.data:
+                uri_to_eq[row['skill_uri']] = row['equivalence_id']
+            offset += len(batch.data)
+            if len(batch.data) < 1000:
+                break
+
+        # Load group labels
+        offset = 0
+        while True:
+            batch = client.table('skill_equivalences').select(
+                'id,label_representante,label_argentino'
+            ).range(offset, offset + 999).execute()
+            if not batch.data:
+                break
+            for row in batch.data:
+                equiv_groups[row['id']] = {
+                    'label': row.get('label_argentino') or row['label_representante'],
+                    'member_uris': set(),
+                }
+            offset += len(batch.data)
+            if len(batch.data) < 1000:
+                break
+
+        # Map URIs to groups
+        for uri, eq_id in uri_to_eq.items():
+            if eq_id in equiv_groups:
+                equiv_groups[eq_id]['member_uris'].add(uri)
+
+        print(f"   - {len(uri_to_eq)} URIs en {len(equiv_groups)} grupos")
+    except Exception as e:
+        print(f"   - No se pudieron cargar equivalencias: {e}")
+        print(f"   - Continuando sin colapsar")
+
+    # Build URI-to-record index
+    uri_index = {}
+    for rec in output_skills:
+        full_uri = f"http://data.europa.eu/esco/skill/{rec['id']}"
+        uri_index[full_uri] = rec
+
+    # Collapse equivalence groups
+    collapsed_ids = set()  # IDs of skills that were merged into a group representative
+    original_count = len(output_skills)
+
+    for eq_id, group in equiv_groups.items():
+        member_uris = group['member_uris']
+        if len(member_uris) < 2:
+            continue
+
+        # Find all records for this group
+        member_records = []
+        for uri in member_uris:
+            if uri in uri_index:
+                member_records.append((uri, uri_index[uri]))
+
+        if len(member_records) < 2:
+            continue
+
+        # Pick representative: the one whose label matches the group label, or highest total
+        canonical_label = group['label']
+        representative = None
+        for uri, rec in member_records:
+            if rec['label'].lower() == canonical_label.lower():
+                representative = rec
+                break
+        if not representative:
+            member_records.sort(key=lambda x: -x[1]['total'])
+            representative = member_records[0][1]
+
+        # Collect alt_labels from other members
+        alt_labels = []
+        for uri, rec in member_records:
+            if rec['id'] != representative['id']:
+                alt_labels.append(rec['label'])
+                collapsed_ids.add(rec['id'])
+                # Merge frequency counts
+                representative['essential'] += rec['essential']
+                representative['optional'] += rec['optional']
+                representative['total'] += rec['total']
+
+        # Set canonical label and alt_labels on representative
+        representative['label'] = canonical_label
+        representative['alt_labels'] = alt_labels
+        representative['equivalence_id'] = eq_id
+
+    # Remove collapsed entries
+    output_skills = [s for s in output_skills if s['id'] not in collapsed_ids]
+    print(f"   - Colapsados: {original_count} → {len(output_skills)} skills ({original_count - len(output_skills)} fusionados)")
+
     # Sort by total demand (most demanded first), then alphabetically
-    print("\n4. Ordenando por demanda...")
+    print("\n5. Ordenando por demanda...")
     output_skills.sort(key=lambda x: (-x['total'], x['label'].lower()))
 
     # Build output object
@@ -106,12 +217,14 @@ def main():
             'skills': stats['skills'],
             'knowledge': stats['knowledge'],
             'with_occupations': stats['with_occupations'],
-            'without_occupations': stats['without_occupations']
+            'without_occupations': stats['without_occupations'],
+            'equivalence_groups': len(equiv_groups),
+            'collapsed': original_count - len(output_skills),
         }
     }
 
     # Save
-    print("\n5. Guardando archivo...")
+    print("\n6. Guardando archivo...")
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
         json.dump(output, f, ensure_ascii=False, separators=(',', ':'))

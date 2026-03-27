@@ -18,6 +18,8 @@ interface CatalogSkill {
   description: string
   source: 'esco' | 'argentina_emerging'
   occupations_count?: number
+  alt_labels?: string[]
+  equivalence_id?: string
 }
 
 interface SkillSearchResult {
@@ -96,14 +98,21 @@ export async function GET(request: NextRequest) {
     for (const skill of catalog) {
       const normalizedLabel = normalize(skill.label)
       const normalizedDesc = normalize(skill.description || '')
+      // Also check alt_labels (equivalence variants)
+      const normalizedAlts = (skill.alt_labels || []).map(normalize)
 
-      // Todos los tokens deben matchear en label O en description
+      // Todos los tokens deben matchear en label, alt_labels O description
       const allTokensInLabel = tokens.every(t => normalizedLabel.includes(t))
+      const allTokensInAlts = normalizedAlts.some(alt => tokens.every(t => alt.includes(t)))
       const allTokensInDesc = tokens.every(t => normalizedDesc.includes(t))
-      // Al menos un token en label + resto en desc (match parcial)
-      const someTokensInLabel = tokens.some(t => normalizedLabel.includes(t))
+      // Al menos un token en label/alts + resto en desc (match parcial)
+      const someTokensInLabel = tokens.some(t =>
+        normalizedLabel.includes(t) || normalizedAlts.some(alt => alt.includes(t))
+      )
       const allTokensSomewhere = tokens.every(t =>
-        normalizedLabel.includes(t) || normalizedDesc.includes(t)
+        normalizedLabel.includes(t) ||
+        normalizedAlts.some(alt => alt.includes(t)) ||
+        normalizedDesc.includes(t)
       )
 
       if (!allTokensSomewhere) continue
@@ -122,7 +131,7 @@ export async function GET(request: NextRequest) {
         matchType: allTokensInLabel ? 'label' : 'description',
       }
 
-      if (allTokensInLabel) {
+      if (allTokensInLabel || allTokensInAlts) {
         labelMatches.push(result)
       } else if (someTokensInLabel && allTokensSomewhere) {
         // Tokens split between label and description — prioritize

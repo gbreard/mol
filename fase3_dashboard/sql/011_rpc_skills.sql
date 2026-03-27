@@ -1,6 +1,6 @@
 -- ============================================================
 -- RPC: get_skills_resumen(p_filters jsonb)
--- v3: IF/ELSE branches — no CASE WHEN, no IN subquery
+-- v4: Uses COALESCE(canonical_label, preferred_label) for equivalence groups
 -- Unfiltered: direct scan of ofertas_skills (~296K rows)
 -- Filtered: JOIN ofertas_skills with ofertas_dashboard
 -- ============================================================
@@ -38,7 +38,7 @@ BEGIN
     -----------------------------------------------------------
     CREATE TEMP TABLE _skill_agg ON COMMIT DROP AS
     SELECT
-      s.preferred_label,
+      COALESCE(s.canonical_label, s.preferred_label) AS preferred_label,
       s.l1,
       s.l1_nombre,
       s.es_digital,
@@ -72,7 +72,7 @@ BEGIN
           ELSE p_filters->>'jornada'
         END
       )
-    GROUP BY s.preferred_label, s.l1, s.l1_nombre, s.es_digital;
+    GROUP BY COALESCE(s.canonical_label, s.preferred_label), s.l1, s.l1_nombre, s.es_digital;
 
   ELSE
     -----------------------------------------------------------
@@ -80,13 +80,13 @@ BEGIN
     -----------------------------------------------------------
     CREATE TEMP TABLE _skill_agg ON COMMIT DROP AS
     SELECT
-      preferred_label,
+      COALESCE(canonical_label, preferred_label) AS preferred_label,
       l1,
       l1_nombre,
       es_digital,
       COUNT(*) AS cnt
     FROM ofertas_skills
-    GROUP BY preferred_label, l1, l1_nombre, es_digital;
+    GROUP BY COALESCE(canonical_label, preferred_label), l1, l1_nombre, es_digital;
 
   END IF;
 

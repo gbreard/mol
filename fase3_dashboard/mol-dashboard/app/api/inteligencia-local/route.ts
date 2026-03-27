@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
     // Skills más demandadas en la jurisdicción (from ofertas_skills + ofertas_dashboard)
     const { data: skillsData } = await client
       .from('ofertas_skills')
-      .select('preferred_label, l1_nombre, es_digital, id_oferta')
+      .select('preferred_label, canonical_label, l1_nombre, es_digital, id_oferta')
       .limit(1000);
 
     // Get ofertas de la jurisdicción
@@ -53,10 +53,10 @@ export async function GET(request: NextRequest) {
     // Filter skills to only those from this jurisdiccion
     const skillsJuris = (skillsData || []).filter(s => ofertaIds.has(s.id_oferta));
 
-    // Count skills
+    // Count skills (use canonical_label if available for grouping)
     const skillCounts: Record<string, { count: number; digital: boolean; l1: string }> = {};
     skillsJuris.forEach(s => {
-      const key = s.preferred_label;
+      const key = s.canonical_label || s.preferred_label;
       if (!skillCounts[key]) {
         skillCounts[key] = { count: 0, digital: s.es_digital || false, l1: s.l1_nombre || '' };
       }

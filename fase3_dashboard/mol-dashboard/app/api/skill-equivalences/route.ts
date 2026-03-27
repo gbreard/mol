@@ -91,7 +91,7 @@ export async function PUT(request: NextRequest) {
   // If members were removed, update the lookup table
   if (miembros !== undefined) {
     const memberUris = (miembros as any[]).map((m: any) => m.uri);
-    const { data: currentLookup } = await client.from('skill_equivalence_lookup').select('skill_uri').eq('group_id', id);
+    const { data: currentLookup } = await client.from('skill_equivalence_lookup').select('skill_uri').eq('equivalence_id', id);
     if (currentLookup) {
       const removedUris = currentLookup.filter(l => !memberUris.includes(l.skill_uri)).map(l => l.skill_uri);
       if (removedUris.length > 0) {
@@ -121,7 +121,7 @@ export async function PUT(request: NextRequest) {
         // Point the lookup to the new group
         await client.from('skill_equivalence_lookup').upsert({
           skill_uri: m.uri,
-          group_id: created.id,
+          equivalence_id: created.id,
           skill_label: m.label,
         }, { onConflict: 'skill_uri' });
       }

@@ -299,6 +299,8 @@ export interface OfertaSkillValidacion {
   id: string;
   id_oferta: string;
   preferred_label: string;
+  canonical_label: string | null;
+  equivalence_id: string | null;
   l1: string | null;
   l1_nombre: string | null;
   l2: string | null;

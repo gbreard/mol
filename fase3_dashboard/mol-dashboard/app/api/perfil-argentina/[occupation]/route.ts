@@ -158,6 +158,7 @@ export async function GET(
       .select(`
         skill_uri,
         preferred_label,
+        canonical_label,
         l1,
         l1_nombre,
         l2,
@@ -167,7 +168,7 @@ export async function GET(
 
     if (skillsError) throw skillsError
 
-    // 4. Agregar skills por label normalizado
+    // 4. Agregar skills por label normalizado (use canonical if available)
     const skillsMap: Record<string, {
       label_original: string
       frequency: number
@@ -177,8 +178,9 @@ export async function GET(
     }> = {}
 
     skills?.forEach(s => {
-      if (!s.preferred_label) return
-      const labelNorm = normalize(s.preferred_label)
+      const label = s.canonical_label || s.preferred_label
+      if (!label) return
+      const labelNorm = normalize(label)
 
       if (!skillsMap[labelNorm]) {
         skillsMap[labelNorm] = {

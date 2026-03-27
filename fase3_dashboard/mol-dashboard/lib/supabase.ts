@@ -2134,7 +2134,7 @@ export async function getSkillsByOferta(idOferta: string): Promise<OfertaSkillVa
 
   const { data, error } = await client
     .from('ofertas_skills')
-    .select('id, id_oferta, preferred_label, l1, l1_nombre, l2, l2_nombre, es_digital, es_esencial, score, origen')
+    .select('id, id_oferta, preferred_label, canonical_label, equivalence_id, l1, l1_nombre, l2, l2_nombre, es_digital, es_esencial, score, origen')
     .eq('id_oferta', idOferta)
     .order('es_esencial', { ascending: false })
     .order('score', { ascending: false })

@@ -778,13 +778,75 @@ def upsert_ofertas(client, ofertas: List[Dict], dry_run: bool = False) -> int:
     return total
 
 
-def transform_skill_for_supabase(skill: Dict) -> Dict:
+_equiv_cache = None  # Module-level cache for equivalence lookup
+
+def load_equivalences_lookup(client) -> Dict[str, Dict]:
+    """
+    Load skill_equivalence_lookup + skill_equivalences from Supabase.
+    Returns: {skill_uri: {equivalence_id, canonical_label}}
+    """
+    global _equiv_cache
+    if _equiv_cache is not None:
+        return _equiv_cache
+
+    equiv_map = {}
+    try:
+        # Load lookup table (paginated)
+        uri_to_eq = {}
+        offset = 0
+        while True:
+            batch = client.table('skill_equivalence_lookup').select(
+                'skill_uri,equivalence_id'
+            ).range(offset, offset + 999).execute()
+            if not batch.data:
+                break
+            for row in batch.data:
+                uri_to_eq[row['skill_uri']] = row['equivalence_id']
+            offset += len(batch.data)
+            if len(batch.data) < 1000:
+                break
+
+        # Load equivalences (for canonical labels)
+        eq_labels = {}
+        offset = 0
+        while True:
+            batch = client.table('skill_equivalences').select(
+                'id,label_representante,label_argentino'
+            ).range(offset, offset + 999).execute()
+            if not batch.data:
+                break
+            for row in batch.data:
+                eq_labels[row['id']] = row.get('label_argentino') or row['label_representante']
+            offset += len(batch.data)
+            if len(batch.data) < 1000:
+                break
+
+        # Build combined map
+        for uri, eq_id in uri_to_eq.items():
+            equiv_map[uri] = {
+                'equivalence_id': eq_id,
+                'canonical_label': eq_labels.get(eq_id),
+            }
+
+        logger.info(f"Equivalencias cargadas: {len(equiv_map)} URIs → {len(eq_labels)} grupos")
+    except Exception as e:
+        logger.warning(f"No se pudieron cargar equivalencias: {e}")
+
+    _equiv_cache = equiv_map
+    return equiv_map
+
+
+def transform_skill_for_supabase(skill: Dict, equiv_map: Optional[Dict] = None) -> Dict:
     """
     Transforma un skill de SQLite al formato de ofertas_skills de Supabase.
+    Si equiv_map se provee, agrega equivalence_id y canonical_label.
     """
+    skill_uri = skill.get('esco_skill_uri') or skill.get('skill_uri')
+    equiv = (equiv_map or {}).get(skill_uri, {})
+
     return {
         'id_oferta': str(skill.get('id_oferta')),
-        'skill_uri': skill.get('esco_skill_uri') or skill.get('skill_uri'),
+        'skill_uri': skill_uri,
         'preferred_label': skill.get('esco_skill_label') or skill.get('preferred_label'),
         'l1': skill.get('l1') or skill.get('L1'),
         'l1_nombre': skill.get('l1_nombre') or skill.get('L1_nombre'),
@@ -794,6 +856,8 @@ def transform_skill_for_supabase(skill: Dict) -> Dict:
         'origen': skill.get('skill_tipo_fuente') or skill.get('origen', 'merged'),
         'score': skill.get('match_score') or skill.get('score'),
         'es_esencial': skill.get('es_esencial', False),
+        'equivalence_id': equiv.get('equivalence_id'),
+        'canonical_label': equiv.get('canonical_label'),
     }
 
 
@@ -806,8 +870,11 @@ def upsert_skills(client, skills: List[Dict], dry_run: bool = False) -> int:
     if not skills:
         return 0
 
+    # Load equivalences for canonical labels
+    equiv_map = load_equivalences_lookup(client)
+
     # Transformar al formato de Supabase
-    skills_transformed = [transform_skill_for_supabase(s) for s in skills]
+    skills_transformed = [transform_skill_for_supabase(s, equiv_map) for s in skills]
 
     # Filtrar skills sin URI (inválidos)
     skills_transformed = [s for s in skills_transformed if s.get('skill_uri')]
@@ -852,7 +919,29 @@ def upsert_skills(client, skills: List[Dict], dry_run: bool = False) -> int:
     if len(skills_final) < len(skills_unique):
         logger.warning(f"Se eliminaron {len(skills_unique) - len(skills_final)} skills duplicados semánticos (label normalizado)")
 
-    skills_transformed = skills_final
+    # Tercera pasada: dedup por (id_oferta, equivalence_id) para skills del mismo grupo
+    seen_equiv = {}
+    skills_deduped = []
+    for s in skills_final:
+        eq_id = s.get('equivalence_id')
+        if eq_id:
+            key = (s['id_oferta'], eq_id)
+            if key not in seen_equiv:
+                seen_equiv[key] = s
+                skills_deduped.append(s)
+            else:
+                existing = seen_equiv[key]
+                if (s.get('score') or 0) > (existing.get('score') or 0):
+                    skills_deduped.remove(existing)
+                    seen_equiv[key] = s
+                    skills_deduped.append(s)
+        else:
+            skills_deduped.append(s)
+
+    if len(skills_deduped) < len(skills_final):
+        logger.info(f"Se eliminaron {len(skills_final) - len(skills_deduped)} skills duplicados por equivalencia")
+
+    skills_transformed = skills_deduped
 
     if dry_run:
         logger.info(f"[DRY-RUN] Upsert {len(skills_transformed)} skills")

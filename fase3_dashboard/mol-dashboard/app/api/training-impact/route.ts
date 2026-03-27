@@ -63,13 +63,14 @@ export async function GET(request: NextRequest) {
     const iscoIds = topIsco.map(([code]) => code);
     const { data: skillsReq } = await client
       .from('ofertas_skills')
-      .select('preferred_label, id_oferta')
+      .select('preferred_label, canonical_label, id_oferta')
       .limit(2000);
 
     // Identify gaps: skills requeridas que el worker no tiene
     const skillDemand: Record<string, number> = {};
     (skillsReq || []).forEach(s => {
-      skillDemand[s.preferred_label] = (skillDemand[s.preferred_label] || 0) + 1;
+      const label = s.canonical_label || s.preferred_label;
+      skillDemand[label] = (skillDemand[label] || 0) + 1;
     });
 
     const workerSkillSet = new Set(workerSkills.map(s => s.toLowerCase()));
