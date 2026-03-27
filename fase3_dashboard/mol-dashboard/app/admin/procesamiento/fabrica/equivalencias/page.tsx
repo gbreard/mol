@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import {
   Loader2, RefreshCw, Search, CheckCircle2, Eye, Edit2,
-  Save, X, ChevronDown, ChevronRight,
+  Save, X, ChevronDown, ChevronRight, Undo2, Trash2, RotateCcw,
 } from "lucide-react";
 
 interface Member {
@@ -98,6 +98,9 @@ export default function EquivalenciasPage() {
     });
   }
 
+  const [editMembers, setEditMembers] = useState<Member[]>([]);
+  const [removedMembers, setRemovedMembers] = useState<Member[]>([]);
+
   function startEdit(eq: Equivalence) {
     setEditing(eq.id);
     setEditForm({
@@ -105,6 +108,18 @@ export default function EquivalenciasPage() {
       label_argentino: eq.label_argentino || "",
       notas: eq.notas || "",
     });
+    setEditMembers([...eq.miembros]);
+    setRemovedMembers([]);
+  }
+
+  function removeMember(member: Member) {
+    setEditMembers(prev => prev.filter(m => m.uri !== member.uri));
+    setRemovedMembers(prev => [...prev, member]);
+  }
+
+  function restoreMember(member: Member) {
+    setRemovedMembers(prev => prev.filter(m => m.uri !== member.uri));
+    setEditMembers(prev => [...prev, member]);
   }
 
   async function saveEdit(id: string, newEstado?: string) {
@@ -117,6 +132,8 @@ export default function EquivalenciasPage() {
           id,
           ...editForm,
           estado: newEstado || undefined,
+          miembros: editMembers.length > 0 ? editMembers : undefined,
+          cantidad_miembros: editMembers.length > 0 ? editMembers.length : undefined,
         }),
       });
       if (!res.ok) throw new Error((await res.json()).error);
@@ -136,6 +153,17 @@ export default function EquivalenciasPage() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, estado: "aprobado" }),
+      });
+      loadData();
+    } catch {}
+  }
+
+  async function changeEstado(id: string, newEstado: string) {
+    try {
+      await fetch("/api/skill-equivalences", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, estado: newEstado }),
       });
       loadData();
     } catch {}
@@ -234,19 +262,17 @@ export default function EquivalenciasPage() {
                   </div>
                 </div>
                 <div className="flex gap-1" onClick={e => e.stopPropagation()}>
-                  {eq.estado === "auto" && (
-                    <>
-                      <button onClick={() => startEdit(eq)} className="p-1.5 text-blue-500 hover:bg-blue-50 rounded" title="Editar">
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button onClick={() => quickApprove(eq.id)} className="p-1.5 text-green-500 hover:bg-green-50 rounded" title="Aprobar">
-                        <CheckCircle2 className="w-4 h-4" />
-                      </button>
-                    </>
-                  )}
-                  {eq.estado === "revisado" && (
+                  <button onClick={() => startEdit(eq)} className="p-1.5 text-blue-500 hover:bg-blue-50 rounded" title="Editar">
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  {eq.estado !== "aprobado" && (
                     <button onClick={() => quickApprove(eq.id)} className="p-1.5 text-green-500 hover:bg-green-50 rounded" title="Aprobar">
                       <CheckCircle2 className="w-4 h-4" />
+                    </button>
+                  )}
+                  {eq.estado === "aprobado" && (
+                    <button onClick={() => changeEstado(eq.id, "revisado")} className="p-1.5 text-amber-500 hover:bg-amber-50 rounded" title="Volver a revisado">
+                      <Undo2 className="w-4 h-4" />
                     </button>
                   )}
                 </div>
@@ -254,7 +280,8 @@ export default function EquivalenciasPage() {
 
               {/* Edit form */}
               {isEditing && (
-                <div className="px-4 py-3 bg-blue-50 border-t border-blue-100 space-y-2">
+                <div className="px-4 py-3 bg-blue-50 border-t border-blue-100 space-y-3">
+                  {/* Labels + notas */}
                   <div className="grid grid-cols-2 gap-2">
                     <div>
                       <label className="text-xs text-gray-600 block mb-1">Label representante</label>
@@ -269,15 +296,75 @@ export default function EquivalenciasPage() {
                   </div>
                   <input value={editForm.notas} onChange={e => setEditForm({ ...editForm, notas: e.target.value })}
                     placeholder="Notas (opcional)" className="w-full border rounded px-2 py-1.5 text-sm" />
-                  <div className="flex gap-2">
+
+                  {/* Members in edit mode */}
+                  <div>
+                    <div className="text-xs text-gray-600 mb-1">Miembros del grupo ({editMembers.length}):</div>
+                    <div className="space-y-1 max-h-64 overflow-y-auto">
+                      {editMembers.map((m, i) => {
+                        const desc = descriptions[m.label?.toLowerCase()];
+                        const isRep = m.label === editForm.label_representante;
+                        return (
+                          <div key={m.uri} className="bg-white rounded-lg p-2 border border-gray-200 flex items-start gap-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-gray-400 w-10 text-right flex-shrink-0">{m.frecuencia}</span>
+                                <span className={`text-sm ${isRep ? "font-medium text-blue-700" : "text-gray-700"}`}>
+                                  {m.label}
+                                  {isRep && <span className="text-xs text-blue-400 ml-1">(rep)</span>}
+                                </span>
+                              </div>
+                              {desc && (
+                                <p className="text-xs text-gray-400 mt-0.5 ml-12 line-clamp-2">{desc}</p>
+                              )}
+                            </div>
+                            {!isRep && (
+                              <button onClick={() => removeMember(m)}
+                                className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded flex-shrink-0" title="Quitar del grupo">
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Removed members (can restore) */}
+                  {removedMembers.length > 0 && (
+                    <div>
+                      <div className="text-xs text-red-500 mb-1">Quitados ({removedMembers.length}):</div>
+                      <div className="space-y-1">
+                        {removedMembers.map(m => (
+                          <div key={m.uri} className="bg-red-50 rounded-lg p-2 border border-red-200 flex items-center gap-2">
+                            <span className="text-xs text-red-400 w-10 text-right flex-shrink-0">{m.frecuencia}</span>
+                            <span className="text-sm text-red-500 line-through flex-1">{m.label}</span>
+                            <button onClick={() => restoreMember(m)}
+                              className="p-1 text-green-500 hover:text-green-700 hover:bg-green-50 rounded flex-shrink-0" title="Restaurar">
+                              <RotateCcw className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action buttons */}
+                  <div className="flex gap-2 pt-1">
                     <button onClick={() => saveEdit(eq.id, "revisado")} disabled={saving}
-                      className="bg-amber-500 text-white px-3 py-1.5 rounded text-xs font-medium disabled:opacity-50">
-                      {saving ? <Loader2 className="w-3 h-3 animate-spin inline" /> : <Eye className="w-3 h-3 inline" />} Guardar como revisado
+                      className="bg-amber-500 text-white px-3 py-1.5 rounded text-xs font-medium disabled:opacity-50 flex items-center gap-1">
+                      {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Eye className="w-3 h-3" />} Guardar como revisado
                     </button>
                     <button onClick={() => saveEdit(eq.id, "aprobado")} disabled={saving}
-                      className="bg-green-600 text-white px-3 py-1.5 rounded text-xs font-medium disabled:opacity-50">
-                      <CheckCircle2 className="w-3 h-3 inline" /> Aprobar
+                      className="bg-green-600 text-white px-3 py-1.5 rounded text-xs font-medium disabled:opacity-50 flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" /> Aprobar
                     </button>
+                    {eq.estado !== "auto" && (
+                      <button onClick={() => saveEdit(eq.id, "auto")} disabled={saving}
+                        className="bg-gray-500 text-white px-3 py-1.5 rounded text-xs font-medium disabled:opacity-50 flex items-center gap-1">
+                        <Undo2 className="w-3 h-3" /> Volver a auto
+                      </button>
+                    )}
                     <button onClick={() => setEditing(null)} className="text-gray-500 px-3 py-1.5 text-xs">Cancelar</button>
                   </div>
                 </div>

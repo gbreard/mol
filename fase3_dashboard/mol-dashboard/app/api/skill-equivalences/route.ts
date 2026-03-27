@@ -63,7 +63,7 @@ export async function PUT(request: NextRequest) {
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
 
   const body = await request.json();
-  const { id, label_representante, label_argentino, estado, notas } = body;
+  const { id, label_representante, label_argentino, estado, notas, miembros, cantidad_miembros } = body;
 
   if (!id) return NextResponse.json({ error: 'Falta id' }, { status: 400 });
 
@@ -72,12 +72,34 @@ export async function PUT(request: NextRequest) {
   if (label_argentino !== undefined) updates.label_argentino = label_argentino;
   if (estado !== undefined) updates.estado = estado;
   if (notas !== undefined) updates.notas = notas;
+  if (miembros !== undefined) updates.miembros = miembros;
+  if (cantidad_miembros !== undefined) updates.cantidad_miembros = cantidad_miembros;
+
+  // Recalculate frecuencia_total when members change
+  if (miembros !== undefined) {
+    updates.frecuencia_total = (miembros as any[]).reduce((sum: number, m: any) => sum + (m.frecuencia || 0), 0);
+  }
 
   const email = auth.user?.email || 'admin';
   if (estado === 'revisado' || estado === 'aprobado') updates.revisado_por = email;
+  // Also track who de-approved
+  if (estado === 'auto') updates.revisado_por = null;
 
   const { data, error } = await client.from('skill_equivalences').update(updates).eq('id', id).select().single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // If members were removed, update the lookup table too
+  if (miembros !== undefined) {
+    const memberUris = (miembros as any[]).map((m: any) => m.uri);
+    // Get current lookup entries for this group
+    const { data: currentLookup } = await client.from('skill_equivalence_lookup').select('skill_uri').eq('group_id', id);
+    if (currentLookup) {
+      const removedUris = currentLookup.filter(l => !memberUris.includes(l.skill_uri)).map(l => l.skill_uri);
+      if (removedUris.length > 0) {
+        await client.from('skill_equivalence_lookup').delete().in('skill_uri', removedUris);
+      }
+    }
+  }
 
   return NextResponse.json(data);
 }
