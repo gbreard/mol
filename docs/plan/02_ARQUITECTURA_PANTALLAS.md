@@ -209,6 +209,13 @@ MOL Platform
     │
     ├── /admin/procesamiento ── FÁBRICA DE PROCESAMIENTO (Bloques I+G)
     │   ├── /fabrica ────── P-42 Fábrica (vista dual: fabricación + mejora continua)
+    │   │   ├── /nlp ────── P-47 Detalle NLP (modelo Ollama, métricas, campos)
+    │   │   ├── /validacion-nlp ── P-48 Detalle Gate NLP (reglas, errores, evolución)
+    │   │   ├── /skills ─── P-49 Detalle Skills (modelo BGE-M3, umbral, extracción)
+    │   │   ├── /matching ─ P-50 Detalle Matching (método, scores, distribución)
+    │   │   ├── /validacion-matching P-51 Detalle Gate Matching (errores, issues)
+    │   │   ├── /tareas ─── P-52 Tareas canónicas (frecuencias, nuevas)
+    │   │   └── /canonizacion P-53 Editor canonización (skills + tareas)
     │   ├── /diccionarios ─ P-43 Diccionarios (6 tabs: reglas, NLP, sinón, oficios, skills, limpieza)
     │   ├── /catalogo ───── P-44 Catálogo MOL (curación skills/ocupaciones argentinas)
     │   ├── /perfil-argentino P-45 Perfil Argentino (publicación versionada)
@@ -339,6 +346,13 @@ MOL Platform
 | P-44 | `/admin/procesamiento/catalogo` | U-ADMIN | ✅ Existe | Catálogo MOL: curación skills/ocupaciones argentinas. [Wireframe](./03_WIREFRAMES/fabrica-procesamiento.md#5-wireframe-catálogo-mol-curación--input-de-mejora) |
 | P-45 | `/admin/procesamiento/perfil-argentino` | U-ADMIN | ✅ Existe | Perfil Argentino: publicación versionada. [Wireframe](./03_WIREFRAMES/fabrica-procesamiento.md#6-wireframe-perfil-argentino-publicación--output-de-mejora) |
 | P-46 | `/admin/procesamiento/validacion` | U-ADMIN | ✅ Existe | Validación humana: 3 paneles + wizard + auto-issues. [Wireframe](./03_WIREFRAMES/fabrica-procesamiento.md#7-wireframe-validación-estación-del-analista) |
+| P-47 | `/admin/procesamiento/fabrica/nlp` | U-ADMIN | Planificado | Detalle NLP: modelo Ollama, métricas extracción, completitud campos |
+| P-48 | `/admin/procesamiento/fabrica/validacion-nlp` | U-ADMIN | Planificado | Gate NLP: 51 reglas, errores por tipo/severidad, evolución |
+| P-49 | `/admin/procesamiento/fabrica/skills` | U-ADMIN | Planificado | Skills: modelo BGE-M3/LoRA, umbral, % extracción, canonización |
+| P-50 | `/admin/procesamiento/fabrica/matching` | U-ADMIN | Planificado | Matching v3.5.4: método, scores, distribución regla/semántico |
+| P-51 | `/admin/procesamiento/fabrica/validacion-matching` | U-ADMIN | Planificado | Gate Matching: errores, issues, tasa por run |
+| P-52 | `/admin/procesamiento/fabrica/tareas` | U-ADMIN | Planificado | Tareas canónicas: frecuencias, nuevas sin canónico |
+| P-53 | `/admin/procesamiento/fabrica/canonizacion` | U-ADMIN | Planificado | Editor canonización: skills ESCO→canónicas + tareas canónicas |
 
 ---
 

@@ -761,6 +761,66 @@ ACTUALIZACIÓN PERIÓDICA (cada 2 semanas, como Lightcast)
 
 ---
 
+### Bloque K: Canonización de Skills y Tareas + Páginas de Detalle del Pipeline (2026-03-26)
+
+**Estado:** PLANIFICADO
+**Dependencia:** Skills extractor operativo (BGE-M3 base — fix aplicado 2026-03-26)
+**Prioridad:** CRÍTICA — afecta calidad de matching y gasto computacional
+**Documentación:** `docs/plan/14_CANONIZACION_SKILLS_TAREAS.md`
+
+> Las 14,247 skills ESCO tienen redundancia masiva (510 variaciones de "gestionar", 14 de "trabajo en equipo"). El extractor busca contra todas → scores bajos, 52% sin skills (corregido a 96% con umbral 0.40 pero subóptimo). La canonización agrupa en ~3,000 canónicas para mejor precisión y 5x menos cómputo.
+
+#### Fase K0 — Preparación
+| # | Tarea | Tipo |
+|---|-------|------|
+| K0.1 | Clustering jerárquico de 14,247 skills ESCO (similitud > 0.80) | Script Python |
+| K0.2 | Generar ~3,000 clusters con labels canónicos propuestos | Script Python |
+| K0.3 | Tablas `skills_canonical` + `tareas_canonical` en Supabase | Migration SQL |
+| K0.4 | Poblar clusters automáticos (estado: 'auto') | Script Python |
+
+#### Fase K1 — Páginas de detalle del pipeline (7 páginas)
+| # | Página | Ruta | Qué muestra |
+|---|--------|------|-------------|
+| K1.1 | Detalle NLP | `/fabrica/nlp` | Modelo Ollama, métricas extracción, completitud campos |
+| K1.2 | Gate NLP | `/fabrica/validacion-nlp` | 51 reglas, errores por tipo/severidad, evolución |
+| K1.3 | Skills | `/fabrica/skills` | Modelo BGE-M3/LoRA, umbral, % extracción, alertas |
+| K1.4 | Matching | `/fabrica/matching` | Método, scores, distribución regla/semántico |
+| K1.5 | Gate Matching | `/fabrica/validacion-matching` | Errores, issues, tasa por run |
+| K1.6 | Tareas | `/fabrica/tareas` | Tareas canónicas, frecuencias, nuevas sin canónico |
+| K1.7 | Canonización | `/fabrica/canonizacion` | Editor CRUD skills canónicas + tareas canónicas |
+
+#### Fase K2 — Canonización de Skills
+| # | Tarea | Tipo |
+|---|-------|------|
+| K2.1 | Generar embeddings canónicos (promedio por cluster) | Python |
+| K2.2 | Actualizar SkillsImplicitExtractor para usar canónicas | Python |
+| K2.3 | API `/api/skills-canonical` (CRUD + clustering) | API route |
+| K2.4 | Re-extraer skills de las 44K ofertas con canónicas | Script |
+
+#### Fase K3 — Canonización de Tareas
+| # | Tarea | Tipo |
+|---|-------|------|
+| K3.1 | Clustering de tareas frecuentes | Python |
+| K3.2 | Integrar canonizador en pipeline (entre Gate NLP y Skills) | Python |
+| K3.3 | API `/api/tareas-canonical` | API route |
+
+#### Fase K4 — Comandos Fábrica
+| # | Tarea | Tipo |
+|---|-------|------|
+| K4.1 | Comando `validate_nlp` en poller (solo validación, sin re-NLP) | Python |
+| K4.2 | Comando `extract_skills` en poller (solo skills, sin NLP) | Python |
+| K4.3 | Botones en Fábrica para cada comando | React |
+
+**Métricas de éxito:**
+| Métrica | Hoy | Objetivo |
+|---------|-----|----------|
+| Skills en catálogo | 14,247 | ~3,000 canónicas |
+| Ofertas con skills | 96.6% | >98% |
+| Tiempo extracción/oferta | 0.06s | ~0.02s |
+| Trazabilidad por run | No existe | Completa |
+
+---
+
 ### Bloque F: Responsive — Mobile y Tablet (Sergio)
 
 **Dependencia:** Bloques C y D (las pantallas tienen que existir primero)

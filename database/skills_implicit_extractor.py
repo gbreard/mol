@@ -61,7 +61,7 @@ class SkillsImplicitExtractor:
     Usa cache a nivel de clase para evitar recargar modelo y embeddings.
     """
 
-    VERSION = "2.4.0"  # v2.4: Terminología argentina + Sistema dual (reglas + semántico)
+    VERSION = "2.6.0"  # v2.6: Equivalencias de skills (dedup por grupo)
 
     # Configuración por defecto
     # BGE-M3 base model (LoRA fine-tuned no disponible — model_lora no existe en disco)
@@ -165,6 +165,60 @@ class SkillsImplicitExtractor:
                 SkillsImplicitExtractor._terminology_config = {"terminos": {}}
 
         self.terminology_config = SkillsImplicitExtractor._terminology_config
+
+        # v2.6: Cargar tabla de equivalencias (URI → grupo)
+        if not hasattr(SkillsImplicitExtractor, '_equiv_lookup') or SkillsImplicitExtractor._equiv_lookup is None:
+            SkillsImplicitExtractor._equiv_lookup = {}  # uri → {group_id, label_representante, label_argentino}
+            SkillsImplicitExtractor._equiv_groups = {}  # group_id → {label_representante, label_argentino}
+            try:
+                equiv_path = Path(__file__).parent.parent / "config" / "skill_equivalences_lookup.json"
+                if equiv_path.exists():
+                    with open(equiv_path, 'r', encoding='utf-8') as f:
+                        lookup_data = json.load(f)
+                    for entry in lookup_data:
+                        SkillsImplicitExtractor._equiv_lookup[entry['skill_uri']] = entry.get('equivalence_id')
+                    if self.verbose:
+                        print(f"[SKILLS] Equivalencias cargadas: {len(SkillsImplicitExtractor._equiv_lookup)} URIs")
+                else:
+                    # Try loading from Supabase if local file doesn't exist
+                    try:
+                        config_path = Path(__file__).parent.parent / "config" / "supabase_config.json"
+                        if config_path.exists():
+                            import importlib
+                            supabase_config = json.loads(config_path.read_text())
+                            from supabase import create_client
+                            client = create_client(supabase_config['url'], supabase_config['service_role_key'])
+                            # Paginate to get all (Supabase limits to 1000 per request)
+                            all_lookups = []
+                            offset = 0
+                            while True:
+                                batch = client.table('skill_equivalence_lookup').select('skill_uri,equivalence_id').range(offset, offset + 999).execute()
+                                all_lookups.extend(batch.data or [])
+                                if len(batch.data or []) < 1000:
+                                    break
+                                offset += 1000
+                            result = type('R', (), {'data': all_lookups})()
+                            for row in (result.data or []):
+                                SkillsImplicitExtractor._equiv_lookup[row['skill_uri']] = row['equivalence_id']
+                            # Also load group labels
+                            groups = client.table('skill_equivalences').select('id,label_representante,label_argentino').execute()
+                            for row in (groups.data or []):
+                                SkillsImplicitExtractor._equiv_groups[row['id']] = {
+                                    'label': row.get('label_argentino') or row['label_representante'],
+                                    'label_original': row['label_representante'],
+                                }
+                            if self.verbose:
+                                print(f"[SKILLS] Equivalencias cargadas desde Supabase: {len(SkillsImplicitExtractor._equiv_lookup)} URIs, {len(SkillsImplicitExtractor._equiv_groups)} grupos")
+                    except Exception as e:
+                        if self.verbose:
+                            print(f"[SKILLS] WARN: No se pudieron cargar equivalencias: {e}")
+            except Exception as e:
+                if self.verbose:
+                    print(f"[SKILLS] WARN: Error cargando equivalencias: {e}")
+
+        self.equiv_lookup = getattr(SkillsImplicitExtractor, '_equiv_lookup', {}) or {}
+        self.equiv_groups = getattr(SkillsImplicitExtractor, '_equiv_groups', {}) or {}
+        self.equiv_groups = SkillsImplicitExtractor._equiv_groups
 
         # v2.5: Cargar sinónimos argentinos para skills (mapeo directo)
         if not hasattr(SkillsImplicitExtractor, '_sinonimos_skills') or SkillsImplicitExtractor._sinonimos_skills is None:
@@ -531,12 +585,18 @@ class SkillsImplicitExtractor:
                 skill_label = skill_meta.get('label', skill_meta.get('preferred_label_es', ''))
                 skill_uri = skill_meta.get('uri', skill_meta.get('skill_uri', ''))
 
-                # Evitar duplicados (mantener el de mayor score)
-                skill_key = skill_label.lower()
+                # v2.6: Dedup por grupo de equivalencia (si existe)
+                equiv_group = self.equiv_lookup.get(skill_uri)
+                skill_key = equiv_group if equiv_group else skill_label.lower()
                 if skill_key in skills_vistas:
                     continue
 
                 skills_vistas.add(skill_key)
+
+                # v2.6: Si tiene equivalencia, usar label representante
+                if equiv_group and equiv_group in self.equiv_groups:
+                    group_info = self.equiv_groups[equiv_group]
+                    skill_label = group_info['label']  # label argentino o representante
 
                 # v2.2: Calcular peso según si es skill genérica o específica
                 peso = self._get_skill_weight(

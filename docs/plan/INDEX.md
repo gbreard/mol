@@ -159,6 +159,7 @@
 | **Lab. Indicadores** | [13_LABORATORIO_INDICADORES](./13_LABORATORIO_INDICADORES.md) | Indicadores experimentales |
 | **Skills Emergentes** | [08_PROPUESTA_VALOR](./08_PROPUESTA_VALOR.md#v-17-skills-emergentes-escomol) | V-17: ESCO+MOL, skills no cubiertas |
 | **Fábrica Procesamiento** | [03_WIREFRAMES/fabrica-procesamiento](./03_WIREFRAMES/fabrica-procesamiento.md) | Wireframes, menú, flujo fábrica integrada |
+| **Canonización Skills/Tareas** | [14_CANONIZACION_SKILLS_TAREAS](./14_CANONIZACION_SKILLS_TAREAS.md) | Reducir 14K→3K skills, canonizar tareas, páginas detalle pipeline |
 
 ### Por Urgencia
 

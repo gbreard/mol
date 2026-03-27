@@ -119,6 +119,26 @@ Solo ofertas con `nlp_gate_status = 'aprobado'` pasan a las etapas siguientes.
 Si corrige → re-valida → puede desbloquear. Si no puede → escala a Claude
 (marcado `escalado_claude=1` en `validation_errors`, genera `metrics/cola_claude_*.json`).
 
+### ETAPA 4b: CANONIZACIÓN DE TAREAS (2026-03-26 — planificado)
+
+Nueva etapa entre Gate NLP y Skills. Cada oferta recibe una tarea canónica como metadata adicional.
+
+```
+Tareas originales (del NLP)
+    ↓
+Buscador de tarea canónica (embedding similarity > 0.80)
+    ↓
+Si matchea → asigna tarea_canonica existente
+Si no matchea → queda como "nueva tarea sin canónico" → cola analista
+    ↓
+Tarea original SE MANTIENE (preserva varianza)
+Tarea canónica SE AGREGA (metadata para análisis)
+```
+
+**Tabla:** `tareas_canonical`
+**Config:** `config/tareas_canonical.json` (cuando exista)
+**Admin:** `/admin/procesamiento/fabrica/tareas`
+
 ## ETAPA 5: MULTI-POSITION DETECTION
 
 - **Archivo:** `database/limpiar_titulos.py` → `expandir_ofertas_multi_perfil()`
@@ -172,6 +192,16 @@ titulo_limpio + tareas
         ▼
 5. Categorizar Skills (L1/L2 + es_digital)
 ```
+
+### Cambio Skills Extractor (2026-03-26)
+
+- Modelo: BAAI/bge-m3 base (LoRA fine-tuned no disponible — model_lora no existe)
+- Umbral: 0.40 (bajado de 0.60 para BGE-M3 base)
+- Planificado: Reducir 14,247 skills ESCO a ~3,000 canónicas por clustering
+- Tabla: `skills_canonical`
+- Admin: `/admin/procesamiento/fabrica/skills`, `/admin/procesamiento/fabrica/canonizacion`
+
+> Plan completo: `docs/plan/14_CANONIZACION_SKILLS_TAREAS.md`
 
 ## ETAPA 7: VALIDACIÓN + AUTO-CORRECCIÓN
 
