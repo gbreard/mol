@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import {
   Loader2, RefreshCw, Search, CheckCircle2, Eye, Edit2,
-  Save, X, ChevronDown, ChevronRight, Undo2, Trash2, RotateCcw,
+  Save, X, ChevronDown, ChevronRight, Undo2, Split, RotateCcw,
 } from "lucide-react";
 
 interface Member {
@@ -134,6 +134,7 @@ export default function EquivalenciasPage() {
           estado: newEstado || undefined,
           miembros: editMembers.length > 0 ? editMembers : undefined,
           cantidad_miembros: editMembers.length > 0 ? editMembers.length : undefined,
+          split_members: removedMembers.length > 0 ? removedMembers : undefined,
         }),
       });
       if (!res.ok) throw new Error((await res.json()).error);
@@ -320,8 +321,8 @@ export default function EquivalenciasPage() {
                             </div>
                             {!isRep && (
                               <button onClick={() => removeMember(m)}
-                                className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded flex-shrink-0" title="Quitar del grupo">
-                                <Trash2 className="w-3.5 h-3.5" />
+                                className="p-1 text-orange-400 hover:text-orange-600 hover:bg-orange-50 rounded flex-shrink-0" title="Separar en grupo propio">
+                                <Split className="w-3.5 h-3.5" />
                               </button>
                             )}
                           </div>
@@ -330,17 +331,18 @@ export default function EquivalenciasPage() {
                     </div>
                   </div>
 
-                  {/* Removed members (can restore) */}
+                  {/* Separated members (will become own groups) */}
                   {removedMembers.length > 0 && (
                     <div>
-                      <div className="text-xs text-red-500 mb-1">Quitados ({removedMembers.length}):</div>
+                      <div className="text-xs text-orange-600 mb-1">Se separan en grupos propios ({removedMembers.length}):</div>
                       <div className="space-y-1">
                         {removedMembers.map(m => (
-                          <div key={m.uri} className="bg-red-50 rounded-lg p-2 border border-red-200 flex items-center gap-2">
-                            <span className="text-xs text-red-400 w-10 text-right flex-shrink-0">{m.frecuencia}</span>
-                            <span className="text-sm text-red-500 line-through flex-1">{m.label}</span>
+                          <div key={m.uri} className="bg-orange-50 rounded-lg p-2 border border-orange-200 flex items-center gap-2">
+                            <Split className="w-3.5 h-3.5 text-orange-400 flex-shrink-0" />
+                            <span className="text-xs text-orange-400 w-10 text-right flex-shrink-0">{m.frecuencia}</span>
+                            <span className="text-sm text-orange-600 flex-1">{m.label}</span>
                             <button onClick={() => restoreMember(m)}
-                              className="p-1 text-green-500 hover:text-green-700 hover:bg-green-50 rounded flex-shrink-0" title="Restaurar">
+                              className="p-1 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded flex-shrink-0" title="Volver al grupo">
                               <RotateCcw className="w-3.5 h-3.5" />
                             </button>
                           </div>

@@ -88,15 +88,42 @@ export async function PUT(request: NextRequest) {
   const { data, error } = await client.from('skill_equivalences').update(updates).eq('id', id).select().single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  // If members were removed, update the lookup table too
+  // If members were removed, update the lookup table
   if (miembros !== undefined) {
     const memberUris = (miembros as any[]).map((m: any) => m.uri);
-    // Get current lookup entries for this group
     const { data: currentLookup } = await client.from('skill_equivalence_lookup').select('skill_uri').eq('group_id', id);
     if (currentLookup) {
       const removedUris = currentLookup.filter(l => !memberUris.includes(l.skill_uri)).map(l => l.skill_uri);
       if (removedUris.length > 0) {
+        // Don't delete — these will be reassigned by the split_members logic below or POST
         await client.from('skill_equivalence_lookup').delete().in('skill_uri', removedUris);
+      }
+    }
+  }
+
+  // If split_members provided, create new individual groups for each
+  const splitMembers = body.split_members as any[] | undefined;
+  if (splitMembers && splitMembers.length > 0) {
+    for (const m of splitMembers) {
+      // Create a new group with just this one member
+      const newGroup = {
+        label_representante: m.label,
+        label_argentino: null,
+        miembros: [m],
+        cantidad_miembros: 1,
+        frecuencia_total: m.frecuencia || 0,
+        estado: 'revisado',
+        revisado_por: auth.user?.email || 'admin',
+        notas: `Separado del grupo "${data?.label_representante}" por revisión manual`,
+      };
+      const { data: created } = await client.from('skill_equivalences').insert(newGroup).select().single();
+      if (created) {
+        // Point the lookup to the new group
+        await client.from('skill_equivalence_lookup').upsert({
+          skill_uri: m.uri,
+          group_id: created.id,
+          skill_label: m.label,
+        }, { onConflict: 'skill_uri' });
       }
     }
   }
