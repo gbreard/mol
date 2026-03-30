@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -107,6 +107,25 @@ const adminSections: MenuSection[] = [
 ];
 
 function DesktopAdminSidebar({ pathname }: { pathname: string }) {
+  // M-01: Badge de pendientes de validación
+  const [validacionPendientes, setValidacionPendientes] = useState(0);
+  const loadBadge = useCallback(async () => {
+    try {
+      const { createBrowserClient } = await import("@/lib/supabase/browser");
+      const sb = createBrowserClient();
+      const { count, error } = await sb
+        .from('ofertas_dashboard')
+        .select('*', { count: 'exact', head: true })
+        .is('validacion_humana', null);
+      if (!error && count != null) setValidacionPendientes(count);
+    } catch {}
+  }, []);
+  useEffect(() => { loadBadge(); }, [loadBadge]);
+  useEffect(() => {
+    const interval = setInterval(loadBadge, 300000);
+    return () => clearInterval(interval);
+  }, [loadBadge]);
+
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
     const init: Record<string, boolean> = {};
     adminSections.forEach(s => { init[s.label] = s.defaultOpen; });
@@ -191,6 +210,11 @@ function DesktopAdminSidebar({ pathname }: { pathname: string }) {
                                 >
                                   <subItem.icon className="w-4 h-4" />
                                   {subItem.label}
+                                  {subItem.label === 'Validacion' && validacionPendientes > 0 && (
+                                    <span className="ml-auto text-[10px] font-bold bg-blue-500 text-white px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+                                      {validacionPendientes > 999 ? '999+' : validacionPendientes}
+                                    </span>
+                                  )}
                                 </Link>
                               );
                             })}

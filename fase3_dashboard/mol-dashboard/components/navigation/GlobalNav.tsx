@@ -190,7 +190,7 @@ const ADMIN_SIDEBAR_ITEMS = ADMIN_SIDEBAR_SECTIONS.flatMap(s =>
 
 /* ─── Admin Sidebar Component ─────────────────────────── */
 
-function AdminSidebar({ pathname, onNavigate }: { pathname: string; onNavigate: () => void }) {
+function AdminSidebar({ pathname, onNavigate, validacionPendientes = 0 }: { pathname: string; onNavigate: () => void; validacionPendientes?: number }) {
   // Track which sections and submenus are open
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
@@ -647,7 +647,7 @@ export function GlobalNav() {
           {/* Admin sub-nav (only when in /admin) */}
           {isInAdmin && (
             <div className="border-t border-slate-700 p-3">
-              <AdminSidebar pathname={pathname} onNavigate={() => setSheetOpen(false)} />
+              <AdminSidebar pathname={pathname} onNavigate={() => setSheetOpen(false)} validacionPendientes={validacionPendientes} />
             </div>
           )}
 
