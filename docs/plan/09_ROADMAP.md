@@ -1,7 +1,7 @@
 # 9. Roadmap de Implementación
 
-> Última actualización: 2026-03-20
-> Versión: 4.0 — Roadmap unificado (Dashboard + Skills Intelligence)
+> Última actualización: 2026-03-29
+> Versión: 5.0 — Roadmap unificado (Motor de Datos + Dashboard + Skills Intelligence)
 
 ## Referencias
 
@@ -11,6 +11,7 @@
 | [07_ESCALABILIDAD](./07_ESCALABILIDAD.md) | Fase 1 |
 | [08_PROPUESTA_VALOR](./08_PROPUESTA_VALOR.md) | Fases 2-4 |
 | [01_MODELO_NEGOCIO](./01_MODELO_NEGOCIO.md) | Modelo híbrido v2.0 |
+| [15_DIAGNOSTICO_SISTEMICO](./15_DIAGNOSTICO_SISTEMICO.md) | Diagnóstico motor de datos |
 
 ## Matriz de Impacto
 
@@ -24,7 +25,7 @@
 
 ## Visión General
 
-El proyecto tiene dos dimensiones que avanzan en paralelo compartiendo el motor de datos:
+El proyecto tiene tres dimensiones que avanzan en paralelo compartiendo el motor de datos:
 
 ```
 DASHBOARD (análisis)          SKILLS INTELLIGENCE (servicios)
@@ -39,9 +40,20 @@ Fase 3 Features 🟡            Bloque C: S1 — Mi Futuro Laboral (trabajador)
                               Bloque D: S3 — Empresas (libre + registrado)
 Fase 4 Diferenciación ⬜      Bloque E: Inteligencia avanzada + certificación
 
-    DATOS ──────────────────► alimentan ambas dimensiones
+MOTOR DE DATOS (fundamento)
+═══════════════════════════
+Fase -1: Motor de Datos (NUEVA)
+  Visibilidad, Registro,
+  Circulación de conocimiento,
+  Observatorio real
+
+    DATOS ──────────────────► alimentan las tres dimensiones
     (pipeline scraping + NLP + matching + validación)
 ```
+
+> El roadmap v5.0 agrega una Fase -1 como prerequisito
+> de todo lo demás. Ver 15_DIAGNOSTICO_SISTEMICO.md
+> para el diagnóstico completo que la justifica.
 
 ### Estado actual de los datos (2026-03-20)
 
@@ -54,6 +66,86 @@ Fase 4 Diferenciación ⬜      Bloque E: Inteligencia avanzada + certificación
 | ESCO Argentino | Implementado | ✅ Tabla + API + panel |
 | Cursos CABA scrapeados | 2,255 | ✅ Disponible |
 | Portales scraping activos | 6 (VPS) | ✅ Cron Lun/Jue |
+
+---
+
+## FASE -1: Motor de Datos (NUEVA — PREREQUISITO DE TODO)
+
+> **Principio:** El sistema extrae conocimiento del mercado
+> argentino pero no lo acumula. Esta fase convierte el ciclo
+> de corrección en un ciclo de aprendizaje.
+
+**Estado:** ⬜ No iniciada
+**Prerequisito para:** Todo lo demás
+
+### Por qué existe esta fase
+
+El diagnóstico sistémico (15_DIAGNOSTICO_SISTEMICO.md)
+reveló grietas estructurales en el motor de datos:
+
+- 1 de cada 4 ofertas con tareas reales produce 0 skills ESCO
+  sin que nadie lo sepa
+- 384.000 valores de competencias declaradas flotan como texto
+  sin conectarse con ESCO ni el Perfil Argentino
+- Las alertas son pull, no push — el modelo de embeddings se
+  cayó silenciosamente y nadie lo detectó
+- 300 reglas de negocio sin linaje — nadie sabe por qué
+  existe cada una
+- El Gold Set tiene 49 casos estáticos mientras 15.968
+  validaciones no alimentan nada
+
+### Nivel 1 — Visibilidad operativa
+
+| ID | Tarea | Prioridad | Estado |
+|----|-------|-----------|--------|
+| M-01 | Reporte consolidado post-run | CRÍTICO | ⬜ |
+| M-02 | Alertas push (Telegram/email) | CRÍTICO | ⬜ |
+| M-03 | Ejecutar compare_runs automáticamente post-run | ALTO | ⬜ |
+| M-04 | Auditoría del sync VPS→Local | ALTO | ⬜ |
+| M-05 | pipeline_stage explícito por oferta | MEDIO | ⬜ |
+
+### Nivel 2 — Registro de lo que se pierde
+
+| ID | Tarea | Prioridad | Estado |
+|----|-------|-----------|--------|
+| M-06 | Registrar tareas fallidas (tarea + score + skill más cercana) | CRÍTICO | ⬜ |
+| M-07 | Resolver deuda de procesamiento (--only-pending, 5.415 ofertas) | ALTO | ⬜ |
+| M-08 | Conectar fuentes declaradas con ESCO via BGE-M3 | ALTO | ⬜ |
+
+### Nivel 3 — Circulación de conocimiento
+
+| ID | Tarea | Prioridad | Estado |
+|----|-------|-----------|--------|
+| M-09 | Linaje de reglas de negocio (300 reglas sin origen) | CRÍTICO | ⬜ |
+| M-10 | Gold Set dinámico (49 casos → crece con validaciones) | ALTO | ⬜ |
+| M-11 | Vincular training_pairs con reglas bidireccionalmente | ALTO | ⬜ |
+| M-12 | Activar v_reglas_efectividad automáticamente | MEDIO | ⬜ |
+
+### Nivel 4 — El observatorio real
+
+| ID | Tarea | Prioridad | Estado |
+|----|-------|-----------|--------|
+| M-13 | Tipo C → Perfil Argentino sin URI ESCO | ALTO | ⬜ |
+| M-14 | Retroalimentar extractor con vocabulario curado | ALTO | ⬜ |
+| M-15 | Conexión downstream de emergentes aprobadas | MEDIO | ⬜ |
+| M-16 | Promoción automática de patrones (con aprobación humana) | MEDIO | ⬜ |
+| M-17 | Base de datos limpia para fine-tuning (Track A embeddings + Track B LLM) | ALTO | ⬜ |
+
+### Secuencia de construcción
+
+Cada nivel habilita el siguiente. No se puede saltar ninguno.
+Nivel 1 → ver qué pasa hoy
+Nivel 2 → capturar lo que se pierde
+Nivel 3 → hacer circular el conocimiento
+Nivel 4 → el observatorio real
+
+### Conflicto con planificación anterior resuelto
+
+14_CANONIZACION propone canonizar primero. El diagnóstico
+establece que primero hay que registrar lo que falla (M-06)
+porque sin esos datos no se sabe si la canonización ayuda
+o introduce ruido. La canonización sigue en el plan pero
+va después de M-06.
 
 ---
 
@@ -1071,6 +1163,16 @@ Bloques 9° a 12° del orden de ejecución:
 
 ## MÉTRICAS DE SEGUIMIENTO
 
+### Motor de datos (Fase -1)
+
+| Métrica | Actual | Meta Nivel 2 | Meta Nivel 4 |
+|---------|--------|--------------|--------------|
+| Ofertas con skills completas | 75% | 85%+ | 95%+ |
+| Tareas fallidas registradas | 0% | 100% | 100% |
+| Reglas con linaje | 0/300 | 0/300 | 300/300 |
+| Gold Set | 49 casos | 200+ casos | 500+ casos |
+| Fuentes declaradas conectadas | 0% | 100% | 100% |
+
 ### Datos (pipeline)
 
 | Métrica | Actual | Meta R1.0 | Meta R2.0 |
@@ -1206,3 +1308,4 @@ Cada paso del roadmap pasa por el mismo ciclo. No es solo código: es base de da
 | 2026-03-03 | 2.2 | Fase 3 parcial: acceso gated (solicitar-acceso, trial 7 días, middleware), oficina empleo wireframes, contenido placeholder, GlobalNav plan-aware |
 | 2026-03-18 | 2.3 | V-17 Reporte Compatibilidad Laboral agregado a Fase 3 (PDF + QR + reporte web interactivo para reclutadores) |
 | 2026-03-20 | 4.0 | Roadmap unificado: Dashboard (Fases 0-4) + Skills Intelligence (Bloques A-E). Estado datos actualizado (99% NLP, 42% validadas). Mapa de dependencias entre bloques. Orden de ejecución sugerido sin estimaciones de tiempo |
+| 2026-03-29 | 5.0 | Fase -1 Motor de Datos agregada. Diagnóstico sistémico integrado como 15_DIAGNOSTICO_SISTEMICO.md. Conflicto con 14_CANONIZACION resuelto. Proyecto pasa de 2 a 3 dimensiones |
