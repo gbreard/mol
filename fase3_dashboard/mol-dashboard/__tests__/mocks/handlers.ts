@@ -5,7 +5,7 @@ import { mockOfertasSkills } from './fixtures/skills'
 import { mockPanoramaRPC } from './fixtures/panorama'
 import { mockEvolucionRPC } from './fixtures/evolucion'
 import { mockRequerimientosRPC, mockSkillsResumenRPC, mockSidebarCountsRPC } from './fixtures/requerimientos'
-import { mockPipelineStatusRPC } from './fixtures/pipeline-status'
+import { mockPipelineStatusRPC, mockRunsHistory } from './fixtures/pipeline-status'
 import { mockReconciliacionWarning } from './fixtures/reconciliacion'
 import { mockScrapingStatsRPC, mockScrapingHistoryRPC } from './fixtures/scraping-stats'
 import { mockPreviewImpact, mockSugerencias, mockConfigOverride, mockConfigUpsertResult } from './fixtures/config-editor'
@@ -123,6 +123,11 @@ export const handlers = [
   // RPC: reconciliar_sistemas
   http.post(`${SUPABASE_URL}/rest/v1/rpc/reconciliar_sistemas`, () => {
     return HttpResponse.json(mockReconciliacionWarning)
+  }),
+
+  // M-01: RPC get_pipeline_runs_history
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_pipeline_runs_history`, () => {
+    return HttpResponse.json(mockRunsHistory)
   }),
 
   // RPC: get_scraping_stats

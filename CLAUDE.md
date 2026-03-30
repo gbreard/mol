@@ -1191,7 +1191,7 @@ SKILLS DUAL (v2.3):
 **IMPORTANTE:** El trabajo actual es sobre las **100 ofertas en validación**, no el Gold Set de 49.
 
 ```bash
-# Ejecutar tests
+# Ejecutar tests Python (pipeline)
 python -m pytest tests/ -v
 
 # Test Gold Set Matching (referencia)
@@ -1200,6 +1200,39 @@ pytest tests/matching/test_gold_set_manual.py -v
 # Ver estado de las 100 ofertas en validación
 python scripts/validar_ofertas.py --status
 ```
+
+### Tests Frontend (Dashboard)
+
+**Framework:** Vitest v4 + Testing Library (React) + MSW (Mock Service Worker) + happy-dom
+
+**Ubicación:** `fase3_dashboard/mol-dashboard/__tests__/`
+
+```
+__tests__/
+  component/   ← tests de componentes React (renderizado, interacción)
+  unit/        ← tests unitarios (auth-utils, build-rpc-filters)
+  integration/ ← tests de integración
+  security/    ← tests de seguridad (RLS, auth)
+  mocks/
+    handlers.ts   ← MSW handlers que interceptan Supabase RPCs
+    server.ts     ← MSW server (arranca en vitest.setup.ts)
+    fixtures/     ← datos mock (ofertas, pipeline-status, skills, etc.)
+```
+
+**Mocks de Supabase:** MSW intercepta llamadas HTTP a `https://test.supabase.co` y responde con fixtures. Los handlers mockean RPCs (`get_pipeline_status`, `reconciliar_sistemas`, etc.) y tablas PostgREST (`ofertas_dashboard`, `ofertas_skills`, etc.).
+
+**Config:** `vitest.config.ts` — environment happy-dom, setup con MSW, include `__tests__/**/*.test.{ts,tsx}`, alias `@/` → raíz del proyecto.
+
+```bash
+# Ejecutar tests frontend
+cd fase3_dashboard/mol-dashboard
+npx vitest run                    # todos (933+ tests)
+npx vitest run --reporter=verbose # con detalle
+npx vitest --ui                   # UI interactiva
+npx vitest run __tests__/component/centro-control.test.tsx  # uno solo
+```
+
+**IMPORTANTE:** Al agregar componentes nuevos al dashboard, agregar tests en `__tests__/component/`. Seguir el patrón existente: mockear datos en `mocks/fixtures/`, agregar handlers en `mocks/handlers.ts` si hace falta, renderizar con `render()` de testing-library, verificar con `screen.getByText()` / `screen.queryByText()`.
 
 ---
 

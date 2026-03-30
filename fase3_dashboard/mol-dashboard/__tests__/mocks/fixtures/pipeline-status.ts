@@ -64,7 +64,56 @@ export const mockPipelineStatusRPC = {
     fase_sugerida_razon: 'Último scraping hace 7 días',
   },
   ultimo_update: '2026-03-21T18:07:54.406878+00:00',
+  // M-01: Campos de último run
+  ultimo_run_id: 'run_20260330_1358',
+  ultimo_run_timestamp: '2026-03-30T13:58:52',
+  ultimo_run_branch: 'feature/m06-skills-failures',
+  ultimo_run_nlp_version: '11.3.0',
+  ultimo_run_matching_version: '3.5.2',
+  ultimo_run_ofertas: 500,
+  ultimo_run_skills: 96,
+  ultimo_run_failures: 312,
+  ultimo_run_failures_pct: 0.243,
+  ultimo_run_errores: 12,
+  ultimo_run_corregidos: 10,
+  ultimo_run_escalados: 2,
+  ultimo_run_precision: 0.976,
+  ultimo_run_delta_precision: 0.002,
+  ultimo_run_delta_regresiones: 0,
+  ultimo_run_delta_mejoras: 15,
+  ultimo_run_reglas_nuevas: 38,
+  ultimo_run_top_failures: JSON.stringify([
+    { tarea: 'Controlar políticas de mermas, decomisos y vencimientos', oferta: 'Gerente de sucursal', score: 0.3945, gap: 0.0055, mejor_skill: 'administrar' },
+    { tarea: 'Elaborar plan maestro de producción (MPS)', oferta: 'Responsable planificación', score: 0.3809, gap: 0.0191, mejor_skill: 'planificar inventario' },
+    { tarea: 'Especialista confiabilidad metalúrgico', oferta: 'Técnico metalúrgico', score: 0.3304, gap: 0.0696, mejor_skill: 'garantizar especificaciones' },
+  ]),
 }
+
+// M-01: Sin datos de último run (migration no ejecutada o primer uso)
+export const mockPipelineStatusNoRun = {
+  ...mockPipelineStatusRPC,
+  ultimo_run_id: null,
+  ultimo_run_timestamp: null,
+  ultimo_run_branch: null,
+  ultimo_run_ofertas: null,
+  ultimo_run_failures: null,
+  ultimo_run_failures_pct: null,
+  ultimo_run_top_failures: null,
+}
+
+// M-01: Run con failures altos (>30% = rojo)
+export const mockPipelineStatusHighFailures = {
+  ...mockPipelineStatusRPC,
+  ultimo_run_failures_pct: 0.35,
+  ultimo_run_delta_regresiones: 5,
+}
+
+// M-01: Historial de runs
+export const mockRunsHistory = [
+  { run_id: 'run_20260330_1358', timestamp: '2026-03-30T13:58:52', git_branch: 'feature/m06', ofertas_count: 500, failures_pct: 0.243, precision: 0.976, delta_precision: 0.002, delta_regresiones: 0, errores_escalados: 2 },
+  { run_id: 'run_20260329_1000', timestamp: '2026-03-29T10:00:00', git_branch: 'main', ofertas_count: 487, failures_pct: 0.231, precision: 0.974, delta_precision: 0.011, delta_regresiones: 0, errores_escalados: 0 },
+  { run_id: 'run_20260322_0830', timestamp: '2026-03-22T08:30:00', git_branch: 'main', ofertas_count: 512, failures_pct: 0.312, precision: 0.963, delta_precision: -0.005, delta_regresiones: 3, errores_escalados: 1 },
+]
 
 // Variante: todo OK (sin alertas)
 export const mockPipelineStatusAllOK = {
