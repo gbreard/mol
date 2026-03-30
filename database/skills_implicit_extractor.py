@@ -319,8 +319,9 @@ class SkillsImplicitExtractor:
         self,
         tareas_explicitas: str,
         top_k: int = None,
-        threshold: float = None
-    ) -> List[Dict]:
+        threshold: float = None,
+        track_failures: bool = False
+    ):
         """
         Extrae skills ESCO implícitas desde las tareas de una oferta.
 
@@ -328,12 +329,15 @@ class SkillsImplicitExtractor:
             tareas_explicitas: String con tareas separadas por punto y coma
             top_k: Override del número máximo de skills por tarea
             threshold: Override del umbral de similitud
+            track_failures: Si True, retorna tupla (matcheadas, fallidas)
 
         Returns:
-            Lista de dicts con: tarea, skill_esco, skill_uri, score, origen
+            Si track_failures=False: Lista de dicts con: tarea, skill_esco, skill_uri, score, origen
+            Si track_failures=True: Tupla (matcheadas, fallidas)
         """
+        empty = ([], []) if track_failures else []
         if not tareas_explicitas or not self.embeddings.size:
-            return []
+            return empty
 
         top_k = top_k or self.top_k
         threshold = threshold or self.threshold
@@ -342,9 +346,10 @@ class SkillsImplicitExtractor:
         tareas = [t.strip() for t in tareas_explicitas.split(';') if t.strip()]
 
         if not tareas:
-            return []
+            return empty
 
         skills_implicitas = []
+        tareas_fallidas = []
         skills_vistas = set()  # Para evitar duplicados
 
         # v2.5: Lookup sinónimos argentinos (prioridad sobre BGE-M3)
@@ -378,12 +383,16 @@ class SkillsImplicitExtractor:
             # Obtener top K indices ordenados por similitud
             top_indices = np.argsort(similarities)[-top_k:][::-1]
 
+            # M-06: Verificar si algún candidato supera el umbral
+            tarea_matcheo = False
+
             for idx in top_indices:
                 score = float(similarities[idx])
 
                 if score < threshold:
                     continue
 
+                tarea_matcheo = True
                 skill_meta = self.metadata[idx]
                 skill_label = skill_meta.get('label', skill_meta.get('preferred_label_es', ''))
 
@@ -404,6 +413,32 @@ class SkillsImplicitExtractor:
                 if self.verbose:
                     print(f"[SKILLS] '{tarea[:50]}...' -> '{skill_label}' (score={score:.3f})")
 
+            # M-06: Registrar tarea fallida si ningún candidato superó el umbral
+            if track_failures and not tarea_matcheo:
+                best_idx = top_indices[0] if len(top_indices) > 0 else None
+                if best_idx is not None:
+                    best_score = float(similarities[best_idx])
+                    best_meta = self.metadata[best_idx]
+                    tareas_fallidas.append({
+                        "tarea_texto": tarea[:200],
+                        "mejor_skill_uri": best_meta.get('uri', best_meta.get('skill_uri', '')),
+                        "mejor_skill_label": best_meta.get('label', best_meta.get('preferred_label_es', '')),
+                        "mejor_score": round(best_score, 4),
+                        "threshold_usado": threshold,
+                        "gap_al_umbral": round(threshold - best_score, 4)
+                    })
+                else:
+                    tareas_fallidas.append({
+                        "tarea_texto": tarea[:200],
+                        "mejor_skill_uri": None,
+                        "mejor_skill_label": None,
+                        "mejor_score": 0.0,
+                        "threshold_usado": threshold,
+                        "gap_al_umbral": round(threshold, 4)
+                    })
+
+        if track_failures:
+            return (skills_implicitas, tareas_fallidas)
         return skills_implicitas
 
     def _get_skill_weight(
@@ -473,8 +508,9 @@ class SkillsImplicitExtractor:
         nivel_seniority: str = None,
         area_funcional: str = None,
         top_k: int = None,
-        threshold: float = None
-    ) -> List[Dict]:
+        threshold: float = None,
+        track_failures: bool = False
+    ):
         """
         v2.2: Extrae skills ESCO con ponderación de skills genéricas.
 
@@ -497,12 +533,14 @@ class SkillsImplicitExtractor:
             area_funcional: Área funcional (para ponderación contextual)
             top_k: Override del número máximo de skills por texto
             threshold: Override del umbral de similitud
+            track_failures: Si True, retorna tupla (matcheadas, fallidas)
 
         Returns:
-            Lista de dicts con: skill_esco, skill_uri, score, score_ponderado, peso, origen
+            Si track_failures=False: Lista de dicts con: skill_esco, skill_uri, score, score_ponderado, peso, origen
+            Si track_failures=True: Tupla (matcheadas, fallidas)
         """
         if not self.embeddings.size:
-            return []
+            return ([], []) if track_failures else []
 
         top_k = top_k or self.top_k
         threshold = threshold or self.threshold
@@ -559,10 +597,11 @@ class SkillsImplicitExtractor:
                     textos.append(("soft_skills_nlp", skill))
 
         if not textos and not skills_terminologia:
-            return []
+            return ([], []) if track_failures else []
 
         # v2.4: Iniciar con skills de terminología (ya encontradas)
         skills_extraidas = list(skills_terminologia)
+        textos_fallidos = []
         skills_vistas = set(skills_term_vistas)  # Para evitar duplicados con semántico
 
         for origen, texto in textos:
@@ -575,12 +614,16 @@ class SkillsImplicitExtractor:
             # Obtener top K indices ordenados por similitud
             top_indices = np.argsort(similarities)[-top_k:][::-1]
 
+            # M-06: Verificar si algún candidato supera el umbral
+            texto_matcheo = False
+
             for idx in top_indices:
                 score = float(similarities[idx])
 
                 if score < threshold:
                     continue
 
+                texto_matcheo = True
                 skill_meta = self.metadata[idx]
                 skill_label = skill_meta.get('label', skill_meta.get('preferred_label_es', ''))
                 skill_uri = skill_meta.get('uri', skill_meta.get('skill_uri', ''))
@@ -621,6 +664,32 @@ class SkillsImplicitExtractor:
                     peso_tag = " [GEN]" if peso < 1.0 else ""
                     print(f"[SKILLS] [{origen}] '{texto[:40]}...' -> '{skill_label}' (score={score:.3f}, peso={peso}){peso_tag}")
 
+            # M-06: Registrar texto fallido si ningún candidato superó el umbral
+            if track_failures and not texto_matcheo:
+                best_idx = top_indices[0] if len(top_indices) > 0 else None
+                if best_idx is not None:
+                    best_score = float(similarities[best_idx])
+                    best_meta = self.metadata[best_idx]
+                    textos_fallidos.append({
+                        "tarea_texto": texto[:200],
+                        "tarea_origen": origen,
+                        "mejor_skill_uri": best_meta.get('uri', best_meta.get('skill_uri', '')),
+                        "mejor_skill_label": best_meta.get('label', best_meta.get('preferred_label_es', '')),
+                        "mejor_score": round(best_score, 4),
+                        "threshold_usado": threshold,
+                        "gap_al_umbral": round(threshold - best_score, 4)
+                    })
+                else:
+                    textos_fallidos.append({
+                        "tarea_texto": texto[:200],
+                        "tarea_origen": origen,
+                        "mejor_skill_uri": None,
+                        "mejor_skill_label": None,
+                        "mejor_score": 0.0,
+                        "threshold_usado": threshold,
+                        "gap_al_umbral": round(threshold, 4)
+                    })
+
         # v2.2: Ordenar por score_ponderado descendente (skills genéricas bajan en el ranking)
         skills_extraidas.sort(key=lambda x: x['score_ponderado'], reverse=True)
 
@@ -637,6 +706,8 @@ class SkillsImplicitExtractor:
             if self.verbose:
                 print(f"[WARN] Error en categorización: {e}")
 
+        if track_failures:
+            return (skills_extraidas, textos_fallidos)
         return skills_extraidas
 
     def get_skills_for_offer(
@@ -698,7 +769,8 @@ class SkillsImplicitExtractor:
         nivel_seniority: str = None,
         area_funcional: str = None,
         top_k: int = None,
-        threshold: float = None
+        threshold: float = None,
+        track_failures: bool = False
     ) -> Dict:
         """
         v2.3: Extracción DUAL de skills: reglas + semántico.
@@ -794,7 +866,7 @@ class SkillsImplicitExtractor:
         # ============================================
         # PASO 2: Extraer semántico (SIEMPRE)
         # ============================================
-        skills_semantico = self.extract_skills(
+        _extract_result = self.extract_skills(
             titulo_limpio=titulo_limpio,
             tareas_explicitas=tareas_explicitas,
             skills_nlp=skills_nlp,
@@ -803,11 +875,19 @@ class SkillsImplicitExtractor:
             nivel_seniority=nivel_seniority,
             area_funcional=area_funcional,
             top_k=top_k,
-            threshold=threshold
+            threshold=threshold,
+            track_failures=track_failures
         )
+        if track_failures:
+            skills_semantico, failures_semantico = _extract_result
+        else:
+            skills_semantico = _extract_result
+            failures_semantico = []
 
         if self.verbose:
             print(f"[DUAL] Skills semántico: {len(skills_semantico)} extraídas")
+            if track_failures and failures_semantico:
+                print(f"[DUAL] Textos fallidos: {len(failures_semantico)}")
 
         # ============================================
         # PASO 3: Determinar dual_coinciden_skills
@@ -863,7 +943,8 @@ class SkillsImplicitExtractor:
             "nombre_regla": nombre_regla,
             "dual_coinciden_skills": dual_coinciden_skills,
             "skills_final": skills_final,
-            "metodo_primario": metodo_primario
+            "metodo_primario": metodo_primario,
+            "failures": failures_semantico
         }
 
     def compare_skills_with_occupation(

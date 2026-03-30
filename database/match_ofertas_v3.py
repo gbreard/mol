@@ -1307,6 +1307,34 @@ class MatcherV3:
             self.conn.close()
         self.skills_matcher.close()
 
+    def _persist_skill_failures(self, oferta_id: str, run_id: str, failures: list) -> None:
+        """
+        M-06: Persiste intentos fallidos de extracción de skills.
+        Fallo silencioso — no interrumpe el pipeline.
+        """
+        if not failures:
+            return
+        try:
+            for f in failures:
+                self.conn.execute('''
+                    INSERT INTO skills_extraction_failures
+                    (oferta_id, run_id, tarea_texto, tarea_origen,
+                     mejor_skill_uri, mejor_skill_label, mejor_score,
+                     threshold_usado, gap_al_umbral)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (
+                    oferta_id, run_id,
+                    f.get("tarea_texto"), f.get("tarea_origen", "matching"),
+                    f.get("mejor_skill_uri"), f.get("mejor_skill_label"),
+                    f.get("mejor_score", 0.0),
+                    f.get("threshold_usado", 0.40),
+                    f.get("gap_al_umbral")
+                ))
+            self.conn.commit()
+        except Exception as e:
+            import logging
+            logging.warning(f"[M-06] No se pudieron registrar {len(failures)} failures para {oferta_id}: {e}")
+
     def save_matching_result(self, id_oferta: str, result: MatchResult, run_id: str = None) -> bool:
         """
         Persiste el resultado del matching en ofertas_esco_matching.
@@ -1567,13 +1595,21 @@ class MatcherV3:
             soft_skills_nlp=soft_skills_nlp,
             sector_empresa=oferta_nlp.get("sector_empresa"),
             nivel_seniority=oferta_nlp.get("nivel_seniority"),
-            area_funcional=oferta_nlp.get("area_funcional")
+            area_funcional=oferta_nlp.get("area_funcional"),
+            track_failures=True
         )
         skills_extracted = skills_dual_result["skills_final"]
+
+        # M-06: Persistir tareas fallidas (fallo silencioso)
+        failures = skills_dual_result.get("failures", [])
+        if failures:
+            self._persist_skill_failures(id_oferta, run_id, failures)
 
         if self.verbose:
             metodo_skills = skills_dual_result.get("metodo_primario", "semantico")
             print(f"[V3] Skills extraídas: {len(skills_extracted)} (metodo: {metodo_skills})")
+            if failures:
+                print(f"[V3] Tareas fallidas registradas: {len(failures)}")
 
         # 2. Ejecutar matching
         result = self.match(oferta_nlp)
