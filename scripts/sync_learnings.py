@@ -992,6 +992,145 @@ FASE 3 - PRESENTACION (Dashboard)
     return report.strip()
 
 
+def _get_ultimo_run_data(verbose: bool = False) -> Dict:
+    """
+    M-01: Lee datos del último run de pipeline_runs + skills_extraction_failures.
+    Retorna dict con campos ultimo_run_* para sistema_estado.
+    """
+    result = {
+        "ultimo_run_id": None,
+        "ultimo_run_timestamp": None,
+        "ultimo_run_branch": None,
+        "ultimo_run_nlp_version": None,
+        "ultimo_run_matching_version": None,
+        "ultimo_run_ofertas": None,
+        "ultimo_run_skills": None,
+        "ultimo_run_failures": 0,
+        "ultimo_run_failures_pct": 0.0,
+        "ultimo_run_errores": None,
+        "ultimo_run_corregidos": None,
+        "ultimo_run_escalados": None,
+        "ultimo_run_precision": None,
+        "ultimo_run_delta_precision": None,
+        "ultimo_run_delta_regresiones": None,
+        "ultimo_run_delta_mejoras": None,
+        "ultimo_run_reglas_nuevas": None,
+        "ultimo_run_top_failures": None,
+    }
+
+    try:
+        conn = sqlite3.connect(str(DB_PATH))
+        conn.row_factory = sqlite3.Row
+
+        # Último run completo
+        row = conn.execute("""
+            SELECT run_id, timestamp, git_branch, git_commit,
+                   nlp_version, matching_version,
+                   ofertas_count, metricas_precision,
+                   errores_detectados, errores_corregidos, errores_escalados,
+                   run_anterior, diff_mejoras, diff_regresiones,
+                   delta_reglas, sinonimos_count, reglas_negocio_count
+            FROM pipeline_runs
+            ORDER BY timestamp DESC
+            LIMIT 1
+        """).fetchone()
+
+        if not row:
+            conn.close()
+            return result
+
+        run_id = row["run_id"]
+        result["ultimo_run_id"] = run_id
+        result["ultimo_run_timestamp"] = row["timestamp"]
+        result["ultimo_run_branch"] = row["git_branch"]
+        result["ultimo_run_nlp_version"] = row["nlp_version"]
+        result["ultimo_run_matching_version"] = row["matching_version"]
+        result["ultimo_run_ofertas"] = row["ofertas_count"]
+        result["ultimo_run_precision"] = row["metricas_precision"]
+        result["ultimo_run_errores"] = row["errores_detectados"]
+        result["ultimo_run_corregidos"] = row["errores_corregidos"]
+        result["ultimo_run_escalados"] = row["errores_escalados"]
+        result["ultimo_run_delta_mejoras"] = row["diff_mejoras"]
+        result["ultimo_run_delta_regresiones"] = row["diff_regresiones"]
+        result["ultimo_run_reglas_nuevas"] = row["delta_reglas"]
+
+        # Delta precisión vs run anterior
+        if row["run_anterior"]:
+            prev = conn.execute(
+                "SELECT metricas_precision FROM pipeline_runs WHERE run_id = ?",
+                (row["run_anterior"],)
+            ).fetchone()
+            if prev and prev["metricas_precision"] is not None and row["metricas_precision"] is not None:
+                result["ultimo_run_delta_precision"] = round(
+                    row["metricas_precision"] - prev["metricas_precision"], 4
+                )
+
+        # Skills count del run
+        skills_count = conn.execute("""
+            SELECT COUNT(*) FROM ofertas_esco_skills_detalle
+            WHERE id_oferta IN (
+                SELECT id_oferta FROM ofertas_esco_matching WHERE run_id = ?
+            )
+        """, (run_id,)).fetchone()[0]
+        result["ultimo_run_skills"] = skills_count
+
+        # M-06: Failures del run (si la tabla existe)
+        try:
+            failures_row = conn.execute("""
+                SELECT COUNT(*) as cnt FROM skills_extraction_failures
+                WHERE run_id = ?
+            """, (run_id,)).fetchone()
+            failures_count = failures_row[0] if failures_row else 0
+            result["ultimo_run_failures"] = failures_count
+
+            # Calcular porcentaje (tareas totales de las ofertas del run)
+            tareas_row = conn.execute("""
+                SELECT SUM(
+                    LENGTH(n.tareas_explicitas) - LENGTH(REPLACE(n.tareas_explicitas, ';', '')) + 1
+                ) as total_tareas
+                FROM ofertas_nlp n
+                JOIN ofertas_esco_matching m ON n.id_oferta = m.id_oferta
+                WHERE m.run_id = ? AND n.tareas_explicitas IS NOT NULL AND n.tareas_explicitas != ''
+            """, (run_id,)).fetchone()
+            total_tareas = tareas_row[0] if tareas_row and tareas_row[0] else 0
+            if total_tareas > 0:
+                result["ultimo_run_failures_pct"] = round(failures_count / total_tareas, 4)
+
+            # Top 3 failures más cercanas al umbral
+            top_rows = conn.execute("""
+                SELECT f.tarea_texto, f.mejor_score, f.gap_al_umbral,
+                       f.mejor_skill_label, n.titulo_limpio as oferta_titulo
+                FROM skills_extraction_failures f
+                LEFT JOIN ofertas_nlp n ON f.oferta_id = n.id_oferta
+                WHERE f.run_id = ?
+                ORDER BY f.gap_al_umbral ASC
+                LIMIT 3
+            """, (run_id,)).fetchall()
+            if top_rows:
+                result["ultimo_run_top_failures"] = json.dumps([
+                    {
+                        "tarea": r["tarea_texto"][:100],
+                        "oferta": (r["oferta_titulo"] or "")[:60],
+                        "score": r["mejor_score"],
+                        "gap": r["gap_al_umbral"],
+                        "mejor_skill": (r["mejor_skill_label"] or "")[:60]
+                    }
+                    for r in top_rows
+                ], ensure_ascii=False)
+
+        except Exception:
+            # skills_extraction_failures no existe (M-06 no implementado)
+            pass
+
+        conn.close()
+
+    except Exception as e:
+        if verbose:
+            print(f"[M-01] Warning leyendo último run: {e}")
+
+    return result
+
+
 def sync_to_supabase(p1: Dict, p2: Dict, p3: Dict, suggested: Tuple[int, str, str], verbose: bool = True) -> bool:
     """
     Sincroniza métricas de fases a Supabase para colaboración.
@@ -1064,14 +1203,49 @@ def sync_to_supabase(p1: Dict, p2: Dict, p3: Dict, suggested: Tuple[int, str, st
             "fase_sugerida_razon": suggested[2],
 
             # Metadata
-            "sync_version": "2.1"
+            "sync_version": "3.0"
         }
 
-        # Insertar
+        # M-01: Agregar datos del último run
+        ultimo_run = _get_ultimo_run_data(verbose=verbose)
+        data.update(ultimo_run)
+
+        # Insertar sistema_estado
         result = client.table("sistema_estado").insert(data).execute()
 
         if verbose:
             print(f"[SUPABASE] Estado sincronizado (fase sugerida: {suggested[0]})")
+            if ultimo_run.get("ultimo_run_id"):
+                print(f"[M-01] Último run: {ultimo_run['ultimo_run_id']} ({ultimo_run['ultimo_run_ofertas'] or 0} ofertas, {ultimo_run['ultimo_run_failures'] or 0} failures)")
+
+        # M-01: Insertar en pipeline_runs_history via RPC
+        if ultimo_run.get("ultimo_run_id"):
+            try:
+                client.rpc('insertar_pipeline_run', {
+                    "p_run_id": ultimo_run["ultimo_run_id"],
+                    "p_timestamp": ultimo_run["ultimo_run_timestamp"],
+                    "p_git_branch": ultimo_run["ultimo_run_branch"],
+                    "p_nlp_version": ultimo_run["ultimo_run_nlp_version"],
+                    "p_matching_version": ultimo_run["ultimo_run_matching_version"],
+                    "p_ofertas_count": ultimo_run["ultimo_run_ofertas"],
+                    "p_skills_count": ultimo_run["ultimo_run_skills"],
+                    "p_failures_count": ultimo_run["ultimo_run_failures"],
+                    "p_failures_pct": ultimo_run["ultimo_run_failures_pct"],
+                    "p_errores_detectados": ultimo_run["ultimo_run_errores"],
+                    "p_errores_corregidos": ultimo_run["ultimo_run_corregidos"],
+                    "p_errores_escalados": ultimo_run["ultimo_run_escalados"],
+                    "p_precision": ultimo_run["ultimo_run_precision"],
+                    "p_delta_precision": ultimo_run["ultimo_run_delta_precision"],
+                    "p_delta_mejoras": ultimo_run["ultimo_run_delta_mejoras"],
+                    "p_delta_regresiones": ultimo_run["ultimo_run_delta_regresiones"],
+                    "p_reglas_nuevas": ultimo_run["ultimo_run_reglas_nuevas"],
+                    "p_top_failures": json.loads(ultimo_run["ultimo_run_top_failures"]) if ultimo_run.get("ultimo_run_top_failures") else None,
+                }).execute()
+                if verbose:
+                    print(f"[M-01] Pipeline run registrado en historial: {ultimo_run['ultimo_run_id']}")
+            except Exception as rpc_err:
+                if verbose:
+                    print(f"[M-01] Warning: no se pudo insertar pipeline_run en historial: {rpc_err}")
 
         return True
 
