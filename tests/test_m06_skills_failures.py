@@ -293,16 +293,68 @@ class TestExtractSkillsDualFallidos:
 class TestCasosBorde:
 
     def test_score_exacto_en_umbral(self, extractor):
-        """Score == 0.40 exacto pasa (score < threshold → continue, no <=)."""
-        # Difícil controlar score exacto con mock, pero verificamos la lógica:
-        # si best_score >= threshold, no es fallida
+        """Score == 0.40 exacto después de round() es matcheada, no fallida."""
+        # Simular un score que al hacer round(float, 4) da exactamente 0.40
+        # Forzamos el model.encode a retornar un vector que produzca ~0.40
+        import numpy as np
+        original_encode = extractor.model.encode
+
+        def encode_borderline(text, normalize_embeddings=True):
+            # Construir vector que dé cosine ~0.3999...7 con skill 0 (dims 0-5)
+            # Después de round(score, 4) debe dar 0.4000
+            dim = 32
+            vec = np.zeros(dim, dtype=np.float32)
+            vec[0:6] = 0.41   # Parcial overlap con skill 001
+            vec[30:32] = 0.9  # Ruido
+            norm = np.linalg.norm(vec)
+            if norm > 0 and normalize_embeddings:
+                vec = vec / norm
+            return vec
+
+        extractor.model.encode = encode_borderline
+
         matcheadas, fallidas = extractor.extract_from_tasks(
-            "instalar cableado industrial",  # Score alto, claramente pasa
+            "borderline test task",
             track_failures=True
         )
-        # Lo que matchea no aparece como fallido
+
+        # El score redondeado a 4 decimales debe compararse con threshold
+        # Si round(score, 4) >= 0.40 → debe ser matcheada, no fallida
+        for m in matcheadas:
+            assert m["score"] >= extractor.threshold
         for f in fallidas:
             assert f["mejor_score"] < extractor.threshold
+
+        extractor.model.encode = original_encode
+
+    def test_score_exacto_en_umbral_extract_skills(self, extractor):
+        """Score == 0.40 exacto en extract_skills() también es matcheada."""
+        import numpy as np
+        original_encode = extractor.model.encode
+
+        def encode_borderline(text, normalize_embeddings=True):
+            dim = 32
+            vec = np.zeros(dim, dtype=np.float32)
+            vec[0:6] = 0.41
+            vec[30:32] = 0.9
+            norm = np.linalg.norm(vec)
+            if norm > 0 and normalize_embeddings:
+                vec = vec / norm
+            return vec
+
+        extractor.model.encode = encode_borderline
+
+        matcheadas, fallidas = extractor.extract_skills(
+            titulo_limpio="borderline test",
+            track_failures=True
+        )
+
+        for m in matcheadas:
+            assert m["score"] >= extractor.threshold
+        for f in fallidas:
+            assert f["mejor_score"] < extractor.threshold
+
+        extractor.model.encode = original_encode
 
     def test_tarea_muy_larga(self, extractor):
         """Tarea de 500+ chars se trunca a 200 en tarea_texto."""

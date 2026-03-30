@@ -387,7 +387,7 @@ class SkillsImplicitExtractor:
             tarea_matcheo = False
 
             for idx in top_indices:
-                score = float(similarities[idx])
+                score = round(float(similarities[idx]), 4)
 
                 if score < threshold:
                     continue
@@ -406,7 +406,7 @@ class SkillsImplicitExtractor:
                     "tarea": tarea[:100],  # Truncar para BD
                     "skill_esco": skill_label,
                     "skill_uri": skill_meta.get('uri', skill_meta.get('skill_uri', '')),
-                    "score": round(score, 4),
+                    "score": score,
                     "origen": "IMPLICITA"
                 })
 
@@ -618,7 +618,7 @@ class SkillsImplicitExtractor:
             texto_matcheo = False
 
             for idx in top_indices:
-                score = float(similarities[idx])
+                score = round(float(similarities[idx]), 4)
 
                 if score < threshold:
                     continue
@@ -653,7 +653,7 @@ class SkillsImplicitExtractor:
                 skills_extraidas.append({
                     "skill_esco": skill_label,
                     "skill_uri": skill_uri,
-                    "score": round(score, 4),
+                    "score": score,
                     "score_ponderado": round(score_ponderado, 4),  # v2.2
                     "peso": peso,  # v2.2
                     "origen": origen,  # "titulo" o "tarea"
