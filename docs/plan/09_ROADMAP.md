@@ -98,7 +98,7 @@ reveló grietas estructurales en el motor de datos:
 
 | ID | Tarea | Prioridad | Estado |
 |----|-------|-----------|--------|
-| M-01 | Reporte consolidado post-run | CRÍTICO | ⬜ |
+| M-01 | Reporte consolidado post-run | CRÍTICO | ✅ Completado 2026-03-30 |
 | M-02 | Alertas push (Telegram/email) | CRÍTICO | ⬜ |
 | M-03 | Ejecutar compare_runs automáticamente post-run | ALTO | ⬜ |
 | M-04 | Auditoría del sync VPS→Local | ALTO | ⬜ |
@@ -108,7 +108,7 @@ reveló grietas estructurales en el motor de datos:
 
 | ID | Tarea | Prioridad | Estado |
 |----|-------|-----------|--------|
-| M-06 | Registrar tareas fallidas (tarea + score + skill más cercana) | CRÍTICO | ⬜ |
+| M-06 | Registrar tareas fallidas (tarea + score + skill más cercana) | CRÍTICO | ✅ Completado 2026-03-30 |
 | M-07 | Resolver deuda de procesamiento (--only-pending, 5.415 ofertas) | ALTO | ⬜ |
 | M-08 | Conectar fuentes declaradas con ESCO via BGE-M3 | ALTO | ⬜ |
 
@@ -130,6 +130,14 @@ reveló grietas estructurales en el motor de datos:
 | M-15 | Conexión downstream de emergentes aprobadas | MEDIO | ⬜ |
 | M-16 | Promoción automática de patrones (con aprobación humana) | MEDIO | ⬜ |
 | M-17 | Base de datos limpia para fine-tuning (Track A embeddings + Track B LLM) | ALTO | ⬜ |
+
+### Transversal — Infraestructura de calidad
+
+| ID | Tarea | Prioridad | Estado |
+|----|-------|-----------|--------|
+| M-18 | Infraestructura de tests frontend (vitest + testing-library + mocks Supabase/Next.js) | ALTO | ⬜ |
+
+M-18 se ejecuta después de completar las specs pendientes. Incluye: configuración base del entorno, tests para componentes existentes (metricas, validacion, GlobalNav), y patrón replicable para futuros componentes.
 
 ### Secuencia de construcción
 
