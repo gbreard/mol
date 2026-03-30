@@ -156,11 +156,18 @@ export default function MetricasPage() {
     try {
       if (!supabase) throw new Error('Supabase no configurado');
 
-      const [statusResult, reconResult, historyResult] = await Promise.all([
+      const [statusResult, reconResult] = await Promise.all([
         supabase.rpc('get_pipeline_status'),
         supabase.rpc('reconciliar_sistemas'),
-        supabase.rpc('get_pipeline_runs_history', { limit_n: 30 }).catch(() => ({ data: [], error: null })),
       ]);
+
+      // M-01: Historial de runs (fallo silencioso si RPC no existe)
+      let historyResult: { data: any; error: any } = { data: [], error: null };
+      try {
+        historyResult = await supabase.rpc('get_pipeline_runs_history', { limit_n: 30 });
+      } catch {
+        // RPC no disponible — historial vacío
+      }
 
       if (statusResult.error) throw statusResult.error;
 
