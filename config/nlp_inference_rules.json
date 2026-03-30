@@ -1545,6 +1545,16 @@
       "requisito excluyente",
       "grupo gestión",
       "grupo gestion",
+      "link laboral",
+      "manpower",
+      "randstad",
+      "adecco",
+      "pullmen rrhh",
+      "bayton",
+      "consultora",
+      "concesionario oficial",
+      "concesionario jeep",
+      "concesionario chrysler",
       "recuperar oferta",
       "ocultaste esta oferta",
       "postularme volver",
@@ -1590,7 +1600,17 @@
       "pulsa ",
       "versión:",
       "version:",
-      "postularme"
+      "postularme",
+      "importante empresa",
+      "importante grupo",
+      "importante compañía",
+      "reconocida empresa",
+      "destacada empresa",
+      "prestigiosa empresa",
+      "líder en el",
+      "lider en el",
+      "empresa líder",
+      "empresa lider"
     ],
     "descartar_si_matchea_regex": [
       {
@@ -1616,6 +1636,14 @@
       {
         "patron": "^(ver más|ver menos|mostrar más|mostrar menos|cargar más)$",
         "descripcion": "Botones de UI scrapeados"
+      },
+      {
+        "patron": ".*\\(req\\d+.*\\).*",
+        "descripcion": "Códigos internos de RRHH (req199974, ref12345)"
+      },
+      {
+        "patron": ".*\\(ref\\.?\\s*\\d+.*\\).*",
+        "descripcion": "Códigos de referencia interna"
       }
     ]
   },

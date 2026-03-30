@@ -126,6 +126,99 @@ class TestPreservarTareasReales:
 # Casos mixtos (ruido + tareas reales)
 # ============================================================================
 
+# ============================================================================
+# Ruido v2: consultoras, descripciones empresa, códigos internos
+# ============================================================================
+
+class TestFiltrarRuidoV2:
+
+    def test_consultora_link_laboral(self, postprocessor):
+        """'Link Laboral Puerto Norte' se filtra (nombre de consultora)."""
+        result = limpiar(postprocessor, "Gestionar ventas; Link Laboral Puerto Norte")
+        assert not any("link laboral" in t.lower() for t in result)
+        assert any("ventas" in t.lower() for t in result)
+
+    def test_consultora_adecco(self, postprocessor):
+        """Nombres de consultoras conocidas se filtran."""
+        result = limpiar(postprocessor, "Supervisar equipo; Adecco busca talento; Control calidad")
+        assert not any("adecco" in t.lower() for t in result)
+
+    def test_consultora_randstad(self, postprocessor):
+        result = limpiar(postprocessor, "Operar maquinaria; Randstad selecciona")
+        assert not any("randstad" in t.lower() for t in result)
+
+    def test_descripcion_importante_empresa(self, postprocessor):
+        """'Importante empresa de...' se filtra."""
+        result = limpiar(postprocessor, "Importante empresa de autopartes busca; Controlar stock")
+        assert not any("importante empresa" in t.lower() for t in result)
+        assert any("stock" in t.lower() for t in result)
+
+    def test_descripcion_importante_grupo(self, postprocessor):
+        result = limpiar(postprocessor, "Importante grupo concesionario JEEP-RAM; Vender autos")
+        assert not any("importante grupo" in t.lower() for t in result)
+
+    def test_descripcion_reconocida_empresa(self, postprocessor):
+        result = limpiar(postprocessor, "Reconocida empresa del rubro alimenticio; Producir alimentos")
+        assert not any("reconocida empresa" in t.lower() for t in result)
+
+    def test_codigo_interno_req(self, postprocessor):
+        """'Auxiliar de Planta (req199974) - Eventual' se filtra (código interno)."""
+        result = limpiar(postprocessor, "Controlar calidad; Auxiliar de Planta (req199974) - Eventual")
+        assert not any("req199974" in t for t in result)
+
+    def test_codigo_interno_ref(self, postprocessor):
+        result = limpiar(postprocessor, "Gestionar inventario; Operario (ref. 12345)")
+        assert not any("ref." in t for t in result)
+
+
+class TestPreservarTareasRealesV2:
+
+    def test_tarea_participar_balance(self, postprocessor):
+        """Caso #2 muestra: 'Participar activamente en el armado de Balance' NO se filtra."""
+        result = limpiar(postprocessor, "Participar activamente en el armado de Balance")
+        assert len(result) == 1
+        assert "balance" in result[0].lower()
+
+    def test_tarea_contenido_organico(self, postprocessor):
+        """Caso #9 muestra: 'Crear y gestionar contenido orgánico' NO se filtra."""
+        result = limpiar(postprocessor, "Crear y gestionar contenido orgánico")
+        assert len(result) == 1
+        assert "contenido" in result[0].lower()
+
+    def test_tarea_zorras_manuales(self, postprocessor):
+        """Caso #36 muestra: 'Manejo de zorras manuales y eléctricas' NO se filtra."""
+        result = limpiar(postprocessor, "Manejo de zorras manuales y eléctricas")
+        assert len(result) == 1
+        assert "zorras" in result[0].lower()
+
+    def test_tarea_monitoreo_eeg(self, postprocessor):
+        """Caso #45 muestra: 'Realización de Monitoreo EEG continuo' NO se filtra."""
+        result = limpiar(postprocessor, "Realización de Monitoreo EEG continuo")
+        assert len(result) == 1
+        assert "eeg" in result[0].lower()
+
+    def test_tarea_en_ingles_no_filtrada(self, postprocessor):
+        """Tareas en inglés son reales, no se filtran."""
+        tareas_ingles = [
+            "Architect & Build",
+            "Maintain tax mapping for products/services",
+            "Present and articulate value proposition",
+            "Implement resilience patterns and concurrency",
+        ]
+        for t in tareas_ingles:
+            result = limpiar(postprocessor, t)
+            assert len(result) == 1, f"'{t}' fue filtrada incorrectamente"
+
+    def test_empresa_lider_en_tarea_real(self, postprocessor):
+        """'Liderar equipo de ventas' NO se filtra (contiene 'líder' en contexto de tarea)."""
+        result = limpiar(postprocessor, "Liderar equipo de ventas")
+        assert len(result) == 1
+
+
+# ============================================================================
+# Casos mixtos (ruido + tareas reales)
+# ============================================================================
+
 class TestCasosMixtos:
 
     def test_mixto_preserva_reales_filtra_ruido(self, postprocessor):
