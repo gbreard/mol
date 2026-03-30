@@ -450,11 +450,16 @@ class NLPExtractorV11:
                     skills_declaradas = [s.strip() for s in skills_declaradas.split(",") if s.strip()]
 
                 try:
-                    skills_all, skills_implicitas = self.skills_extractor.get_skills_for_offer(
-                        skills_declaradas=skills_declaradas,
+                    # M-06: Extraer con tracking de fallidos
+                    matcheadas, fallidas = self.skills_extractor.extract_from_tasks(
                         tareas_explicitas=tareas,
-                        merge=True
+                        track_failures=True
                     )
+
+                    # Deduplicar contra declaradas (misma lógica que get_skills_for_offer)
+                    declaradas_norm = {s.lower().strip() for s in skills_declaradas if s}
+                    skills_implicitas = [s for s in matcheadas if s['skill_esco'].lower() not in declaradas_norm]
+                    skills_all = list(skills_declaradas) + [s['skill_esco'] for s in skills_implicitas]
 
                     if skills_implicitas:
                         # Agregar skills implícitas al campo skills_tecnicas_list
@@ -465,6 +470,34 @@ class NLPExtractorV11:
 
                         if self.verbose:
                             print(f"[SKILLS] +{len(skills_implicitas)} implícitas: {[s['skill_esco'][:30] for s in skills_implicitas[:3]]}")
+
+                    # M-06: Persistir tareas fallidas (fallo silencioso, run_id=NULL en path NLP)
+                    if fallidas:
+                        try:
+                            import sqlite3 as _sqlite3
+                            _conn = _sqlite3.connect(str(self.db_path))
+                            for f in fallidas:
+                                _conn.execute('''
+                                    INSERT INTO skills_extraction_failures
+                                    (oferta_id, run_id, tarea_texto, tarea_origen,
+                                     mejor_skill_uri, mejor_skill_label, mejor_score,
+                                     threshold_usado, gap_al_umbral)
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                ''', (
+                                    id_oferta, None,
+                                    f.get("tarea_texto"), "nlp",
+                                    f.get("mejor_skill_uri"), f.get("mejor_skill_label"),
+                                    f.get("mejor_score", 0.0),
+                                    f.get("threshold_usado", 0.40),
+                                    f.get("gap_al_umbral")
+                                ))
+                            _conn.commit()
+                            _conn.close()
+                            if self.verbose:
+                                print(f"[M-06] {len(fallidas)} tareas fallidas registradas para {id_oferta}")
+                        except Exception as _e:
+                            if self.verbose:
+                                print(f"[M-06] WARN: No se pudieron registrar failures: {_e}")
                 except Exception as e:
                     if self.verbose:
                         print(f"[WARN] Skills implícitas error: {e}")
