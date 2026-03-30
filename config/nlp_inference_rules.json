@@ -1542,7 +1542,13 @@
       "registro de conducir",
       "carnet de conducir",
       "autos nuevos",
-      "requisito excluyente"
+      "requisito excluyente",
+      "grupo gestión",
+      "grupo gestion",
+      "recuperar oferta",
+      "ocultaste esta oferta",
+      "postularme volver",
+      "pulsarecuperar"
     ],
     "descartar_si_es_requisito": [
       "ser responsable",
@@ -1574,7 +1580,43 @@
       "por ",
       "seas ",
       "si ",
-      "similares "
+      "similares ",
+      "hace ",
+      "experiencia requerida",
+      "dias laborables",
+      "días laborables",
+      "requisitos ",
+      "ocultaste ",
+      "pulsa ",
+      "versión:",
+      "version:",
+      "postularme"
+    ],
+    "descartar_si_matchea_regex": [
+      {
+        "patron": "^hace \\d+ (días|horas|minutos|semanas|día|hora|minuto|semana)$",
+        "descripcion": "Metadata temporal de portales: Hace N días/horas"
+      },
+      {
+        "patron": "^[a-záéíóúñü ]+,\\s*[a-záéíóúñü ]+$",
+        "descripcion": "Ubicaciones tipo Ciudad, Provincia (ej: Córdoba, Córdoba / Rosario, Santa Fe)"
+      },
+      {
+        "patron": "^[a-záéíóúñü ]+,\\s*[a-záéíóúñü ]+-gba$",
+        "descripcion": "Ubicaciones tipo Ciudad, Provincia-GBA (ej: San Martín, Buenos Aires-GBA)"
+      },
+      {
+        "patron": "^(experiencia|educación|estudios|nivel educativo)\\s*(requerida|requerido|mínima|mínimo)?:?\\s*(no|sí|si)$",
+        "descripcion": "Pares clave-valor de requisitos scrapeados"
+      },
+      {
+        "patron": "^\\w+\\s+\\w+\\s+s\\.?a?\\.?$",
+        "descripcion": "Nombres de empresas SA/S (ej: Adecco Argentina SA, Adecco Argentina S)"
+      },
+      {
+        "patron": "^(ver más|ver menos|mostrar más|mostrar menos|cargar más)$",
+        "descripcion": "Botones de UI scrapeados"
+      }
     ]
   },
   "limpieza_skills": {

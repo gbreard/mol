@@ -2050,6 +2050,21 @@ class NLPPostprocessor:
             if descartada:
                 continue
 
+            # 4d. Descartar si matchea regex completo (M-07: ruido de scraping)
+            for patron_info in config.get("descartar_si_matchea_regex", []):
+                patron = patron_info.get("patron", "")
+                if patron:
+                    try:
+                        if re.match(patron, tarea_lower):
+                            if self.verbose:
+                                print(f"[TAREAS] Descartada (regex '{patron}'): '{tarea}'")
+                            descartada = True
+                            break
+                    except re.error:
+                        pass
+            if descartada:
+                continue
+
             # 5. Validar longitud minima
             min_len = config.get("min_longitud_tarea", 5)
             if len(tarea) >= min_len:
