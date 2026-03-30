@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -302,6 +302,11 @@ function AdminSidebar({ pathname, onNavigate }: { pathname: string; onNavigate: 
                                 >
                                   <subItem.icon className="w-3.5 h-3.5" />
                                   {subItem.label}
+                                  {subItem.label === 'Validacion' && validacionPendientes > 0 && (
+                                    <span className="ml-auto text-[10px] font-bold bg-blue-500 text-white px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+                                      {validacionPendientes > 999 ? '999+' : validacionPendientes}
+                                    </span>
+                                  )}
                                 </Link>
                               );
                             })}
@@ -327,6 +332,11 @@ function AdminSidebar({ pathname, onNavigate }: { pathname: string; onNavigate: 
                     >
                       <menuItem.icon className="w-4 h-4" />
                       {menuItem.label}
+                      {menuItem.label === 'Validacion' && validacionPendientes > 0 && (
+                        <span className="ml-auto text-[10px] font-bold bg-blue-500 text-white px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+                          {validacionPendientes > 999 ? '999+' : validacionPendientes}
+                        </span>
+                      )}
                     </Link>
                   );
                 })}
@@ -403,6 +413,25 @@ export function GlobalNav() {
   const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [validacionPendientes, setValidacionPendientes] = useState(0);
+
+  // M-01: Badge de pendientes de validación (refresh cada 5 min)
+  const loadValidacionBadge = useCallback(async () => {
+    try {
+      const sb = createBrowserClient();
+      const { count, error } = await sb
+        .from('ofertas_dashboard')
+        .select('*', { count: 'exact', head: true })
+        .is('validacion_humana', null);
+      if (!error && count != null) setValidacionPendientes(count);
+    } catch {}
+  }, []);
+
+  useEffect(() => { loadValidacionBadge(); }, [loadValidacionBadge]);
+  useEffect(() => {
+    const interval = setInterval(loadValidacionBadge, 300000); // 5 min
+    return () => clearInterval(interval);
+  }, [loadValidacionBadge]);
 
   useEffect(() => {
     async function loadUser() {

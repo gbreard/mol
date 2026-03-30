@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   BarChart3,
   TrendingUp,
@@ -19,6 +19,9 @@ import {
   Cloud,
   ExternalLink,
   ShieldCheck,
+  Clock,
+  History,
+  Zap,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
@@ -129,20 +132,34 @@ const QUICK_LINKS = [
 
 // --- Page ---
 
+interface RunHistory {
+  run_id: string;
+  timestamp: string;
+  git_branch: string | null;
+  ofertas_count: number | null;
+  failures_pct: number | null;
+  precision: number | null;
+  delta_precision: number | null;
+  delta_regresiones: number | null;
+  errores_escalados: number | null;
+}
+
 export default function MetricasPage() {
   const [pipeline, setPipeline] = useState<PipelineData | null>(null);
+  const [runsHistory, setRunsHistory] = useState<RunHistory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  async function loadData() {
+  const loadData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       if (!supabase) throw new Error('Supabase no configurado');
 
-      const [statusResult, reconResult] = await Promise.all([
+      const [statusResult, reconResult, historyResult] = await Promise.all([
         supabase.rpc('get_pipeline_status'),
         supabase.rpc('reconciliar_sistemas'),
+        supabase.rpc('get_pipeline_runs_history', { limit_n: 30 }).catch(() => ({ data: [], error: null })),
       ]);
 
       if (statusResult.error) throw statusResult.error;
@@ -151,15 +168,22 @@ export default function MetricasPage() {
         ...(statusResult.data as any),
         reconciliacion: reconResult.error ? null : (reconResult.data as Reconciliacion),
       });
+      setRunsHistory((historyResult as any)?.data || []);
     } catch (err: any) {
       console.error('Error cargando datos:', err);
       setError(err.message || 'Error al cargar datos');
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => { loadData(); }, [loadData]);
+
+  // M-01: Auto-refresh cada 30 segundos
+  useEffect(() => {
+    const interval = setInterval(() => loadData(), 30000);
+    return () => clearInterval(interval);
+  }, [loadData]);
 
   if (loading) {
     return (
@@ -369,7 +393,60 @@ export default function MetricasPage() {
         </div>
       )}
 
-      {/* Seccion 5: Links rapidos */}
+      {/* M-01: Seccion 5 — Último Run */}
+      <UltimoRunSection data={pipeline} />
+
+      {/* M-01: Seccion 6 — Historial de Runs */}
+      {runsHistory.length > 0 && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <History className="w-4 h-4 text-gray-400" />
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Historial de Runs</h2>
+            <span className="text-xs text-gray-400 ml-auto">Últimos {runsHistory.length}</span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-xs text-gray-500 border-b">
+                  <th className="pb-2 pr-4">Run</th>
+                  <th className="pb-2 pr-4">Ofertas</th>
+                  <th className="pb-2 pr-4">Failures</th>
+                  <th className="pb-2 pr-4">Precisión</th>
+                  <th className="pb-2 pr-4">Delta</th>
+                  <th className="pb-2">Branch</th>
+                </tr>
+              </thead>
+              <tbody>
+                {runsHistory.map(run => {
+                  const failColor = (run.failures_pct || 0) >= 0.30 ? 'text-red-600' : (run.failures_pct || 0) >= 0.20 ? 'text-amber-600' : 'text-gray-700';
+                  const deltaColor = (run.delta_precision || 0) < 0 ? 'text-red-600' : (run.delta_precision || 0) > 0 ? 'text-green-600' : 'text-gray-500';
+                  const hasRegression = (run.delta_regresiones || 0) > 0;
+                  return (
+                    <tr key={run.run_id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="py-2 pr-4">
+                        <div className="text-xs text-gray-500">{formatTimeAgo(new Date(run.timestamp))}</div>
+                        <div className="text-xs text-gray-400 font-mono">{run.run_id?.slice(0, 20)}</div>
+                      </td>
+                      <td className="py-2 pr-4 font-medium">{run.ofertas_count?.toLocaleString() || '-'}</td>
+                      <td className={`py-2 pr-4 font-medium ${failColor}`}>
+                        {run.failures_pct != null ? `${(run.failures_pct * 100).toFixed(1)}%` : '-'}
+                      </td>
+                      <td className="py-2 pr-4">{run.precision != null ? `${(run.precision * 100).toFixed(1)}%` : '-'}</td>
+                      <td className={`py-2 pr-4 ${deltaColor}`}>
+                        {run.delta_precision != null ? `${run.delta_precision > 0 ? '+' : ''}${(run.delta_precision * 100).toFixed(1)}%` : '-'}
+                        {hasRegression && <span className="ml-1 text-red-500">!</span>}
+                      </td>
+                      <td className="py-2 text-xs text-gray-500 max-w-[100px] truncate">{run.git_branch || '-'}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Seccion 7: Links rapidos */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Acceso rapido</h2>
         <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
@@ -381,6 +458,120 @@ export default function MetricasPage() {
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+// --- M-01: Último Run ---
+
+function UltimoRunSection({ data }: { data: PipelineData | null }) {
+  if (!data) return null;
+
+  // Los campos ultimo_run_* vienen del RPC get_pipeline_status → sistema_estado
+  const raw = data as any;
+  const runId = raw.ultimo_run_id;
+  if (!runId) {
+    return (
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="flex items-center gap-2 mb-2">
+          <Zap className="w-4 h-4 text-gray-400" />
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Ultimo Run</h2>
+        </div>
+        <p className="text-sm text-gray-400">Sin datos de run. Ejecutar el pipeline para ver resultados.</p>
+      </div>
+    );
+  }
+
+  const failuresPct = raw.ultimo_run_failures_pct || 0;
+  const failColor = failuresPct >= 0.30 ? 'text-red-600' : failuresPct >= 0.20 ? 'text-amber-600' : 'text-green-600';
+  const failBg = failuresPct >= 0.30 ? 'bg-red-50 border-red-200' : failuresPct >= 0.20 ? 'bg-amber-50 border-amber-200' : 'bg-green-50 border-green-200';
+  const escalados = raw.ultimo_run_escalados || 0;
+  const deltaPrec = raw.ultimo_run_delta_precision;
+  const deltaRegr = raw.ultimo_run_delta_regresiones || 0;
+  const deltaMej = raw.ultimo_run_delta_mejoras || 0;
+
+  let topFailures: Array<{tarea: string; oferta: string; score: number; gap: number; mejor_skill: string}> = [];
+  try {
+    const tf = raw.ultimo_run_top_failures;
+    if (tf) topFailures = typeof tf === 'string' ? JSON.parse(tf) : tf;
+  } catch {}
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-1">
+        <div className="flex items-center gap-2">
+          <Zap className="w-4 h-4 text-blue-500" />
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Ultimo Run</h2>
+        </div>
+        <span className="text-xs font-mono text-gray-400">{runId}</span>
+      </div>
+      <div className="text-xs text-gray-400 mb-4">
+        {raw.ultimo_run_timestamp ? formatTimeAgo(new Date(raw.ultimo_run_timestamp)) : ''}{' '}
+        {raw.ultimo_run_branch && <span>· branch: {raw.ultimo_run_branch}</span>}{' '}
+        {raw.ultimo_run_nlp_version && <span>· NLP {raw.ultimo_run_nlp_version}</span>}{' '}
+        {raw.ultimo_run_matching_version && <span>· Match {raw.ultimo_run_matching_version}</span>}
+      </div>
+
+      {/* KPI cards */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+        <RunKPI label="Ofertas" value={raw.ultimo_run_ofertas} />
+        <RunKPI label="Skills" value={raw.ultimo_run_skills} />
+        <div className={`rounded-lg border p-3 text-center ${failBg}`}>
+          <div className={`text-lg font-bold ${failColor}`}>{raw.ultimo_run_failures || 0}</div>
+          <div className="text-xs text-gray-500">Fallidas</div>
+          <div className={`text-xs font-medium ${failColor}`}>{(failuresPct * 100).toFixed(1)}%</div>
+        </div>
+        <RunKPI label="Errores" value={raw.ultimo_run_errores} warn={raw.ultimo_run_errores > 0} />
+        <RunKPI label="Escalados" value={escalados} warn={escalados > 0} />
+      </div>
+
+      {/* Delta vs anterior */}
+      {(deltaPrec != null || deltaMej > 0 || deltaRegr > 0) && (
+        <div className="bg-gray-50 rounded-lg p-3 mb-4 text-sm">
+          <span className="text-xs text-gray-500 font-medium">vs run anterior: </span>
+          {raw.ultimo_run_precision != null && (
+            <span className="mr-3">
+              Precision: {(raw.ultimo_run_precision * 100).toFixed(1)}%
+              {deltaPrec != null && (
+                <span className={deltaPrec > 0 ? 'text-green-600' : deltaPrec < 0 ? 'text-red-600' : 'text-gray-500'}>
+                  {' '}({deltaPrec > 0 ? '+' : ''}{(deltaPrec * 100).toFixed(1)}%)
+                </span>
+              )}
+            </span>
+          )}
+          {deltaMej > 0 && <span className="text-green-600 mr-3">Mejoras: +{deltaMej}</span>}
+          {deltaRegr > 0 && <span className="text-red-600 mr-3">Regresiones: {deltaRegr}</span>}
+          {raw.ultimo_run_reglas_nuevas > 0 && <span className="text-blue-600">Reglas nuevas: {raw.ultimo_run_reglas_nuevas}</span>}
+        </div>
+      )}
+
+      {/* Top failures */}
+      {topFailures.length > 0 && (
+        <div>
+          <div className="text-xs text-gray-500 font-medium mb-2">Tareas mas cercanas al umbral</div>
+          {topFailures.map((f, i) => (
+            <div key={i} className="flex items-start gap-2 text-xs text-gray-600 mb-1">
+              <span className="text-gray-400 mt-0.5">·</span>
+              <div>
+                <span className="font-medium">&quot;{f.tarea?.slice(0, 60)}&quot;</span>
+                <span className="text-gray-400 ml-2">score {f.score?.toFixed(2)} · gap {f.gap?.toFixed(3)}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RunKPI({ label, value, warn }: { label: string; value: number | null; warn?: boolean }) {
+  return (
+    <div className={`rounded-lg border p-3 text-center ${warn ? 'bg-amber-50 border-amber-200' : 'bg-gray-50 border-gray-200'}`}>
+      <div className={`text-lg font-bold ${warn ? 'text-amber-700' : 'text-gray-900'}`}>
+        {value != null ? value.toLocaleString() : '-'}
+      </div>
+      <div className="text-xs text-gray-500">{label}</div>
     </div>
   );
 }
