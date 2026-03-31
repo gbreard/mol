@@ -44,9 +44,9 @@ AS $$
         d.isco_label as ocupacion_label,
         COUNT(DISTINCT og.id_oferta) as ofertas_count,
         ROUND(
-            COUNT(DISTINCT og.id_oferta)::REAL /
-            NULLIF(t.total_ocupacion, 0) * 100, 1
-        ) as pct_de_ocupacion
+            (COUNT(DISTINCT og.id_oferta)::NUMERIC /
+            NULLIF(t.total_ocupacion, 0) * 100)::NUMERIC, 1
+        )::REAL as pct_de_ocupacion
     FROM ofertas_del_grupo og
     JOIN ofertas_dashboard d ON og.id_oferta = d.id_oferta
     LEFT JOIN totales_por_isco t ON d.isco_code = t.isco_code
