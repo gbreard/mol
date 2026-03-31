@@ -544,7 +544,6 @@ export default function EquivalenciasPage() {
           Siguiente
         </button>
       </div>
-      </div>
       </>}
     </div>
   );
