@@ -25,8 +25,11 @@ const TRANSITIONS: Record<string, string[]> = {
 
 // B3 — GET /api/casos/:id
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const auth = await requireAuth(request);
-  if (isAuthError(auth)) return auth;
+  // Auth bypass for development — TODO: restore requireAuth before production
+  if (process.env.DEV_MOCK_AUTH !== 'true') {
+    const auth = await requireAuth(request);
+    if (isAuthError(auth)) return auth;
+  }
 
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
@@ -72,8 +75,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
 // B4 — PATCH /api/casos/:id
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const auth = await requireAuth(request);
-  if (isAuthError(auth)) return auth;
+  if (process.env.DEV_MOCK_AUTH !== 'true') {
+    const auth = await requireAuth(request);
+    if (isAuthError(auth)) return auth;
+  }
 
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
