@@ -18,6 +18,7 @@ import numpy as np
 from pathlib import Path
 from collections import defaultdict, Counter
 from sklearn.cluster import AgglomerativeClustering
+from sklearn.metrics.pairwise import cosine_similarity
 
 PROJECT = Path(__file__).parent.parent
 DB_PATH = PROJECT / "database" / "bumeran_scraping.db"
@@ -75,7 +76,21 @@ def calculate_frequencies(metadata):
     return freq
 
 
-def build_equivalence_table(metadata, cluster_labels, frequencies):
+def calculate_group_similarity(embeddings, indices):
+    """Calcula similitud promedio y mínima entre miembros del grupo."""
+    if len(indices) < 2:
+        return 1.0, 1.0
+    group_embs = embeddings[indices]
+    sim_matrix = cosine_similarity(group_embs)
+    n = len(indices)
+    pairwise_sims = []
+    for i in range(n):
+        for j in range(i + 1, n):
+            pairwise_sims.append(float(sim_matrix[i][j]))
+    return round(float(np.mean(pairwise_sims)), 4), round(float(np.min(pairwise_sims)), 4)
+
+
+def build_equivalence_table(metadata, cluster_labels, frequencies, embeddings=None):
     """Construye la tabla de equivalencias."""
     groups = defaultdict(list)
     for i, cl in enumerate(cluster_labels):
@@ -117,6 +132,11 @@ def build_equivalence_table(metadata, cluster_labels, frequencies):
         freq_total = sum(m['frecuencia'] for m in members)
         eq_id = f"EQ-{group_id:05d}"
 
+        # Score de confianza del clustering
+        sim_avg, sim_min = (0.0, 0.0)
+        if embeddings is not None:
+            sim_avg, sim_min = calculate_group_similarity(embeddings, indices)
+
         equiv_table.append({
             'id': eq_id,
             'label_representante': representative,
@@ -125,6 +145,8 @@ def build_equivalence_table(metadata, cluster_labels, frequencies):
             'cantidad_miembros': len(members),
             'frecuencia_total': freq_total,
             'estado': 'auto',
+            'similitud_promedio': sim_avg,
+            'similitud_minima': sim_min,
         })
 
         for m in members:
@@ -192,7 +214,7 @@ def main():
     frequencies = calculate_frequencies(metadata)
 
     # Build table
-    equiv_table, lookup_table = build_equivalence_table(metadata, cluster_labels, frequencies)
+    equiv_table, lookup_table = build_equivalence_table(metadata, cluster_labels, frequencies, embeddings=embeddings)
 
     groups_with_members = [eq for eq in equiv_table if eq['cantidad_miembros'] >= 2]
     total_skills_grouped = sum(eq['cantidad_miembros'] for eq in groups_with_members)

@@ -1924,6 +1924,34 @@ def run_matching_pipeline(
     # Inicializar matcher
     matcher = MatcherV3(db_conn=conn, verbose=verbose)
 
+    # EQUIV-UI: Verificar si equiv_lookup está desactualizado
+    try:
+        _config_path = Path(__file__).parent.parent / "config" / "supabase_config.json"
+        if _config_path.exists():
+            import json as _json
+            _sb_config = _json.load(open(_config_path))
+            if _sb_config.get('url') and _sb_config.get('anon_key'):
+                from supabase import create_client as _create_client
+                _sb = _create_client(_sb_config['url'], _sb_config['anon_key'])
+                _latest = _sb.rpc('get_latest_equiv_update').execute()
+                if _latest.data:
+                    from datetime import datetime, timezone
+                    _latest_str = str(_latest.data)
+                    _latest_update = datetime.fromisoformat(_latest_str.replace('Z', '+00:00'))
+                    _loaded_at = getattr(SkillsImplicitExtractor, '_equiv_loaded_at', None)
+                    if _loaded_at and _latest_update > _loaded_at:
+                        SkillsImplicitExtractor._equiv_lookup = None
+                        SkillsImplicitExtractor._equiv_groups = None
+                        SkillsImplicitExtractor._initialized = False
+                        matcher = MatcherV3(db_conn=conn, verbose=verbose)
+                        if verbose:
+                            print(f"[EQUIV] Lookup recargado (último cambio: {_latest_str})")
+                    elif verbose:
+                        print(f"[EQUIV] Lookup vigente (sin cambios desde última carga)")
+    except Exception as _e:
+        if verbose:
+            print(f"[EQUIV] WARN: No se pudo verificar staleness: {_e}")
+
     stats = {
         'total': len(ofertas),
         'procesadas': 0,

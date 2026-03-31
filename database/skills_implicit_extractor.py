@@ -237,6 +237,10 @@ class SkillsImplicitExtractor:
 
         SkillsImplicitExtractor._initialized = True
 
+        # Registrar timestamp de carga de equivalencias (para staleness check)
+        from datetime import datetime, timezone
+        SkillsImplicitExtractor._equiv_loaded_at = datetime.now(timezone.utc)
+
         if self.verbose:
             print(f"[SKILLS] Inicializado: {len(self.metadata)} skills, umbral={self.threshold}")
 

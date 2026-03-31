@@ -12,6 +12,13 @@ interface Member {
   frecuencia: number;
 }
 
+interface ImpactoOcupacion {
+  isco_code: string;
+  ocupacion_label: string;
+  ofertas_count: number;
+  pct_de_ocupacion: number;
+}
+
 interface Equivalence {
   id: string;
   label_representante: string;
@@ -22,6 +29,8 @@ interface Equivalence {
   estado: string;
   revisado_por: string | null;
   notas: string | null;
+  similitud_promedio: number | null;
+  similitud_minima: number | null;
 }
 
 interface Stats {
@@ -43,6 +52,8 @@ export default function EquivalenciasPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [estadoFilter, setEstadoFilter] = useState("");
+  const [sortBy, setSortBy] = useState("frecuencia");
+  const [impactoCache, setImpactoCache] = useState<Record<string, ImpactoOcupacion[]>>({});
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [editing, setEditing] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ label_representante: "", label_argentino: "", notas: "" });
@@ -58,6 +69,7 @@ export default function EquivalenciasPage() {
       const params = new URLSearchParams();
       if (estadoFilter) params.set("estado", estadoFilter);
       if (search) params.set("search", search);
+      if (sortBy) params.set("sort", sortBy);
       params.set("limit", String(pageSize));
       params.set("offset", String(page * pageSize));
 
@@ -72,7 +84,20 @@ export default function EquivalenciasPage() {
     }
   }
 
-  useEffect(() => { loadData(); }, [estadoFilter, page]);
+  // Lazy load impacto en ocupaciones
+  async function loadImpacto(eqId: string) {
+    if (impactoCache[eqId]) return;
+    try {
+      const { supabase } = await import("@/lib/supabase");
+      if (!supabase) return;
+      const result = await supabase.rpc('get_equivalencia_impacto', { p_equivalence_id: eqId });
+      if (result.data) {
+        setImpactoCache(prev => ({ ...prev, [eqId]: result.data }));
+      }
+    } catch {}
+  }
+
+  useEffect(() => { loadData(); }, [estadoFilter, page, sortBy]);
 
   // Load descriptions from skills_searchable.json (once)
   useEffect(() => {
@@ -236,6 +261,12 @@ export default function EquivalenciasPage() {
           <option value="revisado">Revisados</option>
           <option value="aprobado">Aprobados</option>
         </select>
+        <select value={sortBy} onChange={e => { setSortBy(e.target.value); setPage(0); }}
+          className="border rounded-lg px-3 py-2 text-sm">
+          <option value="frecuencia">Frecuencia</option>
+          <option value="confianza_desc">Confianza alta</option>
+          <option value="confianza_asc">Revisar primero</option>
+        </select>
       </div>
 
       {/* List */}
@@ -257,6 +288,7 @@ export default function EquivalenciasPage() {
                       <span className="text-xs text-gray-400">({eq.label_representante})</span>
                     )}
                     <span className={`text-xs px-2 py-0.5 rounded-full ${ESTADO_STYLES[eq.estado]}`}>{eq.estado}</span>
+                    {eq.similitud_promedio != null && <ConfidenceBadge sim={eq.similitud_promedio} />}
                   </div>
                   <div className="text-xs text-gray-400 mt-0.5">
                     {eq.cantidad_miembros} equivalentes · {eq.frecuencia_total.toLocaleString("es-AR")} apariciones en ofertas
@@ -393,6 +425,8 @@ export default function EquivalenciasPage() {
                       </div>
                     );
                   })}
+                  {/* Panel de impacto en ocupaciones (lazy load) */}
+                  <ImpactoPanel eqId={eq.id} impacto={impactoCache[eq.id]} onLoad={loadImpacto} />
                 </div>
               )}
             </div>
@@ -412,6 +446,57 @@ export default function EquivalenciasPage() {
           Siguiente
         </button>
       </div>
+    </div>
+  );
+}
+
+// ─── Componentes auxiliares ───────────────────────────────────────
+
+function ConfidenceBadge({ sim }: { sim: number }) {
+  let dots = 1;
+  let color = 'text-red-500';
+  if (sim >= 0.92) { dots = 4; color = 'text-green-500'; }
+  else if (sim >= 0.88) { dots = 3; color = 'text-blue-500'; }
+  else if (sim >= 0.85) { dots = 2; color = 'text-amber-500'; }
+
+  return (
+    <span className={`text-xs ${color} ml-1`} title={`Similitud promedio: ${(sim * 100).toFixed(1)}%`}>
+      {'●'.repeat(dots)}{'○'.repeat(4 - dots)}
+      <span className="text-gray-400 ml-1">{(sim * 100).toFixed(0)}%</span>
+    </span>
+  );
+}
+
+function ImpactoPanel({ eqId, impacto, onLoad }: { eqId: string; impacto?: ImpactoOcupacion[]; onLoad: (id: string) => void }) {
+  useEffect(() => { if (!impacto) onLoad(eqId); }, [eqId]);
+
+  if (!impacto) {
+    return (
+      <div className="text-xs text-gray-400 mt-2">
+        <Loader2 className="w-3 h-3 animate-spin inline mr-1" />
+        Cargando impacto en ocupaciones...
+      </div>
+    );
+  }
+
+  if (impacto.length === 0) {
+    return (
+      <div className="text-xs text-gray-400 mt-2">Sin datos de impacto en ocupaciones</div>
+    );
+  }
+
+  return (
+    <div className="mt-3 pt-3 border-t border-gray-200">
+      <div className="text-xs text-gray-500 mb-2">Impacto en ocupaciones:</div>
+      {impacto.map((o, i) => (
+        <div key={i} className="flex items-center gap-2 text-xs text-gray-600 mb-1">
+          <span className="text-gray-400">·</span>
+          <span className="font-medium">{o.ocupacion_label}</span>
+          <span className="text-gray-400">({o.isco_code})</span>
+          <span className="ml-auto text-gray-500">{o.ofertas_count.toLocaleString()} ofertas</span>
+          <span className="text-blue-500">({o.pct_de_ocupacion}%)</span>
+        </div>
+      ))}
     </div>
   );
 }
