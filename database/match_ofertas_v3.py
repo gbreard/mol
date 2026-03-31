@@ -1491,12 +1491,17 @@ class MatcherV3:
 
             count = 0
             for skill in seen_uris.values():
+                # M-08b: texto_original — texto fuente antes del match ESCO
+                texto_orig = skill.get('texto_fuente') or skill.get('tarea') or None
+                if texto_orig and len(texto_orig) > 200:
+                    texto_orig = texto_orig[:200]
+
                 self.conn.execute('''
                     INSERT INTO ofertas_esco_skills_detalle (
                         id_oferta, skill_mencionado, skill_tipo_fuente,
                         esco_skill_uri, esco_skill_label, match_score, match_method,
-                        esco_skill_type, source_classification
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        esco_skill_type, source_classification, texto_original
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (
                     str(id_oferta),
                     skill.get('skill_esco', skill.get('skill', '')),
@@ -1512,7 +1517,8 @@ class MatcherV3:
                         'L2': skill.get('L2', ''),
                         'L2_nombre': skill.get('L2_nombre', ''),
                         'es_digital': skill.get('es_digital', False)
-                    }, ensure_ascii=False)
+                    }, ensure_ascii=False),
+                    texto_orig
                 ))
                 count += 1
 
