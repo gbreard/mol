@@ -14,10 +14,11 @@ const DEV_MOCK_USER = {
 export async function updateSession(request: NextRequest) {
   const supabaseResponse = NextResponse.next({ request });
 
-  // Dev bypass: retorna usuario admin mock sin tocar Supabase
-  // En Vercel Edge Runtime, usar NEXT_PUBLIC_ para que sea accesible
-  const devMock = process.env.DEV_MOCK_AUTH || process.env.NEXT_PUBLIC_DEV_MOCK_AUTH
-  if (devMock === "true") {
+  // Dev bypass: simula usuario admin para desarrollo S2
+  // Vercel Edge Runtime no recibe env vars del dashboard en deploys CLI
+  // TODO: quitar cuando se implemente auth real con Supabase
+  const DEV_BYPASS = true
+  if (DEV_BYPASS || process.env.DEV_MOCK_AUTH === "true") {
     const user = DEV_MOCK_USER;
 
     if (user && request.nextUrl.pathname === "/login") {
