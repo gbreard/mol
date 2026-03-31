@@ -130,10 +130,18 @@ export default function DetalleCasoPage() {
         if (!res.ok) throw new Error(`Error ${res.status}`)
         const data = await res.json()
 
-        setCaso(data.caso)
+        // La API devuelve el caso en la raíz con persona y perfil embebidos
+        setCaso({
+          id: data.id,
+          persona_id: data.persona_id,
+          estado: data.estado,
+          objetivo: data.objetivo,
+          prioridad: data.prioridad,
+          nota_tecnico: data.nota_tecnico,
+          created_at: data.created_at,
+        })
         setPersona(data.persona)
 
-        // Skills come from the perfil included in the caso response
         if (data.perfil?.skills) {
           setSkills(data.perfil.skills)
         }
