@@ -15,7 +15,6 @@ export async function updateSession(request: NextRequest) {
   const supabaseResponse = NextResponse.next({ request });
 
   // Dev bypass: retorna usuario admin mock sin tocar Supabase
-  console.log('[middleware] DEV_MOCK_AUTH=', process.env.DEV_MOCK_AUTH)
   if (process.env.DEV_MOCK_AUTH === "true") {
     const user = DEV_MOCK_USER;
 

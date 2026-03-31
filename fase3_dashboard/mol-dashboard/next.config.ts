@@ -8,6 +8,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  env: {
+    DEV_MOCK_AUTH: process.env.DEV_MOCK_AUTH || '',
+  },
   async headers() {
     return [
       {
