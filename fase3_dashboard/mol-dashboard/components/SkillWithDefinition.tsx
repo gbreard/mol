@@ -1,7 +1,7 @@
 'use client'
 
 export type SkillConfidence = 'confirmed' | 'unsure' | 'discarded'
-export type SkillVia = 'ocupacion' | 'busqueda' | 'texto_libre'
+export type SkillVia = 'ocupacion' | 'busqueda' | 'texto_libre' | 'tarea' | 'texto' | 'formacion'
 
 export interface SkillItem {
   uri: string
@@ -24,6 +24,9 @@ const VIA_LABELS: Record<SkillVia, string> = {
   ocupacion: 'vía ocupación',
   busqueda: 'vía búsqueda',
   texto_libre: 'vía texto libre',
+  tarea: 'vía tarea',
+  texto: 'vía texto libre',
+  formacion: 'vía formación',
 }
 
 const TYPE_LABELS: Record<string, string> = {

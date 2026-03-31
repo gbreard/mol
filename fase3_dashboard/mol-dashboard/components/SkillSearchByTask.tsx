@@ -14,9 +14,11 @@ interface SkillSearchResult {
 
 interface Props {
   onSkillsChange?: (skills: SkillItem[]) => void
+  hideList?: boolean
+  existingUris?: Set<string>
 }
 
-export default function SkillSearchByTask({ onSkillsChange }: Props) {
+export default function SkillSearchByTask({ onSkillsChange, hideList, existingUris }: Props) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<SkillSearchResult[]>([])
   const [loading, setLoading] = useState(false)
@@ -53,7 +55,8 @@ export default function SkillSearchByTask({ onSkillsChange }: Props) {
   }, [query, search])
 
   const addSkill = (result: SkillSearchResult) => {
-    if (addedSkills.some((s) => s.uri === result.uri)) return
+    // Ignorar si ya está en el store global o en la lista interna
+    if (existingUris?.has(result.uri) || addedSkills.some((s) => s.uri === result.uri)) return
     const newSkill: SkillItem = { ...result, confidence: 'confirmed', via: 'busqueda' }
     const updated = [...addedSkills, newSkill]
     setAddedSkills(updated)
@@ -111,40 +114,49 @@ export default function SkillSearchByTask({ onSkillsChange }: Props) {
             {results.length === 0 ? (
               <li className="px-4 py-3 text-sm text-gray-500">Sin resultados para &quot;{query}&quot;</li>
             ) : (
-              results.map((r) => (
-                <li
-                  key={r.uri}
-                  role="option"
-                  aria-selected={addedSkills.some((s) => s.uri === r.uri)}
-                  onMouseDown={() => addSkill(r)}
-                  className="flex cursor-pointer items-start gap-2 px-4 py-2.5 hover:bg-blue-50"
-                >
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-sm font-medium text-gray-900">{r.label}</span>
-                      <span className="rounded bg-blue-100 px-1.5 py-0.5 text-xs text-blue-700">
-                        {r.type === 'skill' ? 'competencia' : 'conocimiento'}
-                      </span>
-                      {r.source === 'argentina_approved' && (
-                        <span className="rounded bg-orange-100 px-1.5 py-0.5 text-xs text-orange-700">emergente</span>
+              results.map((r) => {
+                const yaAgregada = addedSkills.some((s) => s.uri === r.uri) || existingUris?.has(r.uri)
+                return (
+                  <li
+                    key={r.uri}
+                    role="option"
+                    aria-selected={yaAgregada}
+                    className="flex cursor-pointer items-start gap-2 px-4 py-2.5 hover:bg-blue-50"
+                  >
+                    <div className="min-w-0 flex-1" onMouseDown={() => addSkill(r)}>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm font-medium text-gray-900">{r.label}</span>
+                        <span className="rounded bg-blue-100 px-1.5 py-0.5 text-xs text-blue-700">
+                          {r.type === 'skill' ? 'competencia' : 'conocimiento'}
+                        </span>
+                        {r.source === 'argentina_approved' && (
+                          <span className="rounded bg-orange-100 px-1.5 py-0.5 text-xs text-orange-700">emergente</span>
+                        )}
+                      </div>
+                      {r.description && (
+                        <p className="mt-0.5 truncate text-xs text-gray-400">{r.description}</p>
                       )}
                     </div>
-                    {r.description && (
-                      <p className="mt-0.5 truncate text-xs text-gray-400">{r.description}</p>
+                    {yaAgregada ? (
+                      <span className="shrink-0 text-xs text-green-500 py-1">✓ agregada</span>
+                    ) : (
+                      <button
+                        onMouseDown={() => addSkill(r)}
+                        className="shrink-0 flex items-center gap-1 bg-blue-600 text-white text-xs font-medium px-2.5 py-1 rounded-lg hover:bg-blue-700 transition-colors"
+                      >
+                        + Agregar
+                      </button>
                     )}
-                  </div>
-                  {addedSkills.some((s) => s.uri === r.uri) && (
-                    <span className="text-xs text-green-500">✓ agregada</span>
-                  )}
-                </li>
-              ))
+                  </li>
+                )
+              })
             )}
           </ul>
         )}
       </div>
 
-      {/* Added skills list */}
-      {addedSkills.length > 0 && (
+      {/* Added skills list — oculta cuando el padre ya muestra el acumulador */}
+      {!hideList && addedSkills.length > 0 && (
         <div className="space-y-2">
           <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
             Competencias agregadas ({addedSkills.length})
