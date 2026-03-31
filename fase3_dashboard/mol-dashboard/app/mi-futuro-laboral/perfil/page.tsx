@@ -213,14 +213,9 @@ export default function PerfilPage() {
 
   const handleSkillsFromVia = (skills: SkillItem[]) => addSkills(skills)
 
-  const handleFormacion = (result: { skills_derivadas: string[] }) => {
-    const nuevas: SkillItem[] = result.skills_derivadas.map((label, i) => ({
-      uri: `formacion_${Date.now()}_${i}`,
-      label,
-      type: 'knowledge' as const,
-      description: `Competencia derivada de tu formación.`,
-      source: 'esco' as const,
-      confidence: 'confirmed' as SkillConfidence,
+  const handleFormacion = (result: { id: string; titulo: string; skills_derivadas: SkillItem[] }) => {
+    const nuevas: SkillItem[] = result.skills_derivadas.map((s) => ({
+      ...s,
       via: 'formacion' as const,
     }))
     addSkills(nuevas)
