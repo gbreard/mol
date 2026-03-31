@@ -15,6 +15,7 @@ export async function updateSession(request: NextRequest) {
   const supabaseResponse = NextResponse.next({ request });
 
   // Dev bypass: retorna usuario admin mock sin tocar Supabase
+  console.log('[middleware] DEV_MOCK_AUTH=', process.env.DEV_MOCK_AUTH)
   if (process.env.DEV_MOCK_AUTH === "true") {
     const user = DEV_MOCK_USER;
 
@@ -57,8 +58,7 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Rutas públicas que no requieren autenticación
-  // TODO: quitar /oficina-empleo y /empresas de públicas cuando auth esté implementada
-  const publicPrefixes = ["/login", "/auth/callback", "/informes", "/precios", "/registro", "/checkout", "/skills", "/para-oficinas", "/mi-futuro-laboral", "/oficina-empleo", "/empresas", "/reporte", "/metodologia", "/terminos", "/politica-datos"];
+  const publicPrefixes = ["/login", "/auth/callback", "/informes", "/precios", "/registro", "/checkout", "/skills", "/para-oficinas", "/mi-futuro-laboral", "/metodologia", "/terminos", "/politica-datos"];
   const publicExact = ["/"];
   const isPublicRoute =
     publicExact.includes(request.nextUrl.pathname) ||
