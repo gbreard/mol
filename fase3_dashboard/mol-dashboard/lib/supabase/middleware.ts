@@ -15,7 +15,9 @@ export async function updateSession(request: NextRequest) {
   const supabaseResponse = NextResponse.next({ request });
 
   // Dev bypass: retorna usuario admin mock sin tocar Supabase
-  if (process.env.DEV_MOCK_AUTH === "true") {
+  // En Vercel Edge Runtime, usar NEXT_PUBLIC_ para que sea accesible
+  const devMock = process.env.DEV_MOCK_AUTH || process.env.NEXT_PUBLIC_DEV_MOCK_AUTH
+  if (devMock === "true") {
     const user = DEV_MOCK_USER;
 
     if (user && request.nextUrl.pathname === "/login") {
