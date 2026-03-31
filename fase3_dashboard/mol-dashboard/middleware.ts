@@ -1,15 +1,7 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
-  // S2 dev: bypass total para /oficina-empleo y /empresas
-  // TODO: quitar al implementar auth
-  if (
-    request.nextUrl.pathname.startsWith("/oficina-empleo") ||
-    request.nextUrl.pathname.startsWith("/empresas")
-  ) {
-    return NextResponse.next();
-  }
   return await updateSession(request);
 }
 
