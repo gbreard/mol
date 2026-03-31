@@ -28,10 +28,10 @@ export interface SemanticMatchOffer {
 /**
  * GET /api/matching-offers-semantic?skill_uris=uri1,uri2&limit=20&threshold=0.55
  *
- * Matching semántico con pgvector:
- * 1. Expande skills con similares semánticos
- * 2. Busca ofertas que tengan esas skills (directamente en ofertas_skills)
- * 3. Agrupa por oferta y calcula match score
+ * Matching semántico real con pgvector en 3 pasos:
+ * 1. expand_skills_semantic (pgvector cosine en skills_embeddings — 14K rows, <1s)
+ * 2. Buscar ofertas que tienen esas skills expandidas (index lookup en ofertas_skills)
+ * 3. Calcular match score con info de similaridad del paso 1
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
@@ -48,16 +48,16 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Step 1: Expand skills semantically
+    // Step 1: Expand skills with pgvector (cosine similarity on 14K embeddings)
     const { data: expanded, error: expandError } = await supabase.rpc('expand_skills_semantic', {
       skill_uris: skillUris,
       similarity_threshold: threshold,
-      max_per_skill: 5,
+      max_per_skill: 8,
     })
 
     if (expandError) throw expandError
 
-    // Build expanded URI map
+    // Build map: expanded_uri → { similarity, originalLabel, isExact }
     const expandedMap = new Map<string, { similarity: number; originalLabel: string; isExact: boolean }>()
     for (const row of (expanded || [])) {
       const existing = expandedMap.get(row.expanded_uri)
@@ -71,38 +71,37 @@ export async function GET(request: NextRequest) {
     }
 
     const allExpandedUris = Array.from(expandedMap.keys())
-
     if (allExpandedUris.length === 0) {
       return NextResponse.json({ offers: [], total: 0, expanded_skills: 0 })
     }
 
-    // Step 2: Find offers that HAVE these skills (search in ofertas_skills directly)
-    const { data: matchedSkillRows, error: skillsError } = await supabase
+    // Step 2: Find offers that have these expanded skills (index lookup, fast)
+    const { data: matchedRows, error: matchError } = await supabase
       .from('ofertas_skills')
       .select('id_oferta, skill_uri, preferred_label')
       .in('skill_uri', allExpandedUris)
       .limit(2000)
 
-    if (skillsError) throw skillsError
-    if (!matchedSkillRows || matchedSkillRows.length === 0) {
+    if (matchError) throw matchError
+    if (!matchedRows || matchedRows.length === 0) {
       return NextResponse.json({ offers: [], total: 0, expanded_skills: allExpandedUris.length })
     }
 
-    // Group matched skills by offer
-    const matchesByOffer = new Map<string, Array<{ skill_uri: string; preferred_label: string }>>()
-    for (const row of matchedSkillRows) {
+    // Group by offer
+    const byOffer = new Map<string, Array<{ skill_uri: string; preferred_label: string }>>()
+    for (const row of matchedRows) {
       const oid = String(row.id_oferta)
-      if (!matchesByOffer.has(oid)) matchesByOffer.set(oid, [])
-      matchesByOffer.get(oid)!.push(row)
+      if (!byOffer.has(oid)) byOffer.set(oid, [])
+      byOffer.get(oid)!.push(row)
     }
 
-    // Get top offer IDs (most matched skills first)
-    const topOfferIds = Array.from(matchesByOffer.entries())
+    // Sort by number of matched skills, take top candidates
+    const topOfferIds = Array.from(byOffer.entries())
       .sort((a, b) => b[1].length - a[1].length)
       .slice(0, limit * 2)
       .map(([oid]) => oid)
 
-    // Step 3: Get offer details + total skill counts
+    // Step 3: Get offer details
     const { data: ofertas } = await supabase
       .from('ofertas_dashboard')
       .select('id_oferta, titulo, empresa, provincia, isco_code')
@@ -114,26 +113,26 @@ export async function GET(request: NextRequest) {
 
     const ofertaMap = new Map(ofertas.map(o => [String(o.id_oferta), o]))
 
-    // Get total skill count per offer
-    const { data: totalSkillRows } = await supabase
+    // Get total skills per offer for score calculation
+    const { data: totalRows } = await supabase
       .from('ofertas_skills')
       .select('id_oferta, skill_uri')
       .in('id_oferta', topOfferIds)
 
-    const totalSkillsByOffer = new Map<string, number>()
-    for (const row of (totalSkillRows || [])) {
+    const totalByOffer = new Map<string, number>()
+    for (const row of (totalRows || [])) {
       const oid = String(row.id_oferta)
-      totalSkillsByOffer.set(oid, (totalSkillsByOffer.get(oid) || 0) + 1)
+      totalByOffer.set(oid, (totalByOffer.get(oid) || 0) + 1)
     }
 
-    // Step 4: Calculate match scores
+    // Build results with similarity info from pgvector
     const results: SemanticMatchOffer[] = []
 
-    for (const [oid, matchedSkills] of matchesByOffer) {
+    for (const [oid, matchedSkills] of byOffer) {
       const oferta = ofertaMap.get(oid)
       if (!oferta) continue
 
-      const totalSkills = totalSkillsByOffer.get(oid) || matchedSkills.length
+      const totalSkills = totalByOffer.get(oid) || matchedSkills.length
 
       const detalle: SemanticMatchOffer['skills_detalle'] = []
       for (const ms of matchedSkills) {
@@ -147,6 +146,8 @@ export async function GET(request: NextRequest) {
           })
         }
       }
+
+      if (detalle.length === 0) continue
 
       detalle.sort((a, b) => b.similarity - a.similarity)
       const matchScore = Math.round((detalle.length / totalSkills) * 1000) / 10
