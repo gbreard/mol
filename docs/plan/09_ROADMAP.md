@@ -110,7 +110,7 @@ reveló grietas estructurales en el motor de datos:
 |----|-------|-----------|--------|
 | M-06 | Registrar tareas fallidas (tarea + score + skill más cercana) | CRÍTICO | ✅ Completado 2026-03-30 |
 | M-07 | Resolver deuda de procesamiento (--only-pending, 5.415 ofertas) | ALTO | ⬜ |
-| M-08 | Conectar fuentes declaradas con ESCO via BGE-M3 | ALTO | ⬜ |
+| M-08 | Conectar fuentes declaradas con ESCO via BGE-M3 | ALTO | ✅ Completado 2026-03-31 |
 
 ### Nivel 3 — Circulación de conocimiento
 
