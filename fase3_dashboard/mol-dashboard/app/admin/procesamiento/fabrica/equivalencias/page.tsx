@@ -54,6 +54,9 @@ export default function EquivalenciasPage() {
   const [estadoFilter, setEstadoFilter] = useState("");
   const [sortBy, setSortBy] = useState("frecuencia");
   const [impactoCache, setImpactoCache] = useState<Record<string, ImpactoOcupacion[]>>({});
+  const [activeTab, setActiveTab] = useState<"equivalencias" | "candidatos">("equivalencias");
+  const [candidates, setCandidates] = useState<any[]>([]);
+  const [candidatesLoading, setCandidatesLoading] = useState(false);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [editing, setEditing] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ label_representante: "", label_argentino: "", notas: "" });
@@ -97,7 +100,36 @@ export default function EquivalenciasPage() {
     } catch {}
   }
 
+  async function loadCandidates() {
+    setCandidatesLoading(true);
+    try {
+      const { supabase } = await import("@/lib/supabase");
+      if (!supabase) return;
+      const result = await supabase.rpc('get_equiv_candidates', { p_estado: 'pendiente', limit_n: 50 });
+      if (result.data) setCandidates(result.data);
+    } catch {} finally {
+      setCandidatesLoading(false);
+    }
+  }
+
+  async function handleCandidateAction(id: number, action: 'aprobar' | 'rechazar') {
+    try {
+      const { supabase } = await import("@/lib/supabase");
+      if (!supabase) return;
+      if (action === 'aprobar') {
+        await supabase.rpc('aprobar_candidato', { p_candidate_id: id, p_action: 'crear_grupo' });
+      } else {
+        await supabase.rpc('rechazar_candidato', { p_candidate_id: id });
+      }
+      setCandidates(prev => prev.filter(c => c.id !== id));
+      setMessage({ type: "ok", text: `Candidato ${action === 'aprobar' ? 'aprobado' : 'rechazado'}` });
+    } catch (e: any) {
+      setMessage({ type: "error", text: e.message || "Error" });
+    }
+  }
+
   useEffect(() => { loadData(); }, [estadoFilter, page, sortBy]);
+  useEffect(() => { if (activeTab === 'candidatos') loadCandidates(); }, [activeTab]);
 
   // Load descriptions from skills_searchable.json (once)
   useEffect(() => {
@@ -212,8 +244,28 @@ export default function EquivalenciasPage() {
             {stats.total} grupos · {stats.auto} automaticos · {stats.revisado} revisados · {stats.aprobado} aprobados
           </p>
         </div>
-        <button onClick={loadData} className="flex items-center gap-2 text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-100 text-sm">
+        <button onClick={() => activeTab === 'candidatos' ? loadCandidates() : loadData()} className="flex items-center gap-2 text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-100 text-sm">
           <RefreshCw className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-1 border-b border-gray-200">
+        <button
+          onClick={() => setActiveTab("equivalencias")}
+          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            activeTab === "equivalencias" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          Equivalencias
+        </button>
+        <button
+          onClick={() => setActiveTab("candidatos")}
+          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            activeTab === "candidatos" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          Candidatos {candidates.length > 0 && <span className="ml-1 bg-blue-100 text-blue-700 text-xs px-1.5 py-0.5 rounded-full">{candidates.length}</span>}
         </button>
       </div>
 
@@ -225,6 +277,52 @@ export default function EquivalenciasPage() {
       )}
 
       {/* KPIs */}
+      {/* Candidatos Tab */}
+      {activeTab === "candidatos" && (
+        <div className="space-y-3">
+          {candidatesLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+              <span className="ml-2 text-gray-500">Cargando candidatos...</span>
+            </div>
+          ) : candidates.length === 0 ? (
+            <div className="bg-white rounded-xl border border-gray-200 p-8 text-center text-gray-400">
+              Sin candidatos pendientes. Correr generate_equiv_candidates.py para detectar nuevos.
+            </div>
+          ) : (
+            candidates.map(c => (
+              <div key={c.id} className="bg-white rounded-xl border border-gray-200 p-4">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="text-xs text-gray-400 mb-1">URI: {c.skill_label_esco || c.uri_esco?.slice(0, 50)}</div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-gray-900">&quot;{c.termino_a}&quot;</span>
+                      <span className="text-gray-400">↔</span>
+                      <span className="font-medium text-gray-900">&quot;{c.termino_b}&quot;</span>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {c.co_apariciones} co-apariciones · {c.fuente_a} · {c.fuente_b}
+                    </div>
+                  </div>
+                  <div className="flex gap-2" onClick={e => e.stopPropagation()}>
+                    <button onClick={() => handleCandidateAction(c.id, 'aprobar')}
+                      className="px-3 py-1.5 bg-green-50 text-green-700 text-xs rounded-lg hover:bg-green-100 border border-green-200">
+                      Crear grupo
+                    </button>
+                    <button onClick={() => handleCandidateAction(c.id, 'rechazar')}
+                      className="px-3 py-1.5 bg-gray-50 text-gray-600 text-xs rounded-lg hover:bg-gray-100 border border-gray-200">
+                      Rechazar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* Equivalencias Tab */}
+      {activeTab === "equivalencias" && <>
       <div className="grid grid-cols-4 gap-3">
         <div className="bg-gray-50 rounded-lg p-3 text-center">
           <div className="text-xl font-bold text-gray-700">{stats.total}</div>
@@ -446,6 +544,8 @@ export default function EquivalenciasPage() {
           Siguiente
         </button>
       </div>
+      </div>
+      </>}
     </div>
   );
 }
