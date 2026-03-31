@@ -17,7 +17,7 @@ function loadOccupations(): Occupation[] {
 
   const filePath = path.join(
     process.cwd(),
-    '../../database/embeddings/esco_occupations_metadata.json'
+    'public/data/esco_occupations_metadata.json'
   );
 
   const data = fs.readFileSync(filePath, 'utf-8');

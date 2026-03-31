@@ -1,13 +1,14 @@
 'use client'
 
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { Search, Loader2, Plus, ChevronRight, CheckCircle } from 'lucide-react'
 import type { SkillItem, SkillConfidence } from '@/components/SkillWithDefinition'
 
 interface OccupationResult {
   id: string
+  uri: string
   label: string
-  isco: string
+  isco_code: string
 }
 
 interface OccupationSkill {
@@ -31,87 +32,40 @@ export default function OcupacionSkillsVia({ onSkillsFound, existingUris }: Prop
   const [selected, setSelected] = useState<OccupationResult | null>(null)
   const [skills, setSkills] = useState<OccupationSkill[]>([])
   const [loadingSkills, setLoadingSkills] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-
-  const MOCK_OCUPACIONES: OccupationResult[] = [
-    { id: 'esco_5223', label: 'Cajero/a', isco: '5223' },
-    { id: 'esco_5221', label: 'Vendedor/a en comercios', isco: '5221' },
-    { id: 'esco_4110', label: 'Empleado/a administrativo/a', isco: '4110' },
-    { id: 'esco_2512', label: 'Desarrollador/a de software', isco: '2512' },
-    { id: 'esco_3511', label: 'Técnico/a en sistemas informáticos', isco: '3511' },
-    { id: 'esco_2221', label: 'Enfermero/a', isco: '2221' },
-    { id: 'esco_5141', label: 'Peluquero/a', isco: '5141' },
-    { id: 'esco_7411', label: 'Electricista', isco: '7411' },
-    { id: 'esco_7422', label: 'Plomero/a', isco: '7422' },
-    { id: 'esco_3412', label: 'Agente inmobiliario', isco: '3412' },
-    { id: 'esco_2431', label: 'Publicista / Gestor de publicidad', isco: '2431' },
-    { id: 'esco_1221', label: 'Gerente de ventas', isco: '1221' },
-    { id: 'esco_5311', label: 'Cuidador/a de niños', isco: '5311' },
-    { id: 'esco_8332', label: 'Conductor/a de camiones', isco: '8332' },
-    { id: 'esco_6111', label: 'Agricultor/a', isco: '6111' },
-    { id: 'esco_3433', label: 'Contador/a', isco: '3433' },
-    { id: 'esco_5120', label: 'Cocinero/a', isco: '5120' },
-    { id: 'esco_2330', label: 'Docente de nivel secundario', isco: '2330' },
-  ]
-
-  const MOCK_SKILLS: Record<string, OccupationSkill[]> = {
-    'esco_5223': [
-      { uri: 'esco_sk_caja', label: 'Manejo de caja registradora', type: 'skill', description: 'Operar sistemas de cobro y manejo de efectivo.', source: 'esco', essential: true },
-      { uri: 'esco_sk_atencion', label: 'Atención al cliente', type: 'skill', description: 'Atender y resolver consultas de clientes de forma efectiva.', source: 'esco', essential: true },
-      { uri: 'esco_sk_stock', label: 'Control de stock', type: 'skill', description: 'Gestionar inventario y reposición de mercadería.', source: 'esco', essential: true },
-      { uri: 'esco_sk_calcul', label: 'Cálculo numérico básico', type: 'knowledge', description: 'Realizar operaciones aritméticas con rapidez y precisión.', source: 'esco', essential: false },
-      { uri: 'esco_sk_venta', label: 'Técnicas de venta', type: 'skill', description: 'Aplicar estrategias para incrementar las ventas.', source: 'esco', essential: false },
-    ],
-    'esco_2512': [
-      { uri: 'esco_sk_prog', label: 'Programación orientada a objetos', type: 'skill', description: 'Diseñar y desarrollar software usando paradigmas OOP.', source: 'esco', essential: true },
-      { uri: 'esco_sk_db', label: 'Bases de datos', type: 'knowledge', description: 'Diseñar y consultar bases de datos relacionales.', source: 'esco', essential: true },
-      { uri: 'esco_sk_api', label: 'Desarrollo de APIs REST', type: 'skill', description: 'Construir y consumir APIs web siguiendo estándares REST.', source: 'esco', essential: true },
-      { uri: 'esco_sk_git', label: 'Control de versiones (Git)', type: 'skill', description: 'Gestionar código fuente con herramientas de versionado.', source: 'esco', essential: false },
-      { uri: 'esco_sk_test', label: 'Testing de software', type: 'skill', description: 'Escribir y ejecutar pruebas para garantizar calidad del código.', source: 'esco', essential: false },
-    ],
-    'esco_4110': [
-      { uri: 'esco_sk_ofim', label: 'Ofimática (Office)', type: 'skill', description: 'Manejo de Word, Excel y herramientas de oficina.', source: 'esco', essential: true },
-      { uri: 'esco_sk_archivo', label: 'Gestión documental', type: 'skill', description: 'Organizar, clasificar y archivar documentación.', source: 'esco', essential: true },
-      { uri: 'esco_sk_comunic', label: 'Comunicación escrita', type: 'skill', description: 'Redactar comunicaciones formales con claridad.', source: 'esco', essential: true },
-      { uri: 'esco_sk_agenda', label: 'Gestión de agenda', type: 'skill', description: 'Coordinar reuniones, turnos y compromisos.', source: 'esco', essential: false },
-    ],
-    'default': [
-      { uri: 'esco_sk_resol', label: 'Resolución de problemas', type: 'skill', description: 'Identificar y solucionar problemas de manera sistemática.', source: 'esco', essential: true },
-      { uri: 'esco_sk_comu2', label: 'Comunicación efectiva', type: 'skill', description: 'Transmitir información de forma clara y concisa.', source: 'esco', essential: true },
-      { uri: 'esco_sk_org', label: 'Organización y planificación', type: 'skill', description: 'Planificar tareas y gestionar el tiempo de forma eficiente.', source: 'esco', essential: false },
-      { uri: 'esco_sk_eq', label: 'Trabajo en equipo', type: 'skill', description: 'Colaborar con otros para alcanzar objetivos comunes.', source: 'esco', essential: false },
-    ],
-  }
 
   const search = useCallback(async (q: string) => {
     if (!q.trim()) { setResults([]); return }
     setLoadingSearch(true)
+    setError(null)
     try {
       const res = await fetch(`/api/occupations/search?q=${encodeURIComponent(q)}&limit=8`)
-      if (res.ok) {
-        const data = await res.json()
-        const results = data.results ?? data
-        if (Array.isArray(results) && results.length > 0) {
-          setResults(results)
-          setLoadingSearch(false)
-          return
-        }
+      if (!res.ok) throw new Error(`API error ${res.status}`)
+      const data = await res.json()
+      const items = data.results ?? data
+      if (Array.isArray(items)) {
+        setResults(items.map((o: any) => ({
+          id: o.id || o.uri?.split('/').pop() || '',
+          uri: o.uri || '',
+          label: o.label || '',
+          isco_code: o.isco_code || o.isco || '',
+        })))
       }
-    } catch { /* fallback */ }
-    // Mock fallback
-    const filtered = MOCK_OCUPACIONES.filter((o) =>
-      o.label.toLowerCase().includes(q.toLowerCase()) ||
-      o.isco.startsWith(q)
-    )
-    setResults(filtered.length > 0 ? filtered : [])
-    setLoadingSearch(false)
+    } catch (e) {
+      console.error('Error searching occupations:', e)
+      setError('Error buscando ocupaciones')
+    } finally {
+      setLoadingSearch(false)
+    }
   }, [])
 
   const handleQueryChange = (q: string) => {
     setQuery(q)
     setSelected(null)
     setSkills([])
+    setError(null)
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => search(q), 350)
   }
@@ -121,22 +75,23 @@ export default function OcupacionSkillsVia({ onSkillsFound, existingUris }: Prop
     setResults([])
     setQuery(occ.label)
     setLoadingSkills(true)
+    setError(null)
     try {
-      const res = await fetch(`/api/occupations/skills?occupation_id=${occ.id}&limit=20`)
-      if (res.ok) {
-        const data = await res.json()
-        const skills = data.skills ?? data
-        if (Array.isArray(skills) && skills.length > 0) {
-          setSkills(skills)
-          setLoadingSkills(false)
-          return
-        }
+      const isco = occ.isco_code.replace('C', '')
+      const res = await fetch(`/api/occupations/skills-by-isco?isco=${isco}&limit=15`)
+      if (!res.ok) throw new Error(`API error ${res.status}`)
+      const data = await res.json()
+      if (Array.isArray(data.skills) && data.skills.length > 0) {
+        setSkills(data.skills)
+      } else {
+        setError('Sin competencias encontradas para esta ocupación')
       }
-    } catch { /* fallback */ }
-    // Mock fallback
-    await new Promise((r) => setTimeout(r, 400))
-    setSkills(MOCK_SKILLS[occ.id] ?? MOCK_SKILLS['default'])
-    setLoadingSkills(false)
+    } catch (e) {
+      console.error('Error loading skills:', e)
+      setError('Error cargando competencias')
+    } finally {
+      setLoadingSkills(false)
+    }
   }
 
   const handleAgregar = () => {
@@ -153,7 +108,6 @@ export default function OcupacionSkillsVia({ onSkillsFound, existingUris }: Prop
     setSelected(null)
     setQuery('')
     setSkills([])
-    // Refocus para que el usuario pueda buscar otra ocupación inmediatamente
     setTimeout(() => inputRef.current?.focus(), 50)
   }
 
@@ -161,7 +115,6 @@ export default function OcupacionSkillsVia({ onSkillsFound, existingUris }: Prop
 
   return (
     <div className="space-y-4">
-      {/* Search input */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
         <input
@@ -169,7 +122,7 @@ export default function OcupacionSkillsVia({ onSkillsFound, existingUris }: Prop
           type="text"
           value={query}
           onChange={(e) => handleQueryChange(e.target.value)}
-          placeholder="Ej: cajero, enfermero, desarrollador..."
+          placeholder="Ej: cajero, enfermero, desarrollador, soldador..."
           className="w-full rounded-lg border border-gray-200 pl-9 pr-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
           autoFocus
         />
@@ -178,7 +131,8 @@ export default function OcupacionSkillsVia({ onSkillsFound, existingUris }: Prop
         )}
       </div>
 
-      {/* Resultados búsqueda */}
+      {error && <p className="text-sm text-red-500">{error}</p>}
+
       {results.length > 0 && !selected && (
         <div className="border border-gray-200 rounded-lg divide-y divide-gray-100 overflow-hidden">
           {results.map((r) => (
@@ -189,7 +143,7 @@ export default function OcupacionSkillsVia({ onSkillsFound, existingUris }: Prop
             >
               <span className="text-sm text-gray-800">{r.label}</span>
               <div className="flex items-center gap-2 shrink-0">
-                <span className="text-xs text-gray-400 font-mono">{r.isco}</span>
+                <span className="text-xs text-gray-400 font-mono">{r.isco_code}</span>
                 <ChevronRight className="w-3.5 h-3.5 text-gray-300" />
               </div>
             </button>
@@ -197,11 +151,10 @@ export default function OcupacionSkillsVia({ onSkillsFound, existingUris }: Prop
         </div>
       )}
 
-      {/* Skills de la ocupación seleccionada */}
       {loadingSkills && (
         <div className="flex items-center justify-center py-8 text-gray-400">
           <Loader2 className="w-5 h-5 animate-spin mr-2" />
-          <span className="text-sm">Cargando competencias...</span>
+          <span className="text-sm">Cargando competencias de ofertas reales...</span>
         </div>
       )}
 
@@ -225,9 +178,7 @@ export default function OcupacionSkillsVia({ onSkillsFound, existingUris }: Prop
                   {yaEnPerfil ? (
                     <CheckCircle className="w-3.5 h-3.5 text-green-400 shrink-0" />
                   ) : s.essential ? (
-                    <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded font-medium">
-                      esencial
-                    </span>
+                    <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded font-medium">esencial</span>
                   ) : null}
                 </div>
               )
@@ -243,15 +194,10 @@ export default function OcupacionSkillsVia({ onSkillsFound, existingUris }: Prop
               ? `Agregar ${nuevasCount} competencia${nuevasCount !== 1 ? 's' : ''} nueva${nuevasCount !== 1 ? 's' : ''}`
               : 'Todas ya están en tu perfil'}
           </button>
-          {nuevasCount === 0 && (
-            <p className="text-center text-xs text-gray-400 mt-2">
-              Probá buscar otra ocupación para sumar más.
-            </p>
-          )}
         </div>
       )}
 
-      {selected && !loadingSkills && skills.length === 0 && (
+      {selected && !loadingSkills && skills.length === 0 && !error && (
         <p className="text-sm text-gray-400 text-center py-4">
           No encontramos competencias para esta ocupación.
         </p>
