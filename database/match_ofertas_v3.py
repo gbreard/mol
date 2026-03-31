@@ -1631,6 +1631,50 @@ class MatcherV3:
                 metadata={**result.metadata, "skills_count": len(skills_extracted)}
             )
 
+        # 3b. M-08: Extraer skills de fuentes declaradas
+        declared_skills, declared_failures = self.skills_extractor.extract_declared_skills(
+            oferta_nlp, track_failures=True
+        )
+
+        # M-06: Persistir failures de declaradas
+        if declared_failures:
+            self._persist_skill_failures(id_oferta, run_id, declared_failures)
+
+        # M-08: Merge declaradas con skills de tareas (dedup por equiv_group)
+        if declared_skills:
+            existing_keys = set()
+            for s in skills_extracted:
+                uri = s.get("skill_uri", "")
+                group = self.skills_extractor.equiv_lookup.get(uri, uri)
+                existing_keys.add(group)
+
+            added = 0
+            for s in declared_skills:
+                uri = s.get("skill_uri", "")
+                group = self.skills_extractor.equiv_lookup.get(uri, uri)
+                if group not in existing_keys:
+                    existing_keys.add(group)
+                    skills_extracted.append(s)
+                    added += 1
+
+            if self.verbose and added > 0:
+                print(f"[M-08] +{added} skills declaradas (de {len(declared_skills)} candidatas, {len(declared_skills) - added} dedup)")
+
+            # Actualizar result con skills mergeadas
+            if added > 0:
+                result = MatchResult(
+                    status=result.status,
+                    esco_uri=result.esco_uri,
+                    esco_label=result.esco_label,
+                    isco_code=result.isco_code,
+                    score=result.score,
+                    metodo=result.metodo,
+                    skills_extracted=skills_extracted,
+                    skills_matched=result.skills_matched,
+                    alternativas=result.alternativas,
+                    metadata={**result.metadata, "skills_count": len(skills_extracted)}
+                )
+
         # 4. Categorizar skills si se solicita
         skills_to_save = result.skills_extracted
         if categorize_skills and skills_to_save:
@@ -1805,7 +1849,9 @@ def run_matching_pipeline(
         query = f'''
             SELECT n.id_oferta, n.titulo_limpio, n.tareas_explicitas,
                    n.area_funcional, n.nivel_seniority, n.sector_empresa,
-                   o.titulo as titulo_original
+                   o.titulo as titulo_original,
+                   n.skills_tecnicas_list, n.tecnologias_list,
+                   n.herramientas_list, n.soft_skills_list
             FROM ofertas_nlp n
             LEFT JOIN ofertas o ON CAST(n.id_oferta AS INTEGER) = o.id_oferta
             WHERE n.id_oferta IN ({placeholders})
@@ -1816,7 +1862,9 @@ def run_matching_pipeline(
         query = f'''
             SELECT n.id_oferta, n.titulo_limpio, n.tareas_explicitas,
                    n.area_funcional, n.nivel_seniority, n.sector_empresa,
-                   o.titulo as titulo_original
+                   o.titulo as titulo_original,
+                   n.skills_tecnicas_list, n.tecnologias_list,
+                   n.herramientas_list, n.soft_skills_list
             FROM ofertas_nlp n
             LEFT JOIN ofertas o ON CAST(n.id_oferta AS INTEGER) = o.id_oferta
             LEFT JOIN ofertas_esco_matching m ON n.id_oferta = m.id_oferta
@@ -1829,7 +1877,9 @@ def run_matching_pipeline(
         query = f'''
             SELECT n.id_oferta, n.titulo_limpio, n.tareas_explicitas,
                    n.area_funcional, n.nivel_seniority, n.sector_empresa,
-                   o.titulo as titulo_original
+                   o.titulo as titulo_original,
+                   n.skills_tecnicas_list, n.tecnologias_list,
+                   n.herramientas_list, n.soft_skills_list
             FROM ofertas_nlp n
             LEFT JOIN ofertas o ON CAST(n.id_oferta AS INTEGER) = o.id_oferta
             WHERE 1=1
@@ -1893,7 +1943,12 @@ def run_matching_pipeline(
                 'tareas_explicitas': oferta['tareas_explicitas'] or '',
                 'area_funcional': oferta['area_funcional'] or '',
                 'nivel_seniority': oferta['nivel_seniority'] or '',
-                'sector_empresa': oferta['sector_empresa'] or ''
+                'sector_empresa': oferta['sector_empresa'] or '',
+                # M-08: Fuentes declaradas para extract_declared_skills()
+                'skills_tecnicas_list': oferta['skills_tecnicas_list'] or '',
+                'tecnologias_list': oferta['tecnologias_list'] or '',
+                'herramientas_list': oferta['herramientas_list'] or '',
+                'soft_skills_list': oferta['soft_skills_list'] or '',
             }
 
             result = matcher.match_and_persist(id_oferta, oferta_nlp, run_id=run_id)
