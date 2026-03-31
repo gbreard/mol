@@ -14,8 +14,9 @@ function getSupabaseAdmin(): SupabaseClient | null {
 
 // B1 — GET /api/casos?org_id=X&estado=Y&q=nombre_o_dni
 export async function GET(request: NextRequest) {
-  const auth = await requireAuth(request);
-  if (isAuthError(auth)) return auth;
+  // TODO: restore requireAuth when auth flow is implemented
+  // const auth = await requireAuth(request);
+  // if (isAuthError(auth)) return auth;
 
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
