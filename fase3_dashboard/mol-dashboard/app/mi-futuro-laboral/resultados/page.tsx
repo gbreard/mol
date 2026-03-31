@@ -1,52 +1,26 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Briefcase, Target, GraduationCap, ArrowRight, TrendingUp, MapPin, Building2, Clock, CheckCircle2 } from 'lucide-react'
+import { Briefcase, Target, ArrowRight, MapPin, Building2, Loader2, CheckCircle2 } from 'lucide-react'
 import { useS1Store } from '@/lib/use-s1-store'
 
-const MOCK_OCUPACIONES = [
-  { uri: 'esco_3511', label: 'Técnico en sistemas informáticos', isco: '3511', match: 87, gap: 2, ofertas: 124 },
-  { uri: 'esco_2512', label: 'Desarrollador de software', isco: '2512', match: 73, gap: 4, ofertas: 312 },
-  { uri: 'esco_3512', label: 'Técnico de soporte TI', isco: '3512', match: 69, gap: 3, ofertas: 88 },
-  { uri: 'esco_2511', label: 'Analista de sistemas', isco: '2511', match: 61, gap: 5, ofertas: 97 },
-]
-
-const MOCK_OFERTAS = [
-  {
-    id: 1, titulo: 'Técnico IT Junior', empresa: 'TechSolutions SA',
-    provincia: 'CABA', modalidad: 'Híbrido', match: 84,
-    skills_ok: ['Python', 'SQL', 'Linux'], skills_gap: ['Docker'],
-    publicada: 'hace 2 días', url: '#',
-  },
-  {
-    id: 2, titulo: 'Soporte Técnico N1', empresa: 'BancoCentral',
-    provincia: 'GBA Norte', modalidad: 'Presencial', match: 78,
-    skills_ok: ['Windows', 'Redes', 'Hardware'], skills_gap: ['Active Directory'],
-    publicada: 'hace 3 días', url: '#',
-  },
-  {
-    id: 3, titulo: 'Analista de Datos Jr.', empresa: 'Startup ABC',
-    provincia: 'CABA', modalidad: 'Remoto', match: 71,
-    skills_ok: ['Excel', 'SQL'], skills_gap: ['Python', 'Tableau'],
-    publicada: 'hace 1 semana', url: '#',
-  },
-]
-
-const MOCK_CURSOS = [
-  {
-    skill: 'Docker', impacto: '+9%', nombre: 'Administración de contenedores con Docker',
-    institucion: 'CGPC CABA', duracion: '3 semanas', modalidad: 'Presencial', gratuito: true,
-  },
-  {
-    skill: 'Python', impacto: '+12%', nombre: 'Python para análisis de datos',
-    institucion: 'Argentina Programa', duracion: '8 semanas', modalidad: 'Online', gratuito: true,
-  },
-  {
-    skill: 'Active Directory', impacto: '+6%', nombre: 'Administración de Windows Server',
-    institucion: 'Teclab', duracion: '4 semanas', modalidad: 'Híbrido', gratuito: false,
-  },
-]
+interface MatchedOffer {
+  id_oferta: string
+  titulo: string
+  empresa: string
+  provincia: string
+  isco_code: string
+  match_score: number
+  skills_cubiertas: number
+  skills_oferta_total: number
+  skills_detalle: Array<{
+    skill: string
+    similarity: number
+    matched_by: string
+    exact: boolean
+  }>
+}
 
 const COPY_PROPOSITO: Record<string, { titulo: string; subtitulo: string }> = {
   busco_trabajo: {
@@ -59,7 +33,7 @@ const COPY_PROPOSITO: Record<string, { titulo: string; subtitulo: string }> = {
   },
   saber_que_vale: {
     titulo: 'Así se valorizan tus competencias en el mercado',
-    subtitulo: 'Ocupaciones y ofertas donde tus skills tienen mayor demanda.',
+    subtitulo: 'Ofertas donde tus skills tienen mayor demanda.',
   },
   desde_oe: {
     titulo: 'Tu análisis de competencias',
@@ -67,27 +41,14 @@ const COPY_PROPOSITO: Record<string, { titulo: string; subtitulo: string }> = {
   },
 }
 
-const TAB_INICIAL: Record<string, string> = {
-  busco_trabajo: 'ofertas',
-  cambiar_rubro: 'ocupaciones',
-  saber_que_vale: 'ocupaciones',
-  desde_oe: 'ocupaciones',
-}
-
-const TABS = [
-  { id: 'ocupaciones', label: 'Ocupaciones', icon: Target },
-  { id: 'ofertas', label: 'Ofertas reales', icon: Briefcase },
-  { id: 'formacion', label: 'Formación', icon: GraduationCap },
-]
-
 function MatchBar({ pct }: { pct: number }) {
-  const color = pct >= 80 ? 'bg-green-500' : pct >= 60 ? 'bg-blue-500' : 'bg-yellow-400'
+  const color = pct >= 50 ? 'bg-green-500' : pct >= 30 ? 'bg-blue-500' : 'bg-yellow-400'
   return (
     <div className="flex items-center gap-2">
       <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-        <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
+        <div className={`h-full rounded-full ${color}`} style={{ width: `${Math.min(pct, 100)}%` }} />
       </div>
-      <span className={`text-xs font-bold tabular-nums ${pct >= 80 ? 'text-green-600' : pct >= 60 ? 'text-blue-600' : 'text-yellow-600'}`}>
+      <span className={`text-xs font-bold tabular-nums ${pct >= 50 ? 'text-green-600' : pct >= 30 ? 'text-blue-600' : 'text-yellow-600'}`}>
         {pct}%
       </span>
     </div>
@@ -96,21 +57,40 @@ function MatchBar({ pct }: { pct: number }) {
 
 export default function ResultadosPage() {
   const router = useRouter()
-  const { store, confirmed, setDestino } = useS1Store()
+  const { store, confirmed } = useS1Store()
+
+  const [offers, setOffers] = useState<MatchedOffer[]>([])
+  const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState<{ expanded: number; total: number } | null>(null)
 
   const proposito = store.proposito ?? 'busco_trabajo'
-  const tabInicial = TAB_INICIAL[proposito] ?? 'ocupaciones'
-  const [tab, setTab] = useState(tabInicial)
-  const [destinoElegido, setDestinoElegido] = useState<string | null>(store.destino_uri)
-
   const copy = COPY_PROPOSITO[proposito] ?? COPY_PROPOSITO['busco_trabajo']
   const nombre = store.nombre || 'tu perfil'
 
-  const handleElegirDestino = (uri: string, label: string, match: number) => {
-    setDestino(uri, label, match)
-    setDestinoElegido(uri)
-    router.push(`/mi-futuro-laboral/brecha?uri=${uri}&label=${encodeURIComponent(label)}&match=${match}`)
-  }
+  useEffect(() => {
+    async function loadResults() {
+      const skillUris = store.skills.map(s => s.uri).filter(Boolean)
+      if (skillUris.length === 0) {
+        setLoading(false)
+        return
+      }
+
+      try {
+        const res = await fetch(
+          `/api/matching-offers-semantic?skill_uris=${encodeURIComponent(skillUris.join(','))}&limit=20&threshold=0.55`
+        )
+        if (!res.ok) throw new Error(`API error ${res.status}`)
+        const data = await res.json()
+        setOffers(data.offers || [])
+        setStats({ expanded: data.expanded_skills || 0, total: data.total || 0 })
+      } catch (e) {
+        console.error('Error loading results:', e)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadResults()
+  }, [store.skills])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -127,188 +107,119 @@ export default function ResultadosPage() {
           </p>
         </div>
 
-        {/* Destino elegido anteriormente */}
-        {store.destino_label && (
-          <div className="mb-4 flex items-center gap-2 bg-green-50 border border-green-200 rounded-xl px-4 py-2.5">
-            <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
-            <p className="text-xs text-green-700 flex-1">
-              Destino elegido: <strong>{store.destino_label}</strong>
-            </p>
+        {/* Stats */}
+        {stats && (
+          <div className="mb-4 bg-teal-50 border border-teal-100 rounded-xl px-4 py-2 flex items-center justify-between">
+            <span className="text-xs text-teal-700">
+              {store.skills.length} skills → {stats.expanded} expandidas semánticamente → {stats.total} ofertas encontradas
+            </span>
+          </div>
+        )}
+
+        {/* Loading */}
+        {loading && (
+          <div className="bg-white rounded-xl border border-gray-200 p-12 flex items-center justify-center gap-3">
+            <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+            <span className="text-sm text-gray-500">Buscando ofertas compatibles (matching semántico)...</span>
+          </div>
+        )}
+
+        {/* No skills */}
+        {!loading && store.skills.length === 0 && (
+          <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
+            <p className="text-sm text-gray-600">No tenés competencias cargadas.</p>
             <button
-              onClick={() => router.push(`/mi-futuro-laboral/brecha?uri=${store.destino_uri}&label=${encodeURIComponent(store.destino_label ?? '')}&match=${store.destino_match ?? 0}`)}
-              className="text-xs text-green-700 font-semibold hover:underline shrink-0"
+              onClick={() => router.push('/mi-futuro-laboral/perfil')}
+              className="mt-3 text-sm text-blue-600 hover:underline"
             >
-              Ver brecha →
+              Volver a cargar competencias →
             </button>
           </div>
         )}
 
-        {/* Tabs */}
-        <div className="flex gap-1 bg-white border border-gray-200 rounded-xl p-1 mb-6">
-          {TABS.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium transition-all ${
-                tab === t.id
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-              }`}
-            >
-              <t.icon className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{t.label}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Tab: Ocupaciones */}
-        {tab === 'ocupaciones' && (
+        {/* Results */}
+        {!loading && offers.length > 0 && (
           <div className="space-y-3">
-            <p className="text-xs text-gray-400 mb-2">
-              Hacé click en "Elegir este destino" para ver exactamente qué te falta y cómo cerrarlo.
-            </p>
-            {MOCK_OCUPACIONES.map((o) => {
-              const esDestino = destinoElegido === o.uri
-              return (
-                <div
-                  key={o.uri}
-                  className={`bg-white rounded-xl border p-4 transition-all ${esDestino ? 'border-green-400 shadow-sm shadow-green-100' : 'border-gray-200'}`}
-                >
-                  <div className="flex items-start justify-between gap-3 mb-3">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        {esDestino && <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />}
-                        <h3 className="font-semibold text-gray-900 text-sm">{o.label}</h3>
-                      </div>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-xs text-gray-400 font-mono">{o.isco}</span>
-                        <span className="text-xs text-gray-400">·</span>
-                        <span className="text-xs text-gray-500">{o.ofertas} ofertas activas</span>
-                      </div>
-                    </div>
-                    <span className="text-xs text-gray-400 shrink-0">
-                      falta{o.gap !== 1 ? 'n' : ''} {o.gap} skill{o.gap !== 1 ? 's' : ''}
-                    </span>
-                  </div>
-                  <MatchBar pct={o.match} />
-                  <div className="mt-3">
-                    <button
-                      onClick={() => handleElegirDestino(o.uri, o.label, o.match)}
-                      className={`w-full text-xs font-semibold rounded-lg py-2 transition-colors ${
-                        esDestino
-                          ? 'bg-green-50 text-green-700'
-                          : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
-                      }`}
-                    >
-                      {esDestino ? '✓ Destino elegido — ver brecha' : `Elegir este destino → ver qué me falta`}
-                    </button>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
-
-        {/* Tab: Ofertas reales */}
-        {tab === 'ofertas' && (
-          <div className="space-y-3">
-            {MOCK_OFERTAS.map((o) => (
-              <div key={o.id} className="bg-white rounded-xl border border-gray-200 p-4">
+            {offers.map((o) => (
+              <div key={o.id_oferta} className="bg-white rounded-xl border border-gray-200 p-4">
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div>
                     <h3 className="font-semibold text-gray-900 text-sm">{o.titulo}</h3>
                     <div className="flex flex-wrap items-center gap-2 mt-1">
-                      <span className="flex items-center gap-1 text-xs text-gray-500">
-                        <Building2 className="w-3 h-3" />{o.empresa}
-                      </span>
-                      <span className="flex items-center gap-1 text-xs text-gray-500">
-                        <MapPin className="w-3 h-3" />{o.provincia}
-                      </span>
-                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{o.modalidad}</span>
-                      <span className="flex items-center gap-1 text-xs text-gray-400">
-                        <Clock className="w-3 h-3" />{o.publicada}
-                      </span>
+                      {o.empresa && (
+                        <span className="flex items-center gap-1 text-xs text-gray-500">
+                          <Building2 className="w-3 h-3" />{o.empresa}
+                        </span>
+                      )}
+                      {o.provincia && (
+                        <span className="flex items-center gap-1 text-xs text-gray-500">
+                          <MapPin className="w-3 h-3" />{o.provincia}
+                        </span>
+                      )}
+                      <span className="text-xs text-gray-400 font-mono">{o.isco_code}</span>
                     </div>
                   </div>
                 </div>
-                <MatchBar pct={o.match} />
-                <div className="mt-3 flex flex-wrap gap-1">
-                  {o.skills_ok.map((s) => (
-                    <span key={s} className="text-[10px] bg-green-50 text-green-700 px-2 py-0.5 rounded-full">✓ {s}</span>
-                  ))}
-                  {o.skills_gap.map((s) => (
-                    <span key={s} className="text-[10px] bg-red-50 text-red-600 px-2 py-0.5 rounded-full">✗ {s}</span>
-                  ))}
-                </div>
-                <div className="mt-3 flex gap-2">
-                  <button
-                    onClick={() => router.push(`/mi-futuro-laboral/brecha?oferta=${o.id}&label=${encodeURIComponent(o.titulo)}&match=${o.match}`)}
-                    className="flex-1 text-xs text-blue-600 font-medium bg-blue-50 hover:bg-blue-100 rounded-lg py-2 transition-colors"
-                  >
-                    Ver brecha exacta →
-                  </button>
-                  <a href={o.url} className="text-xs text-gray-500 font-medium bg-gray-50 hover:bg-gray-100 rounded-lg py-2 px-3 transition-colors">
-                    Ver oferta
-                  </a>
+                <MatchBar pct={o.match_score} />
+                <div className="mt-2">
+                  <span className="text-[10px] text-gray-400 block mb-1">
+                    {o.skills_cubiertas}/{o.skills_oferta_total} competencias cubiertas
+                  </span>
+                  <div className="flex flex-wrap gap-1">
+                    {o.skills_detalle.slice(0, 8).map((d, i) => (
+                      <span
+                        key={i}
+                        className={`text-[10px] px-2 py-0.5 rounded-full ${
+                          d.exact
+                            ? 'bg-green-50 text-green-700'
+                            : d.similarity >= 0.80
+                              ? 'bg-blue-50 text-blue-700'
+                              : 'bg-yellow-50 text-yellow-700'
+                        }`}
+                        title={d.exact ? 'Match exacto' : `Similar a "${d.matched_by}" (${(d.similarity * 100).toFixed(0)}%)`}
+                      >
+                        {d.exact ? '✓' : '~'} {d.skill}
+                      </span>
+                    ))}
+                    {o.skills_detalle.length > 8 && (
+                      <span className="text-[10px] text-gray-400">+{o.skills_detalle.length - 8} más</span>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         )}
 
-        {/* Tab: Formación */}
-        {tab === 'formacion' && (
-          <div className="space-y-3">
-            <p className="text-xs text-gray-400 mb-4">
-              Cursos que cierran las brechas más frecuentes de tu perfil, ordenados por impacto en tu empleabilidad.
-            </p>
-            {MOCK_CURSOS.map((c, i) => (
-              <div key={i} className="bg-white rounded-xl border border-gray-200 p-4">
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs bg-orange-50 text-orange-600 font-medium px-2 py-0.5 rounded-full">
-                        cierra: {c.skill}
-                      </span>
-                      <span className="text-xs text-green-600 font-bold flex items-center gap-0.5">
-                        <TrendingUp className="w-3 h-3" />{c.impacto} match
-                      </span>
-                    </div>
-                    <h3 className="font-semibold text-gray-900 text-sm">{c.nombre}</h3>
-                    <div className="flex flex-wrap items-center gap-2 mt-1">
-                      <span className="text-xs text-gray-500">{c.institucion}</span>
-                      <span className="text-xs text-gray-400">·</span>
-                      <span className="text-xs text-gray-500">{c.duracion}</span>
-                      <span className="text-xs text-gray-400">·</span>
-                      <span className="text-xs text-gray-500">{c.modalidad}</span>
-                      {c.gratuito && (
-                        <span className="text-[10px] bg-green-50 text-green-700 px-2 py-0.5 rounded-full font-medium">Gratuito</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <button className="mt-2 w-full text-xs text-blue-600 font-medium bg-blue-50 hover:bg-blue-100 rounded-lg py-2 transition-colors">
-                  Ver cómo inscribirme →
-                </button>
-              </div>
-            ))}
+        {/* No results */}
+        {!loading && offers.length === 0 && store.skills.length > 0 && (
+          <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
+            <p className="text-sm text-gray-500">No se encontraron ofertas compatibles con tu perfil actual.</p>
+            <button
+              onClick={() => router.push('/mi-futuro-laboral/perfil')}
+              className="mt-3 text-sm text-blue-600 hover:underline"
+            >
+              Agregar más competencias →
+            </button>
           </div>
         )}
 
         {/* CTA generar reporte */}
-        <div className="mt-8 bg-blue-600 rounded-2xl p-5 text-center text-white">
-          <h2 className="font-bold text-base mb-1">¿Listo para la entrevista?</h2>
-          <p className="text-blue-100 text-xs mb-4">
-            Generá tu reporte con código QR para que el empleador vea tu análisis de competencias.
-          </p>
-          <button
-            onClick={() => router.push('/mi-futuro-laboral/reporte')}
-            className="inline-flex items-center gap-2 bg-white text-blue-700 text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-blue-50 transition-colors"
-          >
-            Generar mi reporte PDF + QR
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
+        {offers.length > 0 && (
+          <div className="mt-8 bg-blue-600 rounded-2xl p-5 text-center text-white">
+            <h2 className="font-bold text-base mb-1">¿Listo para la entrevista?</h2>
+            <p className="text-blue-100 text-xs mb-4">
+              Generá tu reporte con código QR para que el empleador vea tu análisis de competencias.
+            </p>
+            <button
+              onClick={() => router.push('/mi-futuro-laboral/reporte')}
+              className="inline-flex items-center gap-2 bg-white text-blue-700 text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-blue-50 transition-colors"
+            >
+              Generar mi reporte PDF + QR
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
