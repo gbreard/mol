@@ -57,7 +57,8 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Rutas públicas que no requieren autenticación
-  const publicPrefixes = ["/login", "/auth/callback", "/informes", "/precios", "/registro", "/checkout", "/skills", "/para-oficinas", "/mi-futuro-laboral", "/metodologia", "/terminos", "/politica-datos"];
+  // TODO: quitar /oficina-empleo y /empresas de públicas cuando auth esté implementada
+  const publicPrefixes = ["/login", "/auth/callback", "/informes", "/precios", "/registro", "/checkout", "/skills", "/para-oficinas", "/mi-futuro-laboral", "/oficina-empleo", "/empresas", "/reporte", "/metodologia", "/terminos", "/politica-datos"];
   const publicExact = ["/"];
   const isPublicRoute =
     publicExact.includes(request.nextUrl.pathname) ||
