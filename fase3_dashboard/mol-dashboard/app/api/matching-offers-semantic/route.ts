@@ -26,19 +26,18 @@ export interface SemanticMatchOffer {
 }
 
 /**
- * GET /api/matching-offers-semantic?skill_uris=uri1,uri2&isco_codes=2411,2512&limit=30&threshold=0.60
+ * GET /api/matching-offers-semantic?skill_uris=uri1,uri2&limit=20&threshold=0.55
  *
- * Matching semántico usando pgvector.
- * 1. Expande skills de la persona con similares semánticos (expand_skills_semantic RPC)
- * 2. Busca ofertas por ISCO codes
- * 3. Calcula match score semántico (exacto + similares)
+ * Matching semántico con pgvector:
+ * 1. Expande skills con similares semánticos
+ * 2. Busca ofertas que tengan esas skills (directamente en ofertas_skills)
+ * 3. Agrupa por oferta y calcula match score
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const skillUris = searchParams.get('skill_uris')?.split(',').filter(Boolean) || []
-  const iscoCodes = searchParams.get('isco_codes')?.split(',').filter(Boolean) || []
-  const limit = Math.min(parseInt(searchParams.get('limit') || '30', 10), 100)
-  const threshold = parseFloat(searchParams.get('threshold') || '0.60')
+  const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10), 100)
+  const threshold = parseFloat(searchParams.get('threshold') || '0.55')
 
   if (skillUris.length === 0) {
     return NextResponse.json({ offers: [], total: 0, message: 'skill_uris requerido' })
@@ -49,7 +48,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Step 1: Expand skills semantically using pgvector
+    // Step 1: Expand skills semantically
     const { data: expanded, error: expandError } = await supabase.rpc('expand_skills_semantic', {
       skill_uris: skillUris,
       similarity_threshold: threshold,
@@ -58,7 +57,7 @@ export async function GET(request: NextRequest) {
 
     if (expandError) throw expandError
 
-    // Build expanded URI map: uri -> { similarity, original_label, is_exact }
+    // Build expanded URI map
     const expandedMap = new Map<string, { similarity: number; originalLabel: string; isExact: boolean }>()
     for (const row of (expanded || [])) {
       const existing = expandedMap.get(row.expanded_uri)
@@ -73,57 +72,75 @@ export async function GET(request: NextRequest) {
 
     const allExpandedUris = Array.from(expandedMap.keys())
 
-    // Step 2: Get offers filtered by ISCO codes
-    let query = supabase
-      .from('ofertas_dashboard')
-      .select('id_oferta, titulo, empresa, provincia, isco_code')
-
-    if (iscoCodes.length > 0) {
-      query = query.in('isco_code', iscoCodes)
+    if (allExpandedUris.length === 0) {
+      return NextResponse.json({ offers: [], total: 0, expanded_skills: 0 })
     }
 
-    const { data: ofertas, error: ofertasError } = await query.limit(limit * 2)
+    // Step 2: Find offers that HAVE these skills (search in ofertas_skills directly)
+    const { data: matchedSkillRows, error: skillsError } = await supabase
+      .from('ofertas_skills')
+      .select('id_oferta, skill_uri, preferred_label')
+      .in('skill_uri', allExpandedUris)
+      .limit(2000)
 
-    if (ofertasError) throw ofertasError
+    if (skillsError) throw skillsError
+    if (!matchedSkillRows || matchedSkillRows.length === 0) {
+      return NextResponse.json({ offers: [], total: 0, expanded_skills: allExpandedUris.length })
+    }
+
+    // Group matched skills by offer
+    const matchesByOffer = new Map<string, Array<{ skill_uri: string; preferred_label: string }>>()
+    for (const row of matchedSkillRows) {
+      const oid = String(row.id_oferta)
+      if (!matchesByOffer.has(oid)) matchesByOffer.set(oid, [])
+      matchesByOffer.get(oid)!.push(row)
+    }
+
+    // Get top offer IDs (most matched skills first)
+    const topOfferIds = Array.from(matchesByOffer.entries())
+      .sort((a, b) => b[1].length - a[1].length)
+      .slice(0, limit * 2)
+      .map(([oid]) => oid)
+
+    // Step 3: Get offer details + total skill counts
+    const { data: ofertas } = await supabase
+      .from('ofertas_dashboard')
+      .select('id_oferta, titulo, empresa, provincia, isco_code')
+      .in('id_oferta', topOfferIds)
+
     if (!ofertas || ofertas.length === 0) {
       return NextResponse.json({ offers: [], total: 0, expanded_skills: allExpandedUris.length })
     }
 
-    const ofertaIds = ofertas.map(o => String(o.id_oferta))
     const ofertaMap = new Map(ofertas.map(o => [String(o.id_oferta), o]))
 
-    // Step 3: Get skills of these offers
-    const { data: ofertaSkills, error: skillsError } = await supabase
+    // Get total skill count per offer
+    const { data: totalSkillRows } = await supabase
       .from('ofertas_skills')
-      .select('id_oferta, skill_uri, preferred_label')
-      .in('id_oferta', ofertaIds)
+      .select('id_oferta, skill_uri')
+      .in('id_oferta', topOfferIds)
 
-    if (skillsError) throw skillsError
-
-    // Group skills by offer
-    const skillsByOffer = new Map<string, Array<{ skill_uri: string; preferred_label: string }>>()
-    for (const row of (ofertaSkills || [])) {
+    const totalSkillsByOffer = new Map<string, number>()
+    for (const row of (totalSkillRows || [])) {
       const oid = String(row.id_oferta)
-      if (!skillsByOffer.has(oid)) skillsByOffer.set(oid, [])
-      skillsByOffer.get(oid)!.push(row)
+      totalSkillsByOffer.set(oid, (totalSkillsByOffer.get(oid) || 0) + 1)
     }
 
-    // Step 4: Calculate semantic match scores
+    // Step 4: Calculate match scores
     const results: SemanticMatchOffer[] = []
 
-    for (const [oid, skills] of skillsByOffer) {
+    for (const [oid, matchedSkills] of matchesByOffer) {
       const oferta = ofertaMap.get(oid)
-      if (!oferta || skills.length === 0) continue
+      if (!oferta) continue
+
+      const totalSkills = totalSkillsByOffer.get(oid) || matchedSkills.length
 
       const detalle: SemanticMatchOffer['skills_detalle'] = []
-      let cubiertas = 0
-
-      for (const os of skills) {
-        const match = expandedMap.get(os.skill_uri)
-        if (match && (match.isExact || match.similarity >= threshold)) {
-          cubiertas++
+      for (const ms of matchedSkills) {
+        const match = expandedMap.get(ms.skill_uri)
+        if (match) {
           detalle.push({
-            skill: os.preferred_label,
+            skill: ms.preferred_label,
             similarity: Math.round(match.similarity * 1000) / 1000,
             matched_by: match.isExact ? '(exacto)' : match.originalLabel,
             exact: match.isExact,
@@ -131,9 +148,8 @@ export async function GET(request: NextRequest) {
         }
       }
 
-      if (cubiertas === 0) continue
-
-      const matchScore = Math.round((cubiertas / skills.length) * 1000) / 10
+      detalle.sort((a, b) => b.similarity - a.similarity)
+      const matchScore = Math.round((detalle.length / totalSkills) * 1000) / 10
 
       results.push({
         id_oferta: oid,
@@ -142,13 +158,12 @@ export async function GET(request: NextRequest) {
         provincia: oferta.provincia || '',
         isco_code: oferta.isco_code || '',
         match_score: matchScore,
-        skills_cubiertas: cubiertas,
-        skills_oferta_total: skills.length,
-        skills_detalle: detalle.sort((a, b) => b.similarity - a.similarity),
+        skills_cubiertas: detalle.length,
+        skills_oferta_total: totalSkills,
+        skills_detalle: detalle,
       })
     }
 
-    // Sort by match score
     results.sort((a, b) => b.match_score - a.match_score)
 
     return NextResponse.json({
