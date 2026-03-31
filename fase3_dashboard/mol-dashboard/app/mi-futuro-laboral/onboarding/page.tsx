@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowRight } from 'lucide-react'
 import { useS1Store, type S1Proposito } from '@/lib/use-s1-store'
@@ -14,9 +14,11 @@ const PROPOSITOS: { value: S1Proposito; label: string; emoji: string }[] = [
 
 export default function OnboardingPage() {
   const router = useRouter()
-  const { store, setStore } = useS1Store()
-  const [nombre, setNombre] = useState(store.nombre)
-  const [proposito, setProposito] = useState<S1Proposito | null>(store.proposito)
+  const { setStore, reset } = useS1Store()
+  const [nombre, setNombre] = useState('')
+  const [proposito, setProposito] = useState<S1Proposito | null>(null)
+
+  useEffect(() => { reset() }, [reset])
   const [error, setError] = useState('')
 
   const handleContinuar = () => {
