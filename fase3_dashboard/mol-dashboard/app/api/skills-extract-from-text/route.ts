@@ -1,82 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireRateLimit } from '@/lib/api-auth'
-import { promises as fs } from 'fs'
-import path from 'path'
+import { createClient } from '@supabase/supabase-js'
 
-interface CatalogSkill {
-  id: string
-  label: string
-  type: string
-  L1: string
-  L2: string
-  essential: number
-  optional: number
-  total: number
-  description: string
-  source: 'esco' | 'argentina_emerging'
-  occupations_count?: number
-}
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+
+const supabase = supabaseUrl && supabaseKey
+  ? createClient(supabaseUrl, supabaseKey)
+  : null
 
 interface ExtractedSkill {
   id: string
   label: string
   type: string
   description: string
-  source: 'esco' | 'argentina_emerging'
+  source: string
   L1: string
   L2: string
   confidence: 'high' | 'medium' | 'low'
-  matchedKeyword: string  // qué palabra del texto matcheó
-}
-
-// Cache
-let catalogCache: CatalogSkill[] | null = null
-let keywordIndex: Map<string, CatalogSkill[]> | null = null
-
-async function loadCatalog(): Promise<CatalogSkill[]> {
-  if (catalogCache) return catalogCache
-  const filePath = path.join(process.cwd(), 'public', 'data', 'skills_searchable.json')
-  const raw = await fs.readFile(filePath, 'utf-8')
-  const data = JSON.parse(raw)
-  catalogCache = data.skills as CatalogSkill[]
-  return catalogCache
+  matchedKeyword: string
+  uri: string
 }
 
 function normalize(text: string): string {
   return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 }
 
-/**
- * Construye un índice invertido: keyword → skills que contienen esa keyword en su label.
- * Se construye una vez y se cachea.
- */
-async function getKeywordIndex(): Promise<Map<string, CatalogSkill[]>> {
-  if (keywordIndex) return keywordIndex
-
-  const catalog = await loadCatalog()
-  keywordIndex = new Map()
-
-  for (const skill of catalog) {
-    // Extraer palabras significativas del label (>= 4 chars)
-    const words = normalize(skill.label)
-      .split(/\s+/)
-      .filter(w => w.length >= 4)
-
-    for (const word of words) {
-      if (!keywordIndex.has(word)) {
-        keywordIndex.set(word, [])
-      }
-      keywordIndex.get(word)!.push(skill)
-    }
-  }
-
-  return keywordIndex
-}
-
-/**
- * Extrae keywords significativas del texto del usuario.
- * Filtra stopwords y palabras cortas.
- */
 function extractKeywords(text: string): string[] {
   const stopwords = new Set([
     'que', 'como', 'para', 'por', 'con', 'sin', 'una', 'uno', 'los', 'las',
@@ -88,6 +37,7 @@ function extractKeywords(text: string): string[] {
     'tambien', 'siempre', 'nunca', 'algo', 'mucho', 'poco', 'otro', 'otra',
     'tengo', 'tiene', 'hacer', 'hago', 'hacia', 'haciendo', 'saber', 'sabia',
     'conozco', 'conocimiento', 'experiencia', 'encargaba', 'responsable',
+    'sabe', 'sabes', 'pueden', 'puede', 'cosas', 'cosa',
   ])
 
   const normalized = normalize(text)
@@ -96,7 +46,6 @@ function extractKeywords(text: string): string[] {
     .split(/\s+/)
     .filter(w => w.length >= 4 && !stopwords.has(w))
 
-  // Deduplicate preservando orden
   return [...new Set(words)]
 }
 
@@ -104,24 +53,23 @@ function extractKeywords(text: string): string[] {
  * POST /api/skills-extract-from-text
  * Body: { text: string }
  *
- * Extrae skills del texto libre del trabajador.
- * Fase 1: extrae keywords del texto → busca en índice invertido del catálogo.
- * Fase 2 (futuro): embeddings del texto completo contra embeddings de skills.
- *
- * Retorna skills encontradas con nivel de confianza:
- * - high: keyword matchea exacto con label de skill
- * - medium: keyword es parte del label
- * - low: keyword matchea solo en description
+ * Extrae skills del texto libre usando:
+ * 1. pg_trgm (trigrams) para buscar skills similares por label
+ * 2. pgvector para expandir con skills semánticamente relacionadas
  */
 export async function POST(request: NextRequest) {
   const rateLimited = requireRateLimit(request, 'public')
   if (rateLimited) return rateLimited
 
+  if (!supabase) {
+    return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 })
+  }
+
   try {
     const body = await request.json()
     const { text } = body
 
-    if (!text || typeof text !== 'string' || text.trim().length < 10) {
+    if (!text || typeof text !== 'string' || text.trim().length < 5) {
       return NextResponse.json({
         results: [],
         keywords: [],
@@ -129,8 +77,6 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    const index = await getKeywordIndex()
-    const catalog = await loadCatalog()
     const keywords = extractKeywords(text)
 
     if (keywords.length === 0) {
@@ -141,61 +87,80 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Buscar skills por cada keyword
-    const skillScores = new Map<string, { skill: CatalogSkill; score: number; matchedKeyword: string }>()
+    // Step 1: Search skills by trigram similarity for each keyword
+    const skillMap = new Map<string, { uri: string; label: string; score: number; keyword: string }>()
 
     for (const keyword of keywords) {
-      // Búsqueda exacta en índice
-      const exactMatches = index.get(keyword) || []
-      for (const skill of exactMatches) {
-        const existing = skillScores.get(skill.id)
-        const score = (existing?.score || 0) + 3  // peso alto por match exacto en label
-        skillScores.set(skill.id, {
-          skill,
-          score,
-          matchedKeyword: existing?.matchedKeyword || keyword,
-        })
-      }
+      const { data: trgmResults } = await supabase.rpc('search_skills_by_text', {
+        query_text: keyword,
+        similarity_min: 0.2,
+        max_results: 5,
+      })
 
-      // Búsqueda parcial en label (keyword contenido en label)
-      if (exactMatches.length === 0) {
-        for (const skill of catalog) {
-          const normLabel = normalize(skill.label)
-          if (normLabel.includes(keyword) && !skillScores.has(skill.id)) {
-            skillScores.set(skill.id, { skill, score: 2, matchedKeyword: keyword })
-          }
+      for (const r of (trgmResults || [])) {
+        const existing = skillMap.get(r.skill_uri)
+        const newScore = r.text_similarity + (existing?.score || 0)
+        if (!existing || newScore > existing.score) {
+          skillMap.set(r.skill_uri, {
+            uri: r.skill_uri,
+            label: r.skill_label,
+            score: newScore,
+            keyword: existing?.keyword || keyword,
+          })
         }
       }
     }
 
-    // Ordenar por score y limitar
-    const sorted = Array.from(skillScores.values())
+    // Step 2: For top trigram matches, expand with semantic neighbors via pgvector
+    const topUris = Array.from(skillMap.values())
       .sort((a, b) => b.score - a.score)
-      .slice(0, 30)
+      .slice(0, 8)
+      .map(s => s.uri)
 
-    const results: ExtractedSkill[] = sorted.map(({ skill, score, matchedKeyword }) => ({
-      id: skill.id,
-      label: skill.label,
-      type: skill.type,
-      description: skill.description || '',
-      source: skill.source || 'esco',
-      L1: skill.L1,
-      L2: skill.L2,
-      confidence: score >= 3 ? 'high' : score >= 2 ? 'medium' : 'low',
-      matchedKeyword,
+    if (topUris.length > 0) {
+      const { data: expanded } = await supabase.rpc('expand_skills_semantic', {
+        skill_uris: topUris,
+        similarity_threshold: 0.75,
+        max_per_skill: 3,
+      })
+
+      for (const r of (expanded || [])) {
+        if (r.is_exact) continue
+        if (skillMap.has(r.expanded_uri)) continue
+        skillMap.set(r.expanded_uri, {
+          uri: r.expanded_uri,
+          label: r.expanded_label,
+          score: r.similarity * 0.8,
+          keyword: `≈ ${r.original_label}`,
+        })
+      }
+    }
+
+    // Step 3: Sort and format results
+    const sorted = Array.from(skillMap.values())
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 20)
+
+    const results: ExtractedSkill[] = sorted.map(s => ({
+      id: s.uri,
+      uri: s.uri,
+      label: s.label,
+      type: 'skill',
+      description: '',
+      source: 'esco',
+      L1: '',
+      L2: '',
+      confidence: s.score >= 0.5 ? 'high' : s.score >= 0.3 ? 'medium' : 'low',
+      matchedKeyword: s.keyword,
     }))
 
     return NextResponse.json({
       results,
       keywords,
       text_length: text.length,
-      catalog_size: catalog.length,
     })
   } catch (error) {
     console.error('Error extracting skills from text:', error)
-    return NextResponse.json(
-      { error: 'Error processing text' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Error processing text' }, { status: 500 })
   }
 }
