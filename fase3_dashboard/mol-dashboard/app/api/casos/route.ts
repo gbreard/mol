@@ -68,17 +68,18 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const { persona_id, organizacion_id, objetivo } = body;
 
-  if (!persona_id || !organizacion_id) {
-    return NextResponse.json({ error: 'Falta persona_id o organizacion_id' }, { status: 400 });
+  if (!persona_id) {
+    return NextResponse.json({ error: 'Falta persona_id' }, { status: 400 });
   }
 
-  // Check no active case for this persona in this org
-  const { data: existing } = await client.from('casos')
+  // Check no active case for this persona
+  let existQuery = client.from('casos')
     .select('id, estado')
     .eq('persona_id', persona_id)
-    .eq('organizacion_id', organizacion_id)
     .neq('estado', 'cerrado')
     .limit(1);
+  if (organizacion_id) existQuery = existQuery.eq('organizacion_id', organizacion_id);
+  const { data: existing } = await existQuery;
 
   if (existing && existing.length > 0) {
     return NextResponse.json(
@@ -88,7 +89,7 @@ export async function POST(request: NextRequest) {
   }
 
   const { data, error } = await client.from('casos').insert({
-    persona_id, organizacion_id, objetivo: objetivo || 'empleo',
+    persona_id, organizacion_id: organizacion_id || null, objetivo: objetivo || 'empleo',
   }).select().single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
