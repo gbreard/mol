@@ -101,12 +101,12 @@ El sistema se estructura como un **motor con 6 capacidades** expuestas a través
 |---|----------|-----------|--------|
 | S2-1 | Importar datos (Excel/CSV) | Cap. 6 | ⬜ Por crear |
 | S2-2 | Login institucional | — | ⬜ Por crear |
-| S2-3 | Panel de casos | Cap. 2 + 6 | ⬜ Por crear |
-| S2-4 | Perfil del caso (2 cols: datos + tabs) | Cap. 1 + 2 | ⚠️ Wireframe (P-33) |
-| S2-5 | Nota del técnico | Cap. 1 | ⬜ Por crear |
-| S2-6 | Matching con vacantes | Cap. 2 | ⬜ Por crear |
-| S2-7 | Gestión de vacantes (empresa trae puesto) | Cap. 2 | ⬜ Por crear |
-| S2-8 | Formación (catálogo OE + impacto) | Cap. 3 | ⬜ Por crear |
+| S2-3 | Panel de casos | Cap. 2 + 6 | ✅ Datos reales Supabase (2026-03-31) |
+| S2-4 | Perfil del caso (tabs: Perfil ✅, Ocupaciones ✅, Comparar ✅, Vacantes ✅, Notas ✅) | Cap. 1 + 2 | ✅ pgvector matching semántico (OE-03, OE-04) |
+| S2-5 | Nota del técnico | Cap. 1 | ✅ CRUD real (dentro de S2-4 tab Notas) |
+| S2-6 | Matching con vacantes | Cap. 2 | ✅ pgvector expand + ofertas reales (dentro de S2-4 tab Vacantes) |
+| S2-7 | Gestión de vacantes (empresa trae puesto) | Cap. 2 | ⬜ Por crear (vacantes_oe tabla existe, sin UI) |
+| S2-8 | Formación (catálogo OE + impacto) | Cap. 3 | ⬜ Por crear (cursos_oe tabla pendiente) |
 | S2-9 | Comparar casos | Cap. 2 + 6 | ⬜ Por crear |
 | S2-10 | Inteligencia local | Cap. 4 | ⬜ Por crear (v2) |
 | S2-11 | Exportar diagnóstico (PDF institucional) | Cap. 5 | ⬜ Por crear |

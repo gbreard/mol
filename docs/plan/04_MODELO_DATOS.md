@@ -1067,7 +1067,24 @@ CREATE INDEX IF NOT EXISTS idx_perfiles_optin ON perfiles_trabajadores(opt_in_po
 
 ---
 
-### T-cursos_oe (NUEVA — Bloque 8° catálogo de cursos de cada OE)
+### Estado de tablas S2 en Supabase (actualizado 2026-04-01)
+
+| Tabla | Migration | En Supabase | Rows | Notas |
+|-------|-----------|:-----------:|-----:|-------|
+| `personas` | 035 | ✅ | 10 | 8 sintéticas + 2 test |
+| `perfiles` | 035 | ✅ | 8 | 1 por persona sintética |
+| `perfil_skills` | 035 | ✅ | 105 | Skills ESCO reales (4 vías) |
+| `casos` | 035 | ✅ | 9 | 8 sintéticos |
+| `derivaciones` | 035 | ✅ | 0 | Vacía |
+| `eventos_caso` | 035 | ✅ | 3 | |
+| `vacantes_oe` | 035 | ✅ | 0 | Tabla existe, sin UI |
+| `cursos_oe` | — | ⬜ **NO EXISTE** | — | Migration pendiente |
+| `skills_embeddings` | 042 | ✅ | 14,247 | pgvector BGE-M3 1024 dims |
+| `occupations_embeddings` | 047 | ✅ | 3,045 | pgvector BGE-M3 1024 dims |
+
+---
+
+### T-cursos_oe (NUEVA — Bloque 8° catálogo de cursos de cada OE, ⬜ PENDIENTE crear en Supabase)
 
 Catálogo de cursos de cada Oficina de Empleo, mapeados a skills ESCO.
 
