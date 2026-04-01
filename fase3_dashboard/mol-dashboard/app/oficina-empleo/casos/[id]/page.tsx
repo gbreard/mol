@@ -40,6 +40,14 @@ interface Skill {
   confianza: number
 }
 
+interface OcupacionCompatible {
+  uri: string
+  label: string
+  isco_code: string
+  afinidad: number
+  skills_matched: number
+}
+
 interface MatchedOffer {
   id_oferta: string
   titulo: string
@@ -72,6 +80,7 @@ const ESTADO_CONFIG: Record<string, { label: string; color: string; next?: strin
 
 const TABS = [
   { id: 'perfil', label: 'Perfil', icon: User },
+  { id: 'ocupaciones', label: 'Ocupaciones', icon: TrendingUp },
   { id: 'vacantes', label: 'Vacantes', icon: Briefcase },
   { id: 'notas', label: 'Notas', icon: ClipboardList },
 ]
@@ -120,6 +129,14 @@ export default function DetalleCasoPage() {
   const [offers, setOffers] = useState<MatchedOffer[]>([])
   const [matchStats, setMatchStats] = useState<{ expanded: number; total: number } | null>(null)
 
+  // Ocupaciones
+  const [ocupaciones, setOcupaciones] = useState<OcupacionCompatible[]>([])
+  const [ocupLoading, setOcupLoading] = useState(false)
+  const [ocupMensaje, setOcupMensaje] = useState<string | null>(null)
+
+  // Contrato con OE-04 (Tab Comparar)
+  const [selectedDestino, setSelectedDestino] = useState<{ uri: string; label: string; isco_code: string } | null>(null)
+
   // Fetch case data
   useEffect(() => {
     async function loadCaso() {
@@ -153,6 +170,31 @@ export default function DetalleCasoPage() {
     }
     if (casoId) loadCaso()
   }, [casoId])
+
+  // Fetch ocupaciones when switching to ocupaciones tab
+  const loadOcupaciones = useCallback(async () => {
+    if (ocupaciones.length > 0) return
+    setOcupLoading(true)
+    setOcupMensaje(null)
+    try {
+      const res = await fetch(`/api/casos/${casoId}/ocupaciones`)
+      if (!res.ok) throw new Error(`Error ${res.status}`)
+      const data = await res.json()
+      if (data.mensaje === 'sin_skills') {
+        setOcupMensaje('sin_skills')
+      } else {
+        setOcupaciones(data.ocupaciones || [])
+      }
+    } catch (e) {
+      console.error('Error loading ocupaciones:', e)
+    } finally {
+      setOcupLoading(false)
+    }
+  }, [casoId, ocupaciones.length])
+
+  useEffect(() => {
+    if (tab === 'ocupaciones') loadOcupaciones()
+  }, [tab, loadOcupaciones])
 
   // Fetch semantic matches when switching to vacantes tab
   const loadMatches = useCallback(async () => {
@@ -394,6 +436,78 @@ export default function DetalleCasoPage() {
                 Completar perfil con la persona →
               </button>
             </div>
+          </div>
+        )}
+
+        {/* Tab: Ocupaciones (match directo skills→ocupaciones por pgvector) */}
+        {tab === 'ocupaciones' && (
+          <div className="space-y-3">
+            {ocupLoading && (
+              <div className="bg-white rounded-xl border border-gray-200 p-8 flex items-center justify-center gap-3">
+                <Loader2 className="w-5 h-5 animate-spin text-teal-600" />
+                <span className="text-sm text-gray-500">Buscando ocupaciones compatibles...</span>
+              </div>
+            )}
+
+            {!ocupLoading && ocupMensaje === 'sin_skills' && (
+              <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
+                <p className="text-sm text-gray-600 mb-3">
+                  Para ver ocupaciones compatibles, completá primero el perfil de la persona.
+                </p>
+                <button
+                  onClick={() => setTab('perfil')}
+                  className="text-sm text-teal-600 font-medium hover:underline"
+                >
+                  Ir a Perfil
+                </button>
+              </div>
+            )}
+
+            {!ocupLoading && !ocupMensaje && ocupaciones.length > 0 && (
+              <>
+                <p className="text-xs text-gray-400">
+                  Ocupaciones compatibles · basado en {skills.length} skills del perfil
+                </p>
+                {ocupaciones.map(o => (
+                  <div key={o.uri} className="bg-white rounded-xl border border-gray-200 p-4">
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <div>
+                        <h3 className="font-semibold text-gray-900 text-sm">{o.label}</h3>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-xs text-gray-400 font-mono">{o.isco_code}</span>
+                          <span className="text-xs text-gray-400">·</span>
+                          <span className="text-xs text-gray-500">{o.skills_matched} skills coinciden</span>
+                        </div>
+                      </div>
+                    </div>
+                    <MatchBar pct={o.afinidad} />
+                    <div className="mt-3">
+                      <button
+                        onClick={() => {
+                          setSelectedDestino({ uri: o.uri, label: o.label, isco_code: o.isco_code })
+                          // OE-04: activar tab Comparar cuando exista
+                        }}
+                        className={`w-full text-xs font-semibold rounded-lg py-2 transition-colors ${
+                          selectedDestino?.uri === o.uri
+                            ? 'bg-green-50 text-green-700'
+                            : 'bg-teal-50 text-teal-600 hover:bg-teal-100'
+                        }`}
+                      >
+                        {selectedDestino?.uri === o.uri
+                          ? '✓ Destino seleccionado'
+                          : 'Usar como destino →'}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
+
+            {!ocupLoading && !ocupMensaje && ocupaciones.length === 0 && (
+              <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
+                <p className="text-sm text-gray-500">No se encontraron ocupaciones compatibles.</p>
+              </div>
+            )}
           </div>
         )}
 

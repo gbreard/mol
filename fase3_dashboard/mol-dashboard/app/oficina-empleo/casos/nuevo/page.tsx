@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, ArrowRight, User, QrCode } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react'
 
 export default function NuevoCasoPage() {
   const router = useRouter()
@@ -11,13 +11,14 @@ export default function NuevoCasoPage() {
     provincia: 'CABA', barrio: '', edad: '',
   })
   const [error, setError] = useState('')
+  const [saving, setSaving] = useState(false)
 
   const set = (key: string, val: string) => {
     setForm((f) => ({ ...f, [key]: val }))
     setError('')
   }
 
-  const handleContinuar = () => {
+  const handleCrear = async () => {
     if (!form.nombre.trim() || !form.apellido.trim()) {
       setError('Completá nombre y apellido.')
       return
@@ -26,9 +27,69 @@ export default function NuevoCasoPage() {
       setError('Ingresá el DNI.')
       return
     }
-    // En producción: POST /api/casos → { persona_id, caso_id }
-    // Mock: redirige al perfil S1 con nombre pre-cargado
-    router.push(`/mi-futuro-laboral/perfil`)
+
+    setSaving(true)
+    setError('')
+
+    try {
+      // 1. Crear persona
+      const personaRes = await fetch('/api/personas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: `${form.nombre.trim()} ${form.apellido.trim()}`,
+          dni: form.dni.trim(),
+          edad: form.edad ? parseInt(form.edad) : null,
+          telefono: form.telefono.trim() || null,
+          email: form.email.trim() || null,
+          ubicacion: form.barrio ? `${form.barrio}, ${form.provincia}` : form.provincia,
+          origen: 'S2',
+        }),
+      })
+
+      if (!personaRes.ok) {
+        const err = await personaRes.json()
+        throw new Error(err.error || 'Error creando persona')
+      }
+
+      const persona = await personaRes.json()
+
+      // 2. Crear perfil vacío
+      const perfilRes = await fetch('/api/perfiles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          persona_id: persona.id,
+          origen: 'S2',
+        }),
+      })
+
+      // 3. Crear caso
+      const casoRes = await fetch('/api/casos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          persona_id: persona.id,
+          organizacion_id: null,
+          objetivo: 'empleo',
+        }),
+      })
+
+      if (!casoRes.ok) {
+        const err = await casoRes.json()
+        throw new Error(err.error || 'Error creando caso')
+      }
+
+      const caso = await casoRes.json()
+
+      // Ir al detalle del caso (donde se cargan skills)
+      router.push(`/oficina-empleo/casos/${caso.id}`)
+
+    } catch (e) {
+      setError((e as Error).message)
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -51,13 +112,11 @@ export default function NuevoCasoPage() {
 
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-5">
 
-          {/* Nombre */}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1.5">Nombre *</label>
               <input
-                type="text"
-                value={form.nombre}
+                type="text" value={form.nombre}
                 onChange={(e) => set('nombre', e.target.value)}
                 placeholder="María"
                 className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-100"
@@ -66,8 +125,7 @@ export default function NuevoCasoPage() {
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1.5">Apellido *</label>
               <input
-                type="text"
-                value={form.apellido}
+                type="text" value={form.apellido}
                 onChange={(e) => set('apellido', e.target.value)}
                 placeholder="González"
                 className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-100"
@@ -75,13 +133,11 @@ export default function NuevoCasoPage() {
             </div>
           </div>
 
-          {/* DNI + Edad */}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1.5">DNI *</label>
               <input
-                type="text"
-                value={form.dni}
+                type="text" value={form.dni}
                 onChange={(e) => set('dni', e.target.value)}
                 placeholder="28.450.123"
                 className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-100"
@@ -90,22 +146,18 @@ export default function NuevoCasoPage() {
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1.5">Edad</label>
               <input
-                type="number"
-                value={form.edad}
+                type="number" value={form.edad}
                 onChange={(e) => set('edad', e.target.value)}
-                placeholder="34"
-                min={16} max={100}
+                placeholder="34" min={16} max={100}
                 className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-100"
               />
             </div>
           </div>
 
-          {/* Contacto */}
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1.5">Teléfono</label>
             <input
-              type="tel"
-              value={form.telefono}
+              type="tel" value={form.telefono}
               onChange={(e) => set('telefono', e.target.value)}
               placeholder="+54 11 4523-9876"
               className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-100"
@@ -115,15 +167,13 @@ export default function NuevoCasoPage() {
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1.5">Email</label>
             <input
-              type="email"
-              value={form.email}
+              type="email" value={form.email}
               onChange={(e) => set('email', e.target.value)}
               placeholder="mgonzalez@email.com"
               className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-100"
             />
           </div>
 
-          {/* Ubicación */}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1.5">Provincia</label>
@@ -137,14 +187,14 @@ export default function NuevoCasoPage() {
                 <option>Córdoba</option>
                 <option>Santa Fe</option>
                 <option>Mendoza</option>
+                <option>Tucumán</option>
                 <option>Otra</option>
               </select>
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1.5">Barrio / Localidad</label>
               <input
-                type="text"
-                value={form.barrio}
+                type="text" value={form.barrio}
                 onChange={(e) => set('barrio', e.target.value)}
                 placeholder="Flores"
                 className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-100"
@@ -155,27 +205,22 @@ export default function NuevoCasoPage() {
           {error && <p className="text-xs text-red-600">{error}</p>}
 
           <button
-            onClick={handleContinuar}
-            className="w-full inline-flex items-center justify-center gap-2 bg-teal-600 text-white text-sm font-semibold px-4 py-3 rounded-xl hover:bg-teal-700 transition-colors"
+            onClick={handleCrear}
+            disabled={saving}
+            className="w-full inline-flex items-center justify-center gap-2 bg-teal-600 text-white text-sm font-semibold px-4 py-3 rounded-xl hover:bg-teal-700 disabled:opacity-50 transition-colors"
           >
-            Continuar al perfil de competencias
-            <ArrowRight className="w-4 h-4" />
+            {saving ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Creando caso...
+              </>
+            ) : (
+              <>
+                Crear caso y cargar competencias
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
           </button>
-        </div>
-
-        {/* Opción QR */}
-        <div className="mt-4 flex items-start gap-3 bg-teal-50 border border-teal-200 rounded-xl p-4">
-          <QrCode className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
-          <div>
-            <p className="text-xs font-semibold text-teal-800">¿La persona tiene un teléfono?</p>
-            <p className="text-xs text-teal-700 mt-0.5">
-              Podés enviarle el link de Mi Futuro Laboral para que complete su perfil desde el teléfono.
-              El técnico ve los resultados automáticamente.
-            </p>
-            <button className="mt-2 text-xs text-teal-600 font-medium hover:underline">
-              Enviar link →
-            </button>
-          </div>
         </div>
       </div>
     </div>
