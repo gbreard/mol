@@ -103,11 +103,11 @@ export default function AdminIssuesPage() {
     sections.push(`Generado: ${new Date().toISOString().slice(0, 10)} | Correcciones: ${pendientes.length}\n`);
 
     // Sección 1: Correcciones ISCO
-    const iscoCorr = pendientes.filter(i => corrections[i.id_oferta]?.ocupacion_corregida);
+    const iscoCorr = pendientes.filter(i => corrections[i.id_oferta!]?.ocupacion_corregida);
     if (iscoCorr.length > 0) {
       sections.push(`## CORRECCIONES DE ISCO (para reglas de matching)\n`);
       iscoCorr.forEach(i => {
-        const c = corrections[i.id_oferta];
+        const c = corrections[i.id_oferta!];
         const oc = c.ocupacion_corregida;
         sections.push(`### Oferta: ${c._titulo || i.titulo} (ID: ${i.id_oferta})`);
         sections.push(`- ISCO sistema: ${c._isco} (${c._isco_label})`);
@@ -119,13 +119,13 @@ export default function AdminIssuesPage() {
 
     // Sección 2: Notas con análisis
     const notasLargas = pendientes.filter(i => {
-      const c = corrections[i.id_oferta];
+      const c = corrections[i.id_oferta!];
       return c?.nota && c.nota.length > 50 && !c.ocupacion_corregida;
     });
     if (notasLargas.length > 0) {
       sections.push(`## NOTAS CON ANÁLISIS (para sinónimos / reglas NLP)\n`);
       notasLargas.forEach(i => {
-        const c = corrections[i.id_oferta];
+        const c = corrections[i.id_oferta!];
         const tipo = inferCorrectionType(i.id, i.id_oferta);
         sections.push(`### Oferta: ${c._titulo || i.titulo} (ID: ${i.id_oferta})`);
         sections.push(`- Tipo inferido: ${tipo || "General"}`);
@@ -136,11 +136,11 @@ export default function AdminIssuesPage() {
     }
 
     // Sección 3: Skills editadas
-    const skillsCorr = pendientes.filter(i => corrections[i.id_oferta]?.skills_editadas);
+    const skillsCorr = pendientes.filter(i => corrections[i.id_oferta!]?.skills_editadas);
     if (skillsCorr.length > 0) {
       sections.push(`## SKILLS EDITADAS (para Gold Set / training pairs)\n`);
       skillsCorr.forEach(i => {
-        const c = corrections[i.id_oferta];
+        const c = corrections[i.id_oferta!];
         sections.push(`### Oferta: ${c._titulo || i.titulo} (ID: ${i.id_oferta})`);
         const skills = c.skills_editadas || [];
         skills.forEach((s: any) => sections.push(`  - ${s.label} (${s.type})`));
