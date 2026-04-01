@@ -1491,12 +1491,17 @@ class MatcherV3:
 
             count = 0
             for skill in seen_uris.values():
+                # M-08b: texto_original — texto fuente antes del match ESCO
+                texto_orig = skill.get('texto_fuente') or skill.get('tarea') or None
+                if texto_orig and len(texto_orig) > 200:
+                    texto_orig = texto_orig[:200]
+
                 self.conn.execute('''
                     INSERT INTO ofertas_esco_skills_detalle (
                         id_oferta, skill_mencionado, skill_tipo_fuente,
                         esco_skill_uri, esco_skill_label, match_score, match_method,
-                        esco_skill_type, source_classification
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        esco_skill_type, source_classification, texto_original
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (
                     str(id_oferta),
                     skill.get('skill_esco', skill.get('skill', '')),
@@ -1512,7 +1517,8 @@ class MatcherV3:
                         'L2': skill.get('L2', ''),
                         'L2_nombre': skill.get('L2_nombre', ''),
                         'es_digital': skill.get('es_digital', False)
-                    }, ensure_ascii=False)
+                    }, ensure_ascii=False),
+                    texto_orig
                 ))
                 count += 1
 
@@ -1630,6 +1636,50 @@ class MatcherV3:
                 alternativas=result.alternativas,
                 metadata={**result.metadata, "skills_count": len(skills_extracted)}
             )
+
+        # 3b. M-08: Extraer skills de fuentes declaradas
+        declared_skills, declared_failures = self.skills_extractor.extract_declared_skills(
+            oferta_nlp, track_failures=True
+        )
+
+        # M-06: Persistir failures de declaradas
+        if declared_failures:
+            self._persist_skill_failures(id_oferta, run_id, declared_failures)
+
+        # M-08: Merge declaradas con skills de tareas (dedup por equiv_group)
+        if declared_skills:
+            existing_keys = set()
+            for s in skills_extracted:
+                uri = s.get("skill_uri", "")
+                group = self.skills_extractor.equiv_lookup.get(uri, uri)
+                existing_keys.add(group)
+
+            added = 0
+            for s in declared_skills:
+                uri = s.get("skill_uri", "")
+                group = self.skills_extractor.equiv_lookup.get(uri, uri)
+                if group not in existing_keys:
+                    existing_keys.add(group)
+                    skills_extracted.append(s)
+                    added += 1
+
+            if self.verbose and added > 0:
+                print(f"[M-08] +{added} skills declaradas (de {len(declared_skills)} candidatas, {len(declared_skills) - added} dedup)")
+
+            # Actualizar result con skills mergeadas
+            if added > 0:
+                result = MatchResult(
+                    status=result.status,
+                    esco_uri=result.esco_uri,
+                    esco_label=result.esco_label,
+                    isco_code=result.isco_code,
+                    score=result.score,
+                    metodo=result.metodo,
+                    skills_extracted=skills_extracted,
+                    skills_matched=result.skills_matched,
+                    alternativas=result.alternativas,
+                    metadata={**result.metadata, "skills_count": len(skills_extracted)}
+                )
 
         # 4. Categorizar skills si se solicita
         skills_to_save = result.skills_extracted
@@ -1805,7 +1855,9 @@ def run_matching_pipeline(
         query = f'''
             SELECT n.id_oferta, n.titulo_limpio, n.tareas_explicitas,
                    n.area_funcional, n.nivel_seniority, n.sector_empresa,
-                   o.titulo as titulo_original
+                   o.titulo as titulo_original,
+                   n.skills_tecnicas_list, n.tecnologias_list,
+                   n.herramientas_list, n.soft_skills_list
             FROM ofertas_nlp n
             LEFT JOIN ofertas o ON CAST(n.id_oferta AS INTEGER) = o.id_oferta
             WHERE n.id_oferta IN ({placeholders})
@@ -1816,7 +1868,9 @@ def run_matching_pipeline(
         query = f'''
             SELECT n.id_oferta, n.titulo_limpio, n.tareas_explicitas,
                    n.area_funcional, n.nivel_seniority, n.sector_empresa,
-                   o.titulo as titulo_original
+                   o.titulo as titulo_original,
+                   n.skills_tecnicas_list, n.tecnologias_list,
+                   n.herramientas_list, n.soft_skills_list
             FROM ofertas_nlp n
             LEFT JOIN ofertas o ON CAST(n.id_oferta AS INTEGER) = o.id_oferta
             LEFT JOIN ofertas_esco_matching m ON n.id_oferta = m.id_oferta
@@ -1829,7 +1883,9 @@ def run_matching_pipeline(
         query = f'''
             SELECT n.id_oferta, n.titulo_limpio, n.tareas_explicitas,
                    n.area_funcional, n.nivel_seniority, n.sector_empresa,
-                   o.titulo as titulo_original
+                   o.titulo as titulo_original,
+                   n.skills_tecnicas_list, n.tecnologias_list,
+                   n.herramientas_list, n.soft_skills_list
             FROM ofertas_nlp n
             LEFT JOIN ofertas o ON CAST(n.id_oferta AS INTEGER) = o.id_oferta
             WHERE 1=1
@@ -1874,6 +1930,34 @@ def run_matching_pipeline(
     # Inicializar matcher
     matcher = MatcherV3(db_conn=conn, verbose=verbose)
 
+    # EQUIV-UI: Verificar si equiv_lookup está desactualizado
+    try:
+        _config_path = Path(__file__).parent.parent / "config" / "supabase_config.json"
+        if _config_path.exists():
+            import json as _json
+            _sb_config = _json.load(open(_config_path))
+            if _sb_config.get('url') and _sb_config.get('anon_key'):
+                from supabase import create_client as _create_client
+                _sb = _create_client(_sb_config['url'], _sb_config['anon_key'])
+                _latest = _sb.rpc('get_latest_equiv_update').execute()
+                if _latest.data:
+                    from datetime import datetime, timezone
+                    _latest_str = str(_latest.data)
+                    _latest_update = datetime.fromisoformat(_latest_str.replace('Z', '+00:00'))
+                    _loaded_at = getattr(SkillsImplicitExtractor, '_equiv_loaded_at', None)
+                    if _loaded_at and _latest_update > _loaded_at:
+                        SkillsImplicitExtractor._equiv_lookup = None
+                        SkillsImplicitExtractor._equiv_groups = None
+                        SkillsImplicitExtractor._initialized = False
+                        matcher = MatcherV3(db_conn=conn, verbose=verbose)
+                        if verbose:
+                            print(f"[EQUIV] Lookup recargado (último cambio: {_latest_str})")
+                    elif verbose:
+                        print(f"[EQUIV] Lookup vigente (sin cambios desde última carga)")
+    except Exception as _e:
+        if verbose:
+            print(f"[EQUIV] WARN: No se pudo verificar staleness: {_e}")
+
     stats = {
         'total': len(ofertas),
         'procesadas': 0,
@@ -1893,7 +1977,12 @@ def run_matching_pipeline(
                 'tareas_explicitas': oferta['tareas_explicitas'] or '',
                 'area_funcional': oferta['area_funcional'] or '',
                 'nivel_seniority': oferta['nivel_seniority'] or '',
-                'sector_empresa': oferta['sector_empresa'] or ''
+                'sector_empresa': oferta['sector_empresa'] or '',
+                # M-08: Fuentes declaradas para extract_declared_skills()
+                'skills_tecnicas_list': oferta['skills_tecnicas_list'] or '',
+                'tecnologias_list': oferta['tecnologias_list'] or '',
+                'herramientas_list': oferta['herramientas_list'] or '',
+                'soft_skills_list': oferta['soft_skills_list'] or '',
             }
 
             result = matcher.match_and_persist(id_oferta, oferta_nlp, run_id=run_id)

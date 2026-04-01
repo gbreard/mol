@@ -119,6 +119,7 @@ const ACCION_LINKS: Record<string, { label: string; href: string }> = {
   ver_issues: { label: 'Ver issues', href: '/admin/issues' },
   backfill_skills: { label: 'Ver skills', href: '/admin/skills' },
   reprocesar_matching: { label: 'Ver matching', href: '/admin/metricas' },
+  ver_equiv_baja_confianza: { label: 'Ver equivalencias', href: '/admin/procesamiento/fabrica/equivalencias?sort=confianza_asc' },
 };
 
 const QUICK_LINKS = [

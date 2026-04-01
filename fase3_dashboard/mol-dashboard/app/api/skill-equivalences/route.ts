@@ -22,6 +22,7 @@ export async function GET(request: NextRequest) {
 
   const estado = request.nextUrl.searchParams.get('estado');
   const search = request.nextUrl.searchParams.get('search');
+  const sort = request.nextUrl.searchParams.get('sort') || 'frecuencia';
   const limit = parseInt(request.nextUrl.searchParams.get('limit') || '50');
   const offset = parseInt(request.nextUrl.searchParams.get('offset') || '0');
 
@@ -30,8 +31,16 @@ export async function GET(request: NextRequest) {
   if (estado) query = query.eq('estado', estado);
   if (search) query = query.or(`label_representante.ilike.%${search}%,label_argentino.ilike.%${search}%`);
 
+  // Ordenamiento
+  if (sort === 'confianza_desc') {
+    query = query.order('similitud_promedio', { ascending: false, nullsFirst: false });
+  } else if (sort === 'confianza_asc') {
+    query = query.order('similitud_minima', { ascending: true, nullsFirst: false });
+  } else {
+    query = query.order('frecuencia_total', { ascending: false });
+  }
+
   const { data, error, count } = await query
-    .order('frecuencia_total', { ascending: false })
     .range(offset, offset + limit - 1);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

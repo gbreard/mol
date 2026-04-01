@@ -237,6 +237,10 @@ class SkillsImplicitExtractor:
 
         SkillsImplicitExtractor._initialized = True
 
+        # Registrar timestamp de carga de equivalencias (para staleness check)
+        from datetime import datetime, timezone
+        SkillsImplicitExtractor._equiv_loaded_at = datetime.now(timezone.utc)
+
         if self.verbose:
             print(f"[SKILLS] Inicializado: {len(self.metadata)} skills, umbral={self.threshold}")
 
@@ -946,6 +950,182 @@ class SkillsImplicitExtractor:
             "metodo_primario": metodo_primario,
             "failures": failures_semantico
         }
+
+    # ================================================================
+    # M-08: Fuentes declaradas
+    # ================================================================
+
+    def _parse_declared_source(self, campo: str, texto) -> List[str]:
+        """
+        M-08: Parsea una fuente declarada a lista de strings limpia.
+        Maneja JSON array, semicolon, comma, y texto libre.
+        """
+        if not texto or texto in ('', '[]', 'null', 'None'):
+            return []
+
+        if isinstance(texto, list):
+            items = []
+            for item in texto:
+                if isinstance(item, dict):
+                    v = item.get("valor") or item.get("texto_original") or ""
+                    if v:
+                        items.append(v)
+                elif isinstance(item, str) and item.strip():
+                    items.append(item.strip())
+            texto_str = "; ".join(items) if items else ""
+        else:
+            texto_str = str(texto).strip()
+
+        if not texto_str:
+            return []
+
+        items = []
+
+        # JSON array
+        if texto_str.startswith('['):
+            try:
+                import json as _json
+                parsed = _json.loads(texto_str)
+                for item in parsed:
+                    if isinstance(item, dict):
+                        v = item.get("valor") or item.get("texto_original") or ""
+                        if v:
+                            items.append(v.strip())
+                    elif isinstance(item, str) and item.strip():
+                        items.append(item.strip())
+            except (ValueError, TypeError):
+                # JSON inválido — fallback a split
+                cleaned = texto_str.strip('[]')
+                items = [s.strip().strip('"').strip("'") for s in cleaned.split(',') if s.strip()]
+
+        # Soft skills: comma-separated + split por ' y '
+        elif campo == 'soft_skills_list':
+            for part in texto_str.split(','):
+                part = part.strip()
+                if not part:
+                    continue
+                # Split por ' y ' para frases compuestas
+                if ' y ' in part and len(part) > 20:
+                    subparts = part.split(' y ')
+                    items.extend(s.strip() for s in subparts if s.strip())
+                else:
+                    items.append(part)
+
+        # Semicolon (tecnologias, herramientas, skills_tecnicas con ;)
+        elif ';' in texto_str:
+            items = [s.strip() for s in texto_str.split(';') if s.strip()]
+
+        # Comma fallback
+        elif ',' in texto_str:
+            items = [s.strip() for s in texto_str.split(',') if s.strip()]
+
+        # Texto libre sin separador
+        else:
+            items = [texto_str.strip()] if texto_str.strip() else []
+
+        # Filtrar vacíos y muy cortos
+        items = [s for s in items if s and len(s) > 1]
+
+        # Deduplicar preservando orden
+        seen = set()
+        deduped = []
+        for item in items:
+            key = item.lower().strip()
+            if key not in seen:
+                seen.add(key)
+                deduped.append(item)
+        items = deduped
+
+        # Normalizar case según campo
+        if campo in ('soft_skills_list', 'skills_tecnicas_list'):
+            items = [s.lower().strip() for s in items]
+        else:
+            items = [s.strip() for s in items]  # preservar case para nombres propios
+
+        # Limitar cantidad
+        max_items = 20 if campo == 'soft_skills_list' else 15
+        return items[:max_items]
+
+    def extract_declared_skills(
+        self,
+        oferta_nlp: Dict,
+        track_failures: bool = False
+    ):
+        """
+        M-08: Extrae skills ESCO de las 4 fuentes declaradas.
+
+        Para cada fuente: parsear → embeddear → coseno top 1 → equivalencias.
+        Retorna tupla (declared_skills, declared_failures).
+        """
+        if not self.embeddings.size:
+            return ([], [])
+
+        threshold = self.threshold
+        declared_skills = []
+        declared_failures = []
+
+        sources = [
+            ('skills_tecnicas_list', 'skills_nlp_declarada'),
+            ('tecnologias_list', 'tecnologia_declarada'),
+            ('herramientas_list', 'herramienta_declarada'),
+            ('soft_skills_list', 'soft_skill_declarada'),
+        ]
+
+        for campo, tipo_fuente in sources:
+            texto = oferta_nlp.get(campo, '')
+            items = self._parse_declared_source(campo, texto)
+
+            if not items:
+                continue
+
+            for item in items:
+                # Embeddear
+                item_emb = self.model.encode(item, normalize_embeddings=True)
+
+                # Coseno contra todas las skills ESCO
+                similarities = np.dot(self.embeddings, item_emb)
+
+                # Top 1
+                best_idx = np.argmax(similarities)
+                score = round(float(similarities[best_idx]), 4)
+
+                if score >= threshold:
+                    skill_meta = self.metadata[best_idx]
+                    skill_label = skill_meta.get('label', skill_meta.get('preferred_label_es', ''))
+                    skill_uri = skill_meta.get('uri', skill_meta.get('skill_uri', ''))
+
+                    # Aplicar equivalencias
+                    equiv_group = self.equiv_lookup.get(skill_uri)
+                    if equiv_group and equiv_group in self.equiv_groups:
+                        group_info = self.equiv_groups[equiv_group]
+                        skill_label = group_info['label']
+
+                    declared_skills.append({
+                        "skill_esco": skill_label,
+                        "skill_uri": skill_uri,
+                        "score": score,
+                        "score_ponderado": score,
+                        "peso": 1.0,
+                        "origen": tipo_fuente,
+                        "texto_fuente": item[:100]
+                    })
+
+                    if self.verbose:
+                        print(f"[M-08] [{tipo_fuente}] '{item[:40]}' -> '{skill_label}' (score={score:.3f})")
+
+                elif track_failures:
+                    best_meta = self.metadata[best_idx]
+                    declared_failures.append({
+                        "tarea_texto": item[:200],
+                        "tarea_origen": tipo_fuente,
+                        "mejor_skill_uri": best_meta.get('uri', best_meta.get('skill_uri', '')),
+                        "mejor_skill_label": best_meta.get('label', best_meta.get('preferred_label_es', '')),
+                        "mejor_score": score,
+                        "threshold_usado": threshold,
+                        "gap_al_umbral": round(threshold - score, 4)
+                    })
+
+        return (declared_skills, declared_failures)
 
     def compare_skills_with_occupation(
         self,
