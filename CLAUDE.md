@@ -175,15 +175,22 @@ fase_actual: "procesamiento"  # adquisicion | procesamiento | presentacion
 
 ## Deploy Dashboard (Fase 3)
 
-**URL producción:** https://mol-nextjs.vercel.app
+**⚠️ ALIASES DE DEPLOY — NO CONFUNDIR:**
+
+| Alias | Quién deploya | Para qué |
+|-------|---------------|----------|
+| `mol-nextjs.vercel.app` | **Solo Gerardo** | Producción |
+| `mol-dev.vercel.app` | **Solo Sergio** | Desarrollo frontend |
+
+**NUNCA** hacer `vercel alias ... mol-nextjs.vercel.app` si no sos Gerardo.
+**NUNCA** hacer `vercel alias ... mol-dev.vercel.app` si no sos Sergio.
 
 **Arquitectura:**
 ```
-fase3_dashboard/mol-dashboard/  →  Vercel (mol-dashboard)  →  mol-nextjs.vercel.app
-         ↓                                ↓
-    Código local                    Deploy via CLI
-         ↓                                ↓
-   gbreard/mol (GitHub)            Supabase (datos)
+fase3_dashboard/mol-dashboard/  →  Vercel (mol-dashboard)
+         ↓
+    Gerardo deploya → mol-nextjs.vercel.app (producción)
+    Sergio deploya  → mol-dev.vercel.app (desarrollo)
 ```
 
 **IMPORTANTE:** El deploy NO es automático. No está vinculado a GitHub por limitaciones del plan gratuito de Vercel.
@@ -199,7 +206,7 @@ fase3_dashboard/mol-dashboard/  →  Vercel (mol-dashboard)  →  mol-nextjs.ver
 
 2. **Cuando está listo** → decirle a Claude: "commitear y deployar"
 
-3. **Claude ejecuta:**
+3. **Claude ejecuta (verificar qué alias usar según el desarrollador):**
    ```bash
    # Regenerar architecture JSON (si cambiaron pantallas o pipeline)
    python scripts/generate_architecture_json.py
@@ -213,11 +220,14 @@ fase3_dashboard/mol-dashboard/  →  Vercel (mol-dashboard)  →  mol-nextjs.ver
    cd fase3_dashboard/mol-dashboard
    npx vercel --prod --yes
 
-   # IMPORTANTE: Actualizar alias (el deploy crea URL nueva cada vez)
+   # IMPORTANTE: Usar el alias correcto según quién deploya
+   # Gerardo:
    npx vercel alias [url-del-deploy] mol-nextjs.vercel.app
+   # Sergio:
+   npx vercel alias [url-del-deploy] mol-dev.vercel.app
    ```
 
-   **Nota:** Sin el último comando, `mol-nextjs.vercel.app` queda apuntando al deploy anterior.
+   **Nota:** Sin el alias, la URL queda solo en el deploy temporal.
 
 ### Comandos útiles Vercel
 
