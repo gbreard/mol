@@ -92,6 +92,14 @@ COMMAND_MAP = {
         'script': 'scripts/exports/generate_training_pairs.py',
         'build_args': lambda p: [],
     },
+    'recluster_preview': {
+        'script': 'scripts/generate_skill_equivalences.py',
+        'build_args': lambda p: ['--partial', '--preview'] + (['--threshold', str(p['threshold'])] if p.get('threshold') else []),
+    },
+    'recluster_apply': {
+        'script': 'scripts/generate_skill_equivalences.py',
+        'build_args': lambda p: ['--partial'] + (['--threshold', str(p['threshold'])] if p.get('threshold') else []),
+    },
 }
 
 
@@ -187,13 +195,23 @@ def execute_command(client, cmd, dry_run=False):
             log_output += f"\n--- STDERR ---\n{result.stderr[-2000:]}"
 
         if result.returncode == 0:
+            # M-08c: Intentar parsear JSON estructurado de la última línea
+            resultado = {'exit_code': 0, 'duracion_seg': duration}
+            try:
+                stdout_lines = (result.stdout or '').strip().split('\n')
+                if stdout_lines:
+                    last_line = stdout_lines[-1].strip()
+                    parsed = json.loads(last_line)
+                    if isinstance(parsed, dict) and 'tipo' in parsed:
+                        resultado.update(parsed)
+                        resultado['duracion_seg'] = duration
+            except (json.JSONDecodeError, IndexError):
+                pass
+
             update_command(client, cmd_id,
                 estado='completado',
                 log=log_output,
-                resultado={
-                    'exit_code': 0,
-                    'duracion_seg': duration,
-                },
+                resultado=resultado,
                 completed_at=datetime.utcnow().isoformat()
             )
             print(f"[POLLER] OK — {duration}s")
