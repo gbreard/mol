@@ -6,6 +6,7 @@ import {
   ArrowLeft, User, Briefcase, BookOpen, ClipboardList,
   TrendingUp, Plus, ChevronRight, CheckCircle, Clock,
   Building2, MapPin, AlertTriangle, Edit3, Send, Loader2,
+  GitCompare,
 } from 'lucide-react'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -81,6 +82,7 @@ const ESTADO_CONFIG: Record<string, { label: string; color: string; next?: strin
 const TABS = [
   { id: 'perfil', label: 'Perfil', icon: User },
   { id: 'ocupaciones', label: 'Ocupaciones', icon: TrendingUp },
+  { id: 'comparar', label: 'Comparar', icon: GitCompare },
   { id: 'vacantes', label: 'Vacantes', icon: Briefcase },
   { id: 'notas', label: 'Notas', icon: ClipboardList },
 ]
@@ -134,8 +136,20 @@ export default function DetalleCasoPage() {
   const [ocupLoading, setOcupLoading] = useState(false)
   const [ocupMensaje, setOcupMensaje] = useState<string | null>(null)
 
-  // Contrato con OE-04 (Tab Comparar)
+  // OE-03/OE-04: selectedDestino compartido entre tabs Ocupaciones y Comparar
   const [selectedDestino, setSelectedDestino] = useState<{ uri: string; label: string; isco_code: string } | null>(null)
+
+  // OE-04: Gap data
+  const [gapLoading, setGapLoading] = useState(false)
+  const [gapData, setGapData] = useState<{
+    skills_cubiertas_uris: string[]
+    skills_cubiertas_detail: Record<string, { similarity: number; is_exact: boolean }>
+    total_expanded: number
+  } | null>(null)
+  const [occDetail, setOccDetail] = useState<{
+    essential: Array<{ id: string; label: string }>
+    optional: Array<{ id: string; label: string }>
+  } | null>(null)
 
   // Fetch case data
   useEffect(() => {
@@ -170,6 +184,52 @@ export default function DetalleCasoPage() {
     }
     if (casoId) loadCaso()
   }, [casoId])
+
+  // OE-04: Load gap when destino changes or tab activates
+  const loadGap = useCallback(async (destino: { uri: string; label: string; isco_code: string }) => {
+    setGapLoading(true)
+    setGapData(null)
+    setOccDetail(null)
+    try {
+      // Fetch occupation detail from JSON (parallel with API)
+      const [gapRes, occRes] = await Promise.all([
+        fetch(`/api/casos/${casoId}/gap`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ occupation_uri: destino.uri }),
+        }),
+        fetch('/data/occupation_full_detail.json').then(r => r.json()),
+      ])
+
+      if (!gapRes.ok) throw new Error(`Gap API error ${gapRes.status}`)
+      const gap = await gapRes.json()
+      if (gap.mensaje === 'sin_skills') {
+        setGapData(null)
+        return
+      }
+      setGapData(gap)
+
+      // Extract occupation skills from JSON
+      const occId = destino.uri.split('/').pop() || ''
+      const occ = occRes[occId]
+      if (occ) {
+        setOccDetail({
+          essential: (occ.skills?.essential || []).map((s: any) => ({ id: s.id, label: s.label })),
+          optional: (occ.skills?.optional || []).map((s: any) => ({ id: s.id, label: s.label })),
+        })
+      }
+    } catch (e) {
+      console.error('Error loading gap:', e)
+    } finally {
+      setGapLoading(false)
+    }
+  }, [casoId])
+
+  useEffect(() => {
+    if (tab === 'comparar' && selectedDestino && !gapData && !gapLoading) {
+      loadGap(selectedDestino)
+    }
+  }, [tab, selectedDestino, gapData, gapLoading, loadGap])
 
   // Fetch ocupaciones when switching to ocupaciones tab
   const loadOcupaciones = useCallback(async () => {
@@ -485,7 +545,8 @@ export default function DetalleCasoPage() {
                       <button
                         onClick={() => {
                           setSelectedDestino({ uri: o.uri, label: o.label, isco_code: o.isco_code })
-                          // OE-04: activar tab Comparar cuando exista
+                          setGapData(null) // Reset gap para recalcular
+                          setTab('comparar')
                         }}
                         className={`w-full text-xs font-semibold rounded-lg py-2 transition-colors ${
                           selectedDestino?.uri === o.uri
@@ -506,6 +567,158 @@ export default function DetalleCasoPage() {
             {!ocupLoading && !ocupMensaje && ocupaciones.length === 0 && (
               <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
                 <p className="text-sm text-gray-500">No se encontraron ocupaciones compatibles.</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Tab: Comparar (OE-04 — gap semántico perfil vs ocupación destino) */}
+        {tab === 'comparar' && (
+          <div className="space-y-4">
+            {/* Sin destino seleccionado */}
+            {!selectedDestino && (
+              <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
+                <p className="text-sm text-gray-600 mb-3">
+                  Elegí una ocupación destino para ver el gap.
+                </p>
+                <button
+                  onClick={() => setTab('ocupaciones')}
+                  className="text-sm text-teal-600 font-medium hover:underline"
+                >
+                  Ir a Ocupaciones para elegir destino
+                </button>
+              </div>
+            )}
+
+            {/* Loading */}
+            {selectedDestino && gapLoading && (
+              <div className="bg-white rounded-xl border border-gray-200 p-8 flex items-center justify-center gap-3">
+                <Loader2 className="w-5 h-5 animate-spin text-teal-600" />
+                <span className="text-sm text-gray-500">Calculando gap semántico...</span>
+              </div>
+            )}
+
+            {/* Con destino y datos */}
+            {selectedDestino && !gapLoading && gapData && occDetail && (() => {
+              const SKILL_URI_PREFIX = 'http://data.europa.eu/esco/skill/'
+              const cubiertas = new Map<string, { similarity: number; is_exact: boolean }>()
+              for (const [uri, detail] of Object.entries(gapData.skills_cubiertas_detail)) {
+                cubiertas.set(uri, detail as { similarity: number; is_exact: boolean })
+              }
+
+              // Classify occupation skills
+              const essentialCubiertas = occDetail.essential.filter(s => cubiertas.has(SKILL_URI_PREFIX + s.id))
+              const essentialGap = occDetail.essential.filter(s => !cubiertas.has(SKILL_URI_PREFIX + s.id))
+              const optionalCubiertas = occDetail.optional.filter(s => cubiertas.has(SKILL_URI_PREFIX + s.id))
+              const optionalGap = occDetail.optional.filter(s => !cubiertas.has(SKILL_URI_PREFIX + s.id))
+
+              const totalEssential = occDetail.essential.length
+              const cubiertasEssentialCount = essentialCubiertas.length
+              const pctEsenciales = totalEssential > 0 ? Math.round((cubiertasEssentialCount / totalEssential) * 100) : 0
+
+              const cubExact = [...essentialCubiertas, ...optionalCubiertas].filter(s => cubiertas.get(SKILL_URI_PREFIX + s.id)?.is_exact).length
+              const cubSemantic = [...essentialCubiertas, ...optionalCubiertas].length - cubExact
+
+              return (
+                <>
+                  {/* Header */}
+                  <div className="bg-white rounded-xl border border-gray-200 p-4">
+                    <div className="flex items-center gap-2 text-sm text-gray-700 mb-3">
+                      <span className="font-semibold">{persona?.nombre}</span>
+                      <span className="text-gray-300">→</span>
+                      <span className="font-semibold text-teal-700">{selectedDestino.label}</span>
+                      <span className="text-xs text-gray-400 font-mono ml-1">{selectedDestino.isco_code}</span>
+                    </div>
+
+                    {/* Progress bar */}
+                    <div className="mb-2">
+                      <MatchBar pct={pctEsenciales} />
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      {pctEsenciales}% skills esenciales cubiertas · {cubExact} exactas · {cubSemantic} semánticas · {essentialGap.length + optionalGap.length} faltan
+                    </p>
+
+                    {/* Change destino */}
+                    <button
+                      onClick={() => setTab('ocupaciones')}
+                      className="mt-2 text-xs text-teal-600 hover:underline"
+                    >
+                      Cambiar ocupación destino
+                    </button>
+                  </div>
+
+                  {/* Essential skills */}
+                  <div className="bg-white rounded-xl border border-gray-200 p-4">
+                    <h3 className="text-xs font-semibold text-gray-700 mb-3">
+                      Skills esenciales ({cubiertasEssentialCount}/{totalEssential})
+                    </h3>
+                    <div className="space-y-1.5">
+                      {essentialCubiertas.map(s => {
+                        const match = cubiertas.get(SKILL_URI_PREFIX + s.id)
+                        return (
+                          <div key={s.id} className="flex items-center gap-2 text-sm">
+                            <CheckCircle className="w-3.5 h-3.5 text-green-500 shrink-0" />
+                            <span className="text-gray-700 flex-1">{s.label}</span>
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded ${match?.is_exact ? 'bg-green-50 text-green-600' : 'bg-blue-50 text-blue-600'}`}>
+                              {match?.is_exact ? 'exacto' : `~${((match?.similarity || 0) * 100).toFixed(0)}%`}
+                            </span>
+                          </div>
+                        )
+                      })}
+                      {essentialGap.map(s => (
+                        <div key={s.id} className="flex items-center gap-2 text-sm">
+                          <span className="w-3.5 h-3.5 rounded-full border-2 border-red-300 shrink-0" />
+                          <span className="text-gray-500 flex-1">{s.label}</span>
+                          <span className="text-[10px] bg-red-50 text-red-500 px-1.5 py-0.5 rounded">falta</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Optional skills */}
+                  {(optionalCubiertas.length > 0 || optionalGap.length > 0) && (
+                    <div className="bg-white rounded-xl border border-gray-200 p-4">
+                      <h3 className="text-xs font-semibold text-gray-700 mb-3">
+                        Skills opcionales ({optionalCubiertas.length}/{occDetail.optional.length})
+                      </h3>
+                      <div className="space-y-1.5">
+                        {optionalCubiertas.map(s => {
+                          const match = cubiertas.get(SKILL_URI_PREFIX + s.id)
+                          return (
+                            <div key={s.id} className="flex items-center gap-2 text-sm">
+                              <CheckCircle className="w-3.5 h-3.5 text-green-400 shrink-0" />
+                              <span className="text-gray-600 flex-1">{s.label}</span>
+                              <span className={`text-[10px] px-1.5 py-0.5 rounded ${match?.is_exact ? 'bg-green-50 text-green-600' : 'bg-blue-50 text-blue-600'}`}>
+                                {match?.is_exact ? 'exacto' : `~${((match?.similarity || 0) * 100).toFixed(0)}%`}
+                              </span>
+                            </div>
+                          )
+                        })}
+                        {optionalGap.slice(0, 10).map(s => (
+                          <div key={s.id} className="flex items-center gap-2 text-sm">
+                            <span className="w-3.5 h-3.5 rounded-full border-2 border-gray-200 shrink-0" />
+                            <span className="text-gray-400 flex-1">{s.label}</span>
+                          </div>
+                        ))}
+                        {optionalGap.length > 10 && (
+                          <p className="text-xs text-gray-400 mt-1">+{optionalGap.length - 10} opcionales más</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )
+            })()}
+
+            {/* Sin skills */}
+            {selectedDestino && !gapLoading && !gapData && !occDetail && (
+              <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
+                <p className="text-sm text-gray-600">
+                  Completá el perfil de la persona para ver el gap con esta ocupación.
+                </p>
+                <button onClick={() => setTab('perfil')} className="mt-2 text-sm text-teal-600 hover:underline">
+                  Ir a Perfil
+                </button>
               </div>
             )}
           </div>
