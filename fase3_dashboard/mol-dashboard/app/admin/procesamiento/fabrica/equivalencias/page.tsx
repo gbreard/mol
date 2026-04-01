@@ -142,12 +142,12 @@ export default function EquivalenciasPage() {
     try {
       const { supabase } = await import("@/lib/supabase");
       if (!supabase) return;
-      const { data } = await supabase.from("pipeline_commands").insert({
-        comando: "recluster_preview",
-        params: { threshold: reclusterThreshold },
-        creado_por: "admin@dashboard",
-      }).select("id").single();
-      if (data?.id) pollReclusterCommand(data.id, "preview");
+      const { data } = await supabase.rpc("crear_pipeline_command", {
+        p_comando: "recluster_preview",
+        p_params: { threshold: reclusterThreshold },
+        p_creado_por: "admin@dashboard",
+      });
+      if (data) pollReclusterCommand(data, "preview");
     } catch (e: any) {
       setReclusterState("error");
       setReclusterError(e.message || "Error al crear comando");
@@ -159,12 +159,12 @@ export default function EquivalenciasPage() {
     try {
       const { supabase } = await import("@/lib/supabase");
       if (!supabase) return;
-      const { data } = await supabase.from("pipeline_commands").insert({
-        comando: "recluster_apply",
-        params: { threshold: reclusterThreshold },
-        creado_por: "admin@dashboard",
-      }).select("id").single();
-      if (data?.id) pollReclusterCommand(data.id, "apply");
+      const { data } = await supabase.rpc("crear_pipeline_command", {
+        p_comando: "recluster_apply",
+        p_params: { threshold: reclusterThreshold },
+        p_creado_por: "admin@dashboard",
+      });
+      if (data) pollReclusterCommand(data, "apply");
     } catch (e: any) {
       setReclusterState("error");
       setReclusterError(e.message || "Error al crear comando");
@@ -176,15 +176,16 @@ export default function EquivalenciasPage() {
     if (!supabase) return;
     const interval = setInterval(async () => {
       try {
-        const { data } = await supabase.from("pipeline_commands").select("estado,resultado,error_message").eq("id", cmdId).single();
-        if (!data) return;
-        if (data.estado === "completado") {
+        const { data } = await supabase.rpc("get_pipeline_command_status", { p_id: cmdId });
+        const row = Array.isArray(data) ? data[0] : data;
+        if (!row) return;
+        if (row.estado === "completado") {
           clearInterval(interval);
-          setReclusterResult(data.resultado);
+          setReclusterResult(row.resultado);
           setReclusterState(tipo === "preview" ? "preview_ready" : "done");
-        } else if (data.estado === "error") {
+        } else if (row.estado === "error") {
           clearInterval(interval);
-          setReclusterError(data.error_message || "Error desconocido");
+          setReclusterError(row.error_message || "Error desconocido");
           setReclusterState("error");
         }
       } catch {}
