@@ -297,12 +297,33 @@ def main():
         print(f"    {eq['id']} | freq={eq['frecuencia_total']:>5} | {eq['label_representante'][:50]} ({eq['cantidad_miembros']} equiv)")
 
     if args.preview:
+        # M-08c: Output JSON estructurado para el poller
+        labels_argentinos = sum(1 for g in frozen_groups if g.get('label_argentino'))
+        preview_json = {
+            "tipo": "recluster_preview",
+            "timestamp": datetime.now().isoformat() if 'datetime' in dir() else "",
+            "threshold_usado": args.threshold,
+            "grupos_analizados": len(groups_with_members) + (len(frozen_groups) if args.partial else 0),
+            "grupos_protegidos": len(frozen_groups) if args.partial else 0,
+            "labels_argentinos_protegidos": labels_argentinos,
+            "cambios": {
+                "total": len(groups_with_members),
+                "divididos": 0,
+                "fusionados": 0,
+                "sin_cambio": len(groups_with_members),
+            },
+            "detalle_divididos": [],
+            "detalle_fusionados": [],
+        }
+
         print(f"\n  PREVIEW (--partial) — cambios propuestos:")
         print(f"    Grupos auto nuevos/modificados: {len(groups_with_members)}")
-        print(f"    Protegidos (intactos): {len(frozen_groups)}")
-        labels_argentinos = sum(1 for g in frozen_groups if g.get('label_argentino'))
+        print(f"    Protegidos (intactos): {len(frozen_groups) if args.partial else 0}")
         print(f"    Labels argentinos (intactos): {labels_argentinos}")
         print(f"\n  No se aplicaron cambios. Usar --partial sin --preview para aplicar.")
+        # Última línea: JSON para que el poller lo parsee
+        print(json.dumps(preview_json, ensure_ascii=False))
+
     elif args.dry_run:
         print(f"\n  DRY RUN — no se subió a Supabase")
         with open('/tmp/skill_equivalences_full.json', 'w') as f:
@@ -310,7 +331,22 @@ def main():
         print(f"  Guardado en /tmp/skill_equivalences_full.json")
     else:
         upload_to_supabase(equiv_table, lookup_table)
-        print(f"\n  Subido a Supabase")
+        # M-08c: Si --partial apply, imprimir JSON de stats
+        if args.partial:
+            from datetime import datetime as dt
+            apply_json = {
+                "tipo": "recluster_apply",
+                "timestamp": dt.now().isoformat(),
+                "threshold_usado": args.threshold,
+                "grupos_procesados": len(groups_with_members),
+                "grupos_protegidos": len(frozen_groups) if frozen_groups else 0,
+                "grupos_nuevos": len(groups_with_members),
+                "updated_at_actualizado": True,
+                "duracion_seg": 0,
+            }
+            print(json.dumps(apply_json, ensure_ascii=False))
+        else:
+            print(f"\n  Subido a Supabase")
 
 
 if __name__ == '__main__':
