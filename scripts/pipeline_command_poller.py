@@ -100,6 +100,14 @@ COMMAND_MAP = {
         'script': 'scripts/generate_skill_equivalences.py',
         'build_args': lambda p: ['--partial'] + (['--threshold', str(p['threshold'])] if p.get('threshold') else []),
     },
+    'scrape_indeed': {
+        'script': 'scripts/scraping/run_indeed_local.py',
+        'build_args': lambda p: (
+            ['--delay', '4', '--detail-delay', '4']
+            + (['--force-chunk', str(p['chunk'])] if p.get('chunk') is not None else [])
+            + (['--all-keywords'] if p.get('all_keywords') else [])
+        ),
+    },
 }
 
 

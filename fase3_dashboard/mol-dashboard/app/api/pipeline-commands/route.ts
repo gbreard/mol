@@ -14,6 +14,7 @@ const COMANDOS_VALIDOS = [
   'sync_supabase',
   'sync_supabase_full',
   'generate_training',
+  'scrape_indeed',
 ] as const;
 
 type Comando = typeof COMANDOS_VALIDOS[number];
