@@ -142,7 +142,7 @@ export default function EquivalenciasPage() {
     try {
       const { supabase } = await import("@/lib/supabase");
       if (!supabase) return;
-      const { data } = await supabase.table("pipeline_commands").insert({
+      const { data } = await supabase.from("pipeline_commands").insert({
         comando: "recluster_preview",
         params: { threshold: reclusterThreshold },
         creado_por: "admin@dashboard",
@@ -159,7 +159,7 @@ export default function EquivalenciasPage() {
     try {
       const { supabase } = await import("@/lib/supabase");
       if (!supabase) return;
-      const { data } = await supabase.table("pipeline_commands").insert({
+      const { data } = await supabase.from("pipeline_commands").insert({
         comando: "recluster_apply",
         params: { threshold: reclusterThreshold },
         creado_por: "admin@dashboard",
@@ -176,7 +176,7 @@ export default function EquivalenciasPage() {
     if (!supabase) return;
     const interval = setInterval(async () => {
       try {
-        const { data } = await supabase.table("pipeline_commands").select("estado,resultado,error_message").eq("id", cmdId).single();
+        const { data } = await supabase.from("pipeline_commands").select("estado,resultado,error_message").eq("id", cmdId).single();
         if (!data) return;
         if (data.estado === "completado") {
           clearInterval(interval);
