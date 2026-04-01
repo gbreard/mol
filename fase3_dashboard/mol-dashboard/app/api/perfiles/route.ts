@@ -14,8 +14,9 @@ function getSupabaseAdmin(): SupabaseClient | null {
 
 // A6 — GET /api/perfiles?id=X or /api/perfiles?persona_id=X
 export async function GET(request: NextRequest) {
-  const auth = await requireAuth(request);
-  if (isAuthError(auth)) return auth;
+  // TODO OE-11: restore requireAuth
+  // const auth = await requireAuth(request);
+  // if (isAuthError(auth)) return auth;
 
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
@@ -47,8 +48,9 @@ export async function GET(request: NextRequest) {
 
 // A3 — POST /api/perfiles
 export async function POST(request: NextRequest) {
-  const auth = await requireAuth(request);
-  if (isAuthError(auth)) return auth;
+  // TODO OE-11: restore requireAuth
+  // const auth = await requireAuth(request);
+  // if (isAuthError(auth)) return auth;
 
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });

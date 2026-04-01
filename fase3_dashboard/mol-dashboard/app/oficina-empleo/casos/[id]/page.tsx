@@ -462,7 +462,7 @@ export default function DetalleCasoPage() {
                   Competencias ({skills.length})
                 </h3>
                 <button
-                  onClick={() => router.push(`/mi-futuro-laboral/perfil?caso_id=${casoId}&persona_id=${persona.id}`)}
+                  onClick={() => router.push(`/oficina-empleo/casos/${casoId}/entrevista`)}
                   className="text-xs text-teal-600 hover:underline flex items-center gap-1"
                 >
                   <Plus className="w-3 h-3" /> Agregar
@@ -490,10 +490,10 @@ export default function DetalleCasoPage() {
                 </div>
               )}
               <button
-                onClick={() => router.push(`/mi-futuro-laboral/perfil?caso_id=${casoId}&persona_id=${persona.id}`)}
-                className="mt-3 w-full text-xs text-teal-600 bg-teal-50 hover:bg-teal-100 rounded-lg py-2 transition-colors font-medium"
+                onClick={() => router.push(`/oficina-empleo/casos/${casoId}/entrevista`)}
+                className="mt-3 w-full text-xs text-white bg-teal-600 hover:bg-teal-700 rounded-lg py-2.5 transition-colors font-semibold"
               >
-                Completar perfil con la persona →
+                Iniciar entrevista
               </button>
             </div>
           </div>

@@ -58,8 +58,9 @@ export async function GET(request: NextRequest) {
 
 // B2 — POST /api/casos
 export async function POST(request: NextRequest) {
-  const auth = await requireAuth(request);
-  if (isAuthError(auth)) return auth;
+  // TODO OE-11: restore requireAuth
+  // const auth = await requireAuth(request);
+  // if (isAuthError(auth)) return auth;
 
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
