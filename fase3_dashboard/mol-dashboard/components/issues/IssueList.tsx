@@ -115,6 +115,11 @@ function IssueItem({ issue, compact, showOfertaLink }: { issue: Issue; compact?:
             <IssueBadge variant="tipo" value={issue.tipo} />
             <IssueBadge variant="prioridad" value={issue.prioridad} />
             <IssueBadge variant="estado" value={issue.estado} />
+            {(issue as any)._correctionType && (
+              <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-medium">
+                {(issue as any)._correctionType}
+              </span>
+            )}
           </div>
 
           <h4 className="font-medium text-gray-900 mb-1">{issue.titulo}</h4>
