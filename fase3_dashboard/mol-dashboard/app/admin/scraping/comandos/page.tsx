@@ -188,6 +188,32 @@ export default function ComandosPage() {
     }
   }
 
+  // Indeed corre local (IP VPS bloqueada por Cloudflare)
+  async function sendIndeedLocal() {
+    if (!supabase) return;
+    setSending('scrape_indeed');
+
+    try {
+      const res = await fetch('/api/pipeline-commands', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comando: 'scrape_indeed', params: {} }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        alert(`Error: ${err.error}`);
+        return;
+      }
+
+      await loadCommands();
+    } catch (e: any) {
+      alert(`Error: ${e.message}`);
+    } finally {
+      setSending(null);
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -341,7 +367,7 @@ export default function ComandosPage() {
         <div className="mb-4">
           <p className="text-sm text-gray-600 mb-2">Lanzar scraping por portal:</p>
           <div className="flex flex-wrap gap-2">
-            {PORTALES.map(portal => (
+            {PORTALES.filter(p => p !== 'indeed').map(portal => (
               <button
                 key={portal}
                 onClick={() => sendCommand('lanzar_portal', { portal })}
@@ -352,6 +378,17 @@ export default function ComandosPage() {
                 <span className="capitalize">{portal}</span>
               </button>
             ))}
+            {/* Indeed corre local (IP VPS bloqueada por Cloudflare) */}
+            <button
+              onClick={sendIndeedLocal}
+              disabled={sending !== null}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-purple-300 bg-purple-50 hover:border-purple-400 hover:bg-purple-100 text-sm transition-colors disabled:opacity-50"
+              title="Corre local con keyword cycling (~268 kw, ~30 min)"
+            >
+              {sending === 'scrape_indeed' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe className="w-4 h-4 text-purple-500" />}
+              <span className="capitalize text-purple-700">Indeed</span>
+              <span className="text-xs text-purple-400">local</span>
+            </button>
           </div>
         </div>
 

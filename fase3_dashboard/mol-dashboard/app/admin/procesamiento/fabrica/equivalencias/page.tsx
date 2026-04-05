@@ -57,6 +57,12 @@ export default function EquivalenciasPage() {
   const [activeTab, setActiveTab] = useState<"equivalencias" | "candidatos">("equivalencias");
   const [candidates, setCandidates] = useState<any[]>([]);
   const [candidatesLoading, setCandidatesLoading] = useState(false);
+  // M-08c: Re-clustering modal
+  const [reclusterOpen, setReclusterOpen] = useState(false);
+  const [reclusterThreshold, setReclusterThreshold] = useState(0.85);
+  const [reclusterState, setReclusterState] = useState<"idle" | "previewing" | "preview_ready" | "applying" | "done" | "error">("idle");
+  const [reclusterResult, setReclusterResult] = useState<any>(null);
+  const [reclusterError, setReclusterError] = useState("");
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [editing, setEditing] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ label_representante: "", label_argentino: "", notas: "" });
@@ -126,6 +132,66 @@ export default function EquivalenciasPage() {
     } catch (e: any) {
       setMessage({ type: "error", text: e.message || "Error" });
     }
+  }
+
+  // M-08c: Re-clustering via pipeline_commands
+  async function startReclusterPreview() {
+    setReclusterState("previewing");
+    setReclusterResult(null);
+    setReclusterError("");
+    try {
+      const { supabase } = await import("@/lib/supabase");
+      if (!supabase) return;
+      const { data } = await supabase.rpc("crear_pipeline_command", {
+        p_comando: "recluster_preview",
+        p_params: { threshold: reclusterThreshold },
+        p_creado_por: "admin@dashboard",
+      });
+      if (data) pollReclusterCommand(data, "preview");
+    } catch (e: any) {
+      setReclusterState("error");
+      setReclusterError(e.message || "Error al crear comando");
+    }
+  }
+
+  async function startReclusterApply() {
+    setReclusterState("applying");
+    try {
+      const { supabase } = await import("@/lib/supabase");
+      if (!supabase) return;
+      const { data } = await supabase.rpc("crear_pipeline_command", {
+        p_comando: "recluster_apply",
+        p_params: { threshold: reclusterThreshold },
+        p_creado_por: "admin@dashboard",
+      });
+      if (data) pollReclusterCommand(data, "apply");
+    } catch (e: any) {
+      setReclusterState("error");
+      setReclusterError(e.message || "Error al crear comando");
+    }
+  }
+
+  async function pollReclusterCommand(cmdId: string, tipo: "preview" | "apply") {
+    const { supabase } = await import("@/lib/supabase");
+    if (!supabase) return;
+    const interval = setInterval(async () => {
+      try {
+        const { data } = await supabase.rpc("get_pipeline_command_status", { p_id: cmdId });
+        const row = Array.isArray(data) ? data[0] : data;
+        if (!row) return;
+        if (row.estado === "completado") {
+          clearInterval(interval);
+          setReclusterResult(row.resultado);
+          setReclusterState(tipo === "preview" ? "preview_ready" : "done");
+        } else if (row.estado === "error") {
+          clearInterval(interval);
+          setReclusterError(row.error_message || "Error desconocido");
+          setReclusterState("error");
+        }
+      } catch {}
+    }, 5000);
+    // Cleanup after 10 min max
+    setTimeout(() => clearInterval(interval), 600000);
   }
 
   useEffect(() => { loadData(); }, [estadoFilter, page, sortBy]);
@@ -244,10 +310,131 @@ export default function EquivalenciasPage() {
             {stats.total} grupos · {stats.auto} automaticos · {stats.revisado} revisados · {stats.aprobado} aprobados
           </p>
         </div>
-        <button onClick={() => activeTab === 'candidatos' ? loadCandidates() : loadData()} className="flex items-center gap-2 text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-100 text-sm">
-          <RefreshCw className="w-4 h-4" />
-        </button>
+        <div className="flex gap-2">
+          <button onClick={() => setReclusterOpen(true)} disabled={reclusterState === "previewing" || reclusterState === "applying"}
+            className="flex items-center gap-2 bg-purple-50 text-purple-700 px-3 py-2 rounded-lg hover:bg-purple-100 text-sm border border-purple-200 disabled:opacity-50">
+            <RotateCcw className="w-4 h-4" /> Re-clustering
+          </button>
+          <button onClick={() => activeTab === 'candidatos' ? loadCandidates() : loadData()} className="flex items-center gap-2 text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-100 text-sm">
+            <RefreshCw className="w-4 h-4" />
+          </button>
+        </div>
       </div>
+
+      {/* M-08c: Modal de re-clustering */}
+      {reclusterOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-gray-900">Re-clustering de equivalencias</h2>
+              <button onClick={() => { setReclusterOpen(false); setReclusterState("idle"); }} className="text-gray-400 hover:text-gray-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {reclusterState === "idle" && (
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Umbral de similitud</label>
+                  <div className="flex items-center gap-3 mt-1">
+                    <input type="range" min="0.80" max="0.95" step="0.01" value={reclusterThreshold}
+                      onChange={e => setReclusterThreshold(parseFloat(e.target.value))}
+                      className="flex-1" />
+                    <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{reclusterThreshold.toFixed(2)}</span>
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">Grupos mas estrictos con umbral mas alto. Default: 0.85</p>
+                </div>
+                <button onClick={startReclusterPreview}
+                  className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 text-sm font-medium">
+                  Ver cambios
+                </button>
+              </div>
+            )}
+
+            {reclusterState === "previewing" && (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+                <span className="ml-2 text-gray-500">Calculando preview (umbral {reclusterThreshold})...</span>
+              </div>
+            )}
+
+            {reclusterState === "preview_ready" && reclusterResult && (
+              <div className="space-y-4">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                  <div className="text-sm font-medium text-green-800">Protegidos (no se tocan)</div>
+                  <div className="text-xs text-green-600 mt-1">
+                    {reclusterResult.grupos_protegidos || 0} grupos aprobados/revisados ·
+                    {reclusterResult.labels_argentinos_protegidos || 0} labels argentinos
+                  </div>
+                </div>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div className="text-sm font-medium text-blue-800">Cambios en grupos automaticos</div>
+                  <div className="text-xs text-blue-600 mt-1">
+                    {reclusterResult.cambios?.total || 0} grupos cambiarían
+                    {reclusterResult.cambios?.divididos > 0 && ` · ${reclusterResult.cambios.divididos} se dividirían`}
+                    {reclusterResult.cambios?.fusionados > 0 && ` · ${reclusterResult.cambios.fusionados} se fusionarían`}
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <button onClick={startReclusterApply}
+                    className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 text-sm font-medium">
+                    Aplicar re-clustering
+                  </button>
+                  <button onClick={() => { setReclusterOpen(false); setReclusterState("idle"); }}
+                    className="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 text-sm">
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {reclusterState === "applying" && (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-6 h-6 animate-spin text-green-600" />
+                <span className="ml-2 text-gray-500">Actualizando grupos...</span>
+              </div>
+            )}
+
+            {reclusterState === "done" && reclusterResult && (
+              <div className="space-y-4">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                  <CheckCircle2 className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                  <div className="text-sm font-medium text-green-800">Re-clustering completado</div>
+                  <div className="text-xs text-green-600 mt-1">
+                    {reclusterResult.grupos_procesados || reclusterResult.grupos_nuevos || 0} grupos actualizados ·
+                    {reclusterResult.grupos_protegidos || 0} protegidos intactos
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">El matching usara el lookup actualizado en el proximo run.</p>
+                </div>
+                <button onClick={() => { setReclusterOpen(false); setReclusterState("idle"); loadData(); }}
+                  className="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 text-sm">
+                  Cerrar
+                </button>
+              </div>
+            )}
+
+            {reclusterState === "error" && (
+              <div className="space-y-4">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                  <X className="w-8 h-8 text-red-600 mx-auto mb-2" />
+                  <div className="text-sm font-medium text-red-800">Error</div>
+                  <div className="text-xs text-red-600 mt-1">{reclusterError}</div>
+                </div>
+                <div className="flex gap-3">
+                  <button onClick={() => setReclusterState("idle")}
+                    className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 text-sm">
+                    Reintentar
+                  </button>
+                  <button onClick={() => { setReclusterOpen(false); setReclusterState("idle"); }}
+                    className="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 text-sm">
+                    Cerrar
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="flex gap-1 border-b border-gray-200">

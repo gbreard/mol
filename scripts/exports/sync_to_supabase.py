@@ -1432,6 +1432,61 @@ def sync_sistema_estado(client, conn: sqlite3.Connection, dry_run: bool = False)
         return False
 
 
+def sync_scraping_live_stats(client, conn: sqlite3.Connection, dry_run: bool = False) -> bool:
+    """
+    Actualiza scraping_live_stats con datos de la BD local.
+
+    Esta tabla alimenta el panel de portales del dashboard. Se mergea con
+    los datos del VPS para que portales que corren local (ej: Indeed) también
+    se reflejen correctamente.
+    """
+    from datetime import timezone
+
+    cursor = conn.execute("""
+        SELECT portal,
+               COUNT(*) as total,
+               MAX(scrapeado_en) as ultimo,
+               SUM(CASE WHEN scrapeado_en >= datetime('now', '-7 days') THEN 1 ELSE 0 END) as ultimos_7d,
+               SUM(CASE WHEN scrapeado_en >= datetime('now', '-1 day') THEN 1 ELSE 0 END) as hoy
+        FROM ofertas
+        GROUP BY portal
+        ORDER BY total DESC
+    """)
+
+    portales = {}
+    ultimo_global = None
+    for row in cursor.fetchall():
+        portal = row['portal'] or 'sin_portal'
+        portales[portal] = {
+            'total': row['total'],
+            'ultimo_scraping': str(row['ultimo'] or ''),
+            'ultimos_7d': row['ultimos_7d'] or 0,
+            'hoy': row['hoy'] or 0,
+        }
+        if row['ultimo'] and (not ultimo_global or row['ultimo'] > ultimo_global):
+            ultimo_global = row['ultimo']
+
+    total = conn.execute("SELECT COUNT(*) FROM ofertas").fetchone()[0]
+
+    if dry_run:
+        logger.info(f"[DRY-RUN] scraping_live_stats: {total} ofertas, {len(portales)} portales")
+        return True
+
+    try:
+        client.table('scraping_live_stats').upsert({
+            'id': 'current',
+            'timestamp': datetime.now(timezone.utc).isoformat(),
+            'total_ofertas': total,
+            'portales': portales,
+            'ultimo_scraping': ultimo_global,
+        }).execute()
+        logger.info(f"scraping_live_stats actualizado: {total} ofertas, {len(portales)} portales")
+        return True
+    except Exception as e:
+        logger.error(f"Error actualizando scraping_live_stats: {e}")
+        return False
+
+
 # ============================================================
 # TENSIÓN DE DEMANDA (V-16)
 # ============================================================
@@ -2534,6 +2589,10 @@ Ejemplos:
         # Indicadores calculados — siempre se recalculan (usan TODAS las ofertas validadas)
         logger.info("Sincronizando estado del sistema...")
         sync_sistema_estado(client, conn, dry_run=args.dry_run)
+
+        # Actualizar scraping_live_stats con datos locales (Indeed corre local, no VPS)
+        logger.info("Actualizando scraping_live_stats desde BD local...")
+        sync_scraping_live_stats(client, conn, dry_run=args.dry_run)
 
         logger.info("Calculando tensión de demanda...")
         n_tension = sync_tension_ocupaciones(client, conn, dry_run=args.dry_run)
