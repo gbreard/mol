@@ -8,6 +8,12 @@ import { PersonaSelector, type PerfilResumen } from '@/components/oficina-empleo
 import { OccupationMatchCard } from '@/components/oficina-empleo/OccupationMatchCard'
 import { type OccSkillDetail } from '@/components/oficina-empleo/getSkillsForOccupation'
 import { createBrowserClient } from '@supabase/ssr'
+
+let _supabase: ReturnType<typeof createBrowserClient> | null = null
+function getSupabase() {
+  if (!_supabase) _supabase = createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+  return _supabase
+}
 import { OfertasModal } from '@/components/oficina-empleo/OfertasModal'
 
 export interface OccupationMatch {
@@ -61,11 +67,7 @@ export default function MatchingPage() {
       .catch(() => {})
 
     // Ofertas count via RPC (fast — single query, no 37K row download)
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
-    supabase.rpc('get_ofertas_count_by_isco').then(({ data, error }) => {
+    getSupabase().rpc('get_ofertas_count_by_isco').then(({ data, error }) => {
       if (!error && data) {
         const map: Record<string, number> = {}
         for (const row of data) map[row.isco_code] = Number(row.count)

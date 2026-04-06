@@ -1,9 +1,22 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { BarChart3, Loader2 } from 'lucide-react'
+import { BarChart3, Loader2, FlaskConical, Zap, PieChart, GraduationCap, Cpu, Share2, Timer, Wifi, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 import { createBrowserClient } from '@supabase/ssr'
 import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
+
+// Single Supabase client instance — avoid multiple GoTrueClient instances
+let _supabase: ReturnType<typeof createBrowserClient> | null = null
+function getSupabase() {
+  if (!_supabase) {
+    _supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+  }
+  return _supabase
+}
 
 const PROVINCIAS = [
   '', 'Buenos Aires', 'CABA', 'Catamarca', 'Chaco', 'Chubut', 'Córdoba',
@@ -51,44 +64,59 @@ export default function DashboardEjecutivoPage() {
   const [loadingSkills, setLoadingSkills] = useState(true)
 
   const fetchAll = useCallback(async (prov: string, per: string) => {
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
+    const supabase = getSupabase()
     const { desde, hasta } = getDateRange(per)
-    const p_provincia = prov || null
-    const p_fecha_desde = desde
-    const p_fecha_hasta = hasta
+
+    // Base filters for RPCs that use p_filters jsonb
+    const filters: Record<string, any> = {}
+    if (prov) filters.provincia = prov
+    if (desde) { filters.fecha_desde = desde; filters.fecha_hasta = hasta }
 
     setLoadingKpis(true); setLoadingSectores(true); setLoadingEvol(true); setLoadingReqs(true); setLoadingSkills(true)
 
-    // All in parallel
-    const [r1, r2, r3, r4, r5] = await Promise.all([
-      supabase.rpc('get_panorama', { p_provincia, p_fecha_desde, p_fecha_hasta }),
-      supabase.rpc('get_sidebar_counts', { p_provincia, p_fecha_desde, p_fecha_hasta }),
-      supabase.rpc('get_evolucion', {
-        p_filters: JSON.stringify(prov ? { provincia: prov } : {}),
-        p_periodos: per === '7d' ? 7 : per === '30d' ? 4 : per === '365d' ? 12 : 13,
-      }),
-      supabase.rpc('get_requerimientos', { p_provincia, p_fecha_desde, p_fecha_hasta }),
-      supabase.rpc('get_skills_resumen', { p_provincia, p_fecha_desde, p_fecha_hasta, p_limit: 10 }),
-    ])
+    // Evolucion filters: bar size depends on period
+    const evolFilters: Record<string, any> = {}
+    if (prov) evolFilters.provincia = prov
+    evolFilters.fecha_desde = per === '7d'
+      ? new Date(Date.now() - 1 * 86400000).toISOString().split('T')[0]
+      : per === '365d'
+        ? new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0]
+        : new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0]
+    evolFilters.fecha_hasta = new Date().toISOString().split('T')[0]
 
-    if (r1.data) setPanorama(r1.data)
-    setLoadingKpis(false)
+    // All 5 RPCs in parallel — each handles its own result independently
+    supabase.rpc('get_panorama', { p_filters: filters }).then(({ data }) => {
+      if (data) setPanorama(data)
+      setLoadingKpis(false)
+    })
 
-    if (r2.data?.sectores) setSectores(r2.data.sectores)
-    setLoadingSectores(false)
+    supabase.rpc('get_sidebar_counts', { p_filters: filters }).then(({ data }) => {
+      if (data?.sectores) setSectores(data.sectores)
+      setLoadingSectores(false)
+    })
 
-    if (r3.data?.periodos) setEvolucion(r3.data.periodos)
-    setLoadingEvol(false)
+    supabase.rpc('get_evolucion', {
+      p_filters: evolFilters,
+      p_periodos: per === '7d' ? 7 : per === '30d' ? 4 : per === '365d' ? 12 : 13,
+    }).then(({ data, error }) => {
+      if (error) console.error('get_evolucion error:', error)
+      if (data?.periodos) setEvolucion(data.periodos)
+      setLoadingEvol(false)
+    })
 
-    if (r4.data) setRequerimientos(r4.data)
-    setLoadingReqs(false)
+    supabase.rpc('get_requerimientos', { p_filters: filters }).then(({ data }) => {
+      if (data) setRequerimientos(data)
+      setLoadingReqs(false)
+    })
 
-    if (r5.data?.top_skills) setTopSkills(r5.data.top_skills)
-    else if (r5.data?.por_l1) setTopSkills(r5.data.por_l1)
-    setLoadingSkills(false)
+    supabase.rpc('get_skills_resumen', {
+      p_filters: filters,
+    }).then(({ data, error }) => {
+      if (error) console.error('get_skills_resumen error:', error)
+      if (data?.top_skills) setTopSkills(data.top_skills)
+      else if (data?.por_l1) setTopSkills(data.por_l1)
+      setLoadingSkills(false)
+    })
   }, [])
 
   useEffect(() => {
@@ -155,7 +183,7 @@ export default function DashboardEjecutivoPage() {
             <>
               <KpiCard label="Ofertas activas" value={kpis.total_ofertas?.toLocaleString('es-AR') || '0'} />
               <KpiCard label="Ocupaciones distintas" value={kpis.ocupaciones_distintas?.toLocaleString('es-AR') || '0'} />
-              <KpiCard label="Empresas" value={kpis.empresas_activas?.toLocaleString('es-AR') || '0'} />
+              <KpiCard label="Sectores" value={sectores.length.toString()} />
               <KpiCard label="Provincias" value={kpis.provincias?.toString() || '0'} />
             </>
           )}
@@ -189,13 +217,18 @@ export default function DashboardEjecutivoPage() {
           ) : evolucion.length === 0 ? (
             <p className="text-xs text-gray-400">Sin datos de evolución</p>
           ) : (
-            <div className="flex items-end gap-1 h-32">
-              {evolucion.map((e: any, i: number) => (
-                <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                  <div className="w-full bg-amber-200 rounded-t" style={{ height: `${Math.max((e.ofertas / maxEvol) * 100, 2)}%` }} />
-                  <span className="text-[9px] text-gray-400 leading-tight text-center">{e.label?.split(' ')[0]}</span>
-                </div>
-              ))}
+            <div className="flex items-end gap-1" style={{ height: '140px' }}>
+              {evolucion.map((e: any, i: number) => {
+                const pct = maxEvol > 0 ? (e.ofertas / maxEvol) * 100 : 0
+                const barH = Math.max(pct, 2)
+                return (
+                  <div key={i} className="flex-1 flex flex-col items-center justify-end" style={{ height: '100%' }}>
+                    <span className="text-[9px] text-gray-500 mb-0.5">{e.ofertas > 0 ? e.ofertas.toLocaleString('es-AR') : ''}</span>
+                    <div className="w-full bg-amber-400 rounded-t" style={{ height: `${barH}%` }} />
+                    <span className="text-[9px] text-gray-400 mt-1 leading-tight text-center truncate w-full">{e.label?.replace('Sem ', '')}</span>
+                  </div>
+                )
+              })}
             </div>
           )}
         </div>
@@ -265,10 +298,48 @@ export default function DashboardEjecutivoPage() {
             )}
           </div>
         </div>
+        {/* Bloque 6 — Indicadores experimentales */}
+        <div className="mt-5">
+          <div className="flex items-center gap-2 mb-3">
+            <FlaskConical className="w-4 h-4 text-purple-600" />
+            <h2 className="text-sm font-semibold text-gray-800">Indicadores experimentales</h2>
+            <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-medium">Experimental</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {LAB_INDICATORS.map(ind => (
+              <Link
+                key={ind.slug}
+                href={ind.href}
+                className="bg-white rounded-xl border border-gray-200 p-4 hover:border-purple-200 hover:shadow-sm transition-all group"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="bg-gray-100 rounded-lg p-2 shrink-0">
+                    <ind.icon className="w-4 h-4 text-gray-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-medium text-gray-900 mb-0.5">{ind.title}</h3>
+                    <p className="text-xs text-gray-500 line-clamp-2">{ind.description}</p>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-purple-500 shrink-0 mt-0.5 transition-colors" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )
 }
+
+const LAB_INDICATORS = [
+  { slug: 'tension-demanda', title: 'Tensión de Demanda', description: 'Persistencia x Insistencia por ocupación. Identifica demanda crítica, urgente, pasiva o fluida.', href: '/oficina-empleo/laboratorio/tension-demanda', icon: Zap },
+  { slug: 'concentracion-ocupacional', title: 'Concentración Ocupacional', description: 'Índice HHI de concentración de ofertas por ocupación. ¿Pocas ocupaciones acaparan la demanda?', href: '/oficina-empleo/laboratorio/concentracion-ocupacional', icon: PieChart },
+  { slug: 'brecha-calificacion', title: 'Brecha de Calificación', description: 'Skills demandadas vs promedio del mercado por ocupación. Detecta sobreexigencia y subexigencia.', href: '/oficina-empleo/laboratorio/brecha-calificacion', icon: GraduationCap },
+  { slug: 'digitalizacion-sector', title: 'Digitalización por Sector', description: '% de skills digitales sobre total por sector CLAE. ¿Qué sectores demandan más transformación digital?', href: '/oficina-empleo/laboratorio/digitalizacion-sector', icon: Cpu },
+  { slug: 'transicion-skills', title: 'Transición Skills-Ocupación', description: 'Mapa de similitud entre ocupaciones basado en skills compartidas. ¿Qué ocupaciones comparten competencias?', href: '/oficina-empleo/laboratorio/transicion-skills', icon: Share2 },
+  { slug: 'velocidad-cobertura', title: 'Velocidad de Cobertura', description: 'Mediana de días para cubrir una posición por ocupación. ¿Qué puestos son más difíciles de llenar?', href: '/oficina-empleo/laboratorio/velocidad-cobertura', icon: Timer },
+  { slug: 'indice-remoto', title: 'Índice de Trabajo Remoto', description: 'Evolución mensual de modalidades (presencial, híbrido, remoto). ¿Cómo cambia el trabajo remoto?', href: '/oficina-empleo/laboratorio/indice-remoto', icon: Wifi },
+]
 
 function KpiCard({ label, value }: { label: string; value: string }) {
   return (

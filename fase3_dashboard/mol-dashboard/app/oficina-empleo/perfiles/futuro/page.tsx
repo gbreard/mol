@@ -5,6 +5,12 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { Loader2, Map, Check, X as XIcon, ArrowRight, ExternalLink } from 'lucide-react'
 import { createBrowserClient } from '@supabase/ssr'
 import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
+
+let _supabase: ReturnType<typeof createBrowserClient> | null = null
+function getSupabase() {
+  if (!_supabase) _supabase = createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+  return _supabase
+}
 import { PersonaSelector, type PerfilResumen } from '@/components/oficina-empleo/PersonaSelector'
 import { OcupacionObjetivoSelector } from '@/components/oficina-empleo/OcupacionObjetivoSelector'
 import { OfertasModal } from '@/components/oficina-empleo/OfertasModal'
@@ -98,10 +104,7 @@ export default function FuturoLaboralPage() {
       .catch(() => {})
 
     // Ofertas count via RPC
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
+    const supabase = getSupabase()
     supabase.rpc('get_ofertas_count_by_isco').then(({ data }) => {
       if (data) {
         const map: Record<string, number> = {}
