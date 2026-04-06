@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Search, Briefcase, Loader2, Plus, Check, X } from 'lucide-react'
 import type { SelectedSkill, SelectedOccupation } from './useSkillCapture'
+import { getSkillsForOccupation } from './getSkillsForOccupation'
 
 interface Props {
   ocupaciones: SelectedOccupation[]
@@ -12,80 +13,12 @@ interface Props {
   onAddSkills: (skills: SelectedSkill[]) => void
 }
 
-interface OccSkill {
-  uri: string
-  label: string
-  type: string
-  L1?: string
-  L2?: string
-  total?: number
-  essential?: boolean
-  source?: string
-}
-
-/**
- * Busca skills para una ocupación:
- * 1. Si tiene perfil en esco_argentino → usa skills_consolidadas
- * 2. Si no → fallback a occupation_full_detail.json via /api/occupations/skills
- */
-async function getSkillsForOccupation(uri: string): Promise<{ skills: OccSkill[]; source: 'argentino' | 'esco' }> {
-  // 1. Intentar esco_argentino
-  try {
-    const argRes = await fetch(`/api/esco-argentino?occupation=${encodeURIComponent(uri)}`)
-    if (argRes.ok) {
-      const data = await argRes.json()
-      if (data.skills_consolidadas && data.skills_consolidadas.length > 0) {
-        const skills: OccSkill[] = data.skills_consolidadas.map((s: any) => ({
-          uri: s.uri || '',
-          label: s.label,
-          type: s.L1?.startsWith('K') ? 'knowledge' : 'skill',
-          L1: s.L1,
-          L2: s.L2,
-          total: s.percentage_when_approved || s.freq_cuando_aprobada || 0,
-          essential: s.source === 'esco_common',
-          source: s.source,
-        }))
-        return { skills, source: 'argentino' }
-      }
-    }
-  } catch {}
-
-  // 2. Fallback: occupation_full_detail.json via API
-  try {
-    const res = await fetch(`/api/occupations/skills?uri=${encodeURIComponent(uri)}`)
-    if (res.ok) {
-      const data = await res.json()
-      const essential = (data.essential || []).map((s: any) => ({
-        uri: s.skill_uri || s.uri || '',
-        label: s.skill_label || s.label,
-        type: 'skill' as string,
-        L1: s.L1,
-        L2: s.L2,
-        total: 0,
-        essential: true,
-      }))
-      const optional = (data.optional || []).map((s: any) => ({
-        uri: s.skill_uri || s.uri || '',
-        label: s.skill_label || s.label,
-        type: 'skill' as string,
-        L1: s.L1,
-        L2: s.L2,
-        total: 0,
-        essential: false,
-      }))
-      return { skills: [...essential, ...optional], source: 'esco' }
-    }
-  } catch {}
-
-  return { skills: [], source: 'esco' }
-}
-
 export function OccupationSkillPicker({ ocupaciones, skillUris, onAddOccupation, onRemoveOccupation, onAddSkills }: Props) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [selectedOcc, setSelectedOcc] = useState<any | null>(null)
-  const [occSkills, setOccSkills] = useState<OccSkill[]>([])
+  const [occSkills, setOccSkills] = useState<any[]>([])
   const [loadingSkills, setLoadingSkills] = useState(false)
   const [checkedUris, setCheckedUris] = useState<Set<string>>(new Set())
 
@@ -113,10 +46,11 @@ export function OccupationSkillPicker({ ocupaciones, skillUris, onAddOccupation,
       const { skills } = await getSkillsForOccupation(occ.uri)
       setOccSkills(skills)
       // Pre-check essentials that aren't already in profile
+      // Skills from getSkillsForOccupation have .id (UUID), build URI for matching
       const preChecked = new Set<string>(
         skills
-          .filter(s => s.essential && !skillUris.has(s.uri))
-          .map(s => s.uri)
+          .filter((s: any) => s.essential && !skillUris.has(`http://data.europa.eu/esco/skill/${s.id}`))
+          .map((s: any) => s.id)
       )
       setCheckedUris(preChecked)
     } catch {} finally {
@@ -124,20 +58,22 @@ export function OccupationSkillPicker({ ocupaciones, skillUris, onAddOccupation,
     }
   }
 
-  function toggleCheck(uri: string) {
+  function toggleCheck(id: string) {
     setCheckedUris(prev => {
       const next = new Set(prev)
-      if (next.has(uri)) next.delete(uri)
-      else next.add(uri)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
       return next
     })
   }
 
   function selectAll() {
-    const allUris = new Set<string>(
-      occSkills.filter(s => !skillUris.has(s.uri)).map(s => s.uri)
+    const skillUriSet = new Set(
+      occSkills
+        .filter((s: any) => !skillUris.has(`http://data.europa.eu/esco/skill/${s.id}`))
+        .map((s: any) => s.id)
     )
-    setCheckedUris(allUris)
+    setCheckedUris(skillUriSet)
   }
 
   function addToProfile() {
@@ -148,11 +84,11 @@ export function OccupationSkillPicker({ ocupaciones, skillUris, onAddOccupation,
       label: selectedOcc.label,
       isco_code: selectedOcc.isco_code,
     })
-    // Add checked skills
+    // Add checked skills — build full ESCO URI from skill.id
     const toAdd: SelectedSkill[] = occSkills
-      .filter(s => checkedUris.has(s.uri))
-      .map(s => ({
-        uri: s.uri,
+      .filter((s: any) => checkedUris.has(s.id))
+      .map((s: any) => ({
+        uri: `http://data.europa.eu/esco/skill/${s.id}`,
         label: s.label,
         type: (s.type === 'knowledge' ? 'knowledge' : 'skill') as 'skill' | 'knowledge',
         L1: s.L1,
@@ -262,16 +198,17 @@ export function OccupationSkillPicker({ ocupaciones, skillUris, onAddOccupation,
           ) : (
             <>
               <div className="max-h-56 overflow-y-auto divide-y">
-                {occSkills.map((s, i) => {
-                  const alreadyInProfile = skillUris.has(s.uri)
-                  const checked = checkedUris.has(s.uri)
+                {occSkills.map((s: any, i: number) => {
+                  const fullUri = `http://data.europa.eu/esco/skill/${s.id}`
+                  const alreadyInProfile = skillUris.has(fullUri)
+                  const checked = checkedUris.has(s.id)
                   return (
                     <label key={i} className={`flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-50 ${alreadyInProfile ? 'opacity-40' : ''}`}>
                       <input
                         type="checkbox"
                         checked={alreadyInProfile || checked}
                         disabled={alreadyInProfile}
-                        onChange={() => toggleCheck(s.uri)}
+                        onChange={() => toggleCheck(s.id)}
                         className="rounded text-teal-600"
                       />
                       <span className="text-sm text-gray-900 flex-1">{s.label}</span>
