@@ -12,7 +12,7 @@ function getSupabaseAdmin(): SupabaseClient | null {
   return supabaseAdmin;
 }
 
-// A6 — GET /api/perfiles?id=X or /api/perfiles?persona_id=X
+// A6 — GET /api/perfiles?id=X or /api/perfiles?persona_id=X or /api/perfiles (list all)
 export async function GET(request: NextRequest) {
   // TODO OE-11: restore requireAuth
   // const auth = await requireAuth(request);
@@ -23,27 +23,51 @@ export async function GET(request: NextRequest) {
 
   const id = request.nextUrl.searchParams.get('id');
   const personaId = request.nextUrl.searchParams.get('persona_id');
+  const search = request.nextUrl.searchParams.get('search');
 
   if (id) {
-    // Get single profile with skills
-    const { data: perfil, error } = await client.from('perfiles').select('*').eq('id', id).maybeSingle();
+    // Get single profile with skills + persona data
+    const { data: perfil, error } = await client.from('perfiles')
+      .select('*, personas(id, nombre, dni, edad, nivel_educativo, ubicacion)')
+      .eq('id', id).maybeSingle();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     if (!perfil) return NextResponse.json({ error: 'Perfil no encontrado' }, { status: 404 });
 
     const { data: skills } = await client.from('perfil_skills')
-      .select('*').eq('perfil_id', id).order('created_at');
+      .select('*').eq('perfil_id', id).neq('estado', 'descartada').order('created_at');
 
     return NextResponse.json({ ...perfil, skills: skills || [] });
   }
 
   if (personaId) {
-    const { data, error } = await client.from('perfiles').select('*')
+    const { data, error } = await client.from('perfiles')
+      .select('*, personas(nombre, dni)')
       .eq('persona_id', personaId).order('updated_at', { ascending: false });
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json(data);
   }
 
-  return NextResponse.json({ error: 'Falta id o persona_id' }, { status: 400 });
+  // List all perfiles with persona info (for M1 perfiles list)
+  const limit = parseInt(request.nextUrl.searchParams.get('limit') || '100');
+
+  const { data: perfiles, error } = await client.from('perfiles')
+    .select('id, persona_id, origen, completitud, estado, validado_at, ocupaciones, updated_at, personas(nombre, dni)')
+    .order('updated_at', { ascending: false }).limit(limit);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  let result = perfiles || [];
+
+  // Client-side search filter by nombre or dni
+  if (search) {
+    const term = search.toLowerCase();
+    result = result.filter((p: any) => {
+      const nombre = (p.personas?.nombre || '').toLowerCase();
+      const dni = p.personas?.dni || '';
+      return nombre.includes(term) || dni.includes(term);
+    });
+  }
+
+  return NextResponse.json(result);
 }
 
 // A3 — POST /api/perfiles
@@ -56,12 +80,13 @@ export async function POST(request: NextRequest) {
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
 
   const body = await request.json();
-  const { persona_id, origen } = body;
+  const { persona_id, origen, ocupaciones } = body;
 
   if (!persona_id) return NextResponse.json({ error: 'Falta persona_id' }, { status: 400 });
 
   const { data, error } = await client.from('perfiles').insert({
     persona_id, origen: origen || 'S2', completitud: 0,
+    ocupaciones: ocupaciones || [], estado: 'borrador',
   }).select().single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
