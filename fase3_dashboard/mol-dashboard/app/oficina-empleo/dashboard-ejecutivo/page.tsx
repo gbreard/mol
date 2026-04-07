@@ -55,6 +55,8 @@ export default function DashboardEjecutivoPage() {
   const [evolucion, setEvolucion] = useState<any[]>([])
   const [requerimientos, setRequerimientos] = useState<any>(null)
   const [topSkills, setTopSkills] = useState<any[]>([])
+  const [brechaData, setBrechaData] = useState<{ resumen: any; skills: any[] } | null>(null)
+  const [loadingBrecha, setLoadingBrecha] = useState(true)
 
   // Loading per block
   const [loadingKpis, setLoadingKpis] = useState(true)
@@ -117,6 +119,16 @@ export default function DashboardEjecutivoPage() {
       else if (data?.por_l1) setTopSkills(data.por_l1)
       setLoadingSkills(false)
     })
+
+    // Brecha formación
+    setLoadingBrecha(true)
+    const brechaParams = new URLSearchParams({ estado: 'brecha', limit: '5' })
+    if (prov) brechaParams.set('provincia', prov)
+    fetch(`/api/laboratorio/brecha-formacion?${brechaParams}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data) setBrechaData(data) })
+      .catch(() => {})
+      .finally(() => setLoadingBrecha(false))
   }, [])
 
   useEffect(() => {
@@ -298,7 +310,47 @@ export default function DashboardEjecutivoPage() {
             )}
           </div>
         </div>
-        {/* Bloque 6 — Indicadores experimentales */}
+        {/* Bloque 6 — Brecha de Formación */}
+        <div className="bg-white rounded-xl border border-gray-200 p-5 mb-5">
+          <div className="flex items-center gap-2 mb-1">
+            <FlaskConical className="w-4 h-4 text-purple-600" />
+            <h2 className="text-sm font-semibold text-gray-800">Brecha de Formación</h2>
+            <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-medium">Experimental</span>
+          </div>
+          <p className="text-xs text-gray-400 mb-3">Skills demandadas sin oferta educativa disponible</p>
+
+          {loadingBrecha ? (
+            <Skeleton lines={4} />
+          ) : brechaData ? (
+            <div>
+              <p className="text-sm text-gray-700 mb-3">
+                <span className="font-semibold text-red-600">{brechaData.resumen?.pct_brecha || 0}%</span> de skills demandadas no tienen cursos en REGICE
+                {provincia && <span className="text-gray-400"> en {provincia}</span>}
+              </p>
+              {brechaData.skills.length > 0 && (
+                <div className="space-y-1.5">
+                  {brechaData.skills.slice(0, 5).map((s: any, i: number) => (
+                    <div key={s.skill_uri} className="flex items-center gap-2">
+                      <span className="text-xs text-gray-400 w-4 shrink-0">{i + 1}.</span>
+                      <span className="text-xs text-gray-700 flex-1 truncate">{s.skill_label}</span>
+                      <span className="text-xs text-gray-500 shrink-0">{s.ofertas_count.toLocaleString('es-AR')} ofertas</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <Link
+                href="/oficina-empleo/laboratorio/brecha-formacion"
+                className="inline-flex items-center gap-1 text-xs text-purple-600 hover:text-purple-700 font-medium mt-3"
+              >
+                Ver análisis completo <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+          ) : (
+            <p className="text-xs text-gray-400">Sin datos</p>
+          )}
+        </div>
+
+        {/* Bloque 7 — Indicadores experimentales */}
         <div className="mt-5">
           <div className="flex items-center gap-2 mb-3">
             <FlaskConical className="w-4 h-4 text-purple-600" />

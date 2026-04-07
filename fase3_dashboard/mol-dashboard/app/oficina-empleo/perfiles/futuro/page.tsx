@@ -558,6 +558,8 @@ export default function FuturoLaboralPage() {
                 loading={loadingCursos}
                 showAll={showAllCursos}
                 onShowAll={() => setShowAllCursos(true)}
+                sharedCount={gapAnalysis.sharedEssential.length}
+                essentialTotal={gapAnalysis.essentialTotal}
               />
             )}
 
@@ -653,13 +655,27 @@ export default function FuturoLaboralPage() {
   )
 }
 
-function CursosGapPanel({ cursos, loading, showAll, onShowAll }: {
+function CursosGapPanel({ cursos, loading, showAll, onShowAll, sharedCount, essentialTotal }: {
   cursos: any[]
   loading: boolean
   showAll: boolean
   onShowAll: () => void
+  sharedCount: number
+  essentialTotal: number
 }) {
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
+
+  const compatActual = essentialTotal > 0 ? Math.round((sharedCount / essentialTotal) * 100) : 0
+
+  // Sort by mejora DESC (client-side, no refetch)
+  const sorted = useMemo(() => {
+    return [...cursos].map(c => {
+      const proyectada = essentialTotal > 0
+        ? Math.round(((sharedCount + c.skills_cubiertas) / essentialTotal) * 100)
+        : 0
+      return { ...c, compatProyectada: Math.min(proyectada, 100), mejora: Math.min(proyectada, 100) - compatActual }
+    }).sort((a, b) => b.mejora - a.mejora)
+  }, [cursos, sharedCount, essentialTotal, compatActual])
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-4">
@@ -676,15 +692,15 @@ function CursosGapPanel({ cursos, loading, showAll, onShowAll }: {
         </div>
       )}
 
-      {!loading && cursos.length === 0 && (
+      {!loading && sorted.length === 0 && (
         <p className="text-xs text-gray-400 text-center py-3">
           No encontramos cursos registrados para las skills que le faltan.
         </p>
       )}
 
-      {!loading && cursos.length > 0 && (
+      {!loading && sorted.length > 0 && (
         <div className="space-y-2">
-          {(showAll ? cursos : cursos.slice(0, 3)).map((c: any, i: number) => {
+          {(showAll ? sorted : sorted.slice(0, 3)).map((c: any, i: number) => {
             const isExpanded = expandedIdx === i
             const skills = c.skills_detalle || []
             const skillLabels = skills.map((s: any) => s.label)
@@ -712,9 +728,9 @@ function CursosGapPanel({ cursos, loading, showAll, onShowAll }: {
                         {c.carga_horaria > 0 && (
                           <span className="text-[10px] text-gray-400">{c.carga_horaria}hs</span>
                         )}
-                        <span className="text-xs text-purple-700 font-semibold ml-auto">
-                          Cubre {c.skills_cubiertas} de {c.total_gap_skills}
-                        </span>
+                        {c.mejora > 0 && (
+                          <span className="text-xs text-green-600 font-semibold ml-auto">+{c.mejora}%</span>
+                        )}
                       </div>
                       {!isExpanded && skillLabels.length > 0 && (
                         <p className="text-[10px] text-gray-400 mt-1">
@@ -733,6 +749,27 @@ function CursosGapPanel({ cursos, loading, showAll, onShowAll }: {
                 {/* Expanded detail */}
                 {isExpanded && (
                   <div className="border-t px-3 py-3 bg-gray-50 space-y-3">
+                    {/* Compatibility projection */}
+                    <div>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="text-xs text-gray-500 w-36 shrink-0">Compatibilidad actual:</span>
+                        <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                          <div className="h-full bg-gray-400 rounded-full" style={{ width: `${compatActual}%` }} />
+                        </div>
+                        <span className="text-xs text-gray-600 w-8 text-right">{compatActual}%</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-500 w-36 shrink-0">Si completás este curso:</span>
+                        <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                          <div className="h-full bg-green-500 rounded-full" style={{ width: `${c.compatProyectada}%` }} />
+                        </div>
+                        <span className="text-xs text-gray-800 font-semibold w-8 text-right">{c.compatProyectada}%</span>
+                        {c.mejora > 0 && (
+                          <span className="text-xs text-green-600 font-semibold shrink-0">(+{c.mejora}%)</span>
+                        )}
+                      </div>
+                    </div>
+
                     {/* Institution details */}
                     <div>
                       <p className="text-xs font-medium text-gray-600 mb-1">Institución</p>
@@ -775,12 +812,12 @@ function CursosGapPanel({ cursos, loading, showAll, onShowAll }: {
               </div>
             )
           })}
-          {!showAll && cursos.length > 3 && (
+          {!showAll && sorted.length > 3 && (
             <button
               onClick={onShowAll}
               className="text-xs text-purple-600 hover:text-purple-700 font-medium w-full text-center py-1"
             >
-              + Ver {cursos.length - 3} cursos más
+              + Ver {sorted.length - 3} cursos más
             </button>
           )}
         </div>
