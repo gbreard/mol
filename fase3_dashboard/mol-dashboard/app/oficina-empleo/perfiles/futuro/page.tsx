@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { Loader2, Map, Check, X as XIcon, ArrowRight, ExternalLink } from 'lucide-react'
+import { Loader2, Map, Check, X as XIcon, ArrowRight, ExternalLink, ChevronDown, ChevronUp, BookOpen } from 'lucide-react'
 import { createBrowserClient } from '@supabase/ssr'
 import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
 
@@ -14,6 +14,8 @@ function getSupabase() {
 import { PersonaSelector, type PerfilResumen } from '@/components/oficina-empleo/PersonaSelector'
 import { OcupacionObjetivoSelector } from '@/components/oficina-empleo/OcupacionObjetivoSelector'
 import { OfertasModal } from '@/components/oficina-empleo/OfertasModal'
+import { normalizeProvinciaToRegice } from '@/components/oficina-empleo/normalizeProvinciaToRegice'
+
 import type { OccupationMatch } from '@/app/oficina-empleo/perfiles/matching/page'
 
 interface PerfilSkill {
@@ -77,6 +79,12 @@ export default function FuturoLaboralPage() {
 
   // Modal
   const [modalOpen, setModalOpen] = useState(false)
+
+  // Cursos gap
+  const [cursosGap, setCursosGap] = useState<any[]>([])
+  const [loadingCursos, setLoadingCursos] = useState(false)
+  const [provinciaCursos, setProvinciaCursos] = useState('')
+  const [showAllCursos, setShowAllCursos] = useState(false)
 
   // Loading
   const [loadingPerfil, setLoadingPerfil] = useState(false)
@@ -240,6 +248,9 @@ export default function FuturoLaboralPage() {
         skill_label: s.skill_label,
         type: s.via_captura,
       })))
+      // Pre-select provincia for cursos panel
+      const prov = normalizeProvinciaToRegice(data.personas?.ubicacion)
+      if (prov) setProvinciaCursos(prov)
     } catch {} finally {
       setLoadingPerfil(false)
     }
@@ -283,6 +294,35 @@ export default function FuturoLaboralPage() {
     }
   }, [ofertasCountMap])
 
+  // Fetch cursos when gap changes
+  const fetchCursosGap = useCallback(async (gapEssential: any[], prov: string) => {
+    if (gapEssential.length === 0) { setCursosGap([]); return }
+    setLoadingCursos(true)
+    setShowAllCursos(false)
+    try {
+      const gapUris = gapEssential.map((s: any) => `http://data.europa.eu/esco/skill/${s.id}`)
+      const res = await fetch('/api/perfiles/cursos-gap', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gap_skill_uris: gapUris, provincia: prov || null }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setCursosGap(data.cursos || [])
+      }
+    } catch {} finally {
+      setLoadingCursos(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (gapAnalysis && gapAnalysis.gapEssential.length > 0) {
+      fetchCursosGap(gapAnalysis.gapEssential, provinciaCursos)
+    } else {
+      setCursosGap([])
+    }
+  }, [gapAnalysis, provinciaCursos, fetchCursosGap])
+
   function handleSelectPerfil(p: PerfilResumen) {
     setPerfil(p)
     setSelectedOcc(null)
@@ -297,6 +337,8 @@ export default function FuturoLaboralPage() {
     setPerfil(null)
     setPerfilSkills([])
     setSelectedOcc(null)
+    setProvinciaCursos('')
+    setCursosGap([])
     const url = new URL(window.location.href)
     url.searchParams.delete('perfil_id')
     url.searchParams.delete('occ_id')
@@ -509,6 +551,16 @@ export default function FuturoLaboralPage() {
               </div>
             )}
 
+            {/* Panel 2b — Dónde aprender lo que falta */}
+            {gapAnalysis.gapEssential.length > 0 && (
+              <CursosGapPanel
+                cursos={cursosGap}
+                loading={loadingCursos}
+                showAll={showAllCursos}
+                onShowAll={() => setShowAllCursos(true)}
+              />
+            )}
+
             {/* Panel 3 — Conocimientos */}
             {(gapAnalysis.sharedKnowledge.length > 0 || gapAnalysis.gapKnowledge.length > 0) && (
               <div className="bg-white rounded-xl border border-gray-200 p-4">
@@ -597,6 +649,142 @@ export default function FuturoLaboralPage() {
         iscoCode={selectedOcc?.isco_code || ''}
         label={selectedOcc?.label || ''}
       />
+    </div>
+  )
+}
+
+function CursosGapPanel({ cursos, loading, showAll, onShowAll }: {
+  cursos: any[]
+  loading: boolean
+  showAll: boolean
+  onShowAll: () => void
+}) {
+  const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-4">
+      <div className="flex items-center gap-2 mb-1">
+        <BookOpen className="w-4 h-4 text-purple-600" />
+        <h3 className="text-sm font-semibold text-purple-700">Dónde aprender lo que falta</h3>
+      </div>
+      <p className="text-xs text-gray-400 mb-3">Cursos que cubren las skills ausentes del perfil</p>
+
+      {loading && (
+        <div className="flex items-center gap-2 py-4 justify-center text-gray-400">
+          <Loader2 className="w-4 h-4 animate-spin" />
+          <span className="text-xs">Buscando cursos...</span>
+        </div>
+      )}
+
+      {!loading && cursos.length === 0 && (
+        <p className="text-xs text-gray-400 text-center py-3">
+          No encontramos cursos registrados para las skills que le faltan.
+        </p>
+      )}
+
+      {!loading && cursos.length > 0 && (
+        <div className="space-y-2">
+          {(showAll ? cursos : cursos.slice(0, 3)).map((c: any, i: number) => {
+            const isExpanded = expandedIdx === i
+            const skills = c.skills_detalle || []
+            const skillLabels = skills.map((s: any) => s.label)
+            const modalColor = (c.modalidad || '').toLowerCase().includes('virtual') ? 'bg-green-100 text-green-700'
+              : (c.modalidad || '').toLowerCase().includes('semi') ? 'bg-blue-100 text-blue-700'
+              : 'bg-gray-100 text-gray-600'
+
+            return (
+              <div key={`${c.curso_id}-${c.provincia}-${i}`} className="border rounded-lg overflow-hidden">
+                {/* Summary — clickable */}
+                <button
+                  onClick={() => setExpandedIdx(isExpanded ? null : i)}
+                  className="w-full p-3 text-left hover:bg-gray-50 transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900">{c.titulo}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {c.institucion} · {c.municipio}, {c.provincia}
+                      </p>
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${modalColor}`}>
+                          {c.modalidad || 'Presencial'}
+                        </span>
+                        {c.carga_horaria > 0 && (
+                          <span className="text-[10px] text-gray-400">{c.carga_horaria}hs</span>
+                        )}
+                        <span className="text-xs text-purple-700 font-semibold ml-auto">
+                          Cubre {c.skills_cubiertas} de {c.total_gap_skills}
+                        </span>
+                      </div>
+                      {!isExpanded && skillLabels.length > 0 && (
+                        <p className="text-[10px] text-gray-400 mt-1">
+                          {skillLabels.slice(0, 2).join(' · ')}
+                          {skillLabels.length > 2 && ` · +${skillLabels.length - 2} más`}
+                        </p>
+                      )}
+                    </div>
+                    {isExpanded
+                      ? <ChevronUp className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
+                      : <ChevronDown className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
+                    }
+                  </div>
+                </button>
+
+                {/* Expanded detail */}
+                {isExpanded && (
+                  <div className="border-t px-3 py-3 bg-gray-50 space-y-3">
+                    {/* Institution details */}
+                    <div>
+                      <p className="text-xs font-medium text-gray-600 mb-1">Institución</p>
+                      <p className="text-xs text-gray-800">{c.institucion}</p>
+                      <p className="text-xs text-gray-500">{c.municipio}, {c.provincia}</p>
+                    </div>
+
+                    {/* Course details */}
+                    <div className="flex items-center gap-4">
+                      <div>
+                        <p className="text-xs font-medium text-gray-600">Modalidad</p>
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${modalColor}`}>
+                          {c.modalidad || 'Presencial'}
+                        </span>
+                      </div>
+                      {c.carga_horaria > 0 && (
+                        <div>
+                          <p className="text-xs font-medium text-gray-600">Duración</p>
+                          <p className="text-xs text-gray-800">{c.carga_horaria} horas</p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Skills covered */}
+                    <div>
+                      <p className="text-xs font-medium text-gray-600 mb-1">
+                        Skills que cubre ({skills.length} de {c.total_gap_skills} faltantes)
+                      </p>
+                      <div className="space-y-0.5">
+                        {skills.map((s: any, j: number) => (
+                          <div key={j} className="flex items-center gap-1.5">
+                            <Check className="w-3 h-3 text-purple-500 shrink-0" />
+                            <span className="text-xs text-gray-700">{s.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          })}
+          {!showAll && cursos.length > 3 && (
+            <button
+              onClick={onShowAll}
+              className="text-xs text-purple-600 hover:text-purple-700 font-medium w-full text-center py-1"
+            >
+              + Ver {cursos.length - 3} cursos más
+            </button>
+          )}
+        </div>
+      )}
     </div>
   )
 }
