@@ -77,6 +77,9 @@ export default function FuturoLaboralPage() {
   const [molFreqs, setMolFreqs] = useState<Record<string, number>>({}) // skill_uri -> freq%
   const [molOfertasCount, setMolOfertasCount] = useState(0)
 
+  // Provincia (MOL format, for filtering ofertas)
+  const [perfilProvincia, setPerfilProvincia] = useState<string | null>(null)
+
   // Modal
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -248,8 +251,13 @@ export default function FuturoLaboralPage() {
         skill_label: s.skill_label,
         type: s.via_captura,
       })))
-      // Pre-select provincia for cursos panel
-      const prov = normalizeProvinciaToRegice(data.personas?.ubicacion)
+      // Pre-select provincia for cursos panel + ofertas filter
+      const ubi = data.personas?.ubicacion
+      if (ubi) {
+        const parts = ubi.split(',')
+        setPerfilProvincia(parts.length > 1 ? parts[parts.length - 1].trim() : ubi.trim())
+      }
+      const prov = normalizeProvinciaToRegice(ubi)
       if (prov) setProvinciaCursos(prov)
     } catch {} finally {
       setLoadingPerfil(false)
@@ -650,6 +658,7 @@ export default function FuturoLaboralPage() {
         onClose={() => setModalOpen(false)}
         iscoCode={selectedOcc?.isco_code || ''}
         label={selectedOcc?.label || ''}
+        provincia={perfilProvincia}
       />
     </div>
   )

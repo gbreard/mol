@@ -24,6 +24,8 @@ export interface SelectedOccupation {
 export interface SkillCaptureState {
   nombre: string
   dni: string
+  localidad: string
+  provincia: string
   ocupaciones: SelectedOccupation[]
   skills: SelectedSkill[]
 }
@@ -31,6 +33,8 @@ export interface SkillCaptureState {
 export function useSkillCapture(initial?: Partial<SkillCaptureState>) {
   const [nombre, setNombre] = useState(initial?.nombre || '')
   const [dni, setDni] = useState(initial?.dni || '')
+  const [localidad, setLocalidad] = useState(initial?.localidad || '')
+  const [provincia, setProvincia] = useState(initial?.provincia || '')
   const [ocupaciones, setOcupaciones] = useState<SelectedOccupation[]>(initial?.ocupaciones || [])
   const [skills, setSkills] = useState<SelectedSkill[]>(initial?.skills || [])
 
@@ -70,6 +74,8 @@ export function useSkillCapture(initial?: Partial<SkillCaptureState>) {
   const reset = useCallback(() => {
     setNombre('')
     setDni('')
+    setLocalidad('')
+    setProvincia('')
     setOcupaciones([])
     setSkills([])
   }, [])
@@ -77,8 +83,10 @@ export function useSkillCapture(initial?: Partial<SkillCaptureState>) {
   return {
     nombre, setNombre,
     dni, setDni,
-    ocupaciones, addOccupation, removeOccupation,
-    skills, skillUris, addSkill, addSkills, removeSkill,
+    localidad, setLocalidad,
+    provincia, setProvincia,
+    ocupaciones, setOcupaciones, addOccupation, removeOccupation,
+    skills, setSkills, skillUris, addSkill, addSkills, removeSkill,
     reset,
   }
 }

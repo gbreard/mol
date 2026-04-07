@@ -35,6 +35,7 @@ interface Props {
   rank: number
   perfilId: string
   ofertasCount: number
+  provincia?: string | null
   onLoadOccupationSkills: (uri: string) => Promise<OccSkillDetail[]>
   onOpenModal: (iscoCode: string, label: string) => void
 }
@@ -52,7 +53,7 @@ function ofertasBadge(count: number) {
 }
 
 export function OccupationMatchCard({
-  occupation, rank, perfilId, ofertasCount,
+  occupation, rank, perfilId, ofertasCount, provincia,
   onLoadOccupationSkills, onOpenModal,
 }: Props) {
   const [expanded, setExpanded] = useState(false)
@@ -74,7 +75,7 @@ export function OccupationMatchCard({
         fetch(`/api/perfiles/${perfilId}/gap?occupation_uri=${encodeURIComponent(occupation.uri)}`)
           .then(r => r.ok ? r.json() : null),
         onLoadOccupationSkills(occupation.uri),
-        getOfertasByIsco(occupation.isco_code, 3),
+        getOfertasByIsco(occupation.isco_code, 3, 0, provincia),
       ])
 
       // Classify skills

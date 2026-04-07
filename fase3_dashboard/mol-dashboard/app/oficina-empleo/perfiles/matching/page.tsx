@@ -42,6 +42,7 @@ export default function MatchingPage() {
   const initialPerfilId = searchParams.get('perfil_id')
 
   const [perfil, setPerfil] = useState<PerfilResumen | null>(null)
+  const [perfilProvincia, setPerfilProvincia] = useState<string | null>(null)
   const [profileSkillUris, setProfileSkillUris] = useState<Set<string>>(new Set())
   const [occupationsData, setOccupationsData] = useState<Record<string, any> | null>(null)
   const [loading, setLoading] = useState(false)
@@ -92,6 +93,14 @@ export default function MatchingPage() {
       }
       const uris = new Set<string>(skills.map((s: any) => s.skill_uri).filter(Boolean))
       setProfileSkillUris(uris)
+      // Extract provincia for filtering ofertas
+      const ubi = data.personas?.ubicacion
+      if (ubi) {
+        const parts = ubi.split(',')
+        setPerfilProvincia(parts.length > 1 ? parts[parts.length - 1].trim() : ubi.trim())
+      } else {
+        setPerfilProvincia(null)
+      }
     } catch (e) {
       console.error('Error loading perfil:', e)
       setMensaje('error')
@@ -150,6 +159,7 @@ export default function MatchingPage() {
   function handleClear() {
     setPerfil(null)
     setProfileSkillUris(new Set())
+    setPerfilProvincia(null)
     setMensaje(null)
     const url = new URL(window.location.href)
     url.searchParams.delete('perfil_id')
@@ -287,6 +297,7 @@ export default function MatchingPage() {
                 rank={i + 1}
                 perfilId={perfil!.id}
                 ofertasCount={ofertasCountMap[o.isco_code] || 0}
+                provincia={perfilProvincia}
                 onLoadOccupationSkills={handleLoadOccSkills}
                 onOpenModal={handleOpenModal}
               />
@@ -313,6 +324,7 @@ export default function MatchingPage() {
         onClose={() => setModalOpen(false)}
         iscoCode={modalIsco}
         label={modalLabel}
+        provincia={perfilProvincia}
       />
     </div>
   )

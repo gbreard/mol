@@ -4,6 +4,14 @@ import { useMemo } from 'react'
 import { X, Briefcase } from 'lucide-react'
 import type { SelectedSkill, SelectedOccupation } from './useSkillCapture'
 
+const PROVINCIAS_AR = [
+  'Buenos Aires', 'CABA', 'Catamarca', 'Chaco', 'Chubut', 'Córdoba',
+  'Corrientes', 'Entre Ríos', 'Formosa', 'Jujuy', 'La Pampa', 'La Rioja',
+  'Mendoza', 'Misiones', 'Neuquén', 'Río Negro', 'Salta', 'San Juan',
+  'San Luis', 'Santa Cruz', 'Santa Fe', 'Santiago del Estero',
+  'Tierra del Fuego', 'Tucumán',
+]
+
 interface Props {
   ocupaciones: SelectedOccupation[]
   skills: SelectedSkill[]
@@ -11,10 +19,15 @@ interface Props {
   onRemoveOccupation: (id: string) => void
   nombre: string
   dni: string
+  localidad: string
+  provincia: string
   onSetNombre: (v: string) => void
   onSetDni: (v: string) => void
+  onSetLocalidad: (v: string) => void
+  onSetProvincia: (v: string) => void
   onSave: () => void
   saving?: boolean
+  editMode?: boolean
 }
 
 interface Section {
@@ -69,7 +82,9 @@ function DemandBar({ frequency }: { frequency?: number }) {
 
 export function SkillProfilePanel({
   ocupaciones, skills, onRemoveSkill, onRemoveOccupation,
-  nombre, dni, onSetNombre, onSetDni, onSave, saving,
+  nombre, dni, localidad, provincia,
+  onSetNombre, onSetDni, onSetLocalidad, onSetProvincia,
+  onSave, saving, editMode,
 }: Props) {
   const sections = useMemo(() => classifySkills(skills), [skills])
 
@@ -154,12 +169,35 @@ export function SkillProfilePanel({
           </div>
         </div>
 
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <label className="text-xs text-gray-500 mb-0.5 block">Provincia</label>
+            <select
+              value={provincia}
+              onChange={e => onSetProvincia(e.target.value)}
+              className="w-full border rounded-lg px-3 py-2 text-sm"
+            >
+              <option value="">Seleccionar...</option>
+              {PROVINCIAS_AR.map(p => <option key={p} value={p}>{p}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="text-xs text-gray-500 mb-0.5 block">Localidad</label>
+            <input
+              value={localidad}
+              onChange={e => onSetLocalidad(e.target.value)}
+              placeholder="Ciudad o partido"
+              className="w-full border rounded-lg px-3 py-2 text-sm"
+            />
+          </div>
+        </div>
+
         <button
           onClick={onSave}
           disabled={saving || !nombre.trim() || !dni.trim() || skills.length === 0}
           className="w-full bg-teal-600 text-white text-sm font-semibold py-2.5 rounded-lg hover:bg-teal-700 disabled:opacity-50 transition-colors"
         >
-          {saving ? 'Guardando...' : 'Guardar perfil'}
+          {saving ? 'Guardando...' : editMode ? 'Actualizar perfil' : 'Guardar perfil'}
         </button>
       </div>
     </div>

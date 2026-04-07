@@ -61,10 +61,17 @@ export async function POST(request: NextRequest) {
 
   if (!nombre) return NextResponse.json({ error: 'Falta nombre' }, { status: 400 });
 
-  // Si tiene DNI, buscar existente
+  // Si tiene DNI, buscar existente y actualizar campos si cambiaron
   if (dni) {
     const { data: existing } = await client.from('personas').select('*').eq('dni', dni).maybeSingle();
     if (existing) {
+      const updates: Record<string, any> = {};
+      if (nombre && nombre !== existing.nombre) updates.nombre = nombre;
+      if (ubicacion && ubicacion !== existing.ubicacion) updates.ubicacion = ubicacion;
+      if (Object.keys(updates).length > 0) {
+        await client.from('personas').update(updates).eq('id', existing.id);
+        Object.assign(existing, updates);
+      }
       return NextResponse.json({ ...existing, es_nueva: false });
     }
   }

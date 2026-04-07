@@ -9,9 +9,10 @@ interface Props {
   onClose: () => void
   iscoCode: string
   label: string
+  provincia?: string | null
 }
 
-export function OfertasModal({ isOpen, onClose, iscoCode, label }: Props) {
+export function OfertasModal({ isOpen, onClose, iscoCode, label, provincia }: Props) {
   const [ofertas, setOfertas] = useState<any[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -19,7 +20,7 @@ export function OfertasModal({ isOpen, onClose, iscoCode, label }: Props) {
   useEffect(() => {
     if (isOpen && iscoCode) {
       setLoading(true)
-      getOfertasByIsco(iscoCode, 100)
+      getOfertasByIsco(iscoCode, 100, 0, provincia)
         .then(({ ofertas: data, total: count }) => {
           setOfertas(data)
           setTotal(count)

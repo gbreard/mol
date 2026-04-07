@@ -1591,13 +1591,14 @@ export async function getOfertasCountByIsco(): Promise<Record<string, number>> {
 export async function getOfertasByIsco(
   iscoCode: string,
   limit: number = 50,
-  offset: number = 0
+  offset: number = 0,
+  provincia?: string | null
 ): Promise<{ ofertas: OfertaPorOcupacion[], total: number }> {
   const client = getSupabaseClient()
   if (!client) return { ofertas: [], total: 0 }
 
   try {
-    const { data, error, count } = await client
+    let query = client
       .from(TABLA_OFERTAS)
       .select(`
         id_oferta,
@@ -1609,6 +1610,8 @@ export async function getOfertasByIsco(
         skills_tecnicas
       `, { count: 'exact' })
       .eq('isco_code', iscoCode)
+    if (provincia) query = query.eq('provincia', provincia)
+    const { data, error, count } = await query
       .order('fecha_publicacion', { ascending: false })
       .range(offset, offset + limit - 1)
 
