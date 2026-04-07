@@ -17,11 +17,13 @@ import { OfertasModal } from '@/components/oficina-empleo/OfertasModal'
 import { normalizeProvinciaToRegice } from '@/components/oficina-empleo/normalizeProvinciaToRegice'
 
 import type { OccupationMatch } from '@/app/oficina-empleo/perfiles/matching/page'
+import { calculateOccupationMatch, type ProfileSkill } from '@/lib/matching'
 
 interface PerfilSkill {
   skill_uri: string
   skill_label: string
   type?: string
+  nivel?: string | null
 }
 
 interface OccSkill {
@@ -125,87 +127,65 @@ export default function FuturoLaboralPage() {
     })
   }, [])
 
-  // Profile skill URIs set (for matching)
-  const profileSkillUris = useMemo(
-    () => new Set(perfilSkills.map(s => s.skill_uri)),
-    [perfilSkills]
-  )
-
-  // Client-side matching (same as M2) — for "Mis matches" in occupation selector
+  // Client-side matching with nivel weighting — for "Mis matches" in occupation selector
   const matchingOccupations = useMemo((): OccupationMatch[] => {
-    if (profileSkillUris.size === 0 || !occupationsData) return []
+    if (perfilSkills.length === 0 || !occupationsData) return []
     const results: OccupationMatch[] = []
     for (const [id, occ] of Object.entries(occupationsData) as [string, any][]) {
-      const essential = occ.skills?.essential ?? []
-      const optional = occ.skills?.optional ?? []
-      const essentialCovered = essential.filter((s: any) => profileSkillUris.has(`http://data.europa.eu/esco/skill/${s.id}`)).length
-      const optionalCovered = optional.filter((s: any) => profileSkillUris.has(`http://data.europa.eu/esco/skill/${s.id}`)).length
-      if (essentialCovered === 0) continue
-      const essentialTotal = essential.length
+      const result = calculateOccupationMatch(
+        perfilSkills,
+        occ.skills?.essential ?? [],
+        occ.skills?.optional ?? []
+      )
+      if (result.sharedEssential.length === 0) continue
       results.push({
         uri: `http://data.europa.eu/esco/occupation/${id}`,
         label: occ.label || id,
         isco_code: (occ.isco || '').replace(/^C/, ''),
-        matchScore: essentialTotal > 0 ? Math.round((essentialCovered / essentialTotal) * 100) : 0,
-        essentialTotal,
-        essentialCovered,
-        optionalCovered,
-        gapCount: essentialTotal - essentialCovered,
+        matchScore: result.matchScore,
+        essentialTotal: result.essentialTotal,
+        essentialCovered: result.sharedEssential.length,
+        optionalCovered: result.sharedOptional.length,
+        gapCount: result.gapCount,
       })
     }
     results.sort((a, b) => b.matchScore - a.matchScore || a.gapCount - b.gapCount)
     return results
-  }, [profileSkillUris, occupationsData])
+  }, [perfilSkills, occupationsData])
 
-  // Gap analysis (plan lines 1058-1085)
+  // Gap analysis — uses calculateOccupationMatch + separate knowledge calc
   const gapAnalysis = useMemo(() => {
     if (!selectedOcc || !occupationsData) return null
     const occId = selectedOcc.uri.split('/').pop() || ''
     const occ = occupationsData[occId]
     if (!occ?.skills) return null
 
-    const allSkillsB = [...(occ.skills.essential || []), ...(occ.skills.optional || [])]
-    const essentialIdsB = new Set((occ.skills.essential || []).map((s: any) => s.id))
+    const result = calculateOccupationMatch(
+      perfilSkills,
+      occ.skills.essential || [],
+      occ.skills.optional || []
+    )
 
-    // Knowledge is {essential: [], optional: []}, flatten to single array
+    // Knowledge (separate — not handled by calculateOccupationMatch)
     const knowledgeRaw = occ.knowledge || {}
     const knowledgeB = [...(knowledgeRaw.essential || []), ...(knowledgeRaw.optional || [])]
-
-    // Skills the person has that the occupation requires
-    const shared = allSkillsB.filter((s: any) => profileSkillUris.has(`http://data.europa.eu/esco/skill/${s.id}`))
-    const sharedEssential = shared.filter((s: any) => essentialIdsB.has(s.id))
-    const sharedOptional = shared.filter((s: any) => !essentialIdsB.has(s.id))
-
-    // Skills the occupation requires that the person doesn't have
-    const gapToCover = allSkillsB.filter((s: any) => !profileSkillUris.has(`http://data.europa.eu/esco/skill/${s.id}`))
-    const gapEssential = gapToCover.filter((s: any) => essentialIdsB.has(s.id))
-    const gapOptional = gapToCover.filter((s: any) => !essentialIdsB.has(s.id))
-
-    // Knowledge
-    const sharedKnowledge = knowledgeB.filter((k: any) => profileSkillUris.has(`http://data.europa.eu/esco/skill/${k.id}`))
-    const gapKnowledge = knowledgeB.filter((k: any) => !profileSkillUris.has(`http://data.europa.eu/esco/skill/${k.id}`))
-
-    // Transferable (person has but occupation doesn't need)
-    const bSkillIds = new Set(allSkillsB.map((s: any) => `http://data.europa.eu/esco/skill/${s.id}`))
-    const bKnowledgeIds = new Set(knowledgeB.map((k: any) => `http://data.europa.eu/esco/skill/${k.id}`))
-    const transferable = perfilSkills.filter(s => !bSkillIds.has(s.skill_uri) && !bKnowledgeIds.has(s.skill_uri))
-
-    // Compatibility
-    const essentialTotal = (occ.skills.essential || []).length
-    const compatibility = essentialTotal > 0
-      ? Math.round((sharedEssential.length / essentialTotal) * 100)
-      : 0
+    const profileUriSet = new Set(perfilSkills.map(s => s.skill_uri))
+    const sharedKnowledge = knowledgeB.filter((k: any) => profileUriSet.has(`http://data.europa.eu/esco/skill/${k.id}`))
+    const gapKnowledge = knowledgeB.filter((k: any) => !profileUriSet.has(`http://data.europa.eu/esco/skill/${k.id}`))
 
     return {
-      compatibility,
-      essentialTotal,
-      sharedEssential, sharedOptional,
-      gapEssential, gapOptional,
-      gapCount: gapEssential.length + gapOptional.length,
-      sharedKnowledge, gapKnowledge,
-      transferable,
+      compatibility: result.matchScore,
+      essentialTotal: result.essentialTotal,
+      sharedEssential: result.sharedEssential,
+      sharedOptional: result.sharedOptional,
+      gapEssential: result.gapEssential,
+      gapOptional: result.gapOptional,
+      gapCount: result.gapCount,
+      sharedKnowledge,
+      gapKnowledge,
+      transferable: result.transferable,
     }
-  }, [selectedOcc, occupationsData, profileSkillUris, perfilSkills])
+  }, [selectedOcc, occupationsData, perfilSkills])
 
   // Similar occupations for Panel 5 (caminos alternativos)
   const alternatives = useMemo(() => {
@@ -219,25 +199,23 @@ export default function FuturoLaboralPage() {
       .map((s: any) => {
         const altOcc = occupationsData[s.id]
         if (!altOcc?.skills?.essential) return null
-        const essential = altOcc.skills.essential
-        const covered = essential.filter((sk: any) => profileSkillUris.has(`http://data.europa.eu/esco/skill/${sk.id}`)).length
-        if (covered === 0) return null
-        const total = essential.length
+        const result = calculateOccupationMatch(perfilSkills, altOcc.skills.essential, [])
+        if (result.sharedEssential.length === 0) return null
         const isco = (altOcc.isco || '').replace(/^C/, '')
         return {
           uri: `http://data.europa.eu/esco/occupation/${s.id}`,
           id: s.id,
           label: altOcc.label || s.label,
           isco_code: isco,
-          matchScore: total > 0 ? Math.round((covered / total) * 100) : 0,
-          gapCount: total - covered,
+          matchScore: result.matchScore,
+          gapCount: result.gapCount,
           ofertasCount: ofertasCountMap[isco] || 0,
         }
       })
       .filter(Boolean)
       .sort((a: any, b: any) => a.gapCount - b.gapCount || b.matchScore - a.matchScore)
       .slice(0, 5)
-  }, [selectedOcc, occupationsData, profileSkillUris, gapAnalysis, ofertasCountMap])
+  }, [selectedOcc, occupationsData, perfilSkills, gapAnalysis, ofertasCountMap])
 
   // Load perfil skills
   const loadPerfilSkills = useCallback(async (perfilId: string) => {
@@ -250,6 +228,7 @@ export default function FuturoLaboralPage() {
         skill_uri: s.skill_uri,
         skill_label: s.skill_label,
         type: s.via_captura,
+        nivel: s.nivel ?? null,
       })))
       // Pre-select provincia for cursos panel + ofertas filter
       const ubi = data.personas?.ubicacion

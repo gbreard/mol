@@ -7,6 +7,7 @@ import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
 import { PersonaSelector, type PerfilResumen } from '@/components/oficina-empleo/PersonaSelector'
 import { OccupationMatchCard } from '@/components/oficina-empleo/OccupationMatchCard'
 import { type OccSkillDetail } from '@/components/oficina-empleo/getSkillsForOccupation'
+import { calculateOccupationMatch, type ProfileSkill } from '@/lib/matching'
 import { createBrowserClient } from '@supabase/ssr'
 
 let _supabase: ReturnType<typeof createBrowserClient> | null = null
@@ -43,7 +44,7 @@ export default function MatchingPage() {
 
   const [perfil, setPerfil] = useState<PerfilResumen | null>(null)
   const [perfilProvincia, setPerfilProvincia] = useState<string | null>(null)
-  const [profileSkillUris, setProfileSkillUris] = useState<Set<string>>(new Set())
+  const [profileSkills, setProfileSkills] = useState<ProfileSkill[]>([])
   const [occupationsData, setOccupationsData] = useState<Record<string, any> | null>(null)
   const [loading, setLoading] = useState(false)
   const [mensaje, setMensaje] = useState<string | null>(null)
@@ -81,7 +82,7 @@ export default function MatchingPage() {
   const loadPerfilSkills = useCallback(async (perfilId: string) => {
     setLoading(true)
     setMensaje(null)
-    setProfileSkillUris(new Set())
+    setProfileSkills([])
     try {
       const res = await fetch(`/api/perfiles?id=${perfilId}`)
       if (!res.ok) throw new Error(`Error ${res.status}`)
@@ -91,8 +92,10 @@ export default function MatchingPage() {
         setMensaje('sin_skills')
         return
       }
-      const uris = new Set<string>(skills.map((s: any) => s.skill_uri).filter(Boolean))
-      setProfileSkillUris(uris)
+      setProfileSkills(skills.map((s: any) => ({
+        skill_uri: s.skill_uri,
+        nivel: s.nivel ?? null,
+      })))
       // Extract provincia for filtering ofertas
       const ubi = data.personas?.ubicacion
       if (ubi) {
@@ -109,27 +112,21 @@ export default function MatchingPage() {
     }
   }, [])
 
-  // Client-side matching: plan_OE_MVP.md lines 667-694
+  // Client-side matching with nivel weighting
   const matches = useMemo(() => {
-    if (profileSkillUris.size === 0 || !occupationsData) return []
+    if (profileSkills.length === 0 || !occupationsData) return []
 
     const results: OccupationMatch[] = []
 
     for (const [id, occ] of Object.entries(occupationsData) as [string, any][]) {
-      const essential = occ.skills?.essential ?? []
-      const optional = occ.skills?.optional ?? []
+      const result = calculateOccupationMatch(
+        profileSkills,
+        occ.skills?.essential ?? [],
+        occ.skills?.optional ?? []
+      )
 
-      const essentialCovered = essential.filter((s: any) => profileSkillUris.has(`http://data.europa.eu/esco/skill/${s.id}`)).length
-      const optionalCovered = optional.filter((s: any) => profileSkillUris.has(`http://data.europa.eu/esco/skill/${s.id}`)).length
-      const essentialTotal = essential.length
+      if (result.sharedEssential.length === 0) continue
 
-      if (essentialCovered === 0) continue
-
-      const matchScore = essentialTotal > 0
-        ? Math.round((essentialCovered / essentialTotal) * 100)
-        : 0
-
-      // isco field has "C" prefix (e.g. "C7212"), ofertas_dashboard uses without prefix ("7212")
       const rawIsco = occ.isco || occ.isco_code || ''
       const iscoCode = rawIsco.replace(/^C/, '')
 
@@ -137,16 +134,16 @@ export default function MatchingPage() {
         uri: `http://data.europa.eu/esco/occupation/${id}`,
         label: occ.label || id,
         isco_code: iscoCode,
-        matchScore,
-        essentialTotal,
-        essentialCovered,
-        optionalCovered,
-        gapCount: essentialTotal - essentialCovered,
+        matchScore: result.matchScore,
+        essentialTotal: result.essentialTotal,
+        essentialCovered: result.sharedEssential.length,
+        optionalCovered: result.sharedOptional.length,
+        gapCount: result.gapCount,
       })
     }
 
     return results
-  }, [profileSkillUris, occupationsData])
+  }, [profileSkills, occupationsData])
 
   function handleSelectPerfil(p: PerfilResumen) {
     setPerfil(p)
@@ -158,7 +155,7 @@ export default function MatchingPage() {
 
   function handleClear() {
     setPerfil(null)
-    setProfileSkillUris(new Set())
+    setProfileSkills([])
     setPerfilProvincia(null)
     setMensaje(null)
     const url = new URL(window.location.href)
@@ -209,7 +206,7 @@ export default function MatchingPage() {
     })
   }, [matches, sortBy, ofertasCountMap])
 
-  const loadingAll = loading || (perfil && profileSkillUris.size > 0 && !occupationsData)
+  const loadingAll = loading || (perfil && profileSkills.length > 0 && !occupationsData)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -274,7 +271,7 @@ export default function MatchingPage() {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <p className="text-xs text-gray-400">
-                {matches.length} ocupaciones compatibles · basado en {profileSkillUris.size} skills
+                {matches.length} ocupaciones compatibles · basado en {profileSkills.length} skills
               </p>
               <div className="flex items-center gap-1.5">
                 <ArrowUpDown className="w-3 h-3 text-gray-400" />
@@ -306,7 +303,7 @@ export default function MatchingPage() {
         )}
 
         {/* No results */}
-        {!loadingAll && !mensaje && perfil && profileSkillUris.size > 0 && matches.length === 0 && (
+        {!loadingAll && !mensaje && perfil && profileSkills.length > 0 && matches.length === 0 && (
           <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
             <p className="text-sm text-gray-600">
               No encontramos ocupaciones con al menos 1 skill en común.
