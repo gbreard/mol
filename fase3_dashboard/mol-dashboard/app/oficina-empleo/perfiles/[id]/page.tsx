@@ -13,6 +13,22 @@ interface PerfilSkill {
   via_captura: string
   estado: string
   confianza: number
+  nivel: string
+  certificado: boolean
+}
+
+const NIVEL_COLORS: Record<string, string> = {
+  basico: 'bg-slate-100 text-slate-600',
+  intermedio: 'bg-teal-100 text-teal-700',
+  avanzado: 'bg-blue-100 text-blue-700',
+  experto: 'bg-purple-100 text-purple-700',
+}
+
+const NIVEL_LABELS: Record<string, string> = {
+  basico: 'Básico',
+  intermedio: 'Intermedio',
+  avanzado: 'Avanzado',
+  experto: 'Experto',
 }
 
 interface PerfilData {
@@ -78,6 +94,8 @@ export default function PerfilDetailPage() {
             via_captura: s.via_captura,
             estado: s.estado,
             confianza: s.confianza,
+            nivel: s.nivel || 'intermedio',
+            certificado: s.certificado || false,
           })),
         })
       })
@@ -194,10 +212,20 @@ export default function PerfilDetailPage() {
               <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
                 {sec.label} <span className="text-gray-400 font-normal">({sec.skills.length})</span>
               </h2>
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 {sec.skills.map(s => (
-                  <div key={s.id} className="flex items-center gap-2">
+                  <div key={s.id}>
                     <span className="text-sm text-gray-800">● {s.label}</span>
+                    <div className="flex items-center gap-1.5 ml-3 mt-0.5">
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${NIVEL_COLORS[s.nivel] || NIVEL_COLORS.intermedio}`}>
+                        {NIVEL_LABELS[s.nivel] || 'Intermedio'}
+                      </span>
+                      {s.certificado && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded font-medium bg-green-100 text-green-700">
+                          ✓ Cert
+                        </span>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
