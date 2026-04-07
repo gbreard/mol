@@ -116,21 +116,58 @@ export async function updateSession(request: NextRequest) {
     }
   }
 
-  // Oficina de Empleo gating: requiere rol oficina_empleo, admin, o super_admin
+  // Oficina de Empleo gating: requiere rol oficina_empleo, admin, super_admin, o visit_vip
   const isOficinaRoute = request.nextUrl.pathname.startsWith("/oficina-empleo");
   if (isOficinaRoute && user) {
     const role = (user.user_metadata?.role as string) || 'viewer';
-    if (role !== 'oficina_empleo' && role !== 'admin' && role !== 'super_admin') {
+    if (role !== 'oficina_empleo' && role !== 'admin' && role !== 'super_admin' && role !== 'visit_vip') {
       const url = request.nextUrl.clone();
       url.pathname = "/home";
       return NextResponse.redirect(url);
     }
   }
 
-  // Si hay usuario y está en login, redirigir a home
+  // VIP gating: /vip/* solo para visit_vip + admin
+  const isVipRoute = request.nextUrl.pathname.startsWith("/vip");
+  if (isVipRoute && user) {
+    const role = (user.user_metadata?.role as string) || 'viewer';
+    if (role !== 'visit_vip' && role !== 'admin' && role !== 'super_admin') {
+      const url = request.nextUrl.clone();
+      url.pathname = "/home";
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // Bloquear VIP del sistema principal
+  if (user) {
+    const role = (user.user_metadata?.role as string) || 'viewer';
+    if (role === 'visit_vip') {
+      const isMainSystemRoute =
+        request.nextUrl.pathname.startsWith('/dashboard') ||
+        request.nextUrl.pathname.startsWith('/admin') ||
+        request.nextUrl.pathname.startsWith('/skills') ||
+        request.nextUrl.pathname.startsWith('/mi-futuro-laboral');
+      if (isMainSystemRoute) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/vip";
+        return NextResponse.redirect(url);
+      }
+    }
+  }
+
+  // Si hay usuario y está en login, redirigir según rol
   if (user && request.nextUrl.pathname === "/login") {
+    const role = (user.user_metadata?.role as string) || 'viewer';
     const url = request.nextUrl.clone();
-    url.pathname = "/home";
+    if (role === 'visit_vip') {
+      url.pathname = "/vip";
+    } else if (role === 'oficina_empleo') {
+      url.pathname = "/oficina-empleo";
+    } else if (role === 'admin' || role === 'super_admin') {
+      url.pathname = "/admin";
+    } else {
+      url.pathname = "/home";
+    }
     return NextResponse.redirect(url);
   }
 

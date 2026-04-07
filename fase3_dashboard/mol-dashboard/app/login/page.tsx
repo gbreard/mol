@@ -42,7 +42,18 @@ export default function LoginPage() {
       );
       setLoading(false);
     } else {
-      router.push("/home");
+      // Redirect by role
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      const userRole = authUser?.user_metadata?.role || 'viewer';
+      if (userRole === 'visit_vip') {
+        router.push('/vip');
+      } else if (userRole === 'oficina_empleo') {
+        router.push('/oficina-empleo');
+      } else if (userRole === 'admin' || userRole === 'super_admin') {
+        router.push('/admin');
+      } else {
+        router.push('/home');
+      }
       router.refresh();
     }
   };

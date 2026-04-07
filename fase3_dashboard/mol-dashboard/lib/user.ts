@@ -4,6 +4,7 @@ export const ROLE = {
   ANALYST: "analyst",
   VIEWER: "viewer",
   OFICINA_EMPLEO: "oficina_empleo",
+  VISIT_VIP: "visit_vip",
 } as const;
 
 export type Role = (typeof ROLE)[keyof typeof ROLE];
@@ -111,6 +112,10 @@ export function getRoleBadge(role: Role): { label: string; className: string } {
     [ROLE.OFICINA_EMPLEO]: {
       label: "Oficina de Empleo",
       className: "bg-teal-100 text-teal-700",
+    },
+    [ROLE.VISIT_VIP]: {
+      label: "Inversor",
+      className: "bg-amber-100 text-amber-700",
     },
   };
   return badges[role] ?? badges[ROLE.VIEWER];

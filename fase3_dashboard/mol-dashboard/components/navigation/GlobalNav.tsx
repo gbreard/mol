@@ -105,6 +105,12 @@ const NAV_ITEMS: NavItem[] = [
     roles: ["super_admin", "admin"],
     matchMode: "startsWith",
   },
+  // VIP items
+  { label: "Inicio", href: "/vip", icon: Home, roles: ["visit_vip"], matchMode: "exact" },
+  { label: "Dashboard", href: "/vip/dashboard", icon: BarChart3, roles: ["visit_vip"], matchMode: "startsWith" },
+  { label: "Oficina de Empleo", href: "/oficina-empleo", icon: Briefcase, roles: ["visit_vip"], matchMode: "startsWith" },
+  { label: "Políticas Laborales", href: "/vip/politicas", icon: FileText, roles: ["visit_vip"], matchMode: "startsWith" },
+  { label: "Informes", href: "/contenido", icon: BookOpen, roles: ["visit_vip"], matchMode: "startsWith" },
 ];
 
 interface AdminMenuItem {
@@ -358,6 +364,7 @@ function getRoleLabel(role: string) {
     analyst: "Analista",
     viewer: "Visualizador",
     oficina_empleo: "Oficina de Empleo",
+    visit_vip: "Inversor",
     usuario: "Usuario",
   };
   return roles[role] || role;
@@ -369,6 +376,7 @@ function getRoleBadgeColor(role: string) {
     admin: "bg-blue-100 text-blue-800",
     analyst: "bg-green-100 text-green-800",
     oficina_empleo: "bg-teal-100 text-teal-800",
+    visit_vip: "bg-amber-100 text-amber-800",
     viewer: "bg-gray-100 text-gray-800",
     usuario: "bg-gray-100 text-gray-800",
   };
