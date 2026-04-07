@@ -101,6 +101,8 @@ export async function PUT(
       ),
       estado: s.estado || 'confirmada',
       confianza: s.confianza ?? 0.8,
+      nivel: s.nivel || 'intermedio',
+      certificado: s.certificado || false,
     }));
 
     const { error: skErr } = await client.from('perfil_skills').insert(skillRows);

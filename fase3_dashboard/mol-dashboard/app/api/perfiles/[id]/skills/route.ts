@@ -37,6 +37,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     via_captura: s.via_captura || 'tarea',
     estado: s.estado || 'sugerida',
     confianza: s.confianza || 0.5,
+    nivel: s.nivel || 'intermedio',
+    certificado: s.certificado || false,
     validado_por_tecnico: s.validado_por_tecnico || false,
   }));
 

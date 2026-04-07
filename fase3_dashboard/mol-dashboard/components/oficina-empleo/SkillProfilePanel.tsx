@@ -1,8 +1,8 @@
 'use client'
 
 import { useMemo } from 'react'
-import { X, Briefcase } from 'lucide-react'
-import type { SelectedSkill, SelectedOccupation } from './useSkillCapture'
+import { X, Briefcase, Award } from 'lucide-react'
+import type { SelectedSkill, SelectedOccupation, NivelMaestria } from './useSkillCapture'
 
 const PROVINCIAS_AR = [
   'Buenos Aires', 'CABA', 'Catamarca', 'Chaco', 'Chubut', 'Córdoba',
@@ -17,6 +17,8 @@ interface Props {
   skills: SelectedSkill[]
   onRemoveSkill: (uri: string) => void
   onRemoveOccupation: (id: string) => void
+  onUpdateNivel?: (uri: string, nivel: NivelMaestria) => void
+  onToggleCertificado?: (uri: string) => void
   nombre: string
   dni: string
   localidad: string
@@ -84,6 +86,7 @@ export function SkillProfilePanel({
   ocupaciones, skills, onRemoveSkill, onRemoveOccupation,
   nombre, dni, localidad, provincia,
   onSetNombre, onSetDni, onSetLocalidad, onSetProvincia,
+  onUpdateNivel, onToggleCertificado,
   onSave, saving, editMode,
 }: Props) {
   const sections = useMemo(() => classifySkills(skills), [skills])
@@ -114,21 +117,15 @@ export function SkillProfilePanel({
             <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
               {sec.label} <span className="text-gray-400 font-normal">({sec.skills.length})</span>
             </h3>
-            <div className="space-y-1">
+            <div className="space-y-2">
               {sec.skills.map(s => (
-                <div key={s.uri} className="flex items-center gap-1.5 group">
-                  <span className="text-sm text-gray-800 flex-1 min-w-0 truncate">{s.label}</span>
-                  <DemandBar frequency={s.market_frequency} />
-                  {s.essential_for_occupation && (
-                    <span className="text-[10px] bg-teal-100 text-teal-700 px-1 py-0.5 rounded shrink-0">esencial</span>
-                  )}
-                  <button
-                    onClick={() => onRemoveSkill(s.uri)}
-                    className="text-gray-300 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+                <SkillRow
+                  key={s.uri}
+                  skill={s}
+                  onRemove={onRemoveSkill}
+                  onUpdateNivel={onUpdateNivel}
+                  onToggleCertificado={onToggleCertificado}
+                />
               ))}
             </div>
           </div>
@@ -198,6 +195,64 @@ export function SkillProfilePanel({
           className="w-full bg-teal-600 text-white text-sm font-semibold py-2.5 rounded-lg hover:bg-teal-700 disabled:opacity-50 transition-colors"
         >
           {saving ? 'Guardando...' : editMode ? 'Actualizar perfil' : 'Guardar perfil'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+const NIVELES: { id: NivelMaestria; label: string; color: string; activeColor: string }[] = [
+  { id: 'basico', label: 'Básico', color: 'text-gray-400', activeColor: 'bg-slate-200 text-slate-700' },
+  { id: 'intermedio', label: 'Interm.', color: 'text-gray-400', activeColor: 'bg-teal-100 text-teal-700' },
+  { id: 'avanzado', label: 'Avanz.', color: 'text-gray-400', activeColor: 'bg-blue-100 text-blue-700' },
+  { id: 'experto', label: 'Experto', color: 'text-gray-400', activeColor: 'bg-purple-100 text-purple-700' },
+]
+
+function SkillRow({ skill, onRemove, onUpdateNivel, onToggleCertificado }: {
+  skill: SelectedSkill
+  onRemove: (uri: string) => void
+  onUpdateNivel?: (uri: string, nivel: NivelMaestria) => void
+  onToggleCertificado?: (uri: string) => void
+}) {
+  const nivel = skill.nivel || 'intermedio'
+
+  return (
+    <div className="border border-gray-100 rounded-lg px-2 py-1.5">
+      {/* Top row: label + badges + remove */}
+      <div className="flex items-center gap-1.5">
+        <span className="text-sm text-gray-800 flex-1 min-w-0 truncate">{skill.label}</span>
+        <DemandBar frequency={skill.market_frequency} />
+        {skill.essential_for_occupation && (
+          <span className="text-[10px] bg-teal-100 text-teal-700 px-1 py-0.5 rounded shrink-0">esencial</span>
+        )}
+        <button
+          onClick={() => onRemove(skill.uri)}
+          className="text-gray-300 hover:text-red-400 shrink-0"
+        >
+          <X className="w-3.5 h-3.5" />
+        </button>
+      </div>
+      {/* Bottom row: nivel buttons + certificado */}
+      <div className="flex items-center gap-1 mt-1">
+        {NIVELES.map(n => (
+          <button
+            key={n.id}
+            onClick={() => onUpdateNivel?.(skill.uri, n.id)}
+            className={`text-[10px] px-1.5 py-0.5 rounded transition-colors ${
+              nivel === n.id ? n.activeColor + ' font-medium' : 'text-gray-400 hover:bg-gray-100'
+            }`}
+          >
+            {n.label}
+          </button>
+        ))}
+        <button
+          onClick={() => onToggleCertificado?.(skill.uri)}
+          className={`ml-auto flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded transition-colors ${
+            skill.certificado ? 'bg-green-100 text-green-700 font-medium' : 'text-gray-400 hover:bg-gray-100'
+          }`}
+        >
+          <Award className="w-3 h-3" />
+          Cert
         </button>
       </div>
     </div>

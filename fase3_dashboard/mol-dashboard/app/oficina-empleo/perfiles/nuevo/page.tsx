@@ -63,6 +63,8 @@ export default function NuevoPerfilPage() {
             : s.via_captura === 'texto' ? 'texto'
             : s.via_captura === 'estructurado' ? 'estructurado'
             : 'busqueda') as any,
+          nivel: s.nivel || 'intermedio',
+          certificado: s.certificado || false,
         }))
         capture.setSkills(skills)
       })
@@ -94,6 +96,8 @@ export default function NuevoPerfilPage() {
               uri: s.uri,
               label: s.label,
               source: s.source,
+              nivel: s.nivel || 'intermedio',
+              certificado: s.certificado || false,
             })),
           }),
         })
@@ -149,6 +153,8 @@ export default function NuevoPerfilPage() {
             : 'tarea',
           estado: 'confirmada',
           confianza: 0.8,
+          nivel: s.nivel || 'intermedio',
+          certificado: s.certificado || false,
         }))
         const skillsRes = await fetch(`/api/perfiles/${perfil.id}/skills`, {
           method: 'POST',
@@ -258,6 +264,8 @@ export default function NuevoPerfilPage() {
               onSetDni={capture.setDni}
               onSetLocalidad={capture.setLocalidad}
               onSetProvincia={capture.setProvincia}
+              onUpdateNivel={capture.updateSkillNivel}
+              onToggleCertificado={capture.toggleSkillCertificado}
               onSave={handleSave}
               saving={saving}
               editMode={!!editId}

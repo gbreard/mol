@@ -2,6 +2,8 @@
 
 import { useState, useCallback, useMemo } from 'react'
 
+export type NivelMaestria = 'basico' | 'intermedio' | 'avanzado' | 'experto'
+
 export interface SelectedSkill {
   uri: string
   label: string
@@ -13,6 +15,8 @@ export interface SelectedSkill {
   essential_for_occupation?: boolean
   market_frequency?: number
   description?: string
+  nivel?: NivelMaestria
+  certificado?: boolean
 }
 
 export interface SelectedOccupation {
@@ -44,16 +48,26 @@ export function useSkillCapture(initial?: Partial<SkillCaptureState>) {
     setSkills(prev => {
       const key = skill.uri || skill.label.toLowerCase()
       if (prev.some(s => (s.uri || s.label.toLowerCase()) === key)) return prev
-      return [...prev, skill]
+      return [...prev, { ...skill, nivel: skill.nivel ?? 'intermedio', certificado: skill.certificado ?? false }]
     })
   }, [])
 
   const addSkills = useCallback((newSkills: SelectedSkill[]) => {
     setSkills(prev => {
       const existing = new Set(prev.map(s => s.uri || s.label.toLowerCase()))
-      const unique = newSkills.filter(s => !existing.has(s.uri || s.label.toLowerCase()))
+      const unique = newSkills
+        .filter(s => !existing.has(s.uri || s.label.toLowerCase()))
+        .map(s => ({ ...s, nivel: s.nivel ?? 'intermedio' as NivelMaestria, certificado: s.certificado ?? false }))
       return unique.length > 0 ? [...prev, ...unique] : prev
     })
+  }, [])
+
+  const updateSkillNivel = useCallback((uri: string, nivel: NivelMaestria) => {
+    setSkills(prev => prev.map(s => s.uri === uri ? { ...s, nivel } : s))
+  }, [])
+
+  const toggleSkillCertificado = useCallback((uri: string) => {
+    setSkills(prev => prev.map(s => s.uri === uri ? { ...s, certificado: !s.certificado } : s))
   }, [])
 
   const removeSkill = useCallback((uri: string) => {
@@ -87,6 +101,7 @@ export function useSkillCapture(initial?: Partial<SkillCaptureState>) {
     provincia, setProvincia,
     ocupaciones, setOcupaciones, addOccupation, removeOccupation,
     skills, setSkills, skillUris, addSkill, addSkills, removeSkill,
+    updateSkillNivel, toggleSkillCertificado,
     reset,
   }
 }
