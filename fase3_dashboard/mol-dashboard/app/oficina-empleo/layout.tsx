@@ -17,7 +17,7 @@ export default async function OficinaEmpleoLayout({
   // Por ahora S2 está en desarrollo sin flujo de auth
   if (user) {
     const profile = getUserProfile(user);
-    if (!isAdmin(profile.role) && !isOficinaEmpleo(profile.role)) {
+    if (!isAdmin(profile.role) && !isOficinaEmpleo(profile.role) && profile.role !== 'visit_vip') {
       redirect("/home");
     }
   }

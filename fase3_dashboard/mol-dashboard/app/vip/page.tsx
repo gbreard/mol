@@ -24,7 +24,7 @@ const MODULES = [
     color: 'blue',
   },
   {
-    href: '/contenido',
+    href: '/informes',
     icon: FileText,
     title: 'Informes',
     description: 'Reportes y análisis del mercado laboral argentino',

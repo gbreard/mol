@@ -350,28 +350,31 @@ export function ChartDownloadButton(options: FormattedExcelOptions) {
     );
   }
 
+  const [open, setOpen] = useState(false);
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="gap-1.5 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 transition-all"
-        >
-          <Download className="w-4 h-4" />
-          <ChevronDown className="w-3 h-3" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => handleExport('csv')} className="gap-2 cursor-pointer">
-          <FileText className="w-4 h-4 text-green-600" />
-          <span>Descargar CSV</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleExport('excel')} className="gap-2 cursor-pointer">
-          <FileSpreadsheet className="w-4 h-4 text-blue-600" />
-          <span>Descargar Excel</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="relative">
+      <Button
+        variant="outline"
+        size="sm"
+        className="gap-1.5 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 transition-all"
+        onClick={() => setOpen(!open)}
+      >
+        <Download className="w-4 h-4" />
+        <ChevronDown className="w-3 h-3" />
+      </Button>
+      {open && (
+        <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-1 min-w-[160px]">
+          <button onClick={() => { handleExport('csv'); setOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-50 cursor-pointer">
+            <FileText className="w-4 h-4 text-green-600" />
+            Descargar CSV
+          </button>
+          <button onClick={() => { handleExport('excel'); setOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-50 cursor-pointer">
+            <FileSpreadsheet className="w-4 h-4 text-blue-600" />
+            Descargar Excel
+          </button>
+        </div>
+      )}
+    </div>
   );
 }

@@ -110,7 +110,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/vip/dashboard", icon: BarChart3, roles: ["visit_vip"], matchMode: "startsWith" },
   { label: "Oficina de Empleo", href: "/oficina-empleo", icon: Briefcase, roles: ["visit_vip"], matchMode: "startsWith" },
   { label: "Políticas Laborales", href: "/vip/politicas", icon: FileText, roles: ["visit_vip"], matchMode: "startsWith" },
-  { label: "Informes", href: "/contenido", icon: BookOpen, roles: ["visit_vip"], matchMode: "startsWith" },
+  { label: "Informes", href: "/informes", icon: BookOpen, roles: ["visit_vip"], matchMode: "startsWith" },
 ];
 
 interface AdminMenuItem {
@@ -384,8 +384,14 @@ function getRoleBadgeColor(role: string) {
 }
 
 function isItemVisible(item: NavItem, role: string | undefined, plan: string | undefined): boolean {
-  if (item.roles === "*" && !item.plans) return true;
   if (!role) return false;
+
+  // VIP users see ONLY items explicitly tagged with visit_vip
+  if (role === "visit_vip") {
+    return Array.isArray(item.roles) && item.roles.includes("visit_vip");
+  }
+
+  if (item.roles === "*" && !item.plans) return true;
 
   // Admins bypass plan check
   const isAdminRole = role === "super_admin" || role === "admin";

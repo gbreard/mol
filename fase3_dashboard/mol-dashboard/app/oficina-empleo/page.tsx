@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { ClipboardList, Target, Map, BarChart3, ChevronRight } from 'lucide-react'
+import { createServerClient } from '@/lib/supabase/server'
 
 const MODULES = [
   {
@@ -25,6 +26,14 @@ const MODULES = [
   },
 ]
 
+const M4_MODULE = {
+  href: '/oficina-empleo/dashboard-ejecutivo',
+  icon: BarChart3,
+  title: 'Inteligencia del Mercado Laboral',
+  description: 'Panorama territorial de la demanda de empleo — sectores, ocupaciones, skills más pedidas y perfil de requerimientos por provincia y período',
+  color: 'amber',
+}
+
 const COLORS: Record<string, { bg: string; iconBg: string; iconText: string; hover: string }> = {
   teal:   { bg: 'bg-white', iconBg: 'bg-teal-50',   iconText: 'text-teal-600',   hover: 'hover:border-teal-300' },
   blue:   { bg: 'bg-white', iconBg: 'bg-blue-50',   iconText: 'text-blue-600',   hover: 'hover:border-blue-300' },
@@ -32,7 +41,15 @@ const COLORS: Record<string, { bg: string; iconBg: string; iconText: string; hov
   amber:  { bg: 'bg-white', iconBg: 'bg-amber-50',  iconText: 'text-amber-600',  hover: 'hover:border-amber-300' },
 }
 
-export default function OficinaEmpleoPage() {
+export default async function OficinaEmpleoPage() {
+  // Check if user is VIP — hide M4 for VIP (they have it in /vip/politicas)
+  let isVip = false
+  try {
+    const supabase = await createServerClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    isVip = user?.user_metadata?.role === 'visit_vip'
+  } catch {}
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto px-4 py-8">
@@ -69,24 +86,24 @@ export default function OficinaEmpleoPage() {
           })}
         </div>
 
-        {/* M4 — full width */}
-        <Link
-          href="/oficina-empleo/dashboard-ejecutivo"
-          className={`${COLORS.amber.bg} rounded-xl border border-gray-200 ${COLORS.amber.hover} p-5 flex items-start gap-4 transition-all group`}
-        >
-          <div className={`w-10 h-10 rounded-lg ${COLORS.amber.iconBg} ${COLORS.amber.iconText} flex items-center justify-center shrink-0`}>
-            <BarChart3 className="w-5 h-5" />
-          </div>
-          <div className="flex-1">
-            <h2 className="text-sm font-semibold text-gray-900 mb-1">Inteligencia del Mercado Laboral</h2>
-            <p className="text-xs text-gray-500 leading-relaxed">
-              Panorama territorial de la demanda de empleo — sectores, ocupaciones, skills más pedidas y perfil de requerimientos por provincia y período
-            </p>
-          </div>
-          <div className="flex items-center gap-1 text-xs font-medium text-gray-400 group-hover:text-gray-600 transition-colors shrink-0 mt-1">
-            Abrir <ChevronRight className="w-3 h-3" />
-          </div>
-        </Link>
+        {/* M4 — only for non-VIP */}
+        {!isVip && (
+          <Link
+            href={M4_MODULE.href}
+            className={`${COLORS.amber.bg} rounded-xl border border-gray-200 ${COLORS.amber.hover} p-5 flex items-start gap-4 transition-all group`}
+          >
+            <div className={`w-10 h-10 rounded-lg ${COLORS.amber.iconBg} ${COLORS.amber.iconText} flex items-center justify-center shrink-0`}>
+              <BarChart3 className="w-5 h-5" />
+            </div>
+            <div className="flex-1">
+              <h2 className="text-sm font-semibold text-gray-900 mb-1">{M4_MODULE.title}</h2>
+              <p className="text-xs text-gray-500 leading-relaxed">{M4_MODULE.description}</p>
+            </div>
+            <div className="flex items-center gap-1 text-xs font-medium text-gray-400 group-hover:text-gray-600 transition-colors shrink-0 mt-1">
+              Abrir <ChevronRight className="w-3 h-3" />
+            </div>
+          </Link>
+        )}
       </div>
     </div>
   )

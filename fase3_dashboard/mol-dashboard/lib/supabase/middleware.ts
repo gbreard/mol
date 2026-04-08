@@ -17,7 +17,7 @@ export async function updateSession(request: NextRequest) {
   // Dev bypass: simula usuario admin para desarrollo S2
   // Vercel Edge Runtime no recibe env vars del dashboard en deploys CLI
   // TODO: quitar cuando se implemente auth real con Supabase
-  const DEV_BYPASS = true
+  const DEV_BYPASS = false
   if (DEV_BYPASS || process.env.DEV_MOCK_AUTH === "true") {
     const user = DEV_MOCK_USER;
 
