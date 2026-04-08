@@ -1,8 +1,8 @@
 {
-  "version": "5.11",
+  "version": "5.14",
   "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-03-12",
+  "fecha_actualizacion": "2026-04-08",
   "_cambios_v53": "Fix R139 repositor 9333→9334, R137 excluir controlador, new R265 controlador logístico→4321. Issues Diego.",
   "_cambios_v51": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344, R137 excluye maquinista.",
   "_cambios_v43": "R181-R182: Personal mantenimiento -> 7233, Tecnico electromedicina -> 3211",
@@ -914,7 +914,9 @@
           "mecanizado",
           "lead",
           "fresadora",
-          "cnc"
+          "cnc",
+          "producción",
+          "produccion"
         ]
       },
       "accion": {
@@ -924,7 +926,8 @@
       "caso_gold_set": "1117982053 - Desarrollador Angular Senior",
       "activa": true,
       "nota": "Excluye CNC/mecanizado (v2026-01-20)",
-      "nota_v47": "v4.7: Excluir manager/director/lead (son IT managers 1330, no developers 2512)"
+      "nota_v47": "v4.7: Excluir manager/director/lead (son IT managers 1330, no developers 2512)",
+      "_fix_2026_04_08": "Excluir producción/produccion para no pisar programador de producción industrial"
     },
     "R34_cajero": {
       "nombre": "Cajero/Cajera",
@@ -1342,7 +1345,8 @@
           "mantenimiento",
           "compras",
           "logística",
-          "logistica"
+          "logistica",
+          "depósito"
         ]
       },
       "accion": {
@@ -1351,7 +1355,8 @@
         "esco_label": "jefe de departamento/jefa de departamento"
       },
       "activa": true,
-      "nota": "FASE 3 v3.2.3 - Jefes genericos van a ISCO 1xxx. Excluye compras/logística"
+      "nota": "FASE 3 v3.2.3 - Jefes genericos van a ISCO 1xxx. Excluye compras/logística",
+      "_fix_2026_04_08": "Agregado \"depósito\" con tilde a exclusión (bug de acento)"
     },
     "R117_responsable_compras": {
       "nombre": "Responsable/Jefe de Compras y Logística",
@@ -1902,12 +1907,13 @@
       },
       "accion": {
         "forzar_isco": "5414",
-        "esco_label": "guardia de furgón blindado"
+        "esco_label": "vigilante de seguridad"
       },
       "caso_revision_100": "2171959 - Vigilador General",
       "activa": true,
       "nota": "FASE 4 - Vigilador genérico = guardia seguridad",
-      "prioridad": 1
+      "prioridad": 1,
+      "_fix_2026_04_08": "Label corregido de \"guardia de furgón blindado\" a \"vigilante de seguridad\". Afecta ~180 ofertas."
     },
     "R76_fonoaudiologo": {
       "nombre": "Fonoaudiólogo/Logopeda",
@@ -2523,10 +2529,11 @@
       },
       "accion": {
         "forzar_isco": "2263",
-        "esco_label": "especialista en seguridad alimentaria"
+        "esco_label": "responsable de salud y seguridad"
       },
       "caso_demo": "1118115976 - Licenciado en Seguridad e Higiene",
-      "activa": true
+      "activa": true,
+      "_fix_2026_04_08": "Label corregido de \"especialista en seguridad alimentaria\" a \"responsable de salud y seguridad\""
     },
     "R108_jefe_rrhh": {
       "nombre": "Jefe de RRHH/HR",
@@ -4762,7 +4769,7 @@
     },
     "R211_soldador": {
       "nombre": "Soldador",
-      "prioridad": 1,
+      "prioridad": -2,
       "condicion": {
         "titulo_contiene_alguno": [
           "soldador",
@@ -4778,7 +4785,8 @@
       },
       "activa": true,
       "_fecha": "2026-02-08",
-      "_nota": "Sprint 2: gap cobertura - 3 ofertas sin match"
+      "_nota": "Sprint 2: gap cobertura - 3 ofertas sin match",
+      "_fix_2026_04_08": "Prioridad subida a 0 para ganarle a R240_operario_produccion"
     },
     "R212_personal_limpieza": {
       "nombre": "Personal de Limpieza",
@@ -5380,7 +5388,10 @@
         "area_funcional_es": "Produccion",
         "titulo_no_contiene_alguno": [
           "limpieza",
-          "logistic"
+          "logistic",
+          "soldador",
+          "soldadora",
+          "soldadura"
         ]
       },
       "accion": {
@@ -5389,7 +5400,8 @@
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 6 operarios producción"
+      "nota": "Sprint 7 V31: 6 operarios producción",
+      "_fix_2026_04_08": "Excluir soldador/soldadora/soldadura para no pisar R211"
     },
     "R241_tecnico_it": {
       "nombre": "Técnico IT genérico",
@@ -6541,13 +6553,15 @@
     },
     "R290_tecnico_electricista": {
       "nombre": "Técnico electricista",
-      "prioridad": 1,
+      "prioridad": -2,
       "condicion": {
         "titulo_contiene_alguno": [
           "tecnico electricista",
           "técnico electricista",
           "tecnica electricista",
-          "técnica electricista"
+          "técnica electricista",
+          "técnico/a electricista",
+          "tecnico/a electricista"
         ]
       },
       "accion": {
@@ -6557,7 +6571,8 @@
       "activa": true,
       "_caso": "2166530 - Técnico electricista",
       "_fecha": "2026-03-12",
-      "nota": "Técnico electricista es electricista (7411). Baseline daba productos sanitarios, fine-tuned daba podcast"
+      "nota": "Técnico electricista es electricista (7411). Baseline daba productos sanitarios, fine-tuned daba podcast",
+      "_fix_2026_04_08": "Agregadas variantes con /a que no matcheaban"
     },
     "R291_auxiliar_proveedores": {
       "nombre": "Auxiliar de Proveedores / Compras",
@@ -6866,6 +6881,349 @@
       "_caso": "2168722 - Sous Chef - Restaurante en Balneario Reta",
       "_fecha": "2026-03-12",
       "nota": "Sous chef es chef (3434). Combined LoRA daba camarero"
+    },
+    "R301_ascensores": {
+      "nombre": "Técnico en ascensores/elevadores",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "ascensor",
+          "ascensores",
+          "elevador",
+          "elevadores",
+          "ascensorista"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7412",
+        "esco_label": "técnico de ascensores/técnica de ascensores"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [
+          "768a205a",
+          "68b6bf5a",
+          "cacfa6ef"
+        ],
+        "oferta_ejemplo": "5924126529 - Tecnico en mantenimiento de ascensores",
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+      },
+      "_fecha": "2026-04-08"
+    },
+    "R302_supervisor_obra": {
+      "nombre": "Supervisor de obra/montaje/instalación",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "supervisor de obra",
+          "supervisor obra",
+          "supervisora de obra",
+          "supervisor de montaje",
+          "supervisor montaje",
+          "supervisor de instalacion",
+          "supervisor de instalación",
+          "supervisor instalacion",
+          "supervisor instalación"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3123",
+        "esco_label": "supervisor de obras/supervisora de obras"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [
+          "9d237a90",
+          "a221d7f3",
+          "ede8e93c"
+        ],
+        "oferta_ejemplo": "5945752836 - Supervisor de Instalacion",
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+      },
+      "_fecha": "2026-04-08"
+    },
+    "R303_gerente_admin": {
+      "nombre": "Gerente de Administración",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "gerente administracion",
+          "gerente administración",
+          "gerente de administracion",
+          "gerente de administración",
+          "gerente administrativo",
+          "gerente administrativa",
+          "gerente admin"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1211",
+        "esco_label": "director financiero/directora financiera"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [
+          "16fc28ea",
+          "817a82f9",
+          "1171e027"
+        ],
+        "oferta_ejemplo": "7006539054 - Gerente Administración",
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+      },
+      "_fecha": "2026-04-08"
+    },
+    "R304_torrista": {
+      "nombre": "Técnico torrista",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "torrista",
+          "tecnico torrista",
+          "técnico torrista"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3522",
+        "esco_label": "técnico en ingeniería de las telecomunicaciones/técnica en ingeniería de las telecomunicaciones"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [
+          "3e2e6b86",
+          "ffd65960",
+          "55a4ea26"
+        ],
+        "oferta_ejemplo": "5876264262 - Tecnico Torrista",
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+      },
+      "_fecha": "2026-04-08"
+    },
+    "R305_electromecanico": {
+      "nombre": "Técnico electromecánico",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "electromecánico",
+          "electromecanico",
+          "electromecánica",
+          "electromecanica",
+          "electromecánicos",
+          "electromecanicos"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7412",
+        "esco_label": "mecánico electricista/mecánica electricista"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [
+          "a9465494",
+          "b88be3c6"
+        ],
+        "oferta_ejemplo": "1118088910 - Técnico Electromecánico",
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+      },
+      "_fecha": "2026-04-08"
+    },
+    "R306_mantenimiento_electrico": {
+      "nombre": "Técnico de mantenimiento eléctrico",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "mantenimiento eléctrico",
+          "mantenimiento electrico",
+          "técnico eléctrico",
+          "tecnico electrico"
+        ],
+        "titulo_no_contiene_alguno": [
+          "electromecánico",
+          "electromecanico",
+          "electricista"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7412",
+        "esco_label": "mecánico electricista/mecánica electricista"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [
+          "7b1e9dfe",
+          "bfa67ce8",
+          "9fc64897"
+        ],
+        "oferta_ejemplo": "6053706024 - Técnico de mantenimiento eléctrico industrial",
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+      },
+      "_fecha": "2026-04-08"
+    },
+    "R307_ingeniero_electronico": {
+      "nombre": "Ingeniero electrónico",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "ingeniero electrónico",
+          "ingeniero electronico",
+          "ingeniera electrónica",
+          "ingeniera electronica",
+          "ing electrónico",
+          "ing electronico"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2152",
+        "esco_label": "ingeniero electrónico/ingeniera electrónica"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [
+          "204ca922",
+          "d2d2970f",
+          "d6451678"
+        ],
+        "oferta_ejemplo": "6208652557 - Ingeniero Electrónico (Vicente Lopez)",
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+      },
+      "_fecha": "2026-04-08"
+    },
+    "R308_lonas_toldos": {
+      "nombre": "Taller de lonas y toldos",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "lona",
+          "lonas",
+          "toldo",
+          "toldos"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7533",
+        "esco_label": "fabricante de artículos textiles confeccionados"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [
+          "680f62a5",
+          "469786e0",
+          "c18012a3"
+        ],
+        "oferta_ejemplo": "5898997970 - Ayudante de taller. lonas y toldos",
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+      },
+      "_fecha": "2026-04-08"
+    },
+    "R309_responsable_deposito": {
+      "nombre": "Responsable/Encargado de depósito",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "responsable de depósito",
+          "responsable de deposito",
+          "responsable deposito",
+          "responsable depósito",
+          "encargado de depósito",
+          "encargado de deposito",
+          "encargado deposito",
+          "encargado depósito",
+          "encargada de depósito",
+          "encargada de deposito",
+          "jefe de depósito",
+          "jefe de deposito",
+          "jefe depósito",
+          "jefe deposito",
+          "jefa de depósito",
+          "jefa de deposito"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1324",
+        "esco_label": "director de distribución/directora de distribución"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [
+          "0347ad77",
+          "d15fb510",
+          "11113c28"
+        ],
+        "oferta_ejemplo": "5770283730 - Responsable de Depósito",
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+      },
+      "_fecha": "2026-04-08"
+    },
+    "R310_auxiliar_promociones": {
+      "nombre": "Auxiliar de promociones / Promotor",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "auxiliar de promociones",
+          "auxiliar promociones",
+          "promotor",
+          "promotora",
+          "promotor/a",
+          "promotores",
+          "promotoras"
+        ],
+        "area_funcional_es": "Marketing"
+      },
+      "accion": {
+        "forzar_isco": "3332",
+        "esco_label": "responsable de eventos"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [
+          "6c977c33",
+          "be2d43e2",
+          "fb749f54"
+        ],
+        "oferta_ejemplo": "5784938217 - auxiliar de promociones y marketing",
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+      },
+      "_fecha": "2026-04-08"
+    },
+    "R311_programador_produccion": {
+      "nombre": "Programador de producción (industrial)",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "programador de producción",
+          "programador de produccion",
+          "programador producción",
+          "programador produccion",
+          "programadora de producción",
+          "programadora de produccion",
+          "programador/a de producción",
+          "programador/a de produccion",
+          "programador/a producción",
+          "programador/a produccion",
+          "programador/a de la producción",
+          "programador/a de la produccion",
+          "programador de la producción",
+          "programador de la produccion",
+          "programadora de la producción",
+          "programadora de la produccion"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3122",
+        "esco_label": "supervisor de producción/supervisora de producción"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [
+          "9b1f71e2",
+          "28d8de00",
+          "8f952d4d"
+        ],
+        "oferta_ejemplo": "1118132013 - Programador/a de la Producción",
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+      },
+      "_fecha": "2026-04-08",
+      "_fix_2026_04_08": "Agregadas variantes con \"de la\" — título real es \"Programador/a de la Producción\"",
+      "_fix2_2026_04_08": "Label cambiado: \"planificador\" matcheaba planificador financiero (2412) por fallback LIKE. Ahora usa \"supervisor de producción\" que es ISCO 3122 exacto."
     }
   },
   "reglas_filtro": {
@@ -6956,5 +7314,8 @@
   "_cambios_v57": "Issue Gerardo: R273 advisor soporte app -> 3512",
   "_cambios_v58": "Fine-tuning protección: R281-R292 (12 reglas) para proteger 13 regresiones detectadas en test 1-epoch. Chofer camiones, conductor marca, subgerente construcción, repr técnico comercial, coordinador RRHH, auxiliar RRHH, herrero, envasado, encargado limpieza, técnico electricista, auxiliar proveedores, pasante marketing.",
   "_cambios_v59": "R293-R299: 7 reglas para cubrir regresiones del LoRA fine-tuning (asistente pago, desarrollo analítico, facturación, infra support, estudiante abogacía, mesa servicio IT, jefatura compras)",
-  "_cambios_v511": "R300-R303: Protección regresiones combined LoRA (HRBP->RRHH, productor contenido->web, proyectista->ing civil, sous chef->chef)"
+  "_cambios_v511": "R300-R303: Protección regresiones combined LoRA (HRBP->RRHH, productor contenido->web, proyectista->ing civil, sous chef->chef)",
+  "_cambios_v512": "Fix R75 label vigilador, fix R211 prioridad vs R240, fix R290 variantes /a, nuevas R301-R305 (ascensores, supervisor obra, gerente admin, torrista, electromecánico). Linaje: reporte correcciones 2026-04-08.",
+  "_cambios_v513": "R306 mantenimiento eléctrico → 7412. Linaje: reporte correcciones 2026-04-08.",
+  "_cambios_v514": "Fix R107 label seguridad, fix R49 tilde depósito, fix R33 excluir producción. Nuevas R307-R311 (ing electrónico, lonas/toldos, resp depósito, promotor, programador producción). Linaje: reporte correcciones 2026-04-08."
 }
