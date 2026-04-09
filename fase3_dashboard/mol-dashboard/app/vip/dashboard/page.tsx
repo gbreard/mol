@@ -13,13 +13,13 @@ export default function VipDashboardPage() {
   const [activeTab, setActiveTab] = useState('panorama')
   const [filters, setFilters] = useState(() => {
     const hoy = new Date()
-    const semanaAtras = new Date(hoy)
-    semanaAtras.setDate(hoy.getDate() - 7)
+    const mesAtras = new Date(hoy)
+    mesAtras.setDate(hoy.getDate() - 30)
     return {
       territorio: 'nacional',
       provincia: '',
       localidad: [] as string[],
-      fechaDesde: semanaAtras as Date | null,
+      fechaDesde: mesAtras as Date | null,
       fechaHasta: hoy as Date | null,
       permanencia: [] as string[],
       searchOcupacion: '',

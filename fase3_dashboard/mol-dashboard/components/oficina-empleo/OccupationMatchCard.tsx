@@ -175,53 +175,8 @@ export function OccupationMatchCard({
 
           {!loading && loaded && (
             <div className="space-y-4">
-              {/* Two columns: Tiene / Le falta */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Tiene */}
-                <div>
-                  <h4 className="text-xs font-semibold text-green-700 mb-2">
-                    Tiene ({tiene.length})
-                  </h4>
-                  {tiene.length > 0 ? (
-                    <div className="space-y-1">
-                      {tiene.map(r => (
-                        <div key={r.skill.id} className="flex items-center gap-1.5 py-0.5">
-                          <Check className="w-3 h-3 text-green-500 shrink-0" />
-                          <span className="text-xs text-gray-700 flex-1">{r.skill.label}</span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-xs text-gray-400">Ninguna coincidencia</p>
-                  )}
-                </div>
-
-                {/* Le falta */}
-                <div>
-                  <h4 className="text-xs font-semibold text-red-600 mb-2">
-                    Le falta ({leFalta.length})
-                  </h4>
-                  {leFalta.length > 0 ? (
-                    <div className="space-y-1">
-                      {faltaVisible.map(r => (
-                        <div key={r.skill.id} className="flex items-center gap-1.5 py-0.5">
-                          <XIcon className="w-3 h-3 text-red-400 shrink-0" />
-                          <span className="text-xs text-gray-500 flex-1">{r.skill.label}</span>
-                        </div>
-                      ))}
-                      {!showAllFalta && faltaHidden > 0 && (
-                        <button
-                          onClick={() => setShowAllFalta(true)}
-                          className="text-xs text-teal-600 hover:text-teal-700 font-medium mt-1"
-                        >
-                          y {faltaHidden} más →
-                        </button>
-                      )}
-                    </div>
-                  ) : (
-                    <p className="text-xs text-green-600 font-medium">Perfil completo</p>
-                  )}
-                </div>
+              {/* Gap hidden per Diego feedback (req 20) — only ofertas visible */}
+              <div className="hidden">
               </div>
 
               {/* Ofertas preview */}

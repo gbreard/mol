@@ -5,7 +5,7 @@ const MODULES = [
   {
     href: '/vip/dashboard',
     icon: BarChart3,
-    title: 'Tablero de seguimiento (dashboard)',
+    title: 'Tablero de seguimiento',
     description: 'Ofertas laborales, requerimientos y competencias',
     color: 'amber',
   },
