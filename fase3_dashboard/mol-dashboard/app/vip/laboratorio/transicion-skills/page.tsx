@@ -2,9 +2,7 @@
 import { OEBreadcrumb } from "@/components/oficina-empleo/OEBreadcrumb";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import {
-  ArrowLeft,
   Loader2,
   AlertCircle,
   Share2,
@@ -103,13 +101,6 @@ export default function TransicionSkillsPage() {
         <OEBreadcrumb items={[{ label: "Indicadores", href: "/oficina-empleo/dashboard-ejecutivo" }, { label: "Transicion Skills" }]} />
       {/* Header */}
       <div>
-        <Link
-          href="/vip/dashboard"
-          className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-3 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Laboratorio
-        </Link>
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold text-gray-900">
             Mapa de Transicion Skills-Ocupacion
