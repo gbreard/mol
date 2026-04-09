@@ -109,7 +109,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Inicio", href: "/vip", icon: Home, roles: ["visit_vip"], matchMode: "exact" },
   { label: "Dashboard", href: "/vip/dashboard", icon: BarChart3, roles: ["visit_vip"], matchMode: "startsWith" },
   { label: "Oficina de Empleo", href: "/oficina-empleo", icon: Briefcase, roles: ["visit_vip"], matchMode: "startsWith" },
-  { label: "Políticas Laborales", href: "/vip/politicas", icon: FileText, roles: ["visit_vip"], matchMode: "startsWith" },
+  { label: "Análisis ocupacional", href: "/vip/politicas", icon: FileText, roles: ["visit_vip"], matchMode: "startsWith" },
   { label: "Informes", href: "/informes", icon: BookOpen, roles: ["visit_vip"], matchMode: "startsWith" },
 ];
 

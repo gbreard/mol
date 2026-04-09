@@ -70,7 +70,7 @@ export default function VipPoliticasPage() {
         <div className="mb-5">
           <div className="flex items-center gap-2 mb-1">
             <Scale className="w-5 h-5 text-blue-600" />
-            <h1 className="text-xl font-bold text-gray-900">Políticas Laborales</h1>
+            <h1 className="text-xl font-bold text-gray-900">Análisis ocupacional</h1>
           </div>
           <p className="text-sm text-gray-500">Inteligencia de mercado y análisis de ocupaciones para fundamentar políticas basadas en datos</p>
         </div>
