@@ -1703,6 +1703,29 @@ class MatcherV3:
                     metadata={**result.metadata, "skills_count": len(skills_extracted)}
                 )
 
+        # 3c. E2.2: Boost de skills con perfil argentino
+        occupation_uri = result.esco_uri
+        if occupation_uri and skills_extracted:
+            skills_extracted = self.skills_extractor.rerank_with_argentino_boost(
+                skills_extracted, occupation_uri
+            )
+            boosted_count = sum(1 for s in skills_extracted if s.get("boost_applied"))
+            if boosted_count > 0:
+                result = MatchResult(
+                    status=result.status,
+                    esco_uri=result.esco_uri,
+                    esco_label=result.esco_label,
+                    isco_code=result.isco_code,
+                    score=result.score,
+                    metodo=result.metodo,
+                    skills_extracted=skills_extracted,
+                    skills_matched=result.skills_matched,
+                    alternativas=result.alternativas,
+                    metadata={**result.metadata, "argentino_boost_count": boosted_count}
+                )
+                if self.verbose:
+                    print(f"[E2.2] Boost argentino aplicado a {boosted_count}/{len(skills_extracted)} skills")
+
         # 4. Categorizar skills si se solicita
         skills_to_save = result.skills_extracted
         if categorize_skills and skills_to_save:

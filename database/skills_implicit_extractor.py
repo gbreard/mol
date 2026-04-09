@@ -838,6 +838,123 @@ class SkillsImplicitExtractor:
         if self.verbose:
             print(f"[SKILLS] Compatibilidad verificada: modelo y corpus usan {actual_revision[:12]}")
 
+    # ============================================================
+    # E2.2: Argentino boost — rerank skills post-matching
+    # ============================================================
+
+    _argentino_cache: Dict[str, Dict] = None  # occupation_uri → {skills: {esco_uri: frequency}, max_freq: int}
+
+    @classmethod
+    def _load_argentino_cache(cls, verbose: bool = False) -> Dict[str, Dict]:
+        """
+        Carga esco_argentino desde Supabase y construye cache de boost por ocupación.
+
+        Cache format:
+            {occupation_uri: {"skills": {esco_uri: frequency, ...}, "max_freq": int}}
+
+        Degrada sin error si Supabase no está disponible.
+        """
+        if cls._argentino_cache is not None:
+            return cls._argentino_cache
+
+        cls._argentino_cache = {}
+        try:
+            config_path = Path(__file__).parent.parent / "config" / "supabase_config.json"
+            if not config_path.exists():
+                if verbose:
+                    print("[BOOST] WARN: supabase_config.json no encontrado, boost deshabilitado")
+                return cls._argentino_cache
+
+            supabase_config = json.loads(config_path.read_text())
+            from supabase import create_client
+            client = create_client(supabase_config['url'], supabase_config['service_role_key'])
+
+            result = client.table('esco_argentino').select(
+                'esco_occupation_uri,skills_consolidadas'
+            ).execute()
+
+            for row in (result.data or []):
+                uri = row.get('esco_occupation_uri')
+                skills_raw = row.get('skills_consolidadas') or []
+                if not uri or not skills_raw:
+                    continue
+
+                skill_map = {}
+                for s in skills_raw:
+                    esco_uri = s.get('esco_uri')
+                    freq = s.get('frequency', 1)
+                    if esco_uri:
+                        skill_map[esco_uri] = freq
+
+                max_freq = max(skill_map.values()) if skill_map else 1
+                cls._argentino_cache[uri] = {
+                    "skills": skill_map,
+                    "max_freq": max_freq,
+                }
+
+            if verbose:
+                print(f"[BOOST] Cache argentino cargado: {len(cls._argentino_cache)} ocupaciones")
+
+        except Exception as e:
+            if verbose:
+                print(f"[BOOST] WARN: No se pudo cargar esco_argentino: {e}")
+            # Graceful degradation — cache queda vacío pero no None
+            cls._argentino_cache = {}
+
+        return cls._argentino_cache
+
+    def rerank_with_argentino_boost(
+        self,
+        skills: List[Dict],
+        occupation_uri: str,
+    ) -> List[Dict]:
+        """
+        E2.2: Re-rankea skills aplicando boost del perfil argentino.
+
+        Para skills que están en el perfil esco_argentino de la ocupación,
+        incrementa el score proporcionalmente a la frecuencia observada.
+
+        boost_factor = 0.05 * (frequency / max_frequency)
+
+        Args:
+            skills: Lista de skills extraídas (cada una con skill_uri, score, etc.)
+            occupation_uri: URI de la ocupación ESCO matcheada
+
+        Returns:
+            Skills re-ordenadas por score descendente, con boost_applied=True donde aplica.
+            Si no hay perfil argentino → retorna skills sin cambios.
+        """
+        cache = self._load_argentino_cache(verbose=self.verbose)
+
+        perfil = cache.get(occupation_uri)
+        if not perfil:
+            return skills
+
+        skill_map = perfil["skills"]
+        max_freq = perfil["max_freq"]
+
+        boosted = []
+        for s in skills:
+            s_copy = dict(s)
+            uri = s_copy.get("skill_uri", "")
+            if uri in skill_map:
+                freq = skill_map[uri]
+                boost_factor = 0.05 * (freq / max_freq)
+                original_score = s_copy.get("score", 0.0)
+                s_copy["score"] = min(1.0, original_score + boost_factor)
+                # Also boost score_ponderado if present
+                if "score_ponderado" in s_copy:
+                    s_copy["score_ponderado"] = min(1.0, s_copy["score_ponderado"] + boost_factor)
+                s_copy["boost_applied"] = True
+                s_copy["boost_factor"] = round(boost_factor, 4)
+            else:
+                s_copy["boost_applied"] = False
+            boosted.append(s_copy)
+
+        # Re-sort by score descending
+        boosted.sort(key=lambda x: x.get("score", 0.0), reverse=True)
+        return boosted
+
     def is_ready(self) -> bool:
         """Verifica si el extractor está listo (tiene embeddings cargados)."""
         return self.embeddings.size > 0 and len(self.metadata) > 0
