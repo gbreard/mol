@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Loader2, GitCompare, ChevronDown, X, Check, AlertCircle, Star, Circle, Briefcase, ExternalLink } from 'lucide-react';
+import { Search, Loader2, GitCompare, ChevronDown, X, Check, AlertCircle, Star, Circle, Briefcase, ExternalLink, BookOpen } from 'lucide-react';
 import { OccupationDetail, OccupationFullDetailIndex, SkillItem } from '@/lib/types';
 import { getOfertasCountByIsco } from '@/lib/supabase';
 import { capitalize } from '@/lib/utils';
@@ -55,6 +55,9 @@ export default function OccupationCompare({
   const [showOfertasModal, setShowOfertasModal] = useState(false);
   const [modalIsco, setModalIsco] = useState('');
   const [modalLabel, setModalLabel] = useState('');
+  const [cursosGap, setCursosGap] = useState<any[]>([]);
+  const [loadingCursosGap, setLoadingCursosGap] = useState(false);
+  const [showAllCursosGap, setShowAllCursosGap] = useState(false);
 
   // Update when initial values change
   useEffect(() => {
@@ -140,6 +143,26 @@ export default function OccupationCompare({
       gapKnowledge
     };
   }, [occA, occB]);
+
+  // Fetch cursos for gap skills
+  useEffect(() => {
+    if (!gapAnalysis || gapAnalysis.gapToCover.length === 0) {
+      setCursosGap([]);
+      return;
+    }
+    const uris = gapAnalysis.gapToCover.map(s => `http://data.europa.eu/esco/skill/${s.id}`);
+    setLoadingCursosGap(true);
+    setShowAllCursosGap(false);
+    fetch('/api/perfiles/cursos-gap', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ gap_skill_uris: uris }),
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data?.cursos) setCursosGap(data.cursos); })
+      .catch(() => {})
+      .finally(() => setLoadingCursosGap(false));
+  }, [gapAnalysis]);
 
   if (!occupationsData) {
     return (
@@ -320,6 +343,50 @@ export default function OccupationCompare({
               )}
             </div>
           </div>
+
+          {/* Cursos para cubrir el gap */}
+          {gapAnalysis.gapToCover.length > 0 && (
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center gap-2 mb-3">
+                <BookOpen className="w-4 h-4 text-purple-600" />
+                <h3 className="text-sm font-semibold text-gray-800">Cursos para cubrir el gap</h3>
+              </div>
+              <p className="text-xs text-gray-400 mb-3">Formación que cubre las competencias faltantes</p>
+              {loadingCursosGap && (
+                <div className="flex items-center gap-2 py-3 text-gray-400">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="text-xs">Buscando cursos...</span>
+                </div>
+              )}
+              {!loadingCursosGap && cursosGap.length === 0 && (
+                <p className="text-xs text-gray-400 py-2">No hay cursos registrados para estas competencias</p>
+              )}
+              {!loadingCursosGap && cursosGap.length > 0 && (
+                <div className="space-y-2">
+                  {(showAllCursosGap ? cursosGap : cursosGap.slice(0, 3)).map((c: any, i: number) => (
+                    <div key={`${c.curso_id}-${c.provincia}-${i}`} className="border rounded-lg p-3">
+                      <p className="text-sm font-medium text-gray-900">{c.titulo}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">{c.institucion} · {c.municipio}, {c.provincia}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-medium">{c.modalidad || 'Presencial'}</span>
+                        {c.carga_horaria > 0 && <span className="text-[10px] text-gray-400">{c.carga_horaria}hs</span>}
+                        {c.skills_cubiertas != null && c.total_gap_skills != null && (
+                          <span className="text-[10px] bg-purple-50 text-purple-600 px-1.5 py-0.5 rounded font-medium">
+                            Cubre {c.skills_cubiertas} de {c.total_gap_skills} faltantes
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  {!showAllCursosGap && cursosGap.length > 3 && (
+                    <button onClick={() => setShowAllCursosGap(true)} className="text-xs text-purple-600 hover:text-purple-700 font-medium">
+                      Ver {cursosGap.length - 3} cursos más
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Knowledge Gap */}
           {(gapAnalysis.sharedKnowledge.length > 0 || gapAnalysis.gapKnowledge.length > 0) && (

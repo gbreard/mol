@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Loader2, Briefcase, ChevronDown, X, ExternalLink } from 'lucide-react';
+import { Search, Loader2, Briefcase, ChevronDown, X, ExternalLink, BookOpen } from 'lucide-react';
 import SkillsList from './SkillsList';
 import SimilarOccupations from './SimilarOccupations';
 import OfertasOcupacionModal from './OfertasOcupacionModal';
@@ -39,6 +39,9 @@ export default function OccupationDetail({
   const [modalIsco, setModalIsco] = useState('');
   const [modalLabel, setModalLabel] = useState('');
   const [showOfertasModal, setShowOfertasModal] = useState(false);
+  const [cursos, setCursos] = useState<any[]>([]);
+  const [loadingCursos, setLoadingCursos] = useState(false);
+  const [showAllCursos, setShowAllCursos] = useState(false);
 
   // Set initial occupation when prop changes
   useEffect(() => {
@@ -94,6 +97,25 @@ export default function OccupationDetail({
     setSelectedId(null);
     setSearchTerm('');
   };
+
+  // Fetch cursos when occupation changes
+  useEffect(() => {
+    if (!selectedOccupation) { setCursos([]); return; }
+    const essential = selectedOccupation.skills?.essential ?? [];
+    if (essential.length === 0) { setCursos([]); return; }
+    const uris = essential.map((s: any) => `http://data.europa.eu/esco/skill/${s.id}`);
+    setLoadingCursos(true);
+    setShowAllCursos(false);
+    fetch('/api/perfiles/cursos-gap', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ gap_skill_uris: uris }),
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data?.cursos) setCursos(data.cursos); })
+      .catch(() => {})
+      .finally(() => setLoadingCursos(false));
+  }, [selectedOccupation]);
 
   const handleViewSimilar = (similarId: string) => {
     setSelectedId(similarId);
@@ -268,6 +290,43 @@ export default function OccupationDetail({
                 type="knowledge"
                 maxHeight="350px"
               />
+            </div>
+
+            {/* Cursos de formación */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center gap-2 mb-3">
+                <BookOpen className="w-4 h-4 text-purple-600" />
+                <h3 className="text-sm font-semibold text-gray-800">Cursos del sistema de formación continua del STEySS</h3>
+              </div>
+              <p className="text-xs text-gray-400 mb-3">Formación disponible para esta ocupación</p>
+              {loadingCursos && (
+                <div className="flex items-center gap-2 py-3 text-gray-400">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="text-xs">Buscando cursos...</span>
+                </div>
+              )}
+              {!loadingCursos && cursos.length === 0 && (
+                <p className="text-xs text-gray-400 py-2">No hay cursos registrados para esta ocupación</p>
+              )}
+              {!loadingCursos && cursos.length > 0 && (
+                <div className="space-y-2">
+                  {(showAllCursos ? cursos : cursos.slice(0, 3)).map((c: any, i: number) => (
+                    <div key={`${c.curso_id}-${c.provincia}-${i}`} className="border rounded-lg p-3">
+                      <p className="text-sm font-medium text-gray-900">{c.titulo}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">{c.institucion} · {c.municipio}, {c.provincia}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-medium">{c.modalidad || 'Presencial'}</span>
+                        {c.carga_horaria > 0 && <span className="text-[10px] text-gray-400">{c.carga_horaria}hs</span>}
+                      </div>
+                    </div>
+                  ))}
+                  {!showAllCursos && cursos.length > 3 && (
+                    <button onClick={() => setShowAllCursos(true)} className="text-xs text-purple-600 hover:text-purple-700 font-medium">
+                      Ver {cursos.length - 3} cursos más
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
