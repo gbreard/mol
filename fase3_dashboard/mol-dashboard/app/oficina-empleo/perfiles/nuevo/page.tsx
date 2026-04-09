@@ -2,20 +2,22 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Briefcase, Search, Wrench, Loader2 } from 'lucide-react'
+import { Briefcase, Search, Wrench, GraduationCap, Loader2 } from 'lucide-react'
 import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
 import { useSkillCapture, type SelectedSkill } from '@/components/oficina-empleo/useSkillCapture'
 import { OccupationSkillPicker } from '@/components/oficina-empleo/OccupationSkillPicker'
 import { TaskSkillSearch } from '@/components/oficina-empleo/TaskSkillSearch'
 import { StructuredSkills } from '@/components/oficina-empleo/StructuredSkills'
 import { SkillProfilePanel } from '@/components/oficina-empleo/SkillProfilePanel'
+import { FormacionSkillPicker } from '@/components/oficina-empleo/FormacionSkillPicker'
 
-type Via = 'ocupacion' | 'tarea' | 'estructurado'
+type Via = 'ocupacion' | 'tarea' | 'estructurado' | 'formacion'
 
 const VIA_TABS: { id: Via; label: string; icon: typeof Briefcase }[] = [
   { id: 'ocupacion', label: 'Ocupación', icon: Briefcase },
   { id: 'tarea', label: 'Tareas', icon: Search },
   { id: 'estructurado', label: 'Herramientas', icon: Wrench },
+  { id: 'formacion', label: 'Formación', icon: GraduationCap },
 ]
 
 function parseUbicacion(ubicacion: string | null | undefined): { localidad: string; provincia: string } {
@@ -242,6 +244,12 @@ export default function NuevoPerfilPage() {
               <StructuredSkills
                 skillUris={capture.skillUris}
                 onAddSkill={capture.addSkill}
+              />
+            )}
+            {activeVia === 'formacion' && (
+              <FormacionSkillPicker
+                skillUris={capture.skillUris}
+                onAddSkills={capture.addSkills}
               />
             )}
           </div>
