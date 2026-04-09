@@ -62,15 +62,21 @@ export function OfertasModal({ isOpen, onClose, iscoCode, label, provincia }: Pr
             </div>
           ) : (
             <>
-              <p className="text-xs text-gray-400 mb-3">{total} oferta{total !== 1 ? 's' : ''}</p>
+              <p className="text-xs text-gray-400 mb-3">
+                {total} oferta{total !== 1 ? 's' : ''}
+                {(() => { const activas = ofertas.filter((o: any) => o.estado === 'activa').length; return activas > 0 ? ` · ${activas} activa${activas !== 1 ? 's' : ''}` : '' })()}
+              </p>
               <div className="space-y-2">
                 {ofertas.map((o: any, i: number) => (
                   <div key={o.id_oferta || i} className="bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition-colors">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          {o.titulo_limpio || o.titulo}
-                        </p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-medium text-gray-900 truncate">{o.titulo_limpio || o.titulo}</p>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded font-medium shrink-0 ${o.estado === 'activa' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                            {o.estado === 'activa' ? 'Activa' : 'Cerrada'}
+                          </span>
+                        </div>
                         <div className="flex items-center gap-3 mt-0.5 text-xs text-gray-500">
                           {o.empresa && <span>{o.empresa}</span>}
                           {o.fecha_publicacion && <span>{new Date(o.fecha_publicacion).toLocaleDateString('es-AR')}</span>}

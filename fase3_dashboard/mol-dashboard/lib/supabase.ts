@@ -1607,7 +1607,8 @@ export async function getOfertasByIsco(
         empresa,
         fecha_publicacion,
         url,
-        skills_tecnicas
+        skills_tecnicas,
+        estado
       `, { count: 'exact' })
       .eq('isco_code', iscoCode)
     if (provincia) query = query.eq('provincia', provincia)

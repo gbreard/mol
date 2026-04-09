@@ -28,6 +28,7 @@ interface OfertaPreview {
   empresa: string
   fecha_publicacion: string
   url: string
+  estado: string
 }
 
 interface Props {
@@ -114,6 +115,7 @@ export function OccupationMatchCard({
           empresa: o.empresa || '',
           fecha_publicacion: o.fecha_publicacion || '',
           url: o.url || '',
+          estado: o.estado || 'baja',
         })))
       }
 
@@ -183,7 +185,9 @@ export function OccupationMatchCard({
               {(ofertas.length > 0 || ofertasCount > 0) && (
                 <div className="border rounded-lg overflow-hidden">
                   <div className="bg-gray-50 px-3 py-2 border-b flex items-center justify-between">
-                    <span className="text-xs font-medium text-gray-600">Ofertas disponibles</span>
+                    <span className="text-xs font-medium text-gray-600">
+                      {ofertasCount} ofertas{ofertas.filter(o => o.estado === 'activa').length > 0 && ` · ${ofertas.filter(o => o.estado === 'activa').length} activas`}
+                    </span>
                     {ofertasCount > 0 && (
                       <button
                         onClick={() => onOpenModal(occupation.isco_code, occupation.label)}
@@ -204,6 +208,9 @@ export function OccupationMatchCard({
                               {o.empresa}{o.fecha_publicacion ? ` · ${new Date(o.fecha_publicacion).toLocaleDateString('es-AR')}` : ''}
                             </span>
                           </div>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded font-medium shrink-0 ${o.estado === 'activa' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                            {o.estado === 'activa' ? 'Activa' : 'Cerrada'}
+                          </span>
                           {o.url && (
                             <a href={o.url} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-teal-600 shrink-0">
                               <ExternalLink className="w-3 h-3" />
