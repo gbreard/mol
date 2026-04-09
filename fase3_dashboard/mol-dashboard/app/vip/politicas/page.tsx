@@ -78,10 +78,10 @@ export default function VipPoliticasPage() {
         {/* Section tabs */}
         <div className="flex gap-1 bg-gray-100 rounded-lg p-1 w-fit mb-6">
           <button onClick={() => setSection('mercado')} className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${section === 'mercado' ? 'bg-white text-blue-700 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
-            <BarChart3 className="w-4 h-4 inline mr-1.5" />Inteligencia de Mercado
+            <BarChart3 className="w-4 h-4 inline mr-1.5" />Indicadores experimentales
           </button>
           <button onClick={() => setSection('skills')} className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${section === 'skills' ? 'bg-white text-blue-700 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
-            <Target className="w-4 h-4 inline mr-1.5" />Skills Intelligence
+            <Target className="w-4 h-4 inline mr-1.5" />Análisis de competencias
           </button>
         </div>
 
@@ -97,59 +97,18 @@ export default function VipPoliticasPage() {
 // ============================================================
 
 function InteligenciaMercadoSection() {
-  const [provincia, setProvincia] = useState('')
-  const [periodo, setPeriodo] = useState('90d')
-  const [panorama, setPanorama] = useState<any>(null)
   const [brechaData, setBrechaData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const supabase = getSupabase()
-    const { desde, hasta } = getDateRange(periodo)
-    const filters: Record<string, any> = {}
-    if (provincia) filters.provincia = provincia
-    if (desde) { filters.fecha_desde = desde; filters.fecha_hasta = hasta }
-
-    setLoading(true)
-    supabase.rpc('get_panorama', { p_filters: filters }).then(({ data }) => { if (data) setPanorama(data) })
-
-    const brechaParams = new URLSearchParams({ estado: 'brecha', limit: '5' })
-    if (provincia) brechaParams.set('provincia', provincia)
-    fetch(`/api/laboratorio/brecha-formacion?${brechaParams}`)
+    fetch('/api/laboratorio/brecha-formacion?estado=brecha&limit=5')
       .then(r => r.ok ? r.json() : null)
       .then(data => { if (data) setBrechaData(data) })
       .finally(() => setLoading(false))
-  }, [provincia, periodo])
-
-  const kpis = panorama?.kpis || {}
+  }, [])
 
   return (
     <div className="space-y-5">
-      {/* Filters */}
-      <div className="flex items-center gap-4">
-        <div>
-          <label className="text-xs text-gray-500 mb-1 block">Territorio</label>
-          <select value={provincia} onChange={e => setProvincia(e.target.value)} className="border rounded-lg px-3 py-2 text-sm min-w-[180px]">
-            <option value="">Todo el país</option>
-            {PROVINCIAS.filter(Boolean).map(p => <option key={p} value={p}>{p}</option>)}
-          </select>
-        </div>
-        <div>
-          <label className="text-xs text-gray-500 mb-1 block">Período</label>
-          <select value={periodo} onChange={e => setPeriodo(e.target.value)} className="border rounded-lg px-3 py-2 text-sm">
-            {PERIODOS.map(p => <option key={p.id} value={p.id}>{p.label}</option>)}
-          </select>
-        </div>
-      </div>
-
-      {/* KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <KpiCard label="Ofertas activas" value={kpis.total_ofertas?.toLocaleString('es-AR') || '—'} />
-        <KpiCard label="Ocupaciones distintas" value={kpis.ocupaciones_distintas?.toLocaleString('es-AR') || '—'} />
-        <KpiCard label="Empresas" value={kpis.empresas_activas?.toLocaleString('es-AR') || '—'} />
-        <KpiCard label="Provincias" value={kpis.provincias?.toString() || '—'} />
-      </div>
-
       {/* Brecha */}
       {brechaData && (
         <div className="bg-white rounded-xl border p-5">
@@ -195,7 +154,7 @@ function InteligenciaMercadoSection() {
 }
 
 // ============================================================
-// Section 2: Skills Intelligence
+// Section 2: Análisis de competencias
 // ============================================================
 
 function SkillsIntelligenceSection() {
@@ -240,11 +199,3 @@ function SkillsIntelligenceSection() {
   )
 }
 
-function KpiCard({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="bg-white rounded-xl border p-4">
-      <p className="text-2xl font-bold text-gray-900">{value}</p>
-      <p className="text-xs text-gray-500 mt-0.5">{label}</p>
-    </div>
-  )
-}

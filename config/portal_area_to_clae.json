@@ -1,0 +1,32 @@
+{
+  "version": "1.0",
+  "descripcion": "Mapeo id_area de portales Bumeran/ZonaJobs (plataforma Navent) a sección CLAE. IDs numéricos inferidos por cross-reference con clasificaciones CLAE existentes.",
+  "nota": "Bumeran y ZonaJobs comparten los mismos IDs de área (misma plataforma Navent). ComputRabajo no tiene id_area.",
+  "navent": {
+    "1":  {"nombre_inferido": "Administración / Contabilidad", "clae_seccion": "M", "clae_code_default": "692000", "confianza": "alta"},
+    "2":  {"nombre_inferido": "Comercial / Ventas", "clae_seccion": "G", "clae_code_default": "471000", "confianza": "media"},
+    "3":  {"nombre_inferido": "Logística / Transporte / Distribución", "clae_seccion": "H", "clae_code_default": "521000", "confianza": "alta"},
+    "4":  {"nombre_inferido": "Ingeniería / Construcción", "clae_seccion": "F", "clae_code_default": "410010", "confianza": "alta"},
+    "6":  {"nombre_inferido": "Comercio / Atención al cliente", "clae_seccion": "G", "clae_code_default": "471000", "confianza": "alta"},
+    "9":  {"nombre_inferido": "Educación / Docencia", "clae_seccion": "P", "clae_code_default": "854900", "confianza": "alta"},
+    "10": {"nombre_inferido": "Gastronomía / Hotelería / Turismo", "clae_seccion": "I", "clae_code_default": "561011", "confianza": "alta"},
+    "11": {"nombre_inferido": "Comercio minorista", "clae_seccion": "G", "clae_code_default": "471000", "confianza": "media"},
+    "13": {"nombre_inferido": "Diseño / Marketing / Publicidad", "clae_seccion": "M", "clae_code_default": "731001", "confianza": "alta"},
+    "14": {"nombre_inferido": "Comunicaciones / Medios", "clae_seccion": "J", "clae_code_default": "591100", "confianza": "media"},
+    "16": {"nombre_inferido": "Producción / Manufactura / Industria", "clae_seccion": "C", "clae_code_default": "259100", "confianza": "alta"},
+    "17": {"nombre_inferido": "RRHH / Recursos Humanos", "clae_seccion": "N", "clae_code_default": "780000", "confianza": "alta"},
+    "18": {"nombre_inferido": "Telecomunicaciones", "clae_seccion": "J", "clae_code_default": "611000", "confianza": "media"},
+    "19": {"nombre_inferido": "Tecnología / Sistemas / IT", "clae_seccion": "J", "clae_code_default": "620100", "confianza": "alta"},
+    "22": {"nombre_inferido": "Oficios / Mantenimiento / Técnicos", "clae_seccion": "C", "clae_code_default": "331200", "confianza": "media"},
+    "23": {"nombre_inferido": "Salud / Medicina", "clae_seccion": "Q", "clae_code_default": "861000", "confianza": "alta"},
+    "25": {"nombre_inferido": "Abastecimiento / Compras", "clae_seccion": "G", "clae_code_default": "461000", "confianza": "media"},
+    "26": {"nombre_inferido": "Secretaría / Recepción / Administrativos", "clae_seccion": "N", "clae_code_default": "822000", "confianza": "media"},
+    "28": {"nombre_inferido": "Finanzas / Banca / Seguros", "clae_seccion": "K", "clae_code_default": "649290", "confianza": "alta"},
+    "29": {"nombre_inferido": "Minería / Petróleo / Gas", "clae_seccion": "B", "clae_code_default": "072900", "confianza": "alta"},
+    "30": {"nombre_inferido": "Calidad / Control / Laboratorio", "clae_seccion": "C", "clae_code_default": "259100", "confianza": "media"},
+    "31": {"nombre_inferido": "Sistemas / Soporte IT", "clae_seccion": "J", "clae_code_default": "620300", "confianza": "alta"},
+    "33": {"nombre_inferido": "Farmacia / Bioquímica", "clae_seccion": "Q", "clae_code_default": "869090", "confianza": "media"},
+    "36": {"nombre_inferido": "Call Center / Contact Center", "clae_seccion": "N", "clae_code_default": "822000", "confianza": "alta"},
+    "38": {"nombre_inferido": "Comercio Exterior / Importación", "clae_seccion": "H", "clae_code_default": "524100", "confianza": "media"}
+  }
+}

@@ -5,22 +5,22 @@ const MODULES = [
   {
     href: '/vip/dashboard',
     icon: BarChart3,
-    title: 'Dashboard',
-    description: 'Panorama del mercado laboral argentino — ofertas activas, indicadores experimentales y brecha de formación',
+    title: 'Tablero de seguimiento (dashboard)',
+    description: 'Ofertas laborales, requerimientos y competencias',
     color: 'amber',
   },
   {
     href: '/oficina-empleo',
     icon: Briefcase,
     title: 'Oficina de Empleo',
-    description: 'Diagnóstico y matching de skills — perfil de competencias, oportunidades laborales y futuro laboral',
+    description: 'Orientación a trabajadores y trabajadoras para acceder a vacantes disponibles y reconversión laboral',
     color: 'teal',
   },
   {
     href: '/vip/politicas',
     icon: Scale,
-    title: 'Políticas Laborales',
-    description: 'Inteligencia de mercado y análisis de ocupaciones para fundamentar políticas basadas en datos',
+    title: 'Análisis ocupacional',
+    description: 'Indicadores analíticos, perfiles de competencias y reconversión laboral',
     color: 'blue',
   },
   {

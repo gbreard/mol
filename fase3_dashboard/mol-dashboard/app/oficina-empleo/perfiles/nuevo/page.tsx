@@ -203,7 +203,7 @@ export default function NuevoPerfilPage() {
           {/* Left panel — capture */}
           <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
             <h2 className="text-lg font-semibold text-gray-900">
-              {editId ? 'Editar skills' : 'Captura de skills'}
+              {editId ? 'Editar competencias' : 'Captura de competencias'}
             </h2>
 
             {/* Via tabs */}

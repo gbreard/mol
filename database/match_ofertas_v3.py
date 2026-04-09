@@ -645,12 +645,18 @@ class MatcherV3:
         regla_isco = None
         regla_aplicada = None
         regla_critica = False
+        override_semantico = False
         if rule_info:
             regla_isco = rule_info["isco_code"]
             regla_aplicada = rule_info["rule_id"]
             regla_critica = rule_info.get("correccion_critica", False)
+            override_semantico = rule_info.get("override_semantico", False)
             if self.verbose:
-                print(f"[V3.4] Regla aplicable: {regla_aplicada} -> ISCO {regla_isco}{' (CRITICA)' if regla_critica else ''}")
+                flags = []
+                if regla_critica: flags.append("CRITICA")
+                if override_semantico: flags.append("OVERRIDE_SEM")
+                flag_str = f" ({', '.join(flags)})" if flags else ""
+                print(f"[V3.4] Regla aplicable: {regla_aplicada} -> ISCO {regla_isco}{flag_str}")
 
         # =====================================================================
         # PASO 4: DETERMINAR dual_coinciden
@@ -679,7 +685,8 @@ class MatcherV3:
             semantic_isco=semantic_isco,
             semantic_score=semantic_score,
             regla_id=regla_aplicada,
-            regla_critica=regla_critica
+            regla_critica=regla_critica,
+            override_semantico=override_semantico
         )
 
         if self.verbose:
@@ -1067,7 +1074,11 @@ class MatcherV3:
                         "isco_code": occupation['isco_code'].lstrip("C"),  # ISCO derivado, sin prefijo C
                         "esco_label": occupation['label'],  # Label exacto de ESCO
                         "nombre_regla": rule.get("nombre", ""),
-                        "correccion_critica": rule.get("correccion_critica", False)
+                        "correccion_critica": rule.get("correccion_critica", False),
+                    # override_semantico: true — usar solo cuando el término del título
+                    # es inequívoco y el semántico puede confundirse.
+                    # Ej: enfermero, soldador, electricista.
+                    "override_semantico": rule.get("override_semantico", False)
                     }
                 else:
                     # Si no se encuentra ESCO, continuar con siguiente regla
@@ -1081,7 +1092,8 @@ class MatcherV3:
         semantic_isco: Optional[str],
         semantic_score: float,
         regla_id: Optional[str],
-        regla_critica: bool = False
+        regla_critica: bool = False,
+        override_semantico: bool = False
     ) -> Tuple[str, str, str]:
         """
         Decide cuál ISCO usar basado en confianza de cada método.
@@ -1089,6 +1101,8 @@ class MatcherV3:
         v3.5.2: Semántico alta confianza (>=0.80) ahora gana sobre regla cuando divergen.
         v3.5.3: Reglas con correccion_critica=True SIEMPRE ganan (no se overridean).
         v3.5.4: Threshold subido a >=0.95. Con 0.80 overrideaba 860 reglas correctas.
+        v3.5.5: override_semantico ignora el threshold de alta confianza para reglas
+                 con términos de título inequívocos (enfermero, soldador, etc.)
 
         Args:
             regla_isco: ISCO de la regla de negocio (None si no aplica ninguna)
@@ -1096,6 +1110,7 @@ class MatcherV3:
             semantic_score: Score del matching semántico (0-1)
             regla_id: ID de la regla aplicada (None si no aplica ninguna)
             regla_critica: Si True, la regla no puede ser overrideada por semántico
+            override_semantico: Si True, la regla gana incluso si score >= 0.95
 
         Returns:
             Tuple de (isco_final, decision_metodo, decision_razon)
@@ -1114,6 +1129,13 @@ class MatcherV3:
         if regla_critica:
             return (regla_isco, "regla_critica",
                     f"regla {regla_id} (correccion_critica) fuerza ISCO {regla_isco}, semantico={semantic_isco} score={semantic_score:.2f}")
+
+        # Caso 2c: override_semantico → regla gana incluso si semántico >= 0.95
+        # Usar solo cuando el término del título es inequívoco y el semántico
+        # puede confundirse. Ej: enfermero, soldador, electricista.
+        if override_semantico:
+            return (regla_isco, "regla_override_semantico",
+                    f"regla {regla_id} (override_semantico) fuerza ISCO {regla_isco}, semantico={semantic_isco} score={semantic_score:.2f}")
 
         # Caso 3: Ambos disponibles - comparar primeros 4 dígitos (ISCO-4)
         # zfill(4) evita false negatives con ISCOs de 3 dígitos (ej: "332" vs "3322")

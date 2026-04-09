@@ -50,11 +50,11 @@ interface Section {
 
 function classifyByVia(skills: PerfilSkill[]): Section[] {
   const map: Record<string, { label: string; skills: PerfilSkill[] }> = {
-    ocupacion: { label: 'Skills de ocupación', skills: [] },
-    tarea: { label: 'Skills por tarea', skills: [] },
-    texto: { label: 'Skills por relato', skills: [] },
+    ocupacion: { label: 'Competencias de ocupación', skills: [] },
+    tarea: { label: 'Competencias por tarea', skills: [] },
+    texto: { label: 'Competencias por relato', skills: [] },
     estructurado: { label: 'Herramientas e idiomas', skills: [] },
-    formacion: { label: 'Skills por formación', skills: [] },
+    formacion: { label: 'Competencias por formación', skills: [] },
   }
   for (const s of skills) {
     const via = s.via_captura || 'tarea'

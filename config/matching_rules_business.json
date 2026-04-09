@@ -1,5 +1,5 @@
 {
-  "version": "5.14",
+  "version": "5.16",
   "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-04-08",
@@ -280,7 +280,9 @@
       },
       "caso_diagnostico": "2154046 - Enfermeros para atencion domiciliaria",
       "fix_v33": "2026-01-29 - esco_label corregido (antes 'enfermero/enfermera' mapeaba a 5329)",
-      "activa": true
+      "activa": true,
+      "override_semantico": true,
+      "_nota_override": "v3.5.5: 12 ofertas de enfermero/a overrideadas por semantico_alta_confianza (score=0.95 exacto para 5329). Título inequívoco."
     },
     "R14_contador_auditor": {
       "nombre": "Contador/Auditor (financiero, no médico)",
@@ -635,11 +637,17 @@
         ]
       },
       "accion": {
-        "forzar_isco": "4321",
-        "esco_label": "coordinador de inventario/coordinadora de inventario"
+        "forzar_isco": "1324",
+        "esco_label": "jefe de almacén/jefa de almacén"
       },
       "caso_gold_set": "1118026729 - Responsable de Deposito",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [],
+        "oferta_ejemplo": "5891652793",
+        "reporte": "reporte_correcciones_2026-04-08",
+        "nota": "Fix ISCO 4321→1324: encargado de depósito es jefe de almacén, no coordinador de inventario"
+      }
     },
     "R24_gerente_ventas": {
       "nombre": "Gerente de Ventas/Comercial",
@@ -656,10 +664,16 @@
       },
       "accion": {
         "forzar_isco": "1221",
-        "esco_label": "director de promoción/directora de promoción"
+        "esco_label": "director de ventas/directora de ventas"
       },
       "caso_gold_set": "1117984105 - Gerente de Ventas",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [],
+        "oferta_ejemplo": "1118042070",
+        "reporte": "reporte_correcciones_2026-04-08",
+        "nota": "Fix esco_label: director de promoción → director de ventas (Gerente Comercial Concesionarios)"
+      }
     },
     "R25_gerente_gastronomia": {
       "nombre": "Gerente Restaurante/Bar/Gastronomia",
@@ -3702,13 +3716,19 @@
         ]
       },
       "accion": {
-        "forzar_isco": "7411",
-        "esco_label": "electricista de obras"
+        "forzar_isco": "7131",
+        "esco_label": "pintor de obra/pintora de obra"
       },
       "caso_diagnostico": "1118102093 - Técnico de Mantenimiento Edilicio (San Martín)",
       "fecha_creacion": "2026-01-29",
       "activa": true,
-      "nota": "Mantenimiento edilicio = electricidad, plomería, climatización de edificios"
+      "nota": "Mantenimiento edilicio = electricidad, plomería, climatización de edificios",
+      "_linaje": {
+        "issue_ids": [],
+        "oferta_ejemplo": "5945859930",
+        "reporte": "reporte_correcciones_2026-04-08",
+        "nota": "Fix ISCO 7411→7131 y esco_label: mantenimiento edilicio es pintor de obra, no electricista"
+      }
     },
     "R163_analista_comex_admin": {
       "nombre": "Analista/Senior de Comercio Exterior (rol administrativo)",
@@ -5298,11 +5318,17 @@
       },
       "accion": {
         "forzar_isco": "7231",
-        "esco_label": "supervisor de mantenimiento de vehículos/supervisora de mantenimiento de vehículos"
+        "esco_label": "mecánico de vehículos/mecánica de vehículos"
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 2 casos mecánico"
+      "nota": "Sprint 7 V31: 2 casos mecánico",
+      "_linaje": {
+        "issue_ids": [],
+        "oferta_ejemplo": "5885840822",
+        "reporte": "reporte_correcciones_2026-04-08",
+        "nota": "Fix esco_label: supervisor de mantenimiento → mecánico de vehículos (más genérico)"
+      }
     },
     "R236_analista_marketing": {
       "nombre": "Analista de marketing/CRM",
@@ -7224,6 +7250,333 @@
       "_fecha": "2026-04-08",
       "_fix_2026_04_08": "Agregadas variantes con \"de la\" — título real es \"Programador/a de la Producción\"",
       "_fix2_2026_04_08": "Label cambiado: \"planificador\" matcheaba planificador financiero (2412) por fallback LIKE. Ahora usa \"supervisor de producción\" que es ISCO 3122 exacto."
+    },
+    "R312_consultor_software_nomina": {
+      "nombre": "Consultor funcional de software de nómina/liquidación",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_contiene_todos": [
+          "consultor",
+          "liquidación"
+        ],
+        "titulo_no_contiene": [
+          "contable",
+          "impositivo"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2519",
+        "esco_label": "analista de pruebas"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [],
+        "oferta_ejemplo": "2145263",
+        "reporte": "reporte_correcciones_2026-04-08",
+        "nota": "Consultor funcional de software de liquidación, no administrativo de nóminas. ISCO 2519"
+      }
+    },
+    "R313_encargado_logistica": {
+      "nombre": "Encargado/Jefe de Logística",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "encargado de logística",
+          "encargado logística",
+          "encargado de logistica",
+          "encargado logistica",
+          "jefe de logística",
+          "jefe logística",
+          "jefe de logistica",
+          "jefe logistica"
+        ],
+        "titulo_no_contiene": [
+          "compras"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1324",
+        "esco_label": "jefe de almacén/jefa de almacén"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [],
+        "oferta_ejemplo": "7186551637",
+        "reporte": "reporte_correcciones_2026-04-08",
+        "nota": "Encargado de logística es jefe de almacén, no conductor"
+      }
+    },
+    "R314_advisor_software": {
+      "nombre": "Advisor de software/IT",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "advisor"
+        ],
+        "area_funcional_es": "IT"
+      },
+      "accion": {
+        "forzar_isco": "2519",
+        "esco_label": "analista de pruebas"
+      },
+      "activa": false,
+      "_linaje": {
+        "issue_ids": [],
+        "oferta_ejemplo": "1117968852,1117985442",
+        "reporte": "reporte_correcciones_2026-04-08",
+        "nota": "Advisor en contexto IT es analista/tester de software, no director financiero ni soporte TIC"
+      },
+      "_nota_desactivacion": "Advisors con area RRHH son soporte funcional (R273=3512), no testers. Las ofertas 1117968852 y 1117985442 son soporte de app de transporte."
+    },
+    "R315_operario_metalurgico": {
+      "nombre": "Operario metalúrgico",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "operario metalúrgico",
+          "operaria metalúrgica",
+          "operario metalurgico",
+          "operaria metalurgica",
+          "operario de producción metalúrgico",
+          "operario de produccion metalurgico"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7223",
+        "esco_label": "operador de máquinas de control numérico/operadora de máquinas de control numérico"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [],
+        "oferta_ejemplo": "1118007106",
+        "reporte": "reporte_correcciones_2026-04-08",
+        "nota": "Operario metalúrgico es operador de máquinas de metal, no hornero de panadería"
+      }
+    },
+    "R316_representante_ventas_industrial": {
+      "nombre": "Representante de ventas sector industrial",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "representante de ventas",
+          "representante ventas",
+          "representante técnico de ventas",
+          "representante tecnico de ventas"
+        ],
+        "titulo_contiene_alguno_2": [
+          "industrial",
+          "técnico",
+          "tecnico",
+          "maquinaria",
+          "equipo"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2433",
+        "esco_label": "representante técnico de ventas/representante técnica de ventas"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [],
+        "oferta_ejemplo": "2155532",
+        "reporte": "reporte_correcciones_2026-04-08",
+        "nota": "Representante de ventas en sector industrial es técnico de ventas, no comercial genérico"
+      }
+    },
+    "R317_vendedor_viajante": {
+      "nombre": "Vendedor/a viajante",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "vendedor viajante",
+          "vendedora viajante",
+          "vendedor/a viajante",
+          "viajante de comercio",
+          "viajante"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3322",
+        "esco_label": "representante comercial"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [],
+        "oferta_ejemplo": "1118133126",
+        "reporte": "reporte_correcciones_2026-04-08",
+        "nota": "Viajante es representante comercial, no vendedor a domicilio"
+      }
+    },
+    "R318_operador_produccion": {
+      "nombre": "Operador/a de producción (genérico)",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "operador de producción",
+          "operador producción",
+          "operador produccion",
+          "operador de produccion",
+          "operadora de producción",
+          "operadora de produccion"
+        ],
+        "titulo_no_contiene": [
+          "metalúrgico",
+          "metalurgico",
+          "soldador",
+          "textil",
+          "costura"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8142",
+        "esco_label": "operador de prensa hidráulica/operadora de prensa hidráulica"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [],
+        "oferta_ejemplo": "1118145955",
+        "reporte": "reporte_correcciones_2026-04-08",
+        "nota": "Operador de producción genérico → 8142, no hornero de panadería"
+      }
+    },
+    "R319_corte_costura": {
+      "nombre": "Operario/a de corte y costura / textil",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "corte y costura",
+          "costurero",
+          "costurera",
+          "costurero",
+          "operario textil",
+          "operaria textil",
+          "operario de costura",
+          "operaria de costura"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8153",
+        "esco_label": "operador de máquinas de coser/operadora de máquinas de coser"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [],
+        "oferta_ejemplo": "1118163504",
+        "reporte": "reporte_correcciones_2026-04-08",
+        "nota": "Corte y costura / textil es operador de máquinas de coser, no prensado de fruta"
+      }
+    },
+    "R320_ventas_telemarketing": {
+      "nombre": "Agente/Ejecutivo de ventas telemarketing",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "ventas telemarketing",
+          "agente de ventas telemarketing",
+          "ejecutivo de ventas telemarketing",
+          "venta telemarketing"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5244",
+        "esco_label": "teleoperador/teleoperadora"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [],
+        "oferta_ejemplo": "5876899139",
+        "reporte": "reporte_correcciones_2026-04-08",
+        "nota": "Ventas telemarketing es vendedor por teléfono (5244), no agente de atención (4222)"
+      }
+    },
+    "R321_tecnico_instalador_seguridad": {
+      "nombre": "Técnico instalador de sistemas de seguridad",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "técnico instalador",
+          "tecnico instalador",
+          "técnico/a instalador",
+          "tecnico/a instalador"
+        ],
+        "area_funcional_es": "Seguridad"
+      },
+      "accion": {
+        "forzar_isco": "3522",
+        "esco_label": "técnico en ingeniería de las telecomunicaciones/técnica en ingeniería de las telecomunicaciones"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [],
+        "oferta_ejemplo": "6064967568",
+        "reporte": "reporte_correcciones_2026-04-08",
+        "nota": "Técnico instalador en Seguridad = alarmas, CCTV, control de accesos → 3522"
+      }
+    },
+    "R322_mecanico_industrial": {
+      "nombre": "Mecánico de mantenimiento industrial/maquinaria",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "mecánico",
+          "mecanico"
+        ],
+        "titulo_contiene_alguno_2": [
+          "mantenimiento",
+          "industrial",
+          "maquinaria"
+        ],
+        "titulo_no_contiene_alguno": [
+          "vehículo",
+          "vehiculo",
+          "automotor",
+          "automotriz",
+          "flota"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7233",
+        "esco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [],
+        "oferta_ejemplo": "6136315548",
+        "reporte": "reporte_correcciones_2026-04-08",
+        "nota": "Mecánico + mantenimiento/industrial/maquinaria (sin vehículos) → 7233 maquinaria industrial"
+      }
+    },
+    "R323_atencion_publico": {
+      "nombre": "Empleado de atención al público/cliente",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "atención al público",
+          "atencion al publico",
+          "atención al cliente",
+          "atencion al cliente"
+        ],
+        "titulo_no_contiene_alguno": [
+          "supervisor",
+          "jefe",
+          "gerente",
+          "coordinador",
+          "responsable",
+          "líder",
+          "lider"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4225",
+        "esco_label": "agente de servicio de atención al cliente"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [],
+        "oferta_ejemplo": "2172764",
+        "reporte": "reporte_correcciones_2026-04-08",
+        "nota": "Atención al público = empleado de centro de información (4225), no diseñador de decorados ni correo postal"
+      }
     }
   },
   "reglas_filtro": {
@@ -7317,5 +7670,7 @@
   "_cambios_v511": "R300-R303: Protección regresiones combined LoRA (HRBP->RRHH, productor contenido->web, proyectista->ing civil, sous chef->chef)",
   "_cambios_v512": "Fix R75 label vigilador, fix R211 prioridad vs R240, fix R290 variantes /a, nuevas R301-R305 (ascensores, supervisor obra, gerente admin, torrista, electromecánico). Linaje: reporte correcciones 2026-04-08.",
   "_cambios_v513": "R306 mantenimiento eléctrico → 7412. Linaje: reporte correcciones 2026-04-08.",
-  "_cambios_v514": "Fix R107 label seguridad, fix R49 tilde depósito, fix R33 excluir producción. Nuevas R307-R311 (ing electrónico, lonas/toldos, resp depósito, promotor, programador producción). Linaje: reporte correcciones 2026-04-08."
+  "_cambios_v514": "Fix R107 label seguridad, fix R49 tilde depósito, fix R33 excluir producción. Nuevas R307-R311 (ing electrónico, lonas/toldos, resp depósito, promotor, programador producción). Linaje: reporte correcciones 2026-04-08.",
+  "_cambios_v515": "Fix R24 label ventas. New R312 consultor nómina→2519, R313 encargado logística→1324, R314 advisor IT→2519, R315 metalúrgico→7223, R316 rep ventas industrial→2433, R317 viajante→3322, R318 operador producción→8142, R319 corte costura→8153. Batch 2 correcciones Cynthia.",
+  "_cambios_v516": "Fix R235 label mecánico vehículos, R162 ISCO 7411→7133 edilicio, R23 ISCO 4321→1324 depósito. New R320 ventas telemarketing→5244, R321 instalador seguridad→3522, R322 mecánico industrial→7233. Batch 3 correcciones Cynthia."
 }

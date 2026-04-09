@@ -40,11 +40,20 @@ Uso:
 """
 
 import json
+import sys
 import numpy as np
 import sqlite3
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple
 from sentence_transformers import SentenceTransformer
+
+# Configuración centralizada del modelo de embeddings (E1.1)
+sys.path.insert(0, str(Path(__file__).parent.parent / "config"))
+try:
+    from embedding_config import EMBEDDING_MODEL, EMBEDDING_REVISION
+except ImportError:
+    EMBEDDING_MODEL = "BAAI/bge-m3"
+    EMBEDDING_REVISION = None
 
 # Categorización jerárquica L1/L2 para dashboards
 # v2.0: Usa datos ESCO directos del RDF (sin hardcoding)
@@ -63,11 +72,12 @@ class SkillsImplicitExtractor:
 
     VERSION = "2.6.0"  # v2.6: Equivalencias de skills (dedup por grupo)
 
-    # Configuración por defecto
-    # BGE-M3 base model (LoRA fine-tuned no disponible — model_lora no existe en disco)
+    # Configuración por defecto (E1.1: usa config centralizada)
+    # LoRA fine-tuned tiene prioridad si existe en disco
     _PROJECT_ROOT = str(Path(__file__).parent.parent)
     _LORA_PATH = Path(_PROJECT_ROOT) / "data" / "finetuning" / "matching" / "model_lora"
-    DEFAULT_MODEL = str(_LORA_PATH) if _LORA_PATH.exists() else "BAAI/bge-m3"
+    DEFAULT_MODEL = str(_LORA_PATH) if _LORA_PATH.exists() else EMBEDDING_MODEL
+    DEFAULT_MODEL_REVISION = None if _LORA_PATH.exists() else EMBEDDING_REVISION
     DEFAULT_THRESHOLD = 0.40  # Umbral para BGE-M3 base (sin LoRA fine-tuned los scores son más bajos)
     DEFAULT_TOP_K = 3  # Top K skills por tarea
 
@@ -92,8 +102,8 @@ class SkillsImplicitExtractor:
         Inicializa el extractor.
 
         Args:
-            embeddings_path: Path a embeddings .npy (default: database/embeddings/esco_skills_embeddings.npy)
-            metadata_path: Path a metadata .json (default: database/embeddings/esco_skills_metadata.json)
+            embeddings_path: Path a embeddings .npy (default: database/embeddings/esco_skills_embeddings_full.npy)
+            metadata_path: Path a metadata .json (default: database/embeddings/esco_skills_metadata_full.json)
             db_path: Path a BD (para regenerar embeddings si no existen)
             threshold: Umbral de similitud mínima (default: 0.55)
             top_k: Número máximo de skills por tarea (default: 3)
@@ -116,9 +126,16 @@ class SkillsImplicitExtractor:
         """Carga modelo y embeddings (usa cache si ya están cargados)."""
         # Cargar modelo (una sola vez)
         if SkillsImplicitExtractor._model is None:
+            revision = self.DEFAULT_MODEL_REVISION
             if self.verbose:
-                print(f"[SKILLS] Cargando modelo {self.DEFAULT_MODEL}...")
-            SkillsImplicitExtractor._model = SentenceTransformer(self.DEFAULT_MODEL)
+                rev_str = f" @ {revision[:12]}" if revision else ""
+                print(f"[SKILLS] Cargando modelo {self.DEFAULT_MODEL}{rev_str}...")
+            if revision:
+                SkillsImplicitExtractor._model = SentenceTransformer(
+                    self.DEFAULT_MODEL, revision=revision
+                )
+            else:
+                SkillsImplicitExtractor._model = SentenceTransformer(self.DEFAULT_MODEL)
 
         self.model = SkillsImplicitExtractor._model
 

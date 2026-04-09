@@ -550,30 +550,7 @@ export default function FuturoLaboralPage() {
               />
             )}
 
-            {/* Panel 3 — Conocimientos */}
-            {(gapAnalysis.sharedKnowledge.length > 0 || gapAnalysis.gapKnowledge.length > 0) && (
-              <div className="bg-white rounded-xl border border-gray-200 p-4">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3">Conocimientos</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs font-medium text-green-600 mb-1">Ya tiene ({gapAnalysis.sharedKnowledge.length})</p>
-                    <div className="space-y-1">
-                      {gapAnalysis.sharedKnowledge.map((k: any) => (
-                        <p key={k.id} className="text-xs text-gray-600">○ {k.label}</p>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-xs font-medium text-red-500 mb-1">Necesita adquirir ({gapAnalysis.gapKnowledge.length})</p>
-                    <div className="space-y-1">
-                      {gapAnalysis.gapKnowledge.map((k: any) => (
-                        <p key={k.id} className="text-xs text-gray-500">○ {k.label}</p>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+            {/* Panel 3 — Conocimientos (fusionado con competencias — no se muestra separado) */}
 
             {/* Panel 4 — Skills transferibles */}
             {gapAnalysis.transferable.length > 0 && (

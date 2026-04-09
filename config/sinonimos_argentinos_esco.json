@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "descripcion": "Mapeo de terminos argentinos a ocupaciones/skills ESCO para mejorar matching semantico",
   "fecha_creacion": "2026-01-14",
   "notas": [
@@ -174,6 +174,62 @@
       "esco_label": "agente inmobiliario/agente inmobiliaria",
       "variantes": ["martillero", "martillero público", "martillero publico", "martillera"],
       "nota": "Martillero público = agente inmobiliario matriculado en Argentina. Semántico confundía con 'artillería' (0110)."
+    },
+
+    "repositor": {
+      "isco_primario": "9334",
+      "esco_label": "reponedor/reponedora",
+      "variantes": ["repositor", "repositora", "repositor de góndola", "repositor externo", "repositor de supermercado", "repositor de mercaderías", "merchandiser"],
+      "nota": "Argentina usa 'repositor', ESCO usa 'reponedor'. Merchandiser en contexto retail = repositor externo. Fuente: correcciones Cynthia 2026-04-08."
+    },
+
+    "ejecutivo comercial": {
+      "isco_primario": "3322",
+      "esco_label": "representante comercial",
+      "variantes": ["ejecutivo comercial", "ejecutiva comercial", "ejecutivo de cuentas", "asesora comercial", "asesor comercial B2B", "sales executive"],
+      "nota": "En Argentina 'ejecutivo comercial' = representante comercial. Incluye variantes B2B y anglicismos. Fuente: correcciones Cynthia 2026-04-08."
+    },
+
+    "administrativo contable": {
+      "isco_primario": "4311",
+      "esco_label": "empleado de contabilidad/empleada de contabilidad",
+      "variantes": ["administrativo contable", "administrativa contable", "auxiliar contable"],
+      "nota": "En Argentina 'administrativo contable' es más común que 'empleado de contabilidad'. Fuente: correcciones Cynthia 2026-04-08."
+    },
+
+    "cajero de mostrador": {
+      "isco_primario": "5230",
+      "esco_label": "cajero/cajera",
+      "variantes": ["cajero de mostrador", "cajera de mostrador", "cajero de comercio", "cajera de comercio"],
+      "nota": "Variantes argentinas de cajero en comercio. Fuente: correcciones Cynthia 2026-04-08."
+    },
+
+    "operario de deposito": {
+      "isco_primario": "9333",
+      "esco_label": "mozo de almacén/moza de almacén",
+      "variantes": ["operario de depósito", "operaria de depósito", "operario de deposito", "mozo de depósito", "mozo de deposito"],
+      "nota": "En Argentina 'operario de depósito' es la denominación más frecuente. ESCO usa 'mozo de almacén'. Fuente: correcciones Cynthia 2026-04-08."
+    },
+
+    "bachero": {
+      "isco_primario": "9412",
+      "esco_label": "ayudante de cocina",
+      "variantes": ["bachero", "bachera", "steward"],
+      "nota": "Bachero (Argentina) = friegaplatos/ayudante de cocina (España). Steward en gastronomía argentina = bachero. Fuente: correcciones Cynthia 2026-04-08."
+    },
+
+    "vendedor mayorista": {
+      "isco_primario": "5223",
+      "esco_label": "vendedor especializado/vendedora especializada",
+      "variantes": ["vendedora mayorista", "vendedor mayorista", "vendedora online", "vendedor online"],
+      "nota": "Variantes de vendedor especializado en contexto mayorista/online. Fuente: correcciones Cynthia 2026-04-08."
+    },
+
+    "gerente de operaciones gastronómicas": {
+      "isco_primario": "1412",
+      "esco_label": "director de restaurante/directora de restaurante",
+      "variantes": ["gerente de operaciones gastronómicas", "director de operaciones gastronómicas", "gerente gastronómico", "director gastronómico"],
+      "nota": "En Argentina 'gerente de operaciones gastronómicas' = director de restaurante/cadena gastronómica. Fuente: correcciones Cynthia 2026-04-08."
     }
   },
 

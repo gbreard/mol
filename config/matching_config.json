@@ -6,6 +6,7 @@
   "scoring": {
     "metodo": "bge_m3_semantico",
     "modelo": "BAAI/bge-m3",
+    "modelo_revision": "5617a9f61b028005a4858fdac845db406aefb181",
     "embeddings_path": "database/embeddings",
     "usar_cache_embeddings": true
   },
