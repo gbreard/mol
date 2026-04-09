@@ -41,6 +41,8 @@ Uso:
 
 import json
 import sys
+import os
+import warnings
 import numpy as np
 import sqlite3
 from pathlib import Path
@@ -155,6 +157,10 @@ class SkillsImplicitExtractor:
 
         self.embeddings = SkillsImplicitExtractor._skills_embeddings
         self.metadata = SkillsImplicitExtractor._skills_metadata
+
+        # E1.3: Verificar compatibilidad modelo ↔ corpus
+        if self.embeddings.size > 0:
+            self._verify_corpus_compatibility()
 
         # v2.2: Cargar config de pesos para skills genéricas
         if SkillsImplicitExtractor._skills_weights_config is None:
@@ -774,6 +780,63 @@ class SkillsImplicitExtractor:
         cls._skills_embeddings = None
         cls._skills_metadata = None
         cls._initialized = False
+
+    def _verify_corpus_compatibility(self):
+        """
+        E1.3: Verifica que el modelo BGE-M3 cargado coincide con el que generó los embeddings.
+        Lee el SHA esperado desde corpus_manifest.json y lo compara con el modelo en cache.
+        Si no coinciden → RuntimeError. Si SHA desconocido → warning.
+        """
+        manifest_path = Path(__file__).parent / "embeddings" / "corpus_manifest.json"
+        if not manifest_path.exists():
+            return  # Sin manifiesto, no se puede verificar
+
+        try:
+            manifest = json.load(open(manifest_path))
+            expected_revision = manifest.get('esco_skills', {}).get('model_revision', '')
+        except (json.JSONDecodeError, KeyError):
+            return  # Manifiesto corrupto, no bloquear
+
+        if not expected_revision:
+            return
+
+        # Leer SHA del modelo desde cache de HuggingFace
+        actual_revision = None
+        hf_ref = Path(os.path.expanduser(
+            "~/.cache/huggingface/hub/models--BAAI--bge-m3/refs/main"
+        ))
+        try:
+            if hf_ref.exists():
+                actual_revision = hf_ref.read_text().strip()
+        except Exception:
+            pass
+
+        # Fallback: huggingface_hub si disponible
+        if not actual_revision:
+            try:
+                from huggingface_hub import model_info
+                info = model_info("BAAI/bge-m3")
+                actual_revision = info.sha
+            except Exception:
+                pass
+
+        if not actual_revision:
+            warnings.warn(
+                "[SKILLS] No se pudo determinar la revisión del modelo BGE-M3 cargado. "
+                "No se puede verificar compatibilidad con embeddings.",
+                UserWarning
+            )
+            return
+
+        if actual_revision != expected_revision:
+            raise RuntimeError(
+                f"INCOMPATIBILIDAD DE EMBEDDINGS: "
+                f"Modelo cargado ({actual_revision[:8]}) difiere del que generó el corpus ({expected_revision[:8]}). "
+                f"Regenerar con: python scripts/db/regenerate_all_embeddings.py"
+            )
+
+        if self.verbose:
+            print(f"[SKILLS] Compatibilidad verificada: modelo y corpus usan {actual_revision[:12]}")
 
     def is_ready(self) -> bool:
         """Verifica si el extractor está listo (tiene embeddings cargados)."""
