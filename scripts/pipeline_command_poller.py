@@ -181,6 +181,27 @@ def _sync_scraping_stats_after_indeed(client):
         print(f"[POLLER] WARN: No se pudo sync stats post-Indeed: {e}")
 
 
+def _sync_scraping_daily_after_indeed():
+    """Run sync_scraping_daily.py to update the daily chart with local Indeed data."""
+    try:
+        script = PROJECT_DIR / "scripts" / "sync_scraping_daily.py"
+        if not script.exists():
+            print("[POLLER] WARN: sync_scraping_daily.py no encontrado")
+            return
+        import subprocess
+        result = subprocess.run(
+            [sys.executable, str(script), '--days', '7'],
+            capture_output=True, text=True, timeout=60,
+            cwd=str(PROJECT_DIR),
+        )
+        if result.returncode == 0:
+            print("[POLLER] scraping_daily actualizado post-Indeed")
+        else:
+            print(f"[POLLER] WARN: sync_scraping_daily falló: {result.stderr[-200:]}")
+    except Exception as e:
+        print(f"[POLLER] WARN: No se pudo sync daily post-Indeed: {e}")
+
+
 def execute_command(client, cmd, dry_run=False):
     """Ejecuta un comando del pipeline."""
     cmd_id = cmd['id']
@@ -272,9 +293,10 @@ def execute_command(client, cmd, dry_run=False):
             )
             print(f"[POLLER] OK — {duration}s")
 
-            # Post-scraping: sync stats to Supabase so dashboard updates
+            # Post-scraping: sync stats + daily to Supabase so dashboard updates
             if comando == 'scrape_indeed':
                 _sync_scraping_stats_after_indeed(client)
+                _sync_scraping_daily_after_indeed()
 
             return True
         else:
