@@ -40,11 +40,11 @@ def get_daily_counts(db_path, days=None):
 
     daily = []
 
-    # Tipo 1: por fecha de scraping (fecha_ultimo_visto)
+    # Tipo 1: por fecha de scraping (scrapeado_en, compatible con VPS y local)
     query = f"""
-        SELECT DATE(fecha_ultimo_visto) as fecha, COALESCE(portal, 'desconocido') as portal, COUNT(*) as cnt
+        SELECT DATE(scrapeado_en) as fecha, COALESCE(portal, 'desconocido') as portal, COUNT(*) as cnt
         FROM ofertas
-        WHERE fecha_ultimo_visto IS NOT NULL {since_clause.replace('fecha', 'DATE(fecha_ultimo_visto)')}
+        WHERE scrapeado_en IS NOT NULL {since_clause.replace('fecha', 'DATE(scrapeado_en)')}
         GROUP BY fecha, portal
         HAVING fecha IS NOT NULL
         ORDER BY fecha, portal
