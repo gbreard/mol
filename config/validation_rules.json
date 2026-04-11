@@ -56,5 +56,46 @@
     "bajo": {"orden": 4, "auto_rechazar": false},
     "warning": {"orden": 5, "auto_rechazar": false},
     "info": {"orden": 6, "auto_rechazar": false}
+  },
+  "_nota_politica": "Errores bloqueantes impiden la transición automática a validado_claude. Solo V02 y V10 bloquean porque indican ISCO potencialmente incorrecto. El resto son imperfecciones de datos secundarios.",
+  "politica_transicion": {
+    "errores_bloqueantes": [
+      "V02_isco_nulo_score_bajo",
+      "V10_match_score_muy_bajo",
+      "NV02_sector_no_canonico"
+    ],
+    "errores_no_bloqueantes": [
+      "V03_skills_insuficientes",
+      "V07_titulo_codigo_interno",
+      "V08_area_funcional_nula",
+      "V09_seniority_nulo",
+      "V11_tareas_vacias",
+      "V12_provincia_vacia",
+      "V14_descripcion_muy_corta",
+      "V16_clae_missing",
+      "V18_sector_igual_area",
+      "V20_sector_salud_no_sanitario",
+      "V22_empresa_confidencial_con_sector",
+      "V24_skills_baja_coherencia",
+      "V25_tareas_vacias_con_skills",
+      "V26_formato_tareas_incorrecto",
+      "V27_divergencia_dual",
+      "V28_sin_skills_esenciales",
+      "V29_tareas_muy_cortas",
+      "V30_it_sin_skills_tecnicas",
+      "V31_ocupacion_esco_incorrecta",
+      "NQ01_seniority_titulo_senior_pero_junior",
+      "NQ03_area_titulo_incoherente",
+      "NQ05_modalidad_scraping_difiere",
+      "NQ12_computrabajo_provincia_vacia",
+      "NQ13_indeed_jornada_no_prefilled",
+      "NQ16_sin_skills_desc_larga",
+      "NV03_area_funcional_invalida",
+      "NV08_sin_tareas_ni_skills",
+      "NV_EXP_SENIORITY",
+      "NV_CROSS_gente_seniority",
+      "V27_skills_dual_divergencia",
+      "V30_skills_it_sin_tecnicas"
+    ]
   }
 }

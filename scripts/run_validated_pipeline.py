@@ -73,6 +73,84 @@ from database.nlp_validator import NLPValidator
 from scripts.sync_learnings import sync_learnings_yaml
 
 DB_PATH = Path(__file__).parent.parent / "database" / "bumeran_scraping.db"
+CONFIG_DIR = Path(__file__).parent.parent / "config"
+
+
+def _load_errores_bloqueantes() -> set:
+    """Carga lista de error_ids que bloquean transición a validado_claude."""
+    try:
+        vr = json.loads((CONFIG_DIR / "validation_rules.json").read_text(encoding='utf-8'))
+        return set(vr.get("politica_transicion", {}).get("errores_bloqueantes", []))
+    except Exception:
+        # Fallback conservador: todo bloquea
+        return {"V02_isco_nulo_score_bajo", "V10_match_score_muy_bajo", "NV02_sector_no_canonico"}
+
+
+def auto_transicionar_pendientes(ids: list, verbose: bool = False) -> dict:
+    """
+    PASO 4.5: Transiciona ofertas de 'pendiente' a 'validado_claude'
+    si no tienen errores bloqueantes.
+
+    Returns: {evaluadas, transicionadas, bloqueadas, ids_bloqueados}
+    """
+    bloqueantes = _load_errores_bloqueantes()
+    conn = sqlite3.connect(str(DB_PATH))
+    conn.row_factory = sqlite3.Row
+
+    str_ids = [str(i) for i in ids]
+    placeholders = ','.join(['?'] * len(str_ids))
+
+    # Get offers that are still pendiente
+    pendientes = conn.execute(f"""
+        SELECT id_oferta FROM ofertas_esco_matching
+        WHERE id_oferta IN ({placeholders})
+        AND estado_validacion = 'pendiente'
+    """, str_ids).fetchall()
+
+    pendiente_ids = [r['id_oferta'] for r in pendientes]
+    if not pendiente_ids:
+        conn.close()
+        return {"evaluadas": 0, "transicionadas": 0, "bloqueadas": 0, "ids_bloqueados": []}
+
+    # Find which have blocking errors
+    ph2 = ','.join(['?'] * len(pendiente_ids))
+    blocked = conn.execute(f"""
+        SELECT DISTINCT id_oferta FROM validation_errors
+        WHERE id_oferta IN ({ph2})
+        AND resuelto = 0
+        AND error_id IN ({','.join(['?'] * len(bloqueantes))})
+    """, pendiente_ids + list(bloqueantes)).fetchall()
+
+    blocked_ids = set(r['id_oferta'] for r in blocked)
+    to_transition = [oid for oid in pendiente_ids if oid not in blocked_ids]
+
+    # Transition in batch
+    timestamp = datetime.now().isoformat()
+    if to_transition:
+        ph3 = ','.join(['?'] * len(to_transition))
+        conn.execute(f"""
+            UPDATE ofertas_esco_matching
+            SET estado_validacion = 'validado_claude',
+                validado_timestamp = ?,
+                validado_por = 'auto_transicion'
+            WHERE id_oferta IN ({ph3})
+            AND estado_validacion = 'pendiente'
+        """, [timestamp] + to_transition)
+        conn.commit()
+
+    conn.close()
+
+    result = {
+        "evaluadas": len(pendiente_ids),
+        "transicionadas": len(to_transition),
+        "bloqueadas": len(blocked_ids),
+        "ids_bloqueados": list(blocked_ids)[:20],
+    }
+
+    if verbose and blocked_ids:
+        safe_print(f"  IDs bloqueados: {', '.join(list(blocked_ids)[:5])}{'...' if len(blocked_ids) > 5 else ''}")
+
+    return result
 
 
 def get_ids_with_nlp_errors() -> list:
@@ -452,6 +530,23 @@ def run_full_pipeline(
         if verbose:
             safe_print(f"Auto-corregidos: {len(correccion['auto_corregidos'])}")
             safe_print(f"Escalados a Claude: {len(correccion['escalados_claude'])}")
+
+        # PASO 4.5: Auto-transición pendiente → validado_claude
+        if ids_to_process:
+            if verbose:
+                safe_print("\n" + "=" * 60)
+                safe_print("PASO 4.5: AUTO-TRANSICION")
+                safe_print("=" * 60)
+
+            try:
+                transicion = auto_transicionar_pendientes(ids_to_process, verbose=verbose)
+                resultados["transicion"] = transicion
+                if verbose:
+                    safe_print(f"Transicionadas: {transicion['transicionadas']}/{transicion['evaluadas']}")
+                    if transicion['bloqueadas'] > 0:
+                        safe_print(f"Bloqueadas: {transicion['bloqueadas']} (errores bloqueantes)")
+            except Exception as e:
+                safe_print(f"Error en auto-transición: {e}")
 
         # PASO 5: Verificar errores NLP para reprocesar
         ids_nlp_errors = get_ids_with_nlp_errors()
