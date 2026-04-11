@@ -322,8 +322,8 @@ export default function ScrapingPage() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Ofertas por dia</h2>
-            <p className="text-sm text-gray-500">{totalPeriodo.toLocaleString("es-AR")} ofertas en el periodo (datos procesados)</p>
+            <h2 className="text-lg font-semibold text-gray-900">Detecciones por dia</h2>
+            <p className="text-sm text-gray-500">{totalPeriodo.toLocaleString("es-AR")} detecciones en el periodo (incluye ofertas vistas en mas de un scraping)</p>
           </div>
 
           <div className="flex items-center gap-4">
