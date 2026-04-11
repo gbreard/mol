@@ -134,33 +134,49 @@ def update_command(client, cmd_id, **kwargs):
 
 
 def _sync_scraping_stats_after_indeed(client):
-    """Sync scraping_live_stats after Indeed scraping so dashboard reflects the update."""
+    """Merge Indeed stats into scraping_live_stats without overwriting VPS portals."""
     try:
         import sqlite3
         db_path = PROJECT_DIR / "database" / "bumeran_scraping.db"
         conn = sqlite3.connect(str(db_path))
-        rows = conn.execute(
-            "SELECT portal, MAX(scrapeado_en) as ultimo, COUNT(*) as total "
-            "FROM ofertas WHERE portal IS NOT NULL GROUP BY portal"
-        ).fetchall()
-        portales = {}
-        ultimo_global = None
-        for portal, ultimo, total in rows:
-            portales[portal] = {'ultimo_scraping': ultimo, 'total': total}
-            if not ultimo_global or ultimo > ultimo_global:
-                ultimo_global = ultimo
-        total = conn.execute("SELECT COUNT(*) FROM ofertas").fetchone()[0]
+
+        # Get local Indeed stats only
+        row = conn.execute(
+            "SELECT MAX(scrapeado_en), COUNT(*) FROM ofertas WHERE portal = 'indeed'"
+        ).fetchone()
         conn.close()
+
+        if not row or not row[0]:
+            return
+
+        indeed_ultimo = row[0]
+        indeed_total = row[1]
+
+        # Read current stats from Supabase (includes VPS portals)
+        existing = client.table('scraping_live_stats').select('portales,ultimo_scraping').eq('id', 'current').execute()
+        portales = {}
+        if existing.data:
+            portales = existing.data[0].get('portales', {}) or {}
+            if isinstance(portales, str):
+                portales = json.loads(portales)
+
+        # Only update Indeed, keep VPS portals as-is
+        portales['indeed'] = {'ultimo_scraping': indeed_ultimo, 'total': indeed_total}
+
+        # Global ultimo = max across all portals
+        ultimo_global = max(
+            (v.get('ultimo_scraping', '') for v in portales.values()),
+            default=indeed_ultimo
+        )
 
         from datetime import timezone
         client.table('scraping_live_stats').upsert({
             'id': 'current',
             'timestamp': datetime.now(timezone.utc).isoformat(),
-            'total_ofertas': total,
             'portales': portales,
             'ultimo_scraping': ultimo_global,
         }).execute()
-        print("[POLLER] scraping_live_stats actualizado post-Indeed")
+        print(f"[POLLER] scraping_live_stats: Indeed actualizado ({indeed_ultimo[:19]}, {indeed_total} ofertas)")
     except Exception as e:
         print(f"[POLLER] WARN: No se pudo sync stats post-Indeed: {e}")
 
