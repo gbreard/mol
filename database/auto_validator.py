@@ -50,6 +50,9 @@ class AutoValidator:
         self.diagnostic_patterns = self._load_json("diagnostic_patterns.json")
         self.correction_map = self._load_json("auto_correction_map.json")
 
+        # E2.2: Cargar reglas de negocio para suprimir V27 en divergencias esperadas
+        self._matching_rules = self._load_json("matching_rules_business.json").get("reglas_forzar_isco", {})
+
         # Cache de reglas compiladas (regex)
         self._compiled_patterns = {}
 
@@ -241,6 +244,16 @@ class AutoValidator:
                 aplica = self._evaluar_condicion_simple(oferta, regla)
 
             if aplica:
+                # E2.2: Suprimir V27 cuando la divergencia es esperada
+                # (regla con override_semantico o prioridad <= -2)
+                if regla.get("id") == "V27_divergencia_dual":
+                    regla_id = oferta.get("regla_aplicada") or ""
+                    if regla_id:
+                        mr = self._matching_rules.get(regla_id, {})
+                        if isinstance(mr, dict):
+                            if mr.get("override_semantico") or (mr.get("prioridad") or 0) <= -2:
+                                continue  # Divergencia esperada, no registrar
+
                 campo_afectado = regla.get("campo")
                 # Capturar valor actual del campo para auditoría (fine-tuning data)
                 valor_act = self._get_field_value(oferta, campo_afectado) if campo_afectado else None
@@ -787,6 +800,7 @@ def validar_ofertas_desde_bd(
             m.skills_oferta_json,
             m.esco_occupation_uri,
             m.occupation_match_method,
+            m.regla_aplicada,
             -- Essential skills count de la ocupacion asignada (V24, V28, V31)
             (SELECT COUNT(*) FROM esco_associations ea
              WHERE ea.occupation_uri = m.esco_occupation_uri

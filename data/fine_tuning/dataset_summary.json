@@ -1,0 +1,43 @@
+{
+  "generado_at": "2026-04-11T11:58:35.867044+00:00",
+  "fuentes": {
+    "train_human": {
+      "pares": 66,
+      "confianza": "alta",
+      "descripcion": "Pares de issues humanos (Cynthia, Diego, Gerardo)"
+    },
+    "train_correcciones": {
+      "pares": 0,
+      "confianza": "alta",
+      "descripcion": "Correcciones expertas aprobadas"
+    },
+    "train_argentino": {
+      "pares": 288,
+      "confianza": "alta",
+      "descripcion": "Pares contrastivos desde esco_argentino (44 ocupaciones)"
+    },
+    "validation_auto": {
+      "pares": 536,
+      "confianza": "baja",
+      "descripcion": "Pares automáticos baja confianza"
+    },
+    "validation_gold": {
+      "pares": 49,
+      "confianza": "alta",
+      "descripcion": "Gold set manual de referencia"
+    }
+  },
+  "totales": {
+    "entrenamiento_alta_confianza": 354,
+    "validacion": 585,
+    "go_no_go": {
+      "pares_requeridos": 500,
+      "pares_actuales": 354,
+      "gap": 146,
+      "gold_set_requerido": 150,
+      "gold_set_actual": 49,
+      "gap_gold_set": 101,
+      "listo_para_fine_tuning": false
+    }
+  }
+}
