@@ -265,6 +265,7 @@ export interface OfertaValidacion {
   isco_label: string | null;
   esco_occupation_uri: string | null;
   esco_occupation_label: string | null;
+  esco_label: string | null;
   occupation_match_score: number | null;
   occupation_match_method: string | null;
   decision_metodo: string | null;
