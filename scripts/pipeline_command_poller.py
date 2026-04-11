@@ -375,14 +375,19 @@ def sync_local_status(client):
 
         conn.close()
 
-        # Sync log
+        # Sync log + count real from Supabase
         try:
             sync_log = json.loads(sync_log_path.read_text()) if sync_log_path.exists() else {}
-            en_supabase = sync_log.get("ofertas_synced", sync_log.get("total_synced", 0))
             ultimo_sync = sync_log.get("last_sync_timestamp", sync_log.get("ultimo_sync"))
         except Exception:
-            en_supabase = 0
+            sync_log = {}
             ultimo_sync = None
+
+        try:
+            count_result = client.table('ofertas_dashboard').select('id_oferta', count='exact', head=True).execute()
+            en_supabase = count_result.count or 0
+        except Exception:
+            en_supabase = sync_log.get("ofertas_synced", sync_log.get("total_synced", 0))
 
         gate_total = aprobados + bloqueados
         gate_pct = round(aprobados / gate_total * 100, 1) if gate_total > 0 else 100
