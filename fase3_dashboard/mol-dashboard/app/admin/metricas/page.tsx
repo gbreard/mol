@@ -149,6 +149,8 @@ interface RunHistory {
 export default function MetricasPage() {
   const [pipeline, setPipeline] = useState<PipelineData | null>(null);
   const [runsHistory, setRunsHistory] = useState<RunHistory[]>([]);
+  const [goldSetStats, setGoldSetStats] = useState<{ total: number; correctos: number; errores: number; agregados_este_mes: number } | null>(null);
+  const [reglasEfectividad, setReglasEfectividad] = useState<{ sin_uso_reciente_count: number; baja_coincidencia_count: number; top_10: any[]; sin_uso_reciente: string[] } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -169,6 +171,22 @@ export default function MetricasPage() {
         historyResult = await supabase.rpc('get_pipeline_runs_history', { limit_n: 30 });
       } catch {
         // RPC no disponible — historial vacío
+      }
+
+      // M-10: Gold Set stats (fallo silencioso)
+      try {
+        const gsResult = await supabase.rpc('get_gold_set_stats');
+        if (!gsResult.error && gsResult.data) setGoldSetStats(gsResult.data);
+      } catch {
+        // RPC no disponible
+      }
+
+      // M-12: Reglas efectividad (fallo silencioso)
+      try {
+        const reResult = await supabase.rpc('get_reglas_efectividad', { p_dias: 30 });
+        if (!reResult.error && reResult.data) setReglasEfectividad(reResult.data);
+      } catch {
+        // RPC no disponible
       }
 
       if (statusResult.error) throw statusResult.error;
@@ -345,6 +363,98 @@ export default function MetricasPage() {
           <KPICard label="En Supabase" value={resumen.en_supabase} icon={Cloud} color="green" />
           <KPICard label="Issues usuarios" value={resumen.issues_humanos_pendientes} icon={AlertTriangle} color={resumen.issues_humanos_pendientes > 0 ? 'amber' : 'green'} />
           <KPICard label="Sin procesar" value={(resumen.total_ofertas - resumen.en_supabase)} icon={TrendingUp} color={(resumen.total_ofertas - resumen.en_supabase) > 0 ? 'red' : 'green'} />
+        </div>
+      )}
+
+      {/* Seccion 3b: Gold Set KPI (M-10) */}
+      {goldSetStats && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-amber-500 text-lg">&#9733;</span>
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Gold Set</h2>
+            <span className="ml-auto text-xs font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-600">
+              {goldSetStats.total}/150
+            </span>
+          </div>
+          <div className="flex items-center gap-6 mb-3">
+            <div className="flex-1">
+              <div className="flex justify-between text-xs text-gray-500 mb-1">
+                <span>{goldSetStats.total} casos</span>
+                <span>{Math.round(goldSetStats.total / 150 * 100)}%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div
+                  className={`h-2.5 rounded-full ${goldSetStats.total >= 150 ? 'bg-green-500' : goldSetStats.total >= 100 ? 'bg-amber-500' : 'bg-red-400'}`}
+                  style={{ width: `${Math.min(100, goldSetStats.total / 150 * 100)}%` }}
+                />
+              </div>
+            </div>
+            <div className="flex gap-4 text-sm">
+              <div className="text-center">
+                <div className="font-bold text-green-600">{goldSetStats.correctos}</div>
+                <div className="text-[10px] text-gray-400">correctos</div>
+              </div>
+              <div className="text-center">
+                <div className="font-bold text-red-500">{goldSetStats.errores}</div>
+                <div className="text-[10px] text-gray-400">errores</div>
+              </div>
+              <div className="text-center">
+                <div className="font-bold text-blue-500">{goldSetStats.agregados_este_mes}</div>
+                <div className="text-[10px] text-gray-400">este mes</div>
+              </div>
+            </div>
+          </div>
+          {goldSetStats.total < 100 && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800">
+              <AlertTriangle className="w-3.5 h-3.5 inline mr-1" />
+              El Gold Set tiene {goldSetStats.total} casos. Se necesitan 150 para habilitar el fine-tuning.
+              Agregar casos desde el validador con <kbd className="bg-amber-100 px-1 py-0.5 rounded text-[10px]">Alt+6</kbd>.
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Seccion 3c: Efectividad de reglas (M-12) */}
+      {reglasEfectividad && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Efectividad de reglas</h2>
+          {(reglasEfectividad.sin_uso_reciente_count > 0 || reglasEfectividad.baja_coincidencia_count > 0) && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800 mb-4">
+              <AlertTriangle className="w-3.5 h-3.5 inline mr-1" />
+              {reglasEfectividad.sin_uso_reciente_count > 0 && (
+                <span>{reglasEfectividad.sin_uso_reciente_count} reglas sin uso en 30 días. </span>
+              )}
+              {reglasEfectividad.baja_coincidencia_count > 0 && (
+                <span>{reglasEfectividad.baja_coincidencia_count} reglas con baja coincidencia semántica ({'<'}30%).</span>
+              )}
+            </div>
+          )}
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-left text-gray-400 border-b">
+                  <th className="pb-2 font-medium">Regla</th>
+                  <th className="pb-2 font-medium text-right">Usos total</th>
+                  <th className="pb-2 font-medium text-right">Usos 30d</th>
+                  <th className="pb-2 font-medium text-right">Coincidencia</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reglasEfectividad.top_10.map((r: any) => (
+                  <tr key={r.regla} className="border-b border-gray-50">
+                    <td className="py-1.5 font-mono text-[11px]">{r.regla}</td>
+                    <td className="py-1.5 text-right">{r.usos_total.toLocaleString()}</td>
+                    <td className="py-1.5 text-right">{r.usos_periodo}</td>
+                    <td className="py-1.5 text-right">
+                      <span className={r.pct_coincidencia < 30 ? 'text-red-600 font-medium' : r.pct_coincidencia < 50 ? 'text-amber-600' : 'text-green-600'}>
+                        {r.pct_coincidencia != null ? `${r.pct_coincidencia}%` : '—'}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

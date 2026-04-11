@@ -1,10 +1,10 @@
 {
-  "last_sync": "2026-03-21T19:13:08.994137",
+  "last_sync": "2026-04-11T16:00:09.945124",
   "last_sync_stats": {
-    "ofertas_en_sql": 27658,
-    "nuevas_insertadas": 4634,
-    "ignoradas": 23024,
-    "total_bd": 42419
+    "ofertas_en_sql": 301,
+    "nuevas_insertadas": 293,
+    "ignoradas": 8,
+    "total_bd": 48825
   },
   "history": [
     {
@@ -46,6 +46,11 @@
       "timestamp": "2026-03-21T19:13:08.994150",
       "nuevas": 4634,
       "total_bd": 42419
+    },
+    {
+      "timestamp": "2026-04-11T16:00:09.945134",
+      "nuevas": 293,
+      "total_bd": 48825
     }
   ]
 }

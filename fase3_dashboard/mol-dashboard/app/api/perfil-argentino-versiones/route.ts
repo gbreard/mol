@@ -57,21 +57,22 @@ export async function GET(request: NextRequest) {
     // Calcular estado actual (cambios desde último corte)
     const ultimoCorteAt = activa?.created_at || '1970-01-01T00:00:00Z'
 
-    // Contar emergentes pendientes en esco_argentino
-    const { data: statsArgentino } = await supabase
-      .from('esco_argentino')
-      .select('skills_from_argentina, updated_at')
+    // Contar emergentes pendientes (directo de la tabla, no por fecha)
+    const { count: emergentes_pendientes_count } = await supabase
+      .from('emergentes_pendientes')
+      .select('id', { count: 'exact', head: true })
+      .eq('estado', 'pendiente')
 
-    let emergentes_pendientes = 0
-    let skills_aprobadas_desde_corte = 0
+    const emergentes_pendientes = emergentes_pendientes_count || 0
 
-    if (statsArgentino) {
-      for (const row of statsArgentino) {
-        if (row.updated_at > ultimoCorteAt) {
-          skills_aprobadas_desde_corte += row.skills_from_argentina || 0
-        }
-      }
-    }
+    // Contar skills aprobadas desde último corte
+    const { count: skills_aprobadas_count } = await supabase
+      .from('emergentes_pendientes')
+      .select('id', { count: 'exact', head: true })
+      .eq('estado', 'aprobada')
+      .gt('fecha_resolucion', ultimoCorteAt)
+
+    const skills_aprobadas_desde_corte = skills_aprobadas_count || 0
 
     const estado_actual: EstadoActual = {
       ofertas_desde_ultimo_corte: 0, // TODO: calcular desde ofertas_dashboard

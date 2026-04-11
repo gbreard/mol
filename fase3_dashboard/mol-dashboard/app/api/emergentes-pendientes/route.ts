@@ -36,6 +36,7 @@ export async function GET(request: NextRequest) {
 }
 
 // PATCH: aprobar o rechazar emergente
+// E2.4: Si se aprueba, ejecuta 4 triggers downstream via RPC
 export async function PATCH(request: NextRequest) {
   const auth = await requireAdmin(request);
   if (isAuthError(auth)) return auth;
@@ -51,12 +52,37 @@ export async function PATCH(request: NextRequest) {
   }
 
   const adminEmail = auth.user?.email || 'admin';
-  const nuevoEstado = accion === 'aprobar' ? 'aprobada' : 'rechazada';
 
+  if (accion === 'aprobar') {
+    // E2.4: Usar RPC con triggers downstream (transaccional)
+    const { data, error } = await client.rpc('aprobar_emergente_con_triggers', {
+      p_emergente_id: id,
+      p_admin_email: adminEmail,
+      p_notas: notas || null,
+    });
+
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+    return NextResponse.json({
+      id,
+      skill_label: data?.skill_label || '',
+      estado: 'aprobada',
+      message: `Skill "${data?.skill_label}" aprobada con triggers downstream`,
+      triggers: {
+        esco_argentino: data?.trigger_1_esco_argentino,
+        training_pair_id: data?.trigger_2_training_pair_id,
+        cache_invalidated: data?.trigger_3_cache_invalidated,
+        alerta: data?.trigger_4_alerta,
+        aprobadas_desde_corte: data?.aprobadas_desde_corte,
+      },
+    });
+  }
+
+  // Rechazar: solo UPDATE simple (sin triggers)
   const { data, error } = await client
     .from('emergentes_pendientes')
     .update({
-      estado: nuevoEstado,
+      estado: 'rechazada',
       fecha_resolucion: new Date().toISOString(),
       resuelto_por: adminEmail,
       notas: notas || null,
@@ -71,7 +97,7 @@ export async function PATCH(request: NextRequest) {
     id: data.id,
     skill_label: data.skill_label,
     estado: data.estado,
-    message: `Skill "${data.skill_label}" ${nuevoEstado}`,
+    message: `Skill "${data.skill_label}" rechazada`,
   });
 }
 

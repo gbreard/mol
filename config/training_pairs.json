@@ -52,7 +52,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "2174645",
@@ -95,7 +111,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "1118161376",
@@ -138,7 +170,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "2174264",
@@ -181,7 +229,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "1118136695",
@@ -224,7 +288,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "2174061",
@@ -267,7 +347,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "1118133545",
@@ -310,7 +406,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "1118124667",
@@ -353,7 +465,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "1118118915",
@@ -396,7 +524,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "1118109693",
@@ -439,7 +583,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "1118109693",
@@ -482,7 +642,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "1118099801",
@@ -525,7 +701,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "2171314",
@@ -568,7 +760,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "2170988",
@@ -611,7 +819,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "1118072854",
@@ -654,7 +878,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "1118070681",
@@ -697,7 +937,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "1118060565",
@@ -740,7 +996,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "1118050314",
@@ -783,7 +1055,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "1118046662",
@@ -826,7 +1114,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "1118044046",
@@ -869,7 +1173,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "1118041226",
@@ -912,7 +1232,23 @@
       "correccion": {
         "solucion_aplicada": "Reglas R247-R259 + fix R57 + diccionario argentino (capataz, albañil, plomero, martillero). Commit 29bf7a42 en branch resolucion-de-issues.",
         "config_modificada": "matching_rules_business.json, sinonimos_argentinos_esco.json, nlp_titulo_limpieza.json"
-      }
+      },
+      "reglas_generadas": [
+        "R57",
+        "R247",
+        "R248",
+        "R249",
+        "R250",
+        "R251",
+        "R252",
+        "R253",
+        "R254",
+        "R255",
+        "R256",
+        "R257",
+        "R258",
+        "R259"
+      ]
     },
     {
       "id_oferta": "1118095663",
@@ -955,7 +1291,10 @@
       "correccion": {
         "solucion_aplicada": "Regla de negocio R245_analista_cobranzas creada. Reclasificado a ISCO 2411 (analista contable)",
         "config_modificada": "config/matching_rules_business.json v4.9"
-      }
+      },
+      "reglas_generadas": [
+        "R245"
+      ]
     },
     {
       "id_oferta": "1118101649",
@@ -998,7 +1337,10 @@
       "correccion": {
         "solucion_aplicada": "Regla de negocio R244_coordinador_turno_retail creada. Reclasificado a ISCO 1420 (gerente de tienda)",
         "config_modificada": "config/matching_rules_business.json v4.9"
-      }
+      },
+      "reglas_generadas": [
+        "R244"
+      ]
     },
     {
       "id_oferta": "1117931697",
@@ -1041,7 +1383,10 @@
       "correccion": {
         "solucion_aplicada": "Regla de negocio R242_asistente_impuestos creada. Reclasificado a ISCO 2411 (analista contable)",
         "config_modificada": "config/matching_rules_business.json v4.9"
-      }
+      },
+      "reglas_generadas": [
+        "R242"
+      ]
     },
     {
       "id_oferta": "1116826229",
@@ -1084,7 +1429,10 @@
       "correccion": {
         "solucion_aplicada": "Regla de negocio R243_gerente_local creada. Reclasificado a ISCO 1420 (gerente de tienda)",
         "config_modificada": "config/matching_rules_business.json v4.9"
-      }
+      },
+      "reglas_generadas": [
+        "R243"
+      ]
     },
     {
       "id_oferta": "1117573054",
@@ -1127,7 +1475,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118028891",
@@ -1170,7 +1519,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118097997",
@@ -1213,7 +1563,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118091351",
@@ -1256,7 +1607,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118075365",
@@ -1299,7 +1651,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118086892",
@@ -1342,7 +1695,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117909240",
@@ -1385,7 +1739,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118082806",
@@ -1428,7 +1783,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117728977",
@@ -1471,7 +1827,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118070881",
@@ -1514,7 +1871,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118052950",
@@ -1557,7 +1915,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118044932",
@@ -1600,7 +1959,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098826",
@@ -1643,7 +2003,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118063733",
@@ -1686,7 +2047,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118081189",
@@ -1729,7 +2091,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101736",
@@ -1772,7 +2135,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2172028",
@@ -1815,7 +2179,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2170723",
@@ -1858,7 +2223,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102202",
@@ -1901,7 +2267,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118090189",
@@ -1944,7 +2311,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2172829",
@@ -1987,7 +2355,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171960",
@@ -2030,7 +2399,8 @@
       "correccion": {
         "solucion_aplicada": "Clasificación corregida por mejoras del pipeline (NLP validation gate + reglas de negocio v4.9)",
         "config_modificada": "config/matching_rules_business.json, config/validation_rules.json, database/auto_validator.py"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117922436",
@@ -2073,7 +2443,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117838417",
@@ -2116,7 +2487,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117917839",
@@ -2159,7 +2531,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117916904",
@@ -2202,7 +2575,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1116792900",
@@ -2245,7 +2619,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117906951",
@@ -2288,7 +2663,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117906089",
@@ -2331,7 +2707,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117690942",
@@ -2374,7 +2751,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094635",
@@ -2417,7 +2795,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118100573",
@@ -2460,7 +2839,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117637414",
@@ -2503,7 +2883,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118026322",
@@ -2546,7 +2927,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117943630",
@@ -2589,7 +2971,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1116949546",
@@ -2632,7 +3015,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117946085",
@@ -2675,7 +3059,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099799",
@@ -2718,7 +3103,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099825",
@@ -2761,7 +3147,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094581",
@@ -2804,7 +3191,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099905",
@@ -2847,7 +3235,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099977",
@@ -2890,7 +3279,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118100378",
@@ -2933,7 +3323,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118032378",
@@ -2976,7 +3367,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118100581",
@@ -3019,7 +3411,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095810",
@@ -3062,7 +3455,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101058",
@@ -3105,7 +3499,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101077",
@@ -3148,7 +3543,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102044",
@@ -3191,7 +3587,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102051",
@@ -3234,7 +3631,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118097255",
@@ -3277,7 +3675,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103176",
@@ -3320,7 +3719,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103241",
@@ -3363,7 +3763,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103792",
@@ -3406,7 +3807,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103849",
@@ -3449,7 +3851,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118092675",
@@ -3492,7 +3895,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1116902910",
@@ -3535,7 +3939,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098263",
@@ -3578,7 +3983,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117894483",
@@ -3621,7 +4027,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095768",
@@ -3664,7 +4071,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118012915",
@@ -3707,7 +4115,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095764",
@@ -3750,7 +4159,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117893862",
@@ -3793,7 +4203,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1116826265",
@@ -3836,7 +4247,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1116792864",
@@ -3879,7 +4291,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094931",
@@ -3922,7 +4335,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117889980",
@@ -3965,7 +4379,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118088834",
@@ -4008,7 +4423,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118088589",
@@ -4051,7 +4467,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118087448",
@@ -4094,7 +4511,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118084332",
@@ -4137,7 +4555,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117886051",
@@ -4180,7 +4599,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094132",
@@ -4223,7 +4643,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118079882",
@@ -4266,7 +4687,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117876068",
@@ -4309,7 +4731,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1116764210",
@@ -4352,7 +4775,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118077791",
@@ -4395,7 +4819,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117872035",
@@ -4438,7 +4863,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118080517",
@@ -4481,7 +4907,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118079942",
@@ -4524,7 +4951,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117948698",
@@ -4567,7 +4995,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118080949",
@@ -4610,7 +5039,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2172825",
@@ -4653,7 +5083,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117953457",
@@ -4696,7 +5127,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117962440",
@@ -4739,7 +5171,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117967211",
@@ -4782,7 +5215,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117971365",
@@ -4825,7 +5259,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117982942",
@@ -4868,7 +5303,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117991163",
@@ -4911,7 +5347,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117991482",
@@ -4954,7 +5391,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095066",
@@ -4997,7 +5435,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117992618",
@@ -5040,7 +5479,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117997377",
@@ -5083,7 +5523,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118005666",
@@ -5126,7 +5567,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118006430",
@@ -5169,7 +5611,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118088649",
@@ -5212,7 +5655,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118015275",
@@ -5255,7 +5699,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118016547",
@@ -5298,7 +5743,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118017264",
@@ -5341,7 +5787,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118018788",
@@ -5384,7 +5831,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118020807",
@@ -5427,7 +5875,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118021946",
@@ -5470,7 +5919,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118023815",
@@ -5513,7 +5963,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095826",
@@ -5556,7 +6007,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118024205",
@@ -5599,7 +6051,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118026183",
@@ -5642,7 +6095,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118090214",
@@ -5685,7 +6139,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118027828",
@@ -5728,7 +6183,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118027959",
@@ -5771,7 +6227,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118028688",
@@ -5814,7 +6271,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118028992",
@@ -5857,7 +6315,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118029336",
@@ -5900,7 +6359,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118030327",
@@ -5943,7 +6403,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118030470",
@@ -5986,7 +6447,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118030888",
@@ -6029,7 +6491,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118031959",
@@ -6072,7 +6535,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118092651",
@@ -6115,7 +6579,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118092767",
@@ -6158,7 +6623,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118033651",
@@ -6201,7 +6667,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118035838",
@@ -6244,7 +6711,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118037369",
@@ -6287,7 +6755,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118039974",
@@ -6330,7 +6799,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118040252",
@@ -6373,7 +6843,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118041514",
@@ -6416,7 +6887,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118044967",
@@ -6459,7 +6931,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118044994",
@@ -6502,7 +6975,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118046435",
@@ -6545,7 +7019,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095857",
@@ -6588,7 +7063,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094747",
@@ -6631,7 +7107,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171937",
@@ -6674,7 +7151,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118046536",
@@ -6717,7 +7195,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118052784",
@@ -6760,7 +7239,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2172827",
@@ -6803,7 +7283,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117946169",
@@ -6846,7 +7327,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118075716",
@@ -6889,7 +7371,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117868779",
@@ -6932,7 +7415,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118071629",
@@ -6975,7 +7459,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117867767",
@@ -7018,7 +7503,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118069117",
@@ -7061,7 +7547,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118071566",
@@ -7104,7 +7591,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118069109",
@@ -7147,7 +7635,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118071297",
@@ -7190,7 +7679,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2172203",
@@ -7233,7 +7723,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118055256",
@@ -7276,7 +7767,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171880",
@@ -7319,7 +7811,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118097914",
@@ -7362,7 +7855,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118070788",
@@ -7405,7 +7899,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098114",
@@ -7448,7 +7943,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118005232",
@@ -7491,7 +7987,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118070209",
@@ -7534,7 +8031,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095025",
@@ -7577,7 +8075,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118070876",
@@ -7620,7 +8119,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118071221",
@@ -7663,7 +8163,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098119",
@@ -7706,7 +8207,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098397",
@@ -7749,7 +8251,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118072630",
@@ -7792,7 +8295,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095976",
@@ -7835,7 +8339,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118072667",
@@ -7878,7 +8383,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118072787",
@@ -7921,7 +8427,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118073503",
@@ -7964,7 +8471,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118073886",
@@ -8007,7 +8515,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118074652",
@@ -8050,7 +8559,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118074736",
@@ -8093,7 +8603,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118074798",
@@ -8136,7 +8647,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099809",
@@ -8179,7 +8691,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118075798",
@@ -8222,7 +8735,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118076108",
@@ -8265,7 +8779,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118077230",
@@ -8308,7 +8823,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118077418",
@@ -8351,7 +8867,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096246",
@@ -8394,7 +8911,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2172220",
@@ -8437,7 +8955,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118077649",
@@ -8480,7 +8999,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118077823",
@@ -8523,7 +9043,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118077953",
@@ -8566,7 +9087,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118077977",
@@ -8609,7 +9131,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118100970",
@@ -8652,7 +9175,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118080460",
@@ -8695,7 +9219,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101022",
@@ -8738,7 +9263,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101134",
@@ -8781,7 +9307,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101510",
@@ -8824,7 +9351,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118081612",
@@ -8867,7 +9395,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118082337",
@@ -8910,7 +9439,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118082783",
@@ -8953,7 +9483,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096468",
@@ -8996,7 +9527,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101982",
@@ -9039,7 +9571,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171979",
@@ -9082,7 +9615,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171983",
@@ -9125,7 +9659,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2172001",
@@ -9168,7 +9703,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2172164",
@@ -9211,7 +9747,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2172208",
@@ -9254,7 +9791,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118085191",
@@ -9297,7 +9835,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118085399",
@@ -9340,7 +9879,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118085577",
@@ -9383,7 +9923,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118085665",
@@ -9426,7 +9967,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118086030",
@@ -9469,7 +10011,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118086197",
@@ -9512,7 +10055,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118086716",
@@ -9555,7 +10099,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118086728",
@@ -9598,7 +10143,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118086752",
@@ -9641,7 +10187,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096863",
@@ -9684,7 +10231,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118086793",
@@ -9727,7 +10275,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118086879",
@@ -9770,7 +10319,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118087439",
@@ -9813,7 +10363,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118088134",
@@ -9856,7 +10407,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118088312",
@@ -9899,7 +10451,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118088313",
@@ -9942,7 +10495,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118088398",
@@ -9985,7 +10539,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118088420",
@@ -10028,7 +10583,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118088481",
@@ -10071,7 +10627,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118088596",
@@ -10114,7 +10671,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118104749",
@@ -10157,7 +10715,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118088657",
@@ -10200,7 +10759,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118088708",
@@ -10243,7 +10803,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118088731",
@@ -10286,7 +10847,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118088733",
@@ -10329,7 +10891,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118097890",
@@ -10372,7 +10935,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118088775",
@@ -10415,7 +10979,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118088998",
@@ -10458,7 +11023,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118089003",
@@ -10501,7 +11067,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118089005",
@@ -10544,7 +11111,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118089054",
@@ -10587,7 +11155,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118089222",
@@ -10630,7 +11199,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118089293",
@@ -10673,7 +11243,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118089310",
@@ -10716,7 +11287,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118089453",
@@ -10759,7 +11331,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118089749",
@@ -10802,7 +11375,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118090039",
@@ -10845,7 +11419,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118090081",
@@ -10888,7 +11463,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118090518",
@@ -10931,7 +11507,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118090585",
@@ -10974,7 +11551,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118090718",
@@ -11017,7 +11595,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2167679",
@@ -11060,7 +11639,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118090763",
@@ -11103,7 +11683,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118091119",
@@ -11146,7 +11727,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2170278",
@@ -11189,7 +11771,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118090277",
@@ -11232,7 +11815,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118090360",
@@ -11275,7 +11859,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118090419",
@@ -11318,7 +11903,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118090427",
@@ -11361,7 +11947,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118090501",
@@ -11404,7 +11991,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102464",
@@ -11447,7 +12035,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118091304",
@@ -11490,7 +12079,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118091358",
@@ -11533,7 +12123,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118091405",
@@ -11576,7 +12167,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118091444",
@@ -11619,7 +12211,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118091820",
@@ -11662,7 +12255,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118091964",
@@ -11705,7 +12299,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118092213",
@@ -11748,7 +12343,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118092276",
@@ -11791,7 +12387,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118092323",
@@ -11834,7 +12431,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118092353",
@@ -11877,7 +12475,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118092549",
@@ -11920,7 +12519,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118092588",
@@ -11963,7 +12563,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103234",
@@ -12006,7 +12607,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118092729",
@@ -12049,7 +12651,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1116368072",
@@ -12092,7 +12695,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118092879",
@@ -12135,7 +12739,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118092924",
@@ -12178,7 +12783,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118092978",
@@ -12221,7 +12827,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118093007",
@@ -12264,7 +12871,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118093045",
@@ -12307,7 +12915,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118093059",
@@ -12350,7 +12959,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118093195",
@@ -12393,7 +13003,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118093233",
@@ -12436,7 +13047,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118093253",
@@ -12479,7 +13091,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118093263",
@@ -12522,7 +13135,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094009",
@@ -12565,7 +13179,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103737",
@@ -12608,7 +13223,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118104905",
@@ -12651,7 +13267,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115534",
@@ -12694,7 +13311,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2170520",
@@ -12737,7 +13355,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094118",
@@ -12780,7 +13399,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094185",
@@ -12823,7 +13443,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094277",
@@ -12866,7 +13487,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094289",
@@ -12909,7 +13531,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094318",
@@ -12952,7 +13575,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094627",
@@ -12995,7 +13619,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103853",
@@ -13038,7 +13663,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094664",
@@ -13081,7 +13707,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094744",
@@ -13124,7 +13751,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171688",
@@ -13167,7 +13795,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094809",
@@ -13210,7 +13839,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094819",
@@ -13253,7 +13883,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094877",
@@ -13296,7 +13927,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094897",
@@ -13339,7 +13971,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118094940",
@@ -13382,7 +14015,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095032",
@@ -13425,7 +14059,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115660",
@@ -13468,7 +14103,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095064",
@@ -13511,7 +14147,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118070036",
@@ -13554,7 +14191,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2170809",
@@ -13597,7 +14235,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118068585",
@@ -13640,7 +14279,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118067729",
@@ -13683,7 +14323,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096872",
@@ -13726,7 +14367,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118065348",
@@ -13769,7 +14411,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2170807",
@@ -13812,7 +14455,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117964061",
@@ -13855,7 +14499,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095455",
@@ -13898,7 +14543,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1116816141",
@@ -13941,7 +14587,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171963",
@@ -13984,7 +14631,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118064469",
@@ -14027,7 +14675,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118064357",
@@ -14070,7 +14719,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2159638",
@@ -14113,7 +14763,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118062990",
@@ -14156,7 +14807,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096419",
@@ -14199,7 +14851,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118062249",
@@ -14242,7 +14895,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117553398",
@@ -14285,7 +14939,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118061101",
@@ -14328,7 +14983,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118060951",
@@ -14371,7 +15027,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2159623",
@@ -14414,7 +15071,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118059636",
@@ -14457,7 +15115,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115906",
@@ -14500,7 +15159,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095968",
@@ -14543,7 +15203,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095954",
@@ -14586,7 +15247,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118059548",
@@ -14629,7 +15291,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115815",
@@ -14672,7 +15335,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096248",
@@ -14715,7 +15379,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096263",
@@ -14758,7 +15423,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096353",
@@ -14801,7 +15467,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095938",
@@ -14844,7 +15511,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096423",
@@ -14887,7 +15555,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096455",
@@ -14930,7 +15599,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096466",
@@ -14973,7 +15643,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096662",
@@ -15016,7 +15687,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096702",
@@ -15059,7 +15731,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096744",
@@ -15102,7 +15775,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096775",
@@ -15145,7 +15819,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096799",
@@ -15188,7 +15863,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2170150",
@@ -15231,7 +15907,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096867",
@@ -15274,7 +15951,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118096880",
@@ -15317,7 +15995,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118097273",
@@ -15360,7 +16039,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118097460",
@@ -15403,7 +16083,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118097480",
@@ -15446,7 +16127,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118097868",
@@ -15489,7 +16171,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118097904",
@@ -15532,7 +16215,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171316",
@@ -15575,7 +16259,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118097945",
@@ -15618,7 +16303,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118097983",
@@ -15661,7 +16347,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098016",
@@ -15704,7 +16391,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098083",
@@ -15747,7 +16435,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098118",
@@ -15790,7 +16479,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095897",
@@ -15833,7 +16523,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098233",
@@ -15876,7 +16567,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098252",
@@ -15919,7 +16611,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095892",
@@ -15962,7 +16655,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098406",
@@ -16005,7 +16699,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098438",
@@ -16048,7 +16743,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098839",
@@ -16091,7 +16787,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098907",
@@ -16134,7 +16831,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171966",
@@ -16177,7 +16875,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098927",
@@ -16220,7 +16919,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098944",
@@ -16263,7 +16963,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098948",
@@ -16306,7 +17007,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098964",
@@ -16349,7 +17051,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098981",
@@ -16392,7 +17095,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118098982",
@@ -16435,7 +17139,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099068",
@@ -16478,7 +17183,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099340",
@@ -16521,7 +17227,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099462",
@@ -16564,7 +17271,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099502",
@@ -16607,7 +17315,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099585",
@@ -16650,7 +17359,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099641",
@@ -16693,7 +17403,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099684",
@@ -16736,7 +17447,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118058765",
@@ -16779,7 +17491,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115544",
@@ -16822,7 +17535,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099687",
@@ -16865,7 +17579,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099804",
@@ -16908,7 +17623,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099805",
@@ -16951,7 +17667,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095034",
@@ -16994,7 +17711,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099821",
@@ -17037,7 +17755,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099827",
@@ -17080,7 +17799,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099841",
@@ -17123,7 +17843,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099864",
@@ -17166,7 +17887,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099877",
@@ -17209,7 +17931,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118099997",
@@ -17252,7 +17975,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118100261",
@@ -17295,7 +18019,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118100300",
@@ -17338,7 +18063,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118100326",
@@ -17381,7 +18107,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1116827133",
@@ -17424,7 +18151,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2172222",
@@ -17467,7 +18195,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118100639",
@@ -17510,7 +18239,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118100751",
@@ -17553,7 +18283,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118100777",
@@ -17596,7 +18327,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118100841",
@@ -17639,7 +18371,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118100846",
@@ -17682,7 +18415,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118100954",
@@ -17725,7 +18459,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118100982",
@@ -17768,7 +18503,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101014",
@@ -17811,7 +18547,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101650",
@@ -17854,7 +18591,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101172",
@@ -17897,7 +18635,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101694",
@@ -17940,7 +18679,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101725",
@@ -17983,7 +18723,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101768",
@@ -18026,7 +18767,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101793",
@@ -18069,7 +18811,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101870",
@@ -18112,7 +18855,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101894",
@@ -18155,7 +18899,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101953",
@@ -18198,7 +18943,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101956",
@@ -18241,7 +18987,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118101983",
@@ -18284,7 +19031,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102043",
@@ -18327,7 +19075,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102067",
@@ -18370,7 +19119,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102117",
@@ -18413,7 +19163,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102131",
@@ -18456,7 +19207,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102135",
@@ -18499,7 +19251,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102139",
@@ -18542,7 +19295,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102173",
@@ -18585,7 +19339,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102175",
@@ -18628,7 +19383,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102198",
@@ -18671,7 +19427,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102339",
@@ -18714,7 +19471,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102499",
@@ -18757,7 +19515,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102599",
@@ -18800,7 +19559,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102601",
@@ -18843,7 +19603,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102682",
@@ -18886,7 +19647,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102716",
@@ -18929,7 +19691,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102717",
@@ -18972,7 +19735,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102740",
@@ -19015,7 +19779,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102864",
@@ -19058,7 +19823,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102902",
@@ -19101,7 +19867,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103042",
@@ -19144,7 +19911,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103085",
@@ -19187,7 +19955,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103095",
@@ -19230,7 +19999,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103156",
@@ -19273,7 +20043,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095855",
@@ -19316,7 +20087,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103498",
@@ -19359,7 +20131,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103574",
@@ -19402,7 +20175,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103619",
@@ -19445,7 +20219,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103621",
@@ -19488,7 +20263,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103752",
@@ -19531,7 +20307,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103781",
@@ -19574,7 +20351,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103789",
@@ -19617,7 +20395,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103801",
@@ -19660,7 +20439,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103816",
@@ -19703,7 +20483,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103767",
@@ -19746,7 +20527,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118055887",
@@ -19789,7 +20571,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103861",
@@ -19832,7 +20615,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118103948",
@@ -19875,7 +20659,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118104052",
@@ -19918,7 +20703,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118104090",
@@ -19961,7 +20747,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118104113",
@@ -20004,7 +20791,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118104300",
@@ -20047,7 +20835,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118104469",
@@ -20090,7 +20879,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118104648",
@@ -20133,7 +20923,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118104684",
@@ -20176,7 +20967,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118104765",
@@ -20219,7 +21011,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118104934",
@@ -20262,7 +21055,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118104951",
@@ -20305,7 +21099,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118104838",
@@ -20348,7 +21143,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118105069",
@@ -20391,7 +21187,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118105081",
@@ -20434,7 +21231,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118105335",
@@ -20477,7 +21275,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118105375",
@@ -20520,7 +21319,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118105492",
@@ -20563,7 +21363,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118105735",
@@ -20606,7 +21407,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118105765",
@@ -20649,7 +21451,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118105773",
@@ -20692,7 +21495,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118105781",
@@ -20735,7 +21539,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118105782",
@@ -20778,7 +21583,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118105930",
@@ -20821,7 +21627,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115515",
@@ -20864,7 +21671,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118055470",
@@ -20907,7 +21715,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115594",
@@ -20950,7 +21759,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115616",
@@ -20993,7 +21803,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115621",
@@ -21036,7 +21847,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115646",
@@ -21079,7 +21891,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115694",
@@ -21122,7 +21935,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115757",
@@ -21165,7 +21979,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115767",
@@ -21208,7 +22023,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115834",
@@ -21251,7 +22067,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115836",
@@ -21294,7 +22111,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115862",
@@ -21337,7 +22155,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2144364",
@@ -21380,7 +22199,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1116740268",
@@ -21423,7 +22243,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2145519",
@@ -21466,7 +22287,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2161804",
@@ -21509,7 +22331,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2162524",
@@ -21552,7 +22375,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2164943",
@@ -21595,7 +22419,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2167038",
@@ -21638,7 +22463,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095854",
@@ -21681,7 +22507,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2169428",
@@ -21724,7 +22551,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2169621",
@@ -21767,7 +22595,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2170229",
@@ -21810,7 +22639,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095843",
@@ -21853,7 +22683,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2166495",
@@ -21896,7 +22727,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2170815",
@@ -21939,7 +22771,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171158",
@@ -21982,7 +22815,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171207",
@@ -22025,7 +22859,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171229",
@@ -22068,7 +22903,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171254",
@@ -22111,7 +22947,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171256",
@@ -22154,7 +22991,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171257",
@@ -22197,7 +23035,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171269",
@@ -22240,7 +23079,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171280",
@@ -22283,7 +23123,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171287",
@@ -22326,7 +23167,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171317",
@@ -22369,7 +23211,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171347",
@@ -22412,7 +23255,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171387",
@@ -22455,7 +23299,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171398",
@@ -22498,7 +23343,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171419",
@@ -22541,7 +23387,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171466",
@@ -22584,7 +23431,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171530",
@@ -22627,7 +23475,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171546",
@@ -22670,7 +23519,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171565",
@@ -22713,7 +23563,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171566",
@@ -22756,7 +23607,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171570",
@@ -22799,7 +23651,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171572",
@@ -22842,7 +23695,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171354",
@@ -22885,7 +23739,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1116376020",
@@ -22928,7 +23783,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095837",
@@ -22971,7 +23827,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171580",
@@ -23014,7 +23871,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171582",
@@ -23057,7 +23915,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171638",
@@ -23100,7 +23959,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171674",
@@ -23143,7 +24003,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171744",
@@ -23186,7 +24047,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171781",
@@ -23229,7 +24091,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171798",
@@ -23272,7 +24135,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171804",
@@ -23315,7 +24179,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171813",
@@ -23358,7 +24223,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171866",
@@ -23401,7 +24267,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171652",
@@ -23444,7 +24311,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171959",
@@ -23487,7 +24355,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115516",
@@ -23530,7 +24399,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2172849",
@@ -23573,7 +24443,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2162414",
@@ -23616,7 +24487,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1115976274",
@@ -23659,7 +24531,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1115993504",
@@ -23702,7 +24575,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1116110674",
@@ -23745,7 +24619,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095964",
@@ -23788,7 +24663,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1116533947",
@@ -23831,7 +24707,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171996",
@@ -23874,7 +24751,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118055466",
@@ -23917,7 +24795,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118115511",
@@ -23960,7 +24839,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente (sin errores pendientes)",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117866300",
@@ -24003,7 +24883,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118062401",
@@ -24046,7 +24927,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1116536336",
@@ -24089,7 +24971,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118022230",
@@ -24132,7 +25015,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118083470",
@@ -24175,7 +25059,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118097943",
@@ -24218,7 +25103,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118102706",
@@ -24261,7 +25147,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095762",
@@ -24304,7 +25191,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095742",
@@ -24347,7 +25235,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118054365",
@@ -24390,7 +25279,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118014351",
@@ -24433,7 +25323,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118046767",
@@ -24476,7 +25367,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118076145",
@@ -24519,7 +25411,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118088769",
@@ -24562,7 +25455,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118090160",
@@ -24605,7 +25499,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118100453",
@@ -24648,7 +25543,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118024194",
@@ -24691,7 +25587,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118089007",
@@ -24734,7 +25631,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118089849",
@@ -24777,7 +25675,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118105712",
@@ -24820,7 +25719,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118105913",
@@ -24863,7 +25763,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "2171132",
@@ -24906,7 +25807,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118054357",
@@ -24949,7 +25851,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118059992",
@@ -24992,7 +25895,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118065194",
@@ -25035,7 +25939,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118095739",
@@ -25078,7 +25983,8 @@
       "correccion": {
         "solucion_aplicada": "Resuelto automáticamente",
         "config_modificada": null
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1118061127",
@@ -25121,7 +26027,10 @@
       "correccion": {
         "solucion_aplicada": "ISCO 2411->4311 (empleado contabilidad). R228 existente matcheó. Skills: eliminado 10 ruido. Issue original sin corrección específica.",
         "config_modificada": "Skills corregidas manual"
-      }
+      },
+      "reglas_generadas": [
+        "R228"
+      ]
     },
     {
       "id_oferta": "1118047224",
@@ -25164,7 +26073,10 @@
       "correccion": {
         "solucion_aplicada": "ISCO 2412->3412 (operador línea emergencia). Regla R266_despachador_emergencias. Skills limpiadas.",
         "config_modificada": "config/matching_rules_business.json (R266)"
-      }
+      },
+      "reglas_generadas": [
+        "R266"
+      ]
     },
     {
       "id_oferta": "1118059308",
@@ -25207,7 +26119,10 @@
       "correccion": {
         "solucion_aplicada": "Ya resuelto previamente con issue de Cyn. ISCO 2611->3411, ESCO->asistente juridico. Regla R267 creada. CLAE corregido 712->691.",
         "config_modificada": "config/matching_rules_business.json (R267)"
-      }
+      },
+      "reglas_generadas": [
+        "R267"
+      ]
     },
     {
       "id_oferta": "1117951568",
@@ -25250,7 +26165,10 @@
       "correccion": {
         "solucion_aplicada": "ISCO 2512 correcto, ESCO label corregido: ingeniero cloud->desarrollador de software. Regla R271_desarrollador_python. CLAE corregido a 620 (programación). Skills limpiadas.",
         "config_modificada": "config/matching_rules_business.json (R271), ofertas_nlp (CLAE), skills corregidas manual"
-      }
+      },
+      "reglas_generadas": [
+        "R271"
+      ]
     },
     {
       "id_oferta": "1118154835",
@@ -25293,7 +26211,10 @@
       "correccion": {
         "solucion_aplicada": "ISCO 2431->3322 (representante comercial). Regla R268_setter_comercial.",
         "config_modificada": "config/matching_rules_business.json (R268)"
-      }
+      },
+      "reglas_generadas": [
+        "R268"
+      ]
     },
     {
       "id_oferta": "1118124320",
@@ -25336,7 +26257,10 @@
       "correccion": {
         "solucion_aplicada": "ISCO 2421->2423 (responsable RRHH). Regla R269_team_leader_reclutamiento. Skills: eliminado 9 ruido, agregado 6 RRHH (evaluar candidatos, gestionar contratación, etc).",
         "config_modificada": "config/matching_rules_business.json (R269), skills corregidas manual"
-      }
+      },
+      "reglas_generadas": [
+        "R269"
+      ]
     },
     {
       "id_oferta": "1118065220",
@@ -25379,7 +26303,10 @@
       "correccion": {
         "solucion_aplicada": "ISCO 2356->3512 (técnico TIC). Regla R241 existente matcheó. Skills: eliminado 3 ruido, agregado 6 (CSS, Moodle, Canvas, Office, soporte TIC, CMS).",
         "config_modificada": "Skills corregidas manual"
-      }
+      },
+      "reglas_generadas": [
+        "R241"
+      ]
     },
     {
       "id_oferta": "1118042070",
@@ -25422,7 +26349,10 @@
       "correccion": {
         "solucion_aplicada": "ISCO 3214->1221 (director ventas). NLP corregido: titulo_limpio Lobos->Gerente Comercial, tareas reconstruidas. Regla R24 existente matcheó. Skills limpiadas.",
         "config_modificada": "ofertas_nlp (titulo, tareas), skills corregidas manual"
-      }
+      },
+      "reglas_generadas": [
+        "R24"
+      ]
     },
     {
       "id_oferta": "1118010542",
@@ -25465,7 +26395,10 @@
       "correccion": {
         "solucion_aplicada": "ISCO 3312->3334 (agente inmobiliario). R220 actualizada con variantes bienes raíces. Skills: eliminado 8 ruido, agregado 6 inmobiliarias.",
         "config_modificada": "config/matching_rules_business.json (R220 update), skills corregidas manual"
-      }
+      },
+      "reglas_generadas": [
+        "R220"
+      ]
     },
     {
       "id_oferta": "2166218",
@@ -25508,7 +26441,10 @@
       "correccion": {
         "solucion_aplicada": "ISCO 3312->3334 (agente inmobiliario). R220 actualizada. Skills: eliminado 8 ruido, agregado 6 inmobiliarias.",
         "config_modificada": "config/matching_rules_business.json (R220 update), skills corregidas manual"
-      }
+      },
+      "reglas_generadas": [
+        "R220"
+      ]
     },
     {
       "id_oferta": "1117978310",
@@ -25551,7 +26487,10 @@
       "correccion": {
         "solucion_aplicada": "ISCO 3254->2522 (administrador sistemas TIC). Regla R272_analista_operaciones_datacenter. Skills: eliminado 4 ruido (cirugía, energía, etc).",
         "config_modificada": "config/matching_rules_business.json (R272), skills corregidas manual"
-      }
+      },
+      "reglas_generadas": [
+        "R272"
+      ]
     },
     {
       "id_oferta": "1118019336",
@@ -25594,7 +26533,10 @@
       "correccion": {
         "solucion_aplicada": "Corregido ISCO 4323->3331, ESCO->director de logistica (3331.2). Regla R274 creada con prioridad 0 para coordinador operaciones en logistica/almacen. Skills limpiadas (7 ruidosas removidas, 6 relevantes agregadas).",
         "config_modificada": "config/matching_rules_business.json (R274 nueva, v5.8)"
-      }
+      },
+      "reglas_generadas": [
+        "R274"
+      ]
     },
     {
       "id_oferta": "1117968852",
@@ -25637,7 +26579,10 @@
       "correccion": {
         "solucion_aplicada": "ISCO 1211->3512 (agente asistencia TIC). Regla R273_advisor_soporte_app. No es testing (2519) sino soporte funcional de app. Skills: -14 ruido, 16 finales.",
         "config_modificada": "config/matching_rules_business.json (R273), skills corregidas manual"
-      }
+      },
+      "reglas_generadas": [
+        "R273"
+      ]
     },
     {
       "id_oferta": "1118019322",
@@ -25680,7 +26625,10 @@
       "correccion": {
         "solucion_aplicada": "Corregido ISCO 8160->9333, ESCO->operario de logistica de almacen (9333.3). Regla R275 creada con prioridad -1. Nota para fine-tuning: en Argentina deposito=almacen (ESCO). Skills limpiadas (8 ruidosas removidas, 2 relevantes agregadas).",
         "config_modificada": "config/matching_rules_business.json (R275 nueva, v5.8)"
-      }
+      },
+      "reglas_generadas": [
+        "R275"
+      ]
     },
     {
       "id_oferta": "1117955657",
@@ -25723,7 +26671,10 @@
       "correccion": {
         "solucion_aplicada": "Corregido ISCO 3254(optico)->4226(recepcionista). ESCO->recepcionista (4226.1). Regla R276 creada. NLP area corregida RRHH->Administracion. Skills limpiadas (6 ruidosas removidas: espacio aereo, meteorologia, biblioteca; 3 relevantes agregadas: zona recepcion, centralita, asistir visitantes). Office host = recepcionista en Argentina.",
         "config_modificada": "config/matching_rules_business.json (R276 nueva), ofertas_nlp.area_funcional corregida"
-      }
+      },
+      "reglas_generadas": [
+        "R276"
+      ]
     },
     {
       "id_oferta": "1118019326",
@@ -25766,7 +26717,10 @@
       "correccion": {
         "solucion_aplicada": "Corregido ISCO 8211(montador motores nauticos)->7233(mecanico maquinaria industrial). ESCO->mecanico de maquinaria industrial (7233.7). Regla R277 creada. Skills limpiadas: 11 ruidosas removidas (extrusoras jabon/arcilla, torrefaccion, congelacion, etc), 6 relevantes agregadas (diagnosticar motores, sistemas hidraulicos/neumaticos, mantenimiento moldes, lubricacion).",
         "config_modificada": "config/matching_rules_business.json (R277 nueva)"
-      }
+      },
+      "reglas_generadas": [
+        "R277"
+      ]
     },
     {
       "id_oferta": "1118019485",
@@ -25809,7 +26763,10 @@
       "correccion": {
         "solucion_aplicada": "Corregido ISCO 3122(supervisor maquinas)->2142(ingeniero construccion). ESCO->ingeniero de construccion (2142.1.2). Regla R278 creada. NLP area corregida Administracion->Ingenieria. Skills: 8 ruidosas removidas (producciones artisticas, equipo deportivo, logistica, fabricacion), 7 relevantes agregadas (coordinar construccion, normativa construccion, documentacion tecnica, especificaciones, archivos construccion).",
         "config_modificada": "config/matching_rules_business.json (R278 nueva), ofertas_nlp.area_funcional corregida"
-      }
+      },
+      "reglas_generadas": [
+        "R278"
+      ]
     },
     {
       "id_oferta": "1118019188",
@@ -25852,7 +26809,8 @@
       "correccion": {
         "solucion_aplicada": "Agregadas 5 skills ESCO: maniobrar camiones pesados, conducir en zonas urbanas, vaciar contenedores basura, normativa recogida residuos, tipos vehiculos recoleccion.",
         "config_modificada": "database/bumeran_scraping.db (skills_oferta_json oferta 1118019188)"
-      }
+      },
+      "reglas_generadas": []
     },
     {
       "id_oferta": "1117983846",
@@ -25895,7 +26853,8 @@
       "correccion": {
         "solucion_aplicada": "Eliminadas 5 skills ruidosas: coordinar eventos, supervisar facturacion, administracion prestamos, seguimiento eventos, montar arma de fuego. Agregadas 4 skills relevantes: archivar documentacion, gestion registros, mantener archivos, documentacion requisitos legales.",
         "config_modificada": "database/bumeran_scraping.db (skills_oferta_json oferta 1117983846)"
-      }
+      },
+      "reglas_generadas": []
     }
   ]
 }

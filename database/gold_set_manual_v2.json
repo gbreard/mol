@@ -59,8 +59,8 @@
   {
     "id_oferta": "1118028038",
     "esco_ok": true,
-    "isco_esperado": "3322",
-    "comentario": "Match correcto. Ejecutiva/o Comercial Cuentas -> Representante comercial (ISCO 3322). Regla R28."
+    "comentario": "Match correcto. Ejecutiva/o Comercial Cuentas -> Representante comercial (ISCO 3322). Regla R28.",
+    "isco_esperado": "3322"
   },
   {
     "id_oferta": "1118028201",
@@ -85,8 +85,8 @@
   {
     "id_oferta": "1118028828",
     "esco_ok": true,
-    "isco_esperado": "7531",
-    "comentario": "Match correcto. Modelista textil -> Sastre/sastra (ISCO 7531). Regla R29."
+    "comentario": "Match correcto. Modelista textil -> Sastre/sastra (ISCO 7531). Regla R29.",
+    "isco_esperado": "7531"
   },
   {
     "id_oferta": "1118028833",
@@ -106,7 +106,6 @@
   {
     "id_oferta": "2162667",
     "esco_ok": true,
-    "tipo_error": null,
     "comentario": "Gerente Operaciones Facility/Catering corporativo, NO restaurante. ISCO 1321 correcto.",
     "esco_esperado": "Director de operaciones",
     "isco_esperado": "1321"
@@ -114,21 +113,13 @@
   {
     "id_oferta": "1118022146",
     "esco_ok": true,
-    "isco_esperado": "2432",
-    "comentario": "Match correcto. Community Manager -> Gestor de la informacion para las redes sociales (ISCO 2432). Regla R30."
+    "comentario": "Match correcto. Community Manager -> Gestor de la informacion para las redes sociales (ISCO 2432). Regla R30.",
+    "isco_esperado": "2432"
   },
   {
     "id_oferta": "1118025212",
     "esco_ok": true,
     "comentario": "Match correcto. Familia de ventas tecnicas correcta."
-  },
-  {
-    "id_oferta": "1117984105",
-    "esco_ok": false,
-    "tipo_error": "nivel_jerarquico",
-    "comentario": "ERROR: Gerente de Ventas asignado a Representante tecnico (2433). Deberia ser Gerentes comercios (ISCO 1221). Nivel jerarquico ignorado.",
-    "esco_esperado": "Gerente de comercio",
-    "isco_esperado": "1221"
   },
   {
     "id_oferta": "1117960588",
@@ -168,8 +159,8 @@
   {
     "id_oferta": "2164100",
     "esco_ok": true,
-    "isco_esperado": "5131",
-    "comentario": "Match correcto. Mozo -> Camarero/camarera (ISCO 5131). Regla R31."
+    "comentario": "Match correcto. Mozo -> Camarero/camarera (ISCO 5131). Regla R31.",
+    "isco_esperado": "5131"
   },
   {
     "id_oferta": "2165052",
@@ -189,8 +180,8 @@
   {
     "id_oferta": "1118023904",
     "esco_ok": true,
-    "isco_esperado": "9333",
-    "comentario": "Operario Picking en almacen logistico -> Mozo de almacen (ISCO 9333). NO es repositor de gondola (9334)."
+    "comentario": "Operario Picking en almacen logistico -> Mozo de almacen (ISCO 9333). NO es repositor de gondola (9334).",
+    "isco_esperado": "9333"
   },
   {
     "id_oferta": "1117980907",
@@ -210,8 +201,8 @@
   {
     "id_oferta": "1117982053",
     "esco_ok": true,
-    "isco_esperado": "2512",
-    "comentario": "Match correcto. Desarrollador Angular -> Desarrollador de software (ISCO 2512). Regla R33."
+    "comentario": "Match correcto. Desarrollador Angular -> Desarrollador de software (ISCO 2512). Regla R33.",
+    "isco_esperado": "2512"
   },
   {
     "id_oferta": "1118018461",
@@ -263,14 +254,6 @@
     "comentario": "Match correcto."
   },
   {
-    "id_oferta": "1117977340",
-    "esco_ok": false,
-    "tipo_error": "rol_primario",
-    "comentario": "ERROR: Recepcionista Administrativo asignado a Admin seguros (4312). Deberia ser Recepcionista (ISCO 4226). El titulo dice RECEPCIONISTA primero.",
-    "esco_esperado": "Recepcionista",
-    "isco_esperado": "4226"
-  },
-  {
     "id_oferta": "1118028048",
     "esco_ok": true,
     "comentario": "Match correcto. Asesor/a de Ventas -> Vendedor/vendedora (ISCO 5223). Bypass diccionario."
@@ -279,5 +262,21 @@
     "id_oferta": "1118009703",
     "esco_ok": true,
     "comentario": "Match correcto. E-commerce es ventas en red."
+  },
+  {
+    "id_oferta": "1117984105",
+    "esco_ok": false,
+    "tipo_error": "nivel_jerarquico",
+    "comentario": "ERROR: Gerente de Ventas asignado a Representante tecnico (2433). Deberia ser Gerentes comercios (ISCO 1221). Nivel jerarquico ignorado.",
+    "esco_esperado": "Gerente de comercio",
+    "isco_esperado": "1221"
+  },
+  {
+    "id_oferta": "1117977340",
+    "esco_ok": false,
+    "tipo_error": "rol_primario",
+    "comentario": "ERROR: Recepcionista Administrativo asignado a Admin seguros (4312). Deberia ser Recepcionista (ISCO 4226). El titulo dice RECEPCIONISTA primero.",
+    "esco_esperado": "Recepcionista",
+    "isco_esperado": "4226"
   }
 ]

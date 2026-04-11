@@ -672,7 +672,10 @@
         "issue_ids": [],
         "oferta_ejemplo": "1118042070",
         "reporte": "reporte_correcciones_2026-04-08",
-        "nota": "Fix esco_label: director de promoción → director de ventas (Gerente Comercial Concesionarios)"
+        "nota": "Fix esco_label: director de promoción → director de ventas (Gerente Comercial Concesionarios)",
+        "training_pair_ids": [
+          "TP-590"
+        ]
       }
     },
     "R25_gerente_gastronomia": {
@@ -1529,7 +1532,32 @@
       },
       "activa": true,
       "prioridad": 1,
-      "nota": "Sprint issues Cynthia: 'capataz' genérico removido (causaba 13 FP en construcción). Solo términos explícitamente agropecuarios."
+      "nota": "Sprint issues Cynthia: 'capataz' genérico removido (causaba 13 FP en construcción). Solo términos explícitamente agropecuarios.",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-000",
+          "TP-001",
+          "TP-002",
+          "TP-003",
+          "TP-004",
+          "TP-005",
+          "TP-006",
+          "TP-007",
+          "TP-008",
+          "TP-009",
+          "TP-010",
+          "TP-011",
+          "TP-012",
+          "TP-013",
+          "TP-014",
+          "TP-015",
+          "TP-016",
+          "TP-017",
+          "TP-018",
+          "TP-019",
+          "TP-020"
+        ]
+      }
     },
     "R58_operador_sim_aduanas": {
       "condicion": {
@@ -5013,7 +5041,13 @@
       "activa": true,
       "prioridad": 1,
       "nota": "Sprint 5 V31 - IDs 1118089222, 2171269 | v5.5: Added bienes raices variants (Issues Cyn #1118010542, #2166218)",
-      "_fecha": "2026-02-09"
+      "_fecha": "2026-02-09",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-591",
+          "TP-592"
+        ]
+      }
     },
     "R221_analista_calidad_general": {
       "nombre": "Analista de Calidad General/Productos",
@@ -5184,7 +5218,12 @@
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 4 analistas contabilidad"
+      "nota": "Sprint 7 V31: 4 analistas contabilidad",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-583"
+        ]
+      }
     },
     "R229_analista_comercial": {
       "nombre": "Analista/Ejecutivo comercial ventas",
@@ -5451,7 +5490,12 @@
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 7 técnicos IT (no soporte)"
+      "nota": "Sprint 7 V31: 7 técnicos IT (no soporte)",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-589"
+        ]
+      }
     },
     "R242_asistente_impuestos": {
       "nombre": "Asistente/Analista de Impuestos",
@@ -5473,7 +5517,12 @@
       "caso_diagnostico": "1117931697 - ASISTENTE EXPERIMENTADO DE IMPUESTOS",
       "fecha_creacion": "2026-02-23",
       "activa": true,
-      "nota": "Issue Diego Schleser: impuestos = area contable, no dirección financiera"
+      "nota": "Issue Diego Schleser: impuestos = area contable, no dirección financiera",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-023"
+        ]
+      }
     },
     "R243_gerente_local": {
       "nombre": "Gerente de Local/Sucursal",
@@ -5496,7 +5545,12 @@
       "caso_diagnostico": "1116826229 - Gerente de Local - Grupo Gastronómico",
       "fecha_creacion": "2026-02-23",
       "activa": true,
-      "nota": "Issue Diego Schleser: gerente de local gastronomico = retail, no IT"
+      "nota": "Issue Diego Schleser: gerente de local gastronomico = retail, no IT",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-024"
+        ]
+      }
     },
     "R244_coordinador_turno_retail": {
       "nombre": "Coordinador de Turno en retail/entretenimiento",
@@ -5514,7 +5568,12 @@
       "caso_diagnostico": "1118101649 - Coordinador de Turno - Cadena de Cines",
       "fecha_creacion": "2026-02-23",
       "activa": true,
-      "nota": "Issue Diego Schleser: coordinador de turno en cines/retail = gerente tienda"
+      "nota": "Issue Diego Schleser: coordinador de turno en cines/retail = gerente tienda",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-022"
+        ]
+      }
     },
     "R245_analista_cobranzas": {
       "nombre": "Analista de Cobranzas",
@@ -5541,7 +5600,12 @@
       "caso_diagnostico": "1118095663 - Analista en cobranzas",
       "fecha_creacion": "2026-02-23",
       "activa": true,
-      "nota": "Issue Diego Schleser: cobranzas = area financiera/contable, no data analysis"
+      "nota": "Issue Diego Schleser: cobranzas = area financiera/contable, no data analysis",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-021"
+        ]
+      }
     },
     "R246_jefe_calidad": {
       "nombre": "Jefe/Director de Calidad Industrial",
@@ -5581,7 +5645,32 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
-      "nota": "Issues Cynthia: 10 ofertas 'capataz de obra' iban a 6121 ganadero por R57 genérica"
+      "nota": "Issues Cynthia: 10 ofertas 'capataz de obra' iban a 6121 ganadero por R57 genérica",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-000",
+          "TP-001",
+          "TP-002",
+          "TP-003",
+          "TP-004",
+          "TP-005",
+          "TP-006",
+          "TP-007",
+          "TP-008",
+          "TP-009",
+          "TP-010",
+          "TP-011",
+          "TP-012",
+          "TP-013",
+          "TP-014",
+          "TP-015",
+          "TP-016",
+          "TP-017",
+          "TP-018",
+          "TP-019",
+          "TP-020"
+        ]
+      }
     },
     "R248_capataz_generico": {
       "nombre": "Capataz (genérico → construcción por default)",
@@ -5605,7 +5694,32 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
-      "nota": "Fallback: 'capataz' sin calificador en Argentina es casi siempre construcción. Excluye campo/ganadero (R57), eléctrico (R249), planta (semántico)."
+      "nota": "Fallback: 'capataz' sin calificador en Argentina es casi siempre construcción. Excluye campo/ganadero (R57), eléctrico (R249), planta (semántico).",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-000",
+          "TP-001",
+          "TP-002",
+          "TP-003",
+          "TP-004",
+          "TP-005",
+          "TP-006",
+          "TP-007",
+          "TP-008",
+          "TP-009",
+          "TP-010",
+          "TP-011",
+          "TP-012",
+          "TP-013",
+          "TP-014",
+          "TP-015",
+          "TP-016",
+          "TP-017",
+          "TP-018",
+          "TP-019",
+          "TP-020"
+        ]
+      }
     },
     "R249_supervisor_electrico": {
       "nombre": "Supervisor / Encargado Eléctrico",
@@ -5628,7 +5742,32 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
-      "nota": "Issue Cynthia: 1118041226 Supervisor/Encargado Eléctrico iba a ganadero"
+      "nota": "Issue Cynthia: 1118041226 Supervisor/Encargado Eléctrico iba a ganadero",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-000",
+          "TP-001",
+          "TP-002",
+          "TP-003",
+          "TP-004",
+          "TP-005",
+          "TP-006",
+          "TP-007",
+          "TP-008",
+          "TP-009",
+          "TP-010",
+          "TP-011",
+          "TP-012",
+          "TP-013",
+          "TP-014",
+          "TP-015",
+          "TP-016",
+          "TP-017",
+          "TP-018",
+          "TP-019",
+          "TP-020"
+        ]
+      }
     },
     "R250_supervisor_fractura": {
       "nombre": "Supervisor de Fractura (petrolero)",
@@ -5647,7 +5786,32 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
-      "nota": "Issue Cynthia: 1118072854 fractura hidráulica en petrolera iba a 6113 horticultura"
+      "nota": "Issue Cynthia: 1118072854 fractura hidráulica en petrolera iba a 6113 horticultura",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-000",
+          "TP-001",
+          "TP-002",
+          "TP-003",
+          "TP-004",
+          "TP-005",
+          "TP-006",
+          "TP-007",
+          "TP-008",
+          "TP-009",
+          "TP-010",
+          "TP-011",
+          "TP-012",
+          "TP-013",
+          "TP-014",
+          "TP-015",
+          "TP-016",
+          "TP-017",
+          "TP-018",
+          "TP-019",
+          "TP-020"
+        ]
+      }
     },
     "R251_martillero_publico": {
       "nombre": "Martillero Público (inmobiliario)",
@@ -5668,7 +5832,32 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
-      "nota": "Issue Cynthia: 2174645 martillero iba a 0110 oficial artillería (similitud fonética)"
+      "nota": "Issue Cynthia: 2174645 martillero iba a 0110 oficial artillería (similitud fonética)",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-000",
+          "TP-001",
+          "TP-002",
+          "TP-003",
+          "TP-004",
+          "TP-005",
+          "TP-006",
+          "TP-007",
+          "TP-008",
+          "TP-009",
+          "TP-010",
+          "TP-011",
+          "TP-012",
+          "TP-013",
+          "TP-014",
+          "TP-015",
+          "TP-016",
+          "TP-017",
+          "TP-018",
+          "TP-019",
+          "TP-020"
+        ]
+      }
     },
     "R252_hrbp": {
       "nombre": "HRBP / HR Business Partner",
@@ -5686,7 +5875,32 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
-      "nota": "Issue Cynthia: 1118133545 HRBP iba a 6221 estructuras acuícolas"
+      "nota": "Issue Cynthia: 1118133545 HRBP iba a 6221 estructuras acuícolas",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-000",
+          "TP-001",
+          "TP-002",
+          "TP-003",
+          "TP-004",
+          "TP-005",
+          "TP-006",
+          "TP-007",
+          "TP-008",
+          "TP-009",
+          "TP-010",
+          "TP-011",
+          "TP-012",
+          "TP-013",
+          "TP-014",
+          "TP-015",
+          "TP-016",
+          "TP-017",
+          "TP-018",
+          "TP-019",
+          "TP-020"
+        ]
+      }
     },
     "R253_servicios_funerarios": {
       "nombre": "Servicios Funerarios / Cementerio",
@@ -5706,7 +5920,32 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
-      "nota": "Issue Cynthia: 1118044046 asistente cementerio jardín iba a 6113 horticultura (keyword 'jardín')"
+      "nota": "Issue Cynthia: 1118044046 asistente cementerio jardín iba a 6113 horticultura (keyword 'jardín')",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-000",
+          "TP-001",
+          "TP-002",
+          "TP-003",
+          "TP-004",
+          "TP-005",
+          "TP-006",
+          "TP-007",
+          "TP-008",
+          "TP-009",
+          "TP-010",
+          "TP-011",
+          "TP-012",
+          "TP-013",
+          "TP-014",
+          "TP-015",
+          "TP-016",
+          "TP-017",
+          "TP-018",
+          "TP-019",
+          "TP-020"
+        ]
+      }
     },
     "R254_logistica_liviana": {
       "nombre": "Empleado Logística Liviana / Tareas Generales",
@@ -5723,7 +5962,32 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
-      "nota": "Issue Cynthia: 1118153838 logística liviana con utilitario iba a 0110 oficial Ejército del Aire"
+      "nota": "Issue Cynthia: 1118153838 logística liviana con utilitario iba a 0110 oficial Ejército del Aire",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-000",
+          "TP-001",
+          "TP-002",
+          "TP-003",
+          "TP-004",
+          "TP-005",
+          "TP-006",
+          "TP-007",
+          "TP-008",
+          "TP-009",
+          "TP-010",
+          "TP-011",
+          "TP-012",
+          "TP-013",
+          "TP-014",
+          "TP-015",
+          "TP-016",
+          "TP-017",
+          "TP-018",
+          "TP-019",
+          "TP-020"
+        ]
+      }
     },
     "R255_albañil": {
       "nombre": "Albañil / Oficial Albañil",
@@ -5752,7 +6016,32 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
-      "nota": "Semántico daba 7115/2133/9622/3113 para albañil. Excluye multi-oficio (esos van a multi-position)."
+      "nota": "Semántico daba 7115/2133/9622/3113 para albañil. Excluye multi-oficio (esos van a multi-position).",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-000",
+          "TP-001",
+          "TP-002",
+          "TP-003",
+          "TP-004",
+          "TP-005",
+          "TP-006",
+          "TP-007",
+          "TP-008",
+          "TP-009",
+          "TP-010",
+          "TP-011",
+          "TP-012",
+          "TP-013",
+          "TP-014",
+          "TP-015",
+          "TP-016",
+          "TP-017",
+          "TP-018",
+          "TP-019",
+          "TP-020"
+        ]
+      }
     },
     "R256_plomero": {
       "nombre": "Plomero / Sanitarista / Gasista",
@@ -5778,7 +6067,32 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
-      "nota": "Semántico daba 8211/8342/2141 para plomero. ESCO usa 'fontanero' para plumber."
+      "nota": "Semántico daba 8211/8342/2141 para plomero. ESCO usa 'fontanero' para plumber.",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-000",
+          "TP-001",
+          "TP-002",
+          "TP-003",
+          "TP-004",
+          "TP-005",
+          "TP-006",
+          "TP-007",
+          "TP-008",
+          "TP-009",
+          "TP-010",
+          "TP-011",
+          "TP-012",
+          "TP-013",
+          "TP-014",
+          "TP-015",
+          "TP-016",
+          "TP-017",
+          "TP-018",
+          "TP-019",
+          "TP-020"
+        ]
+      }
     },
     "R257_pintor_obra": {
       "nombre": "Pintor de Obra / Construcción",
@@ -5811,7 +6125,32 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
-      "nota": "Pintor genérico = obra/construcción. Excluye automotriz (R218) y muebles (7316)."
+      "nota": "Pintor genérico = obra/construcción. Excluye automotriz (R218) y muebles (7316).",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-000",
+          "TP-001",
+          "TP-002",
+          "TP-003",
+          "TP-004",
+          "TP-005",
+          "TP-006",
+          "TP-007",
+          "TP-008",
+          "TP-009",
+          "TP-010",
+          "TP-011",
+          "TP-012",
+          "TP-013",
+          "TP-014",
+          "TP-015",
+          "TP-016",
+          "TP-017",
+          "TP-018",
+          "TP-019",
+          "TP-020"
+        ]
+      }
     },
     "R258_ayudante_construccion": {
       "nombre": "Ayudante de Albañil / Peón Construcción",
@@ -5834,7 +6173,32 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
-      "nota": "Ayudante albañil → 9313 peón/obrero. Semántico daba 5142 salón de belleza (!)"
+      "nota": "Ayudante albañil → 9313 peón/obrero. Semántico daba 5142 salón de belleza (!)",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-000",
+          "TP-001",
+          "TP-002",
+          "TP-003",
+          "TP-004",
+          "TP-005",
+          "TP-006",
+          "TP-007",
+          "TP-008",
+          "TP-009",
+          "TP-010",
+          "TP-011",
+          "TP-012",
+          "TP-013",
+          "TP-014",
+          "TP-015",
+          "TP-016",
+          "TP-017",
+          "TP-018",
+          "TP-019",
+          "TP-020"
+        ]
+      }
     },
     "R259_oficiales_construccion": {
       "nombre": "Oficiales de Construcción / para Obra",
@@ -5859,7 +6223,32 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
-      "nota": "Ofertas genéricas de construcción → albañil como default (ISCO grupo 711x)."
+      "nota": "Ofertas genéricas de construcción → albañil como default (ISCO grupo 711x).",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-000",
+          "TP-001",
+          "TP-002",
+          "TP-003",
+          "TP-004",
+          "TP-005",
+          "TP-006",
+          "TP-007",
+          "TP-008",
+          "TP-009",
+          "TP-010",
+          "TP-011",
+          "TP-012",
+          "TP-013",
+          "TP-014",
+          "TP-015",
+          "TP-016",
+          "TP-017",
+          "TP-018",
+          "TP-019",
+          "TP-020"
+        ]
+      }
     },
     "R260_gestor_operativo": {
       "nombre": "Gestor Operativo (administrativo/contable)",
@@ -5999,7 +6388,12 @@
       },
       "activa": true,
       "_caso": "Issue Cyn #1118047224 - Despachador (Neuquén). Despacho ambulancias.",
-      "_fecha": "2026-03-11"
+      "_fecha": "2026-03-11",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-584"
+        ]
+      }
     },
     "R267_auxiliar_legal": {
       "nombre": "Auxiliar legal / Estudiante de abogacía",
@@ -6024,7 +6418,12 @@
       },
       "activa": true,
       "_caso": "Issue Cyn #1118059308 - Estudiante de Abogacía. No es abogado sino auxiliar.",
-      "_fecha": "2026-03-11"
+      "_fecha": "2026-03-11",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-585"
+        ]
+      }
     },
     "R268_setter_comercial": {
       "nombre": "Setter comercial / Auxiliar comercial seguros",
@@ -6049,7 +6448,12 @@
       "activa": true,
       "_caso": "Issue Cyn #1118154835 - Auxiliar Comercial Setter de Seguros.",
       "_fecha": "2026-03-11",
-      "nota": "Setter = rol de contacto inicial con leads, NO es director de relaciones"
+      "nota": "Setter = rol de contacto inicial con leads, NO es director de relaciones",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-587"
+        ]
+      }
     },
     "R269_team_leader_reclutamiento": {
       "nombre": "Team Leader de Reclutamiento / Selección",
@@ -6076,7 +6480,12 @@
       "activa": true,
       "_caso": "Issue Cyn #1118124320 - Team Leader de Reclutamiento.",
       "_fecha": "2026-03-11",
-      "nota": "Team leader reclutamiento = responsable RRHH, NO inteligencia competitiva"
+      "nota": "Team leader reclutamiento = responsable RRHH, NO inteligencia competitiva",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-588"
+        ]
+      }
     },
     "R270_tecnico_incidencias": {
       "nombre": "Técnico de incidencias / soporte plataformas web",
@@ -6120,7 +6529,12 @@
       "activa": true,
       "_caso": "Issue Cyn #1117951568 - Desarrollador Python SR.",
       "_fecha": "2026-03-11",
-      "nota": "Dev Python = desarrollador de software, NO ingeniero cloud ni IoT"
+      "nota": "Dev Python = desarrollador de software, NO ingeniero cloud ni IoT",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-586"
+        ]
+      }
     },
     "R272_analista_operaciones_datacenter": {
       "nombre": "Analista de operaciones Data Center / Infraestructura",
@@ -6144,7 +6558,12 @@
       "activa": true,
       "_caso": "Issue Cyn #1117978310 - Analista Corporativo operaciones Data Center.",
       "_fecha": "2026-03-11",
-      "nota": "Operaciones data center = sysadmin, NO óptico ni call center"
+      "nota": "Operaciones data center = sysadmin, NO óptico ni call center",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-593"
+        ]
+      }
     },
     "R273_advisor_soporte_app": {
       "nombre": "Advisor / Soporte funcional de app",
@@ -6173,7 +6592,12 @@
       "activa": true,
       "_caso": "Issue Gerardo #1117968852 - Advisor soporte app transporte.",
       "_fecha": "2026-03-11",
-      "nota": "Advisor genérico con tareas de soporte app/onboarding/incidencias = helpdesk TIC"
+      "nota": "Advisor genérico con tareas de soporte app/onboarding/incidencias = helpdesk TIC",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-595"
+        ]
+      }
     },
     "R274_coordinador_operaciones_logistica": {
       "nombre": "Coordinador de operaciones logísticas / almacén",
@@ -6198,7 +6622,12 @@
       "activa": true,
       "_caso": "Issue Diego #1118019336 - Coordinador de operaciones almacenamiento.",
       "_fecha": "2026-03-11",
-      "nota": "Coordinador operativo de logística/almacén con equipo a cargo = director de logística ESCO 3331.2"
+      "nota": "Coordinador operativo de logística/almacén con equipo a cargo = director de logística ESCO 3331.2",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-594"
+        ]
+      }
     },
     "R275_operario_deposito_almacen": {
       "nombre": "Operario de depósito / almacén / central de pesada",
@@ -6227,7 +6656,12 @@
       "activa": true,
       "_caso": "Issue Diego #1118019322 - Operario central de pesada (depósito farmoquímico).",
       "_fecha": "2026-03-11",
-      "nota": "En Argentina 'depósito' = 'almacén' (ESCO). Operario de depósito/almacén = peón de carga/almacenamiento ISCO 9333."
+      "nota": "En Argentina 'depósito' = 'almacén' (ESCO). Operario de depósito/almacén = peón de carga/almacenamiento ISCO 9333.",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-596"
+        ]
+      }
     },
     "R276_office_host_recepcionista": {
       "nombre": "Office host / host de coworking / recepcionista de oficina",
@@ -6250,7 +6684,12 @@
       "activa": true,
       "_caso": "Issue Diego #1117955657 - Office host red coworking.",
       "_fecha": "2026-03-11",
-      "nota": "Office host es anglicismo argentino para recepcionista de oficina/coworking. Punto de contacto, recibe visitantes, gestiona reservas."
+      "nota": "Office host es anglicismo argentino para recepcionista de oficina/coworking. Punto de contacto, recibe visitantes, gestiona reservas.",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-597"
+        ]
+      }
     },
     "R277_medio_oficial_mantenimiento_industrial": {
       "nombre": "Medio oficial / técnico de mantenimiento industrial electromecánico",
@@ -6274,7 +6713,12 @@
       "activa": true,
       "_caso": "Issue Diego #1118019326 - Medio oficial mantenimiento rubro plástico.",
       "_fecha": "2026-03-11",
-      "nota": "Medio oficial de mantenimiento en Argentina = técnico de mantenimiento de maquinaria industrial. Incluye inyectoras, extrusoras, neumática, hidráulica."
+      "nota": "Medio oficial de mantenimiento en Argentina = técnico de mantenimiento de maquinaria industrial. Incluye inyectoras, extrusoras, neumática, hidráulica.",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-598"
+        ]
+      }
     },
     "R278_analista_oficina_tecnica_construccion": {
       "nombre": "Analista de oficina técnica / proyectos de construcción",
@@ -6302,7 +6746,12 @@
       "activa": true,
       "_caso": "Issue Diego #1118019485 - Analista oficina técnica constructora.",
       "_fecha": "2026-03-11",
-      "nota": "Oficina técnica en construcción = ingeniero de construcción. Elabora planos, cómputos, presupuestos, normativas técnicas de obra."
+      "nota": "Oficina técnica en construcción = ingeniero de construcción. Elabora planos, cómputos, presupuestos, normativas técnicas de obra.",
+      "_linaje": {
+        "training_pair_ids": [
+          "TP-599"
+        ]
+      }
     },
     "R279_chofer_recoleccion_residuos": {
       "nombre": "Chófer / conductor de recolección de residuos",

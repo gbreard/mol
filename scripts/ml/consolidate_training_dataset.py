@@ -49,6 +49,56 @@ def count_json_file(path: Path) -> int:
         return 0
 
 
+def sync_correcciones_from_supabase() -> int:
+    """E2.4: Sync approved training pairs from Supabase to local file."""
+    correcciones_path = FT_DIR / "train_correcciones.json"
+    try:
+        config_path = PROJECT_ROOT / "config" / "supabase_config.json"
+        if not config_path.exists():
+            config_path = Path("/mnt/d/OEDE/Webscrapping/config/supabase_config.json")
+        if not config_path.exists():
+            return 0
+
+        config = json.loads(config_path.read_text())
+        from supabase import create_client
+        client = create_client(config['url'], config['service_role_key'])
+
+        result = client.table('approved_training_pairs').select(
+            'query,positive,negatives,occupation_context,occupation_label,source,confianza,split'
+        ).order('created_at').execute()
+
+        pairs = []
+        for row in (result.data or []):
+            # negatives is already JSONB array from Supabase
+            negs = row.get('negatives', [])
+            neg_strings = []
+            if isinstance(negs, list):
+                for n in negs:
+                    if isinstance(n, dict):
+                        neg_strings.append(f"{n.get('uri', '')} {n.get('label', '')}")
+                    elif isinstance(n, str):
+                        neg_strings.append(n)
+            pairs.append({
+                "query": row['query'],
+                "positive": row['positive'],
+                "negatives": neg_strings,
+                "occupation_context": row.get('occupation_context'),
+                "occupation_label": row.get('occupation_label'),
+                "source": row.get('source', 'emergente_aprobada'),
+                "confianza": row.get('confianza', 'alta'),
+                "split": row.get('split', 'train'),
+            })
+
+        FT_DIR.mkdir(parents=True, exist_ok=True)
+        with open(correcciones_path, 'w', encoding='utf-8') as f:
+            json.dump(pairs, f, ensure_ascii=False, indent=2)
+
+        return len(pairs)
+    except Exception as e:
+        print(f"  WARN: No se pudo sincronizar correcciones desde Supabase: {e}")
+        return count_json_file(correcciones_path)
+
+
 def main():
     parser = argparse.ArgumentParser(description="E4.3: Consolidate training dataset")
     parser.add_argument("--dry-run", action="store_true")
@@ -56,6 +106,11 @@ def main():
 
     print("E4.3: Consolidando dataset de entrenamiento")
     print("=" * 60)
+
+    # E2.4: Sync correcciones from Supabase before counting
+    correcciones_synced = sync_correcciones_from_supabase()
+    if correcciones_synced > 0:
+        print(f"  Correcciones sincronizadas desde Supabase: {correcciones_synced}")
 
     # Count all sources
     sources = {

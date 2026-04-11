@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Check, X, AlertTriangle, Trash2, Loader2, Pencil } from "lucide-react";
+import { Check, X, AlertTriangle, Trash2, Loader2, Pencil, Star } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,6 +19,7 @@ import { OfertaValidacion, ValidacionHumana } from "@/lib/types";
 import type { WizardCorrecciones, WizardTrigger } from "@/lib/wizard-types";
 import { toast } from "sonner";
 import { WizardModal } from "./wizard/WizardModal";
+import { GoldSetModal } from "./GoldSetModal";
 
 function extractErrorMessage(err: unknown): string {
   if (err instanceof Error) return err.message;
@@ -55,6 +56,7 @@ export function ValidationActions({
   const [wizardOpen, setWizardOpen] = useState(false);
   const [wizardTrigger, setWizardTrigger] = useState<WizardTrigger>("editar");
   const [confirmAction, setConfirmAction] = useState<ValidacionHumana | null>(null);
+  const [goldSetOpen, setGoldSetOpen] = useState(false);
 
   // Close wizard when oferta changes
   useEffect(() => {
@@ -259,6 +261,9 @@ export function ValidationActions({
       } else if (e.key === "5") {
         e.preventDefault();
         handleOpenEditar();
+      } else if (e.key === "6") {
+        e.preventDefault();
+        setGoldSetOpen(true);
       }
     }
     window.addEventListener("keydown", handleKey);
@@ -350,6 +355,20 @@ export function ValidationActions({
           Editar
           <kbd className="ml-1.5 text-[9px] opacity-50">Alt+5</kbd>
         </Button>
+
+        <div className="h-5 w-px bg-gray-200 mx-1" />
+
+        <Button
+          size="sm"
+          variant="outline"
+          disabled={saving}
+          onClick={() => setGoldSetOpen(true)}
+          className="h-7 text-xs hover:bg-amber-50 hover:text-amber-700 hover:border-amber-300"
+        >
+          <Star className="w-3.5 h-3.5 mr-1" />
+          Gold Set
+          <kbd className="ml-1.5 text-[9px] opacity-50">Alt+6</kbd>
+        </Button>
       </div>
 
       {/* Wizard modal */}
@@ -359,6 +378,16 @@ export function ValidationActions({
         oferta={oferta}
         trigger={wizardTrigger}
         onSave={handleWizardSave}
+      />
+
+      {/* Gold Set modal */}
+      <GoldSetModal
+        open={goldSetOpen}
+        onOpenChange={setGoldSetOpen}
+        idOferta={idOferta}
+        tituloOferta={tituloOferta}
+        iscoCode={iscoCode}
+        escoLabel={oferta.esco_label || null}
       />
 
       {/* Re-validation confirmation */}

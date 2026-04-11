@@ -86,7 +86,7 @@ export function PerfilArgentinoAdmin() {
     const res = await fetch("/api/perfil-argentino-versiones", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ version_id: rollbackTarget.id, action: "rollback" }),
+      body: JSON.stringify({ version_id: rollbackTarget.id, action: "activar" }),
     });
     if (!res.ok) throw new Error("Error al hacer rollback");
     setRollbackTarget(null);
