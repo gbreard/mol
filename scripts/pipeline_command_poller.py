@@ -133,6 +133,38 @@ def update_command(client, cmd_id, **kwargs):
         print(f"[POLLER] WARN: No se pudo actualizar comando {cmd_id}: {e}")
 
 
+def _sync_scraping_stats_after_indeed(client):
+    """Sync scraping_live_stats after Indeed scraping so dashboard reflects the update."""
+    try:
+        import sqlite3
+        db_path = PROJECT_DIR / "database" / "bumeran_scraping.db"
+        conn = sqlite3.connect(str(db_path))
+        rows = conn.execute(
+            "SELECT portal, MAX(scrapeado_en) as ultimo, COUNT(*) as total "
+            "FROM ofertas WHERE portal IS NOT NULL GROUP BY portal"
+        ).fetchall()
+        portales = {}
+        ultimo_global = None
+        for portal, ultimo, total in rows:
+            portales[portal] = {'ultimo_scraping': ultimo, 'total': total}
+            if not ultimo_global or ultimo > ultimo_global:
+                ultimo_global = ultimo
+        total = conn.execute("SELECT COUNT(*) FROM ofertas").fetchone()[0]
+        conn.close()
+
+        from datetime import timezone
+        client.table('scraping_live_stats').upsert({
+            'id': 'current',
+            'timestamp': datetime.now(timezone.utc).isoformat(),
+            'total_ofertas': total,
+            'portales': portales,
+            'ultimo_scraping': ultimo_global,
+        }).execute()
+        print("[POLLER] scraping_live_stats actualizado post-Indeed")
+    except Exception as e:
+        print(f"[POLLER] WARN: No se pudo sync stats post-Indeed: {e}")
+
+
 def execute_command(client, cmd, dry_run=False):
     """Ejecuta un comando del pipeline."""
     cmd_id = cmd['id']
@@ -223,6 +255,11 @@ def execute_command(client, cmd, dry_run=False):
                 completed_at=datetime.utcnow().isoformat()
             )
             print(f"[POLLER] OK — {duration}s")
+
+            # Post-scraping: sync stats to Supabase so dashboard updates
+            if comando == 'scrape_indeed':
+                _sync_scraping_stats_after_indeed(client)
+
             return True
         else:
             update_command(client, cmd_id,
