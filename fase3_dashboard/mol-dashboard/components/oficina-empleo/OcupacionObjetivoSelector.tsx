@@ -86,7 +86,7 @@ export function OcupacionObjetivoSelector({ disabled, matches, selected, onSelec
     debounceRef.current = setTimeout(() => doSearch(q), 300)
   }
 
-  // Load trend data batch (once, when Mapa tab is first opened)
+  // Load trend data from pre-calculated table (once, when Mapa tab is first opened)
   const loadTrends = useCallback(async () => {
     if (trendLoaded || matches.length === 0) return
     setTrendLoading(true)
@@ -95,67 +95,33 @@ export function OcupacionObjetivoSelector({ disabled, matches, selected, onSelec
       const iscoSet = new Set(matches.map(m => m.isco_code))
       const iscoCodes = [...iscoSet]
 
-      // Batch query: all ofertas for these ISCOs with date + portal
-      const { data: ofertas } = await getSb()
-        .from('ofertas_dashboard')
-        .select('isco_code, fecha_publicacion, portal')
+      // Read pre-calculated trends from isco_demand_trend table
+      const { data: trends } = await getSb()
+        .from('isco_demand_trend')
+        .select('isco_code, trend_label, trend_pvalue, trend_r2, volatility_label, volatility_cv, ofertas_total, monthly_counts, suficiente')
         .in('isco_code', iscoCodes)
 
-      if (!ofertas) { setTrendLoaded(true); setTrendLoading(false); return }
-
-      // Build 6-month window
-      const now = new Date()
-      const monthLabels: string[] = []
-      for (let i = 5; i >= 0; i--) {
-        const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
-        monthLabels.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`)
+      const trendMap = new Map<string, any>()
+      if (trends) {
+        for (const t of trends) trendMap.set(t.isco_code, t)
       }
 
-      // Find stable portals (present in first AND last month)
-      const portalFirst = new Set<string>()
-      const portalLast = new Set<string>()
-      for (const o of ofertas) {
-        if (!o.fecha_publicacion || !o.portal) continue
-        const m = o.fecha_publicacion.substring(0, 7)
-        if (m === monthLabels[0]) portalFirst.add(o.portal)
-        if (m === monthLabels[5]) portalLast.add(o.portal)
-      }
-      const stablePortals = new Set([...portalFirst].filter(p => portalLast.has(p)))
-      const useAll = stablePortals.size === 0
-
-      // Aggregate by ISCO + month (stable portals only for trend)
-      const byIsco: Record<string, { total: number; monthly: number[] }> = {}
-      for (const code of iscoCodes) {
-        byIsco[code] = { total: 0, monthly: monthLabels.map(() => 0) }
-      }
-      for (const o of ofertas) {
-        const code = o.isco_code
-        if (!byIsco[code]) continue
-        byIsco[code].total++
-        if (!o.fecha_publicacion) continue
-        if (!useAll && o.portal && !stablePortals.has(o.portal)) continue
-        const m = o.fecha_publicacion.substring(0, 7)
-        const idx = monthLabels.indexOf(m)
-        if (idx >= 0) byIsco[code].monthly[idx]++
-      }
-
-      // Build trend rows — only occupations with >0 offers
+      // Build trend rows — only occupations with offers
       const rows: TrendRow[] = []
       for (const m of matches) {
-        const d = byIsco[m.isco_code]
-        if (!d || d.total === 0) continue
+        const t = trendMap.get(m.isco_code)
+        if (!t || !t.ofertas_total || t.ofertas_total === 0) continue
 
-        const mc = d.monthly
-        const recent = (mc[3] + mc[4] + mc[5]) / 3
-        const previous = (mc[0] + mc[1] + mc[2]) / 3
+        const mc: number[] = (typeof t.monthly_counts === 'string' ? JSON.parse(t.monthly_counts) : t.monthly_counts) || []
+        const trend: 'up' | 'stable' | 'down' =
+          t.trend_label === 'creciendo' ? 'up' : t.trend_label === 'cayendo' ? 'down' : 'stable'
+        const volatility: 'alta' | 'media' | 'baja' =
+          t.volatility_label === 'volatil' ? 'alta' : t.volatility_label === 'variable' ? 'media' : 'baja'
+
+        // Calculate trendPct from monthly counts for display
+        const recent = mc.length >= 6 ? (mc[mc.length-3] + mc[mc.length-2] + mc[mc.length-1]) / 3 : 0
+        const previous = mc.length >= 6 ? (mc[mc.length-6] + mc[mc.length-5] + mc[mc.length-4]) / 3 : 0
         const trendPct = previous > 0 ? Math.round(((recent - previous) / previous) * 100) : (recent > 0 ? 100 : 0)
-        const trend: 'up' | 'stable' | 'down' = trendPct > 15 ? 'up' : trendPct < -15 ? 'down' : 'stable'
-
-        const nonZero = mc.filter(c => c > 0)
-        const mean = nonZero.length > 0 ? nonZero.reduce((a, b) => a + b, 0) / nonZero.length : 0
-        const stddev = mean > 0 ? Math.sqrt(nonZero.reduce((sum, c) => sum + (c - mean) ** 2, 0) / nonZero.length) : 0
-        const cv = mean > 0 ? Math.round((stddev / mean) * 100) : 0
-        const volatility: 'alta' | 'media' | 'baja' = cv > 60 ? 'alta' : cv > 30 ? 'media' : 'baja'
 
         rows.push({
           isco_code: m.isco_code,
@@ -164,8 +130,11 @@ export function OcupacionObjetivoSelector({ disabled, matches, selected, onSelec
           matchScore: m.matchScore,
           essentialTotal: m.essentialTotal,
           optionalCovered: m.optionalCovered,
-          ofertas: d.total,
-          trend, trendPct, volatility, monthlyCounts: mc,
+          ofertas: t.ofertas_total,
+          trend,
+          trendPct: t.suficiente ? trendPct : 0,
+          volatility: t.suficiente ? volatility : 'baja',
+          monthlyCounts: mc,
         })
       }
 
