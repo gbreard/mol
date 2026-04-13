@@ -48,8 +48,8 @@ export async function GET(request: NextRequest) {
   }
 
   // List all perfiles with persona info (for M1 perfiles list)
-  const limit = parseInt(request.nextUrl.searchParams.get('limit') || '100');
-  const offset = parseInt(request.nextUrl.searchParams.get('offset') || '0');
+  const limit = Math.max(1, Math.min(100, parseInt(request.nextUrl.searchParams.get('limit') || '100', 10) || 100));
+  const offset = Math.max(0, parseInt(request.nextUrl.searchParams.get('offset') || '0', 10) || 0);
 
   const { data: perfiles, error } = await client.from('perfiles')
     .select('id, persona_id, origen, completitud, estado, validado_at, ocupaciones, updated_at, personas(nombre, dni)')

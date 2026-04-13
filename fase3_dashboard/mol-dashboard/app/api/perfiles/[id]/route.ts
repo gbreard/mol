@@ -54,6 +54,10 @@ export async function DELETE(
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
 
+  // Check perfil exists before deleting
+  const { data: existing } = await client.from('perfiles').select('id').eq('id', id).maybeSingle();
+  if (!existing) return NextResponse.json({ error: 'Perfil no encontrado' }, { status: 404 });
+
   // Delete skills first (FK dependency)
   await client.from('perfil_skills').delete().eq('perfil_id', id);
 

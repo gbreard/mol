@@ -26,7 +26,6 @@ interface OfertaPreview {
 interface Props {
   occupation: OccupationMatch
   rank: number
-  perfilId: string
   ofertasCount: number
   provincia?: string | null
   onOpenModal: (iscoCode: string, label: string) => void
@@ -45,7 +44,7 @@ function ofertasBadge(count: number) {
 }
 
 export function OccupationMatchCard({
-  occupation, rank, perfilId, ofertasCount, provincia,
+  occupation, rank, ofertasCount, provincia,
   onOpenModal,
 }: Props) {
   const [expanded, setExpanded] = useState(false)

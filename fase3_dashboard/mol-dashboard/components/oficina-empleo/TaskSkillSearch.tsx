@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { Search, MessageSquare, Loader2, Plus, Check, X } from 'lucide-react'
 import type { SelectedSkill } from './useSkillCapture'
 
@@ -19,6 +19,11 @@ export function TaskSkillSearch({ skillUris, onAddSkill, onAddSkills }: Props) {
   const [loading, setLoading] = useState(false)
   const [extractedPending, setExtractedPending] = useState<any[]>([])
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Cleanup debounce on unmount
+  useEffect(() => {
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
+  }, [])
 
   const doSearch = useCallback(async (q: string) => {
     if (q.trim().length < 2) { setResults([]); setLoading(false); return }

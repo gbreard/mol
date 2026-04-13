@@ -273,7 +273,6 @@ export default function MatchingPage() {
                 key={o.uri}
                 occupation={o}
                 rank={i + 1}
-                perfilId={perfil!.id}
                 ofertasCount={ofertasCountMap[o.isco_code] || 0}
                 provincia={perfilProvincia}
                 onOpenModal={handleOpenModal}

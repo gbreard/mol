@@ -78,6 +78,7 @@ export default function PerfilDetailPage() {
   const [deleting, setDeleting] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [qrUrl, setQrUrl] = useState('')
+  const [qrFailed, setQrFailed] = useState(false)
 
   useEffect(() => {
     fetch(`/api/perfiles?id=${id}`)
@@ -119,7 +120,7 @@ export default function PerfilDetailPage() {
           width: 80,
           margin: 1,
           color: { dark: '#1f2937', light: '#ffffff' },
-        }).catch(() => {})
+        }).catch(() => setQrFailed(true))
       }
     }
   }, [id, perfil])
@@ -215,8 +216,12 @@ export default function PerfilDetailPage() {
             </div>
 
             {/* QR code */}
-            <div className="w-20 h-20 rounded-lg flex items-center justify-center shrink-0 print:bg-white">
-              <canvas ref={qrCanvasRef} className="rounded" />
+            <div className="w-20 h-20 rounded-lg flex items-center justify-center shrink-0 print:bg-white bg-gray-50">
+              {qrFailed ? (
+                <span className="text-[10px] text-gray-400 text-center">QR no disponible</span>
+              ) : (
+                <canvas ref={qrCanvasRef} className="rounded" />
+              )}
             </div>
           </div>
 

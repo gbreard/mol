@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import { Search, Plus, Loader2, User } from 'lucide-react'
 import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
@@ -25,6 +25,7 @@ export default function PerfilesListPage() {
   const [hasMore, setHasMore] = useState(true)
   const [search, setSearch] = useState('')
   const sentinelRef = useRef<HTMLDivElement>(null)
+  const offsetRef = useRef(0)
 
   const mapPerfil = (p: any): PerfilResumen => ({
     id: p.id,
@@ -48,8 +49,10 @@ export default function PerfilesListPage() {
         const mapped = data.map(mapPerfil)
         if (append) {
           setPerfiles(prev => [...prev, ...mapped])
+          offsetRef.current = offset + mapped.length
         } else {
           setPerfiles(mapped)
+          offsetRef.current = mapped.length
         }
         setHasMore(mapped.length >= PAGE_SIZE)
       }
@@ -68,14 +71,14 @@ export default function PerfilesListPage() {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !loadingMore && !loading) {
-          loadPerfiles(perfiles.length, true)
+          loadPerfiles(offsetRef.current, true)
         }
       },
       { rootMargin: '200px' }
     )
     observer.observe(sentinelRef.current)
     return () => observer.disconnect()
-  }, [hasMore, loadingMore, loading, perfiles.length, loadPerfiles])
+  }, [hasMore, loadingMore, loading, loadPerfiles])
 
   const filtered = search.trim()
     ? perfiles.filter(p =>
