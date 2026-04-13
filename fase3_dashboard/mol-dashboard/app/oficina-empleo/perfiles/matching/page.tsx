@@ -89,6 +89,7 @@ export default function MatchingPage() {
   // Load ofertas count (re-runs when time period or provincia changes)
   useEffect(() => {
     setCountLoading(true)
+    setOfertasCountMap({}) // Clear old counts immediately
     const since = getSinceDate(timePeriod)
 
     // Direct query with optional date + provincia filter
@@ -99,13 +100,13 @@ export default function MatchingPage() {
     if (since) query = query.gte('fecha_publicacion', since)
     if (perfilProvincia) query = query.eq('provincia', perfilProvincia)
     query.then(({ data, error }) => {
+      const map: Record<string, number> = {}
       if (!error && data) {
-        const map: Record<string, number> = {}
         for (const row of data as any[]) {
           if (row.isco_code) map[row.isco_code] = (map[row.isco_code] || 0) + 1
         }
-        setOfertasCountMap(map)
       }
+      setOfertasCountMap(map)
       setCountLoading(false)
     })
   }, [timePeriod, perfilProvincia])
@@ -237,6 +238,7 @@ export default function MatchingPage() {
   const hiddenCount = sorted.length - withOffers.length
 
   const loadingAll = loading || (perfil && profileSkills.length > 0 && !occupationsData)
+  const countsReady = !countLoading
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -303,8 +305,16 @@ export default function MatchingPage() {
           </div>
         )}
 
+        {/* Loading ofertas count */}
+        {!loadingAll && !mensaje && perfil && matches.length > 0 && !countsReady && (
+          <div className="bg-white rounded-xl border border-gray-200 p-8 flex items-center justify-center gap-3">
+            <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
+            <span className="text-sm text-gray-500">Buscando ofertas{perfilProvincia ? ` en ${perfilProvincia}` : ''}...</span>
+          </div>
+        )}
+
         {/* Results */}
-        {!loadingAll && !mensaje && perfil && matches.length > 0 && (
+        {!loadingAll && !mensaje && perfil && matches.length > 0 && countsReady && (
           <div className="space-y-3">
             {/* Controls bar */}
             <div className="flex items-center justify-between flex-wrap gap-2">
