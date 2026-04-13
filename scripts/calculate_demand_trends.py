@@ -88,19 +88,20 @@ def fetch_ofertas_data(client, months=6):
 
 
 def build_month_labels(months=6):
-    """Genera etiquetas de meses: ['2025-11', '2025-12', ...]."""
+    """Genera etiquetas de meses completos (excluye mes actual que está incompleto)."""
     now = datetime.now()
+    # Start from last COMPLETE month (not current)
     labels = []
-    for i in range(months - 1, -1, -1):
+    for i in range(months, 0, -1):
         d = datetime(now.year, now.month, 1) - timedelta(days=i * 30)
-        d = datetime(d.year, d.month, 1)  # Normalizar a primer día
-        labels.append(f"{d.year}-{d.month:02d}")
-    # Dedup y sort
-    seen = []
-    for l in labels:
-        if l not in seen:
-            seen.append(l)
-    return seen
+        d = datetime(d.year, d.month, 1)
+        label = f"{d.year}-{d.month:02d}"
+        if label not in labels:
+            labels.append(label)
+    # Exclude current month
+    current = f"{now.year}-{now.month:02d}"
+    labels = [l for l in labels if l != current]
+    return labels
 
 
 def find_stable_portals(ofertas, month_labels):
@@ -278,13 +279,29 @@ def calculate_trends(ofertas, month_labels, stable_portals):
         x = list(range(len(share_series)))
         slope, intercept, r2, p_value, se_slope = linear_regression(x, share_series)
 
-        # Classify trend
+        # Classify trend with consistency check
         if p_value < TREND_ALPHA and slope > 0:
             trend_label = "creciendo"
         elif p_value < TREND_ALPHA and slope < 0:
             trend_label = "cayendo"
         else:
             trend_label = "estable"
+
+        # Consistency check: if "creciendo" but last month dropped >50% vs peak,
+        # or if driven by a single spike, override to "estable"
+        if trend_label != "estable" and len(share_series) >= 3:
+            last = share_series[-1]
+            peak = max(share_series)
+            median_val = float(np.median(share_series))
+            # If peak is >3x the median, it's a spike — don't trust the trend
+            if peak > 0 and peak > 3 * median_val and median_val > 0:
+                trend_label = "estable"
+            # If "creciendo" but last month < median, not convincing
+            elif trend_label == "creciendo" and last < median_val * 0.7:
+                trend_label = "estable"
+            # If "cayendo" but last month > median, not convincing
+            elif trend_label == "cayendo" and last > median_val * 1.3:
+                trend_label = "estable"
 
         # Volatility from residuals
         y_pred = [intercept + slope * t for t in x]
