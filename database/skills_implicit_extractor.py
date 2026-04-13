@@ -40,11 +40,27 @@ Uso:
 """
 
 import json
+import sys
+import os
+import warnings
 import numpy as np
 import sqlite3
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple
 from sentence_transformers import SentenceTransformer
+
+# Configuración centralizada del modelo de embeddings (E1.1)
+sys.path.insert(0, str(Path(__file__).parent.parent / "config"))
+try:
+    from embedding_config import (
+        EMBEDDING_MODEL, EMBEDDING_REVISION,
+        EQUIVALENCES_CACHE_TTL_HOURS, EQUIVALENCES_CACHE_PATH,
+    )
+except ImportError:
+    EMBEDDING_MODEL = "BAAI/bge-m3"
+    EMBEDDING_REVISION = None
+    EQUIVALENCES_CACHE_TTL_HOURS = 24
+    EQUIVALENCES_CACHE_PATH = "config/skill_equivalences_lookup.json"
 
 # Categorización jerárquica L1/L2 para dashboards
 # v2.0: Usa datos ESCO directos del RDF (sin hardcoding)
@@ -61,11 +77,15 @@ class SkillsImplicitExtractor:
     Usa cache a nivel de clase para evitar recargar modelo y embeddings.
     """
 
-    VERSION = "2.4.0"  # v2.4: Terminología argentina + Sistema dual (reglas + semántico)
+    VERSION = "2.6.0"  # v2.6: Equivalencias de skills (dedup por grupo)
 
-    # Configuración por defecto
-    DEFAULT_MODEL = "BAAI/bge-m3"
-    DEFAULT_THRESHOLD = 0.60  # Umbral de similitud mínima (v2.2: subido de 0.55)
+    # Configuración por defecto (E1.1: usa config centralizada)
+    # LoRA fine-tuned tiene prioridad si existe en disco
+    _PROJECT_ROOT = str(Path(__file__).parent.parent)
+    _LORA_PATH = Path(_PROJECT_ROOT) / "data" / "finetuning" / "matching" / "model_lora"
+    DEFAULT_MODEL = str(_LORA_PATH) if _LORA_PATH.exists() else EMBEDDING_MODEL
+    DEFAULT_MODEL_REVISION = None if _LORA_PATH.exists() else EMBEDDING_REVISION
+    DEFAULT_THRESHOLD = 0.40  # Umbral para BGE-M3 base (sin LoRA fine-tuned los scores son más bajos)
     DEFAULT_TOP_K = 3  # Top K skills por tarea
 
     # Cache a nivel de clase
@@ -89,8 +109,8 @@ class SkillsImplicitExtractor:
         Inicializa el extractor.
 
         Args:
-            embeddings_path: Path a embeddings .npy (default: database/embeddings/esco_skills_embeddings.npy)
-            metadata_path: Path a metadata .json (default: database/embeddings/esco_skills_metadata.json)
+            embeddings_path: Path a embeddings .npy (default: database/embeddings/esco_skills_embeddings_full.npy)
+            metadata_path: Path a metadata .json (default: database/embeddings/esco_skills_metadata_full.json)
             db_path: Path a BD (para regenerar embeddings si no existen)
             threshold: Umbral de similitud mínima (default: 0.55)
             top_k: Número máximo de skills por tarea (default: 3)
@@ -113,9 +133,16 @@ class SkillsImplicitExtractor:
         """Carga modelo y embeddings (usa cache si ya están cargados)."""
         # Cargar modelo (una sola vez)
         if SkillsImplicitExtractor._model is None:
+            revision = self.DEFAULT_MODEL_REVISION
             if self.verbose:
-                print(f"[SKILLS] Cargando modelo {self.DEFAULT_MODEL}...")
-            SkillsImplicitExtractor._model = SentenceTransformer(self.DEFAULT_MODEL)
+                rev_str = f" @ {revision[:12]}" if revision else ""
+                print(f"[SKILLS] Cargando modelo {self.DEFAULT_MODEL}{rev_str}...")
+            if revision:
+                SkillsImplicitExtractor._model = SentenceTransformer(
+                    self.DEFAULT_MODEL, revision=revision
+                )
+            else:
+                SkillsImplicitExtractor._model = SentenceTransformer(self.DEFAULT_MODEL)
 
         self.model = SkillsImplicitExtractor._model
 
@@ -135,6 +162,10 @@ class SkillsImplicitExtractor:
 
         self.embeddings = SkillsImplicitExtractor._skills_embeddings
         self.metadata = SkillsImplicitExtractor._skills_metadata
+
+        # E1.3: Verificar compatibilidad modelo ↔ corpus
+        if self.embeddings.size > 0:
+            self._verify_corpus_compatibility()
 
         # v2.2: Cargar config de pesos para skills genéricas
         if SkillsImplicitExtractor._skills_weights_config is None:
@@ -163,7 +194,40 @@ class SkillsImplicitExtractor:
 
         self.terminology_config = SkillsImplicitExtractor._terminology_config
 
+        # v2.6+cache: Cargar tabla de equivalencias (URI → grupo) con cache local
+        if not hasattr(SkillsImplicitExtractor, '_equiv_lookup') or SkillsImplicitExtractor._equiv_lookup is None:
+            SkillsImplicitExtractor._equiv_lookup = {}
+            SkillsImplicitExtractor._equiv_groups = {}
+            force_refresh = getattr(SkillsImplicitExtractor, '_force_refresh_cache', False)
+            try:
+                self._load_equivalences_cached(force_refresh=force_refresh)
+            except Exception as e:
+                if self.verbose:
+                    print(f"[SKILLS] WARN: Error cargando equivalencias: {e}")
+
+        self.equiv_lookup = getattr(SkillsImplicitExtractor, '_equiv_lookup', {}) or {}
+        self.equiv_groups = getattr(SkillsImplicitExtractor, '_equiv_groups', {}) or {}
+
+        # v2.5: Cargar sinónimos argentinos para skills (mapeo directo)
+        if not hasattr(SkillsImplicitExtractor, '_sinonimos_skills') or SkillsImplicitExtractor._sinonimos_skills is None:
+            sinonimos_path = Path(__file__).parent.parent / "config" / "sinonimos_skills_argentinos.json"
+            if sinonimos_path.exists():
+                with open(sinonimos_path, 'r', encoding='utf-8') as f:
+                    SkillsImplicitExtractor._sinonimos_skills = json.load(f)
+                if self.verbose:
+                    tareas = len(SkillsImplicitExtractor._sinonimos_skills.get('tareas_a_skills', {}))
+                    soft = len(SkillsImplicitExtractor._sinonimos_skills.get('soft_skills_argentinas', {}))
+                    print(f"[SKILLS] Sinónimos argentinos cargados: {tareas} tareas + {soft} soft skills")
+            else:
+                SkillsImplicitExtractor._sinonimos_skills = {"tareas_a_skills": {}, "soft_skills_argentinas": {}}
+
+        self.sinonimos_skills = SkillsImplicitExtractor._sinonimos_skills
+
         SkillsImplicitExtractor._initialized = True
+
+        # Registrar timestamp de carga de equivalencias (para staleness check)
+        from datetime import datetime, timezone
+        SkillsImplicitExtractor._equiv_loaded_at = datetime.now(timezone.utc)
 
         if self.verbose:
             print(f"[SKILLS] Inicializado: {len(self.metadata)} skills, umbral={self.threshold}")
@@ -247,8 +311,9 @@ class SkillsImplicitExtractor:
         self,
         tareas_explicitas: str,
         top_k: int = None,
-        threshold: float = None
-    ) -> List[Dict]:
+        threshold: float = None,
+        track_failures: bool = False
+    ):
         """
         Extrae skills ESCO implícitas desde las tareas de una oferta.
 
@@ -256,12 +321,15 @@ class SkillsImplicitExtractor:
             tareas_explicitas: String con tareas separadas por punto y coma
             top_k: Override del número máximo de skills por tarea
             threshold: Override del umbral de similitud
+            track_failures: Si True, retorna tupla (matcheadas, fallidas)
 
         Returns:
-            Lista de dicts con: tarea, skill_esco, skill_uri, score, origen
+            Si track_failures=False: Lista de dicts con: tarea, skill_esco, skill_uri, score, origen
+            Si track_failures=True: Tupla (matcheadas, fallidas)
         """
+        empty = ([], []) if track_failures else []
         if not tareas_explicitas or not self.embeddings.size:
-            return []
+            return empty
 
         top_k = top_k or self.top_k
         threshold = threshold or self.threshold
@@ -270,13 +338,35 @@ class SkillsImplicitExtractor:
         tareas = [t.strip() for t in tareas_explicitas.split(';') if t.strip()]
 
         if not tareas:
-            return []
+            return empty
 
         skills_implicitas = []
+        tareas_fallidas = []
         skills_vistas = set()  # Para evitar duplicados
 
+        # v2.5: Lookup sinónimos argentinos (prioridad sobre BGE-M3)
+        sinonimos_tareas = self.sinonimos_skills.get('tareas_a_skills', {})
+        sinonimos_soft = self.sinonimos_skills.get('soft_skills_argentinas', {})
+        sinonimos_all = {**sinonimos_tareas, **sinonimos_soft}
+
         for tarea in tareas:
-            # Generar embedding de la tarea
+            # Primero: buscar match directo en sinónimos argentinos
+            tarea_lower = tarea.lower().strip()
+            match_sinonimo = sinonimos_all.get(tarea_lower)
+            if match_sinonimo and match_sinonimo.lower() not in skills_vistas:
+                skills_vistas.add(match_sinonimo.lower())
+                skills_implicitas.append({
+                    'tarea': tarea,
+                    'skill_esco': match_sinonimo,
+                    'skill_uri': None,
+                    'score': 0.99,
+                    'origen': 'sinonimo_argentino'
+                })
+                if self.verbose:
+                    print(f"[SKILLS] '{tarea}' -> '{match_sinonimo}' (sinónimo argentino)")
+                continue
+
+            # Fallback: Generar embedding de la tarea
             tarea_emb = self.model.encode(tarea, normalize_embeddings=True)
 
             # Calcular similitud coseno con todas las skills
@@ -285,12 +375,16 @@ class SkillsImplicitExtractor:
             # Obtener top K indices ordenados por similitud
             top_indices = np.argsort(similarities)[-top_k:][::-1]
 
+            # M-06: Verificar si algún candidato supera el umbral
+            tarea_matcheo = False
+
             for idx in top_indices:
-                score = float(similarities[idx])
+                score = round(float(similarities[idx]), 4)
 
                 if score < threshold:
                     continue
 
+                tarea_matcheo = True
                 skill_meta = self.metadata[idx]
                 skill_label = skill_meta.get('label', skill_meta.get('preferred_label_es', ''))
 
@@ -304,13 +398,39 @@ class SkillsImplicitExtractor:
                     "tarea": tarea[:100],  # Truncar para BD
                     "skill_esco": skill_label,
                     "skill_uri": skill_meta.get('uri', skill_meta.get('skill_uri', '')),
-                    "score": round(score, 4),
+                    "score": score,
                     "origen": "IMPLICITA"
                 })
 
                 if self.verbose:
                     print(f"[SKILLS] '{tarea[:50]}...' -> '{skill_label}' (score={score:.3f})")
 
+            # M-06: Registrar tarea fallida si ningún candidato superó el umbral
+            if track_failures and not tarea_matcheo:
+                best_idx = top_indices[0] if len(top_indices) > 0 else None
+                if best_idx is not None:
+                    best_score = float(similarities[best_idx])
+                    best_meta = self.metadata[best_idx]
+                    tareas_fallidas.append({
+                        "tarea_texto": tarea[:200],
+                        "mejor_skill_uri": best_meta.get('uri', best_meta.get('skill_uri', '')),
+                        "mejor_skill_label": best_meta.get('label', best_meta.get('preferred_label_es', '')),
+                        "mejor_score": round(best_score, 4),
+                        "threshold_usado": threshold,
+                        "gap_al_umbral": round(threshold - best_score, 4)
+                    })
+                else:
+                    tareas_fallidas.append({
+                        "tarea_texto": tarea[:200],
+                        "mejor_skill_uri": None,
+                        "mejor_skill_label": None,
+                        "mejor_score": 0.0,
+                        "threshold_usado": threshold,
+                        "gap_al_umbral": round(threshold, 4)
+                    })
+
+        if track_failures:
+            return (skills_implicitas, tareas_fallidas)
         return skills_implicitas
 
     def _get_skill_weight(
@@ -380,8 +500,9 @@ class SkillsImplicitExtractor:
         nivel_seniority: str = None,
         area_funcional: str = None,
         top_k: int = None,
-        threshold: float = None
-    ) -> List[Dict]:
+        threshold: float = None,
+        track_failures: bool = False
+    ):
         """
         v2.2: Extrae skills ESCO con ponderación de skills genéricas.
 
@@ -404,12 +525,14 @@ class SkillsImplicitExtractor:
             area_funcional: Área funcional (para ponderación contextual)
             top_k: Override del número máximo de skills por texto
             threshold: Override del umbral de similitud
+            track_failures: Si True, retorna tupla (matcheadas, fallidas)
 
         Returns:
-            Lista de dicts con: skill_esco, skill_uri, score, score_ponderado, peso, origen
+            Si track_failures=False: Lista de dicts con: skill_esco, skill_uri, score, score_ponderado, peso, origen
+            Si track_failures=True: Tupla (matcheadas, fallidas)
         """
         if not self.embeddings.size:
-            return []
+            return ([], []) if track_failures else []
 
         top_k = top_k or self.top_k
         threshold = threshold or self.threshold
@@ -466,10 +589,11 @@ class SkillsImplicitExtractor:
                     textos.append(("soft_skills_nlp", skill))
 
         if not textos and not skills_terminologia:
-            return []
+            return ([], []) if track_failures else []
 
         # v2.4: Iniciar con skills de terminología (ya encontradas)
         skills_extraidas = list(skills_terminologia)
+        textos_fallidos = []
         skills_vistas = set(skills_term_vistas)  # Para evitar duplicados con semántico
 
         for origen, texto in textos:
@@ -482,22 +606,32 @@ class SkillsImplicitExtractor:
             # Obtener top K indices ordenados por similitud
             top_indices = np.argsort(similarities)[-top_k:][::-1]
 
+            # M-06: Verificar si algún candidato supera el umbral
+            texto_matcheo = False
+
             for idx in top_indices:
-                score = float(similarities[idx])
+                score = round(float(similarities[idx]), 4)
 
                 if score < threshold:
                     continue
 
+                texto_matcheo = True
                 skill_meta = self.metadata[idx]
                 skill_label = skill_meta.get('label', skill_meta.get('preferred_label_es', ''))
                 skill_uri = skill_meta.get('uri', skill_meta.get('skill_uri', ''))
 
-                # Evitar duplicados (mantener el de mayor score)
-                skill_key = skill_label.lower()
+                # v2.6: Dedup por grupo de equivalencia (si existe)
+                equiv_group = self.equiv_lookup.get(skill_uri)
+                skill_key = equiv_group if equiv_group else skill_label.lower()
                 if skill_key in skills_vistas:
                     continue
 
                 skills_vistas.add(skill_key)
+
+                # v2.6: Si tiene equivalencia, usar label representante
+                if equiv_group and equiv_group in self.equiv_groups:
+                    group_info = self.equiv_groups[equiv_group]
+                    skill_label = group_info['label']  # label argentino o representante
 
                 # v2.2: Calcular peso según si es skill genérica o específica
                 peso = self._get_skill_weight(
@@ -511,7 +645,7 @@ class SkillsImplicitExtractor:
                 skills_extraidas.append({
                     "skill_esco": skill_label,
                     "skill_uri": skill_uri,
-                    "score": round(score, 4),
+                    "score": score,
                     "score_ponderado": round(score_ponderado, 4),  # v2.2
                     "peso": peso,  # v2.2
                     "origen": origen,  # "titulo" o "tarea"
@@ -521,6 +655,32 @@ class SkillsImplicitExtractor:
                 if self.verbose:
                     peso_tag = " [GEN]" if peso < 1.0 else ""
                     print(f"[SKILLS] [{origen}] '{texto[:40]}...' -> '{skill_label}' (score={score:.3f}, peso={peso}){peso_tag}")
+
+            # M-06: Registrar texto fallido si ningún candidato superó el umbral
+            if track_failures and not texto_matcheo:
+                best_idx = top_indices[0] if len(top_indices) > 0 else None
+                if best_idx is not None:
+                    best_score = float(similarities[best_idx])
+                    best_meta = self.metadata[best_idx]
+                    textos_fallidos.append({
+                        "tarea_texto": texto[:200],
+                        "tarea_origen": origen,
+                        "mejor_skill_uri": best_meta.get('uri', best_meta.get('skill_uri', '')),
+                        "mejor_skill_label": best_meta.get('label', best_meta.get('preferred_label_es', '')),
+                        "mejor_score": round(best_score, 4),
+                        "threshold_usado": threshold,
+                        "gap_al_umbral": round(threshold - best_score, 4)
+                    })
+                else:
+                    textos_fallidos.append({
+                        "tarea_texto": texto[:200],
+                        "tarea_origen": origen,
+                        "mejor_skill_uri": None,
+                        "mejor_skill_label": None,
+                        "mejor_score": 0.0,
+                        "threshold_usado": threshold,
+                        "gap_al_umbral": round(threshold, 4)
+                    })
 
         # v2.2: Ordenar por score_ponderado descendente (skills genéricas bajan en el ranking)
         skills_extraidas.sort(key=lambda x: x['score_ponderado'], reverse=True)
@@ -538,6 +698,8 @@ class SkillsImplicitExtractor:
             if self.verbose:
                 print(f"[WARN] Error en categorización: {e}")
 
+        if track_failures:
+            return (skills_extraidas, textos_fallidos)
         return skills_extraidas
 
     def get_skills_for_offer(
@@ -584,6 +746,318 @@ class SkillsImplicitExtractor:
         cls._skills_metadata = None
         cls._initialized = False
 
+    def _verify_corpus_compatibility(self):
+        """
+        E1.3: Verifica que el modelo BGE-M3 cargado coincide con el que generó los embeddings.
+        Lee el SHA esperado desde corpus_manifest.json y lo compara con el modelo en cache.
+        Si no coinciden → RuntimeError. Si SHA desconocido → warning.
+        """
+        manifest_path = Path(__file__).parent / "embeddings" / "corpus_manifest.json"
+        if not manifest_path.exists():
+            return  # Sin manifiesto, no se puede verificar
+
+        try:
+            manifest = json.load(open(manifest_path))
+            expected_revision = manifest.get('esco_skills', {}).get('model_revision', '')
+        except (json.JSONDecodeError, KeyError):
+            return  # Manifiesto corrupto, no bloquear
+
+        if not expected_revision:
+            return
+
+        # Leer SHA del modelo desde cache de HuggingFace
+        actual_revision = None
+        hf_ref = Path(os.path.expanduser(
+            "~/.cache/huggingface/hub/models--BAAI--bge-m3/refs/main"
+        ))
+        try:
+            if hf_ref.exists():
+                actual_revision = hf_ref.read_text().strip()
+        except Exception:
+            pass
+
+        # Fallback: huggingface_hub si disponible
+        if not actual_revision:
+            try:
+                from huggingface_hub import model_info
+                info = model_info("BAAI/bge-m3")
+                actual_revision = info.sha
+            except Exception:
+                pass
+
+        if not actual_revision:
+            warnings.warn(
+                "[SKILLS] No se pudo determinar la revisión del modelo BGE-M3 cargado. "
+                "No se puede verificar compatibilidad con embeddings.",
+                UserWarning
+            )
+            return
+
+        if actual_revision != expected_revision:
+            raise RuntimeError(
+                f"INCOMPATIBILIDAD DE EMBEDDINGS: "
+                f"Modelo cargado ({actual_revision[:8]}) difiere del que generó el corpus ({expected_revision[:8]}). "
+                f"Regenerar con: python scripts/db/regenerate_all_embeddings.py"
+            )
+
+        if self.verbose:
+            print(f"[SKILLS] Compatibilidad verificada: modelo y corpus usan {actual_revision[:12]}")
+
+    # ============================================================
+    # Cache local de equivalencias con TTL
+    # ============================================================
+
+    def _load_equivalences_cached(self, force_refresh: bool = False):
+        """
+        Carga equivalencias con cache local (TTL configurable).
+
+        Orden:
+        1. Si cache local existe y tiene < EQUIVALENCES_CACHE_TTL_HOURS → cargar local
+        2. Si no → cargar desde Supabase → guardar cache local
+        3. Si Supabase falla → cargar cache local aunque esté vencido (stale)
+        """
+        from datetime import datetime, timezone
+
+        cache_path = Path(__file__).parent.parent / EQUIVALENCES_CACHE_PATH
+
+        # Check if local cache is valid
+        if not force_refresh and cache_path.exists():
+            try:
+                cache_data = json.loads(cache_path.read_text(encoding='utf-8'))
+                cache_ts = cache_data.get('_cache_timestamp', '')
+                if cache_ts:
+                    cache_time = datetime.fromisoformat(cache_ts)
+                    age_hours = (datetime.now(timezone.utc) - cache_time).total_seconds() / 3600
+                    if age_hours < EQUIVALENCES_CACHE_TTL_HOURS:
+                        # Cache is fresh — use it
+                        self._apply_cache_data(cache_data)
+                        if self.verbose:
+                            print(f"[SKILLS] Equivalencias desde cache local ({age_hours:.1f}h, {len(SkillsImplicitExtractor._equiv_lookup)} URIs)")
+                        return
+                    elif self.verbose:
+                        print(f"[SKILLS] Cache vencido ({age_hours:.1f}h > {EQUIVALENCES_CACHE_TTL_HOURS}h), recargando...")
+            except Exception as e:
+                if self.verbose:
+                    print(f"[SKILLS] WARN: Cache corrupto, recargando: {e}")
+
+        # Load from Supabase
+        loaded = self._load_equivalences_from_supabase()
+
+        if loaded:
+            # Save cache
+            self._save_equivalences_cache(cache_path)
+            if self.verbose:
+                print(f"[SKILLS] Equivalencias desde Supabase: {len(SkillsImplicitExtractor._equiv_lookup)} URIs, {len(SkillsImplicitExtractor._equiv_groups)} grupos (cache guardado)")
+        elif cache_path.exists():
+            # Supabase failed but stale cache exists — use it
+            try:
+                cache_data = json.loads(cache_path.read_text(encoding='utf-8'))
+                self._apply_cache_data(cache_data)
+                if self.verbose:
+                    print(f"[SKILLS] WARN: Supabase no disponible, usando cache stale ({len(SkillsImplicitExtractor._equiv_lookup)} URIs)")
+            except Exception:
+                pass
+
+    def _load_equivalences_from_supabase(self) -> bool:
+        """Load equivalences from Supabase. Returns True on success."""
+        try:
+            config_path = Path(__file__).parent.parent / "config" / "supabase_config.json"
+            if not config_path.exists():
+                return False
+
+            supabase_config = json.loads(config_path.read_text())
+            from supabase import create_client
+            client = create_client(supabase_config['url'], supabase_config['service_role_key'])
+
+            # Paginate lookups
+            all_lookups = []
+            offset = 0
+            while True:
+                batch = client.table('skill_equivalence_lookup').select(
+                    'skill_uri,equivalence_id'
+                ).range(offset, offset + 999).execute()
+                all_lookups.extend(batch.data or [])
+                if len(batch.data or []) < 1000:
+                    break
+                offset += 1000
+
+            for row in all_lookups:
+                SkillsImplicitExtractor._equiv_lookup[row['skill_uri']] = row['equivalence_id']
+
+            # Load group labels
+            groups = client.table('skill_equivalences').select(
+                'id,label_representante,label_argentino'
+            ).execute()
+            for row in (groups.data or []):
+                SkillsImplicitExtractor._equiv_groups[row['id']] = {
+                    'label': row.get('label_argentino') or row['label_representante'],
+                    'label_original': row['label_representante'],
+                }
+
+            return len(SkillsImplicitExtractor._equiv_lookup) > 0
+        except Exception as e:
+            if self.verbose:
+                print(f"[SKILLS] WARN: No se pudieron cargar equivalencias desde Supabase: {e}")
+            return False
+
+    def _save_equivalences_cache(self, cache_path: Path):
+        """Save current equivalences to local JSON cache."""
+        from datetime import datetime, timezone
+        import hashlib
+
+        lookups = [
+            {'skill_uri': uri, 'equivalence_id': eid}
+            for uri, eid in SkillsImplicitExtractor._equiv_lookup.items()
+        ]
+        groups = [
+            {'id': gid, 'label': info.get('label', ''), 'label_original': info.get('label_original', '')}
+            for gid, info in SkillsImplicitExtractor._equiv_groups.items()
+        ]
+
+        cache_data = {
+            '_cache_timestamp': datetime.now(timezone.utc).isoformat(),
+            '_cache_version': hashlib.md5(json.dumps(len(lookups)).encode()).hexdigest()[:8],
+            '_cache_uris': len(lookups),
+            '_cache_groups': len(groups),
+            'lookups': lookups,
+            'groups': groups,
+        }
+
+        try:
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(cache_path, 'w', encoding='utf-8') as f:
+                json.dump(cache_data, f, ensure_ascii=False)
+        except Exception as e:
+            if self.verbose:
+                print(f"[SKILLS] WARN: No se pudo guardar cache: {e}")
+
+    def _apply_cache_data(self, cache_data: dict):
+        """Apply cached equivalences data to class-level attributes."""
+        for entry in cache_data.get('lookups', []):
+            SkillsImplicitExtractor._equiv_lookup[entry['skill_uri']] = entry.get('equivalence_id')
+        for entry in cache_data.get('groups', []):
+            SkillsImplicitExtractor._equiv_groups[entry['id']] = {
+                'label': entry.get('label', ''),
+                'label_original': entry.get('label_original', ''),
+            }
+
+    # ============================================================
+    # E2.2: Argentino boost — rerank skills post-matching
+    # ============================================================
+
+    _argentino_cache: Dict[str, Dict] = None  # occupation_uri → {skills: {esco_uri: frequency}, max_freq: int}
+
+    @classmethod
+    def _load_argentino_cache(cls, verbose: bool = False) -> Dict[str, Dict]:
+        """
+        Carga esco_argentino desde Supabase y construye cache de boost por ocupación.
+
+        Cache format:
+            {occupation_uri: {"skills": {esco_uri: frequency, ...}, "max_freq": int}}
+
+        Degrada sin error si Supabase no está disponible.
+        """
+        if cls._argentino_cache is not None:
+            return cls._argentino_cache
+
+        cls._argentino_cache = {}
+        try:
+            config_path = Path(__file__).parent.parent / "config" / "supabase_config.json"
+            if not config_path.exists():
+                if verbose:
+                    print("[BOOST] WARN: supabase_config.json no encontrado, boost deshabilitado")
+                return cls._argentino_cache
+
+            supabase_config = json.loads(config_path.read_text())
+            from supabase import create_client
+            client = create_client(supabase_config['url'], supabase_config['service_role_key'])
+
+            result = client.table('esco_argentino').select(
+                'esco_occupation_uri,skills_consolidadas'
+            ).execute()
+
+            for row in (result.data or []):
+                uri = row.get('esco_occupation_uri')
+                skills_raw = row.get('skills_consolidadas') or []
+                if not uri or not skills_raw:
+                    continue
+
+                skill_map = {}
+                for s in skills_raw:
+                    esco_uri = s.get('esco_uri')
+                    freq = s.get('frequency', 1)
+                    if esco_uri:
+                        skill_map[esco_uri] = freq
+
+                max_freq = max(skill_map.values()) if skill_map else 1
+                cls._argentino_cache[uri] = {
+                    "skills": skill_map,
+                    "max_freq": max_freq,
+                }
+
+            if verbose:
+                print(f"[BOOST] Cache argentino cargado: {len(cls._argentino_cache)} ocupaciones")
+
+        except Exception as e:
+            if verbose:
+                print(f"[BOOST] WARN: No se pudo cargar esco_argentino: {e}")
+            # Graceful degradation — cache queda vacío pero no None
+            cls._argentino_cache = {}
+
+        return cls._argentino_cache
+
+    def rerank_with_argentino_boost(
+        self,
+        skills: List[Dict],
+        occupation_uri: str,
+    ) -> List[Dict]:
+        """
+        E2.2: Re-rankea skills aplicando boost del perfil argentino.
+
+        Para skills que están en el perfil esco_argentino de la ocupación,
+        incrementa el score proporcionalmente a la frecuencia observada.
+
+        boost_factor = 0.05 * (frequency / max_frequency)
+
+        Args:
+            skills: Lista de skills extraídas (cada una con skill_uri, score, etc.)
+            occupation_uri: URI de la ocupación ESCO matcheada
+
+        Returns:
+            Skills re-ordenadas por score descendente, con boost_applied=True donde aplica.
+            Si no hay perfil argentino → retorna skills sin cambios.
+        """
+        cache = self._load_argentino_cache(verbose=self.verbose)
+
+        perfil = cache.get(occupation_uri)
+        if not perfil:
+            return skills
+
+        skill_map = perfil["skills"]
+        max_freq = perfil["max_freq"]
+
+        boosted = []
+        for s in skills:
+            s_copy = dict(s)
+            uri = s_copy.get("skill_uri", "")
+            if uri in skill_map:
+                freq = skill_map[uri]
+                boost_factor = 0.05 * (freq / max_freq)
+                original_score = s_copy.get("score", 0.0)
+                s_copy["score"] = min(1.0, original_score + boost_factor)
+                # Also boost score_ponderado if present
+                if "score_ponderado" in s_copy:
+                    s_copy["score_ponderado"] = min(1.0, s_copy["score_ponderado"] + boost_factor)
+                s_copy["boost_applied"] = True
+                s_copy["boost_factor"] = round(boost_factor, 4)
+            else:
+                s_copy["boost_applied"] = False
+            boosted.append(s_copy)
+
+        # Re-sort by score descending
+        boosted.sort(key=lambda x: x.get("score", 0.0), reverse=True)
+        return boosted
+
     def is_ready(self) -> bool:
         """Verifica si el extractor está listo (tiene embeddings cargados)."""
         return self.embeddings.size > 0 and len(self.metadata) > 0
@@ -599,7 +1073,8 @@ class SkillsImplicitExtractor:
         nivel_seniority: str = None,
         area_funcional: str = None,
         top_k: int = None,
-        threshold: float = None
+        threshold: float = None,
+        track_failures: bool = False
     ) -> Dict:
         """
         v2.3: Extracción DUAL de skills: reglas + semántico.
@@ -695,7 +1170,7 @@ class SkillsImplicitExtractor:
         # ============================================
         # PASO 2: Extraer semántico (SIEMPRE)
         # ============================================
-        skills_semantico = self.extract_skills(
+        _extract_result = self.extract_skills(
             titulo_limpio=titulo_limpio,
             tareas_explicitas=tareas_explicitas,
             skills_nlp=skills_nlp,
@@ -704,11 +1179,19 @@ class SkillsImplicitExtractor:
             nivel_seniority=nivel_seniority,
             area_funcional=area_funcional,
             top_k=top_k,
-            threshold=threshold
+            threshold=threshold,
+            track_failures=track_failures
         )
+        if track_failures:
+            skills_semantico, failures_semantico = _extract_result
+        else:
+            skills_semantico = _extract_result
+            failures_semantico = []
 
         if self.verbose:
             print(f"[DUAL] Skills semántico: {len(skills_semantico)} extraídas")
+            if track_failures and failures_semantico:
+                print(f"[DUAL] Textos fallidos: {len(failures_semantico)}")
 
         # ============================================
         # PASO 3: Determinar dual_coinciden_skills
@@ -764,8 +1247,185 @@ class SkillsImplicitExtractor:
             "nombre_regla": nombre_regla,
             "dual_coinciden_skills": dual_coinciden_skills,
             "skills_final": skills_final,
-            "metodo_primario": metodo_primario
+            "metodo_primario": metodo_primario,
+            "failures": failures_semantico
         }
+
+    # ================================================================
+    # M-08: Fuentes declaradas
+    # ================================================================
+
+    def _parse_declared_source(self, campo: str, texto) -> List[str]:
+        """
+        M-08: Parsea una fuente declarada a lista de strings limpia.
+        Maneja JSON array, semicolon, comma, y texto libre.
+        """
+        if not texto or texto in ('', '[]', 'null', 'None'):
+            return []
+
+        if isinstance(texto, list):
+            items = []
+            for item in texto:
+                if isinstance(item, dict):
+                    v = item.get("valor") or item.get("texto_original") or ""
+                    if v:
+                        items.append(v)
+                elif isinstance(item, str) and item.strip():
+                    items.append(item.strip())
+            texto_str = "; ".join(items) if items else ""
+        else:
+            texto_str = str(texto).strip()
+
+        if not texto_str:
+            return []
+
+        items = []
+
+        # JSON array
+        if texto_str.startswith('['):
+            try:
+                import json as _json
+                parsed = _json.loads(texto_str)
+                for item in parsed:
+                    if isinstance(item, dict):
+                        v = item.get("valor") or item.get("texto_original") or ""
+                        if v:
+                            items.append(v.strip())
+                    elif isinstance(item, str) and item.strip():
+                        items.append(item.strip())
+            except (ValueError, TypeError):
+                # JSON inválido — fallback a split
+                cleaned = texto_str.strip('[]')
+                items = [s.strip().strip('"').strip("'") for s in cleaned.split(',') if s.strip()]
+
+        # Soft skills: comma-separated + split por ' y '
+        elif campo == 'soft_skills_list':
+            for part in texto_str.split(','):
+                part = part.strip()
+                if not part:
+                    continue
+                # Split por ' y ' para frases compuestas
+                if ' y ' in part and len(part) > 20:
+                    subparts = part.split(' y ')
+                    items.extend(s.strip() for s in subparts if s.strip())
+                else:
+                    items.append(part)
+
+        # Semicolon (tecnologias, herramientas, skills_tecnicas con ;)
+        elif ';' in texto_str:
+            items = [s.strip() for s in texto_str.split(';') if s.strip()]
+
+        # Comma fallback
+        elif ',' in texto_str:
+            items = [s.strip() for s in texto_str.split(',') if s.strip()]
+
+        # Texto libre sin separador
+        else:
+            items = [texto_str.strip()] if texto_str.strip() else []
+
+        # Filtrar vacíos y muy cortos
+        items = [s for s in items if s and len(s) > 1]
+
+        # Deduplicar preservando orden
+        seen = set()
+        deduped = []
+        for item in items:
+            key = item.lower().strip()
+            if key not in seen:
+                seen.add(key)
+                deduped.append(item)
+        items = deduped
+
+        # Normalizar case según campo
+        if campo in ('soft_skills_list', 'skills_tecnicas_list'):
+            items = [s.lower().strip() for s in items]
+        else:
+            items = [s.strip() for s in items]  # preservar case para nombres propios
+
+        # Limitar cantidad
+        max_items = 20 if campo == 'soft_skills_list' else 15
+        return items[:max_items]
+
+    def extract_declared_skills(
+        self,
+        oferta_nlp: Dict,
+        track_failures: bool = False
+    ):
+        """
+        M-08: Extrae skills ESCO de las 4 fuentes declaradas.
+
+        Para cada fuente: parsear → embeddear → coseno top 1 → equivalencias.
+        Retorna tupla (declared_skills, declared_failures).
+        """
+        if not self.embeddings.size:
+            return ([], [])
+
+        threshold = self.threshold
+        declared_skills = []
+        declared_failures = []
+
+        sources = [
+            ('skills_tecnicas_list', 'skills_nlp_declarada'),
+            ('tecnologias_list', 'tecnologia_declarada'),
+            ('herramientas_list', 'herramienta_declarada'),
+            ('soft_skills_list', 'soft_skill_declarada'),
+        ]
+
+        for campo, tipo_fuente in sources:
+            texto = oferta_nlp.get(campo, '')
+            items = self._parse_declared_source(campo, texto)
+
+            if not items:
+                continue
+
+            for item in items:
+                # Embeddear
+                item_emb = self.model.encode(item, normalize_embeddings=True)
+
+                # Coseno contra todas las skills ESCO
+                similarities = np.dot(self.embeddings, item_emb)
+
+                # Top 1
+                best_idx = np.argmax(similarities)
+                score = round(float(similarities[best_idx]), 4)
+
+                if score >= threshold:
+                    skill_meta = self.metadata[best_idx]
+                    skill_label = skill_meta.get('label', skill_meta.get('preferred_label_es', ''))
+                    skill_uri = skill_meta.get('uri', skill_meta.get('skill_uri', ''))
+
+                    # Aplicar equivalencias
+                    equiv_group = self.equiv_lookup.get(skill_uri)
+                    if equiv_group and equiv_group in self.equiv_groups:
+                        group_info = self.equiv_groups[equiv_group]
+                        skill_label = group_info['label']
+
+                    declared_skills.append({
+                        "skill_esco": skill_label,
+                        "skill_uri": skill_uri,
+                        "score": score,
+                        "score_ponderado": score,
+                        "peso": 1.0,
+                        "origen": tipo_fuente,
+                        "texto_fuente": item[:100]
+                    })
+
+                    if self.verbose:
+                        print(f"[M-08] [{tipo_fuente}] '{item[:40]}' -> '{skill_label}' (score={score:.3f})")
+
+                elif track_failures:
+                    best_meta = self.metadata[best_idx]
+                    declared_failures.append({
+                        "tarea_texto": item[:200],
+                        "tarea_origen": tipo_fuente,
+                        "mejor_skill_uri": best_meta.get('uri', best_meta.get('skill_uri', '')),
+                        "mejor_skill_label": best_meta.get('label', best_meta.get('preferred_label_es', '')),
+                        "mejor_score": score,
+                        "threshold_usado": threshold,
+                        "gap_al_umbral": round(threshold - score, 4)
+                    })
+
+        return (declared_skills, declared_failures)
 
     def compare_skills_with_occupation(
         self,
