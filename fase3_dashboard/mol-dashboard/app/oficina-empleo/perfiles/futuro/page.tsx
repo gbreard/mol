@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { Loader2, Map, Check, X as XIcon, ArrowRight, ExternalLink, ChevronDown, ChevronUp, BookOpen } from 'lucide-react'
+import { Loader2, Map, Check, X as XIcon, ArrowRight, ExternalLink, ChevronDown, ChevronUp, BookOpen, MessageSquare } from 'lucide-react'
 import { createBrowserClient } from '@supabase/ssr'
 import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
 
@@ -103,6 +103,11 @@ export default function FuturoLaboralPage() {
     r2: number
     suficiente: boolean
   } | null>(null)
+
+  // AI recommendation
+  const [recomendacion, setRecomendacion] = useState<string | null>(null)
+  const [loadingReco, setLoadingReco] = useState(false)
+  const [recoError, setRecoError] = useState(false)
 
   // Loading & errors
   const [loadingPerfil, setLoadingPerfil] = useState(false)
@@ -389,6 +394,8 @@ export default function FuturoLaboralPage() {
 
   function handleSelectOcc(occ: OccDetail) {
     setSelectedOcc(occ)
+    setRecomendacion(null)
+    setRecoError(false)
     loadMolProfile(occ.uri, occ.isco_code)
   }
 
@@ -401,7 +408,68 @@ export default function FuturoLaboralPage() {
       optionalCount: 0,
     }
     setSelectedOcc(occ)
+    setRecomendacion(null)
+    setRecoError(false)
     loadMolProfile(occ.uri, occ.isco_code)
+  }
+
+  async function handlePedirRecomendacion() {
+    if (!perfil || !selectedOcc || !gapAnalysis) return
+    setLoadingReco(true)
+    setRecoError(false)
+    setRecomendacion(null)
+    try {
+      const res = await fetch('/api/trayectoria-laboral', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          perfil: {
+            nombre: perfil.nombre,
+            skills_count: perfilSkills.length,
+            ubicacion: perfilProvincia,
+          },
+          ocupacion: {
+            label: selectedOcc.label,
+            isco_code: selectedOcc.isco_code,
+            compatibilidad: gapAnalysis.compatibility,
+            esenciales_total: gapAnalysis.essentialTotal,
+            cubiertas: gapAnalysis.sharedEssential.length,
+          },
+          tendencia: demandTrend ? {
+            trend_label: demandTrend.trend === 'up' ? 'creciendo' : demandTrend.trend === 'down' ? 'cayendo' : 'estable',
+            ofertas_total: molOfertasCount,
+            volatilidad: demandTrend.volatility === 'alta' ? 'volatil' : demandTrend.volatility === 'media' ? 'variable' : 'estable',
+          } : { trend_label: 'insuficiente', ofertas_total: molOfertasCount, volatilidad: 'desconocida' },
+          gap_skills: gapAnalysis.gapEssential.map((s: any) => ({
+            label: s.label,
+            frecuencia_mercado: molFreqs[`http://data.europa.eu/esco/skill/${s.id}`] || null,
+          })),
+          skills_tiene: gapAnalysis.sharedEssential.slice(0, 5).map((s: any) => ({ label: s.label })),
+          cursos: cursosGap.slice(0, 5).map((c: any) => ({
+            titulo: c.titulo,
+            institucion: c.institucion,
+            skills_cubiertas: c.skills_cubiertas,
+            provincia: c.provincia,
+          })),
+          alternativas: alternatives.slice(0, 3).map((a: any) => ({
+            label: a.label,
+            match: a.matchScore,
+            ofertas: a.ofertasCount,
+            tendencia: 'sin datos',
+          })),
+        }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setRecomendacion(data.recomendacion || null)
+      } else {
+        setRecoError(true)
+      }
+    } catch {
+      setRecoError(true)
+    } finally {
+      setLoadingReco(false)
+    }
   }
 
   const ofertasBadge = (count: number) => count >= 5 ? '🟢' : count >= 1 ? '🟡' : '⚪'
@@ -617,6 +685,60 @@ export default function FuturoLaboralPage() {
                   </div>
                 )}
                 {loadingMol && <p className="text-[10px] text-gray-400 mt-2">Cargando datos de mercado...</p>}
+              </div>
+            )}
+
+            {/* Panel 2a — Recomendación IA */}
+            {gapAnalysis && (
+              <div className="bg-white rounded-xl border border-gray-200 p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <MessageSquare className="w-4 h-4 text-purple-600" />
+                  <h3 className="text-sm font-semibold text-purple-700">Recomendación personalizada</h3>
+                </div>
+
+                {!recomendacion && !loadingReco && !recoError && (
+                  <div className="text-center py-3">
+                    <p className="text-xs text-gray-400 mb-3">
+                      Analizamos el perfil, el gap de competencias, los cursos disponibles y la demanda del mercado para darte una recomendación concreta.
+                    </p>
+                    <button
+                      onClick={handlePedirRecomendacion}
+                      className="inline-flex items-center gap-1.5 bg-purple-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5" />
+                      Pedir recomendación
+                    </button>
+                  </div>
+                )}
+
+                {loadingReco && (
+                  <div className="flex items-center justify-center gap-2 py-6 text-purple-400">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span className="text-xs">Analizando perfil y mercado...</span>
+                  </div>
+                )}
+
+                {recoError && (
+                  <div className="text-center py-3">
+                    <p className="text-xs text-red-500 mb-2">No se pudo generar la recomendación.</p>
+                    <button
+                      onClick={handlePedirRecomendacion}
+                      className="text-xs text-purple-600 hover:text-purple-700 font-medium"
+                    >
+                      Reintentar
+                    </button>
+                  </div>
+                )}
+
+                {recomendacion && (
+                  <div>
+                    <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{recomendacion}</p>
+                    <p className="text-[9px] text-gray-300 mt-3 leading-snug">
+                      Generado con IA a partir de {molOfertasCount > 0 ? `${molOfertasCount} ofertas y ` : ''}datos del mercado laboral argentino.
+                      Esta recomendación es orientativa y no constituye asesoramiento profesional.
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 
