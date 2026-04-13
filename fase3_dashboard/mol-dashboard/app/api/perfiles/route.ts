@@ -49,10 +49,11 @@ export async function GET(request: NextRequest) {
 
   // List all perfiles with persona info (for M1 perfiles list)
   const limit = parseInt(request.nextUrl.searchParams.get('limit') || '100');
+  const offset = parseInt(request.nextUrl.searchParams.get('offset') || '0');
 
   const { data: perfiles, error } = await client.from('perfiles')
     .select('id, persona_id, origen, completitud, estado, validado_at, ocupaciones, updated_at, personas(nombre, dni)')
-    .order('updated_at', { ascending: false }).limit(limit);
+    .order('updated_at', { ascending: false }).range(offset, offset + limit - 1);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   let result = perfiles || [];

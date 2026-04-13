@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { X, Briefcase, ExternalLink, Loader2 } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { X, Briefcase, ExternalLink, Loader2, RefreshCw } from 'lucide-react'
 import { getOfertasByIsco } from '@/lib/supabase'
 
 interface Props {
@@ -16,19 +16,24 @@ export function OfertasModal({ isOpen, onClose, iscoCode, label, provincia }: Pr
   const [ofertas, setOfertas] = useState<any[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+
+  const loadOfertas = useCallback(() => {
+    if (!iscoCode) return
+    setLoading(true)
+    setError(false)
+    getOfertasByIsco(iscoCode, 100, 0, provincia)
+      .then(({ ofertas: data, total: count }) => {
+        setOfertas(data)
+        setTotal(count)
+      })
+      .catch(() => setError(true))
+      .finally(() => setLoading(false))
+  }, [iscoCode, provincia])
 
   useEffect(() => {
-    if (isOpen && iscoCode) {
-      setLoading(true)
-      getOfertasByIsco(iscoCode, 100, 0, provincia)
-        .then(({ ofertas: data, total: count }) => {
-          setOfertas(data)
-          setTotal(count)
-        })
-        .catch(() => {})
-        .finally(() => setLoading(false))
-    }
-  }, [isOpen, iscoCode])
+    if (isOpen && iscoCode) loadOfertas()
+  }, [isOpen, iscoCode, provincia, loadOfertas])
 
   if (!isOpen) return null
 
@@ -54,6 +59,16 @@ export function OfertasModal({ isOpen, onClose, iscoCode, label, provincia }: Pr
             <div className="flex items-center justify-center py-12 gap-2">
               <Loader2 className="w-5 h-5 animate-spin text-teal-600" />
               <span className="text-sm text-gray-500">Cargando ofertas...</span>
+            </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <p className="text-sm text-gray-500 mb-3">No se pudieron cargar las ofertas. Intentá de nuevo.</p>
+              <button
+                onClick={loadOfertas}
+                className="inline-flex items-center gap-1.5 text-sm text-teal-600 hover:text-teal-700 font-medium"
+              >
+                <RefreshCw className="w-4 h-4" /> Reintentar
+              </button>
             </div>
           ) : ofertas.length === 0 ? (
             <div className="text-center py-12">

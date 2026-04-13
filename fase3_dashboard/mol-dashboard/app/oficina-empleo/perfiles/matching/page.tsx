@@ -1,12 +1,11 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Loader2, Target, ArrowUpDown } from 'lucide-react'
 import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
 import { PersonaSelector, type PerfilResumen } from '@/components/oficina-empleo/PersonaSelector'
 import { OccupationMatchCard } from '@/components/oficina-empleo/OccupationMatchCard'
-import { type OccSkillDetail } from '@/components/oficina-empleo/getSkillsForOccupation'
 import { calculateOccupationMatch, type ProfileSkill } from '@/lib/matching'
 import { createBrowserClient } from '@supabase/ssr'
 
@@ -57,9 +56,6 @@ export default function MatchingPage() {
   const [modalIsco, setModalIsco] = useState('')
   const [modalLabel, setModalLabel] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
-
-  // Cache for expanded card skills
-  const occSkillsCache = useRef<Record<string, OccSkillDetail[]>>({})
 
   // Load occupation JSON + ofertas count on mount
   useEffect(() => {
@@ -162,21 +158,6 @@ export default function MatchingPage() {
     url.searchParams.delete('perfil_id')
     router.replace(url.pathname, { scroll: false })
   }
-
-  const handleLoadOccSkills = useCallback(async (uri: string): Promise<OccSkillDetail[]> => {
-    if (occSkillsCache.current[uri]) return occSkillsCache.current[uri]
-    // Use occupation_full_detail.json directly (already loaded)
-    const occId = uri.split('/').pop() || ''
-    if (occupationsData?.[occId]?.skills) {
-      const occ = occupationsData[occId]
-      const essential = (occ.skills.essential || []).map((s: any) => ({ ...s, type: 'skill', essential: true, total: 0 }))
-      const optional = (occ.skills.optional || []).map((s: any) => ({ ...s, type: 'skill', essential: false, total: 0 }))
-      const skills = [...essential, ...optional]
-      occSkillsCache.current[uri] = skills
-      return skills
-    }
-    return []
-  }, [occupationsData])
 
   function handleOpenModal(iscoCode: string, label: string) {
     setModalIsco(iscoCode)
@@ -295,7 +276,6 @@ export default function MatchingPage() {
                 perfilId={perfil!.id}
                 ofertasCount={ofertasCountMap[o.isco_code] || 0}
                 provincia={perfilProvincia}
-                onLoadOccupationSkills={handleLoadOccSkills}
                 onOpenModal={handleOpenModal}
               />
             ))}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { X, Briefcase, Award } from 'lucide-react'
 import type { SelectedSkill, SelectedOccupation, NivelMaestria } from './useSkillCapture'
 
@@ -215,6 +215,7 @@ function SkillRow({ skill, onRemove, onUpdateNivel, onToggleCertificado }: {
   onToggleCertificado?: (uri: string) => void
 }) {
   const nivel = skill.nivel || 'intermedio'
+  const [confirmingRemove, setConfirmingRemove] = useState(false)
 
   return (
     <div className="border border-gray-100 rounded-lg px-2 py-1.5">
@@ -225,12 +226,29 @@ function SkillRow({ skill, onRemove, onUpdateNivel, onToggleCertificado }: {
         {skill.essential_for_occupation && (
           <span className="text-[10px] bg-teal-100 text-teal-700 px-1 py-0.5 rounded shrink-0">esencial</span>
         )}
-        <button
-          onClick={() => onRemove(skill.uri)}
-          className="text-gray-300 hover:text-red-400 shrink-0"
-        >
-          <X className="w-3.5 h-3.5" />
-        </button>
+        {!confirmingRemove ? (
+          <button
+            onClick={() => setConfirmingRemove(true)}
+            className="text-gray-300 hover:text-red-400 shrink-0"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        ) : (
+          <span className="flex items-center gap-1 shrink-0">
+            <button
+              onClick={() => onRemove(skill.uri)}
+              className="text-[10px] font-medium text-red-600 hover:text-red-700 px-1"
+            >
+              Si
+            </button>
+            <button
+              onClick={() => setConfirmingRemove(false)}
+              className="text-[10px] font-medium text-gray-400 hover:text-gray-600 px-1"
+            >
+              No
+            </button>
+          </span>
+        )}
       </div>
       {/* Bottom row: nivel buttons + certificado */}
       <div className="flex items-center gap-1 mt-1">

@@ -126,7 +126,7 @@ export default function BrechaCalificacionPage() {
 
   return (
     <div className="p-8 max-w-6xl mx-auto space-y-6">
-        <OEBreadcrumb items={[{ label: "Indicadores", href: "/oficina-empleo/dashboard-ejecutivo" }, { label: "Brecha Calificacion" }]} />
+        <OEBreadcrumb items={[{ label: "Indicadores", href: "/oficina-empleo" }, { label: "Brecha Calificacion" }]} />
       {/* Header */}
       <div>
         <Link

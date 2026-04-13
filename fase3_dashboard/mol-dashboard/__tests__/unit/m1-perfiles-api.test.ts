@@ -27,7 +27,7 @@ describe('GET /api/perfiles (list all — M1 perfiles list)', () => {
     mockFrom.mockReturnValue({
       select: () => ({
         order: () => ({
-          limit: () => Promise.resolve({ data: mockPerfiles, error: null }),
+          range: () => Promise.resolve({ data: mockPerfiles, error: null }),
         }),
       }),
     })
@@ -50,7 +50,7 @@ describe('GET /api/perfiles (list all — M1 perfiles list)', () => {
     mockFrom.mockReturnValue({
       select: () => ({
         order: () => ({
-          limit: () => Promise.resolve({ data: mockPerfiles, error: null }),
+          range: () => Promise.resolve({ data: mockPerfiles, error: null }),
         }),
       }),
     })

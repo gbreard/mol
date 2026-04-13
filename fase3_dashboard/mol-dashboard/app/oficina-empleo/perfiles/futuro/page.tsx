@@ -554,22 +554,7 @@ export default function FuturoLaboralPage() {
 
             {/* Panel 4 — Skills transferibles */}
             {gapAnalysis.transferable.length > 0 && (
-              <div className="bg-white rounded-xl border border-gray-200 p-4">
-                <h3 className="text-sm font-semibold text-blue-700 mb-1">
-                  Skills transferibles ({gapAnalysis.transferable.length})
-                </h3>
-                <p className="text-xs text-gray-400 mb-2">Las tiene pero la ocupación objetivo no las requiere</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {gapAnalysis.transferable.slice(0, 10).map((s, i) => (
-                    <span key={i} className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded">
-                      {s.skill_label}
-                    </span>
-                  ))}
-                  {gapAnalysis.transferable.length > 10 && (
-                    <span className="text-xs text-gray-400">+{gapAnalysis.transferable.length - 10} más</span>
-                  )}
-                </div>
-              </div>
+              <TransferableSkillsPanel skills={gapAnalysis.transferable} />
             )}
 
             {/* Panel 5 — Caminos alternativos (solo si gap ≥ 3) */}
@@ -616,6 +601,44 @@ export default function FuturoLaboralPage() {
         label={selectedOcc?.label || ''}
         provincia={perfilProvincia}
       />
+    </div>
+  )
+}
+
+function TransferableSkillsPanel({ skills }: { skills: ProfileSkill[] }) {
+  const [showAll, setShowAll] = useState(false)
+  const visible = showAll ? skills : skills.slice(0, 10)
+  const hiddenCount = skills.length - 10
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-4">
+      <h3 className="text-sm font-semibold text-blue-700 mb-1">
+        Skills transferibles ({skills.length})
+      </h3>
+      <p className="text-xs text-gray-400 mb-2">Las tiene pero la ocupacion objetivo no las requiere</p>
+      <div className="flex flex-wrap gap-1.5">
+        {visible.map((s, i) => (
+          <span key={i} className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded">
+            {s.skill_label || s.skill_uri}
+          </span>
+        ))}
+        {!showAll && hiddenCount > 0 && (
+          <button
+            onClick={() => setShowAll(true)}
+            className="text-xs text-blue-600 hover:text-blue-700 font-medium px-2 py-0.5"
+          >
+            +{hiddenCount} mas — Ver todas
+          </button>
+        )}
+        {showAll && skills.length > 10 && (
+          <button
+            onClick={() => setShowAll(false)}
+            className="text-xs text-gray-400 hover:text-gray-600 font-medium px-2 py-0.5"
+          >
+            Ver menos
+          </button>
+        )}
+      </div>
     </div>
   )
 }

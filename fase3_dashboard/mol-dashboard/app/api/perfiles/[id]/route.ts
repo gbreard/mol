@@ -45,6 +45,24 @@ export async function PATCH(
   return NextResponse.json(data);
 }
 
+// DELETE /api/perfiles/[id] — eliminar perfil y sus skills
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const client = getSupabaseAdmin();
+  if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
+
+  // Delete skills first (FK dependency)
+  await client.from('perfil_skills').delete().eq('perfil_id', id);
+
+  const { error } = await client.from('perfiles').delete().eq('id', id);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  return NextResponse.json({ deleted: true });
+}
+
 // PUT /api/perfiles/[id] — editar perfil completo (persona + ocupaciones + skills)
 export async function PUT(
   request: NextRequest,
