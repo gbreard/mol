@@ -85,41 +85,29 @@ export default function MatchingPage() {
       .catch(() => setDataError('No se pudieron cargar las ocupaciones. Recargá la página.'))
   }, [])
 
-  // Load ofertas count (re-runs when time period changes)
+  // Load ofertas count (re-runs when time period or provincia changes)
   useEffect(() => {
     setCountLoading(true)
     const since = getSinceDate(timePeriod)
 
-    // Try RPC first (fast, pre-aggregated); fallback to direct query with date filter
-    if (!since) {
-      // Historical: use RPC (no date filter needed)
-      getSupabase().rpc('get_ofertas_count_by_isco').then(({ data, error }) => {
-        if (!error && data) {
-          const map: Record<string, number> = {}
-          for (const row of data) map[row.isco_code] = Number(row.count)
-          setOfertasCountMap(map)
+    // Direct query with optional date + provincia filter
+    let query = getSupabase()
+      .from('ofertas_dashboard')
+      .select('isco_code')
+      .not('isco_code', 'is', null)
+    if (since) query = query.gte('fecha_publicacion', since)
+    if (perfilProvincia) query = query.eq('provincia', perfilProvincia)
+    query.then(({ data, error }) => {
+      if (!error && data) {
+        const map: Record<string, number> = {}
+        for (const row of data as any[]) {
+          if (row.isco_code) map[row.isco_code] = (map[row.isco_code] || 0) + 1
         }
-        setCountLoading(false)
-      })
-    } else {
-      // With date filter: direct query (RPC doesn't support since param)
-      let query = getSupabase()
-        .from('ofertas_dashboard')
-        .select('isco_code')
-        .not('isco_code', 'is', null)
-        .gte('fecha_publicacion', since)
-      query.then(({ data, error }) => {
-        if (!error && data) {
-          const map: Record<string, number> = {}
-          for (const row of data as any[]) {
-            if (row.isco_code) map[row.isco_code] = (map[row.isco_code] || 0) + 1
-          }
-          setOfertasCountMap(map)
-        }
-        setCountLoading(false)
-      })
-    }
-  }, [timePeriod])
+        setOfertasCountMap(map)
+      }
+      setCountLoading(false)
+    })
+  }, [timePeriod, perfilProvincia])
 
   // Load profile skills when perfil is selected
   const loadPerfilSkills = useCallback(async (perfilId: string) => {

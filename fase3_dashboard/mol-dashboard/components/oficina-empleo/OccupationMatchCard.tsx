@@ -143,14 +143,14 @@ export function OccupationMatchCard({
                 <div className="border rounded-lg overflow-hidden">
                   <div className="bg-gray-50 px-3 py-2 border-b flex items-center justify-between">
                     <span className="text-xs font-medium text-gray-600">
-                      {ofertasCount} ofertas{ofertas.filter(o => o.estado === 'activa').length > 0 && ` · ${ofertas.filter(o => o.estado === 'activa').length} activas`}
+                      {ofertasCount} oferta{ofertasCount !== 1 ? 's' : ''}
                     </span>
                     {ofertasCount > 0 && (
                       <button
                         onClick={() => onOpenModal(occupation.isco_code, occupation.label)}
                         className="text-xs text-teal-600 hover:text-teal-700 font-medium"
                       >
-                        Ver las {ofertasCount} ofertas →
+                        Ver {ofertasCount === 1 ? 'la oferta' : `las ${ofertasCount} ofertas`} →
                       </button>
                     )}
                   </div>
