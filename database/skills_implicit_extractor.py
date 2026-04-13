@@ -52,10 +52,15 @@ from sentence_transformers import SentenceTransformer
 # Configuración centralizada del modelo de embeddings (E1.1)
 sys.path.insert(0, str(Path(__file__).parent.parent / "config"))
 try:
-    from embedding_config import EMBEDDING_MODEL, EMBEDDING_REVISION
+    from embedding_config import (
+        EMBEDDING_MODEL, EMBEDDING_REVISION,
+        EQUIVALENCES_CACHE_TTL_HOURS, EQUIVALENCES_CACHE_PATH,
+    )
 except ImportError:
     EMBEDDING_MODEL = "BAAI/bge-m3"
     EMBEDDING_REVISION = None
+    EQUIVALENCES_CACHE_TTL_HOURS = 24
+    EQUIVALENCES_CACHE_PATH = "config/skill_equivalences_lookup.json"
 
 # Categorización jerárquica L1/L2 para dashboards
 # v2.0: Usa datos ESCO directos del RDF (sin hardcoding)
@@ -189,59 +194,19 @@ class SkillsImplicitExtractor:
 
         self.terminology_config = SkillsImplicitExtractor._terminology_config
 
-        # v2.6: Cargar tabla de equivalencias (URI → grupo)
+        # v2.6+cache: Cargar tabla de equivalencias (URI → grupo) con cache local
         if not hasattr(SkillsImplicitExtractor, '_equiv_lookup') or SkillsImplicitExtractor._equiv_lookup is None:
-            SkillsImplicitExtractor._equiv_lookup = {}  # uri → {group_id, label_representante, label_argentino}
-            SkillsImplicitExtractor._equiv_groups = {}  # group_id → {label_representante, label_argentino}
+            SkillsImplicitExtractor._equiv_lookup = {}
+            SkillsImplicitExtractor._equiv_groups = {}
+            force_refresh = getattr(SkillsImplicitExtractor, '_force_refresh_cache', False)
             try:
-                equiv_path = Path(__file__).parent.parent / "config" / "skill_equivalences_lookup.json"
-                if equiv_path.exists():
-                    with open(equiv_path, 'r', encoding='utf-8') as f:
-                        lookup_data = json.load(f)
-                    for entry in lookup_data:
-                        SkillsImplicitExtractor._equiv_lookup[entry['skill_uri']] = entry.get('equivalence_id')
-                    if self.verbose:
-                        print(f"[SKILLS] Equivalencias cargadas: {len(SkillsImplicitExtractor._equiv_lookup)} URIs")
-                else:
-                    # Try loading from Supabase if local file doesn't exist
-                    try:
-                        config_path = Path(__file__).parent.parent / "config" / "supabase_config.json"
-                        if config_path.exists():
-                            import importlib
-                            supabase_config = json.loads(config_path.read_text())
-                            from supabase import create_client
-                            client = create_client(supabase_config['url'], supabase_config['service_role_key'])
-                            # Paginate to get all (Supabase limits to 1000 per request)
-                            all_lookups = []
-                            offset = 0
-                            while True:
-                                batch = client.table('skill_equivalence_lookup').select('skill_uri,equivalence_id').range(offset, offset + 999).execute()
-                                all_lookups.extend(batch.data or [])
-                                if len(batch.data or []) < 1000:
-                                    break
-                                offset += 1000
-                            result = type('R', (), {'data': all_lookups})()
-                            for row in (result.data or []):
-                                SkillsImplicitExtractor._equiv_lookup[row['skill_uri']] = row['equivalence_id']
-                            # Also load group labels
-                            groups = client.table('skill_equivalences').select('id,label_representante,label_argentino').execute()
-                            for row in (groups.data or []):
-                                SkillsImplicitExtractor._equiv_groups[row['id']] = {
-                                    'label': row.get('label_argentino') or row['label_representante'],
-                                    'label_original': row['label_representante'],
-                                }
-                            if self.verbose:
-                                print(f"[SKILLS] Equivalencias cargadas desde Supabase: {len(SkillsImplicitExtractor._equiv_lookup)} URIs, {len(SkillsImplicitExtractor._equiv_groups)} grupos")
-                    except Exception as e:
-                        if self.verbose:
-                            print(f"[SKILLS] WARN: No se pudieron cargar equivalencias: {e}")
+                self._load_equivalences_cached(force_refresh=force_refresh)
             except Exception as e:
                 if self.verbose:
                     print(f"[SKILLS] WARN: Error cargando equivalencias: {e}")
 
         self.equiv_lookup = getattr(SkillsImplicitExtractor, '_equiv_lookup', {}) or {}
         self.equiv_groups = getattr(SkillsImplicitExtractor, '_equiv_groups', {}) or {}
-        self.equiv_groups = SkillsImplicitExtractor._equiv_groups
 
         # v2.5: Cargar sinónimos argentinos para skills (mapeo directo)
         if not hasattr(SkillsImplicitExtractor, '_sinonimos_skills') or SkillsImplicitExtractor._sinonimos_skills is None:
@@ -837,6 +802,144 @@ class SkillsImplicitExtractor:
 
         if self.verbose:
             print(f"[SKILLS] Compatibilidad verificada: modelo y corpus usan {actual_revision[:12]}")
+
+    # ============================================================
+    # Cache local de equivalencias con TTL
+    # ============================================================
+
+    def _load_equivalences_cached(self, force_refresh: bool = False):
+        """
+        Carga equivalencias con cache local (TTL configurable).
+
+        Orden:
+        1. Si cache local existe y tiene < EQUIVALENCES_CACHE_TTL_HOURS → cargar local
+        2. Si no → cargar desde Supabase → guardar cache local
+        3. Si Supabase falla → cargar cache local aunque esté vencido (stale)
+        """
+        from datetime import datetime, timezone
+
+        cache_path = Path(__file__).parent.parent / EQUIVALENCES_CACHE_PATH
+
+        # Check if local cache is valid
+        if not force_refresh and cache_path.exists():
+            try:
+                cache_data = json.loads(cache_path.read_text(encoding='utf-8'))
+                cache_ts = cache_data.get('_cache_timestamp', '')
+                if cache_ts:
+                    cache_time = datetime.fromisoformat(cache_ts)
+                    age_hours = (datetime.now(timezone.utc) - cache_time).total_seconds() / 3600
+                    if age_hours < EQUIVALENCES_CACHE_TTL_HOURS:
+                        # Cache is fresh — use it
+                        self._apply_cache_data(cache_data)
+                        if self.verbose:
+                            print(f"[SKILLS] Equivalencias desde cache local ({age_hours:.1f}h, {len(SkillsImplicitExtractor._equiv_lookup)} URIs)")
+                        return
+                    elif self.verbose:
+                        print(f"[SKILLS] Cache vencido ({age_hours:.1f}h > {EQUIVALENCES_CACHE_TTL_HOURS}h), recargando...")
+            except Exception as e:
+                if self.verbose:
+                    print(f"[SKILLS] WARN: Cache corrupto, recargando: {e}")
+
+        # Load from Supabase
+        loaded = self._load_equivalences_from_supabase()
+
+        if loaded:
+            # Save cache
+            self._save_equivalences_cache(cache_path)
+            if self.verbose:
+                print(f"[SKILLS] Equivalencias desde Supabase: {len(SkillsImplicitExtractor._equiv_lookup)} URIs, {len(SkillsImplicitExtractor._equiv_groups)} grupos (cache guardado)")
+        elif cache_path.exists():
+            # Supabase failed but stale cache exists — use it
+            try:
+                cache_data = json.loads(cache_path.read_text(encoding='utf-8'))
+                self._apply_cache_data(cache_data)
+                if self.verbose:
+                    print(f"[SKILLS] WARN: Supabase no disponible, usando cache stale ({len(SkillsImplicitExtractor._equiv_lookup)} URIs)")
+            except Exception:
+                pass
+
+    def _load_equivalences_from_supabase(self) -> bool:
+        """Load equivalences from Supabase. Returns True on success."""
+        try:
+            config_path = Path(__file__).parent.parent / "config" / "supabase_config.json"
+            if not config_path.exists():
+                return False
+
+            supabase_config = json.loads(config_path.read_text())
+            from supabase import create_client
+            client = create_client(supabase_config['url'], supabase_config['service_role_key'])
+
+            # Paginate lookups
+            all_lookups = []
+            offset = 0
+            while True:
+                batch = client.table('skill_equivalence_lookup').select(
+                    'skill_uri,equivalence_id'
+                ).range(offset, offset + 999).execute()
+                all_lookups.extend(batch.data or [])
+                if len(batch.data or []) < 1000:
+                    break
+                offset += 1000
+
+            for row in all_lookups:
+                SkillsImplicitExtractor._equiv_lookup[row['skill_uri']] = row['equivalence_id']
+
+            # Load group labels
+            groups = client.table('skill_equivalences').select(
+                'id,label_representante,label_argentino'
+            ).execute()
+            for row in (groups.data or []):
+                SkillsImplicitExtractor._equiv_groups[row['id']] = {
+                    'label': row.get('label_argentino') or row['label_representante'],
+                    'label_original': row['label_representante'],
+                }
+
+            return len(SkillsImplicitExtractor._equiv_lookup) > 0
+        except Exception as e:
+            if self.verbose:
+                print(f"[SKILLS] WARN: No se pudieron cargar equivalencias desde Supabase: {e}")
+            return False
+
+    def _save_equivalences_cache(self, cache_path: Path):
+        """Save current equivalences to local JSON cache."""
+        from datetime import datetime, timezone
+        import hashlib
+
+        lookups = [
+            {'skill_uri': uri, 'equivalence_id': eid}
+            for uri, eid in SkillsImplicitExtractor._equiv_lookup.items()
+        ]
+        groups = [
+            {'id': gid, 'label': info.get('label', ''), 'label_original': info.get('label_original', '')}
+            for gid, info in SkillsImplicitExtractor._equiv_groups.items()
+        ]
+
+        cache_data = {
+            '_cache_timestamp': datetime.now(timezone.utc).isoformat(),
+            '_cache_version': hashlib.md5(json.dumps(len(lookups)).encode()).hexdigest()[:8],
+            '_cache_uris': len(lookups),
+            '_cache_groups': len(groups),
+            'lookups': lookups,
+            'groups': groups,
+        }
+
+        try:
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(cache_path, 'w', encoding='utf-8') as f:
+                json.dump(cache_data, f, ensure_ascii=False)
+        except Exception as e:
+            if self.verbose:
+                print(f"[SKILLS] WARN: No se pudo guardar cache: {e}")
+
+    def _apply_cache_data(self, cache_data: dict):
+        """Apply cached equivalences data to class-level attributes."""
+        for entry in cache_data.get('lookups', []):
+            SkillsImplicitExtractor._equiv_lookup[entry['skill_uri']] = entry.get('equivalence_id')
+        for entry in cache_data.get('groups', []):
+            SkillsImplicitExtractor._equiv_groups[entry['id']] = {
+                'label': entry.get('label', ''),
+                'label_original': entry.get('label_original', ''),
+            }
 
     # ============================================================
     # E2.2: Argentino boost — rerank skills post-matching

@@ -679,10 +679,17 @@ def main():
     # Nuevos argumentos para sistema de prioridad
     parser.add_argument("--no-priority", action="store_true", help="Desactivar seleccion por prioridad")
     parser.add_argument("--force-new-batch", action="store_true", help="Forzar nuevo lote ignorando errores pendientes")
+    parser.add_argument("--refresh-cache", action="store_true", help="Forzar recarga de equivalencias desde Supabase")
 
     args = parser.parse_args()
 
     ids = args.ids.split(",") if args.ids else None
+
+    # Set refresh-cache flag for the extractor (class-level, before initialization)
+    if args.refresh_cache:
+        from database.skills_implicit_extractor import SkillsImplicitExtractor
+        SkillsImplicitExtractor._force_refresh_cache = True
+        SkillsImplicitExtractor._equiv_lookup = None  # Force reload
 
     # === SISTEMA DE PRIORIDAD ===
     if args.limit and not args.ids and not args.no_priority:
