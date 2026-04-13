@@ -252,58 +252,39 @@ export default function FuturoLaboralPage() {
     setDemandTrend(null)
     setMolOfertasCount(ofertasCountMap[iscoCode] || 0)
     try {
-      // Get ofertas for this occupation (with date + portal for trend calc)
+      // 1. Read pre-calculated trend from isco_demand_trend (single source of truth)
+      const { data: trendRow } = await getSupabase()
+        .from('isco_demand_trend')
+        .select('*')
+        .eq('isco_code', iscoCode)
+        .maybeSingle()
+
+      if (trendRow) {
+        setMolOfertasCount(trendRow.ofertas_total || 0)
+        const mc: number[] = (typeof trendRow.monthly_counts === 'string'
+          ? JSON.parse(trendRow.monthly_counts) : trendRow.monthly_counts) || []
+        const ml: string[] = (typeof trendRow.monthly_labels === 'string'
+          ? JSON.parse(trendRow.monthly_labels) : trendRow.monthly_labels) || []
+
+        if (trendRow.suficiente) {
+          const trend: 'up' | 'stable' | 'down' =
+            trendRow.trend_label === 'creciendo' ? 'up' : trendRow.trend_label === 'cayendo' ? 'down' : 'stable'
+          const volatility: 'alta' | 'media' | 'baja' =
+            trendRow.volatility_label === 'volatil' ? 'alta' : trendRow.volatility_label === 'variable' ? 'media' : 'baja'
+          const recent = mc.length >= 6 ? (mc[mc.length-3] + mc[mc.length-2] + mc[mc.length-1]) / 3 : 0
+          const previous = mc.length >= 6 ? (mc[mc.length-6] + mc[mc.length-5] + mc[mc.length-4]) / 3 : 0
+          const trendPct = previous > 0 ? Math.round(((recent - previous) / previous) * 100) : 0
+          setDemandTrend({ trend, trendPct, volatility, cv: trendRow.volatility_cv || 0, monthlyCounts: mc, months: ml })
+        }
+      }
+
+      // 2. Load skill frequencies (for "pedida en X% de ofertas")
       const { data: ofertas } = await getSupabase()
         .from('ofertas_dashboard')
-        .select('id_oferta, fecha_publicacion, portal')
+        .select('id_oferta')
         .eq('isco_code', iscoCode)
       if (ofertas && ofertas.length > 0) {
-        setMolOfertasCount(ofertas.length)
-
-        // Calculate demand trend from last 6 months
-        // IMPORTANT: only use portals present in ALL 6 months (avoids bias from new sources)
-        const now = new Date()
-        const monthLabels: string[] = []
-        for (let i = 5; i >= 0; i--) {
-          const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
-          monthLabels.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`)
-        }
-
-        // Find stable portals (present in first AND last month of the window)
-        const portalsByMonth: Record<string, Set<string>> = {}
-        for (const label of monthLabels) portalsByMonth[label] = new Set()
-        for (const o of ofertas) {
-          if (!o.fecha_publicacion || !o.portal) continue
-          const m = o.fecha_publicacion.substring(0, 7)
-          if (portalsByMonth[m]) portalsByMonth[m].add(o.portal)
-        }
-        const firstMonthPortals = portalsByMonth[monthLabels[0]]
-        const stablePortals = new Set([...firstMonthPortals].filter(p =>
-          portalsByMonth[monthLabels[5]]?.has(p)
-        ))
-        // If no stable portals (all new), use all data as-is
-        const useAll = stablePortals.size === 0
-
-        const monthlyCounts: number[] = monthLabels.map(() => 0)
-        for (const o of ofertas) {
-          if (!o.fecha_publicacion) continue
-          if (!useAll && o.portal && !stablePortals.has(o.portal)) continue
-          const m = o.fecha_publicacion.substring(0, 7)
-          const idx = monthLabels.indexOf(m)
-          if (idx >= 0) monthlyCounts[idx]++
-        }
-        // Trend: compare last 3 months avg vs previous 3
-        const recent = (monthlyCounts[3] + monthlyCounts[4] + monthlyCounts[5]) / 3
-        const previous = (monthlyCounts[0] + monthlyCounts[1] + monthlyCounts[2]) / 3
-        const trendPct = previous > 0 ? Math.round(((recent - previous) / previous) * 100) : (recent > 0 ? 100 : 0)
-        const trend: 'up' | 'stable' | 'down' = trendPct > 15 ? 'up' : trendPct < -15 ? 'down' : 'stable'
-        // Volatility: coefficient of variation of non-zero months
-        const nonZero = monthlyCounts.filter(c => c > 0)
-        const mean = nonZero.length > 0 ? nonZero.reduce((a, b) => a + b, 0) / nonZero.length : 0
-        const stddev = mean > 0 ? Math.sqrt(nonZero.reduce((sum, c) => sum + (c - mean) ** 2, 0) / nonZero.length) : 0
-        const cv = mean > 0 ? Math.round((stddev / mean) * 100) : 0
-        const volatility: 'alta' | 'media' | 'baja' = cv > 60 ? 'alta' : cv > 30 ? 'media' : 'baja'
-        setDemandTrend({ trend, trendPct, volatility, cv, monthlyCounts, months: monthLabels })
+        if (!trendRow) setMolOfertasCount(ofertas.length)
         const ids = ofertas.map((o: any) => o.id_oferta)
         const { data: skills } = await getSupabase()
           .from('ofertas_skills')
