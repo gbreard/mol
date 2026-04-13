@@ -510,6 +510,13 @@ export default function FuturoLaboralPage() {
                   </div>
                 </div>
               )}
+              {!loadingMol && !demandTrend && (
+                <div className="mt-3 pt-3 border-t border-gray-100">
+                  <p className="text-[10px] text-gray-400">
+                    Datos insuficientes para estimar la tendencia de demanda de esta ocupación. Se necesitan al menos 4 meses con ofertas publicadas en portales estables.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Panel 1 — Lo que ya tiene */}
