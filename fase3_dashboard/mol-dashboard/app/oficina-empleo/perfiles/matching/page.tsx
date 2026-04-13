@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { Loader2, Target, ArrowUpDown, Calendar } from 'lucide-react'
+import { Loader2, Target, ArrowUpDown, Calendar, Eye, EyeOff } from 'lucide-react'
 import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
 import { PersonaSelector, type PerfilResumen } from '@/components/oficina-empleo/PersonaSelector'
 import { OccupationMatchCard } from '@/components/oficina-empleo/OccupationMatchCard'
@@ -63,6 +63,7 @@ export default function MatchingPage() {
   const [mensaje, setMensaje] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<SortBy>('match')
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('30d')
+  const [showAll, setShowAll] = useState(false)
   const [dataError, setDataError] = useState<string | null>(null)
 
   // Ofertas count map
@@ -230,6 +231,11 @@ export default function MatchingPage() {
     })
   }, [matches, sortBy, ofertasCountMap])
 
+  // Filter: by default only show occupations with offers in the selected period
+  const withOffers = useMemo(() => sorted.filter(o => (ofertasCountMap[o.isco_code] || 0) > 0), [sorted, ofertasCountMap])
+  const displayed = showAll ? sorted : withOffers
+  const hiddenCount = sorted.length - withOffers.length
+
   const loadingAll = loading || (perfil && profileSkills.length > 0 && !occupationsData)
 
   return (
@@ -300,9 +306,15 @@ export default function MatchingPage() {
         {/* Results */}
         {!loadingAll && !mensaje && perfil && matches.length > 0 && (
           <div className="space-y-3">
+            {/* Controls bar */}
             <div className="flex items-center justify-between flex-wrap gap-2">
               <p className="text-xs text-gray-400">
-                {matches.length} ocupaciones compatibles · basado en {profileSkills.length} skills
+                {withOffers.length > 0
+                  ? `${withOffers.length} ocupaciones con ofertas${perfilProvincia ? ` en ${perfilProvincia}` : ''}`
+                  : `Sin ofertas${perfilProvincia ? ` en ${perfilProvincia}` : ''} para este período`
+                }
+                {!showAll && hiddenCount > 0 && ` · ${hiddenCount} sin ofertas ocultas`}
+                {showAll && ` · ${matches.length} total`}
               </p>
               <div className="flex items-center gap-3">
                 {/* Time period filter */}
@@ -331,10 +343,36 @@ export default function MatchingPage() {
                     ))}
                   </select>
                 </div>
+                {/* Toggle show all */}
+                {hiddenCount > 0 && (
+                  <button
+                    onClick={() => setShowAll(v => !v)}
+                    className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700"
+                  >
+                    {showAll ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                    {showAll ? 'Solo con ofertas' : 'Ver todas'}
+                  </button>
+                )}
               </div>
             </div>
 
-            {sorted.map((o, i) => (
+            {/* Empty state when all filtered out */}
+            {displayed.length === 0 && (
+              <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
+                <Target className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                <p className="text-sm text-gray-600">
+                  No hay ofertas publicadas{perfilProvincia ? ` en ${perfilProvincia}` : ''} en {TIME_OPTIONS.find(t => t.id === timePeriod)?.label.toLowerCase()} para las ocupaciones compatibles.
+                </p>
+                <p className="text-xs text-gray-400 mt-1">
+                  Probá con otro período o
+                  <button onClick={() => setShowAll(true)} className="text-teal-600 hover:text-teal-700 font-medium ml-1">
+                    ver todas las {matches.length} ocupaciones compatibles
+                  </button>
+                </p>
+              </div>
+            )}
+
+            {displayed.map((o, i) => (
               <OccupationMatchCard
                 key={o.uri}
                 occupation={o}
@@ -348,7 +386,7 @@ export default function MatchingPage() {
           </div>
         )}
 
-        {/* No results */}
+        {/* No skill matches at all */}
         {!loadingAll && !mensaje && perfil && profileSkills.length > 0 && matches.length === 0 && (
           <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
             <p className="text-sm text-gray-600">
