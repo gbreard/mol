@@ -48,6 +48,7 @@ export default function MatchingPage() {
   const [loading, setLoading] = useState(false)
   const [mensaje, setMensaje] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<SortBy>('match')
+  const [dataError, setDataError] = useState<string | null>(null)
 
   // Ofertas count map (loaded once)
   const [ofertasCountMap, setOfertasCountMap] = useState<Record<string, number>>({})
@@ -60,9 +61,12 @@ export default function MatchingPage() {
   // Load occupation JSON + ofertas count on mount
   useEffect(() => {
     fetch('/data/occupation_full_detail.json')
-      .then(r => r.ok ? r.json() : null)
-      .then(d => { if (d) setOccupationsData(d) })
-      .catch(() => {})
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`)
+        return r.json()
+      })
+      .then(d => setOccupationsData(d))
+      .catch(() => setDataError('No se pudieron cargar las ocupaciones. Recargá la página.'))
 
     // Ofertas count via RPC (fast — single query, no 37K row download)
     getSupabase().rpc('get_ofertas_count_by_isco').then(({ data, error }) => {
@@ -95,8 +99,16 @@ export default function MatchingPage() {
       // Extract provincia for filtering ofertas
       const ubi = data.personas?.ubicacion
       if (ubi) {
-        const parts = ubi.split(',')
-        setPerfilProvincia(parts.length > 1 ? parts[parts.length - 1].trim() : ubi.trim())
+        // Try "ciudad, provincia" format; fallback to full string
+        const parts = ubi.split(',').map((p: string) => p.trim()).filter(Boolean)
+        const candidate = parts.length > 1 ? parts[parts.length - 1] : parts[0] || null
+        // Normalize common variants
+        const NORM: Record<string, string> = {
+          'caba': 'Capital Federal', 'ciudad autónoma de buenos aires': 'Capital Federal',
+          'ciudad autonoma de buenos aires': 'Capital Federal', 'cap. fed.': 'Capital Federal',
+          'capital federal': 'Capital Federal', 'gba': 'Buenos Aires',
+        }
+        setPerfilProvincia(candidate ? (NORM[candidate.toLowerCase()] || candidate) : null)
       } else {
         setPerfilProvincia(null)
       }
@@ -240,10 +252,17 @@ export default function MatchingPage() {
           </div>
         )}
 
-        {/* Error */}
+        {/* Error perfil */}
         {!loading && mensaje === 'error' && (
           <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center">
             <p className="text-sm text-red-700">Error cargando el perfil. Intentá de nuevo.</p>
+          </div>
+        )}
+
+        {/* Error datos ocupaciones */}
+        {dataError && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center">
+            <p className="text-sm text-red-700">{dataError}</p>
           </div>
         )}
 

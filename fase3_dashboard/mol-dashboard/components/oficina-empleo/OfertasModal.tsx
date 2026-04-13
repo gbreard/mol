@@ -35,6 +35,8 @@ export function OfertasModal({ isOpen, onClose, iscoCode, label, provincia }: Pr
     if (isOpen && iscoCode) loadOfertas()
   }, [isOpen, iscoCode, provincia, loadOfertas])
 
+  const activasCount = ofertas.filter((o: any) => o.estado === 'activa').length
+
   if (!isOpen) return null
 
   return (
@@ -79,7 +81,7 @@ export function OfertasModal({ isOpen, onClose, iscoCode, label, provincia }: Pr
             <>
               <p className="text-xs text-gray-400 mb-3">
                 {total} oferta{total !== 1 ? 's' : ''}
-                {(() => { const activas = ofertas.filter((o: any) => o.estado === 'activa').length; return activas > 0 ? ` · ${activas} activa${activas !== 1 ? 's' : ''}` : '' })()}
+                {activasCount > 0 && ` · ${activasCount} activa${activasCount !== 1 ? 's' : ''}`}
               </p>
               <div className="space-y-2">
                 {ofertas.map((o: any, i: number) => (
