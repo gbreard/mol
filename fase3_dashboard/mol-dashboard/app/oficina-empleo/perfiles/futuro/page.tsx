@@ -587,6 +587,60 @@ export default function FuturoLaboralPage() {
               )}
             </div>
 
+            {/* Recomendación IA */}
+            {gapAnalysis && (
+              <div className="bg-purple-50 rounded-xl border border-purple-200 p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <MessageSquare className="w-4 h-4 text-purple-600" />
+                  <h3 className="text-sm font-semibold text-purple-700">Recomendación personalizada</h3>
+                </div>
+
+                {!recomendacion && !loadingReco && !recoError && (
+                  <div className="flex items-center gap-3">
+                    <p className="text-xs text-gray-500 flex-1">
+                      Análisis de trayectoria basado en el perfil, gap de competencias, cursos disponibles y demanda del mercado.
+                    </p>
+                    <button
+                      onClick={handlePedirRecomendacion}
+                      className="inline-flex items-center gap-1.5 bg-purple-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors shrink-0"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5" />
+                      Pedir recomendación
+                    </button>
+                  </div>
+                )}
+
+                {loadingReco && (
+                  <div className="flex items-center justify-center gap-2 py-4 text-purple-400">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span className="text-xs">Analizando perfil y mercado...</span>
+                  </div>
+                )}
+
+                {recoError && (
+                  <div className="flex items-center gap-3">
+                    <p className="text-xs text-red-500 flex-1">No se pudo generar la recomendación.</p>
+                    <button
+                      onClick={handlePedirRecomendacion}
+                      className="text-xs text-purple-600 hover:text-purple-700 font-medium shrink-0"
+                    >
+                      Reintentar
+                    </button>
+                  </div>
+                )}
+
+                {recomendacion && (
+                  <div>
+                    <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{recomendacion}</p>
+                    <p className="text-[9px] text-gray-400 mt-3 leading-snug">
+                      Generado con IA a partir de {molOfertasCount > 0 ? `${molOfertasCount} ofertas y ` : ''}datos del mercado laboral argentino.
+                      Esta recomendación es orientativa y no constituye asesoramiento profesional.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Panel 1 — Lo que ya tiene */}
             {(gapAnalysis.sharedEssential.length > 0 || gapAnalysis.sharedOptional.length > 0) && (
               <div className="bg-white rounded-xl border border-gray-200 p-4">
@@ -685,60 +739,6 @@ export default function FuturoLaboralPage() {
                   </div>
                 )}
                 {loadingMol && <p className="text-[10px] text-gray-400 mt-2">Cargando datos de mercado...</p>}
-              </div>
-            )}
-
-            {/* Panel 2a — Recomendación IA */}
-            {gapAnalysis && (
-              <div className="bg-white rounded-xl border border-gray-200 p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <MessageSquare className="w-4 h-4 text-purple-600" />
-                  <h3 className="text-sm font-semibold text-purple-700">Recomendación personalizada</h3>
-                </div>
-
-                {!recomendacion && !loadingReco && !recoError && (
-                  <div className="text-center py-3">
-                    <p className="text-xs text-gray-400 mb-3">
-                      Analizamos el perfil, el gap de competencias, los cursos disponibles y la demanda del mercado para darte una recomendación concreta.
-                    </p>
-                    <button
-                      onClick={handlePedirRecomendacion}
-                      className="inline-flex items-center gap-1.5 bg-purple-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
-                    >
-                      <MessageSquare className="w-3.5 h-3.5" />
-                      Pedir recomendación
-                    </button>
-                  </div>
-                )}
-
-                {loadingReco && (
-                  <div className="flex items-center justify-center gap-2 py-6 text-purple-400">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span className="text-xs">Analizando perfil y mercado...</span>
-                  </div>
-                )}
-
-                {recoError && (
-                  <div className="text-center py-3">
-                    <p className="text-xs text-red-500 mb-2">No se pudo generar la recomendación.</p>
-                    <button
-                      onClick={handlePedirRecomendacion}
-                      className="text-xs text-purple-600 hover:text-purple-700 font-medium"
-                    >
-                      Reintentar
-                    </button>
-                  </div>
-                )}
-
-                {recomendacion && (
-                  <div>
-                    <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{recomendacion}</p>
-                    <p className="text-[9px] text-gray-300 mt-3 leading-snug">
-                      Generado con IA a partir de {molOfertasCount > 0 ? `${molOfertasCount} ofertas y ` : ''}datos del mercado laboral argentino.
-                      Esta recomendación es orientativa y no constituye asesoramiento profesional.
-                    </p>
-                  </div>
-                )}
               </div>
             )}
 
