@@ -91,6 +91,16 @@ export default function FuturoLaboralPage() {
   const [provinciaCursos, setProvinciaCursos] = useState('')
   const [showAllCursos, setShowAllCursos] = useState(false)
 
+  // Demand trend indicators
+  const [demandTrend, setDemandTrend] = useState<{
+    trend: 'up' | 'stable' | 'down'
+    trendPct: number
+    volatility: 'alta' | 'media' | 'baja'
+    cv: number
+    monthlyCounts: number[]
+    months: string[]
+  } | null>(null)
+
   // Loading & errors
   const [loadingPerfil, setLoadingPerfil] = useState(false)
   const [loadingMol, setLoadingMol] = useState(false)
@@ -239,15 +249,45 @@ export default function FuturoLaboralPage() {
   const loadMolProfile = useCallback(async (escoUri: string, iscoCode: string) => {
     setLoadingMol(true)
     setMolFreqs({})
+    setDemandTrend(null)
     setMolOfertasCount(ofertasCountMap[iscoCode] || 0)
     try {
-      // Get ofertas for this occupation
+      // Get ofertas for this occupation (with date for trend calc)
       const { data: ofertas } = await getSupabase()
         .from('ofertas_dashboard')
-        .select('id_oferta')
-        .eq('esco_occupation_uri', escoUri)
+        .select('id_oferta, fecha_publicacion')
+        .eq('isco_code', iscoCode)
       if (ofertas && ofertas.length > 0) {
         setMolOfertasCount(ofertas.length)
+
+        // Calculate demand trend from last 6 months
+        const now = new Date()
+        const monthLabels: string[] = []
+        const monthlyCounts: number[] = []
+        for (let i = 5; i >= 0; i--) {
+          const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+          const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+          monthLabels.push(key)
+          monthlyCounts.push(0)
+        }
+        for (const o of ofertas) {
+          if (!o.fecha_publicacion) continue
+          const m = o.fecha_publicacion.substring(0, 7) // "YYYY-MM"
+          const idx = monthLabels.indexOf(m)
+          if (idx >= 0) monthlyCounts[idx]++
+        }
+        // Trend: compare last 3 months avg vs previous 3
+        const recent = (monthlyCounts[3] + monthlyCounts[4] + monthlyCounts[5]) / 3
+        const previous = (monthlyCounts[0] + monthlyCounts[1] + monthlyCounts[2]) / 3
+        const trendPct = previous > 0 ? Math.round(((recent - previous) / previous) * 100) : (recent > 0 ? 100 : 0)
+        const trend: 'up' | 'stable' | 'down' = trendPct > 15 ? 'up' : trendPct < -15 ? 'down' : 'stable'
+        // Volatility: coefficient of variation of non-zero months
+        const nonZero = monthlyCounts.filter(c => c > 0)
+        const mean = nonZero.length > 0 ? nonZero.reduce((a, b) => a + b, 0) / nonZero.length : 0
+        const stddev = mean > 0 ? Math.sqrt(nonZero.reduce((sum, c) => sum + (c - mean) ** 2, 0) / nonZero.length) : 0
+        const cv = mean > 0 ? Math.round((stddev / mean) * 100) : 0
+        const volatility: 'alta' | 'media' | 'baja' = cv > 60 ? 'alta' : cv > 30 ? 'media' : 'baja'
+        setDemandTrend({ trend, trendPct, volatility, cv, monthlyCounts, months: monthLabels })
         const ids = ofertas.map((o: any) => o.id_oferta)
         const { data: skills } = await getSupabase()
           .from('ofertas_skills')
@@ -444,15 +484,73 @@ export default function FuturoLaboralPage() {
                 <div>
                   <p className="text-xs text-gray-500 mb-1">Demanda</p>
                   <p className="text-sm font-bold text-gray-800">
-                    {ofertasBadge(molOfertasCount)} {molOfertasCount} ofertas activas
+                    {ofertasBadge(molOfertasCount)} {molOfertasCount} oferta{molOfertasCount !== 1 ? 's' : ''} activa{molOfertasCount !== 1 ? 's' : ''}
                   </p>
                   {molOfertasCount > 0 && (
                     <button onClick={() => setModalOpen(true)} className="text-xs text-teal-600 hover:text-teal-700 font-medium mt-1">
-                      Ver las {molOfertasCount} ofertas →
+                      Ver {molOfertasCount === 1 ? 'la oferta' : `las ${molOfertasCount} ofertas`} →
                     </button>
                   )}
                 </div>
               </div>
+
+              {/* Demand trend indicators */}
+              {demandTrend && (
+                <div className="mt-3 pt-3 border-t border-gray-100">
+                  <div className="grid grid-cols-3 gap-3">
+                    {/* Trend */}
+                    <div>
+                      <p className="text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Tendencia 6m</p>
+                      <div className="flex items-center gap-1">
+                        <span className={`text-sm font-bold ${demandTrend.trend === 'up' ? 'text-green-600' : demandTrend.trend === 'down' ? 'text-red-500' : 'text-gray-600'}`}>
+                          {demandTrend.trend === 'up' ? '↑' : demandTrend.trend === 'down' ? '↓' : '→'}
+                        </span>
+                        <span className={`text-xs font-medium ${demandTrend.trend === 'up' ? 'text-green-600' : demandTrend.trend === 'down' ? 'text-red-500' : 'text-gray-500'}`}>
+                          {demandTrend.trend === 'up' ? 'Creciendo' : demandTrend.trend === 'down' ? 'Cayendo' : 'Estable'}
+                          {demandTrend.trendPct !== 0 && ` ${demandTrend.trendPct > 0 ? '+' : ''}${demandTrend.trendPct}%`}
+                        </span>
+                      </div>
+                    </div>
+                    {/* Volatility */}
+                    <div>
+                      <p className="text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Estabilidad</p>
+                      <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${
+                        demandTrend.volatility === 'baja' ? 'bg-green-50 text-green-700' :
+                        demandTrend.volatility === 'media' ? 'bg-yellow-50 text-yellow-700' :
+                        'bg-red-50 text-red-600'
+                      }`}>
+                        {demandTrend.volatility === 'baja' ? 'Estable' : demandTrend.volatility === 'media' ? 'Variable' : 'Volátil'}
+                      </span>
+                    </div>
+                    {/* Mini sparkline */}
+                    <div>
+                      <p className="text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Últimos 6 meses</p>
+                      <div className="flex items-end gap-px h-5">
+                        {demandTrend.monthlyCounts.map((c, i) => {
+                          const max = Math.max(...demandTrend.monthlyCounts, 1)
+                          const h = Math.max(2, Math.round((c / max) * 20))
+                          return (
+                            <div
+                              key={i}
+                              className={`w-3 rounded-sm ${i >= 3 ? 'bg-teal-400' : 'bg-gray-300'}`}
+                              style={{ height: `${h}px` }}
+                              title={`${demandTrend.months[i]}: ${c} ofertas`}
+                            />
+                          )
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {loadingMol && !demandTrend && (
+                <div className="mt-3 pt-3 border-t border-gray-100">
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    <span className="text-[10px]">Calculando tendencia...</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Panel 1 — Lo que ya tiene */}
