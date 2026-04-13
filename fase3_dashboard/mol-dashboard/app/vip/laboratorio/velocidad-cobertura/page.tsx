@@ -127,7 +127,7 @@ export default function VelocidadCoberturaPage() {
 
   return (
     <div className="p-8 max-w-6xl mx-auto space-y-6">
-        <OEBreadcrumb items={[{ label: "Indicadores", href: "/oficina-empleo/dashboard-ejecutivo" }, { label: "Velocidad Cobertura" }]} />
+        <OEBreadcrumb items={[{ label: "Indicadores", href: "/vip/politicas" }, { label: "Velocidad Cobertura" }]} />
       {/* Header */}
       <div>
         <div className="flex items-center gap-3">

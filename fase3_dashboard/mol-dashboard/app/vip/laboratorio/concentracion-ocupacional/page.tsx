@@ -114,7 +114,7 @@ export default function ConcentracionOcupacionalPage() {
 
   return (
     <div className="p-8 max-w-6xl mx-auto space-y-6">
-        <OEBreadcrumb items={[{ label: "Indicadores", href: "/oficina-empleo/dashboard-ejecutivo" }, { label: "Concentracion Ocupacional" }]} />
+        <OEBreadcrumb items={[{ label: "Indicadores", href: "/vip/politicas" }, { label: "Concentracion Ocupacional" }]} />
       {/* Header */}
       <div>
         <div className="flex items-center gap-3">
