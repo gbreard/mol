@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ChevronDown, ChevronUp, Loader2, Briefcase, ExternalLink } from 'lucide-react'
 import { getOfertasByIsco } from '@/lib/supabase'
 
@@ -28,6 +28,7 @@ interface Props {
   rank: number
   ofertasCount: number
   provincia?: string | null
+  since?: string | null
   onOpenModal: (iscoCode: string, label: string) => void
 }
 
@@ -44,13 +45,23 @@ function ofertasBadge(count: number) {
 }
 
 export function OccupationMatchCard({
-  occupation, rank, ofertasCount, provincia,
+  occupation, rank, ofertasCount, provincia, since,
   onOpenModal,
 }: Props) {
   const [expanded, setExpanded] = useState(false)
   const [loading, setLoading] = useState(false)
   const [ofertas, setOfertas] = useState<OfertaPreview[]>([])
   const [loaded, setLoaded] = useState(false)
+  const prevSinceRef = useRef(since)
+
+  // Invalidate cached ofertas when time period changes
+  useEffect(() => {
+    if (prevSinceRef.current !== since) {
+      prevSinceRef.current = since
+      setLoaded(false)
+      setOfertas([])
+    }
+  }, [since])
 
   async function handleExpand() {
     if (expanded) { setExpanded(false); return }
@@ -59,7 +70,7 @@ export function OccupationMatchCard({
 
     setLoading(true)
     try {
-      const ofertasData = await getOfertasByIsco(occupation.isco_code, 3, 0, provincia)
+      const ofertasData = await getOfertasByIsco(occupation.isco_code, 3, 0, provincia, since)
 
       if (ofertasData?.ofertas) {
         setOfertas(ofertasData.ofertas.slice(0, 3).map((o: any) => ({

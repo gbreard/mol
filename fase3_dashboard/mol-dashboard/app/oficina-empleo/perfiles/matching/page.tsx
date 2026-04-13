@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { Loader2, Target, ArrowUpDown } from 'lucide-react'
+import { Loader2, Target, ArrowUpDown, Calendar } from 'lucide-react'
 import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
 import { PersonaSelector, type PerfilResumen } from '@/components/oficina-empleo/PersonaSelector'
 import { OccupationMatchCard } from '@/components/oficina-empleo/OccupationMatchCard'
@@ -28,6 +28,7 @@ export interface OccupationMatch {
 }
 
 type SortBy = 'match' | 'gap' | 'ofertas' | 'alpha'
+type TimePeriod = '7d' | '30d' | 'all'
 
 const SORT_OPTIONS: { id: SortBy; label: string }[] = [
   { id: 'match', label: 'Mejor match' },
@@ -35,6 +36,19 @@ const SORT_OPTIONS: { id: SortBy; label: string }[] = [
   { id: 'ofertas', label: 'Más ofertas' },
   { id: 'alpha', label: 'Alfabético' },
 ]
+
+const TIME_OPTIONS: { id: TimePeriod; label: string }[] = [
+  { id: '7d', label: 'Última semana' },
+  { id: '30d', label: 'Último mes' },
+  { id: 'all', label: 'Histórico' },
+]
+
+function getSinceDate(period: TimePeriod): string | null {
+  if (period === 'all') return null
+  const d = new Date()
+  d.setDate(d.getDate() - (period === '7d' ? 7 : 30))
+  return d.toISOString().split('T')[0]
+}
 
 export default function MatchingPage() {
   const searchParams = useSearchParams()
@@ -48,17 +62,19 @@ export default function MatchingPage() {
   const [loading, setLoading] = useState(false)
   const [mensaje, setMensaje] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<SortBy>('match')
+  const [timePeriod, setTimePeriod] = useState<TimePeriod>('30d')
   const [dataError, setDataError] = useState<string | null>(null)
 
-  // Ofertas count map (loaded once)
+  // Ofertas count map
   const [ofertasCountMap, setOfertasCountMap] = useState<Record<string, number>>({})
+  const [countLoading, setCountLoading] = useState(false)
 
   // Modal
   const [modalIsco, setModalIsco] = useState('')
   const [modalLabel, setModalLabel] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
 
-  // Load occupation JSON + ofertas count on mount
+  // Load occupation JSON on mount
   useEffect(() => {
     fetch('/data/occupation_full_detail.json')
       .then(r => {
@@ -67,16 +83,43 @@ export default function MatchingPage() {
       })
       .then(d => setOccupationsData(d))
       .catch(() => setDataError('No se pudieron cargar las ocupaciones. Recargá la página.'))
-
-    // Ofertas count via RPC (fast — single query, no 37K row download)
-    getSupabase().rpc('get_ofertas_count_by_isco').then(({ data, error }) => {
-      if (!error && data) {
-        const map: Record<string, number> = {}
-        for (const row of data) map[row.isco_code] = Number(row.count)
-        setOfertasCountMap(map)
-      }
-    })
   }, [])
+
+  // Load ofertas count (re-runs when time period changes)
+  useEffect(() => {
+    setCountLoading(true)
+    const since = getSinceDate(timePeriod)
+
+    // Try RPC first (fast, pre-aggregated); fallback to direct query with date filter
+    if (!since) {
+      // Historical: use RPC (no date filter needed)
+      getSupabase().rpc('get_ofertas_count_by_isco').then(({ data, error }) => {
+        if (!error && data) {
+          const map: Record<string, number> = {}
+          for (const row of data) map[row.isco_code] = Number(row.count)
+          setOfertasCountMap(map)
+        }
+        setCountLoading(false)
+      })
+    } else {
+      // With date filter: direct query (RPC doesn't support since param)
+      let query = getSupabase()
+        .from('ofertas_dashboard')
+        .select('isco_code')
+        .not('isco_code', 'is', null)
+        .gte('fecha_publicacion', since)
+      query.then(({ data, error }) => {
+        if (!error && data) {
+          const map: Record<string, number> = {}
+          for (const row of data as any[]) {
+            if (row.isco_code) map[row.isco_code] = (map[row.isco_code] || 0) + 1
+          }
+          setOfertasCountMap(map)
+        }
+        setCountLoading(false)
+      })
+    }
+  }, [timePeriod])
 
   // Load profile skills when perfil is selected
   const loadPerfilSkills = useCallback(async (perfilId: string) => {
@@ -269,21 +312,37 @@ export default function MatchingPage() {
         {/* Results */}
         {!loadingAll && !mensaje && perfil && matches.length > 0 && (
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <p className="text-xs text-gray-400">
                 {matches.length} ocupaciones compatibles · basado en {profileSkills.length} skills
               </p>
-              <div className="flex items-center gap-1.5">
-                <ArrowUpDown className="w-3 h-3 text-gray-400" />
-                <select
-                  value={sortBy}
-                  onChange={e => setSortBy(e.target.value as SortBy)}
-                  className="text-xs text-gray-600 bg-transparent border-none cursor-pointer focus:outline-none"
-                >
-                  {SORT_OPTIONS.map(o => (
-                    <option key={o.id} value={o.id}>{o.label}</option>
-                  ))}
-                </select>
+              <div className="flex items-center gap-3">
+                {/* Time period filter */}
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="w-3 h-3 text-gray-400" />
+                  <select
+                    value={timePeriod}
+                    onChange={e => setTimePeriod(e.target.value as TimePeriod)}
+                    className="text-xs text-gray-600 bg-transparent border-none cursor-pointer focus:outline-none"
+                  >
+                    {TIME_OPTIONS.map(o => (
+                      <option key={o.id} value={o.id}>{o.label}</option>
+                    ))}
+                  </select>
+                </div>
+                {/* Sort */}
+                <div className="flex items-center gap-1.5">
+                  <ArrowUpDown className="w-3 h-3 text-gray-400" />
+                  <select
+                    value={sortBy}
+                    onChange={e => setSortBy(e.target.value as SortBy)}
+                    className="text-xs text-gray-600 bg-transparent border-none cursor-pointer focus:outline-none"
+                  >
+                    {SORT_OPTIONS.map(o => (
+                      <option key={o.id} value={o.id}>{o.label}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -294,6 +353,7 @@ export default function MatchingPage() {
                 rank={i + 1}
                 ofertasCount={ofertasCountMap[o.isco_code] || 0}
                 provincia={perfilProvincia}
+                since={getSinceDate(timePeriod)}
                 onOpenModal={handleOpenModal}
               />
             ))}
@@ -320,6 +380,7 @@ export default function MatchingPage() {
         iscoCode={modalIsco}
         label={modalLabel}
         provincia={perfilProvincia}
+        since={getSinceDate(timePeriod)}
       />
     </div>
   )

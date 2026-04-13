@@ -10,9 +10,10 @@ interface Props {
   iscoCode: string
   label: string
   provincia?: string | null
+  since?: string | null
 }
 
-export function OfertasModal({ isOpen, onClose, iscoCode, label, provincia }: Props) {
+export function OfertasModal({ isOpen, onClose, iscoCode, label, provincia, since }: Props) {
   const [ofertas, setOfertas] = useState<any[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -22,18 +23,18 @@ export function OfertasModal({ isOpen, onClose, iscoCode, label, provincia }: Pr
     if (!iscoCode) return
     setLoading(true)
     setError(false)
-    getOfertasByIsco(iscoCode, 100, 0, provincia)
+    getOfertasByIsco(iscoCode, 100, 0, provincia, since)
       .then(({ ofertas: data, total: count }) => {
         setOfertas(data)
         setTotal(count)
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false))
-  }, [iscoCode, provincia])
+  }, [iscoCode, provincia, since])
 
   useEffect(() => {
     if (isOpen && iscoCode) loadOfertas()
-  }, [isOpen, iscoCode, provincia, loadOfertas])
+  }, [isOpen, iscoCode, provincia, since, loadOfertas])
 
   const activasCount = ofertas.filter((o: any) => o.estado === 'activa').length
 
