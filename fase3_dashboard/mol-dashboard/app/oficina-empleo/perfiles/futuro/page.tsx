@@ -91,16 +91,18 @@ export default function FuturoLaboralPage() {
   const [provinciaCursos, setProvinciaCursos] = useState('')
   const [showAllCursos, setShowAllCursos] = useState(false)
 
-  // Loading
+  // Loading & errors
   const [loadingPerfil, setLoadingPerfil] = useState(false)
   const [loadingMol, setLoadingMol] = useState(false)
+  const [dataError, setDataError] = useState<string | null>(null)
+  const [cursosError, setCursosError] = useState(false)
 
   // Load static data on mount
   useEffect(() => {
     fetch('/data/occupation_full_detail.json')
-      .then(r => r.ok ? r.json() : null)
-      .then(d => { if (d) setOccupationsData(d) })
-      .catch(() => {})
+      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json() })
+      .then(d => setOccupationsData(d))
+      .catch(() => setDataError('No se pudieron cargar las ocupaciones. Recargá la página.'))
 
     // skills_searchable.json — build uri->total map for market_frequency
     fetch('/data/skills_searchable.json')
@@ -114,12 +116,11 @@ export default function FuturoLaboralPage() {
           setSkillsSearchable(map)
         }
       })
-      .catch(() => {})
+      .catch(() => {}) // Not critical — demand indicators just won't show
 
-    // Ofertas count via RPC
-    const supabase = getSupabase()
-    supabase.rpc('get_ofertas_count_by_isco').then(({ data }) => {
-      if (data) {
+    // Ofertas count via RPC (not critical — defaults to 0)
+    getSupabase().rpc('get_ofertas_count_by_isco').then(({ data, error }) => {
+      if (!error && data) {
         const map: Record<string, number> = {}
         for (const row of data) map[row.isco_code] = Number(row.count)
         setOfertasCountMap(map)
@@ -166,13 +167,6 @@ export default function FuturoLaboralPage() {
       occ.skills.optional || []
     )
 
-    // Knowledge (separate — not handled by calculateOccupationMatch)
-    const knowledgeRaw = occ.knowledge || {}
-    const knowledgeB = [...(knowledgeRaw.essential || []), ...(knowledgeRaw.optional || [])]
-    const profileUriSet = new Set(perfilSkills.map(s => s.skill_uri))
-    const sharedKnowledge = knowledgeB.filter((k: any) => profileUriSet.has(`http://data.europa.eu/esco/skill/${k.id}`))
-    const gapKnowledge = knowledgeB.filter((k: any) => !profileUriSet.has(`http://data.europa.eu/esco/skill/${k.id}`))
-
     return {
       compatibility: result.matchScore,
       essentialTotal: result.essentialTotal,
@@ -181,8 +175,6 @@ export default function FuturoLaboralPage() {
       gapEssential: result.gapEssential,
       gapOptional: result.gapOptional,
       gapCount: result.gapCount,
-      sharedKnowledge,
-      gapKnowledge,
       transferable: result.transferable,
     }
   }, [selectedOcc, occupationsData, perfilSkills])
@@ -249,19 +241,15 @@ export default function FuturoLaboralPage() {
     setMolFreqs({})
     setMolOfertasCount(ofertasCountMap[iscoCode] || 0)
     try {
-      const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      )
       // Get ofertas for this occupation
-      const { data: ofertas } = await supabase
+      const { data: ofertas } = await getSupabase()
         .from('ofertas_dashboard')
         .select('id_oferta')
         .eq('esco_occupation_uri', escoUri)
       if (ofertas && ofertas.length > 0) {
         setMolOfertasCount(ofertas.length)
         const ids = ofertas.map((o: any) => o.id_oferta)
-        const { data: skills } = await supabase
+        const { data: skills } = await getSupabase()
           .from('ofertas_skills')
           .select('skill_uri')
           .in('id_oferta', ids.slice(0, 500))
@@ -286,18 +274,41 @@ export default function FuturoLaboralPage() {
     if (gapEssential.length === 0) { setCursosGap([]); return }
     setLoadingCursos(true)
     setShowAllCursos(false)
+    setCursosError(false)
     try {
       const gapUris = gapEssential.map((s: any) => `http://data.europa.eu/esco/skill/${s.id}`)
-      const res = await fetch('/api/perfiles/cursos-gap', {
+      // First try with provincia filter
+      let res = await fetch('/api/perfiles/cursos-gap', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ gap_skill_uris: gapUris, provincia: prov || null }),
       })
       if (res.ok) {
         const data = await res.json()
-        setCursosGap(data.cursos || [])
+        if (data.cursos && data.cursos.length > 0) {
+          setCursosGap(data.cursos)
+        } else if (prov) {
+          // No results with provincia — retry without filter (national)
+          res = await fetch('/api/perfiles/cursos-gap', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ gap_skill_uris: gapUris }),
+          })
+          if (res.ok) {
+            const data2 = await res.json()
+            setCursosGap(data2.cursos || [])
+          } else {
+            setCursosError(true)
+          }
+        } else {
+          setCursosGap([])
+        }
+      } else {
+        setCursosError(true)
       }
-    } catch {} finally {
+    } catch {
+      setCursosError(true)
+    } finally {
       setLoadingCursos(false)
     }
   }, [])
@@ -384,8 +395,15 @@ export default function FuturoLaboralPage() {
           </div>
         </div>
 
+        {/* Data error */}
+        {dataError && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center mb-4">
+            <p className="text-sm text-red-700">{dataError}</p>
+          </div>
+        )}
+
         {/* Empty state */}
-        {(!perfil || !selectedOcc) && !loadingPerfil && (
+        {(!perfil || !selectedOcc) && !loadingPerfil && !dataError && (
           <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
             <Map className="w-10 h-10 text-gray-300 mx-auto mb-3" />
             <p className="text-sm text-gray-500">
@@ -543,14 +561,13 @@ export default function FuturoLaboralPage() {
               <CursosGapPanel
                 cursos={cursosGap}
                 loading={loadingCursos}
+                error={cursosError}
                 showAll={showAllCursos}
                 onShowAll={() => setShowAllCursos(true)}
                 sharedCount={gapAnalysis.sharedEssential.length}
                 essentialTotal={gapAnalysis.essentialTotal}
               />
             )}
-
-            {/* Panel 3 — Conocimientos (fusionado con competencias — no se muestra separado) */}
 
             {/* Panel 4 — Skills transferibles */}
             {gapAnalysis.transferable.length > 0 && (
@@ -643,9 +660,10 @@ function TransferableSkillsPanel({ skills }: { skills: ProfileSkill[] }) {
   )
 }
 
-function CursosGapPanel({ cursos, loading, showAll, onShowAll, sharedCount, essentialTotal }: {
+function CursosGapPanel({ cursos, loading, error, showAll, onShowAll, sharedCount, essentialTotal }: {
   cursos: any[]
   loading: boolean
+  error?: boolean
   showAll: boolean
   onShowAll: () => void
   sharedCount: number
@@ -680,7 +698,13 @@ function CursosGapPanel({ cursos, loading, showAll, onShowAll, sharedCount, esse
         </div>
       )}
 
-      {!loading && sorted.length === 0 && (
+      {!loading && error && (
+        <p className="text-xs text-red-500 text-center py-3">
+          Error al buscar cursos. Intentá de nuevo.
+        </p>
+      )}
+
+      {!loading && !error && sorted.length === 0 && (
         <p className="text-xs text-gray-400 text-center py-3">
           No encontramos cursos registrados para las skills que le faltan.
         </p>

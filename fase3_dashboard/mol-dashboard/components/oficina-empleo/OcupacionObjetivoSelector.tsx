@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { Search, Loader2, X, Zap } from 'lucide-react'
 import type { OccupationMatch } from '@/app/oficina-empleo/perfiles/matching/page'
 
@@ -31,13 +31,15 @@ export function OcupacionObjetivoSelector({ disabled, matches, selected, onSelec
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<any[]>([])
   const [searching, setSearching] = useState(false)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  async function handleSearch(q: string) {
-    setSearchQuery(q)
-    if (q.trim().length < 2) { setSearchResults([]); return }
+  useEffect(() => {
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
+  }, [])
+
+  const doSearch = useCallback(async (q: string) => {
     setSearching(true)
     try {
-      // Uses search_occupations_by_text RPC (pg_trgm) for fuzzy matching
       const res = await fetch(`/api/occupations/search-semantic?q=${encodeURIComponent(q)}`)
       if (res.ok) {
         const data = await res.json()
@@ -46,6 +48,13 @@ export function OcupacionObjetivoSelector({ disabled, matches, selected, onSelec
     } catch {} finally {
       setSearching(false)
     }
+  }, [])
+
+  function handleSearch(q: string) {
+    setSearchQuery(q)
+    if (q.trim().length < 2) { setSearchResults([]); return }
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => doSearch(q), 300)
   }
 
   function selectFromSearch(occ: any) {
