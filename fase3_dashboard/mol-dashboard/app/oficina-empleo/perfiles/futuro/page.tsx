@@ -252,27 +252,43 @@ export default function FuturoLaboralPage() {
     setDemandTrend(null)
     setMolOfertasCount(ofertasCountMap[iscoCode] || 0)
     try {
-      // Get ofertas for this occupation (with date for trend calc)
+      // Get ofertas for this occupation (with date + portal for trend calc)
       const { data: ofertas } = await getSupabase()
         .from('ofertas_dashboard')
-        .select('id_oferta, fecha_publicacion')
+        .select('id_oferta, fecha_publicacion, portal')
         .eq('isco_code', iscoCode)
       if (ofertas && ofertas.length > 0) {
         setMolOfertasCount(ofertas.length)
 
         // Calculate demand trend from last 6 months
+        // IMPORTANT: only use portals present in ALL 6 months (avoids bias from new sources)
         const now = new Date()
         const monthLabels: string[] = []
-        const monthlyCounts: number[] = []
         for (let i = 5; i >= 0; i--) {
           const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
-          const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
-          monthLabels.push(key)
-          monthlyCounts.push(0)
+          monthLabels.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`)
         }
+
+        // Find stable portals (present in first AND last month of the window)
+        const portalsByMonth: Record<string, Set<string>> = {}
+        for (const label of monthLabels) portalsByMonth[label] = new Set()
+        for (const o of ofertas) {
+          if (!o.fecha_publicacion || !o.portal) continue
+          const m = o.fecha_publicacion.substring(0, 7)
+          if (portalsByMonth[m]) portalsByMonth[m].add(o.portal)
+        }
+        const firstMonthPortals = portalsByMonth[monthLabels[0]]
+        const stablePortals = new Set([...firstMonthPortals].filter(p =>
+          portalsByMonth[monthLabels[5]]?.has(p)
+        ))
+        // If no stable portals (all new), use all data as-is
+        const useAll = stablePortals.size === 0
+
+        const monthlyCounts: number[] = monthLabels.map(() => 0)
         for (const o of ofertas) {
           if (!o.fecha_publicacion) continue
-          const m = o.fecha_publicacion.substring(0, 7) // "YYYY-MM"
+          if (!useAll && o.portal && !stablePortals.has(o.portal)) continue
+          const m = o.fecha_publicacion.substring(0, 7)
           const idx = monthLabels.indexOf(m)
           if (idx >= 0) monthlyCounts[idx]++
         }
