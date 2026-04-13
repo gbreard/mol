@@ -91,7 +91,7 @@ export default function FuturoLaboralPage() {
   const [provinciaCursos, setProvinciaCursos] = useState('')
   const [showAllCursos, setShowAllCursos] = useState(false)
 
-  // Demand trend indicators
+  // Demand trend indicators + projection
   const [demandTrend, setDemandTrend] = useState<{
     trend: 'up' | 'stable' | 'down'
     trendPct: number
@@ -99,6 +99,9 @@ export default function FuturoLaboralPage() {
     cv: number
     monthlyCounts: number[]
     months: string[]
+    slope: number
+    r2: number
+    suficiente: boolean
   } | null>(null)
 
   // Loading & errors
@@ -274,7 +277,11 @@ export default function FuturoLaboralPage() {
           const recent = mc.length >= 6 ? (mc[mc.length-3] + mc[mc.length-2] + mc[mc.length-1]) / 3 : 0
           const previous = mc.length >= 6 ? (mc[mc.length-6] + mc[mc.length-5] + mc[mc.length-4]) / 3 : 0
           const trendPct = previous > 0 ? Math.round(((recent - previous) / previous) * 100) : 0
-          setDemandTrend({ trend, trendPct, volatility, cv: trendRow.volatility_cv || 0, monthlyCounts: mc, months: ml })
+          setDemandTrend({
+            trend, trendPct, volatility, cv: trendRow.volatility_cv || 0,
+            monthlyCounts: mc, months: ml,
+            slope: trendRow.trend_slope || 0, r2: trendRow.trend_r2 || 0, suficiente: true,
+          })
         }
       }
 
@@ -491,54 +498,9 @@ export default function FuturoLaboralPage() {
                 </div>
               </div>
 
-              {/* Demand trend indicators */}
+              {/* Demand trend + projection */}
               {demandTrend && (
-                <div className="mt-3 pt-3 border-t border-gray-100">
-                  <div className="grid grid-cols-3 gap-3">
-                    {/* Trend */}
-                    <div>
-                      <p className="text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Tendencia 6m</p>
-                      <div className="flex items-center gap-1">
-                        <span className={`text-sm font-bold ${demandTrend.trend === 'up' ? 'text-green-600' : demandTrend.trend === 'down' ? 'text-red-500' : 'text-gray-600'}`}>
-                          {demandTrend.trend === 'up' ? '↑' : demandTrend.trend === 'down' ? '↓' : '→'}
-                        </span>
-                        <span className={`text-xs font-medium ${demandTrend.trend === 'up' ? 'text-green-600' : demandTrend.trend === 'down' ? 'text-red-500' : 'text-gray-500'}`}>
-                          {demandTrend.trend === 'up' ? 'Creciendo' : demandTrend.trend === 'down' ? 'Cayendo' : 'Estable'}
-                          {demandTrend.trendPct !== 0 && ` ${demandTrend.trendPct > 0 ? '+' : ''}${demandTrend.trendPct}%`}
-                        </span>
-                      </div>
-                    </div>
-                    {/* Volatility */}
-                    <div>
-                      <p className="text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Estabilidad</p>
-                      <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${
-                        demandTrend.volatility === 'baja' ? 'bg-green-50 text-green-700' :
-                        demandTrend.volatility === 'media' ? 'bg-yellow-50 text-yellow-700' :
-                        'bg-red-50 text-red-600'
-                      }`}>
-                        {demandTrend.volatility === 'baja' ? 'Estable' : demandTrend.volatility === 'media' ? 'Variable' : 'Volátil'}
-                      </span>
-                    </div>
-                    {/* Mini sparkline */}
-                    <div>
-                      <p className="text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Últimos 6 meses</p>
-                      <div className="flex items-end gap-px h-5">
-                        {demandTrend.monthlyCounts.map((c, i) => {
-                          const max = Math.max(...demandTrend.monthlyCounts, 1)
-                          const h = Math.max(2, Math.round((c / max) * 20))
-                          return (
-                            <div
-                              key={i}
-                              className={`w-3 rounded-sm ${i >= 3 ? 'bg-teal-400' : 'bg-gray-300'}`}
-                              style={{ height: `${h}px` }}
-                              title={`${demandTrend.months[i]}: ${c} ofertas`}
-                            />
-                          )
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <DemandTrendPanel trend={demandTrend} />
               )}
               {loadingMol && !demandTrend && (
                 <div className="mt-3 pt-3 border-t border-gray-100">
@@ -713,6 +675,145 @@ export default function FuturoLaboralPage() {
         label={selectedOcc?.label || ''}
         provincia={perfilProvincia}
       />
+    </div>
+  )
+}
+
+function DemandTrendPanel({ trend }: { trend: {
+  trend: 'up' | 'stable' | 'down'; trendPct: number
+  volatility: 'alta' | 'media' | 'baja'; cv: number
+  monthlyCounts: number[]; months: string[]
+  slope: number; r2: number; suficiente: boolean
+}}) {
+  // Project 6 months ahead using slope from regression
+  const mc = trend.monthlyCounts
+  const n = mc.length
+  const canProject = trend.suficiente && trend.r2 >= 0.3 && n >= 4
+
+  // Build regression line for existing data
+  const mean = mc.reduce((a, b) => a + b, 0) / (n || 1)
+  // Simple linear fit on raw counts for display
+  let fitSlope = 0, fitIntercept = mean
+  if (n >= 2) {
+    const xMean = (n - 1) / 2
+    let ssxy = 0, ssxx = 0
+    for (let i = 0; i < n; i++) { ssxy += (i - xMean) * (mc[i] - mean); ssxx += (i - xMean) ** 2 }
+    fitSlope = ssxx > 0 ? ssxy / ssxx : 0
+    fitIntercept = mean - fitSlope * xMean
+  }
+
+  // Generate projection months labels
+  const projMonths = 6
+  const projLabels: string[] = []
+  if (trend.months.length > 0) {
+    const last = trend.months[trend.months.length - 1]
+    const [y, m] = last.split('-').map(Number)
+    for (let i = 1; i <= projMonths; i++) {
+      const d = new Date(y, m - 1 + i, 1)
+      projLabels.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`)
+    }
+  }
+
+  // Projected values
+  const projValues = canProject
+    ? Array.from({ length: projMonths }, (_, i) => Math.max(0, Math.round(fitIntercept + fitSlope * (n + i))))
+    : []
+
+  // All values for scale
+  const allValues = [...mc, ...projValues]
+  const maxVal = Math.max(...allValues, 1)
+  const barH = 40
+
+  // Month labels for display (short)
+  const shortMonth = (label: string) => {
+    const [, m] = label.split('-')
+    const names = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
+    return names[parseInt(m) - 1] || m
+  }
+
+  return (
+    <div className="mt-3 pt-3 border-t border-gray-100">
+      {/* Indicators row */}
+      <div className="flex items-center gap-4 mb-3">
+        <div className="flex items-center gap-1">
+          <span className={`text-sm font-bold ${trend.trend === 'up' ? 'text-green-600' : trend.trend === 'down' ? 'text-red-500' : 'text-gray-600'}`}>
+            {trend.trend === 'up' ? '↑' : trend.trend === 'down' ? '↓' : '→'}
+          </span>
+          <span className={`text-xs font-medium ${trend.trend === 'up' ? 'text-green-600' : trend.trend === 'down' ? 'text-red-500' : 'text-gray-500'}`}>
+            {trend.trend === 'up' ? 'Creciendo' : trend.trend === 'down' ? 'Cayendo' : 'Estable'}
+            {trend.trendPct !== 0 && ` ${trend.trendPct > 0 ? '+' : ''}${trend.trendPct}%`}
+          </span>
+        </div>
+        <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${
+          trend.volatility === 'baja' ? 'bg-green-50 text-green-700' :
+          trend.volatility === 'media' ? 'bg-yellow-50 text-yellow-700' :
+          'bg-red-50 text-red-600'
+        }`}>
+          {trend.volatility === 'baja' ? 'Estable' : trend.volatility === 'media' ? 'Variable' : 'Volátil'}
+        </span>
+        {canProject && (
+          <span className="text-[10px] text-gray-400 ml-auto">
+            R² {(trend.r2 * 100).toFixed(0)}% — confianza {trend.r2 >= 0.6 ? 'alta' : 'moderada'}
+          </span>
+        )}
+      </div>
+
+      {/* Chart: historical bars + projection */}
+      <div className="flex items-end gap-[3px]" style={{ height: `${barH + 16}px` }}>
+        {/* Historical */}
+        {mc.map((c, i) => {
+          const h = Math.max(2, Math.round((c / maxVal) * barH))
+          return (
+            <div key={`h-${i}`} className="flex flex-col items-center gap-0.5" style={{ width: '24px' }}>
+              <div
+                className="w-full rounded-t-sm bg-teal-500"
+                style={{ height: `${h}px` }}
+                title={`${trend.months[i]}: ${c} ofertas (real)`}
+              />
+              <span className="text-[8px] text-gray-400 leading-none">{shortMonth(trend.months[i])}</span>
+            </div>
+          )
+        })}
+
+        {/* Separator */}
+        {canProject && (
+          <div className="flex flex-col items-center justify-end" style={{ width: '8px', height: `${barH}px` }}>
+            <div className="w-px h-full border-l border-dashed border-gray-300" />
+          </div>
+        )}
+
+        {/* Projection */}
+        {projValues.map((c, i) => {
+          const h = Math.max(2, Math.round((c / maxVal) * barH))
+          return (
+            <div key={`p-${i}`} className="flex flex-col items-center gap-0.5" style={{ width: '24px' }}>
+              <div
+                className="w-full rounded-t-sm bg-teal-200 border border-dashed border-teal-400"
+                style={{ height: `${h}px` }}
+                title={`${projLabels[i]}: ~${c} ofertas (proyección)`}
+              />
+              <span className="text-[8px] text-gray-300 leading-none">{shortMonth(projLabels[i])}</span>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Legend */}
+      <div className="flex items-center gap-3 mt-1.5">
+        <div className="flex items-center gap-1">
+          <div className="w-2 h-2 rounded-sm bg-teal-500" />
+          <span className="text-[9px] text-gray-400">Datos reales</span>
+        </div>
+        {canProject && (
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 rounded-sm bg-teal-200 border border-dashed border-teal-400" />
+            <span className="text-[9px] text-gray-400">Proyección 6 meses</span>
+          </div>
+        )}
+        {!canProject && (
+          <span className="text-[9px] text-gray-300">Datos insuficientes para proyectar</span>
+        )}
+      </div>
     </div>
   )
 }
