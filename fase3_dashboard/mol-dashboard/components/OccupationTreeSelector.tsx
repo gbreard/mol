@@ -82,7 +82,7 @@ export default function OccupationTreeSelector({ occupationsList, onSelect, isOp
   if (!isOpen) return null;
 
   return (
-    <div className="absolute z-20 left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden" style={{ maxHeight: 'min(500px, 60vh)' }}>
+    <div className="absolute z-30 left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-2xl" style={{ maxHeight: 'min(500px, 60vh)', overflow: 'hidden' }}>
       {/* Mode toggle + search */}
       <div className="border-b bg-gray-50 px-3 py-2 flex items-center gap-2">
         <div className="flex bg-gray-200 rounded p-0.5">
@@ -146,12 +146,12 @@ export default function OccupationTreeSelector({ occupationsList, onSelect, isOp
 
       {/* Tree view */}
       {mode === 'tree' && (
-        <div className="max-h-80 overflow-y-auto">
+        <div className="overflow-y-auto" style={{ maxHeight: 'min(420px, 55vh)' }}>
           {!treeData ? (
             <div className="px-4 py-6 text-center text-xs text-gray-400">Cargando árbol...</div>
           ) : (
             <div className="py-1">
-              {Object.entries(treeData).sort(([a], [b]) => a.localeCompare(b)).map(([d1, g1]) => (
+              {Object.entries(treeData).filter(([code]) => code !== '0').sort(([a], [b]) => a.localeCompare(b)).map(([d1, g1]) => (
                 <TreeLevel
                   key={d1}
                   code={d1}
