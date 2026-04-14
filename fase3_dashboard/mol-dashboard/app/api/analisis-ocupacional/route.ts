@@ -27,10 +27,15 @@ REGLAS:
 - Empezá directo con el análisis, no con "Ante un escenario..." genérico.`
 
 function buildPrompt(data: any): string {
-  const { ocupacion, similares, cursos } = data
+  const { ocupacion, similares, cursos_ocupacion } = data
 
   let prompt = `OCUPACIÓN ANALIZADA: ${ocupacion.label} (ISCO ${ocupacion.isco_code})\n`
   prompt += `Ofertas activas: ${ocupacion.ofertas_total}\n`
+  if (ocupacion.tendencia && ocupacion.tendencia !== 'insuficiente') {
+    prompt += `Tendencia de demanda: ${ocupacion.tendencia}. Volatilidad: ${ocupacion.volatilidad}.\n`
+  } else {
+    prompt += `Tendencia: datos insuficientes.\n`
+  }
   prompt += `Skills esenciales (${ocupacion.skills_esenciales.length}): ${ocupacion.skills_esenciales.join(', ')}\n`
   if (ocupacion.skills_opcionales_count > 0) {
     prompt += `Skills opcionales: ${ocupacion.skills_opcionales_count}\n`
@@ -40,25 +45,36 @@ function buildPrompt(data: any): string {
   }
   prompt += '\n'
 
-  if (similares && similares.length > 0) {
-    prompt += `OCUPACIONES SIMILARES (por skills compartidas):\n`
-    for (const s of similares) {
-      prompt += `- ${s.label} (ISCO ${s.isco_code}): ${Math.round(s.similarity * 100)}% similaridad, ${s.ofertas} ofertas activas\n`
-    }
-    prompt += '\n'
-  }
-
-  if (cursos && cursos.length > 0) {
-    prompt += `CURSOS DE FORMACIÓN DISPONIBLES:\n`
-    for (const c of cursos) {
+  if (cursos_ocupacion && cursos_ocupacion.length > 0) {
+    prompt += `CURSOS DE FORMACIÓN PARA ESTA OCUPACIÓN:\n`
+    for (const c of cursos_ocupacion) {
       prompt += `- "${c.titulo}" en ${c.institucion} (${c.provincia}): cubre ${c.skills_cubiertas} skills\n`
     }
     prompt += '\n'
-  } else {
-    prompt += `CURSOS: No se encontraron cursos de formación vinculados a esta ocupación.\n\n`
   }
 
-  prompt += `Analizá las opciones de reconversión para trabajadores de "${ocupacion.label}" en un escenario de crisis. Identificá las mejores trayectorias considerando transferibilidad de skills, demanda de mercado y formación disponible.`
+  if (similares && similares.length > 0) {
+    prompt += `OCUPACIONES DESTINO DE RECONVERSIÓN (por skills compartidas):\n\n`
+    for (const s of similares) {
+      prompt += `• ${s.label} (ISCO ${s.isco_code})\n`
+      prompt += `  Similaridad: ${Math.round(s.similarity * 100)}% · Ofertas: ${s.ofertas}\n`
+      if (s.tendencia && s.tendencia !== 'insuficiente') {
+        prompt += `  Tendencia: ${s.tendencia}. Volatilidad: ${s.volatilidad}.\n`
+      } else {
+        prompt += `  Tendencia: datos insuficientes.\n`
+      }
+      if (s.cursos && s.cursos.length > 0) {
+        for (const c of s.cursos) {
+          prompt += `  Curso: "${c.titulo}" en ${c.institucion} (${c.provincia})\n`
+        }
+      } else {
+        prompt += `  Sin cursos de formación disponibles.\n`
+      }
+      prompt += '\n'
+    }
+  }
+
+  prompt += `Analizá las opciones de reconversión para trabajadores de "${ocupacion.label}" en un escenario de crisis. Identificá las mejores trayectorias considerando transferibilidad de skills, tendencia de demanda, y formación disponible para cubrir el gap.`
   return prompt
 }
 

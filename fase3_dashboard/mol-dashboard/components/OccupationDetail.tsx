@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { Search, Loader2, Briefcase, ChevronDown, X, ExternalLink, BookOpen, MessageSquare } from 'lucide-react';
+import { createBrowserClient } from '@supabase/ssr';
 import SkillsList from './SkillsList';
 import SimilarOccupations from './SimilarOccupations';
 import OfertasOcupacionModal from './OfertasOcupacionModal';
@@ -139,7 +140,7 @@ export default function OccupationDetail({
   }, [selectedId]);
 
   async function handlePedirAnalisis() {
-    if (!selectedOccupation || !selectedInfo) return;
+    if (!selectedOccupation || !selectedInfo || !occupationsData) return;
     setLoadingReco(true);
     setRecoError(false);
     setRecoPolicy(null);
@@ -149,15 +150,48 @@ export default function OccupationDetail({
       const essential = selectedOccupation.skills?.essential || [];
       const optional = selectedOccupation.skills?.optional || [];
       const knowledge = [...(selectedOccupation.knowledge?.essential || []), ...(selectedOccupation.knowledge?.optional || [])];
-      const similar = (selectedOccupation.similar || []).slice(0, 6).map((s: any) => {
+      const topSimilar = (selectedOccupation.similar || []).slice(0, 6);
+      const simIscos = [...new Set(topSimilar.map((s: any) => normalizeIsco(s.isco || '')))];
+
+      // Fetch trends for similar occupations
+      const { data: trends } = await createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      ).from('isco_demand_trend')
+        .select('isco_code, trend_label, ofertas_total, volatility_label, suficiente')
+        .in('isco_code', [isco, ...simIscos]);
+      const trendLookup: Record<string, any> = {};
+      if (trends) for (const t of trends) trendLookup[t.isco_code] = t;
+
+      // Fetch cursos for each similar occupation's essential skills
+      const similares = await Promise.all(topSimilar.map(async (s: any) => {
         const simIsco = normalizeIsco(s.isco || '');
+        const simOcc = occupationsData[s.id];
+        const simEssentialUris = (simOcc?.skills?.essential || []).slice(0, 6).map((sk: any) => `http://data.europa.eu/esco/skill/${sk.id}`);
+        let simCursos: any[] = [];
+        if (simEssentialUris.length > 0) {
+          try {
+            const cr = await fetch('/api/perfiles/cursos-gap', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ gap_skill_uris: simEssentialUris }),
+            });
+            if (cr.ok) { const cd = await cr.json(); simCursos = (cd.cursos || []).slice(0, 2); }
+          } catch {}
+        }
+        const trend = trendLookup[simIsco];
         return {
           label: s.label,
           isco_code: simIsco,
           similarity: s.similarity || s.jaccard || 0,
           ofertas: ofertasCountMap[simIsco] || 0,
+          tendencia: trend?.suficiente ? trend.trend_label : 'insuficiente',
+          volatilidad: trend?.volatility_label || 'desconocida',
+          cursos: simCursos.map((c: any) => ({ titulo: c.titulo, institucion: c.institucion, provincia: c.provincia })),
         };
-      });
+      }));
+
+      const occTrend = trendLookup[isco];
 
       const res = await fetch('/api/analisis-ocupacional', {
         method: 'POST',
@@ -167,12 +201,14 @@ export default function OccupationDetail({
             label: selectedInfo.label,
             isco_code: isco,
             ofertas_total: ofertas,
+            tendencia: occTrend?.suficiente ? occTrend.trend_label : 'insuficiente',
+            volatilidad: occTrend?.volatility_label || 'desconocida',
             skills_esenciales: essential.slice(0, 8).map((s: any) => s.label),
             skills_opcionales_count: optional.length,
             knowledge_esenciales: knowledge.slice(0, 5).map((k: any) => k.label),
           },
-          similares: similar,
-          cursos: cursos.slice(0, 5).map((c: any) => ({
+          similares,
+          cursos_ocupacion: cursos.slice(0, 5).map((c: any) => ({
             titulo: c.titulo,
             institucion: c.institucion,
             provincia: c.provincia,
