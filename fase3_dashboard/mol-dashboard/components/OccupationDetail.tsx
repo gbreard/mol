@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Loader2, Briefcase, ChevronDown, X, ExternalLink, BookOpen } from 'lucide-react';
+import { Search, Loader2, Briefcase, ChevronDown, X, ExternalLink, BookOpen, MessageSquare } from 'lucide-react';
 import SkillsList from './SkillsList';
 import SimilarOccupations from './SimilarOccupations';
 import OfertasOcupacionModal from './OfertasOcupacionModal';
@@ -126,6 +126,72 @@ export default function OccupationDetail({
       onNavigateToCompare(selectedId, similarId);
     }
   };
+
+  // AI policy recommendation
+  const [recoPolicy, setRecoPolicy] = useState<string | null>(null);
+  const [loadingReco, setLoadingReco] = useState(false);
+  const [recoError, setRecoError] = useState(false);
+
+  // Clear recommendation when occupation changes
+  useEffect(() => {
+    setRecoPolicy(null);
+    setRecoError(false);
+  }, [selectedId]);
+
+  async function handlePedirAnalisis() {
+    if (!selectedOccupation || !selectedInfo) return;
+    setLoadingReco(true);
+    setRecoError(false);
+    setRecoPolicy(null);
+    try {
+      const isco = normalizeIsco(selectedInfo.isco);
+      const ofertas = ofertasCountMap[isco] || 0;
+      const essential = selectedOccupation.skills?.essential || [];
+      const optional = selectedOccupation.skills?.optional || [];
+      const knowledge = [...(selectedOccupation.knowledge?.essential || []), ...(selectedOccupation.knowledge?.optional || [])];
+      const similar = (selectedOccupation.similar || []).slice(0, 6).map((s: any) => {
+        const simIsco = normalizeIsco(s.isco || '');
+        return {
+          label: s.label,
+          isco_code: simIsco,
+          similarity: s.similarity || s.jaccard || 0,
+          ofertas: ofertasCountMap[simIsco] || 0,
+        };
+      });
+
+      const res = await fetch('/api/analisis-ocupacional', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ocupacion: {
+            label: selectedInfo.label,
+            isco_code: isco,
+            ofertas_total: ofertas,
+            skills_esenciales: essential.slice(0, 8).map((s: any) => s.label),
+            skills_opcionales_count: optional.length,
+            knowledge_esenciales: knowledge.slice(0, 5).map((k: any) => k.label),
+          },
+          similares: similar,
+          cursos: cursos.slice(0, 5).map((c: any) => ({
+            titulo: c.titulo,
+            institucion: c.institucion,
+            provincia: c.provincia,
+            skills_cubiertas: c.skills_cubiertas,
+          })),
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setRecoPolicy(data.recomendacion || null);
+      } else {
+        setRecoError(true);
+      }
+    } catch {
+      setRecoError(true);
+    } finally {
+      setLoadingReco(false);
+    }
+  }
 
   const handleViewOfertas = (isco: string, label: string) => {
     setModalIsco(isco);
@@ -264,6 +330,54 @@ export default function OccupationDetail({
           </div>
         )}
       </div>
+
+      {/* AI Policy Analysis */}
+      {selectedOccupation && selectedInfo && (
+        <div className="bg-blue-50 rounded-xl border border-blue-200 p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <MessageSquare className="w-4 h-4 text-blue-600" />
+            <h3 className="text-sm font-semibold text-blue-700">Análisis de reconversión ocupacional</h3>
+          </div>
+
+          {!recoPolicy && !loadingReco && !recoError && (
+            <div className="flex items-center gap-3">
+              <p className="text-xs text-gray-500 flex-1">
+                Ante un escenario de crisis (cierre de empresa, caída de demanda, apertura de importaciones), qué opciones de reconversión existen para los trabajadores de esta ocupación.
+              </p>
+              <button
+                onClick={handlePedirAnalisis}
+                className="inline-flex items-center gap-1.5 bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shrink-0"
+              >
+                <MessageSquare className="w-3.5 h-3.5" />
+                Analizar reconversión
+              </button>
+            </div>
+          )}
+
+          {loadingReco && (
+            <div className="flex items-center justify-center gap-2 py-4 text-blue-400">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span className="text-xs">Analizando ocupación, skills transferibles y mercado...</span>
+            </div>
+          )}
+
+          {recoError && (
+            <div className="flex items-center gap-3">
+              <p className="text-xs text-red-500 flex-1">No se pudo generar el análisis.</p>
+              <button onClick={handlePedirAnalisis} className="text-xs text-blue-600 hover:text-blue-700 font-medium shrink-0">Reintentar</button>
+            </div>
+          )}
+
+          {recoPolicy && (
+            <div>
+              <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{recoPolicy}</p>
+              <p className="text-[9px] text-gray-400 mt-3 leading-snug">
+                Generado con IA a partir de datos del mercado laboral argentino. Orientativo para fundamentar política — no constituye dictamen técnico.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Content - only show when occupation selected */}
       {selectedOccupation && (
