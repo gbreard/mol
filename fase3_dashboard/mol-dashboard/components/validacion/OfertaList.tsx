@@ -3,10 +3,17 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { OfertaValidacion, ValidacionHumana } from "@/lib/types";
 
+interface GoldSetCandidate {
+  id_oferta: string;
+  prioridad: number;
+  razon: string;
+}
+
 interface OfertaListProps {
   ofertas: OfertaValidacion[];
   selectedId: string | null;
   onSelect: (oferta: OfertaValidacion) => void;
+  goldSetCandidates?: GoldSetCandidate[];
 }
 
 const STATUS_DOT: Record<string, string> = {
@@ -28,7 +35,17 @@ function StatusDot({ validacion, por }: { validacion: ValidacionHumana | null; p
   );
 }
 
-export function OfertaList({ ofertas, selectedId, onSelect }: OfertaListProps) {
+const PRIORITY_LABELS: Record<number, string> = {
+  1: "Corrección tuya",
+  2: "Regla nueva",
+  3: "Divergencia",
+  4: "Perfil Argentino",
+};
+
+export function OfertaList({ ofertas, selectedId, onSelect, goldSetCandidates }: OfertaListProps) {
+  const candidateMap = new Map(
+    (goldSetCandidates || []).map(c => [c.id_oferta, c])
+  );
   if (ofertas.length === 0) {
     return (
       <div className="flex items-center justify-center h-full text-gray-500 text-xs p-4">
@@ -66,6 +83,11 @@ export function OfertaList({ ofertas, selectedId, onSelect }: OfertaListProps) {
               <span className="truncate flex-1 min-w-0">
                 {oferta.titulo_limpio || oferta.titulo}
               </span>
+              {candidateMap.has(oferta.id_oferta) && (
+                <span className="shrink-0 text-[9px] bg-amber-100 text-amber-700 px-1 py-0.5 rounded" title={candidateMap.get(oferta.id_oferta)!.razon}>
+                  &#9733; {PRIORITY_LABELS[candidateMap.get(oferta.id_oferta)!.prioridad] || `P${candidateMap.get(oferta.id_oferta)!.prioridad}`}
+                </span>
+              )}
               <span className={`tabular-nums shrink-0 ${scoreColor}`}>
                 {score != null ? score.toFixed(2) : "-"}
               </span>

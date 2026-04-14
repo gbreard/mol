@@ -151,6 +151,7 @@ export default function MetricasPage() {
   const [runsHistory, setRunsHistory] = useState<RunHistory[]>([]);
   const [goldSetStats, setGoldSetStats] = useState<{ total: number; correctos: number; errores: number; agregados_este_mes: number } | null>(null);
   const [reglasEfectividad, setReglasEfectividad] = useState<{ sin_uso_reciente_count: number; baja_coincidencia_count: number; top_10: any[]; sin_uso_reciente: string[] } | null>(null);
+  const [apiUsage, setApiUsage] = useState<{ total_llamadas: number; costo_usd_estimado: number; costo_hoy: number; llamadas_hoy: number; total_tokens_input: number; total_tokens_output: number; ultimo_uso: string | null } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -187,6 +188,19 @@ export default function MetricasPage() {
         if (!reResult.error && reResult.data) setReglasEfectividad(reResult.data);
       } catch {
         // RPC no disponible
+      }
+
+      // M-09b C4: API usage (from sistema_estado)
+      try {
+        const { data: sysEstado } = await supabase
+          .from('sistema_estado')
+          .select('api_anthropic_usage')
+          .order('timestamp', { ascending: false })
+          .limit(1)
+          .single();
+        if (sysEstado?.api_anthropic_usage) setApiUsage(sysEstado.api_anthropic_usage);
+      } catch {
+        // no disponible
       }
 
       if (statusResult.error) throw statusResult.error;
@@ -409,6 +423,40 @@ export default function MetricasPage() {
               <AlertTriangle className="w-3.5 h-3.5 inline mr-1" />
               El Gold Set tiene {goldSetStats.total} casos. Se necesitan 150 para habilitar el fine-tuning.
               Agregar casos desde el validador con <kbd className="bg-amber-100 px-1 py-0.5 rounded text-[10px]">Alt+6</kbd>.
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Seccion 3b2: API Anthropic usage (M-09b C4) */}
+      {apiUsage && apiUsage.total_llamadas > 0 && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Zap className="w-4 h-4 text-purple-500" />
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">API Anthropic</h2>
+          </div>
+          <div className="grid grid-cols-4 gap-4 text-center">
+            <div>
+              <div className="text-lg font-bold text-gray-900">${apiUsage.costo_usd_estimado?.toFixed(2)}</div>
+              <div className="text-[10px] text-gray-400">total</div>
+            </div>
+            <div>
+              <div className="text-lg font-bold text-gray-900">${apiUsage.costo_hoy?.toFixed(2)}</div>
+              <div className="text-[10px] text-gray-400">hoy</div>
+            </div>
+            <div>
+              <div className="text-lg font-bold text-gray-900">{apiUsage.total_llamadas}</div>
+              <div className="text-[10px] text-gray-400">llamadas</div>
+            </div>
+            <div>
+              <div className="text-lg font-bold text-gray-900">{((apiUsage.total_tokens_input + apiUsage.total_tokens_output) / 1000).toFixed(0)}K</div>
+              <div className="text-[10px] text-gray-400">tokens</div>
+            </div>
+          </div>
+          {apiUsage.costo_hoy > 1.0 && (
+            <div className="mt-3 bg-amber-50 border border-amber-200 rounded-lg p-2 text-xs text-amber-800">
+              <AlertTriangle className="w-3.5 h-3.5 inline mr-1" />
+              Uso de API elevado hoy (${apiUsage.costo_hoy?.toFixed(2)}). Revisá si hay llamadas duplicadas.
             </div>
           )}
         </div>

@@ -175,10 +175,17 @@ export default function AdminIssuesPage() {
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Issues & Feedback</h1>
           <p className="text-gray-600">Gestion de issues y sugerencias del equipo</p>
         </div>
-        <Button variant="outline" size="sm" onClick={generateReport}
-          className="flex items-center gap-2">
-          <FileText className="w-4 h-4" /> Generar reporte para Claude Code
-        </Button>
+        <div className="flex items-center gap-2">
+          <a href="/admin/procesamiento/correcciones"
+            className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-md border border-purple-300 bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors">
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            Analizar con Claude
+          </a>
+          <Button variant="outline" size="sm" onClick={generateReport}
+            className="flex items-center gap-2">
+            <FileText className="w-4 h-4" /> Generar reporte para Claude Code
+          </Button>
+        </div>
       </div>
 
       {/* M-09b: Modal de reporte */}

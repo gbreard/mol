@@ -33,6 +33,17 @@ const EMPTY_FILTERS: ValidationFiltersState = {
   estadoValidacion: "",
 };
 
+interface GoldSetCandidate {
+  id_oferta: string;
+  titulo: string;
+  isco_code: string;
+  isco_label: string;
+  prioridad: number;
+  razon: string;
+  regla_aplicada: string | null;
+  tiene_correccion_cynthia: boolean;
+}
+
 export default function ValidacionPage() {
   const [filters, setFilters] = useState<ValidationFiltersState>(EMPTY_FILTERS);
   const [ofertas, setOfertas] = useState<OfertaValidacion[]>([]);
@@ -43,6 +54,9 @@ export default function ValidacionPage() {
   const [offset, setOffset] = useState(0);
   const [stats, setStats] = useState<ValidationStats | null>(null);
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+  const [goldSetMode, setGoldSetMode] = useState(false);
+  const [goldSetStats, setGoldSetStats] = useState<{ total: number; correctos: number; errores: number } | null>(null);
+  const [goldSetCandidates, setGoldSetCandidates] = useState<GoldSetCandidate[]>([]);
 
   // Get current user email
   useEffect(() => {
@@ -53,20 +67,52 @@ export default function ValidacionPage() {
       });
   }, []);
 
-  // Fetch ofertas
+  // Fetch ofertas (normal mode or gold set mode)
   const fetchOfertas = useCallback(async () => {
     setLoading(true);
     try {
-      const [result, statsResult] = await Promise.all([
-        getOfertasValidacion(filters, PAGE_SIZE, offset),
-        getValidacionStats(),
-      ]);
-      setOfertas(result.ofertas);
-      setTotal(result.total);
-      setStats(statsResult);
+      if (goldSetMode) {
+        // Gold Set candidates mode
+        const res = await fetch("/api/gold-set/candidates?limit=100");
+        if (!res.ok) throw new Error("Error cargando candidatas");
+        const json = await res.json();
+        const candidates: GoldSetCandidate[] = json.candidates || [];
+        setGoldSetStats(json.gold_set_stats || null);
+        setGoldSetCandidates(candidates);
+
+        // Fetch full oferta data for the candidate IDs
+        if (candidates.length > 0) {
+          const candidateIds = candidates.map(c => c.id_oferta);
+          const result = await getOfertasValidacion(
+            { ...EMPTY_FILTERS, ids: candidateIds } as any,
+            candidates.length,
+            0
+          );
+          // Reorder by candidate priority
+          const idOrder = new Map(candidateIds.map((id, i) => [id, i]));
+          const sorted = result.ofertas.sort((a, b) =>
+            (idOrder.get(a.id_oferta) ?? 999) - (idOrder.get(b.id_oferta) ?? 999)
+          );
+          setOfertas(sorted);
+          setTotal(sorted.length);
+        } else {
+          setOfertas([]);
+          setTotal(0);
+        }
+      } else {
+        // Normal mode
+        const [result, statsResult] = await Promise.all([
+          getOfertasValidacion(filters, PAGE_SIZE, offset),
+          getValidacionStats(),
+        ]);
+        setOfertas(result.ofertas);
+        setTotal(result.total);
+        setStats(statsResult);
+        setGoldSetCandidates([]);
+      }
       // Auto-select first if nothing selected
-      if (result.ofertas.length > 0 && !selectedOferta) {
-        setSelectedOferta(result.ofertas[0]);
+      if (!selectedOferta) {
+        setSelectedOferta(ofertas[0] || null);
         setCurrentIndex(0);
       }
     } catch (err) {
@@ -74,7 +120,7 @@ export default function ValidacionPage() {
     } finally {
       setLoading(false);
     }
-  }, [filters, offset]);
+  }, [goldSetMode, filters, offset]);
 
   useEffect(() => {
     fetchOfertas();
@@ -165,9 +211,54 @@ export default function ValidacionPage() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)]">
-      {/* Filters bar */}
+      {/* Filters bar + Gold Set toggle */}
       <div className="border-b bg-white px-4 py-2 shrink-0">
-        <ValidationFilters filters={filters} onChange={setFilters} stats={stats} ofertas={ofertas} />
+        <div className="flex items-center gap-2">
+          <div className="flex-1">
+            {!goldSetMode && (
+              <ValidationFilters filters={filters} onChange={setFilters} stats={stats} ofertas={ofertas} />
+            )}
+            {goldSetMode && (
+              <span className="text-sm text-amber-700 font-medium">
+                Modo Gold Set — {goldSetCandidates.length} candidatas
+              </span>
+            )}
+          </div>
+          <button
+            onClick={() => { setGoldSetMode(!goldSetMode); setSelectedOferta(null); setOffset(0); }}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              goldSetMode
+                ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                : 'bg-gray-100 text-gray-600 hover:bg-amber-50 hover:text-amber-700'
+            }`}
+          >
+            <span>&#9733;</span>
+            {goldSetMode ? 'Salir Gold Set' : 'Candidatas Gold Set'}
+          </button>
+        </div>
+        {/* Gold Set banner */}
+        {goldSetMode && goldSetStats && (
+          <div className="mt-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+            <div className="flex items-center gap-3">
+              <span className="text-amber-500 text-lg">&#9733;</span>
+              <div className="flex-1">
+                <div className="text-xs text-amber-800 font-medium">
+                  Modo Gold Set — Validá estas ofertas y presioná Alt+6 para agregarlas.
+                </div>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-[10px] text-amber-600">Progreso: {goldSetStats.total}/150</span>
+                  <div className="flex-1 max-w-[200px] bg-amber-200 rounded-full h-1.5">
+                    <div
+                      className={`h-1.5 rounded-full ${goldSetStats.total >= 150 ? 'bg-green-500' : 'bg-amber-500'}`}
+                      style={{ width: `${Math.min(100, goldSetStats.total / 150 * 100)}%` }}
+                    />
+                  </div>
+                  <span className="text-[10px] text-amber-600">{Math.round(goldSetStats.total / 150 * 100)}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Main content: 3-panel split */}
@@ -194,6 +285,7 @@ export default function ValidacionPage() {
                     ofertas={ofertas}
                     selectedId={selectedOferta?.id_oferta ?? null}
                     onSelect={handleSelect}
+                    goldSetCandidates={goldSetMode ? goldSetCandidates : undefined}
                   />
                 </div>
                 <ListPagination
