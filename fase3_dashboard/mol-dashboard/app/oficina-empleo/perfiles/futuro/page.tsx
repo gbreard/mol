@@ -570,7 +570,7 @@ export default function FuturoLaboralPage() {
         </div>
 
         {/* Recomendación IA — a nivel perfil, independiente de ocupación */}
-        {perfil && !loadingPerfil && matchingOccupations.length > 0 && (
+        {perfil && !loadingPerfil && perfilSkills.length > 0 && (
           <div className="bg-purple-50 rounded-xl border border-purple-200 p-4 mb-4">
             <div className="flex items-center gap-2 mb-2">
               <MessageSquare className="w-4 h-4 text-purple-600" />
