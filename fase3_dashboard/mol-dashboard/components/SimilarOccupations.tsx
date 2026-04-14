@@ -252,7 +252,10 @@ export default function SimilarOccupations({
               {/* Row 3: actions */}
               <div className="flex items-center gap-3 mt-1.5 ml-6">
                 {onSelect && (
-                  <button onClick={() => onSelect(occ.id)} className="text-[10px] text-blue-600 hover:text-blue-700 font-medium">
+                  <button
+                    onClick={() => { onSelect(occ.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    className="text-[10px] text-blue-600 hover:text-blue-700 font-medium"
+                  >
                     Ver detalle
                   </button>
                 )}
