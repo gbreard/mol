@@ -414,11 +414,92 @@ export default function FuturoLaboralPage() {
   }
 
   async function handlePedirRecomendacion() {
-    if (!perfil || !selectedOcc || !gapAnalysis) return
+    if (!perfil || !selectedOcc || !gapAnalysis || !occupationsData) return
     setLoadingReco(true)
     setRecoError(false)
     setRecomendacion(null)
     try {
+      // Build top 5 occupations: the selected one + best alternatives
+      // Score = match * 0.5 + (has offers) * 0.3 + (low gap) * 0.2
+      const candidates = matchingOccupations
+        .filter(m => (ofertasCountMap[m.isco_code] || 0) > 0)
+        .slice(0, 20)
+
+      // Deduplicate by ISCO, keep best match
+      const byIsco: Record<string, typeof candidates[0]> = {}
+      for (const c of candidates) {
+        const existing = byIsco[c.isco_code]
+        if (!existing || c.matchScore > existing.matchScore) byIsco[c.isco_code] = c
+      }
+      let top = Object.values(byIsco)
+        .sort((a, b) => b.matchScore - a.matchScore)
+        .slice(0, 5)
+
+      // Make sure the selected occupation is included
+      if (selectedOcc && !top.find(t => t.isco_code === selectedOcc.isco_code)) {
+        const selMatch = matchingOccupations.find(m => m.uri === selectedOcc.uri)
+        if (selMatch) top = [selMatch, ...top.slice(0, 4)]
+      }
+
+      // Fetch trends for top ISCOs
+      const topIscos = [...new Set(top.map(t => t.isco_code))]
+      const { data: trends } = await getSupabase()
+        .from('isco_demand_trend')
+        .select('isco_code, trend_label, ofertas_total, volatility_label, suficiente')
+        .in('isco_code', topIscos)
+      const trendMap: Record<string, any> = {}
+      if (trends) for (const t of trends) trendMap[t.isco_code] = t
+
+      // Fetch cursos for each occupation's gap
+      const topOcupaciones = await Promise.all(top.map(async (occ) => {
+        const occId = occ.uri.split('/').pop() || ''
+        const occData = occupationsData[occId]
+        if (!occData?.skills) return null
+
+        const result = calculateOccupationMatch(perfilSkills, occData.skills.essential || [], occData.skills.optional || [])
+        const gapUris = result.gapEssential.map((s: any) => `http://data.europa.eu/esco/skill/${s.id}`)
+
+        // Fetch cursos for this gap
+        let cursos: any[] = []
+        if (gapUris.length > 0) {
+          try {
+            const cursosRes = await fetch('/api/perfiles/cursos-gap', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ gap_skill_uris: gapUris }),
+            })
+            if (cursosRes.ok) {
+              const cursosData = await cursosRes.json()
+              cursos = (cursosData.cursos || []).slice(0, 3)
+            }
+          } catch {}
+        }
+
+        const trend = trendMap[occ.isco_code]
+        return {
+          label: occ.label,
+          isco_code: occ.isco_code,
+          compatibilidad: result.matchScore,
+          esenciales_total: result.essentialTotal,
+          cubiertas: result.sharedEssential.length,
+          tendencia: trend ? {
+            trend_label: !trend.suficiente ? 'insuficiente' : trend.trend_label,
+            ofertas_total: trend.ofertas_total || 0,
+            volatilidad: trend.volatility_label === 'volatil' ? 'volátil' : trend.volatility_label || 'desconocida',
+          } : { trend_label: 'insuficiente', ofertas_total: ofertasCountMap[occ.isco_code] || 0, volatilidad: 'desconocida' },
+          gap_skills: result.gapEssential.slice(0, 6).map((s: any) => ({
+            label: s.label,
+            frecuencia_mercado: molFreqs[`http://data.europa.eu/esco/skill/${s.id}`] || null,
+          })),
+          cursos: cursos.map((c: any) => ({
+            titulo: c.titulo,
+            institucion: c.institucion,
+            skills_cubiertas: c.skills_cubiertas,
+            provincia: c.provincia,
+          })),
+        }
+      }))
+
       const res = await fetch('/api/trayectoria-laboral', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -428,35 +509,14 @@ export default function FuturoLaboralPage() {
             skills_count: perfilSkills.length,
             ubicacion: perfilProvincia,
           },
-          ocupacion: {
+          ocupacion_elegida: {
             label: selectedOcc.label,
             isco_code: selectedOcc.isco_code,
             compatibilidad: gapAnalysis.compatibility,
             esenciales_total: gapAnalysis.essentialTotal,
             cubiertas: gapAnalysis.sharedEssential.length,
           },
-          tendencia: demandTrend ? {
-            trend_label: demandTrend.trend === 'up' ? 'creciendo' : demandTrend.trend === 'down' ? 'cayendo' : 'estable',
-            ofertas_total: molOfertasCount,
-            volatilidad: demandTrend.volatility === 'alta' ? 'volatil' : demandTrend.volatility === 'media' ? 'variable' : 'estable',
-          } : { trend_label: 'insuficiente', ofertas_total: molOfertasCount, volatilidad: 'desconocida' },
-          gap_skills: gapAnalysis.gapEssential.map((s: any) => ({
-            label: s.label,
-            frecuencia_mercado: molFreqs[`http://data.europa.eu/esco/skill/${s.id}`] || null,
-          })),
-          skills_tiene: gapAnalysis.sharedEssential.slice(0, 5).map((s: any) => ({ label: s.label })),
-          cursos: cursosGap.slice(0, 5).map((c: any) => ({
-            titulo: c.titulo,
-            institucion: c.institucion,
-            skills_cubiertas: c.skills_cubiertas,
-            provincia: c.provincia,
-          })),
-          alternativas: alternatives.slice(0, 3).map((a: any) => ({
-            label: a.label,
-            match: a.matchScore,
-            ofertas: a.ofertasCount,
-            tendencia: 'sin datos',
-          })),
+          top_ocupaciones: topOcupaciones.filter(Boolean),
         }),
       })
       if (res.ok) {
