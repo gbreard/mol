@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Loader2, Briefcase, ChevronDown, X, ExternalLink, BookOpen, MessageSquare } from 'lucide-react';
+import { Loader2, Briefcase, X, ExternalLink, BookOpen, MessageSquare } from 'lucide-react';
 import { createBrowserClient } from '@supabase/ssr';
+import OccupationTreeSelector from './OccupationTreeSelector';
 import SkillsList from './SkillsList';
 import SimilarOccupations from './SimilarOccupations';
 import OfertasOcupacionModal from './OfertasOcupacionModal';
@@ -34,8 +35,7 @@ export default function OccupationDetail({
   initialOccupation
 }: OccupationDetailProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSelectorOpen, setIsSelectorOpen] = useState(false);
   const [ofertasCountMap, setOfertasCountMap] = useState<Record<string, number>>({});
   const [modalIsco, setModalIsco] = useState('');
   const [modalLabel, setModalLabel] = useState('');
@@ -71,32 +71,13 @@ export default function OccupationDetail({
     return occupationsList.find(o => o.id === selectedId) || null;
   }, [selectedId, occupationsList]);
 
-  // Filter occupations for dropdown
-  const filteredOccupations = useMemo(() => {
-    if (!searchTerm.trim()) return occupationsList;
-
-    const normalizedSearch = searchTerm.toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
-
-    return occupationsList.filter(occ => {
-      const normalizedLabel = occ.label.toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '');
-      return normalizedLabel.includes(normalizedSearch) ||
-             occ.isco.toLowerCase().includes(normalizedSearch);
-    });
-  }, [occupationsList, searchTerm]);
-
   const handleSelect = (id: string) => {
     setSelectedId(id);
-    setIsDropdownOpen(false);
-    setSearchTerm('');
+    setIsSelectorOpen(false);
   };
 
   const handleClear = () => {
     setSelectedId(null);
-    setSearchTerm('');
   };
 
   // Fetch cursos when occupation changes
@@ -295,74 +276,31 @@ export default function OccupationDetail({
             </button>
           </div>
         ) : (
-          // Selector
+          // Selector with search + tree
           <div className="relative">
             <div
               className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-colors ${
-                isDropdownOpen ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-300 hover:border-gray-400'
+                isSelectorOpen ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-300 hover:border-gray-400'
               }`}
-              onClick={() => setIsDropdownOpen(true)}
+              onClick={() => setIsSelectorOpen(true)}
             >
-              <Search className="w-5 h-5 text-gray-400" />
-              {isDropdownOpen ? (
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Escribi para filtrar..."
-                  className="flex-1 outline-none bg-transparent"
-                  autoFocus
-                />
-              ) : (
-                <span className="flex-1 text-gray-500">
-                  Buscar entre {occupationsList.length.toLocaleString()} ocupaciones...
-                </span>
-              )}
-              <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              <Briefcase className="w-5 h-5 text-gray-400" />
+              <span className="flex-1 text-gray-500">
+                Buscar o navegar entre {occupationsList.length.toLocaleString()} ocupaciones...
+              </span>
             </div>
 
-            {/* Dropdown */}
-            {isDropdownOpen && (
-              <>
-                {/* Backdrop */}
-                <div
-                  className="fixed inset-0 z-10"
-                  onClick={() => setIsDropdownOpen(false)}
-                />
-
-                {/* List */}
-                <div className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-80 overflow-hidden">
-                  <div className="px-3 py-2 bg-gray-50 border-b text-sm text-gray-600">
-                    {searchTerm
-                      ? `${filteredOccupations.length} resultados`
-                      : `${occupationsList.length} ocupaciones ESCO`}
-                  </div>
-                  <ul className="overflow-y-auto max-h-64">
-                    {filteredOccupations.length === 0 ? (
-                      <li className="px-4 py-8 text-center text-gray-500">
-                        No se encontraron ocupaciones
-                      </li>
-                    ) : (
-                      filteredOccupations.slice(0, 100).map(occ => (
-                        <li
-                          key={occ.id}
-                          onClick={() => handleSelect(occ.id)}
-                          className="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0"
-                        >
-                          <div className="font-medium text-gray-900">{capitalize(occ.label)}</div>
-                          <div className="text-sm text-gray-500">ISCO: {occ.isco}</div>
-                        </li>
-                      ))
-                    )}
-                    {filteredOccupations.length > 100 && (
-                      <li className="px-4 py-3 text-center text-sm text-gray-500 bg-gray-50">
-                        Mostrando 100 de {filteredOccupations.length} resultados. Refina tu busqueda.
-                      </li>
-                    )}
-                  </ul>
-                </div>
-              </>
+            {/* Backdrop */}
+            {isSelectorOpen && (
+              <div className="fixed inset-0 z-10" onClick={() => setIsSelectorOpen(false)} />
             )}
+
+            <OccupationTreeSelector
+              occupationsList={occupationsList}
+              onSelect={handleSelect}
+              isOpen={isSelectorOpen}
+              onToggle={setIsSelectorOpen}
+            />
           </div>
         )}
       </div>
