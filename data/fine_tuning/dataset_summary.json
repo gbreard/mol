@@ -38,6 +38,14 @@
       "gold_set_actual": 49,
       "gap_gold_set": 101,
       "listo_para_fine_tuning": false
+    },
+    "skills_baseline": {
+      "precision_skills_baseline": 0.517,
+      "recall_skills_baseline": 0.474,
+      "threshold_semantico": 0.70,
+      "ofertas_evaluadas": 48,
+      "ofertas_recall_50_pct": 22,
+      "medido_at": "2026-04-14"
     }
   }
 }

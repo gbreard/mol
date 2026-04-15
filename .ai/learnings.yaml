@@ -6,11 +6,11 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-04-14 11:35"
+  fecha_actualizacion: "2026-04-15 08:28"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "adquisicion"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "49516 errores sin resolver - sistema sugiere Fase 2"
+  fase_detalle: "60830 errores sin resolver - sistema sugiere Fase 2"
 
 ultimo_trabajo:
   fecha: "2026-03-12"
@@ -177,7 +177,7 @@ conteos:
   empresas_catalogo: 247  # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
   skills_esco: 14257            # database/embeddings/esco_skills_full.json
   ocupaciones_esco: 3046        # database/embeddings/esco_occupations_full.json
-  ultima_verificacion: 2026-04-14
+  ultima_verificacion: 2026-04-15
 
   supabase:
     integrado: true
@@ -211,8 +211,8 @@ conteos:
   proximo_paso: "Revisar 24 casos con override semántico alto"
 
   estadisticas_actuales:
-    ofertas_validadas: 45771  # todas sincronizadas a Supabase
-    ofertas_pendientes: 11  # 0 errores de validación
+    ofertas_validadas: 46655  # todas sincronizadas a Supabase
+    ofertas_pendientes: 15  # 0 errores de validación
     errores_validacion: 0  # resueltos 201 → 0
     reglas_negocio: 319
     convergencia: "CONVERGIDO (0 errores pendientes)"
@@ -230,9 +230,9 @@ conteos:
 
   # Métricas de evolución del aprendizaje
   learning_evolution:
-    total_runs: 387
+    total_runs: 397
     ofertas_con_historial_nlp: 5474  # ofertas en ofertas_nlp_history
-    ofertas_con_matching: 45782  # ofertas distintas en ofertas_esco_matching
+    ofertas_con_matching: 46670  # ofertas distintas en ofertas_esco_matching
 
     # Distribución real de reprocesos (datos de ofertas_nlp_history)
     distribucion_reprocesos:

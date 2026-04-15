@@ -44,7 +44,12 @@
         "esco_label": "dibujante técnico/dibujante técnica"
       },
       "caso_gold_set": "1118027941 - Dibujante Tecnico",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v53",
+        "contexto": "Fix R139 repositor 9333→9334, R137 excluir controlador, new R265",
+        "requiere_revision": true
+      }
     },
     "R2_skills_diseno_grafico": {
       "nombre": "Skills Diseño Gráfico",
@@ -64,7 +69,12 @@
         "esco_label": "diseñador gráfico/diseñadora gráfica"
       },
       "caso_gold_set": "1118018714 - Diseñador Gráfico E-commerce",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v53",
+        "contexto": "ir controlador, new R265 controlador logístico→4321. Issues Diego.",
+        "requiere_revision": true
+      }
     },
     "R3_autoelevador": {
       "nombre": "Operador Autoelevador/Montacargas",
@@ -84,7 +94,12 @@
         "esco_label": "operador de carretilla elevadora/operadora de carretilla elevadora"
       },
       "caso_gold_set": "1118028027 - Operador Autoelevadores",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v47",
+        "contexto": "acturación, ventas; R38: excluir supervisor, marketing; R58: excluir mostrador/h",
+        "requiere_revision": true
+      }
     },
     "R4_nivel_gerencial": {
       "nombre": "Nivel Gerencial con Gente a Cargo",
@@ -112,7 +127,12 @@
         ]
       },
       "caso_gold_set": "1117984105 - Gerente de Ventas",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v11",
+        "contexto": "Agregadas R43-R47: DevOps, Architect, SAP, Integraciones, Data Enginee",
+        "requiere_revision": true
+      }
     },
     "R6_sector_gastronomia": {
       "nombre": "Sector Gastronomía",
@@ -140,7 +160,12 @@
         ]
       },
       "caso_gold_set": "2162667 - Gerente Operaciones Gastronomía",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v51",
+        "contexto": "general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista",
+        "requiere_revision": true
+      }
     },
     "R7_sector_educacion": {
       "nombre": "Sector Educación con Admisiones",
@@ -161,7 +186,12 @@
         "esco_label_si_asesor": "Asesor academico/asesora academica"
       },
       "caso_gold_set": "1118018461 - Asesor de Admisiones",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v512",
+        "contexto": "Fix R75 label vigilador, fix R211 prioridad vs R240, fix R290 va",
+        "requiere_revision": true
+      }
     },
     "R8_nutricion_animal": {
       "nombre": "Nutrición Animal/Veterinaria",
@@ -182,7 +212,12 @@
         "esco_label": "técnico veterinario/técnica veterinaria"
       },
       "caso_gold_set": "1117995368 - Asesor Nutrición Animal",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v51",
+        "contexto": "Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344",
+        "requiere_revision": true
+      }
     },
     "R9_tareas_logisticas": {
       "nombre": "Tareas Logísticas/Almacén",
@@ -208,7 +243,12 @@
         ]
       },
       "caso_gold_set": "1118026729 - Responsable de Depósito",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v33",
+        "contexto": "Fix: R95 removido data architect, R92 excluye telecom, R146 prior",
+        "requiere_revision": true
+      }
     },
     "R10_electricista_industrial": {
       "nombre": "Electricista Industrial",
@@ -229,7 +269,12 @@
       },
       "caso_gold_set": "2165052 - Electricista Industrial (mejorable)",
       "activa": false,
-      "nota": "Desactivada - match actual 7411 es aceptable, mismo grupo"
+      "nota": "Desactivada - match actual 7411 es aceptable, mismo grupo",
+      "_linaje": {
+        "version_origen": "v23",
+        "contexto": "Demo optimizacion: R105-R110 (Jefe Mant, Preventista, Seg Higiene, Jefe RRHH, E",
+        "requiere_revision": true
+      }
     },
     "R11_titulo_compuesto": {
       "nombre": "Título Compuesto - Priorizar Primero",
@@ -242,7 +287,12 @@
       },
       "caso_gold_set": "1117977340 - Recepcionista Administrativo",
       "activa": false,
-      "nota": "Desactivada: reemplazada por sistema multi-posición (024_multi_position.sql + limpiar_titulos.py). Sprint issues Cynthia 2026-02-26."
+      "nota": "Desactivada: reemplazada por sistema multi-posición (024_multi_position.sql + limpiar_titulos.py). Sprint issues Cynthia 2026-02-26.",
+      "_linaje": {
+        "version_origen": "v27",
+        "contexto": "Agregadas R119-R121: Operario logístico, Gomero/balanceador, Bioquímic",
+        "requiere_revision": true
+      }
     },
     "R12_ejecutivo_cuentas": {
       "nombre": "Ejecutivo de Cuentas = Ventas",
@@ -259,7 +309,12 @@
         "esco_label": "representante comercial"
       },
       "caso_gold_set": "1118027276 - Ejecutivo de Cuentas",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v27",
+        "contexto": "Agregadas R119-R121: Operario logístico, Gomero/balanceador, Bioquímico (fi",
+        "requiere_revision": true
+      }
     },
     "R13_enfermero": {
       "nombre": "Enfermero/Enfermera (profesional de salud)",
@@ -282,7 +337,12 @@
       "fix_v33": "2026-01-29 - esco_label corregido (antes 'enfermero/enfermera' mapeaba a 5329)",
       "activa": true,
       "override_semantico": true,
-      "_nota_override": "v3.5.5: 12 ofertas de enfermero/a overrideadas por semantico_alta_confianza (score=0.95 exacto para 5329). Título inequívoco."
+      "_nota_override": "v3.5.5: 12 ofertas de enfermero/a overrideadas por semantico_alta_confianza (score=0.95 exacto para 5329). Título inequívoco.",
+      "_linaje": {
+        "version_origen": "v53",
+        "contexto": "Fix R139 repositor 9333→9334, R137 excluir controlador, new R265",
+        "requiere_revision": true
+      }
     },
     "R14_contador_auditor": {
       "nombre": "Contador/Auditor (financiero, no médico)",
@@ -324,7 +384,12 @@
       "caso_diagnostico": "2154549 - Contador para Sector Auditoria",
       "fix_aplicado": "2026-01-12 - Excluir auditor médico (1118105872)",
       "activa": true,
-      "nota_v47": "v4.7: Excluir auditor nocturno hotel, administrativa contable (son admin, no contadores)"
+      "nota_v47": "v4.7: Excluir auditor nocturno hotel, administrativa contable (son admin, no contadores)",
+      "_linaje": {
+        "version_origen": "v33",
+        "contexto": "92 excluye telecom, R146 prioridad 0",
+        "requiere_revision": true
+      }
     },
     "R14b_auditor_medico": {
       "nombre": "Auditor Médico (profesional de salud)",
@@ -342,7 +407,10 @@
       },
       "caso_diagnostico": "1118105872 - Auditor Médico Swiss Medical",
       "fecha_creacion": "2026-01-12",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R14c_auditor_medico_alt": {
       "nombre": "Auditor Médico (variante sin acento)",
@@ -359,7 +427,10 @@
       },
       "caso_diagnostico": "1118105872 - Auditor Médico Swiss Medical",
       "fecha_creacion": "2026-01-12",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R14d_administrativo_contable": {
       "nombre": "Administrativo Contable (empleado, no profesional)",
@@ -381,7 +452,12 @@
       "fecha_creacion": "2026-01-29",
       "nota": "Más específica que R14. Administrativo Contable = empleado (4311), no Contador profesional (2411)",
       "activa": true,
-      "nota_v47": "v4.7: Excluir analista (analista contable SR = profesional 2411, no empleado 4311)"
+      "nota_v47": "v4.7: Excluir analista (analista contable SR = profesional 2411, no empleado 4311)",
+      "_linaje": {
+        "version_origen": "v47",
+        "contexto": "istrativa contable; R14d: excluir analista; R158: ISCO 1324→1321 (manufacturing",
+        "requiere_revision": true
+      }
     },
     "R15_customer_care": {
       "nombre": "Customer Care/Atencion al Cliente (call center)",
@@ -412,7 +488,12 @@
       },
       "caso_diagnostico": "2149320 - Customer Care Professional",
       "fix_v33": "2026-01-29 - Exclusiones para mercería, depósito (son vendedores, no call center)",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v40",
+        "contexto": "R159: Farmaceutico -> 2262, R160: Tecnico instalador -> 7411",
+        "requiere_revision": true
+      }
     },
     "R16_barista_heladero": {
       "nombre": "Barista/Heladero/Cafeteria",
@@ -432,7 +513,12 @@
         "esco_label": "barista"
       },
       "caso_diagnostico": "2155040 - ENCARGADAS/OS - HELADERAS/OS - BARISTAS",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v40",
+        "contexto": "rmaceutico -> 2262, R160: Tecnico instalador -> 7411",
+        "requiere_revision": true
+      }
     },
     "R17_compliance_legal": {
       "nombre": "Compliance/Legal (no financiero)",
@@ -462,7 +548,12 @@
         "esco_label": "abogado/abogada"
       },
       "caso_diagnostico": "1118027243 - Responsable de Legales, 2151075 - Asistente Compliance",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v42",
+        "contexto": "R177-R180: Gestor cobranzas, QA/Tester, Instalador fibra, So",
+        "requiere_revision": true
+      }
     },
     "R17b_compliance_financiero": {
       "nombre": "Compliance Financiero (ALyC, Banca, Seguros)",
@@ -483,7 +574,10 @@
       "caso_diagnostico": "2172825 - Analista de Compliance (ALyC, sector Finanzas)",
       "fecha_creacion": "2026-01-29",
       "nota": "Compliance en finanzas = analista financiero (2413), no abogado (2611)",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R18_payroll_nominas": {
       "nombre": "Payroll/Liquidacion de Sueldos",
@@ -503,7 +597,12 @@
         "esco_label": "administrativo de nóminas/administrativa de nóminas"
       },
       "caso_diagnostico": "2145263 - Consultor Junior de Liquidacion de Sueldos",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v43",
+        "contexto": "R181-R182: Personal mantenimiento -> 7233, Tecnico electrome",
+        "requiere_revision": true
+      }
     },
     "R19_project_manager": {
       "nombre": "Project Manager/Jefe de Proyectos",
@@ -525,7 +624,12 @@
         "esco_label": "director de empresa/directora de empresa"
       },
       "caso_diagnostico": "1118026719 - Project Manager IT",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v44",
+        "contexto": "R183-R197: Bobinador, Carnicero, Guardavidas, Kinesiologo, Aux Fa",
+        "requiere_revision": true
+      }
     },
     "R19b_project_manager_it": {
       "nombre": "Project Manager IT/Telecomunicaciones",
@@ -548,7 +652,10 @@
       "caso_diagnostico": "2171813 - Project Manager (Sector Tecnologia, Area IT)",
       "fecha_creacion": "2026-01-29",
       "nota": "PM de área IT = 1330, PM general = 1213 (R19)",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R20_vendedor_ferreteria": {
       "nombre": "Vendedor Ferreteria/Electricidad/Mostrador",
@@ -570,7 +677,12 @@
         "esco_label": "vendedor especializado en ferretería y pintura/vendedora especializada en ferretería y pintura"
       },
       "caso_diagnostico": "2130257 - EMPLEADA/O VENTA MOSTRADOR PARA CASA DE ELECTRICIDAD",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v45",
+        "contexto": "R198-R202: Bell boy, Foguista, Extraccionista, Inspector API, Ges",
+        "requiere_revision": true
+      }
     },
     "R21_lider_atencion_cliente": {
       "nombre": "Lider/Supervisor Atencion al Cliente",
@@ -594,7 +706,12 @@
         "esco_label": "agente de centro de atención al cliente"
       },
       "caso_diagnostico": "2156388 - Lider de Atencion al Cliente",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v51",
+        "contexto": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223,",
+        "requiere_revision": true
+      }
     },
     "R22_instalaciones_mantenimiento": {
       "nombre": "Coordinador/Tecnico Instalaciones",
@@ -618,7 +735,12 @@
         "esco_label": "operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías"
       },
       "caso_diagnostico": "1118028168 - Coordinador de Instalaciones",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v51",
+        "contexto": "or vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad genera",
+        "requiere_revision": true
+      }
     },
     "R23_responsable_deposito": {
       "nombre": "Responsable/Jefe de Deposito/Almacen",
@@ -699,7 +821,10 @@
       },
       "caso_gold_set": "Casos con titulo explicito de restaurante/bar",
       "activa": true,
-      "nota": "Solo aplica si titulo menciona restaurante/bar/gastronomia explicitamente"
+      "nota": "Solo aplica si titulo menciona restaurante/bar/gastronomia explicitamente",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R26_recepcionista": {
       "nombre": "Recepcionista (rol primario)",
@@ -726,7 +851,12 @@
         "esco_label": "recepcionista"
       },
       "caso_gold_set": "1117977340 - Recepcionista Administrativo",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v53",
+        "contexto": "ir controlador, new R265 controlador logístico→4321. Issues Diego.",
+        "requiere_revision": true
+      }
     },
     "R26b_recepcionista_hotel": {
       "nombre": "Recepcionista de Hotel/Hotelería",
@@ -752,7 +882,10 @@
       "caso_diagnostico": "1118102035 - Recepcionista franquero para Hotel (CABA)",
       "fecha_creacion": "2026-01-29",
       "nota": "Más específica que R26. Recepcionista de hotel = 4224, no recepcionista general = 4226",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R27_asesor_admisiones": {
       "nombre": "Asesor Admisiones/Academico",
@@ -774,7 +907,12 @@
         "esco_label": "asesor académico/asesora académica"
       },
       "caso_gold_set": "1118018461 - Asesor de Admisiones",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v55",
+        "contexto": "ader reclutamiento, R270 tecnico incidencias, R271 dev python. 6 nuevas + 1 upda",
+        "requiere_revision": true
+      }
     },
     "R28_comercial_cuentas": {
       "nombre": "Comercial de Cuentas/Account Manager",
@@ -793,7 +931,12 @@
         "esco_label": "representante comercial"
       },
       "caso_gold_set": "1118028038 - Ejecutiva/o Comercial de Cuentas",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v58",
+        "contexto": "-tuning protección: R281-R292 (12 reglas) para proteger 13 regresiones detectada",
+        "requiere_revision": true
+      }
     },
     "R29_modelista_patronista": {
       "nombre": "Modelista/Patronista Textil (diseño de patrones)",
@@ -814,7 +957,12 @@
       },
       "caso_gold_set": "1118028828 - Modelista textil, 1118106004 - Modelista/Tizadora Audaces",
       "activa": true,
-      "nota": "Modelista/Patronista DISEÑA patrones (7532), no confecciona ropa (7531)"
+      "nota": "Modelista/Patronista DISEÑA patrones (7532), no confecciona ropa (7531)",
+      "_linaje": {
+        "version_origen": "v58",
+        "contexto": "ng protección: R281-R292 (12 reglas) para proteger 13 regresiones detectadas en",
+        "requiere_revision": true
+      }
     },
     "R29b_sastre_modista": {
       "nombre": "Sastre/Modista (confección)",
@@ -834,7 +982,10 @@
         "esco_label": "sastre/sastra"
       },
       "activa": true,
-      "nota": "Sastre/Modista CONFECCIONA ropa (7531)"
+      "nota": "Sastre/Modista CONFECCIONA ropa (7531)",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R30_community_manager": {
       "nombre": "Community Manager/Social Media",
@@ -853,7 +1004,12 @@
         "esco_label": "gestor de la información para las redes sociales/gestora de la información para las redes sociales"
       },
       "caso_gold_set": "1118022146 - Community manager",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v511",
+        "contexto": "R300-R303: Protección regresiones combined LoRA (HRBP->RRHH,",
+        "requiere_revision": true
+      }
     },
     "R31_mozo_camarero": {
       "nombre": "Mozo/Camarero/Mesero",
@@ -876,7 +1032,12 @@
         "esco_label": "camarero/camarera"
       },
       "caso_gold_set": "2164100 - Mozo/Moza",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v514",
+        "contexto": "ucción. Nuevas R307-R311 (ing electrónico, lonas/toldos, resp depósito, promotor",
+        "requiere_revision": true
+      }
     },
     "R32_operario_picking": {
       "nombre": "Operario Picking/Preparador Pedidos (Almacén)",
@@ -898,7 +1059,12 @@
       },
       "caso_gold_set": "1118023904 - Operario Picking Zona Norte",
       "activa": true,
-      "nota": "Picking en deposito/almacen es 9333, NO repositor de gondola (9334)"
+      "nota": "Picking en deposito/almacen es 9333, NO repositor de gondola (9334)",
+      "_linaje": {
+        "version_origen": "v516",
+        "contexto": "→1324 depósito. New R320 ventas telemarketing→5244, R321 instalador seguridad→35",
+        "requiere_revision": true
+      }
     },
     "R33_desarrollador_software": {
       "nombre": "Desarrollador/Programador Software",
@@ -944,7 +1110,12 @@
       "activa": true,
       "nota": "Excluye CNC/mecanizado (v2026-01-20)",
       "nota_v47": "v4.7: Excluir manager/director/lead (son IT managers 1330, no developers 2512)",
-      "_fix_2026_04_08": "Excluir producción/produccion para no pisar programador de producción industrial"
+      "_fix_2026_04_08": "Excluir producción/produccion para no pisar programador de producción industrial",
+      "_linaje": {
+        "version_origen": "v47",
+        "contexto": "ostrador/heladería; R33: excluir manager/director/lead; R171: excluir administra",
+        "requiere_revision": true
+      }
     },
     "R34_cajero": {
       "nombre": "Cajero/Cajera",
@@ -962,7 +1133,10 @@
         "esco_label": "cajero/cajera"
       },
       "caso_gold_set": "2123908 - CAJEROS",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R35_disenador_grafico_titulo": {
       "nombre": "Diseñador Gráfico (por título)",
@@ -985,7 +1159,10 @@
         "esco_label": "diseñador gráfico/diseñadora gráfica"
       },
       "caso_gold_set": "1118018714 - Diseñador Gráfico E-commerce",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R36_operario_almacen": {
       "nombre": "Operario Almacén/Depósito/Logístico (consolidado R36+R119)",
@@ -1014,7 +1191,10 @@
       },
       "caso_gold_set": "1117980907 - Operario de Almacen/Logistica",
       "activa": true,
-      "_nota": "Sprint 2: merged R119 keywords"
+      "_nota": "Sprint 2: merged R119 keywords",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R37_operario_alimentos": {
       "nombre": "Operario Producción de Alimentos (genérico)",
@@ -1040,7 +1220,10 @@
       },
       "caso_gold_set": "2131827 - Operario de Producción de Alimentos (genérico)",
       "activa": true,
-      "nota": "ISCO 8160 para operarios de alimentos genéricos. ISCO 7511 solo si menciona carne explícitamente."
+      "nota": "ISCO 8160 para operarios de alimentos genéricos. ISCO 7511 solo si menciona carne explícitamente.",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R38_comercio_exterior": {
       "nombre": "Comercio Exterior / Importación-Exportación (despachante)",
@@ -1080,7 +1263,12 @@
       "fix_v33": "2026-01-29 - Exclusiones para analista/senior/admin (son roles contables, no despachantes)",
       "activa": true,
       "nota": "Detecta por tareas aunque título sea genérico. Excluye roles administrativos.",
-      "nota_v47": "v4.7: Excluir supervisor/marketing"
+      "nota_v47": "v4.7: Excluir supervisor/marketing",
+      "_linaje": {
+        "version_origen": "v47",
+        "contexto": "acturación, ventas; R38: excluir supervisor, marketing; R58: excluir mostrador/h",
+        "requiere_revision": true
+      }
     },
     "R39_supervisor_administracion": {
       "nombre": "Supervisor de Administración",
@@ -1098,7 +1286,10 @@
       },
       "caso_gold_set": "2165301 - Supervisor/a Administración Autos usados",
       "activa": true,
-      "nota": "Evita que supervisor admin vaya a ingeniero industrial por skills de optimización"
+      "nota": "Evita que supervisor admin vaya a ingeniero industrial por skills de optimización",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R40_asesor_comercial": {
       "nombre": "Asesor Comercial / Corredor (B2B)",
@@ -1123,7 +1314,10 @@
       "caso_gold_set": "1118028833 - Asesor Comercial Plan de Ahorro Volkswagen",
       "activa": true,
       "nota": "B2B: asesor/corredor/ejecutivo/representante -> 3322. Vendedor generico va a R111",
-      "fix_validacion_humana": "2026-01-16"
+      "fix_validacion_humana": "2026-01-16",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R41_chofer_repartidor": {
       "nombre": "Chofer Repartidor / Delivery",
@@ -1152,7 +1346,10 @@
       },
       "caso_gold_set": "2091347 - CHOFER REPARTIDOR (huevos en Kangoo)",
       "activa": true,
-      "nota": "Chofer repartidor con vehiculo ligero (camioneta/furgoneta) es ISCO 8322"
+      "nota": "Chofer repartidor con vehiculo ligero (camioneta/furgoneta) es ISCO 8322",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R42_gerente_operaciones": {
       "nombre": "Gerente de Operaciones",
@@ -1177,7 +1374,10 @@
       },
       "caso_gold_set": "2162667 - Gerente Operaciones Facility/Catering",
       "activa": true,
-      "nota": "ISCO 1321 para ops industriales. Gastronomía va a R116"
+      "nota": "ISCO 1321 para ops industriales. Gastronomía va a R116",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R116_gerente_operaciones_gastronomia": {
       "nombre": "Gerente/Supervisor de Operaciones Gastronomía",
@@ -1203,7 +1403,10 @@
       "caso_validacion_humana": "1118091304 - Gerente de Operaciones Grupo Gastronómico, 1118115485 - Gerente de Local Gastronómico",
       "activa": true,
       "nota": "Operaciones/local en gastronomía → 1412. Ampliado 2026-01-20",
-      "fix_validacion_humana": "2026-01-20"
+      "fix_validacion_humana": "2026-01-20",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R43_IT_devops": {
       "nombre": "DevOps Engineer/SRE",
@@ -1223,7 +1426,12 @@
       },
       "caso_revision_100": "2172191 - DevOps Engineer mal clasificado como operador centro datos",
       "activa": true,
-      "nota": "FASE 2 v3.2.1 - DevOps requiere ISCO 2523 (redes) o 2512 (desarrollador)"
+      "nota": "FASE 2 v3.2.1 - DevOps requiere ISCO 2523 (redes) o 2512 (desarrollador)",
+      "_linaje": {
+        "version_origen": "v11",
+        "contexto": "Agregadas R43-R47: DevOps, Architect, SAP, Integraciones, Data Enginee",
+        "requiere_revision": true
+      }
     },
     "R44_IT_architect": {
       "nombre": "Arquitecto Software",
@@ -1251,7 +1459,10 @@
       },
       "caso_revision_100": "2172192 - JAVA Architect mal clasificado como gestor TIC",
       "activa": true,
-      "nota": "FASE 2 v3.2.1 - Arquitecto software = desarrollador senior"
+      "nota": "FASE 2 v3.2.1 - Arquitecto software = desarrollador senior",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R45_IT_analista_sap": {
       "nombre": "Analista SAP/ERP/Funcional",
@@ -1277,7 +1488,10 @@
       },
       "caso_revision_100": "2172152 - Analista SAP Jr mal clasificado como técnico baterías",
       "activa": true,
-      "nota": "FASE 2 v3.2.1 - Roles SAP/ERP son analistas de sistemas"
+      "nota": "FASE 2 v3.2.1 - Roles SAP/ERP son analistas de sistemas",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R46_IT_integraciones": {
       "nombre": "Analista de Integraciones",
@@ -1298,7 +1512,10 @@
       },
       "caso_revision_100": "2172151 - Analista Integraciones mal clasificado",
       "activa": true,
-      "nota": "FASE 2 v3.2.1 - Integraciones IT = analista sistemas"
+      "nota": "FASE 2 v3.2.1 - Integraciones IT = analista sistemas",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R47_IT_data_engineer": {
       "nombre": "Data Engineer/ETL",
@@ -1318,7 +1535,12 @@
       },
       "caso_revision_100": "2172159 - Data Engineer Sr",
       "activa": true,
-      "nota": "FASE 2 v3.2.1 - Data Engineers trabajan con bases de datos y pipelines"
+      "nota": "FASE 2 v3.2.1 - Data Engineers trabajan con bases de datos y pipelines",
+      "_linaje": {
+        "version_origen": "v11",
+        "contexto": "Agregadas R43-R47: DevOps, Architect, SAP, Integraciones, Data Engineer",
+        "requiere_revision": true
+      }
     },
     "R48_secretaria_admin": {
       "nombre": "Secretaria/Asistente Administrativo",
@@ -1335,7 +1557,12 @@
         "esco_label": "secretario/secretaria"
       },
       "activa": true,
-      "nota": "FASE 3 v3.2.3 - Secretarias van a ISCO 4120"
+      "nota": "FASE 3 v3.2.3 - Secretarias van a ISCO 4120",
+      "_linaje": {
+        "version_origen": "v12",
+        "contexto": "Agregadas R48-R52: Secretaria, Jefe generico, Back office, Carpintero,",
+        "requiere_revision": true
+      }
     },
     "R49_jefe_generico": {
       "nombre": "Jefe/Encargado Genérico",
@@ -1373,7 +1600,12 @@
       },
       "activa": true,
       "nota": "FASE 3 v3.2.3 - Jefes genericos van a ISCO 1xxx. Excluye compras/logística",
-      "_fix_2026_04_08": "Agregado \"depósito\" con tilde a exclusión (bug de acento)"
+      "_fix_2026_04_08": "Agregado \"depósito\" con tilde a exclusión (bug de acento)",
+      "_linaje": {
+        "version_origen": "v514",
+        "contexto": "abel seguridad, fix R49 tilde depósito, fix R33 excluir producción. Nuevas R307-",
+        "requiere_revision": true
+      }
     },
     "R117_responsable_compras": {
       "nombre": "Responsable/Jefe de Compras y Logística",
@@ -1398,7 +1630,10 @@
       "caso_validacion_humana": "2172098 - Responsable de Compras y Logística",
       "activa": true,
       "nota": "Responsable de compras es rol operativo de comprador, no directivo",
-      "fix_validacion_humana": "2026-01-16"
+      "fix_validacion_humana": "2026-01-16",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R50_back_office": {
       "nombre": "Back Office/Operaciones Administrativas",
@@ -1415,7 +1650,10 @@
         "esco_label": "técnico administrativo de gestión/técnica administrativa de gestión"
       },
       "activa": true,
-      "nota": "FASE 3 v3.2.3 - Back office es trabajo administrativo"
+      "nota": "FASE 3 v3.2.3 - Back office es trabajo administrativo",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R51_carpintero": {
       "nombre": "Carpintero/Oficial Carpinteria",
@@ -1432,7 +1670,10 @@
         "esco_label": "ebanista"
       },
       "activa": true,
-      "nota": "FASE 3 v3.2.3 - Carpinteros van a ISCO 7522"
+      "nota": "FASE 3 v3.2.3 - Carpinteros van a ISCO 7522",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R52_ingeniero_ia_ml": {
       "nombre": "Ingeniero IA/ML/Data Science",
@@ -1451,7 +1692,12 @@
         "esco_label": "desarrollador de software/desarrolladora de software"
       },
       "activa": true,
-      "nota": "FASE 3 v3.2.3 - Ingenieros IA/ML son desarrolladores"
+      "nota": "FASE 3 v3.2.3 - Ingenieros IA/ML son desarrolladores",
+      "_linaje": {
+        "version_origen": "v12",
+        "contexto": "Agregadas R48-R52: Secretaria, Jefe generico, Back office, Carpintero, Ing",
+        "requiere_revision": true
+      }
     },
     "R53_operario_plastico": {
       "condicion": {
@@ -1468,7 +1714,10 @@
         "esco_label": "operador de máquinas para la fabricación de muebles de plástico/operadora de máquinas para la fabricación de muebles de plástico"
       },
       "activa": true,
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R54_cuidador_adultos": {
       "condicion": {
@@ -1483,7 +1732,10 @@
         "esco_label": "técnico de atención sociosanitaria a personas en el domicilio/técnica de atención sociosanitaria a personas en el domicilio"
       },
       "activa": true,
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R55_vendedor_ambulante": {
       "condicion": {
@@ -1497,7 +1749,10 @@
         "esco_label": "vendedor ambulante/vendedora ambulante"
       },
       "activa": true,
-      "prioridad": 0
+      "prioridad": 0,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R56_analista_creditos": {
       "condicion": {
@@ -1513,7 +1768,10 @@
         "esco_label": "analista de créditos"
       },
       "activa": true,
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R57_encargado_ganadero": {
       "nombre": "Ganadero / Encargado de Campo (agropecuario)",
@@ -1581,7 +1839,12 @@
       },
       "activa": true,
       "prioridad": 1,
-      "nota_v47": "v4.7: Excluir despachante de mostrador/heladería (no es aduanas)"
+      "nota_v47": "v4.7: Excluir despachante de mostrador/heladería (no es aduanas)",
+      "_linaje": {
+        "version_origen": "v47",
+        "contexto": "ervisor, marketing; R58: excluir mostrador/heladería; R33: excluir manager/direc",
+        "requiere_revision": true
+      }
     },
     "R59_medico_especialista": {
       "nombre": "Médico Especialista",
@@ -1620,7 +1883,12 @@
       },
       "activa": true,
       "nota": "Excluye ingeniero/técnico para evitar falsos positivos con 'equipamiento médico'",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "version_origen": "v14",
+        "contexto": "ervisor Ventas. Fix R59 excluye ingeniero.",
+        "requiere_revision": true
+      }
     },
     "R60_mecanico_vehiculos": {
       "nombre": "Mecánico de vehículos/camiones (NO barcos)",
@@ -1645,7 +1913,10 @@
         "esco_label": "mecánico de vehículos/mecánica de vehículos"
       },
       "activa": true,
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R61_analista_qa_farma": {
       "nombre": "Analista QA/Calidad Farmacéutico",
@@ -1670,7 +1941,10 @@
         "esco_label": "ingeniero químico/ingeniera química"
       },
       "activa": true,
-      "prioridad": 0
+      "prioridad": 0,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R62_auditor_medico": {
       "nombre": "Auditor Médico",
@@ -1691,7 +1965,10 @@
         "esco_label": "médico especialista/médica especialista"
       },
       "activa": true,
-      "prioridad": 0
+      "prioridad": 0,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R63_secretaria_educacion": {
       "nombre": "Secretaria/Asistente Académico",
@@ -1715,7 +1992,10 @@
         "esco_label": "empleado administrativo/empleada administrativa"
       },
       "activa": true,
-      "prioridad": 0
+      "prioridad": 0,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R64_admin_funeraria": {
       "nombre": "Administrativo Funeraria/Cementerio",
@@ -1737,7 +2017,10 @@
         "esco_label": "empleado de oficina/empleada de oficina"
       },
       "activa": true,
-      "prioridad": 0
+      "prioridad": 0,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R65_jefe_delegacion": {
       "nombre": "Jefe de Delegación/Sucursal",
@@ -1760,7 +2043,12 @@
       },
       "activa": true,
       "prioridad": -1,
-      "nota": "v4.7: prioridad -1 para que semántico gane cuando score > 0.85 (bancario vs retail). 6 V27 fix."
+      "nota": "v4.7: prioridad -1 para que semántico gane cuando score > 0.85 (bancario vs retail). 6 V27 fix.",
+      "_linaje": {
+        "version_origen": "v51",
+        "contexto": "general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista",
+        "requiere_revision": true
+      }
     },
     "R66_arquitecto_software": {
       "nombre": "Arquitecto de Software",
@@ -1783,7 +2071,10 @@
         "esco_label": "desarrollador de software/desarrolladora de software"
       },
       "activa": true,
-      "prioridad": 0
+      "prioridad": 0,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R67_devops_engineer": {
       "nombre": "DevOps Engineer/Ingeniero DevOps",
@@ -1800,7 +2091,10 @@
         "esco_label": "desarrollador de software/desarrolladora de software"
       },
       "activa": true,
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R68_gerente_ops_gastronomia": {
       "nombre": "Gerente/Supervisor Operaciones Gastronomía",
@@ -1826,7 +2120,12 @@
       "caso_revision_100": "1118091304, 1118097995 - Gerente/Supervisor Operaciones Gastronómico",
       "activa": true,
       "nota": "FASE 4 - Operaciones en gastronomía = gerente restaurante, NO director fabricación",
-      "prioridad": 0
+      "prioridad": 0,
+      "_linaje": {
+        "version_origen": "v13",
+        "contexto": "Agregadas R68-R82: Gastronomía, Financiero, Retail, Aluminio, Product",
+        "requiere_revision": true
+      }
     },
     "R69_analista_financiero": {
       "nombre": "Analista Financiero",
@@ -1845,7 +2144,10 @@
       "activa": true,
       "nota": "FASE 4 - Corregido: 2413 (no 2411). Analista financiero != contador",
       "fix_validacion_humana": "2026-01-16",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R70_encargado_gastronomia": {
       "nombre": "Encargado/Subencargado Gastronomía",
@@ -1871,7 +2173,10 @@
       "caso_revision_100": "2172164 - Encargado Senior Gastronomía",
       "activa": true,
       "nota": "FASE 4 - Encargado gastronomía = gerente restaurante",
-      "prioridad": 0
+      "prioridad": 0,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R71_encargado_local_retail": {
       "nombre": "Encargado/Subencargado de Local Retail",
@@ -1892,7 +2197,10 @@
       "caso_revision_100": "1118101812 - Subencargado de Local",
       "activa": true,
       "nota": "FASE 4 - Encargado local retail = supervisor tienda",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R72_carpintero_aluminio": {
       "nombre": "Carpintero de Aluminio/Vidriero",
@@ -1912,7 +2220,10 @@
       "caso_revision_100": "2172208 - Carpintero de Aluminio / Cortador Vidriero",
       "activa": true,
       "nota": "FASE 4 - Carpintero aluminio es carpintería metálica, NO ebanista",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R74_supervisor_ventas": {
       "nombre": "Supervisor de Ventas",
@@ -1933,7 +2244,10 @@
       "caso_revision_100": "2172203 - Supervisor de Ventas Servicios Salud",
       "activa": true,
       "nota": "FASE 4 - Supervisor ventas = director ventas",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R75_vigilador": {
       "nombre": "Vigilador/Guardia de Seguridad",
@@ -1955,7 +2269,12 @@
       "activa": true,
       "nota": "FASE 4 - Vigilador genérico = guardia seguridad",
       "prioridad": 1,
-      "_fix_2026_04_08": "Label corregido de \"guardia de furgón blindado\" a \"vigilante de seguridad\". Afecta ~180 ofertas."
+      "_fix_2026_04_08": "Label corregido de \"guardia de furgón blindado\" a \"vigilante de seguridad\". Afecta ~180 ofertas.",
+      "_linaje": {
+        "version_origen": "v512",
+        "contexto": "Fix R75 label vigilador, fix R211 prioridad vs R240, fix R290 va",
+        "requiere_revision": true
+      }
     },
     "R76_fonoaudiologo": {
       "nombre": "Fonoaudiólogo/Logopeda",
@@ -1975,7 +2294,10 @@
       "caso_revision_100": "2171937 - Fonoaudióloga",
       "activa": true,
       "nota": "FASE 4 - Fonoaudiólogo = logopeda (ISCO 2266)",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R77_responsable_compras": {
       "nombre": "Responsable/Jefe Compras y Logística",
@@ -1994,7 +2316,10 @@
       "caso_revision_100": "2172098 - Responsable Compras y Logística",
       "activa": true,
       "nota": "FASE 4 - Responsable compras = director supply chain",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R78_analista_tecnico_funcional_it": {
       "nombre": "Analista Técnico Funcional IT (Medios de Pago)",
@@ -2013,7 +2338,10 @@
       "caso_revision_100": "2172188 - Analista Técnico Funcional Medios de Pago",
       "activa": true,
       "nota": "FASE 4 - Técnico funcional IT = analista sistemas",
-      "prioridad": 0
+      "prioridad": 0,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R79_ingeniero_industrial_equipos": {
       "nombre": "Ingeniero Industrial (Equipamiento/Gestión)",
@@ -2035,7 +2363,10 @@
       "caso_revision_100": "2172199 - Ingeniero Industrial Equipamiento Médico",
       "activa": true,
       "nota": "FASE 4 - Ingeniero industrial = ISCO 2141",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R80_administrativo_almacen": {
       "nombre": "Administrativo de Almacén/Stock",
@@ -2060,7 +2391,10 @@
       "caso_revision_100": "2172219 - Administrativo para Almacenes",
       "activa": true,
       "nota": "FASE 4 - Administrativo almacén = coordinador inventario",
-      "prioridad": 0
+      "prioridad": 0,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R81_monitoreo_alarmas": {
       "nombre": "Operador Monitoreo de Alarmas",
@@ -2085,7 +2419,10 @@
       "caso_revision_100": "1118102051 - Operadores de Monitoreo de Alarmas",
       "activa": true,
       "nota": "FASE 4 - Monitoreo alarmas = seguridad",
-      "prioridad": 0
+      "prioridad": 0,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R82_operario_farmaceutico": {
       "nombre": "Operario Industria Farmacéutica",
@@ -2110,7 +2447,12 @@
       "caso_revision_100": "1118040252 - Operarios pharma mal clasificado a zoológico",
       "activa": true,
       "nota": "FASE 4 - Operario pharma = operador productos químicos",
-      "prioridad": 0
+      "prioridad": 0,
+      "_linaje": {
+        "version_origen": "v13",
+        "contexto": "Agregadas R68-R82: Gastronomía, Financiero, Retail, Aluminio, Product Mana",
+        "requiere_revision": true
+      }
     },
     "R83_analista_calidad_servicios": {
       "nombre": "Analista de Calidad de Servicios",
@@ -2129,7 +2471,12 @@
       "caso_revision_100": "1118101077, 1118101058 - Analista Calidad Servicios",
       "activa": true,
       "nota": "Sprint 5 V31: refinada - solo servicios/atencion. ID 1118088708 era falso positivo.",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "version_origen": "v51",
+        "contexto": "Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344",
+        "requiere_revision": true
+      }
     },
     "R84_operario_acondicionamiento": {
       "nombre": "Operario Acondicionamiento (Laboratorio/Pharma)",
@@ -2153,7 +2500,10 @@
       "caso_revision_100": "1118040252 - Operarios acondicionamiento laboratorio",
       "activa": true,
       "nota": "FASE 5 - Acondicionamiento pharma = operador productos químicos",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R85_supervisor_operaciones": {
       "nombre": "Supervisor de Operaciones (Gastronómico/Retail)",
@@ -2175,7 +2525,10 @@
       "caso_revision_100": "1118097995 - Supervisor Operaciones Gastronomia",
       "activa": true,
       "nota": "FASE 5 - Supervisor ops gastro/retail = supervisor tienda",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R86_subencargado_local": {
       "nombre": "Subencargado/Asistente de Local (Retail)",
@@ -2196,7 +2549,10 @@
       "caso_revision_100": "1118101812 - Subencargado de Local Retail",
       "activa": true,
       "nota": "FASE 5 - Subencargado retail = supervisor tienda",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R87_administrativo_ecommerce": {
       "nombre": "Administrativo/Analista de E-commerce",
@@ -2228,7 +2584,12 @@
       "activa": true,
       "nota": "v3.5.2: Corregido - admin ecommerce es oficinista, no agente propiedad intelectual",
       "prioridad": 0,
-      "nota_v47": "v4.7: Excluir facturación/ventas (admin facturación MeLi = admin genérico, no analista ecommerce)"
+      "nota_v47": "v4.7: Excluir facturación/ventas (admin facturación MeLi = admin genérico, no analista ecommerce)",
+      "_linaje": {
+        "version_origen": "v39",
+        "contexto": ": Jefe operaciones, R87 ajustada",
+        "requiere_revision": true
+      }
     },
     "R88_jefe_producto": {
       "nombre": "Jefe/Gerente de Producto (Product Manager)",
@@ -2250,7 +2611,10 @@
       "activa": true,
       "nota": "Product Manager → director de producto (no director de ventas). Corregido 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R89_disenador_grafico_senior": {
       "nombre": "Diseñador Gráfico (con seniority)",
@@ -2273,7 +2637,10 @@
       "caso_revision_100": "2172144 - Diseñador Gráfico Senior",
       "activa": true,
       "nota": "FASE 5 - Diseñador gráfico = ISCO 2166 (refuerza R2)",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R90_supervisor_ventas": {
       "nombre": "Supervisor de Ventas",
@@ -2301,7 +2668,12 @@
       "activa": true,
       "nota": "FASE 5 - Supervisor ventas = representante comercial (supervisión equipo)",
       "prioridad": 1,
-      "_nota": "Sprint 2: agregadas exclusiones gerenciales"
+      "_nota": "Sprint 2: agregadas exclusiones gerenciales",
+      "_linaje": {
+        "version_origen": "v14",
+        "contexto": "Agregadas R83-R90: Calidad Servicios, Acondicionamiento, Supervisor Ops, S",
+        "requiere_revision": true
+      }
     },
     "R91_jefe_mantenimiento": {
       "nombre": "Jefe/Supervisor de Mantenimiento Industrial",
@@ -2322,7 +2694,10 @@
       "caso_revision_100": "1117941805 - JEFE/A DE MANTENIMIENTO (rubro alimenticio)",
       "activa": true,
       "nota": "Validacion v2.0 - Jefe mantenimiento en Argentina = supervisor técnico (3115), no director (1321). Corregido 2026-01-20. Prio 0 para ganar vs R235_mecanico.",
-      "prioridad": 0
+      "prioridad": 0,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R92_jefe_cotizaciones_presupuestos": {
       "nombre": "Jefe/Responsable de Cotizaciones, Presupuestos y Cómputo de Obras",
@@ -2353,7 +2728,12 @@
       },
       "caso_revision_100": "1118105832 - Jefe/a de Cotizaciones, Cómputo y Presupuesto (instalaciones contra incendios)",
       "activa": true,
-      "nota": "Validacion v1.0 - Roles de estimación de costos/presupuestos de obras van a director de construcción"
+      "nota": "Validacion v1.0 - Roles de estimación de costos/presupuestos de obras van a director de construcción",
+      "_linaje": {
+        "version_origen": "v33",
+        "contexto": "ido data architect, R92 excluye telecom, R146 prioridad 0",
+        "requiere_revision": true
+      }
     },
     "R93_telemarketer": {
       "nombre": "Telemarketer / Vendedor telefónico",
@@ -2376,7 +2756,10 @@
       },
       "caso_revision_100": "1117872265 - Telemarketers con experiencia en planes de ahorro",
       "activa": true,
-      "nota": "Validacion v1.0 - Telemarketers = vendedores telefónicos (5244), no representantes comerciales (3322)"
+      "nota": "Validacion v1.0 - Telemarketers = vendedores telefónicos (5244), no representantes comerciales (3322)",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R94_jefe_sucursal_financiera": {
       "nombre": "Jefe/Gerente de Sucursal/Delegación Financiera",
@@ -2402,7 +2785,10 @@
       },
       "caso_revision_100": "2172211 - Jefe de Delegación (AMPF - venta de créditos)",
       "activa": true,
-      "nota": "Validacion v1.0 - Jefe delegación financiera = 1346, prioridad sobre R65 genérica"
+      "nota": "Validacion v1.0 - Jefe delegación financiera = 1346, prioridad sobre R65 genérica",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R95_tech_lead_ia_ml": {
       "nombre": "Tech Lead / Arquitecto IA / ML Engineer",
@@ -2431,7 +2817,12 @@
       },
       "caso_revision_100": "1118105718 - IA Tech Lead (desarrollo RAG, LangChain, arquitectura IA)",
       "activa": true,
-      "nota": "Validacion v1.0 - Tech Lead de IA/ML es desarrollador senior, no seguridad TIC"
+      "nota": "Validacion v1.0 - Tech Lead de IA/ML es desarrollador senior, no seguridad TIC",
+      "_linaje": {
+        "version_origen": "v33",
+        "contexto": "Fix: R95 removido data architect, R92 excluye telecom, R146 prior",
+        "requiere_revision": true
+      }
     },
     "R96_profesional_belleza": {
       "nombre": "Profesional de Belleza (manicura, pedicura, cejas, pestanas)",
@@ -2454,7 +2845,10 @@
         "esco_label": "manicuro/manicura"
       },
       "caso_validacion": "1118102076 - Profesionales de Belleza de Manos, Pies, Cejas y Pestanas",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R97_coordinador_deposito": {
       "nombre": "Coordinador/Encargado de Deposito/Almacen",
@@ -2475,7 +2869,10 @@
         "esco_label": "coordinador de inventario/coordinadora de inventario"
       },
       "caso_validacion": "1117953276 - Coordinador Deposito",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R98_asesor_medicina_prepaga": {
       "nombre": "Asesor/Vendedor Medicina Prepaga/Obra Social",
@@ -2496,7 +2893,10 @@
         "esco_label": "asesor de seguros/asesora de seguros"
       },
       "caso_validacion": "2170807 - Asesor Medicina Prepaga",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R100_mucama_hotel": {
       "nombre": "Mucama/Camarera de Hotel",
@@ -2514,7 +2914,10 @@
         "esco_label": "camarero de pisos/camarera de pisos"
       },
       "activa": true,
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R101_business_analyst": {
       "nombre": "Business Analyst / Analista de Negocio",
@@ -2535,7 +2938,12 @@
       },
       "activa": true,
       "prioridad": 1,
-      "nota_v47": "v4.7: Excluir core bancario (analista funcional core bancario = analista financiero 2413)"
+      "nota_v47": "v4.7: Excluir core bancario (analista funcional core bancario = analista financiero 2413)",
+      "_linaje": {
+        "version_origen": "v47",
+        "contexto": ": excluir analista; R101: excluir core bancario; R203: prioridad -1",
+        "requiere_revision": true
+      }
     },
     "R106_preventista": {
       "nombre": "Preventista",
@@ -2554,7 +2962,10 @@
         "esco_label": "vendedor a domicilio"
       },
       "caso_demo": "1118115978 - PREVENTISTA MEDIA JORNADA",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R107_seguridad_higiene": {
       "nombre": "Seguridad e Higiene",
@@ -2575,7 +2986,12 @@
       },
       "caso_demo": "1118115976 - Licenciado en Seguridad e Higiene",
       "activa": true,
-      "_fix_2026_04_08": "Label corregido de \"especialista en seguridad alimentaria\" a \"responsable de salud y seguridad\""
+      "_fix_2026_04_08": "Label corregido de \"especialista en seguridad alimentaria\" a \"responsable de salud y seguridad\"",
+      "_linaje": {
+        "version_origen": "v514",
+        "contexto": "Fix R107 label seguridad, fix R49 tilde depósito, fix R33 exclui",
+        "requiere_revision": true
+      }
     },
     "R108_jefe_rrhh": {
       "nombre": "Jefe de RRHH/HR",
@@ -2605,7 +3021,10 @@
         "esco_label": "director de recursos humanos/directora de recursos humanos"
       },
       "caso_demo": "1118115922 - Jefe/a de Hard HR",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R109_ejecutivo_ventas": {
       "nombre": "Ejecutivo de Ventas (consolidado R109+R145+R195)",
@@ -2634,7 +3053,10 @@
       },
       "caso_demo": "1118115901 - Ejecutivo de ventas rubro alimenticio",
       "activa": true,
-      "_nota": "Sprint 2: merged R145+R195 keywords + exclusiones"
+      "_nota": "Sprint 2: merged R145+R195 keywords + exclusiones",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R110_tecnico_mantenimiento": {
       "nombre": "Tecnico de Mantenimiento Industrial",
@@ -2662,7 +3084,12 @@
         "esco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial"
       },
       "caso_demo": "1118115860 - Tecnico de Mantenimiento Industrial",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v23",
+        "contexto": "optimizacion: R105-R110 (Jefe Mant, Preventista, Seg Higiene, Jefe RRHH, Ejec V",
+        "requiere_revision": true
+      }
     },
     "R111_vendedor_generico": {
       "nombre": "Vendedor/Vendedora Genérico (tienda/local)",
@@ -2700,7 +3127,12 @@
       "nota": "Vendedor genérico → 5223. Los B2B (asesor, ejecutivo, representante) van a R40 → 3322",
       "fix_validacion_humana": "2026-01-16",
       "activa": true,
-      "nota_v47": "v4.7: Excluir telefónico/call center (son vendedores telefónicos 5244, no de tienda 5223)"
+      "nota_v47": "v4.7: Excluir telefónico/call center (son vendedores telefónicos 5244, no de tienda 5223)",
+      "_linaje": {
+        "version_origen": "v47",
+        "contexto": "sentante/comercial; R111: excluir telefónico/call center; R160: excluir internet",
+        "requiere_revision": true
+      }
     },
     "R112_analista_tesoreria": {
       "nombre": "Analista de Tesorería",
@@ -2721,7 +3153,10 @@
       },
       "nota": "Analista de tesorería → analista contable (validación humana v2). Corregido 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R118_asistente_tesoreria": {
       "nombre": "Asistente de Tesorería",
@@ -2742,7 +3177,10 @@
       },
       "nota": "Asistente de tesorería → empleado contabilidad (validación humana)",
       "fix_validacion_humana": "2026-01-16",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R113_auditor_medico": {
       "nombre": "Auditor Médico / Médico Auditor",
@@ -2763,7 +3201,10 @@
       },
       "nota": "Auditor médico requiere título de médico → 2212",
       "fix_validacion_humana": "2026-01-16",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R114_analista_calidad_lab": {
       "nombre": "Analista de Calidad Laboratorio",
@@ -2791,7 +3232,10 @@
       },
       "nota": "Calidad en laboratorio → 3111 (técnico químico, no ingeniero). Corregido 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R115_administrativo_almacen": {
       "nombre": "Administrativo de Almacén/Depósito",
@@ -2814,7 +3258,10 @@
       },
       "nota": "Administrativo en almacén/depósito → 4321 (inventario, no admin genérico)",
       "fix_validacion_humana": "2026-01-16",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R120_gomero_balanceador": {
       "nombre": "Gomero/Balanceador de Neumáticos",
@@ -2834,7 +3281,10 @@
       },
       "nota": "Gomero/balanceador → 7231 (mecánico vehículos), no demostrador",
       "fix_validacion_humana": "2026-01-19",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R121_bioquimico": {
       "nombre": "Bioquímico/a de Laboratorio",
@@ -2853,7 +3303,12 @@
       },
       "nota": "Bioquímico → 2131 (bioquímico en ESCO), no ingeniero bioquímico (2145)",
       "fix_validacion_humana": "2026-01-19",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v27",
+        "contexto": "Agregadas R119-R121: Operario logístico, Gomero/balanceador, Bioquímico (fi",
+        "requiere_revision": true
+      }
     },
     "R122_personal_obra": {
       "nombre": "Personal para Obra / Obrero de Construcción",
@@ -2879,7 +3334,10 @@
       },
       "nota": "Personal genérico para obra de construcción → Albañiles (7112)",
       "fix_validacion_humana": "2026-01-20",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R123_asesor_tecnico_comercial": {
       "nombre": "Asesor Técnico Comercial",
@@ -2900,7 +3358,10 @@
       },
       "nota": "REVISADO: regla correcta (2433). Fix: R38 ahora excluye 'asesor técnico' para no interferir. 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R124_analista_contable": {
       "nombre": "Analista Contable",
@@ -2920,7 +3381,10 @@
       },
       "nota": "Analista contable ≠ contador. La demanda es de analista, no de contador matriculado. Fix validacion 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R125_gerente_finanzas": {
       "nombre": "Gerente/Director de Finanzas",
@@ -2942,7 +3406,10 @@
       },
       "nota": "Gerente/Director de Finanzas → director financiero (no director de contabilidad). Fix validacion 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R126_ejecutivo_seguros": {
       "nombre": "Ejecutivo/Asesor de Seguros/ART",
@@ -2972,7 +3439,10 @@
       },
       "nota": "Venta de seguros/ART → 3321 (asesor de seguros). Prioridad 0 para ganar sobre R40.",
       "fix_validacion_humana": "2026-01-20",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R127_gerente_postventa": {
       "nombre": "Gerente/Director de Postventa/Servicio al Cliente",
@@ -2997,7 +3467,10 @@
       },
       "nota": "Gerente de Postventa/Servicio al cliente → 1349 (director servicios clientes). Fix validacion 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R128_programador_cnc": {
       "nombre": "Programador/Operario CNC/Mecanizado",
@@ -3022,7 +3495,10 @@
       },
       "nota": "Programador/Operario CNC = operador máquinas herramienta (7223), NO desarrollador software. Fix validacion 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R129_coordinador_educacion": {
       "nombre": "Coordinador de Programas Educativos/Formación",
@@ -3045,7 +3521,10 @@
       },
       "nota": "Coordinador educación/formación → 1345 (director servicios educativos). Fix validacion 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R130_supervisor_qa_procesos": {
       "nombre": "Supervisor de QA/Mejora de Procesos",
@@ -3066,7 +3545,10 @@
       },
       "nota": "Supervisor QA/procesos → 3341 (supervisor calidad), NO director (1321). Fix validacion 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R131_hoteleria_hospitalaria": {
       "nombre": "Hoteleria Hospitalaria/en Salud",
@@ -3090,7 +3572,12 @@
         "esco_label": "supervisor de servicio de limpieza/supervisora de servicio de limpieza"
       },
       "caso_referencia": "2172389 - Tecnico/a de Hoteleria en Salud",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v28",
+        "contexto": "Agregadas R131 hoteleria hospitalaria, R132 medicina prepaga",
+        "requiere_revision": true
+      }
     },
     "R132_vendedor_medicina_prepaga": {
       "nombre": "Vendedor/Asesor Medicina Prepaga",
@@ -3111,7 +3598,12 @@
         "esco_label": "asesor de seguros/asesora de seguros"
       },
       "caso_referencia": "2171880 - Vendedores de medicina prepaga",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v28",
+        "contexto": "leria hospitalaria, R132 medicina prepaga",
+        "requiere_revision": true
+      }
     },
     "R131b_hoteleria_sector_salud": {
       "nombre": "Hoteleria en sector Salud",
@@ -3131,7 +3623,10 @@
         "esco_label": "supervisor de servicio de limpieza/supervisora de servicio de limpieza"
       },
       "caso_referencia": "2172389 - Tecnico/a de Hoteleria (sector Salud)",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R133_steward_bachero": {
       "nombre": "Steward/Bachero hoteleria",
@@ -3148,7 +3643,12 @@
         "esco_label": "ayudante de cocina"
       },
       "caso_referencia": "1116740268 - H - Steward - Bacheros - CABA",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v29",
+        "contexto": "Agregada R133 Steward/Bachero hoteleria -> 9412 ayudante cocina",
+        "requiere_revision": true
+      }
     },
     "R135_gestor_liquidaciones": {
       "nombre": "Gestor de Liquidaciones",
@@ -3165,7 +3665,12 @@
         "esco_label": "empleado de contabilidad/empleada de contabilidad"
       },
       "caso_referencia": "1118115815 - Gestor de Liquidaciones",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v30",
+        "contexto": "mmercial Executive, R135 Gestor Liquidaciones",
+        "requiere_revision": true
+      }
     },
     "R136_personal_deposito": {
       "nombre": "Personal de Depósito/Almacén (consolidado R136+R161)",
@@ -3198,7 +3703,10 @@
       "_fecha": "2026-01-22",
       "nota": "Personal genérico de depósito con tareas de picking/logística → 9333 (mozo almacén)",
       "prioridad": 1,
-      "_nota": "Sprint 2: merged R161 keywords"
+      "_nota": "Sprint 2: merged R161 keywords",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R137_tareas_picking_crossdocking": {
       "nombre": "Tareas Picking/Cross-docking (sin título específico)",
@@ -3235,7 +3743,12 @@
       "_caso": "ID 1118092945 - tareas picking, cross docking en área logística",
       "_fecha": "2026-01-22",
       "nota": "Sprint 5 V31 + v53: excluir maquinista/apiladora + controlador logístico. Issue 0dde98f9.",
-      "prioridad": 0
+      "prioridad": 0,
+      "_linaje": {
+        "version_origen": "v53",
+        "contexto": "epositor 9333→9334, R137 excluir controlador, new R265 controlador logístico→432",
+        "requiere_revision": true
+      }
     },
     "R138_control_gestion": {
       "nombre": "Analista de Control de Gestión",
@@ -3254,7 +3767,10 @@
       "activa": true,
       "_caso": "ID 2172829 - Analista de Control de Gestión - Petrolera Martinez",
       "_fecha": "2026-01-22",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R139_repositor": {
       "nombre": "Repositor/Reponedor",
@@ -3276,7 +3792,12 @@
       "_caso": "ID 1118097220 Repositores con experiencia",
       "_fecha": "2026-01-23",
       "prioridad": 1,
-      "nota": "v53: Corregido ISCO 9333→9334 (reponedor, no mozo almacén). Issue c19933f5."
+      "nota": "v53: Corregido ISCO 9333→9334 (reponedor, no mozo almacén). Issue c19933f5.",
+      "_linaje": {
+        "version_origen": "v53",
+        "contexto": "Fix R139 repositor 9333→9334, R137 excluir controlador, new R265",
+        "requiere_revision": true
+      }
     },
     "R140_mucama_hotel": {
       "nombre": "Mucama/Camarera de Pisos Hotelería",
@@ -3298,7 +3819,10 @@
       "activa": true,
       "_caso": "ID 1118005232 Mucamas/os para Hoteles 4* y 5*",
       "_fecha": "2026-01-23",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R141_peon_deposito": {
       "nombre": "Peón de Depósito/Distribución",
@@ -3321,7 +3845,10 @@
       "activa": true,
       "_caso": "ID 1118009711 Empleado de reposicion, distribucion y deposito",
       "_fecha": "2026-01-23",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R142_bodeguero": {
       "nombre": "Bodeguero/Encargado de Bodega",
@@ -3342,7 +3869,12 @@
       "_caso": "ID 1118104232 Peones y Bodegueros",
       "_fecha": "2026-01-23",
       "nota": "En Argentina, bodeguero = almacenero (no relacionado a vinos)",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "version_origen": "v31",
+        "contexto": "Agregadas R139-R142: Repositor, Mucama hotel, Peón depósito, Bodeguero -> 9",
+        "requiere_revision": true
+      }
     },
     "R143_jefe_cocina": {
       "nombre": "Jefe/Chef/Responsable de Cocina",
@@ -3366,7 +3898,10 @@
       "activa": true,
       "_caso": "ID 1118032379 Jefe/a de cocina - Temperley, 1116827130 Responsable de Cocina",
       "_fecha": "2026-02-04",
-      "prioridad": 1
+      "prioridad": 1,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R144_pizzero": {
       "nombre": "Pizzaiolo/Pizzero/Panadero",
@@ -3396,7 +3931,12 @@
       "_caso": "ID 2171992 Pizzaiolo/Maestro Pizzero/Panadero",
       "_fecha": "2026-01-23",
       "prioridad": 1,
-      "nota_v47": "v4.7: Excluir asesor/representante/comercial/técnico (son vendedores técnicos 3322, no panaderos 7512)"
+      "nota_v47": "v4.7: Excluir asesor/representante/comercial/técnico (son vendedores técnicos 3322, no panaderos 7512)",
+      "_linaje": {
+        "version_origen": "v47",
+        "contexto": "r offset/impresión; R144: excluir asesor/representante/comercial; R111: excluir",
+        "requiere_revision": true
+      }
     },
     "R146_data_architect": {
       "nombre": "Data Architect / Arquitecto de Datos",
@@ -3414,7 +3954,12 @@
         "esco_label": "arquitecto de sistemas de TIC/arquitecta de sistemas de TIC"
       },
       "caso_referencia": "1118103686 - Data Architect",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v33",
+        "contexto": "92 excluye telecom, R146 prioridad 0",
+        "requiere_revision": true
+      }
     },
     "R147_admin_redes_servidores": {
       "nombre": "Administrador de Redes y Servidores",
@@ -3435,7 +3980,10 @@
         "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC"
       },
       "caso_referencia": "1118103687 - Administrador de Redes y Servidores",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R148_disenador_multimedia": {
       "nombre": "Diseñador Multimedia / Motion Graphics",
@@ -3455,7 +4003,10 @@
         "esco_label": "diseñador gráfico/diseñadora gráfica"
       },
       "caso_referencia": "1118103801 - DISEÑADOR MULTIMEDIA",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R149_ingeniero_telecomunicaciones": {
       "nombre": "Ingeniero de Telecomunicaciones/Transmisión",
@@ -3486,7 +4037,12 @@
         "esco_label": "ingeniero de telecomunicaciones/ingeniera de telecomunicaciones"
       },
       "caso_referencia": "1118100726 - Ingeniero de Planificación de Presupuestos de Transmisión",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v34",
+        "contexto": "R149: Ajustada condición para titulo_contiene_todos + titulo",
+        "requiere_revision": true
+      }
     },
     "R150_asesor_plan_ahorro": {
       "nombre": "Asesor de Plan de Ahorro / Ahorro Previo",
@@ -3505,7 +4061,12 @@
       },
       "caso_referencia": "1118095764 - Asesor de Plan de Ahorro - San Martín GBA",
       "activa": true,
-      "nota": "Planes de ahorro automotor son productos financieros vendidos por representantes comerciales"
+      "nota": "Planes de ahorro automotor son productos financieros vendidos por representantes comerciales",
+      "_linaje": {
+        "version_origen": "v35",
+        "contexto": "R150: Asesor de Plan de Ahorro -> 3322 representante comerci",
+        "requiere_revision": true
+      }
     },
     "R151_jefe_de_obra": {
       "nombre": "Jefe de Obra / Encargado de Obra",
@@ -3525,7 +4086,12 @@
         "esco_label": "director de obra/directora de obra"
       },
       "caso_referencia": "1118096877 - JEFE DE OBRA",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v36",
+        "contexto": "R151: Jefe de Obra -> 1323 director de obra",
+        "requiere_revision": true
+      }
     },
     "R152_ecommerce_manager": {
       "nombre": "E-commerce Manager / Responsable Comercio Electrónico",
@@ -3553,7 +4119,12 @@
       },
       "caso_referencia": "1118069619 - E - COMMERCE",
       "activa": true,
-      "nota": "Roles de gestión de ventas digitales van a marketing digital, no a desarrollo"
+      "nota": "Roles de gestión de ventas digitales van a marketing digital, no a desarrollo",
+      "_linaje": {
+        "version_origen": "v37",
+        "contexto": "R152: E-commerce -> 1221, R153: Creador Contenido -> 2432",
+        "requiere_revision": true
+      }
     },
     "R153_creador_contenido": {
       "nombre": "Creador de Contenido / Content Creator",
@@ -3573,7 +4144,12 @@
       },
       "caso_referencia": "1118099884 - Creador/a de Contenido",
       "activa": true,
-      "nota": "Creadores de contenido para redes sociales = community manager"
+      "nota": "Creadores de contenido para redes sociales = community manager",
+      "_linaje": {
+        "version_origen": "v37",
+        "contexto": "E-commerce -> 1221, R153: Creador Contenido -> 2432",
+        "requiere_revision": true
+      }
     },
     "R154_auditor_inventario": {
       "nombre": "Auditor de Stock / Control de Inventario",
@@ -3595,7 +4171,12 @@
       },
       "caso_referencia": "1116677957 - Auditores Control de Stock",
       "activa": true,
-      "nota": "Auditores de stock son control de inventario, no contables"
+      "nota": "Auditores de stock son control de inventario, no contables",
+      "_linaje": {
+        "version_origen": "v38",
+        "contexto": "R154: Auditor stock -> 4321, R155: Asesor telefonico -> 4222",
+        "requiere_revision": true
+      }
     },
     "R155_asesor_telefonico": {
       "nombre": "Asesor Comercial Telefónico / Televentas",
@@ -3618,7 +4199,12 @@
       },
       "caso_referencia": "1118095110 - Asesor Comercial Telefonico",
       "activa": true,
-      "nota": "Trabajo telefónico comercial = call center"
+      "nota": "Trabajo telefónico comercial = call center",
+      "_linaje": {
+        "version_origen": "v38",
+        "contexto": "itor stock -> 4321, R155: Asesor telefonico -> 4222, R17 excluye inmobiliario",
+        "requiere_revision": true
+      }
     },
     "R156_vendedor_viajante": {
       "nombre": "Vendedor Viajante / Vendedor de Ruta",
@@ -3637,7 +4223,12 @@
         "esco_label": "vendedor a domicilio"
       },
       "caso_referencia": "1118095742 - Vendedor/a viajante rubro motos",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v39",
+        "contexto": "R156: Vendedor viajante, R157: Jefe produccion, R158: Jefe o",
+        "requiere_revision": true
+      }
     },
     "R157_jefe_produccion": {
       "nombre": "Jefe de Producción Industrial",
@@ -3657,7 +4248,12 @@
         "esco_label": "director de producción industrial/directora de producción industrial"
       },
       "caso_referencia": "1118103812 - Jefe de Producción",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v39",
+        "contexto": "Vendedor viajante, R157: Jefe produccion, R158: Jefe operaciones, R87 ajustada",
+        "requiere_revision": true
+      }
     },
     "R158_jefe_operaciones": {
       "nombre": "Jefe de Operaciones",
@@ -3677,7 +4273,12 @@
       "caso_referencia": "1118104175 - Jefe de Operaciones",
       "activa": true,
       "nota": "FIX v4.6: esco_label corregido",
-      "nota_v47": "v4.7: ISCO 1324→1321. Gerente operaciones es más amplio que solo logística."
+      "nota_v47": "v4.7: ISCO 1324→1321. Gerente operaciones es más amplio que solo logística.",
+      "_linaje": {
+        "version_origen": "v39",
+        "contexto": "7: Jefe produccion, R158: Jefe operaciones, R87 ajustada",
+        "requiere_revision": true
+      }
     },
     "R159_farmaceutico": {
       "nombre": "Farmacéutico / Farmacéutica",
@@ -3701,7 +4302,12 @@
         "esco_label": "farmacéutico/farmacéutica"
       },
       "caso_referencia": "1118103767 - Farmacéutico/a para el área de Ensayos Clínicos",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v40",
+        "contexto": "R159: Farmaceutico -> 2262, R160: Tecnico instalador -> 7411",
+        "requiere_revision": true
+      }
     },
     "R160_tecnico_instalador": {
       "nombre": "Técnico Instalador Genérico",
@@ -3728,7 +4334,12 @@
       "caso_referencia": "1118099825 - TECNICO INSTALADOR",
       "activa": true,
       "nota": "Default para instalador genérico. FIX v4.6: esco_label corregido",
-      "nota_v47": "v4.7: Excluir internet/fibra/soporte (son técnicos ICT 3512, no electricistas 7411)"
+      "nota_v47": "v4.7: Excluir internet/fibra/soporte (son técnicos ICT 3512, no electricistas 7411)",
+      "_linaje": {
+        "version_origen": "v40",
+        "contexto": "rmaceutico -> 2262, R160: Tecnico instalador -> 7411",
+        "requiere_revision": true
+      }
     },
     "R162_tecnico_mantenimiento_edilicio": {
       "nombre": "Técnico de Mantenimiento Edilicio/de Edificios",
@@ -3781,7 +4392,10 @@
       "caso_diagnostico": "1118101825 - Senior de Comercio Exterior (tareas SAP, facturas, KPIs)",
       "fecha_creacion": "2026-01-29",
       "activa": true,
-      "nota": "Roles administrativos de comex = empleados contables, no despachantes de aduana"
+      "nota": "Roles administrativos de comex = empleados contables, no despachantes de aduana",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R164_camarista_camara_frio": {
       "nombre": "Camarista de cámara de frío (industria alimenticia)",
@@ -3802,7 +4416,10 @@
       "caso_diagnostico": "1118101813 - Camarista (Cámara de Frío) zona Santos Lugares - heladería",
       "fecha_creacion": "2026-01-30",
       "activa": true,
-      "nota": "Camarista en Argentina = operario de cámara frigorífica, NO cajista tipográfico"
+      "nota": "Camarista en Argentina = operario de cámara frigorífica, NO cajista tipográfico",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R165_portero_seguridad": {
       "nombre": "Portero (edificio/empresa - funciones de seguridad)",
@@ -3827,7 +4444,10 @@
       "caso_diagnostico": "1118102070 - Portero Zona Bernal (empresa metalúrgica, portería y seguridad)",
       "fecha_creacion": "2026-01-30",
       "activa": true,
-      "nota": "Portero en Argentina = vigilante/seguridad de edificio, NO repostero"
+      "nota": "Portero en Argentina = vigilante/seguridad de edificio, NO repostero",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R166_cocinero_planchero": {
       "nombre": "Cocinero / Planchero (gastronomía)",
@@ -3856,7 +4476,10 @@
       "caso_diagnostico": "1118098117 - Cocinero / Planchero smash",
       "fecha_creacion": "2026-01-30",
       "activa": true,
-      "nota": "Cocinero/planchero = ISCO 5120 cocinero, NO 3434 jefe de cocina"
+      "nota": "Cocinero/planchero = ISCO 5120 cocinero, NO 3434 jefe de cocina",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R167_soporte_tecnico_isp": {
       "nombre": "Soporte técnico ISP / Helpdesk",
@@ -3880,7 +4503,10 @@
       "caso_diagnostico": "1118101750 - Técnico operativo / soporte técnico isp (2º nivel)",
       "fecha_creacion": "2026-01-30",
       "activa": true,
-      "nota": "Soporte ISP = helpdesk TIC, NO supervisor mantenimiento vehículos"
+      "nota": "Soporte ISP = helpdesk TIC, NO supervisor mantenimiento vehículos",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R168_docente_gastronomico": {
       "nombre": "Docente gastronómico / Pastelero instructor",
@@ -3908,7 +4534,10 @@
       "caso_diagnostico": "1118101656 - Docente gastronómico / pastelero",
       "fecha_creacion": "2026-01-30",
       "activa": true,
-      "nota": "Docente gastronomía = formador profesional, NO profesor universitario. FIX v4.6: esco_label corregido"
+      "nota": "Docente gastronomía = formador profesional, NO profesor universitario. FIX v4.6: esco_label corregido",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R169_analista_impuestos": {
       "nombre": "Analista de impuestos / fiscal",
@@ -3936,7 +4565,10 @@
       "caso_diagnostico": "1118101751 - Analista de impuestos (semisenior) - NO es director financiero",
       "fecha_creacion": "2026-01-30",
       "activa": true,
-      "nota": "Analista de impuestos = contable especializado, NO director financiero (1211)"
+      "nota": "Analista de impuestos = contable especializado, NO director financiero (1211)",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R170_asesor_comercial": {
       "nombre": "Asesor comercial / ejecutivo de cuentas",
@@ -3968,7 +4600,10 @@
       "caso_diagnostico": "1118102143 - Asesor/a comercial (semisenior) - NO es director ventas",
       "fecha_creacion": "2026-01-30",
       "activa": true,
-      "nota": "Asesor comercial = representante comercial, NO director de ventas (1221)"
+      "nota": "Asesor comercial = representante comercial, NO director de ventas (1221)",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R171_logistica_entregas": {
       "nombre": "Logística / Repartidor entregas domicilio",
@@ -4001,7 +4636,12 @@
       "fecha_creacion": "2026-01-30",
       "activa": true,
       "nota": "Logística de entregas = conductor de reparto, NO enfermero (3258)",
-      "nota_v47": "v4.7: Excluir administrativo/analista logística (son admin 4110, no repartidores 8322)"
+      "nota_v47": "v4.7: Excluir administrativo/analista logística (son admin 4110, no repartidores 8322)",
+      "_linaje": {
+        "version_origen": "v47",
+        "contexto": "ager/director/lead; R171: excluir administrativo; R175: excluir depósito/carga;",
+        "requiere_revision": true
+      }
     },
     "R172_analista_siniestros": {
       "nombre": "Analista de Siniestros / Claims Analyst",
@@ -4021,7 +4661,10 @@
       "caso_diagnostico": "1117981798 - Analista de Siniestros - análisis de reclamos seguros",
       "fecha_creacion": "2026-02-04",
       "activa": true,
-      "nota": "Analista de siniestros en aseguradoras = 3321 (no IT/ciberseguridad)"
+      "nota": "Analista de siniestros en aseguradoras = 3321 (no IT/ciberseguridad)",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R173_analista_lab_id": {
       "nombre": "Analista Laboratorio I+D / Químico formulaciones",
@@ -4042,7 +4685,10 @@
       "caso_diagnostico": "2166968 - Analista para Laboratorio de Investigación y Desarrollo - formulaciones pinturas",
       "fecha_creacion": "2026-02-04",
       "activa": true,
-      "nota": "Lab I+D con formulaciones de pinturas/recubrimientos = químico (2113)"
+      "nota": "Lab I+D con formulaciones de pinturas/recubrimientos = químico (2113)",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R174_control_stock": {
       "nombre": "Responsable Control de Stock / Inventario",
@@ -4062,7 +4708,10 @@
       "caso_diagnostico": "1118100003 - Responsable de Control de Stock",
       "fecha_creacion": "2026-02-04",
       "activa": true,
-      "nota": "Confirma match semántico correcto (4321)"
+      "nota": "Confirma match semántico correcto (4321)",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R175_operario_limpieza": {
       "nombre": "Operario/a de Limpieza",
@@ -4093,7 +4742,12 @@
       "fecha_creacion": "2026-02-05",
       "activa": true,
       "nota": "Fix match incorrecto a extracción fécula (8160). FIX v4.6: esco_label corregido",
-      "nota_v47": "v4.7: Excluir operario depósito/carga (son operarios logística 9333, no limpieza 9112)"
+      "nota_v47": "v4.7: Excluir operario depósito/carga (son operarios logística 9333, no limpieza 9112)",
+      "_linaje": {
+        "version_origen": "v41",
+        "contexto": "R175: Operario limpieza -> 9112, R176: Auditor franquicias -",
+        "requiere_revision": true
+      }
     },
     "R176_auditor_franquicias": {
       "nombre": "Auditor de Franquicias / Establecimientos",
@@ -4117,7 +4771,12 @@
       "caso_diagnostico": "1116827375 - Auditor de Franquicias - Grupo Gastronómico",
       "fecha_creacion": "2026-02-05",
       "activa": true,
-      "nota": "Auditor que verifica cumplimiento estándares en franquicias. FIX v4.6: esco_label corregido"
+      "nota": "Auditor que verifica cumplimiento estándares en franquicias. FIX v4.6: esco_label corregido",
+      "_linaje": {
+        "version_origen": "v41",
+        "contexto": "o limpieza -> 9112, R176: Auditor franquicias -> 2421",
+        "requiere_revision": true
+      }
     },
     "R177_gestor_cobranzas": {
       "nombre": "Gestor de Cobranzas Telefónicas",
@@ -4145,7 +4804,12 @@
       "caso_diagnostico": "1118049547 - Gestor de Cobranzas Telefónicas",
       "fecha_creacion": "2026-02-05",
       "activa": true,
-      "nota_v47": "v4.7: Excluir operador (operador telefónico cobranzas = 4222 operador teléfono, no 4214 cobrador)"
+      "nota_v47": "v4.7: Excluir operador (operador telefónico cobranzas = 4222 operador teléfono, no 4214 cobrador)",
+      "_linaje": {
+        "version_origen": "v42",
+        "contexto": "R177-R180: Gestor cobranzas, QA/Tester, Instalador fibra, So",
+        "requiere_revision": true
+      }
     },
     "R178_qa_tester": {
       "nombre": "QA / Tester de Software",
@@ -4166,7 +4830,10 @@
       "caso_diagnostico": "QA Ssr",
       "fecha_creacion": "2026-02-05",
       "activa": true,
-      "nota": "FIX v4.6: esco_label corregido"
+      "nota": "FIX v4.6: esco_label corregido",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R179_instalador_fibra": {
       "nombre": "Técnico Instalador Fibra Óptica",
@@ -4188,7 +4855,10 @@
       "caso_diagnostico": "1118089284 - Técnico Instalador de Fibra Óptica",
       "fecha_creacion": "2026-02-05",
       "activa": true,
-      "nota": "FIX v4.6: esco_label corregido"
+      "nota": "FIX v4.6: esco_label corregido",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R180_soporte_infraestructura": {
       "nombre": "Soporte / Infraestructura IT",
@@ -4209,7 +4879,12 @@
       "caso_diagnostico": "1118096134 - Especialista en Soporte e Infraestructura",
       "fecha_creacion": "2026-02-05",
       "activa": true,
-      "nota": "FIX v4.6: esco_label corregido"
+      "nota": "FIX v4.6: esco_label corregido",
+      "_linaje": {
+        "version_origen": "v42",
+        "contexto": "R177-R180: Gestor cobranzas, QA/Tester, Instalador fibra, Soporte",
+        "requiere_revision": true
+      }
     },
     "R181_personal_mantenimiento": {
       "nombre": "Personal de Mantenimiento (edificios/instalaciones)",
@@ -4235,7 +4910,12 @@
       },
       "caso_diagnostico": "1118103015 - Personal de Mantenimiento (centro médico)",
       "fecha_creacion": "2026-02-05",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v43",
+        "contexto": "R181-R182: Personal mantenimiento -> 7233, Tecnico electrome",
+        "requiere_revision": true
+      }
     },
     "R182_tecnico_electromedicina": {
       "nombre": "Técnico en Electromedicina / Equipos Médicos",
@@ -4259,7 +4939,12 @@
       "_nota_isco": "2269 (técnico equipos médicos) es lo más cercano a electromedicina en ESCO",
       "caso_diagnostico": "1118073665 - Técnicos en Electro Medicina",
       "fecha_creacion": "2026-02-05",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v43",
+        "contexto": "R181-R182: Personal mantenimiento -> 7233, Tecnico electromedicin",
+        "requiere_revision": true
+      }
     },
     "R183_bobinador_transformadores": {
       "nombre": "Bobinador de Transformadores",
@@ -4276,7 +4961,12 @@
         "esco_label": "electricista industrial"
       },
       "_nota": "v4.4: Bobinador eléctrico → electricista industrial",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v44",
+        "contexto": "R183-R197: Bobinador, Carnicero, Guardavidas, Kinesiologo, A",
+        "requiere_revision": true
+      }
     },
     "R184_carnicero_depostador": {
       "nombre": "Carnicero / Depostador",
@@ -4296,7 +4986,10 @@
         "esco_label": "carnicero/carnicera"
       },
       "_nota": "v4.4: Carnicero/Depostador → carnicero",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R185_guardavidas_socorrista": {
       "nombre": "Guardavidas / Salvavidas",
@@ -4315,7 +5008,10 @@
         "esco_label": "socorrista"
       },
       "_nota": "v4.4: Guardavidas → socorrista",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R186_kinesiologo_fisioterapeuta": {
       "nombre": "Kinesiólogo / Fisioterapeuta",
@@ -4335,7 +5031,10 @@
         "esco_label": "fisioterapeuta"
       },
       "_nota": "v4.4: Kinesiólogo → fisioterapeuta (término argentino)",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R187_auxiliar_farmacia": {
       "nombre": "Auxiliar de Farmacia",
@@ -4357,7 +5056,10 @@
         "esco_label": "técnico auxiliar de farmacia/técnica auxiliar de farmacia"
       },
       "_nota": "v4.4: Auxiliar farmacia → técnico auxiliar farmacia",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R188_auxiliar_seguridad": {
       "nombre": "Auxiliar / Agente de Seguridad",
@@ -4381,7 +5083,10 @@
         "esco_label": "vigilante de seguridad"
       },
       "_nota": "v4.4: Auxiliar seguridad física → vigilante",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R189_business_development": {
       "nombre": "Business Development Specialist/Manager",
@@ -4403,7 +5108,10 @@
         "esco_label": "representante comercial"
       },
       "_nota": "v4.4: Business Development → representante comercial",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R190_auditor_interno": {
       "nombre": "Auditor Interno / Control Interno",
@@ -4426,7 +5134,10 @@
         "esco_label": "auditor de cuentas/auditora de cuentas"
       },
       "_nota": "v4.4: Auditor interno → auditor de cuentas",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R191_analista_abastecimiento": {
       "nombre": "Analista de Abastecimiento / Compras",
@@ -4448,7 +5159,10 @@
         "esco_label": "comprador/compradora"
       },
       "_nota": "v4.4: Analista abastecimiento → comprador",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R192_atencion_paciente": {
       "nombre": "Personal Atención al Paciente",
@@ -4467,7 +5181,10 @@
       },
       "_nota": "v4.4: Atención paciente → recepcionista médico",
       "activa": true,
-      "nota": "FIX v4.6: esco_label corregido"
+      "nota": "FIX v4.6: esco_label corregido",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R193_supervisor_operaciones": {
       "nombre": "Supervisor de Operaciones (genérico)",
@@ -4494,7 +5211,10 @@
         "esco_label": "supervisor de construcción/supervisora de construcción"
       },
       "_nota": "v4.4: Supervisor operaciones genérico → 3123 (fallback)",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R194_middle_office": {
       "nombre": "Middle Office / Back Office",
@@ -4516,7 +5236,12 @@
       "_nota": "v4.4: Middle/Back Office → auxiliar contabilidad",
       "activa": true,
       "nota": "FIX v4.6: esco_label corregido",
-      "nota_v47": "v4.7: Excluir analista (analista back office SR = analista financiero 2413, no empleado 4311)"
+      "nota_v47": "v4.7: Excluir analista (analista back office SR = analista financiero 2413, no empleado 4311)",
+      "_linaje": {
+        "version_origen": "v47",
+        "contexto": ": excluir operador; R194: excluir analista; R101: excluir core bancario; R203: p",
+        "requiere_revision": true
+      }
     },
     "R196_pasante_administrativo": {
       "nombre": "Pasante Administrativo / Contable",
@@ -4536,7 +5261,10 @@
       },
       "_nota": "v4.4: Pasante administrativo → auxiliar administrativo",
       "activa": true,
-      "nota": "FIX v4.6: esco_label corregido"
+      "nota": "FIX v4.6: esco_label corregido",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R197_personal_atencion_paciente": {
       "nombre": "Personal Atención al Paciente (variante)",
@@ -4554,7 +5282,12 @@
       },
       "_nota": "v4.4: Personal atención → recepcionista médico (complementa R192)",
       "activa": true,
-      "nota": "FIX v4.6: esco_label corregido"
+      "nota": "FIX v4.6: esco_label corregido",
+      "_linaje": {
+        "version_origen": "v44",
+        "contexto": "R183-R197: Bobinador, Carnicero, Guardavidas, Kinesiologo, Aux Fa",
+        "requiere_revision": true
+      }
     },
     "R198_bell_boy_botones": {
       "nombre": "Bell Boy / Botones Hotel",
@@ -4572,7 +5305,12 @@
         "esco_label": "conserje de hotel"
       },
       "_nota": "v4.5: Bell boy → conserje hotel",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v45",
+        "contexto": "R198-R202: Bell boy, Foguista, Extraccionista, Inspector API",
+        "requiere_revision": true
+      }
     },
     "R199_foguista_caldera": {
       "nombre": "Foguista / Operador de Calderas",
@@ -4589,7 +5327,10 @@
         "esco_label": "operador de calderas/operadora de calderas"
       },
       "_nota": "v4.5: Foguista → operador calderas",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R200_extraccionista_laboratorio": {
       "nombre": "Extraccionista de Laboratorio",
@@ -4606,7 +5347,10 @@
         "esco_label": "técnico en laboratorio clínico y biomédico/técnica en laboratorio clínico y biomédico"
       },
       "_nota": "v4.5: Extraccionista → técnico laboratorio clínico",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R201_inspector_industrial": {
       "nombre": "Inspector Industrial / API / NDT",
@@ -4625,7 +5369,10 @@
         "esco_label": "inspector de instalaciones y de seguridad industrial/inspectora de instalaciones y de seguridad industrial"
       },
       "_nota": "v4.5: Inspector API/NDT → inspector industrial",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R202_gestor_cobranzas": {
       "nombre": "Gestor / Agente de Cobranzas",
@@ -4646,7 +5393,12 @@
         "esco_label": "cobrador de deudas/cobradora de deudas"
       },
       "_nota": "v4.5: Gestor cobranzas → cobrador deudas",
-      "activa": true
+      "activa": true,
+      "_linaje": {
+        "version_origen": "v45",
+        "contexto": "R198-R202: Bell boy, Foguista, Extraccionista, Inspector API, Ges",
+        "requiere_revision": true
+      }
     },
     "R203_analista_pagos_proveedores": {
       "nombre": "Analista de Pago a Proveedores",
@@ -4666,7 +5418,12 @@
       "caso_referencia": "1118099977 - Analista de pago a proveedores",
       "activa": true,
       "nota": "v4.6: Analista de pagos/proveedores = contable (4311)",
-      "nota_v47": "v4.7: prioridad -1 para que semántico gane (pagos internacionales=4312 vs genérico 4311)"
+      "nota_v47": "v4.7: prioridad -1 para que semántico gane (pagos internacionales=4312 vs genérico 4311)",
+      "_linaje": {
+        "version_origen": "v46",
+        "contexto": "co_label inválido + R203-R206 nuevas reglas",
+        "requiere_revision": true
+      }
     },
     "R204_operador_retenciones": {
       "nombre": "Operador de Retenciones / Impuestos",
@@ -4685,7 +5442,10 @@
       },
       "caso_referencia": "1118100573 - Operador de retenciones",
       "activa": true,
-      "nota": "v4.6: Operador retenciones = contable (4311), área fiscal"
+      "nota": "v4.6: Operador retenciones = contable (4311), área fiscal",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R205_vendedor_puerta_puerta": {
       "nombre": "Vendedor Puerta a Puerta / Ambulante",
@@ -4704,7 +5464,10 @@
       },
       "caso_referencia": "1118102044 - Vendedor puerta a puerta",
       "activa": true,
-      "nota": "v4.6: Vendedor puerta a puerta = 5243 vendedor a domicilio"
+      "nota": "v4.6: Vendedor puerta a puerta = 5243 vendedor a domicilio",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R206_tecnico_seguridad_electronica": {
       "nombre": "Técnico/Instalador Seguridad Electrónica",
@@ -4726,7 +5489,12 @@
       },
       "caso_referencia": "2171178 - Tecnico e instalador en sistemas de seguridad electronica",
       "activa": true,
-      "nota": "v4.6: Técnico seguridad electrónica = 7421 electrónica"
+      "nota": "v4.6: Técnico seguridad electrónica = 7421 electrónica",
+      "_linaje": {
+        "version_origen": "v46",
+        "contexto": "bel inválido + R203-R206 nuevas reglas",
+        "requiere_revision": true
+      }
     },
     "R207_peon_cocina": {
       "nombre": "Peón/Ayudante de Cocina",
@@ -4748,7 +5516,10 @@
       "_caso": "ID 1118092879 Peón de Cocina",
       "_fecha": "2026-01-22",
       "prioridad": 1,
-      "_nota": "Sprint 2: renombrada de R135 (key duplicada)"
+      "_nota": "Sprint 2: renombrada de R135 (key duplicada)",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R208_analista_compras": {
       "nombre": "Analista/Responsable de Compras",
@@ -4774,7 +5545,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-08",
-      "_nota": "Sprint 2: gap cobertura - 5 ofertas sin match"
+      "_nota": "Sprint 2: gap cobertura - 5 ofertas sin match",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R209_personal_maestranza": {
       "nombre": "Personal de Maestranza",
@@ -4792,7 +5566,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-08",
-      "_nota": "Sprint 2: gap cobertura - 4 ofertas sin match"
+      "_nota": "Sprint 2: gap cobertura - 4 ofertas sin match",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R210_telefonista_ventas": {
       "nombre": "Operador/a de Venta Telefónica (Telemarketing)",
@@ -4813,7 +5590,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-08",
-      "_nota": "Sprint 2: gap cobertura - 4 ofertas sin match"
+      "_nota": "Sprint 2: gap cobertura - 4 ofertas sin match",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R211_soldador": {
       "nombre": "Soldador",
@@ -4834,7 +5614,12 @@
       "activa": true,
       "_fecha": "2026-02-08",
       "_nota": "Sprint 2: gap cobertura - 3 ofertas sin match",
-      "_fix_2026_04_08": "Prioridad subida a 0 para ganarle a R240_operario_produccion"
+      "_fix_2026_04_08": "Prioridad subida a 0 para ganarle a R240_operario_produccion",
+      "_linaje": {
+        "version_origen": "v512",
+        "contexto": "abel vigilador, fix R211 prioridad vs R240, fix R290 variantes /a, nuevas R301-R",
+        "requiere_revision": true
+      }
     },
     "R212_personal_limpieza": {
       "nombre": "Personal de Limpieza",
@@ -4859,7 +5644,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-08",
-      "_nota": "Sprint 2: gap cobertura - 3 ofertas sin match"
+      "_nota": "Sprint 2: gap cobertura - 3 ofertas sin match",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R213_asistente_comercial": {
       "nombre": "Asistente Comercial",
@@ -4878,7 +5666,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-08",
-      "_nota": "Sprint 2: gap cobertura - 3 ofertas sin match"
+      "_nota": "Sprint 2: gap cobertura - 3 ofertas sin match",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R214_analista_comercial": {
       "nombre": "Analista Comercial",
@@ -4902,7 +5693,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-08",
-      "_nota": "Sprint 2: gap cobertura - 3 ofertas sin match"
+      "_nota": "Sprint 2: gap cobertura - 3 ofertas sin match",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R215_supervisor_mecanizado": {
       "nombre": "Supervisor de Mecanizado/Producción",
@@ -4923,7 +5717,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-08",
-      "_nota": "Sprint 2: gap cobertura - sector industria/produccion. Fix 2026-02-24: ESCO label corregido"
+      "_nota": "Sprint 2: gap cobertura - sector industria/produccion. Fix 2026-02-24: ESCO label corregido",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R216_pastelero": {
       "nombre": "Pastelero/Panadero",
@@ -4946,7 +5743,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-08",
-      "_nota": "Sprint 2: gap cobertura - 2 ofertas sin match"
+      "_nota": "Sprint 2: gap cobertura - 2 ofertas sin match",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R217_kinesiologio": {
       "nombre": "Kinesiólogo/Fisioterapeuta",
@@ -4966,7 +5766,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-08",
-      "_nota": "Sprint 2: gap cobertura - sector salud"
+      "_nota": "Sprint 2: gap cobertura - sector salud",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R218_pintor_vehiculos": {
       "nombre": "Pintor de Vehiculos/Automoviles",
@@ -4990,7 +5793,12 @@
       "activa": true,
       "prioridad": 1,
       "nota": "Sprint 5 V31 - ID 2171804",
-      "_fecha": "2026-02-09"
+      "_fecha": "2026-02-09",
+      "_linaje": {
+        "version_origen": "v51",
+        "contexto": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223,",
+        "requiere_revision": true
+      }
     },
     "R219_vendedor_vehiculos": {
       "nombre": "Vendedor de Vehiculos OKM/Usados",
@@ -5013,7 +5821,12 @@
       "activa": true,
       "prioridad": 1,
       "nota": "Sprint 5 V31 - ID 1118075798",
-      "_fecha": "2026-02-09"
+      "_fecha": "2026-02-09",
+      "_linaje": {
+        "version_origen": "v51",
+        "contexto": "or vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->333",
+        "requiere_revision": true
+      }
     },
     "R220_asesor_inmobiliario": {
       "nombre": "Asesor Inmobiliario",
@@ -5046,7 +5859,9 @@
         "training_pair_ids": [
           "TP-591",
           "TP-592"
-        ]
+        ],
+        "version_origen": "v51",
+        "contexto": "or vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad genera"
       }
     },
     "R221_analista_calidad_general": {
@@ -5070,7 +5885,12 @@
       "activa": true,
       "prioridad": 1,
       "nota": "Sprint 5 V31: analista calidad genérico = inspector control calidad. ID 1118088708 (Makro, auditorias BPM/HACCP).",
-      "_fecha": "2026-02-09"
+      "_fecha": "2026-02-09",
+      "_linaje": {
+        "version_origen": "v51",
+        "contexto": "inmobiliario->3334, R221 Analista calidad general->7543. Fix R65 1324->1420, R83",
+        "requiere_revision": true
+      }
     },
     "R222_maquinista_apiladora": {
       "nombre": "Maquinista Apiladora/Autoelevador",
@@ -5098,7 +5918,12 @@
       "prioridad": 1,
       "nota": "Sprint 5 V31: maquinista apiladora = operador carretilla elevadora. ID 1118090160.",
       "_fecha": "2026-02-09",
-      "nota_v47": "v4.7: Excluir maquinista offset/impresión (son operarios gráficos 8160, no carretilleros 8344)"
+      "nota_v47": "v4.7: Excluir maquinista offset/impresión (son operarios gráficos 8160, no carretilleros 8344)",
+      "_linaje": {
+        "version_origen": "v51",
+        "contexto": "ada solo servicios. R222 Maquinista apiladora->8344, R137 excluye maquinista.",
+        "requiere_revision": true
+      }
     },
     "R223_admin_infraestructura": {
       "nombre": "Administrador de Infraestructura IT",
@@ -5121,7 +5946,12 @@
       "prioridad": 1,
       "correccion_critica": true,
       "nota": "Sprint 5b: Admin infraestructura IT = sysadmin. ID 1118094809 estaba como 4110 empleado oficina. Critica porque 'administrador' matchea dict argentino → 4110 con score 0.90.",
-      "_fecha": "2026-02-09"
+      "_fecha": "2026-02-09",
+      "_linaje": {
+        "version_origen": "v52",
+        "contexto": "Sprint 5b: R223 Admin infraestructura->2522 sysadmin. V30 keywords expa",
+        "requiere_revision": true
+      }
     },
     "R224_supervisor_cocina": {
       "nombre": "Supervisor/Encargado de cocina",
@@ -5142,7 +5972,12 @@
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 4 casos"
+      "nota": "Sprint 7 V31: 4 casos",
+      "_linaje": {
+        "version_origen": "v48",
+        "contexto": "Sprint 7 V31: R224-R241 (18 reglas) para 337 errores V31 residuales. Anali",
+        "requiere_revision": true
+      }
     },
     "R225_comis_pasteleria": {
       "nombre": "Comis/Ayudante de pastelería",
@@ -5162,7 +5997,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 4 casos comis pastelería"
+      "nota": "Sprint 7 V31: 4 casos comis pastelería",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R226_analista_rrhh": {
       "nombre": "Analista de RRHH/Empleos/Selección",
@@ -5179,7 +6017,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 10 analistas RRHH"
+      "nota": "Sprint 7 V31: 10 analistas RRHH",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R227_soporte_tecnico_it": {
       "nombre": "Soporte técnico IT",
@@ -5201,7 +6042,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 7 casos soporte IT"
+      "nota": "Sprint 7 V31: 7 casos soporte IT",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R228_analista_contabilidad": {
       "nombre": "Analista contable/facturación",
@@ -5242,7 +6086,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 11 analistas/ejecutivos ventas"
+      "nota": "Sprint 7 V31: 11 analistas/ejecutivos ventas",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R230_asesor_comercial": {
       "nombre": "Asesor comercial/ventas",
@@ -5260,7 +6107,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 6 asesores ventas"
+      "nota": "Sprint 7 V31: 6 asesores ventas",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R231_supervisor_operaciones": {
       "nombre": "Supervisor de operaciones/producción",
@@ -5283,7 +6133,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 8 supervisores operaciones"
+      "nota": "Sprint 7 V31: 8 supervisores operaciones",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R232_coordinador_operaciones": {
       "nombre": "Coordinador de operaciones/logística",
@@ -5301,7 +6154,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 7 coordinadores operaciones"
+      "nota": "Sprint 7 V31: 7 coordinadores operaciones",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R233_maestranza": {
       "nombre": "Maestranza/Mantenimiento edilicio",
@@ -5317,7 +6173,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 3 casos maestranza"
+      "nota": "Sprint 7 V31: 3 casos maestranza",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R234_ayudante_panaderia": {
       "nombre": "Ayudante de panadería",
@@ -5336,7 +6195,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 2 casos"
+      "nota": "Sprint 7 V31: 2 casos",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R235_mecanico": {
       "nombre": "Mecánico general",
@@ -5384,7 +6246,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 7 analistas marketing"
+      "nota": "Sprint 7 V31: 7 analistas marketing",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R237_analista_finanzas": {
       "nombre": "Analista financiero/inversiones",
@@ -5401,7 +6266,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 5 analistas finanzas"
+      "nota": "Sprint 7 V31: 5 analistas finanzas",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R238_analista_it": {
       "nombre": "Analista IT/Sistemas",
@@ -5423,7 +6291,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 9 analistas IT"
+      "nota": "Sprint 7 V31: 9 analistas IT",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R239_analista_operaciones": {
       "nombre": "Analista de operaciones/planificación",
@@ -5440,7 +6311,10 @@
       },
       "activa": true,
       "_fecha": "2026-02-20",
-      "nota": "Sprint 7 V31: 12 analistas operaciones"
+      "nota": "Sprint 7 V31: 12 analistas operaciones",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R240_operario_produccion": {
       "nombre": "Operario de producción",
@@ -5466,7 +6340,12 @@
       "activa": true,
       "_fecha": "2026-02-20",
       "nota": "Sprint 7 V31: 6 operarios producción",
-      "_fix_2026_04_08": "Excluir soldador/soldadora/soldadura para no pisar R211"
+      "_fix_2026_04_08": "Excluir soldador/soldadora/soldadura para no pisar R211",
+      "_linaje": {
+        "version_origen": "v512",
+        "contexto": "x R211 prioridad vs R240, fix R290 variantes /a, nuevas R301-R305 (ascensores, s",
+        "requiere_revision": true
+      }
     },
     "R241_tecnico_it": {
       "nombre": "Técnico IT genérico",
@@ -5494,7 +6373,9 @@
       "_linaje": {
         "training_pair_ids": [
           "TP-589"
-        ]
+        ],
+        "version_origen": "v48",
+        "contexto": "Sprint 7 V31: R224-R241 (18 reglas) para 337 errores V31 residuales. Analista p"
       }
     },
     "R242_asistente_impuestos": {
@@ -5521,7 +6402,9 @@
       "_linaje": {
         "training_pair_ids": [
           "TP-023"
-        ]
+        ],
+        "version_origen": "v49",
+        "contexto": "R242-R245: Issues Diego Schleser — asistente impuestos, gere"
       }
     },
     "R243_gerente_local": {
@@ -5604,7 +6487,9 @@
       "_linaje": {
         "training_pair_ids": [
           "TP-021"
-        ]
+        ],
+        "version_origen": "v49",
+        "contexto": "R242-R245: Issues Diego Schleser — asistente impuestos, gerente l"
       }
     },
     "R246_jefe_calidad": {
@@ -5627,7 +6512,10 @@
       "caso_diagnostico": "1118061207_3 - Jefe de Calidad (multi-position sub-oferta)",
       "fecha_creacion": "2026-02-24",
       "activa": true,
-      "nota": "Jefe/Director calidad = gerencia manufacturera (1321), no tecnico (7543) ni ingeniero (2149)"
+      "nota": "Jefe/Director calidad = gerencia manufacturera (1321), no tecnico (7543) ni ingeniero (2149)",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R247_capataz_obra": {
       "nombre": "Capataz de Obra / Construcción",
@@ -6265,7 +7153,10 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-27",
-      "nota": "Issue Cynthia: 1118032342 funciones admin/contables en agroindustrial iba a 6130 gestor explotación agrícola"
+      "nota": "Issue Cynthia: 1118032342 funciones admin/contables en agroindustrial iba a 6130 gestor explotación agrícola",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R261_vendimia": {
       "nombre": "Vendimia / Cosecha",
@@ -6283,7 +7174,10 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-27",
-      "nota": "Issue Cynthia: 1118028694 'Vendimia 2026' es campaña estacional = peón agrícola"
+      "nota": "Issue Cynthia: 1118028694 'Vendimia 2026' es campaña estacional = peón agrícola",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R262_pasante_vinedos": {
       "nombre": "Pasante de Viñedos (administrativo)",
@@ -6302,7 +7196,10 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-27",
-      "nota": "Issue Cynthia: 1118008954/1118008939 tareas son admin (fichadas, planillas, datos) no supervisión de viñedos"
+      "nota": "Issue Cynthia: 1118008954/1118008939 tareas son admin (fichadas, planillas, datos) no supervisión de viñedos",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R263_operario_limpieza_industrial": {
       "nombre": "Operario Limpieza Industrial (tanques, cisternas)",
@@ -6320,7 +7217,10 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-27",
-      "nota": "Issue Cynthia: 1118164691 limpieza tanques no es limpieza edificios (9112). Título debe ser solo 'Operario de limpieza'"
+      "nota": "Issue Cynthia: 1118164691 limpieza tanques no es limpieza edificios (9112). Título debe ser solo 'Operario de limpieza'",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R264_lider_almacen": {
       "nombre": "Líder / Supervisor de Almacén",
@@ -6343,7 +7243,10 @@
       },
       "activa": true,
       "fecha_creacion": "2026-02-27",
-      "nota": "Issue Cynthia: 2175371 líder almacén iba a 9333 mozo almacén. Es supervisión, no mozo."
+      "nota": "Issue Cynthia: 2175371 líder almacén iba a 9333 mozo almacén. Es supervisión, no mozo.",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R265_controlador_logistico": {
       "nombre": "Controlador logístico / de stock",
@@ -6365,7 +7268,12 @@
       "activa": true,
       "_caso": "ID 1118113712 - Controlador Logistico Zona Pilar. Issue 0dde98f9.",
       "_fecha": "2026-02-27",
-      "nota": "v54: Fix ESCO label (no existía en BD). Issue 0dde98f9."
+      "nota": "v54: Fix ESCO label (no existía en BD). Issue 0dde98f9.",
+      "_linaje": {
+        "version_origen": "v53",
+        "contexto": "ir controlador, new R265 controlador logístico→4321. Issues Diego.",
+        "requiere_revision": true
+      }
     },
     "R266_despachador_emergencias": {
       "nombre": "Despachador de emergencias médicas",
@@ -6392,7 +7300,9 @@
       "_linaje": {
         "training_pair_ids": [
           "TP-584"
-        ]
+        ],
+        "version_origen": "v55",
+        "contexto": "220 +bienes raices, R266 despachador emergencias, R267 auxiliar legal, R268 sett"
       }
     },
     "R267_auxiliar_legal": {
@@ -6422,7 +7332,9 @@
       "_linaje": {
         "training_pair_ids": [
           "TP-585"
-        ]
+        ],
+        "version_origen": "v55",
+        "contexto": "chador emergencias, R267 auxiliar legal, R268 setter comercial, R269 team leader"
       }
     },
     "R268_setter_comercial": {
@@ -6452,7 +7364,9 @@
       "_linaje": {
         "training_pair_ids": [
           "TP-587"
-        ]
+        ],
+        "version_origen": "v55",
+        "contexto": "267 auxiliar legal, R268 setter comercial, R269 team leader reclutamiento, R270"
       }
     },
     "R269_team_leader_reclutamiento": {
@@ -6484,7 +7398,9 @@
       "_linaje": {
         "training_pair_ids": [
           "TP-588"
-        ]
+        ],
+        "version_origen": "v55",
+        "contexto": "8 setter comercial, R269 team leader reclutamiento, R270 tecnico incidencias, R2"
       }
     },
     "R270_tecnico_incidencias": {
@@ -6507,7 +7423,12 @@
       "activa": true,
       "_caso": "Issue Cyn #1118065220 - Técnico de Incidencias maquetación web.",
       "_fecha": "2026-03-11",
-      "nota": "Soporte/incidencias web/e-learning = helpdesk TIC, NO profesor"
+      "nota": "Soporte/incidencias web/e-learning = helpdesk TIC, NO profesor",
+      "_linaje": {
+        "version_origen": "v55",
+        "contexto": "ader reclutamiento, R270 tecnico incidencias, R271 dev python. 6 nuevas + 1 upda",
+        "requiere_revision": true
+      }
     },
     "R271_desarrollador_python": {
       "nombre": "Desarrollador Python",
@@ -6533,7 +7454,9 @@
       "_linaje": {
         "training_pair_ids": [
           "TP-586"
-        ]
+        ],
+        "version_origen": "v55",
+        "contexto": "ecnico incidencias, R271 dev python. 6 nuevas + 1 update."
       }
     },
     "R272_analista_operaciones_datacenter": {
@@ -6562,7 +7485,9 @@
       "_linaje": {
         "training_pair_ids": [
           "TP-593"
-        ]
+        ],
+        "version_origen": "v56",
+        "contexto": "Issue Cyn: R272 analista operaciones data center -> 2522 sysadmin"
       }
     },
     "R273_advisor_soporte_app": {
@@ -6596,7 +7521,9 @@
       "_linaje": {
         "training_pair_ids": [
           "TP-595"
-        ]
+        ],
+        "version_origen": "v57",
+        "contexto": "Issue Gerardo: R273 advisor soporte app -> 3512"
       }
     },
     "R274_coordinador_operaciones_logistica": {
@@ -6777,7 +7704,10 @@
       "activa": true,
       "_caso": "Issue Diego #1118019188 - Chófer recolección residuos Villa Lugano",
       "_fecha": "2026-03-11",
-      "nota": "Chófer de camión recolector de RSU. Función central: conducir camión pesado, transportar residuos urbanos, operar compactador."
+      "nota": "Chófer de camión recolector de RSU. Función central: conducir camión pesado, transportar residuos urbanos, operar compactador.",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R280_agente_documentacion": {
       "nombre": "Agente de documentación / gestión documental",
@@ -6799,7 +7729,10 @@
       "activa": true,
       "_caso": "Issue Cyn #1117983846 - Agente documentacion KAVAK",
       "_fecha": "2026-03-11",
-      "nota": "Puesto administrativo documental: armado legajos, tramites registrales, legalizaciones, seguimiento. No es IT."
+      "nota": "Puesto administrativo documental: armado legajos, tramites registrales, legalizaciones, seguimiento. No es IT.",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R281_chofer_camiones": {
       "nombre": "Chofer / Conductor de camiones",
@@ -6828,7 +7761,12 @@
       "activa": true,
       "_caso": "1117212619 - Chofer de camiones",
       "_fecha": "2026-03-12",
-      "nota": "Protección fine-tuning: chofer de camiones es conductor pesado (8332), no operario almacén"
+      "nota": "Protección fine-tuning: chofer de camiones es conductor pesado (8332), no operario almacén",
+      "_linaje": {
+        "version_origen": "v58",
+        "contexto": "-tuning protección: R281-R292 (12 reglas) para proteger 13 regresiones detectada",
+        "requiere_revision": true
+      }
     },
     "R282_conductor_marca_vehiculo": {
       "nombre": "Conductor de marca/tipo de vehículo",
@@ -6853,7 +7791,10 @@
       "activa": true,
       "_caso": "1118040331 - Conductor de IVECO",
       "_fecha": "2026-03-12",
-      "nota": "Cuando el título menciona marca de vehículo pesado, es conductor de carga"
+      "nota": "Cuando el título menciona marca de vehículo pesado, es conductor de carga",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R283_subgerente_construccion": {
       "nombre": "Subgerente / Jefe de Construcción",
@@ -6880,7 +7821,10 @@
       "activa": true,
       "_caso": "1118034511 - Subgerente Construcción para Retail",
       "_fecha": "2026-03-12",
-      "nota": "Subgerente/Jefe de construcción es supervisor (3123), no arquitecto"
+      "nota": "Subgerente/Jefe de construcción es supervisor (3123), no arquitecto",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R284_representante_tecnico_comercial": {
       "nombre": "Representante Técnico Comercial",
@@ -6905,7 +7849,10 @@
       "activa": true,
       "_caso": "1118129325 - Representante Técnico Comercial",
       "_fecha": "2026-03-12",
-      "nota": "Representante técnico comercial es vendedor especializado (5223), no director de ventas"
+      "nota": "Representante técnico comercial es vendedor especializado (5223), no director de ventas",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R285_coordinador_rrhh": {
       "nombre": "Coordinador/a de Recursos Humanos",
@@ -6931,7 +7878,10 @@
       "activa": true,
       "_caso": "1118145945 - Coordinador/a de Recursos Humanos",
       "_fecha": "2026-03-12",
-      "nota": "Coordinador RRHH es nivel directivo RRHH (1212)"
+      "nota": "Coordinador RRHH es nivel directivo RRHH (1212)",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R286_auxiliar_rrhh": {
       "nombre": "Auxiliar de RRHH",
@@ -6951,7 +7901,10 @@
       "activa": true,
       "_caso": "1118151100 - Auxiliar de RRHH",
       "_fecha": "2026-03-12",
-      "nota": "Auxiliar RRHH es personal de RRHH (2423). Baseline daba ingeniero industrial (mal)"
+      "nota": "Auxiliar RRHH es personal de RRHH (2423). Baseline daba ingeniero industrial (mal)",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R287_herrero": {
       "nombre": "Herrero / Plegador",
@@ -6973,7 +7926,10 @@
       "activa": true,
       "_caso": "1118151709 - Plegador/herrero",
       "_fecha": "2026-03-12",
-      "nota": "Herrero/plegador es 7221, ni cantero (baseline) ni diseñador paisajístico (fine-tuned)"
+      "nota": "Herrero/plegador es 7221, ni cantero (baseline) ni diseñador paisajístico (fine-tuned)",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R288_ayudante_envasado": {
       "nombre": "Ayudante / Operario línea de envasado",
@@ -6997,7 +7953,10 @@
       "activa": true,
       "_caso": "1118157163 - Ayudante linea de envasado",
       "_fecha": "2026-03-12",
-      "nota": "Envasado operativo es 8183, no producción alimentos"
+      "nota": "Envasado operativo es 8183, no producción alimentos",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R289_encargado_limpieza": {
       "nombre": "Encargado/a de Limpieza",
@@ -7024,7 +7983,10 @@
       "activa": true,
       "_caso": "1118162787 - Encargado Limpieza",
       "_fecha": "2026-03-12",
-      "nota": "Encargado/supervisor de limpieza es 5151, no vigilante"
+      "nota": "Encargado/supervisor de limpieza es 5151, no vigilante",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R290_tecnico_electricista": {
       "nombre": "Técnico electricista",
@@ -7047,7 +8009,12 @@
       "_caso": "2166530 - Técnico electricista",
       "_fecha": "2026-03-12",
       "nota": "Técnico electricista es electricista (7411). Baseline daba productos sanitarios, fine-tuned daba podcast",
-      "_fix_2026_04_08": "Agregadas variantes con /a que no matcheaban"
+      "_fix_2026_04_08": "Agregadas variantes con /a que no matcheaban",
+      "_linaje": {
+        "version_origen": "v512",
+        "contexto": "oridad vs R240, fix R290 variantes /a, nuevas R301-R305 (ascensores, supervisor",
+        "requiere_revision": true
+      }
     },
     "R291_auxiliar_proveedores": {
       "nombre": "Auxiliar de Proveedores / Compras",
@@ -7067,7 +8034,10 @@
       "activa": true,
       "_caso": "2170436 - Auxiliar de Proveedores",
       "_fecha": "2026-03-12",
-      "nota": "Auxiliar proveedores es administrativo contable (4311)"
+      "nota": "Auxiliar proveedores es administrativo contable (4311)",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R292_pasante_marketing": {
       "nombre": "Pasante de Marketing",
@@ -7089,7 +8059,12 @@
       "activa": true,
       "_caso": "2171320 - Pasante de Marketing",
       "_fecha": "2026-03-12",
-      "nota": "Pasante/trainee de marketing es ayudante de marketing (2431), no vendedor"
+      "nota": "Pasante/trainee de marketing es ayudante de marketing (2431), no vendedor",
+      "_linaje": {
+        "version_origen": "v58",
+        "contexto": "ng protección: R281-R292 (12 reglas) para proteger 13 regresiones detectadas en",
+        "requiere_revision": true
+      }
     },
     "R293_asistente_pago": {
       "nombre": "Asistente de Estado de Pago / Pagos",
@@ -7114,7 +8089,12 @@
       "activa": true,
       "_caso": "1118040436 - Asistente Estado de Pago",
       "_fecha": "2026-03-12",
-      "nota": "Asistente de pagos/EDP es administrativo contable (4311). LoRA daba inspector bienes consumo"
+      "nota": "Asistente de pagos/EDP es administrativo contable (4311). LoRA daba inspector bienes consumo",
+      "_linaje": {
+        "version_origen": "v59",
+        "contexto": "R293-R299: 7 reglas para cubrir regresiones del LoRA fine-tu",
+        "requiere_revision": true
+      }
     },
     "R294_analista_desarrollo_analitico": {
       "nombre": "Analista de Desarrollo Analítico (laboratorio)",
@@ -7132,7 +8112,10 @@
       "activa": true,
       "_caso": "1118063792 - Analista de Desarrollo Analítico",
       "_fecha": "2026-03-12",
-      "nota": "Desarrollo analítico es área de laboratorio químico/farmacéutico (2113). LoRA daba ing electromecánico"
+      "nota": "Desarrollo analítico es área de laboratorio químico/farmacéutico (2113). LoRA daba ing electromecánico",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R295_asistente_facturacion": {
       "nombre": "Asistente de Facturación y/o Cobranzas",
@@ -7166,7 +8149,10 @@
       "activa": true,
       "_caso": "1118068046 - Asistente Facturación y Cobranzas",
       "_fecha": "2026-03-12",
-      "nota": "Asistente facturación/cobranzas es contable (4311). LoRA daba jefe de sala"
+      "nota": "Asistente facturación/cobranzas es contable (4311). LoRA daba jefe de sala",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R296_soporte_infraestructura": {
       "nombre": "Soporte de Infraestructura IT",
@@ -7187,7 +8173,10 @@
       "activa": true,
       "_caso": "1118100781 - Infraestructure Support Ssr",
       "_fecha": "2026-03-12",
-      "nota": "Soporte de infraestructura IT es admin sistemas TIC (2522). LoRA daba desarrollador web"
+      "nota": "Soporte de infraestructura IT es admin sistemas TIC (2522). LoRA daba desarrollador web",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R297_estudiante_abogacia": {
       "nombre": "Estudiante de Abogacía / Derecho",
@@ -7211,7 +8200,10 @@
       "activa": true,
       "_caso": "1118132453 - ESTUDIANTE ABOGACIA para Area Laboral y Civil",
       "_fecha": "2026-03-12",
-      "nota": "Estudiante/pasante de abogacía es asistente jurídico (3411). LoRA daba repr ventas ferretería"
+      "nota": "Estudiante/pasante de abogacía es asistente jurídico (3411). LoRA daba repr ventas ferretería",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R298_mesa_servicio_it": {
       "nombre": "Mesa de Servicio / Help Desk IT",
@@ -7232,7 +8224,10 @@
       "activa": true,
       "_caso": "1118138652 - Coordinador/a de Mesa de Servicio IT",
       "_fecha": "2026-03-12",
-      "nota": "Mesa de servicio / help desk IT es gestor asistencia TIC (3512). LoRA daba coord inventario"
+      "nota": "Mesa de servicio / help desk IT es gestor asistencia TIC (3512). LoRA daba coord inventario",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R299_jefatura_compras": {
       "nombre": "Jefatura / Jefe de Compras",
@@ -7262,7 +8257,12 @@
       "activa": true,
       "_caso": "1118157618 - Jefatura de Compras Non Food",
       "_fecha": "2026-03-12",
-      "nota": "Jefatura/jefe de compras es director compras (1324). LoRA daba responsable marketing"
+      "nota": "Jefatura/jefe de compras es director compras (1324). LoRA daba responsable marketing",
+      "_linaje": {
+        "version_origen": "v59",
+        "contexto": "R293-R299: 7 reglas para cubrir regresiones del LoRA fine-tuning",
+        "requiere_revision": true
+      }
     },
     "R300_hrbp": {
       "nombre": "HRBP / Business Partner RRHH",
@@ -7282,7 +8282,12 @@
       "activa": true,
       "_caso": "1117993174 - 619BE | HRBP | ROSARIO | TELECOMUNICACIONES",
       "_fecha": "2026-03-12",
-      "nota": "HRBP es responsable de recursos humanos (2423). Usa titulo_original porque NLP limpia la sigla"
+      "nota": "HRBP es responsable de recursos humanos (2423). Usa titulo_original porque NLP limpia la sigla",
+      "_linaje": {
+        "version_origen": "v511",
+        "contexto": "R300-R303: Protección regresiones combined LoRA (HRBP->RRHH,",
+        "requiere_revision": true
+      }
     },
     "R301_productor_contenido_digital": {
       "nombre": "Productor de Contenido Digital/Multimedial",
@@ -7308,7 +8313,12 @@
       "activa": true,
       "_caso": "1118107207 - Productor/a de contenido multimedial/digital",
       "_fecha": "2026-03-12",
-      "nota": "Productor contenido digital es responsable contenidos web (2513). Combined LoRA daba diseñador didáctico"
+      "nota": "Productor contenido digital es responsable contenidos web (2513). Combined LoRA daba diseñador didáctico",
+      "_linaje": {
+        "version_origen": "v512",
+        "contexto": "ariantes /a, nuevas R301-R305 (ascensores, supervisor obra, gerente admin, torri",
+        "requiere_revision": true
+      }
     },
     "R302_proyectista_ing_civil": {
       "nombre": "Proyectista / Estudiante Ingeniería Civil",
@@ -7335,7 +8345,10 @@
       "activa": true,
       "_caso": "1118151137 - Estudiante Ing. Civil - Proyectista",
       "_fecha": "2026-03-12",
-      "nota": "Proyectista/Ing Civil es ingeniero construcción (2142). Combined LoRA daba supervisor demolición"
+      "nota": "Proyectista/Ing Civil es ingeniero construcción (2142). Combined LoRA daba supervisor demolición",
+      "_linaje": {
+        "requiere_revision": true
+      }
     },
     "R303_sous_chef": {
       "nombre": "Sous Chef / Segundo de Cocina",
@@ -7355,7 +8368,12 @@
       "activa": true,
       "_caso": "2168722 - Sous Chef - Restaurante en Balneario Reta",
       "_fecha": "2026-03-12",
-      "nota": "Sous chef es chef (3434). Combined LoRA daba camarero"
+      "nota": "Sous chef es chef (3434). Combined LoRA daba camarero",
+      "_linaje": {
+        "version_origen": "v511",
+        "contexto": "R300-R303: Protección regresiones combined LoRA (HRBP->RRHH, prod",
+        "requiere_revision": true
+      }
     },
     "R301_ascensores": {
       "nombre": "Técnico en ascensores/elevadores",

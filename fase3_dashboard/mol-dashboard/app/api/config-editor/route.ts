@@ -75,7 +75,7 @@ export async function PUT(request: NextRequest) {
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
 
   const body = await request.json();
-  const { config_key, data, action_summary } = body;
+  const { config_key, data, action_summary, lineage } = body;
 
   if (!config_key || !VALID_CONFIGS.includes(config_key)) {
     return NextResponse.json({ error: 'config_key inválido' }, { status: 400 });
@@ -95,11 +95,15 @@ export async function PUT(request: NextRequest) {
 
   const newVersion = (existing?.version || 0) + 1;
   const changelog = existing?.changelog || [];
+  // M-09: Enriched changelog entry with lineage
   changelog.push({
     timestamp: new Date().toISOString(),
     user: adminEmail,
     version: newVersion,
     action: action_summary || 'Actualización',
+    ...(lineage?.issue_id && { issue_id: lineage.issue_id }),
+    ...(lineage?.reglas_modificadas && { reglas_modificadas: lineage.reglas_modificadas }),
+    ...(lineage?.tipo_cambio && { tipo_cambio: lineage.tipo_cambio }),
   });
 
   // Upsert

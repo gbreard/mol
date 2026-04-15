@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Search,
   Plus,
@@ -26,6 +26,18 @@ interface Regla {
   forzar_area?: string;
   esco_label?: string;
   activa?: boolean;
+  _linaje?: {
+    issue_ids?: string[];
+    oferta_ejemplo?: string;
+    reporte?: string;
+    nota?: string;
+    training_pair_ids?: string[];
+    created_at?: string;
+    created_by?: string;
+    justificacion?: string;
+    requiere_revision?: boolean;
+    last_fix?: Record<string, unknown>;
+  };
 }
 
 interface ConfigData {
@@ -60,6 +72,15 @@ export default function ReglasPage() {
   const [sugerencias, setSugerencias] = useState<any[]>([]);
   const [showSugerencias, setShowSugerencias] = useState(false);
   const [loadingSugerencias, setLoadingSugerencias] = useState(false);
+  // M-09: Save modal with lineage
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [saveDescription, setSaveDescription] = useState('');
+  const [saveIssueId, setSaveIssueId] = useState('');
+  const [saveTipoCambio, setSaveTipoCambio] = useState<'nueva_regla' | 'fix' | 'optimizacion' | 'desactivacion'>('fix');
+  const [detectedChanges, setDetectedChanges] = useState<string[]>([]);
+  // M-09: Lineage toggle per rule
+  const [showLinaje, setShowLinaje] = useState<string | null>(null);
+  const [originalReglas, setOriginalReglas] = useState<Record<string, any>>({});
 
   async function loadConfig() {
     setLoading(true);
@@ -88,6 +109,9 @@ export default function ReglasPage() {
   }
 
   function parseReglas(reglasDict: Record<string, any>) {
+    // M-09: Store original for diff detection
+    setOriginalReglas(JSON.parse(JSON.stringify(reglasDict)));
+
     const parsed: Regla[] = Object.entries(reglasDict)
       .filter(([key]) => key !== 'descripcion')
       .map(([id, data]: [string, any]) => ({
@@ -95,10 +119,11 @@ export default function ReglasPage() {
         nombre: data.nombre || id,
         prioridad: data.prioridad || 999,
         condicion: data.condicion || {},
-        forzar_isco: data.forzar_isco || '',
+        forzar_isco: data.forzar_isco || data.accion?.forzar_isco || '',
         forzar_area: data.forzar_area,
-        esco_label: data.esco_label,
+        esco_label: data.esco_label || data.accion?.esco_label,
         activa: data.activa !== false,
+        _linaje: data._linaje,
       }))
       .sort((a, b) => a.prioridad - b.prioridad);
     setReglas(parsed);
@@ -217,11 +242,51 @@ export default function ReglasPage() {
     setHasChanges(true);
   }
 
+  // M-09: Detect which rules changed vs original
+  function detectChangedRules(): string[] {
+    const changed: string[] = [];
+    const currentDict: Record<string, any> = {};
+    reglas.forEach(r => { currentDict[r.id] = r; });
+
+    // New rules
+    for (const r of reglas) {
+      if (!originalReglas[r.id]) {
+        changed.push(r.id);
+        continue;
+      }
+      const orig = originalReglas[r.id];
+      if (
+        r.forzar_isco !== (orig.forzar_isco || orig.accion?.forzar_isco || '') ||
+        r.nombre !== (orig.nombre || r.id) ||
+        (r.activa !== false) !== (orig.activa !== false) ||
+        r.esco_label !== (orig.esco_label || orig.accion?.esco_label)
+      ) {
+        changed.push(r.id);
+      }
+    }
+    // Deleted rules
+    for (const id of Object.keys(originalReglas)) {
+      if (id === 'descripcion') continue;
+      if (!currentDict[id]) changed.push(id + ' (eliminada)');
+    }
+    return changed;
+  }
+
+  function openSaveModal() {
+    const changes = detectChangedRules();
+    setDetectedChanges(changes);
+    setSaveDescription('');
+    setSaveIssueId('');
+    setSaveTipoCambio('fix');
+    setShowSaveModal(true);
+  }
+
   async function saveToSupabase() {
     setSaving(true);
     setMessage(null);
+    setShowSaveModal(false);
     try {
-      // Rebuild the dict structure
+      // Rebuild the dict structure preserving _linaje
       const reglasDict: Record<string, any> = {
         descripcion: "Reglas que fuerzan un codigo ISCO especifico cuando se cumplen las condiciones. Tienen prioridad sobre el matching semantico.",
       };
@@ -234,6 +299,7 @@ export default function ReglasPage() {
           ...(r.forzar_area && { forzar_area: r.forzar_area }),
           ...(r.esco_label && { esco_label: r.esco_label }),
           ...(r.activa === false && { activa: false }),
+          ...(r._linaje && { _linaje: r._linaje }),
         };
       });
 
@@ -243,13 +309,19 @@ export default function ReglasPage() {
       const fullConfig = fullData.data || {};
       fullConfig.reglas_forzar_isco = reglasDict;
 
+      // M-09: Enriched changelog entry
       const res = await fetch('/api/config-editor', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           config_key: 'matching_rules_business',
           data: fullConfig,
-          action_summary: `Editado ${reglas.length} reglas`,
+          action_summary: saveDescription || `Editado ${reglas.length} reglas`,
+          lineage: {
+            issue_id: saveIssueId || null,
+            reglas_modificadas: detectedChanges,
+            tipo_cambio: saveTipoCambio,
+          },
         }),
       });
 
@@ -260,7 +332,8 @@ export default function ReglasPage() {
 
       const result = await res.json();
       setHasChanges(false);
-      setMessage({ type: 'ok', text: `Guardado v${result.version} — el pipeline usará estas reglas` });
+      setOriginalReglas(reglasDict);
+      setMessage({ type: 'ok', text: `Guardado v${result.version} — ${detectedChanges.length} reglas modificadas` });
     } catch (e: any) {
       setMessage({ type: 'error', text: e.message });
     } finally {
@@ -317,7 +390,7 @@ export default function ReglasPage() {
           </button>
           {hasChanges && (
             <button
-              onClick={saveToSupabase}
+              onClick={openSaveModal}
               disabled={saving}
               className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm disabled:opacity-50"
             >
@@ -560,7 +633,8 @@ export default function ReglasPage() {
                 }
 
                 return (
-                  <tr key={regla.id} className={`border-b border-gray-100 hover:bg-gray-50 ${regla.activa === false ? 'opacity-40' : ''}`}>
+                  <React.Fragment key={regla.id}>
+                  <tr className={`border-b border-gray-100 hover:bg-gray-50 ${regla.activa === false ? 'opacity-40' : ''}`}>
                     <td className="py-2 px-4 text-gray-400 text-xs">{regla.prioridad}</td>
                     <td className="py-2 px-4">
                       <div className="font-mono text-xs text-gray-400">{regla.id}</div>
@@ -579,11 +653,49 @@ export default function ReglasPage() {
                     </td>
                     <td className="py-2 px-4 text-center">
                       <div className="flex items-center justify-center gap-1">
+                        <button onClick={() => setShowLinaje(showLinaje === regla.id ? null : regla.id)}
+                          className={`p-1 rounded text-xs ${regla._linaje ? 'text-purple-600 hover:bg-purple-100' : 'text-gray-300 hover:bg-gray-100'}`}
+                          title="Linaje">
+                          <FileText className="w-4 h-4" />
+                        </button>
                         <button onClick={() => startEdit(regla)} className="p-1 text-blue-600 hover:bg-blue-100 rounded"><Edit2 className="w-4 h-4" /></button>
                         <button onClick={() => deleteRegla(regla.id)} className="p-1 text-red-400 hover:bg-red-100 rounded"><Trash2 className="w-4 h-4" /></button>
                       </div>
                     </td>
                   </tr>
+                  {/* M-09: Lineage row */}
+                  {showLinaje === regla.id && (
+                    <tr key={`${regla.id}-linaje`} className="border-b border-gray-100">
+                      <td colSpan={7} className="px-4 py-3 bg-purple-50">
+                        <div className="text-xs space-y-1">
+                          <div className="font-medium text-purple-800 mb-2">Linaje — {regla.id}</div>
+                          {regla._linaje ? (
+                            <>
+                              {regla._linaje.nota && <div><span className="text-gray-500">Nota:</span> {regla._linaje.nota}</div>}
+                              {regla._linaje.justificacion && <div><span className="text-gray-500">Justificacion:</span> {regla._linaje.justificacion}</div>}
+                              {regla._linaje.created_by && <div><span className="text-gray-500">Creada por:</span> {regla._linaje.created_by} {regla._linaje.created_at && `(${regla._linaje.created_at.slice(0, 10)})`}</div>}
+                              {regla._linaje.issue_ids && regla._linaje.issue_ids.length > 0 && <div><span className="text-gray-500">Issues:</span> {regla._linaje.issue_ids.join(', ')}</div>}
+                              {regla._linaje.oferta_ejemplo && <div><span className="text-gray-500">Oferta ejemplo:</span> #{regla._linaje.oferta_ejemplo}</div>}
+                              {regla._linaje.training_pair_ids && regla._linaje.training_pair_ids.length > 0 && (
+                                <div><span className="text-gray-500">Training pairs:</span> {regla._linaje.training_pair_ids.join(', ')}</div>
+                              )}
+                              {regla._linaje.reporte && <div><span className="text-gray-500">Reporte:</span> {regla._linaje.reporte}</div>}
+                              {regla._linaje.requiere_revision && (
+                                <div className="text-amber-600 font-medium">Requiere revision manual</div>
+                              )}
+                              {regla._linaje.last_fix && (
+                                <div><span className="text-gray-500">Ultimo fix:</span> {JSON.stringify(regla._linaje.last_fix).slice(0, 100)}</div>
+                              )}
+                            </>
+                          ) : (
+                            <div className="text-gray-400">Sin datos de linaje. Ejecutar backfill_rule_lineage.py para poblar.</div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  {/* End lineage row */}
+                  </React.Fragment>
                 );
               })}
             </tbody>
@@ -603,6 +715,91 @@ export default function ReglasPage() {
           updatedAt={config.updated_at}
           source={config.source}
         />
+      )}
+
+      {/* M-09: Save Modal with Lineage */}
+      {showSaveModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 space-y-4">
+            <h3 className="text-lg font-bold">Guardar cambios</h3>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Descripcion del cambio *
+              </label>
+              <input
+                value={saveDescription}
+                onChange={e => setSaveDescription(e.target.value)}
+                placeholder="Ej: Fix R218 label ESCO incorrecto"
+                className="w-full border rounded-lg px-3 py-2 text-sm"
+                autoFocus
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Issue relacionado (opcional)
+              </label>
+              <input
+                value={saveIssueId}
+                onChange={e => setSaveIssueId(e.target.value)}
+                placeholder="ID del issue"
+                className="w-full border rounded-lg px-3 py-2 text-sm"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de cambio</label>
+              <div className="flex gap-3 text-sm">
+                {[
+                  { v: 'nueva_regla', l: 'Nueva regla' },
+                  { v: 'fix', l: 'Fix' },
+                  { v: 'optimizacion', l: 'Optimizacion' },
+                  { v: 'desactivacion', l: 'Desactivacion' },
+                ].map(opt => (
+                  <label key={opt.v} className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="tipoCambio"
+                      checked={saveTipoCambio === opt.v}
+                      onChange={() => setSaveTipoCambio(opt.v as typeof saveTipoCambio)}
+                      className="w-3.5 h-3.5"
+                    />
+                    {opt.l}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {detectedChanges.length > 0 && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div className="text-xs font-medium text-blue-800 mb-1">
+                  Reglas modificadas ({detectedChanges.length}):
+                </div>
+                <div className="text-xs text-blue-700 font-mono">
+                  {detectedChanges.slice(0, 10).join(', ')}
+                  {detectedChanges.length > 10 && ` +${detectedChanges.length - 10} mas`}
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                onClick={() => setShowSaveModal(false)}
+                className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={saveToSupabase}
+                disabled={!saveDescription.trim() || saving}
+                className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+              >
+                {saving ? 'Guardando...' : 'Guardar'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

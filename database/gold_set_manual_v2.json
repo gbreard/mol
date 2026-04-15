@@ -2,7 +2,14 @@
   {
     "id_oferta": "1118026700",
     "esco_ok": true,
-    "comentario": "Match correcto. Vendedor de repuestos -> vendedor de piezas de repuesto de automoviles."
+    "comentario": "Match correcto. Vendedor de repuestos -> vendedor de piezas de repuesto de automoviles.",
+    "skills_esperadas": [
+      "comunicarse eficazmente",
+      "gestionar canales venta online",
+      "trabajar en equipo",
+      "utilizar herramientas informáticas",
+      "utilizar software ofimático"
+    ]
   },
   {
     "id_oferta": "1118026729",
@@ -10,7 +17,30 @@
     "tipo_error": "dominio_incorrecto",
     "comentario": "ERROR: Responsable de Deposito asignado a RRPP (2432). Deberia ser Jefe de almacen (ISCO 4321). El pipeline ignora 'deposito' y matchea 'responsable' con relaciones publicas.",
     "esco_esperado": "Jefe de almacen/jefa de almacen",
-    "isco_esperado": "4321"
+    "isco_esperado": "4321",
+    "skills_esperadas": [
+      "colaborar con recursos humanos",
+      "comunicarse eficazmente",
+      "comunicarse en portugués",
+      "coordinar actividades de equipo",
+      "coordinar logística de entregas",
+      "delegar tareas",
+      "elaborar informes de gestión",
+      "gestionar documentación comercial",
+      "gestionar inventario",
+      "gestionar operaciones de almacén",
+      "gestionar pagos",
+      "liderar equipos",
+      "organizar el espacio de trabajo",
+      "procesar facturas",
+      "realizar cierres contables",
+      "realizar conciliaciones bancarias",
+      "realizar control de existencias",
+      "trabajar autónomamente",
+      "utilizar sistemas de gestión de almacenes",
+      "utilizar sistemas ERP",
+      "utilizar software de hojas de cálculo"
+    ]
   },
   {
     "id_oferta": "1118027243",
@@ -20,7 +50,25 @@
   {
     "id_oferta": "1118027261",
     "esco_ok": true,
-    "comentario": "Match correcto. Supervisor de limpieza -> supervisor de servicio de limpieza."
+    "comentario": "Match correcto. Supervisor de limpieza -> supervisor de servicio de limpieza.",
+    "skills_esperadas": [
+      "aplicar normas de seguridad e higiene",
+      "aplicar técnicas de limpieza",
+      "capacitar personal",
+      "comunicar procedimientos operativos",
+      "controlar calidad del trabajo",
+      "controlar consumo de materiales",
+      "dar retroalimentación constructiva",
+      "delegar tareas",
+      "evaluar desempeño de empleados",
+      "gestionar el tiempo",
+      "gestionar inventario de insumos",
+      "planificar horarios de trabajo",
+      "realizar pedidos de suministros",
+      "supervisar personal",
+      "utilizar software de planificación",
+      "utilizar software ofimático"
+    ]
   },
   {
     "id_oferta": "1118027276",
@@ -28,17 +76,75 @@
     "tipo_error": "dominio_incorrecto",
     "comentario": "ERROR: Ejecutivo de Cuentas asignado a Electricidad (7411). Deberia ser familia Ventas (ISCO 3322). 'Cuentas' confunde al pipeline con 'contadores electricos'.",
     "esco_esperado": "Representante comercial",
-    "isco_esperado": "3322"
+    "isco_esperado": "3322",
+    "skills_esperadas": [
+      "aplicar estrategias de ventas B2B",
+      "aplicar técnicas de cierre de ventas",
+      "calcular presupuestos",
+      "colaborar con equipos técnicos",
+      "comunicarse eficazmente",
+      "diseñar soluciones personalizadas",
+      "elaborar propuestas comerciales",
+      "fidelizar clientes corporativos",
+      "gestionar objetivos de ventas",
+      "gestionar pipeline de ventas",
+      "gestionar relaciones con clientes",
+      "identificar clientes potenciales",
+      "identificar necesidades del cliente",
+      "investigar mercado industrial",
+      "negociar condiciones comerciales",
+      "presentar propuestas comerciales",
+      "realizar llamadas en frío",
+      "registrar actividades comerciales",
+      "trabajar autónomamente",
+      "trabajar bajo presión",
+      "utilizar software CRM",
+      "utilizar software de presentaciones"
+    ]
   },
   {
     "id_oferta": "1118027662",
     "esco_ok": true,
-    "comentario": "Match correcto. Farmaceutico/a -> Farmaceutico/farmaceutica (ISCO 2262)."
+    "comentario": "Match correcto. Farmaceutico/a -> Farmaceutico/farmaceutica (ISCO 2262).",
+    "skills_esperadas": [
+      "administrar vacunas",
+      "aplicar normativas farmacéuticas",
+      "asesorar sobre uso de medicamentos",
+      "controlar fechas de vencimiento",
+      "dispensar medicamentos",
+      "educar sobre salud pública",
+      "gestionar inventario farmacéutico",
+      "prestar atención al cliente",
+      "prestar atención al paciente",
+      "realizar pedidos a proveedores",
+      "registrar aplicaciones de vacunas",
+      "verificar recetas médicas"
+    ]
   },
   {
     "id_oferta": "1118027834",
     "esco_ok": true,
-    "comentario": "Match correcto. Vendedora digital -> vendedor/vendedora."
+    "comentario": "Match correcto. Vendedora digital -> vendedor/vendedora.",
+    "skills_esperadas": [
+      "aplicar técnicas negociación",
+      "comunicarse eficazmente",
+      "comunicarse por canales digitales",
+      "coordinar con otras áreas",
+      "dar seguimiento a entregas",
+      "dar seguimiento a pedidos",
+      "gestionar comunicación interna",
+      "gestionar cotizaciones",
+      "gestionar redes sociales",
+      "ingresar datos al sistema",
+      "mantener bases de datos actualizadas",
+      "prestar atención al cliente",
+      "resolver consultas de clientes",
+      "resolver problemas",
+      "utilizar comunicación digital",
+      "utilizar herramientas informáticas",
+      "utilizar software CRM",
+      "utilizar software de hojas de cálculo"
+    ]
   },
   {
     "id_oferta": "1118027941",
@@ -46,7 +152,16 @@
     "tipo_error": "dominio_incorrecto",
     "comentario": "ERROR: Dibujante Tecnico asignado a Contabilidad (3313). Deberia ser Delineantes (ISCO 3118). Skills como AutoCAD, Solidworks ignoradas.",
     "esco_esperado": "Delineante tecnico/delineante tecnica",
-    "isco_esperado": "3118"
+    "isco_esperado": "3118",
+    "skills_esperadas": [
+      "aplicar normas de dibujo técnico",
+      "calcular dimensiones y tolerancias",
+      "documentar especificaciones",
+      "interpretar especificaciones técnicas",
+      "medir piezas mecánicas",
+      "utilizar instrumentos de medición",
+      "utilizar software CAD"
+    ]
   },
   {
     "id_oferta": "1118028027",
@@ -54,155 +169,540 @@
     "tipo_error": "dominio_incorrecto",
     "comentario": "ERROR: Operador Autoelevadores asignado a Maquinaria Agricola (8341). Deberia ser Carretillas elevadoras (ISCO 8344). Autoelevador != maquinaria agricola.",
     "esco_esperado": "Operador de carretilla elevadora",
-    "isco_esperado": "8344"
+    "isco_esperado": "8344",
+    "skills_esperadas": [
+      "aplicar normas de seguridad industrial",
+      "controlar documentación de carga",
+      "operar autoelevadores",
+      "organizar mercadería en almacén",
+      "preparar pedidos",
+      "realizar maniobras de carga"
+    ]
   },
   {
     "id_oferta": "1118028038",
     "esco_ok": true,
     "comentario": "Match correcto. Ejecutiva/o Comercial Cuentas -> Representante comercial (ISCO 3322). Regla R28.",
-    "isco_esperado": "3322"
+    "isco_esperado": "3322",
+    "skills_esperadas": [
+      "analizar indicadores de ventas",
+      "analizar necesidades del cliente",
+      "calcular presupuestos",
+      "comunicarse eficazmente",
+      "conducir vehículo",
+      "elaborar informes de gestión",
+      "elaborar propuestas comerciales",
+      "planificar rutas de visitas",
+      "realizar visitas comerciales",
+      "trabajar en equipo",
+      "utilizar sistemas ERP",
+      "utilizar software de presentaciones",
+      "utilizar software ofimático"
+    ]
   },
   {
     "id_oferta": "1118028201",
     "esco_ok": true,
-    "comentario": "Match correcto. Operarios industria alimenticia -> operario de produccion de alimentos."
+    "comentario": "Match correcto. Operarios industria alimenticia -> operario de produccion de alimentos.",
+    "skills_esperadas": [
+      "aplicar etiquetas de productos",
+      "aplicar gestión procesos negocio",
+      "aplicar normas de higiene industrial",
+      "controlar peso y medidas",
+      "detectar defectos en productos",
+      "manipular alimentos de forma segura",
+      "mantener área de trabajo limpia",
+      "operar maquinaria de envasado",
+      "operar máquinas llenadoras",
+      "preparar pedidos según orden",
+      "realizar controles de calidad",
+      "verificar cantidades",
+      "verificar información de etiquetado"
+    ]
   },
   {
     "id_oferta": "1118028376",
     "esco_ok": true,
-    "comentario": "Match aceptable. Analista administrativo -> empleado administrativo seguros (ISCO 4312). Familia admin correcta."
+    "comentario": "Match aceptable. Analista administrativo -> empleado administrativo seguros (ISCO 4312). Familia admin correcta.",
+    "skills_esperadas": [
+      "comunicarse con otras áreas",
+      "coordinar procesos entre departamentos",
+      "gestionar documentación financiera",
+      "procesar transacciones comerciales",
+      "realizar tareas contables",
+      "trabajar en equipo",
+      "utilizar hojas de cálculo",
+      "utilizar software ofimático"
+    ]
   },
   {
     "id_oferta": "1118028657",
     "esco_ok": true,
-    "comentario": "Match correcto. Recepcionista -> recepcionista."
+    "comentario": "Match correcto. Recepcionista -> recepcionista.",
+    "skills_esperadas": [
+      "archivar documentos",
+      "atender llamadas telefónicas",
+      "comunicarse de forma profesional",
+      "gestionar agenda",
+      "gestionar documentación",
+      "prestar atención al cliente",
+      "realizar tareas administrativas",
+      "recibir visitantes",
+      "utilizar software ofimático"
+    ]
   },
   {
     "id_oferta": "1118028681",
     "esco_ok": true,
-    "comentario": "Match correcto. Administrativa/o -> empleado administrativo."
+    "comentario": "Match correcto. Administrativa/o -> empleado administrativo.",
+    "skills_esperadas": [
+      "actualizar catálogos online",
+      "aplicar normativa laboral",
+      "calcular márgenes comerciales",
+      "controlar cuentas por pagar",
+      "gestionar compras",
+      "gestionar pagos a proveedores",
+      "gestionar plataformas e-commerce",
+      "gestionar precios de productos",
+      "liquidar sueldos",
+      "negociar con proveedores",
+      "realizar transferencias bancarias",
+      "registrar mercadería en sistema",
+      "utilizar sistemas de gestión",
+      "utilizar software de nómina",
+      "utilizar software ofimático",
+      "verificar documentación de entrada"
+    ]
   },
   {
     "id_oferta": "1118028828",
     "esco_ok": true,
     "comentario": "Match correcto. Modelista textil -> Sastre/sastra (ISCO 7531). Regla R29.",
-    "isco_esperado": "7531"
+    "isco_esperado": "7531",
+    "skills_esperadas": [
+      "aplicar proporciones de escalado",
+      "aplicar técnicas de corte y confección",
+      "conocer propiedades de textiles",
+      "coordinar con área comercial",
+      "desarrollar moldes de prendas",
+      "documentar resultados de pruebas",
+      "elaborar fichas técnicas",
+      "escalar patrones por tallas",
+      "evaluar comportamiento de telas",
+      "gestionar tiempos de entrega",
+      "identificar problemas de calce",
+      "interpretar diseños de moda",
+      "modificar patrones",
+      "preparar muestras de productos",
+      "realizar pruebas de ajuste",
+      "seleccionar materiales y accesorios",
+      "trabajar en equipo",
+      "utilizar software diseño patrones"
+    ]
   },
   {
     "id_oferta": "1118028833",
     "esco_ok": true,
-    "comentario": "Match correcto. Asesor comercial plan ahorro -> Representante comercial (familia comercial correcta)."
+    "comentario": "Match correcto. Asesor comercial plan ahorro -> Representante comercial (familia comercial correcta).",
+    "skills_esperadas": [
+      "analizar datos de prospectos",
+      "aplicar técnicas de cierre de ventas",
+      "aplicar técnicas de venta consultiva",
+      "buscar excelencia",
+      "gestionar cartera de clientes",
+      "gestionar información de clientes",
+      "identificar oportunidades de venta",
+      "mostrar iniciativa",
+      "negociar condiciones de venta",
+      "orientación a resultados",
+      "prestar atención al cliente",
+      "trabajar en equipo",
+      "utilizar sistemas de gestión"
+    ]
   },
   {
     "id_oferta": "1118028887",
     "esco_ok": true,
-    "comentario": "Match aceptable. Account Executive (Hunter) -> agente de empleo. Familia ventas/RRHH cercana."
+    "comentario": "Match aceptable. Account Executive (Hunter) -> agente de empleo. Familia ventas/RRHH cercana.",
+    "skills_esperadas": [
+      "aplicar técnicas negociación",
+      "calcular ROI para clientes",
+      "crear propuestas de valor",
+      "dar seguimiento a prospectos",
+      "gestionar relaciones comerciales",
+      "identificar clientes potenciales",
+      "investigar mercado objetivo",
+      "orientación a resultados",
+      "utilizar LinkedIn para prospección",
+      "utilizar software CRM",
+      "utilizar software de presentaciones"
+    ]
   },
   {
     "id_oferta": "1118028891",
     "esco_ok": true,
-    "comentario": "Match correcto. Auxiliar contable -> administrativo contable."
+    "comentario": "Match correcto. Auxiliar contable -> administrativo contable.",
+    "skills_esperadas": [
+      "conciliar cuentas",
+      "controlar fondos fijos",
+      "emitir órdenes de pago",
+      "generar documentación contable",
+      "gestionar base de proveedores",
+      "gestionar caja registradora",
+      "gestionar cheques",
+      "gestionar cobranzas",
+      "llevar la contabilidad",
+      "mostrar iniciativa",
+      "preparar cierres contables",
+      "procesar facturas",
+      "realizar análisis financiero",
+      "realizar conciliaciones bancarias",
+      "realizar depósitos bancarios",
+      "registrar rechazos bancarios",
+      "utilizar sistemas contables",
+      "utilizar software de hojas de cálculo",
+      "verificar movimientos bancarios"
+    ]
   },
   {
     "id_oferta": "2162667",
     "esco_ok": true,
     "comentario": "Gerente Operaciones Facility/Catering corporativo, NO restaurante. ISCO 1321 correcto.",
     "esco_esperado": "Director de operaciones",
-    "isco_esperado": "1321"
+    "isco_esperado": "1321",
+    "skills_esperadas": [
+      "analizar indicadores de gestión",
+      "aplicar normas de calidad",
+      "controlar gastos operativos",
+      "demostrar liderazgo",
+      "desarrollar talento organizacional",
+      "diseñar estrategias operativas",
+      "elaborar presupuestos",
+      "gestionar cuentas clave",
+      "gestionar seguridad e higiene",
+      "implementar mejora continua",
+      "implementar planes de acción",
+      "liderar equipos gerenciales",
+      "negociar contratos de servicio",
+      "utilizar herramientas de BI"
+    ]
   },
   {
     "id_oferta": "1118022146",
     "esco_ok": true,
     "comentario": "Match correcto. Community Manager -> Gestor de la informacion para las redes sociales (ISCO 2432). Regla R30.",
-    "isco_esperado": "2432"
+    "isco_esperado": "2432",
+    "skills_esperadas": [
+      "analizar métricas de campañas",
+      "atender consultas digitales",
+      "editar videos",
+      "gestionar calendario de contenidos",
+      "gestionar comunidad online",
+      "gestionar plataformas e-commerce",
+      "gestionar publicidad online",
+      "gestionar relaciones con influencers",
+      "mostrar iniciativa",
+      "negociar colaboraciones",
+      "optimizar campañas publicitarias",
+      "optimizar fichas de productos",
+      "pensar creativamente",
+      "planificar estrategias de marketing digital",
+      "prestar atención al detalle",
+      "producir contenido audiovisual",
+      "realizar SEO",
+      "redactar copywriting",
+      "segmentar base de clientes",
+      "utilizar software CRM",
+      "utilizar software edición video"
+    ]
   },
   {
     "id_oferta": "1118025212",
     "esco_ok": true,
-    "comentario": "Match correcto. Familia de ventas tecnicas correcta."
+    "comentario": "Match correcto. Familia de ventas tecnicas correcta.",
+    "skills_esperadas": [
+      "aplicar habilidades de venta",
+      "asesorar sobre productos agrícolas",
+      "gestionar cartera de clientes",
+      "orientación a resultados",
+      "prospectar clientes agropecuarios",
+      "realizar demostraciones técnicas"
+    ]
   },
   {
     "id_oferta": "1117960588",
     "esco_ok": true,
-    "comentario": "Match correcto. Asistente de Direccion -> Empleado administrativo (ISCO 3343)."
+    "comentario": "Match correcto. Asistente de Direccion -> Empleado administrativo (ISCO 3343).",
+    "skills_esperadas": [
+      "atender llamadas telefónicas",
+      "comunicarse eficazmente",
+      "coordinar con agencias de publicidad",
+      "gestionar agenda ejecutiva",
+      "gestionar correspondencia",
+      "gestionar materiales promocionales",
+      "prestar atención al cliente",
+      "realizar tareas administrativas",
+      "recibir visitantes",
+      "redactar comunicaciones",
+      "utilizar hojas de cálculo",
+      "utilizar software ofimático"
+    ]
   },
   {
     "id_oferta": "1118009739",
     "esco_ok": true,
-    "comentario": "Match correcto. Administrativa Comex -> Empleado de oficina (ISCO 4110). Oficinista general es correcto."
+    "comentario": "Match correcto. Administrativa Comex -> Empleado de oficina (ISCO 4110). Oficinista general es correcto.",
+    "skills_esperadas": [
+      "controlar compliance aduanero",
+      "coordinar pagos internacionales",
+      "gestionar divisas",
+      "gestionar documentación Comex",
+      "procesar facturas de exportación"
+    ]
   },
   {
     "id_oferta": "1118000814",
     "esco_ok": true,
-    "comentario": "Match aceptable. Asistente Admin Ventas -> Asistente de direccion (ISCO 3343). Familia admin correcta."
+    "comentario": "Match aceptable. Asistente Admin Ventas -> Asistente de direccion (ISCO 3343). Familia admin correcta.",
+    "skills_esperadas": [
+      "actualizar información de clientes",
+      "analizar datos de ventas",
+      "aplicar pensamiento analítico",
+      "apoyar acciones comerciales",
+      "coordinar actividades promocionales",
+      "coordinar despachos",
+      "crear informes visuales",
+      "crear tablas dinámicas",
+      "dar seguimiento a entregas",
+      "dar seguimiento a pagos pendientes",
+      "gestionar bases de datos",
+      "gestionar cuentas por cobrar",
+      "ingresar pedidos al sistema",
+      "mantener documentación ordenada",
+      "mostrar iniciativa",
+      "organizar archivos comerciales",
+      "orientación a resultados",
+      "prestar atención al detalle",
+      "trabajar en equipo",
+      "utilizar hojas de cálculo",
+      "utilizar sistemas de gestión comercial",
+      "utilizar software de presentaciones"
+    ]
   },
   {
     "id_oferta": "1118020225",
     "esco_ok": true,
-    "comentario": "Match aceptable. Representante atencion cliente -> Agente chat (ISCO 4222). Familia atencion al cliente correcta."
+    "comentario": "Match aceptable. Representante atencion cliente -> Agente chat (ISCO 4222). Familia atencion al cliente correcta.",
+    "skills_esperadas": [
+      "atender consultas por email",
+      "atender consultas telefónicas",
+      "comunicarse eficazmente",
+      "coordinar con equipos internos",
+      "documentar feedback de clientes",
+      "escalar incidencias",
+      "generar vínculos comerciales",
+      "gestionar relaciones con clientes",
+      "identificar oportunidades cross-selling",
+      "identificar oportunidades de mejora",
+      "prestar atención al cliente",
+      "proponer soluciones adicionales",
+      "resolver problemas",
+      "utilizar plataformas mensajería",
+      "utilizar software CRM"
+    ]
   },
   {
     "id_oferta": "1118003709",
     "esco_ok": true,
-    "comentario": "Match correcto."
+    "comentario": "Match correcto.",
+    "skills_esperadas": [
+      "cuadrar ingresos del día",
+      "delegar responsabilidades",
+      "operar caja registradora",
+      "prestar atención al cliente",
+      "procesar pagos",
+      "realizar arqueos de caja",
+      "resolver reclamos",
+      "supervisar personal de turno",
+      "utilizar hojas de cálculo",
+      "utilizar software ofimático"
+    ]
   },
   {
     "id_oferta": "1118017586",
     "esco_ok": true,
-    "comentario": "Match correcto. Medica Clinica/Dermatologa -> Medico generalista (ISCO 2211). Ambos son medicos."
+    "comentario": "Match correcto. Medica Clinica/Dermatologa -> Medico generalista (ISCO 2211). Ambos son medicos.",
+    "skills_esperadas": [
+      "aplicar protocolos de seguridad láser",
+      "aplicar tratamientos estéticos inyectables",
+      "aplicar tratamientos láser",
+      "establecer relaciones interpersonales",
+      "evaluar pacientes para procedimientos",
+      "prestar atención al paciente"
+    ]
   },
   {
     "id_oferta": "1118025956",
     "esco_ok": true,
-    "comentario": "Match correcto."
+    "comentario": "Match correcto.",
+    "skills_esperadas": [
+      "aplicar técnicas de poda",
+      "limpiar áreas verdes",
+      "mantener jardines y plantas",
+      "regar plantas",
+      "utilizar herramientas de jardinería"
+    ]
   },
   {
     "id_oferta": "2164100",
     "esco_ok": true,
     "comentario": "Match correcto. Mozo -> Camarero/camarera (ISCO 5131). Regla R31.",
-    "isco_esperado": "5131"
+    "isco_esperado": "5131",
+    "skills_esperadas": [
+      "mantener actitud positiva",
+      "prestar atención al cliente"
+    ]
   },
   {
     "id_oferta": "2165052",
     "esco_ok": true,
-    "comentario": "Match aceptable. Electricista Industrial -> Electricista de obras (ISCO 7411). Mismo grupo 741x, diferencia de especificidad menor."
+    "comentario": "Match aceptable. Electricista Industrial -> Electricista de obras (ISCO 7411). Mismo grupo 741x, diferencia de especificidad menor.",
+    "skills_esperadas": [
+      "armar tableros eléctricos",
+      "calcular cargas eléctricas",
+      "dimensionar instalaciones eléctricas",
+      "instalar canalizaciones eléctricas",
+      "interpretar planos técnicos",
+      "leer esquemas eléctricos",
+      "programar automatismos",
+      "realizar conexiones eléctricas",
+      "realizar mantenimiento equipos",
+      "seleccionar componentes eléctricos",
+      "tender cableado eléctrico"
+    ]
   },
   {
     "id_oferta": "2165301",
     "esco_ok": true,
-    "comentario": "Match correcto. Supervisor/a Administracion -> Director departamento administracion (ISCO 3341). Score 0.95."
+    "comentario": "Match correcto. Supervisor/a Administracion -> Director departamento administracion (ISCO 3341). Score 0.95.",
+    "skills_esperadas": [
+      "analizar procesos operativos",
+      "controlar indicadores de gestión",
+      "demostrar liderazgo",
+      "gestionar documentación vehicular",
+      "implementar mejoras de eficiencia",
+      "utilizar software ofimático"
+    ]
   },
   {
     "id_oferta": "1116898892",
     "esco_ok": true,
-    "comentario": "Match exacto."
+    "comentario": "Match exacto.",
+    "skills_esperadas": [
+      "asumir responsabilidad",
+      "comunicar incidencias",
+      "controlar cantidad y calidad",
+      "controlar niveles de fluidos",
+      "optimizar tiempos de entrega",
+      "planificar rutas de entrega",
+      "realizar mantenimiento vehículos",
+      "registrar novedades de entrega",
+      "reportar fallas mecánicas",
+      "ser puntual",
+      "trabajar de forma autónoma",
+      "utilizar aplicaciones de navegación",
+      "verificar mercadería contra remito"
+    ]
   },
   {
     "id_oferta": "1118023904",
     "esco_ok": true,
     "comentario": "Operario Picking en almacen logistico -> Mozo de almacen (ISCO 9333). NO es repositor de gondola (9334).",
-    "isco_esperado": "9333"
+    "isco_esperado": "9333",
+    "skills_esperadas": [
+      "cargar y descargar mercadería",
+      "embalar productos",
+      "localizar productos en almacén",
+      "manipular cargas pesadas",
+      "operar terminales RF",
+      "preparar pedidos según orden",
+      "realizar inventarios físicos",
+      "verificar cantidades"
+    ]
   },
   {
     "id_oferta": "1117980907",
     "esco_ok": true,
-    "comentario": "Match exacto."
+    "comentario": "Match exacto.",
+    "skills_esperadas": [
+      "aplicar sistema de ubicaciones",
+      "controlar estado de productos",
+      "coordinar despacho de mercadería",
+      "gestionar inventario",
+      "organizar productos en almacén",
+      "preparar pedidos",
+      "realizar conteos cíclicos",
+      "recibir mercadería",
+      "registrar en sistema",
+      "verificar documentación de entrada"
+    ]
   },
   {
     "id_oferta": "1117990944",
     "esco_ok": true,
-    "comentario": "Match correcto. Repositor -> Reponedor/reponedora (ISCO 9334). Bypass diccionario argentino."
+    "comentario": "Match correcto. Repositor -> Reponedor/reponedora (ISCO 9334). Bypass diccionario argentino.",
+    "skills_esperadas": [
+      "actualizar cartelería de precios",
+      "armar exhibiciones comerciales",
+      "controlar calidad de productos",
+      "controlar fechas de vencimiento",
+      "gestionar inventario en piso",
+      "gestionar material promocional",
+      "instalar cartelería",
+      "interpretar instrucciones visuales",
+      "mantener góndolas ordenadas",
+      "registrar mermas",
+      "reponer mercadería",
+      "reportar quiebres de stock",
+      "retirar productos vencidos",
+      "rotar stock por fecha",
+      "verificar precios en góndola"
+    ]
   },
   {
     "id_oferta": "1117961954",
     "esco_ok": true,
-    "comentario": "Match correcto. Asistente Administrativo General -> Empleado administrativo (ISCO 3343)."
+    "comentario": "Match correcto. Asistente Administrativo General -> Empleado administrativo (ISCO 3343).",
+    "skills_esperadas": [
+      "conciliar cuentas básicas",
+      "coordinar logística de eventos",
+      "elaborar informes",
+      "gestionar agenda de reuniones",
+      "gestionar el tiempo",
+      "mantener orden documental",
+      "mostrar iniciativa",
+      "organizar archivos físicos y digitales",
+      "registrar transacciones contables",
+      "utilizar software de presentaciones",
+      "utilizar software ofimático"
+    ]
   },
   {
     "id_oferta": "1117982053",
     "esco_ok": true,
     "comentario": "Match correcto. Desarrollador Angular -> Desarrollador de software (ISCO 2512). Regla R33.",
-    "isco_esperado": "2512"
+    "isco_esperado": "2512",
+    "skills_esperadas": [
+      "configurar CI/CD",
+      "desarrollar aplicaciones web",
+      "escribir código limpio y mantenible",
+      "implementar micro-frontends",
+      "monitorear aplicaciones en producción",
+      "optimizar carga de aplicaciones",
+      "optimizar rendimiento frontend",
+      "utilizar herramientas desarrollo",
+      "utilizar lenguajes programación"
+    ]
   },
   {
     "id_oferta": "1118018461",
@@ -210,7 +710,28 @@
     "tipo_error": "homonimia",
     "comentario": "ERROR: Asesor de Admisiones asignado a Juridico (2619). Deberia ser Asesor academico (ISCO 2359). 'Asesor' es polisemico, se ignora contexto educacion.",
     "esco_esperado": "Asesor academico/asesora academica",
-    "isco_esperado": "2359"
+    "isco_esperado": "2359",
+    "skills_esperadas": [
+      "asesorar sobre carreras universitarias",
+      "atender consultas multicanal",
+      "comunicar información académica",
+      "comunicarse eficazmente",
+      "coordinar eventos institucionales",
+      "gestionar relaciones con instituciones",
+      "guiar proceso de admisión",
+      "mostrar iniciativa",
+      "organizar actividades promocionales",
+      "prestar atención al cliente",
+      "prestar atención al detalle",
+      "procesar aplicaciones de postulantes",
+      "realizar presentaciones públicas",
+      "realizar visitas a escuelas",
+      "resolver problemas",
+      "utilizar herramientas informáticas",
+      "utilizar plataformas de mensajería",
+      "utilizar software CRM",
+      "utilizar software ofimático"
+    ]
   },
   {
     "id_oferta": "1118018714",
@@ -218,17 +739,50 @@
     "tipo_error": "dominio_incorrecto",
     "comentario": "ERROR: Disenador Grafico E-commerce asignado a Dibujante guiones (2651). Deberia ser Disenador grafico (ISCO 2166). Skills Photoshop/Illustrator ignoradas.",
     "esco_esperado": "Disenador grafico/disenadora grafica",
-    "isco_esperado": "2166"
+    "isco_esperado": "2166",
+    "skills_esperadas": [
+      "actualizar catálogos e-commerce",
+      "aplicar estándares de calidad visual",
+      "aplicar técnicas SEO",
+      "coordinar con equipos de marketing",
+      "desarrollar identidad visual",
+      "editar imágenes de productos",
+      "fotografiar productos",
+      "mantener consistencia de marca",
+      "pensar creativamente",
+      "redactar descripciones comerciales",
+      "retocar fotografías",
+      "utilizar software edición imágenes"
+    ]
   },
   {
     "id_oferta": "1118031991",
     "esco_ok": true,
-    "comentario": "Match correcto. Asesor de Ventas Directas -> Vendedor/vendedora (ISCO 5223). Bypass diccionario."
+    "comentario": "Match correcto. Asesor de Ventas Directas -> Vendedor/vendedora (ISCO 5223). Bypass diccionario.",
+    "skills_esperadas": [
+      "trabajar en equipo"
+    ]
   },
   {
     "id_oferta": "1116884561",
     "esco_ok": true,
-    "comentario": "Match correcto."
+    "comentario": "Match correcto.",
+    "skills_esperadas": [
+      "adaptarse al cambio",
+      "analizar tendencias de mercado",
+      "aplicar pensamiento analítico",
+      "aplicar técnicas negociación",
+      "comunicarse de forma asertiva",
+      "conciliar cuentas con finanzas",
+      "gestionar cobranzas",
+      "gestionar reclamos de clientes",
+      "planificar y organizar",
+      "presentar productos a clientes",
+      "realizar demostraciones comerciales",
+      "reportar competencia",
+      "resolver incidencias comerciales",
+      "trabajar en equipo"
+    ]
   },
   {
     "id_oferta": "1117995368",
@@ -236,32 +790,120 @@
     "tipo_error": "dominio_incorrecto",
     "comentario": "ERROR: Asesor Nutricion Animal asignado a Orientacion profesional (2423). Deberia ser Tecnico veterinario (ISCO 3240). Nutricion animal completamente ignorado.",
     "esco_esperado": "Tecnico veterinario/tecnica veterinaria",
-    "isco_esperado": "3240"
+    "isco_esperado": "3240",
+    "skills_esperadas": [
+      "disponibilidad para viajar"
+    ]
   },
   {
     "id_oferta": "2170124",
     "esco_ok": true,
-    "comentario": "Match aceptable. Analista de Cultivo -> Ingeniero agricola (ISCO 2144). Nivel educativo podria ser tecnico pero ingeniero es aceptable para analista."
+    "comentario": "Match aceptable. Analista de Cultivo -> Ingeniero agricola (ISCO 2144). Nivel educativo podria ser tecnico pero ingeniero es aceptable para analista.",
+    "skills_esperadas": [
+      "analizar datos geoespaciales",
+      "aplicar tratamientos fitosanitarios",
+      "coordinar cosecha",
+      "crear mapas de siembra y cosecha",
+      "elaborar informes técnicos",
+      "identificar plagas y enfermedades",
+      "monitorear desarrollo de cultivos",
+      "monitorear riego",
+      "operar maquinaria agrícola",
+      "planificar rotación de cultivos",
+      "realizar análisis de suelos",
+      "registrar datos agronómicos",
+      "supervisar labores de siembra",
+      "supervisar mantenimiento de equipos",
+      "utilizar sistemas de información geográfica",
+      "utilizar sistemas ERP",
+      "utilizar software ofimático"
+    ]
   },
   {
     "id_oferta": "1117975249",
     "esco_ok": true,
-    "comentario": "Match correcto."
+    "comentario": "Match correcto.",
+    "skills_esperadas": [
+      "analizar datos de rendimiento (KPIs)",
+      "aplicar metodologías de mejora continua",
+      "controlar costos operativos",
+      "controlar indicadores por sucursal",
+      "coordinar operaciones logísticas",
+      "definir objetivos comerciales",
+      "elaborar informes ejecutivos",
+      "gestionar cadena de suministro",
+      "gestionar el tiempo",
+      "gestionar presupuestos",
+      "gestionar relaciones con stakeholders",
+      "motivar equipos de trabajo",
+      "negociar contratos comerciales",
+      "optimizar procesos operativos",
+      "pensar de forma estratégica",
+      "resolver problemas operativos",
+      "supervisar operaciones multi-sitio",
+      "tomar decisiones bajo presión",
+      "utilizar software de análisis (Excel/BI)"
+    ]
   },
   {
     "id_oferta": "1118028777",
     "esco_ok": true,
-    "comentario": "Match correcto."
+    "comentario": "Match correcto.",
+    "skills_esperadas": [
+      "aplicar técnicas de venta",
+      "aplicar técnicas negociación",
+      "asesorar sobre productos",
+      "comunicarse eficazmente",
+      "dar seguimiento a clientes",
+      "gestionar cobranzas",
+      "gestionar cuotas de ventas",
+      "reportar resultados comerciales"
+    ]
   },
   {
     "id_oferta": "1118028048",
     "esco_ok": true,
-    "comentario": "Match correcto. Asesor/a de Ventas -> Vendedor/vendedora (ISCO 5223). Bypass diccionario."
+    "comentario": "Match correcto. Asesor/a de Ventas -> Vendedor/vendedora (ISCO 5223). Bypass diccionario.",
+    "skills_esperadas": [
+      "adaptarse al cambio",
+      "atender consultas de clientes",
+      "demostrar autoconfianza",
+      "demostrar empatía",
+      "establecer relaciones interpersonales",
+      "gestionar reclamos",
+      "mantener limpieza del local",
+      "mostrar iniciativa",
+      "organizar exhibición de productos",
+      "realizar ventas retail",
+      "utilizar sistemas punto venta"
+    ]
   },
   {
     "id_oferta": "1118009703",
     "esco_ok": true,
-    "comentario": "Match correcto. E-commerce es ventas en red."
+    "comentario": "Match correcto. E-commerce es ventas en red.",
+    "skills_esperadas": [
+      "adaptarse al cambio",
+      "analizar métricas de marketing",
+      "asesorar clientes B2B",
+      "coordinar con proveedores externos",
+      "crear contenido visual",
+      "demostrar productos",
+      "gestionar el tiempo",
+      "gestionar pipeline comercial",
+      "gestionar plataformas e-commerce",
+      "gestionar presupuestos",
+      "identificar necesidades de negocio",
+      "optimizar publicaciones para SEO",
+      "realizar ventas técnicas",
+      "redactar descripciones de productos",
+      "supervisar campañas digitales",
+      "trabajar bajo presión",
+      "trabajar en equipo",
+      "utilizar software CRM",
+      "utilizar software edición imágenes",
+      "utilizar software ofimático"
+    ]
   },
   {
     "id_oferta": "1117984105",
@@ -269,7 +911,11 @@
     "tipo_error": "nivel_jerarquico",
     "comentario": "ERROR: Gerente de Ventas asignado a Representante tecnico (2433). Deberia ser Gerentes comercios (ISCO 1221). Nivel jerarquico ignorado.",
     "esco_esperado": "Gerente de comercio",
-    "isco_esperado": "1221"
+    "isco_esperado": "1221",
+    "skills_esperadas": [
+      "liderar equipos",
+      "mostrar iniciativa"
+    ]
   },
   {
     "id_oferta": "1117977340",
@@ -277,6 +923,29 @@
     "tipo_error": "rol_primario",
     "comentario": "ERROR: Recepcionista Administrativo asignado a Admin seguros (4312). Deberia ser Recepcionista (ISCO 4226). El titulo dice RECEPCIONISTA primero.",
     "esco_esperado": "Recepcionista",
-    "isco_esperado": "4226"
+    "isco_esperado": "4226",
+    "skills_esperadas": [
+      "analizar ingresos",
+      "atender visitantes",
+      "controlar stock de insumos",
+      "controlar vencimientos impositivos",
+      "coordinar con obra social y ART",
+      "coordinar logística de reuniones",
+      "crear contenido para comunicación interna",
+      "dar seguimiento de pagos",
+      "gestionar altas de personal",
+      "gestionar cobranzas",
+      "gestionar compras de suministros",
+      "gestionar correspondencia",
+      "gestionar pagos",
+      "gestionar redes sociales",
+      "mostrar iniciativa",
+      "organizar eventos corporativos",
+      "procesar facturas de compra",
+      "registrar proveedores",
+      "tramitar certificaciones profesionales",
+      "utilizar plataformas de colegios profesionales",
+      "utilizar sistemas ERP"
+    ]
   }
 ]

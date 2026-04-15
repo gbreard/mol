@@ -93,6 +93,131 @@ def get_current_matches(cursor, ids):
     return results
 
 
+def evaluate_skills():
+    """M-10 P2: Evalúa precision y recall de skills con matching semántico BGE-M3."""
+    try:
+        import numpy as np
+        from pathlib import Path as P
+
+        config_path = PROJECT_ROOT / 'config' / 'supabase_config.json'
+        if not config_path.exists():
+            return None
+        config = json.loads(config_path.read_text())
+        from supabase import create_client
+        client = create_client(config['url'], config['service_role_key'])
+
+        # Load expected skills from gold_set_skills
+        gs_skills = client.table('gold_set_skills').select('id_oferta,skill_label').execute()
+        if not gs_skills.data:
+            return None
+
+        # Group by oferta
+        expected_by_oferta = {}
+        for row in gs_skills.data:
+            oid = row['id_oferta']
+            expected_by_oferta.setdefault(oid, [])
+            expected_by_oferta[oid].append(row['skill_label'])
+
+        # Load extracted skills from local DB
+        conn = sqlite3.connect(DB_PATH, timeout=30)
+        conn.execute("PRAGMA journal_mode=WAL")
+        cursor = conn.cursor()
+
+        extracted_by_oferta = {}
+        for oid in expected_by_oferta:
+            cursor.execute('''
+                SELECT esco_skill_label FROM ofertas_esco_skills_detalle
+                WHERE id_oferta = ?
+            ''', (oid,))
+            labels = [r[0] for r in cursor.fetchall() if r[0]]
+            if labels:
+                extracted_by_oferta[oid] = labels
+        conn.close()
+
+        # Load BGE-M3 for semantic comparison
+        import sys
+        sys.path.insert(0, str(PROJECT_ROOT / 'database'))
+        sys.path.insert(0, str(PROJECT_ROOT / 'config'))
+        from sentence_transformers import SentenceTransformer
+        try:
+            from embedding_config import EMBEDDING_MODEL, EMBEDDING_REVISION
+        except ImportError:
+            EMBEDDING_MODEL = "BAAI/bge-m3"
+            EMBEDDING_REVISION = None
+
+        print("[SKILLS] Cargando BGE-M3 para comparación semántica...")
+        model = SentenceTransformer(EMBEDDING_MODEL, revision=EMBEDDING_REVISION) if EMBEDDING_REVISION else SentenceTransformer(EMBEDDING_MODEL)
+
+        THRESHOLD = 0.70
+        from collections import Counter
+        precisions = []
+        recalls = []
+        missing_skills = Counter()
+        ofertas_recall_100 = 0
+        ofertas_recall_50 = 0
+
+        for oid, exp_labels in expected_by_oferta.items():
+            ext_labels = extracted_by_oferta.get(oid, [])
+            if not exp_labels or not ext_labels:
+                if exp_labels:
+                    recalls.append(0.0)
+                    precisions.append(0.0)
+                    for e in exp_labels:
+                        missing_skills[e] += 1
+                continue
+
+            # Embed both sets
+            exp_embs = model.encode(exp_labels, normalize_embeddings=True)
+            ext_embs = model.encode(ext_labels, normalize_embeddings=True)
+
+            # Cosine similarity matrix (exp × ext)
+            sim_matrix = np.dot(exp_embs, ext_embs.T)
+
+            # Recall: for each expected, best match >= threshold?
+            matched_exp = 0
+            for i, exp in enumerate(exp_labels):
+                best = sim_matrix[i].max()
+                if best >= THRESHOLD:
+                    matched_exp += 1
+                else:
+                    missing_skills[exp] += 1
+
+            # Precision: for each extracted, best match >= threshold?
+            matched_ext = 0
+            for j in range(len(ext_labels)):
+                best = sim_matrix[:, j].max()
+                if best >= THRESHOLD:
+                    matched_ext += 1
+
+            recall = matched_exp / len(exp_labels)
+            precision = matched_ext / len(ext_labels)
+            recalls.append(recall)
+            precisions.append(precision)
+
+            if recall >= 1.0:
+                ofertas_recall_100 += 1
+            if recall >= 0.5:
+                ofertas_recall_50 += 1
+
+        if not recalls:
+            return None
+
+        return {
+            'ofertas_evaluadas': len(recalls),
+            'precision_promedio': sum(precisions) / len(precisions) * 100,
+            'recall_promedio': sum(recalls) / len(recalls) * 100,
+            'ofertas_recall_100': ofertas_recall_100,
+            'ofertas_recall_50': ofertas_recall_50,
+            'threshold': THRESHOLD,
+            'skills_mas_faltantes': missing_skills.most_common(10),
+        }
+    except Exception as e:
+        import traceback
+        print(f"[SKILLS] Error evaluando skills: {e}")
+        traceback.print_exc()
+        return None
+
+
 def run_validation():
     """Ejecuta la validacion contra el gold set."""
     print("=" * 70)
@@ -104,8 +229,9 @@ def run_validation():
     gold_set = load_gold_set()
     print(f"\n[1] Gold set cargado: {len(gold_set)} casos")
 
-    # Conectar DB
-    conn = sqlite3.connect(DB_PATH)
+    # Conectar DB (WAL mode + timeout for concurrent pipeline access)
+    conn = sqlite3.connect(DB_PATH, timeout=30)
+    conn.execute("PRAGMA journal_mode=WAL")
     cursor = conn.cursor()
 
     # Obtener matches actuales
@@ -188,6 +314,24 @@ def run_validation():
             matching_version = match['version']
             break
 
+    # M-10 P2: Evaluación de skills
+    skills_metrics = evaluate_skills()
+    if skills_metrics:
+        print("\n" + "=" * 70)
+        print("EVALUACION DE SKILLS (M-10 P2):")
+        print("=" * 70)
+        print(f"  Ofertas evaluadas:        {skills_metrics['ofertas_evaluadas']}")
+        print(f"  Threshold semántico:      {skills_metrics.get('threshold', '?')}")
+        print(f"  Precision skills prom:    {skills_metrics['precision_promedio']:.1f}%")
+        print(f"  Recall skills prom:       {skills_metrics['recall_promedio']:.1f}%")
+        print(f"  Ofertas con recall >= 50%:{skills_metrics.get('ofertas_recall_50', '?')}")
+        print(f"  Ofertas con 100% recall:  {skills_metrics['ofertas_recall_100']}")
+        if skills_metrics.get('skills_mas_faltantes'):
+            print(f"  Skills más faltantes:")
+            for s, c in skills_metrics['skills_mas_faltantes'][:5]:
+                print(f"    - \"{s}\" (falta en {c} ofertas)")
+        print("=" * 70)
+
     # Retornar metricas para uso programatico
     return {
         'precision': precision,
@@ -195,7 +339,8 @@ def run_validation():
         'incorrect': incorrect,
         'total': total,
         'errors_by_type': errors_by_type,
-        'matching_version': matching_version
+        'matching_version': matching_version,
+        'skills_metrics': skills_metrics,
     }
 
 

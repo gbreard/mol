@@ -73,6 +73,27 @@ def main():
     else:
         print(f"  Archivo local no existe, se creará nuevo")
 
+    # M-10 P2: Fetch skills per oferta
+    skills_result = client.table('gold_set_skills').select(
+        'id_oferta,skill_label'
+    ).order('id_oferta').execute()
+
+    skills_by_oferta = {}
+    for row in (skills_result.data or []):
+        oid = row['id_oferta']
+        skills_by_oferta.setdefault(oid, [])
+        skills_by_oferta[oid].append(row['skill_label'])
+
+    ofertas_with_skills = sum(1 for g in gold_set if g['id_oferta'] in skills_by_oferta)
+    total_skills = sum(len(v) for v in skills_by_oferta.values())
+    print(f"  Skills: {total_skills} en {ofertas_with_skills} ofertas")
+
+    # Add skills_esperadas to each entry
+    for entry in gold_set:
+        oid = entry['id_oferta']
+        if oid in skills_by_oferta:
+            entry['skills_esperadas'] = skills_by_oferta[oid]
+
     if args.dry_run:
         print("[DRY-RUN] No se escribe archivo.")
         return
