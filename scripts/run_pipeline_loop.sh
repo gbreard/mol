@@ -40,7 +40,7 @@ conn.close()
     # Correr un lote
     echo "$(date '+%H:%M:%S') — Corriendo pipeline --limit 1000..."
     python3 scripts/run_validated_pipeline.py \
-        --force-new-batch --limit 1000 \
+        --force-new-batch --limit 1000 --max-nlp-iterations 1 \
         || echo "$(date '+%H:%M:%S') — Pipeline terminó con error (continuando...)"
 
     # Estado post-lote
