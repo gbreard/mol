@@ -76,3 +76,20 @@ data/tracking/*.bak*
 database/*.csv
 database/*.txt
 database/embeddings/
+
+# Logs de sync del pipeline (autogenerados)
+config/supabase_sync_log.json
+config/vps_sync_log.json
+
+# Archivos temporales de SQLite (autogenerados por el motor)
+*.db-shm
+*.db-wal
+
+# Exports incrementales del VPS (autogenerados por cron de scraping)
+data/vps_imports/
+
+# Cache de equivalencias (autogenerado desde Supabase, TTL 24h)
+config/skill_equivalences_lookup.json
+
+# Dashboard R antiguo (repo separado, embebido por error)
+Visual--/
