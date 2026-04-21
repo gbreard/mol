@@ -28,6 +28,9 @@ export function PersonaSelector({ selectedId, onSelect, onClear }: Props) {
   const [selected, setSelected] = useState<PerfilResumen | null>(null)
   const ref = useRef<HTMLDivElement>(null)
 
+  const onSelectRef = useRef(onSelect)
+  onSelectRef.current = onSelect
+
   // Load all perfiles on mount
   useEffect(() => {
     fetch('/api/perfiles')
@@ -50,14 +53,14 @@ export function PersonaSelector({ selectedId, onSelect, onClear }: Props) {
             const found = mapped.find((p: PerfilResumen) => p.id === selectedId)
             if (found) {
               setSelected(found)
-              onSelect(found)
+              onSelectRef.current(found)
             }
           }
         }
       })
       .catch(() => {})
       .finally(() => setLoading(false))
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedId])
 
   // Close dropdown on click outside
   useEffect(() => {

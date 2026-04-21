@@ -125,7 +125,7 @@ export default function DigitalizacionSectorPage() {
 
   return (
     <div className="p-8 max-w-6xl mx-auto space-y-6">
-        <OEBreadcrumb items={[{ label: "Indicadores", href: "/oficina-empleo/dashboard-ejecutivo" }, { label: "Digitalizacion Sector" }]} />
+        <OEBreadcrumb items={[{ label: "Indicadores", href: "/oficina-empleo" }, { label: "Digitalizacion Sector" }]} />
       {/* Header */}
       <div>
         <Link

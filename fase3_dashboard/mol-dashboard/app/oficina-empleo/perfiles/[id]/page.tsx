@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
+import QRCode from 'qrcode'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Loader2, Printer, Pencil, ArrowRight, Shield, ShieldOff, Briefcase } from 'lucide-react'
+import { Loader2, Printer, Pencil, ArrowRight, Shield, ShieldOff, Briefcase, Trash2 } from 'lucide-react'
 import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
 
 interface PerfilSkill {
@@ -39,6 +40,7 @@ interface PerfilData {
   ocupaciones: { id: string; label: string; isco_code: string }[]
   estado: string
   validado_at: string | null
+  created_at: string | null
   skills: PerfilSkill[]
 }
 
@@ -73,7 +75,10 @@ export default function PerfilDetailPage() {
   const [perfil, setPerfil] = useState<PerfilData | null>(null)
   const [loading, setLoading] = useState(true)
   const [toggling, setToggling] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
   const [qrUrl, setQrUrl] = useState('')
+  const [qrFailed, setQrFailed] = useState(false)
 
   useEffect(() => {
     fetch(`/api/perfiles?id=${id}`)
@@ -87,6 +92,7 @@ export default function PerfilDetailPage() {
           ocupaciones: data.ocupaciones || [],
           estado: data.estado || 'borrador',
           validado_at: data.validado_at,
+          created_at: data.created_at || data.updated_at || null,
           skills: (data.skills || []).map((s: any) => ({
             id: s.id,
             uri: s.skill_uri,
@@ -103,12 +109,21 @@ export default function PerfilDetailPage() {
       .finally(() => setLoading(false))
   }, [id])
 
-  // Lazy load QR code
+  // Generate QR code
+  const qrCanvasRef = useRef<HTMLCanvasElement>(null)
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setQrUrl(`${window.location.origin}/oficina-empleo/perfiles/${id}`)
+      const url = `${window.location.origin}/oficina-empleo/perfiles/${id}`
+      setQrUrl(url)
+      if (qrCanvasRef.current) {
+        QRCode.toCanvas(qrCanvasRef.current, url, {
+          width: 80,
+          margin: 1,
+          color: { dark: '#1f2937', light: '#ffffff' },
+        }).catch(() => setQrFailed(true))
+      }
     }
-  }, [id])
+  }, [id, perfil])
 
   const sections = useMemo(() => perfil ? classifyByVia(perfil.skills) : [], [perfil])
 
@@ -131,6 +146,19 @@ export default function PerfilDetailPage() {
     }
   }
 
+  async function handleDelete() {
+    setDeleting(true)
+    try {
+      const res = await fetch(`/api/perfiles/${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        router.push('/oficina-empleo/perfiles')
+      }
+    } catch {} finally {
+      setDeleting(false)
+      setConfirmDelete(false)
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -148,7 +176,9 @@ export default function PerfilDetailPage() {
   }
 
   const validadoDate = perfil.validado_at ? new Date(perfil.validado_at).toLocaleDateString('es-AR') : null
-  const createdDate = new Date().toLocaleDateString('es-AR')
+  const createdDate = perfil.created_at
+    ? new Date(perfil.created_at).toLocaleDateString('es-AR')
+    : new Date().toLocaleDateString('es-AR')
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -185,9 +215,13 @@ export default function PerfilDetailPage() {
               </div>
             </div>
 
-            {/* QR placeholder */}
-            <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-400 shrink-0 print:bg-white">
-              QR
+            {/* QR code */}
+            <div className="w-20 h-20 rounded-lg flex items-center justify-center shrink-0 print:bg-white bg-gray-50">
+              {qrFailed ? (
+                <span className="text-[10px] text-gray-400 text-center">QR no disponible</span>
+              ) : (
+                <canvas ref={qrCanvasRef} className="rounded" />
+              )}
             </div>
           </div>
 
@@ -265,6 +299,32 @@ export default function PerfilDetailPage() {
           >
             <Printer className="w-4 h-4" /> Imprimir
           </button>
+
+          {!confirmDelete ? (
+            <button
+              onClick={() => setConfirmDelete(true)}
+              className="inline-flex items-center gap-1.5 bg-white border border-gray-200 text-red-500 text-sm font-medium px-4 py-2 rounded-lg hover:bg-red-50 hover:border-red-200 transition-colors"
+            >
+              <Trash2 className="w-4 h-4" /> Eliminar
+            </button>
+          ) : (
+            <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 text-sm px-4 py-2 rounded-lg">
+              <span className="text-red-700 font-medium">Eliminar perfil?</span>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="text-red-700 font-semibold hover:text-red-800 disabled:opacity-50"
+              >
+                {deleting ? 'Eliminando...' : 'Si'}
+              </button>
+              <button
+                onClick={() => setConfirmDelete(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                No
+              </button>
+            </div>
+          )}
 
           <Link
             href={`/oficina-empleo/perfiles/matching?perfil_id=${id}`}

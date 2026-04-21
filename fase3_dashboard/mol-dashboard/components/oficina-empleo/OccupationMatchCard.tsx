@@ -1,9 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { ChevronDown, ChevronUp, Loader2, Check, X as XIcon, Briefcase, ExternalLink } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { ChevronDown, ChevronUp, Loader2, Briefcase, ExternalLink } from 'lucide-react'
 import { getOfertasByIsco } from '@/lib/supabase'
-import type { OccSkillDetail } from './getSkillsForOccupation'
 
 interface OccupationMatch {
   uri: string
@@ -14,13 +13,6 @@ interface OccupationMatch {
   essentialCovered: number
   optionalCovered: number
   gapCount: number
-}
-
-interface GapSkill {
-  skill: OccSkillDetail
-  covered: boolean
-  similarity?: number
-  isExact?: boolean
 }
 
 interface OfertaPreview {
@@ -34,10 +26,9 @@ interface OfertaPreview {
 interface Props {
   occupation: OccupationMatch
   rank: number
-  perfilId: string
   ofertasCount: number
   provincia?: string | null
-  onLoadOccupationSkills: (uri: string) => Promise<OccSkillDetail[]>
+  since?: string | null
   onOpenModal: (iscoCode: string, label: string) => void
 }
 
@@ -54,16 +45,23 @@ function ofertasBadge(count: number) {
 }
 
 export function OccupationMatchCard({
-  occupation, rank, perfilId, ofertasCount, provincia,
-  onLoadOccupationSkills, onOpenModal,
+  occupation, rank, ofertasCount, provincia, since,
+  onOpenModal,
 }: Props) {
   const [expanded, setExpanded] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [tiene, setTiene] = useState<GapSkill[]>([])
-  const [leFalta, setLeFalta] = useState<GapSkill[]>([])
   const [ofertas, setOfertas] = useState<OfertaPreview[]>([])
   const [loaded, setLoaded] = useState(false)
-  const [showAllFalta, setShowAllFalta] = useState(false)
+  const prevSinceRef = useRef(since)
+
+  // Invalidate cached ofertas when time period changes
+  useEffect(() => {
+    if (prevSinceRef.current !== since) {
+      prevSinceRef.current = since
+      setLoaded(false)
+      setOfertas([])
+    }
+  }, [since])
 
   async function handleExpand() {
     if (expanded) { setExpanded(false); return }
@@ -72,43 +70,8 @@ export function OccupationMatchCard({
 
     setLoading(true)
     try {
-      const [gapRes, occSkills, ofertasData] = await Promise.all([
-        fetch(`/api/perfiles/${perfilId}/gap?occupation_uri=${encodeURIComponent(occupation.uri)}`)
-          .then(r => r.ok ? r.json() : null),
-        onLoadOccupationSkills(occupation.uri),
-        getOfertasByIsco(occupation.isco_code, 3, 0, provincia),
-      ])
+      const ofertasData = await getOfertasByIsco(occupation.isco_code, 3, 0, provincia, since)
 
-      // Classify skills
-      if (gapRes && gapRes.mensaje !== 'sin_skills') {
-        const coveredUris = new Set(gapRes.skills_cubiertas_uris || [])
-        const coveredDetail: Record<string, { similarity: number; is_exact: boolean }> =
-          gapRes.skills_cubiertas_detail || {}
-
-        const tieneList: GapSkill[] = []
-        const faltaList: GapSkill[] = []
-
-        for (const skill of occSkills) {
-          const skillUri = `http://data.europa.eu/esco/skill/${skill.id}`
-          const detail = coveredDetail[skillUri]
-          const item: GapSkill = {
-            skill,
-            covered: coveredUris.has(skillUri),
-            similarity: detail?.similarity,
-            isExact: detail?.is_exact,
-          }
-          if (item.covered) {
-            tieneList.push(item)
-          } else if (skill.essential) {
-            faltaList.push(item)
-          }
-        }
-
-        setTiene(tieneList)
-        setLeFalta(faltaList)
-      }
-
-      // Ofertas
       if (ofertasData?.ofertas) {
         setOfertas(ofertasData.ofertas.slice(0, 3).map((o: any) => ({
           titulo: o.titulo_limpio || o.titulo,
@@ -129,8 +92,6 @@ export function OccupationMatchCard({
   }
 
   const badge = ofertasBadge(ofertasCount)
-  const faltaVisible = showAllFalta ? leFalta : leFalta.slice(0, 5)
-  const faltaHidden = leFalta.length - 5
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -177,23 +138,19 @@ export function OccupationMatchCard({
 
           {!loading && loaded && (
             <div className="space-y-4">
-              {/* Gap hidden per Diego feedback (req 20) — only ofertas visible */}
-              <div className="hidden">
-              </div>
-
               {/* Ofertas preview */}
               {(ofertas.length > 0 || ofertasCount > 0) && (
                 <div className="border rounded-lg overflow-hidden">
                   <div className="bg-gray-50 px-3 py-2 border-b flex items-center justify-between">
                     <span className="text-xs font-medium text-gray-600">
-                      {ofertasCount} ofertas{ofertas.filter(o => o.estado === 'activa').length > 0 && ` · ${ofertas.filter(o => o.estado === 'activa').length} activas`}
+                      {ofertasCount} oferta{ofertasCount !== 1 ? 's' : ''}
                     </span>
                     {ofertasCount > 0 && (
                       <button
                         onClick={() => onOpenModal(occupation.isco_code, occupation.label)}
                         className="text-xs text-teal-600 hover:text-teal-700 font-medium"
                       >
-                        Ver las {ofertasCount} ofertas →
+                        Ver {ofertasCount === 1 ? 'la oferta' : `las ${ofertasCount} ofertas`} →
                       </button>
                     )}
                   </div>

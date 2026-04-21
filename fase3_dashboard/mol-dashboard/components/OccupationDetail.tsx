@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Loader2, Briefcase, ChevronDown, X, ExternalLink, BookOpen } from 'lucide-react';
+import { Loader2, Briefcase, X, ExternalLink, BookOpen, MessageSquare } from 'lucide-react';
+import { createBrowserClient } from '@supabase/ssr';
+import OccupationTreeSelector from './OccupationTreeSelector';
 import SkillsList from './SkillsList';
 import SimilarOccupations from './SimilarOccupations';
 import OfertasOcupacionModal from './OfertasOcupacionModal';
@@ -33,8 +35,7 @@ export default function OccupationDetail({
   initialOccupation
 }: OccupationDetailProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSelectorOpen, setIsSelectorOpen] = useState(false);
   const [ofertasCountMap, setOfertasCountMap] = useState<Record<string, number>>({});
   const [modalIsco, setModalIsco] = useState('');
   const [modalLabel, setModalLabel] = useState('');
@@ -70,32 +71,13 @@ export default function OccupationDetail({
     return occupationsList.find(o => o.id === selectedId) || null;
   }, [selectedId, occupationsList]);
 
-  // Filter occupations for dropdown
-  const filteredOccupations = useMemo(() => {
-    if (!searchTerm.trim()) return occupationsList;
-
-    const normalizedSearch = searchTerm.toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
-
-    return occupationsList.filter(occ => {
-      const normalizedLabel = occ.label.toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '');
-      return normalizedLabel.includes(normalizedSearch) ||
-             occ.isco.toLowerCase().includes(normalizedSearch);
-    });
-  }, [occupationsList, searchTerm]);
-
   const handleSelect = (id: string) => {
     setSelectedId(id);
-    setIsDropdownOpen(false);
-    setSearchTerm('');
+    setIsSelectorOpen(false);
   };
 
   const handleClear = () => {
     setSelectedId(null);
-    setSearchTerm('');
   };
 
   // Fetch cursos when occupation changes
@@ -126,6 +108,107 @@ export default function OccupationDetail({
       onNavigateToCompare(selectedId, similarId);
     }
   };
+
+  // AI policy recommendation
+  const [recoPolicy, setRecoPolicy] = useState<string | null>(null);
+  const [loadingReco, setLoadingReco] = useState(false);
+  const [recoError, setRecoError] = useState(false);
+
+  // Clear recommendation when occupation changes
+  useEffect(() => {
+    setRecoPolicy(null);
+    setRecoError(false);
+  }, [selectedId]);
+
+  async function handlePedirAnalisis() {
+    if (!selectedOccupation || !selectedInfo || !occupationsData) return;
+    setLoadingReco(true);
+    setRecoError(false);
+    setRecoPolicy(null);
+    try {
+      const isco = normalizeIsco(selectedInfo.isco);
+      const ofertas = ofertasCountMap[isco] || 0;
+      const essential = selectedOccupation.skills?.essential || [];
+      const optional = selectedOccupation.skills?.optional || [];
+      const knowledge = [...(selectedOccupation.knowledge?.essential || []), ...(selectedOccupation.knowledge?.optional || [])];
+      const topSimilar = (selectedOccupation.similar || []).slice(0, 6);
+      const simIscos = [...new Set(topSimilar.map((s: any) => normalizeIsco(s.isco || '')))];
+
+      // Fetch trends for similar occupations
+      const { data: trends } = await createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      ).from('isco_demand_trend')
+        .select('isco_code, trend_label, ofertas_total, volatility_label, suficiente')
+        .in('isco_code', [isco, ...simIscos]);
+      const trendLookup: Record<string, any> = {};
+      if (trends) for (const t of trends) trendLookup[t.isco_code] = t;
+
+      // Fetch cursos for each similar occupation's essential skills
+      const similares = await Promise.all(topSimilar.map(async (s: any) => {
+        const simIsco = normalizeIsco(s.isco || '');
+        const simOcc = occupationsData[s.id];
+        const simEssentialUris = (simOcc?.skills?.essential || []).slice(0, 6).map((sk: any) => `http://data.europa.eu/esco/skill/${sk.id}`);
+        let simCursos: any[] = [];
+        if (simEssentialUris.length > 0) {
+          try {
+            const cr = await fetch('/api/perfiles/cursos-gap', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ gap_skill_uris: simEssentialUris }),
+            });
+            if (cr.ok) { const cd = await cr.json(); simCursos = (cd.cursos || []).slice(0, 2); }
+          } catch {}
+        }
+        const trend = trendLookup[simIsco];
+        return {
+          label: s.label,
+          isco_code: simIsco,
+          similarity: s.similarity || s.jaccard || 0,
+          ofertas: ofertasCountMap[simIsco] || 0,
+          tendencia: trend?.suficiente ? trend.trend_label : 'insuficiente',
+          volatilidad: trend?.volatility_label || 'desconocida',
+          cursos: simCursos.map((c: any) => ({ titulo: c.titulo, institucion: c.institucion, provincia: c.provincia })),
+        };
+      }));
+
+      const occTrend = trendLookup[isco];
+
+      const res = await fetch('/api/analisis-ocupacional', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ocupacion: {
+            label: selectedInfo.label,
+            isco_code: isco,
+            ofertas_total: ofertas,
+            tendencia: occTrend?.suficiente ? occTrend.trend_label : 'insuficiente',
+            volatilidad: occTrend?.volatility_label || 'desconocida',
+            skills_esenciales: essential.slice(0, 8).map((s: any) => s.label),
+            skills_opcionales_count: optional.length,
+            knowledge_esenciales: knowledge.slice(0, 5).map((k: any) => k.label),
+          },
+          similares,
+          cursos_ocupacion: cursos.slice(0, 5).map((c: any) => ({
+            titulo: c.titulo,
+            institucion: c.institucion,
+            provincia: c.provincia,
+            skills_cubiertas: c.skills_cubiertas,
+          })),
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setRecoPolicy(data.recomendacion || null);
+      } else {
+        setRecoError(true);
+      }
+    } catch {
+      setRecoError(true);
+    } finally {
+      setLoadingReco(false);
+    }
+  }
 
   const handleViewOfertas = (isco: string, label: string) => {
     setModalIsco(isco);
@@ -193,77 +276,82 @@ export default function OccupationDetail({
             </button>
           </div>
         ) : (
-          // Selector
+          // Selector with search + tree
           <div className="relative">
             <div
               className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-colors ${
-                isDropdownOpen ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-300 hover:border-gray-400'
+                isSelectorOpen ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-300 hover:border-gray-400'
               }`}
-              onClick={() => setIsDropdownOpen(true)}
+              onClick={() => setIsSelectorOpen(true)}
             >
-              <Search className="w-5 h-5 text-gray-400" />
-              {isDropdownOpen ? (
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Escribi para filtrar..."
-                  className="flex-1 outline-none bg-transparent"
-                  autoFocus
-                />
-              ) : (
-                <span className="flex-1 text-gray-500">
-                  Buscar entre {occupationsList.length.toLocaleString()} ocupaciones...
-                </span>
-              )}
-              <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              <Briefcase className="w-5 h-5 text-gray-400" />
+              <span className="flex-1 text-gray-500">
+                Buscar o navegar entre {occupationsList.length.toLocaleString()} ocupaciones...
+              </span>
             </div>
 
-            {/* Dropdown */}
-            {isDropdownOpen && (
-              <>
-                {/* Backdrop */}
-                <div
-                  className="fixed inset-0 z-10"
-                  onClick={() => setIsDropdownOpen(false)}
-                />
-
-                {/* List */}
-                <div className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-80 overflow-hidden">
-                  <div className="px-3 py-2 bg-gray-50 border-b text-sm text-gray-600">
-                    {searchTerm
-                      ? `${filteredOccupations.length} resultados`
-                      : `${occupationsList.length} ocupaciones ESCO`}
-                  </div>
-                  <ul className="overflow-y-auto max-h-64">
-                    {filteredOccupations.length === 0 ? (
-                      <li className="px-4 py-8 text-center text-gray-500">
-                        No se encontraron ocupaciones
-                      </li>
-                    ) : (
-                      filteredOccupations.slice(0, 100).map(occ => (
-                        <li
-                          key={occ.id}
-                          onClick={() => handleSelect(occ.id)}
-                          className="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0"
-                        >
-                          <div className="font-medium text-gray-900">{capitalize(occ.label)}</div>
-                          <div className="text-sm text-gray-500">ISCO: {occ.isco}</div>
-                        </li>
-                      ))
-                    )}
-                    {filteredOccupations.length > 100 && (
-                      <li className="px-4 py-3 text-center text-sm text-gray-500 bg-gray-50">
-                        Mostrando 100 de {filteredOccupations.length} resultados. Refina tu busqueda.
-                      </li>
-                    )}
-                  </ul>
-                </div>
-              </>
+            {/* Backdrop */}
+            {isSelectorOpen && (
+              <div className="fixed inset-0 z-10" onClick={() => setIsSelectorOpen(false)} />
             )}
+
+            <OccupationTreeSelector
+              occupationsList={occupationsList}
+              onSelect={handleSelect}
+              isOpen={isSelectorOpen}
+              onToggle={setIsSelectorOpen}
+            />
           </div>
         )}
       </div>
+
+      {/* AI Policy Analysis */}
+      {selectedOccupation && selectedInfo && (
+        <div className="bg-blue-50 rounded-xl border border-blue-200 p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <MessageSquare className="w-4 h-4 text-blue-600" />
+            <h3 className="text-sm font-semibold text-blue-700">Análisis de reconversión ocupacional</h3>
+          </div>
+
+          {!recoPolicy && !loadingReco && !recoError && (
+            <div className="flex items-center gap-3">
+              <p className="text-xs text-gray-500 flex-1">
+                Ante un escenario de crisis (cierre de empresa, caída de demanda, apertura de importaciones), qué opciones de reconversión existen para los trabajadores de esta ocupación.
+              </p>
+              <button
+                onClick={handlePedirAnalisis}
+                className="inline-flex items-center gap-1.5 bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shrink-0"
+              >
+                <MessageSquare className="w-3.5 h-3.5" />
+                Analizar reconversión
+              </button>
+            </div>
+          )}
+
+          {loadingReco && (
+            <div className="flex items-center justify-center gap-2 py-4 text-blue-400">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span className="text-xs">Analizando ocupación, skills transferibles y mercado...</span>
+            </div>
+          )}
+
+          {recoError && (
+            <div className="flex items-center gap-3">
+              <p className="text-xs text-red-500 flex-1">No se pudo generar el análisis.</p>
+              <button onClick={handlePedirAnalisis} className="text-xs text-blue-600 hover:text-blue-700 font-medium shrink-0">Reintentar</button>
+            </div>
+          )}
+
+          {recoPolicy && (
+            <div>
+              <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{recoPolicy}</p>
+              <p className="text-[9px] text-gray-400 mt-3 leading-snug">
+                Generado con IA a partir de datos del mercado laboral argentino. Orientativo para fundamentar política — no constituye dictamen técnico.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Content - only show when occupation selected */}
       {selectedOccupation && (

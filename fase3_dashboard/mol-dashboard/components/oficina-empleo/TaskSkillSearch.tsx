@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { Search, MessageSquare, Loader2, Plus, Check, X } from 'lucide-react'
 import type { SelectedSkill } from './useSkillCapture'
 
@@ -18,10 +18,15 @@ export function TaskSkillSearch({ skillUris, onAddSkill, onAddSkills }: Props) {
   const [results, setResults] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [extractedPending, setExtractedPending] = useState<any[]>([])
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  async function handleQuickSearch(q: string) {
-    setQuery(q)
-    if (q.trim().length < 2) { setResults([]); return }
+  // Cleanup debounce on unmount
+  useEffect(() => {
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
+  }, [])
+
+  const doSearch = useCallback(async (q: string) => {
+    if (q.trim().length < 2) { setResults([]); setLoading(false); return }
     setLoading(true)
     try {
       const res = await fetch(`/api/skills-search?q=${encodeURIComponent(q)}&limit=15`)
@@ -32,6 +37,13 @@ export function TaskSkillSearch({ skillUris, onAddSkill, onAddSkills }: Props) {
     } catch {} finally {
       setLoading(false)
     }
+  }, [])
+
+  function handleQuickSearch(q: string) {
+    setQuery(q)
+    if (q.trim().length < 2) { setResults([]); return }
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => doSearch(q), 300)
   }
 
   async function handleExtract() {

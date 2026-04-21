@@ -1,12 +1,11 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { Loader2, Target, ArrowUpDown } from 'lucide-react'
+import { Loader2, Target, ArrowUpDown, Calendar, Eye, EyeOff } from 'lucide-react'
 import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
 import { PersonaSelector, type PerfilResumen } from '@/components/oficina-empleo/PersonaSelector'
 import { OccupationMatchCard } from '@/components/oficina-empleo/OccupationMatchCard'
-import { type OccSkillDetail } from '@/components/oficina-empleo/getSkillsForOccupation'
 import { calculateOccupationMatch, type ProfileSkill } from '@/lib/matching'
 import { createBrowserClient } from '@supabase/ssr'
 
@@ -29,6 +28,7 @@ export interface OccupationMatch {
 }
 
 type SortBy = 'match' | 'gap' | 'ofertas' | 'alpha'
+type TimePeriod = '7d' | '30d' | 'all'
 
 const SORT_OPTIONS: { id: SortBy; label: string }[] = [
   { id: 'match', label: 'Mejor match' },
@@ -36,6 +36,19 @@ const SORT_OPTIONS: { id: SortBy; label: string }[] = [
   { id: 'ofertas', label: 'Más ofertas' },
   { id: 'alpha', label: 'Alfabético' },
 ]
+
+const TIME_OPTIONS: { id: TimePeriod; label: string }[] = [
+  { id: '7d', label: 'Última semana' },
+  { id: '30d', label: 'Último mes' },
+  { id: 'all', label: 'Histórico' },
+]
+
+function getSinceDate(period: TimePeriod): string | null {
+  if (period === 'all') return null
+  const d = new Date()
+  d.setDate(d.getDate() - (period === '7d' ? 7 : 30))
+  return d.toISOString().split('T')[0]
+}
 
 export default function MatchingPage() {
   const searchParams = useSearchParams()
@@ -49,34 +62,54 @@ export default function MatchingPage() {
   const [loading, setLoading] = useState(false)
   const [mensaje, setMensaje] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<SortBy>('match')
+  const [timePeriod, setTimePeriod] = useState<TimePeriod>('30d')
+  const [showAll, setShowAll] = useState(false)
+  const [dataError, setDataError] = useState<string | null>(null)
 
-  // Ofertas count map (loaded once)
+  // Ofertas count map
   const [ofertasCountMap, setOfertasCountMap] = useState<Record<string, number>>({})
+  const [countLoading, setCountLoading] = useState(false)
 
   // Modal
   const [modalIsco, setModalIsco] = useState('')
   const [modalLabel, setModalLabel] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
 
-  // Cache for expanded card skills
-  const occSkillsCache = useRef<Record<string, OccSkillDetail[]>>({})
-
-  // Load occupation JSON + ofertas count on mount
+  // Load occupation JSON on mount
   useEffect(() => {
     fetch('/data/occupation_full_detail.json')
-      .then(r => r.ok ? r.json() : null)
-      .then(d => { if (d) setOccupationsData(d) })
-      .catch(() => {})
-
-    // Ofertas count via RPC (fast — single query, no 37K row download)
-    getSupabase().rpc('get_ofertas_count_by_isco').then(({ data, error }) => {
-      if (!error && data) {
-        const map: Record<string, number> = {}
-        for (const row of data) map[row.isco_code] = Number(row.count)
-        setOfertasCountMap(map)
-      }
-    })
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`)
+        return r.json()
+      })
+      .then(d => setOccupationsData(d))
+      .catch(() => setDataError('No se pudieron cargar las ocupaciones. Recargá la página.'))
   }, [])
+
+  // Load ofertas count (re-runs when time period or provincia changes)
+  useEffect(() => {
+    setCountLoading(true)
+    setOfertasCountMap({}) // Clear old counts immediately
+    const since = getSinceDate(timePeriod)
+
+    // Direct query with optional date + provincia filter
+    let query = getSupabase()
+      .from('ofertas_dashboard')
+      .select('isco_code')
+      .not('isco_code', 'is', null)
+    if (since) query = query.gte('fecha_publicacion', since)
+    if (perfilProvincia) query = query.eq('provincia', perfilProvincia)
+    query.then(({ data, error }) => {
+      const map: Record<string, number> = {}
+      if (!error && data) {
+        for (const row of data as any[]) {
+          if (row.isco_code) map[row.isco_code] = (map[row.isco_code] || 0) + 1
+        }
+      }
+      setOfertasCountMap(map)
+      setCountLoading(false)
+    })
+  }, [timePeriod, perfilProvincia])
 
   // Load profile skills when perfil is selected
   const loadPerfilSkills = useCallback(async (perfilId: string) => {
@@ -99,8 +132,16 @@ export default function MatchingPage() {
       // Extract provincia for filtering ofertas
       const ubi = data.personas?.ubicacion
       if (ubi) {
-        const parts = ubi.split(',')
-        setPerfilProvincia(parts.length > 1 ? parts[parts.length - 1].trim() : ubi.trim())
+        // Try "ciudad, provincia" format; fallback to full string
+        const parts = ubi.split(',').map((p: string) => p.trim()).filter(Boolean)
+        const candidate = parts.length > 1 ? parts[parts.length - 1] : parts[0] || null
+        // Normalize common variants
+        const NORM: Record<string, string> = {
+          'caba': 'Capital Federal', 'ciudad autónoma de buenos aires': 'Capital Federal',
+          'ciudad autonoma de buenos aires': 'Capital Federal', 'cap. fed.': 'Capital Federal',
+          'capital federal': 'Capital Federal', 'gba': 'Buenos Aires',
+        }
+        setPerfilProvincia(candidate ? (NORM[candidate.toLowerCase()] || candidate) : null)
       } else {
         setPerfilProvincia(null)
       }
@@ -163,21 +204,6 @@ export default function MatchingPage() {
     router.replace(url.pathname, { scroll: false })
   }
 
-  const handleLoadOccSkills = useCallback(async (uri: string): Promise<OccSkillDetail[]> => {
-    if (occSkillsCache.current[uri]) return occSkillsCache.current[uri]
-    // Use occupation_full_detail.json directly (already loaded)
-    const occId = uri.split('/').pop() || ''
-    if (occupationsData?.[occId]?.skills) {
-      const occ = occupationsData[occId]
-      const essential = (occ.skills.essential || []).map((s: any) => ({ ...s, type: 'skill', essential: true, total: 0 }))
-      const optional = (occ.skills.optional || []).map((s: any) => ({ ...s, type: 'skill', essential: false, total: 0 }))
-      const skills = [...essential, ...optional]
-      occSkillsCache.current[uri] = skills
-      return skills
-    }
-    return []
-  }, [occupationsData])
-
   function handleOpenModal(iscoCode: string, label: string) {
     setModalIsco(iscoCode)
     setModalLabel(label)
@@ -206,7 +232,13 @@ export default function MatchingPage() {
     })
   }, [matches, sortBy, ofertasCountMap])
 
+  // Filter: by default only show occupations with offers in the selected period
+  const withOffers = useMemo(() => sorted.filter(o => (ofertasCountMap[o.isco_code] || 0) > 0), [sorted, ofertasCountMap])
+  const displayed = showAll ? sorted : withOffers
+  const hiddenCount = sorted.length - withOffers.length
+
   const loadingAll = loading || (perfil && profileSkills.length > 0 && !occupationsData)
+  const countsReady = !countLoading
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -259,50 +291,112 @@ export default function MatchingPage() {
           </div>
         )}
 
-        {/* Error */}
+        {/* Error perfil */}
         {!loading && mensaje === 'error' && (
           <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center">
             <p className="text-sm text-red-700">Error cargando el perfil. Intentá de nuevo.</p>
           </div>
         )}
 
+        {/* Error datos ocupaciones */}
+        {dataError && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center">
+            <p className="text-sm text-red-700">{dataError}</p>
+          </div>
+        )}
+
+        {/* Loading ofertas count */}
+        {!loadingAll && !mensaje && perfil && matches.length > 0 && !countsReady && (
+          <div className="bg-white rounded-xl border border-gray-200 p-8 flex items-center justify-center gap-3">
+            <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
+            <span className="text-sm text-gray-500">Buscando ofertas{perfilProvincia ? ` en ${perfilProvincia}` : ''}...</span>
+          </div>
+        )}
+
         {/* Results */}
-        {!loadingAll && !mensaje && perfil && matches.length > 0 && (
+        {!loadingAll && !mensaje && perfil && matches.length > 0 && countsReady && (
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
+            {/* Controls bar */}
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <p className="text-xs text-gray-400">
-                {matches.length} ocupaciones compatibles · basado en {profileSkills.length} skills
+                {withOffers.length > 0
+                  ? `${withOffers.length} ocupaciones con ofertas${perfilProvincia ? ` en ${perfilProvincia}` : ''}`
+                  : `Sin ofertas${perfilProvincia ? ` en ${perfilProvincia}` : ''} para este período`
+                }
+                {!showAll && hiddenCount > 0 && ` · ${hiddenCount} sin ofertas ocultas`}
+                {showAll && ` · ${matches.length} total`}
               </p>
-              <div className="flex items-center gap-1.5">
-                <ArrowUpDown className="w-3 h-3 text-gray-400" />
-                <select
-                  value={sortBy}
-                  onChange={e => setSortBy(e.target.value as SortBy)}
-                  className="text-xs text-gray-600 bg-transparent border-none cursor-pointer focus:outline-none"
-                >
-                  {SORT_OPTIONS.map(o => (
-                    <option key={o.id} value={o.id}>{o.label}</option>
-                  ))}
-                </select>
+              <div className="flex items-center gap-3">
+                {/* Time period filter */}
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="w-3 h-3 text-gray-400" />
+                  <select
+                    value={timePeriod}
+                    onChange={e => setTimePeriod(e.target.value as TimePeriod)}
+                    className="text-xs text-gray-600 bg-transparent border-none cursor-pointer focus:outline-none"
+                  >
+                    {TIME_OPTIONS.map(o => (
+                      <option key={o.id} value={o.id}>{o.label}</option>
+                    ))}
+                  </select>
+                </div>
+                {/* Sort */}
+                <div className="flex items-center gap-1.5">
+                  <ArrowUpDown className="w-3 h-3 text-gray-400" />
+                  <select
+                    value={sortBy}
+                    onChange={e => setSortBy(e.target.value as SortBy)}
+                    className="text-xs text-gray-600 bg-transparent border-none cursor-pointer focus:outline-none"
+                  >
+                    {SORT_OPTIONS.map(o => (
+                      <option key={o.id} value={o.id}>{o.label}</option>
+                    ))}
+                  </select>
+                </div>
+                {/* Toggle show all */}
+                {hiddenCount > 0 && (
+                  <button
+                    onClick={() => setShowAll(v => !v)}
+                    className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700"
+                  >
+                    {showAll ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                    {showAll ? 'Solo con ofertas' : 'Ver todas'}
+                  </button>
+                )}
               </div>
             </div>
 
-            {sorted.map((o, i) => (
+            {/* Empty state when all filtered out */}
+            {displayed.length === 0 && (
+              <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
+                <Target className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                <p className="text-sm text-gray-600">
+                  No hay ofertas publicadas{perfilProvincia ? ` en ${perfilProvincia}` : ''} en {TIME_OPTIONS.find(t => t.id === timePeriod)?.label.toLowerCase()} para las ocupaciones compatibles.
+                </p>
+                <p className="text-xs text-gray-400 mt-1">
+                  Probá con otro período o
+                  <button onClick={() => setShowAll(true)} className="text-teal-600 hover:text-teal-700 font-medium ml-1">
+                    ver todas las {matches.length} ocupaciones compatibles
+                  </button>
+                </p>
+              </div>
+            )}
+
+            {displayed.map((o, i) => (
               <OccupationMatchCard
                 key={o.uri}
                 occupation={o}
                 rank={i + 1}
-                perfilId={perfil!.id}
                 ofertasCount={ofertasCountMap[o.isco_code] || 0}
                 provincia={perfilProvincia}
-                onLoadOccupationSkills={handleLoadOccSkills}
+                since={getSinceDate(timePeriod)}
                 onOpenModal={handleOpenModal}
               />
             ))}
           </div>
         )}
 
-        {/* No results */}
+        {/* No skill matches at all */}
         {!loadingAll && !mensaje && perfil && profileSkills.length > 0 && matches.length === 0 && (
           <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
             <p className="text-sm text-gray-600">
@@ -322,6 +416,7 @@ export default function MatchingPage() {
         iscoCode={modalIsco}
         label={modalLabel}
         provincia={perfilProvincia}
+        since={getSinceDate(timePeriod)}
       />
     </div>
   )

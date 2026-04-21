@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import { Search, Plus, Loader2, User } from 'lucide-react'
 import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
@@ -16,31 +16,69 @@ interface PerfilResumen {
   created_at: string
 }
 
+const PAGE_SIZE = 20
+
 export default function PerfilesListPage() {
   const [perfiles, setPerfiles] = useState<PerfilResumen[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
   const [search, setSearch] = useState('')
+  const sentinelRef = useRef<HTMLDivElement>(null)
+  const offsetRef = useRef(0)
 
-  useEffect(() => {
-    fetch('/api/perfiles')
-      .then(r => r.json())
-      .then(data => {
-        if (Array.isArray(data)) {
-          setPerfiles(data.map((p: any) => ({
-            id: p.id,
-            nombre: p.personas?.nombre || '',
-            dni: p.personas?.dni || '',
-            ocupaciones: p.ocupaciones || [],
-            skill_count: p.completitud || 0,
-            estado: p.estado || 'borrador',
-            validado_at: p.validado_at,
-            created_at: p.updated_at,
-          })))
+  const mapPerfil = (p: any): PerfilResumen => ({
+    id: p.id,
+    nombre: p.personas?.nombre || '',
+    dni: p.personas?.dni || '',
+    ocupaciones: p.ocupaciones || [],
+    skill_count: p.completitud || 0,
+    estado: p.estado || 'borrador',
+    validado_at: p.validado_at,
+    created_at: p.updated_at,
+  })
+
+  const loadPerfiles = useCallback(async (offset: number, append: boolean) => {
+    if (append) setLoadingMore(true)
+    else setLoading(true)
+
+    try {
+      const res = await fetch(`/api/perfiles?limit=${PAGE_SIZE}&offset=${offset}`)
+      const data = await res.json()
+      if (Array.isArray(data)) {
+        const mapped = data.map(mapPerfil)
+        if (append) {
+          setPerfiles(prev => [...prev, ...mapped])
+          offsetRef.current = offset + mapped.length
+        } else {
+          setPerfiles(mapped)
+          offsetRef.current = mapped.length
         }
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false))
+        setHasMore(mapped.length >= PAGE_SIZE)
+      }
+    } catch {}
+    finally {
+      setLoading(false)
+      setLoadingMore(false)
+    }
   }, [])
+
+  useEffect(() => { loadPerfiles(0, false) }, [loadPerfiles])
+
+  // Infinite scroll via IntersectionObserver
+  useEffect(() => {
+    if (!sentinelRef.current) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loadingMore && !loading) {
+          loadPerfiles(offsetRef.current, true)
+        }
+      },
+      { rootMargin: '200px' }
+    )
+    observer.observe(sentinelRef.current)
+    return () => observer.disconnect()
+  }, [hasMore, loadingMore, loading, loadPerfiles])
 
   const filtered = search.trim()
     ? perfiles.filter(p =>
@@ -86,7 +124,7 @@ export default function PerfilesListPage() {
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-gray-400">
               <User className="w-8 h-8 mx-auto mb-2 opacity-30" />
-              <p className="text-sm">{search ? 'Sin resultados' : 'No hay perfiles. Creá el primero.'}</p>
+              <p className="text-sm">{search ? 'Sin resultados' : 'No hay perfiles. Crea el primero.'}</p>
             </div>
           ) : (
             <table className="w-full text-sm">
@@ -105,7 +143,7 @@ export default function PerfilesListPage() {
                       <Link href={`/oficina-empleo/perfiles/${p.id}`} className="text-teal-700 font-medium hover:underline">
                         {p.nombre}
                       </Link>
-                      {p.ocupaciones.length > 0 && (
+                      {p.ocupaciones?.length > 0 && (
                         <p className="text-xs text-gray-400 mt-0.5">
                           {p.ocupaciones.map(o => o.label).join(', ')}
                         </p>
@@ -130,6 +168,18 @@ export default function PerfilesListPage() {
                 ))}
               </tbody>
             </table>
+          )}
+
+          {/* Infinite scroll sentinel */}
+          {!search.trim() && hasMore && !loading && (
+            <div ref={sentinelRef} className="py-4 flex items-center justify-center">
+              {loadingMore && (
+                <div className="flex items-center gap-2 text-gray-400">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="text-xs">Cargando mas...</span>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>

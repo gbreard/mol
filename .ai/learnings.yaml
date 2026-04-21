@@ -13,25 +13,38 @@ current_state:
   fase_detalle: "89189 errores sin resolver - sistema sugiere Fase 2"
 
 ultimo_trabajo:
-  fecha: "2026-03-12"
-  sesion: "Sprint 13: Fix ComputRabajo + VPS cron + Sync"
+  fecha: "2026-04-13/14"
+  sesion: "Sprint 17: UI Oficina de Empleo + Modelo Tendencias + LLM Recomendaciones"
   cambios:
-    - "fix(scraping): 3 bugs CT - dedup por URL slug, descripción p.mbB, parser fechas completo"
-    - "fix(vps): cron sin permisos ejecución (chmod +x) + stderr a cron_errors.log"
-    - "sync: 13,324 ofertas CT importadas a BD local (total: 35,143)"
-    - "vps: scraping manual lanzado (Bumeran+ZonaJobs+CT, ~10h en background)"
-    - "pendiente: 19K ofertas sin NLP (13K CT + 6K nuevas Bumeran/ZJ)"
+    - "fix(oe): 16 bugs en sección Oficina de Empleo VIP (QR, fecha, debounce, delete, scroll infinito, etc)"
+    - "fix(oe): 7 tests UI desactualizados (formacion-search, free-text-extractor)"
+    - "fix(matching): filtro temporal ofertas (semana/mes/histórico) + provincia coherente"
+    - "fix(matching): ocultar ocupaciones sin ofertas por default + toggle ver todas"
+    - "fix(futuro): error handling, cursos fallback nacional, debounce búsqueda"
+    - "feat(futuro): indicadores de tendencia de demanda por ocupación (↑→↓ + sparkline + proyección)"
+    - "feat(futuro): modelo de tendencia con regresión lineal (calculate_demand_trends.py)"
+    - "feat(futuro): tabla isco_demand_trend en Supabase (381 ISCOs, 122 con datos suficientes)"
+    - "feat(futuro): tab Mapa de demanda en selector de ocupación (sort por ofertas/match/creciendo)"
+    - "feat(futuro): asistente de trayectoria laboral con LLM (Groq llama-3.3-70b-versatile)"
+    - "feat(futuro): recomendación analiza top 5 ocupaciones + cursos + tendencias"
+    - "feat(politicas): análisis de reconversión ocupacional con LLM"
+    - "feat(politicas): tendencias + sort + cursos destino en ocupaciones similares"
+    - "feat(politicas): selector de ocupaciones con árbol ISCO (3045 ESCO) + búsqueda"
+    - "feat(politicas): modal ofertas con filtro temporal (semana/mes/3meses/histórico)"
+    - "fix(vip): breadcrumbs indicadores laboratorio apuntan a /vip/politicas (no M4)"
+    - "fix(vip): vacantes conectado a Supabase (sin mock data) + VIP bloqueado"
   sesion_anterior:
-    tema: "Sprint 12: Fix ComputRabajo scraper bugs"
-    cambios_resumen: "3 bugs CT corregidos, deploy VPS, re-scrape 13K, backfill 682 fechas"
+    tema: "Sprint 16: Diagnóstico sistémico + Fase -1 completa"
+    cambios_resumen: "M-01/M-06/M-07/M-08/M-08b/M-08c/M-09b implementados. 157 tests Python."
   sesion_anterior_2:
-    tema: "Sprint 11: Panel de Validación para Cynthia (/admin/validacion)"
-    cambios_resumen: "Panel validación 7 componentes, backfill 16K ofertas + 296K skills"
-  branch: "feature/nuevo-vps"
+    tema: "Sprint 15: Fixes dashboard + Centro de Control + sync VPS"
+    cambios_resumen: "Bloque J completo, reorg admin menu, sync VPS 4634 ofertas nuevas"
+  branch: "feature/UI-oficina-de-empleo"
   pendiente:
-    - "19K ofertas sin NLP (13K CT + ~6K nuevas Bumeran/ZJ)"
-    - "Scraping corriendo en VPS (lanzado manual, ~10h)"
-    - "Segundo sync después de que termine el scraping de hoy"
+    - "TODO OE-11: restaurar requireAuth en APIs de perfiles/casos (seguridad)"
+    - "Unificar indicador tendencia+volatilidad en semáforo de oportunidad (propuesto)"
+    - "Mejorar prompt LLM recomendación para incluir links clickeables a ocupaciones"
+    - "19K ofertas sin NLP pendientes"
 
   # Protección de Ofertas Validadas v2.0 (2026-01-20)
   proteccion_validadas:

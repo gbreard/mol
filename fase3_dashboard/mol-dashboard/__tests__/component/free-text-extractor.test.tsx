@@ -55,7 +55,7 @@ describe('FreeTextSkillExtractor', () => {
     fireEvent.change(screen.getByRole('textbox'), { target: { value: 'texto' } })
     fireEvent.click(screen.getByRole('button', { name: /identificar/i }))
     await waitFor(() =>
-      expect(screen.getByText(/No se pudo procesar/)).toBeInTheDocument()
+      expect(screen.getByText(/Error al procesar el texto/)).toBeInTheDocument()
     )
     global.fetch = originalFetch
   })

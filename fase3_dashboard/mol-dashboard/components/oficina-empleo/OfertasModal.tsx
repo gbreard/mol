@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { X, Briefcase, ExternalLink, Loader2 } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { X, Briefcase, ExternalLink, Loader2, RefreshCw } from 'lucide-react'
 import { getOfertasByIsco } from '@/lib/supabase'
 
 interface Props {
@@ -10,25 +10,33 @@ interface Props {
   iscoCode: string
   label: string
   provincia?: string | null
+  since?: string | null
 }
 
-export function OfertasModal({ isOpen, onClose, iscoCode, label, provincia }: Props) {
+export function OfertasModal({ isOpen, onClose, iscoCode, label, provincia, since }: Props) {
   const [ofertas, setOfertas] = useState<any[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+
+  const loadOfertas = useCallback(() => {
+    if (!iscoCode) return
+    setLoading(true)
+    setError(false)
+    getOfertasByIsco(iscoCode, 100, 0, provincia, since)
+      .then(({ ofertas: data, total: count }) => {
+        setOfertas(data)
+        setTotal(count)
+      })
+      .catch(() => setError(true))
+      .finally(() => setLoading(false))
+  }, [iscoCode, provincia, since])
 
   useEffect(() => {
-    if (isOpen && iscoCode) {
-      setLoading(true)
-      getOfertasByIsco(iscoCode, 100, 0, provincia)
-        .then(({ ofertas: data, total: count }) => {
-          setOfertas(data)
-          setTotal(count)
-        })
-        .catch(() => {})
-        .finally(() => setLoading(false))
-    }
-  }, [isOpen, iscoCode])
+    if (isOpen && iscoCode) loadOfertas()
+  }, [isOpen, iscoCode, provincia, since, loadOfertas])
+
+  const activasCount = ofertas.filter((o: any) => o.estado === 'activa').length
 
   if (!isOpen) return null
 
@@ -55,6 +63,16 @@ export function OfertasModal({ isOpen, onClose, iscoCode, label, provincia }: Pr
               <Loader2 className="w-5 h-5 animate-spin text-teal-600" />
               <span className="text-sm text-gray-500">Cargando ofertas...</span>
             </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <p className="text-sm text-gray-500 mb-3">No se pudieron cargar las ofertas. Intentá de nuevo.</p>
+              <button
+                onClick={loadOfertas}
+                className="inline-flex items-center gap-1.5 text-sm text-teal-600 hover:text-teal-700 font-medium"
+              >
+                <RefreshCw className="w-4 h-4" /> Reintentar
+              </button>
+            </div>
           ) : ofertas.length === 0 ? (
             <div className="text-center py-12">
               <Briefcase className="w-10 h-10 mx-auto text-gray-300 mb-2" />
@@ -64,7 +82,7 @@ export function OfertasModal({ isOpen, onClose, iscoCode, label, provincia }: Pr
             <>
               <p className="text-xs text-gray-400 mb-3">
                 {total} oferta{total !== 1 ? 's' : ''}
-                {(() => { const activas = ofertas.filter((o: any) => o.estado === 'activa').length; return activas > 0 ? ` · ${activas} activa${activas !== 1 ? 's' : ''}` : '' })()}
+                {activasCount > 0 && ` · ${activasCount} activa${activasCount !== 1 ? 's' : ''}`}
               </p>
               <div className="space-y-2">
                 {ofertas.map((o: any, i: number) => (

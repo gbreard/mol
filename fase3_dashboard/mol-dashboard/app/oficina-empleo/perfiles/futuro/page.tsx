@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { Loader2, Map, Check, X as XIcon, ArrowRight, ExternalLink, ChevronDown, ChevronUp, BookOpen } from 'lucide-react'
+import { Loader2, Map, Check, X as XIcon, ArrowRight, ExternalLink, ChevronDown, ChevronUp, BookOpen, MessageSquare } from 'lucide-react'
 import { createBrowserClient } from '@supabase/ssr'
 import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
 
@@ -91,16 +91,36 @@ export default function FuturoLaboralPage() {
   const [provinciaCursos, setProvinciaCursos] = useState('')
   const [showAllCursos, setShowAllCursos] = useState(false)
 
-  // Loading
+  // Demand trend indicators + projection
+  const [demandTrend, setDemandTrend] = useState<{
+    trend: 'up' | 'stable' | 'down'
+    trendPct: number
+    volatility: 'alta' | 'media' | 'baja'
+    cv: number
+    monthlyCounts: number[]
+    months: string[]
+    slope: number
+    r2: number
+    suficiente: boolean
+  } | null>(null)
+
+  // AI recommendation
+  const [recomendacion, setRecomendacion] = useState<string | null>(null)
+  const [loadingReco, setLoadingReco] = useState(false)
+  const [recoError, setRecoError] = useState(false)
+
+  // Loading & errors
   const [loadingPerfil, setLoadingPerfil] = useState(false)
   const [loadingMol, setLoadingMol] = useState(false)
+  const [dataError, setDataError] = useState<string | null>(null)
+  const [cursosError, setCursosError] = useState(false)
 
   // Load static data on mount
   useEffect(() => {
     fetch('/data/occupation_full_detail.json')
-      .then(r => r.ok ? r.json() : null)
-      .then(d => { if (d) setOccupationsData(d) })
-      .catch(() => {})
+      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json() })
+      .then(d => setOccupationsData(d))
+      .catch(() => setDataError('No se pudieron cargar las ocupaciones. Recargá la página.'))
 
     // skills_searchable.json — build uri->total map for market_frequency
     fetch('/data/skills_searchable.json')
@@ -114,12 +134,11 @@ export default function FuturoLaboralPage() {
           setSkillsSearchable(map)
         }
       })
-      .catch(() => {})
+      .catch(() => {}) // Not critical — demand indicators just won't show
 
-    // Ofertas count via RPC
-    const supabase = getSupabase()
-    supabase.rpc('get_ofertas_count_by_isco').then(({ data }) => {
-      if (data) {
+    // Ofertas count via RPC (not critical — defaults to 0)
+    getSupabase().rpc('get_ofertas_count_by_isco').then(({ data, error }) => {
+      if (!error && data) {
         const map: Record<string, number> = {}
         for (const row of data) map[row.isco_code] = Number(row.count)
         setOfertasCountMap(map)
@@ -166,13 +185,6 @@ export default function FuturoLaboralPage() {
       occ.skills.optional || []
     )
 
-    // Knowledge (separate — not handled by calculateOccupationMatch)
-    const knowledgeRaw = occ.knowledge || {}
-    const knowledgeB = [...(knowledgeRaw.essential || []), ...(knowledgeRaw.optional || [])]
-    const profileUriSet = new Set(perfilSkills.map(s => s.skill_uri))
-    const sharedKnowledge = knowledgeB.filter((k: any) => profileUriSet.has(`http://data.europa.eu/esco/skill/${k.id}`))
-    const gapKnowledge = knowledgeB.filter((k: any) => !profileUriSet.has(`http://data.europa.eu/esco/skill/${k.id}`))
-
     return {
       compatibility: result.matchScore,
       essentialTotal: result.essentialTotal,
@@ -181,8 +193,6 @@ export default function FuturoLaboralPage() {
       gapEssential: result.gapEssential,
       gapOptional: result.gapOptional,
       gapCount: result.gapCount,
-      sharedKnowledge,
-      gapKnowledge,
       transferable: result.transferable,
     }
   }, [selectedOcc, occupationsData, perfilSkills])
@@ -247,21 +257,48 @@ export default function FuturoLaboralPage() {
   const loadMolProfile = useCallback(async (escoUri: string, iscoCode: string) => {
     setLoadingMol(true)
     setMolFreqs({})
+    setDemandTrend(null)
     setMolOfertasCount(ofertasCountMap[iscoCode] || 0)
     try {
-      const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      )
-      // Get ofertas for this occupation
-      const { data: ofertas } = await supabase
+      // 1. Read pre-calculated trend from isco_demand_trend (single source of truth)
+      const { data: trendRow } = await getSupabase()
+        .from('isco_demand_trend')
+        .select('*')
+        .eq('isco_code', iscoCode)
+        .maybeSingle()
+
+      if (trendRow) {
+        setMolOfertasCount(trendRow.ofertas_total || 0)
+        const mc: number[] = (typeof trendRow.monthly_counts === 'string'
+          ? JSON.parse(trendRow.monthly_counts) : trendRow.monthly_counts) || []
+        const ml: string[] = (typeof trendRow.monthly_labels === 'string'
+          ? JSON.parse(trendRow.monthly_labels) : trendRow.monthly_labels) || []
+
+        if (trendRow.suficiente) {
+          const trend: 'up' | 'stable' | 'down' =
+            trendRow.trend_label === 'creciendo' ? 'up' : trendRow.trend_label === 'cayendo' ? 'down' : 'stable'
+          const volatility: 'alta' | 'media' | 'baja' =
+            trendRow.volatility_label === 'volatil' ? 'alta' : trendRow.volatility_label === 'variable' ? 'media' : 'baja'
+          const recent = mc.length >= 6 ? (mc[mc.length-3] + mc[mc.length-2] + mc[mc.length-1]) / 3 : 0
+          const previous = mc.length >= 6 ? (mc[mc.length-6] + mc[mc.length-5] + mc[mc.length-4]) / 3 : 0
+          const trendPct = previous > 0 ? Math.round(((recent - previous) / previous) * 100) : 0
+          setDemandTrend({
+            trend, trendPct, volatility, cv: trendRow.volatility_cv || 0,
+            monthlyCounts: mc, months: ml,
+            slope: trendRow.trend_slope || 0, r2: trendRow.trend_r2 || 0, suficiente: true,
+          })
+        }
+      }
+
+      // 2. Load skill frequencies (for "pedida en X% de ofertas")
+      const { data: ofertas } = await getSupabase()
         .from('ofertas_dashboard')
         .select('id_oferta')
-        .eq('esco_occupation_uri', escoUri)
+        .eq('isco_code', iscoCode)
       if (ofertas && ofertas.length > 0) {
-        setMolOfertasCount(ofertas.length)
+        if (!trendRow) setMolOfertasCount(ofertas.length)
         const ids = ofertas.map((o: any) => o.id_oferta)
-        const { data: skills } = await supabase
+        const { data: skills } = await getSupabase()
           .from('ofertas_skills')
           .select('skill_uri')
           .in('id_oferta', ids.slice(0, 500))
@@ -286,18 +323,41 @@ export default function FuturoLaboralPage() {
     if (gapEssential.length === 0) { setCursosGap([]); return }
     setLoadingCursos(true)
     setShowAllCursos(false)
+    setCursosError(false)
     try {
       const gapUris = gapEssential.map((s: any) => `http://data.europa.eu/esco/skill/${s.id}`)
-      const res = await fetch('/api/perfiles/cursos-gap', {
+      // First try with provincia filter
+      let res = await fetch('/api/perfiles/cursos-gap', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ gap_skill_uris: gapUris, provincia: prov || null }),
       })
       if (res.ok) {
         const data = await res.json()
-        setCursosGap(data.cursos || [])
+        if (data.cursos && data.cursos.length > 0) {
+          setCursosGap(data.cursos)
+        } else if (prov) {
+          // No results with provincia — retry without filter (national)
+          res = await fetch('/api/perfiles/cursos-gap', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ gap_skill_uris: gapUris }),
+          })
+          if (res.ok) {
+            const data2 = await res.json()
+            setCursosGap(data2.cursos || [])
+          } else {
+            setCursosError(true)
+          }
+        } else {
+          setCursosGap([])
+        }
+      } else {
+        setCursosError(true)
       }
-    } catch {} finally {
+    } catch {
+      setCursosError(true)
+    } finally {
       setLoadingCursos(false)
     }
   }, [])
@@ -326,6 +386,8 @@ export default function FuturoLaboralPage() {
     setSelectedOcc(null)
     setProvinciaCursos('')
     setCursosGap([])
+    setRecomendacion(null)
+    setRecoError(false)
     const url = new URL(window.location.href)
     url.searchParams.delete('perfil_id')
     url.searchParams.delete('occ_id')
@@ -334,6 +396,8 @@ export default function FuturoLaboralPage() {
 
   function handleSelectOcc(occ: OccDetail) {
     setSelectedOcc(occ)
+    setRecomendacion(null)
+    setRecoError(false)
     loadMolProfile(occ.uri, occ.isco_code)
   }
 
@@ -346,7 +410,128 @@ export default function FuturoLaboralPage() {
       optionalCount: 0,
     }
     setSelectedOcc(occ)
+    setRecomendacion(null)
+    setRecoError(false)
     loadMolProfile(occ.uri, occ.isco_code)
+  }
+
+  async function handlePedirRecomendacion() {
+    if (!perfil || !occupationsData || matchingOccupations.length === 0) return
+    setLoadingReco(true)
+    setRecoError(false)
+    setRecomendacion(null)
+    try {
+      // Build top 5 occupations: the selected one + best alternatives
+      // Score = match * 0.5 + (has offers) * 0.3 + (low gap) * 0.2
+      const candidates = matchingOccupations
+        .filter(m => (ofertasCountMap[m.isco_code] || 0) > 0)
+        .slice(0, 20)
+
+      // Deduplicate by ISCO, keep best match
+      const byIsco: Record<string, typeof candidates[0]> = {}
+      for (const c of candidates) {
+        const existing = byIsco[c.isco_code]
+        if (!existing || c.matchScore > existing.matchScore) byIsco[c.isco_code] = c
+      }
+      let top = Object.values(byIsco)
+        .sort((a, b) => b.matchScore - a.matchScore)
+        .slice(0, 5)
+
+      // If user already selected an occupation, include it
+      if (selectedOcc && !top.find(t => t.isco_code === selectedOcc.isco_code)) {
+        const selMatch = matchingOccupations.find(m => m.uri === selectedOcc.uri)
+        if (selMatch) top = [selMatch, ...top.slice(0, 4)]
+      }
+
+      // Fetch trends for top ISCOs
+      const topIscos = [...new Set(top.map(t => t.isco_code))]
+      const { data: trends } = await getSupabase()
+        .from('isco_demand_trend')
+        .select('isco_code, trend_label, ofertas_total, volatility_label, suficiente')
+        .in('isco_code', topIscos)
+      const trendMap: Record<string, any> = {}
+      if (trends) for (const t of trends) trendMap[t.isco_code] = t
+
+      // Fetch cursos for each occupation's gap
+      const topOcupaciones = await Promise.all(top.map(async (occ) => {
+        const occId = occ.uri.split('/').pop() || ''
+        const occData = occupationsData[occId]
+        if (!occData?.skills) return null
+
+        const result = calculateOccupationMatch(perfilSkills, occData.skills.essential || [], occData.skills.optional || [])
+        const gapUris = result.gapEssential.map((s: any) => `http://data.europa.eu/esco/skill/${s.id}`)
+
+        // Fetch cursos for this gap
+        let cursos: any[] = []
+        if (gapUris.length > 0) {
+          try {
+            const cursosRes = await fetch('/api/perfiles/cursos-gap', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ gap_skill_uris: gapUris }),
+            })
+            if (cursosRes.ok) {
+              const cursosData = await cursosRes.json()
+              cursos = (cursosData.cursos || []).slice(0, 3)
+            }
+          } catch {}
+        }
+
+        const trend = trendMap[occ.isco_code]
+        return {
+          label: occ.label,
+          isco_code: occ.isco_code,
+          compatibilidad: result.matchScore,
+          esenciales_total: result.essentialTotal,
+          cubiertas: result.sharedEssential.length,
+          tendencia: trend ? {
+            trend_label: !trend.suficiente ? 'insuficiente' : trend.trend_label,
+            ofertas_total: trend.ofertas_total || 0,
+            volatilidad: trend.volatility_label === 'volatil' ? 'volátil' : trend.volatility_label || 'desconocida',
+          } : { trend_label: 'insuficiente', ofertas_total: ofertasCountMap[occ.isco_code] || 0, volatilidad: 'desconocida' },
+          gap_skills: result.gapEssential.slice(0, 6).map((s: any) => ({
+            label: s.label,
+            frecuencia_mercado: molFreqs[`http://data.europa.eu/esco/skill/${s.id}`] || null,
+          })),
+          cursos: cursos.map((c: any) => ({
+            titulo: c.titulo,
+            institucion: c.institucion,
+            skills_cubiertas: c.skills_cubiertas,
+            provincia: c.provincia,
+          })),
+        }
+      }))
+
+      const res = await fetch('/api/trayectoria-laboral', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          perfil: {
+            nombre: perfil.nombre,
+            skills_count: perfilSkills.length,
+            ubicacion: perfilProvincia,
+          },
+          ocupacion_elegida: selectedOcc && gapAnalysis ? {
+            label: selectedOcc.label,
+            isco_code: selectedOcc.isco_code,
+            compatibilidad: gapAnalysis.compatibility,
+            esenciales_total: gapAnalysis.essentialTotal,
+            cubiertas: gapAnalysis.sharedEssential.length,
+          } : null,
+          top_ocupaciones: topOcupaciones.filter(Boolean),
+        }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setRecomendacion(data.recomendacion || null)
+      } else {
+        setRecoError(true)
+      }
+    } catch {
+      setRecoError(true)
+    } finally {
+      setLoadingReco(false)
+    }
   }
 
   const ofertasBadge = (count: number) => count >= 5 ? '🟢' : count >= 1 ? '🟡' : '⚪'
@@ -384,8 +569,69 @@ export default function FuturoLaboralPage() {
           </div>
         </div>
 
+        {/* Recomendación IA — a nivel perfil, independiente de ocupación */}
+        {perfil && !loadingPerfil && perfilSkills.length > 0 && (
+          <div className="bg-purple-50 rounded-xl border border-purple-200 p-4 mb-4">
+            <div className="flex items-center gap-2 mb-2">
+              <MessageSquare className="w-4 h-4 text-purple-600" />
+              <h3 className="text-sm font-semibold text-purple-700">Recomendación personalizada</h3>
+            </div>
+
+            {!recomendacion && !loadingReco && !recoError && (
+              <div className="flex items-center gap-3">
+                <p className="text-xs text-gray-500 flex-1">
+                  Analizamos las mejores ocupaciones para {perfil.nombre.split(' ')[0]} según sus competencias, la demanda del mercado y los cursos disponibles.
+                </p>
+                <button
+                  onClick={handlePedirRecomendacion}
+                  className="inline-flex items-center gap-1.5 bg-purple-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors shrink-0"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  Pedir recomendación
+                </button>
+              </div>
+            )}
+
+            {loadingReco && (
+              <div className="flex items-center justify-center gap-2 py-4 text-purple-400">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span className="text-xs">Analizando {matchingOccupations.length} ocupaciones compatibles...</span>
+              </div>
+            )}
+
+            {recoError && (
+              <div className="flex items-center gap-3">
+                <p className="text-xs text-red-500 flex-1">No se pudo generar la recomendación.</p>
+                <button
+                  onClick={handlePedirRecomendacion}
+                  className="text-xs text-purple-600 hover:text-purple-700 font-medium shrink-0"
+                >
+                  Reintentar
+                </button>
+              </div>
+            )}
+
+            {recomendacion && (
+              <div>
+                <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{recomendacion}</p>
+                <p className="text-[9px] text-gray-400 mt-3 leading-snug">
+                  Generado con IA a partir de datos del mercado laboral argentino.
+                  Esta recomendación es orientativa y no constituye asesoramiento profesional.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Data error */}
+        {dataError && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center mb-4">
+            <p className="text-sm text-red-700">{dataError}</p>
+          </div>
+        )}
+
         {/* Empty state */}
-        {(!perfil || !selectedOcc) && !loadingPerfil && (
+        {(!perfil || !selectedOcc) && !loadingPerfil && !dataError && (
           <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
             <Map className="w-10 h-10 text-gray-300 mx-auto mb-3" />
             <p className="text-sm text-gray-500">
@@ -426,15 +672,35 @@ export default function FuturoLaboralPage() {
                 <div>
                   <p className="text-xs text-gray-500 mb-1">Demanda</p>
                   <p className="text-sm font-bold text-gray-800">
-                    {ofertasBadge(molOfertasCount)} {molOfertasCount} ofertas activas
+                    {ofertasBadge(molOfertasCount)} {molOfertasCount} oferta{molOfertasCount !== 1 ? 's' : ''} activa{molOfertasCount !== 1 ? 's' : ''}
                   </p>
                   {molOfertasCount > 0 && (
                     <button onClick={() => setModalOpen(true)} className="text-xs text-teal-600 hover:text-teal-700 font-medium mt-1">
-                      Ver las {molOfertasCount} ofertas →
+                      Ver {molOfertasCount === 1 ? 'la oferta' : `las ${molOfertasCount} ofertas`} →
                     </button>
                   )}
                 </div>
               </div>
+
+              {/* Demand trend + projection */}
+              {demandTrend && (
+                <DemandTrendPanel trend={demandTrend} />
+              )}
+              {loadingMol && !demandTrend && (
+                <div className="mt-3 pt-3 border-t border-gray-100">
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    <span className="text-[10px]">Calculando tendencia...</span>
+                  </div>
+                </div>
+              )}
+              {!loadingMol && !demandTrend && (
+                <div className="mt-3 pt-3 border-t border-gray-100">
+                  <p className="text-[10px] text-gray-400">
+                    Datos insuficientes para estimar la tendencia de demanda de esta ocupación. Se necesitan al menos 4 meses con ofertas publicadas en portales estables.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Panel 1 — Lo que ya tiene */}
@@ -543,6 +809,7 @@ export default function FuturoLaboralPage() {
               <CursosGapPanel
                 cursos={cursosGap}
                 loading={loadingCursos}
+                error={cursosError}
                 showAll={showAllCursos}
                 onShowAll={() => setShowAllCursos(true)}
                 sharedCount={gapAnalysis.sharedEssential.length}
@@ -550,26 +817,9 @@ export default function FuturoLaboralPage() {
               />
             )}
 
-            {/* Panel 3 — Conocimientos (fusionado con competencias — no se muestra separado) */}
-
             {/* Panel 4 — Skills transferibles */}
             {gapAnalysis.transferable.length > 0 && (
-              <div className="bg-white rounded-xl border border-gray-200 p-4">
-                <h3 className="text-sm font-semibold text-blue-700 mb-1">
-                  Skills transferibles ({gapAnalysis.transferable.length})
-                </h3>
-                <p className="text-xs text-gray-400 mb-2">Las tiene pero la ocupación objetivo no las requiere</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {gapAnalysis.transferable.slice(0, 10).map((s, i) => (
-                    <span key={i} className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded">
-                      {s.skill_label}
-                    </span>
-                  ))}
-                  {gapAnalysis.transferable.length > 10 && (
-                    <span className="text-xs text-gray-400">+{gapAnalysis.transferable.length - 10} más</span>
-                  )}
-                </div>
-              </div>
+              <TransferableSkillsPanel skills={gapAnalysis.transferable} />
             )}
 
             {/* Panel 5 — Caminos alternativos (solo si gap ≥ 3) */}
@@ -620,9 +870,187 @@ export default function FuturoLaboralPage() {
   )
 }
 
-function CursosGapPanel({ cursos, loading, showAll, onShowAll, sharedCount, essentialTotal }: {
+function DemandTrendPanel({ trend }: { trend: {
+  trend: 'up' | 'stable' | 'down'; trendPct: number
+  volatility: 'alta' | 'media' | 'baja'; cv: number
+  monthlyCounts: number[]; months: string[]
+  slope: number; r2: number; suficiente: boolean
+}}) {
+  // Project 6 months ahead using slope from regression
+  const mc = trend.monthlyCounts
+  const n = mc.length
+  const canProject = trend.suficiente && trend.r2 >= 0.3 && n >= 4
+
+  // Build regression line for existing data
+  const mean = mc.reduce((a, b) => a + b, 0) / (n || 1)
+  // Simple linear fit on raw counts for display
+  let fitSlope = 0, fitIntercept = mean
+  if (n >= 2) {
+    const xMean = (n - 1) / 2
+    let ssxy = 0, ssxx = 0
+    for (let i = 0; i < n; i++) { ssxy += (i - xMean) * (mc[i] - mean); ssxx += (i - xMean) ** 2 }
+    fitSlope = ssxx > 0 ? ssxy / ssxx : 0
+    fitIntercept = mean - fitSlope * xMean
+  }
+
+  // Generate projection months labels
+  const projMonths = 6
+  const projLabels: string[] = []
+  if (trend.months.length > 0) {
+    const last = trend.months[trend.months.length - 1]
+    const [y, m] = last.split('-').map(Number)
+    for (let i = 1; i <= projMonths; i++) {
+      const d = new Date(y, m - 1 + i, 1)
+      projLabels.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`)
+    }
+  }
+
+  // Projected values
+  const projValues = canProject
+    ? Array.from({ length: projMonths }, (_, i) => Math.max(0, Math.round(fitIntercept + fitSlope * (n + i))))
+    : []
+
+  // All values for scale
+  const allValues = [...mc, ...projValues]
+  const maxVal = Math.max(...allValues, 1)
+  const barH = 40
+
+  // Month labels for display (short)
+  const shortMonth = (label: string) => {
+    const [, m] = label.split('-')
+    const names = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
+    return names[parseInt(m) - 1] || m
+  }
+
+  return (
+    <div className="mt-3 pt-3 border-t border-gray-100">
+      {/* Indicators row */}
+      <div className="flex items-center gap-4 mb-3">
+        <div className="flex items-center gap-1">
+          <span className={`text-sm font-bold ${trend.trend === 'up' ? 'text-green-600' : trend.trend === 'down' ? 'text-red-500' : 'text-gray-600'}`}>
+            {trend.trend === 'up' ? '↑' : trend.trend === 'down' ? '↓' : '→'}
+          </span>
+          <span className={`text-xs font-medium ${trend.trend === 'up' ? 'text-green-600' : trend.trend === 'down' ? 'text-red-500' : 'text-gray-500'}`}>
+            {trend.trend === 'up' ? 'Creciendo' : trend.trend === 'down' ? 'Cayendo' : 'Estable'}
+            {trend.trendPct !== 0 && ` ${trend.trendPct > 0 ? '+' : ''}${trend.trendPct}%`}
+          </span>
+        </div>
+        <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${
+          trend.volatility === 'baja' ? 'bg-green-50 text-green-700' :
+          trend.volatility === 'media' ? 'bg-yellow-50 text-yellow-700' :
+          'bg-red-50 text-red-600'
+        }`}>
+          {trend.volatility === 'baja' ? 'Estable' : trend.volatility === 'media' ? 'Variable' : 'Volátil'}
+        </span>
+        {canProject && (
+          <span className="text-[10px] text-gray-400 ml-auto">
+            R² {(trend.r2 * 100).toFixed(0)}% — confianza {trend.r2 >= 0.6 ? 'alta' : 'moderada'}
+          </span>
+        )}
+      </div>
+
+      {/* Chart: historical bars + projection */}
+      <div className="flex items-end gap-[3px]" style={{ height: `${barH + 16}px` }}>
+        {/* Historical */}
+        {mc.map((c, i) => {
+          const h = Math.max(2, Math.round((c / maxVal) * barH))
+          return (
+            <div key={`h-${i}`} className="flex flex-col items-center gap-0.5" style={{ width: '24px' }}>
+              <div
+                className="w-full rounded-t-sm bg-teal-500"
+                style={{ height: `${h}px` }}
+                title={`${trend.months[i]}: ${c} ofertas (real)`}
+              />
+              <span className="text-[8px] text-gray-400 leading-none">{shortMonth(trend.months[i])}</span>
+            </div>
+          )
+        })}
+
+        {/* Separator */}
+        {canProject && (
+          <div className="flex flex-col items-center justify-end" style={{ width: '8px', height: `${barH}px` }}>
+            <div className="w-px h-full border-l border-dashed border-gray-300" />
+          </div>
+        )}
+
+        {/* Projection */}
+        {projValues.map((c, i) => {
+          const h = Math.max(2, Math.round((c / maxVal) * barH))
+          return (
+            <div key={`p-${i}`} className="flex flex-col items-center gap-0.5" style={{ width: '24px' }}>
+              <div
+                className="w-full rounded-t-sm bg-teal-200 border border-dashed border-teal-400"
+                style={{ height: `${h}px` }}
+                title={`${projLabels[i]}: ~${c} ofertas (proyección)`}
+              />
+              <span className="text-[8px] text-gray-300 leading-none">{shortMonth(projLabels[i])}</span>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Legend */}
+      <div className="flex items-center gap-3 mt-1.5">
+        <div className="flex items-center gap-1">
+          <div className="w-2 h-2 rounded-sm bg-teal-500" />
+          <span className="text-[9px] text-gray-400">Datos reales</span>
+        </div>
+        {canProject && (
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 rounded-sm bg-teal-200 border border-dashed border-teal-400" />
+            <span className="text-[9px] text-gray-400">Proyección 6 meses</span>
+          </div>
+        )}
+        {!canProject && (
+          <span className="text-[9px] text-gray-300">Datos insuficientes para proyectar</span>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function TransferableSkillsPanel({ skills }: { skills: ProfileSkill[] }) {
+  const [showAll, setShowAll] = useState(false)
+  const visible = showAll ? skills : skills.slice(0, 10)
+  const hiddenCount = skills.length - 10
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-4">
+      <h3 className="text-sm font-semibold text-blue-700 mb-1">
+        Skills transferibles ({skills.length})
+      </h3>
+      <p className="text-xs text-gray-400 mb-2">Las tiene pero la ocupacion objetivo no las requiere</p>
+      <div className="flex flex-wrap gap-1.5">
+        {visible.map((s, i) => (
+          <span key={i} className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded">
+            {s.skill_label || s.skill_uri}
+          </span>
+        ))}
+        {!showAll && hiddenCount > 0 && (
+          <button
+            onClick={() => setShowAll(true)}
+            className="text-xs text-blue-600 hover:text-blue-700 font-medium px-2 py-0.5"
+          >
+            +{hiddenCount} mas — Ver todas
+          </button>
+        )}
+        {showAll && skills.length > 10 && (
+          <button
+            onClick={() => setShowAll(false)}
+            className="text-xs text-gray-400 hover:text-gray-600 font-medium px-2 py-0.5"
+          >
+            Ver menos
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function CursosGapPanel({ cursos, loading, error, showAll, onShowAll, sharedCount, essentialTotal }: {
   cursos: any[]
   loading: boolean
+  error?: boolean
   showAll: boolean
   onShowAll: () => void
   sharedCount: number
@@ -657,7 +1085,13 @@ function CursosGapPanel({ cursos, loading, showAll, onShowAll, sharedCount, esse
         </div>
       )}
 
-      {!loading && sorted.length === 0 && (
+      {!loading && error && (
+        <p className="text-xs text-red-500 text-center py-3">
+          Error al buscar cursos. Intentá de nuevo.
+        </p>
+      )}
+
+      {!loading && !error && sorted.length === 0 && (
         <p className="text-xs text-gray-400 text-center py-3">
           No encontramos cursos registrados para las skills que le faltan.
         </p>

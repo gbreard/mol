@@ -180,7 +180,7 @@ function SkillsIntelligenceSection() {
   }, [occupationsData])
 
   return (
-    <div className="bg-white rounded-xl border overflow-hidden">
+    <div className="bg-white rounded-xl border">
       <div className="border-b px-4 py-3">
         <div className="flex gap-1 bg-gray-100 rounded-lg p-1 w-fit">
           <button onClick={() => setActiveTab('ocupaciones')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${activeTab === 'ocupaciones' ? 'bg-white text-blue-700 shadow-sm' : 'text-gray-500'}`}>Ocupaciones</button>

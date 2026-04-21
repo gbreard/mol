@@ -2,24 +2,11 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import FormacionSearch from '@/components/FormacionSearch'
 
+// Mock results matching the actual API response format (skills, not formacion titles)
 const mockResults = [
-  {
-    id: 'f1',
-    titulo: 'Tecnicatura en Redes y Telecomunicaciones',
-    institucion: 'UTN',
-    nivel: 'Tecnicatura',
-    resolucion: '1234/2022',
-    verificado: true,
-    skills_derivadas: ['Redes', 'TCP/IP', 'Cisco'],
-  },
-  {
-    id: 'f2',
-    titulo: 'Curso de Redes Básicas',
-    institucion: 'CABA Digital',
-    nivel: 'Curso',
-    verificado: false,
-    skills_derivadas: ['Redes'],
-  },
+  { uri: 'skill-redes', label: 'Redes', type: 'skill', description: 'Redes informáticas', source: 'esco' },
+  { uri: 'skill-tcp', label: 'TCP/IP', type: 'skill', description: 'Protocolo TCP/IP', source: 'esco' },
+  { uri: 'skill-cisco', label: 'Cisco', type: 'skill', description: 'Equipos Cisco', source: 'esco' },
 ]
 
 // ─── S20: FormacionSearch ─────────────────────────────────────────────────────
@@ -55,12 +42,12 @@ describe('S20 — FormacionSearch', () => {
     fireEvent.keyDown(input, { key: 'Enter' })
 
     await waitFor(() => {
-      expect(screen.getByText('Tecnicatura en Redes y Telecomunicaciones')).toBeInTheDocument()
+      expect(screen.getByText('Redes')).toBeInTheDocument()
     })
     vi.restoreAllMocks()
   })
 
-  it('muestra resultados con título e institución', async () => {
+  it('muestra resultados con competencias identificadas', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ results: mockResults }),
@@ -71,13 +58,12 @@ describe('S20 — FormacionSearch', () => {
     fireEvent.click(screen.getByLabelText('Buscar formación'))
 
     await waitFor(() => {
-      expect(screen.getByText('UTN')).toBeInTheDocument()
-      expect(screen.getByText('CABA Digital')).toBeInTheDocument()
+      expect(screen.getByText('3 competencias identificadas')).toBeInTheDocument()
     })
     vi.restoreAllMocks()
   })
 
-  it('badge Verificado solo en resultados con verificado=true', async () => {
+  it('muestra skills como badges', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ results: mockResults }),
@@ -88,13 +74,14 @@ describe('S20 — FormacionSearch', () => {
     fireEvent.click(screen.getByLabelText('Buscar formación'))
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Título verificado con resolución oficial')).toBeInTheDocument()
-      expect(screen.getAllByLabelText('Título verificado con resolución oficial').length).toBe(1)
+      expect(screen.getByText('Redes')).toBeInTheDocument()
+      expect(screen.getByText('TCP/IP')).toBeInTheDocument()
+      expect(screen.getByText('Cisco')).toBeInTheDocument()
     })
     vi.restoreAllMocks()
   })
 
-  it('muestra skills derivadas como badges', async () => {
+  it('muestra skills derivadas como badges individuales', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ results: mockResults }),
@@ -122,12 +109,12 @@ describe('S20 — FormacionSearch', () => {
     fireEvent.click(screen.getByLabelText('Buscar formación'))
 
     await waitFor(() => {
-      expect(screen.getByText(/No se encontraron títulos formativos/)).toBeInTheDocument()
+      expect(screen.getByText(/No se encontraron competencias/)).toBeInTheDocument()
     })
     vi.restoreAllMocks()
   })
 
-  it('agregar llama onAgregar y cambia botón a "Agregado"', async () => {
+  it('agregar llama onAgregar y cambia botón a "Agregadas"', async () => {
     const onAgregar = vi.fn()
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
@@ -138,11 +125,11 @@ describe('S20 — FormacionSearch', () => {
     fireEvent.change(screen.getByLabelText('Buscar título formativo'), { target: { value: 'redes' } })
     fireEvent.click(screen.getByLabelText('Buscar formación'))
 
-    await waitFor(() => screen.getByLabelText('Agregar Tecnicatura en Redes y Telecomunicaciones al perfil'))
-    fireEvent.click(screen.getByLabelText('Agregar Tecnicatura en Redes y Telecomunicaciones al perfil'))
+    await waitFor(() => screen.getByLabelText('Agregar competencias al perfil'))
+    fireEvent.click(screen.getByLabelText('Agregar competencias al perfil'))
 
-    expect(onAgregar).toHaveBeenCalledWith(mockResults[0])
-    expect(screen.getByText('Agregado')).toBeInTheDocument()
+    expect(onAgregar).toHaveBeenCalled()
+    expect(screen.getByText('Agregadas')).toBeInTheDocument()
     vi.restoreAllMocks()
   })
 

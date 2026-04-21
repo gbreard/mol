@@ -103,7 +103,6 @@ function OfertasContent() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <OEBreadcrumb items={[
-        { label: "Perfil", href: "/oficina-empleo/perfil" },
         { label: "Ofertas Coincidentes" },
       ]} />
 
