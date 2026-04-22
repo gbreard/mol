@@ -9044,6 +9044,144 @@
         "reporte": "reporte_correcciones_2026-04-08",
         "nota": "Atención al público = empleado de centro de información (4225), no diseñador de decorados ni correo postal"
       }
+    },
+    "R324_fileteador_pescado": {
+      "nombre": "Fileteador/a de pescado",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "fileteador",
+          "fileteadora",
+          "fileteado",
+          "filetear pescado",
+          "filetero"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7511",
+        "esco_label": "limpiador de pescado/limpiadora de pescado"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": ["adb4b6b1", "74a8005d", "7aaac721"],
+        "oferta_ejemplo": "9168162159",
+        "autor_correccion": "Cynthia",
+        "nota": "Fileteador de pescado en industria alimenticia. Cynthia reporta: 8131 (máquinas jabón) era totalmente incorrecto. ISCO 7511 incluye 'limpiador de pescado' como ocupación más cercana a fileteador argentino."
+      }
+    },
+    "R325_instalador_satelital": {
+      "nombre": "Instalador satelital / técnico de campo telecom",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_original_contiene_alguno": ["instalación satelital", "instalador satelital", "técnico satelital", "tecnico satelital", "instalador de antena", "instalacion satelital", "satelital zona"]
+      },
+      "accion": {"forzar_isco": "7422", "esco_label": "instalador de sistemas y dispositivos de telecomunicación/instaladora de sistemas y dispositivos de telecomunicación"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "1118204622", "autor_correccion": "Cynthia"}
+    },
+    "R326_tecnico_refrigeracion": {
+      "nombre": "Técnico de refrigeración / aire acondicionado",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_original_contiene_alguno": ["refrigeración", "refrigeracion"],
+        "titulo_contiene_alguno": ["técnico", "tecnico", "técnica", "tecnica"]
+      },
+      "accion": {"forzar_isco": "7127", "esco_label": "técnico en instalación y mantenimiento de aire acondicionado/técnica en instalación y mantenimiento de aire acondicionado"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "6312291090", "autor_correccion": "Cynthia"}
+    },
+    "R327_encargado_salon": {
+      "nombre": "Encargado/a de salón (gastronomía)",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_original_contiene_alguno": ["de salón", "de salon"],
+        "titulo_contiene_alguno": ["encargado", "encargada", "jefe", "jefa", "responsable"]
+      },
+      "accion": {"forzar_isco": "5131", "esco_label": "jefe de sala/jefa de sala"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "6313884152", "autor_correccion": "Cynthia"}
+    },
+    "R328_psicologo_profesional": {
+      "nombre": "Psicólogo/a profesional (clínico, educativo, laboral)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": ["psicólogo", "psicologo", "psicóloga", "psicologa", "lic psicología", "lic psicologia", "licenciado en psicología", "licenciada en psicología"]
+      },
+      "accion": {"forzar_isco": "2634", "esco_label": "psicólogo/psicóloga"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "6400928571", "autor_correccion": "Cynthia", "nota": "Aplica a psicólogo clínico, laboral, educativo y ofertas combinadas con terapia ocupacional."}
+    },
+    "R329_tecnico_electronico_mantenimiento": {
+      "nombre": "Técnico electrónico para mantenimiento de equipos",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_original_contiene_alguno": ["electrónico", "electronico", "electrónica", "electronica"],
+        "titulo_contiene_alguno": ["técnico", "tecnico", "técnica", "tecnica"]
+      },
+      "accion": {"forzar_isco": "3114", "esco_label": "técnico electrónico/técnica electrónica"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "6441959979", "autor_correccion": "Cynthia"}
+    },
+    "R330_fiambrero": {
+      "nombre": "Fiambrero/a (vendedor especializado fiambres/embutidos)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": ["fiambrero", "fiambrera"]
+      },
+      "accion": {"forzar_isco": "5223", "esco_label": "vendedor especializado en pescado y mariscos/vendedora especializada en pescado y mariscos"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "6519792909", "autor_correccion": "Cynthia", "nota": "Cynthia indica ISCO 5223 para fiambrero. ESCO no tiene label específico de fiambrero; el más cercano es vendedor especializado en productos alimenticios."}
+    },
+    "R331_acompanante_integracion_escolar": {
+      "nombre": "Acompañante terapéutico (AT) para integración escolar",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_original_contiene_alguno": ["integración escolar", "integracion escolar", "acompañante terapéutico", "acompanante terapeutico", "acompañante terapeutico", "at para integración", "at integracion", "at para integracion"]
+      },
+      "accion": {"forzar_isco": "3412", "esco_label": "trabajador/a de apoyo a personas con discapacidad"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "7677139622", "autor_correccion": "Cynthia"}
+    },
+    "R332_talentos_discapacidad": {
+      "nombre": "Base de talentos / búsqueda para personas con discapacidad",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_original_contiene_alguno": ["personas con discapacidad", "talento inclusiv", "base de talentos"]
+      },
+      "accion": {"forzar_isco": "3435", "esco_label": "asistente social/asistenta social"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "8303429460", "autor_correccion": "Cynthia"}
+    },
+    "R333_operario_limpieza": {
+      "nombre": "Operario/a de limpieza",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_original_contiene_alguno": ["limpieza"],
+        "titulo_contiene_alguno": ["operario", "operaria", "empleado", "empleada", "personal"]
+      },
+      "accion": {"forzar_isco": "9112", "esco_label": "operario de limpieza de aseos/operaria de limpieza de aseos"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "8740015957", "autor_correccion": "Cynthia"}
+    },
+    "R334_ninera": {
+      "nombre": "Niñera / cuidador de niños",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": ["niñera", "ninera", "niñero", "ninero", "nana", "nanny", "cuidadora de niños", "cuidador de niños", "cuidadora de ninos"]
+      },
+      "accion": {"forzar_isco": "5311", "esco_label": "niñero/niñera"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "9177646546", "autor_correccion": "Cynthia"}
+    },
+    "R335_promotor_via_publica": {
+      "nombre": "Promotor/a vía pública (venta/promoción telefónica y presencial)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": ["promotor vía pública", "promotor via publica", "promotora vía pública", "promotora via publica", "promotor callejero", "promotor de vía pública"]
+      },
+      "accion": {"forzar_isco": "5244", "esco_label": "teleoperador/teleoperadora"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "9192373935", "autor_correccion": "Cynthia", "nota": "Cynthia asigna 5244 (teleoperador) al promotor vía pública como ocupación ESCO más cercana en el esquema MOL."}
     }
   },
   "reglas_filtro": {
