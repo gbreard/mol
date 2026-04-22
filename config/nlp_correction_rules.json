@@ -1,0 +1,121 @@
+{
+  "_version": "1.0",
+  "_descripcion": "Reglas de CORRECCIÓN de campos NLP ya procesados (complementan nlp_inference_rules.json que rellena vacíos). Aplican cuando ya hay valor pero es incorrecto según patrones en descripción/título.",
+  "_fecha": "2026-04-22",
+
+  "sector_empresa": {
+    "_descripcion": "Corrige sector='Otro' u otro valor incorrecto basándose en palabras clave. ORDEN IMPORTA: evaluadas de arriba a abajo, primera que matchea gana.",
+    "reglas": [
+      {
+        "id": "sector_educacion_integracion",
+        "titulo_contiene_alguno": ["integración escolar", "integracion escolar", "acompañante terapéutico", "acompanante terapeutico", "at para integración", "at para integracion", "at integracion", "docente", "maestro", "maestra"],
+        "override_si_actual_es": ["Otro", null, "", "Servicios personales"],
+        "resultado": "Educacion"
+      },
+      {
+        "id": "sector_salud_psicologia",
+        "titulo_contiene_alguno": ["psicólogo", "psicologo", "psicóloga", "psicologa", "terapeuta", "psiquiatra", "niñera", "ninera", "lic psicología", "lic psicologia", "terapia ocupacional", "fonoaudiólog", "fonoaudiolog"],
+        "override_si_actual_es": ["Otro", null, "", "Servicios personales"],
+        "resultado": "Salud"
+      },
+      {
+        "id": "sector_alimentacion_pescado",
+        "descripcion_contiene_alguno": ["pescado", "pescados", "salmón", "salmon", "trucha", "mariscos", "fileteador", "frigorífico", "frigorifico pescad", "distribuidora de pescad"],
+        "override_si_actual_es": ["Otro", null, ""],
+        "resultado": "Alimentacion"
+      },
+      {
+        "id": "sector_alimentacion_fiambres",
+        "descripcion_contiene_alguno": ["fiambres", "embutidos", "fiambrería", "fiambreria", "carnicería", "carniceria", "panadería", "panaderia"],
+        "override_si_actual_es": ["Otro", null, ""],
+        "resultado": "Alimentacion"
+      },
+      {
+        "id": "sector_tecnologia_telecom",
+        "descripcion_contiene_alguno": ["instalación satelital", "instalacion satelital", "antena satelital", "fibra óptica", "fibra optica", "telecomunicación", "telecomunicacion"],
+        "override_si_actual_es": ["Otro", null, ""],
+        "resultado": "Tecnologia"
+      },
+      {
+        "id": "sector_logistica_transporte",
+        "descripcion_contiene_alguno": ["repartidor", "reparto", "paquetería", "paqueteria", "chofer de camión", "chofer de camion", "chofer camionero", "maquinista de containera", "container", "logística", "logistica"],
+        "override_si_actual_es": ["Otro", null, ""],
+        "resultado": "Logistica"
+      },
+      {
+        "id": "sector_construccion_obra",
+        "descripcion_contiene_alguno": ["retroexcavadora", "excavadora", "movimiento de suelo", "obras viales", "maquinaria vial", "maquinaria pesada", "pala cargadora", "bulldozer", "topadora"],
+        "override_si_actual_es": ["Otro", null, ""],
+        "resultado": "Construccion"
+      },
+      {
+        "id": "sector_belleza_estetica",
+        "titulo_contiene_alguno": ["manicura", "pedicura", "depilaci", "peluquer", "barber", "spa ", "estetici", "estética", "estetica"],
+        "descripcion_contiene_alguno": ["manicura", "esmaltado semipermanente", "peluquería", "peluqueria", "salón de belleza", "salon de belleza"],
+        "override_si_actual_es": ["Otro", null, "", "Salud", "Gastronomia"],
+        "resultado": "Servicios personales"
+      }
+    ]
+  },
+
+  "nivel_seniority": {
+    "_descripcion": "Corrige seniority erróneo cuando descripción contradice el valor actual",
+    "reglas": [
+      {
+        "id": "seniority_no_trainee_con_experiencia",
+        "descripcion_contiene_alguno": ["con experiencia", "con experiencia comprobable", "experiencia comprobable", "experiencia previa", "experiencia demostrable", "experiencia mínima", "experiencia minima"],
+        "override_si_actual_es": ["trainee"],
+        "resultado": "junior"
+      },
+      {
+        "id": "seniority_no_junior_experiencia_req",
+        "descripcion_contiene_alguno": ["experiencia comprobable", "experiencia mínima de 3", "experiencia mínima de 5", "experiencia en puesto similar"],
+        "titulo_contiene_alguno": ["senior", "sr", "ssr"],
+        "override_si_actual_es": ["junior", "trainee"],
+        "resultado": "semi_senior"
+      }
+    ]
+  },
+
+  "experiencia_min_anios": {
+    "_descripcion": "Corrige experiencia_min=0 cuando descripción pide experiencia",
+    "reglas": [
+      {
+        "id": "experiencia_min_1_si_con_exp",
+        "descripcion_contiene_alguno": ["con experiencia", "experiencia comprobable", "experiencia previa", "experiencia demostrable"],
+        "override_si_actual_es": [0, "0"],
+        "resultado": 1
+      }
+    ]
+  },
+
+  "area_funcional": {
+    "_descripcion": "Corrige area_funcional cuando el título claramente indica otra área",
+    "reglas": [
+      {
+        "id": "area_salud_psicologia",
+        "titulo_contiene_alguno": ["psicólog", "psicolog", "terapeuta", "niñera", "ninera", "acompañante terapéutico", "acompanante terapeutico", "terapia ocupacional"],
+        "override_si_actual_es": ["RRHH", "Administracion", "Marketing", "Ventas"],
+        "resultado": "Salud"
+      },
+      {
+        "id": "area_gastronomia_salon",
+        "titulo_contiene_alguno": ["encargado de salón", "encargada de salon", "jefe de salón", "jefa de salon", "ayudante de cocina", "cocinero", "cocinera", "mozo", "moza", "bachero", "steward"],
+        "override_si_actual_es": ["RRHH", "Administracion", "Ventas"],
+        "resultado": "Gastronomia"
+      },
+      {
+        "id": "area_legal_assistant",
+        "titulo_contiene_alguno": ["legal assistant", "asistente legal", "asistente jurídico", "paralegal", "abogado", "abogada"],
+        "override_si_actual_es": ["RRHH", "Administracion"],
+        "resultado": "Legal"
+      },
+      {
+        "id": "area_estetica_belleza",
+        "titulo_contiene_alguno": ["manicura", "pedicura", "depilación", "depilacion", "peluquería", "peluqueria", "estética", "estetica"],
+        "override_si_actual_es": ["Salud", "RRHH"],
+        "resultado": "Servicios personales"
+      }
+    ]
+  }
+}
