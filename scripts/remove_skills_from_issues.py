@@ -68,6 +68,16 @@ def parse_skills_to_remove(desc):
 
         if re.search(r'skills?\s+(incorrect|asignad.*incorrect|clasificad.+llm|que\s+no\s+correspond|que\s+no\s+tienen|ruido)', low):
             in_remove_block = True
+            # Si hay contenido después del marcador en la misma línea, procesarlo
+            m_tail = re.search(r':\s*(.+)$', s)
+            if m_tail:
+                tail = m_tail.group(1).strip()
+                parts = re.split(r'\s+[–—\-|]\s+', tail)
+                for p in parts:
+                    p = p.strip().rstrip('.').rstrip(',').rstrip(':').strip()
+                    p = re.sub(r'\s*:\s*(incorrect|correct|validaci).*$', '', p, flags=re.IGNORECASE)
+                    if SKILL_VERBS_PAT.match(p) and 5 <= len(p) <= 120:
+                        skills.append(p)
             continue
         if re.search(r'skills?\s+(sugerid|nuev|falt|pertinent|alineadas)', low):
             in_remove_block = False
@@ -91,7 +101,8 @@ def parse_skills_to_remove(desc):
             continue
 
         if in_remove_block:
-            parts = re.split(r'\s+[–-]\s+', s)
+            # Split por cualquier dash/separador (- – — |) con espacios
+            parts = re.split(r'\s+[–—\-|]\s+', s)
             for p in parts:
                 p = p.strip().rstrip('.').rstrip(',').rstrip(':').strip()
                 p = re.sub(r'\s*:\s*(incorrect|correct|validaci).*$', '', p, flags=re.IGNORECASE)

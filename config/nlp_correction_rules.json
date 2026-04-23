@@ -54,6 +54,57 @@
         "descripcion_contiene_alguno": ["manicura", "esmaltado semipermanente", "peluquería", "peluqueria", "salón de belleza", "salon de belleza"],
         "override_si_actual_es": ["Otro", null, "", "Salud", "Gastronomia"],
         "resultado": "Servicios personales"
+      },
+      {
+        "id": "sector_industria_pyme",
+        "descripcion_contiene_alguno": ["pyme industrial", "industria manufacturera", "planta industrial", "fábrica", "fabrica", "manufactura", "metalúrgic", "metalurgic", "empresa industrial"],
+        "override_si_actual_es": ["Otro", null, ""],
+        "resultado": "Industria"
+      },
+      {
+        "id": "sector_servicios_profesionales_estudio",
+        "descripcion_contiene_alguno": ["estudio contable", "estudio jurídico", "estudio juridico", "consultora de impuestos", "servicios profesionales", "firma profesional"],
+        "titulo_contiene_alguno": ["contador", "contable", "impositivo", "fiscal", "abogado", "abogada", "analista impositivo", "tax"],
+        "override_si_actual_es": ["Otro", null, ""],
+        "resultado": "Servicios profesionales"
+      },
+      {
+        "id": "sector_it_servicios_tecnologicos",
+        "descripcion_contiene_alguno": ["salesforce marketing cloud", "consultora tecnológica", "consultora tecnologica", "empresa de software", "servicios tecnológicos", "servicios tecnologicos", "marketing digital", "startup tecnológica", "plataforma tecnológica"],
+        "override_si_actual_es": ["Otro", null, "", "Servicios personales"],
+        "resultado": "Tecnologia"
+      },
+      {
+        "id": "sector_farmaceutico_salud",
+        "descripcion_contiene_alguno": ["laboratorio farmacéutico", "biofarmacéutico", "biofarmaceutico", "industria farmacéutica", "industria farmaceutica", "producción de medicamentos", "produccion de medicamentos", "vacunas"],
+        "titulo_contiene_alguno": ["farmacéutic", "farmaceutic", "internship", "base de talentos"],
+        "override_si_actual_es": ["Otro", null, ""],
+        "resultado": "Salud"
+      },
+      {
+        "id": "sector_transporte_movilidad",
+        "descripcion_contiene_alguno": ["plataforma de movilidad", "plataforma de transporte", "servicio de transporte", "empresa de transporte", "transporte de pasajeros", "cadetería", "cadeteria", "última milla", "ultima milla"],
+        "override_si_actual_es": ["Otro", null, "", "Logistica"],
+        "resultado": "Logistica"
+      },
+      {
+        "id": "sector_comercio_mayorista_minorista",
+        "descripcion_contiene_alguno": ["venta mayorista", "distribuidora", "tienda", "comercio minorista", "retail", "comercio mayorista", "librería", "libreria", "óptica", "optica", "supermercado", "casa de deportes"],
+        "titulo_contiene_alguno": ["vendedor", "vendedora", "ejecutivo de ventas", "ejecutiva de ventas", "supervisor de ventas", "óptico", "optico", "preventista"],
+        "override_si_actual_es": ["Otro", null, ""],
+        "resultado": "Comercio"
+      },
+      {
+        "id": "sector_gastronomia_comida",
+        "titulo_contiene_alguno": ["ayudante de cocina", "cocinero", "cocinera", "chef", "mozo", "moza", "camarero", "camarera", "encargado de salón", "encargada de salón", "encargado de salon", "encargada de salon", "maitre", "fileteador", "fiambrero"],
+        "override_si_actual_es": ["Otro", null, "", "RRHH"],
+        "resultado": "Gastronomia"
+      },
+      {
+        "id": "sector_atencion_customer_support",
+        "titulo_contiene_alguno": ["advisor", "customer support", "customer service", "atención al cliente", "atencion al cliente", "atención al usuario", "atencion al usuario", "experiencia de usuario"],
+        "override_si_actual_es": ["Otro", null, ""],
+        "resultado": "Servicios"
       }
     ]
   },

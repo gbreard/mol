@@ -9255,6 +9255,27 @@
       "accion": {"forzar_isco": "5329", "esco_label": "celador sanitario/celadora sanitaria"},
       "activa": true,
       "_linaje": {"oferta_ejemplo": "6104769191", "autor_correccion": "Cynthia", "nota": "AT sin contexto escolar → 5329 (celador). Con contexto escolar → R331 (3412)."}
+    },
+    "R343_inyector_plastico": {
+      "nombre": "Inyector/Operario de máquinas de inyección plástica",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_original_contiene_alguno": ["inyector plástico", "inyector plastico", "inyectora plástica", "inyectora plastica", "operario inyector", "operario de inyección"]
+      },
+      "accion": {"forzar_isco": "8142", "esco_label": "operador de máquinas de moldear plástico por inyección/operadora de máquinas de moldear plástico por inyección"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "5548577462", "autor_correccion": "Cynthia"}
+    },
+    "R344_project_manager": {
+      "nombre": "Project Manager / Gerente de proyectos (sobrescribe R19)",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_original_contiene_alguno": ["project manager", "gerente de proyectos", "gerenta de proyectos", "jefe de proyecto", "jefa de proyecto", "pm senior", "pm junior"],
+        "titulo_no_contiene_alguno": ["assistant", "asistente"]
+      },
+      "accion": {"forzar_isco": "1330", "esco_label": "gestor de proyectos de TIC/gestora de proyectos de TIC"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "6024230224", "autor_correccion": "Cynthia", "nota": "Cynthia indica 1330 (TIC) en vez de 1213. Prioridad 0 para sobrescribir R19_project_manager."}
     }
   },
   "reglas_filtro": {
