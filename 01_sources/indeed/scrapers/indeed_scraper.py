@@ -70,7 +70,9 @@ class IndeedScraper:
         self.delay = delay
         self.detail_delay = detail_delay
         self.fetch_details = fetch_details
-        self.session = cffi_requests.Session(impersonate='chrome')
+        # chrome131 (2026-04-23): el alias 'chrome' equivale a chrome110/116 que Cloudflare ya detecta.
+        # Fingerprints chrome120+ pasan el challenge. Si Cloudflare volviera a bloquear, probar chrome124/firefox.
+        self.session = cffi_requests.Session(impersonate='chrome131')
         self._seen_jks: Set[str] = set()
         self._consecutive_blocks = 0
         self._max_consecutive_blocks = 5  # Parar si 5 keywords seguidos dan 403
