@@ -9075,7 +9075,7 @@
       "condicion": {
         "titulo_original_contiene_alguno": ["instalación satelital", "instalador satelital", "técnico satelital", "tecnico satelital", "instalador de antena", "instalacion satelital", "satelital zona"]
       },
-      "accion": {"forzar_isco": "7422", "esco_label": "instalador de sistemas y dispositivos de telecomunicación/instaladora de sistemas y dispositivos de telecomunicación"},
+      "accion": {"forzar_isco": "7422", "esco_label": "técnico reparador de telefonía móvil/técnica reparadora de telefonía móvil"},
       "activa": true,
       "_linaje": {"oferta_ejemplo": "1118204622", "autor_correccion": "Cynthia"}
     },
@@ -9086,7 +9086,7 @@
         "titulo_original_contiene_alguno": ["refrigeración", "refrigeracion"],
         "titulo_contiene_alguno": ["técnico", "tecnico", "técnica", "tecnica"]
       },
-      "accion": {"forzar_isco": "7127", "esco_label": "técnico en instalación y mantenimiento de aire acondicionado/técnica en instalación y mantenimiento de aire acondicionado"},
+      "accion": {"forzar_isco": "7127", "esco_label": "instalador de servicios de calefacción y ventilación/instaladora de servicios de calefacción y ventilación"},
       "activa": true,
       "_linaje": {"oferta_ejemplo": "6312291090", "autor_correccion": "Cynthia"}
     },
@@ -9118,7 +9118,7 @@
         "titulo_original_contiene_alguno": ["electrónico", "electronico", "electrónica", "electronica"],
         "titulo_contiene_alguno": ["técnico", "tecnico", "técnica", "tecnica"]
       },
-      "accion": {"forzar_isco": "3114", "esco_label": "técnico electrónico/técnica electrónica"},
+      "accion": {"forzar_isco": "3114", "esco_label": "ingeniero técnico en electrónica/ingeniera técnica en electrónica"},
       "activa": true,
       "_linaje": {"oferta_ejemplo": "6441959979", "autor_correccion": "Cynthia"}
     },
@@ -9138,7 +9138,7 @@
       "condicion": {
         "titulo_original_contiene_alguno": ["integración escolar", "integracion escolar", "acompañante terapéutico", "acompanante terapeutico", "acompañante terapeutico", "at para integración", "at integracion", "at para integracion"]
       },
-      "accion": {"forzar_isco": "3412", "esco_label": "trabajador/a de apoyo a personas con discapacidad"},
+      "accion": {"forzar_isco": "3412", "esco_label": "trabajador de apoyo a las familias/trabajadora de apoyo a las familias"},
       "activa": true,
       "_linaje": {"oferta_ejemplo": "7677139622", "autor_correccion": "Cynthia"}
     },
@@ -9182,6 +9182,79 @@
       "accion": {"forzar_isco": "5244", "esco_label": "teleoperador/teleoperadora"},
       "activa": true,
       "_linaje": {"oferta_ejemplo": "9192373935", "autor_correccion": "Cynthia", "nota": "Cynthia asigna 5244 (teleoperador) al promotor vía pública como ocupación ESCO más cercana en el esquema MOL."}
+    },
+    "R336_analista_seguridad_higiene": {
+      "nombre": "Analista/Técnico de Seguridad e Higiene (técnico, no profesional)",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_original_contiene_alguno": ["seguridad e higiene", "seguridad higiene", "higiene y seguridad"],
+        "titulo_contiene_alguno": ["analista", "técnico", "tecnico", "técnica", "tecnica", "auxiliar", "asistente"]
+      },
+      "accion": {"forzar_isco": "3257", "esco_label": "inspector de seguridad y salud en el trabajo/inspectora de seguridad y salud en el trabajo"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "6057883738", "autor_correccion": "Cynthia", "nota": "Sobrescribe R107 (2263) cuando el título indica nivel técnico, no profesional."}
+    },
+    "R337_psicologo_laboral_educativo": {
+      "nombre": "Psicólogo/a (laboral, educativo, clínico) - match reforzado",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_original_contiene_alguno": ["psicólog", "psicolog", "psicóloga", "psicologa"]
+      },
+      "accion": {"forzar_isco": "2634", "esco_label": "psicólogo/psicóloga"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "6979872094", "autor_correccion": "Cynthia", "nota": "Aplica a cualquier título con 'psicólog*'. Incluye psicólogo laboral (6979872094), psicólogo educativo (8393131999) y ofertas combinadas con terapia ocupacional."}
+    },
+    "R338_operador_tecnico_generico": {
+      "nombre": "Operador/a técnico (producción genérica)",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_original_contiene_alguno": ["operador/a técnico", "operadora técnica", "operador tecnico", "operadora tecnica"]
+      },
+      "accion": {"forzar_isco": "8189", "esco_label": "operador de canteadora/operadora de canteadora"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "6697865056", "autor_correccion": "Cynthia", "nota": "ISCO 8189 no tiene label genérico; usamos 'operador de canteadora' como representativo."}
+    },
+    "R339_analista_contrataciones_transporte": {
+      "nombre": "Analista de contrataciones (sector transporte/logística)",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_original_contiene_alguno": ["analista de contrataciones", "analista contrataciones", "coordinador de contrataciones", "coordinadora contrataciones"]
+      },
+      "accion": {"forzar_isco": "4323", "esco_label": "coordinador de operaciones portuarias/coordinadora de operaciones portuarias"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "6742049170", "autor_correccion": "Cynthia", "nota": "ISCO 4323 (empleado administrativo de transporte); se usa label de coordinador operaciones como representativo."}
+    },
+    "R340_jefe_operativo_obra": {
+      "nombre": "Jefe operativo de obra / construcción (gerente)",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_original_contiene_alguno": ["jefe operativo", "jefa operativa"],
+        "titulo_contiene_alguno": ["ingeniero", "ingeniera", "obra", "construcci", "operaciones"]
+      },
+      "accion": {"forzar_isco": "1323", "esco_label": "director de obra/directora de obra"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "7110596797", "autor_correccion": "Cynthia", "nota": "Sobrescribe R79 (2141 ingeniero industrial) cuando título indica jefatura operativa de obra."}
+    },
+    "R341_vigilador_supervisor_produccion": {
+      "nombre": "Vigilador de personal (supervisor producción, no seguridad privada)",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_original_contiene_alguno": ["vigilador de personal", "vigiladora de personal"]
+      },
+      "accion": {"forzar_isco": "3122", "esco_label": "supervisor de montaje industrial/supervisora de montaje industrial"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "7139382499", "autor_correccion": "Cynthia", "nota": "Sobrescribe R75 (5414 vigilador seguridad). 'Vigilador de personal' en Argentina es supervisor operativo, no guardia. Label ESCO más cercano en 3122."}
+    },
+    "R342_acompanante_terapeutico_cuidador": {
+      "nombre": "Acompañante terapéutico (cuidador, sin integración escolar)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_original_contiene_alguno": ["acompañante terapéutico", "acompanante terapeutico", "acomp terapeutico", "acomp terapéutico"],
+        "titulo_no_contiene_alguno": ["integración escolar", "integracion escolar", "escolar"]
+      },
+      "accion": {"forzar_isco": "5329", "esco_label": "celador sanitario/celadora sanitaria"},
+      "activa": true,
+      "_linaje": {"oferta_ejemplo": "6104769191", "autor_correccion": "Cynthia", "nota": "AT sin contexto escolar → 5329 (celador). Con contexto escolar → R331 (3412)."}
     }
   },
   "reglas_filtro": {
