@@ -32,6 +32,41 @@ from pathlib import Path
 BASE_DIR = Path(__file__).parent.parent
 DB_PATH = BASE_DIR / "database" / "bumeran_scraping.db"
 SUPABASE_CONFIG = BASE_DIR / "config" / "supabase_config.json"
+SKILLS_EMBEDDINGS_PATH = BASE_DIR / "database" / "embeddings" / "esco_skills_embeddings_full.npy"
+SKILLS_METADATA_PATH = BASE_DIR / "database" / "embeddings" / "esco_skills_metadata_full.json"
+
+# Lazy-loaded globals
+_semantic_model = None
+_skills_embeddings = None
+_skills_metadata = None
+
+
+def _load_semantic():
+    """Carga BGE-M3 + embeddings ESCO skills (lazy)."""
+    global _semantic_model, _skills_embeddings, _skills_metadata
+    if _semantic_model is not None:
+        return
+    import numpy as np
+    from sentence_transformers import SentenceTransformer
+    print("[SEMANTIC] Cargando BGE-M3 y embeddings ESCO...", file=sys.stderr)
+    _semantic_model = SentenceTransformer('BAAI/bge-m3')
+    _skills_embeddings = np.load(str(SKILLS_EMBEDDINGS_PATH))
+    _skills_metadata = json.load(open(SKILLS_METADATA_PATH))
+    print(f"[SEMANTIC] {len(_skills_metadata)} skills ESCO cargadas.", file=sys.stderr)
+
+
+def semantic_lookup(label, threshold=0.7):
+    """Busca skill ESCO más cercana semánticamente. Devuelve (uri, label_preferred, score) o None."""
+    import numpy as np
+    _load_semantic()
+    emb = _semantic_model.encode(label, normalize_embeddings=True)
+    scores = _skills_embeddings @ emb
+    top_idx = int(np.argmax(scores))
+    top_score = float(scores[top_idx])
+    if top_score < threshold:
+        return None
+    meta = _skills_metadata[top_idx]
+    return meta['uri'], meta['label'], top_score
 
 # Verbos iniciales típicos de skills ESCO en español
 VERBOS_SKILL = [
@@ -61,13 +96,16 @@ VERBOS_SKILL = [
 VERBO_PATTERN = re.compile(r'^(?:' + '|'.join(VERBOS_SKILL) + r')\s', re.IGNORECASE)
 
 
-def find_skill_uri(label, cursor, cache):
-    """Busca URI ESCO para un label. Orden: exacto > prefix > contains > alt_labels."""
+def find_skill_uri(label, cursor, cache, use_semantic=False, semantic_threshold=0.7):
+    """Busca URI ESCO para un label.
+    Orden: exacto > prefix > contains > alt_labels > semántico (si use_semantic=True).
+    Devuelve (uri, label_preferred, method_or_score) o None."""
     label = label.strip().lower()
-    if label in cache:
-        return cache[label]
+    cache_key = (label, use_semantic, semantic_threshold)
+    if cache_key in cache:
+        return cache[cache_key]
     if len(label) < 3:
-        cache[label] = None
+        cache[cache_key] = None
         return None
 
     queries = [
@@ -84,10 +122,18 @@ def find_skill_uri(label, cursor, cache):
         cursor.execute(sql, params)
         r = cursor.fetchone()
         if r:
-            cache[label] = (r[0], r[1], method)
-            return cache[label]
+            cache[cache_key] = (r[0], r[1], method)
+            return cache[cache_key]
 
-    cache[label] = None
+    # Fallback semántico
+    if use_semantic:
+        sem = semantic_lookup(label, threshold=semantic_threshold)
+        if sem:
+            uri, lbl, score = sem
+            cache[cache_key] = (uri, lbl, f'semantic:{score:.3f}')
+            return cache[cache_key]
+
+    cache[cache_key] = None
     return None
 
 
@@ -193,6 +239,14 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--author', help="Substring para filtrar por autor_nombre/autor_email (ej: 'cyn')")
     ap.add_argument('--all-pending', action='store_true', help='Todos los issues pendientes')
+    ap.add_argument('--semantic', action='store_true',
+                    help='Fallback semántico con BGE-M3 cuando string-matching falla. '
+                         'ATENCIÓN: BGE-M3 genérico genera falsos positivos. Usar con threshold alto '
+                         '(>=0.90) y revisar resultados en --dry-run antes de aplicar.')
+    ap.add_argument('--semantic-threshold', type=float, default=0.9,
+                    help='Score mínimo para aceptar match semántico (default: 0.9). '
+                         'Tests: 0.65 → 74 matches pero ~80%% falsos positivos; '
+                         '0.85 → 10 matches ~70%% falsos positivos; 0.9+ → pocos matches pero más confiables.')
     ap.add_argument('--dry-run', action='store_true')
     ap.add_argument('-v', '--verbose', action='store_true')
     args = ap.parse_args()
@@ -239,7 +293,8 @@ def main():
         with_uri = []
         without_uri = []
         for sk in dedup:
-            r = find_skill_uri(sk, cursor, cache)
+            r = find_skill_uri(sk, cursor, cache, use_semantic=args.semantic,
+                               semantic_threshold=args.semantic_threshold)
             if r:
                 uri, preferred, method = r
                 with_uri.append({'input': sk, 'preferred': preferred, 'uri': uri, 'method': method})
