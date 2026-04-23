@@ -138,7 +138,13 @@ def find_skill_uri(label, cursor, cache, use_semantic=False, semantic_threshold=
 
 
 def parse_skills_from_description(desc):
-    """Detecta skills sugeridas por bloques o por líneas que empiezan con verbo en infinitivo."""
+    """Detecta skills sugeridas por bloques o por líneas que empiezan con verbo en infinitivo.
+
+    Maneja:
+      - Marcadores de validación de Cynthia (→ ❌ / → ✔ / INCORECTA) → descarta la skill
+      - Skills múltiples en una línea separadas por ' - ' → splittea
+      - Secciones 'Skills INCORRECTAS' → ignora (no son sugerencias)
+    """
     if not desc:
         return []
     skills = []
@@ -159,7 +165,10 @@ def parse_skills_from_description(desc):
             in_add_block = True
             continue
         if any(kw in low for kw in ['skills incorrect', 'skill incorrect', 'skills ruido',
-                                     'no correspond', 'skills que no tienen']):
+                                     'no correspond', 'skills que no tienen',
+                                     'skills que el llm', 'skills asignadas incorrect',
+                                     'atributos del aviso', 'attributes',
+                                     'skills clasificad']):
             in_add_block = False
             continue
         if any(kw in low for kw in ['oferta:', 'isco actual', 'criterio de', 'nota:',
@@ -167,10 +176,21 @@ def parse_skills_from_description(desc):
             in_add_block = False
             continue
 
-        if (in_add_block or VERBO_PATTERN.match(s)) and 5 <= len(s) <= 120:
-            s = re.sub(r'\s+\(.*\)\s*$', '', s).rstrip('.').strip()
-            if s and VERBO_PATTERN.match(s):
-                skills.append(s)
+        if (in_add_block or VERBO_PATTERN.match(s)) and 5 <= len(s) <= 300:
+            # Split por " - " si hay múltiples skills en una línea
+            parts = re.split(r'\s+-\s+|\s+–\s+', s)
+            for part in parts:
+                p = part.strip().rstrip('.').rstrip(',').strip()
+                if not p:
+                    continue
+                # Descartar si tiene marcador de validación (→ ❌ / → ✔ / INCORECTA / Incorrecta)
+                if re.search(r'→\s*(❌|✔|✓|✓|✗)|INCORECTA|Incorrecta|Correcta\b', p, re.IGNORECASE):
+                    continue
+                # Limpiar trailing comments tipo "(alt: ...)"
+                p = re.sub(r'\s+\(.*\)\s*$', '', p).rstrip('.').strip()
+                # Debe seguir empezando con verbo en infinitivo O ser una skill válida
+                if 5 <= len(p) <= 120 and VERBO_PATTERN.match(p):
+                    skills.append(p)
 
     seen = set()
     out = []
