@@ -1253,7 +1253,8 @@ npx vitest run __tests__/component/centro-control.test.tsx  # uno solo
 | Archivo | Propósito |
 |---------|-----------|
 | `config/nlp_preprocessing.json` | Parsing ubicación |
-| `config/nlp_inference_rules.json` | Inferencia área/seniority/modalidad |
+| `config/nlp_inference_rules.json` | Inferencia área/seniority/modalidad (rellena vacíos) |
+| `config/nlp_correction_rules.json` | **Corrección** post-LLM (sobrescribe valores incorrectos cuando patrones en título/descripción contradicen — integrado en postprocessor paso 9 desde 2026-04-22) |
 | `config/nlp_validation.json` | Validación tipos |
 | `config/nlp_extraction_patterns.json` | Regex experiencia |
 | `config/nlp_normalization.json` | CABA → Capital Federal |

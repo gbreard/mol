@@ -267,7 +267,7 @@ Si no existe, buscar un label real del ISCO target con `search_esco_skill.py` o 
 | Archivo | Rol |
 |---|---|
 | `config/matching_rules_business.json` | Reglas de negocio ISCO (leído por pipeline) |
-| `config/nlp_correction_rules.json` | Reglas de corrección NLP post-LLM (leído por `reapply_nlp_to_validated.py`) |
+| `config/nlp_correction_rules.json` | Reglas de corrección NLP post-LLM (integrado en `nlp_postprocessor.py` desde commit `3189eb02` + sigue siendo usado por `reapply_nlp_to_validated.py` para ofertas validadas) |
 | `config/sinonimos_skills_argentinos.json` | Diccionario argentino (leído por `skills_implicit_extractor.py`) |
 | `scripts/reapply_rules_to_validated.py` | Aplica reglas matching a ofertas validadas |
 | `scripts/reapply_nlp_to_validated.py` | Aplica correcciones NLP a ofertas validadas |
@@ -284,3 +284,32 @@ Si no existe, buscar un label real del ISCO target con `search_esco_skill.py` o 
 - Commit inicial del pipeline: `a27032ee`
 - Bug del matcher (esco_label inexistente descarta regla): `43ae1ed5`
 - Expansión dict: `210521ca`
+- Integración de nlp_correction_rules en el postprocessor: `3189eb02`
+
+---
+
+## Qué está integrado al pipeline vs qué es helper manual
+
+### Integrado (se ejecuta automáticamente en cada corrida del pipeline)
+
+| Componente | Cuándo corre | Qué afecta |
+|---|---|---|
+| `config/matching_rules_business.json` | Cada matching en `match_ofertas_v3.py` | ISCO de oferta nueva |
+| `config/nlp_correction_rules.json` | Cada NLP postprocess (paso 9) | sector/seniority/área/experiencia de oferta nueva |
+| `config/sinonimos_skills_argentinos.json` | Skills extractor durante matching | Skills extraídas |
+| `esco_skill_alternative_labels` (244 argentine_mol) | Skills lookup durante matching | Mapeos argentinos |
+
+Editar estos JSONs → inmediatamente efectivo en la próxima oferta procesada.
+
+### Helpers manuales (requieren invocación explícita)
+
+| Script | Cuándo usarlo |
+|---|---|
+| `reapply_rules_to_validated.py` | Tras agregar regla matching, para retrofit de ofertas YA validadas |
+| `reapply_nlp_to_validated.py` | Tras agregar regla NLP correction, idem |
+| `inject_skills_from_issues.py` | Tras recibir un batch de feedback humano |
+| `remove_skills_from_issues.py` | Tras recibir feedback con skills marcadas incorrectas |
+| `import_argentine_skill_labels.py` | Tras editar `sinonimos_skills_argentinos.json`, sincroniza BD |
+| `search_esco_skill.py` | Cualquier momento, para investigación manual |
+
+Estos son post-hoc por diseño: operan sobre datos específicos (issues en Supabase, ofertas ya validadas) que no existen en el momento de procesar una oferta nueva.
