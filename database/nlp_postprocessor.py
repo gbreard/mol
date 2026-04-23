@@ -155,6 +155,7 @@ class NLPPostprocessor:
             "nlp_inference_rules.json",
             "nlp_defaults.json",
             "nlp_normalization.json",
+            "nlp_correction_rules.json",
         ]
 
         # Configs que pueden tener override en Supabase
@@ -2623,6 +2624,10 @@ class NLPPostprocessor:
         # Paso 8: Defaults
         data = self._apply_defaults(data)
 
+        # Paso 9: Correction rules (override campos ya poblados según patrones título/descripción)
+        # Agregado 2026-04-22 — reglas aprendidas del batch de Cynthia
+        data = self._apply_correction_rules(data, descripcion)
+
         if self.verbose:
             print(f"\n[POSTPROC] Stats: {self.stats}")
 
@@ -2675,6 +2680,82 @@ class NLPPostprocessor:
                         print(f"[MERGE] {campo}: '{valor}' (de scraping, LLM no extrajo)")
 
         return post_data
+
+    def _apply_correction_rules(self, data: Dict[str, Any], descripcion: str) -> Dict[str, Any]:
+        """Aplica reglas de CORRECCIÓN sobre campos ya procesados.
+
+        Distinto de nlp_inference_rules (que rellena vacíos), estas reglas
+        sobrescriben valores existentes si la descripción/título contradicen.
+
+        Config: nlp_correction_rules.json (secciones: sector_empresa,
+        nivel_seniority, experiencia_min_anios, area_funcional).
+
+        Orden importa: las reglas se evalúan en orden, primera que matchea gana.
+        """
+        rules_config = self.configs.get("correction_rules", {})
+        if not rules_config:
+            return data
+
+        titulo = (data.get("titulo_limpio") or "").lower()
+        desc_lower = (descripcion or "").lower()
+
+        def contains_any(text: str, patterns) -> bool:
+            if not text or not patterns:
+                return False
+            return any(p.lower() in text for p in patterns)
+
+        def matches_override(actual, override_list) -> bool:
+            for v in override_list:
+                if v is None and actual is None:
+                    return True
+                if v == "" and (actual == "" or actual is None):
+                    return True
+                if str(actual) == str(v):
+                    return True
+            return False
+
+        field_map = {
+            "sector_empresa": "sector_empresa",
+            "nivel_seniority": "nivel_seniority",
+            "area_funcional": "area_funcional",
+            "experiencia_min_anios": "experiencia_min_anios",
+        }
+
+        for field, field_config in rules_config.items():
+            if field.startswith("_") or field not in field_map:
+                continue
+            rules = field_config.get("reglas", [])
+            current = data.get(field_map[field])
+
+            for rule in rules:
+                # Chequear condiciones (AND entre titulo/descripcion si ambas están)
+                desc_match = True
+                if "descripcion_contiene_alguno" in rule:
+                    desc_match = contains_any(desc_lower, rule["descripcion_contiene_alguno"])
+                tit_match = True
+                if "titulo_contiene_alguno" in rule:
+                    tit_match = contains_any(titulo, rule["titulo_contiene_alguno"])
+                if not (desc_match and tit_match):
+                    continue
+
+                # Chequear que el valor actual esté en la lista de sobrescribibles
+                override = rule.get("override_si_actual_es", [])
+                if override and not matches_override(current, override):
+                    continue
+
+                # Aplicar corrección
+                new_val = rule.get("resultado")
+                if new_val is None or str(new_val) == str(current):
+                    continue
+
+                data[field_map[field]] = new_val
+                self.stats[f"correction_{field}"] = self.stats.get(f"correction_{field}", 0) + 1
+                if self.verbose:
+                    print(f"[CORR-{field}] {current!r} -> {new_val!r} (regla {rule.get('id')})")
+                # Primera regla que matchea gana — romper
+                break
+
+        return data
 
     def get_stats(self) -> Dict[str, int]:
         """Retorna estadisticas del ultimo procesamiento"""
