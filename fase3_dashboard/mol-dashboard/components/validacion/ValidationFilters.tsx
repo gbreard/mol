@@ -245,8 +245,9 @@ export function ValidationFilters({ filters, onChange, stats, ofertas }: Validat
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearchSubmit()}
-            placeholder="Titulo o ID..."
-            className="w-[150px] h-7 text-xs"
+            placeholder="Titulo, ID o lista IDs..."
+            className="w-[200px] h-7 text-xs"
+            title="Un término = búsqueda parcial en título e ID. Múltiples IDs separados por coma, espacio o salto de línea = filtro exacto por lista."
           />
           <Button size="sm" variant="ghost" onClick={handleSearchSubmit} className="h-7 w-7 p-0">
             <Search className="w-3.5 h-3.5" />

@@ -2058,9 +2058,22 @@ export async function getOfertasValidacion(
     query = query.eq('decision_metodo', filters.metodo)
   }
   if (filters.search) {
-    query = query.or(
-      `titulo_limpio.ilike.%${filters.search}%,titulo.ilike.%${filters.search}%,id_oferta.eq.${filters.search}`
-    )
+    const tokens = filters.search
+      .split(/[\s,;\n]+/)
+      .map((t) => t.trim())
+      .filter(Boolean)
+
+    if (tokens.length > 1) {
+      query = query.in('id_oferta', tokens)
+    } else {
+      const term = tokens[0] ?? ''
+      const safe = term.replace(/[(),:]/g, ' ').trim()
+      if (safe) {
+        query = query.or(
+          `titulo_limpio.ilike.%${safe}%,titulo.ilike.%${safe}%,id_oferta.ilike.%${safe}%`
+        )
+      }
+    }
   }
 
   // New filters
