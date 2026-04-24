@@ -40,7 +40,11 @@ docs/Datos-VPS.txt
 
 # Claude Code settings (contiene API keys)
 .claude/settings.local.json
+.claude/scheduled_tasks.lock
 .mcp.json
+
+# Docs Excel autogenerados (solo local, muy pesados para git)
+docs/ocupaciones_*.xlsx
 
 # Linear cache (sincronizado localmente)
 .linear/
