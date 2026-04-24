@@ -77,7 +77,7 @@ class SkillsImplicitExtractor:
     Usa cache a nivel de clase para evitar recargar modelo y embeddings.
     """
 
-    VERSION = "2.6.0"  # v2.6: Equivalencias de skills (dedup por grupo)
+    VERSION = "2.7.0"  # v2.7: Trust-source filter (SPEC B v2)
 
     # Configuración por defecto (E1.1: usa config centralizada)
     # LoRA fine-tuned tiene prioridad si existe en disco
@@ -103,7 +103,8 @@ class SkillsImplicitExtractor:
         db_path: str = None,
         threshold: float = None,
         top_k: int = None,
-        verbose: bool = False
+        verbose: bool = False,
+        filtrar_por_trust: bool = False
     ):
         """
         Inicializa el extractor.
@@ -115,6 +116,8 @@ class SkillsImplicitExtractor:
             threshold: Umbral de similitud mínima (default: 0.55)
             top_k: Número máximo de skills por tarea (default: 3)
             verbose: Mostrar mensajes de debug
+            filtrar_por_trust: v2.7/SPEC B v2 - si True, descarta skills con trust bajo.
+                               Default False: solo anota trust_motivo (telemetría).
         """
         base_path = Path(__file__).parent
 
@@ -125,6 +128,7 @@ class SkillsImplicitExtractor:
         self.threshold = threshold or self.DEFAULT_THRESHOLD
         self.top_k = top_k or self.DEFAULT_TOP_K
         self.verbose = verbose
+        self.filtrar_por_trust = filtrar_por_trust
 
         # Inicializar (usa cache de clase)
         self._initialize()
@@ -490,6 +494,72 @@ class SkillsImplicitExtractor:
         # Por defecto, peso 1.0 (skill específica)
         return 1.0
 
+    def _classify_skill_trust(
+        self,
+        skill: Dict,
+        oferta_context: Dict
+    ) -> Tuple[bool, str]:
+        """
+        v2.7 / SPEC B v2 — Clasifica la confianza de una skill según su origen.
+
+        No consulta ESCO oficial ni depende del ISCO: evalúa solo el `origen`
+        de la skill y la calidad del `texto_fuente` que la generó.
+
+        Args:
+            skill: dict con al menos origen, score, texto_fuente
+            oferta_context: dict con titulo_limpio, tareas_explicitas, skills_tecnicas_list
+
+        Returns:
+            (trust, motivo). trust=True mantiene la skill; False la descarta
+            cuando filtrar_por_trust está activo.
+        """
+        origen = skill.get('origen', 'desconocido')
+        texto_fuente = skill.get('texto_fuente', '') or ''
+        score = skill.get('score', 0) or 0
+
+        # 1. Origen "regla" / "terminologia_argentina" → siempre confianza alta
+        if origen in ('regla', 'terminologia_argentina', 'terminologia',
+                      'sinonimo_argentino', 'regla_cynthia', 'regla_issue'):
+            return True, 'origen_reglas'
+
+        # 2. Origen "skills_nlp" o "soft_skills_nlp" → LLM las identificó
+        if origen in ('skills_nlp', 'soft_skills_nlp'):
+            return True, 'origen_llm_detectado'
+
+        # 3. Origen "tarea" con tarea sustantiva (≥20 chars)
+        if origen == 'tarea':
+            tarea_clean = texto_fuente.strip()
+            if len(tarea_clean) >= 20:
+                return True, 'origen_tarea_real'
+            if score >= 0.75:
+                return True, 'origen_tarea_corta_score_alto'
+            return False, 'origen_tarea_corta_score_bajo'
+
+        # 4. Origen "titulo" → depende del contexto
+        if origen == 'titulo':
+            titulo_len = len((oferta_context.get('titulo_limpio') or '').strip())
+            tiene_tareas = bool((oferta_context.get('tareas_explicitas') or '').strip())
+            tiene_skills_nlp = bool(oferta_context.get('skills_tecnicas_list'))
+
+            # Si ya hay tareas o skills_nlp, las de título son secundarias → exigir score alto
+            if (tiene_tareas or tiene_skills_nlp) and score < 0.80:
+                return False, 'titulo_redundante_score_bajo'
+
+            # Sin otras fuentes, el título es lo único
+            if titulo_len >= 30:
+                if score >= 0.70:
+                    return True, 'titulo_solo_fuente_score_ok'
+                return False, 'titulo_solo_fuente_score_bajo'
+            else:
+                if score >= 0.85:
+                    return True, 'titulo_corto_score_muy_alto'
+                return False, 'titulo_corto_score_medio'
+
+        # Fallback: score alto o descartar
+        if score >= 0.80:
+            return True, 'fallback_score_alto'
+        return False, 'fallback_origen_desconocido'
+
     def extract_skills(
         self,
         titulo_limpio: str,
@@ -684,6 +754,29 @@ class SkillsImplicitExtractor:
 
         # v2.2: Ordenar por score_ponderado descendente (skills genéricas bajan en el ranking)
         skills_extraidas.sort(key=lambda x: x['score_ponderado'], reverse=True)
+
+        # v2.7 / SPEC B v2: Clasificar trust-source para cada skill
+        oferta_context = {
+            'titulo_limpio': titulo_limpio or '',
+            'tareas_explicitas': tareas_explicitas or '',
+            'skills_tecnicas_list': skills_nlp or [],
+        }
+
+        skills_filtradas = []
+        descartadas = 0
+        for s in skills_extraidas:
+            trust, motivo = self._classify_skill_trust(s, oferta_context)
+            s['trust'] = bool(trust)
+            s['trust_motivo'] = motivo
+            if self.filtrar_por_trust and not trust:
+                descartadas += 1
+                continue
+            skills_filtradas.append(s)
+
+        if self.filtrar_por_trust:
+            if self.verbose and descartadas:
+                print(f"[TRUST] Descartadas {descartadas}/{len(skills_extraidas)} skills por baja confianza")
+            skills_extraidas = skills_filtradas
 
         # Agregar categorías L1/L2 para dashboards
         try:
