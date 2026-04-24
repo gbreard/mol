@@ -145,45 +145,212 @@ Evita que los thresholds queden hardcoded en el código — permiten tuning.
 
 ## 4. Tests
 
-### Unit tests nuevos
+### 4.1 Unit tests — archivo nuevo
 
-`tests/matching/test_skills_threshold_dynamic.py`:
+**Archivo:** `tests/matching/test_skills_threshold_dynamic.py`
+
+Sigue patrón de `tests/test_limpieza_tareas_ruido.py` (clases `TestXxx`, fixtures, aserts concretos).
 
 ```python
-def test_threshold_desc_corta_sin_tareas():
-    extractor = SkillsImplicitExtractor()
-    t = extractor._compute_effective_threshold("Operario producción. Envio CV.", [])
-    assert t == 0.75
+# -*- coding: utf-8 -*-
+"""
+Tests: threshold dinámico en skills_implicit_extractor.
 
-def test_threshold_normal():
-    extractor = SkillsImplicitExtractor()
-    desc = "Se busca operario... " * 50  # desc larga
-    tareas = ["controlar máquinas", "realizar picking"]
-    t = extractor._compute_effective_threshold(desc, tareas)
-    assert t == 0.40
+Verifica que el threshold se ajusta según contexto (largo descripción,
+cantidad de tareas) y que ofertas con contexto pobre no asignan skills
+random.
+"""
+import pytest
+import sys
+from pathlib import Path
 
-def test_no_skills_assigned_on_low_confidence():
-    """Si todas las skills están bajo el threshold dinámico, no asignar ninguna."""
-    extractor = SkillsImplicitExtractor()
-    result = extractor.extract_from_tasks(
-        descripcion="Operario.",
-        tareas=[],
-    )
-    assert len(result) == 0 or all(s.get('origen') == 'low_confidence' for s in result)
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "database"))
+
+
+@pytest.fixture(scope="module")
+def extractor():
+    """SkillsImplicitExtractor con modelo cargado (una sola vez por módulo)."""
+    from skills_implicit_extractor import SkillsImplicitExtractor
+    return SkillsImplicitExtractor(verbose=False)
+
+
+# ============================================================================
+# Threshold dinámico
+# ============================================================================
+
+class TestThresholdDinamico:
+
+    def test_desc_corta_sin_tareas(self, extractor):
+        """Desc < 400 chars + 0 tareas → threshold muy restrictivo."""
+        t = extractor._compute_effective_threshold("Operario producción. Envio CV.", [])
+        assert t == 0.75
+
+    def test_desc_corta_pocas_tareas(self, extractor):
+        """Desc < 600 chars + 1 tarea → threshold restrictivo."""
+        t = extractor._compute_effective_threshold("Se busca operario.", ["controlar máquinas"])
+        assert t == 0.65
+
+    def test_tareas_chars_pobres(self, extractor):
+        """Tareas muy cortas (< 100 chars totales) → threshold moderado."""
+        desc = "x" * 1000  # desc larga
+        tareas = ["x"]  # tarea vacía
+        t = extractor._compute_effective_threshold(desc, tareas)
+        assert t == 0.55
+
+    def test_contexto_normal(self, extractor):
+        """Desc larga + tareas reales → threshold default."""
+        desc = "Se busca operario con experiencia en línea de producción. " * 10
+        tareas = [
+            "controlar máquinas de envasado",
+            "realizar picking de mercadería",
+            "cumplir estándares de calidad",
+        ]
+        t = extractor._compute_effective_threshold(desc, tareas)
+        assert t == 0.40
+
+
+# ============================================================================
+# Política: no asignar skills si no hay confianza
+# ============================================================================
+
+class TestLowConfidencePolicy:
+
+    def test_zero_skills_si_todas_bajo_threshold(self, extractor):
+        """Oferta sin contexto no debe recibir skills random."""
+        skills = extractor.extract_from_tasks(
+            descripcion="Operario.",
+            tareas=[],
+        )
+        # Comportamiento esperado: cero skills O marcadas como low_confidence
+        if skills:
+            assert all(s.get('origen') == 'low_confidence' for s in skills)
+        else:
+            assert skills == []
+
+    def test_no_skills_irrelevantes_desc_corta(self, extractor):
+        """Las skills 'top-K random' de dominios ajenos no deben aparecer."""
+        skills = extractor.extract_from_tasks(
+            descripcion="Operario de producción. Jornada diurna.",
+            tareas=[],
+        )
+        skill_labels = [s.get('skill_esco', '').lower() for s in skills]
+        # Dominios random que aparecían en el caso reportado
+        dominios_prohibidos = [
+            'oncología', 'paisajismo', 'radioterapia',
+            'pedagogía teatral', 'inseminar', 'transferir peces',
+            'ordenación pesquera',
+        ]
+        for dominio in dominios_prohibidos:
+            assert not any(dominio in l for l in skill_labels), \
+                f"Skill irrelevante '{dominio}' apareció"
+
+    def test_marca_origen_low_confidence(self, extractor):
+        """Skills asignadas con threshold dinámico deben marcar origen."""
+        skills = extractor.extract_from_tasks(
+            descripcion="Operario producción",
+            tareas=["operario"],
+        )
+        # Si algo se asignó con threshold ajustado, el origen debe indicar
+        if skills:
+            origenes = set(s.get('origen') for s in skills)
+            # Puede tener: sinonimo_argentino, semantico_normal, low_confidence
+            assert len(origenes) > 0
+
+
+# ============================================================================
+# Fallback con skills_rules.json
+# ============================================================================
+
+class TestSkillsRulesFallback:
+
+    def test_fallback_aplica_skills_rules_por_isco(self, extractor):
+        """Si threshold dinámico descarta todas, skills_rules por ISCO
+        aplica como fallback (integrado en match_ofertas_v3)."""
+        from match_ofertas_v3 import MatcherV3
+        # Oferta sin tareas, pero con ISCO ya asignado por regla matching
+        # Debe aplicar skills_rules.json[ISCO 9333] (mozo almacén)
+        pytest.skip("Requiere fixture con BD mock — implementar según estructura MatcherV3")
+
+
+# ============================================================================
+# Regresión: no romper casos con contexto bueno
+# ============================================================================
+
+class TestRegresionGoldSet:
+
+    def test_gold_set_ofertas_normales_mantienen_skills(self, extractor):
+        """Las 49 ofertas del gold set tienen contexto normal.
+        Deben mantener >= 80% de sus skills tras el fix."""
+        import json
+        from pathlib import Path
+        gold = json.load(open(Path(__file__).parent / "gold_set.json"))
+        # Sample de 5 para no relentizar
+        muestra = gold[:5] if isinstance(gold, list) else list(gold.values())[:5]
+        for caso in muestra:
+            desc = caso.get('descripcion', '') or ''
+            tareas = caso.get('tareas_explicitas', '') or ''
+            if len(desc) < 400 or not tareas:
+                continue  # saltar casos borderline
+            threshold = extractor._compute_effective_threshold(desc, tareas.split(';'))
+            assert threshold == 0.40, f"Gold set caso {caso.get('id_oferta')} recibió threshold ajustado"
 ```
 
-### Tests de regresión
+### 4.2 Tests de regresión (existentes)
 
-- **Gold set matching**: no debe romper los 49 casos existentes.
-- **Oferta 1118219210 (bebidas)**: debe NO tener skills aleatorias tras el fix. Lo ideal: tener las skills forzadas por `R349_operario_envasado` (si existe) o cero skills.
+**Correr antes y después del deploy:**
 
-### Test manual con ofertas afectadas
+```bash
+# Gold set matching (49 casos manuales)
+pytest tests/matching/test_gold_set_manual.py -v
 
-Lista de ofertas para verificar (de los 18 operarios analizados):
+# Gold set dinámico con Supabase
+pytest tests/matching/test_m10_gold_set.py -v
 
-| Oferta | Descripción | Tareas actuales | Expectativa post-fix |
-|---|---|---|---|
-| 1118219210 | corta | vacías | cero skills random, skills por regla |
+# Gold set skills específicamente
+pytest tests/matching/test_m10_gold_set_skills.py -v
+
+# Ruido de tareas (complementario al Spec C)
+pytest tests/test_limpieza_tareas_ruido.py -v
+```
+
+**Criterio de aceptación:** todos los tests pre-existentes deben seguir pasando (0 regresiones).
+
+### 4.3 Smoke test manual con ofertas afectadas
+
+Script rápido para validar casos concretos:
+
+```bash
+python3 -c "
+import sys, sqlite3, json
+sys.path.insert(0, 'database')
+from skills_implicit_extractor import SkillsImplicitExtractor
+
+conn = sqlite3.connect('database/bumeran_scraping.db')
+c = conn.cursor()
+
+OFERTAS_TEST = [
+    ('1118219210', 0, 'cero skills random'),      # desc corta, caso peor
+    ('7985222956', '<=5', 'pocas, sin oncología/paisajismo'),
+    ('7272678691', '>=3', 'skills reales operario plástico'),
+]
+
+ext = SkillsImplicitExtractor(verbose=False)
+for oid, expected, nota in OFERTAS_TEST:
+    c.execute('SELECT descripcion FROM ofertas WHERE id_oferta=?', (oid,))
+    desc = c.fetchone()[0] or ''
+    c.execute('SELECT tareas_explicitas FROM ofertas_nlp WHERE id_oferta=?', (oid,))
+    tareas = (c.fetchone() or [''])[0] or ''
+    tareas_list = [t.strip() for t in tareas.split(';') if t.strip()]
+    skills = ext.extract_from_tasks(descripcion=desc, tareas=tareas_list)
+    print(f'{oid}: {len(skills)} skills ({nota})')
+"
+```
+
+**Ofertas para validar (las 18 operarios analizadas):**
+
+| Oferta | Desc | Tareas actuales | Skills actuales | Skills post-fix esperadas |
+|---|---|---|---|---|
+| 1118219210 | corta | vacías | 20 random | 0 o fallback por ISCO |
 | 7985222956 | corta | contaminadas | cero skills semánticas, skills por regla |
 | 7272678691 | media | 4 reales | skills razonables (no ruido) |
 

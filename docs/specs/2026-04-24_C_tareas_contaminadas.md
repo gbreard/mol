@@ -172,6 +172,270 @@ Filtrar en el output de `tareas_explicitas` antes de guardar.
 
 ---
 
+## 4.bis Tests
+
+### 4.bis.1 Extender `tests/test_limpieza_tareas_ruido.py` (existente)
+
+**Ya existe** y tiene 35 casos cubriendo filtros de "Hace N días", "Experiencia requerida: No", etc. Agregamos casos nuevos para los patrones detectados en operarios:
+
+```python
+# tests/test_limpieza_tareas_ruido.py — SUMAR al archivo existente
+
+class TestFiltrarRuidoOperariosComputrabajo:
+    """Ruido específico de ofertas ComputRabajo de operarios (2026-04-24).
+
+    Casos reales: 7985222956, 7938726540, 7942527874.
+    """
+
+    def test_nombres_empresas_eventuales(self, postprocessor):
+        """Nombres de agencias eventuales como 'EXTRAMEN', 'PULLMEN' se filtran."""
+        entradas = [
+            "Realizar picking; EXTRAMEN Empresa de Servicios Eventuales SRL",
+            "Limpieza general; PULLMEN búsqueda y selección",
+            "Controlar stock; ARCH Resources Group",
+        ]
+        for entrada in entradas:
+            result = limpiar(postprocessor, entrada)
+            assert not any("EXTRAMEN" in t or "PULLMEN" in t or "ARCH Resources" in t for t in result)
+
+    def test_grupo_empresa_aislado(self, postprocessor):
+        """'Grupo Gestión' aislado (sin otro contexto) se filtra."""
+        result = limpiar(postprocessor, "Carga y descarga; Grupo Gestión; Empaquetado")
+        assert "Grupo Gestión" not in "; ".join(result)
+        assert any("descarga" in t.lower() for t in result)  # tarea real preservada
+
+    def test_ubicaciones_buenos_aires_gba(self, postprocessor):
+        """Ubicaciones formato '<Localidad>, Buenos Aires-GBA' se filtran."""
+        entradas = [
+            "Picking; San Martín, Buenos Aires-GBA",
+            "Control calidad; Santos Lugares, Buenos Aires-GBA",
+            "Soldadura; Villa Maipú, Buenos Aires-GBA",
+        ]
+        for entrada in entradas:
+            result = limpiar(postprocessor, entrada)
+            assert not any("Buenos Aires-GBA" in t for t in result)
+
+    def test_descripciones_otras_empresas(self, postprocessor):
+        """'Importante empresa X dedicada a Y...' (descripción de OTRO aviso) se filtra."""
+        entradas = [
+            "Realizar picking; Importante empresa metalúrgica dedicada a la fabricación de electrodomésticos",
+            "Embalaje; Importante empresa del rubro alimenticio incorpora Operarios/as",
+            "Limpieza; Importante fábrica alimenticia busca Operarios/as",
+        ]
+        for entrada in entradas:
+            result = limpiar(postprocessor, entrada)
+            assert not any("Importante empresa" in t or "Importante fábrica" in t for t in result)
+
+    def test_ui_noise_computrabajo(self, postprocessor):
+        """Texto de UI del portal ComputRabajo se filtra."""
+        entradas = [
+            "Picking mercadería; Ocultaste esta oferta, pulsaRecuperar oferta",
+            "Control stock; para verla de nuevo en los listados",
+        ]
+        for entrada in entradas:
+            result = limpiar(postprocessor, entrada)
+            txt = "; ".join(result)
+            assert "Ocultaste" not in txt
+            assert "pulsaRecuperar" not in txt
+            assert "nuevo en los listados" not in txt
+
+    def test_frases_cortadas(self, postprocessor):
+        """'Operar y controlar...' (frase terminada en puntos suspensivos) se filtra."""
+        result = limpiar(postprocessor, "Picking; Operar y controlar...; Empaquetar")
+        # Tarea cortada termina en "..." o queda muy corta — postprocessor debería descartar
+        assert not any(t.endswith("...") for t in result)
+
+    # ========================================================================
+    # PRESERVAR tareas reales aun con ruido alrededor
+    # ========================================================================
+
+    def test_preservar_tareas_reales_caso_7985222956(self, postprocessor):
+        """Caso real: oferta Operario Pickeador.
+
+        Entrada tiene 5 tareas válidas + 5 ruido. Output debe tener las 5 válidas.
+        """
+        entrada = (
+            "Picking de mercadería; "
+            "uso de handheld; "
+            "cumplimiento de procedimientos de recepción; "
+            "carga y descarga; "
+            "empaquetado y embalaje; "
+            "Operar y controlar...; "
+            "Hace 2 días; "
+            "Grupo Gestión; "
+            "San Martín, Buenos Aires-GBA; "
+            "Importante empresa metalúrgica dedicada a la fabricación de electrodomésticos"
+        )
+        result = limpiar(postprocessor, entrada)
+
+        # Las 5 reales deben estar
+        assert any("picking" in t.lower() for t in result)
+        assert any("handheld" in t.lower() or "recepción" in t.lower() for t in result)
+        assert any("carga" in t.lower() and "descarga" in t.lower() for t in result)
+        assert any("empaquetado" in t.lower() or "embalaje" in t.lower() for t in result)
+
+        # Los 5 ruido NO deben estar
+        txt = "; ".join(result)
+        for noise in ["Hace 2 días", "Grupo Gestión", "Buenos Aires-GBA",
+                      "Importante empresa metalúrgica", "Operar y controlar..."]:
+            assert noise not in txt, f"Ruido '{noise}' no fue filtrado"
+```
+
+### 4.bis.2 Test nuevo del scraper — `tests/scraping/test_computrabajo_description.py`
+
+Archivo nuevo para validar que el scraper bajo la nueva lógica devuelve descripciones limpias (sin UI noise ni texto de otras ofertas).
+
+```python
+# -*- coding: utf-8 -*-
+"""
+Tests: ComputRabajo scraper — extracción limpia de descripción.
+
+Verifica que el scraper NO incluye:
+  - UI noise ("Ocultaste esta oferta...", "pulsaRecuperar oferta...")
+  - Ofertas similares ("Importante empresa X dedicada a...")
+  - Metadata del portal ("Hace 2 días", ubicaciones sueltas)
+  - Nombres de empresas de otras ofertas
+
+Requiere HTML fixtures en tests/fixtures/computrabajo/
+"""
+import pytest
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "01_sources/computrabajo/scrapers"))
+
+FIXTURES_DIR = Path(__file__).parent.parent / "fixtures/computrabajo"
+
+
+@pytest.fixture
+def scraper():
+    from computrabajo_scraper import ComputrabajoScraper
+    return ComputrabajoScraper()
+
+
+class TestDescripcionLimpia:
+
+    def test_oferta_normal_descripcion_completa(self, scraper):
+        """Oferta con HTML estándar — descripción debe estar completa."""
+        html_path = FIXTURES_DIR / "oferta_normal.html"
+        if not html_path.exists():
+            pytest.skip(f"Fixture faltante: {html_path}")
+        with open(html_path, encoding='utf-8') as f:
+            html = f.read()
+        result = scraper._parse_detail_html(html)  # método helper hipotético
+        desc = result.get('descripcion', '')
+        assert len(desc) > 100
+        assert len(desc) < 5000  # sanity: no captura la página entera
+
+    def test_no_ui_noise_ocultar_oferta(self, scraper):
+        """'Ocultaste esta oferta, pulsaRecuperar oferta...' NO debe aparecer en descripción."""
+        html_path = FIXTURES_DIR / "oferta_con_ocultar.html"
+        if not html_path.exists():
+            pytest.skip(f"Fixture faltante: {html_path}")
+        with open(html_path, encoding='utf-8') as f:
+            html = f.read()
+        result = scraper._parse_detail_html(html)
+        desc = result.get('descripcion', '')
+        assert "Ocultaste esta oferta" not in desc
+        assert "pulsaRecuperar" not in desc
+        assert "nuevo en los listados" not in desc
+
+    def test_no_incluye_ofertas_similares(self, scraper):
+        """Sección 'Ofertas similares' al final NO debe incluirse."""
+        html_path = FIXTURES_DIR / "oferta_con_similares.html"
+        if not html_path.exists():
+            pytest.skip(f"Fixture faltante: {html_path}")
+        with open(html_path, encoding='utf-8') as f:
+            html = f.read()
+        result = scraper._parse_detail_html(html)
+        desc = result.get('descripcion', '')
+        # Patrones típicos de "ofertas similares"
+        assert "Importante empresa metalúrgica dedicada a" not in desc
+        assert "EXTRAMEN" not in desc
+        assert "PULLMEN" not in desc
+        assert "Grupo Gestión" not in desc
+
+    def test_oferta_real_contaminada_reproducida(self, scraper):
+        """Reproduce caso real 7985222956.
+
+        El HTML capturado en producción contenía 'Ocultaste esta oferta' +
+        descripción real + 'Importante empresa metalúrgica...' al final.
+
+        Tras el fix, solo debe quedar la descripción real del puesto Pickeador.
+        """
+        html_path = FIXTURES_DIR / "oferta_7985222956.html"
+        if not html_path.exists():
+            pytest.skip(f"Fixture faltante: {html_path}")
+        with open(html_path, encoding='utf-8') as f:
+            html = f.read()
+        result = scraper._parse_detail_html(html)
+        desc = result.get('descripcion', '')
+        # Debe tener el contenido real
+        assert "neumáticos" in desc.lower() or "pickeador" in desc.lower()
+        # Y NO el ruido
+        assert "metalúrgica dedicada" not in desc
+        assert "ARCH Resources" not in desc or desc.count("ARCH") <= 1  # 1 OK si es intro de esta oferta
+```
+
+**Setup de fixtures HTML:**
+
+Para que estos tests corran, hay que capturar HTML de producción:
+
+```bash
+mkdir -p tests/fixtures/computrabajo
+# Guardar HTML de las 3 ofertas contaminadas conocidas:
+for oid in 7985222956 7938726540 7942527874; do
+    python3 -c "
+import requests
+r = requests.get(f'https://ar.computrabajo.com/ofertas-de-trabajo/oferta-de-trabajo-de-operario-en-buenos-aires-{oid}')
+open(f'tests/fixtures/computrabajo/oferta_{oid}.html','w').write(r.text)
+"
+done
+```
+
+### 4.bis.3 Tests de regresión
+
+```bash
+# Debe seguir pasando tras el fix
+pytest tests/scraping/test_pipeline_fixes.py -v
+pytest tests/test_limpieza_tareas_ruido.py -v
+pytest tests/matching/test_gold_set_manual.py -v
+```
+
+### 4.bis.4 Smoke test sobre BD actual
+
+Script para validar que el fix limpió las tareas contaminadas ya en BD (tras re-correr postprocessor):
+
+```python
+import sqlite3
+
+conn = sqlite3.connect('database/bumeran_scraping.db')
+c = conn.cursor()
+
+# Ofertas target del análisis
+OFERTAS_TEST = ['7985222956', '7938726540', '7942527874']
+
+NOISE_PATTERNS = [
+    'Hace 2 días', 'Hace 3 días', 'Grupo Gestión',
+    'EXTRAMEN', 'PULLMEN', 'ARCH Resources',
+    'Buenos Aires-GBA', 'Importante empresa metalúrgica',
+    'Ocultaste esta oferta',
+]
+
+for oid in OFERTAS_TEST:
+    c.execute("SELECT tareas_explicitas FROM ofertas_nlp WHERE id_oferta=?", (oid,))
+    row = c.fetchone()
+    if not row: continue
+    tareas = row[0] or ''
+    encontrados = [p for p in NOISE_PATTERNS if p in tareas]
+    status = "OK" if not encontrados else f"RUIDO: {encontrados}"
+    print(f"{oid}: {status}")
+```
+
+**Criterio:** las 3 ofertas post-fix deben reportar "OK" (sin ruido).
+
+---
+
 ## 5. Detección de ofertas ya afectadas
 
 Query para identificar cuántas ofertas tienen tareas contaminadas:
