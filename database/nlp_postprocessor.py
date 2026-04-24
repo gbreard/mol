@@ -1983,6 +1983,10 @@ class NLPPostprocessor:
             return data
         tareas_limpias = []
 
+        # SPEC C: flag para cortar arrastre de tareas tras detectar ruido.
+        # Reset por cada oferta.
+        self._cortar_arrastre = False
+
         for tarea in lista_tareas:
             if not tarea:
                 continue
@@ -2013,6 +2017,13 @@ class NLPPostprocessor:
             # 4. Descartar tareas que no son tareas (v11.4)
             tarea_lower = tarea.lower().strip()
 
+            # 4.0 SPEC C: Si ya detectamos ruido-trigger en una tarea anterior,
+            # todo lo que sigue se descarta (son arrastres de otras ofertas).
+            if getattr(self, '_cortar_arrastre', False):
+                if self.verbose:
+                    print(f"[TAREAS] Descartada (post-ruido, arrastre): '{tarea[:60]}'")
+                continue
+
             # 4a. Descartar exactos
             if tarea_lower in [x.lower() for x in config.get("descartar_exactos", [])]:
                 if self.verbose:
@@ -2026,6 +2037,11 @@ class NLPPostprocessor:
                     if self.verbose:
                         print(f"[TAREAS] Descartada (empieza con '{prefijo}'): '{tarea}'")
                     descartada = True
+                    # SPEC C: "hace N..." dispara corte de arrastre
+                    if prefijo.lower() in ('hace ', 'hace'):
+                        self._cortar_arrastre = True
+                        if self.verbose:
+                            print(f"[TAREAS] Activado corte de arrastre — descarta resto")
                     break
             if descartada:
                 continue
@@ -2060,6 +2076,21 @@ class NLPPostprocessor:
                             if self.verbose:
                                 print(f"[TAREAS] Descartada (regex '{patron}'): '{tarea}'")
                             descartada = True
+                            # SPEC C: Una vez detectado ruido típico de "ofertas
+                            # similares arrastradas", cortar el resto. Las tareas
+                            # posteriores suelen ser fragmentos de otros avisos.
+                            patrones_cortan_arrastre = [
+                                r'^hace \d+',
+                                r'^más de 30 días$',
+                                r'^¡no te pierdas',
+                                r'^recibe (las )?nuevas ofertas',
+                                r'^importante\s+(empresa|fábrica',
+                                r'^ocultaste esta oferta',
+                            ]
+                            if any(re.match(p, tarea_lower) for p in patrones_cortan_arrastre):
+                                self._cortar_arrastre = True
+                                if self.verbose:
+                                    print(f"[TAREAS] Activado corte de arrastre — descarta resto")
                             break
                     except re.error:
                         pass

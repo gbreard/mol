@@ -1644,6 +1644,50 @@
       {
         "patron": ".*\\(ref\\.?\\s*\\d+.*\\).*",
         "descripcion": "Códigos de referencia interna"
+      },
+      {
+        "patron": "^más de 30 días$",
+        "descripcion": "Metadata 'Más de 30 días' como tarea aislada (publicación)"
+      },
+      {
+        "patron": "^postularme$|^denunciar empleo$|^avísame con ofertas similares$",
+        "descripcion": "Botones CTA del portal ComputRabajo/Bumeran"
+      },
+      {
+        "patron": "^¡no te pierdas ninguna oportunidad.*$",
+        "descripcion": "CTA promocional del portal"
+      },
+      {
+        "patron": "^recibe (las )?nuevas ofertas.*$",
+        "descripcion": "Mensaje suscripción email del portal"
+      },
+      {
+        "patron": "^escribe tu correo.*$",
+        "descripcion": "Mensaje de captura de email"
+      },
+      {
+        "patron": "^parece que ya estas registrado.*$",
+        "descripcion": "Mensaje de login del portal"
+      },
+      {
+        "patron": "^grupo\\s+[a-záéíóúñ]+$",
+        "descripcion": "Nombres de empresas 'Grupo X' (agencias eventuales)"
+      },
+      {
+        "patron": "^importante\\s+(empresa|fábrica|fabrica|compañía|compania)\\s+.*(busca|incorpora|dedicada|del rubro|líder|lider).*$",
+        "descripcion": "Descripción de OTRAS ofertas (texto contaminado de ofertas similares)"
+      },
+      {
+        "patron": "^(extramen|pullmen|archlatam|adecco|manpower|randstad|grupo gestión|grupo gestion)(\\s+.*)?$",
+        "descripcion": "Nombres de agencias eventuales conocidas aisladas como tarea"
+      },
+      {
+        "patron": "^ocultaste esta oferta.*listados$",
+        "descripcion": "UI noise: texto de 'Ocultaste esta oferta' de ComputRabajo"
+      },
+      {
+        "patron": "^[a-záéíóúñ ]+,\\s*(capital federal|buenos aires(-gba)?|córdoba|santa fe|mendoza|rosario)$",
+        "descripcion": "Ubicaciones del aviso (amplia la regla existente)"
       }
     ]
   },
