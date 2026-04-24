@@ -227,11 +227,20 @@ Usar el label exacto que sí exista.
 ## 5. Tests de regresión
 
 ```bash
-# Gold set matching (NO debe romper ningún caso)
-pytest tests/matching/test_gold_set_manual.py -v
+# Gold set v2 (casos verificados por Cyn + Diego con isco_esperado explícito)
+pytest tests/matching/test_gold_set_v2_verified.py -v
+
+# Baseline antes de Spec A: 26 passed (R324-R344 verified) + 22 failed (Spec A pending)
+# Después de Spec A: 48 passed, 0 failed
 ```
 
-Si una regla nueva rompe un caso del gold set, agregar `titulo_no_contiene_alguno` para excluir el caso específico.
+El test está parametrizado por caso: pytest reporta cada oferta individual con ISCO actual vs esperado. Tests agrupados por regla (`TestReglasOperariosSpecA::test_r345_operario_cnc`) permiten ver rápido qué regla falta aplicar.
+
+**NO usar `tests/matching/test_gold_set_manual.py` (v1)** — está desactualizado (49 casos con solo `esco_ok: true/false`, sin ISCO esperado explícito). Puede dar falsos positivos si una regla nueva cambia legítimamente el ISCO.
+
+Si una regla nueva rompe un caso verified, revisar:
+1. ¿El ISCO esperado en gold_set_v2.json sigue siendo correcto tras la regla? Si no, actualizar JSON.
+2. ¿La nueva regla pisa un caso legítimo? Agregar `titulo_no_contiene_alguno` para excluir.
 
 ---
 

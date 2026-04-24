@@ -1,0 +1,353 @@
+{
+  "_version": "2.0",
+  "_fecha": "2026-04-24",
+  "_descripcion": "Gold set verificado con validadores humanos (Cynthia Vázquez, Diego Schleser). A diferencia de gold_set.json v1 (49 casos, solo esco_ok boolean), este incluye el isco_esperado explícito por caso.",
+  "_fuentes": [
+    "Cynthia Vázquez (cinvazquez4@gmail.com) - batch 2026-04-22 (414 issues cerrados R324-R344) + 32 pendientes operarios (2026-04-23)",
+    "Diego Schleser (dschlese@trabajo.gob.ar) - 8 pendientes operarios (2026-04-23)"
+  ],
+  "_categorias": [
+    "rule_verified: casos donde la regla Rxxx YA aplica y el ISCO es correcto (regresión)",
+    "rule_pending: casos de Spec A que deben pasar DESPUÉS de aplicar R345-R352 (detección de fix)"
+  ],
+  "_uso": "pytest tests/matching/test_gold_set_v2_verified.py -v",
+
+  "casos": [
+    {
+      "id_oferta": "9168162159",
+      "titulo": "Fileteador",
+      "isco_esperado": "7511",
+      "esco_label_esperado": "limpiador de pescado/limpiadora de pescado",
+      "regla_aplicable": "R324_fileteador_pescado",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified",
+      "notas": "Primer caso del batch Cynthia. Antes: 8131 (máquinas jabón) — absurdo."
+    },
+    {
+      "id_oferta": "1118204622",
+      "titulo": "Técnicos/as de campo instalación satelital zona norte / oeste",
+      "isco_esperado": "7422",
+      "esco_label_esperado": "técnico reparador de telefonía móvil/técnica reparadora de telefonía móvil",
+      "regla_aplicable": "R325_instalador_satelital",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+    {
+      "id_oferta": "6312291090",
+      "titulo": "Técnico/a De Refrigeración (San Martin)",
+      "isco_esperado": "7127",
+      "esco_label_esperado": "instalador de servicios de calefacción y ventilación/instaladora de servicios de calefacción y ventilación",
+      "regla_aplicable": "R326_tecnico_refrigeracion",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+    {
+      "id_oferta": "6313884152",
+      "titulo": "Encargado/a de Salón",
+      "isco_esperado": "5131",
+      "esco_label_esperado": "jefe de sala/jefa de sala",
+      "regla_aplicable": "R327_encargado_salon",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+    {
+      "id_oferta": "6400928571",
+      "titulo": "Psicólogo clínico",
+      "isco_esperado": "2634",
+      "esco_label_esperado": "psicólogo/psicóloga",
+      "regla_aplicable": "R328_psicologo_profesional",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+    {
+      "id_oferta": "6441959979",
+      "titulo": "Técnico/as Electrónico/as para equipo de Mantenimiento en empresa de servicios petroleros",
+      "isco_esperado": "3114",
+      "esco_label_esperado": "ingeniero técnico en electrónica/ingeniera técnica en electrónica",
+      "regla_aplicable": "R329_tecnico_electronico_mantenimiento",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+    {
+      "id_oferta": "6519792909",
+      "titulo": "fiambrero/a",
+      "isco_esperado": "5223",
+      "esco_label_esperado": "vendedor especializado en pescado y mariscos/vendedora especializada en pescado y mariscos",
+      "regla_aplicable": "R330_fiambrero",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+    {
+      "id_oferta": "7677139622",
+      "titulo": "(ID: 6834) AT para Integración Escolar en Billinghurst",
+      "isco_esperado": "3412",
+      "esco_label_esperado": "trabajador de apoyo a las familias/trabajadora de apoyo a las familias",
+      "regla_aplicable": "R331_acompanante_integracion_escolar",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+    {
+      "id_oferta": "8740015957",
+      "titulo": "Operario para Limpieza en Capital y GBA",
+      "isco_esperado": "9112",
+      "esco_label_esperado": "operario de limpieza de aseos/operaria de limpieza de aseos",
+      "regla_aplicable": "R333_operario_limpieza",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+    {
+      "id_oferta": "9177646546",
+      "titulo": "Niñera",
+      "isco_esperado": "5311",
+      "esco_label_esperado": "niñero/niñera",
+      "regla_aplicable": "R334_ninera",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+    {
+      "id_oferta": "9192373935",
+      "titulo": "Promotor Vía Pública",
+      "isco_esperado": "5244",
+      "esco_label_esperado": "teleoperador/teleoperadora",
+      "regla_aplicable": "R335_promotor_via_publica",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+    {
+      "id_oferta": "6057883738",
+      "titulo": "analista de seguridad e higiene",
+      "isco_esperado": "3257",
+      "esco_label_esperado": "inspector de seguridad y salud en el trabajo/inspectora de seguridad y salud en el trabajo",
+      "regla_aplicable": "R336_analista_seguridad_higiene",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+    {
+      "id_oferta": "6979872094",
+      "titulo": "psicólogo laboral",
+      "isco_esperado": "2634",
+      "esco_label_esperado": "psicólogo/psicóloga",
+      "regla_aplicable": "R337_psicologo_laboral_educativo",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+    {
+      "id_oferta": "6697865056",
+      "titulo": "operador/a técnico",
+      "isco_esperado": "8189",
+      "esco_label_esperado": "operador de canteadora/operadora de canteadora",
+      "regla_aplicable": "R338_operador_tecnico_generico",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+    {
+      "id_oferta": "6742049170",
+      "titulo": "Analista de contrataciones",
+      "isco_esperado": "4323",
+      "esco_label_esperado": "coordinador de operaciones portuarias/coordinadora de operaciones portuarias",
+      "regla_aplicable": "R339_analista_contrataciones_transporte",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+    {
+      "id_oferta": "7110596797",
+      "titulo": "Jefe Operativo  Ingeniero Industrial",
+      "isco_esperado": "1323",
+      "esco_label_esperado": "director de obra/directora de obra",
+      "regla_aplicable": "R340_jefe_operativo_obra",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+    {
+      "id_oferta": "6104769191",
+      "titulo": "acomp terapeutico",
+      "isco_esperado": "5329",
+      "esco_label_esperado": "celador sanitario/celadora sanitaria",
+      "regla_aplicable": "R342_acompanante_terapeutico_cuidador",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+    {
+      "id_oferta": "5548577462",
+      "titulo": "Inyector plástico",
+      "isco_esperado": "8142",
+      "esco_label_esperado": "operador de máquinas de moldear plástico por inyección/operadora de máquinas de moldear plástico por inyección",
+      "regla_aplicable": "R343_inyector_plastico",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+    {
+      "id_oferta": "6024230224",
+      "titulo": "Ref. 20826: Project Manager",
+      "isco_esperado": "1330",
+      "esco_label_esperado": "gestor de proyectos de TIC/gestora de proyectos de TIC",
+      "regla_aplicable": "R344_project_manager",
+      "source": "cynthia_2026-04-22",
+      "categoria": "rule_verified"
+    },
+
+    {
+      "id_oferta": "7942527874",
+      "titulo": "Operario de CNC",
+      "isco_esperado": "7223",
+      "esco_label_esperado": "operador de máquinas-herramienta de control numérico por computadora/operadora de máquinas-herramienta de control numérico por computadora",
+      "regla_aplicable": "R345_operario_cnc",
+      "source": "cynthia_diego_2026-04-23",
+      "categoria": "rule_pending",
+      "notas": "CONFIRMADO POR AMBOS (Cynthia + Diego). Sin fix aún: ISCO actual 8160."
+    },
+    {
+      "id_oferta": "7937139991",
+      "titulo": "Operario cnc",
+      "isco_esperado": "7223",
+      "esco_label_esperado": "operador de máquinas-herramienta de control numérico por computadora/operadora de máquinas-herramienta de control numérico por computadora",
+      "regla_aplicable": "R345_operario_cnc",
+      "source": "diego_2026-04-23",
+      "categoria": "rule_pending"
+    },
+    {
+      "id_oferta": "8090263692",
+      "titulo": "Operario/a corte láser",
+      "isco_esperado": "7223",
+      "esco_label_esperado": "operador de máquinas-herramienta de control numérico por computadora/operadora de máquinas-herramienta de control numérico por computadora",
+      "regla_aplicable": "R346_operario_corte_laser",
+      "source": "cynthia_2026-04-23",
+      "categoria": "rule_pending"
+    },
+    {
+      "id_oferta": "7907119232",
+      "titulo": "Operario metalúrgico",
+      "isco_esperado": "7214",
+      "esco_label_esperado": "montador de estructuras metálicas/montadora de estructuras metálicas",
+      "regla_aplicable": "R347_operario_metalurgico",
+      "source": "diego_2026-04-23",
+      "categoria": "rule_pending"
+    },
+    {
+      "id_oferta": "7245178831",
+      "titulo": "Operario de Mantenimiento para Metalúrgica",
+      "isco_esperado": "7214",
+      "esco_label_esperado": "montador de estructuras metálicas/montadora de estructuras metálicas",
+      "regla_aplicable": "R347_operario_metalurgico",
+      "source": "cynthia_2026-04-23",
+      "categoria": "rule_pending",
+      "notas": "Caso borderline: Cynthia deja 8160 como aceptable. Preferimos 7214."
+    },
+    {
+      "id_oferta": "9255109063",
+      "titulo": "Operario de producción para maquina flex blow",
+      "isco_esperado": "8142",
+      "esco_label_esperado": "operador de máquinas de moldear plástico por soplado/operadora de máquinas de moldear plástico por soplado",
+      "regla_aplicable": "R348_operario_plastico_soplado",
+      "source": "diego_2026-04-23",
+      "categoria": "rule_pending"
+    },
+    {
+      "id_oferta": "7272678691",
+      "titulo": "Operarios/as de producción zona Campana",
+      "isco_esperado": "8219",
+      "esco_label_esperado": "operador de máquinas de moldear plástico por soplado/operadora de máquinas de moldear plástico por soplado",
+      "regla_aplicable": "R348_operario_plastico_soplado",
+      "source": "cynthia_2026-04-23",
+      "categoria": "rule_pending",
+      "notas": "Cynthia sugiere 8219. Diego sugiere 8142. Ambos válidos según contexto. Aceptamos 8142 genérico."
+    },
+    {
+      "id_oferta": "1118219210",
+      "titulo": "Operario de producción",
+      "isco_esperado": "8183",
+      "esco_label_esperado": "operario de línea de envasado y embotellado/operaria de línea de envasado y embotellado",
+      "regla_aplicable": "R349_operario_envasado",
+      "source": "cynthia_2026-04-23",
+      "categoria": "rule_pending",
+      "notas": "Línea de envasado de bebidas. Skills actuales = 20 random (caso peor de ruido)."
+    },
+    {
+      "id_oferta": "7985222956",
+      "titulo": "Operario Pickeador Zona Villa Maipu",
+      "isco_esperado": "9333",
+      "esco_label_esperado": "mozo de almacén/mozos de almacén",
+      "regla_aplicable": "R350_operario_deposito_logistica",
+      "source": "cynthia_2026-04-23",
+      "categoria": "rule_pending"
+    },
+    {
+      "id_oferta": "7347150394",
+      "titulo": "Operarios de deposito con experiencia comprobable",
+      "isco_esperado": "9333",
+      "esco_label_esperado": "mozo de almacén/mozos de almacén",
+      "regla_aplicable": "R350_operario_deposito_logistica",
+      "source": "cynthia_2026-04-23",
+      "categoria": "rule_pending"
+    },
+    {
+      "id_oferta": "6866505508",
+      "titulo": "Operarios/as de depósito",
+      "isco_esperado": "9333",
+      "esco_label_esperado": "mozo de almacén/mozos de almacén",
+      "regla_aplicable": "R350_operario_deposito_logistica",
+      "source": "diego_2026-04-23",
+      "categoria": "rule_pending"
+    },
+    {
+      "id_oferta": "8299423434",
+      "titulo": "Operarios/as de despacho metalúrgico",
+      "isco_esperado": "4321",
+      "esco_label_esperado": "coordinador de operaciones portuarias/coordinadora de operaciones portuarias",
+      "regla_aplicable": "R351_operario_despacho",
+      "source": "diego_2026-04-23",
+      "categoria": "rule_pending"
+    },
+    {
+      "id_oferta": "7879857202",
+      "titulo": "Operario de ensamble de armas",
+      "isco_esperado": "7223",
+      "esco_label_esperado": "operador de máquinas-herramienta de control numérico por computadora/operadora de máquinas-herramienta de control numérico por computadora",
+      "regla_aplicable": "R352_operario_ensamble_armas",
+      "source": "diego_2026-04-23",
+      "categoria": "rule_pending",
+      "notas": "ESCO real 'montador de armamento' — verificar label correcto en Fase 4 del Spec A."
+    },
+    {
+      "id_oferta": "6786905097",
+      "titulo": "Operarias/os ( con habilidad manual) unicamente",
+      "isco_esperado": "9319",
+      "esco_label_esperado": "peón de la industria manufacturera no clasificado bajo otros epígrafes",
+      "regla_aplicable": null,
+      "source": "diego_2026-04-23",
+      "categoria": "rule_pending",
+      "notas": "Sin regla dedicada aún. Diego sugiere 9319 como catch-all para manufactura no clasificada. Puede necesitar R353."
+    },
+
+    {
+      "id_oferta": "7057631179",
+      "titulo": "Operario Maquinista (req203559) Eventual Zona",
+      "isco_esperado": "8160",
+      "esco_label_esperado": "operario de prensado de fruta/operaria de prensado de fruta",
+      "regla_aplicable": null,
+      "source": "cynthia_2026-04-23",
+      "categoria": "rule_verified",
+      "notas": "Cynthia VALIDÓ 8160 como correcto (puesto alimentos). Test confirma que la regla operarios NO rompe este caso."
+    },
+    {
+      "id_oferta": "7171410854",
+      "titulo": "Operarios/as de produccion alimenticia zona Avellaneda",
+      "isco_esperado": "8160",
+      "esco_label_esperado": "operario de prensado de fruta/operaria de prensado de fruta",
+      "regla_aplicable": null,
+      "source": "cynthia_2026-04-23",
+      "categoria": "rule_verified",
+      "notas": "Cynthia VALIDÓ 8160 (alimentos). Cuida que nuevas reglas operario no contaminen alimentos."
+    },
+    {
+      "id_oferta": "7938726540",
+      "titulo": "Operario de producción c/ Exp. en linea de producción",
+      "isco_esperado": "8160",
+      "esco_label_esperado": "operario de prensado de fruta/operaria de prensado de fruta",
+      "regla_aplicable": null,
+      "source": "cynthia_2026-04-23",
+      "categoria": "rule_verified",
+      "notas": "Cynthia VALIDÓ 8160. Tiene tareas contaminadas (ver Spec C) pero ISCO es correcto."
+    }
+  ]
+}

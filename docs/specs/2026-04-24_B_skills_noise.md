@@ -300,10 +300,10 @@ class TestRegresionGoldSet:
 **Correr antes y después del deploy:**
 
 ```bash
-# Gold set matching (49 casos manuales)
-pytest tests/matching/test_gold_set_manual.py -v
+# Gold set v2 — casos verificados con ISCO esperado explícito (preferido)
+pytest tests/matching/test_gold_set_v2_verified.py -v
 
-# Gold set dinámico con Supabase
+# Gold set dinámico con Supabase (sigue siendo útil para integración)
 pytest tests/matching/test_m10_gold_set.py -v
 
 # Gold set skills específicamente
@@ -313,7 +313,9 @@ pytest tests/matching/test_m10_gold_set_skills.py -v
 pytest tests/test_limpieza_tareas_ruido.py -v
 ```
 
-**Criterio de aceptación:** todos los tests pre-existentes deben seguir pasando (0 regresiones).
+**Nota sobre gold set v1**: `tests/matching/test_gold_set_manual.py` usa `esco_ok: true/false` sin ISCO esperado. Puede dar falsos negativos si los cambios del Spec B bajan skills en ofertas que el LLM original clasificó mal. Preferir **v2** (`gold_set_v2_verified.py`).
+
+**Criterio de aceptación:** los casos `rule_verified` del gold set v2 no deben cambiar tras el Spec B.
 
 ### 4.3 Smoke test manual con ofertas afectadas
 

@@ -399,8 +399,10 @@ done
 # Debe seguir pasando tras el fix
 pytest tests/scraping/test_pipeline_fixes.py -v
 pytest tests/test_limpieza_tareas_ruido.py -v
-pytest tests/matching/test_gold_set_manual.py -v
+pytest tests/matching/test_gold_set_v2_verified.py -v  # v2 — casos verificados
 ```
+
+**Nota:** no usar `test_gold_set_manual.py` (v1). Ver Specs A/B para detalles.
 
 ### 4.bis.4 Smoke test sobre BD actual
 
