@@ -102,21 +102,42 @@ Muestra típica:
 
 ---
 
-## 8. Recomendación
+## 8. Ajuste post-Fase 3
 
-✅ **Retropropagar con `filtrar_por_trust=True` activo**, pero primero:
+Tras inspeccionar las ofertas "drásticas", se identificaron dos problemas:
 
-1. **Persistir `trust_motivo` como telemetría permanente** en `skills_semantico_json` (ya implementado).
-2. **Analizar las 2,547 ofertas con reducción drástica** antes de descartar: revisar una muestra para confirmar que el input era pobre (no un falso positivo del filtro).
-3. **Mantener default `filtrar_por_trust=False`** en el pipeline regular hasta validar retropropagación. Activar solo para el backfill.
+### 8.1 Tareas argentinas cortas legítimas
+Ofertas como "Mucama/niñera" con tareas `Lavado; Planchado; Cocina` o "Operario de mantenimiento" con `Plomería; Electricidad; Soldadura` tienen tareas sustantivo-corto válidas. El criterio original (≥20 chars) las consideraba "cortas" y exigía score ≥0.75, descartando skills como `lavar la ropa`, `planchar tejidos`, `electricidad`.
 
-### Alternativa conservadora
-Solo descartar skills con motivo `titulo_*` (los problemas claros) y mantener todas las de `tarea` aunque sean cortas:
-- Reducción esperada: ~12.7% (vs 16.5%)
-- Más seguro ante falsos positivos en tareas cortas
+**Corrección:** el clasificador ahora **confía siempre en `origen=tarea`** (sin importar largo). La tarea ya pasó el threshold BGE-M3 inicial — es la fuente de verdad del puesto.
 
-### Alternativa agresiva
-Aplicar tal como está. Reducción 16.5%. Los casos patológicos (Project manager con tareas basura) pierden muchas skills, pero eso es correcto porque el input era malo.
+### 8.2 Títulos cortos específicos con top-K razonable
+Casos como `[1118092286] Electricista` → skills `electricidad`, `mantener el equipo eléctrico`, `corriente eléctrica` (scores 0.70-0.76) caen por `titulo_corto_score_medio`. Son falsos positivos. El score no permite distinguir "electricista" (top-K coherente) de "operario limpieza" (top-K random).
+
+**Decisión:** se acepta el trade-off. El caso canónico del spec (operario limpieza) se resuelve; los falsos positivos en títulos cortos específicos se compensan dejando `filtrar_por_trust=False` por default y solo persistir `trust_motivo` como telemetría.
+
+---
+
+## 9. Resultado tras ajuste
+
+- **Descarte total: 12.7%** (vs 16.5% antes del ajuste)
+- `origen=tarea` cae 0% (vs 4.9% antes) — preserva tareas argentinas cortas
+- `origen=titulo` cae 99.8% — el filtro sigue detectando ruido top-K
+- Casos canónicos resueltos:
+  - Oferta 5575403602 (operario limpieza): 3/3 skills random descartadas ✅
+- Ofertas con reducción drástica: 1,929 (vs 2,547)
+
+---
+
+## 10. Recomendación final
+
+**Retropropagar SOLO metadata** (agregar `trust` + `trust_motivo` a cada skill en `skills_semantico_json`):
+
+- ✅ Reversible (solo atributos JSON; se pueden remover)
+- ✅ Dashboard actual no se afecta (sigue viendo todas las skills)
+- ✅ Telemetría disponible para decisiones futuras
+- ✅ Compatible con `filtrar_por_trust=False` por default
+- ✅ Si se valida el filtro luego, activar `filtrar_por_trust=True` requiere solo una re-query (no alterar BD)
 
 ---
 

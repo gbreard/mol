@@ -526,14 +526,16 @@ class SkillsImplicitExtractor:
         if origen in ('skills_nlp', 'soft_skills_nlp'):
             return True, 'origen_llm_detectado'
 
-        # 3. Origen "tarea" con tarea sustantiva (≥20 chars)
+        # 3. Origen "tarea" → confiar siempre (la tarea es la fuente de verdad
+        #    del puesto). Distinguimos entre sustantiva (≥20 chars) y corta
+        #    para telemetría, pero ambas pasan: las cortas ("Planchado",
+        #    "Faena", "Soldadura") son tareas argentinas legítimas que ya
+        #    pasaron el threshold BGE-M3.
         if origen == 'tarea':
             tarea_clean = texto_fuente.strip()
             if len(tarea_clean) >= 20:
                 return True, 'origen_tarea_real'
-            if score >= 0.75:
-                return True, 'origen_tarea_corta_score_alto'
-            return False, 'origen_tarea_corta_score_bajo'
+            return True, 'origen_tarea_corta'
 
         # 4. Origen "titulo" → depende del contexto
         if origen == 'titulo':

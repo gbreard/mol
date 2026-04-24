@@ -74,19 +74,17 @@ class TestTrustTarea:
         assert trust is True
         assert motivo == 'origen_tarea_real'
 
-    def test_tarea_corta_score_bajo_descartada(self, extractor):
-        skill = {'origen': 'tarea', 'score': 0.55,
-                 'texto_fuente': 'Hace 2 dias', 'skill_esco': 'skill'}
-        trust, motivo = extractor._classify_skill_trust(skill, {})
-        assert trust is False
-        assert motivo == 'origen_tarea_corta_score_bajo'
-
-    def test_tarea_corta_score_alto_pasa(self, extractor):
-        skill = {'origen': 'tarea', 'score': 0.78,
-                 'texto_fuente': 'Soldar', 'skill_esco': 'soldar piezas'}
-        trust, motivo = extractor._classify_skill_trust(skill, {})
-        assert trust is True
-        assert motivo == 'origen_tarea_corta_score_alto'
+    def test_tarea_corta_pasa_sustantivo_argentino(self, extractor):
+        """Tareas argentinas cortas ('Planchado', 'Faena', 'Electricidad') pasan.
+        Ya filtradas por threshold BGE-M3 inicial — la tarea es fuente de verdad.
+        """
+        for texto, score in [('Planchado', 0.73), ('Faena', 0.70),
+                             ('Electricidad', 0.69), ('Soldar', 0.78)]:
+            skill = {'origen': 'tarea', 'score': score,
+                     'texto_fuente': texto, 'skill_esco': 'skill'}
+            trust, motivo = extractor._classify_skill_trust(skill, {})
+            assert trust is True, f"Tarea corta '{texto}' score={score} debería pasar"
+            assert motivo == 'origen_tarea_corta'
 
 
 class TestTrustTitulo:
