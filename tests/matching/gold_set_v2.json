@@ -190,17 +190,17 @@
       "id_oferta": "7942527874",
       "titulo": "Operario de CNC",
       "isco_esperado": "7223",
-      "esco_label_esperado": "operador de máquinas-herramienta de control numérico por computadora/operadora de máquinas-herramienta de control numérico por computadora",
+      "esco_label_esperado": "tornero/ tornera",
       "regla_aplicable": "R345_operario_cnc",
       "source": "cynthia_diego_2026-04-23",
       "categoria": "rule_pending",
-      "notas": "CONFIRMADO POR AMBOS (Cynthia + Diego). Sin fix aún: ISCO actual 8160."
+      "notas": "CONFIRMADO POR AMBOS (Cynthia + Diego). ESCO no tiene 'operador CNC' exacto en ES; 'tornero/tornera' es el label 7223 más representativo."
     },
     {
       "id_oferta": "7937139991",
       "titulo": "Operario cnc",
       "isco_esperado": "7223",
-      "esco_label_esperado": "operador de máquinas-herramienta de control numérico por computadora/operadora de máquinas-herramienta de control numérico por computadora",
+      "esco_label_esperado": "tornero/ tornera",
       "regla_aplicable": "R345_operario_cnc",
       "source": "diego_2026-04-23",
       "categoria": "rule_pending"
@@ -209,7 +209,7 @@
       "id_oferta": "8090263692",
       "titulo": "Operario/a corte láser",
       "isco_esperado": "7223",
-      "esco_label_esperado": "operador de máquinas-herramienta de control numérico por computadora/operadora de máquinas-herramienta de control numérico por computadora",
+      "esco_label_esperado": "operador de cortadora láser/operadora de cortadora láser",
       "regla_aplicable": "R346_operario_corte_laser",
       "source": "cynthia_2026-04-23",
       "categoria": "rule_pending"
@@ -218,16 +218,17 @@
       "id_oferta": "7907119232",
       "titulo": "Operario metalúrgico",
       "isco_esperado": "7214",
-      "esco_label_esperado": "montador de estructuras metálicas/montadora de estructuras metálicas",
+      "esco_label_esperado": "remachador/remachadora",
       "regla_aplicable": "R347_operario_metalurgico",
       "source": "diego_2026-04-23",
-      "categoria": "rule_pending"
+      "categoria": "rule_pending",
+      "notas": "ESCO 7214 solo tiene 4 labels; 'remachador' es el más general para operario metalúrgico."
     },
     {
       "id_oferta": "7245178831",
       "titulo": "Operario de Mantenimiento para Metalúrgica",
       "isco_esperado": "7214",
-      "esco_label_esperado": "montador de estructuras metálicas/montadora de estructuras metálicas",
+      "esco_label_esperado": "remachador/remachadora",
       "regla_aplicable": "R347_operario_metalurgico",
       "source": "cynthia_2026-04-23",
       "categoria": "rule_pending",
@@ -245,12 +246,12 @@
     {
       "id_oferta": "7272678691",
       "titulo": "Operarios/as de producción zona Campana",
-      "isco_esperado": "8219",
+      "isco_esperado": "8142",
       "esco_label_esperado": "operador de máquinas de moldear plástico por soplado/operadora de máquinas de moldear plástico por soplado",
       "regla_aplicable": "R348_operario_plastico_soplado",
-      "source": "cynthia_2026-04-23",
+      "source": "diego_cynthia_2026-04-23",
       "categoria": "rule_pending",
-      "notas": "Cynthia sugiere 8219. Diego sugiere 8142. Ambos válidos según contexto. Aceptamos 8142 genérico."
+      "notas": "Cynthia sugirió 8219 (ensambladores). Diego sugirió 8142 (operador máquinas). Unificado bajo 8142 porque es más genérico y coincide con flex blow."
     },
     {
       "id_oferta": "1118219210",
@@ -266,7 +267,7 @@
       "id_oferta": "7985222956",
       "titulo": "Operario Pickeador Zona Villa Maipu",
       "isco_esperado": "9333",
-      "esco_label_esperado": "mozo de almacén/mozos de almacén",
+      "esco_label_esperado": "mozo de almacén/moza de almacén",
       "regla_aplicable": "R350_operario_deposito_logistica",
       "source": "cynthia_2026-04-23",
       "categoria": "rule_pending"
@@ -275,7 +276,7 @@
       "id_oferta": "7347150394",
       "titulo": "Operarios de deposito con experiencia comprobable",
       "isco_esperado": "9333",
-      "esco_label_esperado": "mozo de almacén/mozos de almacén",
+      "esco_label_esperado": "mozo de almacén/moza de almacén",
       "regla_aplicable": "R350_operario_deposito_logistica",
       "source": "cynthia_2026-04-23",
       "categoria": "rule_pending"
@@ -284,7 +285,7 @@
       "id_oferta": "6866505508",
       "titulo": "Operarios/as de depósito",
       "isco_esperado": "9333",
-      "esco_label_esperado": "mozo de almacén/mozos de almacén",
+      "esco_label_esperado": "mozo de almacén/moza de almacén",
       "regla_aplicable": "R350_operario_deposito_logistica",
       "source": "diego_2026-04-23",
       "categoria": "rule_pending"
@@ -293,7 +294,7 @@
       "id_oferta": "8299423434",
       "titulo": "Operarios/as de despacho metalúrgico",
       "isco_esperado": "4321",
-      "esco_label_esperado": "coordinador de operaciones portuarias/coordinadora de operaciones portuarias",
+      "esco_label_esperado": "coordinador de inventario/coordinadora de inventario",
       "regla_aplicable": "R351_operario_despacho",
       "source": "diego_2026-04-23",
       "categoria": "rule_pending"
@@ -302,21 +303,22 @@
       "id_oferta": "7879857202",
       "titulo": "Operario de ensamble de armas",
       "isco_esperado": "7223",
-      "esco_label_esperado": "operador de máquinas-herramienta de control numérico por computadora/operadora de máquinas-herramienta de control numérico por computadora",
+      "esco_label_esperado": "tornero/ tornera",
       "regla_aplicable": "R352_operario_ensamble_armas",
       "source": "diego_2026-04-23",
       "categoria": "rule_pending",
-      "notas": "ESCO real 'montador de armamento' — verificar label correcto en Fase 4 del Spec A."
+      "notas": "ESCO no tiene 'montador armamento' en ES; 'tornero' es el 7223 disponible más genérico."
     },
     {
       "id_oferta": "6786905097",
       "titulo": "Operarias/os ( con habilidad manual) unicamente",
       "isco_esperado": "9319",
-      "esco_label_esperado": "peón de la industria manufacturera no clasificado bajo otros epígrafes",
+      "esco_label_esperado": null,
       "regla_aplicable": null,
       "source": "diego_2026-04-23",
       "categoria": "rule_pending",
-      "notas": "Sin regla dedicada aún. Diego sugiere 9319 como catch-all para manufactura no clasificada. Puede necesitar R353."
+      "skip_in_test": true,
+      "notas": "ISCO 9319 NO tiene ningún label en esco_occupations (tabla vacía). Sin regla posible. Test lo skipea."
     },
 
     {

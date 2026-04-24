@@ -102,6 +102,9 @@ def test_caso_pending(caso, db_cursor):
     NOTA: Estos tests FALLAN antes de aplicar Spec A. Ese es el punto:
     fallan → aplicamos Spec A → pasan.
     """
+    if caso.get("skip_in_test"):
+        pytest.skip(caso.get("notas", "skip marcado en JSON"))
+
     row = _query_isco(db_cursor, caso["id_oferta"])
     assert row is not None, f"Oferta {caso['id_oferta']} no existe en BD"
     isco_actual, esco_actual, regla_actual = row

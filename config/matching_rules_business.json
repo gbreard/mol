@@ -9063,7 +9063,11 @@
       },
       "activa": true,
       "_linaje": {
-        "issue_ids": ["adb4b6b1", "74a8005d", "7aaac721"],
+        "issue_ids": [
+          "adb4b6b1",
+          "74a8005d",
+          "7aaac721"
+        ],
         "oferta_ejemplo": "9168162159",
         "autor_correccion": "Cynthia",
         "nota": "Fileteador de pescado en industria alimenticia. Cynthia reporta: 8131 (máquinas jabón) era totalmente incorrecto. ISCO 7511 incluye 'limpiador de pescado' como ocupación más cercana a fileteador argentino."
@@ -9073,209 +9077,684 @@
       "nombre": "Instalador satelital / técnico de campo telecom",
       "prioridad": 0,
       "condicion": {
-        "titulo_original_contiene_alguno": ["instalación satelital", "instalador satelital", "técnico satelital", "tecnico satelital", "instalador de antena", "instalacion satelital", "satelital zona"]
+        "titulo_original_contiene_alguno": [
+          "instalación satelital",
+          "instalador satelital",
+          "técnico satelital",
+          "tecnico satelital",
+          "instalador de antena",
+          "instalacion satelital",
+          "satelital zona"
+        ]
       },
-      "accion": {"forzar_isco": "7422", "esco_label": "técnico reparador de telefonía móvil/técnica reparadora de telefonía móvil"},
+      "accion": {
+        "forzar_isco": "7422",
+        "esco_label": "técnico reparador de telefonía móvil/técnica reparadora de telefonía móvil"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "1118204622", "autor_correccion": "Cynthia"}
+      "_linaje": {
+        "oferta_ejemplo": "1118204622",
+        "autor_correccion": "Cynthia"
+      }
     },
     "R326_tecnico_refrigeracion": {
       "nombre": "Técnico de refrigeración / aire acondicionado",
       "prioridad": 0,
       "condicion": {
-        "titulo_original_contiene_alguno": ["refrigeración", "refrigeracion"],
-        "titulo_contiene_alguno": ["técnico", "tecnico", "técnica", "tecnica"]
+        "titulo_original_contiene_alguno": [
+          "refrigeración",
+          "refrigeracion"
+        ],
+        "titulo_contiene_alguno": [
+          "técnico",
+          "tecnico",
+          "técnica",
+          "tecnica"
+        ]
       },
-      "accion": {"forzar_isco": "7127", "esco_label": "instalador de servicios de calefacción y ventilación/instaladora de servicios de calefacción y ventilación"},
+      "accion": {
+        "forzar_isco": "7127",
+        "esco_label": "instalador de servicios de calefacción y ventilación/instaladora de servicios de calefacción y ventilación"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "6312291090", "autor_correccion": "Cynthia"}
+      "_linaje": {
+        "oferta_ejemplo": "6312291090",
+        "autor_correccion": "Cynthia"
+      }
     },
     "R327_encargado_salon": {
       "nombre": "Encargado/a de salón (gastronomía)",
       "prioridad": 0,
       "condicion": {
-        "titulo_original_contiene_alguno": ["de salón", "de salon"],
-        "titulo_contiene_alguno": ["encargado", "encargada", "jefe", "jefa", "responsable"]
+        "titulo_original_contiene_alguno": [
+          "de salón",
+          "de salon"
+        ],
+        "titulo_contiene_alguno": [
+          "encargado",
+          "encargada",
+          "jefe",
+          "jefa",
+          "responsable"
+        ]
       },
-      "accion": {"forzar_isco": "5131", "esco_label": "jefe de sala/jefa de sala"},
+      "accion": {
+        "forzar_isco": "5131",
+        "esco_label": "jefe de sala/jefa de sala"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "6313884152", "autor_correccion": "Cynthia"}
+      "_linaje": {
+        "oferta_ejemplo": "6313884152",
+        "autor_correccion": "Cynthia"
+      }
     },
     "R328_psicologo_profesional": {
       "nombre": "Psicólogo/a profesional (clínico, educativo, laboral)",
       "prioridad": 1,
       "condicion": {
-        "titulo_contiene_alguno": ["psicólogo", "psicologo", "psicóloga", "psicologa", "lic psicología", "lic psicologia", "licenciado en psicología", "licenciada en psicología"]
+        "titulo_contiene_alguno": [
+          "psicólogo",
+          "psicologo",
+          "psicóloga",
+          "psicologa",
+          "lic psicología",
+          "lic psicologia",
+          "licenciado en psicología",
+          "licenciada en psicología"
+        ]
       },
-      "accion": {"forzar_isco": "2634", "esco_label": "psicólogo/psicóloga"},
+      "accion": {
+        "forzar_isco": "2634",
+        "esco_label": "psicólogo/psicóloga"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "6400928571", "autor_correccion": "Cynthia", "nota": "Aplica a psicólogo clínico, laboral, educativo y ofertas combinadas con terapia ocupacional."}
+      "_linaje": {
+        "oferta_ejemplo": "6400928571",
+        "autor_correccion": "Cynthia",
+        "nota": "Aplica a psicólogo clínico, laboral, educativo y ofertas combinadas con terapia ocupacional."
+      }
     },
     "R329_tecnico_electronico_mantenimiento": {
       "nombre": "Técnico electrónico para mantenimiento de equipos",
       "prioridad": 0,
       "condicion": {
-        "titulo_original_contiene_alguno": ["electrónico", "electronico", "electrónica", "electronica"],
-        "titulo_contiene_alguno": ["técnico", "tecnico", "técnica", "tecnica"]
+        "titulo_original_contiene_alguno": [
+          "electrónico",
+          "electronico",
+          "electrónica",
+          "electronica"
+        ],
+        "titulo_contiene_alguno": [
+          "técnico",
+          "tecnico",
+          "técnica",
+          "tecnica"
+        ]
       },
-      "accion": {"forzar_isco": "3114", "esco_label": "ingeniero técnico en electrónica/ingeniera técnica en electrónica"},
+      "accion": {
+        "forzar_isco": "3114",
+        "esco_label": "ingeniero técnico en electrónica/ingeniera técnica en electrónica"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "6441959979", "autor_correccion": "Cynthia"}
+      "_linaje": {
+        "oferta_ejemplo": "6441959979",
+        "autor_correccion": "Cynthia"
+      }
     },
     "R330_fiambrero": {
       "nombre": "Fiambrero/a (vendedor especializado fiambres/embutidos)",
       "prioridad": 1,
       "condicion": {
-        "titulo_contiene_alguno": ["fiambrero", "fiambrera"]
+        "titulo_contiene_alguno": [
+          "fiambrero",
+          "fiambrera"
+        ]
       },
-      "accion": {"forzar_isco": "5223", "esco_label": "vendedor especializado en pescado y mariscos/vendedora especializada en pescado y mariscos"},
+      "accion": {
+        "forzar_isco": "5223",
+        "esco_label": "vendedor especializado en pescado y mariscos/vendedora especializada en pescado y mariscos"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "6519792909", "autor_correccion": "Cynthia", "nota": "Cynthia indica ISCO 5223 para fiambrero. ESCO no tiene label específico de fiambrero; el más cercano es vendedor especializado en productos alimenticios."}
+      "_linaje": {
+        "oferta_ejemplo": "6519792909",
+        "autor_correccion": "Cynthia",
+        "nota": "Cynthia indica ISCO 5223 para fiambrero. ESCO no tiene label específico de fiambrero; el más cercano es vendedor especializado en productos alimenticios."
+      }
     },
     "R331_acompanante_integracion_escolar": {
       "nombre": "Acompañante terapéutico (AT) para integración escolar",
       "prioridad": 0,
       "condicion": {
-        "titulo_original_contiene_alguno": ["integración escolar", "integracion escolar", "acompañante terapéutico", "acompanante terapeutico", "acompañante terapeutico", "at para integración", "at integracion", "at para integracion"]
+        "titulo_original_contiene_alguno": [
+          "integración escolar",
+          "integracion escolar",
+          "acompañante terapéutico",
+          "acompanante terapeutico",
+          "acompañante terapeutico",
+          "at para integración",
+          "at integracion",
+          "at para integracion"
+        ]
       },
-      "accion": {"forzar_isco": "3412", "esco_label": "trabajador de apoyo a las familias/trabajadora de apoyo a las familias"},
+      "accion": {
+        "forzar_isco": "3412",
+        "esco_label": "trabajador de apoyo a las familias/trabajadora de apoyo a las familias"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "7677139622", "autor_correccion": "Cynthia"}
+      "_linaje": {
+        "oferta_ejemplo": "7677139622",
+        "autor_correccion": "Cynthia"
+      }
     },
     "R332_talentos_discapacidad": {
       "nombre": "Base de talentos / búsqueda para personas con discapacidad",
       "prioridad": 0,
       "condicion": {
-        "titulo_original_contiene_alguno": ["personas con discapacidad", "talento inclusiv", "base de talentos"]
+        "titulo_original_contiene_alguno": [
+          "personas con discapacidad",
+          "talento inclusiv",
+          "base de talentos"
+        ]
       },
-      "accion": {"forzar_isco": "3435", "esco_label": "asistente social/asistenta social"},
+      "accion": {
+        "forzar_isco": "3435",
+        "esco_label": "asistente social/asistenta social"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "8303429460", "autor_correccion": "Cynthia"}
+      "_linaje": {
+        "oferta_ejemplo": "8303429460",
+        "autor_correccion": "Cynthia"
+      }
     },
     "R333_operario_limpieza": {
       "nombre": "Operario/a de limpieza",
       "prioridad": 0,
       "condicion": {
-        "titulo_original_contiene_alguno": ["limpieza"],
-        "titulo_contiene_alguno": ["operario", "operaria", "empleado", "empleada", "personal"]
+        "titulo_original_contiene_alguno": [
+          "limpieza"
+        ],
+        "titulo_contiene_alguno": [
+          "operario",
+          "operaria",
+          "empleado",
+          "empleada",
+          "personal"
+        ]
       },
-      "accion": {"forzar_isco": "9112", "esco_label": "operario de limpieza de aseos/operaria de limpieza de aseos"},
+      "accion": {
+        "forzar_isco": "9112",
+        "esco_label": "operario de limpieza de aseos/operaria de limpieza de aseos"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "8740015957", "autor_correccion": "Cynthia"}
+      "_linaje": {
+        "oferta_ejemplo": "8740015957",
+        "autor_correccion": "Cynthia"
+      }
     },
     "R334_ninera": {
       "nombre": "Niñera / cuidador de niños",
       "prioridad": 1,
       "condicion": {
-        "titulo_contiene_alguno": ["niñera", "ninera", "niñero", "ninero", "nana", "nanny", "cuidadora de niños", "cuidador de niños", "cuidadora de ninos"]
+        "titulo_contiene_alguno": [
+          "niñera",
+          "ninera",
+          "niñero",
+          "ninero",
+          "nana",
+          "nanny",
+          "cuidadora de niños",
+          "cuidador de niños",
+          "cuidadora de ninos"
+        ]
       },
-      "accion": {"forzar_isco": "5311", "esco_label": "niñero/niñera"},
+      "accion": {
+        "forzar_isco": "5311",
+        "esco_label": "niñero/niñera"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "9177646546", "autor_correccion": "Cynthia"}
+      "_linaje": {
+        "oferta_ejemplo": "9177646546",
+        "autor_correccion": "Cynthia"
+      }
     },
     "R335_promotor_via_publica": {
       "nombre": "Promotor/a vía pública (venta/promoción telefónica y presencial)",
       "prioridad": 1,
       "condicion": {
-        "titulo_contiene_alguno": ["promotor vía pública", "promotor via publica", "promotora vía pública", "promotora via publica", "promotor callejero", "promotor de vía pública"]
+        "titulo_contiene_alguno": [
+          "promotor vía pública",
+          "promotor via publica",
+          "promotora vía pública",
+          "promotora via publica",
+          "promotor callejero",
+          "promotor de vía pública"
+        ]
       },
-      "accion": {"forzar_isco": "5244", "esco_label": "teleoperador/teleoperadora"},
+      "accion": {
+        "forzar_isco": "5244",
+        "esco_label": "teleoperador/teleoperadora"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "9192373935", "autor_correccion": "Cynthia", "nota": "Cynthia asigna 5244 (teleoperador) al promotor vía pública como ocupación ESCO más cercana en el esquema MOL."}
+      "_linaje": {
+        "oferta_ejemplo": "9192373935",
+        "autor_correccion": "Cynthia",
+        "nota": "Cynthia asigna 5244 (teleoperador) al promotor vía pública como ocupación ESCO más cercana en el esquema MOL."
+      }
     },
     "R336_analista_seguridad_higiene": {
       "nombre": "Analista/Técnico de Seguridad e Higiene (técnico, no profesional)",
       "prioridad": 0,
       "condicion": {
-        "titulo_original_contiene_alguno": ["seguridad e higiene", "seguridad higiene", "higiene y seguridad"],
-        "titulo_contiene_alguno": ["analista", "técnico", "tecnico", "técnica", "tecnica", "auxiliar", "asistente"]
+        "titulo_original_contiene_alguno": [
+          "seguridad e higiene",
+          "seguridad higiene",
+          "higiene y seguridad"
+        ],
+        "titulo_contiene_alguno": [
+          "analista",
+          "técnico",
+          "tecnico",
+          "técnica",
+          "tecnica",
+          "auxiliar",
+          "asistente"
+        ]
       },
-      "accion": {"forzar_isco": "3257", "esco_label": "inspector de seguridad y salud en el trabajo/inspectora de seguridad y salud en el trabajo"},
+      "accion": {
+        "forzar_isco": "3257",
+        "esco_label": "inspector de seguridad y salud en el trabajo/inspectora de seguridad y salud en el trabajo"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "6057883738", "autor_correccion": "Cynthia", "nota": "Sobrescribe R107 (2263) cuando el título indica nivel técnico, no profesional."}
+      "_linaje": {
+        "oferta_ejemplo": "6057883738",
+        "autor_correccion": "Cynthia",
+        "nota": "Sobrescribe R107 (2263) cuando el título indica nivel técnico, no profesional."
+      }
     },
     "R337_psicologo_laboral_educativo": {
       "nombre": "Psicólogo/a (laboral, educativo, clínico) - match reforzado",
       "prioridad": 0,
       "condicion": {
-        "titulo_original_contiene_alguno": ["psicólog", "psicolog", "psicóloga", "psicologa"]
+        "titulo_original_contiene_alguno": [
+          "psicólog",
+          "psicolog",
+          "psicóloga",
+          "psicologa"
+        ]
       },
-      "accion": {"forzar_isco": "2634", "esco_label": "psicólogo/psicóloga"},
+      "accion": {
+        "forzar_isco": "2634",
+        "esco_label": "psicólogo/psicóloga"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "6979872094", "autor_correccion": "Cynthia", "nota": "Aplica a cualquier título con 'psicólog*'. Incluye psicólogo laboral (6979872094), psicólogo educativo (8393131999) y ofertas combinadas con terapia ocupacional."}
+      "_linaje": {
+        "oferta_ejemplo": "6979872094",
+        "autor_correccion": "Cynthia",
+        "nota": "Aplica a cualquier título con 'psicólog*'. Incluye psicólogo laboral (6979872094), psicólogo educativo (8393131999) y ofertas combinadas con terapia ocupacional."
+      }
     },
     "R338_operador_tecnico_generico": {
       "nombre": "Operador/a técnico (producción genérica)",
       "prioridad": 0,
       "condicion": {
-        "titulo_original_contiene_alguno": ["operador/a técnico", "operadora técnica", "operador tecnico", "operadora tecnica"]
+        "titulo_original_contiene_alguno": [
+          "operador/a técnico",
+          "operadora técnica",
+          "operador tecnico",
+          "operadora tecnica"
+        ]
       },
-      "accion": {"forzar_isco": "8189", "esco_label": "operador de canteadora/operadora de canteadora"},
+      "accion": {
+        "forzar_isco": "8189",
+        "esco_label": "operador de canteadora/operadora de canteadora"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "6697865056", "autor_correccion": "Cynthia", "nota": "ISCO 8189 no tiene label genérico; usamos 'operador de canteadora' como representativo."}
+      "_linaje": {
+        "oferta_ejemplo": "6697865056",
+        "autor_correccion": "Cynthia",
+        "nota": "ISCO 8189 no tiene label genérico; usamos 'operador de canteadora' como representativo."
+      }
     },
     "R339_analista_contrataciones_transporte": {
       "nombre": "Analista de contrataciones (sector transporte/logística)",
       "prioridad": 0,
       "condicion": {
-        "titulo_original_contiene_alguno": ["analista de contrataciones", "analista contrataciones", "coordinador de contrataciones", "coordinadora contrataciones"]
+        "titulo_original_contiene_alguno": [
+          "analista de contrataciones",
+          "analista contrataciones",
+          "coordinador de contrataciones",
+          "coordinadora contrataciones"
+        ]
       },
-      "accion": {"forzar_isco": "4323", "esco_label": "coordinador de operaciones portuarias/coordinadora de operaciones portuarias"},
+      "accion": {
+        "forzar_isco": "4323",
+        "esco_label": "coordinador de operaciones portuarias/coordinadora de operaciones portuarias"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "6742049170", "autor_correccion": "Cynthia", "nota": "ISCO 4323 (empleado administrativo de transporte); se usa label de coordinador operaciones como representativo."}
+      "_linaje": {
+        "oferta_ejemplo": "6742049170",
+        "autor_correccion": "Cynthia",
+        "nota": "ISCO 4323 (empleado administrativo de transporte); se usa label de coordinador operaciones como representativo."
+      }
     },
     "R340_jefe_operativo_obra": {
       "nombre": "Jefe operativo de obra / construcción (gerente)",
       "prioridad": 0,
       "condicion": {
-        "titulo_original_contiene_alguno": ["jefe operativo", "jefa operativa"],
-        "titulo_contiene_alguno": ["ingeniero", "ingeniera", "obra", "construcci", "operaciones"]
+        "titulo_original_contiene_alguno": [
+          "jefe operativo",
+          "jefa operativa"
+        ],
+        "titulo_contiene_alguno": [
+          "ingeniero",
+          "ingeniera",
+          "obra",
+          "construcci",
+          "operaciones"
+        ]
       },
-      "accion": {"forzar_isco": "1323", "esco_label": "director de obra/directora de obra"},
+      "accion": {
+        "forzar_isco": "1323",
+        "esco_label": "director de obra/directora de obra"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "7110596797", "autor_correccion": "Cynthia", "nota": "Sobrescribe R79 (2141 ingeniero industrial) cuando título indica jefatura operativa de obra."}
+      "_linaje": {
+        "oferta_ejemplo": "7110596797",
+        "autor_correccion": "Cynthia",
+        "nota": "Sobrescribe R79 (2141 ingeniero industrial) cuando título indica jefatura operativa de obra."
+      }
     },
     "R341_vigilador_supervisor_produccion": {
       "nombre": "Vigilador de personal (supervisor producción, no seguridad privada)",
       "prioridad": 0,
       "condicion": {
-        "titulo_original_contiene_alguno": ["vigilador de personal", "vigiladora de personal"]
+        "titulo_original_contiene_alguno": [
+          "vigilador de personal",
+          "vigiladora de personal"
+        ]
       },
-      "accion": {"forzar_isco": "3122", "esco_label": "supervisor de montaje industrial/supervisora de montaje industrial"},
+      "accion": {
+        "forzar_isco": "3122",
+        "esco_label": "supervisor de montaje industrial/supervisora de montaje industrial"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "7139382499", "autor_correccion": "Cynthia", "nota": "Sobrescribe R75 (5414 vigilador seguridad). 'Vigilador de personal' en Argentina es supervisor operativo, no guardia. Label ESCO más cercano en 3122."}
+      "_linaje": {
+        "oferta_ejemplo": "7139382499",
+        "autor_correccion": "Cynthia",
+        "nota": "Sobrescribe R75 (5414 vigilador seguridad). 'Vigilador de personal' en Argentina es supervisor operativo, no guardia. Label ESCO más cercano en 3122."
+      }
     },
     "R342_acompanante_terapeutico_cuidador": {
       "nombre": "Acompañante terapéutico (cuidador, sin integración escolar)",
       "prioridad": 1,
       "condicion": {
-        "titulo_original_contiene_alguno": ["acompañante terapéutico", "acompanante terapeutico", "acomp terapeutico", "acomp terapéutico"],
-        "titulo_no_contiene_alguno": ["integración escolar", "integracion escolar", "escolar"]
+        "titulo_original_contiene_alguno": [
+          "acompañante terapéutico",
+          "acompanante terapeutico",
+          "acomp terapeutico",
+          "acomp terapéutico"
+        ],
+        "titulo_no_contiene_alguno": [
+          "integración escolar",
+          "integracion escolar",
+          "escolar"
+        ]
       },
-      "accion": {"forzar_isco": "5329", "esco_label": "celador sanitario/celadora sanitaria"},
+      "accion": {
+        "forzar_isco": "5329",
+        "esco_label": "celador sanitario/celadora sanitaria"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "6104769191", "autor_correccion": "Cynthia", "nota": "AT sin contexto escolar → 5329 (celador). Con contexto escolar → R331 (3412)."}
+      "_linaje": {
+        "oferta_ejemplo": "6104769191",
+        "autor_correccion": "Cynthia",
+        "nota": "AT sin contexto escolar → 5329 (celador). Con contexto escolar → R331 (3412)."
+      }
     },
     "R343_inyector_plastico": {
       "nombre": "Inyector/Operario de máquinas de inyección plástica",
       "prioridad": 0,
       "condicion": {
-        "titulo_original_contiene_alguno": ["inyector plástico", "inyector plastico", "inyectora plástica", "inyectora plastica", "operario inyector", "operario de inyección"]
+        "titulo_original_contiene_alguno": [
+          "inyector plástico",
+          "inyector plastico",
+          "inyectora plástica",
+          "inyectora plastica",
+          "operario inyector",
+          "operario de inyección"
+        ]
       },
-      "accion": {"forzar_isco": "8142", "esco_label": "operador de máquinas de moldear plástico por inyección/operadora de máquinas de moldear plástico por inyección"},
+      "accion": {
+        "forzar_isco": "8142",
+        "esco_label": "operador de máquinas de moldear plástico por inyección/operadora de máquinas de moldear plástico por inyección"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "5548577462", "autor_correccion": "Cynthia"}
+      "_linaje": {
+        "oferta_ejemplo": "5548577462",
+        "autor_correccion": "Cynthia"
+      }
     },
     "R344_project_manager": {
       "nombre": "Project Manager / Gerente de proyectos (sobrescribe R19)",
       "prioridad": 0,
       "condicion": {
-        "titulo_original_contiene_alguno": ["project manager", "gerente de proyectos", "gerenta de proyectos", "jefe de proyecto", "jefa de proyecto", "pm senior", "pm junior"],
-        "titulo_no_contiene_alguno": ["assistant", "asistente"]
+        "titulo_original_contiene_alguno": [
+          "project manager",
+          "gerente de proyectos",
+          "gerenta de proyectos",
+          "jefe de proyecto",
+          "jefa de proyecto",
+          "pm senior",
+          "pm junior"
+        ],
+        "titulo_no_contiene_alguno": [
+          "assistant",
+          "asistente"
+        ]
       },
-      "accion": {"forzar_isco": "1330", "esco_label": "gestor de proyectos de TIC/gestora de proyectos de TIC"},
+      "accion": {
+        "forzar_isco": "1330",
+        "esco_label": "gestor de proyectos de TIC/gestora de proyectos de TIC"
+      },
       "activa": true,
-      "_linaje": {"oferta_ejemplo": "6024230224", "autor_correccion": "Cynthia", "nota": "Cynthia indica 1330 (TIC) en vez de 1213. Prioridad 0 para sobrescribir R19_project_manager."}
+      "_linaje": {
+        "oferta_ejemplo": "6024230224",
+        "autor_correccion": "Cynthia",
+        "nota": "Cynthia indica 1330 (TIC) en vez de 1213. Prioridad 0 para sobrescribir R19_project_manager."
+      }
+    },
+    "R345_operario_cnc": {
+      "nombre": "Operario/Operador CNC (no prensado de fruta)",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_original_contiene_alguno": [
+          "operario cnc",
+          "operador cnc",
+          "operadora cnc",
+          "operario de cnc",
+          "operador de cnc",
+          "operadora de cnc",
+          "operario de máquinas cnc",
+          "operador de máquinas cnc"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7223",
+        "esco_label": "tornero/ tornera"
+      },
+      "activa": true,
+      "_linaje": {
+        "oferta_ejemplo": "7942527874",
+        "autor_correccion": "Cynthia+Diego",
+        "nota": "Ambos validadores confirman 7223 para operario CNC. Evita que caiga en 8160 (prensado fruta) por default."
+      }
+    },
+    "R346_operario_corte_laser": {
+      "nombre": "Operario de corte láser",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_original_contiene_alguno": [
+          "corte láser",
+          "corte laser",
+          "cortadora láser",
+          "cortadora laser",
+          "operario de láser",
+          "operador láser"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7223",
+        "esco_label": "operador de cortadora láser/operadora de cortadora láser"
+      },
+      "activa": true,
+      "_linaje": {
+        "oferta_ejemplo": "8090263692",
+        "autor_correccion": "Cynthia"
+      }
+    },
+    "R347_operario_metalurgico": {
+      "nombre": "Operario metalúrgico (no prensado de fruta)",
+      "prioridad": -3,
+      "condicion": {
+        "titulo_original_contiene_alguno": [
+          "operario metalúrgico",
+          "operario metalurgico",
+          "operaria metalúrgica",
+          "operaria metalurgica",
+          "metalúrgico/a",
+          "operario de metalúrgica",
+          "operario mantenimiento metalúrgica",
+          "operario de mantenimiento para metalúrgica"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7214",
+        "esco_label": "remachador/remachadora"
+      },
+      "activa": true,
+      "_linaje": {
+        "oferta_ejemplo": "7907119232",
+        "autor_correccion": "Diego",
+        "nota": "ESCO 7214 solo tiene 4 labels. 'remachador' es el más genérico disponible."
+      }
+    },
+    "R348_operario_plastico_soplado": {
+      "nombre": "Operario producción plástico (moldeo/soplado)",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": ["flex blow", "moldeo por soplado", "soplado de plástico", "fabricación de bidones", "bidones plásticos", "inyección plástica", "inyectora plástica", "maquina flex blow", "máquina flex blow", "productos plásticos"],
+        "titulo_contiene_alguno": ["operario", "operaria", "operarios", "operarias"]
+      },
+      "accion": {
+        "forzar_isco": "8142",
+        "esco_label": "operador de máquinas de moldear plástico por soplado/operadora de máquinas de moldear plástico por soplado"
+      },
+      "activa": true,
+      "_linaje": {
+        "oferta_ejemplo": "9255109063",
+        "autor_correccion": "Diego",
+        "nota": "Busca en título Y tareas. Ofertas suelen tener 'Operarios/as de producción' genérico en título y el detalle de plástico/flex blow en descripción/tareas."
+      }
+    },
+    "R349_operario_envasado": {
+      "nombre": "Operario de envasado / embotellado / línea de llenado",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": ["envasado", "embotellado", "línea de llenado", "linea de llenado", "línea de envasado", "linea de envasado", "línea de bebidas"],
+        "titulo_contiene_alguno": ["operario", "operaria", "operarios", "operarias"],
+        "titulo_no_contiene_alguno": ["jefe", "supervisor", "encargado", "chofer", "cocina", "e-commerce", "ecommerce", "mantenimiento", "limpieza", "soldador", "pintor", "mecánico", "mecanico"]
+      },
+      "accion": {
+        "forzar_isco": "8183",
+        "esco_label": "operario de línea de envasado y embotellado/operaria de línea de envasado y embotellado"
+      },
+      "activa": true,
+      "_linaje": {
+        "oferta_ejemplo": "1118219210",
+        "autor_correccion": "Cynthia",
+        "nota": "Busca también en descripción. Muchas ofertas tienen 'Operario de producción' en título y 'línea de llenado de bebidas' en descripción."
+      }
+    },
+    "R350_operario_deposito_logistica": {
+      "nombre": "Operario de depósito / pickeador / logística almacén",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_original_contiene_alguno": [
+          "pickeador",
+          "pickeadora",
+          "picker",
+          "operario de depósito",
+          "operario de deposito",
+          "operaria de depósito",
+          "operaria de deposito",
+          "operarios de depósito",
+          "operarios de deposito",
+          "operarios/as de depósito",
+          "operarios/as de deposito",
+          "operario logístico",
+          "operario logistico",
+          "mozo de almacén",
+          "mozo de almacen",
+          "moza de almacén",
+          "moza de almacen"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9333",
+        "esco_label": "mozo de almacén/moza de almacén"
+      },
+      "activa": true,
+      "_linaje": {
+        "oferta_ejemplo": "7985222956",
+        "autor_correccion": "Cynthia+Diego"
+      }
+    },
+    "R351_operario_despacho": {
+      "nombre": "Operario/auxiliar de despacho y expedición",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_original_contiene_alguno": [
+          "operario de despacho",
+          "operaria de despacho",
+          "operarios/as de despacho",
+          "despacho metalúrgico",
+          "despacho metalurgico",
+          "auxiliar de despacho",
+          "auxiliar despacho"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4321",
+        "esco_label": "coordinador de inventario/coordinadora de inventario"
+      },
+      "activa": true,
+      "_linaje": {
+        "oferta_ejemplo": "8299423434",
+        "autor_correccion": "Diego"
+      }
+    },
+    "R352_operario_ensamble_armas": {
+      "nombre": "Operario de ensamble de armamento",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_original_contiene_alguno": [
+          "ensamble de armas",
+          "ensamble armas",
+          "montador de armamento",
+          "ensamblador armamento",
+          "operario armero"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7223",
+        "esco_label": "tornero/ tornera"
+      },
+      "activa": true,
+      "_linaje": {
+        "oferta_ejemplo": "7879857202",
+        "autor_correccion": "Diego",
+        "nota": "ESCO no tiene 'montador armamento' en ES. Usa 7223 con label genérico tornero."
+      }
     }
   },
   "reglas_filtro": {
