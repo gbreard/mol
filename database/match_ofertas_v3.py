@@ -162,6 +162,20 @@ class MatcherV3:
             if self.verbose:
                 print("[V3] WARN: Embeddings de ocupaciones no encontrados")
 
+        # SPEC J: index esco_code → ocupación, para resolución autoritativa
+        self.code_to_occupation = {}
+        for o in (self.occ_metadata or []):
+            code = o.get('esco_code')
+            if code and code not in self.code_to_occupation:
+                # Derivar isco_4dig si no está presente
+                isco = o.get('isco_4dig') or (code.split('.')[0] if '.' in code else code[:4])
+                self.code_to_occupation[code] = {
+                    'uri': o.get('uri', ''),
+                    'label': o.get('label') or o.get('esco_label') or '',
+                    'esco_code': code,
+                    'isco_code': isco,
+                }
+
     def _load_business_rules(self):
         """Carga reglas de negocio — override de Supabase o JSON local."""
         try:
@@ -726,8 +740,8 @@ class MatcherV3:
         # el label de la regla es más específico, ej: "software developer" vs "blockchain")
         use_rule_label = ("regla" in decision_metodo or decision_metodo == "dual_coinciden") and rule_info
         if use_rule_label:
-            # La decisión es usar la regla
-            rule_occupation = self._find_occupation_by_esco_label(rule_info.get("esco_label", ""))
+            # La decisión es usar la regla — SPEC J: usar esco_code si está disponible
+            rule_occupation = self._resolve_rule_target(rule_info)
             if rule_occupation:
                 return MatchResult(
                     status=MatchStatus.BUSINESS_RULE.value,
@@ -927,14 +941,13 @@ class MatcherV3:
 
             if condicion_cumplida:
                 # v3.4.2: ESCO es el target primario, ISCO se deriva
-                esco_label = accion.get("esco_label", "")
-
-                # Buscar ocupación ESCO por label exacto
-                occupation = self._find_occupation_by_esco_label(esco_label)
+                # SPEC J: usar esco_code (autoritativo) con fallback a esco_label
+                occupation = self._resolve_rule_target(accion)
 
                 if not occupation:
                     if self.verbose:
-                        print(f"[V3.4.2] WARN: Regla {rule_id} - ESCO label no encontrado: '{esco_label}'")
+                        target = accion.get('esco_code') or accion.get('esco_label', '?')
+                        print(f"[V3.4.2] WARN: Regla {rule_id} - ESCO target no encontrado: '{target}'")
                     continue  # Skip esta regla, probar siguiente
 
                 if self.verbose:
@@ -1065,13 +1078,14 @@ class MatcherV3:
 
             if condicion_cumplida:
                 # v3.4.2: ESCO es el target, ISCO se deriva
-                esco_label = accion.get("esco_label", "")
-                occupation = self._find_occupation_by_esco_label(esco_label)
+                # SPEC J: usar esco_code (autoritativo) con fallback a esco_label
+                occupation = self._resolve_rule_target(accion)
 
                 if occupation:
                     return {
                         "rule_id": rule_id,
                         "isco_code": occupation['isco_code'].lstrip("C"),  # ISCO derivado, sin prefijo C
+                        "esco_code": occupation.get('esco_code', ''),  # SPEC J: pasar el código completo
                         "esco_label": occupation['label'],  # Label exacto de ESCO
                         "nombre_regla": rule.get("nombre", ""),
                         "correccion_critica": rule.get("correccion_critica", False),
@@ -1165,6 +1179,36 @@ class MatcherV3:
         # v3.5.4: ampliada zona (antes 0.55-0.80, ahora 0.55-0.95)
         return (regla_isco, "regla_prioridad",
                 f"regla {regla_id} prioridad (score semantico {semantic_score:.2f} < 0.95, semantico={semantic_isco})")
+
+    def _find_occupation_by_esco_code(self, esco_code: str) -> Optional[Dict]:
+        """
+        SPEC J — Busca ocupación ESCO por código específico (autoritativo).
+
+        El esco_code (ej "7214.3.1") es identificador único en el catálogo ESCO.
+        Más confiable que esco_label (texto libre).
+
+        Returns: dict con {uri, label, isco_code, esco_code} o None.
+        """
+        if not esco_code:
+            return None
+        return self.code_to_occupation.get(esco_code)
+
+    def _resolve_rule_target(self, accion: Dict) -> Optional[Dict]:
+        """
+        SPEC J — Resuelve la ocupación target de una regla.
+
+        Prioriza esco_code sobre esco_label (más preciso). Mantiene fallback
+        para reglas que aún no tengan esco_code.
+        """
+        esco_code = accion.get('esco_code')
+        if esco_code:
+            occ = self._find_occupation_by_esco_code(esco_code)
+            if occ:
+                return occ
+            # Si esco_code declarado no existe en metadata, fallback al label
+            if self.verbose:
+                print(f"[V3/SPEC-J] esco_code '{esco_code}' no encontrado en metadata, fallback a esco_label")
+        return self._find_occupation_by_esco_label(accion.get('esco_label', ''))
 
     def _find_occupation_by_esco_label(self, esco_label: str) -> Optional[Dict]:
         """
