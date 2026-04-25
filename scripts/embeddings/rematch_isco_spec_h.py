@@ -167,7 +167,7 @@ def persist_matching_result(conn, id_oferta: str, result, estado_actual: dict, r
 
     # Extraer campos del MatchResult
     isco_nuevo = str(result.isco_code) if result.isco_code else None
-    esco_label_nuevo = result.esco_occupation_label or result.metadata.get('esco_label') or ''
+    esco_label_nuevo = result.esco_label or result.metadata.get('esco_label') or ''
     titulo_esco_code_nuevo = result.metadata.get('esco_code') or result.metadata.get('titulo_esco_code') or ''
     score_nuevo = float(result.score or 0)
     decision_metodo_nuevo = result.metadata.get('decision_metodo', estado_actual['decision_metodo'])

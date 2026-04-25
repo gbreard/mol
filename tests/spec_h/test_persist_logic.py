@@ -28,7 +28,7 @@ spec.loader.exec_module(rematch_mod)
 class MockMatchResult:
     """Emula la estructura de MatchResult de match_ofertas_v3."""
     isco_code: Optional[str] = None
-    esco_occupation_label: Optional[str] = None
+    esco_label: Optional[str] = None
     score: float = 0.0
     metadata: Optional[Dict] = None
     skills: list = None
@@ -74,7 +74,7 @@ class TestPersistMatchingResult:
         estado_actual = rematch_mod.get_estado_actual(conn, 'X1')
         result = MockMatchResult(
             isco_code='7214',
-            esco_occupation_label='remachador/remachadora',
+            esco_label='remachador/remachadora',
             score=0.72,
             metadata={'esco_code': '7214.3.1', 'decision_metodo': 'semantico_unico'},
         )
@@ -96,7 +96,7 @@ class TestPersistMatchingResult:
         conn = db_tmp
         estado_actual = rematch_mod.get_estado_actual(conn, 'X1')
         result = MockMatchResult(
-            isco_code='7214', esco_occupation_label='x', score=0.70,
+            isco_code='7214', esco_label='x', score=0.70,
             metadata={'decision_metodo': 'semantico_unico'}
         )
         rematch_mod.persist_matching_result(conn, 'X1', result, estado_actual, 'r')
@@ -109,7 +109,7 @@ class TestPersistMatchingResult:
         conn = db_tmp
         estado_actual = rematch_mod.get_estado_actual(conn, 'X1')
         result = MockMatchResult(
-            isco_code='7214', esco_occupation_label='y', score=0.95,
+            isco_code='7214', esco_label='y', score=0.95,
             metadata={'decision_metodo': 'regla_prioridad', 'regla_aplicada': 'R347'}
         )
         rematch_mod.persist_matching_result(conn, 'X1', result, estado_actual, 'r')
@@ -128,7 +128,7 @@ class TestUmbralLogic:
         # Aquí replico la lógica inline del main() para testearla aislada.
         estado_actual = rematch_mod.get_estado_actual(conn, 'X1')
         result = MockMatchResult(
-            isco_code='7214', esco_occupation_label='z', score=0.40,
+            isco_code='7214', esco_label='z', score=0.40,
             metadata={'decision_metodo': 'semantico_unico'}
         )
         umbral = 0.45
@@ -154,7 +154,7 @@ class TestUmbralLogic:
         estado_actual = rematch_mod.get_estado_actual(conn, 'X1')
         # Matcher retorna el mismo ISCO
         result = MockMatchResult(
-            isco_code='5120', esco_occupation_label='cocinero_nuevo', score=0.70,
+            isco_code='5120', esco_label='cocinero_nuevo', score=0.70,
             metadata={'decision_metodo': 'semantico_unico'}
         )
         umbral = 0.45
@@ -173,7 +173,7 @@ class TestUmbralLogic:
         conn = db_tmp
         estado_actual = rematch_mod.get_estado_actual(conn, 'X1')
         result = MockMatchResult(
-            isco_code='7214', esco_occupation_label='x', score=0.30,
+            isco_code='7214', esco_label='x', score=0.30,
             metadata={'decision_metodo': 'regla_prioridad'}
         )
         umbral = 0.45
