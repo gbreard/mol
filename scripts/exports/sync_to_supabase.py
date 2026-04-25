@@ -836,6 +836,17 @@ def load_equivalences_lookup(client) -> Dict[str, Dict]:
     return equiv_map
 
 
+# Valores aceptados por el check constraint `ofertas_skills_origen_check`
+# Ver migrations de Supabase. Si llega un valor fuera de esta lista lo mapeamos.
+_ORIGEN_ALIAS = {
+    'soft_skills_nlp': 'skills_nlp',      # soft skills detectadas por LLM → categoría skills_nlp
+    'terminologia_argentina': 'terminologia',
+    'sinonimo_argentino': 'terminologia',
+    'regla_cynthia': 'regla',
+    'regla_issue': 'regla',
+}
+
+
 def transform_skill_for_supabase(skill: Dict, equiv_map: Optional[Dict] = None) -> Dict:
     """
     Transforma un skill de SQLite al formato de ofertas_skills de Supabase.
@@ -843,6 +854,9 @@ def transform_skill_for_supabase(skill: Dict, equiv_map: Optional[Dict] = None) 
     """
     skill_uri = skill.get('esco_skill_uri') or skill.get('skill_uri')
     equiv = (equiv_map or {}).get(skill_uri, {})
+
+    origen_raw = skill.get('skill_tipo_fuente') or skill.get('origen', 'merged')
+    origen = _ORIGEN_ALIAS.get(origen_raw, origen_raw)
 
     return {
         'id_oferta': str(skill.get('id_oferta')),
@@ -853,7 +867,7 @@ def transform_skill_for_supabase(skill: Dict, equiv_map: Optional[Dict] = None) 
         'l2': skill.get('l2') or skill.get('L2'),
         'l2_nombre': skill.get('l2_nombre') or skill.get('L2_nombre'),
         'es_digital': skill.get('es_digital', False),
-        'origen': skill.get('skill_tipo_fuente') or skill.get('origen', 'merged'),
+        'origen': origen,
         'score': skill.get('match_score') or skill.get('score'),
         'es_esencial': skill.get('es_esencial', False),
         'equivalence_id': equiv.get('equivalence_id'),

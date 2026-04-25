@@ -27,20 +27,28 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT / 'database'))
 sys.path.insert(0, str(ROOT / 'config'))
 
-UMBRAL_MIN_SCORE = 0.45  # Si el top-1 nuevo < umbral → skip (deja ESCO viejo)
-UMBRAL_VIEJO_RUIDO = 0.50  # Si score_viejo < esto, era ruido → siempre aceptar el cambio
-TOLERANCIA_REGRESION = 0.05  # Aceptar cambio si score_nuevo > score_viejo - tolerancia
+UMBRAL_MIN_SCORE = 0.45       # Si score_nuevo < umbral → skip
+UMBRAL_VIEJO_RUIDO = 0.50     # Si score_viejo < esto, era ruido → aceptar cambio
+TOLERANCIA_REGRESION = 0.05   # Aceptar si score_nuevo > score_viejo - tolerancia
+ZONA_FALLBACK_LO = 0.59       # Banda donde el matcher devuelve 0.6 como fallback
+ZONA_FALLBACK_HI = 0.61       # (combined_score = 0.6*1.0 + 0.4*0 = 0.6 exacto)
 
 
 def evaluar_cambio(score_viejo: float, score_nuevo: float, decision_metodo_nuevo: str,
                    isco_nuevo: str, isco_viejo: str, umbral_min: float) -> str:
     """
-    Política D (mixta) — decide qué hacer con un re-match.
+    Política E — decide qué hacer con un re-match.
+
+    Política D + filtro fallback 0.6: el matcher devuelve combined_score = 0.6 exacto
+    cuando hay skill_score=1.0 (skill forzada por regla RS_xx) sin match de título.
+    Eso NO es un match semántico genuino — solo skills forzadas. Lo descartamos
+    cuando el viejo ya tenía un score >= 0.55 (probable match real).
 
     Retorna uno de:
-      - 'actualizada_dispara_regla': cambia decision_metodo a regla
+      - 'actualizada_dispara_regla': cambia decision_metodo a regla curada
       - 'skip_score_bajo': score nuevo bajo el umbral mínimo
       - 'skip_no_cambio': mismo ESCO viejo y nuevo
+      - 'skip_fallback_06': score nuevo en zona fallback 0.6 sin match real
       - 'skip_regresion_probable': score nuevo cae mucho desde uno alto viejo
       - 'actualizada': cambio aceptado
     """
@@ -51,18 +59,21 @@ def evaluar_cambio(score_viejo: float, score_nuevo: float, decision_metodo_nuevo
     if decision_metodo_nuevo == 'regla_prioridad':
         return 'actualizada_dispara_regla'
 
-    # 2. Score nuevo bajo umbral → no confiable, dejamos viejo
+    # 2. Score nuevo bajo umbral → no confiable
     if sn < umbral_min:
         return 'skip_score_bajo'
 
-    # 3. Mismo ESCO → no hay cambio que aplicar
+    # 3. Mismo ESCO → no hay cambio
     if isco_nuevo == isco_viejo:
         return 'skip_no_cambio'
 
-    # 4. Política D — proteger casos donde el viejo probablemente era correcto.
-    #    Aceptamos el cambio si:
-    #      a) score sube (con tolerancia de TOLERANCIA_REGRESION)
-    #      b) o el viejo era bajo (< UMBRAL_VIEJO_RUIDO) → era ruido
+    # 4. NUEVO: Filtro fallback 0.6 (Política E)
+    #    Si score_nuevo está en zona [0.59, 0.61] Y score_viejo era razonable (>=0.55),
+    #    es probable que sea un fallback de skill forzada sin contexto real.
+    if ZONA_FALLBACK_LO <= sn <= ZONA_FALLBACK_HI and sv >= 0.55:
+        return 'skip_fallback_06'
+
+    # 5. Política D — proteger contra regresiones
     if sn > sv - TOLERANCIA_REGRESION:
         return 'actualizada'
     if sv < UMBRAL_VIEJO_RUIDO:
@@ -273,7 +284,8 @@ def main():
     run_id = f'spec_h_rematch_{datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")}'
     stats = {'actualizada': 0, 'actualizada_dispara_regla': 0,
              'skip_score_bajo': 0, 'skip_no_cambio': 0,
-             'skip_regresion_probable': 0, 'skip_locked': 0, 'error': 0}
+             'skip_regresion_probable': 0, 'skip_fallback_06': 0,
+             'skip_locked': 0, 'error': 0}
     t0 = time.time()
     nowiso = lambda: datetime.now(timezone.utc).isoformat()
 
@@ -318,6 +330,8 @@ def main():
                 mensaje = 'mismo ESCO viejo y nuevo'
             elif resultado == 'skip_regresion_probable':
                 mensaje = f'score baja de {score_viejo:.3f} a {score_nuevo_pre:.3f} (>tolerancia)'
+            elif resultado == 'skip_fallback_06':
+                mensaje = f'score nuevo {score_nuevo_pre:.3f} es fallback (zona 0.6)'
 
             # Persistencia
             if resultado in ('actualizada', 'actualizada_dispara_regla') and not args.dry_run:

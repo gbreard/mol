@@ -162,5 +162,14 @@ class TestEvaluarCambio:
         assert self._eval(0.555, 0.649, isco_n='5142', isco_v='2421') == 'actualizada'
 
     def test_caso_canonico_electricista_de_obra(self):
-        """Electricista 0.94 → 0.60 → preservar viejo (es regresión)."""
-        assert self._eval(0.94, 0.60, isco_n='7127', isco_v='7411') == 'skip_regresion_probable'
+        """Electricista 0.94 → 0.60 → política E lo cataloga como fallback (no regresión).
+        El score 0.60 exacto es fallback del matcher (skill_score=1.0 sin título)."""
+        assert self._eval(0.94, 0.60, isco_n='7127', isco_v='7411') == 'skip_fallback_06'
+
+    def test_score_nuevo_06_con_viejo_alto_es_fallback(self):
+        """Política E: score nuevo en zona 0.59-0.61 con viejo razonable → fallback."""
+        assert self._eval(0.85, 0.60, isco_n='Y', isco_v='X') == 'skip_fallback_06'
+
+    def test_score_nuevo_06_con_viejo_bajo_pasa(self):
+        """Si viejo era ruido (<0.55), aceptamos cambio aunque nuevo sea 0.60."""
+        assert self._eval(0.45, 0.60, isco_n='Y', isco_v='X') == 'actualizada'
