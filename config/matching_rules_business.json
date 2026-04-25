@@ -2692,7 +2692,7 @@
         ]
       },
       "accion": {
-        "forzar_isco": "1221",
+        "forzar_isco": "1223",
         "esco_label": "director de producto/directora de producto",
         "esco_code": "1223.3"
       },
@@ -3337,7 +3337,7 @@
         ]
       },
       "accion": {
-        "forzar_isco": "3111",
+        "forzar_isco": "3116",
         "esco_label": "técnico en control de calidad de productos químicos/técnica en control de calidad de productos químicos",
         "esco_code": "3116.1.2"
       },

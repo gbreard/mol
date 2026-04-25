@@ -58,9 +58,9 @@ def db_cursor():
 
 
 def _query_isco(cursor, id_oferta):
-    """Devuelve (isco_code, esco_label, regla_aplicada) o None."""
+    """Devuelve (isco_code, esco_label, regla_aplicada, titulo_esco_code) o None."""
     cursor.execute(
-        "SELECT isco_code, esco_occupation_label, regla_aplicada "
+        "SELECT isco_code, esco_occupation_label, regla_aplicada, titulo_esco_code "
         "FROM ofertas_esco_matching WHERE id_oferta = ?",
         (id_oferta,)
     )
@@ -82,16 +82,23 @@ def _get_cases(categoria):
 @pytest.mark.parametrize("caso", _get_cases("rule_verified"),
                           ids=lambda c: f"{c['id_oferta']}_{c.get('regla_aplicable', 'no-rule')}")
 def test_caso_verified(caso, db_cursor):
-    """Cada caso verified debe seguir con su ISCO esperado."""
+    """Cada caso verified debe seguir con su ISCO/ESCO esperado."""
     row = _query_isco(db_cursor, caso["id_oferta"])
     assert row is not None, f"Oferta {caso['id_oferta']} no existe en BD"
-    isco_actual, esco_actual, regla_actual = row
+    isco_actual, esco_actual, regla_actual, esco_code_actual = row
 
     assert isco_actual == caso["isco_esperado"], (
         f"Oferta {caso['id_oferta']} ({caso['titulo'][:40]}): "
         f"esperaba ISCO {caso['isco_esperado']}, got {isco_actual}. "
         f"Regla aplicada: {regla_actual}"
     )
+    # SPEC J: validar también esco_code específico (granularidad real)
+    if caso.get("esco_code_esperado"):
+        assert esco_code_actual == caso["esco_code_esperado"], (
+            f"Oferta {caso['id_oferta']}: "
+            f"esperaba esco_code {caso['esco_code_esperado']}, got {esco_code_actual}. "
+            f"Regla: {regla_actual}"
+        )
 
 
 @pytest.mark.parametrize("caso", _get_cases("rule_pending"),
@@ -107,7 +114,7 @@ def test_caso_pending(caso, db_cursor):
 
     row = _query_isco(db_cursor, caso["id_oferta"])
     assert row is not None, f"Oferta {caso['id_oferta']} no existe en BD"
-    isco_actual, esco_actual, regla_actual = row
+    isco_actual, esco_actual, regla_actual, esco_code_actual = row
 
     assert isco_actual == caso["isco_esperado"], (
         f"Oferta {caso['id_oferta']} ({caso['titulo'][:40]}): "

@@ -11,7 +11,6 @@
     "rule_pending: casos de Spec A que deben pasar DESPUÉS de aplicar R345-R352 (detección de fix)"
   ],
   "_uso": "pytest tests/matching/test_gold_set_v2_verified.py -v",
-
   "casos": [
     {
       "id_oferta": "9168162159",
@@ -21,7 +20,8 @@
       "regla_aplicable": "R324_fileteador_pescado",
       "source": "cynthia_2026-04-22",
       "categoria": "rule_verified",
-      "notas": "Primer caso del batch Cynthia. Antes: 8131 (máquinas jabón) — absurdo."
+      "notas": "Primer caso del batch Cynthia. Antes: 8131 (máquinas jabón) — absurdo.",
+      "esco_code_esperado": "7511.3"
     },
     {
       "id_oferta": "1118204622",
@@ -30,7 +30,8 @@
       "esco_label_esperado": "técnico reparador de telefonía móvil/técnica reparadora de telefonía móvil",
       "regla_aplicable": "R325_instalador_satelital",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "7422.3.1"
     },
     {
       "id_oferta": "6312291090",
@@ -39,7 +40,8 @@
       "esco_label_esperado": "instalador de servicios de calefacción y ventilación/instaladora de servicios de calefacción y ventilación",
       "regla_aplicable": "R326_tecnico_refrigeracion",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "7127.1"
     },
     {
       "id_oferta": "6313884152",
@@ -48,7 +50,8 @@
       "esco_label_esperado": "jefe de sala/jefa de sala",
       "regla_aplicable": "R327_encargado_salon",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "5131.2.1"
     },
     {
       "id_oferta": "6400928571",
@@ -57,7 +60,8 @@
       "esco_label_esperado": "psicólogo/psicóloga",
       "regla_aplicable": "R328_psicologo_profesional",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "2634.2"
     },
     {
       "id_oferta": "6441959979",
@@ -66,7 +70,8 @@
       "esco_label_esperado": "ingeniero técnico en electrónica/ingeniera técnica en electrónica",
       "regla_aplicable": "R329_tecnico_electronico_mantenimiento",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "3114.1"
     },
     {
       "id_oferta": "6519792909",
@@ -75,7 +80,8 @@
       "esco_label_esperado": "vendedor especializado en pescado y mariscos/vendedora especializada en pescado y mariscos",
       "regla_aplicable": "R330_fiambrero",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "5223.7.16"
     },
     {
       "id_oferta": "7677139622",
@@ -84,7 +90,8 @@
       "esco_label_esperado": "trabajador de apoyo a las familias/trabajadora de apoyo a las familias",
       "regla_aplicable": "R331_acompanante_integracion_escolar",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "3412.4.5"
     },
     {
       "id_oferta": "8740015957",
@@ -93,7 +100,8 @@
       "esco_label_esperado": "operario de limpieza de aseos/operaria de limpieza de aseos",
       "regla_aplicable": "R333_operario_limpieza",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "9112.5"
     },
     {
       "id_oferta": "9177646546",
@@ -102,7 +110,8 @@
       "esco_label_esperado": "niñero/niñera",
       "regla_aplicable": "R334_ninera",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "5311.1.4"
     },
     {
       "id_oferta": "9192373935",
@@ -111,7 +120,8 @@
       "esco_label_esperado": "teleoperador/teleoperadora",
       "regla_aplicable": "R335_promotor_via_publica",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "5244.1"
     },
     {
       "id_oferta": "6057883738",
@@ -120,7 +130,8 @@
       "esco_label_esperado": "inspector de seguridad y salud en el trabajo/inspectora de seguridad y salud en el trabajo",
       "regla_aplicable": "R336_analista_seguridad_higiene",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "3257.5"
     },
     {
       "id_oferta": "6979872094",
@@ -129,7 +140,8 @@
       "esco_label_esperado": "psicólogo/psicóloga",
       "regla_aplicable": "R337_psicologo_laboral_educativo",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "2634.2"
     },
     {
       "id_oferta": "6697865056",
@@ -138,7 +150,8 @@
       "esco_label_esperado": "operador de canteadora/operadora de canteadora",
       "regla_aplicable": "R338_operador_tecnico_generico",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "8189.1"
     },
     {
       "id_oferta": "6742049170",
@@ -147,7 +160,8 @@
       "esco_label_esperado": "coordinador de operaciones portuarias/coordinadora de operaciones portuarias",
       "regla_aplicable": "R339_analista_contrataciones_transporte",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "4323.11"
     },
     {
       "id_oferta": "7110596797",
@@ -156,7 +170,8 @@
       "esco_label_esperado": "director de obra/directora de obra",
       "regla_aplicable": "R340_jefe_operativo_obra",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "1323.1"
     },
     {
       "id_oferta": "6104769191",
@@ -165,7 +180,8 @@
       "esco_label_esperado": "celador sanitario/celadora sanitaria",
       "regla_aplicable": "R342_acompanante_terapeutico_cuidador",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "5329.1"
     },
     {
       "id_oferta": "5548577462",
@@ -174,7 +190,8 @@
       "esco_label_esperado": "operador de máquinas de moldear plástico por inyección/operadora de máquinas de moldear plástico por inyección",
       "regla_aplicable": "R343_inyector_plastico",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "8142.7"
     },
     {
       "id_oferta": "6024230224",
@@ -183,9 +200,9 @@
       "esco_label_esperado": "gestor de proyectos de TIC/gestora de proyectos de TIC",
       "regla_aplicable": "R344_project_manager",
       "source": "cynthia_2026-04-22",
-      "categoria": "rule_verified"
+      "categoria": "rule_verified",
+      "esco_code_esperado": "1330.7"
     },
-
     {
       "id_oferta": "7942527874",
       "titulo": "Operario de CNC",
@@ -320,7 +337,6 @@
       "skip_in_test": true,
       "notas": "ISCO 9319 NO tiene ningún label en esco_occupations (tabla vacía). Sin regla posible. Test lo skipea."
     },
-
     {
       "id_oferta": "7057631179",
       "titulo": "Operario Maquinista (req203559) Eventual Zona",
@@ -329,7 +345,8 @@
       "regla_aplicable": null,
       "source": "cynthia_2026-04-23",
       "categoria": "rule_verified",
-      "notas": "Cynthia VALIDÓ 8160 como correcto (puesto alimentos). Test confirma que la regla operarios NO rompe este caso."
+      "notas": "Cynthia VALIDÓ 8160 como correcto (puesto alimentos). Test confirma que la regla operarios NO rompe este caso.",
+      "esco_code_esperado": "8160.35"
     },
     {
       "id_oferta": "7171410854",
@@ -339,7 +356,8 @@
       "regla_aplicable": null,
       "source": "cynthia_2026-04-23",
       "categoria": "rule_verified",
-      "notas": "Cynthia VALIDÓ 8160 (alimentos). Cuida que nuevas reglas operario no contaminen alimentos."
+      "notas": "Cynthia VALIDÓ 8160 (alimentos). Cuida que nuevas reglas operario no contaminen alimentos.",
+      "esco_code_esperado": "8160.35"
     },
     {
       "id_oferta": "7938726540",
@@ -349,7 +367,8 @@
       "regla_aplicable": null,
       "source": "cynthia_2026-04-23",
       "categoria": "rule_verified",
-      "notas": "Cynthia VALIDÓ 8160. Tiene tareas contaminadas (ver Spec C) pero ISCO es correcto."
+      "notas": "Cynthia VALIDÓ 8160. Tiene tareas contaminadas (ver Spec C) pero ISCO es correcto.",
+      "esco_code_esperado": "8160.35"
     }
   ]
 }
