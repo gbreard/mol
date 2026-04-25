@@ -119,70 +119,48 @@ class TestPersistMatchingResult:
         assert c.fetchone()[0] == 'regla_prioridad'
 
 
-class TestUmbralLogic:
-    """Tests de la lógica de decisión (umbral, skip reasons)."""
+class TestEvaluarCambio:
+    """Tests de la política D (mixta) en evaluar_cambio()."""
 
-    def test_score_bajo_no_persiste(self, db_tmp):
-        """Si el script decide skip_score_bajo, los campos NO se tocan."""
-        conn = db_tmp
-        # Aquí replico la lógica inline del main() para testearla aislada.
-        estado_actual = rematch_mod.get_estado_actual(conn, 'X1')
-        result = MockMatchResult(
-            isco_code='7214', esco_label='z', score=0.40,
-            metadata={'decision_metodo': 'semantico_unico'}
-        )
-        umbral = 0.45
+    def _eval(self, sv, sn, dm='semantico_unico', isco_n='7214', isco_v='5120'):
+        return rematch_mod.evaluar_cambio(sv, sn, dm, isco_n, isco_v, umbral_min=0.45)
 
-        if result.metadata.get('decision_metodo') == 'regla_prioridad':
-            resultado = 'actualizada_dispara_regla'
-        elif result.score < umbral:
-            resultado = 'skip_score_bajo'
-        elif str(result.isco_code) == estado_actual['isco_code']:
-            resultado = 'skip_no_cambio'
-        else:
-            resultado = 'actualizada'
+    def test_score_bajo_skip(self):
+        assert self._eval(0.65, 0.40) == 'skip_score_bajo'
 
-        assert resultado == 'skip_score_bajo'
+    def test_mismo_isco_skip(self):
+        assert self._eval(0.65, 0.70, isco_n='5120') == 'skip_no_cambio'
 
-        # Verificar que el estado en BD NO cambió
-        c = conn.cursor()
-        c.execute('SELECT isco_code FROM ofertas_esco_matching WHERE id_oferta="X1"')
-        assert c.fetchone()[0] == '5120'  # sigue el viejo
+    def test_regla_gana_aunque_score_bajo(self):
+        assert self._eval(0.65, 0.30, dm='regla_prioridad') == 'actualizada_dispara_regla'
 
-    def test_mismo_isco_skip(self, db_tmp):
-        conn = db_tmp
-        estado_actual = rematch_mod.get_estado_actual(conn, 'X1')
-        # Matcher retorna el mismo ISCO
-        result = MockMatchResult(
-            isco_code='5120', esco_label='cocinero_nuevo', score=0.70,
-            metadata={'decision_metodo': 'semantico_unico'}
-        )
-        umbral = 0.45
-        if result.metadata.get('decision_metodo') == 'regla_prioridad':
-            resultado = 'actualizada_dispara_regla'
-        elif result.score < umbral:
-            resultado = 'skip_score_bajo'
-        elif str(result.isco_code) == estado_actual['isco_code']:
-            resultado = 'skip_no_cambio'
-        else:
-            resultado = 'actualizada'
-        assert resultado == 'skip_no_cambio'
+    def test_score_sube_actualiza(self):
+        assert self._eval(0.55, 0.70) == 'actualizada'
 
-    def test_regla_tiene_prioridad_sobre_umbral(self, db_tmp):
-        """Aunque score sea bajo, si dispara regla → aplicar."""
-        conn = db_tmp
-        estado_actual = rematch_mod.get_estado_actual(conn, 'X1')
-        result = MockMatchResult(
-            isco_code='7214', esco_label='x', score=0.30,
-            metadata={'decision_metodo': 'regla_prioridad'}
-        )
-        umbral = 0.45
-        if result.metadata.get('decision_metodo') == 'regla_prioridad':
-            resultado = 'actualizada_dispara_regla'
-        elif result.score < umbral:
-            resultado = 'skip_score_bajo'
-        elif str(result.isco_code) == estado_actual['isco_code']:
-            resultado = 'skip_no_cambio'
-        else:
-            resultado = 'actualizada'
-        assert resultado == 'actualizada_dispara_regla'
+    def test_score_baja_dentro_tolerancia_actualiza(self):
+        # tolerancia 0.05: viejo 0.70, nuevo 0.66 → diferencia 0.04 < 0.05 → acepta
+        assert self._eval(0.70, 0.66) == 'actualizada'
+
+    def test_score_baja_fuera_tolerancia_y_viejo_alto_skip(self):
+        # viejo 0.85, nuevo 0.65 → diferencia 0.20, viejo NO era bajo → SKIP regresion
+        assert self._eval(0.85, 0.65) == 'skip_regresion_probable'
+
+    def test_score_baja_pero_viejo_era_bajo_actualiza(self):
+        # viejo 0.40 (era ruido), nuevo 0.50 → diff 0.10 fuera tolerancia
+        # PERO viejo era < 0.50 → acepta cambio
+        # (este caso ya cae en skip_score_bajo si nuevo < 0.45 — usemos 0.50)
+        # nuevo 0.50 ≥ 0.45 (umbral) → procesa
+        # viejo 0.40 < 0.50 → POLITICA acepta
+        assert self._eval(0.40, 0.50) == 'actualizada'
+
+    def test_score_baja_viejo_borderline_skip(self):
+        # viejo 0.55, nuevo 0.45, diff 0.10 fuera tolerancia, viejo NO < 0.50
+        assert self._eval(0.55, 0.45) == 'skip_regresion_probable'
+
+    def test_caso_canonico_lashista(self):
+        """Lashista: viejo era ruido (0.55) → nuevo 0.65 mejor → actualizar."""
+        assert self._eval(0.555, 0.649, isco_n='5142', isco_v='2421') == 'actualizada'
+
+    def test_caso_canonico_electricista_de_obra(self):
+        """Electricista 0.94 → 0.60 → preservar viejo (es regresión)."""
+        assert self._eval(0.94, 0.60, isco_n='7127', isco_v='7411') == 'skip_regresion_probable'

@@ -27,7 +27,47 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT / 'database'))
 sys.path.insert(0, str(ROOT / 'config'))
 
-UMBRAL_MIN_SCORE = 0.45  # Si el top-1 nuevo < umbral → skip (deja ISCO viejo)
+UMBRAL_MIN_SCORE = 0.45  # Si el top-1 nuevo < umbral → skip (deja ESCO viejo)
+UMBRAL_VIEJO_RUIDO = 0.50  # Si score_viejo < esto, era ruido → siempre aceptar el cambio
+TOLERANCIA_REGRESION = 0.05  # Aceptar cambio si score_nuevo > score_viejo - tolerancia
+
+
+def evaluar_cambio(score_viejo: float, score_nuevo: float, decision_metodo_nuevo: str,
+                   isco_nuevo: str, isco_viejo: str, umbral_min: float) -> str:
+    """
+    Política D (mixta) — decide qué hacer con un re-match.
+
+    Retorna uno de:
+      - 'actualizada_dispara_regla': cambia decision_metodo a regla
+      - 'skip_score_bajo': score nuevo bajo el umbral mínimo
+      - 'skip_no_cambio': mismo ESCO viejo y nuevo
+      - 'skip_regresion_probable': score nuevo cae mucho desde uno alto viejo
+      - 'actualizada': cambio aceptado
+    """
+    sv = float(score_viejo or 0)
+    sn = float(score_nuevo or 0)
+
+    # 1. Regla curada siempre gana
+    if decision_metodo_nuevo == 'regla_prioridad':
+        return 'actualizada_dispara_regla'
+
+    # 2. Score nuevo bajo umbral → no confiable, dejamos viejo
+    if sn < umbral_min:
+        return 'skip_score_bajo'
+
+    # 3. Mismo ESCO → no hay cambio que aplicar
+    if isco_nuevo == isco_viejo:
+        return 'skip_no_cambio'
+
+    # 4. Política D — proteger casos donde el viejo probablemente era correcto.
+    #    Aceptamos el cambio si:
+    #      a) score sube (con tolerancia de TOLERANCIA_REGRESION)
+    #      b) o el viejo era bajo (< UMBRAL_VIEJO_RUIDO) → era ruido
+    if sn > sv - TOLERANCIA_REGRESION:
+        return 'actualizada'
+    if sv < UMBRAL_VIEJO_RUIDO:
+        return 'actualizada'
+    return 'skip_regresion_probable'
 
 
 def ensure_tables(conn):
@@ -231,8 +271,9 @@ def main():
     print(f'[H] Matcher cargado (version {matcher.VERSION})')
 
     run_id = f'spec_h_rematch_{datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")}'
-    stats = {'actualizada': 0, 'skip_score_bajo': 0, 'skip_regla': 0,
-             'skip_no_cambio': 0, 'skip_locked': 0, 'error': 0}
+    stats = {'actualizada': 0, 'actualizada_dispara_regla': 0,
+             'skip_score_bajo': 0, 'skip_no_cambio': 0,
+             'skip_regresion_probable': 0, 'skip_locked': 0, 'error': 0}
     t0 = time.time()
     nowiso = lambda: datetime.now(timezone.utc).isoformat()
 
@@ -259,22 +300,24 @@ def main():
             score_nuevo_pre = float(result.score or 0)
             decision_nuevo_pre = result.metadata.get('decision_metodo', decision_viejo)
 
-            # Reglas de skip
-            resultado = None
+            # Política D (mixta) — ver evaluar_cambio() arriba
+            resultado = evaluar_cambio(
+                score_viejo=score_viejo,
+                score_nuevo=score_nuevo_pre,
+                decision_metodo_nuevo=decision_nuevo_pre,
+                isco_nuevo=isco_nuevo_pre or '',
+                isco_viejo=isco_viejo or '',
+                umbral_min=args.umbral_score,
+            )
             mensaje = ''
-            if decision_nuevo_pre == 'regla_prioridad':
-                # Dispara regla nueva que antes no aplicaba — aplicarla
-                # (esta es la decisión del usuario: "completo" = aplicar reglas también)
-                resultado = 'actualizada_dispara_regla'
+            if resultado == 'actualizada_dispara_regla':
                 mensaje = f'regla_aplicada={result.metadata.get("regla_aplicada","?")}'
-            elif score_nuevo_pre < args.umbral_score:
-                resultado = 'skip_score_bajo'
+            elif resultado == 'skip_score_bajo':
                 mensaje = f'score nuevo {score_nuevo_pre:.3f} < {args.umbral_score}'
-            elif isco_nuevo_pre == isco_viejo:
-                resultado = 'skip_no_cambio'
-                mensaje = 'mismo ISCO, no amerita update'
-            else:
-                resultado = 'actualizada'
+            elif resultado == 'skip_no_cambio':
+                mensaje = 'mismo ESCO viejo y nuevo'
+            elif resultado == 'skip_regresion_probable':
+                mensaje = f'score baja de {score_viejo:.3f} a {score_nuevo_pre:.3f} (>tolerancia)'
 
             # Persistencia
             if resultado in ('actualizada', 'actualizada_dispara_regla') and not args.dry_run:
@@ -304,13 +347,8 @@ def main():
                     else:
                         raise
 
-            stats[resultado if resultado in stats else resultado.split('_')[0]] = \
-                stats.get(resultado if resultado in stats else resultado.split('_')[0], 0) + 1
-            # Normalizar resultado a stats clave
-            key = 'actualizada' if resultado.startswith('actualizada') else resultado
-            stats.setdefault(key, 0)
-            if resultado not in ('actualizada', 'actualizada_dispara_regla'):
-                pass  # ya sumado arriba
+            # Stats counting simple
+            stats[resultado] = stats.get(resultado, 0) + 1
             # Log progress
             if not args.dry_run:
                 c = conn.cursor()
