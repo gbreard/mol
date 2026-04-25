@@ -41,7 +41,8 @@
       },
       "accion": {
         "forzar_isco": "3118",
-        "esco_label": "dibujante técnico/dibujante técnica"
+        "esco_label": "dibujante técnico/dibujante técnica",
+        "esco_code": "3118.3"
       },
       "caso_gold_set": "1118027941 - Dibujante Tecnico",
       "activa": true,
@@ -66,7 +67,8 @@
       },
       "accion": {
         "forzar_isco": "2166",
-        "esco_label": "diseñador gráfico/diseñadora gráfica"
+        "esco_label": "diseñador gráfico/diseñadora gráfica",
+        "esco_code": "2166.9"
       },
       "caso_gold_set": "1118018714 - Diseñador Gráfico E-commerce",
       "activa": true,
@@ -91,7 +93,8 @@
       },
       "accion": {
         "forzar_isco": "8344",
-        "esco_label": "operador de carretilla elevadora/operadora de carretilla elevadora"
+        "esco_label": "operador de carretilla elevadora/operadora de carretilla elevadora",
+        "esco_code": "8344.1"
       },
       "caso_gold_set": "1118028027 - Operador Autoelevadores",
       "activa": true,
@@ -209,7 +212,8 @@
       },
       "accion": {
         "forzar_isco": "3240",
-        "esco_label": "técnico veterinario/técnica veterinaria"
+        "esco_label": "técnico veterinario/técnica veterinaria",
+        "esco_code": "3240.2"
       },
       "caso_gold_set": "1117995368 - Asesor Nutrición Animal",
       "activa": true,
@@ -306,7 +310,8 @@
       },
       "accion": {
         "forzar_isco": "3322",
-        "esco_label": "representante comercial"
+        "esco_label": "representante comercial",
+        "esco_code": "3322.1"
       },
       "caso_gold_set": "1118027276 - Ejecutivo de Cuentas",
       "activa": true,
@@ -331,7 +336,8 @@
       },
       "accion": {
         "forzar_isco": "2221",
-        "esco_label": "enfermero responsable de cuidados generales/enfermera responsable de cuidados generales"
+        "esco_label": "enfermero responsable de cuidados generales/enfermera responsable de cuidados generales",
+        "esco_code": "2221.2"
       },
       "caso_diagnostico": "2154046 - Enfermeros para atencion domiciliaria",
       "fix_v33": "2026-01-29 - esco_label corregido (antes 'enfermero/enfermera' mapeaba a 5329)",
@@ -379,7 +385,8 @@
       },
       "accion": {
         "forzar_isco": "2411",
-        "esco_label": "contable"
+        "esco_label": "contable",
+        "esco_code": "2411.1"
       },
       "caso_diagnostico": "2154549 - Contador para Sector Auditoria",
       "fix_aplicado": "2026-01-12 - Excluir auditor médico (1118105872)",
@@ -403,7 +410,8 @@
       },
       "accion": {
         "forzar_isco": "2212",
-        "esco_label": "médico especialista/médica especialista"
+        "esco_label": "médico especialista/médica especialista",
+        "esco_code": "2212.1"
       },
       "caso_diagnostico": "1118105872 - Auditor Médico Swiss Medical",
       "fecha_creacion": "2026-01-12",
@@ -423,7 +431,8 @@
       },
       "accion": {
         "forzar_isco": "2212",
-        "esco_label": "médico especialista/médica especialista"
+        "esco_label": "médico especialista/médica especialista",
+        "esco_code": "2212.1"
       },
       "caso_diagnostico": "1118105872 - Auditor Médico Swiss Medical",
       "fecha_creacion": "2026-01-12",
@@ -446,7 +455,8 @@
       },
       "accion": {
         "forzar_isco": "4311",
-        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+        "esco_label": "empleado de contabilidad/empleada de contabilidad",
+        "esco_code": "4311.1"
       },
       "caso_diagnostico": "1118102043 - Administrativo Contable SR, 1118102117 - Administrativo Contable Part Time",
       "fecha_creacion": "2026-01-29",
@@ -484,7 +494,8 @@
       },
       "accion": {
         "forzar_isco": "4222",
-        "esco_label": "agente de centro de atención al cliente"
+        "esco_label": "agente de centro de atención al cliente",
+        "esco_code": "4222.1"
       },
       "caso_diagnostico": "2149320 - Customer Care Professional",
       "fix_v33": "2026-01-29 - Exclusiones para mercería, depósito (son vendedores, no call center)",
@@ -510,7 +521,8 @@
       },
       "accion": {
         "forzar_isco": "5132",
-        "esco_label": "barista"
+        "esco_label": "barista",
+        "esco_code": "5132.1.1"
       },
       "caso_diagnostico": "2155040 - ENCARGADAS/OS - HELADERAS/OS - BARISTAS",
       "activa": true,
@@ -545,7 +557,8 @@
       },
       "accion": {
         "forzar_isco": "2611",
-        "esco_label": "abogado/abogada"
+        "esco_label": "abogado/abogada",
+        "esco_code": "2611.1"
       },
       "caso_diagnostico": "1118027243 - Responsable de Legales, 2151075 - Asistente Compliance",
       "activa": true,
@@ -569,7 +582,8 @@
       },
       "accion": {
         "forzar_isco": "2413",
-        "esco_label": "analista financiero/analista financiera"
+        "esco_label": "analista financiero/analista financiera",
+        "esco_code": "2413.1"
       },
       "caso_diagnostico": "2172825 - Analista de Compliance (ALyC, sector Finanzas)",
       "fecha_creacion": "2026-01-29",
@@ -594,7 +608,8 @@
       },
       "accion": {
         "forzar_isco": "4313",
-        "esco_label": "administrativo de nóminas/administrativa de nóminas"
+        "esco_label": "administrativo de nóminas/administrativa de nóminas",
+        "esco_code": "4313.1"
       },
       "caso_diagnostico": "2145263 - Consultor Junior de Liquidacion de Sueldos",
       "activa": true,
@@ -621,7 +636,8 @@
       },
       "accion": {
         "forzar_isco": "1213",
-        "esco_label": "director de empresa/directora de empresa"
+        "esco_label": "director de empresa/directora de empresa",
+        "esco_code": "1213.5"
       },
       "caso_diagnostico": "1118026719 - Project Manager IT",
       "activa": true,
@@ -647,7 +663,8 @@
       },
       "accion": {
         "forzar_isco": "1330",
-        "esco_label": "gestor de proyectos de TIC/gestora de proyectos de TIC"
+        "esco_label": "gestor de proyectos de TIC/gestora de proyectos de TIC",
+        "esco_code": "1330.7"
       },
       "caso_diagnostico": "2171813 - Project Manager (Sector Tecnologia, Area IT)",
       "fecha_creacion": "2026-01-29",
@@ -674,7 +691,8 @@
       },
       "accion": {
         "forzar_isco": "5223",
-        "esco_label": "vendedor especializado en ferretería y pintura/vendedora especializada en ferretería y pintura"
+        "esco_label": "vendedor especializado en ferretería y pintura/vendedora especializada en ferretería y pintura",
+        "esco_code": "5223.7.21"
       },
       "caso_diagnostico": "2130257 - EMPLEADA/O VENTA MOSTRADOR PARA CASA DE ELECTRICIDAD",
       "activa": true,
@@ -703,7 +721,8 @@
       },
       "accion": {
         "forzar_isco": "4222",
-        "esco_label": "agente de centro de atención al cliente"
+        "esco_label": "agente de centro de atención al cliente",
+        "esco_code": "4222.1"
       },
       "caso_diagnostico": "2156388 - Lider de Atencion al Cliente",
       "activa": true,
@@ -732,7 +751,8 @@
       },
       "accion": {
         "forzar_isco": "7126",
-        "esco_label": "operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías"
+        "esco_label": "operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías",
+        "esco_code": "7126.7"
       },
       "caso_diagnostico": "1118028168 - Coordinador de Instalaciones",
       "activa": true,
@@ -760,7 +780,8 @@
       },
       "accion": {
         "forzar_isco": "1324",
-        "esco_label": "jefe de almacén/jefa de almacén"
+        "esco_label": "jefe de almacén/jefa de almacén",
+        "esco_code": "1324.3.4"
       },
       "caso_gold_set": "1118026729 - Responsable de Deposito",
       "activa": true,
@@ -786,7 +807,8 @@
       },
       "accion": {
         "forzar_isco": "1221",
-        "esco_label": "director de ventas/directora de ventas"
+        "esco_label": "director de ventas/directora de ventas",
+        "esco_code": "1221.3.2.1"
       },
       "caso_gold_set": "1117984105 - Gerente de Ventas",
       "activa": true,
@@ -817,7 +839,8 @@
       },
       "accion": {
         "forzar_isco": "1412",
-        "esco_label": "director de restaurante/directora de restaurante"
+        "esco_label": "director de restaurante/directora de restaurante",
+        "esco_code": "1412.1"
       },
       "caso_gold_set": "Casos con titulo explicito de restaurante/bar",
       "activa": true,
@@ -848,7 +871,8 @@
       },
       "accion": {
         "forzar_isco": "4226",
-        "esco_label": "recepcionista"
+        "esco_label": "recepcionista",
+        "esco_code": "4226.1"
       },
       "caso_gold_set": "1117977340 - Recepcionista Administrativo",
       "activa": true,
@@ -877,7 +901,8 @@
       },
       "accion": {
         "forzar_isco": "4224",
-        "esco_label": "recepcionista de alojamientos turísticos"
+        "esco_label": "recepcionista de alojamientos turísticos",
+        "esco_code": "4224.1"
       },
       "caso_diagnostico": "1118102035 - Recepcionista franquero para Hotel (CABA)",
       "fecha_creacion": "2026-01-29",
@@ -904,7 +929,8 @@
       },
       "accion": {
         "forzar_isco": "2359",
-        "esco_label": "asesor académico/asesora académica"
+        "esco_label": "asesor académico/asesora académica",
+        "esco_code": "2359.1"
       },
       "caso_gold_set": "1118018461 - Asesor de Admisiones",
       "activa": true,
@@ -928,7 +954,8 @@
       },
       "accion": {
         "forzar_isco": "3322",
-        "esco_label": "representante comercial"
+        "esco_label": "representante comercial",
+        "esco_code": "3322.1"
       },
       "caso_gold_set": "1118028038 - Ejecutiva/o Comercial de Cuentas",
       "activa": true,
@@ -953,7 +980,8 @@
       },
       "accion": {
         "forzar_isco": "7532",
-        "esco_label": "patronista de artículos de cuero"
+        "esco_label": "patronista de artículos de cuero",
+        "esco_code": "7532.6"
       },
       "caso_gold_set": "1118028828 - Modelista textil, 1118106004 - Modelista/Tizadora Audaces",
       "activa": true,
@@ -979,7 +1007,8 @@
       },
       "accion": {
         "forzar_isco": "7531",
-        "esco_label": "sastre/sastra"
+        "esco_label": "sastre/sastra",
+        "esco_code": "7531.5"
       },
       "activa": true,
       "nota": "Sastre/Modista CONFECCIONA ropa (7531)",
@@ -1001,7 +1030,8 @@
       },
       "accion": {
         "forzar_isco": "2432",
-        "esco_label": "gestor de la información para las redes sociales/gestora de la información para las redes sociales"
+        "esco_label": "gestor de la información para las redes sociales/gestora de la información para las redes sociales",
+        "esco_code": "2432.5"
       },
       "caso_gold_set": "1118022146 - Community manager",
       "activa": true,
@@ -1029,7 +1059,8 @@
       },
       "accion": {
         "forzar_isco": "5131",
-        "esco_label": "camarero/camarera"
+        "esco_label": "camarero/camarera",
+        "esco_code": "5131.2"
       },
       "caso_gold_set": "2164100 - Mozo/Moza",
       "activa": true,
@@ -1055,7 +1086,8 @@
       },
       "accion": {
         "forzar_isco": "9333",
-        "esco_label": "mozo de almacén/moza de almacén"
+        "esco_label": "mozo de almacén/moza de almacén",
+        "esco_code": "9333.8"
       },
       "caso_gold_set": "1118023904 - Operario Picking Zona Norte",
       "activa": true,
@@ -1104,7 +1136,8 @@
       },
       "accion": {
         "forzar_isco": "2512",
-        "esco_label": "desarrollador de software/desarrolladora de software"
+        "esco_label": "desarrollador de software/desarrolladora de software",
+        "esco_code": "2512.4"
       },
       "caso_gold_set": "1117982053 - Desarrollador Angular Senior",
       "activa": true,
@@ -1130,7 +1163,8 @@
       },
       "accion": {
         "forzar_isco": "5230",
-        "esco_label": "cajero/cajera"
+        "esco_label": "cajero/cajera",
+        "esco_code": "5230.1"
       },
       "caso_gold_set": "2123908 - CAJEROS",
       "activa": true,
@@ -1156,7 +1190,8 @@
       },
       "accion": {
         "forzar_isco": "2166",
-        "esco_label": "diseñador gráfico/diseñadora gráfica"
+        "esco_label": "diseñador gráfico/diseñadora gráfica",
+        "esco_code": "2166.9"
       },
       "caso_gold_set": "1118018714 - Diseñador Gráfico E-commerce",
       "activa": true,
@@ -1187,7 +1222,8 @@
       },
       "accion": {
         "forzar_isco": "9333",
-        "esco_label": "mozo de almacén/moza de almacén"
+        "esco_label": "mozo de almacén/moza de almacén",
+        "esco_code": "9333.8"
       },
       "caso_gold_set": "1117980907 - Operario de Almacen/Logistica",
       "activa": true,
@@ -1216,7 +1252,8 @@
       },
       "accion": {
         "forzar_isco": "8160",
-        "esco_label": "operador de refrigeración de alimentos/operadora de refrigeración de alimentos"
+        "esco_label": "operador de refrigeración de alimentos/operadora de refrigeración de alimentos",
+        "esco_code": "8160.15"
       },
       "caso_gold_set": "2131827 - Operario de Producción de Alimentos (genérico)",
       "activa": true,
@@ -1257,7 +1294,8 @@
       },
       "accion": {
         "forzar_isco": "3331",
-        "esco_label": "especialista en importación y exportación"
+        "esco_label": "especialista en importación y exportación",
+        "esco_code": "3331.2.1"
       },
       "caso_gold_set": "1118028376 - Analista administrativo (tareas comex)",
       "fix_v33": "2026-01-29 - Exclusiones para analista/senior/admin (son roles contables, no despachantes)",
@@ -1282,7 +1320,8 @@
       },
       "accion": {
         "forzar_isco": "3341",
-        "esco_label": "supervisor de centro de llamadas/supervisora de centro de llamadas"
+        "esco_label": "supervisor de centro de llamadas/supervisora de centro de llamadas",
+        "esco_code": "3341.3"
       },
       "caso_gold_set": "2165301 - Supervisor/a Administración Autos usados",
       "activa": true,
@@ -1309,7 +1348,8 @@
       },
       "accion": {
         "forzar_isco": "3322",
-        "esco_label": "representante comercial"
+        "esco_label": "representante comercial",
+        "esco_code": "3322.1"
       },
       "caso_gold_set": "1118028833 - Asesor Comercial Plan de Ahorro Volkswagen",
       "activa": true,
@@ -1342,7 +1382,8 @@
       },
       "accion": {
         "forzar_isco": "8322",
-        "esco_label": "conductor de vehículo de reparto/conductora de vehículo de reparto"
+        "esco_label": "conductor de vehículo de reparto/conductora de vehículo de reparto",
+        "esco_code": "8322.2"
       },
       "caso_gold_set": "2091347 - CHOFER REPARTIDOR (huevos en Kangoo)",
       "activa": true,
@@ -1370,7 +1411,8 @@
       },
       "accion": {
         "forzar_isco": "1321",
-        "esco_label": "director de fabricación/directora de fabricación"
+        "esco_label": "director de fabricación/directora de fabricación",
+        "esco_code": "1321.2"
       },
       "caso_gold_set": "2162667 - Gerente Operaciones Facility/Catering",
       "activa": true,
@@ -1398,7 +1440,8 @@
       },
       "accion": {
         "forzar_isco": "1412",
-        "esco_label": "director de restaurante/directora de restaurante"
+        "esco_label": "director de restaurante/directora de restaurante",
+        "esco_code": "1412.1"
       },
       "caso_validacion_humana": "1118091304 - Gerente de Operaciones Grupo Gastronómico, 1118115485 - Gerente de Local Gastronómico",
       "activa": true,
@@ -1422,7 +1465,8 @@
       },
       "accion": {
         "forzar_isco": "2512",
-        "esco_label": "desarrollador de software/desarrolladora de software"
+        "esco_label": "desarrollador de software/desarrolladora de software",
+        "esco_code": "2512.4"
       },
       "caso_revision_100": "2172191 - DevOps Engineer mal clasificado como operador centro datos",
       "activa": true,
@@ -1455,7 +1499,8 @@
       },
       "accion": {
         "forzar_isco": "2512",
-        "esco_label": "desarrollador de software/desarrolladora de software"
+        "esco_label": "desarrollador de software/desarrolladora de software",
+        "esco_code": "2512.4"
       },
       "caso_revision_100": "2172192 - JAVA Architect mal clasificado como gestor TIC",
       "activa": true,
@@ -1484,7 +1529,8 @@
       },
       "accion": {
         "forzar_isco": "2511",
-        "esco_label": "analista de sistemas de TIC"
+        "esco_label": "analista de sistemas de TIC",
+        "esco_code": "2511.13"
       },
       "caso_revision_100": "2172152 - Analista SAP Jr mal clasificado como técnico baterías",
       "activa": true,
@@ -1508,7 +1554,8 @@
       },
       "accion": {
         "forzar_isco": "2511",
-        "esco_label": "analista de sistemas de TIC"
+        "esco_label": "analista de sistemas de TIC",
+        "esco_code": "2511.13"
       },
       "caso_revision_100": "2172151 - Analista Integraciones mal clasificado",
       "activa": true,
@@ -1531,7 +1578,8 @@
       },
       "accion": {
         "forzar_isco": "2521",
-        "esco_label": "administrador de bases de datos/administradora de bases de datos"
+        "esco_label": "administrador de bases de datos/administradora de bases de datos",
+        "esco_code": "2521.1"
       },
       "caso_revision_100": "2172159 - Data Engineer Sr",
       "activa": true,
@@ -1554,7 +1602,8 @@
       },
       "accion": {
         "forzar_isco": "4120",
-        "esco_label": "secretario/secretaria"
+        "esco_label": "secretario/secretaria",
+        "esco_code": "4120.1"
       },
       "activa": true,
       "nota": "FASE 3 v3.2.3 - Secretarias van a ISCO 4120",
@@ -1596,7 +1645,8 @@
       "accion": {
         "priorizar_isco_familia": "1",
         "forzar_isco": "1219",
-        "esco_label": "jefe de departamento/jefa de departamento"
+        "esco_label": "jefe de departamento/jefa de departamento",
+        "esco_code": "1219.4"
       },
       "activa": true,
       "nota": "FASE 3 v3.2.3 - Jefes genericos van a ISCO 1xxx. Excluye compras/logística",
@@ -1625,7 +1675,8 @@
       },
       "accion": {
         "forzar_isco": "3323",
-        "esco_label": "comprador/compradora de café verde"
+        "esco_label": "comprador/compradora de café verde",
+        "esco_code": "3323.2.1"
       },
       "caso_validacion_humana": "2172098 - Responsable de Compras y Logística",
       "activa": true,
@@ -1647,7 +1698,8 @@
       },
       "accion": {
         "forzar_isco": "4312",
-        "esco_label": "técnico administrativo de gestión/técnica administrativa de gestión"
+        "esco_label": "técnico administrativo de gestión/técnica administrativa de gestión",
+        "esco_code": "4312.2"
       },
       "activa": true,
       "nota": "FASE 3 v3.2.3 - Back office es trabajo administrativo",
@@ -1667,7 +1719,8 @@
       },
       "accion": {
         "forzar_isco": "7522",
-        "esco_label": "ebanista"
+        "esco_label": "ebanista",
+        "esco_code": "7522.2"
       },
       "activa": true,
       "nota": "FASE 3 v3.2.3 - Carpinteros van a ISCO 7522",
@@ -1689,7 +1742,8 @@
       },
       "accion": {
         "forzar_isco": "2512",
-        "esco_label": "desarrollador de software/desarrolladora de software"
+        "esco_label": "desarrollador de software/desarrolladora de software",
+        "esco_code": "2512.4"
       },
       "activa": true,
       "nota": "FASE 3 v3.2.3 - Ingenieros IA/ML son desarrolladores",
@@ -1711,7 +1765,8 @@
       },
       "accion": {
         "forzar_isco": "8142",
-        "esco_label": "operador de máquinas para la fabricación de muebles de plástico/operadora de máquinas para la fabricación de muebles de plástico"
+        "esco_label": "operador de máquinas para la fabricación de muebles de plástico/operadora de máquinas para la fabricación de muebles de plástico",
+        "esco_code": "8142.9"
       },
       "activa": true,
       "prioridad": 1,
@@ -1729,7 +1784,8 @@
       },
       "accion": {
         "forzar_isco": "5322",
-        "esco_label": "técnico de atención sociosanitaria a personas en el domicilio/técnica de atención sociosanitaria a personas en el domicilio"
+        "esco_label": "técnico de atención sociosanitaria a personas en el domicilio/técnica de atención sociosanitaria a personas en el domicilio",
+        "esco_code": "5322.1"
       },
       "activa": true,
       "prioridad": 1,
@@ -1746,7 +1802,8 @@
       },
       "accion": {
         "forzar_isco": "9520",
-        "esco_label": "vendedor ambulante/vendedora ambulante"
+        "esco_label": "vendedor ambulante/vendedora ambulante",
+        "esco_code": "9520.1"
       },
       "activa": true,
       "prioridad": 0,
@@ -1765,7 +1822,8 @@
       },
       "accion": {
         "forzar_isco": "3312",
-        "esco_label": "analista de créditos"
+        "esco_label": "analista de créditos",
+        "esco_code": "3312.2.1"
       },
       "activa": true,
       "prioridad": 1,
@@ -1786,7 +1844,8 @@
       },
       "accion": {
         "forzar_isco": "6121",
-        "esco_label": "ganadero/ganadera"
+        "esco_label": "ganadero/ganadera",
+        "esco_code": "6121.1"
       },
       "activa": true,
       "prioridad": 1,
@@ -1835,7 +1894,8 @@
       },
       "accion": {
         "forzar_isco": "3331",
-        "esco_label": "agente y comisionista de aduanas"
+        "esco_label": "agente y comisionista de aduanas",
+        "esco_code": "3331.1"
       },
       "activa": true,
       "prioridad": 1,
@@ -1879,7 +1939,8 @@
       },
       "accion": {
         "forzar_isco": "2212",
-        "esco_label": "médico especialista/médica especialista"
+        "esco_label": "médico especialista/médica especialista",
+        "esco_code": "2212.1"
       },
       "activa": true,
       "nota": "Excluye ingeniero/técnico para evitar falsos positivos con 'equipamiento médico'",
@@ -1910,7 +1971,8 @@
       },
       "accion": {
         "forzar_isco": "7231",
-        "esco_label": "mecánico de vehículos/mecánica de vehículos"
+        "esco_label": "mecánico de vehículos/mecánica de vehículos",
+        "esco_code": "7231.10"
       },
       "activa": true,
       "prioridad": 1,
@@ -1938,7 +2000,8 @@
       },
       "accion": {
         "forzar_isco": "2145",
-        "esco_label": "ingeniero químico/ingeniera química"
+        "esco_label": "ingeniero químico/ingeniera química",
+        "esco_code": "2145.1"
       },
       "activa": true,
       "prioridad": 0,
@@ -1962,7 +2025,8 @@
       },
       "accion": {
         "forzar_isco": "2212",
-        "esco_label": "médico especialista/médica especialista"
+        "esco_label": "médico especialista/médica especialista",
+        "esco_code": "2212.1"
       },
       "activa": true,
       "prioridad": 0,
@@ -1989,7 +2053,8 @@
       },
       "accion": {
         "forzar_isco": "3343",
-        "esco_label": "empleado administrativo/empleada administrativa"
+        "esco_label": "empleado administrativo/empleada administrativa",
+        "esco_code": "3343.1"
       },
       "activa": true,
       "prioridad": 0,
@@ -2014,7 +2079,8 @@
       },
       "accion": {
         "forzar_isco": "4110",
-        "esco_label": "empleado de oficina/empleada de oficina"
+        "esco_label": "empleado de oficina/empleada de oficina",
+        "esco_code": "4110.1"
       },
       "activa": true,
       "prioridad": 0,
@@ -2039,7 +2105,8 @@
       },
       "accion": {
         "forzar_isco": "1420",
-        "esco_label": "gerente de tienda"
+        "esco_label": "gerente de tienda",
+        "esco_code": "1420.4"
       },
       "activa": true,
       "prioridad": -1,
@@ -2068,7 +2135,8 @@
       },
       "accion": {
         "forzar_isco": "2512",
-        "esco_label": "desarrollador de software/desarrolladora de software"
+        "esco_label": "desarrollador de software/desarrolladora de software",
+        "esco_code": "2512.4"
       },
       "activa": true,
       "prioridad": 0,
@@ -2088,7 +2156,8 @@
       },
       "accion": {
         "forzar_isco": "2512",
-        "esco_label": "desarrollador de software/desarrolladora de software"
+        "esco_label": "desarrollador de software/desarrolladora de software",
+        "esco_code": "2512.4"
       },
       "activa": true,
       "prioridad": 1,
@@ -2115,7 +2184,8 @@
       },
       "accion": {
         "forzar_isco": "1412",
-        "esco_label": "director de restaurante/directora de restaurante"
+        "esco_label": "director de restaurante/directora de restaurante",
+        "esco_code": "1412.1"
       },
       "caso_revision_100": "1118091304, 1118097995 - Gerente/Supervisor Operaciones Gastronómico",
       "activa": true,
@@ -2138,7 +2208,8 @@
       },
       "accion": {
         "forzar_isco": "2413",
-        "esco_label": "analista financiero/analista financiera"
+        "esco_label": "analista financiero/analista financiera",
+        "esco_code": "2413.1"
       },
       "caso_revision_100": "1118101894, 2172001 - Analista Financiero Junior",
       "activa": true,
@@ -2168,7 +2239,8 @@
       },
       "accion": {
         "forzar_isco": "1412",
-        "esco_label": "director de restaurante/directora de restaurante"
+        "esco_label": "director de restaurante/directora de restaurante",
+        "esco_code": "1412.1"
       },
       "caso_revision_100": "2172164 - Encargado Senior Gastronomía",
       "activa": true,
@@ -2192,7 +2264,8 @@
       },
       "accion": {
         "forzar_isco": "5222",
-        "esco_label": "supervisor de tienda/supervisora de tienda"
+        "esco_label": "supervisor de tienda/supervisora de tienda",
+        "esco_code": "5222.1"
       },
       "caso_revision_100": "1118101812 - Subencargado de Local",
       "activa": true,
@@ -2215,7 +2288,8 @@
       },
       "accion": {
         "forzar_isco": "7214",
-        "esco_label": "carpintero de ribera/carpintera de ribera"
+        "esco_label": "carpintero de ribera/carpintera de ribera",
+        "esco_code": "7214.2"
       },
       "caso_revision_100": "2172208 - Carpintero de Aluminio / Cortador Vidriero",
       "activa": true,
@@ -2239,7 +2313,8 @@
       },
       "accion": {
         "forzar_isco": "1221",
-        "esco_label": "director de ventas/directora de ventas"
+        "esco_label": "director de ventas/directora de ventas",
+        "esco_code": "1221.3.2.1"
       },
       "caso_revision_100": "2172203 - Supervisor de Ventas Servicios Salud",
       "activa": true,
@@ -2263,7 +2338,8 @@
       },
       "accion": {
         "forzar_isco": "5414",
-        "esco_label": "vigilante de seguridad"
+        "esco_label": "vigilante de seguridad",
+        "esco_code": "5414.1"
       },
       "caso_revision_100": "2171959 - Vigilador General",
       "activa": true,
@@ -2289,7 +2365,8 @@
       },
       "accion": {
         "forzar_isco": "2266",
-        "esco_label": "audiólogo/audióloga"
+        "esco_label": "audiólogo/audióloga",
+        "esco_code": "2266.1"
       },
       "caso_revision_100": "2171937 - Fonoaudióloga",
       "activa": true,
@@ -2311,7 +2388,8 @@
       },
       "accion": {
         "forzar_isco": "1324",
-        "esco_label": "director de la cadena de suministro/directora de la cadena de suministro"
+        "esco_label": "director de la cadena de suministro/directora de la cadena de suministro",
+        "esco_code": "1324.8"
       },
       "caso_revision_100": "2172098 - Responsable Compras y Logística",
       "activa": true,
@@ -2333,7 +2411,8 @@
       },
       "accion": {
         "forzar_isco": "2511",
-        "esco_label": "analista de sistemas de TIC"
+        "esco_label": "analista de sistemas de TIC",
+        "esco_code": "2511.13"
       },
       "caso_revision_100": "2172188 - Analista Técnico Funcional Medios de Pago",
       "activa": true,
@@ -2358,7 +2437,8 @@
       },
       "accion": {
         "forzar_isco": "2141",
-        "esco_label": "ingeniero industrial/ingeniera industrial"
+        "esco_label": "ingeniero industrial/ingeniera industrial",
+        "esco_code": "2141.4"
       },
       "caso_revision_100": "2172199 - Ingeniero Industrial Equipamiento Médico",
       "activa": true,
@@ -2386,7 +2466,8 @@
       },
       "accion": {
         "forzar_isco": "4321",
-        "esco_label": "coordinador de inventario/coordinadora de inventario"
+        "esco_label": "coordinador de inventario/coordinadora de inventario",
+        "esco_code": "4321.1"
       },
       "caso_revision_100": "2172219 - Administrativo para Almacenes",
       "activa": true,
@@ -2414,7 +2495,8 @@
       },
       "accion": {
         "forzar_isco": "5414",
-        "esco_label": "jefe de equipo de seguridad/jefa de equipo de seguridad"
+        "esco_label": "jefe de equipo de seguridad/jefa de equipo de seguridad",
+        "esco_code": "5414.1.9"
       },
       "caso_revision_100": "1118102051 - Operadores de Monitoreo de Alarmas",
       "activa": true,
@@ -2442,7 +2524,8 @@
       },
       "accion": {
         "forzar_isco": "8131",
-        "esco_label": "operador de control de la fabricación de jabón/operadora de control de la fabricación de jabón"
+        "esco_label": "operador de control de la fabricación de jabón/operadora de control de la fabricación de jabón",
+        "esco_code": "8131.20"
       },
       "caso_revision_100": "1118040252 - Operarios pharma mal clasificado a zoológico",
       "activa": true,
@@ -2466,7 +2549,8 @@
       },
       "accion": {
         "forzar_isco": "3341",
-        "esco_label": "supervisor de centro de llamadas/supervisora de centro de llamadas"
+        "esco_label": "supervisor de centro de llamadas/supervisora de centro de llamadas",
+        "esco_code": "3341.3"
       },
       "caso_revision_100": "1118101077, 1118101058 - Analista Calidad Servicios",
       "activa": true,
@@ -2495,7 +2579,8 @@
       },
       "accion": {
         "forzar_isco": "8131",
-        "esco_label": "operador de control de la fabricación de jabón/operadora de control de la fabricación de jabón"
+        "esco_label": "operador de control de la fabricación de jabón/operadora de control de la fabricación de jabón",
+        "esco_code": "8131.20"
       },
       "caso_revision_100": "1118040252 - Operarios acondicionamiento laboratorio",
       "activa": true,
@@ -2520,7 +2605,8 @@
       },
       "accion": {
         "forzar_isco": "5222",
-        "esco_label": "supervisor de tienda/supervisora de tienda"
+        "esco_label": "supervisor de tienda/supervisora de tienda",
+        "esco_code": "5222.1"
       },
       "caso_revision_100": "1118097995 - Supervisor Operaciones Gastronomia",
       "activa": true,
@@ -2544,7 +2630,8 @@
       },
       "accion": {
         "forzar_isco": "5222",
-        "esco_label": "supervisor de tienda/supervisora de tienda"
+        "esco_label": "supervisor de tienda/supervisora de tienda",
+        "esco_code": "5222.1"
       },
       "caso_revision_100": "1118101812 - Subencargado de Local Retail",
       "activa": true,
@@ -2578,7 +2665,8 @@
       },
       "accion": {
         "forzar_isco": "2431",
-        "esco_label": "especialista en publicidad"
+        "esco_label": "especialista en publicidad",
+        "esco_code": "2431.3"
       },
       "caso_revision_100": "1118105735 - Administrativo Ecommerce",
       "activa": true,
@@ -2605,7 +2693,8 @@
       },
       "accion": {
         "forzar_isco": "1221",
-        "esco_label": "director de producto/directora de producto"
+        "esco_label": "director de producto/directora de producto",
+        "esco_code": "1223.3"
       },
       "caso_revision_100": "1118105850 - Jefe de Producto",
       "activa": true,
@@ -2632,7 +2721,8 @@
       },
       "accion": {
         "forzar_isco": "2166",
-        "esco_label": "diseñador gráfico/diseñadora gráfica"
+        "esco_label": "diseñador gráfico/diseñadora gráfica",
+        "esco_code": "2166.9"
       },
       "caso_revision_100": "2172144 - Diseñador Gráfico Senior",
       "activa": true,
@@ -2662,7 +2752,8 @@
       },
       "accion": {
         "forzar_isco": "3322",
-        "esco_label": "representante comercial"
+        "esco_label": "representante comercial",
+        "esco_code": "3322.1"
       },
       "caso_revision_100": "2172203 - Supervisor de Ventas",
       "activa": true,
@@ -2689,7 +2780,8 @@
       },
       "accion": {
         "forzar_isco": "3115",
-        "esco_label": "supervisor de mantenimiento industrial/supervisora de mantenimiento industrial"
+        "esco_label": "supervisor de mantenimiento industrial/supervisora de mantenimiento industrial",
+        "esco_code": "3115.1.6"
       },
       "caso_revision_100": "1117941805 - JEFE/A DE MANTENIMIENTO (rubro alimenticio)",
       "activa": true,
@@ -2724,7 +2816,8 @@
       },
       "accion": {
         "forzar_isco": "1323",
-        "esco_label": "director de obra/directora de obra"
+        "esco_label": "director de obra/directora de obra",
+        "esco_code": "1323.1"
       },
       "caso_revision_100": "1118105832 - Jefe/a de Cotizaciones, Cómputo y Presupuesto (instalaciones contra incendios)",
       "activa": true,
@@ -2752,7 +2845,8 @@
       },
       "accion": {
         "forzar_isco": "5244",
-        "esco_label": "teleoperador/teleoperadora"
+        "esco_label": "teleoperador/teleoperadora",
+        "esco_code": "5244.1"
       },
       "caso_revision_100": "1117872265 - Telemarketers con experiencia en planes de ahorro",
       "activa": true,
@@ -2781,7 +2875,8 @@
       },
       "accion": {
         "forzar_isco": "1346",
-        "esco_label": "gerente de reclamaciones de seguros"
+        "esco_label": "gerente de reclamaciones de seguros",
+        "esco_code": "1346.5"
       },
       "caso_revision_100": "2172211 - Jefe de Delegación (AMPF - venta de créditos)",
       "activa": true,
@@ -2813,7 +2908,8 @@
       },
       "accion": {
         "forzar_isco": "2512",
-        "esco_label": "desarrollador de software/desarrolladora de software"
+        "esco_label": "desarrollador de software/desarrolladora de software",
+        "esco_code": "2512.4"
       },
       "caso_revision_100": "1118105718 - IA Tech Lead (desarrollo RAG, LangChain, arquitectura IA)",
       "activa": true,
@@ -2842,7 +2938,8 @@
       },
       "accion": {
         "forzar_isco": "5142",
-        "esco_label": "manicuro/manicura"
+        "esco_label": "manicuro/manicura",
+        "esco_code": "5142.6"
       },
       "caso_validacion": "1118102076 - Profesionales de Belleza de Manos, Pies, Cejas y Pestanas",
       "activa": true,
@@ -2866,7 +2963,8 @@
       },
       "accion": {
         "forzar_isco": "4321",
-        "esco_label": "coordinador de inventario/coordinadora de inventario"
+        "esco_label": "coordinador de inventario/coordinadora de inventario",
+        "esco_code": "4321.1"
       },
       "caso_validacion": "1117953276 - Coordinador Deposito",
       "activa": true,
@@ -2890,7 +2988,8 @@
       },
       "accion": {
         "forzar_isco": "3321",
-        "esco_label": "asesor de seguros/asesora de seguros"
+        "esco_label": "asesor de seguros/asesora de seguros",
+        "esco_code": "3321.3.1"
       },
       "caso_validacion": "2170807 - Asesor Medicina Prepaga",
       "activa": true,
@@ -2911,7 +3010,8 @@
       },
       "accion": {
         "forzar_isco": "9112",
-        "esco_label": "camarero de pisos/camarera de pisos"
+        "esco_label": "camarero de pisos/camarera de pisos",
+        "esco_code": "9112.4"
       },
       "activa": true,
       "prioridad": 1,
@@ -2934,7 +3034,8 @@
       },
       "accion": {
         "forzar_isco": "2511",
-        "esco_label": "analista de sistemas de TIC"
+        "esco_label": "analista de sistemas de TIC",
+        "esco_code": "2511.13"
       },
       "activa": true,
       "prioridad": 1,
@@ -2959,7 +3060,8 @@
       },
       "accion": {
         "forzar_isco": "5243",
-        "esco_label": "vendedor a domicilio"
+        "esco_label": "vendedor a domicilio",
+        "esco_code": "5243.1"
       },
       "caso_demo": "1118115978 - PREVENTISTA MEDIA JORNADA",
       "activa": true,
@@ -2982,7 +3084,8 @@
       },
       "accion": {
         "forzar_isco": "2263",
-        "esco_label": "responsable de salud y seguridad"
+        "esco_label": "responsable de salud y seguridad",
+        "esco_code": "2263.3"
       },
       "caso_demo": "1118115976 - Licenciado en Seguridad e Higiene",
       "activa": true,
@@ -3018,7 +3121,8 @@
       },
       "accion": {
         "forzar_isco": "1212",
-        "esco_label": "director de recursos humanos/directora de recursos humanos"
+        "esco_label": "director de recursos humanos/directora de recursos humanos",
+        "esco_code": "1212.2"
       },
       "caso_demo": "1118115922 - Jefe/a de Hard HR",
       "activa": true,
@@ -3049,7 +3153,8 @@
       },
       "accion": {
         "forzar_isco": "3322",
-        "esco_label": "representante comercial"
+        "esco_label": "representante comercial",
+        "esco_code": "3322.1"
       },
       "caso_demo": "1118115901 - Ejecutivo de ventas rubro alimenticio",
       "activa": true,
@@ -3081,7 +3186,8 @@
       },
       "accion": {
         "forzar_isco": "7233",
-        "esco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial"
+        "esco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial",
+        "esco_code": "7233.7"
       },
       "caso_demo": "1118115860 - Tecnico de Mantenimiento Industrial",
       "activa": true,
@@ -3122,7 +3228,8 @@
       },
       "accion": {
         "forzar_isco": "5223",
-        "esco_label": "vendedor especializado/vendedora especializada"
+        "esco_label": "vendedor especializado/vendedora especializada",
+        "esco_code": "5223.7"
       },
       "nota": "Vendedor genérico → 5223. Los B2B (asesor, ejecutivo, representante) van a R40 → 3322",
       "fix_validacion_humana": "2026-01-16",
@@ -3149,7 +3256,8 @@
       },
       "accion": {
         "forzar_isco": "2411",
-        "esco_label": "analista contable"
+        "esco_label": "analista contable",
+        "esco_code": "2411.1.1"
       },
       "nota": "Analista de tesorería → analista contable (validación humana v2). Corregido 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
@@ -3173,7 +3281,8 @@
       },
       "accion": {
         "forzar_isco": "4311",
-        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+        "esco_label": "empleado de contabilidad/empleada de contabilidad",
+        "esco_code": "4311.1"
       },
       "nota": "Asistente de tesorería → empleado contabilidad (validación humana)",
       "fix_validacion_humana": "2026-01-16",
@@ -3197,7 +3306,8 @@
       },
       "accion": {
         "forzar_isco": "2212",
-        "esco_label": "médico especialista/médica especialista"
+        "esco_label": "médico especialista/médica especialista",
+        "esco_code": "2212.1"
       },
       "nota": "Auditor médico requiere título de médico → 2212",
       "fix_validacion_humana": "2026-01-16",
@@ -3228,7 +3338,8 @@
       },
       "accion": {
         "forzar_isco": "3111",
-        "esco_label": "técnico en control de calidad de productos químicos/técnica en control de calidad de productos químicos"
+        "esco_label": "técnico en control de calidad de productos químicos/técnica en control de calidad de productos químicos",
+        "esco_code": "3116.1.2"
       },
       "nota": "Calidad en laboratorio → 3111 (técnico químico, no ingeniero). Corregido 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
@@ -3254,7 +3365,8 @@
       },
       "accion": {
         "forzar_isco": "4321",
-        "esco_label": "coordinador de inventario/coordinadora de inventario"
+        "esco_label": "coordinador de inventario/coordinadora de inventario",
+        "esco_code": "4321.1"
       },
       "nota": "Administrativo en almacén/depósito → 4321 (inventario, no admin genérico)",
       "fix_validacion_humana": "2026-01-16",
@@ -3277,7 +3389,8 @@
       },
       "accion": {
         "forzar_isco": "7231",
-        "esco_label": "mecánico de vehículos/mecánica de vehículos"
+        "esco_label": "mecánico de vehículos/mecánica de vehículos",
+        "esco_code": "7231.10"
       },
       "nota": "Gomero/balanceador → 7231 (mecánico vehículos), no demostrador",
       "fix_validacion_humana": "2026-01-19",
@@ -3299,7 +3412,8 @@
       },
       "accion": {
         "forzar_isco": "2131",
-        "esco_label": "bioquímico/bioquímica"
+        "esco_label": "bioquímico/bioquímica",
+        "esco_code": "2131.4.2"
       },
       "nota": "Bioquímico → 2131 (bioquímico en ESCO), no ingeniero bioquímico (2145)",
       "fix_validacion_humana": "2026-01-19",
@@ -3330,7 +3444,8 @@
       },
       "accion": {
         "forzar_isco": "7112",
-        "esco_label": "albañil"
+        "esco_label": "albañil",
+        "esco_code": "7112.1"
       },
       "nota": "Personal genérico para obra de construcción → Albañiles (7112)",
       "fix_validacion_humana": "2026-01-20",
@@ -3354,7 +3469,8 @@
       },
       "accion": {
         "forzar_isco": "2433",
-        "esco_label": "representante técnico de ventas/representante técnica de ventas"
+        "esco_label": "representante técnico de ventas/representante técnica de ventas",
+        "esco_code": "2433.6"
       },
       "nota": "REVISADO: regla correcta (2433). Fix: R38 ahora excluye 'asesor técnico' para no interferir. 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
@@ -3377,7 +3493,8 @@
       },
       "accion": {
         "forzar_isco": "2411",
-        "esco_label": "analista contable"
+        "esco_label": "analista contable",
+        "esco_code": "2411.1.1"
       },
       "nota": "Analista contable ≠ contador. La demanda es de analista, no de contador matriculado. Fix validacion 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
@@ -3402,7 +3519,8 @@
       },
       "accion": {
         "forzar_isco": "1211",
-        "esco_label": "director financiero/directora financiera"
+        "esco_label": "director financiero/directora financiera",
+        "esco_code": "1211.1"
       },
       "nota": "Gerente/Director de Finanzas → director financiero (no director de contabilidad). Fix validacion 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
@@ -3435,7 +3553,8 @@
       },
       "accion": {
         "forzar_isco": "3321",
-        "esco_label": "asesor de seguros/asesora de seguros"
+        "esco_label": "asesor de seguros/asesora de seguros",
+        "esco_code": "3321.3.1"
       },
       "nota": "Venta de seguros/ART → 3321 (asesor de seguros). Prioridad 0 para ganar sobre R40.",
       "fix_validacion_humana": "2026-01-20",
@@ -3463,7 +3582,8 @@
       },
       "accion": {
         "forzar_isco": "1349",
-        "esco_label": "director de servicios para los clientes/directora de servicios para los clientes"
+        "esco_label": "director de servicios para los clientes/directora de servicios para los clientes",
+        "esco_code": "1349.21"
       },
       "nota": "Gerente de Postventa/Servicio al cliente → 1349 (director servicios clientes). Fix validacion 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
@@ -3491,7 +3611,8 @@
       },
       "accion": {
         "forzar_isco": "7223",
-        "esco_label": "operador de torno metalúrgico/operadora de torno metalúrgico"
+        "esco_label": "operador de torno metalúrgico/operadora de torno metalúrgico",
+        "esco_code": "7223.4.4.1"
       },
       "nota": "Programador/Operario CNC = operador máquinas herramienta (7223), NO desarrollador software. Fix validacion 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
@@ -3517,7 +3638,8 @@
       },
       "accion": {
         "forzar_isco": "1345",
-        "esco_label": "coordinador de programación educativa/coordinadora de programación educativa"
+        "esco_label": "coordinador de programación educativa/coordinadora de programación educativa",
+        "esco_code": "1345.1.3"
       },
       "nota": "Coordinador educación/formación → 1345 (director servicios educativos). Fix validacion 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
@@ -3541,7 +3663,8 @@
       },
       "accion": {
         "forzar_isco": "3341",
-        "esco_label": "supervisor de centro de llamadas/supervisora de centro de llamadas"
+        "esco_label": "supervisor de centro de llamadas/supervisora de centro de llamadas",
+        "esco_code": "3341.3"
       },
       "nota": "Supervisor QA/procesos → 3341 (supervisor calidad), NO director (1321). Fix validacion 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
@@ -3569,7 +3692,8 @@
       },
       "accion": {
         "forzar_isco": "5151",
-        "esco_label": "supervisor de servicio de limpieza/supervisora de servicio de limpieza"
+        "esco_label": "supervisor de servicio de limpieza/supervisora de servicio de limpieza",
+        "esco_code": "5151.2"
       },
       "caso_referencia": "2172389 - Tecnico/a de Hoteleria en Salud",
       "activa": true,
@@ -3595,7 +3719,8 @@
       },
       "accion": {
         "forzar_isco": "3321",
-        "esco_label": "asesor de seguros/asesora de seguros"
+        "esco_label": "asesor de seguros/asesora de seguros",
+        "esco_code": "3321.3.1"
       },
       "caso_referencia": "2171880 - Vendedores de medicina prepaga",
       "activa": true,
@@ -3620,7 +3745,8 @@
       },
       "accion": {
         "forzar_isco": "5151",
-        "esco_label": "supervisor de servicio de limpieza/supervisora de servicio de limpieza"
+        "esco_label": "supervisor de servicio de limpieza/supervisora de servicio de limpieza",
+        "esco_code": "5151.2"
       },
       "caso_referencia": "2172389 - Tecnico/a de Hoteleria (sector Salud)",
       "activa": true,
@@ -3640,7 +3766,8 @@
       },
       "accion": {
         "forzar_isco": "9412",
-        "esco_label": "ayudante de cocina"
+        "esco_label": "ayudante de cocina",
+        "esco_code": "9412.1"
       },
       "caso_referencia": "1116740268 - H - Steward - Bacheros - CABA",
       "activa": true,
@@ -3662,7 +3789,8 @@
       },
       "accion": {
         "forzar_isco": "4311",
-        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+        "esco_label": "empleado de contabilidad/empleada de contabilidad",
+        "esco_code": "4311.1"
       },
       "caso_referencia": "1118115815 - Gestor de Liquidaciones",
       "activa": true,
@@ -3696,7 +3824,8 @@
       },
       "accion": {
         "forzar_isco": "9333",
-        "esco_label": "mozo de almacén/moza de almacén"
+        "esco_label": "mozo de almacén/moza de almacén",
+        "esco_code": "9333.8"
       },
       "activa": true,
       "_caso": "ID 1118092945 Personal para Depósito en Villa Soldati",
@@ -3737,7 +3866,8 @@
       },
       "accion": {
         "forzar_isco": "9333",
-        "esco_label": "mozo de almacén/moza de almacén"
+        "esco_label": "mozo de almacén/moza de almacén",
+        "esco_code": "9333.8"
       },
       "activa": true,
       "_caso": "ID 1118092945 - tareas picking, cross docking en área logística",
@@ -3762,7 +3892,8 @@
       },
       "accion": {
         "forzar_isco": "2411",
-        "esco_label": "analista de presupuestos"
+        "esco_label": "analista de presupuestos",
+        "esco_code": "2411.1.4"
       },
       "activa": true,
       "_caso": "ID 2172829 - Analista de Control de Gestión - Petrolera Martinez",
@@ -3786,7 +3917,8 @@
       },
       "accion": {
         "forzar_isco": "9334",
-        "esco_label": "reponedor/reponedora"
+        "esco_label": "reponedor/reponedora",
+        "esco_code": "9334.1"
       },
       "activa": true,
       "_caso": "ID 1118097220 Repositores con experiencia",
@@ -3814,7 +3946,8 @@
       },
       "accion": {
         "forzar_isco": "9112",
-        "esco_label": "camarero de pisos/camarera de pisos"
+        "esco_label": "camarero de pisos/camarera de pisos",
+        "esco_code": "9112.4"
       },
       "activa": true,
       "_caso": "ID 1118005232 Mucamas/os para Hoteles 4* y 5*",
@@ -3840,7 +3973,8 @@
       },
       "accion": {
         "forzar_isco": "9333",
-        "esco_label": "mozo de almacén/moza de almacén"
+        "esco_label": "mozo de almacén/moza de almacén",
+        "esco_code": "9333.8"
       },
       "activa": true,
       "_caso": "ID 1118009711 Empleado de reposicion, distribucion y deposito",
@@ -3863,7 +3997,8 @@
       },
       "accion": {
         "forzar_isco": "9333",
-        "esco_label": "mozo de almacén/moza de almacén"
+        "esco_label": "mozo de almacén/moza de almacén",
+        "esco_code": "9333.8"
       },
       "activa": true,
       "_caso": "ID 1118104232 Peones y Bodegueros",
@@ -3893,7 +4028,8 @@
       },
       "accion": {
         "forzar_isco": "3434",
-        "esco_label": "chef"
+        "esco_label": "chef",
+        "esco_code": "3434.1"
       },
       "activa": true,
       "_caso": "ID 1118032379 Jefe/a de cocina - Temperley, 1116827130 Responsable de Cocina",
@@ -3925,7 +4061,8 @@
       },
       "accion": {
         "forzar_isco": "7512",
-        "esco_label": "panadero/panadera"
+        "esco_label": "panadero/panadera",
+        "esco_code": "7512.1"
       },
       "activa": true,
       "_caso": "ID 2171992 Pizzaiolo/Maestro Pizzero/Panadero",
@@ -3951,7 +4088,8 @@
       },
       "accion": {
         "forzar_isco": "2511",
-        "esco_label": "arquitecto de sistemas de TIC/arquitecta de sistemas de TIC"
+        "esco_label": "arquitecto de sistemas de TIC/arquitecta de sistemas de TIC",
+        "esco_code": "2511.14"
       },
       "caso_referencia": "1118103686 - Data Architect",
       "activa": true,
@@ -3977,7 +4115,8 @@
       },
       "accion": {
         "forzar_isco": "2522",
-        "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC"
+        "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC",
+        "esco_code": "2522.1"
       },
       "caso_referencia": "1118103687 - Administrador de Redes y Servidores",
       "activa": true,
@@ -4000,7 +4139,8 @@
       },
       "accion": {
         "forzar_isco": "2166",
-        "esco_label": "diseñador gráfico/diseñadora gráfica"
+        "esco_label": "diseñador gráfico/diseñadora gráfica",
+        "esco_code": "2166.9"
       },
       "caso_referencia": "1118103801 - DISEÑADOR MULTIMEDIA",
       "activa": true,
@@ -4034,7 +4174,8 @@
       },
       "accion": {
         "forzar_isco": "2153",
-        "esco_label": "ingeniero de telecomunicaciones/ingeniera de telecomunicaciones"
+        "esco_label": "ingeniero de telecomunicaciones/ingeniera de telecomunicaciones",
+        "esco_code": "2153.1"
       },
       "caso_referencia": "1118100726 - Ingeniero de Planificación de Presupuestos de Transmisión",
       "activa": true,
@@ -4057,7 +4198,8 @@
       },
       "accion": {
         "forzar_isco": "3322",
-        "esco_label": "representante comercial"
+        "esco_label": "representante comercial",
+        "esco_code": "3322.1"
       },
       "caso_referencia": "1118095764 - Asesor de Plan de Ahorro - San Martín GBA",
       "activa": true,
@@ -4083,7 +4225,8 @@
       },
       "accion": {
         "forzar_isco": "1323",
-        "esco_label": "director de obra/directora de obra"
+        "esco_label": "director de obra/directora de obra",
+        "esco_code": "1323.1"
       },
       "caso_referencia": "1118096877 - JEFE DE OBRA",
       "activa": true,
@@ -4115,7 +4258,8 @@
       },
       "accion": {
         "forzar_isco": "1221",
-        "esco_label": "responsable de marketing digital"
+        "esco_label": "responsable de marketing digital",
+        "esco_code": "1221.5"
       },
       "caso_referencia": "1118069619 - E - COMMERCE",
       "activa": true,
@@ -4140,7 +4284,8 @@
       },
       "accion": {
         "forzar_isco": "2432",
-        "esco_label": "gestor de la información para las redes sociales/gestora de la información para las redes sociales"
+        "esco_label": "gestor de la información para las redes sociales/gestora de la información para las redes sociales",
+        "esco_code": "2432.5"
       },
       "caso_referencia": "1118099884 - Creador/a de Contenido",
       "activa": true,
@@ -4167,7 +4312,8 @@
       },
       "accion": {
         "forzar_isco": "4321",
-        "esco_label": "coordinador de inventario/coordinadora de inventario"
+        "esco_label": "coordinador de inventario/coordinadora de inventario",
+        "esco_code": "4321.1"
       },
       "caso_referencia": "1116677957 - Auditores Control de Stock",
       "activa": true,
@@ -4195,7 +4341,8 @@
       },
       "accion": {
         "forzar_isco": "4222",
-        "esco_label": "agente de centro de atención al cliente"
+        "esco_label": "agente de centro de atención al cliente",
+        "esco_code": "4222.1"
       },
       "caso_referencia": "1118095110 - Asesor Comercial Telefonico",
       "activa": true,
@@ -4220,7 +4367,8 @@
       },
       "accion": {
         "forzar_isco": "5243",
-        "esco_label": "vendedor a domicilio"
+        "esco_label": "vendedor a domicilio",
+        "esco_code": "5243.1"
       },
       "caso_referencia": "1118095742 - Vendedor/a viajante rubro motos",
       "activa": true,
@@ -4245,7 +4393,8 @@
       },
       "accion": {
         "forzar_isco": "1321",
-        "esco_label": "director de producción industrial/directora de producción industrial"
+        "esco_label": "director de producción industrial/directora de producción industrial",
+        "esco_code": "1321.2.1"
       },
       "caso_referencia": "1118103812 - Jefe de Producción",
       "activa": true,
@@ -4268,7 +4417,8 @@
       },
       "accion": {
         "forzar_isco": "1321",
-        "esco_label": "director de producción industrial/directora de producción industrial"
+        "esco_label": "director de producción industrial/directora de producción industrial",
+        "esco_code": "1321.2.1"
       },
       "caso_referencia": "1118104175 - Jefe de Operaciones",
       "activa": true,
@@ -4299,7 +4449,8 @@
       },
       "accion": {
         "forzar_isco": "2262",
-        "esco_label": "farmacéutico/farmacéutica"
+        "esco_label": "farmacéutico/farmacéutica",
+        "esco_code": "2262.1"
       },
       "caso_referencia": "1118103767 - Farmacéutico/a para el área de Ensayos Clínicos",
       "activa": true,
@@ -4329,7 +4480,8 @@
       },
       "accion": {
         "forzar_isco": "7411",
-        "esco_label": "electricista doméstico/electricista doméstica"
+        "esco_label": "electricista doméstico/electricista doméstica",
+        "esco_code": "7411.1.1.1"
       },
       "caso_referencia": "1118099825 - TECNICO INSTALADOR",
       "activa": true,
@@ -4356,7 +4508,8 @@
       },
       "accion": {
         "forzar_isco": "7131",
-        "esco_label": "pintor de obra/pintora de obra"
+        "esco_label": "pintor de obra/pintora de obra",
+        "esco_code": "7131.1"
       },
       "caso_diagnostico": "1118102093 - Técnico de Mantenimiento Edilicio (San Martín)",
       "fecha_creacion": "2026-01-29",
@@ -4387,7 +4540,8 @@
       },
       "accion": {
         "forzar_isco": "4311",
-        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+        "esco_label": "empleado de contabilidad/empleada de contabilidad",
+        "esco_code": "4311.1"
       },
       "caso_diagnostico": "1118101825 - Senior de Comercio Exterior (tareas SAP, facturas, KPIs)",
       "fecha_creacion": "2026-01-29",
@@ -4411,7 +4565,8 @@
       },
       "accion": {
         "forzar_isco": "9333",
-        "esco_label": "operario de logística de almacén/operaria de logística de almacén"
+        "esco_label": "operario de logística de almacén/operaria de logística de almacén",
+        "esco_code": "9333.3"
       },
       "caso_diagnostico": "1118101813 - Camarista (Cámara de Frío) zona Santos Lugares - heladería",
       "fecha_creacion": "2026-01-30",
@@ -4439,7 +4594,8 @@
       },
       "accion": {
         "forzar_isco": "5414",
-        "esco_label": "vigilante de seguridad"
+        "esco_label": "vigilante de seguridad",
+        "esco_code": "5414.1"
       },
       "caso_diagnostico": "1118102070 - Portero Zona Bernal (empresa metalúrgica, portería y seguridad)",
       "fecha_creacion": "2026-01-30",
@@ -4471,7 +4627,8 @@
       },
       "accion": {
         "forzar_isco": "5120",
-        "esco_label": "cocinero/cocinera"
+        "esco_label": "cocinero/cocinera",
+        "esco_code": "5120.1"
       },
       "caso_diagnostico": "1118098117 - Cocinero / Planchero smash",
       "fecha_creacion": "2026-01-30",
@@ -4498,7 +4655,8 @@
       },
       "accion": {
         "forzar_isco": "3512",
-        "esco_label": "agente del servicio de asistencia de TIC"
+        "esco_label": "agente del servicio de asistencia de TIC",
+        "esco_code": "3512.1"
       },
       "caso_diagnostico": "1118101750 - Técnico operativo / soporte técnico isp (2º nivel)",
       "fecha_creacion": "2026-01-30",
@@ -4529,7 +4687,8 @@
       },
       "accion": {
         "forzar_isco": "2320",
-        "esco_label": "profesor de formación profesional/profesora de formación profesional"
+        "esco_label": "profesor de formación profesional/profesora de formación profesional",
+        "esco_code": "2320.1"
       },
       "caso_diagnostico": "1118101656 - Docente gastronómico / pastelero",
       "fecha_creacion": "2026-01-30",
@@ -4560,7 +4719,8 @@
       },
       "accion": {
         "forzar_isco": "2411",
-        "esco_label": "contable"
+        "esco_label": "contable",
+        "esco_code": "2411.1"
       },
       "caso_diagnostico": "1118101751 - Analista de impuestos (semisenior) - NO es director financiero",
       "fecha_creacion": "2026-01-30",
@@ -4595,7 +4755,8 @@
       },
       "accion": {
         "forzar_isco": "3322",
-        "esco_label": "representante comercial"
+        "esco_label": "representante comercial",
+        "esco_code": "3322.1"
       },
       "caso_diagnostico": "1118102143 - Asesor/a comercial (semisenior) - NO es director ventas",
       "fecha_creacion": "2026-01-30",
@@ -4630,7 +4791,8 @@
       },
       "accion": {
         "forzar_isco": "8322",
-        "esco_label": "conductor de vehículo de reparto/conductora de vehículo de reparto"
+        "esco_label": "conductor de vehículo de reparto/conductora de vehículo de reparto",
+        "esco_code": "8322.2"
       },
       "caso_diagnostico": "1118102208 - Logística (trainee) sector salud - entregas equipamiento médico, NO enfermero",
       "fecha_creacion": "2026-01-30",
@@ -4656,7 +4818,8 @@
       },
       "accion": {
         "forzar_isco": "3321",
-        "esco_label": "asesor de seguros/asesora de seguros"
+        "esco_label": "asesor de seguros/asesora de seguros",
+        "esco_code": "3321.3.1"
       },
       "caso_diagnostico": "1117981798 - Analista de Siniestros - análisis de reclamos seguros",
       "fecha_creacion": "2026-02-04",
@@ -4680,7 +4843,8 @@
       },
       "accion": {
         "forzar_isco": "2113",
-        "esco_label": "químico/química"
+        "esco_label": "químico/química",
+        "esco_code": "2113.1"
       },
       "caso_diagnostico": "2166968 - Analista para Laboratorio de Investigación y Desarrollo - formulaciones pinturas",
       "fecha_creacion": "2026-02-04",
@@ -4703,7 +4867,8 @@
       },
       "accion": {
         "forzar_isco": "4321",
-        "esco_label": "coordinador de inventario/coordinadora de inventario"
+        "esco_label": "coordinador de inventario/coordinadora de inventario",
+        "esco_code": "4321.1"
       },
       "caso_diagnostico": "1118100003 - Responsable de Control de Stock",
       "fecha_creacion": "2026-02-04",
@@ -4736,7 +4901,8 @@
       },
       "accion": {
         "forzar_isco": "9112",
-        "esco_label": "operario de limpieza de edificios/operaria de limpieza de edificios"
+        "esco_label": "operario de limpieza de edificios/operaria de limpieza de edificios",
+        "esco_code": "9112.2"
       },
       "caso_diagnostico": "1118101716 - Operario/a de limpieza Zona Oeste",
       "fecha_creacion": "2026-02-05",
@@ -4766,7 +4932,8 @@
       },
       "accion": {
         "forzar_isco": "2421",
-        "esco_label": "consultor empresarial/consultora empresarial"
+        "esco_label": "consultor empresarial/consultora empresarial",
+        "esco_code": "2421.2"
       },
       "caso_diagnostico": "1116827375 - Auditor de Franquicias - Grupo Gastronómico",
       "fecha_creacion": "2026-02-05",
@@ -4799,7 +4966,8 @@
       },
       "accion": {
         "forzar_isco": "4214",
-        "esco_label": "cobrador de deudas/cobradora de deudas"
+        "esco_label": "cobrador de deudas/cobradora de deudas",
+        "esco_code": "4214.1"
       },
       "caso_diagnostico": "1118049547 - Gestor de Cobranzas Telefónicas",
       "fecha_creacion": "2026-02-05",
@@ -4825,7 +4993,8 @@
       },
       "accion": {
         "forzar_isco": "2519",
-        "esco_label": "probador de software/probadora de software"
+        "esco_label": "probador de software/probadora de software",
+        "esco_code": "2519.7"
       },
       "caso_diagnostico": "QA Ssr",
       "fecha_creacion": "2026-02-05",
@@ -4850,7 +5019,8 @@
       },
       "accion": {
         "forzar_isco": "7422",
-        "esco_label": "técnico reparador de telefonía móvil/técnica reparadora de telefonía móvil"
+        "esco_label": "técnico reparador de telefonía móvil/técnica reparadora de telefonía móvil",
+        "esco_code": "7422.3.1"
       },
       "caso_diagnostico": "1118089284 - Técnico Instalador de Fibra Óptica",
       "fecha_creacion": "2026-02-05",
@@ -4874,7 +5044,8 @@
       },
       "accion": {
         "forzar_isco": "2522",
-        "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC"
+        "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC",
+        "esco_code": "2522.1"
       },
       "caso_diagnostico": "1118096134 - Especialista en Soporte e Infraestructura",
       "fecha_creacion": "2026-02-05",
@@ -4906,7 +5077,8 @@
       },
       "accion": {
         "forzar_isco": "7233",
-        "esco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial"
+        "esco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial",
+        "esco_code": "7233.7"
       },
       "caso_diagnostico": "1118103015 - Personal de Mantenimiento (centro médico)",
       "fecha_creacion": "2026-02-05",
@@ -4934,7 +5106,8 @@
       },
       "accion": {
         "forzar_isco": "2269",
-        "esco_label": "técnico en imagen para diagnóstico/técnica en imagen para diagnóstico"
+        "esco_label": "técnico en imagen para diagnóstico/técnica en imagen para diagnóstico",
+        "esco_code": "2269.8.1"
       },
       "_nota_isco": "2269 (técnico equipos médicos) es lo más cercano a electromedicina en ESCO",
       "caso_diagnostico": "1118073665 - Técnicos en Electro Medicina",
@@ -4958,7 +5131,8 @@
       },
       "accion": {
         "forzar_isco": "7411",
-        "esco_label": "electricista industrial"
+        "esco_label": "electricista industrial",
+        "esco_code": "7411.1.1.2"
       },
       "_nota": "v4.4: Bobinador eléctrico → electricista industrial",
       "activa": true,
@@ -4983,7 +5157,8 @@
       },
       "accion": {
         "forzar_isco": "7511",
-        "esco_label": "carnicero/carnicera"
+        "esco_label": "carnicero/carnicera",
+        "esco_code": "7511.1"
       },
       "_nota": "v4.4: Carnicero/Depostador → carnicero",
       "activa": true,
@@ -5005,7 +5180,8 @@
       },
       "accion": {
         "forzar_isco": "5419",
-        "esco_label": "socorrista"
+        "esco_label": "socorrista",
+        "esco_code": "5419.7"
       },
       "_nota": "v4.4: Guardavidas → socorrista",
       "activa": true,
@@ -5028,7 +5204,8 @@
       },
       "accion": {
         "forzar_isco": "2264",
-        "esco_label": "fisioterapeuta"
+        "esco_label": "fisioterapeuta",
+        "esco_code": "2264.2"
       },
       "_nota": "v4.4: Kinesiólogo → fisioterapeuta (término argentino)",
       "activa": true,
@@ -5053,7 +5230,8 @@
       },
       "accion": {
         "forzar_isco": "3213",
-        "esco_label": "técnico auxiliar de farmacia/técnica auxiliar de farmacia"
+        "esco_label": "técnico auxiliar de farmacia/técnica auxiliar de farmacia",
+        "esco_code": "3213.1"
       },
       "_nota": "v4.4: Auxiliar farmacia → técnico auxiliar farmacia",
       "activa": true,
@@ -5080,7 +5258,8 @@
       },
       "accion": {
         "forzar_isco": "5414",
-        "esco_label": "vigilante de seguridad"
+        "esco_label": "vigilante de seguridad",
+        "esco_code": "5414.1"
       },
       "_nota": "v4.4: Auxiliar seguridad física → vigilante",
       "activa": true,
@@ -5105,7 +5284,8 @@
       },
       "accion": {
         "forzar_isco": "3322",
-        "esco_label": "representante comercial"
+        "esco_label": "representante comercial",
+        "esco_code": "3322.1"
       },
       "_nota": "v4.4: Business Development → representante comercial",
       "activa": true,
@@ -5131,7 +5311,8 @@
       },
       "accion": {
         "forzar_isco": "2411",
-        "esco_label": "auditor de cuentas/auditora de cuentas"
+        "esco_label": "auditor de cuentas/auditora de cuentas",
+        "esco_code": "2411.1.7"
       },
       "_nota": "v4.4: Auditor interno → auditor de cuentas",
       "activa": true,
@@ -5156,7 +5337,8 @@
       },
       "accion": {
         "forzar_isco": "3323",
-        "esco_label": "comprador/compradora"
+        "esco_label": "comprador/compradora",
+        "esco_code": "3323.2.1"
       },
       "_nota": "v4.4: Analista abastecimiento → comprador",
       "activa": true,
@@ -5177,7 +5359,8 @@
       },
       "accion": {
         "forzar_isco": "4226",
-        "esco_label": "recepcionista de centro de atención médica/recepcionista de centro de atención médica"
+        "esco_label": "recepcionista de centro de atención médica/recepcionista de centro de atención médica",
+        "esco_code": "4226.1.1"
       },
       "_nota": "v4.4: Atención paciente → recepcionista médico",
       "activa": true,
@@ -5208,7 +5391,8 @@
       },
       "accion": {
         "forzar_isco": "3123",
-        "esco_label": "supervisor de construcción/supervisora de construcción"
+        "esco_label": "supervisor general de construcción/supervisora general de construcción",
+        "esco_code": "3123.1"
       },
       "_nota": "v4.4: Supervisor operaciones genérico → 3123 (fallback)",
       "activa": true,
@@ -5231,7 +5415,8 @@
       },
       "accion": {
         "forzar_isco": "4311",
-        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+        "esco_label": "empleado de contabilidad/empleada de contabilidad",
+        "esco_code": "4311.1"
       },
       "_nota": "v4.4: Middle/Back Office → auxiliar contabilidad",
       "activa": true,
@@ -5257,7 +5442,8 @@
       },
       "accion": {
         "forzar_isco": "4110",
-        "esco_label": "empleado de oficina/empleada de oficina"
+        "esco_label": "empleado de oficina/empleada de oficina",
+        "esco_code": "4110.1"
       },
       "_nota": "v4.4: Pasante administrativo → auxiliar administrativo",
       "activa": true,
@@ -5278,7 +5464,8 @@
       },
       "accion": {
         "forzar_isco": "4226",
-        "esco_label": "recepcionista de centro de atención médica/recepcionista de centro de atención médica"
+        "esco_label": "recepcionista de centro de atención médica/recepcionista de centro de atención médica",
+        "esco_code": "4226.1.1"
       },
       "_nota": "v4.4: Personal atención → recepcionista médico (complementa R192)",
       "activa": true,
@@ -5302,7 +5489,8 @@
       },
       "accion": {
         "forzar_isco": "4229",
-        "esco_label": "conserje de hotel"
+        "esco_label": "conserje de hotel",
+        "esco_code": "4229.2"
       },
       "_nota": "v4.5: Bell boy → conserje hotel",
       "activa": true,
@@ -5324,7 +5512,8 @@
       },
       "accion": {
         "forzar_isco": "8182",
-        "esco_label": "operador de calderas/operadora de calderas"
+        "esco_label": "operador de calderas/operadora de calderas",
+        "esco_code": "8182.1"
       },
       "_nota": "v4.5: Foguista → operador calderas",
       "activa": true,
@@ -5344,7 +5533,8 @@
       },
       "accion": {
         "forzar_isco": "2269",
-        "esco_label": "técnico en laboratorio clínico y biomédico/técnica en laboratorio clínico y biomédico"
+        "esco_label": "técnico en laboratorio clínico y biomédico/técnica en laboratorio clínico y biomédico",
+        "esco_code": "2269.13"
       },
       "_nota": "v4.5: Extraccionista → técnico laboratorio clínico",
       "activa": true,
@@ -5366,7 +5556,8 @@
       },
       "accion": {
         "forzar_isco": "3119",
-        "esco_label": "inspector de instalaciones y de seguridad industrial/inspectora de instalaciones y de seguridad industrial"
+        "esco_label": "inspector de instalaciones y de seguridad industrial/inspectora de instalaciones y de seguridad industrial",
+        "esco_code": "3119.19"
       },
       "_nota": "v4.5: Inspector API/NDT → inspector industrial",
       "activa": true,
@@ -5390,7 +5581,8 @@
       },
       "accion": {
         "forzar_isco": "4214",
-        "esco_label": "cobrador de deudas/cobradora de deudas"
+        "esco_label": "cobrador de deudas/cobradora de deudas",
+        "esco_code": "4214.1"
       },
       "_nota": "v4.5: Gestor cobranzas → cobrador deudas",
       "activa": true,
@@ -5413,7 +5605,8 @@
       },
       "accion": {
         "forzar_isco": "4311",
-        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+        "esco_label": "empleado de contabilidad/empleada de contabilidad",
+        "esco_code": "4311.1"
       },
       "caso_referencia": "1118099977 - Analista de pago a proveedores",
       "activa": true,
@@ -5438,7 +5631,8 @@
       },
       "accion": {
         "forzar_isco": "4311",
-        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+        "esco_label": "empleado de contabilidad/empleada de contabilidad",
+        "esco_code": "4311.1"
       },
       "caso_referencia": "1118100573 - Operador de retenciones",
       "activa": true,
@@ -5460,7 +5654,8 @@
       },
       "accion": {
         "forzar_isco": "5243",
-        "esco_label": "vendedor a domicilio"
+        "esco_label": "vendedor a domicilio",
+        "esco_code": "5243.1"
       },
       "caso_referencia": "1118102044 - Vendedor puerta a puerta",
       "activa": true,
@@ -5485,7 +5680,8 @@
       },
       "accion": {
         "forzar_isco": "7421",
-        "esco_label": "técnico reparador de electrónica de consumo/técnica reparadora de electrónica de consumo"
+        "esco_label": "técnico reparador de electrónica de consumo/técnica reparadora de electrónica de consumo",
+        "esco_code": "7421.3"
       },
       "caso_referencia": "2171178 - Tecnico e instalador en sistemas de seguridad electronica",
       "activa": true,
@@ -5510,7 +5706,8 @@
       },
       "accion": {
         "forzar_isco": "9412",
-        "esco_label": "ayudante/ayudanta de cocina"
+        "esco_label": "ayudante de cocina",
+        "esco_code": "9412.1"
       },
       "activa": true,
       "_caso": "ID 1118092879 Peón de Cocina",
@@ -5541,7 +5738,8 @@
       },
       "accion": {
         "forzar_isco": "3323",
-        "esco_label": "comprador/compradora"
+        "esco_label": "comprador/compradora",
+        "esco_code": "3323.2.1"
       },
       "activa": true,
       "_fecha": "2026-02-08",
@@ -5562,7 +5760,8 @@
       },
       "accion": {
         "forzar_isco": "9112",
-        "esco_label": "limpiador de oficinas/limpiadora de oficinas"
+        "esco_label": "operario de limpieza de edificios/operaria de limpieza de edificios",
+        "esco_code": "9112.2"
       },
       "activa": true,
       "_fecha": "2026-02-08",
@@ -5585,8 +5784,9 @@
         ]
       },
       "accion": {
-        "forzar_isco": "5244",
-        "esco_label": "vendedor en centro de contacto/vendedora en centro de contacto"
+        "forzar_isco": "4222",
+        "esco_label": "agente de centro de atención al cliente",
+        "esco_code": "4222.1"
       },
       "activa": true,
       "_fecha": "2026-02-08",
@@ -5609,7 +5809,8 @@
       },
       "accion": {
         "forzar_isco": "7212",
-        "esco_label": "soldador/soldadora"
+        "esco_label": "soldador/soldadora",
+        "esco_code": "7212.3"
       },
       "activa": true,
       "_fecha": "2026-02-08",
@@ -5640,7 +5841,8 @@
       },
       "accion": {
         "forzar_isco": "9112",
-        "esco_label": "limpiador de oficinas/limpiadora de oficinas"
+        "esco_label": "operario de limpieza de edificios/operaria de limpieza de edificios",
+        "esco_code": "9112.2"
       },
       "activa": true,
       "_fecha": "2026-02-08",
@@ -5662,7 +5864,8 @@
       },
       "accion": {
         "forzar_isco": "4222",
-        "esco_label": "empleado del centro de contacto de información/empleada del centro de contacto de información"
+        "esco_label": "agente de centro de atención al cliente",
+        "esco_code": "4222.1"
       },
       "activa": true,
       "_fecha": "2026-02-08",
@@ -5689,7 +5892,8 @@
       },
       "accion": {
         "forzar_isco": "2431",
-        "esco_label": "profesional de la publicidad y la comercialización"
+        "esco_label": "especialista en publicidad",
+        "esco_code": "2431.3"
       },
       "activa": true,
       "_fecha": "2026-02-08",
@@ -5713,7 +5917,8 @@
       },
       "accion": {
         "forzar_isco": "3122",
-        "esco_label": "supervisor de producción/supervisora de producción"
+        "esco_label": "supervisor de producción/supervisora de producción",
+        "esco_code": "3122.4"
       },
       "activa": true,
       "_fecha": "2026-02-08",
@@ -5739,7 +5944,8 @@
       },
       "accion": {
         "forzar_isco": "7512",
-        "esco_label": "panadero/panadera"
+        "esco_label": "panadero/panadera",
+        "esco_code": "7512.1"
       },
       "activa": true,
       "_fecha": "2026-02-08",
@@ -5762,7 +5968,8 @@
       },
       "accion": {
         "forzar_isco": "2264",
-        "esco_label": "fisioterapeuta"
+        "esco_label": "fisioterapeuta",
+        "esco_code": "2264.2"
       },
       "activa": true,
       "_fecha": "2026-02-08",
@@ -5788,7 +5995,8 @@
       },
       "accion": {
         "forzar_isco": "7132",
-        "esco_label": "pintor de vehículos/pintora de vehículos"
+        "esco_label": "pintor de vehículos/pintora de vehículos",
+        "esco_code": "7132.3"
       },
       "activa": true,
       "prioridad": 1,
@@ -5816,7 +6024,8 @@
       },
       "accion": {
         "forzar_isco": "5223",
-        "esco_label": "vendedor especializado en vehículos de motor/vendedora especializada en vehículos de motor"
+        "esco_label": "vendedor especializado en vehículos de motor/vendedora especializada en vehículos de motor",
+        "esco_code": "5223.7.25"
       },
       "activa": true,
       "prioridad": 1,
@@ -5849,7 +6058,8 @@
       },
       "accion": {
         "forzar_isco": "3334",
-        "esco_label": "agente inmobiliario/agente inmobiliaria"
+        "esco_label": "agente inmobiliario/agente inmobiliaria",
+        "esco_code": "3334.3"
       },
       "activa": true,
       "prioridad": 1,
@@ -5880,7 +6090,8 @@
       },
       "accion": {
         "forzar_isco": "7543",
-        "esco_label": "inspector de control de calidad/inspectora de control de calidad"
+        "esco_label": "inspector de control de calidad/inspectora de control de calidad",
+        "esco_code": "7543.10"
       },
       "activa": true,
       "prioridad": 1,
@@ -5912,7 +6123,8 @@
       },
       "accion": {
         "forzar_isco": "8344",
-        "esco_label": "operador de carretilla elevadora/operadora de carretilla elevadora"
+        "esco_label": "operador de carretilla elevadora/operadora de carretilla elevadora",
+        "esco_code": "8344.1"
       },
       "activa": true,
       "prioridad": 1,
@@ -5940,7 +6152,8 @@
       },
       "accion": {
         "forzar_isco": "2522",
-        "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC"
+        "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC",
+        "esco_code": "2522.1"
       },
       "activa": true,
       "prioridad": 1,
@@ -5968,7 +6181,8 @@
       },
       "accion": {
         "forzar_isco": "3434",
-        "esco_label": "jefe de cocina/jefa de cocina"
+        "esco_label": "jefe de cocina/jefa de cocina",
+        "esco_code": "3434.1.1"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -5993,7 +6207,8 @@
       },
       "accion": {
         "forzar_isco": "7512",
-        "esco_label": "chocolatero/chocolatera"
+        "esco_label": "chocolatero/chocolatera",
+        "esco_code": "7512.2"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6013,7 +6228,8 @@
       },
       "accion": {
         "forzar_isco": "2423",
-        "esco_label": "asesor de orientación profesional/asesora de orientación profesional"
+        "esco_label": "asesor de orientación profesional/asesora de orientación profesional",
+        "esco_code": "2423.1"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6038,7 +6254,8 @@
       },
       "accion": {
         "forzar_isco": "3512",
-        "esco_label": "técnico de TIC/técnica de TIC"
+        "esco_label": "técnico de TIC/técnica de TIC",
+        "esco_code": "3512.4"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6058,7 +6275,8 @@
       },
       "accion": {
         "forzar_isco": "4311",
-        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+        "esco_label": "empleado de contabilidad/empleada de contabilidad",
+        "esco_code": "4311.1"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6082,7 +6300,8 @@
       },
       "accion": {
         "forzar_isco": "3322",
-        "esco_label": "representante comercial"
+        "esco_label": "representante comercial",
+        "esco_code": "3322.1"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6103,7 +6322,8 @@
       },
       "accion": {
         "forzar_isco": "3322",
-        "esco_label": "representante comercial"
+        "esco_label": "representante comercial",
+        "esco_code": "3322.1"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6129,7 +6349,8 @@
       },
       "accion": {
         "forzar_isco": "3122",
-        "esco_label": "planificador/planificadora de producción de alimentos"
+        "esco_label": "planificador/planificadora de producción de alimentos",
+        "esco_code": "3122.2"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6150,7 +6371,8 @@
       },
       "accion": {
         "forzar_isco": "1219",
-        "esco_label": "gestor de proyectos/gestora de proyectos"
+        "esco_label": "gestor de proyectos/gestora de proyectos",
+        "esco_code": "1219.6"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6169,7 +6391,8 @@
       },
       "accion": {
         "forzar_isco": "9112",
-        "esco_label": "operario de limpieza de edificios/operaria de limpieza de edificios"
+        "esco_label": "operario de limpieza de edificios/operaria de limpieza de edificios",
+        "esco_code": "9112.2"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6191,7 +6414,8 @@
       },
       "accion": {
         "forzar_isco": "7512",
-        "esco_label": "chocolatero/chocolatera"
+        "esco_label": "chocolatero/chocolatera",
+        "esco_code": "7512.2"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6219,7 +6443,8 @@
       },
       "accion": {
         "forzar_isco": "7231",
-        "esco_label": "mecánico de vehículos/mecánica de vehículos"
+        "esco_label": "mecánico de vehículos/mecánica de vehículos",
+        "esco_code": "7231.10"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6242,7 +6467,8 @@
       },
       "accion": {
         "forzar_isco": "2431",
-        "esco_label": "director de relaciones con los clientes/directora de relaciones con los clientes"
+        "esco_label": "director de relaciones con los clientes/directora de relaciones con los clientes",
+        "esco_code": "2431.6"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6262,7 +6488,8 @@
       },
       "accion": {
         "forzar_isco": "2413",
-        "esco_label": "técnico analista de administración y sistemas/técnica analista de administración y sistemas"
+        "esco_label": "técnico analista de administración y sistemas/técnica analista de administración y sistemas",
+        "esco_code": "2413.2"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6287,7 +6514,8 @@
       },
       "accion": {
         "forzar_isco": "2511",
-        "esco_label": "consultor de TIC verdes/consultora de TIC verdes"
+        "esco_label": "consultor de TIC verdes/consultora de TIC verdes",
+        "esco_code": "2511.7"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6307,7 +6535,8 @@
       },
       "accion": {
         "forzar_isco": "2421",
-        "esco_label": "analista de logística"
+        "esco_label": "analista de logística",
+        "esco_code": "2421.5"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6335,7 +6564,8 @@
       },
       "accion": {
         "forzar_isco": "8160",
-        "esco_label": "operario de prensado de fruta/operaria de prensado de fruta"
+        "esco_label": "operario de prensado de fruta/operaria de prensado de fruta",
+        "esco_code": "8160.35"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6365,7 +6595,8 @@
       },
       "accion": {
         "forzar_isco": "3512",
-        "esco_label": "técnico de TIC/técnica de TIC"
+        "esco_label": "técnico de TIC/técnica de TIC",
+        "esco_code": "3512.4"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6393,7 +6624,8 @@
       },
       "accion": {
         "forzar_isco": "2411",
-        "esco_label": "analista contable"
+        "esco_label": "analista contable",
+        "esco_code": "2411.1.1"
       },
       "caso_diagnostico": "1117931697 - ASISTENTE EXPERIMENTADO DE IMPUESTOS",
       "fecha_creacion": "2026-02-23",
@@ -6423,7 +6655,8 @@
       },
       "accion": {
         "forzar_isco": "1420",
-        "esco_label": "gerente de tienda"
+        "esco_label": "gerente de tienda",
+        "esco_code": "1420.4"
       },
       "caso_diagnostico": "1116826229 - Gerente de Local - Grupo Gastronómico",
       "fecha_creacion": "2026-02-23",
@@ -6446,7 +6679,8 @@
       },
       "accion": {
         "forzar_isco": "1420",
-        "esco_label": "gerente de tienda"
+        "esco_label": "gerente de tienda",
+        "esco_code": "1420.4"
       },
       "caso_diagnostico": "1118101649 - Coordinador de Turno - Cadena de Cines",
       "fecha_creacion": "2026-02-23",
@@ -6478,7 +6712,8 @@
       },
       "accion": {
         "forzar_isco": "2411",
-        "esco_label": "analista contable"
+        "esco_label": "analista contable",
+        "esco_code": "2411.1.1"
       },
       "caso_diagnostico": "1118095663 - Analista en cobranzas",
       "fecha_creacion": "2026-02-23",
@@ -6507,7 +6742,8 @@
       },
       "accion": {
         "forzar_isco": "1321",
-        "esco_label": "director de control de calidad en industrias/directora de control de calidad en industrias"
+        "esco_label": "director de control de calidad en industrias/directora de control de calidad en industrias",
+        "esco_code": "1321.2.2"
       },
       "caso_diagnostico": "1118061207_3 - Jefe de Calidad (multi-position sub-oferta)",
       "fecha_creacion": "2026-02-24",
@@ -6529,7 +6765,8 @@
       },
       "accion": {
         "forzar_isco": "3123",
-        "esco_label": "capataz de construcción"
+        "esco_label": "capataz de construcción",
+        "esco_code": "3123.1.1"
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
@@ -6578,7 +6815,8 @@
       },
       "accion": {
         "forzar_isco": "3123",
-        "esco_label": "capataz de construcción"
+        "esco_label": "capataz de construcción",
+        "esco_code": "3123.1.1"
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
@@ -6626,7 +6864,8 @@
       },
       "accion": {
         "forzar_isco": "3123",
-        "esco_label": "supervisor de instalaciones eléctricas/supervisora de instalaciones eléctricas"
+        "esco_label": "supervisor de instalaciones eléctricas/supervisora de instalaciones eléctricas",
+        "esco_code": "3123.1.11"
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
@@ -6670,7 +6909,8 @@
       },
       "accion": {
         "forzar_isco": "3121",
-        "esco_label": "supervisor de mina/supervisora de mina"
+        "esco_label": "supervisor de mina/supervisora de mina",
+        "esco_code": "3121.1"
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
@@ -6716,7 +6956,8 @@
       },
       "accion": {
         "forzar_isco": "3334",
-        "esco_label": "agente inmobiliario/agente inmobiliaria"
+        "esco_label": "agente inmobiliario/agente inmobiliaria",
+        "esco_code": "3334.3"
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
@@ -6759,7 +7000,8 @@
       },
       "accion": {
         "forzar_isco": "2423",
-        "esco_label": "responsable de recursos humanos"
+        "esco_label": "responsable de recursos humanos",
+        "esco_code": "2423.3"
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
@@ -6804,7 +7046,8 @@
       },
       "accion": {
         "forzar_isco": "5163",
-        "esco_label": "empleado de pompas fúnebres/empleada de pompas fúnebres"
+        "esco_label": "empleado de pompas fúnebres/empleada de pompas fúnebres",
+        "esco_code": "5163.3"
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
@@ -6846,7 +7089,8 @@
       },
       "accion": {
         "forzar_isco": "8322",
-        "esco_label": "conductor de vehículo de reparto/conductora de vehículo de reparto"
+        "esco_label": "conductor de vehículo de reparto/conductora de vehículo de reparto",
+        "esco_code": "8322.2"
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
@@ -6900,7 +7144,8 @@
       },
       "accion": {
         "forzar_isco": "7112",
-        "esco_label": "albañil"
+        "esco_label": "albañil",
+        "esco_code": "7112.1"
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
@@ -6951,7 +7196,8 @@
       },
       "accion": {
         "forzar_isco": "7126",
-        "esco_label": "fontanero/fontanera"
+        "esco_label": "fontanero/fontanera",
+        "esco_code": "7126.8"
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
@@ -7009,7 +7255,8 @@
       },
       "accion": {
         "forzar_isco": "7131",
-        "esco_label": "pintor de obra/pintora de obra"
+        "esco_label": "pintor de obra/pintora de obra",
+        "esco_code": "7131.1"
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
@@ -7057,7 +7304,8 @@
       },
       "accion": {
         "forzar_isco": "9313",
-        "esco_label": "obrero de la construcción/obrera de la construcción"
+        "esco_label": "obrero de la construcción/obrera de la construcción",
+        "esco_code": "9313.1"
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
@@ -7107,7 +7355,8 @@
       },
       "accion": {
         "forzar_isco": "7112",
-        "esco_label": "albañil"
+        "esco_label": "albañil",
+        "esco_code": "7112.1"
       },
       "activa": true,
       "fecha_creacion": "2026-02-26",
@@ -7149,7 +7398,8 @@
       },
       "accion": {
         "forzar_isco": "4311",
-        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+        "esco_label": "empleado de contabilidad/empleada de contabilidad",
+        "esco_code": "4311.1"
       },
       "activa": true,
       "fecha_creacion": "2026-02-27",
@@ -7170,7 +7420,8 @@
       },
       "accion": {
         "forzar_isco": "9213",
-        "esco_label": "operario agrícola/operaria agrícola"
+        "esco_label": "operario agrícola/operaria agrícola",
+        "esco_code": "9213.1"
       },
       "activa": true,
       "fecha_creacion": "2026-02-27",
@@ -7192,7 +7443,8 @@
       },
       "accion": {
         "forzar_isco": "4110",
-        "esco_label": "empleado de oficina/empleada de oficina"
+        "esco_label": "empleado de oficina/empleada de oficina",
+        "esco_code": "4110.1"
       },
       "activa": true,
       "fecha_creacion": "2026-02-27",
@@ -7213,7 +7465,8 @@
       },
       "accion": {
         "forzar_isco": "9129",
-        "esco_label": "operario de limpieza de alcantarillado/operaria de limpieza de alcantarillado"
+        "esco_label": "operario de limpieza de alcantarillado/operaria de limpieza de alcantarillado",
+        "esco_code": "9129.2"
       },
       "activa": true,
       "fecha_creacion": "2026-02-27",
@@ -7239,7 +7492,8 @@
       },
       "accion": {
         "forzar_isco": "3122",
-        "esco_label": "supervisor de producción/supervisora de producción"
+        "esco_label": "supervisor de producción/supervisora de producción",
+        "esco_code": "3122.4"
       },
       "activa": true,
       "fecha_creacion": "2026-02-27",
@@ -7263,7 +7517,8 @@
       },
       "accion": {
         "forzar_isco": "4321",
-        "esco_label": "coordinador de inventario/coordinadora de inventario"
+        "esco_label": "coordinador de inventario/coordinadora de inventario",
+        "esco_code": "4321.1"
       },
       "activa": true,
       "_caso": "ID 1118113712 - Controlador Logistico Zona Pilar. Issue 0dde98f9.",
@@ -7292,7 +7547,8 @@
       },
       "accion": {
         "forzar_isco": "3412",
-        "esco_label": "operador de línea telefónica de ayuda de emergencia/operadora de línea telefónica de ayuda de emergencia"
+        "esco_label": "operador de línea telefónica de ayuda de emergencia/operadora de línea telefónica de ayuda de emergencia",
+        "esco_code": "3412.1"
       },
       "activa": true,
       "_caso": "Issue Cyn #1118047224 - Despachador (Neuquén). Despacho ambulancias.",
@@ -7324,7 +7580,8 @@
       },
       "accion": {
         "forzar_isco": "3411",
-        "esco_label": "auxiliar judicial"
+        "esco_label": "auxiliar judicial",
+        "esco_code": "3411.4"
       },
       "activa": true,
       "_caso": "Issue Cyn #1118059308 - Estudiante de Abogacía. No es abogado sino auxiliar.",
@@ -7355,7 +7612,8 @@
       },
       "accion": {
         "forzar_isco": "3322",
-        "esco_label": "representante comercial"
+        "esco_label": "representante comercial",
+        "esco_code": "3322.1"
       },
       "activa": true,
       "_caso": "Issue Cyn #1118154835 - Auxiliar Comercial Setter de Seguros.",
@@ -7389,7 +7647,8 @@
       },
       "accion": {
         "forzar_isco": "2423",
-        "esco_label": "responsable de recursos humanos"
+        "esco_label": "responsable de recursos humanos",
+        "esco_code": "2423.3"
       },
       "activa": true,
       "_caso": "Issue Cyn #1118124320 - Team Leader de Reclutamiento.",
@@ -7418,7 +7677,8 @@
       },
       "accion": {
         "forzar_isco": "3512",
-        "esco_label": "agente del servicio de asistencia de TIC"
+        "esco_label": "agente del servicio de asistencia de TIC",
+        "esco_code": "3512.1"
       },
       "activa": true,
       "_caso": "Issue Cyn #1118065220 - Técnico de Incidencias maquetación web.",
@@ -7445,7 +7705,8 @@
       },
       "accion": {
         "forzar_isco": "2512",
-        "esco_label": "desarrollador de software/desarrolladora de software"
+        "esco_label": "desarrollador de software/desarrolladora de software",
+        "esco_code": "2512.4"
       },
       "activa": true,
       "_caso": "Issue Cyn #1117951568 - Desarrollador Python SR.",
@@ -7476,7 +7737,8 @@
       },
       "accion": {
         "forzar_isco": "2522",
-        "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC"
+        "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC",
+        "esco_code": "2522.1"
       },
       "activa": true,
       "_caso": "Issue Cyn #1117978310 - Analista Corporativo operaciones Data Center.",
@@ -7512,7 +7774,8 @@
       },
       "accion": {
         "forzar_isco": "3512",
-        "esco_label": "agente del servicio de asistencia de TIC"
+        "esco_label": "agente del servicio de asistencia de TIC",
+        "esco_code": "3512.1"
       },
       "activa": true,
       "_caso": "Issue Gerardo #1117968852 - Advisor soporte app transporte.",
@@ -7544,7 +7807,8 @@
       },
       "accion": {
         "forzar_isco": "3331",
-        "esco_label": "director de logística/directora de logística"
+        "esco_label": "director de logística/directora de logística",
+        "esco_code": "3331.2"
       },
       "activa": true,
       "_caso": "Issue Diego #1118019336 - Coordinador de operaciones almacenamiento.",
@@ -7578,7 +7842,8 @@
       },
       "accion": {
         "forzar_isco": "9333",
-        "esco_label": "operario de logística de almacén/operaria de logística de almacén"
+        "esco_label": "operario de logística de almacén/operaria de logística de almacén",
+        "esco_code": "9333.3"
       },
       "activa": true,
       "_caso": "Issue Diego #1118019322 - Operario central de pesada (depósito farmoquímico).",
@@ -7606,7 +7871,8 @@
       },
       "accion": {
         "forzar_isco": "4226",
-        "esco_label": "recepcionista"
+        "esco_label": "recepcionista",
+        "esco_code": "4226.1"
       },
       "activa": true,
       "_caso": "Issue Diego #1117955657 - Office host red coworking.",
@@ -7635,7 +7901,8 @@
       },
       "accion": {
         "forzar_isco": "7233",
-        "esco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial"
+        "esco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial",
+        "esco_code": "7233.7"
       },
       "activa": true,
       "_caso": "Issue Diego #1118019326 - Medio oficial mantenimiento rubro plástico.",
@@ -7668,7 +7935,8 @@
       },
       "accion": {
         "forzar_isco": "2142",
-        "esco_label": "ingeniero de construcción/ingeniera de construcción"
+        "esco_label": "ingeniero de construcción/ingeniera de construcción",
+        "esco_code": "2142.1.2"
       },
       "activa": true,
       "_caso": "Issue Diego #1118019485 - Analista oficina técnica constructora.",
@@ -7699,7 +7967,8 @@
       },
       "accion": {
         "forzar_isco": "8332",
-        "esco_label": "conductor de vehículo de recogida de basura/conductora de vehículo de recogida de basura"
+        "esco_label": "conductor de vehículo de recogida de basura/conductora de vehículo de recogida de basura",
+        "esco_code": "8332.8"
       },
       "activa": true,
       "_caso": "Issue Diego #1118019188 - Chófer recolección residuos Villa Lugano",
@@ -7724,7 +7993,8 @@
       },
       "accion": {
         "forzar_isco": "4110",
-        "esco_label": "empleado de oficina/empleada de oficina"
+        "esco_label": "empleado de oficina/empleada de oficina",
+        "esco_code": "4110.1"
       },
       "activa": true,
       "_caso": "Issue Cyn #1117983846 - Agente documentacion KAVAK",
@@ -7756,7 +8026,8 @@
       },
       "accion": {
         "forzar_isco": "8332",
-        "esco_label": "conductor de vehículo de carga/conductora de vehículo de carga"
+        "esco_label": "conductor de vehículo de carga/conductora de vehículo de carga",
+        "esco_code": "8332.2"
       },
       "activa": true,
       "_caso": "1117212619 - Chofer de camiones",
@@ -7786,7 +8057,8 @@
       },
       "accion": {
         "forzar_isco": "8332",
-        "esco_label": "conductor de vehículo de carga/conductora de vehículo de carga"
+        "esco_label": "conductor de vehículo de carga/conductora de vehículo de carga",
+        "esco_code": "8332.2"
       },
       "activa": true,
       "_caso": "1118040331 - Conductor de IVECO",
@@ -7816,7 +8088,8 @@
       },
       "accion": {
         "forzar_isco": "3123",
-        "esco_label": "supervisor general de construcción/supervisora general de construcción"
+        "esco_label": "supervisor general de construcción/supervisora general de construcción",
+        "esco_code": "3123.1"
       },
       "activa": true,
       "_caso": "1118034511 - Subgerente Construcción para Retail",
@@ -7844,7 +8117,8 @@
       },
       "accion": {
         "forzar_isco": "5223",
-        "esco_label": "vendedor especializado/vendedora especializada"
+        "esco_label": "vendedor especializado/vendedora especializada",
+        "esco_code": "5223.7"
       },
       "activa": true,
       "_caso": "1118129325 - Representante Técnico Comercial",
@@ -7873,7 +8147,8 @@
       },
       "accion": {
         "forzar_isco": "1212",
-        "esco_label": "director de recursos humanos/directora de recursos humanos"
+        "esco_label": "director de recursos humanos/directora de recursos humanos",
+        "esco_code": "1212.2"
       },
       "activa": true,
       "_caso": "1118145945 - Coordinador/a de Recursos Humanos",
@@ -7896,7 +8171,8 @@
       },
       "accion": {
         "forzar_isco": "2423",
-        "esco_label": "responsable de recursos humanos"
+        "esco_label": "responsable de recursos humanos",
+        "esco_code": "2423.3"
       },
       "activa": true,
       "_caso": "1118151100 - Auxiliar de RRHH",
@@ -7921,7 +8197,8 @@
       },
       "accion": {
         "forzar_isco": "7221",
-        "esco_label": "herrero/herrera"
+        "esco_label": "herrero/herrera",
+        "esco_code": "7221.1"
       },
       "activa": true,
       "_caso": "1118151709 - Plegador/herrero",
@@ -7948,7 +8225,8 @@
       },
       "accion": {
         "forzar_isco": "8183",
-        "esco_label": "operario de línea de envasado y embotellado/operaria de línea de envasado y embotellado"
+        "esco_label": "operario de línea de envasado y embotellado/operaria de línea de envasado y embotellado",
+        "esco_code": "8183.1"
       },
       "activa": true,
       "_caso": "1118157163 - Ayudante linea de envasado",
@@ -7978,7 +8256,8 @@
       },
       "accion": {
         "forzar_isco": "5151",
-        "esco_label": "supervisor de servicio de limpieza/supervisora de servicio de limpieza"
+        "esco_label": "supervisor de servicio de limpieza/supervisora de servicio de limpieza",
+        "esco_code": "5151.2"
       },
       "activa": true,
       "_caso": "1118162787 - Encargado Limpieza",
@@ -8003,7 +8282,8 @@
       },
       "accion": {
         "forzar_isco": "7411",
-        "esco_label": "electricista"
+        "esco_label": "electricista",
+        "esco_code": "7411.1"
       },
       "activa": true,
       "_caso": "2166530 - Técnico electricista",
@@ -8029,7 +8309,8 @@
       },
       "accion": {
         "forzar_isco": "4311",
-        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+        "esco_label": "empleado de contabilidad/empleada de contabilidad",
+        "esco_code": "4311.1"
       },
       "activa": true,
       "_caso": "2170436 - Auxiliar de Proveedores",
@@ -8054,7 +8335,8 @@
       },
       "accion": {
         "forzar_isco": "2431",
-        "esco_label": "ayudante de marketing"
+        "esco_label": "ayudante de marketing",
+        "esco_code": "2431.10.3"
       },
       "activa": true,
       "_caso": "2171320 - Pasante de Marketing",
@@ -8084,7 +8366,8 @@
       },
       "accion": {
         "forzar_isco": "4311",
-        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+        "esco_label": "empleado de contabilidad/empleada de contabilidad",
+        "esco_code": "4311.1"
       },
       "activa": true,
       "_caso": "1118040436 - Asistente Estado de Pago",
@@ -8107,7 +8390,8 @@
       },
       "accion": {
         "forzar_isco": "2113",
-        "esco_label": "químico analista/química analista"
+        "esco_label": "químico analista/química analista",
+        "esco_code": "2113.1.1"
       },
       "activa": true,
       "_caso": "1118063792 - Analista de Desarrollo Analítico",
@@ -8144,7 +8428,8 @@
       },
       "accion": {
         "forzar_isco": "4311",
-        "esco_label": "empleado de contabilidad/empleada de contabilidad"
+        "esco_label": "empleado de contabilidad/empleada de contabilidad",
+        "esco_code": "4311.1"
       },
       "activa": true,
       "_caso": "1118068046 - Asistente Facturación y Cobranzas",
@@ -8168,7 +8453,8 @@
       },
       "accion": {
         "forzar_isco": "2522",
-        "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC"
+        "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC",
+        "esco_code": "2522.1"
       },
       "activa": true,
       "_caso": "1118100781 - Infraestructure Support Ssr",
@@ -8195,7 +8481,8 @@
       },
       "accion": {
         "forzar_isco": "3411",
-        "esco_label": "asistente jurídico/asistente jurídica"
+        "esco_label": "asistente jurídico/asistente jurídica",
+        "esco_code": "3411.7"
       },
       "activa": true,
       "_caso": "1118132453 - ESTUDIANTE ABOGACIA para Area Laboral y Civil",
@@ -8219,7 +8506,8 @@
       },
       "accion": {
         "forzar_isco": "3512",
-        "esco_label": "gestor de servicio de asistencia de TIC/gestora de servicio de asistencia de TIC"
+        "esco_label": "gestor de servicio de asistencia de TIC/gestora de servicio de asistencia de TIC",
+        "esco_code": "3512.2"
       },
       "activa": true,
       "_caso": "1118138652 - Coordinador/a de Mesa de Servicio IT",
@@ -8252,7 +8540,8 @@
       },
       "accion": {
         "forzar_isco": "1324",
-        "esco_label": "director de compras/directora de compras"
+        "esco_label": "director de compras/directora de compras",
+        "esco_code": "1324.8.2"
       },
       "activa": true,
       "_caso": "1118157618 - Jefatura de Compras Non Food",
@@ -8277,7 +8566,8 @@
       },
       "accion": {
         "forzar_isco": "2423",
-        "esco_label": "responsable de recursos humanos"
+        "esco_label": "responsable de recursos humanos",
+        "esco_code": "2423.3"
       },
       "activa": true,
       "_caso": "1117993174 - 619BE | HRBP | ROSARIO | TELECOMUNICACIONES",
@@ -8308,7 +8598,8 @@
       },
       "accion": {
         "forzar_isco": "2513",
-        "esco_label": "responsable de contenidos web"
+        "esco_label": "responsable de contenidos web",
+        "esco_code": "2513.4"
       },
       "activa": true,
       "_caso": "1118107207 - Productor/a de contenido multimedial/digital",
@@ -8340,7 +8631,8 @@
       },
       "accion": {
         "forzar_isco": "2142",
-        "esco_label": "ingeniero de construcción/ingeniera de construcción"
+        "esco_label": "ingeniero de construcción/ingeniera de construcción",
+        "esco_code": "2142.1.2"
       },
       "activa": true,
       "_caso": "1118151137 - Estudiante Ing. Civil - Proyectista",
@@ -8363,7 +8655,8 @@
       },
       "accion": {
         "forzar_isco": "3434",
-        "esco_label": "chef"
+        "esco_label": "chef",
+        "esco_code": "3434.1"
       },
       "activa": true,
       "_caso": "2168722 - Sous Chef - Restaurante en Balneario Reta",
@@ -8389,7 +8682,8 @@
       },
       "accion": {
         "forzar_isco": "7412",
-        "esco_label": "técnico de ascensores/técnica de ascensores"
+        "esco_label": "técnico de ascensores/técnica de ascensores",
+        "esco_code": "7412.7"
       },
       "activa": true,
       "_linaje": {
@@ -8421,7 +8715,8 @@
       },
       "accion": {
         "forzar_isco": "3123",
-        "esco_label": "supervisor de obras/supervisora de obras"
+        "esco_label": "supervisor general de construcción/supervisora general de construcción",
+        "esco_code": "3123.1"
       },
       "activa": true,
       "_linaje": {
@@ -8451,7 +8746,8 @@
       },
       "accion": {
         "forzar_isco": "1211",
-        "esco_label": "director financiero/directora financiera"
+        "esco_label": "director financiero/directora financiera",
+        "esco_code": "1211.1"
       },
       "activa": true,
       "_linaje": {
@@ -8477,7 +8773,8 @@
       },
       "accion": {
         "forzar_isco": "3522",
-        "esco_label": "técnico en ingeniería de las telecomunicaciones/técnica en ingeniería de las telecomunicaciones"
+        "esco_label": "técnico en ingeniería de las telecomunicaciones/técnica en ingeniería de las telecomunicaciones",
+        "esco_code": "3522.1"
       },
       "activa": true,
       "_linaje": {
@@ -8506,7 +8803,8 @@
       },
       "accion": {
         "forzar_isco": "7412",
-        "esco_label": "mecánico electricista/mecánica electricista"
+        "esco_label": "mecánico electricista/mecánica electricista",
+        "esco_code": "7412.3"
       },
       "activa": true,
       "_linaje": {
@@ -8537,7 +8835,8 @@
       },
       "accion": {
         "forzar_isco": "7412",
-        "esco_label": "mecánico electricista/mecánica electricista"
+        "esco_label": "mecánico electricista/mecánica electricista",
+        "esco_code": "7412.3"
       },
       "activa": true,
       "_linaje": {
@@ -8566,7 +8865,8 @@
       },
       "accion": {
         "forzar_isco": "2152",
-        "esco_label": "ingeniero electrónico/ingeniera electrónica"
+        "esco_label": "ingeniero electrónico/ingeniera electrónica",
+        "esco_code": "2152.1"
       },
       "activa": true,
       "_linaje": {
@@ -8593,7 +8893,8 @@
       },
       "accion": {
         "forzar_isco": "7533",
-        "esco_label": "fabricante de artículos textiles confeccionados"
+        "esco_label": "fabricante de artículos textiles confeccionados",
+        "esco_code": "7533.4"
       },
       "activa": true,
       "_linaje": {
@@ -8632,7 +8933,8 @@
       },
       "accion": {
         "forzar_isco": "1324",
-        "esco_label": "director de distribución/directora de distribución"
+        "esco_label": "director de distribución/directora de distribución",
+        "esco_code": "1324.3.1"
       },
       "activa": true,
       "_linaje": {
@@ -8663,7 +8965,8 @@
       },
       "accion": {
         "forzar_isco": "3332",
-        "esco_label": "responsable de eventos"
+        "esco_label": "responsable de eventos",
+        "esco_code": "3332.2.1"
       },
       "activa": true,
       "_linaje": {
@@ -8702,7 +9005,8 @@
       },
       "accion": {
         "forzar_isco": "3122",
-        "esco_label": "supervisor de producción/supervisora de producción"
+        "esco_label": "supervisor de producción/supervisora de producción",
+        "esco_code": "3122.4"
       },
       "activa": true,
       "_linaje": {
@@ -8733,7 +9037,8 @@
       },
       "accion": {
         "forzar_isco": "2519",
-        "esco_label": "analista de pruebas"
+        "esco_label": "analista de pruebas",
+        "esco_code": "2519.6"
       },
       "activa": true,
       "_linaje": {
@@ -8763,7 +9068,8 @@
       },
       "accion": {
         "forzar_isco": "1324",
-        "esco_label": "jefe de almacén/jefa de almacén"
+        "esco_label": "jefe de almacén/jefa de almacén",
+        "esco_code": "1324.3.4"
       },
       "activa": true,
       "_linaje": {
@@ -8810,7 +9116,8 @@
       },
       "accion": {
         "forzar_isco": "7223",
-        "esco_label": "operador de máquinas de control numérico/operadora de máquinas de control numérico"
+        "esco_label": "operador de máquinas de control numérico/operadora de máquinas de control numérico",
+        "esco_code": "7223.4"
       },
       "activa": true,
       "_linaje": {
@@ -8840,7 +9147,8 @@
       },
       "accion": {
         "forzar_isco": "2433",
-        "esco_label": "representante técnico de ventas/representante técnica de ventas"
+        "esco_label": "representante técnico de ventas/representante técnica de ventas",
+        "esco_code": "2433.6"
       },
       "activa": true,
       "_linaje": {
@@ -8864,7 +9172,8 @@
       },
       "accion": {
         "forzar_isco": "3322",
-        "esco_label": "representante comercial"
+        "esco_label": "representante comercial",
+        "esco_code": "3322.1"
       },
       "activa": true,
       "_linaje": {
@@ -8896,7 +9205,8 @@
       },
       "accion": {
         "forzar_isco": "8142",
-        "esco_label": "operador de prensa hidráulica/operadora de prensa hidráulica"
+        "esco_label": "operador de prensa hidráulica/operadora de prensa hidráulica",
+        "esco_code": "8142.2"
       },
       "activa": true,
       "_linaje": {
@@ -8923,7 +9233,8 @@
       },
       "accion": {
         "forzar_isco": "8153",
-        "esco_label": "operador de máquinas de coser/operadora de máquinas de coser"
+        "esco_label": "operador de máquinas de coser/operadora de máquinas de coser",
+        "esco_code": "8153.1"
       },
       "activa": true,
       "_linaje": {
@@ -8946,7 +9257,8 @@
       },
       "accion": {
         "forzar_isco": "5244",
-        "esco_label": "teleoperador/teleoperadora"
+        "esco_label": "teleoperador/teleoperadora",
+        "esco_code": "5244.1"
       },
       "activa": true,
       "_linaje": {
@@ -8970,7 +9282,8 @@
       },
       "accion": {
         "forzar_isco": "3522",
-        "esco_label": "técnico en ingeniería de las telecomunicaciones/técnica en ingeniería de las telecomunicaciones"
+        "esco_label": "técnico en ingeniería de las telecomunicaciones/técnica en ingeniería de las telecomunicaciones",
+        "esco_code": "3522.1"
       },
       "activa": true,
       "_linaje": {
@@ -9003,7 +9316,8 @@
       },
       "accion": {
         "forzar_isco": "7233",
-        "esco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial"
+        "esco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial",
+        "esco_code": "7233.7"
       },
       "activa": true,
       "_linaje": {
@@ -9035,7 +9349,8 @@
       },
       "accion": {
         "forzar_isco": "4225",
-        "esco_label": "agente de servicio de atención al cliente"
+        "esco_label": "agente de servicio de atención al cliente",
+        "esco_code": "4225.1"
       },
       "activa": true,
       "_linaje": {
@@ -9059,7 +9374,8 @@
       },
       "accion": {
         "forzar_isco": "7511",
-        "esco_label": "limpiador de pescado/limpiadora de pescado"
+        "esco_label": "limpiador de pescado/limpiadora de pescado",
+        "esco_code": "7511.3"
       },
       "activa": true,
       "_linaje": {
@@ -9089,7 +9405,8 @@
       },
       "accion": {
         "forzar_isco": "7422",
-        "esco_label": "técnico reparador de telefonía móvil/técnica reparadora de telefonía móvil"
+        "esco_label": "técnico reparador de telefonía móvil/técnica reparadora de telefonía móvil",
+        "esco_code": "7422.3.1"
       },
       "activa": true,
       "_linaje": {
@@ -9114,7 +9431,8 @@
       },
       "accion": {
         "forzar_isco": "7127",
-        "esco_label": "instalador de servicios de calefacción y ventilación/instaladora de servicios de calefacción y ventilación"
+        "esco_label": "instalador de servicios de calefacción y ventilación/instaladora de servicios de calefacción y ventilación",
+        "esco_code": "7127.1"
       },
       "activa": true,
       "_linaje": {
@@ -9140,7 +9458,8 @@
       },
       "accion": {
         "forzar_isco": "5131",
-        "esco_label": "jefe de sala/jefa de sala"
+        "esco_label": "jefe de sala/jefa de sala",
+        "esco_code": "5131.2.1"
       },
       "activa": true,
       "_linaje": {
@@ -9165,7 +9484,8 @@
       },
       "accion": {
         "forzar_isco": "2634",
-        "esco_label": "psicólogo/psicóloga"
+        "esco_label": "psicólogo/psicóloga",
+        "esco_code": "2634.2"
       },
       "activa": true,
       "_linaje": {
@@ -9193,7 +9513,8 @@
       },
       "accion": {
         "forzar_isco": "3114",
-        "esco_label": "ingeniero técnico en electrónica/ingeniera técnica en electrónica"
+        "esco_label": "ingeniero técnico en electrónica/ingeniera técnica en electrónica",
+        "esco_code": "3114.1"
       },
       "activa": true,
       "_linaje": {
@@ -9212,7 +9533,8 @@
       },
       "accion": {
         "forzar_isco": "5223",
-        "esco_label": "vendedor especializado en pescado y mariscos/vendedora especializada en pescado y mariscos"
+        "esco_label": "vendedor especializado en pescado y mariscos/vendedora especializada en pescado y mariscos",
+        "esco_code": "5223.7.16"
       },
       "activa": true,
       "_linaje": {
@@ -9238,7 +9560,8 @@
       },
       "accion": {
         "forzar_isco": "3412",
-        "esco_label": "trabajador de apoyo a las familias/trabajadora de apoyo a las familias"
+        "esco_label": "trabajador de apoyo a las familias/trabajadora de apoyo a las familias",
+        "esco_code": "3412.4.5"
       },
       "activa": true,
       "_linaje": {
@@ -9257,8 +9580,9 @@
         ]
       },
       "accion": {
-        "forzar_isco": "3435",
-        "esco_label": "asistente social/asistenta social"
+        "forzar_isco": "2635",
+        "esco_label": "trabajador social/trabajadora social",
+        "esco_code": "2635.3"
       },
       "activa": true,
       "_linaje": {
@@ -9283,7 +9607,8 @@
       },
       "accion": {
         "forzar_isco": "9112",
-        "esco_label": "operario de limpieza de aseos/operaria de limpieza de aseos"
+        "esco_label": "operario de limpieza de aseos/operaria de limpieza de aseos",
+        "esco_code": "9112.5"
       },
       "activa": true,
       "_linaje": {
@@ -9309,7 +9634,8 @@
       },
       "accion": {
         "forzar_isco": "5311",
-        "esco_label": "niñero/niñera"
+        "esco_label": "niñero/niñera",
+        "esco_code": "5311.1.4"
       },
       "activa": true,
       "_linaje": {
@@ -9332,7 +9658,8 @@
       },
       "accion": {
         "forzar_isco": "5244",
-        "esco_label": "teleoperador/teleoperadora"
+        "esco_label": "teleoperador/teleoperadora",
+        "esco_code": "5244.1"
       },
       "activa": true,
       "_linaje": {
@@ -9362,7 +9689,8 @@
       },
       "accion": {
         "forzar_isco": "3257",
-        "esco_label": "inspector de seguridad y salud en el trabajo/inspectora de seguridad y salud en el trabajo"
+        "esco_label": "inspector de seguridad y salud en el trabajo/inspectora de seguridad y salud en el trabajo",
+        "esco_code": "3257.5"
       },
       "activa": true,
       "_linaje": {
@@ -9384,7 +9712,8 @@
       },
       "accion": {
         "forzar_isco": "2634",
-        "esco_label": "psicólogo/psicóloga"
+        "esco_label": "psicólogo/psicóloga",
+        "esco_code": "2634.2"
       },
       "activa": true,
       "_linaje": {
@@ -9406,7 +9735,8 @@
       },
       "accion": {
         "forzar_isco": "8189",
-        "esco_label": "operador de canteadora/operadora de canteadora"
+        "esco_label": "operador de canteadora/operadora de canteadora",
+        "esco_code": "8189.1"
       },
       "activa": true,
       "_linaje": {
@@ -9428,7 +9758,8 @@
       },
       "accion": {
         "forzar_isco": "4323",
-        "esco_label": "coordinador de operaciones portuarias/coordinadora de operaciones portuarias"
+        "esco_label": "coordinador de operaciones portuarias/coordinadora de operaciones portuarias",
+        "esco_code": "4323.11"
       },
       "activa": true,
       "_linaje": {
@@ -9455,7 +9786,8 @@
       },
       "accion": {
         "forzar_isco": "1323",
-        "esco_label": "director de obra/directora de obra"
+        "esco_label": "director de obra/directora de obra",
+        "esco_code": "1323.1"
       },
       "activa": true,
       "_linaje": {
@@ -9475,7 +9807,8 @@
       },
       "accion": {
         "forzar_isco": "3122",
-        "esco_label": "supervisor de montaje industrial/supervisora de montaje industrial"
+        "esco_label": "supervisor de montaje industrial/supervisora de montaje industrial",
+        "esco_code": "3122.3"
       },
       "activa": true,
       "_linaje": {
@@ -9502,7 +9835,8 @@
       },
       "accion": {
         "forzar_isco": "5329",
-        "esco_label": "celador sanitario/celadora sanitaria"
+        "esco_label": "celador sanitario/celadora sanitaria",
+        "esco_code": "5329.1"
       },
       "activa": true,
       "_linaje": {
@@ -9526,7 +9860,8 @@
       },
       "accion": {
         "forzar_isco": "8142",
-        "esco_label": "operador de máquinas de moldear plástico por inyección/operadora de máquinas de moldear plástico por inyección"
+        "esco_label": "operador de máquinas de moldear plástico por inyección/operadora de máquinas de moldear plástico por inyección",
+        "esco_code": "8142.7"
       },
       "activa": true,
       "_linaje": {
@@ -9554,7 +9889,8 @@
       },
       "accion": {
         "forzar_isco": "1330",
-        "esco_label": "gestor de proyectos de TIC/gestora de proyectos de TIC"
+        "esco_label": "gestor de proyectos de TIC/gestora de proyectos de TIC",
+        "esco_code": "1330.7"
       },
       "activa": true,
       "_linaje": {
@@ -9580,7 +9916,8 @@
       },
       "accion": {
         "forzar_isco": "7223",
-        "esco_label": "tornero/ tornera"
+        "esco_label": "tornero/ tornera",
+        "esco_code": "7223.7"
       },
       "activa": true,
       "_linaje": {
@@ -9604,7 +9941,8 @@
       },
       "accion": {
         "forzar_isco": "7223",
-        "esco_label": "operador de cortadora láser/operadora de cortadora láser"
+        "esco_label": "operador de cortadora láser/operadora de cortadora láser",
+        "esco_code": "7223.4.3"
       },
       "activa": true,
       "_linaje": {
@@ -9629,7 +9967,8 @@
       },
       "accion": {
         "forzar_isco": "7214",
-        "esco_label": "remachador/remachadora"
+        "esco_label": "remachador/remachadora",
+        "esco_code": "7214.3.1"
       },
       "activa": true,
       "_linaje": {
@@ -9642,12 +9981,29 @@
       "nombre": "Operario producción plástico (moldeo/soplado)",
       "prioridad": -1,
       "condicion": {
-        "titulo_o_tareas_contiene_alguno": ["flex blow", "moldeo por soplado", "soplado de plástico", "fabricación de bidones", "bidones plásticos", "inyección plástica", "inyectora plástica", "maquina flex blow", "máquina flex blow", "productos plásticos"],
-        "titulo_contiene_alguno": ["operario", "operaria", "operarios", "operarias"]
+        "titulo_o_tareas_contiene_alguno": [
+          "flex blow",
+          "moldeo por soplado",
+          "soplado de plástico",
+          "fabricación de bidones",
+          "bidones plásticos",
+          "inyección plástica",
+          "inyectora plástica",
+          "maquina flex blow",
+          "máquina flex blow",
+          "productos plásticos"
+        ],
+        "titulo_contiene_alguno": [
+          "operario",
+          "operaria",
+          "operarios",
+          "operarias"
+        ]
       },
       "accion": {
         "forzar_isco": "8142",
-        "esco_label": "operador de máquinas de moldear plástico por soplado/operadora de máquinas de moldear plástico por soplado"
+        "esco_label": "operador de máquinas de moldear plástico por soplado/operadora de máquinas de moldear plástico por soplado",
+        "esco_code": "8142.1"
       },
       "activa": true,
       "_linaje": {
@@ -9660,13 +10016,41 @@
       "nombre": "Operario de envasado / embotellado / línea de llenado",
       "prioridad": -1,
       "condicion": {
-        "titulo_o_tareas_contiene_alguno": ["envasado", "embotellado", "línea de llenado", "linea de llenado", "línea de envasado", "linea de envasado", "línea de bebidas"],
-        "titulo_contiene_alguno": ["operario", "operaria", "operarios", "operarias"],
-        "titulo_no_contiene_alguno": ["jefe", "supervisor", "encargado", "chofer", "cocina", "e-commerce", "ecommerce", "mantenimiento", "limpieza", "soldador", "pintor", "mecánico", "mecanico"]
+        "titulo_o_tareas_contiene_alguno": [
+          "envasado",
+          "embotellado",
+          "línea de llenado",
+          "linea de llenado",
+          "línea de envasado",
+          "linea de envasado",
+          "línea de bebidas"
+        ],
+        "titulo_contiene_alguno": [
+          "operario",
+          "operaria",
+          "operarios",
+          "operarias"
+        ],
+        "titulo_no_contiene_alguno": [
+          "jefe",
+          "supervisor",
+          "encargado",
+          "chofer",
+          "cocina",
+          "e-commerce",
+          "ecommerce",
+          "mantenimiento",
+          "limpieza",
+          "soldador",
+          "pintor",
+          "mecánico",
+          "mecanico"
+        ]
       },
       "accion": {
         "forzar_isco": "8183",
-        "esco_label": "operario de línea de envasado y embotellado/operaria de línea de envasado y embotellado"
+        "esco_label": "operario de línea de envasado y embotellado/operaria de línea de envasado y embotellado",
+        "esco_code": "8183.1"
       },
       "activa": true,
       "_linaje": {
@@ -9701,7 +10085,8 @@
       },
       "accion": {
         "forzar_isco": "9333",
-        "esco_label": "mozo de almacén/moza de almacén"
+        "esco_label": "mozo de almacén/moza de almacén",
+        "esco_code": "9333.8"
       },
       "activa": true,
       "_linaje": {
@@ -9725,7 +10110,8 @@
       },
       "accion": {
         "forzar_isco": "4321",
-        "esco_label": "coordinador de inventario/coordinadora de inventario"
+        "esco_label": "coordinador de inventario/coordinadora de inventario",
+        "esco_code": "4321.1"
       },
       "activa": true,
       "_linaje": {
@@ -9747,7 +10133,8 @@
       },
       "accion": {
         "forzar_isco": "7223",
-        "esco_label": "tornero/ tornera"
+        "esco_label": "tornero/ tornera",
+        "esco_code": "7223.7"
       },
       "activa": true,
       "_linaje": {
