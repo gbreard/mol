@@ -77,7 +77,7 @@ class SkillsImplicitExtractor:
     Usa cache a nivel de clase para evitar recargar modelo y embeddings.
     """
 
-    VERSION = "2.7.0"  # v2.7: Trust-source filter (SPEC B v2)
+    VERSION = "2.8.0"  # v2.8: Filter LLM-hallucinated skills (SPEC G)
 
     # Configuración por defecto (E1.1: usa config centralizada)
     # LoRA fine-tuned tiene prioridad si existe en disco
@@ -104,7 +104,8 @@ class SkillsImplicitExtractor:
         threshold: float = None,
         top_k: int = None,
         verbose: bool = False,
-        filtrar_por_trust: bool = False
+        filtrar_por_trust: bool = False,
+        filter_llm_skills: bool = True
     ):
         """
         Inicializa el extractor.
@@ -129,6 +130,7 @@ class SkillsImplicitExtractor:
         self.top_k = top_k or self.DEFAULT_TOP_K
         self.verbose = verbose
         self.filtrar_por_trust = filtrar_por_trust
+        self.filter_llm_skills = filter_llm_skills
 
         # Inicializar (usa cache de clase)
         self._initialize()
@@ -562,6 +564,70 @@ class SkillsImplicitExtractor:
             return True, 'fallback_score_alto'
         return False, 'fallback_origen_desconocido'
 
+    # === SPEC G — filtro de skills_nlp alucinadas por el LLM ===
+    UMBRAL_NLP_INDIVIDUAL = 0.45      # filtrar individuales por debajo de este sim
+    UMBRAL_NLP_OFERTA_MEDIANA = 0.45  # detectar alucinación masiva
+    UMBRAL_NLP_SALVAVIDAS = 0.55      # rescatar individuales en modo alucinación
+
+    def _filter_llm_skills(
+        self,
+        skills_lista: List[str],
+        titulo: str,
+        tareas: str,
+    ) -> List[str]:
+        """
+        SPEC G — filtra skills alucinadas por el LLM en skills_tecnicas_list/soft_skills_list.
+
+        Política de 2 niveles:
+          1. Detección oferta-level: si median(sim con contexto) < umbral oferta,
+             el LLM alucinó masivamente → modo salvavidas (solo skills con sim >= umbral salvavidas).
+          2. Caso normal: filtra individuales con sim >= umbral individual.
+
+        Args:
+            skills_lista: lista de skills strings desde NLP
+            titulo: titulo_limpio de la oferta
+            tareas: tareas_explicitas
+
+        Returns:
+            Lista filtrada de skills (subconjunto de la entrada)
+        """
+        if not skills_lista or not self.filter_llm_skills:
+            return skills_lista or []
+
+        # Normalizar input
+        skills_norm = [s.strip() for s in skills_lista if isinstance(s, str) and s.strip()]
+        skills_norm = [s for s in skills_norm if s.lower() not in ('null', 'none', '')]
+        if not skills_norm:
+            return []
+
+        contexto = f'{titulo or ""}. Tareas: {tareas or ""}'.strip()
+        if contexto in ('', '. Tareas:'):
+            # Sin contexto sustantivo no se puede filtrar — devolver tal cual
+            return skills_norm
+
+        # Embebber contexto y skills
+        try:
+            ctx_emb = self.model.encode(contexto, normalize_embeddings=True)
+            sk_embs = self.model.encode(skills_norm, normalize_embeddings=True)
+            sims = sk_embs @ ctx_emb
+        except Exception as e:
+            if self.verbose:
+                print(f"[SPEC-G] WARN: filtrado falló ({e}), devolviendo skills sin filtrar")
+            return skills_norm
+
+        mediana = float(np.median(sims))
+        modo_alucinacion = mediana < self.UMBRAL_NLP_OFERTA_MEDIANA
+        umbral = self.UMBRAL_NLP_SALVAVIDAS if modo_alucinacion else self.UMBRAL_NLP_INDIVIDUAL
+
+        filtradas = [skills_norm[i] for i in range(len(skills_norm)) if sims[i] >= umbral]
+
+        if self.verbose and len(filtradas) < len(skills_norm):
+            descartadas = len(skills_norm) - len(filtradas)
+            modo = "alucinación-salvavidas" if modo_alucinacion else "normal"
+            print(f"[SPEC-G] {modo}: descartadas {descartadas}/{len(skills_norm)} (mediana={mediana:.3f})")
+
+        return filtradas
+
     def extract_skills(
         self,
         titulo_limpio: str,
@@ -646,19 +712,19 @@ class SkillsImplicitExtractor:
 
         # 3. Skills NLP (v2.1): usar skills extraídas por LLM como contexto adicional
         # Esto es CRÍTICO cuando tareas_explicitas es NULL pero el LLM detectó skills
-        if skills_nlp:
-            for skill in skills_nlp:
-                skill = skill.strip() if isinstance(skill, str) else str(skill)
-                if skill and skill.lower() not in ['null', 'none', '']:
-                    textos.append(("skills_nlp", skill))
+        # SPEC G (v2.8): filtrar skills alucinadas antes de embebberlas
+        skills_nlp_filtradas = self._filter_llm_skills(
+            skills_nlp or [], titulo_limpio, tareas_explicitas)
+        for skill in skills_nlp_filtradas:
+            textos.append(("skills_nlp", skill))
 
         # 4. Soft Skills NLP (v2.2): usar soft skills extraídas por LLM
         # Las soft skills ayudan a identificar mejor roles de gestión/liderazgo
-        if soft_skills_nlp:
-            for skill in soft_skills_nlp:
-                skill = skill.strip() if isinstance(skill, str) else str(skill)
-                if skill and skill.lower() not in ['null', 'none', '']:
-                    textos.append(("soft_skills_nlp", skill))
+        # SPEC G (v2.8): mismo filtro
+        soft_skills_filtradas = self._filter_llm_skills(
+            soft_skills_nlp or [], titulo_limpio, tareas_explicitas)
+        for skill in soft_skills_filtradas:
+            textos.append(("soft_skills_nlp", skill))
 
         if not textos and not skills_terminologia:
             return ([], []) if track_failures else []
