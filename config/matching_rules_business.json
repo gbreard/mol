@@ -1248,18 +1248,37 @@
           "producción alimenticia",
           "operario de produccion de alimentos",
           "produccion de alimentos"
+        ],
+        "titulo_no_contiene_alguno": [
+          "coordinadora",
+          "supervisora",
+          "planificador",
+          "analyst",
+          "consultora",
+          "asesora",
+          "consultor",
+          "gerente",
+          "higiene y seguridad",
+          "coordinador",
+          "responsable",
+          "planificadora",
+          "supervisor",
+          "asesor",
+          "analista",
+          "jefe"
         ]
       },
       "accion": {
         "forzar_isco": "8160",
-        "esco_label": "operador de refrigeración de alimentos/operadora de refrigeración de alimentos",
-        "esco_code": "8160.15"
+        "esco_label": "operario de producción de alimentos/operaria de producción de alimentos",
+        "esco_code": "8160.34"
       },
       "caso_gold_set": "2131827 - Operario de Producción de Alimentos (genérico)",
       "activa": true,
       "nota": "ISCO 8160 para operarios de alimentos genéricos. ISCO 7511 solo si menciona carne explícitamente.",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "_fix_2026_04_26_spec_n": "Target cambiado de 8160.15 refrigeración a 8160.34 producción alimentos (más genérico). Excluyo jefe/gerente/coordinador para no atrapar roles directivos en industria alimenticia."
       }
     },
     "R38_comercio_exterior": {
@@ -3611,14 +3630,14 @@
       },
       "accion": {
         "forzar_isco": "7223",
-        "esco_label": "operador de torno metalúrgico/operadora de torno metalúrgico",
-        "esco_code": "7223.4.4.1"
+        "esco_label": "operador de máquinas de control numérico/operadora de máquinas de control numérico",
+        "esco_code": "7223.4"
       },
       "nota": "Programador/Operario CNC = operador máquinas herramienta (7223), NO desarrollador software. Fix validacion 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
       "activa": true,
       "_linaje": {
-        "requiere_revision": true
+        "_fix_2026_04_26_spec_o": "Target 7223.4.4.1 'operador de torno metalúrgico' era ULTRA-ESPECÍFICO (solo torneros). Cambiado a 7223.4 'operador de máquinas de control numérico' — captura todos los CNC (torno, fresadora, centro mecanizado) que es lo que la regla pretende cubrir. SPEC O M1 detección."
       }
     },
     "R129_coordinador_educacion": {
@@ -6274,9 +6293,9 @@
         "area_funcional_es": "Contabilidad"
       },
       "accion": {
-        "forzar_isco": "4311",
-        "esco_label": "empleado de contabilidad/empleada de contabilidad",
-        "esco_code": "4311.1"
+        "forzar_isco": "2411",
+        "esco_label": "analista contable",
+        "esco_code": "2411.1.1"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6284,7 +6303,8 @@
       "_linaje": {
         "training_pair_ids": [
           "TP-583"
-        ]
+        ],
+        "_fix_2026_04_26_spec_o": "Target 4311.1 'empleado de contabilidad' (ISCO 4 oficinista jerarquía baja) era ERRÓNEO para 'analista'. Cambiado a 2411.1.1 'analista contable' (ISCO 2411 contadores, label literal). SPEC O M1+M3 detección."
       }
     },
     "R229_analista_comercial": {
@@ -6467,14 +6487,14 @@
       },
       "accion": {
         "forzar_isco": "2431",
-        "esco_label": "director de relaciones con los clientes/directora de relaciones con los clientes",
-        "esco_code": "2431.6"
+        "esco_label": "especialista en mercadotecnia",
+        "esco_code": "2431.10"
       },
       "activa": true,
       "_fecha": "2026-02-20",
       "nota": "Sprint 7 V31: 7 analistas marketing",
       "_linaje": {
-        "requiere_revision": true
+        "_fix_2026_04_26_spec_o": "Target 2431.6 'director de relaciones con los clientes' era jerarquía MUY ALTA para un 'analista' jr/sr. Cambiado a 2431.10 'especialista en mercadotecnia' (mismo ISCO 2431 marketing, label apropiado para analista). SPEC O M1+M3 detección."
       }
     },
     "R237_analista_finanzas": {
@@ -6488,14 +6508,14 @@
       },
       "accion": {
         "forzar_isco": "2413",
-        "esco_label": "técnico analista de administración y sistemas/técnica analista de administración y sistemas",
-        "esco_code": "2413.2"
+        "esco_label": "analista financiero/analista financiera",
+        "esco_code": "2413.1"
       },
       "activa": true,
       "_fecha": "2026-02-20",
       "nota": "Sprint 7 V31: 5 analistas finanzas",
       "_linaje": {
-        "requiere_revision": true
+        "_fix_2026_04_26_spec_o": "Target 2413.2 'técnico analista de administración y sistemas' era CATEGORÍA ERRÓNEA (IT/sistemas, no finanzas). Cambiado a 2413.1 'analista financiero' (mismo ISCO 2413 analistas finanzas, label literal). SPEC O M1+M3 detección."
       }
     },
     "R238_analista_it": {
@@ -6555,17 +6575,37 @@
         ],
         "area_funcional_es": "Produccion",
         "titulo_no_contiene_alguno": [
-          "limpieza",
-          "logistic",
           "soldador",
+          "descarga",
+          "pickeado",
+          "lavadero",
+          "mantenimiento",
+          "pvc",
+          "soldadura",
+          "autos",
+          "logistic",
+          "pickeo",
+          "metalurgico",
+          "aluminio",
+          "lavado",
+          "despacho",
+          "tecnico operario",
+          "carpintería",
+          "picking",
+          "metalúrgico",
+          "maestranza",
+          "técnico de producción",
+          "limpieza",
           "soldadora",
-          "soldadura"
+          "técnico operario",
+          "carga",
+          "vehíc"
         ]
       },
       "accion": {
-        "forzar_isco": "8160",
-        "esco_label": "operario de prensado de fruta/operaria de prensado de fruta",
-        "esco_code": "8160.35"
+        "forzar_isco": "9329",
+        "esco_label": "trabajador de fábrica/trabajadora de fábrica",
+        "esco_code": "9329.1"
       },
       "activa": true,
       "_fecha": "2026-02-20",
@@ -6574,7 +6614,8 @@
       "_linaje": {
         "version_origen": "v512",
         "contexto": "x R211 prioridad vs R240, fix R290 variantes /a, nuevas R301-R305 (ascensores, s",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "_fix_2026_04_26_spec_n": "Target cambiado de 8160.35 prensado de fruta a 9329.1 trabajador fábrica neutral. Exclusiones expandidas para no atrapar casos cubiertos por R353-R357."
       }
     },
     "R241_tecnico_it": {
@@ -7821,7 +7862,7 @@
       }
     },
     "R275_operario_deposito_almacen": {
-      "nombre": "Operario de depósito / almacén / central de pesada",
+      "nombre": "Operario de depósito / almacén / central de pesada / logística",
       "prioridad": -1,
       "condicion": {
         "titulo_contiene_alguno": [
@@ -7837,7 +7878,13 @@
           "operario almacén",
           "central de pesada",
           "operario logistica",
-          "operario logística"
+          "operario logística",
+          "operario de logistica",
+          "operario de logística",
+          "operaria de logistica",
+          "operaria de logística",
+          "operarios/as de logística",
+          "operarios/as de logistica"
         ]
       },
       "accion": {
@@ -8678,6 +8725,18 @@
           "elevador",
           "elevadores",
           "ascensorista"
+        ],
+        "titulo_no_contiene_alguno": [
+          "autoelevador",
+          "autoelevadores",
+          "autoelevadorista",
+          "auto elevador",
+          "auto-elevador",
+          "carretilla elevadora",
+          "operario",
+          "operaria",
+          "operarios",
+          "operarias"
         ]
       },
       "accion": {
@@ -8693,7 +8752,8 @@
           "cacfa6ef"
         ],
         "oferta_ejemplo": "5924126529 - Tecnico en mantenimiento de ascensores",
-        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md",
+        "_fix_2026_04_26_spec_n": "Bug: 'autoelevador' contenía 'elevador' como substring → 'Operario logística autoelevador' caía en técnico de ascensores. Excluir variantes autoelevador/carretilla y operarios."
       },
       "_fecha": "2026-04-08"
     },
@@ -9959,10 +10019,19 @@
           "operario metalurgico",
           "operaria metalúrgica",
           "operaria metalurgica",
-          "metalúrgico/a",
-          "operario de metalúrgica",
-          "operario mantenimiento metalúrgica",
-          "operario de mantenimiento para metalúrgica"
+          "metalúrgico/a"
+        ],
+        "titulo_no_contiene_alguno": [
+          "soldador",
+          "soldadora",
+          "soldadura",
+          "mantenimiento",
+          "tornero",
+          "fresador",
+          "cnc",
+          "matricero",
+          "chapa",
+          "chapista"
         ]
       },
       "accion": {
@@ -9974,7 +10043,9 @@
       "_linaje": {
         "oferta_ejemplo": "7907119232",
         "autor_correccion": "Diego",
-        "nota": "ESCO 7214 solo tiene 4 labels. 'remachador' es el más genérico disponible."
+        "nota": "ESCO 7214 solo tiene 4 labels. 'remachador' es el más genérico disponible. CANDIDATO A CATÁLOGO MOL ARGENTINO — perfil polivalente metalúrgico no tiene buen ESCO. Ver docs/plan/15_PERFILES_POLIVALENTES_AR.md.",
+        "_fix_2026_04_26_spec_o": "Exclusiones agregadas para derivar soldadores → R211, mantenimiento → R110, especialistas (tornero/fresador/cnc/chapista) → reglas específicas. Removidas variantes 'operario de metalúrgica' / 'operario mantenimiento metalúrgica' que duplicaban con R110.",
+        "requiere_catalogo_mol": true
       }
     },
     "R348_operario_plastico_soplado": {
@@ -10101,22 +10172,38 @@
         "titulo_original_contiene_alguno": [
           "operario de despacho",
           "operaria de despacho",
+          "operarios de despacho",
+          "operarias de despacho",
           "operarios/as de despacho",
+          "operador de despacho",
+          "operadora de despacho",
+          "operadores de despacho",
+          "operarios p/despacho",
+          "operario p/despacho",
+          "operarios para despacho",
+          "operario para despacho",
           "despacho metalúrgico",
           "despacho metalurgico",
           "auxiliar de despacho",
-          "auxiliar despacho"
+          "auxiliar despacho",
+          "despacho/logística",
+          "despacho/logistica"
+        ],
+        "titulo_no_contiene_alguno": [
+          "administrativo",
+          "administrativa"
         ]
       },
       "accion": {
-        "forzar_isco": "4321",
-        "esco_label": "coordinador de inventario/coordinadora de inventario",
-        "esco_code": "4321.1"
+        "forzar_isco": "9333",
+        "esco_label": "operario de logística de almacén/operaria de logística de almacén",
+        "esco_code": "9333.3"
       },
       "activa": true,
       "_linaje": {
         "oferta_ejemplo": "8299423434",
-        "autor_correccion": "Diego"
+        "autor_correccion": "Diego",
+        "_fix_2026_04_26_spec_n": "Target cambiado de 4321.1 coordinador inventario (administrativo, INCORRECTO) a 9333.3 operario de logística de almacén. Operarios de despacho son trabajo manual de expedición/almacén, no administrativo. Excluir 'administrativo' para no atrapar 'Operario de despacho administrativo' — esos sí van a 4321."
       }
     },
     "R352_operario_ensamble_armas": {
@@ -10141,6 +10228,153 @@
         "oferta_ejemplo": "7879857202",
         "autor_correccion": "Diego",
         "nota": "ESCO no tiene 'montador armamento' en ES. Usa 7223 con label genérico tornero."
+      }
+    },
+    "R353_operario_carga_descarga": {
+      "nombre": "Operario carga/descarga/picking",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "operario",
+          "operaria",
+          "operarios",
+          "operarias",
+          "peon",
+          "peón"
+        ],
+        "titulo_o_tareas_contiene_alguno": [
+          "carga y descarga",
+          "descarga",
+          "picking",
+          "pickeo",
+          "pickeado",
+          "despacho",
+          "crossdocking",
+          "cross-docking"
+        ],
+        "titulo_no_contiene_alguno": [
+          "chofer",
+          "conductor"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9333",
+        "esco_label": "mozo de almacén/moza de almacén",
+        "esco_code": "9333.8"
+      },
+      "activa": true,
+      "_linaje": {
+        "spec": "SPEC N",
+        "fecha": "2026-04-26",
+        "motivo": "Issue Diego: ofertas operarios carga/descarga mal codificadas a 8160.35"
+      }
+    },
+    "R354_operario_lavadero": {
+      "nombre": "Operario de lavadero de vehículos",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "operario",
+          "operaria",
+          "operarios",
+          "operarias"
+        ],
+        "titulo_o_tareas_contiene_alguno": [
+          "lavadero",
+          "lavado de auto",
+          "lavado de vehíc",
+          "lavar autos",
+          "lavadero de autos",
+          "lavadero automotriz"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9122",
+        "esco_label": "operario de limpieza de vehículos/operaria de limpieza de vehículos",
+        "esco_code": "9122.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "spec": "SPEC N",
+        "fecha": "2026-04-26"
+      }
+    },
+    "R355_operario_maestranza": {
+      "nombre": "Operario de maestranza",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "maestranza",
+          "operario maestranza",
+          "operario/a maestranza"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9112",
+        "esco_label": "operario de limpieza de edificios/operaria de limpieza de edificios",
+        "esco_code": "9112.2"
+      },
+      "activa": true,
+      "_linaje": {
+        "spec": "SPEC N",
+        "fecha": "2026-04-26"
+      }
+    },
+    "R356_operario_mantenimiento": {
+      "nombre": "Operario de mantenimiento industrial",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "operario",
+          "operaria",
+          "operarios",
+          "operarias"
+        ],
+        "titulo_o_tareas_contiene_alguno": [
+          "mantenimiento industrial",
+          "mantenimiento de maquinaria",
+          "mantenimiento mecánico",
+          "mantenimiento general"
+        ],
+        "titulo_no_contiene_alguno": [
+          "limpieza",
+          "edilicio"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7233",
+        "esco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial",
+        "esco_code": "7233.7"
+      },
+      "activa": true,
+      "_linaje": {
+        "spec": "SPEC N",
+        "fecha": "2026-04-26"
+      }
+    },
+    "R357_tecnico_operario_produccion": {
+      "nombre": "Técnico operario producción (ingeniería)",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "técnico operario",
+          "tecnico operario",
+          "técnico/a operario",
+          "tecnico/a operario",
+          "técnico de producción",
+          "técnico en producción"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3115",
+        "esco_label": "ingeniero técnico de mecánica/ingeniera técnica de mecánica",
+        "esco_code": "3115.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "spec": "SPEC N",
+        "fecha": "2026-04-26",
+        "motivo": "Issue Diego: técnico operario producción debe ser técnico ingeniería, no operario"
       }
     }
   },

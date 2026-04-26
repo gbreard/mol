@@ -208,34 +208,73 @@ def get_estado_actual(conn, id_oferta: str):
     ], row))
 
 
-def persist_matching_result(conn, id_oferta: str, result, estado_actual: dict, run_id: str):
-    """Persiste SOLO los campos de matching de ocupación. NO toca skills.
+def persist_matching_result(conn, id_oferta: str, result, estado_actual: dict, run_id: str, uri_to_esco_code: dict = None):
+    """Persiste TODOS los campos de matching de ocupación (no toca columnas de skills).
 
-    Respeta el trigger: si estado='validado', debe haber unlock previo.
+    BUG fix 2026-04-26: la versión anterior solo escribía 9 columnas, dejando
+    `regla_aplicada`, `isco_label`, `isco_regla`, `isco_semantico`, `decision_razon`,
+    `occupation_match_method`, `esco_occupation_uri`, `dual_coinciden` en valores stale
+    de runs previos — provocando inconsistencias del tipo
+    "esco_occupation_label = R357 nuevo / regla_aplicada = R240 viejo".
+
+    Respeta el trigger: si estado='validado' estricto, debe haber unlock previo.
     Retorna dict con info de lo actualizado.
     """
     c = conn.cursor()
+    meta = result.metadata or {}
 
-    # Extraer campos del MatchResult
+    # Campos del MatchResult
     isco_nuevo = str(result.isco_code) if result.isco_code else None
-    esco_label_nuevo = result.esco_label or result.metadata.get('esco_label') or ''
-    titulo_esco_code_nuevo = result.metadata.get('esco_code') or result.metadata.get('titulo_esco_code') or ''
+    esco_label_nuevo = result.esco_label or meta.get('esco_label') or ''
+    esco_uri_nuevo = result.esco_uri or ''
+    titulo_esco_code_nuevo = meta.get('esco_code') or meta.get('titulo_esco_code') or ''
+    # Fallback: derivar esco_code desde URI usando metadata global
+    if not titulo_esco_code_nuevo and esco_uri_nuevo and uri_to_esco_code:
+        titulo_esco_code_nuevo = uri_to_esco_code.get(esco_uri_nuevo, '')
     score_nuevo = float(result.score or 0)
-    decision_metodo_nuevo = result.metadata.get('decision_metodo', estado_actual['decision_metodo'])
+    metodo_nuevo = result.metodo or ''
+
+    # Metadata dual matching (la fuente de las inconsistencias del bug previo)
+    decision_metodo_nuevo = meta.get('decision_metodo', estado_actual['decision_metodo'])
+    decision_razon_nuevo = meta.get('decision_razon', '')
+    isco_regla_nuevo = meta.get('isco_regla')
+    isco_semantico_nuevo = meta.get('isco_semantico')
+    score_semantico_nuevo = meta.get('score_semantico', score_nuevo)
+    regla_aplicada_nuevo = meta.get('regla_aplicada')
+    dual_coinciden_nuevo = meta.get('dual_coinciden')
+    skills_regla_aplicada_nuevo = meta.get('skills_regla_aplicada')
+    dual_coinciden_skills_nuevo = meta.get('dual_coinciden_skills')
+
+    # isco_label en BD = esco_label (mismo patrón que match_ofertas_v3._save_match)
+    isco_label_nuevo = esco_label_nuevo
 
     c.execute('''UPDATE ofertas_esco_matching SET
                      isco_code = ?,
+                     isco_label = ?,
                      esco_occupation_label = ?,
+                     esco_occupation_uri = ?,
                      titulo_esco_code = ?,
-                     score_semantico = ?,
                      occupation_match_score = ?,
+                     occupation_match_method = ?,
+                     score_semantico = ?,
+                     isco_semantico = ?,
+                     isco_regla = ?,
+                     regla_aplicada = ?,
+                     dual_coinciden = ?,
                      decision_metodo = ?,
+                     decision_razon = ?,
+                     skills_regla_aplicada = ?,
+                     dual_coinciden_skills = ?,
                      matching_timestamp = ?,
                      matching_version = ?,
                      run_id = ?
                  WHERE id_oferta = ?''',
-              (isco_nuevo, esco_label_nuevo, titulo_esco_code_nuevo,
-               score_nuevo, score_nuevo, decision_metodo_nuevo,
+              (isco_nuevo, isco_label_nuevo, esco_label_nuevo, esco_uri_nuevo,
+               titulo_esco_code_nuevo, score_nuevo, metodo_nuevo,
+               score_semantico_nuevo, isco_semantico_nuevo,
+               isco_regla_nuevo, regla_aplicada_nuevo, dual_coinciden_nuevo,
+               decision_metodo_nuevo, decision_razon_nuevo,
+               skills_regla_aplicada_nuevo, dual_coinciden_skills_nuevo,
                datetime.now(timezone.utc).isoformat(), 'spec_h_rematch',
                run_id, str(id_oferta)))
 
@@ -244,6 +283,7 @@ def persist_matching_result(conn, id_oferta: str, result, estado_actual: dict, r
         'score_nuevo': score_nuevo,
         'decision_metodo_nuevo': decision_metodo_nuevo,
         'esco_label_nuevo': esco_label_nuevo,
+        'regla_aplicada_nuevo': regla_aplicada_nuevo,
     }
 
 
@@ -280,6 +320,17 @@ def main():
     from match_ofertas_v3 import MatcherV3
     matcher = MatcherV3(db_conn=conn, verbose=args.verbose)
     print(f'[H] Matcher cargado (version {matcher.VERSION})')
+
+    # Mapa URI → esco_code (para poblar titulo_esco_code cuando metadata no lo trae)
+    print('[H] Cargando mapa URI → esco_code...')
+    meta_path = ROOT / 'database/embeddings/esco_occupations_metadata.json'
+    uri_to_esco_code = {}
+    if meta_path.exists():
+        meta_data = json.load(open(meta_path))
+        uri_to_esco_code = {m['uri']: m.get('esco_code') for m in meta_data if m.get('esco_code')}
+        print(f'[H] Mapa cargado: {len(uri_to_esco_code):,} URIs con esco_code')
+    else:
+        print('[H] WARN: metadata no encontrada, titulo_esco_code podría quedar vacío')
 
     run_id = f'spec_h_rematch_{datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")}'
     stats = {'actualizada': 0, 'actualizada_dispara_regla': 0,
@@ -352,7 +403,7 @@ def main():
                            estado_actual['matching_timestamp'],
                            nowiso()))
                 try:
-                    persist_matching_result(conn, oid, result, estado_actual, run_id)
+                    persist_matching_result(conn, oid, result, estado_actual, run_id, uri_to_esco_code)
                 except sqlite3.IntegrityError as e:
                     # Trigger protect_validated_matching si estado='validado' estricto
                     if 'No se puede modificar oferta validada' in str(e):
