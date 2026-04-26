@@ -188,17 +188,18 @@ def main():
     c = conn.cursor()
     for i, oid in enumerate(ids_a_procesar, 1):
         try:
-            # Leer NLP + skills actuales
+            # Leer NLP + skills actuales + esco_code para filtro L2
             c.execute('''SELECT m.skills_semantico_json, n.titulo_limpio, n.tareas_explicitas,
                                 n.skills_tecnicas_list, n.soft_skills_list,
-                                n.sector_empresa, n.nivel_seniority, n.area_funcional
+                                n.sector_empresa, n.nivel_seniority, n.area_funcional,
+                                m.titulo_esco_code
                          FROM ofertas_esco_matching m
                          LEFT JOIN ofertas_nlp n ON n.id_oferta = m.id_oferta
                          WHERE m.id_oferta = ?''', (oid,))
             row = c.fetchone()
             if not row:
                 stats['errores'] += 1; continue
-            sjson_viejo, tl, tareas, sk_nlp_raw, soft_raw, sector, sen, area = row
+            sjson_viejo, tl, tareas, sk_nlp_raw, soft_raw, sector, sen, area, esco_code = row
             if not tl:
                 stats['skipped_no_nlp'] += 1; continue
 
@@ -217,6 +218,10 @@ def main():
                 skills_nlp=skills_nlp, soft_skills_nlp=soft_nlp,
                 sector_empresa=sector, nivel_seniority=sen, area_funcional=area,
             )
+            # SPEC K — filtro L2 incompatible con la ocupación target
+            if esco_code:
+                skills_nuevas = extractor.filter_skills_by_l2_compatibility(
+                    skills_nuevas, esco_code)
             dt_ms = int((time.time() - t_oferta0) * 1000)
 
             # Conteos

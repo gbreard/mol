@@ -77,7 +77,7 @@ class SkillsImplicitExtractor:
     Usa cache a nivel de clase para evitar recargar modelo y embeddings.
     """
 
-    VERSION = "2.8.0"  # v2.8: Filter LLM-hallucinated skills (SPEC G)
+    VERSION = "2.9.0"  # v2.9: L2 compatibility filter (SPEC K)
 
     # Configuración por defecto (E1.1: usa config centralizada)
     # LoRA fine-tuned tiene prioridad si existe en disco
@@ -569,6 +569,13 @@ class SkillsImplicitExtractor:
     UMBRAL_NLP_OFERTA_MEDIANA = 0.45  # detectar alucinación masiva
     UMBRAL_NLP_SALVAVIDAS = 0.55      # rescatar individuales en modo alucinación
 
+    # === SPEC K — filtro de compatibilidad L2 ESCO ===
+    # Cache a nivel de clase (cargado una vez)
+    _occ_l2_set = None        # uri ocupación → set de L2s sectoriales+K
+    _isco_l2_set = None       # isco_4dig → set L2 expandido del grupo
+    _code_to_uri = None       # esco_code → uri ocupación
+    _uri_to_isco = None       # uri ocupación → isco_4dig
+
     def _filter_llm_skills(
         self,
         skills_lista: List[str],
@@ -627,6 +634,96 @@ class SkillsImplicitExtractor:
             print(f"[SPEC-G] {modo}: descartadas {descartadas}/{len(skills_norm)} (mediana={mediana:.3f})")
 
         return filtradas
+
+    @classmethod
+    def _load_l2_compatibility_data(cls):
+        """SPEC K — carga índices L2 por ocupación y por grupo ISCO 4-dig.
+
+        Lazy-load + cache a nivel de clase. Solo se ejecuta una vez.
+        """
+        if cls._occ_l2_set is not None:
+            return
+        from collections import defaultdict
+        base = Path(__file__).parent / 'embeddings'
+        with open(base / 'esco_occupation_skills.json', encoding='utf-8') as f:
+            occ_skills = json.load(f)['occupation_skills']
+        with open(base / 'esco_occupations_metadata.json', encoding='utf-8') as f:
+            meta = json.load(f)
+        cls._code_to_uri = {m['esco_code']: m['uri'] for m in meta if m.get('esco_code')}
+        cls._uri_to_isco = {m['uri']: m.get('isco_4dig') for m in meta}
+
+        # Set L2 SECTORIAL+K por ocupación (T* no se usa para filtro)
+        occ_l2 = defaultdict(set)
+        for occ_uri, data in occ_skills.items():
+            for rel in ('essential', 'optional'):
+                for sk in data.get(rel, []):
+                    l1 = sk.get('L1') or ''
+                    l2 = sk.get('L2') or ''
+                    if l2 and (l1.startswith('S') or l1 == 'K'):
+                        occ_l2[occ_uri].add(l2)
+        cls._occ_l2_set = dict(occ_l2)
+
+        # Set L2 expandido al grupo ISCO 4-dig (familia de ocupaciones)
+        isco_l2 = defaultdict(set)
+        for occ_uri, l2set in occ_l2.items():
+            isco = cls._uri_to_isco.get(occ_uri)
+            if isco:
+                isco_l2[isco] |= l2set
+        cls._isco_l2_set = dict(isco_l2)
+
+    def _l2_compatible(self, skill_l1: str, skill_l2: str, esco_code_target: str) -> bool:
+        """SPEC K — verifica si una skill es L2-compatible con el esco_code target.
+
+        Política:
+          - L1 transversal (T*) o vacío → siempre compatible.
+          - L1 sectorial (S*) o K → L2 debe estar en el set propio + grupo 4-dig
+            de la ocupación target.
+          - Si no encuentra metadata para el target → permisivo (devuelve True).
+        """
+        if not skill_l1 or (not skill_l1.startswith('S') and skill_l1 != 'K'):
+            return True
+        if not skill_l2:
+            return True
+        if not esco_code_target:
+            return True
+        self._load_l2_compatibility_data()
+        uri = self._code_to_uri.get(esco_code_target)
+        if not uri:
+            return True
+        s_propio = self._occ_l2_set.get(uri, set())
+        isco = self._uri_to_isco.get(uri)
+        s_grupo = self._isco_l2_set.get(isco, set()) if isco else set()
+        return skill_l2 in (s_propio | s_grupo)
+
+    def filter_skills_by_l2_compatibility(self, skills: list, esco_code_target: str) -> list:
+        """SPEC K — filtra una lista de skills extraídas, descartando las que tienen
+        L2 incompatible con el esco_code target.
+
+        Args:
+            skills: lista de dicts con campos L1, L2, skill_esco
+            esco_code_target: código ESCO completo de la ocupación target (ej "7214.3.1")
+
+        Returns:
+            Lista filtrada (subconjunto). Cada skill descartada queda registrada
+            con campo 'l2_incompat' en self.last_filter_log para debugging.
+        """
+        if not esco_code_target:
+            return skills
+        self._load_l2_compatibility_data()
+        if esco_code_target not in self._code_to_uri:
+            # Sin mapeo, no podemos filtrar — pasamos todo
+            return skills
+        kept = []
+        verbose = getattr(self, 'verbose', False)
+        for s in skills:
+            l1 = s.get('L1') or ''
+            l2 = s.get('L2') or ''
+            if self._l2_compatible(l1, l2, esco_code_target):
+                kept.append(s)
+            elif verbose:
+                print(f'[SPEC-K] descartada L1={l1} L2={l2} target={esco_code_target}: '
+                      f'{s.get("skill_esco","")[:50]}')
+        return kept
 
     def extract_skills(
         self,
