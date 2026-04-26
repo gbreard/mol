@@ -66,8 +66,16 @@
           "sereno"
         ],
         "titulo_no_contiene_alguno": [
-          "enfermero", "enfermería", "médico", "médica", "hospital",
-          "clínica", "salud", "bioquímico", "farmacia", "guardia médica"
+          "enfermero",
+          "enfermería",
+          "médico",
+          "médica",
+          "hospital",
+          "clínica",
+          "salud",
+          "bioquímico",
+          "farmacia",
+          "guardia médica"
         ]
       },
       "accion": {
@@ -295,8 +303,14 @@
           "operario industrial"
         ],
         "titulo_no_contiene_alguno": [
-          "logística", "logistica", "depósito", "deposito",
-          "almacén", "almacen", "picking", "distribución"
+          "logística",
+          "logistica",
+          "depósito",
+          "deposito",
+          "almacén",
+          "almacen",
+          "picking",
+          "distribución"
         ]
       },
       "accion": {
@@ -588,22 +602,9 @@
         ]
       },
       "accion": {
-        "forzar_skills": [
-          {
-            "skill_esco": "lavar platos",
-            "skill_uri": "http://data.europa.eu/esco/skill/f2f2f2f2-0000-0000-0000-000000000001"
-          },
-          {
-            "skill_esco": "mantener la limpieza de las zonas de trabajo",
-            "skill_uri": "http://data.europa.eu/esco/skill/1e47a5a8-46e1-4643-a5bc-441a57e6c9c9"
-          },
-          {
-            "skill_esco": "preparar ingredientes",
-            "skill_uri": "http://data.europa.eu/esco/skill/a1a1a1a1-0000-0000-0000-000000000001"
-          }
-        ]
+        "forzar_skills": []
       },
-      "activa": true,
+      "activa": false,
       "_caso": "ID 1118092879 Peón de Cocina",
       "_fecha": "2026-01-22"
     },
@@ -637,7 +638,7 @@
           }
         ]
       },
-      "activa": true,
+      "activa": false,
       "_caso": "Issue Diego #1118019322 - Operario farmoquímico GMP/QSHE/BPE.",
       "_fecha": "2026-03-11",
       "nota": "Detecta ofertas con procedimientos operativos estándar (GMP/BPF/BPE/SOP). Común en farmoquímica, alimentos, laboratorios."
