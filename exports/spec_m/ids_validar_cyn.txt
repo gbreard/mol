@@ -1,0 +1,132 @@
+# Lista de IDs para validar — SPEC M (90 ofertas)
+
+# Trabajalas en /admin/validacion (sección de validación de la UI)
+
+# Filtra por id_oferta en el buscador, o pegá la URL: 
+#   https://mol-nextjs.vercel.app/admin/validacion?id=XXXX
+
+
+# ════ TIER 1 (50 ofertas) ════
+# ISCOs que más se vaciaron (potenciales fallbacks pre-fix)
+
+## ISCO 8160 → cambio típico: operario de prensado de fruta/opera → trabajador de fábrica/trabajadora d
+  6381126767  | Operario pintor  sobre metal para Metalúrgica           | R240_operario_produccion
+  7941849392  | Operarios de Producción                                 | R240_operario_produccion
+  7650903051  | BU788 Operario de Mecanizado. Autopartista líder, GBA S | R240_operario_produccion
+  2177749  | Operario de Sala de Máquinas                            | R240_operario_produccion
+  6737962970  | Operario de carga y descarga (por convocatoria)         | R353_operario_carga_descarga
+  6984421440  | Operario de Encapsulado para cubrir licencia            | R240_operario_produccion
+  5527372163  | Operario Resortero Manual                               | R240_operario_produccion
+  1118145380  | Operario de Maquinaria Industrial                       | R240_operario_produccion
+  5445086863  | operario/a maquinista                                   | R353_operario_carga_descarga
+  5159312719  | Operarias para linea de producción, eventual por una se | R240_operario_produccion
+
+## ISCO 5223 → cambio típico: vendedor especializado en joyería y → coordinador de restaurante de comid
+  1118131550  | Coordinadora de Locales                                 | sin_regla
+  1118069181  | Sommelier - Nordelta                                    | sin_regla
+  2179959  | Personal de Seguridad / Control CABA                    | sin_regla
+  7506202673  | Analista Seguros                                        | sin_regla
+  7187197516  | Jefe Unidad de Negocios                                 | sin_regla
+  6184214788  | Supervisor/a comercial                                  | sin_regla
+  1118161383  | Encargado Lavadero de autos zona norte                  | sin_regla
+  1118193994  | Jefe/a de Ventas PyME                                   | sin_regla
+  1117171013  | Asistente de Ventas Técnicas para ROSARIO               | R213_asistente_comercial
+  8281711843  | Senior SEO Specialist (I-Gaming)                        | sin_regla
+
+## ISCO 4311 → cambio típico: empleado de contabilidad/empleada d → analista contable
+  1118141356  | Analista de Cuentas Corrientes                          | R228_analista_contabilidad
+  1118200382  | Analista Cuentas a Pagar JR                             | R228_analista_contabilidad
+  5900999363  | Analista de Cuentas a Pagar (Req204381) Eventual        | R228_analista_contabilidad
+  1118238816  | Analista Pagó a Proveedores                             | R228_analista_contabilidad
+  1118193795  | Asesor/a de Cobranzas (Mora Tardía)                     | sin_regla
+  1118229704  | Analista de Cuentas a Pagar(Martinez)                   | R228_analista_contabilidad
+  2173201  | Analista de Cuentas a Pagar                             | R228_analista_contabilidad
+  2176618  | Analista Administrativo                                 | R228_analista_contabilidad
+  2179585  | Analista de Cuentas a Pagar                             | R228_analista_contabilidad
+  5842516962  | REF 21010 Analista Senior de Costos y Contratos         | R228_analista_contabilidad
+
+## ISCO 1349 → cambio típico: editor jefe/editora jefa → Gerente de tienda de cosmética y pe
+  6108409477  | Transferista / APM Comercial – Rubro Cosmética – Zona S | sin_regla
+  1118173537  | Ingeniero de Producción                                 | sin_regla
+  1118207621  | Ingeniero/Superintendente de Confiabilidad Mantenimient | sin_regla
+  1117964610  | Team Leader Mora Tardia                                 | sin_regla
+  8806272362  | Senior Intelligent Automation Engineer                  | sin_regla
+  1118198928  | Ingeniero Agrónomo liderando Gerencia Regional          | sin_regla
+  8785608041  | Senior OT/ICS Security Engineer                         | sin_regla
+  1118103917  | Promotor Vía Pública - Córdoba                          | R335_promotor_via_publica
+  8846621016  | Especialista en Verificación de Seguros                 | sin_regla
+  1118194653  | Ingeniero de Confiabilidad                              | sin_regla
+
+## ISCO 2431 → cambio típico: planificador de espacios publicitar → odontólogo/odontóloga
+  1118202738  | Asistente Dental                                        | sin_regla
+  8444617971  | Peon de Recoleccion                                     | R353_operario_carga_descarga
+  1118232168  | APM / APF - GBA Norte                                   | sin_regla
+  9251665765  | Generador/a de Contenido  para Imp. Estudio de Marketin | sin_regla
+  1118118363  | Lider de Ventas de Salón - req201341 - Rosario          | sin_regla
+  1117975370  | Recruiter - Part Time                                   | sin_regla
+  8026075031  | Profesional de limpieza para espacios comerciales       | sin_regla
+  6960661531  | Elaboración de Alimentos (Pollería / Carnes)            | sin_regla
+  1118165027  | Tecnico de servicio                                     | sin_regla
+  6294868330  | Enfermeros y asistentes geriatricos                     | sin_regla
+
+# ════ TIER 2 (25 ofertas) ════
+# Cambios puntuales con muestra chica (alta variabilidad)
+
+## ISCO 3435 → cambio típico: ayudante de director de cine y tele → ingeniero químico/ingeniera química
+  7276672758  | ingeniero químico                                       | sin_regla
+  8506987345  | Senior Node.JS Engineer                                 | sin_regla
+  2162518  | Especialista en Infraestructura tecnológica             | sin_regla
+  1118190234  | Líder de Innovación Tecnológica - Mix (Onsite - Remoto) | sin_regla
+  1118230785  | Application Security Engineer                           | sin_regla
+
+## ISCO 3123 → cambio típico: supervisor de instalaciones de aisl → jefe de cocina/jefa de cocina
+  1118058759  | Supervisor de cocina- Villa Celina                      | R224_supervisor_cocina
+  7785816520  | Coordinador de transporte Z/Norte                       | sin_regla
+  1118154856  | Coordinador de Proyectos y Obras                        | sin_regla
+  2178321  | Especialista en Marketing Digital                       | sin_regla
+  1118224788  | Supervisor de Posventa (automotriz)                     | sin_regla
+
+## ISCO 7412 → cambio típico: técnico de ascensores/técnica de as → trabajador de fábrica/trabajadora d
+  1118113713  | Operario de Autoelevador Zona Pilar                     | R240_operario_produccion
+  8188075811  | Chofer de autoelevador y cargas generales               | R3_autoelevador
+  1118035657  | Operario de Depósito con manejo de Autoelevador Retráct | R275_operario_deposito_almacen
+  9072068985  | Maquinista/ Operador de Autoelevador                    | R3_autoelevador
+  8953928103  | DL Maquinista de autoelevador con registro habilitante  | R3_autoelevador
+
+## ISCO 8322 → cambio típico: conductor de vehículo de reparto/co → conductor de vehículo de carga/cond
+  1118028680  | Chofer de camión                                        | R281_chofer_camiones
+  5362376293  | Promotor/ a de Crédito en vía publica (la plata)        | sin_regla
+  7957993627  | Operario de Logística                                   | R275_operario_deposito_almacen
+  2177196  | Editor de Video / Diseñador Audiovisual con IA          | sin_regla
+  1118129937  | Chofer de semirremolque de media y larga distancia con  | sin_regla
+
+## ISCO 2269 → cambio típico: terapeuta musical → odontólogo/odontóloga
+  6419821355  | Ortodoncista                                            | sin_regla
+  6444989588  | agente de ventas de mostrador                           | sin_regla
+  7857294634  | Coordinado/ar comercial y de marketing  San Luis        | sin_regla
+  6182261811  | Trabajo part time con impacto social en Paraná          | sin_regla
+  8363855431  | Montador de Polímeros                                   | sin_regla
+
+# ════ TIER 3 (15 ofertas) ════
+# ISCOs que más crecieron (validar lo que ganaron)
+
+## ISCO 9329 → cambio típico: operario de prensado de fruta/opera → trabajador de fábrica/trabajadora d
+  8613700960  | Operarios/as de producción, eventual                    | R240_operario_produccion
+  1118201687  | SL30 | OPERARIO/A DE PRODUCCIÓN | MULTINACIONAL | GBA S | R240_operario_produccion
+  8699915011  | Operario de producción de  Pintura/Tintas               | R240_operario_produccion
+  6438990234  | Operario Pesada Materia Prima                           | R240_operario_produccion
+  7818068122  | Operario de producción (Eventual) José León Suarez req2 | R240_operario_produccion
+
+## ISCO 9333 → cambio típico: operario de prensado de fruta/opera → mozo de almacén/moza de almacén
+  1118226646  | Operario tareas generales- CONTRATO A PLAZO FIJO DE 6 A | R353_operario_carga_descarga
+  7148997902  | Operarios de producción p/ rubro Maderero               | R353_operario_carga_descarga
+  8511750245  | Personal Carga y Descarga                               | sin_regla
+  6163928953  | Auxiliar logístico                                      | sin_regla
+  6456724989  | Operarios de produccion                                 | R353_operario_carga_descarga
+
+## ISCO 2411 → cambio típico: empleado de contabilidad/empleada d → analista contable
+  6308204420  | REF 1033: Analista Senior de Cuentas a Pagar            | R228_analista_contabilidad
+  1118141818  | Analista de Cobranzas Semi Sr.                          | R245_analista_cobranzas
+  1118142229  | Analista de Cobranzas (inglés avanzado excluyente)      | R245_analista_cobranzas
+  5920202703  | Analista de Cuentas a Pagar                             | R228_analista_contabilidad
+  6123538682  | 740SI Analista de Cuentas a Pagar                       | R228_analista_contabilidad

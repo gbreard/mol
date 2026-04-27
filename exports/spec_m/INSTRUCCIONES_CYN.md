@@ -1,123 +1,108 @@
 # SPEC M — Validación de muestra (90 ofertas)
 
 **Para:** Cynthia
-**Tiempo estimado:** ~2-2.5 hs
-**Archivo a completar:** `spec_m_muestra_validacion_cyn.csv`
+**Tiempo estimado:** ~2-2.5 hs (90 ofertas × ~90 seg)
+**Archivo con IDs:** `ids_validar_cyn.txt`
 
 ---
 
-## Contexto
+## Contexto rápido
 
-Tras los SPECs E+G+H+J+K+N+O+P, **6,781 ofertas cambiaron de ocupación ISCO 4-dig**. Antes de dar el trabajo por estable, te pedimos validar 90 ofertas dirigidas para confirmar que los cambios son mejoras reales.
+Después de los SPECs E+G+H+J+K+N+O+P, **6,781 ofertas cambiaron de ocupación ISCO**. Antes de dar por estable el sistema, te pedimos validar 90 ofertas dirigidas para confirmar que los cambios son mejoras reales.
 
-**No es revisión exhaustiva** — es muestra estratificada con criterios claros.
-
----
-
-## Cómo usar el CSV
-
-Abrí el archivo en Google Sheets o LibreOffice. Tiene 90 filas y 14 columnas.
-
-**Columnas que ya vienen llenas (solo lectura):**
-| Columna | Qué muestra |
-|---|---|
-| `tier` | 1, 2 o 3 (ver criterio abajo) |
-| `isco_focus` | ISCO bajo análisis |
-| `id_oferta` | ID único |
-| `titulo` | Título original del aviso |
-| `isco_antes` / `esco_antes` | Cómo estaba codificada ANTES |
-| `isco_despues` / `esco_despues` | Cómo está codificada AHORA |
-| `esco_code_granular` | Código ESCO granular (vacío si no aplica/aún sin actualizar) |
-| `regla_aplicada` | Qué regla disparó (si hubo) |
-| `url_admin` | Link directo al admin del dashboard |
-
-**Columnas que vos completás:**
-| Columna | Qué poner |
-|---|---|
-| `resultado` | Una de: **OK** / **MEJORA** / **PEOR** / **AMBOS_MAL** / **DUDOSA** |
-| `comentario` | (opcional) explicación breve si es PEOR / AMBOS_MAL |
-| `isco_correcto` | (opcional) si conocés el ISCO que debería ser |
+**No es revisión exhaustiva** — es muestra estratificada por criterios.
 
 ---
 
-## Criterios de evaluación
+## Cómo trabajarlas
 
-Para cada oferta:
+1. Abrí el dashboard → **`/admin/validacion`**.
+2. Tomá un ID del archivo `ids_validar_cyn.txt`.
+3. Buscalo en la lista (filtro por id_oferta) o entrá directo con la URL:
+   ```
+   https://mol-nextjs.vercel.app/admin/validacion?id=XXXXXXX
+   ```
+4. Mirás el aviso, evaluás la clasificación actual, y marcás en la UI usando el flujo habitual:
+   - **OK** si está bien
+   - **Error** si hay algo mal (creás issue con el detalle como hiciste el 27-04)
+   - **Revisar** si dudás
 
-1. **Hacé clic en `url_admin`** → te abre el aviso original con título, descripción, tareas.
-2. **Leé el aviso real.**
-3. **Compará** con `esco_despues` (la nueva clasificación) y `esco_antes` (la vieja).
-4. **Marcá en `resultado`:**
+---
 
-| Marca | Cuándo |
+## Qué evaluar en cada oferta
+
+### En cada caso, leé el aviso y compará con la clasificación actual:
+
+- ¿El **título ESCO** representa bien el rol pedido?
+- ¿La **descripción ESCO** coincide con las tareas reales?
+- ¿Las **skills** asignadas son pertinentes (sin alucinaciones tipo "javanés", "peces", etc.)?
+- ¿El **área funcional** y **sector** están bien?
+
+### Para tomar la decisión:
+
+| Resultado | Cuándo |
 |---|---|
 | **OK** | El nuevo está bien (ya estaba bien o cambió a algo igual de bueno) |
-| **MEJORA** | El nuevo es claramente mejor que el viejo |
-| **PEOR** | El nuevo es peor que el viejo (regresión) |
-| **AMBOS_MAL** | Ni el nuevo ni el viejo son correctos |
-| **DUDOSA** | No estoy segura |
+| **Error / Issue** | El nuevo es peor o ambos son malos → crear issue con tu propuesta de ESCO correcto (como hacés siempre) |
+| **Revisar** | No estás segura |
 
-**Si marcás PEOR o AMBOS_MAL:** poné en `isco_correcto` qué ISCO sería correcto, y en `comentario` por qué (1 línea alcanza).
+**Si creás issue:** seguí el formato que ya venís usando — incluye **ESCO sugerido** (código + label), justificación y skills correctas/incorrectas. Ya viste el flujo con las 6 ofertas del 27-04 (ej. 8299423434, 7879857202).
 
 ---
 
 ## Distribución de la muestra
 
-Total: **90 ofertas** estratificadas por tipo de cambio.
+El archivo `ids_validar_cyn.txt` agrupa los 90 IDs en 3 tiers. Te conviene ir tier por tier:
 
-| Tier | Tipo | ISCOs cubiertos | N |
-|---|---|---|---:|
-| **1** | ISCOs que más se vaciaron — potenciales fallbacks pre-fix | 8160 (prensado fruta), 5223, 4311, 1349, 2431 | 50 |
-| **2** | Cambios puntuales — muestra chica con alta variabilidad | 3435, 3123, 7412, 8322, 2269 | 25 |
-| **3** | ISCOs que más crecieron — validar ganancia | 9329 (trabajador fábrica), 9333 (mozo almacén), 2411 (analista contable) | 15 |
+### Tier 1 — ISCOs que más se vaciaron (50 ofertas)
+ISCOs que perdieron muchas ofertas tras los fixes — confirmar que el cambio fue MEJORA y no regresión.
+
+| ISCO antes | Cambio típico | N |
+|---|---|---:|
+| **8160** | prensado de fruta → trabajador de fábrica / mozo de almacén | 10 |
+| **5223** | vendedor especializado → coordinador restaurante / otros | 10 |
+| **4311** | empleado de contabilidad → analista contable | 10 |
+| **1349** | (varios fallbacks pre-fix) | 10 |
+| **2431** | director relaciones clientes → especialista mercadotecnia | 10 |
+
+### Tier 2 — Cambios puntuales (25 ofertas)
+ISCOs con muestra chica donde la variabilidad puede ser alta.
+
+ISCOs: **3435, 3123, 7412, 8322, 2269** (5 c/u)
+
+### Tier 3 — ISCOs que más crecieron (15 ofertas)
+ISCOs que recibieron muchas ofertas nuevas — validar que efectivamente les corresponde estar ahí.
+
+| ISCO ahora | Etiqueta | N |
+|---|---|---:|
+| **9329** | trabajador de fábrica | 5 |
+| **9333** | mozo de almacén | 5 |
+| **2411** | analista contable | 5 |
 
 ---
 
-## Ejemplo de lo que vas a ver
+## Tiempo estimado y reparto
 
-```
-tier: 1
-isco_focus: 8160
-id_oferta: 1118098190
-titulo: Operario de producción zona Pilar
-isco_antes: 8160 (prensado de fruta)
-isco_despues: 9329 (trabajador de fábrica)
-url_admin: https://mol-nextjs.vercel.app/admin/validacion?id=1118098190
-```
-
-→ Abrís el link, leés el aviso, ves que es operario genérico de planta industrial, no de fruta. Marcás `MEJORA`. Listo.
+- **90 ofertas × ~90 seg = ~135 min**
+- Si querés repartir con Diego: vos T1 (50), él T2+T3 (40). O dividís a gusto.
 
 ---
 
 ## Cuando termines
 
-Mandanos el CSV completo (Google Sheets exportado, o el archivo modificado).
+Avisanos. Vamos a calcular sobre tus revisiones:
+- % de OK + MEJORA
+- % de errores (issues nuevos creados)
+- Patrones recurrentes (si una regla específica genera varios errores)
 
-Calculamos:
-- % MEJORA + OK
-- % PEOR (regresiones)
-- % AMBOS_MAL (límites del sistema)
-
-Y decidimos:
-- **>80% MEJORA+OK:** sistema validado, seguimos.
-- **60-80%:** documentar caveats, seguimos con cuidado.
-- **<60%:** investigar regresiones antes de avanzar.
+Y decidimos si el sistema está listo para etapa siguiente o si hay que volver a iterar.
 
 ---
 
-## Si encontrás patrones (extra)
+## Si encontrás un patrón
 
-Si ves que MUCHAS ofertas de un mismo `regla_aplicada` están **PEOR**, marcalo en `comentario` con "REGLA-X" para que detectemos rápido. No es obligatorio.
-
----
-
-## Tiempo estimado
-
-- 90 ofertas × ~90 segundos cada una = **~135 minutos**
-- Distribuible en 2-3 sesiones
-
-Si querés repartir con Diego, agarrá Tier 1 (50) y dale Tier 2+3 (40), o como prefieran.
+Si ves que **muchos errores caen sobre la misma `regla_aplicada`** (columna en el archivo), avisanos antes de seguir — quizás hay un fix sistémico que ahorra tiempo.
 
 ---
 
-**Cualquier duda escribinos.** Lo más importante es que NO te frenes en casos dudosos — marcá `DUDOSA` y seguí.
+**Lo más importante:** no te frenes en casos dudosos. Marcá "Revisar" o creá un issue con `prioridad: baja` y seguí.
