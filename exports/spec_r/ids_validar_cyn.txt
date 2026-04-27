@@ -1,0 +1,149 @@
+# SPEC R — Casos RAROS / borderline (no polivalentes)
+# Trabajalas en /admin/validacion (mismo flujo que SPEC M y Q)
+# URL directa: https://mol-nextjs.vercel.app/admin/validacion?id=XXXX
+
+
+# ═══════════════════════════════════════════════════════════
+# GRUPO D — NLP DEFECTUOSO (tareas vacías o skills <3) (15 ofertas)
+# Sospecha: scraping incompleto o LLM no extrajo bien. El matching pudo ser adivinado.
+# ═══════════════════════════════════════════════════════════
+
+## NLP_defectuoso
+  6113184821  | Técnico de Instalaciones/Campo                     | técnico de TIC/técnica de TIC  | tareas_len=194, skills=0
+  7444899883  | Operarios/as para descargas de contenedores por co | mozo de almacén/moza de almacé | tareas_len=25, skills=13
+  8377098377  | Auditor Senior                                     | contable                       | tareas_len=741, skills=2
+  7653790060  | Analista Sr. Gestión de Pacientes y Cobranzas      | analista contable              | tareas_len=501, skills=0
+  8351882858  | Fonoaudiología                                     | terapeuta especializado en tra | tareas_len=0, skills=3
+  8088943442  | Patient & Diagnostic Manager                       | director comercial/directora c | tareas_len=979, skills=2
+  6103561471  | Administrativo de Taller                           | empleado de oficina/empleada d | tareas_len=84, skills=2
+  9033876691  | Técnica/o Electrónica/o Eléctrica/o Req 203783 Per | técnico de TIC/técnica de TIC  | tareas_len=536, skills=1
+  6094503764  | Comercial de Ventas / Alquileres                   | gestor de alquiler de bienes d | tareas_len=0, skills=6
+  8897651476  | Transaction Processing Analyst                     | médico especialista/médica esp | tareas_len=731, skills=2
+  1118020705  | Customer Service Senior con exp en Forwarder CABA  | agente de centro de atención a | tareas_len=0, skills=1
+  7715329312  | Analista de control de gestión                     | analista de presupuestos       | tareas_len=385, skills=1
+  9209739433  | Chofer de reparto zona Hurlingham                  | conductor de vehículo de repar | tareas_len=28, skills=6
+  5572679700  | Responsable de área Soft de RRHH                   | jefe de departamento/jefa de d | tareas_len=469, skills=0
+  5585224240  | Analista de administracion de personal hard(req201 | asesor de orientación profesio | tareas_len=534, skills=1
+
+# ═══════════════════════════════════════════════════════════
+# GRUPO E — SIN REGLA + SCORE BAJO (<0.45) (15 ofertas)
+# Sospecha: el matcher no encontró nada parecido. Casos donde el sistema "adivinó" mal.
+# ═══════════════════════════════════════════════════════════
+
+## Sin_regla_bajo_score
+  1118046796  | Operador de Playa /Conductor - SAN FERNANDO        | conductor de coche fúnebre/con | score=0.30, code=8322.3
+  1117986104  | Gastronómicos                                      | empleado de mostrador de ofici | score=0.43, code=4211.2
+  8340966205  | Lic. en kinesiología                               | físico/física                  | score=0.42, code=2111.3
+  1118027524  | INTENDENTE DE OBRA                                 | vigilante de seguridad en espe | score=0.30, code=5419.5
+  1118089439  | Analista comercial - Seguridad Física y Electrónic | representante comercial        | score=0.38, code=3322.1
+  1118071519  | Asistente de Ingeniería Jr.                        | supervisor de producción/super | score=0.30, code=3122.4
+  1118065063  | Ingeniero/a Químico o Ambiental con perfil comerci | director de servicios para los | score=0.40, code=1349.21
+  1117988861  | Asesores/as Comerciales - Capital Federal          | representante comercial        | score=0.45, code=3322.1
+  1118045848  | PASTELERÍA Y TORTAS PARA SALÓN DE EVENTOS          | pastelero/pastelera            | score=0.39, code=7512.5
+  1117977374  | Soporte Técnico IT                                 | agente del servicio de asisten | score=0.32, code=3512.1
+  1118078172  | Analista de Soporte N1 y N2 Presencial             | director de operaciones/direct | score=0.43, code=1321.2.3
+  1117994728  | Editor de Videos                                   | editor de fotografía/editora d | score=0.45, code=2642.1.14
+  1118201193  | Estudiantes de Logística para Pasantía Stellantis  | analista de logística          | score=0.32, code=2421.5
+  1118088563  | Clampista Zona Pacheco                             | columnista                     | score=0.32, code=2642.1.4
+  8611901681  | Consultor GRC Junior                               | consultor de TIC/consultora de | score=0.36, code=2511.10
+
+# ═══════════════════════════════════════════════════════════
+# GRUPO F — ISCO FFAA (0xxx — fuerzas armadas) (20 ofertas)
+# Sospecha: SI hay 21 ofertas como Oficial FFAA, MUCHAS son falsos positivos. Argentina ofertas civiles.
+# ═══════════════════════════════════════════════════════════
+
+## ISCO_0110
+  6789664236  | Líder de Mantenimiento de Flota                    | comandante de flota            | isco=0110
+  7688149590  | Sereno                                             | oficial de artillería          | isco=0110
+  7835523819  | Oficiales y Suboficiales de las Fuerzas Armadas    | oficial de las Fuerzas Armadas | isco=0110
+  8599203974  | Armed Dispatcher                                   | oficial de artillería          | isco=0110
+  9221086655  | referente de armado                                | teniente del Ejército          | isco=0110
+  9232271799  | Generalista de RRHH                                | general de brigada             | isco=0110
+  8019079994  | Oficial armador                                    | oficial de la Armada           | isco=0110
+  8592617326  | Sereno                                             | oficial de la Armada           | isco=0110
+  8197398818  | Scrum Master MS044KA                               | comandante del Ejército        | isco=0110
+  8035161034  | Operador de Cobranzas                              | oficial de la Armada           | isco=0110
+
+## ISCO_0210
+  8045550795  | Técnico de Operaciones                             | técnico en operativa de guerra | isco=0210
+  8226690033  | Operations Specialist                              | oficial de las fuerzas especia | isco=0210
+  1118168860  | Sereno - Zona Lanús                                | técnico en operativa de guerra | isco=0210
+  1118167187  | Sereno Nocturno                                    | oficial de las fuerzas especia | isco=0210
+  2172398  | Supervisor de Vigilancia Física                    | técnico en operativa de guerra | isco=0210
+  2174877  | Supervisor de Vigilancia Fisica - Terminal Zarate  | técnico en operativa de guerra | isco=0210
+  8585234974  | Talent Acquisition Partner (Contractor)            | técnico en operativa de guerra | isco=0210
+
+## ISCO_0310
+  6257704643  | Alistaje de autos                                  | ingeniero militar/ingeniera mi | isco=0310
+  2178246  | Jefe/a de Personal                                 | ingeniero militar/ingeniera mi | isco=0310
+  1118142264  | Analista de Farmacovigilancia                      | soldado de infantería          | isco=0310
+
+# ═══════════════════════════════════════════════════════════
+# GRUPO G — DECISION_METODO = regla_zona_gris (15 ofertas)
+# Sospecha: la regla aplicó en zona dudosa (score borderline). Verificar si la decisión fue correcta.
+# ═══════════════════════════════════════════════════════════
+
+## R49_jefe_generico
+  1118015175  | Jefe de Planta                                     | jefe de departamento/jefa de d | zona_gris
+  1118064219  | ENCARGADO DE FABRICA                               | jefe de departamento/jefa de d | zona_gris
+  1118034225  | JEFE DE PLANTA (Industria premium de QUESOS Artesa | jefe de departamento/jefa de d | zona_gris
+
+## R170_asesor_comercial
+  1118067656  | Ejecutivo de Cuentas para broker de Seguros        | representante comercial        | zona_gris
+  1118039577  | 1290CC | ASESOR COMERCIAL B2B| ZONA OESTE | PRESEN | representante comercial        | zona_gris
+  1118028833  | Asesor Comercial Plan de Ahorro - Volkswagen       | representante comercial        | zona_gris
+
+## R33_desarrollador_software
+  1118031067  | Programador Fullstack (Vue.js y .NET)              | desarrollador de software/desa | zona_gris
+  2170899  | Node.js Developer - Remoto - 1771                  | desarrollador de software/desa | zona_gris
+  2163647  | Analista Desarrollador .Net (Front)                | desarrollador de software/desa | zona_gris
+
+## R109_ejecutivo_ventas
+  1118016996  | Ejecutivo de Ventas canal Empresas                 | representante comercial        | zona_gris
+  1118032816  | Ejecutivo Comercial                                | representante comercial        | zona_gris
+  1118062230  | Ejecutivo Comercial                                | representante comercial        | zona_gris
+
+## R17_compliance_legal
+  1117933167  | Coordinador Jurídico Contable                      | abogado/abogada                | zona_gris
+  1118024183  | Abogado/a Especialista en Contratos                | abogado/abogada                | zona_gris
+  1118030604  | Abogado SemiSenior Corporativo                     | abogado/abogada                | zona_gris
+
+# ═══════════════════════════════════════════════════════════
+# GRUPO H — REGLAS LEGACY (>3 meses sin auditar) con cobertura ALTA (25 ofertas)
+# R14 (1,199 ofertas), R13 (337), R139 (311), R207 (267), R137 (180). Pueden estar obsoletas.
+# ═══════════════════════════════════════════════════════════
+
+## R14_contador_auditor
+  6057923326  | Ref. 20982 Analista contable con experiencia en fi | contable                       | legacy_>3meses
+  1118018952  | Administrativa/o Contable zona Berazategui         | contable                       | legacy_>3meses
+  5877040201  | Auditores de stock                                 | contable                       | legacy_>3meses
+  5931096360  | Estudiantes de Contador Público para Pasantía Stel | contable                       | legacy_>3meses
+  1118149861  | Contador Público Nacional con Experiencia en Audit | contable                       | legacy_>3meses
+
+## R13_enfermero
+  5751421374  | Guardia de Enfermería Pediátrica , Mar del Plata   | enfermero responsable de cuida | legacy_>3meses
+  5296985238  | Enfermera o Auxiliar                               | enfermero responsable de cuida | legacy_>3meses
+  1118153364  | ENFERMERO/A (Atención Domiciliaria y Programada)   | enfermero responsable de cuida | legacy_>3meses
+  5409865822  | enfermero auxiliar                                 | enfermero responsable de cuida | legacy_>3meses
+  1118067326  | Enfermera/o - Turno Noche                          | enfermero responsable de cuida | legacy_>3meses
+
+## R139_repositor
+  5308280608  | Repositor Super Mami Alto Verde                    | reponedor/reponedora           | legacy_>3meses
+  1118090025  | Repositor                                          | reponedor/reponedora           | legacy_>3meses
+  7312488478  | Repositor Externo                                  | reponedor/reponedora           | legacy_>3meses
+  7921579257  | Repositor (req204375) Eventual Obera Misiones      | reponedor/reponedora           | legacy_>3meses
+  7742650221  | Repositor  Rosario                                 | reponedor/reponedora           | legacy_>3meses
+
+## R207_peon_cocina
+  8230554969  | Ayudante de Cocina                                 | ayudante de cocina             | legacy_>3meses
+  5077896885  | Ayudante de cocina                                 | ayudante de cocina             | legacy_>3meses
+  9238527255  | auxiliar de cocina                                 | ayudante de cocina             | legacy_>3meses
+  9105774162  | Ayudante de cocina // Kosher                       | ayudante de cocina             | legacy_>3meses
+  1118041278  | Ayudante de Cocina                                 | ayudante de cocina             | legacy_>3meses
+
+## R137_tareas_picking_crossdocking
+  5580990063  | Operador de ecommerce y logística                  | mozo de almacén/moza de almacé | legacy_>3meses
+  1118139447  | REPOSITOR / DEPOSITO / ARMADOR DE PEDIDOS          | mozo de almacén/moza de almacé | legacy_>3meses
+  1117988449  | REPARTIDOR DE PANIFICADOS ZONA NORTE CON VEHICULO  | mozo de almacén/moza de almacé | legacy_>3meses
+  7639649823  | Auxiliar de deposito                               | mozo de almacén/moza de almacé | legacy_>3meses
+  6333217997  | Cadete de deposito                                 | mozo de almacén/moza de almacé | legacy_>3meses
