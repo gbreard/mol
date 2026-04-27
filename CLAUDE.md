@@ -476,31 +476,94 @@ python scripts/exports/generate_training_pairs.py --since 2026-03-01
 python scripts/exports/generate_training_pairs.py --dry-run
 ```
 
-### Flujo de Trabajo con Issues de Usuarios
+### ⛔ Flujo OBLIGATORIO de Resolución de Issues Humanos (SPEC T)
+
+**REGLA CRÍTICA:** cada issue creado por humano (Cyn/Diego/Gerardo) debe pasar por los 7 pasos. **No se cierra un issue sin completar la propagación.**
+
+Motivo: 99.8% de issues resueltos antes de SPEC T (468/469) **NO se propagaron** a ofertas similares. Cada corrección puntual sin propagar pierde su valor a escala.
 
 ```
-PASO 1: Listar issues pendientes
-─────────────────────────────────
-python -c "..." (ver sección Gestión de Issues)
+PASO 1 — Leer issue (descripcion, valor_actual, valor_esperado, campo_afectado)
 
-PASO 2: Por cada issue, ver qué corrección pide
-────────────────────────────────────────────────
-- Leer descripcion, valor_actual, valor_esperado
-- Identificar si es error de NLP, Matching, o clasificación
+PASO 2 — Aplicar fix puntual a la oferta del issue
+   └─ Modificar config/*.json correspondiente
+   └─ Reprocesar SOLO esa oferta
+   └─ Verificar que la oferta del issue queda correcta
 
-PASO 3: Aplicar corrección
-──────────────────────────
-- Crear/modificar regla en config/*.json correspondiente
-- Reprocesar oferta: python scripts/run_validated_pipeline.py --ids X
+PASO 3 — Estructurar el patrón corregido (Claude infiere del texto libre)
+   └─ Construir patron JSON con schema:
+      {
+        "tipo": "nlp_area_funcional" | "matching_esco" | "skills_filtro"
+              | "nlp_tareas_explicitas",
+        "campo": "<campo afectado>",
+        "condicion": {
+          "tipo": "titulo_contiene_alguno" | "regla_aplicada" | ...,
+          "keywords": [...] | "valor_unico": "..."
+        },
+        "valor_anterior": "...",
+        "valor_nuevo": "..."
+      }
 
-PASO 4: Marcar issue como resuelto
-───────────────────────────────────
-- Actualizar en Supabase con solucion_aplicada y config_modificada
+PASO 4 — DRY-RUN de propagación (estima cuántas ofertas matchean)
+   └─ from scripts.correcciones import propagate_correction
+   └─ result = propagate_correction(patron, dry_run=True, update_issue=False)
+   └─ Inspeccionar result.ofertas_identificadas
+   └─ Si N == 0 → es excepción puntual sin patrón generalizable, saltar paso 5
+   └─ Si N >= 1 → seguir con paso 5
 
-PASO 5: Sync → Training pair se genera automáticamente
-──────────────────────────────────────────────────────
-python scripts/sync_learnings.py
+PASO 5 — Aplicar propagación (NO dry-run)
+   └─ result = propagate_correction(patron, dry_run=False, issue_id="UUID")
+   └─ Esto hace UPDATE/re-rematch + actualiza issue con
+      patron_corregido, propagacion_n, propagacion_ids
+
+PASO 6 — Cerrar issue con metadata completa
+   └─ estado = 'resuelto'
+   └─ resuelto_at = ISO timestamp
+   └─ solucion_aplicada (texto libre con descripción del fix)
+   └─ config_modificada (path a archivos editados)
+
+PASO 7 — Sync learnings + sync Supabase
+   └─ python scripts/sync_learnings.py     # genera training_pair
+   └─ python scripts/exports/sync_to_supabase.py  # propaga a dashboard
 ```
+
+#### Tipos de propagación soportados
+
+| `tipo` | Caso típico | Acción |
+|---|---|---|
+| `nlp_area_funcional` | "área debería ser Logística, no Producción" | UPDATE ofertas_nlp + actualiza issue |
+| `matching_esco` | "target ESCO X cambia a Y" | re-rematch con MatcherV3 |
+| `skills_filtro` | "skills alucinadas (peces, javanés)" | re-extracción aplica SPEC G+K |
+| `nlp_tareas_explicitas` | "tareas son encabezados, no tareas" | re-NLP completo |
+
+#### Helper
+
+```python
+from scripts.correcciones import propagate_correction
+
+# Dry-run: estima sin tocar BD
+result = propagate_correction(patron, dry_run=True, update_issue=False)
+print(result.summary())
+
+# Aplicar
+result = propagate_correction(
+    patron,
+    dry_run=False,
+    issue_id="UUID-del-issue",  # actualiza Supabase columnas patron_corregido, propagacion_n, propagacion_ids
+)
+```
+
+#### Excepciones al workflow (cuándo se permite saltar pasos)
+
+- **Patrón único sin generalización:** si paso 4 dry-run devuelve `ofertas_identificadas <= 1`, marcar issue con `propagacion_n=0` y nota "excepción puntual".
+- **Re-NLP costoso:** para `nlp_tareas_explicitas`, si N > 50 ofertas, primero validar con muestra de 5 antes de aplicar masivo.
+
+#### Casos donde NO se debe usar este flujo
+
+- Issues automáticos (`autor_email='auto-validator@mol.gob.ar'`): tienen su propio circuito.
+- Sugerencias de mejora general (no son correcciones de oferta puntual).
+
+→ **Spec completa:** `docs/specs/2026-04-27_T_flujo_propagacion_correcciones.md`
 
 **IMPORTANTE:** Cada issue resuelto con buena justificación = mejor dato de entrenamiento.
 Los issues de múltiples aspectos de la misma oferta se deduplicany y mergean justificaciones.
