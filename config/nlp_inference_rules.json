@@ -717,6 +717,42 @@
           "forzar_area": "Seguridad",
           "_nota": "Validacion v1.1: Roles de vigilancia van a Seguridad, no Marketing/Ventas",
           "_caso": "ID 2171959 Vigilador General"
+        },
+        {
+          "titulo_contiene_alguno": [
+            "operario de deposito",
+            "operario de depósito",
+            "operaria de deposito",
+            "operaria de depósito",
+            "operarios de deposito",
+            "operarios de depósito",
+            "operarios/as de deposito",
+            "operarios/as de depósito",
+            "operario de almacen",
+            "operario de almacén",
+            "operaria de almacen",
+            "operaria de almacén",
+            "operarios de almacen",
+            "operarios de almacén",
+            "operarios/as de almacen",
+            "operarios/as de almacén",
+            "operario de despacho",
+            "operaria de despacho",
+            "operarios de despacho",
+            "operarios/as de despacho",
+            "operario de logistica",
+            "operario de logística",
+            "operaria de logistica",
+            "operaria de logística",
+            "operarios/as de logistica",
+            "operarios/as de logística",
+            "operarios de logística",
+            "despacho metalúrgico",
+            "despacho metalurgico"
+          ],
+          "forzar_area": "Logistica",
+          "_nota": "SPEC S 2026-04-27: Operario depósito/almacén/despacho/logística es rol de Logística, NO Producción aunque el LLM tienda a asignarlo así. Validado por Cyn (issue 6866505508, 7347150394) y Diego (issue 8299423434).",
+          "_caso": "IDs 6866505508, 7347150394, 8299423434"
         }
       ]
     },
