@@ -1,0 +1,179 @@
+# SPEC Q — Validación de casos sospechosos identificados por Claude
+# Trabajalas en /admin/validacion (mismo flujo que SPEC M)
+# URL directa: https://mol-nextjs.vercel.app/admin/validacion?id=XXXX
+
+# ═══════════════════════════════════════════════════════════
+# GRUPO A — Perfiles POLIVALENTES (50 ofertas)
+# Sospecha: ESCO no representa bien el rol argentino real
+# Estos casos alimentan el DEBATE DE EQUIPO sobre Catálogo MOL Argentino
+# Ver: docs/plan/15_PERFILES_POLIVALENTES_AR.md
+# ═══════════════════════════════════════════════════════════
+
+## R162_tecnico_mantenimiento_edilicio  (técnico mantenimiento edilicio)
+  1118155746  | Técnico Electromec. para Mantenimiento edilicio y de eq | actual: electricista de obras
+  1118182739  | Mantenimiento edilicio                                  | actual: pintor de obra/pintora de obra
+  1118143088  | Técnico Electromec. para Mantenimiento edilicio y de eq | actual: electricista de obras
+  6536606280  | Empleado de Mantenimiento Edilicio                      | actual: pintor de obra/pintora de obra
+  6666652882  | mantenimiento edilicio/albañileria                      | actual: electricista de obras
+
+## R110_tecnico_mantenimiento  (técnico mantenimiento industrial)
+  2173888  | Técnico de Mantenimiento Industrial                     | actual: mecánico de maquinaria industrial/m
+  6304029348  | Técnico de Mantenimiento                                | actual: mecánico de maquinaria industrial/m
+  8673824166  | Técnico de Mantenimiento de Campo                       | actual: mecánico de maquinaria industrial/m
+  5638553477  | Técnico de Mantenimiento para Importante Empresa Indust | actual: mecánico de maquinaria industrial/m
+  2177100  | Técnico de Mantenimiento                                | actual: mecánico de maquinaria industrial/m
+
+## R49_jefe_generico  (jefe genérico)
+  1118010958  | Responsable de Planificación                            | actual: jefe de departamento/jefa de depart
+  2179402  | Responsable del Área de Recursos Humano                 | actual: jefe de departamento/jefa de depart
+  1118060529  | Jefe de Calidad                                         | actual: jefe de departamento/jefa de depart
+  1118082220  | Jefe de Planta (req199701) - Permanente                 | actual: jefe de departamento/jefa de depart
+  1118033744  | Responsable de seguros                                  | actual: jefe de departamento/jefa de depart
+
+## R170_asesor_comercial  (asesor comercial PyME)
+  6462511191  | Asesor Comercial para RRHH.                             | actual: representante comercial
+  8360134028  | Asesora de Ventas Todomoda, Isadora Mendoza             | actual: representante comercial
+  1118212818  | ASESOR COMERCIAL - Rosario                              | actual: representante comercial
+  8271070144  | Asesor comercial                                        | actual: representante comercial
+  8318286937  | Ejecutivo de cuentas canal PAS                          | actual: representante comercial
+
+## R34_cajero  (cajero)
+  6893519523  | Cajero/a                                                | actual: cajero/cajera
+  8803946720  | cajero/a gastronomico                                   | actual: cajero/cajera
+  6718267553  | Cajero/a                                                | actual: cajero/cajera
+  5124020536  | Runner / Cajero                                         | actual: cajero/cajera
+  8057334922  | cajero/a de restaurantebar o adicionista                | actual: cajero/cajera
+
+## R166_cocinero_planchero  (cocinero planchero)
+  1117972289  | Cocinero profesional- Finger food                       | actual: cocinero/cocinera
+  7377778632  | Cocinero/a para importante Restaurante                  | actual: cocinero/cocinera
+  1118006577  | Cocineros - Restaurant                                  | actual: cocinero/cocinera
+  2174698  | Parrillero Encargado - Importante Grupo Gastronómico    | actual: cocinero/cocinera
+  7436676809  | Cocineros y Ayudantes de Cocina                         | actual: cocinero/cocinera
+
+## R31_mozo_camarero  (mozo / camarero)
+  6940610379  | Camarero/a                                              | actual: camarero/camarera
+  1116613266  | Camareros/as - Mar del Plata                            | actual: camarero/camarera
+  6684919392  | Camarero/a  Importante grupo Gastronomico               | actual: camarero/camarera
+  1118063767  | Peones y Camareros de Cocina                            | actual: camarero/camarera
+  1118169548  | Camareros/as para Zona Cardales                         | actual: camarero/camarera
+
+## R109_ejecutivo_ventas  (ejecutivo de ventas)
+  1118225579  | Ejecutivo/a de Ventas Obras IFCI                        | actual: representante comercial
+  2177165  | Ejecutivo comercial para desarrollarse como Asesor inmo | actual: representante comercial
+  5763846208  | Ejecutivo comercial Jr.                                 | actual: representante comercial
+  8818878255  | Ejecutivo/a de Ventas Digitales                         | actual: representante comercial
+  1118024320  | EJECUTIVO DE VENTAS JR                                  | actual: representante comercial
+
+## R15_customer_care  (customer care)
+  9223076290  | Repr de At al Cte Tel y Vtas // Call Center // Presenci | actual: agente de centro de atención al cli
+  1118086728  | Operador comercial de atención al cliente TANDIL        | actual: agente de centro de atención al cli
+  1118189918  | Representante Atencion al cliente                       | actual: agente de centro de atención al cli
+  1118153674  | Asesor/a de atención al cliente                         | actual: agente de centro de atención al cli
+  8875868869  | Oficial de Atención al Cliente                          | actual: agente de centro de atención al cli
+
+## R226_analista_rrhh  (analista RRHH)
+  1118187094  | TANDIL Analista de RRHH                                 | actual: asesor de orientación profesional/a
+  1118231778  | Analista de recursos humanos zona hurlingam             | actual: asesor de orientación profesional/a
+  1118107816  | BU769 ANALISTA DE NÓMINA SR - RRHH | CCT CAMIONEROS | L | actual: asesor de orientación profesional/a
+  5037411203  | 754SI Analista de RRHH Hard Escobar                     | actual: asesor de orientación profesional/a
+  1118215486  | Analista de Soporte Tecnico (con ingles avanzado)       | actual: asesor de orientación profesional/a
+
+
+# ═══════════════════════════════════════════════════════════
+# GRUPO B — Targets ULTRA-ESPECÍFICOS (27 ofertas)
+# Sospecha: el ESCO específico es absurdo para el rol genérico
+# Ej: 'gerente ventas' → 'director de promoción' (1221.3.3)
+# ═══════════════════════════════════════════════════════════
+
+## ESCO 3331.2.1  (especialista importación/exportación)
+  2176789  | Operador/a Sistema Malvina                         | regla: R38_comercio_exterior
+  1118130890  | Asesor. Consultor de Proyectos y Negocios. Balcarc | regla: R38_comercio_exterior
+  7362255195  | Ref.20977: Ayudante de Gerencia en comex /  Boedo  | regla: R38_comercio_exterior
+
+## ESCO 3323.2.2  (comprador de TIC)
+  2176770  | Analista de Compras                                | regla: R191_analista_abastecimiento
+  1118045013  | analista de compras con ingles y portugues excluye | regla: R191_analista_abastecimiento
+  1118032094  | Comprador- Saenz Peña                              | regla: R208_analista_compras
+
+## ESCO 1221.3.3  (director de promoción)
+  2166091  | Gerente Comercial exp. Centros Médicos/Salud       | regla: R24_gerente_ventas
+  1118189997  | Gerente Comercial                                  | regla: R24_gerente_ventas
+  1118016991  | Gerente Comercial – Rubro Retail                   | regla: R24_gerente_ventas
+
+## ESCO 3321.3.1  (asesor de seguros)
+  8099830966  | Operadores de Ventas de Seguros  Call Center       | regla: R126_ejecutivo_seguros
+  1118239156  | Analista de Datos Semi Senior- Contratación Direct | regla: R132_vendedor_medicina_prepaga
+  1118043321  | Analista de Siniestros Ssr                         | regla: R172_analista_siniestros
+
+## ESCO 3323.2.1  (comprador café verde)
+  1118183316  | RESPONSABLE DE COMPRAS                             | regla: R117_responsable_compras
+  8446885293  | Responsable de Compras y Abastecimiento            | regla: R117_responsable_compras
+  1118134009  | Jefe de Logística y Envasado                       | regla: R117_responsable_compras
+
+## ESCO 2131.4.2  (bioquímico)
+  2174425  | Coordinador/a Bioquímica Endocrinología y Quimica  | regla: R121_bioquimico
+  2171579  | Bioquímico Bacteriología                           | regla: R121_bioquimico
+  2171846  | Bioquímico/a - Dirección Tecnica (Pilar)           | regla: R121_bioquimico
+
+## ESCO 1221.3.2  (responsable de marketing)
+  1117957503  | Responsable de E-commerce                          | regla: R152_ecommerce_manager
+  1118112905  | IT Growth Marketing Specialist Sr                  | regla: 
+  2177388  | GERENTE DE MARKETING                               | regla: 
+
+## ESCO 5132.1.1  (barista)
+  8822707521  | Barista Cafetero/a                                 | regla: R16_barista_heladero
+  6636406221  | Bartenders/Barista                                 | regla: R16_barista_heladero
+  1118179789  | Maestro Heladero / Oficial Heladero                | regla: R16_barista_heladero
+
+## ESCO 1431.2.1  (jefe de sala)
+  8859173748  | Coordinador Logistico                              | regla: 
+  1118142688  | Coordinador Zonal SAS                              | regla: 
+  5137882406  | Coordinador Operativo. Rubro Salud / Institución M | regla: 
+
+
+# ═══════════════════════════════════════════════════════════
+# GRUPO C — Reglas con SEMÁNTICO discrepante (24 ofertas)
+# Sospecha: la regla está pisando una ocupación más pertinente
+# Tasa de divergencia 95%+ entre regla y semántico
+# ═══════════════════════════════════════════════════════════
+
+## R240_operario_produccion  (operario producción)
+  5586691412  | Operario de producción alimenticia turno mañana         | actual: trabajador de fábrica/trabajad
+  8872938582  | Operarios de Produccion                                 | actual: trabajador de fábrica/trabajad
+  7384853888  | Operario laminador                                      | actual: trabajador de fábrica/trabajad
+
+## R229_analista_comercial  (analista comercial)
+  6875865086  | Ejecutivo/a Comercial B2B                               | actual: representante comercial
+  8749598848  | EJECUTIVO DE DESARROLLO COMERCAL                        | actual: representante comercial
+  5514684480  | Analista de oportunidades comercial                     | actual: representante comercial
+
+## R48_secretaria_admin  (secretaria admin)
+  8063696118  | Secretaria Administrativa Zona Liniers                  | actual: secretario/secretaria
+  1118127778  | Asistente Administrativo/a                              | actual: secretario/secretaria
+  2170437  | Asistente Administrativo con Habilidades en Redes Socia | actual: secretario/secretaria
+
+## R241_tecnico_it  (técnico IT)
+  1118085967  | Ingeniero de Asistencia Técnica                         | actual: técnico de TIC/técnica de TIC
+  2175627  | Especialista Técnico/a – Laboratorio de Investigación R | actual: técnico de TIC/técnica de TIC
+  5569503597  | Técnico electrónico                                     | actual: técnico de TIC/técnica de TIC
+
+## R323_atencion_publico  (atención al público)
+  8819360972  | Atención al Público y Perfiles Comerciales              | actual: agente de servicio de atención
+  1118210798  | Atencion al cliente y asistente de ventas en micro-empr | actual: agente de servicio de atención
+  8161557672  | atención al cliente                                     | actual: agente de servicio de atención
+
+## R305_electromecanico  (electromecánico)
+  1118211509  | Coordinador de Proyectos Electromecánicos               | actual: mecánico electricista/mecánica
+  6430346537  | Ref.20998:Técnico Electromecánico – Producción / Calida | actual: mecánico electricista/mecánica
+  8758057201  | Operario Técnico Electromecanico                        | actual: mecánico electricista/mecánica
+
+## R91_jefe_mantenimiento  (jefe mantenimiento)
+  1118201314  | Encargado de Mantenimiento Turno Mañana                 | actual: supervisor de mantenimiento in
+  8388544735  | Responsable de Mantenimiento y Servicios Generales      | actual: supervisor de mantenimiento in
+  7701423356  | 772SI  Jefe de Mantenimiento, Empresa Industrial, Plc,  | actual: supervisor de mantenimiento in
+
+## R30_community_manager  (community manager)
+  9268725654  | Diseñador grafico con perfil community manager          | actual: gestor de la información para 
+  6410654935  | Community Manager Virtual Assistant (Redes Sociales)    | actual: gestor de la información para 
+  6124716660  | Community Manager                                       | actual: gestor de la información para 
