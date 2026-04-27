@@ -10115,7 +10115,11 @@
           "soldador",
           "pintor",
           "mecánico",
-          "mecanico"
+          "mecanico",
+          "habilidad manual",
+          "habilidades manuales",
+          "papelera",
+          "papelero"
         ]
       },
       "accion": {
@@ -10127,7 +10131,8 @@
       "_linaje": {
         "oferta_ejemplo": "1118219210",
         "autor_correccion": "Cynthia",
-        "nota": "Busca también en descripción. Muchas ofertas tienen 'Operario de producción' en título y 'línea de llenado de bebidas' en descripción."
+        "nota": "Busca también en descripción. Muchas ofertas tienen 'Operario de producción' en título y 'línea de llenado de bebidas' en descripción.",
+        "_fix_2026_04_27_spec_p": "Excluir 'habilidad manual' y 'papelera/papelero' — Cyn validó que ofertas con esos términos son trabajo manual sin línea automatizada y deben caer en 9329.1 trabajador de fábrica (R240). Validado issue f7e73275 (oferta 6786905097)."
       }
     },
     "R350_operario_deposito_logistica": {
@@ -10213,21 +10218,58 @@
         "titulo_original_contiene_alguno": [
           "ensamble de armas",
           "ensamble armas",
+          "ensamble de pistola",
+          "ensamble pistola",
+          "ensamble de pistolas",
           "montador de armamento",
           "ensamblador armamento",
-          "operario armero"
+          "operario armero",
+          "tecnico armero",
+          "técnico armero"
         ]
       },
       "accion": {
-        "forzar_isco": "7223",
-        "esco_label": "tornero/ tornera",
-        "esco_code": "7223.7"
+        "forzar_isco": "7222",
+        "esco_label": "armero/armera",
+        "esco_code": "7222.2"
       },
       "activa": true,
       "_linaje": {
         "oferta_ejemplo": "7879857202",
         "autor_correccion": "Diego",
-        "nota": "ESCO no tiene 'montador armamento' en ES. Usa 7223 con label genérico tornero."
+        "_fix_2026_04_27_spec_p": "Target 7223.7 'tornero' era INCORRECTO — el rol no opera torno, ensambla armas. ESCO 7222.2 'armero/armera' (modifica y repara armas de fuego) es exacto. Validado por Cynthia issue 34f29a26."
+      }
+    },
+    "R358_despacho_metalurgico_grua": {
+      "nombre": "Despacho metalúrgico con operación de puente grúa",
+      "prioridad": -2,
+      "condicion": {
+        "titulo_original_contiene_alguno": [
+          "despacho metalúrgico",
+          "despacho metalurgico"
+        ],
+        "titulo_o_tareas_contiene_alguno": [
+          "puente grua",
+          "puente grúa",
+          "manejo de grua",
+          "manejo de grúa",
+          "operación de grúa",
+          "operacion de grua"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8343",
+        "esco_label": "operador de grúa de instalaciones de producción/operadora de grúa de instalaciones de producción",
+        "esco_code": "8343.4"
+      },
+      "activa": true,
+      "_linaje": {
+        "spec": "SPEC P",
+        "fecha": "2026-04-27",
+        "oferta_ejemplo": "8299423434",
+        "autor_correccion": "Cynthia",
+        "issue_id": "3cf48856",
+        "motivo": "Despacho metalúrgico con puente grúa NO es logística genérica — el rol fuerte es operar equipo pesado de elevación. Cyn propone 8343.4 'operador de grúa de instalaciones de producción'. Prioridad -2 gana sobre R351 prio -1 (logística almacén)."
       }
     },
     "R353_operario_carga_descarga": {
