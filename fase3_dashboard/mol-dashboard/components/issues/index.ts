@@ -9,3 +9,4 @@ export { IssueWrapper } from './IssueWrapper';
 export { PropagationBadge, getPropagationEstado } from './PropagationBadge';
 export { PropagationInfoPanel } from './PropagationInfoPanel';
 export { RequestPropagationModal } from './RequestPropagationModal';
+export { ProcessPropagationPanel } from './ProcessPropagationPanel';

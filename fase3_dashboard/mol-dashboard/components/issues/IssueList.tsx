@@ -2,6 +2,7 @@
 
 import { Issue } from "@/lib/types";
 import { IssueBadge } from "./IssueBadge";
+import { PropagationBadge } from "./PropagationBadge";
 import { Button } from "@/components/ui/button";
 import { Check, Clock, FileText, User, Hash } from "lucide-react";
 import { updateIssue } from "@/lib/supabase";
@@ -115,6 +116,7 @@ function IssueItem({ issue, compact, showOfertaLink }: { issue: Issue; compact?:
             <IssueBadge variant="tipo" value={issue.tipo} />
             <IssueBadge variant="prioridad" value={issue.prioridad} />
             <IssueBadge variant="estado" value={issue.estado} />
+            <PropagationBadge issue={issue} />
             {(issue as any)._correctionType && (
               <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-medium">
                 {(issue as any)._correctionType}
