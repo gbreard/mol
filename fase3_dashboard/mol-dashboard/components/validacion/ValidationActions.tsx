@@ -123,7 +123,7 @@ export function ValidationActions({
                 `ISCO actual: ${iscoCode || "sin asignar"}`,
               ].filter(Boolean) as string[];
 
-              await createIssue({
+              const createdIssue = await createIssue({
                 titulo,
                 descripcion: parts.join("\n"),
                 tipo,
@@ -137,6 +137,43 @@ export function ValidationActions({
                   "Validador",
               });
               toast.success("Issue creado", { duration: 3000 });
+
+              // SPEC T Fase 4: si el wizard marcó solicitar propagación,
+              // disparar el endpoint inmediatamente después de crear el issue.
+              const solicitar =
+                typeof (correcciones as { solicitar_propagacion?: boolean })
+                  ?.solicitar_propagacion === "boolean"
+                  ? (correcciones as { solicitar_propagacion?: boolean })
+                      .solicitar_propagacion
+                  : false;
+              if (solicitar && createdIssue?.id) {
+                try {
+                  const res = await fetch(
+                    `/api/issues/${createdIssue.id}/solicitar-propagacion`,
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        justificacion:
+                          nota ||
+                          "Corrección reportada desde validación — el analista considera que aplica a otras ofertas similares.",
+                      }),
+                    }
+                  );
+                  if (res.ok) {
+                    toast.success("Propagación solicitada al admin", { duration: 3000 });
+                  } else {
+                    const j = await res.json().catch(() => ({}));
+                    toast.error(
+                      `Solicitud de propagación falló: ${j.error ?? res.status}`,
+                      { duration: 6000 }
+                    );
+                  }
+                } catch (e) {
+                  console.error("solicitar-propagacion error:", e);
+                  toast.error("No se pudo solicitar propagación", { duration: 6000 });
+                }
+              }
             }
           } catch (issueErr: unknown) {
             const issueMsg = extractErrorMessage(issueErr);

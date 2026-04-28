@@ -57,6 +57,8 @@ export function WizardModal({
   const [nota, setNota] = useState("");
   const [saving, setSaving] = useState(false);
   const [descExpanded, setDescExpanded] = useState(false);
+  // SPEC T Fase 4: checkbox solo aparece cuando trigger=error
+  const [solicitarPropagacion, setSolicitarPropagacion] = useState(false);
 
   // Correction state per tab
   const [ocupacionCorregida, setOcupacionCorregida] = useState<
@@ -103,6 +105,10 @@ export function WizardModal({
       if (tareasEditadas) correcciones.tareas_editadas = tareasEditadas;
       if (skillsEditadas) correcciones.skills_editadas = skillsEditadas;
       if (nota.trim()) correcciones.nota = nota.trim();
+      // SPEC T Fase 4: pasar flag de solicitud de propagación
+      if (trigger === "error" && solicitarPropagacion) {
+        correcciones.solicitar_propagacion = true;
+      }
 
       // Determine resultado based on trigger
       let resultado: ValidacionHumana | null = null;
@@ -126,6 +132,7 @@ export function WizardModal({
     trigger,
     onSave,
     onOpenChange,
+    solicitarPropagacion,
   ]);
 
   const tabLabel = (id: TabId, label: string) => (
@@ -260,6 +267,27 @@ export function WizardModal({
             className="text-sm resize-none"
             rows={2}
           />
+          {/* SPEC T Fase 4: checkbox solo cuando se reporta error */}
+          {trigger === "error" && (
+            <label
+              className="flex items-start gap-2 text-xs text-gray-700 cursor-pointer select-none px-1"
+              title="Si marcás esto, le pedimos al admin que revise y aplique tu corrección a las otras ofertas que tengan el mismo problema. El admin hace los controles primero, no se aplica automáticamente."
+            >
+              <input
+                type="checkbox"
+                checked={solicitarPropagacion}
+                onChange={(e) => setSolicitarPropagacion(e.target.checked)}
+                className="mt-0.5"
+              />
+              <span>
+                <b>Esta corrección probablemente aplica a otras ofertas similares</b>
+                {" — solicitar propagación"}
+                <span className="text-blue-600 ml-1" title="El admin revisa antes de aplicar. No se aplica automáticamente.">
+                  (?)
+                </span>
+              </span>
+            </label>
+          )}
           <div className="flex justify-end gap-2">
             <Button
               variant="ghost"

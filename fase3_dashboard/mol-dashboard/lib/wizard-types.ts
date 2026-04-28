@@ -51,6 +51,11 @@ export interface WizardCorrecciones {
   tareas_editadas?: TareaEditada[];
   skills_editadas?: SkillAsociada[];
   nota?: string;
+  /**
+   * SPEC T Fase 4: si true, después de crear el issue se solicita
+   * automáticamente propagación al admin (cola pendiente).
+   */
+  solicitar_propagacion?: boolean;
 }
 
 /** Trigger that opened the wizard — determines default tab */

@@ -109,6 +109,8 @@ const adminSections: MenuSection[] = [
 function DesktopAdminSidebar({ pathname }: { pathname: string }) {
   // M-01: Badge de pendientes de validación
   const [validacionPendientes, setValidacionPendientes] = useState(0);
+  // SPEC T Fase 4: Badge de solicitudes de propagación pendientes (solo admin)
+  const [propagacionPendientes, setPropagacionPendientes] = useState(0);
   const loadBadge = useCallback(async () => {
     try {
       const { createBrowserClient } = await import("@/lib/supabase/browser");
@@ -120,11 +122,28 @@ function DesktopAdminSidebar({ pathname }: { pathname: string }) {
       if (!error && count != null) setValidacionPendientes(count);
     } catch {}
   }, []);
-  useEffect(() => { loadBadge(); }, [loadBadge]);
+  const loadPropagacionBadge = useCallback(async () => {
+    try {
+      const res = await fetch("/api/issues/cola-propagacion");
+      if (!res.ok) {
+        // Probable 401/403 (no admin) — silently 0
+        setPropagacionPendientes(0);
+        return;
+      }
+      const j = await res.json();
+      setPropagacionPendientes(j.count ?? 0);
+    } catch {
+      setPropagacionPendientes(0);
+    }
+  }, []);
+  useEffect(() => { loadBadge(); loadPropagacionBadge(); }, [loadBadge, loadPropagacionBadge]);
   useEffect(() => {
-    const interval = setInterval(loadBadge, 300000);
+    const interval = setInterval(() => {
+      loadBadge();
+      loadPropagacionBadge();
+    }, 300000);
     return () => clearInterval(interval);
-  }, [loadBadge]);
+  }, [loadBadge, loadPropagacionBadge]);
 
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
     const init: Record<string, boolean> = {};
@@ -226,6 +245,8 @@ function DesktopAdminSidebar({ pathname }: { pathname: string }) {
 
                   const menuItem = item as MenuItem;
                   const active = isItemActive(menuItem);
+                  const showPropagBadge =
+                    menuItem.href === "/admin/issues" && propagacionPendientes > 0;
                   return (
                     <Link
                       key={menuItem.href}
@@ -235,7 +256,15 @@ function DesktopAdminSidebar({ pathname }: { pathname: string }) {
                       }`}
                     >
                       <menuItem.icon className="w-5 h-5" />
-                      {menuItem.label}
+                      <span className="flex-1">{menuItem.label}</span>
+                      {showPropagBadge && (
+                        <span
+                          className="text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full min-w-[20px] text-center"
+                          title={`${propagacionPendientes} solicitudes de propagación pendientes`}
+                        >
+                          🟡 {propagacionPendientes > 99 ? '99+' : propagacionPendientes}
+                        </span>
+                      )}
                     </Link>
                   );
                 })}
