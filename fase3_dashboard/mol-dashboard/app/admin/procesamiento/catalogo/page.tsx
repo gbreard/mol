@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { Fragment, useState, useEffect, useMemo } from "react";
+import Link from "next/link";
 import {
   Loader2, RefreshCw, Plus, Search, Edit2, Trash2, Save, X,
   CheckCircle2, AlertTriangle, XCircle, BookOpen, Briefcase,
   AlertCircle, Tag, Clock, ChevronDown, ChevronRight, Eye,
+  ExternalLink,
 } from "lucide-react";
 
 // ============================================================
@@ -32,6 +34,14 @@ interface CatalogoSkill {
   notas: string | null;
 }
 
+interface OfertaEjemplo {
+  id_oferta: string;
+  titulo: string;
+  esco_actual?: string;
+  regla_aplicada?: string;
+  fecha_deteccion?: string;
+}
+
 interface CatalogoOcupacion {
   id: string;
   label: string;
@@ -51,6 +61,7 @@ interface CatalogoOcupacion {
   aprobada_por: string | null;
   version_catalogo: string | null;
   notas: string | null;
+  ofertas_ejemplo?: OfertaEjemplo[];
 }
 
 interface UnclassifiedItem {
@@ -619,6 +630,8 @@ function OcupacionesTab({ onRefresh, showMessage }: { onRefresh: () => void; sho
   const [estadoFilter, setEstadoFilter] = useState("");
   const [showNewForm, setShowNewForm] = useState(false);
   const [newForm, setNewForm] = useState({ label: "", definicion: "", isco_parent: "", skills_esenciales: "", sector: "" });
+  // SPEC catálogo MOL: row expansion para mostrar ofertas_ejemplo
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
@@ -729,6 +742,7 @@ function OcupacionesTab({ onRefresh, showMessage }: { onRefresh: () => void; sho
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">
             <thead><tr className="bg-gray-50 border-b text-gray-500 text-xs">
+              <th className="w-8 px-2 py-2.5"></th>
               <th className="text-left px-4 py-2.5">Ocupacion</th>
               <th className="text-center px-4 py-2.5 w-20">ISCO</th>
               <th className="text-left px-4 py-2.5 w-24">Estado</th>
@@ -737,48 +751,75 @@ function OcupacionesTab({ onRefresh, showMessage }: { onRefresh: () => void; sho
               <th className="text-center px-4 py-2.5 w-28">Acciones</th>
             </tr></thead>
             <tbody>
-              {filtered.map((o) => (
-                <tr key={o.id} className="border-t border-gray-50 hover:bg-gray-50">
-                  <td className="px-4 py-2">
-                    <div className="font-medium text-gray-900">{o.label}</div>
-                    {o.definicion && <div className="text-xs text-gray-400 truncate max-w-xs">{o.definicion}</div>}
-                  </td>
-                  <td className="px-4 py-2 text-center font-mono text-blue-700 font-bold">{o.isco_parent || "—"}</td>
-                  <td className="px-4 py-2">
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${ESTADO_COLORS[o.estado] || ""}`}>{o.estado}</span>
-                  </td>
-                  <td className="px-4 py-2 text-right text-gray-600">{o.frecuencia_mercado}</td>
-                  <td className="px-4 py-2">
-                    <div className="flex flex-wrap gap-1">
-                      {(o.skills_esenciales || []).slice(0, 3).map((s) => (
-                        <span key={s} className="text-xs bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded">{s}</span>
-                      ))}
-                      {(o.skills_esenciales || []).length > 3 && (
-                        <span className="text-xs text-gray-400">+{o.skills_esenciales.length - 3}</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-4 py-2 text-center">
-                    <div className="flex items-center gap-1 justify-center">
-                      {o.estado === "detectada" && (
-                        <button onClick={() => changeEstado(o.id, "en_revision")} className="text-xs text-amber-600 hover:bg-amber-50 px-2 py-1 rounded">
-                          <Eye className="w-3.5 h-3.5" />
-                        </button>
-                      )}
-                      {o.estado === "en_revision" && (
-                        <>
-                          <button onClick={() => changeEstado(o.id, "catalogada")} className="text-xs text-green-600 hover:bg-green-50 px-2 py-1 rounded">
-                            <CheckCircle2 className="w-3.5 h-3.5" />
+              {filtered.map((o) => {
+                const expandable = (o.ofertas_ejemplo?.length ?? 0) > 0;
+                const isExpanded = expandedId === o.id;
+                return (
+                  <Fragment key={o.id}>
+                    <tr className="border-t border-gray-50 hover:bg-gray-50">
+                      <td className="px-2 py-2 text-center">
+                        {expandable ? (
+                          <button
+                            onClick={() => setExpandedId(isExpanded ? null : o.id)}
+                            className="text-gray-400 hover:text-gray-700"
+                            title={isExpanded ? "Ocultar ofertas" : `Ver ${o.ofertas_ejemplo!.length} ofertas`}
+                          >
+                            {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                           </button>
-                          <button onClick={() => changeEstado(o.id, "descartada")} className="text-xs text-red-400 hover:bg-red-50 px-2 py-1 rounded">
-                            <XCircle className="w-3.5 h-3.5" />
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                        ) : (
+                          <span className="text-gray-200">—</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-2">
+                        <div className="font-medium text-gray-900">{o.label}</div>
+                        {o.definicion && <div className="text-xs text-gray-400 truncate max-w-xs">{o.definicion}</div>}
+                      </td>
+                      <td className="px-4 py-2 text-center font-mono text-blue-700 font-bold">{o.isco_parent || "—"}</td>
+                      <td className="px-4 py-2">
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${ESTADO_COLORS[o.estado] || ""}`}>{o.estado}</span>
+                      </td>
+                      <td className="px-4 py-2 text-right text-gray-600">{o.frecuencia_mercado}</td>
+                      <td className="px-4 py-2">
+                        <div className="flex flex-wrap gap-1">
+                          {(o.skills_esenciales || []).slice(0, 3).map((s) => (
+                            <span key={s} className="text-xs bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded">{s}</span>
+                          ))}
+                          {(o.skills_esenciales || []).length > 3 && (
+                            <span className="text-xs text-gray-400">+{o.skills_esenciales.length - 3}</span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-2 text-center">
+                        <div className="flex items-center gap-1 justify-center">
+                          {o.estado === "detectada" && (
+                            <button onClick={() => changeEstado(o.id, "en_revision")} className="text-xs text-amber-600 hover:bg-amber-50 px-2 py-1 rounded">
+                              <Eye className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                          {o.estado === "en_revision" && (
+                            <>
+                              <button onClick={() => changeEstado(o.id, "catalogada")} className="text-xs text-green-600 hover:bg-green-50 px-2 py-1 rounded">
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                              </button>
+                              <button onClick={() => changeEstado(o.id, "descartada")} className="text-xs text-red-400 hover:bg-red-50 px-2 py-1 rounded">
+                                <XCircle className="w-3.5 h-3.5" />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                    {isExpanded && expandable && (
+                      <tr className="bg-purple-50/30 border-t border-purple-100">
+                        <td></td>
+                        <td colSpan={6} className="px-4 py-3">
+                          <OfertasEjemploTable ocupacion={o} />
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                );
+              })}
             </tbody>
           </table>
           <div className="px-4 py-2 border-t text-xs text-gray-500">{filtered.length} de {total} ocupaciones</div>
@@ -912,6 +953,85 @@ function KPI({ label, value, color }: { label: string; value: number; color: str
     <div className={`rounded-xl p-3 ${colors[color] || colors.gray}`}>
       <div className="text-xs font-medium opacity-75">{label}</div>
       <div className="text-2xl font-bold">{value}</div>
+    </div>
+  );
+}
+
+// ============================================================
+// Tabla anidada: ofertas que motivaron una entrada del catálogo
+// ============================================================
+
+function OfertasEjemploTable({ ocupacion }: { ocupacion: CatalogoOcupacion }) {
+  const ofertas = ocupacion.ofertas_ejemplo ?? [];
+  const total = ocupacion.frecuencia_mercado ?? 0;
+  const showingAll = ofertas.length >= total;
+
+  if (ofertas.length === 0) {
+    return (
+      <div className="text-xs text-gray-500 py-2">
+        Sin ofertas de ejemplo cargadas para esta entrada.
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between text-xs">
+        <h4 className="font-semibold text-purple-900">
+          Ofertas que motivaron esta entrada
+          <span className="ml-2 text-gray-500 font-normal">
+            ({ofertas.length}{showingAll ? "" : ` de ${total}`} mostradas)
+          </span>
+        </h4>
+        {!showingAll && (
+          <span className="text-gray-500 italic">
+            Sample representativo — el catálogo MOL guarda solo una muestra.
+          </span>
+        )}
+      </div>
+
+      <div className="bg-white rounded border border-gray-200 overflow-hidden">
+        <table className="w-full text-xs">
+          <thead className="bg-gray-50 text-gray-500">
+            <tr>
+              <th className="text-left px-3 py-1.5 w-32">ID Oferta</th>
+              <th className="text-left px-3 py-1.5">Título</th>
+              <th className="text-left px-3 py-1.5">ESCO actual (incorrecto)</th>
+              <th className="text-left px-3 py-1.5 w-44">Regla aplicada</th>
+              <th className="text-center px-3 py-1.5 w-16">Ver</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ofertas.map((o) => (
+              <tr key={o.id_oferta} className="border-t border-gray-100">
+                <td className="px-3 py-1.5 font-mono text-blue-700">{o.id_oferta}</td>
+                <td className="px-3 py-1.5 text-gray-800">{o.titulo}</td>
+                <td className="px-3 py-1.5 text-gray-600 italic">
+                  {o.esco_actual || "—"}
+                </td>
+                <td className="px-3 py-1.5 text-gray-500 font-mono text-[10px]">
+                  {o.regla_aplicada || "—"}
+                </td>
+                <td className="px-3 py-1.5 text-center">
+                  <Link
+                    href={`/admin/validacion?id=${o.id_oferta}`}
+                    className="inline-flex items-center gap-1 text-blue-600 hover:underline"
+                    title="Abrir oferta en validación"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <p className="text-xs text-gray-500">
+        Estas ofertas fueron clasificadas mal por el sistema (ESCO oficial no
+        tiene targets adecuados). Forman parte del fundamento para crear esta
+        entrada en el Catálogo MOL Argentino.
+      </p>
     </div>
   );
 }
