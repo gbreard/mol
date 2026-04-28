@@ -112,6 +112,38 @@ Suponemos que el patrón se va a repetir en muchas ocupaciones, porque el mercad
 
 Todos comparten el patrón: **el rol argentino concentra skills que ESCO separa en oficios distintos**, generalmente porque las empresas argentinas no pueden o no quieren contratar especialistas separados.
 
+### Caso confirmado en producción (2026-04-28): perfiles farma/médicos especializados
+
+Cyn revisó hoy `8088943442 "Patient & Diagnostic Manager"` (issue del SPEC R Grupo D) y confirma que el matching ESCO actual (`1221.4 director comercial`) es **incorrecto**. Es un rol de **Medical & Patient Affairs** en industria farmacéutica.
+
+Al buscar similares en BD, encontramos **11 ofertas con patrón análogo** y **TODAS están mal codificadas como roles distintos sin relación al rol real**:
+
+| Oferta | Título | ESCO actual (absurdo) |
+|---|---|---|
+| Clinical Operations Manager | Téc. procesamiento productos lácteos |
+| Clinical Research Manager | Director de galería de arte |
+| Clinical Trial Manager (×2) | Responsable de cultivos acuícolas |
+| Medical Affairs Director | Director de tecnología |
+| MSL Neurology | Médico especialista (parcial) |
+| Medical Science Liaison | Genetista (parcial) |
+| Patient & Diagnostic Manager | Director comercial |
+| Programa Pasantías Medical Affairs | Operario máquinas fabricar |
+| Senior Clinical Data Manager | Ingeniero de datos (parcial) |
+| Clinical Supply Chain Manager | Director de logística (parcial) |
+
+**Diagnóstico técnico:**
+- ESCO no tiene targets adecuados para "Patient Manager", "Medical Liaison", "Clinical Manager", "Medical Affairs" como roles distintos.
+- El sistema cae en cualquier ESCO que tenga embedding semántico cercano a "manager" + alguna keyword del título.
+- Si forzáramos un único target (ej: `2230 médico`) pisaríamos los pocos que están parcialmente OK (MSL Neurology, Senior Clinical Data Manager).
+
+**Esto es un FAMILIA NUEVA propuesta para Catálogo MOL Argentino:**
+- `MOL.AR.medical_affairs` — Patient/Medical/Clinical Manager / MSL en industria farmacéutica/salud
+- Padre ISCO sugerido: 2230 (médicos) o 1342 (directores hospital), según especialización del rol específico
+- Skills típicas: coordinación médica, diagnóstico molecular, programas pacientes, compliance médica, análisis KPIs farma
+- Cobertura inicial estimada: 11+ ofertas (creciendo con scraping continuo)
+
+Argentina tiene mercado farma significativo (Bagó, Roemmers, Sanofi, Bayer, etc.) y este rol es frecuente — el sistema actual lo dispersa caóticamente.
+
 ### Causas del fenómeno
 
 1. **Estructura empresaria PyME.** El 99% de las empresas argentinas son PyME. No tienen presupuesto para especialistas separados — un trabajador hace lo que en empresas grandes hacen 3.
