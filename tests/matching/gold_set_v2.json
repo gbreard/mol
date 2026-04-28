@@ -244,12 +244,15 @@
     {
       "id_oferta": "7245178831",
       "titulo": "Operario de Mantenimiento para Metalúrgica",
-      "isco_esperado": "7214",
-      "esco_label_esperado": "remachador/remachadora",
+      "isco_esperado": "7233",
+      "esco_label_esperado": "mecánico de maquinaria industrial/mecánica de maquinaria industrial",
       "regla_aplicable": "R347_operario_metalurgico",
       "source": "cynthia_2026-04-23",
       "categoria": "rule_pending",
-      "notas": "Caso borderline: Cynthia deja 8160 como aceptable. Preferimos 7214."
+      "notas": "Caso borderline: Cynthia deja 8160 como aceptable. Preferimos 7214.",
+      "esco_code_esperado": "7233.7",
+      "regla_esperada": "R110_tecnico_mantenimiento",
+      "_motivo_actualizacion": "SPEC P 2026-04-27: R347 ahora EXCLUYE \"mantenimiento\" para no atrapar este caso. Cae en R110 → 7233.7."
     },
     {
       "id_oferta": "9255109063",
@@ -310,21 +313,27 @@
     {
       "id_oferta": "8299423434",
       "titulo": "Operarios/as de despacho metalúrgico",
-      "isco_esperado": "4321",
-      "esco_label_esperado": "coordinador de inventario/coordinadora de inventario",
+      "isco_esperado": "8343",
+      "esco_label_esperado": "operador de grúa de instalaciones de producción/operadora de grúa de instalaciones de producción",
       "regla_aplicable": "R351_operario_despacho",
       "source": "diego_2026-04-23",
-      "categoria": "rule_pending"
+      "categoria": "rule_pending",
+      "esco_code_esperado": "8343.4",
+      "regla_esperada": "R358_despacho_metalurgico_grua",
+      "_motivo_actualizacion": "SPEC P 2026-04-27: regla R358 nueva creada para despacho metalúrgico + puente grúa. Cyn confirmó target 8343.4."
     },
     {
       "id_oferta": "7879857202",
       "titulo": "Operario de ensamble de armas",
-      "isco_esperado": "7223",
-      "esco_label_esperado": "tornero/ tornera",
+      "isco_esperado": "7222",
+      "esco_label_esperado": "armero/armera",
       "regla_aplicable": "R352_operario_ensamble_armas",
       "source": "diego_2026-04-23",
       "categoria": "rule_pending",
-      "notas": "ESCO no tiene 'montador armamento' en ES; 'tornero' es el 7223 disponible más genérico."
+      "notas": "ESCO no tiene 'montador armamento' en ES; 'tornero' es el 7223 disponible más genérico.",
+      "esco_code_esperado": "7222.2",
+      "regla_esperada": "R352_operario_ensamble_armas",
+      "_motivo_actualizacion": "SPEC P 2026-04-27: R352 target corregido de 7223.7 tornero (incorrecto) a 7222.2 armero. Validado por Cynthia."
     },
     {
       "id_oferta": "6786905097",
@@ -340,35 +349,42 @@
     {
       "id_oferta": "7057631179",
       "titulo": "Operario Maquinista (req203559) Eventual Zona",
-      "isco_esperado": "8160",
-      "esco_label_esperado": "operario de prensado de fruta/operaria de prensado de fruta",
+      "isco_esperado": "9329",
+      "esco_label_esperado": "trabajador de fábrica/trabajadora de fábrica",
       "regla_aplicable": null,
       "source": "cynthia_2026-04-23",
       "categoria": "rule_verified",
       "notas": "Cynthia VALIDÓ 8160 como correcto (puesto alimentos). Test confirma que la regla operarios NO rompe este caso.",
-      "esco_code_esperado": "8160.35"
+      "esco_code_esperado": "9329.1",
+      "regla_esperada": "R240_operario_produccion",
+      "_motivo_actualizacion": "SPEC N 2026-04-26: R240 target migrado de 8160.35 prensado fruta a 9329.1 trabajador fábrica."
     },
     {
       "id_oferta": "7171410854",
       "titulo": "Operarios/as de produccion alimenticia zona Avellaneda",
-      "isco_esperado": "8160",
-      "esco_label_esperado": "operario de prensado de fruta/operaria de prensado de fruta",
+      "isco_esperado": "9329",
+      "esco_label_esperado": "trabajador de fábrica/trabajadora de fábrica",
       "regla_aplicable": null,
       "source": "cynthia_2026-04-23",
       "categoria": "rule_verified",
       "notas": "Cynthia VALIDÓ 8160 (alimentos). Cuida que nuevas reglas operario no contaminen alimentos.",
-      "esco_code_esperado": "8160.35"
+      "esco_code_esperado": "9329.1",
+      "regla_esperada": "R240_operario_produccion",
+      "_motivo_actualizacion": "SPEC N 2026-04-26: R240 target migrado a 9329.1."
     },
     {
       "id_oferta": "7938726540",
       "titulo": "Operario de producción c/ Exp. en linea de producción",
-      "isco_esperado": "8160",
-      "esco_label_esperado": "operario de prensado de fruta/operaria de prensado de fruta",
+      "isco_esperado": "9329",
+      "esco_label_esperado": "trabajador de fábrica/trabajadora de fábrica",
       "regla_aplicable": null,
       "source": "cynthia_2026-04-23",
       "categoria": "rule_verified",
       "notas": "Cynthia VALIDÓ 8160. Tiene tareas contaminadas (ver Spec C) pero ISCO es correcto.",
-      "esco_code_esperado": "8160.35"
+      "esco_code_esperado": "9329.1",
+      "regla_esperada": "R240_operario_produccion",
+      "_motivo_actualizacion": "SPEC N 2026-04-26: R240 target migrado a 9329.1."
     }
-  ]
+  ],
+  "_actualizacion_2026_04_28": "Targets actualizados tras aplicación de SPEC N+O+P+S. 6 casos modificados. Backup en gold_set_v2.json.bak_*"
 }
