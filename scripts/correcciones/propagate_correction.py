@@ -119,7 +119,10 @@ def _update_issue_propagacion(
 def main():
     import argparse
     parser = argparse.ArgumentParser(description="Propagar corrección humana")
-    parser.add_argument("patron_file", help="Path a JSON con el patrón")
+    parser.add_argument(
+        "patron_file",
+        help="Path a JSON con el patrón. Usar '-' para leer de stdin (preferible en serverless).",
+    )
     parser.add_argument("--apply", action="store_true",
                         help="Aplicar (default es dry-run)")
     parser.add_argument("--issue-id", help="UUID del issue para actualizar metadata")
@@ -128,7 +131,10 @@ def main():
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
 
-    patron = json.loads(Path(args.patron_file).read_text())
+    if args.patron_file == "-":
+        patron = json.loads(sys.stdin.read())
+    else:
+        patron = json.loads(Path(args.patron_file).read_text())
     result = propagate_correction(
         patron,
         dry_run=not args.apply,

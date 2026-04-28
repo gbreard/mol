@@ -63,7 +63,48 @@ export interface Issue {
   config_modificada?: string;   // Archivo de config modificado
   ofertas_afectadas?: number;   // Cantidad de ofertas corregidas
   sprint?: string;              // Sprint/iteración asignada
+  // SPEC T — propagación de correcciones
+  patron_corregido?: PropagationPattern | { _audit_note?: string; _audit_at?: string };
+  propagacion_n?: number;
+  propagacion_ids?: string[];
+  propagacion_solicitada?: boolean;
+  propagacion_solicitada_por?: string;
+  propagacion_solicitada_at?: string;
 }
+
+// SPEC T — schema del patrón de corrección propagable
+export type PropagationTipo =
+  | 'nlp_area_funcional'
+  | 'matching_esco'
+  | 'skills_filtro'
+  | 'nlp_tareas_explicitas';
+
+export interface PropagationPattern {
+  tipo: PropagationTipo;
+  campo: string;
+  condicion: {
+    tipo: 'titulo_contiene_alguno' | 'regla_aplicada' | 'titulo_esco_code' | 'id_oferta_lista';
+    keywords?: string[];
+    valor_unico?: string;
+    valores?: string[];
+  };
+  valor_anterior?: string;
+  valor_nuevo?: string;
+  _nota_audit?: string;
+}
+
+export type PropagationEstado =
+  | 'aplicada'      // ✅ propagacion_n > 0
+  | 'excepcion'     // ➡ propagacion_n = 0 con patrón
+  | 'solicitada'    // 🟡 propagacion_solicitada = true sin aplicar
+  | 'sin_auditar';  // ⚠ resuelto sin patron_corregido
+
+export const PROPAGATION_TIPO_LABELS: Record<PropagationTipo, string> = {
+  nlp_area_funcional: 'Área funcional (NLP)',
+  matching_esco: 'Ocupación ESCO (Matching)',
+  skills_filtro: 'Skills filtrado',
+  nlp_tareas_explicitas: 'Tareas (re-extracción NLP)',
+};
 
 export interface IssueStats {
   pendientes: number;
