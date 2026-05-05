@@ -112,9 +112,14 @@ def unlock_offers(ids: list, motivo: str, admin: str = "claude"):
             print(f"  [SKIP] {id_oferta} - No encontrada")
             continue
 
-        if row['estado_validacion'] != 'validado':
-            errores.append(f"{id_oferta}: Estado actual es '{row['estado_validacion']}', no 'validado'")
-            print(f"  [SKIP] {id_oferta} - Estado es '{row['estado_validacion']}', no 'validado'")
+        # SPEC U-1 v3.1 sub-fase D: aceptar validado, validado_claude, validado_humano.
+        # Los triggers (protect_validated_*) solo bloquean 'validado'; los otros dos
+        # estados no tienen protección pero igualmente requieren audit trail al desbloquear.
+        ESTADOS_VALIDADOS = ('validado', 'validado_claude', 'validado_humano')
+        estado_actual = row['estado_validacion']
+        if estado_actual not in ESTADOS_VALIDADOS:
+            errores.append(f"{id_oferta}: Estado actual es '{estado_actual}', no validado")
+            print(f"  [SKIP] {id_oferta} - Estado es '{estado_actual}', no validado")
             continue
 
         try:
@@ -122,8 +127,8 @@ def unlock_offers(ids: list, motivo: str, admin: str = "claude"):
             conn.execute('''
                 INSERT INTO validacion_historial
                 (id_oferta, estado_anterior, estado_nuevo, timestamp, usuario, motivo)
-                VALUES (?, 'validado', 'en_revision', ?, ?, ?)
-            ''', (str(id_oferta), datetime.now().isoformat(), admin, motivo))
+                VALUES (?, ?, 'en_revision', ?, ?, ?)
+            ''', (str(id_oferta), estado_actual, datetime.now().isoformat(), admin, motivo))
 
             # Cambiar estado
             conn.execute('''
