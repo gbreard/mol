@@ -249,7 +249,7 @@ ofertas (crudo)
 |---------|-----------|
 | `config/matching_config.json` | Pesos y umbrales |
 | `config/matching_rules_business.json` | ~195 reglas de negocio |
-| `config/sinonimos_argentinos_esco.json` | Diccionario argentino (13 ocupaciones) |
+| `config/sinonimos_argentinos_esco.json` | Diccionario argentino (22 ocupaciones, v2 SPEC U-1) |
 | `config/skills_rules.json` | 25 reglas de skills |
 
 **Tracking:**

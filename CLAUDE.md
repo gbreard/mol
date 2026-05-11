@@ -1177,7 +1177,7 @@ NLP GATE (pre-matching):
 | Skills Extractor | `database/skills_implicit_extractor.py` v2.4 | - |
 | Skills Rules Config | `config/skills_rules.json` (25 reglas) | - |
 | Skills Rules Matcher | `database/skills_rules_matcher.py` | - |
-| Diccionario Argentino | `config/sinonimos_argentinos_esco.json` (17 ocup) | - |
+| Diccionario Argentino | `config/sinonimos_argentinos_esco.json` (22 ocup, v2 SPEC U-1) | - |
 | Config reglas negocio | `config/matching_rules_business.json` (297 reglas) | hardcodeados |
 | Config principal | `config/matching_config.json` | - |
 

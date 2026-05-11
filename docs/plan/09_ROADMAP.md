@@ -636,7 +636,7 @@ Proceso que verifica consistencia entre los 4 sistemas periódicamente.
 | Config JSON | Items | Ruta UI |
 |-------------|-------|---------|
 | matching_rules_business.json | 300 reglas | `/procesamiento/reglas` |
-| sinonimos_argentinos_esco.json | 17 ocupaciones | `/procesamiento/sinonimos` |
+| sinonimos_argentinos_esco.json | 22 ocupaciones | `/procesamiento/sinonimos` |
 | nlp_inference_rules.json | ~50 reglas | `/procesamiento/nlp-inference` |
 | skills_rules.json | 27 reglas | `/procesamiento/editores` |
 | oficios_arg.json | 170 oficios | `/procesamiento/oficios` |
