@@ -97,3 +97,8 @@ config/skill_equivalences_lookup.json
 
 # Dashboard R antiguo (repo separado, embebido por error)
 Visual--/
+
+# SPEC U-1 — snapshots BD/Supabase (rescatables, no van a git por tamaño)
+data/snapshots/
+# temp/ diagramas y revisiones locales
+temp/
