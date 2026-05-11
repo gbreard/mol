@@ -167,7 +167,7 @@ def extraer_ofertas_validadas(
     """
     # Construir WHERE clause
     # v1.1: Aceptar validado_claude, validado_humano Y validado para poblar dashboard
-    where_clauses = ["m.estado_validacion IN ('validado_claude', 'validado_humano', 'validado')"]
+    where_clauses = ["m.estado_validacion IN ('validado_claude', 'validado_humano', 'validado', 'validado_claude_subfaseD', 'validado_claude_C1')"]
     params = []
 
     if since:
@@ -267,7 +267,9 @@ def extraer_skills_detalle(
         d.esco_skill_label,
         d.match_score,
         d.esco_skill_type as skill_type,
-        d.source_classification
+        d.source_classification,
+        d.is_essential_for_occupation,
+        d.is_optional_for_occupation
     FROM ofertas_esco_skills_detalle d
     WHERE d.id_oferta IN ({placeholders})
     """
@@ -869,7 +871,9 @@ def transform_skill_for_supabase(skill: Dict, equiv_map: Optional[Dict] = None) 
         'es_digital': skill.get('es_digital', False),
         'origen': origen,
         'score': skill.get('match_score') or skill.get('score'),
-        'es_esencial': skill.get('es_esencial', False),
+        # SPEC U-1 H16 fix: mapear flags ESCO desde columnas locales backfilleadas por C4
+        'es_esencial': bool(skill.get('is_essential_for_occupation', 0)),
+        'es_opcional': bool(skill.get('is_optional_for_occupation', 0)),
         'equivalence_id': equiv.get('equivalence_id'),
         'canonical_label': equiv.get('canonical_label'),
     }
@@ -1339,7 +1343,7 @@ def calcular_estado_sistema(conn: sqlite3.Connection) -> Dict[str, Any]:
     # Validadas (todos los estados de validación)
     cursor = conn.execute("""
         SELECT COUNT(*) FROM ofertas_esco_matching
-        WHERE estado_validacion IN ('validado', 'validado_claude', 'validado_humano')
+        WHERE estado_validacion IN ('validado_claude', 'validado_humano', 'validado', 'validado_claude_subfaseD', 'validado_claude_C1')
     """)
     estado['fase2_validadas'] = cursor.fetchone()[0] or 0
 
@@ -1528,7 +1532,7 @@ def calcular_tension_ocupaciones(conn: sqlite3.Connection) -> List[Dict[str, Any
             CASE WHEN o.grupo_republicacion IS NOT NULL THEN 1 ELSE 0 END AS es_republicada
         FROM ofertas o
         INNER JOIN ofertas_esco_matching m ON o.id_oferta = m.id_oferta
-        WHERE m.estado_validacion IN ('validado', 'validado_claude', 'validado_humano')
+        WHERE m.estado_validacion IN ('validado_claude', 'validado_humano', 'validado', 'validado_claude_subfaseD', 'validado_claude_C1')
           AND m.isco_code IS NOT NULL
     ),
     posiciones AS (
@@ -1655,7 +1659,7 @@ def calcular_concentracion_ocupacional(conn: sqlite3.Connection) -> List[Dict[st
                strftime('%Y-%m', o.fecha_publicacion_iso) AS mes
         FROM ofertas o
         JOIN ofertas_esco_matching m ON o.id_oferta = m.id_oferta
-        WHERE m.estado_validacion IN ('validado','validado_claude','validado_humano')
+        WHERE m.estado_validacion IN ('validado_claude', 'validado_humano', 'validado', 'validado_claude_subfaseD', 'validado_claude_C1')
           AND m.isco_code IS NOT NULL
           AND o.fecha_publicacion_iso IS NOT NULL
     ),
@@ -1705,7 +1709,7 @@ def calcular_concentracion_ocupacional(conn: sqlite3.Connection) -> List[Dict[st
         SELECT m.isco_code
         FROM ofertas o
         JOIN ofertas_esco_matching m ON o.id_oferta = m.id_oferta
-        WHERE m.estado_validacion IN ('validado','validado_claude','validado_humano')
+        WHERE m.estado_validacion IN ('validado_claude', 'validado_humano', 'validado', 'validado_claude_subfaseD', 'validado_claude_C1')
           AND m.isco_code IS NOT NULL
           AND o.fecha_publicacion_iso IS NOT NULL
     ),
@@ -1750,7 +1754,7 @@ def calcular_concentracion_ocupacional(conn: sqlite3.Connection) -> List[Dict[st
                strftime('%Y-%m', o.fecha_publicacion_iso) AS mes
         FROM ofertas o
         JOIN ofertas_esco_matching m ON o.id_oferta = m.id_oferta
-        WHERE m.estado_validacion IN ('validado','validado_claude','validado_humano')
+        WHERE m.estado_validacion IN ('validado_claude', 'validado_humano', 'validado', 'validado_claude_subfaseD', 'validado_claude_C1')
           AND m.isco_code IS NOT NULL
           AND o.fecha_publicacion_iso IS NOT NULL
     ),
@@ -1830,7 +1834,7 @@ def calcular_brecha_calificacion(conn: sqlite3.Connection) -> List[Dict[str, Any
     WITH ofertas_validadas AS (
         SELECT m.id_oferta, m.isco_code, m.isco_label
         FROM ofertas_esco_matching m
-        WHERE m.estado_validacion IN ('validado','validado_claude','validado_humano')
+        WHERE m.estado_validacion IN ('validado_claude', 'validado_humano', 'validado', 'validado_claude_subfaseD', 'validado_claude_C1')
           AND m.isco_code IS NOT NULL
     ),
     skills_por_oferta AS (
@@ -1930,7 +1934,7 @@ def calcular_digitalizacion_sector(conn: sqlite3.Connection) -> List[Dict[str, A
         SELECT m.id_oferta, n.clae_seccion
         FROM ofertas_esco_matching m
         JOIN ofertas_nlp n ON m.id_oferta = n.id_oferta
-        WHERE m.estado_validacion IN ('validado','validado_claude','validado_humano')
+        WHERE m.estado_validacion IN ('validado_claude', 'validado_humano', 'validado', 'validado_claude_subfaseD', 'validado_claude_C1')
           AND n.clae_seccion IS NOT NULL
     ),
     skills_con_digital AS (
@@ -2027,7 +2031,7 @@ def calcular_transicion_skills(conn: sqlite3.Connection) -> List[Dict[str, Any]]
     WITH ofertas_validadas AS (
         SELECT m.id_oferta, m.isco_code, m.isco_label
         FROM ofertas_esco_matching m
-        WHERE m.estado_validacion IN ('validado','validado_claude','validado_humano')
+        WHERE m.estado_validacion IN ('validado_claude', 'validado_humano', 'validado', 'validado_claude_subfaseD', 'validado_claude_C1')
           AND m.isco_code IS NOT NULL
     ),
     isco_counts AS (
@@ -2175,7 +2179,7 @@ def calcular_velocidad_cobertura(conn: sqlite3.Connection) -> List[Dict[str, Any
     SELECT m.isco_code, m.isco_label, o.dias_publicada
     FROM ofertas_esco_matching m
     JOIN ofertas o ON m.id_oferta = o.id_oferta
-    WHERE m.estado_validacion IN ('validado','validado_claude','validado_humano')
+    WHERE m.estado_validacion IN ('validado_claude', 'validado_humano', 'validado', 'validado_claude_subfaseD', 'validado_claude_C1')
       AND m.isco_code IS NOT NULL
       AND o.estado_oferta = 'baja'
       AND o.dias_publicada IS NOT NULL
@@ -2284,7 +2288,7 @@ def calcular_indice_remoto(conn: sqlite3.Connection) -> List[Dict[str, Any]]:
         FROM ofertas_esco_matching m
         JOIN ofertas o ON m.id_oferta = o.id_oferta
         JOIN ofertas_nlp n ON m.id_oferta = n.id_oferta
-        WHERE m.estado_validacion IN ('validado','validado_claude','validado_humano')
+        WHERE m.estado_validacion IN ('validado_claude', 'validado_humano', 'validado', 'validado_claude_subfaseD', 'validado_claude_C1')
           AND o.fecha_publicacion_iso IS NOT NULL
           AND n.modalidad IS NOT NULL
     ),
@@ -2428,7 +2432,7 @@ def mostrar_stats_local(conn: sqlite3.Connection):
                MIN(validado_timestamp) as primera,
                MAX(validado_timestamp) as ultima
         FROM ofertas_esco_matching
-        WHERE estado_validacion IN ('validado_claude', 'validado_humano', 'validado')
+        WHERE estado_validacion IN ('validado_claude', 'validado_humano', 'validado', 'validado_claude_subfaseD', 'validado_claude_C1')
     """)
     row = cursor.fetchone()
     print(f"Ofertas validadas: {row['total']}")
@@ -2439,7 +2443,7 @@ def mostrar_stats_local(conn: sqlite3.Connection):
     cursor = conn.execute("""
         SELECT COUNT(*) FROM ofertas_esco_skills_detalle d
         JOIN ofertas_esco_matching m ON d.id_oferta = m.id_oferta
-        WHERE m.estado_validacion IN ('validado_claude', 'validado_humano', 'validado')
+        WHERE m.estado_validacion IN ('validado_claude', 'validado_humano', 'validado', 'validado_claude_subfaseD', 'validado_claude_C1')
     """)
     print(f"Skills detalle: {cursor.fetchone()[0]}")
 
