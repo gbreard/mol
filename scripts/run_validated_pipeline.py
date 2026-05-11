@@ -760,9 +760,12 @@ def main():
         )
         conn = get_priority_conn()
         # ids ya está definido desde el sistema de prioridad
-        mark_batch_as_completed(conn, ids)
+        result = mark_batch_as_completed(conn, ids)
         if not args.quiet:
-            safe_print(f"\nLote marcado como procesado: {len(ids)} ofertas")
+            safe_print(
+                f"\nLote cerrado: {result['cerradas']} procesadas, "
+                f"{result['reseteadas']} sin NLP (devueltas a pendiente)"
+            )
         conn.close()
 
     # Exit code basado en resultado

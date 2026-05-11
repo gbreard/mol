@@ -202,6 +202,11 @@ def get_pending_offers_with_scores(conn, weights: dict, params: dict, limit: int
         } for row in rows]
 
     # Query ofertas pendientes (sin NLP) - cálculo en memoria
+    # NLP requiere descripción no vacía y >100 chars (mismo filtro que process_batch).
+    # Sin este filtro, ofertas crudas sin descripción (típico de listados de
+    # ComputRabajo/Indeed que no scrapearon el detalle) entran al sistema de
+    # prioridad pero NLP las descarta — quedan ciclando como pendientes para
+    # siempre y bloquean el avance del loop.
     query = """
         SELECT
             o.id_oferta,
@@ -219,7 +224,8 @@ def get_pending_offers_with_scores(conn, weights: dict, params: dict, limit: int
         WHERE NOT EXISTS (
             SELECT 1 FROM ofertas_nlp n WHERE n.id_oferta = o.id_oferta
         )
-        -- Procesar TODAS las ofertas sin NLP, incluyendo bajas (dato histórico válido)
+          AND o.descripcion IS NOT NULL
+          AND LENGTH(o.descripcion) > 100
     """
 
     cur = conn.execute(query)
@@ -407,16 +413,67 @@ def get_batch(conn, weights: dict, params: dict, size: int = 100, offset: int = 
 # FUNCIONES DE PERSISTENCIA EN BD
 # ============================================
 
+def cleanup_stuck_processing(conn):
+    """
+    Sanea ofertas con estado inconsistente entre `ofertas_prioridad` y `ofertas_nlp`.
+
+    Casos a corregir (lotes interrumpidos sin cierre limpio):
+    - `en_proceso` + tiene NLP → marcar `procesado` (lote viejo se cortó después de NLP)
+    - `en_proceso` + sin NLP → resetear a `pendiente` (lote se cortó antes de NLP)
+
+    Las ofertas sin descripción procesable NO se purgan: el filtro en
+    `get_pending_offers_with_scores` evita que entren a la cola, y existe
+    `scripts/backfill_ct_descripciones.py` (y equivalentes) que completan
+    descripciones faltantes visitando la URL del aviso. Una vez completas,
+    el siguiente refresh las inserta al sistema con su score nuevo.
+
+    Returns:
+        dict con {'cerradas_completas': int, 'reseteadas_incompletas': int}
+    """
+    now = datetime.now().isoformat()
+
+    cur = conn.execute('''
+        UPDATE ofertas_prioridad
+        SET estado = 'procesado', fecha_procesado = ?
+        WHERE estado = 'en_proceso'
+          AND EXISTS (SELECT 1 FROM ofertas_nlp n WHERE n.id_oferta = ofertas_prioridad.id_oferta)
+    ''', (now,))
+    cerradas = cur.rowcount
+
+    cur = conn.execute('''
+        UPDATE ofertas_prioridad
+        SET estado = 'pendiente', lote_asignado = NULL,
+            fecha_asignado = NULL, fecha_procesado = NULL
+        WHERE estado = 'en_proceso'
+          AND NOT EXISTS (SELECT 1 FROM ofertas_nlp n WHERE n.id_oferta = ofertas_prioridad.id_oferta)
+    ''')
+    reseteadas = cur.rowcount
+
+    conn.commit()
+    return {'cerradas_completas': cerradas, 'reseteadas_incompletas': reseteadas}
+
+
 def refresh_priorities(conn, weights: dict = None, params: dict = None):
     """
     Recalcula y persiste prioridades para ofertas pendientes.
 
-    1. Inserta ofertas nuevas (sin NLP y sin entrada en ofertas_prioridad)
-    2. Actualiza scores de ofertas pendientes (score fecha cambia con el tiempo)
-    3. NO toca ofertas en_proceso o procesadas
+    Como `get_pending_offers_with_scores(from_db=False)` SOLO devuelve ofertas
+    sin NLP, cualquier oferta que aparezca acá pero esté marcada como
+    `procesado` o `en_proceso` en `ofertas_prioridad` es una "zombi": un lote
+    se interrumpió antes de terminar y dejó la oferta marcada como completa
+    sin que NLP la haya procesado. La reseteamos a `pendiente`.
+
+    Antes del recálculo se ejecuta `cleanup_stuck_processing` para sanear
+    lotes que quedaron a medio cerrar (en_proceso con NLP completo).
+
+    1. Saneamiento previo de lotes interrumpidos
+    2. Inserta ofertas nuevas (sin NLP y sin entrada en ofertas_prioridad)
+    3. Actualiza scores de ofertas que ya están en `pendiente`
+    4. Resetea zombi: ofertas en `procesado`/`en_proceso` que aún no tienen NLP
 
     Returns:
-        dict con estadísticas: {'nuevas': int, 'actualizadas': int}
+        dict con estadísticas: {'nuevas', 'actualizadas', 'reseteadas',
+                                'cerradas_completas', 'reseteadas_incompletas'}
     """
     if weights is None:
         config = load_config()
@@ -425,11 +482,15 @@ def refresh_priorities(conn, weights: dict = None, params: dict = None):
         config = load_config()
         params = config.get("params", SCORING_PARAMS)
 
+    # Saneamiento previo de lotes que quedaron a medio cerrar
+    cleanup = cleanup_stuck_processing(conn)
+
     # Obtener ofertas pendientes calculando scores
     offers = get_pending_offers_with_scores(conn, weights, params, from_db=False)
 
     nuevas = 0
     actualizadas = 0
+    reseteadas = 0
     now = datetime.now().isoformat()
 
     for o in offers:
@@ -451,7 +512,7 @@ def refresh_priorities(conn, weights: dict = None, params: dict = None):
                   o['score_vacantes'], o['score_permanencia'], now))
             nuevas += 1
         elif row['estado'] == 'pendiente':
-            # Actualizar solo si está pendiente (score fecha cambia)
+            # Actualizar score (cambia con el tiempo)
             conn.execute('''
                 UPDATE ofertas_prioridad
                 SET score_total = ?, score_fecha = ?, score_vacantes = ?,
@@ -460,9 +521,28 @@ def refresh_priorities(conn, weights: dict = None, params: dict = None):
             ''', (o['score_total'], o['score_fecha'], o['score_vacantes'],
                   o['score_permanencia'], now, str(o['id_oferta'])))
             actualizadas += 1
+        elif row['estado'] in ('procesado', 'en_proceso'):
+            # Zombi: marcado como completo pero sin NLP → resetear a pendiente
+            conn.execute('''
+                UPDATE ofertas_prioridad
+                SET estado = 'pendiente',
+                    score_total = ?, score_fecha = ?, score_vacantes = ?,
+                    score_permanencia = ?, fecha_calculo = ?,
+                    lote_asignado = NULL, fecha_asignado = NULL,
+                    fecha_procesado = NULL
+                WHERE id_oferta = ?
+            ''', (o['score_total'], o['score_fecha'], o['score_vacantes'],
+                  o['score_permanencia'], now, str(o['id_oferta'])))
+            reseteadas += 1
 
     conn.commit()
-    return {'nuevas': nuevas, 'actualizadas': actualizadas}
+    return {
+        'nuevas': nuevas,
+        'actualizadas': actualizadas,
+        'reseteadas': reseteadas,
+        'cerradas_completas': cleanup['cerradas_completas'],
+        'reseteadas_incompletas': cleanup['reseteadas_incompletas'],
+    }
 
 
 def get_next_batch_from_db(conn, size: int = 100) -> list:
@@ -525,22 +605,56 @@ def mark_batch_as_processing(conn, offer_ids: list, lote_id: str):
     conn.commit()
 
 
-def mark_batch_as_completed(conn, offer_ids: list):
+def mark_batch_as_completed(conn, offer_ids: list) -> dict:
     """
-    Marca ofertas como 'procesado' al terminar el pipeline.
+    Marca el final de un lote: solo cierra como 'procesado' las ofertas que
+    efectivamente tienen NLP en BD; las que faltan vuelven a 'pendiente' para
+    reintentar en el próximo lote.
+
+    Esto evita zombis cuando el pipeline falla silenciosamente (Ollama caído,
+    proceso interrumpido, excepción atrapada que no propaga, etc.) y marca
+    todo como completo aunque NLP no haya corrido.
 
     Args:
-        offer_ids: Lista de IDs de ofertas procesadas
+        offer_ids: Lista de IDs de ofertas asignadas al lote
+
+    Returns:
+        dict con {'cerradas': int, 'reseteadas': int}
     """
+    if not offer_ids:
+        return {'cerradas': 0, 'reseteadas': 0}
+
     now = datetime.now().isoformat()
-    for oid in offer_ids:
-        conn.execute('''
-            UPDATE ofertas_prioridad
-            SET estado = 'procesado',
-                fecha_procesado = ?
-            WHERE id_oferta = ?
-        ''', (now, str(oid)))
+    ids_str = [str(oid) for oid in offer_ids]
+    placeholders = ','.join('?' for _ in ids_str)
+
+    cur = conn.execute(
+        f'''
+        UPDATE ofertas_prioridad
+        SET estado = 'procesado', fecha_procesado = ?
+        WHERE id_oferta IN ({placeholders})
+          AND EXISTS (SELECT 1 FROM ofertas_nlp n WHERE n.id_oferta = ofertas_prioridad.id_oferta)
+        ''',
+        [now, *ids_str],
+    )
+    cerradas = cur.rowcount
+
+    cur = conn.execute(
+        f'''
+        UPDATE ofertas_prioridad
+        SET estado = 'pendiente',
+            lote_asignado = NULL,
+            fecha_asignado = NULL,
+            fecha_procesado = NULL
+        WHERE id_oferta IN ({placeholders})
+          AND NOT EXISTS (SELECT 1 FROM ofertas_nlp n WHERE n.id_oferta = ofertas_prioridad.id_oferta)
+        ''',
+        ids_str,
+    )
+    reseteadas = cur.rowcount
+
     conn.commit()
+    return {'cerradas': cerradas, 'reseteadas': reseteadas}
 
 
 def check_pending_errors_block(conn) -> dict:
@@ -680,6 +794,9 @@ def main():
         result = refresh_priorities(conn, weights, params)
         print(f"  Nuevas: {result['nuevas']}")
         print(f"  Actualizadas: {result['actualizadas']}")
+        print(f"  Zombi reseteadas (sin NLP marcadas como procesado): {result['reseteadas']}")
+        print(f"  Lotes huérfanos cerrados (en_proceso con NLP completo): {result['cerradas_completas']}")
+        print(f"  Lotes huérfanos reseteados (en_proceso sin NLP): {result['reseteadas_incompletas']}")
         print(f"Prioridades persistidas en ofertas_prioridad")
     elif args.queue_status:
         # Mostrar estado de la cola
