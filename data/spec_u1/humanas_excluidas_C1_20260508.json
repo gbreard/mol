@@ -1,0 +1,54 @@
+[
+  {
+    "id_oferta": "1118115497",
+    "motivo": "validacion humana de Gerardo, 2026-01-19, \"Validacion Excel 2026-01-19\"",
+    "usuario_historial": "gerardo",
+    "criterio": "preservar decisión humana real registrada en validacion_historial",
+    "estado_actual": "validado_claude",
+    "esco_uri_actual": "http://data.europa.eu/esco/occupation/7aedaa07-3884-4c5b-88f9-80997b2aa54b",
+    "esco_label_actual": "soldador/soldadora",
+    "isco_code_actual": "7212",
+    "validado_por_actual": "auto_transicion_batch",
+    "validado_timestamp": "2026-04-11T18:37:38.405334",
+    "titulo": "SOLDADOR/OPERARIO METALÚRGICO"
+  },
+  {
+    "id_oferta": "1118115501",
+    "motivo": "validacion humana de Gerardo, 2026-01-19, \"Validacion Excel 2026-01-19\"",
+    "usuario_historial": "gerardo",
+    "criterio": "preservar decisión humana real registrada en validacion_historial",
+    "estado_actual": "validado_claude",
+    "esco_uri_actual": "http://data.europa.eu/esco/occupation/5c082067-ea18-4ccb-8c43-e70b18ad8120",
+    "esco_label_actual": "operador de máquinas de control numérico/operadora de máquinas de control numérico",
+    "isco_code_actual": "7223",
+    "validado_por_actual": "auto_transicion_batch",
+    "validado_timestamp": "2026-04-11T18:37:38.405334",
+    "titulo": "Programador de CNC– Centro de Mecanizado - Boulogne"
+  },
+  {
+    "id_oferta": "1118115516",
+    "motivo": "validacion humana de Gerardo, 2026-01-19, \"Validacion Excel 2026-01-19\"",
+    "usuario_historial": "gerardo",
+    "criterio": "preservar decisión humana real registrada en validacion_historial",
+    "estado_actual": "validado_claude",
+    "esco_uri_actual": "http://data.europa.eu/esco/occupation/8d3e8aaa-791b-4c75-a465-f3f827028f50",
+    "esco_label_actual": "enfermero responsable de cuidados generales/enfermera responsable de cuidados generales",
+    "isco_code_actual": "2221",
+    "validado_por_actual": "auto_transicion_batch",
+    "validado_timestamp": "2026-04-11T18:37:38.405334",
+    "titulo": "Enfermero (Nordelta)"
+  },
+  {
+    "id_oferta": "1118099854",
+    "motivo": "validador \"manual\" con motivo \"Errores resueltos, scores OK\"",
+    "usuario_historial": "manual",
+    "criterio": "preservación conservadora ante ambigüedad (regla: en duda, preservar)",
+    "estado_actual": "validado_claude",
+    "esco_uri_actual": "http://data.europa.eu/esco/occupation/5c082067-ea18-4ccb-8c43-e70b18ad8120",
+    "esco_label_actual": "operador de máquinas de control numérico/operadora de máquinas de control numérico",
+    "isco_code_actual": "7223",
+    "validado_por_actual": null,
+    "validado_timestamp": "2026-02-05 19:54:55",
+    "titulo": "Programador de CNC– Centro de Mecanizado Y Torno- Boulogne"
+  }
+]

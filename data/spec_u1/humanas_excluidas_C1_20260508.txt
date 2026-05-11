@@ -1,0 +1,47 @@
+# SPEC U-1 v3.1 C1 — Ofertas excluidas del re-rematch
+# Fecha generación: 2026-05-08T18:25:05.566210
+# Cantidad excluidas: 4
+# Estas ofertas mantienen su estado_validacion actual y NO se reprocesan en C1.
+# Razón: preservar validación humana real (registrada en validacion_historial)
+# o ambigüedad sobre si fue humana (preservación conservadora).
+
+id_oferta:           1118115497
+  título:           SOLDADOR/OPERARIO METALÚRGICO
+  estado actual:   validado_claude
+  ISCO + label:    7212 — soldador/soldadora
+  esco_uri:        http://data.europa.eu/esco/occupation/7aedaa07-3884-4c5b-88f9-80997b2aa54b
+  validado_por:    auto_transicion_batch  (2026-04-11T18:37:38.405334)
+  usuario_historial: gerardo
+  motivo exclusión: validacion humana de Gerardo, 2026-01-19, "Validacion Excel 2026-01-19"
+  criterio:        preservar decisión humana real registrada en validacion_historial
+
+id_oferta:           1118115501
+  título:           Programador de CNC– Centro de Mecanizado - Boulogne
+  estado actual:   validado_claude
+  ISCO + label:    7223 — operador de máquinas de control numérico/operadora de máquin
+  esco_uri:        http://data.europa.eu/esco/occupation/5c082067-ea18-4ccb-8c43-e70b18ad8120
+  validado_por:    auto_transicion_batch  (2026-04-11T18:37:38.405334)
+  usuario_historial: gerardo
+  motivo exclusión: validacion humana de Gerardo, 2026-01-19, "Validacion Excel 2026-01-19"
+  criterio:        preservar decisión humana real registrada en validacion_historial
+
+id_oferta:           1118115516
+  título:           Enfermero (Nordelta)
+  estado actual:   validado_claude
+  ISCO + label:    2221 — enfermero responsable de cuidados generales/enfermera respon
+  esco_uri:        http://data.europa.eu/esco/occupation/8d3e8aaa-791b-4c75-a465-f3f827028f50
+  validado_por:    auto_transicion_batch  (2026-04-11T18:37:38.405334)
+  usuario_historial: gerardo
+  motivo exclusión: validacion humana de Gerardo, 2026-01-19, "Validacion Excel 2026-01-19"
+  criterio:        preservar decisión humana real registrada en validacion_historial
+
+id_oferta:           1118099854
+  título:           Programador de CNC– Centro de Mecanizado Y Torno- Boulogne
+  estado actual:   validado_claude
+  ISCO + label:    7223 — operador de máquinas de control numérico/operadora de máquin
+  esco_uri:        http://data.europa.eu/esco/occupation/5c082067-ea18-4ccb-8c43-e70b18ad8120
+  validado_por:    None  (2026-02-05 19:54:55)
+  usuario_historial: manual
+  motivo exclusión: validador "manual" con motivo "Errores resueltos, scores OK"
+  criterio:        preservación conservadora ante ambigüedad (regla: en duda, preservar)
+
