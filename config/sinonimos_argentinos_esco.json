@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "2.0.0",
   "descripcion": "Mapeo de terminos argentinos a ocupaciones/skills ESCO para mejorar matching semantico",
   "fecha_creacion": "2026-01-14",
   "notas": [
@@ -7,100 +7,149 @@
     "Este diccionario permite mapear titulos y skills argentinos a codigos ESCO",
     "Usado por match_ofertas_v3.py para mejorar precision del matching semantico"
   ],
-
   "ocupaciones_titulo": {
     "_descripcion": "Mapeo titulo argentino -> codigo ISCO. Cuando el titulo contiene estos terminos, forzar o priorizar el ISCO indicado.",
-
     "recepcionista": {
       "isco_primario": "4226",
       "esco_label": "recepcionista",
-      "variantes": ["recepcionista", "receptionist"],
+      "variantes": [
+        "recepcionista",
+        "receptionist"
+      ],
       "contextos": {
         "consultorio|medico|salud|clinica|hospital": "4226",
         "hotel|alojamiento|hostel": "4224",
         "restaurante|bar|gastronomia": "5131",
         "club|gimnasio|deportivo": "5169"
-      }
+      },
+      "esco_uri": "http://data.europa.eu/esco/occupation/f7b04542-d8c7-42db-8475-e63b507cce82"
     },
-
     "jefe de mantenimiento": {
-      "isco_primario": "1321",
-      "esco_label": "jefe de mantenimiento/jefa de mantenimiento",
-      "variantes": ["jefe mantenimiento", "jefa mantenimiento", "encargado mantenimiento", "supervisor mantenimiento"],
-      "nota": "En Argentina 'jefe' implica nivel gerencial, no tecnico"
+      "isco_primario": "1219",
+      "esco_label": "director de mantenimiento de una fábrica/directora de mantenimiento de una fábrica",
+      "variantes": [
+        "jefe mantenimiento",
+        "jefa mantenimiento",
+        "encargado mantenimiento",
+        "supervisor mantenimiento"
+      ],
+      "nota": "En Argentina 'jefe' implica nivel gerencial, no tecnico",
+      "_nota_v2": "ISCO corregido 1321→1219 (label correcto en BD). 149 ofertas históricas se re-clasifican.",
+      "esco_uri": "http://data.europa.eu/esco/occupation/680831bb-64fc-4fc8-ae58-c450327d9700"
     },
-
     "gerente": {
       "isco_familia": "1",
-      "variantes": ["gerente", "manager", "director"],
+      "variantes": [
+        "gerente",
+        "manager",
+        "director"
+      ],
       "contextos": {
-        "ventas|comercial": "1221",
-        "finanzas|financiero": "1211",
-        "operaciones|planta|produccion": "1321",
-        "rrhh|recursos humanos": "1212",
-        "it|sistemas|tecnologia": "1330",
-        "marketing": "1221",
-        "logistica|supply chain": "1324"
+        "ventas|comercial": {
+          "isco": "1221",
+          "esco_uri": "http://data.europa.eu/esco/occupation/a7594892-ff23-4e2a-aedf-2f967ebca15c",
+          "esco_label": "director de ventas/directora de ventas",
+          "_heuristica_v2": "frec(251) + keyword 'ventas'"
+        },
+        "finanzas|financiero": {
+          "isco": "1211",
+          "esco_uri": "http://data.europa.eu/esco/occupation/30f3ea93-882a-4525-841c-1d5b4b64076f",
+          "esco_label": "director financiero/directora financiera",
+          "_heuristica_v2": "frec dominante(177) + keyword 'financiera'"
+        },
+        "operaciones|planta|produccion": {
+          "isco": "1321",
+          "esco_uri": "http://data.europa.eu/esco/occupation/eb9479c6-5fdf-4f45-ace4-28b547b8c7e5",
+          "esco_label": "director de producción industrial/directora de producción industrial",
+          "_heuristica_v2": "frec dominante(227) + keyword 'producción'"
+        },
+        "rrhh|recursos humanos": {
+          "isco": "1212",
+          "esco_uri": "http://data.europa.eu/esco/occupation/f605bcd2-90b6-45a0-a558-d05016d68a77",
+          "esco_label": "director de recursos humanos/directora de recursos humanos",
+          "_heuristica_v2": "frec dominante(131) + keyword exacta"
+        },
+        "it|sistemas|tecnologia": {
+          "isco": "1330",
+          "esco_uri": "http://data.europa.eu/esco/occupation/8b6388a4-4904-471b-9331-d3b1211f5525",
+          "esco_label": "gestor de proyectos de TIC/gestora de proyectos de TIC",
+          "_heuristica_v2": "frec dominante(104)"
+        },
+        "marketing": {
+          "isco": "1221",
+          "esco_uri": "http://data.europa.eu/esco/occupation/dc97adbe-f807-4ad8-8f3c-c24b3416cdef",
+          "esco_label": "responsable de marketing digital",
+          "_heuristica_v2": "frec dominante(252) + keyword 'marketing'"
+        },
+        "logistica|supply chain": {
+          "isco": "1324",
+          "esco_uri": "http://data.europa.eu/esco/occupation/aacc3918-b5d3-484b-9480-5d29aa550d74",
+          "esco_label": "director de la cadena de suministro/directora de la cadena de suministro",
+          "_heuristica_v2": "match keyword 'cadena suministro' + freq(40)"
+        }
       }
     },
-
     "analista de tesoreria": {
       "isco_primario": "4312",
-      "esco_label": "empleado de gestión financiera/empleada de gestión financiera",
-      "variantes": ["analista de tesoreria", "analista de tesorería", "analista tesoreria", "analista tesorería"],
-      "nota": "Tesorería en Argentina es operativo, no directivo"
+      "esco_label": "empleado administrativo de gestión financiera/empleada administrativa de gestión financiera",
+      "variantes": [
+        "analista de tesoreria",
+        "analista de tesorería",
+        "analista tesoreria",
+        "analista tesorería"
+      ],
+      "nota": "Tesorería en Argentina es operativo, no directivo",
+      "_nota_v2": "Label canónico ESCO sustituido (v1 tenía 'empleado de gestión financiera'). Mismo ISCO 4312.",
+      "esco_uri": "http://data.europa.eu/esco/occupation/35fbb8cd-c044-49a1-850c-010481c99b4a"
     },
-
-    "analista": {
-      "isco_familia": "2",
-      "nota": "Analista en Argentina es nivel profesional, no gerencial",
-      "contextos": {
-        "tesoreria|tesorería|caja|pagos": "4312",
-        "contable|contabilidad": "2411",
-        "financiero|finanzas": "2413",
-        "creditos|créditos|riesgos": "3312",
-        "sistemas|it|datos": "2511",
-        "funcional|negocios": "2421",
-        "rrhh|seleccion|selección": "2423",
-        "marketing|mercado": "2431"
-      }
-    },
-
     "operador de atencion": {
       "isco_primario": "4222",
-      "esco_label": "empleado de centro de contacto/empleada de centro de contacto",
-      "variantes": ["operador de atencion", "operador de atención", "operador atencion al cliente", "operador atención al cliente"],
-      "nota": "En Argentina, operador de atención = call center / contact center"
+      "esco_label": "agente de centro de atención al cliente",
+      "variantes": [
+        "operador de atencion",
+        "operador de atención",
+        "operador atencion al cliente",
+        "operador atención al cliente"
+      ],
+      "nota": "En Argentina, operador de atención = call center / contact center",
+      "_nota_v2": "Label canónico ESCO sustituido (v1 tenía 'empleado de centro de contacto'). Mismo ISCO 4222.",
+      "esco_uri": "http://data.europa.eu/esco/occupation/b7b75eb6-34bc-462d-b412-eed393cc1397"
     },
-
-    "operario": {
-      "isco_familia": "8",
-      "variantes": ["operario", "operaria"],
-      "nota": "Operador/a se maneja por separado para evitar conflictos",
-      "contextos": {
-        "almacen|almacén|deposito|depósito|logistica|logística": "9333",
-        "produccion|producción|planta|fabrica|fábrica": "8160",
-        "plastico|plástico|inyeccion|inyección|soplado": "8142",
-        "empaque|acondicionamiento": "8131",
-        "maquinas|máquinas|cnc|torno": "8211"
-      }
-    },
-
     "operador": {
       "isco_familia": "8",
-      "variantes": ["operador", "operadora"],
+      "variantes": [
+        "operador",
+        "operadora"
+      ],
       "contextos": {
-        "atencion|atención|cliente|call center|telefonico|telefónico": "4222",
-        "almacen|almacén|deposito|depósito|logistica|logística": "9333",
-        "produccion|producción|planta|fabrica|fábrica": "8160",
-        "maquinas|máquinas|cnc|torno": "8211"
+        "atencion|atención|cliente|call center|telefonico|telefónico": {
+          "isco": "4222",
+          "esco_uri": "http://data.europa.eu/esco/occupation/b7b75eb6-34bc-462d-b412-eed393cc1397",
+          "esco_label": "agente de centro de atención al cliente",
+          "_heuristica_v2": "frec dominante(841)"
+        },
+        "almacen|almacén|deposito|depósito|logistica|logística": {
+          "isco": "9333",
+          "esco_uri": "http://data.europa.eu/esco/occupation/bea705fe-06ac-4147-b8e0-6e8ac1208d8f",
+          "esco_label": "mozo de almacén/moza de almacén",
+          "_heuristica_v2": "frec dominante(962)"
+        },
+        "produccion|producción|planta|fabrica|fábrica": {
+          "isco": "8160",
+          "esco_uri": "http://data.europa.eu/esco/occupation/e3dc66de-99c7-4607-a82b-7244036d316d",
+          "esco_label": "operario de producción de alimentos/operaria de producción de alimentos",
+          "_heuristica_v2": "naturalidad genérica (top freq 'prensado fruta' es muy específico)"
+        }
       }
     },
-
     "vendedor": {
       "isco_primario": "5223",
       "esco_label": "vendedor/vendedora",
-      "variantes": ["vendedor", "vendedora", "sales"],
+      "variantes": [
+        "vendedor",
+        "vendedora",
+        "sales"
+      ],
       "nota": "IMPORTANTE: esco_label genérico para evitar que LIMIT 1 asigne 'piezas de repuesto'. Contextos derivan a ESCO específicos. 'asesor comercial' y 'ejecutivo comercial' se manejan via reglas de negocio (R40)",
       "contextos": {
         "mostrador|tienda|local": "5223",
@@ -108,178 +157,311 @@
         "telefono|call center|telemarketing": "5244",
         "inmobiliario|propiedades": "3334",
         "tecnico|especializado": "3322"
-      }
+      },
+      "esco_uri": "http://data.europa.eu/esco/occupation/9ba74e8a-c40c-4228-9998-eb3c7a5c11df"
     },
-
     "administrativo": {
       "isco_primario": "4110",
       "esco_label": "empleado de oficina/empleada de oficina",
-      "variantes": ["administrativo", "administrativa", "admin", "asistente administrativo"],
+      "variantes": [
+        "administrativo",
+        "administrativa",
+        "admin",
+        "asistente administrativo"
+      ],
       "contextos": {
         "contable|facturacion": "4311",
         "rrhh|personal": "4416",
         "almacen|stock|inventario": "4321",
         "compras|proveedores": "3323",
         "general|oficina": "4110"
-      }
+      },
+      "esco_uri": "http://data.europa.eu/esco/occupation/6c999fc7-c6b7-4ef3-a4b9-af124a1783a2"
     },
-
     "tecnico": {
       "isco_familia": "3",
-      "variantes": ["tecnico", "tecnica", "technician"],
+      "variantes": [
+        "tecnico",
+        "tecnica",
+        "technician"
+      ],
       "contextos": {
-        "mantenimiento|reparacion": "7233",
-        "electronica|electronico": "7421",
-        "refrigeracion|aire|clima": "7127",
-        "it|sistemas|soporte": "3512",
-        "quimico|laboratorio": "3111",
-        "seguridad|higiene": "3257"
+        "mantenimiento|reparacion": {
+          "isco": "7233",
+          "esco_uri": "http://data.europa.eu/esco/occupation/269c47e7-9017-4aa6-bce8-49e89a696a64",
+          "esco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial",
+          "_heuristica_v2": "frec dominante(609); ISCO 7233 = mecánicos de maquinaria"
+        },
+        "electronica|electronico": {
+          "isco": "7421",
+          "esco_uri": "http://data.europa.eu/esco/occupation/f8ab2e08-d14e-4938-a2cd-c04821556db7",
+          "esco_label": "técnico reparador de electrónica de consumo/técnica reparadora de electrónica de consumo",
+          "_heuristica_v2": "frec dominante(106) + naturalidad"
+        },
+        "refrigeracion|aire|clima": {
+          "isco": "7127",
+          "esco_uri": "http://data.europa.eu/esco/occupation/79f435d0-9bc6-4d25-a26a-acbe16569ebb",
+          "esco_label": "instalador de servicios de calefacción y ventilación/instaladora de servicios de calefacción y ventilación",
+          "_heuristica_v2": "único candidato (36 hist)"
+        },
+        "it|sistemas|soporte": {
+          "isco": "3512",
+          "esco_uri": "http://data.europa.eu/esco/occupation/3e7bf729-4442-4b9f-ad5e-83111963795c",
+          "esco_label": "técnico de TIC/técnica de TIC",
+          "_heuristica_v2": "frec dominante(506) + naturalidad alta"
+        },
+        "quimico|laboratorio": {
+          "isco": "3111",
+          "esco_uri": "http://data.europa.eu/esco/occupation/87775d69-ae88-449e-ad71-6f9875711816",
+          "esco_label": "técnico de laboratorio de industrias químicas/técnica de laboratorio de industrias químicas",
+          "_heuristica_v2": "frec dominante(18) + matchea keyword 'químicas|laboratorio'"
+        },
+        "seguridad|higiene": {
+          "isco": "3257",
+          "esco_uri": "http://data.europa.eu/esco/occupation/2b31f745-f04f-4d2c-9692-4715e1448f80",
+          "esco_label": "inspector de seguridad e higiene en el trabajo/inspectora de seguridad e higiene en el trabajo",
+          "_heuristica_v2": "matchea exacto keyword 'seguridad e higiene'; freq baja(4) pero label naturalidad ALTA"
+        }
       }
     },
-
     "personal para obra": {
       "isco_primario": "7112",
       "esco_label": "albañil",
-      "variantes": ["personal para obra", "personal de obra", "personal obra", "obrero de construcción", "obrero construcción", "peón de obra", "peón obra"],
-      "nota": "Término genérico en Argentina para trabajador de construcción"
+      "variantes": [
+        "personal para obra",
+        "personal de obra",
+        "personal obra",
+        "obrero de construcción",
+        "obrero construcción",
+        "peón de obra",
+        "peón obra"
+      ],
+      "nota": "Término genérico en Argentina para trabajador de construcción",
+      "esco_uri": "http://data.europa.eu/esco/occupation/05f321f8-055b-407d-bf19-e0ddabda56b7"
     },
-
     "capataz": {
       "isco_primario": "3123",
       "esco_label": "capataz de construcción",
-      "variantes": ["capataz", "capataz de obra"],
+      "variantes": [
+        "capataz",
+        "capataz de obra"
+      ],
       "contextos": {
         "campo|estancia|ganadero|rural": "6121",
         "planta|manufactura|metalúrgica|metalurgica": "3122"
       },
-      "nota": "En Argentina 'capataz' es casi siempre construcción. Solo es agropecuario con calificador explícito (de campo, ganadero, estancia)."
+      "nota": "En Argentina 'capataz' es casi siempre construcción. Solo es agropecuario con calificador explícito (de campo, ganadero, estancia).",
+      "esco_uri": "http://data.europa.eu/esco/occupation/046574a1-9bb3-4a80-8a7b-83dc7db1dae2"
     },
-
     "albañil": {
       "isco_primario": "7112",
       "esco_label": "albañil",
-      "variantes": ["albañil", "albanil", "oficial albañil", "oficial albanil", "medio oficial albañil", "albañiles"],
-      "nota": "ESCO usa 'albañil' directo. El semántico fallaba consistentemente (7115, 2133, 9622)."
+      "variantes": [
+        "albañil",
+        "albanil",
+        "oficial albañil",
+        "oficial albanil",
+        "medio oficial albañil",
+        "albañiles"
+      ],
+      "nota": "ESCO usa 'albañil' directo. El semántico fallaba consistentemente (7115, 2133, 9622).",
+      "esco_uri": "http://data.europa.eu/esco/occupation/05f321f8-055b-407d-bf19-e0ddabda56b7"
     },
-
     "plomero": {
       "isco_primario": "7126",
       "esco_label": "fontanero/fontanera",
-      "variantes": ["plomero", "plomeros", "oficial plomero", "sanitarista", "plomero sanitarista"],
-      "nota": "Argentina usa 'plomero', ESCO usa 'fontanero'. El semántico daba 8211 (montador náutico)."
+      "variantes": [
+        "plomero",
+        "plomeros",
+        "oficial plomero",
+        "sanitarista",
+        "plomero sanitarista"
+      ],
+      "nota": "Argentina usa 'plomero', ESCO usa 'fontanero'. El semántico daba 8211 (montador náutico).",
+      "esco_uri": "http://data.europa.eu/esco/occupation/ed3cf43d-c2c1-4c46-82fc-1375e27e0290"
     },
-
     "martillero": {
       "isco_primario": "3334",
       "esco_label": "agente inmobiliario/agente inmobiliaria",
-      "variantes": ["martillero", "martillero público", "martillero publico", "martillera"],
-      "nota": "Martillero público = agente inmobiliario matriculado en Argentina. Semántico confundía con 'artillería' (0110)."
+      "variantes": [
+        "martillero",
+        "martillero público",
+        "martillero publico",
+        "martillera"
+      ],
+      "nota": "Martillero público = agente inmobiliario matriculado en Argentina. Semántico confundía con 'artillería' (0110).",
+      "esco_uri": "http://data.europa.eu/esco/occupation/8ec8df02-e9dd-43b7-b416-5846ae0414ab"
     },
-
     "repositor": {
       "isco_primario": "9334",
       "esco_label": "reponedor/reponedora",
-      "variantes": ["repositor", "repositora", "repositor de góndola", "repositor externo", "repositor de supermercado", "repositor de mercaderías", "merchandiser"],
-      "nota": "Argentina usa 'repositor', ESCO usa 'reponedor'. Merchandiser en contexto retail = repositor externo. Fuente: correcciones Cynthia 2026-04-08."
+      "variantes": [
+        "repositor",
+        "repositora",
+        "repositor de góndola",
+        "repositor externo",
+        "repositor de supermercado",
+        "repositor de mercaderías",
+        "merchandiser"
+      ],
+      "nota": "Argentina usa 'repositor', ESCO usa 'reponedor'. Merchandiser en contexto retail = repositor externo. Fuente: correcciones Cynthia 2026-04-08.",
+      "esco_uri": "http://data.europa.eu/esco/occupation/d35f9e79-5778-43b4-8667-0e3ba1fcb19a"
     },
-
     "ejecutivo comercial": {
       "isco_primario": "3322",
       "esco_label": "representante comercial",
-      "variantes": ["ejecutivo comercial", "ejecutiva comercial", "ejecutivo de cuentas", "asesora comercial", "asesor comercial B2B", "sales executive"],
-      "nota": "En Argentina 'ejecutivo comercial' = representante comercial. Incluye variantes B2B y anglicismos. Fuente: correcciones Cynthia 2026-04-08."
+      "variantes": [
+        "ejecutivo comercial",
+        "ejecutiva comercial",
+        "ejecutivo de cuentas",
+        "asesora comercial",
+        "asesor comercial B2B",
+        "sales executive"
+      ],
+      "nota": "En Argentina 'ejecutivo comercial' = representante comercial. Incluye variantes B2B y anglicismos. Fuente: correcciones Cynthia 2026-04-08.",
+      "esco_uri": "http://data.europa.eu/esco/occupation/14031d4a-6e99-442f-b4fe-18262b6432b2"
     },
-
     "administrativo contable": {
       "isco_primario": "4311",
       "esco_label": "empleado de contabilidad/empleada de contabilidad",
-      "variantes": ["administrativo contable", "administrativa contable", "auxiliar contable"],
-      "nota": "En Argentina 'administrativo contable' es más común que 'empleado de contabilidad'. Fuente: correcciones Cynthia 2026-04-08."
+      "variantes": [
+        "administrativo contable",
+        "administrativa contable",
+        "auxiliar contable"
+      ],
+      "nota": "En Argentina 'administrativo contable' es más común que 'empleado de contabilidad'. Fuente: correcciones Cynthia 2026-04-08.",
+      "esco_uri": "http://data.europa.eu/esco/occupation/bafbc672-0ad9-41af-9de8-db0c91a24f9b"
     },
-
     "cajero de mostrador": {
       "isco_primario": "5230",
       "esco_label": "cajero/cajera",
-      "variantes": ["cajero de mostrador", "cajera de mostrador", "cajero de comercio", "cajera de comercio"],
-      "nota": "Variantes argentinas de cajero en comercio. Fuente: correcciones Cynthia 2026-04-08."
+      "variantes": [
+        "cajero de mostrador",
+        "cajera de mostrador",
+        "cajero de comercio",
+        "cajera de comercio"
+      ],
+      "nota": "Variantes argentinas de cajero en comercio. Fuente: correcciones Cynthia 2026-04-08.",
+      "esco_uri": "http://data.europa.eu/esco/occupation/2b871272-bd61-4206-bd1a-0b96d7023098"
     },
-
     "operario de deposito": {
       "isco_primario": "9333",
       "esco_label": "mozo de almacén/moza de almacén",
-      "variantes": ["operario de depósito", "operaria de depósito", "operario de deposito", "mozo de depósito", "mozo de deposito"],
-      "nota": "En Argentina 'operario de depósito' es la denominación más frecuente. ESCO usa 'mozo de almacén'. Fuente: correcciones Cynthia 2026-04-08."
+      "variantes": [
+        "operario de depósito",
+        "operaria de depósito",
+        "operario de deposito",
+        "mozo de depósito",
+        "mozo de deposito"
+      ],
+      "nota": "En Argentina 'operario de depósito' es la denominación más frecuente. ESCO usa 'mozo de almacén'. Fuente: correcciones Cynthia 2026-04-08.",
+      "esco_uri": "http://data.europa.eu/esco/occupation/bea705fe-06ac-4147-b8e0-6e8ac1208d8f"
     },
-
     "bachero": {
       "isco_primario": "9412",
       "esco_label": "ayudante de cocina",
-      "variantes": ["bachero", "bachera", "steward"],
-      "nota": "Bachero (Argentina) = friegaplatos/ayudante de cocina (España). Steward en gastronomía argentina = bachero. Fuente: correcciones Cynthia 2026-04-08."
+      "variantes": [
+        "bachero",
+        "bachera",
+        "steward"
+      ],
+      "nota": "Bachero (Argentina) = friegaplatos/ayudante de cocina (España). Steward en gastronomía argentina = bachero. Fuente: correcciones Cynthia 2026-04-08.",
+      "esco_uri": "http://data.europa.eu/esco/occupation/e1cf6897-158d-4b48-a39e-2a3a8cac216c"
     },
-
     "vendedor mayorista": {
       "isco_primario": "5223",
       "esco_label": "vendedor especializado/vendedora especializada",
-      "variantes": ["vendedora mayorista", "vendedor mayorista", "vendedora online", "vendedor online"],
-      "nota": "Variantes de vendedor especializado en contexto mayorista/online. Fuente: correcciones Cynthia 2026-04-08."
+      "variantes": [
+        "vendedora mayorista",
+        "vendedor mayorista",
+        "vendedora online",
+        "vendedor online"
+      ],
+      "nota": "Variantes de vendedor especializado en contexto mayorista/online. Fuente: correcciones Cynthia 2026-04-08.",
+      "esco_uri": "http://data.europa.eu/esco/occupation/547b304b-9a72-4717-9b24-b7046df5f64e"
     },
-
     "gerente de operaciones gastronómicas": {
       "isco_primario": "1412",
       "esco_label": "director de restaurante/directora de restaurante",
-      "variantes": ["gerente de operaciones gastronómicas", "director de operaciones gastronómicas", "gerente gastronómico", "director gastronómico"],
-      "nota": "En Argentina 'gerente de operaciones gastronómicas' = director de restaurante/cadena gastronómica. Fuente: correcciones Cynthia 2026-04-08."
+      "variantes": [
+        "gerente de operaciones gastronómicas",
+        "director de operaciones gastronómicas",
+        "gerente gastronómico",
+        "director gastronómico"
+      ],
+      "nota": "En Argentina 'gerente de operaciones gastronómicas' = director de restaurante/cadena gastronómica. Fuente: correcciones Cynthia 2026-04-08.",
+      "esco_uri": "http://data.europa.eu/esco/occupation/d5eb6150-bbff-4a9c-9d0c-21eab4dbe2b6"
     }
   },
-
   "skills_mapeo": {
     "_descripcion": "Mapeo de frases argentinas a skills ESCO. Cuando se extrae una skill del texto, buscar si hay mapeo.",
-
     "atencion al cliente": {
       "skill_esco": "atender a los clientes",
       "skill_uri": "http://data.europa.eu/esco/skill/8b15f32e-1fc7-44c3-be23-59f01c7d4c08"
     },
-
     "recibir pacientes": {
       "skill_esco": "comunicarse en la asistencia sanitaria",
       "skill_uri": "http://data.europa.eu/esco/skill/abcd1234"
     },
-
     "coordinar turnos": {
       "skill_esco": "programar turnos",
       "skill_uri": "http://data.europa.eu/esco/skill/xyz789"
     },
-
     "gestion de personal": {
       "skill_esco": "gestionar recursos humanos",
       "skill_uri": "http://data.europa.eu/esco/skill/hr123"
     },
-
     "liquidacion de sueldos": {
       "skill_esco": "gestionar nominas",
       "skill_uri": "http://data.europa.eu/esco/skill/payroll001"
     },
-
     "control de stock": {
       "skill_esco": "gestionar el inventario",
       "skill_uri": "http://data.europa.eu/esco/skill/inventory001"
     },
-
     "manejo de caja": {
       "skill_esco": "tramitar pagos",
       "skill_uri": "http://data.europa.eu/esco/skill/payments001"
     }
   },
-
   "contextos_sector": {
     "_descripcion": "Mapeo de sector_empresa a familias ISCO compatibles",
-    "Gastronomia": ["14", "51", "94"],
-    "Retail": ["14", "42", "52"],
-    "Salud": ["22", "32", "53"],
-    "IT": ["25", "35"],
-    "Industria": ["31", "7", "8"],
-    "Logistica": ["43", "83", "93"],
-    "Finanzas": ["12", "24", "33", "41"]
-  }
+    "Gastronomia": [
+      "14",
+      "51",
+      "94"
+    ],
+    "Retail": [
+      "14",
+      "42",
+      "52"
+    ],
+    "Salud": [
+      "22",
+      "32",
+      "53"
+    ],
+    "IT": [
+      "25",
+      "35"
+    ],
+    "Industria": [
+      "31",
+      "7",
+      "8"
+    ],
+    "Logistica": [
+      "43",
+      "83",
+      "93"
+    ],
+    "Finanzas": [
+      "12",
+      "24",
+      "33",
+      "41"
+    ]
+  },
+  "fecha_modificacion": "2026-05-05",
+  "nota_v2": "v2.0: SPEC U-1 v3.1 con revisión de decisión sobre tecnico. URIs explícitas en gerente (7 ctx), operador (3 ctx, sin maquinas/CNC), tecnico (6 ctx, Opción 3). Eliminadas analista, operario (cobertura por reglas ≥98%). Eliminado contexto operador.maquinas/CNC (ISCO 8211 mal declarado). Label drift corregido: jefe de mantenimiento (1321→1219), analista de tesoreria, operador de atencion. Reportes: docs/diagnostico/2026-05-05_verificacion_overmatch_C2.md y baseline_canarios_post_F0.md."
 }

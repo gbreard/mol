@@ -176,6 +176,28 @@ class MatcherV3:
                     'isco_code': isco,
                 }
 
+        # SPEC U-1 v3.1 C2: index isco_4dig → ocupación canónica, fallback para
+        # contextos del diccionario sin URI explícita. Prioriza esco_code == isco_4dig
+        # (padre genérico) por sobre versiones con sufijo (.1.7 etc).
+        self.isco_to_canonical_occupation = {}
+        for o in (self.occ_metadata or []):
+            isco = o.get('isco_4dig') or ''
+            if not isco:
+                continue
+            esco_code = o.get('esco_code') or ''
+            uri = o.get('uri', '')
+            label = o.get('label') or o.get('esco_label') or ''
+            if not uri:
+                continue
+            existing = self.isco_to_canonical_occupation.get(isco)
+            # Preferir la entrada cuyo esco_code coincide con isco (más genérica)
+            if existing is None or (esco_code == isco and existing.get('esco_code') != isco):
+                self.isco_to_canonical_occupation[isco] = {
+                    'uri': uri,
+                    'label': label,
+                    'esco_code': esco_code,
+                }
+
     def _load_business_rules(self):
         """Carga reglas de negocio — override de Supabase o JSON local."""
         try:
@@ -261,7 +283,11 @@ class MatcherV3:
                 continue
 
             # Verificar si el titulo contiene el termino
-            variantes = config.get("variantes", [termino])
+            # SPEC U-1 v3.1 C2: la KEY del JSON siempre es una variante implícita
+            # (ej: "jefe de mantenimiento" matchea aunque "variantes" no lo liste).
+            variantes = list(config.get("variantes", []) or [])
+            if termino not in variantes:
+                variantes.append(termino)
             match_found = any(v.lower() in titulo for v in variantes)
 
             if not match_found:
@@ -271,21 +297,33 @@ class MatcherV3:
             contextos = config.get("contextos", {})
             isco = None
             esco_label = config.get("esco_label", "")
+            # SPEC U-1 v3.1 C2: URI raíz del JSON v2 (entradas con isco_primario)
+            esco_uri_root = config.get("esco_uri", "")
+            ctx_uri_override = ""
+            ctx_label_override = ""
 
             if contextos:
                 # Buscar contexto que matchee con titulo o sector
-                for patron, isco_ctx in contextos.items():
-                    if "|" in patron:
-                        keywords = patron.split("|")
-                        if any(kw in titulo or kw in sector for kw in keywords):
-                            isco = isco_ctx
-                            # v3.4.3: Si el contexto cambió el ISCO, invalidar esco_label del padre
-                            # para que se resuelva contra el nuevo ISCO
-                            if esco_label and isco != config.get("isco_primario"):
-                                esco_label = ""
-                            if self.verbose:
-                                print(f"[V3.3] Dict argentino: '{termino}' + contexto '{patron}' -> ISCO {isco}")
-                            break
+                for patron, ctx_value in contextos.items():
+                    # SPEC U-1 v3.1 C2: contextos sin "|" (ej: "marketing") también
+                    # se evalúan como una sola keyword. Antes se ignoraban.
+                    keywords = patron.split("|") if "|" in patron else [patron]
+                    if any(kw in titulo or kw in sector for kw in keywords):
+                        # SPEC U-1 v3.1 C2: ctx_value puede ser dict (gerente/operador
+                        # tras JSON v2) o string (legacy isco_primario+contextos).
+                        if isinstance(ctx_value, dict):
+                            isco = ctx_value.get("isco")
+                            ctx_uri_override = ctx_value.get("esco_uri", "") or ""
+                            ctx_label_override = ctx_value.get("esco_label", "") or ""
+                        else:
+                            isco = ctx_value
+                        # v3.4.3: Si el contexto cambió el ISCO, invalidar esco_label del padre
+                        # para que se resuelva contra el nuevo ISCO
+                        if esco_label and isco != config.get("isco_primario"):
+                            esco_label = ctx_label_override
+                        if self.verbose:
+                            print(f"[V3.3] Dict argentino: '{termino}' + contexto '{patron}' -> ISCO {isco}")
+                        break
 
             # Si no hay contexto o no matcheo ninguno, usar ISCO primario
             if not isco:
@@ -301,6 +339,23 @@ class MatcherV3:
                         print(f"[V3.3] Dict argentino: '{termino}' -> ISCO familia {isco}, delegando a semantico")
                     continue  # No retornar, seguir buscando o dejar al semantico
 
+                # SPEC U-1 v3.1 C2: resolver esco_uri en orden de prioridad
+                #   1. Override de contexto dict (gerente/operador en JSON v2)
+                #   2. URI raíz del JSON v2 si ISCO == isco_primario de la entrada
+                #   3. Lookup canónico en isco_to_canonical_occupation por isco_4dig
+                #   4. "" si nada de lo anterior aplica
+                final_uri = ""
+                if ctx_uri_override:
+                    final_uri = ctx_uri_override
+                elif esco_uri_root and isco == config.get("isco_primario"):
+                    final_uri = esco_uri_root
+                else:
+                    canonical = self.isco_to_canonical_occupation.get(str(isco))
+                    if canonical:
+                        final_uri = canonical.get("uri", "")
+                        if not esco_label:
+                            esco_label = canonical.get("label", "")
+
                 # Buscar label ESCO si no viene en config
                 if not esco_label:
                     esco_label = self._get_esco_label_for_isco(isco)
@@ -308,6 +363,7 @@ class MatcherV3:
                 return {
                     "isco_code": isco,
                     "esco_label": esco_label,
+                    "esco_uri": final_uri,  # SPEC U-1 v3.1 C2: URI ahora se propaga
                     "score": 0.90,  # Score alto por match de diccionario
                     "metodo": f"diccionario_argentino_{termino.replace(' ', '_')}",
                     "termino_matched": termino
@@ -590,6 +646,9 @@ class MatcherV3:
             semantic_label = dict_match["esco_label"]
             semantic_score = dict_match["score"]
             semantic_metodo = dict_match["metodo"]
+            # SPEC U-1 v3.1 C2: bug fix — antes esta rama no asignaba semantic_uri,
+            # quedaba con el default "" y persistía esco_occupation_uri vacía.
+            semantic_uri = dict_match.get("esco_uri", "")
             if self.verbose:
                 print(f"[V3.4] Semántico (diccionario): {dict_match['termino_matched']} -> ISCO {semantic_isco}")
         else:
