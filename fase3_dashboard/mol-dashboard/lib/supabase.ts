@@ -1200,30 +1200,30 @@ export async function updateIssue(
   return data
 }
 
-// Obtener estadísticas de issues
+// Obtener estadísticas de issues — 3 counts con head:true (no transfiere filas).
+// Excluye auto-validator: la tabla tiene ~396K issues automáticos vs ~738
+// humanos; contarlos juntos distorsiona el panel.
 export async function getIssuesStats(): Promise<IssueStats> {
   const client = getSupabaseClient()
   if (!client) return { pendientes: 0, en_progreso: 0, resueltos: 0 }
 
-  const { data, error } = await client
-    .from('issues')
-    .select('estado')
-
-  if (error) throw error
-
-  const stats: IssueStats = {
-    pendientes: 0,
-    en_progreso: 0,
-    resueltos: 0
+  const countFor = async (estado: string) => {
+    const { count, error } = await client
+      .from('issues')
+      .select('id', { count: 'exact', head: true })
+      .eq('estado', estado)
+      .neq('autor_email', 'auto-validator@mol.gob.ar')
+    if (error) throw error
+    return count ?? 0
   }
 
-  data?.forEach(issue => {
-    if (issue.estado === 'pendiente') stats.pendientes++
-    else if (issue.estado === 'en_progreso') stats.en_progreso++
-    else if (issue.estado === 'resuelto') stats.resueltos++
-  })
+  const [pendientes, en_progreso, resueltos] = await Promise.all([
+    countFor('pendiente'),
+    countFor('en_progreso'),
+    countFor('resuelto'),
+  ])
 
-  return stats
+  return { pendientes, en_progreso, resueltos }
 }
 
 // Obtener issues de una oferta específica
