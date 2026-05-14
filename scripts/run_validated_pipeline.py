@@ -454,9 +454,12 @@ def run_full_pipeline(
                 safe_print("=" * 60)
 
             try:
+                # Defensivo: si ya tenemos offer_ids explícitos (incluye sub-ofertas
+                # creadas por multi-position), no pasar limit. Pasar ambos hacía que
+                # el SELECT WHERE IN (...) LIMIT N recortara N - len(extras) ofertas.
                 stats = run_matching_pipeline(
                     offer_ids=ids_to_process,
-                    limit=limit,
+                    limit=None if ids_to_process else limit,
                     only_pending=only_pending,
                     verbose=verbose
                 )
@@ -759,12 +762,17 @@ def main():
             mark_batch_as_completed
         )
         conn = get_priority_conn()
-        # ids ya está definido desde el sistema de prioridad
-        result = mark_batch_as_completed(conn, ids)
+        # ids ya está definido desde el sistema de prioridad.
+        # Pasar run_id del matching: cierra solo las efectivamente persistidas
+        # en ofertas_esco_matching del run actual; las que no, vuelven a pendiente.
+        # Si skip_matching=True no hay run_id → fallback a criterio NLP (legacy).
+        matching_run_id = (resultados.get("matching") or {}).get("run_id")
+        result = mark_batch_as_completed(conn, ids, run_id=matching_run_id)
         if not args.quiet:
+            criterio = "matching del run" if matching_run_id else "NLP"
             safe_print(
-                f"\nLote cerrado: {result['cerradas']} procesadas, "
-                f"{result['reseteadas']} sin NLP (devueltas a pendiente)"
+                f"\nLote cerrado ({criterio}): {result['cerradas']} procesadas, "
+                f"{result['reseteadas']} devueltas a pendiente"
             )
         conn.close()
 

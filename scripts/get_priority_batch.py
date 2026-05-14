@@ -605,18 +605,20 @@ def mark_batch_as_processing(conn, offer_ids: list, lote_id: str):
     conn.commit()
 
 
-def mark_batch_as_completed(conn, offer_ids: list) -> dict:
+def mark_batch_as_completed(conn, offer_ids: list, run_id: str = None) -> dict:
     """
     Marca el final de un lote: solo cierra como 'procesado' las ofertas que
-    efectivamente tienen NLP en BD; las que faltan vuelven a 'pendiente' para
-    reintentar en el próximo lote.
+    efectivamente quedaron persistidas; las que faltan vuelven a 'pendiente'
+    para reintentar en el próximo lote.
 
-    Esto evita zombis cuando el pipeline falla silenciosamente (Ollama caído,
-    proceso interrumpido, excepción atrapada que no propaga, etc.) y marca
-    todo como completo aunque NLP no haya corrido.
+    Si `run_id` se proporciona: el criterio es tener entry en
+    `ofertas_esco_matching` para ese run_id (cubre zombies post-matching).
+    Si no se proporciona: criterio legacy = tener NLP en BD (cubre zombies
+    post-NLP, que es lo único que se puede chequear si skip_matching=True).
 
     Args:
         offer_ids: Lista de IDs de ofertas asignadas al lote
+        run_id: Si se pasa, verifica matching del run específico en lugar de NLP
 
     Returns:
         dict con {'cerradas': int, 'reseteadas': int}
@@ -628,30 +630,64 @@ def mark_batch_as_completed(conn, offer_ids: list) -> dict:
     ids_str = [str(oid) for oid in offer_ids]
     placeholders = ','.join('?' for _ in ids_str)
 
-    cur = conn.execute(
-        f'''
-        UPDATE ofertas_prioridad
-        SET estado = 'procesado', fecha_procesado = ?
-        WHERE id_oferta IN ({placeholders})
-          AND EXISTS (SELECT 1 FROM ofertas_nlp n WHERE n.id_oferta = ofertas_prioridad.id_oferta)
-        ''',
-        [now, *ids_str],
-    )
-    cerradas = cur.rowcount
+    if run_id:
+        cur = conn.execute(
+            f'''
+            UPDATE ofertas_prioridad
+            SET estado = 'procesado', fecha_procesado = ?
+            WHERE id_oferta IN ({placeholders})
+              AND EXISTS (
+                  SELECT 1 FROM ofertas_esco_matching m
+                  WHERE m.id_oferta = ofertas_prioridad.id_oferta
+                    AND m.run_id = ?
+              )
+            ''',
+            [now, *ids_str, run_id],
+        )
+        cerradas = cur.rowcount
 
-    cur = conn.execute(
-        f'''
-        UPDATE ofertas_prioridad
-        SET estado = 'pendiente',
-            lote_asignado = NULL,
-            fecha_asignado = NULL,
-            fecha_procesado = NULL
-        WHERE id_oferta IN ({placeholders})
-          AND NOT EXISTS (SELECT 1 FROM ofertas_nlp n WHERE n.id_oferta = ofertas_prioridad.id_oferta)
-        ''',
-        ids_str,
-    )
-    reseteadas = cur.rowcount
+        cur = conn.execute(
+            f'''
+            UPDATE ofertas_prioridad
+            SET estado = 'pendiente',
+                lote_asignado = NULL,
+                fecha_asignado = NULL,
+                fecha_procesado = NULL
+            WHERE id_oferta IN ({placeholders})
+              AND NOT EXISTS (
+                  SELECT 1 FROM ofertas_esco_matching m
+                  WHERE m.id_oferta = ofertas_prioridad.id_oferta
+                    AND m.run_id = ?
+              )
+            ''',
+            [*ids_str, run_id],
+        )
+        reseteadas = cur.rowcount
+    else:
+        cur = conn.execute(
+            f'''
+            UPDATE ofertas_prioridad
+            SET estado = 'procesado', fecha_procesado = ?
+            WHERE id_oferta IN ({placeholders})
+              AND EXISTS (SELECT 1 FROM ofertas_nlp n WHERE n.id_oferta = ofertas_prioridad.id_oferta)
+            ''',
+            [now, *ids_str],
+        )
+        cerradas = cur.rowcount
+
+        cur = conn.execute(
+            f'''
+            UPDATE ofertas_prioridad
+            SET estado = 'pendiente',
+                lote_asignado = NULL,
+                fecha_asignado = NULL,
+                fecha_procesado = NULL
+            WHERE id_oferta IN ({placeholders})
+              AND NOT EXISTS (SELECT 1 FROM ofertas_nlp n WHERE n.id_oferta = ofertas_prioridad.id_oferta)
+            ''',
+            ids_str,
+        )
+        reseteadas = cur.rowcount
 
     conn.commit()
     return {'cerradas': cerradas, 'reseteadas': reseteadas}

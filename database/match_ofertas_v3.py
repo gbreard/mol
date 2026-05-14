@@ -2042,7 +2042,10 @@ def run_matching_pipeline(
         '''
         params = []
 
-    if limit:
+    # Solo aplicar LIMIT cuando NO se pasaron offer_ids explícitos.
+    # Caller que pasa offer_ids ya decidió cuántas; aplicar LIMIT recortaba IDs
+    # silenciosamente cuando len(offer_ids) > limit (p.ej. lote+sub-ofertas).
+    if limit and not offer_ids:
         query += f' LIMIT {limit}'
 
     cur = conn.execute(query, params)
