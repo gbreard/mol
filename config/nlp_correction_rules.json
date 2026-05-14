@@ -142,7 +142,7 @@
         "descripcion_contiene_alguno": ["experiencia comprobable", "experiencia mínima de 3", "experiencia mínima de 5", "experiencia en puesto similar"],
         "titulo_contiene_alguno": ["senior", "sr", "ssr"],
         "override_si_actual_es": ["junior", "trainee"],
-        "resultado": "semi_senior"
+        "resultado": "semisenior"
       }
     ]
   },
