@@ -162,8 +162,10 @@ def import_sql(sql_file):
     nuevas = count_after - count_before
     ignoradas = 0
     
-    # Contar INSERTs en el SQL para saber cuántas se ignoraron
-    insert_count = sql_content.count('INSERT OR IGNORE')
+    # Contar INSERTs en el SQL para saber cuántas se ignoraron.
+    # Soporta tanto el formato legacy (INSERT OR IGNORE) como el nuevo
+    # (INSERT INTO ofertas ... ON CONFLICT) introducido en el fix del 2026-05-12.
+    insert_count = sql_content.count('INSERT OR IGNORE') + sql_content.count('INSERT INTO ofertas')
     ignoradas = insert_count - nuevas
     
     conn.close()
