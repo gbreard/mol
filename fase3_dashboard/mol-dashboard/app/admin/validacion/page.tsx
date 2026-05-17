@@ -31,6 +31,7 @@ const EMPTY_FILTERS: ValidationFiltersState = {
   nivelEducativo: "",
   scoreRange: "",
   estadoValidacion: "",
+  runId: "",
 };
 
 interface GoldSetCandidate {
