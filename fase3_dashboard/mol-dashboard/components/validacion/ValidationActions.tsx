@@ -336,7 +336,7 @@ export function ValidationActions({
           variant="outline"
           disabled={saving}
           onClick={() => handleQuickAction("ok")}
-          className="h-7 text-xs hover:bg-green-50 hover:text-green-700 hover:border-green-300"
+          className="h-7 lg:h-8 text-xs lg:text-sm hover:bg-green-50 hover:text-green-700 hover:border-green-300"
         >
           <Check className="w-3.5 h-3.5 mr-1" />
           OK
@@ -348,7 +348,7 @@ export function ValidationActions({
           variant="outline"
           disabled={saving}
           onClick={() => handleQuickAction("error")}
-          className="h-7 text-xs hover:bg-red-50 hover:text-red-700 hover:border-red-300"
+          className="h-7 lg:h-8 text-xs lg:text-sm hover:bg-red-50 hover:text-red-700 hover:border-red-300"
         >
           <X className="w-3.5 h-3.5 mr-1" />
           Error
@@ -360,7 +360,7 @@ export function ValidationActions({
           variant="outline"
           disabled={saving}
           onClick={() => handleQuickAction("revisar")}
-          className="h-7 text-xs hover:bg-amber-50 hover:text-amber-700 hover:border-amber-300"
+          className="h-7 lg:h-8 text-xs lg:text-sm hover:bg-amber-50 hover:text-amber-700 hover:border-amber-300"
         >
           <AlertTriangle className="w-3.5 h-3.5 mr-1" />
           Revisar
@@ -372,7 +372,7 @@ export function ValidationActions({
           variant="outline"
           disabled={saving}
           onClick={() => handleQuickAction("basura")}
-          className="h-7 text-xs hover:bg-gray-100 hover:text-gray-700"
+          className="h-7 lg:h-8 text-xs lg:text-sm hover:bg-gray-100 hover:text-gray-700"
         >
           <Trash2 className="w-3.5 h-3.5 mr-1" />
           Basura
@@ -386,7 +386,7 @@ export function ValidationActions({
           variant="outline"
           disabled={saving}
           onClick={handleOpenEditar}
-          className="h-7 text-xs hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
+          className="h-7 lg:h-8 text-xs lg:text-sm hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
         >
           <Pencil className="w-3.5 h-3.5 mr-1" />
           Editar
@@ -400,7 +400,7 @@ export function ValidationActions({
           variant="outline"
           disabled={saving}
           onClick={() => setGoldSetOpen(true)}
-          className="h-7 text-xs hover:bg-amber-50 hover:text-amber-700 hover:border-amber-300"
+          className="h-7 lg:h-8 text-xs lg:text-sm hover:bg-amber-50 hover:text-amber-700 hover:border-amber-300"
         >
           <Star className="w-3.5 h-3.5 mr-1" />
           Gold Set

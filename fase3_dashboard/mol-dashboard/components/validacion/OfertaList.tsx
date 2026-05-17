@@ -73,7 +73,7 @@ export function OfertaList({ ofertas, selectedId, onSelect, goldSetCandidates }:
             <button
               key={oferta.id_oferta}
               onClick={() => onSelect(oferta)}
-              className={`w-full text-left px-3 py-1.5 flex items-center gap-2 transition-colors text-xs border-b border-gray-50 ${
+              className={`w-full text-left px-3 py-1.5 flex items-center gap-2 transition-colors text-xs lg:text-sm border-b border-gray-50 ${
                 isSelected
                   ? "bg-blue-50 border-l-2 border-l-blue-500"
                   : "hover:bg-gray-50 border-l-2 border-l-transparent"

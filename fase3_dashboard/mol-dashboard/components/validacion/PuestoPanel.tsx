@@ -12,9 +12,9 @@ interface PuestoPanelProps {
 function Field({ label, value }: { label: string; value: string | number | null | undefined }) {
   if (value == null || value === "") return null;
   return (
-    <div className="flex gap-2 py-1 text-xs">
-      <span className="font-medium text-gray-500 w-[100px] shrink-0">{label}</span>
-      <span className="text-gray-900">{String(value)}</span>
+    <div className="flex gap-2 py-1 text-xs lg:text-sm">
+      <span className="font-medium text-gray-500 w-[100px] lg:w-[120px] shrink-0">{label}</span>
+      <span className="text-gray-900 break-words min-w-0">{String(value)}</span>
     </div>
   );
 }
@@ -45,17 +45,17 @@ export function PuestoPanel({ oferta }: PuestoPanelProps) {
               </a>
             )}
           </div>
-          <div className="flex items-center gap-2 mt-1 text-xs text-gray-500 flex-wrap">
+          <div className="flex items-center gap-2 mt-1 text-xs lg:text-sm text-gray-500 flex-wrap">
             {oferta.empresa && <span>{oferta.empresa}</span>}
             {oferta.portal && (
-              <Badge variant="outline" className="text-[10px]">
+              <Badge variant="outline" className="text-[10px] lg:text-xs">
                 {oferta.portal}
               </Badge>
             )}
             {oferta.matching_version && (
               <Badge
                 variant="outline"
-                className="text-[10px] font-mono text-gray-400 border-gray-200"
+                className="text-[10px] lg:text-xs font-mono text-gray-400 border-gray-200"
                 title={oferta.run_id ? `Run: ${oferta.run_id}` : undefined}
               >
                 Matcher: {oferta.matching_version}
@@ -70,9 +70,9 @@ export function PuestoPanel({ oferta }: PuestoPanelProps) {
         {/* Description */}
         {oferta.descripcion && (
           <div>
-            <span className="text-xs font-medium text-gray-500">Descripcion</span>
+            <span className="text-xs lg:text-sm font-medium text-gray-500">Descripcion</span>
             <div className="mt-1 rounded border bg-gray-50 p-3 max-h-[250px] overflow-y-auto">
-              <p className="text-xs text-gray-800 whitespace-pre-wrap leading-relaxed">
+              <p className="text-xs lg:text-sm text-gray-800 whitespace-pre-wrap leading-relaxed break-words">
                 {oferta.descripcion}
               </p>
             </div>
@@ -81,7 +81,7 @@ export function PuestoPanel({ oferta }: PuestoPanelProps) {
 
         {/* NLP Fields */}
         <div className="space-y-0.5">
-          <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">NLP</span>
+          <span className="text-xs lg:text-sm font-medium text-gray-400 uppercase tracking-wider">NLP</span>
           <Field label="Area" value={oferta.area_funcional} />
           <Field label="Seniority" value={oferta.nivel_seniority} />
           <Field label="Modalidad" value={oferta.modalidad} />
@@ -97,9 +97,9 @@ export function PuestoPanel({ oferta }: PuestoPanelProps) {
         {/* Tasks */}
         {oferta.tareas_explicitas && (
           <div>
-            <span className="text-xs font-medium text-gray-500">Tareas</span>
+            <span className="text-xs lg:text-sm font-medium text-gray-500">Tareas</span>
             <div className="mt-1 rounded border bg-gray-50 p-2 max-h-[150px] overflow-y-auto">
-              <p className="text-xs text-gray-800 whitespace-pre-wrap">
+              <p className="text-xs lg:text-sm text-gray-800 whitespace-pre-wrap break-words">
                 {oferta.tareas_explicitas}
               </p>
             </div>
@@ -109,13 +109,13 @@ export function PuestoPanel({ oferta }: PuestoPanelProps) {
         {/* Skills tecnicas from NLP */}
         {oferta.skills_tecnicas && oferta.skills_tecnicas.length > 0 && (
           <div>
-            <span className="text-xs font-medium text-gray-500">Skills tecnicas (NLP)</span>
+            <span className="text-xs lg:text-sm font-medium text-gray-500">Skills tecnicas (NLP)</span>
             <div className="flex flex-wrap gap-1 mt-1">
               {(Array.isArray(oferta.skills_tecnicas)
                 ? oferta.skills_tecnicas
                 : String(oferta.skills_tecnicas).split(/[;,]\s*/).filter(Boolean)
               ).map((s, i) => (
-                <Badge key={i} variant="secondary" className="text-[10px]">
+                <Badge key={i} variant="secondary" className="text-[10px] lg:text-xs">
                   {s}
                 </Badge>
               ))}
@@ -124,7 +124,7 @@ export function PuestoPanel({ oferta }: PuestoPanelProps) {
         )}
 
         {/* ID */}
-        <div className="text-[10px] text-gray-400 font-mono pt-2 border-t">
+        <div className="text-[10px] lg:text-xs text-gray-400 font-mono pt-2 border-t">
           #{oferta.id_oferta}
         </div>
       </div>

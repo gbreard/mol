@@ -63,7 +63,7 @@ function MetodoBadge({ metodo }: { metodo: string | null }) {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Badge variant="outline" className={`text-[11px] cursor-help ${color}`}>
+          <Badge variant="outline" className={`text-[11px] lg:text-xs cursor-help ${color}`}>
             {label}
           </Badge>
         </TooltipTrigger>
@@ -92,13 +92,13 @@ export function ClasificacionPanel({ oferta }: ClasificacionPanelProps) {
         {/* Score + Metodo */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <span className="text-xs text-gray-500">Score</span>
+            <span className="text-xs lg:text-sm text-gray-500">Score</span>
             <div className="mt-0.5">
               <ScoreBar score={oferta.occupation_match_score} />
             </div>
           </div>
           <div>
-            <span className="text-xs text-gray-500">Metodo</span>
+            <span className="text-xs lg:text-sm text-gray-500">Metodo</span>
             <div className="mt-1">
               <MetodoBadge metodo={oferta.decision_metodo} />
             </div>
@@ -106,34 +106,34 @@ export function ClasificacionPanel({ oferta }: ClasificacionPanelProps) {
         </div>
         {/* Descripcion del metodo — siempre visible */}
         {oferta.decision_metodo && (
-          <p className="text-[11px] text-gray-500 italic bg-gray-50 rounded px-2 py-1">
+          <p className="text-[11px] lg:text-xs lg:text-sm text-gray-500 italic bg-gray-50 rounded px-2 py-1">
             {METODO_LABELS[oferta.decision_metodo]?.description || oferta.decision_metodo}
           </p>
         )}
 
         {/* ESCO details */}
-        <div className="space-y-1 text-xs">
+        <div className="space-y-1 text-xs lg:text-sm">
           {oferta.esco_occupation_label && (
             <div className="flex gap-2 py-1">
-              <span className="font-medium text-gray-500 w-[80px] shrink-0">ESCO</span>
+              <span className="font-medium text-gray-500 w-[80px] lg:w-[100px] shrink-0">ESCO</span>
               <span className="text-gray-900">{oferta.esco_occupation_label}</span>
             </div>
           )}
           {oferta.regla_aplicada && (
             <div className="flex gap-2 py-1">
-              <span className="font-medium text-gray-500 w-[80px] shrink-0">Regla</span>
-              <span className="text-gray-900 font-mono text-[11px]">{oferta.regla_aplicada}</span>
+              <span className="font-medium text-gray-500 w-[80px] lg:w-[100px] shrink-0">Regla</span>
+              <span className="text-gray-900 font-mono text-[11px] lg:text-xs">{oferta.regla_aplicada}</span>
             </div>
           )}
           {oferta.clae_descripcion_seccion && (
             <div className="flex gap-2 py-1">
-              <span className="font-medium text-gray-500 w-[80px] shrink-0">CLAE</span>
+              <span className="font-medium text-gray-500 w-[80px] lg:w-[100px] shrink-0">CLAE</span>
               <span className="text-gray-900">{oferta.clae_descripcion_seccion}</span>
             </div>
           )}
           {oferta.sector_empresa && (
             <div className="flex gap-2 py-1">
-              <span className="font-medium text-gray-500 w-[80px] shrink-0">Sector NLP</span>
+              <span className="font-medium text-gray-500 w-[80px] lg:w-[100px] shrink-0">Sector NLP</span>
               <span className="text-gray-500 italic">{oferta.sector_empresa}</span>
             </div>
           )}
@@ -141,7 +141,7 @@ export function ClasificacionPanel({ oferta }: ClasificacionPanelProps) {
 
         {/* Skills ESCO */}
         <div>
-          <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+          <span className="text-xs lg:text-sm font-medium text-gray-400 uppercase tracking-wider">
             Skills ESCO
           </span>
           <div className="mt-2">

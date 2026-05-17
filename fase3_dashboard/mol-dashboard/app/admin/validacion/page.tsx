@@ -210,8 +210,19 @@ export default function ValidacionPage() {
     return () => window.removeEventListener("keydown", handleKey);
   }, [navigateTo]);
 
+  // Responsive: en lg+ usa layout horizontal con altura fija (viewport).
+  // En pantallas <lg apila vertical y permite scroll de la página entera.
+  const [isWide, setIsWide] = useState(true);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    setIsWide(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsWide(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)]">
+    <div className="flex flex-col min-h-[calc(100vh-64px)] lg:h-[calc(100vh-64px)]">
       {/* Filters bar + Gold Set toggle */}
       <div className="border-b bg-white px-4 py-2 shrink-0">
         <div className="flex items-center gap-2">
@@ -273,10 +284,10 @@ export default function ValidacionPage() {
           No se encontraron ofertas con los filtros seleccionados
         </div>
       ) : (
-        <div className="flex-1 min-h-0">
-          <ResizablePanelGroup direction="horizontal" className="h-full">
+        <div className={`flex-1 min-h-0 ${isWide ? "" : "h-[1500px]"}`}>
+          <ResizablePanelGroup direction={isWide ? "horizontal" : "vertical"} className="h-full">
             {/* Panel 1: List */}
-            <ResizablePanel defaultSize={20} minSize={15} maxSize={30}>
+            <ResizablePanel defaultSize={isWide ? 20 : 25} minSize={isWide ? 15 : 20} maxSize={isWide ? 30 : 40}>
               <div className="h-full flex flex-col border-r">
                 <div className="px-3 py-1.5 border-b bg-gray-50 text-xs text-gray-500 shrink-0">
                   {offset + currentIndex + 1} / {total} ofertas
@@ -305,7 +316,7 @@ export default function ValidacionPage() {
             <ResizableHandle withHandle />
 
             {/* Panel 2: Puesto */}
-            <ResizablePanel defaultSize={40} minSize={25}>
+            <ResizablePanel defaultSize={isWide ? 40 : 35} minSize={isWide ? 25 : 25}>
               {selectedOferta ? (
                 <PuestoPanel oferta={selectedOferta} />
               ) : (
@@ -318,7 +329,7 @@ export default function ValidacionPage() {
             <ResizableHandle withHandle />
 
             {/* Panel 3: Clasificacion */}
-            <ResizablePanel defaultSize={40} minSize={25}>
+            <ResizablePanel defaultSize={isWide ? 40 : 40} minSize={isWide ? 25 : 25}>
               {selectedOferta ? (
                 <ClasificacionPanel oferta={selectedOferta} />
               ) : (
