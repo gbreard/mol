@@ -2029,7 +2029,8 @@ const VALIDACION_SELECT = `
   clae_code, clae_grupo, clae_seccion,
   nivel_educativo, experiencia_min_anios, salario_min, salario_max,
   skills_tecnicas, soft_skills,
-  validacion_humana, validacion_humana_at, validacion_humana_por, validacion_correcciones
+  validacion_humana, validacion_humana_at, validacion_humana_por, validacion_correcciones,
+  run_id, matching_version
 `
 
 export async function getOfertasValidacion(
@@ -2115,6 +2116,11 @@ export async function getOfertasValidacion(
     } else {
       query = query.eq('validacion_humana', filters.estadoValidacion)
     }
+  }
+
+  // Run / corrida — para auditar ofertas de una corrida específica
+  if (filters.runId) {
+    query = query.eq('run_id', filters.runId)
   }
 
   const { data, error, count } = await query
@@ -2223,6 +2229,39 @@ export async function getValidacionFilterOptions(): Promise<ValidacionFilterOpti
     sectores: unique(sectorRes.data, 'clae_descripcion_seccion'),
     nivelesEducativos: unique(educRes.data, 'nivel_educativo'),
   }
+}
+
+// ========== RUNS DISPONIBLES (filtro UI) ==========
+
+const RUN_ID_DATE_RE = /^(?:run_|reapply_|spec_[a-z]_[a-z]+_)(\d{4})(\d{2})(\d{2})[T_](\d{2})(\d{2})(\d{2})?/
+
+const MESES_ABBR = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+
+function parseRunFecha(runId: string): string | null {
+  const m = RUN_ID_DATE_RE.exec(runId)
+  if (!m) return null
+  const [, y, mo, d, h, mi] = m
+  const mes = MESES_ABBR[parseInt(mo, 10) - 1]
+  if (!mes) return null
+  return `${parseInt(d, 10)} ${mes} ${y}, ${h}:${mi}`
+}
+
+import type { RunOption as RunOptionType } from './types'
+
+export async function getRunsDisponibles(): Promise<RunOptionType[]> {
+  const client = getSupabaseClient()
+  if (!client) return []
+  const { data, error } = await client.rpc('get_runs_disponibles')
+  if (error) {
+    console.error('Error fetching runs disponibles:', error)
+    return []
+  }
+  const rows = (data || []) as { run_id: string; n: number }[]
+  return rows.map((r) => ({
+    run_id: r.run_id,
+    n: Number(r.n) || 0,
+    fecha_legible: parseRunFecha(r.run_id),
+  }))
 }
 
 // ========== VALIDACIÓN HUMANA ==========

@@ -52,6 +52,15 @@ export function PuestoPanel({ oferta }: PuestoPanelProps) {
                 {oferta.portal}
               </Badge>
             )}
+            {oferta.matching_version && (
+              <Badge
+                variant="outline"
+                className="text-[10px] font-mono text-gray-400 border-gray-200"
+                title={oferta.run_id ? `Run: ${oferta.run_id}` : undefined}
+              >
+                Matcher: {oferta.matching_version}
+              </Badge>
+            )}
             {oferta.fecha_publicacion && (
               <span className="text-gray-400">{oferta.fecha_publicacion}</span>
             )}

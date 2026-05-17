@@ -1,6 +1,18 @@
 {
   "pages": [
     {
+      "id": "admin-aprendizaje",
+      "path": "/admin/aprendizaje",
+      "label": "Admin Aprendizaje",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/processing-metrics"
+      ]
+    },
+    {
       "id": "admin-arquitectura",
       "path": "/admin/arquitectura",
       "label": "Arquitectura",
@@ -18,19 +30,57 @@
       ]
     },
     {
+      "id": "admin-catalogo",
+      "path": "/admin/catalogo",
+      "label": "Admin Catalogo",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/unclassified-items",
+        "/api/catalog-item",
+        "/api/catalog-item/sinonimo",
+        "/api/catalog-item/descartar"
+      ]
+    },
+    {
       "id": "admin-configuracion",
       "path": "/admin/configuracion",
       "label": "Configuracion",
       "type": "admin",
       "description": "Configuracion del sistema",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "admin-issues-id",
+      "path": "/admin/issues/[id]",
+      "label": "Admin Issues [Id]",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "PropagationInfoPanel",
+        "ProcessPropagationPanel",
+        "RequestPropagationModal"
+      ],
+      "dataSource": [
+        "/api/issues/${issue.id}/cancelar-solicitud",
+        "issues"
+      ]
+    },
+    {
+      "id": "admin-issues-cola-propagacion",
+      "path": "/admin/issues/cola-propagacion",
+      "label": "Admin Issues Cola Propagacion",
+      "type": "admin",
+      "description": "",
       "rendering": "client",
       "components": [],
       "dataSource": [
-        "ofertas_dashboard",
-        "ofertas_skills",
-        "ocupaciones_esco",
-        "issues",
-        "sistema_estado"
+        "/api/issues/cola-propagacion"
       ]
     },
     {
@@ -43,6 +93,145 @@
       "components": [
         "IssueList",
         "IssueBadge"
+      ],
+      "dataSource": [
+        "ofertas_dashboard"
+      ]
+    },
+    {
+      "id": "admin-issues-sin-propagacion",
+      "path": "/admin/issues/sin-propagacion",
+      "label": "Admin Issues Sin Propagacion",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "RequestPropagationModal"
+      ],
+      "dataSource": [
+        "/api/issues/sin-propagacion"
+      ]
+    },
+    {
+      "id": "admin-laboratorio-brecha-calificacion",
+      "path": "/admin/laboratorio/brecha-calificacion",
+      "label": "Admin Laboratorio Brecha Calificacion",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "ChartContainer",
+        "BrechaCalificacionChart",
+        "CATEGORIA_COLORS",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "admin-laboratorio-concentracion-ocupacional",
+      "path": "/admin/laboratorio/concentracion-ocupacional",
+      "label": "Admin Laboratorio Concentracion Ocupacional",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "ChartContainer",
+        "ConcentracionOcupacionalChart",
+        "CLASIFICACION_COLORS",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "admin-laboratorio-digitalizacion-sector",
+      "path": "/admin/laboratorio/digitalizacion-sector",
+      "label": "Admin Laboratorio Digitalizacion Sector",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "ChartContainer",
+        "DigitalizacionSectorChart",
+        "NIVEL_COLORS",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "admin-laboratorio-indice-remoto",
+      "path": "/admin/laboratorio/indice-remoto",
+      "label": "Admin Laboratorio Indice Remoto",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "ChartContainer",
+        "IndiceRemotoChart",
+        "MODALIDAD_COLORS",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "admin-laboratorio",
+      "path": "/admin/laboratorio",
+      "label": "Admin Laboratorio",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "admin-laboratorio-tension-demanda",
+      "path": "/admin/laboratorio/tension-demanda",
+      "label": "Admin Laboratorio Tension Demanda",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "ChartContainer",
+        "TensionDemandaChart",
+        "CUADRANTE_COLORS",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "admin-laboratorio-transicion-skills",
+      "path": "/admin/laboratorio/transicion-skills",
+      "label": "Admin Laboratorio Transicion Skills",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "ChartContainer",
+        "TransicionSkillsChart",
+        "TransicionNodo",
+        "TransicionEnlace",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "admin-laboratorio-velocidad-cobertura",
+      "path": "/admin/laboratorio/velocidad-cobertura",
+      "label": "Admin Laboratorio Velocidad Cobertura",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "ChartContainer",
+        "VelocidadCoberturaChart",
+        "VELOCIDAD_COLORS",
+        "InsightList",
+        "InsightItem"
       ],
       "dataSource": []
     },
@@ -68,10 +257,7 @@
       "rendering": "client",
       "components": [],
       "dataSource": [
-        "ofertas_dashboard",
-        "ofertas_skills",
-        "sistema_estado",
-        "vw_distribucion_isco"
+        "sistema_estado"
       ]
     },
     {
@@ -80,14 +266,227 @@
       "label": "Admin Dashboard",
       "type": "admin",
       "description": "Estado general del sistema y metricas principales",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "admin-perfil-argentino",
+      "path": "/admin/perfil-argentino",
+      "label": "Admin Perfil Argentino",
+      "type": "admin",
+      "description": "",
+      "rendering": "server",
+      "components": [
+        "PerfilArgentinoAdmin"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "admin-procesamiento-catalogo",
+      "path": "/admin/procesamiento/catalogo",
+      "label": "Admin Procesamiento Catalogo",
+      "type": "admin",
+      "description": "",
       "rendering": "client",
       "components": [],
       "dataSource": [
-        "/api/admin/stats",
-        "ofertas_dashboard",
-        "ofertas_skills",
-        "sistema_estado"
+        "/api/catalogo-mol/stats",
+        "/api/catalogo-mol/unclassified?min_frecuencia=${minFreq}",
+        "/api/catalogo-mol/skills",
+        "/api/catalogo-mol/ocupaciones",
+        "/api/catalogo-mol/skills?${params}",
+        "/api/catalogo-mol/ocupaciones?${params}",
+        "/api/catalogo-mol/versiones"
       ]
+    },
+    {
+      "id": "admin-procesamiento-correcciones",
+      "path": "/admin/procesamiento/correcciones",
+      "label": "Admin Procesamiento Correcciones",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/admin/analizar-correcciones?estado=pendiente",
+        "/api/admin/analizar-correcciones"
+      ]
+    },
+    {
+      "id": "admin-procesamiento-diccionarios",
+      "path": "/admin/procesamiento/diccionarios",
+      "label": "Admin Procesamiento Diccionarios",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "admin-procesamiento-editores",
+      "path": "/admin/procesamiento/editores",
+      "label": "Admin Procesamiento Editores",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/config-editor?key=${key}",
+        "/data/${key}.json",
+        "/api/config-editor"
+      ]
+    },
+    {
+      "id": "admin-procesamiento-fabrica-equivalencias",
+      "path": "/admin/procesamiento/fabrica/equivalencias",
+      "label": "Admin Procesamiento Fabrica Equivalencias",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/skill-equivalences?${params}",
+        "/data/skills_searchable.json",
+        "/api/skill-equivalences"
+      ]
+    },
+    {
+      "id": "admin-procesamiento-fabrica",
+      "path": "/admin/procesamiento/fabrica",
+      "label": "Admin Procesamiento Fabrica",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/pipeline-local-status",
+        "/api/pipeline-commands?limit=10",
+        "/api/pipeline-commands"
+      ]
+    },
+    {
+      "id": "admin-procesamiento-fine-tuning",
+      "path": "/admin/procesamiento/fine-tuning",
+      "label": "Admin Procesamiento Fine Tuning",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/training-readiness"
+      ]
+    },
+    {
+      "id": "admin-procesamiento-nlp-inference",
+      "path": "/admin/procesamiento/nlp-inference",
+      "label": "Admin Procesamiento Nlp Inference",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "ConfigChangelog"
+      ],
+      "dataSource": [
+        "/api/config-editor?key=nlp_inference_rules",
+        "/data/nlp_inference_rules.json",
+        "/api/config-editor"
+      ]
+    },
+    {
+      "id": "admin-procesamiento-oficios",
+      "path": "/admin/procesamiento/oficios",
+      "label": "Admin Procesamiento Oficios",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "ConfigChangelog"
+      ],
+      "dataSource": [
+        "/api/config-editor?key=oficios_arg",
+        "/data/oficios_arg.json",
+        "/api/config-editor"
+      ]
+    },
+    {
+      "id": "admin-procesamiento",
+      "path": "/admin/procesamiento",
+      "label": "Admin Procesamiento",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "admin-procesamiento-perfil-argentino",
+      "path": "/admin/procesamiento/perfil-argentino",
+      "label": "Admin Procesamiento Perfil Argentino",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "PerfilArgentinoAdmin"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "admin-procesamiento-reglas",
+      "path": "/admin/procesamiento/reglas",
+      "label": "Admin Procesamiento Reglas",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "ConfigChangelog"
+      ],
+      "dataSource": [
+        "/api/config-editor?key=matching_rules_business",
+        "/data/matching_rules_business.json",
+        "/api/config-editor/preview",
+        "/api/config-editor"
+      ]
+    },
+    {
+      "id": "admin-procesamiento-sinonimos",
+      "path": "/admin/procesamiento/sinonimos",
+      "label": "Admin Procesamiento Sinonimos",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "ConfigChangelog"
+      ],
+      "dataSource": [
+        "/api/config-editor?key=sinonimos_argentinos_esco",
+        "/data/sinonimos_argentinos_esco.json",
+        "/api/config-editor"
+      ]
+    },
+    {
+      "id": "admin-scraping-comandos",
+      "path": "/admin/scraping/comandos",
+      "label": "Admin Scraping Comandos",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/scraping-schedule",
+        "/api/scraping-commands",
+        "/api/pipeline-commands"
+      ]
+    },
+    {
+      "id": "admin-scraping-dinamica",
+      "path": "/admin/scraping/dinamica",
+      "label": "Admin Scraping Dinamica",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": []
     },
     {
       "id": "admin-scraping",
@@ -98,8 +497,8 @@
       "rendering": "client",
       "components": [],
       "dataSource": [
-        "sistema_estado",
-        "ofertas_dashboard"
+        "scraping_live_stats",
+        "pipeline_local_status"
       ]
     },
     {
@@ -121,7 +520,19 @@
         "/data/esco_skills_hierarchy.json",
         "/data/occupations_index.json",
         "/data/occupation_full_detail.json",
-        "/data/mol_skills_profile.json"
+        "/api/skills-intelligence"
+      ]
+    },
+    {
+      "id": "admin-solicitudes",
+      "path": "/admin/solicitudes",
+      "label": "Admin Solicitudes",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/admin/solicitudes"
       ]
     },
     {
@@ -134,6 +545,25 @@
       "components": [],
       "dataSource": [
         "/api/admin/users"
+      ]
+    },
+    {
+      "id": "admin-validacion",
+      "path": "/admin/validacion",
+      "label": "Admin Validacion",
+      "type": "admin",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "ValidationFilters",
+        "OfertaList",
+        "PuestoPanel",
+        "ClasificacionPanel",
+        "ValidationActions",
+        "ListPagination"
+      ],
+      "dataSource": [
+        "/api/gold-set/candidates?limit=100"
       ]
     },
     {
@@ -162,6 +592,16 @@
       "label": "Checkout",
       "type": "checkout",
       "description": "Proceso de pago para suscripcion",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "contenido",
+      "path": "/contenido",
+      "label": "Contenido",
+      "type": "authenticated",
+      "description": "",
       "rendering": "server",
       "components": [],
       "dataSource": []
@@ -224,7 +664,6 @@
       "description": "Tablero de datos del mercado laboral con filtros",
       "rendering": "client",
       "components": [
-        "Header",
         "Sidebar",
         "PanoramaGeneral",
         "Requerimientos",
@@ -244,6 +683,96 @@
       "dataSource": []
     },
     {
+      "id": "empresas-benchmark",
+      "path": "/empresas/benchmark",
+      "label": "Empresas Benchmark",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "empresas-candidatos-comparar",
+      "path": "/empresas/candidatos/comparar",
+      "label": "Empresas Candidatos Comparar",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "empresas-candidatos",
+      "path": "/empresas/candidatos",
+      "label": "Empresas Candidatos",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "empresas-dashboard",
+      "path": "/empresas/dashboard",
+      "label": "Empresas Dashboard",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "empresas",
+      "path": "/empresas",
+      "label": "Empresas",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "empresas-pool",
+      "path": "/empresas/pool",
+      "label": "Empresas Pool",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "empresas-puestos-id",
+      "path": "/empresas/puestos/[id]",
+      "label": "Empresas Puestos [Id]",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "empresas-puestos-nuevo",
+      "path": "/empresas/puestos/nuevo",
+      "label": "Empresas Puestos Nuevo",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "empresas-puestos",
+      "path": "/empresas/puestos",
+      "label": "Empresas Puestos",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": []
+    },
+    {
       "id": "home",
       "path": "/home",
       "label": "Home",
@@ -251,6 +780,7 @@
       "description": "Dashboard principal post-login con accesos rapidos segun rol",
       "rendering": "server",
       "components": [
+        "GlobalNav",
         "LogoutButton"
       ],
       "dataSource": []
@@ -276,6 +806,521 @@
       "dataSource": []
     },
     {
+      "id": "metodologia",
+      "path": "/metodologia",
+      "label": "Metodologia",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "mi-futuro-laboral-brecha",
+      "path": "/mi-futuro-laboral/brecha",
+      "label": "Mi Futuro Laboral Brecha",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "mi-futuro-laboral-onboarding",
+      "path": "/mi-futuro-laboral/onboarding",
+      "label": "Mi Futuro Laboral Onboarding",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "mi-futuro-laboral",
+      "path": "/mi-futuro-laboral",
+      "label": "Mi Futuro Laboral",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "mi-futuro-laboral-perfil",
+      "path": "/mi-futuro-laboral/perfil",
+      "label": "Mi Futuro Laboral Perfil",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "SkillSearchByTask",
+        "FreeTextSkillExtractor",
+        "FormacionSearch",
+        "OcupacionSkillsVia"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "mi-futuro-laboral-perfil-review",
+      "path": "/mi-futuro-laboral/perfil/review",
+      "label": "Mi Futuro Laboral Perfil Review",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "mi-futuro-laboral-reporte",
+      "path": "/mi-futuro-laboral/reporte",
+      "label": "Mi Futuro Laboral Reporte",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/compatibility-report"
+      ]
+    },
+    {
+      "id": "mi-futuro-laboral-resultados",
+      "path": "/mi-futuro-laboral/resultados",
+      "label": "Mi Futuro Laboral Resultados",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/matching-offers-semantic?skill_uris=${encodeURIComponent(skillUris.join("
+      ]
+    },
+    {
+      "id": "oficina-empleo-benchmark",
+      "path": "/oficina-empleo/benchmark",
+      "label": "Oficina Empleo Benchmark",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb"
+      ],
+      "dataSource": [
+        "/api/inteligencia-local?jurisdiccion=${jurisdiccion}"
+      ]
+    },
+    {
+      "id": "oficina-empleo-casos-id-entrevista",
+      "path": "/oficina-empleo/casos/[id]/entrevista",
+      "label": "Oficina Empleo Casos [Id] Entrevista",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "FreeTextSkillExtractor"
+      ],
+      "dataSource": [
+        "/api/casos/${casoId}",
+        "/api/esco-argentino",
+        "/api/occupations/search-semantic?q=${encodeURIComponent(q",
+        "/data/occupation_full_detail.json",
+        "/api/perfiles/${perfilId}/skills"
+      ]
+    },
+    {
+      "id": "oficina-empleo-casos-id",
+      "path": "/oficina-empleo/casos/[id]",
+      "label": "Oficina Empleo Casos [Id]",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/casos/${casoId}",
+        "/api/casos/${casoId}/gap",
+        "/data/occupation_full_detail.json",
+        "/api/casos/${casoId}/ocupaciones",
+        "/api/matching-offers-semantic?skill_uris=${encodeURIComponent(skillUris"
+      ]
+    },
+    {
+      "id": "oficina-empleo-casos-nuevo",
+      "path": "/oficina-empleo/casos/nuevo",
+      "label": "Oficina Empleo Casos Nuevo",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/personas",
+        "/api/perfiles",
+        "/api/casos"
+      ]
+    },
+    {
+      "id": "oficina-empleo-casos",
+      "path": "/oficina-empleo/casos",
+      "label": "Oficina Empleo Casos",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/casos?${params}"
+      ]
+    },
+    {
+      "id": "oficina-empleo-dashboard-ejecutivo",
+      "path": "/oficina-empleo/dashboard-ejecutivo",
+      "label": "Oficina Empleo Dashboard Ejecutivo",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb"
+      ],
+      "dataSource": [
+        "/api/laboratorio/brecha-formacion?${brechaParams}"
+      ]
+    },
+    {
+      "id": "oficina-empleo-formacion",
+      "path": "/oficina-empleo/formacion",
+      "label": "Oficina Empleo Formacion",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb"
+      ],
+      "dataSource": [
+        "/api/training-impact?profile_id=${profileId}"
+      ]
+    },
+    {
+      "id": "oficina-empleo-laboratorio-brecha-calificacion",
+      "path": "/oficina-empleo/laboratorio/brecha-calificacion",
+      "label": "Oficina Empleo Laboratorio Brecha Calificacion",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb",
+        "ChartContainer",
+        "BrechaCalificacionChart",
+        "CATEGORIA_COLORS",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "oficina-empleo-laboratorio-brecha-formacion",
+      "path": "/oficina-empleo/laboratorio/brecha-formacion",
+      "label": "Oficina Empleo Laboratorio Brecha Formacion",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb"
+      ],
+      "dataSource": [
+        "/api/laboratorio/brecha-formacion?${params}"
+      ]
+    },
+    {
+      "id": "oficina-empleo-laboratorio-concentracion-ocupacional",
+      "path": "/oficina-empleo/laboratorio/concentracion-ocupacional",
+      "label": "Oficina Empleo Laboratorio Concentracion Ocupacional",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb",
+        "ChartContainer",
+        "ConcentracionOcupacionalChart",
+        "CLASIFICACION_COLORS",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "oficina-empleo-laboratorio-digitalizacion-sector",
+      "path": "/oficina-empleo/laboratorio/digitalizacion-sector",
+      "label": "Oficina Empleo Laboratorio Digitalizacion Sector",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb",
+        "ChartContainer",
+        "DigitalizacionSectorChart",
+        "NIVEL_COLORS",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "oficina-empleo-laboratorio-indice-remoto",
+      "path": "/oficina-empleo/laboratorio/indice-remoto",
+      "label": "Oficina Empleo Laboratorio Indice Remoto",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb",
+        "ChartContainer",
+        "IndiceRemotoChart",
+        "MODALIDAD_COLORS",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "oficina-empleo-laboratorio-tension-demanda",
+      "path": "/oficina-empleo/laboratorio/tension-demanda",
+      "label": "Oficina Empleo Laboratorio Tension Demanda",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb",
+        "ChartContainer",
+        "TensionDemandaChart",
+        "CUADRANTE_COLORS",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "oficina-empleo-laboratorio-transicion-skills",
+      "path": "/oficina-empleo/laboratorio/transicion-skills",
+      "label": "Oficina Empleo Laboratorio Transicion Skills",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb",
+        "ChartContainer",
+        "TransicionSkillsChart",
+        "TransicionNodo",
+        "TransicionEnlace",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "oficina-empleo-laboratorio-velocidad-cobertura",
+      "path": "/oficina-empleo/laboratorio/velocidad-cobertura",
+      "label": "Oficina Empleo Laboratorio Velocidad Cobertura",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb",
+        "ChartContainer",
+        "VelocidadCoberturaChart",
+        "VELOCIDAD_COLORS",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "oficina-empleo-ofertas",
+      "path": "/oficina-empleo/ofertas",
+      "label": "Oficina Empleo Ofertas",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb"
+      ],
+      "dataSource": [
+        "/api/matching-offers?${params}",
+        "/api/training-suggestions"
+      ]
+    },
+    {
+      "id": "oficina-empleo-onboarding",
+      "path": "/oficina-empleo/onboarding",
+      "label": "Oficina Empleo Onboarding",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEOnboarding"
+      ],
+      "dataSource": [
+        "/api/import-pool",
+        "/api/import-pool/confirm"
+      ]
+    },
+    {
+      "id": "oficina-empleo",
+      "path": "/oficina-empleo",
+      "label": "Oficina Empleo",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "oficina-empleo-perfil",
+      "path": "/oficina-empleo/perfil",
+      "label": "Oficina Empleo Perfil",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "SkillCapturePanel",
+        "SkillsPanel",
+        "OEBreadcrumb",
+        "DniSearch"
+      ],
+      "dataSource": [
+        "/api/occupations/search?q=${encodeURIComponent(skillLabels.slice(0,",
+        "/api/occupations/skills?isco_code=${occ.isco_code",
+        "/api/worker-profiles"
+      ]
+    },
+    {
+      "id": "oficina-empleo-perfil-puesto",
+      "path": "/oficina-empleo/perfil-puesto",
+      "label": "Oficina Empleo Perfil Puesto",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb"
+      ],
+      "dataSource": [
+        "/api/perfil-puesto"
+      ]
+    },
+    {
+      "id": "oficina-empleo-perfiles-id",
+      "path": "/oficina-empleo/perfiles/[id]",
+      "label": "Oficina Empleo Perfiles [Id]",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb"
+      ],
+      "dataSource": [
+        "/api/perfiles?id=${id}",
+        "/api/perfiles/${id}"
+      ]
+    },
+    {
+      "id": "oficina-empleo-perfiles-futuro",
+      "path": "/oficina-empleo/perfiles/futuro",
+      "label": "Oficina Empleo Perfiles Futuro",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb",
+        "PersonaSelector",
+        "OcupacionObjetivoSelector",
+        "OfertasModal"
+      ],
+      "dataSource": [
+        "/data/occupation_full_detail.json",
+        "/data/skills_searchable.json",
+        "/api/perfiles?id=${perfilId}",
+        "/api/perfiles/cursos-gap",
+        "/api/trayectoria-laboral",
+        "isco_demand_trend",
+        "ofertas_dashboard",
+        "ofertas_skills"
+      ]
+    },
+    {
+      "id": "oficina-empleo-perfiles-matching",
+      "path": "/oficina-empleo/perfiles/matching",
+      "label": "Oficina Empleo Perfiles Matching",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb",
+        "PersonaSelector",
+        "OccupationMatchCard",
+        "OfertasModal"
+      ],
+      "dataSource": [
+        "/data/occupation_full_detail.json",
+        "/api/perfiles?id=${perfilId}",
+        "ofertas_dashboard"
+      ]
+    },
+    {
+      "id": "oficina-empleo-perfiles-nuevo",
+      "path": "/oficina-empleo/perfiles/nuevo",
+      "label": "Oficina Empleo Perfiles Nuevo",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb",
+        "OccupationSkillPicker",
+        "TaskSkillSearch",
+        "StructuredSkills",
+        "SkillProfilePanel",
+        "FormacionSkillPicker"
+      ],
+      "dataSource": [
+        "/api/perfiles?id=${editId}",
+        "/api/perfiles/${editId}",
+        "/api/personas",
+        "/api/perfiles",
+        "/api/perfiles/${perfil.id}/skills"
+      ]
+    },
+    {
+      "id": "oficina-empleo-perfiles",
+      "path": "/oficina-empleo/perfiles",
+      "label": "Oficina Empleo Perfiles",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb"
+      ],
+      "dataSource": [
+        "/api/perfiles?limit=${PAGE_SIZE}&offset=${offset}"
+      ]
+    },
+    {
+      "id": "oficina-empleo-vacantes-nueva",
+      "path": "/oficina-empleo/vacantes/nueva",
+      "label": "Oficina Empleo Vacantes Nueva",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "oficina-empleo-vacantes",
+      "path": "/oficina-empleo/vacantes",
+      "label": "Oficina Empleo Vacantes",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/vacantes-oe"
+      ]
+    },
+    {
       "id": "landing",
       "path": "/",
       "label": "Landing",
@@ -288,6 +1333,26 @@
         "Counter",
         "ScrollReveal"
       ],
+      "dataSource": []
+    },
+    {
+      "id": "para-oficinas",
+      "path": "/para-oficinas",
+      "label": "Para Oficinas",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "politica-datos",
+      "path": "/politica-datos",
+      "label": "Politica Datos",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "server",
+      "components": [],
       "dataSource": []
     },
     {
@@ -311,6 +1376,16 @@
       "dataSource": []
     },
     {
+      "id": "reporte-token",
+      "path": "/reporte/[token]",
+      "label": "Reporte [Token]",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
       "id": "skills",
       "path": "/skills",
       "label": "Skills (Publico)",
@@ -327,9 +1402,216 @@
         "/data/esco_skills_hierarchy.json",
         "/data/occupation_full_detail.json"
       ]
+    },
+    {
+      "id": "solicitar-acceso",
+      "path": "/solicitar-acceso",
+      "label": "Solicitar Acceso",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "server",
+      "components": [
+        "SolicitarAccesoForm"
+      ],
+      "dataSource": [
+        "solicitudes_acceso"
+      ]
+    },
+    {
+      "id": "terminos",
+      "path": "/terminos",
+      "label": "Terminos",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "vip-dashboard",
+      "path": "/vip/dashboard",
+      "label": "Vip Dashboard",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "Sidebar",
+        "PanoramaGeneral",
+        "Requerimientos",
+        "OfertasLaborales",
+        "ActiveFilters"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "vip-laboratorio-brecha-calificacion",
+      "path": "/vip/laboratorio/brecha-calificacion",
+      "label": "Vip Laboratorio Brecha Calificacion",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb",
+        "ChartContainer",
+        "BrechaCalificacionChart",
+        "CATEGORIA_COLORS",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "vip-laboratorio-brecha-formacion",
+      "path": "/vip/laboratorio/brecha-formacion",
+      "label": "Vip Laboratorio Brecha Formacion",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb"
+      ],
+      "dataSource": [
+        "/api/laboratorio/brecha-formacion?${params}"
+      ]
+    },
+    {
+      "id": "vip-laboratorio-concentracion-ocupacional",
+      "path": "/vip/laboratorio/concentracion-ocupacional",
+      "label": "Vip Laboratorio Concentracion Ocupacional",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb",
+        "ChartContainer",
+        "ConcentracionOcupacionalChart",
+        "CLASIFICACION_COLORS",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "vip-laboratorio-digitalizacion-sector",
+      "path": "/vip/laboratorio/digitalizacion-sector",
+      "label": "Vip Laboratorio Digitalizacion Sector",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb",
+        "ChartContainer",
+        "DigitalizacionSectorChart",
+        "NIVEL_COLORS",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "vip-laboratorio-indice-remoto",
+      "path": "/vip/laboratorio/indice-remoto",
+      "label": "Vip Laboratorio Indice Remoto",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb",
+        "ChartContainer",
+        "IndiceRemotoChart",
+        "MODALIDAD_COLORS",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "vip-laboratorio-tension-demanda",
+      "path": "/vip/laboratorio/tension-demanda",
+      "label": "Vip Laboratorio Tension Demanda",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb",
+        "ChartContainer",
+        "TensionDemandaChart",
+        "CUADRANTE_COLORS",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "vip-laboratorio-transicion-skills",
+      "path": "/vip/laboratorio/transicion-skills",
+      "label": "Vip Laboratorio Transicion Skills",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb",
+        "ChartContainer",
+        "TransicionSkillsChart",
+        "TransicionNodo",
+        "TransicionEnlace",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "vip-laboratorio-velocidad-cobertura",
+      "path": "/vip/laboratorio/velocidad-cobertura",
+      "label": "Vip Laboratorio Velocidad Cobertura",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [
+        "OEBreadcrumb",
+        "ChartContainer",
+        "VelocidadCoberturaChart",
+        "VELOCIDAD_COLORS",
+        "InsightList",
+        "InsightItem"
+      ],
+      "dataSource": []
+    },
+    {
+      "id": "vip",
+      "path": "/vip",
+      "label": "Vip",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "server",
+      "components": [],
+      "dataSource": []
+    },
+    {
+      "id": "vip-politicas",
+      "path": "/vip/politicas",
+      "label": "Vip Politicas",
+      "type": "authenticated",
+      "description": "",
+      "rendering": "client",
+      "components": [],
+      "dataSource": [
+        "/api/laboratorio/brecha-formacion?estado=brecha&limit=5",
+        "/data/occupation_full_detail.json",
+        "/data/occupations_index.json"
+      ]
     }
   ],
   "apiRoutes": [
+    {
+      "id": "api-admin-analizar-correcciones",
+      "path": "/api/admin/analizar-correcciones",
+      "method": "POST/GET/PATCH",
+      "description": "",
+      "usedBy": [
+        "/admin/procesamiento/correcciones"
+      ]
+    },
     {
       "id": "api-admin-architecture-metrics",
       "path": "/api/admin/architecture-metrics",
@@ -340,21 +1622,151 @@
       ]
     },
     {
+      "id": "api-admin-solicitudes",
+      "path": "/api/admin/solicitudes",
+      "method": "GET/PATCH",
+      "description": "",
+      "usedBy": [
+        "/admin/solicitudes"
+      ]
+    },
+    {
       "id": "api-admin-stats",
       "path": "/api/admin/stats",
       "method": "GET",
       "description": "Estadisticas generales del sistema",
-      "usedBy": [
-        "/admin"
-      ]
+      "usedBy": []
     },
     {
       "id": "api-admin-users",
       "path": "/api/admin/users",
-      "method": "GET/POST",
+      "method": "GET/PATCH/POST",
       "description": "CRUD de usuarios",
       "usedBy": [
         "/admin/usuarios"
+      ]
+    },
+    {
+      "id": "api-analisis-ocupacional",
+      "path": "/api/analisis-ocupacional",
+      "method": "POST",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-casos-id-derivar",
+      "path": "/api/casos/[id]/derivar",
+      "method": "POST/PATCH",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-casos-id-gap",
+      "path": "/api/casos/[id]/gap",
+      "method": "POST",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-casos-id-ocupaciones",
+      "path": "/api/casos/[id]/ocupaciones",
+      "method": "GET",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-casos-id",
+      "path": "/api/casos/[id]",
+      "method": "GET/PATCH",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-casos",
+      "path": "/api/casos",
+      "method": "GET/POST",
+      "description": "",
+      "usedBy": [
+        "/oficina-empleo/casos",
+        "/oficina-empleo/casos/[id]",
+        "/oficina-empleo/casos/[id]/entrevista",
+        "/oficina-empleo/casos/nuevo"
+      ]
+    },
+    {
+      "id": "api-catalogo-mol-ocupaciones",
+      "path": "/api/catalogo-mol/ocupaciones",
+      "method": "GET/POST/PUT/DELETE",
+      "description": "",
+      "usedBy": [
+        "/admin/procesamiento/catalogo"
+      ]
+    },
+    {
+      "id": "api-catalogo-mol-skills",
+      "path": "/api/catalogo-mol/skills",
+      "method": "GET/POST/PUT/DELETE",
+      "description": "",
+      "usedBy": [
+        "/admin/procesamiento/catalogo"
+      ]
+    },
+    {
+      "id": "api-catalogo-mol-stats",
+      "path": "/api/catalogo-mol/stats",
+      "method": "GET",
+      "description": "",
+      "usedBy": [
+        "/admin/procesamiento/catalogo"
+      ]
+    },
+    {
+      "id": "api-catalogo-mol-unclassified",
+      "path": "/api/catalogo-mol/unclassified",
+      "method": "GET",
+      "description": "",
+      "usedBy": [
+        "/admin/procesamiento/catalogo"
+      ]
+    },
+    {
+      "id": "api-catalogo-mol-versiones",
+      "path": "/api/catalogo-mol/versiones",
+      "method": "GET/POST",
+      "description": "",
+      "usedBy": [
+        "/admin/procesamiento/catalogo"
+      ]
+    },
+    {
+      "id": "api-compatibility-report",
+      "path": "/api/compatibility-report",
+      "method": "GET/POST/PATCH",
+      "description": "",
+      "usedBy": [
+        "/mi-futuro-laboral/reporte"
+      ]
+    },
+    {
+      "id": "api-config-editor-preview",
+      "path": "/api/config-editor/preview",
+      "method": "POST/GET",
+      "description": "",
+      "usedBy": [
+        "/admin/procesamiento/reglas"
+      ]
+    },
+    {
+      "id": "api-config-editor",
+      "path": "/api/config-editor",
+      "method": "GET/PUT",
+      "description": "",
+      "usedBy": [
+        "/admin/procesamiento/editores",
+        "/admin/procesamiento/nlp-inference",
+        "/admin/procesamiento/oficios",
+        "/admin/procesamiento/reglas",
+        "/admin/procesamiento/sinonimos"
       ]
     },
     {
@@ -365,24 +1777,190 @@
       "usedBy": []
     },
     {
+      "id": "api-cursos-formacion-id-skills",
+      "path": "/api/cursos-formacion/[id]/skills",
+      "method": "GET",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-cursos-formacion-search",
+      "path": "/api/cursos-formacion/search",
+      "method": "GET",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-emergentes-pendientes-count",
+      "path": "/api/emergentes-pendientes/count",
+      "method": "GET",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-emergentes-pendientes",
+      "path": "/api/emergentes-pendientes",
+      "method": "GET/PATCH/POST",
+      "description": "",
+      "usedBy": []
+    },
+    {
       "id": "api-esco-argentino",
       "path": "/api/esco-argentino",
       "method": "GET/POST/PATCH/DELETE",
       "description": "Datos ESCO adaptados al mercado argentino",
+      "usedBy": [
+        "/oficina-empleo/casos/[id]/entrevista"
+      ]
+    },
+    {
+      "id": "api-gold-set-candidates",
+      "path": "/api/gold-set/candidates",
+      "method": "GET",
+      "description": "",
+      "usedBy": [
+        "/admin/validacion"
+      ]
+    },
+    {
+      "id": "api-gold-set",
+      "path": "/api/gold-set",
+      "method": "GET/POST/DELETE",
+      "description": "",
       "usedBy": []
+    },
+    {
+      "id": "api-inteligencia-local",
+      "path": "/api/inteligencia-local",
+      "method": "GET",
+      "description": "",
+      "usedBy": [
+        "/oficina-empleo/benchmark"
+      ]
+    },
+    {
+      "id": "api-issues-id-cancelar-solicitud",
+      "path": "/api/issues/[id]/cancelar-solicitud",
+      "method": "POST",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-issues-id-propagation-apply",
+      "path": "/api/issues/[id]/propagation/apply",
+      "method": "POST",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-issues-id-propagation-dry-run",
+      "path": "/api/issues/[id]/propagation/dry-run",
+      "method": "POST",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-issues-id-propagation-rechazar",
+      "path": "/api/issues/[id]/propagation/rechazar",
+      "method": "POST",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-issues-id-solicitar-propagacion",
+      "path": "/api/issues/[id]/solicitar-propagacion",
+      "method": "POST",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-issues-cola-propagacion",
+      "path": "/api/issues/cola-propagacion",
+      "method": "GET",
+      "description": "",
+      "usedBy": [
+        "/admin/issues/cola-propagacion"
+      ]
+    },
+    {
+      "id": "api-issues-sin-propagacion",
+      "path": "/api/issues/sin-propagacion",
+      "method": "GET",
+      "description": "",
+      "usedBy": [
+        "/admin/issues/sin-propagacion"
+      ]
+    },
+    {
+      "id": "api-laboratorio-brecha-formacion",
+      "path": "/api/laboratorio/brecha-formacion",
+      "method": "GET",
+      "description": "",
+      "usedBy": [
+        "/oficina-empleo/dashboard-ejecutivo",
+        "/oficina-empleo/laboratorio/brecha-formacion",
+        "/vip/laboratorio/brecha-formacion",
+        "/vip/politicas"
+      ]
+    },
+    {
+      "id": "api-matching-offers",
+      "path": "/api/matching-offers",
+      "method": "GET",
+      "description": "",
+      "usedBy": [
+        "/oficina-empleo/ofertas"
+      ]
+    },
+    {
+      "id": "api-matching-offers-semantic",
+      "path": "/api/matching-offers-semantic",
+      "method": "GET",
+      "description": "",
+      "usedBy": [
+        "/mi-futuro-laboral/resultados",
+        "/oficina-empleo/casos/[id]"
+      ]
     },
     {
       "id": "api-occupations-search",
       "path": "/api/occupations/search",
       "method": "GET",
       "description": "Busqueda de ocupaciones ESCO",
-      "usedBy": []
+      "usedBy": [
+        "/oficina-empleo/perfil"
+      ]
+    },
+    {
+      "id": "api-occupations-search-semantic",
+      "path": "/api/occupations/search-semantic",
+      "method": "GET",
+      "description": "",
+      "usedBy": [
+        "/oficina-empleo/casos/[id]/entrevista"
+      ]
     },
     {
       "id": "api-occupations-skills",
       "path": "/api/occupations/skills",
       "method": "GET",
       "description": "Skills de una ocupacion especifica",
+      "usedBy": [
+        "/oficina-empleo/perfil"
+      ]
+    },
+    {
+      "id": "api-occupations-skills-by-isco",
+      "path": "/api/occupations/skills-by-isco",
+      "method": "GET",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-organizaciones",
+      "path": "/api/organizaciones",
+      "method": "GET/POST",
+      "description": "",
       "usedBy": []
     },
     {
@@ -390,6 +1968,160 @@
       "path": "/api/perfil-argentina/[occupation]",
       "method": "GET",
       "description": "Perfil ocupacional argentino con datos MOL",
+      "usedBy": []
+    },
+    {
+      "id": "api-perfil-argentino-versiones",
+      "path": "/api/perfil-argentino-versiones",
+      "method": "GET/POST/PATCH",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-perfil-puesto",
+      "path": "/api/perfil-puesto",
+      "method": "GET/POST",
+      "description": "",
+      "usedBy": [
+        "/oficina-empleo/perfil-puesto"
+      ]
+    },
+    {
+      "id": "api-perfiles-id-gap",
+      "path": "/api/perfiles/[id]/gap",
+      "method": "GET",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-perfiles-id-ocupaciones",
+      "path": "/api/perfiles/[id]/ocupaciones",
+      "method": "GET",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-perfiles-id",
+      "path": "/api/perfiles/[id]",
+      "method": "PATCH/DELETE/PUT",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-perfiles-id-skills",
+      "path": "/api/perfiles/[id]/skills",
+      "method": "POST/PATCH",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-perfiles-cursos-gap",
+      "path": "/api/perfiles/cursos-gap",
+      "method": "POST",
+      "description": "",
+      "usedBy": [
+        "/oficina-empleo/perfiles/futuro"
+      ]
+    },
+    {
+      "id": "api-perfiles",
+      "path": "/api/perfiles",
+      "method": "GET/POST",
+      "description": "",
+      "usedBy": [
+        "/oficina-empleo/casos/[id]/entrevista",
+        "/oficina-empleo/casos/nuevo",
+        "/oficina-empleo/perfiles",
+        "/oficina-empleo/perfiles/[id]",
+        "/oficina-empleo/perfiles/futuro",
+        "/oficina-empleo/perfiles/matching",
+        "/oficina-empleo/perfiles/nuevo"
+      ]
+    },
+    {
+      "id": "api-personas",
+      "path": "/api/personas",
+      "method": "GET/POST",
+      "description": "",
+      "usedBy": [
+        "/oficina-empleo/casos/nuevo",
+        "/oficina-empleo/perfiles/nuevo"
+      ]
+    },
+    {
+      "id": "api-pipeline-commands",
+      "path": "/api/pipeline-commands",
+      "method": "GET/POST",
+      "description": "",
+      "usedBy": [
+        "/admin/procesamiento/fabrica",
+        "/admin/scraping/comandos"
+      ]
+    },
+    {
+      "id": "api-pipeline-local-status",
+      "path": "/api/pipeline-local-status",
+      "method": "GET",
+      "description": "",
+      "usedBy": [
+        "/admin/procesamiento/fabrica"
+      ]
+    },
+    {
+      "id": "api-pipeline-status",
+      "path": "/api/pipeline-status",
+      "method": "GET",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-processing-metrics",
+      "path": "/api/processing-metrics",
+      "method": "GET",
+      "description": "",
+      "usedBy": [
+        "/admin/aprendizaje"
+      ]
+    },
+    {
+      "id": "api-scraping-commands",
+      "path": "/api/scraping-commands",
+      "method": "GET/POST",
+      "description": "",
+      "usedBy": [
+        "/admin/scraping/comandos"
+      ]
+    },
+    {
+      "id": "api-scraping-live-stats",
+      "path": "/api/scraping-live-stats",
+      "method": "GET",
+      "description": "",
+      "usedBy": []
+    },
+    {
+      "id": "api-scraping-schedule",
+      "path": "/api/scraping-schedule",
+      "method": "GET/PUT/POST",
+      "description": "",
+      "usedBy": [
+        "/admin/scraping/comandos"
+      ]
+    },
+    {
+      "id": "api-skill-equivalences",
+      "path": "/api/skill-equivalences",
+      "method": "GET/PUT",
+      "description": "",
+      "usedBy": [
+        "/admin/procesamiento/fabrica/equivalencias"
+      ]
+    },
+    {
+      "id": "api-skills-extract-from-text",
+      "path": "/api/skills-extract-from-text",
+      "method": "POST",
+      "description": "",
       "usedBy": []
     },
     {
@@ -404,14 +2136,70 @@
       "path": "/api/skills-intelligence",
       "method": "GET",
       "description": "Analisis de inteligencia de skills",
+      "usedBy": [
+        "/admin/skills"
+      ]
+    },
+    {
+      "id": "api-skills-search",
+      "path": "/api/skills-search",
+      "method": "GET",
+      "description": "",
       "usedBy": []
+    },
+    {
+      "id": "api-training-impact",
+      "path": "/api/training-impact",
+      "method": "GET",
+      "description": "",
+      "usedBy": [
+        "/oficina-empleo/formacion"
+      ]
+    },
+    {
+      "id": "api-training-readiness",
+      "path": "/api/training-readiness",
+      "method": "GET",
+      "description": "",
+      "usedBy": [
+        "/admin/procesamiento/fine-tuning"
+      ]
+    },
+    {
+      "id": "api-training-suggestions",
+      "path": "/api/training-suggestions",
+      "method": "GET",
+      "description": "",
+      "usedBy": [
+        "/oficina-empleo/ofertas"
+      ]
+    },
+    {
+      "id": "api-trayectoria-laboral",
+      "path": "/api/trayectoria-laboral",
+      "method": "POST",
+      "description": "",
+      "usedBy": [
+        "/oficina-empleo/perfiles/futuro"
+      ]
+    },
+    {
+      "id": "api-vacantes-oe",
+      "path": "/api/vacantes-oe",
+      "method": "GET",
+      "description": "",
+      "usedBy": [
+        "/oficina-empleo/vacantes"
+      ]
     },
     {
       "id": "api-worker-profiles",
       "path": "/api/worker-profiles",
       "method": "GET/POST/PUT/DELETE",
       "description": "Perfiles de trabajadores",
-      "usedBy": []
+      "usedBy": [
+        "/oficina-empleo/perfil"
+      ]
     },
     {
       "id": "auth-callback",
@@ -430,6 +2218,12 @@
     },
     {
       "from": "/",
+      "to": "/politica-datos",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/",
       "to": "/precios",
       "type": "navigation",
       "label": ""
@@ -441,10 +2235,16 @@
       "label": ""
     },
     {
-      "from": "/admin",
-      "to": "/api/admin/stats",
+      "from": "/",
+      "to": "/terminos",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/admin/aprendizaje",
+      "to": "/api/processing-metrics",
       "type": "data",
-      "label": "Fetch stats"
+      "label": "Fetch processing-metrics"
     },
     {
       "from": "/admin/arquitectura",
@@ -453,10 +2253,220 @@
       "label": "Fetch architecture-metrics"
     },
     {
+      "from": "/admin/issues",
+      "to": "/admin/procesamiento/correcciones",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/admin/issues/[id]",
+      "to": "/admin/issues",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/admin/issues/cola-propagacion",
+      "to": "/admin/issues",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/admin/issues/cola-propagacion",
+      "to": "/api/issues/cola-propagacion",
+      "type": "data",
+      "label": "Fetch cola-propagacion"
+    },
+    {
+      "from": "/admin/issues/sin-propagacion",
+      "to": "/api/issues/sin-propagacion",
+      "type": "data",
+      "label": "Fetch sin-propagacion"
+    },
+    {
+      "from": "/admin/laboratorio/brecha-calificacion",
+      "to": "/admin/laboratorio",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/admin/laboratorio/concentracion-ocupacional",
+      "to": "/admin/laboratorio",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/admin/laboratorio/digitalizacion-sector",
+      "to": "/admin/laboratorio",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/admin/laboratorio/indice-remoto",
+      "to": "/admin/laboratorio",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/admin/laboratorio/tension-demanda",
+      "to": "/admin/laboratorio",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/admin/laboratorio/transicion-skills",
+      "to": "/admin/laboratorio",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/admin/laboratorio/velocidad-cobertura",
+      "to": "/admin/laboratorio",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/admin/procesamiento/catalogo",
+      "to": "/api/catalogo-mol/ocupaciones",
+      "type": "data",
+      "label": "Fetch ocupaciones"
+    },
+    {
+      "from": "/admin/procesamiento/catalogo",
+      "to": "/api/catalogo-mol/skills",
+      "type": "data",
+      "label": "Fetch skills"
+    },
+    {
+      "from": "/admin/procesamiento/catalogo",
+      "to": "/api/catalogo-mol/stats",
+      "type": "data",
+      "label": "Fetch stats"
+    },
+    {
+      "from": "/admin/procesamiento/catalogo",
+      "to": "/api/catalogo-mol/unclassified",
+      "type": "data",
+      "label": "Fetch unclassified"
+    },
+    {
+      "from": "/admin/procesamiento/catalogo",
+      "to": "/api/catalogo-mol/versiones",
+      "type": "data",
+      "label": "Fetch versiones"
+    },
+    {
+      "from": "/admin/procesamiento/correcciones",
+      "to": "/api/admin/analizar-correcciones",
+      "type": "data",
+      "label": "Fetch analizar-correcciones"
+    },
+    {
+      "from": "/admin/procesamiento/editores",
+      "to": "/api/config-editor",
+      "type": "data",
+      "label": "Fetch config-editor"
+    },
+    {
+      "from": "/admin/procesamiento/fabrica",
+      "to": "/admin/aprendizaje",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/admin/procesamiento/fabrica",
+      "to": "/api/pipeline-commands",
+      "type": "data",
+      "label": "Fetch pipeline-commands"
+    },
+    {
+      "from": "/admin/procesamiento/fabrica",
+      "to": "/api/pipeline-local-status",
+      "type": "data",
+      "label": "Fetch pipeline-local-status"
+    },
+    {
+      "from": "/admin/procesamiento/fabrica/equivalencias",
+      "to": "/api/skill-equivalences",
+      "type": "data",
+      "label": "Fetch skill-equivalences"
+    },
+    {
+      "from": "/admin/procesamiento/fine-tuning",
+      "to": "/api/training-readiness",
+      "type": "data",
+      "label": "Fetch training-readiness"
+    },
+    {
+      "from": "/admin/procesamiento/nlp-inference",
+      "to": "/api/config-editor",
+      "type": "data",
+      "label": "Fetch config-editor"
+    },
+    {
+      "from": "/admin/procesamiento/oficios",
+      "to": "/api/config-editor",
+      "type": "data",
+      "label": "Fetch config-editor"
+    },
+    {
+      "from": "/admin/procesamiento/reglas",
+      "to": "/api/config-editor",
+      "type": "data",
+      "label": "Fetch config-editor"
+    },
+    {
+      "from": "/admin/procesamiento/reglas",
+      "to": "/api/config-editor/preview",
+      "type": "data",
+      "label": "Fetch preview"
+    },
+    {
+      "from": "/admin/procesamiento/sinonimos",
+      "to": "/api/config-editor",
+      "type": "data",
+      "label": "Fetch config-editor"
+    },
+    {
+      "from": "/admin/scraping/comandos",
+      "to": "/api/pipeline-commands",
+      "type": "data",
+      "label": "Fetch pipeline-commands"
+    },
+    {
+      "from": "/admin/scraping/comandos",
+      "to": "/api/scraping-commands",
+      "type": "data",
+      "label": "Fetch scraping-commands"
+    },
+    {
+      "from": "/admin/scraping/comandos",
+      "to": "/api/scraping-schedule",
+      "type": "data",
+      "label": "Fetch scraping-schedule"
+    },
+    {
+      "from": "/admin/skills",
+      "to": "/api/skills-intelligence",
+      "type": "data",
+      "label": "Fetch skills-intelligence"
+    },
+    {
+      "from": "/admin/solicitudes",
+      "to": "/api/admin/solicitudes",
+      "type": "data",
+      "label": "Fetch solicitudes"
+    },
+    {
       "from": "/admin/usuarios",
       "to": "/api/admin/users",
       "type": "data",
       "label": "Fetch users"
+    },
+    {
+      "from": "/admin/validacion",
+      "to": "/api/gold-set/candidates",
+      "type": "data",
+      "label": "Fetch candidates"
     },
     {
       "from": "/checkout",
@@ -475,6 +2485,12 @@
       "to": "/home",
       "type": "navigation",
       "label": "Volver al home"
+    },
+    {
+      "from": "/contenido",
+      "to": "/informes",
+      "type": "navigation",
+      "label": ""
     },
     {
       "from": "/cuenta",
@@ -497,6 +2513,60 @@
     {
       "from": "/cuenta/suscripcion",
       "to": "/precios",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/empresas",
+      "to": "/empresas/dashboard",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/empresas",
+      "to": "/empresas/pool",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/empresas/candidatos/comparar",
+      "to": "/empresas/candidatos",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/empresas/dashboard",
+      "to": "/empresas",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/empresas/dashboard",
+      "to": "/empresas/candidatos",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/empresas/dashboard",
+      "to": "/empresas/puestos",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/empresas/dashboard",
+      "to": "/empresas/puestos/nuevo",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/empresas/puestos",
+      "to": "/empresas/puestos/nuevo",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/empresas/puestos/[id]",
+      "to": "/empresas/puestos",
       "type": "navigation",
       "label": ""
     },
@@ -543,6 +2613,12 @@
       "label": ""
     },
     {
+      "from": "/home",
+      "to": "/solicitar-acceso",
+      "type": "navigation",
+      "label": ""
+    },
+    {
       "from": "/login",
       "to": "/home",
       "type": "navigation",
@@ -555,8 +2631,302 @@
       "label": ""
     },
     {
+      "from": "/mi-futuro-laboral",
+      "to": "/mi-futuro-laboral/onboarding",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/mi-futuro-laboral/reporte",
+      "to": "/api/compatibility-report",
+      "type": "data",
+      "label": "Fetch compatibility-report"
+    },
+    {
+      "from": "/mi-futuro-laboral/resultados",
+      "to": "/api/matching-offers-semantic",
+      "type": "data",
+      "label": "Fetch matching-offers-semantic"
+    },
+    {
+      "from": "/oficina-empleo/benchmark",
+      "to": "/api/inteligencia-local",
+      "type": "data",
+      "label": "Fetch inteligencia-local"
+    },
+    {
+      "from": "/oficina-empleo/casos",
+      "to": "/api/casos",
+      "type": "data",
+      "label": "Fetch casos"
+    },
+    {
+      "from": "/oficina-empleo/casos",
+      "to": "/oficina-empleo/casos/nuevo",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/oficina-empleo/casos/[id]",
+      "to": "/api/casos",
+      "type": "data",
+      "label": "Fetch casos"
+    },
+    {
+      "from": "/oficina-empleo/casos/[id]",
+      "to": "/api/matching-offers-semantic",
+      "type": "data",
+      "label": "Fetch matching-offers-semantic"
+    },
+    {
+      "from": "/oficina-empleo/casos/[id]/entrevista",
+      "to": "/api/casos",
+      "type": "data",
+      "label": "Fetch casos"
+    },
+    {
+      "from": "/oficina-empleo/casos/[id]/entrevista",
+      "to": "/api/esco-argentino",
+      "type": "data",
+      "label": "Fetch esco-argentino"
+    },
+    {
+      "from": "/oficina-empleo/casos/[id]/entrevista",
+      "to": "/api/occupations/search-semantic",
+      "type": "data",
+      "label": "Fetch search-semantic"
+    },
+    {
+      "from": "/oficina-empleo/casos/[id]/entrevista",
+      "to": "/api/perfiles",
+      "type": "data",
+      "label": "Fetch perfiles"
+    },
+    {
+      "from": "/oficina-empleo/casos/nuevo",
+      "to": "/api/casos",
+      "type": "data",
+      "label": "Fetch casos"
+    },
+    {
+      "from": "/oficina-empleo/casos/nuevo",
+      "to": "/api/perfiles",
+      "type": "data",
+      "label": "Fetch perfiles"
+    },
+    {
+      "from": "/oficina-empleo/casos/nuevo",
+      "to": "/api/personas",
+      "type": "data",
+      "label": "Fetch personas"
+    },
+    {
+      "from": "/oficina-empleo/dashboard-ejecutivo",
+      "to": "/api/laboratorio/brecha-formacion",
+      "type": "data",
+      "label": "Fetch brecha-formacion"
+    },
+    {
+      "from": "/oficina-empleo/dashboard-ejecutivo",
+      "to": "/oficina-empleo/laboratorio/brecha-formacion",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/oficina-empleo/formacion",
+      "to": "/api/training-impact",
+      "type": "data",
+      "label": "Fetch training-impact"
+    },
+    {
+      "from": "/oficina-empleo/formacion",
+      "to": "/oficina-empleo/perfil",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/oficina-empleo/laboratorio/brecha-calificacion",
+      "to": "/oficina-empleo",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/oficina-empleo/laboratorio/brecha-formacion",
+      "to": "/api/laboratorio/brecha-formacion",
+      "type": "data",
+      "label": "Fetch brecha-formacion"
+    },
+    {
+      "from": "/oficina-empleo/laboratorio/concentracion-ocupacional",
+      "to": "/oficina-empleo",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/oficina-empleo/laboratorio/digitalizacion-sector",
+      "to": "/oficina-empleo",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/oficina-empleo/laboratorio/indice-remoto",
+      "to": "/oficina-empleo",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/oficina-empleo/laboratorio/tension-demanda",
+      "to": "/oficina-empleo",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/oficina-empleo/laboratorio/transicion-skills",
+      "to": "/oficina-empleo",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/oficina-empleo/laboratorio/velocidad-cobertura",
+      "to": "/oficina-empleo",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/oficina-empleo/ofertas",
+      "to": "/api/matching-offers",
+      "type": "data",
+      "label": "Fetch matching-offers"
+    },
+    {
+      "from": "/oficina-empleo/ofertas",
+      "to": "/api/training-suggestions",
+      "type": "data",
+      "label": "Fetch training-suggestions"
+    },
+    {
+      "from": "/oficina-empleo/ofertas",
+      "to": "/oficina-empleo/perfil",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/oficina-empleo/perfil",
+      "to": "/api/occupations/search",
+      "type": "data",
+      "label": "Fetch search"
+    },
+    {
+      "from": "/oficina-empleo/perfil",
+      "to": "/api/occupations/skills",
+      "type": "data",
+      "label": "Fetch skills"
+    },
+    {
+      "from": "/oficina-empleo/perfil",
+      "to": "/api/worker-profiles",
+      "type": "data",
+      "label": "Fetch worker-profiles"
+    },
+    {
+      "from": "/oficina-empleo/perfil-puesto",
+      "to": "/api/perfil-puesto",
+      "type": "data",
+      "label": "Fetch perfil-puesto"
+    },
+    {
+      "from": "/oficina-empleo/perfiles",
+      "to": "/api/perfiles",
+      "type": "data",
+      "label": "Fetch perfiles"
+    },
+    {
+      "from": "/oficina-empleo/perfiles",
+      "to": "/oficina-empleo/perfiles/nuevo",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/oficina-empleo/perfiles/[id]",
+      "to": "/api/perfiles",
+      "type": "data",
+      "label": "Fetch perfiles"
+    },
+    {
+      "from": "/oficina-empleo/perfiles/futuro",
+      "to": "/api/perfiles",
+      "type": "data",
+      "label": "Fetch perfiles"
+    },
+    {
+      "from": "/oficina-empleo/perfiles/futuro",
+      "to": "/api/perfiles/cursos-gap",
+      "type": "data",
+      "label": "Fetch cursos-gap"
+    },
+    {
+      "from": "/oficina-empleo/perfiles/futuro",
+      "to": "/api/trayectoria-laboral",
+      "type": "data",
+      "label": "Fetch trayectoria-laboral"
+    },
+    {
+      "from": "/oficina-empleo/perfiles/matching",
+      "to": "/api/perfiles",
+      "type": "data",
+      "label": "Fetch perfiles"
+    },
+    {
+      "from": "/oficina-empleo/perfiles/nuevo",
+      "to": "/api/perfiles",
+      "type": "data",
+      "label": "Fetch perfiles"
+    },
+    {
+      "from": "/oficina-empleo/perfiles/nuevo",
+      "to": "/api/personas",
+      "type": "data",
+      "label": "Fetch personas"
+    },
+    {
+      "from": "/oficina-empleo/vacantes",
+      "to": "/api/vacantes-oe",
+      "type": "data",
+      "label": "Fetch vacantes-oe"
+    },
+    {
+      "from": "/oficina-empleo/vacantes",
+      "to": "/oficina-empleo/vacantes/nueva",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/para-oficinas",
+      "to": "/oficina-empleo",
+      "type": "navigation",
+      "label": ""
+    },
+    {
       "from": "/registro",
       "to": "/login",
+      "type": "navigation",
+      "label": ""
+    },
+    {
+      "from": "/vip/laboratorio/brecha-formacion",
+      "to": "/api/laboratorio/brecha-formacion",
+      "type": "data",
+      "label": "Fetch brecha-formacion"
+    },
+    {
+      "from": "/vip/politicas",
+      "to": "/api/laboratorio/brecha-formacion",
+      "type": "data",
+      "label": "Fetch brecha-formacion"
+    },
+    {
+      "from": "/vip/politicas",
+      "to": "/vip/laboratorio/brecha-formacion",
       "type": "navigation",
       "label": ""
     }
@@ -575,6 +2945,12 @@
             "status": "active"
           },
           {
+            "id": "caba",
+            "name": "Caba",
+            "type": "scraper",
+            "status": "inactive"
+          },
+          {
             "id": "computrabajo",
             "name": "Computrabajo",
             "type": "scraper",
@@ -589,6 +2965,12 @@
           {
             "id": "linkedin",
             "name": "LinkedIn",
+            "type": "scraper",
+            "status": "inactive"
+          },
+          {
+            "id": "portalempleo",
+            "name": "Portalempleo",
             "type": "scraper",
             "status": "inactive"
           },
@@ -618,19 +3000,19 @@
             "name": "Skills Extractor v2.3",
             "type": "processor",
             "model": "BGE-M3",
-            "count": 26
+            "count": 25
           },
           {
             "id": "matching",
-            "name": "ESCO Matching v3.5.3",
+            "name": "ESCO Matching v3.5.4",
             "type": "processor",
-            "count": 208
+            "count": 354
           },
           {
             "id": "validation",
             "name": "Validación",
             "type": "processor",
-            "count": 22
+            "count": 3
           }
         ],
         "entryPoint": "run_validated_pipeline.py",
@@ -658,12 +3040,12 @@
     ]
   },
   "_meta": {
-    "generated_at": "2026-02-08T19:53:43",
+    "generated_at": "2026-05-17T18:51:56",
     "generator": "scripts/generate_architecture_json.py",
     "stats": {
-      "pages": 26,
-      "apiRoutes": 12,
-      "connections": 23,
+      "pages": 118,
+      "apiRoutes": 72,
+      "connections": 120,
       "pipeline_phases": 3
     }
   }

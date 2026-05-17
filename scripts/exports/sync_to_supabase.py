@@ -695,6 +695,8 @@ def transform_oferta_for_supabase(oferta: Dict) -> Dict:
         'mision_rol': oferta.get('mision_rol'),
         'decision_metodo': oferta.get('decision_metodo'),
         'regla_aplicada': oferta.get('regla_aplicada'),
+        'run_id': oferta.get('run_id'),
+        'matching_version': oferta.get('matching_version'),
         'fecha_sync': datetime.now().isoformat(),
     }
 

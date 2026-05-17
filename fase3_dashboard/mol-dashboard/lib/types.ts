@@ -335,6 +335,15 @@ export interface OfertaValidacion {
   validacion_humana_at: string | null;
   validacion_humana_por: string | null;
   validacion_correcciones: Record<string, unknown> | null;
+  // Tracking de corrida
+  run_id: string | null;
+  matching_version: string | null;
+}
+
+export interface RunOption {
+  run_id: string;
+  n: number;
+  fecha_legible: string | null;
 }
 
 export interface OfertaSkillValidacion {
@@ -365,6 +374,7 @@ export interface ValidationFiltersState {
   nivelEducativo: string;
   scoreRange: string;
   estadoValidacion: string;
+  runId: string;
 }
 
 export interface ValidationStats {

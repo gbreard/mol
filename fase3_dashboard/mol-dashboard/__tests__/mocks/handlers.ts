@@ -6,6 +6,7 @@ import { mockPanoramaRPC } from './fixtures/panorama'
 import { mockEvolucionRPC } from './fixtures/evolucion'
 import { mockRequerimientosRPC, mockSkillsResumenRPC, mockSidebarCountsRPC } from './fixtures/requerimientos'
 import { mockPipelineStatusRPC, mockRunsHistory } from './fixtures/pipeline-status'
+import { mockRunsDisponibles } from './fixtures/runs-disponibles'
 import { mockReconciliacionWarning } from './fixtures/reconciliacion'
 import { mockScrapingStatsRPC, mockScrapingHistoryRPC } from './fixtures/scraping-stats'
 import { mockPreviewImpact, mockSugerencias, mockConfigOverride, mockConfigUpsertResult } from './fixtures/config-editor'
@@ -128,6 +129,11 @@ export const handlers = [
   // M-01: RPC get_pipeline_runs_history
   http.post(`${SUPABASE_URL}/rest/v1/rpc/get_pipeline_runs_history`, () => {
     return HttpResponse.json(mockRunsHistory)
+  }),
+
+  // RPC: get_runs_disponibles (filtro Run/Corrida en /admin/validacion)
+  http.post(`${SUPABASE_URL}/rest/v1/rpc/get_runs_disponibles`, () => {
+    return HttpResponse.json(mockRunsDisponibles)
   }),
 
   // RPC: get_scraping_stats

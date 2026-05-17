@@ -19,6 +19,7 @@ import {
 import { Search, RotateCcw, Download } from "lucide-react";
 import { getValidacionFilterOptions, ValidacionFilterOptions } from "@/lib/supabase";
 import { ValidationFiltersState, ValidationStats, METODO_LABELS, OfertaValidacion } from "@/lib/types";
+import { RunFilter } from "./RunFilter";
 
 interface ValidationFiltersProps {
   filters: ValidationFiltersState;
@@ -39,6 +40,7 @@ const EMPTY_FILTERS: ValidationFiltersState = {
   nivelEducativo: "",
   scoreRange: "",
   estadoValidacion: "",
+  runId: "",
 };
 
 const SCORE_RANGES = [
@@ -237,6 +239,11 @@ export function ValidationFilters({ filters, onChange, stats, ofertas }: Validat
           placeholder="Educacion"
           allLabel="Todo nivel"
           options={options.nivelesEducativos.map((n) => ({ value: n, label: n }))}
+        />
+
+        <RunFilter
+          value={filters.runId}
+          onChange={(v) => handleChange("runId", v)}
         />
 
         {/* Search */}
