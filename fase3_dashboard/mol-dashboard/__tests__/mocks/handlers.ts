@@ -7,6 +7,7 @@ import { mockEvolucionRPC } from './fixtures/evolucion'
 import { mockRequerimientosRPC, mockSkillsResumenRPC, mockSidebarCountsRPC } from './fixtures/requerimientos'
 import { mockPipelineStatusRPC, mockRunsHistory } from './fixtures/pipeline-status'
 import { mockRunsDisponibles } from './fixtures/runs-disponibles'
+import { mockPipelineRuns } from './fixtures/pipeline-runs'
 import { mockReconciliacionWarning } from './fixtures/reconciliacion'
 import { mockScrapingStatsRPC, mockScrapingHistoryRPC } from './fixtures/scraping-stats'
 import { mockPreviewImpact, mockSugerencias, mockConfigOverride, mockConfigUpsertResult } from './fixtures/config-editor'
@@ -188,6 +189,24 @@ export const handlers = [
   // API: scraping-commands
   http.post('/api/scraping-commands', () => {
     return HttpResponse.json({ id: 'cmd-new', estado: 'pendiente' }, { status: 201 })
+  }),
+
+  // API: pipeline-runs (historial de corridas)
+  http.get('/api/pipeline-runs', ({ request }) => {
+    const url = new URL(request.url)
+    const since = url.searchParams.get('since')
+    const until = url.searchParams.get('until')
+    const matchingVersion = url.searchParams.get('matching_version')
+    const limit = Number(url.searchParams.get('limit') || '100')
+
+    let filtered = [...mockPipelineRuns]
+    if (since) filtered = filtered.filter((r) => r.timestamp >= since)
+    if (until) filtered = filtered.filter((r) => r.timestamp <= until)
+    if (matchingVersion) filtered = filtered.filter((r) => r.matching_version === matchingVersion)
+    filtered.sort((a, b) => b.timestamp.localeCompare(a.timestamp))
+    const runs = filtered.slice(0, limit)
+
+    return HttpResponse.json({ runs, total: filtered.length, limit })
   }),
 
   // API: scraping-schedule

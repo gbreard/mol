@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import LearningDashboard, { type LearningData } from '@/components/LearningDashboard'
+import { PipelineRunsHistory } from '@/components/aprendizaje/PipelineRunsHistory'
 
 export default function AprendizajePage() {
   const [data, setData] = useState<LearningData | null>(null)
@@ -29,11 +30,13 @@ export default function AprendizajePage() {
   }, [])
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 mb-1">Aprendizaje del sistema</h1>
-      <p className="text-sm text-gray-500 mb-6">
-        Evolución de la tasa de error, reglas creadas y resultados del Gold Set de referencia.
-      </p>
+    <div className="p-6 max-w-5xl mx-auto space-y-8">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900 mb-1">Aprendizaje del sistema</h1>
+        <p className="text-sm text-gray-500">
+          Evolución de la tasa de error, reglas creadas y resultados del Gold Set de referencia.
+        </p>
+      </div>
 
       {loading ? (
         <div className="space-y-4">
@@ -44,6 +47,8 @@ export default function AprendizajePage() {
       ) : data ? (
         <LearningDashboard data={data} />
       ) : null}
+
+      <PipelineRunsHistory />
     </div>
   )
 }
