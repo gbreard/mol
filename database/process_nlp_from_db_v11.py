@@ -86,8 +86,8 @@ class NLPExtractorV11:
     Optimizado para velocidad: 18s vs 240s (v10)
     """
 
-    VERSION = "11.3.0"
-    NLP_VERSION_TAG = "11.3.0"
+    VERSION = "11.3.1"
+    NLP_VERSION_TAG = "11.3.1"
     EXTRACTION_METHOD = "pipeline_v11_schema_lite_implicit_skills"
     # Modelo optimizado: 7b es suficiente para extracción JSON (3x más rápido que 14b)
     OLLAMA_MODEL = "qwen2.5:7b"

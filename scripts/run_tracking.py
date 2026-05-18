@@ -291,25 +291,25 @@ class RunTracker:
         """Extrae versiones de los pipelines principales."""
         versions = {}
 
+        import re
+
+        def _read_version(path):
+            try:
+                content = path.read_text(encoding='utf-8')
+                m = re.search(r'VERSION\s*=\s*["\']([^"\']+)["\']', content)
+                return m.group(1) if m else None
+            except Exception:
+                return None
+
         # NLP version
         nlp_path = DB_DIR / "process_nlp_from_db_v11.py"
         if nlp_path.exists():
-            versions["nlp"] = "11.3.0"
+            versions["nlp"] = _read_version(nlp_path) or "11.3.1"
 
         # Matching version
         match_path = DB_DIR / "match_ofertas_v3.py"
         if match_path.exists():
-            try:
-                content = match_path.read_text(encoding='utf-8')
-                if 'VERSION = "' in content:
-                    import re
-                    m = re.search(r'VERSION\s*=\s*["\']([^"\']+)["\']', content)
-                    if m:
-                        versions["matching"] = m.group(1)
-            except:
-                pass
-            if "matching" not in versions:
-                versions["matching"] = "3.2.3"
+            versions["matching"] = _read_version(match_path) or "3.5.5"
 
         # Skills extractor version
         skills_path = DB_DIR / "skills_implicit_extractor.py"

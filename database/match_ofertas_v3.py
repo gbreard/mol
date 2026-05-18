@@ -99,7 +99,7 @@ class MatcherV3:
     Pipeline de matching v3.4.0 - Dual Matching (reglas + semantico).
     """
 
-    VERSION = "3.5.2"  # v3.5.2: Fix exclusiones titulo_original, R87 ecommerce
+    VERSION = "3.5.5"
 
     # Pesos para combinacion de scores
     ALPHA_SKILLS = 0.6  # Peso para match por skills
