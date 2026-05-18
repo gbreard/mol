@@ -191,22 +191,40 @@ export const handlers = [
     return HttpResponse.json({ id: 'cmd-new', estado: 'pendiente' }, { status: 201 })
   }),
 
-  // API: pipeline-runs (historial de corridas)
+  // API: pipeline-runs (historial de corridas) - GET filtros
   http.get('/api/pipeline-runs', ({ request }) => {
     const url = new URL(request.url)
     const since = url.searchParams.get('since')
     const until = url.searchParams.get('until')
     const matchingVersion = url.searchParams.get('matching_version')
+    const source = url.searchParams.get('source')
     const limit = Number(url.searchParams.get('limit') || '100')
 
     let filtered = [...mockPipelineRuns]
     if (since) filtered = filtered.filter((r) => r.timestamp >= since)
     if (until) filtered = filtered.filter((r) => r.timestamp <= until)
     if (matchingVersion) filtered = filtered.filter((r) => r.matching_version === matchingVersion)
+    if (source) filtered = filtered.filter((r) => r.source === source)
     filtered.sort((a, b) => b.timestamp.localeCompare(a.timestamp))
     const runs = filtered.slice(0, limit)
 
     return HttpResponse.json({ runs, total: filtered.length, limit })
+  }),
+
+  // API: pipeline-runs (POST list_sources)
+  http.post('/api/pipeline-runs', async ({ request }) => {
+    const body = (await request.json()) as { action?: string }
+    if (body.action !== 'list_sources') {
+      return HttpResponse.json({ error: 'Acción no soportada' }, { status: 400 })
+    }
+    const counts = new Map<string, number>()
+    for (const r of mockPipelineRuns) {
+      if (r.source) counts.set(r.source, (counts.get(r.source) || 0) + 1)
+    }
+    const sources = Array.from(counts.entries())
+      .map(([source, n]) => ({ source, n }))
+      .sort((a, b) => b.n - a.n)
+    return HttpResponse.json({ sources })
   }),
 
   // API: scraping-schedule

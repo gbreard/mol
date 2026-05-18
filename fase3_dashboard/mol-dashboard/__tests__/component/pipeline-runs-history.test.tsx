@@ -67,4 +67,39 @@ describe('PipelineRunsHistory', () => {
       expect(screen.getAllByText('100.0%').length).toBeGreaterThan(0)
     })
   })
+
+  it('muestra columna Tipo con el source de cada run', async () => {
+    render(<PipelineRunsHistory />)
+    await waitFor(() => {
+      expect(screen.getAllByText('manual').length).toBeGreaterThan(0)
+      expect(screen.getByText('reapply_rules')).toBeInTheDocument()
+    })
+  })
+
+  it('renderiza el filtro source con conteos', async () => {
+    render(<PipelineRunsHistory />)
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Tipo \(source\)/i)).toBeInTheDocument()
+    })
+    // El option text incluye el count, ej "manual (2)"
+    const sel = screen.getByLabelText(/Tipo \(source\)/i) as HTMLSelectElement
+    const options = Array.from(sel.options).map((o) => o.textContent)
+    expect(options).toContain('manual (2)')
+    expect(options).toContain('reapply_rules (1)')
+  })
+
+  it('filtra por source', async () => {
+    render(<PipelineRunsHistory />)
+    await waitFor(() => {
+      expect(screen.getByText('reapply_20260422_185810')).toBeInTheDocument()
+    })
+
+    const sel = screen.getByLabelText(/Tipo \(source\)/i) as HTMLSelectElement
+    fireEvent.change(sel, { target: { value: 'reapply_rules' } })
+
+    await waitFor(() => {
+      expect(screen.queryByText('run_20260516_2052')).not.toBeInTheDocument()
+      expect(screen.getByText('reapply_20260422_185810')).toBeInTheDocument()
+    })
+  })
 })

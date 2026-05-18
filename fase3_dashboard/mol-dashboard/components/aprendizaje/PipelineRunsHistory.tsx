@@ -5,6 +5,8 @@ import { useState, useEffect, useMemo } from "react";
 export interface PipelineRun {
   run_id: string;
   timestamp: string;
+  source: string | null;
+  description: string | null;
   git_branch: string | null;
   git_commit: string | null;
   nlp_version: string | null;
@@ -21,6 +23,11 @@ export interface PipelineRun {
   delta_mejoras: number | null;
   delta_regresiones: number | null;
   run_anterior_id: string | null;
+}
+
+interface SourceOption {
+  source: string;
+  n: number;
 }
 
 function fmtDate(ts: string): string {
@@ -50,17 +57,39 @@ function fmtNum(v: number | null): string {
 
 export function PipelineRunsHistory() {
   const [runs, setRuns] = useState<PipelineRun[]>([]);
+  const [sources, setSources] = useState<SourceOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [since, setSince] = useState("");
   const [until, setUntil] = useState("");
   const [matchingVersion, setMatchingVersion] = useState("");
+  const [source, setSource] = useState("");
   const [limit, setLimit] = useState(50);
 
   const versions = useMemo(() => {
     const set = new Set(runs.map((r) => r.matching_version).filter(Boolean) as string[]);
     return Array.from(set).sort().reverse();
   }, [runs]);
+
+  // Cargar sources una sola vez (no depende de filtros)
+  useEffect(() => {
+    const loadSources = async () => {
+      try {
+        const res = await fetch("/api/pipeline-runs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "list_sources" }),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          setSources(json.sources || []);
+        }
+      } catch {
+        // silent: si falla, el filtro queda vacío
+      }
+    };
+    loadSources();
+  }, []);
 
   useEffect(() => {
     const load = async () => {
@@ -71,6 +100,7 @@ export function PipelineRunsHistory() {
         if (since) params.set("since", since);
         if (until) params.set("until", until);
         if (matchingVersion) params.set("matching_version", matchingVersion);
+        if (source) params.set("source", source);
         params.set("limit", String(limit));
 
         const res = await fetch(`/api/pipeline-runs?${params.toString()}`);
@@ -89,7 +119,7 @@ export function PipelineRunsHistory() {
       }
     };
     load();
-  }, [since, until, matchingVersion, limit]);
+  }, [since, until, matchingVersion, source, limit]);
 
   return (
     <div className="space-y-3">
@@ -143,6 +173,26 @@ export function PipelineRunsHistory() {
             ))}
           </select>
         </div>
+        {sources.length > 0 && (
+          <div>
+            <label htmlFor="prh-source" className="block text-[10px] lg:text-xs font-medium text-gray-500 mb-1">
+              Tipo (source)
+            </label>
+            <select
+              id="prh-source"
+              value={source}
+              onChange={(e) => setSource(e.target.value)}
+              className="h-8 border border-gray-300 rounded px-2 text-xs lg:text-sm max-w-[200px]"
+            >
+              <option value="">Todos</option>
+              {sources.map((s) => (
+                <option key={s.source} value={s.source}>
+                  {s.source} ({s.n})
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         <div>
           <label htmlFor="prh-limit" className="block text-[10px] lg:text-xs font-medium text-gray-500 mb-1">
             Mostrar
@@ -160,12 +210,13 @@ export function PipelineRunsHistory() {
             <option value={500}>500</option>
           </select>
         </div>
-        {(since || until || matchingVersion) && (
+        {(since || until || matchingVersion || source) && (
           <button
             onClick={() => {
               setSince("");
               setUntil("");
               setMatchingVersion("");
+              setSource("");
             }}
             className="h-8 px-3 text-xs lg:text-sm text-gray-600 hover:text-gray-900 border border-gray-300 rounded"
           >
@@ -188,6 +239,7 @@ export function PipelineRunsHistory() {
                 <tr>
                   <th className="px-3 py-2 text-left font-medium">Run ID</th>
                   <th className="px-3 py-2 text-left font-medium">Fecha</th>
+                  <th className="px-3 py-2 text-left font-medium">Tipo</th>
                   <th className="px-3 py-2 text-left font-medium">Matcher</th>
                   <th className="px-3 py-2 text-right font-medium">Ofertas</th>
                   <th className="px-3 py-2 text-right font-medium">Errores</th>
@@ -199,8 +251,22 @@ export function PipelineRunsHistory() {
               <tbody className="divide-y divide-gray-100">
                 {runs.map((r) => (
                   <tr key={r.run_id} className="hover:bg-gray-50">
-                    <td className="px-3 py-1.5 font-mono text-[10px] lg:text-xs text-gray-700">{r.run_id}</td>
+                    <td
+                      className="px-3 py-1.5 font-mono text-[10px] lg:text-xs text-gray-700"
+                      title={r.description || undefined}
+                    >
+                      {r.run_id}
+                    </td>
                     <td className="px-3 py-1.5 text-gray-700">{fmtDate(r.timestamp)}</td>
+                    <td className="px-3 py-1.5">
+                      {r.source ? (
+                        <span className="text-[10px] lg:text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded">
+                          {r.source}
+                        </span>
+                      ) : (
+                        <span className="text-gray-300">—</span>
+                      )}
+                    </td>
                     <td className="px-3 py-1.5">
                       <span className="font-mono text-[10px] lg:text-xs text-gray-500">
                         {r.matching_version || "—"}
