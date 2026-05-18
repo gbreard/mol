@@ -12,6 +12,20 @@ function getSupabaseAdmin(): SupabaseClient | null {
   return supabaseAdmin;
 }
 
+interface RunRow {
+  timestamp: string;
+  ofertas_count: number | null;
+  errores_escalados: number | null;
+}
+
+function tasaEscaladosPct(runs: RunRow[]): number {
+  const validos = runs.filter((r) => (r.ofertas_count ?? 0) > 0);
+  if (validos.length === 0) return 0;
+  const ratios = validos.map((r) => (r.errores_escalados ?? 0) / (r.ofertas_count ?? 1));
+  const mean = ratios.reduce((a, b) => a + b, 0) / ratios.length;
+  return Math.round(mean * 100 * 10) / 10;
+}
+
 // GET /api/processing-metrics — metrics for learning dashboard
 export async function GET(request: NextRequest) {
   const auth = await requireAdmin(request);
@@ -21,93 +35,85 @@ export async function GET(request: NextRequest) {
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
 
   try {
-    // Get local pipeline status for current counts
-    const { data: localStatus } = await client
-      .from('pipeline_local_status')
-      .select('*')
-      .eq('id', 'current')
-      .maybeSingle();
-
-    // Get resolved issues for training data
+    // Resolved issues for training pairs count
     const { data: issues } = await client
       .from('issues')
-      .select('id, resuelto_at, campo_afectado')
+      .select('id, resuelto_at')
       .eq('estado', 'resuelto')
       .not('id_oferta', 'is', null)
       .order('resuelto_at', { ascending: false })
       .limit(500);
 
-    // Build error rate timeline from issues (grouped by week)
-    const weeklyErrors: Record<string, { fecha: string; total_procesadas: number; tasa_error: number }> = {};
-    const issuesByWeek: Record<string, number> = {};
+    // Últimos N runs para tasa_error_actual y primer run para baseline
+    const { data: runsRecientes } = await client
+      .from('pipeline_runs_history')
+      .select('timestamp, ofertas_count, errores_escalados')
+      .order('timestamp', { ascending: false })
+      .limit(5);
 
-    for (const issue of (issues || [])) {
-      if (!issue.resuelto_at) continue;
-      const date = new Date(issue.resuelto_at);
-      const weekStart = new Date(date);
-      weekStart.setDate(date.getDate() - date.getDay());
-      const weekKey = weekStart.toISOString().split('T')[0];
-      issuesByWeek[weekKey] = (issuesByWeek[weekKey] || 0) + 1;
+    // Baseline: primer run con errores escalados > 0 (los runs muy viejos no medían escalados)
+    const { data: primerRun } = await client
+      .from('pipeline_runs_history')
+      .select('timestamp, ofertas_count, errores_escalados')
+      .gt('ofertas_count', 0)
+      .gt('errores_escalados', 0)
+      .order('timestamp', { ascending: true })
+      .limit(1);
+
+    const tasaErrorActual = tasaEscaladosPct((runsRecientes as RunRow[]) || []);
+    const tasaErrorInicial = tasaEscaladosPct((primerRun as RunRow[]) || []);
+
+    // Timeline desde pipeline_runs_history (agrupado por día, últimos 60 días)
+    const sinceISO = new Date(Date.now() - 60 * 86400000).toISOString();
+    const { data: runsTimeline } = await client
+      .from('pipeline_runs_history')
+      .select('timestamp, ofertas_count, errores_escalados')
+      .gte('timestamp', sinceISO)
+      .gt('ofertas_count', 0)
+      .order('timestamp', { ascending: true });
+
+    const byDay: Record<string, { ofertas: number; escalados: number }> = {};
+    for (const run of (runsTimeline as RunRow[]) || []) {
+      const day = run.timestamp.split('T')[0];
+      if (!byDay[day]) byDay[day] = { ofertas: 0, escalados: 0 };
+      byDay[day].ofertas += run.ofertas_count ?? 0;
+      byDay[day].escalados += run.errores_escalados ?? 0;
     }
-
-    const totalProcessed = localStatus?.nlp_procesadas || 0;
-    const timeline_errores = Object.entries(issuesByWeek)
+    const timeline_errores = Object.entries(byDay)
       .sort(([a], [b]) => a.localeCompare(b))
-      .slice(-20)
-      .map(([fecha, count]) => ({
+      .map(([fecha, { ofertas, escalados }]) => ({
         fecha,
-        total_procesadas: Math.round(totalProcessed / 20),
-        tasa_error: totalProcessed > 0 ? Math.round(count / (totalProcessed / 20) * 100 * 10) / 10 : 0,
+        total_procesadas: ofertas,
+        tasa_error: ofertas > 0 ? Math.round((escalados / ofertas) * 100 * 10) / 10 : 0,
       }));
 
-    // Rules count (from config_overrides or estimate)
+    // Reglas activas desde config_overrides
     const { data: configOverride } = await client
       .from('config_overrides')
       .select('json_value, version')
       .eq('config_key', 'matching_rules_business')
       .maybeSingle();
 
-    let totalReglasActivas = 299; // default
+    let totalReglasActivas = 0;
     if (configOverride?.json_value?.reglas_forzar_isco) {
       totalReglasActivas = Object.keys(configOverride.json_value.reglas_forzar_isco)
         .filter((k: string) => k !== 'descripcion').length;
     }
 
-    // Build gold set results (simplified from validation data)
-    const goldSet = [
-      { oferta_id: 1, titulo: 'Gerente de Ventas', isco_esperado: '1221', isco_obtenido: '1221', correcto: true, score: 0.98 },
-      { oferta_id: 2, titulo: 'Contador', isco_esperado: '2411', isco_obtenido: '2411', correcto: true, score: 0.95 },
-      { oferta_id: 3, titulo: 'Electricista', isco_esperado: '7411', isco_obtenido: '7411', correcto: true, score: 0.92 },
-    ];
-
-    // Training pairs count
-    const trainingPairsCount = (issues || []).length;
-
-    // Calculate current error rate
-    const recentIssues = (issues || []).filter(i => {
-      if (!i.resuelto_at) return false;
-      return Date.now() - new Date(i.resuelto_at).getTime() < 30 * 86400000;
-    }).length;
-
-    const tasaErrorActual = totalProcessed > 0 ? Math.round(recentIssues / totalProcessed * 100 * 10) / 10 : 0;
-
     return NextResponse.json({
       aprendizaje: {
         total_reglas_activas: totalReglasActivas,
-        total_reglas_creadas: totalReglasActivas + 50, // approximate historical
+        total_reglas_creadas: totalReglasActivas,
         tasa_error_actual: tasaErrorActual,
-        tasa_error_inicial: 8.5, // historical baseline
+        tasa_error_inicial: tasaErrorInicial,
         timeline_errores,
-        timeline_reglas: [
-          { fecha: '2026-03-20', regla_id: 'R299', tipo: 'creada' as const, descripcion: 'Regla data engineer → 2521' },
-          { fecha: '2026-03-15', regla_id: 'R297', tipo: 'creada' as const, descripcion: 'Regla community manager → 2431' },
-          { fecha: '2026-03-10', regla_id: 'R290', tipo: 'modificada' as const, descripcion: 'Ajuste gerente ventas' },
-        ],
-        gold_set: goldSet,
+        timeline_reglas: [],
+        gold_set: [],
       },
-      training_pairs: trainingPairsCount,
+      training_pairs: (issues || []).length,
     });
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : 'Error desconocido';
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

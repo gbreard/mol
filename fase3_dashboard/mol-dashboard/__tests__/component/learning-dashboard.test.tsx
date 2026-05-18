@@ -77,8 +77,18 @@ describe('S28 — LearningDashboard', () => {
     expect(rows.length).toBe(1)
   })
 
-  it('sin eventos de reglas muestra mensaje vacío', () => {
+  it('sin eventos de reglas muestra mensaje vacío honesto', () => {
     render(<LearningDashboard data={{ ...mockData, timeline_reglas: [] }} />)
-    expect(screen.getByText('Sin eventos de reglas.')).toBeInTheDocument()
+    expect(screen.getByText(/Sin historial de reglas registrado/i)).toBeInTheDocument()
+  })
+
+  it('sin gold set muestra mensaje vacío honesto', () => {
+    render(<LearningDashboard data={{ ...mockData, gold_set: [] }} />)
+    expect(screen.getByText(/Sin gold set conectado/i)).toBeInTheDocument()
+  })
+
+  it('sin gold set NO muestra el badge de % correctos', () => {
+    render(<LearningDashboard data={{ ...mockData, gold_set: [] }} />)
+    expect(screen.queryByLabelText(/Gold Set: \d+% correctos/i)).not.toBeInTheDocument()
   })
 })
