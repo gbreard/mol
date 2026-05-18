@@ -80,14 +80,22 @@ from patterns.regex_patterns_v4 import extract_all as extract_regex_v4
 from limpiar_titulos import limpiar_titulo
 
 
+def _read_nlp_version() -> str:
+    from pathlib import Path
+    try:
+        return (Path(__file__).parent / "NLP_VERSION").read_text().strip()
+    except Exception:
+        return "unknown"
+
+
 class NLPExtractorV11:
     """
     Extractor NLP v11.0 - Schema Lite (15 campos normalizables)
     Optimizado para velocidad: 18s vs 240s (v10)
     """
 
-    VERSION = "11.3.1"
-    NLP_VERSION_TAG = "11.3.1"
+    VERSION = _read_nlp_version()
+    NLP_VERSION_TAG = VERSION
     EXTRACTION_METHOD = "pipeline_v11_schema_lite_implicit_skills"
     # Modelo optimizado: 7b es suficiente para extracción JSON (3x más rápido que 14b)
     OLLAMA_MODEL = "qwen2.5:7b"

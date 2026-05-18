@@ -1,0 +1,7 @@
+#!/bin/sh
+# MOL pre-commit guard
+# Instalación: ln -s ../../scripts/hooks/pre-commit .git/hooks/pre-commit
+
+python3 "$(git rev-parse --show-toplevel)/scripts/check_version_bumped.py"
+status=$?
+exit $status

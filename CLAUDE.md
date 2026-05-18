@@ -1380,12 +1380,35 @@ python scripts/exports/export_validation_excel.py --etapa completo --ids X
 
 ## Regla de Versionado
 
-**OBLIGATORIO:** Cuando se crea una nueva versión:
+### Fuente única de verdad (desde 2026-05-18)
 
-1. Crear nueva versión (ej: `v11.py`)
+Las versiones de NLP y Matcher viven en archivos planos:
+
+| Componente | Archivo | Lo leen |
+|---|---|---|
+| NLP | `database/NLP_VERSION` | `NLPExtractorV11.VERSION`, `run_tracking.py` |
+| Matcher | `database/MATCHER_VERSION` | `MatcherV3.VERSION`, `run_tracking.py` |
+
+**Cuándo bumpear** (Decisión 4 — Opción B):
+- Cambio modifica comportamiento del algoritmo (threshold, regla, lógica de decisión) → **SÍ bumpear**
+- Fix de typo, comentarios, refactor sin cambio funcional → **NO bumpear** (commit con `--no-verify` si el hook se queja)
+
+**Pre-commit hook** (instalar 1 vez por desarrollador):
+```bash
+ln -sf ../../scripts/hooks/pre-commit .git/hooks/pre-commit
+```
+Si modificás `match_ofertas_v3.py` o `process_nlp_from_db_v11.py` sin tocar el archivo `*_VERSION` correspondiente, el commit falla. Para excepciones genuinas: `git commit --no-verify`.
+
+Validador manual: `python scripts/check_version_bumped.py`
+
+### Regla legacy (crear nueva versión por reescritura grande)
+
+Cuando se crea una **nueva versión mayor** (reescritura, ej: `v11.py` → `v12.py`):
+
+1. Crear nueva versión (ej: `v12.py`)
 2. Archivar anterior en `database/archive_old_versions/`
 3. Verificar que nada importe el archivo archivado
-4. Actualizar CLAUDE.md
+4. Actualizar `*_VERSION` y CLAUDE.md
 
 **NUNCA** dejar dos versiones activas en el mismo directorio.
 

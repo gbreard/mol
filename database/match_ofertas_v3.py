@@ -94,12 +94,20 @@ class MatchResult:
         return asdict(self)
 
 
+def _read_matcher_version() -> str:
+    from pathlib import Path
+    try:
+        return (Path(__file__).parent / "MATCHER_VERSION").read_text().strip()
+    except Exception:
+        return "unknown"
+
+
 class MatcherV3:
     """
     Pipeline de matching v3.4.0 - Dual Matching (reglas + semantico).
     """
 
-    VERSION = "3.5.5"
+    VERSION = _read_matcher_version()
 
     # Pesos para combinacion de scores
     ALPHA_SKILLS = 0.6  # Peso para match por skills
