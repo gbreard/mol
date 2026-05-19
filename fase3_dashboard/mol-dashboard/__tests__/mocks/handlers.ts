@@ -8,6 +8,7 @@ import { mockRequerimientosRPC, mockSkillsResumenRPC, mockSidebarCountsRPC } fro
 import { mockPipelineStatusRPC, mockRunsHistory } from './fixtures/pipeline-status'
 import { mockRunsDisponibles } from './fixtures/runs-disponibles'
 import { mockPipelineRuns } from './fixtures/pipeline-runs'
+import { mockGoldSetMetrics } from './fixtures/gold-set-metrics'
 import { mockReconciliacionWarning } from './fixtures/reconciliacion'
 import { mockScrapingStatsRPC, mockScrapingHistoryRPC } from './fixtures/scraping-stats'
 import { mockPreviewImpact, mockSugerencias, mockConfigOverride, mockConfigUpsertResult } from './fixtures/config-editor'
@@ -209,6 +210,11 @@ export const handlers = [
     const runs = filtered.slice(0, limit)
 
     return HttpResponse.json({ runs, total: filtered.length, limit })
+  }),
+
+  // API: gold-set-metrics
+  http.get('/api/gold-set-metrics', () => {
+    return HttpResponse.json(mockGoldSetMetrics)
   }),
 
   // API: pipeline-runs (POST list_sources)

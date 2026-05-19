@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import LearningDashboard, { type LearningData } from '@/components/LearningDashboard'
 import { PipelineRunsHistory } from '@/components/aprendizaje/PipelineRunsHistory'
+import { GoldSetMetrics } from '@/components/aprendizaje/GoldSetMetrics'
 
 export default function AprendizajePage() {
   const [data, setData] = useState<LearningData | null>(null)
@@ -47,6 +48,8 @@ export default function AprendizajePage() {
       ) : data ? (
         <LearningDashboard data={data} />
       ) : null}
+
+      <GoldSetMetrics />
 
       <PipelineRunsHistory />
     </div>
