@@ -6,45 +6,48 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-04-30 10:52"
+  fecha_actualizacion: "2026-05-19 11:41"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "adquisicion"  # adquisicion | procesamiento | presentacion
-  fase_detalle: "105443 errores sin resolver - sistema sugiere Fase 2"
+  fase_detalle: "140221 errores sin resolver - sistema sugiere Fase 2"
 
 ultimo_trabajo:
-  fecha: "2026-04-13/14"
-  sesion: "Sprint 17: UI Oficina de Empleo + Modelo Tendencias + LLM Recomendaciones"
+  fecha: "2026-05-18/19"
+  sesion: "Sprint 18: Versionado real + Historial de corridas + Disciplina *_VERSION"
+  branch: "feature/spec-e-embeddings-enriquecidos"
   cambios:
-    - "fix(oe): 16 bugs en sección Oficina de Empleo VIP (QR, fecha, debounce, delete, scroll infinito, etc)"
-    - "fix(oe): 7 tests UI desactualizados (formacion-search, free-text-extractor)"
-    - "fix(matching): filtro temporal ofertas (semana/mes/histórico) + provincia coherente"
-    - "fix(matching): ocultar ocupaciones sin ofertas por default + toggle ver todas"
-    - "fix(futuro): error handling, cursos fallback nacional, debounce búsqueda"
-    - "feat(futuro): indicadores de tendencia de demanda por ocupación (↑→↓ + sparkline + proyección)"
-    - "feat(futuro): modelo de tendencia con regresión lineal (calculate_demand_trends.py)"
-    - "feat(futuro): tabla isco_demand_trend en Supabase (381 ISCOs, 122 con datos suficientes)"
-    - "feat(futuro): tab Mapa de demanda en selector de ocupación (sort por ofertas/match/creciendo)"
-    - "feat(futuro): asistente de trayectoria laboral con LLM (Groq llama-3.3-70b-versatile)"
-    - "feat(futuro): recomendación analiza top 5 ocupaciones + cursos + tendencias"
-    - "feat(politicas): análisis de reconversión ocupacional con LLM"
-    - "feat(politicas): tendencias + sort + cursos destino en ocupaciones similares"
-    - "feat(politicas): selector de ocupaciones con árbol ISCO (3045 ESCO) + búsqueda"
-    - "feat(politicas): modal ofertas con filtro temporal (semana/mes/3meses/histórico)"
-    - "fix(vip): breadcrumbs indicadores laboratorio apuntan a /vip/politicas (no M4)"
-    - "fix(vip): vacantes conectado a Supabase (sin mock data) + VIP bloqueado"
+    - "fix(versions): VERSION constants alineadas con docstring + lectura dinámica (commit 25cd4423)"
+    - "backfill: ofertas_dashboard.matching_version 68K filas → 3.5.4 (pre 14-may) / 3.5.5 (post) / 3.5.2 (sin run_id)"
+    - "feat(aprendizaje): /api/pipeline-runs endpoint + componente PipelineRunsHistory (commit ed7ea461)"
+    - "backfill: pipeline_runs_history 615 runs nuevos en 4s (de 1 → 616 totales)"
+    - "fix(aprendizaje): /api/processing-metrics ahora usa datos reales de pipeline_runs_history (commit ff046356)"
+    - "fix(aprendizaje): tasa_error_inicial 8.5 hardcoded → primer run con escalados>0 (~44.7%)"
+    - "fix(aprendizaje): gold_set 3 hardcoded → array vacío + mensaje honesto"
+    - "fix(aprendizaje): timeline_reglas 3 hardcoded → array vacío + mensaje honesto"
+    - "migration 023: pipeline_runs_history + source + description columns (aplicada manual desde Studio)"
+    - "feat(aprendizaje): filtro por source en historial + 73 sources únicos disponibles (commit 61359c89)"
+    - "backfill: pipeline_runs_history.source 616 runs en 105s (manual=536, experiment=5, resto micro)"
+    - "feat(versioning): database/NLP_VERSION + database/MATCHER_VERSION como única fuente (commit b86d7dc1)"
+    - "feat(versioning): pre-commit hook scripts/hooks/pre-commit + validator scripts/check_version_bumped.py"
+    - "test(versioning): tests/test_versioning.py 15/15 pasan"
+  hallazgo_critico:
+    - "Cloudflare WAF (error 1010) bloquea api.supabase.com Management API desde WSL — DDL solo via Studio web"
+    - "Runs régimen 15-17 mayo tienen precision=1.0 todos porque no se comparan vs gold set"
+    - "Tasa de escalados real ~40% en runs recientes (auto-corrector resuelve poco)"
   sesion_anterior:
+    tema: "Sprint 17: UI Oficina de Empleo + Modelo Tendencias + LLM Recomendaciones"
+    cambios_resumen: "16 bugs OE, modelo tendencias demanda (381 ISCOs), asistente LLM Groq, árbol ISCO 3045 ocupaciones"
+  sesion_anterior_2:
     tema: "Sprint 16: Diagnóstico sistémico + Fase -1 completa"
     cambios_resumen: "M-01/M-06/M-07/M-08/M-08b/M-08c/M-09b implementados. 157 tests Python."
-  sesion_anterior_2:
-    tema: "Sprint 15: Fixes dashboard + Centro de Control + sync VPS"
-    cambios_resumen: "Bloque J completo, reorg admin menu, sync VPS 4634 ofertas nuevas"
-  branch: "feature/UI-oficina-de-empleo"
   pendiente:
+    - "Régimen tasa_escalados ~40% → investigar por qué auto-corrector resuelve poco"
+    - "Gold Set real: persistir validaciones humanas como referencia para tasa_error real (no escalados)"
+    - "Conectar timeline_reglas a config_overrides timestamps (eventos de cambio de reglas)"
+    - "Instalación hook para Sergio: ln -sf ../../scripts/hooks/pre-commit .git/hooks/pre-commit"
     - "TODO OE-11: restaurar requireAuth en APIs de perfiles/casos (seguridad)"
-    - "Unificar indicador tendencia+volatilidad en semáforo de oportunidad (propuesto)"
-    - "Mejorar prompt LLM recomendación para incluir links clickeables a ocupaciones"
-    - "19K ofertas sin NLP pendientes"
+    - "12K ofertas sin NLP pendientes (rate de cola)"
 
   # Protección de Ofertas Validadas v2.0 (2026-01-20)
   proteccion_validadas:
@@ -186,11 +189,11 @@ conteos:
   reglas_negocio: 354  # config/matching_rules_business.json > reglas_forzar_isco (v3.1 actualizado 2026-01-29)
   reglas_validacion: 3  # config/validation_rules.json > reglas_validacion (V01-V22 legacy + V25-V29 declarativas Sprint 3)
   reglas_skills_dual: 25  # config/skills_rules.json > reglas_forzar_skills (v2.0 2026-01-22)
-  sinonimos_argentinos: 22  # config/sinonimos_argentinos_esco.json v2 > ocupaciones_titulo (SPEC U-1 v3.1: 19 isco_primario + gerente/operador/tecnico)
+  sinonimos_argentinos: 23  # config/sinonimos_argentinos_esco.json v2 > ocupaciones_titulo (SPEC U-1 v3.1: 19 isco_primario + gerente/operador/tecnico)
   empresas_catalogo: 247  # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
   skills_esco: 14257            # database/embeddings/esco_skills_full.json
   ocupaciones_esco: 3046        # database/embeddings/esco_occupations_full.json
-  ultima_verificacion: 2026-04-30
+  ultima_verificacion: 2026-05-19
 
   supabase:
     integrado: true
@@ -224,8 +227,8 @@ conteos:
   proximo_paso: "Revisar 24 casos con override semántico alto"
 
   estadisticas_actuales:
-    ofertas_validadas: 56397  # todas sincronizadas a Supabase
-    ofertas_pendientes: 36  # 0 errores de validación
+    ofertas_validadas: 56224  # todas sincronizadas a Supabase
+    ofertas_pendientes: 12017  # 0 errores de validación
     errores_validacion: 0  # resueltos 201 → 0
     reglas_negocio: 354
     convergencia: "CONVERGIDO (0 errores pendientes)"
@@ -243,9 +246,9 @@ conteos:
 
   # Métricas de evolución del aprendizaje
   learning_evolution:
-    total_runs: 595
+    total_runs: 616
     ofertas_con_historial_nlp: 5474  # ofertas en ofertas_nlp_history
-    ofertas_con_matching: 56433  # ofertas distintas en ofertas_esco_matching
+    ofertas_con_matching: 68241  # ofertas distintas en ofertas_esco_matching
 
     # Distribución real de reprocesos (datos de ofertas_nlp_history)
     distribucion_reprocesos:
