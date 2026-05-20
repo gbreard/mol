@@ -16,6 +16,7 @@ import { PuestoPanel } from "@/components/validacion/PuestoPanel";
 import { ClasificacionPanel } from "@/components/validacion/ClasificacionPanel";
 import { ValidationActions } from "@/components/validacion/ValidationActions";
 import { ListPagination } from "@/components/validacion/ListPagination";
+import { EmptyResultsWithFilters } from "@/components/validacion/EmptyResultsWithFilters";
 import { createBrowserClient } from "@/lib/supabase/browser";
 
 const PAGE_SIZE = 50;
@@ -284,9 +285,13 @@ export default function ValidacionPage() {
           <span className="ml-2 text-sm text-gray-500">Cargando ofertas...</span>
         </div>
       ) : ofertas.length === 0 ? (
-        <div className="flex items-center justify-center flex-1 text-gray-500 text-sm">
-          No se encontraron ofertas con los filtros seleccionados
-        </div>
+        <EmptyResultsWithFilters
+          filters={filters}
+          onClearFiltersKeepSearch={() =>
+            setFilters({ ...EMPTY_FILTERS, search: filters.search })
+          }
+          onClearAll={() => setFilters(EMPTY_FILTERS)}
+        />
       ) : (
         <div className={`flex-1 min-h-0 ${isWide ? "" : "h-[1500px]"}`}>
           <ResizablePanelGroup direction={isWide ? "horizontal" : "vertical"} className="h-full">
