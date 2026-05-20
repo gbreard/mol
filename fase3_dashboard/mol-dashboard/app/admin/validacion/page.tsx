@@ -8,6 +8,7 @@ import {
   ResizableHandle,
 } from "@/components/ui/resizable";
 import { getOfertasValidacion, getValidacionStats } from "@/lib/supabase";
+import { shouldSkipKeyNavigation } from "@/lib/keyboard-utils";
 import { OfertaValidacion, ValidationFiltersState, ValidationStats, ValidacionHumana } from "@/lib/types";
 import { ValidationFilters } from "@/components/validacion/ValidationFilters";
 import { OfertaList } from "@/components/validacion/OfertaList";
@@ -198,6 +199,9 @@ export default function ValidacionPage() {
   // Keyboard: Arrow up/down for list navigation
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
+      // B1: no navegar la lista si el foco está en un campo editable o
+      // dentro de un dialog — las flechas son comportamiento natural ahí.
+      if (shouldSkipKeyNavigation(e.target)) return;
       if (e.key === "ArrowUp") {
         e.preventDefault();
         navigateTo("prev");
