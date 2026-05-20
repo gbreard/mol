@@ -85,6 +85,40 @@ fixeados y mergeados a main (2026-05-19, commit `4d365179`):
 
 ---
 
+## D8 — Cobertura parcial del filtro F7 "datos incompletos"
+
+**Decisión:** Generated column con cobertura 67%.
+
+**Contexto:** El filtro F7 originalmente debía detectar ofertas con
+ESCO/skills/tareas/score bajo. La verificación "sin skills" requiere
+JOIN con `ofertas_skills` que en 68K filas tarda 1.8-9s.
+
+**Solución aplicada:** Generated column `datos_incompletos` cubre
+4 condiciones rápidas (sin ESCO, sin tareas explícitas, tareas vacías,
+score < 0.5). Excluye el chequeo "sin skills puro" (~1.4K ofertas =
+33% del concepto original cuando se considera el universo de matching
+del filtro F7).
+
+**Riesgo:** Cyn puede notar que algunas ofertas sin skills no aparecen
+en el filtro. Si lo reporta, se agrega columna `tiene_skills` con
+trigger en Sprint 2 (o equivalente).
+
+**Decisión de iterar:** Validar uso real primero. Si Cyn no nota
+limitación o no lo reporta, dejar así. Si lo reporta, escalar.
+
+**Aplicado en:** `migrations/024_1_spec_w_performance_filtros.sql`.
+
+**Métricas pre/post migration:**
+
+| Query | Antes | Después |
+|---|---|---|
+| `solo_datos_incompletos` count | 1815 ms | 21.7 ms |
+| `estado_revision IS NULL` LIMIT 50 | 4902 ms | 16.7 ms |
+| `datos_incompletos = true` LIMIT 50 | n/a | 2.4 ms |
+| `estado_revision IS NULL` count exact | 4902 ms | 2845 ms (mitigar con `count: 'planned'` en frontend) |
+
+---
+
 ## Próximos pasos
 
 1. **Etapa 1 Sprint 1 (semana 1):** Schema + backend
@@ -119,3 +153,4 @@ fixeados y mergeados a main (2026-05-19, commit `4d365179`):
 | D2 | Etapa 2 no tiene data suficiente | Plan B: parseo parcial de notas como ingest a `audit_actions` |
 | D3 | Cyn pide desglose después | Aditivo: agregar columnas detalle sin romper schema actual |
 | D6 | Similitud heurística genera falsos positivos | Mostrar score visible para que Cyn juzgue |
+| D8 | Cyn pide cobertura completa (incluir sin skills) | Aditivo: agregar columna `tiene_skills` + trigger en Sprint 2 sin romper schema |
