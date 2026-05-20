@@ -4,7 +4,7 @@
 **Reportado por:** Cyn (cuestionario MOL — mayo 2026, Bloque 1.4 sobre bugs del validador)
 **Fecha registro:** 2026-05-19
 **Severidad:** Alta (afecta flujo diario de validación)
-**Estado:** open
+**Estado:** fixed (pendiente validación en producción por Cyn)
 **Bloqueante para:** SPEC W Etapa 1 (Visualizador estructurado)
 
 ---
@@ -69,3 +69,54 @@ Diagnóstico read-only sin tocar código (Fase 3 del plan de fix). Ver `docs/iss
 
 - Sesión con Cyn (pantalla compartida o video) ayudaría a confirmar bajo qué condiciones específicas falla.
 - Verificar si la deuda se reproduce sin filtros previos activos (test A) y con filtros previos activos (test B) — esto descarta o confirma Variante 1.
+
+---
+
+## Fix aplicado
+
+**Commit:** `a79075ed` fix(B2): feedback visual cuando búsqueda + filtros activos retorna vacío
+**Branch:** `fix/validador-bugs-cyn`
+**Fecha:** 2026-05-19
+
+### Resumen del cambio
+
+Cuando la búsqueda + filtros activos no devuelven ofertas, en lugar del mensaje genérico "No se encontraron ofertas con los filtros seleccionados" ahora aparece un panel que:
+
+1. **Explica** qué filtros están activos y por qué probablemente la búsqueda no devuelve resultados.
+2. **Ofrece un botón** "Limpiar filtros (mantener búsqueda)" que setea todo a `EMPTY_FILTERS` pero preserva `filters.search`.
+3. **Ofrece un botón alternativo** "Limpiar todo" para reset total.
+
+Esto convierte la percepción de "el buscador no funciona" en "los filtros están filtrando mi resultado, click para resolverlo". No modifica el comportamiento del buscador en sí.
+
+### Archivos modificados
+
+| Path | Cambio |
+|---|---|
+| `fase3_dashboard/mol-dashboard/components/validacion/EmptyResultsWithFilters.tsx` | Nuevo. Componente con 3 ramas según presencia de búsqueda y filtros. |
+| `fase3_dashboard/mol-dashboard/app/admin/validacion/page.tsx` | Reemplaza el div genérico de empty state por `<EmptyResultsWithFilters />` y pasa handlers para limpiar manteniendo/no la búsqueda. |
+| `fase3_dashboard/mol-dashboard/__tests__/component/empty-results-with-filters.test.tsx` | Nuevo. 7 tests component. |
+
+### Tests
+
+Archivo: `__tests__/component/empty-results-with-filters.test.tsx` — **7/7 verdes**.
+
+| # | Test | Cubre |
+|---|---|---|
+| 1 | mensaje + botón limpiar cuando hay search Y otros filtros activos | caso principal del bug |
+| 2 | NO muestra mensaje de filtros cuando sólo hay búsqueda | caso degenerado: sin otros filtros, no hay nada que limpiar |
+| 3 | click en "Limpiar filtros (mantener búsqueda)" dispara callback correcto | UX |
+| 4 | click en "Limpiar todo" dispara callback correcto | UX alternativa |
+| 5 | mensaje genérico cuando no hay búsqueda ni filtros (vacío total) | regresión: empty state base sigue funcionando |
+| 6 | mensaje genérico cuando hay filtros pero no búsqueda | regresión: caso ya cubierto antes |
+| 7 | enumera los 11 filtros activos sin perder ninguno | regresión: completitud del mapeo |
+
+### Lo que NO se hizo (fixes complementarios, postergados)
+
+- Debounce en el input de búsqueda (`onChange` solo dispara en ENTER/lupita).
+- Match exacto por `.eq('id_oferta', X)` cuando el input parece ID puro (en lugar del `ilike` actual).
+
+Esos quedan para iteración posterior si Cyn reporta que el fix mínimo no es suficiente.
+
+### Validación pendiente
+
+Cyn debe confirmar en producción que ahora entiende por qué un ID no aparece (y puede resolverlo con el botón). **Hasta entonces este issue queda en estado `fixed`, no `closed`.**
