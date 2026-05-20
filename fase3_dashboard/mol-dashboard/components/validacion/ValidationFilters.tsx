@@ -10,6 +10,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -319,6 +321,71 @@ export function ValidationFilters({ filters, onChange, stats, ofertas }: Validat
             </div>
           </div>
         )}
+      </div>
+
+      {/* Row 3: Bloque Revisión (SPEC W F7/F8) */}
+      <div
+        data-testid="bloque-revision"
+        className="flex items-center gap-4 flex-wrap border-t pt-2 mt-1"
+      >
+        <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+          Revisión
+        </span>
+
+        {/* Radio group: estado de revisión */}
+        <RadioGroup
+          value={filters.estadoRevision || "__todas__"}
+          onValueChange={(v) => handleChange("estadoRevision", v === "__todas__" ? "" : v)}
+          className="flex items-center gap-3"
+          aria-label="Estado de revisión"
+        >
+          <label className="flex items-center gap-1.5 text-xs cursor-pointer">
+            <RadioGroupItem value="__todas__" id="revision-todas" className="size-3" />
+            <span>Todas</span>
+          </label>
+          <label className="flex items-center gap-1.5 text-xs cursor-pointer">
+            <RadioGroupItem value="pendiente" id="revision-pendiente" className="size-3" />
+            <span>Pendientes</span>
+          </label>
+          <label className="flex items-center gap-1.5 text-xs cursor-pointer">
+            <RadioGroupItem value="revisada" id="revision-revisada" className="size-3" />
+            <span>Revisadas</span>
+          </label>
+          <label className="flex items-center gap-1.5 text-xs cursor-pointer">
+            <RadioGroupItem
+              value="mal_extraida_total"
+              id="revision-mal-extraida"
+              className="size-3"
+            />
+            <span>Mal extraídas</span>
+          </label>
+        </RadioGroup>
+
+        {/* Toggle: datos incompletos */}
+        <label className="flex items-center gap-1.5 text-xs cursor-pointer">
+          <Checkbox
+            id="solo-datos-incompletos"
+            checked={filters.soloDatosIncompletos === "true"}
+            onCheckedChange={(checked) =>
+              handleChange("soloDatosIncompletos", checked ? "true" : "")
+            }
+            className="size-3.5"
+          />
+          <span>Solo datos incompletos</span>
+        </label>
+
+        {/* Toggle: corregidas manualmente */}
+        <label className="flex items-center gap-1.5 text-xs cursor-pointer">
+          <Checkbox
+            id="solo-correccion-manual"
+            checked={filters.soloCorreccionManual === "true"}
+            onCheckedChange={(checked) =>
+              handleChange("soloCorreccionManual", checked ? "true" : "")
+            }
+            className="size-3.5"
+          />
+          <span>Solo corregidas manualmente</span>
+        </label>
       </div>
     </div>
   );
