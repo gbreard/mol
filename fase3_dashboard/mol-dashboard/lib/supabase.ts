@@ -2030,7 +2030,8 @@ const VALIDACION_SELECT = `
   nivel_educativo, experiencia_min_anios, salario_min, salario_max,
   skills_tecnicas, soft_skills,
   validacion_humana, validacion_humana_at, validacion_humana_por, validacion_correcciones,
-  run_id, matching_version
+  run_id, matching_version,
+  estado_revision, denominacion_arg, denominacion_esp
 `
 
 // SPEC W F8 — IDs de ofertas con audit_actions humanas de corrección

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Check, X, AlertTriangle, Trash2, Loader2, Pencil, Star } from "lucide-react";
 import {
@@ -15,11 +15,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import { saveValidacion, createIssue } from "@/lib/supabase";
 import { createBrowserClient } from "@/lib/supabase/browser";
+import { shouldSkipKeyNavigation } from "@/lib/keyboard-utils";
 import { OfertaValidacion, ValidacionHumana } from "@/lib/types";
 import type { WizardCorrecciones, WizardTrigger } from "@/lib/wizard-types";
 import { toast } from "sonner";
 import { WizardModal } from "./wizard/WizardModal";
 import { GoldSetModal } from "./GoldSetModal";
+import { AuditActionToolbar, type AuditActionToolbarHandle } from "./AuditActionToolbar";
 
 function extractErrorMessage(err: unknown): string {
   if (err instanceof Error) return err.message;
@@ -42,6 +44,8 @@ interface ValidationActionsProps {
   currentValidacion: ValidacionHumana | null;
   oferta: OfertaValidacion;
   onEvaluated: (resultado: ValidacionHumana) => void;
+  // SPEC W Etapa 1 D.1 — Estado de revisión humana estructurada
+  onAuditStateChange?: (newEstado: "revisada" | "mal_extraida_total" | null) => void;
 }
 
 export function ValidationActions({
@@ -51,7 +55,9 @@ export function ValidationActions({
   currentValidacion,
   oferta,
   onEvaluated,
+  onAuditStateChange,
 }: ValidationActionsProps) {
+  const auditToolbarRef = useRef<AuditActionToolbarHandle>(null);
   const [saving, setSaving] = useState(false);
   const [wizardOpen, setWizardOpen] = useState(false);
   const [wizardTrigger, setWizardTrigger] = useState<WizardTrigger>("editar");
@@ -276,12 +282,13 @@ export function ValidationActions({
     [doSave, currentValidacion, idOferta, onEvaluated]
   );
 
-  // Keyboard shortcuts: Alt+1/2/3/4/5
-  // Suppressed when wizard is open
+  // Keyboard shortcuts: Alt+1..Alt+6 (legacy) + Alt+7/Alt+8 (SPEC W D.1)
+  // Suppressed cuando el foco está en input/dialog (mismo patrón que fix B1)
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
       if (saving || wizardOpen) return;
       if (!e.altKey) return;
+      if (shouldSkipKeyNavigation(e.target)) return;
 
       if (e.key === "1") {
         e.preventDefault();
@@ -301,6 +308,12 @@ export function ValidationActions({
       } else if (e.key === "6") {
         e.preventDefault();
         setGoldSetOpen(true);
+      } else if (e.key === "7") {
+        e.preventDefault();
+        auditToolbarRef.current?.triggerRevisada();
+      } else if (e.key === "8") {
+        e.preventDefault();
+        auditToolbarRef.current?.triggerMalExtraida();
       }
     }
     window.addEventListener("keydown", handleKey);
@@ -406,6 +419,18 @@ export function ValidationActions({
           Gold Set
           <kbd className="ml-1.5 text-[9px] opacity-50">Alt+6</kbd>
         </Button>
+
+        <div className="h-5 w-px bg-gray-200 mx-1" />
+
+        {/* SPEC W D.1 — Audit actions (revisión humana estructurada) */}
+        <AuditActionToolbar
+          ref={auditToolbarRef}
+          idOferta={idOferta}
+          estadoRevisionActual={oferta.estado_revision ?? null}
+          onAuditComplete={(newEstado) => {
+            onAuditStateChange?.(newEstado);
+          }}
+        />
       </div>
 
       {/* Wizard modal */}

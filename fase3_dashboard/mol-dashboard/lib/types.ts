@@ -338,6 +338,10 @@ export interface OfertaValidacion {
   // Tracking de corrida
   run_id: string | null;
   matching_version: string | null;
+  // SPEC W Etapa 1 — Revisión humana estructurada (audit_actions)
+  estado_revision: 'revisada' | 'mal_extraida_total' | null;
+  denominacion_arg: string | null;
+  denominacion_esp: string | null;
 }
 
 export interface RunOption {
