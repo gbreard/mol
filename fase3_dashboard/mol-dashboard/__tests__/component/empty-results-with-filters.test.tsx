@@ -26,6 +26,9 @@ const EMPTY_FILTERS: ValidationFiltersState = {
   scoreRange: "",
   estadoValidacion: "",
   runId: "",
+  soloDatosIncompletos: "",
+  soloCorreccionManual: "",
+  estadoRevision: "",
 };
 
 describe("EmptyResultsWithFilters (fix B2)", () => {

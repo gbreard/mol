@@ -34,6 +34,9 @@ const EMPTY_FILTERS: ValidationFiltersState = {
   scoreRange: "",
   estadoValidacion: "",
   runId: "",
+  soloDatosIncompletos: "",
+  soloCorreccionManual: "",
+  estadoRevision: "",
 };
 
 interface GoldSetCandidate {

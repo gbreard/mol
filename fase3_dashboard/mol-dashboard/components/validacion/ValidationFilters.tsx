@@ -41,6 +41,9 @@ const EMPTY_FILTERS: ValidationFiltersState = {
   scoreRange: "",
   estadoValidacion: "",
   runId: "",
+  soloDatosIncompletos: "",
+  soloCorreccionManual: "",
+  estadoRevision: "",
 };
 
 const SCORE_RANGES = [

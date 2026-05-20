@@ -375,6 +375,10 @@ export interface ValidationFiltersState {
   scoreRange: string;
   estadoValidacion: string;
   runId: string;
+  // SPEC W F7/F8 — filtros de revisión humana
+  soloDatosIncompletos: string; // '' o 'true'
+  soloCorreccionManual: string; // '' o 'true'
+  estadoRevision: string; // '' | 'pendiente' | 'revisada' | 'mal_extraida_total'
 }
 
 export interface ValidationStats {

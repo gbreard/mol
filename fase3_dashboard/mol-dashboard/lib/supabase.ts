@@ -2033,6 +2033,31 @@ const VALIDACION_SELECT = `
   run_id, matching_version
 `
 
+// SPEC W F8 — IDs de ofertas con audit_actions humanas de corrección
+// (cualquier acción distinta a mark_revised/unmark_revised).
+// Usa idx_audit_actions_source + idx_audit_actions_type → <10ms aun con 100K+ filas.
+export async function getOfertasConCorreccionManual(): Promise<string[]> {
+  const client = getSupabaseClient()
+  if (!client) return []
+
+  const { data, error } = await client
+    .from('audit_actions')
+    .select('id_oferta')
+    .eq('source', 'human')
+    .not('action_type', 'in', '(mark_revised,unmark_revised)')
+
+  if (error) {
+    console.error('Error fetching ofertas con corrección manual:', error)
+    return []
+  }
+
+  const ids = new Set<string>()
+  for (const row of data || []) {
+    if (row.id_oferta) ids.add(row.id_oferta as string)
+  }
+  return [...ids]
+}
+
 export async function getOfertasValidacion(
   filters: Partial<ValidationFiltersState>,
   limit = 50,
@@ -2121,6 +2146,32 @@ export async function getOfertasValidacion(
   // Run / corrida — para auditar ofertas de una corrida específica
   if (filters.runId) {
     query = query.eq('run_id', filters.runId)
+  }
+
+  // SPEC W F7 — Datos incompletos. Usa generated column con índice parcial.
+  // Cobertura 67% (no incluye "sin skills puro"). Ver D8 en DECISIONES_PRE_SPRINT_1.md
+  if (filters.soloDatosIncompletos === 'true') {
+    query = query.eq('datos_incompletos', true)
+  }
+
+  // SPEC W F8 — Corrección manual. Filtra a ofertas con audit_actions humanas
+  // de tipo distinto a mark_revised/unmark_revised.
+  if (filters.soloCorreccionManual === 'true') {
+    const correctedIds = await getOfertasConCorreccionManual()
+    if (correctedIds.length === 0) {
+      // Ninguna oferta cumple — devolver vacío sin disparar query principal
+      return { ofertas: [], total: 0 }
+    }
+    query = query.in('id_oferta', correctedIds)
+  }
+
+  // SPEC W F7 — Estado revisión humana
+  if (filters.estadoRevision) {
+    if (filters.estadoRevision === 'pendiente') {
+      query = query.is('estado_revision', null)
+    } else {
+      query = query.eq('estado_revision', filters.estadoRevision)
+    }
   }
 
   const { data, error, count } = await query
