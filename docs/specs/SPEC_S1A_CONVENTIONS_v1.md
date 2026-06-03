@@ -1,6 +1,6 @@
 # SPEC S1.A — CONVENTIONS.md
 
-> Versión v1.2 (borrador, secciones 1-4 con correcciones de hecho + decisiones Tipo B aplicadas) · 2026-06-03
+> Versión v1.3 (borrador completo, secciones 1-8 con coherencia interna) · 2026-06-03
 > **Estado:** Borrador · **Carril:** desarrollo · **Fase:** Fundación · **Versión cerebro destino:** 1.0.1
 > **Entregable principal:** `CONVENTIONS.md` en la raíz del repositorio (o `docs/` según se defina)
 > Spec parte del paraguas S1.A — Setup documental. Define las convenciones operativas del proyecto MOL para humanos e IA. Primer entregable del setup, prioritario por urgencia operativa (limpieza de branches, formalización de flujo de PR).
@@ -10,6 +10,8 @@
 > *Changelog v1.1 (2026-06-03):* correcciones de hecho (Tipo A) sobre §2, §3 y §4 a partir de la validación `exports/cyn_backlog/validacion_spec_s1a_secciones_3_4_2026-06-03.md`: (A1) sin `README.md` en raíz; (A2) sin `docs/MOL_modelo_conceptual.md`; (A3) `docs/` es heterogéneo (40+ archivos), no "2 masters"; (A4) specs en dos ubicaciones; (A5) tres patrones de naming de specs; (A8) eliminado `PROMPT_` (inexistente) y lista de prefijos de cyn_backlog corregida; (A9) B9 reusa la entrada de `.gitignore` ya aplicada. Añadidos Z1 (secciones obsoletas de CLAUDE.md) y Z2 (riesgo descartado: nada parsea nombres). Decisiones del Tipo B marcadas como `[DECISIÓN PENDIENTE — GERARDO]`.
 >
 > *Changelog v1.2 (2026-06-03):* aplicadas las 6 decisiones del Tipo B (B-04, B-05, B-06, B-07, B-09, B-10), resueltas por Gerardo. B-06 incorpora la verificación de los **cuatro** árboles de SQL (`exports/cyn_backlog/verificacion_arboles_sql_2026-06-03.md`). Z1 ampliado: `docs/plan/INDEX.md` ("FUENTE DE VERDAD") se suma a las secciones obsoletas de CLAUDE.md tras B-07.
+>
+> *Changelog v1.3 (2026-06-03):* spec completo (8 secciones). Se **ensamblaron** las §1-4 corregidas (recuperadas del commit `b742fe84`, que tenían Tipo A + Tipo B aplicadas) con las §5-8 nuevas (Dependencias, Validación, Riesgos, Criterio de aceptación) — una versión intermedia había revertido §1-4 al borrador v1, generando contradicciones internas detectadas en `exports/cyn_backlog/verificacion_spec_s1a_completo_2026-06-03.md`. Además: corregido el bug de rutas absolutas en los comandos de §6 y §8 (`/CONVENTIONS.md` → `CONVENTIONS.md`, `/.gitignore` → `.gitignore`, `/CODEOWNERS` → `CODEOWNERS`; se corren desde la raíz del repo).
 
 ---
 
@@ -264,4 +266,182 @@ La validación confirmó que **ningún script del repo parsea nombres de branch 
 
 ---
 
-> *Secciones 5-8 (Dependencias, Validación, Riesgos, Criterio de aceptación) a desarrollar en la próxima tanda, una vez validados Entregables e Implementación.*
+## 5. Dependencias
+
+Este spec tiene dependencias mínimas porque es fundacional —es el primer entregable del paraguas S1.A—. Las que hay son operativas, no de otros specs:
+
+**Dependencia cumplida**: el repo debe estar en estado conocido y limpio antes de poder implementar este spec. Cumplido por el cierre de SPEC W del 2026-06-03 (`exports/cyn_backlog/reporte_ejecucion_cierre_spec_w_2026-06-03.md`): main mergeado, branches stale borrados, working tree limpio sobre `main`.
+
+**Dependencia operativa actual**: estar en el branch `spec/s1a-conventions` para todo el trabajo del spec. Verificable con `git branch --show-current`.
+
+**Dependencia de información**: las verificaciones previas que sustentan el contenido del spec (`verificacion_spec_s1a_conventions_2026-06-02.md`, `validacion_spec_s1a_secciones_3_4_2026-06-03.md`, `verificacion_arboles_sql_2026-06-03.md`). Si alguna se vuelve obsoleta porque el sistema cambia, el spec debe re-verificarse antes de implementar.
+
+**No depende** de otros specs (no hay spec previo que cubra convenciones operativas). **Sí bloquea** a los siguientes entregables del paraguas S1.A: la reescritura de CLAUDE.md depende de que CONVENTIONS.md exista para poder alinearse a él; INDEX.md y la formalización del inventario también lo referencian.
+
+---
+
+## 6. Validación
+
+Tres niveles integrados, todos con comandos exactos, entradas concretas, salidas esperadas, y criterio binario de pase/falla. Esta sección se diseñó después de aprender que la sección "Validación" abstracta no alcanza para que el spec sea ejecutable.
+
+### Tests de código
+
+CONVENTIONS.md es un documento markdown, no código. Los tests automatizados son mínimos pero útiles para evitar errores tipográficos y referencias rotas:
+
+**Test 6.1.1 — El archivo existe en la ubicación correcta.**
+
+```bash
+# (correr desde la raíz del repo)
+test -f CONVENTIONS.md && echo "OK: archivo existe en raíz" || echo "FALLA: no existe"
+```
+
+- Salida esperada: `OK: archivo existe en raíz`.
+- Criterio: si dice "FALLA", el paso B1 de la implementación no se completó.
+
+**Test 6.1.2 — El archivo tiene las 9 secciones esperadas.**
+
+```bash
+grep -c "^## " CONVENTIONS.md
+```
+
+- Salida esperada: `9` (las 9 secciones de nivel H2: Cómo se usa, Branches, Commits, PRs, Política de tests, Ubicación, Naming, Versionado de cyn_backlog, Responsabilidades).
+- Criterio: si el conteo es menor a 9, hay secciones faltantes; si es mayor, hay secciones de más que conviene revisar.
+
+**Test 6.1.3 — No hay marcadores residuales de borrador.**
+
+```bash
+grep -nE "TODO|FIXME|XXX|\[PENDIENTE\]|\[DECISIÓN PENDIENTE\]" CONVENTIONS.md
+```
+
+- Salida esperada: vacía (sin coincidencias).
+- Criterio: cualquier coincidencia indica que el documento quedó con notas internas que deberían haberse resuelto antes de cerrar el spec.
+
+**Test 6.1.4 — Coherencia entre CONVENTIONS.md y `.gitignore` sobre cyn_backlog.**
+
+```bash
+grep -E "exports/cyn_backlog/\*\*/\*\.(json|jsonl|xlsx)" .gitignore && \
+grep -E "!exports/cyn_backlog/\*\*/\*\.md" .gitignore && \
+echo "OK: gitignore coincide con decisión B-09"
+```
+
+- Salida esperada: las dos líneas de gitignore impresas + `OK: gitignore coincide con decisión B-09`.
+- Criterio: si alguna no aparece, el paso B9 quedó inconsistente entre la decisión escrita y la configuración aplicada.
+
+### Test end-to-end
+
+El test E2E para un spec documental es de orientación humana: alguien que no participó del proyecto debe poder ubicar qué convenciones aplican leyendo solo CONVENTIONS.md.
+
+**Test 6.2 — Test de orientación de tres minutos.**
+
+Procedimiento:
+1. Tomar una persona que no haya leído el documento (puede ser Sergio, Cynthia, o alguien externo si está disponible).
+2. Darle acceso a `/CONVENTIONS.md` y un cronómetro de 3 minutos.
+3. Pedirle que responda **sin abrir ningún otro archivo**:
+   - ¿Cómo se nombra un branch nuevo si voy a trabajar el spec S5?
+   - ¿Dónde tengo que poner el archivo del nuevo spec?
+   - ¿Qué formato tiene el mensaje de commit cuando agrego una documentación?
+   - ¿Quién mergea a main?
+   - ¿Qué pasa con los archivos `.json` que dejo en `exports/cyn_backlog/exp_raiz_skills/`?
+
+Salida esperada: las cinco respuestas correctas en los tres minutos.
+
+Criterio de aceptación:
+- 5/5 correctas: el documento cumple su función orientadora.
+- 4/5: aceptable; el spec se cierra, pero la pregunta fallada se anota como mejora para v1.1 de CONVENTIONS.md.
+- 3/5 o menos: el documento no está cumpliendo su función. Bloquea el cierre del spec; conviene reescribir las secciones problemáticas.
+
+### QA humana
+
+La validación humana es la que más peso tiene en un spec documental, porque verifica que el contenido es **correcto, completo y útil**, no solo "está".
+
+**QA 6.3.1 — Validación de contenido (responsable: Gerardo).**
+
+Procedimiento:
+1. Leer `/CONVENTIONS.md` entero.
+2. Para cada una de las 9 secciones, responder: ¿la información acá es correcta y refleja cómo trabajamos hoy?
+
+Criterio: las 9 secciones deben ser "sí" para que el spec se considere cerrado. Cualquier "no" o "más o menos" genera ajuste antes de mergear.
+
+**QA 6.3.2 — Validación de flujos operativos (responsable: Sergio, sobre las secciones que tocan dev).**
+
+Procedimiento:
+1. Sergio lee las secciones de Branches, Commits, PRs y Política de tests.
+2. Responde: ¿esto coincide con lo que efectivamente hacés cuando trabajás en el proyecto? ¿Hay algo que falta o que está descrito de forma engañosa?
+
+Criterio: si Sergio reporta inconsistencias entre el documento y la práctica, se ajusta el documento (la práctica es la fuente, el documento la refleja).
+
+**QA 6.3.3 — Validación de la sección Responsabilidades (responsable: Gerardo).**
+
+Procedimiento:
+1. Leer la sección de responsabilidades de CONVENTIONS.md.
+2. Confirmar que la referencia a SERGIO.md sigue siendo válida y que no hay áreas críticas sin responsable visible.
+
+Criterio: si hay áreas críticas sin asignación clara, la decisión B-10 (no introducir CODEOWNERS por ahora) puede revisarse, aunque el spec se cierra igual.
+
+---
+
+## 7. Riesgos identificados
+
+Los riesgos del spec, con su mitigación. Algunos son inherentes a su naturaleza documental; otros surgen del sistema preexistente.
+
+**Riesgo 7.1 — Desactualización rápida.**
+CONVENTIONS.md describe convenciones de un sistema vivo. Si el sistema cambia (nuevo tipo de branch, nueva ubicación, nueva práctica) y CONVENTIONS.md no se actualiza, el documento se vuelve fuente de información falsa.
+*Mitigación*: declarar en la sección "Cómo se usa este documento" que se actualiza cuando una convención cambia; revisarlo al cierre de cada versión del cerebro como parte del ciclo de release; tratarlo como artefacto vivo, no como entregable terminado.
+
+**Riesgo 7.2 — Sobre-documentación.**
+Tentación de documentar todo lo que se hace, incluyendo cosas que cambian todo el tiempo o que no aportan. Resultado: documento largo, difícil de mantener, que nadie lee.
+*Mitigación*: mantener el alcance en lo **estructural** (qué hay y cómo se trabaja a alto nivel), no en lo operativo de cada día. Si algo es muy específico de un componente, va a la sección de S1.B correspondiente cuando se trabaje ese componente, no a CONVENTIONS.md.
+
+**Riesgo 7.3 — Contradicciones cruzadas con CLAUDE.md.**
+CLAUDE.md tiene secciones obsoletas (flujo de branches con `develop` inexistente, `docs/plan/INDEX.md` como FUENTE DE VERDAD) que van a contradecir CONVENTIONS.md desde el día uno.
+*Mitigación*: el spec declara explícitamente que **CONVENTIONS.md manda** sobre CLAUDE.md cuando hay conflicto, y la reescritura de CLAUDE.md queda como siguiente entregable del paraguas S1.A. Hasta que ese entregable se haga, existe contradicción documentada pero con jerarquía clara.
+
+**Riesgo 7.4 — Las convenciones de hecho no estaban en lugares visibles.**
+Las verificaciones del 2026-06-02 y 2026-06-03 destaparon que el sistema acumuló capas no documentadas (cuatro árboles de migraciones, tres patrones de naming de specs, una credencial hardcodeada). Es probable que CONVENTIONS.md también deje cosas afuera por no haberlas detectado todavía.
+*Mitigación*: CONVENTIONS.md se trata como versión 1 que va a tener actualizaciones; cuando aparezca una convención de hecho no documentada, se agrega. Esto es consecuencia natural del principio "es un quilombo documentado y verificado, distinto del quilombo escondido".
+
+**Riesgo 7.5 — Falsa sensación de cobertura por la decisión B-10 (no CODEOWNERS).**
+Sin CODEOWNERS ni branch protection, no hay enforcement automático de responsabilidades. Si el equipo crece o si Gerardo deja de ser el único mergeador, la falta de enforcement se vuelve problema real.
+*Mitigación*: la decisión B-10 queda explícitamente como reversible — el spec dice "si el equipo crece y se configura branch protection, vale la pena revisar la decisión". Revisar la decisión es trabajo de mantenimiento del spec, no rotura.
+
+**Riesgo 7.6 — Riesgo descartado: nada parsea nombres.**
+La verificación confirmó que ningún script parsea nombres de branches ni de specs (solo `check_version_bumped.py` parsea archivos cambiados). Por lo tanto, las convenciones de naming que CONVENTIONS.md establece **no rompen automatización existente**. Este riesgo queda registrado como descartado para que no resurja en futuras evaluaciones.
+
+---
+
+## 8. Criterio de aceptación
+
+Condiciones binarias para considerar el spec implementado. Cada una con un sí/no claro, sin "más o menos":
+
+1. **`/CONVENTIONS.md` existe en la raíz del repositorio.**
+   *Verificación* (desde la raíz del repo): `test -f CONVENTIONS.md`.
+
+2. **`/CONVENTIONS.md` tiene las 9 secciones de nivel H2 definidas en la sección 4 del spec (B2 a B10).**
+   *Verificación*: `grep -c "^## " CONVENTIONS.md` devuelve 9.
+
+3. **`/CONVENTIONS.md` no tiene marcadores residuales de borrador.**
+   *Verificación*: `grep -nE "TODO|FIXME|XXX|\[PENDIENTE\]|\[DECISIÓN PENDIENTE\]" CONVENTIONS.md` devuelve vacío.
+
+4. **`.gitignore` refleja la decisión B-09** (cubre `**/*.json`, `**/*.jsonl`, `**/*.xlsx` de cyn_backlog en cualquier nivel, conservando `!**/*.md`).
+   *Verificación*: el test 6.1.4 pasa.
+
+5. **No se introdujo `CODEOWNERS`** (decisión B-10), y la sección Responsabilidades de CONVENTIONS.md menciona explícitamente la decisión y referencia `SERGIO.md`.
+   *Verificación*: `test ! -f CODEOWNERS` y la sección Responsabilidades de CONVENTIONS.md contiene la palabra "SERGIO.md".
+
+6. **El test E2E (6.2) pasa con al menos 4/5 respuestas correctas.**
+   *Verificación*: ejecutar el procedimiento y registrar el resultado.
+
+7. **La QA humana (6.3.1) registra "sí" en las 9 secciones por parte de Gerardo.**
+   *Verificación*: revisión documentada (puede ser un comentario en el PR de cierre del spec).
+
+8. **El branch `spec/s1a-conventions` se mergea a `main` con merge commit `--no-ff`**, siguiendo la propia política que CONVENTIONS.md establece (validación circular pero deliberada: el spec se cierra aplicando la convención que él mismo documenta).
+   *Verificación*: `git log main --oneline -3` muestra el merge commit del spec.
+
+9. **El branch `spec/s1a-conventions` se borra local y remoto post-merge**, también siguiendo la convención del propio spec.
+   *Verificación*: `git branch -a | grep spec/s1a-conventions` devuelve vacío.
+
+Si los 9 criterios se cumplen, el spec S1.A — CONVENTIONS está implementado y el primer entregable del paraguas S1.A queda cerrado. El siguiente entregable del paraguas (reescritura de CLAUDE.md) puede arrancar.
+
+---
+
+> *Spec completo. Versiones 1-8 cerradas. Listo para implementar: aplicar los pasos B1 a B10 de la sección 4 en el branch `spec/s1a-conventions`, validar contra los 9 criterios de aceptación de la sección 8, mergear a `main`.*
