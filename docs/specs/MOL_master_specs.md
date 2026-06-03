@@ -1,9 +1,9 @@
 # MOL — Master de specs
 
-> Versión 0.2 · 2026-06-02
+> Versión 0.3 · 2026-06-03
 > Documento operativo del plano técnico. Mientras `MOL_planificacion.md` define el qué y el por qué de cada sprint, este master organiza el cómo: qué specs existen, en qué carril y fase viven, qué entregan, cómo se validan, qué versión los incorpora, y dónde están sus dependencias. Es la vista panorámica de la evolución técnica del sistema.
 >
-> *Cambios desde v0.1:* S1 reorganizado como paraguas con dos sub-paraguas (S1.A documental, S1.B operativo por componente); CONVENTIONS.md marcado como primer entregable activo; agregada nota de alcance solo-cerebro; ubicación oficial del master definida en `docs/specs/MOL_master_specs.md`.
+> *Cambios desde v0.2:* template estándar pasa de 7 a 8 secciones, agregando "Implementación (el cómo)" entre Entregables y Dependencias; sección "Validación" rediseñada para pedir tests **ejecutables y concretos** (comandos exactos, salidas esperadas, criterios binarios) en lugar de declaraciones abstractas; agregado el principio de método "un spec es operativo o no es spec"; orden final del template: Propósito → Reutilización → Entregables → Implementación → Dependencias → Validación → Riesgos → Criterio.
 
 ---
 
@@ -109,18 +109,21 @@ S1 se trabaja como **paraguas** con dos sub-paraguas:
 
 ## 4. Specs en desarrollo activo
 
-Los specs activos siguen este **template estándar** de 7 secciones:
+Los specs activos siguen este **template estándar** de 8 secciones:
 
 1. **Propósito**: qué problema resuelve el spec, en una o dos frases.
 2. **Reutilización del sistema existente**: qué del código actual, de los specs adyacentes y de la UI existente sirve a este spec. Este ejercicio se hace al inicio del desarrollo del spec, no antes, y es parte del trabajo del spec mismo. Se apoya en el inventario y en lectura directa del código en el momento.
-3. **Entregables**: qué produce el spec (código, configuración, documentación, esquema de base, etc.), en qué archivos vive, en qué forma.
-4. **Dependencias**: qué otros specs o piezas del sistema necesitan estar listos antes.
-5. **Validación**: cómo se verifica que el entregable funciona, en tres niveles integrados:
-   - **Tests de código**: qué se verifica automatizado a nivel unitario y de integración.
-   - **Test end-to-end**: cómo se verifica que la función completa atraviesa el sistema y produce el output esperado.
-   - **QA humana**: qué requiere mirada de un humano para considerarse aceptado (quién, sobre qué muestra, qué mira, umbral de aceptación, qué pasa si no pasa).
-6. **Riesgos identificados**: qué cosas pueden salir mal o dejar deuda nueva (drift, contradicciones con specs adyacentes, dependencias frágiles), con una idea de cómo mitigarlas.
-7. **Criterio de aceptación**: las condiciones binarias que el spec debe cumplir para considerarse implementado.
+3. **Entregables (el qué)**: qué produce el spec (código, configuración, documentación, esquema de base, etc.), en qué archivos vive, en qué forma. Lista concreta de artefactos.
+4. **Implementación (el cómo)**: el paso-a-paso operativo para construir los entregables. Cada paso con instrucción precisa (qué archivo, qué línea, qué comando) de modo que quien lea el spec pueda implementarlo sin tener que inventar el cómo. **Esta es la sección que vuelve al spec ejecutable**: sin ella, el spec es un documento de planificación, no un documento operativo. Para specs documentales (como CONVENTIONS.md), los pasos son edición de archivos y validación de contenido; para specs de código, son cambios concretos al código con sus comandos asociados.
+5. **Dependencias**: qué otros specs o piezas del sistema necesitan estar listos antes de poder ejecutar la implementación.
+6. **Validación**: tests **ejecutables y concretos** en tres niveles integrados. No declaraciones de qué se va a validar, sino comandos exactos con su input, salida esperada y criterio binario de pase/falla:
+   - **Tests de código**: comando exacto a correr (ej. `npx vitest run path/to/file`), salida esperada (ej. "all passed"), criterio de falla (ej. "cualquier test rojo bloquea").
+   - **Test end-to-end**: secuencia de acciones específica con resultado esperado verificable (ej. "abrir X en navegador, hacer click en Y, esperar Z visible en pantalla").
+   - **QA humana**: pregunta exacta que se le hace a la persona, sobre qué muestra concreta (ej. "abrir el archivo X, leer la sección Y, responder ¿la información es correcta?"), umbral de aceptación, qué pasa si no pasa.
+7. **Riesgos identificados**: qué cosas pueden salir mal o dejar deuda nueva (drift, contradicciones con specs adyacentes, dependencias frágiles), con una idea de cómo mitigarlas.
+8. **Criterio de aceptación**: las condiciones binarias que el spec debe cumplir para considerarse implementado. Cada condición tiene que poder verificarse con un sí/no, no con un "más o menos".
+
+> **Principio de método**: un spec es operativo o no es spec. Si quien lo lee no puede ejecutarlo sin volver a inventar el cómo, el spec no está terminado. Este principio se aplica tanto a specs de código como a specs documentales.
 
 El detalle técnico completo de cada spec (código de ejemplo, schemas SQL, contratos de API, etc.) vive en su archivo individual en `docs/specs/`. Lo que sigue en este master es el **marco** de cada spec activo, no el spec técnico completo.
 
