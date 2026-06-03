@@ -1,9 +1,11 @@
 # MOL — Documento de planificación
 
-> Versión 0.4 · 2026-06-03
+> Versión 0.5 · 2026-06-03
 > Documento operativo derivado del *Modelo conceptual del MOL* (master). Mientras el master define el horizonte y la teoría, este documento baja a tierra: objetivos, tareas concretas y decisiones a tomar, ordenados por sprint. Es el documento de trabajo; se actualiza a medida que se avanza, y su traducción a un seguimiento en el tiempo (días, hitos) se hace sobre la herramienta de gestión.
 >
 > *Cambios desde v0.3:* agregado al método de trabajo el principio "un spec es operativo o no es spec" (cada spec debe ser ejecutable y verificable sin inventar el cómo).
+>
+> *Cambios desde v0.4:* nuevo principio de método "Descubrir antes de definir"; nueva sección "Deuda identificada (a procesar)" con deuda funcional, de seguridad, de mantenimiento de tests, estructural y drifts menores, basada en las verificaciones del 2026-06-02 y 2026-06-03.
 
 ---
 
@@ -82,6 +84,81 @@ Cualquier afirmación del tipo "esto ya está hecho", "esto está al X% de avanc
 ### Un spec es operativo o no es spec
 
 Cada spec del proyecto debe poder **leerse, ejecutarse y verificarse** sin que quien lo implemente tenga que inventar el cómo. La diferencia entre un documento de planificación y un spec operativo es la sección "Implementación", que detalla el paso-a-paso concreto: qué archivo, qué línea, qué comando. La sección "Validación", a su vez, debe declarar tests ejecutables (comandos con sus salidas esperadas) y no declaraciones abstractas. Si un spec describe qué se va a hacer pero no cómo hacerlo ni cómo verificarlo, no está terminado. Este principio aplica tanto a specs de código como a specs documentales.
+
+### Descubrir antes de definir
+
+El sistema MOL evolucionó más rápido que su documentación, sus tests y sus convenciones escritas. Cuando se planifica trabajo sobre cualquier componente, **es esperable encontrar más capas de las anticipadas**: tests que quedaron desactualizados respecto al código que sí evolucionó, configuraciones múltiples para lo mismo, árboles paralelos donde se esperaba uno, prácticas de hecho que ningún documento registró. Esto no es defecto del proyecto; es síntoma natural de un sistema vivo desarrollado por pocas personas sin red de revisión automatizada.
+
+La consecuencia práctica para el método: **descubrir es trabajo previo a definir**. Antes de redactar specs sobre un componente, conviene una pasada de verificación que mapee qué hay realmente. La verificación previa no es solo para validar afirmaciones sobre el sistema (verificación previa antes de planificar); también es para destapar lo que el sistema acumuló sin que nadie lo catalogara. Estos descubrimientos no son malos hallazgos — al contrario, son lo que diferencia "un quilombo documentado y verificado" de "un quilombo escondido". El primero se puede ordenar; el segundo solo explota tarde.
+
+---
+
+## Deuda identificada (a procesar)
+
+Lista de deuda concreta detectada en las verificaciones de las últimas sesiones, con su origen, urgencia y tipo. **No es lista priorizada** — la priorización se hace cuando cada ítem se acerca al sprint o spec que lo abordará. Es un registro vivo: cuando se resuelve un ítem, se marca; cuando aparece deuda nueva en una verificación futura, se agrega.
+
+### Deuda funcional
+
+**Posible regresión en regla R240_operario_produccion.** El matcher devuelve `esco_code = None` donde el gold set espera `9329.1`, sobre 3 ofertas. Es el único candidato a regresión real de lógica del matcher detectado en el estado actual de los tests.
+- *Origen*: `exports/cyn_backlog/estado_tests_2026-06-03.md` §1b.
+- *Urgencia*: a investigar **antes o como parte del Sprint 1** (refactor del matcher), porque toca el área directamente afectada.
+- *Tipo*: regresión funcional, requiere abrir oferta y regla para determinar si es bug del matcher o expectativa de gold set obsoleta.
+
+### Deuda de seguridad
+
+**OE-11 / s05-rate-limiting.** 10 endpoints del módulo OE sin guard de rate-limiting/auth, más 3 endpoints (personas-casos-api) con auth/validación floja.
+- *Origen*: `exports/cyn_backlog/estado_tests_2026-06-03.md` §2b; coincide con blocker conocido OE-11.
+- *Urgencia*: **bloquea la puesta en producción del módulo OE**. No bloquea sprints del cerebro.
+- *Tipo*: spec aparte cuando se decida atacar OE.
+
+**Contraseña hardcodeada en `fase3_dashboard/sql/execute_schema.py`.** Conexión Postgres con password expuesto en archivo tracked en git. Mismo proyecto Supabase del incidente S-01 ya conocido.
+- *Origen*: `exports/cyn_backlog/verificacion_arboles_sql_2026-06-03.md`, hallazgo colateral.
+- *Urgencia*: **baja según evaluación de Gerardo** dado el alcance del equipo (2-3 personas que conocen el sistema). A revisar si cambian las condiciones de acceso.
+- *Tipo*: rotación de credencial + extracción a variable de entorno.
+
+### Deuda de mantenimiento de tests
+
+**Drift de configuración NLP.** El archivo `config/nlp_validation_rules.json` creció de 35 a 51 reglas (v1.1) y los tests de `tests/nlp/test_nlp_validation_rules.py` siguen esperando 35. Genera 66 errores de setup (`KeyError: 'id'` por fixture desalineado) + 8 fallos de count. Es una sola causa de desincronización, no 74 bugs.
+- *Origen*: `exports/cyn_backlog/estado_tests_2026-06-03.md` §1c.
+- *Urgencia*: trabajo de mantenimiento; no bloquea sprints pero hace que la suite reporte ruido que oculta señales reales.
+- *Tipo*: actualización de tests y fixtures contra el config actual.
+
+**Refactor de SkillsImplicitExtractor sin actualizar tests.** El método `filtrar_por_trust` fue eliminado del extractor, pero 12 tests (entre `test_m06_skills_failures.py` y `test_m06_regression.py`) siguen llamándolo.
+- *Origen*: `exports/cyn_backlog/estado_tests_2026-06-03.md` §1b-1c.
+- *Urgencia*: trabajo de mantenimiento.
+- *Tipo*: actualización de tests para reflejar la API actual del extractor.
+
+**MSW no intercepta llamadas en componentes de dashboard.** 13 fallos de componente porque el mock de Supabase (MSW) deja escapar `fetch` a `test.supabase.co` y a `localhost:3000`. No son bugs de lógica.
+- *Origen*: `exports/cyn_backlog/estado_tests_2026-06-03.md` §2a-2b.
+- *Urgencia*: configuración del entorno de tests; no bloquea pero ensucia el reporte de vitest.
+- *Tipo*: revisar configuración de MSW en `__tests__/setup` o equivalente.
+
+### Deuda estructural
+
+**Revisión de base de datos como spec propio.** El estado real de la base de datos (Supabase + SQLite local + 4 árboles SQL con `database/migrations/` archivado y `supabase/migrations/` abandonado) no ha sido auditado. Schemas vs migraciones, datos vs declarados, aplicado vs documentado.
+- *Origen*: verificaciones del 2026-06-02 y 2026-06-03; intuición confirmada de Gerardo el 2026-06-03.
+- *Urgencia*: candidato a spec propio dentro de S1.B (setup operativo por componente), posiblemente prerrequisito de otros componentes que dependen de saber qué hay en la BD.
+- *Tipo*: spec nuevo, alcance amplio.
+
+**Sin CI configurado.** No hay GitHub Actions ni equivalente que corra tests automáticamente al abrir PRs. La política "Nivel B" depende de disciplina humana.
+- *Origen*: `exports/cyn_backlog/inventario_tests_2026-06-03.md` §4.
+- *Urgencia*: no bloquea sprints individuales pero es la diferencia entre proyecto con red de seguridad y proyecto sin. A evaluar si se introduce como parte del setup de un componente.
+- *Tipo*: infraestructura nueva (GitHub Actions o equivalente).
+
+**E2E con Playwright esquelético.** Playwright instalado y configurado, pero hay un único spec (`responsive-flow.spec.ts`). El dev server no arranca sin env vars de Supabase cargadas.
+- *Origen*: `exports/cyn_backlog/estado_tests_2026-06-03.md` §3; `inventario_tests_2026-06-03.md` §3.
+- *Urgencia*: a expandir cuando haya trabajo de UI significativo. Resolver el setup del dev server es trabajo de infraestructura aparte.
+- *Tipo*: ampliación de cobertura E2E + configuración de entorno para correr la suite.
+
+### Drifts menores
+
+**Test `test_m10_gold_set` espera muestra de 49, encuentra 113.** Drift de tamaño de muestra entre lo que el test asume y lo que el gold set tiene hoy.
+- *Origen*: `exports/cyn_backlog/estado_tests_2026-06-03.md` §1b.
+- *Tipo*: actualización del valor esperado.
+
+**Test `test_pipeline_command_poller` no esperaba el comando `recluster_preview`.** El poller incorporó un comando que el whitelist del test no contempla.
+- *Origen*: `exports/cyn_backlog/estado_tests_2026-06-03.md` §1b.
+- *Tipo*: actualización del whitelist del test.
 
 ---
 
