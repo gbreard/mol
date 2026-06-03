@@ -123,3 +123,106 @@ Antes de mergear un spec a `main` se corren los **tests específicos de los arch
 No se exige correr toda la suite del repo en cada merge: el foco es lo que el spec cambió. La suite completa es responsabilidad del ciclo de release, no de cada PR.
 
 **Ejemplo del flujo:** el cierre de SPEC W (`exports/cyn_backlog/reporte_ejecucion_cierre_spec_w_2026-06-03.md`) corrió 87/87 tests de los archivos tocados antes de habilitar el merge del PR #16.
+
+---
+
+## Ubicación de archivos
+
+Esta sección documenta **dónde vive cada tipo de archivo en el repo tal como está hoy**. No propone reorganizar nada: describe el estado real para que alguien nuevo (persona o IA) pueda ubicar un archivo correctamente.
+
+**Raíz del repo** — documentos de gobierno del proyecto:
+- `CONVENTIONS.md` (este archivo), `DEPLOY_RULES.md`, `CLAUDE.md`, `SERGIO.md`, `.gitignore`.
+- **No hay `README.md` en la raíz** (existe `docs/README.md`). **No hay `CODEOWNERS`** (decisión B-10, ver sección Responsabilidades).
+
+**`docs/`** — directorio **heterogéneo** con 40+ archivos: mezcla documentos maestros, specs sueltos (con prefijo `SPEC_*` y con sufijo `*_SPEC.md`), diagnósticos y reportes. CONVENTIONS.md documenta el estado, no propone reorganizar `docs/`.
+- `docs/MOL_planificacion.md` — planificación del **enfoque vigente** (dos carriles, sprints, specs operativos). Es la **fuente de verdad de planificación activa**.
+- `docs/plan/` — planificación del **enfoque pre-spec**: archivo de referencia histórica, **no** fuente de verdad vigente. La declaración de `CLAUDE.md` de que `docs/plan/INDEX.md` es "FUENTE DE VERDAD" está **obsoleta** (se corrige en la reescritura de CLAUDE.md, siguiente entregable de S1.A).
+
+**`docs/specs/`** — master de specs (`MOL_master_specs.md`) y la mayoría de los specs individuales. Es la ubicación para **specs nuevos** (ver sección Naming para las dos ubicaciones y los tres patrones que conviven).
+
+**Resto de directorios** — rol en una línea cuando es inferible:
+
+| Directorio | Rol |
+|------------|-----|
+| `scripts/` | Utilidades y entry points (pipeline, scraping, exports, sync). Subcarpetas por área (`db/`, `nlp/`, `matching/`, `exports/`, `scraping/`, `hooks/`). |
+| `database/` | BD SQLite, procesadores NLP, matching, prompts, patterns, archivos `*_VERSION`. |
+| `config/` | JSONs de configuración (reglas de NLP, matching, skills, sinónimos). |
+| `migrations/` | Migraciones SQL del pipeline (árbol vivo; ver Naming). |
+| `fase3_dashboard/` | Dashboard Next.js + SQL del dashboard/Supabase. |
+| `exports/` | Salidas generadas: Excel de validación, dumps, `cyn_backlog/` (diagnósticos y planes). |
+| `01_sources/` | Scrapers por portal (bumeran, zonajobs, computrabajo, caba, portalempleo, indeed). |
+| `tests/` | Tests pytest del pipeline. Los tests del frontend van en `fase3_dashboard/mol-dashboard/__tests__/`. |
+
+Donde el rol de un archivo no sea claro, se documenta **caso por caso** al tocarlo, no se infiere.
+
+---
+
+## Naming de archivos
+
+**Specs** — conviven **tres patrones** en **dos ubicaciones** (`docs/specs/` y `docs/`):
+
+| Patrón | Forma | Ejemplo | Estado |
+|--------|-------|---------|--------|
+| Legacy fecha-prefijo | `<fecha>_<id>_<nombre>.md` | `2026-04-27_T_flujo_propagacion_correcciones.md` | No se migran los viejos |
+| Sufijo | `<NOMBRE>_SPEC.md` | `LAB-BRECHA-FORMATIVA_SPEC.md` | No se migran los viejos (9 archivos en `docs/`) |
+| **Prefijo (vigente)** | `SPEC_<id>_<nombre>_v<ver>.md` | `SPEC_U-1_CRITICO_v3_1.md` | **Formato para specs nuevos** |
+
+> **Regla vigente (decisiones B-04 y B-05):** los tres patrones coexisten y los viejos **no se migran ni se renombran** (son archivo de referencia). **Todo spec nuevo se nombra `SPEC_<id>_<nombre>_v<ver>.md` y se ubica en `docs/specs/`.** `docs/` queda como archivo de specs del enfoque anterior.
+
+**Archivos en `exports/cyn_backlog/`** — **prefijo-por-tipo**, con fecha opcional como sufijo. Prefijos reales presentes en el repo: `diagnostico_`, `verificacion_`, `experimento_`, `plan_`, `reporte_`, `inventario_`, `catalogo_`, `familia_`, `paso1_`, `clasificacion_`, `cruce_`, `bugs_`, `analisis_`, `informe_`, `investigacion_`, `validacion_`. Ejemplo: `verificacion_arboles_sql_2026-06-03.md`.
+
+**Migraciones SQL** — patrón `<NNN>_<nombre_descriptivo>.sql`, pero el repo tiene **cuatro árboles**, no uno (verificado el 2026-06-03, `exports/cyn_backlog/verificacion_arboles_sql_2026-06-03.md`):
+
+| Árbol | Estado | Función |
+|-------|--------|---------|
+| `migrations/` | **VIVO** | Pipeline; numeración secuencial limpia (12 archivos). Último cambio: SPEC W (2026-05-20). |
+| `fase3_dashboard/sql/` | **VIVO** | Dashboard/Supabase (78 archivos). Numeración colisionada: distintas features tomaron el mismo número en paralelo. |
+| `database/migrations/` | **ARCHIVO** | Era SQLite, congelado desde 2026-02-24. Algunos scripts aún leen archivos puntuales. |
+| `fase3_dashboard/mol-dashboard/supabase/migrations/` | **EXPERIMENTO ABANDONADO** | Intento de adoptar Supabase CLI; un solo archivo, sin continuidad. |
+
+> **Punto crítico (decisión B-06):** **ningún runner aplica migraciones en orden numérico.** Se corren manualmente en el SQL Editor de Supabase, o por archivo suelto ad-hoc. La numeración es **etiqueta, no secuencia ejecutable** — por eso la colisión de números en `fase3_dashboard/sql/` no rompe nada hoy.
+>
+> **Convención:** los archivos SQL nuevos se agregan al **árbol vivo que corresponda según el destino** — `migrations/` para el pipeline, `fase3_dashboard/sql/` para dashboard/Supabase. Los otros dos árboles quedan como archivo. Cualquier consolidación futura es trabajo de un spec aparte, fuera del alcance de S1.A.
+
+---
+
+## Versionado de exports/cyn_backlog/
+
+`exports/cyn_backlog/` acumula trabajo intelectual del proyecto (diagnósticos, verificaciones, inventarios, planes, reportes) junto con dumps de datos pesados y regenerables. La regla separa **lo que se versiona** de **lo que se ignora**:
+
+- **Se versionan los `.md`** en cualquier nivel (incluidos subdirectorios). Son trabajo de análisis valioso, no regenerable automáticamente.
+- **Se ignoran los dumps pesados** (`.json`, `.jsonl`, `.xlsx`) en cualquier nivel — son datos derivados, regenerables, y pesan.
+
+> **Decisión B-09** — la regla aplica a **todos los niveles** (`**/`), no solo al directorio superior. Esto cubre dumps en subdirectorios como `exp_raiz_skills/*.json`, que el patrón top-level anterior dejaba fuera.
+
+Entrada vigente en `.gitignore`:
+
+```gitignore
+# Datos pesados de cyn_backlog (incluye subdirectorios) — decisión B-09
+exports/cyn_backlog/**/*.json
+exports/cyn_backlog/**/*.jsonl
+exports/cyn_backlog/**/*.xlsx
+# ...pero conservar los .md (diagnósticos, verificaciones, inventarios, planes) en cualquier nivel
+!exports/cyn_backlog/**/*.md
+```
+
+Si dejás un `.md` de análisis en cualquier subcarpeta de `exports/cyn_backlog/`, se versiona. Si dejás un `.json`/`.jsonl`/`.xlsx`, git lo ignora.
+
+---
+
+## Responsabilidades por tipo de archivo
+
+**No se usa `CODEOWNERS` (decisión B-10).** En un equipo donde Gerardo es prácticamente el único committer y **no hay branch protection configurada en GitHub**, `CODEOWNERS` sería solo documentación sin enforcement real (no obliga a que un owner revise antes de mergear): ceremonia sin efecto. Por eso las responsabilidades se documentan acá, de manera **informal**.
+
+**Responsabilidades por área:**
+
+| Área | Responsable | Referencia |
+|------|-------------|------------|
+| Pipeline (NLP, matching, skills, scraping), BD, configs | Gerardo | `CLAUDE.md` |
+| Merge a `main` y deploy a producción | Gerardo (exclusivo) | `DEPLOY_RULES.md` regla #1 |
+| Frontend / Skills Intelligence (UI, dashboard) | Sergio | `SERGIO.md` |
+| Deploy a desarrollo (`mol-dev.vercel.app`) | Sergio | `DEPLOY_RULES.md` |
+
+`SERGIO.md` (en la raíz) documenta el detalle de las áreas y tareas de Sergio en el frontend; es la referencia vigente para esas responsabilidades.
+
+**Reversibilidad:** la decisión B-10 es revisable. Si el equipo crece o si Gerardo deja de ser el único mergeador, conviene configurar branch protection en GitHub e introducir `CODEOWNERS` con enforcement real.
