@@ -111,10 +111,10 @@ node_modules/
 # Datos derivados pesados y dumps regenerables (R1)
 exports/tareas_canonizacion/
 exports/sectores_2026-05-20/
-exports/cyn_backlog/*.json
-exports/cyn_backlog/*.jsonl
-exports/cyn_backlog/*.xlsx
-# ...pero conservar los .md (diagnósticos, verificaciones, inventarios, planes)
+exports/cyn_backlog/**/*.json
+exports/cyn_backlog/**/*.jsonl
+exports/cyn_backlog/**/*.xlsx
+# ...pero conservar los .md (diagnósticos, verificaciones, inventarios, planes) en cualquier nivel
 !exports/cyn_backlog/**/*.md
 
 # Datos auxiliares de scratch (no versionar)
