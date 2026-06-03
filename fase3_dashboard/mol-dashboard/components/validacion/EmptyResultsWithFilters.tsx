@@ -36,6 +36,9 @@ const FILTER_LABELS: Record<keyof ValidationFiltersState, string> = {
   scoreRange: "Score",
   estadoValidacion: "Estado",
   runId: "Corrida",
+  soloDatosIncompletos: "Datos incompletos",
+  soloCorreccionManual: "Con corrección manual",
+  estadoRevision: "Estado revisión",
 };
 
 function getActiveOtherFilters(filters: ValidationFiltersState): { key: string; label: string; value: string }[] {

@@ -3,6 +3,24 @@ import { requireAdmin, isAuthError } from '@/lib/api-auth';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import Anthropic from '@anthropic-ai/sdk';
 
+// skills_tecnicas puede venir como JSON array serializado o como texto plano
+// (dato heredado mal formateado). Parsear sin try/catch revienta el batch.
+function parseSkillsTecnicas(raw: unknown): unknown[] {
+  if (!raw) return [];
+  if (Array.isArray(raw)) return raw;
+  if (typeof raw === 'string') {
+    const trimmed = raw.trim();
+    if (!trimmed.startsWith('[')) return [];
+    try {
+      const parsed = JSON.parse(trimmed);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
+}
+
 // ============================================================
 // Supabase admin client
 // ============================================================
@@ -279,8 +297,7 @@ export async function POST(request: NextRequest) {
     const enriched: CorrectionData[] = batch.map(c => ({
       ...c,
       reglas_candidatas: findCandidateRules(c.titulo_limpio || c.titulo || '', matchingRules),
-      skills_tecnicas: typeof c.skills_tecnicas === 'string'
-        ? JSON.parse(c.skills_tecnicas || '[]') : (c.skills_tecnicas || []),
+      skills_tecnicas: parseSkillsTecnicas(c.skills_tecnicas),
     }));
 
     const userPrompt = buildBatchPrompt(enriched);

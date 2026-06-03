@@ -34,6 +34,9 @@ const EMPTY_FILTERS: ValidationFiltersState = {
   scoreRange: "",
   estadoValidacion: "",
   runId: "",
+  soloDatosIncompletos: "",
+  soloCorreccionManual: "",
+  estadoRevision: "",
 };
 
 interface GoldSetCandidate {
@@ -155,6 +158,29 @@ export default function ValidacionPage() {
       setSelectedOferta(ofertas[newIndex]);
     },
     [ofertas, currentIndex]
+  );
+
+  // SPEC W D.1 — Audit action callback (mark_revised / mark_total_failure)
+  const handleAuditStateChange = useCallback(
+    (newEstado: "revisada" | "mal_extraida_total" | null) => {
+      setOfertas((prev) =>
+        prev.map((o) =>
+          o.id_oferta === selectedOferta?.id_oferta
+            ? { ...o, estado_revision: newEstado }
+            : o,
+        ),
+      );
+      setSelectedOferta((prev) =>
+        prev ? { ...prev, estado_revision: newEstado } : prev,
+      );
+      // Auto-navigate al siguiente cuando se MARCÓ (no cuando se desmarcó)
+      if (newEstado !== null && currentIndex < ofertas.length - 1) {
+        const nextIndex = currentIndex + 1;
+        setCurrentIndex(nextIndex);
+        setSelectedOferta(ofertas[nextIndex]);
+      }
+    },
+    [selectedOferta, currentIndex, ofertas],
   );
 
   // After evaluating: update local state + auto-next
@@ -379,6 +405,7 @@ export default function ValidacionPage() {
           currentValidacion={selectedOferta.validacion_humana}
           oferta={selectedOferta}
           onEvaluated={handleEvaluated}
+          onAuditStateChange={handleAuditStateChange}
         />
       )}
     </div>
