@@ -199,4 +199,84 @@ La hipótesis de la 5.1 ("sync pesado al final del pipeline, sin observabilidad,
 
 ---
 
-> *Versión 0.1 — Capas 5.1 y 5.2 cerradas. Capas 5.3 (deuda detectada) y 5.4 (diseño objetivo) pendientes, se trabajan con Gerardo.*
+## 5.3 Deuda observada
+
+Registro de problemas detectados durante el relevamiento de las tres BDs, **sin priorización ni propietario asignado en esta etapa**. La priorización y el diseño de reparaciones se harán en S1.C — Master de reparación, cuando los 7 specs de relevamiento estén cerrados. Tocar la BD aisladamente para optimizarla sería peinar al muerto: el comportamiento de la BD refleja decisiones del pipeline, del matcher y del dashboard, y la solución correcta no se puede pensar sin ese cuadro.
+
+### D-01 — Patrón N+1 en sync de skills
+Cada sync full ejecuta ~68K DELETEs individuales sobre `ofertas_skills` (uno por oferta) antes de re-insertar. Es probable candidato fuerte al costo elevado de Supabase.
+**Componentes involucrados**: pipeline de matching (decide cómo armar el sync), arquitectura de la tabla ofertas × skills (el modelo de datos que obliga a este patrón), dashboard (consume los datos sincronizados).
+**Por qué no se prioriza acá**: tocar el sync sin entender por qué el pipeline lo diseñó así puede romper el flujo de matching.
+
+### D-02 — RPCs pgvector en page loads del dashboard
+Cada apertura de página con búsqueda semántica o uso de `recalcular_emergentes` dispara RPCs costosas sobre la tabla grande de embeddings.
+**Componentes involucrados**: dashboard (decide cuándo invocar), arquitectura de embeddings, modelo de Skills.
+**Por qué no se prioriza acá**: requiere relevar dashboard y Skills antes para entender si la solución está en cache, en precálculo, en cambio de modelo o en cambio de UI.
+
+### D-03 — Pollers 24/7 contra Supabase
+Dos pollers (`vps_command_poller.py` y poller de admin) corren continuamente. Aunque cada query individual sea barata, el piso continuo durante 30 días suma.
+**Componentes involucrados**: pipeline operativo (orquestación), arquitectura de comunicación entre VPS y local.
+**Por qué no se prioriza acá**: requiere relevar pipeline operativo para entender qué eventos podrían reemplazar el polling.
+
+### D-04 — Falta total de observabilidad en sincronizaciones
+Si falla un sync, no hay alerta, log accesible ni señal visible. Gerardo se entera tarde o no se entera. El sistema puede estar en estado de inconsistencia silenciosa.
+**Componentes involucrados**: todos. Es deuda transversal.
+**Por qué no se prioriza acá**: anotada como crítica, pero la solución (qué herramienta usar, qué métricas, dónde mostrarlas) requiere conocer todos los componentes que necesitan observabilidad.
+
+### D-05 — Histórico que se acumula sin política
+6 tablas `_backup_*` dentro del SQLite vivo (un backup pesa más que su tabla viva). ~11 archivos `.db` vacíos en `database/`. Carpeta `backups/` con dumps históricos.
+**Componentes involucrados**: políticas operativas del proyecto, decisiones de retención.
+**Por qué no se prioriza acá**: requiere política de retención general, no solo limpieza puntual.
+
+### D-06 — `validation_errors` con 278K filas en local
+Tamaño desproporcionado para una tabla de errores. Causa desconocida.
+**Componentes involucrados**: NLP (probablemente origen de los errores), matcher.
+**Por qué no se prioriza acá**: requiere relevar NLP y matcher para entender qué genera estos errores y si son errores reales o ruido.
+
+### D-07 — `recalcular_emergentes` con 3 versiones SQL coexistiendo
+Tres versiones de la misma función (028, 043, 050_v3) en `fase3_dashboard/sql/`.
+**Componentes involucrados**: arquitectura de schema de Supabase, módulo OE.
+**Por qué no se prioriza acá**: requiere relevar módulo OE para saber cuál versión está activa y si las otras dos son código muerto o respaldos.
+
+### D-08 — Dashboard legacy `dashboards/production/`
+No deployado pero apunta a la misma Supabase productiva. Riesgo bajo (consume solo si alguien levanta `npm run dev` local), pero deuda de limpieza.
+**Componentes involucrados**: dashboard, gestión de configuraciones de entorno.
+**Por qué no se prioriza acá**: deuda menor, puede atacarse en cualquier momento como cleanup.
+
+### D-09 — Credenciales hardcodeadas
+SSH key del VPS en `scripts/sync_from_vps.py` (host `root@187.124.150.28`), `service_role_key` de Supabase en `config/supabase_config.json`. Ya conocido como incidente S-01.
+**Componentes involucrados**: gestión de credenciales del proyecto, todos los scripts que consumen.
+**Por qué no se prioriza acá**: requiere decisión sobre infraestructura de secretos (variables de entorno, gestor de secretos, qué herramienta).
+
+### D-10 — Dos directorios de migraciones SQL
+`database/migrations/` (18 archivos, congelado desde feb 2026, archivo) y `migrations/` (12 archivos, vivo). Ya documentado en `exports/cyn_backlog/verificacion_arboles_sql_2026-06-03.md`.
+**Componentes involucrados**: arquitectura de schema, scripts que leen archivos puntuales de uno y otro.
+**Por qué no se prioriza acá**: requiere consolidación que toca múltiples scripts vivos.
+
+---
+
+## 5.4 Principios de diseño objetivo
+
+Principios generales de cómo debería comportarse el sistema de BDs cuando esté sano. **No es diseño detallado** — eso surge del master S1.C con el cuadro completo de los 7 componentes. Estos principios son el norte conceptual hacia el cual diseñar las reparaciones cuando llegue su momento.
+
+### Principio 1 — Observabilidad de extremo a extremo
+Cada sincronización, cada escritura masiva, cada job programado debería emitir señal verificable: éxito, fracaso, métricas básicas. El sistema sano es uno donde "no me entero" no debería ser posible.
+
+### Principio 2 — Costo predecible y mensurable
+El consumo mensual de Supabase debería ser predecible mes a mes, con desglose accesible (qué proceso consume cuánto). Hoy la factura llega como sorpresa; debería ser señal anticipada.
+
+### Principio 3 — Separación clara de responsabilidades
+Cada BD con un rol definido (VPS = scraping, Local = procesamiento, Supabase = UI) y un único proceso de escritura por dominio. Las "escrituras múltiples a la misma instancia desde distintos componentes" deberían ser explícitas y justificadas, no implícitas y acumuladas.
+
+### Principio 4 — Crecimiento controlado
+Las tablas que crecen sin límite (ofertas × skills, validation_errors, backups) deberían tener política de archivado, retención o limpieza. Crecimiento perpetuo no es aceptable para un sistema sano.
+
+### Principio 5 — Eventos sobre polling cuando sea posible
+Los pollers 24/7 son patrón de "no encontré mejor opción"; el sistema sano usa eventos o webhooks donde sea factible, reservando polling para casos justificados.
+
+### Principio 6 — Credenciales fuera del código
+Variables de entorno, secretos gestionados, rotación posible. Ninguna credencial productiva en archivos versionados.
+
+---
+
+> *Spec S1.B.1 — Bases de Datos: capas 5.1, 5.2, 5.3 y 5.4 cerradas. Las 10 deudas observadas se vuelcan al master S1.C cuando esté listo. Los 6 principios son input del diseño objetivo del sistema sano.*
