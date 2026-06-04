@@ -1,7 +1,9 @@
 # MOL — Master de relevamiento del sistema (Fase S1.B)
 
-> Versión 0.1 (borrador) · 2026-06-04
+> Versión 0.2 · 2026-06-04
 > Documento operativo de la fase de relevamiento. Define qué relevar, en qué orden, cómo, y cómo lo relevado se conecta con la fase posterior de reparación. Es el mapa de la fase intermedia entre el setup documental (S1.A, en curso) y los sprints de mejora del cerebro (Sprint 1 en adelante).
+>
+> *Cambios desde v0.1:* las capas 5.3 y 5.4 se reformulan después de la observación de Gerardo durante el primer relevamiento (BD): no se prioriza ni se diseña reparación de un componente aislado; eso se hace en S1.C cuando los 7 specs estén cerrados. El cambio formaliza el principio de que los componentes del sistema están interconectados y la reparación de uno depende del cuadro completo.
 
 ---
 
@@ -12,6 +14,8 @@ El proyecto MOL evolucionó más rápido que su documentación, sus tests y su c
 Esto significa que **no podemos planificar nuevos sprints sobre supuestos**. Antes de cualquier refactor del matcher (Sprint 1) o cualquier reescritura sustantiva, hace falta saber con qué realidad estamos trabajando.
 
 La fase S1.B — Relevamiento del sistema produce ese conocimiento. Es la aplicación sistemática del principio "Descubrir antes de definir" (`docs/MOL_planificacion.md` v0.5) a todos los componentes del sistema. No es documentación por documentación: cada spec de relevamiento produce además **la deuda detectada** y **el diseño objetivo**, para que lo relevado sirva como cimiento de las reparaciones que vienen después.
+
+**Igual de importante: cada relevamiento observa deuda pero no la prioriza ni la diseña reparada.** Los componentes del sistema están interconectados (la BD refleja el pipeline; el pipeline depende de la lógica del matcher; el matcher se apoya en skills y NLP). Priorizar la reparación de un componente sin conocer los otros sería peinar al muerto: se puede arreglar el síntoma sin tocar la causa. La priorización y el diseño de reparaciones se hacen en S1.C — Master de reparación, cuando los 7 specs de relevamiento estén cerrados.
 
 ## 2. Decisiones de método registradas el 2026-06-04
 
@@ -91,13 +95,20 @@ Esto **se documenta apenas Gerardo lo dice**, no se mantiene solo en el chat. Es
 
 Claude Code verifica contra el código y los archivos del repo todo lo que Gerardo aportó en 5.1, más una pasada general de la realidad del componente. Produce: qué hay efectivamente, dónde, en qué condición, qué desfases hay entre lo que dice la doc, lo que dicen los archivos y lo que efectivamente corre.
 
-### 5.3 Deuda detectada (capa B)
+### 5.3 Deuda observada (capa B)
 
-Lista de problemas concretos encontrados, con: descripción, urgencia (bloquea sprint, bloquea producción, no bloquea pero genera ruido, etc.), qué spec o sprint debería resolverlo, qué hacer mientras tanto.
+Registro de los problemas detectados durante el relevamiento del componente, **sin priorización ni asignación de propietario en esta etapa**. Cada ítem incluye:
+- Qué se observó.
+- Qué otros componentes probablemente estén involucrados (pipeline, matcher, NLP, dashboard, etc.) — porque la deuda casi nunca es del componente aislado.
+- Por qué no se prioriza ahora.
 
-### 5.4 Diseño objetivo (capa C)
+La priorización y el diseño de las reparaciones se hace en S1.C — Master de reparación, cruzando la deuda de los 7 componentes para identificar causas comunes, dependencias y orden óptimo de ataque.
 
-Cómo debería verse este componente cuando esté sano. No es "cómo se repara" — eso es trabajo de specs de reparación posteriores. Es el norte hacia el cual diseñar las reparaciones.
+### 5.4 Principios de diseño objetivo (capa C)
+
+Principios generales de cómo debería comportarse el componente cuando esté sano: observabilidad, predictibilidad, escalabilidad, separación de responsabilidades, etc. **No es diseño detallado** — eso requiere conocer cómo se usa el componente desde los otros componentes, lo cual recién se sabe cuando los 7 relevamientos están cerrados.
+
+El diseño detallado de la reparación de cada componente se hace en los specs de reparación que salgan de S1.C, con el cuadro completo a la vista.
 
 ### 5.5 Validación
 
@@ -163,4 +174,4 @@ Memoria preliminar de Gerardo aportada el 2026-06-04, antes de escribir los spec
 
 ---
 
-*Versión 0.1, borrador para discusión.*
+*Versión 0.2 — 2026-06-04.*
