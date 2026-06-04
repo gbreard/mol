@@ -174,4 +174,4 @@ Memoria preliminar de Gerardo aportada el 2026-06-04, antes de escribir los spec
 
 ---
 
-*Versión 0.1, borrador para discusión.*
+*Versión 0.2 — 2026-06-04.*
