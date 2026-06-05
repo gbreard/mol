@@ -112,4 +112,82 @@ Cosas que aparecieron en la conversación pero que **están fuera del alcance de
 
 ---
 
-> *Versión 0.1 — Capa 5.1 cerrada. Capa 5.2 (estado actual relevado por Claude Code) pendiente, próximo paso.*
+## 5.2 Estado actual relevado
+
+Verificación de Claude Code contra el código del repo (solo lectura, sin correr scrapers ni conectar a las BDs reales). Confirma, refuta o refina la memoria operativa de la capa 5.1. Pasada del 2026-06-05 sobre el branch `spec/s1b2-scraping`.
+
+### 5.2.1 Los 6 scrapers
+
+Los 6 portales activos viven en `01_sources/<portal>/scrapers/`, orquestados desde el VPS por `scripts/scraping/run_scraping_vps.sh`:
+
+| Portal | Scraper principal | Ubicación | Método | Último commit | Madurez (#.py) |
+|---|---|---|---|---|---|
+| **Bumeran** | `bumeran_scraper.py` (vía `run_scheduler.py`) | VPS | API searchV2 + **keywords** | 2026-02-08 | **18** |
+| **ZonaJobs** | `zonajobs_scraper_v2.py` | VPS | API searchV2 + **keywords** | 2026-03-15 | **15** |
+| **ComputRabajo** | `computrabajo_scraper.py` | VPS | HTML/BS4 + **keywords** | 2026-03-11 | 9 |
+| **CABA** | `caba_scraper.py` | VPS | HTML listado completo (**sin keywords**) | 2026-03-13 | 1 |
+| **Portal Empleo** | `portalempleo_scraper.py` | VPS | HTML listado completo (**sin keywords**) | 2026-03-13 | 1 |
+| **Indeed** | `indeed_scraper.py` | **VPS / local (ambiguo)** | curl_cffi + **keywords** | 2026-04-23 | 1 |
+
+**Refinamientos sobre la 5.1:**
+- **Método (refina "la mayoría usa keywords"):** 4 de 6 usan keywords (Bumeran, ZonaJobs, ComputRabajo, Indeed); **CABA y Portal Empleo paginan el listado completo sin keywords**. Para esos dos, el "universo" no depende del diccionario sino de la cobertura del portal.
+- **Pato rengo de Indeed confirmado pero sin cerrar:** existe `scripts/scraping/run_indeed_local.py` (*"wrapper… para ejecución local… keyword cycling… para no quemar la IP"*), pero el cron `run_scraping_vps.sh` **todavía invoca `run_indeed_vps.py`** (línea 71). Cuál corre realmente en producción **no es verificable leyendo el repo** (requiere el crontab vivo del VPS). La UI tiene un botón `sendIndeedLocal` dedicado, lo que sugiere que el camino local es el vigente.
+- **Disparidad de madurez (confirma a Gerardo "qué tiene Bumeran que los otros no"):** Bumeran (18 archivos) y ZonaJobs (15) tienen tooling propio (rate limiter, alertas, análisis de eficiencia, exploradores de API); **CABA, Portal Empleo e Indeed son scrapers de 1 solo archivo**. Cuantitativamente, en manejo de errores: `bumeran_scraper.py` tiene **21 referencias a retry**; CABA/Portal Empleo/Indeed tienen **0**. Ninguno tiene detección activa de cambio de HTML que alerte (solo guardas de vacío/None).
+- **7º directorio:** `01_sources/linkedin/` existe pero es **legacy** (JobSpy, no integrado). No es un scraper extra en producción — los 6 activos coinciden con la 5.1.
+
+### 5.2.2 Diccionario de palabras clave
+
+- **Archivo principal:** `config/scraping/master_keywords.json` — **v3.2**, `ultima_actualizacion: 2025-10-31`, **59 categorías**, **~2050 keywords**.
+- **No es único:** hay diccionarios por portal (`config/scraping/zonajobs_keyword_combos.json`, `zonajobs_popular_keywords.json`, `01_sources/computrabajo/config/search_keywords.json`, `01_sources/linkedin/config/search_keywords.json`) + historial de versiones en `config/archive/` (v3.0, v3.1, v3.2).
+- **Sí se actualizó alguna vez (matiza "nunca se actualizó"):** la nota de versión dice *"EXPANSIÓN v3.1: +267 términos basados en análisis de 3.484 ofertas reales"*. Pero está **congelado desde hace ~7 meses (2025-10-31)**.
+- **Métricas de eficiencia keyword→ofertas: EXISTEN pero son un one-shot.** Tabla local `keywords_performance` (2296 filas) con `ofertas_encontradas / ofertas_nuevas / ofertas_duplicadas / tiempo_ejecucion / exito / esco_occupation_uri` por keyword, **pero todas las filas son de un único día (2025-10-31) y solo de `fuente='bumeran'`**. Hay 3 herramientas (`analizar_eficiencia_keywords.py`, `analizar_keywords_faltantes.py`, `keyword_optimizer.py`). La capacidad de medir existe; el uso continuo no.
+
+### 5.2.3 Cron, orquestación y UI de scraping
+
+**Orquestación (cron VPS):** `run_scraping_vps.sh` corre los scrapers **secuencialmente** (Bumeran → ZonaJobs → ComputRabajo → CABA → Portal Empleo → Indeed) y al final `export_nuevas.py` para el sync a local. CLAUDE.md indica frecuencia Lun/Jue. El crontab vivo del VPS no está versionado → la frecuencia real **no es verificable en esta pasada**.
+
+**Manejo de errores:** cada scraper usa `try/except` + logging a archivo; solo Bumeran tiene retry/backoff y circuit breaker. **No hay detección de cambio de HTML**: si un portal cambia su estructura, el scraper trae vacío/sucio en silencio (confirma a Gerardo). La degradación se descubre tarde o nunca.
+
+**Control de cobertura (foco pedido):** `scripts/scraping/medir_cobertura_v3_2.py` es un **one-shot Bumeran-only**: compara cobertura de diccionario v3.1 vs v3.2 leyendo CSVs locales contra un total **hardcodeado** (`TOTAL_OFERTAS_BUMERAN = 12207 # Actualizar con valor real`), último commit 2026-01-15, no integrado al pipeline. Confirma a Gerardo: el control de cobertura existe solo para Bumeran y ni siquiera es automático.
+
+**Alertas:** `01_sources/bumeran/scrapers/alert_manager.py` genera alertas por métricas + circuit breaker, pero **"actualmente solo registra en logs… preparado para envío por email"** (`email_enabled=False`). Capacidad construida, no cableada.
+
+**UI de scraping** (`fase3_dashboard/mol-dashboard/app/admin/scraping/`): tres páginas + APIs (`scraping-commands`, `scraping-live-stats`, `scraping-schedule`).
+- `page.tsx` (401 líneas): **monitoreo** — stats por portal (VPS + Supabase merge), histórico, toggles de visibilidad. Es vista de lectura.
+- `comandos/page.tsx`: **gateway de comandos** — botones `lanzar_portal` / `pausar_portal` (el disparo manual que Gerardo no usa), `sendIndeedLocal` dedicado, y edición de `scraping_schedule`. Escribe en `scraping_commands`, que el `vps_command_poller.py` recoge (cadena vista en S1.B.1).
+- `dinamica/page.tsx`: gráfico de dinámica.
+- **No existe trazabilidad por oferta** (scraping → NLP → matching → dashboard): confirmado el gap que señaló Gerardo. El "probar scraper aislado" se reduce a `lanzar_portal` (portal entero), no a seguir una oferta por el pipeline.
+
+### 5.2.4 Detección de duplicados y republicaciones
+
+**Anti-rescrapeo intra-portal (por ID):** `02_consolidation/scripts/incremental_tracker.py` + `tracking/scraped_ids.json` por portal. Evita re-bajar IDs ya vistos. No es detección de republicación (mismo aviso con ID nuevo).
+
+**Republicación intra-portal — ACTIVA (refuta la desconfianza como "no funciona"):** `database/detectar_republicaciones.py` agrupa por `titulo+empresa` con `id_oferta` distinto (primera = original, resto = republicación). **Está automatizado** — lo invocan `run_scheduler.py` y `sync_from_vps.py` — **tiene test** (`tests/scraping/test_republicaciones.py`) y **pobló datos reales**: 4.212 ofertas con `es_republicacion=1`, columnas `numero_republicacion`/`grupo_republicacion` en uso, 75.593 con `fecha_baja`. La desconfianza de Gerardo es sobre la **precisión** del criterio (titulo+empresa exacto), no sobre su existencia: el sistema corre y produce datos.
+
+**Dedup cross-portal — EXISTE pero DORMIDO (refuta "probablemente no existe"; confirma "nadie lo usa"):** `scripts/db/deduplicate_cross_portal.py` (clase `CrossPortalDeduplicator`, umbral fuzzy 0.85, `--dry-run`), pero **ningún cron/pipeline/script lo invoca** (commit único 2026-01-15). Capacidad construida, nunca automatizada.
+
+**Contador roto:** en las 311.696 filas de `keywords_performance`, `ofertas_duplicadas = 0` (nuevas == encontradas) → el contador de duplicadas **nunca se pobló**.
+
+### 5.2.5 Hipótesis refinadas y patrón transversal
+
+**Hipótesis 1 (huecos en el diccionario): no verificable cuantitativamente en esta pasada**, pero el contexto la hace plausible: diccionario congelado desde 2025-10-31, y existe `analizar_keywords_faltantes.py` (señal de que el hueco se sospechó y nunca se midió de forma continua). Medir la brecha real requiere correr análisis, fuera de alcance de solo-lectura.
+
+**Hipótesis 2 (eficiencia keyword→ofertas muy desigual): parcialmente refutada en cuanto a capacidad, confirmada en cuanto a uso.** La infraestructura para medirla existe (`keywords_performance` + 3 scripts), pero solo se corrió **una vez, para Bumeran, hace 7 meses**. No hay medición continua ni por-portal, así que la desigualdad sigue sin cuantificarse.
+
+**Hipótesis 3 (scrapers no-Bumeran degradados sin que nadie lo note): respaldada estructuralmente.** CABA/Portal Empleo/Indeed son single-file, sin retry, sin alertas, sin control de cobertura, sin detección de cambio de HTML. No se puede afirmar que estén rotos hoy (requiere correrlos), pero **la ausencia de observabilidad hace que un quiebre pasaría inadvertido** — exactamente el riesgo que describe Gerardo.
+
+**Patrón transversal — "construido una vez y abandonado":** apareció de forma recurrente y conviene marcarlo para S1.C. Instancias detectadas en este relevamiento:
+1. `keywords_performance` — medición única (2025-10-31), solo Bumeran.
+2. `master_keywords.json` — expansión única (v3.1, oct 2025), congelado desde entonces.
+3. `medir_cobertura_v3_2.py` — one-shot Bumeran-only, total hardcodeado, sin integrar.
+4. `alert_manager.py` — alertas "solo a logs", email nunca habilitado.
+5. `deduplicate_cross_portal.py` — construido (ene 2026), nunca invocado.
+6. `ofertas_historial` — tabla de change-tracking con schema completo y **0 filas**, nunca usada.
+
+Contraejemplos que **sí** siguen activos: `detectar_republicaciones.py` (automatizado + test + datos) e `incremental_tracker.py` (anti-rescrapeo por portal).
+
+**No verificable en esta pasada:** frecuencia real del cron del VPS; qué runner de Indeed corre en producción (VPS vs local); si los scrapers single-file están trayendo datos correctos hoy; magnitud real de la brecha del diccionario y de la eficiencia por keyword.
+
+---
+
+> *Versión 0.1 — Capas 5.1 y 5.2 cerradas. Capas 5.3 (deuda observada) y 5.4 (principios de diseño) pendientes, se trabajan con Gerardo.*
