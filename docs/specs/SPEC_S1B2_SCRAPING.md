@@ -190,4 +190,145 @@ Contraejemplos que **sí** siguen activos: `detectar_republicaciones.py` (automa
 
 ---
 
-> *Versión 0.1 — Capas 5.1 y 5.2 cerradas. Capas 5.3 (deuda observada) y 5.4 (principios de diseño) pendientes, se trabajan con Gerardo.*
+## 5.3 Deuda observada
+
+Registro de problemas detectados durante el relevamiento de Scraping, **sin priorización ni propietario asignado en esta etapa**. La priorización y el diseño de reparaciones se harán en S1.C — Master de reparación, cuando los 7 specs de relevamiento estén cerrados. Tocar el scraping aisladamente para optimizarlo sería peinar al muerto: el comportamiento de los scrapers refleja decisiones de orquestación del pipeline, decisiones de BD sobre cómo guardar las ofertas, y decisiones de UI sobre qué exponer.
+
+Las deudas están organizadas en categorías para legibilidad, pero sin orden de prioridad entre ellas.
+
+### Categoría A — Observabilidad y calidad
+
+#### D-01 — Sin detección automática de cambios de HTML
+Cuando un portal cambia su estructura HTML, los scrapers traen datos vacíos o sucios en silencio. El sistema no lo detecta hasta que algo más abajo en el pipeline rompe, o no lo detecta nunca.
+**Componentes involucrados**: scraping, NLP (recibe los datos sucios después), pipeline operativo (no hay alertas).
+**Por qué no se prioriza acá**: requiere decisión sobre infraestructura de alertas a nivel proyecto.
+
+#### D-02 — Alert manager existe pero solo loguea
+Hay infraestructura de alertas en el código pero no está conectada a un canal real (email, Slack, etc.).
+**Componentes involucrados**: scraping, infraestructura de notificaciones del proyecto.
+**Por qué no se prioriza acá**: requiere decisión sobre qué canal de alertas usar a nivel proyecto.
+
+#### D-03 — Sin trazabilidad por oferta a través del pipeline
+No se puede seguir una oferta específica desde el scraping hasta el dashboard. Gerardo lo identificó como gap importante: idealmente debería poder hacerse desde la UI.
+**Componentes involucrados**: scraping, UI (S1.B.7), NLP, matching.
+**Por qué no se prioriza acá**: requiere relevamiento de UI y de pipeline operativo para diseñar trazabilidad end-to-end.
+
+### Categoría B — Disparidad entre scrapers
+
+#### D-04 — Tres scrapers single-file sin tooling
+CABA, Portal Empleo, Indeed: 1 archivo cada uno, cero retries, sin observabilidad propia. Contraste con Bumeran (18 archivos, 21 retries, rate limiter, alertas).
+**Componentes involucrados**: scraping, arquitectura del proyecto (no hay framework común aplicado a todos).
+**Por qué no se prioriza acá**: requiere decisión arquitectónica sobre framework común de scrapers.
+
+#### D-05 — Pato rengo de Indeed
+Existe wrapper local (`run_indeed_local.py`) explícitamente "para no quemar la IP", pero el cron del VPS sigue invocando `run_indeed_vps.py`. No es verificable sin ver el crontab vivo del VPS cuál corre realmente en producción.
+**Componentes involucrados**: scraping, gestión de cron del VPS.
+**Por qué no se prioriza acá**: requiere acceso al VPS para verificar y decisión sobre ubicación definitiva.
+
+### Categoría C — Diccionario de palabras clave
+
+#### D-06 — Diccionario sin proceso de actualización continua
+Última actualización del `master_keywords.json`: 2025-10-31 (hace 7 meses). Existe la infraestructura para medir eficiencia y agregar términos, pero no hay práctica recurrente.
+**Componentes involucrados**: scraping, proceso operativo del proyecto.
+**Por qué no se prioriza acá**: requiere decisión sobre cadencia y responsabilidad de mantenimiento.
+
+#### D-07 — Métricas de eficiencia keyword→ofertas existen pero abandonadas
+Tabla `keywords_performance` (2.296 filas) + 3 scripts de análisis. Última corrida: una sola vez, solo Bumeran, 2025-10-31.
+**Componentes involucrados**: scraping, decisiones operativas.
+**Por qué no se prioriza acá**: ver D-15 (patrón sistémico). La infraestructura existe; lo que falta es la práctica.
+
+#### D-08 — Múltiples diccionarios por portal sin sincronización clara
+Diccionario global (`master_keywords.json`) + diccionarios específicos por portal (`zonajobs_keyword_combos.json`, `computrabajo/config/search_keywords.json`, etc.). No queda claro cómo se mantienen sincronizados ni qué pasa cuando se agrega un término al global.
+**Componentes involucrados**: scraping, configuración del proyecto.
+**Por qué no se prioriza acá**: requiere decisión sobre arquitectura de diccionarios.
+
+### Categoría D — Cobertura y duplicados
+
+#### D-09 — Control de cobertura solo en Bumeran, con total hardcodeado
+`medir_cobertura_v3_2.py` es one-shot, Bumeran-only, y el total no se actualiza dinámicamente desde el portal.
+**Componentes involucrados**: scraping, monitoreo del proyecto.
+**Por qué no se prioriza acá**: requiere decisión sobre cómo extender a otros portales y cómo mantener el total actualizado.
+
+#### D-10 — Deduplicación cross-portal implementada pero dormida
+`deduplicate_cross_portal.py` existe con fuzzy matching 0.85, pero nadie lo invoca. La BD probablemente tiene la misma oferta replicada desde múltiples portales sin marcar.
+**Componentes involucrados**: scraping, BD (S1.B.1), arquitectura de datos.
+**Por qué no se prioriza acá**: requiere decisión sobre cuándo y cómo invocarlo, y validar que el criterio fuzzy 0.85 es correcto antes de aplicarlo masivamente.
+
+#### D-11 — Republicación intra-portal funciona pero criterio no validado
+El sistema detecta y marca republicaciones (4.212 detectadas, automatizado vía `detectar_republicaciones.py`). Gerardo desconfía de la precisión del criterio, no de si corre.
+**Componentes involucrados**: scraping.
+**Por qué no se prioriza acá**: requiere muestreo y validación humana del criterio, posiblemente con apoyo de Cynthia.
+
+### Categoría E — Documentación y conocimiento
+
+#### D-12 — Sin documentación interna del scraping
+Cómo agregar un portal nuevo, cómo arreglar uno cuando rompe, cómo verificar que un scraper trae datos buenos: todo conocimiento concentrado en Gerardo. Especialmente crítico considerando los 10+ portales nuevos en agenda.
+**Componentes involucrados**: documentación general del proyecto.
+**Por qué no se prioriza acá**: requiere decisión sobre qué documentar y dónde, en sintonía con el resto de la documentación del proyecto.
+
+### Categoría F — Sprawl
+
+#### D-13 — LinkedIn legacy no integrado
+`01_sources/linkedin/` con JobSpy. Existe código pero no está en producción.
+**Componentes involucrados**: scraping.
+**Por qué no se prioriza acá**: deuda menor de limpieza.
+
+#### D-14 — Tabla `ofertas_historial` con 0 filas
+Creada pero nunca usada.
+**Componentes involucrados**: scraping, BD.
+**Por qué no se prioriza acá**: ver D-15 (patrón sistémico).
+
+### Categoría G — Patrón sistémico
+
+#### D-15 — Patrón "construido una vez y abandonado"
+
+**No es deuda de scraping específicamente — es síntoma del proceso de trabajo del proyecto.** En el relevamiento de Scraping se identificaron al menos seis instancias del mismo patrón:
+
+1. `keywords_performance` — tabla con análisis de eficiencia, corrida una vez (Bumeran, octubre 2025).
+2. `master_keywords` — diccionario expandido con datos en octubre 2025, no actualizado después.
+3. `medir_cobertura_v3_2.py` — control de cobertura one-shot solo Bumeran.
+4. `alert_manager` — existe pero solo loguea, no envía a canal real.
+5. `deduplicate_cross_portal.py` — código completo de deduplicación, nadie lo invoca.
+6. `ofertas_historial` — tabla creada con 0 filas.
+
+Contraejemplos activos en el mismo componente: `detectar_republicaciones`, `incremental_tracker`.
+
+**Por qué importa**: cada esfuerzo de mejora se hizo bien técnicamente, pero no se incorporó como práctica continua. Queda el código, queda la infraestructura, pero el uso muere. No es defecto de capacidad técnica; es ausencia de prácticas operativas que mantengan vivo lo que se construye.
+
+**Componentes involucrados**: todos. Es transversal.
+
+**Por qué no se prioriza acá**: esta deuda va a cruzarse en S1.C cuando los 7 specs de relevamiento estén cerrados. Es probable que se manifieste en cada componente, y la solución (si hay) es de proceso operativo del proyecto, no de ninguno de los componentes específicos.
+
+---
+
+## 5.4 Principios de diseño objetivo
+
+Principios generales de cómo debería comportarse el sistema de Scraping cuando esté sano. **No es diseño detallado** — eso surge del master S1.C con el cuadro completo. Estos principios son el norte conceptual.
+
+### Principio 1 — Detección activa de cambios estructurales
+El sistema sano detecta cuándo un portal cambió su HTML antes de que los datos sucios contaminen el pipeline. No depende de que un humano lo note.
+
+### Principio 2 — Uniformidad mínima entre scrapers
+Cualquier scraper, sea cual sea el portal, debe tener mínimo: retries, manejo de errores, observabilidad básica, métrica de cobertura. La disparidad actual entre Bumeran (18 archivos con tooling) y los scrapers single-file es inaceptable para un sistema sano.
+
+### Principio 3 — Trazabilidad por oferta a través del pipeline
+Cualquier oferta debe poder seguirse desde el momento del scraping hasta su presencia en el dashboard. Tanto para debug como para validación. Es un principio que afecta también a UI, NLP y matching, no solo a scraping.
+
+### Principio 4 — Cobertura medida en todos los portales que lo permitan
+Donde el portal publica el total de ofertas disponibles, el scraper debe comparar contra ese total y reportar la diferencia. Bumeran es el modelo, no la excepción.
+
+### Principio 5 — Diccionario con proceso continuo de mantenimiento
+El diccionario de palabras clave necesita actualización periódica basada en datos. No esfuerzo puntual; práctica recurrente con cadencia definida.
+
+### Principio 6 — Deduplicación cross-portal activa
+Si el sistema tiene la capacidad técnica de deduplicar entre portales, debe usarla. Código zombi vs deduplicación real es inaceptable.
+
+### Principio 7 — Documentación operativa mínima
+Cómo agregar un portal nuevo, cómo arreglar uno roto, cómo verificar que un scraper trae datos buenos. Conocimiento que no vive solo en la cabeza de una persona.
+
+### Principio 8 — Escalable a 16+ portales
+Cualquier arquitectura propuesta tiene que escalar a la meta de crecimiento (10+ portales nuevos en agenda), no solo a los 6 actuales.
+
+---
+
+> *Spec S1.B.2 — Scraping: capas 5.1, 5.2, 5.3 y 5.4 cerradas. Las 15 deudas observadas se vuelcan al master S1.C cuando esté listo. Los 8 principios son input del diseño objetivo del sistema sano. La deuda D-15 (patrón sistémico) es transversal y se va a cruzar con los hallazgos de los otros 5 specs pendientes.*
