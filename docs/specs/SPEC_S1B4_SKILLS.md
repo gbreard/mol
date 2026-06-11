@@ -76,4 +76,131 @@ El modelo fine-tuneado de mayo se hizo en disco C, se borró sin querer, no qued
 
 ---
 
-> *Versión 0.1 — Capa 5.1 cerrada (fuentes: Gerardo + Cyn + modelo conceptual v1.0). Capa 5.2 pendiente, próximo paso.*
+## 5.2 Estado actual relevado (verificado contra el código, solo lectura)
+
+> Relevamiento read-only sobre el árbol de trabajo y la BD local (`database/bumeran_scraping.db`, `mode=ro`). Lo que vive en Supabase y no es reconstruible desde el repo se marca como **no verificable sin conexión viva**.
+
+### 5.2.1 Flujo real tarea → skill y el embudo
+
+**Extractor**: `database/skills_implicit_extractor.py`, clase `SkillsImplicitExtractor`. **VERSION = "2.9.0"** (SPEC K — "L2 compatibility filter"). Entry points: `extract_from_tasks()`, `extract_skills()`, `extract_skills_dual()`. Lo invocan `database/match_ofertas_v3.py` y `database/process_nlp_from_db_v11.py`.
+- **Drift de versión (instancia menor de D-15)**: CLAUDE.md declara v2.4; el docstring de cabecera del módulo dice `2.0.0`; la clase dice `2.9.0`. Tres números distintos para el mismo archivo. La fuente real es la constante de clase: **2.9.0**.
+
+**El embudo NO es un solo gate de 0.40 — son tres capas superpuestas:**
+1. `DEFAULT_THRESHOLD = 0.40` — gate de similitud BGE-M3 base (confirma el ≥0.40 del modelo conceptual). Comentario en código: el umbral es bajo porque sin LoRA fine-tuned los scores caen.
+2. `UMBRAL_NLP_INDIVIDUAL = 0.45` + **modo "salvavidas"** anti-alucinación: si la mediana de similitud de la oferta cae por debajo del umbral-oferta, asume que el LLM alucinó masivamente y descarta casi todo salvo lo de score muy alto.
+3. **Trust classifier** (`_classify_skill_trust`, SPEC B v2): clasifica por `origen` y largo de `texto_fuente`, sin consultar ESCO ni ISCO.
+
+**El "cementerio" existe, está poblado y NO es `validation_errors`** (refuta hipótesis 3 de la 5.1): es la tabla dedicada **`skills_extraction_failures`** — **7.564 filas**, columnas estructuradas (`tarea_texto`, `mejor_skill_uri`, `mejor_score`, `gap_al_umbral`, `tipo_falla`). La pueblan `match_ofertas_v3.py:1453` y `process_nlp_from_db_v11.py:489` con `track_failures=True`. **Nadie la recupera ni reutiliza**: solo `sync_learnings.py` lee su conteo para métricas. Es un cementerio en el sentido literal del modelo conceptual: registro de descartes que no vuelve a entrar a ningún lado.
+
+**El origen SÍ se registra** (refina el modelo conceptual, que lo pedía como capacidad a CREAR): la señal de ruteo tarea-vs-declarada **ya está en el dato**. Ver 5.2.4 para la verificación de consistencia.
+
+**`filtrar_por_trust` — REFUTA la memoria de Gerardo**: no fue eliminado. Es un parámetro vivo (default `False`), agregado por SPEC B v2 (commit `e2ad5845`), única vez que se tocó en la historia del archivo. Con default `False` solo anota `trust_motivo` como telemetría; no descarta nada. Gerardo "ni sabía que existía" porque nunca se activó — está construido pero apagado (variante de D-15).
+
+**Modelo conceptual**: ❌ **no está versionado en el repo** (verificado con `git ls-files`). El PDF v1.0 (2026-05-30) existe solo fuera del repo.
+
+### 5.2.2 Vectorización ESCO y perfil argentino
+
+**REFUTA parcialmente la memoria SK-3 de Gerardo** ("una sola vez desde el RDF, sin trazabilidad, congelado en el pasado"): existe `database/embeddings/corpus_manifest.json` con trazabilidad completa:
+
+| | esco_skills | esco_occupations |
+|---|---|---|
+| shape | **[14257, 1024]** | **[3046, 1024]** |
+| model | `BAAI/bge-m3` | `BAAI/bge-m3` |
+| model_revision | `5617a9f6…` | `5617a9f6…` |
+| generated_at | **2026-04-24T23:03** | 2026-04-24T23:09 |
+| generated_by | `LOCAL:spec_e_fase_1` | `LOCAL:spec_e_fase_1` |
+| source_table | `esco_skills_enriched` | `esco_occupations_enriched` |
+| checksum_sha256 | presente | presente |
+
+Matices:
+1. Los embeddings **se regeneraron en SPEC E el 2026-04-24** — no son del pasado lejano congelado. Hay un mecanismo de regeneración (existe `scripts/upload_skills_embeddings.py`, `scripts/extract_skills_from_rdf.py`) y un `corpus_manifest.json` con checksum que `_check_corpus_sha()` compara contra el modelo en cache.
+2. PERO el manifest **no estampa la release de ESCO** (¿v1.2.0?): registra `source_table` + `source_count`, no el tag de versión de ESCO. → Hipótesis 4 **parcialmente refutada**: hay trazabilidad de *generación* (modelo, revisión, fecha, checksum, fuente), falta trazabilidad de la *versión de ESCO* de origen.
+
+**Ubicación**: archivos `.npy` + `.json` en `database/embeddings/` (local; el matcher NO usa pgvector para esto). Los activos de ocupaciones son **symlinks → `enriched/`**. Co-existen artefactos de varias épocas (enero, febrero, abril) en el mismo directorio — posibilidad de confusión sobre cuál es el vigente (D-15).
+
+**Perfil argentino / boost +0.05 — CONFIRMA el modelo conceptual (Escenario B sin conectar)**: `rerank_with_argentino_boost()` (línea 1267) carga `esco_argentino` desde Supabase; `boost_factor = 0.05 * (frequency / max_frequency)`. Se invoca en `match_ofertas_v3.py:1820` **después** de que `result.esco_uri` ya fue decidido — usa la ocupación ya elegida (`occupation_uri = result.esco_uri`) para re-rankear la *lista de skills*. **No participa de la decisión de ocupación**, confirmado en código. No está flag-gateado en este path, pero depende de cargar `esco_argentino` de Supabase viva; si falla, el cache queda vacío → sin boost.
+
+**Repo centralizado de vectores (idea de Gerardo)**: hoy NO existe. Los `.npy` viven en `database/embeddings/` del proyecto; cualquier otro proyecto/harness que los necesite los duplicaría o no podría acceder. La preocupación de Gerardo está bien fundada — no hay servicio ni ubicación compartida.
+
+### 5.2.3 Emergentes, cementerio y cadenas cortadas
+
+**`recalcular_emergentes` — tres versiones SQL coexisten** (confirma D-07 de BD), activa la v3:
+- `028_emergentes_pendientes.sql` (2026-03-22) · `043_recalcular_emergentes_v2.sql` (2026-03-31) · `050_fix_recalcular_emergentes_v3.sql` (2026-04-09, vigente).
+- Define "emergente" como: skill cuya **frecuencia ≥30%** dentro de un ISCO (con ≥10 ofertas) y que NO está en el `perfil_skills` de esa ocupación. El v3 corrige tres bugs reales del v2 (isco_code NULL, parsing JSONB roto, doble nombre de campo URI). Es un componente que se reparó iterando, no abandonado.
+
+**El panel de aprobación humana EXISTE** (refina el modelo conceptual): UI en `app/admin/skills/page.tsx`, API `app/api/emergentes-pendientes/route.ts` (GET lista vía RPC `get_emergentes`; PATCH aprobar/rechazar).
+
+**La cadena posterior a la aprobación NO está cortada — está cableada a buffers que no se descargan** (refina con precisión el "Sprint 3, cadena cortada" del modelo). Al aprobar, el endpoint llama `aprobar_emergente_con_triggers` (RPC definida y desplegada en `057_e24_downstream_triggers.sql`), que ejecuta 4 triggers transaccionales:
+- **T1 → `esco_argentino.skills_consolidadas`**: la skill entra al perfil argentino… que solo alimenta el boost +0.05 post-match (5.2.2). Dead-end respecto de la decisión de ocupación.
+- **T2 → `approved_training_pairs`**: inserta un par contrastivo en una tabla **distinta** de `config/training_pairs.json` (S1.B.3). Hay ahora **dos almacenes de training pairs**, y ningún fine-tuning consume ninguno (LoRA ausente). Dead-end.
+- **T3 → `pipeline_commands`**: encola un comando para el poller local. Es la única conexión real de vuelta a producción — pero depende de que el gateway local lo ejecute (no verificable read-only).
+- **T4 → alerta**.
+
+Conclusión: la cadena de emergentes está **más construida de lo que el modelo conceptual asume** (tabla + 4 triggers desplegados), pero termina en los mismos dos buffers que S1.B.3 identificó como rotos: perfil argentino (solo post-match) y training pairs (sin fine-tuning). No es "cadena cortada"; es "cadena cableada a destinos que no retroalimentan la decisión".
+
+**Estado de la tabla de emergentes** (cuántas pendientes/aprobadas): vive en Supabase → **no verificable sin conexión viva**.
+
+**Derivación inversa ocupación → skill (categoría DESCARTAR del modelo)**: existe `filter_skills_by_l2_compatibility()` (SPEC K) + `_l2_compatible()`. Carga `esco_occupation_skills.json` (essential/optional por ocupación) y **descarta** skills cuya categoría L2 sectorial (S*/K) no esté en el set de la ocupación target ni de su grupo ISCO-4. Matiz importante: es un **filtro de compatibilidad** (poda lo incoherente, permisivo si falta metadata del target), **no una generación arbitraria** de skills desde la ocupación. El modelo conceptual lo etiqueta como "derivación inversa a descartar"; el código real es más defendible (constraint vía ESCO oficial), pero comparte el riesgo: usa el grafo EU de associations para podar señal AR (converge con el diagnóstico de `[[project_perfil_argentino_matcher]]`).
+
+### 5.2.4 Gold set, contrato con matching y verificación del mapeo conceptual
+
+**Gold set** (`tests/nlp/gold_set.json`): **49 casos**. Es un gold set de **NLP**, pero su bloque `expected` **sí incluye skills**: `skills_tecnicas_list`, `soft_skills_list`, `herramientas_list` (además de los 17 campos NLP restantes). Confirma a medias la intuición de Gerardo ("cree que son de matching"):
+- **Mismo universo de ofertas que el gold set de matching**: overlap **49/49** con `database/gold_set_manual_v2.json`. Son las mismas 49 ofertas, validadas en dos capas distintas (NLP+skills vs ISCO).
+- **Antigüedad (D-15)**: último commit que lo tocó `3d3b7807` (refactor 3-fases); creado en `3f0069dc` ("NLP v10"). Está congelado en la era **NLP v10**, mientras producción corre **v11.4**. El harness de skills valida contra expectativas viejas — mismo patrón que el gold set de matching en S1.B.3.
+
+**Contrato Skills → Matching** (qué consume el matcher): `match_ofertas_v3.py` invoca al extractor y recibe `skills_extracted` (lista de dicts con `skill_label`, `origen`, `score`, `uri`), la re-rankea con el boost argentino y la persiste. Persistencia en dos tablas:
+- `ofertas_esco_skills_detalle` (**1.569.227 filas**): `esco_skill_uri`, `match_score`, `match_method`, `skill_tipo_fuente`, `is_essential/optional_for_occupation`, `source_classification`.
+- `ofertas_skills` (consumida por `recalcular_emergentes` y el dashboard).
+
+Relación con el `esco_code` granular perdido (D-01 de Matching): el lado skills **sí persiste URIs de skill** correctamente (`esco_skill_uri`), distinto del `esco_code` de *ocupación* que MatchResult perdía. NO comparte el bug puntual, pero **sí comparte el patrón**: señal granular calculada en runtime que se aplana al cruzar el borde a BD (ver `origen_tipo` abajo).
+
+**Verificación de consistencia de la señal de origen (adición de Gerardo):**
+- ⚠️ **Dos columnas de origen coexisten, una viva y una muerta:**
+  - `origen_tipo`: **100% "semantico"** en las 1.569.227 filas. Columna **muerta** — no la escribe ningún script de `database/` ni `scripts/exports/`; quedó clavada en un valor único.
+  - `skill_tipo_fuente`: **la señal real**, **11 valores distintos, 0 nulos/vacíos**. Distribución:
+
+    | skill_tipo_fuente | filas | % |
+    |---|---|---|
+    | tarea | 708.061 | 45,1% |
+    | semantico | 278.602 | 17,8% |
+    | skills_nlp | 156.215 | 10,0% |
+    | titulo | 141.021 | 9,0% |
+    | skills_nlp_declarada | 112.241 | 7,2% |
+    | soft_skill_declarada | 72.231 | 4,6% |
+    | terminologia | 30.402 | 1,9% |
+    | soft_skills_nlp | 24.512 | 1,6% |
+    | regla | 21.666 | 1,4% |
+    | tecnologia_declarada | 14.478 | 0,9% |
+    | herramienta_declarada | 9.798 | 0,6% |
+
+  - **Lectura**: la señal de ruteo está **limpia y poblada** (sin nulos), y **`tarea` domina con 45%** — confirma empíricamente el ancla "las tareas son la fuente de verdad". La distribución tarea/título/declarada/regla es exactamente la materia prima que el ruteo por escenarios del modelo conceptual necesitaría. El obstáculo no es la calidad del dato sino que hay **dos columnas y la documentada (`origen_tipo`) es la muerta** — riesgo de que el ruteo futuro lea la columna equivocada.
+- 🔴 **`regla_cynthia` y `regla_issue` = 0 filas persistidas.** El trust classifier los incluye en su whitelist de "origen confiable", pero **ningún dato real los lleva**. El rastro del feedback humano de Cyn **no existe dentro del dato de skills**: el origen `regla` (21.666) es genérico y no distingue corrección humana de regla automática. Converge con el hallazgo de S1.B.3: las correcciones de Cyn se acumulan en `issues`/observaciones-texto-libre y **no bajan al grano de la skill**. La señal de feedback humano está prevista en el código pero vacía en la práctica.
+
+**Mapeo de capacidades (sección 6 del modelo conceptual) verificado contra el código:**
+
+| Capacidad (modelo) | Categoría | Estado REAL verificado |
+|---|---|---|
+| Extracción de skills desde tareas | CONSERVAR | ✅ Existe y funciona (`tarea`=45% de la señal, ancla confirmada) |
+| Ocupación granular (esco_code) | CONSERVAR | ⚠️ Existe pero se pierde al persistir la ocupación (D-01 de Matching) |
+| Atributos de skill (essential/optional, L1/L2) | CONSERVAR | ✅ Persistidos en `ofertas_esco_skills_detalle` |
+| Perfil argentino → decisión de ocupación | CONECTAR | 🔴 Existe **desconectado**: solo boost +0.05 post-match |
+| Training data de correcciones → mejora | CONECTAR | 🔴 Existe **desconectado**: 2 almacenes (`training_pairs.json` + `approved_training_pairs`), ningún fine-tuning los consume |
+| Ciclo de detección de frecuentes | CONECTAR | 🟡 Más completo de lo asumido: detección + panel + 4 triggers; pero los triggers terminan en buffers sin descarga |
+| Registro de emergentes con identidad propia | CREAR | 🔴 No existe: skill sin URI muere en `skills_extraction_failures` (7.564) o se fuerza a la ESCO más cercana (cf. `[[project_escenarios_skills_sin_uri]]`) |
+| Clasificador de ruteo por escenario | CREAR | 🟡 La señal de entrada (`skill_tipo_fuente`) **ya existe limpia**; el clasificador que la consuma, no |
+| Centinelas en las fronteras | CREAR | 🔴 No existen |
+| Abstracción de modelos de IA | CREAR | 🔴 No existe: `BAAI/bge-m3` y la ruta LoRA están clavados como constantes de clase |
+| Derivación inversa ocupación→skill arbitraria | DESCARTAR | 🟡 Existe como **filtro** L2 (SPEC K), no como generación arbitraria; defendible pero poda señal AR con grafo EU |
+| Log de descartes como cementerio | DESCARTAR | 🔴 Existe y estorba: `skills_extraction_failures` (7.564 filas) acumula sin reuso |
+
+### 5.2.5 Hipótesis refinadas (para 5.3/5.4, que se trabajan con Gerardo)
+
+1. **El cuello de botella no es la calidad de la señal de origen — es su consumo y su duplicación.** `skill_tipo_fuente` está limpia (11 valores, 0 nulos, `tarea` dominante). Falta el ruteo que la lea, y sobra la columna muerta `origen_tipo` que la documentación señala como la buena.
+2. **El feedback humano de Cyn no baja al grano de la skill.** `regla_cynthia`/`regla_issue` están previstos pero vacíos; las correcciones quedan en texto libre. Es el mismo break de loop de S1.B.3, visto desde el dato de skills.
+3. **La cadena de emergentes está cableada, no cortada — pero a destinos muertos.** Reparar emergentes ≠ construir la cadena (ya existe); = **drenar los buffers** (perfil argentino → decisión; training pairs → fine-tuning). Converge con la intervención de mayor retorno del modelo (conectar el perfil argentino).
+4. **La vectorización ESCO tiene trazabilidad de generación pero no de versión de ESCO**, vive duplicable en `database/embeddings/`, y los modelos están clavados como constantes. El "repo centralizado de vectores" de Gerardo y la "abstracción de modelos de IA" del modelo conceptual son el mismo principio visto desde dos lados.
+5. **D-15 ("construido una vez y abandonado") se confirma por cuarta vez consecutiva** en este componente: `filtrar_por_trust` apagado, `origen_tipo` muerta, gold set congelado en NLP v10, embeddings multi-época en un mismo directorio, drift de versión 2.0/2.4/2.9, cementerio sin reuso, dos almacenes de training pairs.
+
+---
+
+> *Versión 0.2 — Capas 5.1 y 5.2 cerradas (fuentes: Gerardo + Cyn + modelo conceptual v1.0; 5.2 verificada read-only contra código y BD local). Capas 5.3 (deuda observada) y 5.4 (principios) pendientes — se trabajan con Gerardo. Acción pendiente con conexión viva: estado de la tabla de emergentes en Supabase.*
