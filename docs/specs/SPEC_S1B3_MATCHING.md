@@ -176,4 +176,110 @@ Esto **explica con precisión la percepción de Cyn** ("el sistema vuelve a come
 
 ---
 
-> *Versión 0.2 — Capas 5.1 y 5.2 cerradas. Capas 5.3 (deuda observada, sin priorizar) y 5.4 (principios de diseño objetivo) pendientes, se trabajan con Gerardo (master v0.2). No abrir PR hasta cerrar el spec.*
+## 5.3 Deuda observada
+
+Registro de problemas detectados durante el relevamiento de Matching, **sin priorización ni propietario asignado en esta etapa**. La priorización y el diseño de reparaciones se harán en S1.C — Master de reparación, cuando los 7 specs de relevamiento estén cerrados. Tocar el matcher aisladamente sería peinar al muerto: sus errores de contexto pueden originarse en el NLP, su loop de aprendizaje involucra a la UI y al proceso operativo, y su contrato de datos afecta a quien consuma los resultados aguas abajo.
+
+Las deudas están organizadas en categorías para legibilidad, sin orden de prioridad entre ellas.
+
+### Categoría A — Contrato de datos
+
+#### D-01 — El esco_code granular de las reglas nunca llega a la BD
+Bug de contrato detectado a partir de la "regresión" R240: la regla dispara y persiste el ISCO correcto (9329), pero el `esco_code` granular (9329.1) que SPEC J definió en las reglas se pierde porque `MatchResult` no tiene ese campo. Afecta a 350 de las 357 reglas — R240 es solo la instancia que el gold set cazó. El trabajo de SPEC J se pierde silenciosamente en el camino a la BD desde que se hizo.
+**Componentes involucrados**: matcher, contrato de datos del pipeline, tests de regresión, consumidores aguas abajo (Skills, dashboard).
+**Por qué no se prioriza acá**: primero hay que saber si alguien consume ese esco_code granular aguas abajo — eso se sabe con los relevamientos de Skills (S1.B.4) y UI (S1.B.7).
+
+### Categoría B — Gold Sets fragmentados
+
+#### D-02 — Al menos 5 nociones distintas de "gold set" sin fuente única
+Conviven: 49 manual (`gold_set_manual_v2.json`, lo que carga el test de regresión), 36 verified, 100/106 de enero (NLP y matching), 113 esperado por `test_m10_gold_set.py`, y el ampliado de mayo (ausente del repo). El harness de regresión evalúa contra las 49 expectativas viejas.
+**Componentes involucrados**: matching, tests, proceso de validación.
+**Por qué no se prioriza acá**: consolidar la fuente única requiere recuperar primero el ampliado (D-03) y definir proceso de ampliación con Cyn.
+
+#### D-03 — El Gold Set ampliado de mayo no está versionado
+El gold set ampliado durante el fine-tuning del LoRA (49→100+, con los trazadores Sommelier y Carnicero que recuerda Cyn) no está en el repo. `data/finetuning/matching/` está vacío. Candidato más fuerte: las 218 validaciones humanas de Cyn/Diego/Gerardo (ventana 2026-03 a 2026-05) en Supabase (`issues`/`ofertas_dashboard`), ya materializadas parcialmente en `data/spec_w/dataset_validaciones_humanas_2026_03_a_05.xlsx`.
+**Componentes involucrados**: matching, Supabase, proceso de respaldo de artefactos.
+**Por qué no se prioriza acá**: la recuperación requiere conexión viva a Supabase. Queda como acción pendiente documentada.
+
+### Categoría C — Loop de aprendizaje
+
+#### D-04 — El loop de aprendizaje se rompe en la segunda mitad
+Refinamiento del hallazgo doble de la 5.1: la primera mitad funciona (el issue de Cyn se lee y se convierte en training pair vía `generate_training_pairs.py`, alimentado por `ofertas_matching_history`). La segunda mitad no existe: la propagación es manual (SPEC T) y no hay fine-tuning que devuelva el aprendizaje a producción. Cyn siente que el sistema no aprende porque el aprendizaje se acumula en un buffer que nunca se descarga.
+**Componentes involucrados**: matching, NLP, proceso operativo, UI (visibilidad de correcciones).
+**Por qué no se prioriza acá**: cerrar el loop requiere decisiones de infraestructura de entrenamiento (dónde, con qué cadencia, con qué validación) que dependen del cuadro completo.
+
+#### D-05 — LoRA borrado sin querer, sin backup, pérdida total
+El modelo fine-tuneado en mayo se hizo en disco C local, se borró por accidente y no quedó nada. No fue decisión consciente de liberar espacio. Deuda de proceso: no había (ni hay) política de respaldo de artefactos costosos.
+**Componentes involucrados**: proceso operativo del proyecto.
+**Por qué no se prioriza acá**: la política de respaldo es transversal (afecta modelos, gold sets, datasets) y se define en S1.C.
+
+### Categoría D — Gobernanza de reglas
+
+#### D-06 — 259/357 reglas (73%) marcadas requiere_revision=True y nunca revisadas
+El flag existe, la revisión no sucede. Un marcador que nadie procesa es acumulación de deuda con apariencia de control.
+**Componentes involucrados**: matching, proceso de validación con Cyn.
+**Por qué no se prioriza acá**: requiere definir proceso de revisión (quién, con qué cadencia, con qué criterio) que involucra el tiempo de Cyn.
+
+#### D-07 — Changelog del header congelado en v3.4.0
+El código va por 3.5.5 y la evolución 3.5.1→3.5.5 está auto-documentada inline (bien), pero el changelog formal del header del archivo quedó congelado. Deuda documental menor.
+**Componentes involucrados**: matcher.
+**Por qué no se prioriza acá**: deuda menor, puede resolverse en cualquier momento como parte de otra intervención al archivo.
+
+### Categoría E — Errores de contexto
+
+#### D-08 — El matcher se queda con una palabra puntual y no con el contexto
+Patrón de error dominante según Cyn (validadora), con ejemplos documentados: "Sobrestante de obra" → 7111 constructor inmobiliario; "Ing. eléctrica o electromecánica" → 7412 mecánico electricista (confusión de nivel profesional vs técnico/oficio). Lo que Cyn pide que el sistema entienda: acción principal, objeto de trabajo, nivel del rol, contexto del aviso ("instalar iluminación en vivienda ≠ instalar iluminación para shows").
+**Componentes involucrados**: matcher, NLP (extracción de contexto), modelo semántico.
+**Por qué no se prioriza acá**: la solución puede estar en el NLP (extraer mejor los campos de contexto), en el matcher (usarlos mejor), o en ambos — requiere los relevamientos S1.B.4 (Skills) y S1.B.5 (NLP).
+
+### Categoría F — UI que afecta la validación (pertenece a S1.B.7, registrada acá por su impacto en matching)
+
+#### D-09 — Herramientas de validación que degradan el trabajo de Cyn
+Cuatro problemas reportados por la validadora: (1) las correcciones no quedan visibles en la oferta — se envían como issue pero la oferta se ve igual, imposible hacer seguimiento o reutilizar criterio; (2) **bug del cambio automático: al guardar, el sistema salta a otra oferta**, con riesgo de pérdida silenciosa de trabajo; (3) filtros que traen ofertas de sectores que no corresponden; (4) sin estados por oferta (pendiente / en revisión / corregida / finalizada).
+**Componentes involucrados**: UI (S1.B.7).
+**Por qué no se prioriza acá**: pertenece al relevamiento de UI; se registra acá porque afecta directamente la calidad y eficiencia de la validación de matching.
+
+### Categoría G — Patrón sistémico
+
+#### D-10 — Patrón "construido una vez y abandonado" (D-15 de Scraping) confirmado en Matching
+Tercera aparición consecutiva del patrón (BD, Scraping, Matching). Cinco instancias en este componente:
+
+1. **LoRA**: entrenado en mayo, borrado sin backup.
+2. **Training pairs**: se generan pero nada los consume aguas abajo (la cadena muere antes del fine-tuning).
+3. **Gold Set ampliado**: construido en mayo, desconectado del harness de regresión que sigue corriendo contra los 49 viejos.
+4. **Reglas**: 73% marcadas para revisión que nunca sucede.
+5. **ofertas_matching_history**: alimenta una cadena (generate_training_pairs) cuyo final no existe.
+
+**Componentes involucrados**: todos. Es transversal.
+**Por qué no se prioriza acá**: se cruza en S1.C con las instancias de los otros componentes. La solución (si hay) es de proceso operativo del proyecto.
+
+---
+
+## 5.4 Principios de diseño objetivo
+
+Principios generales de cómo debería comportarse el sistema de Matching cuando esté sano. **No es diseño detallado** — eso surge del master S1.C con el cuadro completo. Estos principios son el norte conceptual.
+
+### Principio 1 — Contratos de datos completos extremo a extremo
+Si una regla define un dato, ese dato llega a la BD. Si un componente produce información, el contrato garantiza que no se pierda silenciosamente en el camino. El bug del esco_code granular (350 reglas afectadas sin que nadie lo supiera) es exactamente lo que el sistema sano hace imposible.
+
+### Principio 2 — Fuente única de verdad para el Gold Set
+Un gold set canónico, versionado, con proceso claro de ampliación y dueño definido. Los tests de regresión corren contra esa fuente y solo esa. Cinco nociones de "gold set" conviviendo es la negación de la idea misma de gold set.
+
+### Principio 3 — Loop de aprendizaje cerrado
+Corrección humana → training pair → reentrenamiento o regla → producción → la validadora ve el efecto de su corrección. Hoy existe la primera mitad del ciclo; el sistema sano lo cierra. El trabajo de validación humana es el activo más caro del proyecto y hoy se acumula sin retornar.
+
+### Principio 4 — Artefactos costosos con respaldo
+Modelos entrenados, gold sets validados, datasets curados: todo lo que costó horas humanas o de cómputo tiene backup y versionado automático. "Se borró sin querer y no quedó nada" no puede volver a pasar.
+
+### Principio 5 — Reglas con gobernanza
+Toda regla tiene dueño, fecha y estado de revisión real. Un flag de revisión que nadie procesa es peor que no tenerlo: da apariencia de control sin control.
+
+### Principio 6 — Matching por contexto, no por palabra
+El norte que la validadora definió con precisión: el sistema debe entender la acción principal, el objeto de trabajo, el nivel del rol y el contexto del aviso. "Instalar iluminación en vivienda" y "instalar iluminación para shows" son ocupaciones distintas y el sistema sano las distingue.
+
+### Principio 7 — Migración de modelo posible
+El norte fundante de toda la fase (frase de Gerardo: "todo este quilombo nace porque quisimos pasar a otro modelo y nos dimos cuenta que no se puede"). Cuando el sistema esté sano, cambiar de modelo —de embeddings, de NLP, de fine-tuning— debe ser una operación posible y acotada, no una imposibilidad estructural. Es el criterio de éxito final de toda la reparación.
+
+---
+
+> *Spec S1.B.3 — Matching: capas 5.1 (Gerardo + Cyn), 5.2, 5.3 y 5.4 cerradas. Las 10 deudas observadas se vuelcan al master S1.C cuando esté listo. Los 7 principios son input del diseño objetivo. La deuda D-10 (patrón sistémico) suma la tercera aparición consecutiva del patrón transversal. Acción pendiente que requiere conexión viva: recuperar el Gold Set ampliado desde Supabase (218 validaciones humanas, ventana 2026-03..05).*
