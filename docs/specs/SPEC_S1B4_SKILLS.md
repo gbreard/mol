@@ -204,3 +204,118 @@ Relación con el `esco_code` granular perdido (D-01 de Matching): el lado skills
 ---
 
 > *Versión 0.2 — Capas 5.1 y 5.2 cerradas (fuentes: Gerardo + Cyn + modelo conceptual v1.0; 5.2 verificada read-only contra código y BD local). Capas 5.3 (deuda observada) y 5.4 (principios) pendientes — se trabajan con Gerardo. Acción pendiente con conexión viva: estado de la tabla de emergentes en Supabase.*
+
+---
+
+## 5.3 Deuda observada
+
+Registro de problemas detectados durante el relevamiento de Skills, **sin priorización ni propietario asignado en esta etapa**. La priorización y el diseño de reparaciones se harán en S1.C — Master de reparación, cuando los 7 specs estén cerrados. Tocar Skills aisladamente sería peinar al muerto: su señal de origen alimenta el ruteo futuro, su cementerio es materia prima de las emergentes, su contrato alimenta al matcher, y sus cadenas muertas convergen con el loop roto relevado en Matching.
+
+Las deudas están organizadas en categorías para legibilidad, sin orden de prioridad entre ellas.
+
+### Categoría A — Señal y contrato de datos
+
+#### D-01 — Columna documentada muerta, señal real sin documentar
+`origen_tipo` está 100% en "semantico" (nadie la escribe) y es la columna que la documentación trata como la buena. La señal real y limpia vive en `skill_tipo_fuente` (11 valores, 0 nulos, distribución: tarea 45,1% › semantico 18% › skills_nlp 10% › titulo 9% › declaradas › regla 1,4%). La señal que el modelo conceptual pedía crear ya existe — pero el mapa oficial apunta al lugar equivocado.
+**Componentes involucrados**: skills, NLP, documentación, el futuro clasificador de ruteo.
+**Por qué no se prioriza acá**: la consolidación de la señal se diseña junto con el ruteo por escenario (cuadro completo en S1.C).
+
+#### D-02 — `regla_cynthia` / `regla_issue` con 0 filas
+Los valores existen en el trust classifier pero nunca se escribieron: el rastro del feedback humano de Cyn no baja al grano de la skill. Converge con D-04 de Matching (loop roto en la segunda mitad).
+**Componentes involucrados**: skills, matching, UI, proceso de feedback.
+**Por qué no se prioriza acá**: es parte del cierre del loop de aprendizaje, que se diseña en S1.C con todas sus piezas a la vista.
+
+### Categoría B — Embudo y cementerio
+
+#### D-03 — Cementerio estructurado sin reutilización
+`skills_extraction_failures`: 7.564 filas con columnas ricas (tarea_texto, mejor_skill_uri, mejor_score, gap_al_umbral, tipo_falla). La pueblan dos entry points con `track_failures=True`; solo `sync_learnings.py` lee el conteo para métricas. Nadie recupera ni reutiliza el contenido. Es la materia prima del Sprint 0 del modelo conceptual (captura de emergentes) ya acumulada y desaprovechada.
+**Componentes involucrados**: skills, proceso operativo, ciclo de emergentes.
+**Por qué no se prioriza acá**: la captura de emergentes con identidad propia es diseño del S1.C (Sprint 0 del modelo conceptual).
+
+#### D-04 — El filtro de compatibilidad L2 poda señal argentina con el grafo europeo
+Lo que el modelo conceptual etiquetaba "derivación inversa arbitraria" resultó ser un filtro de compatibilidad L2 (SPEC K, anti-ruido) — más defendible de lo asumido. Pero filtra usando las asociaciones skill→ocupación de ESCO (europeas) exactamente donde el Escenario B del modelo dice que la divergencia argentina es dato, no ruido.
+**Componentes involucrados**: skills, matching, perfil argentino.
+**Por qué no se prioriza acá**: decidir si el filtro se recalibra, se condiciona al perfil argentino o se retira requiere el diseño del ruteo completo.
+
+### Categoría C — Emergentes
+
+#### D-05 — Cadena de emergentes cableada a buffers muertos
+Refinamiento del modelo conceptual (que la daba por "cortada"): la cadena está más construida de lo asumido. El panel de aprobación existe y `aprobar_emergente_con_triggers` (migración 057) dispara 4 triggers — pero T1 va al perfil argentino (que solo actúa post-match, no decide), T2 a `approved_training_pairs` (que ningún fine-tuning consume), T3 a `pipeline_commands` (única conexión real, dependiente del poller). No está cortada: está conectada a destinos que no consumen. Rompe en los mismos dead-ends que el loop de Matching.
+**Componentes involucrados**: skills, matching, pipeline, UI.
+**Por qué no se prioriza acá**: cerrar la cadena requiere decidir los consumidores finales (fine-tuning, decisión de ocupación), diseño de S1.C.
+
+### Categoría D — Vectorización
+
+#### D-06 — El manifest de embeddings no estampa la release de ESCO
+`corpus_manifest.json` tiene trazabilidad de generación (BAAI/bge-m3, revisión, 2026-04-24, checksum, source_table) — mejor de lo que la memoria recordaba. Pero no registra de qué versión/release de ESCO provienen los vectores. ESCO publica versiones nuevas y no hay forma de saber contra cuál está vectorizado el sistema.
+**Componentes involucrados**: skills, taxonomía ESCO.
+**Por qué no se prioriza acá**: se resuelve junto con el diseño del repositorio centralizado (D-07).
+
+#### D-07 — Sin repositorio centralizado de vectores ESCO
+Idea arquitectónica de Gerardo (capa 5.1): la vectorización de ESCO debería ser un repositorio único en la máquina local que sirva vectores a todos los proyectos que los soliciten (producción, sandbox de escenarios, harness futuro). Hoy cada proyecto duplica o no accede.
+**Componentes involucrados**: arquitectura del proyecto, todos los consumidores de embeddings.
+**Por qué no se prioriza acá**: es decisión de arquitectura transversal, propia de S1.C.
+
+#### D-08 — Embeddings multi-época conviviendo en un directorio
+`database/embeddings/` acumula generaciones distintas (activos de ocupaciones como symlinks → `enriched/`). Sprawl que dificulta saber qué está vivo.
+**Componentes involucrados**: skills.
+**Por qué no se prioriza acá**: limpieza menor, se resuelve con el diseño de D-07.
+
+### Categoría E — Gold set
+
+#### D-09 — El gold set de skills no existe como tal
+`tests/nlp/gold_set.json` son las mismas 49 ofertas del gold set de matching (overlap 49/49), congeladas en era NLP v10 mientras producción corre v11.4. No hay un gold set propio del componente de skills: el sistema valida skills con un set pensado para otra cosa y desactualizado dos versiones.
+**Componentes involucrados**: skills, NLP, tests, proceso de validación.
+**Por qué no se prioriza acá**: la consolidación de gold sets es transversal (D-02 de Matching) y se diseña con fuente única en S1.C.
+
+### Categoría F — Versionado
+
+#### D-10 — Drift de versión del extractor
+Tres versiones declaradas conviviendo: docstring del módulo 2.0.0, CLAUDE.md v2.4, clase `VERSION = "2.9.0"` (SPEC K). La fuente de verdad es la clase, pero nada lo hace explícito.
+**Componentes involucrados**: skills, documentación.
+**Por qué no se prioriza acá**: deuda documental menor; se resuelve con la disciplina de versionado ya aplicada al matcher (archivo VERSION).
+
+### Categoría G — Training pairs duplicados
+
+#### D-11 — Dos almacenes de training pairs, ninguno consumido
+`training_pairs.json` (local) y `approved_training_pairs` (Supabase, destino del trigger T2). Ninguno alimenta fine-tuning alguno. Converge con D-04 de Matching y con el LoRA perdido: el sistema acumula material de entrenamiento en dos lugares y no entrena.
+**Componentes involucrados**: skills, matching, proceso operativo.
+**Por qué no se prioriza acá**: parte del cierre del loop de aprendizaje (S1.C).
+
+### Categoría H — Patrón sistémico
+
+#### D-12 — Patrón "construido una vez y abandonado": cuarta aparición consecutiva
+Siete instancias en este componente: (1) `filtrar_por_trust` apagado desde su creación — **variante nueva del patrón: "construido y nunca encendido"**; (2) `origen_tipo` columna muerta; (3) gold set congelado en v10 con producción en v11.4; (4) embeddings multi-época sin limpieza; (5) drift de versión 2.0/2.4/2.9; (6) cementerio estructurado sin reuso; (7) dos almacenes de training pairs.
+**Componentes involucrados**: todos. Es transversal.
+**Por qué no se prioriza acá**: se cruza en S1.C con las instancias de BD, Scraping y Matching. Con cuatro componentes confirmados, el patrón es la regla del proyecto, no la excepción.
+
+---
+
+## 5.4 Principios de diseño objetivo
+
+Principios generales de cómo debería comportarse el componente de Skills cuando esté sano. **No es diseño detallado** — eso surge del master S1.C. Estos principios son el norte conceptual.
+
+### Principio 1 — Una sola columna de verdad por señal
+Cada señal del sistema vive en un lugar, documentado y consumido. Las columnas muertas se retiran. Documentación que apunta a la columna equivocada es peor que no tener documentación: produce decisiones sobre datos que nadie escribe.
+
+### Principio 2 — El cementerio es materia prima, no destino final
+Toda skill descartada queda disponible para el ciclo de emergentes con su contexto completo (gap al umbral, tipo de falla, origen). Un descarte sin posibilidad de recuperación es información destruida; el sistema sano convierte sus fallas en su mejor fuente de descubrimiento.
+
+### Principio 3 — Las cadenas terminan en consumidores reales
+Un trigger que descarga en un buffer que nadie lee da apariencia de conexión sin conexión. Cadena que no llega a producción es cadena que no existe. El sistema sano no tiene buffers terminales: todo lo que se acumula tiene un consumidor definido o no se acumula.
+
+### Principio 4 — Vectorización con trazabilidad completa, servida centralizadamente
+Cada corpus de embeddings registra modelo, revisión, fecha, checksum y release de la taxonomía de origen. Un repositorio local único sirve los vectores a todos los proyectos (producción, harness, sandbox) — regenerar es una operación trazable, no un ritual artesanal.
+
+### Principio 5 — Gold set propio por componente, sincronizado con producción
+Cada componente valida contra un gold set propio, versionado y alineado con la versión que corre en producción. Un gold set congelado dos versiones atrás valida un sistema que ya no existe.
+
+### Principio 6 — La señal argentina no se poda con el grafo europeo
+Donde la realidad local diverge del canon ESCO (Escenario B del modelo conceptual), la divergencia es dato, no ruido a filtrar. Los filtros de compatibilidad reconocen el perfil argentino antes de podar.
+
+### Principio 7 — Lo apagado se decide: se enciende o se retira
+Un flag dormido desde su creación no es opcionalidad, es deuda con apariencia de feature. El sistema sano revisa periódicamente sus capacidades latentes y decide: a producción o afuera.
+
+---
+
+> *Spec S1.B.4 — Skills: capas 5.1 (Gerardo + Cyn + modelo conceptual), 5.2, 5.3 y 5.4 cerradas. Las 12 deudas observadas se vuelcan al master S1.C. Los 7 principios son input del diseño objetivo. D-12 confirma el patrón transversal por cuarta vez consecutiva, sumando la variante "construido y nunca encendido". Hallazgo central del spec: el sistema está más construido y menos conectado de lo que el propio modelo conceptual suponía — la categoría CONECTAR crece, la categoría CREAR se achica.*
