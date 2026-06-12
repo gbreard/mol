@@ -1,6 +1,6 @@
 # SPEC S1.B.7 — Relevamiento de UI
 
-> Versión 0.2 (capas 5.1 + 5.2 — Memoria operativa + estado relevado) · 2026-06-12
+> Versión 1.0 (capas 5.1 + 5.2 + 5.3 + 5.4 — Memoria operativa + estado relevado + deuda + principios) · 2026-06-12
 > Séptimo y último spec de la fase S1.B — Relevamiento del sistema. Releva la UI del proyecto MOL. Sigue la plantilla común del master v0.2. Tras su cierre se abre S1.C — Master de reparación.
 
 ---
@@ -169,4 +169,106 @@ La UI es, en buena medida, **el consumidor faltante** de las cadenas muertas det
 
 ---
 
-> *Versión 0.2 — Capas 5.1 y 5.2 cerradas. Hallazgo central: la UI es el consumidor faltante de las cadenas muertas de todo el paraguas — produce y guarda datos (correcciones, audit-history, estados, marcas de sector) que ninguna pantalla muestra. Severidad de seguridad afinada: las páginas están cerradas por middleware, pero las API routes OE-11 quedan eximidas y exponen PII por HTTP directo. Capas 5.3 (deuda observada) y 5.4 (principios) se trabajan con Gerardo después. Último spec del paraguas: tras su cierre se abre S1.C.*
+## 5.3 Deuda observada
+
+Registro de problemas detectados durante el relevamiento de la UI, **sin priorización ni propietario asignado en esta etapa**. La priorización y el diseño de reparaciones se harán en S1.C — Master de reparación, ahora que los 7 specs están cerrados. La UI es el componente donde la interconexión es más literal: buena parte de su deuda consiste en NO mostrar lo que los otros seis componentes ya producen.
+
+Las deudas están organizadas en categorías para legibilidad, sin orden de prioridad entre ellas.
+
+### Categoría A — Cartografía y frontera
+
+#### D-01 — ~32 de 118 páginas son fábrica real; ~90 en mantenimiento pasivo, mock o abandono
+Inventario verificado: 40 bajo `/admin/` (8 de laboratorio experimental → núcleo fábrica ≈ 32), 27 del local OE, 31 de productos futuros (`empresas/*` y `mi-futuro-laboral/*` enteros con `MOCK_*` hardcodeado — fachadas sin backend), 6 de comercio congeladas desde febrero, 14 públicas/auth. ~30+ rutas huérfanas sin link en el menú (se llega solo por URL directa), incluidas 7 de `/admin/procesamiento/` y las 8 de laboratorio.
+**Componentes involucrados**: UI, planificación de producto.
+**Por qué no se prioriza acá**: decidir qué se retira, qué se marca como mock y qué se mantiene requiere el plan comercial (los locales) y el diseño de la fábrica (S1.C).
+
+#### D-02 — Frontera fábrica/local solo por convención de carpetas
+OE lee `ofertas_dashboard` (tabla de la fábrica) directo desde páginas cliente; las API puente (matching-offers, training-*, occupations/*) leen ambos mundos sin aislamiento. Admin no toca tablas de OE (el cruce es asimétrico y acotado), pero no hay barrera de datos: la separación que la metáfora fábrica/locales exige no existe en el código.
+**Componentes involucrados**: UI, BD, arquitectura.
+**Por qué no se prioriza acá**: la capa de acceso de los locales se diseña con la separación arquitectónica completa (S1.C).
+
+### Categoría B — Herramientas de validación (Cyn)
+
+#### D-03 — Auto-avance sin escape al guardar
+Verificado contra el código (corrigiendo un diagnóstico previo): el save está awaiteado y la navegación solo ocurre en éxito — no es race condition ni pérdida silenciosa por BD. El problema es el auto-avance intencional (`// Auto-navigate to next`): tras guardar, salta a la siguiente oferta sin opción de quedarse, sin confirmación y sin undo. Cyn pierde el lugar y no puede revisar lo que acaba de marcar. La reparación es de diseño UX, no de bug.
+**Componentes involucrados**: UI.
+**Por qué no se prioriza acá**: se repara junto con el rediseño del flujo de validación (D-04, D-05) en S1.C.
+
+#### D-04 — La corrección se guarda en dos lados y no se muestra en ninguno
+`saveValidacion` escribe `validacion_correcciones` (JSONB en `ofertas_dashboard`) y `createIssue` inserta en `issues` — pero los paneles de la oferta leen solo los campos base y no renderizan ni las correcciones ni los issues. El endpoint `/api/oferta/{id}/audit-history` existe y se consulta, pero su resultado no se pinta. Es la causa exacta de la queja de Cyn ("la oferta se ve igual").
+**Componentes involucrados**: UI, loop de aprendizaje (S1.B.3 D-04).
+**Por qué no se prioriza acá**: es parte del cierre del loop human-in-the-loop (S1.C).
+
+#### D-05 — El historial y los estados que Cyn pide ya tienen los datos guardados
+`validacion_correcciones`, `audit-history`, `estado_revision` (SPEC W): todo se persiste, nada se visualiza. El pedido número uno de Cyn está a un componente de distancia de datos que ya existen. Instancia pura del patrón D-15 en su variante UI.
+**Componentes involucrados**: UI.
+**Por qué no se prioriza acá**: mismo paquete que D-04.
+
+#### D-06 — Filtros por igualdad exacta sobre datos posiblemente sucios
+El filtro de sector usa `eq('clae_descripcion_seccion', value)` — el código es correcto; la imprecisión que Cyn reporta apunta a datos sucios en la columna o a opciones de filtro desincronizadas. No verificable sin BD viva.
+**Componentes involucrados**: UI, BD, NLP (origen del dato de sector).
+**Por qué no se prioriza acá**: depende del rediseño del campo sector (S1.B.5 D-04) y de verificación con conexión viva.
+
+### Categoría C — Feedback de acciones
+
+#### D-07 — Tres niveles de feedback según herramienta; dos fallan
+Graduación verificada: **pipeline** bien (toast + polling cada 5s, estado/resultado/duración visibles — el único patrón sano); **scraping** a medias (alert() efímero solo si el POST falla, sin rastro persistente — "disparo a ciegas" parcial); **emergentes** en silencio total (si el PATCH falla, solo `console.error`; y al aprobar dispara `aprobar_emergente_con_triggers` — la cadena a buffers muertos de S1.B.4 — sin confirmación visible). La desconfianza de Gerardo hacia la UI tiene raíz verificada en código.
+**Componentes involucrados**: UI, pipeline, skills.
+**Por qué no se prioriza acá**: el patrón de feedback se uniformiza en el rediseño de la fábrica (S1.C); el del pipeline es el piso de referencia.
+
+### Categoría D — Seguridad
+
+#### D-08 — API sin guard con PII expuesta
+El hueco no son las páginas (el middleware redirige al anónimo a /login): es la API. `lib/supabase/middleware.ts:70-73` exime `/api/*` del middleware, y los ~10 endpoints de OE-11 tienen el guard comentado (`// TODO: OE-11`). Resultado: PII de buscadores de empleo (DNI, nombre, teléfono, email) leíble y escribible por curl sin auth. Agravantes: sin RLS versionada para personas/casos/perfiles, backdoor `DEV_MOCK_AUTH`, rol en `user_metadata` (escribible por el propio usuario → posible escalación). Tres ítems quedaron no verificables sin BD/deploy vivos (incluida la confirmación contra el deploy público).
+**Componentes involucrados**: UI, módulo OE, Supabase.
+**Decisión de Gerardo (2026-06-11)**: NO se trata como excepción al protocolo — converge en S1.C como el resto de la deuda. Prioridad declarada: la eficiencia de la máquina primero. Decisión consciente, registrada para que S1.C la retome con la verificación pendiente contra el deploy vivo.
+
+### Categoría E — Consumidores faltantes
+
+#### D-09 — La tabla de consumidores faltantes: 1 de 6 cerrado
+Estado verificado de lo que los otros specs detectaron que la UI debería exponer: estado del sync **completo** (el único); validadores configurables **parcial** (matching sí, NLP no); marcas de sector (~18.500) **nada**; trazabilidad por oferta **nada** (audit-history existe, nadie lo consume); re-encolado humano **parcial** (en fábrica, no en validación); panel de emergentes **cableado a buffers muertos**.
+**Componentes involucrados**: UI + los seis componentes de origen.
+**Por qué no se prioriza acá**: esta tabla ES el insumo central de S1.C — el plan de cierre de las cadenas muertas del relevamiento entero.
+
+#### D-10 — Trazabilidad (Gerardo) e historial (Cyn) son el mismo consumidor faltante
+El pedido número uno de cada uno de los dos usuarios reales del sistema converge en la misma pieza: el audit-history por oferta, visto desde dos roles. Una pieza cierra los dos pedidos.
+**Componentes involucrados**: UI, pipeline, validación.
+**Por qué no se prioriza acá**: convergencia mayor para el diseño de S1.C; se registra para que no se diseñe dos veces.
+
+### Categoría F — Patrón sistémico
+
+#### D-11 — Patrón "construido una vez y abandonado": séptima aparición, variante UI
+En la UI el patrón toma la forma: **"el dato se produce y se guarda, pero no hay pantalla que lo muestre"** (correcciones, historial, estados, marcas). Con el paraguas completo, el catálogo de variantes del patrón queda cerrado: abandonado tras uso (Scraping), nunca encendido (Skills), declarado completado sin estarlo (M-13), documentado sin existir (launch_nlp_batch), y producido sin pantalla (UI). La UI no es una cadena muerta más: **es la salida de las cadenas muertas de los otros seis specs** — el lugar donde casi toda la deuda transversal se volvería visible y operable.
+**Componentes involucrados**: todos. Transversal.
+**Por qué no se prioriza acá**: con 7 de 7 componentes confirmando el patrón, es EL tema de proceso de S1.C.
+
+---
+
+## 5.4 Principios de diseño objetivo
+
+Principios generales de cómo debería comportarse la UI cuando esté sana. **No es diseño detallado** — eso surge del master S1.C. Estos principios son el norte conceptual.
+
+### Principio 1 — La fábrica y los locales se separan por arquitectura, no por convención
+Frontera de datos explícita: los locales consumen por capa de acceso definida, no leyendo tablas de la fábrica desde el cliente. La metáfora de Gerardo (la fábrica concentra la fabricación; los locales venden) se cumple en el código, no solo en las carpetas.
+
+### Principio 2 — Toda acción da feedback persistente
+Éxito, fallo y progreso visibles en el momento y consultables después. El patrón del pipeline (toast + polling + historial) es el piso para todas las herramientas, no la excepción. Una acción que falla en silencio destruye la confianza del operador en toda la herramienta.
+
+### Principio 3 — El validador humano controla su ritmo
+Sin auto-avance forzado: quedarse, revisar y deshacer son derechos de quien valida. El sistema optimiza el throughput de la validación sin quitarle al humano el control de su propio trabajo.
+
+### Principio 4 — Lo que se guarda se muestra
+Si el dato existe (correcciones, historial, estados, marcas), tiene pantalla. Es el inverso exacto de la variante UI del patrón D-15: producir sin mostrar es construir cadenas muertas con interfaz.
+
+### Principio 5 — Una sola vista de trazabilidad para todos los roles
+El recorrido completo de una oferta —scraping, NLP, matching, validaciones, correcciones, sync— en un lugar que sirve igual al operador (Gerardo) y a la validadora (Cyn). Sus dos pedidos número uno son la misma pieza.
+
+### Principio 6 — PII bajo auth y RLS, siempre
+Defensa en profundidad: middleware + guard por endpoint + RLS en la base. Ningún dato personal accesible sin identidad verificada. (Registrado como principio aunque su reparación converja en S1.C por decisión explícita de Gerardo.)
+
+### Principio 7 — Las páginas viven o se retiran
+Mocks y experimentos marcados como tales o fuera del deploy. El inventario de qué se usa es observable en todo momento, no arqueología de git log.
+
+---
+
+> *Spec S1.B.7 — UI: capas 5.1, 5.2, 5.3 y 5.4 cerradas. **CON ESTE SPEC, EL PARAGUAS S1.B QUEDA COMPLETO: 7 de 7 componentes relevados.** Las 11 deudas observadas se vuelcan al master S1.C junto con las ~80 del resto del paraguas. D-11 cierra el catálogo de variantes del patrón transversal con su séptima aparición. Hallazgo de cierre: la UI es la salida de las cadenas muertas de los otros seis specs — la tabla de consumidores faltantes (D-09) y la convergencia trazabilidad/historial (D-10) son insumos centrales del diseño de S1.C. Próximo paso: abrir el master S1.C — Reparación.*
