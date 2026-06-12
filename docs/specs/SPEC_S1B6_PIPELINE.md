@@ -1,6 +1,6 @@
 # SPEC S1.B.6 — Relevamiento de Pipeline
 
-> Versión 0.2 (capas 5.1 + 5.2 — Memoria operativa + estado relevado) · 2026-06-11
+> Versión 1.0 (capas 5.1 + 5.2 + 5.3 + 5.4 — Memoria operativa + estado relevado + deuda + principios) · 2026-06-12
 > Sexto spec de la fase S1.B — Relevamiento del sistema. Releva la orquestación del pipeline del proyecto MOL. Sigue la plantilla común del master v0.2.
 > **Particularidad**: el pipeline es el componente orquestador. Parte de su memoria ya está capturada en los specs S1.B.1–S1.B.5; esta capa la consolida y suma las respuestas operativas de Gerardo del 2026-06-11.
 
@@ -244,4 +244,102 @@ Es decir: la 5.1 decía "no hay automatización periódica" y es cierto **para e
 
 ---
 
-> *Versión 0.2 — Capas 5.1 y 5.2 cerradas. Capas 5.3 (deuda observada) y 5.4 (principios) se trabajan con Gerardo después.*
+## 5.3 Deuda observada
+
+Registro de problemas detectados durante el relevamiento del Pipeline, **sin priorización ni propietario asignado en esta etapa**. La priorización y el diseño de reparaciones se harán en S1.C — Master de reparación, cuando los 7 specs estén cerrados. Tocar la orquestación aisladamente sería peinar al muerto: su selección de procesamiento depende de los estados que SPEC W introdujo, sus validadores son el NLP Gate y el sistema de validación ya relevados, y su automatización requiere la observabilidad que falta en todos los componentes.
+
+Las deudas están organizadas en categorías para legibilidad, sin orden de prioridad entre ellas.
+
+### Categoría A — Orquestación
+
+#### D-01 — Núcleo on-demand entre extremos automatizados
+El hueco de automatización está localizado con precisión: los extremos corren solos (auto_sync.sh cada hora para VPS→local→Supabase; pipeline_command_poller.py cada minuto como gateway de la admin UI), pero el núcleo de procesamiento (NLP+matching) depende de que Gerardo se acuerde de pedirlo. Latencia medida por tramo: **scraping→NLP 6,6 días (el cuello); NLP→matching 1 día; matching→validado 0 días**. No es que el procesamiento sea lento; es que arranca tarde.
+**Componentes involucrados**: pipeline, proceso operativo.
+**Por qué no se prioriza acá**: automatizar el núcleo requiere resolver primero los bloqueos del inventario (D-02, D-03, D-09, D-10) — diseño de S1.C.
+
+#### D-02 — Selección de procesamiento: 4 mecanismos superpuestos + 8 estados de épocas distintas
+El "nunca quedó prolijo" de Gerardo tiene anatomía: (1) sistema de prioridad v3.1 (`ofertas_prioridad`, condicionado a flags de CLI); (2) selección de NLP por ausencia de fila (LEFT JOIN IS NULL); (3) `estado_validacion='validado'` como candado; (4) `validation_errors.resuelto` + bloqueantes. Y 8 valores de `estado_validacion` conviviendo: los originales + los `_C1` + los `_subfaseD` de SPEC W (validado_claude 49.949, validado 6.275, pendiente_humano_C1 4.488, validado_claude_C1 3.691, validado_claude_subfaseD 2.770, pendiente_humano_subfaseD 974, pendiente 56, en_revision 38).
+**Componentes involucrados**: pipeline, BD, SPEC W.
+**Por qué no se prioriza acá**: consolidar el criterio de elegibilidad requiere decidir el destino de los estados históricos de SPEC W — cuadro completo.
+
+#### D-03 — Sin marca de "corrida incompleta"
+La reanudación por estado por oferta funciona (`mark_batch_as_completed(run_id)` devuelve no-completadas a pendiente), pero no hay acta de corrida: una interrupción deja huérfanas sin señal (censo: **1.553 ofertas con NLP sin matching**) y el mecanismo es frágil si dos corridas se solapan.
+**Componentes involucrados**: pipeline, BD.
+**Por qué no se prioriza acá**: el acta de corrida se diseña junto con la automatización periódica (D-01).
+
+#### D-04 — Cobertura parcial de la cola
+`ofertas_prioridad` cubre 57K de 82K ofertas; **~13.000 ofertas nunca entraron al procesamiento**. No hay proceso que detecte y reincorpore las excluidas.
+**Componentes involucrados**: pipeline, BD, scraping.
+**Por qué no se prioriza acá**: requiere definir el criterio único de elegibilidad (D-02) antes de reincorporar.
+
+### Categoría B — Validadores
+
+#### D-05 — El gate marca masivamente y bloquea casi nada
+278.565 marcas en `validation_errors`; **70 ofertas bloqueadas (0,1%)**. Solo critico/alto bloquean el paso a matching; todo lo demás (info 156.694, medio 78.229, warning 34.115, bajo 7.179) marca y pasa. El veredicto del validador no tiene consecuencias salvo en lo crítico. Confirma S1.B.5 D-08 desde el extremo de la orquestación.
+**Componentes involucrados**: pipeline, NLP, proceso operativo.
+**Por qué no se prioriza acá**: decidir qué consecuencia corresponde a cada severidad es diseño del loop de validación completo (S1.C).
+
+#### D-06 — ~18.500 marcas de sector sin consumidor
+V18_sector_igual_area (8.662), V22_empresa_confidencial_con_sector (6.833), V19/V20/V21 (~2.928), NV02_sector_no_canonico (74): el colapso del sector está diagnosticado oferta por oferta dentro del propio sistema — y el dashboard lo muestra colapsado igual. El conocimiento existe y no vuelve.
+**Componentes involucrados**: pipeline, NLP, UI.
+**Por qué no se prioriza acá**: el consumidor de estas marcas se define junto con el rediseño del campo sector (S1.B.5 D-04) en S1.C.
+
+#### D-07 — Configurabilidad sin exposición
+Reglas, severidades y errores bloqueantes viven en JSON ajustable sin tocar código (`config/nlp_validation_rules.json`, `config/validation_rules.json`, umbrales de matching). Pero no hay UI que los muestre ni los opere. La percepción de Gerardo ("no tengo control sobre los validadores") es exacta como experiencia y errónea como diagnóstico técnico: el control existe, no está expuesto.
+**Componentes involucrados**: pipeline, UI.
+**Por qué no se prioriza acá**: la exposición se diseña en el spec de UI (S1.B.7) y el master.
+
+#### D-08 — El re-encolado con corrección humana no existe
+Hoy el único re-encolado es automático (no-completadas vuelven a pendiente). El que la visión de la 5.1 necesita — Cyn ve en vivo qué sale mal, corrige, y la oferta vuelve a la cola con la corrección aplicada — no existe en ninguna forma. Es el hueco exacto entre la infraestructura de validación (que existe y es configurable) y el human-in-the-loop (que no).
+**Componentes involucrados**: pipeline, UI, loop de aprendizaje (S1.B.3 D-04).
+**Por qué no se prioriza acá**: es la pieza central de la visión de diseño; se diseña en S1.C con el loop completo.
+
+### Categoría C — Fragilidad operativa
+
+#### D-09 — Sin verificación de disponibilidad de Ollama ni alertas de fallo
+El núcleo asume Ollama disponible; si no lo está, el fallo se descubre tarde y sin alerta. Para la automatización periódica es bloqueo directo.
+**Componentes involucrados**: pipeline, infraestructura.
+**Por qué no se prioriza acá**: parte del paquete de observabilidad transversal (S1.B.1 Principio 1).
+
+#### D-10 — Paso bloqueante manual intercalado
+`check_pending_errors_block` frena el lote siguiente hasta intervención humana. Razonable como protección en operación manual; incompatible con cualquier periodicidad si no se redefine su política.
+**Componentes involucrados**: pipeline, proceso.
+**Por qué no se prioriza acá**: su política se redefine junto con las consecuencias por severidad (D-05).
+
+### Categoría D — Patrón sistémico
+
+#### D-11 — Patrón "construido una vez y abandonado": sexta aparición consecutiva
+Tres instancias en orquestación: (1) **`launch_nlp_batch.py` — entry point fantasma**: CLAUDE.md lo documenta como entry point y el archivo no existe en el repo — **variante nueva del patrón: "documentado sin existir"** (la inversa de M-13, que figuraba completado sin estarlo); (2) `run_scheduler.py` vivo en el repo y dormido (logs en 0 bytes desde abril); (3) el NLP Gate construido con 51 reglas y prácticamente desconectado de consecuencias (278K marcas / 70 bloqueos).
+**Componentes involucrados**: todos. Transversal.
+**Por qué no se prioriza acá**: se cruza en S1.C. Con 6 de 6 componentes confirmando el patrón, el catálogo de variantes ya incluye: abandonado tras uso, nunca encendido, declarado completado sin estarlo, y documentado sin existir.
+
+---
+
+## 5.4 Principios de diseño objetivo
+
+Principios generales de cómo debería comportarse la orquestación cuando esté sana. **No es diseño detallado** — eso surge del master S1.C. Estos principios son el norte conceptual.
+
+### Principio 1 — El pipeline corre solo; el humano supervisa
+Periodicidad de punta a punta con el operador en rol de supervisión y excepción, no de disparador. "Cuando me acuerdo" no es una cadencia: la latencia de 6,6 días del tramo manual contra 1 día del resto es la medida exacta del costo de operar por memoria.
+
+### Principio 2 — Un solo criterio de elegibilidad
+Una oferta sabe si está lista para procesarse por un criterio único y legible, no por cuatro mecanismos superpuestos de épocas distintas. Los estados históricos se migran o se retiran; no conviven.
+
+### Principio 3 — Toda corrida deja acta
+Inicio, fin, alcance, completitud. Una corrida interrumpida se distingue de una completa, y las huérfanas se detectan por diferencia contra el acta, no por arqueología de estados.
+
+### Principio 4 — Validar tiene consecuencias
+Un validador que marca 278 mil veces y bloquea 70 es telemetría muerta con apariencia de control. Cada severidad implica un comportamiento definido y conocido: bloquear, derivar a revisión, marcar para análisis — pero algo.
+
+### Principio 5 — El control existente se expone
+Lo que ya es configurable en JSON es visible y operable desde la UI por quienes operan y validan. El control que existe pero no se ve, operativamente no existe.
+
+### Principio 6 — Re-encolado con corrección humana
+La corrección de Cyn vuelve a la cola junto con la oferta: el human-in-the-loop sucede en línea, durante el procesamiento, no después. Es la pieza que conecta la validación (que existe), la corrección (que hoy muere en un issue) y el aprendizaje (que hoy no vuelve).
+
+### Principio 7 — Ninguna oferta queda atrás
+Las huérfanas y las excluidas de la cola se detectan y reincorporan automáticamente. El censo de estados es observable en todo momento: cuántas ofertas hay en cada etapa, cuántas trabadas, cuántas fuera de la cola.
+
+---
+
+> *Spec S1.B.6 — Pipeline: capas 5.1, 5.2, 5.3 y 5.4 cerradas. Las 11 deudas observadas se vuelcan al master S1.C. Los 7 principios son input del diseño objetivo. D-11 confirma el patrón transversal por sexta vez consecutiva y completa su catálogo de variantes. Hallazgo central del spec: el hueco de automatización está localizado (núcleo on-demand entre extremos automatizados, 6,6 días vs 1 día) y la configurabilidad de los validadores ya existe sin exposición — la visión human-in-the-loop de la 5.1 tiene más infraestructura disponible de lo que se suponía.*
