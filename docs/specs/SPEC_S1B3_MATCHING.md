@@ -283,3 +283,19 @@ El norte fundante de toda la fase (frase de Gerardo: "todo este quilombo nace po
 ---
 
 > *Spec S1.B.3 — Matching: capas 5.1 (Gerardo + Cyn), 5.2, 5.3 y 5.4 cerradas. Las 10 deudas observadas se vuelcan al master S1.C cuando esté listo. Los 7 principios son input del diseño objetivo. La deuda D-10 (patrón sistémico) suma la tercera aparición consecutiva del patrón transversal. Acción pendiente que requiere conexión viva: recuperar el Gold Set ampliado desde Supabase (218 validaciones humanas, ventana 2026-03..05).*
+
+---
+
+## Adenda 2026-06-11 — Transferencia del harness (sandbox de escenarios)
+
+> Fuente: nota de transferencia de la conversación paralela del harness (índice de investigaciones mayo-junio, sandbox DuckDB MOL_escenarios, documento "Respuestas a Diego Schleser · v2" del 20-may). Registra evidencia sin priorizar; todo lo accionable converge en S1.C.
+
+### A-1 — La acción pendiente de D-03 queda RESUELTA: el Gold Set ampliado está ubicado
+
+El Gold Set ampliado es la **tabla `gold_set` de Supabase**, poblada por `scripts/ingest_gold_set.py` en el commit `9890779e` (20-may, "Paso D"): 49 → **112 casos**. Composición con prioridad y deduplicación: 30 casos del Excel B2 de Cyn (SPEC W, 2026-05-08) + 9 de `ofertas_dashboard.validacion_humana` + 24-25 del bucket local `ofertas_esco_matching.validado_por` (discrepancia conocida: el docstring dice 24, la BD entrega 25). El índice del harness lo midió en 113 activos a fin de mayo — lo que explica el `test_m10_gold_set.py` que espera 49 y encuentra 113. Recuperable vía `scripts/sync_gold_set.py`.
+
+**Dato crítico adicional**: la precisión sobre los 112/113 **nunca se midió**. El 81,63% que circula es la marca humana estática de diciembre (campo `esco_ok`) que no se recomputa contra el output actual del matcher — no detecta regresiones. El gold set encontrado tampoco está cumpliendo función de regresión.
+
+**Verificación pendiente (ventana de conexión viva)**: `SELECT * FROM gold_set WHERE titulo ILIKE '%sommelier%' OR titulo ILIKE '%carnicer%'` — si los trazadores de Cyn aparecen, confirmación definitiva.
+
+Esto actualiza D-02 (las "≥5 nociones de gold set" tienen ahora su mapa completo) y resuelve la ubicación que D-03 dejaba pendiente. La consolidación sigue siendo trabajo de S1.C.

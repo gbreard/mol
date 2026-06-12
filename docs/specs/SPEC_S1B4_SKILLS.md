@@ -319,3 +319,29 @@ Un flag dormido desde su creación no es opcionalidad, es deuda con apariencia d
 ---
 
 > *Spec S1.B.4 — Skills: capas 5.1 (Gerardo + Cyn + modelo conceptual), 5.2, 5.3 y 5.4 cerradas. Las 12 deudas observadas se vuelcan al master S1.C. Los 7 principios son input del diseño objetivo. D-12 confirma el patrón transversal por cuarta vez consecutiva, sumando la variante "construido y nunca encendido". Hallazgo central del spec: el sistema está más construido y menos conectado de lo que el propio modelo conceptual suponía — la categoría CONECTAR crece, la categoría CREAR se achica.*
+
+---
+
+## Adenda 2026-06-11 — Transferencia del harness (sandbox de escenarios)
+
+> Fuente: nota de transferencia de la conversación paralela del harness (verificación FACTIBILIDAD_S0 del 2026-06-10 read-only contra código y BD local; clasificador observacional del sandbox MOL_escenarios sobre las 1.569.227 filas de `ofertas_esco_skills_detalle`). Registra evidencia sin priorizar; todo lo accionable converge en S1.C.
+
+### A-2 — Drift de embeddings: 8.381 URIs huérfanas (amplía D-06)
+
+8.381 filas de `ofertas_esco_skills_detalle` con `skill_tipo_fuente='semantico'` tienen una `esco_skill_uri` que **no existe en `esco_skills`**. Hipótesis que conecta con el manifest relevado en 5.2.2: el `.npy` se generó desde `source_table = esco_skills_enriched` (14.257 filas, SPEC E) mientras el lookup de runtime va contra `esco_skills` — si las dos tablas divergieron, los embeddings y el catálogo de runtime son corpus distintos. D-06 deja de ser solo "falta metadata de release" y suma "posible divergencia de corpus". Verificación pendiente (conexión/consulta): conteo de URIs de `esco_skills_enriched` ausentes en `esco_skills`.
+
+### A-3 — Hay una segunda fosa, anónima (matiza D-03 y el Principio 2)
+
+`_filter_llm_skills` (`skills_implicit_extractor.py`, ~líneas 813 y 821) descarta skills del LLM **sin escribir al cementerio** — el rechazo no deja rastro en ninguna tabla. El cementerio captura los descartes del gate de similitud; los del filtro/salvavidas se pierden sin registro (estimación: ~25% de lo extraído por el LLM). Implicancia para S1.C: "drenar el cementerio" no recupera todo lo perdido; cualquier diseño de captura de emergentes necesita instrumentar también ese punto.
+
+### A-4 — Cuantificación poblacional de D-04 (sustento empírico del Principio 6)
+
+Medido por el sandbox sobre las 1.569.227 filas: **90%+ de los pares (ocupación, skill) declarados están fuera del canon `esco_associations` de su ocupación** — la divergencia AR↔EU es la condición normal del corpus, no la excepción. Núcleo con evidencia fuerte: **3.292 pares únicos con respaldo multi-empresa** (≥3 empresas) que el grafo europeo no conecta; con criterio estricto (v1.1), 13.252 filas elegibles. La otra cara: **972 URIs "comodín"** (asignadas a ≥100 ocupaciones; 196 cubren el 50% de las filas afectadas) — coincide con las "526 skills magnéticas" del Informe de mayo, medido sobre más datos. De los 3.292 pares, solo **43 coinciden con la curaduría de `esco_argentino`** (~1,3% de cobertura); ~870 caen dentro de las 44 ocupaciones ya curadas — candidatos inmediatos a validación humana si S1.C lo prioriza. Reportes completos en `MOL_escenarios/data_out/`.
+
+### A-5 — Tercera columna zombi: `match_method` colapsado (amplía D-01)
+
+`match_ofertas_v3.py:~1645` hardcodea `match_method='implicit_bge_m3'` al persistir, perdiendo el método real. Cuadro completo de la tabla: dos columnas de procedencia muertas (`origen_tipo`, `match_method`) y una viva (`skill_tipo_fuente`). El riesgo de que un consumidor futuro lea la columna equivocada es doble.
+
+### A-6 — Genealogía del cementerio (amplía D-03 y D-12)
+
+(1) El cementerio tiene spec propio: `docs/plan/SPEC_M06_SKILLS_FAILURES_V2.md` — implementación deliberada (M-06), no acumulación accidental. (2) **M-13 figura "Completado 2026-03-30"** en el roadmap, prometiendo exactamente el "registro de skills sin URI con identidad propia" que no existe según ambas verificaciones independientes — variante nueva del patrón D-15: **"declarado completado sin estarlo"**. (3) Los 12 tests de M-06 en rojo (corrida 2026-06-03) fallan con `AttributeError: 'SkillsImplicitExtractor' object has no attribute 'filtrar_por_trust'`. **Verificación T6.3 (lectura de `tests/test_m06_skills_failures.py` y `tests/test_m06_regression.py`) — veredicto distinto al esperado**: ninguno de los dos archivos invoca `filtrar_por_trust`, ni como método ni como parámetro. El `AttributeError` no proviene de una API inexistente, sino de **drift de fixture**: ambas fixtures construyen el extractor con `SkillsImplicitExtractor.__new__(...)` (saltando `__init__`) y setean a mano una lista fija de atributos que **omite `self.filtrar_por_trust`**. Ese atributo es un parámetro real del constructor (`skills_implicit_extractor.py:107`, default False, asignado en `:132`) que el path de extracción lee internamente (`:936` y `:941`); como la instancia de test nunca pasó por `__init__`, la lectura revienta. Es decir: el parámetro `filtrar_por_trust` se agregó al `__init__` **después** de escritas las fixtures de M-06, y nunca se actualizaron — confirma la variante "construido y nunca encendido" de S1.B.4 (el parámetro vive con default False, jamás activado) y suma una instancia limpia de D-12: feature agregado a la clase sin sincronizar su harness de tests.
