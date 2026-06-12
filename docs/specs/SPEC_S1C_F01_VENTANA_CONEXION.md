@@ -81,7 +81,72 @@ Cada verificación tiene su criterio binario en la sección 4. El spec valida cu
 
 ## 8. Resultados
 
-*(Se completa al ejecutar — cada verificación con: query/comando, resultado, veredicto contra el criterio binario, premisas que actualiza en ambos registros.)*
+> Ejecutado 2026-06-12, read-only. Orden: V2/V6 (local) → V1/V3/V7-a (Supabase) → V7-b (grep) → V4 (GET). Punto de control reportado tras V1-V3. V5 pendiente de Gerardo (no bloquea).
+
+### V1 — Gold Set ampliado → ✅ CONFIRMADO
+- **Comando**: `gold_set` en Supabase, `count(*)` + resolución de títulos por join local (`gold_set.id_oferta` → `ofertas.titulo`).
+- **Resultado**: `gold_set` = **113** filas (∈ [110,115]). Columnas reales: `id, id_oferta, esco_ok, isco_esperado, esco_esperado, tipo_error, comentario, agregado_por, agregado_at, version_reglas, activo`. La tabla **no guarda título** → el trazador `sommelier/carnicer` no aplica a este schema. Por join local se resolvieron **110 de 113** títulos (reales y variados: Gerente Operaciones, Capataz, Odontólogo, Mozo, Electricista); **3 ids del gold set no existen en la BD local**.
+- **Veredicto**: conteo CONFIRMA (113 en rango). **Corrección de supuesto del spec**: el trazador asumía una columna `titulo` inexistente; la composición se verifica por join, no por texto en la tabla. Los 3 ids ausentes en local son síntoma de residencia (el dato humano vive arriba, el local está incompleto).
+- **Premisas**: S1.B.3 A-1 → confirmada (Gold Set ampliado = 113 en Supabase, regresión local mide contra 49). Índice harness → ficha del Gold Set: actualizar tamaño 113 y nota "3 ids sin contraparte local".
+
+### V2 — Embeddings vs catálogo de runtime → número CONFIRMADO, causa simple REFUTADA
+- **Comando**: SQLite local. Pata (a) implícita por conteos de catálogo; pata (b) discriminante: URIs huérfanas (`ofertas_esco_skills_detalle` `skill_tipo_fuente='semantico'` no en `esco_skills`) cruzadas contra el catálogo enriched real (`database/embeddings/enriched/esco_skills_metadata_full.json`, fuente del `.npy` según `corpus_manifest.json`).
+- **Resultado**: **8.381 filas huérfanas** / **54 URIs distintas**. `esco_skills` local = 14.247; `.npy` `esco_skills_embeddings_full.npy` generado de `esco_skills_enriched` = **14.257** (manifest `generated_at` 2026-04-24). De las 54 huérfanas, **solo 10 están en el enriched actual; 44 no están ni en runtime ni en enriched actual**.
+- **Veredicto**: el número 8.381 calza exacto con A-2, pero la hipótesis "el `.npy` se generó de enriched y los corpus divergieron" **solo explica 10/54**. Las 44 restantes son **acumulación multi-época**: filas escritas por embeddings de épocas anteriores que ya no existen en ningún catálogo vigente. No es una divergencia limpia de un solo `.npy`.
+- **Premisas**: S1.B.4 A-2 → refinada (divergencia real + componente multi-época). Engancha con S1.B.4 D-08 (embeddings multi-época sin release estampada). Índice harness → R6/A-2: marcar "causa = multi-época, no divergencia de catálogo único".
+
+### V3 — Estado real de las emergentes → ✅ CONFIRMADO
+- **Comando**: Supabase `emergentes_pendientes`, distribución por `estado`.
+- **Resultado**: **508 filas, todas `pendiente`**, 0 en cualquier otro estado.
+- **Veredicto**: delta vs mayo (431/0) = **+77 pendientes, sigue 0 aprobadas**. El buffer se llena y no drena. C4 confirmado en vivo.
+- **Premisas**: C4 del master → dato actualizado (508 pendientes / 0 aprobadas). Índice harness → P-13 (emergentes): actualizar conteo.
+
+### V4 — Seguridad del deploy vivo → ⛔ EXPOSICIÓN CONFIRMADA EN VIVO
+- **Comando**: `curl -s -o /dev/null -w "%{http_code}" -X GET` contra `https://mol-nextjs.vercel.app`, sin sesión, exactamente 3 endpoints, **solo GET, solo status code**.
+- **Resultado**: `GET /api/personas → 200` · `GET /api/casos → 200` · `GET /api/perfiles → 200`.
+- **Veredicto**: los tres endpoints de OE responden **200 sin autenticación en producción**. La exposición no es solo de código local (OE-11): está **viva**. Dato para que S1.C decida cuándo sube la deuda de seguridad (D-08), hoy diferida por decisión de Gerardo. No se descargó ni inspeccionó contenido (solo status).
+- **Premisas**: S1.B.7 D-08 (seguridad) → confirmada en vivo, no solo en código. Severidad: PII accesible sin auth en producción.
+
+### V5 — Facturación de Supabase → ⏳ ABIERTA (Gerardo)
+- Pendiente del desglose de billing del último mes (compute/egress/storage). No bloquea el cierre del spec.
+
+### V6 — Diagnóstico CLAE previo al backlog → REGRESIÓN ~2026-03 (no backlog pre-clasificador)
+- **Comando**: SQLite local, cobertura CLAE (`ofertas_nlp.clae_code` no nulo entre ofertas con NLP) agrupada por **mes × portal**.
+- **Resultado**: cobertura ~**100% en todos los portales hasta 2026-02**; cae desde **2026-03** de forma sostenida e independiente del portal — bumeran 100% → 95,9% (mar) → 69,7% (abr) → 69,1% (may); zonajobs 91,5% → 68%; computrabajo 80% → 66-68%; indeed con piso propio 42-60%. Cobertura agregada por portal: bumeran 94,2% · zonajobs 87,3% · portalempleo 82,9% · computrabajo 77,4% · indeed 52,1%.
+- **Veredicto**: el patrón **descarta (a) backlog pre-clasificador** (los meses viejos tienen cobertura completa; la caída es de los meses recientes) y apunta a **(b) regresión introducida ~2026-03**, que degradó la clasificación CLAE en todos los portales establecidos. Indeed suma un factor de portal propio (metadata más pobre).
+- ⚠️ **Nota que modifica la condición de la sección 4.1 del master**: "backlog HABILITADO" pasa a **"habilitado solo si primero se diagnostica o se acepta conscientemente la regresión CLAE de 2026-03"** — porque reprocesar el backlog con la versión vigente del pipeline **propagaría** la cobertura degradada. *El ajuste del texto del master se hace en un ciclo aparte tras el merge de este spec, no en este branch.*
+- **Premisas**: master §4.1 → condición revisada (ver nota). Nuevo ítem candidato para Eje 5/NLP: regresión CLAE 2026-03. Índice harness → P-13 / cobertura: registrar la regresión con el corte por portal.
+
+### V7 — Censo de residencia de datos → completo en ambas direcciones
+
+**Pata (a) — dato humano varado arriba:**
+
+| Dato humano | Supabase | Local | Estado de la bajada |
+|---|---|---|---|
+| `gold_set` | 113 | 49 (`database/gold_set_manual_v2.json`) | bajada rota; `scripts/sync_gold_set.py` existe pero no se corre; Δ64 |
+| `emergentes_pendientes` | 508 | 0 | nunca bajó |
+| `approved_training_pairs` | **0 (tabla vacía)** | `config/training_pairs.json` = 602 | el consumidor de aprobación **nunca escribió a la tabla**; el dato local proviene de otro flujo |
+| `issues` | 431.314 (430.388 `auto-validator@mol.gob.ar` / **926 humanos**) | sin contraparte local | nativo Supabase; 99,8% automático |
+| `validacion_humana*` | **no es tabla** | — | la validación humana vive como `estado_validacion` en `ofertas_dashboard` (lo confirma `scripts/spec_u1/export_validaciones_humanas.py`) — **corrección de supuesto del spec** |
+
+**Pata (b) — el pipeline estira la mano (lecturas Supabase en runtime del núcleo):**
+
+| Archivo del núcleo | Llamadas | Qué trae | Afecta decisión | Ante fallo |
+|---|---|---|---|---|
+| `config_loader.py:316-339` | 3 | tabla `config_overrides` (reglas de negocio, diccionario argentino) | **Sí** (reglas que "ganan siempre") | **fallback local** (try/except L340 → Warning → JSON local L363-365) |
+| `match_ofertas_v3.py:2094-2101` | 3 | RPC `get_latest_equiv_update` + configs vía `load_config` | Sí (equivalencias) | degradado (depende del RPC) |
+| `skills_implicit_extractor.py:1102,1119-1131,1223-1231` | 7 | equivalencias + boost (vía `service_role_key`) | Sí (skills) | boost deshabilitado / equivalencias off (graceful) |
+| `process_nlp_from_db_v11.py` | 0 | — | — | núcleo NLP **limpio**, solo local |
+| `match_by_skills.py`, `skills_rules_matcher.py` | 0 | — | — | limpios |
+
+- **Veredicto**: **3 archivos del núcleo** leen Supabase en runtime para decidir; NLP y los matchers de reglas/skills están limpios. El fallo degrada con gracia (fallback local / boost off), **no crashea** — la dependencia es "blanda", pero igual viola la residencia: la decisión del pipeline **cambia** según si Supabase respondió (otras reglas/equivalencias/boost). La bajada se repara en el Eje 2; el corte de estas lecturas runtime en los Ejes 4/5.
+- **Premisas**: principio nº7 del master (PR #30) → censo completo, ambas direcciones cuantificadas. S1.B.4 D-11 → confirmado (`approved_training_pairs` vacío = consumidor de aprobación nunca conectado, sabor D-15).
+
+### Premisas actualizadas — resumen en ambos registros
+
+**(a) Specs S1.B**: S1.B.3 A-1 (gold set 113 confirmado), S1.B.4 A-2 (causa multi-época), S1.B.4 D-08 (embeddings multi-época), S1.B.4 D-11 (`approved_training_pairs` vacío), S1.B.7 D-08 (exposición OE viva).
+
+**(b) Índice de investigaciones del harness**: ficha del Gold Set (tamaño 113, 3 ids sin local), R6/A-2 (multi-época), P-13 / cobertura (emergentes 508/0; regresión CLAE 2026-03 con corte por portal), principio de residencia (censo bidireccional).
 
 ## 9. Criterio de aceptación
 
