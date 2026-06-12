@@ -165,4 +165,113 @@ El intento de migración que detonó todo el relevamiento **dejó arqueología m
 
 ---
 
-> *Versión 0.2 — Capas 5.1 + 5.2 cerradas. Relevamiento read-only contra código y BD local (2026-06-11). Capas 5.3 (deuda observada) y 5.4 (principios de diseño) pendientes, se trabajan con Gerardo.*
+## 5.3 Deuda observada
+
+Registro de problemas detectados durante el relevamiento de NLP, **sin priorización ni propietario asignado en esta etapa**. La priorización y el diseño de reparaciones se harán en S1.C — Master de reparación, cuando los 7 specs estén cerrados. Tocar el NLP aisladamente sería peinar al muerto: su acoplamiento al modelo condiciona al matcher (thresholds calibrados a estos outputs), su colapso de sector inutiliza la penalización del matcher, sus tareas alimentan la inferencia de skills, y su telemetría sin consumidor converge con las cadenas muertas de los otros componentes.
+
+Las deudas están organizadas en categorías para legibilidad, sin orden de prioridad entre ellas.
+
+### Categoría A — Acoplamiento al modelo (la deuda fundante)
+
+#### D-01 — Cinco puntos de acoplamiento a Qwen2.5
+Inventario verificado: (1) nombre del modelo hardcodeado (línea 101, sin override de env); (2) parámetros Ollama-específicos (format:json, temp:0.0, num_predict:1024, num_ctx:4096); (3) parsing calibrado a la salida de Qwen (`_parse_llm_response`); (4) sintaxis del prompt "optimizado para Qwen2.5"; (5) el downgrade 14b→7b como literal sin versionar. Es el bloqueo concreto de la migración que detonó toda la fase ("quisimos pasar a otro modelo y nos dimos cuenta que no se puede").
+**Componentes involucrados**: NLP, matcher (thresholds calibrados a estos outputs), arquitectura del proyecto.
+**Por qué no se prioriza acá**: la capa de abstracción de modelos es decisión arquitectónica transversal (principio del modelo conceptual), se diseña en S1.C.
+
+#### D-02 — Downgrade 14b→7b decidido en código sin documentar
+La decisión fue deliberada y razonada (comentario: "7b es suficiente… 3x más rápido que 14b") pero nunca llegó a la documentación. Consecuencia material: los diagnósticos de mayo (incluido el "Informe MOL COMPLETO") atribuyen los números de calidad a 14b cuando describen outputs de 7b.
+**Componentes involucrados**: NLP, documentación, proceso de decisión.
+**Por qué no se prioriza acá**: el caso testigo de lo que la capa de abstracción debe volver explícito y versionado; se resuelve con ella.
+
+#### D-03 — Prompt monolítico hardcodeado en .py
+`database/prompts/extraction_prompt_lite_v1.py`: 225 líneas, pide los 20 campos en un solo bloque, catálogo de valores embebido. Versionarlo o parametrizarlo requiere tocar código.
+**Componentes involucrados**: NLP.
+**Por qué no se prioriza acá**: el rediseño del prompt depende de decisiones sobre campos (D-04, D-07) y sobre la abstracción de modelos (D-01).
+
+### Categoría B — Sector (el campo más roto)
+
+#### D-04 — Colapso estructural del sector
+El prompt pide el sector "de la EMPRESA, no del puesto" contra un catálogo cerrado de 25 valores — pero los avisos describen el puesto. El campo pide lo que el insumo no contiene. La normalización fuerza a "Otro" todo valor no canónico; el embudo de confianza (catálogo de empresas escaso → frase explícita rara → default media) casi nunca da "alta". Resultado: 75% "Otro" (Informe) + 84% confianza media (lo que volvió inerte la penalización de sector del matcher, S1.B.3). Es diseño contra la naturaleza del dato, no un bug puntual.
+**Componentes involucrados**: NLP, matcher, dashboard, productos comerciales que usen sector.
+**Por qué no se prioriza acá**: rediseñar el campo (¿sector del puesto? ¿inferencia por empresa enriquecida? ¿catálogo abierto?) requiere decidir qué necesitan los consumidores — cuadro de S1.C.
+
+#### D-05 — Nueve reglas del gate marcan el colapso sin consumidor
+V16/V18-V22, NV02, NV11, NQ11: el gate detecta los síntomas del colapso (sector=área del puesto, no canónico, null-like) y escribió 15.000+ marcas a `validation_errors` — ningún proceso downstream las lee. El sistema ya sabe dónde está roto el sector y ese conocimiento no vuelve a la extracción.
+**Componentes involucrados**: NLP, proceso operativo.
+**Por qué no se prioriza acá**: parte del cierre del loop telemetría→corrección (S1.C).
+
+### Categoría C — Otros campos problemáticos
+
+#### D-06 — Sesgo de seniority sin regla que lo marque
+El seniority se infiere de keywords del título (prompt:142-148, "manager = gerente, jefe de área") sin cruzar con `tiene_gente_cargo`: 18,4% de los "manager" tienen gente a cargo en cero (Informe). Las reglas de cruce existentes (`NV_CROSS_gente_seniority` y otras) cubren la dirección opuesta al sesgo real — el sesgo pasa el gate sin marca.
+**Componentes involucrados**: NLP, productos que usen seniority.
+**Por qué no se prioriza acá**: el rediseño del campo y de su validación cruzada va con D-04 en el rediseño del schema.
+
+#### D-07 — Prompt task-assuming: las listas sin verbo no se normalizan
+La regla 3 del prompt asume que el aviso describe tareas con acción; no hay instrucción para listas de conceptos sueltos ("Excel, inglés, atención al cliente"). El diagnóstico de Cyn se confirma en el origen: no hay capa que reencuadre listas a tareas-con-acción (acción + objeto + nivel + contexto).
+**Componentes involucrados**: NLP, calidad de tareas → inferencia de skills → matching.
+**Por qué no se prioriza acá**: tocar el prompt sin medir el efecto en cadena (skills, matching) sería a ciegas; requiere el harness.
+
+### Categoría D — Telemetría y validación
+
+#### D-08 — `validation_errors`: 278.565 marcas creciendo sin consumidor ni retención
+Resuelto el misterio de S1.B.1: la tabla es la acumulación de marcas del NLP Gate (100% prefijos V/NV/NQ, 69.698 ofertas, dominada por V14_descripcion_muy_corta con 36%). Creció de 253K (14-may) a 278K. Es la instancia mayor del patrón D-15 en el proyecto: telemetría de validación funcionando, sin consumidor analítico ni política de retención. Reclasifica la deuda D-06 de S1.B.1.
+**Componentes involucrados**: NLP, BD, proceso operativo.
+**Por qué no se prioriza acá**: definir el consumidor (¿dashboard de calidad? ¿loop de corrección? ¿reportes?) es diseño de S1.C.
+
+#### D-09 — 0/51 reglas del gate con fecha individual
+La historia de las reglas solo se reconstruye por git. Eco exacto de la gobernanza de reglas del matcher (73% sin revisar, S1.B.3).
+**Componentes involucrados**: NLP, proceso.
+**Por qué no se prioriza acá**: la gobernanza de reglas es transversal (gate + matcher + inference + correction) y se define una sola vez en S1.C.
+
+### Categoría E — Schema y persistencia
+
+#### D-10 — `ofertas_nlp` con 171 columnas, ~150 nunca pobladas
+Acumulación histórica de schemas anteriores; el código filtra dinámicamente vía PRAGMA y persiste solo las ~20 claves del schema actual. El "153" de la documentación no corresponde a ningún artefacto.
+**Componentes involucrados**: NLP, BD, documentación.
+**Por qué no se prioriza acá**: la limpieza de columnas requiere certeza de que ningún consumidor las lee (relevamientos de Pipeline y UI pendientes).
+
+### Categoría F — Arqueología
+
+#### D-11 — Lag negativo localizado: timestamps corruptos sin marcar
+`migrate_historical_data.py:223` estampó `datetime.now()` en `scrapeado_en` ausente durante la migración V1→V2. 4.778 ofertas (7,9%) con timestamp de scraping posterior al de NLP. La corrupción no está marcada en los datos: cualquier análisis temporal la incluye sin saberlo.
+**Componentes involucrados**: NLP, BD, cualquier análisis o producto con series temporales.
+**Por qué no se prioriza acá**: decidir si se marca, se corrige o se excluye es política de datos (S1.C); el Informe de mayo ya declaró la limitación.
+
+### Categoría G — Patrón sistémico
+
+#### D-12 — Patrón "construido una vez y abandonado": quinta aparición consecutiva
+Cinco instancias en NLP: (1) `validation_errors` como feedback abandonado — la mayor del proyecto; (2) reglas de sector sin consumidor; (3) reglas de cruce de seniority sin consumidor; (4) tabla de 171 columnas con ~150 muertas; (5) downgrade 14b→7b sin documentar. Con 5 de 5 componentes relevados confirmando el patrón, ya no es hallazgo: es la ley operativa del proyecto que S1.C debe tratar como deuda de proceso de primer orden.
+**Componentes involucrados**: todos. Transversal.
+**Por qué no se prioriza acá**: se cruza en S1.C con las instancias de los otros componentes.
+
+---
+
+## 5.4 Principios de diseño objetivo
+
+Principios generales de cómo debería comportarse el componente de NLP cuando esté sano. **No es diseño detallado** — eso surge del master S1.C. Estos principios son el norte conceptual.
+
+### Principio 1 — Modelo intercambiable por configuración, no por reescritura
+Nombre, parámetros, parsing y prompt viven fuera del código; cada dato registra qué modelo y versión lo produjo. Es el principio transversal del modelo conceptual aterrizado en el componente más acoplado del sistema. Cuando el NLP esté sano, "probar Qwen3" será una entrada de configuración más una corrida de harness, no una reescritura.
+
+### Principio 2 — Toda decisión de modelo es explícita y versionada
+El downgrade 14b→7b fue una decisión razonable tomada invisiblemente: la documentación quedó describiendo un sistema que no existe y los diagnósticos posteriores midieron al modelo equivocado. Una decisión correcta sin registro es deuda aunque la decisión sea buena.
+
+### Principio 3 — El prompt es un artefacto versionado, no código
+Separado de la lógica, con catálogos en configuración, con historia propia y trazabilidad de qué versión del prompt procesó cada oferta.
+
+### Principio 4 — La telemetría tiene consumidor o no se acumula
+278K marcas que nadie lee no son control de calidad: son la ilusión de control de calidad. Cada familia de marcas del gate tiene un consumidor definido (dashboard, loop de corrección, reporte) o se retira.
+
+### Principio 5 — Los campos piden lo que el insumo puede dar
+Pedir el sector de la empresa a un aviso que describe el puesto es diseñar contra la naturaleza del dato. El schema sano se define desde lo que los avisos reales contienen, no desde lo que sería deseable que contuvieran.
+
+### Principio 6 — Normalización que preserva, no que destruye
+Forzar "Otro" borra señal; el valor no canónico es información (la misma lógica del Principio 2 de Skills: el descarte sin registro es información destruida). La normalización sana conserva el valor original junto al normalizado.
+
+### Principio 7 — Extracción robusta a los formatos reales del mercado
+El prompt maneja avisos con listas de conceptos sin verbo, avisos cortos, avisos en inglés — los formatos que el mercado argentino efectivamente publica — en lugar de asumir avisos bien redactados.
+
+---
+
+> *Spec S1.B.5 — NLP: capas 5.1 (Gerardo + Cyn + diagnósticos de mayo), 5.2, 5.3 y 5.4 cerradas. Las 12 deudas observadas se vuelcan al master S1.C. Los 7 principios son input del diseño objetivo. D-12 confirma el patrón transversal por quinta vez consecutiva: con 5 de 5 componentes, es la ley operativa del proyecto. El inventario de acoplamiento a Qwen2.5 (D-01) es el insumo directo de la capa de abstracción de modelos — la tarea que habilita la migración que detonó toda esta fase.*
