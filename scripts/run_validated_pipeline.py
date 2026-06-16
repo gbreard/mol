@@ -71,6 +71,9 @@ from database.auto_validator import AutoValidator, validar_ofertas_desde_bd
 from database.auto_corrector import AutoCorrector
 from database.nlp_validator import NLPValidator
 from scripts.sync_learnings import sync_learnings_yaml
+from scripts.observabilidad import (
+    barrer_actas_huerfanas, crear_acta, cerrar_acta, invocador_actual,
+)
 
 DB_PATH = Path(__file__).parent.parent / "database" / "bumeran_scraping.db"
 CONFIG_DIR = Path(__file__).parent.parent / "config"
@@ -246,6 +249,29 @@ def run_full_pipeline(
     nlp_iteration = 0
     ids_to_process = ids
 
+    # === ACTA DE CORRIDA (SPEC S1C-F0.3, observabilidad Eje 1) ===
+    # Barrido primero: marca incompleta cualquier acta huerfana de una corrida muerta.
+    # Recien despues se crea la nueva acta, asi el barrido nunca la toca.
+    acta_fallos = []
+    acta_id = None
+    try:
+        barrer_actas_huerfanas()
+        _acta_args = json.dumps({
+            "limit": limit, "ids": (len(ids) if ids else None),
+            "only_pending": only_pending,
+            "skip_nlp": skip_nlp, "skip_matching": skip_matching,
+        }, ensure_ascii=False)
+        _alcance_entrada = len(ids) if ids else limit
+        acta_id = crear_acta(
+            invocador=invocador_actual(), args=_acta_args,
+            alcance_entrada=_alcance_entrada,
+        )
+        if verbose:
+            safe_print(f"[ACTA] Corrida abierta: {acta_id}")
+    except Exception as e:
+        # Observabilidad nunca debe romper el pipeline.
+        safe_print(f"[ACTA] Warning: no se pudo abrir acta: {e}")
+
     # === LOOP PRINCIPAL ===
     while True:
         nlp_iteration += 1
@@ -295,6 +321,16 @@ def run_full_pipeline(
                 except Exception as e:
                     safe_print(f"Error en NLP: {e}")
                     # Continuar con matching si NLP falla
+                    _msg = str(e).lower()
+                    _es_ollama = any(k in _msg for k in (
+                        "connection", "conexion", "refused", "rechaz",
+                        "11434", "ollama", "timed out", "max retries",
+                    ))
+                    acta_fallos.append({
+                        "severidad": "error",
+                        "tipo": "ollama_down" if _es_ollama else "nlp_fallo",
+                        "mensaje": f"NLP aborto: {e}",
+                    })
             else:
                 if verbose:
                     safe_print("No hay ofertas pendientes de NLP")
@@ -651,6 +687,10 @@ def run_full_pipeline(
     except Exception as e:
         safe_print(f"Warning: Error exportando Excel: {e}")
         resultados["excel_export"] = f"Error: {e}"
+        acta_fallos.append({
+            "severidad": "warning", "tipo": "export_fallo",
+            "mensaje": f"Export Excel fallo: {e}",
+        })
 
     # PASO 8: Sincronizar learnings.yaml
     if verbose:
@@ -664,6 +704,32 @@ def run_full_pipeline(
     except Exception as e:
         safe_print(f"Warning: Error sincronizando learnings.yaml: {e}")
         resultados["learnings_sync"] = False
+        acta_fallos.append({
+            "severidad": "warning", "tipo": "sync_no_corrio",
+            "mensaje": f"Sync learnings.yaml fallo: {e}",
+        })
+
+    # === CIERRE DEL ACTA (SPEC S1C-F0.3) ===
+    # resultado: 'fallida' si hubo algun fallo error/critico (NLP/Ollama); 'ok' si no.
+    # 'incompleta' lo asigna solo el barrido (una corrida muerta nunca llega aca).
+    if acta_id:
+        try:
+            _hubo_error = any(
+                f.get("severidad") in ("error", "critico") for f in acta_fallos
+            )
+            _resultado = "fallida" if _hubo_error else "ok"
+            _matching_run_id = (resultados.get("matching") or {}).get("run_id")
+            _alcance_proc = (resultados.get("matching") or {}).get("total")
+            cerrar_acta(
+                acta_id, resultado=_resultado,
+                alcance_procesado=_alcance_proc,
+                matching_run_id=_matching_run_id,
+                fallos=acta_fallos,
+            )
+            if verbose:
+                safe_print(f"[ACTA] Corrida cerrada: {acta_id} -> {_resultado}")
+        except Exception as e:
+            safe_print(f"[ACTA] Warning: no se pudo cerrar acta: {e}")
 
     return resultados
 
