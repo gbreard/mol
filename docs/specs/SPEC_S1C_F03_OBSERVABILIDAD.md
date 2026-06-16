@@ -95,14 +95,29 @@ El acta **por-comando** y el **panel** ya existen (Supabase, solo vía poller). 
 | `args` | TEXT | flags de invocación (limit/ids/skip-*) |
 | `alcance_entrada` | INTEGER | ofertas que entraron a la corrida |
 | `alcance_procesado` | INTEGER | ofertas efectivamente procesadas |
-| `resultado` | TEXT | `ok` \| `fallida` \| `incompleta` |
+| `resultado` | TEXT | `ok` \| `fallida` \| `incompleta` \| (NULL mientras corre) |
 | `fallos` | TEXT | JSON array de alertas-clave de esta corrida |
 | `matching_run_id` | TEXT NULL | FK lógica a `pipeline_runs.run_id` (si llegó a matching) |
+| `pid` | INTEGER | PID del proceso que abrió el acta (para distinguir en curso vs muerta) |
+| `host` | TEXT | hostname donde corrió (PID solo es comparable dentro del mismo host) |
 
 **Estados de `resultado`:**
 - `ok`: la corrida llegó al final sin fallos bloqueantes.
-- `fallida`: terminó por un fallo (bloqueante, exit≠0 controlado).
-- `incompleta`: empezó y no cerró (`finished_at` quedó NULL) — corrida interrumpida/crash. Se deriva: una acta con `finished_at IS NULL` y `started_at` viejo es incompleta. Una corrida nueva marca como `incompleta` cualquier acta huérfana previa al arrancar (barrido de apertura).
+- `fallida`: terminó por un fallo (bloqueante, o exit≠0 controlado).
+- `incompleta`: empezó y no cerró — corrida interrumpida/crash.
+- `NULL`: acta abierta de una corrida **en curso** (todavía no cerró, pero viva).
+
+**Mecanismo de `incompleta` — decisión consciente (el problema y su resolución).**
+Una corrida **en curso** y una **muerta** se ven idénticas con `finished_at IS NULL`: nada las distingue por sí solo. Para resolverlo de forma determinista, sin depender de un timeout frágil:
+
+- **Quién y cuándo hace el barrido:** `run_validated_pipeline.py` ejecuta `barrer_actas_huerfanas()` (de `scripts/observabilidad.py`) **al inicio de cada corrida, antes de crear la nueva acta**. Es el único momento garantizado y suficiente: como el poller ejecuta comandos en serie (single-execution) y las corridas de terminal son manuales, al arrancar una corrida nueva cualquier acta previa abierta pertenece a una corrida que ya no está. El barrido es además invocable on-demand (endpoint/poller) por si se quiere refrescar la UI sin arrancar corrida.
+- **Regla de distinción (en curso vs muerta):** un acta abierta (`finished_at IS NULL`) se marca `incompleta` si, **en su mismo `host`**, se cumple **cualquiera** de:
+  1. su `pid` ya no corresponde a un proceso vivo (`os.kill(pid, 0)` → `ProcessLookupError`), **o**
+  2. su `started_at` supera el timeout máximo de corrida (8 h — el mismo `subprocess timeout` del poller), como respaldo cuando el PID no es confiable (reinicio de máquina que reusa PIDs, u otro host).
+  - **En curso** = abierta + pid vivo + dentro del timeout → se respeta, no se toca.
+  - **Muerta** = abierta + (pid no vivo **o** fuera de timeout) → `incompleta`.
+- **Sesgo elegido:** la regla nunca marca `incompleta` a una corrida viva (un pid vivo dentro de 8 h siempre se respeta; el poller mata a las 8 h, así que ninguna corrida legítima excede ese límite viva). El único residuo es un falso negativo raro (un acta muerta cuyo PID fue reusado por otro proceso vivo dentro de la misma ventana de 8 h queda abierta hasta cumplirse el timeout). Se acepta a conciencia: preferimos no mentir sobre una corrida viva antes que cerrar agresivamente una muerta.
+- **Efecto:** cada acta barrida emite una alerta `corrida_incompleta` (ver 4.2).
 
 ### 4.2 Registro de alertas (local + log)
 **Tabla nueva `pipeline_alertas`** (no reutilizar `alertas` legacy — ver Riesgos):
