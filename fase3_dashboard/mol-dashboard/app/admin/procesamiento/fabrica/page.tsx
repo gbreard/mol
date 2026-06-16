@@ -36,9 +36,32 @@ interface Command {
   duracion_seg: number | null;
 }
 
+// SPEC S1C-F0.3 — observabilidad del Eje 1
+interface Acta {
+  acta_id: string;
+  started_at: string;
+  finished_at: string | null;
+  invocador: string;
+  alcance_entrada: number | null;
+  alcance_procesado: number | null;
+  resultado: "ok" | "fallida" | "incompleta" | null;
+  fallos: { severidad: string; tipo: string; mensaje: string }[] | null;
+  matching_run_id: string | null;
+}
+
+interface Alerta {
+  timestamp: string;
+  severidad: "info" | "warning" | "error" | "critico";
+  tipo: string;
+  mensaje: string;
+  acta_id: string | null;
+}
+
 export default function FabricaPage() {
   const [status, setStatus] = useState<LocalStatus | null>(null);
   const [commands, setCommands] = useState<Command[]>([]);
+  const [lastRun, setLastRun] = useState<Acta | null>(null);
+  const [alertas, setAlertas] = useState<Alerta[]>([]);
   const [loading, setLoading] = useState(true);
   const [executing, setExecuting] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: "ok" | "error"; text: string } | null>(null);
@@ -47,9 +70,10 @@ export default function FabricaPage() {
 
   const loadData = useCallback(async () => {
     try {
-      const [statusRes, cmdsRes] = await Promise.all([
+      const [statusRes, cmdsRes, lastRunRes] = await Promise.all([
         fetch("/api/pipeline-local-status"),
         fetch("/api/pipeline-commands?limit=10"),
+        fetch("/api/pipeline-last-run"),
       ]);
 
       if (statusRes.ok) {
@@ -59,6 +83,11 @@ export default function FabricaPage() {
       if (cmdsRes.ok) {
         const data = await cmdsRes.json();
         setCommands(data.commands || []);
+      }
+      if (lastRunRes.ok) {
+        const data = await lastRunRes.json();
+        setLastRun(data.ultimaActa || null);
+        setAlertas(data.alertas || []);
       }
     } catch {} finally {
       setLoading(false);
@@ -209,6 +238,65 @@ export default function FabricaPage() {
             Ultimo run: {formatComando(commands[0].comando)} · {commands[0].resultado.procesadas || "?"} procesadas
             {commands[0].resultado.errores ? ` · ${commands[0].resultado.errores} errores (${commands[0].resultado.procesadas ? Math.round(commands[0].resultado.errores / commands[0].resultado.procesadas * 100) : 0}%)` : " · 0 errores"}
             {commands[0].duracion_seg != null && ` · ${formatDuration(commands[0].duracion_seg)}`}
+          </div>
+        )}
+      </div>
+
+      {/* ═══ ÚLTIMA CORRIDA + ALERTAS (SPEC S1C-F0.3) ═══ */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
+          Última corrida
+        </h2>
+
+        {!lastRun ? (
+          <p className="text-sm text-gray-400 py-2">
+            Sin actas registradas todavía. La próxima corrida del pipeline deja acta.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 flex-wrap text-sm">
+              <ActaBadge resultado={lastRun.resultado} />
+              <span className="text-gray-700 font-medium">{lastRun.acta_id}</span>
+              <span className="text-gray-400">·</span>
+              <span className="text-gray-500">vía {lastRun.invocador}</span>
+              <span className="text-gray-400">·</span>
+              <span className="text-gray-500">{formatTime(lastRun.finished_at || lastRun.started_at)}</span>
+            </div>
+            <div className="text-sm text-gray-600">
+              Entraron {(lastRun.alcance_entrada ?? 0).toLocaleString("es-AR")} ·
+              procesadas {(lastRun.alcance_procesado ?? 0).toLocaleString("es-AR")}
+              {lastRun.matching_run_id && <span className="text-gray-400"> · matching {lastRun.matching_run_id}</span>}
+            </div>
+            {lastRun.fallos && lastRun.fallos.length > 0 && (
+              <div className="text-xs text-gray-500 space-y-1 pt-1">
+                {lastRun.fallos.map((f, i) => (
+                  <div key={i} className="flex items-center gap-1.5">
+                    <AlertCircle className="w-3 h-3 text-amber-500 shrink-0" />
+                    <span className="font-mono text-gray-400">{f.tipo}</span>
+                    <span className="text-gray-600 truncate">{f.mensaje}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mt-5 mb-2">
+          Alertas recientes {alertas.length > 0 && <span className="text-gray-300">({alertas.length})</span>}
+        </h3>
+        {alertas.length === 0 ? (
+          <p className="text-sm text-gray-400 py-1">Sin alertas.</p>
+        ) : (
+          <div className="space-y-1.5">
+            {alertas.slice(0, 8).map((a, i) => (
+              <div key={i} className="flex items-start gap-2 text-xs">
+                <AlertaIcon severidad={a.severidad} />
+                <span className="text-gray-400 font-mono shrink-0">{a.severidad}</span>
+                <span className="text-gray-400 font-mono shrink-0">{a.tipo}</span>
+                <span className="text-gray-600">{a.mensaje}</span>
+                <span className="text-gray-300 ml-auto shrink-0">{formatTime(a.timestamp)}</span>
+              </div>
+            ))}
           </div>
         )}
       </div>
@@ -416,4 +504,27 @@ const COMANDO_LABELS: Record<string, string> = {
 
 function formatComando(cmd: string): string {
   return COMANDO_LABELS[cmd] || cmd;
+}
+
+// SPEC S1C-F0.3 — badge de resultado del acta
+function ActaBadge({ resultado }: { resultado: "ok" | "fallida" | "incompleta" | null }) {
+  const map: Record<string, { cls: string; txt: string }> = {
+    ok: { cls: "bg-green-100 text-green-700", txt: "ok" },
+    fallida: { cls: "bg-red-100 text-red-700", txt: "fallida" },
+    incompleta: { cls: "bg-amber-100 text-amber-700", txt: "incompleta" },
+  };
+  const m = resultado ? map[resultado] : { cls: "bg-blue-100 text-blue-700", txt: "en curso" };
+  return (
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${m.cls}`}>
+      ● {m.txt}
+    </span>
+  );
+}
+
+function AlertaIcon({ severidad }: { severidad: string }) {
+  const color =
+    severidad === "critico" || severidad === "error" ? "text-red-500"
+    : severidad === "warning" ? "text-amber-500"
+    : "text-gray-400";
+  return <AlertCircle className={`w-3 h-3 shrink-0 mt-0.5 ${color}`} />;
 }

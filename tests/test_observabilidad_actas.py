@@ -245,6 +245,45 @@ def test_run_pipeline_fallida_emite_alerta_ollama_en_ambos(db_tmp, monkeypatch):
     assert _aparece_en_ambos(db_tmp, "ollama_down")
 
 
+def test_poller_lee_acta_y_alertas_para_espejo(db_tmp):
+    """El lector del poller arma el espejo (última acta + alertas) desde el SQLite local."""
+    import scripts.pipeline_command_poller as poller
+
+    acta_id = obs.crear_acta(invocador="poller", args='{"limit": 3}', alcance_entrada=3)
+    obs.cerrar_acta(acta_id, resultado="fallida", alcance_procesado=2,
+                    fallos=[{"severidad": "error", "tipo": "ollama_down", "mensaje": "x"}])
+    obs.emitir_alerta("error", "ollama_down", "Conexión rechazada", acta_id=acta_id,
+                      contexto={"ids_count": 3})
+
+    con = sqlite3.connect(str(db_tmp))
+    ultima_acta, alertas = poller._leer_observabilidad_local(con)
+    con.close()
+
+    assert ultima_acta["acta_id"] == acta_id
+    assert ultima_acta["resultado"] == "fallida"
+    assert ultima_acta["invocador"] == "poller"
+    # fallos llega deserializado (lista), listo para subir como JSONB
+    assert isinstance(ultima_acta["fallos"], list)
+    assert ultima_acta["fallos"][0]["tipo"] == "ollama_down"
+    assert any(a["tipo"] == "ollama_down" for a in alertas)
+    assert isinstance(alertas[0]["contexto"], dict)
+
+
+def test_poller_lee_observabilidad_sin_tablas_no_rompe(tmp_path):
+    """Si las tablas de observabilidad no existen (migración 025 no aplicada), devuelve (None, [])."""
+    import scripts.pipeline_command_poller as poller
+
+    db = tmp_path / "vacia.db"
+    con = sqlite3.connect(str(db))
+    con.execute("CREATE TABLE ofertas (id INTEGER)")  # BD sin tablas de observabilidad
+    con.commit()
+    ultima_acta, alertas = poller._leer_observabilidad_local(con)
+    con.close()
+
+    assert ultima_acta is None
+    assert alertas == []
+
+
 def test_emitir_alerta_nunca_rompe(monkeypatch, tmp_path):
     """Aunque tabla y jsonl fallen, emitir_alerta no lanza (no rompe el pipeline)."""
     monkeypatch.setattr(obs, "DB_PATH", tmp_path / "no_existe" / "x.db")  # _conn falla
