@@ -73,6 +73,7 @@ from database.nlp_validator import NLPValidator
 from scripts.sync_learnings import sync_learnings_yaml
 from scripts.observabilidad import (
     barrer_actas_huerfanas, crear_acta, cerrar_acta, invocador_actual,
+    emitir_alerta,
 )
 
 DB_PATH = Path(__file__).parent.parent / "database" / "bumeran_scraping.db"
@@ -272,6 +273,15 @@ def run_full_pipeline(
         # Observabilidad nunca debe romper el pipeline.
         safe_print(f"[ACTA] Warning: no se pudo abrir acta: {e}")
 
+    def _registrar_fallo(severidad, tipo, mensaje, contexto=None):
+        """Acumula el fallo para el resultado del acta y emite la alerta (tabla+jsonl).
+        Envuelto: el registro de alertas tampoco puede romper el pipeline."""
+        acta_fallos.append({"severidad": severidad, "tipo": tipo, "mensaje": mensaje})
+        try:
+            emitir_alerta(severidad, tipo, mensaje, acta_id=acta_id, contexto=contexto)
+        except Exception:
+            pass
+
     # === LOOP PRINCIPAL ===
     while True:
         nlp_iteration += 1
@@ -326,11 +336,11 @@ def run_full_pipeline(
                         "connection", "conexion", "refused", "rechaz",
                         "11434", "ollama", "timed out", "max retries",
                     ))
-                    acta_fallos.append({
-                        "severidad": "error",
-                        "tipo": "ollama_down" if _es_ollama else "nlp_fallo",
-                        "mensaje": f"NLP aborto: {e}",
-                    })
+                    _registrar_fallo(
+                        "error", "ollama_down" if _es_ollama else "nlp_fallo",
+                        f"NLP aborto: {e}",
+                        contexto={"ids_count": len(nlp_ids)},
+                    )
             else:
                 if verbose:
                     safe_print("No hay ofertas pendientes de NLP")
@@ -687,10 +697,7 @@ def run_full_pipeline(
     except Exception as e:
         safe_print(f"Warning: Error exportando Excel: {e}")
         resultados["excel_export"] = f"Error: {e}"
-        acta_fallos.append({
-            "severidad": "warning", "tipo": "export_fallo",
-            "mensaje": f"Export Excel fallo: {e}",
-        })
+        _registrar_fallo("warning", "export_fallo", f"Export Excel fallo: {e}")
 
     # PASO 8: Sincronizar learnings.yaml
     if verbose:
@@ -704,10 +711,7 @@ def run_full_pipeline(
     except Exception as e:
         safe_print(f"Warning: Error sincronizando learnings.yaml: {e}")
         resultados["learnings_sync"] = False
-        acta_fallos.append({
-            "severidad": "warning", "tipo": "sync_no_corrio",
-            "mensaje": f"Sync learnings.yaml fallo: {e}",
-        })
+        _registrar_fallo("warning", "sync_no_corrio", f"Sync learnings.yaml fallo: {e}")
 
     # === CIERRE DEL ACTA (SPEC S1C-F0.3) ===
     # resultado: 'fallida' si hubo algun fallo error/critico (NLP/Ollama); 'ok' si no.
@@ -783,6 +787,16 @@ def main():
             safe_print(f"\nOpciones:")
             safe_print(f"  1. Resolver errores: --ids {','.join(block_info['ids'])}")
             safe_print(f"  2. Forzar nuevo lote: --force-new-batch")
+            # Paso bloqueante: no se crea acta (la corrida no arranca). Alerta sin acta_id.
+            try:
+                emitir_alerta(
+                    "warning", "paso_bloqueante",
+                    f"Lote {block_info['lote']} bloqueado: {block_info['errores']} errores sin resolver",
+                    contexto={"lote": block_info['lote'], "errores": block_info['errores'],
+                              "ids": block_info['ids'][:20]},
+                )
+            except Exception:
+                pass
             conn.close()
             sys.exit(1)
 

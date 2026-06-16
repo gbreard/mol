@@ -23,8 +23,14 @@ from pathlib import Path
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 DB_PATH = PROJECT_DIR / "database" / "bumeran_scraping.db"
 
+# Log estructurado de alertas (fuente local, independiente de la tabla y de Supabase)
+ALERTAS_JSONL = PROJECT_DIR / "logs" / "pipeline_alertas.jsonl"
+
 # Mismo límite que el subprocess timeout del poller (pipeline_command_poller.py)
 RUN_TIMEOUT_SECONDS = 8 * 3600
+
+# Severidades que, registradas en una corrida, la marcan como `fallida`.
+SEVERIDADES_FALLIDA = ("error", "critico")
 
 
 def _conn():
@@ -70,8 +76,8 @@ def barrer_actas_huerfanas(con=None):
           no es confiable: reinicio que reusa PIDs, u otro host).
     Una corrida viva (PID vivo dentro del timeout) NUNCA se marca incompleta.
 
-    Devuelve la lista de acta_id barridas. No emite alertas en este paso (Paso 2);
-    el Paso 3 engancha `emitir_alerta('corrida_incompleta', ...)` por cada barrida.
+    Devuelve la lista de acta_id barridas y emite una alerta `corrida_incompleta`
+    por cada una (tabla + jsonl).
     """
     own = con is None
     if own:
@@ -98,11 +104,62 @@ def barrer_actas_huerfanas(con=None):
                 "WHERE acta_id = ?",
                 (_now(), acta_id),
             )
-            barridas.append(acta_id)
+            barridas.append((acta_id, started_at, pid, host))
     con.commit()
     if own:
         con.close()
-    return barridas
+
+    # Emitir alerta por cada acta barrida (corrida que empezó y nunca cerró).
+    for acta_id, started_at, pid, host in barridas:
+        emitir_alerta(
+            "error", "corrida_incompleta",
+            f"Acta {acta_id} quedó incompleta (corrida muerta sin cierre)",
+            acta_id=acta_id,
+            contexto={"started_at": started_at, "pid": pid, "host": host},
+        )
+    return [b[0] for b in barridas]
+
+
+def emitir_alerta(severidad, tipo, mensaje, acta_id=None, contexto=None):
+    """Registra una alerta del pipeline en la tabla `pipeline_alertas` Y en
+    `logs/pipeline_alertas.jsonl` (doble persistencia local, independiente).
+
+    Nunca lanza: la observabilidad no puede romper el pipeline. Cada destino se
+    escribe en su propio try/except, así un fallo en uno no impide el otro.
+
+    Devuelve el registro emitido (dict).
+    """
+    ts = _now()
+    contexto = contexto or {}
+    registro = {
+        "timestamp": ts, "severidad": severidad, "tipo": tipo,
+        "mensaje": mensaje, "acta_id": acta_id, "contexto": contexto,
+    }
+
+    # 1) Tabla local
+    try:
+        con = _conn()
+        con.execute(
+            "INSERT INTO pipeline_alertas "
+            "(timestamp, severidad, tipo, mensaje, acta_id, contexto) "
+            "VALUES (?, ?, ?, ?, ?, ?)",
+            (ts, severidad, tipo, mensaje, acta_id,
+             json.dumps(contexto, ensure_ascii=False)),
+        )
+        con.commit()
+        con.close()
+    except Exception:
+        pass
+
+    # 2) Log estructurado (una alerta por línea)
+    try:
+        ALERTAS_JSONL.parent.mkdir(parents=True, exist_ok=True)
+        with open(ALERTAS_JSONL, "a", encoding="utf-8") as f:
+            f.write(json.dumps(registro, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
+
+    return registro
 
 
 def crear_acta(invocador="terminal", args="", alcance_entrada=None):

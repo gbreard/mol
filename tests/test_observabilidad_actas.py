@@ -45,13 +45,15 @@ def _restore_streams():
 
 @pytest.fixture
 def db_tmp(tmp_path, monkeypatch):
-    """BD temporal con solo las tablas de observabilidad; redirige el helper a ella."""
+    """BD temporal con solo las tablas de observabilidad; redirige el helper a ella
+    y el jsonl de alertas a tmp (para no contaminar logs/ reales)."""
     db = tmp_path / "obs_test.db"
     con = sqlite3.connect(str(db))
     con.executescript(MIGRATION.read_text())
     con.commit()
     con.close()
     monkeypatch.setattr(obs, "DB_PATH", db)
+    monkeypatch.setattr(obs, "ALERTAS_JSONL", tmp_path / "pipeline_alertas.jsonl")
     return db
 
 
@@ -61,6 +63,22 @@ def _actas(db):
     rows = [dict(r) for r in con.execute("SELECT * FROM pipeline_run_actas")]
     con.close()
     return rows
+
+
+def _alertas_tabla(db):
+    con = sqlite3.connect(str(db))
+    con.row_factory = sqlite3.Row
+    rows = [dict(r) for r in con.execute("SELECT * FROM pipeline_alertas")]
+    con.close()
+    return rows
+
+
+def _alertas_jsonl():
+    import json
+    p = obs.ALERTAS_JSONL
+    if not p.exists():
+        return []
+    return [json.loads(line) for line in p.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
 # ── Unidad: ciclo de vida del acta ───────────────────────────────────────────
@@ -176,3 +194,67 @@ def test_run_full_pipeline_acta_fallida_por_ollama(db_tmp, monkeypatch):
     assert acta["resultado"] == "fallida"
     fallos = json.loads(acta["fallos"])
     assert any(f["tipo"] == "ollama_down" for f in fallos)
+
+
+# ── Paso 3: alertas en tabla Y jsonl (criterio binario por tipo de fallo) ─────
+
+def _aparece_en_ambos(db, tipo):
+    en_tabla = any(a["tipo"] == tipo for a in _alertas_tabla(db))
+    en_jsonl = any(a["tipo"] == tipo for a in _alertas_jsonl())
+    return en_tabla and en_jsonl
+
+
+def test_emitir_alerta_persiste_en_tabla_y_jsonl(db_tmp):
+    obs.emitir_alerta("error", "ollama_down", "Conexión rechazada 172.17.0.1:11434",
+                      acta_id="acta_x", contexto={"ids_count": 5})
+    # Tabla
+    fila = _alertas_tabla(db_tmp)[0]
+    assert fila["tipo"] == "ollama_down"
+    assert fila["severidad"] == "error"
+    assert fila["acta_id"] == "acta_x"
+    assert '"ids_count": 5' in fila["contexto"]
+    # JSONL
+    linea = _alertas_jsonl()[0]
+    assert linea["tipo"] == "ollama_down"
+    assert linea["contexto"]["ids_count"] == 5
+
+
+def test_barrido_emite_alerta_corrida_incompleta(db_tmp):
+    con = sqlite3.connect(str(db_tmp))
+    con.execute(
+        "INSERT INTO pipeline_run_actas (acta_id, started_at, pid, host) VALUES (?,?,?,?)",
+        ("acta_zombie", "2026-06-16T09:00:00", 999999, obs._host()),
+    )
+    con.commit()
+    con.close()
+
+    obs.barrer_actas_huerfanas()
+
+    assert _aparece_en_ambos(db_tmp, "corrida_incompleta")
+    alerta = [a for a in _alertas_tabla(db_tmp) if a["tipo"] == "corrida_incompleta"][0]
+    assert alerta["acta_id"] == "acta_zombie"
+    assert alerta["severidad"] == "error"
+
+
+def test_run_pipeline_fallida_emite_alerta_ollama_en_ambos(db_tmp, monkeypatch):
+    _patch_pipeline_pesado(monkeypatch, nlp_raise=True)
+
+    rvp.run_full_pipeline(ids=None, limit=1, skip_nlp=False, skip_matching=True,
+                          only_pending=False, verbose=False)
+
+    assert _aparece_en_ambos(db_tmp, "ollama_down")
+
+
+def test_emitir_alerta_nunca_rompe(monkeypatch, tmp_path):
+    """Aunque tabla y jsonl fallen, emitir_alerta no lanza (no rompe el pipeline)."""
+    monkeypatch.setattr(obs, "DB_PATH", tmp_path / "no_existe" / "x.db")  # _conn falla
+    monkeypatch.setattr(obs, "ALERTAS_JSONL", tmp_path / "ro" / "a.jsonl")
+    # crear dir read-only para forzar fallo de escritura del jsonl
+    ro = tmp_path / "ro"
+    ro.mkdir()
+    os.chmod(ro, 0o500)
+    try:
+        reg = obs.emitir_alerta("error", "nlp_fallo", "x")  # no debe lanzar
+        assert reg["tipo"] == "nlp_fallo"
+    finally:
+        os.chmod(ro, 0o700)
