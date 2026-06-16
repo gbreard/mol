@@ -81,7 +81,7 @@ Cada verificación tiene su criterio binario en la sección 4. El spec valida cu
 
 ## 8. Resultados
 
-> Ejecutado 2026-06-12, read-only. Orden: V2/V6 (local) → V1/V3/V7-a (Supabase) → V7-b (grep) → V4 (GET). Punto de control reportado tras V1-V3. V5 pendiente de Gerardo (no bloquea).
+> Ejecutado 2026-06-12, read-only. Orden: V2/V6 (local) → V1/V3/V7-a (Supabase) → V7-b (grep) → V4 (GET). Punto de control reportado tras V1-V3. V5 (billing) integrada con datos de Gerardo el 2026-06-16. **V1-V7 con veredicto: spec completo.**
 
 ### V1 — Gold Set ampliado → ✅ CONFIRMADO
 - **Comando**: `gold_set` en Supabase, `count(*)` + resolución de títulos por join local (`gold_set.id_oferta` → `ofertas.titulo`).
@@ -107,8 +107,23 @@ Cada verificación tiene su criterio binario en la sección 4. El spec valida cu
 - **Veredicto**: los tres endpoints de OE responden **200 sin autenticación en producción**. La exposición no es solo de código local (OE-11): está **viva**. Dato para que S1.C decida cuándo sube la deuda de seguridad (D-08), hoy diferida por decisión de Gerardo. No se descargó ni inspeccionó contenido (solo status).
 - **Premisas**: S1.B.7 D-08 (seguridad) → confirmada en vivo, no solo en código. Severidad: PII accesible sin auth en producción.
 
-### V5 — Facturación de Supabase → ⏳ ABIERTA (Gerardo)
-- Pendiente del desglose de billing del último mes (compute/egress/storage). No bloquea el cierre del spec.
+### V5 — Facturación de Supabase → VEREDICTO: candidato de costo REFUTADO como problema de facturación
+
+Datos del período 07 jun – 07 jul 2026 (plan Pro), aportados por Gerardo desde el dashboard de Usage:
+
+- **Egress: 0,296 GB** (el plan Pro incluye 250 GB — uso ~0,1%). Cached egress: 0.
+- **Compute: 228 horas Micro** — el proyecto encendido; cubierto por los $10 de compute credits del Pro. El gráfico por día muestra barras parejas y llenas (proyecto prendido 24/7), no picos de actividad.
+- **Storage / Disk: 8 GB provisionados, 0 GB-Hrs de overage** — dentro de lo incluido.
+- **MAU: 2** (los dos operadores). Realtime, Edge Functions, Storage Image Transformations, Log Drains: todo en 0.
+- **Egress por día**: ~0 casi todos los días, con un único pico aislado el 09 jun (~228 MB).
+
+**Veredicto contra el criterio binario**: los tres candidatos de costo de S1.B.1 (N+1 de ~68K DELETEs por sync, RPCs pgvector por page load, pollers 24/7) quedan **refutados como problema de facturación actual**. Sus firmas serían recurrentes (egress o requests elevados de forma sostenida); la realidad es egress casi nulo y sin overage en ninguna métrica. MOL está holgadamente dentro de lo incluido en el plan Pro.
+
+**Reclasificación de la deuda**: el N+1, los RPCs y los pollers siguen siendo deuda de **arquitectura y eficiencia** (relevantes al escalar hacia ~9.500+ ofertas y para el principio de residencia), pero **no generan costo medible hoy**. Esto baja su prioridad en la ruta crítica: no urgen por facturación.
+
+**Consecuencia para C6**: el criterio "costo predecible" se reformula — de "diagnosticar una factura sorpresa" a "el costo es bajo y predecible hoy; la eficiencia de N+1/pollers es deuda para la escala, no para la factura actual".
+
+**Nota abierta (menor, no bloqueante)**: el pico de egress del 09 jun (~228 MB contra ~0 el resto del período) queda sin explicar — candidato: una corrida de sync completo o una exportación puntual ese día. No mueve la aguja; se anota por completitud.
 
 ### V6 — Diagnóstico CLAE previo al backlog → REGRESIÓN ~2026-03 (no backlog pre-clasificador)
 - **Comando**: SQLite local, cobertura CLAE (`ofertas_nlp.clae_code` no nulo entre ofertas con NLP) agrupada por **mes × portal**.
@@ -150,4 +165,4 @@ Cada verificación tiene su criterio binario en la sección 4. El spec valida cu
 
 ## 9. Criterio de aceptación
 
-El spec está TERMINADO cuando: la sección 8 documenta veredicto de V1-V4, V6 y V7 (V5 con casilla abierta si falta el dato de Gerardo), las premisas afectadas están listadas en ambos registros (specs S1.B + índice del harness), y el PR está mergeado. Definición de terminado del Eje 6: este documento es su propio consumidor — la Fase 0 decide con él.
+El spec está TERMINADO cuando: la sección 8 documenta veredicto de V1-V7 (V5 integrada el 2026-06-16 con los datos de billing de Gerardo), las premisas afectadas están listadas en ambos registros (specs S1.B + índice del harness), y el PR está mergeado. Definición de terminado del Eje 6: este documento es su propio consumidor — la Fase 0 decide con él.
