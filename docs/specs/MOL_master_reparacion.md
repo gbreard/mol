@@ -3,7 +3,7 @@
 > Versión 0.2 · 2026-06-12
 > Documento operativo de la fase de reparación. Cruza las ~80 deudas observadas en los 7 specs de relevamiento (S1.B.1–S1.B.7), las organiza en ejes transversales, define el norte contra el cual se prioriza, y establece la lógica de secuencia. Es el primer documento del proyecto que prioriza con el cuadro completo a la vista.
 > Antecedentes: `MOL_master_relevamiento.md` v0.2 (la fase que produjo el insumo), los 7 specs `SPEC_S1B*.md`, el modelo conceptual v1.0 (mayo 2026), los diagnósticos de mayo y el índice de investigaciones del harness.
-> *Cambios desde v0.1:* integradas las 7 observaciones de la primera revisión del hilo del harness (corrección de la premisa refutada del Eje 3 — Cadena 8, experimento puente anclado en Fase 0 como primer consumidor del harness, SPEC S0 v0.2 referenciado como insumo, dos actas de decisión, criterio C8 de cobertura, los informes como tercer consumidor, y la sección de operación durante la reparación con el corte t1 como baseline) y las correcciones de la segunda ronda (2026-06-12): precisión numérica del acta de terminologia, verificación CLAE previa al backlog, y punto de partida completo de C4, y principio de método nº7 (residencia de datos) incorporado el 2026-06-12 tras verificación de las violaciones en ambas direcciones.
+> *Cambios desde v0.1:* integradas las 7 observaciones de la primera revisión del hilo del harness (corrección de la premisa refutada del Eje 3 — Cadena 8, experimento puente anclado en Fase 0 como primer consumidor del harness, SPEC S0 v0.2 referenciado como insumo, dos actas de decisión, criterio C8 de cobertura, los informes como tercer consumidor, y la sección de operación durante la reparación con el corte t1 como baseline) y las correcciones de la segunda ronda (2026-06-12): precisión numérica del acta de terminologia, verificación CLAE previa al backlog, y punto de partida completo de C4, y principio de método nº7 (residencia de datos) incorporado el 2026-06-12 tras verificación de las violaciones en ambas direcciones, y ajuste de §4.1 con el veredicto de V6 (la caída CLAE es regresión de 2026-03, no backlog pre-clasificador) el 2026-06-12.
 
 ---
 
@@ -37,6 +37,8 @@ La fase de reparación se declara exitosa cuando estos ocho enunciados son verda
 | C6 | El costo es predecible | Factura Supabase sorpresa, 3 causas candidatas sin confirmar | Desglose conocido, costo estable mes a mes |
 | C7 | Lo que se construye queda vivo | D-15 en 7/7 componentes, 5 variantes, ~30 instancias | Cero instancias nuevas: definición de terminado aplicada a todo lo que se repare |
 | C8 | El corpus procesado es el corpus scrapeado | ~84% (≈13.000 ofertas nunca entraron al procesamiento) | ~100%, con las exclusiones detectadas y justificadas. La cobertura es la métrica nº1 del consumidor de informes: una fábrica rápida sobre el 84% del mercado no es de alto nivel |
+
+> *Nota a C8 (V6/F0.1):* la caída de cobertura CLAE desde 2026-03 es una **regresión a diagnosticar**, no solo exclusión de las 13K — afecta la medición de C8 (ver §4.1).
 
 C5 es el criterio de cierre simbólico y real de toda la fase: la frase fundante fue "quisimos pasar a otro modelo y nos dimos cuenta que no se puede".
 
@@ -153,7 +155,7 @@ El **Eje 6 (D-15) no es una fase: es el reglamento de todas** — la definición
 
 La fábrica **sigue operando con el proceso manual vigente durante toda la reparación** — la reparación no detiene ni espera. En particular: el backlog acumulado se procesa con la versión vigente del pipeline, sin esperar a la automatización de la Fase 1. Ese procesamiento produce el **corte t1**, que es el **baseline de todas las comparaciones del harness** (incluida la corrida comparativa de C5): el backlog no es un estorbo de la reparación — es su grupo de control.
 
-**Verificación previa al procesamiento del backlog**: estado de la caída de cobertura CLAE detectada en mayo (18-20pp; hipótesis abiertas: backlog pre-clasificador / regresión / distribución de las 13K excluidas). Es diagnóstico read-only de horas; el backlog se suelta con ese dato en mano.
+**Verificación previa al procesamiento del backlog — RESUELTA (V6 de la ventana F0.1)**: el diagnóstico CLAE por mes × portal × estado mostró que la cobertura es ~100% en todos los portales hasta 2026-02 y cae desde 2026-03 incluso en Bumeran (100% → 69%) y ZonaJobs (91% → 68%). Esto **descarta la hipótesis de backlog pre-clasificador** (sería al revés: lo viejo sin cobertura, lo nuevo con) y apunta a una **regresión introducida ~2026-03**. (Indeed arrastra un piso propio ~50%, factor de portal independiente.) **Consecuencia para la operación durante la reparación**: soltar el backlog con la versión vigente del pipeline propagaría la regresión a todo lo que se procese. Por lo tanto, "backlog habilitado" pasa a **"habilitado solo si primero se diagnostica y corrige la regresión CLAE de 2026-03, o se acepta conscientemente procesar con ella y reprocesar después"**. El corte t1 (baseline del harness) debe tomarse con esta decisión ya tomada, no antes — de lo contrario el grupo de control nace contaminado. Diagnosticar la regresión de marzo es candidato a spec temprano de la Fase 1 (toca el Eje 5, contratos/datos sanos, y el Eje 1, cobertura C8).
 
 ## 5. Lo que se difiere conscientemente
 
