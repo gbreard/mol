@@ -212,3 +212,27 @@ Tests Python en `tests/` (acta + alertas) y test de componente en `__tests__/com
 - Panel en `procesamiento/fabrica` mostrando última corrida + alertas con datos reales.
 - T1-T4 verdes. Sin regresión en lo que `pipeline_runs` / el pipeline ya hacen.
 - (Eje 6 / definición de terminado) consumidor conectado = panel mostrando datos reales.
+
+---
+
+## 10. Estado de implementación (2026-06-16)
+
+Implementado en 5 pasos incrementales (1 commit por paso) sobre `spec/s1c-f03-observabilidad`:
+
+| Paso | Qué | Commit |
+|---|---|---|
+| 1 | Migración 025 (sqlite): `pipeline_run_actas` + `pipeline_alertas` | `692c6f35` |
+| 2 | Acta en `run_validated_pipeline.py` (barrido + abrir/cerrar + resultado) | `3863d6fa` |
+| 3 | `emitir_alerta` (tabla + jsonl) en los 5 puntos de fallo | `3eee50aa` |
+| 4+5 | Migración 066 (Supabase mirror) + poller + endpoint + panel | `e4bf4d1f` |
+
+**Tests verdes:**
+- Python (`tests/test_observabilidad_actas.py`): 11. Cubren T1 (run real escribe acta ok/fallida), T2 (barrido distingue viva/muerta/timeout), T3 (alerta en tabla **y** jsonl por tipo), lector del poller, y que la observabilidad nunca rompe el pipeline.
+- Frontend (`__tests__/component/fabrica-page.test.tsx`): 12 (panel renderiza acta real + alertas). T4.
+
+**Pasos manuales pendientes (de Gerardo — fuera del alcance read-only/no-deploy):**
+1. Ejecutar `fase3_dashboard/sql/066_pipeline_observabilidad_mirror.sql` en Supabase (ALTER TABLE aditivo). Hasta entonces el poller loguea un warning y el panel muestra "Sin actas" — sin romper nada.
+2. Deploy del dashboard (panel nuevo) — solo Gerardo (DEPLOY_RULES).
+3. Validación viva end-to-end: con 066 aplicada + poller corriendo + deploy, una corrida real deja acta y el panel la muestra contra datos vivos.
+
+> Mientras 1-3 no se hagan, el acta y las alertas **ya se escriben localmente** (fuente de verdad); solo el reflejo en la UI espera el deploy.
