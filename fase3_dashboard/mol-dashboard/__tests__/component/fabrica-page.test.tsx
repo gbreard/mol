@@ -32,6 +32,23 @@ function setupHandlers() {
     http.post('/api/pipeline-commands', () => {
       return HttpResponse.json({ id: 'cmd-new', estado: 'pendiente' }, { status: 201 })
     }),
+    // SPEC S1C-F0.3 — última corrida + alertas (acta real producida por el pipeline)
+    http.get('/api/pipeline-last-run', () => {
+      return HttpResponse.json({
+        ultimaActa: {
+          acta_id: 'acta_20260616_1432', started_at: '2026-06-16T14:32:00',
+          finished_at: '2026-06-16T14:40:00', invocador: 'poller',
+          alcance_entrada: 100, alcance_procesado: 97, resultado: 'fallida',
+          fallos: [{ severidad: 'error', tipo: 'ollama_down', mensaje: 'NLP aborto: Connection refused' }],
+          matching_run_id: 'run_20260616_1433',
+        },
+        alertas: [
+          { timestamp: '2026-06-16T14:40:00', severidad: 'error', tipo: 'ollama_down',
+            mensaje: 'NLP aborto: Connection refused', acta_id: 'acta_20260616_1432' },
+        ],
+        timestamp: '2026-06-16T14:41:00',
+      })
+    }),
   )
 }
 
@@ -121,6 +138,29 @@ describe('FabricaPage', () => {
         expect(screen.getByText('Actividad reciente')).toBeInTheDocument()
       })
       expect(screen.getAllByText(/Completado/).length).toBeGreaterThanOrEqual(1)
+    })
+  })
+
+  // SPEC S1C-F0.3 — el panel renderiza el acta real (no mock interno)
+  describe('última corrida + alertas', () => {
+    it('muestra la sección y el acta con su resultado', async () => {
+      render(<FabricaPage />)
+      await waitFor(() => {
+        expect(screen.getByText('Última corrida')).toBeInTheDocument()
+      })
+      expect(screen.getByText('acta_20260616_1432')).toBeInTheDocument()
+      expect(screen.getByText(/fallida/)).toBeInTheDocument()
+      expect(screen.getByText(/vía poller/)).toBeInTheDocument()
+      expect(screen.getByText(/run_20260616_1433/)).toBeInTheDocument()
+    })
+
+    it('muestra las alertas recientes con su tipo y mensaje', async () => {
+      render(<FabricaPage />)
+      await waitFor(() => {
+        expect(screen.getByText(/Alertas recientes/)).toBeInTheDocument()
+      })
+      expect(screen.getAllByText(/ollama_down/).length).toBeGreaterThanOrEqual(1)
+      expect(screen.getAllByText(/Connection refused/).length).toBeGreaterThanOrEqual(1)
     })
   })
 })

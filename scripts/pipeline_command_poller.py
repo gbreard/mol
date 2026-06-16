@@ -256,6 +256,8 @@ def execute_command(client, cmd, dry_run=False):
         env = os.environ.copy()
         if 'OLLAMA_HOST' not in env:
             env['OLLAMA_HOST'] = '172.17.0.1'
+        # SPEC S1C-F0.3: el acta de corrida registra quién la invocó.
+        env['MOL_INVOCADOR'] = 'poller'
 
         result = subprocess.run(
             full_cmd,
@@ -334,6 +336,52 @@ def execute_command(client, cmd, dry_run=False):
         return False
 
 
+def _leer_observabilidad_local(conn):
+    """Lee la última acta y las alertas recientes del SQLite local (SPEC S1C-F0.3).
+
+    Devuelve (ultima_acta: dict|None, alertas_recientes: list). Tolerante a que las
+    tablas no existan (migración 025 no aplicada) → devuelve (None, []).
+    """
+    ultima_acta = None
+    alertas = []
+    try:
+        cur = conn.execute(
+            "SELECT acta_id, started_at, finished_at, invocador, args, "
+            "alcance_entrada, alcance_procesado, resultado, fallos, matching_run_id "
+            "FROM pipeline_run_actas ORDER BY started_at DESC LIMIT 1"
+        )
+        row = cur.fetchone()
+        if row:
+            cols = [d[0] for d in cur.description]
+            ultima_acta = dict(zip(cols, row))
+            if ultima_acta.get("fallos"):
+                try:
+                    ultima_acta["fallos"] = json.loads(ultima_acta["fallos"])
+                except (json.JSONDecodeError, TypeError):
+                    ultima_acta["fallos"] = []
+    except Exception:
+        pass
+
+    try:
+        cur = conn.execute(
+            "SELECT timestamp, severidad, tipo, mensaje, acta_id, contexto "
+            "FROM pipeline_alertas ORDER BY id DESC LIMIT 10"
+        )
+        cols = [d[0] for d in cur.description]
+        for row in cur.fetchall():
+            a = dict(zip(cols, row))
+            if a.get("contexto"):
+                try:
+                    a["contexto"] = json.loads(a["contexto"])
+                except (json.JSONDecodeError, TypeError):
+                    pass
+            alertas.append(a)
+    except Exception:
+        pass
+
+    return ultima_acta, alertas
+
+
 def sync_local_status(client):
     """Sube el estado real de SQLite a Supabase para que la Fábrica lo muestre."""
     db_path = PROJECT_DIR / "database" / "bumeran_scraping.db"
@@ -373,6 +421,9 @@ def sync_local_status(client):
         except Exception:
             errores = 0
 
+        # Observabilidad (SPEC S1C-F0.3): leer acta + alertas con la misma conexión.
+        ultima_acta, alertas_recientes = _leer_observabilidad_local(conn)
+
         conn.close()
 
         # Sync log + count real from Supabase
@@ -409,6 +460,17 @@ def sync_local_status(client):
             'pendientes_sync': max(validadas - en_supabase, 0),
             'ultimo_sync': ultimo_sync,
         }).execute()
+
+        # Espejo de observabilidad en columnas JSONB aparte. Separado del upsert
+        # principal para que, si la migración 066 (columnas) aún no se aplicó en
+        # Supabase, el fallo no rompa el sync de estado.
+        try:
+            client.table('pipeline_local_status').update({
+                'ultima_acta': ultima_acta,
+                'alertas_recientes': alertas_recientes,
+            }).eq('id', 'current').execute()
+        except Exception as e:
+            print(f"[POLLER] WARN: no se pudo espejar observabilidad (¿migración 066?): {e}")
 
     except Exception as e:
         print(f"[POLLER] WARN: No se pudo sync status local: {e}")
