@@ -1,0 +1,1033 @@
+{
+  "spec": "S1C-F0.5-build",
+  "fecha_snapshot": "2026-06-17",
+  "fuente": "supabase.gold_set (activo=True)",
+  "nota": "Snapshot fechado del ground truth para el harness de ocupación. NO sustituye database/gold_set_manual_v2.json (regresión vieja de 49).",
+  "totales": {
+    "n_casos": 113,
+    "n_esco_ok_true": 98,
+    "n_esco_ok_false": 15,
+    "n_con_isco_esperado": 18,
+    "n_con_esco_esperado": 13,
+    "n_true_sin_esperado": 91
+  },
+  "casos": [
+    {
+      "id_oferta": "1118026700",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Vendedor de repuestos -> vendedor de piezas de repuesto de automoviles.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118026729",
+      "esco_ok": false,
+      "isco_esperado": "4321",
+      "esco_esperado": "Jefe de almacen/jefa de almacen",
+      "tipo_error": "dominio_incorrecto",
+      "comentario": "ERROR: Responsable de Deposito asignado a RRPP (2432). Deberia ser Jefe de almacen (ISCO 4321). El pipeline ignora 'deposito' y matchea 'responsable' con relaciones publicas.",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "1118027243",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Abogado/a de impuestos -> ocupacion general abogado/abogada.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118027261",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Supervisor de limpieza -> supervisor de servicio de limpieza.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118027276",
+      "esco_ok": false,
+      "isco_esperado": "3322",
+      "esco_esperado": "Representante comercial",
+      "tipo_error": "dominio_incorrecto",
+      "comentario": "ERROR: Ejecutivo de Cuentas asignado a Electricidad (7411). Deberia ser familia Ventas (ISCO 3322). 'Cuentas' confunde al pipeline con 'contadores electricos'.",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "1118027662",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Farmaceutico/a -> Farmaceutico/farmaceutica (ISCO 2262).",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118027834",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Vendedora digital -> vendedor/vendedora.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118027941",
+      "esco_ok": false,
+      "isco_esperado": "3118",
+      "esco_esperado": "Delineante tecnico/delineante tecnica",
+      "tipo_error": "dominio_incorrecto",
+      "comentario": "ERROR: Dibujante Tecnico asignado a Contabilidad (3313). Deberia ser Delineantes (ISCO 3118). Skills como AutoCAD, Solidworks ignoradas.",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "1118028027",
+      "esco_ok": false,
+      "isco_esperado": "8344",
+      "esco_esperado": "Operador de carretilla elevadora",
+      "tipo_error": "dominio_incorrecto",
+      "comentario": "ERROR: Operador Autoelevadores asignado a Maquinaria Agricola (8341). Deberia ser Carretillas elevadoras (ISCO 8344). Autoelevador != maquinaria agricola.",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "1118028038",
+      "esco_ok": true,
+      "isco_esperado": "3322",
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Ejecutiva/o Comercial Cuentas -> Representante comercial (ISCO 3322). Regla R28.",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "1118028201",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Operarios industria alimenticia -> operario de produccion de alimentos.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118028376",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match aceptable. Analista administrativo -> empleado administrativo seguros (ISCO 4312). Familia admin correcta.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118028657",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Recepcionista -> recepcionista.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118028681",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Administrativa/o -> empleado administrativo.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118028828",
+      "esco_ok": true,
+      "isco_esperado": "7531",
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Modelista textil -> Sastre/sastra (ISCO 7531). Regla R29.",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "1118028833",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Asesor comercial plan ahorro -> Representante comercial (familia comercial correcta).",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118028887",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match aceptable. Account Executive (Hunter) -> agente de empleo. Familia ventas/RRHH cercana.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118028891",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Auxiliar contable -> administrativo contable.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "2162667",
+      "esco_ok": true,
+      "isco_esperado": "1321",
+      "esco_esperado": "Director de operaciones",
+      "tipo_error": null,
+      "comentario": "Gerente Operaciones Facility/Catering corporativo, NO restaurante. ISCO 1321 correcto.",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "1118022146",
+      "esco_ok": true,
+      "isco_esperado": "2432",
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Community Manager -> Gestor de la informacion para las redes sociales (ISCO 2432). Regla R30.",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "1118025212",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Familia de ventas tecnicas correcta.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1117960588",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Asistente de Direccion -> Empleado administrativo (ISCO 3343).",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118009739",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Administrativa Comex -> Empleado de oficina (ISCO 4110). Oficinista general es correcto.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118000814",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match aceptable. Asistente Admin Ventas -> Asistente de direccion (ISCO 3343). Familia admin correcta.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118020225",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match aceptable. Representante atencion cliente -> Agente chat (ISCO 4222). Familia atencion al cliente correcta.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118003709",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118017586",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Medica Clinica/Dermatologa -> Medico generalista (ISCO 2211). Ambos son medicos.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118025956",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "2164100",
+      "esco_ok": true,
+      "isco_esperado": "5131",
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Mozo -> Camarero/camarera (ISCO 5131). Regla R31.",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "2165052",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match aceptable. Electricista Industrial -> Electricista de obras (ISCO 7411). Mismo grupo 741x, diferencia de especificidad menor.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "2165301",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Supervisor/a Administracion -> Director departamento administracion (ISCO 3341). Score 0.95.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1116898892",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match exacto.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118023904",
+      "esco_ok": true,
+      "isco_esperado": "9333",
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Operario Picking en almacen logistico -> Mozo de almacen (ISCO 9333). NO es repositor de gondola (9334).",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "1117980907",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match exacto.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1117990944",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Repositor -> Reponedor/reponedora (ISCO 9334). Bypass diccionario argentino.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1117961954",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Asistente Administrativo General -> Empleado administrativo (ISCO 3343).",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1117982053",
+      "esco_ok": true,
+      "isco_esperado": "2512",
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Desarrollador Angular -> Desarrollador de software (ISCO 2512). Regla R33.",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "1118018461",
+      "esco_ok": false,
+      "isco_esperado": "2359",
+      "esco_esperado": "Asesor academico/asesora academica",
+      "tipo_error": "homonimia",
+      "comentario": "ERROR: Asesor de Admisiones asignado a Juridico (2619). Deberia ser Asesor academico (ISCO 2359). 'Asesor' es polisemico, se ignora contexto educacion.",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "1118018714",
+      "esco_ok": false,
+      "isco_esperado": "2166",
+      "esco_esperado": "Disenador grafico/disenadora grafica",
+      "tipo_error": "dominio_incorrecto",
+      "comentario": "ERROR: Disenador Grafico E-commerce asignado a Dibujante guiones (2651). Deberia ser Disenador grafico (ISCO 2166). Skills Photoshop/Illustrator ignoradas.",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "1118031991",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Asesor de Ventas Directas -> Vendedor/vendedora (ISCO 5223). Bypass diccionario.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1116884561",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1117995368",
+      "esco_ok": false,
+      "isco_esperado": "3240",
+      "esco_esperado": "Tecnico veterinario/tecnica veterinaria",
+      "tipo_error": "dominio_incorrecto",
+      "comentario": "ERROR: Asesor Nutricion Animal asignado a Orientacion profesional (2423). Deberia ser Tecnico veterinario (ISCO 3240). Nutricion animal completamente ignorado.",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "2170124",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match aceptable. Analista de Cultivo -> Ingeniero agricola (ISCO 2144). Nivel educativo podria ser tecnico pero ingeniero es aceptable para analista.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1117975249",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118028777",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118028048",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. Asesor/a de Ventas -> Vendedor/vendedora (ISCO 5223). Bypass diccionario.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118009703",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Match correcto. E-commerce es ventas en red.",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1117984105",
+      "esco_ok": false,
+      "isco_esperado": "1221",
+      "esco_esperado": "Gerente de comercio",
+      "tipo_error": "nivel_jerarquico",
+      "comentario": "ERROR: Gerente de Ventas asignado a Representante tecnico (2433). Deberia ser Gerentes comercios (ISCO 1221). Nivel jerarquico ignorado.",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "1117977340",
+      "esco_ok": false,
+      "isco_esperado": "4226",
+      "esco_esperado": "Recepcionista",
+      "tipo_error": "rol_primario",
+      "comentario": "ERROR: Recepcionista Administrativo asignado a Admin seguros (4312). Deberia ser Recepcionista (ISCO 4226). El titulo dice RECEPCIONISTA primero.",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "1118163967",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_issues_diego_gerardo (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118061207_2",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_issues_diego_gerardo (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118061207_3",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_issues_diego_gerardo (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118061207_4",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_issues_diego_gerardo (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118061207",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_issues_diego_gerardo (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1117938377",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_issues_cynthia_r2 (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118008939",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_issues_cynthia_r2 (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118008954",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_issues_cynthia_r2 (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118025702",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_issues_cynthia_r2 (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118032342",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_issues_cynthia_r2 (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118043294",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_issues_cynthia_r2 (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118164691",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_issues_cynthia_r2 (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118028694",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_issues_cynthia_r2 (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "7542392224",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "CLASIFICACION  ACTUAL CORRECTA ISCO 2511. - CLASIFICACION CORRECTA ESCO: 2511.3. Description: Los analistas de datos importan, inspeccionan, limpian, validan, modelan o interpretan recopilaciones de datos con respecto a los objetivos empresariales de la empresa. Garantizan que las fuentes de datos y... | ESCO 2511.3",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "8085763783",
+      "esco_ok": false,
+      "isco_esperado": null,
+      "esco_esperado": "“agente de compras”",
+      "tipo_error": null,
+      "comentario": "CLASIFICACION ACTUAL CORRECTA: , La clasificación ISCO 3323 es correcta para el aviso, ya que las tareas corresponden al campo de compras: proceso de adquisición, contratación de proveedores, presupuestos, control de facturas y gestión operativa de compras. Sin embargo, la denominación asignada por ... | ISCO 3323 — “agente de compras”",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "1118009744",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAS. - SKILLS CORRECTAS: Skill: crear contenido digital... | ISCO 2431 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "7099049972",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAS - SKILLS CORRECTAS.  Skill: utilizar aparatos para escanear el código de barras... | ISCO 9333 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "8553161974",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAS:  SKILLS CORRECTAS:  Skill: evaluar datos, información y contenido digital... | ISCO 2431 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "2168174",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAS - SKILLS CORRECTAS: Skill: realizar tareas administrativas... | ISCO 2423 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "8005295118",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAS - SKILLS CORRECTAS:  Skill: evaluar datos, información y contenido digital... | ISCO 2431 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118022482",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREA EXTRAIDAS CORRECTAS - SKILLS CORRECTAS: Skill: organizar los documentos de la empresa... | ISCO 4311 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "8126801755",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAMENTE. - EL SISTEMA NO EXTRAJO SKILLS CLASIFICADAS PARA ESTE AVISO. - SKILLS SUGERIDAS: Skill sugerida: realizar análisis de control de calidad... | ISCO 3122 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118190831",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAS. - SKILLS CORRECTAS: Skill: preparar estados financieros... | ISCO 4311 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "8972615032",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAS. - SKILLS CORRECTAS:  Skill: conservar la documentación financiera... | ISCO 4311 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118109693",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAS. - SKILLS CORRECTAS: Skill: puesta en servicio del proyecto... | ISCO 3122 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118012966",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "CLASIFICACION ACTUAL CORRECTA. 1211.\"director financiero/directora financiera\" OBSERVACION: Lo que ajustaría es la denominación específica: no es simplemente director financiero/directora financiera, porque el foco del aviso no está en finanzas corporativas generales, inversiones, tesorería estratég... | ESCO 1211.1",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1117925089",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAS. - SKILLS CORRECTAS: Skill: gestionar proyectos... | ISCO 1330 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118075182",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS INCORRECTAS: ❌ Well, Open - ❌ Wells, Pason, TOTCO, CORVA, Rig- JUSTIFICACION: Son fragmentos cortados de nombres de aplicaciones, no tareas - SKILLS CORRECTAS: Skill: gestionar incidentes... | ISCO 2511 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "2171374",
+      "esco_ok": false,
+      "isco_esperado": "4311.1",
+      "esco_esperado": "empleado de contabilidad / empleada de contabilidad",
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAMENTE, SE AGREGO \"interactuar con clientes internos y externos,\"- EL SISTEMA NO EXTRAJO SKILL, PERO LAS QUE CORRESPONDEN AL AVISO Y AL CODIGO ESCO SON: gestionar operaciones financieras... | ESCO 4311.1 — empleado de contabilidad / empleada de contabilidad",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "1118014258",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREA FALTANTE POSIBLE: Seguir tareas operativas de producción alimenticia. - SKILLS CORRECTAS: Skill: manipular equipos de cocina... | ISCO 8160 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "7060550346",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAS. - SKILLS CORRECTAS: Skill: gestionar presupuestos... | ISCO 4311 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118130897",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAMENTE: - SKILLS CORRECTAS: Skill: evaluar datos, información y contenido digital... | ISCO 2511 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118087360",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS, FALTO AGREGAR: \"preliquidación de sueldos.\". - Skill: elaborar perfiles... | ISCO 2423 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118074970",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREEAS EXTRAIDAS CORRECTAMENTE. - SKILLS CORRECTAS: Skill: preparar estados financieros... | ISCO 2411 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1117999916",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "SE AGREGARON TAREAS QUE FALTABAN Y NO FUERON EXTRAIDAS. - SKILLS CORRECTAS: Skill: abrir cuentas de banco... | ISCO 2423 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "7975002320",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAS. - SKILLS CORRECTAS: Skill: controlar máquinas automáticas... | ISCO 8211 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "2162939",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAS. - SKILLS CORRECTAS: Skill: supervisar personal... | ISCO 3122 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "2169749",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAS. - SKILLS CORRECTAS: Skill: mantener sistemas de comunicación interna... | ISCO 2423 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118039378",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAMENTE. - SKILLS CORRECTAS:  gestionar redes sociales... | ISCO 2431 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118060539",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "LAS TAREAS SON EXTRAIDAS CORRECTAMENTE, PERO La tarea “Confeccionar y mantener actualizado el material gráfico digital” aparece repetida. Es correcta, pero debe quedar una sola vez.. - SKILLS CORRECTAS: Skill: evaluar datos, información y contenido digital... | ISCO 2511 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118082890",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAMENTE:  - SKILLS CORRECTAS: Skill: resolver problemas de sistemas TIC... | ISCO 2511 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "2166593",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAMENTE. - SKILLS CORRECTAS: Skill: utilizar técnicas de comunicación... | ISCO 2423 confirmado, sin propuesta de label específica",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1117936517",
+      "esco_ok": false,
+      "isco_esperado": "3122.4",
+      "esco_esperado": "supervisor de producción / supervisora de producción",
+      "tipo_error": null,
+      "comentario": "TAREAS EXTRAIDAS CORRECTAMENTE- SKILLS CORRECTAS: supervisar el nivel de las existencias:... | ESCO 3122.4 — supervisor de producción / supervisora de producción",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "2177749",
+      "esco_ok": false,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validacion_humana=error (ofertas_dashboard)",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "6381126767",
+      "esco_ok": false,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validacion_humana=error (ofertas_dashboard)",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "7650903051",
+      "esco_ok": false,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validacion_humana=error (ofertas_dashboard)",
+      "es_true_sin_esperado": false
+    },
+    {
+      "id_oferta": "2175371",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validacion_humana=ok (ofertas_dashboard)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118149108",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validacion_humana=ok (ofertas_dashboard)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118014800",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validacion_humana=ok (ofertas_dashboard)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "2173254",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validacion_humana=ok (ofertas_dashboard)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "2173361",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validacion_humana=ok (ofertas_dashboard)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "7941849392",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validacion_humana=ok (ofertas_dashboard)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1117969136",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_revision_manual (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1117994467",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_revision_manual (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118028753",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_revision_manual (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118030549",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_revision_manual (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118031194",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_revision_manual (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1118076570",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_revision_manual (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "2162945",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_revision_manual (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "1117960493",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_revision_manual (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "2169793",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=claude_revision_manual (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "2170532",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=manual (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "2166968",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "validado_por=manual (BD local)",
+      "es_true_sin_esperado": true
+    },
+    {
+      "id_oferta": "8750458558",
+      "esco_ok": true,
+      "isco_esperado": null,
+      "esco_esperado": null,
+      "tipo_error": null,
+      "comentario": "Matching correcto. ",
+      "es_true_sin_esperado": true
+    }
+  ]
+}
