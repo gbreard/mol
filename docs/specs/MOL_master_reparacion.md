@@ -3,7 +3,7 @@
 > Versión 0.2 · 2026-06-12
 > Documento operativo de la fase de reparación. Cruza las ~80 deudas observadas en los 7 specs de relevamiento (S1.B.1–S1.B.7), las organiza en ejes transversales, define el norte contra el cual se prioriza, y establece la lógica de secuencia. Es el primer documento del proyecto que prioriza con el cuadro completo a la vista.
 > Antecedentes: `MOL_master_relevamiento.md` v0.2 (la fase que produjo el insumo), los 7 specs `SPEC_S1B*.md`, el modelo conceptual v1.0 (mayo 2026), los diagnósticos de mayo y el índice de investigaciones del harness.
-> *Cambios desde v0.1:* integradas las 7 observaciones de la primera revisión del hilo del harness (corrección de la premisa refutada del Eje 3 — Cadena 8, experimento puente anclado en Fase 0 como primer consumidor del harness, SPEC S0 v0.2 referenciado como insumo, dos actas de decisión, criterio C8 de cobertura, los informes como tercer consumidor, y la sección de operación durante la reparación con el corte t1 como baseline) y las correcciones de la segunda ronda (2026-06-12): precisión numérica del acta de terminologia, verificación CLAE previa al backlog, y punto de partida completo de C4, y principio de método nº7 (residencia de datos) incorporado el 2026-06-12 tras verificación de las violaciones en ambas direcciones, y ajuste de §4.1 con el veredicto de V6 (la caída CLAE es regresión de 2026-03, no backlog pre-clasificador) el 2026-06-12, y cierre del diagnóstico CLAE (F0.2): la caída no es regresión sino fin de backfill único; backlog desbloqueado, cobertura → C8; deuda nlp_processed_at NULL registrada (2026-06-12).
+> *Cambios desde v0.1:* integradas las 7 observaciones de la primera revisión del hilo del harness (corrección de la premisa refutada del Eje 3 — Cadena 8, experimento puente anclado en Fase 0 como primer consumidor del harness, SPEC S0 v0.2 referenciado como insumo, dos actas de decisión, criterio C8 de cobertura, los informes como tercer consumidor, y la sección de operación durante la reparación con el corte t1 como baseline) y las correcciones de la segunda ronda (2026-06-12): precisión numérica del acta de terminologia, verificación CLAE previa al backlog, y punto de partida completo de C4, y principio de método nº7 (residencia de datos) incorporado el 2026-06-12 tras verificación de las violaciones en ambas direcciones, y ajuste de §4.1 con el veredicto de V6 (la caída CLAE es regresión de 2026-03, no backlog pre-clasificador) el 2026-06-12, y cierre del diagnóstico CLAE (F0.2): la caída no es regresión sino fin de backfill único; backlog desbloqueado, cobertura → C8; deuda nlp_processed_at NULL registrada (2026-06-12), y sección 7 (estado y secuencia viva de la Fase 0) con el reorden por la decisión de Gerardo del 2026-06-12 (harness antes que mejoras; backlog al final) y los hallazgos de F0.4a anclados a sus consumidores.
 
 ---
 
@@ -169,6 +169,46 @@ La fábrica **sigue operando con el proceso manual vigente durante toda la repar
 
 1. Merge de este master al repo (branch + PR).
 2. Apertura de la Fase 0: diseño del primer spec de reparación (la ventana de conexión viva + cimientos del Eje 1 + formalización del harness con el experimento puente), con verificación previa del estado del repo.
+
+## 7. Estado y secuencia de la Fase 0 (vivo — actualizado 2026-06-12)
+
+Esta sección registra el avance real de la Fase 0 y su secuencia, que se reordenó sobre la marcha por una decisión de Gerardo. Es el mapa único de la fase — evita que el orden viva en la memoria de las conversaciones.
+
+### 7.1 Specs cerrados
+
+- **F0.1 — Ventana de conexión viva** (`SPEC_S1C_F01_VENTANA_CONEXION.md`): V1-V7 cerrados. Gold Set confirmado (113), huérfanas (multi-época), emergentes (508/0), seguridad viva (200 sin auth, diferida), costo refutado como problema de facturación, censo de residencia.
+- **F0.2 — Diagnóstico CLAE** (`SPEC_S1C_F02_DIAGNOSTICO_CLAE.md`): la caída no es regresión sino fin de backfill único; backlog técnicamente desbloqueado, cobertura → C8.
+- **F0.3 — Observabilidad del Eje 1** (`SPEC_S1C_F03_OBSERVABILIDAD.md`): acta de corrida local + alertas + panel. En main; pendientes 3 pasos manuales de Gerardo (066 Supabase + deploy + corrida) para el panel en vivo.
+- **F0.4a — Discovery de elegibilidad** (`SPEC_S1C_F04a_DISCOVERY_ELEGIBILIDAD.md`): las tres preguntas de diseño respondidas con datos (ver 7.3 — hallazgos anclados a sus consumidores).
+
+### 7.2 Acta de decisión — el backlog se suelta después de mejorar el procesamiento
+
+Gerardo (2026-06-12): el backlog de 10.787 ofertas elegibles **no se suelta con el pipeline actual**. Soltarlo ahora produciría 10.787 ofertas más con la calidad mediocre conocida (sector colapsado, perfil argentino sin decidir, emergentes perdidas). La prioridad no es la cobertura sino la **calidad del procesamiento**. Consecuencia de secuencia:
+
+1. **Primero el harness** (F0.5): es la precondición para saber si una mejora al procesamiento mejora o empeora, sin romper producción. Sin harness, mejorar es un acto de fe.
+2. **Después, las mejoras del procesamiento medidas** (Eje 3 y vecinos): sector, perfil argentino a la decisión, emergentes — cada una probada en el harness antes de producción.
+3. **El criterio único de elegibilidad + el candado de inmutabilidad** (F0.4b): cuando se vaya a soltar el backlog en serio.
+4. **El backlog se suelta al final**, con el procesamiento ya mejorado y medido. El corte t1 (baseline del harness) nace con la calidad nueva, no la vieja.
+
+Esto reordena la Fase 0: el harness pasa al frente; elegibilidad/candado/backlog van al final. La acción "gratis" de recuperar las 10.787 con un refresh (sin código) queda **deliberadamente en pausa** hasta el paso 4 — recuperarlas ahora sería procesarlas mal. (Esto matiza §4.1, que con el diagnóstico F0.2 daba el backlog por "desbloqueado ya": técnicamente lo está; por decisión de calidad, se posterga.)
+
+### 7.3 Hallazgos del discovery F0.4a anclados a sus consumidores
+
+Para que el discovery no quede huérfano (sería D-15 dentro de la fase que lo combate), sus hallazgos quedan apuntados al spec que los consumirá:
+
+- **La regla de negocio efectiva + las 4 contradicciones** (candado fantasma · tres definiciones de "no tocar" que no coinciden · filtro de descripción solo en la cola · prioridad solo prioriza NLP) → **las consume F0.4b** (diseño del criterio único). F0.4b arranca leyendo F0.4a §8, no rehace el análisis.
+- **El candado de inmutabilidad nunca se conectó**: el check protege `validado_humano` (0 filas) mientras la validación manual escribe `validado`; discrepancia de string desde el 2026-01-23 (commit 2052761c). Las ~60K ofertas validadas son reprocesables hoy — **no hay candado efectivo**. → F0.4b debe **decidir cuál es el candado real** antes de cualquier reproceso masivo. Es deuda y decisión abierta, no solo dato.
+- **El acoplamiento selección↔estados es bajo**: la selección se puede unificar sin migrar las 68K filas históricas (keya por presencia/ausencia + 3 literales; los otros 5 estados son residuo que solo leen el sync y SPEC U-1). → F0.4b puede unificar el criterio sin tocar datos; si renombra estados, debe tocar `sync_to_supabase.py` y `scripts/spec_u1/`.
+- **Las 14.189 "nunca procesadas"**: 3.402 exclusión legítima (sin descripción útil) + 10.787 backlog reciente (may-jun, ningún refresh corrió). 0 elegibles sin NLP anteriores a mayo (el throughput histórico cerró). → lo consume el paso 4 de 7.2 (soltar el backlog), no antes.
+
+### 7.4 Specs pendientes de la Fase 0 (orden vigente)
+
+1. **F0.5 — Harness formalizado + experimento puente** (próximo): infraestructura para medir mejoras contra ground truth (Gold Set 113 + pares de Cyn). Primer consumidor: la inyección de aristas argentinas (calibra el Eje 3).
+2. **Specs de mejora del procesamiento** (post-harness, cada uno medido): sector, perfil argentino a la decisión, captura de emergentes.
+3. **F0.4b — Criterio único de elegibilidad + candado de inmutabilidad** (lee F0.4a).
+4. **Soltar el backlog + corte t1** (con procesamiento mejorado y medido).
+
+Diferidos vivos: 3 pasos manuales de F0.3 (panel en vivo); seguridad OE-11 (verificada en F0.1, reparación diferida por decisión de Gerardo); datos menores de ventana viva (fecha del backfill CLAE, pico egress 09-jun).
 
 ---
 
