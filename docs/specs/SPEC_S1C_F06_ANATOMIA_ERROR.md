@@ -80,3 +80,117 @@ Verdict de ocupación por oferta (ledger 302): **274 tienen al menos un `incorre
 > estructurada; las otras 8 son notas/skills o ESCO en texto libre). El ledger ya
 > cubre el grueso del universo de correcciones de ocupación. Artefacto:
 > `tests/harness/universo_errores_cyn_2026-06-18.json`.
+
+---
+
+## RESULTADO FINAL (2026-06-18)
+
+### Hallazgo central — el loop está roto (Eje 2, evidencia dura)
+
+> **De 67 errores de ocupación con target claro, el matcher de HOY sigue errando en 65. Solo 2 se arreglaron** (ambos por el semántico, rescatando casos del default absurdo `0110` fuerzas armadas; ninguno por regla).
+
+| estado (sobre 67 errores reales medibles) | n |
+|---|---:|
+| **(a) sigue errando** | **65** |
+| (c) acierta por mejora del canal general | 2 |
+| **(b) acierta por parche de Cyn (circular)** | **0** |
+
+**(b)=0 es la prueba dura del loop roto:** las correcciones de Cyn **no volvieron como
+reglas** que arreglen sus propios casos. El sistema casi no mejoró sobre el universo que
+Cyn marcó. No es falla de detección — el formato `regla_aplicada` se verificó contra las
+claves de origen; (b)=0 es robusto porque solo 2 casos se arreglaron en total.
+
+### Veredicto sobre la hipótesis dirigente — matiz cerrado
+
+La hipótesis del master era *"Eje 3 bloqueado por Eje 4"*. **Se refina:** no es bloqueo,
+**son los dos canales rotos por su cuenta.**
+
+| población | canal que decide los errores |
+|---|---|
+| **119 incorrecta sin-target** (correctness no verificable) | **regla 80%** · sem 13% · dicc 8% |
+| **67 errores reales medibles** | **regla load-bearing 49%** · sem solo **41%** · dual 6 · dicc 1 |
+
+En el universo amplio las reglas dominan (80%); en el subconjunto medible es **mitad y
+mitad**. El semántico yerra ~40% **por su cuenta** → **arreglar solo las reglas dejaría
+el residuo semántico sin tocar.** Eje 4 es el mayor canal, pero Eje 3 no está meramente
+bloqueado: el semántico está roto independientemente.
+
+### Los tres límites — parte del veredicto, no nota al pie
+
+1. **Medible solo en 67/312.** El resto: 94 con target == respuesta de mayo (confirmación
+   o issue de otra dimensión, no error de ocupación) y 151 sin target recuperable (solo
+   canal observable). El a/b/c se sostiene sobre 1 de cada 5 ofertas del universo.
+2. **Método ciego a errores solo-granulares.** El target de texto libre es ISCO-4; el
+   error granular (ESCO fino, rubro bien / ocupación exacta mal) — que es **donde el
+   baseline F0.5 ubicó la brecha (ESCO 60%)** — es invisible a esta corrida.
+3. **Linaje de reglas en 27%.** El número del Eje 4 es un **piso (26-95), no la
+   confirmación de los 180-220** del master. `_linaje` registra origen por-regla solo en
+   95/357; las otras 262 quedan indeterminadas (dominio o parche no registrado).
+
+### Los cuatro cortes (sobre los 67 errores reales)
+
+**Corte 1 — canal de decisión** (ver veredicto arriba): regla 39/65 still-erring, sem 25, dicc 1.
+
+**Corte 2 — familia ocupacional del target** (hacia dónde está el error):
+
+| familia (ISCO-1) | n | regla | sem |
+|---|---:|---:|---:|
+| Profesionales/científicos (2) | 21 | 13 | 8 |
+| Técnicos/prof. asociados (3) | 11 | 4 | 6 |
+| Oficios y artesanos (7) | 9 | 7 | 2 |
+| Operadores planta/máquinas (8) | 9 | 7 | 2 |
+| Directivos (1) | 5 | 3 | 2 |
+| Apoyo administrativo (4) | 5 | 3 | 2 |
+| Servicios y ventas (5) | 5 | 1 | 4 |
+| Ocupaciones elementales (9) | 2 | 1 | 1 |
+
+El error se concentra en **Profesionales + Técnicos (32/67 = 48%)** y **Oficios +
+Operadores (18/67 = 27%)** — familias técnicas/industriales donde el perfil argentino
+**no cubre** (confirma a escala la pata 1 del doble desajuste de F0.5-exp).
+
+**Corte 3 — nivel de unidad del error** (graduado, sobre los 65 que siguen errando):
+
+| distancia al target | n |
+|---|---:|
+| **gran grupo DISTINTO (error grueso, ISCO-1 distinto)** | **49** |
+| mismo ISCO-1 | 6 |
+| mismo ISCO-2 (subgrupo) | 4 |
+| mismo ISCO-3 (solo unidad menor difiere) | 6 |
+
+**75% de los errores son gruesos** (gran grupo equivocado), no afinamiento fino. Sobre el
+universo completo de Cyn, el matcher falla a nivel rubro — distinto del baseline F0.5
+(Gold Set curado, ISCO-4 91,7% sano). La diferencia es la población: el Gold Set ya pasó
+por propagación; el ledger completo expone la superficie cruda de error.
+
+### Doble entregable
+
+**Para el Eje 3 (hacia dónde crecer el perfil):** los errores se concentran en familias
+**técnicas/profesionales** (Profesionales 21, Técnicos 11, Oficios 9, Operadores 9), no en
+las ocupaciones de servicios/ventas que el perfil argentino ya cubre bien. Y el 75% son
+errores **gruesos** (gran grupo), no granulares → el frente no es afinar vocabulario fino
+sino corregir matching grueso en familias técnicas.
+
+**Para el Eje 4 (reglas parche vs dominio — primer corte, consumidor: C5 migración de
+modelo):** piso de **26 reglas con autor Cyn explícito / 95 con algún marcador de origen**,
+sobre 357. **21 reglas distintas deciden los 67 errores hoy**; la más ofensora
+**`R240_operario_produccion` decide 9 errores ella sola** (sobre-dispara). El número de
+parches NO se puede cerrar desde `_linaje` (27% de cobertura) — es un piso, no los 180-220.
+
+### Dos observaciones (registradas, no se resuelven acá)
+
+- **Residencia (Eje 2/5):** 34 ofertas están en el ledger pero **no** en
+  `validacion_correcciones` de Supabase — desincronización del dato humano (el issue existe
+  pero no se escribió de vuelta al JSONB del dashboard).
+- **Canal cambió mayo→hoy:** 9/67 errores cambiaron de canal entre mayo y hoy — el sistema
+  se modificó activamente en el ínterin (siguen errando, pero por otro canal: una regla
+  nueva se metió en el medio).
+
+### Artefactos
+
+```
+tests/harness/universo_errores_cyn_2026-06-18.json      universo consolidado (312)
+tests/harness/anatomia_error.py                          re-corrida read-only del matcher
+tests/harness/anatomia_recorrida_2026-06-18.json         canal+resultado hoy (312)
+tests/harness/anatomia_clasificar.py                     clasificación a/b/c + 4 cortes
+tests/harness/anatomia_clasificacion_2026-06-18.json     clasificación fechada
+```
