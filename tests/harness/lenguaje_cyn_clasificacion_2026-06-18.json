@@ -1,0 +1,3181 @@
+{
+ "generado": "2026-06-18",
+ "n_ofertas": 309,
+ "categorias": [
+  "G1_ocupacion",
+  "G2_target",
+  "G3_denominacion",
+  "G4_atributos",
+  "G5_skills_ruido",
+  "G6_skills_faltan",
+  "G7a_tareas_no_ext",
+  "G7b_tareas_norm",
+  "G8_multiocup",
+  "G9_confirma",
+  "AMB_duda"
+ ],
+ "presencia_por_categoria": {
+  "G1_ocupacion": 161,
+  "G2_target": 200,
+  "G3_denominacion": 229,
+  "G4_atributos": 225,
+  "G5_skills_ruido": 122,
+  "G6_skills_faltan": 237,
+  "G7a_tareas_no_ext": 20,
+  "G7b_tareas_norm": 14,
+  "G8_multiocup": 3,
+  "G9_confirma": 49,
+  "AMB_duda": 4
+ },
+ "sin_categoria": 5,
+ "pureza": {
+  "puras": 37,
+  "multi": 267,
+  "distribucion_n_cats": {
+   "0": 5,
+   "1": 37,
+   "2": 34,
+   "3": 45,
+   "4": 43,
+   "5": 44,
+   "6": 76,
+   "7": 24,
+   "8": 1
+  },
+  "puras_por_categoria": {
+   "G2_target": 14,
+   "G3_denominacion": 12,
+   "G6_skills_faltan": 3,
+   "G1_ocupacion": 1,
+   "G4_atributos": 3,
+   "G8_multiocup": 3,
+   "AMB_duda": 1
+  }
+ },
+ "dimension_activo": {
+  "vocabulario_argentino_G3": 229,
+  "ocupacion_G1": 161,
+  "lectura_aviso_NLP_G4_G5_G6_G7": 259,
+  "  skills_G5_G6": 239,
+  "  tareas_G7a_G7b": 34,
+  "  atributos_G4": 225,
+  "confirmaciones_G9": 49,
+  "multiocupacion_G8": 3,
+  "dudas_AMB": 4
+ },
+ "por_oferta": {
+  "1117925089": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1117936517": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1117977374": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1117988861": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1117994728": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1117999916": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118009744": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118014258": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118020705": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G7a_tareas_no_ext"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118022482": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118027524": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118039378": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118045848": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G7b_tareas_norm"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118060539": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118065063": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118071519": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118074970": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118075182": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118078172": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118082890": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118087360": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118088563": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118089439": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118109693": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 5
+  },
+  "1118130897": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118190831": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118201193": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G7a_tareas_no_ext",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118280745": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118281839": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118288249": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118293430": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2162939": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2169749": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2171374": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2177749": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "2180694": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2180827": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2180850": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2180873": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2180963": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2181060": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2181083": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2181572": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G7a_tareas_no_ext"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2181644": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2181731": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 2
+  },
+  "5293206352": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5423643954": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5433503763": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5572679700": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G7a_tareas_no_ext",
+    "G9_confirma"
+   ],
+   "primaria": "G7a_tareas_no_ext",
+   "n_frag": 3
+  },
+  "5585224240": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 2
+  },
+  "5721817959": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 3
+  },
+  "6082847662": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 6
+  },
+  "6094503764": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G7a_tareas_no_ext"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 4
+  },
+  "6297813821": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 4
+  },
+  "6381126767": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 2
+  },
+  "6399423316": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6477042742": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6592545470": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6789664236": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6817654464": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6844618515": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6947583100": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7060550346": {
+   "categorias": [
+    "G1_ocupacion",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7099049972": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7132049713": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7298041255": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7444899883": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7542392224": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7650903051": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "7653790060": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G7b_tareas_norm"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7688149590": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7764597473": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G7b_tareas_norm"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7835523819": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7907688389": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7975002320": {
+   "categorias": [
+    "G1_ocupacion",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8005295118": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8019079994": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G7a_tareas_no_ext"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8035161034": {
+   "categorias": [
+    "G1_ocupacion",
+    "G4_atributos"
+   ],
+   "primaria": "G1_ocupacion",
+   "n_frag": 1
+  },
+  "8050296930": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 2
+  },
+  "8085763783": {
+   "categorias": [
+    "G1_ocupacion",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8126104369": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8126801755": {
+   "categorias": [
+    "G1_ocupacion",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8176235367": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8197398818": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8333452862": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8340966205": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G7a_tareas_no_ext"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 5
+  },
+  "8377098377": {
+   "categorias": [
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 1
+  },
+  "8397544466": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8398772363": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8434021153": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8435015757": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 3
+  },
+  "8479723941": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G7b_tareas_norm"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8481049074": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8483889674": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8553161974": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8571351785": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8599203974": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8611901681": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G7a_tareas_no_ext"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8683467616": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8798974511": {
+   "categorias": [
+    "G1_ocupacion",
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "8801672815": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8897651476": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 6
+  },
+  "8912162576": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8912307138": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G7b_tareas_norm",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8972615032": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "9000393253": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 4
+  },
+  "9033876691": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G1_ocupacion",
+   "n_frag": 3
+  },
+  "9164059783": {
+   "categorias": [
+    "G1_ocupacion",
+    "G4_atributos"
+   ],
+   "primaria": "G1_ocupacion",
+   "n_frag": 1
+  },
+  "9178142741": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "9195191053": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G7b_tareas_norm"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "9209739433": {
+   "categorias": [
+    "G1_ocupacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G7b_tareas_norm",
+    "G9_confirma"
+   ],
+   "primaria": "G7b_tareas_norm",
+   "n_frag": 3
+  },
+  "9221086655": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "9232271799": {
+   "categorias": [
+    "G1_ocupacion",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1117938377": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 4
+  },
+  "1117951568": {
+   "categorias": [
+    "G2_target"
+   ],
+   "primaria": "G2_target",
+   "n_frag": 3
+  },
+  "1117955657": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1117978310": {
+   "categorias": [
+    "G2_target",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 3
+  },
+  "1117983846": {
+   "categorias": [
+    "G1_ocupacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 2
+  },
+  "1117985442": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118007106": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118008939": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "1118008954": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 2
+  },
+  "1118010542": {
+   "categorias": [
+    "G2_target",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 2
+  },
+  "1118019188": {
+   "categorias": [
+    "AMB_duda",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "AMB_duda",
+   "n_frag": 3
+  },
+  "1118019326": {
+   "categorias": [
+    "G2_target",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 3
+  },
+  "1118019485": {
+   "categorias": [
+    "G2_target",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 3
+  },
+  "1118030128": {
+   "categorias": [
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G6_skills_faltan",
+   "n_frag": 2
+  },
+  "1118032342": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "1118041226": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "1118042070": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 4
+  },
+  "1118044046": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "1118047224": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target"
+   ],
+   "primaria": "G1_ocupacion",
+   "n_frag": 3
+  },
+  "1118050314": {
+   "categorias": [
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "1118059308": {
+   "categorias": [
+    "G2_target"
+   ],
+   "primaria": "G2_target",
+   "n_frag": 4
+  },
+  "1118060565": {
+   "categorias": [
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "1118065220": {
+   "categorias": [
+    "G2_target"
+   ],
+   "primaria": "G2_target",
+   "n_frag": 2
+  },
+  "1118070681": {
+   "categorias": [
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "1118072854": {
+   "categorias": [
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "1118088910": {
+   "categorias": [
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 2
+  },
+  "1118099801": {
+   "categorias": [
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "1118103867": {
+   "categorias": [
+    "G6_skills_faltan"
+   ],
+   "primaria": "G6_skills_faltan",
+   "n_frag": 2
+  },
+  "1118114694": {
+   "categorias": [
+    "G6_skills_faltan"
+   ],
+   "primaria": "G6_skills_faltan",
+   "n_frag": 2
+  },
+  "1118115484": {
+   "categorias": [
+    "G3_denominacion",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 2
+  },
+  "1118118915": {
+   "categorias": [],
+   "primaria": "SIN_CATEGORIA",
+   "n_frag": 1
+  },
+  "1118124320": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 2
+  },
+  "1118124667": {
+   "categorias": [
+    "G2_target"
+   ],
+   "primaria": "G2_target",
+   "n_frag": 1
+  },
+  "1118125851": {
+   "categorias": [
+    "G3_denominacion",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 4
+  },
+  "1118132013": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118133126": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118133545": {
+   "categorias": [
+    "G1_ocupacion"
+   ],
+   "primaria": "G1_ocupacion",
+   "n_frag": 1
+  },
+  "1118135695": {
+   "categorias": [
+    "AMB_duda",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "AMB_duda",
+   "n_frag": 3
+  },
+  "1118136695": {
+   "categorias": [
+    "G2_target"
+   ],
+   "primaria": "G2_target",
+   "n_frag": 1
+  },
+  "1118138730": {
+   "categorias": [
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G6_skills_faltan",
+   "n_frag": 3
+  },
+  "1118145955": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 2
+  },
+  "1118151114": {
+   "categorias": [
+    "G3_denominacion",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118153838": {
+   "categorias": [],
+   "primaria": "SIN_CATEGORIA",
+   "n_frag": 1
+  },
+  "1118154835": {
+   "categorias": [
+    "G2_target"
+   ],
+   "primaria": "G2_target",
+   "n_frag": 2
+  },
+  "1118155844": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118158042": {
+   "categorias": [
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G6_skills_faltan",
+   "n_frag": 2
+  },
+  "1118161061": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "1118161376": {
+   "categorias": [
+    "G4_atributos"
+   ],
+   "primaria": "G4_atributos",
+   "n_frag": 1
+  },
+  "1118163504": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118164691": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "1118204622": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1118219210": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2145263": {
+   "categorias": [
+    "G2_target",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 3
+  },
+  "2155532": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2163224": {
+   "categorias": [
+    "G1_ocupacion",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2170988": {
+   "categorias": [
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "2171314": {
+   "categorias": [
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "2172764": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2172797": {
+   "categorias": [
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 1
+  },
+  "2174061": {
+   "categorias": [
+    "G2_target"
+   ],
+   "primaria": "G2_target",
+   "n_frag": 1
+  },
+  "2174264": {
+   "categorias": [
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "2174645": {
+   "categorias": [],
+   "primaria": "SIN_CATEGORIA",
+   "n_frag": 1
+  },
+  "2175513": {
+   "categorias": [
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2177796": {
+   "categorias": [
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G7a_tareas_no_ext"
+   ],
+   "primaria": "G7a_tareas_no_ext",
+   "n_frag": 2
+  },
+  "5548577462": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 6
+  },
+  "5698185694": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 4
+  },
+  "5755776659": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5764903316": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5765891697": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G7b_tareas_norm"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 9
+  },
+  "5770283730": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5771330788": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5774803261": {
+   "categorias": [
+    "G1_ocupacion",
+    "G4_atributos"
+   ],
+   "primaria": "G1_ocupacion",
+   "n_frag": 1
+  },
+  "5775966215": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5776077535": {
+   "categorias": [
+    "G4_atributos"
+   ],
+   "primaria": "G4_atributos",
+   "n_frag": 3
+  },
+  "5783919915": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5784938217": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5786782663": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5795826998": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5804676995": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G7b_tareas_norm"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5812800545": {
+   "categorias": [
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G6_skills_faltan",
+   "n_frag": 3
+  },
+  "5818643361": {
+   "categorias": [
+    "G4_atributos",
+    "G7b_tareas_norm"
+   ],
+   "primaria": "G7b_tareas_norm",
+   "n_frag": 1
+  },
+  "5821474489": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 2
+  },
+  "5829024810": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5830328706": {
+   "categorias": [
+    "G1_ocupacion",
+    "G4_atributos"
+   ],
+   "primaria": "G1_ocupacion",
+   "n_frag": 2
+  },
+  "5846800678": {
+   "categorias": [
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G6_skills_faltan",
+   "n_frag": 2
+  },
+  "5870097948": {
+   "categorias": [
+    "G4_atributos"
+   ],
+   "primaria": "G4_atributos",
+   "n_frag": 2
+  },
+  "5876264262": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G1_ocupacion",
+   "n_frag": 3
+  },
+  "5876899139": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5877584780": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5885840822": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5891652793": {
+   "categorias": [
+    "G1_ocupacion",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5893353636": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G7b_tareas_norm"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5898997970": {
+   "categorias": [
+    "G2_target",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G6_skills_faltan",
+   "n_frag": 3
+  },
+  "5905566806": {
+   "categorias": [
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G6_skills_faltan",
+   "n_frag": 2
+  },
+  "5924126529": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5940348923": {
+   "categorias": [
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G6_skills_faltan",
+   "n_frag": 2
+  },
+  "5945752836": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5945859930": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "5989496616": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6023647267": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6024230224": {
+   "categorias": [
+    "G1_ocupacion",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6053706024": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G7b_tareas_norm"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6057883738": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 4
+  },
+  "6064967568": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6103561471": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6104769191": {
+   "categorias": [
+    "G1_ocupacion",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 4
+  },
+  "6136315548": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G7a_tareas_no_ext"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6169628655": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 4
+  },
+  "6185898502": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6208652557": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6232330072": {
+   "categorias": [
+    "G1_ocupacion",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6304255423": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6312291090": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6313884152": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6328860527": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6391918158": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G7a_tareas_no_ext"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6400928571": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G7a_tareas_no_ext"
+   ],
+   "primaria": "G7a_tareas_no_ext",
+   "n_frag": 3
+  },
+  "6441959979": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6443298743": {
+   "categorias": [
+    "G1_ocupacion",
+    "G4_atributos"
+   ],
+   "primaria": "G1_ocupacion",
+   "n_frag": 1
+  },
+  "6455173120": {
+   "categorias": [
+    "G1_ocupacion",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 5
+  },
+  "6519792909": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6697865056": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 4
+  },
+  "6742049170": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 4
+  },
+  "6786905097": {
+   "categorias": [
+    "G3_denominacion",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 2
+  },
+  "6866505508": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 3
+  },
+  "6979872094": {
+   "categorias": [
+    "AMB_duda",
+    "G1_ocupacion",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "AMB_duda",
+   "n_frag": 3
+  },
+  "7006539054": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G7a_tareas_no_ext"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7024571988": {
+   "categorias": [
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G6_skills_faltan",
+   "n_frag": 2
+  },
+  "7057631179": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7110596797": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7139382499": {
+   "categorias": [
+    "G1_ocupacion",
+    "G3_denominacion",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 2
+  },
+  "7144798237": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7171410854": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G7a_tareas_no_ext"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7186551637": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7186714536": {
+   "categorias": [
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G6_skills_faltan",
+   "n_frag": 2
+  },
+  "7207138629": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G7a_tareas_no_ext"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7215160363": {
+   "categorias": [
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G7b_tareas_norm"
+   ],
+   "primaria": "G7b_tareas_norm",
+   "n_frag": 1
+  },
+  "7245178831": {
+   "categorias": [
+    "G1_ocupacion",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7272678691": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G1_ocupacion",
+   "n_frag": 3
+  },
+  "7347150394": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7677139622": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7879857202": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 2
+  },
+  "7907119232": {
+   "categorias": [
+    "G1_ocupacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 2
+  },
+  "7938726540": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "7942527874": {
+   "categorias": [
+    "G1_ocupacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 2
+  },
+  "7965889050": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G4_atributos"
+   ],
+   "primaria": "G1_ocupacion",
+   "n_frag": 3
+  },
+  "7985222956": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8088943442": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8090263692": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8299423434": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8303429460": {
+   "categorias": [
+    "G1_ocupacion",
+    "G4_atributos"
+   ],
+   "primaria": "G1_ocupacion",
+   "n_frag": 3
+  },
+  "8393131999": {
+   "categorias": [
+    "G1_ocupacion",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 4
+  },
+  "8725040719": {
+   "categorias": [
+    "G1_ocupacion",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G7a_tareas_no_ext"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8740015957": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G7a_tareas_no_ext"
+   ],
+   "primaria": "G7a_tareas_no_ext",
+   "n_frag": 3
+  },
+  "9168162159": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "9177646546": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G7a_tareas_no_ext"
+   ],
+   "primaria": "G7a_tareas_no_ext",
+   "n_frag": 3
+  },
+  "9188918351": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "9192373935": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "9218783131": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 6
+  },
+  "9244800621": {
+   "categorias": [
+    "G1_ocupacion",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G7a_tareas_no_ext"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "9247600786": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "9255109063": {
+   "categorias": [
+    "G1_ocupacion",
+    "G5_skills_ruido",
+    "G6_skills_faltan",
+    "G7b_tareas_norm"
+   ],
+   "primaria": "G7b_tareas_norm",
+   "n_frag": 2
+  },
+  "9278613932": {
+   "categorias": [
+    "G1_ocupacion",
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "6113184821": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 2
+  },
+  "7715329312": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 2
+  },
+  "6213261602": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 4
+  },
+  "1117991261": {
+   "categorias": [
+    "G2_target"
+   ],
+   "primaria": "G2_target",
+   "n_frag": 1
+  },
+  "1118025702": {
+   "categorias": [
+    "G2_target"
+   ],
+   "primaria": "G2_target",
+   "n_frag": 1
+  },
+  "1118028694": {
+   "categorias": [
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "1118043294": {
+   "categorias": [
+    "G2_target"
+   ],
+   "primaria": "G2_target",
+   "n_frag": 1
+  },
+  "1118046662": {
+   "categorias": [
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "1118113712": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "1118161376_2": {
+   "categorias": [
+    "G8_multiocup"
+   ],
+   "primaria": "G8_multiocup",
+   "n_frag": 1
+  },
+  "1118161376_4": {
+   "categorias": [
+    "G8_multiocup"
+   ],
+   "primaria": "G8_multiocup",
+   "n_frag": 2
+  },
+  "1118161376_5": {
+   "categorias": [
+    "G8_multiocup"
+   ],
+   "primaria": "G8_multiocup",
+   "n_frag": 1
+  },
+  "2175371": {
+   "categorias": [
+    "G2_target"
+   ],
+   "primaria": "G2_target",
+   "n_frag": 2
+  },
+  "2166593": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "2168174": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "1117962440": {
+   "categorias": [
+    "G6_skills_faltan"
+   ],
+   "primaria": "G6_skills_faltan",
+   "n_frag": 1
+  },
+  "5860235121": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 3
+  },
+  "8592617326": {
+   "categorias": [
+    "G3_denominacion",
+    "G4_atributos",
+    "G6_skills_faltan",
+    "G7a_tareas_no_ext",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 2
+  },
+  "8391227813": {
+   "categorias": [
+    "G4_atributos",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G6_skills_faltan",
+   "n_frag": 2
+  },
+  "1118158144": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "1118012966": {
+   "categorias": [
+    "G2_target",
+    "G3_denominacion",
+    "G4_atributos",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 2
+  },
+  "1118046796": {
+   "categorias": [
+    "G4_atributos",
+    "G9_confirma"
+   ],
+   "primaria": "G4_atributos",
+   "n_frag": 2
+  },
+  "1118061127": {
+   "categorias": [],
+   "primaria": "SIN_CATEGORIA",
+   "n_frag": 2
+  },
+  "1118162538": {
+   "categorias": [
+    "G3_denominacion",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 2
+  },
+  "2162269": {
+   "categorias": [
+    "G3_denominacion"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "2166218": {
+   "categorias": [],
+   "primaria": "SIN_CATEGORIA",
+   "n_frag": 1
+  },
+  "6913217366": {
+   "categorias": [
+    "G2_target"
+   ],
+   "primaria": "G2_target",
+   "n_frag": 1
+  },
+  "7572054244": {
+   "categorias": [
+    "G2_target"
+   ],
+   "primaria": "G2_target",
+   "n_frag": 1
+  },
+  "7937139991": {
+   "categorias": [
+    "G2_target"
+   ],
+   "primaria": "G2_target",
+   "n_frag": 1
+  },
+  "2180463_2": {
+   "categorias": [
+    "G2_target",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 1
+  },
+  "2180269": {
+   "categorias": [
+    "G2_target",
+    "G5_skills_ruido",
+    "G6_skills_faltan"
+   ],
+   "primaria": "G5_skills_ruido",
+   "n_frag": 1
+  },
+  "2180463_4": {
+   "categorias": [
+    "G3_denominacion",
+    "G6_skills_faltan",
+    "G9_confirma"
+   ],
+   "primaria": "G3_denominacion",
+   "n_frag": 1
+  },
+  "2164348": {
+   "categorias": [
+    "AMB_duda"
+   ],
+   "primaria": "AMB_duda",
+   "n_frag": 1
+  }
+ }
+}

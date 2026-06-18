@@ -1,6 +1,6 @@
 # SPEC S1C-F0.7 — Discovery del lenguaje de Cyn (read-only)
 
-> **Estado:** Fase 1 completa · esperando validación de categorías · **Fecha:** 2026-06-18
+> **Estado:** Fase 2 completa · categorías validadas por Cyn · clasificación + split listos · **Fecha:** 2026-06-18
 > **Branch:** `spec/s1c-f07-lenguaje-cyn` · **Tipo:** discovery puro (read-only, cero implementación).
 
 ## Propósito
@@ -153,4 +153,108 @@ train/test split) hasta que las categorías estén confirmadas.
 ```
 docs/specs/SPEC_S1C_F07_LENGUAJE_CYN.md                  este spec
 tests/harness/lenguaje_cyn_extraccion_2026-06-18.json    818 fragmentos literales + marcadores + conteos
+```
+
+---
+
+# FASE 2 — Clasificación con las categorías validadas por Cyn (2026-06-18)
+
+## Categorías validadas (las finales)
+
+Los 9 grupos de Fase 1 quedan confirmados. Ajustes de la validación de Cyn:
+
+- **G1 (ocupación) y G3 (denominación argentina) SEPARADOS** (decisión de Gerardo) — G3 es
+  el activo de vocabulario (Eje 3), no se fusiona para no perder la señal. Una nota puede
+  tener ambos.
+- **G2 (target ESCO/ISCO)**: atributo presente en G1/G3 (el código destino), no categoría
+  autónoma. La clasificación lo confirma: de 200 ofertas con target, solo **14 son puras** de
+  G2; el resto va anidado.
+- **G4/G5/G6/G7 SEPARADOS por campo** pero etiquetados todos como **"corrección de lectura
+  del aviso (NLP)"** — comparten que alimentan la lectura de avisos, vuelven por mecanismos
+  distintos.
+- **G7 partido en dos** (refinamiento de Cyn): **G7a** tareas no extraídas · **G7b** tareas
+  presentes pero mal normalizadas (encabezados/requisitos tomados como tarea, o listas de
+  actividades sin verbo). G7b lleva la regla textual de Cyn: *transformar actividades en
+  tareas con verbo SIN inventar contenido nuevo* (conecta con la deuda de S1.B.5).
+- **G8 (multi-ocupación)**: caso real; vía especial = desagregar en subofertas, NO
+  reclasificar a una sola.
+- **G9 (confirma correcto)**: señal de oro (positivos).
+- **AMB (dudas)**: además de categoría, es **pedido de funcionalidad** — un estado "pendiente
+  de revisión" que hoy no existe (insumo del Eje 2).
+
+## Clasificación de las 309 ofertas (presencia, NO exclusiva)
+
+| categoría | ofertas | vía de vuelta | Eje |
+|---|---:|---|---|
+| **G3** denominación argentina | **229** | perfil argentino / vocabulario (el activo) | 3 |
+| **G6** skills faltantes/validadas | 237 | registro de emergentes / perfil | 3 |
+| **G4** atributos del aviso | 225 | corrección NLP (prompt/catálogo sector…) | 3/NLP |
+| **G2** target ESCO/ISCO | 200 | dato de apoyo del training pair | 2 |
+| **G1** ocupación mal | 161 | training pair; si expone bug de regla → corregir regla | 2/4 |
+| **G5** skills ruido | 122 | señal negativa para el extractor | 3/NLP |
+| **G9** confirma correcto | 49 | positivos para el harness (ground truth) | medición |
+| **G7a** tareas no extraídas | 20 | corrección NLP (extracción) | 3/NLP |
+| **G7b** tareas sin verbo / mal normalizadas | 14 | normalización lista→tarea con verbo, sin inventar | 3/NLP |
+| **G8** multi-ocupación | 3 | marcar para desagregar en subofertas | 2 (proceso) |
+| **AMB** dudas | 4 | estado "pendiente de revisión" para Cyn | 2 |
+| *(sin categoría)* | 5 | — (texto truncado / nota vacía) | — |
+
+Suma > 309: **no exclusivas.** El mapeo categoría→vía se confirma tal cual el del prompt;
+el único matiz que la clasificación agrega es que **G2 casi nunca es autónomo** (es atributo).
+
+## El activo es mayormente multi-dimensional
+
+| | ofertas |
+|---|---:|
+| **multi-categoría (≥2)** | **267** |
+| puras (1 sola) | 37 |
+| sin categoría | 5 |
+
+Distribución de nº de categorías por oferta: la moda es **6** (76 ofertas). **Una corrección
+de Cyn alimenta varias vías a la vez** — esto manda en el diseño del cierre del loop: no se
+puede rutear "una corrección → un mecanismo".
+
+## Dimensión del activo por tipo (ofertas con presencia)
+
+| bloque | ofertas | % de 309 |
+|---|---:|---:|
+| **Lectura del aviso / NLP** (G4+G5+G6+G7) | **259** | 84% |
+| └ skills (G5+G6) | 239 | 77% |
+| └ atributos (G4) | 225 | 73% |
+| └ tareas (G7a+G7b) | 34 | 11% |
+| **Vocabulario argentino** (G3) | **229** | 74% |
+| **Ocupación** (G1) | 161 | 52% |
+| **Confirmaciones** (G9, ground truth) | 49 | 16% |
+| **Multi-ocupación** (G8) | 3 | 1% |
+| **Dudas** (AMB) | 4 | 1% |
+
+Lectura-de-aviso (84%) y vocabulario argentino (74%) son los dos frentes más grandes — ambos
+del **Eje 3/NLP**, no de las reglas. Coherente con el reencuadre: el grueso del activo **no**
+vuelve como regla.
+
+## Train/test split (fijado y fechado — NO se usa acá)
+
+- **Criterio:** aleatorio **estratificado por categoría primaria** (prioridad: categorías
+  raras/valiosas primero), `seed=42`, **test = 30%**.
+- **TRAIN = 216 ofertas** (alimenta el loop) · **TEST = 93 ofertas** (reservado, **nunca**
+  usado para generar nada — mide si el loop funcionó).
+- **Balance verificado por presencia no-exclusiva** (lo que importa): cada categoría sustancial
+  queda **27–32%** en test (G1 27%, G2 31%, G3 30%, G4 32%, G5 30%, G6 30%, G9 27%). Las
+  categorías chicas (G7a/G7b/G8/AMB, N<20) quedan ruidosas (35–43%) por tamaño, inevitable.
+- **Regla de oro:** si los dos conjuntos se mezclan una vez, la medición posterior queda
+  contaminada y no se limpia. El split va **desde el día uno**; se documenta y commitea, **no
+  se usa** (el loop no se cierra en este spec).
+
+## Nota de método (Fase 2)
+
+La clasificación es **marcador-triage**, igual que Fase 1: ~5 ofertas sin marcador (prosa /
+texto truncado), y G7a/G7b se separan por marcador con margen (la palabra "normalización" la
+usa Cyn también para ocupación, no solo tareas — se acotó G7b a señales de tarea). Los números
+de las categorías chicas (G7, G8, AMB) son indicativos, no exactos.
+
+## Artefactos (Fase 2)
+
+```
+tests/harness/lenguaje_cyn_clasificacion_2026-06-18.json   309 ofertas × 11 categorías + pureza + dimensión
+tests/harness/lenguaje_cyn_split_2026-06-18.json           train(216)/test(93) estratificado, seed=42
 ```
