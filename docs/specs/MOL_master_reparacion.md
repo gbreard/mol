@@ -3,7 +3,7 @@
 > Versión 0.2 · 2026-06-12
 > Documento operativo de la fase de reparación. Cruza las ~80 deudas observadas en los 7 specs de relevamiento (S1.B.1–S1.B.7), las organiza en ejes transversales, define el norte contra el cual se prioriza, y establece la lógica de secuencia. Es el primer documento del proyecto que prioriza con el cuadro completo a la vista.
 > Antecedentes: `MOL_master_relevamiento.md` v0.2 (la fase que produjo el insumo), los 7 specs `SPEC_S1B*.md`, el modelo conceptual v1.0 (mayo 2026), los diagnósticos de mayo y el índice de investigaciones del harness.
-> *Cambios desde v0.1:* integradas las 7 observaciones de la primera revisión del hilo del harness (corrección de la premisa refutada del Eje 3 — Cadena 8, experimento puente anclado en Fase 0 como primer consumidor del harness, SPEC S0 v0.2 referenciado como insumo, dos actas de decisión, criterio C8 de cobertura, los informes como tercer consumidor, y la sección de operación durante la reparación con el corte t1 como baseline) y las correcciones de la segunda ronda (2026-06-12): precisión numérica del acta de terminologia, verificación CLAE previa al backlog, y punto de partida completo de C4, y principio de método nº7 (residencia de datos) incorporado el 2026-06-12 tras verificación de las violaciones en ambas direcciones, y ajuste de §4.1 con el veredicto de V6 (la caída CLAE es regresión de 2026-03, no backlog pre-clasificador) el 2026-06-12, y cierre del diagnóstico CLAE (F0.2): la caída no es regresión sino fin de backfill único; backlog desbloqueado, cobertura → C8; deuda nlp_processed_at NULL registrada (2026-06-12), y sección 7 (estado y secuencia viva de la Fase 0) con el reorden por la decisión de Gerardo del 2026-06-12 (harness antes que mejoras; backlog al final) y los hallazgos de F0.4a anclados a sus consumidores, y hallazgo del experimento puente F0.5-exp (doble desajuste del perfil argentino; hipótesis dirigente Eje 3 bloqueado por Eje 4, a confirmar en el discovery de anatomía del error) el 2026-06-17, y cierre del discovery de anatomía del error F0.6 (loop roto P-14 con (b)=0; hipótesis Eje3-bloqueado-por-Eje4 confirmada en universo amplio, residuo semántico sugerido a medir después; frente recalibrado a matching grueso en familias técnicas; Eje 4 piso 26-95/357; orden de frente de Fase 2) el 2026-06-18.
+> *Cambios desde v0.1:* integradas las 7 observaciones de la primera revisión del hilo del harness (corrección de la premisa refutada del Eje 3 — Cadena 8, experimento puente anclado en Fase 0 como primer consumidor del harness, SPEC S0 v0.2 referenciado como insumo, dos actas de decisión, criterio C8 de cobertura, los informes como tercer consumidor, y la sección de operación durante la reparación con el corte t1 como baseline) y las correcciones de la segunda ronda (2026-06-12): precisión numérica del acta de terminologia, verificación CLAE previa al backlog, y punto de partida completo de C4, y principio de método nº7 (residencia de datos) incorporado el 2026-06-12 tras verificación de las violaciones en ambas direcciones, y ajuste de §4.1 con el veredicto de V6 (la caída CLAE es regresión de 2026-03, no backlog pre-clasificador) el 2026-06-12, y cierre del diagnóstico CLAE (F0.2): la caída no es regresión sino fin de backfill único; backlog desbloqueado, cobertura → C8; deuda nlp_processed_at NULL registrada (2026-06-12), y sección 7 (estado y secuencia viva de la Fase 0) con el reorden por la decisión de Gerardo del 2026-06-12 (harness antes que mejoras; backlog al final) y los hallazgos de F0.4a anclados a sus consumidores, y hallazgo del experimento puente F0.5-exp (doble desajuste del perfil argentino; hipótesis dirigente Eje 3 bloqueado por Eje 4, a confirmar en el discovery de anatomía del error) el 2026-06-17, y cierre del discovery de anatomía del error F0.6 (loop roto P-14 con (b)=0; hipótesis Eje3-bloqueado-por-Eje4 confirmada en universo amplio, residuo semántico sugerido a medir después; frente recalibrado a matching grueso en familias técnicas; Eje 4 piso 26-95/357; orden de frente de Fase 2) el 2026-06-18, y confirmación del cuello de reglas como hecho estructural central (4 ángulos: puente, comprensión NLP, diccionario, anatomía) con techo ~21-28% para mejoras no-regla; G3 dimensionado y acotado a ~63; 104 override-duro como lista de arranque del Eje 4; el 2026-06-18.
 
 ---
 
@@ -109,6 +109,16 @@ Las ~80 deudas de los 7 specs no se reparan componente por componente — se rep
 **Datos menores del experimento, registrados**: (a) atractor desproporcionado — `representante comercial` (3322, 42 skills) se "come" casos por peso plano → candidato a peso escalado por frecuencia, no plano; (b) caso no-determinista en el desempate semántico (1117969136: 3 corridas, 3 respuestas distintas, todas 0.6) → deuda del tiebreaker, ajena al overlay, registrada en el Eje 4/5.
 
 **Corrida 2 (3.292 pares B_FUERTE) — despriorizada**: a la luz del doble desajuste, inyectar más aristas al mismo canal semántico chocaría contra el mismo muro de precedencia. Queda pendiente del export del harness, pero detrás del discovery de anatomía del error, que define si el cuello es la precedencia (Eje 4) o la cobertura del perfil (Eje 3).
+
+**CONFIRMADO (2026-06-18) — el cuello de reglas es el hecho estructural central del matcher.** La hipótesis dirigente de F0.6 ("Eje 3 bloqueado por Eje 4") quedó confirmada por cuarta vez desde cuatro ángulos independientes:
+1. **Experimento puente (F0.5-exp)**: inyectar vocabulario argentino al canal semántico → −4 (las reglas deciden río arriba).
+2. **Comprensión NLP (G3 V1.3)**: 6 de 7 decisiones de ocupación las toma keyword sobre el título; mejorar la comprensión no llega a la decisión si se deja en un campo que las reglas no leen.
+3. **Diccionario argentino (G3 V1.4)**: de 229 denominaciones de Cyn, las reglas pisan el 72% (166/229); el diccionario solo decide cuando ninguna regla dispara.
+4. **Anatomía del error (F0.6)**: las reglas deciden el 80% de los errores del universo amplio.
+
+**Ya no es hipótesis: es el hecho estructural central.** Cualquier mejora de semántico / diccionario / comprensión / vocabulario tiene **techo en lo que las reglas le dejan — ~21-28% del universo hoy**. El Eje 4 (precedencia y clasificación de reglas) no es "el segundo paso de la Fase 2": es **el frente que limita todo lo demás**. La regla de diseño que se deriva: ante cualquier mejora nueva, la primera pregunta no es "¿mejora el dato?" sino "¿el dato llega a la decisión, o una regla lo pisa río arriba?".
+
+**Lista de arranque del Eje 4 (subproducto de G3 V1.4)**: de los 166 casos pisados, **104 son "override duro"** (la regla le ganó a un semántico divergente y Cyn marcó el resultado como incorrecto) — 104 reglas sospechosas de pisar mal, cada una con su corrección humana que lo prueba. Cuando el Eje 4 arranque (clasificar reglas dominio-vs-parche), se empieza por estos 104, no de cero. Los 62 restantes son `dual_coinciden` (regla y semántico coinciden en ISCO-4; G3 no aporta al rubro pero podría corregir el label fino ESCO si la resolución leyera el diccionario).
 
 **Deudas que agrupa**: S1.B.4 D-03 (cementerio sin reuso), D-04 (filtro L2 poda señal AR), D-05 (emergentes a buffers muertos), A-3 (segunda fosa), A-4 (cuantificación de la divergencia); S1.B.5 D-04/D-05 (sector colapsado y sus marcas sin consumidor), D-07 (listas sin verbo); el Sprint 0 y el Sprint 1 del modelo conceptual.
 
@@ -237,11 +247,27 @@ Diferidos vivos: 3 pasos manuales de F0.3 (panel en vivo); seguridad OE-11 (veri
 
 ### 7.5 Orden de frente de la Fase 2 (derivado de F0.6, 2026-06-18)
 
+> **Superado por 7.6 (mismo día, post mini-discovery de G3)** — se conserva como traza de la derivación inicial. El orden vigente es el de 7.6.
+
 El discovery de anatomía del error fija el orden por gravedad y dependencia:
 
 1. **Loop de Cyn / Eje 2 primero.** (b)=0 es lo más grave y es habilitante: sin un loop que devuelva las correcciones al sistema, ninguna mejora de reglas o vocabulario vuelve — es llenar un balde agujereado. Cerrar el loop desbloquea todo lo demás.
 2. **Reglas / Eje 4 segundo.** Las reglas deciden el 80% de los errores del universo; `R240_operario_produccion` (9/67) es el objetivo puntual de arranque. Fix directo y medible rápido.
 3. **Medir el residuo semántico tercero.** Recién con las reglas arregladas, re-correr el discovery: ese número decide si el semántico necesita trabajo propio (no el 41% de los 67 sesgados). La corrida 2 del experimento puente (los 3.292 pares B_FUERTE) re-entra acá — cuando el semántico tenga espacio para decidir, recién tiene sentido medir si más aristas argentinas lo mejoran.
+
+### 7.6 Estado de G3 (denominación argentina) — dimensionado y acotado (2026-06-18)
+
+El mini-discovery de G3 (V1.1/V1.2/V1.4) dimensionó la primera vía del cierre del loop:
+- El diccionario de ocupación argentina (`config/sinonimos_argentinos_esco.json`, clave `ocupaciones_titulo`) existe, está **limpio** (22 entradas, 0 URIs fabricadas — contraste con `terminologia_argentina_skills.json`, 48/49 inventadas) y el mecanismo admite la dirección correcta ESCO→ISCO. Tiene un fallback de derivación inversa (`LIMIT 1`, el bug del label arbitrario) que hay que **tapar como prerrequisito**.
+- **Techo de efecto sin tocar reglas: ~63 de las 229 ofertas G3 (27%)** — 48 semántico-libre (agregar entrada nueva, bajo riesgo) + 15 que el diccionario ya decide (corregir, riesgo medio). Las otras 166 (72%) las pisa una regla → dependen del Eje 4.
+
+**G3 se diseña acotado a los ~63, como primer cierre de loop del proyecto** (el primer caso de corrección de Cyn que vuelve al sistema; hasta hoy (b)=0). No se junta con el Eje 4: los 166 quedan anclados como dependientes de él (los 104 override-duro son su lista de arranque). El spec de G3 modifica procesamiento por primera vez — su diseño se cruza entre los dos hilos antes de construir.
+
+### Orden de frente de la Fase 2 (actualizado 2026-06-18)
+
+1. **Loop de Cyn / Eje 2** — en curso. Primera vía: **G3 acotado a ~63** (cargar 48 + corregir 15 + tapar el fallback inverso), con train/test split ya fijado (F0.7). Mide el primer cierre de loop de punta a punta.
+2. **Reglas / Eje 4 — EL frente** (reclasificado de "segundo paso" a "el cuello que limita todo"). Arranca por los 104 override-duro. Es la precondición para que G3 escale más allá del 27% y para que cualquier mejora no-regla supere su techo actual.
+3. **Medir el residuo semántico** — después del Eje 4, re-corriendo el discovery con las reglas ya arregladas. La corrida 2 del puente (3.292 pares) re-entra acá.
 
 ---
 
