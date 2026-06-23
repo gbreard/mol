@@ -1,0 +1,63 @@
+{
+ "spec": "S1C-G3",
+ "punto_control": 1,
+ "fecha": "2026-06-23",
+ "P1_ground_truth": {
+  "archivo": "tests/harness/g3_ground_truth_denominacion_2026-06-23.json",
+  "total_g3": 229,
+  "resuelto_uri_real": 22,
+  "pendiente": 207,
+  "ceiling_con_subcodigo_esco": 107,
+  "nota_ceiling": "107 citan subcódigo ESCO pero esco_code está 0% poblado y no hay mapa código->URI en ninguna tabla; resolución es solo por label. 22 resuelven limpio; ~85 con subcódigo no matchean label del catálogo -> pendiente Cyn / RDF externo.",
+  "guarda_coherencia": "si Cyn da código, ISCO-4 resuelto debe coincidir; 1 falso positivo (editor 2654->1349) descartado"
+ },
+ "P2_split": {
+  "sem_libre_48": {
+   "total": 48,
+   "train": 35,
+   "test": 13,
+   "fuera": 0,
+   "uri_resuelta": 7,
+   "uri_train": 5,
+   "uri_test": 2
+  },
+  "dicc_ya_15": {
+   "total": 15,
+   "train": 14,
+   "test": 1,
+   "fuera": 0,
+   "uri_resuelta": 4,
+   "uri_train": 4,
+   "uri_test": 0
+  },
+  "total_63": {
+   "total": 63,
+   "train": 49,
+   "test": 14,
+   "fuera": 0,
+   "uri_resuelta": 11,
+   "uri_train": 9,
+   "uri_test": 2
+  },
+  "veredicto_o_mecanismo": "48-load: 13 en TEST -> casi-veredicto (borderline). 15-correct: 1 en TEST -> prueba de mecanismo."
+ },
+ "P3_fallback": {
+  "universo_dict": 3839,
+  "rama": {
+   "explicit": 565
+  },
+  "db_fallback_LIMIT1": 0,
+  "conclusion": "0/3839 alcanzan la rama DB LIMIT-1; 565 vía mapa explícito isco_preferred_labels. El fallback arbitrario ya está muerto -> paso 0 no rompe nada; no hay aciertos-por-fallback que proteger."
+ },
+ "P4_canal_inicial": {
+  "sem_libre": "47 skills_first_v3 + 1 semantic_fallback (ninguna por dict hoy)",
+  "dicc_ya": "diccionario_argentino_{capataz,administrativo,gerente}"
+ },
+ "CRUCE_CRITICO": {
+  "alcanzables_con_uri_real_hoy": 11,
+  "sem_libre": "7 (TRAIN 5 / TEST 2)",
+  "dicc_ya": "4 (TRAIN 4 / TEST 0)",
+  "cargable_AHORA_sin_inventar": "paso1 -> 5 SEM_LIBRE TRAIN con URI; paso3 -> 4 DICC_YA TRAIN con URI = 9 entradas",
+  "gateado_por": "disponibilidad de URI-target (no por el fallback, que es seguro). 52 de 63 pendiente de target resuelto."
+ }
+}
