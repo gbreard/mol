@@ -4,7 +4,7 @@
 Match Ofertas v3.3.0 - Skills-First Matching Pipeline con Diccionario Argentino
 ================================================================================
 
-VERSION: 3.5.6
+VERSION: 3.5.7
 FECHA: 2026-02-19
 MODELO: BGE-M3 (BAAI/bge-m3)
 
@@ -309,6 +309,7 @@ class MatcherV3:
             esco_uri_root = config.get("esco_uri", "")
             ctx_uri_override = ""
             ctx_label_override = ""
+            ctx_code_override = ""
 
             if contextos:
                 # Buscar contexto que matchee con titulo o sector
@@ -323,6 +324,7 @@ class MatcherV3:
                             isco = ctx_value.get("isco")
                             ctx_uri_override = ctx_value.get("esco_uri", "") or ""
                             ctx_label_override = ctx_value.get("esco_label", "") or ""
+                            ctx_code_override = ctx_value.get("esco_code", "") or ""
                         else:
                             isco = ctx_value
                         # v3.4.3: Si el contexto cambió el ISCO, invalidar esco_label del padre
@@ -332,6 +334,33 @@ class MatcherV3:
                         if self.verbose:
                             print(f"[V3.3] Dict argentino: '{termino}' + contexto '{patron}' -> ISCO {isco}")
                         break
+
+            # SPEC S1C-G3 (3.a): resolución autoritativa por esco_code.
+            # Si la entrada (o su contexto) trae un esco_code — el código exacto que
+            # Cyn citó — resolverlo vía code_to_occupation, igual que las reglas en
+            # _resolve_rule_target. El código es un token inequívoco: evita la
+            # adivinanza de label sobre ISCO-4 (ambigua: 13 preferred + 602 alt
+            # mapean a >1 URI) y el fallback silencioso (muerto tras Paso 0).
+            # Gana sobre el camino isco→label heredado.
+            matched_code = (ctx_code_override or config.get("esco_code", "") or "").strip()
+            if matched_code:
+                occ_by_code = self._find_occupation_by_esco_code(matched_code)
+                if occ_by_code and occ_by_code.get("uri"):
+                    if self.verbose:
+                        print(f"[S1C-G3] Dict argentino: '{termino}' -> esco_code "
+                              f"{matched_code} -> {occ_by_code.get('label')}")
+                    return {
+                        "isco_code": occ_by_code.get("isco_code"),
+                        "esco_label": occ_by_code.get("label", ""),
+                        "esco_uri": occ_by_code.get("uri", ""),
+                        "score": 0.92,
+                        "metodo": f"diccionario_argentino_{termino.replace(' ', '_')}",
+                        "termino_matched": termino,
+                        "via_resolucion": "esco_code",
+                    }
+                elif self.verbose:
+                    print(f"[S1C-G3] esco_code '{matched_code}' no resuelve en "
+                          f"metadata, fallback a isco/label")
 
             # Si no hay contexto o no matcheo ninguno, usar ISCO primario
             if not isco:

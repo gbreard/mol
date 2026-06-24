@@ -5,7 +5,8 @@
   "notas": [
     "El vocabulario ESCO es europeo y no matchea bien con terminos argentinos",
     "Este diccionario permite mapear titulos y skills argentinos a codigos ESCO",
-    "Usado por match_ofertas_v3.py para mejorar precision del matching semantico"
+    "Usado por match_ofertas_v3.py para mejorar precision del matching semantico",
+    "2026-06-24 SPEC S1C-G3: +6 denominaciones argentinas de Cyn (SEM_LIBRE TRAIN), resueltas por esco_code. HOLD: ['operario de produccion', 'estudiantes de logística para pasantía stellantis 2026']."
   ],
   "ocupaciones_titulo": {
     "_descripcion": "Mapeo titulo argentino -> codigo ISCO. Cuando el titulo contiene estos terminos, forzar o priorizar el ISCO indicado.",
@@ -391,6 +392,79 @@
       ],
       "nota": "En Argentina 'gerente de operaciones gastronómicas' = director de restaurante/cadena gastronómica. Fuente: correcciones Cynthia 2026-04-08.",
       "esco_uri": "http://data.europa.eu/esco/occupation/d5eb6150-bbff-4a9c-9d0c-21eab4dbe2b6"
+    },
+    "project control manager": {
+      "esco_code": "1330.7",
+      "isco_primario": "1330",
+      "esco_label": "gestor de proyectos de TIC/gestora de proyectos de TIC",
+      "esco_uri": "http://data.europa.eu/esco/occupation/8b6388a4-4904-471b-9331-d3b1211f5525",
+      "variantes": [
+        "project control manager"
+      ],
+      "_spec": "S1C-G3 SEM_LIBRE TRAIN (cierre loop Cyn)",
+      "_oid_origen": "1117925089",
+      "_denom_cyn": "Project Control Manager / Gerente de proyectos TIC"
+    },
+    "editor de videos": {
+      "esco_code": "2654.5",
+      "isco_primario": "2654",
+      "esco_label": "editor/editora de cine y televisión de cine y televisión",
+      "esco_uri": "http://data.europa.eu/esco/occupation/ac734172-ae9a-41ab-80a0-a7b33694e027",
+      "variantes": [
+        "editor de videos"
+      ],
+      "_spec": "S1C-G3 SEM_LIBRE TRAIN (cierre loop Cyn)",
+      "_oid_origen": "1117994728",
+      "_denom_cyn": ""
+    },
+    "intendente de obra": {
+      "esco_code": "5153.1",
+      "isco_primario": "5153",
+      "esco_label": "conserje de edificio",
+      "esco_uri": "http://data.europa.eu/esco/occupation/1822bfc2-e735-449f-ba00-ca71eb5c062b",
+      "variantes": [
+        "intendente de obra"
+      ],
+      "_spec": "S1C-G3 SEM_LIBRE TRAIN (cierre loop Cyn)",
+      "_oid_origen": "1118027524",
+      "_denom_cyn": "",
+      "_flag": "mapeo semánticamente dudoso (intendente de obra -> conserje de edificio 5153); es la corrección de Cyn, blast radius 1."
+    },
+    "asistente de ingeniería jr": {
+      "esco_code": "3119.8",
+      "isco_primario": "3119",
+      "esco_label": "ingeniero técnico industrial/ingeniera técnica industrial",
+      "esco_uri": "http://data.europa.eu/esco/occupation/bcc21c63-7eee-4520-8fa7-43eefd389668",
+      "variantes": [
+        "asistente de ingeniería jr"
+      ],
+      "_spec": "S1C-G3 SEM_LIBRE TRAIN (cierre loop Cyn)",
+      "_oid_origen": "1118071519",
+      "_denom_cyn": ""
+    },
+    "líder de mantenimiento de flota": {
+      "esco_code": "7231.9",
+      "isco_primario": "7231",
+      "esco_label": "supervisor de mantenimiento de vehículos/supervisora de mantenimiento de vehículos",
+      "esco_uri": "http://data.europa.eu/esco/occupation/264b00c9-84d0-4dc9-b590-aed2cea2b904",
+      "variantes": [
+        "líder de mantenimiento de flota"
+      ],
+      "_spec": "S1C-G3 SEM_LIBRE TRAIN (cierre loop Cyn)",
+      "_oid_origen": "6789664236",
+      "_denom_cyn": ""
+    },
+    "oficial armador": {
+      "esco_code": "8219.8",
+      "isco_primario": "8219",
+      "esco_label": "montador de productos metálicos/montadora de productos metálicos",
+      "esco_uri": "http://data.europa.eu/esco/occupation/af2f3615-63ab-44dc-957d-c9660410d336",
+      "variantes": [
+        "oficial armador"
+      ],
+      "_spec": "S1C-G3 SEM_LIBRE TRAIN (cierre loop Cyn)",
+      "_oid_origen": "8019079994",
+      "_denom_cyn": ""
     }
   },
   "skills_mapeo": {
@@ -462,6 +536,6 @@
       "41"
     ]
   },
-  "fecha_modificacion": "2026-05-05",
+  "fecha_modificacion": "2026-06-24",
   "nota_v2": "v2.0: SPEC U-1 v3.1 con revisión de decisión sobre tecnico. URIs explícitas en gerente (7 ctx), operador (3 ctx, sin maquinas/CNC), tecnico (6 ctx, Opción 3). Eliminadas analista, operario (cobertura por reglas ≥98%). Eliminado contexto operador.maquinas/CNC (ISCO 8211 mal declarado). Label drift corregido: jefe de mantenimiento (1321→1219), analista de tesoreria, operador de atencion. Reportes: docs/diagnostico/2026-05-05_verificacion_overmatch_C2.md y baseline_canarios_post_F0.md."
 }
