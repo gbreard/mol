@@ -4,7 +4,7 @@
 Match Ofertas v3.3.0 - Skills-First Matching Pipeline con Diccionario Argentino
 ================================================================================
 
-VERSION: 3.5.5
+VERSION: 3.5.8
 FECHA: 2026-02-19
 MODELO: BGE-M3 (BAAI/bge-m3)
 
@@ -286,21 +286,26 @@ class MatcherV3:
         sector = (oferta_nlp.get("sector_empresa") or "").lower()
         ocupaciones = self.sinonimos_arg.get("ocupaciones_titulo", {})
 
+        # SPEC S1C-G3: ordenar los matches por la variante MÁS LARGA que matchea
+        # (la más específica gana). Evita que una denominación genérica
+        # ("vigilador/a", "sales") tape a una más específica que la contiene como
+        # substring ("vigilador/a de personal" -> supervisor; "sales executive"
+        # -> representante comercial). Antes ganaba la primera en orden de inserción.
+        # SPEC U-1 v3.1 C2: la KEY del JSON siempre es una variante implícita
+        # (ej: "jefe de mantenimiento" matchea aunque "variantes" no lo liste).
+        candidatos = []
         for termino, config in ocupaciones.items():
             if termino.startswith("_"):
                 continue
-
-            # Verificar si el titulo contiene el termino
-            # SPEC U-1 v3.1 C2: la KEY del JSON siempre es una variante implícita
-            # (ej: "jefe de mantenimiento" matchea aunque "variantes" no lo liste).
             variantes = list(config.get("variantes", []) or [])
             if termino not in variantes:
                 variantes.append(termino)
-            match_found = any(v.lower() in titulo for v in variantes)
+            matched = [v for v in variantes if v.lower() in titulo]
+            if matched:
+                candidatos.append((max(len(v) for v in matched), termino, config))
+        candidatos.sort(key=lambda x: x[0], reverse=True)
 
-            if not match_found:
-                continue
-
+        for _mlen, termino, config in candidatos:
             # Hay match con el termino, ahora verificar contexto
             contextos = config.get("contextos", {})
             isco = None
@@ -309,6 +314,7 @@ class MatcherV3:
             esco_uri_root = config.get("esco_uri", "")
             ctx_uri_override = ""
             ctx_label_override = ""
+            ctx_code_override = ""
 
             if contextos:
                 # Buscar contexto que matchee con titulo o sector
@@ -323,6 +329,7 @@ class MatcherV3:
                             isco = ctx_value.get("isco")
                             ctx_uri_override = ctx_value.get("esco_uri", "") or ""
                             ctx_label_override = ctx_value.get("esco_label", "") or ""
+                            ctx_code_override = ctx_value.get("esco_code", "") or ""
                         else:
                             isco = ctx_value
                         # v3.4.3: Si el contexto cambió el ISCO, invalidar esco_label del padre
@@ -332,6 +339,33 @@ class MatcherV3:
                         if self.verbose:
                             print(f"[V3.3] Dict argentino: '{termino}' + contexto '{patron}' -> ISCO {isco}")
                         break
+
+            # SPEC S1C-G3 (3.a): resolución autoritativa por esco_code.
+            # Si la entrada (o su contexto) trae un esco_code — el código exacto que
+            # Cyn citó — resolverlo vía code_to_occupation, igual que las reglas en
+            # _resolve_rule_target. El código es un token inequívoco: evita la
+            # adivinanza de label sobre ISCO-4 (ambigua: 13 preferred + 602 alt
+            # mapean a >1 URI) y el fallback silencioso (muerto tras Paso 0).
+            # Gana sobre el camino isco→label heredado.
+            matched_code = (ctx_code_override or config.get("esco_code", "") or "").strip()
+            if matched_code:
+                occ_by_code = self._find_occupation_by_esco_code(matched_code)
+                if occ_by_code and occ_by_code.get("uri"):
+                    if self.verbose:
+                        print(f"[S1C-G3] Dict argentino: '{termino}' -> esco_code "
+                              f"{matched_code} -> {occ_by_code.get('label')}")
+                    return {
+                        "isco_code": occ_by_code.get("isco_code"),
+                        "esco_label": occ_by_code.get("label", ""),
+                        "esco_uri": occ_by_code.get("uri", ""),
+                        "score": 0.92,
+                        "metodo": f"diccionario_argentino_{termino.replace(' ', '_')}",
+                        "termino_matched": termino,
+                        "via_resolucion": "esco_code",
+                    }
+                elif self.verbose:
+                    print(f"[S1C-G3] esco_code '{matched_code}' no resuelve en "
+                          f"metadata, fallback a isco/label")
 
             # Si no hay contexto o no matcheo ninguno, usar ISCO primario
             if not isco:
@@ -380,23 +414,31 @@ class MatcherV3:
         return None
 
     def _get_esco_label_for_isco(self, isco_code: str) -> str:
-        """Obtiene label ESCO para un código ISCO.
+        """Obtiene label ESCO para un código ISCO, vía mapeo explícito.
 
-        Prioridad: mapeo explícito (isco_preferred_labels.json) > DB fallback.
-        El mapeo explícito evita el problema de LIMIT 1 sin ORDER BY
-        que asignaba labels arbitrarios como 'vendedor de piezas de repuesto'.
+        SPEC S1C-G3 (Paso 0.b): la antigua rama de fallback a BD
+        (`SELECT ... WHERE isco_code LIKE ? LIMIT 1` sin ORDER BY) devolvía un
+        label ARBITRARIO del ISCO (ej 'café verde', 'vendedor de piezas de
+        repuesto') cuando el ISCO no estaba mapeado. P.3 midió 0/3839 ofertas
+        alcanzándola hoy → enterrarla es seguro. Ahora, en vez de inventar un
+        label, falla de forma RUIDOSA: loguea y devuelve "" (sin label).
+
+        El camino correcto para resolver el target del diccionario es por
+        `esco_code` (token inequívoco de Cyn) vía `_find_occupation_by_esco_code`,
+        no por adivinanza de label sobre el ISCO-4.
         """
-        # 1. Mapeo explícito (autoritativo)
+        # Mapeo explícito (autoritativo)
         if isco_code in self.isco_preferred_labels:
             return self.isco_preferred_labels[isco_code]
 
-        # 2. Fallback a BD (para ISCOs no mapeados)
-        cur = self.conn.execute('''
-            SELECT preferred_label_es FROM esco_occupations
-            WHERE isco_code LIKE ? LIMIT 1
-        ''', (f"%{isco_code}%",))
-        row = cur.fetchone()
-        return row[0] if row else ""
+        # Fallo ruidoso: NO inventar un label arbitrario para un ISCO no mapeado.
+        logger.warning(
+            "[S1C-G3/0.b] _get_esco_label_for_isco sin mapeo explícito para ISCO "
+            "'%s' — se devuelve label vacío (antes se devolvía un label arbitrario "
+            "vía LIMIT 1). Resolver el target por esco_code, no por ISCO.",
+            isco_code,
+        )
+        return ""
 
     def _apply_sector_penalty(
         self,
@@ -1329,26 +1371,6 @@ class MatcherV3:
             }
 
         return None
-
-    def _find_occupation_uri(self, isco_code: str, label: str) -> str:
-        """
-        DEPRECATED: Usar _find_occupation_by_esco_label() en su lugar.
-        Mantenido por compatibilidad.
-        """
-        # Intentar con el nuevo método primero
-        result = self._find_occupation_by_esco_label(label)
-        if result:
-            return result['uri']
-
-        # Fallback al método antiguo
-        cur = self.conn.execute('''
-            SELECT occupation_uri FROM esco_occupations
-            WHERE isco_code LIKE ? OR preferred_label_es LIKE ?
-            LIMIT 1
-        ''', (f"%{isco_code}%", f"%{label}%"))
-
-        row = cur.fetchone()
-        return row[0] if row else ""
 
     def _semantic_match_title(self, titulo: str, top_n: int = 10) -> List[Dict]:
         """Match semantico del titulo usando embeddings."""
