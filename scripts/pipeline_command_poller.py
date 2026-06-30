@@ -140,9 +140,14 @@ def _sync_scraping_stats_after_indeed(client):
         db_path = PROJECT_DIR / "database" / "bumeran_scraping.db"
         conn = sqlite3.connect(str(db_path))
 
-        # Get local Indeed stats only
+        # Get local Indeed stats only. Mismas 4 métricas que sync_scraping_stats.py
+        # (total, ultimo, ultimos_7d, hoy) para que el entry sea schema-consistente
+        # con los portales del VPS; si no, sync_scraping_stats.py crashea con KeyError.
         row = conn.execute(
-            "SELECT MAX(scrapeado_en), COUNT(*) FROM ofertas WHERE portal = 'indeed'"
+            """SELECT MAX(scrapeado_en), COUNT(*),
+                      SUM(CASE WHEN scrapeado_en >= datetime('now','-7 days') THEN 1 ELSE 0 END),
+                      SUM(CASE WHEN scrapeado_en >= datetime('now','-1 day')  THEN 1 ELSE 0 END)
+               FROM ofertas WHERE portal = 'indeed'"""
         ).fetchone()
         conn.close()
 
@@ -151,6 +156,8 @@ def _sync_scraping_stats_after_indeed(client):
 
         indeed_ultimo = row[0]
         indeed_total = row[1]
+        indeed_7d = row[2] or 0
+        indeed_hoy = row[3] or 0
 
         # Read current stats from Supabase (includes VPS portals)
         existing = client.table('scraping_live_stats').select('portales,ultimo_scraping').eq('id', 'current').execute()
@@ -161,7 +168,12 @@ def _sync_scraping_stats_after_indeed(client):
                 portales = json.loads(portales)
 
         # Only update Indeed, keep VPS portals as-is
-        portales['indeed'] = {'ultimo_scraping': indeed_ultimo, 'total': indeed_total}
+        portales['indeed'] = {
+            'ultimo_scraping': indeed_ultimo,
+            'total': indeed_total,
+            'ultimos_7d': indeed_7d,
+            'hoy': indeed_hoy,
+        }
 
         # Global ultimo = max across all portals
         ultimo_global = max(
