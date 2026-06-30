@@ -68,15 +68,22 @@ echo "" >> "$LOG_FILE"
 # Paso 6: Indeed (~2.5 horas con detalles, multi-keyword)
 # =====================================================================
 echo "=== [6/7] Indeed scraping: $(date) ===" >> "$LOG_FILE"
-PYTHONUNBUFFERED=1 python3 scripts/scraping/run_indeed_vps.py --estrategia exhaustiva --fromage 14 >> "$LOG_FILE" 2>&1
+# Indeed corre local (VPS bloqueado por Cloudflare). Se encola via Supabase → poller local.
+PYTHONUNBUFFERED=1 python3 scripts/scraping/queue_indeed_local.py >> "$LOG_FILE" 2>&1
 echo "=== Indeed finalizado: $(date) ===" >> "$LOG_FILE"
 echo "" >> "$LOG_FILE"
 
 # =====================================================================
-# Paso 7: Export incremental (para sync a local)
+# Paso 7: Export incremental — DESACTIVADO (2026-06-30)
 # =====================================================================
-echo "=== [7/7] Export incremental: $(date) ===" >> "$LOG_FILE"
-python3 scripts/export_nuevas.py >> "$LOG_FILE" 2>&1
+# Bug "watermark robado": export_nuevas.py comparte el cursor data/sync_log.json
+# con el sync local (sync_from_vps.py, horario). Si el cron exporta acá, avanza
+# el watermark a un .sql que queda en el VPS y que NADIE importa, dejando afuera
+# del sync local los portales scrapeados al final del cron (CABA 11:23, Portal
+# Empleo 11:23-11:27). El sync local es el ÚNICO consumidor real y debe ser el
+# único dueño del watermark. NO reactivar este paso.
+echo "=== [7/7] Export incremental: DESACTIVADO (lo hace el sync local) ===" >> "$LOG_FILE"
+# python3 scripts/export_nuevas.py >> "$LOG_FILE" 2>&1
 
 echo "" >> "$LOG_FILE"
 echo "=== TODO FINALIZADO: $(date) ===" >> "$LOG_FILE"
@@ -85,3 +92,7 @@ echo "=== TODO FINALIZADO: $(date) ===" >> "$LOG_FILE"
 find /opt/mol/logs -name "scraping_*.log" -mtime +30 -delete 2>/dev/null
 # Limpiar exports viejos (>30 días)
 find /opt/mol/data/export -name "ofertas_export_*.sql" -mtime +30 -delete 2>/dev/null
+
+# Sync scraping stats a Supabase (para dashboard)
+echo "=== [STATS] Subiendo stats a Supabase ===" >> "$LOG_FILE"
+cd /opt/mol && python3 scripts/sync_scraping_stats.py && python3 scripts/sync_scraping_daily.py --days 7 >> "$LOG_FILE" 2>&1
