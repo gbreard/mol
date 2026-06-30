@@ -6,7 +6,8 @@
     "El vocabulario ESCO es europeo y no matchea bien con terminos argentinos",
     "Este diccionario permite mapear titulos y skills argentinos a codigos ESCO",
     "Usado por match_ofertas_v3.py para mejorar precision del matching semantico",
-    "2026-06-24 SPEC S1C-G3: +6 denominaciones argentinas de Cyn (SEM_LIBRE TRAIN), resueltas por esco_code. HOLD: ['operario de produccion', 'estudiantes de logística para pasantía stellantis 2026']."
+    "2026-06-24 SPEC S1C-G3: +6 denominaciones argentinas de Cyn (SEM_LIBRE TRAIN), resueltas por esco_code. HOLD: ['operario de produccion', 'estudiantes de logística para pasantía stellantis 2026'].",
+    "2026-06-30 SPEC S1C-G3 GRUPO A: +42 denominaciones nuevas validadas por Cyn (xlsx 2026-06-24) resueltas por esco_code; UPDATE intendente de obra 5153.1->3123.1.1; +esco_code a 1 legacy; HOLD ['lobos'] (titulo=localidad). GRUPO B + HOJA 2 -> taxonomia_contexto_cyn.md (Eje 4)."
   ],
   "ocupaciones_titulo": {
     "_descripcion": "Mapeo titulo argentino -> codigo ISCO. Cuando el titulo contiene estos terminos, forzar o priorizar el ISCO indicado.",
@@ -309,6 +310,7 @@
       "esco_uri": "http://data.europa.eu/esco/occupation/d35f9e79-5778-43b4-8667-0e3ba1fcb19a"
     },
     "ejecutivo comercial": {
+      "esco_code": "3322.1",
       "isco_primario": "3322",
       "esco_label": "representante comercial",
       "variantes": [
@@ -418,17 +420,16 @@
       "_denom_cyn": ""
     },
     "intendente de obra": {
-      "esco_code": "5153.1",
-      "isco_primario": "5153",
-      "esco_label": "conserje de edificio",
-      "esco_uri": "http://data.europa.eu/esco/occupation/1822bfc2-e735-449f-ba00-ca71eb5c062b",
+      "esco_code": "3123.1.1",
+      "isco_primario": "3123",
+      "esco_label": "capataz de construcción",
+      "esco_uri": "http://data.europa.eu/esco/occupation/046574a1-9bb3-4a80-8a7b-83dc7db1dae2",
       "variantes": [
         "intendente de obra"
       ],
-      "_spec": "S1C-G3 SEM_LIBRE TRAIN (cierre loop Cyn)",
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24) - UPDATE target",
       "_oid_origen": "1118027524",
-      "_denom_cyn": "",
-      "_flag": "mapeo semánticamente dudoso (intendente de obra -> conserje de edificio 5153); es la corrección de Cyn, blast radius 1."
+      "_denom_cyn": "Intendente de obra"
     },
     "asistente de ingeniería jr": {
       "esco_code": "3119.8",
@@ -465,6 +466,518 @@
       "_spec": "S1C-G3 SEM_LIBRE TRAIN (cierre loop Cyn)",
       "_oid_origen": "8019079994",
       "_denom_cyn": ""
+    },
+    "acomp terapeutico": {
+      "esco_code": "3412.4.13",
+      "isco_primario": "3412",
+      "esco_label": "cuidador en centro de menores/cuidadora en centro de menores",
+      "esco_uri": "http://data.europa.eu/esco/occupation/6667bf29-a3e3-4513-a71b-82c67206045b",
+      "variantes": [
+        "acomp terapeutico"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 6104769191,
+      "_denom_cyn": "Acomp terapeutico"
+    },
+    "architectural designer - interior workplace": {
+      "esco_code": "3432.1",
+      "isco_primario": "3432",
+      "esco_label": "diseñador de interiores/diseñadora de interiores",
+      "esco_uri": "http://data.europa.eu/esco/occupation/73e776fb-4d99-4031-bad4-7716f121155d",
+      "variantes": [
+        "architectural designer - interior workplace"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 8912162576,
+      "_denom_cyn": "Architectural designer - interior workplace"
+    },
+    "armed dispatcher": {
+      "esco_code": "4323.9",
+      "isco_primario": "4323",
+      "esco_label": "coordinador de transporte/coordinadora de transporte",
+      "esco_uri": "http://data.europa.eu/esco/occupation/f57eb0cb-e67a-419c-9b7b-4abd811b7e2f",
+      "variantes": [
+        "armed dispatcher"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 8599203974,
+      "_denom_cyn": "Armed dispatcher"
+    },
+    "bachero / steward": {
+      "esco_code": "9412.1",
+      "isco_primario": "9412",
+      "esco_label": "ayudante de cocina",
+      "esco_uri": "http://data.europa.eu/esco/occupation/e1cf6897-158d-4b48-a39e-2a3a8cac216c",
+      "variantes": [
+        "bachero / steward"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": "1117938377",
+      "_denom_cyn": "Bachero / Steward"
+    },
+    "contador tax": {
+      "esco_code": "2411.1",
+      "isco_primario": "2411",
+      "esco_label": "contable",
+      "esco_uri": "http://data.europa.eu/esco/occupation/eda0d957-3c3c-4139-b89a-a18bc9e18897",
+      "variantes": [
+        "contador tax"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 5877584780,
+      "_denom_cyn": "Contador tax"
+    },
+    "contador/a público senior orientación impuestos": {
+      "esco_code": "2411.1",
+      "isco_primario": "2411",
+      "esco_label": "contable",
+      "esco_uri": "http://data.europa.eu/esco/occupation/eda0d957-3c3c-4139-b89a-a18bc9e18897",
+      "variantes": [
+        "contador/a público senior orientación impuestos"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 5989496616,
+      "_denom_cyn": "Contador/a público senior orientación impuestos"
+    },
+    "customer service senior con exp en forwarder": {
+      "esco_code": "3331.2.1",
+      "isco_primario": "3331",
+      "esco_label": "especialista en importación y exportación",
+      "esco_uri": "http://data.europa.eu/esco/occupation/61b859ed-24d8-48cf-9c1b-67d7a6c62bb5",
+      "variantes": [
+        "customer service senior con exp en forwarder"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 1118020705,
+      "_denom_cyn": "Customer service senior con exp en forwarder"
+    },
+    "direccion de obras": {
+      "esco_code": "1323.1",
+      "isco_primario": "1323",
+      "esco_label": "director de obra/directora de obra",
+      "esco_uri": "http://data.europa.eu/esco/occupation/faed05c0-c1d1-4e34-b575-0dea96459e56",
+      "variantes": [
+        "direccion de obras"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 2180850,
+      "_denom_cyn": "Direccion de obras"
+    },
+    "fiambrero/a": {
+      "esco_code": "5223.7",
+      "isco_primario": "5223",
+      "esco_label": "vendedor especializado/vendedora especializada",
+      "esco_uri": "http://data.europa.eu/esco/occupation/547b304b-9a72-4717-9b24-b7046df5f64e",
+      "variantes": [
+        "fiambrero/a"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 6519792909,
+      "_denom_cyn": "Fiambrero/a"
+    },
+    "fileteador": {
+      "esco_code": "7511.3",
+      "isco_primario": "7511",
+      "esco_label": "limpiador de pescado/limpiadora de pescado",
+      "esco_uri": "http://data.europa.eu/esco/occupation/6c39cf1c-7332-41c1-86c3-6ed3daf3c479",
+      "variantes": [
+        "fileteador"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 9168162159,
+      "_denom_cyn": "Fileteador"
+    },
+    "generalista de rrhh": {
+      "esco_code": "4416.1",
+      "isco_primario": "4416",
+      "esco_label": "ayudante de recursos humanos",
+      "esco_uri": "http://data.europa.eu/esco/occupation/d8ed1703-9c03-4ea0-83cc-b6169bc54ffd",
+      "variantes": [
+        "generalista de rrhh"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 9232271799,
+      "_denom_cyn": "Generalista de RRHH",
+      "_flag": "alto blast-radius (45) - denominacion estable validada por Cyn, vigilar regresion"
+    },
+    "higiene y seguridad/ sustentabilidad": {
+      "esco_code": "2263.3",
+      "isco_primario": "2263",
+      "esco_label": "responsable de salud y seguridad",
+      "esco_uri": "http://data.europa.eu/esco/occupation/789517fb-95ee-43d1-9530-c2860be1a439",
+      "variantes": [
+        "higiene y seguridad/ sustentabilidad"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 6169628655,
+      "_denom_cyn": "Higiene y seguridad/ sustentabilidad"
+    },
+    "at para integración escolar en billingh": {
+      "esco_code": "5312.4",
+      "isco_primario": "5312",
+      "esco_label": "asistente en educación especial",
+      "esco_uri": "http://data.europa.eu/esco/occupation/1f137f0b-7097-4583-9d1b-b69e57369319",
+      "variantes": [
+        "at para integración escolar en billingh"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 7677139622,
+      "_denom_cyn": "(id: 6834) at para integración escolar en billingh",
+      "_flag": "NLP: titulo con ruido, cargada denominacion limpia (raw: '(id: 6834) at para integración escolar en billingh')"
+    },
+    "ing. eléctrica o electromecánica": {
+      "esco_code": "2151.1",
+      "isco_primario": "2151",
+      "esco_label": "ingeniero eléctrico/ingeniera eléctrica",
+      "esco_uri": "http://data.europa.eu/esco/occupation/86ca306c-ab99-420a-9e2a-aa73c5c4de22",
+      "variantes": [
+        "ing. eléctrica o electromecánica"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 6592545470,
+      "_denom_cyn": "Ing. eléctrica o electromecánica"
+    },
+    "inyector plástico": {
+      "esco_code": "8142.7",
+      "isco_primario": "8142",
+      "esco_label": "operador de máquinas de moldear plástico por inyección/operadora de máquinas de moldear plástico por inyección",
+      "esco_uri": "http://data.europa.eu/esco/occupation/502fe307-ae65-46cb-a485-e559b9a35266",
+      "variantes": [
+        "inyector plástico"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 5548577462,
+      "_denom_cyn": "Inyector plástico"
+    },
+    "legal assistant": {
+      "esco_code": "3342.2",
+      "isco_primario": "3342",
+      "esco_label": "empleado administrativo en el ámbito jurídico-legal/empleada administrativo en el ámbito jurídico-legal",
+      "esco_uri": "http://data.europa.eu/esco/occupation/0264b794-3771-47aa-a675-78bf13b62ee7",
+      "variantes": [
+        "legal assistant"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 6328860527,
+      "_denom_cyn": "Legal assistant"
+    },
+    "lic psicología y lic terapia ocupacional": {
+      "esco_code": "2634.2.1",
+      "isco_primario": "2634",
+      "esco_label": "psicólogo clínico/psicóloga clínica",
+      "esco_uri": "http://data.europa.eu/esco/occupation/c3c8c56c-b3ab-4425-a38a-abcace020d22",
+      "variantes": [
+        "lic psicología y lic terapia ocupacional"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 9218783131,
+      "_denom_cyn": "Lic psicología y lic terapia ocupacional"
+    },
+    "lic. en kinesiología": {
+      "esco_code": "2269.2",
+      "isco_primario": "2269",
+      "esco_label": "kinesiólogo/kinesióloga",
+      "esco_uri": "http://data.europa.eu/esco/occupation/11a6d0f6-e692-4774-aa5f-193b67d31022",
+      "variantes": [
+        "lic. en kinesiología"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 8340966205,
+      "_denom_cyn": "Lic. en kinesiología"
+    },
+    "mantenimiento edilicio (durlock, pintura)": {
+      "esco_code": "9622.1",
+      "isco_primario": "9622",
+      "esco_label": "mantenedor/mantenedora",
+      "esco_uri": "http://data.europa.eu/esco/occupation/f4a25243-b06a-42a9-9c69-246853df63ad",
+      "variantes": [
+        "mantenimiento edilicio (durlock, pintura)"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 5945859930,
+      "_denom_cyn": "Mantenimiento edilicio (durlock, pintura)"
+    },
+    "office host - red de espacios de coworking": {
+      "esco_code": "4226.1",
+      "isco_primario": "4226",
+      "esco_label": "recepcionista",
+      "esco_uri": "http://data.europa.eu/esco/occupation/f7b04542-d8c7-42db-8475-e63b507cce82",
+      "variantes": [
+        "office host - red de espacios de coworking"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 1117955657,
+      "_denom_cyn": "Office host - red de espacios de coworking"
+    },
+    "ofical mecanico flota pesada y maquinaria": {
+      "esco_code": "7231.10",
+      "isco_primario": "7231",
+      "esco_label": "mecánico de vehículos/mecánica de vehículos",
+      "esco_uri": "http://data.europa.eu/esco/occupation/4ad4024e-d1d3-4dea-b6d1-2c7948111dce",
+      "variantes": [
+        "ofical mecanico flota pesada y maquinaria"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 5885840822,
+      "_denom_cyn": "Ofical mecanico flota pesada y maquinaria"
+    },
+    "oficiales y suboficiales de las fuerzas armadas": {
+      "esco_code": "5414.1.9",
+      "isco_primario": "5414",
+      "esco_label": "jefe de equipo de seguridad/jefa de equipo de seguridad",
+      "esco_uri": "http://data.europa.eu/esco/occupation/37442765-f7bb-4ccd-9de1-4790296f3d37",
+      "variantes": [
+        "oficiales y suboficiales de las fuerzas armadas"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 7835523819,
+      "_denom_cyn": "Oficiales y suboficiales de las fuerzas armadas"
+    },
+    "operadores máquinas cnc": {
+      "esco_code": "7223.4",
+      "isco_primario": "7223",
+      "esco_label": "operador de máquinas de control numérico/operadora de máquinas de control numérico",
+      "esco_uri": "http://data.europa.eu/esco/occupation/5c082067-ea18-4ccb-8c43-e70b18ad8120",
+      "variantes": [
+        "operadores máquinas cnc"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 7975002320,
+      "_denom_cyn": "Operadores máquinas cnc"
+    },
+    "operarias/os ( con habilidad manual) unicamente": {
+      "esco_code": "9321.2",
+      "isco_primario": "9321",
+      "esco_label": "responsable de empaquetado manual",
+      "esco_uri": "http://data.europa.eu/esco/occupation/f5cb9901-86fc-48d0-9cde-667fbe8cef3a",
+      "variantes": [
+        "operarias/os ( con habilidad manual) unicamente"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 6786905097,
+      "_denom_cyn": "Operarias/os ( con habilidad manual) unicamente"
+    },
+    "operarios de deposito con experiencia comprobable": {
+      "esco_code": "9333.8",
+      "isco_primario": "9333",
+      "esco_label": "mozo de almacén/moza de almacén",
+      "esco_uri": "http://data.europa.eu/esco/occupation/bea705fe-06ac-4147-b8e0-6e8ac1208d8f",
+      "variantes": [
+        "operarios de deposito con experiencia comprobable"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 7347150394,
+      "_denom_cyn": "Operarios de deposito con experiencia comprobable"
+    },
+    "operarios/as de despacho metalúrgico": {
+      "esco_code": "8343.4",
+      "isco_primario": "8343",
+      "esco_label": "operador de grúa de instalaciones de producción/operadora de grúa de instalaciones de producción",
+      "esco_uri": "http://data.europa.eu/esco/occupation/1de948c1-192a-4810-afb7-48548217a912",
+      "variantes": [
+        "operarios/as de despacho metalúrgico"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 8299423434,
+      "_denom_cyn": "Operarios/as de despacho metalúrgico"
+    },
+    "operarios/as de produccion alimenticia": {
+      "esco_code": "9329.1",
+      "isco_primario": "9329",
+      "esco_label": "trabajador de fábrica/trabajadora de fábrica",
+      "esco_uri": "http://data.europa.eu/esco/occupation/245be6d1-fe9a-4ac8-9f81-122a687e4724",
+      "variantes": [
+        "operarios/as de produccion alimenticia"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 7171410854,
+      "_denom_cyn": "Operarios/as de produccion alimenticia"
+    },
+    "operarios/as para descargas de contenedores por co": {
+      "esco_code": "9333.8",
+      "isco_primario": "9333",
+      "esco_label": "mozo de almacén/moza de almacén",
+      "esco_uri": "http://data.europa.eu/esco/occupation/bea705fe-06ac-4147-b8e0-6e8ac1208d8f",
+      "variantes": [
+        "operarios/as para descargas de contenedores por co"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": "7444899883",
+      "_denom_cyn": "Operarios/as para descargas de contenedores por co"
+    },
+    "patient & diagnostic manager": {
+      "esco_code": "2422.6",
+      "isco_primario": "2422",
+      "esco_label": "consultor sanitario/consultora sanitaria",
+      "esco_uri": "http://data.europa.eu/esco/occupation/61053604-8091-4a8e-9c63-5151051722e3",
+      "variantes": [
+        "patient & diagnostic manager"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 8088943442,
+      "_denom_cyn": "Patient & diagnostic manager"
+    },
+    "analista de prevención para incorporar al": {
+      "esco_code": "2263.3",
+      "isco_primario": "2263",
+      "esco_label": "responsable de salud y seguridad",
+      "esco_uri": "http://data.europa.eu/esco/occupation/789517fb-95ee-43d1-9530-c2860be1a439",
+      "variantes": [
+        "analista de prevención para incorporar al"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 5786782663,
+      "_denom_cyn": "Ref 20975analista de prevención para incorporar al",
+      "_flag": "NLP: titulo con ruido, cargada denominacion limpia (raw: 'Ref 20975analista de prevención para incorporar al')"
+    },
+    "referente de armado": {
+      "esco_code": "3122.3",
+      "isco_primario": "3122",
+      "esco_label": "supervisor de montaje industrial/supervisora de montaje industrial",
+      "esco_uri": "http://data.europa.eu/esco/occupation/b12b14fd-5b74-40c6-afd9-dd35b34e27ed",
+      "variantes": [
+        "referente de armado"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 9221086655,
+      "_denom_cyn": "Referente de armado"
+    },
+    "scrum master": {
+      "esco_code": "1330.7",
+      "isco_primario": "1330",
+      "esco_label": "gestor de proyectos de TIC/gestora de proyectos de TIC",
+      "esco_uri": "http://data.europa.eu/esco/occupation/8b6388a4-4904-471b-9331-d3b1211f5525",
+      "variantes": [
+        "scrum master"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 8197398818,
+      "_denom_cyn": "SCRUM master ms044ka",
+      "_flag": "NLP: titulo con ruido, cargada denominacion limpia (raw: 'SCRUM master ms044ka')"
+    },
+    "sereno": {
+      "esco_code": "5414.1",
+      "isco_primario": "5414",
+      "esco_label": "vigilante de seguridad",
+      "esco_uri": "http://data.europa.eu/esco/occupation/31808988-fc0a-4bc3-9e47-27216d6759f5",
+      "variantes": [
+        "sereno"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 7688149590,
+      "_denom_cyn": "Sereno",
+      "_flag": "alto blast-radius (17) - denominacion estable validada por Cyn, vigilar regresion"
+    },
+    "sobrestante de obra / capataz": {
+      "esco_code": "3123.1.1",
+      "isco_primario": "3123",
+      "esco_label": "capataz de construcción",
+      "esco_uri": "http://data.europa.eu/esco/occupation/046574a1-9bb3-4a80-8a7b-83dc7db1dae2",
+      "variantes": [
+        "sobrestante de obra / capataz"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 6297813821,
+      "_denom_cyn": "Sobrestante de obra / capataz"
+    },
+    "sommelier": {
+      "esco_code": "5131.2.2",
+      "isco_primario": "5131",
+      "esco_label": "sumiller/sumillera",
+      "esco_uri": "http://data.europa.eu/esco/occupation/499f80e3-860c-48ef-8286-be929a93e254",
+      "variantes": [
+        "sommelier"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 8050296930,
+      "_denom_cyn": "Sommelier",
+      "_flag": "alto blast-radius (25) - denominacion estable validada por Cyn, vigilar regresion"
+    },
+    "systems design & implementation engineer": {
+      "esco_code": "2511.17",
+      "isco_primario": "2511",
+      "esco_label": "ingeniero de integración/ingeniera de integración",
+      "esco_uri": "http://data.europa.eu/esco/occupation/07e60525-1aad-4099-aaf3-2c7014c92212",
+      "variantes": [
+        "systems design & implementation engineer"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 8683467616,
+      "_denom_cyn": "Systems design & implementation engineer"
+    },
+    "team leader de reclutamiento": {
+      "esco_code": "2423.3",
+      "isco_primario": "2423",
+      "esco_label": "responsable de recursos humanos",
+      "esco_uri": "http://data.europa.eu/esco/occupation/d3e32e5e-7f24-48e3-b939-e4f800eb62fb",
+      "variantes": [
+        "team leader de reclutamiento"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 1118124320,
+      "_denom_cyn": "Team leader de reclutamiento"
+    },
+    "tecnicos/as electricos": {
+      "esco_code": "3113.1",
+      "isco_primario": "3113",
+      "esco_label": "ingeniero técnico en electricidad/ingeniera técnica en electricidad",
+      "esco_uri": "http://data.europa.eu/esco/occupation/9aa2a36f-296e-45fe-9798-b7839e0ed389",
+      "variantes": [
+        "tecnicos/as electricos"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 8481049074,
+      "_denom_cyn": "Tecnicos/as electricos"
+    },
+    "telemarketer": {
+      "esco_code": "5244.1",
+      "isco_primario": "5244",
+      "esco_label": "teleoperador/teleoperadora",
+      "esco_uri": "http://data.europa.eu/esco/occupation/0ededdc2-050a-4ec3-8e70-6295105fcd19",
+      "variantes": [
+        "telemarketer"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 9188918351,
+      "_denom_cyn": "Telemarketer",
+      "_flag": "alto blast-radius (136) - denominacion estable validada por Cyn, vigilar regresion"
+    },
+    "trabajo de campo | captación de terrenos | indepen": {
+      "esco_code": "3322.1",
+      "isco_primario": "3322",
+      "esco_label": "representante comercial",
+      "esco_uri": "http://data.europa.eu/esco/occupation/14031d4a-6e99-442f-b4fe-18262b6432b2",
+      "variantes": [
+        "trabajo de campo | captación de terrenos | indepen"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": "2181083",
+      "_denom_cyn": "Trabajo de campo | captación de terrenos | indepen"
+    },
+    "vigilador/a": {
+      "esco_code": "5414.1",
+      "isco_primario": "5414",
+      "esco_label": "vigilante de seguridad",
+      "esco_uri": "http://data.europa.eu/esco/occupation/31808988-fc0a-4bc3-9e47-27216d6759f5",
+      "variantes": [
+        "vigilador/a"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 7207138629,
+      "_denom_cyn": "Vigilador/a",
+      "_flag": "alto blast-radius (35) - denominacion estable validada por Cyn, vigilar regresion"
+    },
+    "vigilador/a de personal": {
+      "esco_code": "3122.4",
+      "isco_primario": "3122",
+      "esco_label": "supervisor de producción/supervisora de producción",
+      "esco_uri": "http://data.europa.eu/esco/occupation/40517ed4-2769-4283-a15b-4b0d939bd2d3",
+      "variantes": [
+        "vigilador/a de personal"
+      ],
+      "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
+      "_oid_origen": 7139382499,
+      "_denom_cyn": "Vigilador/a de personal"
     }
   },
   "skills_mapeo": {
@@ -536,6 +1049,6 @@
       "41"
     ]
   },
-  "fecha_modificacion": "2026-06-24",
+  "fecha_modificacion": "2026-06-30",
   "nota_v2": "v2.0: SPEC U-1 v3.1 con revisión de decisión sobre tecnico. URIs explícitas en gerente (7 ctx), operador (3 ctx, sin maquinas/CNC), tecnico (6 ctx, Opción 3). Eliminadas analista, operario (cobertura por reglas ≥98%). Eliminado contexto operador.maquinas/CNC (ISCO 8211 mal declarado). Label drift corregido: jefe de mantenimiento (1321→1219), analista de tesoreria, operador de atencion. Reportes: docs/diagnostico/2026-05-05_verificacion_overmatch_C2.md y baseline_canarios_post_F0.md."
 }

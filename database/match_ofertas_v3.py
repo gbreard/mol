@@ -4,7 +4,7 @@
 Match Ofertas v3.3.0 - Skills-First Matching Pipeline con Diccionario Argentino
 ================================================================================
 
-VERSION: 3.5.7
+VERSION: 3.5.8
 FECHA: 2026-02-19
 MODELO: BGE-M3 (BAAI/bge-m3)
 
@@ -286,21 +286,26 @@ class MatcherV3:
         sector = (oferta_nlp.get("sector_empresa") or "").lower()
         ocupaciones = self.sinonimos_arg.get("ocupaciones_titulo", {})
 
+        # SPEC S1C-G3: ordenar los matches por la variante MÁS LARGA que matchea
+        # (la más específica gana). Evita que una denominación genérica
+        # ("vigilador/a", "sales") tape a una más específica que la contiene como
+        # substring ("vigilador/a de personal" -> supervisor; "sales executive"
+        # -> representante comercial). Antes ganaba la primera en orden de inserción.
+        # SPEC U-1 v3.1 C2: la KEY del JSON siempre es una variante implícita
+        # (ej: "jefe de mantenimiento" matchea aunque "variantes" no lo liste).
+        candidatos = []
         for termino, config in ocupaciones.items():
             if termino.startswith("_"):
                 continue
-
-            # Verificar si el titulo contiene el termino
-            # SPEC U-1 v3.1 C2: la KEY del JSON siempre es una variante implícita
-            # (ej: "jefe de mantenimiento" matchea aunque "variantes" no lo liste).
             variantes = list(config.get("variantes", []) or [])
             if termino not in variantes:
                 variantes.append(termino)
-            match_found = any(v.lower() in titulo for v in variantes)
+            matched = [v for v in variantes if v.lower() in titulo]
+            if matched:
+                candidatos.append((max(len(v) for v in matched), termino, config))
+        candidatos.sort(key=lambda x: x[0], reverse=True)
 
-            if not match_found:
-                continue
-
+        for _mlen, termino, config in candidatos:
             # Hay match con el termino, ahora verificar contexto
             contextos = config.get("contextos", {})
             isco = None
