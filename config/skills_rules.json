@@ -642,6 +642,232 @@
       "_caso": "Issue Diego #1118019322 - Operario farmoquímico GMP/QSHE/BPE.",
       "_fecha": "2026-03-11",
       "nota": "Detecta ofertas con procedimientos operativos estándar (GMP/BPF/BPE/SOP). Común en farmoquímica, alimentos, laboratorios."
+    },
+    "RS28_picking": {
+      "nombre": "Terminología logística: picking",
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": [
+          "picking"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "preparar pedidos",
+            "skill_uri": "http://data.europa.eu/esco/skill/24c4beb4-429c-4cd1-b0bd-c04ba4c82e13"
+          },
+          {
+            "skill_esco": "gestionar el inventario",
+            "skill_uri": "http://data.europa.eu/esco/skill/ab6265f2-a9bf-49e8-a9a5-67cbab4de38b"
+          }
+        ]
+      },
+      "activa": true,
+      "_migrado_de": "terminologia_argentina_skills (fix veneno 2026-07-03)"
+    },
+    "RS29_rf": {
+      "nombre": "Terminología logística: rf",
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": [
+          "pistola rf",
+          "scanner rf",
+          "lector rf",
+          "radiofrecuencia"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "utilizar aparatos para escanear el código de barras",
+            "skill_uri": "http://data.europa.eu/esco/skill/fd79b3c4-e264-41b5-bada-49ba5f317588"
+          }
+        ]
+      },
+      "activa": true,
+      "_migrado_de": "terminologia_argentina_skills (fix veneno 2026-07-03)"
+    },
+    "RS30_armado_de_pedidos": {
+      "nombre": "Terminología logística: armado de pedidos",
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": [
+          "armado de pedidos",
+          "preparacion de pedidos",
+          "order picking"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "preparar pedidos",
+            "skill_uri": "http://data.europa.eu/esco/skill/24c4beb4-429c-4cd1-b0bd-c04ba4c82e13"
+          },
+          {
+            "skill_esco": "empaquetar mercancías",
+            "skill_uri": "http://data.europa.eu/esco/skill/667cbbaf-f377-46d8-8f2d-1f6d8a55d74a"
+          }
+        ]
+      },
+      "activa": true,
+      "_migrado_de": "terminologia_argentina_skills (fix veneno 2026-07-03)"
+    },
+    "RS31_paqueteria": {
+      "nombre": "Terminología logística: paqueteria",
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": [
+          "paqueteria",
+          "empaque",
+          "embalaje",
+          "packaging"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "empaquetar mercancías",
+            "skill_uri": "http://data.europa.eu/esco/skill/667cbbaf-f377-46d8-8f2d-1f6d8a55d74a"
+          },
+          {
+            "skill_esco": "procedimientos de empaquetado",
+            "skill_uri": "http://data.europa.eu/esco/skill/fcc64184-33d5-4e4a-8d28-0993d5685c39"
+          }
+        ]
+      },
+      "activa": true,
+      "_migrado_de": "terminologia_argentina_skills (fix veneno 2026-07-03)"
+    },
+    "RS32_e_commerce": {
+      "nombre": "Terminología logística: e-commerce",
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": [
+          "e-commerce",
+          "ecommerce",
+          "tienda online",
+          "venta online"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "sistemas de comercio electrónico",
+            "skill_uri": "http://data.europa.eu/esco/skill/b1272de4-1f5f-408b-8b26-061f2550fc72"
+          },
+          {
+            "skill_esco": "negocio electrónico",
+            "skill_uri": "http://data.europa.eu/esco/skill/a6532ae5-efc4-4ca4-b172-c11471940d09"
+          }
+        ]
+      },
+      "activa": true,
+      "_migrado_de": "terminologia_argentina_skills (fix veneno 2026-07-03)"
+    },
+    "RS33_carga_y_descarga": {
+      "nombre": "Terminología logística: carga y descarga",
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": [
+          "carga y descarga",
+          "descarga",
+          "estiba",
+          "desestiba"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "realizar operaciones de carga y descarga",
+            "skill_uri": "http://data.europa.eu/esco/skill/c80b2f08-ab07-4632-be78-68c6ec1f3b41"
+          },
+          {
+            "skill_esco": "mover objetos",
+            "skill_uri": "http://data.europa.eu/esco/skill/b6bdf202-524f-475d-b813-2aa9af005c37"
+          }
+        ]
+      },
+      "activa": true,
+      "_migrado_de": "terminologia_argentina_skills (fix veneno 2026-07-03)"
+    },
+    "RS34_zorra": {
+      "nombre": "Terminología logística: zorra",
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": [
+          "zorra",
+          "zorras",
+          "transpaleta",
+          "traspalet"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "realizar operaciones de carga y descarga",
+            "skill_uri": "http://data.europa.eu/esco/skill/c80b2f08-ab07-4632-be78-68c6ec1f3b41"
+          }
+        ]
+      },
+      "activa": true,
+      "_migrado_de": "terminologia_argentina_skills (fix veneno 2026-07-03)"
+    },
+    "RS35_autoelevador": {
+      "nombre": "Terminología logística: autoelevador",
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": [
+          "autoelevador",
+          "clark",
+          "montacargas",
+          "elevador",
+          "carretilla elevadora"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "manejar carretillas elevadoras",
+            "skill_uri": "http://data.europa.eu/esco/skill/28cb374e-6261-4133-8371-f9a5470145da"
+          }
+        ]
+      },
+      "activa": true,
+      "_migrado_de": "terminologia_argentina_skills (fix veneno 2026-07-03)"
+    },
+    "RS36_fifo": {
+      "nombre": "Terminología logística: fifo",
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": [
+          "fifo",
+          "lifo",
+          "fefo"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "gestionar el inventario",
+            "skill_uri": "http://data.europa.eu/esco/skill/ab6265f2-a9bf-49e8-a9a5-67cbab4de38b"
+          }
+        ]
+      },
+      "activa": true,
+      "_migrado_de": "terminologia_argentina_skills (fix veneno 2026-07-03)"
+    },
+    "RS37_pallets": {
+      "nombre": "Terminología logística: pallets",
+      "condicion": {
+        "titulo_o_tareas_contiene_alguno": [
+          "pallets",
+          "pallet",
+          "tarima",
+          "europallet"
+        ]
+      },
+      "accion": {
+        "forzar_skills": [
+          {
+            "skill_esco": "apilar mercancías",
+            "skill_uri": "http://data.europa.eu/esco/skill/3d086228-d7fc-4c23-972a-22b7d44a6173"
+          }
+        ]
+      },
+      "activa": true,
+      "_migrado_de": "terminologia_argentina_skills (fix veneno 2026-07-03)"
     }
   },
   "reglas_validacion_skills": {
@@ -680,8 +906,9 @@
   },
   "metadata": {
     "creado": "2026-01-21",
-    "ultima_modificacion": "2026-03-11",
-    "total_reglas_forzar": 27,
+    "ultima_modificacion": "2026-07-03",
+    "total_reglas_forzar": 37,
     "total_reglas_validacion": 2
-  }
+  },
+  "_cambios_2026-07-03": "Migración veneno terminologia: +10 reglas logísticas (15 skills, URIs reales resueltas por preferred-label) desde terminologia_argentina_skills.json, que se vació. Ver exports/cyn_backlog/PR_body_terminologia_fix.md"
 }

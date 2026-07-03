@@ -1,0 +1,254 @@
+{
+  "_descripcion": "Semilla de skills emergentes desde el vaciado de terminologia_argentina_skills (fix veneno 2026-07-03). Vocabulario argentino real que ESCO no tiene skill puntual (o cuyo label no resuelve al catálogo). NO se fabrican URIs. Candidatos al flujo V-17 de emergentes. Promover a emergentes_pendientes (Supabase) es paso siguiente (write a prod, coordinar con flujo emergentes hoy dormido).",
+  "_fecha": "2026-07-03",
+  "_origen": "terminologia_argentina_skills (deprecado)",
+  "emergentes": [
+    {
+      "termino": "ultima milla",
+      "aliases": [
+        "last mile",
+        "reparto",
+        "delivery"
+      ],
+      "expansion": "entrega final al cliente",
+      "contexto_area": null,
+      "skills_pretendidas_sin_uri_real": [
+        "entregar mercancias",
+        "planificar rutas de transporte"
+      ],
+      "ofertas_aprox_que_lo_mencionan": 5,
+      "estado": "candidato_emergente"
+    },
+    {
+      "termino": "rotacion",
+      "aliases": [],
+      "expansion": "movimiento de productos / turnos",
+      "contexto_area": [
+        "Logistica",
+        "Almacen"
+      ],
+      "skills_pretendidas_sin_uri_real": [
+        "aplicar metodos de control de existencias"
+      ],
+      "ofertas_aprox_que_lo_mencionan": 27,
+      "estado": "candidato_emergente"
+    },
+    {
+      "termino": "remito",
+      "aliases": [
+        "remitos",
+        "albaran",
+        "nota de entrega"
+      ],
+      "expansion": "documento de entrega / albaran",
+      "contexto_area": null,
+      "skills_pretendidas_sin_uri_real": [
+        "gestionar documentos de transporte"
+      ],
+      "ofertas_aprox_que_lo_mencionan": 827,
+      "estado": "candidato_emergente"
+    },
+    {
+      "termino": "consultorio",
+      "aliases": [
+        "consultorios",
+        "atencion ambulatoria"
+      ],
+      "expansion": "espacio de atencion medica",
+      "contexto_area": [
+        "Salud"
+      ],
+      "skills_pretendidas_sin_uri_real": [
+        "atender pacientes",
+        "gestionar citas de pacientes"
+      ],
+      "ofertas_aprox_que_lo_mencionan": 165,
+      "estado": "candidato_emergente"
+    },
+    {
+      "termino": "internacion",
+      "aliases": [
+        "internado",
+        "hospitalizado",
+        "camas"
+      ],
+      "expansion": "hospitalizacion / ingreso hospitalario",
+      "contexto_area": [
+        "Salud"
+      ],
+      "skills_pretendidas_sin_uri_real": [
+        "cuidar pacientes hospitalizados",
+        "controlar signos vitales"
+      ],
+      "ofertas_aprox_que_lo_mencionan": 714,
+      "estado": "candidato_emergente"
+    },
+    {
+      "termino": "quirofano",
+      "aliases": [
+        "quirurgico",
+        "cirugia",
+        "block quirurgico"
+      ],
+      "expansion": "sala de operaciones",
+      "contexto_area": [
+        "Salud"
+      ],
+      "skills_pretendidas_sin_uri_real": [
+        "asistir en intervenciones quirurgicas",
+        "preparar quirofano"
+      ],
+      "ofertas_aprox_que_lo_mencionan": 6,
+      "estado": "candidato_emergente"
+    },
+    {
+      "termino": "pauta",
+      "aliases": [
+        "ads",
+        "paid media",
+        "google ads",
+        "meta ads",
+        "pauta publicitaria"
+      ],
+      "expansion": "publicidad paga / ads / media buying",
+      "contexto_area": [
+        "Marketing"
+      ],
+      "skills_pretendidas_sin_uri_real": [
+        "gestionar campanas publicitarias",
+        "analizar metricas de marketing"
+      ],
+      "ofertas_aprox_que_lo_mencionan": 236,
+      "estado": "candidato_emergente"
+    },
+    {
+      "termino": "branding",
+      "aliases": [
+        "marca",
+        "identidad de marca",
+        "brand"
+      ],
+      "expansion": "gestion de marca / identidad corporativa",
+      "contexto_area": [
+        "Marketing",
+        "Diseno"
+      ],
+      "skills_pretendidas_sin_uri_real": [
+        "desarrollar identidad de marca",
+        "disenar estrategias de marca"
+      ],
+      "ofertas_aprox_que_lo_mencionan": 124,
+      "estado": "candidato_emergente"
+    },
+    {
+      "termino": "seo",
+      "aliases": [
+        "posicionamiento",
+        "optimizacion web",
+        "search engine"
+      ],
+      "expansion": "search engine optimization / posicionamiento web",
+      "contexto_area": [
+        "Marketing",
+        "Tecnologia"
+      ],
+      "skills_pretendidas_sin_uri_real": [
+        "optimizar contenido para motores de busqueda",
+        "analizar trafico web"
+      ],
+      "ofertas_aprox_que_lo_mencionan": 221,
+      "estado": "candidato_emergente"
+    },
+    {
+      "termino": "sem",
+      "aliases": [
+        "google adwords",
+        "ppc",
+        "cpc"
+      ],
+      "expansion": "search engine marketing / publicidad en buscadores",
+      "contexto_area": [
+        "Marketing"
+      ],
+      "skills_pretendidas_sin_uri_real": [
+        "gestionar publicidad en buscadores",
+        "analizar rendimiento de campanas"
+      ],
+      "ofertas_aprox_que_lo_mencionan": 3692,
+      "estado": "candidato_emergente"
+    },
+    {
+      "termino": "inbound",
+      "aliases": [
+        "content marketing",
+        "marketing de contenidos",
+        "lead nurturing"
+      ],
+      "expansion": "marketing de atraccion / content marketing",
+      "contexto_area": [
+        "Marketing"
+      ],
+      "skills_pretendidas_sin_uri_real": [
+        "desarrollar estrategias de contenido",
+        "generar leads"
+      ],
+      "ofertas_aprox_que_lo_mencionan": 117,
+      "estado": "candidato_emergente"
+    },
+    {
+      "termino": "mailing",
+      "aliases": [
+        "email marketing",
+        "newsletter",
+        "mailchimp",
+        "emailing"
+      ],
+      "expansion": "email marketing / envio de correos masivos",
+      "contexto_area": [
+        "Marketing"
+      ],
+      "skills_pretendidas_sin_uri_real": [
+        "gestionar campanas de email marketing",
+        "segmentar bases de datos"
+      ],
+      "ofertas_aprox_que_lo_mencionan": 63,
+      "estado": "candidato_emergente"
+    },
+    {
+      "termino": "atencion primaria",
+      "aliases": [
+        "caps",
+        "centro de salud",
+        "salita"
+      ],
+      "expansion": "primer nivel de atencion de salud",
+      "contexto_area": [
+        "Salud"
+      ],
+      "skills_pretendidas_sin_uri_real": [
+        "brindar atencion primaria de salud",
+        "promover la salud"
+      ],
+      "ofertas_aprox_que_lo_mencionan": 0,
+      "estado": "candidato_emergente"
+    },
+    {
+      "termino": "cross docking",
+      "aliases": [
+        "crossdocking",
+        "cross-docking"
+      ],
+      "expansion": "transferencia directa sin almacenamiento",
+      "contexto_area": [
+        "Logistica",
+        "Distribucion"
+      ],
+      "skills_pretendidas_sin_uri_real": [
+        "coordinar operaciones de almacen",
+        "logistica"
+      ],
+      "ofertas_aprox_que_lo_mencionan": 6,
+      "estado": "candidato_emergente"
+    }
+  ]
+}
