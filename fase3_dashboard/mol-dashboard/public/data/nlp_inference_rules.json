@@ -717,6 +717,42 @@
           "forzar_area": "Seguridad",
           "_nota": "Validacion v1.1: Roles de vigilancia van a Seguridad, no Marketing/Ventas",
           "_caso": "ID 2171959 Vigilador General"
+        },
+        {
+          "titulo_contiene_alguno": [
+            "operario de deposito",
+            "operario de depósito",
+            "operaria de deposito",
+            "operaria de depósito",
+            "operarios de deposito",
+            "operarios de depósito",
+            "operarios/as de deposito",
+            "operarios/as de depósito",
+            "operario de almacen",
+            "operario de almacén",
+            "operaria de almacen",
+            "operaria de almacén",
+            "operarios de almacen",
+            "operarios de almacén",
+            "operarios/as de almacen",
+            "operarios/as de almacén",
+            "operario de despacho",
+            "operaria de despacho",
+            "operarios de despacho",
+            "operarios/as de despacho",
+            "operario de logistica",
+            "operario de logística",
+            "operaria de logistica",
+            "operaria de logística",
+            "operarios/as de logistica",
+            "operarios/as de logística",
+            "operarios de logística",
+            "despacho metalúrgico",
+            "despacho metalurgico"
+          ],
+          "forzar_area": "Logistica",
+          "_nota": "SPEC S 2026-04-27: Operario depósito/almacén/despacho/logística es rol de Logística, NO Producción aunque el LLM tienda a asignarlo así. Validado por Cyn (issue 6866505508, 7347150394) y Diego (issue 8299423434).",
+          "_caso": "IDs 6866505508, 7347150394, 8299423434"
         }
       ]
     },
@@ -1542,7 +1578,23 @@
       "registro de conducir",
       "carnet de conducir",
       "autos nuevos",
-      "requisito excluyente"
+      "requisito excluyente",
+      "grupo gestión",
+      "grupo gestion",
+      "link laboral",
+      "manpower",
+      "randstad",
+      "adecco",
+      "pullmen rrhh",
+      "bayton",
+      "consultora",
+      "concesionario oficial",
+      "concesionario jeep",
+      "concesionario chrysler",
+      "recuperar oferta",
+      "ocultaste esta oferta",
+      "postularme volver",
+      "pulsarecuperar"
     ],
     "descartar_si_es_requisito": [
       "ser responsable",
@@ -1574,7 +1626,105 @@
       "por ",
       "seas ",
       "si ",
-      "similares "
+      "similares ",
+      "hace ",
+      "experiencia requerida",
+      "dias laborables",
+      "días laborables",
+      "requisitos ",
+      "ocultaste ",
+      "pulsa ",
+      "versión:",
+      "version:",
+      "postularme",
+      "importante empresa",
+      "importante grupo",
+      "importante compañía",
+      "reconocida empresa",
+      "destacada empresa",
+      "prestigiosa empresa",
+      "líder en el",
+      "lider en el",
+      "empresa líder",
+      "empresa lider"
+    ],
+    "descartar_si_matchea_regex": [
+      {
+        "patron": "^hace \\d+ (días|horas|minutos|semanas|día|hora|minuto|semana)$",
+        "descripcion": "Metadata temporal de portales: Hace N días/horas"
+      },
+      {
+        "patron": "^[a-záéíóúñü ]+,\\s*[a-záéíóúñü ]+$",
+        "descripcion": "Ubicaciones tipo Ciudad, Provincia (ej: Córdoba, Córdoba / Rosario, Santa Fe)"
+      },
+      {
+        "patron": "^[a-záéíóúñü ]+,\\s*[a-záéíóúñü ]+-gba$",
+        "descripcion": "Ubicaciones tipo Ciudad, Provincia-GBA (ej: San Martín, Buenos Aires-GBA)"
+      },
+      {
+        "patron": "^(experiencia|educación|estudios|nivel educativo)\\s*(requerida|requerido|mínima|mínimo)?:?\\s*(no|sí|si)$",
+        "descripcion": "Pares clave-valor de requisitos scrapeados"
+      },
+      {
+        "patron": "^\\w+\\s+\\w+\\s+s\\.?a?\\.?$",
+        "descripcion": "Nombres de empresas SA/S (ej: Adecco Argentina SA, Adecco Argentina S)"
+      },
+      {
+        "patron": "^(ver más|ver menos|mostrar más|mostrar menos|cargar más)$",
+        "descripcion": "Botones de UI scrapeados"
+      },
+      {
+        "patron": ".*\\(req\\d+.*\\).*",
+        "descripcion": "Códigos internos de RRHH (req199974, ref12345)"
+      },
+      {
+        "patron": ".*\\(ref\\.?\\s*\\d+.*\\).*",
+        "descripcion": "Códigos de referencia interna"
+      },
+      {
+        "patron": "^más de 30 días$",
+        "descripcion": "Metadata 'Más de 30 días' como tarea aislada (publicación)"
+      },
+      {
+        "patron": "^postularme$|^denunciar empleo$|^avísame con ofertas similares$",
+        "descripcion": "Botones CTA del portal ComputRabajo/Bumeran"
+      },
+      {
+        "patron": "^¡no te pierdas ninguna oportunidad.*$",
+        "descripcion": "CTA promocional del portal"
+      },
+      {
+        "patron": "^recibe (las )?nuevas ofertas.*$",
+        "descripcion": "Mensaje suscripción email del portal"
+      },
+      {
+        "patron": "^escribe tu correo.*$",
+        "descripcion": "Mensaje de captura de email"
+      },
+      {
+        "patron": "^parece que ya estas registrado.*$",
+        "descripcion": "Mensaje de login del portal"
+      },
+      {
+        "patron": "^grupo\\s+[a-záéíóúñ]+$",
+        "descripcion": "Nombres de empresas 'Grupo X' (agencias eventuales)"
+      },
+      {
+        "patron": "^importante\\s+(empresa|fábrica|fabrica|compañía|compania)\\s+.*(busca|incorpora|dedicada|del rubro|líder|lider).*$",
+        "descripcion": "Descripción de OTRAS ofertas (texto contaminado de ofertas similares)"
+      },
+      {
+        "patron": "^(extramen|pullmen|archlatam|adecco|manpower|randstad|grupo gestión|grupo gestion)(\\s+.*)?$",
+        "descripcion": "Nombres de agencias eventuales conocidas aisladas como tarea"
+      },
+      {
+        "patron": "^ocultaste esta oferta.*listados$",
+        "descripcion": "UI noise: texto de 'Ocultaste esta oferta' de ComputRabajo"
+      },
+      {
+        "patron": "^[a-záéíóúñ ]+,\\s*(capital federal|buenos aires(-gba)?|córdoba|santa fe|mendoza|rosario)$",
+        "descripcion": "Ubicaciones del aviso (amplia la regla existente)"
+      }
     ]
   },
   "limpieza_skills": {
