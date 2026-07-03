@@ -21,6 +21,9 @@ class TestCommandMap:
         'run_pipeline', 'run_nlp', 'run_matching', 'reprocess_errors',
         'revalidate_nlp', 'revalidate_matching', 'reapply_rules',
         'export_excel', 'sync_supabase', 'sync_supabase_full', 'generate_training',
+        # agregados en migraciones posteriores (reconciliados con el CHECK SQL 058)
+        'recluster_preview', 'recluster_apply', 'scrape_indeed',
+        'aplicar_candidata',  # SPEC S1C-PUENTE: escritura git-first del puente
     ]
 
     def test_all_commands_mapped(self):

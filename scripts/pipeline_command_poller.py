@@ -108,6 +108,14 @@ COMMAND_MAP = {
             + (['--all-keywords'] if p.get('all_keywords') else [])
         ),
     },
+    # SPEC S1C-PUENTE (mesa de Cyn): escritura git-first de candidatas confirmadas
+    # al diccionario argentino. El payload viaja como JSON (lista de candidatas +
+    # sesion); aplicar_candidata valida contra el catalogo, respeta longest-match,
+    # escribe el JSON local que el matcher lee y hace UN commit (squash por sesion).
+    'aplicar_candidata': {
+        'script': 'scripts/puente/aplicar_candidata.py',
+        'build_args': lambda p: ['--payload-json', json.dumps(p, ensure_ascii=False)],
+    },
 }
 
 
