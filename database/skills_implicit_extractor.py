@@ -42,12 +42,15 @@ Uso:
 import json
 import sys
 import os
+import logging
 import warnings
 import numpy as np
 import sqlite3
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple
 from sentence_transformers import SentenceTransformer
+
+logger = logging.getLogger(__name__)
 
 # Configuración centralizada del modelo de embeddings (E1.1)
 sys.path.insert(0, str(Path(__file__).parent.parent / "config"))
@@ -238,6 +241,24 @@ class SkillsImplicitExtractor:
         if self.verbose:
             print(f"[SKILLS] Inicializado: {len(self.metadata)} skills, umbral={self.threshold}")
 
+    def _valid_skill_uris(self) -> set:
+        """Set de URIs de skills reales del catálogo ESCO (desde metadata de embeddings).
+
+        Usado por el fallo-ruidoso de terminología para rechazar URIs fabricadas.
+        Se construye una sola vez por proceso (lazy + cache de instancia).
+        """
+        cached = getattr(self, "_valid_skill_uris_cache", None)
+        if cached is not None:
+            return cached
+        uris = set()
+        for m in (self.metadata or []):
+            if isinstance(m, dict):
+                u = m.get("uri") or m.get("skill_uri")
+                if u:
+                    uris.add(u)
+        self._valid_skill_uris_cache = uris
+        return uris
+
     def _extract_terminology_skills(
         self,
         texto: str,
@@ -290,6 +311,17 @@ class SkillsImplicitExtractor:
             for skill_data in config.get('skills_esco', []):
                 skill_label = skill_data.get('skill', '')
                 skill_uri = skill_data.get('uri', '')
+
+                # Fallo-ruidoso (fix veneno 2026-07-03): terminologia fue vaciado y su núcleo
+                # logístico válido migrado a skills_rules.json. 48/49 de sus URIs eran fabricadas.
+                # Si alguien repuebla este canal, una URI fuera del catálogo ESCO real NO entra
+                # al matching y se loguea visible (patrón Paso 0 de G3): nunca más café verde acá.
+                if skill_uri and skill_uri not in self._valid_skill_uris():
+                    logger.warning(
+                        "[TERM-ARG/veneno] URI no-catálogo RECHAZADA — termino='%s' skill='%s' "
+                        "uri='%s'. terminologia está deprecado; migrar a skills_rules.json.",
+                        termino, skill_label, skill_uri)
+                    continue
 
                 skill_key = skill_label.lower()
                 if skill_key in skills_vistas:
