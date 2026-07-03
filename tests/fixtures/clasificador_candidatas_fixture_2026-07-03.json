@@ -1,0 +1,600 @@
+{
+  "_descripcion": "Fixture-contrato del clasificador de candidatas del puente. Las 34 correcciones de ocupacion de la validacion en seco FRENTE B. El clasificador (config congelada) debe reproducir senal_esperada y clasificacion_esperada exactas: 0 falsos vocabulario.",
+  "_juicio_humano": "Dato de dominio con atribucion. Un re-juicio futuro NO pisa el original: agrega version.",
+  "fecha": "2026-07-03",
+  "origen": "ofertas_dashboard.validacion_correcciones (presencia de ocupacion_corregida, validacion_humana=revisar)",
+  "config_clasificador": "config/clasificador_candidatas.json v2.0",
+  "resumen_esperado": {
+    "total": 34,
+    "clasificador": {
+      "CONDICIONAL": 33,
+      "VOCABULARIO": 1
+    },
+    "falsos_vocabulario": 0,
+    "juicio_humano": {
+      "CONDICIONAL": 27,
+      "VOCABULARIO": 5,
+      "RUIDO": 2
+    }
+  },
+  "casos": [
+    {
+      "id_oferta": "5784938217",
+      "denominacion": "auxiliar de promociones y marketing",
+      "titulo_limpio": "Auxiliar de promociones y marketing",
+      "esco_code": "3332.2.1",
+      "esco_label": "responsable de eventos",
+      "isco": "3332",
+      "senal_esperada": "guard-prof:2pts",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "auxiliar→responsable: salto de jerarquía + promo/mkt→eventos es contextual",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "5786782663",
+      "denominacion": "Ref 20975Analista de prevención para incorporar al área de Higiene y Seguridad",
+      "titulo_limpio": "Ref 20975analista de prevención para incorporar al área de higiene y seguridad",
+      "esco_code": "2263.3",
+      "esco_label": "responsable de salud y seguridad",
+      "isco": "2263",
+      "senal_esperada": "S1-blanca:analista",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "prevención ambiguo (ART/H&S vs prevención de pérdidas) + título con ruido NLP pegado",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "5804676995",
+      "denominacion": "Operario/a soldador",
+      "titulo_limpio": "Operario/a soldador",
+      "esco_code": "7212.2",
+      "esco_label": "soldador de soldadura blanda/soldadora de soldadura blanda",
+      "isco": "7212",
+      "senal_esperada": "S1-azul:operario",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "familia operario/soldador: árbol taxonomía (blanda⇒7212.2)",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "5876264262",
+      "denominacion": "Tecnico Torrista",
+      "titulo_limpio": "Tecnico torrista",
+      "esco_code": "3522.1",
+      "esco_label": "técnico en ingeniería de las telecomunicaciones/técnica en ingeniería de las telecomunicaciones",
+      "isco": "3522",
+      "senal_esperada": "S1-azul:tecnico",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "familia técnico: torrista/telecom, destino por tareas",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "5898997970",
+      "denominacion": "Ayudante de taller. lonas y toldos",
+      "titulo_limpio": "Ayudante de taller. lonas y toldos",
+      "esco_code": "7533.4",
+      "esco_label": "fabricante de artículos textiles confeccionados",
+      "isco": "7533",
+      "senal_esperada": "S2-forma:de",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "ayudante de taller genérico; lonas/toldos especializa a textil",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "5924126529",
+      "denominacion": "Tecnico en mantenimiento de ascensores",
+      "titulo_limpio": "Tecnico en mantenimiento de ascensores",
+      "esco_code": "7412.7",
+      "esco_label": "técnico de ascensores/técnica de ascensores",
+      "isco": "7412",
+      "senal_esperada": "S1-azul:tecnico",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "VOCABULARIO",
+        "razonamiento": "técnico de ascensores: mapeo directo y estable (elevator technician)",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "5945752836",
+      "denominacion": "Supervisor de Instalacion",
+      "titulo_limpio": "Supervisor de instalacion",
+      "esco_code": "3123.1.22",
+      "esco_label": "supervisor de obras de alcantarillado/supervisora de obras de alcantarillado",
+      "isco": "3123",
+      "senal_esperada": "guard-prof:2pts",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "supervisor de instalación genérico; alcantarillado vino de tareas",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "6053706024",
+      "denominacion": "Técnico de mantenimiento eléctrico industrial. Zona Abasto, La Plata",
+      "titulo_limpio": "Técnico de mantenimiento eléctrico industrial",
+      "esco_code": "7412.3",
+      "esco_label": "mecánico electricista/mecánica electricista",
+      "isco": "7412",
+      "senal_esperada": "S1-azul:tecnico",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "familia técnico mant. eléctrico: árbol taxonomía (rama mecánico electricista)",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "6185898502",
+      "denominacion": "técnico/a electricista",
+      "titulo_limpio": "Técnico/a electricista",
+      "esco_code": "7411.1.1",
+      "esco_label": "electricista de obras",
+      "isco": "7411",
+      "senal_esperada": "S1-azul:tecnico",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "familia técnico electricista: árbol taxonomía (rama obra⇒electricista de obras)",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "6208652557",
+      "denominacion": "Ingeniero Electrónico (Vicente Lopez)",
+      "titulo_limpio": "Ingeniero electrónico",
+      "esco_code": "2152.1.12",
+      "esco_label": "ingeniero electrónico de potencia/ingeniera electrónica de potencia",
+      "isco": "2152",
+      "senal_esperada": "guard-prof:2pts",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "ing. electrónico estable a ISCO-4 2152, pero sub-código 'de potencia' es por tareas",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "7006539054",
+      "denominacion": "Gerente Administración",
+      "titulo_limpio": "Gerente administración",
+      "esco_code": "1211.1",
+      "esco_label": "director financiero/directora financiera",
+      "isco": "1211",
+      "senal_esperada": "S1b-dict:gerente",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "gerente = raíz ambigua (ya en dict, 7 contextos); administración→dir.financiero contextual",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "7186551637",
+      "denominacion": "Encargado de Logistica",
+      "titulo_limpio": "Encargado de logistica",
+      "esco_code": "1324.3.4",
+      "esco_label": "jefe de almacén/jefa de almacén",
+      "isco": "1324",
+      "senal_esperada": "S1-blanca:encargado",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "encargado de logística: encargado seniority ambiguo (jefe 1324 vs clerk 4321)",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "7207138629",
+      "denominacion": "vigilador/a",
+      "titulo_limpio": "Vigilador/a",
+      "esco_code": "5414.1",
+      "esco_label": "vigilante de seguridad",
+      "isco": "5414",
+      "senal_esperada": "sin-senal",
+      "clasificacion_esperada": "VOCABULARIO",
+      "juicio_humano": {
+        "clase": "VOCABULARIO",
+        "razonamiento": "vigilador/a: estable, YA en dict con mismo código 5414.1",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "2145263",
+      "denominacion": "Consultor Junior y Semi Junior de Liquidación de Sueldos",
+      "titulo_limpio": "Consultor junior y semi junior de liquidación de sueldos",
+      "esco_code": "2511.12",
+      "esco_label": "consultor de investigación en TIC/consultora de investigación en TIC",
+      "isco": "2511",
+      "senal_esperada": "S1-blanca:consultor",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "consultor ambiguo; liquidación de sueldos→consultor TIC es salto contextual",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "1117985442",
+      "denominacion": "Advisor",
+      "titulo_limpio": "Advisor",
+      "esco_code": "2519.7",
+      "esco_label": "probador de software/probadora de software",
+      "isco": "2519",
+      "senal_esperada": "S1-blanca:advisor",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "RUIDO",
+        "razonamiento": "Advisor: palabra genérica inglesa, sin denominación; destino 100% por tareas",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "1118132013",
+      "denominacion": "Programador/a de la Producción",
+      "titulo_limpio": "Programador/a de la producción",
+      "esco_code": "3122.2",
+      "esco_label": "planificador/planificadora de producción de alimentos",
+      "isco": "3122",
+      "senal_esperada": "S1-blanca:programador",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "programador DE PRODUCCIÓN (scheduler, no coder): head 'programador' peligroso",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "5821474489",
+      "denominacion": "Asesor comercial",
+      "titulo_limpio": "Asesor comercial",
+      "esco_code": "1221.3.2",
+      "esco_label": "responsable de marketing",
+      "isco": "1221",
+      "senal_esperada": "S1-blanca:asesor",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "asesor comercial normalmente ventas(3322); →responsable de marketing atípico/contextual",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "1117951568",
+      "denominacion": "Desarrollador PYTHON Sr para Proyectos Bancarios",
+      "titulo_limpio": "Desarrollador python SR para proyectos bancarios",
+      "esco_code": "2512.9",
+      "esco_label": "desarrollador de IdC/desarrolladora de IdC",
+      "isco": "2512",
+      "senal_esperada": "S2-forma:para",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "desarrollador Python estable a 2512, pero sub-código IoT/IdC es por proyecto",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "1118010542",
+      "denominacion": "Asesor Bienes Raices",
+      "titulo_limpio": "Asesor bienes raices",
+      "esco_code": "3334.3",
+      "esco_label": "agente inmobiliario/agente inmobiliaria",
+      "isco": "3334",
+      "senal_esperada": "S1-blanca:asesor",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "VOCABULARIO",
+        "razonamiento": "asesor de bienes raíces: estable = agente inmobiliario",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "1118059308",
+      "denominacion": "Estudiante de Abogacía",
+      "titulo_limpio": "Estudiante de abogacía",
+      "esco_code": "3411.4",
+      "esco_label": "auxiliar judicial",
+      "isco": "3411",
+      "senal_esperada": "S2-forma:de",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "estudiante de abogacía→auxiliar judicial: destino por tareas",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "1117978310",
+      "denominacion": "Analista Corporativo de operaciones - Data Center (CABA y San Justo)",
+      "titulo_limpio": "Analista Corporativo de Operaciones - Data Center (Puerto Madero)",
+      "esco_code": "2522.1",
+      "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC",
+      "isco": "2522",
+      "senal_esperada": "S1-blanca:analista",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "analista ambiguo; datacenter especializa a sysadmin",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "1117968852",
+      "denominacion": "Advisor",
+      "titulo_limpio": "Advisor",
+      "esco_code": "2519.7",
+      "esco_label": "probador de software/probadora de software",
+      "isco": "2519",
+      "senal_esperada": "S1-blanca:advisor",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "RUIDO",
+        "razonamiento": "Advisor (duplicado): palabra genérica, sin denominación",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "1118019322",
+      "denominacion": "OPERARIO CENTRAL DE PESADA",
+      "titulo_limpio": "Operario central de pesada",
+      "esco_code": "9333.3",
+      "esco_label": "operario de logística de almacén/operaria de logística de almacén",
+      "isco": "9333",
+      "senal_esperada": "S1-azul:operario",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "familia operario (central de pesada/logística almacén): árbol taxonomía",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "1117955657",
+      "denominacion": "OFFICE HOST - RED DE ESPACIOS DE COWORKING.",
+      "titulo_limpio": "Office host - red de espacios de coworking",
+      "esco_code": "4226.1",
+      "esco_label": "recepcionista",
+      "isco": "4226",
+      "senal_esperada": "S2-forma:de",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "VOCABULARIO",
+        "razonamiento": "office host coworking→recepcionista: estable, YA en dict con mismo código 4226.1",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "1118019326",
+      "denominacion": "Medio Oficial de Mantenimiento- Rubro Plástico. Zona Villa Soldati",
+      "titulo_limpio": "Medio oficial de mantenimiento",
+      "esco_code": "7233.8.1",
+      "esco_label": "técnico de maquinaria agrícola/técnica de maquinaria agrícola",
+      "isco": "7233",
+      "senal_esperada": "guard-prof:2pts",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "medio oficial de mantenimiento genérico; target por tareas",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "1118019485",
+      "denominacion": "Analista de Oficina Técnica",
+      "titulo_limpio": "Analista de oficina técnica",
+      "esco_code": "2142.1",
+      "esco_label": "ingeniero civil/ingeniera civil",
+      "isco": "2142",
+      "senal_esperada": "S1-blanca:analista",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "analista de oficina técnica ambiguo; →ingeniero civil por tareas",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "1118019188",
+      "denominacion": "Chófer con experiencia en recolección de residuos Villa Lugano",
+      "titulo_limpio": "Chófer con experiencia en recolección de residuos villa lugano",
+      "esco_code": "8332.2",
+      "esco_label": "conductor de vehículo de carga/conductora de vehículo de carga",
+      "isco": "8332",
+      "senal_esperada": "S2-forma:de",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "chófer estable a conductor, pero recolección residuos especializa (8332 vs 9611)",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "1118007106",
+      "denominacion": "BU667 Operario de Producción Metalúrgico (Experiencia excluyente), GBA SUR, Spegazzini",
+      "titulo_limpio": "Operario de producción metalúrgico (experiencia excluyente), gba sur, spegazzini",
+      "esco_code": "7223.1",
+      "esco_label": "operador de taladradora/operadora de taladradora",
+      "isco": "7223",
+      "senal_esperada": "S1-azul:operario",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "familia operario producción metalúrgico: árbol taxonomía + ruido prefijo BU667",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "1118042070",
+      "denominacion": "Lobos - Gerente Comercial para Importante Grupo de Concesionarios Oficiales Automotor",
+      "titulo_limpio": "Gerente Comercial",
+      "esco_code": "1221.3.2.1",
+      "esco_label": "director de ventas/directora de ventas",
+      "isco": "1221",
+      "senal_esperada": "S1b-dict:gerente",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "gerente comercial: raíz ambigua (gerente en dict) + prefijo localidad 'Lobos -'",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "1118133126",
+      "denominacion": "Vendedor/a Viajante para Zona NEA con base en Corrientes para Importante Empresa autopartista",
+      "titulo_limpio": "Vendedor/a viajante para zona nea con base",
+      "esco_code": "3322.1",
+      "esco_label": "representante comercial",
+      "isco": "3322",
+      "senal_esperada": "S1b-dict:vendedor",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "VOCABULARIO",
+        "razonamiento": "vendedor viajante = representante comercial: estable (viajante fija el destino)",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "1118163504",
+      "denominacion": "Operario Sr - Corte y Costura - Multinacional Autopartista",
+      "titulo_limpio": "Operario SR - corte y costura",
+      "esco_code": "8153.1",
+      "esco_label": "operador de máquinas de coser/operadora de máquinas de coser",
+      "isco": "8153",
+      "senal_esperada": "S1-azul:operario",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "familia operario (corte y costura): árbol taxonomía verbatim (Operario SR corte y costura→8153.1)",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "2155532",
+      "denominacion": "Representante de Ventas - Sector Industrial - Zona Bahía Blanca - Sherwin Williams",
+      "titulo_limpio": "Representante de ventas - sector industrial - zona rosario - sherwin williams",
+      "esco_code": "2433.6.1",
+      "esco_label": "representante técnico de ventas de maquinaria y equipo agrícolas/representante técnica de ventas de maquinaria y equipo agrícolas",
+      "isco": "2433",
+      "senal_esperada": "guard-prof:2pts",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "representante de ventas estable a 3322, pero 'técnico industrial' especializa a 2433",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "1118145955",
+      "denominacion": "Operador de Producción",
+      "titulo_limpio": "Operador de producción",
+      "esco_code": "8142.2",
+      "esco_label": "operador de prensa hidráulica/operadora de prensa hidráulica",
+      "isco": "8142",
+      "senal_esperada": "S1b-dict:operador",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "operador de producción genérico (como operario de producción: NO estable); prensa por tareas",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    },
+    {
+      "id_oferta": "5770283730",
+      "denominacion": "Responsable de Depósito – productos de alto valor y alta sensibilidad",
+      "titulo_limpio": "Responsable de depósito - productos de alto valor y alta sensibilidad",
+      "esco_code": "1324.3.1.6.11",
+      "esco_label": "director de distribución de equipos y piezas electrónicos y de telecomunicaciones/directora de distribución de equipos electrónicos y de telecomunicaciones",
+      "isco": "1324",
+      "senal_esperada": "S1-blanca:responsable",
+      "clasificacion_esperada": "CONDICIONAL",
+      "juicio_humano": {
+        "clase": "CONDICIONAL",
+        "razonamiento": "responsable de depósito: seniority ambiguo (director 1324 vs clerk)",
+        "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
+        "fecha": "2026-07-03",
+        "version": 1
+      }
+    }
+  ]
+}
