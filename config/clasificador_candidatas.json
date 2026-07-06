@@ -1,0 +1,39 @@
+{
+  "_descripcion": "Config CONGELADA del clasificador de candidatas del puente validacion->diccionario (mesa de Cyn, Eje 4). Separa correcciones de ocupacion en VOCABULARIO (cargable a diccionario plano) / CONDICIONAL (evidencia para el traductor del Eje 4) / RUIDO.",
+  "_estatus": "AJUSTADO sin contraejemplos restantes sobre 34 casos (2026-07-03) — NO validado out-of-sample. Los ajustes (familias blancas + S1b + guard de profundidad) se disenaron mirando los 5 falsos-vocabulario de la corrida v1 y se midieron sobre las mismas 34; la generalizacion se audita en operacion (ver politica: primeras 20 correcciones nuevas auditadas contra el clasificador).",
+  "_linaje": "Corrida en seco FRENTE B v1 (5 falsos vocab) -> v2 (0 falsos vocab, 30/34 aciertos). Fixture: tests/fixtures/clasificador_candidatas_fixture_2026-07-03.json.",
+  "version": "2.0",
+  "fecha_congelado": "2026-07-03",
+  "orden_senales": ["S1", "S1b", "S3", "guard_profundidad", "S2", "VOCABULARIO"],
+  "familias_azules": {
+    "_origen": "6 familias de la taxonomia de contexto de Cyn (exports/cyn_backlog/taxonomia_contexto_cyn.md)",
+    "raices": ["operario", "tecnico", "arquitecto", "pintor", "editor", "herrero"]
+  },
+  "familias_blancas": {
+    "_origen": "Raices genericas de cuello blanco (jerarquicas/comerciales/foraneas) no cubiertas por la taxonomia azul. Cerrada; agregar exige actualizar el test de regresion.",
+    "raices": ["asesor", "advisor", "consultor", "analista", "encargado", "responsable", "coordinador", "ejecutivo", "referente", "especialista", "manager", "programador"]
+  },
+  "s1b_dict_contextos": {
+    "_descripcion": "DINAMICO en runtime: lee las entradas de config/sinonimos_argentinos_esco.json que tienen bloque 'contextos' (el curador ya las declaro ambiguas). NO es lista hardcodeada. Al 2026-07-03 son: recepcionista, gerente, operador, vendedor, administrativo, tecnico, capataz.",
+    "fuente": "config/sinonimos_argentinos_esco.json",
+    "criterio": "entrada con clave 'contextos' no vacia"
+  },
+  "guard_profundidad": {
+    "_descripcion": "Si el esco_code corregido es una hoja fina (mas profundo que el nivel ocupacion-base X.Y), la granularidad es contextual (vino de las tareas, no de la denominacion) -> CONDICIONAL. Variante conservadora: no se degrada a padre, se manda a bandeja.",
+    "min_puntos": 2,
+    "_nota_niveles": "catalogo ESCO: 0 puntos=grupo ISCO, 1 punto=ocupacion base (1798 occ), >=2 puntos=hoja/refinamiento (1247 occ)"
+  },
+  "criterio_head": {
+    "_descripcion": "El head de la denominacion es el primer token significativo, cortando en el primer conector o separador y quitando prefijo de ruido NLP/localidad. S1 y S1b se anclan al head (no substring en cualquier posicion; evita el falso disparo 'oficina tecnica' de la v1).",
+    "conectores_corte": ["de", "para", "con", "en", "del"],
+    "separadores_corte": ["-", ".", ",", "/", "|"],
+    "prefijos_ruido_regex": "^(ref\\s*\\d+|bu\\d+|[a-z]{2,3}\\d{3,})\\s*",
+    "prefijo_localidad_regex": "^[a-z]+ ?- ?"
+  },
+  "s2_conectores_forma": [" de ", " para ", " con ", " en "],
+  "clases": {
+    "VOCABULARIO": "denominacion estable con un unico destino ESCO plausible -> candidata a diccionario plano",
+    "CONDICIONAL": "el destino ESCO depende de las tareas -> evidencia para el traductor de reglas del Eje 4",
+    "RUIDO": "titulo que no es denominacion (nombre de empresa, localidad, ruido NLP sin limpiar)"
+  }
+}
