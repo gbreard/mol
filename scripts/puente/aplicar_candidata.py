@@ -154,9 +154,14 @@ def aplicar(candidatas, session, commit=True, dict_path=DICT_PATH, mirror_path=M
 
     if aplicadas:
         dict_path.write_text(json.dumps(dic, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        # sync espejo de display
-        if mirror_path and Path(mirror_path).parent.exists():
-            Path(mirror_path).write_text(json.dumps(dic, ensure_ascii=False, indent=2) + "\n",
+        # sync espejo de display: QUIRURGICO — inserta solo las claves aplicadas, no
+        # sobrescribe el resto del espejo (que puede estar desfasado; PR #49 lo sincroniza
+        # completo aparte). Asi el commit del puente solo muestra las entradas nuevas.
+        if mirror_path and Path(mirror_path).exists():
+            mir = json.loads(Path(mirror_path).read_text(encoding="utf-8"))
+            for a in aplicadas:
+                mir["ocupaciones_titulo"][a["key"]] = dic["ocupaciones_titulo"][a["key"]]
+            Path(mirror_path).write_text(json.dumps(mir, ensure_ascii=False, indent=2) + "\n",
                                          encoding="utf-8")
         if commit:
             _commit(session, aplicadas, dict_path, mirror_path)
