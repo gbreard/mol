@@ -978,6 +978,44 @@
       "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
       "_oid_origen": 7139382499,
       "_denom_cyn": "Vigilador/a de personal"
+    },
+    "tecnico de ascensores": {
+      "esco_code": "7412.7",
+      "isco_primario": "7412",
+      "esco_label": "técnico de ascensores/técnica de ascensores",
+      "esco_uri": "http://data.europa.eu/esco/occupation/f8d1bcf9-9ca1-408f-a713-7bdf28c400fd",
+      "variantes": [
+        "tecnico de ascensores",
+        "tecnico en ascensores",
+        "tecnica de ascensores",
+        "mantenimiento de ascensores"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (bandeja P5)",
+        "fecha": "2026-07-03",
+        "id_oferta": "5924126529",
+        "correccion_fuente": "validacion_correcciones wizard (Cyn), Tecnico en mantenimiento de ascensores -> 7412.7"
+      },
+      "nota": "Denominacion estable validada por Cyn. Blast exacto dry-run=14 (todos tecnicos de ascensores). Preview-por-head dio timeout; el dry-run local es su unico blast."
+    },
+    "asesor bienes raices": {
+      "esco_code": "3334.3",
+      "isco_primario": "3334",
+      "esco_label": "agente inmobiliario/agente inmobiliaria",
+      "esco_uri": "http://data.europa.eu/esco/occupation/8ec8df02-e9dd-43b7-b416-5846ae0414ab",
+      "variantes": [
+        "asesor bienes raices",
+        "asesor de bienes raices",
+        "asesora bienes raices",
+        "asesora de bienes raices"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (bandeja P5)",
+        "fecha": "2026-07-03",
+        "id_oferta": "1118010542",
+        "correccion_fuente": "validacion_correcciones wizard (Cyn), Asesor Bienes Raices -> 3334.3"
+      },
+      "nota": "Denominacion estable validada por Cyn. Blast exacto dry-run=3 (variante 'asesor inmobiliario' se excluyo por amplia: subia a 121)."
     }
   },
   "skills_mapeo": {
