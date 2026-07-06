@@ -18,12 +18,22 @@ import sys
 import time
 import os
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Setup paths
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_DIR = SCRIPT_DIR.parent
 DB_DIR = PROJECT_DIR / "database"
+
+# --- Reintento diferido de Indeed (bloqueo Cloudflare) -----------------------
+# Indeed corre LOCAL; la corrida pesada (~1900s+, 480 kw) a veces deja la IP
+# flagueada en Cloudflare y la siguiente aborta en ~22s con 5x403. Cuando eso
+# pasa, re-encolamos la corrida unas horas después (otra ventana de tráfico)
+# por si el bloqueo era transitorio. Es barato: una corrida bloqueada dura ~22s.
+# El estado vive en un archivo LOCAL (no toca el schema de pipeline_commands).
+INDEED_RETRY_STATE = PROJECT_DIR / "data" / "indeed_retry.json"
+INDEED_BLOCK_MAX_DUR = 600        # una corrida limpia dura ~1900s+; <600s = bloqueo
+INDEED_RETRY_OFFSETS_MIN = [180, 480]  # reintentos: +3h, luego +8h (2 máx)
 
 # Add project to path
 sys.path.insert(0, str(PROJECT_DIR))
@@ -222,6 +232,99 @@ def _sync_scraping_daily_after_indeed():
         print(f"[POLLER] WARN: No se pudo sync daily post-Indeed: {e}")
 
 
+def _indeed_fue_bloqueado(duration, log_output):
+    """True si una corrida de Indeed fue abortada por bloqueo Cloudflare.
+
+    Señal principal: duración anómalamente corta (una corrida limpia procesa
+    480 keywords a 4s → mínimo ~1900s; un bloqueo aborta a los 5x403 en ~22s).
+    """
+    if duration is not None and duration < INDEED_BLOCK_MAX_DUR:
+        return True
+    marcadores = ('blocks consecutivos', 'No se obtuvieron ofertas', 'Cloudflare block')
+    return any(m in (log_output or '') for m in marcadores)
+
+
+def _load_retry_state():
+    try:
+        if INDEED_RETRY_STATE.exists():
+            return json.loads(INDEED_RETRY_STATE.read_text())
+    except Exception as e:
+        print(f"[POLLER] WARN: no se pudo leer estado de reintento Indeed: {e}")
+    return None
+
+
+def _clear_retry_state(motivo=""):
+    try:
+        if INDEED_RETRY_STATE.exists():
+            INDEED_RETRY_STATE.unlink()
+            if motivo:
+                print(f"[POLLER] reintento Indeed: estado limpiado ({motivo})")
+    except Exception as e:
+        print(f"[POLLER] WARN: no se pudo limpiar estado de reintento Indeed: {e}")
+
+
+def _programar_reintento_indeed():
+    """Tras un bloqueo, agenda el próximo reintento (o desiste si se agotaron)."""
+    prev = _load_retry_state()
+    intento = (prev.get('intento', 0) if prev else 0) + 1
+    if intento > len(INDEED_RETRY_OFFSETS_MIN):
+        _clear_retry_state(f"agotados {len(INDEED_RETRY_OFFSETS_MIN)} reintentos; espera al próximo cron")
+        return
+    offset_min = INDEED_RETRY_OFFSETS_MIN[intento - 1]
+    not_before = datetime.utcnow() + timedelta(minutes=offset_min)
+    try:
+        INDEED_RETRY_STATE.parent.mkdir(parents=True, exist_ok=True)
+        INDEED_RETRY_STATE.write_text(json.dumps({
+            'intento': intento,
+            'not_before': not_before.isoformat(),
+            'programado_en': datetime.utcnow().isoformat(),
+        }))
+        print(f"[POLLER] Indeed bloqueado → reintento #{intento} agendado "
+              f"para {not_before.isoformat()[:16]} UTC (+{offset_min}min)")
+    except Exception as e:
+        print(f"[POLLER] WARN: no se pudo agendar reintento Indeed: {e}")
+
+
+def _hay_indeed_en_curso(client):
+    """True si ya hay un scrape_indeed pendiente o ejecutando (evita duplicados)."""
+    try:
+        r = client.table('pipeline_commands').select('id') \
+            .eq('comando', 'scrape_indeed') \
+            .in_('estado', ['pendiente', 'ejecutando']).limit(1).execute()
+        return bool(r.data)
+    except Exception as e:
+        print(f"[POLLER] WARN: no se pudo verificar Indeed en curso: {e}")
+        return True  # ante la duda, no encolar
+
+
+def _check_indeed_retry(client):
+    """Cada ciclo: si vence un reintento agendado y no hay Indeed en curso,
+    encola una nueva corrida scrape_indeed por el camino normal."""
+    state = _load_retry_state()
+    if not state:
+        return
+    try:
+        not_before = datetime.fromisoformat(state['not_before'])
+    except Exception:
+        _clear_retry_state("estado corrupto")
+        return
+    if datetime.utcnow() < not_before:
+        return  # todavía no vence
+    if _hay_indeed_en_curso(client):
+        return  # ya hay uno; esperar a que termine (re-agenda o limpia solo)
+    try:
+        client.table('pipeline_commands').insert({
+            'comando': 'scrape_indeed',
+            'estado': 'pendiente',
+            'params': {'reintento': state.get('intento', 1)},
+            'creado_por': 'poller-retry',
+        }).execute()
+        print(f"[POLLER] reintento Indeed #{state.get('intento')} encolado "
+              f"(bloqueo Cloudflare previo)")
+    except Exception as e:
+        print(f"[POLLER] WARN: no se pudo encolar reintento Indeed: {e}")
+
+
 def execute_command(client, cmd, dry_run=False):
     """Ejecuta un comando del pipeline."""
     cmd_id = cmd['id']
@@ -319,6 +422,12 @@ def execute_command(client, cmd, dry_run=False):
             if comando == 'scrape_indeed':
                 _sync_scraping_stats_after_indeed(client)
                 _sync_scraping_daily_after_indeed()
+                # Reintento diferido: si Cloudflare bloqueó (corrida ~22s), agendar
+                # otra corrida en unas horas; si fue limpia, limpiar cualquier estado.
+                if _indeed_fue_bloqueado(duration, log_output):
+                    _programar_reintento_indeed()
+                else:
+                    _clear_retry_state("corrida limpia")
 
             return True
         else:
@@ -504,6 +613,9 @@ def poll_once(dry_run=False):
 
     # Siempre sincronizar status local
     sync_local_status(client)
+
+    # Reintento diferido de Indeed: encola una corrida si venció un bloqueo previo
+    _check_indeed_retry(client)
 
     cmd = fetch_pending_command(client)
     if not cmd:
