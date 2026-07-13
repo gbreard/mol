@@ -1,0 +1,2256 @@
+{
+  "session": "cosecha-2026-07-13",
+  "universo_dryrun": 69794,
+  "listas_para_cargar": [
+    {
+      "denominacion": "vendedor viajante",
+      "esco_code": "3322.1",
+      "variantes": [
+        "vendedor viajante",
+        "vendedora viajante"
+      ],
+      "blast_dryrun": 141,
+      "hold_destrabado": true,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "Word sesión 2026-07 — HOLD 141 DESTRABADO por decisión escrita de Cyn (Confirmar) — criterio: venta externa: visita clientes, recorre zonas de venta, ofrece productos o servicios, toma pedidos y mantiene una cartera comercial fuera del local (criterio textual completo en taxonomía, familia «vendedor»)"
+      }
+    },
+    {
+      "denominacion": "supervisor de obra",
+      "esco_code": "3123.1",
+      "variantes": [
+        "supervisor de obra",
+        "supervisora de obra"
+      ],
+      "blast_dryrun": 46,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G16"
+      }
+    },
+    {
+      "denominacion": "coordinador de obra",
+      "esco_code": "1323.1",
+      "variantes": [
+        "coordinador de obra",
+        "coordinadora de obra"
+      ],
+      "blast_dryrun": 28,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
+      }
+    },
+    {
+      "denominacion": "ingeniero eléctrico",
+      "esco_code": "2151.1",
+      "variantes": [
+        "ingeniero eléctrico",
+        "ingeniero electrico",
+        "ingeniera eléctrica",
+        "ingeniera electrica"
+      ],
+      "blast_dryrun": 26,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G8"
+      }
+    },
+    {
+      "denominacion": "técnico electricista industrial",
+      "esco_code": "7411.1.1.2",
+      "variantes": [
+        "técnico electricista industrial",
+        "tecnico electricista industrial",
+        "técnica electricista industrial",
+        "tecnica electricista industrial"
+      ],
+      "blast_dryrun": 18,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G3"
+      }
+    },
+    {
+      "denominacion": "director de obra",
+      "esco_code": "1323.1",
+      "variantes": [
+        "director de obra",
+        "directora de obra"
+      ],
+      "blast_dryrun": 14,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
+      }
+    },
+    {
+      "denominacion": "instalador de sistemas de seguridad",
+      "esco_code": "7422.5",
+      "variantes": [
+        "instalador de sistemas de seguridad",
+        "instaladora de sistemas de seguridad"
+      ],
+      "blast_dryrun": 14,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G17"
+      }
+    },
+    {
+      "denominacion": "encargado de edificio",
+      "esco_code": "5153.1",
+      "variantes": [
+        "encargado de edificio",
+        "encargada de edificio"
+      ],
+      "blast_dryrun": 13,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G11"
+      }
+    },
+    {
+      "denominacion": "técnico instalador de alarmas",
+      "esco_code": "7422.5",
+      "variantes": [
+        "técnico instalador de alarmas",
+        "tecnico instalador de alarmas",
+        "técnica instaladora de alarmas",
+        "tecnica instaladora de alarmas"
+      ],
+      "blast_dryrun": 13,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G17"
+      }
+    },
+    {
+      "denominacion": "analista de monitoreo",
+      "esco_code": "3511.1",
+      "variantes": [
+        "analista de monitoreo"
+      ],
+      "blast_dryrun": 12,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G14"
+      }
+    },
+    {
+      "denominacion": "ingeniero electricista",
+      "esco_code": "2151.1",
+      "variantes": [
+        "ingeniero electricista",
+        "ingeniera electricista"
+      ],
+      "blast_dryrun": 12,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G8"
+      }
+    },
+    {
+      "denominacion": "gerente de obra",
+      "esco_code": "1323.1",
+      "variantes": [
+        "gerente de obra"
+      ],
+      "blast_dryrun": 8,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
+      }
+    },
+    {
+      "denominacion": "técnico en electrónica",
+      "esco_code": "3114.1",
+      "variantes": [
+        "técnico en electrónica",
+        "tecnico en electronica",
+        "técnica en electrónica",
+        "tecnica en electronica"
+      ],
+      "blast_dryrun": 8,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G20"
+      }
+    },
+    {
+      "denominacion": "responsable de obra",
+      "esco_code": "1323.1",
+      "variantes": [
+        "responsable de obra"
+      ],
+      "blast_dryrun": 7,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
+      }
+    },
+    {
+      "denominacion": "técnico electromecánico de mantenimiento",
+      "esco_code": "7412.3",
+      "variantes": [
+        "técnico electromecánico de mantenimiento",
+        "tecnico electromecanico de mantenimiento",
+        "técnica electromecánica de mantenimiento",
+        "tecnica electromecanica de mantenimiento"
+      ],
+      "blast_dryrun": 7,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G2"
+      }
+    },
+    {
+      "denominacion": "encargado de obra",
+      "esco_code": "3123.1",
+      "variantes": [
+        "encargado de obra",
+        "encargada de obra"
+      ],
+      "blast_dryrun": 6,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G16"
+      }
+    },
+    {
+      "denominacion": "operador noc",
+      "esco_code": "3511.1",
+      "variantes": [
+        "operador NOC",
+        "operadora NOC"
+      ],
+      "blast_dryrun": 6,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G14"
+      }
+    },
+    {
+      "denominacion": "técnico de mantenimiento de equipos industriales",
+      "esco_code": "7412.3",
+      "variantes": [
+        "técnico de mantenimiento de equipos industriales",
+        "tecnico de mantenimiento de equipos industriales",
+        "técnica de mantenimiento de equipos industriales",
+        "tecnica de mantenimiento de equipos industriales"
+      ],
+      "blast_dryrun": 6,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G2"
+      }
+    },
+    {
+      "denominacion": "administrativo de mantenimiento",
+      "esco_code": "3343.1",
+      "variantes": [
+        "administrativo de mantenimiento",
+        "administrativa de mantenimiento"
+      ],
+      "blast_dryrun": 5,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G10"
+      }
+    },
+    {
+      "denominacion": "desarrollador python sr",
+      "esco_code": "2512.9",
+      "variantes": [
+        "desarrollador python sr",
+        "desarrollador python senior",
+        "desarrolladora python sr",
+        "desarrolladora python senior"
+      ],
+      "blast_dryrun": 5,
+      "hold_destrabado": false,
+      "warn_discrepancia": "⚠ DISCREPANCIA: `2512.9` = **desarrollador de IdC** (IoT) en el catálogo, pero el criterio de Cyn («desarrollo de software con Python, backend, APIs») describe **desarrollador de software = `2512.4`**. ¿Typo de sub-código? Decidir antes de cargar.",
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "Word sesión 2026-07 (estable image7) — criterio: Es estable si las tareas son desarrollo de software con Python, programación, backend, APIs, sistemas o aplicaciones."
+      }
+    },
+    {
+      "denominacion": "ingeniero en telecomunicaciones",
+      "esco_code": "2153.1",
+      "variantes": [
+        "ingeniero en telecomunicaciones",
+        "ingeniera en telecomunicaciones"
+      ],
+      "blast_dryrun": 5,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G23"
+      }
+    },
+    {
+      "denominacion": "mecánico electricista",
+      "esco_code": "7412.3",
+      "variantes": [
+        "mecánico electricista",
+        "mecanico electricista",
+        "mecánica electricista",
+        "mecanica electricista"
+      ],
+      "blast_dryrun": 5,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G2"
+      }
+    },
+    {
+      "denominacion": "técnico de ascensores",
+      "esco_code": "7412.7",
+      "variantes": [
+        "técnico de ascensores",
+        "tecnico de ascensores",
+        "técnica de ascensores",
+        "tecnica de ascensores"
+      ],
+      "blast_dryrun": 4,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G13"
+      }
+    },
+    {
+      "denominacion": "técnico de mantenimiento eléctrico industrial",
+      "esco_code": "7411.1.1.2",
+      "variantes": [
+        "técnico de mantenimiento eléctrico industrial",
+        "tecnico de mantenimiento electrico industrial",
+        "técnica de mantenimiento eléctrico industrial",
+        "tecnica de mantenimiento electrico industrial"
+      ],
+      "blast_dryrun": 4,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G3"
+      }
+    },
+    {
+      "denominacion": "técnico en ascensores",
+      "esco_code": "7412.7",
+      "variantes": [
+        "técnico en ascensores",
+        "tecnico en ascensores",
+        "técnica en ascensores",
+        "tecnica en ascensores"
+      ],
+      "blast_dryrun": 4,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G4"
+      }
+    },
+    {
+      "denominacion": "técnico oficial",
+      "esco_code": "7119.4",
+      "variantes": [
+        "técnico oficial",
+        "tecnico oficial"
+      ],
+      "blast_dryrun": 4,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G5"
+      }
+    },
+    {
+      "denominacion": "arquitecto dibujante",
+      "esco_code": "2161.1",
+      "variantes": [
+        "arquitecto dibujante",
+        "arquitecta dibujante"
+      ],
+      "blast_dryrun": 2,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G18"
+      }
+    },
+    {
+      "denominacion": "arquitecto junior",
+      "esco_code": "2161.1",
+      "variantes": [
+        "arquitecto junior",
+        "arquitecta junior"
+      ],
+      "blast_dryrun": 2,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G18"
+      }
+    },
+    {
+      "denominacion": "electricista de planta",
+      "esco_code": "7411.1.1.2",
+      "variantes": [
+        "electricista de planta"
+      ],
+      "blast_dryrun": 2,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G3"
+      }
+    },
+    {
+      "denominacion": "ingeniero civil estructural",
+      "esco_code": "2142.1",
+      "variantes": [
+        "ingeniero civil estructural",
+        "ingeniera civil estructural"
+      ],
+      "blast_dryrun": 2,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G7"
+      }
+    },
+    {
+      "denominacion": "técnico de monitoreo",
+      "esco_code": "3511.1",
+      "variantes": [
+        "técnico de monitoreo",
+        "tecnico de monitoreo",
+        "técnica de monitoreo",
+        "tecnica de monitoreo"
+      ],
+      "blast_dryrun": 2,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G14"
+      }
+    },
+    {
+      "denominacion": "técnico de seguridad electrónica",
+      "esco_code": "7422.5",
+      "variantes": [
+        "técnico de seguridad electrónica",
+        "tecnico de seguridad electronica",
+        "técnica de seguridad electrónica",
+        "tecnica de seguridad electronica"
+      ],
+      "blast_dryrun": 2,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G22"
+      }
+    },
+    {
+      "denominacion": "técnico electrónico de mantenimiento industrial",
+      "esco_code": "7412.3",
+      "variantes": [
+        "técnico electrónico de mantenimiento industrial",
+        "tecnico electronico de mantenimiento industrial",
+        "técnica electrónica de mantenimiento industrial",
+        "tecnica electronica de mantenimiento industrial"
+      ],
+      "blast_dryrun": 2,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G2"
+      }
+    },
+    {
+      "denominacion": "técnico mecánico de elevadores",
+      "esco_code": "7412.7",
+      "variantes": [
+        "técnico mecánico de elevadores",
+        "tecnico mecanico de elevadores",
+        "técnica mecánica de elevadores",
+        "tecnica mecanica de elevadores"
+      ],
+      "blast_dryrun": 2,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G13"
+      }
+    },
+    {
+      "denominacion": "administrativo de infraestructura",
+      "esco_code": "3343.1",
+      "variantes": [
+        "administrativo de infraestructura",
+        "administrativa de infraestructura"
+      ],
+      "blast_dryrun": 1,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G10"
+      }
+    },
+    {
+      "denominacion": "arquitecto de obra",
+      "esco_code": "3123.1",
+      "variantes": [
+        "arquitecto de obra",
+        "arquitecta de obra"
+      ],
+      "blast_dryrun": 1,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G16"
+      }
+    },
+    {
+      "denominacion": "ingeniero eléctrico de proyectos",
+      "esco_code": "2151.1",
+      "variantes": [
+        "ingeniero eléctrico de proyectos",
+        "ingeniero electrico de proyectos",
+        "ingeniera eléctrica de proyectos",
+        "ingeniera electrica de proyectos"
+      ],
+      "blast_dryrun": 1,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G8"
+      }
+    },
+    {
+      "denominacion": "instalador de ascensores",
+      "esco_code": "7412.7",
+      "variantes": [
+        "instalador de ascensores",
+        "instaladora de ascensores"
+      ],
+      "blast_dryrun": 1,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G4"
+      }
+    },
+    {
+      "denominacion": "líder de obra",
+      "esco_code": "1323.1",
+      "variantes": [
+        "líder de obra",
+        "lider de obra"
+      ],
+      "blast_dryrun": 1,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
+      }
+    },
+    {
+      "denominacion": "peón de carga",
+      "esco_code": "9333.3",
+      "variantes": [
+        "peón de carga",
+        "peon de carga",
+        "peona de carga"
+      ],
+      "blast_dryrun": 1,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G6"
+      }
+    },
+    {
+      "denominacion": "proyectista de instrumentación",
+      "esco_code": "2152.1.3",
+      "variantes": [
+        "proyectista de instrumentación",
+        "proyectista de instrumentacion"
+      ],
+      "blast_dryrun": 1,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G9"
+      }
+    },
+    {
+      "denominacion": "technical monitoring operations",
+      "esco_code": "3511.1",
+      "variantes": [
+        "technical monitoring operations"
+      ],
+      "blast_dryrun": 1,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G14"
+      }
+    },
+    {
+      "denominacion": "técnico de cctv",
+      "esco_code": "7422.5",
+      "variantes": [
+        "técnico de CCTV",
+        "tecnico de CCTV",
+        "técnica de CCTV",
+        "tecnica de CCTV"
+      ],
+      "blast_dryrun": 1,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G22"
+      }
+    },
+    {
+      "denominacion": "técnico de puesta en marcha de ascensores",
+      "esco_code": "7412.7",
+      "variantes": [
+        "técnico de puesta en marcha de ascensores",
+        "tecnico de puesta en marcha de ascensores",
+        "técnica de puesta en marcha de ascensores",
+        "tecnica de puesta en marcha de ascensores"
+      ],
+      "blast_dryrun": 1,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G13"
+      }
+    },
+    {
+      "denominacion": "técnico de sistemas de seguridad",
+      "esco_code": "7422.5",
+      "variantes": [
+        "técnico de sistemas de seguridad",
+        "tecnico de sistemas de seguridad",
+        "técnica de sistemas de seguridad",
+        "tecnica de sistemas de seguridad"
+      ],
+      "blast_dryrun": 1,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G17"
+      }
+    },
+    {
+      "denominacion": "arquitecto de documentación técnica",
+      "esco_code": "2161.1",
+      "variantes": [
+        "arquitecto de documentación técnica",
+        "arquitecto de documentacion tecnica",
+        "arquitecta de documentación técnica",
+        "arquitecta de documentacion tecnica"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G18"
+      }
+    },
+    {
+      "denominacion": "arquitecto modelador técnico",
+      "esco_code": "2161.1",
+      "variantes": [
+        "arquitecto modelador técnico",
+        "arquitecto modelador tecnico",
+        "arquitecta modeladora técnica",
+        "arquitecta modeladora tecnica"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G18"
+      }
+    },
+    {
+      "denominacion": "arquitecto proyectista junior",
+      "esco_code": "2161.1",
+      "variantes": [
+        "arquitecto proyectista junior",
+        "arquitecta proyectista junior"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G18"
+      }
+    },
+    {
+      "denominacion": "arquitecto recién recibido",
+      "esco_code": "2161.1",
+      "variantes": [
+        "arquitecto recién recibido",
+        "arquitecto recien recibido",
+        "arquitecta recién recibida",
+        "arquitecta recien recibida"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G18"
+      }
+    },
+    {
+      "denominacion": "arquitecto responsable de obra",
+      "esco_code": "1323.1",
+      "variantes": [
+        "arquitecto responsable de obra",
+        "arquitecta responsable de obra"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
+      }
+    },
+    {
+      "denominacion": "asistente administrativo de infraestructura",
+      "esco_code": "3343.1",
+      "variantes": [
+        "asistente administrativo de infraestructura",
+        "asistente administrativa de infraestructura"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G10"
+      }
+    },
+    {
+      "denominacion": "auxiliar administrativo de mantenimiento",
+      "esco_code": "3343.1",
+      "variantes": [
+        "auxiliar administrativo de mantenimiento",
+        "auxiliar administrativa de mantenimiento"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G10"
+      }
+    },
+    {
+      "denominacion": "auxiliar de terminación",
+      "esco_code": "7323.1",
+      "variantes": [
+        "auxiliar de terminación",
+        "auxiliar de terminacion"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G21"
+      }
+    },
+    {
+      "denominacion": "ayudante de encuadernación",
+      "esco_code": "7323.1",
+      "variantes": [
+        "ayudante de encuadernación",
+        "ayudante de encuadernacion"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G21"
+      }
+    },
+    {
+      "denominacion": "ayudante de imprenta",
+      "esco_code": "7323.1",
+      "variantes": [
+        "ayudante de imprenta"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G21"
+      }
+    },
+    {
+      "denominacion": "ayudante de plomería para instalación de medidores",
+      "esco_code": "7126.8",
+      "variantes": [
+        "ayudante de plomería para instalación de medidores",
+        "ayudante de plomeria para instalacion de medidores"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G19"
+      }
+    },
+    {
+      "denominacion": "ayudante de postimpresión",
+      "esco_code": "7323.1",
+      "variantes": [
+        "ayudante de postimpresión",
+        "ayudante de postimpresion"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G21"
+      }
+    },
+    {
+      "denominacion": "ayudante de taller (lonas y toldos)",
+      "esco_code": "7533.4",
+      "variantes": [
+        "ayudante de taller (lonas y toldos)",
+        "ayudante de taller lonas y toldos"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "Word sesión 2026-07 (estable image7) — criterio: Es estable si el aviso habla de confección, reparación, armado o colocación de lonas, toldos, coberturas o materiales similares."
+      }
+    },
+    {
+      "denominacion": "ayudante de terminación gráfica",
+      "esco_code": "7323.1",
+      "variantes": [
+        "ayudante de terminación gráfica",
+        "ayudante de terminacion grafica"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G21"
+      }
+    },
+    {
+      "denominacion": "chofer de recolección de residuos",
+      "esco_code": "8332.2",
+      "variantes": [
+        "chofer de recolección de residuos",
+        "chofer de recoleccion de residuos"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": "⚠ DISCREPANCIA: `8332.2` = **conductor de vehículo de carga** (genérico), pero existe `8332.8` **conductor de vehículo de recogida de basura**, que calza exacto con el criterio de Cyn («maneja camión o vehículo de recolección de residuos»). Decidir antes de cargar.",
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "Word sesión 2026-07 (estable image7) — criterio: Es estable si maneja camión o vehículo de recolección de residuos."
+      }
+    },
+    {
+      "denominacion": "colocador de medidores de agua",
+      "esco_code": "7126.8",
+      "variantes": [
+        "colocador de medidores de agua",
+        "colocadora de medidores de agua"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G19"
+      }
+    },
+    {
+      "denominacion": "conserje de edificio",
+      "esco_code": "5153.1",
+      "variantes": [
+        "conserje de edificio"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G11"
+      }
+    },
+    {
+      "denominacion": "diseñador de telecomunicaciones",
+      "esco_code": "2153.1",
+      "variantes": [
+        "diseñador de telecomunicaciones",
+        "disenador de telecomunicaciones",
+        "diseñadora de telecomunicaciones",
+        "disenadora de telecomunicaciones"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G23"
+      }
+    },
+    {
+      "denominacion": "electromecánico de ascensores",
+      "esco_code": "7412.7",
+      "variantes": [
+        "electromecánico de ascensores",
+        "electromecanico de ascensores",
+        "electromecánica de ascensores",
+        "electromecanica de ascensores"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G4"
+      }
+    },
+    {
+      "denominacion": "encargado de consorcio",
+      "esco_code": "5153.1",
+      "variantes": [
+        "encargado de consorcio",
+        "encargada de consorcio"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G11"
+      }
+    },
+    {
+      "denominacion": "encargado de montaje de ascensores",
+      "esco_code": "3123.1.14",
+      "variantes": [
+        "encargado de montaje de ascensores",
+        "encargada de montaje de ascensores"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G12"
+      }
+    },
+    {
+      "denominacion": "ingeniero civil de proyectos",
+      "esco_code": "2142.1",
+      "variantes": [
+        "ingeniero civil de proyectos",
+        "ingeniera civil de proyectos"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G7"
+      }
+    },
+    {
+      "denominacion": "ingeniero civil en obra",
+      "esco_code": "3123.1",
+      "variantes": [
+        "ingeniero civil en obra",
+        "ingeniera civil en obra"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G16"
+      }
+    },
+    {
+      "denominacion": "ingeniero de electricidad industrial",
+      "esco_code": "2151.1",
+      "variantes": [
+        "ingeniero de electricidad industrial",
+        "ingeniera de electricidad industrial"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G8"
+      }
+    },
+    {
+      "denominacion": "ingeniero de instrumentación y control",
+      "esco_code": "2152.1.3",
+      "variantes": [
+        "ingeniero de instrumentación y control",
+        "ingeniero de instrumentacion y control",
+        "ingeniera de instrumentación y control",
+        "ingeniera de instrumentacion y control"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G9"
+      }
+    },
+    {
+      "denominacion": "ingeniero de obra civil",
+      "esco_code": "2142.1",
+      "variantes": [
+        "ingeniero de obra civil",
+        "ingeniera de obra civil"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G7"
+      }
+    },
+    {
+      "denominacion": "ingeniero de telecomunicaciones",
+      "esco_code": "2153.1",
+      "variantes": [
+        "ingeniero de telecomunicaciones",
+        "ingeniera de telecomunicaciones"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G23"
+      }
+    },
+    {
+      "denominacion": "ingeniero de telecos",
+      "esco_code": "2153.1",
+      "variantes": [
+        "ingeniero de telecos",
+        "ingeniera de telecos"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G23"
+      }
+    },
+    {
+      "denominacion": "ingeniero electrónico orientado a telecomunicaciones",
+      "esco_code": "2153.1",
+      "variantes": [
+        "ingeniero electrónico orientado a telecomunicaciones",
+        "ingeniero electronico orientado a telecomunicaciones",
+        "ingeniera electrónica orientada a telecomunicaciones",
+        "ingeniera electronica orientada a telecomunicaciones"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G23"
+      }
+    },
+    {
+      "denominacion": "ingeniero eléctrico y de automatización",
+      "esco_code": "2151.1",
+      "variantes": [
+        "ingeniero eléctrico y de automatización",
+        "ingeniero electrico y de automatizacion",
+        "ingeniera eléctrica y de automatización",
+        "ingeniera electrica y de automatizacion"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G8"
+      }
+    },
+    {
+      "denominacion": "ingeniero en construcciones",
+      "esco_code": "1323.1",
+      "variantes": [
+        "ingeniero en construcciones",
+        "ingeniera en construcciones"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
+      }
+    },
+    {
+      "denominacion": "ingeniero junior en electrónica",
+      "esco_code": "3114.1",
+      "variantes": [
+        "ingeniero junior en electrónica",
+        "ingeniero junior en electronica",
+        "ingeniera junior en electrónica",
+        "ingeniera junior en electronica"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G20"
+      }
+    },
+    {
+      "denominacion": "ingeniero técnico en electrónica",
+      "esco_code": "3114.1",
+      "variantes": [
+        "ingeniero técnico en electrónica",
+        "ingeniero tecnico en electronica",
+        "ingeniera técnica en electrónica",
+        "ingeniera tecnica en electronica"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G20"
+      }
+    },
+    {
+      "denominacion": "instalador de alarmas comerciales",
+      "esco_code": "7422.5",
+      "variantes": [
+        "instalador de alarmas comerciales",
+        "instaladora de alarmas comerciales"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G17"
+      }
+    },
+    {
+      "denominacion": "instalador de alarmas domiciliarias",
+      "esco_code": "7422.5",
+      "variantes": [
+        "instalador de alarmas domiciliarias",
+        "instaladora de alarmas domiciliarias"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G17"
+      }
+    },
+    {
+      "denominacion": "instalador de medidores de agua",
+      "esco_code": "7126.8",
+      "variantes": [
+        "instalador de medidores de agua",
+        "instaladora de medidores de agua"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G19"
+      }
+    },
+    {
+      "denominacion": "instalador de redes de seguridad",
+      "esco_code": "7119.4",
+      "variantes": [
+        "instalador de redes de seguridad",
+        "instaladora de redes de seguridad"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G5"
+      }
+    },
+    {
+      "denominacion": "instalador de sensores",
+      "esco_code": "7422.5",
+      "variantes": [
+        "instalador de sensores",
+        "instaladora de sensores"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G17"
+      }
+    },
+    {
+      "denominacion": "instalador domiciliario de agua",
+      "esco_code": "7126.8",
+      "variantes": [
+        "instalador domiciliario de agua",
+        "instaladora domiciliaria de agua"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G19"
+      }
+    },
+    {
+      "denominacion": "jefe de montaje de ascensores",
+      "esco_code": "3123.1.14",
+      "variantes": [
+        "jefe de montaje de ascensores",
+        "jefa de montaje de ascensores"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G12"
+      }
+    },
+    {
+      "denominacion": "jefe de obra operativo",
+      "esco_code": "3123.1",
+      "variantes": [
+        "jefe de obra operativo",
+        "jefa de obra operativa"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G16"
+      }
+    },
+    {
+      "denominacion": "jefe operativo en obra",
+      "esco_code": "1323.1",
+      "variantes": [
+        "jefe operativo en obra",
+        "jefa operativa en obra"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
+      }
+    },
+    {
+      "denominacion": "oficial en trabajos verticales",
+      "esco_code": "7119.4",
+      "variantes": [
+        "oficial en trabajos verticales"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G5"
+      }
+    },
+    {
+      "denominacion": "operador de plataforma",
+      "esco_code": "3511.1",
+      "variantes": [
+        "operador de plataforma",
+        "operadora de plataforma"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G14"
+      }
+    },
+    {
+      "denominacion": "operario de encuadernación",
+      "esco_code": "7323.1",
+      "variantes": [
+        "operario de encuadernación",
+        "operario de encuadernacion",
+        "operaria de encuadernación",
+        "operaria de encuadernacion"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G21"
+      }
+    },
+    {
+      "denominacion": "operario de postimpresión",
+      "esco_code": "7323.1",
+      "variantes": [
+        "operario de postimpresión",
+        "operario de postimpresion",
+        "operaria de postimpresión",
+        "operaria de postimpresion"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G21"
+      }
+    },
+    {
+      "denominacion": "operario de terminación gráfica",
+      "esco_code": "7323.1",
+      "variantes": [
+        "operario de terminación gráfica",
+        "operario de terminacion grafica",
+        "operaria de terminación gráfica",
+        "operaria de terminacion grafica"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G21"
+      }
+    },
+    {
+      "denominacion": "operario eventual de depósito",
+      "esco_code": "9333.3",
+      "variantes": [
+        "operario eventual de depósito",
+        "operario eventual de deposito",
+        "operaria eventual de depósito",
+        "operaria eventual de deposito"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G6"
+      }
+    },
+    {
+      "denominacion": "operario gráfico de terminación",
+      "esco_code": "7323.1",
+      "variantes": [
+        "operario gráfico de terminación",
+        "operario grafico de terminacion",
+        "operaria gráfica de terminación",
+        "operaria grafica de terminacion"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G21"
+      }
+    },
+    {
+      "denominacion": "operario vertical",
+      "esco_code": "7119.4",
+      "variantes": [
+        "operario vertical",
+        "operaria vertical"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G5"
+      }
+    },
+    {
+      "denominacion": "plomero instalador",
+      "esco_code": "7126.8",
+      "variantes": [
+        "plomero instalador",
+        "plomera instaladora"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G19"
+      }
+    },
+    {
+      "denominacion": "portero de edificio",
+      "esco_code": "5153.1",
+      "variantes": [
+        "portero de edificio",
+        "portera de edificio"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G11"
+      }
+    },
+    {
+      "denominacion": "proyectista de control",
+      "esco_code": "2152.1.3",
+      "variantes": [
+        "proyectista de control"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G9"
+      }
+    },
+    {
+      "denominacion": "representante de ventas industrial",
+      "esco_code": "2433.6.1",
+      "variantes": [
+        "representante de ventas industrial",
+        "representante de ventas — industrial",
+        "representante de ventas - industrial"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "Word sesión 2026-07 (estable image7) — criterio: Es estable si vende productos, insumos, maquinaria, equipos o servicios industriales a empresas o clientes del sector industrial."
+      }
+    },
+    {
+      "denominacion": "responsable de ingeniería de telecomunicaciones",
+      "esco_code": "2153.1",
+      "variantes": [
+        "responsable de ingeniería de telecomunicaciones",
+        "responsable de ingenieria de telecomunicaciones"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G23"
+      }
+    },
+    {
+      "denominacion": "responsable de montaje de ascensores",
+      "esco_code": "3123.1.14",
+      "variantes": [
+        "responsable de montaje de ascensores"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G12"
+      }
+    },
+    {
+      "denominacion": "supervisor de instalación de ascensores",
+      "esco_code": "3123.1.14",
+      "variantes": [
+        "supervisor de instalación de ascensores",
+        "supervisor de instalacion de ascensores",
+        "supervisora de instalación de ascensores",
+        "supervisora de instalacion de ascensores"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G12"
+      }
+    },
+    {
+      "denominacion": "supervisor de montaje de ascensores",
+      "esco_code": "3123.1.14",
+      "variantes": [
+        "supervisor de montaje de ascensores",
+        "supervisora de montaje de ascensores"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G12"
+      }
+    },
+    {
+      "denominacion": "supervisor de montaje de medios de elevación",
+      "esco_code": "3123.1.14",
+      "variantes": [
+        "supervisor de montaje de medios de elevación",
+        "supervisor de montaje de medios de elevacion",
+        "supervisora de montaje de medios de elevación",
+        "supervisora de montaje de medios de elevacion"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G12"
+      }
+    },
+    {
+      "denominacion": "trabajador de almacén",
+      "esco_code": "9333.3",
+      "variantes": [
+        "trabajador de almacén",
+        "trabajador de almacen",
+        "trabajadora de almacén",
+        "trabajadora de almacen"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G6"
+      }
+    },
+    {
+      "denominacion": "trabajador en altura",
+      "esco_code": "7119.4",
+      "variantes": [
+        "trabajador en altura",
+        "trabajadora en altura"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G5"
+      }
+    },
+    {
+      "denominacion": "técnico de barreras y molinetes",
+      "esco_code": "7422.5",
+      "variantes": [
+        "técnico de barreras y molinetes",
+        "tecnico de barreras y molinetes",
+        "técnica de barreras y molinetes",
+        "tecnica de barreras y molinetes"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G22"
+      }
+    },
+    {
+      "denominacion": "técnico de colocación de medidores",
+      "esco_code": "7126.8",
+      "variantes": [
+        "técnico de colocación de medidores",
+        "tecnico de colocacion de medidores",
+        "técnica de colocación de medidores",
+        "tecnica de colocacion de medidores"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G19"
+      }
+    },
+    {
+      "denominacion": "técnico de control de acceso",
+      "esco_code": "7422.5",
+      "variantes": [
+        "técnico de control de acceso",
+        "tecnico de control de acceso",
+        "técnica de control de acceso",
+        "tecnica de control de acceso"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G22"
+      }
+    },
+    {
+      "denominacion": "técnico de documentación técnica i&c",
+      "esco_code": "2152.1.3",
+      "variantes": [
+        "técnico de documentación técnica I&C",
+        "tecnico de documentacion tecnica I&C",
+        "técnica de documentación técnica I&C",
+        "tecnica de documentacion tecnica I&C"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G9"
+      }
+    },
+    {
+      "denominacion": "técnico de ensamble electrónico",
+      "esco_code": "3114.1",
+      "variantes": [
+        "técnico de ensamble electrónico",
+        "tecnico de ensamble electronico",
+        "técnica de ensamble electrónico",
+        "tecnica de ensamble electronico"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G20"
+      }
+    },
+    {
+      "denominacion": "técnico de equipos de elevación",
+      "esco_code": "7412.7",
+      "variantes": [
+        "técnico de equipos de elevación",
+        "tecnico de equipos de elevacion",
+        "técnica de equipos de elevación",
+        "tecnica de equipos de elevacion"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G4"
+      }
+    },
+    {
+      "denominacion": "técnico de mantenimiento de alarmas",
+      "esco_code": "7422.5",
+      "variantes": [
+        "técnico de mantenimiento de alarmas",
+        "tecnico de mantenimiento de alarmas",
+        "técnica de mantenimiento de alarmas",
+        "tecnica de mantenimiento de alarmas"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G17"
+      }
+    },
+    {
+      "denominacion": "técnico de mantenimiento de ascensores",
+      "esco_code": "7412.7",
+      "variantes": [
+        "técnico de mantenimiento de ascensores",
+        "tecnico de mantenimiento de ascensores",
+        "técnica de mantenimiento de ascensores",
+        "tecnica de mantenimiento de ascensores"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G4"
+      }
+    },
+    {
+      "denominacion": "técnico de mantenimiento eléctrico de planta",
+      "esco_code": "7411.1.1.2",
+      "variantes": [
+        "técnico de mantenimiento eléctrico de planta",
+        "tecnico de mantenimiento electrico de planta",
+        "técnica de mantenimiento eléctrico de planta",
+        "tecnica de mantenimiento electrico de planta"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G3"
+      }
+    },
+    {
+      "denominacion": "técnico de operaciones tic",
+      "esco_code": "3511.1",
+      "variantes": [
+        "técnico de operaciones TIC",
+        "tecnico de operaciones TIC",
+        "técnica de operaciones TIC",
+        "tecnica de operaciones TIC"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G14"
+      }
+    },
+    {
+      "denominacion": "técnico de producción electrónica",
+      "esco_code": "3114.1",
+      "variantes": [
+        "técnico de producción electrónica",
+        "tecnico de produccion electronica",
+        "técnica de producción electrónica",
+        "tecnica de produccion electronica"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G20"
+      }
+    },
+    {
+      "denominacion": "técnico de puesta en marcha electrónica",
+      "esco_code": "3114.1",
+      "variantes": [
+        "técnico de puesta en marcha electrónica",
+        "tecnico de puesta en marcha electronica",
+        "técnica de puesta en marcha electrónica",
+        "tecnica de puesta en marcha electronica"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G20"
+      }
+    },
+    {
+      "denominacion": "técnico de servicio electrónico",
+      "esco_code": "3114.1",
+      "variantes": [
+        "técnico de servicio electrónico",
+        "tecnico de servicio electronico",
+        "técnica de servicio electrónico",
+        "tecnica de servicio electronico"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G20"
+      }
+    },
+    {
+      "denominacion": "técnico de servicio técnico de calle en seguridad electrónica",
+      "esco_code": "7422.5",
+      "variantes": [
+        "técnico de servicio técnico de calle en seguridad electrónica",
+        "tecnico de servicio tecnico de calle en seguridad electronica",
+        "técnica de servicio técnico de calle en seguridad electrónica",
+        "tecnica de servicio tecnico de calle en seguridad electronica"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G22"
+      }
+    },
+    {
+      "denominacion": "técnico de servicio técnico industrial",
+      "esco_code": "7412.3",
+      "variantes": [
+        "técnico de servicio técnico industrial",
+        "tecnico de servicio tecnico industrial",
+        "técnica de servicio técnico industrial",
+        "tecnica de servicio tecnico industrial"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G2"
+      }
+    },
+    {
+      "denominacion": "técnico de soporte operativo",
+      "esco_code": "3511.1",
+      "variantes": [
+        "técnico de soporte operativo",
+        "tecnico de soporte operativo",
+        "técnica de soporte operativo",
+        "tecnica de soporte operativo"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G14"
+      }
+    },
+    {
+      "denominacion": "técnico de verisure",
+      "esco_code": "7422.5",
+      "variantes": [
+        "técnico de Verisure",
+        "tecnico de Verisure",
+        "técnica de Verisure",
+        "tecnica de Verisure"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G17"
+      }
+    },
+    {
+      "denominacion": "técnico electricista/electromecánico de flota",
+      "esco_code": "7412.3",
+      "variantes": [
+        "técnico electricista/electromecánico de flota",
+        "tecnico electricista/electromecanico de flota",
+        "técnica electricista/electromecánica de flota",
+        "tecnica electricista/electromecanica de flota"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G2"
+      }
+    },
+    {
+      "denominacion": "técnico electromecánico de ascensores",
+      "esco_code": "7412.7",
+      "variantes": [
+        "técnico electromecánico de ascensores",
+        "tecnico electromecanico de ascensores",
+        "técnica electromecánica de ascensores",
+        "tecnica electromecanica de ascensores"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G13"
+      }
+    },
+    {
+      "denominacion": "técnico electrónico de ascensores",
+      "esco_code": "7412.7",
+      "variantes": [
+        "técnico electrónico de ascensores",
+        "tecnico electronico de ascensores",
+        "técnica electrónica de ascensores",
+        "tecnica electronica de ascensores"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G13"
+      }
+    },
+    {
+      "denominacion": "técnico electrónico de seguridad",
+      "esco_code": "7422.5",
+      "variantes": [
+        "técnico electrónico de seguridad",
+        "tecnico electronico de seguridad",
+        "técnica electrónica de seguridad",
+        "tecnica electronica de seguridad"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G22"
+      }
+    },
+    {
+      "denominacion": "técnico en alarmas de seguridad",
+      "esco_code": "7422.5",
+      "variantes": [
+        "técnico en alarmas de seguridad",
+        "tecnico en alarmas de seguridad",
+        "técnica en alarmas de seguridad",
+        "tecnica en alarmas de seguridad"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G17"
+      }
+    },
+    {
+      "denominacion": "técnico en trabajos verticales",
+      "esco_code": "7119.4",
+      "variantes": [
+        "técnico en trabajos verticales",
+        "tecnico en trabajos verticales",
+        "técnica en trabajos verticales",
+        "tecnica en trabajos verticales"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G5"
+      }
+    },
+    {
+      "denominacion": "técnico instalador de equipamiento de seguridad",
+      "esco_code": "7422.5",
+      "variantes": [
+        "técnico instalador de equipamiento de seguridad",
+        "tecnico instalador de equipamiento de seguridad",
+        "técnica instaladora de equipamiento de seguridad",
+        "tecnica instaladora de equipamiento de seguridad"
+      ],
+      "blast_dryrun": 0,
+      "hold_destrabado": false,
+      "warn_discrepancia": null,
+      "linaje": {
+        "confirmado_por": "PENDIENTE (punto de control Gerardo)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G22"
+      }
+    }
+  ],
+  "hold_50": [
+    {
+      "denominacion": "jefe de obra",
+      "esco_code": "1323.1",
+      "blast": 181,
+      "linaje": "REGLAS.xlsx Cyn Hoja 2 G1"
+    },
+    {
+      "denominacion": "técnico electromecánico",
+      "esco_code": "7412.3",
+      "blast": 334,
+      "linaje": "REGLAS.xlsx Cyn Hoja 2 G2"
+    },
+    {
+      "denominacion": "electricista industrial",
+      "esco_code": "7411.1.1.2",
+      "blast": 63,
+      "linaje": "REGLAS.xlsx Cyn Hoja 2 G3"
+    },
+    {
+      "denominacion": "operario de carga y descarga",
+      "esco_code": "9333.3",
+      "blast": 60,
+      "linaje": "REGLAS.xlsx Cyn Hoja 2 G6"
+    },
+    {
+      "denominacion": "operario de logística",
+      "esco_code": "9333.3",
+      "blast": 65,
+      "linaje": "REGLAS.xlsx Cyn Hoja 2 G6"
+    },
+    {
+      "denominacion": "auxiliar de depósito",
+      "esco_code": "9333.3",
+      "blast": 53,
+      "linaje": "REGLAS.xlsx Cyn Hoja 2 G6"
+    },
+    {
+      "denominacion": "empleado administrativo",
+      "esco_code": "3343.1",
+      "blast": 61,
+      "linaje": "REGLAS.xlsx Cyn Hoja 2 G10"
+    },
+    {
+      "denominacion": "operador de monitoreo",
+      "esco_code": "3511.1",
+      "blast": 55,
+      "linaje": "REGLAS.xlsx Cyn Hoja 2 G14"
+    },
+    {
+      "denominacion": "técnico electrónico",
+      "esco_code": "3114.1",
+      "blast": 162,
+      "linaje": "REGLAS.xlsx Cyn Hoja 2 G20"
+    }
+  ]
+}
