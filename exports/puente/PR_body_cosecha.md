@@ -26,7 +26,7 @@ fuente · estado.
 - Fusiones Word-manda: supervisor de instalación (Word más fino) · analista de oficina
   técnica (rama del árbol de analista del Word). Las 6 familias v1 conservadas tal cual.
 
-### 2 · Cosecha al diccionario — 153 entradas nuevas (72 → 222)
+### 2 · Cosecha al diccionario — 153 entradas nuevas (72 → 225)
 
 Bandeja completa con **dry-run exacto** (réplica del resolver real: normalización +
 longest-match + contextos + resolución por esco_code, sobre 69.794 ofertas; el motor
