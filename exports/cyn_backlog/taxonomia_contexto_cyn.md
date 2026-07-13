@@ -763,6 +763,39 @@ lote lo confirma con la nota del Excel) y «Operario de carga y descarga» (text
 
 ---
 
+### Familia «desarrollador»
+**Raíz:** desarrollador · developer · programador (software) | **Fuente:** REGLAS respuesta Cyn 2026-07-13 (post-punto-de-control) | **Estado:** definida
+
+*Contexto:* resuelve la discrepancia 2512.9→**2512.4** detectada en la bandeja de cosecha
+(el caso «Desarrollador Python Sr», estable del Word). Árbol de Cyn (textual):
+
+> «Desarrollador/a Python, desarrollador/a Python Senior, Python Developer, desarrollador/a backend Python, programador/a Python, software developer, desarrollador/a de software, desarrollador/a backend, desarrollador/a de aplicaciones, ingeniero/a de software o perfil técnico que diseña, desarrolla, programa, prueba, despliega, mantiene, integra u optimiza aplicaciones, APIs, sistemas backend, servicios cloud, soluciones informáticas, modelos de lenguaje, flujos con LangChain/LangGraph, CI/CD, arquitectura de software o componentes de software corresponde a desarrollador/a de software; usar cuando el aviso se centra en programación y desarrollo de soluciones informáticas, aunque mencione proyectos bancarios, inteligencia artificial, LLMs, APIs de terceros, cloud, contenedores, buenas prácticas de arquitectura, acompañamiento técnico a perfiles junior o mejora de eficiencia del software. Si el eje principal es Internet de las Cosas, sensores, dispositivos conectados, hardware embebido, firmware, conectividad entre dispositivos o plataformas IoT, corresponde a desarrollador/a de IdC/IoT; si el foco es análisis funcional, relevamiento de requerimientos, documentación y nexo entre negocio y tecnología sin programación como tarea principal, corresponde a analista de sistemas o analista funcional según el catálogo; si administra servidores, infraestructura, redes, despliegues o pipelines sin desarrollar software como eje central, corresponde a perfil de administración de sistemas, DevOps o infraestructura según las tareas reales; y si solo realiza soporte técnico, atención de incidencias o mantenimiento operativo de sistemas sin diseño ni programación, corresponde a técnico/a de soporte informático.»
+
+*Caso de evidencia:* Desarrollador Python Senior («Desarrollador python SR para proyectos
+bancarios») | matcher dijo `2512` | → `2512.4` desarrollador de software. Denominaciones de la
+consolidada cargadas al diccionario (cosecha 2026-07-13, todas → 2512.4).
+
+---
+
+### Familia «chofer / conductor»
+**Raíz:** chofer · conductor · transportista | **Fuente:** REGLAS respuesta Cyn 2026-07-13 (post-punto-de-control) | **Estado:** definida
+
+*Contexto:* resuelve la discrepancia 8332.2→**8332.8** (caso «Chofer de recolección de
+residuos», estable del Word). Es el árbol más ramificado del material: deslinda residuos /
+carga general / reparto / pasajeros / taxi / ambulancia / autoelevador / maquinaria pesada /
+mercancías peligrosas / recolector manual. **Complementa (no pisa) los deslindes existentes
+de la familia «operario» (depósito): autoelevador dentro de depósito ⇒ operador/a de
+carretilla elevadora, igual que en los árboles v1.** Árbol de Cyn (textual):
+
+> «Chofer de recolección de residuos, chofer de camión recolector, conductor/a de camión de basura, chofer recolector, conductor/a de vehículo de recolección, chofer de higiene urbana, chofer de servicios ambientales, chofer de camión compactador, chofer de residuos domiciliarios, chofer de residuos urbanos, chofer de contenedores o transportista de residuos que conduce vehículos destinados a recoger basura, residuos, contenedores o materiales descartados en recorridos urbanos, industriales, comerciales o municipales corresponde a conductor/a de vehículo de recogida de basura; usar cuando el aviso se centra en conducir camiones recolectores, compactadores o vehículos de higiene urbana para realizar recorridos de recolección, carga de residuos, retiro de contenedores, traslado de basura o apoyo al servicio de limpieza urbana. Si el puesto conduce camiones para transportar mercadería, materiales, insumos, productos, cargas generales, encomiendas, pallets, áridos, maquinaria, alimentos, bebidas o carga de larga, media o corta distancia sin foco en residuos, corresponde a conductor/a de vehículo de carga; si realiza reparto urbano, distribución, entregas a clientes, paquetería, e-commerce, cadetería o reparto de mercadería con camioneta, utilitario, furgón, moto o vehículo liviano, corresponde a conductor/a de automóvil, taxi o furgoneta, repartidor/a o mensajero/a según el tipo de vehículo y la tarea dominante; si transporta pasajeros en colectivo, ómnibus, micro, combi, minibús, charter, transporte escolar, transporte de personal o servicios turísticos, corresponde a conductor/a de autobús o transporte de pasajeros según el vehículo y el servicio; si conduce taxi, remis, auto de aplicación, traslado ejecutivo, traslado particular de personas o chofer privado, corresponde a conductor/a de taxi o automóvil; si conduce ambulancia, móvil sanitario o vehículo de emergencias médicas, corresponde a conductor/a de ambulancia o transporte sanitario según el catálogo disponible; si maneja autoelevador, montacargas, zorra, apilador, reach, carretilla elevadora o equipos de movimiento interno dentro de depósito, planta, fábrica, puerto, centro logístico o almacén, no corresponde a chofer de ruta ni a conductor/a de vehículo de carga, sino a operador/a de carretilla elevadora o montacargas; si opera maquinaria vial, maquinaria pesada o equipos de obra como retroexcavadora, pala cargadora, motoniveladora, topadora, excavadora, grúa, hidrogrúa, camión volcador usado como equipo de obra, mixer, compactadora, rodillo, terminadora de asfalto o maquinaria similar, no corresponde automáticamente a chofer, sino a operador/a de maquinaria pesada, operador/a de maquinaria de movimiento de tierras, operador/a de grúa u oficio específico según el equipo y las tareas; si transporta combustibles, químicos, sustancias peligrosas, residuos patógenos, residuos peligrosos, cisternas, gases o materiales regulados, revisar si existe ocupación específica para transporte de mercancías peligrosas o residuos especiales y no usar carga general sin validar las tareas; si no conduce y solo acompaña al camión, levanta bolsas, carga residuos, barre, limpia, descarga, clasifica materiales o realiza tareas manuales de recolección, corresponde a recolector/a de residuos, peón/a de carga, estibador/a o trabajador/a de limpieza urbana según la tarea dominante; si el aviso combina conducción con tareas de depósito, carga y descarga, reparto, mantenimiento, cobranza, atención al cliente o gestión logística, se debe codificar por la tarea principal, el tipo de vehículo efectivamente conducido, la carga transportada y el contexto real del servicio.»
+
+*Caso de evidencia:* Chofer de recolección de residuos | corrección previa decía `8332.2`
+(conductor de vehículo de carga — genérico) | → `8332.8` conductor de vehículo de recogida
+de basura. Denominaciones de la consolidada cargadas al diccionario (cosecha 2026-07-13,
+todas → 8332.8).
+
+---
+
 # PARTE 4 — Familias PENDIENTES (para el próximo intercambio con Cyn)
 
 | Familia | Qué hay | Qué falta |
@@ -777,7 +810,7 @@ lote lo confirma con la nota del Excel) y «Operario de carga y descarga» (text
 
 # ÍNDICE — conteo de familias
 
-**Definidas (26):**
+**Definidas (28):**
 v1 conservadas (6): operario · técnico · arquitecto · pintor · editor · herrero/soldador.
 Sesión Word (10): gerente/encargado/responsable/jefe (conducción, + rama obra del Excel) ·
 operador/programador · analista (+ rama oficina técnica) · asesor/advisor/consultor ·
@@ -788,12 +821,13 @@ mantenimiento.
 Lote REGLAS.xlsx (10): administrativo · electricista · encargado de edificio · responsable
 de mantenimiento edilicio · aprendiz/trabajos verticales · sobrestante · instalador ·
 ayudante · colocador · mampostero/albañil.
+Respuesta post-punto-de-control (2, 2026-07-13): desarrollador · chofer/conductor.
 
 **Pendientes-Cyn (3 familias + colas):** coordinador · director · montador (+ ramas
 pendientes marcadas dentro de asesor, supervisor, ingeniero, técnico-telecomunicaciones;
 + ~12 filas incompletas de Hoja 1 → `exports/cyn_backlog/devoluciones_para_cyn_*.md`).
 
-**Total catalogado: 29 familias-raíz (26 definidas / 3 pendientes).**
+**Total catalogado: 31 familias-raíz (28 definidas / 3 pendientes).**
 
 ---
 

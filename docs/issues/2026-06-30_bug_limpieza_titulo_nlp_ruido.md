@@ -41,6 +41,23 @@ SPEC S1C-G3 cargó la **denominación limpia** de estos 5 casos al diccionario (
 pero NO la raíz: cualquier oferta nueva con el mismo ruido seguirá mal clasificada hasta que
 se arregle la limpieza del título.
 
+
+## Casos nuevos (lote REGLAS de Cyn, 2026-07-13 — «MAL EXTRAIDA»)
+
+Variante del mismo bug-familia NLP: el extractor no obtuvo tareas reales del aviso
+(«Sin tareas reales disponibles») y Cyn no pudo clasificar. Detectadas en
+`docs/REGLAS-v2.xlsx` Hoja 1:
+
+| denominación | qué clasificó el sistema | estado |
+|---|---|---|
+| Ingeniero/a en integración electrónica y electromecánica (aviso duplicado sin tareas) | 7412 mecánico electricista | sin tareas extraídas — re-NLP pendiente |
+| Coordinador de mantenimiento de flota | 1219 gestor de proyectos | sin tareas extraídas — re-NLP pendiente |
+
+Nota: el otro aviso de «Ingeniero/a en integración electrónica y electromecánica» (con
+tareas bien extraídas) SÍ fue resuelto por Cyn → 2141.3.2.1 ingeniero de automatización.
+Cuando se re-procesen, devolver a Cyn (están en
+`exports/cyn_backlog/devoluciones_para_cyn_2026-07-13.md`).
+
 ## Relación
 
 - SPEC S1C-G3 (`exports/cyn_backlog/PR_body_g3_carga47.md`, `taxonomia_contexto_cyn.md`).

@@ -270,3 +270,131 @@ copia sin acentos, convención G3).
 **PUNTO DE CONTROL:** Gerardo confirma sobre esta bandeja qué se carga. Ningún write al
 diccionario antes de eso (P3: `aplicar_candidata`, squash por sesión, tandas ≤50 con TEST
 entre tandas).
+
+---
+
+# ADDENDUM post-confirmación (2026-07-13) — estado FINAL de la bandeja
+
+**Confirmación de Gerardo + respuesta escrita de Cyn** (dos consolidadas nuevas y dos
+árboles de familia; ver taxonomía v2, familias «desarrollador» y «chofer/conductor»).
+
+## Discrepancias RESUELTAS por Cyn
+- «desarrollador python sr»: 2512.9 → **2512.4** desarrollador de software. CARGADA con el código de Cyn.
+- «chofer de recolección de residuos»: 8332.2 → **8332.8** conductor de vehículo de recogida de basura. CARGADA.
+
+## Candidatas NUEVAS de la respuesta de Cyn (mismo circuito: dry-run exacto + HOLD ≥50)
+
+| denominación | esco_code | blast | resultado |
+|---|---|---|---|
+| desarrollador python | `2512.4` | 14 | CARGADA (<50, sin colisión) |
+| python developer | `2512.4` | 46 | CARGADA (<50, sin colisión) |
+| desarrollador backend python | `2512.4` | 1 | CARGADA (<50, sin colisión) |
+| programador python | `2512.4` | 0 | CARGADA (<50, sin colisión) |
+| software developer | `2512.4` | 27 | CARGADA (<50, sin colisión) |
+| desarrollador de software | `2512.4` | 1 | CARGADA (<50, sin colisión) |
+| desarrollador backend | `2512.4` | 29 | CARGADA (<50, sin colisión) |
+| desarrollador de aplicaciones | `2512.4` | 3 | CARGADA (<50, sin colisión) |
+| ingeniero de software | `2512.4` | 1 | CARGADA (<50, sin colisión) |
+| chofer de camión recolector | `8332.8` | 0 | CARGADA (<50, sin colisión) |
+| conductor de camión de basura | `8332.8` | 0 | CARGADA (<50, sin colisión) |
+| chofer recolector | `8332.8` | 0 | CARGADA (<50, sin colisión) |
+| conductor de vehículo de recolección | `8332.8` | 0 | CARGADA (<50, sin colisión) |
+| chofer de higiene urbana | `8332.8` | 0 | CARGADA (<50, sin colisión) |
+| chofer de servicios ambientales | `8332.8` | 0 | CARGADA (<50, sin colisión) |
+| chofer de camión compactador | `8332.8` | 0 | CARGADA (<50, sin colisión) |
+| chofer de residuos domiciliarios | `8332.8` | 0 | CARGADA (<50, sin colisión) |
+| chofer de residuos urbanos | `8332.8` | 0 | CARGADA (<50, sin colisión) |
+| chofer de contenedores | `8332.8` | 0 | CARGADA (<50, sin colisión) |
+| transportista de residuos | `8332.8` | 0 | CARGADA (<50, sin colisión) |
+| desarrollador python sr | `2512.4` | 5 | CARGADA (<50, sin colisión) |
+| chofer de recolección de residuos | `8332.8` | 0 | CARGADA (<50, sin colisión) |
+
+Ninguna alcanzó el umbral HOLD (máx: «python developer» 46).
+
+## Cargas ejecutadas (P3)
+**150 entradas** en 3 tandas de 50 (squash por tanda, commits `c3afb3ff` t1 / `47cc2019` t2 /
+`c0970528` t3), TEST verde entre tandas. 0 rechazos, 0 no-op. Diccionario: 72 → **222 entradas**.
+
+## HOLDs — decisión final
+
+| denominación | blast | decisión |
+|---|---|---|
+| técnico electromecánico | 334 | **NO SE CARGA — material del traductor** (raíz cubierta por árbol, familia «técnico» rama electromecánico) |
+| jefe de obra | 181 | **NO SE CARGA — material del traductor** (familia conducción, rama obra) |
+| técnico electrónico | 162 | **NO SE CARGA — material del traductor** (familia «técnico» rama electrónica) |
+| empleado administrativo | 61 | **NO SE CARGA — material del traductor** (familia «administrativo») |
+| auxiliar de depósito | 53 | **NO SE CARGA — material del traductor** (familia «operario» depósito) |
+| electricista industrial | 63 | **PENDIENTE muestra de 10** (abajo) — Gerardo confirma con la muestra a la vista |
+| operario de carga y descarga | 60 | **PENDIENTE muestra de 10** (abajo) |
+| operador de monitoreo | 55 | **PENDIENTE muestra de 10** (abajo) |
+| operario de logística | 65 | **PENDIENTE muestra de 10** (abajo) |
+
+### Muestras de 10 ofertas (dry-run: las que CAMBIARÍAN si se carga)
+
+**electricista industrial → `7411.1.1.2`** (total que cambiarían: 63)
+
+| id_oferta | titulo_limpio | resolución actual |
+|---|---|---|
+| 2172445 | electricista industrial | sin-dict |
+| 1118081439 | electricista industrial | sin-dict |
+| 1118104793 | tecnico electricista industrial- permanente | sin-dict |
+| 2165052 | electricista industrial | sin-dict |
+| 2165990 | electricista industrial | sin-dict |
+| 2168800 | técnico electricista industrial | sin-dict |
+| 1117957529 | electricista industrial | sin-dict |
+| 1117957894 | electricista industrial | sin-dict |
+| 1117960036 | electricista industrial | sin-dict |
+| 1117969167 | electricista industrial | sin-dict |
+
+**operario de carga y descarga → `9333.3`** (total que cambiarían: 60)
+
+| id_oferta | titulo_limpio | resolución actual |
+|---|---|---|
+| 1118044446 | operario de carga y descarga por convocatoria | sin-dict |
+| 1118100448 | operario de carga y descarga por convocatoria brandsen | sin-dict |
+| 1118044433 | operario de carga y descarga por convocatoria general rodriguez | sin-dict |
+| 1118068018 | operario de carga y descarga | sin-dict |
+| 1118076313 | operario de carga y descarga por convocatoria | sin-dict |
+| 1118044451 | operario de carga y descarga por convocatoria | sin-dict |
+| 1118155316 | operario de carga y descarga por convocatoria | sin-dict |
+| 1118155320 | operario de carga y descarga por convocatoria | sin-dict |
+| 1118155377 | operario de carga y descarga por convocatoria | sin-dict |
+| 5190757257 | operario de carga y descarga en pompeya | sin-dict |
+
+**operador de monitoreo → `3511.1`** (total que cambiarían: 54)
+
+| id_oferta | titulo_limpio | resolución actual |
+|---|---|---|
+| 1118095455 | operador de monitoreo sector logística y seguridad | isco:9333 |
+| 1118096083 | operador de monitoreo satelital | sin-dict |
+| 1118007429 | operador de monitoreo satelital | sin-dict |
+| 1118051248 | operador de monitoreo | sin-dict |
+| 1116737379 | operador de monitoreo | sin-dict |
+| 1117847960 | operador de monitoreo | sin-dict |
+| 1118164585 | operador de monitoreo satelital | sin-dict |
+| 5044706365 | operador de monitoreo de flota | sin-dict |
+| 5099817572 | operador de monitoreo | sin-dict |
+| 5244951781 | operador de monitoreo cctv | sin-dict |
+
+**operario de logística → `9333.3`** (total que cambiarían: 65)
+
+| id_oferta | titulo_limpio | resolución actual |
+|---|---|---|
+| 1118103737 | operario de logística para distribuidora | sin-dict |
+| 1116764948 | operario de logística- eventual- general | sin-dict |
+| 1118021683 | operario de logistica | sin-dict |
+| 1118062456 | operario de logística | sin-dict |
+| 1118140754 | operario de logistica | sin-dict |
+| 1118144503 | operario de logística | sin-dict |
+| 1118148803 | operario de logística con habilitación de autoelevador | sin-dict |
+| 1118152733 | operario de logística | sin-dict |
+| 6406177451 | operario de logística | sin-dict |
+| 7596117031 | operario de logística | sin-dict |
+
+> Observación del harness sobre «operador de monitoreo»: la muestra es heterogénea —
+> monitoreo satelital/de flota/CCTV conviven con NOC/plataformas. El árbol de Cyn (familia
+> «técnico», rama monitoreo TIC) manda a 3511.1 el monitoreo de infraestructura TIC; el
+> satelital/CCTV de seguridad podría ser otra rama. Ídem «operario de logística con
+> habilitación de autoelevador» (→ ¿carretilla elevadora según el árbol de depósito?).
+> Decisión queda en Gerardo/Cyn.
+
