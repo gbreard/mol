@@ -52,7 +52,36 @@ Sin código ni árbol — cuando puedas, con ver las tareas del aviso alcanza:
 - Ingeniero civil, en construcciones o carreras afines
 - Director/a de finanzas
 
-## 5 · Ya resuelto con tu respuesta (solo para que quede registro)
+
+## 5 · Familia nueva para tu árbol: «monitoreo»
+
+«Operador/a de monitoreo» estaba en tu lote (→ operador de centro de datos, 3511.1), pero
+al mirar los avisos reales que afectaría (54) la muestra salió mezclada — no es una sola
+ocupación. Detectamos **3 ramas**:
+
+1. **NOC / plataformas / infraestructura TIC** → operador de centro de datos (3511.1) —
+   tu criterio original.
+2. **CCTV / cámaras / seguridad** → ¿vigilante/monitoreo de seguridad? (tu árbol de
+   alarmas dice que el que solo monitorea sin instalar NO es técnico en alarmas).
+3. **Satelital / seguimiento de flota** → ¿otra ocupación? (logística/seguridad vehicular).
+
+Por eso NO la cargamos plana: te pedimos el árbol con tu formato de siempre
+(«si el aviso dice/hace X → ocupación Y; si Z → W…»). Títulos reales de la muestra:
+
+| título del aviso |
+|---|
+| operador de monitoreo sector logística y seguridad |
+| operador de monitoreo satelital |
+| operador de monitoreo satelital |
+| operador de monitoreo |
+| operador de monitoreo |
+| operador de monitoreo |
+| operador de monitoreo satelital |
+| operador de monitoreo de flota |
+| operador de monitoreo |
+| operador de monitoreo cctv |
+
+## 6 · Ya resuelto con tu respuesta (solo para que quede registro)
 
 - Desarrollador Python Senior → **2512.4** desarrollador de software (cargado + tu árbol en taxonomía)
 - Chofer de recolección de residuos → **8332.8** conductor de vehículo de recogida de basura (cargado + tu árbol en taxonomía)

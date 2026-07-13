@@ -802,6 +802,7 @@ todas → 8332.8).
 |---|---|---|
 | «coordinador» | «Coordinador de mantenimiento de flota» (MAL EXTRAIDA — bug NLP de título, sin tareas) · «Coordinador de servicios eléctricos» (fila vacía) | tareas reales + árbol + código |
 | «director» | «Director/a de finanzas» (fila vacía; la familia conducción del Word cubre "dirige administración/finanzas → director financiero 1211.1" — confirmar si alcanza) | confirmación de Cyn |
+| «monitoreo» | «Operador/a de monitoreo» (54 avisos): muestra heterogénea con 3 ramas detectadas — NOC/plataformas TIC (→3511.1, criterio original de Cyn), CCTV/seguridad, satelital/flota. NO se cargó plana (decisión Gerardo 2026-07-13); muestra en devoluciones | árbol de Cyn con las 3 ramas |
 | «montador» | «Montador de estructuras de hormigón» — REQUIERE REVISION (nota de Cyn: «Realiza el montaje de estructuras de hormigón en obra, con traslado fuera de la localidad, trabajo en altura y experiencia en tareas de montaje») | código destino |
 | «estudiante» (fuera de abogacía) | solo la rama abogacía definida | otras carreras si aparecen |
 | ~12 filas incompletas Hoja 1 | denominaciones sin código ni árbol (listadas en devoluciones_para_cyn) | completar |
@@ -823,11 +824,11 @@ de mantenimiento edilicio · aprendiz/trabajos verticales · sobrestante · inst
 ayudante · colocador · mampostero/albañil.
 Respuesta post-punto-de-control (2, 2026-07-13): desarrollador · chofer/conductor.
 
-**Pendientes-Cyn (3 familias + colas):** coordinador · director · montador (+ ramas
+**Pendientes-Cyn (4 familias + colas):** coordinador · director · montador · monitoreo (+ ramas
 pendientes marcadas dentro de asesor, supervisor, ingeniero, técnico-telecomunicaciones;
 + ~12 filas incompletas de Hoja 1 → `exports/cyn_backlog/devoluciones_para_cyn_*.md`).
 
-**Total catalogado: 31 familias-raíz (28 definidas / 3 pendientes).**
+**Total catalogado: 32 familias-raíz (28 definidas / 4 pendientes).**
 
 ---
 

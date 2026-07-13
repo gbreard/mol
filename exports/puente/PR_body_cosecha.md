@@ -10,7 +10,7 @@ La prosa de Cyn es la verdad de dominio: se estructura y rutea, textual, sin ree
 
 ### 1 · Taxonomía v2 — el insumo del traductor (`exports/cyn_backlog/taxonomia_contexto_cyn.md`)
 
-De 6 a **31 familias-raíz (28 definidas / 3 pendientes-Cyn)**. Estructura por familia:
+De 6 a **32 familias-raíz (28 definidas / 4 pendientes-Cyn, incluida «monitoreo»)**. Estructura por familia:
 raíz · árbol (prosa textual de Cyn) · casos de evidencia (matcher dijo → Cyn corrigió) ·
 fuente · estado.
 
@@ -26,7 +26,7 @@ fuente · estado.
 - Fusiones Word-manda: supervisor de instalación (Word más fino) · analista de oficina
   técnica (rama del árbol de analista del Word). Las 6 familias v1 conservadas tal cual.
 
-### 2 · Cosecha al diccionario — 150 entradas nuevas (72 → 222)
+### 2 · Cosecha al diccionario — 153 entradas nuevas (72 → 222)
 
 Bandeja completa con **dry-run exacto** (réplica del resolver real: normalización +
 longest-match + contextos + resolución por esco_code, sobre 69.794 ofertas; el motor
@@ -35,7 +35,7 @@ reprodujo el 141 histórico de vendedor viajante): `exports/puente/bandeja_cosec
 - 148 candidatas de la bandeja original + 22 de la respuesta de Cyn; códigos 100%
   validados contra catálogo (G4/G13 «7412 técnico de ascensores» → `7412.7` por label,
   flageado; jamás inventado).
-- **Confirmadas por Gerardo en el punto de control** → 3 tandas de 50 vía
+- **Confirmadas por Gerardo en el punto de control** → 3 tandas de 50 + tanda 4 de 3 vía
   `aplicar_candidata` (squash por tanda: `c3afb3ff` / `47cc2019` / `c0970528`), TEST verde
   entre tandas, 0 rechazos, 0 no-op, `_linaje` por entrada.
 - **vendedor viajante → 3322.1 (blast 141)**: HOLD de P5 DESTRABADO por decisión escrita
@@ -44,11 +44,14 @@ reprodujo el 141 histórico de vendedor viajante): `exports/puente/bandeja_cosec
   recolección de residuos 8332.2→**8332.8** (cargadas con el código corregido).
 - HOLDs ≥50: **NO cargadas** técnico electromecánico (334) · jefe de obra (181) · técnico
   electrónico (162) · empleado administrativo (61) · auxiliar de depósito (53) — raíces
-  cubiertas por árboles, material del traductor (así marcadas en la bandeja). **Pendientes
-  de decisión con muestra de 10 a la vista** (addendum de la bandeja): electricista
-  industrial (63) · operario de logística (65) · operario de carga y descarga (60) ·
-  operador de monitoreo (54) — con observación de heterogeneidad en «operador de monitoreo»
-  (satelital/CCTV vs NOC).
+  cubiertas por árboles, material del traductor (así marcadas en la bandeja).
+- **Tanda 4** (`cosecha-2026-07-13-t4-holds`) — decisión final de Gerardo con las muestras
+  de 10 a la vista: **CARGADAS** electricista industrial (63) · operario de carga y
+  descarga (60) · operario de logística (65, incluye el caso «con habilitación de
+  autoelevador»: requisito accesorio, no tarea principal). **NO cargada** operador de
+  monitoreo (54): la heterogeneidad de la muestra (NOC/plataformas vs CCTV/seguridad vs
+  satelital/flota) la define como CONDICIONAL → familia pendiente «monitoreo» en taxonomía
+  + devoluciones para que Cyn escriba el árbol. Diccionario final: **225 entradas**.
 
 ### 3 · Re-juicio versionado en la fixture (sin pisar)
 
@@ -100,7 +103,7 @@ diccionario" o "Correcciones para confirmar".»*
 - **Regresión TEST reservado (93): 1 oferta tocada** — `1117951568` (Desarrollador PYTHON
   Sr), movimiento `sin-dict` → `2512.4`, exactamente el target que Cyn dictó en su
   respuesta. No es fuga: la entrada no se generó desde el TEST sino desde la consolidada
-  de Cyn; es recurrencia del vocabulario (el loop funcionando). Resto del TEST: 0 tocadas.
+  de Cyn; es recurrencia del vocabulario (el loop funcionando). Resto del TEST: 0 tocadas (tanda 4 incluida: 0).
 - Working tree blindado: adds explícitos; protegidos (`config/training_pairs.json`,
   `metrics/gold_set_history.json`) y ~40 sin-trackear preexistentes intactos.
 - Wizard, matcher, reglas de matching y canal de skills: sin tocar. `tests/harness/`: solo lectura.

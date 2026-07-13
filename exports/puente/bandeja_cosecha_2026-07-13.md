@@ -324,10 +324,10 @@ Ninguna alcanzó el umbral HOLD (máx: «python developer» 46).
 | técnico electrónico | 162 | **NO SE CARGA — material del traductor** (familia «técnico» rama electrónica) |
 | empleado administrativo | 61 | **NO SE CARGA — material del traductor** (familia «administrativo») |
 | auxiliar de depósito | 53 | **NO SE CARGA — material del traductor** (familia «operario» depósito) |
-| electricista industrial | 63 | **PENDIENTE muestra de 10** (abajo) — Gerardo confirma con la muestra a la vista |
-| operario de carga y descarga | 60 | **PENDIENTE muestra de 10** (abajo) |
-| operador de monitoreo | 55 | **PENDIENTE muestra de 10** (abajo) |
-| operario de logística | 65 | **PENDIENTE muestra de 10** (abajo) |
+| electricista industrial | 63 | **CARGADA (tanda 4)** — confirmada por Gerardo con muestra a la vista |
+| operario de carga y descarga | 60 | **CARGADA (tanda 4)** — confirmada con muestra |
+| operador de monitoreo | 55 | **NO SE CARGA — CONDICIONAL por heterogeneidad de la muestra** (NOC vs CCTV vs satelital/flota) → familia pendiente «monitoreo» en taxonomía + devoluciones para que Cyn escriba el árbol |
+| operario de logística | 65 | **CARGADA (tanda 4)** — confirmada con muestra; el caso «con habilitación de autoelevador» incluido (habilitación = requisito accesorio, no tarea principal, según el árbol de depósito) |
 
 ### Muestras de 10 ofertas (dry-run: las que CAMBIARÍAN si se carga)
 
@@ -398,3 +398,14 @@ Ninguna alcanzó el umbral HOLD (máx: «python developer» 46).
 > habilitación de autoelevador» (→ ¿carretilla elevadora según el árbol de depósito?).
 > Decisión queda en Gerardo/Cyn.
 
+
+## Cierre — decisión final sobre los 4 HOLD con muestra (Gerardo, 2026-07-13)
+
+**Tanda 4** (`cosecha-2026-07-13-t4-holds`, squash): electricista industrial (63) ·
+operario de carga y descarga (60) · operario de logística (65) — 3 aplicadas, 0 rechazos,
+TEST verde, 0 ofertas del split TEST tocadas. Diccionario: 222 → **225 entradas**.
+
+**operador de monitoreo (54): NO cargada** — la heterogeneidad de la muestra la define
+como CONDICIONAL. Va como familia pendiente «monitoreo» (3 ramas: NOC/plataformas,
+CCTV/seguridad, satelital/flota) a la taxonomía y a `devoluciones_para_cyn_2026-07-13.md`
+para que Cyn escriba el árbol.
