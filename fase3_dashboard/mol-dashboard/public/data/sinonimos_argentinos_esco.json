@@ -2591,6 +2591,52 @@
         "fecha": "2026-07-13",
         "correccion_fuente": "Word estable — codigo corregido por Cyn (8332.2->8332.8)"
       }
+    },
+    "electricista industrial": {
+      "esco_code": "7411.1.1.2",
+      "isco_primario": "7411",
+      "esco_label": "electricista industrial",
+      "esco_uri": "http://data.europa.eu/esco/occupation/5df63943-f1bc-4438-90f1-92768a7a23c8",
+      "variantes": [
+        "electricista industrial"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (decisión final HOLDs con muestra, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G3 — HOLD >=50 confirmado con muestra de 10 a la vista"
+      }
+    },
+    "operario de carga y descarga": {
+      "esco_code": "9333.3",
+      "isco_primario": "9333",
+      "esco_label": "operario de logística de almacén/operaria de logística de almacén",
+      "esco_uri": "http://data.europa.eu/esco/occupation/808becc8-5a4e-4e71-a043-c2ea32b56ae3",
+      "variantes": [
+        "operario de carga y descarga",
+        "operaria de carga y descarga"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (decisión final HOLDs con muestra, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G6 — HOLD >=50 confirmado con muestra de 10 a la vista"
+      }
+    },
+    "operario de logística": {
+      "esco_code": "9333.3",
+      "isco_primario": "9333",
+      "esco_label": "operario de logística de almacén/operaria de logística de almacén",
+      "esco_uri": "http://data.europa.eu/esco/occupation/808becc8-5a4e-4e71-a043-c2ea32b56ae3",
+      "variantes": [
+        "operario de logística",
+        "operario de logistica",
+        "operaria de logística",
+        "operaria de logistica"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (decisión final HOLDs con muestra, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G6 — HOLD >=50 confirmado con muestra de 10 a la vista (incluye caso con habilitación de autoelevador: requisito accesorio, no tarea principal)"
+      }
     }
   },
   "skills_mapeo": {
