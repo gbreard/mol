@@ -1016,6 +1016,796 @@
         "correccion_fuente": "validacion_correcciones wizard (Cyn), Asesor Bienes Raices -> 3334.3"
       },
       "nota": "Denominacion estable validada por Cyn. Blast exacto dry-run=3 (variante 'asesor inmobiliario' se excluyo por amplia: subia a 121)."
+    },
+    "vendedor viajante": {
+      "esco_code": "3322.1",
+      "isco_primario": "3322",
+      "esco_label": "representante comercial",
+      "esco_uri": "http://data.europa.eu/esco/occupation/14031d4a-6e99-442f-b4fe-18262b6432b2",
+      "variantes": [
+        "vendedor viajante",
+        "vendedora viajante"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "Word sesión 2026-07 — HOLD 141 DESTRABADO por decisión escrita de Cyn (Confirmar) — criterio: venta externa: visita clientes, recorre zonas de venta, ofrece productos o servicios, toma pedidos y mantiene una cartera comercial fuera del local (criterio textual completo en taxonomía, familia «vendedor»)"
+      }
+    },
+    "supervisor de obra": {
+      "esco_code": "3123.1",
+      "isco_primario": "3123",
+      "esco_label": "supervisor general de construcción/supervisora general de construcción",
+      "esco_uri": "http://data.europa.eu/esco/occupation/0dd7e6cd-2e5a-4fae-9ce0-6a3622d4019f",
+      "variantes": [
+        "supervisor de obra",
+        "supervisora de obra"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G16"
+      }
+    },
+    "coordinador de obra": {
+      "esco_code": "1323.1",
+      "isco_primario": "1323",
+      "esco_label": "director de obra/directora de obra",
+      "esco_uri": "http://data.europa.eu/esco/occupation/faed05c0-c1d1-4e34-b575-0dea96459e56",
+      "variantes": [
+        "coordinador de obra",
+        "coordinadora de obra"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
+      }
+    },
+    "ingeniero eléctrico": {
+      "esco_code": "2151.1",
+      "isco_primario": "2151",
+      "esco_label": "ingeniero eléctrico/ingeniera eléctrica",
+      "esco_uri": "http://data.europa.eu/esco/occupation/86ca306c-ab99-420a-9e2a-aa73c5c4de22",
+      "variantes": [
+        "ingeniero eléctrico",
+        "ingeniero electrico",
+        "ingeniera eléctrica",
+        "ingeniera electrica"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G8"
+      }
+    },
+    "técnico electricista industrial": {
+      "esco_code": "7411.1.1.2",
+      "isco_primario": "7411",
+      "esco_label": "electricista industrial",
+      "esco_uri": "http://data.europa.eu/esco/occupation/5df63943-f1bc-4438-90f1-92768a7a23c8",
+      "variantes": [
+        "técnico electricista industrial",
+        "tecnico electricista industrial",
+        "técnica electricista industrial",
+        "tecnica electricista industrial"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G3"
+      }
+    },
+    "director de obra": {
+      "esco_code": "1323.1",
+      "isco_primario": "1323",
+      "esco_label": "director de obra/directora de obra",
+      "esco_uri": "http://data.europa.eu/esco/occupation/faed05c0-c1d1-4e34-b575-0dea96459e56",
+      "variantes": [
+        "director de obra",
+        "directora de obra"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
+      }
+    },
+    "instalador de sistemas de seguridad": {
+      "esco_code": "7422.5",
+      "isco_primario": "7422",
+      "esco_label": "técnico en alarmas de seguridad/técnica en alarmas de seguridad",
+      "esco_uri": "http://data.europa.eu/esco/occupation/c0c1364d-f784-4e76-8d3f-1e998dc6545d",
+      "variantes": [
+        "instalador de sistemas de seguridad",
+        "instaladora de sistemas de seguridad"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G17"
+      }
+    },
+    "encargado de edificio": {
+      "esco_code": "5153.1",
+      "isco_primario": "5153",
+      "esco_label": "conserje de edificio",
+      "esco_uri": "http://data.europa.eu/esco/occupation/1822bfc2-e735-449f-ba00-ca71eb5c062b",
+      "variantes": [
+        "encargado de edificio",
+        "encargada de edificio"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G11"
+      }
+    },
+    "técnico instalador de alarmas": {
+      "esco_code": "7422.5",
+      "isco_primario": "7422",
+      "esco_label": "técnico en alarmas de seguridad/técnica en alarmas de seguridad",
+      "esco_uri": "http://data.europa.eu/esco/occupation/c0c1364d-f784-4e76-8d3f-1e998dc6545d",
+      "variantes": [
+        "técnico instalador de alarmas",
+        "tecnico instalador de alarmas",
+        "técnica instaladora de alarmas",
+        "tecnica instaladora de alarmas"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G17"
+      }
+    },
+    "analista de monitoreo": {
+      "esco_code": "3511.1",
+      "isco_primario": "3511",
+      "esco_label": "operador de centro de datos/operadora de centro de datos",
+      "esco_uri": "http://data.europa.eu/esco/occupation/9729c0f3-c9bc-482e-ac59-a82ec3b67ba3",
+      "variantes": [
+        "analista de monitoreo"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G14"
+      }
+    },
+    "ingeniero electricista": {
+      "esco_code": "2151.1",
+      "isco_primario": "2151",
+      "esco_label": "ingeniero eléctrico/ingeniera eléctrica",
+      "esco_uri": "http://data.europa.eu/esco/occupation/86ca306c-ab99-420a-9e2a-aa73c5c4de22",
+      "variantes": [
+        "ingeniero electricista",
+        "ingeniera electricista"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G8"
+      }
+    },
+    "gerente de obra": {
+      "esco_code": "1323.1",
+      "isco_primario": "1323",
+      "esco_label": "director de obra/directora de obra",
+      "esco_uri": "http://data.europa.eu/esco/occupation/faed05c0-c1d1-4e34-b575-0dea96459e56",
+      "variantes": [
+        "gerente de obra"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
+      }
+    },
+    "técnico en electrónica": {
+      "esco_code": "3114.1",
+      "isco_primario": "3114",
+      "esco_label": "ingeniero técnico en electrónica/ingeniera técnica en electrónica",
+      "esco_uri": "http://data.europa.eu/esco/occupation/27811419-407f-4868-a388-2f7df7aafd91",
+      "variantes": [
+        "técnico en electrónica",
+        "tecnico en electronica",
+        "técnica en electrónica",
+        "tecnica en electronica"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G20"
+      }
+    },
+    "responsable de obra": {
+      "esco_code": "1323.1",
+      "isco_primario": "1323",
+      "esco_label": "director de obra/directora de obra",
+      "esco_uri": "http://data.europa.eu/esco/occupation/faed05c0-c1d1-4e34-b575-0dea96459e56",
+      "variantes": [
+        "responsable de obra"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
+      }
+    },
+    "técnico electromecánico de mantenimiento": {
+      "esco_code": "7412.3",
+      "isco_primario": "7412",
+      "esco_label": "mecánico electricista/mecánica electricista",
+      "esco_uri": "http://data.europa.eu/esco/occupation/5d009d45-3bb9-4e33-8760-294f59adec8c",
+      "variantes": [
+        "técnico electromecánico de mantenimiento",
+        "tecnico electromecanico de mantenimiento",
+        "técnica electromecánica de mantenimiento",
+        "tecnica electromecanica de mantenimiento"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G2"
+      }
+    },
+    "encargado de obra": {
+      "esco_code": "3123.1",
+      "isco_primario": "3123",
+      "esco_label": "supervisor general de construcción/supervisora general de construcción",
+      "esco_uri": "http://data.europa.eu/esco/occupation/0dd7e6cd-2e5a-4fae-9ce0-6a3622d4019f",
+      "variantes": [
+        "encargado de obra",
+        "encargada de obra"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G16"
+      }
+    },
+    "operador noc": {
+      "esco_code": "3511.1",
+      "isco_primario": "3511",
+      "esco_label": "operador de centro de datos/operadora de centro de datos",
+      "esco_uri": "http://data.europa.eu/esco/occupation/9729c0f3-c9bc-482e-ac59-a82ec3b67ba3",
+      "variantes": [
+        "operador noc",
+        "operador NOC",
+        "operadora NOC"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G14"
+      }
+    },
+    "técnico de mantenimiento de equipos industriales": {
+      "esco_code": "7412.3",
+      "isco_primario": "7412",
+      "esco_label": "mecánico electricista/mecánica electricista",
+      "esco_uri": "http://data.europa.eu/esco/occupation/5d009d45-3bb9-4e33-8760-294f59adec8c",
+      "variantes": [
+        "técnico de mantenimiento de equipos industriales",
+        "tecnico de mantenimiento de equipos industriales",
+        "técnica de mantenimiento de equipos industriales",
+        "tecnica de mantenimiento de equipos industriales"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G2"
+      }
+    },
+    "administrativo de mantenimiento": {
+      "esco_code": "3343.1",
+      "isco_primario": "3343",
+      "esco_label": "empleado administrativo/empleada administrativa",
+      "esco_uri": "http://data.europa.eu/esco/occupation/044d78cc-f62f-4532-83a5-8e04f2889652",
+      "variantes": [
+        "administrativo de mantenimiento",
+        "administrativa de mantenimiento"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G10"
+      }
+    },
+    "ingeniero en telecomunicaciones": {
+      "esco_code": "2153.1",
+      "isco_primario": "2153",
+      "esco_label": "ingeniero de telecomunicaciones/ingeniera de telecomunicaciones",
+      "esco_uri": "http://data.europa.eu/esco/occupation/02eb0ae6-ecdd-4602-9c8e-60ffe6dbe1e2",
+      "variantes": [
+        "ingeniero en telecomunicaciones",
+        "ingeniera en telecomunicaciones"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G23"
+      }
+    },
+    "mecánico electricista": {
+      "esco_code": "7412.3",
+      "isco_primario": "7412",
+      "esco_label": "mecánico electricista/mecánica electricista",
+      "esco_uri": "http://data.europa.eu/esco/occupation/5d009d45-3bb9-4e33-8760-294f59adec8c",
+      "variantes": [
+        "mecánico electricista",
+        "mecanico electricista",
+        "mecánica electricista",
+        "mecanica electricista"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G2"
+      }
+    },
+    "técnico de ascensores": {
+      "esco_code": "7412.7",
+      "isco_primario": "7412",
+      "esco_label": "técnico de ascensores/técnica de ascensores",
+      "esco_uri": "http://data.europa.eu/esco/occupation/f8d1bcf9-9ca1-408f-a713-7bdf28c400fd",
+      "variantes": [
+        "técnico de ascensores",
+        "tecnico de ascensores",
+        "técnica de ascensores",
+        "tecnica de ascensores"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G13"
+      }
+    },
+    "técnico de mantenimiento eléctrico industrial": {
+      "esco_code": "7411.1.1.2",
+      "isco_primario": "7411",
+      "esco_label": "electricista industrial",
+      "esco_uri": "http://data.europa.eu/esco/occupation/5df63943-f1bc-4438-90f1-92768a7a23c8",
+      "variantes": [
+        "técnico de mantenimiento eléctrico industrial",
+        "tecnico de mantenimiento electrico industrial",
+        "técnica de mantenimiento eléctrico industrial",
+        "tecnica de mantenimiento electrico industrial"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G3"
+      }
+    },
+    "técnico en ascensores": {
+      "esco_code": "7412.7",
+      "isco_primario": "7412",
+      "esco_label": "técnico de ascensores/técnica de ascensores",
+      "esco_uri": "http://data.europa.eu/esco/occupation/f8d1bcf9-9ca1-408f-a713-7bdf28c400fd",
+      "variantes": [
+        "técnico en ascensores",
+        "tecnico en ascensores",
+        "técnica en ascensores",
+        "tecnica en ascensores"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G4"
+      }
+    },
+    "técnico oficial": {
+      "esco_code": "7119.4",
+      "isco_primario": "7119",
+      "esco_label": "especialista en trabajos verticales",
+      "esco_uri": "http://data.europa.eu/esco/occupation/ac7c07d1-bc11-4f19-bca5-e468e9b1a53c",
+      "variantes": [
+        "técnico oficial",
+        "tecnico oficial"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G5"
+      }
+    },
+    "arquitecto dibujante": {
+      "esco_code": "2161.1",
+      "isco_primario": "2161",
+      "esco_label": "arquitecto/arquitecta",
+      "esco_uri": "http://data.europa.eu/esco/occupation/8c3f536e-ba66-4321-ba40-363dc39f129b",
+      "variantes": [
+        "arquitecto dibujante",
+        "arquitecta dibujante"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G18"
+      }
+    },
+    "arquitecto junior": {
+      "esco_code": "2161.1",
+      "isco_primario": "2161",
+      "esco_label": "arquitecto/arquitecta",
+      "esco_uri": "http://data.europa.eu/esco/occupation/8c3f536e-ba66-4321-ba40-363dc39f129b",
+      "variantes": [
+        "arquitecto junior",
+        "arquitecta junior"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G18"
+      }
+    },
+    "electricista de planta": {
+      "esco_code": "7411.1.1.2",
+      "isco_primario": "7411",
+      "esco_label": "electricista industrial",
+      "esco_uri": "http://data.europa.eu/esco/occupation/5df63943-f1bc-4438-90f1-92768a7a23c8",
+      "variantes": [
+        "electricista de planta"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G3"
+      }
+    },
+    "ingeniero civil estructural": {
+      "esco_code": "2142.1",
+      "isco_primario": "2142",
+      "esco_label": "ingeniero civil/ingeniera civil",
+      "esco_uri": "http://data.europa.eu/esco/occupation/d7d986e1-7333-431b-9719-0c5c6939e360",
+      "variantes": [
+        "ingeniero civil estructural",
+        "ingeniera civil estructural"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G7"
+      }
+    },
+    "técnico de monitoreo": {
+      "esco_code": "3511.1",
+      "isco_primario": "3511",
+      "esco_label": "operador de centro de datos/operadora de centro de datos",
+      "esco_uri": "http://data.europa.eu/esco/occupation/9729c0f3-c9bc-482e-ac59-a82ec3b67ba3",
+      "variantes": [
+        "técnico de monitoreo",
+        "tecnico de monitoreo",
+        "técnica de monitoreo",
+        "tecnica de monitoreo"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G14"
+      }
+    },
+    "técnico de seguridad electrónica": {
+      "esco_code": "7422.5",
+      "isco_primario": "7422",
+      "esco_label": "técnico en alarmas de seguridad/técnica en alarmas de seguridad",
+      "esco_uri": "http://data.europa.eu/esco/occupation/c0c1364d-f784-4e76-8d3f-1e998dc6545d",
+      "variantes": [
+        "técnico de seguridad electrónica",
+        "tecnico de seguridad electronica",
+        "técnica de seguridad electrónica",
+        "tecnica de seguridad electronica"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G22"
+      }
+    },
+    "técnico electrónico de mantenimiento industrial": {
+      "esco_code": "7412.3",
+      "isco_primario": "7412",
+      "esco_label": "mecánico electricista/mecánica electricista",
+      "esco_uri": "http://data.europa.eu/esco/occupation/5d009d45-3bb9-4e33-8760-294f59adec8c",
+      "variantes": [
+        "técnico electrónico de mantenimiento industrial",
+        "tecnico electronico de mantenimiento industrial",
+        "técnica electrónica de mantenimiento industrial",
+        "tecnica electronica de mantenimiento industrial"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G2"
+      }
+    },
+    "técnico mecánico de elevadores": {
+      "esco_code": "7412.7",
+      "isco_primario": "7412",
+      "esco_label": "técnico de ascensores/técnica de ascensores",
+      "esco_uri": "http://data.europa.eu/esco/occupation/f8d1bcf9-9ca1-408f-a713-7bdf28c400fd",
+      "variantes": [
+        "técnico mecánico de elevadores",
+        "tecnico mecanico de elevadores",
+        "técnica mecánica de elevadores",
+        "tecnica mecanica de elevadores"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G13"
+      }
+    },
+    "administrativo de infraestructura": {
+      "esco_code": "3343.1",
+      "isco_primario": "3343",
+      "esco_label": "empleado administrativo/empleada administrativa",
+      "esco_uri": "http://data.europa.eu/esco/occupation/044d78cc-f62f-4532-83a5-8e04f2889652",
+      "variantes": [
+        "administrativo de infraestructura",
+        "administrativa de infraestructura"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G10"
+      }
+    },
+    "arquitecto de obra": {
+      "esco_code": "3123.1",
+      "isco_primario": "3123",
+      "esco_label": "supervisor general de construcción/supervisora general de construcción",
+      "esco_uri": "http://data.europa.eu/esco/occupation/0dd7e6cd-2e5a-4fae-9ce0-6a3622d4019f",
+      "variantes": [
+        "arquitecto de obra",
+        "arquitecta de obra"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G16"
+      }
+    },
+    "ingeniero eléctrico de proyectos": {
+      "esco_code": "2151.1",
+      "isco_primario": "2151",
+      "esco_label": "ingeniero eléctrico/ingeniera eléctrica",
+      "esco_uri": "http://data.europa.eu/esco/occupation/86ca306c-ab99-420a-9e2a-aa73c5c4de22",
+      "variantes": [
+        "ingeniero eléctrico de proyectos",
+        "ingeniero electrico de proyectos",
+        "ingeniera eléctrica de proyectos",
+        "ingeniera electrica de proyectos"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G8"
+      }
+    },
+    "instalador de ascensores": {
+      "esco_code": "7412.7",
+      "isco_primario": "7412",
+      "esco_label": "técnico de ascensores/técnica de ascensores",
+      "esco_uri": "http://data.europa.eu/esco/occupation/f8d1bcf9-9ca1-408f-a713-7bdf28c400fd",
+      "variantes": [
+        "instalador de ascensores",
+        "instaladora de ascensores"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G4"
+      }
+    },
+    "líder de obra": {
+      "esco_code": "1323.1",
+      "isco_primario": "1323",
+      "esco_label": "director de obra/directora de obra",
+      "esco_uri": "http://data.europa.eu/esco/occupation/faed05c0-c1d1-4e34-b575-0dea96459e56",
+      "variantes": [
+        "líder de obra",
+        "lider de obra"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
+      }
+    },
+    "peón de carga": {
+      "esco_code": "9333.3",
+      "isco_primario": "9333",
+      "esco_label": "operario de logística de almacén/operaria de logística de almacén",
+      "esco_uri": "http://data.europa.eu/esco/occupation/808becc8-5a4e-4e71-a043-c2ea32b56ae3",
+      "variantes": [
+        "peón de carga",
+        "peon de carga",
+        "peona de carga"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G6"
+      }
+    },
+    "proyectista de instrumentación": {
+      "esco_code": "2152.1.3",
+      "isco_primario": "2152",
+      "esco_label": "ingeniero de instrumentación/ingeniera de instrumentación",
+      "esco_uri": "http://data.europa.eu/esco/occupation/e6800524-eec2-4c33-af0e-6f36d1d679bc",
+      "variantes": [
+        "proyectista de instrumentación",
+        "proyectista de instrumentacion"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G9"
+      }
+    },
+    "technical monitoring operations": {
+      "esco_code": "3511.1",
+      "isco_primario": "3511",
+      "esco_label": "operador de centro de datos/operadora de centro de datos",
+      "esco_uri": "http://data.europa.eu/esco/occupation/9729c0f3-c9bc-482e-ac59-a82ec3b67ba3",
+      "variantes": [
+        "technical monitoring operations"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G14"
+      }
+    },
+    "técnico de cctv": {
+      "esco_code": "7422.5",
+      "isco_primario": "7422",
+      "esco_label": "técnico en alarmas de seguridad/técnica en alarmas de seguridad",
+      "esco_uri": "http://data.europa.eu/esco/occupation/c0c1364d-f784-4e76-8d3f-1e998dc6545d",
+      "variantes": [
+        "técnico de cctv",
+        "técnico de CCTV",
+        "tecnico de CCTV",
+        "técnica de CCTV",
+        "tecnica de CCTV"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G22"
+      }
+    },
+    "técnico de puesta en marcha de ascensores": {
+      "esco_code": "7412.7",
+      "isco_primario": "7412",
+      "esco_label": "técnico de ascensores/técnica de ascensores",
+      "esco_uri": "http://data.europa.eu/esco/occupation/f8d1bcf9-9ca1-408f-a713-7bdf28c400fd",
+      "variantes": [
+        "técnico de puesta en marcha de ascensores",
+        "tecnico de puesta en marcha de ascensores",
+        "técnica de puesta en marcha de ascensores",
+        "tecnica de puesta en marcha de ascensores"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G13"
+      }
+    },
+    "técnico de sistemas de seguridad": {
+      "esco_code": "7422.5",
+      "isco_primario": "7422",
+      "esco_label": "técnico en alarmas de seguridad/técnica en alarmas de seguridad",
+      "esco_uri": "http://data.europa.eu/esco/occupation/c0c1364d-f784-4e76-8d3f-1e998dc6545d",
+      "variantes": [
+        "técnico de sistemas de seguridad",
+        "tecnico de sistemas de seguridad",
+        "técnica de sistemas de seguridad",
+        "tecnica de sistemas de seguridad"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G17"
+      }
+    },
+    "arquitecto de documentación técnica": {
+      "esco_code": "2161.1",
+      "isco_primario": "2161",
+      "esco_label": "arquitecto/arquitecta",
+      "esco_uri": "http://data.europa.eu/esco/occupation/8c3f536e-ba66-4321-ba40-363dc39f129b",
+      "variantes": [
+        "arquitecto de documentación técnica",
+        "arquitecto de documentacion tecnica",
+        "arquitecta de documentación técnica",
+        "arquitecta de documentacion tecnica"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G18"
+      }
+    },
+    "arquitecto modelador técnico": {
+      "esco_code": "2161.1",
+      "isco_primario": "2161",
+      "esco_label": "arquitecto/arquitecta",
+      "esco_uri": "http://data.europa.eu/esco/occupation/8c3f536e-ba66-4321-ba40-363dc39f129b",
+      "variantes": [
+        "arquitecto modelador técnico",
+        "arquitecto modelador tecnico",
+        "arquitecta modeladora técnica",
+        "arquitecta modeladora tecnica"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G18"
+      }
+    },
+    "arquitecto proyectista junior": {
+      "esco_code": "2161.1",
+      "isco_primario": "2161",
+      "esco_label": "arquitecto/arquitecta",
+      "esco_uri": "http://data.europa.eu/esco/occupation/8c3f536e-ba66-4321-ba40-363dc39f129b",
+      "variantes": [
+        "arquitecto proyectista junior",
+        "arquitecta proyectista junior"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G18"
+      }
+    },
+    "arquitecto recién recibido": {
+      "esco_code": "2161.1",
+      "isco_primario": "2161",
+      "esco_label": "arquitecto/arquitecta",
+      "esco_uri": "http://data.europa.eu/esco/occupation/8c3f536e-ba66-4321-ba40-363dc39f129b",
+      "variantes": [
+        "arquitecto recién recibido",
+        "arquitecto recien recibido",
+        "arquitecta recién recibida",
+        "arquitecta recien recibida"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G18"
+      }
+    },
+    "arquitecto responsable de obra": {
+      "esco_code": "1323.1",
+      "isco_primario": "1323",
+      "esco_label": "director de obra/directora de obra",
+      "esco_uri": "http://data.europa.eu/esco/occupation/faed05c0-c1d1-4e34-b575-0dea96459e56",
+      "variantes": [
+        "arquitecto responsable de obra",
+        "arquitecta responsable de obra"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
+      }
+    },
+    "asistente administrativo de infraestructura": {
+      "esco_code": "3343.1",
+      "isco_primario": "3343",
+      "esco_label": "empleado administrativo/empleada administrativa",
+      "esco_uri": "http://data.europa.eu/esco/occupation/044d78cc-f62f-4532-83a5-8e04f2889652",
+      "variantes": [
+        "asistente administrativo de infraestructura",
+        "asistente administrativa de infraestructura"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G10"
+      }
     }
   },
   "skills_mapeo": {
