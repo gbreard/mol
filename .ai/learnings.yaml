@@ -6,17 +6,33 @@
 # ESTADO ACTUAL DEL TRABAJO (LEER PRIMERO)
 # ============================================
 current_state:
-  fecha_actualizacion: "2026-05-19 11:41"
+  fecha_actualizacion: "2026-07-14 17:24"
 
   # Modelo de 3 Fases - ver docs/reference/ARQUITECTURA_3_FASES.md
   fase_actual: "adquisicion"  # adquisicion | procesamiento | presentacion
   fase_detalle: "140221 errores sin resolver - sistema sugiere Fase 2"
 
 ultimo_trabajo:
-  fecha: "2026-05-18/19"
-  sesion: "Sprint 18: Versionado real + Historial de corridas + Disciplina *_VERSION"
-  branch: "feature/spec-e-embeddings-enriquecidos"
+  fecha: "2026-07-13/14"
+  sesion: "FRENTE B cosecha Cyn (PR #53 MERGEADO) + FRENTE C mediciones pre-traductor (read-only)"
+  branch: "main (spec/s1c-cosecha-cyn mergeado en ffcfdc6d)"
   cambios:
+    - "feat(cosecha): diccionario argentino 72 -> 225 entradas (153 cargadas en 4 tandas squash via aplicar_candidata, 0 rechazos; incluye vendedor viajante 3322.1 HOLD-141 destrabado por decision escrita de Cyn)"
+    - "docs(cosecha): taxonomia_contexto_cyn.md v2 -> 32 familias-raiz (28 definidas / 4 pendientes-Cyn: coordinador, director, montador-hormigon, monitoreo); prosa de Cyn textual, fusiones Word-manda"
+    - "fix(codigos Cyn): desarrollador python 2512.9->2512.4, chofer recoleccion residuos 8332.2->8332.8 (resueltos por Cyn); fixture con 3 re-juicios versionados (HJ v1 en historial), matriz clasificador sin cambios"
+    - "docs(eje4): evidencia_errores_matcher_REGLAS_2026-07-13.md (57 pares matcher->Cyn) + devoluciones_para_cyn_2026-07-13.md (6 secciones, incl. familia nueva monitoreo con 3 ramas)"
+    - "HOLDs NO cargados (material traductor): tecnico electromecanico 334, jefe de obra 181, tecnico electronico 162, empleado administrativo 61, auxiliar de deposito 53; operador de monitoreo 54 condicional"
+    - "[FRENTE C PRE] M1: 354 reglas activas x 32 familias -> migrable-ya 26.1% del canal reglas / techo ~60.5% / huerfanas 39.2% (uso real 45,291). M2: blast P-01 label-LIKE = CERO (350/354 resuelven por esco_code; refutada expectativa no-cero). M3: observabilidad EXISTE y es veraz (occupation_match_method con id de regla; cuello 66.4% reglas + 5.6% dict = 72.1%)"
+    - "[FRENTE C PRE-2] Barrido compilabilidad: 509 ramas, 93.5% compila al set de modos v1.1; NO-COMPILA 33 (26 destino-abierto, 4 campo-formacion, 1 empate, 2 misc). Piloto: vendedor 5/5, tecnico v1 54/55. VEREDICTO: set de modos v1 alcanza; prerequisito = resolver label->esco_code en 450 ramas"
+    - "[FRENTE C PRE-2] ejemplos_familias_huerfanas_2026-07-14.md (14 familias, 6-8 titulos reales c/u con decision actual) — insumo del pedido-a-Cyn que arma Claude.ai (SIN commitear)"
+  hallazgo_critico_sesion:
+    - "Regla R9_tareas_logisticas tiene SOLO condicion muerta (el evaluador no lee 'tareas_contiene_alguno') -> no puede disparar jamas; 12 ocurrencias de claves de condicion muertas en matching_rules_business"
+    - "129 filas historicas con decision_metodo=dual_coinciden pero persistidas por canal semantico (fallthrough silencioso de _resolve_rule_target cuando el target no resolvia)"
+    - "Baseline estable para el shadow del traductor: 99.6% de filas-regla coinciden con el target actual de su regla"
+  sesion_anterior_sprint18:
+    tema: "Sprint 18: Versionado real + Historial de corridas + Disciplina *_VERSION (2026-05-18/19)"
+    cambios_resumen: "VERSION files como fuente unica, pre-commit hook, pipeline_runs_history 616 runs, fixes /aprendizaje"
+  cambios_sprint18_archivo:
     - "fix(versions): VERSION constants alineadas con docstring + lectura dinámica (commit 25cd4423)"
     - "backfill: ofertas_dashboard.matching_version 68K filas → 3.5.4 (pre 14-may) / 3.5.5 (post) / 3.5.2 (sin run_id)"
     - "feat(aprendizaje): /api/pipeline-runs endpoint + componente PipelineRunsHistory (commit ed7ea461)"
@@ -42,6 +58,10 @@ ultimo_trabajo:
     tema: "Sprint 16: Diagnóstico sistémico + Fase -1 completa"
     cambios_resumen: "M-01/M-06/M-07/M-08/M-08b/M-08c/M-09b implementados. 157 tests Python."
   pendiente:
+    - "Devoluciones a Cyn (2026-07-13): arbol de monitoreo (3 ramas), montador de hormigon, 13 filas incompletas Hoja 1, inconsistencia tecnico-telecom 3522.1"
+    - "Pedido-a-Cyn familias huerfanas: Claude.ai arma el Word con exports/cyn_backlog/ejemplos_familias_huerfanas_2026-07-14.md (contador 2449, mecanico 1963, ...)"
+    - "SPEC C2 bandeja UI 'Propuestas del diccionario' (Cyn dijo SI; requisitos en PR #53) — spec aparte"
+    - "SPEC construccion traductor Eje 4: los 3 numeros de FRENTE C medidos (26.1%/60.5%/39.2%; P-01 blast 0 -> fix seco; P0 observabilidad = normalizar vocabulario decision_metodo + via_resolucion)"
     - "Régimen tasa_escalados ~40% → investigar por qué auto-corrector resuelve poco"
     - "Gold Set real: persistir validaciones humanas como referencia para tasa_error real (no escalados)"
     - "Conectar timeline_reglas a config_overrides timestamps (eventos de cambio de reglas)"
@@ -189,11 +209,11 @@ conteos:
   reglas_negocio: 354  # config/matching_rules_business.json > reglas_forzar_isco (v3.1 actualizado 2026-01-29)
   reglas_validacion: 3  # config/validation_rules.json > reglas_validacion (V01-V22 legacy + V25-V29 declarativas Sprint 3)
   reglas_skills_dual: 25  # config/skills_rules.json > reglas_forzar_skills (v2.0 2026-01-22)
-  sinonimos_argentinos: 23  # config/sinonimos_argentinos_esco.json v2 > ocupaciones_titulo (SPEC U-1 v3.1: 19 isco_primario + gerente/operador/tecnico)
+  sinonimos_argentinos: 226  # config/sinonimos_argentinos_esco.json v2 > ocupaciones_titulo (SPEC U-1 v3.1: 19 isco_primario + gerente/operador/tecnico)
   empresas_catalogo: 247  # config/empresas_catalogo.json (81 empleadores + 164 intermediarios)
   skills_esco: 14257            # database/embeddings/esco_skills_full.json
   ocupaciones_esco: 3046        # database/embeddings/esco_occupations_full.json
-  ultima_verificacion: 2026-05-19
+  ultima_verificacion: 2026-07-14
 
   supabase:
     integrado: true
