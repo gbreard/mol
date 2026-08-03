@@ -46,10 +46,10 @@ Sistema de monitoreo del mercado laboral argentino para OEDE. Scrapea ofertas de
 
 > **CONTEOS OFICIALES:** Ver `.ai/learnings.yaml` sección `conteos` (single source of truth)
 
-- **NLP v11.4** (20 campos + source-aware pre-fill + postprocessor + qwen2.5:7b)
+- **NLP v11.3.1** (20 campos + source-aware pre-fill + postprocessor + qwen2.5:7b)
 - **NLP Gate v1.1** (35+ reglas pre-matching, bloquea critico/alto)
 - **Multi-Position Detection** (regex + LLM, crea sub-ofertas)
-- **Matching v3.5.4 ESCO-FIRST** - ESCO es target, ISCO se deriva
+- **Matching v3.5.8 ESCO-FIRST** - ESCO es target, ISCO se deriva
 - **Skills v2.5** - BGE-M3 base (LoRA fine-tuned NO disponible — model_lora no existe en disco, umbral 0.40)
 - **Canonización planificada** - Reducir 14,247 skills ESCO a ~3,000 canónicas (ver `docs/plan/14_CANONIZACION_SKILLS_TAREAS.md`)
 - **Pipeline v3.3** (8 pasos integrados con NLP Gate + multi-position)
@@ -57,7 +57,7 @@ Sistema de monitoreo del mercado laboral argentino para OEDE. Scrapea ofertas de
 - **Conteos dinámicos** (ver `learnings.yaml`): reglas_negocio, reglas_validacion, sinonimos_argentinos
 - **Auto-sync** de learnings.yaml activado (v2.1)
 
-### Matching v3.5.4 ESCO-First (2026-03-15)
+### Matching v3.5.8 ESCO-First
 ```
 PRINCIPIO: ESCO es el TARGET, ISCO es CONSECUENCIA
 
@@ -86,7 +86,7 @@ El procesamiento se organiza como una fábrica con dos líneas:
 
 **LÍNEA 1 — FABRICACIÓN** (producir datos clasificados):
 ```
-Scraping → NLP v11.4 → Gate NLP (35+ reglas) → Matching v3.5.4 → Gate Matching → Validación → Sync
+Scraping → NLP v11.3.1 → Gate NLP (35+ reglas) → Matching v3.5.8 → Gate Matching → Validación → Sync
 ```
 
 **LÍNEA 2 — MEJORA CONTINUA** (mejorar la fábrica):
@@ -952,11 +952,11 @@ COMANDO ÚNICO (hace TODO automáticamente):
 python scripts/run_validated_pipeline.py --limit 100
 
 EJECUTA AUTOMÁTICAMENTE (v3.3 — 8 pasos):
-  1.   NLP             → process_nlp_from_db_v11.py v11.4 (source-aware)
+  1.   NLP             → process_nlp_from_db_v11.py v11.3.1 (source-aware)
   1.5  NLP GATE        → nlp_validator.py v1.1 (35+ reglas, bloquea critico/alto)
   1.5b NLP AUTO-CORR   → auto_corrector.py (corrige NLP, re-valida, escala a Claude)
   1.6  MULTI-POSITION  → limpiar_titulos.py (detecta "Vendedor / Cajero", crea sub-ofertas)
-  2.   MATCHING        → match_ofertas_v3.py v3.5.4 (ESCO-First)
+  2.   MATCHING        → match_ofertas_v3.py v3.5.8 (ESCO-First)
   3.   VALIDACIÓN      → auto_validator.py (detecta errores → BD)
   4.   AUTO-CORRECCIÓN → auto_corrector.py (arregla lo que puede → BD)
   5.   NLP RE-PROCESS  → si hay errores NLP → reprocesa → vuelve a paso 1.5 (max 2 iter)
@@ -1141,7 +1141,7 @@ python scripts/run_validated_pipeline.py --ids 123,456
 
 | Componente | Archivo ACTUAL | NO USAR |
 |------------|----------------|---------|
-| Pipeline NLP | `database/process_nlp_from_db_v11.py` v11.4 | v7, v8, v9, v10 |
+| Pipeline NLP | `database/process_nlp_from_db_v11.py` v11.3.1 | v7, v8, v9, v10 |
 | Prompt | `database/prompts/extraction_prompt_lite_v1.py` | v8, v9, v10 |
 | Regex Patterns | `database/patterns/regex_patterns_v4.py` | v1, v2, v3 |
 | Normalizador | `database/normalize_nlp_values.py` | - |
@@ -1150,7 +1150,7 @@ python scripts/run_validated_pipeline.py --ids 123,456
 | Limpiador títulos | `database/limpiar_titulos.py` v2.8.1 | - |
 | Batch background | `scripts/launch_nlp_batch.py` | - |
 
-**Arquitectura v11.4 (source-aware):**
+**Arquitectura v11.3.1 (source-aware):**
 ```
 CAPA 0: Regex (salarios, jornada) + Scraping directo (modalidad, portal)
 CAPA 1: LLM Qwen2.5:7b (20 campos)
@@ -1168,11 +1168,11 @@ NLP GATE (pre-matching):
 - `postprocessor_diff_json`: Qué campos cambió el postprocessor y por qué
 - `valor_actual` / `valor_corregido`: En validation_errors, para auditoría
 
-### Matching Pipeline v3.5.4 ESCO-First
+### Matching Pipeline v3.5.8 ESCO-First
 
 | Componente | Archivo ACTUAL | NO USAR |
 |------------|----------------|---------|
-| Pipeline Matching | `database/match_ofertas_v3.py` v3.5.4 | v2.py, v8.x |
+| Pipeline Matching | `database/match_ofertas_v3.py` v3.5.8 | v2.py, v8.x |
 | Matcher por Skills | `database/match_by_skills.py` v1.2.0 | - |
 | Skills Extractor | `database/skills_implicit_extractor.py` v2.4 | - |
 | Skills Rules Config | `config/skills_rules.json` (25 reglas) | - |
@@ -1181,7 +1181,7 @@ NLP GATE (pre-matching):
 | Config reglas negocio | `config/matching_rules_business.json` (297 reglas) | hardcodeados |
 | Config principal | `config/matching_config.json` | - |
 
-**Arquitectura v3.5.4 (orden de prioridad):**
+**Arquitectura v3.5.8 (orden de prioridad):**
 ```
 PRINCIPIO: ESCO es TARGET, ISCO es CONSECUENCIA
 
