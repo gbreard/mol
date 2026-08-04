@@ -121,3 +121,4 @@ exports/cyn_backlog/**/*.xlsx
 data/reanudacion/
 data/spec_w/
 data/test_regimen_continuo/
+!exports/cyn_backlog/indice_reglas_consolidadas_*.json
