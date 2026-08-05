@@ -211,6 +211,69 @@ def run_post_import():
         log(f"  Error en detección de republicaciones: {e}")
 
 
+def check_salud_descripciones(dias_ventana=3):
+    """Alerta post-scrape (FRENTE J, 2026-08-05): % de descripciones <300 chars
+    POR PORTAL sobre las ofertas frescas. La regresion de CT (may/2026) tardo
+    dos meses en verse; con esto se ve en la corrida siguiente.
+
+    Umbral general 10%. Portal Empleo tiene umbral propio (sus avisos cortos son
+    genuinos — municipales con metadata estructurada, cronico ~35-50%).
+    Escribe metrics/salud_scrape.json (ultima corrida + historia) y loguea
+    ALERTA destacada si algun portal supera su umbral.
+    """
+    UMBRAL_DEFAULT = 0.10
+    UMBRALES_PORTAL = {'portalempleo': 0.60}
+    MIN_OFERTAS = 20  # menos que esto no es señal
+
+    try:
+        conn = sqlite3.connect(str(DB_PATH))
+        rows = conn.execute(
+            """SELECT portal, COUNT(*),
+                      SUM(CASE WHEN LENGTH(COALESCE(descripcion,'')) < 300 THEN 1 ELSE 0 END)
+               FROM ofertas
+               WHERE scrapeado_en >= datetime('now', ?)
+               GROUP BY portal""", (f'-{dias_ventana} days',)).fetchall()
+        conn.close()
+    except Exception as e:
+        log(f"  Error en chequeo de salud de descripciones: {e}")
+        return
+
+    resultado, alertas = {}, []
+    for portal, total, cortas in rows:
+        if not portal or total < MIN_OFERTAS:
+            continue
+        pct = cortas / total
+        umbral = UMBRALES_PORTAL.get(portal, UMBRAL_DEFAULT)
+        resultado[portal] = {'total': total, 'cortas': cortas,
+                             'pct': round(pct, 3), 'umbral': umbral,
+                             'alerta': pct > umbral}
+        if pct > umbral:
+            alertas.append(f"{portal}: {100*pct:.0f}% cortas ({cortas}/{total}, umbral {100*umbral:.0f}%)")
+
+    salud_file = Path(__file__).parent.parent / 'metrics' / 'salud_scrape.json'
+    salud_file.parent.mkdir(parents=True, exist_ok=True)
+    data = {}
+    if salud_file.exists():
+        try:
+            data = json.loads(salud_file.read_text())
+        except json.JSONDecodeError:
+            data = {}
+    data['ultima_corrida'] = {'timestamp': datetime.now().isoformat(),
+                              'ventana_dias': dias_ventana, 'portales': resultado}
+    data['history'] = (data.get('history', []) + [data['ultima_corrida']])[-60:]
+    salud_file.write_text(json.dumps(data, indent=2, ensure_ascii=False))
+
+    if alertas:
+        log("=" * 60)
+        log("⚠⚠ ALERTA SALUD SCRAPING — DESCRIPCIONES TRUNCAS ⚠⚠")
+        for a in alertas:
+            log(f"  {a}")
+        log("  Posible regresion de scraper/portal — ver exports/reportes/I_scraping_trunco_2026-08-05.md")
+        log("=" * 60)
+    else:
+        log(f"  Salud descripciones OK ({len(resultado)} portales bajo umbral)")
+
+
 def save_sync_log(total_sql, nuevas, ignoradas, total_bd):
     """Guarda log de sincronización"""
     SYNC_LOG.parent.mkdir(parents=True, exist_ok=True)
@@ -269,7 +332,11 @@ def main():
     # Post-import
     if not args.skip_post:
         run_post_import()
-    
+
+    # Salud de descripciones por portal (siempre, aun con --skip-post)
+    log("Chequeando salud de descripciones por portal...")
+    check_salud_descripciones()
+
     print("=" * 60)
     log("Sync completado")
     print("=" * 60)
