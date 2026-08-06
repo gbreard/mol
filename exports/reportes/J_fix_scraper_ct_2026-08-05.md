@@ -64,6 +64,35 @@ backlog normal de NLP** (no se corre NLP en este frente).
 El fix probado a escala real: 88% de extracción sobre avisos vivos, 100% de los fallos
 explicados (avisos muertos), cero basura nueva almacenada.
 
+## FOLLOW-UP (2026-08-06) — Limpieza retroactiva del boilerplate histórico
+
+Con el grifo cerrado, se vació la pileta (`scripts/db/limpieza_boilerplate_ct.py`,
+ejecutado vía la ceremonia tmpfs del frente F, con dry-run previo):
+
+- **Detección con EL MISMO regex de la guarda** (fuente única:
+  `ComputRabajoScraper.BOILERPLATE_RE`, importado — test que verifica la identidad):
+  **8.835 ofertas con boilerplate vivo** (no ~12.900: el estimado contaba cortas
+  no-boilerplate). Por mes: may 571 / jun 2.603 / jul 4.864 / ago 797. Todas CT.
+- **Guarda del trabajo humano: 0 validadas por humano en la población** — nada
+  intocable, nada excluido.
+- **Anuladas: 8.835** descripciones → NULL, con registro trazable y reversible en la
+  tabla nueva `descripcion_anulada_log` (id, texto original, motivo
+  `boilerplate_seo_ct`, timestamp). Con NULL no re-entran al backlog.
+- **Segunda generación invalidada** (procesadas por NLP sobre el boilerplate):
+  **5.497 filas NLP + 5.491 matching + 31.526 skills** borradas (DELETE — el
+  mecanismo que el pipeline regenera; sus matching eran `validado_claude`, no humano).
+- **Verificación post: 0 ofertas con el patrón vivo.** Spot-check de 5 con
+  antes/después OK. La alerta `check_salud_descripciones` seguirá roja para CT en la
+  ventana fresca **y eso es correcto**: ahora mide NULLs honestos; se pondrá verde
+  cuando el fix llegue al VPS y entren scrapes limpios.
+- Nota: las 152 del re-scrape de ayer se anularon antes de existir el log — quedaron
+  sin texto original registrado (solo esta mención). Backup íntegro pre-limpieza:
+  `database/bumeran_scraping.db.bak_tmpfs` (borrable tras validar el PR).
+- **Pendiente que abre esto (decisión Gerardo):** ~5.4K de estas ofertas habían
+  subido al dashboard (Supabase) como `validado_claude` en el sync de julio — el sync
+  incremental no borra; hace falta un delete dirigido en `ofertas_dashboard` para
+  esas ids (lista derivable de `descripcion_anulada_log`). No ejecutado.
+
 ## Despliegue al VPS (coordina Gerardo)
 
 El fix vive en `01_sources/computrabajo/scrapers/computrabajo_scraper.py` (archivo

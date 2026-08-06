@@ -80,3 +80,18 @@ def test_redirect_a_listado_devuelve_none():
     soup = _soup(body, title='Empleos en Buenos Aires-GBA | Ofertas de trabajo')
     desc = _scraper()._extraer_descripcion(soup, 'http://test/aviso')
     assert desc is None
+
+
+def test_regex_compartido_guarda_y_limpieza():
+    # La guarda del scraper y la limpieza retroactiva usan LA MISMA definicion
+    # (dos copias driftean). La limpieza importa ComputRabajoScraper.BOILERPLATE_RE.
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        'limpieza', Path(__file__).resolve().parents[2] / 'scripts' / 'db' / 'limpieza_boilerplate_ct.py')
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    assert mod.BOILERPLATE_RE is ComputRabajoScraper.BOILERPLATE_RE
+    # y matchea las dos variantes reales del boilerplate
+    assert mod.BOILERPLATE_RE.search('¿Buscas trabajo de Vendedor? Crea tu CV gratis y aplica')
+    assert mod.BOILERPLATE_RE.search('¿Buscas trabajo en Capital Federal? Crea tu CV y aplica')
+    assert not mod.BOILERPLATE_RE.search('Buscamos vendedor con CV actualizado para local')
