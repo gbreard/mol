@@ -1,0 +1,5267 @@
+{
+ "_meta": {
+  "descripcion": "Mapeo reglas planas x familias del traductor — formato maquina",
+  "generado": "2026-08-03 [FRENTE F]",
+  "advertencia": "REPRODUCCION con criterios propios (raices de familia sobre keywords de titulo + nombre + esco_label de cada regla). NO es el cruce M1 original de FRENTE C (no materializado). Toda asignacion incierta lleva asignacion:dudosa.",
+  "clases": {
+   "CUBIERTA": "unica familia con arbol vigente la cubre",
+   "CUBIERTA-pendiente": "familia identificada pero su arbol espera sesion/entrega de Cyn",
+   "AMBIGUA-a": "matchea raices de 2+ familias (dudosa)",
+   "AMBIGUA-b": "regla decide por skills, no por denominacion (dudosa)",
+   "HUERFANA": "sin familia con arbol"
+  },
+  "fuente_familias": "exports/cyn_backlog/taxonomia_contexto_cyn.md (parse FRENTE F) + ejemplos_familias_huerfanas_2026-07-14.md"
+ },
+ "reglas": {
+  "R1_skills_cad": {
+   "nombre": "Skills CAD/Diseño Técnico",
+   "esco_code": "3118.3",
+   "keywords_titulo": [],
+   "clase": "AMBIGUA-b",
+   "familia": "tecnico",
+   "asignacion": "dudosa",
+   "motivo": "condicion por skills, no por denominacion — el arbol decide por titulo/tareas"
+  },
+  "R2_skills_diseno_grafico": {
+   "nombre": "Skills Diseño Gráfico",
+   "esco_code": "2166.9",
+   "keywords_titulo": [],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R3_autoelevador": {
+   "nombre": "Operador Autoelevador/Montacargas",
+   "esco_code": "8344.1",
+   "keywords_titulo": [
+    "autoelevador",
+    "autoelevadores",
+    "montacargas",
+    "forklift",
+    "carretilla elevadora",
+    "apilador"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operador_programador"
+  },
+  "R4_nivel_gerencial": {
+   "nombre": "Nivel Gerencial con Gente a Cargo",
+   "esco_code": null,
+   "keywords_titulo": [
+    "gerente",
+    "director",
+    "jefe de"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R6_sector_gastronomia": {
+   "nombre": "Sector Gastronomía",
+   "esco_code": null,
+   "keywords_titulo": [],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R7_sector_educacion": {
+   "nombre": "Sector Educación con Admisiones",
+   "esco_code": null,
+   "keywords_titulo": [
+    "admision",
+    "academico",
+    "docente",
+    "profesor"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R8_nutricion_animal": {
+   "nombre": "Nutrición Animal/Veterinaria",
+   "esco_code": "3240.2",
+   "keywords_titulo": [],
+   "clase": "CUBIERTA",
+   "familia": "tecnico"
+  },
+  "R9_tareas_logisticas": {
+   "nombre": "Tareas Logísticas/Almacén",
+   "esco_code": null,
+   "keywords_titulo": [],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R10_electricista_industrial": {
+   "nombre": "Electricista Industrial",
+   "esco_code": null,
+   "keywords_titulo": [
+    "industrial"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "electricista"
+  },
+  "R11_titulo_compuesto": {
+   "nombre": "Título Compuesto - Priorizar Primero",
+   "esco_code": null,
+   "keywords_titulo": [],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R12_ejecutivo_cuentas": {
+   "nombre": "Ejecutivo de Cuentas = Ventas",
+   "esco_code": "3322.1",
+   "keywords_titulo": [
+    "ejecutivo de cuentas",
+    "account executive",
+    "key account"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "ejecutivo_ventas",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R13_enfermero": {
+   "nombre": "Enfermero/Enfermera (profesional de salud)",
+   "esco_code": "2221.2",
+   "keywords_titulo": [
+    "enfermero",
+    "enfermera",
+    "enfermeria",
+    "enfermería",
+    "nurse",
+    "nursing"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "enfermero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R14_contador_auditor": {
+   "nombre": "Contador/Auditor (financiero, no médico)",
+   "esco_code": "2411.1",
+   "keywords_titulo": [
+    "contador",
+    "contadora",
+    "contable",
+    "auditor",
+    "auditoria",
+    "auditoría"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "contador_auditor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R14b_auditor_medico": {
+   "nombre": "Auditor Médico (profesional de salud)",
+   "esco_code": "2212.1",
+   "keywords_titulo": [],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "contador_auditor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R14c_auditor_medico_alt": {
+   "nombre": "Auditor Médico (variante sin acento)",
+   "esco_code": "2212.1",
+   "keywords_titulo": [],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "contador_auditor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R14d_administrativo_contable": {
+   "nombre": "Administrativo Contable (empleado, no profesional)",
+   "esco_code": "4311.1",
+   "keywords_titulo": [],
+   "clase": "AMBIGUA-a",
+   "familia": "administrativo",
+   "familias_candidatas": [
+    "administrativo",
+    "contador_auditor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R15_customer_care": {
+   "nombre": "Customer Care/Atencion al Cliente (call center)",
+   "esco_code": "4222.1",
+   "keywords_titulo": [
+    "customer care",
+    "customer service",
+    "atencion al cliente",
+    "atención al cliente",
+    "call center"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "customer_care",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R16_barista_heladero": {
+   "nombre": "Barista/Heladero/Cafeteria",
+   "esco_code": "5132.1.1",
+   "keywords_titulo": [
+    "barista",
+    "heladero",
+    "heladera",
+    "heladeria",
+    "cafeteria",
+    "cafe especialidad"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R17_compliance_legal": {
+   "nombre": "Compliance/Legal (no financiero)",
+   "esco_code": "2611.1",
+   "keywords_titulo": [
+    "compliance",
+    "legales",
+    "legal",
+    "abogado",
+    "abogada",
+    "juridico"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "compliance_legal",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R17b_compliance_financiero": {
+   "nombre": "Compliance Financiero (ALyC, Banca, Seguros)",
+   "esco_code": "2413.1",
+   "keywords_titulo": [
+    "compliance",
+    "cumplimiento normativo"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "analista",
+   "familias_candidatas": [
+    "analista",
+    "compliance_legal"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R18_payroll_nominas": {
+   "nombre": "Payroll/Liquidacion de Sueldos",
+   "esco_code": "4313.1",
+   "keywords_titulo": [
+    "liquidacion de sueldos",
+    "liquidación de sueldos",
+    "payroll",
+    "nominas",
+    "nóminas",
+    "sueldos y jornales"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "administrativo"
+  },
+  "R19_project_manager": {
+   "nombre": "Project Manager/Jefe de Proyectos",
+   "esco_code": "1213.5",
+   "keywords_titulo": [
+    "project manager",
+    "jefe de proyecto",
+    "jefa de proyecto",
+    "gerente de proyecto",
+    "lider de proyecto",
+    "líder de proyecto"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R19b_project_manager_it": {
+   "nombre": "Project Manager IT/Telecomunicaciones",
+   "esco_code": "1330.7",
+   "keywords_titulo": [
+    "project manager",
+    "jefe de proyecto",
+    "jefa de proyecto",
+    "gerente de proyecto",
+    "pm it",
+    "project lead"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "conduccion"
+  },
+  "R20_vendedor_ferreteria": {
+   "nombre": "Vendedor Ferreteria/Electricidad/Mostrador",
+   "esco_code": "5223.7.21",
+   "keywords_titulo": [
+    "venta mostrador",
+    "vendedor mostrador",
+    "vendedora mostrador",
+    "casa de electricidad",
+    "ferreteria",
+    "ferretería"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "vendedor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R21_lider_atencion_cliente": {
+   "nombre": "Lider/Supervisor Atencion al Cliente",
+   "esco_code": "4222.1",
+   "keywords_titulo": [
+    "lider atencion",
+    "líder atención",
+    "supervisor atencion",
+    "supervisor atención",
+    "coordinador atencion",
+    "coordinador atención"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "supervisor",
+    "customer_care",
+    "coordinador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R22_instalaciones_mantenimiento": {
+   "nombre": "Coordinador/Tecnico Instalaciones",
+   "esco_code": "7126.7",
+   "keywords_titulo": [
+    "coordinador instalaciones",
+    "coordinador de instalaciones",
+    "tecnico instalaciones",
+    "técnico instalaciones",
+    "facility"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "tecnico",
+    "mantenimiento_edilicio",
+    "coordinador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R23_responsable_deposito": {
+   "nombre": "Responsable/Jefe de Deposito/Almacen",
+   "esco_code": "1324.3.4",
+   "keywords_titulo": [
+    "responsable de deposito",
+    "responsable deposito",
+    "jefe de deposito",
+    "jefe deposito",
+    "encargado de deposito",
+    "encargado deposito"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "supervisor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R24_gerente_ventas": {
+   "nombre": "Gerente de Ventas/Comercial",
+   "esco_code": "1221.3.2.1",
+   "keywords_titulo": [
+    "gerente de ventas",
+    "gerente ventas",
+    "gerente comercial",
+    "director de ventas",
+    "director comercial",
+    "jefe de ventas"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R25_gerente_gastronomia": {
+   "nombre": "Gerente Restaurante/Bar/Gastronomia",
+   "esco_code": "1412.1",
+   "keywords_titulo": [
+    "gerente de restaurante",
+    "gerente restaurante",
+    "gerente de bar",
+    "gerente bar",
+    "gerente gastronomico",
+    "gerente gastronómico"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R26_recepcionista": {
+   "nombre": "Recepcionista (rol primario)",
+   "esco_code": "4226.1",
+   "keywords_titulo": [
+    "recepcionista"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "recepcionista",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R26b_recepcionista_hotel": {
+   "nombre": "Recepcionista de Hotel/Hotelería",
+   "esco_code": "4224.1",
+   "keywords_titulo": [
+    "recepcionista"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "recepcionista",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R27_asesor_admisiones": {
+   "nombre": "Asesor Admisiones/Academico",
+   "esco_code": "2359.1",
+   "keywords_titulo": [
+    "asesor de admision",
+    "asesor admision",
+    "asesor de admisiones",
+    "asesor/a de admisiones",
+    "asesora de admision",
+    "asesora de admisiones"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R28_comercial_cuentas": {
+   "nombre": "Comercial de Cuentas/Account Manager",
+   "esco_code": "3322.1",
+   "keywords_titulo": [
+    "comercial de cuentas",
+    "comercial cuentas",
+    "account manager",
+    "gerente de cuentas",
+    "gestor de cuentas"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "conduccion"
+  },
+  "R29_modelista_patronista": {
+   "nombre": "Modelista/Patronista Textil (diseño de patrones)",
+   "esco_code": "7532.6",
+   "keywords_titulo": [
+    "modelista",
+    "patronista",
+    "molderia",
+    "moldería",
+    "tizador",
+    "tizadora"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R29b_sastre_modista": {
+   "nombre": "Sastre/Modista (confección)",
+   "esco_code": "7531.5",
+   "keywords_titulo": [
+    "modista",
+    "sastre",
+    "sastreria",
+    "sastrería",
+    "costurera",
+    "costurero"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R30_community_manager": {
+   "nombre": "Community Manager/Social Media",
+   "esco_code": "2432.5",
+   "keywords_titulo": [
+    "community manager",
+    "social media manager",
+    "gestor de redes",
+    "gestora de redes",
+    "social media specialist"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R31_mozo_camarero": {
+   "nombre": "Mozo/Camarero/Mesero",
+   "esco_code": "5131.2",
+   "keywords_titulo": [
+    "mozo",
+    "moza",
+    "camarero",
+    "camarera",
+    "mesero",
+    "mesera"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "mozo_camarero",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R32_operario_picking": {
+   "nombre": "Operario Picking/Preparador Pedidos (Almacén)",
+   "esco_code": "9333.8",
+   "keywords_titulo": [
+    "operario picking",
+    "operario de picking",
+    "picker",
+    "preparador de pedidos",
+    "preparadora de pedidos",
+    "armador de pedidos"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "mozo_camarero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R33_desarrollador_software": {
+   "nombre": "Desarrollador/Programador Software",
+   "esco_code": "2512.4",
+   "keywords_titulo": [
+    "desarrollador",
+    "desarrolladora",
+    "developer",
+    "programador",
+    "programadora",
+    "software engineer"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "desarrollador",
+   "familias_candidatas": [
+    "desarrollador",
+    "ingeniero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R34_cajero": {
+   "nombre": "Cajero/Cajera",
+   "esco_code": "5230.1",
+   "keywords_titulo": [
+    "cajero",
+    "cajera",
+    "cajeros",
+    "cajeras"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "cajero",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R35_disenador_grafico_titulo": {
+   "nombre": "Diseñador Gráfico (por título)",
+   "esco_code": "2166.9",
+   "keywords_titulo": [
+    "disenador grafico",
+    "diseñador grafico",
+    "diseñador gráfico",
+    "disenadora grafica",
+    "diseñadora grafica",
+    "diseñadora gráfica"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R36_operario_almacen": {
+   "nombre": "Operario Almacén/Depósito/Logístico (consolidado R36+R119)",
+   "esco_code": "9333.8",
+   "keywords_titulo": [
+    "operario almacen",
+    "operario almacén",
+    "operario de almacen",
+    "operario de deposito",
+    "operario de logistica",
+    "operario de logística"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "mozo_camarero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R37_operario_alimentos": {
+   "nombre": "Operario Producción de Alimentos (genérico)",
+   "esco_code": "8160.34",
+   "keywords_titulo": [
+    "operario alimenticia",
+    "operarios alimenticia",
+    "operario alimentos",
+    "operarios alimentos",
+    "operario de produccion alimenticia",
+    "operario produccion alimentos"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operario"
+  },
+  "R38_comercio_exterior": {
+   "nombre": "Comercio Exterior / Importación-Exportación (despachante)",
+   "esco_code": "3331.2.1",
+   "keywords_titulo": [],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R39_supervisor_administracion": {
+   "nombre": "Supervisor de Administración",
+   "esco_code": "3341.3",
+   "keywords_titulo": [],
+   "clase": "CUBIERTA",
+   "familia": "supervisor"
+  },
+  "R40_asesor_comercial": {
+   "nombre": "Asesor Comercial / Corredor (B2B)",
+   "esco_code": "3322.1",
+   "keywords_titulo": [
+    "asesor comercial",
+    "asesora comercial",
+    "asesor de ventas",
+    "asesora de ventas",
+    "corredor de ventas",
+    "corredor comercial"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "vendedor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R41_chofer_repartidor": {
+   "nombre": "Chofer Repartidor / Delivery",
+   "esco_code": "8322.2",
+   "keywords_titulo": [
+    "chofer repartidor",
+    "chofer de reparto",
+    "conductor repartidor",
+    "repartidor",
+    "delivery",
+    "distribuidor"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "chofer_conductor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R42_gerente_operaciones": {
+   "nombre": "Gerente de Operaciones",
+   "esco_code": "1321.2",
+   "keywords_titulo": [
+    "gerente de operaciones",
+    "gerente operaciones",
+    "director de operaciones",
+    "director operaciones"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R116_gerente_operaciones_gastronomia": {
+   "nombre": "Gerente/Supervisor de Operaciones Gastronomía",
+   "esco_code": "1412.1",
+   "keywords_titulo": [
+    "operaciones gastronóm",
+    "operaciones gastronom",
+    "grupo gastronóm",
+    "grupo gastronom",
+    "gerente gastronóm",
+    "gerente gastronom"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "supervisor",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R43_IT_devops": {
+   "nombre": "DevOps Engineer/SRE",
+   "esco_code": "2512.4",
+   "keywords_titulo": [
+    "devops",
+    "dev ops",
+    "sre",
+    "site reliability",
+    "devsecops"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "desarrollador"
+  },
+  "R44_IT_architect": {
+   "nombre": "Arquitecto Software",
+   "esco_code": "2512.4",
+   "keywords_titulo": [
+    "architect",
+    "arquitecto"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "arquitecto",
+   "familias_candidatas": [
+    "arquitecto",
+    "desarrollador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R45_IT_analista_sap": {
+   "nombre": "Analista SAP/ERP/Funcional",
+   "esco_code": "2511.13",
+   "keywords_titulo": [
+    "sap",
+    "erp",
+    "oracle",
+    "salesforce",
+    "dynamics"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R46_IT_integraciones": {
+   "nombre": "Analista de Integraciones",
+   "esco_code": "2511.13",
+   "keywords_titulo": [
+    "integracion",
+    "integrador",
+    "api",
+    "middleware",
+    "integraciones"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R47_IT_data_engineer": {
+   "nombre": "Data Engineer/ETL",
+   "esco_code": "2521.1",
+   "keywords_titulo": [
+    "data engineer",
+    "ingeniero de datos",
+    "etl",
+    "pipeline",
+    "data platform"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "ingeniero"
+  },
+  "R48_secretaria_admin": {
+   "nombre": "Secretaria/Asistente Administrativo",
+   "esco_code": "4120.1",
+   "keywords_titulo": [
+    "secretaria",
+    "asistente administrativ",
+    "asistente ejecutiv"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "administrativo"
+  },
+  "R49_jefe_generico": {
+   "nombre": "Jefe/Encargado Genérico",
+   "esco_code": "1219.4",
+   "keywords_titulo": [
+    "jefe de",
+    "encargado de",
+    "responsable de"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "conduccion"
+  },
+  "R117_responsable_compras": {
+   "nombre": "Responsable/Jefe de Compras y Logística",
+   "esco_code": "3323.2.1",
+   "keywords_titulo": [
+    "responsable de compras",
+    "jefe de compras",
+    "jefa de compras",
+    "encargado de compras",
+    "encargada de compras",
+    "responsable de logística"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "conduccion"
+  },
+  "R50_back_office": {
+   "nombre": "Back Office/Operaciones Administrativas",
+   "esco_code": "4312.2",
+   "keywords_titulo": [
+    "back office",
+    "backoffice",
+    "operaciones administrativas"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "administrativo"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R51_carpintero": {
+   "nombre": "Carpintero/Oficial Carpinteria",
+   "esco_code": "7522.2",
+   "keywords_titulo": [
+    "carpintero",
+    "carpinteria",
+    "ebanista"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R52_ingeniero_ia_ml": {
+   "nombre": "Ingeniero IA/ML/Data Science",
+   "esco_code": "2512.4",
+   "keywords_titulo": [
+    "ingeniero ia",
+    "ingeniero de ia",
+    "machine learning",
+    "ml engineer",
+    "data scientist"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "desarrollador",
+   "familias_candidatas": [
+    "desarrollador",
+    "ingeniero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R53_operario_plastico": {
+   "nombre": null,
+   "esco_code": "8142.9",
+   "keywords_titulo": [
+    "industria plástica",
+    "industria plastica",
+    "inyección",
+    "soplado",
+    "moldeo"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operador_programador"
+  },
+  "R54_cuidador_adultos": {
+   "nombre": null,
+   "esco_code": "5322.1",
+   "keywords_titulo": [
+    "cuidador",
+    "cuidadora",
+    "acompañante"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "tecnico"
+  },
+  "R55_vendedor_ambulante": {
+   "nombre": null,
+   "esco_code": "9520.1",
+   "keywords_titulo": [],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "vendedor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R56_analista_creditos": {
+   "nombre": null,
+   "esco_code": "3312.2.1",
+   "keywords_titulo": [
+    "analista de crédito",
+    "analista de credito",
+    "analista créditos",
+    "analista creditos"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R57_encargado_ganadero": {
+   "nombre": "Ganadero / Encargado de Campo (agropecuario)",
+   "esco_code": "6121.1",
+   "keywords_titulo": [
+    "ganadero",
+    "encargado de campo",
+    "capataz de campo",
+    "capataz ganadero",
+    "capataz de estancia"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "conduccion"
+  },
+  "R58_operador_sim_aduanas": {
+   "nombre": null,
+   "esco_code": "3331.1",
+   "keywords_titulo": [
+    "operador sim",
+    "sistema maría",
+    "despacho aduanero",
+    "despachante"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operador_programador"
+  },
+  "R59_medico_especialista": {
+   "nombre": "Médico Especialista",
+   "esco_code": "2212.1",
+   "keywords_titulo": [
+    "médico",
+    "medico",
+    "traumatólogo",
+    "traumatologo",
+    "cardiólogo",
+    "cardiologo"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R60_mecanico_vehiculos": {
+   "nombre": "Mecánico de vehículos/camiones (NO barcos)",
+   "esco_code": "7231.10",
+   "keywords_titulo": [
+    "mecánico",
+    "mecanico"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "mecanico",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R61_analista_qa_farma": {
+   "nombre": "Analista QA/Calidad Farmacéutico",
+   "esco_code": "2145.1",
+   "keywords_titulo": [
+    "calidad",
+    "qa",
+    "garantía",
+    "garantia"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "analista",
+   "familias_candidatas": [
+    "analista",
+    "ingeniero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R62_auditor_medico": {
+   "nombre": "Auditor Médico",
+   "esco_code": "2212.1",
+   "keywords_titulo": [
+    "médico",
+    "medico",
+    "salud",
+    "clinica",
+    "clínica"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "contador_auditor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R63_secretaria_educacion": {
+   "nombre": "Secretaria/Asistente Académico",
+   "esco_code": "3343.1",
+   "keywords_titulo": [
+    "secretaria",
+    "secretario",
+    "asistente"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "administrativo"
+  },
+  "R64_admin_funeraria": {
+   "nombre": "Administrativo Funeraria/Cementerio",
+   "esco_code": "4110.1",
+   "keywords_titulo": [
+    "administrativo",
+    "administrativa",
+    "admin"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "administrativo"
+  },
+  "R65_jefe_delegacion": {
+   "nombre": "Jefe de Delegación/Sucursal",
+   "esco_code": "1420.4",
+   "keywords_titulo": [
+    "jefe",
+    "gerente",
+    "responsable"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "conduccion"
+  },
+  "R66_arquitecto_software": {
+   "nombre": "Arquitecto de Software",
+   "esco_code": "2512.4",
+   "keywords_titulo": [
+    "architect",
+    "arquitecto"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "arquitecto",
+   "familias_candidatas": [
+    "arquitecto",
+    "desarrollador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R67_devops_engineer": {
+   "nombre": "DevOps Engineer/Ingeniero DevOps",
+   "esco_code": "2512.4",
+   "keywords_titulo": [
+    "devops",
+    "dev ops",
+    "sre",
+    "site reliability"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "desarrollador",
+   "familias_candidatas": [
+    "desarrollador",
+    "ingeniero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R68_gerente_ops_gastronomia": {
+   "nombre": "Gerente/Supervisor Operaciones Gastronomía",
+   "esco_code": "1412.1",
+   "keywords_titulo": [
+    "gerente de operaciones",
+    "supervisor de operaciones",
+    "director de operaciones"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "supervisor",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R69_analista_financiero": {
+   "nombre": "Analista Financiero",
+   "esco_code": "2413.1",
+   "keywords_titulo": [
+    "analista financiero",
+    "analista de finanzas",
+    "financial analyst"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R70_encargado_gastronomia": {
+   "nombre": "Encargado/Subencargado Gastronomía",
+   "esco_code": "1412.1",
+   "keywords_titulo": [
+    "encargado",
+    "subencargado",
+    "encargada",
+    "subencargada"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R71_encargado_local_retail": {
+   "nombre": "Encargado/Subencargado de Local Retail",
+   "esco_code": "5222.1",
+   "keywords_titulo": [
+    "encargado de local",
+    "subencargado de local",
+    "encargada de local",
+    "subencargada de local",
+    "encargado de tienda",
+    "encargada de tienda"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "supervisor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R72_carpintero_aluminio": {
+   "nombre": "Carpintero de Aluminio/Vidriero",
+   "esco_code": "7214.2",
+   "keywords_titulo": [
+    "carpintero aluminio",
+    "carpintero de aluminio",
+    "carpintería de aluminio",
+    "vidriero",
+    "cortador vidriero"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R74_supervisor_ventas": {
+   "nombre": "Supervisor de Ventas",
+   "esco_code": "1221.3.2.1",
+   "keywords_titulo": [
+    "supervisor de ventas",
+    "supervisora de ventas",
+    "supervisor ventas",
+    "supervisora ventas",
+    "jefe de ventas",
+    "jefa de ventas"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "supervisor",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R75_vigilador": {
+   "nombre": "Vigilador/Guardia de Seguridad",
+   "esco_code": "5414.1",
+   "keywords_titulo": [
+    "vigilador",
+    "vigiladora",
+    "guardia de seguridad",
+    "guardia seguridad",
+    "seguridad privada",
+    "custodia"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R76_fonoaudiologo": {
+   "nombre": "Fonoaudiólogo/Logopeda",
+   "esco_code": "2266.1",
+   "keywords_titulo": [
+    "fonoaudiologo",
+    "fonoaudióloga",
+    "fonoaudiologo",
+    "fonoaudióloga",
+    "logopeda"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R77_responsable_compras": {
+   "nombre": "Responsable/Jefe Compras y Logística",
+   "esco_code": "1324.8",
+   "keywords_titulo": [
+    "responsable de compras",
+    "jefe de compras",
+    "gerente de compras",
+    "responsable compras"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R78_analista_tecnico_funcional_it": {
+   "nombre": "Analista Técnico Funcional IT (Medios de Pago)",
+   "esco_code": "2511.13",
+   "keywords_titulo": [],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "analista"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R79_ingeniero_industrial_equipos": {
+   "nombre": "Ingeniero Industrial (Equipamiento/Gestión)",
+   "esco_code": "2141.4",
+   "keywords_titulo": [
+    "ingeniero industrial",
+    "ingeniera industrial",
+    "ingeniero/a industrial"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "ingeniero"
+  },
+  "R80_administrativo_almacen": {
+   "nombre": "Administrativo de Almacén/Stock",
+   "esco_code": "4321.1",
+   "keywords_titulo": [
+    "administrativo",
+    "administrativa"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "administrativo",
+   "familias_candidatas": [
+    "administrativo",
+    "coordinador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R81_monitoreo_alarmas": {
+   "nombre": "Operador Monitoreo de Alarmas",
+   "esco_code": "5414.1.9",
+   "keywords_titulo": [
+    "monitoreo",
+    "monitorista",
+    "operador de monitoreo"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "operador_programador",
+    "monitoreo"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R82_operario_farmaceutico": {
+   "nombre": "Operario Industria Farmacéutica",
+   "esco_code": "8131.20",
+   "keywords_titulo": [
+    "operario",
+    "operaria"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "operador_programador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R83_analista_calidad_servicios": {
+   "nombre": "Analista de Calidad de Servicios",
+   "esco_code": "3341.3",
+   "keywords_titulo": [
+    "calidad de servicios",
+    "calidad de atencion",
+    "calidad de atención",
+    "quality assurance servicio"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "supervisor",
+   "familias_candidatas": [
+    "supervisor",
+    "analista"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R84_operario_acondicionamiento": {
+   "nombre": "Operario Acondicionamiento (Laboratorio/Pharma)",
+   "esco_code": "8131.20",
+   "keywords_titulo": [
+    "operario",
+    "operaria",
+    "operarios"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "operador_programador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R85_supervisor_operaciones": {
+   "nombre": "Supervisor de Operaciones (Gastronómico/Retail)",
+   "esco_code": "5222.1",
+   "keywords_titulo": [
+    "supervisor de operaciones",
+    "supervisora de operaciones",
+    "supervisor operaciones"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "supervisor"
+  },
+  "R86_subencargado_local": {
+   "nombre": "Subencargado/Asistente de Local (Retail)",
+   "esco_code": "5222.1",
+   "keywords_titulo": [
+    "subencargado",
+    "subencargada",
+    "encargado de local",
+    "encargada de local",
+    "asistente de local",
+    "asistente de tienda"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "supervisor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R87_administrativo_ecommerce": {
+   "nombre": "Administrativo/Analista de E-commerce",
+   "esco_code": "2431.3",
+   "keywords_titulo": [
+    "administrativo",
+    "administrativa",
+    "analista",
+    "asistente"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "administrativo",
+   "familias_candidatas": [
+    "administrativo",
+    "analista"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R88_jefe_producto": {
+   "nombre": "Jefe/Gerente de Producto (Product Manager)",
+   "esco_code": "1223.3",
+   "keywords_titulo": [
+    "jefe de producto",
+    "jefa de producto",
+    "jefe/a de producto",
+    "gerente de producto",
+    "product manager",
+    "product owner"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R89_disenador_grafico_senior": {
+   "nombre": "Diseñador Gráfico (con seniority)",
+   "esco_code": "2166.9",
+   "keywords_titulo": [
+    "diseñador gráfico",
+    "diseñadora gráfica",
+    "diseñador/a gráfico",
+    "diseñador/a gráfico/a",
+    "disenador grafico",
+    "disenadora grafica"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R90_supervisor_ventas": {
+   "nombre": "Supervisor de Ventas",
+   "esco_code": "3322.1",
+   "keywords_titulo": [
+    "supervisor de ventas",
+    "supervisora de ventas",
+    "supervisor/a de ventas",
+    "supervisor ventas",
+    "coordinador de ventas",
+    "coordinadora de ventas"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "supervisor",
+   "familias_candidatas": [
+    "supervisor",
+    "coordinador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R91_jefe_mantenimiento": {
+   "nombre": "Jefe/Supervisor de Mantenimiento Industrial",
+   "esco_code": "3115.1.6",
+   "keywords_titulo": [
+    "jefe de mantenimiento",
+    "jefa de mantenimiento",
+    "jefe/a de mantenimiento",
+    "supervisor de mantenimiento",
+    "encargado de mantenimiento",
+    "responsable de mantenimiento"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "supervisor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R92_jefe_cotizaciones_presupuestos": {
+   "nombre": "Jefe/Responsable de Cotizaciones, Presupuestos y Cómputo de Obras",
+   "esco_code": "1323.1",
+   "keywords_titulo": [
+    "cotizaciones",
+    "presupuesto",
+    "presupuestos",
+    "cómputo",
+    "computo",
+    "licitaciones"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "analista",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R93_telemarketer": {
+   "nombre": "Telemarketer / Vendedor telefónico",
+   "esco_code": "5244.1",
+   "keywords_titulo": [
+    "telemarketer",
+    "telemarketers",
+    "telemarketing",
+    "vendedor telefonico",
+    "vendedora telefonica",
+    "ventas telefonicas"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operador_programador",
+   "familias_candidatas": [
+    "operador_programador",
+    "vendedor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R94_jefe_sucursal_financiera": {
+   "nombre": "Jefe/Gerente de Sucursal/Delegación Financiera",
+   "esco_code": "1346.5",
+   "keywords_titulo": [
+    "jefe de delegación",
+    "jefe de delegacion",
+    "jefe delegación",
+    "jefe delegacion",
+    "gerente de sucursal",
+    "gerente sucursal"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "conduccion"
+  },
+  "R95_tech_lead_ia_ml": {
+   "nombre": "Tech Lead / Arquitecto IA / ML Engineer",
+   "esco_code": "2512.4",
+   "keywords_titulo": [
+    "tech lead",
+    "arquitecto ia",
+    "arquitecto de ia",
+    "ml engineer",
+    "machine learning engineer",
+    "ia engineer"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "arquitecto",
+   "familias_candidatas": [
+    "arquitecto",
+    "desarrollador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R96_profesional_belleza": {
+   "nombre": "Profesional de Belleza (manicura, pedicura, cejas, pestanas)",
+   "esco_code": "5142.6",
+   "keywords_titulo": [
+    "manicur",
+    "pedicur",
+    "cejas",
+    "pestanas",
+    "belleza de manos",
+    "belleza de pies"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R97_coordinador_deposito": {
+   "nombre": "Coordinador/Encargado de Deposito/Almacen",
+   "esco_code": "4321.1",
+   "keywords_titulo": [
+    "coordinador deposito",
+    "coordinador de deposito",
+    "coordinador almacen",
+    "encargado deposito",
+    "encargado de deposito",
+    "jefe deposito"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "coordinador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R98_asesor_medicina_prepaga": {
+   "nombre": "Asesor/Vendedor Medicina Prepaga/Obra Social",
+   "esco_code": "3321.3.1",
+   "keywords_titulo": [
+    "asesor medicina prepaga",
+    "asesor prepaga",
+    "vendedor prepaga",
+    "comercial prepaga",
+    "asesor obra social",
+    "vendedor obra social"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "vendedor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R100_mucama_hotel": {
+   "nombre": "Mucama/Camarera de Hotel",
+   "esco_code": "9112.4",
+   "keywords_titulo": [
+    "mucama",
+    "camarera de pisos",
+    "housekeeping",
+    "limpieza hotel",
+    "limpieza habitaciones"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "mozo_camarero",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R101_business_analyst": {
+   "nombre": "Business Analyst / Analista de Negocio",
+   "esco_code": "2511.13",
+   "keywords_titulo": [
+    "business analyst",
+    "analista de negocio",
+    "analista de negocios",
+    "analista funcional"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R106_preventista": {
+   "nombre": "Preventista",
+   "esco_code": "5243.1",
+   "keywords_titulo": [
+    "preventista",
+    "pre-ventista",
+    "preventa",
+    "pre venta",
+    "prevendedor"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "vendedor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R107_seguridad_higiene": {
+   "nombre": "Seguridad e Higiene",
+   "esco_code": "2263.3",
+   "keywords_titulo": [
+    "seguridad e higiene",
+    "seguridad higiene",
+    "higiene y seguridad",
+    "seguridad industrial",
+    "prevencionista",
+    "tecnico en seguridad"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "conduccion"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R108_jefe_rrhh": {
+   "nombre": "Jefe de RRHH/HR",
+   "esco_code": "1212.2",
+   "keywords_titulo": [
+    "jefe de rrhh",
+    "jefe rrhh",
+    "jefe de recursos humanos",
+    "jefe recursos humanos",
+    "jefe de hr",
+    "jefe hr"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R109_ejecutivo_ventas": {
+   "nombre": "Ejecutivo de Ventas (consolidado R109+R145+R195)",
+   "esco_code": "3322.1",
+   "keywords_titulo": [
+    "ejecutiva comercial",
+    "ejecutiva de ventas",
+    "ejecutiva ventas",
+    "ejecutivo comercial",
+    "ejecutivo de ventas",
+    "ejecutivo ventas"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "ejecutivo_ventas",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R110_tecnico_mantenimiento": {
+   "nombre": "Tecnico de Mantenimiento Industrial",
+   "esco_code": "7233.7",
+   "keywords_titulo": [
+    "tecnico de mantenimiento",
+    "tecnico mantenimiento",
+    "tecnico de mantenimiento industrial",
+    "tecnico mantenimiento industrial",
+    "operario de mantenimiento",
+    "técnico de mantenimiento"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "tecnico",
+    "mecanico"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R111_vendedor_generico": {
+   "nombre": "Vendedor/Vendedora Genérico (tienda/local)",
+   "esco_code": "5223.7",
+   "keywords_titulo": [
+    "vendedor",
+    "vendedora",
+    "vendedor/a",
+    "vendedor de tienda",
+    "vendedora de tienda",
+    "vendedor de local"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "vendedor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R112_analista_tesoreria": {
+   "nombre": "Analista de Tesorería",
+   "esco_code": "2411.1.1",
+   "keywords_titulo": [
+    "analista de tesorería",
+    "analista de tesoreria",
+    "analista tesorería",
+    "analista tesoreria",
+    "tesorero",
+    "tesorera"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "analista",
+   "familias_candidatas": [
+    "analista",
+    "contador_auditor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R118_asistente_tesoreria": {
+   "nombre": "Asistente de Tesorería",
+   "esco_code": "4311.1",
+   "keywords_titulo": [
+    "asistente de tesorería",
+    "asistente de tesoreria",
+    "asistente tesorería",
+    "asistente tesoreria",
+    "auxiliar de tesorería",
+    "auxiliar de tesoreria"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R113_auditor_medico": {
+   "nombre": "Auditor Médico / Médico Auditor",
+   "esco_code": "2212.1",
+   "keywords_titulo": [
+    "auditor médico",
+    "auditor medico",
+    "médico auditor",
+    "medico auditor",
+    "auditora médica",
+    "auditora medica"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "contador_auditor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R114_analista_calidad_lab": {
+   "nombre": "Analista de Calidad Laboratorio",
+   "esco_code": "3116.1.2",
+   "keywords_titulo": [
+    "analista de calidad",
+    "analista calidad",
+    "control de calidad",
+    "garantía de calidad",
+    "garantia de calidad"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "analista"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R115_administrativo_almacen": {
+   "nombre": "Administrativo de Almacén/Depósito",
+   "esco_code": "4321.1",
+   "keywords_titulo": [
+    "administrativo de almacén",
+    "administrativo de almacen",
+    "administrativo almacén",
+    "administrativo almacen",
+    "administrativo de depósito",
+    "administrativo de deposito"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "administrativo",
+   "familias_candidatas": [
+    "administrativo",
+    "coordinador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R120_gomero_balanceador": {
+   "nombre": "Gomero/Balanceador de Neumáticos",
+   "esco_code": "7231.10",
+   "keywords_titulo": [
+    "gomero",
+    "gomería",
+    "gomeria",
+    "balanceador",
+    "alineador"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "mecanico",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R121_bioquimico": {
+   "nombre": "Bioquímico/a de Laboratorio",
+   "esco_code": "2131.4.2",
+   "keywords_titulo": [
+    "bioquímico",
+    "bioquimica",
+    "bioquimico",
+    "bioquímica"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R122_personal_obra": {
+   "nombre": "Personal para Obra / Obrero de Construcción",
+   "esco_code": "7112.1",
+   "keywords_titulo": [
+    "personal para obra",
+    "personal de obra",
+    "personal obra",
+    "obrero de construcción",
+    "obrero de construccion",
+    "obrero construcción"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "albanil"
+  },
+  "R123_asesor_tecnico_comercial": {
+   "nombre": "Asesor Técnico Comercial",
+   "esco_code": "2433.6",
+   "keywords_titulo": [
+    "asesor técnico comercial",
+    "asesor tecnico comercial",
+    "asesora técnica comercial",
+    "asesora tecnica comercial",
+    "asesor/a técnico comercial",
+    "asesor/a tecnico comercial"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "tecnico"
+  },
+  "R124_analista_contable": {
+   "nombre": "Analista Contable",
+   "esco_code": "2411.1.1",
+   "keywords_titulo": [
+    "analista contable",
+    "analista de contabilidad",
+    "analista contable sr",
+    "analista contable jr",
+    "analista contable ssr"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "analista",
+   "familias_candidatas": [
+    "analista",
+    "contador_auditor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R125_gerente_finanzas": {
+   "nombre": "Gerente/Director de Finanzas",
+   "esco_code": "1211.1",
+   "keywords_titulo": [
+    "gerente de finanzas",
+    "gerente finanzas",
+    "director de finanzas",
+    "director finanzas",
+    "gerente financiero",
+    "director financiero"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R126_ejecutivo_seguros": {
+   "nombre": "Ejecutivo/Asesor de Seguros/ART",
+   "esco_code": "3321.3.1",
+   "keywords_titulo": [
+    "ejecutivo venta seguros",
+    "ejecutivo de venta de seguros",
+    "ejecutivo ventas seguros",
+    "ejecutivo de seguros",
+    "ejecutivo de ventas de seguros",
+    "ejecutivo de ventas de art"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "ejecutivo_ventas",
+   "familias_candidatas": [
+    "ejecutivo_ventas",
+    "vendedor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R127_gerente_postventa": {
+   "nombre": "Gerente/Director de Postventa/Servicio al Cliente",
+   "esco_code": "1349.21",
+   "keywords_titulo": [
+    "gerente de postventa",
+    "gerente de posventa",
+    "gerente postventa",
+    "gerente posventa",
+    "director de postventa",
+    "director de posventa"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R128_programador_cnc": {
+   "nombre": "Programador/Operario CNC/Mecanizado",
+   "esco_code": "7223.4",
+   "keywords_titulo": [
+    "programador cnc",
+    "programador de cnc",
+    "operario cnc",
+    "operador cnc",
+    "tornero cnc",
+    "fresador cnc"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "operador_programador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R129_coordinador_educacion": {
+   "nombre": "Coordinador de Programas Educativos/Formación",
+   "esco_code": "1345.1.3",
+   "keywords_titulo": [
+    "coordinador de programas de educación",
+    "coordinador de programas educativos",
+    "coordinador de educación",
+    "coordinador educativo",
+    "coordinadora de programas de educación",
+    "coordinadora de programas educativos"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "coordinador",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R130_supervisor_qa_procesos": {
+   "nombre": "Supervisor de QA/Mejora de Procesos",
+   "esco_code": "3341.3",
+   "keywords_titulo": [
+    "supervisor de mejora de procesos",
+    "supervisor de procesos",
+    "supervisor qa",
+    "supervisor de qa",
+    "supervisor de quality assurance",
+    "supervisor de aseguramiento de calidad"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "supervisor"
+  },
+  "R131_hoteleria_hospitalaria": {
+   "nombre": "Hoteleria Hospitalaria/en Salud",
+   "esco_code": "5151.2",
+   "keywords_titulo": [
+    "hotelería hospitalaria",
+    "hoteleria hospitalaria",
+    "hotelería en salud",
+    "hoteleria en salud",
+    "hotelería sanatorio",
+    "hoteleria sanatorio"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "supervisor"
+  },
+  "R132_vendedor_medicina_prepaga": {
+   "nombre": "Vendedor/Asesor Medicina Prepaga",
+   "esco_code": "3321.3.1",
+   "keywords_titulo": [
+    "medicina prepaga",
+    "prepaga",
+    "plan de salud",
+    "planes de salud",
+    "seguro de salud",
+    "cobertura médica"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "vendedor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R131b_hoteleria_sector_salud": {
+   "nombre": "Hoteleria en sector Salud",
+   "esco_code": "5151.2",
+   "keywords_titulo": [
+    "hotelería",
+    "hoteleria",
+    "housekeeping"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "supervisor"
+  },
+  "R133_steward_bachero": {
+   "nombre": "Steward/Bachero hoteleria",
+   "esco_code": "9412.1",
+   "keywords_titulo": [
+    "steward",
+    "bachero",
+    "bacheros"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "ayudante",
+   "familias_candidatas": [
+    "ayudante",
+    "cocinero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R135_gestor_liquidaciones": {
+   "nombre": "Gestor de Liquidaciones",
+   "esco_code": "4311.1",
+   "keywords_titulo": [
+    "gestor de liquidaciones",
+    "liquidador",
+    "gestor liquidaciones"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R136_personal_deposito": {
+   "nombre": "Personal de Depósito/Almacén (consolidado R136+R161)",
+   "esco_code": "9333.8",
+   "keywords_titulo": [
+    "auxiliar de deposito",
+    "auxiliar de depósito",
+    "empleado de deposito",
+    "empleado de depósito",
+    "operario de deposito",
+    "operario de depósito"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "mozo_camarero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R137_tareas_picking_crossdocking": {
+   "nombre": "Tareas Picking/Cross-docking (sin título específico)",
+   "esco_code": "9333.8",
+   "keywords_titulo": [],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "mozo_camarero",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R138_control_gestion": {
+   "nombre": "Analista de Control de Gestión",
+   "esco_code": "2411.1.4",
+   "keywords_titulo": [
+    "control de gestión",
+    "control de gestion",
+    "controller",
+    "controlling"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R139_repositor": {
+   "nombre": "Repositor/Reponedor",
+   "esco_code": "9334.1",
+   "keywords_titulo": [
+    "repositor",
+    "repositora",
+    "reponedor",
+    "reponedora",
+    "reposicion",
+    "reposición"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R140_mucama_hotel": {
+   "nombre": "Mucama/Camarera de Pisos Hotelería",
+   "esco_code": "9112.4",
+   "keywords_titulo": [
+    "mucama",
+    "mucamas",
+    "mucamo",
+    "mucamos",
+    "camarera de pisos",
+    "camarero de pisos"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "mozo_camarero",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R141_peon_deposito": {
+   "nombre": "Peón de Depósito/Distribución",
+   "esco_code": "9333.8",
+   "keywords_titulo": [
+    "peón de deposito",
+    "peon de deposito",
+    "peón de depósito",
+    "peon de depósito",
+    "peones de deposito",
+    "peones de depósito"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "mozo_camarero",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R142_bodeguero": {
+   "nombre": "Bodeguero/Encargado de Bodega",
+   "esco_code": "9333.8",
+   "keywords_titulo": [
+    "bodeguero",
+    "bodeguera",
+    "bodegueros",
+    "encargado de bodega",
+    "encargada de bodega"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "mozo_camarero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R143_jefe_cocina": {
+   "nombre": "Jefe/Chef/Responsable de Cocina",
+   "esco_code": "3434.1",
+   "keywords_titulo": [
+    "jefe de cocina",
+    "jefa de cocina",
+    "chef de cocina",
+    "chef ejecutivo",
+    "jefe cocina",
+    "jefa cocina"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "cocinero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R144_pizzero": {
+   "nombre": "Pizzaiolo/Pizzero/Panadero",
+   "esco_code": "7512.1",
+   "keywords_titulo": [
+    "pizzaiolo",
+    "pizzero",
+    "pizzera",
+    "maestro pizzero",
+    "maestro panadero",
+    "panadero"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R146_data_architect": {
+   "nombre": "Data Architect / Arquitecto de Datos",
+   "esco_code": "2511.14",
+   "keywords_titulo": [
+    "data architect",
+    "arquitecto de datos",
+    "arquitecto datos",
+    "data architecture"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "arquitecto"
+  },
+  "R147_admin_redes_servidores": {
+   "nombre": "Administrador de Redes y Servidores",
+   "esco_code": "2522.1",
+   "keywords_titulo": [
+    "administrador de redes",
+    "administrador de servidores",
+    "admin redes",
+    "administrador redes",
+    "sysadmin",
+    "system administrator"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R148_disenador_multimedia": {
+   "nombre": "Diseñador Multimedia / Motion Graphics",
+   "esco_code": "2166.9",
+   "keywords_titulo": [
+    "diseñador multimedia",
+    "disenador multimedia",
+    "diseñadora multimedia",
+    "motion graphics",
+    "motion designer",
+    "multimedia designer"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R149_ingeniero_telecomunicaciones": {
+   "nombre": "Ingeniero de Telecomunicaciones/Transmisión",
+   "esco_code": "2153.1",
+   "keywords_titulo": [
+    "telecomunicaciones",
+    "telecom",
+    "transmisión",
+    "transmision",
+    "redes de datos",
+    "infraestructura de red"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "ingeniero"
+  },
+  "R150_asesor_plan_ahorro": {
+   "nombre": "Asesor de Plan de Ahorro / Ahorro Previo",
+   "esco_code": "3322.1",
+   "keywords_titulo": [
+    "plan de ahorro",
+    "ahorro previo",
+    "planes de ahorro",
+    "asesor de ahorro"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R151_jefe_de_obra": {
+   "nombre": "Jefe de Obra / Encargado de Obra",
+   "esco_code": "1323.1",
+   "keywords_titulo": [
+    "jefe de obra",
+    "jefa de obra",
+    "encargado de obra",
+    "encargada de obra",
+    "supervisor de obra",
+    "supervisora de obra"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "supervisor",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R152_ecommerce_manager": {
+   "nombre": "E-commerce Manager / Responsable Comercio Electrónico",
+   "esco_code": "1221.5",
+   "keywords_titulo": [
+    "e-commerce",
+    "ecommerce",
+    "e commerce",
+    "comercio electronico",
+    "comercio electrónico",
+    "tienda online"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "conduccion"
+  },
+  "R153_creador_contenido": {
+   "nombre": "Creador de Contenido / Content Creator",
+   "esco_code": "2432.5",
+   "keywords_titulo": [
+    "creador de contenido",
+    "creadora de contenido",
+    "content creator",
+    "creador contenido",
+    "creador/a de contenido"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R154_auditor_inventario": {
+   "nombre": "Auditor de Stock / Control de Inventario",
+   "esco_code": "4321.1",
+   "keywords_titulo": [
+    "auditor de stock",
+    "auditores control de stock",
+    "auditor de inventario",
+    "auditor inventario",
+    "control de stock",
+    "auditor de mercaderia"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "contador_auditor",
+   "familias_candidatas": [
+    "contador_auditor",
+    "coordinador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R155_asesor_telefonico": {
+   "nombre": "Asesor Comercial Telefónico / Televentas",
+   "esco_code": "4222.1",
+   "keywords_titulo": [
+    "asesor telefonico",
+    "asesor telefónico",
+    "comercial telefonico",
+    "comercial telefónico",
+    "televentas",
+    "telemarketing"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "customer_care",
+   "familias_candidatas": [
+    "customer_care",
+    "vendedor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R156_vendedor_viajante": {
+   "nombre": "Vendedor Viajante / Vendedor de Ruta",
+   "esco_code": "5243.1",
+   "keywords_titulo": [
+    "vendedor viajante",
+    "vendedora viajante",
+    "viajante",
+    "vendedor de ruta",
+    "vendedor ruta"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "vendedor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R157_jefe_produccion": {
+   "nombre": "Jefe de Producción Industrial",
+   "esco_code": "1321.2.1",
+   "keywords_titulo": [
+    "jefe de produccion",
+    "jefe de producción",
+    "jefa de produccion",
+    "jefa de producción",
+    "gerente de produccion",
+    "gerente de producción"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R158_jefe_operaciones": {
+   "nombre": "Jefe de Operaciones",
+   "esco_code": "1321.2.1",
+   "keywords_titulo": [
+    "jefe de operaciones",
+    "jefa de operaciones",
+    "gerente de operaciones",
+    "gerente operaciones"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R159_farmaceutico": {
+   "nombre": "Farmacéutico / Farmacéutica",
+   "esco_code": "2262.1",
+   "keywords_titulo": [
+    "farmaceutico",
+    "farmacéutico",
+    "farmaceutica",
+    "farmacéutica",
+    "farmacia"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R160_tecnico_instalador": {
+   "nombre": "Técnico Instalador Genérico",
+   "esco_code": "7411.1.1.1",
+   "keywords_titulo": [
+    "tecnico instalador",
+    "técnico instalador",
+    "instalador tecnico",
+    "instalador técnico"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "electricista",
+    "instalador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R162_tecnico_mantenimiento_edilicio": {
+   "nombre": "Técnico de Mantenimiento Edilicio/de Edificios",
+   "esco_code": "7131.1",
+   "keywords_titulo": [
+    "mantenimiento edilicio",
+    "mantenimiento de edificio",
+    "mantenimiento de edificios",
+    "mantenimiento edilicia",
+    "tecnico edilicio",
+    "técnico edilicio"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "pintor",
+    "mantenimiento_edilicio"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R163_analista_comex_admin": {
+   "nombre": "Analista/Senior de Comercio Exterior (rol administrativo)",
+   "esco_code": "4311.1",
+   "keywords_titulo": [
+    "analista de comercio exterior",
+    "analista comercio exterior",
+    "senior de comercio exterior",
+    "senior comercio exterior",
+    "junior de comercio exterior",
+    "administrativo de comercio exterior"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "administrativo",
+   "familias_candidatas": [
+    "administrativo",
+    "analista"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R164_camarista_camara_frio": {
+   "nombre": "Camarista de cámara de frío (industria alimenticia)",
+   "esco_code": "9333.3",
+   "keywords_titulo": [
+    "camarista",
+    "cámara de frío",
+    "camara de frio",
+    "cámara fría",
+    "camara fria"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operario"
+  },
+  "R165_portero_seguridad": {
+   "nombre": "Portero (edificio/empresa - funciones de seguridad)",
+   "esco_code": "5414.1",
+   "keywords_titulo": [
+    "portero",
+    "portera"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R166_cocinero_planchero": {
+   "nombre": "Cocinero / Planchero (gastronomía)",
+   "esco_code": "5120.1",
+   "keywords_titulo": [
+    "cocinero",
+    "cocinera",
+    "planchero",
+    "planchera",
+    "parrillero",
+    "parrillera"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "cocinero",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R167_soporte_tecnico_isp": {
+   "nombre": "Soporte técnico ISP / Helpdesk",
+   "esco_code": "3512.1",
+   "keywords_titulo": [
+    "soporte técnico isp",
+    "soporte tecnico isp",
+    "soporte isp",
+    "técnico isp",
+    "tecnico isp",
+    "helpdesk"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "tecnico"
+  },
+  "R168_docente_gastronomico": {
+   "nombre": "Docente gastronómico / Pastelero instructor",
+   "esco_code": "2320.1",
+   "keywords_titulo": [
+    "docente gastronómico",
+    "docente gastronomico",
+    "docente / pastelero",
+    "docente/pastelero",
+    "instructor de cocina",
+    "instructor cocina"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "cocinero",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R169_analista_impuestos": {
+   "nombre": "Analista de impuestos / fiscal",
+   "esco_code": "2411.1",
+   "keywords_titulo": [
+    "analista de impuestos",
+    "analista impuestos",
+    "analista fiscal",
+    "analista tributario",
+    "analista de tributos"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "analista",
+   "familias_candidatas": [
+    "analista",
+    "contador_auditor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R170_asesor_comercial": {
+   "nombre": "Asesor comercial / ejecutivo de cuentas",
+   "esco_code": "3322.1",
+   "keywords_titulo": [
+    "asesor comercial",
+    "asesora comercial",
+    "asesor/a comercial",
+    "asesor de ventas",
+    "asesora de ventas",
+    "ejecutivo de cuentas"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "ejecutivo_ventas",
+   "familias_candidatas": [
+    "ejecutivo_ventas",
+    "vendedor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R171_logistica_entregas": {
+   "nombre": "Logística / Repartidor entregas domicilio",
+   "esco_code": "8322.2",
+   "keywords_titulo": [
+    "logística",
+    "logistica",
+    "repartidor",
+    "repartidora",
+    "entregas a domicilio",
+    "entregas domicilio"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "chofer_conductor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R172_analista_siniestros": {
+   "nombre": "Analista de Siniestros / Claims Analyst",
+   "esco_code": "3321.3.1",
+   "keywords_titulo": [
+    "siniestro",
+    "siniestros",
+    "claims",
+    "reclamaciones"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R173_analista_lab_id": {
+   "nombre": "Analista Laboratorio I+D / Químico formulaciones",
+   "esco_code": "2113.1",
+   "keywords_titulo": [],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R174_control_stock": {
+   "nombre": "Responsable Control de Stock / Inventario",
+   "esco_code": "4321.1",
+   "keywords_titulo": [
+    "control de stock",
+    "control stock",
+    "control de inventario",
+    "control inventario"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "coordinador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R175_operario_limpieza": {
+   "nombre": "Operario/a de Limpieza",
+   "esco_code": "9112.2",
+   "keywords_titulo": [
+    "operario",
+    "operaria",
+    "operario/a",
+    "personal",
+    "auxiliar"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operario"
+  },
+  "R176_auditor_franquicias": {
+   "nombre": "Auditor de Franquicias / Establecimientos",
+   "esco_code": "2421.2",
+   "keywords_titulo": [
+    "franquicia",
+    "franquicias",
+    "establecimientos",
+    "locales",
+    "sucursales"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "contador_auditor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R177_gestor_cobranzas": {
+   "nombre": "Gestor de Cobranzas Telefónicas",
+   "esco_code": "4214.1",
+   "keywords_titulo": [
+    "gestor",
+    "gestora",
+    "telefonico",
+    "telefonica",
+    "agente"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R178_qa_tester": {
+   "nombre": "QA / Tester de Software",
+   "esco_code": "2519.7",
+   "keywords_titulo": [
+    "qa ",
+    " qa",
+    "tester",
+    "quality assurance",
+    "testing"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R179_instalador_fibra": {
+   "nombre": "Técnico Instalador Fibra Óptica",
+   "esco_code": "7422.3.1",
+   "keywords_titulo": [
+    "instalador",
+    "tecnico",
+    "técnico"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "instalador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R180_soporte_infraestructura": {
+   "nombre": "Soporte / Infraestructura IT",
+   "esco_code": "2522.1",
+   "keywords_titulo": [
+    "soporte",
+    "infraestructura",
+    "helpdesk",
+    "help desk"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R181_personal_mantenimiento": {
+   "nombre": "Personal de Mantenimiento (edificios/instalaciones)",
+   "esco_code": "7233.7",
+   "keywords_titulo": [
+    "personal de mantenimiento",
+    "mantenimiento general",
+    "encargado de mantenimiento"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "mecanico"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R182_tecnico_electromedicina": {
+   "nombre": "Técnico en Electromedicina / Equipos Médicos",
+   "esco_code": "2269.8.1",
+   "keywords_titulo": [
+    "electromedicina",
+    "electro medicina",
+    "electro-medicina",
+    "equipos médicos",
+    "equipamiento médico",
+    "biomédico"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "tecnico"
+  },
+  "R183_bobinador_transformadores": {
+   "nombre": "Bobinador de Transformadores",
+   "esco_code": "7411.1.1.2",
+   "keywords_titulo": [
+    "bobinador",
+    "bobinadora",
+    "rebobinado"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "electricista"
+  },
+  "R184_carnicero_depostador": {
+   "nombre": "Carnicero / Depostador",
+   "esco_code": "7511.1",
+   "keywords_titulo": [
+    "carnicero",
+    "carnicera",
+    "depostador",
+    "depostadora",
+    "despostador",
+    "despostadora"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R185_guardavidas_socorrista": {
+   "nombre": "Guardavidas / Salvavidas",
+   "esco_code": "5419.7",
+   "keywords_titulo": [
+    "guardavida",
+    "guardavidas",
+    "salvavida",
+    "salvavidas",
+    "socorrista"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R186_kinesiologo_fisioterapeuta": {
+   "nombre": "Kinesiólogo / Fisioterapeuta",
+   "esco_code": "2264.2",
+   "keywords_titulo": [
+    "kinesiólogo",
+    "kinesióloga",
+    "kinesiologo",
+    "kinesiologia",
+    "fisiatra",
+    "fisioterapeuta"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R187_auxiliar_farmacia": {
+   "nombre": "Auxiliar de Farmacia",
+   "esco_code": "3213.1",
+   "keywords_titulo": [
+    "auxiliar de farmacia",
+    "asistente de farmacia",
+    "ayudante de farmacia"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "ayudante"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R188_auxiliar_seguridad": {
+   "nombre": "Auxiliar / Agente de Seguridad",
+   "esco_code": "5414.1",
+   "keywords_titulo": [
+    "auxiliar de seguridad",
+    "agente de seguridad",
+    "oficial de seguridad"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R189_business_development": {
+   "nombre": "Business Development Specialist/Manager",
+   "esco_code": "3322.1",
+   "keywords_titulo": [
+    "business development",
+    "desarrollo de negocios",
+    "desarrollo comercial"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R190_auditor_interno": {
+   "nombre": "Auditor Interno / Control Interno",
+   "esco_code": "2411.1.7",
+   "keywords_titulo": [
+    "auditor interno",
+    "auditora interna",
+    "control interno",
+    "auditoría interna"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "contador_auditor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R191_analista_abastecimiento": {
+   "nombre": "Analista de Abastecimiento / Compras",
+   "esco_code": "3323.2.1",
+   "keywords_titulo": [
+    "analista de abastecimiento",
+    "analista de compras",
+    "analista supply"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R192_atencion_paciente": {
+   "nombre": "Personal Atención al Paciente",
+   "esco_code": "4226.1.1",
+   "keywords_titulo": [
+    "atención al paciente",
+    "atencion al paciente",
+    "recepción médica",
+    "recepcionista médic"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "recepcionista",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R193_supervisor_operaciones": {
+   "nombre": "Supervisor de Operaciones (genérico)",
+   "esco_code": "3123.1",
+   "keywords_titulo": [
+    "operaciones",
+    "operations"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "supervisor"
+  },
+  "R194_middle_office": {
+   "nombre": "Middle Office / Back Office",
+   "esco_code": "4311.1",
+   "keywords_titulo": [
+    "middle office",
+    "back office",
+    "backoffice"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R196_pasante_administrativo": {
+   "nombre": "Pasante Administrativo / Contable",
+   "esco_code": "4110.1",
+   "keywords_titulo": [
+    "pasante de adm",
+    "pasante adm",
+    "pasante contab",
+    "practicante adm",
+    "trainee adm"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "administrativo",
+   "familias_candidatas": [
+    "administrativo",
+    "contador_auditor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R197_personal_atencion_paciente": {
+   "nombre": "Personal Atención al Paciente (variante)",
+   "esco_code": "4226.1.1",
+   "keywords_titulo": [
+    "personal para atención",
+    "personal de atención",
+    "personal atencion"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "recepcionista",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R198_bell_boy_botones": {
+   "nombre": "Bell Boy / Botones Hotel",
+   "esco_code": "4229.2",
+   "keywords_titulo": [
+    "bell boy",
+    "bellboy",
+    "botones hotel",
+    "botones de hotel"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R199_foguista_caldera": {
+   "nombre": "Foguista / Operador de Calderas",
+   "esco_code": "8182.1",
+   "keywords_titulo": [
+    "foguista",
+    "operador de caldera",
+    "operador caldera"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operador_programador"
+  },
+  "R200_extraccionista_laboratorio": {
+   "nombre": "Extraccionista de Laboratorio",
+   "esco_code": "2269.13",
+   "keywords_titulo": [
+    "extraccionista",
+    "flebotomista",
+    "toma de muestras"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "tecnico"
+  },
+  "R201_inspector_industrial": {
+   "nombre": "Inspector Industrial / API / NDT",
+   "esco_code": "3119.19",
+   "keywords_titulo": [
+    "inspector api",
+    "inspector ndt",
+    "inspector industrial",
+    "inspector de soldadura",
+    "inspector qc"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R202_gestor_cobranzas": {
+   "nombre": "Gestor / Agente de Cobranzas",
+   "esco_code": "4214.1",
+   "keywords_titulo": [
+    "gestor de cobranza",
+    "agente de cobranza",
+    "asesor de cobranza",
+    "cobrador",
+    "recupero de cartera",
+    "mora tardía"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R203_analista_pagos_proveedores": {
+   "nombre": "Analista de Pago a Proveedores",
+   "esco_code": "4311.1",
+   "keywords_titulo": [
+    "pago a proveedores",
+    "pagos a proveedores",
+    "analista de pagos",
+    "cuentas por pagar"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R204_operador_retenciones": {
+   "nombre": "Operador de Retenciones / Impuestos",
+   "esco_code": "4311.1",
+   "keywords_titulo": [
+    "operador de retenciones",
+    "retenciones impositivas",
+    "retenciones fiscales",
+    "analista de retenciones"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operador_programador",
+   "familias_candidatas": [
+    "operador_programador",
+    "analista"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R205_vendedor_puerta_puerta": {
+   "nombre": "Vendedor Puerta a Puerta / Ambulante",
+   "esco_code": "5243.1",
+   "keywords_titulo": [
+    "puerta a puerta",
+    "door to door",
+    "vendedor ambulante",
+    "venta ambulante"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "vendedor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R206_tecnico_seguridad_electronica": {
+   "nombre": "Técnico/Instalador Seguridad Electrónica",
+   "esco_code": "7421.3",
+   "keywords_titulo": [
+    "seguridad electronica",
+    "seguridad electrónica",
+    "sistemas de seguridad",
+    "alarmas",
+    "cctv",
+    "camaras de seguridad"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "instalador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R207_peon_cocina": {
+   "nombre": "Peón/Ayudante de Cocina",
+   "esco_code": "9412.1",
+   "keywords_titulo": [
+    "peón de cocina",
+    "peon de cocina",
+    "ayudante de cocina",
+    "auxiliar de cocina",
+    "bachero",
+    "bachera"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "ayudante",
+   "familias_candidatas": [
+    "ayudante",
+    "cocinero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R208_analista_compras": {
+   "nombre": "Analista/Responsable de Compras",
+   "esco_code": "3323.2.1",
+   "keywords_titulo": [
+    "analista de compras",
+    "analista compras",
+    "comprador",
+    "compradora",
+    "buyer",
+    "procurement analyst"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "analista"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R209_personal_maestranza": {
+   "nombre": "Personal de Maestranza",
+   "esco_code": "9112.2",
+   "keywords_titulo": [
+    "maestranza",
+    "personal de maestranza",
+    "auxiliar de maestranza"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operario"
+  },
+  "R210_telefonista_ventas": {
+   "nombre": "Operador/a de Venta Telefónica (Telemarketing)",
+   "esco_code": "4222.1",
+   "keywords_titulo": [
+    "venta telefónica",
+    "venta telefonica",
+    "telemarketing",
+    "televentas",
+    "operador de venta telefónica",
+    "operadores de venta telefónica"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operador_programador",
+   "familias_candidatas": [
+    "operador_programador",
+    "customer_care"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R211_soldador": {
+   "nombre": "Soldador",
+   "esco_code": "7212.3",
+   "keywords_titulo": [
+    "soldador",
+    "soldadora",
+    "soldadores",
+    "soldadura",
+    "welder"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "herrero"
+  },
+  "R212_personal_limpieza": {
+   "nombre": "Personal de Limpieza",
+   "esco_code": "9112.2",
+   "keywords_titulo": [
+    "personal de limpieza",
+    "operario de limpieza",
+    "operario/a de limpieza",
+    "auxiliar de limpieza",
+    "limpieza industrial"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operario"
+  },
+  "R213_asistente_comercial": {
+   "nombre": "Asistente Comercial",
+   "esco_code": "4222.1",
+   "keywords_titulo": [
+    "asistente comercial",
+    "asistenta comercial",
+    "asistente de ventas",
+    "asistente del area comercial"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "customer_care",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R214_analista_comercial": {
+   "nombre": "Analista Comercial",
+   "esco_code": "2431.3",
+   "keywords_titulo": [
+    "analista comercial",
+    "analista de ventas",
+    "analista de mercado"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R215_supervisor_mecanizado": {
+   "nombre": "Supervisor de Mecanizado/Producción",
+   "esco_code": "3122.4",
+   "keywords_titulo": [
+    "supervisor de mecanizado",
+    "supervisor mecanizado",
+    "supervisor de producción",
+    "supervisor producción",
+    "supervisor de produccion",
+    "supervisor produccion"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "supervisor"
+  },
+  "R216_pastelero": {
+   "nombre": "Pastelero/Panadero",
+   "esco_code": "7512.1",
+   "keywords_titulo": [
+    "pastelero",
+    "pastelera",
+    "repostero",
+    "repostera",
+    "panadero",
+    "panadera"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R217_kinesiologio": {
+   "nombre": "Kinesiólogo/Fisioterapeuta",
+   "esco_code": "2264.2",
+   "keywords_titulo": [
+    "kinesiólogo",
+    "kinesiologa",
+    "kinesióloga",
+    "kinesiologo",
+    "fisioterapeuta"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R218_pintor_vehiculos": {
+   "nombre": "Pintor de Vehiculos/Automoviles",
+   "esco_code": "7132.3",
+   "keywords_titulo": [
+    "pintor de auto",
+    "pintor de vehiculo",
+    "pintor de vehículo",
+    "pintor automotor",
+    "pintor automotriz",
+    "pintor automóvil"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "pintor"
+  },
+  "R219_vendedor_vehiculos": {
+   "nombre": "Vendedor de Vehiculos OKM/Usados",
+   "esco_code": "5223.7.25",
+   "keywords_titulo": [
+    "venta de okm",
+    "venta de 0km",
+    "vendedor de auto",
+    "vendedor automotor",
+    "vendedor automotriz",
+    "venta automotor"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "vendedor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R220_asesor_inmobiliario": {
+   "nombre": "Asesor Inmobiliario",
+   "esco_code": "3334.3",
+   "keywords_titulo": [
+    "asesor inmobiliario",
+    "asesora inmobiliaria",
+    "asesor inmobiliaria",
+    "agente inmobiliario",
+    "agente inmobiliaria",
+    "corredor inmobiliario"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R221_analista_calidad_general": {
+   "nombre": "Analista de Calidad General/Productos",
+   "esco_code": "7543.10",
+   "keywords_titulo": [
+    "analista de calidad",
+    "analista calidad"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R222_maquinista_apiladora": {
+   "nombre": "Maquinista Apiladora/Autoelevador",
+   "esco_code": "8344.1",
+   "keywords_titulo": [
+    "maquinista",
+    "apiladora",
+    "autoelevador",
+    "autoelevadorista",
+    "carretillero",
+    "operador de clark"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operador_programador"
+  },
+  "R223_admin_infraestructura": {
+   "nombre": "Administrador de Infraestructura IT",
+   "esco_code": "2522.1",
+   "keywords_titulo": [],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R224_supervisor_cocina": {
+   "nombre": "Supervisor/Encargado de cocina",
+   "esco_code": "3434.1.1",
+   "keywords_titulo": [
+    "supervisor de cocina",
+    "encargado de cocina",
+    "jefe de cocina"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "supervisor",
+    "cocinero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R225_comis_pasteleria": {
+   "nombre": "Comis/Ayudante de pastelería",
+   "esco_code": "7512.2",
+   "keywords_titulo": [
+    "comis",
+    "pasteleria",
+    "pastelería",
+    "repostería",
+    "reposteria"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "ayudante"
+  },
+  "R226_analista_rrhh": {
+   "nombre": "Analista de RRHH/Empleos/Selección",
+   "esco_code": "2423.1",
+   "keywords_titulo": [
+    "analista"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R227_soporte_tecnico_it": {
+   "nombre": "Soporte técnico IT",
+   "esco_code": "3512.4",
+   "keywords_titulo": [
+    "soporte técnico",
+    "soporte tecnico",
+    "soporte it",
+    "soporte de aplicaciones",
+    "help desk",
+    "helpdesk"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "tecnico"
+  },
+  "R228_analista_contabilidad": {
+   "nombre": "Analista contable/facturación",
+   "esco_code": "2411.1.1",
+   "keywords_titulo": [
+    "analista"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "analista",
+   "familias_candidatas": [
+    "analista",
+    "contador_auditor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R229_analista_comercial": {
+   "nombre": "Analista/Ejecutivo comercial ventas",
+   "esco_code": "3322.1",
+   "keywords_titulo": [
+    "analista",
+    "ejecutivo",
+    "ejecutiva"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R230_asesor_comercial": {
+   "nombre": "Asesor comercial/ventas",
+   "esco_code": "3322.1",
+   "keywords_titulo": [
+    "asesor",
+    "asesora"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "vendedor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R231_supervisor_operaciones": {
+   "nombre": "Supervisor de operaciones/producción",
+   "esco_code": "3122.2",
+   "keywords_titulo": [
+    "supervisor",
+    "supervisora"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "supervisor"
+  },
+  "R232_coordinador_operaciones": {
+   "nombre": "Coordinador de operaciones/logística",
+   "esco_code": "1219.6",
+   "keywords_titulo": [
+    "coordinador",
+    "coordinadora"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "coordinador",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R233_maestranza": {
+   "nombre": "Maestranza/Mantenimiento edilicio",
+   "esco_code": "9112.2",
+   "keywords_titulo": [
+    "maestranza"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "mantenimiento_edilicio"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R234_ayudante_panaderia": {
+   "nombre": "Ayudante de panadería",
+   "esco_code": "7512.2",
+   "keywords_titulo": [
+    "ayudante de panadería",
+    "ayudante de panaderia",
+    "ayudante panadería",
+    "ayudante panaderia"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "ayudante"
+  },
+  "R235_mecanico": {
+   "nombre": "Mecánico general",
+   "esco_code": "7231.10",
+   "keywords_titulo": [
+    "mecánico",
+    "mecanico"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "mecanico",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R236_analista_marketing": {
+   "nombre": "Analista de marketing/CRM",
+   "esco_code": "2431.10",
+   "keywords_titulo": [
+    "analista"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R237_analista_finanzas": {
+   "nombre": "Analista financiero/inversiones",
+   "esco_code": "2413.1",
+   "keywords_titulo": [
+    "analista"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R238_analista_it": {
+   "nombre": "Analista IT/Sistemas",
+   "esco_code": "2511.7",
+   "keywords_titulo": [
+    "analista"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R239_analista_operaciones": {
+   "nombre": "Analista de operaciones/planificación",
+   "esco_code": "2421.5",
+   "keywords_titulo": [
+    "analista"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R240_operario_produccion": {
+   "nombre": "Operario de producción",
+   "esco_code": "9329.1",
+   "keywords_titulo": [
+    "operario",
+    "operaria"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operario"
+  },
+  "R241_tecnico_it": {
+   "nombre": "Técnico IT genérico",
+   "esco_code": "3512.4",
+   "keywords_titulo": [
+    "técnico",
+    "tecnico",
+    "técnica",
+    "tecnica"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "tecnico"
+  },
+  "R242_asistente_impuestos": {
+   "nombre": "Asistente/Analista de Impuestos",
+   "esco_code": "2411.1.1",
+   "keywords_titulo": [
+    "impuestos",
+    "impositivo",
+    "impositiva",
+    "tributario",
+    "tributaria",
+    "fiscal"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "analista",
+   "familias_candidatas": [
+    "analista",
+    "contador_auditor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R243_gerente_local": {
+   "nombre": "Gerente de Local/Sucursal",
+   "esco_code": "1420.4",
+   "keywords_titulo": [
+    "local",
+    "sucursal",
+    "tienda",
+    "punto de venta"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "conduccion"
+  },
+  "R244_coordinador_turno_retail": {
+   "nombre": "Coordinador de Turno en retail/entretenimiento",
+   "esco_code": "1420.4",
+   "keywords_titulo": [],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "coordinador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R245_analista_cobranzas": {
+   "nombre": "Analista de Cobranzas",
+   "esco_code": "2411.1.1",
+   "keywords_titulo": [
+    "analista",
+    "responsable",
+    "encargado",
+    "encargada",
+    "jefe",
+    "jefa"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "supervisor",
+    "analista",
+    "contador_auditor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R246_jefe_calidad": {
+   "nombre": "Jefe/Director de Calidad Industrial",
+   "esco_code": "1321.2.2",
+   "keywords_titulo": [
+    "jefe de calidad",
+    "jefa de calidad",
+    "director de calidad",
+    "directora de calidad",
+    "gerente de calidad",
+    "responsable de calidad"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R247_capataz_obra": {
+   "nombre": "Capataz de Obra / Construcción",
+   "esco_code": "3123.1.1",
+   "keywords_titulo": [
+    "capataz de obra",
+    "capataz de construcción",
+    "capataz de construccion"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R248_capataz_generico": {
+   "nombre": "Capataz (genérico → construcción por default)",
+   "esco_code": "3123.1.1",
+   "keywords_titulo": [
+    "capataz"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R249_supervisor_electrico": {
+   "nombre": "Supervisor / Encargado Eléctrico",
+   "esco_code": "3123.1.11",
+   "keywords_titulo": [
+    "supervisor eléctrico",
+    "supervisor electrico",
+    "encargado eléctrico",
+    "encargado electrico",
+    "capataz eléctrico",
+    "capataz electrico"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "supervisor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R250_supervisor_fractura": {
+   "nombre": "Supervisor de Fractura (petrolero)",
+   "esco_code": "3121.1",
+   "keywords_titulo": [
+    "supervisor de fractura",
+    "supervisora de fractura",
+    "supervisores de fractura",
+    "jefe de fractura"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "supervisor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R251_martillero_publico": {
+   "nombre": "Martillero Público (inmobiliario)",
+   "esco_code": "3334.3",
+   "keywords_titulo": [
+    "martillero público",
+    "martillero publico",
+    "martillera pública",
+    "martillera publica",
+    "martillero/a público",
+    "martillero/a publico"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R252_hrbp": {
+   "nombre": "HRBP / HR Business Partner",
+   "esco_code": "2423.3",
+   "keywords_titulo": [
+    "hrbp",
+    "hr business partner",
+    "human resources business partner"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "conduccion"
+  },
+  "R253_servicios_funerarios": {
+   "nombre": "Servicios Funerarios / Cementerio",
+   "esco_code": "5163.3",
+   "keywords_titulo": [
+    "servicios funerarios",
+    "pompas fúnebres",
+    "pompas funebres",
+    "cementerio",
+    "sepelio"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R254_logistica_liviana": {
+   "nombre": "Empleado Logística Liviana / Tareas Generales",
+   "esco_code": "8322.2",
+   "keywords_titulo": [
+    "logística liviana",
+    "logistica liviana"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "chofer_conductor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R255_albañil": {
+   "nombre": "Albañil / Oficial Albañil",
+   "esco_code": "7112.1",
+   "keywords_titulo": [
+    "albañil",
+    "albanil",
+    "albañilería",
+    "albanileria",
+    "oficial albañil",
+    "oficial albanil"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "albanil"
+  },
+  "R256_plomero": {
+   "nombre": "Plomero / Sanitarista / Gasista",
+   "esco_code": "7126.8",
+   "keywords_titulo": [
+    "plomero",
+    "plomeros",
+    "sanitarista",
+    "sanitaristas",
+    "oficial plomero",
+    "gasista"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R257_pintor_obra": {
+   "nombre": "Pintor de Obra / Construcción",
+   "esco_code": "7131.1",
+   "keywords_titulo": [
+    "pintor",
+    "pintores",
+    "oficial pintor",
+    "oficiales pintores",
+    "medio oficial pintor"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "pintor"
+  },
+  "R258_ayudante_construccion": {
+   "nombre": "Ayudante de Albañil / Peón Construcción",
+   "esco_code": "9313.1",
+   "keywords_titulo": [
+    "ayudante de albañil",
+    "ayudante de albanil",
+    "ayudante albañil",
+    "ayudante albanil",
+    "peón de construcción",
+    "peon de construccion"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "albanil",
+   "familias_candidatas": [
+    "albanil",
+    "ayudante"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R259_oficiales_construccion": {
+   "nombre": "Oficiales de Construcción / para Obra",
+   "esco_code": "7112.1",
+   "keywords_titulo": [
+    "oficiales de la construcción",
+    "oficiales de la construccion",
+    "oficiales de construcción",
+    "oficiales de construccion",
+    "oficiales para construcción",
+    "oficiales para construccion"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "albanil",
+   "familias_candidatas": [
+    "albanil",
+    "ayudante"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R260_gestor_operativo": {
+   "nombre": "Gestor Operativo (administrativo/contable)",
+   "esco_code": "4311.1",
+   "keywords_titulo": [
+    "gestor operativo",
+    "gestora operativa"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "administrativo",
+   "familias_candidatas": [
+    "administrativo",
+    "contador_auditor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R261_vendimia": {
+   "nombre": "Vendimia / Cosecha",
+   "esco_code": "9213.1",
+   "keywords_titulo": [
+    "vendimia",
+    "cosecha de uva",
+    "cosechador"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operario"
+  },
+  "R262_pasante_vinedos": {
+   "nombre": "Pasante de Viñedos (administrativo)",
+   "esco_code": "4110.1",
+   "keywords_titulo": [
+    "pasante de viñedos",
+    "pasante de viñedo",
+    "pasante viñedos",
+    "pasante viñedo"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "administrativo"
+  },
+  "R263_operario_limpieza_industrial": {
+   "nombre": "Operario Limpieza Industrial (tanques, cisternas)",
+   "esco_code": "9129.2",
+   "keywords_titulo": [
+    "limpieza de tanques",
+    "limpieza de cisternas",
+    "limpieza industrial"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operario"
+  },
+  "R264_lider_almacen": {
+   "nombre": "Líder / Supervisor de Almacén",
+   "esco_code": "3122.4",
+   "keywords_titulo": [
+    "líder de almacén",
+    "lider de almacen",
+    "líder de almacen",
+    "lider de almacén",
+    "supervisor de almacén",
+    "supervisor de almacen"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "supervisor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R265_controlador_logistico": {
+   "nombre": "Controlador logístico / de stock",
+   "esco_code": "4321.1",
+   "keywords_titulo": [
+    "controlador logistico",
+    "controlador logístico",
+    "controlador de stock",
+    "controller de stock",
+    "controlador de inventario"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "coordinador",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R266_despachador_emergencias": {
+   "nombre": "Despachador de emergencias médicas",
+   "esco_code": "3412.1",
+   "keywords_titulo": [
+    "despachador",
+    "despachadora",
+    "dispatcher"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operador_programador"
+  },
+  "R267_auxiliar_legal": {
+   "nombre": "Auxiliar legal / Estudiante de abogacía",
+   "esco_code": "3411.4",
+   "keywords_titulo": [
+    "estudiante de abogacia",
+    "estudiante de abogacía",
+    "auxiliar legal",
+    "auxiliar juridico",
+    "auxiliar jurídico",
+    "auxiliar juridica"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "compliance_legal",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R268_setter_comercial": {
+   "nombre": "Setter comercial / Auxiliar comercial seguros",
+   "esco_code": "3322.1",
+   "keywords_titulo": [
+    "setter",
+    "auxiliar comercial"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R269_team_leader_reclutamiento": {
+   "nombre": "Team Leader de Reclutamiento / Selección",
+   "esco_code": "2423.3",
+   "keywords_titulo": [
+    "team leader",
+    "team lead",
+    "líder",
+    "lider",
+    "responsable",
+    "jefe"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "coordinador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R270_tecnico_incidencias": {
+   "nombre": "Técnico de incidencias / soporte plataformas web",
+   "esco_code": "3512.1",
+   "keywords_titulo": [
+    "tecnico de incidencias",
+    "técnico de incidencias",
+    "tecnica de incidencias",
+    "técnica de incidencias",
+    "tecnico incidencias",
+    "técnico incidencias"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "tecnico"
+  },
+  "R271_desarrollador_python": {
+   "nombre": "Desarrollador Python",
+   "esco_code": "2512.4",
+   "keywords_titulo": [
+    "desarrollador python",
+    "desarrolladora python",
+    "developer python",
+    "python developer",
+    "programador python",
+    "programadora python"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "desarrollador"
+  },
+  "R272_analista_operaciones_datacenter": {
+   "nombre": "Analista de operaciones Data Center / Infraestructura",
+   "esco_code": "2522.1",
+   "keywords_titulo": [
+    "data center",
+    "datacenter",
+    "centro de datos"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R273_advisor_soporte_app": {
+   "nombre": "Advisor / Soporte funcional de app",
+   "esco_code": "3512.1",
+   "keywords_titulo": [
+    "advisor"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R274_coordinador_operaciones_logistica": {
+   "nombre": "Coordinador de operaciones logísticas / almacén",
+   "esco_code": "3331.2",
+   "keywords_titulo": [
+    "coordinador"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "coordinador",
+   "familias_candidatas": [
+    "coordinador",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R275_operario_deposito_almacen": {
+   "nombre": "Operario de depósito / almacén / central de pesada / logística",
+   "esco_code": "9333.3",
+   "keywords_titulo": [
+    "operario de deposito",
+    "operario de depósito",
+    "operaria de deposito",
+    "operaria de depósito",
+    "operario deposito",
+    "operario depósito"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operario"
+  },
+  "R276_office_host_recepcionista": {
+   "nombre": "Office host / host de coworking / recepcionista de oficina",
+   "esco_code": "4226.1",
+   "keywords_titulo": [
+    "office host",
+    "host de coworking",
+    "host coworking",
+    "recepcionista de oficina",
+    "recepcionista oficina",
+    "recepcionista administrativa"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "administrativo",
+   "familias_candidatas": [
+    "administrativo",
+    "recepcionista"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R277_medio_oficial_mantenimiento_industrial": {
+   "nombre": "Medio oficial / técnico de mantenimiento industrial electromecánico",
+   "esco_code": "7233.7",
+   "keywords_titulo": [
+    "medio oficial de mantenimiento",
+    "medio oficial mantenimiento",
+    "tecnico de mantenimiento industrial",
+    "técnico de mantenimiento industrial",
+    "tecnico mantenimiento electromecanico",
+    "técnico mantenimiento electromecánico"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "mecanico"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R278_analista_oficina_tecnica_construccion": {
+   "nombre": "Analista de oficina técnica / proyectos de construcción",
+   "esco_code": "2142.1.2",
+   "keywords_titulo": [
+    "oficina tecnica",
+    "oficina técnica",
+    "analista de oficina tecnica",
+    "analista de oficina técnica",
+    "analista oficina tecnica",
+    "analista oficina técnica"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "analista",
+    "ingeniero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R279_chofer_recoleccion_residuos": {
+   "nombre": "Chófer / conductor de recolección de residuos",
+   "esco_code": "8332.8",
+   "keywords_titulo": [
+    "chofer recoleccion",
+    "chófer recolección",
+    "chofer recolección",
+    "chófer recoleccion",
+    "conductor recoleccion",
+    "conductor recolección"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "chofer_conductor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R280_agente_documentacion": {
+   "nombre": "Agente de documentación / gestión documental",
+   "esco_code": "4110.1",
+   "keywords_titulo": [
+    "agente de documentacion",
+    "agente de documentación",
+    "agente documentacion",
+    "agente documentación",
+    "gestion documental",
+    "gestión documental"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R281_chofer_camiones": {
+   "nombre": "Chofer / Conductor de camiones",
+   "esco_code": "8332.2",
+   "keywords_titulo": [
+    "chofer de camion",
+    "chofer de camión",
+    "chofer de camiones",
+    "chofer camion",
+    "chofer camión",
+    "chofer camiones"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "chofer_conductor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R282_conductor_marca_vehiculo": {
+   "nombre": "Conductor de marca/tipo de vehículo",
+   "esco_code": "8332.2",
+   "keywords_titulo": [
+    "conductor de iveco",
+    "conductor iveco",
+    "chofer de iveco",
+    "chofer iveco",
+    "conductor de scania",
+    "conductor scania"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "chofer_conductor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R283_subgerente_construccion": {
+   "nombre": "Subgerente / Jefe de Construcción",
+   "esco_code": "3123.1",
+   "keywords_titulo": [
+    "subgerente construccion",
+    "subgerente construcción",
+    "subgerente de construccion",
+    "subgerente de construcción",
+    "jefe de construccion",
+    "jefe de construcción"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "supervisor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R284_representante_tecnico_comercial": {
+   "nombre": "Representante Técnico Comercial",
+   "esco_code": "5223.7",
+   "keywords_titulo": [
+    "tecnico comercial",
+    "técnico comercial"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "vendedor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R285_coordinador_rrhh": {
+   "nombre": "Coordinador/a de Recursos Humanos",
+   "esco_code": "1212.2",
+   "keywords_titulo": [
+    "coordinador de recursos humanos",
+    "coordinadora de recursos humanos",
+    "coordinador/a de recursos humanos",
+    "coordinador de rrhh",
+    "coordinadora de rrhh",
+    "coordinador/a de rrhh"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "coordinador",
+   "familias_candidatas": [
+    "coordinador",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R286_auxiliar_rrhh": {
+   "nombre": "Auxiliar de RRHH",
+   "esco_code": "2423.3",
+   "keywords_titulo": [
+    "auxiliar de rrhh",
+    "auxiliar rrhh",
+    "auxiliar de recursos humanos",
+    "auxiliar recursos humanos"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "conduccion"
+  },
+  "R287_herrero": {
+   "nombre": "Herrero / Plegador",
+   "esco_code": "7221.1",
+   "keywords_titulo": [
+    "herrero",
+    "herrera",
+    "plegador"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "herrero"
+  },
+  "R288_ayudante_envasado": {
+   "nombre": "Ayudante / Operario línea de envasado",
+   "esco_code": "8183.1",
+   "keywords_titulo": [
+    "envasado",
+    "envasadora",
+    "embotellado"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "ayudante"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R289_encargado_limpieza": {
+   "nombre": "Encargado/a de Limpieza",
+   "esco_code": "5151.2",
+   "keywords_titulo": [
+    "encargado",
+    "encargada",
+    "encargado/a",
+    "supervisor",
+    "supervisora",
+    "supervisor/a"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "supervisor"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R290_tecnico_electricista": {
+   "nombre": "Técnico electricista",
+   "esco_code": "7411.1",
+   "keywords_titulo": [
+    "tecnico electricista",
+    "técnico electricista",
+    "tecnica electricista",
+    "técnica electricista",
+    "técnico/a electricista",
+    "tecnico/a electricista"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "electricista"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R291_auxiliar_proveedores": {
+   "nombre": "Auxiliar de Proveedores / Compras",
+   "esco_code": "4311.1",
+   "keywords_titulo": [
+    "auxiliar de proveedores",
+    "auxiliar proveedores",
+    "asistente de proveedores",
+    "asistente proveedores"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R292_pasante_marketing": {
+   "nombre": "Pasante de Marketing",
+   "esco_code": "2431.10.3",
+   "keywords_titulo": [
+    "pasante",
+    "trainee",
+    "practicante"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "ayudante"
+  },
+  "R293_asistente_pago": {
+   "nombre": "Asistente de Estado de Pago / Pagos",
+   "esco_code": "4311.1",
+   "keywords_titulo": [
+    "estado de pago",
+    "asistente de pago",
+    "asistente pago",
+    "asistente de pagos",
+    "asistente pagos"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R294_analista_desarrollo_analitico": {
+   "nombre": "Analista de Desarrollo Analítico (laboratorio)",
+   "esco_code": "2113.1.1",
+   "keywords_titulo": [],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R295_asistente_facturacion": {
+   "nombre": "Asistente de Facturación y/o Cobranzas",
+   "esco_code": "4311.1",
+   "keywords_titulo": [
+    "facturación",
+    "facturacion",
+    "cobranzas",
+    "cobranza"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R296_soporte_infraestructura": {
+   "nombre": "Soporte de Infraestructura IT",
+   "esco_code": "2522.1",
+   "keywords_titulo": [
+    "infraestructure support",
+    "infrastructure support",
+    "soporte infraestructura",
+    "soporte de infraestructura",
+    "infra support"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R297_estudiante_abogacia": {
+   "nombre": "Estudiante de Abogacía / Derecho",
+   "esco_code": "3411.7",
+   "keywords_titulo": [
+    "abogacia",
+    "abogacía",
+    "derecho"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R298_mesa_servicio_it": {
+   "nombre": "Mesa de Servicio / Help Desk IT",
+   "esco_code": "3512.2",
+   "keywords_titulo": [
+    "mesa de servicio",
+    "mesa servicio",
+    "help desk",
+    "helpdesk",
+    "service desk"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R299_jefatura_compras": {
+   "nombre": "Jefatura / Jefe de Compras",
+   "esco_code": "1324.8.2",
+   "keywords_titulo": [
+    "jefatura",
+    "jefe",
+    "jefa",
+    "responsable",
+    "gerente",
+    "director"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R300_hrbp": {
+   "nombre": "HRBP / Business Partner RRHH",
+   "esco_code": "2423.3",
+   "keywords_titulo": [
+    "hrbp",
+    "hr business partner",
+    "human resources business partner",
+    "business partner de rrhh"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "conduccion"
+  },
+  "R301_productor_contenido_digital": {
+   "nombre": "Productor de Contenido Digital/Multimedial",
+   "esco_code": "2513.4",
+   "keywords_titulo": [
+    "productor de contenido",
+    "productora de contenido",
+    "productor/a de contenido"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "conduccion"
+  },
+  "R302_proyectista_ing_civil": {
+   "nombre": "Proyectista / Estudiante Ingeniería Civil",
+   "esco_code": "2142.1.2",
+   "keywords_titulo": [
+    "proyectista",
+    "ing. civil",
+    "ing civil",
+    "ingenieria civil",
+    "ingeniería civil"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "ingeniero"
+  },
+  "R303_sous_chef": {
+   "nombre": "Sous Chef / Segundo de Cocina",
+   "esco_code": "3434.1",
+   "keywords_titulo": [
+    "sous chef",
+    "sous-chef",
+    "segundo de cocina",
+    "segundo chef"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "cocinero",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R301_ascensores": {
+   "nombre": "Técnico en ascensores/elevadores",
+   "esco_code": "7412.7",
+   "keywords_titulo": [
+    "ascensor",
+    "ascensores",
+    "elevador",
+    "elevadores",
+    "ascensorista"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "tecnico"
+  },
+  "R302_supervisor_obra": {
+   "nombre": "Supervisor de obra/montaje/instalación",
+   "esco_code": "3123.1",
+   "keywords_titulo": [
+    "supervisor de obra",
+    "supervisor obra",
+    "supervisora de obra",
+    "supervisor de montaje",
+    "supervisor montaje",
+    "supervisor de instalacion"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "supervisor"
+  },
+  "R303_gerente_admin": {
+   "nombre": "Gerente de Administración",
+   "esco_code": "1211.1",
+   "keywords_titulo": [
+    "gerente administracion",
+    "gerente administración",
+    "gerente de administracion",
+    "gerente de administración",
+    "gerente administrativo",
+    "gerente administrativa"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "administrativo",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R304_torrista": {
+   "nombre": "Técnico torrista",
+   "esco_code": "3522.1",
+   "keywords_titulo": [
+    "torrista",
+    "tecnico torrista",
+    "técnico torrista"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "tecnico"
+  },
+  "R305_electromecanico": {
+   "nombre": "Técnico electromecánico",
+   "esco_code": "7412.3",
+   "keywords_titulo": [
+    "electromecánico",
+    "electromecanico",
+    "electromecánica",
+    "electromecanica",
+    "electromecánicos",
+    "electromecanicos"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "electricista",
+    "mecanico"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R306_mantenimiento_electrico": {
+   "nombre": "Técnico de mantenimiento eléctrico",
+   "esco_code": "7412.3",
+   "keywords_titulo": [
+    "mantenimiento eléctrico",
+    "mantenimiento electrico",
+    "técnico eléctrico",
+    "tecnico electrico"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "electricista",
+    "mecanico"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R307_ingeniero_electronico": {
+   "nombre": "Ingeniero electrónico",
+   "esco_code": "2152.1",
+   "keywords_titulo": [
+    "ingeniero electrónico",
+    "ingeniero electronico",
+    "ingeniera electrónica",
+    "ingeniera electronica",
+    "ing electrónico",
+    "ing electronico"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "ingeniero"
+  },
+  "R308_lonas_toldos": {
+   "nombre": "Taller de lonas y toldos",
+   "esco_code": "7533.4",
+   "keywords_titulo": [
+    "lona",
+    "lonas",
+    "toldo",
+    "toldos"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R309_responsable_deposito": {
+   "nombre": "Responsable/Encargado de depósito",
+   "esco_code": "1324.3.1",
+   "keywords_titulo": [
+    "responsable de depósito",
+    "responsable de deposito",
+    "responsable deposito",
+    "responsable depósito",
+    "encargado de depósito",
+    "encargado de deposito"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R310_auxiliar_promociones": {
+   "nombre": "Auxiliar de promociones / Promotor",
+   "esco_code": "3332.2.1",
+   "keywords_titulo": [
+    "auxiliar de promociones",
+    "auxiliar promociones",
+    "promotor",
+    "promotora",
+    "promotor/a",
+    "promotores"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "conduccion"
+  },
+  "R311_programador_produccion": {
+   "nombre": "Programador de producción (industrial)",
+   "esco_code": "3122.4",
+   "keywords_titulo": [
+    "programador de producción",
+    "programador de produccion",
+    "programador producción",
+    "programador produccion",
+    "programadora de producción",
+    "programadora de produccion"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "supervisor"
+  },
+  "R312_consultor_software_nomina": {
+   "nombre": "Consultor funcional de software de nómina/liquidación",
+   "esco_code": "2519.6",
+   "keywords_titulo": [],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R313_encargado_logistica": {
+   "nombre": "Encargado/Jefe de Logística",
+   "esco_code": "1324.3.4",
+   "keywords_titulo": [
+    "encargado de logística",
+    "encargado logística",
+    "encargado de logistica",
+    "encargado logistica",
+    "jefe de logística",
+    "jefe logística"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "conduccion"
+  },
+  "R314_advisor_software": {
+   "nombre": "Advisor de software/IT",
+   "esco_code": null,
+   "keywords_titulo": [
+    "advisor"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "analista"
+  },
+  "R315_operario_metalurgico": {
+   "nombre": "Operario metalúrgico",
+   "esco_code": "7223.4",
+   "keywords_titulo": [
+    "operario metalúrgico",
+    "operaria metalúrgica",
+    "operario metalurgico",
+    "operaria metalurgica",
+    "operario de producción metalúrgico",
+    "operario de produccion metalurgico"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "operador_programador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R316_representante_ventas_industrial": {
+   "nombre": "Representante de ventas sector industrial",
+   "esco_code": "2433.6",
+   "keywords_titulo": [
+    "representante de ventas",
+    "representante ventas",
+    "representante técnico de ventas",
+    "representante tecnico de ventas"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "tecnico"
+  },
+  "R317_vendedor_viajante": {
+   "nombre": "Vendedor/a viajante",
+   "esco_code": "3322.1",
+   "keywords_titulo": [
+    "vendedor viajante",
+    "vendedora viajante",
+    "vendedor/a viajante",
+    "viajante de comercio",
+    "viajante"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "vendedor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R318_operador_produccion": {
+   "nombre": "Operador/a de producción (genérico)",
+   "esco_code": "8142.2",
+   "keywords_titulo": [
+    "operador de producción",
+    "operador producción",
+    "operador produccion",
+    "operador de produccion",
+    "operadora de producción",
+    "operadora de produccion"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operador_programador"
+  },
+  "R319_corte_costura": {
+   "nombre": "Operario/a de corte y costura / textil",
+   "esco_code": "8153.1",
+   "keywords_titulo": [
+    "corte y costura",
+    "costurero",
+    "costurera",
+    "costurero",
+    "operario textil",
+    "operaria textil"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "operador_programador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R320_ventas_telemarketing": {
+   "nombre": "Agente/Ejecutivo de ventas telemarketing",
+   "esco_code": "5244.1",
+   "keywords_titulo": [
+    "ventas telemarketing",
+    "agente de ventas telemarketing",
+    "ejecutivo de ventas telemarketing",
+    "venta telemarketing"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operador_programador",
+   "familias_candidatas": [
+    "operador_programador",
+    "ejecutivo_ventas"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R321_tecnico_instalador_seguridad": {
+   "nombre": "Técnico instalador de sistemas de seguridad",
+   "esco_code": "3522.1",
+   "keywords_titulo": [
+    "técnico instalador",
+    "tecnico instalador",
+    "técnico/a instalador",
+    "tecnico/a instalador"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "instalador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R322_mecanico_industrial": {
+   "nombre": "Mecánico de mantenimiento industrial/maquinaria",
+   "esco_code": "7233.7",
+   "keywords_titulo": [
+    "mecánico",
+    "mecanico"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "mecanico",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R323_atencion_publico": {
+   "nombre": "Empleado de atención al público/cliente",
+   "esco_code": "4225.1",
+   "keywords_titulo": [
+    "atención al público",
+    "atencion al publico",
+    "atención al cliente",
+    "atencion al cliente"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "customer_care",
+   "familias_candidatas": [
+    "customer_care",
+    "atencion_publico"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R324_fileteador_pescado": {
+   "nombre": "Fileteador/a de pescado",
+   "esco_code": "7511.3",
+   "keywords_titulo": [
+    "fileteador",
+    "fileteadora",
+    "fileteado",
+    "filetear pescado",
+    "filetero"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R325_instalador_satelital": {
+   "nombre": "Instalador satelital / técnico de campo telecom",
+   "esco_code": "7422.3.1",
+   "keywords_titulo": [
+    "instalación satelital",
+    "instalador satelital",
+    "técnico satelital",
+    "tecnico satelital",
+    "instalador de antena",
+    "instalacion satelital"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "instalador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R326_tecnico_refrigeracion": {
+   "nombre": "Técnico de refrigeración / aire acondicionado",
+   "esco_code": "7127.1",
+   "keywords_titulo": [
+    "técnico",
+    "tecnico",
+    "técnica",
+    "tecnica",
+    "refrigeración",
+    "refrigeracion"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "instalador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R327_encargado_salon": {
+   "nombre": "Encargado/a de salón (gastronomía)",
+   "esco_code": "5131.2.1",
+   "keywords_titulo": [
+    "encargado",
+    "encargada",
+    "jefe",
+    "jefa",
+    "responsable",
+    "de salón"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "conduccion"
+  },
+  "R328_psicologo_profesional": {
+   "nombre": "Psicólogo/a profesional (clínico, educativo, laboral)",
+   "esco_code": "2634.2",
+   "keywords_titulo": [
+    "psicólogo",
+    "psicologo",
+    "psicóloga",
+    "psicologa",
+    "lic psicología",
+    "lic psicologia"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R329_tecnico_electronico_mantenimiento": {
+   "nombre": "Técnico electrónico para mantenimiento de equipos",
+   "esco_code": "3114.1",
+   "keywords_titulo": [
+    "técnico",
+    "tecnico",
+    "técnica",
+    "tecnica",
+    "electrónico",
+    "electronico"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "ingeniero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R330_fiambrero": {
+   "nombre": "Fiambrero/a (vendedor especializado fiambres/embutidos)",
+   "esco_code": "5223.7.16",
+   "keywords_titulo": [
+    "fiambrero",
+    "fiambrera"
+   ],
+   "clase": "CUBIERTA-pendiente",
+   "familia": "vendedor",
+   "motivo": "familia sin arbol listo (espera sesion Cyn / arbol no entregado)"
+  },
+  "R331_acompanante_integracion_escolar": {
+   "nombre": "Acompañante terapéutico (AT) para integración escolar",
+   "esco_code": "3412.4.5",
+   "keywords_titulo": [
+    "integración escolar",
+    "integracion escolar",
+    "acompañante terapéutico",
+    "acompanante terapeutico",
+    "acompañante terapeutico",
+    "at para integración"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R332_talentos_discapacidad": {
+   "nombre": "Base de talentos / búsqueda para personas con discapacidad",
+   "esco_code": "2635.3",
+   "keywords_titulo": [
+    "personas con discapacidad",
+    "talento inclusiv",
+    "base de talentos"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R333_operario_limpieza": {
+   "nombre": "Operario/a de limpieza",
+   "esco_code": "9112.5",
+   "keywords_titulo": [
+    "operario",
+    "operaria",
+    "empleado",
+    "empleada",
+    "personal",
+    "limpieza"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operario"
+  },
+  "R334_ninera": {
+   "nombre": "Niñera / cuidador de niños",
+   "esco_code": "5311.1.4",
+   "keywords_titulo": [
+    "niñera",
+    "ninera",
+    "niñero",
+    "ninero",
+    "nana",
+    "nanny"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R335_promotor_via_publica": {
+   "nombre": "Promotor/a vía pública (venta/promoción telefónica y presencial)",
+   "esco_code": "5244.1",
+   "keywords_titulo": [
+    "promotor vía pública",
+    "promotor via publica",
+    "promotora vía pública",
+    "promotora via publica",
+    "promotor callejero",
+    "promotor de vía pública"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operador_programador"
+  },
+  "R336_analista_seguridad_higiene": {
+   "nombre": "Analista/Técnico de Seguridad e Higiene (técnico, no profesional)",
+   "esco_code": "3257.5",
+   "keywords_titulo": [
+    "analista",
+    "técnico",
+    "tecnico",
+    "técnica",
+    "tecnica",
+    "auxiliar"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "analista"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R337_psicologo_laboral_educativo": {
+   "nombre": "Psicólogo/a (laboral, educativo, clínico) - match reforzado",
+   "esco_code": "2634.2",
+   "keywords_titulo": [
+    "psicólog",
+    "psicolog",
+    "psicóloga",
+    "psicologa"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R338_operador_tecnico_generico": {
+   "nombre": "Operador/a técnico (producción genérica)",
+   "esco_code": "8189.1",
+   "keywords_titulo": [
+    "operador/a técnico",
+    "operadora técnica",
+    "operador tecnico",
+    "operadora tecnica"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "tecnico",
+   "familias_candidatas": [
+    "tecnico",
+    "operador_programador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R339_analista_contrataciones_transporte": {
+   "nombre": "Analista de contrataciones (sector transporte/logística)",
+   "esco_code": "4323.11",
+   "keywords_titulo": [
+    "analista de contrataciones",
+    "analista contrataciones",
+    "coordinador de contrataciones",
+    "coordinadora contrataciones"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "analista",
+   "familias_candidatas": [
+    "analista",
+    "coordinador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R340_jefe_operativo_obra": {
+   "nombre": "Jefe operativo de obra / construcción (gerente)",
+   "esco_code": "1323.1",
+   "keywords_titulo": [
+    "ingeniero",
+    "ingeniera",
+    "obra",
+    "construcci",
+    "operaciones",
+    "jefe operativo"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "conduccion",
+   "familias_candidatas": [
+    "conduccion",
+    "ingeniero",
+    "director"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R341_vigilador_supervisor_produccion": {
+   "nombre": "Vigilador de personal (supervisor producción, no seguridad privada)",
+   "esco_code": "3122.3",
+   "keywords_titulo": [
+    "vigilador de personal",
+    "vigiladora de personal"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "supervisor"
+  },
+  "R342_acompanante_terapeutico_cuidador": {
+   "nombre": "Acompañante terapéutico (cuidador, sin integración escolar)",
+   "esco_code": "5329.1",
+   "keywords_titulo": [
+    "acompañante terapéutico",
+    "acompanante terapeutico",
+    "acomp terapeutico",
+    "acomp terapéutico"
+   ],
+   "clase": "HUERFANA",
+   "familia": null
+  },
+  "R343_inyector_plastico": {
+   "nombre": "Inyector/Operario de máquinas de inyección plástica",
+   "esco_code": "8142.7",
+   "keywords_titulo": [
+    "inyector plástico",
+    "inyector plastico",
+    "inyectora plástica",
+    "inyectora plastica",
+    "operario inyector",
+    "operario de inyección"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "operador_programador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R344_project_manager": {
+   "nombre": "Project Manager / Gerente de proyectos (sobrescribe R19)",
+   "esco_code": "1330.7",
+   "keywords_titulo": [
+    "project manager",
+    "gerente de proyectos",
+    "gerenta de proyectos",
+    "jefe de proyecto",
+    "jefa de proyecto",
+    "pm senior"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "conduccion"
+  },
+  "R345_operario_cnc": {
+   "nombre": "Operario/Operador CNC (no prensado de fruta)",
+   "esco_code": "7223.7",
+   "keywords_titulo": [
+    "operario cnc",
+    "operador cnc",
+    "operadora cnc",
+    "operario de cnc",
+    "operador de cnc",
+    "operadora de cnc"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "operador_programador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R346_operario_corte_laser": {
+   "nombre": "Operario de corte láser",
+   "esco_code": "7223.4.3",
+   "keywords_titulo": [
+    "corte láser",
+    "corte laser",
+    "cortadora láser",
+    "cortadora laser",
+    "operario de láser",
+    "operador láser"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "operador_programador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R347_operario_metalurgico": {
+   "nombre": "Operario metalúrgico (no prensado de fruta)",
+   "esco_code": "7214.3.1",
+   "keywords_titulo": [
+    "operario metalúrgico",
+    "operario metalurgico",
+    "operaria metalúrgica",
+    "operaria metalurgica",
+    "metalúrgico/a"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operario"
+  },
+  "R348_operario_plastico_soplado": {
+   "nombre": "Operario producción plástico (moldeo/soplado)",
+   "esco_code": "8142.1",
+   "keywords_titulo": [
+    "operario",
+    "operaria",
+    "operarios",
+    "operarias"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "operador_programador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R349_operario_envasado": {
+   "nombre": "Operario de envasado / embotellado / línea de llenado",
+   "esco_code": "8183.1",
+   "keywords_titulo": [
+    "operario",
+    "operaria",
+    "operarios",
+    "operarias"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operario"
+  },
+  "R350_operario_deposito_logistica": {
+   "nombre": "Operario de depósito / pickeador / logística almacén",
+   "esco_code": "9333.8",
+   "keywords_titulo": [
+    "pickeador",
+    "pickeadora",
+    "picker",
+    "operario de depósito",
+    "operario de deposito",
+    "operaria de depósito"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "mozo_camarero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R351_operario_despacho": {
+   "nombre": "Operario/auxiliar de despacho y expedición",
+   "esco_code": "9333.3",
+   "keywords_titulo": [
+    "operario de despacho",
+    "operaria de despacho",
+    "operarios de despacho",
+    "operarias de despacho",
+    "operarios/as de despacho",
+    "operador de despacho"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "operador_programador"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R352_operario_ensamble_armas": {
+   "nombre": "Operario de ensamble de armamento",
+   "esco_code": "7222.2",
+   "keywords_titulo": [
+    "ensamble de armas",
+    "ensamble armas",
+    "ensamble de pistola",
+    "ensamble pistola",
+    "ensamble de pistolas",
+    "montador de armamento"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "tecnico"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R358_despacho_metalurgico_grua": {
+   "nombre": "Despacho metalúrgico con operación de puente grúa",
+   "esco_code": "8343.4",
+   "keywords_titulo": [
+    "despacho metalúrgico",
+    "despacho metalurgico"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operador_programador"
+  },
+  "R353_operario_carga_descarga": {
+   "nombre": "Operario carga/descarga/picking",
+   "esco_code": "9333.8",
+   "keywords_titulo": [
+    "operario",
+    "operaria",
+    "operarios",
+    "operarias",
+    "peon",
+    "peón"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "mozo_camarero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R354_operario_lavadero": {
+   "nombre": "Operario de lavadero de vehículos",
+   "esco_code": "9122.1",
+   "keywords_titulo": [
+    "operario",
+    "operaria",
+    "operarios",
+    "operarias"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operario"
+  },
+  "R355_operario_maestranza": {
+   "nombre": "Operario de maestranza",
+   "esco_code": "9112.2",
+   "keywords_titulo": [
+    "maestranza",
+    "operario maestranza",
+    "operario/a maestranza"
+   ],
+   "clase": "CUBIERTA",
+   "familia": "operario"
+  },
+  "R356_operario_mantenimiento": {
+   "nombre": "Operario de mantenimiento industrial",
+   "esco_code": "7233.7",
+   "keywords_titulo": [
+    "operario",
+    "operaria",
+    "operarios",
+    "operarias"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "mecanico"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  },
+  "R357_tecnico_operario_produccion": {
+   "nombre": "Técnico operario producción (ingeniería)",
+   "esco_code": "3115.1",
+   "keywords_titulo": [
+    "técnico operario",
+    "tecnico operario",
+    "técnico/a operario",
+    "tecnico/a operario",
+    "técnico de producción",
+    "técnico en producción"
+   ],
+   "clase": "AMBIGUA-a",
+   "familia": "operario",
+   "familias_candidatas": [
+    "operario",
+    "tecnico",
+    "ingeniero"
+   ],
+   "asignacion": "dudosa",
+   "motivo": "matchea raices de mas de una familia"
+  }
+ }
+}
