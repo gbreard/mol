@@ -88,10 +88,12 @@ ejecutado vía la ceremonia tmpfs del frente F, con dry-run previo):
 - Nota: las 152 del re-scrape de ayer se anularon antes de existir el log — quedaron
   sin texto original registrado (solo esta mención). Backup íntegro pre-limpieza:
   `database/bumeran_scraping.db.bak_tmpfs` (borrable tras validar el PR).
-- **Pendiente que abre esto (decisión Gerardo):** ~5.4K de estas ofertas habían
-  subido al dashboard (Supabase) como `validado_claude` en el sync de julio — el sync
-  incremental no borra; hace falta un delete dirigido en `ofertas_dashboard` para
-  esas ids (lista derivable de `descripcion_anulada_log`). No ejecutado.
+- **Cierre dashboard (2026-08-06, autorizado por Gerardo):** delete dirigido ejecutado
+  en Supabase — presencia contada ANTES: **5.481** en `ofertas_dashboard` (calzó con
+  las 5.481 `validado_claude` de la detección) + **31.505** filas en `ofertas_skills`.
+  **Borradas 5.481 + 31.505; verificación post: 0 restantes.** Hard DELETE por ids
+  del log (el schema no tiene soft-delete; el propio sync usa DELETE+INSERT). El
+  dashboard ya no muestra ninguna oferta boilerplate.
 
 ## Despliegue al VPS (coordina Gerardo)
 
