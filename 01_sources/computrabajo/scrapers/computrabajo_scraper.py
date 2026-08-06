@@ -303,6 +303,93 @@ class ComputRabajoScraper:
         except Exception as e:
             return None
 
+    # Patrón del boilerplate SEO de CT (meta description de detalle Y de listado).
+    # Verificado 2026-08-05: "¿Buscas trabajo de {título}? Crea tu CV gratis y aplica…"
+    # / "¿Buscas trabajo en {zona}? Crea tu CV y aplica…". Este texto se guardó como
+    # "descripción" en ~14K ofertas may-ago/2026 (incidente FRENTE I/J).
+    BOILERPLATE_RE = re.compile(
+        r'buscas\s+trabajo\s+(de|en)\s+.{0,120}crea\s+tu\s+cv', re.I | re.S)
+
+    def _es_boilerplate(self, texto: str) -> bool:
+        """True si el texto es el SEO genérico de CT — JAMÁS guardarlo como dato."""
+        return bool(texto) and bool(self.BOILERPLATE_RE.search(texto))
+
+    def _extraer_descripcion(self, soup, url: str) -> Optional[str]:
+        """Extrae la descripción real del aviso, o None RUIDOSO si no se pudo.
+
+        Cadena de selectores (verificada en vivo 2026-08-05 — CT sirve VARIANTES
+        de template según origen/sesión; el orden va de lo más estable a lo menos):
+
+          0. JSON-LD JobPosting.description (en @graph) — SEO obligatorio, el más
+             estable ante cambios de template. Ej. real: aviso 8633119316, 2.556 chars.
+          1. p.mbB dentro de div.box_detail — template "clásico" (verificado 2026-03-11
+             y AÚN activo en variante A al 2026-08-05).
+          2. div con texto largo dentro de box_detail, búsqueda RECURSIVA (variante B
+             ~mayo/2026 usa div.mb40.pb40.bb1 anidado; el recursive=False anterior
+             no lo alcanzaba).
+          3. meta description — SOLO si no es boilerplate (guarda dura). El fallback
+             sin guarda fue la causa del veneno de may-ago/2026.
+
+        Principio: mejor ausencia ruidosa que basura silenciosa.
+        """
+        # Detección de redirect a listado (aviso dado de baja / soft-block):
+        # el <title> de detalle empieza "Trabajos de …"; el de listado "Empleos en …".
+        titulo_pagina = soup.title.get_text(strip=True) if soup.title else ''
+        if titulo_pagina.lower().startswith('empleos en'):
+            logger.warning(f"  DESCRIPCION NO EXTRAIDA (redirect a listado — aviso caído o bloqueo): {url}")
+            return None
+
+        # Método 0: JSON-LD JobPosting
+        for script in soup.find_all('script', attrs={'type': 'application/ld+json'}):
+            try:
+                data = json.loads(script.string or '')
+            except (json.JSONDecodeError, TypeError):
+                continue
+            nodos = data.get('@graph', [data]) if isinstance(data, dict) else []
+            for nodo in nodos:
+                if isinstance(nodo, dict) and nodo.get('@type') == 'JobPosting':
+                    desc = re.sub(r'<[^>]+>', ' ', nodo.get('description') or '')
+                    desc = re.sub(r'\s+', ' ', desc).strip()
+                    if len(desc) > 50 and not self._es_boilerplate(desc):
+                        return desc
+
+        desc_container = soup.find('div', class_='box_detail')
+        if desc_container:
+            # Método 1: p.mbB (template clásico)
+            desc_elem = desc_container.find('p', class_='mbB')
+            if desc_elem:
+                texto = desc_elem.get_text(strip=True)
+                if len(texto) > 50 and not self._es_boilerplate(texto):
+                    return texto
+
+            # Método 2: contenedor largo, recursivo, excluyendo ruido conocido
+            skip_classes = {'fs13', 'fc_aux', 'result', 'fs50', 'list_dot',
+                            'fc_ok', 'fw_b', 'fwB', 'box_tooltip', 'group', 'popup'}
+            candidatos = []
+            for elem in desc_container.find_all(['p', 'div']):
+                if set(elem.get('class', [])) & skip_classes:
+                    continue
+                if elem.find(['p', 'div']):  # solo nodos hoja (evita contenedores padre)
+                    continue
+                texto = elem.get_text(strip=True)
+                if len(texto) > 150 and not self._es_boilerplate(texto):
+                    candidatos.append(texto)
+            if candidatos:
+                return max(candidatos, key=len)
+
+        # Método 3: meta description CON GUARDA — jamás boilerplate
+        meta_desc = soup.find('meta', attrs={'name': 'description'})
+        if meta_desc and meta_desc.get('content'):
+            texto = meta_desc['content'].strip()
+            if self._es_boilerplate(texto):
+                logger.warning(f"  DESCRIPCION NO EXTRAIDA (selector falló; meta es boilerplate SEO — se guarda NULL): {url}")
+                return None
+            if len(texto) > 50:
+                return texto
+
+        logger.warning(f"  DESCRIPCION NO EXTRAIDA (ningún método; se guarda NULL): {url}")
+        return None
+
     def scrapear_oferta_individual(self, url_oferta: str) -> Optional[Dict]:
         """
         Scrapea una oferta individual para obtener descripción completa
@@ -332,52 +419,9 @@ class ComputRabajoScraper:
 
             datos_extra = {}
 
-            # ================================================================
-            # Descripción completa
-            # ================================================================
-            # El div.box_detail contiene ~88 párrafos (descripción + reviews +
-            # ofertas similares + legal). La descripción REAL está en p.mbB
-            # dentro de box_detail (primer párrafo con esa clase).
-            #
-            # Estructura HTML de ComputRabajo (verificada 2026-03-11):
-            #   div.box_detail
-            #     p.fs14         → "Ocultaste esta oferta..." (UI noise)
-            #     p.mbB          → DESCRIPCIÓN REAL (incluye requisitos inline)
-            #     p.fwB.fs18     → "Requerimientos" (header)
-            #     p.fc_aux.fs13  → Keywords, fecha
-            #     ...            → Reviews, ofertas similares, legal (RUIDO)
-            # ================================================================
-
-            desc_container = soup.find('div', class_='box_detail')
-            if desc_container:
-                # Método 1: Buscar p.mbB (descripción principal)
-                desc_elem = desc_container.find('p', class_='mbB')
-                if desc_elem:
-                    descripcion = desc_elem.get_text(strip=True)
-                    if descripcion and len(descripcion) > 20:
-                        datos_extra['descripcion'] = descripcion
-
-                # Método 2: Si p.mbB no tiene la descripción, buscar divs con
-                # contenido largo que no sean reviews ni ofertas similares
-                if not datos_extra.get('descripcion'):
-                    # Buscar el primer div/p con contenido sustancial (>100 chars)
-                    # que NO sea un review ni oferta similar
-                    skip_classes = {'fs13', 'fc_aux', 'result', 'fs50', 'list_dot',
-                                    'fc_ok', 'fw_b', 'fwB', 'box_tooltip', 'group'}
-                    for elem in desc_container.find_all(['p', 'div'], recursive=False):
-                        elem_classes = set(elem.get('class', []))
-                        if elem_classes & skip_classes:
-                            continue
-                        text = elem.get_text(strip=True)
-                        if text and len(text) > 100:
-                            datos_extra['descripcion'] = text
-                            break
-
-            # Método 3: Fallback — buscar meta description
-            if not datos_extra.get('descripcion'):
-                meta_desc = soup.find('meta', attrs={'name': 'description'})
-                if meta_desc and meta_desc.get('content'):
-                    datos_extra['descripcion'] = meta_desc['content']
+            descripcion = self._extraer_descripcion(soup, url_clean)
+            if descripcion:
+                datos_extra['descripcion'] = descripcion
 
             # Requisitos (si están separados en sección propia)
             requisitos_section = soup.find('div', class_='requisitos')
