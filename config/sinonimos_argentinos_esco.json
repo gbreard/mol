@@ -1395,21 +1395,6 @@
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G4"
       }
     },
-    "técnico oficial": {
-      "esco_code": "7119.4",
-      "isco_primario": "7119",
-      "esco_label": "especialista en trabajos verticales",
-      "esco_uri": "http://data.europa.eu/esco/occupation/ac7c07d1-bc11-4f19-bca5-e468e9b1a53c",
-      "variantes": [
-        "técnico oficial",
-        "tecnico oficial"
-      ],
-      "_linaje": {
-        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
-        "fecha": "2026-07-13",
-        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G5"
-      }
-    },
     "arquitecto dibujante": {
       "esco_code": "2161.1",
       "isco_primario": "2161",
@@ -3498,5 +3483,24 @@
     ]
   },
   "fecha_modificacion": "2026-06-30",
-  "nota_v2": "v2.0: SPEC U-1 v3.1 con revisión de decisión sobre tecnico. URIs explícitas en gerente (7 ctx), operador (3 ctx, sin maquinas/CNC), tecnico (6 ctx, Opción 3). Eliminadas analista, operario (cobertura por reglas ≥98%). Eliminado contexto operador.maquinas/CNC (ISCO 8211 mal declarado). Label drift corregido: jefe de mantenimiento (1321→1219), analista de tesoreria, operador de atencion. Reportes: docs/diagnostico/2026-05-05_verificacion_overmatch_C2.md y baseline_canarios_post_F0.md."
+  "nota_v2": "v2.0: SPEC U-1 v3.1 con revisión de decisión sobre tecnico. URIs explícitas en gerente (7 ctx), operador (3 ctx, sin maquinas/CNC), tecnico (6 ctx, Opción 3). Eliminadas analista, operario (cobertura por reglas ≥98%). Eliminado contexto operador.maquinas/CNC (ISCO 8211 mal declarado). Label drift corregido: jefe de mantenimiento (1321→1219), analista de tesoreria, operador de atencion. Reportes: docs/diagnostico/2026-05-05_verificacion_overmatch_C2.md y baseline_canarios_post_F0.md.",
+  "_retiradas": {
+    "técnico oficial": {
+      "esco_code": "7119.4",
+      "isco_primario": "7119",
+      "esco_label": "especialista en trabajos verticales",
+      "esco_uri": "http://data.europa.eu/esco/occupation/ac7c07d1-bc11-4f19-bca5-e468e9b1a53c",
+      "variantes": [
+        "técnico oficial",
+        "tecnico oficial"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G5"
+      },
+      "_retirada_en": "2026-08-06",
+      "_motivo": "FRENTE H P0.a.3: denominación NO estable con target hiper-específico (7119.4 trabajos verticales); matcheó de más — evidencia FRENTE F P1 (oferta 8268897316, ayudante de mantenimiento clasificado como trabajos verticales)"
+    }
+  }
 }

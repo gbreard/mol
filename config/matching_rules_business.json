@@ -1662,7 +1662,6 @@
         ]
       },
       "accion": {
-        "priorizar_isco_familia": "1",
         "forzar_isco": "1219",
         "esco_label": "jefe de departamento/jefa de departamento",
         "esco_code": "1219.4"
@@ -1674,7 +1673,8 @@
         "version_origen": "v514",
         "contexto": "abel seguridad, fix R49 tilde depósito, fix R33 excluir producción. Nuevas R307-",
         "requiere_revision": true
-      }
+      },
+      "_nota_p0a3": "FRENTE H P0.a.3 (2026-08-06): clave de accion priorizar_isco_familia retirada — inerte en v3 (el matcher no la implementa en la rama bypass); sin cambio de comportamiento"
     },
     "R117_responsable_compras": {
       "nombre": "Responsable/Jefe de Compras y Logística",
