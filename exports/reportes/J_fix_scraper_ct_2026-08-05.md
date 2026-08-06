@@ -115,3 +115,18 @@ del frente I queda cumplida: la corrida semanal de NLP vuelve a la mesa de Gerar
 con `scripts/ops/run_con_tmpfs.sh` (frente F) listo como camino de I/O. Indeed sigue
 roto (Cloudflare) y NO es de este frente; sus ofertas no envenenan (vacías → no pasan
 el filtro del selector NLP).
+
+## DEPLOY EJECUTADO (2026-08-06, autorizado por Gerardo)
+
+- Acceso SSH verificado (`srv1479021`, misma key del sync diario).
+- **Backup remoto previo**: `computrabajo_scraper.py.pre_fix_20260805` en el VPS (rollback barato).
+- **Deploy**: scp según el contrato de esta sección. **Hash sha256 local == remoto**
+  (`a3872fc14496379a…`) — integridad verificada.
+- **Prueba funcional mínima desde el VPS** (2 avisos vivos, `scrapear_oferta_individual`):
+  descripciones completas de **1.400 y 548 chars** de contenido real — el fix extrae
+  bien desde la IP del datacenter (a este ritmo CT no sirvió walls; si volvieran en
+  corridas de volumen, la guarda persiste NULL ruidoso, jamás boilerplate).
+- **Criterio de éxito diferido**: próximo cron de CT **jueves 2026-08-07 08:00 AR**;
+  el sync diario trae los datos y `check_salud_descripciones()` es la confirmación —
+  CT debe caer de 100% hacia ~2% a medida que la ventana de 3 días se llena de scrapes
+  limpios (verde pleno esperable ~2026-08-09). Primera vez desde mayo.
