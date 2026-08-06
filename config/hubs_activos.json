@@ -1,0 +1,76 @@
+{
+ "_meta": {
+  "descripcion": "Hub-set declarado del traductor — la lista versionada de hubs cuyo TRIGGER esta habilitado (re-laudo 2026-08-06: no hay clusters de runtime)",
+  "semantica": "activo gobierna el TRIGGER, no el DESTINO: las D redirigen a cualquier esco_code verificado; el crecimiento es por decision declarada, jamas por contagio",
+  "generado": "2026-08-06 [FRENTE H P0.a.4 post re-laudo]"
+ },
+ "hub_sets": [
+  {
+   "nombre": "piloto_contable_vendedor",
+   "estado": "declarado_no_activo",
+   "nota": "grupo contable del Excel (1,2,3,4,15) + vecinos-hub directos (36,58) + grupo vendedor (16,51,52); se activa en P4 con la compilacion validada",
+   "hubs": [
+    {
+     "id": 1,
+     "codigo_esco": "2411.1.1",
+     "ocupacion": "Analista contable",
+     "reglas_a_compilar": 13
+    },
+    {
+     "id": 2,
+     "codigo_esco": "2411.1",
+     "ocupacion": "Contable",
+     "reglas_a_compilar": 12
+    },
+    {
+     "id": 3,
+     "codigo_esco": "3313.2",
+     "ocupacion": "Administrativo contable/administrativa contable",
+     "reglas_a_compilar": 7
+    },
+    {
+     "id": 4,
+     "codigo_esco": "4312.1",
+     "ocupacion": "Auditor/auditora",
+     "reglas_a_compilar": 7
+    },
+    {
+     "id": 15,
+     "codigo_esco": "1211.1.1",
+     "ocupacion": "director de contabilidad/directora de contabilidad",
+     "reglas_a_compilar": 16
+    },
+    {
+     "id": 36,
+     "codigo_esco": "2411.1.9",
+     "ocupacion": "auditor forense/auditora forense",
+     "reglas_a_compilar": 10
+    },
+    {
+     "id": 58,
+     "codigo_esco": "4110.1",
+     "ocupacion": "empleado de oficina/empleada de oficina",
+     "reglas_a_compilar": 11
+    },
+    {
+     "id": 16,
+     "codigo_esco": "3322.1",
+     "ocupacion": "representante comercial",
+     "reglas_a_compilar": 14
+    },
+    {
+     "id": 51,
+     "codigo_esco": "5223.4",
+     "ocupacion": "vendedor/vendedora",
+     "reglas_a_compilar": 15
+    },
+    {
+     "id": 52,
+     "codigo_esco": "5223.7",
+     "ocupacion": "vendedor especializado/vendedora especializada",
+     "reglas_a_compilar": 15
+    }
+   ]
+  }
+ ]
+}

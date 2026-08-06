@@ -1522,6 +1522,11 @@ class MatcherV3:
             # v3.5.1: Decision inteligente
             decision_metodo = meta.get("decision_metodo")
             decision_razon = meta.get("decision_razon")
+            # v3.5.9: Observabilidad del traductor (metodo arbol_contexto, FRENTE H)
+            arbol_hub_id = meta.get("arbol_hub_id")
+            arbol_regla_id = meta.get("arbol_regla_id")
+            arbol_camino = meta.get("arbol_camino")
+            arbol_traza_json = meta.get("arbol_traza_json")
 
             self.conn.execute('''
                 INSERT OR REPLACE INTO ofertas_esco_matching (
@@ -1536,8 +1541,9 @@ class MatcherV3:
                     regla_aplicada, dual_coinciden, decision_metodo,
                     skills_regla_json, skills_semantico_json,
                     skills_regla_aplicada, dual_coinciden_skills,
-                    decision_razon
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    decision_razon,
+                    arbol_hub_id, arbol_regla_id, arbol_camino, arbol_traza_json
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 str(id_oferta),
                 result.esco_uri,
@@ -1566,7 +1572,12 @@ class MatcherV3:
                 skills_semantico_json,
                 skills_regla_aplicada,
                 dual_coinciden_skills,
-                decision_razon  # v3.5.1: Razon de la decision
+                decision_razon,  # v3.5.1: Razon de la decision
+                # v3.5.9: Observabilidad arbol_contexto (NULL salvo traductor)
+                arbol_hub_id,
+                arbol_regla_id,
+                arbol_camino,
+                arbol_traza_json
             ))
             # v3.3.3: Tracking histórico
             # Guardar en ofertas_matching_history (no sobrescribe)

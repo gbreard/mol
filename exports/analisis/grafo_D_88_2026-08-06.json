@@ -1,0 +1,5414 @@
+{
+ "_meta": {
+  "generado": "2026-08-06 [FRENTE H — post re-laudo P0.a.4]",
+  "proposito": "ARTEFACTO DE ANALISIS (no config, no precondicion de runtime): clasificacion de divergencias del shadow (arista-directa vs sin-arista) y piso de satelites",
+  "nota": "las componentes conexas NO son clusters de runtime (re-laudo 2026-08-06: mega-componente de 78-82/88 hubs — ver H_p0_parada_clusters_2026-08-06.md)"
+ },
+ "aristas": [
+  {
+   "origen": "2411.1.1",
+   "regla_id": "D12",
+   "destino": "1211.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2411.1.1",
+   "regla_id": "D02",
+   "destino": "4311.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1.1",
+   "regla_id": "D05",
+   "destino": "4313.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1.1",
+   "regla_id": "D06",
+   "destino": "2411.1.12",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1.1",
+   "regla_id": "D08",
+   "destino": "2411.1.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1.1",
+   "regla_id": "D07",
+   "destino": "4312.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2411.1.1",
+   "regla_id": "D09",
+   "destino": "2411.1.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1.1",
+   "regla_id": "D10",
+   "destino": "2411.1.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1.1",
+   "regla_id": "D11",
+   "destino": "2413.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1.1",
+   "regla_id": "D01",
+   "destino": "3313.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2411.1.1",
+   "regla_id": "D03",
+   "destino": "3343.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1.1",
+   "regla_id": "D04",
+   "destino": "2411.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2411.1",
+   "regla_id": "D01",
+   "destino": "2411.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2411.1",
+   "regla_id": "D02",
+   "destino": "3313.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2411.1",
+   "regla_id": "D03",
+   "destino": "4311.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1",
+   "regla_id": "D04",
+   "destino": "4313.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1",
+   "regla_id": "D05",
+   "destino": "2411.1.12",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1",
+   "regla_id": "D06",
+   "destino": "2411.1.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1",
+   "regla_id": "D07",
+   "destino": "2411.1.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1",
+   "regla_id": "D08",
+   "destino": "2413.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1",
+   "regla_id": "D09",
+   "destino": "4312.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2411.1",
+   "regla_id": "D10",
+   "destino": "2411.1.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1",
+   "regla_id": "D11",
+   "destino": "1211.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3313.2",
+   "regla_id": "D01",
+   "destino": "2411.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3313.2",
+   "regla_id": "D02",
+   "destino": "2411.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3313.2",
+   "regla_id": "D03",
+   "destino": "4311.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3313.2",
+   "regla_id": "D04",
+   "destino": "4313.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3313.2",
+   "regla_id": "D05",
+   "destino": "3343.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3313.2",
+   "regla_id": "D06",
+   "destino": "4110.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4312.1",
+   "regla_id": "D01",
+   "destino": "2411.1.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4312.1",
+   "regla_id": "D02",
+   "destino": "2411.1.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4312.1",
+   "regla_id": "D03",
+   "destino": "2411.1.9",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4312.1",
+   "regla_id": "D04",
+   "destino": "2511.18",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4312.1",
+   "regla_id": "D05",
+   "destino": "3343.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4312.1",
+   "regla_id": "D06",
+   "destino": "4110.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2151.1.3",
+   "regla_id": "D01",
+   "destino": "7412.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2151.1.3",
+   "regla_id": "D02",
+   "destino": "2144.1.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2151.1.3",
+   "regla_id": "D03",
+   "destino": "7411.1.1.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2151.1.3",
+   "regla_id": "D04",
+   "destino": "3115.1.6",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2151.1.3",
+   "regla_id": "D05",
+   "destino": "7233.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7231.4",
+   "regla_id": "D01",
+   "destino": "7231.10",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7231.4",
+   "regla_id": "D02",
+   "destino": "7231.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7231.4",
+   "regla_id": "D03",
+   "destino": "7231.8",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7231.4",
+   "regla_id": "D04",
+   "destino": "7412.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7231.4",
+   "regla_id": "D05",
+   "destino": "7231.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7231.4",
+   "regla_id": "D06",
+   "destino": "7132.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7231.4",
+   "regla_id": "D07",
+   "destino": "7231.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7231.4",
+   "regla_id": "D08",
+   "destino": "1439.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7412.10",
+   "regla_id": "D01",
+   "destino": "7233.7",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7412.10",
+   "regla_id": "D02",
+   "destino": "7412.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7412.10",
+   "regla_id": "D03",
+   "destino": "7231.10",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7412.10",
+   "regla_id": "D04",
+   "destino": "7411.1.1.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7231.10",
+   "regla_id": "D01",
+   "destino": "7231.4",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7231.10",
+   "regla_id": "D02",
+   "destino": "7231.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7231.10",
+   "regla_id": "D03",
+   "destino": "7231.8",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7231.10",
+   "regla_id": "D04",
+   "destino": "7412.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7231.10",
+   "regla_id": "D05",
+   "destino": "7231.9",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7231.10",
+   "regla_id": "D06",
+   "destino": "7233.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7231.10",
+   "regla_id": "D07",
+   "destino": "7233.7",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7231.10",
+   "regla_id": "D08",
+   "destino": "8211.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3118.3",
+   "regla_id": "D01",
+   "destino": "2144.1.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3118.3",
+   "regla_id": "D02",
+   "destino": "2144.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3118.3",
+   "regla_id": "D03",
+   "destino": "2163.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3118.3",
+   "regla_id": "D04",
+   "destino": "3118.3.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7233.7",
+   "regla_id": "D01",
+   "destino": "7412.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7233.7",
+   "regla_id": "D02",
+   "destino": "7411.1.1.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7233.7",
+   "regla_id": "D03",
+   "destino": "3115.1.6",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7233.7",
+   "regla_id": "D04",
+   "destino": "7231.10",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7233.7",
+   "regla_id": "D05",
+   "destino": "7233.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7233.7",
+   "regla_id": "D06",
+   "destino": "7212.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7233.7",
+   "regla_id": "D07",
+   "destino": "8344.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.4",
+   "regla_id": "D01",
+   "destino": "1221.3.2.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1221.4",
+   "regla_id": "D02",
+   "destino": "1420.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.4",
+   "regla_id": "D03",
+   "destino": "1221.3.2.1.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.4",
+   "regla_id": "D04",
+   "destino": "2431.10.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.4",
+   "regla_id": "D05",
+   "destino": "3322.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1221.4",
+   "regla_id": "D06",
+   "destino": "2433.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.4",
+   "regla_id": "D07",
+   "destino": "2422.18",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.4",
+   "regla_id": "D08",
+   "destino": "1221.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.4",
+   "regla_id": "D09",
+   "destino": "1221.3.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.4",
+   "regla_id": "D10",
+   "destino": "1221.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.4",
+   "regla_id": "D11",
+   "destino": "1221.3.2.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.4",
+   "regla_id": "D12",
+   "destino": "1223.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.4",
+   "regla_id": "D13",
+   "destino": "1349.21",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.4",
+   "regla_id": "D14",
+   "destino": "1439.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.4",
+   "regla_id": "D15",
+   "destino": "1324.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1221.4",
+   "regla_id": "D16",
+   "destino": "1120.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D01",
+   "destino": "1330.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D02",
+   "destino": "1330.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D03",
+   "destino": "1330.1.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D04",
+   "destino": "1330.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D05",
+   "destino": "1330.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D06",
+   "destino": "3512.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D07",
+   "destino": "2522.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D08",
+   "destino": "2522.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D09",
+   "destino": "2512.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D10",
+   "destino": "2512.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D11",
+   "destino": "2512.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D12",
+   "destino": "2512.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D13",
+   "destino": "2512.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D14",
+   "destino": "2511.20",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D15",
+   "destino": "2511.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D16",
+   "destino": "2511.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D17",
+   "destino": "1330.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D18",
+   "destino": "2529.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D19",
+   "destino": "2529.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D20",
+   "destino": "2529.8",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D21",
+   "destino": "2529.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D22",
+   "destino": "2141.4.2.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D23",
+   "destino": "2149.15",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D24",
+   "destino": "2149.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D25",
+   "destino": "2165.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D26",
+   "destino": "2131.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1330.2",
+   "regla_id": "D27",
+   "destino": "1120.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.3.2.1",
+   "regla_id": "D01",
+   "destino": "1221.4",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1221.3.2.1",
+   "regla_id": "D02",
+   "destino": "1420.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.3.2.1",
+   "regla_id": "D03",
+   "destino": "3322.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1221.3.2.1",
+   "regla_id": "D04",
+   "destino": "2433.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.3.2.1",
+   "regla_id": "D05",
+   "destino": "2422.18",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.3.2.1",
+   "regla_id": "D06",
+   "destino": "1221.3.2.1.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.3.2.1",
+   "regla_id": "D07",
+   "destino": "1221.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.3.2.1",
+   "regla_id": "D08",
+   "destino": "1221.3.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.3.2.1",
+   "regla_id": "D09",
+   "destino": "1221.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.3.2.1",
+   "regla_id": "D10",
+   "destino": "1439.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1221.3.2.1",
+   "regla_id": "D11",
+   "destino": "1324.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1211.1.1",
+   "regla_id": "D01",
+   "destino": "3341.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1211.1.1",
+   "regla_id": "D02",
+   "destino": "2411.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1211.1.1",
+   "regla_id": "D03",
+   "destino": "2411.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1211.1.1",
+   "regla_id": "D04",
+   "destino": "3313.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1211.1.1",
+   "regla_id": "D05",
+   "destino": "4311.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1211.1.1",
+   "regla_id": "D06",
+   "destino": "2411.1.12",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1211.1.1",
+   "regla_id": "D07",
+   "destino": "1211.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1211.1.1",
+   "regla_id": "D08",
+   "destino": "1211.1.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1211.1.1",
+   "regla_id": "D09",
+   "destino": "2411.1.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1211.1.1",
+   "regla_id": "D10",
+   "destino": "2411.1.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1211.1.1",
+   "regla_id": "D11",
+   "destino": "2411.1.9",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1211.1.1",
+   "regla_id": "D12",
+   "destino": "1324.8.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1211.1.1",
+   "regla_id": "D13",
+   "destino": "1212.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1211.1.1",
+   "regla_id": "D14",
+   "destino": "4110.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1211.1.1",
+   "regla_id": "D15",
+   "destino": "1120.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3322.1",
+   "regla_id": "D01",
+   "destino": "2433.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3322.1",
+   "regla_id": "D02",
+   "destino": "3321.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3322.1",
+   "regla_id": "D03",
+   "destino": "3321.3.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3322.1",
+   "regla_id": "D04",
+   "destino": "3334.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3322.1",
+   "regla_id": "D05",
+   "destino": "5244.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3322.1",
+   "regla_id": "D06",
+   "destino": "3331.2.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3322.1",
+   "regla_id": "D07",
+   "destino": "3331.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3322.1",
+   "regla_id": "D08",
+   "destino": "2422.18",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3322.1",
+   "regla_id": "D09",
+   "destino": "1221.3.2.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3322.1",
+   "regla_id": "D10",
+   "destino": "1221.4",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3322.1",
+   "regla_id": "D11",
+   "destino": "2431.8",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3322.1",
+   "regla_id": "D12",
+   "destino": "4225.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3322.1",
+   "regla_id": "D13",
+   "destino": "4110.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3334.2",
+   "regla_id": "D01",
+   "destino": "3334.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3334.2",
+   "regla_id": "D02",
+   "destino": "3334.3.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3334.2",
+   "regla_id": "D03",
+   "destino": "3334.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3334.2",
+   "regla_id": "D04",
+   "destino": "3334.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3334.2",
+   "regla_id": "D05",
+   "destino": "3334.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3334.2",
+   "regla_id": "D06",
+   "destino": "1323.1.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3334.2",
+   "regla_id": "D07",
+   "destino": "3334.3.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3334.2",
+   "regla_id": "D08",
+   "destino": "3334.2.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3334.2",
+   "regla_id": "D09",
+   "destino": "2161.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3334.2",
+   "regla_id": "D10",
+   "destino": "3322.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3334.2",
+   "regla_id": "D11",
+   "destino": "2431.11",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3334.2",
+   "regla_id": "D12",
+   "destino": "1221.3.2.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3334.2",
+   "regla_id": "D13",
+   "destino": "1221.4",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5244.1",
+   "regla_id": "D01",
+   "destino": "4222.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5244.1",
+   "regla_id": "D02",
+   "destino": "4223.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5244.1",
+   "regla_id": "D03",
+   "destino": "3322.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5244.1",
+   "regla_id": "D04",
+   "destino": "4227.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5244.1",
+   "regla_id": "D05",
+   "destino": "4227.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5244.1",
+   "regla_id": "D06",
+   "destino": "4214.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5244.1",
+   "regla_id": "D07",
+   "destino": "3341.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4222.1",
+   "regla_id": "D01",
+   "destino": "4222.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4222.1",
+   "regla_id": "D02",
+   "destino": "4225.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4222.1",
+   "regla_id": "D03",
+   "destino": "2431.6",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4222.1",
+   "regla_id": "D04",
+   "destino": "5244.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4222.1",
+   "regla_id": "D05",
+   "destino": "3322.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4222.1",
+   "regla_id": "D06",
+   "destino": "4214.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4222.1",
+   "regla_id": "D07",
+   "destino": "4227.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4222.1",
+   "regla_id": "D08",
+   "destino": "4227.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4222.1",
+   "regla_id": "D09",
+   "destino": "3512.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4222.1",
+   "regla_id": "D10",
+   "destino": "5414.1.7",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4222.1",
+   "regla_id": "D11",
+   "destino": "3341.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4222.1",
+   "regla_id": "D12",
+   "destino": "3341.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4222.1",
+   "regla_id": "D13",
+   "destino": "3341.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4222.1",
+   "regla_id": "D14",
+   "destino": "3341.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4222.1",
+   "regla_id": "D15",
+   "destino": "1439.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4222.1",
+   "regla_id": "D16",
+   "destino": "1439.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3331.3",
+   "regla_id": "D01",
+   "destino": "4222.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3331.3",
+   "regla_id": "D02",
+   "destino": "4225.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3331.3",
+   "regla_id": "D03",
+   "destino": "4323.9",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D01",
+   "destino": "4225.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D02",
+   "destino": "4222.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D03",
+   "destino": "1219.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D04",
+   "destino": "1330.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D05",
+   "destino": "2434.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D06",
+   "destino": "2434.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D07",
+   "destino": "3322.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D08",
+   "destino": "1420.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D09",
+   "destino": "1221.4",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D10",
+   "destino": "2431.8",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D11",
+   "destino": "1221.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D12",
+   "destino": "2431.10.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D13",
+   "destino": "1330.1.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D14",
+   "destino": "2356.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D15",
+   "destino": "2424.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D16",
+   "destino": "3331.2.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D17",
+   "destino": "3331.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D18",
+   "destino": "1324.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2431.6",
+   "regla_id": "D19",
+   "destino": "1324.3.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4222.1.1",
+   "regla_id": "D01",
+   "destino": "4222.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4222.1.1",
+   "regla_id": "D02",
+   "destino": "4225.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4222.1.1",
+   "regla_id": "D03",
+   "destino": "3512.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4222.1.1",
+   "regla_id": "D04",
+   "destino": "5244.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4222.1.1",
+   "regla_id": "D05",
+   "destino": "3322.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4222.1.1",
+   "regla_id": "D06",
+   "destino": "2432.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4222.1.1",
+   "regla_id": "D07",
+   "destino": "3341.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4222.1.1",
+   "regla_id": "D08",
+   "destino": "3341.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4222.1.1",
+   "regla_id": "D09",
+   "destino": "3341.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4222.1.1",
+   "regla_id": "D10",
+   "destino": "1439.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9412.1",
+   "regla_id": "D01",
+   "destino": "9412.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9412.1",
+   "regla_id": "D02",
+   "destino": "5120.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9412.1",
+   "regla_id": "D03",
+   "destino": "3434.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9412.1",
+   "regla_id": "D04",
+   "destino": "9411.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "9412.1",
+   "regla_id": "D05",
+   "destino": "5246.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9412.1",
+   "regla_id": "D06",
+   "destino": "5131.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "9412.1",
+   "regla_id": "D07",
+   "destino": "5131.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9412.1",
+   "regla_id": "D08",
+   "destino": "1412.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9411.1",
+   "regla_id": "D01",
+   "destino": "7512.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9411.1",
+   "regla_id": "D02",
+   "destino": "7512.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9411.1",
+   "regla_id": "D03",
+   "destino": "5120.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9411.1",
+   "regla_id": "D04",
+   "destino": "9412.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "9411.1",
+   "regla_id": "D05",
+   "destino": "9412.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9411.1",
+   "regla_id": "D06",
+   "destino": "9411.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "9411.1",
+   "regla_id": "D07",
+   "destino": "5246.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9411.1",
+   "regla_id": "D08",
+   "destino": "7512.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9411.1",
+   "regla_id": "D09",
+   "destino": "3434.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9411.1",
+   "regla_id": "D10",
+   "destino": "3434.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9411.1",
+   "regla_id": "D11",
+   "destino": "5246.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9411.1",
+   "regla_id": "D12",
+   "destino": "1412.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5120.1.2",
+   "regla_id": "D01",
+   "destino": "5120.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5120.1.2",
+   "regla_id": "D02",
+   "destino": "3434.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5120.1.2",
+   "regla_id": "D03",
+   "destino": "3434.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5120.1.2",
+   "regla_id": "D04",
+   "destino": "9412.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5120.1.2",
+   "regla_id": "D05",
+   "destino": "9412.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5120.1.2",
+   "regla_id": "D06",
+   "destino": "7511.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5120.1.2",
+   "regla_id": "D07",
+   "destino": "7511.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5120.1.2",
+   "regla_id": "D08",
+   "destino": "5120.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5120.1.2",
+   "regla_id": "D09",
+   "destino": "5120.1.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5120.1.2",
+   "regla_id": "D10",
+   "destino": "5120.1.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5120.1.2",
+   "regla_id": "D11",
+   "destino": "9411.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5120.1.2",
+   "regla_id": "D12",
+   "destino": "7512.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5120.1.2",
+   "regla_id": "D13",
+   "destino": "5246.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5120.1.2",
+   "regla_id": "D14",
+   "destino": "9411.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5120.1.2",
+   "regla_id": "D15",
+   "destino": "1412.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9411.2",
+   "regla_id": "D01",
+   "destino": "5120.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9411.2",
+   "regla_id": "D02",
+   "destino": "5120.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9411.2",
+   "regla_id": "D03",
+   "destino": "9412.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "9411.2",
+   "regla_id": "D04",
+   "destino": "9412.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9411.2",
+   "regla_id": "D05",
+   "destino": "5246.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9411.2",
+   "regla_id": "D06",
+   "destino": "5131.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "9411.2",
+   "regla_id": "D07",
+   "destino": "5230.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "9411.2",
+   "regla_id": "D08",
+   "destino": "5132.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "9411.2",
+   "regla_id": "D09",
+   "destino": "9411.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "9411.2",
+   "regla_id": "D10",
+   "destino": "5246.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9411.2",
+   "regla_id": "D11",
+   "destino": "1412.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5230.1",
+   "regla_id": "D01",
+   "destino": "5131.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5230.1",
+   "regla_id": "D02",
+   "destino": "9334.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5230.1",
+   "regla_id": "D03",
+   "destino": "9411.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5230.1",
+   "regla_id": "D04",
+   "destino": "5246.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5230.1",
+   "regla_id": "D05",
+   "destino": "4226.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D01",
+   "destino": "3343.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D02",
+   "destino": "4120.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D03",
+   "destino": "4110.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D04",
+   "destino": "4223.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D05",
+   "destino": "4222.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D06",
+   "destino": "4225.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D07",
+   "destino": "5414.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D08",
+   "destino": "4224.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D09",
+   "destino": "4224.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D10",
+   "destino": "4229.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D11",
+   "destino": "9621.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D12",
+   "destino": "9621.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D13",
+   "destino": "4226.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D14",
+   "destino": "5223.4",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D15",
+   "destino": "3322.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D16",
+   "destino": "4226.1.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D17",
+   "destino": "5131.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D18",
+   "destino": "5169.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D19",
+   "destino": "3342.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D20",
+   "destino": "2611.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4226.1",
+   "regla_id": "D21",
+   "destino": "2411.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3342.2",
+   "regla_id": "D01",
+   "destino": "4226.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3342.2",
+   "regla_id": "D02",
+   "destino": "3343.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3342.2",
+   "regla_id": "D03",
+   "destino": "4120.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3342.2",
+   "regla_id": "D04",
+   "destino": "4110.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3342.2",
+   "regla_id": "D05",
+   "destino": "2611.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4226.1.1",
+   "regla_id": "D01",
+   "destino": "4226.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4226.1.1",
+   "regla_id": "D02",
+   "destino": "4226.1.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4226.1.1",
+   "regla_id": "D03",
+   "destino": "5223.4",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4226.1.1",
+   "regla_id": "D04",
+   "destino": "5230.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4226.1.1",
+   "regla_id": "D05",
+   "destino": "4225.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4226.1.1",
+   "regla_id": "D06",
+   "destino": "3343.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3411.7",
+   "regla_id": "D01",
+   "destino": "3342.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3411.7",
+   "regla_id": "D02",
+   "destino": "2611.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3411.7",
+   "regla_id": "D03",
+   "destino": "2611.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3411.7",
+   "regla_id": "D04",
+   "destino": "2619.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3411.7",
+   "regla_id": "D05",
+   "destino": "2619.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3411.7",
+   "regla_id": "D06",
+   "destino": "2619.12",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2611.1.1",
+   "regla_id": "D01",
+   "destino": "2611.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2611.1.1",
+   "regla_id": "D02",
+   "destino": "2619.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2611.1.1",
+   "regla_id": "D03",
+   "destino": "3411.7",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2611.1.1",
+   "regla_id": "D04",
+   "destino": "3342.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2611.1.1",
+   "regla_id": "D05",
+   "destino": "2619.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2611.1.1",
+   "regla_id": "D06",
+   "destino": "2412.5",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2611.1.1",
+   "regla_id": "D07",
+   "destino": "2411.1.9",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2611.1.1",
+   "regla_id": "D08",
+   "destino": "2619.10",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2611.1.1",
+   "regla_id": "D09",
+   "destino": "2619.12",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2611.1",
+   "regla_id": "D01",
+   "destino": "2611.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2611.1",
+   "regla_id": "D02",
+   "destino": "2619.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2611.1",
+   "regla_id": "D03",
+   "destino": "3411.7",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2611.1",
+   "regla_id": "D04",
+   "destino": "3342.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2611.1",
+   "regla_id": "D05",
+   "destino": "2619.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2611.1",
+   "regla_id": "D06",
+   "destino": "2611.1.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2611.1",
+   "regla_id": "D07",
+   "destino": "2612.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2611.1",
+   "regla_id": "D08",
+   "destino": "2619.10",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2611.1",
+   "regla_id": "D09",
+   "destino": "2619.8",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2611.1",
+   "regla_id": "D10",
+   "destino": "2619.9",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2412.5",
+   "regla_id": "D01",
+   "destino": "2412.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2412.5",
+   "regla_id": "D02",
+   "destino": "2411.1.9",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2412.5",
+   "regla_id": "D03",
+   "destino": "2411.1.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2412.5",
+   "regla_id": "D04",
+   "destino": "4312.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2412.5",
+   "regla_id": "D05",
+   "destino": "3312.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2412.5",
+   "regla_id": "D06",
+   "destino": "2413.1.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2412.5",
+   "regla_id": "D07",
+   "destino": "3311.3.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2412.5",
+   "regla_id": "D08",
+   "destino": "2611.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2412.5",
+   "regla_id": "D09",
+   "destino": "2611.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2412.5",
+   "regla_id": "D10",
+   "destino": "1213.9",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3334.3",
+   "regla_id": "D01",
+   "destino": "3334.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3334.3",
+   "regla_id": "D02",
+   "destino": "3334.3.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3334.3",
+   "regla_id": "D03",
+   "destino": "3334.2.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3334.3",
+   "regla_id": "D04",
+   "destino": "2611.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3334.3",
+   "regla_id": "D05",
+   "destino": "3315.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3334.3",
+   "regla_id": "D06",
+   "destino": "3334.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3334.3",
+   "regla_id": "D07",
+   "destino": "3334.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3334.3",
+   "regla_id": "D08",
+   "destino": "3334.3.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3334.3",
+   "regla_id": "D09",
+   "destino": "1323.1.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3334.3",
+   "regla_id": "D10",
+   "destino": "4312.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3334.3",
+   "regla_id": "D11",
+   "destino": "3334.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1.9",
+   "regla_id": "D01",
+   "destino": "2411.1.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1.9",
+   "regla_id": "D02",
+   "destino": "2411.1.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1.9",
+   "regla_id": "D03",
+   "destino": "2412.5",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2411.1.9",
+   "regla_id": "D04",
+   "destino": "2412.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1.9",
+   "regla_id": "D05",
+   "destino": "2413.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2411.1.9",
+   "regla_id": "D06",
+   "destino": "2411.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2411.1.9",
+   "regla_id": "D07",
+   "destino": "2611.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2411.1.9",
+   "regla_id": "D08",
+   "destino": "2611.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2411.1.9",
+   "regla_id": "D09",
+   "destino": "2619.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5131.2",
+   "regla_id": "D01",
+   "destino": "5131.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5131.2",
+   "regla_id": "D02",
+   "destino": "5131.2.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5131.2",
+   "regla_id": "D03",
+   "destino": "5132.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5131.2",
+   "regla_id": "D04",
+   "destino": "5132.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5131.2",
+   "regla_id": "D05",
+   "destino": "5132.1.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5131.2",
+   "regla_id": "D06",
+   "destino": "5131.2.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5131.2",
+   "regla_id": "D07",
+   "destino": "5246.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5131.2",
+   "regla_id": "D08",
+   "destino": "9411.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5131.2",
+   "regla_id": "D09",
+   "destino": "5230.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5131.2",
+   "regla_id": "D10",
+   "destino": "5120.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5131.2",
+   "regla_id": "D11",
+   "destino": "9412.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5131.2",
+   "regla_id": "D12",
+   "destino": "9412.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7511.4",
+   "regla_id": "D01",
+   "destino": "7511.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7511.4",
+   "regla_id": "D02",
+   "destino": "8160.47",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7511.4",
+   "regla_id": "D03",
+   "destino": "7511.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7511.4",
+   "regla_id": "D04",
+   "destino": "7511.6.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7511.4",
+   "regla_id": "D05",
+   "destino": "7511.6.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7511.4",
+   "regla_id": "D06",
+   "destino": "5223.7.23",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7511.4",
+   "regla_id": "D07",
+   "destino": "9321.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7511.4",
+   "regla_id": "D08",
+   "destino": "9333.8",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7511.4",
+   "regla_id": "D09",
+   "destino": "9333.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5132.1.1",
+   "regla_id": "D01",
+   "destino": "5131.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5132.1.1",
+   "regla_id": "D02",
+   "destino": "5132.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5132.1.1",
+   "regla_id": "D03",
+   "destino": "5132.1.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5132.1.1",
+   "regla_id": "D04",
+   "destino": "5246.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5132.1.1",
+   "regla_id": "D05",
+   "destino": "9411.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5132.1.1",
+   "regla_id": "D06",
+   "destino": "5223.7.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5132.1.1",
+   "regla_id": "D07",
+   "destino": "5230.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5132.1.1",
+   "regla_id": "D08",
+   "destino": "9334.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5132.1.1",
+   "regla_id": "D09",
+   "destino": "8160.23",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5132.1.1",
+   "regla_id": "D10",
+   "destino": "8160.22",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5132.1.1",
+   "regla_id": "D11",
+   "destino": "1412.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5321.1.1",
+   "regla_id": "D01",
+   "destino": "2221.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5321.1.1",
+   "regla_id": "D02",
+   "destino": "5321.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5321.1.1",
+   "regla_id": "D03",
+   "destino": "5322.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5321.1.1",
+   "regla_id": "D04",
+   "destino": "3256.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5321.1.1",
+   "regla_id": "D05",
+   "destino": "5329.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5321.1.1",
+   "regla_id": "D06",
+   "destino": "5162.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5321.1.1",
+   "regla_id": "D07",
+   "destino": "3412.4.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5321.1.1",
+   "regla_id": "D08",
+   "destino": "3412.4.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5321.1.1",
+   "regla_id": "D09",
+   "destino": "3258.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2221.2",
+   "regla_id": "D01",
+   "destino": "2221.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2221.2",
+   "regla_id": "D02",
+   "destino": "2221.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2221.2",
+   "regla_id": "D03",
+   "destino": "5321.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2221.2",
+   "regla_id": "D04",
+   "destino": "5329.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2221.2",
+   "regla_id": "D05",
+   "destino": "3258.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2221.2",
+   "regla_id": "D06",
+   "destino": "3259.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2221.2",
+   "regla_id": "D07",
+   "destino": "2222.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2221.2",
+   "regla_id": "D08",
+   "destino": "5162.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2221.2",
+   "regla_id": "D09",
+   "destino": "3412.4.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5329.2",
+   "regla_id": "D01",
+   "destino": "2221.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5329.2",
+   "regla_id": "D02",
+   "destino": "2221.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5329.2",
+   "regla_id": "D03",
+   "destino": "2269.13",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5329.2",
+   "regla_id": "D04",
+   "destino": "3256.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5329.2",
+   "regla_id": "D05",
+   "destino": "5321.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5329.2",
+   "regla_id": "D06",
+   "destino": "2212.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2264.2",
+   "regla_id": "D01",
+   "destino": "3255.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2264.2",
+   "regla_id": "D02",
+   "destino": "2264.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2264.2",
+   "regla_id": "D03",
+   "destino": "3423.2.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2264.2",
+   "regla_id": "D04",
+   "destino": "3255.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2264.2",
+   "regla_id": "D05",
+   "destino": "5142.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2264.2",
+   "regla_id": "D06",
+   "destino": "2269.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2264.2",
+   "regla_id": "D07",
+   "destino": "2269.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2264.2",
+   "regla_id": "D08",
+   "destino": "2269.11",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2264.2",
+   "regla_id": "D09",
+   "destino": "2269.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2264.2",
+   "regla_id": "D10",
+   "destino": "2212.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2264.2",
+   "regla_id": "D11",
+   "destino": "2221.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2264.2",
+   "regla_id": "D12",
+   "destino": "5321.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3343.3",
+   "regla_id": "D01",
+   "destino": "4120.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3343.3",
+   "regla_id": "D02",
+   "destino": "3343.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3343.3",
+   "regla_id": "D03",
+   "destino": "4110.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3343.3",
+   "regla_id": "D04",
+   "destino": "3341.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3343.3",
+   "regla_id": "D05",
+   "destino": "2423.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3343.3",
+   "regla_id": "D06",
+   "destino": "1212.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3343.3",
+   "regla_id": "D07",
+   "destino": "2431.10",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3343.3",
+   "regla_id": "D08",
+   "destino": "1221.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3343.3",
+   "regla_id": "D09",
+   "destino": "3332.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1321.2.1.3",
+   "regla_id": "D01",
+   "destino": "1321.2.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1321.2.1.3",
+   "regla_id": "D02",
+   "destino": "1219.5.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1321.2.1.3",
+   "regla_id": "D03",
+   "destino": "1321.2.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1321.2.1.3",
+   "regla_id": "D04",
+   "destino": "1321.2.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1321.2.1.3",
+   "regla_id": "D05",
+   "destino": "1219.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1321.2.1.3",
+   "regla_id": "D06",
+   "destino": "2145.1.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1321.2.1.3",
+   "regla_id": "D07",
+   "destino": "2263.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1321.2.1.3",
+   "regla_id": "D08",
+   "destino": "3257.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2262.1",
+   "regla_id": "D01",
+   "destino": "2262.1.2.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2262.1",
+   "regla_id": "D02",
+   "destino": "2262.1.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2262.1",
+   "regla_id": "D03",
+   "destino": "2262.1.2.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2262.1",
+   "regla_id": "D04",
+   "destino": "2262.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2262.1",
+   "regla_id": "D05",
+   "destino": "2262.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2262.1",
+   "regla_id": "D06",
+   "destino": "3213.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2262.1",
+   "regla_id": "D07",
+   "destino": "1420.4.30",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1324.3",
+   "regla_id": "D01",
+   "destino": "1324.8",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1324.3",
+   "regla_id": "D02",
+   "destino": "1324.3.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1324.3",
+   "regla_id": "D03",
+   "destino": "1324.3.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1324.3",
+   "regla_id": "D04",
+   "destino": "3331.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1324.3",
+   "regla_id": "D05",
+   "destino": "1324.3.1.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1324.3",
+   "regla_id": "D06",
+   "destino": "1324.3.1.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1324.3",
+   "regla_id": "D07",
+   "destino": "1120.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1324.3",
+   "regla_id": "D08",
+   "destino": "1321.2.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1345.1",
+   "regla_id": "D01",
+   "destino": "1345.1.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1345.1",
+   "regla_id": "D02",
+   "destino": "1345.1.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1345.1",
+   "regla_id": "D03",
+   "destino": "3343.1.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1345.1",
+   "regla_id": "D04",
+   "destino": "2341.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1345.1",
+   "regla_id": "D05",
+   "destino": "2353.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1345.1",
+   "regla_id": "D06",
+   "destino": "2351.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1345.1",
+   "regla_id": "D07",
+   "destino": "2359.8",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1345.1",
+   "regla_id": "D08",
+   "destino": "5113.1.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2511.14",
+   "regla_id": "D01",
+   "destino": "2511.10",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2511.14",
+   "regla_id": "D02",
+   "destino": "2521.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2511.14",
+   "regla_id": "D03",
+   "destino": "2521.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2511.14",
+   "regla_id": "D04",
+   "destino": "2511.20",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2511.14",
+   "regla_id": "D05",
+   "destino": "2511.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2511.14",
+   "regla_id": "D06",
+   "destino": "2511.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2511.14",
+   "regla_id": "D07",
+   "destino": "2512.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2511.14",
+   "regla_id": "D08",
+   "destino": "2512.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2511.14",
+   "regla_id": "D09",
+   "destino": "2511.13",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2511.14",
+   "regla_id": "D10",
+   "destino": "2511.16",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2511.14",
+   "regla_id": "D11",
+   "destino": "1330.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2511.14",
+   "regla_id": "D12",
+   "destino": "1330.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2511.14",
+   "regla_id": "D13",
+   "destino": "2529.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D01",
+   "destino": "4222.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D02",
+   "destino": "4222.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D03",
+   "destino": "2166.9",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D04",
+   "destino": "2513.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D05",
+   "destino": "3512.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D06",
+   "destino": "5223.4",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D07",
+   "destino": "5223.7",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D08",
+   "destino": "3322.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D09",
+   "destino": "4226.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D10",
+   "destino": "3343.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D11",
+   "destino": "4110.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D12",
+   "destino": "4120.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D13",
+   "destino": "2422.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D14",
+   "destino": "4214.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D15",
+   "destino": "4227.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D16",
+   "destino": "2431.8",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D17",
+   "destino": "1439.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4225.1",
+   "regla_id": "D18",
+   "destino": "3341.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5223.4",
+   "regla_id": "D01",
+   "destino": "5223.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5223.4",
+   "regla_id": "D02",
+   "destino": "5223.7",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5223.4",
+   "regla_id": "D03",
+   "destino": "5223.7.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5223.4",
+   "regla_id": "D04",
+   "destino": "5223.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5223.4",
+   "regla_id": "D05",
+   "destino": "5246.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5223.4",
+   "regla_id": "D06",
+   "destino": "5131.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5223.4",
+   "regla_id": "D07",
+   "destino": "5230.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5223.4",
+   "regla_id": "D08",
+   "destino": "4225.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5223.4",
+   "regla_id": "D09",
+   "destino": "4222.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5223.4",
+   "regla_id": "D10",
+   "destino": "5244.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5223.4",
+   "regla_id": "D11",
+   "destino": "3322.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5223.4",
+   "regla_id": "D12",
+   "destino": "9333.8.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5223.4",
+   "regla_id": "D13",
+   "destino": "8322.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5223.4",
+   "regla_id": "D14",
+   "destino": "5222.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5223.7",
+   "regla_id": "D01",
+   "destino": "5223.7.34",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5223.7",
+   "regla_id": "D02",
+   "destino": "5223.7.9",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5223.7",
+   "regla_id": "D03",
+   "destino": "5223.4",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5223.7",
+   "regla_id": "D04",
+   "destino": "7422.3.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5223.7",
+   "regla_id": "D05",
+   "destino": "7422.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5223.7",
+   "regla_id": "D06",
+   "destino": "3512.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5223.7",
+   "regla_id": "D07",
+   "destino": "5230.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5223.7",
+   "regla_id": "D08",
+   "destino": "3322.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5223.7",
+   "regla_id": "D09",
+   "destino": "5244.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5223.7",
+   "regla_id": "D10",
+   "destino": "4225.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5223.7",
+   "regla_id": "D11",
+   "destino": "4222.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5223.7",
+   "regla_id": "D12",
+   "destino": "9333.8.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5223.7",
+   "regla_id": "D13",
+   "destino": "5222.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5223.7",
+   "regla_id": "D14",
+   "destino": "1420.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2149.2",
+   "regla_id": "D01",
+   "destino": "2144.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2149.2",
+   "regla_id": "D02",
+   "destino": "2152.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2149.2",
+   "regla_id": "D03",
+   "destino": "2144.1.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2149.2",
+   "regla_id": "D04",
+   "destino": "2149.2.8",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2149.2",
+   "regla_id": "D05",
+   "destino": "2149.2.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2149.2",
+   "regla_id": "D06",
+   "destino": "2141.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2149.2",
+   "regla_id": "D07",
+   "destino": "3322.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2149.2",
+   "regla_id": "D08",
+   "destino": "4225.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2149.2",
+   "regla_id": "D09",
+   "destino": "3512.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2149.2",
+   "regla_id": "D10",
+   "destino": "2142.1.8",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3111.13",
+   "regla_id": "D01",
+   "destino": "2165.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3111.13",
+   "regla_id": "D02",
+   "destino": "2165.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3111.13",
+   "regla_id": "D03",
+   "destino": "3112.10",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3111.13",
+   "regla_id": "D04",
+   "destino": "2112.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3111.13",
+   "regla_id": "D05",
+   "destino": "2112.1.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3111.13",
+   "regla_id": "D06",
+   "destino": "4323.9",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3111.13",
+   "regla_id": "D07",
+   "destino": "5414.1.7",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3111.13",
+   "regla_id": "D08",
+   "destino": "2522.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3111.13",
+   "regla_id": "D09",
+   "destino": "3512.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3111.13",
+   "regla_id": "D10",
+   "destino": "2511.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3111.13",
+   "regla_id": "D11",
+   "destino": "4132.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5414.1.7",
+   "regla_id": "D01",
+   "destino": "5414.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5414.1.7",
+   "regla_id": "D02",
+   "destino": "7422.5",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5414.1.7",
+   "regla_id": "D03",
+   "destino": "4223.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5414.1.7",
+   "regla_id": "D04",
+   "destino": "4323.9",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5414.1.7",
+   "regla_id": "D05",
+   "destino": "2522.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5414.1.7",
+   "regla_id": "D06",
+   "destino": "5414.1.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5414.1.7",
+   "regla_id": "D07",
+   "destino": "5419.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5414.1.7",
+   "regla_id": "D08",
+   "destino": "5414.1.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2522.1",
+   "regla_id": "D01",
+   "destino": "2522.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2522.1",
+   "regla_id": "D02",
+   "destino": "2523.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2522.1",
+   "regla_id": "D03",
+   "destino": "3513.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2522.1",
+   "regla_id": "D04",
+   "destino": "3511.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2522.1",
+   "regla_id": "D05",
+   "destino": "3512.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2522.1",
+   "regla_id": "D06",
+   "destino": "3512.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2522.1",
+   "regla_id": "D07",
+   "destino": "2521.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2522.1",
+   "regla_id": "D08",
+   "destino": "2512.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2522.1",
+   "regla_id": "D09",
+   "destino": "2512.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2522.1",
+   "regla_id": "D10",
+   "destino": "2512.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2522.1",
+   "regla_id": "D11",
+   "destino": "2511.13",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2522.1",
+   "regla_id": "D12",
+   "destino": "2511.14",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2522.1",
+   "regla_id": "D13",
+   "destino": "1330.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2522.1",
+   "regla_id": "D14",
+   "destino": "1330.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2133.15",
+   "regla_id": "D01",
+   "destino": "2133.11",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2133.15",
+   "regla_id": "D02",
+   "destino": "2133.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2133.15",
+   "regla_id": "D03",
+   "destino": "2143.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2133.15",
+   "regla_id": "D04",
+   "destino": "2143.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2133.15",
+   "regla_id": "D05",
+   "destino": "2133.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2133.15",
+   "regla_id": "D06",
+   "destino": "2133.14",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2133.15",
+   "regla_id": "D07",
+   "destino": "2133.15.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2133.15",
+   "regla_id": "D08",
+   "destino": "3111.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2133.15",
+   "regla_id": "D09",
+   "destino": "3111.14",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2133.15",
+   "regla_id": "D10",
+   "destino": "3111.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2133.15",
+   "regla_id": "D11",
+   "destino": "3141.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2133.15",
+   "regla_id": "D12",
+   "destino": "3257.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2133.15",
+   "regla_id": "D13",
+   "destino": "1213.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2133.15",
+   "regla_id": "D14",
+   "destino": "4132.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4110.1",
+   "regla_id": "D01",
+   "destino": "3343.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4110.1",
+   "regla_id": "D02",
+   "destino": "3343.1.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4110.1",
+   "regla_id": "D03",
+   "destino": "4313.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4110.1",
+   "regla_id": "D04",
+   "destino": "3313.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4110.1",
+   "regla_id": "D05",
+   "destino": "4311.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4110.1",
+   "regla_id": "D06",
+   "destino": "3323.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4110.1",
+   "regla_id": "D07",
+   "destino": "4321.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4110.1",
+   "regla_id": "D08",
+   "destino": "3112.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "4110.1",
+   "regla_id": "D09",
+   "destino": "3123.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "4110.1",
+   "regla_id": "D10",
+   "destino": "1323.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2142.1.2",
+   "regla_id": "D01",
+   "destino": "2161.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2142.1.2",
+   "regla_id": "D02",
+   "destino": "2142.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2142.1.2",
+   "regla_id": "D03",
+   "destino": "3112.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2142.1.2",
+   "regla_id": "D04",
+   "destino": "3118.3.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2142.1.2",
+   "regla_id": "D05",
+   "destino": "3123.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2142.1.2",
+   "regla_id": "D06",
+   "destino": "1323.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2142.1.2",
+   "regla_id": "D07",
+   "destino": "4110.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1323.1",
+   "regla_id": "D01",
+   "destino": "3123.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1323.1",
+   "regla_id": "D02",
+   "destino": "2142.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1323.1",
+   "regla_id": "D03",
+   "destino": "2142.1.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1323.1",
+   "regla_id": "D04",
+   "destino": "2161.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1323.1",
+   "regla_id": "D05",
+   "destino": "3112.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1323.1",
+   "regla_id": "D06",
+   "destino": "2149.14",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1323.1",
+   "regla_id": "D07",
+   "destino": "4110.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1323.1",
+   "regla_id": "D08",
+   "destino": "3343.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1323.1",
+   "regla_id": "D09",
+   "destino": "3343.1.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1323.1",
+   "regla_id": "D10",
+   "destino": "9312.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1323.1",
+   "regla_id": "D11",
+   "destino": "7112.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1323.1",
+   "regla_id": "D12",
+   "destino": "7115.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1323.1",
+   "regla_id": "D13",
+   "destino": "7126.8",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1323.1",
+   "regla_id": "D14",
+   "destino": "7131.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1323.1",
+   "regla_id": "D15",
+   "destino": "7212.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D01",
+   "destino": "3435.15",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D02",
+   "destino": "3435.15.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D03",
+   "destino": "3435.25.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D04",
+   "destino": "3435.25.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D05",
+   "destino": "3435.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D06",
+   "destino": "3521.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D07",
+   "destino": "3521.1.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D08",
+   "destino": "3435.25.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D09",
+   "destino": "3435.13",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D10",
+   "destino": "3435.25.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D11",
+   "destino": "3435.25.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D12",
+   "destino": "3435.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D13",
+   "destino": "7215.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D14",
+   "destino": "7215.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D15",
+   "destino": "7411.1.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D16",
+   "destino": "7411.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D17",
+   "destino": "7411.1.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D18",
+   "destino": "7411.1.1.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3435.25",
+   "regla_id": "D19",
+   "destino": "3435.10",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3123.1",
+   "regla_id": "D01",
+   "destino": "1323.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3123.1",
+   "regla_id": "D02",
+   "destino": "3123.1.23",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3123.1",
+   "regla_id": "D03",
+   "destino": "3123.1.11",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3123.1",
+   "regla_id": "D04",
+   "destino": "3123.1.24",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3123.1",
+   "regla_id": "D05",
+   "destino": "2142.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3123.1",
+   "regla_id": "D06",
+   "destino": "2142.1.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3123.1",
+   "regla_id": "D07",
+   "destino": "2161.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3123.1",
+   "regla_id": "D08",
+   "destino": "3112.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3123.1",
+   "regla_id": "D09",
+   "destino": "4110.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "9333.8.1",
+   "regla_id": "D01",
+   "destino": "9333.8",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9333.8.1",
+   "regla_id": "D02",
+   "destino": "9333.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "9333.8.1",
+   "regla_id": "D03",
+   "destino": "8344.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9333.8.1",
+   "regla_id": "D04",
+   "destino": "9329.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7411.1.1.1",
+   "regla_id": "D01",
+   "destino": "7411.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7411.1.1.1",
+   "regla_id": "D02",
+   "destino": "7411.1.1.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7411.1.1.1",
+   "regla_id": "D03",
+   "destino": "7411.1.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7411.1.1.1",
+   "regla_id": "D04",
+   "destino": "7422.5",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7411.1.1.1",
+   "regla_id": "D05",
+   "destino": "7421.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7411.1.1.1",
+   "regla_id": "D06",
+   "destino": "7412.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1219.1.1",
+   "regla_id": "D01",
+   "destino": "3115.1.6",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1219.1.1",
+   "regla_id": "D02",
+   "destino": "3123.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1219.1.1",
+   "regla_id": "D03",
+   "destino": "1323.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "1219.1.1",
+   "regla_id": "D04",
+   "destino": "9622.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "1219.1.1",
+   "regla_id": "D05",
+   "destino": "5153.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2141.4.2.1",
+   "regla_id": "D01",
+   "destino": "2152.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2141.4.2.1",
+   "regla_id": "D02",
+   "destino": "2151.1.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2141.4.2.1",
+   "regla_id": "D03",
+   "destino": "2151.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2141.4.2.1",
+   "regla_id": "D04",
+   "destino": "2152.1.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2141.4.2.1",
+   "regla_id": "D05",
+   "destino": "3119.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2141.4.2.1",
+   "regla_id": "D06",
+   "destino": "7412.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3115.1.6",
+   "regla_id": "D01",
+   "destino": "2141.8",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3115.1.6",
+   "regla_id": "D02",
+   "destino": "2151.1.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3115.1.6",
+   "regla_id": "D03",
+   "destino": "7412.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3115.1.6",
+   "regla_id": "D04",
+   "destino": "1219.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3115.1.6",
+   "regla_id": "D05",
+   "destino": "1219.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3115.1.6",
+   "regla_id": "D06",
+   "destino": "3131.3.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3115.1.6",
+   "regla_id": "D07",
+   "destino": "1120.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7122.4",
+   "regla_id": "D01",
+   "destino": "7122.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7122.4",
+   "regla_id": "D02",
+   "destino": "7122.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7122.4",
+   "regla_id": "D03",
+   "destino": "7122.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7122.4",
+   "regla_id": "D04",
+   "destino": "7114.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7122.4",
+   "regla_id": "D05",
+   "destino": "7112.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7122.4",
+   "regla_id": "D06",
+   "destino": "7119.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7122.4",
+   "regla_id": "D07",
+   "destino": "7131.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7122.4",
+   "regla_id": "D08",
+   "destino": "7121.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7122.4",
+   "regla_id": "D09",
+   "destino": "7123.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7122.4",
+   "regla_id": "D10",
+   "destino": "7126.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7122.4",
+   "regla_id": "D11",
+   "destino": "7411.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7122.4",
+   "regla_id": "D12",
+   "destino": "9622.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7411.1.1",
+   "regla_id": "D01",
+   "destino": "7411.1.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7411.1.1",
+   "regla_id": "D02",
+   "destino": "7411.1.1.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7411.1.1",
+   "regla_id": "D03",
+   "destino": "7411.1.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7411.1.1",
+   "regla_id": "D04",
+   "destino": "7411.1.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7411.1.1",
+   "regla_id": "D05",
+   "destino": "7411.1.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7411.1.1",
+   "regla_id": "D06",
+   "destino": "7413.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7411.1.1",
+   "regla_id": "D07",
+   "destino": "7413.1.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7411.1.1",
+   "regla_id": "D08",
+   "destino": "7412.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7411.1.1",
+   "regla_id": "D09",
+   "destino": "7422.5",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7411.1.1",
+   "regla_id": "D10",
+   "destino": "9622.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7411.1.1",
+   "regla_id": "D11",
+   "destino": "9313.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7131.1",
+   "regla_id": "D01",
+   "destino": "7131.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7131.1",
+   "regla_id": "D02",
+   "destino": "7132.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7131.1",
+   "regla_id": "D03",
+   "destino": "7132.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7131.1",
+   "regla_id": "D04",
+   "destino": "7132.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7131.1",
+   "regla_id": "D05",
+   "destino": "3123.1.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7131.1",
+   "regla_id": "D06",
+   "destino": "2651.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7131.1",
+   "regla_id": "D07",
+   "destino": "7316.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7131.1",
+   "regla_id": "D08",
+   "destino": "7316.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7131.1",
+   "regla_id": "D09",
+   "destino": "7316.1.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7131.1",
+   "regla_id": "D10",
+   "destino": "7316.1.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7131.1",
+   "regla_id": "D11",
+   "destino": "7316.1.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7131.1",
+   "regla_id": "D12",
+   "destino": "3432.4.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7131.1",
+   "regla_id": "D13",
+   "destino": "7112.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7131.1",
+   "regla_id": "D14",
+   "destino": "7122.4",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7131.1",
+   "regla_id": "D15",
+   "destino": "9622.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D01",
+   "destino": "7212.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D02",
+   "destino": "7212.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D03",
+   "destino": "7212.3.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D04",
+   "destino": "7212.3.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D05",
+   "destino": "7212.3.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D06",
+   "destino": "7212.3.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D07",
+   "destino": "7212.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D08",
+   "destino": "3123.1.23",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D09",
+   "destino": "7213.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D10",
+   "destino": "7213.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D11",
+   "destino": "7213.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D12",
+   "destino": "7214.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D13",
+   "destino": "7214.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D14",
+   "destino": "7119.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D15",
+   "destino": "7221.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D16",
+   "destino": "7223.15",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D17",
+   "destino": "8219.8",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D18",
+   "destino": "9313.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7212.3",
+   "regla_id": "D19",
+   "destino": "9622.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7112.1",
+   "regla_id": "D01",
+   "destino": "7121.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7112.1",
+   "regla_id": "D02",
+   "destino": "7119.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7112.1",
+   "regla_id": "D03",
+   "destino": "7122.4",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7112.1",
+   "regla_id": "D04",
+   "destino": "7123.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7112.1",
+   "regla_id": "D05",
+   "destino": "7126.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7112.1",
+   "regla_id": "D06",
+   "destino": "7131.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7112.1",
+   "regla_id": "D07",
+   "destino": "7411.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7112.1",
+   "regla_id": "D08",
+   "destino": "7212.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7112.1",
+   "regla_id": "D09",
+   "destino": "9313.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7112.1",
+   "regla_id": "D10",
+   "destino": "9622.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7112.1",
+   "regla_id": "D11",
+   "destino": "3123.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5153.1",
+   "regla_id": "D01",
+   "destino": "9622.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5153.1",
+   "regla_id": "D02",
+   "destino": "9112.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5153.1",
+   "regla_id": "D03",
+   "destino": "7411.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5153.1",
+   "regla_id": "D04",
+   "destino": "7126.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5153.1",
+   "regla_id": "D05",
+   "destino": "7131.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5153.1",
+   "regla_id": "D06",
+   "destino": "5414.1.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5153.1",
+   "regla_id": "D07",
+   "destino": "4226.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5153.1",
+   "regla_id": "D08",
+   "destino": "9621.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5153.1",
+   "regla_id": "D09",
+   "destino": "3334.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "5153.1",
+   "regla_id": "D10",
+   "destino": "1219.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "5153.1",
+   "regla_id": "D11",
+   "destino": "1219.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7119.4",
+   "regla_id": "D01",
+   "destino": "7119.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7119.4",
+   "regla_id": "D02",
+   "destino": "9313.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7119.4",
+   "regla_id": "D03",
+   "destino": "7411.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7119.4",
+   "regla_id": "D04",
+   "destino": "7422.5",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7119.4",
+   "regla_id": "D05",
+   "destino": "7212.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7119.4",
+   "regla_id": "D06",
+   "destino": "7112.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7119.4",
+   "regla_id": "D07",
+   "destino": "7131.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7119.4",
+   "regla_id": "D08",
+   "destino": "7121.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9333.3",
+   "regla_id": "D01",
+   "destino": "9333.8.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "9333.3",
+   "regla_id": "D02",
+   "destino": "4321.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9333.3",
+   "regla_id": "D03",
+   "destino": "8344.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9333.3",
+   "regla_id": "D04",
+   "destino": "8322.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9333.3",
+   "regla_id": "D05",
+   "destino": "8332.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9333.3",
+   "regla_id": "D06",
+   "destino": "1324.3.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "9333.3",
+   "regla_id": "D07",
+   "destino": "9112.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2142.1",
+   "regla_id": "D01",
+   "destino": "2142.1.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2142.1",
+   "regla_id": "D02",
+   "destino": "3115.1.10",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2142.1",
+   "regla_id": "D03",
+   "destino": "2142.1.9",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2142.1",
+   "regla_id": "D04",
+   "destino": "1323.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2142.1",
+   "regla_id": "D05",
+   "destino": "3123.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2142.1",
+   "regla_id": "D06",
+   "destino": "2149.14",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2142.1",
+   "regla_id": "D07",
+   "destino": "3112.1.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2142.1",
+   "regla_id": "D08",
+   "destino": "2161.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2152.1.3",
+   "regla_id": "D01",
+   "destino": "2141.4.2.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2152.1.3",
+   "regla_id": "D02",
+   "destino": "2152.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2152.1.3",
+   "regla_id": "D03",
+   "destino": "2151.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2152.1.3",
+   "regla_id": "D04",
+   "destino": "3114.1.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2152.1.3",
+   "regla_id": "D05",
+   "destino": "3114.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2152.1.3",
+   "regla_id": "D06",
+   "destino": "2144.1.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3113.1.2",
+   "regla_id": "D01",
+   "destino": "7233.7",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3113.1.2",
+   "regla_id": "D02",
+   "destino": "7412.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3113.1.2",
+   "regla_id": "D03",
+   "destino": "3115.1.11",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3113.1.2",
+   "regla_id": "D04",
+   "destino": "3114.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3113.1.2",
+   "regla_id": "D05",
+   "destino": "3114.1.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3113.1.2",
+   "regla_id": "D06",
+   "destino": "2151.1.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3113.1.2",
+   "regla_id": "D07",
+   "destino": "8211.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3113.1.2",
+   "regla_id": "D08",
+   "destino": "3115.1.6",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7412.3",
+   "regla_id": "D01",
+   "destino": "7411.1.1.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7412.3",
+   "regla_id": "D02",
+   "destino": "7411.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7412.3",
+   "regla_id": "D03",
+   "destino": "7412.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7412.3",
+   "regla_id": "D04",
+   "destino": "7231.10",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7412.3",
+   "regla_id": "D05",
+   "destino": "7233.7",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7412.3",
+   "regla_id": "D06",
+   "destino": "3113.1.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7412.3",
+   "regla_id": "D07",
+   "destino": "3115.1.11",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7412.3",
+   "regla_id": "D08",
+   "destino": "3114.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7412.3",
+   "regla_id": "D09",
+   "destino": "3114.1.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7412.3",
+   "regla_id": "D10",
+   "destino": "2151.1.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7412.3",
+   "regla_id": "D11",
+   "destino": "3115.1.6",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7411.1.1.2",
+   "regla_id": "D01",
+   "destino": "7412.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7411.1.1.2",
+   "regla_id": "D02",
+   "destino": "7233.7",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7411.1.1.2",
+   "regla_id": "D03",
+   "destino": "8212.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7411.1.1.2",
+   "regla_id": "D04",
+   "destino": "7411.1.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7411.1.1.2",
+   "regla_id": "D05",
+   "destino": "2141.4.2.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7411.1.1.2",
+   "regla_id": "D06",
+   "destino": "3115.1.11",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7411.1.1.2",
+   "regla_id": "D07",
+   "destino": "2151.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7412.7",
+   "regla_id": "D01",
+   "destino": "3123.1.14",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7412.7",
+   "regla_id": "D02",
+   "destino": "3122.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7412.7",
+   "regla_id": "D03",
+   "destino": "7412.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7412.7",
+   "regla_id": "D04",
+   "destino": "7233.7",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7412.7",
+   "regla_id": "D05",
+   "destino": "7411.1.1.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7412.7",
+   "regla_id": "D06",
+   "destino": "1323.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3123.1.14",
+   "regla_id": "D01",
+   "destino": "7412.7",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3123.1.14",
+   "regla_id": "D02",
+   "destino": "3122.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3123.1.14",
+   "regla_id": "D03",
+   "destino": "1323.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3123.1.14",
+   "regla_id": "D04",
+   "destino": "7411.1.1.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3123.1.14",
+   "regla_id": "D05",
+   "destino": "7412.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3511.1",
+   "regla_id": "D01",
+   "destino": "3512.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3511.1",
+   "regla_id": "D02",
+   "destino": "3512.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3511.1",
+   "regla_id": "D03",
+   "destino": "3513.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3511.1",
+   "regla_id": "D04",
+   "destino": "2522.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3511.1",
+   "regla_id": "D05",
+   "destino": "2522.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3511.1",
+   "regla_id": "D06",
+   "destino": "2521.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3511.1",
+   "regla_id": "D07",
+   "destino": "2529.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3511.1",
+   "regla_id": "D08",
+   "destino": "2519.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3511.1",
+   "regla_id": "D09",
+   "destino": "2511.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3511.1",
+   "regla_id": "D10",
+   "destino": "2511.11",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3511.1",
+   "regla_id": "D11",
+   "destino": "2511.14",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3511.1",
+   "regla_id": "D12",
+   "destino": "2511.13",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3511.1",
+   "regla_id": "D13",
+   "destino": "1330.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2161.1",
+   "regla_id": "D01",
+   "destino": "2161.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2161.1",
+   "regla_id": "D02",
+   "destino": "3432.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2161.1",
+   "regla_id": "D03",
+   "destino": "3432.1.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2161.1",
+   "regla_id": "D04",
+   "destino": "2162.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2161.1",
+   "regla_id": "D05",
+   "destino": "2164.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2161.1",
+   "regla_id": "D06",
+   "destino": "2164.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2161.1",
+   "regla_id": "D07",
+   "destino": "3118.3.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2161.1",
+   "regla_id": "D08",
+   "destino": "2166.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2161.1",
+   "regla_id": "D09",
+   "destino": "2163.1.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2161.1",
+   "regla_id": "D10",
+   "destino": "2421.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "2161.1",
+   "regla_id": "D11",
+   "destino": "2142.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2161.1",
+   "regla_id": "D12",
+   "destino": "2142.1.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2161.1",
+   "regla_id": "D13",
+   "destino": "1323.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "2161.1",
+   "regla_id": "D14",
+   "destino": "3123.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7126.8",
+   "regla_id": "D01",
+   "destino": "9623.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7126.8",
+   "regla_id": "D02",
+   "destino": "7126.14",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7126.8",
+   "regla_id": "D03",
+   "destino": "7126.11",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7126.8",
+   "regla_id": "D04",
+   "destino": "7126.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7126.8",
+   "regla_id": "D05",
+   "destino": "7126.9",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7126.8",
+   "regla_id": "D06",
+   "destino": "7126.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7126.8",
+   "regla_id": "D07",
+   "destino": "7126.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7126.8",
+   "regla_id": "D08",
+   "destino": "7212.3.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7126.8",
+   "regla_id": "D09",
+   "destino": "7126.12",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7126.8",
+   "regla_id": "D10",
+   "destino": "9313.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7126.8",
+   "regla_id": "D11",
+   "destino": "7112.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3114.1",
+   "regla_id": "D01",
+   "destino": "2152.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3114.1",
+   "regla_id": "D02",
+   "destino": "3113.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3114.1",
+   "regla_id": "D03",
+   "destino": "3113.1.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3114.1",
+   "regla_id": "D04",
+   "destino": "3119.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3114.1",
+   "regla_id": "D05",
+   "destino": "8212.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3114.1",
+   "regla_id": "D06",
+   "destino": "8212.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3114.1",
+   "regla_id": "D07",
+   "destino": "7543.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3114.1",
+   "regla_id": "D08",
+   "destino": "7421.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3114.1",
+   "regla_id": "D09",
+   "destino": "7422.5",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3114.1",
+   "regla_id": "D10",
+   "destino": "7421.8",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3114.1",
+   "regla_id": "D11",
+   "destino": "7412.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3114.1",
+   "regla_id": "D12",
+   "destino": "7411.1.1.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "3114.1",
+   "regla_id": "D13",
+   "destino": "3114.1.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3114.1",
+   "regla_id": "D14",
+   "destino": "3114.1.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "3114.1",
+   "regla_id": "D15",
+   "destino": "3122.4.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D01",
+   "destino": "7323.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D02",
+   "destino": "7323.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D03",
+   "destino": "7323.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D04",
+   "destino": "8143.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D05",
+   "destino": "8171.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D06",
+   "destino": "7321.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D07",
+   "destino": "7321.1.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D08",
+   "destino": "7321.1.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D09",
+   "destino": "7322.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D10",
+   "destino": "7322.5",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D11",
+   "destino": "7322.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D12",
+   "destino": "7322.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D13",
+   "destino": "7322.9",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D14",
+   "destino": "7543.10",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D15",
+   "destino": "9321.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D16",
+   "destino": "9333.3",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D17",
+   "destino": "9333.8",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7323.1",
+   "regla_id": "D18",
+   "destino": "3122.4.15",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7422.5",
+   "regla_id": "D01",
+   "destino": "7422.7",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7422.5",
+   "regla_id": "D02",
+   "destino": "7422.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7422.5",
+   "regla_id": "D03",
+   "destino": "7422.6",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7422.5",
+   "regla_id": "D04",
+   "destino": "3513.2",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7422.5",
+   "regla_id": "D05",
+   "destino": "3512.4",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7422.5",
+   "regla_id": "D06",
+   "destino": "3114.1",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7422.5",
+   "regla_id": "D07",
+   "destino": "3113.1.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7422.5",
+   "regla_id": "D08",
+   "destino": "7411.1.1.2",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7422.5",
+   "regla_id": "D09",
+   "destino": "7421.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7422.5",
+   "regla_id": "D10",
+   "destino": "7222.3",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7422.5",
+   "regla_id": "D11",
+   "destino": "5414.1",
+   "destino_es_hub": false
+  },
+  {
+   "origen": "7422.5",
+   "regla_id": "D12",
+   "destino": "5414.1.7",
+   "destino_es_hub": true
+  },
+  {
+   "origen": "7422.5",
+   "regla_id": "D13",
+   "destino": "2152.1",
+   "destino_es_hub": false
+  }
+ ],
+ "resumen": {
+  "total_aristas": 900,
+  "hub_a_hub": 284,
+  "hub_a_satelite": 616
+ }
+}
