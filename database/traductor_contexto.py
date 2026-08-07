@@ -83,10 +83,29 @@ class TraductorContexto:
     def __init__(self, hubs_data: Optional[dict] = None,
                  hubs_activos: Optional[List[str]] = None,
                  exclusiones_trigger: Optional[List[str]] = None,
-                 catalogo_codes: Optional[set] = None):
+                 catalogo_codes: Optional[set] = None,
+                 lexico: Optional[dict] = None):
         if hubs_data is None:
             hubs_data = json.load(open(REPO / 'docs' / 'MOL_reglas_ESCO_88_ocupaciones_COMPLETO.json'))
         self.hubs = {o['codigo_esco']: o for o in hubs_data['ocupaciones']}
+        # overlay del lexico compilado (config/lexico_traductor.json): reemplaza la
+        # condicion_operacional de cada regla compilada; la prosa queda intacta.
+        if lexico is None:
+            lex_path = REPO / 'config' / 'lexico_traductor.json'
+            lexico = json.load(open(lex_path)) if lex_path.exists() else {'hubs': {}}
+        for cod, reglas_lex in (lexico.get('hubs') or {}).items():
+            hub = self.hubs.get(cod)
+            if not hub:
+                continue
+            for r in hub.get('reglas_desambiguacion', []):
+                lx = reglas_lex.get(r.get('regla_id'))
+                if lx:
+                    r['condicion_operacional'] = {**lx, 'campo': 'contenidos'}
+                    if lx.get('tecnologia_definitoria'):
+                        r['tecnologia_definitoria'] = True
+            lx_inc = reglas_lex.get('inclusion')
+            if lx_inc:
+                hub.setdefault('regla_inclusion', {})['condicion_operacional'] = {**lx_inc, 'campo': 'contenidos'}
         if hubs_activos is None:
             cfg = json.load(open(REPO / 'config' / 'hubs_activos.json'))
             hubs_activos = [h['codigo_esco'] for hs in cfg['hub_sets']

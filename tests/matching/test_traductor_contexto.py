@@ -169,3 +169,19 @@ def test_12_regla_sin_compilar_es_inactiva():
     hub_traza = r['traza']['hubs_activados'][0]
     d01 = next(x for x in hub_traza['reglas'] if x['regla_id'] == 'D01')
     assert d01['estado'] == 'regla_sin_compilar'
+
+
+def test_13_overlay_lexico_compila_regla_semantica():
+    # una regla que llega semantica del JSON 2.0 se vuelve ejecutable via lexico
+    hub = _hub('1000.1', 1, ['vendedor'], [], [
+        {'regla_id': 'D01', 'orden': 1, 'condicion_prosa': 'prosa de Cyn intacta',
+         'condicion_operacional': {'modo': 'evaluacion_semantica_del_nucleo', 'terminos': []},
+         'ocupacion_destino': {'codigo_esco': '2000.1'}}])
+    lexico = {'hubs': {'1000.1': {'D01': {'modo': 'alguna', 'terminos': ['reposicion'],
+                                          'tecnologia_definitoria': False}}}}
+    t = TraductorContexto(hubs_data={'ocupaciones': [hub]}, hubs_activos=['1000.1'],
+                          exclusiones_trigger=[], catalogo_codes=CATALOGO, lexico=lexico)
+    r = t.evaluar('Vendedor', _c(tareas='reposicion de gondolas'))
+    assert r['decide'] and r['codigo_esco'] == '2000.1' and r['regla_id'] == 'D01'
+    # la prosa sigue intacta en el hub
+    assert hub['reglas_desambiguacion'][0]['condicion_prosa'] == 'prosa de Cyn intacta'
