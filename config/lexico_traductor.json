@@ -1,13 +1,31 @@
 {
  "_meta": {
   "descripcion": "Lexico compilado del traductor: terminos operacionales por hub/regla, propuestos desde la prosa de Cyn (jamas reescrita — la prosa vive en el JSON 2.0). Overlay sobre condicion_operacional.",
-  "version": "0.2.0-propuesta",
+  "version": "0.3.0",
   "generado": "2026-08-07 [FRENTE H P2]",
   "terminos_por": "llm_propuesto",
-  "validada_por_casos": false,
+  "validada_por_casos": "parcial: 7 hubs congelados en P2 gate; 3 (36/58/52) quedan v0.x-propuesta para shadow P3",
   "principio_variantes": "terminos-raiz cortos que anclan el vocabulario real del corpus (hallazgo FRENTE I: los parafraseos flexionales rompen frases literales) — sustantivo y verbo en variantes, sin articulos",
   "modo_derivado_de": "marcadores de la prosa: 'principalmente'->principalmente, 'solamente/sin X'->alguna+excluye o solo_estas, enumeracion multiple->min_matches:2, actividad distintiva unica->alguna",
-  "nota_contable": "hubs contables (2,3,4,15,36,58) compilados 2026-08-07 — 63 reglas; hub 1 viene compilado del modelo 1.1"
+  "nota_contable": "hubs contables (2,3,4,15,36,58) compilados 2026-08-07 — 63 reglas; hub 1 viene compilado del modelo 1.1",
+  "ajustes_gate_2026-08-07": [
+   "D06 hub 1 -> min_matches:2 sin impuestos bare",
+   "~23 variantes de anclaje en inclusiones de 3322.1/5223.4/3313.2/4312.1",
+   "hub 1 inclusion vive en JSON 2.0: variante \"soporte a procesos contables\" queda como deuda (no override de inclusion completa)",
+   "rollback de \"control de lo facturado\"/\"evaluar procesos\" en 4312.1: capturaban Auditor Medico (territorio regla plana R62->medico)"
+  ],
+  "estado_por_hub": {
+   "2411.1.1": "congelado_v0.3.0_validado",
+   "2411.1": "congelado_v0.3.0_validado",
+   "3313.2": "congelado_v0.3.0_validado",
+   "4312.1": "congelado_v0.3.0_validado",
+   "1211.1.1": "congelado_v0.3.0_validado",
+   "3322.1": "congelado_v0.3.0_validado",
+   "5223.4": "congelado_v0.3.0_validado",
+   "2411.1.9": "propuesta_pendiente_shadow_P3",
+   "4110.1": "propuesta_pendiente_shadow_P3",
+   "5223.7": "propuesta_pendiente_shadow_P3"
+  }
  },
  "hubs": {
   "5223.4": {
@@ -39,7 +57,11 @@
      "venta al publico",
      "ventas en el local",
      "ventas de salon",
-     "venta de mostrador"
+     "venta de mostrador",
+     "ofrecer productos",
+     "presentar productos",
+     "generar ventas",
+     "lograr objetivos de venta"
     ],
     "tecnologia_definitoria": false
    },
@@ -547,7 +569,15 @@
      "oportunidades comerciales",
      "ventas b2b",
      "venta corporativa",
-     "ventas mayoristas"
+     "ventas mayoristas",
+     "generar nuevos clientes",
+     "generar clientes",
+     "ofrecer productos",
+     "presentar y ofrecer productos",
+     "cerrar acuerdos",
+     "cerrar acuerdos comerciales",
+     "visitar prospectos",
+     "desarrollar relaciones comerciales"
     ],
     "tecnologia_definitoria": false
    },
@@ -974,7 +1004,11 @@
      "balance",
      "imputaciones contables",
      "facturacion y cobranzas",
-     "cuentas corrientes"
+     "cuentas corrientes",
+     "registracion contable",
+     "registraciones contables",
+     "soporte al armado de balances",
+     "armado de balances"
     ],
     "tecnologia_definitoria": false
    },
@@ -1079,7 +1113,11 @@
      "solicitar aclaraciones",
      "control interno",
      "auditoria interna",
-     "auditorias"
+     "auditorias",
+     "liderar equipo de auditoria",
+     "coordinar equipo de auditoria",
+     "garantizar la fiabilidad",
+     "fiabilidad e integridad"
     ],
     "tecnologia_definitoria": false
    },
@@ -1709,6 +1747,27 @@
      "direccion de obra"
     ],
     "tecnologia_definitoria": false
+   }
+  },
+  "2411.1.1": {
+   "D06": {
+    "modo": "min_matches",
+    "minimo": 2,
+    "terminos": [
+     "asesoramiento fiscal",
+     "asesoramiento impositivo",
+     "legislacion fiscal",
+     "legislacion tributaria",
+     "estrategias fiscales",
+     "planificacion fiscal",
+     "planificacion impositiva",
+     "planificacion tributaria",
+     "materia tributaria",
+     "asesor impositivo",
+     "consultoria fiscal"
+    ],
+    "tecnologia_definitoria": false,
+    "_ajuste": "P2 gate 2026-08-07: subido a min_matches:2 sin 'impuestos' bare (decidia con un match generico)"
    }
   }
  }
