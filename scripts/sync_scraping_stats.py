@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
-"""Sube stats de scraping del VPS a Supabase para que el dashboard las muestre.
+"""Sube stats de scraping a Supabase para que el dashboard las muestre.
 
-IMPORTANTE: Indeed corre LOCAL (IP VPS bloqueada por Cloudflare desde 2026-03-21).
-Este script NO toca los datos de Indeed en scraping_live_stats — los preserva
-tal como los dejó el sync local.
+Lee la BD LOCAL, que concentra todos los portales (los del VPS llegan por
+sync_from_vps.py). Por eso no hace falta excluir ninguno: si un portal tiene
+filas en esta BD, sus stats salen de aca.
+
+Historico: hasta 2026-08-11 Indeed se excluia porque corria en la maquina local
+y lo escribia el poller — la exclusion preservaba ese valor para que el sync no
+lo pisara con datos que la BD no tenia. Al volver Indeed al VPS (lo que lo
+bloqueaba no era la IP sino el fingerprint TLS chrome, ver indeed_scraper.py),
+esa exclusion congelaba la fecha de Indeed en el dashboard.
 """
 import json, sqlite3
 from datetime import datetime, timezone
@@ -13,8 +19,9 @@ PROJECT = Path(__file__).parent.parent
 DB_PATH = PROJECT / "database" / "bumeran_scraping.db"
 CONFIG_PATH = PROJECT / "config" / "supabase_config.json"
 
-# Portales que corren LOCAL, no en este VPS
-PORTALES_LOCALES = {"indeed"}
+# Portales cuyas stats NO se recalculan desde esta BD (se preserva lo que haya
+# en Supabase). Vacio: hoy todos los portales tienen sus filas en la BD local.
+PORTALES_LOCALES = set()
 
 def sync():
     if not CONFIG_PATH.exists():

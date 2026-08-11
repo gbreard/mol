@@ -400,6 +400,19 @@ class IndeedScraper:
             return all_listings
 
         logger.info(f"\nFase 2: Fetching detalles de {len(all_listings)} ofertas...")
+
+        # El bloqueo del listado y el del detalle son INDEPENDIENTES (endpoints
+        # distintos, limites distintos). Arrastrar el estado de la fase 1 hacia
+        # aca hacia que una fase 1 que termino bloqueada abortara la fase 2 sin
+        # intentar una sola ficha — y con la politica de no guardar mudas, eso
+        # tiraba la corrida entera. Se entra a la fase 2 en limpio.
+        self._consecutive_blocks = 0
+        if self._fp_idx != 0:
+            self._fp_idx = 0
+            self.session = cffi_requests.Session(impersonate=self._fingerprints[0])
+            logger.info(f"  Estado de bloqueo reseteado para la fase 2 "
+                         f"(impersonate={self._fingerprints[0]})")
+
         ofertas_completas = []
         detail_errors = 0
 
@@ -411,17 +424,18 @@ class IndeedScraper:
             if self._consecutive_blocks >= self._max_consecutive_blocks:
                 # Mismo criterio que fase 1: rotar fingerprint antes de rendirse
                 if not self._rotate_fingerprint():
-                    # El endpoint de detalle esta bloqueado para esta IP (no es el
-                    # fingerprint: ya se agotaron todos). Guardar ofertas sin
-                    # descripcion es peor que no guardarlas — jul/2026 metio 2.740
-                    # ofertas mudas que el NLP no puede usar y hubo que backfillear.
-                    # Se aborta: el poller detecta el bloqueo y reintenta, y con
-                    # fromage=14 hay ~2 semanas de margen para recuperarlas.
-                    logger.error(f"  Detalle bloqueado para esta IP (fingerprints agotados). "
-                                  f"ABORTO la corrida sin guardar: {len(ofertas_completas)} "
-                                  f"ofertas completas se descartan para no mezclar mudas.")
+                    # El detalle esta bloqueado de verdad (se agotaron todos los
+                    # fingerprints intentando fichas). Se corta aca y se devuelve
+                    # SOLO lo completo: las que faltan se descartan en vez de
+                    # entrar mudas — jul/2026 metio 2.740 ofertas sin descripcion
+                    # que el NLP no puede usar. Con fromage=14 hay ~2 semanas de
+                    # margen para recuperar el resto en un reintento.
+                    faltantes = len(all_listings) - i + 1
+                    logger.error(f"  Detalle bloqueado (fingerprints agotados). CORTO aca: "
+                                  f"guardo {len(ofertas_completas)} ofertas completas y "
+                                  f"descarto {faltantes} sin descripcion.")
                     self.detalle_bloqueado = True
-                    return []
+                    break
 
             self._wait(self.detail_delay)
             detail = self.fetch_detail(listing['job_key'])
