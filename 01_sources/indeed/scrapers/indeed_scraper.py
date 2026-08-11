@@ -70,14 +70,37 @@ class IndeedScraper:
         self.delay = delay
         self.detail_delay = detail_delay
         self.fetch_details = fetch_details
-        # chrome131 (2026-04-23): el alias 'chrome' equivale a chrome110/116 que Cloudflare ya detecta.
-        # Fingerprints chrome120+ pasan el challenge. Si Cloudflare volviera a bloquear, probar chrome124/firefox.
-        self.session = cffi_requests.Session(impersonate='chrome131')
+        # Fingerprints en orden de preferencia. Cloudflare bloquea familias enteras:
+        #   2026-04-23: 'chrome' (=chrome110/116) bloqueado -> chrome131 pasaba
+        #   2026-08-06: TODA la familia chrome/edge da 403 -> firefox/safari pasan
+        # Si el primero empieza a dar 403 se rota al siguiente automaticamente.
+        self._fingerprints = ['firefox135', 'safari184', 'firefox133', 'safari180', 'chrome131']
+        self._fp_idx = 0
+        self.session = cffi_requests.Session(impersonate=self._fingerprints[0])
         self._seen_jks: Set[str] = set()
+        self.detalle_bloqueado = False  # True si la IP perdio acceso a /viewjob
         self._consecutive_blocks = 0
-        self._max_consecutive_blocks = 5  # Parar si 5 keywords seguidos dan 403
+        self._max_consecutive_blocks = 5  # Rotar fingerprint si 5 keywords seguidos dan 403
         logger.info(f"IndeedScraper inicializado (delay={delay}s, detail_delay={detail_delay}s, "
-                     f"fetch_details={fetch_details})")
+                     f"fetch_details={fetch_details}, impersonate={self._fingerprints[0]})")
+
+    def _rotate_fingerprint(self) -> bool:
+        """
+        Rota al siguiente fingerprint TLS tras bloqueo sostenido.
+
+        Returns:
+            True si quedaba otro fingerprint, False si se agotaron todos.
+        """
+        self._fp_idx += 1
+        if self._fp_idx >= len(self._fingerprints):
+            return False
+
+        nuevo = self._fingerprints[self._fp_idx]
+        logger.warning(f"  Rotando fingerprint TLS -> '{nuevo}' "
+                        f"({self._fp_idx}/{len(self._fingerprints) - 1})")
+        self.session = cffi_requests.Session(impersonate=nuevo)
+        self._consecutive_blocks = 0
+        return True
 
     def _wait(self, base_delay: float):
         """Delay con jitter aleatorio para parecer humano."""
@@ -200,6 +223,11 @@ class IndeedScraper:
                                   headers={'Accept-Language': 'es-AR,es;q=0.9'},
                                   timeout=30)
             if r.status_code != 200:
+                # 403 = bloqueo Cloudflare, 404 = oferta caida. Distinguirlos importa
+                # para saber si hay que rotar fingerprint o es ruido normal.
+                if r.status_code == 403:
+                    self._consecutive_blocks += 1
+                logger.warning(f"  HTTP {r.status_code} en detalle {job_key}")
                 return None
         except Exception as e:
             logger.error(f"  Error fetching detail {job_key}: {e}")
@@ -207,9 +235,11 @@ class IndeedScraper:
 
         soup = BeautifulSoup(r.text, 'html.parser')
 
-        # Check for blocks
-        title_tag = soup.title.string if soup.title else ''
+        # Check for blocks (title.string es None si el <title> tiene tags anidados)
+        title_tag = (soup.title.string if soup.title else '') or ''
         if 'Security Check' in title_tag or 'Iniciar sesión' in title_tag:
+            logger.warning(f"  Pagina de bloqueo/login en detalle {job_key}")
+            self._consecutive_blocks += 1
             return None
 
         result = {}
@@ -317,9 +347,11 @@ class IndeedScraper:
 
         for i, kw in enumerate(keywords, 1):
             if self._consecutive_blocks >= self._max_consecutive_blocks:
-                logger.error(f"  {self._max_consecutive_blocks} blocks consecutivos, "
-                              f"abortando listado")
-                break
+                # Antes de abortar, probar el siguiente fingerprint TLS
+                if not self._rotate_fingerprint():
+                    logger.error(f"  {self._max_consecutive_blocks} blocks consecutivos y "
+                                  f"fingerprints agotados, abortando listado")
+                    break
 
             logger.info(f"[{i}/{len(keywords)}] Keyword: '{kw}'")
             self._wait(self.delay)
@@ -355,18 +387,35 @@ class IndeedScraper:
                 logger.info(f"  Progreso: {i}/{len(all_listings)} "
                               f"(OK: {len(ofertas_completas)}, errors: {detail_errors})")
 
-            self._wait(self.detail_delay)
+            if self._consecutive_blocks >= self._max_consecutive_blocks:
+                # Mismo criterio que fase 1: rotar fingerprint antes de rendirse
+                if not self._rotate_fingerprint():
+                    # El endpoint de detalle esta bloqueado para esta IP (no es el
+                    # fingerprint: ya se agotaron todos). Guardar ofertas sin
+                    # descripcion es peor que no guardarlas — jul/2026 metio 2.740
+                    # ofertas mudas que el NLP no puede usar y hubo que backfillear.
+                    # Se aborta: el poller detecta el bloqueo y reintenta, y con
+                    # fromage=14 hay ~2 semanas de margen para recuperarlas.
+                    logger.error(f"  Detalle bloqueado para esta IP (fingerprints agotados). "
+                                  f"ABORTO la corrida sin guardar: {len(ofertas_completas)} "
+                                  f"ofertas completas se descartan para no mezclar mudas.")
+                    self.detalle_bloqueado = True
+                    return []
 
+            self._wait(self.detail_delay)
             detail = self.fetch_detail(listing['job_key'])
+
             if detail:
+                self._consecutive_blocks = 0
                 # Merge listing + detail (detail overwrites if present)
                 merged = {**listing, **detail}
                 merged['scrapeado_en'] = datetime.now().isoformat()
                 merged['portal'] = 'indeed'
                 ofertas_completas.append(merged)
             else:
+                # 404 sueltos (oferta caida entre el listado y el detalle) son ruido
+                # normal: esas si se guardan con lo que trajo el listado.
                 detail_errors += 1
-                # Keep listing data even without detail
                 listing['scrapeado_en'] = datetime.now().isoformat()
                 listing['portal'] = 'indeed'
                 listing['descripcion'] = None
