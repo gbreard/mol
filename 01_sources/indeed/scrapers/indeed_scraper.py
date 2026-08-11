@@ -78,6 +78,8 @@ class IndeedScraper:
         self._fp_idx = 0
         self.session = cffi_requests.Session(impersonate=self._fingerprints[0])
         self._seen_jks: Set[str] = set()
+        self.detail_retries = 2      # reintentos ante 403 en el detalle
+        self.detail_backoff = 12.0   # segundos base entre reintentos (x nro de intento)
         self.detalle_bloqueado = False  # True si la IP perdio acceso a /viewjob
         self._consecutive_blocks = 0
         self._max_consecutive_blocks = 5  # Rotar fingerprint si 5 keywords seguidos dan 403
@@ -218,19 +220,38 @@ class IndeedScraper:
             Dict con campos del detalle, o None si falla
         """
         url = f"{self.BASE_URL}/viewjob?jk={job_key}"
-        try:
-            r = self.session.get(url,
-                                  headers={'Accept-Language': 'es-AR,es;q=0.9'},
-                                  timeout=30)
-            if r.status_code != 200:
-                # 403 = bloqueo Cloudflare, 404 = oferta caida. Distinguirlos importa
-                # para saber si hay que rotar fingerprint o es ruido normal.
-                if r.status_code == 403:
-                    self._consecutive_blocks += 1
-                logger.warning(f"  HTTP {r.status_code} en detalle {job_key}")
+        # Los 403 del detalle suelen ser throttling momentaneo, no bloqueo firme:
+        # esperar y reintentar recupera la mayoria. Sin esto la oferta se guarda
+        # muda y hay que backfillearla despues (que es lo que quema la IP).
+        intentos = self.detail_retries + 1
+        r = None
+        for intento in range(1, intentos + 1):
+            try:
+                r = self.session.get(url,
+                                      headers={'Accept-Language': 'es-AR,es;q=0.9'},
+                                      timeout=30)
+            except Exception as e:
+                logger.error(f"  Error fetching detail {job_key}: {e}")
                 return None
-        except Exception as e:
-            logger.error(f"  Error fetching detail {job_key}: {e}")
+
+            if r.status_code == 200:
+                break
+
+            if r.status_code == 403 and intento < intentos:
+                espera = self.detail_backoff * intento
+                logger.info(f"  403 en detalle {job_key}, reintento {intento}/"
+                             f"{intentos - 1} en {espera:.0f}s")
+                time.sleep(espera)
+                continue
+
+            # 404 = oferta caida (ruido normal). 403 tras agotar reintentos =
+            # bloqueo real, cuenta para la rotacion de fingerprint.
+            if r.status_code == 403:
+                self._consecutive_blocks += 1
+            logger.warning(f"  HTTP {r.status_code} en detalle {job_key}")
+            return None
+
+        if r is None or r.status_code != 200:
             return None
 
         soup = BeautifulSoup(r.text, 'html.parser')
