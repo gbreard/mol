@@ -271,6 +271,9 @@ def main():
                         help='Estrategia de keywords (default: exhaustiva)')
     parser.add_argument('--max-keywords', type=int, default=None,
                         help='Limite de keywords (default: todos)')
+    parser.add_argument('--offset', type=int, default=0,
+                        help='Desde que keyword arrancar (el archivo esta ordenado '
+                             'alfabeticamente: sin offset se corre siempre la A-D)')
     parser.add_argument('--fromage', type=int, default=14,
                         help='Dias de antiguedad maxima (default: 14)')
     parser.add_argument('--delay', type=float, default=2.5,
@@ -314,7 +317,8 @@ def main():
             keywords_path,
             estrategia=args.estrategia,
             fromage=args.fromage,
-            max_keywords=args.max_keywords
+            max_keywords=args.max_keywords,
+            offset=args.offset
         )
 
     if not ofertas:

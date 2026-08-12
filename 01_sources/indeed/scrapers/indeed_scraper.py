@@ -430,11 +430,17 @@ class IndeedScraper:
                     # entrar mudas — jul/2026 metio 2.740 ofertas sin descripcion
                     # que el NLP no puede usar. Con fromage=14 hay ~2 semanas de
                     # margen para recuperar el resto en un reintento.
+                    # Las que ya se acumularon sin descripcion (los 403 previos al
+                    # corte) tambien se descartan: si se guardan, el proximo intento
+                    # las ve como duplicadas y quedan mudas para siempre.
                     faltantes = len(all_listings) - i + 1
+                    con_desc = [o for o in ofertas_completas if o.get('descripcion')]
+                    mudas = len(ofertas_completas) - len(con_desc)
                     logger.error(f"  Detalle bloqueado (fingerprints agotados). CORTO aca: "
-                                  f"guardo {len(ofertas_completas)} ofertas completas y "
-                                  f"descarto {faltantes} sin descripcion.")
+                                  f"guardo {len(con_desc)} ofertas completas, descarto "
+                                  f"{mudas} ya bajadas sin descripcion + {faltantes} sin bajar.")
                     self.detalle_bloqueado = True
+                    ofertas_completas = con_desc
                     break
 
             self._wait(self.detail_delay)
@@ -467,7 +473,8 @@ class IndeedScraper:
                                     estrategia: str = "exhaustiva",
                                     location: str = "Argentina",
                                     fromage: int = 14,
-                                    max_keywords: int = None) -> List[Dict]:
+                                    max_keywords: int = None,
+                                    offset: int = 0) -> List[Dict]:
         """
         Scrape usando keywords de master_keywords.json.
 
@@ -488,11 +495,25 @@ class IndeedScraper:
 
         # Filter empty strings
         keywords = [k for k in keywords if k.strip()]
+        total = len(keywords)
+
+        # El archivo esta ordenado alfabeticamente, asi que `keywords[:max]` sin
+        # offset corre siempre de la A hacia adelante y nunca llega al resto del
+        # abecedario (300 de 1072 = corta en "data-engineer"). Con offset se
+        # puede recorrer el archivo por tramos entre corridas.
+        if offset:
+            keywords = keywords[offset:]
 
         if max_keywords:
             keywords = keywords[:max_keywords]
 
-        logger.info(f"Cargadas {len(keywords)} keywords de '{estrategia}'")
+        desde = offset + 1
+        hasta = offset + len(keywords)
+        logger.info(f"Cargadas {len(keywords)} keywords de '{estrategia}' "
+                     f"(tramo {desde}-{hasta} de {total})")
+        if hasta < total:
+            logger.warning(f"  Quedan {total - hasta} keywords sin consultar — "
+                            f"proxima corrida con --offset {hasta}")
         return self.scrape_with_keywords(keywords, location, fromage)
 
 
