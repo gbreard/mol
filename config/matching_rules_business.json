@@ -1,5 +1,5 @@
 {
-  "version": "5.20",
+  "version": "5.21",
   "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-08-13",
@@ -657,11 +657,13 @@
         "esco_code": "2611.1"
       },
       "caso_diagnostico": "1118027243 - Responsable de Legales, 2151075 - Asistente Compliance",
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "version_origen": "v42",
         "contexto": "R177-R180: Gestor cobranzas, QA/Tester, Instalador fibra, So",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R17c_compliance_no_financiero)"
       }
     },
     "R17b_compliance_financiero": {
@@ -7257,11 +7259,36 @@
         "esco_label": "representante comercial",
         "esco_code": "3322.1"
       },
-      "activa": true,
+      "activa": false,
       "_fecha": "2026-02-20",
       "nota": "Sprint 7 V31: 11 analistas/ejecutivos ventas",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R229a_ejecutivo_comercial)"
+      }
+    },
+    "R229a_ejecutivo_comercial": {
+      "nombre": "Ejecutivo/a Comercial / Ejecutivo/a de Ventas",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "ejecutivo comercial",
+          "ejecutiva comercial",
+          "ejecutivo de ventas",
+          "ejecutiva de ventas"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3322",
+        "esco_label": "representante comercial",
+        "esco_code": "3322.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R229_analista_comercial",
+        "nota_cyn": "Representante comercial según regla consolidada MOL."
       }
     },
     "R230_asesor_comercial": {
@@ -7483,11 +7510,56 @@
         "esco_label": "analista financiero/analista financiera",
         "esco_code": "2413.1"
       },
-      "activa": true,
+      "activa": false,
       "_fecha": "2026-02-20",
       "nota": "Sprint 7 V31: 5 analistas finanzas",
       "_linaje": {
-        "_fix_2026_04_26_spec_o": "Target 2413.2 'técnico analista de administración y sistemas' era CATEGORÍA ERRÓNEA (IT/sistemas, no finanzas). Cambiado a 2413.1 'analista financiero' (mismo ISCO 2413 analistas finanzas, label literal). SPEC O M1+M3 detección."
+        "_fix_2026_04_26_spec_o": "Target 2413.2 'técnico analista de administración y sistemas' era CATEGORÍA ERRÓNEA (IT/sistemas, no finanzas). Cambiado a 2413.1 'analista financiero' (mismo ISCO 2413 analistas finanzas, label literal). SPEC O M1+M3 detección.",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R237a_analista_financiero, R237b_analista_inversiones)"
+      }
+    },
+    "R237b_analista_inversiones": {
+      "nombre": "Analista de Inversiones",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista de inversiones",
+          "investment analyst"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2413",
+        "esco_label": "analista de inversiones",
+        "esco_code": "2413.1.2"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R237_analista_finanzas",
+        "nota_cyn": "ESCO específico para análisis de inversiones."
+      }
+    },
+    "R237a_analista_financiero": {
+      "nombre": "Analista Financiero/a",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "analista financiero",
+          "analista financiera",
+          "financial analyst"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2413",
+        "esco_label": "analista financiero/analista financiera",
+        "esco_code": "2413.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R237_analista_finanzas",
+        "nota_cyn": "Analista financiero general."
       }
     },
     "R238_analista_it": {
@@ -11761,5 +11833,6 @@
   "_cambios_v517_k_t1": "[FRENTE K T1] auditoria_cyn_2026-08-12: retiro de las 7 reglas requiere_desambiguacion_funcional (R49, R240=P-17, R235, R158, R160, R176, R250). Destinos del audit, condiciones del repo vivo.",
   "_cambios_v518_k_t3a": "[FRENTE K T3A] auditoria_cyn_2026-08-12: 34 correcciones de destino (solo accion.esco_code/esco_label/forzar_isco; condiciones intactas).",
   "_cambios_v519_k_t3b": "[FRENTE K T3B] auditoria_cyn_2026-08-12: 34 correcciones de destino (solo accion.esco_code/esco_label/forzar_isco; condiciones intactas).",
-  "_cambios_v520_k_t4a": "[FRENTE K T4A] auditoria_cyn_2026-08-12: reemplazo madre->hijas en 24 grupos completos con cola<300. Altas con condicion titulo-only COMPLETA del JSON auditado (reglas nuevas, no existian)."
+  "_cambios_v520_k_t4a": "[FRENTE K T4A] auditoria_cyn_2026-08-12: reemplazo madre->hijas en 24 grupos completos con cola<300. Altas con condicion titulo-only COMPLETA del JSON auditado (reglas nuevas, no existian).",
+  "_cambios_v521_k_t4b": "[FRENTE K T4B] auditoria_cyn_2026-08-12: reemplazo madre->hijas en R17/R229/R237 (cola-0 deliberada confirmada). R14 y R226 en verificacion cola-diseno vs cola-perdida."
 }
