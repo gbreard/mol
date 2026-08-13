@@ -1,8 +1,8 @@
 {
-  "version": "5.16",
+  "version": "5.17",
   "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-04-08",
+  "fecha_actualizacion": "2026-08-13",
   "_cambios_v53": "Fix R139 repositor 9333→9334, R137 excluir controlador, new R265 controlador logístico→4321. Issues Diego.",
   "_cambios_v51": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344, R137 excluye maquinista.",
   "_cambios_v43": "R181-R182: Personal mantenimiento -> 7233, Tecnico electromedicina -> 3211",
@@ -1667,13 +1667,16 @@
         "esco_label": "jefe de departamento/jefa de departamento",
         "esco_code": "1219.4"
       },
-      "activa": true,
+      "activa": false,
       "nota": "FASE 3 v3.2.3 - Jefes genericos van a ISCO 1xxx. Excluye compras/logística",
       "_fix_2026_04_08": "Agregado \"depósito\" con tilde a exclusión (bug de acento)",
       "_linaje": {
         "version_origen": "v514",
         "contexto": "abel seguridad, fix R49 tilde depósito, fix R33 excluir producción. Nuevas R307-",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "retiro_destino: requiere_desambiguacion_funcional (las 12)",
+        "nota_cyn": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
       }
     },
     "R117_responsable_compras": {
@@ -4440,13 +4443,16 @@
         "esco_code": "1321.2.1"
       },
       "caso_referencia": "1118104175 - Jefe de Operaciones",
-      "activa": true,
+      "activa": false,
       "nota": "FIX v4.6: esco_label corregido",
       "nota_v47": "v4.7: ISCO 1324→1321. Gerente operaciones es más amplio que solo logística.",
       "_linaje": {
         "version_origen": "v39",
         "contexto": "7: Jefe produccion, R158: Jefe operaciones, R87 ajustada",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "retiro_destino: requiere_desambiguacion_funcional (las 12)",
+        "nota_cyn": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
       }
     },
     "R159_farmaceutico": {
@@ -4503,13 +4509,16 @@
         "esco_code": "7411.1.1.1"
       },
       "caso_referencia": "1118099825 - TECNICO INSTALADOR",
-      "activa": true,
+      "activa": false,
       "nota": "Default para instalador genérico. FIX v4.6: esco_label corregido",
       "nota_v47": "v4.7: Excluir internet/fibra/soporte (son técnicos ICT 3512, no electricistas 7411)",
       "_linaje": {
         "version_origen": "v40",
         "contexto": "rmaceutico -> 2262, R160: Tecnico instalador -> 7411",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "retiro_destino: requiere_desambiguacion_funcional (las 12)",
+        "nota_cyn": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
       }
     },
     "R162_tecnico_mantenimiento_edilicio": {
@@ -4956,12 +4965,15 @@
       },
       "caso_diagnostico": "1116827375 - Auditor de Franquicias - Grupo Gastronómico",
       "fecha_creacion": "2026-02-05",
-      "activa": true,
+      "activa": false,
       "nota": "Auditor que verifica cumplimiento estándares en franquicias. FIX v4.6: esco_label corregido",
       "_linaje": {
         "version_origen": "v41",
         "contexto": "o limpieza -> 9112, R176: Auditor franquicias -> 2421",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "retiro_destino: requiere_desambiguacion_funcional (las 12)",
+        "nota_cyn": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
       }
     },
     "R177_gestor_cobranzas": {
@@ -6466,14 +6478,17 @@
         "esco_label": "mecánico de vehículos/mecánica de vehículos",
         "esco_code": "7231.10"
       },
-      "activa": true,
+      "activa": false,
       "_fecha": "2026-02-20",
       "nota": "Sprint 7 V31: 2 casos mecánico",
       "_linaje": {
         "issue_ids": [],
         "oferta_ejemplo": "5885840822",
         "reporte": "reporte_correcciones_2026-04-08",
-        "nota": "Fix esco_label: supervisor de mantenimiento → mecánico de vehículos (más genérico)"
+        "nota": "Fix esco_label: supervisor de mantenimiento → mecánico de vehículos (más genérico)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "retiro_destino: requiere_desambiguacion_funcional (las 12)",
+        "nota_cyn": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
       }
     },
     "R236_analista_marketing": {
@@ -6607,7 +6622,7 @@
         "esco_label": "trabajador de fábrica/trabajadora de fábrica",
         "esco_code": "9329.1"
       },
-      "activa": true,
+      "activa": false,
       "_fecha": "2026-02-20",
       "nota": "Sprint 7 V31: 6 operarios producción",
       "_fix_2026_04_08": "Excluir soldador/soldadora/soldadura para no pisar R211",
@@ -6615,7 +6630,10 @@
         "version_origen": "v512",
         "contexto": "x R211 prioridad vs R240, fix R290 variantes /a, nuevas R301-R305 (ascensores, s",
         "requiere_revision": true,
-        "_fix_2026_04_26_spec_n": "Target cambiado de 8160.35 prensado de fruta a 9329.1 trabajador fábrica neutral. Exclusiones expandidas para no atrapar casos cubiertos por R353-R357."
+        "_fix_2026_04_26_spec_n": "Target cambiado de 8160.35 prensado de fruta a 9329.1 trabajador fábrica neutral. Exclusiones expandidas para no atrapar casos cubiertos por R353-R357.",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "retiro_destino: requiere_desambiguacion_funcional (las 12)",
+        "nota_cyn": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
       }
     },
     "R241_tecnico_it": {
@@ -6953,7 +6971,7 @@
         "esco_label": "supervisor de mina/supervisora de mina",
         "esco_code": "3121.1"
       },
-      "activa": true,
+      "activa": false,
       "fecha_creacion": "2026-02-26",
       "nota": "Issue Cynthia: 1118072854 fractura hidráulica en petrolera iba a 6113 horticultura",
       "_linaje": {
@@ -6979,7 +6997,10 @@
           "TP-018",
           "TP-019",
           "TP-020"
-        ]
+        ],
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "retiro_destino: requiere_desambiguacion_funcional (las 12)",
+        "nota_cyn": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
       }
     },
     "R251_martillero_publico": {
@@ -10513,5 +10534,6 @@
   "_cambios_v513": "R306 mantenimiento eléctrico → 7412. Linaje: reporte correcciones 2026-04-08.",
   "_cambios_v514": "Fix R107 label seguridad, fix R49 tilde depósito, fix R33 excluir producción. Nuevas R307-R311 (ing electrónico, lonas/toldos, resp depósito, promotor, programador producción). Linaje: reporte correcciones 2026-04-08.",
   "_cambios_v515": "Fix R24 label ventas. New R312 consultor nómina→2519, R313 encargado logística→1324, R314 advisor IT→2519, R315 metalúrgico→7223, R316 rep ventas industrial→2433, R317 viajante→3322, R318 operador producción→8142, R319 corte costura→8153. Batch 2 correcciones Cynthia.",
-  "_cambios_v516": "Fix R235 label mecánico vehículos, R162 ISCO 7411→7133 edilicio, R23 ISCO 4321→1324 depósito. New R320 ventas telemarketing→5244, R321 instalador seguridad→3522, R322 mecánico industrial→7233. Batch 3 correcciones Cynthia."
+  "_cambios_v516": "Fix R235 label mecánico vehículos, R162 ISCO 7411→7133 edilicio, R23 ISCO 4321→1324 depósito. New R320 ventas telemarketing→5244, R321 instalador seguridad→3522, R322 mecánico industrial→7233. Batch 3 correcciones Cynthia.",
+  "_cambios_v517_k_t1": "[FRENTE K T1] auditoria_cyn_2026-08-12: retiro de las 7 reglas requiere_desambiguacion_funcional (R49, R240=P-17, R235, R158, R160, R176, R250). Destinos del audit, condiciones del repo vivo."
 }
