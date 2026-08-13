@@ -1,0 +1,2192 @@
+{
+ "c1_codigos": {
+  "OK-exacto": 292,
+  "label-difiere-leve": [],
+  "no-existe": [],
+  "otro-concepto": []
+ },
+ "c1_totales": {
+  "OK-exacto": 292,
+  "label-difiere-leve": 0,
+  "no-existe": 0,
+  "otro-concepto": 0
+ },
+ "c2_tri": {
+  "EXISTE": 243,
+  "NUEVA-POR-DIVISION": [
+   {
+    "regla_id": "R193a_supervisor_operaciones_produccion",
+    "madre_candidata": [
+     "R193_supervisor_operaciones"
+    ],
+    "nombre": "Supervisor de Operaciones de Producción / Supervisor de Planta",
+    "codigo": "3122.4"
+   },
+   {
+    "regla_id": "R193b_supervisor_operaciones_construccion",
+    "madre_candidata": [
+     "R193_supervisor_operaciones"
+    ],
+    "nombre": "Supervisor de Operaciones de Obra / Supervisor de Obra",
+    "codigo": "3123.1"
+   },
+   {
+    "regla_id": "R193c_supervisor_operaciones_retail",
+    "madre_candidata": [
+     "R193_supervisor_operaciones"
+    ],
+    "nombre": "Supervisor de Operaciones de Local / Supervisor de Tienda",
+    "codigo": "5222.1"
+   },
+   {
+    "regla_id": "R208a_jefe_responsable_compras",
+    "madre_candidata": [
+     "R208_analista_compras"
+    ],
+    "nombre": "Responsable / Jefe de Compras",
+    "codigo": "3323.2"
+   },
+   {
+    "regla_id": "R208b_analista_compras_generico",
+    "madre_candidata": [
+     "R208_analista_compras"
+    ],
+    "nombre": "Analista de Compras / Comprador (genérico)",
+    "codigo": null
+   },
+   {
+    "regla_id": "R213a_asistente_comercial_administrativo",
+    "madre_candidata": [
+     "R213_asistente_comercial"
+    ],
+    "nombre": "Asistente Comercial / Asistente de Ventas / Administrativo Comercial",
+    "codigo": "4311.2"
+   },
+   {
+    "regla_id": "R213b_asistente_comercial_contact_center",
+    "madre_candidata": [
+     "R213_asistente_comercial"
+    ],
+    "nombre": "Asistente Comercial de Atención / Contact Center",
+    "codigo": "4222.1"
+   },
+   {
+    "regla_id": "R214a_analista_mercado",
+    "madre_candidata": [
+     "R214_analista_comercial"
+    ],
+    "nombre": "Analista de Mercado / Market Analyst",
+    "codigo": "2431.11"
+   },
+   {
+    "regla_id": "R214b_analista_precios",
+    "madre_candidata": [
+     "R214_analista_comercial"
+    ],
+    "nombre": "Analista de Precios / Pricing Analyst",
+    "codigo": "2431.14"
+   },
+   {
+    "regla_id": "R214c_analista_comercial_ventas_generico",
+    "madre_candidata": [
+     "R214_analista_comercial"
+    ],
+    "nombre": "Analista Comercial / Analista de Ventas",
+    "codigo": null
+   },
+   {
+    "regla_id": "R191a_analista_abastecimiento",
+    "madre_candidata": [
+     "R191_analista_abastecimiento"
+    ],
+    "nombre": "Analista de Abastecimiento / Analista de Supply / Analista de Aprovisionamiento",
+    "codigo": "3323.2.3"
+   },
+   {
+    "regla_id": "R65a_jefe_sucursal_retail",
+    "madre_candidata": [
+     "R65_jefe_delegacion"
+    ],
+    "nombre": "Jefe/a o gerente de sucursal/local comercial",
+    "codigo": "1420.4"
+   },
+   {
+    "regla_id": "R65b_jefe_delegacion_generico",
+    "madre_candidata": [
+     "R65_jefe_delegacion"
+    ],
+    "nombre": "Jefe/a de delegación",
+    "codigo": null
+   },
+   {
+    "regla_id": "R8a_nutricionista_animal",
+    "madre_candidata": [
+     "R8_nutricion_animal"
+    ],
+    "nombre": "Nutricionista animal",
+    "codigo": "2131.2"
+   },
+   {
+    "regla_id": "R8b_tecnico_veterinario",
+    "madre_candidata": [
+     "R8_nutricion_animal"
+    ],
+    "nombre": "Técnico/a veterinario/a",
+    "codigo": "3240.2"
+   },
+   {
+    "regla_id": "R14a_contador",
+    "madre_candidata": [
+     "R14_contador_auditor"
+    ],
+    "nombre": "Contador/a / Contable profesional",
+    "codigo": "2411.1"
+   },
+   {
+    "regla_id": "R14e_auditor",
+    "madre_candidata": [
+     "R14_contador_auditor"
+    ],
+    "nombre": "Auditor/a",
+    "codigo": "4312.1"
+   },
+   {
+    "regla_id": "R16a_barista",
+    "madre_candidata": [
+     "R16_barista_heladero"
+    ],
+    "nombre": "Barista / Cafetero/a",
+    "codigo": "5132.1.1"
+   },
+   {
+    "regla_id": "R16b_heladero",
+    "madre_candidata": [
+     "R16_barista_heladero"
+    ],
+    "nombre": "Heladero/a",
+    "codigo": "5246.1"
+   },
+   {
+    "regla_id": "R17c_compliance_no_financiero",
+    "madre_candidata": [
+     "R17_compliance_legal"
+    ],
+    "nombre": "Compliance / Cumplimiento normativo no financiero",
+    "codigo": null
+   },
+   {
+    "regla_id": "R72a_vidriero",
+    "madre_candidata": [
+     "R72_carpintero_aluminio"
+    ],
+    "nombre": "Vidriero/a",
+    "codigo": "7125.1"
+   },
+   {
+    "regla_id": "R72b_carpintero_aluminio",
+    "madre_candidata": [
+     "R72_carpintero_aluminio"
+    ],
+    "nombre": "Carpintero/a de aluminio / Instalador/a de aberturas de aluminio",
+    "codigo": "7115.6"
+   },
+   {
+    "regla_id": "R144a_pizzero",
+    "madre_candidata": [
+     "R144_pizzero"
+    ],
+    "nombre": "Pizzero/a / Pizzaiolo",
+    "codigo": "9411.1"
+   },
+   {
+    "regla_id": "R144b_panadero",
+    "madre_candidata": [
+     "R144_pizzero"
+    ],
+    "nombre": "Panadero/a",
+    "codigo": "7512.1"
+   },
+   {
+    "regla_id": "R216a_pastelero",
+    "madre_candidata": [
+     "R216_pastelero"
+    ],
+    "nombre": "Pastelero/a / Repostero/a",
+    "codigo": "7512.5"
+   },
+   {
+    "regla_id": "R226a_analista_rrhh",
+    "madre_candidata": [
+     "R226_analista_rrhh"
+    ],
+    "nombre": "Analista de Recursos Humanos",
+    "codigo": "2423.5"
+   },
+   {
+    "regla_id": "R226b_seleccion_personal",
+    "madre_candidata": [
+     "R226_analista_rrhh"
+    ],
+    "nombre": "Analista/Consultor/a de Selección de Personal",
+    "codigo": "2423.6"
+   },
+   {
+    "regla_id": "R52a_data_science",
+    "madre_candidata": [
+     "R52_ingeniero_ia_ml"
+    ],
+    "nombre": "Científico/a de datos / Data Scientist",
+    "codigo": "2511.4"
+   },
+   {
+    "regla_id": "R52b_ia_ml_generico",
+    "madre_candidata": [
+     "R52_ingeniero_ia_ml"
+    ],
+    "nombre": "Ingeniero/a de IA / Machine Learning Engineer",
+    "codigo": "2511.11"
+   },
+   {
+    "regla_id": "R206a_tecnico_alarmas_seguridad",
+    "madre_candidata": [
+     "R206_tecnico_seguridad_electronica"
+    ],
+    "nombre": "Técnico/a de Seguridad Electrónica",
+    "codigo": "7422.5"
+   },
+   {
+    "regla_id": "R128a_programador_cnc",
+    "madre_candidata": [
+     "R128_programador_cnc"
+    ],
+    "nombre": "Programador/a CNC",
+    "codigo": "2514.4"
+   },
+   {
+    "regla_id": "R128b_operador_cnc",
+    "madre_candidata": [
+     "R128_programador_cnc"
+    ],
+    "nombre": "Operario/a / Operador/a CNC",
+    "codigo": "7223.4"
+   },
+   {
+    "regla_id": "R205a_vendedor_puerta_puerta",
+    "madre_candidata": [
+     "R205_vendedor_puerta_puerta"
+    ],
+    "nombre": "Vendedor/a puerta a puerta / a domicilio",
+    "codigo": "5243.1"
+   },
+   {
+    "regla_id": "R233a_maestranza",
+    "madre_candidata": [
+     "R233_maestranza"
+    ],
+    "nombre": "Personal de maestranza / limpieza",
+    "codigo": "9112.2"
+   },
+   {
+    "regla_id": "R229a_ejecutivo_comercial",
+    "madre_candidata": [
+     "R229_analista_comercial"
+    ],
+    "nombre": "Ejecutivo/a Comercial / Ejecutivo/a de Ventas",
+    "codigo": "3322.1"
+   },
+   {
+    "regla_id": "R77b_direccion_supply_chain",
+    "madre_candidata": [
+     "R77_responsable_compras"
+    ],
+    "nombre": "Gerente/Director/a de Cadena de Suministro",
+    "codigo": "1324.8"
+   },
+   {
+    "regla_id": "R85a_supervisor_operaciones_retail",
+    "madre_candidata": [
+     "R85_supervisor_operaciones"
+    ],
+    "nombre": "Supervisor/a de Operaciones de Local/Tienda",
+    "codigo": "5222.1"
+   },
+   {
+    "regla_id": "R86a_subencargado_local",
+    "madre_candidata": [
+     "R86_subencargado_local"
+    ],
+    "nombre": "Subencargado/a de Local/Tienda",
+    "codigo": "5222.1"
+   },
+   {
+    "regla_id": "R86b_asistente_local",
+    "madre_candidata": [
+     "R86_subencargado_local"
+    ],
+    "nombre": "Asistente/Empleado/a de Local y Ventas",
+    "codigo": "5223.4"
+   },
+   {
+    "regla_id": "R107a_responsable_seguridad_higiene",
+    "madre_candidata": [
+     "R107_seguridad_higiene"
+    ],
+    "nombre": "Responsable de Seguridad e Higiene",
+    "codigo": "2263.3"
+   },
+   {
+    "regla_id": "R107b_inspector_seguridad_higiene",
+    "madre_candidata": [
+     "R107_seguridad_higiene"
+    ],
+    "nombre": "Inspector/a de Seguridad e Higiene",
+    "codigo": "3257.7"
+   },
+   {
+    "regla_id": "R107c_seguridad_higiene_generico",
+    "madre_candidata": [
+     "R107_seguridad_higiene"
+    ],
+    "nombre": "Seguridad e Higiene / Higiene y Seguridad Laboral",
+    "codigo": "3257.7"
+   },
+   {
+    "regla_id": "R153a_contenido_digital_web",
+    "madre_candidata": [
+     "R153_creador_contenido"
+    ],
+    "nombre": "Creador/a o Especialista de Contenidos Digitales/Web",
+    "codigo": "2513.4"
+   },
+   {
+    "regla_id": "R153b_content_creator_generico",
+    "madre_candidata": [
+     "R153_creador_contenido"
+    ],
+    "nombre": "Content Creator / Creador/a de Contenido",
+    "codigo": "2432.5"
+   },
+   {
+    "regla_id": "R237a_analista_financiero",
+    "madre_candidata": [
+     "R237_analista_finanzas"
+    ],
+    "nombre": "Analista Financiero/a",
+    "codigo": "2413.1"
+   },
+   {
+    "regla_id": "R237b_analista_inversiones",
+    "madre_candidata": [
+     "R237_analista_finanzas"
+    ],
+    "nombre": "Analista de Inversiones",
+    "codigo": "2413.1.2"
+   },
+   {
+    "regla_id": "R253a_servicios_funerarios",
+    "madre_candidata": [
+     "R253_servicios_funerarios"
+    ],
+    "nombre": "Empleado/a de Servicios Funerarios / Pompas Fúnebres",
+    "codigo": "5163.3"
+   },
+   {
+    "regla_id": "R256a_plomero_sanitarista",
+    "madre_candidata": [
+     "R256_plomero"
+    ],
+    "nombre": "Plomero/a / Sanitarista",
+    "codigo": "7126.8"
+   },
+   {
+    "regla_id": "R256b_gasista",
+    "madre_candidata": [
+     "R256_plomero"
+    ],
+    "nombre": "Gasista / Instalador/a de Gas",
+    "codigo": "7126.3"
+   },
+   {
+    "regla_id": "R268a_setter_comercial",
+    "madre_candidata": [
+     "R268_setter_comercial"
+    ],
+    "nombre": "Setter Comercial / Calificador/a de Prospectos",
+    "codigo": "3322.1"
+   },
+   {
+    "regla_id": "R268b_auxiliar_comercial_seguros",
+    "madre_candidata": [
+     "R268_setter_comercial"
+    ],
+    "nombre": "Auxiliar/Asesor/a Comercial de Seguros",
+    "codigo": "3321.3.1"
+   },
+   {
+    "regla_id": "R287a_herrero",
+    "madre_candidata": [
+     "R287_herrero"
+    ],
+    "nombre": "Herrero/a",
+    "codigo": "7221.1"
+   },
+   {
+    "regla_id": "R287b_plegador_metal",
+    "madre_candidata": [
+     "R287_herrero"
+    ],
+    "nombre": "Plegador/a de Metal",
+    "codigo": "7213.4"
+   },
+   {
+    "regla_id": "R295a_asistente_facturacion",
+    "madre_candidata": [
+     "R295_asistente_facturacion"
+    ],
+    "nombre": "Asistente/Administrativo/a de Facturación",
+    "codigo": "4311.1"
+   },
+   {
+    "regla_id": "R295b_asistente_cobranzas",
+    "madre_candidata": [
+     "R295_asistente_facturacion"
+    ],
+    "nombre": "Asistente/Gestor/a de Cobranzas",
+    "codigo": "4214.1"
+   },
+   {
+    "regla_id": "R48a_secretaria",
+    "madre_candidata": [
+     "R48_secretaria_admin"
+    ],
+    "nombre": "Secretario/a",
+    "codigo": "4120.1"
+   },
+   {
+    "regla_id": "R48b_asistente_direccion",
+    "madre_candidata": [
+     "R48_secretaria_admin"
+    ],
+    "nombre": "Asistente Ejecutivo/a / Asistente de Dirección",
+    "codigo": "3343.3"
+   },
+   {
+    "regla_id": "R96a_manicura",
+    "madre_candidata": [
+     "R96_profesional_belleza"
+    ],
+    "nombre": "Manicuro/a",
+    "codigo": "5142.6"
+   },
+   {
+    "regla_id": "R96b_pedicura",
+    "madre_candidata": [
+     "R96_profesional_belleza"
+    ],
+    "nombre": "Pedicuro/a",
+    "codigo": "5142.8"
+   },
+   {
+    "regla_id": "R96c_esteticista",
+    "madre_candidata": [
+     "R96_profesional_belleza"
+    ],
+    "nombre": "Esteticista / Especialista en cejas y tratamientos estéticos",
+    "codigo": "5142.1"
+   },
+   {
+    "regla_id": "R68b_supervisor_gastronomia",
+    "madre_candidata": [
+     "R68_gerente_ops_gastronomia"
+    ],
+    "nombre": "Supervisor/a de Operaciones Gastronómicas",
+    "codigo": null
+   },
+   {
+    "regla_id": "R283a_direccion_construccion_obra",
+    "madre_candidata": [
+     "R283_subgerente_construccion"
+    ],
+    "nombre": "Subgerente / Jefe de Construcción de Obra",
+    "codigo": "1323.1"
+   },
+   {
+    "regla_id": "R283b_supervision_construccion_obra",
+    "madre_candidata": [
+     "R283_subgerente_construccion"
+    ],
+    "nombre": "Jefe / Encargado de Construcción en Obra",
+    "codigo": "3123.1"
+   }
+  ],
+  "SIN-MATCH-ID": []
+ },
+ "c2_vivas_sin_contraparte": {
+  "n": 71,
+  "lista": [
+   {
+    "id": "R113_auditor_medico",
+    "activa": true,
+    "uso": 0
+   },
+   {
+    "id": "R131b_hoteleria_sector_salud",
+    "activa": true,
+    "uso": 11
+   },
+   {
+    "id": "R132_vendedor_medicina_prepaga",
+    "activa": true,
+    "uso": 102
+   },
+   {
+    "id": "R14b_auditor_medico",
+    "activa": true,
+    "uso": 2
+   },
+   {
+    "id": "R14c_auditor_medico_alt",
+    "activa": true,
+    "uso": 0
+   },
+   {
+    "id": "R180_soporte_infraestructura",
+    "activa": true,
+    "uso": 0
+   },
+   {
+    "id": "R186_kinesiologo_fisioterapeuta",
+    "activa": true,
+    "uso": 108
+   },
+   {
+    "id": "R228_analista_contabilidad",
+    "activa": true,
+    "uso": 288
+   },
+   {
+    "id": "R274_coordinador_operaciones_logistica",
+    "activa": true,
+    "uso": 460
+   },
+   {
+    "id": "R301_ascensores",
+    "activa": true,
+    "uso": 68
+   },
+   {
+    "id": "R302_supervisor_obra",
+    "activa": true,
+    "uso": 42
+   },
+   {
+    "id": "R303_gerente_admin",
+    "activa": true,
+    "uso": 122
+   },
+   {
+    "id": "R304_torrista",
+    "activa": true,
+    "uso": 7
+   },
+   {
+    "id": "R305_electromecanico",
+    "activa": true,
+    "uso": 518
+   },
+   {
+    "id": "R306_mantenimiento_electrico",
+    "activa": true,
+    "uso": 92
+   },
+   {
+    "id": "R307_ingeniero_electronico",
+    "activa": true,
+    "uso": 28
+   },
+   {
+    "id": "R308_lonas_toldos",
+    "activa": true,
+    "uso": 4
+   },
+   {
+    "id": "R309_responsable_deposito",
+    "activa": true,
+    "uso": 123
+   },
+   {
+    "id": "R310_auxiliar_promociones",
+    "activa": true,
+    "uso": 3
+   },
+   {
+    "id": "R311_programador_produccion",
+    "activa": true,
+    "uso": 5
+   },
+   {
+    "id": "R312_consultor_software_nomina",
+    "activa": true,
+    "uso": 3
+   },
+   {
+    "id": "R313_encargado_logistica",
+    "activa": true,
+    "uso": 48
+   },
+   {
+    "id": "R314_advisor_software",
+    "activa": false,
+    "uso": 0
+   },
+   {
+    "id": "R315_operario_metalurgico",
+    "activa": true,
+    "uso": 10
+   },
+   {
+    "id": "R316_representante_ventas_industrial",
+    "activa": true,
+    "uso": 8
+   },
+   {
+    "id": "R317_vendedor_viajante",
+    "activa": true,
+    "uso": 157
+   },
+   {
+    "id": "R318_operador_produccion",
+    "activa": true,
+    "uso": 3
+   },
+   {
+    "id": "R319_corte_costura",
+    "activa": true,
+    "uso": 28
+   },
+   {
+    "id": "R320_ventas_telemarketing",
+    "activa": true,
+    "uso": 15
+   },
+   {
+    "id": "R321_tecnico_instalador_seguridad",
+    "activa": true,
+    "uso": 20
+   },
+   {
+    "id": "R322_mecanico_industrial",
+    "activa": true,
+    "uso": 141
+   },
+   {
+    "id": "R323_atencion_publico",
+    "activa": true,
+    "uso": 591
+   },
+   {
+    "id": "R324_fileteador_pescado",
+    "activa": true,
+    "uso": 1
+   },
+   {
+    "id": "R325_instalador_satelital",
+    "activa": true,
+    "uso": 2
+   },
+   {
+    "id": "R326_tecnico_refrigeracion",
+    "activa": true,
+    "uso": 74
+   },
+   {
+    "id": "R327_encargado_salon",
+    "activa": true,
+    "uso": 31
+   },
+   {
+    "id": "R328_psicologo_profesional",
+    "activa": true,
+    "uso": 3
+   },
+   {
+    "id": "R329_tecnico_electronico_mantenimiento",
+    "activa": true,
+    "uso": 172
+   },
+   {
+    "id": "R330_fiambrero",
+    "activa": true,
+    "uso": 10
+   },
+   {
+    "id": "R331_acompanante_integracion_escolar",
+    "activa": true,
+    "uso": 37
+   },
+   {
+    "id": "R332_talentos_discapacidad",
+    "activa": true,
+    "uso": 20
+   },
+   {
+    "id": "R333_operario_limpieza",
+    "activa": true,
+    "uso": 30
+   },
+   {
+    "id": "R334_ninera",
+    "activa": true,
+    "uso": 10
+   },
+   {
+    "id": "R335_promotor_via_publica",
+    "activa": true,
+    "uso": 6
+   },
+   {
+    "id": "R336_analista_seguridad_higiene",
+    "activa": true,
+    "uso": 48
+   },
+   {
+    "id": "R337_psicologo_laboral_educativo",
+    "activa": true,
+    "uso": 88
+   },
+   {
+    "id": "R338_operador_tecnico_generico",
+    "activa": true,
+    "uso": 3
+   },
+   {
+    "id": "R339_analista_contrataciones_transporte",
+    "activa": true,
+    "uso": 3
+   },
+   {
+    "id": "R340_jefe_operativo_obra",
+    "activa": true,
+    "uso": 2
+   },
+   {
+    "id": "R341_vigilador_supervisor_produccion",
+    "activa": true,
+    "uso": 0
+   },
+   {
+    "id": "R342_acompanante_terapeutico_cuidador",
+    "activa": true,
+    "uso": 1
+   },
+   {
+    "id": "R343_inyector_plastico",
+    "activa": true,
+    "uso": 6
+   },
+   {
+    "id": "R344_project_manager",
+    "activa": true,
+    "uso": 62
+   },
+   {
+    "id": "R345_operario_cnc",
+    "activa": true,
+    "uso": 59
+   },
+   {
+    "id": "R346_operario_corte_laser",
+    "activa": true,
+    "uso": 22
+   },
+   {
+    "id": "R347_operario_metalurgico",
+    "activa": true,
+    "uso": 62
+   },
+   {
+    "id": "R348_operario_plastico_soplado",
+    "activa": true,
+    "uso": 12
+   },
+   {
+    "id": "R349_operario_envasado",
+    "activa": true,
+    "uso": 177
+   },
+   {
+    "id": "R350_operario_deposito_logistica",
+    "activa": true,
+    "uso": 164
+   },
+   {
+    "id": "R351_operario_despacho",
+    "activa": true,
+    "uso": 9
+   },
+   {
+    "id": "R352_operario_ensamble_armas",
+    "activa": true,
+    "uso": 2
+   },
+   {
+    "id": "R353_operario_carga_descarga",
+    "activa": true,
+    "uso": 543
+   },
+   {
+    "id": "R354_operario_lavadero",
+    "activa": true,
+    "uso": 25
+   },
+   {
+    "id": "R355_operario_maestranza",
+    "activa": true,
+    "uso": 114
+   },
+   {
+    "id": "R356_operario_mantenimiento",
+    "activa": true,
+    "uso": 46
+   },
+   {
+    "id": "R357_tecnico_operario_produccion",
+    "activa": true,
+    "uso": 9
+   },
+   {
+    "id": "R358_despacho_metalurgico_grua",
+    "activa": true,
+    "uso": 1
+   },
+   {
+    "id": "R66_arquitecto_software",
+    "activa": true,
+    "uso": 79
+   },
+   {
+    "id": "R80_administrativo_almacen",
+    "activa": true,
+    "uso": 76
+   },
+   {
+    "id": "R90_supervisor_ventas",
+    "activa": true,
+    "uso": 64
+   },
+   {
+    "id": "R95_tech_lead_ia_ml",
+    "activa": true,
+    "uso": 174
+   }
+  ]
+ },
+ "c3_diff": {
+  "IGUAL": 164,
+  "DISTINTO": [
+   {
+    "regla_id": "R182_tecnico_electromedicina",
+    "actual": "2269.8.1",
+    "label_actual": "técnico en imagen para diagnóstico/técnica en imagen para diagnóstico",
+    "nuevo": "3114.1.5",
+    "label_nuevo": "ingeniero técnico especializado en productos sanitarios/ingeniera técnica especializada en productos sanitarios",
+    "estado": "corregido_y_validado_esco",
+    "uso": 34,
+    "nota": "Corregido: mantenimiento, instalación, calibración y conservación de equipos médicos no equivale a técnico en imagen diagnóstica."
+   },
+   {
+    "regla_id": "R19_project_manager",
+    "actual": "1213.5",
+    "label_actual": "director de empresa/directora de empresa",
+    "nuevo": "1219.6",
+    "label_nuevo": "gestor de proyectos/gestora de proyectos",
+    "estado": "corregido_y_validado_esco",
+    "uso": 133,
+    "nota": "Corregido: ESCO contiene gestor de proyectos con jefe/director de proyecto como etiquetas alternativas. IT se mantiene separado en R19b."
+   },
+   {
+    "regla_id": "R21_lider_atencion_cliente",
+    "actual": "4222.1",
+    "label_actual": "agente de centro de atención al cliente",
+    "nuevo": "3341.3",
+    "label_nuevo": "supervisor de centro de llamadas/supervisora de centro de llamadas",
+    "estado": "corregido_y_validado_esco",
+    "uso": 0,
+    "nota": "Corregido para funciones de supervisión de equipo de atención/contact center; no clasificar como agente operativo."
+   },
+   {
+    "regla_id": "R29_modelista_patronista",
+    "actual": "7532.6",
+    "label_actual": "patronista de artículos de cuero",
+    "nuevo": "7532.3",
+    "label_nuevo": "patronista escalador textil/patronista escaladora textil",
+    "estado": "corregido_y_validado_esco",
+    "uso": 30,
+    "nota": "Corrección consolidada durante la revisión final del Diccionario MOL."
+   },
+   {
+    "regla_id": "R39_supervisor_administracion",
+    "actual": "3341.3",
+    "label_actual": "supervisor de centro de llamadas/supervisora de centro de llamadas",
+    "nuevo": "3341.7",
+    "label_nuevo": "director de departamento de administración/directora de departamento de administración",
+    "estado": "corregido_y_validado_esco",
+    "uso": 0,
+    "nota": "Corrección consolidada durante la revisión final del Diccionario MOL."
+   },
+   {
+    "regla_id": "R42_gerente_operaciones",
+    "actual": "1321.2",
+    "label_actual": "director de fabricación/directora de fabricación",
+    "nuevo": "1120.4",
+    "label_nuevo": "director de operaciones/directora de operaciones",
+    "estado": "corregido_y_validado_esco",
+    "uso": 1,
+    "nota": "Corregido para dirección global de operaciones empresariales. Si las operaciones son específicamente de producción/fábrica, usar la ocupación sectorial correspondiente."
+   },
+   {
+    "regla_id": "R117_responsable_compras",
+    "actual": "3323.2.1",
+    "label_actual": "comprador/compradora de café verde",
+    "nuevo": "3323.2",
+    "label_nuevo": "jefe de compras/jefa de compras",
+    "estado": "corregido_y_validado_esco",
+    "uso": 117,
+    "nota": "Consolidado por duplicación exacta de denominación y equivalencia ocupacional."
+   },
+   {
+    "regla_id": "R53_operario_plastico",
+    "actual": "8142.9",
+    "label_actual": "operador de máquinas para la fabricación de muebles de plástico/operadora de máquinas para la fabricación de muebles de plástico",
+    "nuevo": "8142.7",
+    "label_nuevo": "operador de máquinas de moldear plástico por inyección/operadora de máquinas de moldear plástico por inyección",
+    "estado": "corregido_y_validado_esco",
+    "uso": 35,
+    "nota": "Nombre técnico reemplazado y código corregido para tareas de moldeo por inyección. Si solo dice 'industria plástica' sin proceso, requiere desambiguación."
+   },
+   {
+    "regla_id": "R67_devops_engineer",
+    "actual": "2512.4",
+    "label_actual": "desarrollador de software/desarrolladora de software",
+    "nuevo": "2519.3",
+    "label_nuevo": "gestor de cambios y configuración de TIC/gestora de cambios y configuración de TIC",
+    "estado": "corregido_y_validado_esco",
+    "uso": 242,
+    "nota": "Corregido: ESCO incluye ingeniero DevOps como etiqueta alternativa; cloud DevOps requiere contexto adicional."
+   },
+   {
+    "regla_id": "R76_fonoaudiologo",
+    "actual": "2266.1",
+    "label_actual": "audiólogo/audióloga",
+    "nuevo": "2266.2",
+    "label_nuevo": "terapeuta especializado en trastornos del lenguaje/terapeuta especializada en trastornos del lenguaje",
+    "estado": "corregido_y_validado_esco",
+    "uso": 17,
+    "nota": "Corregido: la función de lenguaje/habla corresponde a terapeuta especializado en trastornos del lenguaje; no a audiólogo por defecto."
+   },
+   {
+    "regla_id": "R83_analista_calidad_servicios",
+    "actual": "3341.3",
+    "label_actual": "supervisor de centro de llamadas/supervisora de centro de llamadas",
+    "nuevo": "3341.2",
+    "label_nuevo": "analista de calidad en centro de llamadas",
+    "estado": "corregido_y_validado_esco",
+    "uso": 6,
+    "nota": "Corregido para control de calidad de atención en centro de llamadas/servicio al cliente."
+   },
+   {
+    "regla_id": "R84_operario_acondicionamiento",
+    "actual": "8131.20",
+    "label_actual": "operador de control de la fabricación de jabón/operadora de control de la fabricación de jabón",
+    "nuevo": "8183.1",
+    "label_nuevo": "operario de línea de envasado y embotellado/operaria de línea de envasado y embotellado",
+    "estado": "corregido_y_validado_esco",
+    "uso": 24,
+    "nota": "Corrección consolidada durante la revisión final del Diccionario MOL."
+   },
+   {
+    "regla_id": "R92_jefe_cotizaciones_presupuestos",
+    "actual": "1323.1",
+    "label_actual": "director de obra/directora de obra",
+    "nuevo": "2149.14",
+    "label_nuevo": "ingeniero de control de costes/ingeniera de control de costes",
+    "estado": "corregido_y_validado_esco",
+    "uso": 184,
+    "nota": "Corrección consolidada durante la revisión final del Diccionario MOL."
+   },
+   {
+    "regla_id": "R101_business_analyst",
+    "actual": "2511.13",
+    "label_actual": "analista de sistemas de TIC",
+    "nuevo": "2421.1",
+    "label_nuevo": "analista de negocios",
+    "estado": "corregido_y_validado_esco",
+    "uso": 129,
+    "nota": "Corregido: Business Analyst genérico corresponde a analista de negocios. Si es específicamente TIC, revisar 2511.9."
+   },
+   {
+    "regla_id": "R106_preventista",
+    "actual": "5243.1",
+    "label_actual": "vendedor a domicilio",
+    "nuevo": "3322.1",
+    "label_nuevo": "representante comercial",
+    "estado": "corregido_y_validado_esco",
+    "uso": 388,
+    "nota": "Corregido por función comercial de toma de pedidos/venta a clientes; no equiparar por defecto a venta puerta a puerta."
+   },
+   {
+    "regla_id": "R111_vendedor_generico",
+    "actual": "5223.7",
+    "label_actual": "vendedor especializado/vendedora especializada",
+    "nuevo": "5223.4",
+    "label_nuevo": "vendedor/vendedora",
+    "estado": "corregido_y_validado_esco",
+    "uso": 3882,
+    "nota": "Corregido: vendedor genérico de comercio minorista no implica venta especializada."
+   },
+   {
+    "regla_id": "R120_gomero_balanceador",
+    "actual": "7231.10",
+    "label_actual": "mecánico de vehículos/mecánica de vehículos",
+    "nuevo": "7231.7",
+    "label_nuevo": "encargado de la puesta a punto de los neumáticos/encargada de la puesta a punto de los neumáticos",
+    "estado": "corregido_y_validado_esco",
+    "uso": 63,
+    "nota": "Corregido: ESCO contempla específicamente puesta a punto, montaje y equilibrado de neumáticos."
+   },
+   {
+    "regla_id": "R122_personal_obra",
+    "actual": "7112.1",
+    "label_actual": "albañil",
+    "nuevo": "9313.1",
+    "label_nuevo": "obrero de la construcción/obrera de la construcción",
+    "estado": "corregido_y_validado_esco",
+    "uso": 7,
+    "nota": "Corregido: personal de obra genérico no debe forzarse a albañil calificado."
+   },
+   {
+    "regla_id": "R130_supervisor_qa_procesos",
+    "actual": "3341.3",
+    "label_actual": "supervisor de centro de llamadas/supervisora de centro de llamadas",
+    "nuevo": "1219.7",
+    "label_nuevo": "director del departamento de control de la calidad/directora del departamento de control de la calidad",
+    "estado": "corregido_y_validado_esco",
+    "uso": 3,
+    "nota": "Corrección consolidada durante la revisión final del Diccionario MOL."
+   },
+   {
+    "regla_id": "R136_personal_deposito",
+    "actual": "9333.8",
+    "label_actual": "mozo de almacén/moza de almacén",
+    "nuevo": "9333.3",
+    "label_nuevo": "operario de logística de almacén/operaria de logística de almacén",
+    "estado": "corregido_y_validado_esco",
+    "uso": 143,
+    "nota": "Corregido según regla consolidada MOL de operario/a de depósito y ESCO."
+   },
+   {
+    "regla_id": "R142_bodeguero",
+    "actual": "9333.8",
+    "label_actual": "mozo de almacén/moza de almacén",
+    "nuevo": "6112.4",
+    "label_nuevo": "bodeguero vinícola/bodeguera vinícola",
+    "estado": "corregido_y_validado_esco",
+    "uso": 5,
+    "nota": "Corrección consolidada durante la revisión final del Diccionario MOL."
+   },
+   {
+    "regla_id": "R148_disenador_multimedia",
+    "actual": "2166.9",
+    "label_actual": "diseñador gráfico/diseñadora gráfica",
+    "nuevo": "2166.7",
+    "label_nuevo": "diseñador de medios digitales/diseñadora de medios digitales",
+    "estado": "corregido_y_validado_esco",
+    "uso": 37,
+    "nota": "Corregido: ESCO contiene diseñador de medios digitales."
+   },
+   {
+    "regla_id": "R152_ecommerce_manager",
+    "actual": "1221.5",
+    "label_actual": "responsable de marketing digital",
+    "nuevo": "2431.10.2",
+    "label_nuevo": "director de la estrategia de la empresa para ventas on line/directora de la estrategia de la empresa para ventas on line",
+    "estado": "corregido_y_validado_esco",
+    "uso": 317,
+    "nota": "Corregido: ESCO contiene gestor/especialista de comercio electrónico en la estrategia de ventas online."
+   },
+   {
+    "regla_id": "R172_analista_siniestros",
+    "actual": "3321.3.1",
+    "label_actual": "asesor de seguros/asesora de seguros",
+    "nuevo": "3315.5",
+    "label_nuevo": "técnico en seguros especializado en tramitación y gestión de reclamaciones/técnica en seguros especializada en tramitación y gestión de reclamaciones",
+    "estado": "corregido_y_validado_esco",
+    "uso": 78,
+    "nota": "Corregido para tramitación y gestión de reclamaciones de seguros; no asesor de seguros."
+   },
+   {
+    "regla_id": "R210_telefonista_ventas",
+    "actual": "4222.1",
+    "label_actual": "agente de centro de atención al cliente",
+    "nuevo": "5244.1",
+    "label_nuevo": "teleoperador/teleoperadora",
+    "estado": "validado_sin_observacion_critica",
+    "uso": 12,
+    "nota": "Conservado tras auditoría: no se detectó inconsistencia crítica entre denominación y ocupación ESCO."
+   },
+   {
+    "regla_id": "R220_asesor_inmobiliario",
+    "actual": "3334.3",
+    "label_actual": "agente inmobiliario/agente inmobiliaria",
+    "nuevo": "3334.2",
+    "label_nuevo": "agente inmobiliario especializado en compraventa/agente inmobiliaria especializada en compraventa",
+    "estado": "corregido_y_validado_esco",
+    "uso": 325,
+    "nota": "Corregido: 'asesor inmobiliario' figura como etiqueta alternativa de agente inmobiliario especializado en compraventa."
+   },
+   {
+    "regla_id": "R225_comis_pasteleria",
+    "actual": "7512.2",
+    "label_actual": "chocolatero/chocolatera",
+    "nuevo": "7512.5",
+    "label_nuevo": "pastelero/pastelera",
+    "estado": "corregido_y_validado_esco",
+    "uso": 116,
+    "nota": "Corrección consolidada durante la revisión final del Diccionario MOL."
+   },
+   {
+    "regla_id": "R231_supervisor_operaciones",
+    "actual": "3122.2",
+    "label_actual": "planificador/planificadora de producción de alimentos",
+    "nuevo": "3122.4",
+    "label_nuevo": "supervisor de producción/supervisora de producción",
+    "estado": "corregido_y_validado_esco",
+    "uso": 433,
+    "nota": "Corregido: usar solo si las operaciones supervisadas son de producción."
+   },
+   {
+    "regla_id": "R232_coordinador_operaciones",
+    "actual": "1219.6",
+    "label_actual": "gestor de proyectos/gestora de proyectos",
+    "nuevo": "4323.9",
+    "label_nuevo": "coordinador de transporte/coordinadora de transporte",
+    "estado": "corregido_y_validado_esco",
+    "uso": 170,
+    "nota": "Corrección consolidada durante la revisión final del Diccionario MOL."
+   },
+   {
+    "regla_id": "R234_ayudante_panaderia",
+    "actual": "7512.2",
+    "label_actual": "chocolatero/chocolatera",
+    "nuevo": "7512.1",
+    "label_nuevo": "panadero/panadera",
+    "estado": "corregido_y_validado_esco",
+    "uso": 8,
+    "nota": "Corrección consolidada durante la revisión final del Diccionario MOL."
+   },
+   {
+    "regla_id": "R267_auxiliar_legal",
+    "actual": "3411.4",
+    "label_actual": "auxiliar judicial",
+    "nuevo": "3411.7",
+    "label_nuevo": "asistente jurídico/asistente jurídica",
+    "estado": "corregido_y_validado_esco",
+    "uso": 11,
+    "nota": "Corregido según regla consolidada MOL. 'Estudiante de abogacía' se trata como requisito, no como ocupación."
+   },
+   {
+    "regla_id": "R269_team_leader_reclutamiento",
+    "actual": "2423.3",
+    "label_actual": "responsable de recursos humanos",
+    "nuevo": "1212.5",
+    "label_nuevo": "gestor de adquisición de talento/gestora de adquisición de talento",
+    "estado": "corregido_y_validado_esco",
+    "uso": 6,
+    "nota": "Corregido para conducción de adquisición/selección de talento."
+   },
+   {
+    "regla_id": "R272_analista_operaciones_datacenter",
+    "actual": "2522.1",
+    "label_actual": "administrador de sistemas de TIC/administradora de sistemas de TIC",
+    "nuevo": "3511.1",
+    "label_nuevo": "operador de centro de datos/operadora de centro de datos",
+    "estado": "corregido_y_validado_esco",
+    "uso": 1,
+    "nota": "Corregido según regla consolidada MOL de operador de centro de datos."
+   },
+   {
+    "regla_id": "R277_medio_oficial_mantenimiento_industrial",
+    "actual": "7233.7",
+    "label_actual": "mecánico de maquinaria industrial/mecánica de maquinaria industrial",
+    "nuevo": "7412.3",
+    "label_nuevo": "mecánico electricista/mecánica electricista",
+    "estado": "corregido_y_validado_esco",
+    "uso": 10,
+    "nota": "Corregido según regla consolidada MOL para mantenimiento eléctrico/electromecánico industrial."
+   },
+   {
+    "regla_id": "R284_representante_tecnico_comercial",
+    "actual": "5223.7",
+    "label_actual": "vendedor especializado/vendedora especializada",
+    "nuevo": "2433.6",
+    "label_nuevo": "representante técnico de ventas/representante técnica de ventas",
+    "estado": "corregido_y_validado_esco",
+    "uso": 33,
+    "nota": "Corregido según regla consolidada MOL: representante técnico de ventas."
+   },
+   {
+    "regla_id": "R285_coordinador_rrhh",
+    "actual": "1212.2",
+    "label_actual": "director de recursos humanos/directora de recursos humanos",
+    "nuevo": "2423.3",
+    "label_nuevo": "responsable de recursos humanos",
+    "estado": "corregido_y_validado_esco",
+    "uso": 17,
+    "nota": "Corregido por nivel funcional: coordinación/responsabilidad de RRHH sin alcance directivo global."
+   },
+   {
+    "regla_id": "R286_auxiliar_rrhh",
+    "actual": "2423.3",
+    "label_actual": "responsable de recursos humanos",
+    "nuevo": "4416.1",
+    "label_nuevo": "ayudante de recursos humanos",
+    "estado": "corregido_y_validado_esco",
+    "uso": 19,
+    "nota": "Corregido: auxiliar RRHH no equivale a responsable de RRHH."
+   },
+   {
+    "regla_id": "R291_auxiliar_proveedores",
+    "actual": "4311.1",
+    "label_actual": "empleado de contabilidad/empleada de contabilidad",
+    "nuevo": "3343.1.5",
+    "label_nuevo": "responsable de apoyo a la contratación",
+    "estado": "corregido_y_validado_esco",
+    "uso": 3,
+    "nota": "Corregido: apoyo a contratación/compras; no contabilidad por defecto."
+   },
+   {
+    "regla_id": "R299_jefatura_compras",
+    "actual": "1324.8.2",
+    "label_actual": "director de compras/directora de compras",
+    "nuevo": "3323.2",
+    "label_nuevo": "jefe de compras/jefa de compras",
+    "estado": "corregido_y_validado_esco",
+    "uso": 24,
+    "nota": "Corregido: jefe de compras no equivale automáticamente a director de compras."
+   },
+   {
+    "regla_id": "R22_instalaciones_mantenimiento",
+    "actual": "7126.7",
+    "label_actual": "operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías",
+    "nuevo": "1219.1.1",
+    "label_nuevo": "responsable de instalaciones",
+    "estado": "corregido_y_validado_esco",
+    "uso": 30,
+    "nota": "Corrección consolidada durante la revisión final del Diccionario MOL."
+   },
+   {
+    "regla_id": "R51_carpintero",
+    "actual": "7522.2",
+    "label_actual": "ebanista",
+    "nuevo": "7115.1",
+    "label_nuevo": "carpintero/carpintera",
+    "estado": "corregido_y_validado_esco",
+    "uso": 144,
+    "nota": "Corregido: carpintero genérico no es ebanista por defecto."
+   },
+   {
+    "regla_id": "R43_IT_devops",
+    "actual": "2512.4",
+    "label_actual": "desarrollador de software/desarrolladora de software",
+    "nuevo": "2519.3",
+    "label_nuevo": "gestor de cambios y configuración de TIC/gestora de cambios y configuración de TIC",
+    "estado": "corregido_y_validado_esco",
+    "uso": 15,
+    "nota": "Corregido: ESCO incluye ingeniero DevOps como etiqueta alternativa de gestor de cambios y configuración TIC; si el rol es específicamente cloud, revisar 2512.7."
+   },
+   {
+    "regla_id": "R44_IT_architect",
+    "actual": "2512.4",
+    "label_actual": "desarrollador de software/desarrolladora de software",
+    "nuevo": "2512.3",
+    "label_nuevo": "arquitecto de software/arquitecta de software",
+    "estado": "corregido_y_validado_esco",
+    "uso": 95,
+    "nota": "Consolidado por duplicación exacta de denominación y equivalencia ocupacional."
+   },
+   {
+    "regla_id": "R47_IT_data_engineer",
+    "actual": "2521.1",
+    "label_actual": "administrador de bases de datos/administradora de bases de datos",
+    "nuevo": "2511.20",
+    "label_nuevo": "ingeniero de datos/ingeniera de datos",
+    "estado": "corregido_y_validado_esco",
+    "uso": 144,
+    "nota": "Corregido: ESCO contiene ingeniero de datos; no administrador de bases de datos por defecto."
+   },
+   {
+    "regla_id": "R98_asesor_medicina_prepaga",
+    "actual": "3321.3.1",
+    "label_actual": "asesor de seguros/asesora de seguros",
+    "nuevo": "3322.1",
+    "label_nuevo": "representante comercial",
+    "estado": "corregido_y_validado_esco",
+    "uso": 0,
+    "nota": "Corrección consolidada durante la revisión final del Diccionario MOL."
+   },
+   {
+    "regla_id": "R14d_administrativo_contable",
+    "actual": "4311.1",
+    "label_actual": "empleado de contabilidad/empleada de contabilidad",
+    "nuevo": "3313.2",
+    "label_nuevo": "administrativo contable/administrativa contable",
+    "estado": "corregido_y_validado_esco",
+    "uso": 509,
+    "nota": "Corregido según regla consolidada MOL: empleado administrativo contable, no profesional contable."
+   },
+   {
+    "regla_id": "R17b_compliance_financiero",
+    "actual": "2413.1",
+    "label_actual": "analista financiero/analista financiera",
+    "nuevo": "2412.5",
+    "label_nuevo": "gestor de riesgos financieros/gestora de riesgos financieros",
+    "estado": "corregido_y_validado_esco",
+    "uso": 36,
+    "nota": "Corregido según regla consolidada MOL de compliance financiero."
+   },
+   {
+    "regla_id": "R61_analista_qa_farma",
+    "actual": "2145.1",
+    "label_actual": "ingeniero químico/ingeniera química",
+    "nuevo": "2262.1.1",
+    "label_nuevo": "especialista en calidad de los productos farmacéuticos",
+    "estado": "corregido_y_validado_esco",
+    "uso": 12,
+    "nota": "Corregido: ESCO contempla especialista en calidad de productos farmacéuticos; no ingeniero químico por título solo."
+   },
+   {
+    "regla_id": "R81_monitoreo_alarmas",
+    "actual": "5414.1.9",
+    "label_actual": "jefe de equipo de seguridad/jefa de equipo de seguridad",
+    "nuevo": "5414.1.7",
+    "label_nuevo": "técnico de servicio de respuesta a señales de sistemas de alarma/técnica de servicio de respuesta a señales de sistemas de alarma",
+    "estado": "corregido_y_validado_esco",
+    "uso": 24,
+    "nota": "Corregido según regla consolidada MOL y ESCO."
+   },
+   {
+    "regla_id": "R87_administrativo_ecommerce",
+    "actual": "2431.3",
+    "label_actual": "especialista en publicidad",
+    "nuevo": "2431.10.3",
+    "label_nuevo": "ayudante de marketing",
+    "estado": "corregido_y_validado_esco",
+    "uso": 206,
+    "nota": "Corrección consolidada durante la revisión final del Diccionario MOL."
+   },
+   {
+    "regla_id": "R94_jefe_sucursal_financiera",
+    "actual": "1346.5",
+    "label_actual": "gerente de reclamaciones de seguros",
+    "nuevo": "1346.1",
+    "label_nuevo": "director de entidad bancaria/directora de entidad bancaria",
+    "estado": "corregido_y_validado_esco",
+    "uso": 1,
+    "nota": "Corrección consolidada durante la revisión final del Diccionario MOL."
+   },
+   {
+    "regla_id": "R131_hoteleria_hospitalaria",
+    "actual": "5151.2",
+    "label_actual": "supervisor de servicio de limpieza/supervisora de servicio de limpieza",
+    "nuevo": "1219.1.1",
+    "label_nuevo": "responsable de instalaciones",
+    "estado": "corregido_y_validado_esco",
+    "uso": 3,
+    "nota": "Consolidado para funciones de soporte e instalaciones en sector salud."
+   },
+   {
+    "regla_id": "R133_steward_bachero",
+    "actual": "9412.1",
+    "label_actual": "ayudante de cocina",
+    "nuevo": "9412.2",
+    "label_nuevo": "auxiliar de cocina",
+    "estado": "corregido_y_validado_esco",
+    "uso": 165,
+    "nota": "Corregido: bachero/lavaplatos corresponde a auxiliar de cocina."
+   },
+   {
+    "regla_id": "R154_auditor_inventario",
+    "actual": "4321.1",
+    "label_actual": "coordinador de inventario/coordinadora de inventario",
+    "nuevo": "4312.1",
+    "label_nuevo": "auditor/auditora",
+    "estado": "corregido_y_validado_esco",
+    "uso": 29,
+    "nota": "Corregido según regla consolidada MOL: auditor de inventarios corresponde a auditor, no coordinador de inventario."
+   },
+   {
+    "regla_id": "R155_asesor_telefonico",
+    "actual": "4222.1",
+    "label_actual": "agente de centro de atención al cliente",
+    "nuevo": "5244.1",
+    "label_nuevo": "teleoperador/teleoperadora",
+    "estado": "corregido_y_validado_esco",
+    "uso": 193,
+    "nota": "Corregido: función de venta telefónica corresponde a teleoperador de ventas, no atención al cliente genérica."
+   },
+   {
+    "regla_id": "R156_vendedor_viajante",
+    "actual": "5243.1",
+    "label_actual": "vendedor a domicilio",
+    "nuevo": "3322.1",
+    "label_nuevo": "representante comercial",
+    "estado": "corregido_y_validado_esco",
+    "uso": 82,
+    "nota": "Corregido según regla consolidada MOL de representante comercial."
+   },
+   {
+    "regla_id": "R162_tecnico_mantenimiento_edilicio",
+    "actual": "7131.1",
+    "label_actual": "pintor de obra/pintora de obra",
+    "nuevo": "7411.1.1",
+    "label_nuevo": "electricista de obras",
+    "estado": "corregido_y_validado_esco",
+    "uso": 205,
+    "nota": "Mantener solo cuando el núcleo es mantenimiento/instalación eléctrica edilicia. Si es mantenimiento general multioficio, requiere otra clasificación."
+   },
+   {
+    "regla_id": "R163_analista_comex_admin",
+    "actual": "4311.1",
+    "label_actual": "empleado de contabilidad/empleada de contabilidad",
+    "nuevo": "4110.1",
+    "label_nuevo": "empleado de oficina/empleada de oficina",
+    "estado": "corregido_y_validado_esco",
+    "uso": 116,
+    "nota": "Corregido: rol administrativo general de comercio exterior; si realiza gestión técnica de importación/exportación usar ocupación específica."
+   },
+   {
+    "regla_id": "R179_instalador_fibra",
+    "actual": "7422.3.1",
+    "label_actual": "técnico reparador de telefonía móvil/técnica reparadora de telefonía móvil",
+    "nuevo": "7422.8",
+    "label_nuevo": "instalador de fibra óptica/instaladora de fibra óptica",
+    "estado": "corregido_y_validado_esco",
+    "uso": 56,
+    "nota": "Corregido: ESCO contiene instalador de fibra óptica."
+   },
+   {
+    "regla_id": "R181_personal_mantenimiento",
+    "actual": "7233.7",
+    "label_actual": "mecánico de maquinaria industrial/mecánica de maquinaria industrial",
+    "nuevo": "9622.1",
+    "label_nuevo": "mantenedor/mantenedora",
+    "estado": "corregido_y_validado_esco",
+    "uso": 147,
+    "nota": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
+   },
+   {
+    "regla_id": "R183_bobinador_transformadores",
+    "actual": "7411.1.1.2",
+    "label_actual": "electricista industrial",
+    "nuevo": "7412.3",
+    "label_nuevo": "mecánico electricista/mecánica electricista",
+    "estado": "corregido_y_validado_esco",
+    "uso": 5,
+    "nota": "Corrección consolidada durante la revisión final del Diccionario MOL."
+   },
+   {
+    "regla_id": "R194_middle_office",
+    "actual": "4311.1",
+    "label_actual": "empleado de contabilidad/empleada de contabilidad",
+    "nuevo": "4312.2",
+    "label_nuevo": "técnico administrativo de gestión/técnica administrativa de gestión",
+    "estado": "corregido_y_validado_esco",
+    "uso": 101,
+    "nota": "Corregido a técnico administrativo de gestión para operaciones administrativas; si el middle office es financiero especializado, requiere contexto."
+   },
+   {
+    "regla_id": "R198_bell_boy_botones",
+    "actual": "4229.2",
+    "label_actual": "conserje de hotel",
+    "nuevo": "9621.2",
+    "label_nuevo": "mozo de equipaje/moza de equipaje",
+    "estado": "corregido_y_validado_esco",
+    "uso": 14,
+    "nota": "Corregido: botones se corresponde con mozo de equipaje, no con conserje de hotel."
+   },
+   {
+    "regla_id": "R200_extraccionista_laboratorio",
+    "actual": "2269.13",
+    "label_actual": "técnico en laboratorio clínico y biomédico/técnica en laboratorio clínico y biomédico",
+    "nuevo": "5329.2",
+    "label_nuevo": "enfermero/enfermera",
+    "estado": "corregido_y_validado_esco",
+    "uso": 14,
+    "nota": "Corregido según regla consolidada MOL cuando la función es extracción de sangre/enfermería de extracciones; laboratorio analítico es otra ocupación."
+   },
+   {
+    "regla_id": "R238_analista_it",
+    "actual": "2511.7",
+    "label_actual": "consultor de TIC verdes/consultora de TIC verdes",
+    "nuevo": "2511.13",
+    "label_nuevo": "analista de sistemas de TIC",
+    "estado": "corregido_y_validado_esco",
+    "uso": 732,
+    "nota": "Corrección consolidada durante la revisión final del Diccionario MOL."
+   },
+   {
+    "regla_id": "R242_asistente_impuestos",
+    "actual": "2411.1.1",
+    "label_actual": "analista contable",
+    "nuevo": "2411.1.12",
+    "label_nuevo": "asesor fiscal/asesora fiscal",
+    "estado": "corregido_y_validado_esco",
+    "uso": 365,
+    "nota": "Corregido al ámbito fiscal cuando las tareas son asesoramiento/análisis tributario; apoyo contable simple puede corresponder a otra ocupación."
+   },
+   {
+    "regla_id": "R244_coordinador_turno_retail",
+    "actual": "1420.4",
+    "label_actual": "gerente de tienda",
+    "nuevo": "5222.1",
+    "label_nuevo": "supervisor de tienda/supervisora de tienda",
+    "estado": "corregido_y_validado_esco",
+    "uso": 9,
+    "nota": "Corrección consolidada durante la revisión final del Diccionario MOL."
+   },
+   {
+    "regla_id": "R245_analista_cobranzas",
+    "actual": "2411.1.1",
+    "label_actual": "analista contable",
+    "nuevo": "4214.1",
+    "label_nuevo": "cobrador de deudas/cobradora de deudas",
+    "estado": "corregido_y_validado_esco",
+    "uso": 241,
+    "nota": "Corregido: cobranza de deudas no equivale por defecto a analista contable."
+   },
+   {
+    "regla_id": "R264_lider_almacen",
+    "actual": "3122.4",
+    "label_actual": "supervisor de producción/supervisora de producción",
+    "nuevo": "1324.3.4",
+    "label_nuevo": "jefe de almacén/jefa de almacén",
+    "estado": "corregido_y_validado_esco",
+    "uso": 14,
+    "nota": "Corregido: jefatura de almacén no es supervisor de producción."
+   }
+  ],
+  "NULO-AHORA": [
+   {
+    "regla_id": "R250_supervisor_fractura",
+    "estado": "requiere_desambiguacion_funcional",
+    "destino_actual": "3121.1",
+    "isco_actual": "3121",
+    "uso": 1,
+    "nota": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
+   },
+   {
+    "regla_id": "R263_operario_limpieza_industrial",
+    "estado": "validado_isco_sin_esco_especifico",
+    "destino_actual": "9129.2",
+    "isco_actual": "9129",
+    "uso": 4,
+    "nota": "No se fuerza una ocupación ESCO demasiado específica; se conserva la familia ISCO defendible."
+   },
+   {
+    "regla_id": "R160_tecnico_instalador",
+    "estado": "requiere_desambiguacion_funcional",
+    "destino_actual": "7411.1.1.1",
+    "isco_actual": "7411",
+    "uso": 43,
+    "nota": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
+   },
+   {
+    "regla_id": "R49_jefe_generico",
+    "estado": "requiere_desambiguacion_funcional",
+    "destino_actual": "1219.4",
+    "isco_actual": "1219",
+    "uso": 1623,
+    "nota": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
+   },
+   {
+    "regla_id": "R82_operario_farmaceutico",
+    "estado": "validado_isco_sin_esco_especifico",
+    "destino_actual": "8131.20",
+    "isco_actual": "8131",
+    "uso": 69,
+    "nota": "No se fuerza una ocupación ESCO demasiado específica; se conserva la familia ISCO defendible."
+   },
+   {
+    "regla_id": "R158_jefe_operaciones",
+    "estado": "requiere_desambiguacion_funcional",
+    "destino_actual": "1321.2.1",
+    "isco_actual": "1321",
+    "uso": 188,
+    "nota": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
+   },
+   {
+    "regla_id": "R176_auditor_franquicias",
+    "estado": "requiere_desambiguacion_funcional",
+    "destino_actual": "2421.2",
+    "isco_actual": "2421",
+    "uso": 5,
+    "nota": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
+   },
+   {
+    "regla_id": "R235_mecanico",
+    "estado": "requiere_desambiguacion_funcional",
+    "destino_actual": "7231.10",
+    "isco_actual": "7231",
+    "uso": 1242,
+    "nota": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
+   },
+   {
+    "regla_id": "R240_operario_produccion",
+    "estado": "requiere_desambiguacion_funcional",
+    "destino_actual": "9329.1",
+    "isco_actual": "9329",
+    "uso": 1584,
+    "nota": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
+   }
+  ],
+  "REGLA-SIN-ESCO-CODE": [
+   {
+    "regla_id": "R10_electricista_industrial",
+    "nuevo": "7411.1.1.2",
+    "estado": "corregido_y_validado_esco",
+    "isco_actual": null,
+    "label_actual": null,
+    "uso": 0
+   }
+  ]
+ },
+ "c3_estado_x_diff": {
+  "corregido_y_validado_esco": {
+   "DISTINTO": 68,
+   "IGUAL": 44,
+   "REGLA-SIN-ESCO-CODE": 1
+  },
+  "validado_sin_observacion_critica": {
+   "IGUAL": 120,
+   "DISTINTO": 1
+  },
+  "requiere_desambiguacion_funcional": {
+   "NULO-AHORA": 7
+  },
+  "validado_isco_sin_esco_especifico": {
+   "NULO-AHORA": 2
+  }
+ },
+ "c4_cruce": {
+  "resumen_clase_m1": {
+   "CUBIERTA": 11,
+   "HUERFANA": 27,
+   "AMBIGUA": 38,
+   "CUBIERTA-PENDIENTE": 2
+  },
+  "en_hubset": [
+   {
+    "regla_id": "R111_vendedor_generico",
+    "clase_m1": "CUBIERTA",
+    "familia_m1": "vendedor",
+    "uso": 3882,
+    "target_actual": "5223.7",
+    "en_hubset_piloto": true
+   },
+   {
+    "regla_id": "R242_asistente_impuestos",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 365,
+    "target_actual": "2411.1.1",
+    "en_hubset_piloto": true
+   },
+   {
+    "regla_id": "R245_analista_cobranzas",
+    "clase_m1": "AMBIGUA",
+    "familia_m1": "analista | conduccion (gerente/encargado/responsable/jefe) | supervisor",
+    "uso": 241,
+    "target_actual": "2411.1.1",
+    "en_hubset_piloto": true
+   },
+   {
+    "regla_id": "R284_representante_tecnico_comercial",
+    "clase_m1": "AMBIGUA",
+    "familia_m1": "tecnico + kws fuera de territorio",
+    "uso": 33,
+    "target_actual": "5223.7",
+    "en_hubset_piloto": true
+   }
+  ],
+  "top20_huerfanas_con_cambio": [
+   {
+    "regla_id": "R235_mecanico",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 1242,
+    "target_actual": "7231.10",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R106_preventista",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 388,
+    "target_actual": "5243.1",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R242_asistente_impuestos",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 365,
+    "target_actual": "2411.1.1",
+    "en_hubset_piloto": true
+   },
+   {
+    "regla_id": "R152_ecommerce_manager",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 317,
+    "target_actual": "1221.5",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R133_steward_bachero",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 165,
+    "target_actual": "9412.1",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R51_carpintero",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 144,
+    "target_actual": "7522.2",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R225_comis_pasteleria",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 116,
+    "target_actual": "7512.2",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R194_middle_office",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 101,
+    "target_actual": "4311.1",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R172_analista_siniestros",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 78,
+    "target_actual": "3321.3.1",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R120_gomero_balanceador",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 63,
+    "target_actual": "7231.10",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R148_disenador_multimedia",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 37,
+    "target_actual": "2166.9",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R17b_compliance_financiero",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 36,
+    "target_actual": "2413.1",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R53_operario_plastico",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 35,
+    "target_actual": "8142.9",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R182_tecnico_electromedicina",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 34,
+    "target_actual": "2269.8.1",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R29_modelista_patronista",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 30,
+    "target_actual": "7532.6",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R154_auditor_inventario",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 29,
+    "target_actual": "4321.1",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R286_auxiliar_rrhh",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 19,
+    "target_actual": "2423.3",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R76_fonoaudiologo",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 17,
+    "target_actual": "2266.1",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R198_bell_boy_botones",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 14,
+    "target_actual": "4229.2",
+    "en_hubset_piloto": false
+   },
+   {
+    "regla_id": "R200_extraccionista_laboratorio",
+    "clase_m1": "HUERFANA",
+    "familia_m1": "",
+    "uso": 14,
+    "target_actual": "2269.13",
+    "en_hubset_piloto": false
+   }
+  ]
+ },
+ "c5_nulas": {
+  "n12": 12,
+  "n2": 2,
+  "otras": [],
+  "las12": [
+   {
+    "regla_id": "R208b_analista_compras_generico",
+    "nombre": "Analista de Compras / Comprador (genérico)",
+    "existe_en_matcher": false,
+    "uso": 0,
+    "destino_actual": null,
+    "isco_actual": null,
+    "nota": "Caso trabajado y desambiguado previamente."
+   },
+   {
+    "regla_id": "R214c_analista_comercial_ventas_generico",
+    "nombre": "Analista Comercial / Analista de Ventas",
+    "existe_en_matcher": false,
+    "uso": 0,
+    "destino_actual": null,
+    "isco_actual": null,
+    "nota": "Caso trabajado y desambiguado previamente."
+   },
+   {
+    "regla_id": "R250_supervisor_fractura",
+    "nombre": "Supervisor de Fractura (petrolero)",
+    "existe_en_matcher": true,
+    "uso": 1,
+    "destino_actual": "3121.1",
+    "isco_actual": "3121",
+    "nota": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
+   },
+   {
+    "regla_id": "R160_tecnico_instalador",
+    "nombre": "Técnico Instalador Genérico",
+    "existe_en_matcher": true,
+    "uso": 43,
+    "destino_actual": "7411.1.1.1",
+    "isco_actual": "7411",
+    "nota": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
+   },
+   {
+    "regla_id": "R49_jefe_generico",
+    "nombre": "Jefe/Encargado Genérico",
+    "existe_en_matcher": true,
+    "uso": 1623,
+    "destino_actual": "1219.4",
+    "isco_actual": "1219",
+    "nota": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
+   },
+   {
+    "regla_id": "R158_jefe_operaciones",
+    "nombre": "Jefe de Operaciones",
+    "existe_en_matcher": true,
+    "uso": 188,
+    "destino_actual": "1321.2.1",
+    "isco_actual": "1321",
+    "nota": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
+   },
+   {
+    "regla_id": "R176_auditor_franquicias",
+    "nombre": "Auditor de Franquicias / Establecimientos",
+    "existe_en_matcher": true,
+    "uso": 5,
+    "destino_actual": "2421.2",
+    "isco_actual": "2421",
+    "nota": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
+   },
+   {
+    "regla_id": "R235_mecanico",
+    "nombre": "Mecánico general",
+    "existe_en_matcher": true,
+    "uso": 1242,
+    "destino_actual": "7231.10",
+    "isco_actual": "7231",
+    "nota": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
+   },
+   {
+    "regla_id": "R240_operario_produccion",
+    "nombre": "Operario de producción",
+    "existe_en_matcher": true,
+    "uso": 1584,
+    "destino_actual": "9329.1",
+    "isco_actual": "9329",
+    "nota": "Se retiró el código específico de la versión anterior porque la denominación/condición no permite sostener una ocupación ESCO única con seguridad."
+   },
+   {
+    "regla_id": "R65b_jefe_delegacion_generico",
+    "nombre": "Jefe/a de delegación",
+    "existe_en_matcher": false,
+    "uso": 0,
+    "destino_actual": null,
+    "isco_actual": null,
+    "nota": "No equivale por sí solo a gerente de tienda. Requiere sector y alcance de la delegación."
+   },
+   {
+    "regla_id": "R17c_compliance_no_financiero",
+    "nombre": "Compliance / Cumplimiento normativo no financiero",
+    "existe_en_matcher": false,
+    "uso": 0,
+    "destino_actual": null,
+    "isco_actual": null,
+    "nota": "No forzar abogado. Requiere sector y tareas. El compliance financiero se trata en R17b."
+   },
+   {
+    "regla_id": "R68b_supervisor_gastronomia",
+    "nombre": "Supervisor/a de Operaciones Gastronómicas",
+    "existe_en_matcher": false,
+    "uso": 0,
+    "destino_actual": null,
+    "isco_actual": null,
+    "nota": "No equiparar automáticamente a director de restaurante sin alcance gerencial."
+   }
+  ],
+  "las2": [
+   {
+    "regla_id": "R263_operario_limpieza_industrial",
+    "nombre": "Operario/a de Limpieza Industrial",
+    "existe_en_matcher": true,
+    "uso": 4,
+    "destino_actual": "9129.2",
+    "isco_actual": "9129",
+    "nota": "No se fuerza una ocupación ESCO demasiado específica; se conserva la familia ISCO defendible."
+   },
+   {
+    "regla_id": "R82_operario_farmaceutico",
+    "nombre": "Operario/a de Industria Farmacéutica",
+    "existe_en_matcher": true,
+    "uso": 69,
+    "destino_actual": "8131.20",
+    "isco_actual": "8131",
+    "nota": "No se fuerza una ocupación ESCO demasiado específica; se conserva la familia ISCO defendible."
+   }
+  ]
+ },
+ "c6_auxiliares": [
+  {
+   "regla_id": "R1_skills_cad",
+   "nombre": "Skills CAD/Diseño Técnico",
+   "existe_en_matcher": true,
+   "uso": 238,
+   "nota_cyn": "No forma parte del diccionario de denominaciones/sinónimos. Se conserva aparte por trazabilidad del MOL.",
+   "condicion_keys": [
+    "skills_contiene_alguno"
+   ],
+   "asigna_ocupacion": true,
+   "accion": {
+    "forzar_isco": "3118",
+    "esco_label": "dibujante técnico/dibujante técnica",
+    "esco_code": "3118.3"
+   },
+   "activa": true,
+   "solo_skills": true
+  },
+  {
+   "regla_id": "R2_skills_diseno_grafico",
+   "nombre": "Skills Diseño Gráfico",
+   "existe_en_matcher": true,
+   "uso": 89,
+   "nota_cyn": "No forma parte del diccionario de denominaciones/sinónimos. Se conserva aparte por trazabilidad del MOL.",
+   "condicion_keys": [
+    "skills_contiene_alguno"
+   ],
+   "asigna_ocupacion": true,
+   "accion": {
+    "forzar_isco": "2166",
+    "esco_label": "diseñador gráfico/diseñadora gráfica",
+    "esco_code": "2166.9"
+   },
+   "activa": true,
+   "solo_skills": true
+  },
+  {
+   "regla_id": "R6_sector_gastronomia",
+   "nombre": "Sector Gastronomía",
+   "existe_en_matcher": true,
+   "uso": 0,
+   "nota_cyn": "No forma parte del diccionario de denominaciones/sinónimos. Se conserva aparte por trazabilidad del MOL.",
+   "condicion_keys": [
+    "titulo_o_tareas_contiene_alguno"
+   ],
+   "asigna_ocupacion": false,
+   "accion": {
+    "priorizar_isco_familias": [
+     "141",
+     "512",
+     "513",
+     "941"
+    ],
+    "penalizar_isco_familias": [
+     "312",
+     "313"
+    ]
+   },
+   "activa": true,
+   "solo_skills": false
+  },
+  {
+   "regla_id": "R7_sector_educacion",
+   "nombre": "Sector Educación con Admisiones",
+   "existe_en_matcher": true,
+   "uso": 0,
+   "nota_cyn": "No forma parte del diccionario de denominaciones/sinónimos. Se conserva aparte por trazabilidad del MOL.",
+   "condicion_keys": [
+    "nlp_sector_es",
+    "titulo_contiene_alguno"
+   ],
+   "asigna_ocupacion": false,
+   "accion": {
+    "priorizar_isco_familia": "23",
+    "esco_label_si_asesor": "Asesor academico/asesora academica"
+   },
+   "activa": true,
+   "solo_skills": false
+  },
+  {
+   "regla_id": "R4_nivel_gerencial",
+   "nombre": "Nivel Gerencial con Gente a Cargo",
+   "existe_en_matcher": true,
+   "uso": 0,
+   "nota_cyn": "No forma parte del diccionario de denominaciones/sinónimos. Se conserva aparte por trazabilidad del MOL.",
+   "condicion_keys": [
+    "nlp_seniority_es",
+    "nlp_tiene_gente_cargo",
+    "titulo_contiene_alguno"
+   ],
+   "asigna_ocupacion": false,
+   "accion": {
+    "priorizar_isco_familia": "1",
+    "penalizar_isco_familias": [
+     "2",
+     "3",
+     "5",
+     "9"
+    ]
+   },
+   "activa": true,
+   "solo_skills": false
+  },
+  {
+   "regla_id": "R9_tareas_logisticas",
+   "nombre": "Tareas Logísticas/Almacén",
+   "existe_en_matcher": true,
+   "uso": 0,
+   "nota_cyn": "No forma parte del diccionario de denominaciones/sinónimos. Se conserva aparte por trazabilidad del MOL.",
+   "condicion_keys": [
+    "tareas_contiene_alguno"
+   ],
+   "asigna_ocupacion": false,
+   "accion": {
+    "priorizar_isco_familias": [
+     "432",
+     "933"
+    ],
+    "penalizar_isco_familias": [
+     "243",
+     "261"
+    ]
+   },
+   "activa": true,
+   "solo_skills": false
+  },
+  {
+   "regla_id": "R11_titulo_compuesto",
+   "nombre": "Título Compuesto - Priorizar Primero",
+   "existe_en_matcher": true,
+   "uso": 0,
+   "nota_cyn": "No forma parte del diccionario de denominaciones/sinónimos. Se conserva aparte por trazabilidad del MOL.",
+   "condicion_keys": [
+    "titulo_tiene_patron"
+   ],
+   "asigna_ocupacion": false,
+   "accion": {
+    "usar_primer_rol": true
+   },
+   "activa": false,
+   "solo_skills": false
+  },
+  {
+   "regla_id": "R137_tareas_picking_crossdocking",
+   "nombre": "Tareas Picking/Cross-docking (sin título específico)",
+   "existe_en_matcher": true,
+   "uso": 221,
+   "nota_cyn": "No forma parte del diccionario de denominaciones/sinónimos. Se conserva aparte por trazabilidad del MOL.",
+   "condicion_keys": [
+    "titulo_o_tareas_contiene_alguno",
+    "area_funcional_es",
+    "titulo_no_contiene_alguno"
+   ],
+   "asigna_ocupacion": true,
+   "accion": {
+    "forzar_isco": "9333",
+    "esco_label": "mozo de almacén/moza de almacén",
+    "esco_code": "9333.8"
+   },
+   "activa": true,
+   "solo_skills": false
+  }
+ ],
+ "c7_88_keys": [
+  "schema_version",
+  "proposito",
+  "estado_modelo",
+  "fuentes",
+  "contrato_general",
+  "resumen",
+  "ocupaciones"
+ ]
+}
