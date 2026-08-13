@@ -1,5 +1,5 @@
 {
-  "version": "5.18",
+  "version": "5.19",
   "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-08-13",
@@ -732,16 +732,20 @@
         ]
       },
       "accion": {
-        "forzar_isco": "4222",
-        "esco_label": "agente de centro de atención al cliente",
-        "esco_code": "4222.1"
+        "forzar_isco": "3341",
+        "esco_label": "supervisor de centro de llamadas/supervisora de centro de llamadas",
+        "esco_code": "3341.3"
       },
       "caso_diagnostico": "2156388 - Lider de Atencion al Cliente",
       "activa": true,
       "_linaje": {
         "version_origen": "v51",
         "contexto": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223,",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "4222.1 (agente de centro de atención al cliente)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 4222.1 -> 3341.3",
+        "nota_cyn": "Corregido para funciones de supervisión de equipo de atención/contact center; no clasificar como agente operativo."
       }
     },
     "R22_instalaciones_mantenimiento": {
@@ -762,16 +766,20 @@
         ]
       },
       "accion": {
-        "forzar_isco": "7126",
-        "esco_label": "operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías",
-        "esco_code": "7126.7"
+        "forzar_isco": "1219",
+        "esco_label": "responsable de instalaciones",
+        "esco_code": "1219.1.1"
       },
       "caso_diagnostico": "1118028168 - Coordinador de Instalaciones",
       "activa": true,
       "_linaje": {
         "version_origen": "v51",
         "contexto": "or vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad genera",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "7126.7 (operario de mantenimiento de tuberías/operaria de mantenimiento de tuberías)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 7126.7 -> 1219.1.1",
+        "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
       }
     },
     "R23_responsable_deposito": {
@@ -992,8 +1000,8 @@
       },
       "accion": {
         "forzar_isco": "7532",
-        "esco_label": "patronista de artículos de cuero",
-        "esco_code": "7532.6"
+        "esco_label": "patronista escalador textil/patronista escaladora textil",
+        "esco_code": "7532.3"
       },
       "caso_gold_set": "1118028828 - Modelista textil, 1118106004 - Modelista/Tizadora Audaces",
       "activa": true,
@@ -1001,7 +1009,11 @@
       "_linaje": {
         "version_origen": "v58",
         "contexto": "ng protección: R281-R292 (12 reglas) para proteger 13 regresiones detectadas en",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "7532.6 (patronista de artículos de cuero)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 7532.6 -> 7532.3",
+        "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
       }
     },
     "R29b_sastre_modista": {
@@ -1351,14 +1363,18 @@
       },
       "accion": {
         "forzar_isco": "3341",
-        "esco_label": "supervisor de centro de llamadas/supervisora de centro de llamadas",
-        "esco_code": "3341.3"
+        "esco_label": "director de departamento de administración/directora de departamento de administración",
+        "esco_code": "3341.7"
       },
       "caso_gold_set": "2165301 - Supervisor/a Administración Autos usados",
       "activa": true,
       "nota": "Evita que supervisor admin vaya a ingeniero industrial por skills de optimización",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "3341.3 (supervisor de centro de llamadas/supervisora de centro de llamadas)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 3341.3 -> 3341.7",
+        "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
       }
     },
     "R40_asesor_comercial": {
@@ -1441,15 +1457,19 @@
         ]
       },
       "accion": {
-        "forzar_isco": "1321",
-        "esco_label": "director de fabricación/directora de fabricación",
-        "esco_code": "1321.2"
+        "forzar_isco": "1120",
+        "esco_label": "director de operaciones/directora de operaciones",
+        "esco_code": "1120.4"
       },
       "caso_gold_set": "2162667 - Gerente Operaciones Facility/Catering",
       "activa": true,
       "nota": "ISCO 1321 para ops industriales. Gastronomía va a R116",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "1321.2 (director de fabricación/directora de fabricación)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 1321.2 -> 1120.4",
+        "nota_cyn": "Corregido para dirección global de operaciones empresariales. Si las operaciones son específicamente de producción/fábrica, usar la ocupación sectorial correspondiente."
       }
     },
     "R116_gerente_operaciones_gastronomia": {
@@ -1495,9 +1515,9 @@
         ]
       },
       "accion": {
-        "forzar_isco": "2512",
-        "esco_label": "desarrollador de software/desarrolladora de software",
-        "esco_code": "2512.4"
+        "forzar_isco": "2519",
+        "esco_label": "gestor de cambios y configuración de TIC/gestora de cambios y configuración de TIC",
+        "esco_code": "2519.3"
       },
       "caso_revision_100": "2172191 - DevOps Engineer mal clasificado como operador centro datos",
       "activa": true,
@@ -1505,7 +1525,11 @@
       "_linaje": {
         "version_origen": "v11",
         "contexto": "Agregadas R43-R47: DevOps, Architect, SAP, Integraciones, Data Enginee",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "2512.4 (desarrollador de software/desarrolladora de software)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 2512.4 -> 2519.3",
+        "nota_cyn": "Corregido: ESCO incluye ingeniero DevOps como etiqueta alternativa de gestor de cambios y configuración TIC; si el rol es específicamente cloud, revisar 2512.7."
       }
     },
     "R44_IT_architect": {
@@ -2053,14 +2077,18 @@
         ]
       },
       "accion": {
-        "forzar_isco": "2145",
-        "esco_label": "ingeniero químico/ingeniera química",
-        "esco_code": "2145.1"
+        "forzar_isco": "2262",
+        "esco_label": "especialista en calidad de los productos farmacéuticos",
+        "esco_code": "2262.1.1"
       },
       "activa": true,
       "prioridad": 0,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "2145.1 (ingeniero químico/ingeniera química)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 2145.1 -> 2262.1.1",
+        "nota_cyn": "Corregido: ESCO contempla especialista en calidad de productos farmacéuticos; no ingeniero químico por título solo."
       }
     },
     "R62_auditor_medico": {
@@ -2423,15 +2451,19 @@
       },
       "accion": {
         "forzar_isco": "2266",
-        "esco_label": "audiólogo/audióloga",
-        "esco_code": "2266.1"
+        "esco_label": "terapeuta especializado en trastornos del lenguaje/terapeuta especializada en trastornos del lenguaje",
+        "esco_code": "2266.2"
       },
       "caso_revision_100": "2171937 - Fonoaudióloga",
       "activa": true,
       "nota": "FASE 4 - Fonoaudiólogo = logopeda (ISCO 2266)",
       "prioridad": 1,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "2266.1 (audiólogo/audióloga)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 2266.1 -> 2266.2",
+        "nota_cyn": "Corregido: la función de lenguaje/habla corresponde a terapeuta especializado en trastornos del lenguaje; no a audiólogo por defecto."
       }
     },
     "R77_responsable_compras": {
@@ -2553,15 +2585,19 @@
       },
       "accion": {
         "forzar_isco": "5414",
-        "esco_label": "jefe de equipo de seguridad/jefa de equipo de seguridad",
-        "esco_code": "5414.1.9"
+        "esco_label": "técnico de servicio de respuesta a señales de sistemas de alarma/técnica de servicio de respuesta a señales de sistemas de alarma",
+        "esco_code": "5414.1.7"
       },
       "caso_revision_100": "1118102051 - Operadores de Monitoreo de Alarmas",
       "activa": true,
       "nota": "FASE 4 - Monitoreo alarmas = seguridad",
       "prioridad": 0,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "5414.1.9 (jefe de equipo de seguridad/jefa de equipo de seguridad)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 5414.1.9 -> 5414.1.7",
+        "nota_cyn": "Corregido según regla consolidada MOL y ESCO."
       }
     },
     "R82_operario_farmaceutico": {
@@ -2607,8 +2643,8 @@
       },
       "accion": {
         "forzar_isco": "3341",
-        "esco_label": "supervisor de centro de llamadas/supervisora de centro de llamadas",
-        "esco_code": "3341.3"
+        "esco_label": "analista de calidad en centro de llamadas",
+        "esco_code": "3341.2"
       },
       "caso_revision_100": "1118101077, 1118101058 - Analista Calidad Servicios",
       "activa": true,
@@ -2617,7 +2653,11 @@
       "_linaje": {
         "version_origen": "v51",
         "contexto": "Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "3341.3 (supervisor de centro de llamadas/supervisora de centro de llamadas)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 3341.3 -> 3341.2",
+        "nota_cyn": "Corregido para control de calidad de atención en centro de llamadas/servicio al cliente."
       }
     },
     "R84_operario_acondicionamiento": {
@@ -2636,16 +2676,20 @@
         ]
       },
       "accion": {
-        "forzar_isco": "8131",
-        "esco_label": "operador de control de la fabricación de jabón/operadora de control de la fabricación de jabón",
-        "esco_code": "8131.20"
+        "forzar_isco": "8183",
+        "esco_label": "operario de línea de envasado y embotellado/operaria de línea de envasado y embotellado",
+        "esco_code": "8183.1"
       },
       "caso_revision_100": "1118040252 - Operarios acondicionamiento laboratorio",
       "activa": true,
       "nota": "FASE 5 - Acondicionamiento pharma = operador productos químicos",
       "prioridad": 1,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "8131.20 (operador de control de la fabricación de jabón/operadora de control de la fabricación de jabón)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 8131.20 -> 8183.1",
+        "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
       }
     },
     "R85_supervisor_operaciones": {
@@ -2941,14 +2985,18 @@
       },
       "accion": {
         "forzar_isco": "1346",
-        "esco_label": "gerente de reclamaciones de seguros",
-        "esco_code": "1346.5"
+        "esco_label": "director de entidad bancaria/directora de entidad bancaria",
+        "esco_code": "1346.1"
       },
       "caso_revision_100": "2172211 - Jefe de Delegación (AMPF - venta de créditos)",
       "activa": true,
       "nota": "Validacion v1.0 - Jefe delegación financiera = 1346, prioridad sobre R65 genérica",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "1346.5 (gerente de reclamaciones de seguros)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 1346.5 -> 1346.1",
+        "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
       }
     },
     "R95_tech_lead_ia_ml": {
@@ -3053,14 +3101,18 @@
         ]
       },
       "accion": {
-        "forzar_isco": "3321",
-        "esco_label": "asesor de seguros/asesora de seguros",
-        "esco_code": "3321.3.1"
+        "forzar_isco": "3322",
+        "esco_label": "representante comercial",
+        "esco_code": "3322.1"
       },
       "caso_validacion": "2170807 - Asesor Medicina Prepaga",
       "activa": true,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "3321.3.1 (asesor de seguros/asesora de seguros)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 3321.3.1 -> 3322.1",
+        "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
       }
     },
     "R100_mucama_hotel": {
@@ -3525,15 +3577,19 @@
         ]
       },
       "accion": {
-        "forzar_isco": "7112",
-        "esco_label": "albañil",
-        "esco_code": "7112.1"
+        "forzar_isco": "9313",
+        "esco_label": "obrero de la construcción/obrera de la construcción",
+        "esco_code": "9313.1"
       },
       "nota": "Personal genérico para obra de construcción → Albañiles (7112)",
       "fix_validacion_humana": "2026-01-20",
       "activa": true,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "7112.1 (albañil)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 7112.1 -> 9313.1",
+        "nota_cyn": "Corregido: personal de obra genérico no debe forzarse a albañil calificado."
       }
     },
     "R123_asesor_tecnico_comercial": {
@@ -3744,15 +3800,19 @@
         ]
       },
       "accion": {
-        "forzar_isco": "3341",
-        "esco_label": "supervisor de centro de llamadas/supervisora de centro de llamadas",
-        "esco_code": "3341.3"
+        "forzar_isco": "1219",
+        "esco_label": "director del departamento de control de la calidad/directora del departamento de control de la calidad",
+        "esco_code": "1219.7"
       },
       "nota": "Supervisor QA/procesos → 3341 (supervisor calidad), NO director (1321). Fix validacion 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
       "activa": true,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "3341.3 (supervisor de centro de llamadas/supervisora de centro de llamadas)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 3341.3 -> 1219.7",
+        "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
       }
     },
     "R131_hoteleria_hospitalaria": {
@@ -3773,16 +3833,20 @@
         ]
       },
       "accion": {
-        "forzar_isco": "5151",
-        "esco_label": "supervisor de servicio de limpieza/supervisora de servicio de limpieza",
-        "esco_code": "5151.2"
+        "forzar_isco": "1219",
+        "esco_label": "responsable de instalaciones",
+        "esco_code": "1219.1.1"
       },
       "caso_referencia": "2172389 - Tecnico/a de Hoteleria en Salud",
       "activa": true,
       "_linaje": {
         "version_origen": "v28",
         "contexto": "Agregadas R131 hoteleria hospitalaria, R132 medicina prepaga",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "5151.2 (supervisor de servicio de limpieza/supervisora de servicio de limpieza)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 5151.2 -> 1219.1.1",
+        "nota_cyn": "Consolidado para funciones de soporte e instalaciones en sector salud."
       }
     },
     "R132_vendedor_medicina_prepaga": {
@@ -4086,9 +4150,9 @@
         ]
       },
       "accion": {
-        "forzar_isco": "9333",
-        "esco_label": "mozo de almacén/moza de almacén",
-        "esco_code": "9333.8"
+        "forzar_isco": "6112",
+        "esco_label": "bodeguero vinícola/bodeguera vinícola",
+        "esco_code": "6112.4"
       },
       "activa": true,
       "_caso": "ID 1118104232 Peones y Bodegueros",
@@ -4098,7 +4162,11 @@
       "_linaje": {
         "version_origen": "v31",
         "contexto": "Agregadas R139-R142: Repositor, Mucama hotel, Peón depósito, Bodeguero -> 9",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "9333.8 (mozo de almacén/moza de almacén)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 9333.8 -> 6112.4",
+        "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
       }
     },
     "R143_jefe_cocina": {
@@ -4409,9 +4477,9 @@
         ]
       },
       "accion": {
-        "forzar_isco": "4321",
-        "esco_label": "coordinador de inventario/coordinadora de inventario",
-        "esco_code": "4321.1"
+        "forzar_isco": "4312",
+        "esco_label": "auditor/auditora",
+        "esco_code": "4312.1"
       },
       "caso_referencia": "1116677957 - Auditores Control de Stock",
       "activa": true,
@@ -4419,7 +4487,11 @@
       "_linaje": {
         "version_origen": "v38",
         "contexto": "R154: Auditor stock -> 4321, R155: Asesor telefonico -> 4222",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "4321.1 (coordinador de inventario/coordinadora de inventario)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 4321.1 -> 4312.1",
+        "nota_cyn": "Corregido según regla consolidada MOL: auditor de inventarios corresponde a auditor, no coordinador de inventario."
       }
     },
     "R155_asesor_telefonico": {
@@ -5240,9 +5312,9 @@
         ]
       },
       "accion": {
-        "forzar_isco": "2269",
-        "esco_label": "técnico en imagen para diagnóstico/técnica en imagen para diagnóstico",
-        "esco_code": "2269.8.1"
+        "forzar_isco": "3114",
+        "esco_label": "ingeniero técnico especializado en productos sanitarios/ingeniera técnica especializada en productos sanitarios",
+        "esco_code": "3114.1.5"
       },
       "_nota_isco": "2269 (técnico equipos médicos) es lo más cercano a electromedicina en ESCO",
       "caso_diagnostico": "1118073665 - Técnicos en Electro Medicina",
@@ -5251,7 +5323,11 @@
       "_linaje": {
         "version_origen": "v43",
         "contexto": "R181-R182: Personal mantenimiento -> 7233, Tecnico electromedicin",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "2269.8.1 (técnico en imagen para diagnóstico/técnica en imagen para diagnóstico)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 2269.8.1 -> 3114.1.5",
+        "nota_cyn": "Corregido: mantenimiento, instalación, calibración y conservación de equipos médicos no equivale a técnico en imagen diagnóstica."
       }
     },
     "R183_bobinador_transformadores": {
@@ -5265,16 +5341,20 @@
         ]
       },
       "accion": {
-        "forzar_isco": "7411",
-        "esco_label": "electricista industrial",
-        "esco_code": "7411.1.1.2"
+        "forzar_isco": "7412",
+        "esco_label": "mecánico electricista/mecánica electricista",
+        "esco_code": "7412.3"
       },
       "_nota": "v4.4: Bobinador eléctrico → electricista industrial",
       "activa": true,
       "_linaje": {
         "version_origen": "v44",
         "contexto": "R183-R197: Bobinador, Carnicero, Guardavidas, Kinesiologo, A",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "7411.1.1.2 (electricista industrial)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 7411.1.1.2 -> 7412.3",
+        "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
       }
     },
     "R184_carnicero_depostador": {
@@ -5627,16 +5707,20 @@
         ]
       },
       "accion": {
-        "forzar_isco": "4229",
-        "esco_label": "conserje de hotel",
-        "esco_code": "4229.2"
+        "forzar_isco": "9621",
+        "esco_label": "mozo de equipaje/moza de equipaje",
+        "esco_code": "9621.2"
       },
       "_nota": "v4.5: Bell boy → conserje hotel",
       "activa": true,
       "_linaje": {
         "version_origen": "v45",
         "contexto": "R198-R202: Bell boy, Foguista, Extraccionista, Inspector API",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "4229.2 (conserje de hotel)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 4229.2 -> 9621.2",
+        "nota_cyn": "Corregido: botones se corresponde con mozo de equipaje, no con conserje de hotel."
       }
     },
     "R199_foguista_caldera": {
@@ -5671,14 +5755,18 @@
         ]
       },
       "accion": {
-        "forzar_isco": "2269",
-        "esco_label": "técnico en laboratorio clínico y biomédico/técnica en laboratorio clínico y biomédico",
-        "esco_code": "2269.13"
+        "forzar_isco": "5329",
+        "esco_label": "enfermero/enfermera",
+        "esco_code": "5329.2"
       },
       "_nota": "v4.5: Extraccionista → técnico laboratorio clínico",
       "activa": true,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "2269.13 (técnico en laboratorio clínico y biomédico/técnica en laboratorio clínico y biomédico)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 2269.13 -> 5329.2",
+        "nota_cyn": "Corregido según regla consolidada MOL cuando la función es extracción de sangre/enfermería de extracciones; laboratorio analítico es otra ocupación."
       }
     },
     "R201_inspector_industrial": {
@@ -6570,14 +6658,18 @@
       },
       "accion": {
         "forzar_isco": "7512",
-        "esco_label": "chocolatero/chocolatera",
-        "esco_code": "7512.2"
+        "esco_label": "panadero/panadera",
+        "esco_code": "7512.1"
       },
       "activa": true,
       "_fecha": "2026-02-20",
       "nota": "Sprint 7 V31: 2 casos",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "7512.2 (chocolatero/chocolatera)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 7512.2 -> 7512.1",
+        "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
       }
     },
     "R235_mecanico": {
@@ -6869,9 +6961,9 @@
         ]
       },
       "accion": {
-        "forzar_isco": "1420",
-        "esco_label": "gerente de tienda",
-        "esco_code": "1420.4"
+        "forzar_isco": "5222",
+        "esco_label": "supervisor de tienda/supervisora de tienda",
+        "esco_code": "5222.1"
       },
       "caso_diagnostico": "1118101649 - Coordinador de Turno - Cadena de Cines",
       "fecha_creacion": "2026-02-23",
@@ -6880,7 +6972,11 @@
       "_linaje": {
         "training_pair_ids": [
           "TP-022"
-        ]
+        ],
+        "destino_anterior_k": "1420.4 (gerente de tienda)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 1420.4 -> 5222.1",
+        "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
       }
     },
     "R245_analista_cobranzas": {
@@ -7689,15 +7785,19 @@
         ]
       },
       "accion": {
-        "forzar_isco": "3122",
-        "esco_label": "supervisor de producción/supervisora de producción",
-        "esco_code": "3122.4"
+        "forzar_isco": "1324",
+        "esco_label": "jefe de almacén/jefa de almacén",
+        "esco_code": "1324.3.4"
       },
       "activa": true,
       "fecha_creacion": "2026-02-27",
       "nota": "Issue Cynthia: 2175371 líder almacén iba a 9333 mozo almacén. Es supervisión, no mozo.",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "3122.4 (supervisor de producción/supervisora de producción)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 3122.4 -> 1324.3.4",
+        "nota_cyn": "Corregido: jefatura de almacén no es supervisor de producción."
       }
     },
     "R265_controlador_logistico": {
@@ -7778,8 +7878,8 @@
       },
       "accion": {
         "forzar_isco": "3411",
-        "esco_label": "auxiliar judicial",
-        "esco_code": "3411.4"
+        "esco_label": "asistente jurídico/asistente jurídica",
+        "esco_code": "3411.7"
       },
       "activa": true,
       "_caso": "Issue Cyn #1118059308 - Estudiante de Abogacía. No es abogado sino auxiliar.",
@@ -7789,7 +7889,11 @@
           "TP-585"
         ],
         "version_origen": "v55",
-        "contexto": "chador emergencias, R267 auxiliar legal, R268 setter comercial, R269 team leader"
+        "contexto": "chador emergencias, R267 auxiliar legal, R268 setter comercial, R269 team leader",
+        "destino_anterior_k": "3411.4 (auxiliar judicial)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 3411.4 -> 3411.7",
+        "nota_cyn": "Corregido según regla consolidada MOL. 'Estudiante de abogacía' se trata como requisito, no como ocupación."
       }
     },
     "R268_setter_comercial": {
@@ -7844,9 +7948,9 @@
         ]
       },
       "accion": {
-        "forzar_isco": "2423",
-        "esco_label": "responsable de recursos humanos",
-        "esco_code": "2423.3"
+        "forzar_isco": "1212",
+        "esco_label": "gestor de adquisición de talento/gestora de adquisición de talento",
+        "esco_code": "1212.5"
       },
       "activa": true,
       "_caso": "Issue Cyn #1118124320 - Team Leader de Reclutamiento.",
@@ -7857,7 +7961,11 @@
           "TP-588"
         ],
         "version_origen": "v55",
-        "contexto": "8 setter comercial, R269 team leader reclutamiento, R270 tecnico incidencias, R2"
+        "contexto": "8 setter comercial, R269 team leader reclutamiento, R270 tecnico incidencias, R2",
+        "destino_anterior_k": "2423.3 (responsable de recursos humanos)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 2423.3 -> 1212.5",
+        "nota_cyn": "Corregido para conducción de adquisición/selección de talento."
       }
     },
     "R270_tecnico_incidencias": {
@@ -7934,9 +8042,9 @@
         ]
       },
       "accion": {
-        "forzar_isco": "2522",
-        "esco_label": "administrador de sistemas de TIC/administradora de sistemas de TIC",
-        "esco_code": "2522.1"
+        "forzar_isco": "3511",
+        "esco_label": "operador de centro de datos/operadora de centro de datos",
+        "esco_code": "3511.1"
       },
       "activa": true,
       "_caso": "Issue Cyn #1117978310 - Analista Corporativo operaciones Data Center.",
@@ -7947,7 +8055,11 @@
           "TP-593"
         ],
         "version_origen": "v56",
-        "contexto": "Issue Cyn: R272 analista operaciones data center -> 2522 sysadmin"
+        "contexto": "Issue Cyn: R272 analista operaciones data center -> 2522 sysadmin",
+        "destino_anterior_k": "2522.1 (administrador de sistemas de TIC/administradora de sistemas de TIC)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 2522.1 -> 3511.1",
+        "nota_cyn": "Corregido según regla consolidada MOL de operador de centro de datos."
       }
     },
     "R273_advisor_soporte_app": {
@@ -8104,9 +8216,9 @@
         ]
       },
       "accion": {
-        "forzar_isco": "7233",
-        "esco_label": "mecánico de maquinaria industrial/mecánica de maquinaria industrial",
-        "esco_code": "7233.7"
+        "forzar_isco": "7412",
+        "esco_label": "mecánico electricista/mecánica electricista",
+        "esco_code": "7412.3"
       },
       "activa": true,
       "_caso": "Issue Diego #1118019326 - Medio oficial mantenimiento rubro plástico.",
@@ -8115,7 +8227,11 @@
       "_linaje": {
         "training_pair_ids": [
           "TP-598"
-        ]
+        ],
+        "destino_anterior_k": "7233.7 (mecánico de maquinaria industrial/mecánica de maquinaria industrial)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 7233.7 -> 7412.3",
+        "nota_cyn": "Corregido según regla consolidada MOL para mantenimiento eléctrico/electromecánico industrial."
       }
     },
     "R278_analista_oficina_tecnica_construccion": {
@@ -8320,16 +8436,20 @@
         ]
       },
       "accion": {
-        "forzar_isco": "5223",
-        "esco_label": "vendedor especializado/vendedora especializada",
-        "esco_code": "5223.7"
+        "forzar_isco": "2433",
+        "esco_label": "representante técnico de ventas/representante técnica de ventas",
+        "esco_code": "2433.6"
       },
       "activa": true,
       "_caso": "1118129325 - Representante Técnico Comercial",
       "_fecha": "2026-03-12",
       "nota": "Representante técnico comercial es vendedor especializado (5223), no director de ventas",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "5223.7 (vendedor especializado/vendedora especializada)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 5223.7 -> 2433.6",
+        "nota_cyn": "Corregido según regla consolidada MOL: representante técnico de ventas."
       }
     },
     "R285_coordinador_rrhh": {
@@ -8350,16 +8470,20 @@
         ]
       },
       "accion": {
-        "forzar_isco": "1212",
-        "esco_label": "director de recursos humanos/directora de recursos humanos",
-        "esco_code": "1212.2"
+        "forzar_isco": "2423",
+        "esco_label": "responsable de recursos humanos",
+        "esco_code": "2423.3"
       },
       "activa": true,
       "_caso": "1118145945 - Coordinador/a de Recursos Humanos",
       "_fecha": "2026-03-12",
       "nota": "Coordinador RRHH es nivel directivo RRHH (1212)",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "1212.2 (director de recursos humanos/directora de recursos humanos)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 1212.2 -> 2423.3",
+        "nota_cyn": "Corregido por nivel funcional: coordinación/responsabilidad de RRHH sin alcance directivo global."
       }
     },
     "R286_auxiliar_rrhh": {
@@ -8374,16 +8498,20 @@
         ]
       },
       "accion": {
-        "forzar_isco": "2423",
-        "esco_label": "responsable de recursos humanos",
-        "esco_code": "2423.3"
+        "forzar_isco": "4416",
+        "esco_label": "ayudante de recursos humanos",
+        "esco_code": "4416.1"
       },
       "activa": true,
       "_caso": "1118151100 - Auxiliar de RRHH",
       "_fecha": "2026-03-12",
       "nota": "Auxiliar RRHH es personal de RRHH (2423). Baseline daba ingeniero industrial (mal)",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "2423.3 (responsable de recursos humanos)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 2423.3 -> 4416.1",
+        "nota_cyn": "Corregido: auxiliar RRHH no equivale a responsable de RRHH."
       }
     },
     "R287_herrero": {
@@ -8512,16 +8640,20 @@
         ]
       },
       "accion": {
-        "forzar_isco": "4311",
-        "esco_label": "empleado de contabilidad/empleada de contabilidad",
-        "esco_code": "4311.1"
+        "forzar_isco": "3343",
+        "esco_label": "responsable de apoyo a la contratación",
+        "esco_code": "3343.1.5"
       },
       "activa": true,
       "_caso": "2170436 - Auxiliar de Proveedores",
       "_fecha": "2026-03-12",
       "nota": "Auxiliar proveedores es administrativo contable (4311)",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "4311.1 (empleado de contabilidad/empleada de contabilidad)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 4311.1 -> 3343.1.5",
+        "nota_cyn": "Corregido: apoyo a contratación/compras; no contabilidad por defecto."
       }
     },
     "R292_pasante_marketing": {
@@ -8743,9 +8875,9 @@
         ]
       },
       "accion": {
-        "forzar_isco": "1324",
-        "esco_label": "director de compras/directora de compras",
-        "esco_code": "1324.8.2"
+        "forzar_isco": "3323",
+        "esco_label": "jefe de compras/jefa de compras",
+        "esco_code": "3323.2"
       },
       "activa": true,
       "_caso": "1118157618 - Jefatura de Compras Non Food",
@@ -8754,7 +8886,11 @@
       "_linaje": {
         "version_origen": "v59",
         "contexto": "R293-R299: 7 reglas para cubrir regresiones del LoRA fine-tuning",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k": "1324.8.2 (director de compras/directora de compras)",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "correccion_destino: 1324.8.2 -> 3323.2",
+        "nota_cyn": "Corregido: jefe de compras no equivale automáticamente a director de compras."
       }
     },
     "R300_hrbp": {
@@ -10672,5 +10808,6 @@
   "_cambios_v515": "Fix R24 label ventas. New R312 consultor nómina→2519, R313 encargado logística→1324, R314 advisor IT→2519, R315 metalúrgico→7223, R316 rep ventas industrial→2433, R317 viajante→3322, R318 operador producción→8142, R319 corte costura→8153. Batch 2 correcciones Cynthia.",
   "_cambios_v516": "Fix R235 label mecánico vehículos, R162 ISCO 7411→7133 edilicio, R23 ISCO 4321→1324 depósito. New R320 ventas telemarketing→5244, R321 instalador seguridad→3522, R322 mecánico industrial→7233. Batch 3 correcciones Cynthia.",
   "_cambios_v517_k_t1": "[FRENTE K T1] auditoria_cyn_2026-08-12: retiro de las 7 reglas requiere_desambiguacion_funcional (R49, R240=P-17, R235, R158, R160, R176, R250). Destinos del audit, condiciones del repo vivo.",
-  "_cambios_v518_k_t3a": "[FRENTE K T3A] auditoria_cyn_2026-08-12: 34 correcciones de destino (solo accion.esco_code/esco_label/forzar_isco; condiciones intactas)."
+  "_cambios_v518_k_t3a": "[FRENTE K T3A] auditoria_cyn_2026-08-12: 34 correcciones de destino (solo accion.esco_code/esco_label/forzar_isco; condiciones intactas).",
+  "_cambios_v519_k_t3b": "[FRENTE K T3B] auditoria_cyn_2026-08-12: 34 correcciones de destino (solo accion.esco_code/esco_label/forzar_isco; condiciones intactas)."
 }
