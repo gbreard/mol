@@ -1,5 +1,5 @@
 {
-  "version": "5.19",
+  "version": "5.20",
   "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-08-13",
@@ -216,11 +216,58 @@
         "esco_code": "3240.2"
       },
       "caso_gold_set": "1117995368 - Asesor Nutrición Animal",
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "version_origen": "v51",
         "contexto": "Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R8a_nutricionista_animal, R8b_tecnico_veterinario)"
+      }
+    },
+    "R8b_tecnico_veterinario": {
+      "nombre": "Técnico/a veterinario/a",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "técnico veterinario",
+          "técnica veterinaria",
+          "tecnico veterinario",
+          "tecnica veterinaria"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3240",
+        "esco_label": "técnico veterinario/técnica veterinaria",
+        "esco_code": "3240.2"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R8_nutricion_animal",
+        "nota_cyn": "Mantener solo cuando las tareas son de asistencia veterinaria."
+      }
+    },
+    "R8a_nutricionista_animal": {
+      "nombre": "Nutricionista animal",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "nutricionista animal",
+          "nutrición animal",
+          "nutricion animal"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2131",
+        "esco_label": "nutricionista animal",
+        "esco_code": "2131.2"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R8_nutricion_animal",
+        "nota_cyn": "Separado de veterinaria. ESCO específico validado."
       }
     },
     "R9_tareas_logisticas": {
@@ -529,11 +576,56 @@
         "esco_code": "5132.1.1"
       },
       "caso_diagnostico": "2155040 - ENCARGADAS/OS - HELADERAS/OS - BARISTAS",
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "version_origen": "v40",
         "contexto": "rmaceutico -> 2262, R160: Tecnico instalador -> 7411",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R16a_barista, R16b_heladero)"
+      }
+    },
+    "R16b_heladero": {
+      "nombre": "Heladero/a",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "heladero",
+          "heladera"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5246",
+        "esco_label": "trabajador de servicio de restauración/trabajadora de servicio de restauración",
+        "esco_code": "5246.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R16_barista_heladero",
+        "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
+      }
+    },
+    "R16a_barista": {
+      "nombre": "Barista / Cafetero/a",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "barista",
+          "cafetero",
+          "cafetera"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5132",
+        "esco_label": "barista",
+        "esco_code": "5132.1.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R16_barista_heladero",
+        "nota_cyn": "Separado de heladero."
       }
     },
     "R17_compliance_legal": {
@@ -1668,12 +1760,58 @@
         "esco_label": "secretario/secretaria",
         "esco_code": "4120.1"
       },
-      "activa": true,
+      "activa": false,
       "nota": "FASE 3 v3.2.3 - Secretarias van a ISCO 4120",
       "_linaje": {
         "version_origen": "v12",
         "contexto": "Agregadas R48-R52: Secretaria, Jefe generico, Back office, Carpintero,",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R48a_secretaria, R48b_asistente_direccion)"
+      }
+    },
+    "R48b_asistente_direccion": {
+      "nombre": "Asistente Ejecutivo/a / Asistente de Dirección",
+      "prioridad": 80,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "asistente ejecutivo",
+          "asistente ejecutiva",
+          "asistente de dirección",
+          "asistente de direccion"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3343",
+        "esco_label": "asistente de dirección",
+        "esco_code": "3343.3"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R48_secretaria_admin",
+        "nota_cyn": "Usar cuando asiste a dirección/ejecutivos."
+      }
+    },
+    "R48a_secretaria": {
+      "nombre": "Secretario/a",
+      "prioridad": 80,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "secretario",
+          "secretaria"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4120",
+        "esco_label": "secretario/secretaria",
+        "esco_code": "4120.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R48_secretaria_admin",
+        "nota_cyn": "Secretaría general."
       }
     },
     "R49_jefe_generico": {
@@ -1819,12 +1957,63 @@
         "esco_label": "desarrollador de software/desarrolladora de software",
         "esco_code": "2512.4"
       },
-      "activa": true,
+      "activa": false,
       "nota": "FASE 3 v3.2.3 - Ingenieros IA/ML son desarrolladores",
       "_linaje": {
         "version_origen": "v12",
         "contexto": "Agregadas R48-R52: Secretaria, Jefe generico, Back office, Carpintero, Ing",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R52a_data_science, R52b_ia_ml_generico)"
+      }
+    },
+    "R52b_ia_ml_generico": {
+      "nombre": "Ingeniero/a de IA / Machine Learning Engineer",
+      "prioridad": 95,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "ingeniero de ia",
+          "ingeniera de ia",
+          "machine learning engineer",
+          "ml engineer",
+          "ingeniero de machine learning",
+          "ingeniera de machine learning"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2511",
+        "esco_label": "ingeniero de inteligencia artificial/ingeniera de inteligencia artificial",
+        "esco_code": "2511.11"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R52_ingeniero_ia_ml",
+        "nota_cyn": "Consolidado. No se conserva Tech Lead / Arquitecto IA como denominación canónica por su ambigüedad."
+      }
+    },
+    "R52a_data_science": {
+      "nombre": "Científico/a de datos / Data Scientist",
+      "prioridad": 95,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "científico de datos",
+          "científica de datos",
+          "cientifico de datos",
+          "cientifica de datos",
+          "data scientist"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2511",
+        "esco_label": "científico de datos/científica de datos",
+        "esco_code": "2511.4"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R52_ingeniero_ia_ml",
+        "nota_cyn": "Separado de IA/ML genérico."
       }
     },
     "R53_operario_plastico": {
@@ -2190,13 +2379,38 @@
         "esco_label": "gerente de tienda",
         "esco_code": "1420.4"
       },
-      "activa": true,
+      "activa": false,
       "prioridad": -1,
       "nota": "v4.7: prioridad -1 para que semántico gane cuando score > 0.85 (bancario vs retail). 6 V27 fix.",
       "_linaje": {
         "version_origen": "v51",
         "contexto": "general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R65a_jefe_sucursal_retail, R65b_jefe_delegacion_generico)"
+      }
+    },
+    "R65a_jefe_sucursal_retail": {
+      "nombre": "Jefe/a o gerente de sucursal/local comercial",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "jefe de sucursal comercial",
+          "jefa de sucursal comercial",
+          "gerente de sucursal comercial",
+          "gerente de local comercial"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1420",
+        "esco_label": "gerente de tienda",
+        "esco_code": "1420.4"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R65_jefe_delegacion",
+        "nota_cyn": "Usar solo cuando se trate de tienda/local minorista."
       }
     },
     "R66_arquitecto_software": {
@@ -2274,13 +2488,15 @@
         "esco_code": "1412.1"
       },
       "caso_revision_100": "1118091304, 1118097995 - Gerente/Supervisor Operaciones Gastronómico",
-      "activa": true,
+      "activa": false,
       "nota": "FASE 4 - Operaciones en gastronomía = gerente restaurante, NO director fabricación",
       "prioridad": 0,
       "_linaje": {
         "version_origen": "v13",
         "contexto": "Agregadas R68-R82: Gastronomía, Financiero, Retail, Aluminio, Product",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R68b_supervisor_gastronomia)"
       }
     },
     "R69_analista_financiero": {
@@ -2378,11 +2594,59 @@
         "esco_code": "7214.2"
       },
       "caso_revision_100": "2172208 - Carpintero de Aluminio / Cortador Vidriero",
-      "activa": true,
+      "activa": false,
       "nota": "FASE 4 - Carpintero aluminio es carpintería metálica, NO ebanista",
       "prioridad": 1,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R72a_vidriero, R72b_carpintero_aluminio)"
+      }
+    },
+    "R72b_carpintero_aluminio": {
+      "nombre": "Carpintero/a de aluminio / Instalador/a de aberturas de aluminio",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "carpintero de aluminio",
+          "carpintera de aluminio",
+          "instalador de aberturas de aluminio",
+          "instaladora de aberturas de aluminio"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7115",
+        "esco_label": "instalador de ventanas/instaladora de ventanas",
+        "esco_code": "7115.6"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R72_carpintero_aluminio",
+        "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
+      }
+    },
+    "R72a_vidriero": {
+      "nombre": "Vidriero/a",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "vidriero",
+          "vidriera",
+          "cristalero",
+          "cristalera"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7125",
+        "esco_label": "cristalero/cristalera",
+        "esco_code": "7125.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R72_carpintero_aluminio",
+        "nota_cyn": "ESCO: cristalero/cristalera; 'vidriero' es etiqueta alternativa."
       }
     },
     "R74_supervisor_ventas": {
@@ -2482,11 +2746,37 @@
         "esco_code": "1324.8"
       },
       "caso_revision_100": "2172098 - Responsable Compras y Logística",
-      "activa": true,
+      "activa": false,
       "nota": "FASE 4 - Responsable compras = director supply chain",
       "prioridad": 1,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R77b_direccion_supply_chain)"
+      }
+    },
+    "R77b_direccion_supply_chain": {
+      "nombre": "Gerente/Director/a de Cadena de Suministro",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "gerente de cadena de suministro",
+          "director de cadena de suministro",
+          "directora de cadena de suministro",
+          "supply chain manager",
+          "supply chain director"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1324",
+        "esco_label": "director de la cadena de suministro/directora de la cadena de suministro",
+        "esco_code": "1324.8"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R77_responsable_compras",
+        "nota_cyn": "Usar solo cuando dirige integralmente compras/logística/supply chain."
       }
     },
     "R78_analista_tecnico_funcional_it": {
@@ -2711,11 +3001,36 @@
         "esco_code": "5222.1"
       },
       "caso_revision_100": "1118097995 - Supervisor Operaciones Gastronomia",
-      "activa": true,
+      "activa": false,
       "nota": "FASE 5 - Supervisor ops gastro/retail = supervisor tienda",
       "prioridad": 1,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R85a_supervisor_operaciones_retail)"
+      }
+    },
+    "R85a_supervisor_operaciones_retail": {
+      "nombre": "Supervisor/a de Operaciones de Local/Tienda",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "supervisor de operaciones de local",
+          "supervisora de operaciones de local",
+          "supervisor de tienda",
+          "supervisora de tienda"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5222",
+        "esco_label": "supervisor de tienda/supervisora de tienda",
+        "esco_code": "5222.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R85_supervisor_operaciones",
+        "nota_cyn": "Retail/local."
       }
     },
     "R86_subencargado_local": {
@@ -2736,11 +3051,59 @@
         "esco_code": "5222.1"
       },
       "caso_revision_100": "1118101812 - Subencargado de Local Retail",
-      "activa": true,
+      "activa": false,
       "nota": "FASE 5 - Subencargado retail = supervisor tienda",
       "prioridad": 1,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R86a_subencargado_local, R86b_asistente_local)"
+      }
+    },
+    "R86b_asistente_local": {
+      "nombre": "Asistente/Empleado/a de Local y Ventas",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "asistente de local",
+          "empleado de local",
+          "empleada de local",
+          "asistente de ventas de local"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5223",
+        "esco_label": "vendedor/vendedora",
+        "esco_code": "5223.4"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R86_subencargado_local",
+        "nota_cyn": "Usar cuando no supervisa y realiza atención/venta."
+      }
+    },
+    "R86a_subencargado_local": {
+      "nombre": "Subencargado/a de Local/Tienda",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "subencargado de local",
+          "subencargada de local",
+          "subencargado de tienda",
+          "subencargada de tienda"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5222",
+        "esco_label": "supervisor de tienda/supervisora de tienda",
+        "esco_code": "5222.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R86_subencargado_local",
+        "nota_cyn": "Usar cuando supervisa el funcionamiento del local."
       }
     },
     "R87_administrativo_ecommerce": {
@@ -3056,9 +3419,78 @@
         "esco_code": "5142.6"
       },
       "caso_validacion": "1118102076 - Profesionales de Belleza de Manos, Pies, Cejas y Pestanas",
+      "activa": false,
+      "_linaje": {
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R96a_manicura, R96b_pedicura, R96c_esteticista)"
+      }
+    },
+    "R96c_esteticista": {
+      "nombre": "Esteticista / Especialista en cejas y tratamientos estéticos",
+      "prioridad": 96,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "esteticista",
+          "especialista en cejas",
+          "especialista en tratamientos estéticos",
+          "especialista en tratamientos esteticos"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5142",
+        "esco_label": "esteticista",
+        "esco_code": "5142.1"
+      },
       "activa": true,
       "_linaje": {
-        "requiere_revision": true
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R96_profesional_belleza",
+        "nota_cyn": "Tratamientos estéticos generales; pestañas específicas requieren verificar tareas."
+      }
+    },
+    "R96b_pedicura": {
+      "nombre": "Pedicuro/a",
+      "prioridad": 96,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "pedicuro",
+          "pedicura",
+          "pedicurista"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5142",
+        "esco_label": "pedicuro/pedicura",
+        "esco_code": "5142.8"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R96_profesional_belleza",
+        "nota_cyn": "Pedicura estética."
+      }
+    },
+    "R96a_manicura": {
+      "nombre": "Manicuro/a",
+      "prioridad": 96,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "manicuro",
+          "manicura",
+          "manicurista"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5142",
+        "esco_label": "manicuro/manicura",
+        "esco_code": "5142.6"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R96_profesional_belleza",
+        "nota_cyn": "Manicura."
       }
     },
     "R97_coordinador_deposito": {
@@ -3214,12 +3646,81 @@
         "esco_code": "2263.3"
       },
       "caso_demo": "1118115976 - Licenciado en Seguridad e Higiene",
-      "activa": true,
+      "activa": false,
       "_fix_2026_04_08": "Label corregido de \"especialista en seguridad alimentaria\" a \"responsable de salud y seguridad\"",
       "_linaje": {
         "version_origen": "v514",
         "contexto": "Fix R107 label seguridad, fix R49 tilde depósito, fix R33 exclui",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R107a_responsable_seguridad_higiene, R107b_inspector_seguridad_higiene, R107c_seguridad_higiene_generico)"
+      }
+    },
+    "R107c_seguridad_higiene_generico": {
+      "nombre": "Seguridad e Higiene / Higiene y Seguridad Laboral",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "seguridad e higiene",
+          "higiene y seguridad",
+          "higiene y seguridad laboral"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3257",
+        "esco_label": "inspector de seguridad e higiene en el trabajo/inspectora de seguridad e higiene en el trabajo",
+        "esco_code": "3257.7"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R107_seguridad_higiene",
+        "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
+      }
+    },
+    "R107b_inspector_seguridad_higiene": {
+      "nombre": "Inspector/a de Seguridad e Higiene",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "inspector de seguridad e higiene",
+          "inspectora de seguridad e higiene",
+          "inspector de higiene y seguridad",
+          "inspectora de higiene y seguridad"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3257",
+        "esco_label": "inspector de seguridad e higiene en el trabajo/inspectora de seguridad e higiene en el trabajo",
+        "esco_code": "3257.7"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R107_seguridad_higiene",
+        "nota_cyn": "ESCO específico para inspección y cumplimiento en el trabajo."
+      }
+    },
+    "R107a_responsable_seguridad_higiene": {
+      "nombre": "Responsable de Seguridad e Higiene",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "responsable de seguridad e higiene",
+          "responsable de higiene y seguridad",
+          "responsable de seguridad y salud laboral"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2263",
+        "esco_label": "responsable de salud y seguridad",
+        "esco_code": "2263.3"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R107_seguridad_higiene",
+        "nota_cyn": "ESCO: responsable de salud y seguridad."
       }
     },
     "R108_jefe_rrhh": {
@@ -3754,9 +4255,57 @@
       },
       "nota": "Programador/Operario CNC = operador máquinas herramienta (7223), NO desarrollador software. Fix validacion 2026-01-20",
       "fix_validacion_humana": "2026-01-20",
+      "activa": false,
+      "_linaje": {
+        "_fix_2026_04_26_spec_o": "Target 7223.4.4.1 'operador de torno metalúrgico' era ULTRA-ESPECÍFICO (solo torneros). Cambiado a 7223.4 'operador de máquinas de control numérico' — captura todos los CNC (torno, fresadora, centro mecanizado) que es lo que la regla pretende cubrir. SPEC O M1 detección.",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R128a_programador_cnc, R128b_operador_cnc)"
+      }
+    },
+    "R128b_operador_cnc": {
+      "nombre": "Operario/a / Operador/a CNC",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "operador cnc",
+          "operadora cnc",
+          "operario cnc",
+          "operaria cnc"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7223",
+        "esco_label": "operador de máquinas de control numérico/operadora de máquinas de control numérico",
+        "esco_code": "7223.4"
+      },
       "activa": true,
       "_linaje": {
-        "_fix_2026_04_26_spec_o": "Target 7223.4.4.1 'operador de torno metalúrgico' era ULTRA-ESPECÍFICO (solo torneros). Cambiado a 7223.4 'operador de máquinas de control numérico' — captura todos los CNC (torno, fresadora, centro mecanizado) que es lo que la regla pretende cubrir. SPEC O M1 detección."
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R128_programador_cnc",
+        "nota_cyn": "ESCO específico: operador de máquinas de control numérico."
+      }
+    },
+    "R128a_programador_cnc": {
+      "nombre": "Programador/a CNC",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "programador cnc",
+          "programadora cnc",
+          "programador de cnc",
+          "programadora de cnc"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2514",
+        "esco_label": "programador de control numérico de máquinas herramientas y procesos/programadora de control numérico de máquinas herramientas y procesos",
+        "esco_code": "2514.4"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R128_programador_cnc",
+        "nota_cyn": "ESCO específico: programador de control numérico de máquinas herramientas y procesos."
       }
     },
     "R129_coordinador_educacion": {
@@ -4222,7 +4771,7 @@
         "esco_label": "panadero/panadera",
         "esco_code": "7512.1"
       },
-      "activa": true,
+      "activa": false,
       "_caso": "ID 2171992 Pizzaiolo/Maestro Pizzero/Panadero",
       "_fecha": "2026-01-23",
       "prioridad": 1,
@@ -4230,7 +4779,52 @@
       "_linaje": {
         "version_origen": "v47",
         "contexto": "r offset/impresión; R144: excluir asesor/representante/comercial; R111: excluir",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R144a_pizzero, R144b_panadero)"
+      }
+    },
+    "R144b_panadero": {
+      "nombre": "Panadero/a",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "panadero",
+          "panadera"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7512",
+        "esco_label": "panadero/panadera",
+        "esco_code": "7512.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R144_pizzero",
+        "nota_cyn": "Consolidado por duplicación exacta de denominación y equivalencia ocupacional."
+      }
+    },
+    "R144a_pizzero": {
+      "nombre": "Pizzero/a / Pizzaiolo",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "pizzero",
+          "pizzera",
+          "pizzaiolo"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9411",
+        "esco_label": "pizzero/pizzera",
+        "esco_code": "9411.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R144_pizzero",
+        "nota_cyn": "ESCO específico validado."
       }
     },
     "R146_data_architect": {
@@ -4454,12 +5048,59 @@
         "esco_code": "2432.5"
       },
       "caso_referencia": "1118099884 - Creador/a de Contenido",
-      "activa": true,
+      "activa": false,
       "nota": "Creadores de contenido para redes sociales = community manager",
       "_linaje": {
         "version_origen": "v37",
         "contexto": "E-commerce -> 1221, R153: Creador Contenido -> 2432",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R153a_contenido_digital_web, R153b_content_creator_generico)"
+      }
+    },
+    "R153b_content_creator_generico": {
+      "nombre": "Content Creator / Creador/a de Contenido",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "content creator",
+          "creador de contenido",
+          "creadora de contenido"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2432",
+        "esco_label": "gestor de la información para las redes sociales/gestora de la información para las redes sociales",
+        "esco_code": "2432.5"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R153_creador_contenido",
+        "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
+      }
+    },
+    "R153a_contenido_digital_web": {
+      "nombre": "Creador/a o Especialista de Contenidos Digitales/Web",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "creador de contenidos digitales",
+          "creadora de contenidos digitales",
+          "especialista de contenidos web",
+          "responsable de contenidos web"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2513",
+        "esco_label": "responsable de contenidos web",
+        "esco_code": "2513.4"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R153_creador_contenido",
+        "nota_cyn": "Usar cuando crea/administra contenido digital o web."
       }
     },
     "R154_auditor_inventario": {
@@ -5885,10 +6526,35 @@
         "esco_code": "5243.1"
       },
       "caso_referencia": "1118102044 - Vendedor puerta a puerta",
-      "activa": true,
+      "activa": false,
       "nota": "v4.6: Vendedor puerta a puerta = 5243 vendedor a domicilio",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R205a_vendedor_puerta_puerta)"
+      }
+    },
+    "R205a_vendedor_puerta_puerta": {
+      "nombre": "Vendedor/a puerta a puerta / a domicilio",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "vendedor puerta a puerta",
+          "vendedora puerta a puerta",
+          "vendedor a domicilio",
+          "vendedora a domicilio"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "5243",
+        "esco_label": "vendedor a domicilio",
+        "esco_code": "5243.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R205_vendedor_puerta_puerta",
+        "nota_cyn": "Venta a domicilio."
       }
     },
     "R206_tecnico_seguridad_electronica": {
@@ -5911,12 +6577,39 @@
         "esco_code": "7421.3"
       },
       "caso_referencia": "2171178 - Tecnico e instalador en sistemas de seguridad electronica",
-      "activa": true,
+      "activa": false,
       "nota": "v4.6: Técnico seguridad electrónica = 7421 electrónica",
       "_linaje": {
         "version_origen": "v46",
         "contexto": "bel inválido + R203-R206 nuevas reglas",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R206a_tecnico_alarmas_seguridad)"
+      }
+    },
+    "R206a_tecnico_alarmas_seguridad": {
+      "nombre": "Técnico/a de Seguridad Electrónica",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "técnico de seguridad electrónica",
+          "tecnico de seguridad electronica",
+          "técnico instalador de alarmas",
+          "tecnico instalador de alarmas",
+          "técnico de alarmas",
+          "tecnico de alarmas"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7422",
+        "esco_label": "técnico en alarmas de seguridad/técnica en alarmas de seguridad",
+        "esco_code": "7422.5"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R206_tecnico_seguridad_electronica",
+        "nota_cyn": "Validado para instalación/mantenimiento de alarmas, CCTV y sistemas de seguridad."
       }
     },
     "R207_peon_cocina": {
@@ -6174,11 +6867,36 @@
         "esco_label": "panadero/panadera",
         "esco_code": "7512.1"
       },
-      "activa": true,
+      "activa": false,
       "_fecha": "2026-02-08",
       "_nota": "Sprint 2: gap cobertura - 2 ofertas sin match",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R216a_pastelero)"
+      }
+    },
+    "R216a_pastelero": {
+      "nombre": "Pastelero/a / Repostero/a",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "pastelero",
+          "pastelera",
+          "repostero",
+          "repostera"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7512",
+        "esco_label": "pastelero/pastelera",
+        "esco_code": "7512.5"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R216_pastelero",
+        "nota_cyn": "ESCO específico validado."
       }
     },
     "R217_kinesiologio": {
@@ -6638,11 +7356,34 @@
         "esco_label": "operario de limpieza de edificios/operaria de limpieza de edificios",
         "esco_code": "9112.2"
       },
-      "activa": true,
+      "activa": false,
       "_fecha": "2026-02-20",
       "nota": "Sprint 7 V31: 3 casos maestranza",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R233a_maestranza)"
+      }
+    },
+    "R233a_maestranza": {
+      "nombre": "Personal de maestranza / limpieza",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "personal de maestranza",
+          "auxiliar de maestranza"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "9112",
+        "esco_label": "operario de limpieza de edificios/operaria de limpieza de edificios",
+        "esco_code": "9112.2"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R233_maestranza",
+        "nota_cyn": "Usar cuando el eje es limpieza de edificios."
       }
     },
     "R234_ayudante_panaderia": {
@@ -7343,7 +8084,7 @@
         "esco_label": "empleado de pompas fúnebres/empleada de pompas fúnebres",
         "esco_code": "5163.3"
       },
-      "activa": true,
+      "activa": false,
       "fecha_creacion": "2026-02-26",
       "nota": "Issue Cynthia: 1118044046 asistente cementerio jardín iba a 6113 horticultura (keyword 'jardín')",
       "_linaje": {
@@ -7369,7 +8110,32 @@
           "TP-018",
           "TP-019",
           "TP-020"
+        ],
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R253a_servicios_funerarios)"
+      }
+    },
+    "R253a_servicios_funerarios": {
+      "nombre": "Empleado/a de Servicios Funerarios / Pompas Fúnebres",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "empleado de servicios funerarios",
+          "empleada de servicios funerarios",
+          "empleado de pompas fúnebres",
+          "empleada de pompas fúnebres"
         ]
+      },
+      "accion": {
+        "forzar_isco": "5163",
+        "esco_label": "empleado de pompas fúnebres/empleada de pompas fúnebres",
+        "esco_code": "5163.3"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R253_servicios_funerarios",
+        "nota_cyn": "Servicios funerarios."
       }
     },
     "R254_logistica_liviana": {
@@ -7493,7 +8259,7 @@
         "esco_label": "fontanero/fontanera",
         "esco_code": "7126.8"
       },
-      "activa": true,
+      "activa": false,
       "fecha_creacion": "2026-02-26",
       "nota": "Semántico daba 8211/8342/2141 para plomero. ESCO usa 'fontanero' para plumber.",
       "_linaje": {
@@ -7519,7 +8285,53 @@
           "TP-018",
           "TP-019",
           "TP-020"
+        ],
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R256a_plomero_sanitarista, R256b_gasista)"
+      }
+    },
+    "R256b_gasista": {
+      "nombre": "Gasista / Instalador/a de Gas",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "gasista",
+          "instalador de gas",
+          "instaladora de gas"
         ]
+      },
+      "accion": {
+        "forzar_isco": "7126",
+        "esco_label": "instalador de gas/instaladora de gas",
+        "esco_code": "7126.3"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R256_plomero",
+        "nota_cyn": "ESCO específico: instalador de gas."
+      }
+    },
+    "R256a_plomero_sanitarista": {
+      "nombre": "Plomero/a / Sanitarista",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "plomero",
+          "plomera",
+          "sanitarista"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7126",
+        "esco_label": "fontanero/fontanera",
+        "esco_code": "7126.8"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R256_plomero",
+        "nota_cyn": "Fontanería/sanitarios."
       }
     },
     "R257_pintor_obra": {
@@ -7917,7 +8729,7 @@
         "esco_label": "representante comercial",
         "esco_code": "3322.1"
       },
-      "activa": true,
+      "activa": false,
       "_caso": "Issue Cyn #1118154835 - Auxiliar Comercial Setter de Seguros.",
       "_fecha": "2026-03-11",
       "nota": "Setter = rol de contacto inicial con leads, NO es director de relaciones",
@@ -7926,7 +8738,52 @@
           "TP-587"
         ],
         "version_origen": "v55",
-        "contexto": "267 auxiliar legal, R268 setter comercial, R269 team leader reclutamiento, R270"
+        "contexto": "267 auxiliar legal, R268 setter comercial, R269 team leader reclutamiento, R270",
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R268a_setter_comercial, R268b_auxiliar_comercial_seguros)"
+      }
+    },
+    "R268b_auxiliar_comercial_seguros": {
+      "nombre": "Auxiliar/Asesor/a Comercial de Seguros",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "auxiliar comercial de seguros",
+          "asesor comercial de seguros",
+          "asesora comercial de seguros"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3321",
+        "esco_label": "asesor de seguros/asesora de seguros",
+        "esco_code": "3321.3.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R268_setter_comercial",
+        "nota_cyn": "Usar cuando vende/asesora seguros."
+      }
+    },
+    "R268a_setter_comercial": {
+      "nombre": "Setter Comercial / Calificador/a de Prospectos",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "setter comercial",
+          "setter de ventas"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "3322",
+        "esco_label": "representante comercial",
+        "esco_code": "3322.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R268_setter_comercial",
+        "nota_cyn": "Usar cuando el núcleo es prospección/comercialización B2B y derivación de oportunidades."
       }
     },
     "R269_team_leader_reclutamiento": {
@@ -8532,12 +9389,58 @@
         "esco_label": "herrero/herrera",
         "esco_code": "7221.1"
       },
-      "activa": true,
+      "activa": false,
       "_caso": "1118151709 - Plegador/herrero",
       "_fecha": "2026-03-12",
       "nota": "Herrero/plegador es 7221, ni cantero (baseline) ni diseñador paisajístico (fine-tuned)",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R287a_herrero, R287b_plegador_metal)"
+      }
+    },
+    "R287b_plegador_metal": {
+      "nombre": "Plegador/a de Metal",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "plegador de metal",
+          "plegadora de metal",
+          "plegador",
+          "plegadora"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7213",
+        "esco_label": "chapista",
+        "esco_code": "7213.4"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R287_herrero",
+        "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
+      }
+    },
+    "R287a_herrero": {
+      "nombre": "Herrero/a",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "herrero",
+          "herrera"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "7221",
+        "esco_label": "herrero/herrera",
+        "esco_code": "7221.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R287_herrero",
+        "nota_cyn": "ESCO específico."
       }
     },
     "R288_ayudante_envasado": {
@@ -8767,12 +9670,60 @@
         "esco_label": "empleado de contabilidad/empleada de contabilidad",
         "esco_code": "4311.1"
       },
-      "activa": true,
+      "activa": false,
       "_caso": "1118068046 - Asistente Facturación y Cobranzas",
       "_fecha": "2026-03-12",
       "nota": "Asistente facturación/cobranzas es contable (4311). LoRA daba jefe de sala",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "reemplazo madre->hijas (R295a_asistente_facturacion, R295b_asistente_cobranzas)"
+      }
+    },
+    "R295b_asistente_cobranzas": {
+      "nombre": "Asistente/Gestor/a de Cobranzas",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "asistente de cobranzas",
+          "asistente de cobranza",
+          "gestor de cobranzas",
+          "gestora de cobranzas"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4214",
+        "esco_label": "cobrador de deudas/cobradora de deudas",
+        "esco_code": "4214.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R295_asistente_facturacion",
+        "nota_cyn": "Gestión de deudas/cobranzas."
+      }
+    },
+    "R295a_asistente_facturacion": {
+      "nombre": "Asistente/Administrativo/a de Facturación",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "asistente de facturación",
+          "asistente de facturacion",
+          "administrativo de facturación",
+          "administrativa de facturación"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "4311",
+        "esco_label": "empleado de contabilidad/empleada de contabilidad",
+        "esco_code": "4311.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "auditoria_cyn_2026-08-12",
+        "cambio_k": "alta_por_division de R295_asistente_facturacion",
+        "nota_cyn": "Procesamiento de facturas."
       }
     },
     "R296_soporte_infraestructura": {
@@ -10809,5 +11760,6 @@
   "_cambios_v516": "Fix R235 label mecánico vehículos, R162 ISCO 7411→7133 edilicio, R23 ISCO 4321→1324 depósito. New R320 ventas telemarketing→5244, R321 instalador seguridad→3522, R322 mecánico industrial→7233. Batch 3 correcciones Cynthia.",
   "_cambios_v517_k_t1": "[FRENTE K T1] auditoria_cyn_2026-08-12: retiro de las 7 reglas requiere_desambiguacion_funcional (R49, R240=P-17, R235, R158, R160, R176, R250). Destinos del audit, condiciones del repo vivo.",
   "_cambios_v518_k_t3a": "[FRENTE K T3A] auditoria_cyn_2026-08-12: 34 correcciones de destino (solo accion.esco_code/esco_label/forzar_isco; condiciones intactas).",
-  "_cambios_v519_k_t3b": "[FRENTE K T3B] auditoria_cyn_2026-08-12: 34 correcciones de destino (solo accion.esco_code/esco_label/forzar_isco; condiciones intactas)."
+  "_cambios_v519_k_t3b": "[FRENTE K T3B] auditoria_cyn_2026-08-12: 34 correcciones de destino (solo accion.esco_code/esco_label/forzar_isco; condiciones intactas).",
+  "_cambios_v520_k_t4a": "[FRENTE K T4A] auditoria_cyn_2026-08-12: reemplazo madre->hijas en 24 grupos completos con cola<300. Altas con condicion titulo-only COMPLETA del JSON auditado (reglas nuevas, no existian)."
 }
