@@ -81,10 +81,68 @@ class IndeedScraper:
         self.detail_retries = 2      # reintentos ante 403 en el detalle
         self.detail_backoff = 12.0   # segundos base entre reintentos (x nro de intento)
         self.detalle_bloqueado = False  # True si la IP perdio acceso a /viewjob
+        self._bootstrap_intentado = False  # el bootstrap con navegador se prueba 1 vez
         self._consecutive_blocks = 0
         self._max_consecutive_blocks = 5  # Rotar fingerprint si 5 keywords seguidos dan 403
         logger.info(f"IndeedScraper inicializado (delay={delay}s, detail_delay={detail_delay}s, "
                      f"fetch_details={fetch_details}, impersonate={self._fingerprints[0]})")
+
+    def bootstrap_cookies_navegador(self, timeout_ms: int = 60000) -> bool:
+        """
+        Abre un navegador real, deja que resuelva el challenge de Cloudflare y
+        se queda con las cookies (cf_clearance / __cf_bm) para la sesion curl.
+
+        Para que sirve: Cloudflare puede exigir ejecutar JavaScript ("Security
+        Check — Please enable JavaScript"), cosa que curl_cffi no hace por mas
+        que rote fingerprints. Un navegador lo pasa una vez y sus cookies
+        habilitan miles de requests baratos por curl.
+
+        OJO: no sirve contra "Blocked - Indeed.com", que es un bloqueo de IP del
+        propio Indeed, posterior al challenge. Si el navegador ve ese cartel,
+        devuelve False: no hay nada que rescatar y hay que cambiar de IP.
+
+        Returns:
+            True si consiguio cookies utiles.
+        """
+        try:
+            from playwright.sync_api import sync_playwright
+        except ImportError:
+            logger.warning("  playwright no instalado — sin bootstrap de cookies "
+                            "(pip install playwright && playwright install chromium)")
+            return False
+
+        try:
+            with sync_playwright() as p:
+                browser = p.chromium.launch(headless=True, args=['--no-sandbox'])
+                ctx = browser.new_context(locale='es-AR')
+                page = ctx.new_page()
+                page.goto(f"{self.SEARCH_URL}?q=cajero&l=Argentina", timeout=timeout_ms)
+                page.wait_for_timeout(12000)   # dar tiempo al challenge
+                titulo = page.title()
+                cookies = ctx.cookies()
+                user_agent = page.evaluate("() => navigator.userAgent")
+                browser.close()
+        except Exception as e:
+            logger.warning(f"  bootstrap con navegador fallo: {type(e).__name__}: {e}")
+            return False
+
+        if 'Blocked' in titulo:
+            logger.error(f"  El navegador tambien ve '{titulo}': la IP esta bloqueada "
+                          f"por Indeed, no es el challenge. Hay que cambiar de IP.")
+            return False
+
+        utiles = {c['name']: c['value'] for c in cookies
+                  if c['name'] in ('cf_clearance', '__cf_bm')}
+        if not utiles:
+            logger.warning(f"  el navegador no dejo cookies de Cloudflare (titulo: {titulo})")
+            return False
+
+        for nombre, valor in utiles.items():
+            self.session.cookies.set(nombre, valor, domain='.indeed.com')
+        # El cf_clearance queda atado al user-agent que lo obtuvo
+        self.session.headers.update({'User-Agent': user_agent})
+        logger.info(f"  cookies de navegador cargadas: {', '.join(utiles)} (titulo: {titulo})")
+        return True
 
     def _rotate_fingerprint(self) -> bool:
         """
@@ -95,6 +153,16 @@ class IndeedScraper:
         """
         self._fp_idx += 1
         if self._fp_idx >= len(self._fingerprints):
+            # Ultimo recurso antes de rendirse: si lo que frena es el challenge
+            # de Cloudflare (JS obligatorio), un navegador lo pasa y sus cookies
+            # sirven para el resto de la corrida. Se intenta una sola vez.
+            if not self._bootstrap_intentado:
+                self._bootstrap_intentado = True
+                logger.info("  Fingerprints agotados — probando bootstrap con navegador")
+                if self.bootstrap_cookies_navegador():
+                    self._fp_idx = 0
+                    self._consecutive_blocks = 0
+                    return True
             return False
 
         nuevo = self._fingerprints[self._fp_idx]
