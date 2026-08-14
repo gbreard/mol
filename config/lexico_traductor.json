@@ -1,1774 +1,1774 @@
 {
- "_meta": {
-  "descripcion": "Lexico compilado del traductor: terminos operacionales por hub/regla, propuestos desde la prosa de Cyn (jamas reescrita — la prosa vive en el JSON 2.0). Overlay sobre condicion_operacional.",
-  "version": "0.3.0",
-  "generado": "2026-08-07 [FRENTE H P2]",
-  "terminos_por": "llm_propuesto",
-  "validada_por_casos": "parcial: 7 hubs congelados en P2 gate; 3 (36/58/52) quedan v0.x-propuesta para shadow P3",
-  "principio_variantes": "terminos-raiz cortos que anclan el vocabulario real del corpus (hallazgo FRENTE I: los parafraseos flexionales rompen frases literales) — sustantivo y verbo en variantes, sin articulos",
-  "modo_derivado_de": "marcadores de la prosa: 'principalmente'->principalmente, 'solamente/sin X'->alguna+excluye o solo_estas, enumeracion multiple->min_matches:2, actividad distintiva unica->alguna",
-  "nota_contable": "hubs contables (2,3,4,15,36,58) compilados 2026-08-07 — 63 reglas; hub 1 viene compilado del modelo 1.1",
-  "ajustes_gate_2026-08-07": [
-   "D06 hub 1 -> min_matches:2 sin impuestos bare",
-   "~23 variantes de anclaje en inclusiones de 3322.1/5223.4/3313.2/4312.1",
-   "hub 1 inclusion vive en JSON 2.0: variante \"soporte a procesos contables\" queda como deuda (no override de inclusion completa)",
-   "rollback de \"control de lo facturado\"/\"evaluar procesos\" en 4312.1: capturaban Auditor Medico (territorio regla plana R62->medico)"
-  ],
-  "estado_por_hub": {
-   "2411.1.1": "congelado_v0.3.0_validado",
-   "2411.1": "congelado_v0.3.0_validado",
-   "3313.2": "congelado_v0.3.0_validado",
-   "4312.1": "congelado_v0.3.0_validado",
-   "1211.1.1": "congelado_v0.3.0_validado",
-   "3322.1": "congelado_v0.3.0_validado",
-   "5223.4": "congelado_v0.3.0_validado",
-   "2411.1.9": "propuesta_pendiente_shadow_P3",
-   "4110.1": "propuesta_pendiente_shadow_P3",
-   "5223.7": "propuesta_pendiente_shadow_P3"
+  "_meta": {
+    "descripcion": "Lexico compilado del traductor: terminos operacionales por hub/regla, propuestos desde la prosa de Cyn (jamas reescrita — la prosa vive en el JSON 2.0). Overlay sobre condicion_operacional.",
+    "version": "0.3.1",
+    "generado": "2026-08-07 [FRENTE H P2]",
+    "terminos_por": "llm_propuesto",
+    "validada_por_casos": "parcial: 7 hubs congelados en P2 gate; 3 (36/58/52) quedan v0.x-propuesta para shadow P3",
+    "principio_variantes": "terminos-raiz cortos que anclan el vocabulario real del corpus (hallazgo FRENTE I: los parafraseos flexionales rompen frases literales) — sustantivo y verbo en variantes, sin articulos",
+    "modo_derivado_de": "marcadores de la prosa: 'principalmente'->principalmente, 'solamente/sin X'->alguna+excluye o solo_estas, enumeracion multiple->min_matches:2, actividad distintiva unica->alguna",
+    "nota_contable": "hubs contables (2,3,4,15,36,58) compilados 2026-08-07 — 63 reglas; hub 1 viene compilado del modelo 1.1",
+    "ajustes_gate_2026-08-07": [
+      "D06 hub 1 -> min_matches:2 sin impuestos bare",
+      "~23 variantes de anclaje en inclusiones de 3322.1/5223.4/3313.2/4312.1",
+      "hub 1 inclusion vive en JSON 2.0: variante \"soporte a procesos contables\" queda como deuda (no override de inclusion completa)",
+      "rollback de \"control de lo facturado\"/\"evaluar procesos\" en 4312.1: capturaban Auditor Medico (territorio regla plana R62->medico)"
+    ],
+    "estado_por_hub": {
+      "2411.1.1": "congelado_v0.3.0_validado",
+      "2411.1": "congelado_v0.3.0_validado",
+      "3313.2": "congelado_v0.3.0_validado",
+      "4312.1": "congelado_v0.3.0_validado",
+      "1211.1.1": "congelado_v0.3.0_validado",
+      "3322.1": "congelado_v0.3.0_validado",
+      "5223.4": "congelado_v0.3.0_validado",
+      "2411.1.9": "propuesta_pendiente_shadow_P3",
+      "4110.1": "propuesta_pendiente_shadow_P3",
+      "5223.7": "propuesta_pendiente_shadow_P3"
+    },
+    "cambios_v0_3_1": "[FRENTE H P3 parte 1] (a) Conflicto #1 (administrativo/a contable) RESUELTO-CONFIRMATORIO por auditoria_cyn_2026-08-12 (R14d corregida 4311.1->3313.2: la experta confirma la regla consolidada 3; la entrada deja de estar bloqueada para compilacion). (b) Regla 16, denominacion-trampa 'vendedor/a mayorista': la denominacion sigue como trigger del hub 3322.1 pero 'ventas mayoristas' se retira de los terminos de inclusion — mencionar venta mayorista NO es evidencia de representante B2B (el conflicto dict 5223 vs consolidada 3322.1 se resuelve por evidencia de tareas, nunca por la palabra)."
+  },
+  "hubs": {
+    "5223.4": {
+      "inclusion": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "atencion al cliente",
+          "atencion al publico",
+          "atender clientes",
+          "atiende clientes",
+          "atender compradores",
+          "asesoramiento",
+          "asesorar",
+          "asesora",
+          "identificar necesidades",
+          "identifica necesidades",
+          "informar sobre productos",
+          "informa productos",
+          "presentar alternativas",
+          "responder consultas",
+          "responde consultas",
+          "tomar pedidos",
+          "toma pedidos",
+          "preparar pedidos",
+          "concretar ventas",
+          "concreta ventas",
+          "cierre de ventas",
+          "venta al publico",
+          "ventas en el local",
+          "ventas de salon",
+          "venta de mostrador",
+          "ofrecer productos",
+          "presentar productos",
+          "generar ventas",
+          "lograr objetivos de venta"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D01": {
+        "modo": "principalmente",
+        "terminos": [
+          "reposicion",
+          "reponer",
+          "repone",
+          "control de existencias",
+          "control de stock",
+          "colocacion de precios",
+          "etiquetado",
+          "etiquetar precios",
+          "orden del local",
+          "orden y limpieza del local",
+          "mantenimiento del establecimiento",
+          "acomodar mercaderia",
+          "gondolas",
+          "gondola"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D02": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "conocimiento del producto",
+          "conocimientos particulares",
+          "conocimiento tecnico del producto",
+          "explicar caracteristicas",
+          "explica caracteristicas",
+          "funcionamiento del producto",
+          "variedades",
+          "compatibilidades",
+          "compatibilidad",
+          "conservacion",
+          "aplicaciones del producto",
+          "recomendar segun uso"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D03": {
+        "modo": "alguna",
+        "terminos": [
+          "panaderia",
+          "pasteleria",
+          "pan ",
+          "facturas de panaderia",
+          "tortas",
+          "porcionado",
+          "porcionar",
+          "decoracion de tortas",
+          "productos de panaderia"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D04": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "ordenes posteriores a la venta",
+          "posventa de pedidos",
+          "canales de entrega",
+          "ejecutar pedidos",
+          "ejecucion de pedidos",
+          "despacho",
+          "informar despacho",
+          "seguimiento de ordenes"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D05": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "preparar comidas",
+          "prepara comidas",
+          "elaboracion de comidas sencillas",
+          "servir comidas",
+          "sirve comidas",
+          "servir a los clientes"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D06": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "atender mesas",
+          "atencion de mesas",
+          "tomar comandas",
+          "toma comandas",
+          "servir alimentos",
+          "servir bebidas",
+          "salon gastronomico"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D07": {
+        "modo": "principalmente",
+        "terminos": [
+          "recibir pagos",
+          "recibe pagos",
+          "cobro",
+          "cobros",
+          "cobrar",
+          "registrar operaciones de caja",
+          "emitir comprobantes",
+          "emision de comprobantes",
+          "apertura de caja",
+          "arqueo",
+          "cierre de caja",
+          "manejo de caja"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D08": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "reclamaciones",
+          "reclamos",
+          "tramitar reclamos",
+          "seguimiento de reclamos",
+          "relacion con los clientes",
+          "gestion de reclamos"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D09": {
+        "modo": "alguna",
+        "terminos": [
+          "contact center",
+          "call center",
+          "centro de atencion telefonica",
+          "centro de contacto"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D10": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "llamadas",
+          "llamados",
+          "venta telefonica",
+          "ventas telefonicas",
+          "cierre telefonico",
+          "promocionar por telefono",
+          "telemarketing"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D11": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "buscar nuevos clientes",
+          "busqueda de clientes",
+          "captacion de clientes",
+          "prospectar",
+          "prospeccion",
+          "cartera de clientes",
+          "desarrollo de cartera",
+          "desarrollar cartera",
+          "propuestas comerciales",
+          "preparar propuestas",
+          "negociar precios",
+          "negociacion de condiciones"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D12": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "excluye": [
+          "asesorar",
+          "asesoramiento",
+          "vender",
+          "venta directa"
+        ],
+        "terminos": [
+          "preparar pedidos en almacen",
+          "preparacion de pedidos",
+          "embalar",
+          "embalaje",
+          "acondicionar pedidos",
+          "picking",
+          "deposito",
+          "almacen"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D13": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "conducir vehiculo",
+          "conduccion de vehiculo",
+          "manejo de vehiculo",
+          "realizar entregas",
+          "realiza entregas",
+          "reparto",
+          "repartir",
+          "entrega a domicilio"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D14": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "organizar al equipo",
+          "organizacion del equipo",
+          "distribuir horarios",
+          "distribucion de horarios",
+          "asignar tareas",
+          "controlar objetivos",
+          "control de inventario",
+          "evaluar desempeño",
+          "evaluacion del personal",
+          "supervisar al personal"
+        ],
+        "tecnologia_definitoria": false
+      }
+    },
+    "5223.7": {
+      "inclusion": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "atender compradores",
+          "atencion al cliente",
+          "identificar necesidades",
+          "identifica necesidades",
+          "explicar caracteristicas",
+          "explica caracteristicas",
+          "prestaciones",
+          "variedades",
+          "diferencias entre productos",
+          "compatibilidades",
+          "compatibilidad",
+          "condiciones de uso",
+          "mantenimiento del producto",
+          "recomendar alternativas",
+          "recomienda alternativas",
+          "demostraciones",
+          "demostracion de productos",
+          "configuraciones",
+          "configuracion de equipos",
+          "concretar ventas",
+          "concreta ventas"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D01": {
+        "modo": "alguna",
+        "terminos": [
+          "celulares",
+          "celular",
+          "telefonia",
+          "telefonos moviles",
+          "equipos de telecomunicaciones",
+          "servicios de telecomunicaciones",
+          "planes moviles"
+        ],
+        "tecnologia_definitoria": true,
+        "tecnologia_definitoria_por": "llm_derivado",
+        "nota_tec": "la prosa hace del dominio tecnologico (telefonia) el eje de la rama"
+      },
+      "D02": {
+        "modo": "alguna",
+        "terminos": [
+          "computadoras",
+          "computacion",
+          "notebooks",
+          "componentes de pc",
+          "perifericos",
+          "hardware",
+          "informatica"
+        ],
+        "tecnologia_definitoria": true,
+        "tecnologia_definitoria_por": "llm_derivado",
+        "nota_tec": "la prosa hace del dominio tecnologico (computacion) el eje de la rama"
+      },
+      "D03": {
+        "modo": "solo_estas",
+        "terminos": [
+          "asesoramiento general",
+          "mostrar productos",
+          "muestra productos",
+          "informar precios",
+          "informa precios",
+          "concretar ventas",
+          "venta simple"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D04": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "recibir equipos",
+          "recepcion de equipos",
+          "pruebas tecnicas",
+          "desmontar",
+          "desmontaje",
+          "identificar averias",
+          "diagnostico de fallas",
+          "sustituir piezas",
+          "reemplazo de piezas",
+          "reparacion de celulares",
+          "reparar equipos",
+          "restablecer funcionamiento"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D05": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "reparacion de hardware",
+          "reparar computadoras",
+          "pruebas tecnicas",
+          "desmontar componentes",
+          "identificar averias",
+          "sustituir piezas",
+          "service de pc",
+          "soporte tecnico de hardware"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D06": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "excluye": [
+          "vender",
+          "ventas",
+          "concretar ventas"
+        ],
+        "terminos": [
+          "resolver problemas informaticos",
+          "resolucion de incidentes",
+          "consultas de usuarios",
+          "soporte a usuarios",
+          "mesa de ayuda",
+          "help desk",
+          "asistencia remota",
+          "soporte tecnico"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D07": {
+        "modo": "principalmente",
+        "terminos": [
+          "cobros",
+          "cobrar",
+          "gestionar cobros",
+          "comprobantes",
+          "apertura de caja",
+          "arqueo",
+          "cierre de caja",
+          "manejo de caja"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D08": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "desarrollar cartera",
+          "desarrollo de cartera",
+          "captar clientes",
+          "captacion de clientes",
+          "preparar propuestas",
+          "propuestas comerciales",
+          "negociar acuerdos",
+          "negociacion comercial"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D09": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "llamadas salientes",
+          "llamados salientes",
+          "venta telefonica",
+          "ventas por telefono",
+          "promover por telefono",
+          "telemarketing"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D10": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "tramitar reclamaciones",
+          "tramita reclamos",
+          "reclamos",
+          "seguimiento integral",
+          "seguimiento de problemas",
+          "gestion de reclamos"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D11": {
+        "modo": "alguna",
+        "terminos": [
+          "contact center",
+          "call center",
+          "centro de contacto",
+          "centro de atencion telefonica"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D12": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "excluye": [
+          "asesorar",
+          "atender compradores",
+          "atencion al cliente"
+        ],
+        "terminos": [
+          "recibir mercaderia",
+          "recepcion de mercaderia",
+          "controlar mercaderia",
+          "control de mercaderia",
+          "preparar pedidos",
+          "administrar existencias",
+          "administracion de stock",
+          "deposito",
+          "almacen"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D13": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "supervisar al equipo",
+          "supervision del equipo",
+          "distribuir tareas",
+          "distribucion de tareas",
+          "controlar objetivos",
+          "control de inventario",
+          "calidad de atencion",
+          "evaluar al personal",
+          "evaluacion de desempeño"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D14": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "responsabilidad general del local",
+          "responsable del establecimiento",
+          "a cargo del local",
+          "gestion integral de la tienda",
+          "administracion del local",
+          "resultados del establecimiento"
+        ],
+        "tecnologia_definitoria": false
+      }
+    },
+    "3322.1": {
+      "inclusion": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "comercializar",
+          "comercializacion",
+          "visitar clientes",
+          "visita a clientes",
+          "buscar clientes",
+          "captar clientes",
+          "captacion de clientes",
+          "identificar necesidades",
+          "presentar productos",
+          "presentacion de productos",
+          "asesoramiento comercial",
+          "prospectar",
+          "prospeccion",
+          "reactivar clientes",
+          "fidelizar",
+          "fidelizacion",
+          "cartera de clientes",
+          "desarrollar cartera",
+          "cotizaciones",
+          "cotizacion",
+          "cotizar",
+          "propuestas comerciales",
+          "licitaciones",
+          "licitacion",
+          "negociar precios",
+          "negociacion",
+          "cerrar operaciones",
+          "cierre de operaciones",
+          "cierre de ventas",
+          "seguimiento de pedidos",
+          "oportunidades comerciales",
+          "ventas b2b",
+          "venta corporativa",
+          "generar nuevos clientes",
+          "generar clientes",
+          "ofrecer productos",
+          "presentar y ofrecer productos",
+          "cerrar acuerdos",
+          "cerrar acuerdos comerciales",
+          "visitar prospectos",
+          "desarrollar relaciones comerciales"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D01": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "interpretar especificaciones",
+          "especificaciones tecnicas",
+          "calculos",
+          "dimensionamiento",
+          "dimensionamientos",
+          "seleccionar soluciones",
+          "explicar tecnicamente",
+          "asesoramiento tecnico",
+          "productos industriales",
+          "venta tecnica",
+          "instalacion y funcionamiento",
+          "rendimiento del equipo",
+          "integracion de productos"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D02": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "polizas",
+          "poliza",
+          "seguros",
+          "asegurado",
+          "asegurados",
+          "analisis de riesgos",
+          "riesgos y coberturas",
+          "coberturas",
+          "aseguradoras",
+          "intermediario de seguros"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D03": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "polizas",
+          "poliza",
+          "seguros",
+          "asegurado",
+          "coberturas",
+          "recomendar coberturas",
+          "aseguradoras",
+          "asesoramiento de seguros"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D04": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "propiedades",
+          "inmuebles",
+          "proyectos inmobiliarios",
+          "inmobiliaria",
+          "reserva de compra",
+          "firma del contrato",
+          "cierre del contrato",
+          "operacion inmobiliaria",
+          "emprendimientos inmobiliarios"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D05": {
+        "modo": "principalmente",
+        "terminos": [
+          "llamadas entrantes",
+          "llamadas salientes",
+          "llamados",
+          "venta telefonica",
+          "cierre telefonico",
+          "persuasion telefonica",
+          "telemarketing",
+          "contact center"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D06": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "importacion",
+          "exportacion",
+          "comercio exterior",
+          "clasificacion de mercancias",
+          "permisos aduaneros",
+          "aranceles",
+          "documentacion aduanera",
+          "aduana",
+          "normativa de comercio exterior"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D07": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "organizar cargas",
+          "organizacion de cargas",
+          "reservas de transporte",
+          "rutas",
+          "transportistas",
+          "documentacion de embarque",
+          "seguimiento de envios",
+          "envios internacionales",
+          "embarques"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D08": {
+        "modo": "principalmente",
+        "terminos": [
+          "alianzas",
+          "alianzas estrategicas",
+          "socios comerciales",
+          "distribuidores",
+          "canales comerciales",
+          "desarrollo de canales",
+          "relaciones empresariales",
+          "partners"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D09": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "dirigir vendedores",
+          "direccion de vendedores",
+          "equipo de ventas a cargo",
+          "distribuir zonas",
+          "asignacion de carteras",
+          "establecer objetivos",
+          "objetivos del equipo",
+          "resultados del equipo",
+          "liderar equipo comercial"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D10": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "estrategia comercial",
+          "definir mercados",
+          "definicion de mercados",
+          "canales y precios",
+          "politica de precios",
+          "rentabilidad",
+          "plan comercial integral"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D11": {
+        "modo": "principalmente",
+        "excluye": [
+          "prospectar",
+          "prospeccion",
+          "negociar",
+          "cerrar operaciones",
+          "cierre de ventas"
+        ],
+        "terminos": [
+          "consultas posventa",
+          "posventa",
+          "post venta",
+          "reclamos",
+          "problemas posteriores a la venta",
+          "atencion de pedidos",
+          "gestion de consultas"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D12": {
+        "modo": "principalmente",
+        "excluye": [
+          "prospectar",
+          "negociar",
+          "cerrar operaciones"
+        ],
+        "terminos": [
+          "consultas",
+          "reclamos",
+          "pedidos posteriores",
+          "posventa",
+          "atencion al cliente posterior"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D13": {
+        "modo": "solo_estas",
+        "terminos": [
+          "cargar cotizaciones",
+          "carga de cotizaciones",
+          "cargar pedidos",
+          "carga de pedidos",
+          "carga de contratos",
+          "carga de documentacion",
+          "seguir instrucciones",
+          "tareas administrativas de carga"
+        ],
+        "tecnologia_definitoria": false
+      }
+    },
+    "2411.1": {
+      "inclusion": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "revisar estados financieros",
+          "revision de estados financieros",
+          "analizar estados financieros",
+          "analisis de estados financieros",
+          "estados contables",
+          "presupuestos",
+          "presupuesto",
+          "informes financieros",
+          "planes empresariales",
+          "detectar irregularidades",
+          "irregularidades",
+          "fraude",
+          "declaraciones fiscales",
+          "declaraciones juradas",
+          "liquidacion de impuestos",
+          "impuestos",
+          "insolvencia",
+          "previsiones financieras",
+          "evaluacion de riesgos",
+          "asesoramiento financiero",
+          "asesoramiento fiscal",
+          "cierres contables",
+          "balances",
+          "balance general"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D01": {
+        "modo": "principalmente",
+        "terminos": [
+          "evaluacion de estados financieros",
+          "evaluar estados financieros",
+          "interpretacion de sistemas contables",
+          "implementacion de sistemas contables",
+          "procedimientos contables",
+          "analisis de cuentas",
+          "analisis contable"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D02": {
+        "modo": "principalmente",
+        "terminos": [
+          "registrar operaciones",
+          "registro de operaciones",
+          "registraciones",
+          "asientos",
+          "asientos contables",
+          "libros contables",
+          "libro mayor",
+          "carga de comprobantes",
+          "imputaciones",
+          "imputacion contable",
+          "conciliaciones",
+          "conciliacion bancaria",
+          "control de saldos"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D03": {
+        "modo": "solo_estas",
+        "terminos": [
+          "emitir facturas",
+          "emision de facturas",
+          "facturacion",
+          "facturar",
+          "notas de credito",
+          "estados mensuales de clientes",
+          "estados de cuenta"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D04": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "fichas horarias",
+          "novedades",
+          "novedades de personal",
+          "nominas",
+          "nomina",
+          "liquidacion de sueldos",
+          "liquidacion de haberes",
+          "sueldos y jornales"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D05": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "asesoramiento fiscal",
+          "asesoramiento impositivo",
+          "legislacion fiscal",
+          "legislacion tributaria",
+          "estrategias fiscales",
+          "planificacion fiscal",
+          "planificacion tributaria",
+          "materia impositiva"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D06": {
+        "modo": "principalmente",
+        "terminos": [
+          "elaboracion de presupuestos",
+          "elaborar presupuestos",
+          "supervision de presupuestos",
+          "control presupuestario",
+          "presupuestacion",
+          "armado de presupuesto"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D07": {
+        "modo": "principalmente",
+        "terminos": [
+          "analisis de costos",
+          "analisis de costes",
+          "control de costos",
+          "control de costes",
+          "planificacion de costos",
+          "costeo",
+          "estructura de costos"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D08": {
+        "modo": "principalmente",
+        "terminos": [
+          "rentabilidad",
+          "liquidez",
+          "solvencia",
+          "analisis de activos",
+          "recomendaciones financieras",
+          "analisis financiero",
+          "indicadores financieros"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D09": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "comprobar datos financieros",
+          "verificacion de datos",
+          "verificar exactitud",
+          "inventarios",
+          "inventario",
+          "recuento de inventario",
+          "auditoria",
+          "auditar registros"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D10": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "revision independiente",
+          "revision profesional",
+          "auditoria de estados financieros",
+          "auditoria externa",
+          "gobernanza financiera",
+          "dictamen",
+          "informes de auditoria"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D11": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "dirigir la actividad contable",
+          "direccion del area contable",
+          "establecer procedimientos",
+          "garantizar estados financieros",
+          "supervisar personal contable",
+          "supervision del equipo contable",
+          "jefatura contable",
+          "responsable del area contable"
+        ],
+        "tecnologia_definitoria": false
+      }
+    },
+    "3313.2": {
+      "inclusion": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "registrar operaciones",
+          "registro de operaciones",
+          "registraciones",
+          "operaciones cotidianas",
+          "ventas y compras",
+          "pagos e ingresos",
+          "registros contables",
+          "libro mayor",
+          "asientos",
+          "asientos contables",
+          "carga de comprobantes",
+          "cargar comprobantes",
+          "control de comprobantes",
+          "conciliar saldos",
+          "conciliaciones",
+          "conciliacion bancaria",
+          "balance",
+          "imputaciones contables",
+          "facturacion y cobranzas",
+          "cuentas corrientes",
+          "registracion contable",
+          "registraciones contables",
+          "soporte al armado de balances",
+          "armado de balances"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D01": {
+        "modo": "principalmente",
+        "terminos": [
+          "evaluacion de estados financieros",
+          "analisis de estados financieros",
+          "interpretacion de sistemas contables",
+          "aplicacion de procedimientos contables",
+          "analisis de cuentas contables"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D02": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "revisar estados financieros",
+          "presupuestos e informes",
+          "detectar irregularidades",
+          "asesoramiento financiero",
+          "asesoramiento fiscal",
+          "asesoramiento sobre riesgos",
+          "declaraciones fiscales"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D03": {
+        "modo": "solo_estas",
+        "terminos": [
+          "emitir facturas",
+          "emision de facturas",
+          "facturacion",
+          "notas de credito",
+          "estados mensuales",
+          "estados de cuenta",
+          "actualizar expedientes de clientes"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D04": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "fichas horarias",
+          "novedades",
+          "nominas",
+          "nomina",
+          "liquidacion de sueldos",
+          "liquidacion de haberes"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D05": {
+        "modo": "solo_estas",
+        "terminos": [
+          "tareas generales de oficina",
+          "atencion telefonica",
+          "archivo",
+          "archivo de documentacion",
+          "correspondencia",
+          "apoyo administrativo",
+          "tareas administrativas generales"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D06": {
+        "modo": "solo_estas",
+        "terminos": [
+          "tareas generales de oficina",
+          "atencion telefonica",
+          "archivo",
+          "correspondencia",
+          "apoyo administrativo",
+          "apoyo de oficina"
+        ],
+        "tecnologia_definitoria": false
+      }
+    },
+    "4312.1": {
+      "inclusion": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "examinar datos financieros",
+          "recoger datos financieros",
+          "operaciones de inventario",
+          "inventarios",
+          "revisar registros",
+          "revision de registros",
+          "comprobantes",
+          "bases de datos contables",
+          "comprobar exactitud",
+          "verificar exactitud",
+          "verificacion de registros",
+          "cuadre",
+          "que cuadre",
+          "comparar datos",
+          "detectar inconsistencias",
+          "inconsistencias",
+          "solicitar aclaraciones",
+          "control interno",
+          "auditoria interna",
+          "auditorias",
+          "liderar equipo de auditoria",
+          "coordinar equipo de auditoria",
+          "garantizar la fiabilidad",
+          "fiabilidad e integridad"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D01": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "supervisar personal de auditoria",
+          "supervision de auditores",
+          "planificar auditorias",
+          "planificacion de auditorias",
+          "revisar documentacion de auditores",
+          "validar informes",
+          "papeles de trabajo",
+          "alta direccion"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D02": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "revision independiente",
+          "revision profesional",
+          "auditoria de estados financieros",
+          "gobernanza financiera",
+          "garantias a accionistas",
+          "partes interesadas",
+          "dictamen de estados"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D03": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "investigar fraude",
+          "investigacion de fraude",
+          "fraude de valores",
+          "abuso de mercado",
+          "irregularidades en estados financieros",
+          "pruebas forenses",
+          "informes forenses",
+          "peritaje contable"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D04": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "auditar sistemas de informacion",
+          "auditoria de sistemas",
+          "auditoria informatica",
+          "infraestructura tecnologica",
+          "seguridad informatica",
+          "controles de tic",
+          "riesgos de tic",
+          "auditoria de seguridad"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D05": {
+        "modo": "solo_estas",
+        "terminos": [
+          "carga de datos",
+          "cargar datos",
+          "archivar documentacion",
+          "archivo",
+          "preparar planillas",
+          "planillas",
+          "apoyo de oficina",
+          "apoyo administrativo"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D06": {
+        "modo": "solo_estas",
+        "terminos": [
+          "carga de datos",
+          "archivar documentacion",
+          "preparar planillas",
+          "apoyo de oficina",
+          "tareas administrativas generales"
+        ],
+        "tecnologia_definitoria": false
+      }
+    },
+    "1211.1.1": {
+      "inclusion": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "responsabilidad integral de las actividades contables",
+          "responsable del area contable",
+          "jefatura de contabilidad",
+          "direccion contable",
+          "procedimientos contables",
+          "estados financieros precisos",
+          "supervisar personal contable",
+          "supervision del equipo contable",
+          "asignar tareas",
+          "controlar registraciones",
+          "conciliaciones",
+          "cierres",
+          "cierres contables",
+          "balances",
+          "impuestos",
+          "facturacion",
+          "cuentas corrientes",
+          "informes contables"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D01": {
+        "modo": "principalmente",
+        "excluye": [
+          "estados financieros",
+          "contabilidad",
+          "balances"
+        ],
+        "terminos": [
+          "procedimientos administrativos generales",
+          "documentacion administrativa",
+          "comunicaciones internas",
+          "supervision administrativa",
+          "tareas administrativas del area"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D02": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "excluye": [
+          "dirigir el departamento",
+          "direccion integral"
+        ],
+        "terminos": [
+          "contabilidad cotidiana",
+          "llevar la contabilidad",
+          "preparar cierres",
+          "cierres y balances",
+          "declaraciones",
+          "informes contables",
+          "registraciones y balances"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D03": {
+        "modo": "principalmente",
+        "terminos": [
+          "analisis de cuentas",
+          "analisis de balances",
+          "analisis de resultados",
+          "procedimientos contables",
+          "analisis contable"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D04": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "registrar operaciones cotidianas",
+          "registro de compras",
+          "registro de ventas",
+          "registro de pagos",
+          "carga de comprobantes",
+          "asientos contables",
+          "imputaciones"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D05": {
+        "modo": "solo_estas",
+        "terminos": [
+          "confeccionar facturas",
+          "facturacion",
+          "notas de credito",
+          "estados de cuenta",
+          "emision de comprobantes"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D06": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "legislacion tributaria",
+          "interpretar legislacion",
+          "asesorar sobre impuestos",
+          "asesoramiento impositivo",
+          "asesoramiento fiscal",
+          "planificacion tributaria"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D07": {
+        "modo": "principalmente",
+        "terminos": [
+          "financiacion",
+          "inversiones",
+          "activos y pasivos",
+          "capital",
+          "liquidez",
+          "estrategia financiera",
+          "direccion financiera",
+          "finanzas corporativas"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D08": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "disponibilidades",
+          "operaciones bancarias",
+          "previsiones de caja",
+          "flujo de caja",
+          "cash flow",
+          "tesoreria",
+          "inversiones temporales",
+          "posicion de caja"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D09": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "revision independiente",
+          "revision profesional de estados",
+          "auditoria de estados financieros",
+          "controles financieros",
+          "dictamen"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D10": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "planificar auditorias",
+          "planificacion de auditorias",
+          "supervisar personal auditor",
+          "supervision de auditores",
+          "equipo de auditoria"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D11": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "investigar fraude",
+          "investigacion de fraude",
+          "manipulacion contable",
+          "irregularidades contables",
+          "peritaje"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D12": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "seleccion de proveedores",
+          "negociacion de compras",
+          "negociacion de contratos",
+          "direccion de compras",
+          "gestion de compras",
+          "abastecimiento"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D13": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "contratacion de personal",
+          "remuneracion",
+          "desarrollo del personal",
+          "recursos humanos",
+          "gestion de rrhh",
+          "direccion de personal"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D14": {
+        "modo": "solo_estas",
+        "terminos": [
+          "carga de datos",
+          "cargar datos",
+          "archivar documentos",
+          "archivo",
+          "apoyo de oficina",
+          "tareas administrativas generales"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D15": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "maxima posicion ejecutiva",
+          "direccion general",
+          "gerencia general",
+          "dirigir todas las areas",
+          "conduccion integral de la empresa",
+          "direccion ejecutiva"
+        ],
+        "tecnologia_definitoria": false
+      }
+    },
+    "2411.1.9": {
+      "inclusion": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "investigar fraudes",
+          "investigacion de fraude",
+          "fraude",
+          "corrupcion",
+          "sobornos",
+          "abuso de mercado",
+          "irregularidades",
+          "analizar transacciones",
+          "analisis de transacciones",
+          "patrones de hechos",
+          "recopilar pruebas",
+          "verificar pruebas",
+          "revision de pruebas",
+          "entrevistar involucrados",
+          "entrevistas de investigacion",
+          "hallazgos de auditoria",
+          "informes forenses",
+          "peritaje contable",
+          "mitigacion",
+          "mejora de controles"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D01": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "excluye": [
+          "investigar",
+          "investigacion",
+          "fraude concreto"
+        ],
+        "terminos": [
+          "examinar informacion financiera",
+          "registros exactos",
+          "comprobar registros",
+          "errores significativos",
+          "auditoria de estados financieros",
+          "revision de estados"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D02": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "supervisar personal de auditoria",
+          "planificar auditorias",
+          "revisar papeles de trabajo",
+          "papeles de trabajo",
+          "supervision de auditores"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D03": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "excluye": [
+          "investigar hechos",
+          "investigacion de hechos"
+        ],
+        "terminos": [
+          "identificar riesgos financieros",
+          "riesgos operativos",
+          "riesgos reglamentarios",
+          "diseñar controles",
+          "controles preventivos",
+          "gestion de riesgos",
+          "matriz de riesgos"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D04": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "riesgos generales",
+          "riesgos corporativos",
+          "toda la organizacion",
+          "coordinacion de riesgos",
+          "gestion integral de riesgos",
+          "erm"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D05": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "rentabilidad",
+          "liquidez",
+          "solvencia",
+          "recomendaciones financieras",
+          "analisis financiero"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D06": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "registrar operaciones",
+          "preparar estados financieros",
+          "asesoramiento contable",
+          "contabilidad general",
+          "cierres contables"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D07": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "interpretar normas",
+          "asesoramiento juridico",
+          "representacion juridica",
+          "representacion legal",
+          "asesoria legal",
+          "cumplimiento normativo",
+          "compliance legal"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D08": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "abogado de empresa",
+          "asesoramiento juridico interno",
+          "representacion legal",
+          "asuntos legales de la empresa",
+          "contratos y normativa",
+          "cumplimiento"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D09": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "asesoria juridica",
+          "asesoramiento juridico",
+          "interpretacion de normas",
+          "dictamenes juridicos",
+          "consultas legales"
+        ],
+        "tecnologia_definitoria": false
+      }
+    },
+    "4110.1": {
+      "inclusion": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "tareas administrativas generales",
+          "procedimientos establecidos",
+          "gestionar documentacion",
+          "archivo de documentacion",
+          "archivar documentacion",
+          "control de presentismo",
+          "presentismo",
+          "registrar horas trabajadas",
+          "registro de horas",
+          "documentacion para liquidaciones",
+          "fondos fijos",
+          "caja chica",
+          "pedidos de materiales",
+          "carga de pedidos",
+          "seguimiento de pedidos",
+          "reclamos a compras",
+          "coordinacion con contratistas",
+          "coordinacion con proveedores",
+          "apoyo logistico",
+          "insumos y equipos"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D01": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "apoyo a supervisores",
+          "ordenes de trabajo",
+          "prioridades",
+          "cronogramas",
+          "organizar personal operativo",
+          "coordinacion de servicios",
+          "mayor autonomia"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D02": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "gestion del proyecto",
+          "planificacion de recursos",
+          "cronogramas del proyecto",
+          "coordinacion de labores",
+          "control metodologico",
+          "apoyo a proyectos",
+          "pmo"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D03": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "fichas horarias",
+          "liquidacion integral de sueldos",
+          "liquidacion de sueldos",
+          "liquidacion de haberes",
+          "nominas",
+          "nomina"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D04": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "registrar contablemente",
+          "registro contable",
+          "registro de compras",
+          "registro de pagos",
+          "movimientos financieros",
+          "asientos contables",
+          "imputaciones contables"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D05": {
+        "modo": "solo_estas",
+        "terminos": [
+          "confeccionar facturas",
+          "facturacion",
+          "notas de credito",
+          "estados de cuenta"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D06": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "seleccionar proveedores",
+          "seleccion de proveedores",
+          "licitaciones",
+          "organizar licitaciones",
+          "negociar condiciones",
+          "realizar compras",
+          "gestion de compras",
+          "ordenes de compra"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D07": {
+        "modo": "principalmente",
+        "terminos": [
+          "control de existencias",
+          "existencias",
+          "documentacion de stock",
+          "control de stock",
+          "inventario",
+          "gestion de inventario",
+          "kardex"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D08": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "computos",
+          "computos y presupuestos",
+          "mediciones de obra",
+          "presupuestos de obra",
+          "facturacion tecnica",
+          "calculo de materiales",
+          "seguimiento tecnico de obra",
+          "certificaciones de obra"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D09": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "controlar la ejecucion",
+          "control diario de obra",
+          "dirigir cuadrillas",
+          "conduccion de cuadrillas",
+          "supervision de obra",
+          "capataz"
+        ],
+        "tecnologia_definitoria": false
+      },
+      "D10": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "planificar la obra",
+          "conduccion integral de la obra",
+          "cronograma de obra",
+          "costos de obra",
+          "administrar contratistas",
+          "avance de obra",
+          "direccion de obra"
+        ],
+        "tecnologia_definitoria": false
+      }
+    },
+    "2411.1.1": {
+      "D06": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "asesoramiento fiscal",
+          "asesoramiento impositivo",
+          "legislacion fiscal",
+          "legislacion tributaria",
+          "estrategias fiscales",
+          "planificacion fiscal",
+          "planificacion impositiva",
+          "planificacion tributaria",
+          "materia tributaria",
+          "asesor impositivo",
+          "consultoria fiscal"
+        ],
+        "tecnologia_definitoria": false,
+        "_ajuste": "P2 gate 2026-08-07: subido a min_matches:2 sin 'impuestos' bare (decidia con un match generico)"
+      }
+    }
   }
- },
- "hubs": {
-  "5223.4": {
-   "inclusion": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "atencion al cliente",
-     "atencion al publico",
-     "atender clientes",
-     "atiende clientes",
-     "atender compradores",
-     "asesoramiento",
-     "asesorar",
-     "asesora",
-     "identificar necesidades",
-     "identifica necesidades",
-     "informar sobre productos",
-     "informa productos",
-     "presentar alternativas",
-     "responder consultas",
-     "responde consultas",
-     "tomar pedidos",
-     "toma pedidos",
-     "preparar pedidos",
-     "concretar ventas",
-     "concreta ventas",
-     "cierre de ventas",
-     "venta al publico",
-     "ventas en el local",
-     "ventas de salon",
-     "venta de mostrador",
-     "ofrecer productos",
-     "presentar productos",
-     "generar ventas",
-     "lograr objetivos de venta"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D01": {
-    "modo": "principalmente",
-    "terminos": [
-     "reposicion",
-     "reponer",
-     "repone",
-     "control de existencias",
-     "control de stock",
-     "colocacion de precios",
-     "etiquetado",
-     "etiquetar precios",
-     "orden del local",
-     "orden y limpieza del local",
-     "mantenimiento del establecimiento",
-     "acomodar mercaderia",
-     "gondolas",
-     "gondola"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D02": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "conocimiento del producto",
-     "conocimientos particulares",
-     "conocimiento tecnico del producto",
-     "explicar caracteristicas",
-     "explica caracteristicas",
-     "funcionamiento del producto",
-     "variedades",
-     "compatibilidades",
-     "compatibilidad",
-     "conservacion",
-     "aplicaciones del producto",
-     "recomendar segun uso"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D03": {
-    "modo": "alguna",
-    "terminos": [
-     "panaderia",
-     "pasteleria",
-     "pan ",
-     "facturas de panaderia",
-     "tortas",
-     "porcionado",
-     "porcionar",
-     "decoracion de tortas",
-     "productos de panaderia"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D04": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "ordenes posteriores a la venta",
-     "posventa de pedidos",
-     "canales de entrega",
-     "ejecutar pedidos",
-     "ejecucion de pedidos",
-     "despacho",
-     "informar despacho",
-     "seguimiento de ordenes"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D05": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "preparar comidas",
-     "prepara comidas",
-     "elaboracion de comidas sencillas",
-     "servir comidas",
-     "sirve comidas",
-     "servir a los clientes"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D06": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "atender mesas",
-     "atencion de mesas",
-     "tomar comandas",
-     "toma comandas",
-     "servir alimentos",
-     "servir bebidas",
-     "salon gastronomico"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D07": {
-    "modo": "principalmente",
-    "terminos": [
-     "recibir pagos",
-     "recibe pagos",
-     "cobro",
-     "cobros",
-     "cobrar",
-     "registrar operaciones de caja",
-     "emitir comprobantes",
-     "emision de comprobantes",
-     "apertura de caja",
-     "arqueo",
-     "cierre de caja",
-     "manejo de caja"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D08": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "reclamaciones",
-     "reclamos",
-     "tramitar reclamos",
-     "seguimiento de reclamos",
-     "relacion con los clientes",
-     "gestion de reclamos"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D09": {
-    "modo": "alguna",
-    "terminos": [
-     "contact center",
-     "call center",
-     "centro de atencion telefonica",
-     "centro de contacto"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D10": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "llamadas",
-     "llamados",
-     "venta telefonica",
-     "ventas telefonicas",
-     "cierre telefonico",
-     "promocionar por telefono",
-     "telemarketing"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D11": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "buscar nuevos clientes",
-     "busqueda de clientes",
-     "captacion de clientes",
-     "prospectar",
-     "prospeccion",
-     "cartera de clientes",
-     "desarrollo de cartera",
-     "desarrollar cartera",
-     "propuestas comerciales",
-     "preparar propuestas",
-     "negociar precios",
-     "negociacion de condiciones"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D12": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "excluye": [
-     "asesorar",
-     "asesoramiento",
-     "vender",
-     "venta directa"
-    ],
-    "terminos": [
-     "preparar pedidos en almacen",
-     "preparacion de pedidos",
-     "embalar",
-     "embalaje",
-     "acondicionar pedidos",
-     "picking",
-     "deposito",
-     "almacen"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D13": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "conducir vehiculo",
-     "conduccion de vehiculo",
-     "manejo de vehiculo",
-     "realizar entregas",
-     "realiza entregas",
-     "reparto",
-     "repartir",
-     "entrega a domicilio"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D14": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "organizar al equipo",
-     "organizacion del equipo",
-     "distribuir horarios",
-     "distribucion de horarios",
-     "asignar tareas",
-     "controlar objetivos",
-     "control de inventario",
-     "evaluar desempeño",
-     "evaluacion del personal",
-     "supervisar al personal"
-    ],
-    "tecnologia_definitoria": false
-   }
-  },
-  "5223.7": {
-   "inclusion": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "atender compradores",
-     "atencion al cliente",
-     "identificar necesidades",
-     "identifica necesidades",
-     "explicar caracteristicas",
-     "explica caracteristicas",
-     "prestaciones",
-     "variedades",
-     "diferencias entre productos",
-     "compatibilidades",
-     "compatibilidad",
-     "condiciones de uso",
-     "mantenimiento del producto",
-     "recomendar alternativas",
-     "recomienda alternativas",
-     "demostraciones",
-     "demostracion de productos",
-     "configuraciones",
-     "configuracion de equipos",
-     "concretar ventas",
-     "concreta ventas"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D01": {
-    "modo": "alguna",
-    "terminos": [
-     "celulares",
-     "celular",
-     "telefonia",
-     "telefonos moviles",
-     "equipos de telecomunicaciones",
-     "servicios de telecomunicaciones",
-     "planes moviles"
-    ],
-    "tecnologia_definitoria": true,
-    "tecnologia_definitoria_por": "llm_derivado",
-    "nota_tec": "la prosa hace del dominio tecnologico (telefonia) el eje de la rama"
-   },
-   "D02": {
-    "modo": "alguna",
-    "terminos": [
-     "computadoras",
-     "computacion",
-     "notebooks",
-     "componentes de pc",
-     "perifericos",
-     "hardware",
-     "informatica"
-    ],
-    "tecnologia_definitoria": true,
-    "tecnologia_definitoria_por": "llm_derivado",
-    "nota_tec": "la prosa hace del dominio tecnologico (computacion) el eje de la rama"
-   },
-   "D03": {
-    "modo": "solo_estas",
-    "terminos": [
-     "asesoramiento general",
-     "mostrar productos",
-     "muestra productos",
-     "informar precios",
-     "informa precios",
-     "concretar ventas",
-     "venta simple"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D04": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "recibir equipos",
-     "recepcion de equipos",
-     "pruebas tecnicas",
-     "desmontar",
-     "desmontaje",
-     "identificar averias",
-     "diagnostico de fallas",
-     "sustituir piezas",
-     "reemplazo de piezas",
-     "reparacion de celulares",
-     "reparar equipos",
-     "restablecer funcionamiento"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D05": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "reparacion de hardware",
-     "reparar computadoras",
-     "pruebas tecnicas",
-     "desmontar componentes",
-     "identificar averias",
-     "sustituir piezas",
-     "service de pc",
-     "soporte tecnico de hardware"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D06": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "excluye": [
-     "vender",
-     "ventas",
-     "concretar ventas"
-    ],
-    "terminos": [
-     "resolver problemas informaticos",
-     "resolucion de incidentes",
-     "consultas de usuarios",
-     "soporte a usuarios",
-     "mesa de ayuda",
-     "help desk",
-     "asistencia remota",
-     "soporte tecnico"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D07": {
-    "modo": "principalmente",
-    "terminos": [
-     "cobros",
-     "cobrar",
-     "gestionar cobros",
-     "comprobantes",
-     "apertura de caja",
-     "arqueo",
-     "cierre de caja",
-     "manejo de caja"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D08": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "desarrollar cartera",
-     "desarrollo de cartera",
-     "captar clientes",
-     "captacion de clientes",
-     "preparar propuestas",
-     "propuestas comerciales",
-     "negociar acuerdos",
-     "negociacion comercial"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D09": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "llamadas salientes",
-     "llamados salientes",
-     "venta telefonica",
-     "ventas por telefono",
-     "promover por telefono",
-     "telemarketing"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D10": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "tramitar reclamaciones",
-     "tramita reclamos",
-     "reclamos",
-     "seguimiento integral",
-     "seguimiento de problemas",
-     "gestion de reclamos"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D11": {
-    "modo": "alguna",
-    "terminos": [
-     "contact center",
-     "call center",
-     "centro de contacto",
-     "centro de atencion telefonica"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D12": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "excluye": [
-     "asesorar",
-     "atender compradores",
-     "atencion al cliente"
-    ],
-    "terminos": [
-     "recibir mercaderia",
-     "recepcion de mercaderia",
-     "controlar mercaderia",
-     "control de mercaderia",
-     "preparar pedidos",
-     "administrar existencias",
-     "administracion de stock",
-     "deposito",
-     "almacen"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D13": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "supervisar al equipo",
-     "supervision del equipo",
-     "distribuir tareas",
-     "distribucion de tareas",
-     "controlar objetivos",
-     "control de inventario",
-     "calidad de atencion",
-     "evaluar al personal",
-     "evaluacion de desempeño"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D14": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "responsabilidad general del local",
-     "responsable del establecimiento",
-     "a cargo del local",
-     "gestion integral de la tienda",
-     "administracion del local",
-     "resultados del establecimiento"
-    ],
-    "tecnologia_definitoria": false
-   }
-  },
-  "3322.1": {
-   "inclusion": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "comercializar",
-     "comercializacion",
-     "visitar clientes",
-     "visita a clientes",
-     "buscar clientes",
-     "captar clientes",
-     "captacion de clientes",
-     "identificar necesidades",
-     "presentar productos",
-     "presentacion de productos",
-     "asesoramiento comercial",
-     "prospectar",
-     "prospeccion",
-     "reactivar clientes",
-     "fidelizar",
-     "fidelizacion",
-     "cartera de clientes",
-     "desarrollar cartera",
-     "cotizaciones",
-     "cotizacion",
-     "cotizar",
-     "propuestas comerciales",
-     "licitaciones",
-     "licitacion",
-     "negociar precios",
-     "negociacion",
-     "cerrar operaciones",
-     "cierre de operaciones",
-     "cierre de ventas",
-     "seguimiento de pedidos",
-     "oportunidades comerciales",
-     "ventas b2b",
-     "venta corporativa",
-     "ventas mayoristas",
-     "generar nuevos clientes",
-     "generar clientes",
-     "ofrecer productos",
-     "presentar y ofrecer productos",
-     "cerrar acuerdos",
-     "cerrar acuerdos comerciales",
-     "visitar prospectos",
-     "desarrollar relaciones comerciales"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D01": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "interpretar especificaciones",
-     "especificaciones tecnicas",
-     "calculos",
-     "dimensionamiento",
-     "dimensionamientos",
-     "seleccionar soluciones",
-     "explicar tecnicamente",
-     "asesoramiento tecnico",
-     "productos industriales",
-     "venta tecnica",
-     "instalacion y funcionamiento",
-     "rendimiento del equipo",
-     "integracion de productos"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D02": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "polizas",
-     "poliza",
-     "seguros",
-     "asegurado",
-     "asegurados",
-     "analisis de riesgos",
-     "riesgos y coberturas",
-     "coberturas",
-     "aseguradoras",
-     "intermediario de seguros"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D03": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "polizas",
-     "poliza",
-     "seguros",
-     "asegurado",
-     "coberturas",
-     "recomendar coberturas",
-     "aseguradoras",
-     "asesoramiento de seguros"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D04": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "propiedades",
-     "inmuebles",
-     "proyectos inmobiliarios",
-     "inmobiliaria",
-     "reserva de compra",
-     "firma del contrato",
-     "cierre del contrato",
-     "operacion inmobiliaria",
-     "emprendimientos inmobiliarios"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D05": {
-    "modo": "principalmente",
-    "terminos": [
-     "llamadas entrantes",
-     "llamadas salientes",
-     "llamados",
-     "venta telefonica",
-     "cierre telefonico",
-     "persuasion telefonica",
-     "telemarketing",
-     "contact center"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D06": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "importacion",
-     "exportacion",
-     "comercio exterior",
-     "clasificacion de mercancias",
-     "permisos aduaneros",
-     "aranceles",
-     "documentacion aduanera",
-     "aduana",
-     "normativa de comercio exterior"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D07": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "organizar cargas",
-     "organizacion de cargas",
-     "reservas de transporte",
-     "rutas",
-     "transportistas",
-     "documentacion de embarque",
-     "seguimiento de envios",
-     "envios internacionales",
-     "embarques"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D08": {
-    "modo": "principalmente",
-    "terminos": [
-     "alianzas",
-     "alianzas estrategicas",
-     "socios comerciales",
-     "distribuidores",
-     "canales comerciales",
-     "desarrollo de canales",
-     "relaciones empresariales",
-     "partners"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D09": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "dirigir vendedores",
-     "direccion de vendedores",
-     "equipo de ventas a cargo",
-     "distribuir zonas",
-     "asignacion de carteras",
-     "establecer objetivos",
-     "objetivos del equipo",
-     "resultados del equipo",
-     "liderar equipo comercial"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D10": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "estrategia comercial",
-     "definir mercados",
-     "definicion de mercados",
-     "canales y precios",
-     "politica de precios",
-     "rentabilidad",
-     "plan comercial integral"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D11": {
-    "modo": "principalmente",
-    "excluye": [
-     "prospectar",
-     "prospeccion",
-     "negociar",
-     "cerrar operaciones",
-     "cierre de ventas"
-    ],
-    "terminos": [
-     "consultas posventa",
-     "posventa",
-     "post venta",
-     "reclamos",
-     "problemas posteriores a la venta",
-     "atencion de pedidos",
-     "gestion de consultas"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D12": {
-    "modo": "principalmente",
-    "excluye": [
-     "prospectar",
-     "negociar",
-     "cerrar operaciones"
-    ],
-    "terminos": [
-     "consultas",
-     "reclamos",
-     "pedidos posteriores",
-     "posventa",
-     "atencion al cliente posterior"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D13": {
-    "modo": "solo_estas",
-    "terminos": [
-     "cargar cotizaciones",
-     "carga de cotizaciones",
-     "cargar pedidos",
-     "carga de pedidos",
-     "carga de contratos",
-     "carga de documentacion",
-     "seguir instrucciones",
-     "tareas administrativas de carga"
-    ],
-    "tecnologia_definitoria": false
-   }
-  },
-  "2411.1": {
-   "inclusion": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "revisar estados financieros",
-     "revision de estados financieros",
-     "analizar estados financieros",
-     "analisis de estados financieros",
-     "estados contables",
-     "presupuestos",
-     "presupuesto",
-     "informes financieros",
-     "planes empresariales",
-     "detectar irregularidades",
-     "irregularidades",
-     "fraude",
-     "declaraciones fiscales",
-     "declaraciones juradas",
-     "liquidacion de impuestos",
-     "impuestos",
-     "insolvencia",
-     "previsiones financieras",
-     "evaluacion de riesgos",
-     "asesoramiento financiero",
-     "asesoramiento fiscal",
-     "cierres contables",
-     "balances",
-     "balance general"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D01": {
-    "modo": "principalmente",
-    "terminos": [
-     "evaluacion de estados financieros",
-     "evaluar estados financieros",
-     "interpretacion de sistemas contables",
-     "implementacion de sistemas contables",
-     "procedimientos contables",
-     "analisis de cuentas",
-     "analisis contable"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D02": {
-    "modo": "principalmente",
-    "terminos": [
-     "registrar operaciones",
-     "registro de operaciones",
-     "registraciones",
-     "asientos",
-     "asientos contables",
-     "libros contables",
-     "libro mayor",
-     "carga de comprobantes",
-     "imputaciones",
-     "imputacion contable",
-     "conciliaciones",
-     "conciliacion bancaria",
-     "control de saldos"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D03": {
-    "modo": "solo_estas",
-    "terminos": [
-     "emitir facturas",
-     "emision de facturas",
-     "facturacion",
-     "facturar",
-     "notas de credito",
-     "estados mensuales de clientes",
-     "estados de cuenta"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D04": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "fichas horarias",
-     "novedades",
-     "novedades de personal",
-     "nominas",
-     "nomina",
-     "liquidacion de sueldos",
-     "liquidacion de haberes",
-     "sueldos y jornales"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D05": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "asesoramiento fiscal",
-     "asesoramiento impositivo",
-     "legislacion fiscal",
-     "legislacion tributaria",
-     "estrategias fiscales",
-     "planificacion fiscal",
-     "planificacion tributaria",
-     "materia impositiva"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D06": {
-    "modo": "principalmente",
-    "terminos": [
-     "elaboracion de presupuestos",
-     "elaborar presupuestos",
-     "supervision de presupuestos",
-     "control presupuestario",
-     "presupuestacion",
-     "armado de presupuesto"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D07": {
-    "modo": "principalmente",
-    "terminos": [
-     "analisis de costos",
-     "analisis de costes",
-     "control de costos",
-     "control de costes",
-     "planificacion de costos",
-     "costeo",
-     "estructura de costos"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D08": {
-    "modo": "principalmente",
-    "terminos": [
-     "rentabilidad",
-     "liquidez",
-     "solvencia",
-     "analisis de activos",
-     "recomendaciones financieras",
-     "analisis financiero",
-     "indicadores financieros"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D09": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "comprobar datos financieros",
-     "verificacion de datos",
-     "verificar exactitud",
-     "inventarios",
-     "inventario",
-     "recuento de inventario",
-     "auditoria",
-     "auditar registros"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D10": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "revision independiente",
-     "revision profesional",
-     "auditoria de estados financieros",
-     "auditoria externa",
-     "gobernanza financiera",
-     "dictamen",
-     "informes de auditoria"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D11": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "dirigir la actividad contable",
-     "direccion del area contable",
-     "establecer procedimientos",
-     "garantizar estados financieros",
-     "supervisar personal contable",
-     "supervision del equipo contable",
-     "jefatura contable",
-     "responsable del area contable"
-    ],
-    "tecnologia_definitoria": false
-   }
-  },
-  "3313.2": {
-   "inclusion": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "registrar operaciones",
-     "registro de operaciones",
-     "registraciones",
-     "operaciones cotidianas",
-     "ventas y compras",
-     "pagos e ingresos",
-     "registros contables",
-     "libro mayor",
-     "asientos",
-     "asientos contables",
-     "carga de comprobantes",
-     "cargar comprobantes",
-     "control de comprobantes",
-     "conciliar saldos",
-     "conciliaciones",
-     "conciliacion bancaria",
-     "balance",
-     "imputaciones contables",
-     "facturacion y cobranzas",
-     "cuentas corrientes",
-     "registracion contable",
-     "registraciones contables",
-     "soporte al armado de balances",
-     "armado de balances"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D01": {
-    "modo": "principalmente",
-    "terminos": [
-     "evaluacion de estados financieros",
-     "analisis de estados financieros",
-     "interpretacion de sistemas contables",
-     "aplicacion de procedimientos contables",
-     "analisis de cuentas contables"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D02": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "revisar estados financieros",
-     "presupuestos e informes",
-     "detectar irregularidades",
-     "asesoramiento financiero",
-     "asesoramiento fiscal",
-     "asesoramiento sobre riesgos",
-     "declaraciones fiscales"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D03": {
-    "modo": "solo_estas",
-    "terminos": [
-     "emitir facturas",
-     "emision de facturas",
-     "facturacion",
-     "notas de credito",
-     "estados mensuales",
-     "estados de cuenta",
-     "actualizar expedientes de clientes"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D04": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "fichas horarias",
-     "novedades",
-     "nominas",
-     "nomina",
-     "liquidacion de sueldos",
-     "liquidacion de haberes"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D05": {
-    "modo": "solo_estas",
-    "terminos": [
-     "tareas generales de oficina",
-     "atencion telefonica",
-     "archivo",
-     "archivo de documentacion",
-     "correspondencia",
-     "apoyo administrativo",
-     "tareas administrativas generales"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D06": {
-    "modo": "solo_estas",
-    "terminos": [
-     "tareas generales de oficina",
-     "atencion telefonica",
-     "archivo",
-     "correspondencia",
-     "apoyo administrativo",
-     "apoyo de oficina"
-    ],
-    "tecnologia_definitoria": false
-   }
-  },
-  "4312.1": {
-   "inclusion": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "examinar datos financieros",
-     "recoger datos financieros",
-     "operaciones de inventario",
-     "inventarios",
-     "revisar registros",
-     "revision de registros",
-     "comprobantes",
-     "bases de datos contables",
-     "comprobar exactitud",
-     "verificar exactitud",
-     "verificacion de registros",
-     "cuadre",
-     "que cuadre",
-     "comparar datos",
-     "detectar inconsistencias",
-     "inconsistencias",
-     "solicitar aclaraciones",
-     "control interno",
-     "auditoria interna",
-     "auditorias",
-     "liderar equipo de auditoria",
-     "coordinar equipo de auditoria",
-     "garantizar la fiabilidad",
-     "fiabilidad e integridad"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D01": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "supervisar personal de auditoria",
-     "supervision de auditores",
-     "planificar auditorias",
-     "planificacion de auditorias",
-     "revisar documentacion de auditores",
-     "validar informes",
-     "papeles de trabajo",
-     "alta direccion"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D02": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "revision independiente",
-     "revision profesional",
-     "auditoria de estados financieros",
-     "gobernanza financiera",
-     "garantias a accionistas",
-     "partes interesadas",
-     "dictamen de estados"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D03": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "investigar fraude",
-     "investigacion de fraude",
-     "fraude de valores",
-     "abuso de mercado",
-     "irregularidades en estados financieros",
-     "pruebas forenses",
-     "informes forenses",
-     "peritaje contable"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D04": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "auditar sistemas de informacion",
-     "auditoria de sistemas",
-     "auditoria informatica",
-     "infraestructura tecnologica",
-     "seguridad informatica",
-     "controles de tic",
-     "riesgos de tic",
-     "auditoria de seguridad"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D05": {
-    "modo": "solo_estas",
-    "terminos": [
-     "carga de datos",
-     "cargar datos",
-     "archivar documentacion",
-     "archivo",
-     "preparar planillas",
-     "planillas",
-     "apoyo de oficina",
-     "apoyo administrativo"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D06": {
-    "modo": "solo_estas",
-    "terminos": [
-     "carga de datos",
-     "archivar documentacion",
-     "preparar planillas",
-     "apoyo de oficina",
-     "tareas administrativas generales"
-    ],
-    "tecnologia_definitoria": false
-   }
-  },
-  "1211.1.1": {
-   "inclusion": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "responsabilidad integral de las actividades contables",
-     "responsable del area contable",
-     "jefatura de contabilidad",
-     "direccion contable",
-     "procedimientos contables",
-     "estados financieros precisos",
-     "supervisar personal contable",
-     "supervision del equipo contable",
-     "asignar tareas",
-     "controlar registraciones",
-     "conciliaciones",
-     "cierres",
-     "cierres contables",
-     "balances",
-     "impuestos",
-     "facturacion",
-     "cuentas corrientes",
-     "informes contables"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D01": {
-    "modo": "principalmente",
-    "excluye": [
-     "estados financieros",
-     "contabilidad",
-     "balances"
-    ],
-    "terminos": [
-     "procedimientos administrativos generales",
-     "documentacion administrativa",
-     "comunicaciones internas",
-     "supervision administrativa",
-     "tareas administrativas del area"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D02": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "excluye": [
-     "dirigir el departamento",
-     "direccion integral"
-    ],
-    "terminos": [
-     "contabilidad cotidiana",
-     "llevar la contabilidad",
-     "preparar cierres",
-     "cierres y balances",
-     "declaraciones",
-     "informes contables",
-     "registraciones y balances"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D03": {
-    "modo": "principalmente",
-    "terminos": [
-     "analisis de cuentas",
-     "analisis de balances",
-     "analisis de resultados",
-     "procedimientos contables",
-     "analisis contable"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D04": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "registrar operaciones cotidianas",
-     "registro de compras",
-     "registro de ventas",
-     "registro de pagos",
-     "carga de comprobantes",
-     "asientos contables",
-     "imputaciones"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D05": {
-    "modo": "solo_estas",
-    "terminos": [
-     "confeccionar facturas",
-     "facturacion",
-     "notas de credito",
-     "estados de cuenta",
-     "emision de comprobantes"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D06": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "legislacion tributaria",
-     "interpretar legislacion",
-     "asesorar sobre impuestos",
-     "asesoramiento impositivo",
-     "asesoramiento fiscal",
-     "planificacion tributaria"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D07": {
-    "modo": "principalmente",
-    "terminos": [
-     "financiacion",
-     "inversiones",
-     "activos y pasivos",
-     "capital",
-     "liquidez",
-     "estrategia financiera",
-     "direccion financiera",
-     "finanzas corporativas"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D08": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "disponibilidades",
-     "operaciones bancarias",
-     "previsiones de caja",
-     "flujo de caja",
-     "cash flow",
-     "tesoreria",
-     "inversiones temporales",
-     "posicion de caja"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D09": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "revision independiente",
-     "revision profesional de estados",
-     "auditoria de estados financieros",
-     "controles financieros",
-     "dictamen"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D10": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "planificar auditorias",
-     "planificacion de auditorias",
-     "supervisar personal auditor",
-     "supervision de auditores",
-     "equipo de auditoria"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D11": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "investigar fraude",
-     "investigacion de fraude",
-     "manipulacion contable",
-     "irregularidades contables",
-     "peritaje"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D12": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "seleccion de proveedores",
-     "negociacion de compras",
-     "negociacion de contratos",
-     "direccion de compras",
-     "gestion de compras",
-     "abastecimiento"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D13": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "contratacion de personal",
-     "remuneracion",
-     "desarrollo del personal",
-     "recursos humanos",
-     "gestion de rrhh",
-     "direccion de personal"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D14": {
-    "modo": "solo_estas",
-    "terminos": [
-     "carga de datos",
-     "cargar datos",
-     "archivar documentos",
-     "archivo",
-     "apoyo de oficina",
-     "tareas administrativas generales"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D15": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "maxima posicion ejecutiva",
-     "direccion general",
-     "gerencia general",
-     "dirigir todas las areas",
-     "conduccion integral de la empresa",
-     "direccion ejecutiva"
-    ],
-    "tecnologia_definitoria": false
-   }
-  },
-  "2411.1.9": {
-   "inclusion": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "investigar fraudes",
-     "investigacion de fraude",
-     "fraude",
-     "corrupcion",
-     "sobornos",
-     "abuso de mercado",
-     "irregularidades",
-     "analizar transacciones",
-     "analisis de transacciones",
-     "patrones de hechos",
-     "recopilar pruebas",
-     "verificar pruebas",
-     "revision de pruebas",
-     "entrevistar involucrados",
-     "entrevistas de investigacion",
-     "hallazgos de auditoria",
-     "informes forenses",
-     "peritaje contable",
-     "mitigacion",
-     "mejora de controles"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D01": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "excluye": [
-     "investigar",
-     "investigacion",
-     "fraude concreto"
-    ],
-    "terminos": [
-     "examinar informacion financiera",
-     "registros exactos",
-     "comprobar registros",
-     "errores significativos",
-     "auditoria de estados financieros",
-     "revision de estados"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D02": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "supervisar personal de auditoria",
-     "planificar auditorias",
-     "revisar papeles de trabajo",
-     "papeles de trabajo",
-     "supervision de auditores"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D03": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "excluye": [
-     "investigar hechos",
-     "investigacion de hechos"
-    ],
-    "terminos": [
-     "identificar riesgos financieros",
-     "riesgos operativos",
-     "riesgos reglamentarios",
-     "diseñar controles",
-     "controles preventivos",
-     "gestion de riesgos",
-     "matriz de riesgos"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D04": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "riesgos generales",
-     "riesgos corporativos",
-     "toda la organizacion",
-     "coordinacion de riesgos",
-     "gestion integral de riesgos",
-     "erm"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D05": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "rentabilidad",
-     "liquidez",
-     "solvencia",
-     "recomendaciones financieras",
-     "analisis financiero"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D06": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "registrar operaciones",
-     "preparar estados financieros",
-     "asesoramiento contable",
-     "contabilidad general",
-     "cierres contables"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D07": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "interpretar normas",
-     "asesoramiento juridico",
-     "representacion juridica",
-     "representacion legal",
-     "asesoria legal",
-     "cumplimiento normativo",
-     "compliance legal"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D08": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "abogado de empresa",
-     "asesoramiento juridico interno",
-     "representacion legal",
-     "asuntos legales de la empresa",
-     "contratos y normativa",
-     "cumplimiento"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D09": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "asesoria juridica",
-     "asesoramiento juridico",
-     "interpretacion de normas",
-     "dictamenes juridicos",
-     "consultas legales"
-    ],
-    "tecnologia_definitoria": false
-   }
-  },
-  "4110.1": {
-   "inclusion": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "tareas administrativas generales",
-     "procedimientos establecidos",
-     "gestionar documentacion",
-     "archivo de documentacion",
-     "archivar documentacion",
-     "control de presentismo",
-     "presentismo",
-     "registrar horas trabajadas",
-     "registro de horas",
-     "documentacion para liquidaciones",
-     "fondos fijos",
-     "caja chica",
-     "pedidos de materiales",
-     "carga de pedidos",
-     "seguimiento de pedidos",
-     "reclamos a compras",
-     "coordinacion con contratistas",
-     "coordinacion con proveedores",
-     "apoyo logistico",
-     "insumos y equipos"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D01": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "apoyo a supervisores",
-     "ordenes de trabajo",
-     "prioridades",
-     "cronogramas",
-     "organizar personal operativo",
-     "coordinacion de servicios",
-     "mayor autonomia"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D02": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "gestion del proyecto",
-     "planificacion de recursos",
-     "cronogramas del proyecto",
-     "coordinacion de labores",
-     "control metodologico",
-     "apoyo a proyectos",
-     "pmo"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D03": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "fichas horarias",
-     "liquidacion integral de sueldos",
-     "liquidacion de sueldos",
-     "liquidacion de haberes",
-     "nominas",
-     "nomina"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D04": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "registrar contablemente",
-     "registro contable",
-     "registro de compras",
-     "registro de pagos",
-     "movimientos financieros",
-     "asientos contables",
-     "imputaciones contables"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D05": {
-    "modo": "solo_estas",
-    "terminos": [
-     "confeccionar facturas",
-     "facturacion",
-     "notas de credito",
-     "estados de cuenta"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D06": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "seleccionar proveedores",
-     "seleccion de proveedores",
-     "licitaciones",
-     "organizar licitaciones",
-     "negociar condiciones",
-     "realizar compras",
-     "gestion de compras",
-     "ordenes de compra"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D07": {
-    "modo": "principalmente",
-    "terminos": [
-     "control de existencias",
-     "existencias",
-     "documentacion de stock",
-     "control de stock",
-     "inventario",
-     "gestion de inventario",
-     "kardex"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D08": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "computos",
-     "computos y presupuestos",
-     "mediciones de obra",
-     "presupuestos de obra",
-     "facturacion tecnica",
-     "calculo de materiales",
-     "seguimiento tecnico de obra",
-     "certificaciones de obra"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D09": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "controlar la ejecucion",
-     "control diario de obra",
-     "dirigir cuadrillas",
-     "conduccion de cuadrillas",
-     "supervision de obra",
-     "capataz"
-    ],
-    "tecnologia_definitoria": false
-   },
-   "D10": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "planificar la obra",
-     "conduccion integral de la obra",
-     "cronograma de obra",
-     "costos de obra",
-     "administrar contratistas",
-     "avance de obra",
-     "direccion de obra"
-    ],
-    "tecnologia_definitoria": false
-   }
-  },
-  "2411.1.1": {
-   "D06": {
-    "modo": "min_matches",
-    "minimo": 2,
-    "terminos": [
-     "asesoramiento fiscal",
-     "asesoramiento impositivo",
-     "legislacion fiscal",
-     "legislacion tributaria",
-     "estrategias fiscales",
-     "planificacion fiscal",
-     "planificacion impositiva",
-     "planificacion tributaria",
-     "materia tributaria",
-     "asesor impositivo",
-     "consultoria fiscal"
-    ],
-    "tecnologia_definitoria": false,
-    "_ajuste": "P2 gate 2026-08-07: subido a min_matches:2 sin 'impuestos' bare (decidia con un match generico)"
-   }
-  }
- }
 }
