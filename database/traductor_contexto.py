@@ -141,7 +141,8 @@ class TraductorContexto:
 
     # ── evaluación de una condición operacional ──
     def _eval_condicion(self, cond: dict, contenidos: Dict[str, str],
-                        hermanas: List[dict], tecnologia_definitoria: bool) -> dict:
+                        hermanas: List[dict], tecnologia_definitoria: bool,
+                        inclusion_comparativa: Optional[dict] = None) -> dict:
         """Devuelve {'satisfecha': bool, 'matches': [(termino, campo)], 'estado': ...}."""
         modo = cond.get('modo')
         if not modo or modo not in MODOS_EJECUTABLES:
@@ -179,10 +180,14 @@ class TraductorContexto:
                 otros += (h.get('terminos') or [])
             ok = n >= 1 and not _matches_de(otros)
         elif modo == 'principalmente':
-            # comparativo entre ramas hermanas; empate NO decide
+            # comparativo entre ramas hermanas; empate NO decide.
+            # LAUDO L1: la INCLUSION del hub participa del comparativo.
             propios = n
             max_hermana = 0
-            for h in hermanas:
+            comparadas = list(hermanas)
+            if inclusion_comparativa:
+                comparadas.append(inclusion_comparativa)
+            for h in comparadas:
                 nh = len({t for t, _ in _matches_de(h.get('terminos') or [])})
                 max_hermana = max(max_hermana, nh)
             ok = propios >= 1 and propios > max_hermana
@@ -201,6 +206,13 @@ class TraductorContexto:
     def _evaluar_hub(self, codigo: str, contenidos: Dict[str, str]) -> dict:
         hub = self.hubs[codigo]
         traza_reglas = []
+        # LAUDO L1 (H_v032, 2026-08-14): para las D redirectoras el conjunto de
+        # comparacion del MODO COMPARATIVO (principalmente) = D-hermanas ∪
+        # {INCLUSION del hub}. "consiste principalmente en" es predominio sobre
+        # TODO, incluido el nucleo del hub: si la inclusion domina el conteo,
+        # ninguna D redirige — se evalua la inclusion. Solo el comparativo:
+        # solo_estas/min_matches no cambian (letra del laudo).
+        cond_inclusion = (hub.get('regla_inclusion') or {}).get('condicion_operacional') or {}
         hermanas_de = lambda excluir_id: [
             (r.get('condicion_operacional') or {})
             for r in hub.get('reglas_desambiguacion', [])
@@ -214,7 +226,8 @@ class TraductorContexto:
         for r in sorted(hub.get('reglas_desambiguacion', []),
                         key=lambda x: int(x.get('orden', 999))):
             cond = r.get('condicion_operacional') or {}
-            res = self._eval_condicion(cond, contenidos, hermanas_de(r.get('regla_id')), _tec_def(r))
+            res = self._eval_condicion(cond, contenidos, hermanas_de(r.get('regla_id')), _tec_def(r),
+                                       inclusion_comparativa=cond_inclusion or None)
             traza_reglas.append({'regla_id': r.get('regla_id'), 'estado': res['estado'],
                                  'satisfecha': res['satisfecha'],
                                  'matches': [{'termino': t, 'campo': c} for t, c in res['matches']]})

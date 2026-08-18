@@ -185,3 +185,38 @@ def test_13_overlay_lexico_compila_regla_semantica():
     assert r['decide'] and r['codigo_esco'] == '2000.1' and r['regla_id'] == 'D01'
     # la prosa sigue intacta en el hub
     assert hub['reglas_desambiguacion'][0]['condicion_prosa'] == 'prosa de Cyn intacta'
+
+
+# ── LAUDO L1 (H_v032, 2026-08-14): la inclusion participa del comparativo ──
+
+HUB_VND = _hub('5000.1', 51, ['vendedor'],
+               ['venta de salon', 'asesorar', 'atencion al cliente', 'concretar ventas'],
+               [_d('D07', 7, 'principalmente', ['manejo de caja', 'cobros', 'arqueo'], '2000.1')])
+
+
+def test_13_L1_caso_testigo_vendedor_con_caja_NO_va_a_cajero():
+    """4 tareas de venta + 1 mencion de caja: la actividad principal es venta.
+    D07 (principalmente) ya no puede ganar por ser la unica hermana que matcheo —
+    la INCLUSION participa del comparativo y domina el conteo."""
+    t = _traductor([HUB_VND])
+    r = t.evaluar('Vendedor', _c(
+        tareas='venta de salon; asesorar clientes; atencion al cliente; concretar ventas; apoyo en manejo de caja'))
+    assert r['decide'], r
+    assert r['regla_id'] == 'inclusion' and r['codigo_esco'] == '5000.1', r
+
+
+def test_14_L1_caja_dominante_SI_redirige():
+    """El caso inverso: si la caja domina el conteo, D07 redirige como siempre."""
+    t = _traductor([HUB_VND])
+    r = t.evaluar('Vendedor', _c(
+        tareas='manejo de caja; cobros; arqueo diario; venta de salon ocasional'))
+    assert r['decide'] and r['regla_id'] == 'D07' and r['codigo_esco'] == '2000.1', r
+
+
+def test_15_L1_no_toca_solo_estas():
+    """solo_estas no cambia (letra del laudo: solo el modo comparativo)."""
+    hub = _hub('1000.1', 1, ['analista contable'], ['analizar estados financieros'],
+               [_d('D01', 1, 'solo_estas', ['cargar datos', 'archivo'], '2000.1')])
+    t = _traductor([hub])
+    r = t.evaluar('Analista contable', _c(tareas='cargar datos y archivo'))
+    assert r['decide'] and r['regla_id'] == 'D01', r

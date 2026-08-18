@@ -1,7 +1,7 @@
 {
   "_meta": {
     "descripcion": "Lexico compilado del traductor: terminos operacionales por hub/regla, propuestos desde la prosa de Cyn (jamas reescrita — la prosa vive en el JSON 2.0). Overlay sobre condicion_operacional.",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "generado": "2026-08-07 [FRENTE H P2]",
     "terminos_por": "llm_propuesto",
     "validada_por_casos": "parcial: 7 hubs congelados en P2 gate; 3 (36/58/52) quedan v0.x-propuesta para shadow P3",
@@ -26,7 +26,8 @@
       "4110.1": "propuesta_pendiente_shadow_P3",
       "5223.7": "propuesta_pendiente_shadow_P3"
     },
-    "cambios_v0_3_1": "[FRENTE H P3 parte 1] (a) Conflicto #1 (administrativo/a contable) RESUELTO-CONFIRMATORIO por auditoria_cyn_2026-08-12 (R14d corregida 4311.1->3313.2: la experta confirma la regla consolidada 3; la entrada deja de estar bloqueada para compilacion). (b) Regla 16, denominacion-trampa 'vendedor/a mayorista': la denominacion sigue como trigger del hub 3322.1 pero 'ventas mayoristas' se retira de los terminos de inclusion — mencionar venta mayorista NO es evidencia de representante B2B (el conflicto dict 5223 vs consolidada 3322.1 se resuelve por evidencia de tareas, nunca por la palabra)."
+    "cambios_v0_3_1": "[FRENTE H P3 parte 1] (a) Conflicto #1 (administrativo/a contable) RESUELTO-CONFIRMATORIO por auditoria_cyn_2026-08-12 (R14d corregida 4311.1->3313.2: la experta confirma la regla consolidada 3; la entrada deja de estar bloqueada para compilacion). (b) Regla 16, denominacion-trampa 'vendedor/a mayorista': la denominacion sigue como trigger del hub 3322.1 pero 'ventas mayoristas' se retira de los terminos de inclusion — mencionar venta mayorista NO es evidencia de representante B2B (el conflicto dict 5223 vs consolidada 3322.1 se resuelve por evidencia de tareas, nunca por la palabra).",
+    "cambios_v0_3_2": "[FRENTE H v0.3.2 — laudos H_v032] (L1b) Re-chequeo de modos de las D calientes contra los marcadores de la prosa de Cyn: la compilacion resulto FIEL en 10/11 (las prosas dicen 'principalmente/funcion principal' y asi estan compiladas — el defecto era la semantica, corregida en el evaluador por L1). UNICO mis-modado: 5223.7 D02 ('Si se concentra en computadoras, componentes y perifericos') estaba 'alguna' -> pasa a 'principalmente' ('se concentra en' es marcador de dominancia; esta D mando 'Vendedor consumo masivo' a vendedor-de-ordenadores en el shadow). L1 (semantica) vive en traductor_contexto.py: la INCLUSION participa del comparativo de las D."
   },
   "hubs": {
     "5223.4": {
@@ -335,7 +336,7 @@
         "nota_tec": "la prosa hace del dominio tecnologico (telefonia) el eje de la rama"
       },
       "D02": {
-        "modo": "alguna",
+        "modo": "principalmente",
         "terminos": [
           "computadoras",
           "computacion",
