@@ -1,0 +1,68 @@
+[
+ {
+  "titulo": "Administrativo Contable Generalista. Zon",
+  "antes": "decidido(3343.1)",
+  "despues": "familia_sin_rama(None)",
+  "tag": "guard_1a0"
+ },
+ {
+  "titulo": "Analista Contable Generalista",
+  "antes": "decidido(4311.1)",
+  "despues": "familia_sin_rama(None)",
+  "tag": "guard_1a0"
+ },
+ {
+  "titulo": "Administrativo contable",
+  "antes": "decidido(3343.1)",
+  "despues": "familia_sin_rama(None)",
+  "tag": "guard_1a0"
+ },
+ {
+  "titulo": "SECRETARIA ADMINISTRATIVA CONTABLE",
+  "antes": "decidido(4311.1)",
+  "despues": "familia_sin_rama(None)",
+  "tag": "guard_1a0"
+ },
+ {
+  "titulo": "Empleada Administrativa contable",
+  "antes": "decidido(3313.2)",
+  "despues": "familia_sin_rama(None)",
+  "tag": "guard_1a0"
+ },
+ {
+  "titulo": "Asistente Contable",
+  "antes": "decidido(3313.2)",
+  "despues": "familia_sin_rama(None)",
+  "tag": "guard_1a0"
+ },
+ {
+  "titulo": "Administrativa de facturacion y cobranza",
+  "antes": "decidido(3343.1)",
+  "despues": "familia_sin_rama(None)",
+  "tag": "guard_1a0"
+ },
+ {
+  "titulo": "Gerente de Contabilidad",
+  "antes": "decidido(1211.1)",
+  "despues": "familia_sin_rama(None)",
+  "tag": "guard_1a0"
+ },
+ {
+  "titulo": "Vendedor Viajante/Itinerante",
+  "antes": "decidido(5223.4)",
+  "despues": "evidencia_mixta(None)",
+  "tag": "anclas/otro"
+ },
+ {
+  "titulo": "Representante de ventas",
+  "antes": "decidido(4225.1)",
+  "despues": "familia_sin_rama(None)",
+  "tag": "guard_1a0"
+ },
+ {
+  "titulo": "agente comercial",
+  "antes": "decidido(4225.1)",
+  "despues": "familia_sin_rama(None)",
+  "tag": "guard_1a0"
+ }
+]
