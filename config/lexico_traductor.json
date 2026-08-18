@@ -1,7 +1,7 @@
 {
   "_meta": {
     "descripcion": "Lexico compilado del traductor: terminos operacionales por hub/regla, propuestos desde la prosa de Cyn (jamas reescrita — la prosa vive en el JSON 2.0). Overlay sobre condicion_operacional.",
-    "version": "0.3.3.1",
+    "version": "0.3.4",
     "generado": "2026-08-07 [FRENTE H P2]",
     "terminos_por": "llm_propuesto",
     "validada_por_casos": "parcial: 7 hubs congelados en P2 gate; 3 (36/58/52) quedan v0.x-propuesta para shadow P3",
@@ -29,7 +29,8 @@
     "cambios_v0_3_1": "[FRENTE H P3 parte 1] (a) Conflicto #1 (administrativo/a contable) RESUELTO-CONFIRMATORIO por auditoria_cyn_2026-08-12 (R14d corregida 4311.1->3313.2: la experta confirma la regla consolidada 3; la entrada deja de estar bloqueada para compilacion). (b) Regla 16, denominacion-trampa 'vendedor/a mayorista': la denominacion sigue como trigger del hub 3322.1 pero 'ventas mayoristas' se retira de los terminos de inclusion — mencionar venta mayorista NO es evidencia de representante B2B (el conflicto dict 5223 vs consolidada 3322.1 se resuelve por evidencia de tareas, nunca por la palabra).",
     "cambios_v0_3_2": "[FRENTE H v0.3.2 — laudos H_v032] (L1b) Re-chequeo de modos de las D calientes contra los marcadores de la prosa de Cyn: la compilacion resulto FIEL en 10/11 (las prosas dicen 'principalmente/funcion principal' y asi estan compiladas — el defecto era la semantica, corregida en el evaluador por L1). UNICO mis-modado: 5223.7 D02 ('Si se concentra en computadoras, componentes y perifericos') estaba 'alguna' -> pasa a 'principalmente' ('se concentra en' es marcador de dominancia; esta D mando 'Vendedor consumo masivo' a vendedor-de-ordenadores en el shadow). L1 (semantica) vive en traductor_contexto.py: la INCLUSION participa del comparativo de las D.",
     "cambios_v0_3_3": "[FRENTE H v0.3.3 — laudos H_v033] (P2b) Anclas de venta-externa a la inclusion de 3322.1, COMPILADAS TEXTUALES de la prosa de la regla consolidada 16 ('buscar, recibir o visitar clientes; presentar productos o servicios; confeccionar cotizaciones...; negociar precios y condiciones; realizar seguimiento de pedidos o propuestas y detectar oportunidades comerciales'): ['recibir clientes', 'presentar servicios', 'confeccionar cotizaciones', 'negociar condiciones', 'seguimiento de propuestas', 'detectar oportunidades']. terminos_por: prosa_directa. (P3 BINARIO — veredicto: FASE 2, no se compila. La rama de responsabilidad del hub contable exige interpretacion del compilador: la prosa D02 dice 'registrar... para que posteriormente sean analizadas por un profesional' y la inclusion 2411.1 lista 'revisar y analizar estados financieros, presupuestos...', pero los casos reales dicen 'liderar cierres', 'asegurar registraciones', 'analisis de cuentas' — mapear eso a 'responsabilidad profesional integral' (prosa K2 de Cyn, abstracta) NO sale de los marcadores sin interpretar. Costo aceptado: las 2 regresiones P3 de la matriz v2 persisten hasta que Cyn escriba los marcadores.) P1/interaccion/guard P2a viven en traductor_contexto.py.",
-    "cambios_v0_3_3_1_a1": "[FRENTE H — A1, orden de Gerardo 2026-08-18] Anclas a la inclusion de 5223.4 contra las 4 regresiones D08/D10-por-mencion-accesoria. Procedencia SIN maquillar: (a) flexiones textuales de la prosa PROPIA de la regla 51 ('recibe y atiende compradores...'): ['recibir compradores', 'recibe compradores', 'atiende compradores']; (b) las 6 anclas P2b COMPARTIDAS por orden A1 — su fuente textual es la prosa de la regla 16 (la prosa de 51/52 es venta-de-salon y no las contiene): ['recibir clientes', 'presentar servicios', 'confeccionar cotizaciones', 'negociar condiciones', 'seguimiento de propuestas', 'detectar oportunidades']. Alcance: solo 5223.4 (las 4 regresiones A1 son todas hub 51); 5223.7 es hub-propuesta, fuera del gate. Evaluador INTACTO (A2/A3 esperan laudo)."
+    "cambios_v0_3_3_1_a1": "[FRENTE H — A1, orden de Gerardo 2026-08-18] Anclas a la inclusion de 5223.4 contra las 4 regresiones D08/D10-por-mencion-accesoria. Procedencia SIN maquillar: (a) flexiones textuales de la prosa PROPIA de la regla 51 ('recibe y atiende compradores...'): ['recibir compradores', 'recibe compradores', 'atiende compradores']; (b) las 6 anclas P2b COMPARTIDAS por orden A1 — su fuente textual es la prosa de la regla 16 (la prosa de 51/52 es venta-de-salon y no las contiene): ['recibir clientes', 'presentar servicios', 'confeccionar cotizaciones', 'negociar condiciones', 'seguimiento de propuestas', 'detectar oportunidades']. Alcance: solo 5223.4 (las 4 regresiones A1 son todas hub 51); 5223.7 es hub-propuesta, fuera del gate. Evaluador INTACTO (A2/A3 esperan laudo).",
+    "cambios_v0_3_4": "[FRENTE H v0.3.4 — paquete de laudos final] A1-bis: term-set unico venta_externa@regla16 (29 terminos: prosa regla 16 + flexiones autorizadas + 4 nombrados por el laudo) referenciado en D11.terminos_ref y D08/D10.excluye_ref del hub 51, con tag de telemetria excluye_venta_externa. La resolucion de referencias vive en el evaluador (identidad de objeto con test — patron BOILERPLATE_RE). A2 (confirmatorias-primero en modo satelite) y A3 (L3 por grafo) viven en traductor_contexto.py y matching_rules_business.json."
   },
   "hubs": {
     "5223.4": {
@@ -203,7 +204,9 @@
           "relacion con los clientes",
           "gestion de reclamos"
         ],
-        "tecnologia_definitoria": false
+        "tecnologia_definitoria": false,
+        "excluye_ref": "venta_externa@regla16",
+        "excluye_tag": "excluye_venta_externa"
       },
       "D09": {
         "modo": "alguna",
@@ -227,25 +230,14 @@
           "promocionar por telefono",
           "telemarketing"
         ],
-        "tecnologia_definitoria": false
+        "tecnologia_definitoria": false,
+        "excluye_ref": "venta_externa@regla16",
+        "excluye_tag": "excluye_venta_externa"
       },
       "D11": {
         "modo": "min_matches",
         "minimo": 2,
-        "terminos": [
-          "buscar nuevos clientes",
-          "busqueda de clientes",
-          "captacion de clientes",
-          "prospectar",
-          "prospeccion",
-          "cartera de clientes",
-          "desarrollo de cartera",
-          "desarrollar cartera",
-          "propuestas comerciales",
-          "preparar propuestas",
-          "negociar precios",
-          "negociacion de condiciones"
-        ],
+        "terminos_ref": "venta_externa@regla16",
         "tecnologia_definitoria": false
       },
       "D12": {
@@ -1786,6 +1778,73 @@
         ],
         "tecnologia_definitoria": false,
         "_ajuste": "P2 gate 2026-08-07: subido a min_matches:2 sin 'impuestos' bare (decidia con un match generico)"
+      }
+    }
+  },
+  "term_sets": {
+    "venta_externa@regla16": {
+      "descripcion": "LAUDO A1-bis (H_v034): la frontera de venta-externa en UNA sola fuente, referenciada dos veces — condicion positiva de D11 (->3322.1) y excluye de D08/D10 del hub 51. Trazabilidad por termino (terminos_de); ninguno sin fila de origen.",
+      "terminos": [
+        "visitar clientes",
+        "prospectar",
+        "prospeccion",
+        "propuestas comerciales",
+        "negociar precios",
+        "cerrar operaciones",
+        "seguimiento de pedidos",
+        "seguimiento de propuestas",
+        "detectar oportunidades",
+        "oportunidades comerciales",
+        "confeccionar cotizaciones",
+        "visita clientes",
+        "visitas a clientes",
+        "visitas presenciales",
+        "cartera de clientes",
+        "cartera asignada",
+        "desarrollo de cartera",
+        "desarrollar cartera",
+        "captacion de clientes",
+        "buscar nuevos clientes",
+        "busqueda de clientes",
+        "preparar propuestas",
+        "elaborar cotizaciones",
+        "negociacion de condiciones",
+        "oportunidades de negocio",
+        "visitas comerciales",
+        "recorrer zonas",
+        "recorre zonas",
+        "toma de pedidos"
+      ],
+      "terminos_de": {
+        "visitar clientes": "regla_16",
+        "prospectar": "regla_16",
+        "prospeccion": "regla_16",
+        "propuestas comerciales": "regla_16",
+        "negociar precios": "regla_16",
+        "cerrar operaciones": "regla_16",
+        "seguimiento de pedidos": "regla_16",
+        "seguimiento de propuestas": "regla_16",
+        "detectar oportunidades": "regla_16",
+        "oportunidades comerciales": "regla_16",
+        "confeccionar cotizaciones": "regla_16",
+        "visita clientes": "regla_16:flexion",
+        "visitas a clientes": "regla_16:flexion",
+        "visitas presenciales": "regla_16:flexion(visitar clientes)",
+        "cartera de clientes": "regla_16:flexion(fidelizar una cartera)",
+        "cartera asignada": "regla_16:flexion(fidelizar una cartera)",
+        "desarrollo de cartera": "regla_16:flexion",
+        "desarrollar cartera": "regla_16:flexion",
+        "captacion de clientes": "regla_16:flexion(buscar clientes)",
+        "buscar nuevos clientes": "regla_16:flexion",
+        "busqueda de clientes": "regla_16:flexion",
+        "preparar propuestas": "regla_16:flexion",
+        "elaborar cotizaciones": "regla_16:flexion",
+        "negociacion de condiciones": "regla_16:flexion",
+        "oportunidades de negocio": "regla_16:flexion(detectar oportunidades comerciales)",
+        "visitas comerciales": "laudo_A1bis",
+        "recorrer zonas": "laudo_A1bis",
+        "recorre zonas": "laudo_A1bis",
+        "toma de pedidos": "laudo_A1bis"
       }
     }
   }

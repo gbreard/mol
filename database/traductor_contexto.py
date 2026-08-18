@@ -102,6 +102,20 @@ class TraductorContexto:
         if lexico is None:
             lex_path = REPO / 'config' / 'lexico_traductor.json'
             lexico = json.load(open(lex_path)) if lex_path.exists() else {'hubs': {}}
+        # v0.3.4 (laudo A1-bis): term-sets nombrados, referenciados por *_ref.
+        # La resolucion asigna EL MISMO OBJETO lista a cada referencia (identidad
+        # verificable por test — si pudieran driftear, driftean).
+        self._term_sets = {k: v.get('terminos') or []
+                           for k, v in (lexico.get('term_sets') or {}).items()}
+
+        def _resolver_refs(lx: dict) -> dict:
+            out = {**lx, 'campo': 'contenidos'}
+            if 'terminos_ref' in out:
+                out['terminos'] = self._term_sets[out['terminos_ref']]
+            if 'excluye_ref' in out:
+                out['excluye'] = self._term_sets[out['excluye_ref']]
+            return out
+
         for cod, reglas_lex in (lexico.get('hubs') or {}).items():
             hub = self.hubs.get(cod)
             if not hub:
@@ -109,7 +123,7 @@ class TraductorContexto:
             for r in hub.get('reglas_desambiguacion', []):
                 lx = reglas_lex.get(r.get('regla_id'))
                 if lx:
-                    r['condicion_operacional'] = {**lx, 'campo': 'contenidos'}
+                    r['condicion_operacional'] = _resolver_refs(lx)
                     if lx.get('tecnologia_definitoria'):
                         r['tecnologia_definitoria'] = True
             lx_inc = reglas_lex.get('inclusion')
@@ -172,10 +186,12 @@ class TraductorContexto:
             return out
 
         matches = _matches_de(terminos)
-        # modificador excluye: si aparece un término excluido, la condición NO se satisface
+        # modificador excluye: si aparece un término excluido, la condición NO se satisface.
+        # v0.3.4: si el excluye viene de un term-set con tag, la traza lleva el tag.
         excluye = cond.get('excluye') or []
         if excluye and _matches_de(excluye):
-            return {'satisfecha': False, 'matches': matches, 'estado': 'excluida'}
+            estado = cond.get('excluye_tag') or 'excluida'
+            return {'satisfecha': False, 'matches': matches, 'estado': estado}
 
         n = len({t for t, _ in matches})
         if modo == 'alguna':
@@ -250,9 +266,24 @@ class TraductorContexto:
         incl_compilada = bool((cond_inclusion or {}).get('terminos'))
         n_incl = self._conteo_matches(cond_inclusion, contenidos) if incl_compilada else None
 
-        # a) D en orden
-        for r in sorted(hub.get('reglas_desambiguacion', []),
-                        key=lambda x: int(x.get('orden', 999))):
+        # a) D en orden. v0.3.4 (laudo A2): en modo satelite-exacto, las D cuyo
+        # destino COINCIDE con el satelite (confirmatorias) van PRIMERO; el
+        # orden interno de cada grupo sigue siendo el de la prosa.
+        def _dst_de(rr):
+            dst = rr.get('ocupacion_destino') or {}
+            if isinstance(dst, str):
+                m = re.search(r'"codigo_esco":\s*"([\d.]+)"', dst.replace("'", '"'))
+                return m.group(1) if m else None
+            return dst.get('codigo_esco')
+
+        if sat_code:
+            orden_d = sorted(hub.get('reglas_desambiguacion', []),
+                             key=lambda x: (0 if _dst_de(x) == sat_code else 1,
+                                            int(x.get('orden', 999))))
+        else:
+            orden_d = sorted(hub.get('reglas_desambiguacion', []),
+                             key=lambda x: int(x.get('orden', 999)))
+        for r in orden_d:
             cond = r.get('condicion_operacional') or {}
             res = self._eval_condicion(cond, contenidos, hermanas_de(r.get('regla_id')), _tec_def(r),
                                        inclusion_comparativa=(cond_inclusion or None) if not sat_code else None)

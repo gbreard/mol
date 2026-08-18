@@ -307,3 +307,68 @@ def test_22_testigo5_dos_terminos_distintos_redirige():
     t = _t33([HUB_V33], sats={})
     r = t.evaluar('vendedor en calle', _c(tareas='cobros diarios; arqueo de caja'))
     assert r['decide'] and r['regla_id'] == 'D07' and r['codigo_esco'] == '2000.1', r
+
+
+# ── v0.3.4 (paquete final): A1-bis term-set unico + A2 confirmatorias-primero ──
+
+def test_23_A1bis_identidad_de_objeto_del_term_set():
+    """Las dos referencias (D11.terminos y D08/D10.excluye) apuntan al MISMO objeto
+    (patron BOILERPLATE_RE): si pueden driftear, driftean."""
+    import json as _json
+    from pathlib import Path as _P
+    lex = _json.load(open(_P(__file__).resolve().parents[2] / 'config' / 'lexico_traductor.json'))
+    t = TraductorContexto(hubs_activos=['5223.4'], exclusiones_trigger=[], lexico=lex)
+    ds = {r['regla_id']: r['condicion_operacional']
+          for r in t.hubs['5223.4']['reglas_desambiguacion']
+          if r.get('regla_id') in ('D08', 'D10', 'D11')}
+    assert ds['D11']['terminos'] is ds['D08']['excluye']
+    assert ds['D08']['excluye'] is ds['D10']['excluye']
+    assert ds['D08'].get('excluye_tag') == 'excluye_venta_externa'
+
+
+HUB_A1B = _hub('5000.1', 51, ['vendedor'],
+               ['venta de salon', 'concretar ventas'],
+               [_d('D08', 8, 'min_matches', ['reclamos', 'gestion de reclamos'], '2000.1', minimo=2),
+                _d('D11', 11, 'min_matches', ['visitas presenciales', 'cartera de clientes'], '3000.1', minimo=2)])
+# el set unico, cableado como lo hace el resolver
+_SET = ['visitas presenciales', 'cartera de clientes', 'recorrer zonas']
+for _r in HUB_A1B['reglas_desambiguacion']:
+    if _r['regla_id'] == 'D08':
+        _r['condicion_operacional']['excluye'] = _SET
+        _r['condicion_operacional']['excluye_tag'] = 'excluye_venta_externa'
+    if _r['regla_id'] == 'D11':
+        _r['condicion_operacional']['terminos'] = _SET
+
+
+def test_24_A1bis_testigo_bonus_lubricantes():
+    """Vendedor viajante con visitas/cartera + reclamos: el excluye bloquea D08,
+    cae a D11 -> 3000.1 (la mejora, no solo la no-regresion)."""
+    t = _traductor([HUB_A1B])
+    r = t.evaluar('Vendedor', _c(
+        tareas='visitas presenciales a clientes; cartera de clientes; atencion de reclamos; gestion de reclamos'))
+    assert r['decide'] and r['regla_id'] == 'D11' and r['codigo_esco'] == '3000.1', r
+    d08 = [x for h in r['traza']['hubs_activados'] for x in h['reglas'] if x['regla_id'] == 'D08']
+    assert d08[0]['estado'] == 'excluye_venta_externa'
+
+
+def test_25_A1bis_testigo_riesgo_documentado():
+    """Teleoperador genuino con 'cartera' al pasar: D08 bloqueada por el set,
+    D11 no llega a 2 -> familia_sin_rama (la plana decide por subordinacion) + tag visible."""
+    t = _traductor([HUB_A1B])
+    r = t.evaluar('Vendedor', _c(tareas='gestion de reclamos; reclamos diarios; cartera de clientes al pasar'))
+    assert not r['decide'], r
+    d08 = [x for h in r['traza']['hubs_activados'] for x in h['reglas'] if x['regla_id'] == 'D08']
+    assert d08[0]['estado'] == 'excluye_venta_externa'
+
+
+def test_26_A2_confirmatoria_primero_en_modo_satelite():
+    """El caso de la v3: la D-contraria (orden 1, 2 hits) ya no gana por orden —
+    la confirmatoria (destino == satelite) se evalua primero."""
+    hub = _hub('5000.1', 51, ['vendedor'],
+               ['venta de salon'],
+               [_d('D01', 1, 'alguna', ['reposicion', 'control de stock'], '3000.1'),
+                _d('D07', 7, 'alguna', ['cobro en linea de cajas', 'cierre de caja'], '2000.1')])
+    t = _t33([hub], sats={'cajera': '2000.1'})
+    t._triggers.append(('cajera', '5000.1'))
+    r = t.evaluar('Cajera', _c(tareas='cobro en linea de cajas; reposicion de mercaderia; control de stock'))
+    assert r['decide'] and r['regla_id'] == 'D07' and r['codigo_esco'] == '2000.1', r

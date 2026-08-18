@@ -1,5 +1,5 @@
 {
-  "version": "5.25",
+  "version": "5.26",
   "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-08-14",
@@ -561,7 +561,8 @@
         "version_origen": "v40",
         "contexto": "R159: Farmaceutico -> 2262, R160: Tecnico instalador -> 7411",
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 4222.1 == codigo auditado por Cyn."
     },
     "R16_barista_heladero": {
       "nombre": "Barista/Heladero/Cafeteria",
@@ -610,7 +611,8 @@
         "auditoria": "auditoria_cyn_2026-08-12",
         "cambio_k": "alta_por_division de R16_barista_heladero",
         "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 5246.1 == codigo auditado por Cyn."
     },
     "R16a_barista": {
       "nombre": "Barista / Cafetero/a",
@@ -944,7 +946,8 @@
         "training_pair_ids": [
           "TP-590"
         ]
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 1221.3.2.1 == codigo auditado por Cyn."
     },
     "R25_gerente_gastronomia": {
       "nombre": "Gerente Restaurante/Bar/Gastronomia",
@@ -1196,7 +1199,8 @@
         "version_origen": "v514",
         "contexto": "ucción. Nuevas R307-R311 (ing electrónico, lonas/toldos, resp depósito, promotor",
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 5131.2 == codigo auditado por Cyn."
     },
     "R32_operario_picking": {
       "nombre": "Operario Picking/Preparador Pedidos (Almacén)",
@@ -1298,7 +1302,8 @@
       "activa": true,
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 5230.1 == codigo auditado por Cyn."
     },
     "R35_disenador_grafico_titulo": {
       "nombre": "Diseñador Gráfico (por título)",
@@ -1453,7 +1458,8 @@
         "version_origen": "v47",
         "contexto": "acturación, ventas; R38: excluir supervisor, marketing; R58: excluir mostrador/h",
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 3331.2.1 == codigo auditado por Cyn."
     },
     "R39_supervisor_administracion": {
       "nombre": "Supervisor de Administración",
@@ -1479,7 +1485,8 @@
         "auditoria": "auditoria_cyn_2026-08-12",
         "cambio_k": "correccion_destino: 3341.3 -> 3341.7",
         "nota_cyn": "Corrección consolidada durante la revisión final del Diccionario MOL."
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 3341.7 == codigo auditado por Cyn."
     },
     "R40_asesor_comercial": {
       "nombre": "Asesor Comercial / Corredor (B2B)",
@@ -1541,7 +1548,8 @@
       "nota": "Chofer repartidor con vehiculo ligero (camioneta/furgoneta) es ISCO 8322",
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 8322.2 == codigo auditado por Cyn."
     },
     "R42_gerente_operaciones": {
       "nombre": "Gerente de Operaciones",
@@ -2346,7 +2354,8 @@
       "prioridad": 0,
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 3343.1 == codigo auditado por Cyn."
     },
     "R64_admin_funeraria": {
       "nombre": "Administrativo Funeraria/Cementerio",
@@ -2426,7 +2435,8 @@
         "auditoria": "auditoria_cyn_2026-08-12",
         "cambio_k": "alta_por_division de R65_jefe_delegacion",
         "nota_cyn": "Usar solo cuando se trate de tienda/local minorista."
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 1420.4 == codigo auditado por Cyn."
     },
     "R66_arquitecto_software": {
       "nombre": "Arquitecto de Software",
@@ -2689,7 +2699,8 @@
       "prioridad": 1,
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 1221.3.2.1 == codigo auditado por Cyn."
     },
     "R75_vigilador": {
       "nombre": "Vigilador/Guardia de Seguridad",
@@ -3345,7 +3356,8 @@
       "nota": "Validacion v1.0 - Telemarketers = vendedores telefónicos (5244), no representantes comerciales (3322)",
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 5244.1 == codigo auditado por Cyn."
     },
     "R94_jefe_sucursal_financiera": {
       "nombre": "Jefe/Gerente de Sucursal/Delegación Financiera",
@@ -3535,7 +3547,8 @@
       "activa": true,
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 4321.1 == codigo auditado por Cyn."
     },
     "R98_asesor_medicina_prepaga": {
       "nombre": "Asesor/Vendedor Medicina Prepaga/Obra Social",
@@ -3774,7 +3787,8 @@
       "activa": true,
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 1212.2 == codigo auditado por Cyn."
     },
     "R109_ejecutivo_ventas": {
       "nombre": "Ejecutivo de Ventas (consolidado R109+R145+R195)",
@@ -4024,7 +4038,8 @@
       "activa": true,
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 4321.1 == codigo auditado por Cyn."
     },
     "R120_gomero_balanceador": {
       "nombre": "Gomero/Balanceador de Neumáticos",
@@ -4136,7 +4151,8 @@
       "activa": true,
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 2433.6 == codigo auditado por Cyn."
     },
     "R124_analista_contable": {
       "nombre": "Analista Contable",
@@ -4186,7 +4202,8 @@
       "activa": true,
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 1211.1 == codigo auditado por Cyn."
     },
     "R126_ejecutivo_seguros": {
       "nombre": "Ejecutivo/Asesor de Seguros/ART",
@@ -5018,7 +5035,8 @@
         "version_origen": "v36",
         "contexto": "R151: Jefe de Obra -> 1323 director de obra",
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 1323.1 == codigo auditado por Cyn."
     },
     "R152_ecommerce_manager": {
       "nombre": "E-commerce Manager / Responsable Comercio Electrónico",
@@ -5194,7 +5212,8 @@
         "auditoria": "auditoria_cyn_2026-08-12",
         "cambio_k": "correccion_destino: 4222.1 -> 5244.1",
         "nota_cyn": "Corregido: función de venta telefónica corresponde a teleoperador de ventas, no atención al cliente genérica."
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 5244.1 == codigo auditado por Cyn."
     },
     "R156_vendedor_viajante": {
       "nombre": "Vendedor Viajante / Vendedor de Ruta",
@@ -5525,7 +5544,8 @@
       "nota": "Soporte ISP = helpdesk TIC, NO supervisor mantenimiento vehículos",
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 3512.1 == codigo auditado por Cyn."
     },
     "R168_docente_gastronomico": {
       "nombre": "Docente gastronómico / Pastelero instructor",
@@ -5664,7 +5684,8 @@
         "version_origen": "v47",
         "contexto": "ager/director/lead; R171: excluir administrativo; R175: excluir depósito/carga;",
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 8322.2 == codigo auditado por Cyn."
     },
     "R172_analista_siniestros": {
       "nombre": "Analista de Siniestros / Claims Analyst",
@@ -5742,7 +5763,8 @@
       "nota": "Confirma match semántico correcto (4321)",
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 4321.1 == codigo auditado por Cyn."
     },
     "R175_operario_limpieza": {
       "nombre": "Operario/a de Limpieza",
@@ -6754,7 +6776,8 @@
         "auditoria": "segunda_ronda_cyn_2026-08-14",
         "cambio_k2": "correccion_destino 4222.1 -> 5244.1 + exclusion lider de equipo (excepcion de Cyn, regla propia R210b)",
         "nota_cyn": "Cyn: \"Corresponde teleoperador/a —5244.1— cuando el eje es realizar llamadas comerciales, prospectar, captar clientes [...]. 4222.1 no corresponde, porque la finalidad principal es vender y no atender consultas. Como excepcion, los avisos de Lider de equipo comercial corresponden a 1221.3.2.1 —director de ventas.\""
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 5244.1 == codigo auditado por Cyn."
     },
     "R210b_lider_equipo_comercial": {
       "nombre": "Líder de equipo comercial (venta telefónica)",
@@ -6775,7 +6798,8 @@
         "auditoria": "segunda_ronda_cyn_2026-08-14",
         "cambio_k2": "alta_por_excepcion de R210 (distinguible por titulo)",
         "nota_cyn": "Cyn: \"los avisos de Lider de equipo comercial corresponden a 1221.3.2.1 —director de ventas/directora de ventas—, ya que su funcion es liderar equipos y cumplir objetivos comerciales.\""
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 1221.3.2.1 == codigo auditado por Cyn."
     },
     "R211_soldador": {
       "nombre": "Soldador",
@@ -7084,7 +7108,8 @@
         "auditoria": "auditoria_cyn_2026-08-12",
         "cambio_k": "correccion_destino: 3334.3 -> 3334.2",
         "nota_cyn": "Corregido: 'asesor inmobiliario' figura como etiqueta alternativa de agente inmobiliario especializado en compraventa."
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 3334.2 == codigo auditado por Cyn."
     },
     "R221_analista_calidad_general": {
       "nombre": "Analista de Calidad General/Productos",
@@ -7838,7 +7863,8 @@
         "training_pair_ids": [
           "TP-024"
         ]
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 1420.4 == codigo auditado por Cyn."
     },
     "R244_coordinador_turno_retail": {
       "nombre": "Coordinador de Turno en retail/entretenimiento",
@@ -8328,7 +8354,8 @@
           "TP-019",
           "TP-020"
         ]
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 8322.2 == codigo auditado por Cyn."
     },
     "R255_albañil": {
       "nombre": "Albañil / Oficial Albañil",
@@ -8788,7 +8815,8 @@
         "version_origen": "v53",
         "contexto": "ir controlador, new R265 controlador logístico→4321. Issues Diego.",
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 4321.1 == codigo auditado por Cyn."
     },
     "R266_despachador_emergencias": {
       "nombre": "Despachador de emergencias médicas",
@@ -9002,7 +9030,8 @@
         "version_origen": "v55",
         "contexto": "ader reclutamiento, R270 tecnico incidencias, R271 dev python. 6 nuevas + 1 upda",
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 3512.1 == codigo auditado por Cyn."
     },
     "R271_desarrollador_python": {
       "nombre": "Desarrollador Python",
@@ -9105,7 +9134,8 @@
         ],
         "version_origen": "v57",
         "contexto": "Issue Gerardo: R273 advisor soporte app -> 3512"
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 3512.1 == codigo auditado por Cyn."
     },
     "R274_coordinador_operaciones_logistica": {
       "nombre": "Coordinador de operaciones logísticas / almacén",
@@ -9458,7 +9488,8 @@
         "auditoria": "auditoria_cyn_2026-08-12",
         "cambio_k": "correccion_destino: 5223.7 -> 2433.6",
         "nota_cyn": "Corregido según regla consolidada MOL: representante técnico de ventas."
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 2433.6 == codigo auditado por Cyn."
     },
     "R285_coordinador_rrhh": {
       "nombre": "Coordinador/a de Recursos Humanos",
@@ -11920,5 +11951,6 @@
   "_cambios_v522_k2_retiros": "[FRENTE K2] segunda_ronda_cyn_2026-08-14: retiro de R226 (destino 2423 error seguro; reemplazo condicional -> mini-hub RRHH fase 2) y de las 3 auxiliares R1/R2/R137 (el disparador por mencion de herramienta muere; destinos funcionales a insumos fase 2). Cohort 548 en exports/cohorts/.",
   "_cambios_v523_k2_correcciones": "[FRENTE K2] segunda_ronda_cyn_2026-08-14: R229a +variantes con barra de genero + exclusion seguros (L3); R210 4222.1->5244.1 + exclusion lider; alta R210b lider de equipo comercial -> 1221.3.2.1.",
   "_cambios_v524_h_l3": "[FRENTE H v0.3.2] laudo L3: 14 planas especializadas del vecindario marcadas _traductor_L3 (precedencia sobre el traductor; absorcion como ramas en fase 2). Anotacion no-conductual (el matcher ignora la clave). Las demas 71-post-export en familia NO se marcan hasta su auditoria.",
-  "_cambios_v525_h_l3_completo": "[FRENTE H PRE-v0.3.3] Registro L3 COMPLETO en dos pasadas: +15 validadas-IGUAL del K (sin linaje) + correccion del criterio de profundidad (hermano-fino = >= MINIMO de hubs de la familia, no maximo — R69 2413.1 entraba). Total _traductor_L3: 32."
+  "_cambios_v525_h_l3_completo": "[FRENTE H PRE-v0.3.3] Registro L3 COMPLETO en dos pasadas: +15 validadas-IGUAL del K (sin linaje) + correccion del criterio de profundidad (hermano-fino = >= MINIMO de hubs de la familia, no maximo — R69 2413.1 entraba). Total _traductor_L3: 32.",
+  "_cambios_v526_h_a3_grafo": "[FRENTE H v0.3.4] laudo A3: registro L3 extendido POR GRAFO (+31: conectadas por arista D al vecindario, K-validadas). Las 32 previas = subcriterio prefijo. TOTAL _traductor_L3: 63."
 }
