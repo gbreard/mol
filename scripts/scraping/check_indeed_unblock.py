@@ -46,8 +46,11 @@ VPS_HOST = 'root@187.124.150.28'
 LISTADO = 'https://ar.indeed.com/jobs?q=cajero&l=Argentina&fromage=14'
 HEADERS = {'Accept-Language': 'es-AR,es;q=0.9'}
 
-COOLDOWN_HORAS = 72     # margen entre corridas de una misma IP
-MAX_KEYWORDS = 250      # ~650 fichas por corrida (bajo el techo de ~800/dia)
+COOLDOWN_HORAS = 72     # guarda dura: nunca lanzar si la ultima corrida de la IP fue hace <3 dias
+MAX_FICHAS_CORRIDA = 600           # guarda dura acordada: techo de fichas por corrida
+FICHAS_POR_KEYWORD = 2.6           # estimacion medida: 250 keywords ~ 650 fichas
+MAX_KEYWORDS = int(MAX_FICHAS_CORRIDA / FICHAS_POR_KEYWORD)  # 230 -> ~598 fichas
+DISPAROS_LOG = PROJECT_ROOT / "data" / "indeed_vigia_disparos.log"
 
 PROBE = r'''
 import json
@@ -177,8 +180,18 @@ def avanzar(estado: dict, ip: str, offset: int) -> None:
     guardar_estado(estado)
 
 
-def lanzar_local(offset: int, dry_run: bool) -> None:
-    """Encola el comando para que lo tome el poller local."""
+def registrar_disparo(ip: str, offset: int, detalle: str) -> None:
+    """Guarda dura: cada disparo real queda en un log persistente (no depende de stdout)."""
+    DISPAROS_LOG.parent.mkdir(parents=True, exist_ok=True)
+    with open(DISPAROS_LOG, 'a', encoding='utf-8') as f:
+        f.write(json.dumps({
+            'ts': datetime.now().isoformat(), 'ip': ip, 'offset': offset,
+            'max_keywords': MAX_KEYWORDS, 'max_fichas': MAX_FICHAS_CORRIDA,
+            'detalle': detalle}, ensure_ascii=False) + '\n')
+
+
+def lanzar_local(offset: int, dry_run: bool) -> bool:
+    """Encola el comando para que lo tome el poller local. True = disparo real."""
     cfg = json.loads((PROJECT_ROOT / "config" / "supabase_config.json").read_text())
     client = create_client(cfg['url'], cfg['service_role_key'])
 
@@ -187,11 +200,11 @@ def lanzar_local(offset: int, dry_run: bool) -> None:
         .in_('estado', ['pendiente', 'ejecutando']).limit(1).execute()
     if en_curso.data:
         log("  local: ya hay un scrape_indeed pendiente/ejecutando")
-        return
+        return False
 
     if dry_run:
         log(f"  [DRY-RUN] local: encolaria scrape_indeed (offset {offset})")
-        return
+        return False
 
     r = client.table('pipeline_commands').insert({
         'comando': 'scrape_indeed',
@@ -200,24 +213,27 @@ def lanzar_local(offset: int, dry_run: bool) -> None:
         'creado_por': 'check-indeed-unblock',
     }).execute()
     log(f"  local: scrape_indeed encolado ({r.data[0]['id']})")
+    return True
 
 
-def lanzar_vps(offset: int, dry_run: bool) -> None:
+def lanzar_vps(offset: int, dry_run: bool) -> bool:
+    """True = disparo real."""
     cmd = (f"cd /opt/mol && nohup setsid python3 scripts/scraping/run_indeed_vps.py "
            f"--offset {offset} --max-keywords {MAX_KEYWORDS} --delay 5 --detail-delay 8 "
            f"> /tmp/indeed_auto_$(date +%Y%m%d_%H%M).log 2>&1 < /dev/null &")
     if dry_run:
         log(f"  [DRY-RUN] vps: {cmd}")
-        return
+        return False
     ya = subprocess.run(['ssh', '-o', 'ConnectTimeout=15', VPS_HOST,
                          'pgrep -f "[r]un_indeed_vps" >/dev/null && echo SI || echo NO'],
                         capture_output=True, text=True, timeout=60)
     if 'SI' in (ya.stdout or ''):
         log("  vps: ya hay una corrida en curso")
-        return
+        return False
     subprocess.run(['ssh', '-o', 'ConnectTimeout=15', VPS_HOST, cmd],
                    capture_output=True, text=True, timeout=90)
     log(f"  vps: corrida lanzada (tramo {offset + 1}-{offset + MAX_KEYWORDS})")
+    return True
 
 
 def main():
@@ -255,10 +271,12 @@ def main():
         offset = proximo_offset(estado, ip)
         log(f"{ip}: lanzando corrida desde keyword {offset + 1}")
         if ip == 'vps':
-            lanzar_vps(offset, args.dry_run)
+            lanzado = lanzar_vps(offset, args.dry_run)
         else:
-            lanzar_local(offset, args.dry_run)
-        if not args.dry_run:
+            lanzado = lanzar_local(offset, args.dry_run)
+        if lanzado:
+            # solo un disparo REAL sella cooldown, avanza el tramo y queda en el log
+            registrar_disparo(ip, offset, f'tramo {offset + 1}-{offset + MAX_KEYWORDS}')
             avanzar(estado, ip, offset)
         return
 
