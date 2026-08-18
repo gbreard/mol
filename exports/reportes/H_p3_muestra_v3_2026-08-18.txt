@@ -1,0 +1,381 @@
+
+########## [7c] divergencia — 1793 total, muestra 30 ##########
+
+[8672302658] Vendedor/a atención al público
+  TRAD: 5223.4 (vendedor/vendedora) via inclusion@hub51 (inclusion)
+  BASE: regla:R323_atencion_publico -> 4225.1 (agente de servicio de atención al client)
+  arista=True r14=False L3=False tareas_vacias=False portal=indeed
+  TAREAS: Brindar una experiencia de compra del cliente; asesorando y promoviendo el consumo de productos naturales; asegurar el orden, reposición de productos, exhibición de precios y de mercadería, control de vencimientos, manip
+
+[2179939] Vendedor y atencion al publico en fiambreria
+  TRAD: 5223.4 (vendedor/vendedora) via inclusion@hub51 (inclusion)
+  BASE: regla:R323_atencion_publico -> 4225.1 (agente de servicio de atención al client)
+  arista=True r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Atender clientes; Realizar ventas; Manejar inventario; Preparar pedidos; Cerrar caja
+
+[2178042] Analista contable
+  TRAD: 3313.2 (administrativo contable/administrativa c) via D01@hub1 (D_directa)
+  BASE: regla:R14_contador_auditor -> 2411.1 (contable)
+  arista=True r14=True L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Registro y análisis de asientos contables; Conciliaciones bancarias y de cuentas; Análisis de cuenta contables patrimoniales y de resultados; Preparar información para auditorías internas y externas; Detectar desvíos, in
+
+[1118215947] Analista contable SSR
+  TRAD: 3313.2 (administrativo contable/administrativa c) via D01@hub1 (D_directa)
+  BASE: regla:R14_contador_auditor -> 2411.1 (contable)
+  arista=True r14=True L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Analizar y optimizar procesos contables y administrativos; Supervisar registraciones contables; Realizar conciliaciones de cuentas y detectar desvíos; Coordinar información con estudio contable y jurídico externo; Asegur
+
+[2177194] Vendedor alquilador de máquinas
+  TRAD: 3322.1 (representante comercial) via D11@hub51 (D_directa)
+  BASE: regla:R111_vendedor_generico -> 5223.4 (vendedor/vendedora)
+  arista=True r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Prospección via Webs y redes sociales; Visitar a potenciales clientes; Prospectar en parques industriales; Habilidad para generar nuevos clientes
+
+[5722647819] Asesor técnico comercial nea. vendedor vehiculos línea fotón
+  TRAD: 3322.1 (representante comercial) via D11@hub51 (D_directa)
+  BASE: regla:R123_asesor_tecnico_comercial -> 2433.6 (representante técnico de ventas/represen)
+  arista=False r14=False L3=False tareas_vacias=False portal=computrabajo
+  TAREAS: Prospectar y gestionar cartera de clientes B2B; Relevar necesidades operativas y recomendar configuración técnica; Elaborar cotizaciones, propuestas técnico-económicas, seguimiento de oportunidades y cierre comercial; Co
+
+[1118264369] Administrativo contable SR
+  TRAD: 4311.1 (empleado de contabilidad/empleada de con) via D03@hub3 (D_directa)
+  BASE: regla:R14d_administrativo_contable -> 3313.2 (administrativo contable/administrativa c)
+  arista=True r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Gestión de facturación; Administración de tesorería; Liquidación y seguimiento de impuestos; Pago a proveedores; Conciliaciones bancarias y contables; Control y seguimiento de cuentas corrientes; Elaboración de reportes 
+
+[1118192922] Asistente contable y de finanzas
+  TRAD: 4311.1 (empleado de contabilidad/empleada de con) via D03@hub3 (D_directa)
+  BASE: regla:R14_contador_auditor -> 2411.1 (contable)
+  arista=True r14=True L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Gestión de facturación; control administrativo; administración de cuentas a pagar y a cobrar; conciliaciones bancarias; coordinación con estudios contables externos; control de proveedores y gestión de pagos; elaboración
+
+[1118236718] Vendedor/a de local (alto palermo-caba)
+  TRAD: 5223.6 (asistente de tienda) via D01@hub51 (D_directa)
+  BASE: regla:R111_vendedor_generico -> 5223.4 (vendedor/vendedora)
+  arista=True r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Brindar asesoramiento personalizado; Cumplir objetivos de venta individuales y grupales; Mantener estándares de visual y orden del local; Colaborar con tareas de stock y reposición
+
+[2167044] Cajera
+  TRAD: 5223.6 (asistente de tienda) via D01@hub51 (D_directa)
+  BASE: regla:R34_cajero -> 5230.1 (cajero/cajera)
+  arista=True r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Atención al cliente y cobro en línea de cajas; Reposición de mercadería y control de stock; Orden y limpieza del sector; Soporte general al equipo de tienda
+
+[2176219] Vendedor/a mayorista - marca de indumentaria masculina en expansión
+  TRAD: 3322.1 (representante comercial) via inclusion@hub16 (inclusion)
+  BASE: regla:R111_vendedor_generico -> 5223.4 (vendedor/vendedora)
+  arista=False r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Gestión activa de llamados; seguimiento de la cartera de clientes actuales; captación de nuevos clientes mayoristas en zonas estratégicas; asesoramiento comercial basado en los diferenciales de calidad del producto; aten
+
+[1117873205] Ejecutivo de ventas medicina prepaga
+  TRAD: 3322.1 (representante comercial) via inclusion@hub16 (inclusion)
+  BASE: regla:R132_vendedor_medicina_prepaga -> 3321.3.1 (asesor de seguros/asesora de seguros)
+  arista=True r14=False L3=True tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Asesorar y vender planes de salud individuales y/o corporativos; Gestionar leads obtenidos mediante estrategias de inbound digital marketing; Realizar trámites digitales en AFIP y SSS; Llevar adelante acciones de prospec
+
+[9621980031] Auxiliar administrativo
+  TRAD: 3343.1 (empleado administrativo/empleada adminis) via D03@hub1 (D_directa)
+  BASE: dict:administrativo -> ISCO:4110 ()
+  arista=False r14=False L3=False tareas_vacias=False portal=otro9
+  TAREAS: Atencion al publico; Carga de datos en el sistema
+
+[1117951566] Asistente administrativo
+  TRAD: 3343.1 (empleado administrativo/empleada adminis) via D03@hub1 (convergencia)
+  BASE: dict:administrativo -> ISCO:4110 ()
+  arista=False r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Atención telefónica; redacción de newsletters; proceso de facturas y cobros; control de documentación; confección de planillas para control de gestión; atención a proveedores/clientes
+
+[1118157117] Vendedor externo
+  TRAD: 5244.1 (teleoperador/teleoperadora) via D10@hub51 (D_directa)
+  BASE: regla:R111_vendedor_generico -> 5223.4 (vendedor/vendedora)
+  arista=True r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Recorrer zonas asignadas prospectos Mayoristas y distribuidores; Ampliar canal de venta atravez de lo digital con llamados y whatsapp; Tomar pedidos y pasarlos vía mail o nuestro sistema Don Gestion; Desarrollo de Nuevas
+
+[1118183212] Cajera ho
+  TRAD: 5244.1 (teleoperador/teleoperadora) via D10@hub51 (D_directa)
+  BASE: regla:R34_cajero -> 5230.1 (cajero/cajera)
+  arista=True r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: realizar cobros a través de distintos medios de pago; controlar el cierre de caja diario; mantener al día las cuentas corrientes; archivar la documentación correspondiente; atender llamadas telefónicas; ayudar a mantener
+
+[9021557780] Administrativa contable
+  TRAD: 3313.2 (administrativo contable/administrativa c) via inclusion@hub3 (inclusion)
+  BASE: dict:administrativo contable -> ISCO:4311 ()
+  arista=False r14=False L3=False tareas_vacias=False portal=otro9
+  TAREAS: Registro y control de pagos y cobranzas; Conciliaciones bancarias; Registros de asientos contables; Análisis de impuestos; Conciliaciones de cuentas; Emisión y registración de notas de crédito y débito; Generación y enví
+
+[1118221078] Analista administrativo/a contable senior
+  TRAD: 3313.2 (administrativo contable/administrativa c) via inclusion@hub3 (inclusion)
+  BASE: regla:R14_contador_auditor -> 2411.1 (contable)
+  arista=True r14=True L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Gestión de Tesorería; Realización de conciliaciones bancarias y de cuentas corrientes; Relacionamiento directo con entidades bancarias; Negociación operativa con proveedores; Resolución autónoma de tareas operativas diar
+
+[8994841919] Auditor de control interno, tecnología e innovación - junior
+  TRAD: 4312.1 (auditor/auditora) via inclusion@hub4 (inclusion)
+  BASE: regla:R190_auditor_interno -> 2411.1.7 (auditor de cuentas/auditora de cuentas)
+  arista=True r14=False L3=True tareas_vacias=False portal=indeed
+  TAREAS: Relevar y documentar procesos de negocio; Participar en entrevistas con clientes y reuniones internas; Colaborar en la identificación de riesgos y controles asociados a procesos de negocio y sistemas relevantes para la a
+
+[1118161010] Auditor/a interno
+  TRAD: 4312.1 (auditor/auditora) via inclusion@hub4 (inclusion)
+  BASE: regla:R14_contador_auditor -> 2411.1 (contable)
+  arista=False r14=True L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Realizar Auditorías Internas sobre procesos Administrativos y operativos de Stock; Elaborar Informes de Auditorías Identificando desvíos, y proponiendo planes de mejoras; Analizar Indicadores y asegurar el cumplimiento d
+
+[1118348959] Analista contable e impositivo SR contador publico graduado
+  TRAD: 2411.1 (contable) via inclusion@hub2 (inclusion)
+  BASE: regla:R242_asistente_impuestos -> 2411.1.12 (asesor fiscal/asesora fiscal)
+  arista=True r14=False L3=True tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Preparación y análisis de cierres mensuales/anuales; Conciliaciones bancarias; Armado de estados contables; Liquidación de impuestos nacionales y provinciales (Convenio Multilateral); Control de retenciones/percepciones;
+
+[2183105] Contador/a senior - impuestos y contabilidad
+  TRAD: 2411.1 (contable) via inclusion@hub2 (inclusion)
+  BASE: regla:R242_asistente_impuestos -> 2411.1.12 (asesor fiscal/asesora fiscal)
+  arista=True r14=False L3=True tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Conciliación y análisis de cuentas contables; Liquidación y control de impuestos nacionales y provinciales (IVA, Ingresos Brutos, SICORE, SIRE y tasas municipales); Gestión y control de retenciones y percepciones imposit
+
+[7876986738] Administrativo contable
+  TRAD: 2411.1.1 (analista contable) via inclusion@hub1 (inclusion)
+  BASE: regla:R14d_administrativo_contable -> 3313.2 (administrativo contable/administrativa c)
+  arista=True r14=False L3=False tareas_vacias=False portal=portalempleo
+  TAREAS: elaboración y revisión de balances y estados financieros; uso de Microsoft Office para tareas diarias; organización y atención a los detalles
+
+[1118321683] Analista contable impositivo
+  TRAD: 2411.1.1 (analista contable) via inclusion@hub1 (inclusion)
+  BASE: regla:R242_asistente_impuestos -> 2411.1.12 (asesor fiscal/asesora fiscal)
+  arista=True r14=False L3=True tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Liderar el proceso contable integral; Coordinar cierres contables mensuales y anuales; Preparar y analizar estados contables consolidados; Realizar eliminaciones intercompany y ajustes por inflación; Ejecutar y revisar i
+
+[8455437448] Contador/a
+  TRAD: 3313.2 (administrativo contable/administrativa c) via D02@hub2 (D_directa)
+  BASE: regla:R14_contador_auditor -> 2411.1 (contable)
+  arista=True r14=True L3=False tareas_vacias=False portal=indeed
+  TAREAS: Facturación mensual de abonos; Emisión de OP a proveedores; Emisión de pagos otros conceptos; Control de retenciones y percepciones impositivas como agente de retención; Control de retenciones y percepciones impositivas 
+
+[8417020792] Contador/a público
+  TRAD: 3313.2 (administrativo contable/administrativa c) via D02@hub2 (D_directa)
+  BASE: regla:R14_contador_auditor -> 2411.1 (contable)
+  arista=True r14=True L3=False tareas_vacias=False portal=indeed
+  TAREAS: Liquidación mensual de impuestos para cartera de clientes (IVA, IIBB, Drei, ganancias, entre otros); Análisis de información contable y fiscal para la toma de decisiones; Atención y asesoramiento a clientes; Conciliacion
+
+[6495400723] Vendedor/a de lubricantes viajante
+  TRAD: 4225.1 (agente de servicio de atención al client) via D08@hub51 (D_directa)
+  BASE: regla:R317_vendedor_viajante -> 3322.1 (representante comercial)
+  arista=True r14=False L3=False tareas_vacias=False portal=caba
+  TAREAS: Realizar visitas presenciales a clientes; Asesoramiento del producto; Atención de reclamos; Administrar saldos pendientes y cobros; Tomar y gestionar pedidos; Control de cuentas
+
+[1118152243] Vendedor técnico
+  TRAD: 4225.1 (agente de servicio de atención al client) via D08@hub51 (D_directa)
+  BASE: dict:vendedor -> ISCO:5223 ()
+  arista=False r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Gestionar la cartera asignada; Visitar clientes activos dentro de la Prov de Córdoba (fidelizar); Relevar el mercado, captar y desarrollar nuevos clientes; Asesorar y asistir técnicamente; Solucionar reclamos junto con e
+
+[1118062409] Vendedora
+  TRAD: 5223.7.4 (vendedor especializado en panadería o pa) via D03@hub51 (D_directa)
+  BASE: regla:R111_vendedor_generico -> 5223.4 (vendedor/vendedora)
+  arista=True r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: cuidar la imagen del local; ofrecer productos de pastelería
+
+[10839781023] Mozo/a o camarero/a
+  TRAD: 5223.7.4 (vendedor especializado en panadería o pa) via D03@hub51 (D_directa)
+  BASE: regla:R31_mozo_camarero -> 5131.2 (camarero/camarera)
+  arista=True r14=False L3=False tareas_vacias=False portal=otro9
+  TAREAS: Atención al mostrador y caja: Tomar pedidos rápidamente; procesar pagos (efectivo y tarjetas); entregar las comandas al cliente.; Armado de pedidos: Servir las hamburguesas, papas y bebidas correspondientes a cada combo;
+
+########## [7c] trad_fuerza_baseline_no — 109 total, muestra 14 ##########
+
+[7933552963] Agente comercial
+  TRAD: 3322.1 (representante comercial) via inclusion@hub16 (inclusion)
+  BASE: semantico:None -> None ()
+  arista=None r14=False L3=False tareas_vacias=False portal=portalempleo
+  TAREAS: Captación de propiedades para venta y alquiler; Asesoramiento comercial a clientes compradores y vendedores; Gestión y seguimiento de cartera de clientes; Negociación y cierre de operaciones inmobiliarias
+
+[8165724902] Ejecutivo/a de cuentas
+  TRAD: 3322.1 (representante comercial) via inclusion@hub16 (inclusion)
+  BASE: semantico:None -> None ()
+  arista=None r14=False L3=False tareas_vacias=False portal=indeed
+  TAREAS: Identificar y abrir nuevas cuentas comerciales en canales clave; Fidelizar la cartera de clientes existente; Gestionar el servicio posventa; Realizar reportes de ventas y presupuestos; Línea Humana: Farmacias, dietéticas
+
+[1118157084] Ejecutivo/a de cuentas canal pas
+  TRAD: 3321.1 (corredor de seguros/corredora de seguros) via D02@hub16 (D_directa)
+  BASE: semantico:None -> None ()
+  arista=None r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Buscar y seleccionar productores; Generar procesos de ABM de productores; Seguimiento y desarrollo comercial del canal productor; Incentivar, motivar y generar relación de confianza con el productor orientándolo a cumpli
+
+[1118151840] Ejecutivo/a de cuentas canal pas
+  TRAD: 3321.1 (corredor de seguros/corredora de seguros) via D02@hub16 (D_directa)
+  BASE: semantico:None -> None ()
+  arista=None r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Buscar y seleccionar productores; Generar procesos de ABM de productores; Seguimiento y desarrollo comercial del canal productor; Incentivar, motivar y generar relación de confianza con el productor orientándolo a cumpli
+
+[1118363389] Jefe/a de contabilidad y finanzas
+  TRAD: 1211.1.4 (tesorero de empresa/tesorera de empresa) via D08@hub15 (D_directa)
+  BASE: semantico:None -> None ()
+  arista=None r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Liderar y coordinar los equipos de Contabilidad, Finanzas, Tesorería y Cobranzas; Supervisar cierres contables, conciliaciones, reportes financieros y gestión impositiva; Gestionar el flujo de fondos, pagos, cobranzas y 
+
+[2177372] Jefe/a de tesorería
+  TRAD: 1211.1.4 (tesorero de empresa/tesorera de empresa) via D08@hub15 (D_directa)
+  BASE: semantico:None -> None ()
+  arista=None r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Gestión de Tesorería; Administrar el flujo de caja consolidado del grupo; Elaborar proyecciones de caja de corto, mediano y largo plazo; Optimizar el uso de liquidez y coordinar necesidades de financiamiento; Supervisar 
+
+[8035071831] Asesor/a inmobiliario/a independiente
+  TRAD: 3334.2 (agente inmobiliario especializado en com) via D04@hub16 (D_directa)
+  BASE: semantico:None -> None ()
+  arista=None r14=False L3=False tareas_vacias=False portal=indeed
+  TAREAS: Gestionar y expandir tu red de contactos; Captar propiedades para venta y alquiler; Asesorar clientes en operaciones inmobiliarias; Desarrollar cartera propia de clientes y propiedades; Negociar y acompañar cierres de op
+
+[1118200289] Asesor/a inmobiliario
+  TRAD: 3334.2 (agente inmobiliario especializado en com) via D04@hub16 (D_directa)
+  BASE: semantico:None -> None ()
+  arista=None r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Asesorar y acompañar a clientes en sus búsquedas y necesidades; Seguimientos de clientes; Comercialización de inmuebles (venta/alquiler); Exhibición de propiedades; Conversaciones con posibles interesados; Búsqueda de nu
+
+[1118182742] Responsable de contabilidad global
+  TRAD: 1211.1.1 (director de contabilidad/directora de co) via inclusion@hub15 (inclusion)
+  BASE: semantico:None -> None ()
+  arista=None r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Gestionar y dar soporte en tareas administrativo-contables de las subsidiarias del grupo; Cumplir con el cronograma de cierres contables, realizando análisis, registraciones e imputaciones para la preparación de la infor
+
+[1118008124] Responsable de contabilidad
+  TRAD: 1211.1.1 (director de contabilidad/directora de co) via inclusion@hub15 (inclusion)
+  BASE: semantico:None -> None ()
+  arista=None r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Coordinar las tareas del equipo contable; Mantener contacto con estudio contable externo; Realizar los cierres contables semestrales; Verificar el cumplimiento de las normas CNV y UIF
+
+[1118211428] Jefe/a de contabilidad
+  TRAD: 4311.1 (empleado de contabilidad/empleada de con) via D05@hub15 (D_directa)
+  BASE: semantico:None -> None ()
+  arista=None r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Coordinar y supervisar el área contable; Liderar y controlar los cierres contables y financieros mensuales y anuales; Garantizar el correcto registro contable de las operaciones y la conciliación de cuentas contables y b
+
+[5819938837] Jefe/a de contabilidad
+  TRAD: 4311.1 (empleado de contabilidad/empleada de con) via D05@hub15 (D_directa)
+  BASE: semantico:None -> None ()
+  arista=None r14=False L3=False tareas_vacias=False portal=computrabajo
+  TAREAS: Coordinar y supervisar el área contable; Liderar y controlar los cierres contables y financieros mensuales y anuales; Garantizar el correcto registro contable de las operaciones y la conciliación de cuentas contables y b
+
+[1117899491] Ejecutivo/a de cuentas
+  TRAD: 4225.1 (agente de servicio de atención al client) via D12@hub16 (D_directa)
+  BASE: semantico:None -> None ()
+  arista=None r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Atención y respuesta a leads; Generación de presupuestos; Manejo de CRM; Seguimiento de prospects; Seguimiento de ventas hasta posventa
+
+[8536827314] Director/a comercial
+  TRAD: 1221.4 (director comercial/directora comercial) via D10@hub16 (D_directa)
+  BASE: dict_contextual:gerente -> None ()
+  arista=None r14=False L3=False tareas_vacias=False portal=indeed
+  TAREAS: definir y liderar la estrategia comercial; impulsar el crecimiento y expansión internacional; gestionar y desarrollar el equipo comercial; establecer la política de precios; coordinar los objetivos de ventas; analizar me
+
+########## [7c] trad_no_fuerza_baseline_si — 6924 total, muestra 2 ##########
+
+[8709995083] Técnico administrativo
+  TRAD: None () via None@hubNone (None)
+  BASE: dict:administrativo -> ISCO:4110 ()
+  arista=None r14=False L3=False tareas_vacias=False portal=indeed
+  TAREAS: Incorporación de Productos importantes; Codificación carga de códigos al sistema de productos y componentes, generación y carga de fórmulas [Bom]; Carga de información en diversos sistemas de información; Generación y ad
+
+[1118049975] Administrativo contable para estudio impositivo y laboral
+  TRAD: None () via None@hubNone (None)
+  BASE: regla:R14d_administrativo_contable -> 3313.2 (administrativo contable/administrativa c)
+  arista=None r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: liquidacion de IVA; liquidacion de IIBB; monotributo; carga de datos y facturacion en sistemas contables; tasas municipales; cargas sociales; generacion de VEP; tareas generales administrativas
+
+########## [3p] divergencia — 308 total, muestra 8 ##########
+
+[7815199317] Asistente administrativo
+  TRAD: 4321.1 (coordinador de inventario/coordinadora d) via D07@hub58 (D_directa)
+  BASE: dict:administrativo -> ISCO:4110 ()
+  arista=False r14=False L3=False tareas_vacias=False portal=portalempleo
+  TAREAS: Gestión administrativa del proceso de venta de vehículos; Armado de expedientes y documentación para transferencias; Coordinación con gestores automotores externos y registros seccionales; Control de stock de vehículos y
+
+[6548882447] Estudiante administrativa contable
+  TRAD: 4321.1 (coordinador de inventario/coordinadora d) via D07@hub58 (D_directa)
+  BASE: dict:administrativo contable -> ISCO:4311 ()
+  arista=False r14=False L3=False tareas_vacias=False portal=caba
+  TAREAS: Gestionar y controlar el stock de mercadería; Realizar el seguimiento administrativo y contable de las obras desde su inicio hasta su finalización; Ejecutar tareas de facturación y control de cobranzas y pagos; Controlar
+
+[1118172597] Administrativo contable
+  TRAD: 4311.1 (empleado de contabilidad/empleada de con) via D05@hub58 (D_directa)
+  BASE: regla:R14d_administrativo_contable -> 3313.2 (administrativo contable/administrativa c)
+  arista=True r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Gestión de cobranzas; Facturación a clientes; Pago a proveedores; Análisis de cuentas corrientes; Conciliación bancaria; Conciliación de tarjetas de crédito; Carga de datos al sistema (alta y actualización de proveedores
+
+[1118155984] Administrativo contable/ parque ind
+  TRAD: 4311.1 (empleado de contabilidad/empleada de con) via D05@hub58 (D_directa)
+  BASE: regla:R14d_administrativo_contable -> 3313.2 (administrativo contable/administrativa c)
+  arista=True r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: ingreso pedidos; atencion al cliente; facturación; conciliaciones bancarias; cuentas corrientes; envios; planificacion rutas; soporte al equipo de planta; control, analisis y archivo de documentacion administrativa y ope
+
+[8323041055] Recepcionista / cajera
+  TRAD: 5230.1 (cajero/cajera) via D07@hub52 (D_directa)
+  BASE: regla:R26_recepcionista -> 4226.1 (recepcionista)
+  arista=False r14=False L3=False tareas_vacias=False portal=indeed
+  TAREAS: Recepción y bienvenida de clientes; Coordinación de turnos y asignación de mesas; Manejo de caja: cobros, cierre diario, medios de pago y control de movimientos; Registro de comandas y apoyo al equipo de salón; Brindar u
+
+[7893911926] Vendedor de salón
+  TRAD: 5230.1 (cajero/cajera) via D07@hub52 (D_directa)
+  BASE: regla:R111_vendedor_generico -> 5223.4 (vendedor/vendedora)
+  arista=True r14=False L3=False tareas_vacias=False portal=portalempleo
+  TAREAS: Asesoramiento experto en alimentos, indumentaria, juguetes y estética; Atención personalizada en tienda y redes sociales, con manejo fluido y constante de Whatsapp; Gestión de stock y mantenimiento general del local; Man
+
+[1118011586] Administrativo contable y de tesorería
+  TRAD: 4110.1 (empleado de oficina/empleada de oficina) via inclusion@hub58 (inclusion)
+  BASE: regla:R14d_administrativo_contable -> 3313.2 (administrativo contable/administrativa c)
+  arista=True r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Análisis y control de Cuentas Contables y Saldos; Conciliación de cuentas corrientes de proveedores y clientes; Apoyo en el armado de balances y reportes contables; Colaboración en ajustes y asientos de cierre; Imputació
+
+[2185297] Auxiliar contable
+  TRAD: 4110.1 (empleado de oficina/empleada de oficina) via inclusion@hub58 (inclusion)
+  BASE: regla:R14_contador_auditor -> 2411.1 (contable)
+  arista=False r14=True L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Colaborar en la gestión diaria de las operaciones contables; Asistir en la preparación de informes y conciliaciones; Procesar y registrar facturas y otros documentos contables; Apoyar en la organización y archivo de docu
+
+########## [3p] trad_fuerza_baseline_no — 4 total, muestra 2 ##########
+
+[1118343643] Abogado/a
+  TRAD: 2611.1 (abogado/abogada) via D07@hub36 (D_directa)
+  BASE: semantico:None -> None ()
+  arista=None r14=False L3=False tareas_vacias=False portal=bumeran/zonajobs
+  TAREAS: Brindar asesoramiento legal a las distintas áreas de la compañía; Analizar demandas, reclamos, mediaciones y otras contingencias legales; Gestionar el intercambio de información y documentación con asesores externos; Red
+
+[8499526045] Abogado/a corporativo
+  TRAD: 2611.1 (abogado/abogada) via D07@hub36 (D_directa)
+  BASE: semantico:None -> None ()
+  arista=None r14=False L3=False tareas_vacias=False portal=indeed
+  TAREAS: Gestionar de manera autónoma las tareas societarias recurrentes de las distintas sociedades del grupo; Organizar y centralizar la documentación legal corporativa; Redactar y revisar contratos y documentos legales bajo li
+
+########## [AUDIT] satelite_exacto_abstencion — 656 total, aterrizaje aguas-abajo ##########
+[(('dict', 'administrativo'), 232), (('regla', 'R31_mozo_camarero'), 139), (('regla', 'R34_cajero'), 69), (('regla', 'R220_asesor_inmobiliario'), 61), (('regla', 'R24_gerente_ventas'), 54), (('regla', 'R117_responsable_compras'), 32), (('semantico', 'None'), 15), (('regla', 'R112_analista_tesoreria'), 9), (('regla', 'R69_analista_financiero'), 9), (('regla', 'R171_logistica_entregas'), 7), (('dict_contextual', 'gerente'), 6), (('regla', 'R126_ejecutivo_seguros'), 5)]
+[1118028079] Auxiliar administrativo | sat=3343.1 -> cae a dict:administrativo -> ISCO:4110
+[6543295360] Cajero/a | sat=5230.1 -> cae a regla:R34_cajero -> 5230.1
+[8187748525] Asesor de seguros | sat=3321.3.1 -> cae a regla:R126_ejecutivo_seguros -> 3321.3.1
+[8321549255] Auxiliar administrativo/a | sat=3343.1 -> cae a dict:administrativo -> ISCO:4110
+[2185127] Cajera | sat=5230.1 -> cae a regla:R34_cajero -> 5230.1
+[8213914494] Auxiliar administrativo/a | sat=3343.1 -> cae a dict:administrativo -> ISCO:4110
+[1118322298] Asesor inmobiliario | sat=3334.2 -> cae a regla:R220_asesor_inmobiliario -> 3334.2
+[2178767] Asistente administrativo | sat=3343.1 -> cae a dict:administrativo -> ISCO:4110
+[1118115703] Asistente administrativo/a | sat=3343.1 -> cae a dict:administrativo -> ISCO:4110
+[7580406565] Asesor inmobiliario | sat=3334.2 -> cae a regla:R220_asesor_inmobiliario -> 3334.2
+
+########## [AUDIT] guard_1a0_bloqueo — 693 ofertas con bloqueo y sin decision ##########
+[7877414938] Ref 21199 responsable administrativo contable | base=regla:R14d_administrativo_contable->3313.2
+  TAREAS: Supervisar el área administrativa-contable; Coordinar la comunicación con los clientes internos y externos; Controlar y garantizar el cumplimiento de obligacion
+[1118108004] Analista contable | base=regla:R14_contador_auditor->2411.1
+  TAREAS: Administración de Planillas de Trabajo EESS; Facturación y gestión de Cuentas Corrientes; Ingreso de Facturas de Compras; Liquidación de acreditaciones de Tarje
+[1118192864] Analista contable SR | base=regla:R14_contador_auditor->2411.1
+  TAREAS: Nexo de las 2 sociedades agropecurias y el estudio contable; Liquidar impuestos IVA y Ganancias; Hacer retenciones, conciliar cuentas; Contabilizar la facturaci
+[2180421] Empleado administrativo para el sector de homologaciones | base=dict:administrativo->ISCO:4110
+  TAREAS: Atención de consultas de Homologaciones; Registración en el sistema informático; Realización de Cambios de Carrera y Cambios de Planes; Registro de Homologacion
+[1117999302] Analista contable | base=regla:R14_contador_auditor->2411.1
+  TAREAS: Confección de la documentación necesaria para los cierres mensuales; Ingreso de asientos contables; Análisis de cuentas; Confección de la documentación para la 
+[6878009668] Vendedor en calle | base=regla:R111_vendedor_generico->5223.4
+  TAREAS: Identificar nuevas oportunidades de negocio; Desarrollar nuestro catálogo; Gestionar el ciclo completo de venta; Incluir cotizaciones, saldos y cobros
+[5412526355] Ref 20937 analista contable SSR | base=regla:R14_contador_auditor->2411.1
+  TAREAS: Gestión de Tesorería; Gestión de pagos; Manejo de distintos medios de pago; Cobranzas (Cash Flow); Conciliación diaria; Manejo de caja; Administración de Ventas
+[1118092353] Auxiliar administrativo comercial | base=dict:administrativo->ISCO:4110
+  TAREAS: Apoyar en la elaboración y seguimiento de cotizaciones; Atender llamadas, correos y solicitudes de clientes; Registrar y actualizar información de clientes; Dar
+[1118142623] Responsable administrativo contable | base=regla:R14d_administrativo_contable->3313.2
+  TAREAS: Pago a proveedores; Conciliaciones y saldos bancarios; Pre-liquidacion de impuestos; Cierre contable; Cobranzas; Armado de reportes diarios y semanales a gerenc
+[1118098948] Analista contable e impositivo SSR | base=regla:R242_asistente_impuestos->2411.1.12
+  TAREAS: Cierre impositivo ARCA e IIBB; Conciliaciones Bancarias; Seguimiento Bancos, Calificación Cuentas; Control vencimientos y pagos de Impuestos; Preparación de inf
