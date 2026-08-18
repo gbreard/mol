@@ -1,5 +1,5 @@
 {
-  "version": "5.24",
+  "version": "5.25",
   "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-08-14",
@@ -699,7 +699,8 @@
         "auditoria": "auditoria_cyn_2026-08-12",
         "cambio_k": "correccion_destino: 2413.1 -> 2412.5",
         "nota_cyn": "Corregido según regla consolidada MOL de compliance financiero."
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3, criterio hermano-fino = profundidad >= MINIMO de hubs de la familia). Validacion: destino 2412.5 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R18_payroll_nominas": {
       "nombre": "Payroll/Liquidacion de Sueldos",
@@ -725,7 +726,8 @@
         "version_origen": "v43",
         "contexto": "R181-R182: Personal mantenimiento -> 7233, Tecnico electrome",
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3 con las validadas-IGUAL del K, que no dejaron linaje). Validacion: destino 4313.1 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R19_project_manager": {
       "nombre": "Project Manager/Jefe de Proyectos",
@@ -812,7 +814,8 @@
         "version_origen": "v45",
         "contexto": "R198-R202: Bell boy, Foguista, Extraccionista, Inspector API, Ges",
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3 con las validadas-IGUAL del K, que no dejaron linaje). Validacion: destino 5223.7.21 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R21_lider_atencion_cliente": {
       "nombre": "Lider/Supervisor Atencion al Cliente",
@@ -1923,7 +1926,8 @@
       "nota": "FASE 3 v3.2.3 - Back office es trabajo administrativo",
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3 con las validadas-IGUAL del K, que no dejaron linaje). Validacion: destino 4312.2 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R51_carpintero": {
       "nombre": "Carpintero/Oficial Carpinteria",
@@ -2106,7 +2110,8 @@
       "prioridad": 1,
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3 con las validadas-IGUAL del K, que no dejaron linaje). Validacion: destino 3312.2.1 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R57_encargado_ganadero": {
       "nombre": "Ganadero / Encargado de Campo (agropecuario)",
@@ -2530,7 +2535,8 @@
       "prioridad": 1,
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3, criterio hermano-fino = profundidad >= MINIMO de hubs de la familia). Validacion: destino 2413.1 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R70_encargado_gastronomia": {
       "nombre": "Encargado/Subencargado Gastronomía",
@@ -2585,7 +2591,8 @@
       "prioridad": 1,
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3 con las validadas-IGUAL del K, que no dejaron linaje). Validacion: destino 5222.1 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R72_carpintero_aluminio": {
       "nombre": "Carpintero de Aluminio/Vidriero",
@@ -3932,7 +3939,8 @@
       "activa": true,
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3 con las validadas-IGUAL del K, que no dejaron linaje). Validacion: destino 4311.1 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R113_auditor_medico": {
       "nombre": "Auditor Médico / Médico Auditor",
@@ -4212,7 +4220,8 @@
       "activa": true,
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3 con las validadas-IGUAL del K, que no dejaron linaje). Validacion: destino 3321.3.1 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R127_gerente_postventa": {
       "nombre": "Gerente/Director de Postventa/Servicio al Cliente",
@@ -4511,7 +4520,8 @@
         "version_origen": "v30",
         "contexto": "mmercial Executive, R135 Gestor Liquidaciones",
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3 con las validadas-IGUAL del K, que no dejaron linaje). Validacion: destino 4311.1 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R136_personal_deposito": {
       "nombre": "Personal de Depósito/Almacén (consolidado R136+R161)",
@@ -4621,7 +4631,8 @@
       "prioridad": 1,
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3 con las validadas-IGUAL del K, que no dejaron linaje). Validacion: destino 2411.1.4 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R139_repositor": {
       "nombre": "Repositor/Reponedor",
@@ -6192,7 +6203,8 @@
       "activa": true,
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3 con las validadas-IGUAL del K, que no dejaron linaje). Validacion: destino 2411.1.7 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R191_analista_abastecimiento": {
       "nombre": "Analista de Abastecimiento / Compras",
@@ -6503,7 +6515,8 @@
         "version_origen": "v46",
         "contexto": "co_label inválido + R203-R206 nuevas reglas",
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3 con las validadas-IGUAL del K, que no dejaron linaje). Validacion: destino 4311.1 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R204_operador_retenciones": {
       "nombre": "Operador de Retenciones / Impuestos",
@@ -6526,7 +6539,8 @@
       "nota": "v4.6: Operador retenciones = contable (4311), área fiscal",
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3 con las validadas-IGUAL del K, que no dejaron linaje). Validacion: destino 4311.1 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R205_vendedor_puerta_puerta": {
       "nombre": "Vendedor Puerta a Puerta / Ambulante",
@@ -7028,7 +7042,8 @@
         "version_origen": "v51",
         "contexto": "or vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->333",
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3 con las validadas-IGUAL del K, que no dejaron linaje). Validacion: destino 5223.7.25 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R220_asesor_inmobiliario": {
       "nombre": "Asesor Inmobiliario",
@@ -7619,7 +7634,8 @@
         "auditoria": "auditoria_cyn_2026-08-12",
         "cambio_k": "alta_por_division de R237_analista_finanzas",
         "nota_cyn": "Analista financiero general."
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3, criterio hermano-fino = profundidad >= MINIMO de hubs de la familia). Validacion: destino 2413.1 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R238_analista_it": {
       "nombre": "Analista IT/Sistemas",
@@ -8645,7 +8661,8 @@
       "nota": "Issue Cynthia: 1118032342 funciones admin/contables en agroindustrial iba a 6130 gestor explotación agrícola",
       "_linaje": {
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3 con las validadas-IGUAL del K, que no dejaron linaje). Validacion: destino 4311.1 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R261_vendimia": {
       "nombre": "Vendimia / Cosecha",
@@ -9750,7 +9767,8 @@
         "version_origen": "v59",
         "contexto": "R293-R299: 7 reglas para cubrir regresiones del LoRA fine-tu",
         "requiere_revision": true
-      }
+      },
+      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, H_v032; registro completado PRE-v0.3.3 con las validadas-IGUAL del K, que no dejaron linaje). Validacion: destino 4311.1 == codigo auditado por Cyn (K 2026-08-12)."
     },
     "R294_analista_desarrollo_analitico": {
       "nombre": "Analista de Desarrollo Analítico (laboratorio)",
@@ -11901,5 +11919,6 @@
   "_cambios_v521_k_t4b": "[FRENTE K T4B] auditoria_cyn_2026-08-12: reemplazo madre->hijas en R17/R229/R237 (cola-0 deliberada confirmada). R14 y R226 en verificacion cola-diseno vs cola-perdida.",
   "_cambios_v522_k2_retiros": "[FRENTE K2] segunda_ronda_cyn_2026-08-14: retiro de R226 (destino 2423 error seguro; reemplazo condicional -> mini-hub RRHH fase 2) y de las 3 auxiliares R1/R2/R137 (el disparador por mencion de herramienta muere; destinos funcionales a insumos fase 2). Cohort 548 en exports/cohorts/.",
   "_cambios_v523_k2_correcciones": "[FRENTE K2] segunda_ronda_cyn_2026-08-14: R229a +variantes con barra de genero + exclusion seguros (L3); R210 4222.1->5244.1 + exclusion lider; alta R210b lider de equipo comercial -> 1221.3.2.1.",
-  "_cambios_v524_h_l3": "[FRENTE H v0.3.2] laudo L3: 14 planas especializadas del vecindario marcadas _traductor_L3 (precedencia sobre el traductor; absorcion como ramas en fase 2). Anotacion no-conductual (el matcher ignora la clave). Las demas 71-post-export en familia NO se marcan hasta su auditoria."
+  "_cambios_v524_h_l3": "[FRENTE H v0.3.2] laudo L3: 14 planas especializadas del vecindario marcadas _traductor_L3 (precedencia sobre el traductor; absorcion como ramas en fase 2). Anotacion no-conductual (el matcher ignora la clave). Las demas 71-post-export en familia NO se marcan hasta su auditoria.",
+  "_cambios_v525_h_l3_completo": "[FRENTE H PRE-v0.3.3] Registro L3 COMPLETO en dos pasadas: +15 validadas-IGUAL del K (sin linaje) + correccion del criterio de profundidad (hermano-fino = >= MINIMO de hubs de la familia, no maximo — R69 2413.1 entraba). Total _traductor_L3: 32."
 }
