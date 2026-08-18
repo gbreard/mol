@@ -88,9 +88,11 @@ def test_guard_profundidad_no_toca_nivel_base(clf):
 
 def test_s1b_es_dinamico_desde_diccionario(clf):
     """S1b lee las entradas con bloque contextos del diccionario en runtime."""
-    # al 2026-07-03 el diccionario tiene estas raices ambiguas por contextos
-    for raiz in ["gerente", "vendedor", "tecnico", "operador"]:
+    # al 2026-07-03 eran gerente/vendedor/tecnico/operador; 'vendedor' se retiro
+    # con la activacion del piloto Eje 4 ([FRENTE H P4] 2026-08-18, _migra_en_piloto)
+    for raiz in ["gerente", "tecnico", "operador"]:
         assert raiz in clf.dict_contextos, f"{raiz} deberia estar en dict_contextos"
+    assert "vendedor" not in clf.dict_contextos, "vendedor fue retirada en el piloto"
 
 
 def test_conflicto_retroactivo_sintetico(clf):

@@ -1,0 +1,176 @@
+{
+ "antes": {
+  "regla_plana": 1598,
+  "semantico": 1255,
+  "diccionario": 147
+ },
+ "despues": {
+  "regla_plana": 1382,
+  "diccionario": 273,
+  "semantico": 1233,
+  "arbol_contexto": 112
+ },
+ "ejemplares": [
+  {
+   "id": 1118361000,
+   "titulo": "Vendedor/a comercial",
+   "antes": "regla:R111_vendedor_generico",
+   "decide": "3322.1 (representante comercial)",
+   "via": "D11@hub51 (D_directa)",
+   "matches": [
+    [
+     "detectar oportunidades",
+     "tareas_explicitas"
+    ],
+    [
+     "oportunidades de negocio",
+     "tareas_explicitas"
+    ],
+    [
+     "visitas comerciales",
+     "tareas_explicitas"
+    ]
+   ]
+  },
+  {
+   "id": 8975630264,
+   "titulo": "Vendedor técnico de mostrador",
+   "antes": "semantico",
+   "decide": "5223.4 (vendedor/vendedora)",
+   "via": "inclusion@hub51 (inclusion)",
+   "matches": [
+    [
+     "atencion al cliente",
+     "skills_habilidades"
+    ],
+    [
+     "asesoramiento",
+     "tareas_explicitas"
+    ],
+    [
+     "asesorar",
+     "skills_habilidades"
+    ]
+   ]
+  },
+  {
+   "id": 1118364681,
+   "titulo": "Vendedora ejecutiva at cliente actitud y experiencia, muchas ganas de ",
+   "antes": "regla:R111_vendedor_generico",
+   "decide": "5223.4 (vendedor/vendedora)",
+   "via": "inclusion@hub51 (inclusion)",
+   "matches": [
+    [
+     "asesoramiento",
+     "tareas_explicitas"
+    ],
+    [
+     "asesorar",
+     "skills_habilidades"
+    ]
+   ]
+  },
+  {
+   "id": 2185616,
+   "titulo": "Vendedora - boutique",
+   "antes": "regla:R111_vendedor_generico",
+   "decide": "5223.4 (vendedor/vendedora)",
+   "via": "inclusion@hub51 (inclusion)",
+   "matches": [
+    [
+     "atencion al cliente",
+     "skills_habilidades"
+    ],
+    [
+     "atender clientes",
+     "tareas_explicitas"
+    ],
+    [
+     "asesorar",
+     "tareas_explicitas"
+    ]
+   ]
+  },
+  {
+   "id": 2185644,
+   "titulo": "Ejecutivo de ventas",
+   "antes": "regla:R109_ejecutivo_ventas",
+   "decide": "3322.1 (representante comercial)",
+   "via": "inclusion@hub16 (inclusion)",
+   "matches": [
+    [
+     "negociacion",
+     "skills_habilidades"
+    ],
+    [
+     "desarrollar relaciones comerciales",
+     "skills_habilidades"
+    ],
+    [
+     "detectar oportunidades",
+     "tareas_explicitas"
+    ]
+   ]
+  },
+  {
+   "id": 1118363747,
+   "titulo": "Ejecutivo comercial - canal distribuciòn",
+   "antes": "regla:R109_ejecutivo_ventas",
+   "decide": "3322.1 (representante comercial)",
+   "via": "inclusion@hub16 (inclusion)",
+   "matches": [
+    [
+     "negociacion",
+     "skills_habilidades"
+    ],
+    [
+     "negociar condiciones",
+     "tareas_explicitas"
+    ],
+    [
+     "detectar oportunidades",
+     "tareas_explicitas"
+    ]
+   ]
+  },
+  {
+   "id": 1118364661,
+   "titulo": "Vendedor de showroom- amoblamientos de cocinas y placares con experien",
+   "antes": "regla:R111_vendedor_generico",
+   "decide": "5223.4 (vendedor/vendedora)",
+   "via": "inclusion@hub51 (inclusion)",
+   "matches": [
+    [
+     "atencion al cliente",
+     "tareas_explicitas"
+    ],
+    [
+     "asesoramiento",
+     "tareas_explicitas"
+    ],
+    [
+     "asesorar",
+     "skills_habilidades"
+    ]
+   ]
+  },
+  {
+   "id": 1118363389,
+   "titulo": "Jefe/a de contabilidad y finanzas",
+   "antes": "semantico",
+   "decide": "1211.1.4 (tesorero de empresa/tesorera de empresa)",
+   "via": "D08@hub15 (D_directa)",
+   "matches": [
+    [
+     "flujo de caja",
+     "skills_habilidades"
+    ],
+    [
+     "tesoreria",
+     "tareas_explicitas"
+    ]
+   ]
+  }
+ ],
+ "n": 3000
+}

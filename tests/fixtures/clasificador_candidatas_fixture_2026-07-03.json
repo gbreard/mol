@@ -545,7 +545,7 @@
    "esco_code": "3322.1",
    "esco_label": "representante comercial",
    "isco": "3322",
-   "senal_esperada": "S1b-dict:vendedor",
+   "senal_esperada": "S2-forma:para",
    "clasificacion_esperada": "CONDICIONAL",
    "juicio_humano": {
     "clase": "VOCABULARIO",
@@ -553,7 +553,14 @@
     "juzgado_por": "Claude (FRENTE B v1/v2, revisado por Gerardo)",
     "fecha": "2026-07-03",
     "version": 1
-   }
+   },
+   "senal_historial": [
+    {
+     "senal": "S1b-dict:vendedor",
+     "vigente_hasta": "2026-08-18",
+     "motivo": "[FRENTE H P4] la entrada 'vendedor' del diccionario se retiro con la activacion del piloto (los 3 CONTEXTUAL _migra_en_piloto); la senal pasa a S2-forma:para. La CLASE no cambia (CONDICIONAL)."
+    }
+   ]
   },
   {
    "id_oferta": "1118163504",
