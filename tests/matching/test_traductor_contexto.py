@@ -220,3 +220,22 @@ def test_15_L1_no_toca_solo_estas():
     t = _traductor([hub])
     r = t.evaluar('Analista contable', _c(tareas='cargar datos y archivo'))
     assert r['decide'] and r['regla_id'] == 'D01', r
+
+
+# ── PRE-v0.3.3: paridad de género «/a» en triggers (bug, no fase 2) ──
+
+def test_16_titulo_con_barra_de_genero_dispara_trigger():
+    """«Vendedor/a» (barra compacta, como se escribe en los avisos reales)
+    dispara el trigger del hub vendedor igual que «Vendedor»."""
+    t = _traductor([HUB_VND])
+    r = t.evaluar('Vendedor/a', _c(tareas='venta de salon y atencion al cliente'))
+    assert r['telemetria'] != 'no_aplica', r
+    assert r['decide'] and r['codigo_esco'] == '5000.1', r
+
+
+def test_17_barra_compuesta_tambien():
+    """«Ejecutivo/a comercial»-style: la barra interna no corta el word-boundary."""
+    hub = _hub('3000.1', 16, ['ejecutivo/a comercial'], ['prospeccion'], [])
+    t = _traductor([hub])
+    r = t.evaluar('Ejecutivo/a comercial B2B', _c(tareas='prospeccion de clientes'))
+    assert r['decide'] and r['codigo_esco'] == '3000.1', r

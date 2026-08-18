@@ -46,6 +46,11 @@ CAMPOS_SOLO_TECNOLOGIA = {'tecnologias', 'sistemas_herramientas'}
 def _norm(s: str) -> str:
     s = unicodedata.normalize('NFD', (s or '').lower())
     s = ''.join(ch for ch in s if unicodedata.category(ch) != 'Mn')
+    # PRE-v0.3.3 (paridad de genero, bug — no fase 2): los titulos reales escritos
+    # con barra compacta ('vendedor/a', 'ejecutivo/a comercial') deben disparar los
+    # mismos triggers que su forma masculina. Se canonicaliza AQUI porque _norm es
+    # la funcion compartida de triggers, titulos, exclusiones y terminos (contrato).
+    s = re.sub(r'(\w+)/(?:a|na|ra|sa|iz|triz)\b', r'\1', s)
     return re.sub(r'\s+', ' ', s).strip()
 
 
