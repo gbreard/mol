@@ -64,10 +64,12 @@ def test_rechazo_sin_esco_code_vacio(dict_tmp, code2occ):
 
 
 # 7 — colision longest-match: no pisa en silencio
+# (fixture actualizado [FRENTE H P4]: 'ejecutivo comercial' se retiro del dict con el
+#  piloto — la base pasa a 'intendente de obra' -> 3123.1.1, entrada estable de G3)
 def test_colision_longest_match(dict_tmp, code2occ):
-    # 'ejecutivo comercial' existe -> 3322.1. Una candidata 'ejecutivo comercial senior'
-    # (superstring) con OTRO codigo debe ser rechazada (sombrearia la existente).
-    rep = ac.aplicar([_cand("ejecutivo comercial senior", "1221.3.2")], "s",
+    # 'intendente de obra' existe -> 3123.1.1. Una candidata superstring con OTRO
+    # codigo debe ser rechazada (sombrearia la existente).
+    rep = ac.aplicar([_cand("intendente de obra vial", "1323.1")], "s",
                      commit=False, dict_path=dict_tmp, mirror_path=None,
                      code2occ=code2occ, verbose=False)
     assert not rep["aplicadas"]
@@ -76,7 +78,7 @@ def test_colision_longest_match(dict_tmp, code2occ):
 
 def test_colision_mismo_codigo_no_bloquea(dict_tmp, code2occ):
     # substring con MISMO codigo no es colision (no hay sombreado peligroso)
-    rep = ac.aplicar([_cand("ejecutivo comercial premium", "3322.1")], "s",
+    rep = ac.aplicar([_cand("intendente de obra civil", "3123.1.1")], "s",
                      commit=False, dict_path=dict_tmp, mirror_path=None,
                      code2occ=code2occ, verbose=False)
     assert rep["aplicadas"], rep

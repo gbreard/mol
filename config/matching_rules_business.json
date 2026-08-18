@@ -1,5 +1,5 @@
 {
-  "version": "5.26",
+  "version": "5.27",
   "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-08-14",
@@ -448,8 +448,10 @@
       "_linaje": {
         "version_origen": "v33",
         "contexto": "92 excluye telecom, R146 prioridad 0",
-        "requiere_revision": true
-      }
+        "requiere_revision": true,
+        "subordinacion_L4": "[FRENTE H P4, 2026-08-18] cubierta por el hub-set piloto (dispara SOLO si el traductor no decidio — estructural en v3.6.0: el resto de reglas corre despues del traductor). NO se retira; el retiro definitivo es por fase posterior, regla por regla, con su blast. Pactada explicita (R14)."
+      },
+      "subordinada_al_traductor": true
     },
     "R14b_auditor_medico": {
       "nombre": "Auditor Médico (profesional de salud)",
@@ -3902,8 +3904,10 @@
         "destino_anterior_k": "5223.7 (vendedor especializado/vendedora especializada)",
         "auditoria": "auditoria_cyn_2026-08-12",
         "cambio_k": "correccion_destino: 5223.7 -> 5223.4",
-        "nota_cyn": "Corregido: vendedor genérico de comercio minorista no implica venta especializada."
-      }
+        "nota_cyn": "Corregido: vendedor genérico de comercio minorista no implica venta especializada.",
+        "subordinacion_L4": "[FRENTE H P4, 2026-08-18] cubierta por el hub-set piloto (dispara SOLO si el traductor no decidio — estructural en v3.6.0: el resto de reglas corre despues del traductor). NO se retira; el retiro definitivo es por fase posterior, regla por regla, con su blast."
+      },
+      "subordinada_al_traductor": true
     },
     "R112_analista_tesoreria": {
       "nombre": "Analista de Tesorería",
@@ -4175,8 +4179,10 @@
       "fix_validacion_humana": "2026-01-20",
       "activa": true,
       "_linaje": {
-        "requiere_revision": true
-      }
+        "requiere_revision": true,
+        "subordinacion_L4": "[FRENTE H P4, 2026-08-18] cubierta por el hub-set piloto (dispara SOLO si el traductor no decidio — estructural en v3.6.0: el resto de reglas corre despues del traductor). NO se retira; el retiro definitivo es por fase posterior, regla por regla, con su blast."
+      },
+      "subordinada_al_traductor": true
     },
     "R125_gerente_finanzas": {
       "nombre": "Gerente/Director de Finanzas",
@@ -5241,8 +5247,10 @@
         "destino_anterior_k": "5243.1 (vendedor a domicilio)",
         "auditoria": "auditoria_cyn_2026-08-12",
         "cambio_k": "correccion_destino: 5243.1 -> 3322.1",
-        "nota_cyn": "Corregido según regla consolidada MOL de representante comercial."
-      }
+        "nota_cyn": "Corregido según regla consolidada MOL de representante comercial.",
+        "subordinacion_L4": "[FRENTE H P4, 2026-08-18] cubierta por el hub-set piloto (dispara SOLO si el traductor no decidio — estructural en v3.6.0: el resto de reglas corre despues del traductor). NO se retira; el retiro definitivo es por fase posterior, regla por regla, con su blast."
+      },
+      "subordinada_al_traductor": true
     },
     "R157_jefe_produccion": {
       "nombre": "Jefe de Producción Industrial",
@@ -5608,8 +5616,10 @@
       "activa": true,
       "nota": "Analista de impuestos = contable especializado, NO director financiero (1211)",
       "_linaje": {
-        "requiere_revision": true
-      }
+        "requiere_revision": true,
+        "subordinacion_L4": "[FRENTE H P4, 2026-08-18] cubierta por el hub-set piloto (dispara SOLO si el traductor no decidio — estructural en v3.6.0: el resto de reglas corre despues del traductor). NO se retira; el retiro definitivo es por fase posterior, regla por regla, con su blast."
+      },
+      "subordinada_al_traductor": true
     },
     "R170_asesor_comercial": {
       "nombre": "Asesor comercial / ejecutivo de cuentas",
@@ -7329,8 +7339,10 @@
         "training_pair_ids": [
           "TP-583"
         ],
-        "_fix_2026_04_26_spec_o": "Target 4311.1 'empleado de contabilidad' (ISCO 4 oficinista jerarquía baja) era ERRÓNEO para 'analista'. Cambiado a 2411.1.1 'analista contable' (ISCO 2411 contadores, label literal). SPEC O M1+M3 detección."
-      }
+        "_fix_2026_04_26_spec_o": "Target 4311.1 'empleado de contabilidad' (ISCO 4 oficinista jerarquía baja) era ERRÓNEO para 'analista'. Cambiado a 2411.1.1 'analista contable' (ISCO 2411 contadores, label literal). SPEC O M1+M3 detección.",
+        "subordinacion_L4": "[FRENTE H P4, 2026-08-18] cubierta por el hub-set piloto (dispara SOLO si el traductor no decidio — estructural en v3.6.0: el resto de reglas corre despues del traductor). NO se retira; el retiro definitivo es por fase posterior, regla por regla, con su blast."
+      },
+      "subordinada_al_traductor": true
     },
     "R229_analista_comercial": {
       "nombre": "Analista/Ejecutivo comercial ventas",
@@ -7408,8 +7420,10 @@
       "_fecha": "2026-02-20",
       "nota": "Sprint 7 V31: 6 asesores ventas",
       "_linaje": {
-        "requiere_revision": true
-      }
+        "requiere_revision": true,
+        "subordinacion_L4": "[FRENTE H P4, 2026-08-18] cubierta por el hub-set piloto (dispara SOLO si el traductor no decidio — estructural en v3.6.0: el resto de reglas corre despues del traductor). NO se retira; el retiro definitivo es por fase posterior, regla por regla, con su blast."
+      },
+      "subordinada_al_traductor": true
     },
     "R231_supervisor_operaciones": {
       "nombre": "Supervisor de operaciones/producción",
@@ -10246,9 +10260,11 @@
           "1171e027"
         ],
         "oferta_ejemplo": "7006539054 - Gerente Administración",
-        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md",
+        "subordinacion_L4": "[FRENTE H P4, 2026-08-18] cubierta por el hub-set piloto (dispara SOLO si el traductor no decidio — estructural en v3.6.0: el resto de reglas corre despues del traductor). NO se retira; el retiro definitivo es por fase posterior, regla por regla, con su blast."
       },
-      "_fecha": "2026-04-08"
+      "_fecha": "2026-04-08",
+      "subordinada_al_traductor": true
     },
     "R304_torrista": {
       "nombre": "Técnico torrista",
@@ -10669,8 +10685,10 @@
         "issue_ids": [],
         "oferta_ejemplo": "1118133126",
         "reporte": "reporte_correcciones_2026-04-08",
-        "nota": "Viajante es representante comercial, no vendedor a domicilio"
-      }
+        "nota": "Viajante es representante comercial, no vendedor a domicilio",
+        "subordinacion_L4": "[FRENTE H P4, 2026-08-18] cubierta por el hub-set piloto (dispara SOLO si el traductor no decidio — estructural en v3.6.0: el resto de reglas corre despues del traductor). NO se retira; el retiro definitivo es por fase posterior, regla por regla, con su blast."
+      },
+      "subordinada_al_traductor": true
     },
     "R318_operador_produccion": {
       "nombre": "Operador/a de producción (genérico)",
@@ -11952,5 +11970,6 @@
   "_cambios_v523_k2_correcciones": "[FRENTE K2] segunda_ronda_cyn_2026-08-14: R229a +variantes con barra de genero + exclusion seguros (L3); R210 4222.1->5244.1 + exclusion lider; alta R210b lider de equipo comercial -> 1221.3.2.1.",
   "_cambios_v524_h_l3": "[FRENTE H v0.3.2] laudo L3: 14 planas especializadas del vecindario marcadas _traductor_L3 (precedencia sobre el traductor; absorcion como ramas en fase 2). Anotacion no-conductual (el matcher ignora la clave). Las demas 71-post-export en familia NO se marcan hasta su auditoria.",
   "_cambios_v525_h_l3_completo": "[FRENTE H PRE-v0.3.3] Registro L3 COMPLETO en dos pasadas: +15 validadas-IGUAL del K (sin linaje) + correccion del criterio de profundidad (hermano-fino = >= MINIMO de hubs de la familia, no maximo — R69 2413.1 entraba). Total _traductor_L3: 32.",
-  "_cambios_v526_h_a3_grafo": "[FRENTE H v0.3.4] laudo A3: registro L3 extendido POR GRAFO (+31: conectadas por arista D al vecindario, K-validadas). Las 32 previas = subcriterio prefijo. TOTAL _traductor_L3: 63."
+  "_cambios_v526_h_a3_grafo": "[FRENTE H v0.3.4] laudo A3: registro L3 extendido POR GRAFO (+31: conectadas por arista D al vecindario, K-validadas). Las 32 previas = subcriterio prefijo. TOTAL _traductor_L3: 63.",
+  "_cambios_v527_h_p4_subordinacion": "[FRENTE H P4] L4: 9 reglas marcadas subordinada_al_traductor (CUBIERTA del M1 con destino en el territorio de los 7 hubs activos + R14 pactada; las L3 quedan FUERA — preceden). Ninguna se retira."
 }

@@ -1,0 +1,1214 @@
+{
+ "_meta": {
+  "descripcion": "Piso de satelites COMPILADO a config (laudo L2 H_v032 + correccion factual administrativo=alt-label-literal-excluido-por-laudo). Triggers = labels ESCO completos (expansion de genero, jamas fragmento) de los destinos D de los hubs ACTIVOS, hacia su hub de origen. satelites = mapa label->codigo para el modo satelite-exacto (laudo P1). Fuente: grafo_D_88 (artefacto de analisis) compilado aca porque el runtime no depende de exports/.",
+  "generado": "2026-08-18 [FRENTE H P4 — activacion]",
+  "hubs_activos": [
+   "2411.1.1",
+   "2411.1",
+   "3313.2",
+   "4312.1",
+   "1211.1.1",
+   "3322.1",
+   "5223.4"
+  ],
+  "n_triggers": 239,
+  "n_satelites": 164
+ },
+ "triggers": [
+  {
+   "trigger": "asesor fiscal",
+   "hub": "2411.1.1",
+   "satelite": "2411.1.12"
+  },
+  {
+   "trigger": "asesora fiscal",
+   "hub": "2411.1.1",
+   "satelite": "2411.1.12"
+  },
+  {
+   "trigger": "analista de presupuestos",
+   "hub": "2411.1.1",
+   "satelite": "2411.1.4"
+  },
+  {
+   "trigger": "analista de costes",
+   "hub": "2411.1.1",
+   "satelite": "2411.1.5"
+  },
+  {
+   "trigger": "auditor de cuentas",
+   "hub": "2411.1.1",
+   "satelite": "2411.1.7"
+  },
+  {
+   "trigger": "auditora de cuentas",
+   "hub": "2411.1.1",
+   "satelite": "2411.1.7"
+  },
+  {
+   "trigger": "analista financiero",
+   "hub": "2411.1.1",
+   "satelite": "2413.1"
+  },
+  {
+   "trigger": "analista financiera",
+   "hub": "2411.1.1",
+   "satelite": "2413.1"
+  },
+  {
+   "trigger": "empleado administrativo",
+   "hub": "2411.1.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "empleada administrativa",
+   "hub": "2411.1.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "auxiliar administrativa",
+   "hub": "2411.1.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "asistente de direccion y administrativo",
+   "hub": "2411.1.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "asistente de direccion y administrativa",
+   "hub": "2411.1.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "asistente administrativo",
+   "hub": "2411.1.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "auxiliar administrativo",
+   "hub": "2411.1.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "asistente administrativa",
+   "hub": "2411.1.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "tecnico administrativo",
+   "hub": "2411.1.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "tecnica administrativa",
+   "hub": "2411.1.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "empleado de contabilidad",
+   "hub": "2411.1.1",
+   "satelite": "4311.1"
+  },
+  {
+   "trigger": "empleada de contabilidad",
+   "hub": "2411.1.1",
+   "satelite": "4311.1"
+  },
+  {
+   "trigger": "empleada de facturacion",
+   "hub": "2411.1.1",
+   "satelite": "4311.1"
+  },
+  {
+   "trigger": "empleado de facturacion",
+   "hub": "2411.1.1",
+   "satelite": "4311.1"
+  },
+  {
+   "trigger": "administrativo de nominas",
+   "hub": "2411.1.1",
+   "satelite": "4313.1"
+  },
+  {
+   "trigger": "administrativa de nominas",
+   "hub": "2411.1.1",
+   "satelite": "4313.1"
+  },
+  {
+   "trigger": "empleado administrativo de salarios y nominas",
+   "hub": "2411.1.1",
+   "satelite": "4313.1"
+  },
+  {
+   "trigger": "empleada administrativa de salarios y nominas",
+   "hub": "2411.1.1",
+   "satelite": "4313.1"
+  },
+  {
+   "trigger": "asesor fiscal",
+   "hub": "2411.1",
+   "satelite": "2411.1.12"
+  },
+  {
+   "trigger": "asesora fiscal",
+   "hub": "2411.1",
+   "satelite": "2411.1.12"
+  },
+  {
+   "trigger": "analista de presupuestos",
+   "hub": "2411.1",
+   "satelite": "2411.1.4"
+  },
+  {
+   "trigger": "analista de costes",
+   "hub": "2411.1",
+   "satelite": "2411.1.5"
+  },
+  {
+   "trigger": "auditor de cuentas",
+   "hub": "2411.1",
+   "satelite": "2411.1.7"
+  },
+  {
+   "trigger": "auditora de cuentas",
+   "hub": "2411.1",
+   "satelite": "2411.1.7"
+  },
+  {
+   "trigger": "analista financiero",
+   "hub": "2411.1",
+   "satelite": "2413.1"
+  },
+  {
+   "trigger": "analista financiera",
+   "hub": "2411.1",
+   "satelite": "2413.1"
+  },
+  {
+   "trigger": "empleado de contabilidad",
+   "hub": "2411.1",
+   "satelite": "4311.1"
+  },
+  {
+   "trigger": "empleada de contabilidad",
+   "hub": "2411.1",
+   "satelite": "4311.1"
+  },
+  {
+   "trigger": "empleada de facturacion",
+   "hub": "2411.1",
+   "satelite": "4311.1"
+  },
+  {
+   "trigger": "empleado de facturacion",
+   "hub": "2411.1",
+   "satelite": "4311.1"
+  },
+  {
+   "trigger": "administrativo de nominas",
+   "hub": "2411.1",
+   "satelite": "4313.1"
+  },
+  {
+   "trigger": "administrativa de nominas",
+   "hub": "2411.1",
+   "satelite": "4313.1"
+  },
+  {
+   "trigger": "empleado administrativo de salarios y nominas",
+   "hub": "2411.1",
+   "satelite": "4313.1"
+  },
+  {
+   "trigger": "empleada administrativa de salarios y nominas",
+   "hub": "2411.1",
+   "satelite": "4313.1"
+  },
+  {
+   "trigger": "empleado administrativo",
+   "hub": "3313.2",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "empleada administrativa",
+   "hub": "3313.2",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "auxiliar administrativa",
+   "hub": "3313.2",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "asistente de direccion y administrativo",
+   "hub": "3313.2",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "asistente de direccion y administrativa",
+   "hub": "3313.2",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "asistente administrativo",
+   "hub": "3313.2",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "auxiliar administrativo",
+   "hub": "3313.2",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "asistente administrativa",
+   "hub": "3313.2",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "tecnico administrativo",
+   "hub": "3313.2",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "tecnica administrativa",
+   "hub": "3313.2",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "empleado de oficina",
+   "hub": "3313.2",
+   "satelite": "4110.1"
+  },
+  {
+   "trigger": "empleada de oficina",
+   "hub": "3313.2",
+   "satelite": "4110.1"
+  },
+  {
+   "trigger": "empleado de contabilidad",
+   "hub": "3313.2",
+   "satelite": "4311.1"
+  },
+  {
+   "trigger": "empleada de contabilidad",
+   "hub": "3313.2",
+   "satelite": "4311.1"
+  },
+  {
+   "trigger": "empleada de facturacion",
+   "hub": "3313.2",
+   "satelite": "4311.1"
+  },
+  {
+   "trigger": "empleado de facturacion",
+   "hub": "3313.2",
+   "satelite": "4311.1"
+  },
+  {
+   "trigger": "administrativo de nominas",
+   "hub": "3313.2",
+   "satelite": "4313.1"
+  },
+  {
+   "trigger": "administrativa de nominas",
+   "hub": "3313.2",
+   "satelite": "4313.1"
+  },
+  {
+   "trigger": "empleado administrativo de salarios y nominas",
+   "hub": "3313.2",
+   "satelite": "4313.1"
+  },
+  {
+   "trigger": "empleada administrativa de salarios y nominas",
+   "hub": "3313.2",
+   "satelite": "4313.1"
+  },
+  {
+   "trigger": "supervisor de auditoria",
+   "hub": "4312.1",
+   "satelite": "2411.1.2"
+  },
+  {
+   "trigger": "supervisora de auditoria",
+   "hub": "4312.1",
+   "satelite": "2411.1.2"
+  },
+  {
+   "trigger": "auditor de cuentas",
+   "hub": "4312.1",
+   "satelite": "2411.1.7"
+  },
+  {
+   "trigger": "auditora de cuentas",
+   "hub": "4312.1",
+   "satelite": "2411.1.7"
+  },
+  {
+   "trigger": "auditor forense",
+   "hub": "4312.1",
+   "satelite": "2411.1.9"
+  },
+  {
+   "trigger": "auditora forense",
+   "hub": "4312.1",
+   "satelite": "2411.1.9"
+  },
+  {
+   "trigger": "investigador de fraudes financieros",
+   "hub": "4312.1",
+   "satelite": "2411.1.9"
+  },
+  {
+   "trigger": "investigadora de fraudes financieros",
+   "hub": "4312.1",
+   "satelite": "2411.1.9"
+  },
+  {
+   "trigger": "auditor informatico",
+   "hub": "4312.1",
+   "satelite": "2511.18"
+  },
+  {
+   "trigger": "auditora informatica",
+   "hub": "4312.1",
+   "satelite": "2511.18"
+  },
+  {
+   "trigger": "auditor de tecnologias de la informacion",
+   "hub": "4312.1",
+   "satelite": "2511.18"
+  },
+  {
+   "trigger": "auditora de tecnologias de la informacion",
+   "hub": "4312.1",
+   "satelite": "2511.18"
+  },
+  {
+   "trigger": "empleado administrativo",
+   "hub": "4312.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "empleada administrativa",
+   "hub": "4312.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "auxiliar administrativa",
+   "hub": "4312.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "asistente de direccion y administrativo",
+   "hub": "4312.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "asistente de direccion y administrativa",
+   "hub": "4312.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "asistente administrativo",
+   "hub": "4312.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "auxiliar administrativo",
+   "hub": "4312.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "asistente administrativa",
+   "hub": "4312.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "tecnico administrativo",
+   "hub": "4312.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "tecnica administrativa",
+   "hub": "4312.1",
+   "satelite": "3343.1"
+  },
+  {
+   "trigger": "empleado de oficina",
+   "hub": "4312.1",
+   "satelite": "4110.1"
+  },
+  {
+   "trigger": "empleada de oficina",
+   "hub": "4312.1",
+   "satelite": "4110.1"
+  },
+  {
+   "trigger": "primer ejecutivo",
+   "hub": "1211.1.1",
+   "satelite": "1120.3"
+  },
+  {
+   "trigger": "primera ejecutiva",
+   "hub": "1211.1.1",
+   "satelite": "1120.3"
+  },
+  {
+   "trigger": "consejera delegada",
+   "hub": "1211.1.1",
+   "satelite": "1120.3"
+  },
+  {
+   "trigger": "presidente y director ejecutivo",
+   "hub": "1211.1.1",
+   "satelite": "1120.3"
+  },
+  {
+   "trigger": "presidenta y directora ejecutiva",
+   "hub": "1211.1.1",
+   "satelite": "1120.3"
+  },
+  {
+   "trigger": "consejero delegado",
+   "hub": "1211.1.1",
+   "satelite": "1120.3"
+  },
+  {
+   "trigger": "director ejecutivo",
+   "hub": "1211.1.1",
+   "satelite": "1120.3"
+  },
+  {
+   "trigger": "directora ejecutiva",
+   "hub": "1211.1.1",
+   "satelite": "1120.3"
+  },
+  {
+   "trigger": "director financiero",
+   "hub": "1211.1.1",
+   "satelite": "1211.1"
+  },
+  {
+   "trigger": "directora financiera",
+   "hub": "1211.1.1",
+   "satelite": "1211.1"
+  },
+  {
+   "trigger": "tesorero de empresa",
+   "hub": "1211.1.1",
+   "satelite": "1211.1.4"
+  },
+  {
+   "trigger": "tesorera de empresa",
+   "hub": "1211.1.1",
+   "satelite": "1211.1.4"
+  },
+  {
+   "trigger": "tesorero",
+   "hub": "1211.1.1",
+   "satelite": "1211.1.4"
+  },
+  {
+   "trigger": "jefe de tesoreria",
+   "hub": "1211.1.1",
+   "satelite": "1211.1.4"
+  },
+  {
+   "trigger": "jefa de tesoreria",
+   "hub": "1211.1.1",
+   "satelite": "1211.1.4"
+  },
+  {
+   "trigger": "tesorera",
+   "hub": "1211.1.1",
+   "satelite": "1211.1.4"
+  },
+  {
+   "trigger": "director de recursos humanos",
+   "hub": "1211.1.1",
+   "satelite": "1212.2"
+  },
+  {
+   "trigger": "directora de recursos humanos",
+   "hub": "1211.1.1",
+   "satelite": "1212.2"
+  },
+  {
+   "trigger": "director de compras",
+   "hub": "1211.1.1",
+   "satelite": "1324.8.2"
+  },
+  {
+   "trigger": "directora de compras",
+   "hub": "1211.1.1",
+   "satelite": "1324.8.2"
+  },
+  {
+   "trigger": "responsable de compras",
+   "hub": "1211.1.1",
+   "satelite": "1324.8.2"
+  },
+  {
+   "trigger": "asesor fiscal",
+   "hub": "1211.1.1",
+   "satelite": "2411.1.12"
+  },
+  {
+   "trigger": "asesora fiscal",
+   "hub": "1211.1.1",
+   "satelite": "2411.1.12"
+  },
+  {
+   "trigger": "supervisor de auditoria",
+   "hub": "1211.1.1",
+   "satelite": "2411.1.2"
+  },
+  {
+   "trigger": "supervisora de auditoria",
+   "hub": "1211.1.1",
+   "satelite": "2411.1.2"
+  },
+  {
+   "trigger": "auditor de cuentas",
+   "hub": "1211.1.1",
+   "satelite": "2411.1.7"
+  },
+  {
+   "trigger": "auditora de cuentas",
+   "hub": "1211.1.1",
+   "satelite": "2411.1.7"
+  },
+  {
+   "trigger": "auditor forense",
+   "hub": "1211.1.1",
+   "satelite": "2411.1.9"
+  },
+  {
+   "trigger": "auditora forense",
+   "hub": "1211.1.1",
+   "satelite": "2411.1.9"
+  },
+  {
+   "trigger": "investigador de fraudes financieros",
+   "hub": "1211.1.1",
+   "satelite": "2411.1.9"
+  },
+  {
+   "trigger": "investigadora de fraudes financieros",
+   "hub": "1211.1.1",
+   "satelite": "2411.1.9"
+  },
+  {
+   "trigger": "director de departamento de administracion",
+   "hub": "1211.1.1",
+   "satelite": "3341.7"
+  },
+  {
+   "trigger": "directora de departamento de administracion",
+   "hub": "1211.1.1",
+   "satelite": "3341.7"
+  },
+  {
+   "trigger": "gestor administrativo",
+   "hub": "1211.1.1",
+   "satelite": "3341.7"
+  },
+  {
+   "trigger": "tecnico administrativo",
+   "hub": "1211.1.1",
+   "satelite": "3341.7"
+  },
+  {
+   "trigger": "tecnica en organizacion y administracion de empresas",
+   "hub": "1211.1.1",
+   "satelite": "3341.7"
+  },
+  {
+   "trigger": "jefe de departamento administrativo",
+   "hub": "1211.1.1",
+   "satelite": "3341.7"
+  },
+  {
+   "trigger": "tecnica administrativa",
+   "hub": "1211.1.1",
+   "satelite": "3341.7"
+  },
+  {
+   "trigger": "jefa de departamento administrativo",
+   "hub": "1211.1.1",
+   "satelite": "3341.7"
+  },
+  {
+   "trigger": "tecnico en organizacion y administracion de empresas",
+   "hub": "1211.1.1",
+   "satelite": "3341.7"
+  },
+  {
+   "trigger": "gestora administrativa",
+   "hub": "1211.1.1",
+   "satelite": "3341.7"
+  },
+  {
+   "trigger": "empleado de oficina",
+   "hub": "1211.1.1",
+   "satelite": "4110.1"
+  },
+  {
+   "trigger": "empleada de oficina",
+   "hub": "1211.1.1",
+   "satelite": "4110.1"
+  },
+  {
+   "trigger": "empleada administrativa",
+   "hub": "1211.1.1",
+   "satelite": "4110.1"
+  },
+  {
+   "trigger": "empleado administrativo",
+   "hub": "1211.1.1",
+   "satelite": "4110.1"
+  },
+  {
+   "trigger": "empleado de contabilidad",
+   "hub": "1211.1.1",
+   "satelite": "4311.1"
+  },
+  {
+   "trigger": "empleada de contabilidad",
+   "hub": "1211.1.1",
+   "satelite": "4311.1"
+  },
+  {
+   "trigger": "empleada de facturacion",
+   "hub": "1211.1.1",
+   "satelite": "4311.1"
+  },
+  {
+   "trigger": "empleado de facturacion",
+   "hub": "1211.1.1",
+   "satelite": "4311.1"
+  },
+  {
+   "trigger": "director de ventas",
+   "hub": "3322.1",
+   "satelite": "1221.3.2.1"
+  },
+  {
+   "trigger": "directora de ventas",
+   "hub": "3322.1",
+   "satelite": "1221.3.2.1"
+  },
+  {
+   "trigger": "jefa de ventas",
+   "hub": "3322.1",
+   "satelite": "1221.3.2.1"
+  },
+  {
+   "trigger": "jefe de ventas",
+   "hub": "3322.1",
+   "satelite": "1221.3.2.1"
+  },
+  {
+   "trigger": "director comercial",
+   "hub": "3322.1",
+   "satelite": "1221.4"
+  },
+  {
+   "trigger": "directora comercial",
+   "hub": "3322.1",
+   "satelite": "1221.4"
+  },
+  {
+   "trigger": "responsable del desarrollo de las relaciones comerciales",
+   "hub": "3322.1",
+   "satelite": "2422.18"
+  },
+  {
+   "trigger": "responsable de importaciones y exportaciones",
+   "hub": "3322.1",
+   "satelite": "2422.18"
+  },
+  {
+   "trigger": "gestor de la atencion al cliente",
+   "hub": "3322.1",
+   "satelite": "2431.8"
+  },
+  {
+   "trigger": "gestora de la atencion al cliente",
+   "hub": "3322.1",
+   "satelite": "2431.8"
+  },
+  {
+   "trigger": "administrador de la atencion al cliente",
+   "hub": "3322.1",
+   "satelite": "2431.8"
+  },
+  {
+   "trigger": "gerente del departamento de atencion al cliente",
+   "hub": "3322.1",
+   "satelite": "2431.8"
+  },
+  {
+   "trigger": "responsable de la gestion de la atencion al cliente",
+   "hub": "3322.1",
+   "satelite": "2431.8"
+  },
+  {
+   "trigger": "encargado de la gestion de la atencion al cliente",
+   "hub": "3322.1",
+   "satelite": "2431.8"
+  },
+  {
+   "trigger": "administradora de la atencion al cliente",
+   "hub": "3322.1",
+   "satelite": "2431.8"
+  },
+  {
+   "trigger": "encargada de la gestion de la atencion al cliente",
+   "hub": "3322.1",
+   "satelite": "2431.8"
+  },
+  {
+   "trigger": "representante tecnico de ventas",
+   "hub": "3322.1",
+   "satelite": "2433.6"
+  },
+  {
+   "trigger": "representante tecnica de ventas",
+   "hub": "3322.1",
+   "satelite": "2433.6"
+  },
+  {
+   "trigger": "corredor de seguros",
+   "hub": "3322.1",
+   "satelite": "3321.1"
+  },
+  {
+   "trigger": "corredora de seguros",
+   "hub": "3322.1",
+   "satelite": "3321.1"
+  },
+  {
+   "trigger": "intermediaria de seguros",
+   "hub": "3322.1",
+   "satelite": "3321.1"
+  },
+  {
+   "trigger": "mediadora de seguros",
+   "hub": "3322.1",
+   "satelite": "3321.1"
+  },
+  {
+   "trigger": "intermediario de seguros",
+   "hub": "3322.1",
+   "satelite": "3321.1"
+  },
+  {
+   "trigger": "mediador de seguros",
+   "hub": "3322.1",
+   "satelite": "3321.1"
+  },
+  {
+   "trigger": "agente de seguros",
+   "hub": "3322.1",
+   "satelite": "3321.1"
+  },
+  {
+   "trigger": "asesor de seguros",
+   "hub": "3322.1",
+   "satelite": "3321.3.1"
+  },
+  {
+   "trigger": "asesora de seguros",
+   "hub": "3322.1",
+   "satelite": "3321.3.1"
+  },
+  {
+   "trigger": "consultora de seguros",
+   "hub": "3322.1",
+   "satelite": "3321.3.1"
+  },
+  {
+   "trigger": "consultor de seguros",
+   "hub": "3322.1",
+   "satelite": "3321.3.1"
+  },
+  {
+   "trigger": "asesora de seguros inmobiliarios",
+   "hub": "3322.1",
+   "satelite": "3321.3.1"
+  },
+  {
+   "trigger": "asesor de seguros inmobiliarios",
+   "hub": "3322.1",
+   "satelite": "3321.3.1"
+  },
+  {
+   "trigger": "especialista en importacion y exportacion",
+   "hub": "3322.1",
+   "satelite": "3331.2.1"
+  },
+  {
+   "trigger": "especialista en logistica",
+   "hub": "3322.1",
+   "satelite": "3331.2.1"
+  },
+  {
+   "trigger": "coordinador de operaciones de transporte internacional",
+   "hub": "3322.1",
+   "satelite": "3331.3"
+  },
+  {
+   "trigger": "coordinadora de operaciones de transporte internacional",
+   "hub": "3322.1",
+   "satelite": "3331.3"
+  },
+  {
+   "trigger": "jefe de trafico en empresa de transporte",
+   "hub": "3322.1",
+   "satelite": "3331.3"
+  },
+  {
+   "trigger": "director del departamento de importacion exportacion",
+   "hub": "3322.1",
+   "satelite": "3331.3"
+  },
+  {
+   "trigger": "directora de logistica internacional",
+   "hub": "3322.1",
+   "satelite": "3331.3"
+  },
+  {
+   "trigger": "jefa de transporte internacional",
+   "hub": "3322.1",
+   "satelite": "3331.3"
+  },
+  {
+   "trigger": "jefe de transporte internacional",
+   "hub": "3322.1",
+   "satelite": "3331.3"
+  },
+  {
+   "trigger": "director de logistica internacional",
+   "hub": "3322.1",
+   "satelite": "3331.3"
+  },
+  {
+   "trigger": "directora del departamento de importacion exportacion",
+   "hub": "3322.1",
+   "satelite": "3331.3"
+  },
+  {
+   "trigger": "jefa de trafico en empresa de transporte",
+   "hub": "3322.1",
+   "satelite": "3331.3"
+  },
+  {
+   "trigger": "agente inmobiliario especializado en compraventa",
+   "hub": "3322.1",
+   "satelite": "3334.2"
+  },
+  {
+   "trigger": "agente inmobiliaria especializada en compraventa",
+   "hub": "3322.1",
+   "satelite": "3334.2"
+  },
+  {
+   "trigger": "gestora de fondos de inversion",
+   "hub": "3322.1",
+   "satelite": "3334.2"
+  },
+  {
+   "trigger": "asesor inmobiliario",
+   "hub": "3322.1",
+   "satelite": "3334.2"
+  },
+  {
+   "trigger": "agente de la propiedad inmobiliaria",
+   "hub": "3322.1",
+   "satelite": "3334.2"
+  },
+  {
+   "trigger": "analista inmobiliario",
+   "hub": "3322.1",
+   "satelite": "3334.2"
+  },
+  {
+   "trigger": "gestor inmobiliario",
+   "hub": "3322.1",
+   "satelite": "3334.2"
+  },
+  {
+   "trigger": "asesora inmobiliaria",
+   "hub": "3322.1",
+   "satelite": "3334.2"
+  },
+  {
+   "trigger": "especialista en transacciones inmobiliarias",
+   "hub": "3322.1",
+   "satelite": "3334.2"
+  },
+  {
+   "trigger": "gestora inmobiliaria",
+   "hub": "3322.1",
+   "satelite": "3334.2"
+  },
+  {
+   "trigger": "analista inmobiliaria",
+   "hub": "3322.1",
+   "satelite": "3334.2"
+  },
+  {
+   "trigger": "gestor de fondos de inversion",
+   "hub": "3322.1",
+   "satelite": "3334.2"
+  },
+  {
+   "trigger": "empleado de oficina",
+   "hub": "3322.1",
+   "satelite": "4110.1"
+  },
+  {
+   "trigger": "empleada de oficina",
+   "hub": "3322.1",
+   "satelite": "4110.1"
+  },
+  {
+   "trigger": "empleada administrativa",
+   "hub": "3322.1",
+   "satelite": "4110.1"
+  },
+  {
+   "trigger": "empleado administrativo",
+   "hub": "3322.1",
+   "satelite": "4110.1"
+  },
+  {
+   "trigger": "agente de servicio de atencion al cliente",
+   "hub": "3322.1",
+   "satelite": "4225.1"
+  },
+  {
+   "trigger": "teleoperador",
+   "hub": "3322.1",
+   "satelite": "5244.1"
+  },
+  {
+   "trigger": "teleoperadora",
+   "hub": "3322.1",
+   "satelite": "5244.1"
+  },
+  {
+   "trigger": "agente de centro de atencion al cliente",
+   "hub": "5223.4",
+   "satelite": "4222.1"
+  },
+  {
+   "trigger": "agente de servicio de atencion al cliente",
+   "hub": "5223.4",
+   "satelite": "4225.1"
+  },
+  {
+   "trigger": "camarero",
+   "hub": "5223.4",
+   "satelite": "5131.2"
+  },
+  {
+   "trigger": "camarera",
+   "hub": "5223.4",
+   "satelite": "5131.2"
+  },
+  {
+   "trigger": "encargado de la asistencia en mesas",
+   "hub": "5223.4",
+   "satelite": "5131.2"
+  },
+  {
+   "trigger": "asistente de mesa",
+   "hub": "5223.4",
+   "satelite": "5131.2"
+  },
+  {
+   "trigger": "encargada de la asistencia en mesas",
+   "hub": "5223.4",
+   "satelite": "5131.2"
+  },
+  {
+   "trigger": "moza",
+   "hub": "5223.4",
+   "satelite": "5131.2"
+  },
+  {
+   "trigger": "mozo",
+   "hub": "5223.4",
+   "satelite": "5131.2"
+  },
+  {
+   "trigger": "supervisor de tienda",
+   "hub": "5223.4",
+   "satelite": "5222.1"
+  },
+  {
+   "trigger": "supervisora de tienda",
+   "hub": "5223.4",
+   "satelite": "5222.1"
+  },
+  {
+   "trigger": "operador de ventas",
+   "hub": "5223.4",
+   "satelite": "5223.5"
+  },
+  {
+   "trigger": "operadora de ventas",
+   "hub": "5223.4",
+   "satelite": "5223.5"
+  },
+  {
+   "trigger": "gestora de pedidos",
+   "hub": "5223.4",
+   "satelite": "5223.5"
+  },
+  {
+   "trigger": "gestor de pedidos",
+   "hub": "5223.4",
+   "satelite": "5223.5"
+  },
+  {
+   "trigger": "asistente de tienda",
+   "hub": "5223.4",
+   "satelite": "5223.6"
+  },
+  {
+   "trigger": "vendedor especializado",
+   "hub": "5223.4",
+   "satelite": "5223.7"
+  },
+  {
+   "trigger": "vendedora especializada",
+   "hub": "5223.4",
+   "satelite": "5223.7"
+  },
+  {
+   "trigger": "vendedor especializado en panaderia o pasteleria",
+   "hub": "5223.4",
+   "satelite": "5223.7.4"
+  },
+  {
+   "trigger": "vendedora especializada en panaderia o pasteleria",
+   "hub": "5223.4",
+   "satelite": "5223.7.4"
+  },
+  {
+   "trigger": "dependiente de panaderia o pasteleria",
+   "hub": "5223.4",
+   "satelite": "5223.7.4"
+  },
+  {
+   "trigger": "cajero",
+   "hub": "5223.4",
+   "satelite": "5230.1"
+  },
+  {
+   "trigger": "cajera",
+   "hub": "5223.4",
+   "satelite": "5230.1"
+  },
+  {
+   "trigger": "teleoperador",
+   "hub": "5223.4",
+   "satelite": "5244.1"
+  },
+  {
+   "trigger": "teleoperadora",
+   "hub": "5223.4",
+   "satelite": "5244.1"
+  },
+  {
+   "trigger": "trabajador de servicio de restauracion",
+   "hub": "5223.4",
+   "satelite": "5246.1"
+  },
+  {
+   "trigger": "trabajadora de servicio de restauracion",
+   "hub": "5223.4",
+   "satelite": "5246.1"
+  },
+  {
+   "trigger": "trabajador de servicio de catering para aerolineas",
+   "hub": "5223.4",
+   "satelite": "5246.1"
+  },
+  {
+   "trigger": "trabajador de servicio de catering",
+   "hub": "5223.4",
+   "satelite": "5246.1"
+  },
+  {
+   "trigger": "preparadora de pedidos de catering en servicios de aerolineas",
+   "hub": "5223.4",
+   "satelite": "5246.1"
+  },
+  {
+   "trigger": "trabajadora de servicio de catering",
+   "hub": "5223.4",
+   "satelite": "5246.1"
+  },
+  {
+   "trigger": "preparador de pedidos de catering en servicios de aerolineas",
+   "hub": "5223.4",
+   "satelite": "5246.1"
+  },
+  {
+   "trigger": "trabajadora de servicio de catering para aerolineas",
+   "hub": "5223.4",
+   "satelite": "5246.1"
+  },
+  {
+   "trigger": "trabajadora de servicio de restauracion para aerolineas",
+   "hub": "5223.4",
+   "satelite": "5246.1"
+  },
+  {
+   "trigger": "trabajador de servicio de restauracion para aerolineas",
+   "hub": "5223.4",
+   "satelite": "5246.1"
+  },
+  {
+   "trigger": "conductor de vehiculo de reparto",
+   "hub": "5223.4",
+   "satelite": "8322.2"
+  },
+  {
+   "trigger": "conductora de vehiculo de reparto",
+   "hub": "5223.4",
+   "satelite": "8322.2"
+  },
+  {
+   "trigger": "conductor repartidor",
+   "hub": "5223.4",
+   "satelite": "8322.2"
+  },
+  {
+   "trigger": "conductor de automovil de reparto",
+   "hub": "5223.4",
+   "satelite": "8322.2"
+  },
+  {
+   "trigger": "conductora repartidora",
+   "hub": "5223.4",
+   "satelite": "8322.2"
+  },
+  {
+   "trigger": "conductora de automovil de reparto",
+   "hub": "5223.4",
+   "satelite": "8322.2"
+  },
+  {
+   "trigger": "responsable de pedidos de almacen",
+   "hub": "5223.4",
+   "satelite": "9333.8.1"
+  }
+ ]
+}
