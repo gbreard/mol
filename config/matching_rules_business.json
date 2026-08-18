@@ -1,8 +1,8 @@
 {
-  "version": "5.21",
+  "version": "5.23",
   "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-08-13",
+  "fecha_actualizacion": "2026-08-14",
   "_cambios_v53": "Fix R139 repositor 9333→9334, R137 excluir controlador, new R265 controlador logístico→4321. Issues Diego.",
   "_cambios_v51": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344, R137 excluye maquinista.",
   "_cambios_v43": "R181-R182: Personal mantenimiento -> 7233, Tecnico electromedicina -> 3211",
@@ -45,11 +45,14 @@
         "esco_code": "3118.3"
       },
       "caso_gold_set": "1118027941 - Dibujante Tecnico",
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "version_origen": "v53",
         "contexto": "Fix R139 repositor 9333→9334, R137 excluir controlador, new R265",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "segunda_ronda_cyn_2026-08-14",
+        "cambio_k2": "retiro",
+        "nota_cyn": "Cyn: \"La regla que toma la sola mencion de CAD/AutoCAD como criterio para decidir dibujante tecnico debe retirarse. [...] 3118.3 debe asignarse unicamente cuando las tareas reales tienen como eje elaborar dibujos, planos, modelos 2D/3D y documentacion tecnica.\""
       }
     },
     "R2_skills_diseno_grafico": {
@@ -71,11 +74,14 @@
         "esco_code": "2166.9"
       },
       "caso_gold_set": "1118018714 - Diseñador Gráfico E-commerce",
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "version_origen": "v53",
         "contexto": "ir controlador, new R265 controlador logístico→4321. Issues Diego.",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "segunda_ronda_cyn_2026-08-14",
+        "cambio_k2": "retiro",
+        "nota_cyn": "Cyn: \"La sola mencion de Photoshop, Canva, Illustrator o herramientas similares no alcanza para decidir 2166. Debe retirarse el disparador automatico por Photoshop [...] UX/UI/Product Designer correspondieron a 2513.3, Fotografo de moda a 3431.1 y Responsable de marketing a 1221.3.2.\""
       }
     },
     "R3_autoelevador": {
@@ -4574,7 +4580,7 @@
         "esco_label": "mozo de almacén/moza de almacén",
         "esco_code": "9333.8"
       },
-      "activa": true,
+      "activa": false,
       "_caso": "ID 1118092945 - tareas picking, cross docking en área logística",
       "_fecha": "2026-01-22",
       "nota": "Sprint 5 V31 + v53: excluir maquinista/apiladora + controlador logístico. Issue 0dde98f9.",
@@ -4582,7 +4588,10 @@
       "_linaje": {
         "version_origen": "v53",
         "contexto": "epositor 9333→9334, R137 excluir controlador, new R265 controlador logístico→432",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "segunda_ronda_cyn_2026-08-14",
+        "cambio_k2": "retiro",
+        "nota_cyn": "Cyn: \"La sola mencion de picking no alcanza [...] La regla automatica debe retirarse. Recepcion/control/almacenamiento -> 9333.8; picking/armado/despacho de pedidos -> 9333.8.1; carga/descarga/deposito general -> 9333.3.\""
       }
     },
     "R138_control_gestion": {
@@ -6703,18 +6712,47 @@
           "televentas",
           "operador de venta telefónica",
           "operadores de venta telefónica"
+        ],
+        "titulo_no_contiene_alguno": [
+          "lider de equipo",
+          "líder de equipo"
         ]
       },
       "accion": {
-        "forzar_isco": "4222",
-        "esco_label": "agente de centro de atención al cliente",
-        "esco_code": "4222.1"
+        "forzar_isco": "5244",
+        "esco_label": "teleoperador/teleoperadora",
+        "esco_code": "5244.1"
       },
       "activa": true,
       "_fecha": "2026-02-08",
       "_nota": "Sprint 2: gap cobertura - 4 ofertas sin match",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k2": "4222.1 (agente de centro de atención al cliente)",
+        "auditoria": "segunda_ronda_cyn_2026-08-14",
+        "cambio_k2": "correccion_destino 4222.1 -> 5244.1 + exclusion lider de equipo (excepcion de Cyn, regla propia R210b)",
+        "nota_cyn": "Cyn: \"Corresponde teleoperador/a —5244.1— cuando el eje es realizar llamadas comerciales, prospectar, captar clientes [...]. 4222.1 no corresponde, porque la finalidad principal es vender y no atender consultas. Como excepcion, los avisos de Lider de equipo comercial corresponden a 1221.3.2.1 —director de ventas.\""
+      }
+    },
+    "R210b_lider_equipo_comercial": {
+      "nombre": "Líder de equipo comercial (venta telefónica)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "lider de equipo comercial",
+          "líder de equipo comercial"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1221",
+        "esco_label": "director de ventas/directora de ventas",
+        "esco_code": "1221.3.2.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "segunda_ronda_cyn_2026-08-14",
+        "cambio_k2": "alta_por_excepcion de R210 (distinguible por titulo)",
+        "nota_cyn": "Cyn: \"los avisos de Lider de equipo comercial corresponden a 1221.3.2.1 —director de ventas/directora de ventas—, ya que su funcion es liderar equipos y cumplir objetivos comerciales.\""
       }
     },
     "R211_soldador": {
@@ -7186,11 +7224,14 @@
         "esco_label": "asesor de orientación profesional/asesora de orientación profesional",
         "esco_code": "2423.1"
       },
-      "activa": true,
+      "activa": false,
       "_fecha": "2026-02-20",
       "nota": "Sprint 7 V31: 10 analistas RRHH",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "segunda_ronda_cyn_2026-08-14",
+        "cambio_k2": "retiro",
+        "nota_cyn": "Cyn: \"agregar analista de RRHH como forma de entrada, sujeta a desambiguacion funcional, y no asociarla automaticamente al destino historico 2423 — asesor de orientacion profesional\". Retiro: el reemplazo es condicional (generalista->2423.3, seleccion->2423.6, nomina->4313.1) -> mini-hub RRHH fase 2, no plana."
       }
     },
     "R227_soporte_tecnico_it": {
@@ -7276,7 +7317,15 @@
           "ejecutivo comercial",
           "ejecutiva comercial",
           "ejecutivo de ventas",
-          "ejecutiva de ventas"
+          "ejecutiva de ventas",
+          "ejecutivo/a comercial",
+          "ejecutivo/a de ventas",
+          "ejecutivo/a de venta",
+          "ejecutiva de venta",
+          "ejecutivo de venta"
+        ],
+        "titulo_no_contiene_alguno": [
+          "seguros"
         ]
       },
       "accion": {
@@ -7286,9 +7335,10 @@
       },
       "activa": true,
       "_linaje": {
-        "auditoria": "auditoria_cyn_2026-08-12",
+        "auditoria": "segunda_ronda_cyn_2026-08-14",
         "cambio_k": "alta_por_division de R229_analista_comercial",
-        "nota_cyn": "Representante comercial según regla consolidada MOL."
+        "nota_cyn": "Cyn: \"Si. Agregar ejecutivo/a comercial y, en general, las variantes equivalentes con barra de genero a la division R229a. [...] corresponde ESCO 3322.1. Excluir los casos con ocupacion ESCO especifica por el objeto de la venta, como seguros patrimoniales, que corresponde a ESCO 3321.3.1.\"",
+        "cambio_k2": "variantes_barra + exclusion seguros (laudo L3: sin plana K-validada que capture \"ejecutivo de venta seguros patrimoniales\" -> exclusion simple, queda al semantico hasta hub fase 2)"
       }
     },
     "R230_asesor_comercial": {
@@ -11834,5 +11884,7 @@
   "_cambios_v518_k_t3a": "[FRENTE K T3A] auditoria_cyn_2026-08-12: 34 correcciones de destino (solo accion.esco_code/esco_label/forzar_isco; condiciones intactas).",
   "_cambios_v519_k_t3b": "[FRENTE K T3B] auditoria_cyn_2026-08-12: 34 correcciones de destino (solo accion.esco_code/esco_label/forzar_isco; condiciones intactas).",
   "_cambios_v520_k_t4a": "[FRENTE K T4A] auditoria_cyn_2026-08-12: reemplazo madre->hijas en 24 grupos completos con cola<300. Altas con condicion titulo-only COMPLETA del JSON auditado (reglas nuevas, no existian).",
-  "_cambios_v521_k_t4b": "[FRENTE K T4B] auditoria_cyn_2026-08-12: reemplazo madre->hijas en R17/R229/R237 (cola-0 deliberada confirmada). R14 y R226 en verificacion cola-diseno vs cola-perdida."
+  "_cambios_v521_k_t4b": "[FRENTE K T4B] auditoria_cyn_2026-08-12: reemplazo madre->hijas en R17/R229/R237 (cola-0 deliberada confirmada). R14 y R226 en verificacion cola-diseno vs cola-perdida.",
+  "_cambios_v522_k2_retiros": "[FRENTE K2] segunda_ronda_cyn_2026-08-14: retiro de R226 (destino 2423 error seguro; reemplazo condicional -> mini-hub RRHH fase 2) y de las 3 auxiliares R1/R2/R137 (el disparador por mencion de herramienta muere; destinos funcionales a insumos fase 2). Cohort 548 en exports/cohorts/.",
+  "_cambios_v523_k2_correcciones": "[FRENTE K2] segunda_ronda_cyn_2026-08-14: R229a +variantes con barra de genero + exclusion seguros (L3); R210 4222.1->5244.1 + exclusion lider; alta R210b lider de equipo comercial -> 1221.3.2.1."
 }
