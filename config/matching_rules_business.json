@@ -1,8 +1,8 @@
 {
-  "version": "5.21",
+  "version": "5.22",
   "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-08-13",
+  "fecha_actualizacion": "2026-08-14",
   "_cambios_v53": "Fix R139 repositor 9333→9334, R137 excluir controlador, new R265 controlador logístico→4321. Issues Diego.",
   "_cambios_v51": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344, R137 excluye maquinista.",
   "_cambios_v43": "R181-R182: Personal mantenimiento -> 7233, Tecnico electromedicina -> 3211",
@@ -45,11 +45,14 @@
         "esco_code": "3118.3"
       },
       "caso_gold_set": "1118027941 - Dibujante Tecnico",
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "version_origen": "v53",
         "contexto": "Fix R139 repositor 9333→9334, R137 excluir controlador, new R265",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "segunda_ronda_cyn_2026-08-14",
+        "cambio_k2": "retiro",
+        "nota_cyn": "Cyn: \"La regla que toma la sola mencion de CAD/AutoCAD como criterio para decidir dibujante tecnico debe retirarse. [...] 3118.3 debe asignarse unicamente cuando las tareas reales tienen como eje elaborar dibujos, planos, modelos 2D/3D y documentacion tecnica.\""
       }
     },
     "R2_skills_diseno_grafico": {
@@ -71,11 +74,14 @@
         "esco_code": "2166.9"
       },
       "caso_gold_set": "1118018714 - Diseñador Gráfico E-commerce",
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "version_origen": "v53",
         "contexto": "ir controlador, new R265 controlador logístico→4321. Issues Diego.",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "segunda_ronda_cyn_2026-08-14",
+        "cambio_k2": "retiro",
+        "nota_cyn": "Cyn: \"La sola mencion de Photoshop, Canva, Illustrator o herramientas similares no alcanza para decidir 2166. Debe retirarse el disparador automatico por Photoshop [...] UX/UI/Product Designer correspondieron a 2513.3, Fotografo de moda a 3431.1 y Responsable de marketing a 1221.3.2.\""
       }
     },
     "R3_autoelevador": {
@@ -4574,7 +4580,7 @@
         "esco_label": "mozo de almacén/moza de almacén",
         "esco_code": "9333.8"
       },
-      "activa": true,
+      "activa": false,
       "_caso": "ID 1118092945 - tareas picking, cross docking en área logística",
       "_fecha": "2026-01-22",
       "nota": "Sprint 5 V31 + v53: excluir maquinista/apiladora + controlador logístico. Issue 0dde98f9.",
@@ -4582,7 +4588,10 @@
       "_linaje": {
         "version_origen": "v53",
         "contexto": "epositor 9333→9334, R137 excluir controlador, new R265 controlador logístico→432",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "segunda_ronda_cyn_2026-08-14",
+        "cambio_k2": "retiro",
+        "nota_cyn": "Cyn: \"La sola mencion de picking no alcanza [...] La regla automatica debe retirarse. Recepcion/control/almacenamiento -> 9333.8; picking/armado/despacho de pedidos -> 9333.8.1; carga/descarga/deposito general -> 9333.3.\""
       }
     },
     "R138_control_gestion": {
@@ -7186,11 +7195,14 @@
         "esco_label": "asesor de orientación profesional/asesora de orientación profesional",
         "esco_code": "2423.1"
       },
-      "activa": true,
+      "activa": false,
       "_fecha": "2026-02-20",
       "nota": "Sprint 7 V31: 10 analistas RRHH",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "segunda_ronda_cyn_2026-08-14",
+        "cambio_k2": "retiro",
+        "nota_cyn": "Cyn: \"agregar analista de RRHH como forma de entrada, sujeta a desambiguacion funcional, y no asociarla automaticamente al destino historico 2423 — asesor de orientacion profesional\". Retiro: el reemplazo es condicional (generalista->2423.3, seleccion->2423.6, nomina->4313.1) -> mini-hub RRHH fase 2, no plana."
       }
     },
     "R227_soporte_tecnico_it": {
@@ -11834,5 +11846,6 @@
   "_cambios_v518_k_t3a": "[FRENTE K T3A] auditoria_cyn_2026-08-12: 34 correcciones de destino (solo accion.esco_code/esco_label/forzar_isco; condiciones intactas).",
   "_cambios_v519_k_t3b": "[FRENTE K T3B] auditoria_cyn_2026-08-12: 34 correcciones de destino (solo accion.esco_code/esco_label/forzar_isco; condiciones intactas).",
   "_cambios_v520_k_t4a": "[FRENTE K T4A] auditoria_cyn_2026-08-12: reemplazo madre->hijas en 24 grupos completos con cola<300. Altas con condicion titulo-only COMPLETA del JSON auditado (reglas nuevas, no existian).",
-  "_cambios_v521_k_t4b": "[FRENTE K T4B] auditoria_cyn_2026-08-12: reemplazo madre->hijas en R17/R229/R237 (cola-0 deliberada confirmada). R14 y R226 en verificacion cola-diseno vs cola-perdida."
+  "_cambios_v521_k_t4b": "[FRENTE K T4B] auditoria_cyn_2026-08-12: reemplazo madre->hijas en R17/R229/R237 (cola-0 deliberada confirmada). R14 y R226 en verificacion cola-diseno vs cola-perdida.",
+  "_cambios_v522_k2_retiros": "[FRENTE K2] segunda_ronda_cyn_2026-08-14: retiro de R226 (destino 2423 error seguro; reemplazo condicional -> mini-hub RRHH fase 2) y de las 3 auxiliares R1/R2/R137 (el disparador por mencion de herramienta muere; destinos funcionales a insumos fase 2). Cohort 548 en exports/cohorts/."
 }
