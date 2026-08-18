@@ -59,7 +59,8 @@ def test_01_sin_contenidos_evaluables_no_forzar():
 def test_02_orden_de_D_es_precedencia():
     # D02 (orden 2) y D05 (orden 5) ambas satisfechas -> decide D02
     t = _traductor([HUB_A])
-    r = t.evaluar('Analista contable', _c(tareas='emitir facturas y liquidar nomina'))
+    # v0.3.3: +hit de inclusion para que el guard P2a no intervenga (intencion = orden)
+    r = t.evaluar('Analista contable', _c(tareas='analizar estados financieros; emitir facturas y liquidar nomina'))
     assert r['decide'] and r['regla_id'] == 'D02' and r['codigo_esco'] == '3000.1'
 
 
@@ -82,7 +83,7 @@ def test_05_excluye_corta_y_la_evaluacion_sigue():
                    excluye=['sin experiencia']),
                 _d('D02', 2, 'alguna', ['registrar operaciones'], '3000.1')])
     t = _traductor([hub])
-    r = t.evaluar('Analista contable', _c(tareas='registrar operaciones; puesto sin experiencia'))
+    r = t.evaluar('Analista contable', _c(tareas='analizar estados financieros; registrar operaciones; puesto sin experiencia'))
     # D01 satisfecha pero excluida -> sigue a D02, que decide
     assert r['decide'] and r['regla_id'] == 'D02' and r['codigo_esco'] == '3000.1'
 
@@ -90,10 +91,10 @@ def test_05_excluye_corta_y_la_evaluacion_sigue():
 def test_06_convergencia_multi_hub():
     # titulo activa A y B; D01 de A redirige a B; inclusion de B se acepta
     hub_a = _hub('1000.1', 1, ['analista contable bilingue'], ['analizar estados'],
-                 [_d('D01', 1, 'alguna', ['registrar operaciones'], '2000.1')])
+                 [_d('D01', 1, 'alguna', ['registrar operaciones', 'conciliaciones'], '2000.1')])
     hub_b = _hub('2000.1', 2, ['analista contable bilingue'], ['registrar operaciones'], [])
     t = _traductor([hub_a, hub_b])
-    r = t.evaluar('Analista contable bilingue', _c(tareas='registrar operaciones diarias'))
+    r = t.evaluar('Analista contable bilingue', _c(tareas='registrar operaciones diarias; conciliaciones'))
     assert r['decide'] and r['codigo_esco'] == '2000.1' and r['camino'] == 'convergencia'
 
 
@@ -152,7 +153,8 @@ def test_11_principalmente_empate_no_decide():
                 _d('D02', 2, 'alguna', ['emitir facturas'], '3000.1')])
     t = _traductor([hub])
     # empate 1-1 entre D01 y su hermana D02 -> D01 no decide; D02 (alguna) si
-    r = t.evaluar('Analista contable', _c(tareas='registrar operaciones; emitir facturas'))
+    # v0.3.3: +hit de inclusion (el guard no interviene; la intencion es el empate)
+    r = t.evaluar('Analista contable', _c(tareas='analizar estados financieros; registrar operaciones; emitir facturas'))
     assert r['decide'] and r['regla_id'] == 'D02'
 
 
@@ -239,3 +241,69 @@ def test_17_barra_compuesta_tambien():
     t = _traductor([hub])
     r = t.evaluar('Ejecutivo/a comercial B2B', _c(tareas='prospeccion de clientes'))
     assert r['decide'] and r['codigo_esco'] == '3000.1', r
+
+
+# ── v0.3.3 (laudos H_v033): P1 satelite-exacto + interaccion P1xP2 + guard P2a ──
+
+HUB_V33 = _hub('5000.1', 51, ['vendedor'],
+               ['venta de salon', 'asesorar', 'atencion al cliente', 'concretar ventas'],
+               [_d('D07', 7, 'alguna', ['manejo de caja', 'cobros', 'arqueo'], '2000.1'),
+                _d('D09', 9, 'alguna', ['liquidar sueldos', 'legajos'], '3000.1')])
+SATS = {'cajero': '2000.1', 'camarero': '4000.1'}
+
+
+def _t33(hubs, sats=SATS):
+    return TraductorContexto(hubs_data={'ocupaciones': hubs},
+                             hubs_activos=[h['codigo_esco'] for h in hubs],
+                             exclusiones_trigger=[], catalogo_codes=CATALOGO,
+                             satelites=sats)
+
+
+def _con_trigger_cajero(t):
+    t._triggers.append(('cajero', '5000.1'))
+    t._triggers.append(('camarero', '5000.1'))
+    return t
+
+
+def test_18_testigo1_satelite_confirmatorio_1_hit():
+    """«Cajero/a» + tareas mayormente venta + 1 mencion de caja: D07 (destino ==
+    satelite del titulo) redirige con 1 hit — confirmatorio."""
+    t = _con_trigger_cajero(_t33([HUB_V33]))
+    r = t.evaluar('Cajero/a', _c(
+        tareas='venta de salon; asesorar; atencion al cliente; concretar ventas; manejo de caja'))
+    assert r['decide'] and r['regla_id'] == 'D07' and r['codigo_esco'] == '2000.1', r
+
+
+def test_19_testigo2_satelite_d_contraria_necesita_2():
+    """«Cajero/a» + 1 mencion de RRHH (D hacia OTRO destino) -> NO redirige -> abstencion."""
+    t = _con_trigger_cajero(_t33([HUB_V33]))
+    r = t.evaluar('Cajero/a', _c(tareas='legajos del personal'))
+    assert not r['decide'] and r['telemetria'] == 'satelite_exacto_abstencion', r
+    assert r['satelite'] == '2000.1'
+
+
+def test_20_testigo3_satelite_sin_D_abstencion():
+    """«Camarero/a» sin D matcheada -> abstencion (la inclusion NO participa)."""
+    t = _con_trigger_cajero(_t33([HUB_V33]))
+    r = t.evaluar('Camarero/a', _c(tareas='atencion al cliente y concretar ventas'))
+    assert not r['decide'] and r['telemetria'] == 'satelite_exacto_abstencion', r
+    assert r['satelite'] == '4000.1'
+    incl = [x for h in r['traza']['hubs_activados'] for x in h['reglas'] if x['regla_id'] == 'inclusion']
+    assert incl and incl[0]['estado'] == 'satelite_exacto_no_participa'
+
+
+def test_21_testigo4_guard_1a0():
+    """«vendedor en calle» + 'cobros' (D caja 1 hit, inclusion 0) -> familia_sin_rama + tag."""
+    t = _t33([HUB_V33], sats={})
+    r = t.evaluar('vendedor en calle', _c(tareas='desarrollar catalogo; saldos y cobros'))
+    assert not r['decide'] and r['telemetria'] == 'familia_sin_rama', r
+    assert r['traza'].get('tag_guard_1a0') is True
+    d07 = [x for h in r['traza']['hubs_activados'] for x in h['reglas'] if x['regla_id'] == 'D07']
+    assert d07[0]['estado'] == 'guard_1a0_bloqueo'
+
+
+def test_22_testigo5_dos_terminos_distintos_redirige():
+    """El mismo caso con 2 terminos DISTINTOS de caja -> la D redirige legitimo."""
+    t = _t33([HUB_V33], sats={})
+    r = t.evaluar('vendedor en calle', _c(tareas='cobros diarios; arqueo de caja'))
+    assert r['decide'] and r['regla_id'] == 'D07' and r['codigo_esco'] == '2000.1', r

@@ -89,7 +89,11 @@ class TraductorContexto:
                  hubs_activos: Optional[List[str]] = None,
                  exclusiones_trigger: Optional[List[str]] = None,
                  catalogo_codes: Optional[set] = None,
-                 lexico: Optional[dict] = None):
+                 lexico: Optional[dict] = None,
+                 satelites: Optional[Dict[str, str]] = None):
+        # v0.3.3 (laudo P1): mapa label_normalizado -> codigo del satelite.
+        # Si el TITULO ENTERO == label de un satelite, rige el modo satelite-exacto.
+        self.satelites = satelites or {}
         if hubs_data is None:
             hubs_data = json.load(open(REPO / 'docs' / 'MOL_reglas_ESCO_88_ocupaciones_COMPLETO.json'))
         self.hubs = {o['codigo_esco']: o for o in hubs_data['ocupaciones']}
@@ -207,8 +211,21 @@ class TraductorContexto:
                         'estado': 'guarda_tecnologia'}
         return {'satisfecha': ok, 'matches': matches, 'estado': 'evaluada'}
 
+    def _conteo_matches(self, cond: dict, contenidos: Dict[str, str]) -> int:
+        """Terminos DISTINTOS de la condicion presentes en los contenidos (para guards)."""
+        terminos = (cond or {}).get('terminos') or []
+        if not terminos:
+            return 0
+        textos = {c: _norm(contenidos.get(c, '') or '') for c in CAMPOS_CONTENIDOS}
+        n = 0
+        for t in terminos:
+            if any(txt and _term_en_texto(t, txt) for txt in textos.values()):
+                n += 1
+        return n
+
     # ── paso 2: secuencia de un hub ──
-    def _evaluar_hub(self, codigo: str, contenidos: Dict[str, str]) -> dict:
+    def _evaluar_hub(self, codigo: str, contenidos: Dict[str, str],
+                     sat_code: Optional[str] = None) -> dict:
         hub = self.hubs[codigo]
         traza_reglas = []
         # LAUDO L1 (H_v032, 2026-08-14): para las D redirectoras el conjunto de
@@ -227,12 +244,18 @@ class TraductorContexto:
             comp = regla.get('compilacion') or {}
             return bool(regla.get('tecnologia_definitoria') or comp.get('tecnologia_definitoria'))
 
+        # guard P2a (laudo v0.3.3): hits distintos de la inclusion en ESTA oferta.
+        # "Inclusion en 0 hits" presupone inclusion COMPILADA: sin terminos de
+        # inclusion no hay cero, hay ausencia — el guard no aplica.
+        incl_compilada = bool((cond_inclusion or {}).get('terminos'))
+        n_incl = self._conteo_matches(cond_inclusion, contenidos) if incl_compilada else None
+
         # a) D en orden
         for r in sorted(hub.get('reglas_desambiguacion', []),
                         key=lambda x: int(x.get('orden', 999))):
             cond = r.get('condicion_operacional') or {}
             res = self._eval_condicion(cond, contenidos, hermanas_de(r.get('regla_id')), _tec_def(r),
-                                       inclusion_comparativa=cond_inclusion or None)
+                                       inclusion_comparativa=(cond_inclusion or None) if not sat_code else None)
             traza_reglas.append({'regla_id': r.get('regla_id'), 'estado': res['estado'],
                                  'satisfecha': res['satisfecha'],
                                  'matches': [{'termino': t, 'campo': c} for t, c in res['matches']]})
@@ -242,12 +265,29 @@ class TraductorContexto:
                     m = re.search(r'"codigo_esco":\s*"([\d.]+)"', dst.replace("'", '"'))
                     dst = {'codigo_esco': m.group(1)} if m else {}
                 cod_dst = dst.get('codigo_esco')
+                n_hits = len({t for t, _ in res['matches']})
+                if sat_code:
+                    # regla de interaccion P1xP2 (laudada): destino == satelite del
+                    # titulo -> redirect confirmatorio con 1 hit; OTRO destino ->
+                    # exige >=2 hits en terminos distintos.
+                    if cod_dst != sat_code and n_hits < 2:
+                        traza_reglas[-1]['estado'] = 'satelite_d_contraria_insuficiente'
+                        continue
+                else:
+                    # guard P2a: inclusion COMPILADA en 0 -> la D necesita >=2 terminos distintos
+                    if n_incl == 0 and n_hits < 2:
+                        traza_reglas[-1]['estado'] = 'guard_1a0_bloqueo'
+                        continue
                 if cod_dst and cod_dst in self.catalogo:
                     return {'propone': cod_dst, 'regla_id': r.get('regla_id'),
                             'camino': 'D_directa', 'traza': traza_reglas,
                             'prosa': r.get('condicion_prosa')}
                 traza_reglas[-1]['estado'] = 'destino_no_verificado'
-        # b) inclusión
+        # b) inclusión — en modo satelite-exacto NO participa (laudo P1)
+        if sat_code:
+            traza_reglas.append({'regla_id': 'inclusion', 'estado': 'satelite_exacto_no_participa',
+                                 'satisfecha': False, 'matches': []})
+            return {'propone': None, 'regla_id': None, 'camino': None, 'traza': traza_reglas}
         ri = hub.get('regla_inclusion') or {}
         cond = ri.get('condicion_operacional') or {}
         res = self._eval_condicion(cond, contenidos, hermanas_de(None), False)
@@ -268,13 +308,17 @@ class TraductorContexto:
                    telemetria, traza}
         """
         candidatos = self._hubs_candidatos(titulo_limpio)
-        traza = {'hubs_activados': [], 'titulo_norm': _norm(titulo_limpio)}
+        tn = _norm(titulo_limpio)
+        sat_code = self.satelites.get(tn)  # v0.3.3 P1: titulo ENTERO == label de satelite
+        traza = {'hubs_activados': [], 'titulo_norm': tn}
+        if sat_code:
+            traza['satelite_exacto'] = sat_code
         if not candidatos:
             return {'decide': False, 'telemetria': 'no_aplica', 'traza': traza}
 
         propuestas = []
         for hub_cod, trig in candidatos.items():
-            r = self._evaluar_hub(hub_cod, contenidos)
+            r = self._evaluar_hub(hub_cod, contenidos, sat_code=sat_code)
             traza['hubs_activados'].append({
                 'hub': hub_cod, 'hub_id': self.hubs[hub_cod]['id'],
                 'trigger': trig, 'propone': r['propone'],
@@ -284,7 +328,16 @@ class TraductorContexto:
                 propuestas.append((hub_cod, r))
 
         if not propuestas:
-            return {'decide': False, 'telemetria': 'familia_sin_rama', 'traza': traza}
+            if sat_code:
+                # laudo P1: abstencion con tag propio — el destino final aguas-abajo
+                # lo registra el shadow/pipeline (este modulo no conoce los canales).
+                return {'decide': False, 'telemetria': 'satelite_exacto_abstencion',
+                        'satelite': sat_code, 'traza': traza}
+            tele = 'familia_sin_rama'
+            if any(reg.get('estado') == 'guard_1a0_bloqueo'
+                   for h in traza['hubs_activados'] for reg in h['reglas']):
+                traza['tag_guard_1a0'] = True
+            return {'decide': False, 'telemetria': tele, 'traza': traza}
 
         destinos = {r['propone'] for _, r in propuestas}
         if len(destinos) == 1:
