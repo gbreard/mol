@@ -1,5 +1,5 @@
 {
-  "version": "5.22",
+  "version": "5.23",
   "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-08-14",
@@ -6712,18 +6712,47 @@
           "televentas",
           "operador de venta telefónica",
           "operadores de venta telefónica"
+        ],
+        "titulo_no_contiene_alguno": [
+          "lider de equipo",
+          "líder de equipo"
         ]
       },
       "accion": {
-        "forzar_isco": "4222",
-        "esco_label": "agente de centro de atención al cliente",
-        "esco_code": "4222.1"
+        "forzar_isco": "5244",
+        "esco_label": "teleoperador/teleoperadora",
+        "esco_code": "5244.1"
       },
       "activa": true,
       "_fecha": "2026-02-08",
       "_nota": "Sprint 2: gap cobertura - 4 ofertas sin match",
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k2": "4222.1 (agente de centro de atención al cliente)",
+        "auditoria": "segunda_ronda_cyn_2026-08-14",
+        "cambio_k2": "correccion_destino 4222.1 -> 5244.1 + exclusion lider de equipo (excepcion de Cyn, regla propia R210b)",
+        "nota_cyn": "Cyn: \"Corresponde teleoperador/a —5244.1— cuando el eje es realizar llamadas comerciales, prospectar, captar clientes [...]. 4222.1 no corresponde, porque la finalidad principal es vender y no atender consultas. Como excepcion, los avisos de Lider de equipo comercial corresponden a 1221.3.2.1 —director de ventas.\""
+      }
+    },
+    "R210b_lider_equipo_comercial": {
+      "nombre": "Líder de equipo comercial (venta telefónica)",
+      "prioridad": 1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "lider de equipo comercial",
+          "líder de equipo comercial"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1221",
+        "esco_label": "director de ventas/directora de ventas",
+        "esco_code": "1221.3.2.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "segunda_ronda_cyn_2026-08-14",
+        "cambio_k2": "alta_por_excepcion de R210 (distinguible por titulo)",
+        "nota_cyn": "Cyn: \"los avisos de Lider de equipo comercial corresponden a 1221.3.2.1 —director de ventas/directora de ventas—, ya que su funcion es liderar equipos y cumplir objetivos comerciales.\""
       }
     },
     "R211_soldador": {
@@ -7288,7 +7317,15 @@
           "ejecutivo comercial",
           "ejecutiva comercial",
           "ejecutivo de ventas",
-          "ejecutiva de ventas"
+          "ejecutiva de ventas",
+          "ejecutivo/a comercial",
+          "ejecutivo/a de ventas",
+          "ejecutivo/a de venta",
+          "ejecutiva de venta",
+          "ejecutivo de venta"
+        ],
+        "titulo_no_contiene_alguno": [
+          "seguros"
         ]
       },
       "accion": {
@@ -7298,9 +7335,10 @@
       },
       "activa": true,
       "_linaje": {
-        "auditoria": "auditoria_cyn_2026-08-12",
+        "auditoria": "segunda_ronda_cyn_2026-08-14",
         "cambio_k": "alta_por_division de R229_analista_comercial",
-        "nota_cyn": "Representante comercial según regla consolidada MOL."
+        "nota_cyn": "Cyn: \"Si. Agregar ejecutivo/a comercial y, en general, las variantes equivalentes con barra de genero a la division R229a. [...] corresponde ESCO 3322.1. Excluir los casos con ocupacion ESCO especifica por el objeto de la venta, como seguros patrimoniales, que corresponde a ESCO 3321.3.1.\"",
+        "cambio_k2": "variantes_barra + exclusion seguros (laudo L3: sin plana K-validada que capture \"ejecutivo de venta seguros patrimoniales\" -> exclusion simple, queda al semantico hasta hub fase 2)"
       }
     },
     "R230_asesor_comercial": {
@@ -11847,5 +11885,6 @@
   "_cambios_v519_k_t3b": "[FRENTE K T3B] auditoria_cyn_2026-08-12: 34 correcciones de destino (solo accion.esco_code/esco_label/forzar_isco; condiciones intactas).",
   "_cambios_v520_k_t4a": "[FRENTE K T4A] auditoria_cyn_2026-08-12: reemplazo madre->hijas en 24 grupos completos con cola<300. Altas con condicion titulo-only COMPLETA del JSON auditado (reglas nuevas, no existian).",
   "_cambios_v521_k_t4b": "[FRENTE K T4B] auditoria_cyn_2026-08-12: reemplazo madre->hijas en R17/R229/R237 (cola-0 deliberada confirmada). R14 y R226 en verificacion cola-diseno vs cola-perdida.",
-  "_cambios_v522_k2_retiros": "[FRENTE K2] segunda_ronda_cyn_2026-08-14: retiro de R226 (destino 2423 error seguro; reemplazo condicional -> mini-hub RRHH fase 2) y de las 3 auxiliares R1/R2/R137 (el disparador por mencion de herramienta muere; destinos funcionales a insumos fase 2). Cohort 548 en exports/cohorts/."
+  "_cambios_v522_k2_retiros": "[FRENTE K2] segunda_ronda_cyn_2026-08-14: retiro de R226 (destino 2423 error seguro; reemplazo condicional -> mini-hub RRHH fase 2) y de las 3 auxiliares R1/R2/R137 (el disparador por mencion de herramienta muere; destinos funcionales a insumos fase 2). Cohort 548 en exports/cohorts/.",
+  "_cambios_v523_k2_correcciones": "[FRENTE K2] segunda_ronda_cyn_2026-08-14: R229a +variantes con barra de genero + exclusion seguros (L3); R210 4222.1->5244.1 + exclusion lider; alta R210b lider de equipo comercial -> 1221.3.2.1."
 }
