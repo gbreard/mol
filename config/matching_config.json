@@ -1,4 +1,6 @@
 {
+  "traductor_activo": true,
+  "_traductor_activado": "2026-08-18 [FRENTE H P4] GO lectura (ii); flujo: diccionario -> L3 -> traductor -> reglas -> semantico",
   "version": "2.1.0",
   "descripcion": "Configuracion del pipeline de matching ESCO v2.1 con BGE-M3 semantico",
   "fecha_actualizacion": "2025-12-10",

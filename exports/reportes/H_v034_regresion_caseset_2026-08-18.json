@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Vendedor viajante",
+  "antes": "evidencia_mixta(None)",
+  "despues": "decidido(3322.1)",
+  "tag": "anclas/otro"
+ },
+ {
+  "titulo": "Vendedor Corporativo - Importante Corral",
+  "antes": "evidencia_mixta(None)",
+  "despues": "decidido(3322.1)",
+  "tag": "anclas/otro"
+ },
+ {
+  "titulo": "Vendedor/a de seguros part time San Juan",
+  "antes": "decidido(5223.4)",
+  "despues": "decidido(3322.1)",
+  "tag": "anclas/otro"
+ },
+ {
+  "titulo": "Vendedor técnico",
+  "antes": "decidido(5223.4)",
+  "despues": "decidido(3322.1)",
+  "tag": "anclas/otro"
+ },
+ {
+  "titulo": "Vendedora / Telemarketer",
+  "antes": "decidido(5244.1)",
+  "despues": "familia_sin_rama(None)",
+  "tag": "anclas/otro"
+ }
+]

@@ -24,7 +24,8 @@
         "restaurante|bar|gastronomia": "5131",
         "club|gimnasio|deportivo": "5169"
       },
-      "esco_uri": "http://data.europa.eu/esco/occupation/f7b04542-d8c7-42db-8475-e63b507cce82"
+      "esco_uri": "http://data.europa.eu/esco/occupation/f7b04542-d8c7-42db-8475-e63b507cce82",
+      "migra_cuando_hub_active": "4226.1"
     },
     "jefe de mantenimiento": {
       "isco_primario": "1219",
@@ -144,24 +145,6 @@
         }
       }
     },
-    "vendedor": {
-      "isco_primario": "5223",
-      "esco_label": "vendedor/vendedora",
-      "variantes": [
-        "vendedor",
-        "vendedora",
-        "sales"
-      ],
-      "nota": "IMPORTANTE: esco_label genérico para evitar que LIMIT 1 asigne 'piezas de repuesto'. Contextos derivan a ESCO específicos. 'asesor comercial' y 'ejecutivo comercial' se manejan via reglas de negocio (R40)",
-      "contextos": {
-        "mostrador|tienda|local": "5223",
-        "campo|exterior|viajante": "5243",
-        "telefono|call center|telemarketing": "5244",
-        "inmobiliario|propiedades": "3334",
-        "tecnico|especializado": "3322"
-      },
-      "esco_uri": "http://data.europa.eu/esco/occupation/9ba74e8a-c40c-4228-9998-eb3c7a5c11df"
-    },
     "administrativo": {
       "isco_primario": "4110",
       "esco_label": "empleado de oficina/empleada de oficina",
@@ -267,7 +250,8 @@
         "albañiles"
       ],
       "nota": "ESCO usa 'albañil' directo. El semántico fallaba consistentemente (7115, 2133, 9622).",
-      "esco_uri": "http://data.europa.eu/esco/occupation/05f321f8-055b-407d-bf19-e0ddabda56b7"
+      "esco_uri": "http://data.europa.eu/esco/occupation/05f321f8-055b-407d-bf19-e0ddabda56b7",
+      "migra_cuando_hub_active": "7112.1"
     },
     "plomero": {
       "isco_primario": "7126",
@@ -309,21 +293,6 @@
       "nota": "Argentina usa 'repositor', ESCO usa 'reponedor'. Merchandiser en contexto retail = repositor externo. Fuente: correcciones Cynthia 2026-04-08.",
       "esco_uri": "http://data.europa.eu/esco/occupation/d35f9e79-5778-43b4-8667-0e3ba1fcb19a"
     },
-    "ejecutivo comercial": {
-      "esco_code": "3322.1",
-      "isco_primario": "3322",
-      "esco_label": "representante comercial",
-      "variantes": [
-        "ejecutivo comercial",
-        "ejecutiva comercial",
-        "ejecutivo de cuentas",
-        "asesora comercial",
-        "asesor comercial B2B",
-        "sales executive"
-      ],
-      "nota": "En Argentina 'ejecutivo comercial' = representante comercial. Incluye variantes B2B y anglicismos. Fuente: correcciones Cynthia 2026-04-08.",
-      "esco_uri": "http://data.europa.eu/esco/occupation/14031d4a-6e99-442f-b4fe-18262b6432b2"
-    },
     "administrativo contable": {
       "isco_primario": "4311",
       "esco_label": "empleado de contabilidad/empleada de contabilidad",
@@ -345,7 +314,8 @@
         "cajera de comercio"
       ],
       "nota": "Variantes argentinas de cajero en comercio. Fuente: correcciones Cynthia 2026-04-08.",
-      "esco_uri": "http://data.europa.eu/esco/occupation/2b871272-bd61-4206-bd1a-0b96d7023098"
+      "esco_uri": "http://data.europa.eu/esco/occupation/2b871272-bd61-4206-bd1a-0b96d7023098",
+      "migra_cuando_hub_active": "5230.1"
     },
     "operario de deposito": {
       "isco_primario": "9333",
@@ -358,7 +328,8 @@
         "mozo de deposito"
       ],
       "nota": "En Argentina 'operario de depósito' es la denominación más frecuente. ESCO usa 'mozo de almacén'. Fuente: correcciones Cynthia 2026-04-08.",
-      "esco_uri": "http://data.europa.eu/esco/occupation/bea705fe-06ac-4147-b8e0-6e8ac1208d8f"
+      "esco_uri": "http://data.europa.eu/esco/occupation/bea705fe-06ac-4147-b8e0-6e8ac1208d8f",
+      "migra_cuando_hub_active": "9333.3"
     },
     "bachero": {
       "isco_primario": "9412",
@@ -940,7 +911,8 @@
       "_spec": "S1C-G3 GRUPO A (validacion Cyn 2026-06-24)",
       "_oid_origen": 9188918351,
       "_denom_cyn": "Telemarketer",
-      "_flag": "alto blast-radius (136) - denominacion estable validada por Cyn, vigilar regresion"
+      "_flag": "alto blast-radius (136) - denominacion estable validada por Cyn, vigilar regresion",
+      "migra_cuando_hub_active": "5244.1"
     },
     "trabajo de campo | captación de terrenos | indepen": {
       "esco_code": "3322.1",
@@ -1015,22 +987,8 @@
         "id_oferta": "1118010542",
         "correccion_fuente": "validacion_correcciones wizard (Cyn), Asesor Bienes Raices -> 3334.3"
       },
-      "nota": "Denominacion estable validada por Cyn. Blast exacto dry-run=3 (variante 'asesor inmobiliario' se excluyo por amplia: subia a 121)."
-    },
-    "vendedor viajante": {
-      "esco_code": "3322.1",
-      "isco_primario": "3322",
-      "esco_label": "representante comercial",
-      "esco_uri": "http://data.europa.eu/esco/occupation/14031d4a-6e99-442f-b4fe-18262b6432b2",
-      "variantes": [
-        "vendedor viajante",
-        "vendedora viajante"
-      ],
-      "_linaje": {
-        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
-        "fecha": "2026-07-13",
-        "correccion_fuente": "Word sesión 2026-07 — HOLD 141 DESTRABADO por decisión escrita de Cyn (Confirmar) — criterio: venta externa: visita clientes, recorre zonas de venta, ofrece productos o servicios, toma pedidos y mantiene una cartera comercial fuera del local (criterio textual completo en taxonomía, familia «vendedor»)"
-      }
+      "nota": "Denominacion estable validada por Cyn. Blast exacto dry-run=3 (variante 'asesor inmobiliario' se excluyo por amplia: subia a 121).",
+      "migra_cuando_hub_active": "3334.3"
     },
     "supervisor de obra": {
       "esco_code": "3123.1",
@@ -1045,7 +1003,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G16"
-      }
+      },
+      "migra_cuando_hub_active": "3123.1"
     },
     "coordinador de obra": {
       "esco_code": "1323.1",
@@ -1060,7 +1019,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
-      }
+      },
+      "migra_cuando_hub_active": "1323.1"
     },
     "ingeniero eléctrico": {
       "esco_code": "2151.1",
@@ -1109,7 +1069,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
-      }
+      },
+      "migra_cuando_hub_active": "1323.1"
     },
     "instalador de sistemas de seguridad": {
       "esco_code": "7422.5",
@@ -1170,7 +1131,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G14"
-      }
+      },
+      "migra_cuando_hub_active": "3511.1"
     },
     "ingeniero electricista": {
       "esco_code": "2151.1",
@@ -1199,7 +1161,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
-      }
+      },
+      "migra_cuando_hub_active": "1323.1"
     },
     "técnico en electrónica": {
       "esco_code": "3114.1",
@@ -1216,7 +1179,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G20"
-      }
+      },
+      "migra_cuando_hub_active": "3114.1"
     },
     "responsable de obra": {
       "esco_code": "1323.1",
@@ -1230,7 +1194,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
-      }
+      },
+      "migra_cuando_hub_active": "1323.1"
     },
     "técnico electromecánico de mantenimiento": {
       "esco_code": "7412.3",
@@ -1262,7 +1227,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G16"
-      }
+      },
+      "migra_cuando_hub_active": "3123.1"
     },
     "operador noc": {
       "esco_code": "3511.1",
@@ -1278,7 +1244,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G14"
-      }
+      },
+      "migra_cuando_hub_active": "3511.1"
     },
     "técnico de mantenimiento de equipos industriales": {
       "esco_code": "7412.3",
@@ -1342,7 +1309,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G2"
-      }
+      },
+      "migra_cuando_hub_active": "7412.3"
     },
     "técnico de ascensores": {
       "esco_code": "7412.7",
@@ -1395,21 +1363,6 @@
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G4"
       }
     },
-    "técnico oficial": {
-      "esco_code": "7119.4",
-      "isco_primario": "7119",
-      "esco_label": "especialista en trabajos verticales",
-      "esco_uri": "http://data.europa.eu/esco/occupation/ac7c07d1-bc11-4f19-bca5-e468e9b1a53c",
-      "variantes": [
-        "técnico oficial",
-        "tecnico oficial"
-      ],
-      "_linaje": {
-        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
-        "fecha": "2026-07-13",
-        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G5"
-      }
-    },
     "arquitecto dibujante": {
       "esco_code": "2161.1",
       "isco_primario": "2161",
@@ -1438,7 +1391,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G18"
-      }
+      },
+      "migra_cuando_hub_active": "2161.1"
     },
     "electricista de planta": {
       "esco_code": "7411.1.1.2",
@@ -1484,7 +1438,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G14"
-      }
+      },
+      "migra_cuando_hub_active": "3511.1"
     },
     "técnico de seguridad electrónica": {
       "esco_code": "7422.5",
@@ -1612,7 +1567,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
-      }
+      },
+      "migra_cuando_hub_active": "1323.1"
     },
     "peón de carga": {
       "esco_code": "9333.3",
@@ -1775,7 +1731,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G18"
-      }
+      },
+      "migra_cuando_hub_active": "2161.1"
     },
     "arquitecto responsable de obra": {
       "esco_code": "1323.1",
@@ -1790,7 +1747,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
-      }
+      },
+      "migra_cuando_hub_active": "1323.1"
     },
     "asistente administrativo de infraestructura": {
       "esco_code": "3343.1",
@@ -2173,7 +2131,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G1"
-      }
+      },
+      "migra_cuando_hub_active": "1323.1"
     },
     "ingeniero junior en electrónica": {
       "esco_code": "3114.1",
@@ -2371,7 +2330,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G14"
-      }
+      },
+      "migra_cuando_hub_active": "3511.1"
     },
     "operario de encuadernación": {
       "esco_code": "7323.1",
@@ -2813,7 +2773,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G14"
-      }
+      },
+      "migra_cuando_hub_active": "3511.1"
     },
     "técnico de producción electrónica": {
       "esco_code": "3114.1",
@@ -2830,7 +2791,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G20"
-      }
+      },
+      "migra_cuando_hub_active": "3114.1"
     },
     "técnico de puesta en marcha electrónica": {
       "esco_code": "3114.1",
@@ -2915,7 +2877,8 @@
         "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G14"
-      }
+      },
+      "migra_cuando_hub_active": "3511.1"
     },
     "técnico de verisure": {
       "esco_code": "7422.5",
@@ -3408,7 +3371,8 @@
         "confirmado_por": "Gerardo (decisión final HOLDs con muestra, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G6 — HOLD >=50 confirmado con muestra de 10 a la vista"
-      }
+      },
+      "migra_cuando_hub_active": "9333.3"
     },
     "operario de logística": {
       "esco_code": "9333.3",
@@ -3425,7 +3389,8 @@
         "confirmado_por": "Gerardo (decisión final HOLDs con muestra, 2026-07-13)",
         "fecha": "2026-07-13",
         "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G6 — HOLD >=50 confirmado con muestra de 10 a la vista (incluye caso con habilitación de autoelevador: requisito accesorio, no tarea principal)"
-      }
+      },
+      "migra_cuando_hub_active": "9333.3"
     }
   },
   "skills_mapeo": {
@@ -3498,5 +3463,43 @@
     ]
   },
   "fecha_modificacion": "2026-06-30",
-  "nota_v2": "v2.0: SPEC U-1 v3.1 con revisión de decisión sobre tecnico. URIs explícitas en gerente (7 ctx), operador (3 ctx, sin maquinas/CNC), tecnico (6 ctx, Opción 3). Eliminadas analista, operario (cobertura por reglas ≥98%). Eliminado contexto operador.maquinas/CNC (ISCO 8211 mal declarado). Label drift corregido: jefe de mantenimiento (1321→1219), analista de tesoreria, operador de atencion. Reportes: docs/diagnostico/2026-05-05_verificacion_overmatch_C2.md y baseline_canarios_post_F0.md."
+  "nota_v2": "v2.0: SPEC U-1 v3.1 con revisión de decisión sobre tecnico. URIs explícitas en gerente (7 ctx), operador (3 ctx, sin maquinas/CNC), tecnico (6 ctx, Opción 3). Eliminadas analista, operario (cobertura por reglas ≥98%). Eliminado contexto operador.maquinas/CNC (ISCO 8211 mal declarado). Label drift corregido: jefe de mantenimiento (1321→1219), analista de tesoreria, operador de atencion. Reportes: docs/diagnostico/2026-05-05_verificacion_overmatch_C2.md y baseline_canarios_post_F0.md.",
+  "_retiradas": {
+    "técnico oficial": {
+      "esco_code": "7119.4",
+      "isco_primario": "7119",
+      "esco_label": "especialista en trabajos verticales",
+      "esco_uri": "http://data.europa.eu/esco/occupation/ac7c07d1-bc11-4f19-bca5-e468e9b1a53c",
+      "variantes": [
+        "técnico oficial",
+        "tecnico oficial"
+      ],
+      "_linaje": {
+        "confirmado_por": "Gerardo (punto de control FRENTE B, 2026-07-13)",
+        "fecha": "2026-07-13",
+        "correccion_fuente": "REGLAS.xlsx Cyn Hoja 2 G5"
+      },
+      "_retirada_en": "2026-08-06",
+      "_motivo": "FRENTE H P0.a.3: denominación NO estable con target hiper-específico (7119.4 trabajos verticales); matcheó de más — evidencia FRENTE F P1 (oferta 8268897316, ayudante de mantenimiento clasificado como trabajos verticales)"
+    }
+  },
+  "_meta_retiros": {
+    "piloto_eje4_2026-08-18": {
+      "motivo": "[FRENTE H P4] retiro pactado de los 3 CONTEXTUAL _migra_en_piloto en el commit de activacion (viajaban con el piloto): su territorio lo decide el traductor (hubs 16/51) con desambiguacion por tareas.",
+      "entradas": {
+        "vendedor": {
+          "esco_code": null,
+          "variantes_n": 3
+        },
+        "ejecutivo comercial": {
+          "esco_code": "3322.1",
+          "variantes_n": 6
+        },
+        "vendedor viajante": {
+          "esco_code": "3322.1",
+          "variantes_n": 2
+        }
+      }
+    }
+  }
 }

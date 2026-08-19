@@ -78,11 +78,13 @@ def test_variante_mas_larga_gana(matcher):
     r2 = matcher._match_by_argentino_dict(
         {'titulo_limpio': 'vigilador/a nocturno', 'sector_empresa': ''})
     assert str(r2.get('isco_code'))[:4] == '5414'
-    # 'sales executive' -> representante comercial (3322), no vendedor (5223 via 'sales').
+    # [FRENTE H P4, 2026-08-18] 'sales executive' (variante de 'ejecutivo comercial')
+    # se retiro del diccionario con la activacion del piloto (_migra_en_piloto):
+    # ese titulo ahora lo decide el traductor (hub 16). El mecanismo
+    # variante-mas-larga-gana queda cubierto por los dos asserts de arriba.
     r3 = matcher._match_by_argentino_dict(
         {'titulo_limpio': 'sales executive', 'sector_empresa': ''})
-    assert str(r3.get('isco_code'))[:4] == '3322', \
-        f'sales executive debería ser 3322, fue {r3.get("isco_code")}'
+    assert r3 is None, 'sales executive ya no debe resolver por diccionario (retirada en piloto)'
 
 
 def test_lobos_no_cargada(matcher):

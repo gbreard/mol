@@ -217,6 +217,20 @@ class MatcherV3:
             if self.verbose:
                 print(f"[V3] WARN: No se pudieron cargar reglas: {e}")
 
+        # v3.6.0 [FRENTE H P4]: flag de activacion del traductor (piloto Eje 4).
+        # Con flag ON el orden es: diccionario -> reglas L3 (preceden, laudo L3)
+        # -> traductor (decide-cuando-decide) -> resto de reglas (subordinacion
+        # L4 estructural: solo corren si el traductor no decidio) -> semantico.
+        # Con flag OFF: flujo v3.5.x identico.
+        try:
+            _mc = json.load(open(Path(__file__).parent.parent / 'config' / 'matching_config.json'))
+            self.traductor_activo = bool(_mc.get('traductor_activo'))
+        except Exception:
+            self.traductor_activo = False
+        self._traductor = None  # lazy (solo se construye si el flag esta ON)
+        if self.verbose and self.traductor_activo:
+            print("[V3.6] Traductor de contexto ACTIVO (piloto 7 hubs)")
+
         # Cargar config sector-ISCO compatibilidad (v3.2.1)
         self._load_sector_isco_config()
 
@@ -762,8 +776,68 @@ class MatcherV3:
 
         # =====================================================================
         # PASO 3: EVALUAR REGLAS DE NEGOCIO (sin bypass, solo evaluación)
+        # v3.6.0 [FRENTE H P4] con traductor_activo el orden es:
+        #   diccionario -> reglas L3 (preceden) -> TRADUCTOR (decide-cuando-
+        #   decide) -> resto de reglas (subordinacion L4) -> semantico
         # =====================================================================
-        rule_info = self._evaluate_rule_only(oferta_nlp)
+        decision_piloto = None  # razon extra cuando el flag esta ON
+        if self.traductor_activo:
+            if dict_match:
+                # el diccionario decide primero en el piloto: no se evaluan reglas
+                rule_info = None
+                decision_piloto = 'diccionario_prioridad_piloto'
+            else:
+                rule_info = self._evaluate_rule_only(oferta_nlp, solo_l3=True)
+                if rule_info:
+                    decision_piloto = 'L3_precede_traductor'
+                else:
+                    tr = self._evaluar_traductor(oferta_nlp)
+                    if tr and tr.get('decide'):
+                        occ = self.code_to_occupation.get(tr['codigo_esco'])
+                        if occ:
+                            tele_tags = {
+                                'satelite': tr.get('satelite') or tr['traza'].get('satelite_exacto'),
+                                'tag_guard_1a0': tr['traza'].get('tag_guard_1a0'),
+                            }
+                            return MatchResult(
+                                status=MatchStatus.MATCHED.value,
+                                esco_uri=occ.get('uri', ''),
+                                esco_label=occ.get('esco_label') or occ.get('label', ''),
+                                isco_code=str(occ.get('isco_code', '')).lstrip("C"),
+                                score=0.97,
+                                metodo="arbol_contexto",
+                                skills_extracted=skills_extracted,
+                                skills_matched=semantic_skills_matched,
+                                alternativas=[],
+                                metadata={
+                                    "razon": f"traductor: hub {tr.get('hub_id')} regla {tr.get('regla_id')} ({tr.get('camino')})",
+                                    "isco_semantico": semantic_isco,
+                                    "score_semantico": semantic_score,
+                                    "isco_regla": None,
+                                    "regla_aplicada": None,
+                                    "dual_coinciden": None,
+                                    "decision_metodo": "arbol_contexto",
+                                    "decision_razon": f"piloto Eje 4: {tr.get('regla_id')}@hub{tr.get('hub_id')} camino={tr.get('camino')}",
+                                    "arbol_hub_id": tr.get('hub_id'),
+                                    "arbol_regla_id": tr.get('regla_id'),
+                                    "arbol_camino": tr.get('camino'),
+                                    "arbol_traza_json": json.dumps({**tr.get('traza', {}), **tele_tags}, ensure_ascii=False),
+                                    "skills_regla_json": json.dumps(skills_regla) if skills_regla else None,
+                                    "skills_semantico_json": json.dumps(skills_semantico) if skills_semantico else None,
+                                    "skills_regla_aplicada": skills_regla_aplicada,
+                                    "dual_coinciden_skills": dual_coinciden_skills,
+                                    "metodo_skills": metodo_skills,
+                                }
+                            )
+                    # el traductor no decidio (o destino fuera de catalogo):
+                    # resto de reglas = subordinacion estructural (L4)
+                    rule_info = self._evaluate_rule_only(oferta_nlp, solo_l3=False)
+                    if tr and tr.get('telemetria') == 'satelite_exacto_abstencion':
+                        decision_piloto = f"satelite_exacto_abstencion:{tr.get('satelite')}"
+                    elif tr and tr.get('traza', {}).get('tag_guard_1a0'):
+                        decision_piloto = 'guard_1a0_bloqueo'
+        else:
+            rule_info = self._evaluate_rule_only(oferta_nlp)
 
         regla_isco = None
         regla_aplicada = None
@@ -811,6 +885,9 @@ class MatcherV3:
             regla_critica=regla_critica,
             override_semantico=override_semantico
         )
+        # v3.6.0: telemetria del piloto (dict-prioridad / L3 / abstenciones con tag)
+        if decision_piloto:
+            decision_razon = f"{decision_razon} | piloto: {decision_piloto}"
 
         if self.verbose:
             print(f"[V3.5.1] Decisión: {decision_metodo} - {decision_razon}")
@@ -1078,7 +1155,52 @@ class MatcherV3:
 
         return None
 
-    def _evaluate_rule_only(self, oferta_nlp: Dict) -> Optional[Dict]:
+    def _get_traductor(self):
+        """v3.6.0: instancia lazy del evaluador de reglas de contexto (Eje 4).
+
+        Fuentes de runtime: hubs_activos.json (7 activos), lexico_traductor.json
+        (v0.3.4), traductor_exclusiones_trigger.json, y el piso de satelites
+        COMPILADO en config/traductor_piso_satelites.json (el grafo de exports/
+        es artefacto de analisis, no precondicion de runtime).
+        """
+        if self._traductor is None:
+            from traductor_contexto import TraductorContexto
+            base = Path(__file__).parent.parent / 'config'
+            excl = json.load(open(base / 'traductor_exclusiones_trigger.json'))['exclusiones']
+            piso = json.load(open(base / 'traductor_piso_satelites.json'))['triggers']
+            sats = {}
+            for t in piso:
+                sats.setdefault(t['trigger'], t['satelite'])
+            tc = TraductorContexto(exclusiones_trigger=excl, satelites=sats)
+            ya = {t for t, _ in tc._triggers}
+            tc._triggers += [(t['trigger'], t['hub']) for t in piso if t['trigger'] not in ya]
+            self._traductor = tc
+        return self._traductor
+
+    def _evaluar_traductor(self, oferta_nlp: Dict) -> Optional[Dict]:
+        """v3.6.0: evalua el traductor sobre la oferta. Devuelve el dict del
+        evaluador (decide/telemetria/traza) o None si no aplica/no decide."""
+        def _txt(campo):
+            v = oferta_nlp.get(campo)
+            if isinstance(v, list):
+                return ' '.join(str(x) for x in v)
+            return str(v or '')
+        titulo = oferta_nlp.get('titulo_limpio') or oferta_nlp.get('titulo', '')
+        contenidos = {
+            'tareas_explicitas': _txt('tareas_explicitas'),
+            'skills_habilidades': f"{_txt('skills_tecnicas_list')} {_txt('soft_skills_list')}",
+            'conocimientos': _txt('conocimientos_especificos_list'),
+            'tecnologias': _txt('tecnologias_list'),
+            'sistemas_herramientas': f"{_txt('sistemas_list')} {_txt('herramientas_list')}",
+        }
+        try:
+            return self._get_traductor().evaluar(titulo, contenidos)
+        except Exception as e:
+            if self.verbose:
+                print(f"[V3.6] WARN traductor: {e}")
+            return None
+
+    def _evaluate_rule_only(self, oferta_nlp: Dict, solo_l3: Optional[bool] = None) -> Optional[Dict]:
         """
         Evalúa si alguna regla de negocio aplica, sin hacer bypass.
 
@@ -1107,6 +1229,13 @@ class MatcherV3:
             if not isinstance(rule, dict):
                 continue
             if not rule.get("activa", False):
+                continue
+            # v3.6.0 (laudos L3/L4): pasada L3-solo (las especializadas preceden
+            # al traductor) o pasada resto (subordinacion estructural: corren
+            # solo cuando el traductor no decidio)
+            if solo_l3 is True and '_traductor_L3' not in rule:
+                continue
+            if solo_l3 is False and '_traductor_L3' in rule:
                 continue
 
             accion = rule.get("accion", {})
@@ -1522,6 +1651,11 @@ class MatcherV3:
             # v3.5.1: Decision inteligente
             decision_metodo = meta.get("decision_metodo")
             decision_razon = meta.get("decision_razon")
+            # v3.5.9: Observabilidad del traductor (metodo arbol_contexto, FRENTE H)
+            arbol_hub_id = meta.get("arbol_hub_id")
+            arbol_regla_id = meta.get("arbol_regla_id")
+            arbol_camino = meta.get("arbol_camino")
+            arbol_traza_json = meta.get("arbol_traza_json")
 
             self.conn.execute('''
                 INSERT OR REPLACE INTO ofertas_esco_matching (
@@ -1536,8 +1670,9 @@ class MatcherV3:
                     regla_aplicada, dual_coinciden, decision_metodo,
                     skills_regla_json, skills_semantico_json,
                     skills_regla_aplicada, dual_coinciden_skills,
-                    decision_razon
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    decision_razon,
+                    arbol_hub_id, arbol_regla_id, arbol_camino, arbol_traza_json
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 str(id_oferta),
                 result.esco_uri,
@@ -1566,7 +1701,12 @@ class MatcherV3:
                 skills_semantico_json,
                 skills_regla_aplicada,
                 dual_coinciden_skills,
-                decision_razon  # v3.5.1: Razon de la decision
+                decision_razon,  # v3.5.1: Razon de la decision
+                # v3.5.9: Observabilidad arbol_contexto (NULL salvo traductor)
+                arbol_hub_id,
+                arbol_regla_id,
+                arbol_camino,
+                arbol_traza_json
             ))
             # v3.3.3: Tracking histórico
             # Guardar en ofertas_matching_history (no sobrescribe)

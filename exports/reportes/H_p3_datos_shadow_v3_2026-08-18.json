@@ -1,0 +1,94 @@
+{
+ "stats7": {
+  "no_aplica_prefiltro": 71999,
+  "familia_sin_rama": 6340,
+  "decidido": 4051,
+  "no_aplica": 1392,
+  "satelite_exacto_abstencion": 656,
+  "evidencia_mixta": 86
+ },
+ "stats3": {
+  "no_aplica_prefiltro": 74841,
+  "familia_sin_rama": 6442,
+  "satelite_exacto_abstencion": 1567,
+  "decidido": 528,
+  "no_aplica": 1144,
+  "evidencia_mixta": 2
+ },
+ "resumen7": {
+  "cmp": {
+   "trad_no_fuerza_baseline_si": 6952,
+   "divergencia": 1830,
+   "convergente": 2093,
+   "ambos_no_fuerzan": 130,
+   "trad_fuerza_baseline_no": 128
+  },
+  "div_con_arista": 1206,
+  "div_r14": 341,
+  "div_l3": 137,
+  "sat_abstenciones": 656,
+  "sat_aterrizaje": {
+   "dict:administrativo": 232,
+   "regla:R31_mozo_camarero": 139,
+   "regla:R34_cajero": 69,
+   "regla:R220_asesor_inmobiliario": 61,
+   "regla:R24_gerente_ventas": 54,
+   "regla:R117_responsable_compras": 32,
+   "semantico:None": 15,
+   "regla:R112_analista_tesoreria": 9,
+   "regla:R69_analista_financiero": 9,
+   "regla:R171_logistica_entregas": 7,
+   "dict_contextual:gerente": 6,
+   "regla:R126_ejecutivo_seguros": 5,
+   "regla:R316_representante_ventas_industrial": 5,
+   "regla:R85a_supervisor_operaciones_retail": 4,
+   "regla:R38_comercio_exterior": 3
+  },
+  "guard_bloqueos_sin_decision": 693,
+  "por_hub": {
+   "3322.1": 1439,
+   "2411.1.1": 444,
+   "5223.4": 1382,
+   "4312.1": 97,
+   "2411.1": 292,
+   "3313.2": 334,
+   "1211.1.1": 63
+  }
+ },
+ "resumen3": {
+  "cmp": {
+   "trad_no_fuerza_baseline_si": 7547,
+   "convergente": 198,
+   "ambos_no_fuerzan": 464,
+   "divergencia": 315,
+   "trad_fuerza_baseline_no": 15
+  },
+  "div_con_arista": 148,
+  "div_r14": 48,
+  "div_l3": 21,
+  "sat_abstenciones": 1567,
+  "sat_aterrizaje": {
+   "regla:R111_vendedor_generico": 563,
+   "dict:administrativo": 340,
+   "regla:R14d_administrativo_contable": 220,
+   "semantico:None": 114,
+   "regla:R40_asesor_comercial": 98,
+   "regla:R34_cajero": 84,
+   "dict:administrativo contable": 60,
+   "regla:R71_encargado_local_retail": 17,
+   "regla:R117_responsable_compras": 12,
+   "regla:R69_analista_financiero": 11,
+   "regla:R38_comercio_exterior": 9,
+   "regla:R243_gerente_local": 8,
+   "dict:director de obra": 8,
+   "dict_contextual:gerente": 7,
+   "regla:R299_jefatura_compras": 6
+  },
+  "guard_bloqueos_sin_decision": 835,
+  "por_hub": {
+   "5223.7": 274,
+   "4110.1": 186,
+   "2411.1.9": 68
+  }
+ }
+}
