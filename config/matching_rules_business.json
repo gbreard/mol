@@ -1,5 +1,5 @@
 {
-  "version": "5.28",
+  "version": "5.29",
   "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-08-19",
@@ -3258,9 +3258,9 @@
         ]
       },
       "accion": {
-        "forzar_isco": "3322",
-        "esco_label": "representante comercial",
-        "esco_code": "3322.1"
+        "forzar_isco": "1221",
+        "esco_label": "director de ventas/directora de ventas",
+        "esco_code": "1221.3.2.1"
       },
       "caso_revision_100": "2172203 - Supervisor de Ventas",
       "activa": true,
@@ -3270,7 +3270,11 @@
       "_linaje": {
         "version_origen": "v14",
         "contexto": "Agregadas R83-R90: Calidad Servicios, Acondicionamiento, Supervisor Ops, S",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k3": "3322.1 (representante comercial)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "correccion_destino -> 1221.3.2.1 | conduccion de fuerza comercial, ya validado",
+        "nota_cyn": "R90 debe alinearse con la decisión ya validada para Supervisor/a de Ventas: 1221.3.2.1 director de ventas/directora de ventas. Los avisos de la muestra muestran conducción de la fuerza comercial —supervisar vendedores/pr"
       }
     },
     "R91_jefe_mantenimiento": {
@@ -4460,25 +4464,26 @@
           "medicina prepaga",
           "prepaga",
           "plan de salud",
-          "planes de salud",
-          "seguro de salud",
-          "cobertura médica",
-          "cobertura medica"
+          "planes de salud"
         ]
       },
       "accion": {
-        "forzar_isco": "3321",
-        "esco_label": "asesor de seguros/asesora de seguros",
-        "esco_code": "3321.3.1"
+        "forzar_isco": "3322",
+        "esco_label": "representante comercial",
+        "esco_code": "3322.1"
       },
       "caso_referencia": "2171880 - Vendedores de medicina prepaga",
       "activa": true,
       "_linaje": {
         "version_origen": "v28",
         "contexto": "leria hospitalaria, R132 medicina prepaga",
-        "requiere_revision": true
-      },
-      "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo L3, caso testigo). NOTA: no fue K-auditada (esta entre las 71 post-export); su destino 3321.3.1 esta validado INDIRECTAMENTE por la prosa K2 de Cyn (cita 3321.3.1 para venta de seguros). Confirmacion formal en la auditoria de las 71."
+        "requiere_revision": true,
+        "destino_anterior_k3": "3321.3.1 (asesor de seguros/asesora de seguros)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "correccion_destino -> 3322.1 | SALIDA de L3 (P3.4); quitar keywords de beneficio (falsos positivos que cita Cyn)",
+        "nota_cyn": "Para asesor/a o vendedor/a de medicina prepaga y planes de salud corresponde 3322.1 “representante comercial” cuando el núcleo sea prospectar, asesorar comercialmente, gestionar clientes y vender planes de salud. No corr",
+        "salida_L3": "[K3 P3.4] el caso testigo del laudo L3 resulto CORREGIDO por la fuente (3321.3.1 -> 3322.1): las divergencias que L3 neutralizaba eran el traductor acertando."
+      }
     },
     "R131b_hoteleria_sector_salud": {
       "nombre": "Hoteleria en sector Salud",
@@ -4494,14 +4499,18 @@
         ]
       },
       "accion": {
-        "forzar_isco": "5151",
-        "esco_label": "supervisor de servicio de limpieza/supervisora de servicio de limpieza",
-        "esco_code": "5151.2"
+        "forzar_isco": "1219",
+        "esco_label": "responsable de instalaciones",
+        "esco_code": "1219.1.1"
       },
       "caso_referencia": "2172389 - Tecnico/a de Hoteleria (sector Salud)",
       "activa": true,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k3": "5151.2 (supervisor de servicio de limpieza/supervisora de servicio de limpieza)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "correccion_destino -> 1219.1.1 | consolida con R131 (ya L3 en 1219.1.1)",
+        "nota_cyn": "R131 debe corregirse y consolidarse con R131b. El Diccionario MOL auditado ya validó “Responsable / Coordinador/a de Hotelería Hospitalaria / en Sector Salud” como 1219.1.1 responsable de instalaciones, no como 5151.2 su"
       }
     },
     "R133_steward_bachero": {
@@ -9180,9 +9189,9 @@
         ]
       },
       "accion": {
-        "forzar_isco": "3331",
-        "esco_label": "director de logística/directora de logística",
-        "esco_code": "3331.2"
+        "forzar_isco": "4323",
+        "esco_label": "coordinador de transporte/coordinadora de transporte",
+        "esco_code": "4323.9"
       },
       "activa": true,
       "_caso": "Issue Diego #1118019336 - Coordinador de operaciones almacenamiento.",
@@ -9191,7 +9200,11 @@
       "_linaje": {
         "training_pair_ids": [
           "TP-594"
-        ]
+        ],
+        "destino_anterior_k3": "3331.2 (director de logística/directora de logística)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "correccion_destino -> 4323.9 | decision ya validada (regla 11 del dicc consolidado); la condicion ya exige logistica",
+        "nota_cyn": "Corregir R274. El título “coordinador/a de operaciones” no permite asignar automáticamente 3331.2 director de logística/directora de logística. Cuando el núcleo real sea coordinar operaciones logísticas o de transporte —"
       }
     },
     "R275_operario_deposito_almacen": {
@@ -10289,9 +10302,9 @@
         ]
       },
       "accion": {
-        "forzar_isco": "3522",
-        "esco_label": "técnico en ingeniería de las telecomunicaciones/técnica en ingeniería de las telecomunicaciones",
-        "esco_code": "3522.1"
+        "forzar_isco": "7422",
+        "esco_label": "técnico de telecomunicación/técnica de telecomunicación",
+        "esco_code": "7422.7"
       },
       "activa": true,
       "_linaje": {
@@ -10301,7 +10314,11 @@
           "55a4ea26"
         ],
         "oferta_ejemplo": "5876264262 - Tecnico Torrista",
-        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md",
+        "destino_anterior_k3": "3522.1 (técnico en ingeniería de las telecomunicaciones/técnica en ingeniería de las telecomunicaciones)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "correccion_destino -> 7422.7 | default mas defendible de la familia 7422 (instalacion/mantenimiento telecom en altura); 7422.1/7422.6 quedan en precomp",
+        "nota_cyn": "La muestra está centrada en instalación, integración, alineación, mantenimiento y ajuste de antenas, enlaces y equipamiento de telecomunicaciones en altura. El destino actual 3522.1 técnico en ingeniería de las telecomun"
       },
       "_fecha": "2026-04-08"
     },
@@ -10319,9 +10336,9 @@
         ]
       },
       "accion": {
-        "forzar_isco": "7412",
-        "esco_label": "mecánico electricista/mecánica electricista",
-        "esco_code": "7412.3"
+        "forzar_isco": "3113",
+        "esco_label": "ingeniero técnico en electromecánica/ingeniera técnica en electromecánica",
+        "esco_code": "3113.1.2"
       },
       "activa": true,
       "_linaje": {
@@ -10330,7 +10347,11 @@
           "b88be3c6"
         ],
         "oferta_ejemplo": "1118088910 - Técnico Electromecánico",
-        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md",
+        "destino_anterior_k3": "7412.3 (mecánico electricista/mecánica electricista)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "correccion_destino -> 3113.1.2 | la denominacion tecnico electromecanico ES la consolidada 78; nucleo estandar",
+        "nota_cyn": "Corregir R305. La sola presencia de “electromecánico/a” en el título no alcanza para asignar 7412.3. Cuando se trata de técnico/a electromecánico/a y el núcleo comprende instalación, puesta en marcha, inspección, diagnós"
       },
       "_fecha": "2026-04-08"
     },
@@ -10453,8 +10474,8 @@
       },
       "accion": {
         "forzar_isco": "1324",
-        "esco_label": "director de distribución/directora de distribución",
-        "esco_code": "1324.3.1"
+        "esco_label": "jefe de almacén/jefa de almacén",
+        "esco_code": "1324.3.4"
       },
       "activa": true,
       "_linaje": {
@@ -10464,7 +10485,11 @@
           "11113c28"
         ],
         "oferta_ejemplo": "5770283730 - Responsable de Depósito",
-        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md",
+        "destino_anterior_k3": "1324.3.1 (director de distribución/directora de distribución)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "correccion_destino -> 1324.3.4 | deposito -> jefe de almacen",
+        "nota_cyn": "Para responsable, jefe o encargado de depósito que dirige la operación interna del almacén —recepción, almacenamiento, inventario, preparación y despacho— corresponde 1324.3.4 jefe de almacén/jefa de almacén. Reservar 13"
       },
       "_fecha": "2026-04-08"
     },
@@ -10821,16 +10846,20 @@
         "area_funcional_es": "Seguridad"
       },
       "accion": {
-        "forzar_isco": "3522",
-        "esco_label": "técnico en ingeniería de las telecomunicaciones/técnica en ingeniería de las telecomunicaciones",
-        "esco_code": "3522.1"
+        "forzar_isco": "7422",
+        "esco_label": "técnico en alarmas de seguridad/técnica en alarmas de seguridad",
+        "esco_code": "7422.5"
       },
       "activa": true,
       "_linaje": {
         "issue_ids": [],
         "oferta_ejemplo": "6064967568",
         "reporte": "reporte_correcciones_2026-04-08",
-        "nota": "Técnico instalador en Seguridad = alarmas, CCTV, control de accesos → 3522"
+        "nota": "Técnico instalador en Seguridad = alarmas, CCTV, control de accesos → 3522",
+        "destino_anterior_k3": "3522.1 (técnico en ingeniería de las telecomunicaciones/técnica en ingeniería de las telecomunicaciones)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "correccion_destino -> 7422.5 | ya validado en dicc auditado",
+        "nota_cyn": "Los avisos asociados a R321 muestran un núcleo consistente de instalación, configuración, programación, mantenimiento, diagnóstico y reparación de alarmas, CCTV, cámaras, control de accesos y otros sistemas electrónicos "
       }
     },
     "R322_mecanico_industrial": {
@@ -10945,13 +10974,17 @@
       },
       "accion": {
         "forzar_isco": "7422",
-        "esco_label": "técnico reparador de telefonía móvil/técnica reparadora de telefonía móvil",
-        "esco_code": "7422.3.1"
+        "esco_label": "técnico de telecomunicación/técnica de telecomunicación",
+        "esco_code": "7422.7"
       },
       "activa": true,
       "_linaje": {
         "oferta_ejemplo": "1118204622",
-        "autor_correccion": "Cynthia"
+        "autor_correccion": "Cynthia",
+        "destino_anterior_k3": "7422.3.1 (técnico reparador de telefonía móvil/técnica reparadora de telefonía móvil)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "correccion_destino -> 7422.7 | VSAT = telecom, no telefonia movil",
+        "nota_cyn": "El destino actual 7422.3.1 técnico reparador de telefonía móvil/técnica reparadora de telefonía móvil es incorrecto. Los dos avisos realizan instalación de terminales satelitales VSAT, es decir, instalación técnica de in"
       }
     },
     "R326_tecnico_refrigeracion": {
@@ -11076,14 +11109,18 @@
       },
       "accion": {
         "forzar_isco": "5223",
-        "esco_label": "vendedor especializado en pescado y mariscos/vendedora especializada en pescado y mariscos",
-        "esco_code": "5223.7.16"
+        "esco_label": "vendedor especializado en carnicería y productos cárnicos/vendedora especializada en carnicería y productos cárnicos",
+        "esco_code": "5223.7.23"
       },
       "activa": true,
       "_linaje": {
         "oferta_ejemplo": "6519792909",
         "autor_correccion": "Cynthia",
-        "nota": "Cynthia indica ISCO 5223 para fiambrero. ESCO no tiene label específico de fiambrero; el más cercano es vendedor especializado en productos alimenticios."
+        "nota": "Cynthia indica ISCO 5223 para fiambrero. ESCO no tiene label específico de fiambrero; el más cercano es vendedor especializado en productos alimenticios.",
+        "destino_anterior_k3": "5223.7.16 (vendedor especializado en pescado y mariscos/vendedora especializada en pescado y mariscos)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "correccion_destino -> 5223.7.23 | carniceria/fiambres, consolidada vigente",
+        "nota_cyn": "El destino actual 5223.7.16 vendedor especializado en pescado y mariscos es incorrecto. Los avisos asociados muestran atención al público, despacho, corte y fraccionado de fiambres y quesos, manejo de cortadora y prepara"
       }
     },
     "R331_acompanante_integracion_escolar": {
@@ -11156,13 +11193,17 @@
       },
       "accion": {
         "forzar_isco": "9112",
-        "esco_label": "operario de limpieza de aseos/operaria de limpieza de aseos",
-        "esco_code": "9112.5"
+        "esco_label": "operario de limpieza de edificios/operaria de limpieza de edificios",
+        "esco_code": "9112.2"
       },
       "activa": true,
       "_linaje": {
         "oferta_ejemplo": "8740015957",
-        "autor_correccion": "Cynthia"
+        "autor_correccion": "Cynthia",
+        "destino_anterior_k3": "9112.5 (operario de limpieza de aseos/operaria de limpieza de aseos)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "correccion_destino -> 9112.2 | general, no aseos",
+        "nota_cyn": "El destino actual 9112.5 operario de limpieza de aseos es demasiado específico para una regla que captura personal de limpieza general. En la muestra predominan limpieza de instalaciones, oficinas, salones, cocinas y esp"
       }
     },
     "R334_ninera": {
@@ -11206,15 +11247,19 @@
         ]
       },
       "accion": {
-        "forzar_isco": "5244",
-        "esco_label": "teleoperador/teleoperadora",
-        "esco_code": "5244.1"
+        "forzar_isco": "5243",
+        "esco_label": "vendedor a domicilio",
+        "esco_code": "5243.1"
       },
       "activa": true,
       "_linaje": {
         "oferta_ejemplo": "9192373935",
         "autor_correccion": "Cynthia",
-        "nota": "Cynthia asigna 5244 (teleoperador) al promotor vía pública como ocupación ESCO más cercana en el esquema MOL."
+        "nota": "Cynthia asigna 5244 (teleoperador) al promotor vía pública como ocupación ESCO más cercana en el esquema MOL.",
+        "destino_anterior_k3": "5244.1 (teleoperador/teleoperadora)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "correccion_destino -> 5243.1 | captacion presencial = vendedor a domicilio; 3322.1 solo con cartera (cola al arbol/semantico)",
+        "nota_cyn": "El destino actual 5244.1 teleoperador/teleoperadora es incorrecto: los avisos no muestran venta telefónica, sino captación/prospección presencial y gestión del funnel comercial. Si la actividad consiste en captar y vende"
       }
     },
     "R336_analista_seguridad_higiene": {
@@ -11238,14 +11283,18 @@
       },
       "accion": {
         "forzar_isco": "3257",
-        "esco_label": "inspector de seguridad y salud en el trabajo/inspectora de seguridad y salud en el trabajo",
-        "esco_code": "3257.5"
+        "esco_label": "inspector de seguridad e higiene en el trabajo/inspectora de seguridad e higiene en el trabajo",
+        "esco_code": "3257.7"
       },
       "activa": true,
       "_linaje": {
         "oferta_ejemplo": "6057883738",
         "autor_correccion": "Cynthia",
-        "nota": "Sobrescribe R107 (2263) cuando el título indica nivel técnico, no profesional."
+        "nota": "Sobrescribe R107 (2263) cuando el título indica nivel técnico, no profesional.",
+        "destino_anterior_k3": "3257.5 (inspector de seguridad y salud en el trabajo/inspectora de seguridad y salud en el trabajo)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "correccion_destino -> 3257.7 | decision ya validada",
+        "nota_cyn": "La muestra es funcionalmente consistente con inspección y prevención de riesgos laborales: recorridas y relevamientos en campo, identificación de peligros, evaluación de riesgos, mediciones ambientales, control del cumpl"
       }
     },
     "R337_psicologo_laboral_educativo": {
@@ -11340,15 +11389,19 @@
         ]
       },
       "accion": {
-        "forzar_isco": "1323",
-        "esco_label": "director de obra/directora de obra",
-        "esco_code": "1323.1"
+        "forzar_isco": "3123",
+        "esco_label": "supervisor general de construcción/supervisora general de construcción",
+        "esco_code": "3123.1"
       },
       "activa": true,
       "_linaje": {
         "oferta_ejemplo": "7110596797",
         "autor_correccion": "Cynthia",
-        "nota": "Sobrescribe R79 (2141 ingeniero industrial) cuando título indica jefatura operativa de obra."
+        "nota": "Sobrescribe R79 (2141 ingeniero industrial) cuando título indica jefatura operativa de obra.",
+        "destino_anterior_k3": "1323.1 (director de obra/directora de obra)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "correccion_destino -> 3123.1 | supervision cotidiana predomina en la muestra; 1323.1 reservado (precompilacion)",
+        "nota_cyn": "Los avisos muestran planificación operativa de obra, asignación de personal, maquinaria y turnos, seguimiento del avance y coordinación con el cliente. Eso no alcanza siempre para 1323.1 director de obra/directora de obr"
       }
     },
     "R341_vigilador_supervisor_produccion": {
@@ -11476,18 +11529,26 @@
           "operadora de cnc",
           "operario de máquinas cnc",
           "operador de máquinas cnc"
+        ],
+        "titulo_no_contiene_alguno": [
+          "programador",
+          "programadora"
         ]
       },
       "accion": {
         "forzar_isco": "7223",
-        "esco_label": "tornero/ tornera",
-        "esco_code": "7223.7"
+        "esco_label": "operador de máquinas de control numérico/operadora de máquinas de control numérico",
+        "esco_code": "7223.4"
       },
       "activa": true,
       "_linaje": {
         "oferta_ejemplo": "7942527874",
         "autor_correccion": "Cynthia+Diego",
-        "nota": "Ambos validadores confirman 7223 para operario CNC. Evita que caiga en 8160 (prensado fruta) por default."
+        "nota": "Ambos validadores confirman 7223 para operario CNC. Evita que caiga en 8160 (prensado fruta) por default.",
+        "destino_anterior_k3": "7223.7 (tornero/ tornera)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "correccion_destino -> 7223.4 | CONVERGE con R128a/b (T4a); operarios -> 7223.4, programador lo toma R128a",
+        "nota_cyn": "El destino actual 7223.7 tornero/tornera no corresponde como regla general para “operario/operador CNC”. El Diccionario MOL vigente ya validó 7223.4 para Operario/a u Operador/a CNC y 2514.4 para Programador/a CNC. En la"
       }
     },
     "R346_operario_corte_laser": {
@@ -11806,19 +11867,25 @@
         ],
         "titulo_no_contiene_alguno": [
           "chofer",
-          "conductor"
+          "conductor",
+          "produccion",
+          "producción"
         ]
       },
       "accion": {
         "forzar_isco": "9333",
-        "esco_label": "mozo de almacén/moza de almacén",
-        "esco_code": "9333.8"
+        "esco_label": "operario de logística de almacén/operaria de logística de almacén",
+        "esco_code": "9333.3"
       },
       "activa": true,
       "_linaje": {
         "spec": "SPEC N",
         "fecha": "2026-04-26",
-        "motivo": "Issue Diego: ofertas operarios carga/descarga mal codificadas a 8160.35"
+        "motivo": "Issue Diego: ofertas operarios carga/descarga mal codificadas a 8160.35",
+        "destino_anterior_k3": "9333.8 (mozo de almacén/moza de almacén)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "correccion_destino -> 9333.3 | codigo de la consolidada 75; exclusion de titulo produccion (el caso Operarios-de-produccion de la muestra)",
+        "nota_cyn": "Corregir R353. Para operario/a de logística, depósito o carga y descarga con núcleo de recepción, carga, descarga, traslado, almacenamiento, preparación de pedidos y movimiento operativo de mercadería corresponde “operar"
       }
     },
     "R354_operario_lavadero": {
@@ -12038,5 +12105,6 @@
   "_cambios_v525_h_l3_completo": "[FRENTE H PRE-v0.3.3] Registro L3 COMPLETO en dos pasadas: +15 validadas-IGUAL del K (sin linaje) + correccion del criterio de profundidad (hermano-fino = >= MINIMO de hubs de la familia, no maximo — R69 2413.1 entraba). Total _traductor_L3: 32.",
   "_cambios_v526_h_a3_grafo": "[FRENTE H v0.3.4] laudo A3: registro L3 extendido POR GRAFO (+31: conectadas por arista D al vecindario, K-validadas). Las 32 previas = subcriterio prefijo. TOTAL _traductor_L3: 63.",
   "_cambios_v527_h_p4_subordinacion": "[FRENTE H P4] L4: 9 reglas marcadas subordinada_al_traductor (CUBIERTA del M1 con destino en el territorio de los 7 hubs activos + R14 pactada; las L3 quedan FUERA — preceden). Ninguna se retira.",
-  "_cambios_v528_k3_t1": "[FRENTE K3 T1] tercera_ronda_cyn_2026-08-19: 14 retiros (vol 160; cohort en exports/cohorts/) + 8 MANTENER marcadas K-validadas."
+  "_cambios_v528_k3_t1": "[FRENTE K3 T1] tercera_ronda_cyn_2026-08-19: 14 retiros (vol 160; cohort en exports/cohorts/) + 8 MANTENER marcadas K-validadas.",
+  "_cambios_v529_k3_t2": "[FRENTE K3 T2] tercera_ronda_cyn_2026-08-19: 16 correcciones destino-simple (incl. R132 con SALIDA del registro L3)."
 }
