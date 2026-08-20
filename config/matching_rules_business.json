@@ -1,5 +1,5 @@
 {
-  "version": "5.31",
+  "version": "5.32",
   "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-08-19",
@@ -10752,11 +10752,21 @@
       "prioridad": -1,
       "condicion": {
         "titulo_contiene_alguno": [
-          "logistica",
-          "logística"
+          "encargado de logística",
+          "encargado logística",
+          "encargado de logistica",
+          "encargado logistica",
+          "jefe de logística",
+          "jefe logística",
+          "jefe de logistica",
+          "jefe logistica"
         ],
         "titulo_no_contiene": [
           "compras"
+        ],
+        "titulo_contiene_alguno_2": [
+          "logistica",
+          "logística"
         ],
         "titulo_no_contiene_alguno": [
           "transporte",
@@ -10777,7 +10787,8 @@
         "destino_anterior_k3": "1324.3.4 (jefe de almacén/jefa de almacén)",
         "auditoria": "tercera_ronda_cyn_2026-08-19",
         "cambio_k3": "tratamiento (c): split por titulo: logistica integral -> 1324.3; deposito -> 1324.3.4; transporte/flota -> cola (4323.9 en precompilacion)",
-        "nota_cyn": "“Encargado/Jefe de logística” no debe asignarse automáticamente a 1324.3.4 jefe de almacén/jefa de almacén. La muestra mezcla conducción integral de logística y distribución, gestión específica de depósito y coordinación"
+        "nota_cyn": "“Encargado/Jefe de logística” no debe asignarse automáticamente a 1324.3.4 jefe de almacén/jefa de almacén. La muestra mezcla conducción integral de logística y distribución, gestión específica de depósito y coordinación",
+        "fix_split_k3": "correccion del aplicador: el split habia REEMPLAZADO el trigger original por la senal (+4.530 capturas fantasma — atrapado por la replica del baseline); ahora trigger original AND senal en titulo_contiene_alguno_2."
       }
     },
     "R313b_encargado_deposito": {
@@ -10785,10 +10796,27 @@
       "prioridad": -1,
       "condicion": {
         "titulo_contiene_alguno": [
+          "encargado de logística",
+          "encargado logística",
+          "encargado de logistica",
+          "encargado logistica",
+          "jefe de logística",
+          "jefe logística",
+          "jefe de logistica",
+          "jefe logistica"
+        ],
+        "titulo_no_contiene": [
+          "compras"
+        ],
+        "titulo_contiene_alguno_2": [
           "deposito",
           "depósito",
           "almacen",
           "almacén"
+        ],
+        "titulo_no_contiene_alguno": [
+          "transporte",
+          "flota"
         ]
       },
       "accion": {
@@ -10800,7 +10828,8 @@
       "_linaje": {
         "auditoria": "tercera_ronda_cyn_2026-08-19",
         "cambio_k3": "alta_por_split de R313_encargado_logistica",
-        "nota_cyn": "“Encargado/Jefe de logística” no debe asignarse automáticamente a 1324.3.4 jefe de almacén/jefa de almacén. La muestra mezcla conducción integral de logística y distribución, gestión específica de depósito y coordinación"
+        "nota_cyn": "“Encargado/Jefe de logística” no debe asignarse automáticamente a 1324.3.4 jefe de almacén/jefa de almacén. La muestra mezcla conducción integral de logística y distribución, gestión específica de depósito y coordinación",
+        "fix_split_k3": "correccion del aplicador: el split habia REEMPLAZADO el trigger original por la senal (+4.530 capturas fantasma — atrapado por la replica del baseline); ahora trigger original AND senal en titulo_contiene_alguno_2."
       }
     },
     "R314_advisor_software": {
@@ -11789,15 +11818,15 @@
           "assistant",
           "asistente"
         ],
-        "titulo_contiene_alguno": [
-          "it",
-          "ti ",
-          "tic",
+        "titulo_contiene_alguno_2": [
           "sistemas",
           "software",
           "tecnologia",
           "tecnología",
-          "sap"
+          "tic",
+          "sap",
+          "informatica",
+          "informática"
         ]
       },
       "accion": {
@@ -11812,22 +11841,26 @@
         "nota": "Cynthia indica 1330 (TIC) en vez de 1213. Prioridad 0 para sobrescribir R19_project_manager.",
         "auditoria": "tercera_ronda_cyn_2026-08-19",
         "cambio_k3": "tratamiento (c): split por titulo: con senal IT -> 1330.7; sin senal -> 1219.6 (R344b catch-all)",
-        "nota_cyn": "La regla está sobrecapturando porque asigna automáticamente 1330.7, que es específico de proyectos TIC, a cualquier “Project Manager/Gerente/Jefe de proyecto”. El Diccionario MOL ya validó 1219.6 gestor de proyectos/gest"
+        "nota_cyn": "La regla está sobrecapturando porque asigna automáticamente 1330.7, que es específico de proyectos TIC, a cualquier “Project Manager/Gerente/Jefe de proyecto”. El Diccionario MOL ya validó 1219.6 gestor de proyectos/gest",
+        "fix_split_k3": "correccion del aplicador: el split habia REEMPLAZADO el trigger original por la senal (+4.530 capturas fantasma — atrapado por la replica del baseline); ahora trigger original AND senal en titulo_contiene_alguno_2."
       }
     },
     "R344b_pm_generico": {
       "nombre": "R344b pm generico",
       "prioridad": 0,
       "condicion": {
-        "titulo_contiene_alguno": [
-          "it",
-          "ti ",
-          "tic",
-          "sistemas",
-          "software",
-          "tecnologia",
-          "tecnología",
-          "sap"
+        "titulo_original_contiene_alguno": [
+          "project manager",
+          "gerente de proyectos",
+          "gerenta de proyectos",
+          "jefe de proyecto",
+          "jefa de proyecto",
+          "pm senior",
+          "pm junior"
+        ],
+        "titulo_no_contiene_alguno": [
+          "assistant",
+          "asistente"
         ]
       },
       "accion": {
@@ -11839,7 +11872,8 @@
       "_linaje": {
         "auditoria": "tercera_ronda_cyn_2026-08-19",
         "cambio_k3": "alta_por_split de R344_project_manager",
-        "nota_cyn": "La regla está sobrecapturando porque asigna automáticamente 1330.7, que es específico de proyectos TIC, a cualquier “Project Manager/Gerente/Jefe de proyecto”. El Diccionario MOL ya validó 1219.6 gestor de proyectos/gest"
+        "nota_cyn": "La regla está sobrecapturando porque asigna automáticamente 1330.7, que es específico de proyectos TIC, a cualquier “Project Manager/Gerente/Jefe de proyecto”. El Diccionario MOL ya validó 1219.6 gestor de proyectos/gest",
+        "fix_split_k3": "correccion del aplicador: el split habia REEMPLAZADO el trigger original por la senal (+4.530 capturas fantasma — atrapado por la replica del baseline); ahora trigger original AND senal en titulo_contiene_alguno_2."
       }
     },
     "R345_operario_cnc": {
@@ -12516,5 +12550,6 @@
   "_cambios_v528_k3_t1": "[FRENTE K3 T1] tercera_ronda_cyn_2026-08-19: 14 retiros (vol 160; cohort en exports/cohorts/) + 8 MANTENER marcadas K-validadas.",
   "_cambios_v529_k3_t2": "[FRENTE K3 T2] tercera_ronda_cyn_2026-08-19: 16 correcciones destino-simple (incl. R132 con SALIDA del registro L3).",
   "_cambios_v530_k3_t3": "[FRENTE K3 T3] tercera_ronda_cyn_2026-08-19: 19 (b) restricciones patron-R137/exclusiones + 14 (c) defaults+colas+splits (5 altas: R95a/R66b/R344b/R313b/R354b; R95 retirada post-split). Claves ocupadas sin restriccion-tareas (solo exclusiones): ['R349_operario_envasado', 'R348_operario_plastico_soplado', 'R356_operario_mantenimiento', 'R358_despacho_metalurgico_grua'].",
-  "_cambios_v531_k3_p4": "[FRENTE K3 P4] R15 restringida (anexo v4 r4)."
+  "_cambios_v531_k3_p4": "[FRENTE K3 P4] R15 restringida (anexo v4 r4).",
+  "_cambios_v532_k3_fix_split": "[FRENTE K3] fix del split R344/R313: trigger original AND senal."
 }
