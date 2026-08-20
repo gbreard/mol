@@ -1,8 +1,8 @@
 {
-  "version": "5.27",
+  "version": "5.28",
   "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
-  "fecha_actualizacion": "2026-08-14",
+  "fecha_actualizacion": "2026-08-19",
   "_cambios_v53": "Fix R139 repositor 9333→9334, R137 excluir controlador, new R265 controlador logístico→4321. Issues Diego.",
   "_cambios_v51": "Sprint 5 V31: R218 Pintor vehiculos->7132, R219 Vendedor vehiculos->5223, R220 Asesor inmobiliario->3334, R221 Analista calidad general->7543. Fix R65 1324->1420, R83 refinada solo servicios. R222 Maquinista apiladora->8344, R137 excluye maquinista.",
   "_cambios_v43": "R181-R182: Personal mantenimiento -> 7233, Tecnico electromedicina -> 3211",
@@ -472,7 +472,10 @@
       "fecha_creacion": "2026-01-12",
       "activa": true,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "MANTENER — K-validada por la tercera ronda",
+        "nota_cyn": "Los dos avisos asociados realizan auditoría médica efectiva: evaluación de pertinencia y uso de prestaciones, auditoría de prácticas, medicamentos, prótesis e internaciones y monitoreo de desvíos prestacionales. Además, "
       }
     },
     "R14c_auditor_medico_alt": {
@@ -493,7 +496,10 @@
       "fecha_creacion": "2026-01-12",
       "activa": true,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "MANTENER — K-validada por la tercera ronda",
+        "nota_cyn": "R14c no tiene avisos asociados en este paquete que aporten evidencia nueva para modificarla. Además, el Diccionario MOL auditado ya consolidó R14c junto con R14b, R62 y R113 bajo 2212.1 médico especialista/médica especia"
       }
     },
     "R14d_administrativo_contable": {
@@ -3982,7 +3988,10 @@
       "fix_validacion_humana": "2026-01-16",
       "activa": true,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "MANTENER — K-validada por la tercera ronda",
+        "nota_cyn": "R113 no tiene ofertas asociadas en este paquete, por lo que no hay evidencia nueva que justifique modificarla. Además, el Diccionario MOL final reconstruido y auditado consolidó expresamente R113 junto con R62, R14b y R1"
       }
     },
     "R114_analista_calidad_lab": {
@@ -6127,7 +6136,10 @@
       "_nota": "v4.4: Kinesiólogo → fisioterapeuta (término argentino)",
       "activa": true,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "MANTENER — K-validada por la tercera ronda",
+        "nota_cyn": "Mantener 2264.2 para kinesiólogo/a y fisioterapeuta cuando el núcleo sea evaluar, tratar y rehabilitar pacientes mediante intervenciones kinésicas/fisioterapéuticas. Excluir únicamente puestos cuyo núcleo sea otra ocupac"
       }
     },
     "R187_auxiliar_farmacia": {
@@ -10401,7 +10413,7 @@
         "esco_label": "fabricante de artículos textiles confeccionados",
         "esco_code": "7533.4"
       },
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "issue_ids": [
           "680f62a5",
@@ -10409,7 +10421,10 @@
           "c18012a3"
         ],
         "oferta_ejemplo": "5898997970 - Ayudante de taller. lonas y toldos",
-        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "retiro (sin destino ESCO unico sostenible)",
+        "nota_cyn": "La condición basada solo en “lona/lonas/toldo/toldos” sobrecaptura ocupaciones diferentes. La muestra incluye confección/soldado de lonas, instalación de lonas y vinilos, conducción de camión y supervisión de producción."
       },
       "_fecha": "2026-04-08"
     },
@@ -10473,7 +10488,7 @@
         "esco_label": "responsable de eventos",
         "esco_code": "3332.2.1"
       },
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "issue_ids": [
           "6c977c33",
@@ -10481,7 +10496,10 @@
           "fb749f54"
         ],
         "oferta_ejemplo": "5784938217 - auxiliar de promociones y marketing",
-        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "retiro (sin destino ESCO unico sostenible)",
+        "nota_cyn": "La regla mezcla funciones distintas bajo “promotor/promotora”: apoyo y ejecución de acciones de marketing, promoción presencial en vía pública y organización/representación en eventos. El destino 3332.2.1 responsable de "
       },
       "_fecha": "2026-04-08"
     },
@@ -10513,7 +10531,7 @@
         "esco_label": "supervisor de producción/supervisora de producción",
         "esco_code": "3122.4"
       },
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "issue_ids": [
           "9b1f71e2",
@@ -10521,7 +10539,10 @@
           "8f952d4d"
         ],
         "oferta_ejemplo": "1118132013 - Programador/a de la Producción",
-        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "retiro (sin destino ESCO unico sostenible)",
+        "nota_cyn": "El destino 3122.4 supervisor de producción/supervisora de producción no se sostiene para la regla completa. La mayoría de los avisos realizan planificación y programación de la producción —plan maestro, programas diarios"
       },
       "_fecha": "2026-04-08",
       "_fix_2026_04_08": "Agregadas variantes con \"de la\" — título real es \"Programador/a de la Producción\"",
@@ -10602,7 +10623,10 @@
         "issue_ids": [],
         "oferta_ejemplo": "1117968852,1117985442",
         "reporte": "reporte_correcciones_2026-04-08",
-        "nota": "Advisor en contexto IT es analista/tester de software, no director financiero ni soporte TIC"
+        "nota": "Advisor en contexto IT es analista/tester de software, no director financiero ni soporte TIC",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "retiro (sin destino ESCO unico sostenible)",
+        "nota_cyn": "R314 no tiene avisos asociados en este paquete y la condición actual se basa únicamente en “advisor” + área IT, sin evidencia funcional. El destino heredado “analista de pruebas” tampoco está respaldado. Además, el Dicci"
       },
       "_nota_desactivacion": "Advisors con area RRHH son soporte funcional (R273=3512), no testers. Las ofertas 1117968852 y 1117985442 son soporte de app de transporte."
     },
@@ -10624,12 +10648,15 @@
         "esco_label": "operador de máquinas de control numérico/operadora de máquinas de control numérico",
         "esco_code": "7223.4"
       },
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "issue_ids": [],
         "oferta_ejemplo": "1118007106",
         "reporte": "reporte_correcciones_2026-04-08",
-        "nota": "Operario metalúrgico es operador de máquinas de metal, no hornero de panadería"
+        "nota": "Operario metalúrgico es operador de máquinas de metal, no hornero de panadería",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "retiro (sin destino ESCO unico sostenible)",
+        "nota_cyn": "“Operario metalúrgico / operario de producción metalúrgico” no sostiene automáticamente 7223.4 operador de máquinas de control numérico/operadora de máquinas de control numérico. La muestra mezcla armado y montaje, opera"
       }
     },
     "R316_representante_ventas_industrial": {
@@ -10686,7 +10713,10 @@
         "oferta_ejemplo": "1118133126",
         "reporte": "reporte_correcciones_2026-04-08",
         "nota": "Viajante es representante comercial, no vendedor a domicilio",
-        "subordinacion_L4": "[FRENTE H P4, 2026-08-18] cubierta por el hub-set piloto (dispara SOLO si el traductor no decidio — estructural en v3.6.0: el resto de reglas corre despues del traductor). NO se retira; el retiro definitivo es por fase posterior, regla por regla, con su blast."
+        "subordinacion_L4": "[FRENTE H P4, 2026-08-18] cubierta por el hub-set piloto (dispara SOLO si el traductor no decidio — estructural en v3.6.0: el resto de reglas corre despues del traductor). NO se retira; el retiro definitivo es por fase posterior, regla por regla, con su blast.",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "MANTENER — K-validada por la tercera ronda",
+        "nota_cyn": "Mantener R317. Las denominaciones “vendedor/a viajante”, “viajante de comercio” y “comercial viajante” corresponden a 3322.1 “representante comercial” cuando el núcleo del puesto es visitar clientes o prospectos, desarro"
       },
       "subordinada_al_traductor": true
     },
@@ -10715,12 +10745,15 @@
         "esco_label": "operador de prensa hidráulica/operadora de prensa hidráulica",
         "esco_code": "8142.2"
       },
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "issue_ids": [],
         "oferta_ejemplo": "1118145955",
         "reporte": "reporte_correcciones_2026-04-08",
-        "nota": "Operador de producción genérico → 8142, no hornero de panadería"
+        "nota": "Operador de producción genérico → 8142, no hornero de panadería",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "retiro (sin destino ESCO unico sostenible)",
+        "nota_cyn": "El destino actual 8142.2 operador de prensa hidráulica/operadora de prensa hidráulica no representa la muestra. Un aviso opera máquinas de inyección y preparación de moldes; otros operan y controlan procesos de planta, e"
       }
     },
     "R319_corte_costura": {
@@ -10944,7 +10977,10 @@
       "activa": true,
       "_linaje": {
         "oferta_ejemplo": "6312291090",
-        "autor_correccion": "Cynthia"
+        "autor_correccion": "Cynthia",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "MANTENER — K-validada por la tercera ronda",
+        "nota_cyn": "La muestra es funcionalmente consistente con 7127.1: predominan instalación, mantenimiento preventivo y correctivo, diagnóstico y reparación de equipos y sistemas de refrigeración, climatización y aire acondicionado. La "
       }
     },
     "R327_encargado_salon": {
@@ -11070,10 +11106,13 @@
         "esco_label": "trabajador de apoyo a las familias/trabajadora de apoyo a las familias",
         "esco_code": "3412.4.5"
       },
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "oferta_ejemplo": "7677139622",
-        "autor_correccion": "Cynthia"
+        "autor_correccion": "Cynthia",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "retiro (sin destino ESCO unico sostenible)",
+        "nota_cyn": "R331 no sostiene un destino ESCO único y reusable. La muestra mezcla acompañamiento terapéutico domiciliario, integración escolar directa y coordinación/supervisión de prestaciones; además, varios avisos no tienen tareas"
       }
     },
     "R332_talentos_discapacidad": {
@@ -11091,10 +11130,13 @@
         "esco_label": "trabajador social/trabajadora social",
         "esco_code": "2635.3"
       },
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "oferta_ejemplo": "8303429460",
-        "autor_correccion": "Cynthia"
+        "autor_correccion": "Cynthia",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "retiro (sin destino ESCO unico sostenible)",
+        "nota_cyn": "La regla asigna 2635.3 trabajador social/trabajadora social por expresiones como “personas con discapacidad”, “talento inclusivo” o “base de talentos”, pero esas expresiones describen la población destinataria o el tipo "
       }
     },
     "R333_operario_limpieza": {
@@ -11245,11 +11287,14 @@
         "esco_label": "operador de canteadora/operadora de canteadora",
         "esco_code": "8189.1"
       },
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "oferta_ejemplo": "6697865056",
         "autor_correccion": "Cynthia",
-        "nota": "ISCO 8189 no tiene label genérico; usamos 'operador de canteadora' como representativo."
+        "nota": "ISCO 8189 no tiene label genérico; usamos 'operador de canteadora' como representativo.",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "retiro (sin destino ESCO unico sostenible)",
+        "nota_cyn": "El destino 8189.1 operador de canteadora/operadora de canteadora es incorrecto para la regla. Los avisos asociados corresponden a procesos distintos: corte láser y dibujo técnico, operación/regulación de maquinaria de mo"
       }
     },
     "R339_analista_contrataciones_transporte": {
@@ -11268,11 +11313,14 @@
         "esco_label": "coordinador de operaciones portuarias/coordinadora de operaciones portuarias",
         "esco_code": "4323.11"
       },
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "oferta_ejemplo": "6742049170",
         "autor_correccion": "Cynthia",
-        "nota": "ISCO 4323 (empleado administrativo de transporte); se usa label de coordinador operaciones como representativo."
+        "nota": "ISCO 4323 (empleado administrativo de transporte); se usa label de coordinador operaciones como representativo.",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "retiro (sin destino ESCO unico sostenible)",
+        "nota_cyn": "El destino actual 4323.11 coordinador de operaciones portuarias/coordinadora de operaciones portuarias es incorrecto: los avisos realizan negociación y actualización de convenios, contratación y alta de proveedores de tr"
       }
     },
     "R340_jefe_operativo_obra": {
@@ -11317,11 +11365,14 @@
         "esco_label": "supervisor de montaje industrial/supervisora de montaje industrial",
         "esco_code": "3122.3"
       },
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "oferta_ejemplo": "7139382499",
         "autor_correccion": "Cynthia",
-        "nota": "Sobrescribe R75 (5414 vigilador seguridad). 'Vigilador de personal' en Argentina es supervisor operativo, no guardia. Label ESCO más cercano en 3122."
+        "nota": "Sobrescribe R75 (5414 vigilador seguridad). 'Vigilador de personal' en Argentina es supervisor operativo, no guardia. Label ESCO más cercano en 3122.",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "retiro (sin destino ESCO unico sostenible)",
+        "nota_cyn": "La regla está completamente desalineada con la muestra. Aunque la condición busca “vigilador/a de personal”, los ocho avisos asociados son puestos administrativos con tareas de documentación, archivo, correo, atención te"
       }
     },
     "R342_acompanante_terapeutico_cuidador": {
@@ -11345,11 +11396,14 @@
         "esco_label": "celador sanitario/celadora sanitaria",
         "esco_code": "5329.1"
       },
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "oferta_ejemplo": "6104769191",
         "autor_correccion": "Cynthia",
-        "nota": "AT sin contexto escolar → 5329 (celador). Con contexto escolar → R331 (3412)."
+        "nota": "AT sin contexto escolar → 5329 (celador). Con contexto escolar → R331 (3412).",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "retiro (sin destino ESCO unico sostenible)",
+        "nota_cyn": "El destino actual 5329.1 celador sanitario/celadora sanitaria es incorrecto: ESCO define esa ocupación para apoyo sanitario vinculado principalmente al traslado de personas en camillas y otros enseres dentro de estableci"
       }
     },
     "R343_inyector_plastico": {
@@ -11373,7 +11427,10 @@
       "activa": true,
       "_linaje": {
         "oferta_ejemplo": "5548577462",
-        "autor_correccion": "Cynthia"
+        "autor_correccion": "Cynthia",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "MANTENER — K-validada por la tercera ronda",
+        "nota_cyn": "Los avisos asociados muestran operación directa de inyectoras plásticas, producción por inyección, extracción y rebabado de piezas y control visual del producto. El núcleo funcional coincide con 8142.7 y la condición est"
       }
     },
     "R344_project_manager": {
@@ -11486,13 +11543,16 @@
         "esco_label": "remachador/remachadora",
         "esco_code": "7214.3.1"
       },
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "oferta_ejemplo": "7907119232",
         "autor_correccion": "Diego",
         "nota": "ESCO 7214 solo tiene 4 labels. 'remachador' es el más genérico disponible. CANDIDATO A CATÁLOGO MOL ARGENTINO — perfil polivalente metalúrgico no tiene buen ESCO. Ver docs/plan/15_PERFILES_POLIVALENTES_AR.md.",
         "_fix_2026_04_26_spec_o": "Exclusiones agregadas para derivar soldadores → R211, mantenimiento → R110, especialistas (tornero/fresador/cnc/chapista) → reglas específicas. Removidas variantes 'operario de metalúrgica' / 'operario mantenimiento metalúrgica' que duplicaban con R110.",
-        "requiere_catalogo_mol": true
+        "requiere_catalogo_mol": true,
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "retiro (sin destino ESCO unico sostenible)",
+        "nota_cyn": "“Operario metalúrgico” no sostiene un destino ESCO único y reusable. La muestra mezcla tareas generales de planta, armado de estructuras, manipulación y carga de chapas, abastecimiento de línea, limpieza/pintura y asiste"
       }
     },
     "R348_operario_plastico_soplado": {
@@ -11684,7 +11744,10 @@
       "_linaje": {
         "oferta_ejemplo": "7879857202",
         "autor_correccion": "Diego",
-        "_fix_2026_04_27_spec_p": "Target 7223.7 'tornero' era INCORRECTO — el rol no opera torno, ensambla armas. ESCO 7222.2 'armero/armera' (modifica y repara armas de fuego) es exacto. Validado por Cynthia issue 34f29a26."
+        "_fix_2026_04_27_spec_p": "Target 7223.7 'tornero' era INCORRECTO — el rol no opera torno, ensambla armas. ESCO 7222.2 'armero/armera' (modifica y repara armas de fuego) es exacto. Validado por Cynthia issue 34f29a26.",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "MANTENER — K-validada por la tercera ronda",
+        "nota_cyn": "Los dos avisos asociados realizan trabajo directo sobre armas de fuego: ensamble de pistolas, montaje de piezas y control de componentes; uno además se presenta como técnico armero. El núcleo funcional es compatible con "
       }
     },
     "R358_despacho_metalurgico_grua": {
@@ -11859,11 +11922,14 @@
         "esco_label": "ingeniero técnico de mecánica/ingeniera técnica de mecánica",
         "esco_code": "3115.1"
       },
-      "activa": true,
+      "activa": false,
       "_linaje": {
         "spec": "SPEC N",
         "fecha": "2026-04-26",
-        "motivo": "Issue Diego: técnico operario producción debe ser técnico ingeniería, no operario"
+        "motivo": "Issue Diego: técnico operario producción debe ser técnico ingeniería, no operario",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "retiro (sin destino ESCO unico sostenible)",
+        "nota_cyn": "La regla mezcla perfiles funcionalmente distintos: operación de maquinaria y procesos productivos, ensamblaje/montaje, mantenimiento y fabricación/reparación de equipos electrónicos. 3115.1 ingeniero técnico de mecánica/"
       }
     }
   },
@@ -11971,5 +12037,6 @@
   "_cambios_v524_h_l3": "[FRENTE H v0.3.2] laudo L3: 14 planas especializadas del vecindario marcadas _traductor_L3 (precedencia sobre el traductor; absorcion como ramas en fase 2). Anotacion no-conductual (el matcher ignora la clave). Las demas 71-post-export en familia NO se marcan hasta su auditoria.",
   "_cambios_v525_h_l3_completo": "[FRENTE H PRE-v0.3.3] Registro L3 COMPLETO en dos pasadas: +15 validadas-IGUAL del K (sin linaje) + correccion del criterio de profundidad (hermano-fino = >= MINIMO de hubs de la familia, no maximo — R69 2413.1 entraba). Total _traductor_L3: 32.",
   "_cambios_v526_h_a3_grafo": "[FRENTE H v0.3.4] laudo A3: registro L3 extendido POR GRAFO (+31: conectadas por arista D al vecindario, K-validadas). Las 32 previas = subcriterio prefijo. TOTAL _traductor_L3: 63.",
-  "_cambios_v527_h_p4_subordinacion": "[FRENTE H P4] L4: 9 reglas marcadas subordinada_al_traductor (CUBIERTA del M1 con destino en el territorio de los 7 hubs activos + R14 pactada; las L3 quedan FUERA — preceden). Ninguna se retira."
+  "_cambios_v527_h_p4_subordinacion": "[FRENTE H P4] L4: 9 reglas marcadas subordinada_al_traductor (CUBIERTA del M1 con destino en el territorio de los 7 hubs activos + R14 pactada; las L3 quedan FUERA — preceden). Ninguna se retira.",
+  "_cambios_v528_k3_t1": "[FRENTE K3 T1] tercera_ronda_cyn_2026-08-19: 14 retiros (vol 160; cohort en exports/cohorts/) + 8 MANTENER marcadas K-validadas."
 }
