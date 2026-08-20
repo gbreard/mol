@@ -1,5 +1,5 @@
 {
-  "version": "5.29",
+  "version": "5.30",
   "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-08-19",
@@ -2450,8 +2450,8 @@
       "nombre": "Arquitecto de Software",
       "condicion": {
         "titulo_contiene_alguno": [
-          "architect",
-          "arquitecto"
+          "arquitecto de software",
+          "software architect"
         ],
         "titulo_contiene_alguno_2": [
           "java",
@@ -2464,13 +2464,41 @@
       },
       "accion": {
         "forzar_isco": "2512",
-        "esco_label": "desarrollador de software/desarrolladora de software",
-        "esco_code": "2512.4"
+        "esco_label": "arquitecto de software/arquitecta de software",
+        "esco_code": "2512.3"
       },
       "activa": true,
       "prioridad": 0,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "destino_anterior_k3": "2512.4 (desarrollador de software/desarrolladora de software)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (c): separable por titulo: R66 -> 2512.3 con keywords restringidas; alta R66b -> 2511.14; architect ambiguo -> cola",
+        "nota_cyn": "R66 no debe enviar automáticamente los títulos con “architect/arquitecto” a 2512.4 desarrollador de software. Cuando el núcleo es diseñar la arquitectura técnica de una aplicación o producto de software corresponde 2512."
+      }
+    },
+    "R66b_arquitecto_soluciones": {
+      "nombre": "R66b arquitecto soluciones",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "arquitecto de soluciones",
+          "solution architect",
+          "solutions architect",
+          "arquitecto de sistemas",
+          "system architect"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2511",
+        "esco_label": "arquitecto de sistemas de TIC/arquitecta de sistemas de TIC",
+        "esco_code": "2511.14"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "alta_por_split de R66_arquitecto_software",
+        "nota_cyn": "R66 no debe enviar automáticamente los títulos con “architect/arquitecto” a 2512.4 desarrollador de software. Cuando el núcleo es diseñar la arquitectura técnica de una aplicación o producto de software corresponde 2512."
       }
     },
     "R67_devops_engineer": {
@@ -2878,6 +2906,14 @@
           "inventario",
           "deposito",
           "depósito"
+        ],
+        "titulo_o_tareas_contiene_alguno": [
+          "inventario",
+          "stock",
+          "existencias",
+          "conciliacion fisico",
+          "conciliación físico",
+          "kardex"
         ]
       },
       "accion": {
@@ -2890,7 +2926,10 @@
       "nota": "FASE 4 - Administrativo almacén = coordinador inventario",
       "prioridad": 0,
       "_linaje": {
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (c): retiene 4321.1 con nucleo inventario; conduccion (1324.3.4) y compras (3323.2) -> cola + precompilacion",
+        "nota_cyn": "Conservar 4321.1 coordinador de inventario/coordinadora de inventario cuando predominen el registro y control administrativo de existencias, movimientos de stock, conciliación físico-sistema y gestión documental del inve"
       }
     },
     "R81_monitoreo_alarmas": {
@@ -3432,12 +3471,40 @@
         "esco_code": "2512.4"
       },
       "caso_revision_100": "1118105718 - IA Tech Lead (desarrollo RAG, LangChain, arquitectura IA)",
-      "activa": true,
+      "activa": false,
       "nota": "Validacion v1.0 - Tech Lead de IA/ML es desarrollador senior, no seguridad TIC",
       "_linaje": {
         "version_origen": "v33",
         "contexto": "Fix: R95 removido data architect, R92 excluye telecom, R146 prior",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "retiro-post-split: la rama IA/ML vive en R95a; el resto es genero hub (precompilacion)",
+        "nota_cyn": "Corregir R95. No agrupar automáticamente Tech Lead, Arquitecto IA, ML Engineer, AI Engineer y Lead Developer bajo 2512.4 desarrollador de software/desarrolladora de software. La rama Ingeniero/a de IA / AI Engineer / Mac"
+      }
+    },
+    "R95a_ingeniero_ia_ml": {
+      "nombre": "R95a ingeniero ia ml",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "ai engineer",
+          "ia engineer",
+          "machine learning engineer",
+          "ml engineer",
+          "ingeniero de ia",
+          "ingeniero de machine learning"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "2511",
+        "esco_label": "ingeniero de inteligencia artificial/ingeniera de inteligencia artificial",
+        "esco_code": "2511.11"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "alta_por_split de R95_tech_lead_ia_ml",
+        "nota_cyn": "Corregir R95. No agrupar automáticamente Tech Lead, Arquitecto IA, ML Engineer, AI Engineer y Lead Developer bajo 2512.4 desarrollador de software/desarrolladora de software. La rama Ingeniero/a de IA / AI Engineer / Mac"
       }
     },
     "R96_profesional_belleza": {
@@ -5958,10 +6025,7 @@
       "prioridad": 0,
       "condicion": {
         "titulo_contiene_alguno": [
-          "soporte",
-          "infraestructura",
-          "helpdesk",
-          "help desk"
+          "infraestructura"
         ],
         "area_funcional_es": "sistemas"
       },
@@ -5977,7 +6041,10 @@
       "_linaje": {
         "version_origen": "v42",
         "contexto": "R177-R180: Gestor cobranzas, QA/Tester, Instalador fibra, Soporte",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): 2522.1 solo administracion de infraestructura; soporte/helpdesk fuera (vol 0 — sin blast)",
+        "nota_cyn": "R180 no tiene avisos asociados en este paquete. La decisión previa del Diccionario valida 2522.1 únicamente cuando se administran sistemas, servidores o infraestructura y aclara expresamente que helpdesk puro debe ir a s"
       }
     },
     "R181_personal_mantenimiento": {
@@ -7346,7 +7413,18 @@
         "titulo_contiene_alguno": [
           "analista"
         ],
-        "area_funcional_es": "Contabilidad"
+        "area_funcional_es": "Contabilidad",
+        "titulo_o_tareas_contiene_alguno": [
+          "analisis de cuentas",
+          "análisis de cuentas",
+          "analizar",
+          "analisis",
+          "análisis",
+          "cierres",
+          "estados contables",
+          "estados financieros",
+          "balances"
+        ]
       },
       "accion": {
         "forzar_isco": "2411",
@@ -7361,7 +7439,10 @@
           "TP-583"
         ],
         "_fix_2026_04_26_spec_o": "Target 4311.1 'empleado de contabilidad' (ISCO 4 oficinista jerarquía baja) era ERRÓNEO para 'analista'. Cambiado a 2411.1.1 'analista contable' (ISCO 2411 contadores, label literal). SPEC O M1+M3 detección.",
-        "subordinacion_L4": "[FRENTE H P4, 2026-08-18] cubierta por el hub-set piloto (dispara SOLO si el traductor no decidio — estructural en v3.6.0: el resto de reglas corre despues del traductor). NO se retira; el retiro definitivo es por fase posterior, regla por regla, con su blast."
+        "subordinacion_L4": "[FRENTE H P4, 2026-08-18] cubierta por el hub-set piloto (dispara SOLO si el traductor no decidio — estructural en v3.6.0: el resto de reglas corre despues del traductor). NO se retira; el retiro definitivo es por fase posterior, regla por regla, con su blast.",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): CONVERGENTE hub 1 (ya subordinada): retiene solo analisis-predominante; registracion pura -> cola (el arbol la desambigua)",
+        "nota_cyn": "Corregir R228 manteniendo 2411.1.1 “analista contable” como destino, pero restringiendo la condición. No alcanza con que el título contenga “analista” y el área sea Contabilidad. Debe predominar el análisis de cuentas, p"
       },
       "subordinada_al_traductor": true
     },
@@ -10190,7 +10271,6 @@
         "titulo_contiene_alguno": [
           "ascensor",
           "ascensores",
-          "elevador",
           "elevadores",
           "ascensorista"
         ],
@@ -10204,7 +10284,11 @@
           "operario",
           "operaria",
           "operarios",
-          "operarias"
+          "operarias",
+          "relevador",
+          "vendedor",
+          "venta",
+          "comercial"
         ]
       },
       "accion": {
@@ -10221,7 +10305,10 @@
         ],
         "oferta_ejemplo": "5924126529 - Tecnico en mantenimiento de ascensores",
         "reporte": "reporte_correcciones_dedup_2026-04-08.md",
-        "_fix_2026_04_26_spec_n": "Bug: 'autoelevador' contenía 'elevador' como substring → 'Operario logística autoelevador' caía en técnico de ascensores. Excluir variantes autoelevador/carretilla y operarios."
+        "_fix_2026_04_26_spec_n": "Bug: 'autoelevador' contenía 'elevador' como substring → 'Operario logística autoelevador' caía en técnico de ascensores. Excluir variantes autoelevador/carretilla y operarios.",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): quitar 'elevador' (captura 'relevador' por substring) + excluir comerciales",
+        "nota_cyn": "Mantener 7412.7 cuando el núcleo sea instalar, poner en marcha, mantener, diagnosticar o reparar ascensores y otros equipos de elevación. Corregir la condición porque “elevador” está capturando falsos positivos como “rel"
       },
       "_fecha": "2026-04-08"
     },
@@ -10239,6 +10326,11 @@
           "supervisor de instalación",
           "supervisor instalacion",
           "supervisor instalación"
+        ],
+        "titulo_no_contiene_alguno": [
+          "montaje de ascensores",
+          "instalacion de ascensores",
+          "instalación de ascensores"
         ]
       },
       "accion": {
@@ -10254,7 +10346,10 @@
           "ede8e93c"
         ],
         "oferta_ejemplo": "5945752836 - Supervisor de Instalacion",
-        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): especialidad unica excluida (ascensores tiene reglas propias); resto retiene 3123.1",
+        "nota_cyn": "Conservar 3123.1 cuando el núcleo sea supervisar operativamente la ejecución de obra: coordinar cuadrillas y contratistas, distribuir tareas, controlar avances, materiales, calidad, seguridad y cumplimiento técnico en te"
       },
       "_fecha": "2026-04-08"
     },
@@ -10270,6 +10365,11 @@
           "gerente administrativo",
           "gerente administrativa",
           "gerente admin"
+        ],
+        "titulo_contiene_alguno_2": [
+          "finanzas",
+          "financiero",
+          "financiera"
         ]
       },
       "accion": {
@@ -10286,7 +10386,10 @@
         ],
         "oferta_ejemplo": "7006539054 - Gerente Administración",
         "reporte": "reporte_correcciones_dedup_2026-04-08.md",
-        "subordinacion_L4": "[FRENTE H P4, 2026-08-18] cubierta por el hub-set piloto (dispara SOLO si el traductor no decidio — estructural en v3.6.0: el resto de reglas corre despues del traductor). NO se retira; el retiro definitivo es por fase posterior, regla por regla, con su blast."
+        "subordinacion_L4": "[FRENTE H P4, 2026-08-18] cubierta por el hub-set piloto (dispara SOLO si el traductor no decidio — estructural en v3.6.0: el resto de reglas corre despues del traductor). NO se retira; el retiro definitivo es por fase posterior, regla por regla, con su blast.",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (c): CONVERGENTE con la rama de jerarquia del anexo (P4.2): retiene 1211.1 solo con finanzas en titulo; resto -> cola (ya subordinada)",
+        "nota_cyn": "Mantener 1211.1 para gerente de Administración y Finanzas cuando predomine la dirección financiera, presupuesto, bancos, financiación, liquidez o estrategia económico-financiera. No asignar 1211.1 automáticamente a “gere"
       },
       "_fecha": "2026-04-08",
       "subordinada_al_traductor": true
@@ -10368,13 +10471,16 @@
         "titulo_no_contiene_alguno": [
           "electromecánico",
           "electromecanico",
-          "electricista"
+          "electricista",
+          "jefe",
+          "supervisor",
+          "coordinador"
         ]
       },
       "accion": {
-        "forzar_isco": "7412",
-        "esco_label": "mecánico electricista/mecánica electricista",
-        "esco_code": "7412.3"
+        "forzar_isco": "7411",
+        "esco_label": "electricista industrial",
+        "esco_code": "7411.1.1.2"
       },
       "activa": true,
       "_linaje": {
@@ -10384,7 +10490,11 @@
           "9fc64897"
         ],
         "oferta_ejemplo": "6053706024 - Técnico de mantenimiento eléctrico industrial",
-        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md",
+        "destino_anterior_k3": "7412.3 (mecánico electricista/mecánica electricista)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (c): default mas defendible: electrico puro -> 7411.1.1.2 (el grueso segun Cyn); 7412.3/3115.1.6 en precompilacion",
+        "nota_cyn": "La condición actual sobrecaptura por título. Los avisos de mantenimiento eléctrico puro —tableros, circuitos, instalaciones, diagnóstico y reparación eléctrica en planta— corresponden a 7411.1.1.2 electricista industrial"
       },
       "_fecha": "2026-04-08"
     },
@@ -10399,6 +10509,18 @@
           "ingeniera electronica",
           "ing electrónico",
           "ing electronico"
+        ],
+        "titulo_no_contiene_alguno": [
+          "jefe",
+          "supervisor",
+          "mantenimiento"
+        ],
+        "titulo_o_tareas_contiene_alguno": [
+          "diseno",
+          "diseño",
+          "desarrollo de circuitos",
+          "desarrollo de placas",
+          "firmware"
         ]
       },
       "accion": {
@@ -10414,7 +10536,10 @@
           "d6451678"
         ],
         "oferta_ejemplo": "6208652557 - Ingeniero Electrónico (Vicente Lopez)",
-        "reporte": "reporte_correcciones_dedup_2026-04-08.md"
+        "reporte": "reporte_correcciones_dedup_2026-04-08.md",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (c): retiene 2152.1 solo diseno/desarrollo; instrumentacion/mantenimiento/medicos en precompilacion (4 destinos)",
+        "nota_cyn": "2152.1 ingeniero electrónico/ingeniera electrónica es correcto solo cuando predomina el diseño o desarrollo profesional de circuitos, dispositivos, placas, equipos o sistemas electrónicos. R307 sobrecaptura por título: e"
       },
       "_fecha": "2026-04-08"
     },
@@ -10584,19 +10709,27 @@
         "titulo_no_contiene": [
           "contable",
           "impositivo"
+        ],
+        "titulo_contiene_alguno_2": [
+          "consultor",
+          "consultora"
         ]
       },
       "accion": {
-        "forzar_isco": "2519",
-        "esco_label": "analista de pruebas",
-        "esco_code": "2519.6"
+        "forzar_isco": "2511",
+        "esco_label": "consultor de TIC/consultora de TIC",
+        "esco_code": "2511.10"
       },
       "activa": true,
       "_linaje": {
         "issue_ids": [],
         "oferta_ejemplo": "2145263",
         "reporte": "reporte_correcciones_2026-04-08",
-        "nota": "Consultor funcional de software de liquidación, no administrativo de nóminas. ISCO 2519"
+        "nota": "Consultor funcional de software de liquidación, no administrativo de nóminas. ISCO 2519",
+        "destino_anterior_k3": "2519.6 (analista de pruebas)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (c): default 2511.10 con consultor en titulo; liquidacion efectiva (4313.1) -> cola + precompilacion",
+        "nota_cyn": "El destino actual 2519.6 analista de pruebas es incorrecto: los avisos no muestran pruebas sistemáticas de software ni validación de defectos. Cuando el puesto releva necesidades, brinda consultoría y configura u optimiz"
       }
     },
     "R313_encargado_logistica": {
@@ -10604,17 +10737,43 @@
       "prioridad": -1,
       "condicion": {
         "titulo_contiene_alguno": [
-          "encargado de logística",
-          "encargado logística",
-          "encargado de logistica",
-          "encargado logistica",
-          "jefe de logística",
-          "jefe logística",
-          "jefe de logistica",
-          "jefe logistica"
+          "logistica",
+          "logística"
         ],
         "titulo_no_contiene": [
           "compras"
+        ],
+        "titulo_no_contiene_alguno": [
+          "transporte",
+          "flota"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1324",
+        "esco_label": "director de distribución y logística/directora de distribución y logística",
+        "esco_code": "1324.3"
+      },
+      "activa": true,
+      "_linaje": {
+        "issue_ids": [],
+        "oferta_ejemplo": "7186551637",
+        "reporte": "reporte_correcciones_2026-04-08",
+        "nota": "Encargado de logística es jefe de almacén, no conductor",
+        "destino_anterior_k3": "1324.3.4 (jefe de almacén/jefa de almacén)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (c): split por titulo: logistica integral -> 1324.3; deposito -> 1324.3.4; transporte/flota -> cola (4323.9 en precompilacion)",
+        "nota_cyn": "“Encargado/Jefe de logística” no debe asignarse automáticamente a 1324.3.4 jefe de almacén/jefa de almacén. La muestra mezcla conducción integral de logística y distribución, gestión específica de depósito y coordinación"
+      }
+    },
+    "R313b_encargado_deposito": {
+      "nombre": "R313b encargado deposito",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "deposito",
+          "depósito",
+          "almacen",
+          "almacén"
         ]
       },
       "accion": {
@@ -10624,10 +10783,9 @@
       },
       "activa": true,
       "_linaje": {
-        "issue_ids": [],
-        "oferta_ejemplo": "7186551637",
-        "reporte": "reporte_correcciones_2026-04-08",
-        "nota": "Encargado de logística es jefe de almacén, no conductor"
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "alta_por_split de R313_encargado_logistica",
+        "nota_cyn": "“Encargado/Jefe de logística” no debe asignarse automáticamente a 1324.3.4 jefe de almacén/jefa de almacén. La muestra mezcla conducción integral de logística y distribución, gestión específica de depósito y coordinación"
       }
     },
     "R314_advisor_software": {
@@ -10700,6 +10858,15 @@
           "tecnico",
           "maquinaria",
           "equipo"
+        ],
+        "titulo_o_tareas_contiene_alguno": [
+          "asesoramiento tecnico",
+          "asesoramiento técnico",
+          "soporte tecnico",
+          "soporte técnico",
+          "venta tecnica",
+          "venta técnica",
+          "especificaciones"
         ]
       },
       "accion": {
@@ -10712,7 +10879,10 @@
         "issue_ids": [],
         "oferta_ejemplo": "2155532",
         "reporte": "reporte_correcciones_2026-04-08",
-        "nota": "Representante de ventas en sector industrial es técnico de ventas, no comercial genérico"
+        "nota": "Representante de ventas en sector industrial es técnico de ventas, no comercial genérico",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): 2433.6 solo con componente tecnico-comercial; sin el -> cola (3322.1 lo toma el arbol/R229a)",
+        "nota_cyn": "Conservar 2433.6 solo cuando la venta exige conocimiento especializado de productos técnicos, industriales o científicos y existe intervención técnico-comercial. “Sector industrial”, “B2B industrial” o “representante de "
       }
     },
     "R317_vendedor_viajante": {
@@ -10790,8 +10960,6 @@
           "costurero",
           "costurera",
           "costurero",
-          "operario textil",
-          "operaria textil",
           "operario de costura",
           "operaria de costura"
         ]
@@ -10806,7 +10974,10 @@
         "issue_ids": [],
         "oferta_ejemplo": "1118163504",
         "reporte": "reporte_correcciones_2026-04-08",
-        "nota": "Corte y costura / textil es operador de máquinas de coser, no prensado de fruta"
+        "nota": "Corte y costura / textil es operador de máquinas de coser, no prensado de fruta",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): quitar 'operario textil' generico; nucleo costura retiene 8153.1",
+        "nota_cyn": "Conservar 8153.1 cuando el núcleo sea operar máquinas de coser industriales —recta, overlock u otras— para confección, costura o terminación de productos textiles. La condición actual sobrecaptura por incluir “operario t"
       }
     },
     "R320_ventas_telemarketing": {
@@ -10818,6 +10989,14 @@
           "agente de ventas telemarketing",
           "ejecutivo de ventas telemarketing",
           "venta telemarketing"
+        ],
+        "titulo_o_tareas_contiene_alguno": [
+          "venta",
+          "ventas",
+          "vender",
+          "llamadas",
+          "llamados",
+          "contactar"
         ]
       },
       "accion": {
@@ -10830,7 +11009,10 @@
         "issue_ids": [],
         "oferta_ejemplo": "5876899139",
         "reporte": "reporte_correcciones_2026-04-08",
-        "nota": "Ventas telemarketing es vendedor por teléfono (5244), no agente de atención (4222)"
+        "nota": "Ventas telemarketing es vendedor por teléfono (5244), no agente de atención (4222)",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): 5244.1 solo con evidencia de venta remota; sin tareas -> cola",
+        "nota_cyn": "El destino 5244.1 es correcto cuando predominan ventas por teléfono o canales de contacto remoto: prospectar/contactar clientes, presentar ofertas, asesorar comercialmente, responder objeciones y cerrar ventas. La regla "
       }
     },
     "R321_tecnico_instalador_seguridad": {
@@ -10880,7 +11062,15 @@
           "vehiculo",
           "automotor",
           "automotriz",
-          "flota"
+          "flota",
+          "jefe",
+          "coordinador",
+          "planificador",
+          "agricola",
+          "agrícola",
+          "electromecanico",
+          "electromecánico",
+          "electricista"
         ]
       },
       "accion": {
@@ -10893,7 +11083,10 @@
         "issue_ids": [],
         "oferta_ejemplo": "6136315548",
         "reporte": "reporte_correcciones_2026-04-08",
-        "nota": "Mecánico + mantenimiento/industrial/maquinaria (sin vehículos) → 7233 maquinaria industrial"
+        "nota": "Mecánico + mantenimiento/industrial/maquinaria (sin vehículos) → 7233 maquinaria industrial",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): exclusiones de titulo (jerarquia/agro/electro); el nucleo mecanico ya esta en la condicion",
+        "nota_cyn": "Mantener 7233.7 solo cuando predomine el mantenimiento y reparación mecánica de maquinaria industrial. Excluir planificación/coordinación de mantenimiento, maquinaria agrícola y perfiles electromecánicos/eléctricos, que "
       }
     },
     "R323_atencion_publico": {
@@ -10913,7 +11106,18 @@
           "coordinador",
           "responsable",
           "líder",
-          "lider"
+          "lider",
+          "vendedor",
+          "ventas",
+          "repositor"
+        ],
+        "titulo_o_tareas_contiene_alguno": [
+          "consultas",
+          "reclamos",
+          "pedidos",
+          "problemas de clientes",
+          "resolucion de problemas",
+          "resolución de problemas"
         ]
       },
       "accion": {
@@ -10926,7 +11130,10 @@
         "issue_ids": [],
         "oferta_ejemplo": "2172764",
         "reporte": "reporte_correcciones_2026-04-08",
-        "nota": "Atención al público = empleado de centro de información (4225), no diseñador de decorados ni correo postal"
+        "nota": "Atención al público = empleado de centro de información (4225), no diseñador de decorados ni correo postal",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): 4225.1 solo con nucleo de atencion; venta/reposicion quedan des-forzadas (comercial por tareas o 9334.1 fase 2)",
+        "nota_cyn": "R323 debe restringirse. “Atención al público” o “atención al cliente” en el título no alcanza por sí solo para asignar 4225.1. Mantener 4225.1 cuando el núcleo sea atender consultas, reclamos, pedidos o problemas de clie"
       }
     },
     "R324_fileteador_pescado": {
@@ -10939,6 +11146,11 @@
           "fileteado",
           "filetear pescado",
           "filetero"
+        ],
+        "titulo_o_tareas_contiene_alguno": [
+          "filete",
+          "pescado",
+          "fileteado"
         ]
       },
       "accion": {
@@ -10955,7 +11167,10 @@
         ],
         "oferta_ejemplo": "9168162159",
         "autor_correccion": "Cynthia",
-        "nota": "Fileteador de pescado en industria alimenticia. Cynthia reporta: 8131 (máquinas jabón) era totalmente incorrecto. ISCO 7511 incluye 'limpiador de pescado' como ocupación más cercana a fileteador argentino."
+        "nota": "Fileteador de pescado en industria alimenticia. Cynthia reporta: 8131 (máquinas jabón) era totalmente incorrecto. ISCO 7511 incluye 'limpiador de pescado' como ocupación más cercana a fileteador argentino.",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): solo con confirmacion funcional (el unico aviso no trae tareas -> des-forzada)",
+        "nota_cyn": "El código 7511.3 es compatible con tareas de limpieza, preparación y fileteado de pescado. Sin embargo, el único aviso asociado figura solo como “Fileteador” y no contiene tareas reales, por lo que la regla no debe clasi"
       }
     },
     "R325_instalador_satelital": {
@@ -11030,6 +11245,19 @@
           "jefe",
           "jefa",
           "responsable"
+        ],
+        "titulo_no_contiene_alguno": [
+          "local comercial",
+          "tienda"
+        ],
+        "titulo_o_tareas_contiene_alguno": [
+          "gastronomia",
+          "gastronomía",
+          "restaurante",
+          "salon gastronomico",
+          "mozos",
+          "camareros",
+          "servicio de mesa"
         ]
       },
       "accion": {
@@ -11040,7 +11268,10 @@
       "activa": true,
       "_linaje": {
         "oferta_ejemplo": "6313884152",
-        "autor_correccion": "Cynthia"
+        "autor_correccion": "Cynthia",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): 5131.2.1 solo gastronomia; comercio (5222.1) queda a cola/arbol",
+        "nota_cyn": "Mantener 5131.2.1 jefe de sala/jefa de sala cuando el puesto pertenece a gastronomía y dirige/cooordina al personal de salón, organiza el servicio y supervisa su calidad, criterio ya previsto en la regla consolidada vige"
       }
     },
     "R328_psicologo_profesional": {
@@ -11056,6 +11287,9 @@
           "lic psicologia",
           "licenciado en psicología",
           "licenciada en psicología"
+        ],
+        "titulo_no_contiene_alguno": [
+          "terapia ocupacional"
         ]
       },
       "accion": {
@@ -11067,7 +11301,10 @@
       "_linaje": {
         "oferta_ejemplo": "6400928571",
         "autor_correccion": "Cynthia",
-        "nota": "Aplica a psicólogo clínico, laboral, educativo y ofertas combinadas con terapia ocupacional."
+        "nota": "Aplica a psicólogo clínico, laboral, educativo y ofertas combinadas con terapia ocupacional.",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): excluir multiprofesional",
+        "nota_cyn": "2634.2 es correcto cuando las tareas son efectivamente propias del ejercicio profesional de la psicología, como seguimiento clínico, intervención terapéutica y trabajo sobre problemáticas de salud mental. Pero la condici"
       }
     },
     "R329_tecnico_electronico_mantenimiento": {
@@ -11085,6 +11322,19 @@
           "tecnico",
           "técnica",
           "tecnica"
+        ],
+        "titulo_no_contiene_alguno": [
+          "potencia",
+          "electromecanico",
+          "electromecánico",
+          "automatizacion",
+          "automatización"
+        ],
+        "titulo_o_tareas_contiene_alguno": [
+          "electronic",
+          "placas",
+          "circuitos",
+          "soldadura de componentes"
         ]
       },
       "accion": {
@@ -11095,7 +11345,10 @@
       "activa": true,
       "_linaje": {
         "oferta_ejemplo": "6441959979",
-        "autor_correccion": "Cynthia"
+        "autor_correccion": "Cynthia",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): nucleo electronico real; potencia/electromecanica excluidas",
+        "nota_cyn": "Corregir R329 manteniendo 3114.1 como destino cuando el núcleo real sea construir, probar, medir, mantener, diagnosticar, reparar, instalar o poner en marcha equipos, placas, circuitos o sistemas electrónicos. No alcanza"
       }
     },
     "R330_fiambrero": {
@@ -11220,6 +11473,11 @@
           "cuidadora de niños",
           "cuidador de niños",
           "cuidadora de ninos"
+        ],
+        "titulo_no_contiene_alguno": [
+          "domestica",
+          "doméstica",
+          "limpieza"
         ]
       },
       "accion": {
@@ -11230,7 +11488,10 @@
       "activa": true,
       "_linaje": {
         "oferta_ejemplo": "9177646546",
-        "autor_correccion": "Cynthia"
+        "autor_correccion": "Cynthia",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): excluir hibridos ninera+domestica",
+        "nota_cyn": "Conservar 5311.1.4 niñero/niñera cuando el núcleo sea el cuidado directo de niños: supervisarlos, atender sus necesidades cotidianas, acompañarlos y realizar actividades de cuidado o juego. La condición actual sobrecaptu"
       }
     },
     "R335_promotor_via_publica": {
@@ -11306,6 +11567,13 @@
           "psicolog",
           "psicóloga",
           "psicologa"
+        ],
+        "titulo_no_contiene_alguno": [
+          "docente",
+          "profesor",
+          "profesora",
+          "catedra",
+          "cátedra"
         ]
       },
       "accion": {
@@ -11317,7 +11585,10 @@
       "_linaje": {
         "oferta_ejemplo": "6979872094",
         "autor_correccion": "Cynthia",
-        "nota": "Aplica a cualquier título con 'psicólog*'. Incluye psicólogo laboral (6979872094), psicólogo educativo (8393131999) y ofertas combinadas con terapia ocupacional."
+        "nota": "Aplica a cualquier título con 'psicólog*'. Incluye psicólogo laboral (6979872094), psicólogo educativo (8393131999) y ofertas combinadas con terapia ocupacional.",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): excluir docencia; la evidencia de intervencion la vigila fase 2",
+        "nota_cyn": "Conservar 2634.2 psicólogo/psicóloga cuando las tareas sean efectivamente de intervención psicológica —evaluación, acompañamiento, tratamiento, seguimiento clínico, intervención educativa u organizacional propia de la ps"
       }
     },
     "R338_operador_tecnico_generico": {
@@ -11502,6 +11773,16 @@
         "titulo_no_contiene_alguno": [
           "assistant",
           "asistente"
+        ],
+        "titulo_contiene_alguno": [
+          "it",
+          "ti ",
+          "tic",
+          "sistemas",
+          "software",
+          "tecnologia",
+          "tecnología",
+          "sap"
         ]
       },
       "accion": {
@@ -11513,7 +11794,37 @@
       "_linaje": {
         "oferta_ejemplo": "6024230224",
         "autor_correccion": "Cynthia",
-        "nota": "Cynthia indica 1330 (TIC) en vez de 1213. Prioridad 0 para sobrescribir R19_project_manager."
+        "nota": "Cynthia indica 1330 (TIC) en vez de 1213. Prioridad 0 para sobrescribir R19_project_manager.",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (c): split por titulo: con senal IT -> 1330.7; sin senal -> 1219.6 (R344b catch-all)",
+        "nota_cyn": "La regla está sobrecapturando porque asigna automáticamente 1330.7, que es específico de proyectos TIC, a cualquier “Project Manager/Gerente/Jefe de proyecto”. El Diccionario MOL ya validó 1219.6 gestor de proyectos/gest"
+      }
+    },
+    "R344b_pm_generico": {
+      "nombre": "R344b pm generico",
+      "prioridad": 0,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "it",
+          "ti ",
+          "tic",
+          "sistemas",
+          "software",
+          "tecnologia",
+          "tecnología",
+          "sap"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "1219",
+        "esco_label": "gestor de proyectos/gestora de proyectos",
+        "esco_code": "1219.6"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "alta_por_split de R344_project_manager",
+        "nota_cyn": "La regla está sobrecapturando porque asigna automáticamente 1330.7, que es específico de proyectos TIC, a cualquier “Project Manager/Gerente/Jefe de proyecto”. El Diccionario MOL ya validó 1219.6 gestor de proyectos/gest"
       }
     },
     "R345_operario_cnc": {
@@ -11562,6 +11873,10 @@
           "cortadora laser",
           "operario de láser",
           "operador láser"
+        ],
+        "titulo_no_contiene_alguno": [
+          "programador",
+          "programadora"
         ]
       },
       "accion": {
@@ -11572,7 +11887,10 @@
       "activa": true,
       "_linaje": {
         "oferta_ejemplo": "8090263692",
-        "autor_correccion": "Cynthia"
+        "autor_correccion": "Cynthia",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): programacion -> 2514.4 via R128a; nucleo laser retiene",
+        "nota_cyn": "Conservar 7223.4.3 cuando el núcleo sea operar, preparar, ajustar, calibrar y controlar una cortadora láser. La condición actual sobrecaptura porque la muestra incluye perfiles operador/programador, con programación y di"
       }
     },
     "R347_operario_metalurgico": {
@@ -11648,7 +11966,10 @@
       "_linaje": {
         "oferta_ejemplo": "9255109063",
         "autor_correccion": "Diego",
-        "nota": "Busca en título Y tareas. Ofertas suelen tener 'Operarios/as de producción' genérico en título y el detalle de plástico/flex blow en descripción/tareas."
+        "nota": "Busca en título Y tareas. Ofertas suelen tener 'Operarios/as de producción' genérico en título y el detalle de plástico/flex blow en descripción/tareas.",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): 8142.1 solo con evidencia de soplado; inyeccion (8142.7) en precompilacion",
+        "nota_cyn": "Conservar 8142.1 únicamente cuando exista evidencia real de moldeo por soplado, por ejemplo operación de Flex Blow o fabricación mediante soplado. La condición actual mezcla indebidamente soplado e inyección: los avisos "
       }
     },
     "R349_operario_envasado": {
@@ -11700,7 +12021,10 @@
         "oferta_ejemplo": "1118219210",
         "autor_correccion": "Cynthia",
         "nota": "Busca también en descripción. Muchas ofertas tienen 'Operario de producción' en título y 'línea de llenado de bebidas' en descripción.",
-        "_fix_2026_04_27_spec_p": "Excluir 'habilidad manual' y 'papelera/papelero' — Cyn validó que ofertas con esos términos son trabajo manual sin línea automatizada y deben caer en 9329.1 trabajador de fábrica (R240). Validado issue f7e73275 (oferta 6786905097)."
+        "_fix_2026_04_27_spec_p": "Excluir 'habilidad manual' y 'papelera/papelero' — Cyn validó que ofertas con esos términos son trabajo manual sin línea automatizada y deben caer en 9329.1 trabajador de fábrica (R240). Validado issue f7e73275 (oferta 6786905097).",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): retiene nucleo de linea de envasado; recepcion/distribucion des-forzada",
+        "nota_cyn": "Corregir R349 manteniendo 8183.1 como destino cuando el núcleo real sea operar, controlar o intervenir directamente en procesos o líneas de envasado, llenado o embotellado. No alcanza con que aparezca “envasado”, “empaqu"
       }
     },
     "R350_operario_deposito_logistica": {
@@ -11725,6 +12049,16 @@
           "mozo de almacen",
           "moza de almacén",
           "moza de almacen"
+        ],
+        "titulo_o_tareas_contiene_alguno": [
+          "recepcion",
+          "recepción",
+          "preparacion de pedidos",
+          "preparación de pedidos",
+          "embalaje",
+          "almacenamiento",
+          "expedicion",
+          "expedición"
         ]
       },
       "accion": {
@@ -11735,7 +12069,10 @@
       "activa": true,
       "_linaje": {
         "oferta_ejemplo": "7985222956",
-        "autor_correccion": "Cynthia+Diego"
+        "autor_correccion": "Cynthia+Diego",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (c): CONVERGENTE conflicto #4 precompilado: retiene 9333.8 con nucleo deposito; carga/descarga pura y picking -> cola + fase 2",
+        "nota_cyn": "No asignar un único destino automático a “operario/a de depósito”, “picker” u otros títulos logísticos. Mantener 9333.8 cuando predominan recepción, control, preparación, embalaje, almacenamiento y expedición de mercader"
       }
     },
     "R351_operario_despacho": {
@@ -11765,6 +12102,12 @@
         "titulo_no_contiene_alguno": [
           "administrativo",
           "administrativa"
+        ],
+        "titulo_o_tareas_contiene_alguno": [
+          "carga",
+          "descarga",
+          "estibado",
+          "traslado"
         ]
       },
       "accion": {
@@ -11776,7 +12119,10 @@
       "_linaje": {
         "oferta_ejemplo": "8299423434",
         "autor_correccion": "Diego",
-        "_fix_2026_04_26_spec_n": "Target cambiado de 4321.1 coordinador inventario (administrativo, INCORRECTO) a 9333.3 operario de logística de almacén. Operarios de despacho son trabajo manual de expedición/almacén, no administrativo. Excluir 'administrativo' para no atrapar 'Operario de despacho administrativo' — esos sí van a 4321."
+        "_fix_2026_04_26_spec_n": "Target cambiado de 4321.1 coordinador inventario (administrativo, INCORRECTO) a 9333.3 operario de logística de almacén. Operarios de despacho son trabajo manual de expedición/almacén, no administrativo. Excluir 'administrativo' para no atrapar 'Operario de despacho administrativo' — esos sí van a 4321.",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (c): retiene 9333.3 con nucleo fisico; armado de pedidos (9333.8.1) y transporte -> cola + precompilacion",
+        "nota_cyn": "“Operario de despacho” no debe asignarse automáticamente a 9333.3. Mantener 9333.3 cuando predominan carga, descarga, traslado, estibado y movimiento de mercadería; usar 9333.8.1 cuando el núcleo es armado, preparación y"
       }
     },
     "R352_operario_ensamble_armas": {
@@ -11840,7 +12186,10 @@
         "oferta_ejemplo": "8299423434",
         "autor_correccion": "Cynthia",
         "issue_id": "3cf48856",
-        "motivo": "Despacho metalúrgico con puente grúa NO es logística genérica — el rol fuerte es operar equipo pesado de elevación. Cyn propone 8343.4 'operador de grúa de instalaciones de producción'. Prioridad -2 gana sobre R351 prio -1 (logística almacén)."
+        "motivo": "Despacho metalúrgico con puente grúa NO es logística genérica — el rol fuerte es operar equipo pesado de elevación. Cyn propone 8343.4 'operador de grúa de instalaciones de producción'. Prioridad -2 gana sobre R351 prio -1 (logística almacén).",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (c): retiene 8343.4 solo con puente grua en tareas; autoelevador (8344.1) -> cola (vol 1)",
+        "nota_cyn": "El único aviso asociado combina manejo de puente grúa y manejo de autoelevadores. Por eso 8343.4 no debe asignarse automáticamente a toda la regla: corresponde cuando predomina la operación de puente grúa; si predomina l"
       }
     },
     "R353_operario_carga_descarga": {
@@ -11893,10 +12242,11 @@
       "prioridad": -1,
       "condicion": {
         "titulo_contiene_alguno": [
-          "operario",
-          "operaria",
-          "operarios",
-          "operarias"
+          "lavadero de autos",
+          "lavado de vehiculos",
+          "lavado de vehículos",
+          "lavadero de vehiculos",
+          "lavadero de vehículos"
         ],
         "titulo_o_tareas_contiene_alguno": [
           "lavadero",
@@ -11915,7 +12265,33 @@
       "activa": true,
       "_linaje": {
         "spec": "SPEC N",
-        "fecha": "2026-04-26"
+        "fecha": "2026-04-26",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (c): split por titulo: vehiculos -> 9122.1; lavanderia/roperia -> 8157.1; limpieza de areas -> cola",
+        "nota_cyn": "R354 mezcla funciones distintas. Para lavado, secado, planchado y doblado de ropa o ropería en lavandería industrial corresponde 8157.1 operario de lavandería/operaria de lavandería; 9122.1 debe reservarse para lavado y "
+      }
+    },
+    "R354b_operario_lavanderia": {
+      "nombre": "R354b operario lavanderia",
+      "prioridad": -1,
+      "condicion": {
+        "titulo_contiene_alguno": [
+          "lavanderia",
+          "lavandería",
+          "roperia",
+          "ropería"
+        ]
+      },
+      "accion": {
+        "forzar_isco": "8157",
+        "esco_label": "operario de lavandería/operaria de lavandería",
+        "esco_code": "8157.1"
+      },
+      "activa": true,
+      "_linaje": {
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "alta_por_split de R354_operario_lavadero",
+        "nota_cyn": "R354 mezcla funciones distintas. Para lavado, secado, planchado y doblado de ropa o ropería en lavandería industrial corresponde 8157.1 operario de lavandería/operaria de lavandería; 9122.1 debe reservarse para lavado y "
       }
     },
     "R355_operario_maestranza": {
@@ -11926,6 +12302,11 @@
           "maestranza",
           "operario maestranza",
           "operario/a maestranza"
+        ],
+        "titulo_no_contiene_alguno": [
+          "encargado",
+          "supervisor",
+          "coordinador"
         ]
       },
       "accion": {
@@ -11936,7 +12317,10 @@
       "activa": true,
       "_linaje": {
         "spec": "SPEC N",
-        "fecha": "2026-04-26"
+        "fecha": "2026-04-26",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (b): excluir jerarquicos; multipuesto queda para el gate NLP",
+        "nota_cyn": "Mantener 9112.2 cuando el núcleo sea ejecutar tareas de limpieza, higienización, orden y maestranza. Excluir títulos jerárquicos como encargado/a o supervisor/a cuando predominen coordinación de personal, control de asis"
       }
     },
     "R356_operario_mantenimiento": {
@@ -11957,7 +12341,13 @@
         ],
         "titulo_no_contiene_alguno": [
           "limpieza",
-          "edilicio"
+          "edilicio",
+          "electrico",
+          "eléctrico",
+          "electronico",
+          "electrónico",
+          "refrigeracion",
+          "refrigeración"
         ]
       },
       "accion": {
@@ -11968,7 +12358,10 @@
       "activa": true,
       "_linaje": {
         "spec": "SPEC N",
-        "fecha": "2026-04-26"
+        "fecha": "2026-04-26",
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "tratamiento (c): retiene 7233.7 solo mecanico; 3-vias completa en precompilacion",
+        "nota_cyn": "R356 está sobrecapturando por “operario + mantenimiento”. En la muestra aparecen mantenimiento mecánico real de maquinaria, pero también mantenimiento edilicio general, electricidad industrial, mantenimiento electrónico,"
       }
     },
     "R357_tecnico_operario_produccion": {
@@ -12106,5 +12499,6 @@
   "_cambios_v526_h_a3_grafo": "[FRENTE H v0.3.4] laudo A3: registro L3 extendido POR GRAFO (+31: conectadas por arista D al vecindario, K-validadas). Las 32 previas = subcriterio prefijo. TOTAL _traductor_L3: 63.",
   "_cambios_v527_h_p4_subordinacion": "[FRENTE H P4] L4: 9 reglas marcadas subordinada_al_traductor (CUBIERTA del M1 con destino en el territorio de los 7 hubs activos + R14 pactada; las L3 quedan FUERA — preceden). Ninguna se retira.",
   "_cambios_v528_k3_t1": "[FRENTE K3 T1] tercera_ronda_cyn_2026-08-19: 14 retiros (vol 160; cohort en exports/cohorts/) + 8 MANTENER marcadas K-validadas.",
-  "_cambios_v529_k3_t2": "[FRENTE K3 T2] tercera_ronda_cyn_2026-08-19: 16 correcciones destino-simple (incl. R132 con SALIDA del registro L3)."
+  "_cambios_v529_k3_t2": "[FRENTE K3 T2] tercera_ronda_cyn_2026-08-19: 16 correcciones destino-simple (incl. R132 con SALIDA del registro L3).",
+  "_cambios_v530_k3_t3": "[FRENTE K3 T3] tercera_ronda_cyn_2026-08-19: 19 (b) restricciones patron-R137/exclusiones + 14 (c) defaults+colas+splits (5 altas: R95a/R66b/R344b/R313b/R354b; R95 retirada post-split). Claves ocupadas sin restriccion-tareas (solo exclusiones): ['R349_operario_envasado', 'R348_operario_plastico_soplado', 'R356_operario_mantenimiento', 'R358_despacho_metalurgico_grua']."
 }
