@@ -1,0 +1,292 @@
+{
+ "_meta": {
+  "proposito": "Cohort snapshot PRE-retiro [FRENTE K3]: poblacion de las 14 RETIRAR de la tercera ronda (tercera_ronda_cyn_2026-08-19). JOIN para la fase 2 / frente L.",
+  "generado": "2026-08-19"
+ },
+ "cohorts": {
+  "R347_operario_metalurgico": {
+   "n": 62,
+   "destino_retirado": {
+    "esco_code": "7214.3.1",
+    "esco_label": "remachador/remachadora"
+   },
+   "id_ofertas": [
+    "7797557826",
+    "6743482819",
+    "7865851500",
+    "1117876729",
+    "1118032334",
+    "1118040624",
+    "1118048578",
+    "1118113605",
+    "1118155053",
+    "1118179573",
+    "1118212669",
+    "1118219793",
+    "2177753",
+    "5033484934",
+    "5048561082",
+    "5064370466",
+    "5124951937",
+    "5169474615",
+    "5392603904",
+    "5637663426",
+    "5768134006",
+    "5819483190",
+    "5880866221",
+    "6199190756",
+    "6816813774",
+    "7115271750",
+    "7234807883",
+    "7623996378",
+    "7674231052",
+    "7779903569",
+    "7825704390",
+    "7878558889",
+    "7907119232",
+    "7989403641",
+    "8075802493",
+    "8253030558",
+    "8415533868",
+    "8486100472",
+    "8742788832",
+    "8748851298",
+    "8751081602",
+    "8803703363",
+    "8901711515",
+    "8942342659",
+    "9254121708",
+    "5873431284",
+    "6626398353",
+    "6938757255",
+    "1118046253",
+    "5403267536",
+    "6947387383",
+    "8696956742",
+    "5737285238",
+    "7484180748",
+    "9291403700",
+    "2181973",
+    "1118294753",
+    "2182662",
+    "8483155435",
+    "1118305899",
+    "1118313018",
+    "1118360540"
+   ]
+  },
+  "R331_acompanante_integracion_escolar": {
+   "n": 37,
+   "destino_retirado": {
+    "esco_code": "3412.4.5",
+    "esco_label": "trabajador de apoyo a las familias/trabajadora de apoyo a las familias"
+   },
+   "id_ofertas": [
+    "7677139622",
+    "8996789189",
+    "1118236130",
+    "2179924",
+    "8247347753",
+    "8766801451",
+    "6941021316",
+    "7591228599",
+    "7763337210",
+    "7763337210_2",
+    "8545168839",
+    "8835120714",
+    "1117955926",
+    "5042014771",
+    "5491569400",
+    "6214482265",
+    "6624274748",
+    "7011630913",
+    "7163443825",
+    "1118286418",
+    "5293909287",
+    "6130257737",
+    "5602201996",
+    "6284534468",
+    "6958084704",
+    "8458135629",
+    "8477610281",
+    "8845235451",
+    "7454215021",
+    "5459320514",
+    "5588052189",
+    "7059648766",
+    "8771063537",
+    "1118325941",
+    "2183690",
+    "1118348489",
+    "1118356645"
+   ]
+  },
+  "R332_talentos_discapacidad": {
+   "n": 20,
+   "destino_retirado": {
+    "esco_code": "2635.3",
+    "esco_label": "trabajador social/trabajadora social"
+   },
+   "id_ofertas": [
+    "8090340570",
+    "5522183167",
+    "6848994957",
+    "8771062806",
+    "1118142422",
+    "5751609478",
+    "8303429460",
+    "5334775639",
+    "6793862574",
+    "1118297676",
+    "2182209",
+    "2182480",
+    "8084404915",
+    "8927424778",
+    "8978468358",
+    "8543814979",
+    "8437638718",
+    "8628711916",
+    "2185126",
+    "8156321326"
+   ]
+  },
+  "R315_operario_metalurgico": {
+   "n": 10,
+   "destino_retirado": {
+    "esco_code": "7223.4",
+    "esco_label": "operador de máquinas de control numérico/operadora de máquinas de control numérico"
+   },
+   "id_ofertas": [
+    "1118007106",
+    "5783989315",
+    "1118168472",
+    "1118137954",
+    "8918247229",
+    "6606583527",
+    "6822237529",
+    "5522933244",
+    "1118341758",
+    "1118348791"
+   ]
+  },
+  "R357_tecnico_operario_produccion": {
+   "n": 9,
+   "destino_retirado": {
+    "esco_code": "3115.1",
+    "esco_label": "ingeniero técnico de mecánica/ingeniera técnica de mecánica"
+   },
+   "id_ofertas": [
+    "1118213079",
+    "1118221935",
+    "2178537",
+    "5468497673",
+    "5875911811",
+    "6913217366",
+    "7679590685",
+    "1118311093",
+    "1118356628"
+   ]
+  },
+  "R311_programador_produccion": {
+   "n": 5,
+   "destino_retirado": {
+    "esco_code": "3122.4",
+    "esco_label": "supervisor de producción/supervisora de producción"
+   },
+   "id_ofertas": [
+    "1118132013",
+    "6400735583",
+    "2174416",
+    "8975789864",
+    "7003162643"
+   ]
+  },
+  "R308_lonas_toldos": {
+   "n": 4,
+   "destino_retirado": {
+    "esco_code": "7533.4",
+    "esco_label": "fabricante de artículos textiles confeccionados"
+   },
+   "id_ofertas": [
+    "5898997970",
+    "8358425038",
+    "1118228805",
+    "8515740087"
+   ]
+  },
+  "R310_auxiliar_promociones": {
+   "n": 3,
+   "destino_retirado": {
+    "esco_code": "3332.2.1",
+    "esco_label": "responsable de eventos"
+   },
+   "id_ofertas": [
+    "5784938217",
+    "8742033457",
+    "1118356257"
+   ]
+  },
+  "R318_operador_produccion": {
+   "n": 3,
+   "destino_retirado": {
+    "esco_code": "8142.2",
+    "esco_label": "operador de prensa hidráulica/operadora de prensa hidráulica"
+   },
+   "id_ofertas": [
+    "1118145955",
+    "8659254750",
+    "8938755479"
+   ]
+  },
+  "R338_operador_tecnico_generico": {
+   "n": 3,
+   "destino_retirado": {
+    "esco_code": "8189.1",
+    "esco_label": "operador de canteadora/operadora de canteadora"
+   },
+   "id_ofertas": [
+    "6697865056",
+    "8131811164",
+    "6637859722"
+   ]
+  },
+  "R339_analista_contrataciones_transporte": {
+   "n": 3,
+   "destino_retirado": {
+    "esco_code": "4323.11",
+    "esco_label": "coordinador de operaciones portuarias/coordinadora de operaciones portuarias"
+   },
+   "id_ofertas": [
+    "6742049170",
+    "1118282725",
+    "8810306031"
+   ]
+  },
+  "R342_acompanante_terapeutico_cuidador": {
+   "n": 1,
+   "destino_retirado": {
+    "esco_code": "5329.1",
+    "esco_label": "celador sanitario/celadora sanitaria"
+   },
+   "id_ofertas": [
+    "6104769191"
+   ]
+  },
+  "R314_advisor_software": {
+   "n": 0,
+   "destino_retirado": {
+    "esco_code": null,
+    "esco_label": "analista de pruebas"
+   },
+   "id_ofertas": []
+  },
+  "R341_vigilador_supervisor_produccion": {
+   "n": 0,
+   "destino_retirado": {
+    "esco_code": "3122.3",
+    "esco_label": "supervisor de montaje industrial/supervisora de montaje industrial"
+   },
+   "id_ofertas": []
+  }
+ }
+}

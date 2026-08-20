@@ -1,0 +1,107 @@
+{
+ "corpus": 84524,
+ "viejo": {
+  "regla": [
+   49345,
+   58.4
+  ],
+  "semantico": [
+   26318,
+   31.1
+  ],
+  "dict_forzador": [
+   4300,
+   5.1
+  ],
+  "dict_contextual": [
+   4561,
+   5.4
+  ]
+ },
+ "nuevo": {
+  "regla": [
+   48065,
+   56.9
+  ],
+  "semantico": [
+   27199,
+   32.2
+  ],
+  "dict_forzador": [
+   4436,
+   5.2
+  ],
+  "dict_contextual": [
+   4824,
+   5.7
+  ]
+ },
+ "cambios": {
+  "destino_corregido": 4062,
+  "regla->siguiente_canal": 1321,
+  "regla_distinta_mismo_destino_o_split": 121,
+  "sin_regla->regla_nueva": 41
+ },
+ "top_reglas_nuevo": [
+  [
+   "R111_vendedor_generico",
+   3949
+  ],
+  [
+   "R170_asesor_comercial",
+   1954
+  ],
+  [
+   "R33_desarrollador_software",
+   1887
+  ],
+  [
+   "R14_contador_auditor",
+   1740
+  ],
+  [
+   "R109_ejecutivo_ventas",
+   1209
+  ],
+  [
+   "R238_analista_it",
+   843
+  ],
+  [
+   "R34_cajero",
+   835
+  ],
+  [
+   "R305_electromecanico",
+   829
+  ],
+  [
+   "R274_coordinador_operaciones_logistica",
+   785
+  ],
+  [
+   "R353_operario_carga_descarga",
+   689
+  ],
+  [
+   "R230_asesor_comercial",
+   637
+  ],
+  [
+   "R26_recepcionista",
+   613
+  ],
+  [
+   "R239_analista_operaciones",
+   613
+  ],
+  [
+   "R166_cocinero_planchero",
+   600
+  ],
+  [
+   "R31_mozo_camarero",
+   575
+  ]
+ ]
+}

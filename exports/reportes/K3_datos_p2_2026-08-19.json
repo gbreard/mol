@@ -1,0 +1,445 @@
+{
+ "tabla": [
+  {
+   "regla": "R323_atencion_publico",
+   "vol": 591,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": 215,
+   "des_fuerza": 376,
+   "nota": "4225.1 solo con nucleo de atencion; venta/reposicion quedan des-forzadas (comercial por tareas o 9334.1 fase 2)"
+  },
+  {
+   "regla": "R353_operario_carga_descarga",
+   "vol": 543,
+   "clase": "a",
+   "nuevo": "9333.3",
+   "retiene": 484,
+   "des_fuerza": 59,
+   "nota": "codigo de la consolidada 75; exclusion de titulo produccion (el caso Operarios-de-produccion de la muestra)"
+  },
+  {
+   "regla": "R305_electromecanico",
+   "vol": 518,
+   "clase": "a",
+   "nuevo": "3113.1.2",
+   "retiene": null,
+   "des_fuerza": null,
+   "nota": "la denominacion tecnico electromecanico ES la consolidada 78; nucleo estandar"
+  },
+  {
+   "regla": "R274_coordinador_operaciones_logistica",
+   "vol": 460,
+   "clase": "a",
+   "nuevo": "4323.9",
+   "retiene": null,
+   "des_fuerza": null,
+   "nota": "decision ya validada (regla 11 del dicc consolidado); la condicion ya exige logistica"
+  },
+  {
+   "regla": "R228_analista_contabilidad",
+   "vol": 288,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": 150,
+   "des_fuerza": 138,
+   "nota": "CONVERGENTE hub 1 (ya subordinada): retiene solo analisis-predominante; registracion pura -> cola (el arbol la desambigua)"
+  },
+  {
+   "regla": "R349_operario_envasado",
+   "vol": 177,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": 163,
+   "des_fuerza": 14,
+   "nota": "retiene nucleo de linea de envasado; recepcion/distribucion des-forzada"
+  },
+  {
+   "regla": "R95_tech_lead_ia_ml",
+   "vol": 174,
+   "clase": "c",
+   "nuevo": "(mantiene)",
+   "retiene": 101,
+   "des_fuerza": 73,
+   "nota": "rama IA/ML separable POR TITULO -> alta R95a (2511.11); el resto (tech lead/arquitecto/lead dev) -> cola + precompilacion"
+  },
+  {
+   "regla": "R329_tecnico_electronico_mantenimiento",
+   "vol": 172,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": 69,
+   "des_fuerza": 103,
+   "nota": "nucleo electronico real; potencia/electromecanica excluidas"
+  },
+  {
+   "regla": "R350_operario_deposito_logistica",
+   "vol": 164,
+   "clase": "c",
+   "nuevo": "(mantiene)",
+   "retiene": 71,
+   "des_fuerza": 93,
+   "nota": "CONVERGENTE conflicto #4 precompilado: retiene 9333.8 con nucleo deposito; carga/descarga pura y picking -> cola + fase 2"
+  },
+  {
+   "regla": "R322_mecanico_industrial",
+   "vol": 141,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": 126,
+   "des_fuerza": 15,
+   "nota": "exclusiones de titulo (jerarquia/agro/electro); el nucleo mecanico ya esta en la condicion"
+  },
+  {
+   "regla": "R309_responsable_deposito",
+   "vol": 123,
+   "clase": "a",
+   "nuevo": "1324.3.4",
+   "retiene": null,
+   "des_fuerza": null,
+   "nota": "deposito -> jefe de almacen"
+  },
+  {
+   "regla": "R303_gerente_admin",
+   "vol": 122,
+   "clase": "c",
+   "nuevo": "(mantiene)",
+   "retiene": 84,
+   "des_fuerza": 38,
+   "nota": "CONVERGENTE con la rama de jerarquia del anexo (P4.2): retiene 1211.1 solo con finanzas en titulo; resto -> cola (ya subordinada)"
+  },
+  {
+   "regla": "R355_operario_maestranza",
+   "vol": 114,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": 108,
+   "des_fuerza": 6,
+   "nota": "excluir jerarquicos; multipuesto queda para el gate NLP"
+  },
+  {
+   "regla": "R132_vendedor_medicina_prepaga",
+   "vol": 102,
+   "clase": "a",
+   "nuevo": "3322.1",
+   "retiene": null,
+   "des_fuerza": null,
+   "nota": "SALIDA de L3 (P3.4); quitar keywords de beneficio (falsos positivos que cita Cyn)"
+  },
+  {
+   "regla": "R306_mantenimiento_electrico",
+   "vol": 92,
+   "clase": "c",
+   "nuevo": "7411.1.1.2",
+   "retiene": 81,
+   "des_fuerza": 11,
+   "nota": "default mas defendible: electrico puro -> 7411.1.1.2 (el grueso segun Cyn); 7412.3/3115.1.6 en precompilacion"
+  },
+  {
+   "regla": "R337_psicologo_laboral_educativo",
+   "vol": 88,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": 86,
+   "des_fuerza": 2,
+   "nota": "excluir docencia; la evidencia de intervencion la vigila fase 2"
+  },
+  {
+   "regla": "R66_arquitecto_software",
+   "vol": 79,
+   "clase": "c",
+   "nuevo": "(mantiene)",
+   "retiene": 43,
+   "des_fuerza": 36,
+   "nota": "separable por titulo: R66 -> 2512.3 con keywords restringidas; alta R66b -> 2511.14; architect ambiguo -> cola"
+  },
+  {
+   "regla": "R80_administrativo_almacen",
+   "vol": 76,
+   "clase": "c",
+   "nuevo": "(mantiene)",
+   "retiene": 56,
+   "des_fuerza": 20,
+   "nota": "retiene 4321.1 con nucleo inventario; conduccion (1324.3.4) y compras (3323.2) -> cola + precompilacion"
+  },
+  {
+   "regla": "R301_ascensores",
+   "vol": 68,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": 43,
+   "des_fuerza": 25,
+   "nota": "quitar 'elevador' (captura 'relevador' por substring) + excluir comerciales"
+  },
+  {
+   "regla": "R90_supervisor_ventas",
+   "vol": 64,
+   "clase": "a",
+   "nuevo": "1221.3.2.1",
+   "retiene": null,
+   "des_fuerza": null,
+   "nota": "conduccion de fuerza comercial, ya validado"
+  },
+  {
+   "regla": "R344_project_manager",
+   "vol": 62,
+   "clase": "c",
+   "nuevo": "(mantiene)",
+   "retiene": 62,
+   "des_fuerza": 0,
+   "nota": "split por titulo: con senal IT -> 1330.7; sin senal -> 1219.6 (R344b catch-all)"
+  },
+  {
+   "regla": "R345_operario_cnc",
+   "vol": 59,
+   "clase": "a",
+   "nuevo": "7223.4",
+   "retiene": 43,
+   "des_fuerza": 16,
+   "nota": "CONVERGE con R128a/b (T4a); operarios -> 7223.4, programador lo toma R128a"
+  },
+  {
+   "regla": "R313_encargado_logistica",
+   "vol": 48,
+   "clase": "c",
+   "nuevo": "(mantiene)",
+   "retiene": 48,
+   "des_fuerza": 0,
+   "nota": "split por titulo: logistica integral -> 1324.3; deposito -> 1324.3.4; transporte/flota -> cola (4323.9 en precompilacion)"
+  },
+  {
+   "regla": "R336_analista_seguridad_higiene",
+   "vol": 48,
+   "clase": "a",
+   "nuevo": "3257.7",
+   "retiene": null,
+   "des_fuerza": null,
+   "nota": "decision ya validada"
+  },
+  {
+   "regla": "R356_operario_mantenimiento",
+   "vol": 46,
+   "clase": "c",
+   "nuevo": "(mantiene)",
+   "retiene": 9,
+   "des_fuerza": 37,
+   "nota": "retiene 7233.7 solo mecanico; 3-vias completa en precompilacion"
+  },
+  {
+   "regla": "R302_supervisor_obra",
+   "vol": 42,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": 42,
+   "des_fuerza": 0,
+   "nota": "especialidad unica excluida (ascensores tiene reglas propias); resto retiene 3123.1"
+  },
+  {
+   "regla": "R327_encargado_salon",
+   "vol": 31,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": 5,
+   "des_fuerza": 26,
+   "nota": "5131.2.1 solo gastronomia; comercio (5222.1) queda a cola/arbol"
+  },
+  {
+   "regla": "R333_operario_limpieza",
+   "vol": 30,
+   "clase": "a",
+   "nuevo": "9112.2",
+   "retiene": null,
+   "des_fuerza": null,
+   "nota": "general, no aseos"
+  },
+  {
+   "regla": "R307_ingeniero_electronico",
+   "vol": 28,
+   "clase": "c",
+   "nuevo": "(mantiene)",
+   "retiene": 5,
+   "des_fuerza": 23,
+   "nota": "retiene 2152.1 solo diseno/desarrollo; instrumentacion/mantenimiento/medicos en precompilacion (4 destinos)"
+  },
+  {
+   "regla": "R319_corte_costura",
+   "vol": 28,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": null,
+   "des_fuerza": null,
+   "nota": "quitar 'operario textil' generico; nucleo costura retiene 8153.1"
+  },
+  {
+   "regla": "R354_operario_lavadero",
+   "vol": 25,
+   "clase": "c",
+   "nuevo": "(mantiene)",
+   "retiene": 5,
+   "des_fuerza": 20,
+   "nota": "split por titulo: vehiculos -> 9122.1; lavanderia/roperia -> 8157.1; limpieza de areas -> cola"
+  },
+  {
+   "regla": "R346_operario_corte_laser",
+   "vol": 22,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": 19,
+   "des_fuerza": 3,
+   "nota": "programacion -> 2514.4 via R128a; nucleo laser retiene"
+  },
+  {
+   "regla": "R321_tecnico_instalador_seguridad",
+   "vol": 20,
+   "clase": "a",
+   "nuevo": "7422.5",
+   "retiene": null,
+   "des_fuerza": null,
+   "nota": "ya validado en dicc auditado"
+  },
+  {
+   "regla": "R320_ventas_telemarketing",
+   "vol": 15,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": 10,
+   "des_fuerza": 5,
+   "nota": "5244.1 solo con evidencia de venta remota; sin tareas -> cola"
+  },
+  {
+   "regla": "R348_operario_plastico_soplado",
+   "vol": 12,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": 1,
+   "des_fuerza": 11,
+   "nota": "8142.1 solo con evidencia de soplado; inyeccion (8142.7) en precompilacion"
+  },
+  {
+   "regla": "R131b_hoteleria_sector_salud",
+   "vol": 11,
+   "clase": "a",
+   "nuevo": "1219.1.1",
+   "retiene": null,
+   "des_fuerza": null,
+   "nota": "consolida con R131 (ya L3 en 1219.1.1)"
+  },
+  {
+   "regla": "R330_fiambrero",
+   "vol": 10,
+   "clase": "a",
+   "nuevo": "5223.7.23",
+   "retiene": null,
+   "des_fuerza": null,
+   "nota": "carniceria/fiambres, consolidada vigente"
+  },
+  {
+   "regla": "R334_ninera",
+   "vol": 10,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": 7,
+   "des_fuerza": 3,
+   "nota": "excluir hibridos ninera+domestica"
+  },
+  {
+   "regla": "R351_operario_despacho",
+   "vol": 9,
+   "clase": "c",
+   "nuevo": "(mantiene)",
+   "retiene": 7,
+   "des_fuerza": 2,
+   "nota": "retiene 9333.3 con nucleo fisico; armado de pedidos (9333.8.1) y transporte -> cola + precompilacion"
+  },
+  {
+   "regla": "R316_representante_ventas_industrial",
+   "vol": 8,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": 1,
+   "des_fuerza": 7,
+   "nota": "2433.6 solo con componente tecnico-comercial; sin el -> cola (3322.1 lo toma el arbol/R229a)"
+  },
+  {
+   "regla": "R304_torrista",
+   "vol": 7,
+   "clase": "a",
+   "nuevo": "7422.7",
+   "retiene": null,
+   "des_fuerza": null,
+   "nota": "default mas defendible de la familia 7422 (instalacion/mantenimiento telecom en altura); 7422.1/7422.6 quedan en precompilacion"
+  },
+  {
+   "regla": "R335_promotor_via_publica",
+   "vol": 6,
+   "clase": "a",
+   "nuevo": "5243.1",
+   "retiene": null,
+   "des_fuerza": null,
+   "nota": "captacion presencial = vendedor a domicilio; 3322.1 solo con cartera (cola al arbol/semantico)"
+  },
+  {
+   "regla": "R312_consultor_software_nomina",
+   "vol": 3,
+   "clase": "c",
+   "nuevo": "2511.10",
+   "retiene": 3,
+   "des_fuerza": 0,
+   "nota": "default 2511.10 con consultor en titulo; liquidacion efectiva (4313.1) -> cola + precompilacion"
+  },
+  {
+   "regla": "R328_psicologo_profesional",
+   "vol": 3,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": 2,
+   "des_fuerza": 1,
+   "nota": "excluir multiprofesional"
+  },
+  {
+   "regla": "R325_instalador_satelital",
+   "vol": 2,
+   "clase": "a",
+   "nuevo": "7422.7",
+   "retiene": null,
+   "des_fuerza": null,
+   "nota": "VSAT = telecom, no telefonia movil"
+  },
+  {
+   "regla": "R340_jefe_operativo_obra",
+   "vol": 2,
+   "clase": "a",
+   "nuevo": "3123.1",
+   "retiene": null,
+   "des_fuerza": null,
+   "nota": "supervision cotidiana predomina en la muestra; 1323.1 reservado (precompilacion)"
+  },
+  {
+   "regla": "R324_fileteador_pescado",
+   "vol": 1,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": 0,
+   "des_fuerza": 1,
+   "nota": "solo con confirmacion funcional (el unico aviso no trae tareas -> des-forzada)"
+  },
+  {
+   "regla": "R358_despacho_metalurgico_grua",
+   "vol": 1,
+   "clase": "c",
+   "nuevo": "(mantiene)",
+   "retiene": 1,
+   "des_fuerza": 0,
+   "nota": "retiene 8343.4 solo con puente grua en tareas; autoelevador (8344.1) -> cola (vol 1)"
+  },
+  {
+   "regla": "R180_soporte_infraestructura",
+   "vol": 0,
+   "clase": "b",
+   "nuevo": "(mantiene)",
+   "retiene": null,
+   "des_fuerza": null,
+   "nota": "2522.1 solo administracion de infraestructura; soporte/helpdesk fuera (vol 0 — sin blast)"
+  }
+ ]
+}
