@@ -1,5 +1,5 @@
 {
-  "version": "5.30",
+  "version": "5.31",
   "descripcion": "Reglas de negocio para matching ESCO. 300 reglas de bypass que fuerzan ISCO específico.",
   "fecha_creacion": "2025-12-30",
   "fecha_actualizacion": "2026-08-19",
@@ -554,7 +554,20 @@
           "almacén",
           "tienda",
           "local",
-          "sucursal"
+          "sucursal",
+          "venta",
+          "ventas",
+          "vendedor",
+          "vendedora",
+          "comercial"
+        ],
+        "titulo_o_tareas_contiene_alguno": [
+          "consultas",
+          "reclamos",
+          "soporte",
+          "atencion al cliente",
+          "atención al cliente",
+          "resolver problemas"
         ]
       },
       "accion": {
@@ -568,7 +581,9 @@
       "_linaje": {
         "version_origen": "v40",
         "contexto": "R159: Farmaceutico -> 2262, R160: Tecnico instalador -> 7411",
-        "requiere_revision": true
+        "requiere_revision": true,
+        "auditoria": "tercera_ronda_cyn_2026-08-19",
+        "cambio_k3": "restriccion por anexo v4 r4: call center en titulo NO alcanza; exige nucleo de atencion en titulo/tareas y excluye venta (la venta telefonica va a 5244.1 via la rama canal-remoto). Sigue L3 con alcance restringido (4222.1 validado para atencion)."
       },
       "_traductor_L3": "especializada_vecindario — PRECEDE al traductor (laudo A3, H_v034: criterio extendido POR GRAFO — conectada por arista D al vecindario del hub-set). subcriterio: grafo. Validacion: destino 4222.1 == codigo auditado por Cyn."
     },
@@ -12500,5 +12515,6 @@
   "_cambios_v527_h_p4_subordinacion": "[FRENTE H P4] L4: 9 reglas marcadas subordinada_al_traductor (CUBIERTA del M1 con destino en el territorio de los 7 hubs activos + R14 pactada; las L3 quedan FUERA — preceden). Ninguna se retira.",
   "_cambios_v528_k3_t1": "[FRENTE K3 T1] tercera_ronda_cyn_2026-08-19: 14 retiros (vol 160; cohort en exports/cohorts/) + 8 MANTENER marcadas K-validadas.",
   "_cambios_v529_k3_t2": "[FRENTE K3 T2] tercera_ronda_cyn_2026-08-19: 16 correcciones destino-simple (incl. R132 con SALIDA del registro L3).",
-  "_cambios_v530_k3_t3": "[FRENTE K3 T3] tercera_ronda_cyn_2026-08-19: 19 (b) restricciones patron-R137/exclusiones + 14 (c) defaults+colas+splits (5 altas: R95a/R66b/R344b/R313b/R354b; R95 retirada post-split). Claves ocupadas sin restriccion-tareas (solo exclusiones): ['R349_operario_envasado', 'R348_operario_plastico_soplado', 'R356_operario_mantenimiento', 'R358_despacho_metalurgico_grua']."
+  "_cambios_v530_k3_t3": "[FRENTE K3 T3] tercera_ronda_cyn_2026-08-19: 19 (b) restricciones patron-R137/exclusiones + 14 (c) defaults+colas+splits (5 altas: R95a/R66b/R344b/R313b/R354b; R95 retirada post-split). Claves ocupadas sin restriccion-tareas (solo exclusiones): ['R349_operario_envasado', 'R348_operario_plastico_soplado', 'R356_operario_mantenimiento', 'R358_despacho_metalurgico_grua'].",
+  "_cambios_v531_k3_p4": "[FRENTE K3 P4] R15 restringida (anexo v4 r4)."
 }

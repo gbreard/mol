@@ -1,7 +1,7 @@
 {
   "_meta": {
     "descripcion": "Lexico compilado del traductor: terminos operacionales por hub/regla, propuestos desde la prosa de Cyn (jamas reescrita — la prosa vive en el JSON 2.0). Overlay sobre condicion_operacional.",
-    "version": "0.3.4",
+    "version": "0.4.0",
     "generado": "2026-08-07 [FRENTE H P2]",
     "terminos_por": "llm_propuesto",
     "validada_por_casos": "parcial: 7 hubs congelados en P2 gate; 3 (36/58/52) quedan v0.x-propuesta para shadow P3",
@@ -30,7 +30,8 @@
     "cambios_v0_3_2": "[FRENTE H v0.3.2 — laudos H_v032] (L1b) Re-chequeo de modos de las D calientes contra los marcadores de la prosa de Cyn: la compilacion resulto FIEL en 10/11 (las prosas dicen 'principalmente/funcion principal' y asi estan compiladas — el defecto era la semantica, corregida en el evaluador por L1). UNICO mis-modado: 5223.7 D02 ('Si se concentra en computadoras, componentes y perifericos') estaba 'alguna' -> pasa a 'principalmente' ('se concentra en' es marcador de dominancia; esta D mando 'Vendedor consumo masivo' a vendedor-de-ordenadores en el shadow). L1 (semantica) vive en traductor_contexto.py: la INCLUSION participa del comparativo de las D.",
     "cambios_v0_3_3": "[FRENTE H v0.3.3 — laudos H_v033] (P2b) Anclas de venta-externa a la inclusion de 3322.1, COMPILADAS TEXTUALES de la prosa de la regla consolidada 16 ('buscar, recibir o visitar clientes; presentar productos o servicios; confeccionar cotizaciones...; negociar precios y condiciones; realizar seguimiento de pedidos o propuestas y detectar oportunidades comerciales'): ['recibir clientes', 'presentar servicios', 'confeccionar cotizaciones', 'negociar condiciones', 'seguimiento de propuestas', 'detectar oportunidades']. terminos_por: prosa_directa. (P3 BINARIO — veredicto: FASE 2, no se compila. La rama de responsabilidad del hub contable exige interpretacion del compilador: la prosa D02 dice 'registrar... para que posteriormente sean analizadas por un profesional' y la inclusion 2411.1 lista 'revisar y analizar estados financieros, presupuestos...', pero los casos reales dicen 'liderar cierres', 'asegurar registraciones', 'analisis de cuentas' — mapear eso a 'responsabilidad profesional integral' (prosa K2 de Cyn, abstracta) NO sale de los marcadores sin interpretar. Costo aceptado: las 2 regresiones P3 de la matriz v2 persisten hasta que Cyn escriba los marcadores.) P1/interaccion/guard P2a viven en traductor_contexto.py.",
     "cambios_v0_3_3_1_a1": "[FRENTE H — A1, orden de Gerardo 2026-08-18] Anclas a la inclusion de 5223.4 contra las 4 regresiones D08/D10-por-mencion-accesoria. Procedencia SIN maquillar: (a) flexiones textuales de la prosa PROPIA de la regla 51 ('recibe y atiende compradores...'): ['recibir compradores', 'recibe compradores', 'atiende compradores']; (b) las 6 anclas P2b COMPARTIDAS por orden A1 — su fuente textual es la prosa de la regla 16 (la prosa de 51/52 es venta-de-salon y no las contiene): ['recibir clientes', 'presentar servicios', 'confeccionar cotizaciones', 'negociar condiciones', 'seguimiento de propuestas', 'detectar oportunidades']. Alcance: solo 5223.4 (las 4 regresiones A1 son todas hub 51); 5223.7 es hub-propuesta, fuera del gate. Evaluador INTACTO (A2/A3 esperan laudo).",
-    "cambios_v0_3_4": "[FRENTE H v0.3.4 — paquete de laudos final] A1-bis: term-set unico venta_externa@regla16 (29 terminos: prosa regla 16 + flexiones autorizadas + 4 nombrados por el laudo) referenciado en D11.terminos_ref y D08/D10.excluye_ref del hub 51, con tag de telemetria excluye_venta_externa. La resolucion de referencias vive en el evaluador (identidad de objeto con test — patron BOILERPLATE_RE). A2 (confirmatorias-primero en modo satelite) y A3 (L3 por grafo) viven en traductor_contexto.py y matching_rules_business.json."
+    "cambios_v0_3_4": "[FRENTE H v0.3.4 — paquete de laudos final] A1-bis: term-set unico venta_externa@regla16 (29 terminos: prosa regla 16 + flexiones autorizadas + 4 nombrados por el laudo) referenciado en D11.terminos_ref y D08/D10.excluye_ref del hub 51, con tag de telemetria excluye_venta_externa. La resolucion de referencias vive en el evaluador (identidad de objeto con test — patron BOILERPLATE_RE). A2 (confirmatorias-primero en modo satelite) y A3 (L3 por grafo) viven en traductor_contexto.py y matching_rules_business.json.",
+    "cambios_v0_4_0": "[FRENTE K3 P4 — anexo v4 respondido, tercera_ronda_cyn_2026-08-19] (r2) rama de jerarquia DX_jerarquia (prosa_directa, min_matches:2, tag rama_jerarquia_contable) en hubs 2411.1.1/2411.1/3313.2 -> 1211.1.1. (r3) canal-remoto-precede-a-cartera: D10(h51)/D05(h16) modo alguna con anclas INEQUIVOCAS de canal remoto + excluye remoto en D11 (el term-set venta_externa@regla16 queda intacto — el excluye es clave local). (r1) representante comercial como titulo_aviso_extra vive en hubs_activos.json con fuente_pendiente_jd. (r4) R15 restringida en config."
   },
   "hubs": {
     "5223.4": {
@@ -219,26 +220,47 @@
         "tecnologia_definitoria": false
       },
       "D10": {
-        "modo": "min_matches",
-        "minimo": 2,
+        "modo": "alguna",
         "terminos": [
-          "llamadas",
-          "llamados",
           "venta telefonica",
           "ventas telefonicas",
+          "llamadas telefonicas",
+          "venta remota",
+          "canales remotos",
+          "call center",
+          "telemarketing",
+          "televentas",
           "cierre telefonico",
-          "promocionar por telefono",
-          "telemarketing"
+          "por telefono",
+          "llamadas salientes",
+          "llamadas entrantes"
         ],
-        "tecnologia_definitoria": false,
-        "excluye_ref": "venta_externa@regla16",
-        "excluye_tag": "excluye_venta_externa"
+        "compilacion": "prosa_directa",
+        "tag": "canal_remoto_precede",
+        "prosa_cyn": "Cyn (r3): \"teleoperador 5244.1 cuando la venta se realiza principalmente mediante llamadas o canales remotos, aunque incluya prospeccion, seguimiento y cartera propia.\"",
+        "guard_exento": true,
+        "guard_exento_motivo": "conflicto de laudos resuelto por especificidad: la r3 de la tercera ronda (canal remoto precede AUNQUE haya cartera, con 1 senal inequivoca) es posterior y especifica frente al guard P2a generico (v0.3.3). Anclas inequivocas de canal remoto unicamente."
       },
       "D11": {
         "modo": "min_matches",
         "minimo": 2,
         "terminos_ref": "venta_externa@regla16",
-        "tecnologia_definitoria": false
+        "tecnologia_definitoria": false,
+        "excluye": [
+          "venta telefonica",
+          "ventas telefonicas",
+          "llamadas telefonicas",
+          "venta remota",
+          "canales remotos",
+          "call center",
+          "telemarketing",
+          "televentas",
+          "cierre telefonico",
+          "por telefono",
+          "llamadas salientes",
+          "llamadas entrantes"
+        ],
+        "excluye_tag": "canal_remoto_precede"
       },
       "D12": {
         "modo": "min_matches",
@@ -660,18 +682,26 @@
         "tecnologia_definitoria": false
       },
       "D05": {
-        "modo": "principalmente",
+        "modo": "alguna",
         "terminos": [
-          "llamadas entrantes",
-          "llamadas salientes",
-          "llamados",
           "venta telefonica",
-          "cierre telefonico",
-          "persuasion telefonica",
+          "ventas telefonicas",
+          "llamadas telefonicas",
+          "venta remota",
+          "canales remotos",
+          "call center",
           "telemarketing",
-          "contact center"
+          "televentas",
+          "cierre telefonico",
+          "por telefono",
+          "llamadas salientes",
+          "llamadas entrantes"
         ],
-        "tecnologia_definitoria": false
+        "compilacion": "prosa_directa",
+        "tag": "canal_remoto_precede",
+        "prosa_cyn": "Cyn (r3/r4): la venta por llamadas manda 5244.1; call center no fuerza atencion cuando las tareas son de venta.",
+        "guard_exento": true,
+        "guard_exento_motivo": "conflicto de laudos resuelto por especificidad: la r3 de la tercera ronda (canal remoto precede AUNQUE haya cartera, con 1 senal inequivoca) es posterior y especifica frente al guard P2a generico (v0.3.3). Anclas inequivocas de canal remoto unicamente."
       },
       "D06": {
         "modo": "min_matches",
@@ -988,6 +1018,32 @@
           "responsable del area contable"
         ],
         "tecnologia_definitoria": false
+      },
+      "DX_jerarquia": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "dirigir la gestion contable",
+          "liderar la gestion",
+          "liderar la gestion contable",
+          "liderar el area de contabilidad",
+          "supervisar cierres",
+          "supervisar los cierres",
+          "supervisar registraciones",
+          "supervisar la registracion",
+          "organizar el trabajo del equipo",
+          "controlar el trabajo del equipo",
+          "liderar y coordinar los equipos",
+          "establecer procedimientos",
+          "aplicar procedimientos",
+          "responsabilidad final",
+          "conduccion del equipo contable"
+        ],
+        "destino": "1211.1.1",
+        "orden": 0,
+        "compilacion": "prosa_directa",
+        "tag": "rama_jerarquia_contable",
+        "prosa_cyn": "Cyn (anexo v4, r2): \"dirigir o liderar la gestion contable, supervisar cierres y registraciones, organizar o controlar el trabajo del equipo o de los procesos contables, establecer o aplicar procedimientos y asumir responsabilidad final sobre la informacion y los resultados del area.\""
       }
     },
     "3313.2": {
@@ -1097,6 +1153,32 @@
           "apoyo de oficina"
         ],
         "tecnologia_definitoria": false
+      },
+      "DX_jerarquia": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "dirigir la gestion contable",
+          "liderar la gestion",
+          "liderar la gestion contable",
+          "liderar el area de contabilidad",
+          "supervisar cierres",
+          "supervisar los cierres",
+          "supervisar registraciones",
+          "supervisar la registracion",
+          "organizar el trabajo del equipo",
+          "controlar el trabajo del equipo",
+          "liderar y coordinar los equipos",
+          "establecer procedimientos",
+          "aplicar procedimientos",
+          "responsabilidad final",
+          "conduccion del equipo contable"
+        ],
+        "destino": "1211.1.1",
+        "orden": 0,
+        "compilacion": "prosa_directa",
+        "tag": "rama_jerarquia_contable",
+        "prosa_cyn": "Cyn (anexo v4, r2): \"dirigir o liderar la gestion contable, supervisar cierres y registraciones, organizar o controlar el trabajo del equipo o de los procesos contables, establecer o aplicar procedimientos y asumir responsabilidad final sobre la informacion y los resultados del area.\""
       }
     },
     "4312.1": {
@@ -1778,6 +1860,32 @@
         ],
         "tecnologia_definitoria": false,
         "_ajuste": "P2 gate 2026-08-07: subido a min_matches:2 sin 'impuestos' bare (decidia con un match generico)"
+      },
+      "DX_jerarquia": {
+        "modo": "min_matches",
+        "minimo": 2,
+        "terminos": [
+          "dirigir la gestion contable",
+          "liderar la gestion",
+          "liderar la gestion contable",
+          "liderar el area de contabilidad",
+          "supervisar cierres",
+          "supervisar los cierres",
+          "supervisar registraciones",
+          "supervisar la registracion",
+          "organizar el trabajo del equipo",
+          "controlar el trabajo del equipo",
+          "liderar y coordinar los equipos",
+          "establecer procedimientos",
+          "aplicar procedimientos",
+          "responsabilidad final",
+          "conduccion del equipo contable"
+        ],
+        "destino": "1211.1.1",
+        "orden": 0,
+        "compilacion": "prosa_directa",
+        "tag": "rama_jerarquia_contable",
+        "prosa_cyn": "Cyn (anexo v4, r2): \"dirigir o liderar la gestion contable, supervisar cierres y registraciones, organizar o controlar el trabajo del equipo o de los procesos contables, establecer o aplicar procedimientos y asumir responsabilidad final sobre la informacion y los resultados del area.\""
       }
     }
   },

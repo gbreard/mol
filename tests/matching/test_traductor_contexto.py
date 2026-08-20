@@ -322,8 +322,11 @@ def test_23_A1bis_identidad_de_objeto_del_term_set():
           for r in t.hubs['5223.4']['reglas_desambiguacion']
           if r.get('regla_id') in ('D08', 'D10', 'D11')}
     assert ds['D11']['terminos'] is ds['D08']['excluye']
-    assert ds['D08']['excluye'] is ds['D10']['excluye']
     assert ds['D08'].get('excluye_tag') == 'excluye_venta_externa'
+    # v0.4.0 (K3 P4 r3): D10 ya NO referencia el set — la rama canal-remoto
+    # precede a la cartera (Cyn), asi que el excluye de venta-externa se retiro
+    # de D10; la identidad del set queda en D11.terminos <-> D08.excluye.
+    assert 'excluye_ref' not in ds['D10'] and ds['D10'].get('guard_exento') is True
 
 
 HUB_A1B = _hub('5000.1', 51, ['vendedor'],
@@ -372,3 +375,55 @@ def test_26_A2_confirmatoria_primero_en_modo_satelite():
     t._triggers.append(('cajera', '5000.1'))
     r = t.evaluar('Cajera', _c(tareas='cobro en linea de cajas; reposicion de mercaderia; control de stock'))
     assert r['decide'] and r['regla_id'] == 'D07' and r['codigo_esco'] == '2000.1', r
+
+
+# ── K3 P4 (anexo v4): rama de jerarquia + canal-remoto + rep. comercial ──
+
+def _t_real(hubs_activos):
+    """Evaluador con las fuentes REALES de runtime (lexico v0.4.0 + 88)."""
+    import json as _json
+    from pathlib import Path as _P
+    repo = _P(__file__).resolve().parents[2]
+    excl = _json.load(open(repo / 'config' / 'traductor_exclusiones_trigger.json'))['exclusiones']
+    return TraductorContexto(hubs_activos=hubs_activos, exclusiones_trigger=excl)
+
+
+def test_27_rama_jerarquia_testigo():
+    """«Gerente administrativo contable» con conduccion real -> 1211.1.1
+    (ni 2411.1.1 ni 1211.1) via DX_jerarquia (prosa_directa, min 2 marcadores)."""
+    t = _t_real(['2411.1.1', '2411.1', '3313.2'])
+    r = t.evaluar('Gerente administrativo contable', _c(
+        tareas='Liderar la gestion integral de contabilidad; Supervisar los cierres contables '
+               'mensuales y anuales; supervisar la registracion contable; coordinar pagos'))
+    assert r['decide'] and r['codigo_esco'] == '1211.1.1', r
+    assert r['regla_id'] == 'DX_jerarquia'
+
+
+def test_28_rama_jerarquia_contracaso():
+    """Gerente NOMINAL con registracion pura: la rama no dispara (0-1 marcadores);
+    decide por tareas (D01/D02 -> registracion) — el titulo jerarquico no manda solo."""
+    t = _t_real(['2411.1.1', '2411.1', '3313.2'])
+    r = t.evaluar('Gerente administrativo contable', _c(
+        tareas='registraciones contables; carga de facturas; conciliaciones bancarias'))
+    assert not (r.get('decide') and r.get('codigo_esco') == '1211.1.1'), r
+    assert not (r.get('decide') and r.get('regla_id') == 'DX_jerarquia'), r
+
+
+def test_29_canal_remoto_precede_a_cartera():
+    """«Vendedor telefonico / call center» con cartera y prospeccion -> 5244.1
+    (la rama canal-remoto D10 precede a D11 aunque haya cartera)."""
+    t = _t_real(['5223.4', '3322.1'])
+    r = t.evaluar('Vendedor telefonico', _c(
+        tareas='Contactar y gestionar potenciales clientes por telefono y redes; '
+               'prospeccion comercial; desarrollar y fidelizar cartera propia'))
+    assert r['decide'] and r['codigo_esco'] == '5244.1', r
+
+
+def test_30_representante_comercial_activa_hub16():
+    """La denominacion extra (fuente_pendiente_jd) activa el hub 16; las tareas
+    confirman via inclusion -> 3322.1."""
+    t = _t_real(['3322.1'])
+    r = t.evaluar('Representante comercial', _c(
+        tareas='prospeccion de clientes; visitas comerciales; negociar condiciones; '
+               'detectar oportunidades comerciales'))
+    assert r['decide'] and r['codigo_esco'] == '3322.1', r

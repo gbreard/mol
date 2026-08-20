@@ -120,12 +120,27 @@ class TraductorContexto:
             hub = self.hubs.get(cod)
             if not hub:
                 continue
+            ids_hub = {r.get('regla_id') for r in hub.get('reglas_desambiguacion', [])}
             for r in hub.get('reglas_desambiguacion', []):
                 lx = reglas_lex.get(r.get('regla_id'))
                 if lx:
                     r['condicion_operacional'] = _resolver_refs(lx)
                     if lx.get('tecnologia_definitoria'):
                         r['tecnologia_definitoria'] = True
+            # v0.4.0 (K3 P4): ramas EXTRA compiladas prosa-directa desde el lexico
+            # (regla_id 'DX_*' con 'destino'): se APPENDEAN como D nuevas — la
+            # fuente formal (JSON 2.0 de JD) las incorpora despues; el lexico
+            # lleva la prosa de Cyn citada y el tag de telemetria.
+            for rid_lex, lx in reglas_lex.items():
+                if (rid_lex.startswith('DX_') and rid_lex not in ids_hub
+                        and isinstance(lx, dict) and lx.get('destino')):
+                    hub.setdefault('reglas_desambiguacion', []).append({
+                        'regla_id': rid_lex,
+                        'orden': lx.get('orden', 900),
+                        'condicion_prosa': lx.get('prosa_cyn', ''),
+                        'condicion_operacional': _resolver_refs(lx),
+                        'ocupacion_destino': {'codigo_esco': lx['destino']},
+                    })
             lx_inc = reglas_lex.get('inclusion')
             if lx_inc:
                 hub.setdefault('regla_inclusion', {})['condicion_operacional'] = {**lx_inc, 'campo': 'contenidos'}
@@ -144,8 +159,20 @@ class TraductorContexto:
         self.catalogo = catalogo_codes
         # índice de triggers normalizados por hub activo
         self._triggers = []  # (trigger_norm, codigo_hub)
+        # v0.4.0 (K3 P4, r1): titulos_aviso_extra declarados en hubs_activos.json
+        # (marca fuente_pendiente_jd — la fuente formal es el JSON 2.0; el extra
+        # activa el trigger local hasta que JD lo incorpore).
+        extras = {}
+        try:
+            _cfg_ha = json.load(open(REPO / 'config' / 'hubs_activos.json'))
+            for _hs in _cfg_ha.get('hub_sets', []):
+                for _h in _hs.get('hubs', []):
+                    if _h.get('titulos_aviso_extra'):
+                        extras[_h['codigo_esco']] = list(_h['titulos_aviso_extra'])
+        except Exception:
+            pass
         for c in self.activos:
-            for t in self.hubs[c].get('titulos_aviso', []):
+            for t in self.hubs[c].get('titulos_aviso', []) + extras.get(c, []):
                 for forma in _expandir_genero(t):
                     tn = _norm(forma)
                     if tn and tn not in self.exclusiones:
@@ -305,8 +332,10 @@ class TraductorContexto:
                         traza_reglas[-1]['estado'] = 'satelite_d_contraria_insuficiente'
                         continue
                 else:
-                    # guard P2a: inclusion COMPILADA en 0 -> la D necesita >=2 terminos distintos
-                    if n_incl == 0 and n_hits < 2:
+                    # guard P2a: inclusion COMPILADA en 0 -> la D necesita >=2 terminos distintos.
+                    # v0.4.0 (K3 P4 r3): las ramas canal-remoto llevan guard_exento en el
+                    # lexico — laudo posterior y especifico precede al guard generico.
+                    if n_incl == 0 and n_hits < 2 and not cond.get('guard_exento'):
                         traza_reglas[-1]['estado'] = 'guard_1a0_bloqueo'
                         continue
                 if cod_dst and cod_dst in self.catalogo:

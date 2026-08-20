@@ -46,7 +46,14 @@
      "id": 16,
      "codigo_esco": "3322.1",
      "ocupacion": "representante comercial",
-     "reglas_a_compilar": 14
+     "reglas_a_compilar": 14,
+     "titulos_aviso_extra": [
+      "representante comercial"
+     ],
+     "titulos_aviso_extra_meta": {
+      "fuente_pendiente_jd": true,
+      "nota": "Cyn (anexo v4 r1): agregar como titulo de aviso de la regla 16; la denominacion no clasifica sola — las tareas confirman (la inclusion ya lo exige). Fuente formal: JSON 2.0 de JD (en pendientes)."
+     }
     },
     {
      "id": 51,
