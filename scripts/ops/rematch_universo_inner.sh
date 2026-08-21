@@ -32,8 +32,20 @@ PY
     N=$((N + 1))
     NIDS=$(echo "$IDS" | tr ',' '\n' | wc -l)
     log "chunk $N: $NIDS ofertas"
-    if ! /usr/bin/python3 scripts/run_validated_pipeline.py --ids "$IDS" --skip-nlp --quiet >> "$LOG" 2>&1; then
-        log "chunk $N FALLO (exit $?) — corto para diagnostico (reanudable: el universo se recomputa)"
+    # OLLAMA_HOST queda SIN setear a proposito: la validacion LLM de
+    # multi-perfil degrada a SINGLE (0 expandidas) y eso es lo correcto por
+    # alcance — el frente L re-decide SOLO el matching; sub-ofertas nuevas
+    # sin NLP contaminarian el universo y los cohorts de medicion.
+    /usr/bin/python3 scripts/run_validated_pipeline.py --ids "$IDS" --skip-nlp --quiet >> "$LOG" 2>&1
+    rc=$?
+    # rc=1 con --ids = "hay errores que requieren atencion" (patrones_claude):
+    # resultado esperado del re-matching masivo — quedan persistidos en
+    # validation_errors y se analizan en la medicion P3. Solo rc>1 (crash
+    # real del pipeline) corta la corrida.
+    if [ $rc -eq 1 ]; then
+        log "chunk $N: rc=1 (errores esperados, persistidos en validation_errors) — sigo"
+    elif [ $rc -ne 0 ]; then
+        log "chunk $N FALLO (rc=$rc) — corto para diagnostico (reanudable: el universo se recomputa)"
         exit 1
     fi
     if [ $((N % TG)) -eq 0 ]; then
