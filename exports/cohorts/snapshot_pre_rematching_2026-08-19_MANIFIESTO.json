@@ -1,0 +1,24 @@
+{
+ "_meta": {
+  "proposito": "[FRENTE L] Manifiesto del snapshot PRE-re-matching (reversibilidad). Los .gz quedan EN DISCO (263MB total, no viajan a git); este manifiesto los registra.",
+  "generado": "2026-08-19",
+  "universo": 77040,
+  "universo_def": "matching pre-3.6 + NLP con titulo_limpio + estado NOT IN (validado, en_revision) + metodo != rule_manual_fix (candado humano); incluye 392 sub-ofertas multi-position",
+  "candado_excluidas": {
+   "validado": 6275,
+   "en_revision": 38,
+   "rule_manual_fix": 13
+  },
+  "capa_skills": "INCLUIDA: el matching persiste tambien ofertas_esco_skills_detalle (delete+insert por oferta) — snapshot_skills la preserva"
+ },
+ "archivos": {
+  "exports/cohorts/snapshot_pre_rematching_2026-08-19_matching.jsonl.gz": {
+   "sha256": "4f5d5284b5d271a05b426031653b1aef8f62cc082e1e3c7bc20e6e2d084f8150",
+   "bytes": 136089713
+  },
+  "exports/cohorts/snapshot_pre_rematching_2026-08-19_skills.jsonl.gz": {
+   "sha256": "61e5ac954cf549496067406aa2fbd8fb61f6866f4062fb73f702fcca743f273a",
+   "bytes": 141475626
+  }
+ }
+}
