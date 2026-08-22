@@ -10,6 +10,7 @@ cd "$REPO"
 log() { echo "[$(date '+%F %T')] $*" | tee -a "$LOG"; }
 
 N=0
+IDS_PREV=""
 while true; do
     IDS=$(/usr/bin/python3 - "$CHUNK" <<'PY'
 import sqlite3, sys
@@ -29,6 +30,17 @@ PY
         log "universo agotado — re-matching COMPLETO tras $N chunks"
         break
     fi
+    # Guarda anti-estancamiento: si el selector devuelve EXACTAMENTE lo mismo
+    # que la vuelta anterior, esas ofertas no salen del universo (el pipeline
+    # las saltea sin tocar matching_version — p.ej. padres multi-posicion).
+    # Sin esta guarda el loop es infinito (observado 2026-08-22: 13 ofertas,
+    # ~1.950 vueltas). Se cortan como remanente documentado, no como error.
+    if [ "$IDS" = "$IDS_PREV" ]; then
+        log "universo ESTANCADO: la misma seleccion dos veces seguidas ($(echo "$IDS" | tr ',' '\n' | wc -l) ofertas que el pipeline no re-matchea). Remanente: $IDS"
+        log "re-matching COMPLETO (con remanente estancado) tras $N chunks"
+        break
+    fi
+    IDS_PREV="$IDS"
     N=$((N + 1))
     NIDS=$(echo "$IDS" | tr ',' '\n' | wc -l)
     log "chunk $N: $NIDS ofertas"
