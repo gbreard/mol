@@ -1,0 +1,326 @@
+{
+ "kpi_re36": {
+  "arbol_contexto": 3345,
+  "regla_plana": 26419,
+  "diccionario": 11687,
+  "regla_subordinada": 4407,
+  "semantico": 30754,
+  "regla_L3": 7136
+ },
+ "kpi_corpus": {
+  "otro:rule_manual_fix": 13,
+  "regla_plana": 28879,
+  "semantico": 33253,
+  "regla_L3": 7795,
+  "regla_subordinada": 5115,
+  "arbol_contexto": 3345,
+  "diccionario": 11687
+ },
+ "n_re36": 83786,
+ "comparables": 77027,
+ "cambiadas": 34236,
+ "matriz": {
+  "regla_plana->semantico": 6611,
+  "regla_subordinada->diccionario": 444,
+  "regla_plana->regla_plana": 23911,
+  "semantico->semantico": 20679,
+  "regla_L3->regla_L3": 5307,
+  "semantico->regla_L3": 65,
+  "semantico->regla_plana": 374,
+  "regla_subordinada->regla_subordinada": 4034,
+  "regla_plana->diccionario": 5133,
+  "regla_L3->diccionario": 988,
+  "regla_subordinada->arbol_contexto": 1458,
+  "semantico->regla_subordinada": 17,
+  "regla_subordinada->semantico": 99,
+  "regla_plana->arbol_contexto": 1258,
+  "regla_plana->regla_L3": 1010,
+  "regla_L3->semantico": 243,
+  "regla_L3->arbol_contexto": 30,
+  "regla_subordinada->regla_L3": 246,
+  "semantico->arbol_contexto": 56,
+  "semantico->diccionario": 214,
+  "regla_subordinada->regla_plana": 4,
+  "regla_L3->regla_plana": 6,
+  "regla_plana->regla_subordinada": 45,
+  "regla_L3->regla_subordinada": 2,
+  "diccionario->diccionario": 4036,
+  "diccionario->arbol_contexto": 209,
+  "diccionario->semantico": 548
+ },
+ "causas": {
+  "retiro-desforzada": 8970,
+  "reordenamiento-canal (dict/otra regla precede)": 4375,
+  "semantico-mejorado": 7821,
+  "correccion-K/K2/K3": 9527,
+  "reordenamiento-canal (captura nueva regla/dict)": 453,
+  "restriccion-desforzada (cae a semantico)": 676,
+  "reordenamiento-canal (traductor decide)": 1766,
+  "otro": 648
+ },
+ "spot": [
+  {
+   "id": "1118197911",
+   "titulo": "Responsable comercial",
+   "antes": "skills_first_v3 -> agente de alquiler de coches con opción a compra",
+   "ahora": "skills_first_v3 -> empleado de servicio de venta de entradas/empleada de servicio de venta de entradas",
+   "causa_auto": "semantico-mejorado"
+  },
+  {
+   "id": "1118121698",
+   "titulo": "Coordinador de flota",
+   "antes": "regla_negocio_R232_coordinador_operaciones -> gestor de proyectos/gestora de proyectos",
+   "ahora": "regla_negocio_R232_coordinador_operaciones -> coordinador de transporte/coordinadora de transporte",
+   "causa_auto": "correccion-K/K2/K3"
+  },
+  {
+   "id": "8302386271",
+   "titulo": "HSE manager | rincon",
+   "antes": "skills_first_v3 -> empleado de centro termal/empleada de centro termal",
+   "ahora": "skills_first_v3 -> ingeniero eléctrico/ingeniera eléctrica",
+   "causa_auto": "semantico-mejorado"
+  },
+  {
+   "id": "2172865",
+   "titulo": "Vendedor para call center",
+   "antes": "regla_negocio_R15_customer_care -> agente de centro de atención al cliente",
+   "ahora": "arbol_contexto -> teleoperador/teleoperadora",
+   "causa_auto": "reordenamiento-canal (traductor decide)"
+  },
+  {
+   "id": "1118174279",
+   "titulo": "Fonoaudióloga",
+   "antes": "regla_negocio_R76_fonoaudiologo -> audiólogo/audióloga",
+   "ahora": "regla_negocio_R76_fonoaudiologo -> terapeuta especializado en trastornos del lenguaje/terapeuta especializada en trastornos del lenguaje",
+   "causa_auto": "correccion-K/K2/K3"
+  },
+  {
+   "id": "8184878373",
+   "titulo": "Técnico aprendiz en mantenimiento (gral. rodríguez)",
+   "antes": "skills_first_v3 -> sumiller/sumillera",
+   "ahora": "skills_first_v3 -> vendedor especializado/vendedora especializada",
+   "causa_auto": "semantico-mejorado"
+  },
+  {
+   "id": "8909344159",
+   "titulo": "Contracts manager - 100% remote",
+   "antes": "skills_first_v3 -> director comercial/directora comercial",
+   "ahora": "skills_first_v3 -> gestor de contratos/gestora de contratos",
+   "causa_auto": "semantico-mejorado"
+  },
+  {
+   "id": "2177704",
+   "titulo": "Personal de mantenimiento y tareas generales",
+   "antes": "regla_negocio_R181_personal_mantenimiento -> mecánico de maquinaria industrial/mecánica de maquinaria industrial",
+   "ahora": "regla_negocio_R181_personal_mantenimiento -> mantenedor/mantenedora",
+   "causa_auto": "correccion-K/K2/K3"
+  },
+  {
+   "id": "8878401018",
+   "titulo": "Asistente legal bilingue",
+   "antes": "regla_negocio_R17_compliance_legal -> abogado/abogada",
+   "ahora": "skills_first_v3 -> conductor de ambulancia/conductora de ambulancia",
+   "causa_auto": "retiro-desforzada"
+  },
+  {
+   "id": "1118142018",
+   "titulo": "Ejecutivos de ventas zona tucumán: sueldo fijo + comisiones sin techo + beneficios",
+   "antes": "regla_negocio_R225_comis_pasteleria -> chocolatero/chocolatera",
+   "ahora": "regla_negocio_R225_comis_pasteleria -> pastelero/pastelera",
+   "causa_auto": "correccion-K/K2/K3"
+  },
+  {
+   "id": "1118137040",
+   "titulo": "Hrbdp industrial",
+   "antes": "skills_first_v3 -> director de inteligencia competitiva/directora de inteligencia competitiva",
+   "ahora": "skills_first_v3 -> responsable de políticas",
+   "causa_auto": "semantico-mejorado"
+  },
+  {
+   "id": "8524909279",
+   "titulo": "Líder comercial agro",
+   "antes": "semantic_fallback_v3 -> responsable de políticas agrarias",
+   "ahora": "skills_first_v3 -> vendedor especializado/vendedora especializada",
+   "causa_auto": "semantico-mejorado"
+  },
+  {
+   "id": "1118165180",
+   "titulo": "Analista de infraestructura IT",
+   "antes": "regla_negocio_R238_analista_it -> consultor de TIC verdes/consultora de TIC verdes",
+   "ahora": "regla_negocio_R238_analista_it -> analista de sistemas de TIC",
+   "causa_auto": "correccion-K/K2/K3"
+  },
+  {
+   "id": "2178250",
+   "titulo": "Coordinador/a de operaciones digitales y logística",
+   "antes": "regla_negocio_R274_coordinador_operaciones_logistica -> director de logística/directora de logística",
+   "ahora": "regla_negocio_R274_coordinador_operaciones_logistica -> coordinador de transporte/coordinadora de transporte",
+   "causa_auto": "correccion-K/K2/K3"
+  },
+  {
+   "id": "1118352733",
+   "titulo": "Ejecutivo/a comercial outbound- prospección y cierre/ ventas telefónicas",
+   "antes": "regla_negocio_R155_asesor_telefonico -> agente de centro de atención al cliente",
+   "ahora": "regla_negocio_R155_asesor_telefonico -> teleoperador/teleoperadora",
+   "causa_auto": "correccion-K/K2/K3"
+  },
+  {
+   "id": "1118127463",
+   "titulo": "Pañolero / compras - taller de camiones",
+   "antes": "skills_first_v3 -> director de fabricación/directora de fabricación",
+   "ahora": "skills_first_v3 -> director de compras/directora de compras",
+   "causa_auto": "semantico-mejorado"
+  },
+  {
+   "id": "1118178258",
+   "titulo": "Personal de mantenimiento",
+   "antes": "regla_negocio_R181_personal_mantenimiento -> mecánico de maquinaria industrial/mecánica de maquinaria industrial",
+   "ahora": "regla_negocio_R181_personal_mantenimiento -> mantenedor/mantenedora",
+   "causa_auto": "correccion-K/K2/K3"
+  },
+  {
+   "id": "8537425347",
+   "titulo": "Analista de impuestos",
+   "antes": "regla_negocio_R169_analista_impuestos -> contable",
+   "ahora": "regla_negocio_R242_asistente_impuestos -> asesor fiscal/asesora fiscal",
+   "causa_auto": "reordenamiento-canal (dict/otra regla precede)"
+  },
+  {
+   "id": "1118168187",
+   "titulo": "Ingeniero de proyectos hibrido munro vte lopez",
+   "antes": "skills_first_v3 -> ayudante de director de cine y televisión",
+   "ahora": "skills_first_v3 -> ingeniero de grupos motopropulsores/ingeniera de grupos motopropulsores",
+   "causa_auto": "semantico-mejorado"
+  },
+  {
+   "id": "8630443903",
+   "titulo": "Vendedores riiing",
+   "antes": "regla_negocio_R111_vendedor_generico -> vendedor especializado/vendedora especializada",
+   "ahora": "regla_negocio_R111_vendedor_generico -> vendedor/vendedora",
+   "causa_auto": "correccion-K/K2/K3"
+  },
+  {
+   "id": "8598839963",
+   "titulo": "Lead fullstack engineer (react+next.js)",
+   "antes": "skills_first_v3 -> director del departamento de laboratorio médico/directora del departamento de laboratorio médico",
+   "ahora": "skills_first_v3 -> desarrollador de cadenas de bloques/desarrolladora de cadenas de bloques",
+   "causa_auto": "semantico-mejorado"
+  },
+  {
+   "id": "1118023184",
+   "titulo": "Base talentos pasantias",
+   "antes": "semantic_fallback_v3 -> entrenador artístico/entrenadora artística",
+   "ahora": "skills_first_v3 -> representante artístico y deportivo",
+   "causa_auto": "semantico-mejorado"
+  },
+  {
+   "id": "6018060723",
+   "titulo": "Encargado de depósito",
+   "antes": "regla_negocio_R309_responsable_deposito -> director de distribución/directora de distribución",
+   "ahora": "regla_negocio_R309_responsable_deposito -> jefe de almacén/jefa de almacén",
+   "causa_auto": "correccion-K/K2/K3"
+  },
+  {
+   "id": "8965074476",
+   "titulo": "Vendedor corporativo",
+   "antes": "regla_negocio_R111_vendedor_generico -> vendedor especializado/vendedora especializada",
+   "ahora": "arbol_contexto -> representante comercial",
+   "causa_auto": "reordenamiento-canal (traductor decide)"
+  },
+  {
+   "id": "8547145354",
+   "titulo": "Opportunità professionali: sales & marketing support",
+   "antes": "diccionario_argentino_vendedor -> vendedor/vendedora",
+   "ahora": "skills_first_v3 -> representante técnico de ventas de maquinaria y equipo industrial/representante técnica de ventas de maquinaria y equipo industrial",
+   "causa_auto": "otro"
+  },
+  {
+   "id": "8578114033",
+   "titulo": "Representante de ventas para camiones",
+   "antes": "regla_negocio_R40_asesor_comercial -> representante comercial",
+   "ahora": "arbol_contexto -> teleoperador/teleoperadora",
+   "causa_auto": "reordenamiento-canal (traductor decide)"
+  },
+  {
+   "id": "5077452555",
+   "titulo": "Mantenimiento eléctrico",
+   "antes": "regla_negocio_R306_mantenimiento_electrico -> mecánico electricista/mecánica electricista",
+   "ahora": "regla_negocio_R306_mantenimiento_electrico -> electricista industrial",
+   "causa_auto": "correccion-K/K2/K3"
+  },
+  {
+   "id": "9135261856",
+   "titulo": "Representante técnico comercial payway, mercedes y la zona",
+   "antes": "regla_negocio_R241_tecnico_it -> técnico de TIC/técnica de TIC",
+   "ahora": "regla_negocio_R284_representante_tecnico_comercial -> representante técnico de ventas/representante técnica de ventas",
+   "causa_auto": "reordenamiento-canal (dict/otra regla precede)"
+  },
+  {
+   "id": "2180675",
+   "titulo": "Vendedor técnico",
+   "antes": "diccionario_argentino_vendedor -> vendedor/vendedora",
+   "ahora": "arbol_contexto -> representante comercial",
+   "causa_auto": "reordenamiento-canal (traductor decide)"
+  },
+  {
+   "id": "8897651476",
+   "titulo": "Transaction processing analyst",
+   "antes": "skills_first_v3 -> médico especialista/médica especialista",
+   "ahora": "skills_first_v3 -> vendedor especializado/vendedora especializada",
+   "causa_auto": "semantico-mejorado"
+  }
+ ],
+ "cohorts": {
+  "K-T1": {
+   "total": 4686,
+   "canal_ahora": {
+    "semantico": 3327,
+    "regla_plana": 1056,
+    "regla_L3": 11,
+    "diccionario": 282,
+    "regla_subordinada": 6,
+    "arbol_contexto": 4
+   },
+   "mismo_destino_retirado": 596,
+   "sin_decision": 0
+  },
+  "K2-auxiliares": {
+   "total": 548,
+   "canal_ahora": {
+    "regla_plana": 202,
+    "regla_L3": 49,
+    "semantico": 255,
+    "diccionario": 41,
+    "regla_subordinada": 1
+   },
+   "mismo_destino_retirado": 118,
+   "sin_decision": 0
+  },
+  "K3-retiros": {
+   "total": 160,
+   "canal_ahora": {
+    "semantico": 109,
+    "regla_plana": 37,
+    "diccionario": 11,
+    "regla_subordinada": 3
+   },
+   "mismo_destino_retirado": 1,
+   "sin_decision": 0
+  }
+ },
+ "hubs": {
+  "51": 1427,
+  "16": 1467,
+  "1": 175,
+  "2": 201,
+  "4": 40,
+  "3": 7,
+  "15": 28
+ },
+ "testigo": [
+  "diccionario_argentino_intendente_de_obra",
+  "capataz de construcción",
+  null,
+  "3.6.0"
+ ]
+}
