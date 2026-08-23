@@ -14,16 +14,16 @@ Nota de release para consumidores del corpus (harness, dashboard, proyectos exte
 
 **Cómo citar:** *Corpus MOL, release 2026-08-22 (matcher 3.6.0 / reglas v5.32 / léxico v0.4.0, merge 87da0330).* Cada oferta lleva `matching_version` — filtrar `LIKE '3.6%'` para quedarse solo con decisiones de esta generación.
 
-## Censo (corte 2026-08-22 17:16, BD local)
+## Censo (corte final 2026-08-23, backlog NLP cerrado)
 
 | Población | N |
 |---|---|
-| Ofertas totales scrapeadas (6 portales, desde 2025) | **112.809** |
-| Con NLP completo (20 campos) | **96.609** |
-| Con matching de ocupación | 92.640 — de las cuales **86.301 (93%) con matcher 3.6.x** |
+| Ofertas totales scrapeadas (6 portales, desde 2025) | **112.857** |
+| Con NLP completo (20 campos) | **98.770** |
+| Con matching de ocupación | 97.185 — de las cuales **90.846 (93%) con matcher 3.6.x** |
 | Título-only / inertes (sin descripción utilizable, ≤100 chars; nunca tendrán NLP) | 14.580 |
 | Validadas por humano (`validado`/`validado_humano` — intocables por reprocesos) | **6.275** |
-| Filas de skills (detalle por oferta) | 2.704.975 |
+| Filas de skills (detalle por oferta) | 2.827.507 |
 
 ## Calidad por canal de decisión (distribución post re-matching masivo)
 
@@ -50,7 +50,7 @@ Jerarquía de confianza sugerida para consumidores: dict ≈ L3 > árbol > regla
 
 ## Salvedades (leer antes de consumir)
 
-1. **Capa 11-18/08 completándose:** el backlog NLP de ofertas scrapeadas ~11-18/08 corre en estos días; al corte quedan ~2.100 procesables sin NLP (además de las 14.580 inertes). El censo crece unos puntos hasta que cierre.
+1. **Capa 11-18/08 COMPLETA al 23/08:** el backlog NLP cerró (13.803 procesadas, 48 residuales documentadas en `BACKLOG_NLP_cierre_2026-08-23.md`); el matching quedó 100% poblado sobre las procesables.
 2. **Inertes censadas:** las 14.580 sin descripción utilizable (mayormente ComputRabajo/walls de Cloudflare) cuentan como oferta publicada pero no tienen NLP/matching — excluirlas de análisis de contenido, son válidas para conteos de publicación.
 3. **Huecos de scraping conocidos:** Indeed con bloqueos Cloudflare intermitentes (corridas en cero); CABA/Portal Empleo congelados por bug de watermark en jun/2026 (backfill aplicado); julio/2026 procesado en lote diferido. Para series temporales, validar cobertura mensual por portal antes de comparar meses.
 4. **13 ofertas con matching pre-3.6** en estados de revisión humana intermedia (protegidas por diseño, documentadas en el cierre del frente L).
