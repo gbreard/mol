@@ -161,12 +161,17 @@ def get_ids_with_nlp_errors() -> list:
     """Obtiene IDs de ofertas con errores NLP sin resolver (excluye validadas)."""
     conn = sqlite3.connect(str(DB_PATH))
     cur = conn.cursor()
+    # Anti-join por NOT IN (mismo conjunto que el LEFT JOIN .. IS NULL/!=):
+    # con subquery el planificador usa el indice de estado_validacion en vez
+    # de un nested loop (hallazgo del backlog 2026-08-20, ver SQL_BACKLOG en
+    # scripts/ops/backlog_nlp_tanda.py).
     cur.execute('''
         SELECT DISTINCT ve.id_oferta FROM validation_errors ve
-        LEFT JOIN ofertas_esco_matching m ON ve.id_oferta = m.id_oferta
         WHERE ve.resuelto = 0
         AND ve.error_tipo LIKE 'error_nlp_%'
-        AND (m.estado_validacion IS NULL OR m.estado_validacion != 'validado')
+        AND ve.id_oferta NOT IN (
+            SELECT id_oferta FROM ofertas_esco_matching
+            WHERE estado_validacion = 'validado')
     ''')
     ids = [row[0] for row in cur.fetchall()]
     conn.close()
@@ -177,12 +182,21 @@ def get_ids_without_nlp(limit: int = None) -> list:
     """Obtiene IDs de ofertas que no tienen NLP procesado (excluye validadas)."""
     conn = sqlite3.connect(str(DB_PATH))
     cur = conn.cursor()
+    # NOT EXISTS con CAST explicito: ofertas.id_oferta es INTEGER pero
+    # ofertas_nlp/ofertas_esco_matching lo guardan TEXT. Sin el CAST la
+    # comparacion cruza afinidades, ningun indice sirve y el LEFT JOIN
+    # degenera en nested loop de 111K x 96K (>15 min medidos); con CAST son
+    # index seeks (~0,1 s) y el conjunto es EXACTAMENTE el mismo (hallazgo
+    # del backlog 2026-08-20, replica de SQL_BACKLOG en backlog_nlp_tanda.py;
+    # test de equivalencia en tests/pipeline/test_ids_cast_equivalence.py).
     query = '''
         SELECT o.id_oferta FROM ofertas o
-        LEFT JOIN ofertas_nlp n ON o.id_oferta = n.id_oferta
-        LEFT JOIN ofertas_esco_matching m ON o.id_oferta = m.id_oferta
-        WHERE n.id_oferta IS NULL
-        AND (m.estado_validacion IS NULL OR m.estado_validacion != 'validado')
+        WHERE NOT EXISTS (
+            SELECT 1 FROM ofertas_nlp n
+            WHERE n.id_oferta = CAST(o.id_oferta AS TEXT))
+        AND CAST(o.id_oferta AS TEXT) NOT IN (
+            SELECT id_oferta FROM ofertas_esco_matching
+            WHERE estado_validacion = 'validado')
     '''
     if limit:
         query += f' LIMIT {limit}'
@@ -310,9 +324,10 @@ def run_full_pipeline(
                 placeholders = ','.join(['?'] * len(ids_to_process))
                 cur.execute(f'''
                     SELECT o.id_oferta FROM ofertas o
-                    LEFT JOIN ofertas_nlp n ON o.id_oferta = n.id_oferta
                     WHERE o.id_oferta IN ({placeholders})
-                    AND n.id_oferta IS NULL
+                    AND NOT EXISTS (
+                        SELECT 1 FROM ofertas_nlp n
+                        WHERE n.id_oferta = CAST(o.id_oferta AS TEXT))
                 ''', ids_to_process)
                 nlp_ids = [row[0] for row in cur.fetchall()]
                 conn.close()
