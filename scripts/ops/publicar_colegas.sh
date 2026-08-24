@@ -53,8 +53,20 @@ else
 fi
 
 # La época viaja adentro del archivo: se lee de ahí, no se pasa por parámetro.
-EPOCA=$(sqlite3 -readonly "file:${LOCAL}?mode=ro" "SELECT epoca FROM _meta_version LIMIT 1;" 2>/dev/null || echo "")
-[ -n "$EPOCA" ] || abort "el archivo no tiene _meta_version: no se publica algo sin época"
+# Se intenta con el CLI de sqlite3 y, si no está (el WSL de trabajo no lo trae),
+# con el módulo sqlite3 de Python, que está en todas partes.
+leer_epoca() {
+    if command -v sqlite3 >/dev/null 2>&1; then
+        sqlite3 -readonly "file:${LOCAL}?mode=ro" "SELECT epoca FROM _meta_version LIMIT 1;" 2>/dev/null && return 0
+    fi
+    python3 - "$LOCAL" <<'PY' 2>/dev/null
+import sqlite3, sys
+con = sqlite3.connect(f"file:{sys.argv[1]}?mode=ro", uri=True)
+print(con.execute("SELECT epoca FROM _meta_version LIMIT 1").fetchone()[0])
+PY
+}
+EPOCA=$(leer_epoca || echo "")
+[ -n "$EPOCA" ] || abort "el archivo no tiene _meta_version (o no se pudo leer): no se publica algo sin época"
 log "  época: ${EPOCA}  ·  peso: ${SIZE_MB} MB"
 
 # ------------------------------------------------------------- 2) espacio
