@@ -144,8 +144,12 @@ ssh $SSH_OPTS "$VPS" "bash -s" <<'REMOTO'
 set -euo pipefail
 cd /srv/datasette
 ACTUAL="$(readlink colegas.sqlite)"
-# candidatos: todo .sqlite que no sea el symlink ni el destino vigente
-mapfile -t VIEJOS < <(ls -1t *.sqlite 2>/dev/null | grep -v -x "$ACTUAL" || true)
+# Candidatos: SÓLO archivos regulares. Con `ls *.sqlite` entraba también el
+# symlink `colegas.sqlite`, que por ser el más nuevo se quedaba con el lugar de
+# "la anterior" y mandaba a borrar a la versión previa de verdad. Es decir: la
+# rotación borraba justo lo que debía conservar y dejaba sin destino de rollback.
+mapfile -t VIEJOS < <(find . -maxdepth 1 -type f -name '*.sqlite' -printf '%T@ %P\n' 2>/dev/null \
+                      | sort -rn | cut -d' ' -f2- | grep -v -x "$ACTUAL" || true)
 if [ "${#VIEJOS[@]}" -le 1 ]; then
     echo "  nada para borrar (${#VIEJOS[@]} versión previa)"
 else
