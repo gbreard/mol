@@ -84,6 +84,29 @@ if [ "$SHA_LOCAL" != "$SHA_REMOTO" ]; then
 fi
 log "  ✓ hash idéntico en las dos puntas"
 
+# --------------------------------------------- 4.b) comprimido y el .sha256
+# El .gz viaja al lado: 2 GB es descarga pesada y la red del ministerio filtra.
+# El hash que se publica es SIEMPRE el del .sqlite descomprimido, para que la
+# verificación valga igual sin importar cuál de los dos hayan bajado.
+if [ -f "${LOCAL}.gz" ]; then
+    log "subiendo comprimido: ${REMOTE_FILE}.gz"
+    scp $SSH_OPTS "${LOCAL}.gz" "${VPS}:${REMOTE_FILE}.gz"
+    SHA_GZ_LOCAL=$(sha256sum "${LOCAL}.gz" | awk '{print $1}')
+    SHA_GZ_REMOTO=$(ssh $SSH_OPTS "$VPS" "sha256sum '${REMOTE_FILE}.gz' | awk '{print \$1}'")
+    if [ "$SHA_GZ_LOCAL" != "$SHA_GZ_REMOTO" ]; then
+        ssh $SSH_OPTS "$VPS" "rm -f '${REMOTE_FILE}.gz'"
+        abort "el .gz llegó corrupto (local ${SHA_GZ_LOCAL} vs remoto ${SHA_GZ_REMOTO})"
+    fi
+    log "  ✓ comprimido verificado"
+else
+    log "  (sin .gz local — se publica sólo el .sqlite)"
+fi
+
+# El sidecar viaja con el nombre del archivo publicado, para que el colega pueda
+# verificar contra lo que descargó sin tener que reescribir nada.
+log "publicando el .sha256 (siempre el del descomprimido)…"
+ssh $SSH_OPTS "$VPS" "printf '%s  %s\n' '${SHA_LOCAL}' '${BASENAME}' > '${REMOTE_FILE}.sha256'"
+
 # --------------------------------------------------- 5) swap del symlink
 # Primera corrida: colegas.sqlite todavía es un archivo regular (el de junio).
 # Se lo preserva con nombre versionado para que entre en la rotación como
@@ -116,8 +139,8 @@ if [ "${#VIEJOS[@]}" -le 1 ]; then
 else
     echo "  se conserva la anterior: ${VIEJOS[0]}"
     for f in "${VIEJOS[@]:1}"; do
-        echo "  borrando versión vieja: $f"
-        rm -f "$f"
+        echo "  borrando versión vieja: $f (y sus .gz/.sha256)"
+        rm -f "$f" "$f.gz" "$f.sha256"
     done
 fi
 REMOTO
