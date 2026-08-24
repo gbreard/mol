@@ -83,13 +83,41 @@ números significan cosas distintas sobre 68k ofertas que sobre 97k, y volverán
 cosa sobre 150k. Cada corrida futura va a arrastrar el mismo caveat de no-comparabilidad que este
 reporte, indefinidamente.
 
-**La pregunta de fondo:** ¿deberían ser **relativos** (percentiles de la distribución de masa y
-penetración) en vez de absolutos? Un umbral por percentil se auto-ajusta al tamaño del corpus y
-haría las corridas comparables entre épocas — que es justo lo que hoy no se puede hacer. El costo:
-los percentiles son más difíciles de explicar y de auditar que "≥5 empresas", y hacen que el
-escenario de un par dependa de la distribución global y no de un mínimo interpretable.
+**Primera pregunta: ¿absolutos o relativos?** ¿Deberían ser **percentiles** de la distribución de
+masa y penetración en vez de mínimos fijos? Un umbral por percentil se auto-ajusta al tamaño del
+corpus y haría las corridas comparables entre épocas — que es justo lo que hoy no se puede hacer.
+El costo: los percentiles son más difíciles de explicar y de auditar que "≥5 empresas", y hacen que
+el escenario de un par dependa de la distribución global y no de un mínimo interpretable.
 
-No se toca en este frente. Queda anotado con su fundamento para cuando se decida abrirlo.
+**Segunda pregunta, abierta por la medición de esta corrida: ¿es correcta la precedencia?** La
+regla de comodín (6.b) corre antes que la de B_FUERTE por demandantes (6.c). Eso significa que
+**la dispersión global de una skill vence a la concentración local**, por orden del árbol y no por
+evidencia. Las **583.811 filas** que califican como B_FUERTE y salen etiquetadas COMODIN son la
+medida de ese efecto: 4,2× el bucket B_FUERTE entero.
+
+El riesgo es sustantivo y no meramente técnico: si una skill es transversal en el mercado general
+pero **está concentrada en una ocupación argentina concreta**, la precedencia actual la borra como
+señal específica. Es decir, podríamos estar **subestimando sistemáticamente el activo argentino**
+—justo lo que el observatorio existe para detectar— por el orden de evaluación del árbol. Hoy sólo
+sobrevive a comodín la vía `B_FUERTE local` (penetración ≥0,30), un umbral alto.
+
+Las dos preguntas son un mismo frente: revisar umbrales y precedencia junto, porque mover uno sin
+el otro vuelve a hacer inatribuibles los resultados.
+
+No se toca en este frente. Queda anotado con su fundamento empírico para cuando se decida abrirlo.
+
+## Laudo aplicado al export (frente M)
+
+1. **`URI_FABRICADA` a cero** se reporta como **logro medido a 2,8M de filas**: queda en este
+   reporte, en `_meta_version.nota` dentro del archivo publicado y en la guía v3.
+2. **`confianza_skill` NO se publica en esta versión.** Se publica `oferta_skills.escenario` —el
+   dato crudo observado— con su definición y el umbral explícito en la guía v3, más la nota de que
+   la clasificación transversal/específica está en revisión porque el umbral de dispersión (≥100
+   ocupaciones sobre 2.366 = 4,2%) quedó desactualizado. **Ausencia declarada antes que etiqueta
+   torcida a escala.** `_meta_version.clasificacion_transversal` lo registra dentro del archivo,
+   para que un colega que abra el SQLite dentro de seis meses se entere sin depender de la guía.
+3. El comentario del `05b` donde vivía el mapeo conserva la fórmula anterior documentada, con la
+   marca de **no restaurar la columna sin el frente de re-calibración**.
 
 ---
 
