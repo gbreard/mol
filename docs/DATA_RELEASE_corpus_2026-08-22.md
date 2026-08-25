@@ -54,6 +54,6 @@ Jerarquía de confianza sugerida para consumidores: dict ≈ L3 > árbol > regla
 2. **Inertes censadas:** las 14.580 sin descripción utilizable (mayormente ComputRabajo/walls de Cloudflare) cuentan como oferta publicada pero no tienen NLP/matching — excluirlas de análisis de contenido, son válidas para conteos de publicación.
 3. **Huecos de scraping conocidos:** Indeed con bloqueos Cloudflare intermitentes (corridas en cero); CABA/Portal Empleo congelados por bug de watermark en jun/2026 (backfill aplicado); julio/2026 procesado en lote diferido. Para series temporales, validar cobertura mensual por portal antes de comparar meses.
 4. **13 ofertas con matching pre-3.6** en estados de revisión humana intermedia (protegidas por diseño, documentadas en el cierre del frente L).
-5. **El dashboard público aún refleja el estado pre-re-matching:** el sync está diferido por presupuesto I/O de Supabase y corre consolidado con el cierre del backlog (script preparado con punto de control previo). Hasta entonces, BD local ≠ dashboard.
+5. **Dashboard sincronizado al 2026-08-25:** el sync consolidado v2 (re-matching + backlog) se publicó en un solo evento; **BD local = dashboard** (destino + traza + versión 3.6.0). Detalle: `exports/reportes/SYNC_consolidado_cierre_2026-08-25.md` (spot-check 10/10, cero errores HTTP).
 
 **Referencias:** medición completa `exports/reportes/L_p3_medicion_2026-08-22.md` · cierre `L_cierre_2026-08-22.md` · snapshot reversible `exports/cohorts/snapshot_pre_rematching_2026-08-19_*`.
