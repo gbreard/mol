@@ -149,11 +149,24 @@ Ejecucion SOLO tras OK de Gerardo, en horario valle (fuera de 09-21 ART):
     print(f'pre-reporte -> {out}')
 
 
+def esperar_valle(fuera_de_valle):
+    """Guarda de pico como PAUSA-Y-RETOMA (instruccion de Gerardo 2026-08-23):
+    si estamos en horario pico (09-21 ART) NO se aborta — se duerme hasta las
+    21:00 y se retoma. Se chequea al inicio y entre batches, asi una corrida
+    que cruza las 09:00 pausa sola y termina la noche siguiente."""
+    if fuera_de_valle:
+        return
+    now = datetime.now()
+    if now.hour in VALLE:
+        objetivo = now.replace(hour=21, minute=0, second=30, microsecond=0)
+        segs = (objetivo - now).total_seconds()
+        print(f'[{now:%F %T}] PAUSA por horario pico — retomo 21:00 '
+              f'({segs/3600:.1f} h)', flush=True)
+        time.sleep(max(segs, 0))
+
+
 def ejecutar(con, cambiadas, nuevas, skills_cambiadas, fuera_de_valle):
-    hora = datetime.now().hour
-    if hora in VALLE and not fuera_de_valle:
-        sys.exit(f'ABORT: hora {hora} ART es horario pico (09-21). '
-                 'Correr de noche o pasar --fuera-de-valle si Gerardo lo pidio.')
+    esperar_valle(fuera_de_valle)
     import sync_to_supabase as sts
     client = sts.get_supabase_client()
     conn = sts.get_sqlite_connection()
@@ -164,20 +177,23 @@ def ejecutar(con, cambiadas, nuevas, skills_cambiadas, fuera_de_valle):
 
     subidas = 0
     for i in range(0, len(ofertas_viajan), BATCH):
+        esperar_valle(fuera_de_valle)
         chunk = ofertas_viajan[i:i + BATCH]
         ofertas = sts.extraer_ofertas_validadas(conn, ids=chunk)
         subidas += sts.upsert_ofertas(client, ofertas)
         time.sleep(RATE_SLEEP)
         if (i // BATCH) % 50 == 0:
-            print(f'  ofertas {i + len(chunk):,}/{len(ofertas_viajan):,}', flush=True)
+            print(f'[{datetime.now():%F %T}]  ofertas {i + len(chunk):,}/{len(ofertas_viajan):,}', flush=True)
     print(f'ofertas subidas: {subidas:,}', flush=True)
 
     for j, oid in enumerate(ofertas_skills):
+        if j % 50 == 0:
+            esperar_valle(fuera_de_valle)
         skills = sts.extraer_skills_detalle(conn, [oid])
         sts.upsert_skills(client, skills)
         time.sleep(SKILL_SLEEP)
         if j % 500 == 0:
-            print(f'  skills {j:,}/{len(ofertas_skills):,}', flush=True)
+            print(f'[{datetime.now():%F %T}]  skills {j:,}/{len(ofertas_skills):,}', flush=True)
     print('SYNC CONSOLIDADO COMPLETO. Actualizar supabase_sync_log.json y '
           'hacer el spot 10 en el dashboard.', flush=True)
 
