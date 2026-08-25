@@ -18,7 +18,19 @@ El dashboard quedó **entero en matcher 3.6.0** (destino + traza + versión): re
 
 ## Consumo de I/O — CALIBRACIÓN para syncs futuros
 
-**Pendiente de lectura:** el panel de Supabase (Settings → Usage / Database I/O) del **día después (25/08)** nos dice si el plan Micro + el goteo rate-limited (~8 req/s de diseño; real observado ~1,6 ofertas/s en fase ofertas por el round-trip, ~1,6 skills-ofertas/s) alcanzó sin agotar el presupuesto de I/O que forzó el diferimiento original. Anotar acá el % de I/O consumido por este evento para dimensionar el próximo (K4, re-syncs). Volumen de referencia de esta corrida: ~96.928 + ~118.634 = **~215K requests** repartidos en ~18 h de trabajo.
+**Panel de Supabase leído el día después (2026-08-25):**
+
+| Métrica | Valor | Techo |
+|---|---|---|
+| IOPS | 6 | 3.000 (**0,2%**) |
+| Throughput de disco | — | **0,3%** del máximo |
+| CPU | 1,4% | — |
+| IOwait | nulo | — |
+| Disco usado | 2,4 GB (**+600 MB** = esta publicación) | 8 GB |
+
+**Contraste con el 22/08:** en el plan **Nano**, el Disk IO estaba al **100%** — ese era el presupuesto agotado que forzó el diferimiento. El upgrade a **Micro** + el goteo rate-limited dejó el consumo en ~0,2-0,3% de los techos: **presupuesto holgado por ~2 órdenes de magnitud.**
+
+**Conclusión operativa:** los syncs futuros (K4, re-syncs) pueden **duplicar o triplicar el ritmo de batches** si la ventana de tiempo lo pide, sin riesgo de I/O. El goteo actual (~8 req/s de diseño, ~1,6 ofertas/s reales por round-trip) fue deliberadamente conservador para el primer evento grande; ya no hay razón de presupuesto para mantenerlo tan bajo. Volumen de referencia de esta corrida: ~96.928 + ~118.634 = **~215K requests** en ~18 h de trabajo.
 
 ## Estado
 
