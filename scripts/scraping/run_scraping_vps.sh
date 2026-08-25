@@ -10,10 +10,70 @@
 #   5. Portal Empleo Nacional (HTML scraping, ~400-500 ofertas, ~13 min)
 #   6. Indeed (curl_cffi + keywords, ~2,000-3,000 ofertas, ~2.5 horas)
 
+# =====================================================================
+# Guarda anti-concurrencia (2026-08-25)
+# =====================================================================
+# Hasta 2026-08-25 este script corría DOS veces cada lunes y jueves: una
+# por el cron (`0 8 * * 1,4`) y otra por el disparo programado del
+# vps_command_poller.py. Ambas instancias escribían la misma SQLite y se
+# pisaban ("database is locked" ×5 el 2026-08-24).
+#
+# El disparo duplicado ya fue eliminado en el poller, pero este lock queda
+# como defensa en profundidad: si vuelve a aparecer un segundo disparo
+# (schedule reactivado, comando manual encima del cron, cron mal editado),
+# la segunda instancia aborta en lugar de corromper la corrida en curso.
+#
+# El rechazo NO crea un scraping_*.log propio — se registra en un archivo
+# aparte, para que siga habiendo exactamente un log por corrida real.
+LOCK_FILE="/tmp/mol_scraping.lock"
+LOCK_REJECT_LOG="/opt/mol/logs/scraping_lock_rejects.log"
+
+acquire_lock() {
+    # `set -o noclobber` hace el create atómico: si el archivo ya existe,
+    # la redirección falla en vez de sobrescribirlo. Evita la ventana de
+    # carrera de un `if [ -e ... ]` seguido de un `echo >`.
+    if ( set -o noclobber; echo $$ > "$LOCK_FILE" ) 2>/dev/null; then
+        return 0
+    fi
+
+    local lock_pid
+    lock_pid=$(cat "$LOCK_FILE" 2>/dev/null)
+
+    # ¿El dueño del lock sigue vivo?
+    if [ -n "$lock_pid" ] && kill -0 "$lock_pid" 2>/dev/null; then
+        return 1
+    fi
+
+    # Lock huérfano (proceso muerto sin limpiar: kill -9, reboot, OOM).
+    echo "[$(date)] Lock huérfano de PID ${lock_pid:-vacío} reclamado por PID $$" >> "$LOCK_REJECT_LOG"
+    rm -f "$LOCK_FILE"
+    ( set -o noclobber; echo $$ > "$LOCK_FILE" ) 2>/dev/null || return 1
+    return 0
+}
+
+if ! acquire_lock; then
+    LOCK_PID=$(cat "$LOCK_FILE" 2>/dev/null)
+    LOCK_SINCE=$(ps -o lstart= -p "$LOCK_PID" 2>/dev/null | sed 's/^ *//')
+    {
+        echo "[$(date)] ABORTADO: ya hay un scraping en curso."
+        echo "    Instancia dueña : PID $LOCK_PID (desde ${LOCK_SINCE:-desconocido})"
+        echo "    Instancia actual: PID $$ — no se ejecuta nada."
+        echo "    Lock: $LOCK_FILE"
+    } >> "$LOCK_REJECT_LOG"
+    echo "ABORTADO: ya hay un scraping en curso (PID $LOCK_PID). Ver $LOCK_REJECT_LOG" >&2
+    exit 1
+fi
+
+# Liberar el lock pase lo que pase (fin normal, error, Ctrl-C, kill).
+# Se instala DESPUÉS de adquirirlo: si abortamos arriba por lock ajeno,
+# este trap no existe y por lo tanto no borramos el lock de otro.
+trap 'rm -f "$LOCK_FILE"' EXIT INT TERM
+
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 LOG_FILE="/opt/mol/logs/scraping_${TIMESTAMP}.log"
 
 echo "=== MOL Scraping Multi-Portal: $(date) ===" >> "$LOG_FILE"
+echo "Lock adquirido: $LOCK_FILE (PID $$)" >> "$LOG_FILE"
 echo "Portal 1: Bumeran" >> "$LOG_FILE"
 echo "Portal 2: ZonaJobs" >> "$LOG_FILE"
 echo "Portal 3: ComputRabajo" >> "$LOG_FILE"
