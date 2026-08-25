@@ -62,7 +62,31 @@ COMMAND_MAP = {
 
 
 def check_scheduled_scraping(client):
-    """Verifica si hay scraping programado para ahora según scraping_schedule"""
+    """Verifica si hay scraping programado para ahora según scraping_schedule
+
+    ⛔ DESACTIVADA 2026-08-25 — ya no se llama desde main().
+
+    Duplicaba exactamente el cron del VPS (`0 8 * * 1,4` →
+    scripts/scraping/run_scraping_vps.sh). La fila scraping_schedule id=1
+    (dias_semana=[1,4], hora_utc=11:00 = 08:00 ART) hacía que esta función
+    insertara un `lanzar_todos` a la misma hora del cron; el poller lo
+    levantaba ~40 s después y corría el MISMO run_scraping_vps.sh contra la
+    MISMA SQLite. Resultado: dos instancias completas cada lunes y jueves,
+    con `database is locked` observado en los logs.
+
+    Decisión (Gerardo, 2026-08-25): EL CRON ES EL DUEÑO del scraping
+    programado. Esta función queda sin invocar y la fila scraping_schedule
+    id=1 quedó en activo=false — desactivación en los dos lados, código y
+    dato, para que reactivar uno solo no reviva la duplicación.
+
+    Para reactivar el disparo por schedule habría que, a la vez:
+      1. volver a llamar a esta función desde el loop de main(), y
+      2. poner activo=true en scraping_schedule id=1, y
+      3. eliminar antes la entrada del crontab del VPS.
+
+    El disparo MANUAL desde el dashboard NO pasa por acá: entra por
+    poll_once() y sigue funcionando sin cambios.
+    """
     from datetime import datetime
     now = datetime.utcnow()
     dia_semana = now.isoweekday()  # 1=lun, 7=dom
@@ -251,9 +275,14 @@ def main():
 
     while True:
         try:
-            # Verificar scraping programado
-            check_scheduled_scraping(client)
-            # Procesar comandos pendientes
+            # Scraping programado DESACTIVADO 2026-08-25: duplicaba el cron
+            # `0 8 * * 1,4` del VPS (dos instancias de run_scraping_vps.sh
+            # sobre la misma SQLite). El cron es el dueño. Ver docstring de
+            # check_scheduled_scraping() y scraping_schedule id=1 (activo=false).
+            # check_scheduled_scraping(client)
+
+            # Procesar comandos pendientes (incluye el disparo MANUAL del
+            # dashboard, que sigue funcionando como override de emergencia)
             had_work = poll_once(client)
             if had_work:
                 continue  # Si hubo trabajo, buscar más inmediatamente
