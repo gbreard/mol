@@ -362,6 +362,17 @@ class ComputRabajoScraper:
                 if len(texto) > 50 and not self._es_boilerplate(texto):
                     return texto
 
+            # Método 1b: p.mbB a nivel de DOCUMENTO — "variante C" (verificada en
+            # vivo 2026-08-28): box_detail queda reducido al banner "Ya aplicaste
+            # a esta oferta" y la descripcion cuelga FUERA de ese contenedor.
+            # Ademas esta variante NO trae JSON-LD JobPosting, asi que el metodo 0
+            # tampoco alcanza. Se toma el p.mbB mas largo sobre el umbral: en la
+            # misma pagina conviven otros mbB cortos (aviso al reclutador, ~145).
+            sueltos = [p.get_text(' ', strip=True) for p in soup.find_all('p', class_='mbB')]
+            sueltos = [t for t in sueltos if len(t) > 150 and not self._es_boilerplate(t)]
+            if sueltos:
+                return max(sueltos, key=len)
+
             # Método 2: contenedor largo, recursivo, excluyendo ruido conocido
             skip_classes = {'fs13', 'fc_aux', 'result', 'fs50', 'list_dot',
                             'fc_ok', 'fw_b', 'fwB', 'box_tooltip', 'group', 'popup'}
