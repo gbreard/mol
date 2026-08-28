@@ -512,7 +512,7 @@ def scrapear_con_keywords(
     # ==================================================================
     # PASO 2: Bajar descripciones de las ofertas nuevas
     # ==================================================================
-    if fetch_description and ofertas_para_descripcion:
+    if fetch_description:
         logger.info("")
         logger.info("=" * 70)
         logger.info(f"PASO 2/2: Descripciones de {len(ofertas_para_descripcion)} ofertas nuevas")
@@ -566,6 +566,11 @@ def scrapear_con_keywords(
                     logger.info(f"  Quedan {pendientes_totales - len(ofertas_para_descripcion)} para próximas corridas")
             except Exception as e:
                 logger.warning(f"  No se pudo consultar BD para pendientes: {e}")
+
+        if not ofertas_para_descripcion:
+            logger.info("")
+            logger.info("PASO 2 OMITIDO: no hay descripciones pendientes")
+            return stats_global
 
         desc_count = 0
         desc_errors = 0
@@ -623,11 +628,51 @@ def scrapear_con_keywords(
         logger.info(f"  Agotadas — aviso caido (listado/SEO, 1er intento): {agotadas['agotado_listado']}")
         logger.info(f"  Agotadas — {MAX_INTENTOS_DESCRIPCION} intentos sin exito : {agotadas['agotado_reintentos']}")
 
-    elif fetch_description:
-        logger.info("")
-        logger.info("PASO 2 OMITIDO: No hay ofertas nuevas que necesiten descripción")
-
     return stats_global
+
+
+LOCK_FILE = '/tmp/mol_scraping.lock'
+
+
+def _hay_scraping_en_curso() -> bool:
+    """True si el cron (run_scraping_vps.sh) esta corriendo ahora mismo.
+
+    El lote manual se pensa para horario muerto: si arranca encima de la corrida
+    automatica, los dos procesos escriben la misma SQLite y compiten por el
+    portal. Se reusa el mismo lockfile que el .sh, y se valida que el PID siga
+    vivo para no bloquear por un lock huerfano.
+    """
+    import os
+    try:
+        with open(LOCK_FILE) as fh:
+            pid = fh.read().strip()
+    except FileNotFoundError:
+        return False
+    if not pid.isdigit():
+        return False
+    try:
+        os.kill(int(pid), 0)
+    except (ProcessLookupError, ValueError):
+        logger.warning(f"  Lock huerfano (PID {pid} muerto) — se ignora")
+        return False
+    except PermissionError:
+        pass  # existe pero es de otro usuario: cuenta como vivo
+    logger.error(f"  Hay un scraping en curso (PID {pid}, lock {LOCK_FILE}).")
+    logger.error("  El lote manual NO se ejecuta para no competir por la BD ni por el portal.")
+    return True
+
+
+def correr_solo_descripciones(scraper, db_path: str, max_descripciones: int) -> dict:
+    """PASO 2 aislado: baja descripciones del backlog sin recorrer keywords."""
+    return scrapear_con_keywords(
+        scraper=scraper,
+        keywords=[],                 # sin PASO 1
+        max_paginas=0,
+        fetch_description=True,
+        delay_keywords=0,
+        db_path=db_path,
+        max_descripciones=max_descripciones,
+    )
 
 
 def main():
@@ -651,6 +696,11 @@ def main():
                        help='Ruta a la BD SQLite')
     parser.add_argument('--dry-run', action='store_true',
                        help='Solo scrapear, no insertar en BD')
+    parser.add_argument('--solo-descripciones', action='store_true',
+                       help='Lote manual: corre SOLO el PASO 2 (descripciones del '
+                            'backlog), sin recorrer keywords. Para drenar atraso en '
+                            'horario muerto con un tope mayor, ej: '
+                            '--solo-descripciones --max-descripciones 3500')
     args = parser.parse_args()
 
     logger.info("=" * 70)
@@ -667,22 +717,34 @@ def main():
 
     start = time.time()
 
-    # Paso 1: Cargar keywords
-    keywords = cargar_keywords(args.estrategia)
+    if args.solo_descripciones:
+        # Lote manual: sin PASO 1. Se aborta si el cron esta corriendo.
+        if _hay_scraping_en_curso():
+            sys.exit(1)
+        logger.info(f"MODO LOTE MANUAL — solo PASO 2, tope {args.max_descripciones}")
+        scraper = ComputRabajoScraper(delay_between_requests=args.delay_requests)
+        stats = correr_solo_descripciones(
+            scraper=scraper,
+            db_path=None if args.dry_run else args.db,
+            max_descripciones=args.max_descripciones,
+        )
+    else:
+        # Paso 1: Cargar keywords
+        keywords = cargar_keywords(args.estrategia)
 
-    # Paso 2: Crear scraper
-    scraper = ComputRabajoScraper(delay_between_requests=args.delay_requests)
+        # Paso 2: Crear scraper
+        scraper = ComputRabajoScraper(delay_between_requests=args.delay_requests)
 
-    # Paso 3: Scrapear e insertar
-    stats = scrapear_con_keywords(
-        scraper=scraper,
-        keywords=keywords,
-        max_paginas=args.max_paginas,
-        fetch_description=not args.no_description,
-        delay_keywords=args.delay_keywords,
-        db_path=None if args.dry_run else args.db,
-        max_descripciones=args.max_descripciones
-    )
+        # Paso 3: Scrapear e insertar
+        stats = scrapear_con_keywords(
+            scraper=scraper,
+            keywords=keywords,
+            max_paginas=args.max_paginas,
+            fetch_description=not args.no_description,
+            delay_keywords=args.delay_keywords,
+            db_path=None if args.dry_run else args.db,
+            max_descripciones=args.max_descripciones
+        )
 
     elapsed = time.time() - start
 
@@ -705,14 +767,17 @@ def main():
     logger.info("=" * 70)
     logger.info("RESULTADO FINAL - COMPUTRABAJO")
     logger.info("=" * 70)
-    logger.info(f"  Keywords procesadas: {stats['keywords_procesadas']}/{stats['keywords_total']}")
-    logger.info(f"  Keywords exitosas: {stats['keywords_exitosas']}")
-    logger.info(f"  Keywords sin resultados: {stats['keywords_sin_resultados']}")
-    logger.info(f"  Keywords con error: {stats['keywords_error']}")
-    logger.info(f"  ---")
-    logger.info(f"  Ofertas scrapeadas: {stats['ofertas_scrapeadas']}")
+    if not args.solo_descripciones:
+        logger.info(f"  Keywords procesadas: {stats['keywords_procesadas']}/{stats['keywords_total']}")
+        logger.info(f"  Keywords exitosas: {stats['keywords_exitosas']}")
+        logger.info(f"  Keywords sin resultados: {stats['keywords_sin_resultados']}")
+        logger.info(f"  Keywords con error: {stats['keywords_error']}")
+        logger.info(f"  ---")
+        logger.info(f"  Ofertas scrapeadas: {stats['ofertas_scrapeadas']}")
+    if stats.get('agotadas_por_motivo'):
+        logger.info(f"  Agotadas por motivo: {stats['agotadas_por_motivo']}")
     logger.info(f"  Ofertas con descripción: {stats['ofertas_con_descripcion']}")
-    if not args.dry_run:
+    if not args.dry_run and not args.solo_descripciones:
         logger.info(f"  Insertadas en BD: {stats['insertadas_total']}")
         logger.info(f"  Duplicadas: {stats['duplicadas_total']}")
         logger.info(f"  Errores inserción: {stats['errores_total']}")
