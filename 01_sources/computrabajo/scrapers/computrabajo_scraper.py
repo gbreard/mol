@@ -307,12 +307,43 @@ class ComputRabajoScraper:
     # Verificado 2026-08-05: "¿Buscas trabajo de {título}? Crea tu CV gratis y aplica…"
     # / "¿Buscas trabajo en {zona}? Crea tu CV y aplica…". Este texto se guardó como
     # "descripción" en ~14K ofertas may-ago/2026 (incidente FRENTE I/J).
+    # Ampliado 2026-08-28: CT tiene DOS familias de meta SEO, no una. La segunda
+    # ("Consulta las nuevas ofertas de trabajo de {ocupacion} en {ciudad}… ¡Crea tu
+    # CV y postulate con Computrabajo!") aparece cuando el aviso ya no existe y el
+    # portal sirve la pagina de LISTADO por ocupacion+ciudad. No empieza con
+    # "¿Buscas trabajo…", asi que el patron original no la reconocia y se colaba
+    # como descripcion (135-148 chars) al excluir el modal de denuncias.
     BOILERPLATE_RE = re.compile(
-        r'buscas\s+trabajo\s+(de|en)\s+.{0,120}crea\s+tu\s+cv', re.I | re.S)
+        r'(?:buscas\s+trabajo\s+(?:de|en)\s+.{0,120}crea\s+tu\s+cv'
+        r'|consulta\s+las\s+nuevas\s+ofertas\s+de\s+trabajo.{0,160}crea\s+tu\s+cv)',
+        re.I | re.S)
 
     def _es_boilerplate(self, texto: str) -> bool:
         """True si el texto es el SEO genérico de CT — JAMÁS guardarlo como dato."""
         return bool(texto) and bool(self.BOILERPLATE_RE.search(texto))
+
+    @staticmethod
+    def _en_zona_excluida(elem, skip_classes: set) -> bool:
+        """True si el nodo o CUALQUIER ancestro suyo es ruido de interfaz.
+
+        Mirar sólo `elem.get('class')` no alcanza: los contenedores de UI de CT
+        (div.popup, div.group…) tienen hijos sin clase propia, y esos hijos se
+        colaban como si fueran descripción.
+        """
+        if set(elem.get('class', []) or []) & skip_classes:
+            return True
+        for ancestro in elem.parents:
+            if ancestro.name in ('body', 'html', '[document]'):
+                break
+            if set(ancestro.get('class', []) or []) & skip_classes:
+                return True
+        return False
+
+    # Motivo del último fallo de extracción, para que el llamador distinga un
+    # aviso que YA NO EXISTE (el portal sirve la pagina de listado/SEO — no
+    # sirve reintentarlo) de un fallo ambiguo que sí merece reintento.
+    # Valores: None | 'listado_seo' | 'redirect_listado' | 'sin_metodo' | 'http' | 'excepcion'
+    ultimo_fallo = None
 
     def _extraer_descripcion(self, soup, url: str) -> Optional[str]:
         """Extrae la descripción real del aviso, o None RUIDOSO si no se pudo.
@@ -334,9 +365,11 @@ class ComputRabajoScraper:
         """
         # Detección de redirect a listado (aviso dado de baja / soft-block):
         # el <title> de detalle empieza "Trabajos de …"; el de listado "Empleos en …".
+        self.ultimo_fallo = None
         titulo_pagina = soup.title.get_text(strip=True) if soup.title else ''
         if titulo_pagina.lower().startswith('empleos en'):
             logger.warning(f"  DESCRIPCION NO EXTRAIDA (redirect a listado — aviso caído o bloqueo): {url}")
+            self.ultimo_fallo = 'redirect_listado'
             return None
 
         # Método 0: JSON-LD JobPosting
@@ -362,12 +395,30 @@ class ComputRabajoScraper:
                 if len(texto) > 50 and not self._es_boilerplate(texto):
                     return texto
 
-            # Método 2: contenedor largo, recursivo, excluyendo ruido conocido
+            # Método 1b: p.mbB a nivel de DOCUMENTO — "variante C" (verificada en
+            # vivo 2026-08-28): box_detail queda reducido al banner "Ya aplicaste
+            # a esta oferta" y la descripcion cuelga FUERA de ese contenedor.
+            # Ademas esta variante NO trae JSON-LD JobPosting, asi que el metodo 0
+            # tampoco alcanza. Se toma el p.mbB mas largo sobre el umbral: en la
+            # misma pagina conviven otros mbB cortos (aviso al reclutador, ~145).
             skip_classes = {'fs13', 'fc_aux', 'result', 'fs50', 'list_dot',
                             'fc_ok', 'fw_b', 'fwB', 'box_tooltip', 'group', 'popup'}
+
+            sueltos = [p.get_text(' ', strip=True) for p in soup.find_all('p', class_='mbB')
+                       if not self._en_zona_excluida(p, skip_classes)]
+            sueltos = [t for t in sueltos if len(t) > 150 and not self._es_boilerplate(t)]
+            if sueltos:
+                return max(sueltos, key=len)
+
+            # Método 2: contenedor largo, recursivo, excluyendo ruido conocido.
+            # La exclusión mira TODOS los ancestros, no sólo el nodo: saltar sólo
+            # el nodo dejaba entrar a sus hijos. Así se colaba el texto del modal
+            # de denuncias ("Para denuncias como la tuya…", 221 chars), que vive en
+            # un <p class="mb20"> dentro de div.popup — popup ya estaba en la lista,
+            # pero el <p> hijo no heredaba la exclusión. Verificado 2026-08-28.
             candidatos = []
             for elem in desc_container.find_all(['p', 'div']):
-                if set(elem.get('class', [])) & skip_classes:
+                if self._en_zona_excluida(elem, skip_classes):
                     continue
                 if elem.find(['p', 'div']):  # solo nodos hoja (evita contenedores padre)
                     continue
@@ -383,11 +434,13 @@ class ComputRabajoScraper:
             texto = meta_desc['content'].strip()
             if self._es_boilerplate(texto):
                 logger.warning(f"  DESCRIPCION NO EXTRAIDA (selector falló; meta es boilerplate SEO — se guarda NULL): {url}")
+                self.ultimo_fallo = 'listado_seo'
                 return None
             if len(texto) > 50:
                 return texto
 
         logger.warning(f"  DESCRIPCION NO EXTRAIDA (ningún método; se guarda NULL): {url}")
+        self.ultimo_fallo = 'sin_metodo'
         return None
 
     def scrapear_oferta_individual(self, url_oferta: str) -> Optional[Dict]:
@@ -403,6 +456,7 @@ class ComputRabajoScraper:
         try:
             # Quitar fragment (#lc=...) antes del request - no se envía al server
             url_clean = url_oferta.split('#')[0]
+            self.ultimo_fallo = None
             logger.debug(f"  Scrapeando oferta individual: {url_clean}")
 
             response = self.session.get(
@@ -413,6 +467,7 @@ class ComputRabajoScraper:
 
             if response.status_code != 200:
                 logger.warning(f"  Error en oferta individual - Status: {response.status_code}")
+                self.ultimo_fallo = 'http'
                 return None
 
             soup = BeautifulSoup(response.content, 'html.parser')

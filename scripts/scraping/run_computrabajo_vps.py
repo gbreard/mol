@@ -309,13 +309,81 @@ def _extraer_slug(oferta):
     return re.sub(r'-[A-Fa-f0-9]{32}$', '', slug)
 
 
+# Reintentos de descripción antes de dar una oferta por perdida (2026-08-28).
+# Las que fallan lo hacen de forma determinista (aviso caído o template no
+# cubierto): reintentarlas indefinidamente sólo consume la ventana del PASO 2.
+MAX_INTENTOS_DESCRIPCION = 3
+
+
+def _asegurar_columnas_descripcion(cur):
+    """Agrega descripcion_intentos / descripcion_estado si faltan (idempotente)."""
+    cols = {row[1] for row in cur.execute("PRAGMA table_info(ofertas)")}
+    if 'descripcion_intentos' not in cols:
+        cur.execute("ALTER TABLE ofertas ADD COLUMN descripcion_intentos INTEGER DEFAULT 0")
+        logger.info("  [migracion] columna descripcion_intentos agregada")
+    if 'descripcion_estado' not in cols:
+        cur.execute("ALTER TABLE ofertas ADD COLUMN descripcion_estado TEXT")
+        logger.info("  [migracion] columna descripcion_estado agregada")
+
+
+def _registrar_intento_fallido(conn, id_oferta, motivo=None) -> str:
+    """Suma un intento fallido y decide si la oferta sale de la cola.
+
+    Devuelve el estado alcanzado en ESTA llamada — 'agotado_listado',
+    'agotado_reintentos' o '' — y sólo en la TRANSICIÓN, para que el contador de
+    la corrida no infle si una oferta ya agotada vuelve a intentarse (puede pasar
+    si reaparece en el listado por republicación).
+
+    Dos vías de salida, distinguibles para auditoría y reversión:
+
+    - 'agotado_listado': el portal sirvió la página de listado/SEO en lugar del
+      aviso, o redirigió al listado. Es señal DETERMINISTA de que el aviso ya no
+      existe (verificado 15/15 el 2026-08-28), así que no se gastan 3 intentos:
+      sale en el primero. Sobre ~7.600 caídas eso ahorra ~15 h de fetch inútil.
+    - 'agotado_reintentos': fallo ambiguo (timeout, HTTP raro, ningún selector).
+      Puede ser transitorio, así que conserva los MAX_INTENTOS_DESCRIPCION.
+    """
+    FALLOS_DEFINITIVOS = ('listado_seo', 'redirect_listado')
+
+    previo = conn.execute(
+        "SELECT COALESCE(descripcion_estado, '') FROM ofertas WHERE id_oferta = ?",
+        (id_oferta,)).fetchone()
+    if previo and previo[0].startswith('agotado'):
+        return ''   # ya estaba fuera de la cola; no re-contar
+
+    conn.execute(
+        "UPDATE ofertas SET descripcion_intentos = COALESCE(descripcion_intentos, 0) + 1 "
+        "WHERE id_oferta = ?", (id_oferta,))
+
+    nuevo_estado = ''
+    if motivo in FALLOS_DEFINITIVOS:
+        nuevo_estado = 'agotado_listado'
+    else:
+        fila = conn.execute(
+            "SELECT COALESCE(descripcion_intentos, 0) FROM ofertas WHERE id_oferta = ?",
+            (id_oferta,)).fetchone()
+        if fila and fila[0] >= MAX_INTENTOS_DESCRIPCION:
+            nuevo_estado = 'agotado_reintentos'
+
+    if nuevo_estado:
+        # Sólo si sigue sin descripción: nunca sacar de la cola algo ya resuelto
+        cur = conn.execute(
+            "UPDATE ofertas SET descripcion_estado = ? "
+            "WHERE id_oferta = ? AND (descripcion IS NULL OR descripcion = '')",
+            (nuevo_estado, id_oferta))
+        if cur.rowcount == 0:
+            return ''
+    return nuevo_estado
+
+
 def scrapear_con_keywords(
     scraper: ComputRabajoScraper,
     keywords: list,
     max_paginas: int = 5,
     fetch_description: bool = True,
     delay_keywords: float = 3.0,
-    db_path: str = None
+    db_path: str = None,
+    max_descripciones: int = 1500
 ) -> dict:
     """
     Scrapea ComputRabajo en DOS PASADAS:
@@ -325,8 +393,8 @@ def scrapear_con_keywords(
             Rápido: ~2-3 horas para 1072 keywords.
 
     PASO 2: Para las ofertas nuevas insertadas, bajar descripción individual.
-            Solo las que no tienen descripción aún.
-            Se hace UPDATE en BD (no se pierde nada si se interrumpe).
+            Solo las que no tienen descripción aún, ACOTADO por
+            max_descripciones y priorizando lo más reciente.
 
     Args:
         scraper: Instancia de ComputRabajoScraper
@@ -335,6 +403,12 @@ def scrapear_con_keywords(
         fetch_description: Si True, ejecuta Paso 2 (descripciones)
         delay_keywords: Delay entre keywords (segundos)
         db_path: Ruta a la BD SQLite
+        max_descripciones: Tope de fetchs de detalle por corrida (2026-08-28).
+            Sin tope, drenar el backlog acumulado (~14K tras la limpieza del
+            boilerplate) tomaría ~9,3 h a 2,5 s por oferta, encima de las ~3,5 h
+            del scraping — desbordaría la ventana y chocaría con el cron
+            siguiente. Con el tope el backlog se drena en lotes por corrida,
+            atendiendo primero lo más reciente (ORDER BY scrapeado_en DESC).
 
     Returns:
         Dict con estadísticas globales
@@ -445,22 +519,51 @@ def scrapear_con_keywords(
         logger.info("=" * 70)
         paso2_start = time.time()
 
-        # También buscar ofertas sin descripción de corridas anteriores
+        # También buscar ofertas sin descripción de corridas anteriores.
+        # Acotado (2026-08-28): se prioriza lo más reciente y se excluyen las
+        # 'agotadas' — las que ya fallaron MAX_INTENTOS_DESCRIPCION veces. Antes
+        # esta query traía TODO el pendiente sin límite y reintentaba en cada
+        # corrida el mismo conjunto que falla de forma determinista (los fallos
+        # por boilerplate crecían 56→148→217→278→337→432 corrida a corrida).
         if db_path:
             try:
                 conn = sqlite3.connect(db_path, timeout=30)
                 cur = conn.cursor()
+                _asegurar_columnas_descripcion(cur)
+                conn.commit()
+                cupo = max(0, max_descripciones - len(ofertas_para_descripcion))
+                if cupo:
+                    cur.execute("""
+                        SELECT id_oferta, url_oferta FROM ofertas
+                        WHERE portal = 'computrabajo'
+                          AND (descripcion IS NULL OR descripcion = '')
+                          AND url_oferta IS NOT NULL
+                          AND COALESCE(descripcion_estado, '') NOT LIKE 'agotado%'
+                        ORDER BY scrapeado_en DESC
+                        LIMIT ?
+                    """, (cupo,))
+                    for row in cur.fetchall():
+                        if row[0] not in ofertas_para_descripcion:
+                            ofertas_para_descripcion[row[0]] = row[1]
+                # Cuánto queda afuera, para que el tope no oculte el backlog
                 cur.execute("""
-                    SELECT id_oferta, url_oferta FROM ofertas
+                    SELECT COUNT(*) FROM ofertas
                     WHERE portal = 'computrabajo'
                       AND (descripcion IS NULL OR descripcion = '')
                       AND url_oferta IS NOT NULL
+                      AND COALESCE(descripcion_estado, '') NOT LIKE 'agotado%'
                 """)
-                for row in cur.fetchall():
-                    if row[0] not in ofertas_para_descripcion:
-                        ofertas_para_descripcion[row[0]] = row[1]
+                pendientes_totales = cur.fetchone()[0]
+                cur.execute("""
+                    SELECT COUNT(*) FROM ofertas
+                    WHERE portal = 'computrabajo' AND descripcion_estado LIKE 'agotado%'
+                """)
+                agotadas = cur.fetchone()[0]
                 conn.close()
-                logger.info(f"  Total con descripciones pendientes (incl. anteriores): {len(ofertas_para_descripcion)}")
+                logger.info(f"  Se intentarán en esta corrida: {len(ofertas_para_descripcion)} (tope {max_descripciones})")
+                logger.info(f"  Backlog pendiente total: {pendientes_totales} | agotadas (excluidas): {agotadas}")
+                if pendientes_totales > len(ofertas_para_descripcion):
+                    logger.info(f"  Quedan {pendientes_totales - len(ofertas_para_descripcion)} para próximas corridas")
             except Exception as e:
                 logger.warning(f"  No se pudo consultar BD para pendientes: {e}")
 
@@ -468,6 +571,7 @@ def scrapear_con_keywords(
         desc_errors = 0
         conn = sqlite3.connect(db_path, timeout=30) if db_path else None
 
+        agotadas = {'agotado_listado': 0, 'agotado_reintentos': 0}
         for j, (id_oferta, url) in enumerate(ofertas_para_descripcion.items(), 1):
             try:
                 datos_extra = scraper.scrapear_oferta_individual(url)
@@ -480,9 +584,24 @@ def scrapear_con_keywords(
                         if j % 50 == 0:
                             conn.commit()
                     desc_count += 1
+                elif conn:
+                    # Fallo sin excepción. El scraper deja en ultimo_fallo POR QUÉ:
+                    # si el portal sirvió el listado, el aviso ya no existe y sale
+                    # de la cola en el primer intento; si fue ambiguo, reintenta.
+                    est = _registrar_intento_fallido(
+                        conn, id_oferta, getattr(scraper, 'ultimo_fallo', None))
+                    if est:
+                        agotadas[est] += 1
                 time.sleep(scraper.delay)
             except Exception as e:
                 desc_errors += 1
+                if conn:
+                    try:
+                        est = _registrar_intento_fallido(conn, id_oferta, 'excepcion')
+                        if est:
+                            agotadas[est] += 1
+                    except Exception:
+                        pass
                 if desc_errors <= 5:
                     logger.warning(f"  Error descripción {id_oferta}: {e}")
 
@@ -495,10 +614,14 @@ def scrapear_con_keywords(
             conn.close()
 
         stats_global['ofertas_con_descripcion'] = desc_count
+        stats_global['descripciones_agotadas'] = sum(agotadas.values())
+        stats_global['agotadas_por_motivo'] = dict(agotadas)
         paso2_elapsed = time.time() - paso2_start
         logger.info(f"PASO 2 COMPLETADO en {paso2_elapsed:.0f}s ({paso2_elapsed/60:.1f} min)")
         logger.info(f"  Descripciones obtenidas: {desc_count}/{len(ofertas_para_descripcion)}")
         logger.info(f"  Errores: {desc_errors}")
+        logger.info(f"  Agotadas — aviso caido (listado/SEO, 1er intento): {agotadas['agotado_listado']}")
+        logger.info(f"  Agotadas — {MAX_INTENTOS_DESCRIPCION} intentos sin exito : {agotadas['agotado_reintentos']}")
 
     elif fetch_description:
         logger.info("")
@@ -515,6 +638,10 @@ def main():
                        help='Páginas por keyword (default: 5, ~100 ofertas/keyword)')
     parser.add_argument('--no-description', action='store_true',
                        help='No obtener descripción individual (modo rápido)')
+    parser.add_argument('--max-descripciones', type=int, default=1500,
+                       help='Tope de descripciones a bajar por corrida (default: 1500, '
+                            '~1h a 2.5s c/u). Prioriza lo más reciente; el resto del '
+                            'backlog queda para las corridas siguientes')
     parser.add_argument('--delay-requests', type=float, default=2.0,
                        help='Delay entre requests HTTP (default: 2.0s)')
     parser.add_argument('--delay-keywords', type=float, default=3.0,
@@ -553,7 +680,8 @@ def main():
         max_paginas=args.max_paginas,
         fetch_description=not args.no_description,
         delay_keywords=args.delay_keywords,
-        db_path=None if args.dry_run else args.db
+        db_path=None if args.dry_run else args.db,
+        max_descripciones=args.max_descripciones
     )
 
     elapsed = time.time() - start
