@@ -326,31 +326,54 @@ def _asegurar_columnas_descripcion(cur):
         logger.info("  [migracion] columna descripcion_estado agregada")
 
 
-def _registrar_intento_fallido(conn, id_oferta) -> int:
-    """Suma un intento fallido.
+def _registrar_intento_fallido(conn, id_oferta, motivo=None) -> str:
+    """Suma un intento fallido y decide si la oferta sale de la cola.
 
-    Devuelve 1 sólo en la TRANSICIÓN a 'agotado' (para que el contador de la
-    corrida no infle si una oferta ya agotada vuelve a intentarse, cosa que puede
-    pasar si reaparece en el listado por republicación).
+    Devuelve el estado alcanzado en ESTA llamada — 'agotado_listado',
+    'agotado_reintentos' o '' — y sólo en la TRANSICIÓN, para que el contador de
+    la corrida no infle si una oferta ya agotada vuelve a intentarse (puede pasar
+    si reaparece en el listado por republicación).
+
+    Dos vías de salida, distinguibles para auditoría y reversión:
+
+    - 'agotado_listado': el portal sirvió la página de listado/SEO en lugar del
+      aviso, o redirigió al listado. Es señal DETERMINISTA de que el aviso ya no
+      existe (verificado 15/15 el 2026-08-28), así que no se gastan 3 intentos:
+      sale en el primero. Sobre ~7.600 caídas eso ahorra ~15 h de fetch inútil.
+    - 'agotado_reintentos': fallo ambiguo (timeout, HTTP raro, ningún selector).
+      Puede ser transitorio, así que conserva los MAX_INTENTOS_DESCRIPCION.
     """
+    FALLOS_DEFINITIVOS = ('listado_seo', 'redirect_listado')
+
     previo = conn.execute(
         "SELECT COALESCE(descripcion_estado, '') FROM ofertas WHERE id_oferta = ?",
         (id_oferta,)).fetchone()
-    ya_agotada = bool(previo) and previo[0] == 'agotado'
+    if previo and previo[0].startswith('agotado'):
+        return ''   # ya estaba fuera de la cola; no re-contar
 
     conn.execute(
         "UPDATE ofertas SET descripcion_intentos = COALESCE(descripcion_intentos, 0) + 1 "
         "WHERE id_oferta = ?", (id_oferta,))
-    fila = conn.execute(
-        "SELECT COALESCE(descripcion_intentos, 0) FROM ofertas WHERE id_oferta = ?",
-        (id_oferta,)).fetchone()
-    if fila and fila[0] >= MAX_INTENTOS_DESCRIPCION:
-        conn.execute(
-            "UPDATE ofertas SET descripcion_estado = 'agotado' "
+
+    nuevo_estado = ''
+    if motivo in FALLOS_DEFINITIVOS:
+        nuevo_estado = 'agotado_listado'
+    else:
+        fila = conn.execute(
+            "SELECT COALESCE(descripcion_intentos, 0) FROM ofertas WHERE id_oferta = ?",
+            (id_oferta,)).fetchone()
+        if fila and fila[0] >= MAX_INTENTOS_DESCRIPCION:
+            nuevo_estado = 'agotado_reintentos'
+
+    if nuevo_estado:
+        # Sólo si sigue sin descripción: nunca sacar de la cola algo ya resuelto
+        cur = conn.execute(
+            "UPDATE ofertas SET descripcion_estado = ? "
             "WHERE id_oferta = ? AND (descripcion IS NULL OR descripcion = '')",
-            (id_oferta,))
-        return 0 if ya_agotada else 1
-    return 0
+            (nuevo_estado, id_oferta))
+        if cur.rowcount == 0:
+            return ''
+    return nuevo_estado
 
 
 def scrapear_con_keywords(
@@ -515,7 +538,7 @@ def scrapear_con_keywords(
                         WHERE portal = 'computrabajo'
                           AND (descripcion IS NULL OR descripcion = '')
                           AND url_oferta IS NOT NULL
-                          AND COALESCE(descripcion_estado, '') != 'agotado'
+                          AND COALESCE(descripcion_estado, '') NOT LIKE 'agotado%'
                         ORDER BY scrapeado_en DESC
                         LIMIT ?
                     """, (cupo,))
@@ -528,12 +551,12 @@ def scrapear_con_keywords(
                     WHERE portal = 'computrabajo'
                       AND (descripcion IS NULL OR descripcion = '')
                       AND url_oferta IS NOT NULL
-                      AND COALESCE(descripcion_estado, '') != 'agotado'
+                      AND COALESCE(descripcion_estado, '') NOT LIKE 'agotado%'
                 """)
                 pendientes_totales = cur.fetchone()[0]
                 cur.execute("""
                     SELECT COUNT(*) FROM ofertas
-                    WHERE portal = 'computrabajo' AND descripcion_estado = 'agotado'
+                    WHERE portal = 'computrabajo' AND descripcion_estado LIKE 'agotado%'
                 """)
                 agotadas = cur.fetchone()[0]
                 conn.close()
@@ -548,7 +571,7 @@ def scrapear_con_keywords(
         desc_errors = 0
         conn = sqlite3.connect(db_path, timeout=30) if db_path else None
 
-        desc_agotadas = 0
+        agotadas = {'agotado_listado': 0, 'agotado_reintentos': 0}
         for j, (id_oferta, url) in enumerate(ofertas_para_descripcion.items(), 1):
             try:
                 datos_extra = scraper.scrapear_oferta_individual(url)
@@ -562,16 +585,21 @@ def scrapear_con_keywords(
                             conn.commit()
                     desc_count += 1
                 elif conn:
-                    # Fallo sin excepción (aviso caído, template no cubierto,
-                    # meta boilerplate). Se cuenta el intento; al llegar al tope
-                    # sale de la cola automática para no reintentarla por siempre.
-                    desc_agotadas += _registrar_intento_fallido(conn, id_oferta)
+                    # Fallo sin excepción. El scraper deja en ultimo_fallo POR QUÉ:
+                    # si el portal sirvió el listado, el aviso ya no existe y sale
+                    # de la cola en el primer intento; si fue ambiguo, reintenta.
+                    est = _registrar_intento_fallido(
+                        conn, id_oferta, getattr(scraper, 'ultimo_fallo', None))
+                    if est:
+                        agotadas[est] += 1
                 time.sleep(scraper.delay)
             except Exception as e:
                 desc_errors += 1
                 if conn:
                     try:
-                        desc_agotadas += _registrar_intento_fallido(conn, id_oferta)
+                        est = _registrar_intento_fallido(conn, id_oferta, 'excepcion')
+                        if est:
+                            agotadas[est] += 1
                     except Exception:
                         pass
                 if desc_errors <= 5:
@@ -586,12 +614,14 @@ def scrapear_con_keywords(
             conn.close()
 
         stats_global['ofertas_con_descripcion'] = desc_count
-        stats_global['descripciones_agotadas'] = desc_agotadas
+        stats_global['descripciones_agotadas'] = sum(agotadas.values())
+        stats_global['agotadas_por_motivo'] = dict(agotadas)
         paso2_elapsed = time.time() - paso2_start
         logger.info(f"PASO 2 COMPLETADO en {paso2_elapsed:.0f}s ({paso2_elapsed/60:.1f} min)")
         logger.info(f"  Descripciones obtenidas: {desc_count}/{len(ofertas_para_descripcion)}")
         logger.info(f"  Errores: {desc_errors}")
-        logger.info(f"  Marcadas 'agotado' ({MAX_INTENTOS_DESCRIPCION} intentos sin éxito): {desc_agotadas}")
+        logger.info(f"  Agotadas — aviso caido (listado/SEO, 1er intento): {agotadas['agotado_listado']}")
+        logger.info(f"  Agotadas — {MAX_INTENTOS_DESCRIPCION} intentos sin exito : {agotadas['agotado_reintentos']}")
 
     elif fetch_description:
         logger.info("")

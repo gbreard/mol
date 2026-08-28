@@ -339,6 +339,12 @@ class ComputRabajoScraper:
                 return True
         return False
 
+    # Motivo del último fallo de extracción, para que el llamador distinga un
+    # aviso que YA NO EXISTE (el portal sirve la pagina de listado/SEO — no
+    # sirve reintentarlo) de un fallo ambiguo que sí merece reintento.
+    # Valores: None | 'listado_seo' | 'redirect_listado' | 'sin_metodo' | 'http' | 'excepcion'
+    ultimo_fallo = None
+
     def _extraer_descripcion(self, soup, url: str) -> Optional[str]:
         """Extrae la descripción real del aviso, o None RUIDOSO si no se pudo.
 
@@ -359,9 +365,11 @@ class ComputRabajoScraper:
         """
         # Detección de redirect a listado (aviso dado de baja / soft-block):
         # el <title> de detalle empieza "Trabajos de …"; el de listado "Empleos en …".
+        self.ultimo_fallo = None
         titulo_pagina = soup.title.get_text(strip=True) if soup.title else ''
         if titulo_pagina.lower().startswith('empleos en'):
             logger.warning(f"  DESCRIPCION NO EXTRAIDA (redirect a listado — aviso caído o bloqueo): {url}")
+            self.ultimo_fallo = 'redirect_listado'
             return None
 
         # Método 0: JSON-LD JobPosting
@@ -426,11 +434,13 @@ class ComputRabajoScraper:
             texto = meta_desc['content'].strip()
             if self._es_boilerplate(texto):
                 logger.warning(f"  DESCRIPCION NO EXTRAIDA (selector falló; meta es boilerplate SEO — se guarda NULL): {url}")
+                self.ultimo_fallo = 'listado_seo'
                 return None
             if len(texto) > 50:
                 return texto
 
         logger.warning(f"  DESCRIPCION NO EXTRAIDA (ningún método; se guarda NULL): {url}")
+        self.ultimo_fallo = 'sin_metodo'
         return None
 
     def scrapear_oferta_individual(self, url_oferta: str) -> Optional[Dict]:
@@ -446,6 +456,7 @@ class ComputRabajoScraper:
         try:
             # Quitar fragment (#lc=...) antes del request - no se envía al server
             url_clean = url_oferta.split('#')[0]
+            self.ultimo_fallo = None
             logger.debug(f"  Scrapeando oferta individual: {url_clean}")
 
             response = self.session.get(
@@ -456,6 +467,7 @@ class ComputRabajoScraper:
 
             if response.status_code != 200:
                 logger.warning(f"  Error en oferta individual - Status: {response.status_code}")
+                self.ultimo_fallo = 'http'
                 return None
 
             soup = BeautifulSoup(response.content, 'html.parser')
