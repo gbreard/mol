@@ -512,7 +512,7 @@ def scrapear_con_keywords(
     # ==================================================================
     # PASO 2: Bajar descripciones de las ofertas nuevas
     # ==================================================================
-    if fetch_description and ofertas_para_descripcion:
+    if fetch_description:
         logger.info("")
         logger.info("=" * 70)
         logger.info(f"PASO 2/2: Descripciones de {len(ofertas_para_descripcion)} ofertas nuevas")
@@ -566,6 +566,11 @@ def scrapear_con_keywords(
                     logger.info(f"  Quedan {pendientes_totales - len(ofertas_para_descripcion)} para próximas corridas")
             except Exception as e:
                 logger.warning(f"  No se pudo consultar BD para pendientes: {e}")
+
+        if not ofertas_para_descripcion:
+            logger.info("")
+            logger.info("PASO 2 OMITIDO: no hay descripciones pendientes")
+            return stats_global
 
         desc_count = 0
         desc_errors = 0
@@ -622,10 +627,6 @@ def scrapear_con_keywords(
         logger.info(f"  Errores: {desc_errors}")
         logger.info(f"  Agotadas — aviso caido (listado/SEO, 1er intento): {agotadas['agotado_listado']}")
         logger.info(f"  Agotadas — {MAX_INTENTOS_DESCRIPCION} intentos sin exito : {agotadas['agotado_reintentos']}")
-
-    elif fetch_description:
-        logger.info("")
-        logger.info("PASO 2 OMITIDO: No hay ofertas nuevas que necesiten descripción")
 
     return stats_global
 
