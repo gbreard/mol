@@ -313,8 +313,15 @@ class ComputRabajoScraper:
     # portal sirve la pagina de LISTADO por ocupacion+ciudad. No empieza con
     # "¿Buscas trabajo…", asi que el patron original no la reconocia y se colaba
     # como descripcion (135-148 chars) al excluir el modal de denuncias.
+    # Ampliado 2026-09-01: el limite de 120 chars entre "buscas trabajo de" y
+    # "crea tu cv" era el LARGO DEL TITULO del aviso, y CT interpola titulos
+    # largos ("Técnico Electromecánico con experiencia en ensayos eléctricos y
+    # cálculo de transformadores MT - Exp fabricante de transformadores…").
+    # Con 120 se escapaban 46 boilerplates que quedaron sin limpiar y que el
+    # scraper habria vuelto a guardar. 250 cubre los titulos observados
+    # (max 238 chars de texto total) con margen.
     BOILERPLATE_RE = re.compile(
-        r'(?:buscas\s+trabajo\s+(?:de|en)\s+.{0,120}crea\s+tu\s+cv'
+        r'(?:buscas\s+trabajo\s+(?:de|en)\s+.{0,250}crea\s+tu\s+cv'
         r'|consulta\s+las\s+nuevas\s+ofertas\s+de\s+trabajo.{0,160}crea\s+tu\s+cv)',
         re.I | re.S)
 
