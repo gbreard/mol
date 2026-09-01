@@ -165,6 +165,9 @@ def _gate(ofertas, st) -> dict:
     nav = st['nav_total'] or 1
     fallo = (st['challenges'] + st['blocked']) / nav
     minutos = st['elapsed_seg'] / 60.0
+    # Presupuesto de tiempo escalado por Nº de keywords (preserva 20kw<=25min;
+    # 90kw<=112.5min < 2h). Evita el "GO":false engañoso en tramos grandes.
+    budget_min = round(max(st['keywords'], 1) * 1.25, 1)
     # D2 sobre las ofertas conservadas (con descripcion)
     n = len(ofertas) or 1
     con_jsonld = sum(1 for o in ofertas if o.get('_jsonld'))
@@ -175,14 +178,15 @@ def _gate(ofertas, st) -> dict:
         'rendimiento': round(rendimiento, 3), 'rendimiento_ok': rendimiento >= 0.75,
         'con_descripcion': con_desc, 'tarjetas_unicas': st['tarjetas_unicas'],
         'fallo_challenge_blocked': round(fallo, 3), 'fallo_ok': fallo < 0.15,
-        'minutos': round(minutos, 1), 'tiempo_ok': minutos <= 25,
+        'minutos': round(minutos, 1), 'tiempo_budget_min': budget_min,
+        'tiempo_ok': minutos <= budget_min,
         # D2:
         'pct_con_jsonld': round(con_jsonld / n, 3),
         'pct_con_fecha': round((f_jsonld + f_listado) / n, 3),
         'pct_fecha_jsonld': round(f_jsonld / n, 3),
         'pct_fecha_listado': round(f_listado / n, 3),
         'pct_sin_fecha': round(f_none / n, 3),
-        'GO': (rendimiento >= 0.75) and (fallo < 0.15) and (minutos <= 25),
+        'GO': (rendimiento >= 0.75) and (fallo < 0.15) and (minutos <= budget_min),
     }
 
 
