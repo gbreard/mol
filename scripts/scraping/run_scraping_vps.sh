@@ -125,12 +125,17 @@ echo "=== Portal Empleo finalizado: $(date) ===" >> "$LOG_FILE"
 echo "" >> "$LOG_FILE"
 
 # =====================================================================
-# Paso 6: Indeed (~2.5 horas con detalles, multi-keyword)
+# Paso 6: Indeed — DESACTIVADO (2026-09-01)
 # =====================================================================
-echo "=== [6/7] Indeed scraping: $(date) ===" >> "$LOG_FILE"
-# Indeed corre local (VPS bloqueado por Cloudflare). Se encola via Supabase → poller local.
-PYTHONUNBUFFERED=1 python3 scripts/scraping/queue_indeed_local.py >> "$LOG_FILE" 2>&1
-echo "=== Indeed finalizado: $(date) ===" >> "$LOG_FILE"
+# Indeed pasó a scraping LOCAL HEADED (chromium real bajo xvfb): curl_cffi
+# quedó bloqueado por Cloudflare (403 "Security Check") y el modo headless da
+# "Blocked - Indeed.com" (detección de headless, NO baneo de IP). El motor
+# headed corre por un cron local dedicado 1×/día (05:00), no desde el VPS.
+# Dejar este enqueue acá lo dispararía DOS veces los Lun/Jue (cron local +
+# poller). Spec: exports/reportes/SPEC_indeed_scraper_headed_2026-09-01.md
+# (El botón admin sigue disponible: pipeline_commands → poller → headed.)
+echo "=== [6/7] Indeed: DESACTIVADO en VPS — corre local headed 05:00 ===" >> "$LOG_FILE"
+# PYTHONUNBUFFERED=1 python3 scripts/scraping/queue_indeed_local.py >> "$LOG_FILE" 2>&1
 echo "" >> "$LOG_FILE"
 
 # =====================================================================
