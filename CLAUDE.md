@@ -681,7 +681,7 @@ tail -f /tmp/pipeline.log
 | **Scraping ComputRabajo** | `python scripts/scraping/run_computrabajo_vps.py` | Usar scraper directo |
 | **Scraping CABA** | `python scripts/scraping/run_caba_vps.py` | Usar scraper directo |
 | **Scraping Portal Empleo** | `python scripts/scraping/run_portalempleo_vps.py` | Usar scraper directo |
-| **Scraping Indeed** | `python scripts/scraping/run_indeed_vps.py` | Usar scraper directo |
+| **Scraping Indeed (LOCAL headed)** | `xvfb-run -a /usr/bin/python3 scripts/scraping/run_indeed_headed.py --max-keywords 90 --advance` | Usar scraper directo / correr en VPS |
 | **Sync desde VPS** | `python scripts/sync_from_vps.py` (incremental) | Queries manuales al VPS |
 | **Sync Full desde VPS** | `python scripts/sync_from_vps.py --full` | - |
 | **Comparar runs** | `python scripts/compare_runs.py --latest` | Crear comparador custom |
@@ -707,7 +707,7 @@ Cron ejecuta Lun/Jue 08:00 Argentina via `/opt/mol/scripts/scraping/run_scraping
 | **ComputRabajo** | Activo en VPS | ~1,000+ | HTML scraping + keywords (~3-4h con descripción) |
 | **CABA** | Activo en VPS | ~10-50 | HTML scraping listado+detalle (~30s total) |
 | **Portal Empleo** | Activo en VPS | ~400-500 | HTML scraping listado+detalle (~13 min) |
-| **Indeed** | Activo en VPS | ~2,000-3,000 | curl_cffi + keywords (~2.5h con detalles) |
+| **Indeed** | **Local headed (xvfb)** desde 2026-09 | ~90 kw/día (~690 fichas) | chromium headed + click (curl bloqueado por CF) |
 | LinkedIn | Scraper legacy (JobSpy) | - | No integrado (0% descripciones) |
 
 **ZonaJobs - Limitación de API:**
@@ -769,22 +769,33 @@ Con 1,072 keywords de `config/scraping/master_keywords.json` se obtienen ~5,000 
 | Scraper core | `01_sources/portalempleo/scrapers/portalempleo_scraper.py` | HTML parsing listado + detalle |
 | Runner VPS | `scripts/scraping/run_portalempleo_vps.py` | Ejecuta scraping + mapea + inserta en BD |
 
-**Indeed - Detalles:**
-- Scraper propio con `curl_cffi` + `BeautifulSoup` (SIN JobSpy)
-- `curl_cffi` bypasea Cloudflare via impersonacion TLS Chrome
-- Usa keywords de `config/scraping/master_keywords.json` (mismas que ZonaJobs/CT)
-- Sin paginacion (Indeed redirige a login en pagina 2): ~15 ofertas/keyword
-- Detalle: `/viewjob?jk={job_key}` con JSON-LD estructurado (datePosted, employmentType, baseSalary)
-- IDs: `8_000_000_000 + int(job_key_hex, 16) % 1_000_000_000` (evita colisiones)
-- Descripcion completa del detalle: ~94% success rate
-- Scrape completo: ~2.5h (600 keywords * 2.5s + ~3000 detalles * 2.5s)
-- Requiere `curl_cffi` instalado en VPS: `pip3 install --break-system-packages curl_cffi`
+**Indeed - MOTOR HEADED (SOLO LOCAL, desde 2026-09):**
+Desde 2026-09 Indeed bloquea `curl_cffi` (403 "Security Check" de Cloudflare, cualquier
+fingerprint/versión) y el modo **headless** ("Blocked - Indeed.com" = detección de headless,
+NO baneo de IP). Un **chromium real HEADED bajo xvfb** en la IP local pasa ambos muros.
+El motor curl (`indeed_scraper.py`) queda como fallback inerte.
+- Motor: `01_sources/indeed/scrapers/indeed_scraper_headed.py` (`IndeedScraperHeaded`, drop-in de `IndeedScraper`)
+- **SOLO corre LOCAL bajo xvfb** (no en el VPS). Requiere display virtual: `xvfb-run -a ...`
+- Listado por DOM; **descripción CLICKEANDO la tarjeta** (panel embebido `&vjk=`), NUNCA `/viewjob` deep-link (redirige a login)
+- **Fecha** vía modelo mosaic del listado (`pubDate`/`formattedRelativeTime`); `tipo_trabajo`/`salario_*` pueden quedar NULL
+- IDs: `8_000_000_000 + int(job_key_hex, 16) % 1_000_000_000` (igual que antes → compat BD total)
+- Pacing conservador (1 corrida/día, tramo ~90 kw por `proximo_offset`, techo ≤900 fichas), corte por re-challenge/blocked
+- Gate medido (2026-09-01): rendimiento 94.8%, 0% challenge/blocked, 16.1 min/20kw
+- **Comando de corrida (local, bajo xvfb):**
+  ```bash
+  xvfb-run -a /usr/bin/python3 scripts/scraping/run_indeed_headed.py --max-keywords 90 --advance
+  # prototipo/medición (no avanza offset, imprime gate + D2):
+  xvfb-run -a /usr/bin/python3 scripts/scraping/run_indeed_headed.py --max-keywords 20 --no-advance --prototipo
+  ```
+- **Dependencias (env real `/usr/bin/python3`):** `playwright==1.62.0` + `playwright install chromium` + `xvfb` de sistema (ver `config/requirements.txt`)
 
 **Archivos del scraper Indeed:**
 | Archivo | Ubicación | Función |
 |---------|-----------|---------|
-| Scraper core | `01_sources/indeed/scrapers/indeed_scraper.py` | curl_cffi + BS4, multi-keyword |
-| Runner VPS | `scripts/scraping/run_indeed_vps.py` | Ejecuta scraping + mapea + inserta en BD |
+| **Motor headed** | `01_sources/indeed/scrapers/indeed_scraper_headed.py` | **chromium headed/xvfb (ACTUAL, solo local)** |
+| Runner headed | `scripts/scraping/run_indeed_headed.py` | Tramo por offset + xvfb + mapea/inserta en BD |
+| Scraper curl (fallback) | `01_sources/indeed/scrapers/indeed_scraper.py` | curl_cffi + BS4 (bloqueado por CF desde 2026-09) |
+| Runner VPS | `scripts/scraping/run_indeed_vps.py` | Mapeo/insert reusado por el runner headed |
 | Scraper legacy | `01_sources/indeed/scrapers/archive/indeed_scraper_jobspy.py` | Versión anterior con JobSpy (archivado) |
 
 **VPS - Infraestructura:**

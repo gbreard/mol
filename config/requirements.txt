@@ -38,3 +38,12 @@ schedule>=1.2.0  # Scheduler para ejecución automatizada
 plotly>=5.18.0  # Gráficos interactivos
 dash>=2.14.0  # Framework web para dashboards
 dash-bootstrap-components>=1.5.0  # Componentes Bootstrap para Dash
+
+# Scraping Indeed HEADED (SOLO LOCAL, desde 2026-09)
+# Indeed bloquea curl_cffi (403 CF) y modo headless ("Blocked"). El motor
+# headed (01_sources/indeed/scrapers/indeed_scraper_headed.py) usa un chromium
+# real bajo xvfb. Instalar en el env del scraper (/usr/bin/python3):
+#   /usr/bin/python3 -m pip install --user 'playwright==1.62.0'
+#   /usr/bin/python3 -m playwright install chromium
+# Y el binario de sistema xvfb (una sola vez):  sudo apt-get install -y xvfb
+playwright==1.62.0  # navegador headed para Indeed (requiere `playwright install chromium` + xvfb)

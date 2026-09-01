@@ -110,12 +110,17 @@ COMMAND_MAP = {
         'script': 'scripts/generate_skill_equivalences.py',
         'build_args': lambda p: ['--partial'] + (['--threshold', str(p['threshold'])] if p.get('threshold') else []),
     },
+    # Indeed motor HEADED (solo local): corre un chromium real bajo xvfb.
+    # Ver 01_sources/indeed/scrapers/indeed_scraper_headed.py y CLAUDE.md.
+    # Por defecto: tramo de 90 kw desde proximo_offset y avanza el offset.
     'scrape_indeed': {
-        'script': 'scripts/scraping/run_indeed_local.py',
+        'script': 'scripts/scraping/run_indeed_headed.py',
+        'wrap': ['xvfb-run', '-a'],   # display virtual (Indeed detecta headless)
         'build_args': lambda p: (
-            ['--delay', '4', '--detail-delay', '4']
-            + (['--force-chunk', str(p['chunk'])] if p.get('chunk') is not None else [])
-            + (['--all-keywords'] if p.get('all_keywords') else [])
+            (['--offset', str(p['offset'])] if p.get('offset') is not None else [])
+            + ['--max-keywords', str(p.get('max_keywords', 90))]
+            + (['--no-advance'] if p.get('no_advance') else [])
+            + (['--prototipo'] if p.get('prototipo') else [])
         ),
     },
     # SPEC S1C-PUENTE (mesa de Cyn): escritura git-first de candidatas confirmadas
@@ -358,7 +363,8 @@ def execute_command(client, cmd, dry_run=False):
         return False
 
     args = mapping['build_args'](params)
-    full_cmd = [sys.executable, str(script_path)] + [str(a) for a in args if a]
+    wrap = mapping.get('wrap', [])   # p.ej. ['xvfb-run','-a'] para el motor headed
+    full_cmd = wrap + [sys.executable, str(script_path)] + [str(a) for a in args if a]
 
     print(f"[POLLER] Comando: {' '.join(full_cmd)}")
 
