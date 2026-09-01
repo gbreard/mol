@@ -277,6 +277,19 @@ Nota de tensión: 20 kw × ~7 cards ≈ 140 fichas potenciales; ≥100 con descr
 
 ---
 
+## ADDENDUM 2026-09-01 — Aprobación con ajustes (Gerardo)
+
+Spec APROBADA con estas decisiones, que **sobrescriben** lo de arriba donde apliquen:
+
+- **D1 — Vigía: RETIRAR** (no adaptar). Pero el **preflight NO-GO debe loggear `fecha + motivo` en el state-file** (`data/indeed_scraping_state.json`, clave `local`), preservando la función "desde cuándo está bloqueado" que daba el vigía. Campos nuevos en el state: `ultimo_nogo` (ISO) y `ultimo_nogo_motivo` (`blocked` | `challenge` | `login` | `error:<x>`). En GO se limpian.
+- **D2 — Campos estructurados:** `tipo_trabajo` y `salario_*` **pueden quedar NULL**. `fecha_publicacion` **NO**: si el panel no trae JSON-LD, **fallback parseando la fecha relativa de la tarjeta del listado** ("hoy", "ayer", "hace N días", "N+ días") → `fecha_publicacion_iso`. El scraper marca el origen (`_fecha_source ∈ {jsonld, tarjeta, none}`) y el prototipo reporta **% con JSON-LD** y **% con fecha recuperada por tarjeta**.
+- **A1 — Gate, métrica 1 reformulada (pre-medición):** **rendimiento = fichas con descripción real / tarjetas únicas vistas ≥ 75 %**. El conteo absoluto de fichas se **reporta** pero **no gatea**. Métricas 2 (`<15 %` fallo challenge/blocked) y 3 (`≤25 min`) **sin cambio**.
+- **A2 — Desactivar Indeed en cron VPS:** **solo tras GO**, como tarea separada en `main`. No antes, no en esta rama.
+
+**Gate efectivo tras el addendum:** GO ⇔ (rendimiento ≥ 75 %) ∧ (fallo challenge/blocked < 15 %) ∧ (tiempo ≤ 25 min). Se implementa motor + runner + prototipo de 20 keywords, se corre el gate, y **PAUSA** reportando las **tres métricas + las dos mediciones de D2** antes de cualquier paso a producción. Sin merge.
+
+---
+
 ## PAUSA
 
-No se escribe código hasta que Gerardo apruebe esta spec. Al aprobar: se implementa el motor headed + runner + prototipo de 20 keywords y se corre el gate go/no-go, reportando las tres métricas antes de cualquier decisión de producción.
+No se escribe código hasta que Gerardo apruebe esta spec. Al aprobar: se implementa el motor headed + runner + prototipo de 20 keywords y se corre el gate go/no-go, reportando las tres métricas antes de cualquier decisión de producción. *(Cumplido: aprobado con addendum 2026-09-01; se procede a implementar.)*
