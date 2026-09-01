@@ -560,6 +560,17 @@ def scrapear_con_keywords(
                 """)
                 agotadas = cur.fetchone()[0]
                 conn.close()
+                # El tope acota el TOTAL, no solo el backlog agregado. Sin esto, si
+                # el PASO 1 aporta mas de max_descripciones (paso el 2026-08-31:
+                # 7.062 ofertas, PASO 2 de 4,2 h y corrida de 7 h contra las ~3,5 h
+                # habituales), el tope no cumplia su funcion. Se recortan las mas
+                # recientes primero, que es el mismo criterio del ORDER BY.
+                if len(ofertas_para_descripcion) > max_descripciones:
+                    recortadas = len(ofertas_para_descripcion) - max_descripciones
+                    ofertas_para_descripcion = dict(
+                        list(ofertas_para_descripcion.items())[:max_descripciones])
+                    logger.info(f"  Tope aplicado: {recortadas} quedan para la proxima corrida")
+
                 logger.info(f"  Se intentarán en esta corrida: {len(ofertas_para_descripcion)} (tope {max_descripciones})")
                 logger.info(f"  Backlog pendiente total: {pendientes_totales} | agotadas (excluidas): {agotadas}")
                 if pendientes_totales > len(ofertas_para_descripcion):
