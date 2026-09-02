@@ -4,6 +4,9 @@
   "verificacion_gap_horas": 72,
   "verificaciones_para_confirmar": 2,
   "ventana_verificable_factor": 2,
+  "_modo_sombra_doc": "Fase 3 corre en sombra: el legacy detectar_bajas sigue escribiendo estado_oferta (lo que ve producción). El flag legacy_detectar_bajas_enabled APAGA el legacy — se implementa pero NO se activa hasta Fase 5, coordinado con la nota metodológica (§11.5).",
+  "legacy_detectar_bajas_enabled": true,
+  "transiciones_ciclo_enabled": true,
   "portales": {
     "zonajobs":     { "umbral_presunta_baja_dias": 35, "via": "searchv2",         "tope_diario": 2500, "tope_diario_regimen": 2500 },
     "bumeran":      { "umbral_presunta_baja_dias": 42, "via": "searchv2",         "tope_diario": 2500, "tope_diario_regimen": 2500 },

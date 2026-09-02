@@ -242,6 +242,25 @@ def insertar_en_bd(ofertas_mapeadas: list, db_path: str) -> dict:
     }
 
 
+def _registrar_completitud(db_path, n_listado, n_esperadas):
+    """Registra la corrida en corridas_scraping (completa si el listado bajó entero)."""
+    import sqlite3
+    from datetime import datetime
+    completa = 1 if (n_esperadas and n_listado and n_listado >= n_esperadas) else 0
+    nota = f"listado={n_listado} vs contador_sitio={n_esperadas}"
+    try:
+        conn = sqlite3.connect(db_path, timeout=60)
+        conn.execute("PRAGMA busy_timeout=60000")
+        conn.execute(
+            "INSERT INTO corridas_scraping (portal,fecha,completa,n_vistas,n_esperadas,nota) VALUES (?,?,?,?,?,?)",
+            ('portalempleo', datetime.now().isoformat(), completa, n_listado, n_esperadas, nota))
+        conn.commit()
+        conn.close()
+        logger.info(f"  Completitud registrada: completa={completa} ({nota})")
+    except Exception as e:
+        logger.warning(f"  No se pudo registrar completitud (¿migración 026?): {e}")
+
+
 def main():
     parser = argparse.ArgumentParser(description='Portal Empleo Nacional Scraper')
     parser.add_argument('--db', type=str, default=None,
@@ -295,6 +314,11 @@ def main():
         return
 
     stats = insertar_en_bd(ofertas_mapeadas, db_path)
+
+    # Registrar completitud de la corrida (§11.7): completa si el listado bajó
+    # entero (n_listado >= contador del sitio "Se encontraron N"). Solo las
+    # completas cuentan como ausencia para confirmar bajas en el motor de ciclo de vida.
+    _registrar_completitud(db_path, scraper.ultimo_n_listado, scraper.ultimo_total)
 
     logger.info("\n" + "=" * 60)
     logger.info("RESULTADO PORTAL EMPLEO SCRAPING")

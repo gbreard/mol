@@ -182,21 +182,53 @@ def import_sql(sql_file):
     return True
 
 
-def run_post_import():
-    """Ejecuta detección de bajas y republicaciones en local"""
-    
-    log("Ejecutando detección de bajas...")
+def _ciclo_vida_flags():
+    """Lee flags del ciclo de vida (modo sombra). Default: legacy ON, transiciones ON."""
     try:
-        from database.detectar_bajas_integrado import DetectorBajasIntegrado
-        detector = DetectorBajasIntegrado(DB_PATH)
-        detector.connect()
-        result = detector.ejecutar()
-        if result:
-            log(f"  Bajas detectadas: {result.get('nuevas_bajas', 0)}")
-            log(f"  Activas confirmadas: {result.get('activas_confirmadas', 0)}")
-        detector.close()
-    except Exception as e:
-        log(f"  Error en detección de bajas: {e}")
+        import json as _json
+        cfg = _json.loads((Path(__file__).resolve().parent.parent /
+                           "config" / "scraping" / "ciclo_vida_ofertas.json").read_text(encoding="utf-8"))
+        return cfg.get("legacy_detectar_bajas_enabled", True), cfg.get("transiciones_ciclo_enabled", True)
+    except Exception:
+        return True, True
+
+
+def run_post_import():
+    """Ejecuta detección de bajas (legacy) + transiciones de ciclo de vida (sombra) + republicaciones."""
+    legacy_on, transiciones_on = _ciclo_vida_flags()
+
+    # LEGACY detectar_bajas: escribe estado_oferta (lo que ve producción). Sigue
+    # encendido hasta Fase 5; el flag lo apaga sin tocar este código.
+    if legacy_on:
+        log("Ejecutando detección de bajas (legacy)...")
+        try:
+            from database.detectar_bajas_integrado import DetectorBajasIntegrado
+            detector = DetectorBajasIntegrado(DB_PATH)
+            detector.connect()
+            result = detector.ejecutar()
+            if result:
+                log(f"  Bajas detectadas: {result.get('nuevas_bajas', 0)}")
+                log(f"  Activas confirmadas: {result.get('activas_confirmadas', 0)}")
+            detector.close()
+        except Exception as e:
+            log(f"  Error en detección de bajas: {e}")
+    else:
+        log("detección de bajas legacy DESACTIVADA (flag) — estado_oferta no se actualiza")
+
+    # MODO SOMBRA: transiciones de estado_ciclo. Escribe SOLO columnas propias,
+    # nunca estado_oferta. Corre después del legacy (que ya refrescó fecha_ultimo_visto).
+    if transiciones_on:
+        log("Ejecutando transiciones de ciclo de vida (sombra)...")
+        try:
+            from database.transiciones_ciclo_vida import TransicionesCicloVida
+            motor = TransicionesCicloVida(DB_PATH)
+            motor.connect()
+            st = motor.ejecutar()
+            log(f"  Reaparecidas: {st['reaparecidas']} | →presunta: {st['a_presunta']} | "
+                f"PE confirmadas: {st['pe_confirmadas']} | divergencia legacy↔ciclo: {st['divergencia']}")
+            motor.close()
+        except Exception as e:
+            log(f"  Error en transiciones de ciclo de vida: {e}")
     
     log("Ejecutando detección de republicaciones...")
     try:
