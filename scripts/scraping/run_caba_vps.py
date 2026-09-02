@@ -37,6 +37,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(BASE_DIR / "01_sources" / "caba" / "scrapers"))
 sys.path.insert(0, str(BASE_DIR))
 
+from database.colisiones_id import (
+    asegurar_tabla as _asegurar_colisiones,
+    registrar_si_cross_portal as _registrar_colision,
+)
+
 from caba_scraper import CABAScraper
 
 logging.basicConfig(
@@ -44,6 +49,9 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# Nodo donde corre este runner (para la tabla colisiones_id)
+NODO_COLISIONES = 'vps'
 
 # Prefix para IDs de CABA (evitar colisiones con otros portales)
 # Bumeran: ~1,100,000,000 range
@@ -246,6 +254,7 @@ def insertar_en_bd(ofertas_mapeadas: list, db_path: str) -> dict:
     """
     conn = sqlite3.connect(db_path, timeout=30)
     cur = conn.cursor()
+    _asegurar_colisiones(cur)
 
     cols_str = ', '.join(COLUMNAS)
     placeholders = ', '.join(['?'] * len(COLUMNAS))
@@ -265,6 +274,10 @@ def insertar_en_bd(ofertas_mapeadas: list, db_path: str) -> dict:
             if cur.rowcount > 0:
                 insertadas += 1
             else:
+                # rowcount 0: duplicado legitimo del mismo portal, o COLISION de id
+                # entre portales (espacio de ids mal dimensionado). El SELECT del
+                # portal existente ocurre solo aca, no en el camino de insercion.
+                _registrar_colision(cur, valores[0], 'caba', oferta, nodo=NODO_COLISIONES)
                 duplicadas += 1
         except Exception as e:
             errores += 1

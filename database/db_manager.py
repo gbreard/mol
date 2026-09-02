@@ -33,6 +33,17 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
+try:  # segun se importe como paquete (database.db_manager) o suelto
+    from database.colisiones_id import (
+        asegurar_tabla as _asegurar_colisiones,
+        filtrar_reemplazos_cross_portal as _filtrar_reemplazos,
+    )
+except ImportError:  # pragma: no cover
+    from colisiones_id import (
+        asegurar_tabla as _asegurar_colisiones,
+        filtrar_reemplazos_cross_portal as _filtrar_reemplazos,
+    )
+
 # Importar DatabaseManagerV2 para dual-write
 try:
     from database.db_manager_v2 import DatabaseManagerV2
@@ -380,6 +391,34 @@ class DatabaseManager:
         if values:
             logger.debug(f"First value row length: {len(values[0])}")
             logger.debug(f"First 3 values: {values[0][:3]}")
+
+        # ============================================================
+        # GUARDA DE COLISIONES DE ID (2026-09-02)
+        # ============================================================
+        # INSERT OR REPLACE destruye la fila existente. Si esa fila es de OTRO
+        # portal (colision de id: Bumeran y ZonaJobs comparten backend Navent y
+        # usan el id crudo; los prefijos de los demas portales se solapan), el
+        # reemplazo borraria un aviso ajeno y todo lo que solo vive en local
+        # (estado_validacion, fecha_baja, banderas de validacion humana).
+        # Se sacan esas filas del lote, se les refresca fecha_ultimo_visto —el
+        # avistamiento es real: mismo aviso publicado en los dos portales— y se
+        # deja registro en colisiones_id.
+        try:
+            _asegurar_colisiones(self.cursor)
+            values, _evitados = _filtrar_reemplazos(
+                self.cursor, values, idx_id=0, idx_portal=29, nodo='vps')
+            if _evitados:
+                logger.warning(
+                    f"⚠️ {_evitados} reemplazos cross-portal EVITADOS "
+                    f"(ver tabla colisiones_id)")
+        except Exception as e:
+            # La guarda no debe romper el scraping: si falla, se sigue con el
+            # comportamiento anterior, pero queda ruidoso en el log.
+            logger.error(f"Guarda de colisiones no aplicada: {e}", exc_info=True)
+
+        if not values:
+            logger.info("Nada para insertar tras la guarda de colisiones")
+            return 0
 
         try:
             logger.debug(f"Executing INSERT OR REPLACE for {len(values)} rows...")
