@@ -9,7 +9,8 @@ Datos estructurados: vacantes, salario, tareas, beneficios, ubicacion
 completa (provincia/localidad/direccion), dias, horario, experiencia, estudios.
 
 Metodologia: HTML Scraping (NO requiere JavaScript)
-Ofertas activas: ~400-500 (cobertura nacional)
+Ofertas activas: ~105 (variable; el contador del sitio manda. La cifra
+histórica de ~400-500 quedó desactualizada — verificado 2026-09-01)
 Paginacion: page-number=N (10 por pagina)
 Detalle: /OfertasLaborales/Details/{uuid}
 

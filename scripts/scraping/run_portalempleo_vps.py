@@ -4,7 +4,8 @@ Portal Empleo Nacional - Scraping para VPS
 ==========================================
 
 Scrapea portalempleo.gob.ar y guarda en la misma BD SQLite.
-Portal del Ministerio de Trabajo con ofertas de todo el pais (~400-500).
+Portal del Ministerio de Trabajo con ofertas de todo el pais (~105 hoy;
+la cifra historica de ~400-500 quedo desactualizada — verificado 2026-09-01).
 
 Campos mapeados a la tabla ofertas:
   - id_oferta: 7_000_000_000 + CRC32(uuid)

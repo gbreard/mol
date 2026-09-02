@@ -706,7 +706,7 @@ Cron ejecuta Lun/Jue 08:00 Argentina via `/opt/mol/scripts/scraping/run_scraping
 | **ZonaJobs** | Activo en VPS | ~5,000 | API searchV2 + keywords (paginación rota, 20/keyword) |
 | **ComputRabajo** | Activo en VPS | ~1,000+ | HTML scraping + keywords (~3-4h con descripción) |
 | **CABA** | Activo en VPS | ~10-50 | HTML scraping listado+detalle (~30s total) |
-| **Portal Empleo** | Activo en VPS | ~400-500 | HTML scraping listado+detalle (~13 min) |
+| **Portal Empleo** | **Local (HTTP)** desde 2026-09 | ~105 (variable) | HTML scraping listado+detalle (~13 min); VPS bloqueado por el sitio |
 | **Indeed** | **Local headed (xvfb)** desde 2026-09 | ~90 kw/día (~690 fichas) | chromium headed + click (curl bloqueado por CF) |
 | LinkedIn | Scraper legacy (JobSpy) | - | No integrado (0% descripciones) |
 
@@ -760,7 +760,8 @@ Con 1,072 keywords de `config/scraping/master_keywords.json` se obtienen ~5,000 
 - Detalle: `/OfertasLaborales/Details/{uuid}` con campos ricos (vacantes, salario, tareas, beneficios, ubicación completa, horario, experiencia, estudios)
 - IDs: UUIDs convertidos a integer con CRC32 + prefijo `7_000_000_000` (evita colisiones)
 - Campos estructurados (salario, estudios, experiencia, horario) se embeben en descripción como metadata
-- Portal nacional (~400-500 ofertas) con cobertura de todas las provincias
+- Portal nacional (~105 ofertas hoy, variable; ~400-500 es cifra histórica desactualizada) con cobertura de todas las provincias
+- **SOLO LOCAL (HTTP puro) desde 2026-09-01:** la IP del VPS quedó bloqueada contra portalempleo.gob.ar (connection reset). Corre por cron local dedicado (`run_portalempleo_vps.py`, sin browser/xvfb). Ver `fix/portalempleo-local`.
 - Scrape completo: ~13 min (1.5s delay entre requests)
 
 **Archivos del scraper Portal Empleo:**

@@ -117,11 +117,16 @@ echo "=== CABA finalizado: $(date) ===" >> "$LOG_FILE"
 echo "" >> "$LOG_FILE"
 
 # =====================================================================
-# Paso 5: Portal Empleo Nacional (~13 min)
+# Paso 5: Portal Empleo — DESACTIVADO (2026-09-01)
 # =====================================================================
-echo "=== [5/7] Portal Empleo Nacional scraping: $(date) ===" >> "$LOG_FILE"
-PYTHONUNBUFFERED=1 python3 scripts/scraping/run_portalempleo_vps.py >> "$LOG_FILE" 2>&1
-echo "=== Portal Empleo finalizado: $(date) ===" >> "$LOG_FILE"
+# La IP del VPS quedó bloqueada SOLO contra portalempleo.gob.ar
+# (connection reset a todo el dominio; buenosaires.gob.ar y CABA siguen
+# OK desde el VPS). El scraper es HTTP puro (requests+BS4, sin browser),
+# así que pasa a correr LOCAL por cron dedicado. El sitio tiene ~105
+# ofertas activas hoy (no 400-500: cifra histórica desactualizada).
+# Diagnóstico: fix/portalempleo-local (2026-09-01).
+echo "=== [5/7] Portal Empleo: DESACTIVADO en VPS — corre local ===" >> "$LOG_FILE"
+# PYTHONUNBUFFERED=1 python3 scripts/scraping/run_portalempleo_vps.py >> "$LOG_FILE" 2>&1
 echo "" >> "$LOG_FILE"
 
 # =====================================================================
