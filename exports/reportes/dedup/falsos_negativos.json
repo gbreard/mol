@@ -1,0 +1,42 @@
+[
+ {
+  "ct_id": 7639495900,
+  "ct_titulo": "Operario/a de inyección/cambiador de moldes. Zona San Martin",
+  "bum_id": 1118366847,
+  "bum_titulo": "Operario/a de Producción zona Villa Maipú",
+  "empresa": "Grupo Gestión",
+  "sim": 0.6
+ },
+ {
+  "ct_id": 5271488054,
+  "ct_titulo": "Técnico/a de Mantenimiento para reconocido hipermercado en CABA",
+  "bum_id": 1118406543,
+  "bum_titulo": "Técnico/a de mantenimiento de autoelevadores zona Olivos",
+  "empresa": "Grupo Gestión",
+  "sim": 0.61
+ },
+ {
+  "ct_id": 6473669048,
+  "ct_titulo": "Supervisor de Producción y Operaciones. Turno Tarde. Productos Cacique. Villa Gdor. Gálvez",
+  "bum_id": 1118420699,
+  "bum_titulo": "Supervisor de Producción y Operaciones para Productos Cacique (Turno Tarde). Villa Gdor Gálvez",
+  "empresa": "Startia Consultores",
+  "sim": 0.87
+ },
+ {
+  "ct_id": 5930680241,
+  "ct_titulo": "supervisor/a",
+  "bum_id": 1118415256,
+  "bum_titulo": "Supervisor/a de Ventas",
+  "empresa": "360 Marketing",
+  "sim": 0.71
+ },
+ {
+  "ct_id": 7294132271,
+  "ct_titulo": "Asesor/a de atención al cliente y ventas",
+  "bum_id": 1118411768,
+  "bum_titulo": "Atencion al cliente y ventas con o SIN EXPERIENCIA",
+  "empresa": "AGE AUTOMOBILE S.R.L.",
+  "sim": 0.62
+ }
+]

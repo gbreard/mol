@@ -1,0 +1,1010 @@
+{
+ "descripcion": "Semilla de gold set de deduplicacion cross-portal. 50 pares de la heuristica fuerte (titulo+empresa normalizados, portales distintos, |fecha|<=7d), validados manualmente el 2026-09-01. Los 50 son duplicados verdaderos.",
+ "fecha_validacion": "2026-09-01",
+ "n": 50,
+ "falsos_positivos": 0,
+ "precision_observada": 1.0,
+ "nota": "6 pares tienen baja similitud de descripcion (0.03-0.59) y aun asi son duplicados: Indeed antepone \"Fecha:/Ubicacion:/Empresa:\" y algunas empresas redactan una version por portal. La similitud de descripcion NO sirve como criterio de descarte.",
+ "pares": [
+  {
+   "caso": 1,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2186272,
+    "portal": "zonajobs",
+    "titulo": "Gerente de Sistemas - Córdoba",
+    "empresa": "idearhumano",
+    "fecha": "2026-07-21"
+   },
+   "b": {
+    "id": 1118375255,
+    "portal": "bumeran",
+    "titulo": "Gerente de Sistemas - Córdoba",
+    "empresa": "idearhumano",
+    "fecha": "2026-07-21"
+   }
+  },
+  {
+   "caso": 2,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2185263,
+    "portal": "zonajobs",
+    "titulo": "Asistente Administrativo/a de Compras (Almacén)",
+    "empresa": "La Anonima",
+    "fecha": "2026-07-03"
+   },
+   "b": {
+    "id": 1118355321,
+    "portal": "bumeran",
+    "titulo": "Asistente Administrativo/a de Compras (Almacén)",
+    "empresa": "La Anónima",
+    "fecha": "2026-07-03"
+   }
+  },
+  {
+   "caso": 3,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=0.99)",
+   "sim_descripcion": 0.99,
+   "a": {
+    "id": 8379135642,
+    "portal": "indeed",
+    "titulo": "Acompañante terapeútico para adultos mayores",
+    "empresa": "SANNA",
+    "fecha": "2026-07-20"
+   },
+   "b": {
+    "id": 6000022891,
+    "portal": "caba",
+    "titulo": "Acompañante terapeútico para adultos mayores",
+    "empresa": "SANNA",
+    "fecha": "2026-07-13"
+   }
+  },
+  {
+   "caso": 4,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2186125,
+    "portal": "zonajobs",
+    "titulo": "Key Account Manager",
+    "empresa": "SLC",
+    "fecha": "2026-07-20"
+   },
+   "b": {
+    "id": 1118372924,
+    "portal": "bumeran",
+    "titulo": "Key Account Manager",
+    "empresa": "SLC",
+    "fecha": "2026-07-20"
+   }
+  },
+  {
+   "caso": 5,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=0.94)",
+   "sim_descripcion": 0.94,
+   "a": {
+    "id": 8415928703,
+    "portal": "indeed",
+    "titulo": "Administrativo/a técnico/a de obras",
+    "empresa": "Laura Scasso",
+    "fecha": "2026-07-02"
+   },
+   "b": {
+    "id": 2185184,
+    "portal": "zonajobs",
+    "titulo": "Administrativo/a técnico/a de obras",
+    "empresa": "Laura Scasso",
+    "fecha": "2026-07-06"
+   }
+  },
+  {
+   "caso": 6,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=0.99)",
+   "sim_descripcion": 0.99,
+   "a": {
+    "id": 5126351984,
+    "portal": "computrabajo",
+    "titulo": "Mecánico eventual 2 a 3 meses Loma Verde Escobar",
+    "empresa": "Adecco Argentina S.A.",
+    "fecha": "2026-08-15"
+   },
+   "b": {
+    "id": 2188076,
+    "portal": "zonajobs",
+    "titulo": "Mecánico eventual 2 a 3 meses Loma Verde | Escobar",
+    "empresa": "Adecco Argentina",
+    "fecha": "2026-08-14"
+   }
+  },
+  {
+   "caso": 7,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 1118401374,
+    "portal": "bumeran",
+    "titulo": "Personal de Salud - Enfermero/a Doble Perfil",
+    "empresa": "Sanatorio Sagrado Corazón",
+    "fecha": "2026-08-13"
+   },
+   "b": {
+    "id": 2188009,
+    "portal": "zonajobs",
+    "titulo": "Personal de Salud - Enfermero/a Doble Perfil",
+    "empresa": "Sanatorio Sagrado Corazón",
+    "fecha": "2026-08-13"
+   }
+  },
+  {
+   "caso": 8,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=0.99)",
+   "sim_descripcion": 0.99,
+   "a": {
+    "id": 8946223788,
+    "portal": "computrabajo",
+    "titulo": "Gerente/a Comercial",
+    "empresa": "B&B Consultores",
+    "fecha": "2026-07-13"
+   },
+   "b": {
+    "id": 2185665,
+    "portal": "zonajobs",
+    "titulo": "Gerente/a Comercial",
+    "empresa": "B&B Consultores",
+    "fecha": "2026-07-13"
+   }
+  },
+  {
+   "caso": 9,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2186011,
+    "portal": "zonajobs",
+    "titulo": "JEFE DE PRODUCCIÓN",
+    "empresa": "SOL FRUT SA",
+    "fecha": "2026-07-17"
+   },
+   "b": {
+    "id": 1118371152,
+    "portal": "bumeran",
+    "titulo": "JEFE DE PRODUCCIÓN",
+    "empresa": "SOL FRUT SA",
+    "fecha": "2026-07-17"
+   }
+  },
+  {
+   "caso": 10,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 1118402222,
+    "portal": "bumeran",
+    "titulo": "COCINERO",
+    "empresa": "Liserar S.A",
+    "fecha": "2026-08-14"
+   },
+   "b": {
+    "id": 2188041,
+    "portal": "zonajobs",
+    "titulo": "COCINERO",
+    "empresa": "Liserar SA",
+    "fecha": "2026-08-14"
+   }
+  },
+  {
+   "caso": 11,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2187499,
+    "portal": "zonajobs",
+    "titulo": "Analista Técnico Funcional de Adquirencia Sr. - Híbrido - 1869",
+    "empresa": "Aliantec",
+    "fecha": "2026-08-06"
+   },
+   "b": {
+    "id": 1118392768,
+    "portal": "bumeran",
+    "titulo": "Analista Técnico Funcional de Adquirencia Sr. - Híbrido - 1869",
+    "empresa": "Aliantec",
+    "fecha": "2026-08-06"
+   }
+  },
+  {
+   "caso": 12,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=0.99)",
+   "sim_descripcion": 0.99,
+   "a": {
+    "id": 7221181702,
+    "portal": "computrabajo",
+    "titulo": "Analista de Comercio Exterior",
+    "empresa": "B&B Consultores",
+    "fecha": "2026-07-21"
+   },
+   "b": {
+    "id": 1118372995,
+    "portal": "bumeran",
+    "titulo": "Analista de Comercio Exterior",
+    "empresa": "B&B Consultores",
+    "fecha": "2026-07-20"
+   }
+  },
+  {
+   "caso": 13,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d | descripcion difiere (sim=0.03): cada portal formatea distinto, no invalida el match",
+   "sim_descripcion": 0.025,
+   "a": {
+    "id": 8816915924,
+    "portal": "indeed",
+    "titulo": "Personal de Servicios - El Dorado",
+    "empresa": "Fravega",
+    "fecha": "2026-07-31"
+   },
+   "b": {
+    "id": 2187073,
+    "portal": "zonajobs",
+    "titulo": "Personal de Servicios - El Dorado",
+    "empresa": "Fravega",
+    "fecha": "2026-07-31"
+   }
+  },
+  {
+   "caso": 14,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 1118410860,
+    "portal": "bumeran",
+    "titulo": "Especialista en Networking - Híbrido - 1857",
+    "empresa": "Aliantec",
+    "fecha": "2026-08-20"
+   },
+   "b": {
+    "id": 2188054,
+    "portal": "zonajobs",
+    "titulo": "Especialista en Networking - Híbrido - 1857",
+    "empresa": "Aliantec",
+    "fecha": "2026-08-14"
+   }
+  },
+  {
+   "caso": 15,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2188409,
+    "portal": "zonajobs",
+    "titulo": "Analista Sr de Nóminas (eventual)",
+    "empresa": "La Anonima",
+    "fecha": "2026-08-20"
+   },
+   "b": {
+    "id": 1118410242,
+    "portal": "bumeran",
+    "titulo": "Analista Sr de Nóminas (eventual)",
+    "empresa": "La Anónima",
+    "fecha": "2026-08-20"
+   }
+  },
+  {
+   "caso": 16,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d | descripcion difiere (sim=0.04): cada portal formatea distinto, no invalida el match",
+   "sim_descripcion": 0.045,
+   "a": {
+    "id": 8577621383,
+    "portal": "indeed",
+    "titulo": "Asesor Comercial (Patagonia Sur)",
+    "empresa": "Swiss Medical Group",
+    "fecha": "2026-07-02"
+   },
+   "b": {
+    "id": 8819566859,
+    "portal": "computrabajo",
+    "titulo": "Asesor Comercial (Patagonia Sur)",
+    "empresa": "Swiss Medical",
+    "fecha": "2026-07-03"
+   }
+  },
+  {
+   "caso": 17,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2188761,
+    "portal": "zonajobs",
+    "titulo": "Agente inmobiliario - copia",
+    "empresa": "RedSuma",
+    "fecha": "2026-08-26"
+   },
+   "b": {
+    "id": 1118416511,
+    "portal": "bumeran",
+    "titulo": "Agente inmobiliario - copia",
+    "empresa": "RedSuma",
+    "fecha": "2026-08-26"
+   }
+  },
+  {
+   "caso": 18,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2186594,
+    "portal": "zonajobs",
+    "titulo": "Fullstack Developer (React.js + Node js) - Remoto - 1730",
+    "empresa": "Aliantec",
+    "fecha": "2026-07-23"
+   },
+   "b": {
+    "id": 1118370425,
+    "portal": "bumeran",
+    "titulo": "Fullstack Developer (React.js + Node js) - Remoto - 1730",
+    "empresa": "Aliantec",
+    "fecha": "2026-07-16"
+   }
+  },
+  {
+   "caso": 19,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2186207,
+    "portal": "zonajobs",
+    "titulo": "Responsable de Comunicación Medios Digitales y Marca",
+    "empresa": "Diesel Lange SRL",
+    "fecha": "2026-07-20"
+   },
+   "b": {
+    "id": 1118374027,
+    "portal": "bumeran",
+    "titulo": "Responsable de Comunicación Medios Digitales y Marca",
+    "empresa": "Diesel Lange S.R.L.",
+    "fecha": "2026-07-20"
+   }
+  },
+  {
+   "caso": 20,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 1118393918,
+    "portal": "bumeran",
+    "titulo": "Repositor",
+    "empresa": "Rex",
+    "fecha": "2026-08-07"
+   },
+   "b": {
+    "id": 1118387684,
+    "portal": "zonajobs",
+    "titulo": "Repositor",
+    "empresa": "Rex",
+    "fecha": "2026-08-03"
+   }
+  },
+  {
+   "caso": 21,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2188895,
+    "portal": "zonajobs",
+    "titulo": "Tornero / Fresador – Florida Oeste",
+    "empresa": "SP Recursos Humanos",
+    "fecha": "2026-08-27"
+   },
+   "b": {
+    "id": 1118418858,
+    "portal": "bumeran",
+    "titulo": "Tornero / Fresador – Florida Oeste",
+    "empresa": "SP Recursos Humanos",
+    "fecha": "2026-08-27"
+   }
+  },
+  {
+   "caso": 22,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d | descripcion difiere (sim=0.59): cada portal formatea distinto, no invalida el match",
+   "sim_descripcion": 0.59,
+   "a": {
+    "id": 2185314,
+    "portal": "zonajobs",
+    "titulo": "Arquitecto Jr.",
+    "empresa": "Swiss Medical",
+    "fecha": "2026-07-06"
+   },
+   "b": {
+    "id": 8621897303,
+    "portal": "indeed",
+    "titulo": "Arquitecto Jr.",
+    "empresa": "Swiss Medical Group",
+    "fecha": "2026-07-06"
+   }
+  },
+  {
+   "caso": 23,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=0.99)",
+   "sim_descripcion": 0.99,
+   "a": {
+    "id": 1118413202,
+    "portal": "zonajobs",
+    "titulo": "Responsable de Sucursal para importante Supermercado en Recreo, Catamarca",
+    "empresa": "Grupo Gestión",
+    "fecha": "2026-08-24"
+   },
+   "b": {
+    "id": 5338392145,
+    "portal": "computrabajo",
+    "titulo": "Responsable de Sucursal para importante Supermercado en Recreo, Catamarca",
+    "empresa": "Grupo Gestión",
+    "fecha": "2026-08-19"
+   }
+  },
+  {
+   "caso": 24,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=0.99)",
+   "sim_descripcion": 0.99,
+   "a": {
+    "id": 7863004854,
+    "portal": "computrabajo",
+    "titulo": "Técnico Mecánico de Envoltura. Zona CABA",
+    "empresa": "Suministra SRL",
+    "fecha": "2026-08-24"
+   },
+   "b": {
+    "id": 1118411763,
+    "portal": "bumeran",
+    "titulo": "Técnico Mecánico de Envoltura. Zona CABA",
+    "empresa": "Suministra",
+    "fecha": "2026-08-21"
+   }
+  },
+  {
+   "caso": 25,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=0.98)",
+   "sim_descripcion": 0.98,
+   "a": {
+    "id": 1118416481,
+    "portal": "zonajobs",
+    "titulo": "BUILT PROYECT MANAGER (EVENTUAL)",
+    "empresa": "Randstad Argentina",
+    "fecha": "2026-08-26"
+   },
+   "b": {
+    "id": 1118415943,
+    "portal": "bumeran",
+    "titulo": "BUILT PROYECT MANAGER (EVENTUAL)",
+    "empresa": "Randstad Argentina",
+    "fecha": "2026-08-25"
+   }
+  },
+  {
+   "caso": 26,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=0.94)",
+   "sim_descripcion": 0.94,
+   "a": {
+    "id": 7415264616,
+    "portal": "computrabajo",
+    "titulo": "Atención al Público y Venta de Préstamos Personales y Gestión de Mora",
+    "empresa": "Bayton",
+    "fecha": "2026-08-05"
+   },
+   "b": {
+    "id": 1118390662,
+    "portal": "zonajobs",
+    "titulo": "Atención al Público y Venta de Préstamos Personales y Gestión de Mora",
+    "empresa": "BAYTON",
+    "fecha": "2026-08-04"
+   }
+  },
+  {
+   "caso": 27,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2187750,
+    "portal": "zonajobs",
+    "titulo": "Ayudante de pastelería eventual",
+    "empresa": "Hotel Madero",
+    "fecha": "2026-08-10"
+   },
+   "b": {
+    "id": 1118396244,
+    "portal": "bumeran",
+    "titulo": "Ayudante de pastelería eventual",
+    "empresa": "Hotel Madero",
+    "fecha": "2026-08-10"
+   }
+  },
+  {
+   "caso": 28,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 1118413341,
+    "portal": "bumeran",
+    "titulo": "EMPLEADO DE MANTENIEMIENTO",
+    "empresa": "Carrefour Argentina",
+    "fecha": "2026-08-24"
+   },
+   "b": {
+    "id": 2188594,
+    "portal": "zonajobs",
+    "titulo": "EMPLEADO DE MANTENIEMIENTO",
+    "empresa": "Grupo Carrefour Argentina",
+    "fecha": "2026-08-24"
+   }
+  },
+  {
+   "caso": 29,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=0.99)",
+   "sim_descripcion": 0.995,
+   "a": {
+    "id": 8869240907,
+    "portal": "indeed",
+    "titulo": "Desarrollador PL/SQL ssr",
+    "empresa": "Daniela Vincenzini RRHH",
+    "fecha": "2026-07-20"
+   },
+   "b": {
+    "id": 6000022930,
+    "portal": "caba",
+    "titulo": "Desarrollador PL/SQL ssr",
+    "empresa": "Daniela Vincenzini RRHH",
+    "fecha": "2026-07-14"
+   }
+  },
+  {
+   "caso": 30,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 7080606616,
+    "portal": "computrabajo",
+    "titulo": "Operador de torno control numerico y centro de mecanizado",
+    "empresa": "METALURGICA ROYAL",
+    "fecha": "2026-08-05"
+   },
+   "b": {
+    "id": 2187064,
+    "portal": "zonajobs",
+    "titulo": "OPERADOR DE TORNO CONTROL NUMERICO Y CENTRO DE MECANIZADO",
+    "empresa": "Metalurgica Royal",
+    "fecha": "2026-08-04"
+   }
+  },
+  {
+   "caso": 31,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=0.99)",
+   "sim_descripcion": 0.995,
+   "a": {
+    "id": 1118378325,
+    "portal": "bumeran",
+    "titulo": "Auditor/a Corporativo/a de Calidad y Sistemas de Gestión",
+    "empresa": "Cook Master SRL",
+    "fecha": "2026-07-23"
+   },
+   "b": {
+    "id": 7341895439,
+    "portal": "computrabajo",
+    "titulo": "Auditor/a Corporativo/a de Calidad y Sistemas de Gestión",
+    "empresa": "Cook Master SRL",
+    "fecha": "2026-07-23"
+   }
+  },
+  {
+   "caso": 32,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2188053,
+    "portal": "zonajobs",
+    "titulo": "Líder de Integraciones - Remoto - 1860",
+    "empresa": "Aliantec",
+    "fecha": "2026-08-14"
+   },
+   "b": {
+    "id": 1118402354,
+    "portal": "bumeran",
+    "titulo": "Líder de Integraciones - Remoto - 1860",
+    "empresa": "Aliantec",
+    "fecha": "2026-08-14"
+   }
+  },
+  {
+   "caso": 33,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 1118361668,
+    "portal": "bumeran",
+    "titulo": "Administrativo/a de RRHH (Part Time)",
+    "empresa": "Randstad Argentina",
+    "fecha": "2026-07-09"
+   },
+   "b": {
+    "id": 9013544981,
+    "portal": "computrabajo",
+    "titulo": "Administrativo/a de RRHH (Part Time)",
+    "empresa": "Randstad Argentina",
+    "fecha": "2026-07-08"
+   }
+  },
+  {
+   "caso": 34,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=0.99)",
+   "sim_descripcion": 0.995,
+   "a": {
+    "id": 6304004417,
+    "portal": "computrabajo",
+    "titulo": "Generador/a De Demanda de Semillas",
+    "empresa": "B&B Consultores",
+    "fecha": "2026-08-12"
+   },
+   "b": {
+    "id": 2187929,
+    "portal": "zonajobs",
+    "titulo": "Generador/a de Demanda de Semillas",
+    "empresa": "B&B Consultores",
+    "fecha": "2026-08-12"
+   }
+  },
+  {
+   "caso": 35,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d | descripcion difiere (sim=0.04): cada portal formatea distinto, no invalida el match",
+   "sim_descripcion": 0.035,
+   "a": {
+    "id": 1118393596,
+    "portal": "bumeran",
+    "titulo": "Secretaria Atención al Paciente",
+    "empresa": "Sanatorio Allende",
+    "fecha": "2026-08-07"
+   },
+   "b": {
+    "id": 8139700589,
+    "portal": "indeed",
+    "titulo": "Secretaria Atención al Paciente",
+    "empresa": "Sanatorio Allende",
+    "fecha": "2026-08-05"
+   }
+  },
+  {
+   "caso": 36,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=0.98)",
+   "sim_descripcion": 0.985,
+   "a": {
+    "id": 8591833202,
+    "portal": "indeed",
+    "titulo": "Motoquero Audivisual",
+    "empresa": "Daniela Vincenzini RRHH",
+    "fecha": "2026-07-16"
+   },
+   "b": {
+    "id": 6000022911,
+    "portal": "caba",
+    "titulo": "Motoquero Audivisual",
+    "empresa": "Daniela Vincenzini RRHH",
+    "fecha": "2026-07-13"
+   }
+  },
+  {
+   "caso": 37,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 1118416858,
+    "portal": "bumeran",
+    "titulo": "Responsable de Desarrollo comercial",
+    "empresa": "LA NACION",
+    "fecha": "2026-08-26"
+   },
+   "b": {
+    "id": 2188794,
+    "portal": "zonajobs",
+    "titulo": "Responsable de Desarrollo comercial",
+    "empresa": "LA Nación",
+    "fecha": "2026-08-26"
+   }
+  },
+  {
+   "caso": 38,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2185464,
+    "portal": "zonajobs",
+    "titulo": "Especialista en Seguridad de Plataformas - Híbrido - 1844",
+    "empresa": "Aliantec",
+    "fecha": "2026-07-08"
+   },
+   "b": {
+    "id": 1118359883,
+    "portal": "bumeran",
+    "titulo": "Especialista en Seguridad de Plataformas - Híbrido - 1844",
+    "empresa": "Aliantec",
+    "fecha": "2026-07-08"
+   }
+  },
+  {
+   "caso": 39,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d | descripcion difiere (sim=0.05): cada portal formatea distinto, no invalida el match",
+   "sim_descripcion": 0.05,
+   "a": {
+    "id": 2185608,
+    "portal": "zonajobs",
+    "titulo": "JEFE DE COCINA PARA IMPORTANTE HOTEL",
+    "empresa": "GRUPO ROIBAS",
+    "fecha": "2026-07-14"
+   },
+   "b": {
+    "id": 1118363066,
+    "portal": "bumeran",
+    "titulo": "JEFE DE COCINA PARA IMPORTANTE HOTEL",
+    "empresa": "GRUPO ROIBAS",
+    "fecha": "2026-07-14"
+   }
+  },
+  {
+   "caso": 40,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2186963,
+    "portal": "zonajobs",
+    "titulo": "Analista Técnico Funcional de Macrosoluciones - Híbrido",
+    "empresa": "Aliantec",
+    "fecha": "2026-07-29"
+   },
+   "b": {
+    "id": 1118384151,
+    "portal": "bumeran",
+    "titulo": "Analista Técnico Funcional de Macrosoluciones - Híbrido",
+    "empresa": "Aliantec",
+    "fecha": "2026-07-29"
+   }
+  },
+  {
+   "caso": 41,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2186585,
+    "portal": "zonajobs",
+    "titulo": "Analista Técnico Funcional - Plan Sueldo - Híbrido - 1867",
+    "empresa": "Aliantec",
+    "fecha": "2026-07-23"
+   },
+   "b": {
+    "id": 1118379118,
+    "portal": "bumeran",
+    "titulo": "Analista Técnico Funcional - Plan Sueldo - Híbrido - 1867",
+    "empresa": "Aliantec",
+    "fecha": "2026-07-23"
+   }
+  },
+  {
+   "caso": 42,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2185247,
+    "portal": "zonajobs",
+    "titulo": "Técnico Frigorista.",
+    "empresa": "NOS Soluciones en RRHH",
+    "fecha": "2026-07-03"
+   },
+   "b": {
+    "id": 1118355178,
+    "portal": "bumeran",
+    "titulo": "Técnico Frigorista.",
+    "empresa": "NOS Soluciones en RRHH",
+    "fecha": "2026-07-03"
+   }
+  },
+  {
+   "caso": 43,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=0.99)",
+   "sim_descripcion": 0.99,
+   "a": {
+    "id": 2188348,
+    "portal": "zonajobs",
+    "titulo": "Sales Executive Senior - Neuquén",
+    "empresa": "Saiba Recursos Humanos",
+    "fecha": "2026-08-20"
+   },
+   "b": {
+    "id": 1118409368,
+    "portal": "bumeran",
+    "titulo": "Sales Executive Senior - Neuquén",
+    "empresa": "Saiba Recursos Humanos",
+    "fecha": "2026-08-20"
+   }
+  },
+  {
+   "caso": 44,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=0.98)",
+   "sim_descripcion": 0.98,
+   "a": {
+    "id": 6351355555,
+    "portal": "computrabajo",
+    "titulo": "responsable de tienda",
+    "empresa": "Randstad Argentina",
+    "fecha": "2026-08-07"
+   },
+   "b": {
+    "id": 1118391965,
+    "portal": "bumeran",
+    "titulo": "Responsable de tienda",
+    "empresa": "Randstad Argentina",
+    "fecha": "2026-08-05"
+   }
+  },
+  {
+   "caso": 45,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2186591,
+    "portal": "zonajobs",
+    "titulo": "Desarrollador PHP - Laravel Sr - Híbrido - 1819",
+    "empresa": "Aliantec",
+    "fecha": "2026-07-23"
+   },
+   "b": {
+    "id": 1118370372,
+    "portal": "bumeran",
+    "titulo": "Desarrollador PHP - Laravel Sr - Híbrido - 1819",
+    "empresa": "Aliantec",
+    "fecha": "2026-07-16"
+   }
+  },
+  {
+   "caso": 46,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=0.99)",
+   "sim_descripcion": 0.995,
+   "a": {
+    "id": 6743721875,
+    "portal": "computrabajo",
+    "titulo": "Herreros. Zona V. Lugano",
+    "empresa": "Suministra SRL",
+    "fecha": "2026-08-11"
+   },
+   "b": {
+    "id": 1118396530,
+    "portal": "bumeran",
+    "titulo": "Herreros. Zona V. Lugano",
+    "empresa": "Suministra",
+    "fecha": "2026-08-10"
+   }
+  },
+  {
+   "caso": 47,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 2185629,
+    "portal": "zonajobs",
+    "titulo": "Ejecutivo/a Comercial rubro Veterinario (zona Sur GBA)",
+    "empresa": "Generación Talento",
+    "fecha": "2026-07-10"
+   },
+   "b": {
+    "id": 1118363324,
+    "portal": "bumeran",
+    "titulo": "Ejecutivo/a Comercial rubro Veterinario (zona Sur GBA)",
+    "empresa": "Generacion Talento",
+    "fecha": "2026-07-10"
+   }
+  },
+  {
+   "caso": 48,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 1118392048,
+    "portal": "bumeran",
+    "titulo": "Analista contable",
+    "empresa": "ESTUDIO DELLA ROCCA PIAZZA ALMARZA S.R.L.",
+    "fecha": "2026-08-05"
+   },
+   "b": {
+    "id": 2187447,
+    "portal": "zonajobs",
+    "titulo": "Analista contable",
+    "empresa": "ESTUDIO DELLA ROCCA PIAZZA ALMARZA S.R.L.",
+    "fecha": "2026-08-05"
+   }
+  },
+  {
+   "caso": 49,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d + descripcion casi identica (sim=1.00)",
+   "sim_descripcion": 1.0,
+   "a": {
+    "id": 1118415493,
+    "portal": "bumeran",
+    "titulo": "SEGURIDAD PARA EVENTOS",
+    "empresa": "CLAHE EVENTOS S.R.L.",
+    "fecha": "2026-08-25"
+   },
+   "b": {
+    "id": 2188709,
+    "portal": "zonajobs",
+    "titulo": "SEGURIDAD PARA EVENTOS",
+    "empresa": "CLAHE EVENTOS S.R.L.",
+    "fecha": "2026-08-25"
+   }
+  },
+  {
+   "caso": 50,
+   "veredicto": "duplicado_claro",
+   "evidencia": "titulo identico normalizado + empresa identica normalizada + fecha dentro de 7d | descripcion difiere (sim=0.08): cada portal formatea distinto, no invalida el match",
+   "sim_descripcion": 0.08,
+   "a": {
+    "id": 1118388607,
+    "portal": "bumeran",
+    "titulo": "Asistente de Auditoría - Córdoba",
+    "empresa": "BDO Argentina",
+    "fecha": "2026-08-03"
+   },
+   "b": {
+    "id": 8977311886,
+    "portal": "indeed",
+    "titulo": "Asistente de Auditoría - Córdoba",
+    "empresa": "BDO Argentina",
+    "fecha": "2026-08-03"
+   }
+  }
+ ]
+}
