@@ -26,6 +26,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(BASE_DIR / "01_sources" / "zonajobs" / "scrapers"))
 sys.path.insert(0, str(BASE_DIR))
 
+from database.colisiones_id import (
+    asegurar_tabla as _asegurar_colisiones,
+    registrar_si_cross_portal as _registrar_colision,
+)
+
 from zonajobs_scraper_v2 import ZonaJobsScraper
 
 logging.basicConfig(
@@ -33,6 +38,9 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# Nodo donde corre este runner (para la tabla colisiones_id)
+NODO_COLISIONES = 'vps'
 
 # Columnas para INSERT (debe coincidir con schema)
 COLUMNAS = [
@@ -60,6 +68,7 @@ def insertar_en_bd(ofertas: list, db_path: str) -> dict:
     """
     conn = sqlite3.connect(db_path, timeout=30)
     cur = conn.cursor()
+    _asegurar_colisiones(cur)
 
     cols_str = ', '.join(COLUMNAS)
     placeholders = ', '.join(['?'] * len(COLUMNAS))
@@ -76,6 +85,10 @@ def insertar_en_bd(ofertas: list, db_path: str) -> dict:
             if cur.rowcount > 0:
                 insertadas += 1
             else:
+                # rowcount 0: duplicado legitimo del mismo portal, o COLISION de id
+                # entre portales (espacio de ids mal dimensionado). El SELECT del
+                # portal existente ocurre solo aca, no en el camino de insercion.
+                _registrar_colision(cur, valores[0], 'zonajobs', oferta, nodo=NODO_COLISIONES)
                 duplicadas += 1
         except Exception as e:
             errores += 1

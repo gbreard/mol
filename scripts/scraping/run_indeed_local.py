@@ -33,6 +33,11 @@ from keyword_cycling import get_weekly_chunk
 # Reuse mapping/insert logic from VPS script
 sys.path.insert(0, str(BASE_DIR / "scripts" / "scraping"))
 from run_indeed_vps import mapear_oferta_para_bd, insertar_en_bd
+import run_indeed_vps as _indeed_vps
+
+# Este runner corre en LOCAL, no en el VPS. insertar_en_bd() se reusa tal cual,
+# asi que hay que corregirle el nodo con el que etiqueta las colisiones de id.
+_indeed_vps.NODO_COLISIONES = 'local'
 
 logging.basicConfig(
     level=logging.INFO,
