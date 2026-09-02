@@ -165,6 +165,21 @@ Legacy conservado: `estado_oferta`, `fecha_baja`, `es_republicacion`, `numero_re
 | `antiguedad_dias` | INTEGER | |
 | `timestamp` | TEXT | |
 
+**`transiciones_ciclo_vida`** — log de transiciones de estado (auditoría + métrica de resurrección §11.3):
+
+| columna | tipo | |
+|---|---|---|
+| `id` | INTEGER PK | |
+| `id_oferta` | INTEGER | |
+| `portal` | TEXT | |
+| `estado_desde` | TEXT | |
+| `estado_hacia` | TEXT | |
+| `motivo` | TEXT | scraping_reaparece / umbral / verificacion_caida / 2a_ausencia / recompute / fromage |
+| `fecha` | TEXT | timestamp |
+
+> Métrica de resurrección (§11.3): `resurrecciones = COUNT(transiciones WHERE estado_desde='baja_confirmada'
+> AND estado_hacia='activa')` sobre `COUNT(estado_hacia='baja_confirmada')`, por portal, ventana mensual.
+
 ### 2.4 Migración
 
 `database/migrations/0XX_ciclo_vida_ofertas.sql` **idempotente**: `ADD COLUMN` guardado por
@@ -385,8 +400,47 @@ cualquier momento hasta la Fase 5.
 
 ---
 
+## ADDENDUM 2026-09-02 — Aprobación con decisiones (Gerardo)
+
+Spec **APROBADA**. Estas decisiones **sobrescriben** lo de arriba donde apliquen y son vinculantes
+para la implementación:
+
+- **§11.1** `ventana_verificable_factor = 2×`. Aprobado (cola inicial del verificador ≈ 19.125).
+- **§11.2** `presunta_baja` **NO cuenta como activa** — ni para OE/matching ni para indicadores. El
+  umbral es el cruce del 50 %: una presunta es moneda al aire y OE sirve a personas reales. El
+  dashboard puede mostrar **"activas + N en verificación"** como línea separada (no sumada).
+- **§11.3** **Dos** verificaciones (no tres) **+ métrica de resurrección pre-registrada**: `%` de
+  `baja_confirmada` que reaparece en scraping. Si al mes **> 2 %** en portales Navent → se pasa a 3
+  con evidencia. Se computa desde `verificaciones_baja` + `transiciones_ciclo_vida` (tabla nueva, §2.3).
+- **§11.4** **Límites duros del verificador**: searchV2 **≤ 2.500/día por portal Navent**; CT
+  **≤ 4.000/día** en drenaje inicial y **≤ 1.000/día** en régimen. **Corte inmediato** ante
+  403/challenge/patrón de bloqueo (política Indeed: cortar, no insistir); el drenaje sigue al día
+  siguiente. Van a `config/scraping/ciclo_vida_ofertas.json` como `tope_diario` + `tope_diario_regimen`.
+- **§11.5** **Deploy del recómputo coordinado**: sale junto con el dashboard actualizado + **nota
+  metodológica fechada** en el repo. Gerardo avisa a Cyn/Diego antes (borrador aparte). La serie
+  limpia de indicadores **declara su inicio ese día**.
+- **§11.6** **Dual-write hasta Fase 5 + 1 sprint de observación.** Deprecar = dejar de escribir
+  legacy (`estado_oferta`/`fecha_baja` quedan como columnas; el DROP se decide después, aparte).
+- **§11.7** **CABA/PE**: el scraper registra `listado_completo` por corrida (PE: `extraídas ==
+  contador del sitio "Se encontraron N"`; CABA: verificar si hay contador; si no, proxy = paginación
+  agotada sin errores). **Solo las corridas completas cuentan como ausencia. Una corrida abortada NO
+  es ausencia.** → requiere registrar completitud de corrida (Fase 3).
+- **§11.8 CORRECCIÓN**: **Indeed ya NO está bloqueado** (headed local desde 2026-09-01). La regla de
+  inferencia se corrige: `baja_inferida` tras ausencia en **≥ 2 pasadas de su `keyword_source`** (el
+  tramo rotativo cubre 90/1072 kw/día → **ausencia de calendario ≠ ausencia observada**, el mismo
+  principio que motiva toda esta spec). El config de Indeed en §1.3 pasa a
+  `{"via":"keyword_source_passes","pasadas_ausente_infiere":2}`.
+- **§11.9** **Discriminador CT**: **reutilizar la detección `agotado_listado` del PASO 2** (redirect +
+  `BOILERPLATE_RE`, fuente única, probada en producción). **No reimplementar.**
+- **§7** **Horario del verificador: `0 7 * * *` (07:00)**, no 08:00 (08:00 choca con `auto_sync` y,
+  lun/jue, con la ventana VPS + lockfile).
+
+### Ajustes de schema derivados del addendum (aplican a Fase 1)
+- Tabla nueva **`transiciones_ciclo_vida`** (§2.3) — necesaria para la métrica de resurrección (§11.3)
+  y auditoría de transiciones.
+
 ## PAUSA
 
-Spec redactada. No se escribe código hasta la aprobación de Gerardo (y sus respuestas a las
-decisiones abiertas de §11). Al aprobar, se implementa por fases (§10), cada una reversible y
-verificada antes de la siguiente.
+Spec aprobada con addendum 2026-09-02. Implementación **por fases (§10), una por vez**, cada una
+reversible y verificada antes de la siguiente. **Fase 1 (migración)** a continuación; PAUSA con su
+verificación antes de Fase 2.
