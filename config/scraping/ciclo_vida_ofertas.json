@@ -1,0 +1,16 @@
+{
+  "_doc": "Umbrales y parámetros del ciclo de vida de ofertas. Calibrados con exports/reportes/supervivencia/ (2026-09-01). Fuente única para recómputo, transiciones y verificador. NO hardcodear en código. Ver SPEC_ciclo_vida_ofertas.md + addendum 2026-09-02.",
+  "_actualizado": "2026-09-02",
+  "verificacion_gap_horas": 72,
+  "verificaciones_para_confirmar": 2,
+  "ventana_verificable_factor": 2,
+  "portales": {
+    "zonajobs":     { "umbral_presunta_baja_dias": 35, "via": "searchv2",         "tope_diario": 2500, "tope_diario_regimen": 2500 },
+    "bumeran":      { "umbral_presunta_baja_dias": 42, "via": "searchv2",         "tope_diario": 2500, "tope_diario_regimen": 2500 },
+    "computrabajo": { "umbral_presunta_baja_dias": 63, "via": "html_detalle",     "tope_diario": 4000, "tope_diario_regimen": 1000 },
+    "caba":         { "umbral_presunta_baja_dias": 7,  "via": "listado_completo", "corridas_ausente_confirma": 2 },
+    "portalempleo": { "umbral_presunta_baja_dias": 7,  "via": "listado_completo", "corridas_ausente_confirma": 2 },
+    "indeed":       { "umbral_presunta_baja_dias": null, "via": "keyword_source_passes", "pasadas_ausente_infiere": 2, "estado_ausencia": "baja_inferida" }
+  },
+  "_default": { "umbral_presunta_baja_dias": 42, "via": "ninguna" }
+}
