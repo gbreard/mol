@@ -25,12 +25,12 @@ describe('S23 — ScrapingPage (VPS data)', () => {
     expect(screen.getByText(/fuentes/)).toBeInTheDocument()
   })
 
-  it('muestra cards con datos del VPS', async () => {
+  it('muestra cards con datos locales', async () => {
     render(<ScrapingPage />)
     await waitFor(() => {
-      expect(screen.getAllByText(/Total VPS/).length).toBeGreaterThanOrEqual(1)
+      expect(screen.getAllByText(/^Total$/).length).toBeGreaterThanOrEqual(1)
     }, { timeout: 3000 })
-    expect(screen.getAllByText(/En Dashboard/).length).toBeGreaterThan(0)
+    expect(screen.getAllByText(/Validadas/).length).toBeGreaterThan(0)
   })
 
   it('boton Actualizar recarga datos', async () => {
@@ -64,12 +64,12 @@ describe('S23 — ScrapingPage (VPS data)', () => {
     expect(screen.getByRole('button', { name: /Todo/i })).toBeInTheDocument()
   })
 
-  it('cards muestran Total VPS / 7 dias / Hoy / En Dashboard', async () => {
+  it('cards muestran Total / 7 dias / Hoy / Validadas', async () => {
     render(<ScrapingPage />)
     await waitFor(() => {
-      expect(screen.getAllByText(/Total VPS/).length).toBeGreaterThan(0)
+      expect(screen.getAllByText(/^Total$/).length).toBeGreaterThan(0)
     })
-    expect(screen.getAllByText(/En Dashboard/).length).toBeGreaterThan(0)
+    expect(screen.getAllByText(/Validadas/).length).toBeGreaterThan(0)
     expect(screen.getAllByText(/7 dias/).length).toBeGreaterThan(0)
   })
 
@@ -78,5 +78,38 @@ describe('S23 — ScrapingPage (VPS data)', () => {
     await waitFor(() => {
       expect(screen.getByText(/Cadena de datos/)).toBeInTheDocument()
     })
+  })
+})
+
+// E2E: simular (por query mockeada) un portal atrasado y uno fresco, y verificar
+// que la alerta por cadencia aparece SOLO para el atrasado — sin esperar rotura real.
+describe('S23 — alertas por cadencia (simulación de portal atrasado)', () => {
+  const iso = (msAgo: number) => new Date(Date.now() - msAgo).toISOString()
+  const H = 3_600_000
+
+  it('portal VPS atrasado dispara alerta; portal local fresco no', async () => {
+    server.use(
+      http.get('https://test.supabase.co/rest/v1/scraping_live_stats', () =>
+        HttpResponse.json({
+          id: 'current', total_ofertas: 25000,
+          portales: {
+            // fresco (local, diario): scrapeó hoy → sin alerta
+            indeed: { total: 19000, ultimo_scraping: iso(2 * H), ultimos_7d: 300, hoy: 275,
+                      origen: 'local', cadencia: 'diaria', umbral_horas: 30 },
+            // atrasado (VPS, bisemanal): 10 días sin datos (>2×96h) → error
+            bumeran: { total: 6000, ultimo_scraping: iso(240 * H), ultimos_7d: 0, hoy: 0,
+                       origen: 'vps', cadencia: 'bisemanal', umbral_horas: 96 },
+          },
+          ultimo_scraping: iso(2 * H),
+        }),
+      ),
+    )
+    render(<ScrapingPage />)
+    await waitFor(() => {
+      // la alerta de atraso nombra a bumeran con su mensaje de umbral
+      expect(screen.getByText(/sin datos hace \d+h \(umbral 96h\)/)).toBeInTheDocument()
+    }, { timeout: 3000 })
+    // no debe haber una alerta de atraso para indeed
+    expect(screen.queryByText(/umbral 30h/)).not.toBeInTheDocument()
   })
 })

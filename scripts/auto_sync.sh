@@ -30,7 +30,11 @@ echo "[2/3] Sync Local → Supabase..."
 python3 scripts/exports/sync_to_supabase.py 2>&1 | tail -5
 
 # Paso 3: Actualizar scraping_daily
-echo "[3/3] Sync scraping daily..."
+echo "[3/3] Sync scraping stats + daily..."
+# scraping_live_stats = fuente de verdad del monitor, recalculada desde la BD
+# LOCAL (los 6 portales, incl. indeed/portalempleo locales). Antes lo escribía
+# el VPS (run_scraping_vps.sh) desde SU BD y congelaba indeed/PE — 2026-09-01.
+python3 scripts/sync_scraping_stats.py 2>&1 | tail -3
 python3 scripts/sync_scraping_daily.py --days 7 2>&1 | tail -3
 python3 scripts/sync_scraping_dinamica.py --days 7 2>&1 | tail -3
 

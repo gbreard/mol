@@ -1,0 +1,13 @@
+{
+  "_doc": "Cadencia y umbrales de alerta por portal para el monitor de scraping. Fuente única: sync_scraping_stats.py lo inyecta en scraping_live_stats.portales[*] y el dashboard (app/admin/scraping) lo lee de ahí. NO hardcodear umbrales en el frontend. umbral_horas = horas sin datos que disparan alerta. cero_corridas (opcional) = N días/corridas seguidas con 0 nuevas que disparan alerta (portales de goteo).",
+  "_actualizado": "2026-09-01",
+  "portales": {
+    "indeed":       { "origen": "local", "cadencia": "diaria",    "umbral_horas": 30 },
+    "portalempleo": { "origen": "local", "cadencia": "diaria",    "umbral_horas": 30 },
+    "bumeran":      { "origen": "vps",   "cadencia": "bisemanal", "umbral_horas": 96 },
+    "zonajobs":     { "origen": "vps",   "cadencia": "bisemanal", "umbral_horas": 96 },
+    "computrabajo": { "origen": "vps",   "cadencia": "bisemanal", "umbral_horas": 96 },
+    "caba":         { "origen": "vps",   "cadencia": "goteo",     "umbral_horas": 96, "cero_corridas": 3 }
+  },
+  "_default": { "origen": "vps", "cadencia": "bisemanal", "umbral_horas": 96 }
+}

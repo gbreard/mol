@@ -18,6 +18,20 @@ from pathlib import Path
 PROJECT = Path(__file__).parent.parent
 DB_PATH = PROJECT / "database" / "bumeran_scraping.db"
 CONFIG_PATH = PROJECT / "config" / "supabase_config.json"
+# Cadencia/umbrales por portal — fuente única del monitor. Se inyecta en cada
+# entrada de scraping_live_stats.portales para que el dashboard lea los umbrales
+# de ahí (no hardcodeados en el frontend). Ver config/scraping/portal_cadencia.json.
+CADENCIA_PATH = PROJECT / "config" / "scraping" / "portal_cadencia.json"
+
+
+def cargar_cadencia() -> dict:
+    """Devuelve {portales:{...}, _default:{...}} o defaults si falta el archivo."""
+    try:
+        d = json.loads(CADENCIA_PATH.read_text(encoding="utf-8"))
+        return {"portales": d.get("portales", {}),
+                "default": d.get("_default", {"origen": "vps", "cadencia": "bisemanal", "umbral_horas": 96})}
+    except Exception:
+        return {"portales": {}, "default": {"origen": "vps", "cadencia": "bisemanal", "umbral_horas": 96}}
 
 # Portales cuyas stats NO se recalculan desde esta BD (se preserva lo que haya
 # en Supabase). Vacio: hoy todos los portales tienen sus filas en la BD local.
@@ -45,17 +59,26 @@ def sync():
         ORDER BY total DESC
     """).fetchall()
 
+    cadencia = cargar_cadencia()
     vps_portales = {}
     for r in rows:
         portal = r[0] or "sin_portal"
         if portal in PORTALES_LOCALES:
             continue  # No tocar portales que corren local
-        vps_portales[portal] = {
+        cad = cadencia["portales"].get(portal, cadencia["default"])
+        entry = {
             "total": r[1],
             "ultimo_scraping": str(r[2] or ""),
             "ultimos_7d": r[3] or 0,
             "hoy": r[4] or 0,
+            # cadencia/umbrales para el monitor (leídos por el dashboard)
+            "origen": cad.get("origen", "vps"),
+            "cadencia": cad.get("cadencia", "bisemanal"),
+            "umbral_horas": cad.get("umbral_horas", 96),
         }
+        if cad.get("cero_corridas") is not None:
+            entry["cero_corridas"] = cad["cero_corridas"]
+        vps_portales[portal] = entry
 
     total_vps = conn.execute("SELECT COUNT(*) FROM ofertas").fetchone()[0]
     conn.close()

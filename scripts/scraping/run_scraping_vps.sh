@@ -163,6 +163,10 @@ find /opt/mol/logs -name "scraping_*.log" -mtime +30 -delete 2>/dev/null
 # Limpiar exports viejos (>30 días)
 find /opt/mol/data/export -name "ofertas_export_*.sql" -mtime +30 -delete 2>/dev/null
 
-# Sync scraping stats a Supabase (para dashboard)
-echo "=== [STATS] Subiendo stats a Supabase ===" >> "$LOG_FILE"
-cd /opt/mol && python3 scripts/sync_scraping_stats.py && python3 scripts/sync_scraping_daily.py --days 7 >> "$LOG_FILE" 2>&1
+# Sync de stats del monitor: DESACTIVADO en el VPS (2026-09-01).
+# scraping_live_stats y scraping_daily ahora se recalculan desde la BD LOCAL
+# (fuente de verdad) por auto_sync.sh horario. Correrlos acá, desde la BD del
+# VPS, congelaba indeed/portalempleo (que ya scrapean local) y mostraba conteos
+# del VPS más bajos que los reales. Ver fix/monitor-scraping-fuente-local.
+echo "=== [STATS] Stats del monitor: se recalculan LOCAL (auto_sync), no en el VPS ===" >> "$LOG_FILE"
+# cd /opt/mol && python3 scripts/sync_scraping_stats.py && python3 scripts/sync_scraping_daily.py --days 7 >> "$LOG_FILE" 2>&1

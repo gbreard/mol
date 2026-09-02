@@ -7,12 +7,18 @@ import {
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { supabase } from "@/lib/supabase";
+import { evaluarPortal, type PortalEval, type HistoryDay as AlertHistoryDay } from "@/lib/scraping-alerts";
 
 interface VpsPortalStats {
   total: number;
   ultimo_scraping: string;
   ultimos_7d: number;
   hoy: number;
+  // Cadencia/umbrales inyectados por sync_scraping_stats.py (config/scraping/portal_cadencia.json)
+  origen?: "vps" | "local";
+  cadencia?: "diaria" | "bisemanal" | "goteo";
+  umbral_horas?: number;
+  cero_corridas?: number;
 }
 
 interface VpsStats {
@@ -141,9 +147,32 @@ export default function ScrapingPage() {
           procesadas: sbData?.en_dashboard || 0,
           ultimos_7d: stats.ultimos_7d || 0,
           hoy: stats.hoy || 0,
+          origen: stats.origen,
+          cadencia: stats.cadencia,
+          umbral_horas: stats.umbral_horas,
+          cero_corridas: stats.cero_corridas,
         };
       });
   }, [vps, supabasePortales]);
+
+  // Evaluación por portal según cadencia (umbral por portal, "corrió pero cero", goteo).
+  const portalEvals = useMemo(() => {
+    const now = Date.now();
+    const hist: AlertHistoryDay[] = history.map(d => ({ fecha: d.fecha, por_portal: d.por_portal }));
+    const map: Record<string, PortalEval> = {};
+    mergedPortales.forEach(p => {
+      map[p.portal] = evaluarPortal({
+        portal: p.portal, total: p.total_vps, ultimo_scraping: p.ultimo_scraping,
+        ultimos_7d: p.ultimos_7d, hoy: p.hoy, origen: p.origen,
+        cadencia: p.cadencia, umbral_horas: p.umbral_horas, cero_corridas: p.cero_corridas,
+      }, hist, now);
+    });
+    return map;
+  }, [mergedPortales, history]);
+  const portalAlertas = useMemo(
+    () => Object.values(portalEvals).filter(e => e.nivel !== "ok"),
+    [portalEvals],
+  );
 
   // Chart
   const allPortales = useMemo(() => {
@@ -203,7 +232,7 @@ export default function ScrapingPage() {
           <div className="flex items-center gap-1.5">
             <div className={`w-2 h-2 rounded-full ${vpsOffline ? 'bg-red-500' : vpsStale ? 'bg-amber-500' : 'bg-green-500'}`} />
             <span className="text-xs text-gray-500">
-              VPS {vpsOffline ? 'sin datos' : vpsStale ? 'desactualizado' : 'online'}
+              Monitor (local) {vpsOffline ? 'sin datos' : vpsStale ? 'desactualizado' : 'al día'}
               {vps?.timestamp && !vpsOffline && (
                 <span className="text-gray-400 ml-1">
                   ({new Date(vps.timestamp).toLocaleString("es-AR")})
@@ -215,7 +244,7 @@ export default function ScrapingPage() {
         <div className="flex items-center gap-2 overflow-x-auto">
           <div className="bg-blue-50 rounded-lg p-3 text-center min-w-[120px]">
             <div className="text-lg font-bold text-blue-700">{vps?.total_ofertas?.toLocaleString("es-AR") || "?"}</div>
-            <div className="text-xs text-blue-500">VPS (scrapeadas)</div>
+            <div className="text-xs text-blue-500">Total scrapeadas</div>
           </div>
           <div className="text-gray-300 text-lg">→</div>
           <div className="bg-purple-50 rounded-lg p-3 text-center min-w-[120px]">
@@ -252,13 +281,24 @@ export default function ScrapingPage() {
         })()}
       </div>
 
-      {/* Alertas portales */}
-      {mergedPortales.some(p => p.dias_sin_scraping > 3) && (
-        <div className="flex items-center gap-3 px-4 py-3 rounded-lg border bg-amber-50 border-amber-200 text-amber-800">
-          <AlertTriangle className="w-5 h-5 flex-shrink-0" />
-          <span className="text-sm">
-            {mergedPortales.filter(p => p.dias_sin_scraping > 3).map(p => p.portal).join(', ')} sin scraping hace mas de 3 dias
-          </span>
+      {/* Alertas por portal — umbral por cadencia + "corrió pero cero" + goteo */}
+      {portalAlertas.length > 0 && (
+        <div className="space-y-2">
+          {portalAlertas
+            .sort((a, b) => (a.nivel === b.nivel ? 0 : a.nivel === "error" ? -1 : 1))
+            .map((a) => (
+              <div key={a.portal} className={`flex items-center gap-3 px-4 py-3 rounded-lg border ${
+                a.nivel === "error" ? "bg-red-50 border-red-200 text-red-800" : "bg-amber-50 border-amber-200 text-amber-800"
+              }`}>
+                {a.nivel === "error" ? <XCircle className="w-5 h-5 flex-shrink-0" /> : <AlertTriangle className="w-5 h-5 flex-shrink-0" />}
+                <span className="text-sm">
+                  <span className="font-semibold capitalize">{a.portal}</span>
+                  {a.tipo === "corrio_cero" && <span className="ml-1 text-xs font-medium uppercase opacity-70">[corrió pero cero]</span>}
+                  {a.tipo === "goteo_cero" && <span className="ml-1 text-xs font-medium uppercase opacity-70">[goteo en cero]</span>}
+                  : {a.mensaje}
+                </span>
+              </div>
+            ))}
         </div>
       )}
 
@@ -266,9 +306,9 @@ export default function ScrapingPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {mergedPortales.map((portal) => {
           const color = PORTAL_COLORS[portal.portal] || PORTAL_COLORS.otro;
-          const isHealthy = portal.dias_sin_scraping <= 3;
-          const statusColor = isHealthy ? 'text-green-600' : portal.dias_sin_scraping > 7 ? 'text-red-600' : 'text-amber-600';
-          const StatusIcon = isHealthy ? CheckCircle2 : portal.dias_sin_scraping > 7 ? XCircle : AlertTriangle;
+          const ev = portalEvals[portal.portal];
+          const statusColor = ev?.nivel === 'ok' ? 'text-green-600' : ev?.nivel === 'error' ? 'text-red-600' : 'text-amber-600';
+          const StatusIcon = ev?.nivel === 'ok' ? CheckCircle2 : ev?.nivel === 'error' ? XCircle : AlertTriangle;
           const pct = vps?.total_ofertas ? Math.round(portal.total_vps / vps.total_ofertas * 100 * 10) / 10 : 0;
 
           return (
@@ -278,7 +318,14 @@ export default function ScrapingPage() {
                   <Globe className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900 capitalize">{portal.portal}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-gray-900 capitalize">{portal.portal}</h3>
+                    {portal.origen && (
+                      <span className={`text-[10px] font-medium uppercase px-1.5 py-0.5 rounded ${
+                        portal.origen === 'local' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
+                      }`}>{portal.origen}</span>
+                    )}
+                  </div>
                   <p className="text-xs text-gray-500">{pct}% del total</p>
                 </div>
                 <StatusIcon className={`w-5 h-5 ${statusColor}`} />
@@ -287,7 +334,7 @@ export default function ScrapingPage() {
               <div className="grid grid-cols-4 gap-2 text-center">
                 <div className="bg-blue-50 rounded-lg p-2">
                   <div className="text-lg font-bold text-blue-700">{portal.total_vps.toLocaleString("es-AR")}</div>
-                  <div className="text-xs text-blue-500">Total VPS</div>
+                  <div className="text-xs text-blue-500">Total</div>
                 </div>
                 <div className="bg-green-50 rounded-lg p-2">
                   <div className="text-lg font-bold text-green-700">{portal.ultimos_7d.toLocaleString("es-AR")}</div>
@@ -299,7 +346,7 @@ export default function ScrapingPage() {
                 </div>
                 <div className="bg-gray-50 rounded-lg p-2">
                   <div className="text-lg font-bold text-gray-600">{portal.procesadas.toLocaleString("es-AR")}</div>
-                  <div className="text-xs text-gray-400">En Dashboard</div>
+                  <div className="text-xs text-gray-400" title="Ofertas validadas visibles en el dashboard (no es lo scrapeado)">Validadas</div>
                 </div>
               </div>
 
