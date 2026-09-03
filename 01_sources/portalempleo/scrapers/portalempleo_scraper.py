@@ -47,6 +47,8 @@ class PortalEmpleoScraper:
             delay: Segundos entre requests
         """
         self.delay = delay
+        self.ultimo_total = None       # contador del sitio en la última corrida (§11.7)
+        self.ultimo_n_listado = None   # nº de ofertas en el listado (pre-detalle)
         self.session = requests.Session()
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
@@ -413,6 +415,7 @@ class PortalEmpleoScraper:
 
         # Paso 1: Total
         total = self.get_total_results()
+        self.ultimo_total = total  # contador del sitio "Se encontraron N" (completitud §11.7)
         logger.info(f"Total ofertas reportadas por el portal: {total}")
         time.sleep(self.delay)
 
@@ -448,6 +451,7 @@ class PortalEmpleoScraper:
             time.sleep(self.delay)
 
         logger.info(f"Total ofertas en listado: {len(all_ofertas)}")
+        self.ultimo_n_listado = len(all_ofertas)  # listado (pre-detalle) para completitud §11.7
 
         if not fetch_details:
             return all_ofertas
