@@ -297,7 +297,7 @@ export async function POST(request: NextRequest) {
     const enriched: CorrectionData[] = batch.map(c => ({
       ...c,
       reglas_candidatas: findCandidateRules(c.titulo_limpio || c.titulo || '', matchingRules),
-      skills_tecnicas: parseSkillsTecnicas(c.skills_tecnicas),
+      skills_tecnicas: parseSkillsTecnicas(c.skills_tecnicas) as string[],
     }));
 
     const userPrompt = buildBatchPrompt(enriched);
