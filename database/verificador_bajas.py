@@ -109,7 +109,12 @@ class VerificadorBajas:
         s, base = self._session_navent(portal)
         payload = {"filterData": {"filtros": [], "tipoDetalle": "full", "busquedaExtendida": False},
                    "page": 0, "pageSize": TOPE_SEARCHV2, "sort": "RELEVANCE", "query": query}
-        r = s.post(f"{base}/api/avisos/searchV2", json=payload, timeout=15)
+        try:
+            r = s.post(f"{base}/api/avisos/searchV2", json=payload, timeout=15)
+        except requests.RequestException as e:
+            # Corte de red / timeout: NO es un fallo puntual de la oferta — cuenta para
+            # el circuit-breaker (con backoff) para no quemar la cola marcando errores.
+            raise BloqueoError(f"searchV2 red {type(e).__name__}")
         if r.status_code != 200:
             return None, r.status_code
         return r.json(), 200
@@ -257,7 +262,7 @@ class VerificadorBajas:
             if dry_run:
                 continue
             bloqueos = 0
-            for ido, p, titulo, url, n_prev, fuv, primera in rows:
+            for i, (ido, p, titulo, url, n_prev, fuv, primera) in enumerate(rows, 1):
                 delay = self.delay_navent if portal in NAVENT_SITE else self.delay_ct
                 time.sleep(delay)
                 ts = datetime.now().isoformat()
@@ -272,8 +277,11 @@ class VerificadorBajas:
                     st["error"] += 1
                     logger.warning(f"  bloqueo {portal} ({bloqueos}/{self.max_bloqueos}): {e}")
                     if bloqueos >= self.max_bloqueos:
+                        if not dry_run:
+                            self.conn.commit()   # preservar lo hecho antes del corte
                         logger.error(f"  CORTE {portal}: {self.max_bloqueos} bloqueos — sigue mañana")
                         break
+                    time.sleep(min(bloqueos * 10, 60))   # backoff ante bloqueo/corte de red
                     continue
                 except Exception as e:
                     st["error"] += 1
@@ -285,6 +293,8 @@ class VerificadorBajas:
                 nuevo_estado = self.conn.execute("SELECT estado_ciclo FROM ofertas WHERE id_oferta=?", (ido,)).fetchone()[0]
                 if nuevo_estado == "baja_confirmada" and prev_estado != "baja_confirmada":
                     st["confirmadas"] += 1
+                if not dry_run and i % 100 == 0:
+                    self.conn.commit()   # commits por lote: visibilidad + no perder trabajo si corta
             if not dry_run:
                 self.conn.commit()
         return self.stats
