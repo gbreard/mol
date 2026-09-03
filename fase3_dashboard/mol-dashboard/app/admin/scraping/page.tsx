@@ -130,6 +130,10 @@ export default function ScrapingPage() {
         procesadas: p.en_dashboard,
         ultimos_7d: p.ultimos_7d,
         hoy: 0,
+        origen: undefined as ("vps" | "local" | undefined),
+        cadencia: undefined as ("diaria" | "bisemanal" | "goteo" | undefined),
+        umbral_horas: undefined as (number | undefined),
+        cero_corridas: undefined as (number | undefined),
       }));
     }
     return Object.entries(vps.portales)
