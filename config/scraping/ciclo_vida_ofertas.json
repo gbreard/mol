@@ -23,7 +23,7 @@
     "computrabajo": {
       "umbral_presunta_baja_dias": 63,
       "via": "html_detalle",
-      "discriminador": "existencia",
+      "discriminador": "extraccion_A",
       "tope_diario": 4000,
       "tope_diario_regimen": 1000
     },
