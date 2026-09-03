@@ -144,21 +144,66 @@ class VerificadorBajas:
                     return "caida", {**senal, "reintento": True, "caso": "reintento_menos_tope"}
         return "ambigua", {**senal, "caso": "tope_alcanzado"}
 
-    def clasificar_ct(self, url):
+    def _ensure_ct(self):
         if self._ct is None:
             import sys
             sys.path.insert(0, str(BASE_DIR / "01_sources" / "computrabajo" / "scrapers"))
             from computrabajo_scraper import ComputRabajoScraper
             self._ct = ComputRabajoScraper()
-        datos = self._ct.scrapear_oferta_individual(url)
-        fallo = getattr(self._ct, "ultimo_fallo", None)
-        if fallo in ("redirect_listado", "listado_seo"):
+        return self._ct
+
+    def clasificar_ct(self, url):
+        """Enruta a la vía CT según config: 'existencia' (discriminador propio,
+        recomendado) o 'extraccion_A' (interino: reusa el extractor pero SIN
+        contar listado_seo como caída)."""
+        via = self.portales.get("computrabajo", {}).get("discriminador", "extraccion_A")
+        if via == "existencia":
+            return self.clasificar_ct_existencia(url)
+        return self._clasificar_ct_extraccion_A(url)
+
+    def _clasificar_ct_extraccion_A(self, url):
+        """Opción A (§decisión 2026-09-02): SOLO redirect_listado confirma caída.
+        listado_seo/sin_metodo pasan a AMBIGUA (la ficha cargó pero el extractor no
+        pudo — puede ser una oferta VIVA con variante de template no cubierta).
+        OJO: no confundir con la señal agotado_listado del PASO 2, que responde otra
+        pregunta ('¿va a venir la descripción?') y ahí listado_seo=no-reintentar es
+        correcto. Son dos discriminadores para dos preguntas (existencia vs extracción)."""
+        ct = self._ensure_ct()
+        datos = ct.scrapear_oferta_individual(url)
+        fallo = getattr(ct, "ultimo_fallo", None)
+        if fallo == "redirect_listado":
             return "caida", {"ultimo_fallo": fallo}
         if datos and datos.get("descripcion"):
             return "viva", {"desc_len": len(datos["descripcion"])}
         if fallo == "http":
             raise BloqueoError("CT http")
-        return "ambigua", {"ultimo_fallo": fallo}
+        return "ambigua", {"ultimo_fallo": fallo}   # listado_seo / sin_metodo → ambigua (opción A)
+
+    # Discriminador de EXISTENCIA para CT — pregunta "¿el aviso existe?", distinta de
+    # la de EXTRACCIÓN del PASO 2 ("¿va a venir la descripción?"). NO unificar: un aviso
+    # VIVO puede no dar descripción (variante de template) y aun así existir.
+    #   <title> "Trabajo de …" (ficha del aviso)                       → VIVA
+    #   <title> "Empleos en …" / "Consulta las nuevas ofertas" / redirect → CAÍDA
+    #   ninguna reconocible                                            → AMBIGUA
+    def clasificar_ct_existencia(self, url):
+        from bs4 import BeautifulSoup
+        ct = self._ensure_ct()
+        url_clean = url.split("#")[0]
+        try:
+            resp = ct.session.get(url_clean, headers=ct.headers, timeout=30, allow_redirects=True)
+        except Exception as e:
+            raise BloqueoError(f"CT get: {type(e).__name__}")
+        if resp.status_code != 200:
+            raise BloqueoError(f"CT http {resp.status_code}")
+        soup = BeautifulSoup(resp.content, "html.parser")
+        title = (soup.title.get_text(strip=True) if soup.title else "")
+        tl = title.lower()
+        senal = {"title": title[:90]}
+        if tl.startswith("empleos en") or "consulta las nuevas ofertas" in tl:
+            return "caida", {**senal, "clase": "listado"}
+        if tl.startswith("trabajo"):
+            return "viva", {**senal, "clase": "ficha"}
+        return "ambigua", senal
 
     # ---------- aplicar resultado ----------
     def _aplicar(self, ido, portal, fecha_ultimo_visto, n_prev, primera_caida, resultado, senal, ts, dry):

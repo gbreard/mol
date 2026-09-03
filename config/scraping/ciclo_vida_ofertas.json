@@ -8,12 +8,44 @@
   "legacy_detectar_bajas_enabled": true,
   "transiciones_ciclo_enabled": true,
   "portales": {
-    "zonajobs":     { "umbral_presunta_baja_dias": 35, "via": "searchv2",         "tope_diario": 2500, "tope_diario_regimen": 2500 },
-    "bumeran":      { "umbral_presunta_baja_dias": 42, "via": "searchv2",         "tope_diario": 2500, "tope_diario_regimen": 2500 },
-    "computrabajo": { "umbral_presunta_baja_dias": 63, "via": "html_detalle",     "tope_diario": 4000, "tope_diario_regimen": 1000 },
-    "caba":         { "umbral_presunta_baja_dias": 7,  "via": "listado_completo", "corridas_ausente_confirma": 2 },
-    "portalempleo": { "umbral_presunta_baja_dias": 7,  "via": "listado_completo", "corridas_ausente_confirma": 2 },
-    "indeed":       { "umbral_presunta_baja_dias": null, "via": "keyword_source_passes", "pasadas_ausente_infiere": 2, "estado_ausencia": "baja_inferida" }
+    "zonajobs": {
+      "umbral_presunta_baja_dias": 35,
+      "via": "searchv2",
+      "tope_diario": 2500,
+      "tope_diario_regimen": 2500
+    },
+    "bumeran": {
+      "umbral_presunta_baja_dias": 42,
+      "via": "searchv2",
+      "tope_diario": 2500,
+      "tope_diario_regimen": 2500
+    },
+    "computrabajo": {
+      "umbral_presunta_baja_dias": 63,
+      "via": "html_detalle",
+      "discriminador": "existencia",
+      "tope_diario": 4000,
+      "tope_diario_regimen": 1000
+    },
+    "caba": {
+      "umbral_presunta_baja_dias": 7,
+      "via": "listado_completo",
+      "corridas_ausente_confirma": 2
+    },
+    "portalempleo": {
+      "umbral_presunta_baja_dias": 7,
+      "via": "listado_completo",
+      "corridas_ausente_confirma": 2
+    },
+    "indeed": {
+      "umbral_presunta_baja_dias": null,
+      "via": "keyword_source_passes",
+      "pasadas_ausente_infiere": 2,
+      "estado_ausencia": "baja_inferida"
+    }
   },
-  "_default": { "umbral_presunta_baja_dias": 42, "via": "ninguna" }
+  "_default": {
+    "umbral_presunta_baja_dias": 42,
+    "via": "ninguna"
+  }
 }

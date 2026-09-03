@@ -111,6 +111,35 @@ def test_viva_revive_y_loguea(v):
     assert t == ("presunta_baja", "activa", "verificacion_viva") and v_ == "viva"
 
 
+# ---- discriminador de existencia CT (title-based, decisión 2026-09-02) ----
+class _FakeResp:
+    def __init__(self, html): self.content = html.encode(); self.status_code = 200
+
+
+class _FakeCT:
+    headers = {}
+    def __init__(self, html): self._html = html
+    class _S:
+        def __init__(self, html): self._html = html
+        def get(self, *a, **k): return _FakeResp(self._html)
+    @property
+    def session(self): return self._S(self._html)
+
+
+def test_ct_existencia_title(v, monkeypatch):
+    ver, _ = v
+    def fake(html):
+        monkeypatch.setattr(ver, "_ensure_ct", lambda: _FakeCT(html))
+        return ver.clasificar_ct_existencia("http://x")[0]
+    # ficha viva (aunque no haya descripción extraíble) → viva
+    assert fake("<title>Trabajo de asesor comercial en Córdoba | Empleo Argentina</title>") == "viva"
+    # listado → caída
+    assert fake("<title>Empleos en Buenos Aires | Computrabajo</title>") == "caida"
+    assert fake("<title>Consulta las nuevas ofertas de empleo</title>") == "caida"
+    # irreconocible → ambigua
+    assert fake("<title>Algo raro</title>") == "ambigua"
+
+
 # ---- ambigua no cambia contadores ----
 def test_ambigua_no_cuenta(v):
     ver, db = v
