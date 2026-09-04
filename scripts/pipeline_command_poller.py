@@ -57,6 +57,16 @@ def get_supabase_client():
 
 
 # Command → script mapping
+#
+# NLP SUSPENDIDO 2026-09-04 por Gerardo — reactivar cuando scraping estable +
+# mejora de procesamiento. El cron semanal (sabado 09:05) quedo comentado, pero
+# este poller es un SEGUNDO camino: cualquier comando encolado desde el dashboard
+# dispararia NLP igual. Los comandos que invocan NLP quedan deshabilitados aca;
+# el resto del poller (scrape_indeed, sync, export) sigue funcionando.
+COMANDOS_NLP_SUSPENDIDOS = {
+    'run_pipeline', 'run_nlp', 'reprocess_errors', 'revalidate_nlp',
+}
+
 COMMAND_MAP = {
     'run_pipeline': {
         'script': 'scripts/run_validated_pipeline.py',
@@ -340,6 +350,17 @@ def execute_command(client, cmd, dry_run=False):
     print(f"[POLLER] ID: {cmd_id}")
     print(f"[POLLER] Params: {json.dumps(params)}")
     print(f"[POLLER] Creado por: {cmd.get('creado_por', '?')}")
+
+    if comando in COMANDOS_NLP_SUSPENDIDOS:
+        motivo = ("NLP suspendido 2026-09-04 por Gerardo — reactivar cuando el "
+                  "scraping este estable y el procesamiento mejorado")
+        update_command(client, cmd_id,
+            estado='error',
+            error_message=motivo,
+            completed_at=datetime.utcnow().isoformat()
+        )
+        print(f"[POLLER] RECHAZADO: {comando} — {motivo}")
+        return False
 
     if comando not in COMMAND_MAP:
         update_command(client, cmd_id,
