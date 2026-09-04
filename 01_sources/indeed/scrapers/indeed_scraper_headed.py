@@ -45,6 +45,15 @@ DESC_SELECTORS = [
     'div#vjs-desc',
 ]
 
+# Instrumentacion de MUDAS (2026-09-04)
+# Una ficha "muda" es la que se clickea bien pero de la que ningun selector saca
+# descripcion. En la corrida del 03-09 fueron 460 de 516 y el motor no registraba
+# NADA de ellas, asi que no se pudo diagnosticar desde el log. Esto captura una
+# muestra acotada por corrida: que titulo tenia el panel, cuanto HTML habia, y
+# cuales de los selectores existian (y con que largo de texto).
+MUDA_MUESTRA_MAX = 25          # cuantas mudas se registran por corrida
+MUDA_HTML_SAMPLE = 400         # chars de HTML que se guardan por muestra
+
 # Patron de fecha relativa en la tarjeta del listado (fallback D2)
 _RE_HACE_N = re.compile(r'hace\s+m[aá]s\s+de\s+(\d+)\s*d[ií]a', re.I)
 _RE_HACE = re.compile(r'hace\s+(\d+)\s*d[ií]a', re.I)
@@ -82,9 +91,11 @@ class IndeedScraperHeaded:
         self.preflight_ok: Optional[bool] = None
         self.nogo_motivo: Optional[str] = None      # blocked|challenge|login|error:<x>
         self.detalle_bloqueado = False
+        self.mudas_muestra = []
         self.stats = {
             'keywords': 0, 'tarjetas_unicas': 0, 'fichas_intentadas': 0,
             'con_descripcion': 0, 'con_jsonld': 0, 'fecha_jsonld': 0,
+            'mudas': 0,
             'fecha_listado': 0, 'sin_fecha': 0,
             'nav_total': 0, 'nav_fail': 0, 'challenges': 0, 'blocked': 0,
             'elapsed_seg': 0.0,
@@ -98,6 +109,46 @@ class IndeedScraperHeaded:
     # ------------------------------------------------------------------
     def _wait(self, base_delay: float):
         time.sleep(base_delay * random.uniform(0.5, 1.5))
+
+    def _muestrear_muda(self, page, card) -> None:
+        """Registra por que una ficha quedo muda. Solo las primeras N por corrida."""
+        self.stats['mudas'] = self.stats.get('mudas', 0) + 1
+        if len(self.mudas_muestra) >= MUDA_MUESTRA_MAX:
+            return
+        info = {'jk': card.get('job_key', '')[:12], 'url_listado': card.get('url_oferta', '')[:90]}
+        try:
+            info['title'] = (page.title() or '')[:110]
+        except Exception:
+            info['title'] = '<error>'
+        try:
+            html = page.content()
+            info['html_len'] = len(html)
+            # marcadores que distinguen challenge / login / panel vacio
+            low = html.lower()
+            info['marcadores'] = [m for m in (
+                'security check', 'verifying you are human', 'cf-challenge',
+                'iniciar sesión', 'crea una cuenta', 'captcha', 'just a moment',
+            ) if m in low]
+            info['html_sample'] = html[:MUDA_HTML_SAMPLE]
+        except Exception as e:
+            info['html_len'] = -1
+            info['marcadores'] = [f'<error:{type(e).__name__}>']
+        # que selectores EXISTEN y con cuanto texto (0 = existe pero vacio)
+        sel_estado = {}
+        for sel in DESC_SELECTORS:
+            try:
+                el = page.query_selector(sel)
+                if el is None:
+                    sel_estado[sel] = 'ausente'
+                else:
+                    t = el.inner_text() or ''
+                    sel_estado[sel] = f'presente/len={len(t.strip())}'
+            except Exception as e:
+                sel_estado[sel] = f'error:{type(e).__name__}'
+        info['selectores'] = sel_estado
+        self.mudas_muestra.append(info)
+        logger.info(f"  MUDA jk={info['jk']} title={info['title'][:52]!r} "
+                    f"html={info['html_len']} sel={sel_estado}")
 
     def _classify(self, page) -> tuple:
         """Devuelve (clase, titulo, n_cards). clase in real|challenge|blocked|login|vacio."""
@@ -362,6 +413,9 @@ class IndeedScraperHeaded:
         if desc_txt:
             card['descripcion'] = desc_txt
             card['_jsonld'] = bool(jsonld)
+        else:
+            # ficha muda: se descarta aguas arriba, pero antes se registra POR QUE
+            self._muestrear_muda(page, card)
 
     # ------------------------------------------------------------------
     # preflight
