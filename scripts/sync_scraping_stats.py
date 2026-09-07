@@ -23,6 +23,10 @@ CONFIG_PATH = PROJECT / "config" / "supabase_config.json"
 # de ahí (no hardcodeados en el frontend). Ver config/scraping/portal_cadencia.json.
 CADENCIA_PATH = PROJECT / "config" / "scraping" / "portal_cadencia.json"
 
+# El sync a Supabase corre cada hora; 26h da margen para un par de fallos
+# seguidos sin alertar por ruido.
+SYNC_UMBRAL_HORAS = 26
+
 
 def cargar_cadencia() -> dict:
     """Devuelve {portales:{...}, _default:{...}} o defaults si falta el archivo."""
@@ -101,13 +105,51 @@ def sync():
         default=None
     )
 
-    client.table("scraping_live_stats").upsert({
+    # Frescura del sync a Supabase (2026-09-07). El early-exit roto de
+    # auto_sync.sh dejo ofertas_dashboard sin actualizar 2 semanas y NADA lo
+    # senalo: el monitor vigilaba la cadencia de los PORTALES, pero no la del
+    # sync que alimenta al propio dashboard. Mismo patron que umbral_horas por
+    # portal: se publica el dato y el umbral, y el frontend decide como mostrarlo.
+    sync_frescura = {"umbral_horas": SYNC_UMBRAL_HORAS}
+    try:
+        r = (client.table("ofertas_dashboard")
+             .select("fecha_sync").order("fecha_sync", desc=True).limit(1).execute())
+        ultima = (r.data or [{}])[0].get("fecha_sync")
+        sync_frescura["ultima_sync"] = ultima
+        if ultima:
+            dt = datetime.fromisoformat(ultima.replace("Z", "+00:00"))
+            horas = (datetime.now(timezone.utc) - dt).total_seconds() / 3600
+            sync_frescura["horas_desde"] = round(horas, 1)
+            sync_frescura["alerta"] = horas > SYNC_UMBRAL_HORAS
+        else:
+            sync_frescura["horas_desde"] = None
+            sync_frescura["alerta"] = True      # sin dato = alerta, no silencio
+    except Exception as e:
+        sync_frescura["error"] = str(e)[:120]
+        sync_frescura["alerta"] = True
+    if sync_frescura.get("alerta"):
+        print(f"[SYNC-STATS] ALERTA: ofertas_dashboard sin actualizar hace "
+              f"{sync_frescura.get('horas_desde')}h (umbral {SYNC_UMBRAL_HORAS}h)")
+
+    payload = {
         "id": "current",
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "total_ofertas": total,
         "portales": merged,
         "ultimo_scraping": ultimo_global,
-    }).execute()
+        "sync_supabase": sync_frescura,
+    }
+    try:
+        client.table("scraping_live_stats").upsert(payload).execute()
+    except Exception as e:
+        # La columna sync_supabase se agrega en la migracion 026 (SQL Editor).
+        # Hasta entonces el upsert sin ella evita romper el monitor; la alerta
+        # igual queda en el log de cada corrida.
+        if "sync_supabase" not in str(e):
+            raise
+        payload.pop("sync_supabase", None)
+        client.table("scraping_live_stats").upsert(payload).execute()
+        print("[SYNC-STATS] (columna sync_supabase aun no existe — ver migracion 026)")
 
     total_7d = sum(p.get("ultimos_7d", 0) for p in merged.values())
     print(f"[SYNC-STATS] OK: {total} ofertas ({total_7d} ultimos 7d), {len(merged)} portales (local: {list(PORTALES_LOCALES & set(merged))})")
