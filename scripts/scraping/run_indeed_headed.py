@@ -68,11 +68,24 @@ def total_keywords() -> int:
     return len([k for k in kws if k.strip()])
 
 
+MAX_PROBES_EN_STATE = 200   # ventana rodante; ~25 dias a 8 probes/dia
+
+
 def registrar_nogo(state_path: str, state: dict, motivo: str) -> None:
-    """D1: preserva 'desde cuando esta bloqueado'."""
+    """Marca el bloqueo. Distingue CUANDO EMPEZO la racha de CUANDO FUE EL ULTIMO.
+
+    Bug corregido 2026-09-07: antes solo se escribia `ultimo_nogo` si estaba
+    vacio (`if not loc.get('ultimo_nogo')`), con la intencion de preservar
+    "desde cuando esta bloqueado". Efecto: tras el NO-GO del 04-09, los del 05,
+    06 y 07 no lo movieron y el state decia 04-09 con 4 bloqueos posteriores. El
+    campo mentia sobre el ultimo bloqueo, que es el insumo del punto de decision.
+    Ahora se guardan los dos, cada uno con su nombre.
+    """
     loc = state.setdefault('local', {})
-    if not loc.get('ultimo_nogo'):
-        loc['ultimo_nogo'] = datetime.now().isoformat()
+    ahora = datetime.now().isoformat()
+    if not loc.get('bloqueado_desde'):
+        loc['bloqueado_desde'] = ahora        # primero de la racha
+    loc['ultimo_nogo'] = ahora                # SIEMPRE se actualiza
     loc['ultimo_nogo_motivo'] = motivo
     guardar_state(state_path, state)
 
@@ -81,6 +94,32 @@ def limpiar_nogo(state: dict) -> None:
     loc = state.setdefault('local', {})
     loc.pop('ultimo_nogo', None)
     loc.pop('ultimo_nogo_motivo', None)
+    loc.pop('bloqueado_desde', None)
+
+
+def registrar_probe(state: dict, resultado: str, motivo: str, modo: str) -> None:
+    """Deja constancia de CADA sondeo, haya corrido o no.
+
+    Objetivo secundario del probe-then-run: mapear si CF abre ventanas y cuando.
+    Sin este registro solo se sabe que hubo NO-GO, no el patron horario.
+    """
+    loc = state.setdefault('local', {})
+    probes = loc.setdefault('probes', [])
+    probes.append({
+        'ts': datetime.now().isoformat(timespec='seconds'),
+        'resultado': resultado,          # GO | NO-GO
+        'motivo': motivo or '',
+        'modo': modo,                    # run (corrio el tramo) | probe (solo sondeo)
+    })
+    del probes[:-MAX_PROBES_EN_STATE]
+
+
+def ya_corrio_hoy(state: dict) -> bool:
+    """Cooldown: una sola corrida COMPLETA por dia."""
+    ult = (state.get('local', {}) or {}).get('ultima_corrida')
+    if not ult:
+        return False
+    return ult[:10] == datetime.now().strftime('%Y-%m-%d')
 
 
 def main():
@@ -97,6 +136,10 @@ def main():
     ap.add_argument('--dry-run', action='store_true', help='no inserta en BD')
     ap.add_argument('--headless', action='store_true', help='SOLO debug: forzar headless (se bloquea)')
     ap.add_argument('--prototipo', action='store_true', help='imprime metricas del gate + D2')
+    ap.add_argument('--probe-then-run', action='store_true',
+                    help='Modo cron cada 3h: el preflight decide. GO + sin corrida hoy -> '
+                         'corre el tramo completo; si ya corrio hoy, solo sondea y registra. '
+                         'NO-GO -> aborta en ~30s. Todo probe queda en el state.')
     args = ap.parse_args()
 
     state = cargar_state(args.state)
@@ -115,17 +158,37 @@ def main():
         max_fichas=args.max_fichas, headless=args.headless,
     )
 
-    ofertas = scraper.scrape_with_keywords_file(
-        KEYWORDS_FILE, estrategia='exhaustiva', fromage=args.fromage,
-        max_keywords=args.max_keywords, offset=offset,
-    )
+    # probe-then-run: si ya hubo corrida completa hoy, este disparo solo SONDEA.
+    # Sin el cooldown, 8 disparos diarios podrian correr 8 tramos completos.
+    solo_probe = args.probe_then_run and ya_corrio_hoy(state)
+    if solo_probe:
+        logger.info("PROBE (ya hubo corrida completa hoy — solo se sondea y registra)")
+        ofertas = scraper.scrape_with_keywords([], fromage=args.fromage)
+    else:
+        ofertas = scraper.scrape_with_keywords_file(
+            KEYWORDS_FILE, estrategia='exhaustiva', fromage=args.fromage,
+            max_keywords=args.max_keywords, offset=offset,
+        )
 
     st = scraper.stats
+    modo = 'probe' if solo_probe else 'run'
 
     # D1: NO-GO
     if scraper.preflight_ok is False:
         registrar_nogo(args.state, state, scraper.nogo_motivo or 'desconocido')
+        registrar_probe(state, 'NO-GO', scraper.nogo_motivo or 'desconocido', modo)
+        guardar_state(args.state, state)
         logger.error(f"NO-GO ({scraper.nogo_motivo}). Nada que insertar. State actualizado.")
+        _print_resumen(args, offset, ofertas, st, gate=None, insertadas=0)
+        return
+
+    registrar_probe(state, 'GO', '', modo)
+    if solo_probe:
+        # GO pero el cupo del dia ya se uso: queda la marca de que la ventana
+        # estaba abierta, que es justo el dato que se quiere mapear.
+        limpiar_nogo(state)
+        guardar_state(args.state, state)
+        logger.info("PROBE GO — ventana abierta, pero el tramo de hoy ya corrio. Registrado.")
         _print_resumen(args, offset, ofertas, st, gate=None, insertadas=0)
         return
 

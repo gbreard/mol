@@ -1,0 +1,10 @@
+0 * * * * /mnt/d/OEDE/Webscrapping/scripts/auto_sync.sh >> /tmp/mol_auto_sync.log 2>&1
+* * * * * cd /mnt/d/OEDE/Webscrapping && /usr/bin/python3 scripts/pipeline_command_poller.py >> /tmp/pipeline_poller.log 2>&1
+# SUSPENDIDO 2026-09-04 por Gerardo — reactivar cuando scraping estable + mejora de procesamiento
+#5 9 * * 6 cd /mnt/d/OEDE/Webscrapping && OLLAMA_HOST=172.17.0.1 scripts/ops/run_con_tmpfs.sh /usr/bin/python3 scripts/run_validated_pipeline.py --limit 2000 >> /tmp/mol_nlp_semanal.log 2>&1
+# Indeed probe-then-run (2026-09-07): cada 3h el preflight decide. GO + sin corrida hoy ->
+# corre el tramo completo; si ya corrio hoy, solo sondea y registra. NO-GO -> aborta en ~30s.
+# Reemplaza el cron 05:00 fijo, que fallo 5 de 6 dias. Cada probe queda en el state-file.
+0 */3 * * * cd /mnt/d/OEDE/Webscrapping && xvfb-run -a /usr/bin/python3 scripts/scraping/run_indeed_headed.py --probe-then-run --max-keywords 90 >> /tmp/indeed_headed.log 2>&1 && /usr/bin/python3 scripts/sync_scraping_stats.py >> /tmp/indeed_headed.log 2>&1
+15 6 * * * cd /mnt/d/OEDE/Webscrapping && /usr/bin/python3 scripts/scraping/run_portalempleo_vps.py >> /tmp/portalempleo_local.log 2>&1
+0 7 * * * cd /mnt/d/OEDE/Webscrapping && /usr/bin/python3 database/verificador_bajas.py --portales bumeran,zonajobs >> /tmp/verificador_bajas.log 2>&1
