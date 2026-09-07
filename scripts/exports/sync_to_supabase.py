@@ -2524,6 +2524,11 @@ Ejemplos:
     parser.add_argument('--stats', action='store_true', help='Mostrar estadísticas')
     parser.add_argument('--full', action='store_true', help='Sync completo (todas las validadas)')
     parser.add_argument('--catalogs-only', action='store_true', help='Solo sincronizar catálogos ESCO')
+    parser.add_argument('--skip-skills', action='store_true',
+                        help='Omite ofertas_skills y esco_skills; sincroniza solo ofertas + '
+                             'ocupaciones. Para cuando lo que hay que descongelar es el panel: '
+                             'skills son 2,8M filas con delete+insert por oferta y dominan la '
+                             'corrida. Ver pendiente: rediseño del sync de skills.')
     parser.add_argument('--regenerate-profiles', action='store_true', help='Regenerar perfiles MOL vs ESCO después del sync')
     parser.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
 
@@ -2594,14 +2599,22 @@ Ejemplos:
             logger.info("Subiendo ofertas...")
             n_ofertas = upsert_ofertas(client, ofertas, dry_run=args.dry_run)
 
-            logger.info("Subiendo skills detalle...")
-            n_skills = upsert_skills(client, skills, dry_run=args.dry_run)
+            if args.skip_skills:
+                logger.warning(f"SKILLS OMITIDAS (--skip-skills): {len(skills)} skills detalle NO se suben")
+                n_skills = 0
+            else:
+                logger.info("Subiendo skills detalle...")
+                n_skills = upsert_skills(client, skills, dry_run=args.dry_run)
 
             logger.info("Subiendo ocupaciones ESCO...")
             n_ocup = upsert_esco_ocupaciones(client, ocupaciones, dry_run=args.dry_run)
 
-            logger.info("Subiendo skills ESCO...")
-            n_esco = upsert_esco_skills(client, esco_skills, dry_run=args.dry_run)
+            if args.skip_skills:
+                logger.warning(f"SKILLS OMITIDAS (--skip-skills): {len(esco_skills)} skills ESCO NO se suben")
+                n_esco = 0
+            else:
+                logger.info("Subiendo skills ESCO...")
+                n_esco = upsert_esco_skills(client, esco_skills, dry_run=args.dry_run)
 
             logger.info("Sincronizando errores de validación...")
             n_issues = sync_validation_errors_to_issues(client, conn, ids_para_sync, dry_run=args.dry_run)

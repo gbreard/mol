@@ -839,13 +839,13 @@ El sync tiene **dos partes independientes** que suben datos a tablas distintas:
 SQLite (local)                              Supabase (cloud)
 ┌──────────────────┐                        ┌──────────────────┐
 │ ofertas          │                        │ ofertas_dashboard │
-│ ofertas_nlp      │──JOIN + transform──►   │ (16K+ rows)      │
+│ ofertas_nlp      │──JOIN + transform──►   │ (97K rows)       │
 │ ofertas_esco_    │   upsert x100          │ ~40 columnas      │
 │   matching       │                        └──────────────────┘
 └──────────────────┘
 ┌──────────────────┐                        ┌──────────────────┐
 │ ofertas_esco_    │                        │ ofertas_skills    │
-│   skills_detalle │──delete+insert──►      │ (300K+ rows)     │
+│   skills_detalle │──delete+insert──►      │ (2,8M rows)      │
 │                  │   por oferta            │ ~12 cols          │
 └──────────────────┘                        └──────────────────┘
 ```
@@ -855,20 +855,26 @@ SQLite (local)                              Supabase (cloud)
 - Solo `estado_validacion IN ('validado', 'validado_claude', 'validado_humano')`
 - `transform_oferta_for_supabase()` normaliza: ubicación, CLAE, skills como arrays
 - Upsert por `id_oferta` en batches de 100
-- Rápido: ~2 min para 16K ofertas
+- Rápido: ~2 min para 16K ofertas (medido 2026-09-07: 96.872 ofertas, extracción ~96 s)
 
 **Parte 2 — Skills (`ofertas_skills`):**
 - Por cada oferta: DELETE todas sus skills + INSERT nuevas
 - Parsea `source_classification` JSON → `l1`, `l2`, `es_digital`
-- LENTO: ~300K HTTP requests individuales (~60-90 min)
+- **MUY LENTO: 2,8M filas** (medido 2026-09-07: 2.819.992). La cifra de ~300K que
+  figuraba acá estaba desactualizada por casi 10× y casi motiva una corrida de días.
 - Free tier de Supabase limita a ~15 req/s
+- **`--skip-skills`** omite esta parte (y `esco_skills`): sincroniza solo ofertas +
+  ocupaciones. Es lo que hay que usar cuando lo que se necesita es descongelar el panel.
+- ⚠️ **Pendiente abierto**: `docs/issues/2026-09-07_rediseno_sync_skills.md` — el diseño
+  de delete+insert por oferta no escala a este volumen.
 
 **Modos de ejecución:**
 
 | Modo | Comando | Qué hace | Duración |
 |------|---------|----------|----------|
 | Incremental | `sync_to_supabase.py` | Solo ofertas con timestamp > último sync | ~1-5 min |
-| Full | `sync_to_supabase.py --full` | Re-sube TODO (ofertas + skills + indicadores) | ~2.5h |
+| Full | `sync_to_supabase.py --full` | Re-sube TODO (ofertas + skills + indicadores) | **días**, no 2.5h — ver Parte 2 |
+| Full sin skills | `sync_to_supabase.py --full --skip-skills` | Ofertas + ocupaciones, sin las 2,8M de skills | ~1-2h |
 
 El timestamp incremental se lee/guarda en `config/supabase_sync_log.json`.
 
