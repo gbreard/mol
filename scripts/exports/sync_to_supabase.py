@@ -2524,6 +2524,11 @@ Ejemplos:
     parser.add_argument('--stats', action='store_true', help='Mostrar estadísticas')
     parser.add_argument('--full', action='store_true', help='Sync completo (todas las validadas)')
     parser.add_argument('--catalogs-only', action='store_true', help='Solo sincronizar catálogos ESCO')
+    parser.add_argument('--skip-issues', action='store_true',
+                        help='No sincroniza validation_errors como issues. La tabla `issues` es '
+                             'la de FEEDBACK HUMANO (Cyn/Diego) y ya tiene 501K registros '
+                             'automaticos; el sync agregaria 257K mas. Ver el issue: '
+                             'issues contaminada por el sync.')
     parser.add_argument('--skip-skills', action='store_true',
                         help='Omite ofertas_skills y esco_skills; sincroniza solo ofertas + '
                              'ocupaciones. Para cuando lo que hay que descongelar es el panel: '
@@ -2579,17 +2584,28 @@ Ejemplos:
             # IDs para queries relacionadas
             ids_para_sync = [o['id_oferta'] for o in ofertas]
 
-            logger.info("Extrayendo skills detalle...")
-            skills = extraer_skills_detalle(conn, ids_para_sync)
-            logger.info(f"  Encontradas: {len(skills)} skills")
+            # El guard cubre tambien la EXTRACCION, no solo el upsert: extraer las
+            # 2,8M de skills detalle tarda ~2 min y extraer_esco_skills_usadas()
+            # se colgo mas de 1 h en la corrida del 2026-09-07. Pagar eso para
+            # despues descartarlo no tiene sentido. Ver el issue del rediseño.
+            if args.skip_skills:
+                logger.warning("SKILLS OMITIDAS (--skip-skills): no se extraen ni se suben "
+                               "skills detalle ni skills ESCO")
+                skills = []
+                esco_skills = []
+            else:
+                logger.info("Extrayendo skills detalle...")
+                skills = extraer_skills_detalle(conn, ids_para_sync)
+                logger.info(f"  Encontradas: {len(skills)} skills")
 
             logger.info("Extrayendo ocupaciones ESCO usadas...")
             ocupaciones = extraer_esco_ocupaciones_usadas(conn, ids_para_sync)
             logger.info(f"  Encontradas: {len(ocupaciones)} ocupaciones")
 
-            logger.info("Extrayendo skills ESCO usadas...")
-            esco_skills = extraer_esco_skills_usadas(conn, ids_para_sync)
-            logger.info(f"  Encontradas: {len(esco_skills)} skills ESCO")
+            if not args.skip_skills:
+                logger.info("Extrayendo skills ESCO usadas...")
+                esco_skills = extraer_esco_skills_usadas(conn, ids_para_sync)
+                logger.info(f"  Encontradas: {len(esco_skills)} skills ESCO")
 
             # Upload
             print("\n" + "="*60)
@@ -2616,8 +2632,16 @@ Ejemplos:
                 logger.info("Subiendo skills ESCO...")
                 n_esco = upsert_esco_skills(client, esco_skills, dry_run=args.dry_run)
 
-            logger.info("Sincronizando errores de validación...")
-            n_issues = sync_validation_errors_to_issues(client, conn, ids_para_sync, dry_run=args.dry_run)
+            if args.skip_issues:
+                # El guard cubre extraccion Y subida: sync_validation_errors_to_issues()
+                # hace las dos cosas adentro (extraer_errores_pendientes + upsert),
+                # y la extraccion sola sobre validation_errors ya es cara.
+                logger.warning("ISSUES OMITIDOS (--skip-issues): no se extraen ni se suben "
+                               "validation_errors como issues")
+                n_issues = 0
+            else:
+                logger.info("Sincronizando errores de validación...")
+                n_issues = sync_validation_errors_to_issues(client, conn, ids_para_sync, dry_run=args.dry_run)
 
         # Indicadores calculados — siempre se recalculan (usan TODAS las ofertas validadas)
         logger.info("Sincronizando estado del sistema...")
