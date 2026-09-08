@@ -1273,6 +1273,21 @@ TABLE_SISTEMA_ESTADO = 'sistema_estado'
 
 
 def calcular_estado_sistema(conn: sqlite3.Connection) -> Dict[str, Any]:
+    # La funcion accede a las filas por nombre (row['total']), asi que depende de
+    # que el llamador haya seteado row_factory. Si no, revienta con
+    # "TypeError: tuple indices must be integers". Se asegura aca en vez de
+    # confiar en el contrato implicito.
+    # OJO con los NOT EXISTS de abajo: ofertas.id_oferta es INTEGER y
+    # ofertas_nlp/ofertas_esco_matching.id_oferta son TEXT. Sin CAST, SQLite no
+    # puede usar el indice y degrada a SCAN por cada fila (118K x 98K): la funcion
+    # no terminaba en 15 min. Con CAST el plan pasa de
+    #   SCAN n USING COVERING INDEX idx_ofertas_nlp_id
+    # a
+    #   SEARCH n USING COVERING INDEX sqlite_autoindex_ofertas_nlp_1 (id_oferta=?)
+    # Los indices ya existian (17/27/21): el problema era que la query no podia
+    # usarlos. Fix de fondo (unificar el tipo) en issue propio.
+    if conn.row_factory is not sqlite3.Row:
+        conn.row_factory = sqlite3.Row
     """
     Calcula métricas del estado actual del sistema desde SQLite.
     Estas métricas alimentan /admin/scraping y /admin/arquitectura.
@@ -1327,7 +1342,10 @@ def calcular_estado_sistema(conn: sqlite3.Connection) -> Dict[str, Any]:
     # Sin NLP
     cursor = conn.execute("""
         SELECT COUNT(*) FROM ofertas o
-        WHERE NOT EXISTS (SELECT 1 FROM ofertas_nlp n WHERE n.id_oferta = o.id_oferta)
+        WHERE NOT EXISTS (
+            SELECT 1 FROM ofertas_nlp n
+            WHERE n.id_oferta = CAST(o.id_oferta AS TEXT)
+        )
     """)
     estado['fase2_sin_nlp'] = cursor.fetchone()[0] or 0
 
@@ -1338,7 +1356,10 @@ def calcular_estado_sistema(conn: sqlite3.Connection) -> Dict[str, Any]:
     # Pendientes matching
     cursor = conn.execute("""
         SELECT COUNT(*) FROM ofertas_nlp n
-        WHERE NOT EXISTS (SELECT 1 FROM ofertas_esco_matching m WHERE m.id_oferta = n.id_oferta)
+        WHERE NOT EXISTS (
+            SELECT 1 FROM ofertas_esco_matching m
+            WHERE m.id_oferta = n.id_oferta
+        )
     """)
     estado['fase2_pendientes_matching'] = cursor.fetchone()[0] or 0
 
@@ -2524,6 +2545,10 @@ Ejemplos:
     parser.add_argument('--stats', action='store_true', help='Mostrar estadísticas')
     parser.add_argument('--full', action='store_true', help='Sync completo (todas las validadas)')
     parser.add_argument('--catalogs-only', action='store_true', help='Solo sincronizar catálogos ESCO')
+    parser.add_argument('--skip-estado', action='store_true',
+                        help='No recalcula sistema_estado. Sus ~9 COUNT/NOT EXISTS sobre las '
+                             'tablas grandes no terminaron en 15 min (medido 2026-09-07). '
+                             'Pendiente #1 de B.0: sin esto el panel sigue con datos viejos.')
     parser.add_argument('--skip-issues', action='store_true',
                         help='No sincroniza validation_errors como issues. La tabla `issues` es '
                              'la de FEEDBACK HUMANO (Cyn/Diego) y ya tiene 501K registros '
@@ -2644,8 +2669,12 @@ Ejemplos:
                 n_issues = sync_validation_errors_to_issues(client, conn, ids_para_sync, dry_run=args.dry_run)
 
         # Indicadores calculados — siempre se recalculan (usan TODAS las ofertas validadas)
-        logger.info("Sincronizando estado del sistema...")
-        sync_sistema_estado(client, conn, dry_run=args.dry_run)
+        if args.skip_estado:
+            logger.warning("ESTADO OMITIDO (--skip-estado): sistema_estado NO se recalcula "
+                           "(sus COUNTs no terminan; ver pendiente #1 de B.0)")
+        else:
+            logger.info("Sincronizando estado del sistema...")
+            sync_sistema_estado(client, conn, dry_run=args.dry_run)
 
         # Actualizar scraping_live_stats con datos locales (Indeed corre local, no VPS)
         logger.info("Actualizando scraping_live_stats desde BD local...")
