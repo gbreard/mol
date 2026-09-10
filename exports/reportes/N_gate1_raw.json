@@ -1,0 +1,1172 @@
+{
+  "gold_version": "1.0",
+  "resultados": [
+    {
+      "n": "1",
+      "id_oferta": "1118165658",
+      "portal": "bumeran",
+      "titulo": "Analista de Créditos y Cobranzas",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 9,
+      "v12_n": 7,
+      "v12_final": [
+        "analizar y evaluar riesgo crediticio para el otorgamiento de líneas de crédito a clientes",
+        "seguir pedidos y coordinar con el área comercial para su correcta entrega y cobranzas",
+        "controlar y seguir cuentas corrientes comerciales",
+        "gestionar integralmente la facturación",
+        "seguir cobranzas y controlar vencimientos",
+        "elaborar reportes de crédito, facturación y morosidad",
+        "trabajar coordinado con las áreas Comercial, Administración y Finanzas"
+      ],
+      "postfiltradas": [],
+      "filas": [
+        {
+          "gold": "analizar y evaluar riesgo crediticio para el otorgamiento de líneas de crédito a clientes",
+          "match_v12": "analizar y evaluar riesgo crediticio para el otorgamiento de líneas de crédito a clientes",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "realizar seguimiento de pedidos",
+          "match_v12": "",
+          "score": 0.24,
+          "veredicto": "ausente"
+        },
+        {
+          "gold": "coordinar con el área comercial la correcta entrega y cobranza de los pedidos",
+          "match_v12": "seguir pedidos y coordinar con el área comercial para su correcta entrega y cobranzas",
+          "score": 0.95,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "controlar y realizar seguimiento de cuentas corrientes comerciales",
+          "match_v12": "controlar y seguir cuentas corrientes comerciales",
+          "score": 0.63,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "gestionar integralmente la facturación",
+          "match_v12": "gestionar integralmente la facturación",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "realizar seguimiento de cobranzas",
+          "match_v12": "",
+          "score": 0.27,
+          "veredicto": "ausente"
+        },
+        {
+          "gold": "controlar vencimientos",
+          "match_v12": "seguir cobranzas y controlar vencimientos",
+          "score": 0.8,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "elaborar reportes de crédito, facturación y morosidad",
+          "match_v12": "elaborar reportes de crédito, facturación y morosidad",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "trabajar coordinadamente con las áreas Comercial, Administración y Finanzas",
+          "match_v12": "trabajar coordinado con las áreas Comercial, Administración y Finanzas",
+          "score": 0.79,
+          "veredicto": "recuperada"
+        }
+      ],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 7,
+      "parciales": 0,
+      "cobertura": 0.778,
+      "precision": 1.0
+    },
+    {
+      "n": "2",
+      "id_oferta": "5790086984",
+      "portal": "computrabajo",
+      "titulo": "Ref. 21263: Analista QA Semi Sr / Híbrido CABA Centro",
+      "veredicto_cyn": "Sí. “Seguridad y usabilidad” no constituye una tarea independiente; son dimensiones de los requisitos no funcionales dentro de la tarea “asegurar que el producto cumpla con los requisitos funcionales y no funcionales”. El sistema fragmentó incorrectamente una misma oración. Además controlo que el sistema no haya cortado una misma tarea por signos, enumeraciones o paréntesis. ‘Performance, seguridad y usabilidad’ son objetos/dimensiones de una única responsabilidad, no tareas independientes",
+      "gold_n": 8,
+      "v12_n": 6,
+      "v12_final": [
+        "Estrategia y planificación: diseñar, planificar y ejecutar estrategias integrales de testing",
+        "Documentación: crear y mantener casos de prueba, planes de testing y documentación técnica detallada",
+        "Gestión de defectos: identificar, reportar y dar seguimiento a los bugs hasta su resolución",
+        "Calidad integral: asegurar que el producto cumpla con los requisitos funcionales y no funcionales (performance, seguridad y usabilidad)",
+        "Coordinación y trabajo en equipo: participar de las ceremonias ágiles y articular activamente con desarrolladores, BAs y otros stakeholders",
+        "Mirada de negocio: aportar análisis crítico sobre los requerimientos y actuar como nexo entre los equipos técnicos y los clientes"
+      ],
+      "postfiltradas": [],
+      "filas": [
+        {
+          "gold": "diseñar, planificar y ejecutar estrategias integrales de testing",
+          "match_v12": "Estrategia y planificación: diseñar, planificar y ejecutar estrategias integrales de testing",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "crear y mantener casos de prueba, planes de testing y documentación técnica detallada",
+          "match_v12": "Documentación: crear y mantener casos de prueba, planes de testing y documentación técnica detallada",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "identificar, reportar y dar seguimiento a los bugs hasta su resolución",
+          "match_v12": "Gestión de defectos: identificar, reportar y dar seguimiento a los bugs hasta su resolución",
+          "score": 0.91,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "asegurar que el producto cumpla con los requisitos funcionales y no funcionales (performance, seguridad y usabilidad)",
+          "match_v12": "Calidad integral: asegurar que el producto cumpla con los requisitos funcionales y no funcionales (performance, seguridad y usabilidad)",
+          "score": 0.92,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "participar de las ceremonias ágiles",
+          "match_v12": "Coordinación y trabajo en equipo: participar de las ceremonias ágiles y articular activamente con desarrolladores, BAs y otros stakeholders",
+          "score": 0.7,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "articular activamente con desarrolladores, BAs y otros stakeholders",
+          "match_v12": "Coordinación y trabajo en equipo: participar de las ceremonias ágiles y articular activamente con desarrolladores, BAs y otros stakeholders",
+          "score": 0.8,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "aportar análisis crítico sobre los requerimientos",
+          "match_v12": "Mirada de negocio: aportar análisis crítico sobre los requerimientos y actuar como nexo entre los equipos técnicos y los clientes",
+          "score": 0.75,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "actuar como nexo entre los equipos técnicos y los clientes",
+          "match_v12": "Mirada de negocio: aportar análisis crítico sobre los requerimientos y actuar como nexo entre los equipos técnicos y los clientes",
+          "score": 0.78,
+          "veredicto": "recuperada"
+        }
+      ],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 8,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.333
+    },
+    {
+      "n": "3",
+      "id_oferta": "1118392033",
+      "portal": "bumeran",
+      "titulo": "Repartidor de agua y soda con registro para camión",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 3,
+      "v12_n": 6,
+      "v12_final": [
+        "cargar mercadería",
+        "descargar mercadería",
+        "repartir mercadería a clientes",
+        "brindar atención cordial a los clientes",
+        "cuidar el vehículo asignado",
+        "cuidar la mercadería asignada"
+      ],
+      "postfiltradas": [],
+      "filas": [
+        {
+          "gold": "realizar la carga, descarga y reparto de mercadería a clientes",
+          "match_v12": "repartir mercadería a clientes",
+          "score": 0.5,
+          "veredicto": "parcial"
+        },
+        {
+          "gold": "brindar una atención cordial a los clientes",
+          "match_v12": "brindar atención cordial a los clientes",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "cuidar el vehículo y la mercadería asignada",
+          "match_v12": "cuidar el vehículo asignado",
+          "score": 0.75,
+          "veredicto": "recuperada"
+        }
+      ],
+      "extras_para_revision": [
+        "cargar mercadería",
+        "descargar mercadería",
+        "cuidar la mercadería asignada"
+      ],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 2,
+      "parciales": 1,
+      "cobertura": 0.667,
+      "precision": 0.333
+    },
+    {
+      "n": "4",
+      "id_oferta": "2176458",
+      "portal": "zonajobs",
+      "titulo": "OFICIAL MUTIPLE SUPERIOR CENTRO CNC FAGOR - ZONA OESTE",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 7,
+      "v12_n": 7,
+      "v12_final": [
+        "mecanizar en máquinas CNC con programación a pie de máquina de sistema FAGOR",
+        "usar e mantener herramientas de medición como calibre, micrómetro y alesómetro",
+        "ejecutar las órdenes de trabajo",
+        "controlar la entrada y salida al taller de materiales y equipos de trabajo",
+        "llevar registro y control de los trabajos realizados en el taller",
+        "mantener en orden equipo y sitio de trabajo, reportando cualquier anomalía",
+        "cumplir con las normas y procedimientos de seguridad integral establecidos por la empresa"
+      ],
+      "postfiltradas": [],
+      "filas": [
+        {
+          "gold": "mecanizar en máquinas CNC con programación a pie de máquina mediante sistema FAGOR",
+          "match_v12": "mecanizar en máquinas CNC con programación a pie de máquina de sistema FAGOR",
+          "score": 0.88,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "usar y mantener herramientas de medición",
+          "match_v12": "usar e mantener herramientas de medición como calibre, micrómetro y alesómetro",
+          "score": 0.83,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "ejecutar las órdenes de trabajo",
+          "match_v12": "ejecutar las órdenes de trabajo",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "controlar la entrada y salida al taller de materiales y equipos de trabajo",
+          "match_v12": "controlar la entrada y salida al taller de materiales y equipos de trabajo",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "llevar registro y control de los trabajos realizados y/o a realizar en el taller",
+          "match_v12": "llevar registro y control de los trabajos realizados en el taller",
+          "score": 0.86,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "mantener en orden el equipo y el sitio de trabajo, reportando cualquier anomalía",
+          "match_v12": "mantener en orden equipo y sitio de trabajo, reportando cualquier anomalía",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "cumplir las normas y procedimientos en materia de seguridad integral",
+          "match_v12": "cumplir con las normas y procedimientos de seguridad integral establecidos por la empresa",
+          "score": 0.75,
+          "veredicto": "recuperada"
+        }
+      ],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 7,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "5",
+      "id_oferta": "1117972807",
+      "portal": "bumeran",
+      "titulo": "Adm contable - ESTUDIO CONTABLE",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 3,
+      "v12_n": 2,
+      "v12_final": [
+        "colaborar con la liquidación de sueldos",
+        "realizar tareas de contabilidad general"
+      ],
+      "postfiltradas": [
+        {
+          "tarea": "desempeñarse en tareas generales de oficina",
+          "motivo": "fragmento_huerfano_sin_verbo"
+        }
+      ],
+      "filas": [
+        {
+          "gold": "colaborar con la liquidación de sueldos",
+          "match_v12": "colaborar con la liquidación de sueldos",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "tareas de contabilidad general",
+          "match_v12": "realizar tareas de contabilidad general",
+          "score": 0.9,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "tareas generales de oficina",
+          "match_v12": "realizar tareas de contabilidad general",
+          "score": 0.56,
+          "veredicto": "recuperada"
+        }
+      ],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 3,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.5
+    },
+    {
+      "n": "6",
+      "id_oferta": "1118316198",
+      "portal": "bumeran",
+      "titulo": "Analista de Marketing Digital",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 4,
+      "v12_n": 6,
+      "v12_final": [
+        "planificar, ejecutar y optimizar campañas de performance en Google Ads, Meta Ads y otros canales digitales",
+        "monitorear y analizar indicadores clave como CPA, ROAS, conversión, retención y calidad de tráfico",
+        "implementar y validar herramientas de medición, tracking y atribución digital",
+        "identificar oportunidades de mejora a partir del análisis de datos y comportamiento de usuarios",
+        "gestionar acciones de CRM, segmentación y automatización para potenciar la retención",
+        "utilizar herramientas de IA para optimizar procesos, generar insights y mejorar el rendimiento de las campañas"
+      ],
+      "postfiltradas": [],
+      "filas": [
+        {
+          "gold": "planificar, ejecutar y optimizar la estrategia de performance digital",
+          "match_v12": "planificar, ejecutar y optimizar campañas de performance en Google Ads, Meta Ads y otros canales digitales",
+          "score": 0.67,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "impulsar la adquisición de usuarios",
+          "match_v12": "",
+          "score": 0.24,
+          "veredicto": "ausente"
+        },
+        {
+          "gold": "monitorear y analizar indicadores clave como CPA, ROAS, conversión, retención y calidad de tráfico",
+          "match_v12": "monitorear y analizar indicadores clave como CPA, ROAS, conversión, retención y calidad de tráfico",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "identificar oportunidades de mejora a partir del análisis de datos y comportamiento de usuarios",
+          "match_v12": "identificar oportunidades de mejora a partir del análisis de datos y comportamiento de usuarios",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        }
+      ],
+      "extras_para_revision": [
+        "implementar y validar herramientas de medición, tracking y atribución digital",
+        "gestionar acciones de CRM, segmentación y automatización para potenciar la retención",
+        "utilizar herramientas de IA para optimizar procesos, generar insights y mejorar el rendimiento de las campañas"
+      ],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 3,
+      "parciales": 0,
+      "cobertura": 0.75,
+      "precision": 0.5
+    },
+    {
+      "n": "7",
+      "id_oferta": "2176705",
+      "portal": "zonajobs",
+      "titulo": "Software Engineer .NET (con exp WPF) - Mix (Onsite - Remoto) - 1802",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 7,
+      "v12_n": 7,
+      "v12_final": [
+        "diseñar, desarrollar y entregar soluciones de software confiables y de alta calidad",
+        "contribuir al desarrollo de código productivo y participar activamente en revisiones de código dentro del equipo",
+        "resolver problemas técnicos complejos relacionados con el diseño, el desarrollo y la estabilidad de las aplicaciones",
+        "identificar y ejecutar oportunidades de automatización para reducir incidentes recurrentes y mejorar la estabilidad operativa",
+        "participar en evaluaciones técnicas con proveedores externos, startups y equipos internos cuando sea requerido",
+        "promover el uso de nuevas tecnologías, herramientas y buenas prácticas dentro de la comunidad de ingeniería",
+        "contribuir a una cultura de diversidad, equidad e inclusión dentro del equipo y la organización"
+      ],
+      "postfiltradas": [],
+      "filas": [
+        {
+          "gold": "diseñar, desarrollar y entregar soluciones de software confiables y de alta calidad",
+          "match_v12": "diseñar, desarrollar y entregar soluciones de software confiables y de alta calidad",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "contribuir al desarrollo de código productivo y participar activamente en revisiones de código dentro del equipo",
+          "match_v12": "contribuir al desarrollo de código productivo y participar activamente en revisiones de código dentro del equipo",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "resolver problemas técnicos complejos relacionados con el diseño, el desarrollo y la estabilidad de las aplicaciones",
+          "match_v12": "resolver problemas técnicos complejos relacionados con el diseño, el desarrollo y la estabilidad de las aplicaciones",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "identificar y ejecutar oportunidades de automatización para reducir incidentes recurrentes y mejorar la estabilidad operativa",
+          "match_v12": "identificar y ejecutar oportunidades de automatización para reducir incidentes recurrentes y mejorar la estabilidad operativa",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "participar en evaluaciones técnicas con proveedores externos, startups y equipos internos cuando sea requerido",
+          "match_v12": "participar en evaluaciones técnicas con proveedores externos, startups y equipos internos cuando sea requerido",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "promover el uso de nuevas tecnologías, herramientas y buenas prácticas dentro de la comunidad de ingeniería",
+          "match_v12": "promover el uso de nuevas tecnologías, herramientas y buenas prácticas dentro de la comunidad de ingeniería",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "contribuir a una cultura de diversidad, equidad e inclusión dentro del equipo y la organización",
+          "match_v12": "contribuir a una cultura de diversidad, equidad e inclusión dentro del equipo y la organización",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        }
+      ],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 7,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "8",
+      "id_oferta": "6477274334",
+      "portal": "computrabajo",
+      "titulo": "Promotor/a",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 0,
+      "v12_n": 0,
+      "v12_final": [],
+      "postfiltradas": [],
+      "filas": [],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 0,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "9",
+      "id_oferta": "1118058753",
+      "portal": "bumeran",
+      "titulo": "Analista de RRHH Generalista (Movilidad propia-Zona Norte)",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 0,
+      "v12_n": 0,
+      "v12_final": [],
+      "postfiltradas": [],
+      "filas": [],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 0,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "10",
+      "id_oferta": "6265862938",
+      "portal": "computrabajo",
+      "titulo": "Vendedora para Panadería Turno Tarde",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 0,
+      "v12_n": 0,
+      "v12_final": [],
+      "postfiltradas": [],
+      "filas": [],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 0,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "11",
+      "id_oferta": "6171358600",
+      "portal": "computrabajo",
+      "titulo": "Dibujante proyectista",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 0,
+      "v12_n": 0,
+      "v12_final": [],
+      "postfiltradas": [],
+      "filas": [],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 0,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "12",
+      "id_oferta": "2185030",
+      "portal": "zonajobs",
+      "titulo": "Ejecutivo/a de Ventas Posadas",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 6,
+      "v12_n": 11,
+      "v12_final": [
+        "captar nuevos asociados",
+        "comercializar planes de cobertura médica",
+        "asegurar una experiencia de asesoramiento cercana, profesional y efectiva",
+        "gestionar el proceso completo de venta: presupuestación por segmento, cierre y documentación para el alta",
+        "recibir y gestionar leads provenientes de distintos canales",
+        "asegurar una respuesta oportuna y orientada al cierre",
+        "registrar y seguir la gestión comercial en CRM",
+        "garantizar trazabilidad y eficiencia en cada interacción",
+        "analizar la competencia",
+        "reportar acciones del mercado",
+        "aportar información clave para mejorar las estrategias comerciales"
+      ],
+      "postfiltradas": [
+        {
+          "tarea": "prospección activa presencial y/o digital de nuevos clientes individuales y corporativos",
+          "motivo": "fragmento_huerfano_sin_verbo"
+        }
+      ],
+      "filas": [
+        {
+          "gold": "captar nuevos asociados",
+          "match_v12": "captar nuevos asociados",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "comercializar planes de cobertura médica",
+          "match_v12": "comercializar planes de cobertura médica",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "realizar prospección activa presencial y/o digital de nuevos clientes individuales y corporativos, gestionando el proceso completo de venta: presupuestación por segmento, cierre y documentación para el alta",
+          "match_v12": "gestionar el proceso completo de venta: presupuestación por segmento, cierre y documentación para el alta",
+          "score": 0.53,
+          "veredicto": "parcial"
+        },
+        {
+          "gold": "recibir y gestionar leads provenientes de distintos canales",
+          "match_v12": "recibir y gestionar leads provenientes de distintos canales",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "registrar y realizar seguimiento de la gestión comercial en CRM",
+          "match_v12": "registrar y seguir la gestión comercial en CRM",
+          "score": 0.63,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "analizar la competencia y reportar acciones del mercado",
+          "match_v12": "reportar acciones del mercado",
+          "score": 0.6,
+          "veredicto": "recuperada"
+        }
+      ],
+      "extras_para_revision": [
+        "asegurar una experiencia de asesoramiento cercana, profesional y efectiva",
+        "asegurar una respuesta oportuna y orientada al cierre",
+        "garantizar trazabilidad y eficiencia en cada interacción",
+        "analizar la competencia",
+        "aportar información clave para mejorar las estrategias comerciales"
+      ],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 5,
+      "parciales": 1,
+      "cobertura": 0.833,
+      "precision": 0.455
+    },
+    {
+      "n": "13",
+      "id_oferta": "5273316732",
+      "portal": "computrabajo",
+      "titulo": "¡Representante de Venta de Préstamos!",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 2,
+      "v12_n": 2,
+      "v12_final": [
+        "ofrecer productos bancarios",
+        "comunicarse de manera clara, efectiva y persuasiva para generar ventas"
+      ],
+      "postfiltradas": [],
+      "filas": [
+        {
+          "gold": "ofrecer productos bancarios",
+          "match_v12": "ofrecer productos bancarios",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "comunicarse de manera clara, efectiva y persuasiva para generar ventas",
+          "match_v12": "comunicarse de manera clara, efectiva y persuasiva para generar ventas",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        }
+      ],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 2,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "14",
+      "id_oferta": "5917821361",
+      "portal": "computrabajo",
+      "titulo": "promotores Sala y Vía Publica",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 4,
+      "v12_n": 4,
+      "v12_final": [
+        "brindar atención cordial, eficiente y resolutiva a los clientes en sala y vía pública",
+        "promocionar los servicios, eventos y beneficios del Bingo",
+        "garantizar una experiencia satisfactoria y segura bajo los protocolos de servicio",
+        "colaborar en acciones de marketing y fidelización de clientes"
+      ],
+      "postfiltradas": [],
+      "filas": [
+        {
+          "gold": "brindar atención cordial, eficiente y resolutiva a los clientes en sala y vía pública",
+          "match_v12": "brindar atención cordial, eficiente y resolutiva a los clientes en sala y vía pública",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "promocionar los servicios, eventos y beneficios del Bingo",
+          "match_v12": "promocionar los servicios, eventos y beneficios del Bingo",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "garantizar una experiencia satisfactoria y segura bajo los protocolos de servicio",
+          "match_v12": "garantizar una experiencia satisfactoria y segura bajo los protocolos de servicio",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "colaborar en acciones de marketing y fidelización de clientes",
+          "match_v12": "colaborar en acciones de marketing y fidelización de clientes",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        }
+      ],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 4,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "15",
+      "id_oferta": "5650193558",
+      "portal": "computrabajo",
+      "titulo": "Personal de maestranza. Lugar de trabajo: Garin, Munro y Parque Saavedra",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 0,
+      "v12_n": 0,
+      "v12_final": [],
+      "postfiltradas": [],
+      "filas": [],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 0,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "16",
+      "id_oferta": "2176546",
+      "portal": "zonajobs",
+      "titulo": "Enfermera Extraccionista",
+      "veredicto_cyn": "OK",
+      "gold_n": 5,
+      "v12_n": 5,
+      "v12_final": [
+        "realizar extracciones de sangre para la obtención de PRP",
+        "administrar sueros vitamínicos según protocolos establecidos",
+        "brindar atención y orientación a los pacientes durante los procedimientos",
+        "mantener un ambiente de trabajo seguro y estéril",
+        "colaborar con el equipo para asegurar la calidad del servicio"
+      ],
+      "postfiltradas": [],
+      "filas": [
+        {
+          "gold": "realizar extracciones de sangre para la obtención de plasma rico en plaquetas (PRP)",
+          "match_v12": "realizar extracciones de sangre para la obtención de PRP",
+          "score": 0.62,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "administrar sueros vitamínicos según protocolos establecidos",
+          "match_v12": "administrar sueros vitamínicos según protocolos establecidos",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "brindar atención y orientación a los pacientes durante los procedimientos",
+          "match_v12": "brindar atención y orientación a los pacientes durante los procedimientos",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "mantener un ambiente de trabajo seguro y estéril",
+          "match_v12": "mantener un ambiente de trabajo seguro y estéril",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "colaborar con el equipo para asegurar la calidad del servicio",
+          "match_v12": "colaborar con el equipo para asegurar la calidad del servicio",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        }
+      ],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 5,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "17",
+      "id_oferta": "2169530",
+      "portal": "zonajobs",
+      "titulo": "Técnico Mecánico para flota Vehicular pesada. Ciudadela",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 4,
+      "v12_n": 4,
+      "v12_final": [
+        "realizar el mantenimiento preventivo y correctivo de una flota vehicular",
+        "reparar maquinarias pesadas, camiones y utilitarios",
+        "diagnosticar y resolver fallas mecánicas en sistemas hidráulicos y neumáticos",
+        "realizar reparaciones generales y trabajos de soldadura"
+      ],
+      "postfiltradas": [],
+      "filas": [
+        {
+          "gold": "realizar el mantenimiento preventivo y correctivo de una flota vehicular, incluyendo máquinas viales, camiones y utilitarios",
+          "match_v12": "realizar el mantenimiento preventivo y correctivo de una flota vehicular",
+          "score": 0.55,
+          "veredicto": "parcial"
+        },
+        {
+          "gold": "reparar maquinarias pesadas, camiones y utilitarios",
+          "match_v12": "reparar maquinarias pesadas, camiones y utilitarios",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "diagnosticar y resolver fallas mecánicas en sistemas hidráulicos y neumáticos",
+          "match_v12": "diagnosticar y resolver fallas mecánicas en sistemas hidráulicos y neumáticos",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "realizar reparaciones generales y trabajos de soldadura",
+          "match_v12": "realizar reparaciones generales y trabajos de soldadura",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        }
+      ],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 3,
+      "parciales": 1,
+      "cobertura": 0.75,
+      "precision": 0.75
+    },
+    {
+      "n": "18",
+      "id_oferta": "2168972",
+      "portal": "zonajobs",
+      "titulo": "Abogado/a - Derecho Laboral",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 2,
+      "v12_n": 2,
+      "v12_final": [
+        "asistir a audiencias",
+        "realizar el seguimiento de la cartera de clientes"
+      ],
+      "postfiltradas": [],
+      "filas": [
+        {
+          "gold": "asistir a audiencias",
+          "match_v12": "asistir a audiencias",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "realizar el seguimiento de la cartera de clientes",
+          "match_v12": "realizar el seguimiento de la cartera de clientes",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        }
+      ],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 2,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "19",
+      "id_oferta": "6097371222",
+      "portal": "computrabajo",
+      "titulo": "Vendedor telefonico con experiencia",
+      "veredicto_cyn": "OK",
+      "gold_n": 0,
+      "v12_n": 0,
+      "v12_final": [],
+      "postfiltradas": [],
+      "filas": [],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 0,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "20",
+      "id_oferta": "2172514",
+      "portal": "zonajobs",
+      "titulo": "Operario de Planta para Industria",
+      "veredicto_cyn": "OK",
+      "gold_n": 0,
+      "v12_n": 0,
+      "v12_final": [],
+      "postfiltradas": [],
+      "filas": [],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 0,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "21",
+      "id_oferta": "5909299836",
+      "portal": "computrabajo",
+      "titulo": "administración de ventas",
+      "veredicto_cyn": "OK",
+      "gold_n": 0,
+      "v12_n": 0,
+      "v12_final": [],
+      "postfiltradas": [],
+      "filas": [],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 0,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "22",
+      "id_oferta": "5160083235",
+      "portal": "computrabajo",
+      "titulo": "Repositor Part Time  (req203252) Eventual",
+      "veredicto_cyn": "OK",
+      "gold_n": 1,
+      "v12_n": 1,
+      "v12_final": [
+        "Reponer los productos en góndolas"
+      ],
+      "postfiltradas": [],
+      "filas": [
+        {
+          "gold": "reponer los productos en góndolas",
+          "match_v12": "Reponer los productos en góndolas",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        }
+      ],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 1,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "23",
+      "id_oferta": "6483882943",
+      "portal": "computrabajo",
+      "titulo": "Operario de carga y descarga",
+      "veredicto_cyn": "OK",
+      "gold_n": 1,
+      "v12_n": 1,
+      "v12_final": [
+        "realizar la carga y descarga de mercadería"
+      ],
+      "postfiltradas": [],
+      "filas": [
+        {
+          "gold": "realizar la carga y descarga de mercadería",
+          "match_v12": "realizar la carga y descarga de mercadería",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        }
+      ],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 1,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "24",
+      "id_oferta": "2187269",
+      "portal": "zonajobs",
+      "titulo": "Ejecutivo/a de Ventas Rosario",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 7,
+      "v12_n": 11,
+      "v12_final": [
+        "captar nuevos asociados",
+        "comercializar planes de cobertura médica",
+        "asegurar una experiencia de asesoramiento cercana, profesional y efectiva",
+        "gestionar el proceso completo de venta: presupuestación por segmento, cierre y documentación para el alta",
+        "recibir y gestionar leads provenientes de distintos canales",
+        "asegurar una respuesta oportuna y orientada al cierre",
+        "registrar y seguir la gestión comercial en CRM",
+        "garantizar trazabilidad y eficiencia en cada interacción",
+        "analizar la competencia",
+        "reportar acciones del mercado",
+        "aportar información clave para mejorar las estrategias comerciales"
+      ],
+      "postfiltradas": [
+        {
+          "tarea": "prospección activa presencial y/o digital de nuevos clientes individuales y corporativos",
+          "motivo": "fragmento_huerfano_sin_verbo"
+        }
+      ],
+      "filas": [
+        {
+          "gold": "captar nuevos asociados",
+          "match_v12": "captar nuevos asociados",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "comercializar planes de cobertura médica",
+          "match_v12": "comercializar planes de cobertura médica",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "realizar prospección activa presencial y/o digital de nuevos clientes individuales y corporativos, gestionando el proceso completo de venta: presupuestación por segmento, cierre y documentación para el alta",
+          "match_v12": "gestionar el proceso completo de venta: presupuestación por segmento, cierre y documentación para el alta",
+          "score": 0.53,
+          "veredicto": "parcial"
+        },
+        {
+          "gold": "recibir y gestionar leads provenientes de distintos canales",
+          "match_v12": "recibir y gestionar leads provenientes de distintos canales",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "registrar y realizar seguimiento de la gestión comercial en CRM",
+          "match_v12": "registrar y seguir la gestión comercial en CRM",
+          "score": 0.63,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "analizar la competencia",
+          "match_v12": "analizar la competencia",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "reportar acciones del mercado",
+          "match_v12": "reportar acciones del mercado",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        }
+      ],
+      "extras_para_revision": [
+        "asegurar una experiencia de asesoramiento cercana, profesional y efectiva",
+        "asegurar una respuesta oportuna y orientada al cierre",
+        "garantizar trazabilidad y eficiencia en cada interacción",
+        "aportar información clave para mejorar las estrategias comerciales"
+      ],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 6,
+      "parciales": 1,
+      "cobertura": 0.857,
+      "precision": 0.545
+    },
+    {
+      "n": "25",
+      "id_oferta": "1118076732",
+      "portal": "bumeran",
+      "titulo": "Abogado/a Semi Senior Banking",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 0,
+      "v12_n": 0,
+      "v12_final": [],
+      "postfiltradas": [],
+      "filas": [],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 0,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "26",
+      "id_oferta": "2181056",
+      "portal": "zonajobs",
+      "titulo": "Secretaria Administrativa Escribania",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 0,
+      "v12_n": 0,
+      "v12_final": [],
+      "postfiltradas": [],
+      "filas": [],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 0,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "27",
+      "id_oferta": "1118300373",
+      "portal": "bumeran",
+      "titulo": "Ginecóloga/o - Medicina Regenerativa y Estética",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 4,
+      "v12_n": 4,
+      "v12_final": [
+        "Aplicar tratamientos de medicina regenerativa y estética ginecológica",
+        "Participar en la formación y capacitación en protocolos exclusivos",
+        "Brindar atención profesional, cálida y empática a las pacientes",
+        "Contribuir a un ambiente de excelencia e innovación en medicina estética"
+      ],
+      "postfiltradas": [],
+      "filas": [
+        {
+          "gold": "aplicar tratamientos de medicina regenerativa y estética ginecológica",
+          "match_v12": "Aplicar tratamientos de medicina regenerativa y estética ginecológica",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "participar en la formación y capacitación en protocolos exclusivos",
+          "match_v12": "Participar en la formación y capacitación en protocolos exclusivos",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "brindar atención profesional, cálida y empática a las pacientes",
+          "match_v12": "Brindar atención profesional, cálida y empática a las pacientes",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "contribuir a un ambiente de excelencia e innovación en medicina estética",
+          "match_v12": "Contribuir a un ambiente de excelencia e innovación en medicina estética",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        }
+      ],
+      "extras_para_revision": [],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 4,
+      "parciales": 0,
+      "cobertura": 1.0,
+      "precision": 1.0
+    },
+    {
+      "n": "28",
+      "id_oferta": "2176620",
+      "portal": "zonajobs",
+      "titulo": "Ingeniero Scada - Importante Petrolera (Neuquén)",
+      "veredicto_cyn": "FALLA",
+      "gold_n": 6,
+      "v12_n": 7,
+      "v12_final": [
+        "desarrollar, configurar y mantener pantallas HMI en Fast Tools",
+        "programar y configurar gráficos de proceso, tendencias y alarmas en DeltaV Operate",
+        "diseñar arquitecturas de visualización SCADA integradas",
+        "implementar estándares de HMI según ISA-101 y guías de alto rendimiento",
+        "coordinar con Operaciones para definir requerimientos de visualización y optimizar interfaces de operador",
+        "elaborar documentación técnica de pantallas SCADA",
+        "supervisar contratistas de servicios de automatización en desarrollos SCADA"
+      ],
+      "postfiltradas": [],
+      "filas": [
+        {
+          "gold": "desarrollar, configurar y mantener pantallas HMI en Fast Tools (Yokogawa) para sistemas SCADA de producción y facilities",
+          "match_v12": "desarrollar, configurar y mantener pantallas HMI en Fast Tools",
+          "score": 0.58,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "programar y configurar gráficos de proceso, tendencias y alarmas en DeltaV Operate para plantas de tratamiento y baterías de producción",
+          "match_v12": "programar y configurar gráficos de proceso, tendencias y alarmas en DeltaV Operate",
+          "score": 0.67,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "diseñar arquitecturas de visualización SCADA integradas, asegurando consistencia entre sistemas Fast Tools y DeltaV",
+          "match_v12": "diseñar arquitecturas de visualización SCADA integradas",
+          "score": 0.45,
+          "veredicto": "parcial"
+        },
+        {
+          "gold": "implementar estándares de HMI según ISA-101 y guías de alto rendimiento (High Performance HMI)",
+          "match_v12": "implementar estándares de HMI según ISA-101 y guías de alto rendimiento",
+          "score": 0.8,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "coordinar con Operaciones para definir requerimientos de visualización y optimizar interfaces de operador",
+          "match_v12": "coordinar con Operaciones para definir requerimientos de visualización y optimizar interfaces de operador",
+          "score": 1.0,
+          "veredicto": "recuperada"
+        },
+        {
+          "gold": "elaborar documentación técnica de pantallas SCADA (especificaciones funcionales, narrativas de operación, manuales de usuario)",
+          "match_v12": "elaborar documentación técnica de pantallas SCADA",
+          "score": 0.45,
+          "veredicto": "parcial"
+        }
+      ],
+      "extras_para_revision": [
+        "supervisar contratistas de servicios de automatización en desarrollos SCADA"
+      ],
+      "sobras_tipificadas_hit": [],
+      "cubiertas": 4,
+      "parciales": 2,
+      "cobertura": 0.667,
+      "precision": 0.571
+    }
+  ]
+}
