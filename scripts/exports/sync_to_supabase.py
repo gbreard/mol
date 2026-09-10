@@ -192,6 +192,12 @@ def extraer_ofertas_validadas(
         o.scrapeado_en, o.provincia_normalizada, o.localidad_normalizada,
         o.estado_oferta, o.fecha_ultimo_visto, o.dias_publicada,
         o.categoria_permanencia,
+        -- Ciclo de vida (Fase 5). Vienen de `o`, asi que las sub-ofertas HEREDAN
+        -- el estado de su aviso padre por el JOIN de arriba: una sub-oferta es una
+        -- posicion dentro del aviso, si el aviso vive la posicion vive.
+        o.estado_ciclo, o.fecha_baja_estimada, o.fecha_baja_intervalo_desde,
+        o.fecha_baja_intervalo_hasta, o.fecha_baja_incertidumbre_dias,
+        o.grupo_oferta_id,
         o.es_republicacion, o.numero_republicacion,
         -- Multi-position lineage
         n.parent_id_oferta, n.es_suboferta,
@@ -683,6 +689,14 @@ def transform_oferta_for_supabase(oferta: Dict) -> Dict:
         'soft_skills': oferta.get('soft_skills_list'),
         # Estado
         'estado': oferta.get('estado_oferta', 'activa'),
+        # Ciclo de vida (Fase 5). `estado` (legacy) sigue viajando en paralelo
+        # como rollback hasta el cierre de observacion del switch.
+        'estado_ciclo': oferta.get('estado_ciclo'),
+        'fecha_baja_estimada': oferta.get('fecha_baja_estimada'),
+        'fecha_baja_intervalo_desde': oferta.get('fecha_baja_intervalo_desde'),
+        'fecha_baja_intervalo_hasta': oferta.get('fecha_baja_intervalo_hasta'),
+        'fecha_baja_incertidumbre_dias': oferta.get('fecha_baja_incertidumbre_dias'),
+        'grupo_oferta_id': oferta.get('grupo_oferta_id'),
         'categoria_permanencia': oferta.get('categoria_permanencia'),
         'es_republicacion': bool(oferta.get('es_republicacion')) if oferta.get('es_republicacion') is not None else False,
         'numero_republicacion': oferta.get('numero_republicacion'),

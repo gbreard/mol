@@ -880,6 +880,24 @@ El timestamp incremental se lee/guarda en `config/supabase_sync_log.json`.
 
 **Backfills (one-time, para cuando se agregan columnas nuevas):**
 
+⚠️ **El upsert parcial NO sirve para backfills** (medido 2026-09-10). PostgREST
+traduce `upsert` a `INSERT ... ON CONFLICT DO UPDATE`, así que el payload debe
+satisfacer todos los `NOT NULL` **aunque la fila ya exista**. Mandar solo
+`id_oferta` + las columnas nuevas falla con:
+
+```
+null value in column "titulo" of relation "ofertas_dashboard"
+violates not-null constraint (23502)
+```
+
+Las tres vías que sí funcionan:
+1. **Agregar las columnas al transform del sync** y correr un sync — manda la
+   fila completa, el upsert funciona. Es lo más simple si las columnas tienen
+   que viajar en el sync horario de todos modos.
+2. **Función RPC** que reciba JSONB y haga UPDATE (patrón de abajo). Requiere
+   DDL en el SQL Editor.
+3. **PATCH por fila** — funciona, pero es 1 request por fila (96K ≈ 2 h a 15 req/s).
+
 Si agregás columnas a `ofertas_dashboard` en Supabase:
 1. Crear migration SQL en `fase3_dashboard/sql/`
 2. Ejecutar el ALTER TABLE en Supabase SQL Editor
