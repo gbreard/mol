@@ -152,7 +152,8 @@ CAMPOS_SKILLS = [
 def extraer_ofertas_validadas(
     conn: sqlite3.Connection,
     since: Optional[str] = None,
-    ids: Optional[List[str]] = None
+    ids: Optional[List[str]] = None,
+    sin_filtro_vigencia: bool = False
 ) -> List[Dict[str, Any]]:
     """
     Extrae ofertas validadas con datos de scraping + NLP + matching.
@@ -167,12 +168,50 @@ def extraer_ofertas_validadas(
     """
     # Construir WHERE clause
     # v1.1: Aceptar validado_claude, validado_humano Y validado para poblar dashboard
-    where_clauses = ["m.estado_validacion IN ('validado_claude', 'validado_humano', 'validado', 'validado_claude_subfaseD', 'validado_claude_C1')"]
+    VALIDADAS = ("m.estado_validacion IN ('validado_claude', 'validado_humano', "
+                 "'validado', 'validado_claude_subfaseD', 'validado_claude_C1')")
+
+    if sin_filtro_vigencia:
+        # Comportamiento historico: todo lo validado, viva o muerta. Se usa para
+        # backfills de columnas nuevas, donde hay que alcanzar filas que el
+        # filtro de vigencia ya no toca.
+        where_clauses = [VALIDADAS]
+    else:
+        # FILTRO DE VIGENCIA (Fase 5 / B.2). El dashboard describe el mercado de
+        # HOY; mandar 97K ofertas de las cuales 76K estan muertas hace meses
+        # cuesta 19 min por corrida y no mejora ninguna pantalla.
+        #
+        #   vigentes    : activas y presuntas, validadas o no. Van SIEMPRE y
+        #                 COMPLETAS (sin `since`): su estado cambia por fuera del
+        #                 matching, asi que un incremental por validado_timestamp
+        #                 no se enteraria. Son ~15K filas, ~3 min.
+        #   confirmadas : hasta 90 dias, solo validadas. Alimentan los
+        #                 indicadores de duracion; mas viejas no aportan.
+        #   salientes   : las que ACABAN de morir. Sin esto, una oferta que pasa
+        #                 a baja_no_verificada sale del filtro y Supabase la deja
+        #                 congelada en 'activa' para siempre -> el panel
+        #                 sobre-cuenta. Se mandan una vez y caen solas a los 7
+        #                 dias. El margen tolera 6 dias de sync caido.
+        where_clauses = ["""(
+            o.estado_ciclo IN ('activa', 'presunta_baja')
+            OR (o.estado_ciclo = 'baja_confirmada'
+                AND o.fecha_baja >= date('now', '-90 day')
+                AND %s)
+            OR (o.estado_ciclo IN ('baja_no_verificada', 'baja_inferida')
+                AND COALESCE(o.fecha_ultima_verificacion, o.fecha_baja,
+                             o.fecha_ultimo_visto) >= date('now', '-7 day'))
+        )""" % VALIDADAS]
     params = []
 
-    if since:
+    if since and sin_filtro_vigencia:
         # Incluir ofertas con validado_timestamp O matching_timestamp posterior
         # (una oferta ya validada puede reprocesarse por regla nueva → matching_timestamp cambia)
+        #
+        # Solo aplica sin filtro de vigencia. Con el filtro puesto el conjunto ya
+        # es chico (~20K, 4 min) y recortarlo por `since` reintroduciria el
+        # problema que el filtro resuelve: el estado_ciclo de una oferta cambia
+        # cuando el scraper deja de verla, no cuando se la re-matchea, asi que un
+        # incremental por timestamp de matching nunca propagaria la transicion.
         where_clauses.append("(m.validado_timestamp >= ? OR m.matching_timestamp >= ?)")
         params.extend([since, since])
 
@@ -2558,6 +2597,11 @@ Ejemplos:
     parser.add_argument('--dry-run', action='store_true', help='Preview sin escribir')
     parser.add_argument('--stats', action='store_true', help='Mostrar estadísticas')
     parser.add_argument('--full', action='store_true', help='Sync completo (todas las validadas)')
+    parser.add_argument('--sin-filtro-vigencia', action='store_true',
+                        help='Manda TODAS las validadas, vivas o muertas (~97K, ~19 min). '
+                             'Sin esto rige el filtro de vigencia de la Fase 5: vigentes + '
+                             'confirmadas de 90 dias + transiciones recientes (~20K, ~4 min). '
+                             'Usar solo para backfills de columnas nuevas.')
     parser.add_argument('--catalogs-only', action='store_true', help='Solo sincronizar catálogos ESCO')
     parser.add_argument('--skip-estado', action='store_true',
                         help='No recalcula sistema_estado. Sus ~9 COUNT/NOT EXISTS sobre las '
@@ -2612,7 +2656,14 @@ Ejemplos:
 
         # Extraer datos
         logger.info("Extrayendo ofertas validadas...")
-        ofertas = extraer_ofertas_validadas(conn, since=args.since, ids=offer_ids)
+        # Con --ids el filtro de vigencia no aplica: si alguien nombra una oferta,
+        # la quiere sincronizada aunque este muerta.
+        sin_vig = args.sin_filtro_vigencia or bool(offer_ids)
+        if sin_vig and not offer_ids:
+            logger.warning("FILTRO DE VIGENCIA DESACTIVADO (--sin-filtro-vigencia): "
+                           "se mandan todas las validadas, tambien las muertas")
+        ofertas = extraer_ofertas_validadas(conn, since=args.since, ids=offer_ids,
+                                            sin_filtro_vigencia=sin_vig)
         logger.info(f"  Encontradas: {len(ofertas)} ofertas")
 
         n_ofertas = n_skills = n_ocup = n_esco = n_issues = 0

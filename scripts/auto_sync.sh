@@ -14,6 +14,18 @@ cd /mnt/d/OEDE/Webscrapping
 TIMESTAMP=$(date +%Y-%m-%d_%H:%M:%S)
 echo "=== Auto-sync: $TIMESTAMP ==="
 
+# Guarda de concurrencia. El sync corre cada hora y un --full manual tarda ~19
+# min; sin lock, el cron de las :00 se superpone con una corrida en curso y las
+# dos hacen upsert sobre ofertas_dashboard y pisan supabase_sync_log.json (el
+# watermark del incremental). El flock se libera solo si el proceso muere.
+LOCK=/tmp/mol_auto_sync.lock
+exec 9>"$LOCK"
+if ! flock -n 9; then
+    echo "Ya hay un sync en curso (lock $LOCK). Salteando esta corrida."
+    echo "=== Fin: $(date +%H:%M:%S) ==="
+    exit 0
+fi
+
 # Paso 1: Sync VPS → Local
 # La salida se CAPTURA para poder decidir el early-exit con ESTA corrida.
 echo "[1/3] Sync VPS → Local..."
