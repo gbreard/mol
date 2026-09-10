@@ -1,6 +1,6 @@
 # FRENTE N — Para Cyn: pregunta de granularidad + los 4 casos a revisar
 
-Dos cosas para tu ojo antes de habilitar la re-extracción. **Sin pre-juicio: son disensos de criterio, no errores.** Vos decidís.
+Tres cosas para tu ojo antes de habilitar la re-extracción. **Sin pre-juicio: son disensos de criterio, no errores.** Vos decidís.
 
 ---
 
@@ -157,3 +157,28 @@ Quedaron cerca del umbral por granularidad/fidelidad (no por ceguera). Por caso:
 **El disenso:** v12 fusionó/dividió distinto las unidades SCADA (desarrollar/configurar/mantener; programar/configurar) respecto de tu marca; contenido técnico cubierto.
 
 > ¿Veredicto? ☐ v12 OK (granularidad aceptable) · ☐ corregir (aclarar): ____________________
+
+---
+
+## 3. La pregunta de las nominalizaciones escuetas del oficio
+
+En la muestra fresca del gate 2 aparecieron 3 avisos donde el sistema nuevo (v12) devolvió **cero tareas**, pero el sistema viejo (v11) sí tenía las tareas del oficio. Los tres comparten forma: **el oficio se describe con nominalizaciones cortas, sin verbo** («Manejo de chasis», «Instalación de tendidos eléctricos», «Reposición de mercadería»). La regla estricta de atribución de v12 —la misma que logra descartar los requisitos disfrazados de tarea— parece estar comiéndose también estas nominalizaciones que **sí son la tarea nuclear** del puesto.
+
+### Ejemplos (texto real del aviso)
+
+**Chofer de camiones (id 1117212619, bumeran)** — el aviso lista: «Manejo de Chasis de 8 pallets; Manejo de Chasis de 12 pallets; Manejo de Balancines y/o Semis; Control de la mercadería despachada y recibida; Manejo de Remitos».
+- v12 extrajo: **(ninguna)**
+
+**Electricista/Montador/Herrero (id 2184455, zonajobs)** — el aviso lista por puesto: «Instalación de tendidos eléctricos en automotores; Laminación y pulido de PRFV; Fabricación y reparación de piezas en fibra…».
+- v12 extrajo: **(ninguna)**
+
+**Atención de mostrador (id 7853619060, portalempleo)** — «Tareas principales: tareas de depósito, embalaje, carga y descarga de mercadería. Reposición de mercadería, atención al público, limpieza…».
+- v12 extrajo: **(ninguna)**
+
+**La pregunta:** cuando el oficio viene como nominalización escueta sin verbo («Manejo de X», «Instalación de Y», «Reposición de Z»), ¿debe extraerse como tarea (manejar X, instalar Y, reponer Z)? El riesgo del otro lado: «Manejo de Excel», «Manejo de AutoCAD» son requisitos, no tareas (los marcaste así en los casos 11, 15, 26). ¿Cómo distinguís "manejo de [vehículo/herramienta del oficio]" (tarea) de "manejo de [software/skill]" (requisito)?
+
+> Tu criterio: _____________________________________________________________________
+
+**Caso-frontera (id 8802322877, "Ejecutivo de ventas en calle"):** el aviso arranca con «…buscamos incorporar un/a Ejecutivo de ventas en calle para desarrollar y potenciar nuestra cartera de clientes…». ¿«desarrollar y potenciar la cartera», dicho en el párrafo de presentación, es una tarea atribuida o es pitch? v12 lo tomó como pitch y devolvió cero.
+
+> Tu criterio: ☐ es tarea · ☐ es pitch, no cuenta · ☐ depende: __________________
