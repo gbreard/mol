@@ -61,11 +61,15 @@ GOLD = {
         "tareas de contabilidad general",
         "tareas generales de oficina",
     ],
-    '1118316198': [  # C6 FALLA
+    '1118316198': [  # C6 — re-adjudicado v12.3 (hoja 2 C6). Verificado contra el aviso:
+        # las 3 extra (medición/CRM/IA) SÍ están en el bloque "Sus tareas fundamentales serán:" → entran.
         "planificar, ejecutar y optimizar la estrategia de performance digital",
         "impulsar la adquisición de usuarios",
         "monitorear y analizar indicadores clave como CPA, ROAS, conversión, retención y calidad de tráfico",
         "identificar oportunidades de mejora a partir del análisis de datos y comportamiento de usuarios",
+        "implementar y validar herramientas de medición, tracking y atribución digital",
+        "gestionar acciones de CRM, segmentación y automatización para potenciar la retención",
+        "utilizar herramientas de IA para optimizar procesos, generar insights y mejorar el rendimiento de las campañas",
     ],
     '2176705': [  # C7 FALLA
         "diseñar, desarrollar y entregar soluciones de software confiables y de alta calidad",
@@ -86,7 +90,8 @@ GOLD = {
         "realizar prospección activa presencial y/o digital de nuevos clientes individuales y corporativos, gestionando el proceso completo de venta: presupuestación por segmento, cierre y documentación para el alta",
         "recibir y gestionar leads provenientes de distintos canales",
         "registrar y realizar seguimiento de la gestión comercial en CRM",
-        "analizar la competencia y reportar acciones del mercado",
+        "analizar la competencia",           # C12 v12.3: separadas (autonomía funcional, hoja 1)
+        "reportar acciones del mercado",
     ],
     '5273316732': [  # C13 FALLA
         "ofrecer productos bancarios",
@@ -149,7 +154,39 @@ GOLD = {
         "implementar estándares de HMI según ISA-101 y guías de alto rendimiento (High Performance HMI)",
         "coordinar con Operaciones para definir requerimientos de visualización y optimizar interfaces de operador",
         "elaborar documentación técnica de pantallas SCADA (especificaciones funcionales, narrativas de operación, manuales de usuario)",
+        "supervisar contratistas de servicios de automatización en desarrollos SCADA",  # C28 v12.3: verificado en el texto → entra
     ],
+    # ── 4 casos NUEVOS de la hoja 3 (listas escuetas sin verbo) — veredicto de Cyn ──
+    '1117212619': [  # Chofer de camiones (variantes unidas, hoja 3 D3)
+        "conducir chasis (de 8 y 12 pallets)",
+        "conducir balancines y/o semis",
+        "controlar la mercadería despachada y recibida",
+        "manejar remitos",
+    ],
+    '2184455': [  # Electricista/Montador/Herrero — todas menos "manejo de herramientas"
+        "instalar tendidos eléctricos en automotores",
+        "laminar y pulir PRFV",
+        "fabricar y reparar piezas en fibra de vidrio",
+        "armar estructuras metálicas",
+    ],
+    '7853619060': [  # Atención de mostrador — las 5
+        "reponer mercadería",
+        "atender al público",
+        "realizar tareas de depósito",
+        "embalar",
+        "cargar y descargar mercadería",
+    ],
+    '8802322877': [  # Ejecutivo de ventas — "desarrollar y potenciar cartera" (una sola)
+        "desarrollar y potenciar la cartera de clientes",
+    ],
+}
+
+# Casos nuevos (no están en la hoja "28 casos" del Excel original): id → (portal, veredicto)
+NUEVOS_HOJA3 = {
+    '1117212619': ('bumeran', 'TAREAS (hoja 3)'),
+    '2184455': ('zonajobs', 'TAREAS (hoja 3)'),
+    '7853619060': ('portalempleo', 'TAREAS (hoja 3)'),
+    '8802322877': ('computrabajo', 'TAREAS (hoja 3, 1 sola)'),
 }
 
 # Sobras TIPIFICADAS que Cyn marcó explícitamente (para el chequeo "cero sobras").
@@ -188,10 +225,22 @@ def main():
         })
     faltan = [c['id_oferta'] for c in casos if c['id_oferta'] not in GOLD]
     assert not faltan, f'IDs sin gold encodeado: {faltan}'
+    # ── anexar los 4 casos nuevos de la hoja 3 (cuerpo completo desde BD) ──
+    import sqlite3
+    con = sqlite3.connect(f"file:{ROOT/'database/bumeran_scraping.db'}?mode=ro", uri=True)
+    ints = [int(x) for x in NUEVOS_HOJA3]
+    ph = ','.join('?' * len(ints))
+    cuerpos = {str(r[0]): r[1] for r in con.execute(
+        f"SELECT id_oferta, COALESCE(descripcion_utf8,descripcion) FROM ofertas WHERE id_oferta IN ({ph})", ints)}
+    n0 = len(casos)
+    for i, (oid, (portal, ver)) in enumerate(NUEVOS_HOJA3.items(), 1):
+        casos.append({'n': n0 + i, 'id_oferta': oid, 'portal': portal, 'titulo': None,
+                      'cuerpo': cuerpos.get(oid), 'sistema_v11_extrajo': None,
+                      'veredicto_cyn': ver, 'gold_tareas': GOLD[oid], 'sobras_tipificadas': []})
     doc = {
-        'version': '1.0',
-        'fuente': 'validacion_tareas_respuestas_2026-08-26.xlsx (28 casos, Cyn)',
-        'nota': 'gold_tareas a granularidad de unidad funcional (método Cyn). [] = vacío válido.',
+        'version': '1.1-v12.3',
+        'fuente': 'validacion_tareas_respuestas_2026-08-26.xlsx (28) + N_criterios_respuestas_2026-08-26.xlsx (hoja 3: 4 nuevos)',
+        'nota': 'gold re-adjudicado con los 3 criterios de Cyn (v12.3). granularidad = autonomía funcional. [] = vacío válido.',
         'n_casos': len(casos),
         'n_ok': sum(1 for c in casos if c['veredicto_cyn'].upper().startswith('OK')),
         'casos': casos,
