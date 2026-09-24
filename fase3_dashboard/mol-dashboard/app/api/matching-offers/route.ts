@@ -55,9 +55,15 @@ export async function GET(request: NextRequest) {
     // Query ofertas filtradas por ISCO codes
     let query = supabase
       .from('ofertas_dashboard')
-      .select('id_oferta, titulo, empresa, provincia, localidad, modalidad, fecha_publicacion_iso, url_oferta, isco_code, esco_occupation_label, skills_tecnicas_list, estado_oferta', { count: 'exact' })
+      // estado_ciclo: vigencia real de la oferta (Fase 5). Antes decia
+      // `estado_oferta`, columna que NO existe en ofertas_dashboard: PostgREST
+      // devolvia 42703 y este endpoint fallaba en TODA llamada. El nombre local
+      // es estado_oferta y viaja al dashboard como `estado`, pero `estado` es el
+      // legacy roto (daba de baja toda oferta no vista en la ultima corrida, y
+      // el scraping es rotativo): marcaba como baja a las ~7.100 vivas.
+      .select('id_oferta, titulo, empresa, provincia, localidad, modalidad, fecha_publicacion_iso, url_oferta, isco_code, esco_occupation_label, skills_tecnicas_list, estado_ciclo', { count: 'exact' })
       .in('isco_code', iscoCodes)
-      .eq('estado_oferta', 'activa')
+      .eq('estado_ciclo', 'activa')
       .order('fecha_publicacion_iso', { ascending: false })
 
     if (provincia) {

@@ -152,7 +152,8 @@ CAMPOS_SKILLS = [
 def extraer_ofertas_validadas(
     conn: sqlite3.Connection,
     since: Optional[str] = None,
-    ids: Optional[List[str]] = None
+    ids: Optional[List[str]] = None,
+    sin_filtro_vigencia: bool = False
 ) -> List[Dict[str, Any]]:
     """
     Extrae ofertas validadas con datos de scraping + NLP + matching.
@@ -167,12 +168,50 @@ def extraer_ofertas_validadas(
     """
     # Construir WHERE clause
     # v1.1: Aceptar validado_claude, validado_humano Y validado para poblar dashboard
-    where_clauses = ["m.estado_validacion IN ('validado_claude', 'validado_humano', 'validado', 'validado_claude_subfaseD', 'validado_claude_C1')"]
+    VALIDADAS = ("m.estado_validacion IN ('validado_claude', 'validado_humano', "
+                 "'validado', 'validado_claude_subfaseD', 'validado_claude_C1')")
+
+    if sin_filtro_vigencia:
+        # Comportamiento historico: todo lo validado, viva o muerta. Se usa para
+        # backfills de columnas nuevas, donde hay que alcanzar filas que el
+        # filtro de vigencia ya no toca.
+        where_clauses = [VALIDADAS]
+    else:
+        # FILTRO DE VIGENCIA (Fase 5 / B.2). El dashboard describe el mercado de
+        # HOY; mandar 97K ofertas de las cuales 76K estan muertas hace meses
+        # cuesta 19 min por corrida y no mejora ninguna pantalla.
+        #
+        #   vigentes    : activas y presuntas, validadas o no. Van SIEMPRE y
+        #                 COMPLETAS (sin `since`): su estado cambia por fuera del
+        #                 matching, asi que un incremental por validado_timestamp
+        #                 no se enteraria. Son ~15K filas, ~3 min.
+        #   confirmadas : hasta 90 dias, solo validadas. Alimentan los
+        #                 indicadores de duracion; mas viejas no aportan.
+        #   salientes   : las que ACABAN de morir. Sin esto, una oferta que pasa
+        #                 a baja_no_verificada sale del filtro y Supabase la deja
+        #                 congelada en 'activa' para siempre -> el panel
+        #                 sobre-cuenta. Se mandan una vez y caen solas a los 7
+        #                 dias. El margen tolera 6 dias de sync caido.
+        where_clauses = ["""(
+            o.estado_ciclo IN ('activa', 'presunta_baja')
+            OR (o.estado_ciclo = 'baja_confirmada'
+                AND o.fecha_baja >= date('now', '-90 day')
+                AND %s)
+            OR (o.estado_ciclo IN ('baja_no_verificada', 'baja_inferida')
+                AND COALESCE(o.fecha_ultima_verificacion, o.fecha_baja,
+                             o.fecha_ultimo_visto) >= date('now', '-7 day'))
+        )""" % VALIDADAS]
     params = []
 
-    if since:
+    if since and sin_filtro_vigencia:
         # Incluir ofertas con validado_timestamp O matching_timestamp posterior
         # (una oferta ya validada puede reprocesarse por regla nueva → matching_timestamp cambia)
+        #
+        # Solo aplica sin filtro de vigencia. Con el filtro puesto el conjunto ya
+        # es chico (~20K, 4 min) y recortarlo por `since` reintroduciria el
+        # problema que el filtro resuelve: el estado_ciclo de una oferta cambia
+        # cuando el scraper deja de verla, no cuando se la re-matchea, asi que un
+        # incremental por timestamp de matching nunca propagaria la transicion.
         where_clauses.append("(m.validado_timestamp >= ? OR m.matching_timestamp >= ?)")
         params.extend([since, since])
 
@@ -192,6 +231,12 @@ def extraer_ofertas_validadas(
         o.scrapeado_en, o.provincia_normalizada, o.localidad_normalizada,
         o.estado_oferta, o.fecha_ultimo_visto, o.dias_publicada,
         o.categoria_permanencia,
+        -- Ciclo de vida (Fase 5). Vienen de `o`, asi que las sub-ofertas HEREDAN
+        -- el estado de su aviso padre por el JOIN de arriba: una sub-oferta es una
+        -- posicion dentro del aviso, si el aviso vive la posicion vive.
+        o.estado_ciclo, o.fecha_baja_estimada, o.fecha_baja_intervalo_desde,
+        o.fecha_baja_intervalo_hasta, o.fecha_baja_incertidumbre_dias,
+        o.grupo_oferta_id,
         o.es_republicacion, o.numero_republicacion,
         -- Multi-position lineage
         n.parent_id_oferta, n.es_suboferta,
@@ -683,6 +728,14 @@ def transform_oferta_for_supabase(oferta: Dict) -> Dict:
         'soft_skills': oferta.get('soft_skills_list'),
         # Estado
         'estado': oferta.get('estado_oferta', 'activa'),
+        # Ciclo de vida (Fase 5). `estado` (legacy) sigue viajando en paralelo
+        # como rollback hasta el cierre de observacion del switch.
+        'estado_ciclo': oferta.get('estado_ciclo'),
+        'fecha_baja_estimada': oferta.get('fecha_baja_estimada'),
+        'fecha_baja_intervalo_desde': oferta.get('fecha_baja_intervalo_desde'),
+        'fecha_baja_intervalo_hasta': oferta.get('fecha_baja_intervalo_hasta'),
+        'fecha_baja_incertidumbre_dias': oferta.get('fecha_baja_incertidumbre_dias'),
+        'grupo_oferta_id': oferta.get('grupo_oferta_id'),
         'categoria_permanencia': oferta.get('categoria_permanencia'),
         'es_republicacion': bool(oferta.get('es_republicacion')) if oferta.get('es_republicacion') is not None else False,
         'numero_republicacion': oferta.get('numero_republicacion'),
@@ -1273,6 +1326,21 @@ TABLE_SISTEMA_ESTADO = 'sistema_estado'
 
 
 def calcular_estado_sistema(conn: sqlite3.Connection) -> Dict[str, Any]:
+    # La funcion accede a las filas por nombre (row['total']), asi que depende de
+    # que el llamador haya seteado row_factory. Si no, revienta con
+    # "TypeError: tuple indices must be integers". Se asegura aca en vez de
+    # confiar en el contrato implicito.
+    # OJO con los NOT EXISTS de abajo: ofertas.id_oferta es INTEGER y
+    # ofertas_nlp/ofertas_esco_matching.id_oferta son TEXT. Sin CAST, SQLite no
+    # puede usar el indice y degrada a SCAN por cada fila (118K x 98K): la funcion
+    # no terminaba en 15 min. Con CAST el plan pasa de
+    #   SCAN n USING COVERING INDEX idx_ofertas_nlp_id
+    # a
+    #   SEARCH n USING COVERING INDEX sqlite_autoindex_ofertas_nlp_1 (id_oferta=?)
+    # Los indices ya existian (17/27/21): el problema era que la query no podia
+    # usarlos. Fix de fondo (unificar el tipo) en issue propio.
+    if conn.row_factory is not sqlite3.Row:
+        conn.row_factory = sqlite3.Row
     """
     Calcula métricas del estado actual del sistema desde SQLite.
     Estas métricas alimentan /admin/scraping y /admin/arquitectura.
@@ -1327,7 +1395,10 @@ def calcular_estado_sistema(conn: sqlite3.Connection) -> Dict[str, Any]:
     # Sin NLP
     cursor = conn.execute("""
         SELECT COUNT(*) FROM ofertas o
-        WHERE NOT EXISTS (SELECT 1 FROM ofertas_nlp n WHERE n.id_oferta = o.id_oferta)
+        WHERE NOT EXISTS (
+            SELECT 1 FROM ofertas_nlp n
+            WHERE n.id_oferta = CAST(o.id_oferta AS TEXT)
+        )
     """)
     estado['fase2_sin_nlp'] = cursor.fetchone()[0] or 0
 
@@ -1338,7 +1409,10 @@ def calcular_estado_sistema(conn: sqlite3.Connection) -> Dict[str, Any]:
     # Pendientes matching
     cursor = conn.execute("""
         SELECT COUNT(*) FROM ofertas_nlp n
-        WHERE NOT EXISTS (SELECT 1 FROM ofertas_esco_matching m WHERE m.id_oferta = n.id_oferta)
+        WHERE NOT EXISTS (
+            SELECT 1 FROM ofertas_esco_matching m
+            WHERE m.id_oferta = n.id_oferta
+        )
     """)
     estado['fase2_pendientes_matching'] = cursor.fetchone()[0] or 0
 
@@ -2523,7 +2597,26 @@ Ejemplos:
     parser.add_argument('--dry-run', action='store_true', help='Preview sin escribir')
     parser.add_argument('--stats', action='store_true', help='Mostrar estadísticas')
     parser.add_argument('--full', action='store_true', help='Sync completo (todas las validadas)')
+    parser.add_argument('--sin-filtro-vigencia', action='store_true',
+                        help='Manda TODAS las validadas, vivas o muertas (~97K, ~19 min). '
+                             'Sin esto rige el filtro de vigencia de la Fase 5: vigentes + '
+                             'confirmadas de 90 dias + transiciones recientes (~20K, ~4 min). '
+                             'Usar solo para backfills de columnas nuevas.')
     parser.add_argument('--catalogs-only', action='store_true', help='Solo sincronizar catálogos ESCO')
+    parser.add_argument('--skip-estado', action='store_true',
+                        help='No recalcula sistema_estado. Sus ~9 COUNT/NOT EXISTS sobre las '
+                             'tablas grandes no terminaron en 15 min (medido 2026-09-07). '
+                             'Pendiente #1 de B.0: sin esto el panel sigue con datos viejos.')
+    parser.add_argument('--skip-issues', action='store_true',
+                        help='No sincroniza validation_errors como issues. La tabla `issues` es '
+                             'la de FEEDBACK HUMANO (Cyn/Diego) y ya tiene 501K registros '
+                             'automaticos; el sync agregaria 257K mas. Ver el issue: '
+                             'issues contaminada por el sync.')
+    parser.add_argument('--skip-skills', action='store_true',
+                        help='Omite ofertas_skills y esco_skills; sincroniza solo ofertas + '
+                             'ocupaciones. Para cuando lo que hay que descongelar es el panel: '
+                             'skills son 2,8M filas con delete+insert por oferta y dominan la '
+                             'corrida. Ver pendiente: rediseño del sync de skills.')
     parser.add_argument('--regenerate-profiles', action='store_true', help='Regenerar perfiles MOL vs ESCO después del sync')
     parser.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
 
@@ -2563,7 +2656,14 @@ Ejemplos:
 
         # Extraer datos
         logger.info("Extrayendo ofertas validadas...")
-        ofertas = extraer_ofertas_validadas(conn, since=args.since, ids=offer_ids)
+        # Con --ids el filtro de vigencia no aplica: si alguien nombra una oferta,
+        # la quiere sincronizada aunque este muerta.
+        sin_vig = args.sin_filtro_vigencia or bool(offer_ids)
+        if sin_vig and not offer_ids:
+            logger.warning("FILTRO DE VIGENCIA DESACTIVADO (--sin-filtro-vigencia): "
+                           "se mandan todas las validadas, tambien las muertas")
+        ofertas = extraer_ofertas_validadas(conn, since=args.since, ids=offer_ids,
+                                            sin_filtro_vigencia=sin_vig)
         logger.info(f"  Encontradas: {len(ofertas)} ofertas")
 
         n_ofertas = n_skills = n_ocup = n_esco = n_issues = 0
@@ -2574,17 +2674,28 @@ Ejemplos:
             # IDs para queries relacionadas
             ids_para_sync = [o['id_oferta'] for o in ofertas]
 
-            logger.info("Extrayendo skills detalle...")
-            skills = extraer_skills_detalle(conn, ids_para_sync)
-            logger.info(f"  Encontradas: {len(skills)} skills")
+            # El guard cubre tambien la EXTRACCION, no solo el upsert: extraer las
+            # 2,8M de skills detalle tarda ~2 min y extraer_esco_skills_usadas()
+            # se colgo mas de 1 h en la corrida del 2026-09-07. Pagar eso para
+            # despues descartarlo no tiene sentido. Ver el issue del rediseño.
+            if args.skip_skills:
+                logger.warning("SKILLS OMITIDAS (--skip-skills): no se extraen ni se suben "
+                               "skills detalle ni skills ESCO")
+                skills = []
+                esco_skills = []
+            else:
+                logger.info("Extrayendo skills detalle...")
+                skills = extraer_skills_detalle(conn, ids_para_sync)
+                logger.info(f"  Encontradas: {len(skills)} skills")
 
             logger.info("Extrayendo ocupaciones ESCO usadas...")
             ocupaciones = extraer_esco_ocupaciones_usadas(conn, ids_para_sync)
             logger.info(f"  Encontradas: {len(ocupaciones)} ocupaciones")
 
-            logger.info("Extrayendo skills ESCO usadas...")
-            esco_skills = extraer_esco_skills_usadas(conn, ids_para_sync)
-            logger.info(f"  Encontradas: {len(esco_skills)} skills ESCO")
+            if not args.skip_skills:
+                logger.info("Extrayendo skills ESCO usadas...")
+                esco_skills = extraer_esco_skills_usadas(conn, ids_para_sync)
+                logger.info(f"  Encontradas: {len(esco_skills)} skills ESCO")
 
             # Upload
             print("\n" + "="*60)
@@ -2594,21 +2705,41 @@ Ejemplos:
             logger.info("Subiendo ofertas...")
             n_ofertas = upsert_ofertas(client, ofertas, dry_run=args.dry_run)
 
-            logger.info("Subiendo skills detalle...")
-            n_skills = upsert_skills(client, skills, dry_run=args.dry_run)
+            if args.skip_skills:
+                logger.warning(f"SKILLS OMITIDAS (--skip-skills): {len(skills)} skills detalle NO se suben")
+                n_skills = 0
+            else:
+                logger.info("Subiendo skills detalle...")
+                n_skills = upsert_skills(client, skills, dry_run=args.dry_run)
 
             logger.info("Subiendo ocupaciones ESCO...")
             n_ocup = upsert_esco_ocupaciones(client, ocupaciones, dry_run=args.dry_run)
 
-            logger.info("Subiendo skills ESCO...")
-            n_esco = upsert_esco_skills(client, esco_skills, dry_run=args.dry_run)
+            if args.skip_skills:
+                logger.warning(f"SKILLS OMITIDAS (--skip-skills): {len(esco_skills)} skills ESCO NO se suben")
+                n_esco = 0
+            else:
+                logger.info("Subiendo skills ESCO...")
+                n_esco = upsert_esco_skills(client, esco_skills, dry_run=args.dry_run)
 
-            logger.info("Sincronizando errores de validación...")
-            n_issues = sync_validation_errors_to_issues(client, conn, ids_para_sync, dry_run=args.dry_run)
+            if args.skip_issues:
+                # El guard cubre extraccion Y subida: sync_validation_errors_to_issues()
+                # hace las dos cosas adentro (extraer_errores_pendientes + upsert),
+                # y la extraccion sola sobre validation_errors ya es cara.
+                logger.warning("ISSUES OMITIDOS (--skip-issues): no se extraen ni se suben "
+                               "validation_errors como issues")
+                n_issues = 0
+            else:
+                logger.info("Sincronizando errores de validación...")
+                n_issues = sync_validation_errors_to_issues(client, conn, ids_para_sync, dry_run=args.dry_run)
 
         # Indicadores calculados — siempre se recalculan (usan TODAS las ofertas validadas)
-        logger.info("Sincronizando estado del sistema...")
-        sync_sistema_estado(client, conn, dry_run=args.dry_run)
+        if args.skip_estado:
+            logger.warning("ESTADO OMITIDO (--skip-estado): sistema_estado NO se recalcula "
+                           "(sus COUNTs no terminan; ver pendiente #1 de B.0)")
+        else:
+            logger.info("Sincronizando estado del sistema...")
+            sync_sistema_estado(client, conn, dry_run=args.dry_run)
 
         # Actualizar scraping_live_stats con datos locales (Indeed corre local, no VPS)
         logger.info("Actualizando scraping_live_stats desde BD local...")

@@ -50,8 +50,8 @@ class TransicionesCicloVida:
         self.portales = cfg["portales"]
         self.factor = cfg.get("ventana_verificable_factor", 2)
         self.conn = None
-        self.stats = {"reaparecidas": 0, "a_presunta": 0, "pe_confirmadas": 0,
-                      "divergencia": 0, "transiciones": 0}
+        self.stats = {"inicializadas": 0, "reaparecidas": 0, "a_presunta": 0,
+                      "pe_confirmadas": 0, "divergencia": 0, "transiciones": 0}
 
     def connect(self):
         self.conn = sqlite3.connect(self.db_path, timeout=120)
@@ -78,6 +78,22 @@ class TransicionesCicloVida:
             self.conn.execute(
                 "INSERT INTO transiciones_ciclo_vida (id_oferta,portal,estado_desde,estado_hacia,motivo,fecha) VALUES (?,?,?,?,?,?)",
                 (ido, portal, desde, hacia, motivo, ts))
+
+    # ---- 0) inicialización de ofertas nuevas (estado_ciclo NULL → activa) ----
+    def _inicializar_nuevas(self, ts, dry):
+        """El recómputo (025) clasificó el histórico UNA vez; las transiciones
+        gestionan estados existentes. Nada inicializaba lo que ENTRA nuevo → una
+        oferta recién importada quedaba con estado_ciclo NULL, invisible a los
+        consumidores de Fase 5 (que filtran por estado_ciclo). Una oferta que
+        existe en el corpus se inicializa 'activa'; el umbral (paso 2) la envejece
+        a presunta_baja después si corresponde. Escribe SOLO estado_ciclo (sombra)."""
+        rows = self.conn.execute(
+            "SELECT id_oferta, portal FROM ofertas WHERE estado_ciclo IS NULL").fetchall()
+        for ido, portal in rows:
+            self.stats["inicializadas"] += 1
+            if not dry:
+                self.conn.execute("UPDATE ofertas SET estado_ciclo='activa' WHERE id_oferta=?", (ido,))
+            self._log_transicion(ido, portal, None, "activa", "alta_nueva", ts, dry)
 
     # ---- 1) reaparición → activa (con reset) ----
     def _reaparicion(self, ts, desde_corrida, dry):
@@ -156,6 +172,7 @@ class TransicionesCicloVida:
         # "visto en corrida" = fecha_ultimo_visto desde el último run del motor (o desde hoy si primer run)
         desde_corrida = last or ref.isoformat()
 
+        self._inicializar_nuevas(ts, dry_run)   # nuevas (NULL) → activa ANTES del umbral
         self._reaparicion(ts, desde_corrida, dry_run)
         self._a_presunta(ref, ts, dry_run)
         self._pe_confirmadas(ts, dry_run)
