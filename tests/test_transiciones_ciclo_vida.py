@@ -138,3 +138,34 @@ def test_legacy_nunca_se_toca(motor):
     n = c.execute("SELECT COUNT(*) FROM divergencia_ciclo_log").fetchone()[0]
     c.close()
     assert n == 1
+
+
+def test_inicializa_oferta_nueva_null(motor):
+    m, db = motor
+    # oferta nueva recién importada: estado_ciclo NULL, vista hoy → debe quedar activa
+    ins(db, id_oferta=10, portal="bumeran", estado_oferta="activa", fecha_ultimo_visto=hoy_menos(0))
+    m.ejecutar(dry_run=False)
+    assert estado(db, 10)[0] == "activa"
+    c = sqlite3.connect(db)
+    t = c.execute("SELECT estado_desde,estado_hacia,motivo FROM transiciones_ciclo_vida WHERE id_oferta=10").fetchone()
+    c.close()
+    assert t == (None, "activa", "alta_nueva")
+
+
+def test_inicializa_nueva_vieja_termina_presunta(motor):
+    m, db = motor
+    # NULL pero vieja (50d, bumeran umbral 42): init→activa y el umbral la pasa a presunta en la misma corrida
+    ins(db, id_oferta=11, portal="bumeran", estado_oferta="baja", fecha_ultimo_visto=hoy_menos(50))
+    m.ejecutar(dry_run=False)
+    assert estado(db, 11)[0] == "presunta_baja"
+
+
+def test_no_quedan_null_tras_ejecutar(motor):
+    m, db = motor
+    ins(db, id_oferta=12, portal="zonajobs", estado_oferta="activa", fecha_ultimo_visto=hoy_menos(1))
+    ins(db, id_oferta=13, portal="computrabajo", estado_oferta="baja", fecha_ultimo_visto=hoy_menos(2))
+    m.ejecutar(dry_run=False)
+    c = sqlite3.connect(db)
+    nul = c.execute("SELECT COUNT(*) FROM ofertas WHERE estado_ciclo IS NULL").fetchone()[0]
+    c.close()
+    assert nul == 0
