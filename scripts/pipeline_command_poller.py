@@ -102,11 +102,13 @@ COMMAND_MAP = {
     },
     'sync_supabase': {
         'script': 'scripts/exports/sync_to_supabase.py',
-        'build_args': lambda p: [],
+        # --skip-issues (D1, issue 2026-09-24): emisor de issues auto pausado
+        # hasta el rediseño (2026-09-24_rediseno_emisor_issues_auto.md).
+        'build_args': lambda p: ['--skip-issues'],
     },
     'sync_supabase_full': {
         'script': 'scripts/exports/sync_to_supabase.py',
-        'build_args': lambda p: ['--full'],
+        'build_args': lambda p: ['--full', '--skip-issues'],
     },
     'generate_training': {
         'script': 'scripts/exports/generate_training_pairs.py',

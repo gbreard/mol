@@ -220,11 +220,9 @@ export default function MetricasPage() {
 
   useEffect(() => { loadData(); }, [loadData]);
 
-  // M-01: Auto-refresh cada 30 segundos
-  useEffect(() => {
-    const interval = setInterval(() => loadData(), 30000);
-    return () => clearInterval(interval);
-  }, [loadData]);
+  // Auto-refresh removido (issue 2026-09-24): recargaba las RPCs pesadas
+  // (get_pipeline_status + reconciliar_sistemas) cada 30s sobre el free tier con
+  // un solo usuario y datos que cambian cada horas. Usar el botón "Actualizar".
 
   if (loading) {
     return (
