@@ -157,13 +157,8 @@ export default function AdminArchitecturePage() {
     loadMetrics();
   }, [loadMetrics]);
 
-  // Auto-refresh every 30 seconds when on metrics tab
-  useEffect(() => {
-    if (activeTab === 'metrics' || activeTab === 'pipeline') {
-      const interval = setInterval(() => loadMetrics(), 30000);
-      return () => clearInterval(interval);
-    }
-  }, [activeTab, loadMetrics]);
+  // Auto-refresh removido (issue 2026-09-24): mismo patrón que admin/metricas —
+  // polling de 30s de métricas del pipeline sobre free tier. Usar el botón manual.
 
   if (isLoading) {
     return (

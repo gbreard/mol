@@ -62,6 +62,9 @@ fi
 
 # Paso 3: Sync Local → Supabase (ofertas procesadas) — solo si hubo novedades.
 echo "[3/3] Sync Local → Supabase..."
-python3 scripts/exports/sync_to_supabase.py 2>&1 | tail -5
+# --skip-issues (D1, issue 2026-09-24): el emisor de issues auto-validator infla
+# la tabla (dedup rota, ver 2026-09-24_rediseno_emisor_issues_auto.md). Pausado
+# hasta el rediseño con clave natural + upsert server-side.
+python3 scripts/exports/sync_to_supabase.py --skip-issues 2>&1 | tail -5
 
 echo "=== Fin: $(date +%H:%M:%S) ==="

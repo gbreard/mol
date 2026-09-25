@@ -61,6 +61,7 @@ done
 # Al terminar, sync a Supabase
 echo ""
 echo "$(date '+%H:%M:%S') — Sincronizando a Supabase..."
-python3 scripts/exports/sync_to_supabase.py
+# --skip-issues (D1, issue 2026-09-24): ver 2026-09-24_rediseno_emisor_issues_auto.md
+python3 scripts/exports/sync_to_supabase.py --skip-issues
 
 echo "$(date '+%H:%M:%S') — Todo listo."
