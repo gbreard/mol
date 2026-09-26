@@ -19,9 +19,13 @@ producción folddea estas reglas en el prompt de 20 campos — fuera de este enc
 """
 
 # El prompt. {cuerpo} se reemplaza con el cuerpo YA limpiado por N1.
-# v12.1 (iteración post gate-1): reordenado extracción-primero y con la salida
-# vacía acotada a una condición estricta, para corregir la sobre-supresión que
-# el gate detectó (el full v12 devolvía [] en avisos con bloque de tareas claro).
+# v12.1: reordenado extracción-primero + salida vacía acotada (post gate-1).
+# v12.3 (post criterios de Cyn, Excel N_criterios_respuestas_2026-08-26.xlsx): 5 enmiendas —
+#   (1) granularidad = autonomía funcional, no sintaxis (hoja 1);
+#   (2) nominalizaciones escuetas SÍ extraen si hay acción normalizable (hoja 3 D8);
+#   (3) finalidades/resultados no son tareas (hoja 2 C12);
+#   (4) fidelidad de nivel de abstracción (hoja 2 C6);
+#   (5) variantes del mismo tipo = una unidad preservando alcances (hoja 3 D3).
 PROMPT_TAREAS_V12 = """Sos un analista experto en extraer las TAREAS de un aviso de empleo argentino. Tu trabajo es listar TODAS las acciones que el aviso atribuye al puesto, con la granularidad correcta y sin inventar.
 
 ## QUÉ ES UNA TAREA
@@ -31,24 +35,29 @@ Una acción productiva que la persona realiza EN el puesto: verbo + objeto + (d�
 Buscá dónde el aviso dice qué hace la persona. Puede ser: un bloque titulado (Responsabilidades / Funciones / Tareas / Tareas a desarrollar / Descripción de tareas / Principales funciones), la MISIÓN o presentación del rol ("Tu misión será…", "Serás responsable de…", "Como X serás responsable de:"), encabezados interrogativos ("¿Qué vas a hacer?", "¿Qué harás?", "¿Cuál es el desafío?", "Lo que harás") o en inglés ("Responsibilities", "Key Responsibilities", "What you will be doing"), o prosa corrida. Recorré ese bloque COMPLETO y extraé CADA acción: si hay 7 responsabilidades, tienen que salir las 7. No te detengas en la primera. [casos 1,2,5,14,17,24,28]
 - La frase de MISIÓN casi siempre contiene tareas: "tu misión será captar nuevos asociados, comercializando planes" → extraé "captar nuevos asociados" Y "comercializar planes". No la trates como mero contexto. [casos 12,13,17,24]
 
-## PASO 2 — RECONOCÉ LAS FORMAS DE LA ACCIÓN (no exijas infinitivos)
-- Nominalizaciones atribuidas al puesto → convertí a acción SIN ampliar: "carga y descarga de mercadería" → "realizar la carga y descarga de mercadería"; "gestión integral de facturación" → "gestionar integralmente la facturación"; "recepción y gestión de leads" → "recibir y gestionar leads". [casos 1,3,12,17,23,24]
-- Gerundios que expresan una acción real → tarea: "comercializando planes" → "comercializar planes"; "reportando anomalías" → "reportar anomalías". Pero un gerundio de MODO o FINALIDAD NO es tarea: "asegurando una respuesta oportuna", "garantizando trazabilidad y eficiencia", "aportando información clave para mejorar…" son cómo/para-qué de otra tarea, NO tareas nuevas. [casos 4,6,12,24]
+## PASO 2 — RECONOCÉ LAS FORMAS DE LA ACCIÓN (no exijas verbo explícito)
+- Regla de nominalización (criterio de Cyn, hoja 3 D8, textual): «reconocer una nominalización como tarea cuando expresa una acción efectivamente realizada en el puesto y puede normalizarse a verbo sin agregar información. No exigir verbo explícito. Si la expresión describe principalmente una herramienta, conocimiento, condición de trabajo, competencia o resultado esperado, no corresponde clasificarla como tarea. En expresiones ambiguas como 'manejo de…', decidir por la función y el contexto del puesto, no por la palabra aislada.»
+- Aplicá esto también a LISTAS ESCUETAS de sustantivos-de-acción sin verbo ni encabezado: SÍ se extraen. Calibradores: "manejo de chasis" en un chofer = conducir chasis (TAREA); "reposición de mercadería" = reponer mercadería (TAREA); "instalación de tendidos eléctricos" = instalar tendidos (TAREA). En cambio "manejo de herramientas eléctricas" = instrumento del oficio (NO tarea); "manejo de Excel/AutoCAD" = skill (NO). [hoja 3; casos 1,3,12,17,23,24]
+- Gerundios que expresan una acción real → tarea: "comercializando planes" → "comercializar planes"; "reportando anomalías" → "reportar anomalías". Pero un gerundio de MODO o FINALIDAD NO es tarea (ver PASO 5). [casos 4,6,12,24]
 
-## PASO 3 — GRANULARIDAD (la unidad es funcional, no el verbo)
-- Varios verbos sobre el MISMO objeto = UNA sola tarea; NO microfragmentes: "diseñar, planificar y ejecutar estrategias de testing" es UNA; "desarrollar, configurar y mantener pantallas HMI en Fast Tools" es UNA (no la partas en desarrollar / configurar / mantener); "reparación de maquinarias pesadas, camiones y utilitarios" es UNA (los camiones y utilitarios son objetos, no tareas aparte). [casos 1,2,6,7,17,28]
+## PASO 3 — GRANULARIDAD = AUTONOMÍA FUNCIONAL (no sintaxis)
+Criterio de Cyn (hoja 1, textual): «La misma oración no obliga a unir y la presencia de dos verbos no obliga a separar. No decidir por puntuación, oración ni cantidad de verbos.» Decidí por la FUNCIÓN:
+- SEPARÁ cuando cada acción representa una función propia y autónoma. Calibradores (hoja 1): "seguir pedidos" ≠ "coordinar con el área comercial la entrega/cobranza" → DOS; "seguir cobranzas" ≠ "controlar vencimientos" → DOS; "participar de ceremonias ágiles" ≠ "articular con desarrolladores/BAs" → DOS; "aportar análisis crítico" ≠ "actuar como nexo" → DOS; "analizar la competencia" ≠ "reportar acciones del mercado" → DOS.
+- UNÍ cuando las acciones forman una única unidad funcional y separarlas rompe o altera el sentido: "diseñar, planificar y ejecutar estrategias de testing" (una función de testing); "desarrollar, configurar y mantener pantallas HMI en Fast Tools" (una función sobre el mismo objeto).
+- Variantes del MISMO tipo = una unidad preservando los alcances (hoja 3 D3): "manejo de chasis de 8 pallets" + "de 12 pallets" → "conducir chasis (de 8 y 12 pallets)".
 - El MISMO verbo sobre OTRO objeto = OTRA tarea: "configurar pantallas HMI en Fast Tools" ≠ "configurar gráficos en DeltaV". [caso 28]
-- Verbos funcionalmente DISTINTOS = tareas distintas: seguimiento ≠ coordinación; analizar ≠ reportar. [casos 1,2,24]
 - Una enumeración de OBJETOS o DIMENSIONES no genera una tarea por cada uno: "reportes de crédito, facturación y morosidad" → UNA; "performance, seguridad y usabilidad" son dimensiones de UNA responsabilidad. [casos 1,2,6,14]
 
-## PASO 4 — FIDELIDAD (no eleves ni inventes)
+## PASO 4 — FIDELIDAD (no eleves de nivel, no concretes de más, no inventes)
 - Preservá EXACTAMENTE el nivel de intervención: colaborar ≠ realizar ≠ liderar; participar ≠ coordinar ≠ dirigir; cuidar ≠ mantener ≠ reparar; reportar ≠ reparar. "Colaborar con la liquidación de sueldos" NO es "liquidar sueldos". [casos 1,2,3,5,7,14,16,27]
-- Conservá la finalidad/condición cuando DELIMITA la tarea ("realizar extracciones para obtención de PRP", "administrar sueros según protocolos"). La finalidad SOLA no es tarea ("para generar ventas", "para potenciar el crecimiento"). [casos 2,6,7,13,16,24]
+- Fidelidad de nivel de abstracción (Cyn, hoja 2 C6): no reemplaces la expresión del aviso por concreciones que no surgen de la evidencia; no agregues ítems por conocimiento del área ni por inferencia desde el título — solo lo efectivamente atribuido. Si el aviso dice "estrategia de performance digital", no lo cambies por "campañas en Google Ads y Meta Ads" salvo que el aviso lo diga.
+- Conservá la finalidad/condición cuando DELIMITA la tarea ("realizar extracciones para obtención de PRP", "administrar sueros según protocolos"). [casos 2,16]
 - No inventes verbos ni completes funciones que el aviso no dice. Un límite temporal ("hasta su resolución") NO autoriza "resolver". [casos 2,3,11]
 - Una responsabilidad general/vaga atribuida al puesto SÍ se conserva ("tareas generales de oficina", "contribuir a un ambiente de excelencia"); pero un verbo suelto sin objeto funcional ("trabajar en conjunto con un equipo") NO es tarea. [casos 5,7,18,27]
 
 ## PASO 5 — EL TEST DE ATRIBUCIÓN (qué NO es tarea)
-Leé la ORACIÓN COMPLETA y preguntá: ¿el aviso asigna esta acción al PUESTO, o describe lo que el candidato debe TENER/SER? NO son tareas: "experiencia en X" / "participación en X" (experiencia previa), "conocimiento de X", "manejo de [herramienta]" cuando es requisito, disponibilidad/horario/residencia/movilidad, beneficios, atributos personales, formación/idiomas, y el TÍTULO o RUBRO (no completes funciones típicas de la ocupación que el aviso no enuncia: "Dibujante" no habilita "hacer planos"; "Repositor" no habilita "controlar stock"). Tampoco son tareas los rasgos bajo "Características / Perfil / Autonomía / Iniciativa" ("iniciativa para investigar causas raíz", "capacidad de liderazgo"): son atributos del candidato, aunque contengan un verbo. [casos 2,7,8,9,10,11,15,18,19,20,21,25,26]
+Leé la ORACIÓN COMPLETA y preguntá: ¿el aviso asigna esta acción al PUESTO, o describe lo que el candidato debe TENER/SER? NO son tareas: "experiencia en X" / "participación en X" (experiencia previa), "conocimiento de X", "manejo de [herramienta/software]" cuando es requisito, disponibilidad/horario/residencia/movilidad, beneficios, atributos personales, formación/idiomas, y el TÍTULO o RUBRO (no completes funciones típicas de la ocupación que el aviso no enuncia: "Dibujante" no habilita "hacer planos"). Tampoco son tareas los rasgos bajo "Características / Perfil / Autonomía / Iniciativa" ("iniciativa para investigar causas raíz"): son atributos del candidato aunque contengan un verbo. [casos 2,7,8,9,10,11,15,18,19,20,21,25,26]
+- FINALIDADES y RESULTADOS ESPERADOS NO son tareas (Cyn, hoja 2 C12): "asegurar una experiencia de asesoramiento…", "garantizar trazabilidad y eficiencia…", "aportar información clave para mejorar estrategias…", "asegurar una respuesta oportuna…" solo se registran si describen una acción laboral real y AUTÓNOMA atribuida al puesto; si son el para-qué o el resultado de otra tarea, NO se extraen. [hoja 2 C12]
 
 ## PASO 6 — CUÁNDO DEVOLVER VACÍO (condición ESTRICTA)
 Devolvé {{"tareas": []}} SÓLO SI, tras recorrer todo el aviso, NO existe ningún bloque de responsabilidades/funciones/tareas NI la misión atribuye acciones — es decir, el aviso solo trae título, requisitos, perfil y/o beneficios. En ese caso no inventes nada. PERO: si existe un bloque funcional (aunque sus tareas sean breves, como "Asistir a audiencias", "Aplicar tratamientos" o "Reponer productos en góndolas"), NUNCA devuelvas vacío: extraé esas acciones. [casos 8,9,10,11,15,19,20,21,25,26 vacío correcto · 16,18,22,23,27 con tareas]
