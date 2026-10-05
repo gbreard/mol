@@ -1,8 +1,11 @@
 {
-  "version": "1.1-v12.3",
-  "fuente": "validacion_tareas_respuestas_2026-08-26.xlsx (28) + N_criterios_respuestas_2026-08-26.xlsx (hoja 3: 4 nuevos)",
-  "nota": "gold re-adjudicado con los 3 criterios de Cyn (v12.3). granularidad = autonomía funcional. [] = vacío válido.",
-  "n_casos": 32,
+  "version": "1.2-v12.4",
+  "fuente": "validacion_tareas_respuestas_2026-08-26.xlsx (28) + entrega_maestro_qwen_2026-09 (16 RG-TAR + 21 casos entrenamiento + 3 finales + flip chofer)",
+  "nota": "gold re-adjudicado contra las 16 RG-TAR (v12.4). FLIP chofer 1117212619 → [] (requisitos, RG-TAR-005). mostrador +limpieza (6). 11 casos nuevos de entrenamiento. multipuesto 8126765799 fuera del gold (RG-TAR-003, se lista para Cyn). granularidad = autonomía funcional. [] = vacío válido.",
+  "multipuesto_flag": {
+    "8126765799": "Operario textil (Costureros/Tejedores/Cortadores) — RG-TAR-003"
+  },
+  "n_casos": 43,
   "n_ok": 6,
   "casos": [
     {
@@ -448,13 +451,8 @@
       "titulo": null,
       "cuerpo": "Choferes con Experiencia ComprobableResumen del Puesto:Nos encontramos en la búsqueda de Choferes con Experiencia Comprobable para sumarse a nuestro equipo de transporte y distribución. Buscamos personas responsables, con excelente predisposición y ganas de crecer profesionalmente.Requisitos Excluyentes: Experiencia Verificable en el manejo de:Chasis de 8 pallets. Chasis de 12 pallets. Balancines y/o Semis. Amplia Disponibilidad Horaria (para turnos rotativos o variables según la operación). Manejo de Remitos y estricto control de la mercadería despachada y recibida. Licencia de conducir profesional vigente y al día (Cargas Generales/Larga Distancia según corresponda).Deseable Contar con conocimientos y experiencia en el uso de aplicaciones de colecta ML (Mercado Libre u otras plataformas logísticas).Ofrecemos Salario competitivo, acorde a convenio. Incorporación inmediata.Para mantener la prolijidad y eficiencia de nuestro proceso de selección: Solo tomamos la primera postulacion recibida en este u otro aviso.",
       "sistema_v11_extrajo": null,
-      "veredicto_cyn": "TAREAS (hoja 3)",
-      "gold_tareas": [
-        "conducir chasis (de 8 y 12 pallets)",
-        "conducir balancines y/o semis",
-        "controlar la mercadería despachada y recibida",
-        "manejar remitos"
-      ],
+      "veredicto_cyn": "VACIO (flip v12.4: requisitos, RG-TAR-005)",
+      "gold_tareas": [],
       "sobras_tipificadas": []
     },
     {
@@ -464,7 +462,7 @@
       "titulo": null,
       "cuerpo": "Estamos en la búsqueda de operarios para trabajar en nuestra planta industrial ubicada en Vicente López, Provincia de Buenos Aires.Puestos a cubrir: Electricista: Electricidad del automóvil y domiciliaria. Instalación de tendidos eléctricos en automotores, luces, equipamiento, medición y controles. Plástico PRFV: Manejo de equipo de trabajo. Laminación y pulido de PRFV (plástico reforzado con fibra de vidrio, GFRP, GRP). Fabricación y reparación de piezas en fibra de vidrio (moldes, matrices, etc.). Manejo de herramientas y materiales específicos (resinas, catalizadores, cortadores, etc.). Precisión en trabajos manuales y detalles de terminación. Herrería: Herrero/Soldador MIG/MAG. Armado de estructuras metálicas. Manejo de herramientas manuales y maquinaria de taller. Montaje: · Conocimientos en transformaciones y adaptaciones vehiculares. Manejo de herramientas eléctricas y neumáticas (taladros, pulidoras, atornilladoras, remachadoras, caladoras, cementadoras de pegamento en frío, entre otras)Se valorará contar con experiencia en empresas metalúrgicas, industrias automotriz o carrocera.Disponibilidad para incorporación inmediata y detallar las presentaciones salariales netas.",
       "sistema_v11_extrajo": null,
-      "veredicto_cyn": "TAREAS (hoja 3)",
+      "veredicto_cyn": "TAREAS (hoja 3; sin herramientas, RG-TAR-008)",
       "gold_tareas": [
         "instalar tendidos eléctricos en automotores",
         "laminar y pulir PRFV",
@@ -480,13 +478,14 @@
       "titulo": null,
       "cuerpo": ": Atención al cliente, reposición de mercadería, limpieza y orden del lugar de trabajo.\n\nTareas principales: tareas de deposito, embalaje, carga y descarga de mercadería. Reposición de mercadería, atención al publico, limpieza y mantenimiento del lugar de trabajo\n\n---\nEstudios requeridos: Secundarios Idiomas Inglés, conocimientos mínimos: Básico\nExperiencia requerida: No\nDias laborables: Lunes, Martes, Miércoles, Jueves, Viernes, Sábado\nHorario: 08:30 a 12:30",
       "sistema_v11_extrajo": null,
-      "veredicto_cyn": "TAREAS (hoja 3)",
+      "veredicto_cyn": "TAREAS (hoja 3; 6, Tareas principales)",
       "gold_tareas": [
         "reponer mercadería",
         "atender al público",
         "realizar tareas de depósito",
         "embalar",
-        "cargar y descargar mercadería"
+        "cargar y descargar mercadería",
+        "limpiar y mantener el lugar de trabajo"
       ],
       "sobras_tipificadas": []
     },
@@ -497,9 +496,204 @@
       "titulo": null,
       "cuerpo": "En Würth Argentina seguimos creciendo y buscamos incorporar un/a Ejecutivo de ventas en calle para desarrollar y potenciar nuestra cartera de clientes en la zona de Río Cuarto. Si te apasionan las ventas, el trabajo en campo y los desafíos comerciales, esta oportunidad es para vos. ¿Qué ofrecemos para potenciar tu éxito? Contratación directa y efectiva con una multinacional (relación de dependencia). Sueldo básico + comisiones. Plan de carrera y desarrollo personalizado. Cartera propia de clientes activa. Combustible. Reconocimiento por desgaste de vehículo. Capacitación constante y acompañamiento comercial. ¿Qué necesitás para postularte? Contar con 3 años de experiencia en ventas, reactivación y captación de nuevos clientes en campo, terreno o calle. Orientación al logro de objetivos y resultados, con experiencia trabajando bajo esquema de comisiones. Capacidad para trabajar de manera autónoma y en equipo. Disponibilidad full time y exclusiva para la empresa. Movilidad propia (auto modelo 2015 en adelante) - Excluyente. Analítico del secundario en mano - Excluyente. Referencias laborales comprobables (deseable). Conocimientos en los rubros técnico, industrial, construcción o automotor (deseable). Zona de trabajo: Río Cuarto y alrededores. Si buscás desarrollarte profesionalmente en una empresa líder y afrontar nuevos desafíos comerciales, te invitamos a aplicar a la oferta laboral.-Requerimientos- Educación mínima: Secundaria 2 años de experiencia Edad: entre 25 y 45 años Disponibilidad de viajar: Si Palabras clave: directivo, mando, gobierno, regencia, executive, managing, ejecutivo, cambaceo, sales",
       "sistema_v11_extrajo": null,
-      "veredicto_cyn": "TAREAS (hoja 3, 1 sola)",
+      "veredicto_cyn": "TAREAS (hoja 3; 1, del pitch, RG-TAR-004)",
       "gold_tareas": [
         "desarrollar y potenciar la cartera de clientes"
+      ],
+      "sobras_tipificadas": []
+    },
+    {
+      "n": 33,
+      "id_oferta": "8839648839",
+      "portal": "indeed",
+      "titulo": null,
+      "cuerpo": "About Command|Link\nCommand|Link is a global SaaS Platform providing network, voice services, and IT security solutions, helping corporations consolidate their core infrastructure into a single vendor and layering on a proprietary single pane of glass platform. Command|Link has revolutionized the IT industry by tackling the problems our competitors create. In recognition for our unprecedented innovation and dedication, Command|Link was recognized as the SD-WAN Product of the Year, ITSM Visionary Spotlight, UCaaS Product of the Year, NaaS Product of the Year, Supplier of the Year, and the AT&T Strategic Growth Partner. Command|Link has built the only IT platform for scale that solves ISP vendor sprawl and IT headaches. We make it easy for our customers to get more done, maximize uptime and improve the bottom line.\nLearn more about us here!\nThis is a 100% remote position!\nRole Overview:\nAs a Project Manager within our Service Delivery team, you will play a pivotal role in managing new orders for business customers across our range of services. Unlike traditional approaches, you will take ownership of orders from initiation to completion, eliminating handoffs between departments to enhance the overall customer experience. This role requires effective communication, project management skills, and a deep understanding of telecommunications services.\nKey Responsibilities:\nOwn and manage the entire delivery process for assigned orders, ensuring timely and high-quality delivery of services.\nCoordinate with internal and contracted third-party resources to meet customer requirements and delivery timelines.\nRegularly communicate with customers, providing clear and consistent updates throughout the entire delivery life cycle\nHandle tasks such as ordering Internet Circuits, managing Hosted VoIP projects, and overseeing number porting processes.\nDocument dependencies and priorities clearly for efficient project execution.\nUtilize hands-on delivery experience to drive successful outcomes for each project.\nDemonstrate expertise in SDWAN Implementation, VoIP porting, and Internet circuit ordering with various carriers.\nTakes on additional responsibilities and projects as needed to support the success of the team and organization.\nQualifications:\nMinimum of 5 years experience in the telecommunications industry\nMinimum of 5 years of experience in Service Delivery and/or Project Management\nHands-on experience in VoIP, SDWAN Implementation, and Internet Circuit ordering with carriers\nAbility to document dependencies and priorities clearly\nProficient in effectively managing third-party resources\nWhy you'll love life at Command|Link\nJoin us at CommandLink, where you'll have the opportunity to shape the future of business communication. We value the innovative spirit and seek individuals ready to bring their unique vision and expertise to a team that values bold ideas and strategic thinking. Are you ready to make an impact?\nRoom to grow at a high-growth company\nAn environment that celebrates ideas and innovation\nYour work will have a tangible impact\nFlexible time off\nFun events at cool locations\nEmployee referral bonuses to encourage the addition of great new people to the team\nAt CommandLink, we’re committed to creating a fair, consistent, and efficient hiring experience. As part of our process, we use AI-assisted tools to help review and analyze applications. These tools support our recruiting team by identifying qualifications and experience that align with the requirements of each role.\nAI tools are used only to assist in the evaluation process — they do not make final hiring decisions. Every application is reviewed by a member of our recruiting or hiring team before any decisions are made.",
+      "sistema_v11_extrajo": null,
+      "veredicto_cyn": "caso 1 — nivel de intervencion (RG-TAR-014)",
+      "gold_tareas": [
+        "gestionar integralmente el proceso de entrega de las órdenes asignadas",
+        "coordinar con recursos internos y terceros contratados para cumplir requisitos y plazos del cliente",
+        "comunicarse regularmente con los clientes brindando actualizaciones claras y consistentes",
+        "gestionar tareas como la orden de circuitos de internet, proyectos VoIP alojados y procesos de portabilidad numérica",
+        "documentar dependencias y prioridades para la ejecución del proyecto"
+      ],
+      "sobras_tipificadas": []
+    },
+    {
+      "n": 34,
+      "id_oferta": "7675133068",
+      "portal": "computrabajo",
+      "titulo": null,
+      "cuerpo": "Cheker Quimico (req203061) - EVENTUAL \n\n\nEstamos seleccionando para importante empresa del rubro químico\n\nZona de Trabajo: MARTIN CORONADO, BUENOS AIRES\n\nJornada Laboral: 13 a 22 hs de lunes a viernes\n\nEsquema de Empleo: PRESENCIAL.\n\nModalidad de Contratación: EVENTUAL.\n\n\nLas principales funciones del puesto serán:\n\n- Autorizar la puesta en marcha de la línea de producción.\n- Seguimiento de los lotes productivos.\n- Control y liberación de áreas de producción.\n- Control de acondicionamiento en líneas.\n- Muestreo de materias primas, semielaborados, productos terminados y material de empaque.\n- Realizar controles fisicoquímicos de materias primas, semielaborados y productos terminados. \n\n\n\nRequisitos:\n\n- Conocimientos de normas GMP (Excluyente)\n\n- Experiencia previa en áreas de producción o calidad, preferentemente en la industria cosmética. (Excluyente)\n\n- Secundario completo (Excluyente)\n\n- Residír en Martin Coronado/alrededores. (Excluyente) \n\n\nAl postularte o avanzar en este proceso, aceptás el tratamiento de tus datos personales conforme a nuestra Política de Privacidad, en cumplimiento de la Ley 25.326. ManpowerGroup Argentina tratará tu información exclusivamente con fines de evaluación y contacto en relación con oportunidades laborales. Podés ejercer tus derechos de acceso, rectificación o supresión cuando lo desees.\n\n\nEn ManpowerGroup promovemos una cultura inclusiva y diversa basada en el respeto y en la igualdad de oportunidades.",
+      "sistema_v11_extrajo": null,
+      "veredicto_cyn": "caso 2 — mismo proceso, tareas distintas (RG-TAR-011)",
+      "gold_tareas": [
+        "autorizar la puesta en marcha de la línea de producción",
+        "realizar seguimiento de los lotes productivos",
+        "controlar y liberar áreas de producción",
+        "controlar el acondicionamiento en líneas",
+        "muestrear materias primas, semielaborados, productos terminados y material de empaque",
+        "realizar controles fisicoquímicos de materias primas, semielaborados y productos terminados"
+      ],
+      "sobras_tipificadas": []
+    },
+    {
+      "n": 35,
+      "id_oferta": "5092480960",
+      "portal": "computrabajo",
+      "titulo": null,
+      "cuerpo": "Ocultaste esta oferta, pulsaRecuperar ofertapara verla de nuevo en los listados\n\nSomos un grupo privado con operaciones internacionales, enfocado en negocios de alto nivel, gestión estratégica y ejecución rápida. Trabajamos con estructuras ágiles, decisiones directas y estándares elevados.Compensación desde USD 2.500 mensuales, con posibilidad real de incremento según desempeño, disponibilidad y nivel de responsabilidad asumida.Buscamos incorporar una Asistente Personal Ejecutiva que trabaje directamente con la dirección, actuando como extensión operativa del owner (patron) en la gestión diaria.Responsabilidades clave• Gestión integral de agenda y prioridades• Coordinación de reuniones, viajes y logística• Comunicación directa con socios, proveedores y equipo• Organización de información sensible y soporte ejecutivo• Resolución de situaciones con autonomía y criterioPerfil buscado• Alta discreción y sentido de la confidencialidad• Capacidad de respuesta rápida y disponibilidad real• Organización, criterio propio y mentalidad ejecutiva• Comodidad trabajando sin estructuras rígidas• Ambición profesional y orientación a resultadosQué ofrecemos• Compensación económica muy competitiva, muy por encima del mercado• Bonificaciones ligadas a desempeño y nivel de implicación• Viajes internacionales puntuales• Acceso a experiencias, eventos y entorno premium• Flexibilidad real para quien demuestra compromiso• Beneficios adicionales (shopping, gestión personal, lifestyle support)• Crecimiento directo junto a la dirección del grupo\n\nRequerimientos\n\nPalabras clave: staff, empleado, trabajador, worker, employee, personal, casa, remoto, remote, teletrabajo, home, external, international, foreign, exterior\n\n11 de febrero (actualizada)\n\nNos tomamos muy en serio tus comentarios y lo revisaremos lo antes posible.\n\nAcerca de CurvaGilasis\n\nGrupo empresarial internacional con presencia en múltiples mercados, enfocado en operaciones globales, gestión estratégica y coordinación de proyectos de alto nivel.El grupo trabaja de forma transversal en distintas áreas, incluyendo gestión corporativa, logística internacional, coordinación administrativa, apoyo ejecutivo y desarrollo de relaciones profesionales a largo plazo.Operamos en un entorno dinámico, exigente y multicultural, con actividades frecuentes en Europa,...\n\nGrupo empresarial internacional con presencia en múltiples mercados, enfocado en operaciones globales, gestión estratégica y coordinación de proyectos de alto nivel.El grupo trabaja de forma transversal en distintas áreas, incluyendo gestión corporativa, logística internacional, coordinación administrativa, apoyo ejecutivo y desarrollo de relaciones profesionales a largo plazo.Operamos en un entorno dinámico, exigente y multicultural, con actividades frecuentes en Europa, América y otros mercados internacionales.Buscamos perfiles profesionales que valoren la confidencialidad, la excelencia operativa, la flexibilidad y el compromiso, ofreciendo a cambio estabilidad, proyección internacional y crecimiento dentro de una estructura sólida y bien organizada.\n\nOfertas similares\n\nRocketpin ArgentinaPalermo, Capital Federal\n\nEn Rocketpin buscamos incorporar un/a Analista de Control de Calidad (QC) para sumarse a nuestro equipo en...\n\nHace  5  días\n\nADN - Recursos HumanosRecoleta, Capital Federal\n\nEjecutiva/o de Cuenta – Modalidad Remota | Rubro Gráfico Reconocida empresa líder en el rubro gráfico se encuentra en...\n\nHace  7  días\n\nOPCIÓN CUYO S.A.Mendoza, Mendoza\n\nNos encontramos en la búsqueda de Asesores/as Comerciales para incorporarse a nuestro equipo de Call Center,...\n\nHace  6  días\n\nSOLUTION BOX S.R.L.Choya, Santiago del Estero\n\nSomos Solution Box S.R.L., un mayorista líder en informática y telecomunicaciones de valor agregado desde 2002....\n\nMás de 30 días\n\nSolvo Solutions LLCCórdoba, Córdoba\n\n¡Estamos contratando: SDR (Sales Development Representative) ! Location: Argentina ( Remote ) ¿Tienes experiencia en...\n\nHace  2  días\n\nALMUNDOVIAJESVicente López, Buenos Aires-GBA\n\nEstamos en la Busqueda de una Persona de Cualquier Lugar del Pais para realizar tareas Homme Oficce de Publicadora y...\n\nHace  6  días\n\nROYAL GALA SLLa Plata, Buenos Aires\n\nSobre la empresa: Mente Sana es una empresa española en expansión dedicada a democratizar el acceso a servicios...\n\n11 de febrero\n\nMetrickalCabalango, Córdoba\n\nBuscamos un Sales Development Representative (SDR) para generar oportunidades de negocio y fortalecer nuestra red de...\n\nHace  12  horas\n\n¡No te pierdas ninguna oportunidad!\n\nRecibe las nuevas ofertas por e-mail.\n\n¡No te pierdas ninguna oportunidad!\n\nEscribe tu correo y te enviaremosnuevas ofertaspor e-mail.\n\nParece que ya estas registrado\n\nEscribe tu contraseña paraactivar la alerta.\n\nVaya, el correo y la contraseña no coinciden\n\nPrueba de nuevo paraactivar la alerta.\n\nVer detalles legales\n\nResponsable\n\nDGNET LTD.\n\nFinalidad\n\nAtender las solicitudes de información y/o consultas efectuadas por el usuario –registrado o no- a través del portal web.\n\nLegitimación\n\nTu consentimiento\n\nDestinatario\n\nPodrán acceder a tus datos los prestadores de servicios de DGNET Ltd, incluyendo otras empresas de su grupo. Únicamente se cederán datos por obligación legal.\n\nDerechos\n\nTienes derecho a acceder, rectificar y suprimir los datos, así como otros derechos, cuyo detalle se incluye en nuestra Política de Privacidad completa.\n\nTe hemos enviado un correo de verificación. Revísalo yconfirma la alertapara activarla.\n\nGenial\n\nTe avisaremos de nuevas vacantes.\n\nYa tienes una alerta guardada similar a esta búsqueda",
+      "sistema_v11_extrajo": null,
+      "veredicto_cyn": "caso 3 — generalidad (RG-TAR-016)",
+      "gold_tareas": [
+        "gestionar integralmente la agenda y las prioridades",
+        "coordinar reuniones, viajes y logística",
+        "comunicarse directamente con socios, proveedores y equipo",
+        "organizar información sensible y brindar soporte ejecutivo",
+        "resolver situaciones con autonomía y criterio"
+      ],
+      "sobras_tipificadas": []
+    },
+    {
+      "n": 36,
+      "id_oferta": "8493010864",
+      "portal": "computrabajo",
+      "titulo": null,
+      "cuerpo": "En ADN recursos humanos estamos en la búsqueda de Responsable de elaboración para una empresa cosmética ubicada en la zona de Burzaco.Modalidad de trabajo: PresencialLugar de trabajo: Parque Industrial BurzacoHorarios de trabajo: Lunes a viernes de 06:00 a 15:00 hs y Sábados por medio de 06:00 a 12:00 hs.Tareas / Funciones / Responsabilidades:-Ejecutar y supervisar la elaboración de productos cosméticos según fórmulas aprobadas y procedimientos establecidos.-Preparar y dosificar materias primas, controlando pesos, tiempos y condiciones del proceso.-Asegurar el cumplimiento de las Buenas Prácticas de Manufactura (GMP) y normativas internas.-Controlar parámetros de proceso (temperatura, agitación, tiempos, homogeneidad).-Registrar documentación productiva: órdenes de producción, hojas de lote y controles de proceso.-Coordinar con las áreas de Calidad, I+D y Producción ante desvíos o ajustes de formulación.-Mantener el orden, limpieza y correcto uso de equipos e instalaciones del laboratorio.-Detectar desvíos, proponer mejoras y colaborar en la optimización de procesos productivos.-Cumplir con normas de seguridad e higiene industrial.Requerimientos para el puesto:-Técnico Químico.-Experiencia en escalado productivo.-Experiencia en trabajo bajo normas ISO / ANMAT.",
+      "sistema_v11_extrajo": null,
+      "veredicto_cyn": "caso 5 — bloque Tareas; HSE fuera (frontera RG-TAR-009)",
+      "gold_tareas": [
+        "ejecutar y supervisar la elaboración de productos cosméticos según fórmulas aprobadas y procedimientos establecidos",
+        "preparar y dosificar materias primas, controlando pesos, tiempos y condiciones del proceso",
+        "controlar parámetros de proceso (temperatura, agitación, tiempos, homogeneidad)",
+        "registrar documentación productiva: órdenes de producción, hojas de lote y controles de proceso",
+        "coordinar con las áreas de Calidad, I+D y Producción ante desvíos o ajustes de formulación",
+        "mantener el orden, limpieza y correcto uso de equipos e instalaciones del laboratorio",
+        "detectar desvíos, proponer mejoras y colaborar en la optimización de procesos productivos"
+      ],
+      "sobras_tipificadas": []
+    },
+    {
+      "n": 37,
+      "id_oferta": "7916148421",
+      "portal": "computrabajo",
+      "titulo": null,
+      "cuerpo": "Ocultaste esta oferta, pulsaRecuperar ofertapara verla de nuevo en los listados\n\nEstamos seleccionando Gestor Express para importante empresa del rubro bancario.\nZona de Trabajo: Villa Dominico  Buenos Aires\nJornada Laboral: De 10:00 a 15:00 - Part Time\nEsquema de Empleo: PRESENCIAL\nModalidad de Contratación: EVENTUAL\n\nLas principales funciones del puesto serán:\nBrindar asesoramiento personalizado a clientes.\nOrdenar y coordinar las filas del banco.\nAtender y gestionar reclamos.\nRequisitos:\nSecundario completo (Excluyente)\nExperiencia en atención al cliente.\n\nAl postularte o avanzar en este proceso, aceptás el tratamiento de tus datos personales conforme a nuestra Política de Privacidad, en cumplimiento de la Ley 25.326. ManpowerGroup Argentina tratará tu información exclusivamente con fines de evaluación y contacto en relación con oportunidades laborales. Podés ejercer tus derechos de acceso, rectificación o supresión cuando lo desees.\n\nEn ManpowerGroup promovemos una cultura inclusiva y diversa basada en el respeto y en la igualdad de oportunidades.\n\nRequerimientos\n\nPalabras clave: residente, encargado, supervisor, subgerente, responsable, coordinador, gestor, capitan\n\n2 de marzo (actualizada)\n\nNos tomamos muy en serio tus comentarios y lo revisaremos lo antes posible.\n\nAcerca de ManpowerGroup\n\nManpowerGroup es una empresa multinacional líder en soluciones de Recursos Humanos, dedicada a la realización de búsqueda y selección de personal para posiciones permanentes, temporarias o por proyecto; brinda servicios de capacitación, outsourcing y consultoría; y desarrolla soluciones para las principales áreas e industrias: administrativa, contact center, hospitalidad e industrial. Hoy, después de más de 50 años de trayectoria en Argentina, contamos con oficinas distribuidas en Capital Federa...\n\nManpowerGroup es una empresa multinacional líder en soluciones de Recursos Humanos, dedicada a la realización de búsqueda y selección de personal para posiciones permanentes, temporarias o por proyecto; brinda servicios de capacitación, outsourcing y consultoría; y desarrolla soluciones para las principales áreas e industrias: administrativa, contact center, hospitalidad e industrial. Hoy, después de más de 50 años de trayectoria en Argentina, contamos con oficinas distribuidas en Capital Federal, Gran Buenos Aires, Provincia de Buenos Aires y las principales ciudades del interior del país, esto amplía el mapa de operaciones, concepto que nos permite brindarle a nuestros clientes la posibilidad de trabajar con un solo proveedor en todo el país y trabajar con gente y conocimientos locales\n\nEvaluación general\n\n4.3\n\n2.895 Evaluaciones\n\n58%\n\n27%\n\n12%\n\n2%\n\n1%\n\n4,16\n\nAmbiente de trabajo\n\n3,86\n\nSalario y prestaciones\n\n3,54\n\nOportunidades de carrera\n\n3,87\n\nDirector general\n\nRepositor\n\nActual empleadoCórdobaDiciembre, 2025\n\nManpower Argentina es una empresa seria y organizada, que brinda oportunidades laborales en distintos rubros. Destaco el cumplimiento de las condiciones laborales, la claridad en las tareas asignadas y el acompañamiento durante el proceso de trabajo.\n\nLo mejorEl buen trato hacia el personal y el acompañamiento durante el período laboral.\n\nA mejorarNo hay nada por mejorar estoy conforme con la empresa\n\nRecomienda trabajar aquí\n\nMozo\n\nActual empleadoNeuquénDiciembre, 2025\n\nNo le doy 5 estrellas porque es medio complicado manejar todo por la pagina, y la ayuda y guía no suele ser muy buena por parte de los administradores\n\nA mejorarLa atención hacia los trabajadores\n\nRecomienda trabajar aquí\n\nAnalista de marketing\n\nActual empleadoCapital FederalSeptiembre, 2025\n\nEs un excelente lugar para poder crecer y construir mi futuro profesional, aprendiendo sobre el talento en una de las líderes globales en este temática.\n\nRecomienda trabajar aquí\n\nSalarios\n\nCajeros repositores\n\nMedia salarial\n\n/mes\n\n9 salarios\n\nOfertas similares\n\nManpowerGroupLanús, Buenos Aires-GBA\n\nEstamos seleccionando Gestor Express para importante empresa del rubro bancario.\nZona de Trabajo: LanusBuenos...\n\nHace  2  días\n\nAdecco Argentina S.A.Avellaneda, Buenos Aires-GBA\n\nBUSCAMOS TALENTOS,\n¡EN ADECCO TE ESTAMOS BUSCANDO! \nSi te interesa ser *VENDEDORES/AS DE SALÓN EVENTUAL* y ser parte...\n\n3 de marzo\n\nBODEGON DEL SUDWilde, Buenos Aires-GBA\n\nEn empresa del rubro gastronómico buscamos un/a Administrativo/a con foco en Compras y Evaluación de Costos.  La...\n\nHace  7  días\n\nCLAHE EVENTOSWilde, Buenos Aires-GBA\n\nEn Clahe Eventos, red de salones ubicada en Zona Sur, nos encontramos en la búsqueda activa de un/a Asesor/a de Ventas...\n\nMás de 30 días\n\nMAIN | Trade Marketing SolutionsAvellaneda, Buenos Aires-GBA\n\n¡Sumate a nuestro equipo como Auditor Mystery Shopper!\n¿Te apasiona descubrir nuevos lugares y tenés un ojo crítico...\n\nHace  4  días\n\nEAYA ConsultingAvellaneda, Buenos Aires-GBA\n\n¿Querés ganar un sueldo completo trabajando solo 15 días al mes?\nEntonces esta oportunidad es para vos \n Buscamos Vended...\n\nHace  7  días\n\nImportante empresa del sectorBernal Oeste, Buenos Aires-GBA\n\nImportante empresa se encuentra en búsqueda de preventista con actitud comercial, ganas de crecer y pasión por la...\n\nHace  7  días\n\nGrupo GestiónQuilmes, Buenos Aires-GBA\n\nImportante empresa del rubro Retail, solicita Promovendedor/a para trabajar en la vía pública- Zonas Quilmes \n...\n\n23 de febrero\n\n¡No te pierdas ninguna oportunidad!\n\nRecibe las nuevas ofertas por e-mail.\n\n¡No te pierdas ninguna oportunidad!\n\nEscribe tu correo y te enviaremosnuevas ofertaspor e-mail.\n\nParece que ya estas registrado\n\nEscribe tu contraseña paraactivar la alerta.\n\nVaya, el correo y la contraseña no coinciden\n\nPrueba de nuevo paraactivar la alerta.\n\nVer detalles legales\n\nResponsable\n\nDGNET LTD.\n\nFinalidad\n\nAtender las solicitudes de información y/o consultas efectuadas por el usuario –registrado o no- a través del portal web.\n\nLegitimación\n\nTu consentimiento\n\nDestinatario\n\nPodrán acceder a tus datos los prestadores de servicios de DGNET Ltd, incluyendo otras empresas de su grupo. Únicamente se cederán datos por obligación legal.\n\nDerechos\n\nTienes derecho a acceder, rectificar y suprimir los datos, así como otros derechos, cuyo detalle se incluye en nuestra Política de Privacidad completa.\n\nTe hemos enviado un correo de verificación. Revísalo yconfirma la alertapara activarla.\n\nGenial\n\nTe avisaremos de nuevas vacantes.\n\nYa tienes una alerta guardada similar a esta búsqueda",
+      "sistema_v11_extrajo": null,
+      "veredicto_cyn": "caso 6 — chrome del portal (RG-TAR-001/N1)",
+      "gold_tareas": [
+        "brindar asesoramiento personalizado a clientes",
+        "ordenar y coordinar las filas del banco",
+        "atender y gestionar reclamos"
+      ],
+      "sobras_tipificadas": []
+    },
+    {
+      "n": 38,
+      "id_oferta": "8046413181",
+      "portal": "indeed",
+      "titulo": null,
+      "cuerpo": "Hola , somos\nELA\n, agencia de turismo receptiva mayorista en pleno crecimiento en LATAM ¡Estamos buscando un/a\nEjecutivo/a Senior de Operaciones\ncon atención al detalle y pasión por los viajes!✈️\nBuenos Aires, Argentina\nTareas a desarrollar:\nCoordinar documentación de viaje y asegurar que todo esté en tiempo y forma.\nGestionar bookings para Argentina, Chile, Perú, Colombia y Ecuador.\nMantener una comunicación fluida, enviando confirmaciones y updates.\nRevisar itinerarios, actualizar costos y coordinar facturación.\nManejo de teléfono de emergencia (rotativo).\nLo que buscamos en vos:\nMínimos 4 años\nde experiencia en operaciones turísticas o gestión de viajes.\nNivel de Inglés oral y escrito:\nAvanzado\n(excluyente)\nBuenas habilidades comunicativas, resolución de problemas y atención al detalle.\nManejo de sistemas de reservas y herramientas digitales.\nBeneficios:\nExcelente clima laboral.\nSeguro médico individual a partir del 3.º mes de ingreso.\nDía de cumpleaños libre a partir del 3.º mes de ingreso.\n️\nModalidad de trabajo:\nHíbrida (2 días presencial + 3 días remoto).\nHorario de lunes a viernes, de 9 a 18 hs.\nSi querés desarrollarte en una empresa de turismo y sumar en el área de operaciones, esta oportunidad es para vos.\n¡Te estamos buscando! Postulate",
+      "sistema_v11_extrajo": null,
+      "veredicto_cyn": "caso 7 — asegurar como unidad (RG-TAR-013)",
+      "gold_tareas": [
+        "coordinar documentación de viaje y asegurar que todo esté en tiempo y forma",
+        "gestionar bookings para Argentina, Chile, Perú, Colombia y Ecuador",
+        "mantener una comunicación fluida, enviando confirmaciones y updates",
+        "revisar itinerarios, actualizar costos y coordinar facturación",
+        "atender el teléfono de emergencia (rotativo)"
+      ],
+      "sobras_tipificadas": []
+    },
+    {
+      "n": 39,
+      "id_oferta": "8016348095",
+      "portal": "indeed",
+      "titulo": null,
+      "cuerpo": "Excited to grow your career?\nBBVA is a global company with more than 160 years of history that operates in more than 25 countries where we serve more than 80 million customers. We are more than 121,000 professionals working in multidisciplinary teams with profiles as diverse as financiers, legal experts, data scientists, developers, engineers and designers.\nAbout the job:\nDesde BBVA nos encontramos en la búsqueda de un\nEjecutivo Empresas - Minería | SUC SAN JUAN\nquien será responsable de la gestión integral de las necesidades financieras de nuestros clientes del sector minero y cadena de valor, brindando soluciones a medida y asesoramiento en productos y servicios bancarios.\nResponsabilidades:\nAtención y asesoramiento:\nBrindar atención personalizada a compañías de minería, comprendiendo sus necesidades financieras y ofreciendo soluciones adaptadas a cada tipo de negocio.\nGestión de cartera:\nGestionar y ampliar la cartera de clientes segmento empresas del sector minero, realizando visitas periódicas y estableciendo relaciones comerciales duraderas.\nElaboración de propuestas financieras:\nDesarrollar propuestas comerciales y financieras para empresas de minería, que incluyan productos como créditos, financiamiento, seguros, y otros servicios bancarios.\nAnálisis de riesgos:\nRealizar análisis de riesgos y viabilidad de proyectos comerciales dentro del sector minero.\nSeguimiento de operaciones:\nSupervisar y hacer seguimiento de las operaciones y servicios brindados, asegurando la satisfacción del cliente y el cumplimiento de los plazos establecidos.\nDesarrollo de nuevos negocios:\nIdentificar oportunidades de negocio en el sector, participando activamente en la promoción de productos y servicios de la entidad.\nRequisitos:\nExperiencia de al menos 5 años en roles comerciales del segmento empresas (excluyente)\nExperiencia en áreas comerciales relacionadas en la Cadena de Valor del Sector Minero (deseable).\nResidir en San Juan con disponibilidad para viajar (excluyente)\nGraduados de carreras afines al negocio bancario (excluyente) con Máster afín (deseable)\nInglés avanzado (deseable)\nHabilidades de comunicación, buenas relaciones interpersonales y negociación.\nPerfil con proactividad, orientación al cliente y capacidad para gestionar relaciones a largo plazo.\nConocimiento de productos financieros y herramientas bancarias.\nSkills:\nBanking",
+      "sistema_v11_extrajo": null,
+      "veredicto_cyn": "caso 8 — finalidad subordinada fuera (RG-TAR-013)",
+      "gold_tareas": [
+        "brindar atención personalizada a compañías de minería, ofreciendo soluciones financieras adaptadas",
+        "gestionar y ampliar la cartera de clientes del segmento empresas del sector minero, realizando visitas periódicas",
+        "desarrollar propuestas comerciales y financieras para empresas de minería",
+        "realizar análisis de riesgos y viabilidad de proyectos comerciales del sector minero",
+        "supervisar y hacer seguimiento de las operaciones y servicios brindados",
+        "identificar oportunidades de negocio, participando en la promoción de productos y servicios"
+      ],
+      "sobras_tipificadas": []
+    },
+    {
+      "n": 40,
+      "id_oferta": "5558920196",
+      "portal": "computrabajo",
+      "titulo": null,
+      "cuerpo": "Seleccionamos Contador junior con alguna experiencia previa. Nuestro cliente es una pequeña empresa de servicios en constante crecimiento y el contador trabajará desde su casa. Igualmente deberá residir en córdoba capital. REQUISITOS: • Egresado de contador con título. • Experiencia: contador junior, para realizar tareas administrativas, contables, algunas impositivas etc, que conozca un poco de todo, ideal si ha trabajado en algún estudio contable, se reitera, nivel junior. • Disponibilidad horaria full time de lunes a viernes. • Que le interese trabajar remoto. • Edad: no mayor a 35 años. • Que resida en córdoba capital ( excluyente ). • Importante: y que no tenga otro trabajo como principal y busque anexar uno remoto porque se necesita aquí involucramiento 100%. Se va a verificar. SE OFRECE: - Estabilidad laboral. - Trabajar en múltiples tareas de la profesión de contador. - Trabajo 100% remoto. -Requerimientos- Educación mínima: Universitario 2 años de experiencia Edad: entre 23 y 35 años Palabras clave: recursos, humanos, human, resources, rrhh, pagador, contralor, accountant, facturista, tesorero, contable, jr, junior, casa, remoto, remote, teletrabajo, home",
+      "sistema_v11_extrajo": null,
+      "veredicto_cyn": "caso 9 — funcion generica (RG-TAR-016)",
+      "gold_tareas": [
+        "realizar tareas administrativas, contables y algunas impositivas"
+      ],
+      "sobras_tipificadas": []
+    },
+    {
+      "n": 41,
+      "id_oferta": "8665011978",
+      "portal": "indeed",
+      "titulo": null,
+      "cuerpo": "Para industria Plastica ubicada en Florida, del Ferrocarril Belgrano, buscamos un Empleado con excelente experiencia laboral en FACTURACION, que domine algun sistema de gestión, tipo América, Tango, Bejerman o similar. Que entienda que es un IVA, Exento, Factura A, Factura B, Consumidor final, etc. Que esté acostumbrado a Facturar, rápido en pa PC.\nEl puesto es Efectivo NO es temporario. De lunes a Viernes de 8,30 a 18 hs. y sabado de por medio de 8,30 a 13 hs. El sueldo inicial es de $ 2.500.000.- bruto. a Relación de dependencia, con posibilidades de crecimiento.\nLugar de trabajo: Empleo presencial - NO home office.\nSueldo: $2.500.000,00 - $2.600.000,00 al mes\nLugar de trabajo: Empleo presencial",
+      "sistema_v11_extrajo": null,
+      "veredicto_cyn": "caso 10 — VACIO (solo requisito)",
+      "gold_tareas": [],
+      "sobras_tipificadas": []
+    },
+    {
+      "n": 42,
+      "id_oferta": "8889067032",
+      "portal": "indeed",
+      "titulo": null,
+      "cuerpo": "Sumá tu energía a la compañía que contribuye al desarrollo de nuestro país.\nEn YPF buscamos personas que quieran ser parte de un gran equipo que transforma desafíos en oportunidades y que actúa con excelencia para generar valor. Con más de cien años de historia, somos la compañía energética líder de la Argentina, impulsando el desarrollo y la innovación tecnológica del país.\n¡Sumarte a YPF es unirte a un proyecto que combina experiencia, pasión y la energía necesaria para seguir construyendo nuestro futuro!\n¿Qué buscamos?\nNos encontramos en la búsqueda de un Supervisor de Integridad y Mantenimiento para la celda de Proyectos de Upstream con más de 4 años de experiencia en el área de Instrumentación y Control dentro de la industria de Oil & Gas.\n¿Qué valoramos como diferencial?\nFormación académica: Técnicos o ingenieros eléctricos, electromecánicos, electrónicos o instrumentistas.\nExperiencia profesional: Más de 4 años en posiciones similares (no excluyente).\nConocimientos informáticos: Conocimiento de redes, programación en cualquier lenguaje, conocimientos de sistemas de instrumentación industrial y experiencia con variadores de frecuencia Siemens, Schneider.\nHerramientas informáticas: Paquete Office, SQL, software específico de la especialidad, SAP/FSM, sistemas SCADA, conocimiento de OSIsoft PI.\nCompetencias: Proactividad, orientación a resultados, uenas relaciones interpersonales y ganas de sumarse a un equipo con espíritu colaborativo.\n¿Cuáles serán tus principales desafíos?\nSupervisar y asegurar en campo la correcta ejecución del montaje, precomisionado, comisionado y puesta en marcha de equipos de electricidad, instrumentación y control en pozos del upstream.\nPlanificar y participar en la programación de trabajos vinculados a la puesta en marcha de nuevos pozos y optimizaciones relacionadas a cambios de sistemas de extracción.\nGarantizar el cumplimiento de estándares técnicos, de calidad, seguridad, salud y medio ambiente.\nVerificar el cumplimiento de alcances, plazos, instructivos, procedimientos y especificaciones técnicas.\nGestionar eficientemente la planificación de trabajos, recursos y materiales.\nAsegurar la correcta utilización de sistemas corporativos y la trazabilidad de la información.\nArticular con distintas áreas internas para la ejecución segura y eficiente de las tareas para cumplir con el plan de inversión de la compañía y puesta en marcha de pozos y cambios de sistema de extracción así como tambien, gestionar permisos de trabajo.\nElaborar y validar informes de ejecución y documentación técnica.\nDefinir y asignar recursos, equipos, herramientas y materiales necesarios.\nValidar el cumplimiento de tareas en campo para su posterior certificación según pliegos técnicos.\nInformación del puesto\nLugar de trabajo: Añelo, Neuquén.\nModalidad: Presencial.\nSi sos una persona que:\nTrabaja con excelencia y profesionalismo.\nDa lo mejor cada día, valora la meritocracia y busca siempre la milla extra.\nVive los desafíos como oportunidades para innovar y aprender.\nDisfruta del trabajo en equipo y del intercambio de distintos puntos de vista.\nEncara los proyectos con pasión y compromiso.\nPromueve un buen clima de trabajo, con empatía, escucha activa y respeto.\n¡Este puesto es para vos!\n¿Qué ofrecemos?\nUn entorno donde podés aportar lo más valioso que tenés: tu energía. Esa energía que impulsa, que se adapta, que aprende, que suma, que transforma.\nSumarte a la #ExperienciaYPF es:\nImpulsar tu desarrollo al siguiente nivel con nuevas oportunidades de aprendizaje.\nCrear soluciones innovadoras que impactan en el país.\nFormar parte de una empresa comprometida con la equidad y la inclusión.\n‍\n️ Disfrutar del acompañamiento integral del Programa Be #BeneficiosYExperiencias.\nPrograma Be (Beneficios y Experiencias)\nDescuentos exclusivos en combustibles, gimnasios y muchos otros productos y servicios.\nIniciativas para estar cerca en los momentos familiares claves: ayuda escolar, licencias parentales extendidas y regalo de nacimiento.\nCobertura médica para vos y tu familia.\nDescuentos especiales en universidades orientados a impulsar estudios de especialización y posgrado.\nServicios de refrigerio, frutas, snacks y comedor (según locación).\n¡Te esperamos para seguir generando valor y construyendo juntos el futuro energético de nuestro país!",
+      "sistema_v11_extrajo": null,
+      "veredicto_cyn": "caso 11 — garantizar como responsabilidad (RG-TAR-013)",
+      "gold_tareas": [
+        "supervisar y asegurar en campo la correcta ejecución del montaje, precomisionado, comisionado y puesta en marcha de equipos de electricidad, instrumentación y control en pozos del upstream",
+        "planificar y participar en la programación de trabajos vinculados a la puesta en marcha de nuevos pozos y optimizaciones",
+        "garantizar el cumplimiento de estándares técnicos, de calidad, seguridad, salud y medio ambiente",
+        "verificar el cumplimiento de alcances, plazos, instructivos, procedimientos y especificaciones técnicas",
+        "gestionar eficientemente la planificación de trabajos, recursos y materiales",
+        "asegurar la correcta utilización de sistemas corporativos y la trazabilidad de la información",
+        "articular con distintas áreas internas para la ejecución segura y eficiente de las tareas y gestionar permisos de trabajo",
+        "elaborar y validar informes de ejecución y documentación técnica",
+        "definir y asignar recursos, equipos, herramientas y materiales necesarios",
+        "validar el cumplimiento de tareas en campo para su posterior certificación según pliegos técnicos"
+      ],
+      "sobras_tipificadas": []
+    },
+    {
+      "n": 43,
+      "id_oferta": "8001095540",
+      "portal": "indeed",
+      "titulo": null,
+      "cuerpo": "Conocer los aspectos e impactos ambientales así como los peligros y\nriesgos asociados a su trabajo y área en la que se desempeña, actuando\nriesgos asociados a su trabajo y área en la que se desempeña, actuando\npermanentemente en forma segura, fomentando el cuidado personal y el\nde sus compañeros de trabajo.\nCumplir con los procedimientos y estándares del Sistema de Gestión\nAmbiental y con los procedimientos y estándares del Sistema de Seguridad\ny Salud Ocupacional.\nAnalizar las cuentas corrientes de los clientes con el fin de detectar y\nconciliar todo tipo de diferencias y partidas (Facturas, Notas de Crédito,\nOrdenes de Pago).\nRealizar el seguimiento oportuno de los clientes deudores, vía telefónica –\ncorreo electrónico y/o reuniones, con el objetivo de garantizar la\nrecuperación de los fondos.\nIngresar las cobranzas y generar los recibos correspondientes, con la\nfinalidad de mantener los saldos de los clientes actualizados, sirviendo\ncomo base la toma de decisiones.\nAsesorar al cliente sobre su situación y brindarle el soporte necesario para\nagilizar el cobro de las facturas pendientes.\nRevisar diariamente los extractos bancarios, con el objetivo de identificar\nlas acreditaciones de pagos no identificados por parte de los clientes.\nElaborar y enviar los estados de cuenta a los clientes deudores.\nRealizar diariamente la apertura y el cierre de caja.\nInvolucrar e informar oportunamente a los responsables de cuenta, de\ncualquier riesgo de cobranza que exista por parte del cliente bajo su\nresponsabilidad.\nVerificar que no existan diferencias cambiarias significativas en los tipos de\ncambio de los pagos de los clientes, en caso de detectar un tipo de cambio\ndiferente al del día o al pactado, generar la corrección correspondiente.\nBrindar asistencia a los auditores externos.\nCreación y validación de información financiera para el ALTA de nuevos o\nreactivación de clientes antiguos.\nValidar las líneas de créditos de los clientes. Gestionar autorización de\nsobregiros en los casos que fueren necesarios y/o suspensión de la línea\nde crédito de los clientes.\nGeneración de reportes, semanal, quincenal y mensual, de las tablas de\ncuentas por cobrar con sus comentarios y seguimientos correspondientes.\nRealizar la previsión de deudores incobrables.\nParticipar como test owner de controles internos.\nRealizar la búsqueda de documentación y carga para el armado de cartas\npara pagos de proveedores intragroup y del exterior.\nCumplimiento del plan de entrenamientos mandatorios (Código de\nConducta, ABC, Competition Law); y su correcta actualización según\ncorresponda.\n\n---\nTipo: FULL_TIME",
+      "sistema_v11_extrajo": null,
+      "veredicto_cyn": "caso 21 — AR sin HSE/compliance (RG-TAR-009)",
+      "gold_tareas": [
+        "analizar las cuentas corrientes de los clientes para detectar y conciliar diferencias y partidas (facturas, notas de crédito, órdenes de pago)",
+        "realizar el seguimiento de los clientes deudores vía telefónica, correo electrónico y/o reuniones",
+        "ingresar las cobranzas y generar los recibos correspondientes",
+        "asesorar al cliente sobre su situación y brindarle soporte para agilizar el cobro de las facturas pendientes",
+        "revisar diariamente los extractos bancarios para identificar acreditaciones de pagos no identificados",
+        "elaborar y enviar los estados de cuenta a los clientes deudores",
+        "realizar diariamente la apertura y el cierre de caja",
+        "informar a los responsables de cuenta sobre cualquier riesgo de cobranza",
+        "verificar que no existan diferencias cambiarias significativas y generar la corrección correspondiente",
+        "brindar asistencia a los auditores externos",
+        "crear y validar información financiera para el alta o reactivación de clientes",
+        "validar las líneas de crédito de los clientes y gestionar autorización de sobregiros o suspensión de la línea de crédito",
+        "generar reportes semanales, quincenales y mensuales de las cuentas por cobrar",
+        "realizar la previsión de deudores incobrables",
+        "participar como test owner de controles internos",
+        "realizar la búsqueda de documentación y carga para el armado de cartas de pago a proveedores intragroup y del exterior"
       ],
       "sobras_tipificadas": []
     }

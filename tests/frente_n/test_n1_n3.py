@@ -102,6 +102,45 @@ def test_n3_conserva_tareas_validas():
     assert desc == []
 
 
+# ── N3 v12.4: herramienta verbalizada (RG-TAR-008) ──
+def test_n3_filtra_herramienta_verbalizada():
+    ok, desc = postfiltrar(['usar taladros', 'utilizar pulidoras', 'emplear remachadoras',
+                            'manejar herramientas eléctricas y neumáticas', 'manejo de Excel',
+                            'pulir piezas de PRFV'])
+    assert ok == ['pulir piezas de PRFV']                  # solo la acción productiva pasa
+    assert all(d['motivo'] == 'herramienta_verbalizada' for d in desc)
+    assert len(desc) == 5
+
+
+def test_n3_no_filtra_herramienta_de_medicion_ni_remitos():
+    # protegidos: "usar y mantener herramientas de medición" (C4) y "manejar remitos" (chofer)
+    ok, _ = postfiltrar(['usar y mantener herramientas de medición', 'manejar remitos',
+                         'conducir chasis de 8 y 12 pallets'])
+    assert len(ok) == 3
+
+
+# ── N3 v12.4: compliance/HSE pasivo (RG-TAR-009) ──
+def test_n3_filtra_compliance_hse_pasivo():
+    ok, desc = postfiltrar([
+        'conocer los aspectos e impactos ambientales así como peligros y riesgos',
+        'actuar permanentemente en forma segura',
+        'cumplir el plan de entrenamientos mandatorios (código de conducta)'])
+    assert ok == []
+    assert all(d['motivo'] == 'compliance_hse_pasivo' for d in desc)
+
+
+def test_n3_no_filtra_compliance_como_responsabilidad():
+    # protegidos: caso 4 ("cumplir normas/procedimientos de seguridad") y caso 11
+    # ("garantizar/verificar el cumplimiento") — son tareas, NO se filtran.
+    tareas = ['cumplir las normas y procedimientos en materia de seguridad integral',
+              'garantizar el cumplimiento de estándares de calidad, seguridad y medio ambiente',
+              'controlar el cumplimiento de normas',
+              'inspeccionar riesgos ambientales']
+    ok, desc = postfiltrar(tareas)
+    assert ok == tareas
+    assert desc == []
+
+
 # ── N1 guard título-only ──
 def test_guard_titulo_only():
     from limpiar_chrome import parece_solo_titulo
