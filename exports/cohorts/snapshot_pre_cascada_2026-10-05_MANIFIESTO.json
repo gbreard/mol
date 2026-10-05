@@ -1,0 +1,32 @@
+{
+ "_meta": {
+  "proposito": "[CASCADA v12.4] Snapshot PRE-cascada (reversibilidad + linaje viejo). Los .gz quedan EN DISCO; este manifiesto los registra con sha256.",
+  "generado": "2026-10-05",
+  "extractor_destino": "tareas v12.4 (frente N: 16 RG-TAR, qwen2.5:14b)",
+  "capas_congeladas": "tareas_v11 (se reemplazan) + skills (v11, NO se re-derivan acá) + matching (pre-re-matching, candado F0.4b)",
+  "candado_F0.4b": {
+   "validado": 6275,
+   "en_revision": 38,
+   "rule_manual_fix": 13
+  },
+  "candado_total": 6326,
+  "nota_candado": "El candado protege DECISIONES de matching; las TAREAS de estas filas SÍ se re-extraen (laudo). Skills: ventana abierta hasta el frente O."
+ },
+ "archivos": {
+  "exports/cohorts/snapshot_pre_cascada_2026-10-05_tareas_v11.jsonl.gz": {
+   "sha256": "27d327480e0e831f5959a698b11e5fef8e0bb70f138458a46d415d66dd962be8",
+   "bytes": 11216237,
+   "filas": 98709
+  },
+  "exports/cohorts/snapshot_pre_cascada_2026-10-05_matching.jsonl.gz": {
+   "sha256": "cc0099a6c2263349ae054f7fbfb6a5f92630884deb610db61b314a315c292289",
+   "bytes": 3900647,
+   "filas": 97124
+  },
+  "exports/cohorts/snapshot_pre_cascada_2026-10-05_skills.jsonl.gz": {
+   "sha256": "1fb4bcf2cd13a7aee4717f0b44f1e6aca1cc8e247bc88c61e958bac923e39e60",
+   "bytes": 169017547,
+   "filas": 2826638
+  }
+ }
+}
