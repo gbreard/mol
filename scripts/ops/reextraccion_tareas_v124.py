@@ -22,6 +22,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 DB = ROOT / 'database' / 'bumeran_scraping.db'
+# STAGING en DB PROPIA: el main DB tiene escritores continuos (sync_scraping_dinamica,
+# pipeline_command_poller cada minuto, scraping crons) → 'database is locked'. El runner
+# LEE el main en modo RO (los lectores WAL nunca bloquean) y ESCRIBE solo a este archivo.
+STAGING_DB = ROOT / 'database' / 'cascada_staging.db'
 sys.path.insert(0, str(ROOT / 'scripts' / 'frente_n'))
 os.environ.setdefault('MODEL_TAREAS', 'qwen2.5:14b')
 from gate_runner import correr_caso, MODEL   # noqa: E402
@@ -39,16 +43,27 @@ CREATE TABLE IF NOT EXISTS ofertas_nlp_tareas_v124 (
 )"""
 
 
+def _conectar():
+    """Conexión de ESCRITURA al staging propio + ATTACH del main DB como RO (src)."""
+    con = sqlite3.connect(f'file:{STAGING_DB}', uri=True, timeout=120)
+    con.execute('PRAGMA journal_mode=WAL')
+    con.execute('PRAGMA busy_timeout=120000')
+    con.execute(STAGING_DDL)
+    con.execute(f"ATTACH DATABASE 'file:{DB}?mode=ro' AS src")
+    con.commit()
+    return con
+
+
 def _candidatos(con, limit):
     """Ofertas a re-extraer: primarias con descripción procesable, no hechas aún.
-    Orden: más recientes primero (COALESCE de fechas disponibles)."""
-    cols = [r[1] for r in con.execute("PRAGMA table_info(ofertas)")]
+    Orden: más recientes primero. Lee de src (main RO), excluye el staging local."""
+    cols = [r[1] for r in con.execute("PRAGMA src.table_info(ofertas)")]
     fecha = next((c for c in ('fecha_publicacion', 'scrapeado_en', 'fecha_scraping', 'created_at')
                   if c in cols), 'id_oferta')
     q = f"""
       SELECT n.id_oferta, o.portal, COALESCE(o.descripcion_utf8, o.descripcion) AS desc
-      FROM ofertas_nlp n
-      JOIN ofertas o ON CAST(o.id_oferta AS TEXT) = n.id_oferta
+      FROM src.ofertas_nlp n
+      JOIN src.ofertas o ON CAST(o.id_oferta AS TEXT) = n.id_oferta
       WHERE (n.es_suboferta IS NULL OR n.es_suboferta = 0)
         AND length(COALESCE(o.descripcion_utf8, o.descripcion, '')) > 80
         AND n.id_oferta NOT IN (SELECT id_oferta FROM ofertas_nlp_tareas_v124)
@@ -62,10 +77,7 @@ def main():
     ap.add_argument('--limit', type=int, default=40)
     ap.add_argument('--tanda', default='checkpoint')
     args = ap.parse_args()
-    con = sqlite3.connect(DB, timeout=60)
-    con.execute('PRAGMA journal_mode=WAL')
-    con.execute(STAGING_DDL)
-    con.commit()
+    con = _conectar()
     cands, fecha_col = _candidatos(con, args.limit)
     print(f'[tanda {args.tanda}] modelo={MODEL} orden=por {fecha_col} DESC  candidatos={len(cands)}', flush=True)
     t0 = time.time()
