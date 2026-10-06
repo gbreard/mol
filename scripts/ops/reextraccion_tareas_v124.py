@@ -39,7 +39,8 @@ CREATE TABLE IF NOT EXISTS ofertas_nlp_tareas_v124 (
   modelo TEXT,
   dur_ms INTEGER,
   tanda TEXT,
-  ts TEXT
+  ts TEXT,
+  primera_extraccion INTEGER DEFAULT 0
 )"""
 
 
@@ -49,27 +50,45 @@ def _conectar():
     con.execute('PRAGMA journal_mode=WAL')
     con.execute('PRAGMA busy_timeout=120000')
     con.execute(STAGING_DDL)
+    # idempotente: staging viejo (pre-ampliación) no tiene la columna
+    cols = [r[1] for r in con.execute("PRAGMA table_info(ofertas_nlp_tareas_v124)")]
+    if 'primera_extraccion' not in cols:
+        con.execute("ALTER TABLE ofertas_nlp_tareas_v124 ADD COLUMN primera_extraccion INTEGER DEFAULT 0")
     con.execute(f"ATTACH DATABASE 'file:{DB}?mode=ro' AS src")
     con.commit()
     return con
 
 
 def _candidatos(con, limit):
-    """Ofertas a re-extraer: primarias con descripción procesable, no hechas aún.
-    Orden: más recientes primero. Lee de src (main RO), excluye el staging local."""
+    """Universo v12.4 = RE-EXTRACCIONES (con nlp v11, primera=0) + PRIMERAS-EXTRACCIONES
+    (sin fila nlp, primera=1, backlog desde la pausa de la semanal). Ambas primarias con
+    descripción procesable. Orden: re-extracciones PRIMERO (el shadow P3 las necesita),
+    luego primeras; dentro de cada grupo, más recientes primero. Excluye el staging local."""
     cols = [r[1] for r in con.execute("PRAGMA src.table_info(ofertas)")]
     fecha = next((c for c in ('fecha_publicacion', 'scrapeado_en', 'fecha_scraping', 'created_at')
                   if c in cols), 'id_oferta')
     q = f"""
-      SELECT n.id_oferta, o.portal, COALESCE(o.descripcion_utf8, o.descripcion) AS desc
-      FROM src.ofertas_nlp n
-      JOIN src.ofertas o ON CAST(o.id_oferta AS TEXT) = n.id_oferta
-      WHERE (n.es_suboferta IS NULL OR n.es_suboferta = 0)
-        AND length(COALESCE(o.descripcion_utf8, o.descripcion, '')) > 80
-        AND n.id_oferta NOT IN (SELECT id_oferta FROM ofertas_nlp_tareas_v124)
-      ORDER BY o.{fecha} DESC
+      SELECT id_oferta, portal, desc, primera, fecha FROM (
+        SELECT n.id_oferta AS id_oferta, o.portal AS portal,
+               COALESCE(o.descripcion_utf8, o.descripcion) AS desc,
+               0 AS primera, o.{fecha} AS fecha
+        FROM src.ofertas_nlp n
+        JOIN src.ofertas o ON CAST(o.id_oferta AS TEXT) = n.id_oferta
+        WHERE (n.es_suboferta IS NULL OR n.es_suboferta = 0)
+          AND length(COALESCE(o.descripcion_utf8, o.descripcion, '')) > 80
+        UNION ALL
+        SELECT CAST(o.id_oferta AS TEXT) AS id_oferta, o.portal AS portal,
+               COALESCE(o.descripcion_utf8, o.descripcion) AS desc,
+               1 AS primera, o.{fecha} AS fecha
+        FROM src.ofertas o
+        WHERE CAST(o.id_oferta AS TEXT) NOT IN (SELECT id_oferta FROM src.ofertas_nlp)
+          AND length(COALESCE(o.descripcion_utf8, o.descripcion, '')) > 80
+      )
+      WHERE id_oferta NOT IN (SELECT id_oferta FROM ofertas_nlp_tareas_v124)
+      ORDER BY primera ASC, fecha DESC
       LIMIT ?"""
-    return con.execute(q, (limit,)).fetchall(), fecha
+    rows = con.execute(q, (limit,)).fetchall()
+    return rows, fecha
 
 
 def main():
@@ -79,11 +98,13 @@ def main():
     args = ap.parse_args()
     con = _conectar()
     cands, fecha_col = _candidatos(con, args.limit)
-    print(f'[tanda {args.tanda}] modelo={MODEL} orden=por {fecha_col} DESC  candidatos={len(cands)}', flush=True)
+    n_prim = sum(1 for c in cands if c[3] == 1)
+    print(f'[tanda {args.tanda}] modelo={MODEL} orden=re-ext→primera, {fecha_col} DESC  '
+          f'candidatos={len(cands)} (re-ext={len(cands)-n_prim} primera={n_prim})', flush=True)
     t0 = time.time()
     n_vac = n_err = 0
     dists = []
-    for i, (oid, portal, desc) in enumerate(cands, 1):
+    for i, (oid, portal, desc, primera, _f) in enumerate(cands, 1):
         tc = time.time()
         try:
             run = correr_caso(desc, portal)
@@ -96,10 +117,10 @@ def main():
         if not tareas:
             n_vac += 1
         dists.append(len(tareas))
-        con.execute("INSERT OR REPLACE INTO ofertas_nlp_tareas_v124 VALUES (?,?,?,?,?,?,?,?)",
+        con.execute("INSERT OR REPLACE INTO ofertas_nlp_tareas_v124 VALUES (?,?,?,?,?,?,?,?,?)",
                     (oid, json.dumps(tareas, ensure_ascii=False), len(tareas),
                      json.dumps(run['postfiltradas'], ensure_ascii=False), MODEL, dur,
-                     args.tanda, time.strftime('%Y-%m-%dT%H:%M:%S')))
+                     args.tanda, time.strftime('%Y-%m-%dT%H:%M:%S'), primera))
         if i % 10 == 0:
             con.commit()
             rate = i / (time.time() - t0) * 3600
