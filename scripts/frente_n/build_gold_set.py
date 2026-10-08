@@ -61,11 +61,15 @@ GOLD = {
         "tareas de contabilidad general",
         "tareas generales de oficina",
     ],
-    '1118316198': [  # C6 FALLA
+    '1118316198': [  # C6 — re-adjudicado v12.3 (hoja 2 C6). Verificado contra el aviso:
+        # las 3 extra (medición/CRM/IA) SÍ están en el bloque "Sus tareas fundamentales serán:" → entran.
         "planificar, ejecutar y optimizar la estrategia de performance digital",
         "impulsar la adquisición de usuarios",
         "monitorear y analizar indicadores clave como CPA, ROAS, conversión, retención y calidad de tráfico",
         "identificar oportunidades de mejora a partir del análisis de datos y comportamiento de usuarios",
+        "implementar y validar herramientas de medición, tracking y atribución digital",
+        "gestionar acciones de CRM, segmentación y automatización para potenciar la retención",
+        "utilizar herramientas de IA para optimizar procesos, generar insights y mejorar el rendimiento de las campañas",
     ],
     '2176705': [  # C7 FALLA
         "diseñar, desarrollar y entregar soluciones de software confiables y de alta calidad",
@@ -86,7 +90,8 @@ GOLD = {
         "realizar prospección activa presencial y/o digital de nuevos clientes individuales y corporativos, gestionando el proceso completo de venta: presupuestación por segmento, cierre y documentación para el alta",
         "recibir y gestionar leads provenientes de distintos canales",
         "registrar y realizar seguimiento de la gestión comercial en CRM",
-        "analizar la competencia y reportar acciones del mercado",
+        "analizar la competencia",           # C12 v12.3: separadas (autonomía funcional, hoja 1)
+        "reportar acciones del mercado",
     ],
     '5273316732': [  # C13 FALLA
         "ofrecer productos bancarios",
@@ -149,8 +154,158 @@ GOLD = {
         "implementar estándares de HMI según ISA-101 y guías de alto rendimiento (High Performance HMI)",
         "coordinar con Operaciones para definir requerimientos de visualización y optimizar interfaces de operador",
         "elaborar documentación técnica de pantallas SCADA (especificaciones funcionales, narrativas de operación, manuales de usuario)",
+        "supervisar contratistas de servicios de automatización en desarrollos SCADA",  # C28 v12.3: verificado en el texto → entra
+    ],
+    # ── 4 casos de la hoja 3 (listas escuetas sin verbo) — veredicto de Cyn ──
+    # v12.4 FLIP (Frente_N_preguntas_Cyn (3), hoja "3-listas sin verbo", fila chofer +
+    # QWEN_TAREAS_CASOS_ENTRENAMIENTO caso 17): el chofer VUELVE A VACÍO. Sus actividades
+    # ("Manejo de Chasis…", "Manejo de Remitos", "control de la mercadería") están TODAS
+    # bajo "Requisitos Excluyentes: Experiencia Verificable en el manejo de:" → requisitos,
+    # NO tareas (RG-TAR-005). v12.2 trabajaba BIEN dejándolo []. El oro se corrige (el
+    # principio de COMO_USAR orden 6: la referencia oro puede necesitar corrección).
+    '1117212619': [],  # Chofer de camiones → VACÍO (flip v12.4, RG-TAR-005)
+    '2184455': [  # Electricista/Montador/Herrero — todas menos "manejo de herramientas" (RG-TAR-008)
+        "instalar tendidos eléctricos en automotores",
+        "laminar y pulir PRFV",
+        "fabricar y reparar piezas en fibra de vidrio",
+        "armar estructuras metálicas",
+    ],
+    '7853619060': [  # Atención de mostrador — bloque "Tareas principales" (6, incl. limpieza)
+        "reponer mercadería",
+        "atender al público",
+        "realizar tareas de depósito",
+        "embalar",
+        "cargar y descargar mercadería",
+        "limpiar y mantener el lugar de trabajo",  # v12.4: 6ta tarea, verificada en el bloque
+    ],
+    '8802322877': [  # Ejecutivo de ventas — "desarrollar y potenciar cartera" (una sola, del pitch)
+        "desarrollar y potenciar la cartera de clientes",
+    ],
+    # ── 11 casos NUEVOS de entrenamiento (QWEN_TAREAS_CASOS_ENTRENAMIENTO) — v12.4 ──
+    # Gold encodeado contra el cuerpo real de BD (verificado). Idioma fiel al aviso.
+    '8839648839': [  # caso 1 — Project Manager (indeed, aviso EN → el modelo TRADUCE al español).
+        # Gold en español (fiel a la salida del modelo con prompt en español). Preservar nivel (RG-TAR-014).
+        "gestionar integralmente el proceso de entrega de las órdenes asignadas",
+        "coordinar con recursos internos y terceros contratados para cumplir requisitos y plazos del cliente",
+        "comunicarse regularmente con los clientes brindando actualizaciones claras y consistentes",
+        "gestionar tareas como la orden de circuitos de internet, proyectos VoIP alojados y procesos de portabilidad numérica",
+        "documentar dependencias y prioridades para la ejecución del proyecto",
+        # fuera: "utilizar experiencia práctica / demostrar expertise" = experiencia/expertise;
+        #        "asumir responsabilidades adicionales según sea necesario" = relleno vago.
+    ],
+    '7675133068': [  # caso 2 — Cheker Químico (computrabajo). Mismo proceso, tareas distintas (RG-TAR-011).
+        "autorizar la puesta en marcha de la línea de producción",
+        "realizar seguimiento de los lotes productivos",
+        "controlar y liberar áreas de producción",
+        "controlar el acondicionamiento en líneas",
+        "muestrear materias primas, semielaborados, productos terminados y material de empaque",
+        "realizar controles fisicoquímicos de materias primas, semielaborados y productos terminados",
+    ],
+    '5092480960': [  # caso 3 — Asistente Personal Ejecutiva (computrabajo). Conservar generalidad (RG-TAR-016).
+        "gestionar integralmente la agenda y las prioridades",
+        "coordinar reuniones, viajes y logística",
+        "comunicarse directamente con socios, proveedores y equipo",
+        "organizar información sensible y brindar soporte ejecutivo",
+        "resolver situaciones con autonomía y criterio",
+    ],
+    '8493010864': [  # caso 5 — Responsable elaboración cosméticos (computrabajo). Bloque Tareas/Funciones.
+        "ejecutar y supervisar la elaboración de productos cosméticos según fórmulas aprobadas y procedimientos establecidos",
+        "preparar y dosificar materias primas, controlando pesos, tiempos y condiciones del proceso",
+        "controlar parámetros de proceso (temperatura, agitación, tiempos, homogeneidad)",
+        "registrar documentación productiva: órdenes de producción, hojas de lote y controles de proceso",
+        "coordinar con las áreas de Calidad, I+D y Producción ante desvíos o ajustes de formulación",
+        "mantener el orden, limpieza y correcto uso de equipos e instalaciones del laboratorio",
+        "detectar desvíos, proponer mejoras y colaborar en la optimización de procesos productivos",
+        # fuera (frontera RG-TAR-009, se LISTA para Cyn): "asegurar el cumplimiento de GMP y normativas internas",
+        #        "cumplir con normas de seguridad e higiene industrial".
+    ],
+    '7916148421': [  # caso 6 — Gestor Express (computrabajo). N1 corta el chrome (RG-TAR-001).
+        "brindar asesoramiento personalizado a clientes",
+        "ordenar y coordinar las filas del banco",
+        "atender y gestionar reclamos",
+    ],
+    '8046413181': [  # caso 7 — Ejecutivo Sr Operaciones Turismo (indeed). "asegurar" como unidad (RG-TAR-013).
+        "coordinar documentación de viaje y asegurar que todo esté en tiempo y forma",
+        "gestionar bookings para Argentina, Chile, Perú, Colombia y Ecuador",
+        "mantener una comunicación fluida, enviando confirmaciones y updates",
+        "revisar itinerarios, actualizar costos y coordinar facturación",
+        "atender el teléfono de emergencia (rotativo)",
+    ],
+    '8016348095': [  # caso 8 — Ejecutivo Empresas Minería (indeed). Finalidad subordinada fuera (RG-TAR-013).
+        "brindar atención personalizada a compañías de minería, ofreciendo soluciones financieras adaptadas",
+        "gestionar y ampliar la cartera de clientes del segmento empresas del sector minero, realizando visitas periódicas",
+        "desarrollar propuestas comerciales y financieras para empresas de minería",
+        "realizar análisis de riesgos y viabilidad de proyectos comerciales del sector minero",
+        "supervisar y hacer seguimiento de las operaciones y servicios brindados",
+        "identificar oportunidades de negocio, participando en la promoción de productos y servicios",
+        # fuera: "asegurando la satisfacción del cliente y el cumplimiento de los plazos" = finalidad.
+    ],
+    '5558920196': [  # caso 9 — Contador Junior (computrabajo). Función genérica, NO desglosar (RG-TAR-016).
+        "realizar tareas administrativas, contables y algunas impositivas",
+        # NO inventar "liquidar impuestos / conciliar cuentas / preparar balances".
+    ],
+    '8665011978': [],  # caso 10 — Empleado Administrativo (indeed) → VACÍO (solo requisito "facturar").
+    '8889067032': [  # caso 11 — Supervisor Mantenimiento YPF (indeed). "garantizar/asegurar" como responsabilidad (RG-TAR-013).
+        "supervisar y asegurar en campo la correcta ejecución del montaje, precomisionado, comisionado y puesta en marcha de equipos de electricidad, instrumentación y control en pozos del upstream",
+        "planificar y participar en la programación de trabajos vinculados a la puesta en marcha de nuevos pozos y optimizaciones",
+        "garantizar el cumplimiento de estándares técnicos, de calidad, seguridad, salud y medio ambiente",
+        "verificar el cumplimiento de alcances, plazos, instructivos, procedimientos y especificaciones técnicas",
+        "gestionar eficientemente la planificación de trabajos, recursos y materiales",
+        "asegurar la correcta utilización de sistemas corporativos y la trazabilidad de la información",
+        "articular con distintas áreas internas para la ejecución segura y eficiente de las tareas y gestionar permisos de trabajo",
+        "elaborar y validar informes de ejecución y documentación técnica",
+        "definir y asignar recursos, equipos, herramientas y materiales necesarios",
+        "validar el cumplimiento de tareas en campo para su posterior certificación según pliegos técnicos",
+    ],
+    '8001095540': [  # caso 21 — Account Receivable Analyst (indeed). Tareas concretas MENOS HSE/compliance (RG-TAR-009).
+        "analizar las cuentas corrientes de los clientes para detectar y conciliar diferencias y partidas (facturas, notas de crédito, órdenes de pago)",
+        "realizar el seguimiento de los clientes deudores vía telefónica, correo electrónico y/o reuniones",
+        "ingresar las cobranzas y generar los recibos correspondientes",
+        "asesorar al cliente sobre su situación y brindarle soporte para agilizar el cobro de las facturas pendientes",
+        "revisar diariamente los extractos bancarios para identificar acreditaciones de pagos no identificados",
+        "elaborar y enviar los estados de cuenta a los clientes deudores",
+        "realizar diariamente la apertura y el cierre de caja",
+        "informar a los responsables de cuenta sobre cualquier riesgo de cobranza",
+        "verificar que no existan diferencias cambiarias significativas y generar la corrección correspondiente",
+        "brindar asistencia a los auditores externos",
+        "crear y validar información financiera para el alta o reactivación de clientes",
+        "validar las líneas de crédito de los clientes y gestionar autorización de sobregiros o suspensión de la línea de crédito",
+        "generar reportes semanales, quincenales y mensuales de las cuentas por cobrar",
+        "realizar la previsión de deudores incobrables",
+        "participar como test owner de controles internos",
+        "realizar la búsqueda de documentación y carga para el armado de cartas de pago a proveedores intragroup y del exterior",
+        # fuera (RG-TAR-009): "conocer los aspectos e impactos ambientales…", "actuar en forma segura",
+        #        "cumplir con los procedimientos del sistema de gestión ambiental/seguridad",
+        #        "cumplimiento del plan de entrenamientos mandatorios".
     ],
 }
+
+# Casos nuevos (no están en la hoja "28 casos" del Excel original): id → (portal, veredicto)
+# 4 de la hoja 3 + 11 de QWEN_TAREAS_CASOS_ENTRENAMIENTO (v12.4). Cuerpo desde BD.
+NUEVOS_HOJA3 = {
+    '1117212619': ('bumeran', 'VACIO (flip v12.4: requisitos, RG-TAR-005)'),
+    '2184455': ('zonajobs', 'TAREAS (hoja 3; sin herramientas, RG-TAR-008)'),
+    '7853619060': ('portalempleo', 'TAREAS (hoja 3; 6, Tareas principales)'),
+    '8802322877': ('computrabajo', 'TAREAS (hoja 3; 1, del pitch, RG-TAR-004)'),
+    # ── 11 casos de entrenamiento del maestro (v12.4) ──
+    '8839648839': ('indeed', 'caso 1 — nivel de intervencion (RG-TAR-014)'),
+    '7675133068': ('computrabajo', 'caso 2 — mismo proceso, tareas distintas (RG-TAR-011)'),
+    '5092480960': ('computrabajo', 'caso 3 — generalidad (RG-TAR-016)'),
+    '8493010864': ('computrabajo', 'caso 5 — bloque Tareas; HSE fuera (frontera RG-TAR-009)'),
+    '7916148421': ('computrabajo', 'caso 6 — chrome del portal (RG-TAR-001/N1)'),
+    '8046413181': ('indeed', 'caso 7 — asegurar como unidad (RG-TAR-013)'),
+    '8016348095': ('indeed', 'caso 8 — finalidad subordinada fuera (RG-TAR-013)'),
+    '5558920196': ('computrabajo', 'caso 9 — funcion generica (RG-TAR-016)'),
+    '8665011978': ('indeed', 'caso 10 — VACIO (solo requisito)'),
+    '8889067032': ('indeed', 'caso 11 — garantizar como responsabilidad (RG-TAR-013)'),
+    '8001095540': ('indeed', 'caso 21 — AR sin HSE/compliance (RG-TAR-009)'),
+}
+
+# RG-TAR-003 (multipuesto): id 8126765799 (Operario textil Costureros/Tejedores/Cortadores)
+# NO entra al gold. El extractor es por-oferta y NO separa tareas por puesto; scorearlo
+# contra una unión de tareas penalizaría injustamente la fusión. Se LISTA para Cyn y se
+# cruza con el multi-position del pipeline en el reporte (verificación RG-TAR-003).
+MULTIPUESTO_FLAG = {'8126765799': 'Operario textil (Costureros/Tejedores/Cortadores) — RG-TAR-003'}
 
 # Sobras TIPIFICADAS que Cyn marcó explícitamente (para el chequeo "cero sobras").
 SOBRAS_TIPIFICADAS = {
@@ -188,10 +343,27 @@ def main():
         })
     faltan = [c['id_oferta'] for c in casos if c['id_oferta'] not in GOLD]
     assert not faltan, f'IDs sin gold encodeado: {faltan}'
+    # ── anexar los 4 casos nuevos de la hoja 3 (cuerpo completo desde BD) ──
+    import sqlite3
+    con = sqlite3.connect(f"file:{ROOT/'database/bumeran_scraping.db'}?mode=ro", uri=True)
+    ints = [int(x) for x in NUEVOS_HOJA3]
+    ph = ','.join('?' * len(ints))
+    cuerpos = {str(r[0]): r[1] for r in con.execute(
+        f"SELECT id_oferta, COALESCE(descripcion_utf8,descripcion) FROM ofertas WHERE id_oferta IN ({ph})", ints)}
+    n0 = len(casos)
+    for i, (oid, (portal, ver)) in enumerate(NUEVOS_HOJA3.items(), 1):
+        casos.append({'n': n0 + i, 'id_oferta': oid, 'portal': portal, 'titulo': None,
+                      'cuerpo': cuerpos.get(oid), 'sistema_v11_extrajo': None,
+                      'veredicto_cyn': ver, 'gold_tareas': GOLD[oid], 'sobras_tipificadas': []})
     doc = {
-        'version': '1.0',
-        'fuente': 'validacion_tareas_respuestas_2026-08-26.xlsx (28 casos, Cyn)',
-        'nota': 'gold_tareas a granularidad de unidad funcional (método Cyn). [] = vacío válido.',
+        'version': '1.2-v12.4',
+        'fuente': 'validacion_tareas_respuestas_2026-08-26.xlsx (28) + entrega_maestro_qwen_2026-09 '
+                  '(16 RG-TAR + 21 casos entrenamiento + 3 finales + flip chofer)',
+        'nota': 'gold re-adjudicado contra las 16 RG-TAR (v12.4). FLIP chofer 1117212619 → [] '
+                '(requisitos, RG-TAR-005). mostrador +limpieza (6). 11 casos nuevos de entrenamiento. '
+                'multipuesto 8126765799 fuera del gold (RG-TAR-003, se lista para Cyn). '
+                'granularidad = autonomía funcional. [] = vacío válido.',
+        'multipuesto_flag': MULTIPUESTO_FLAG,
         'n_casos': len(casos),
         'n_ok': sum(1 for c in casos if c['veredicto_cyn'].upper().startswith('OK')),
         'casos': casos,
