@@ -26,6 +26,7 @@ import time
 import random
 import logging
 from datetime import datetime, timedelta
+from pathlib import Path
 from typing import List, Dict, Optional, Set
 
 logging.basicConfig(
@@ -53,6 +54,14 @@ DESC_SELECTORS = [
 # cuales de los selectores existian (y con que largo de texto).
 MUDA_MUESTRA_MAX = 25          # cuantas mudas se registran por corrida
 MUDA_HTML_SAMPLE = 400         # chars de HTML que se guardan por muestra
+
+# SONDA DEL PANEL (2026-10-08, dx run-vacio): cuando las fichas salen mudas, el
+# log solo guarda 400 chars — insuficiente para derivar el selector nuevo del DOM.
+# Esto vuelca el HTML COMPLETO del panel de las primeras N mudas a archivo, para
+# inspeccionar el DOM real y re-derivar DESC_SELECTORS SIN adivinar. Se dispara
+# solo en la proxima corrida que encuentre mudas (es decir, al proximo GO).
+PANEL_DUMP_DIR = Path(__file__).resolve().parents[3] / "data" / "indeed_panel_dumps"
+PANEL_DUMP_MAX = 2             # cuantos paneles completos se vuelcan por corrida
 
 # Patron de fecha relativa en la tarjeta del listado (fallback D2)
 _RE_HACE_N = re.compile(r'hace\s+m[aá]s\s+de\s+(\d+)\s*d[ií]a', re.I)
@@ -92,6 +101,7 @@ class IndeedScraperHeaded:
         self.nogo_motivo: Optional[str] = None      # blocked|challenge|login|error:<x>
         self.detalle_bloqueado = False
         self.mudas_muestra = []
+        self._panel_dumps = 0          # sonda: paneles completos ya volcados a archivo
         self.stats = {
             'keywords': 0, 'tarjetas_unicas': 0, 'fichas_intentadas': 0,
             'con_descripcion': 0, 'con_jsonld': 0, 'fecha_jsonld': 0,
@@ -123,6 +133,18 @@ class IndeedScraperHeaded:
         try:
             html = page.content()
             info['html_len'] = len(html)
+            # SONDA: volcar el panel COMPLETO de las primeras N mudas a archivo
+            # (no al log) para derivar los selectores del DOM real.
+            if self._panel_dumps < PANEL_DUMP_MAX:
+                try:
+                    PANEL_DUMP_DIR.mkdir(parents=True, exist_ok=True)
+                    jk = info['jk'] or f'idx{self._panel_dumps}'
+                    dump = PANEL_DUMP_DIR / f"panel_{jk}.html"
+                    dump.write_text(html, encoding='utf-8')
+                    self._panel_dumps += 1
+                    logger.info(f"  SONDA: panel volcado a {dump} ({len(html)} chars)")
+                except Exception as e:
+                    logger.warning(f"  SONDA: no se pudo volcar panel: {e}")
             # marcadores que distinguen challenge / login / panel vacio
             low = html.lower()
             info['marcadores'] = [m for m in (
