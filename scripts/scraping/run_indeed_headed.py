@@ -207,14 +207,24 @@ def main():
     elif args.dry_run:
         logger.info("DRY-RUN: no se inserta")
 
-    # avanzar offset (produccion)
+    # avanzar offset (produccion) — SOLO si la corrida extrajo descripciones.
+    # Un run GO que no saca NINGUNA descripcion (p.ej. DOM del panel cambiado,
+    # fichas todas "mudas") NO debe marchar el offset ni setear ultima_corrida:
+    # si lo hiciera, quemaria el cupo diario y desfilaria por las keywords sin
+    # bajar nada, auto-ocultando el fallo (dx 2026-10-08). Gateado en
+    # con_descripcion para reintentar el MISMO tramo hasta que la extraccion
+    # vuelva a andar (gatear en insertadas rompe con tramos todo-duplicado).
     if not args.no_advance and not args.dry_run:
-        nuevo = offset + args.max_keywords
-        if nuevo >= total:
-            nuevo = 0
-        loc = state.setdefault('local', {})
-        loc['ultima_corrida'] = datetime.now().isoformat()
-        loc['proximo_offset'] = nuevo
+        if st.get('con_descripcion', 0) > 0:
+            nuevo = offset + args.max_keywords
+            if nuevo >= total:
+                nuevo = 0
+            loc = state.setdefault('local', {})
+            loc['ultima_corrida'] = datetime.now().isoformat()
+            loc['proximo_offset'] = nuevo
+        else:
+            logger.warning("run sin descripciones: no avanza offset, reintenta el tramo "
+                           "(posible cambio de DOM del panel — revisar data/indeed_panel_dumps/)")
     guardar_state(args.state, state)
 
     gate = _gate(ofertas, st) if args.prototipo else None
