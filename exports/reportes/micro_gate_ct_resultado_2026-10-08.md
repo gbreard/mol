@@ -53,3 +53,43 @@ Zona de…") cuyo slug no matchea en el buscador.
 ## Estado del código
 Implementación + 10 tests + micro-gate en la rama (`963ec1f3`). **Config SIN tocar
 (`extraccion_A`)** → nada activado. Cron NO modificado. No mergeado a main.
+
+---
+
+## ITERACIÓN (2026-10-08, commit 1f362bc4) — query de TÍTULO LIMPIO
+
+**Cambio:** query = título limpio (sin paréntesis ni ubicación/cualificador
+zona/por/para/turno) en vez del slug crudo; en tope el reintento SOLO promueve a
+viva, nunca a caída.
+
+**Gate PRIMARIO (ground-truth, 50 CT `activa` de hoy = vivas seguras) — PASA:**
+| métrica | antes | ahora | criterio |
+|---|---|---|---|
+| falsa-caída | 12% | **0,0% (0/50)** | <5% ✓ |
+| ambiguas | 39,3% | **2,0% (1/50)** | <10% ✓ |
+| viva detectada | — | 98% (49/50) | — |
+
+La única ambigua ("Recursos Humanos", título genérico) es correcta: tope → no
+confirma ni falsea.
+
+**Gate SECUNDARIO (franja [63,126], 150):** 12 viva / 52 caída / **86 ambigua**.
+%vivas sobre decididas = **18,8%** (borde bajo de la banda 20-25%).
+
+### ⚠️ Caveat material: ambigüedad ALTA en la cola real (57%)
+En el control (ofertas de HOY) la ambigüedad es 2%; en la franja (ofertas VIEJAS,
+63-126d) sube a **57%**. Razón: el buscador de CT ordena por relevancia/recencia;
+una oferta vieja-pero-viva con título común queda sepultada fuera de las 2 páginas
+que se miran → **tope → ambigua** (no falsa-caída — eso sigue en 0). Consecuencias:
+- El drenaje de las 19.357 sería **PARCIAL**: confirma las caídas claras (~35%),
+  revive las encontradas, y deja un **~57% ambiguo SIN confirmar** (seguro, no
+  falseado, pero no drena). La cola no se vacía.
+- La **recalibración §4** de la curva/umbral se mediría sobre el ~43% decidible
+  (submuestra sesgada hacia títulos no-comunes) → hay que tenerlo en cuenta, no
+  usar decididas/total directo.
+
+### Veredicto de la iteración
+**PASA el gate primario (tu criterio decisivo): falsa-caída 0%, ambigua 2% sobre
+ground-truth.** Secundario 18,8% en el borde. La vía es **segura** (no falsea
+bajas de vivas). Lo que NO logra es drenar la cola entera: ~57% de las viejas
+quedan ambiguas. Decisión de activar (cron + drenaje parcial + recalibración) es
+de Gerardo, con ese caveat sobre la mesa.
