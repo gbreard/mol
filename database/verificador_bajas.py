@@ -23,7 +23,7 @@ Vías (taxonomía medida, exports/reportes/supervivencia/):
 Límites §11.4: searchV2 ≤2.500/día por portal; CT ≤4.000 (drenaje) / ≤1.000 (régimen).
 Corte inmediato ante bloqueo (política Indeed). Lockfile-aware.
 """
-import sqlite3, json, time, uuid, logging, argparse
+import sqlite3, json, time, uuid, logging, argparse, re
 from datetime import datetime, date, timedelta
 from pathlib import Path
 import requests
@@ -40,6 +40,13 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
 TOPE_SEARCHV2 = 100
 
+# CT vía BÚSQUEDA (mini-spec SPEC_ct_verificacion_busqueda.md): presencia en el
+# buscador de CompuTrabajo (PASO 1 del scraper), NO re-fetch del detalle (que es
+# mentiroso para existencia). Mismo principio que searchV2 en Navent.
+CT_ID_PREFIX = 5_000_000_000   # id_oferta = CT_ID_PREFIX + data-id del buscador
+CT_PAGS = 2                    # páginas del buscador que se miran (tope de resultados)
+CT_FULL_PAGE = 18             # una página "llena" (~20/pág) → puede haber más → tope
+
 
 class VerificadorBajas:
     def __init__(self, db_path=DB_PATH, regimen=False):
@@ -52,6 +59,7 @@ class VerificadorBajas:
         self.conn = None
         self._sessions = {}
         self._ct = None
+        self._ct_id = None
         self.delay_navent = 1.0
         self.delay_ct = 3.0
         self.max_bloqueos = 5
@@ -157,11 +165,14 @@ class VerificadorBajas:
             self._ct = ComputRabajoScraper()
         return self._ct
 
-    def clasificar_ct(self, url):
-        """Enruta a la vía CT según config: 'existencia' (discriminador propio,
-        recomendado) o 'extraccion_A' (interino: reusa el extractor pero SIN
-        contar listado_seo como caída)."""
+    def clasificar_ct(self, url, titulo=None, target_id=None):
+        """Enruta a la vía CT según config `discriminador`:
+        - 'busqueda'     → presencia en el buscador (mini-spec; recomendado, gate-gated)
+        - 'existencia'   → <title> de la ficha (sobre-llama viva; refutado por la curva)
+        - 'extraccion_A' → reusa el extractor, solo redirect_listado = caída (interino)."""
         via = self.portales.get("computrabajo", {}).get("discriminador", "extraccion_A")
+        if via == "busqueda":
+            return self.clasificar_ct_busqueda(url, titulo, target_id)
         if via == "existencia":
             return self.clasificar_ct_existencia(url)
         return self._clasificar_ct_extraccion_A(url)
@@ -210,13 +221,136 @@ class VerificadorBajas:
             return "viva", {**senal, "clase": "ficha"}
         return "ambigua", senal
 
+    # ---- vía BÚSQUEDA (recomendada por la mini-spec) ----
+    @staticmethod
+    def _slug_ct(texto, max_palabras=6):
+        """Título → slug para /trabajo-de-{slug} (sin acentos, alnum+guiones)."""
+        import unicodedata
+        t = unicodedata.normalize("NFKD", texto or "").encode("ascii", "ignore").decode()
+        t = re.sub(r"[^a-zA-Z0-9]+", "-", t.lower()).strip("-")
+        palabras = [p for p in t.split("-") if p]
+        return "-".join(palabras[:max_palabras])
+
+    @staticmethod
+    def _limpiar_titulo_ct(titulo):
+        """Título → slug LIMPIO para el buscador: sin paréntesis ni ruido de
+        ubicación/cualificador (zona/por/para/turno y separadores). Ese ruido
+        ('(Zona Zárate)', 'Exaltación de la Cruz', 'por la Zona de…') era la causa
+        medida de la falsa-caída: el slug con ubicación no matchea en el buscador."""
+        import unicodedata
+        t = unicodedata.normalize("NFKD", titulo or "").encode("ascii", "ignore").decode()
+        t = re.sub(r"\([^)]*\)", " ", t)                       # fuera paréntesis
+        t = t.lower()
+        t = re.split(r"\b(?:zona|por|para|turno)\b|[/\-,·]", t)[0]  # cortar en marcadores
+        t = re.sub(r"[^a-z0-9]+", "-", t).strip("-")
+        palabras = [p for p in t.split("-") if p]
+        return "-".join(palabras[:5])
+
+    def _ct_id_fn(self):
+        """Función canónica de id CT (misma que usa el runner al insertar en BD):
+        id = 5e9 + crc32(slug_de_URL_sin_hash32). OJO: NO se usa el `data-id` del
+        artículo — es HEX y CAMBIA según el keyword de búsqueda para la MISMA oferta
+        (bug confirmado 2026-03-11), por eso el id estable se deriva de la URL."""
+        if self._ct_id is None:
+            import sys
+            sp = str(BASE_DIR / "scripts" / "scraping")
+            if sp not in sys.path:
+                sys.path.insert(0, sp)
+            from run_computrabajo_vps import computrabajo_id_to_int
+            self._ct_id = computrabajo_id_to_int
+        return self._ct_id
+
+    def _ct_buscar_pagina(self, query, pagina):
+        """GET del buscador CT y mapeo de cada resultado a su id_oferta de BD (vía URL).
+        Detección de BLOQUEO explícita (non-200 / challenge) para NO confundir
+        'buscador bloqueó' (→ circuit-breaker) con '0 resultados' (→ caída fuerte).
+        Por eso NO usa scrapear_pagina(), que devuelve [] en ambos casos."""
+        from bs4 import BeautifulSoup
+        ct = self._ensure_ct()
+        id_fn = self._ct_id_fn()
+        url = f"{ct.base_url}/trabajo-de-{query}"
+        if pagina > 1:
+            url += f"?p={pagina}"
+        try:
+            resp = ct.session.get(url, headers=ct.headers, timeout=30, allow_redirects=True)
+        except Exception as e:
+            raise BloqueoError(f"CT busq red: {type(e).__name__}")
+        if resp.status_code != 200:
+            raise BloqueoError(f"CT busq http {resp.status_code}")
+        low = resp.text[:6000].lower()
+        if any(m in low for m in ("just a moment", "captcha", "verifying you are human",
+                                  "cf-challenge", "security check", "attention required")):
+            raise BloqueoError("CT busq challenge")
+        soup = BeautifulSoup(resp.content, "html.parser")
+        ids = set()
+        arts = soup.find_all("article", class_="box_offer")
+        for a in arts:
+            link = a.find("a", class_="js-o-link")
+            href = link.get("href") if link else None
+            if href:
+                oid = id_fn(url_oferta=href)
+                if oid:
+                    ids.add(oid)
+        return ids, len(arts)
+
+    def _ct_buscar(self, query):
+        """Recorre hasta CT_PAGS páginas. Devuelve (ids, n_total, tope_alcanzado).
+        tope_alcanzado = se vieron CT_PAGS páginas llenas sin agotar resultados."""
+        ids, n, tope = set(), 0, False
+        for pag in range(1, CT_PAGS + 1):
+            pids, cnt = self._ct_buscar_pagina(query, pag)
+            ids |= pids
+            n += cnt
+            if cnt < CT_FULL_PAGE:
+                break  # última página (no llena) → se vieron TODOS los resultados
+            if pag == CT_PAGS:
+                tope = True  # llenamos todas las páginas que miramos → puede haber más
+            time.sleep(self.delay_ct)
+        return ids, n, tope
+
+    def clasificar_ct_busqueda(self, url, titulo, target_id):
+        """Existencia por presencia en el buscador. Espejo de clasificar_navent:
+          id presente                      → viva
+          0 resultados                     → caída (fuerte)
+          >0 sin id, sin tope              → caída (vimos todo, no está)
+          tope alcanzado sin id            → reintento query más específica;
+                                             si persiste el tope → ambigua (no cuenta)
+        Lanza BloqueoError (circuit-breaker) ante bloqueo del buscador."""
+        if not titulo or not target_id:
+            return "ambigua", {"caso": "sin_titulo_o_id"}
+        q = self._limpiar_titulo_ct(titulo)   # título limpio (sin ubicación/paréntesis)
+        if not q:
+            return "ambigua", {"caso": "slug_vacio"}
+        ids, n, tope = self._ct_buscar(q)
+        senal = {"query": q, "n_resultados": n, "id_presente": target_id in ids}
+        if target_id in ids:
+            return "viva", senal
+        if n == 0:
+            return "caida", {**senal, "caso": "cero_resultados"}
+        if not tope:
+            return "caida", {**senal, "caso": "menos_que_tope_sin_id"}
+        # tope alcanzado (título limpio muy común) → reintento con query MÁS
+        # específica SOLO para promover a viva; NUNCA a caída (una oferta viva con
+        # título común no debe confirmarse baja por quedar sepultada). Si no aparece
+        # en el reintento → ambigua (no cuenta, no drena, pero no falsea).
+        q2 = self._slug_ct(titulo, 8)
+        if q2 and q2 != q:
+            time.sleep(self.delay_ct)
+            ids2, _, _ = self._ct_buscar(q2)
+            if target_id in ids2:
+                return "viva", {**senal, "reintento": True}
+        return "ambigua", {**senal, "caso": "tope_alcanzado"}
+
     # ---------- aplicar resultado ----------
     def _aplicar(self, ido, portal, fecha_ultimo_visto, n_prev, primera_caida, resultado, senal, ts, dry):
         if not dry:
+            if portal in NAVENT_SITE:
+                via_lbl = "searchv2"
+            else:
+                via_lbl = "ct_" + self.portales.get("computrabajo", {}).get("discriminador", "extraccion_A")
             self.conn.execute(
                 "INSERT INTO verificaciones_baja (id_oferta,portal,fecha,via,resultado,senal_cruda) VALUES (?,?,?,?,?,?)",
-                (ido, portal, ts, "searchv2" if portal in NAVENT_SITE else "html_detalle",
-                 resultado, json.dumps(senal, ensure_ascii=False)))
+                (ido, portal, ts, via_lbl, resultado, json.dumps(senal, ensure_ascii=False)))
         if resultado == "viva":
             if not dry:
                 self.conn.execute("""UPDATE ofertas SET estado_ciclo='activa', verificaciones_caida_count=0,
@@ -270,7 +404,7 @@ class VerificadorBajas:
                     if portal in NAVENT_SITE:
                         resultado, senal = self.clasificar_navent(portal, titulo, ido)
                     else:
-                        resultado, senal = self.clasificar_ct(url)
+                        resultado, senal = self.clasificar_ct(url, titulo, ido)
                     bloqueos = 0
                 except BloqueoError as e:
                     bloqueos += 1
