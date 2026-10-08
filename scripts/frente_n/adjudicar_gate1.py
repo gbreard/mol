@@ -13,10 +13,11 @@ import re
 import unicodedata
 from pathlib import Path
 
+import sys as _sys
 ROOT = Path(__file__).resolve().parents[2]
-RAW = ROOT / 'exports/reportes/N_gate1_raw.json'
+RAW = ROOT / (_sys.argv[1] if len(_sys.argv) > 1 else 'exports/reportes/N_gate1_raw.json')
 GOLD = ROOT / 'metrics/gold_set_tareas.json'
-OUT_MD = ROOT / 'exports/reportes/N_gate1_tabla.md'
+OUT_MD = ROOT / (_sys.argv[2] if len(_sys.argv) > 2 else 'exports/reportes/N_gate1_tabla.md')
 
 _STOP = set('de la el los las un una unos unas y o u en con para por a al del que se su sus como '
             'sobre entre segun según e cada toda todo todos lo le les nuestro nuestra mismo misma '
@@ -127,12 +128,12 @@ def adjudicar():
          '', '## Tabla', '',
          '| # | id | portal | Cyn | cob | prec | gold/v12 | granularidad | veredicto |',
          '|---|----|--------|-----|-----|------|----------|--------------|-----------|']
-    for x in sorted(resumen, key=lambda z: z['n']):
+    for x in sorted(resumen, key=lambda z: int(z['n'])):
         L.append(f"| {x['n']} | {x['id']} | {x['portal']} | {x['veredicto_cyn']} | "
                  f"{x['cob']:.0%} | {x['prec']:.0%} | {x['gold_n']}/{x['v12_n']} | "
                  f"{x['granularidad']} | {x['veredicto']} |")
     L += ['', '## Detalle por caso (gold vs v12, veredicto por tarea)', '']
-    for (r, g, cubiertas, soportadas, veredicto, cob, prec, gran) in sorted(filas_tabla, key=lambda z: z[0]['n']):
+    for (r, g, cubiertas, soportadas, veredicto, cob, prec, gran) in sorted(filas_tabla, key=lambda z: int(z[0]['n'])):
         L.append(f"\n### Caso {r['n']} — id `{r['id_oferta']}` ({r['portal']}) — {veredicto}")
         L.append(f"Cyn: {g['veredicto_cyn'][:40]} · cobertura {cob:.0%} · precisión {prec:.0%} · granularidad {gran}")
         L.append('\n| tarea-oro (Cyn) | ¿cubierta por v12? |')
