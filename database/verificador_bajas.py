@@ -59,6 +59,7 @@ class VerificadorBajas:
         self.conn = None
         self._sessions = {}
         self._ct = None
+        self._ct_id = None
         self.delay_navent = 1.0
         self.delay_ct = 3.0
         self.max_bloqueos = 5
@@ -230,13 +231,28 @@ class VerificadorBajas:
         palabras = [p for p in t.split("-") if p]
         return "-".join(palabras[:max_palabras])
 
+    def _ct_id_fn(self):
+        """Función canónica de id CT (misma que usa el runner al insertar en BD):
+        id = 5e9 + crc32(slug_de_URL_sin_hash32). OJO: NO se usa el `data-id` del
+        artículo — es HEX y CAMBIA según el keyword de búsqueda para la MISMA oferta
+        (bug confirmado 2026-03-11), por eso el id estable se deriva de la URL."""
+        if self._ct_id is None:
+            import sys
+            sp = str(BASE_DIR / "scripts" / "scraping")
+            if sp not in sys.path:
+                sys.path.insert(0, sp)
+            from run_computrabajo_vps import computrabajo_id_to_int
+            self._ct_id = computrabajo_id_to_int
+        return self._ct_id
+
     def _ct_buscar_pagina(self, query, pagina):
-        """GET del buscador CT y parseo de data-id. Devuelve (ids_mapeados, n_articulos).
-        Hace la detección de BLOQUEO explícita (non-200 / challenge) para NO confundir
+        """GET del buscador CT y mapeo de cada resultado a su id_oferta de BD (vía URL).
+        Detección de BLOQUEO explícita (non-200 / challenge) para NO confundir
         'buscador bloqueó' (→ circuit-breaker) con '0 resultados' (→ caída fuerte).
         Por eso NO usa scrapear_pagina(), que devuelve [] en ambos casos."""
         from bs4 import BeautifulSoup
         ct = self._ensure_ct()
+        id_fn = self._ct_id_fn()
         url = f"{ct.base_url}/trabajo-de-{query}"
         if pagina > 1:
             url += f"?p={pagina}"
@@ -254,9 +270,12 @@ class VerificadorBajas:
         ids = set()
         arts = soup.find_all("article", class_="box_offer")
         for a in arts:
-            did = a.get("data-id")
-            if did and str(did).isdigit():
-                ids.add(CT_ID_PREFIX + int(did))
+            link = a.find("a", class_="js-o-link")
+            href = link.get("href") if link else None
+            if href:
+                oid = id_fn(url_oferta=href)
+                if oid:
+                    ids.add(oid)
         return ids, len(arts)
 
     def _ct_buscar(self, query):
