@@ -21,7 +21,10 @@ import database.verificador_bajas as vb
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--n", type=int, default=150, help="tamaño de la muestra")
+    ap.add_argument("--ground-truth", type=int, default=0, metavar="N",
+                    help="GATE PRIMARIO: N ofertas CT 'activa' de hoy (vivas seguras). "
+                         "Mide falsa-caída (<5%) y ambigua (<10%). Medición directa, no inferencia.")
+    ap.add_argument("--n", type=int, default=150, help="franja [63,126] (gate secundario)")
     ap.add_argument("--umbral", type=int, default=63, help="umbral presunta_baja CT (días)")
     ap.add_argument("--delay", type=float, default=3.0)
     ap.add_argument("--seed", type=int, default=20261008)
@@ -33,6 +36,46 @@ def main():
         return
     v.connect()
     v.delay_ct = args.delay
+
+    if args.ground_truth:
+        rows = v.conn.execute("""
+            SELECT id_oferta, titulo FROM ofertas
+            WHERE portal='computrabajo' AND estado_ciclo='activa'
+            ORDER BY scrapeado_en DESC LIMIT ?""", (args.ground_truth,)).fetchall()
+        v.close()
+        print(f"GATE PRIMARIO — control ground-truth: {len(rows)} CT 'activa' (vivas seguras) | delay={args.delay}s")
+        print("=" * 64)
+        res = Counter(); bloqueos = 0; falsas = []
+        for i, (ido, titulo) in enumerate(rows, 1):
+            time.sleep(args.delay)
+            try:
+                r, s = v.clasificar_ct_busqueda("", titulo, ido)
+                bloqueos = 0
+            except vb.BloqueoError as e:
+                bloqueos += 1; res["error"] += 1
+                print(f"  [{i}] BLOQUEO ({bloqueos}/{v.max_bloqueos}): {e}")
+                if bloqueos >= v.max_bloqueos:
+                    print("  CORTE por bloqueos — control PARCIAL."); break
+                time.sleep(min(bloqueos * 10, 60)); continue
+            res[r] += 1
+            if r != "viva":
+                falsas.append((titulo[:45], r, s.get("caso"), s.get("n_resultados")))
+        tot = res["viva"] + res["caida"] + res["ambigua"]
+        print(f"CLASIFICADAS: {tot}  (viva={res['viva']} caida={res['caida']} ambigua={res['ambigua']} error={res['error']})")
+        if tot:
+            fc = 100.0 * res["caida"] / tot
+            amb = 100.0 * res["ambigua"] / tot
+            print(f"  FALSA-CAÍDA: {res['caida']}/{tot} = {fc:.1f}%   [criterio <5%]")
+            print(f"  AMBIGUAS:    {res['ambigua']}/{tot} = {amb:.1f}%   [criterio <10%]")
+            print(f"  viva detectada: {res['viva']}/{tot} = {100.0*res['viva']/tot:.1f}%")
+            print("  vivas mal clasificadas:")
+            for t, r, caso, n in falsas:
+                print(f"    [{r:7} {caso} n={n}] {t}")
+            ok = fc < 5 and amb < 10
+            print("=" * 64)
+            print(f"VEREDICTO GATE PRIMARIO: {'PASA' if ok else 'NO PASA'} "
+                  f"(falsa-caída {fc:.1f}%<5 {'✓' if fc<5 else '✗'}, ambigua {amb:.1f}%<10 {'✓' if amb<10 else '✗'})")
+        return
 
     lo, hi = args.umbral, 2 * args.umbral
     rows = v.conn.execute(f"""

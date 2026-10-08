@@ -231,6 +231,21 @@ class VerificadorBajas:
         palabras = [p for p in t.split("-") if p]
         return "-".join(palabras[:max_palabras])
 
+    @staticmethod
+    def _limpiar_titulo_ct(titulo):
+        """Título → slug LIMPIO para el buscador: sin paréntesis ni ruido de
+        ubicación/cualificador (zona/por/para/turno y separadores). Ese ruido
+        ('(Zona Zárate)', 'Exaltación de la Cruz', 'por la Zona de…') era la causa
+        medida de la falsa-caída: el slug con ubicación no matchea en el buscador."""
+        import unicodedata
+        t = unicodedata.normalize("NFKD", titulo or "").encode("ascii", "ignore").decode()
+        t = re.sub(r"\([^)]*\)", " ", t)                       # fuera paréntesis
+        t = t.lower()
+        t = re.split(r"\b(?:zona|por|para|turno)\b|[/\-,·]", t)[0]  # cortar en marcadores
+        t = re.sub(r"[^a-z0-9]+", "-", t).strip("-")
+        palabras = [p for p in t.split("-") if p]
+        return "-".join(palabras[:5])
+
     def _ct_id_fn(self):
         """Función canónica de id CT (misma que usa el runner al insertar en BD):
         id = 5e9 + crc32(slug_de_URL_sin_hash32). OJO: NO se usa el `data-id` del
@@ -303,7 +318,7 @@ class VerificadorBajas:
         Lanza BloqueoError (circuit-breaker) ante bloqueo del buscador."""
         if not titulo or not target_id:
             return "ambigua", {"caso": "sin_titulo_o_id"}
-        q = self._slug_ct(titulo, 6)
+        q = self._limpiar_titulo_ct(titulo)   # título limpio (sin ubicación/paréntesis)
         if not q:
             return "ambigua", {"caso": "slug_vacio"}
         ids, n, tope = self._ct_buscar(q)
@@ -314,15 +329,16 @@ class VerificadorBajas:
             return "caida", {**senal, "caso": "cero_resultados"}
         if not tope:
             return "caida", {**senal, "caso": "menos_que_tope_sin_id"}
-        # tope alcanzado → reintento con query más específica (título completo)
-        q2 = self._slug_ct(titulo, 12)
+        # tope alcanzado (título limpio muy común) → reintento con query MÁS
+        # específica SOLO para promover a viva; NUNCA a caída (una oferta viva con
+        # título común no debe confirmarse baja por quedar sepultada). Si no aparece
+        # en el reintento → ambigua (no cuenta, no drena, pero no falsea).
+        q2 = self._slug_ct(titulo, 8)
         if q2 and q2 != q:
             time.sleep(self.delay_ct)
-            ids2, n2, tope2 = self._ct_buscar(q2)
+            ids2, _, _ = self._ct_buscar(q2)
             if target_id in ids2:
                 return "viva", {**senal, "reintento": True}
-            if n2 > 0 and not tope2:
-                return "caida", {**senal, "reintento": True, "caso": "reintento_menos_tope"}
         return "ambigua", {**senal, "caso": "tope_alcanzado"}
 
     # ---------- aplicar resultado ----------

@@ -48,13 +48,30 @@ def test_caida_menos_que_tope_sin_id(v, monkeypatch):
     assert r == "caida" and s["caso"] == "menos_que_tope_sin_id"
 
 
-def test_tope_reintento_resuelve_caida(v, monkeypatch):
-    # 1ª query (corta) llena el tope; reintento (query larga) ve todo sin el id → caída
+def test_limpiar_titulo():
+    f = vb.VerificadorBajas._limpiar_titulo_ct
+    assert f("Encargado de Servicio (Zona Zarate)") == "encargado-de-servicio"
+    assert f("Vigilador Zona Noroeste (Exaltación de la Cruz)") == "vigilador"
+    assert f("Acompañante Terapéutico por la Zona de Vicente Lopez") == "acompanante-terapeutico"
+    assert f("Operario de carga y descarga por convocatoria") == "operario-de-carga-y-descarga"
+
+
+def test_tope_reintento_promueve_viva(v, monkeypatch):
+    # título limpio llena el tope sin el id; el reintento (más específico) lo encuentra → viva
+    seq = [({vb.CT_ID_PREFIX + 7}, 40, True), ({TID, vb.CT_ID_PREFIX + 8}, 4, False)]
+    monkeypatch.setattr(v, "_ct_buscar", lambda q: seq.pop(0))
+    titulo = "Operario de produccion zona norte turno rotativo"
+    r, s = v.clasificar_ct_busqueda("u", titulo, TID)
+    assert r == "viva" and s.get("reintento") is True
+
+
+def test_tope_reintento_no_encuentra_es_ambigua_no_caida(v, monkeypatch):
+    # el reintento NO debe producir caída (evita falsa-caída de vivas con título común)
     seq = [({vb.CT_ID_PREFIX + 7}, 40, True), ({vb.CT_ID_PREFIX + 8}, 4, False)]
     monkeypatch.setattr(v, "_ct_buscar", lambda q: seq.pop(0))
-    titulo = "Analista funcional senior de sistemas con experiencia bancaria avanzada y liderazgo"
+    titulo = "Operario de produccion zona norte turno rotativo"
     r, s = v.clasificar_ct_busqueda("u", titulo, TID)
-    assert r == "caida" and s.get("reintento") and s["caso"] == "reintento_menos_tope"
+    assert r == "ambigua" and s["caso"] == "tope_alcanzado"
 
 
 def test_tope_persiste_ambigua(v, monkeypatch):
