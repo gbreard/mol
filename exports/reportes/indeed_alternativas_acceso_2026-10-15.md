@@ -31,14 +31,33 @@ cambiar SOLO la IP de egreso, con el MISMO motor headed.
    ```
 3. Volver a la red normal.
 
-**Interpretación:**
-- Sale **`NO-GO ... challenge`** (igual que ahora) → el bloqueo **NO es solo IP** →
-  es fingerprint/comportamiento → **un proxy residencial NO alcanza** (descarta opción proxy).
-- Sale un resumen con **`keywords_corridas>0` / `tarjetas>0`** (pasó el preflight) →
-  el bloqueo **es por IP** → **un proxy residencial funcionaría**.
+### RESULTADO (corrido 2026-10-16, VPS como 2ª IP)
 
-Nota: la fingerprint (chromium/xvfb/máquina) queda idéntica; solo cambia la IP →
-test limpio de una variable. Dependencias ya instaladas en la local.
+El hotspot del celular NO cambia la IP del server de casa → se usó el **VPS
+(187.124.150.28)** como 2ª IP, con el MISMO scraper (preflight a
+`ar.indeed.com/jobs?q=cajero&l=Argentina&fromage=14`, sin BD ni offset):
+
+| IP / entorno | motor | resultado |
+|---|---|---|
+| **Casa** (IP residencial) | headed chromium/xvfb | **NO-GO challenge** (61/61 probes desde 08-10) |
+| **VPS** (datacenter Hostinger, salida IPv6/IPv4) | mismo headed chromium/xvfb | **NO-GO challenge** (título "Security Check - Indeed.com") |
+
+**Lectura (con el confound explícito):** las DOS IPs dan challenge. **No es un
+veredicto limpio de "fingerprint → proxy descartado"**, por dos motivos:
+1. El VPS es **IP de datacenter** (y salió por IPv6) — CF desafía datacenter
+   **siempre**, con o sin fingerprint → que el VPS falle era esperable y no aísla
+   la variable.
+2. Lo **más informativo es que la IP de CASA (residencial) ya sea desafiada 61/61**:
+   si fuera pura reputación de IP, una residencial limpia no debería caer → esto
+   **inclina hacia fingerprint/comportamiento** (el chromium headed es detectable)
+   **o** hacia que la IP de casa esté **quemada** por meses de scraping.
+
+**Lo que el test NO resuelve:** si es *fingerprint* (ningún proxy ayuda) vs *IP de
+casa quemada* (una residencial FRESCA sí pasaría). El VPS datacenter no puede
+distinguirlo. **El settle limpio = una IP residencial FRESCA** — que es justo lo
+que dan **gratis los free-tier de los web-unlockers residenciales (§4: Bright Data
+5k, ZenRows 5k)**: prueban IP residencial fresca + anti-bot en un solo tiro contra
+ar.indeed.com. → siguiente test barato definitivo, sin comprar nada.
 
 ---
 
@@ -156,7 +175,7 @@ no recomiendo una sola. Recordar: el objetivo es recuperar **volumen de avisos A
 
 | # | Opción | Costo (plata / trabajo) | Prob. éxito | Tiempo hasta saber | Si falla |
 |---|---|---|---|---|---|
-| 0 | **Test IP vs fingerprint (§2)** | $0 / 10 min | — (es diagnóstico) | **10 min** | decide si la rama "proxy" vale o se descarta |
+| 0 | **Test IP vs fingerprint (§2) — YA CORRIDO** | $0 | casa + VPS = ambos NO-GO | hecho | inclina contra proxy-datacenter; falta probar **residencial fresca** (free-tier §4) |
 | 1 | **JSearch / SerpApi (§5)** — Google for Jobs, trae Indeed | **$25/mes** / integración API chica | **Alta** (cubre AR + Indeed) | **1-2 días** (medir profundidad AR) | probar el otro; o Jooble gratis (datos pobres) |
 | 2 | **Web unlocker comercial (§4)** — Bright Data / Scrapfly / ZenRows | $0 para probar (free tier) → **$1,50-7/1k** | **Media-alta** (ZenRows 90% Indeed) | **horas** (free tier vs ar.indeed.com) | caer a otra opción; sigue siendo vs ToS Indeed |
 | 3 | **Hiring Lab agregados (§1)** | $0 / gestión institucional | **Alta** pero **solo agregados** | semanas (gestión) | — (no reemplaza avisos; es complemento) |
@@ -165,8 +184,10 @@ no recomiendo una sola. Recordar: el objetivo es recuperar **volumen de avisos A
 | 6 | **Baja del canal** (reporte 2026-10-15 previo) | $0 / documentar | certeza | inmediato | — pierde 15,6% volumen, ~0 ocupaciones únicas |
 
 **Lecturas transversales (sin elegir por vos):**
-- El **test §2 ($0, 10 min)** conviene correrlo primero: si da *fingerprint*, borra de la
-  mesa la rama proxy-solo y empuja hacia unlocker comercial o aggregator.
+- El **test §2 YA se corrió** (casa + VPS, ambos NO-GO challenge). Inclina contra un
+  proxy datacenter; lo que falta para cerrar la rama proxy es probar una **IP
+  residencial fresca**, que los **free-tier residenciales de §4 (Bright Data/ZenRows)
+  dan gratis** → ese es el próximo test $0 definitivo antes de pagar nada.
 - La vía **más barata y legítima para recuperar el dato aviso-por-aviso** es el
   **aggregator (JSearch/SerpApi)** — además esquiva Cloudflare por completo y *contiene*
   el inventario de Indeed. Su reparo es el ToS de redistribución si se publicara el aviso
