@@ -10,6 +10,19 @@ Red del lado de SALIDA para los tipos de "sobra" que Cyn marcó en los 28 casos:
     puntuación/paréntesis ("seguridad y usabilidad") → caso 2.
   - duplicado semántico obvio.
 
+v12.4 — dos redes nuevas de los residuales del v12.3 (RG-TAR-008/009):
+  - HERRAMIENTA VERBALIZADA (RG-TAR-008): "usar taladros", "utilizar pulidoras",
+    "emplear remachadoras", "manejar herramientas eléctricas" → instrumento, no
+    tarea (residual electricista 2184455). Lexicón ACOTADO a herramientas de poder
+    y software de oficina — NO toca "usar y mantener herramientas de medición" (C4)
+    ni "manejar remitos" (chofer): ahí no hay herramienta del lexicón.
+  - COMPLIANCE/HSE PASIVO (RG-TAR-009): "conocer los riesgos/impactos ambientales",
+    "actuar en forma segura", "cumplir el plan de entrenamientos / código de conducta"
+    → condición, no tarea (residual Account Receivable 8001095540). ACOTADO: NO filtra
+    "cumplir normas/procedimientos de seguridad" porque Cyn lo acepta como tarea en el
+    caso 4 (2176458) — esa contradicción RG-TAR-009-vs-caso-4 se LISTA para Cyn, no se
+    zanja acá. Solo garantiza que no pasen los 3 ítems que Cyn marcó fuera en el AR.
+
 Filosofía (encargo): mejor filtrar de más AL LOG que dejar pasar al corpus. Todo
 lo filtrado se registra con el motivo (auditable). NO reescribe tareas: solo las
 deja pasar o las descarta con motivo.
@@ -31,6 +44,26 @@ _BENEF_RE = re.compile(
     r'^\s*(obra social|prepaga|sueldo|salario|comisiones|bonos?|premios?|'
     r'horario\b|jornada\b|modalidad\b|home office|vacaciones|descuentos?|'
     r'capacitaci[oó]n continua|plan de carrera|remuneraci[oó]n)\b',
+    re.IGNORECASE)
+
+# v12.4 — HERRAMIENTA VERBALIZADA (RG-TAR-008). Se evalúa sobre el item con acentos
+# quitados. Lexicón ACOTADO: herramientas de poder + software de oficina. El verbo
+# de uso debe ir INMEDIATAMENTE seguido de la herramienta (sin objeto productivo).
+_TOOL_RE = re.compile(
+    r'^(usar|utilizar|emplear|manejar|uso de|manejo de)\s+'
+    r'(taladro|pulidora|remachadora|amoladora|soldadora|'
+    r'herramientas?\s+(electrica|neumatica|manual)|'
+    r'excel|autocad|word|power\s?point|paquete office|office|tango|sap|bejerman)',
+    re.IGNORECASE)
+
+# v12.4 — COMPLIANCE/HSE PASIVO (RG-TAR-009), acotado a los 3 ítems que Cyn marcó
+# fuera en el Account Receivable. NO filtra "cumplir normas/procedimientos de
+# seguridad" (caso 4 lo acepta — contradicción que se LISTA para Cyn).
+_HSE_RE = re.compile(
+    r'^(conocer\b.*(riesgo|impacto\s+ambiental|aspecto.*ambiental|peligro)|'
+    r'actuar\b.*segur|'
+    r'(cumplir|cumplimiento)\b.*(plan de entrenamiento|entrenamientos?\s+mandatori|'
+    r'capacitaciones?\s+obligatori|codigo de conducta))',
     re.IGNORECASE)
 
 # Verbos de acción típicos (para detectar fragmentos SIN verbo). Aproximación:
@@ -66,8 +99,13 @@ def postfiltrar(tareas, log=None):
         if not t or not t.strip():
             continue
         item = t.strip()
+        item_na = unicodedata.normalize('NFKD', item).encode('ascii', 'ignore').decode()
         motivo = None
-        if _REQ_RE.match(item):
+        if _TOOL_RE.match(item_na):
+            motivo = 'herramienta_verbalizada'       # RG-TAR-008
+        elif _HSE_RE.match(item_na):
+            motivo = 'compliance_hse_pasivo'          # RG-TAR-009
+        elif _REQ_RE.match(item):
             motivo = 'requisito/experiencia/conocimiento'
         elif _BENEF_RE.match(item):
             motivo = 'beneficio/condicion'
