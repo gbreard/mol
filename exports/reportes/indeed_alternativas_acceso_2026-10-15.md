@@ -61,6 +61,59 @@ ar.indeed.com. → siguiente test barato definitivo, sin comprar nada.
 
 ---
 
+## 2-bis. Test final (IP residencial FRESCA) — estado + runbook + costo (2026-10-16)
+
+**Objetivo:** distinguir (a) IP-de-casa-quemada (una residencial fresca pasaría →
+proxy sirve) de (b) fingerprint (ningún proxy ayuda). Es la última pregunta abierta.
+
+**Bloqueo honesto:** NO puedo dar de alta la cuenta del free tier (email, verificación
+por mail, aceptar ToS, identidad = del usuario). Ni ZenRows ni Bright Data piden
+**tarjeta**, pero:
+- **ZenRows:** sin tarjeta, **sin KYC**, alta instantánea (trial 14d: 1.000 básicos +
+  **40 protegidos** JS+proxy; o 5.000 créditos/mes). → **el que sirve para el test ya.**
+- **Bright Data:** sin tarjeta pero **KYC obligatorio** (datos personales/empresa, hasta
+  3 días hábiles, posible videollamada) → no instantáneo. Es el más barato en producción,
+  se persigue aparte si el test da bien.
+
+**Runbook (Gerardo da de alta ZenRows en ~2 min → pasa la API key → se corre):**
+
+1. Modo 2b — **unlocker/anti-bot completo** (dice si HAY alguna vía que funcione):
+   ```bash
+   curl -s "https://api.zenrows.com/v1/?apikey=KEY&url=https%3A%2F%2Far.indeed.com%2Fjobs%3Fq%3Dcajero%26l%3DArgentina%26fromage%3D14&js_render=true&premium_proxy=true&proxy_country=ar" \
+     | grep -ioE "job_seen_beacon|Security Check|Verifying you are human|jobsearch" | sort -u
+   ```
+   - Sale `job_seen_beacon`/`jobsearch` (tarjetas) → **PASÓ**. Sale `Security Check` → sigue bloqueado.
+2. **Lo que de verdad importa** (si pasó el listado): traer UNA ficha de detalle por la
+   misma vía (panel `&vjk=<jk>` de una tarjeta del listado) y confirmar **descripción
+   COMPLETA + fecha de publicación**, no snippet. Sin eso, pasar el challenge no sirve.
+3. Modo 2a — **proxy residencial pelado** (nuestro fingerprint + IP fresca; aísla la
+   hipótesis b): rutear el chromium headed por el proxy residencial de ZenRows **sin** su
+   anti-bot. El trial da sobre todo el modo unlocker (40 protegidos); si el proxy-pelado
+   no está en el free tier, el modo 2b igual responde el sí/no crítico.
+
+**Lectura:** 2a pasa → era IP (casa quemada) → proxy residencial resuelve. 2a falla pero
+2b pasa → fingerprint → solo unlocker completo (más caro). Ambos fallan → no hay vía por
+scraping → fin de la rama.
+
+### Costo estimado para el volumen real del MOL
+Volumen: ~90 kw/día × ~7 tarjetas ≈ **~630 req/día** (listado+detalle) → **~19.000 req/mes**.
+
+| Vía (si funciona) | Precio | **~19k req/mes** | Notas |
+|---|---|---|---|
+| **Bright Data Web Unlocker** | $1,50 / 1k exitosos | **~$28/mes** | el más barato; KYC 3d |
+| **ZenRows** (protegido: render+premium ≈ 15 créd/req) | ~$6,85/1k efectivo | **~$130/mes** | free tier NO cubre producción (5k créd ≈ 333 req/mes) |
+| **Proxy residencial pelado** (solo si 2a pasa) | ~$8-12/GB | **~$16-120/mes** | depende de GB; incierto hasta medir |
+
+⚠️ **Costo en TRABAJO (va sí o sí, aunque una vía pase):** arreglar
+`SELECTORES_DESCRIPCION` — el DOM del panel de Indeed cambió (fichas "mudas"). La sonda
+está armada pero necesita **una fetch exitosa** para capturar el DOM nuevo y re-derivar
+el selector. Pasar el challenge NO devuelve descripciones por sí solo.
+
+**Free tiers cubren el TEST, no producción:** ZenRows 5k créd ≈ 333 req protegidos/mes;
+BD 5k req/mes. Producción (~19k/mes) requiere plan pago.
+
+---
+
 ## 3. Sesión persistente (lo que NO probamos del headed)
 
 **Hoy:** `scrape_with_keywords()` hace `p.chromium.launch()` + `browser.new_context(locale='es-AR')`
