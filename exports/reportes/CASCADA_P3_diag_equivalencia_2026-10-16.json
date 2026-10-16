@@ -1,0 +1,757 @@
+[
+  {
+    "id": "1118409617",
+    "titulo": "Vendedor tecnico",
+    "v11_decide": "3322.1",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "prospeccion"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "prospeccion",
+        "tarea_v11_que_matcheaba": null,
+        "tareas_v125_disponibles": [
+          "Identificar y captar nuevos clientes",
+          "Presentar soluciones integrales",
+          "Gestionar el ciclo de ventas completo",
+          "Asegurar el cumplimiento de objetivos"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2188264",
+    "titulo": "Analista contable senior",
+    "v11_decide": "3313.2",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "registraciones"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "registraciones",
+        "tarea_v11_que_matcheaba": " Registraciones contables",
+        "tareas_v125_disponibles": [
+          "procesar información financiera",
+          "medir información financiera",
+          "analizar información financiera",
+          "garantizar precisión en registros contables",
+          "cumplir obligaciones fiscales",
+          "armar asientos contables",
+          "conciliar bancos y registrar movimientos",
+          "participar en el armado del balance"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2188135",
+    "titulo": "Vendedora en local comercial y atencion al cliente",
+    "v11_decide": "5223.6",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "reposicion"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "reposicion",
+        "tarea_v11_que_matcheaba": " Reposicion de productos",
+        "tareas_v125_disponibles": [
+          "asesorar y atender al cliente en la elección de nuestros productos según sus necesidades",
+          "realizar el proceso completo de venta desde la atención hasta el cierre de la transacción",
+          "cobrar en caja",
+          "manejar medios de pago (efectivo, tarjetas)",
+          "cerrar y abrir la caja",
+          "reposicionar productos y controlar inventario",
+          "mantener orden y limpieza del local"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2188094",
+    "titulo": "Analista contable",
+    "v11_decide": "3313.2",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "carga de facturas"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "carga de facturas",
+        "tarea_v11_que_matcheaba": "Carga de facturas",
+        "tareas_v125_disponibles": [
+          "cargar facturas",
+          "gestionar administrativamente tareas contables en general",
+          "controlar cheques y conciliaciones bancarias",
+          "calcular IVA, retenciones y percepciones",
+          "apoyar en auditorías cuando sea necesario"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "1118396671",
+    "titulo": "Cajero/a - asesor/a comercial",
+    "v11_decide": "5230.1",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "arqueo",
+      "cierre de caja",
+      "cobro"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "arqueo",
+        "tarea_v11_que_matcheaba": " Arqueo y cierre de caja conforme a los procedimientos establecidos",
+        "tareas_v125_disponibles": [
+          "brindar una atención extraordinaria, personalizada y cercana",
+          "asegurar una experiencia positiva y cercana desde el ingreso hasta el cierre de la venta",
+          "adaptar la presencia y el servicio según las necesidades de cada cliente",
+          "detectar demandas de los usuarios tanto en tienda física como en canales digitales",
+          "ofrecer productos y servicios adecuados a las necesidades deportivas de los clientes",
+          "compartir pasión por el deporte y transmitir valor de productos de marca propia",
+          "fidelizar a los clientes construyendo una red de usuarios mediante un trato personalizado",
+          "finalizar la venta con calidad en terminales de autoservicio y cajas tradicionales"
+        ]
+      },
+      {
+        "termino_condicion": "cierre de caja",
+        "tarea_v11_que_matcheaba": " Arqueo y cierre de caja conforme a los procedimientos establecidos",
+        "tareas_v125_disponibles": [
+          "brindar una atención extraordinaria, personalizada y cercana",
+          "asegurar una experiencia positiva y cercana desde el ingreso hasta el cierre de la venta",
+          "adaptar la presencia y el servicio según las necesidades de cada cliente",
+          "detectar demandas de los usuarios tanto en tienda física como en canales digitales",
+          "ofrecer productos y servicios adecuados a las necesidades deportivas de los clientes",
+          "compartir pasión por el deporte y transmitir valor de productos de marca propia",
+          "fidelizar a los clientes construyendo una red de usuarios mediante un trato personalizado",
+          "finalizar la venta con calidad en terminales de autoservicio y cajas tradicionales"
+        ]
+      },
+      {
+        "termino_condicion": "cobro",
+        "tarea_v11_que_matcheaba": " Realizar el cobro a través de los distintos medios de pago",
+        "tareas_v125_disponibles": [
+          "brindar una atención extraordinaria, personalizada y cercana",
+          "asegurar una experiencia positiva y cercana desde el ingreso hasta el cierre de la venta",
+          "adaptar la presencia y el servicio según las necesidades de cada cliente",
+          "detectar demandas de los usuarios tanto en tienda física como en canales digitales",
+          "ofrecer productos y servicios adecuados a las necesidades deportivas de los clientes",
+          "compartir pasión por el deporte y transmitir valor de productos de marca propia",
+          "fidelizar a los clientes construyendo una red de usuarios mediante un trato personalizado",
+          "finalizar la venta con calidad en terminales de autoservicio y cajas tradicionales"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "8599117940",
+    "titulo": "Auxiliar administrativo",
+    "v11_decide": "4313.1",
+    "v125_telemetria": "satelite_exacto_abstencion",
+    "terminos_perdidos": [
+      "facturacion",
+      "facturación",
+      "liquidacion de haberes",
+      "liquidación de haberes"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "facturacion",
+        "tarea_v11_que_matcheaba": null,
+        "tareas_v125_disponibles": [
+          "controlar ausentismo",
+          "manejar personal",
+          "realizar altas y bajas de personal",
+          "liquidar haberes",
+          "mantener el libro digital de haberes",
+          "facturar",
+          "gestionar la plataforma TAD",
+          "administrar caja diaria"
+        ]
+      },
+      {
+        "termino_condicion": "facturación",
+        "tarea_v11_que_matcheaba": " facturación",
+        "tareas_v125_disponibles": [
+          "controlar ausentismo",
+          "manejar personal",
+          "realizar altas y bajas de personal",
+          "liquidar haberes",
+          "mantener el libro digital de haberes",
+          "facturar",
+          "gestionar la plataforma TAD",
+          "administrar caja diaria"
+        ]
+      },
+      {
+        "termino_condicion": "liquidacion de haberes",
+        "tarea_v11_que_matcheaba": null,
+        "tareas_v125_disponibles": [
+          "controlar ausentismo",
+          "manejar personal",
+          "realizar altas y bajas de personal",
+          "liquidar haberes",
+          "mantener el libro digital de haberes",
+          "facturar",
+          "gestionar la plataforma TAD",
+          "administrar caja diaria"
+        ]
+      },
+      {
+        "termino_condicion": "liquidación de haberes",
+        "tarea_v11_que_matcheaba": " liquidación de haberes",
+        "tareas_v125_disponibles": [
+          "controlar ausentismo",
+          "manejar personal",
+          "realizar altas y bajas de personal",
+          "liquidar haberes",
+          "mantener el libro digital de haberes",
+          "facturar",
+          "gestionar la plataforma TAD",
+          "administrar caja diaria"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "1118401442",
+    "titulo": "Ejecutivo de cuentas",
+    "v11_decide": "3322.1",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "prospectar"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "prospectar",
+        "tarea_v11_que_matcheaba": "Prospectar y desarrollar nuevos clientes en la región asignada",
+        "tareas_v125_disponibles": [
+          "desarrollar y expandir la cartera de clientes y distribuidores de la región",
+          "impulsar el crecimiento comercial",
+          "fortalecer relaciones de largo plazo con clientes y distribuidores",
+          "potenciar el portafolio de productos de la compañía",
+          "identificar oportunidades de negocio",
+          "determinar tendencias del mercado",
+          "analizar acciones de la competencia",
+          "desarrollar propuestas de valor para clientes y distribuidores"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2187798",
+    "titulo": "Analista contable y de tesorería",
+    "v11_decide": "3313.2",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "conciliaciones",
+      "imputaciones"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "conciliaciones",
+        "tarea_v11_que_matcheaba": " conciliaciones bancarias",
+        "tareas_v125_disponibles": [
+          "Gestión de Tesorería: Arqueo de caja",
+          "gestión de pagos",
+          "control de flujo de fondos diario",
+          "mantenimiento al día de los libros de comercio"
+        ]
+      },
+      {
+        "termino_condicion": "imputaciones",
+        "tarea_v11_que_matcheaba": " imputaciones de comprobantes",
+        "tareas_v125_disponibles": [
+          "Gestión de Tesorería: Arqueo de caja",
+          "gestión de pagos",
+          "control de flujo de fondos diario",
+          "mantenimiento al día de los libros de comercio"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "1118397295",
+    "titulo": "Auxiliar contable",
+    "v11_decide": "3313.2",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "armado de balances",
+      "conciliaciones"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "armado de balances",
+        "tarea_v11_que_matcheaba": " armado de balances mensuales",
+        "tareas_v125_disponibles": [
+          "conciliar cuentas contables",
+          "registrar proveedores especiales de importación",
+          "controlar planillas horarias",
+          "prestar soporte a RRHH",
+          "armar balances mensuales"
+        ]
+      },
+      {
+        "termino_condicion": "conciliaciones",
+        "tarea_v11_que_matcheaba": "conciliaciones contables",
+        "tareas_v125_disponibles": [
+          "conciliar cuentas contables",
+          "registrar proveedores especiales de importación",
+          "controlar planillas horarias",
+          "prestar soporte a RRHH",
+          "armar balances mensuales"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "7399555508",
+    "titulo": "Mozo/a de salón",
+    "v11_decide": "5223.4",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "asesoramiento"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "asesoramiento",
+        "tarea_v11_que_matcheaba": " Asesoramiento sobre la carta y sugerencias del día",
+        "tareas_v125_disponibles": [
+          "atender personalmente y brindar servicio de mesa",
+          "asesorar sobre la carta y sugerir opciones del día",
+          "preparar y armar salones/eventos"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "6137410574",
+    "titulo": "Cajero/a bilingüe para resto bar de alta categoría",
+    "v11_decide": "5230.1",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "cierre de caja"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "cierre de caja",
+        "tarea_v11_que_matcheaba": " control y cierre de caja",
+        "tareas_v125_disponibles": [
+          "gestionar y controlar caja durante el turno",
+          "realizar cobros y manejo de diferentes medios de pago",
+          "controlar y cerrar caja",
+          "atender y resolver consultas de clientes",
+          "coordinar permanentemente con el equipo de salón y demás integrantes del establecimiento"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "7096965378",
+    "titulo": "Atención al público/cajero en dietética",
+    "v11_decide": "5223.4",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "asesoramiento",
+      "atencion al cliente",
+      "cobro"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "asesoramiento",
+        "tarea_v11_que_matcheaba": "Atencion al cliente y asesoramiento personalizado sobre productos naturales y saludables",
+        "tareas_v125_disponibles": [
+          "Atender al cliente y asesorar sobre productos naturales y saludables",
+          "Realizar cobros en caja (efectivo, tarjetas, medios de pago digitales)",
+          "Reponer mercadería, controlar stock y vencimientos",
+          "Fraccionar y pesar frutos secos, legumbres y productos a granel",
+          "Mantener el orden y la limpieza del local"
+        ]
+      },
+      {
+        "termino_condicion": "atencion al cliente",
+        "tarea_v11_que_matcheaba": "Atencion al cliente y asesoramiento personalizado sobre productos naturales y saludables",
+        "tareas_v125_disponibles": [
+          "Atender al cliente y asesorar sobre productos naturales y saludables",
+          "Realizar cobros en caja (efectivo, tarjetas, medios de pago digitales)",
+          "Reponer mercadería, controlar stock y vencimientos",
+          "Fraccionar y pesar frutos secos, legumbres y productos a granel",
+          "Mantener el orden y la limpieza del local"
+        ]
+      },
+      {
+        "termino_condicion": "cobro",
+        "tarea_v11_que_matcheaba": " Cobro en caja (efectivo, tarjetas, medios de pago digitales)",
+        "tareas_v125_disponibles": [
+          "Atender al cliente y asesorar sobre productos naturales y saludables",
+          "Realizar cobros en caja (efectivo, tarjetas, medios de pago digitales)",
+          "Reponer mercadería, controlar stock y vencimientos",
+          "Fraccionar y pesar frutos secos, legumbres y productos a granel",
+          "Mantener el orden y la limpieza del local"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "8046868299",
+    "titulo": "Auxiliar contable",
+    "v11_decide": "4311.1",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "emision de facturas"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "emision de facturas",
+        "tarea_v11_que_matcheaba": " emision de facturas",
+        "tareas_v125_disponibles": [
+          "gestionar la agenda del estudio",
+          "realizar cobros del estudio",
+          "atender al cliente por Whatsapp",
+          "hacer altas y bajas de monotributos",
+          "emitir facturas",
+          "realizar trámites varios en la página de ARCA"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2187678",
+    "titulo": "Analista contable semi senior",
+    "v11_decide": "3313.2",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "registraciones"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "registraciones",
+        "tarea_v11_que_matcheaba": " Registraciones contables",
+        "tareas_v125_disponibles": [
+          "procesar, medir y analizar la información financiera",
+          "armar asientos contables",
+          "conciliar bancos y registrar movimientos",
+          "participar en el armado del balance",
+          "armar reportes, informes e inventarios"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2187677",
+    "titulo": "Analista contable senior",
+    "v11_decide": "3313.2",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "registraciones"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "registraciones",
+        "tarea_v11_que_matcheaba": " Registraciones contables",
+        "tareas_v125_disponibles": [
+          "procesar, medir y analizar la información financiera",
+          "garantizar la precisión en los registros contables",
+          "cumplir con las obligaciones fiscales",
+          "proporcionar datos clave para la toma de decisiones estratégicas",
+          "optimizar los recursos financieros",
+          "analizar cuentas contables (patrimoniales, de activos y de resultado)",
+          "realizar registros contables (de facturas, recibos y órdenes de pago)",
+          "armar asientos contables"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2187579",
+    "titulo": "Administrativo/a contable SR",
+    "v11_decide": "2411.1.1",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [],
+    "detalle": []
+  },
+  {
+    "id": "1118392675",
+    "titulo": "Administrativa contable",
+    "v11_decide": "3313.2",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "conciliaciones",
+      "registraciones",
+      "registraciones contables",
+      "tareas administrativas generales"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "conciliaciones",
+        "tarea_v11_que_matcheaba": " Realización de conciliaciones bancarias",
+        "tareas_v125_disponibles": [
+          "Gestión de facturación",
+          "Administración de cobranzas",
+          "Control de cuentas corrientes"
+        ]
+      },
+      {
+        "termino_condicion": "registraciones",
+        "tarea_v11_que_matcheaba": " Ejecución de registraciones contables",
+        "tareas_v125_disponibles": [
+          "Gestión de facturación",
+          "Administración de cobranzas",
+          "Control de cuentas corrientes"
+        ]
+      },
+      {
+        "termino_condicion": "registraciones contables",
+        "tarea_v11_que_matcheaba": " Ejecución de registraciones contables",
+        "tareas_v125_disponibles": [
+          "Gestión de facturación",
+          "Administración de cobranzas",
+          "Control de cuentas corrientes"
+        ]
+      },
+      {
+        "termino_condicion": "tareas administrativas generales",
+        "tarea_v11_que_matcheaba": " Desempeño de tareas administrativas generales",
+        "tareas_v125_disponibles": [
+          "Gestión de facturación",
+          "Administración de cobranzas",
+          "Control de cuentas corrientes"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "1118393511",
+    "titulo": "Administrativo/a contable SR",
+    "v11_decide": "2411.1.1",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [],
+    "detalle": []
+  },
+  {
+    "id": "8103459304",
+    "titulo": "Administrativo/a contable SR",
+    "v11_decide": "2411.1.1",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [],
+    "detalle": []
+  },
+  {
+    "id": "1118388362",
+    "titulo": "Vendedor stand part time shopping terrazas de mayo",
+    "v11_decide": "5230.1",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "cobro",
+      "control de stock"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "cobro",
+        "tarea_v11_que_matcheaba": " cobro",
+        "tareas_v125_disponibles": [
+          "atender al cliente en el local",
+          "atender al cliente por WhatsApp",
+          "realizar cobros",
+          "abrir el local",
+          "cerrar el local",
+          "controlar el stock",
+          "ingresar y egresar mercadería"
+        ]
+      },
+      {
+        "termino_condicion": "control de stock",
+        "tarea_v11_que_matcheaba": " control de stock e ingreso y egreso de mercaderia",
+        "tareas_v125_disponibles": [
+          "atender al cliente en el local",
+          "atender al cliente por WhatsApp",
+          "realizar cobros",
+          "abrir el local",
+          "cerrar el local",
+          "controlar el stock",
+          "ingresar y egresar mercadería"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "1118388374",
+    "titulo": "Vendedor part time shopping dot",
+    "v11_decide": "5230.1",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "cobro",
+      "control de stock"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "cobro",
+        "tarea_v11_que_matcheaba": " cobro",
+        "tareas_v125_disponibles": [
+          "atender al cliente en el local",
+          "atender al cliente por WhatsApp",
+          "realizar cobros",
+          "abrir el local",
+          "cerrar el local",
+          "controlar el stock",
+          "ingresar y egresar mercadería"
+        ]
+      },
+      {
+        "termino_condicion": "control de stock",
+        "tarea_v11_que_matcheaba": " control de stock e ingreso y egreso de mercaderia",
+        "tareas_v125_disponibles": [
+          "atender al cliente en el local",
+          "atender al cliente por WhatsApp",
+          "realizar cobros",
+          "abrir el local",
+          "cerrar el local",
+          "controlar el stock",
+          "ingresar y egresar mercadería"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2187295",
+    "titulo": "Empleado/a administrativo/a",
+    "v11_decide": "3343.1",
+    "v125_telemetria": "satelite_exacto_abstencion",
+    "terminos_perdidos": [
+      "analisis de cuentas",
+      "archivo",
+      "archivo de documentacion"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "analisis de cuentas",
+        "tarea_v11_que_matcheaba": null,
+        "tareas_v125_disponibles": [
+          "Ingresar cobranzas",
+          "Analizar cuentas corrientes",
+          "Generar remitos y guías",
+          "Archivar documentación",
+          "Realizar otras tareas administrativas relacionadas"
+        ]
+      },
+      {
+        "termino_condicion": "archivo",
+        "tarea_v11_que_matcheaba": " Archivo de documentación",
+        "tareas_v125_disponibles": [
+          "Ingresar cobranzas",
+          "Analizar cuentas corrientes",
+          "Generar remitos y guías",
+          "Archivar documentación",
+          "Realizar otras tareas administrativas relacionadas"
+        ]
+      },
+      {
+        "termino_condicion": "archivo de documentacion",
+        "tarea_v11_que_matcheaba": null,
+        "tareas_v125_disponibles": [
+          "Ingresar cobranzas",
+          "Analizar cuentas corrientes",
+          "Generar remitos y guías",
+          "Archivar documentación",
+          "Realizar otras tareas administrativas relacionadas"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "1118390937",
+    "titulo": "Cajero/a para local gastronomico - turno noche",
+    "v11_decide": "5230.1",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "manejo de caja"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "manejo de caja",
+        "tarea_v11_que_matcheaba": "Manejo de caja",
+        "tareas_v125_disponibles": [
+          "manejar caja y medios de pago",
+          "realizar facturación",
+          "hacer arqueo",
+          "tratar bien al cliente",
+          "trabajar con proveedores",
+          "controlar inventarios"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "1118385034",
+    "titulo": "Responsable de administracion y finanzas",
+    "v11_decide": "4311.1",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [],
+    "detalle": []
+  },
+  {
+    "id": "7990762838",
+    "titulo": "Administrativo contable",
+    "v11_decide": "3313.2",
+    "v125_telemetria": "familia_sin_rama",
+    "terminos_perdidos": [
+      "archivo de documentacion",
+      "conciliaciones",
+      "facturacion",
+      "facturación"
+    ],
+    "detalle": [
+      {
+        "termino_condicion": "archivo de documentacion",
+        "tarea_v11_que_matcheaba": null,
+        "tareas_v125_disponibles": [
+          "Registrar y conciliar operaciones contables",
+          "Facturar, cobrar y pagar",
+          "Conciliar cuentas bancarias",
+          "Seguir cuentas corrientes",
+          "Controlar y archivar documentación",
+          "Realizar tareas administrativas generales"
+        ]
+      },
+      {
+        "termino_condicion": "conciliaciones",
+        "tarea_v11_que_matcheaba": " Conciliaciones bancarias",
+        "tareas_v125_disponibles": [
+          "Registrar y conciliar operaciones contables",
+          "Facturar, cobrar y pagar",
+          "Conciliar cuentas bancarias",
+          "Seguir cuentas corrientes",
+          "Controlar y archivar documentación",
+          "Realizar tareas administrativas generales"
+        ]
+      },
+      {
+        "termino_condicion": "facturacion",
+        "tarea_v11_que_matcheaba": null,
+        "tareas_v125_disponibles": [
+          "Registrar y conciliar operaciones contables",
+          "Facturar, cobrar y pagar",
+          "Conciliar cuentas bancarias",
+          "Seguir cuentas corrientes",
+          "Controlar y archivar documentación",
+          "Realizar tareas administrativas generales"
+        ]
+      },
+      {
+        "termino_condicion": "facturación",
+        "tarea_v11_que_matcheaba": " Facturación",
+        "tareas_v125_disponibles": [
+          "Registrar y conciliar operaciones contables",
+          "Facturar, cobrar y pagar",
+          "Conciliar cuentas bancarias",
+          "Seguir cuentas corrientes",
+          "Controlar y archivar documentación",
+          "Realizar tareas administrativas generales"
+        ]
+      }
+    ]
+  }
+]

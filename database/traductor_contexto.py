@@ -82,6 +82,70 @@ def _term_en_texto(termino: str, texto_norm: str) -> bool:
     return re.search(r'(?<!\w)' + re.escape(t) + r'(?!\w)', texto_norm) is not None
 
 
+# ── CAPA DE EQUIVALENCIA FUNCIONAL (mini-frente árbol v12.5) ──────────────────
+# NO re-escribe las condiciones (prosa compilada de Cyn): normaliza AMBOS lados
+# (término de condición y tarea) a su verbo-núcleo para que la nominalización de v11
+# ("arqueo", "carga de facturas", "asesoramiento") matchee la verbalización de v12.5
+# ("arquear", "cargar facturas", "asesorar") — doctrina de equivalencia funcional de Cyn.
+# Se usa SOLO como fallback cuando el match exacto falla → solo puede AGREGAR matches,
+# nunca quitar (estables y cobertura nueva quedan intactas).
+_EQ_STOP = frozenset('de la el los las un una unos unas y o u en con para por a al del que se su '
+                     'sus como sobre entre segun e cada todo toda todos las lo le les mediante '
+                     'segun ante tras hacia desde sin'.split())
+# irregulares: nominalización y verbo → token compartido (diptongos / raíces que el
+# stemmer regular no alinea).
+# irregulares acotados a nominalización↔verbo de TAREA (no transaccionales genéricos como
+# venta/pago/cobro/compra — demasiado frecuentes → sobre-disparan). Solo los que alinean
+# diptongos/raíces de acciones específicas.
+_EQ_IRREG = {
+    'cierre': 'cerr', 'cerrar': 'cerr', 'cierres': 'cerr',
+    'atencion': 'aten', 'atender': 'aten', 'atiende': 'aten',
+    'reposicion': 'repo', 'reponer': 'repo', 'repone': 'repo', 'repos': 'repo',
+    'arqueo': 'arque', 'arquear': 'arque',
+}
+_EQ_SUF = ('amientos', 'amiento', 'imientos', 'imiento', 'aciones', 'acion', 'iciones', 'icion',
+           'ciones', 'cion', 'siones', 'sion', 'adores', 'ador', 'adoras', 'adora', 'ados',
+           'adas', 'ado', 'ada', 'idos', 'idas', 'ido', 'ida', 'ajes', 'aje', 'ando', 'iendo',
+           'ar', 'er', 'ir', 'os', 'as', 'es', 'o', 'a', 'e')
+
+
+def _eq_stem(w: str) -> str:
+    if w in _EQ_IRREG:
+        return _EQ_IRREG[w]
+    for suf in _EQ_SUF:
+        if w.endswith(suf) and len(w) - len(suf) >= 3:
+            return w[:-len(suf)]
+    return w
+
+
+def _eq_stems(texto_norm: str) -> set:
+    return {_eq_stem(w) for w in texto_norm.split() if w not in _EQ_STOP and len(w) > 2}
+
+
+def _eq_seq(texto_norm: str) -> list:
+    return [_eq_stem(w) for w in texto_norm.split() if w not in _EQ_STOP and len(w) > 2]
+
+
+def _term_equiv_en_texto(termino: str, texto_norm: str) -> bool:
+    """Equivalencia funcional ESTRICTA (verbo-núcleo+objeto): las raíces de contenido del
+    término deben aparecer como SUBSECUENCIA CONTIGUA (frase) en el texto — no dispersas.
+    'cierre de caja'→[cerr,caj] ⊂ 'cerrar caja'; evita falsos por tokens sueltos.
+    Para términos de UNA sola palabra exige raíz específica (≥5) para no sobre-disparar
+    genéricos cortos (vend/pag/cobr/arm/carg)."""
+    tn = _norm(termino)
+    ts = [_eq_stem(w) for w in tn.split() if w not in _EQ_STOP and len(w) > 2]
+    if not ts:
+        return False
+    if len(ts) == 1 and len(ts[0]) < 5:
+        return False  # mono-token genérico corto: no rescatar (lo cubre el match exacto)
+    seq = _eq_seq(texto_norm)
+    n = len(ts)
+    for i in range(len(seq) - n + 1):
+        if seq[i:i + n] == ts:
+            return True
+    return False
+
+
 class TraductorContexto:
     """Evaluador de reglas de contexto. Fuentes inyectables para test y shadow."""
 
@@ -90,7 +154,11 @@ class TraductorContexto:
                  exclusiones_trigger: Optional[List[str]] = None,
                  catalogo_codes: Optional[set] = None,
                  lexico: Optional[dict] = None,
-                 satelites: Optional[Dict[str, str]] = None):
+                 satelites: Optional[Dict[str, str]] = None,
+                 equivalencia_funcional: bool = False):
+        # mini-frente árbol v12.5: capa de equivalencia funcional (nominalización↔verbo)
+        # como FALLBACK del match condición↔tarea. OFF por defecto (producción intacta).
+        self._equiv = equivalencia_funcional
         # v0.3.3 (laudo P1): mapa label_normalizado -> codigo del satelite.
         # Si el TITULO ENTERO == label de un satelite, rige el modo satelite-exacto.
         self.satelites = satelites or {}
@@ -207,7 +275,8 @@ class TraductorContexto:
             out = []
             for t in terms:
                 for campo, txt in textos.items():
-                    if txt and _term_en_texto(t, txt):
+                    if txt and (_term_en_texto(t, txt)
+                                or (self._equiv and _term_equiv_en_texto(t, txt))):
                         out.append((t, campo))
                         break  # primer campo que aporta (la traza registra ese campo)
             return out

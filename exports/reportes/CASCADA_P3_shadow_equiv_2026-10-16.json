@@ -1,0 +1,1472 @@
+{
+  "fecha": "2026-10-16",
+  "n_total": 119081,
+  "decide_v11": 5693,
+  "decide_v125": 8443,
+  "transiciones": {
+    "dd_igual": 4260,
+    "dd_cambia": 948,
+    "d_a": 485,
+    "a_d": 3235,
+    "a_a": 110153,
+    "d_a_v125_3plus": 295,
+    "d_a_v125_1_2": 71,
+    "d_a_v125_0": 119,
+    "dd_cambia_misma_fam": 571,
+    "dd_cambia_cruza_fam": 377
+  },
+  "vara_dual": {
+    "estabilidad_dd_igual": 4260,
+    "no_explicadas_cambio_destino": 948,
+    "pct_no_explicadas_sobre_decididos_ambos": 18.2,
+    "costo_decidia_ahora_abstiene": 485,
+    "pct_costo_sobre_decide_v11": 8.5,
+    "mejora_nueva_cobertura": 3235
+  },
+  "muestra_nuevos": [
+    {
+      "id": "1118408933",
+      "v125": "2411.1.4",
+      "label": "analista de presupuestos",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118408373",
+      "v125": "3313.2",
+      "label": "administrativo contable/administrativa contable",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118407699",
+      "v125": "3313.2",
+      "label": "administrativo contable/administrativa contable",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118409367",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118408818",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8856969774",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8560382194",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8648816694",
+      "v125": "5244.1",
+      "label": "teleoperador/teleoperadora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8550157462",
+      "v125": "4312.1",
+      "label": "auditor/auditora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "10221092485",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8737717204",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "6237814850",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "7117317645",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "6243059127",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5675992125",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "7448756479",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8569157893",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5179075354",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8756360149",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5287857901",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "9128118499",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "7921175331",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5515167074",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "satelite_exacto_abstencion"
+    },
+    {
+      "id": "5676606185",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "6036982724",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5030309177",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8515374500",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8424664719",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8211564464",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5624231273",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118406975",
+      "v125": "4110.1",
+      "label": "empleado de oficina/empleada de oficina",
+      "primera": 0,
+      "tele_v11": "satelite_exacto_abstencion"
+    },
+    {
+      "id": "1118408650",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118408653",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "2188243",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "2188266",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118403245",
+      "v125": "3321.1",
+      "label": "corredor de seguros/corredora de seguros",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "2188301",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "2188295",
+      "v125": "3321.1",
+      "label": "corredor de seguros/corredora de seguros",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118407769",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118407775",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "2188019",
+      "v125": "3321.1",
+      "label": "corredor de seguros/corredora de seguros",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "2188261",
+      "v125": "3343.1",
+      "label": "empleado administrativo/empleada administrativa",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "2188152",
+      "v125": "3321.1",
+      "label": "corredor de seguros/corredora de seguros",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "2188340",
+      "v125": "2411.1.4",
+      "label": "analista de presupuestos",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "2188293",
+      "v125": "3313.2",
+      "label": "administrativo contable/administrativa contable",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118405747",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118405769",
+      "v125": "3313.2",
+      "label": "administrativo contable/administrativa contable",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118405813",
+      "v125": "3321.1",
+      "label": "corredor de seguros/corredora de seguros",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118399558",
+      "v125": "3313.2",
+      "label": "administrativo contable/administrativa contable",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118400729",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118405150",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "9222348481",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5237127122",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "6872268019",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "6111021622",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8437115704",
+      "v125": "5244.1",
+      "label": "teleoperador/teleoperadora",
+      "primera": 0,
+      "tele_v11": "satelite_exacto_abstencion"
+    },
+    {
+      "id": "8134556645",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8028999289",
+      "v125": "9333.8.1",
+      "label": "responsable de pedidos de almacén",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5133818483",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "6739310484",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5392724223",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "satelite_exacto_abstencion"
+    },
+    {
+      "id": "6541422565",
+      "v125": "3321.1",
+      "label": "corredor de seguros/corredora de seguros",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5684487021",
+      "v125": "3321.1",
+      "label": "corredor de seguros/corredora de seguros",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "6613030825",
+      "v125": "4222.1",
+      "label": "agente de centro de atención al cliente",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8785285265",
+      "v125": "5230.1",
+      "label": "cajero/cajera",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8681216741",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5523208406",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8584070465",
+      "v125": "5223.7",
+      "label": "vendedor especializado/vendedora especializada",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8235264943",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5352171454",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "6240440746",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "6497280490",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8299024753",
+      "v125": "3321.1",
+      "label": "corredor de seguros/corredora de seguros",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5297839154",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "7540817738",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "2187378",
+      "v125": "8322.2",
+      "label": "conductor de vehículo de reparto/conductora de vehículo de reparto",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "2187998",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "2188097",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118402336",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "2188132",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "2187943",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "2188121",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "2188082",
+      "v125": "1211.1.1",
+      "label": "director de contabilidad/directora de contabilidad",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "2188142",
+      "v125": "3313.2",
+      "label": "administrativo contable/administrativa contable",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118398771",
+      "v125": "2411.1",
+      "label": "contable",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118401248",
+      "v125": "3313.2",
+      "label": "administrativo contable/administrativa contable",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118403947",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8477943598",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8943504527",
+      "v125": "4312.1",
+      "label": "auditor/auditora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8047297315",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8577857593",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8767639117",
+      "v125": "3313.2",
+      "label": "administrativo contable/administrativa contable",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8665011978",
+      "v125": "4311.1",
+      "label": "empleado de contabilidad/empleada de contabilidad",
+      "primera": 0,
+      "tele_v11": "satelite_exacto_abstencion"
+    },
+    {
+      "id": "1118402360",
+      "v125": "9333.8.1",
+      "label": "responsable de pedidos de almacén",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118397639",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118400596",
+      "v125": "3313.2",
+      "label": "administrativo contable/administrativa contable",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118400958",
+      "v125": "3321.1",
+      "label": "corredor de seguros/corredora de seguros",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118403288",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118396310",
+      "v125": "3321.1",
+      "label": "corredor de seguros/corredora de seguros",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118400697",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "1118395816",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8033462597",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8220558665",
+      "v125": "4311.1",
+      "label": "empleado de contabilidad/empleada de contabilidad",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5135229497",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "6640348299",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8111059851",
+      "v125": "4225.1",
+      "label": "agente de servicio de atención al cliente",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "6996963473",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5620786146",
+      "v125": "9333.8.1",
+      "label": "responsable de pedidos de almacén",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5935061765",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "6880193241",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "7947062497",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "6079544416",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8406828923",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "6591087028",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5189337046",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "7418816034",
+      "v125": "2411.1",
+      "label": "contable",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "5817184115",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "7415879932",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "7761578062",
+      "v125": "3322.1",
+      "label": "representante comercial",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    },
+    {
+      "id": "8756979450",
+      "v125": "5223.4",
+      "label": "vendedor/vendedora",
+      "primera": 0,
+      "tele_v11": "familia_sin_rama"
+    }
+  ],
+  "muestra_cambios_destino": [
+    {
+      "id": "8147890278",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "8406127946",
+      "v11": "5230.1",
+      "v125": "4225.1",
+      "misma_fam": false
+    },
+    {
+      "id": "8968159438",
+      "v11": "3331.2.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "8344707803",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "7403249562",
+      "v11": "5244.1",
+      "v125": "3321.1",
+      "misma_fam": false
+    },
+    {
+      "id": "8232250299",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "1118407700",
+      "v11": "1211.1.4",
+      "v125": "1211.1",
+      "misma_fam": true
+    },
+    {
+      "id": "2188273",
+      "v11": "1211.1.4",
+      "v125": "1211.1",
+      "misma_fam": true
+    },
+    {
+      "id": "2188165",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "1118401437",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "1118406788",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "1118401297",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "1118401301",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "8152112464",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "6848074251",
+      "v11": "5223.4",
+      "v125": "3322.1",
+      "misma_fam": false
+    },
+    {
+      "id": "6943216898",
+      "v11": "4110.1",
+      "v125": "3322.1",
+      "misma_fam": false
+    },
+    {
+      "id": "9034700403",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "8746914404",
+      "v11": "5230.1",
+      "v125": "5244.1",
+      "misma_fam": true
+    },
+    {
+      "id": "5122673624",
+      "v11": "3322.1",
+      "v125": "2433.6",
+      "misma_fam": false
+    },
+    {
+      "id": "1118400610",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "2187989",
+      "v11": "5223.6",
+      "v125": "5223.4",
+      "misma_fam": true
+    },
+    {
+      "id": "2188018",
+      "v11": "2411.1",
+      "v125": "3313.2",
+      "misma_fam": false
+    },
+    {
+      "id": "2187945",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "2188065",
+      "v11": "5244.1",
+      "v125": "3322.1",
+      "misma_fam": false
+    },
+    {
+      "id": "2188135",
+      "v11": "5223.6",
+      "v125": "5223.4",
+      "misma_fam": true
+    },
+    {
+      "id": "2187890",
+      "v11": "4311.1",
+      "v125": "3313.2",
+      "misma_fam": false
+    },
+    {
+      "id": "1118396671",
+      "v11": "5230.1",
+      "v125": "5223.4",
+      "misma_fam": true
+    },
+    {
+      "id": "1118399099",
+      "v11": "4311.1",
+      "v125": "3313.2",
+      "misma_fam": false
+    },
+    {
+      "id": "8900318325",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "8228179651",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "8221499237",
+      "v11": "3322.1",
+      "v125": "3334.2",
+      "misma_fam": true
+    },
+    {
+      "id": "1118401513",
+      "v11": "2411.1",
+      "v125": "3313.2",
+      "misma_fam": false
+    },
+    {
+      "id": "6474574352",
+      "v11": "5230.1",
+      "v125": "5223.4",
+      "misma_fam": true
+    },
+    {
+      "id": "8142391797",
+      "v11": "5230.1",
+      "v125": "5223.4",
+      "misma_fam": true
+    },
+    {
+      "id": "8216064722",
+      "v11": "5230.1",
+      "v125": "5223.4",
+      "misma_fam": true
+    },
+    {
+      "id": "6794250622",
+      "v11": "5223.4",
+      "v125": "3322.1",
+      "misma_fam": false
+    },
+    {
+      "id": "9234629306",
+      "v11": "5223.4",
+      "v125": "3322.1",
+      "misma_fam": false
+    },
+    {
+      "id": "5400739524",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "5740656690",
+      "v11": "5223.6",
+      "v125": "5223.4",
+      "misma_fam": true
+    },
+    {
+      "id": "5664446798",
+      "v11": "5230.1",
+      "v125": "5223.4",
+      "misma_fam": true
+    },
+    {
+      "id": "7479557122",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "6587007975",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "2187812",
+      "v11": "5223.4",
+      "v125": "3322.1",
+      "misma_fam": false
+    },
+    {
+      "id": "1118396371",
+      "v11": "3322.1",
+      "v125": "5244.1",
+      "misma_fam": false
+    },
+    {
+      "id": "1118400593",
+      "v11": "4225.1",
+      "v125": "5244.1",
+      "misma_fam": false
+    },
+    {
+      "id": "1118400592",
+      "v11": "4225.1",
+      "v125": "5244.1",
+      "misma_fam": false
+    },
+    {
+      "id": "1118399097",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "1118398843",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "8531180155",
+      "v11": "3322.1",
+      "v125": "5223.4",
+      "misma_fam": false
+    },
+    {
+      "id": "8417072978",
+      "v11": "3322.1",
+      "v125": "5244.1",
+      "misma_fam": false
+    },
+    {
+      "id": "8138520495",
+      "v11": "2411.1",
+      "v125": "3313.2",
+      "misma_fam": false
+    },
+    {
+      "id": "8392985201",
+      "v11": "4311.1",
+      "v125": "3313.2",
+      "misma_fam": false
+    },
+    {
+      "id": "7741760051",
+      "v11": "5244.1",
+      "v125": "4225.1",
+      "misma_fam": false
+    },
+    {
+      "id": "5626344321",
+      "v11": "2411.1",
+      "v125": "3313.2",
+      "misma_fam": false
+    },
+    {
+      "id": "8111311943",
+      "v11": "5223.6",
+      "v125": "5223.4",
+      "misma_fam": true
+    },
+    {
+      "id": "6709905132",
+      "v11": "5230.1",
+      "v125": "5223.4",
+      "misma_fam": true
+    },
+    {
+      "id": "7065963076",
+      "v11": "3322.1",
+      "v125": "3321.1",
+      "misma_fam": true
+    },
+    {
+      "id": "2187579",
+      "v11": "2411.1.1",
+      "v125": "3313.2",
+      "misma_fam": false
+    },
+    {
+      "id": "1118393511",
+      "v11": "2411.1.1",
+      "v125": "3313.2",
+      "misma_fam": false
+    },
+    {
+      "id": "1118392654",
+      "v11": "5230.1",
+      "v125": "5223.4",
+      "misma_fam": true
+    }
+  ],
+  "muestra_perdidas": [
+    {
+      "id": "1118406090",
+      "v11": "2411.1.1",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 2
+    },
+    {
+      "id": "1118411300",
+      "v11": "2411.1",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 1
+    },
+    {
+      "id": "1118406811",
+      "v11": "3313.2",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 0
+    },
+    {
+      "id": "2188331",
+      "v11": "4311.1",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 6
+    },
+    {
+      "id": "5838746439",
+      "v11": "5230.1",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 2
+    },
+    {
+      "id": "8533745558",
+      "v11": "4311.1",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 0
+    },
+    {
+      "id": "2188094",
+      "v11": "3313.2",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 5
+    },
+    {
+      "id": "1118402933",
+      "v11": "3322.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 9
+    },
+    {
+      "id": "1118402994",
+      "v11": "4311.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 9
+    },
+    {
+      "id": "8817347560",
+      "v11": "5230.1",
+      "tele_v125": "satelite_exacto_abstencion",
+      "v125_n": 0
+    },
+    {
+      "id": "5807493369",
+      "v11": "3322.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 6
+    },
+    {
+      "id": "6376348839",
+      "v11": "4311.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 7
+    },
+    {
+      "id": "2187808",
+      "v11": "3322.1",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 1
+    },
+    {
+      "id": "1118392494",
+      "v11": "3322.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 8
+    },
+    {
+      "id": "5879371691",
+      "v11": "3322.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 8
+    },
+    {
+      "id": "5165150055",
+      "v11": "3322.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 8
+    },
+    {
+      "id": "2187478",
+      "v11": "2411.1.1",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 2
+    },
+    {
+      "id": "2187663",
+      "v11": "2411.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 10
+    },
+    {
+      "id": "1118394436",
+      "v11": "4311.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 9
+    },
+    {
+      "id": "8258819707",
+      "v11": "4311.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 15
+    },
+    {
+      "id": "2187295",
+      "v11": "3343.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 5
+    },
+    {
+      "id": "1118389393",
+      "v11": "4311.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 6
+    },
+    {
+      "id": "1118385034",
+      "v11": "4311.1",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 6
+    },
+    {
+      "id": "8802322877",
+      "v11": "4110.1",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 1
+    },
+    {
+      "id": "6128227356",
+      "v11": "4110.1",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 2
+    },
+    {
+      "id": "7029220231",
+      "v11": "3322.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 5
+    },
+    {
+      "id": "7273276108",
+      "v11": "4311.1",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 5
+    },
+    {
+      "id": "1118384706",
+      "v11": "3322.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 5
+    },
+    {
+      "id": "1118386162",
+      "v11": "3313.2",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 18
+    },
+    {
+      "id": "1118381841",
+      "v11": "3322.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 9
+    },
+    {
+      "id": "5607362836",
+      "v11": "4110.1",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 4
+    },
+    {
+      "id": "6395648715",
+      "v11": "4110.1",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 4
+    },
+    {
+      "id": "6621370587",
+      "v11": "3313.2",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 8
+    },
+    {
+      "id": "8072607354",
+      "v11": "3322.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 5
+    },
+    {
+      "id": "6679665339",
+      "v11": "3322.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 6
+    },
+    {
+      "id": "5431752418",
+      "v11": "3313.2",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 4
+    },
+    {
+      "id": "1118383806",
+      "v11": "4312.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 8
+    },
+    {
+      "id": "8294831231",
+      "v11": "2411.1.1",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 2
+    },
+    {
+      "id": "2186574",
+      "v11": "5223.4",
+      "tele_v125": "familia_sin_rama",
+      "v125_n": 0
+    },
+    {
+      "id": "1118381150",
+      "v11": "3343.1",
+      "tele_v125": "evidencia_mixta",
+      "v125_n": 4
+    }
+  ]
+}

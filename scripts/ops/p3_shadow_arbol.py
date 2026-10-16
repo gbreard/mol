@@ -27,7 +27,7 @@ SNAP = ROOT / 'exports' / 'cohorts' / 'snapshot_pre_cascada_2026-10-05_tareas_v1
 OUT = ROOT / 'exports' / 'reportes' / 'CASCADA_P3_shadow_2026-10-16.json'
 
 
-def _build_traductor():
+def _build_traductor(equiv=False):
     from traductor_contexto import TraductorContexto
     base = ROOT / 'config'
     excl = json.load(open(base / 'traductor_exclusiones_trigger.json'))['exclusiones']
@@ -35,7 +35,7 @@ def _build_traductor():
     sats = {}
     for t in piso:
         sats.setdefault(t['trigger'], t['satelite'])
-    tc = TraductorContexto(exclusiones_trigger=excl, satelites=sats)
+    tc = TraductorContexto(exclusiones_trigger=excl, satelites=sats, equivalencia_funcional=equiv)
     ya = {t for t, _ in tc._triggers}
     tc._triggers += [(t['trigger'], t['hub']) for t in piso if t['trigger'] not in ya]
     return tc
@@ -48,7 +48,14 @@ def _txt(v):
 
 
 def main():
-    tc = _build_traductor()
+    import os
+    EQUIV = os.environ.get('EQUIV_V125') == '1'   # capa de equivalencia en el eval v12.5
+    tc = _build_traductor(equiv=False)             # baseline v11 = producción (capa OFF)
+    tc_v125 = _build_traductor(equiv=EQUIV)         # candidato v12.5 (capa ON si EQUIV)
+    if EQUIV:
+        global OUT
+        OUT = ROOT / 'exports' / 'reportes' / 'CASCADA_P3_shadow_equiv_2026-10-16.json'
+        print('[gate mini-frente] capa de equivalencia funcional ON para v12.5')
     # v11 tareas del snapshot
     v11_tar = {}
     with gzip.open(SNAP, 'rt', encoding='utf-8') as f:
@@ -89,7 +96,7 @@ def main():
         tareas_v125 = _txt(json.loads(tj) if tj else [])
         tareas_v11 = v11_tar.get(oid, '')
         r11 = tc.evaluar(titulo, _contenidos(oid, tareas_v11))
-        r125 = tc.evaluar(titulo, _contenidos(oid, tareas_v125))
+        r125 = tc_v125.evaluar(titulo, _contenidos(oid, tareas_v125))
         d11, d125 = r11.get('decide'), r125.get('decide')
         c11, c125 = r11.get('codigo_esco'), r125.get('codigo_esco')
         if d11 and d125:
@@ -97,8 +104,17 @@ def main():
                 cnt['dd_igual'] += 1
             else:
                 cnt['dd_cambia'] += 1
-                if len(cambios_destino) < 40:
-                    cambios_destino.append({'id': oid, 'v11': c11, 'v125': c125})
+                # familia ISCO-2 (primeros 2 díg. del código antes del punto)
+                f11 = (c11 or '').split('.')[0][:2]
+                f125 = (c125 or '').split('.')[0][:2]
+                cnt.setdefault('dd_cambia_misma_fam', 0); cnt.setdefault('dd_cambia_cruza_fam', 0)
+                if f11 == f125:
+                    cnt['dd_cambia_misma_fam'] += 1
+                else:
+                    cnt['dd_cambia_cruza_fam'] += 1
+                if len(cambios_destino) < 60:
+                    cambios_destino.append({'id': oid, 'v11': c11, 'v125': c125,
+                                            'misma_fam': f11 == f125})
         elif d11 and not d125:
             cnt['d_a'] += 1
             # bucket por riqueza de tareas v12.5 (regresión-del-evaluador vs v12.5-adelgazó/legítimo)
