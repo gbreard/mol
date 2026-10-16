@@ -47,14 +47,15 @@ GOLD = {
         "brindar una atención cordial a los clientes",
         "cuidar el vehículo y la mercadería asignada",
     ],
-    '2176458': [  # C4 FALLA
+    '2176458': [  # C4 — v12.5: oro corregido por laudo hoja 1 (RG-TAR-009 gana).
+        # Se QUITA "cumplir las normas y procedimientos en materia de seguridad integral"
+        # (tarea-oro #7 original): es condición, no tarea. Linaje: fronteras_v124 hoja 1.
         "mecanizar en máquinas CNC con programación a pie de máquina mediante sistema FAGOR",
         "usar y mantener herramientas de medición",
         "ejecutar las órdenes de trabajo",
         "controlar la entrada y salida al taller de materiales y equipos de trabajo",
         "llevar registro y control de los trabajos realizados y/o a realizar en el taller",
         "mantener en orden el equipo y el sitio de trabajo, reportando cualquier anomalía",
-        "cumplir las normas y procedimientos en materia de seguridad integral",
     ],
     '1117972807': [  # C5 FALLA
         "colaborar con la liquidación de sueldos",
@@ -224,11 +225,14 @@ GOLD = {
         "ordenar y coordinar las filas del banco",
         "atender y gestionar reclamos",
     ],
-    '8046413181': [  # caso 7 — Ejecutivo Sr Operaciones Turismo (indeed). "asegurar" como unidad (RG-TAR-013).
+    '8046413181': [  # caso 7 — Ejecutivo Sr Operaciones Turismo (indeed). v12.5: laudo hoja 4.
+        # coordinar+asegurar JUNTOS (asegurar = resultado); facturación SEPARADA en 3.
         "coordinar documentación de viaje y asegurar que todo esté en tiempo y forma",
         "gestionar bookings para Argentina, Chile, Perú, Colombia y Ecuador",
         "mantener una comunicación fluida, enviando confirmaciones y updates",
-        "revisar itinerarios, actualizar costos y coordinar facturación",
+        "revisar itinerarios",
+        "actualizar costos",
+        "coordinar facturación",
         "atender el teléfono de emergencia (rotativo)",
     ],
     '8016348095': [  # caso 8 — Ejecutivo Empresas Minería (indeed). Finalidad subordinada fuera (RG-TAR-013).

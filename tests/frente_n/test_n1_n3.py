@@ -119,23 +119,27 @@ def test_n3_no_filtra_herramienta_de_medicion_ni_remitos():
     assert len(ok) == 3
 
 
-# ── N3 v12.4: compliance/HSE pasivo (RG-TAR-009) ──
+# ── N3 v12.5: compliance/HSE pasivo (RG-TAR-009, AMPLIADO por laudo hoja 1) ──
 def test_n3_filtra_compliance_hse_pasivo():
     ok, desc = postfiltrar([
         'conocer los aspectos e impactos ambientales así como peligros y riesgos',
         'actuar permanentemente en forma segura',
-        'cumplir el plan de entrenamientos mandatorios (código de conducta)'])
+        'cumplir el plan de entrenamientos mandatorios (código de conducta)',
+        'cumplir las normas y procedimientos en materia de seguridad integral',  # laudo: ahora SÍ filtra (ex-caso4)
+        'cumplir con los procedimientos del sistema de gestión ambiental',
+        'respetar los estándares de higiene'])
     assert ok == []
     assert all(d['motivo'] == 'compliance_hse_pasivo' for d in desc)
 
 
-def test_n3_no_filtra_compliance_como_responsabilidad():
-    # protegidos: caso 4 ("cumplir normas/procedimientos de seguridad") y caso 11
-    # ("garantizar/verificar el cumplimiento") — son tareas, NO se filtran.
-    tareas = ['cumplir las normas y procedimientos en materia de seguridad integral',
-              'garantizar el cumplimiento de estándares de calidad, seguridad y medio ambiente',
+def test_n3_no_filtra_intervencion_concreta_sobre_seguridad():
+    # KEEP: la acción concreta sobre la materia SÍ es tarea (lead de intervención, laudo hoja 1).
+    tareas = ['garantizar el cumplimiento de estándares de calidad, seguridad y medio ambiente',
               'controlar el cumplimiento de normas',
-              'inspeccionar riesgos ambientales']
+              'verificar el cumplimiento de procedimientos de seguridad',
+              'inspeccionar riesgos ambientales',
+              'capacitar al personal en seguridad e higiene',
+              'cumplir con los objetivos de venta mensuales']  # "cumplir" + no-compliance-noun → pasa
     ok, desc = postfiltrar(tareas)
     assert ok == tareas
     assert desc == []

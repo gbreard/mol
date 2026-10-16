@@ -56,14 +56,28 @@ _TOOL_RE = re.compile(
     r'excel|autocad|word|power\s?point|paquete office|office|tango|sap|bejerman)',
     re.IGNORECASE)
 
-# v12.4 — COMPLIANCE/HSE PASIVO (RG-TAR-009), acotado a los 3 ítems que Cyn marcó
-# fuera en el Account Receivable. NO filtra "cumplir normas/procedimientos de
-# seguridad" (caso 4 lo acepta — contradicción que se LISTA para Cyn).
+# v12.5 — COMPLIANCE/HSE PASIVO (RG-TAR-009), AMPLIADO por el laudo de Cyn (hoja 1):
+# "cumplir norma/procedimiento/estándar de seguridad/higiene/ambiente" NUNCA es tarea,
+# independiente del oficio. Se netea por LEAD pasivo (cumplir/cumplimiento/conocer/actuar/
+# respetar) + sustantivo de cumplimiento. Los LEADS de intervención concreta
+# (controlar/inspeccionar/verificar/investigar/gestionar/supervisar/capacitar/garantizar)
+# NO matchean (empiezan con otro verbo) → se conservan. Corrige la contradicción caso-4.
 _HSE_RE = re.compile(
     r'^(conocer\b.*(riesgo|impacto\s+ambiental|aspecto.*ambiental|peligro)|'
     r'actuar\b.*segur|'
-    r'(cumplir|cumplimiento)\b.*(plan de entrenamiento|entrenamientos?\s+mandatori|'
-    r'capacitaciones?\s+obligatori|codigo de conducta))',
+    r'respetar\b.*(norma|procedimiento|estandar|seguridad|higiene|ambient)|'
+    r'(cumplir|cumplimiento)\b.*(norma|procedimiento|estandar|seguridad|higiene|'
+    r'ambient|plan de entrenamiento|entrenamientos?\s+mandatori|capacitaciones?\s+obligatori|'
+    r'codigo de conducta|buenas practicas|\bgmp\b|salud ocupacional))',
+    re.IGNORECASE)
+
+# Guard: aunque el LEAD sea pasivo, si el ítem contiene un verbo de INTERVENCIÓN concreta
+# (la keep-list del laudo de Cyn), NO netear — hay una función real. Ej: "cumplir y HACER
+# CUMPLIR las BPF" (enforce = supervisar el cumplimiento) se CONSERVA.
+# Formas VERBALES (no el sustantivo): "gestiona/gestionar" sí, "sistema de gestión" NO.
+_HSE_KEEP_RE = re.compile(
+    r'\b(hacer cumplir|hacer respetar|controlar|controla|supervis|verific|inspeccion|'
+    r'investiga|gestiona|capacit|auditar|audita|garantiz|fiscaliz|monitorea)',
     re.IGNORECASE)
 
 # Verbos de acción típicos (para detectar fragmentos SIN verbo). Aproximación:
@@ -103,8 +117,8 @@ def postfiltrar(tareas, log=None):
         motivo = None
         if _TOOL_RE.match(item_na):
             motivo = 'herramienta_verbalizada'       # RG-TAR-008
-        elif _HSE_RE.match(item_na):
-            motivo = 'compliance_hse_pasivo'          # RG-TAR-009
+        elif _HSE_RE.match(item_na) and not _HSE_KEEP_RE.search(item_na):
+            motivo = 'compliance_hse_pasivo'          # RG-TAR-009 (laudo hoja 1)
         elif _REQ_RE.match(item):
             motivo = 'requisito/experiencia/conocimiento'
         elif _BENEF_RE.match(item):
