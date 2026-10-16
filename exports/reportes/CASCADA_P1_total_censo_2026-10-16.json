@@ -1,0 +1,300 @@
+{
+  "fecha": "2026-10-16",
+  "staging_total": 119081,
+  "capas": {
+    "re-extraccion": {
+      "n": 96481,
+      "vac": 10868,
+      "sum": 580607,
+      "sum_nz": 580607,
+      "nz": 85613,
+      "media_global": 6.02,
+      "media_no_vacio": 6.78,
+      "pct_vacio": 11.3
+    },
+    "delta_contador": {
+      "n": 1965,
+      "vac": 1843,
+      "sum": 487,
+      "sum_nz": 487,
+      "nz": 122,
+      "media_global": 0.25,
+      "media_no_vacio": 3.99,
+      "pct_vacio": 93.8
+    },
+    "primera": {
+      "n": 20635,
+      "vac": 2272,
+      "sum": 129650,
+      "sum_nz": 129650,
+      "nz": 18363,
+      "media_global": 6.28,
+      "media_no_vacio": 7.06,
+      "pct_vacio": 11.0
+    }
+  },
+  "distribucion_reext": {
+    "pares_comparados": 98168,
+    "n_tareas_v11_total": 532641,
+    "n_tareas_v125_total": 580994,
+    "media_v11": 5.43,
+    "media_v125": 5.92,
+    "subio": 39602,
+    "bajo": 28190,
+    "igual": 30376,
+    "vacias_antes": 4179,
+    "vacias_despues": 12454
+  },
+  "multipuesto_inline_flag": 638,
+  "sub_ofertas_check": [
+    {
+      "parent": "1118061207",
+      "n_sub": 3,
+      "v11_tokens": 53,
+      "cubre_pct": 89.0,
+      "v125_n": 15
+    },
+    {
+      "parent": "1118161376",
+      "n_sub": 4,
+      "v11_tokens": 3,
+      "cubre_pct": 0.0,
+      "v125_n": 0
+    },
+    {
+      "parent": "1118010906",
+      "n_sub": 1,
+      "v11_tokens": 0,
+      "cubre_pct": 100.0,
+      "v125_n": 0
+    },
+    {
+      "parent": "2166149",
+      "n_sub": 1,
+      "v11_tokens": 0,
+      "cubre_pct": 100.0,
+      "v125_n": 0
+    },
+    {
+      "parent": "1117978310",
+      "n_sub": 1,
+      "v11_tokens": 54,
+      "cubre_pct": 85.0,
+      "v125_n": 16
+    },
+    {
+      "parent": "1118216441",
+      "n_sub": 1,
+      "v11_tokens": 9,
+      "cubre_pct": 0.0,
+      "v125_n": 0
+    },
+    {
+      "parent": "5306196198",
+      "n_sub": 1,
+      "v11_tokens": 15,
+      "cubre_pct": 13.0,
+      "v125_n": 11
+    },
+    {
+      "parent": "7008603934",
+      "n_sub": 1,
+      "v11_tokens": 30,
+      "cubre_pct": 57.0,
+      "v125_n": 7
+    },
+    {
+      "parent": "8107415621",
+      "n_sub": 1,
+      "v11_tokens": 25,
+      "cubre_pct": 100.0,
+      "v125_n": 8
+    },
+    {
+      "parent": "7777457035",
+      "n_sub": 1,
+      "v11_tokens": 28,
+      "cubre_pct": 100.0,
+      "v125_n": 5
+    }
+  ],
+  "muestra_15": [
+    {
+      "id": "1118411285",
+      "capa": "re-ext",
+      "n": 13,
+      "tareas": [
+        "analizar la secuencia de trabajo del equipo carga e identificar desvíos en cada etapa",
+        "diagnosticar fallas en ciclos incompletos o detenidos",
+        "controlar y verificar sensores de posición, finales de carrera y seguridad operativa",
+        "diagnosticar fallas en botoneras, joysticks y paneles de mando",
+        "interpretar la lógica de control del equipo ECU (Unidades de Control Electrónico)",
+        "evaluar interferencias o fallas que impacten el funcionamiento del equipo en sistemas automatizados mediante PLC (Controlador Lógico Programable)"
+      ],
+      "v11_n": 10
+    },
+    {
+      "id": "1118412137",
+      "capa": "re-ext",
+      "n": 6,
+      "tareas": [
+        "Ejecutar tareas de mantenimiento preventivo, predictivo y correctivo de los equipos e instalaciones de planta",
+        "Diagnosticar y resolver fallas en equipos y sistemas industriales",
+        "Atender mantenimientos correctivos y situaciones de emergencia",
+        "Ejecutar las tareas programadas de acuerdo con la planificación del sector",
+        "Registrar las intervenciones y órdenes de trabajo en el sistema de gestión",
+        "Contribuir a la mejora continua y a la optimización de los procesos de mantenimiento"
+      ],
+      "v11_n": 5
+    },
+    {
+      "id": "1118411991",
+      "capa": "re-ext",
+      "n": 11,
+      "tareas": [
+        "garantizar la operatividad de nuestra planta mediante el mantenimiento preventivo y correctivo",
+        "montar tableros eléctricos",
+        "mantener tableros eléctricos",
+        "reparar motores",
+        "leer e interpretar planos eléctricos",
+        "interpretar planos mecánicos"
+      ],
+      "v11_n": 3
+    },
+    {
+      "id": "1118408557",
+      "capa": "re-ext",
+      "n": 2,
+      "tareas": [
+        "mantener en plantas industriales",
+        "realizar mantenimiento en procesos de línea de producción continua"
+      ],
+      "v11_n": 2
+    },
+    {
+      "id": "1118410030",
+      "capa": "re-ext",
+      "n": 0,
+      "tareas": [],
+      "v11_n": 10
+    },
+    {
+      "id": "1118407944",
+      "capa": "delta",
+      "n": 5,
+      "tareas": [
+        "armar y montar máquinas industriales",
+        "interpretar planos e instrucciones técnicas",
+        "montar cañerías y componentes neumáticos e hidráulicos",
+        "realizar conexiones eléctricas",
+        "instalar y poner en marcha equipos tanto en planta como en locaciones de los clientes"
+      ],
+      "v11_n": 5
+    },
+    {
+      "id": "1118411941",
+      "capa": "delta",
+      "n": 0,
+      "tareas": [],
+      "v11_n": 2
+    },
+    {
+      "id": "1118412460",
+      "capa": "delta",
+      "n": 6,
+      "tareas": [
+        "desarrollar Pinamar y Cariló",
+        "gestionar comercialmente desde la localidad",
+        "participar en reuniones semanales de seguimiento",
+        "recibir capacitación continua",
+        "contar con respaldo operativo de la sede en Mar del Plata",
+        "utilizar herramientas comerciales proporcionadas"
+      ],
+      "v11_n": 1
+    },
+    {
+      "id": "1118403059",
+      "capa": "delta",
+      "n": 0,
+      "tareas": [],
+      "v11_n": 0
+    },
+    {
+      "id": "1118136905",
+      "capa": "delta",
+      "n": 0,
+      "tareas": [],
+      "v11_n": 4
+    },
+    {
+      "id": "1118477478",
+      "capa": "primera",
+      "n": 6,
+      "tareas": [
+        "desarrollar y potenciar la presencia en redes sociales",
+        "crear y protagonizar contenido audiovisual atractivo para presentar productos, demostraciones y explicaciones de características y beneficios",
+        "generar contenido comercial que impulse las ventas",
+        "planificar, grabar y editar contenido para redes sociales (ej. Reels)",
+        "diseñar publicaciones y gestionar la comunidad online",
+        "desarrollar e implementar estrategias de marketing digital enfocadas en la consecución de objetivos comerciales"
+      ],
+      "v11_n": null
+    },
+    {
+      "id": "1118473646",
+      "capa": "primera",
+      "n": 14,
+      "tareas": [
+        "administrar y actualizar publicaciones de productos en Mercado Libre",
+        "gestionar títulos, descripciones, fotografías, categorías, atributos, variantes y stock según la información proporcionada por la empresa",
+        "actualizar precios, promociones y condiciones comerciales previamente autorizados",
+        "revisar el funcionamiento de enlaces, formularios y procesos de compra, detectar problemas y dar seguimiento a su resolución",
+        "ejecutar acciones de optimización de publicaciones y tiendas online",
+        "crear contenido comercial para nuestras líneas de muebles y proyectos a medida"
+      ],
+      "v11_n": null
+    },
+    {
+      "id": "1118473779",
+      "capa": "primera",
+      "n": 6,
+      "tareas": [
+        "Crear, optimizar y gestionar campañas publicitarias en Meta Ads e Instagram/Facebook enfocadas en la conversión",
+        "Gestionar las redes sociales oficiales y planificar el calendario de publicaciones",
+        "Redactar copys persuasivos para redes sociales",
+        "Diseñar piezas institucionales, promociones y contenido audiovisual ágil para redes usando Canva, Photoshop o Illustrator",
+        "Mantener actualizada la página web corporativa en cuanto a novedades y servicios",
+        "Realizar optimizaciones básicas en la página web corporativa"
+      ],
+      "v11_n": null
+    },
+    {
+      "id": "1118475499",
+      "capa": "primera",
+      "n": 6,
+      "tareas": [
+        "prospectar nuevos clientes a través de redes sociales, referidos, contactos, acciones presenciales y canales digitales",
+        "escuchar necesidades y asesorar sobre el plan de cobertura médica más adecuado",
+        "gestionar el proceso comercial completo: contacto, propuesta, negociación, cierre y documentación para el alta",
+        "recibir y gestionar leads, complementándolos con acciones de prospección propia para ampliar la cartera",
+        "registrar y dar seguimiento a las oportunidades en CRM",
+        "observar el mercado y aportar información que ayude a potenciar la estrategia comercial"
+      ],
+      "v11_n": null
+    },
+    {
+      "id": "1118472633",
+      "capa": "primera",
+      "n": 7,
+      "tareas": [
+        "prospectar nuevas empresas y detectar oportunidades de negocio",
+        "reactivar clientes inactivos",
+        "identificar decisores y necesidades",
+        "generar reuniones comerciales (virtuales y presenciales)",
+        "elaborar propuestas y negociar las primeras operaciones",
+        "registrar la gestión en CRM"
+      ],
+      "v11_n": null
+    }
+  ]
+}
