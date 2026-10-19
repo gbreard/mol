@@ -1,0 +1,1096 @@
+{
+  "intra_30": [
+    {
+      "id": "8504965107",
+      "titulo": "Vendedor técnico de mostrador",
+      "tareas": [
+        "atender y asesorar al cliente",
+        "vender repuestos y accesorios",
+        "asesorar técnicamente sobre compatibilidades y medidas",
+        "manejar calibre e instrumentos de medición",
+        "recepcionar y controlar mercadería"
+      ],
+      "v11": "5223.4",
+      "v11_label": "vendedor/vendedora",
+      "v125": "5223.7",
+      "v125_label": "vendedor especializado/vendedora especializada",
+      "hub": "5223.4",
+      "regla": "D02",
+      "terminos": [
+        "compatibilidad",
+        "compatibilidades"
+      ]
+    },
+    {
+      "id": "8142391797",
+      "titulo": "Vendedor polivalente para kiosco",
+      "tareas": [
+        "Atender al cliente en mostrador con vocación de servicio y calidez",
+        "Manejar la caja, realizar cobros (efectivo y medios digitales) y arqueo",
+        "Recepcionar, reponer y controlar el stock de mercadería",
+        "Mantener el orden y la limpieza del local"
+      ],
+      "v11": "5230.1",
+      "v11_label": "cajero/cajera",
+      "v125": "5223.4",
+      "v125_label": "vendedor/vendedora",
+      "hub": "5223.4",
+      "regla": "D01",
+      "terminos": [
+        "control de stock",
+        "orden y limpieza del local",
+        "reponer"
+      ]
+    },
+    {
+      "id": "7569037323",
+      "titulo": "Mozo/a",
+      "tareas": [
+        "atender al cliente en salón garantizando una experiencia cordial y eficiente",
+        "preparar pedidos simples como armado de tostados, carlitos, café para llevar",
+        "reponer heladeras y controlar el stock diariamente",
+        "reponer insumos",
+        "mantener el orden y la limpieza del espacio de trabajo (salón y cocina)"
+      ],
+      "v11": "5223.6",
+      "v11_label": "asistente de tienda",
+      "v125": "5246.1",
+      "v125_label": "trabajador de servicio de restauración/trabajadora de servicio de restauración",
+      "hub": "5223.4",
+      "regla": "D01",
+      "terminos": [
+        "control de stock",
+        "reponer"
+      ]
+    },
+    {
+      "id": "8809283260",
+      "titulo": "Cajero sucursales",
+      "tareas": [
+        "procesar transacciones de venta de forma rápida y precisa",
+        "brindar atención cordial y asesoramiento a los clientes",
+        "colaborar activamente con la venta de productos en el salón",
+        "realizar reposición de mercadería en góndolas y exhibidores",
+        "manejar efectivo, tarjetas y otros medios de pago",
+        "registrar correctamente las operaciones en el sistema",
+        "mantener el sector de caja y el salón de ventas ordenado"
+      ],
+      "v11": "5223.6",
+      "v11_label": "asistente de tienda",
+      "v125": "5223.4",
+      "v125_label": "vendedor/vendedora",
+      "hub": "5223.4",
+      "regla": "D01",
+      "terminos": [
+        "gondola",
+        "gondolas",
+        "reposicion"
+      ]
+    },
+    {
+      "id": "8012750041",
+      "titulo": "Vendedor digital",
+      "tareas": [
+        "atender y cerrar ventas mediante Instagram",
+        "atender y cerrar ventas mediante Facebook Marketplace",
+        "atender y cerrar ventas mediante WhatsApp",
+        "publicar y actualizar productos en plataformas digitales",
+        "seguimiento de consultas y clientes potenciales",
+        "gestionar cartera de clientes",
+        "generar nuevas oportunidades de venta"
+      ],
+      "v11": "5223.4",
+      "v11_label": "vendedor/vendedora",
+      "v125": "5246.1",
+      "v125_label": "trabajador de servicio de restauración/trabajadora de servicio de restauración",
+      "hub": "5223.4",
+      "regla": "D05",
+      "terminos": [
+        "prepara comidas",
+        "preparar comidas"
+      ]
+    },
+    {
+      "id": "8292562701",
+      "titulo": "Vendedor técnico de mostrador",
+      "tareas": [
+        "atender y asesorar al cliente",
+        "vender repuestos y accesorios",
+        "asesorar técnicamente sobre compatibilidades y medidas",
+        "manejar calibre e instrumentos de medición",
+        "recepcionar y controlar mercadería"
+      ],
+      "v11": "5223.4",
+      "v11_label": "vendedor/vendedora",
+      "v125": "5223.7",
+      "v125_label": "vendedor especializado/vendedora especializada",
+      "hub": "5223.4",
+      "regla": "D02",
+      "terminos": [
+        "compatibilidad",
+        "compatibilidades"
+      ]
+    },
+    {
+      "id": "8103223660",
+      "titulo": "Ejecutivo/a de ventas posadas",
+      "tareas": [
+        "captar nuevos asociados",
+        "comercializar planes de cobertura médica",
+        "asegurar una experiencia de asesoramiento cercana, profesional y efectiva",
+        "hacer prospección activa presencial y/o digital de nuevos clientes individuales y corporativos",
+        "gestionar el proceso completo de venta: presupuestación por segmento, cierre y documentación para el alta",
+        "recibir y gestionar leads provenientes de distintos canales",
+        "asegurar una respuesta oportuna y orientada al cierre"
+      ],
+      "v11": "3322.1",
+      "v11_label": "representante comercial",
+      "v125": "3321.1",
+      "v125_label": "corredor de seguros/corredora de seguros",
+      "hub": "3322.1",
+      "regla": "D02",
+      "terminos": [
+        "asegurado",
+        "aseguradoras",
+        "asegurados",
+        "coberturas"
+      ]
+    },
+    {
+      "id": "1118355995",
+      "titulo": "Ejecutivo comercial hunter campo - logística internacional y despacho de aduana - noa / norte argent",
+      "tareas": [
+        "Generar nuevos clientes mediante búsqueda activa, visitas comerciales y networking",
+        "Contactar importadores, exportadores, empresas, comercios, industrias, distribuidores y mayoristas",
+        "Detectar oportunidades de negocio en fletes internacionales marítimos y aéreos, courier y despacho de aduana",
+        "Ofrecer servicios de logística internacional, despacho de aduana y búsqueda de productos en China",
+        "Trabajar sobre base de datos de importadores y leads generados por publicidad",
+        "Relevar información comercial del cliente: producto, origen, volumen, frecuencia de compra y necesidad operativa",
+        "Coordinar cotizaciones junto al equipo interno"
+      ],
+      "v11": "3322.1",
+      "v11_label": "representante comercial",
+      "v125": "3331.2.1",
+      "v125_label": "especialista en importación y exportación",
+      "hub": "3322.1",
+      "regla": "D06",
+      "terminos": [
+        "aduana",
+        "comercio exterior",
+        "importacion"
+      ]
+    },
+    {
+      "id": "2175883",
+      "titulo": "Ejecutiva de cuentas",
+      "tareas": [
+        "Desarrollar y gestionar la cartera de clientes mayoristas a nivel nacional",
+        "Generar nuevas oportunidades comerciales",
+        "Asegurar un servicio de excelencia para los clientes",
+        "Gestión integral de ventas y postventa",
+        "Seguimiento de pedidos",
+        "Cumplir con objetivos comerciales"
+      ],
+      "v11": "3322.1",
+      "v11_label": "representante comercial",
+      "v125": "3331.2.1",
+      "v125_label": "especialista en importación y exportación",
+      "hub": "3322.1",
+      "regla": "D02",
+      "terminos": [
+        "asegurado",
+        "aseguradoras",
+        "asegurados"
+      ]
+    },
+    {
+      "id": "5664446798",
+      "titulo": "Cajera/o multisucursal",
+      "tareas": [
+        "Atender al cliente",
+        "Facturar y cobrar en diferentes medios de pago",
+        "Realizar arqueo de caja",
+        "Rendir cuentas diariamente",
+        "Registrar operaciones en el sistema"
+      ],
+      "v11": "5230.1",
+      "v11_label": "cajero/cajera",
+      "v125": "5223.4",
+      "v125_label": "vendedor/vendedora",
+      "hub": "5223.4",
+      "regla": "D07",
+      "terminos": [
+        "arqueo",
+        "cobrar"
+      ]
+    },
+    {
+      "id": "5740656690",
+      "titulo": "Vendedor riiing",
+      "tareas": [
+        "atender y asesorar a los clientes en tienda",
+        "promover productos y cerrar ventas cumpliendo con las metas",
+        "reponer productos en góndolas y vitrinas",
+        "manejar la caja registradora y medios de pago",
+        "mantener el orden y limpieza del punto de venta",
+        "apoyar en inventarios y control de stock"
+      ],
+      "v11": "5223.6",
+      "v11_label": "asistente de tienda",
+      "v125": "5223.4",
+      "v125_label": "vendedor/vendedora",
+      "hub": "5223.4",
+      "regla": "D01",
+      "terminos": [
+        "control de stock",
+        "gondola",
+        "gondolas",
+        "reponer"
+      ]
+    },
+    {
+      "id": "8426924293",
+      "titulo": "Ejecutivo/a de ventas",
+      "tareas": [
+        "captar nuevos asociados",
+        "comercializar planes de cobertura médica",
+        "asegurar una experiencia de asesoramiento cercana, profesional y efectiva",
+        "hacer prospección activa presencial y/o digital de nuevos clientes individuales y corporativos",
+        "gestionar el proceso completo de venta: presupuestación por segmento, cierre y documentación para el alta",
+        "recibir y gestionar leads provenientes de distintos canales",
+        "asegurar una respuesta oportuna y orientada al cierre"
+      ],
+      "v11": "3322.1",
+      "v11_label": "representante comercial",
+      "v125": "3321.1",
+      "v125_label": "corredor de seguros/corredora de seguros",
+      "hub": "3322.1",
+      "regla": "D02",
+      "terminos": [
+        "asegurado",
+        "aseguradoras",
+        "asegurados",
+        "coberturas"
+      ]
+    },
+    {
+      "id": "1118241187",
+      "titulo": "Ejecutivo/a de cuentas canal pas - noa",
+      "tareas": [
+        "buscar y seleccionar productores de seguros",
+        "generar procesos de ABM de productores",
+        "seguir y desarrollar comercialmente el canal productor",
+        "incentivar y motivar a los productores para cumplir objetivos de ventas",
+        "realizar seguimiento de gestiones de cobranzas del PAS",
+        "generar alianzas comerciales estratégicas",
+        "buscar proactivamente negocios clave según los objetivos de la compañía"
+      ],
+      "v11": "3322.1",
+      "v11_label": "representante comercial",
+      "v125": "3321.1",
+      "v125_label": "corredor de seguros/corredora de seguros",
+      "hub": "3322.1",
+      "regla": "D02",
+      "terminos": [
+        "poliza",
+        "polizas",
+        "seguros"
+      ]
+    },
+    {
+      "id": "2179972",
+      "titulo": "Vendedor/a de local (alto palermo-caba)",
+      "tareas": [
+        "Brindar asesoramiento personalizado",
+        "acompañar al cliente en una experiencia de compra cuidada y diferencial",
+        "cumplir objetivos de venta individuales y grupales",
+        "mantener estándares de visual y orden del local",
+        "colaborar con tareas de stock y reposición"
+      ],
+      "v11": "5223.6",
+      "v11_label": "asistente de tienda",
+      "v125": "5223.4",
+      "v125_label": "vendedor/vendedora",
+      "hub": "5223.4",
+      "regla": "D01",
+      "terminos": [
+        "orden del local",
+        "reposicion"
+      ]
+    },
+    {
+      "id": "5179492220",
+      "titulo": "Encargado/a y vendedor/a para local de indumentaria",
+      "tareas": [
+        "asesorar en ventas en local",
+        "cobrar en local",
+        "llevar la caja en el local",
+        "ordenar mercadería en el local",
+        "reponer mercadería en el local",
+        "remitir mercadería en el local",
+        "controlar stock en el local"
+      ],
+      "v11": "5223.6",
+      "v11_label": "asistente de tienda",
+      "v125": "5223.4",
+      "v125_label": "vendedor/vendedora",
+      "hub": "5223.4",
+      "regla": "D01",
+      "terminos": [
+        "control de stock",
+        "reponer"
+      ]
+    },
+    {
+      "id": "9252289493",
+      "titulo": "Asistente administrativo",
+      "tareas": [
+        "asistir y colaborar con las registraciones contables de todos los movimientos y transacciones que se realicen en la empresa",
+        "preparar reportes y estados contables acordes a los principios de contabilidad nacionales",
+        "realizar conciliaciones de cuentas e imputaciones",
+        "realizar conciliaciones bancarias",
+        "analizar cuentas de saldos y ajustes cada una de las razones sociales",
+        "clasificar las cuentas provenientes de los costos y gastos, compensaciones y variaciones encontradas con respecto a períodos anteriores para la preparación de los Estados Contables",
+        "elaborar informes y encuestas"
+      ],
+      "v11": "3343.1",
+      "v11_label": "empleado administrativo/empleada administrativa",
+      "v125": "3313.2",
+      "v125_label": "administrativo contable/administrativa contable",
+      "hub": "2411.1.1",
+      "regla": "D03",
+      "terminos": [
+        "archivo"
+      ]
+    },
+    {
+      "id": "8746914404",
+      "titulo": "Cajero/a vendedor",
+      "tareas": [
+        "atender al cliente presencialmente",
+        "atender al cliente telefónicamente",
+        "asesorar comercialmente sobre neumáticos y llantas",
+        "asesorar sobre servicios de gomería",
+        "cobrar productos y servicios",
+        "facturar productos y servicios",
+        "manejar valores (efectivo, tarjetas, medios digitales)"
+      ],
+      "v11": "5230.1",
+      "v11_label": "cajero/cajera",
+      "v125": "5244.1",
+      "v125_label": "teleoperador/teleoperadora",
+      "hub": "5223.4",
+      "regla": "D01",
+      "terminos": [
+        "control de stock"
+      ]
+    },
+    {
+      "id": "1118213927",
+      "titulo": "Administrativa contable",
+      "tareas": [
+        "Gestión y seguimiento de proveedores",
+        "Registro y control de documentación contable",
+        "Carga de comprobantes en sistema"
+      ],
+      "v11": "3343.1",
+      "v11_label": "empleado administrativo/empleada administrativa",
+      "v125": "3313.2",
+      "v125_label": "administrativo contable/administrativa contable",
+      "hub": "2411.1.1",
+      "regla": "D01",
+      "terminos": [
+        "conciliaciones",
+        "registraciones"
+      ]
+    },
+    {
+      "id": "1118350218",
+      "titulo": "Asesor comercial / ejecutivo de cuentas",
+      "tareas": [
+        "Liderar integralmente el proceso de venta desde el primer contacto con el potencial cliente hasta el cierre del contrato",
+        "gestionar los contactos que ingresan por los distintos canales - WhatsApp, Instagram, CRM por publicidad y formulario web",
+        "prospectar y desarrollar nuevas oportunidades comerciales",
+        "detectar necesidades del cliente y presentar soluciones de valor",
+        "mantener un contacto fluido y profesional con los interesados enviando la información solicitada y agendando las visitas",
+        "actualizar la propuesta comercial al menos una vez al mes",
+        "agendar la reunión presencial para conocer el salón y ver en detalle la propuesta"
+      ],
+      "v11": "3322.1",
+      "v11_label": "representante comercial",
+      "v125": "3334.2",
+      "v125_label": "agente inmobiliario especializado en compraventa/agente inmobiliaria especializada en compraventa",
+      "hub": "3322.1",
+      "regla": "D04",
+      "terminos": [
+        "cierre del contrato",
+        "inmuebles"
+      ]
+    },
+    {
+      "id": "5869484297",
+      "titulo": "Cajero / auxiliar mixto, la banda del río salí",
+      "tareas": [
+        "realizar la atención y cobro de los productos y servicios ofrecidos por la empresa",
+        "manejar de forma eficiente y precisa la caja registradora, asegurando el correcto conteo y registro del efectivo y los documentos de pago",
+        "realizar el cierre diario de caja y generar los informes correspondientes",
+        "brindar una atención al cliente amable, cortés y eficiente, ofreciendo información sobre los productos y servicios que ofrece la empresa"
+      ],
+      "v11": "5230.1",
+      "v11_label": "cajero/cajera",
+      "v125": "5223.4",
+      "v125_label": "vendedor/vendedora",
+      "hub": "5223.4",
+      "regla": "D07",
+      "terminos": [
+        "cobro",
+        "manejo de caja"
+      ]
+    },
+    {
+      "id": "8621611527",
+      "titulo": "Ejecutivo comercial",
+      "tareas": [
+        "Gestionar la expansión y consolidación de la cartera de seguros",
+        "Seguir y crecer la cartera de productores, asegurando retención y expansión de pólizas",
+        "Captar y desarrollar nuevos canales de venta (productores/organizadores)",
+        "Fortalecer la red de distribución",
+        "Mantener una vinculación directa con el ecosistema comercial",
+        "Brindar asesoramiento técnico y estratégico a productores y organizadores",
+        "Impulsar nuevas oportunidades comerciales"
+      ],
+      "v11": "3322.1",
+      "v11_label": "representante comercial",
+      "v125": "3321.1",
+      "v125_label": "corredor de seguros/corredora de seguros",
+      "hub": "3322.1",
+      "regla": "D01",
+      "terminos": [
+        "asesoramiento tecnico"
+      ]
+    },
+    {
+      "id": "1118186504",
+      "titulo": "Vendedor/a de local",
+      "tareas": [
+        "brindar asesoramiento personalizado a los clientes durante todo el proceso de compra",
+        "garantizar una experiencia de atención alineada con los estándares y valores de la marca",
+        "cumplir con los objetivos de ventas individuales y colaborar con los del equipo",
+        "mantener el orden y la correcta exhibición de productos según lineamientos de Visual Merchandising",
+        "colaborar en la reposición de mercadería y control de stock en el salón de ventas",
+        "manejar operaciones de caja y medios de pago (POS, Mercado Pago, etc.)",
+        "participar activamente en acciones de fidelización y generación de base de clientes"
+      ],
+      "v11": "5223.6",
+      "v11_label": "asistente de tienda",
+      "v125": "5223.4",
+      "v125_label": "vendedor/vendedora",
+      "hub": "5223.4",
+      "regla": "D01",
+      "terminos": [
+        "control de stock",
+        "reposicion"
+      ]
+    },
+    {
+      "id": "6388411131",
+      "titulo": "Cajera camarera",
+      "tareas": [
+        "toma de pedidos y atención en mesas"
+      ],
+      "v11": "5230.1",
+      "v11_label": "cajero/cajera",
+      "v125": "5223.4",
+      "v125_label": "vendedor/vendedora",
+      "hub": "5223.4",
+      "regla": "D06",
+      "terminos": [
+        "atencion de mesas",
+        "atender mesas"
+      ]
+    },
+    {
+      "id": "2180088",
+      "titulo": "Vendedora",
+      "tareas": [
+        "atender al público",
+        "asesorar a los clientes",
+        "armar pedidos para venta online",
+        "reponer stock",
+        "controlar el stock",
+        "cobrar y manejar la caja",
+        "mantener el orden y limpieza del local"
+      ],
+      "v11": "5223.6",
+      "v11_label": "asistente de tienda",
+      "v125": "5223.4",
+      "v125_label": "vendedor/vendedora",
+      "hub": "5223.4",
+      "regla": "D01",
+      "terminos": [
+        "control de stock",
+        "orden y limpieza del local",
+        "reponer"
+      ]
+    },
+    {
+      "id": "8172858208",
+      "titulo": "Cajero/a franquero/a - drugstore 50+ dot - tom",
+      "tareas": [
+        "procesar transacciones de venta de forma rápida y precisa",
+        "brindar atención cordial y asesoramiento a los clientes",
+        "realizar reposición de mercadería en góndolas y exhibidores",
+        "manejar efectivo, tarjetas y otros medios de pago",
+        "registrar correctamente las operaciones en el sistema",
+        "mantener el sector de caja y el salón de ventas ordenado",
+        "reportar incidencias o diferencias al encargado de sucursal"
+      ],
+      "v11": "5223.6",
+      "v11_label": "asistente de tienda",
+      "v125": "5223.4",
+      "v125_label": "vendedor/vendedora",
+      "hub": "5223.4",
+      "regla": "D01",
+      "terminos": [
+        "gondola",
+        "gondolas",
+        "reposicion"
+      ]
+    },
+    {
+      "id": "1118006270",
+      "titulo": "Ejecutivo/a de ventas senior - real estate de alta gama",
+      "tareas": [
+        "Identificar y captar nuevos clientes e inversores interesados en propiedades de alta gama",
+        "Gestionar y cultivar relaciones con clientes existentes, brindando un servicio personalizado y de excelencia",
+        "Presentar y promocionar de manera efectiva los proyectos inmobiliarios, destacando sus características y beneficios únicos",
+        "Negociar y cerrar acuerdos de venta, asegurando la satisfacción del cliente y el cumplimiento de los objetivos comerciales",
+        "Realizar un seguimiento continuo del mercado inmobiliario de lujo, identificando tendencias y oportunidades de negocio"
+      ],
+      "v11": "3322.1",
+      "v11_label": "representante comercial",
+      "v125": "3334.2",
+      "v125_label": "agente inmobiliario especializado en compraventa/agente inmobiliaria especializada en compraventa",
+      "hub": "3322.1",
+      "regla": "D02",
+      "terminos": [
+        "asegurado",
+        "aseguradoras",
+        "asegurados"
+      ]
+    },
+    {
+      "id": "8924031306",
+      "titulo": "Cajero - beccar",
+      "tareas": [
+        "manejar integralmente la caja",
+        "cobrar y registrar operaciones",
+        "controlar efectivo y medios de pago",
+        "realizar apertura y cierre de caja",
+        "atender a cobradores y rendiciones"
+      ],
+      "v11": "5230.1",
+      "v11_label": "cajero/cajera",
+      "v125": "5223.4",
+      "v125_label": "vendedor/vendedora",
+      "hub": "5223.4",
+      "regla": "D07",
+      "terminos": [
+        "cierre de caja",
+        "cobrar"
+      ]
+    },
+    {
+      "id": "1118018348",
+      "titulo": "Vendedor de salón",
+      "tareas": [
+        "control de caja",
+        "atención al público"
+      ],
+      "v11": "5230.1",
+      "v11_label": "cajero/cajera",
+      "v125": "5223.4",
+      "v125_label": "vendedor/vendedora",
+      "hub": "5223.4",
+      "regla": "inclusion",
+      "terminos": [
+        "asesora",
+        "asesoramiento",
+        "asesorar",
+        "atencion al publico"
+      ]
+    },
+    {
+      "id": "5195143651",
+      "titulo": "Administrativo/a contable, granadero baigorria",
+      "tareas": [
+        "registrar, controlar y seguir fondos y transacciones financieras",
+        "elaborar y actualizar el cash flow mensual y proyectado",
+        "realizar gestiones bancarias y cobranzas",
+        "controlar y conciliar cuentas corrientes de clientes y proveedores",
+        "lidiar con tareas relacionadas al comercio exterior (pagos, documentación, coordinación con despachantes)",
+        "colaborar en tareas administrativas generales del área",
+        "apoyar en la contabilidad general"
+      ],
+      "v11": "3343.1",
+      "v11_label": "empleado administrativo/empleada administrativa",
+      "v125": "3313.2",
+      "v125_label": "administrativo contable/administrativa contable",
+      "hub": "3313.2",
+      "regla": "D04",
+      "terminos": [
+        "liquidacion de sueldos"
+      ]
+    },
+    {
+      "id": "1118066091",
+      "titulo": "Cajero/a, adicionista c/ experiencia en gastronomía",
+      "tareas": [
+        "Atender al cliente",
+        "Realizar adiciones",
+        "Cobrar con diferentes medios de pago",
+        "Manejar portales delivery",
+        "Efectuar arqueos y cierre de caja",
+        "Asistir en el área de cafetería"
+      ],
+      "v11": "5230.1",
+      "v11_label": "cajero/cajera",
+      "v125": "5223.4",
+      "v125_label": "vendedor/vendedora",
+      "hub": "5223.4",
+      "regla": "D07",
+      "terminos": [
+        "arqueo",
+        "cierre de caja",
+        "cobrar"
+      ]
+    }
+  ],
+  "cruza_20": [
+    {
+      "id": "5122673624",
+      "titulo": "Arq. y/o ing. civil para ejecutivo comercial técnico",
+      "tareas": [
+        "detectar y desarrollar nuevas oportunidades comerciales en proyectos y obras de gran escala",
+        "visitar y generar vínculos con clientes actuales y potenciales",
+        "identificar proyectos en etapa de planificación, licitación o ejecución",
+        "contactar a decisores de compra y referentes de empresas constructoras, desarrollistas e instituciones",
+        "comercializar las soluciones y productos de la compañía, brindando asesoramiento técnico-comercial",
+        "realizar seguimiento integral de las oportunidades comerciales desde el primer contacto hasta el cierre",
+        "elaborar cómputos métricos y presupuestos según los requerimientos de cada proyecto"
+      ],
+      "v11": "3322.1",
+      "v11_label": "representante comercial",
+      "v125": "2433.6",
+      "v125_label": "representante técnico de ventas/representante técnica de ventas",
+      "hub": "3322.1",
+      "regla": "D01",
+      "terminos": [
+        "asesoramiento tecnico",
+        "calculos"
+      ]
+    },
+    {
+      "id": "1118355407",
+      "titulo": "Analista administrativo contable SSR",
+      "tareas": [
+        "Gestionar pagos a proveedores",
+        "Confeccionar órdenes de pago",
+        "Emitir facturas electrónicas",
+        "Registrar facturas electrónicas",
+        "Mantener cash flow semanal y mensual",
+        "Realizar conciliaciones bancarias",
+        "Realizar conciliaciones de cuentas"
+      ],
+      "v11": "3313.2",
+      "v11_label": "administrativo contable/administrativa contable",
+      "v125": "4313.1",
+      "v125_label": "administrativo de nóminas/administrativa de nóminas",
+      "hub": "3313.2",
+      "regla": "DX_jerarquia",
+      "terminos": [
+        "aplicar procedimientos"
+      ]
+    },
+    {
+      "id": "1118215570",
+      "titulo": "Vendedor de drones agrícolas",
+      "tareas": [
+        "desarrollar oportunidades comerciales en el sector agro",
+        "generar vínculos con clientes",
+        "recorrer distintas zonas para generar oportunidades comerciales",
+        "asesorar a los clientes ofreciendo soluciones vinculadas al producto",
+        "efectuar visitas a campo",
+        "realizar demostraciones de productos",
+        "participar en reuniones de seguimiento y coordinación"
+      ],
+      "v11": "3322.1",
+      "v11_label": "representante comercial",
+      "v125": "5223.4",
+      "v125_label": "vendedor/vendedora",
+      "hub": "5223.4",
+      "regla": "D11",
+      "terminos": [
+        "oportunidades comerciales"
+      ]
+    },
+    {
+      "id": "2180384",
+      "titulo": "Ejecutivo comercial de cuentas (calle) - insumos gráficos con exp",
+      "tareas": [
+        "Identificar y visitar potenciales clientes (empresas gráficas) para presentar el portfolio",
+        "Recomendar los insumos adecuados según la maquinaria y los proyectos del cliente",
+        "Visitar clientes activos para detectar nuevas necesidades y asegurar la recompra",
+        "Seguimiento de cobranzas en calle"
+      ],
+      "v11": "2433.6",
+      "v11_label": "representante técnico de ventas/representante técnica de ventas",
+      "v125": "3322.1",
+      "v125_label": "representante comercial",
+      "hub": "3322.1",
+      "regla": "D01",
+      "terminos": [
+        "venta tecnica"
+      ]
+    },
+    {
+      "id": "7518746787",
+      "titulo": "Vendedor de seguros",
+      "tareas": [
+        "abordar clientes en frío dentro del punto de venta",
+        "generar y desarrollar cartera propia de clientes",
+        "asesorar sobre productos y concretar ventas en el momento",
+        "cumplir y superar los objetivos comerciales establecidos",
+        "brindar una experiencia de atención ágil y efectiva"
+      ],
+      "v11": "5223.4",
+      "v11_label": "vendedor/vendedora",
+      "v125": "3322.1",
+      "v125_label": "representante comercial",
+      "hub": "5223.4",
+      "regla": "D11",
+      "terminos": [
+        "desarrollar cartera",
+        "desarrollo de cartera"
+      ]
+    },
+    {
+      "id": "2185229",
+      "titulo": "Administrativo contable",
+      "tareas": [
+        "Liquidar mensualmente el IVA",
+        "Liquidar Ingresos Brutos (IIBB)",
+        "Seguir el calendario impositivo en ARCA/AFIP, ARBA y municipios",
+        "Preparar y presentar declaraciones juradas como F.931, SICORE, SIFERE",
+        "Registrar y clasificar comprobantes contables",
+        "Conciliar bancos",
+        "Registar compras, ventas, pagos y cobranzas en el sistema contable"
+      ],
+      "v11": "4311.1",
+      "v11_label": "empleado de contabilidad/empleada de contabilidad",
+      "v125": "3313.2",
+      "v125_label": "administrativo contable/administrativa contable",
+      "hub": "2411.1.1",
+      "regla": "D02",
+      "terminos": [
+        "facturación"
+      ]
+    },
+    {
+      "id": "1118300767",
+      "titulo": "Vendedor/a online",
+      "tareas": [
+        "Atender y asesorar a clientes por redes sociales y WhatsApp",
+        "Gestionar consultas y cerrar ventas en canales digitales",
+        "Enviar presupuestos y seguir leads hasta la concreción de la venta",
+        "Cargar y seguir clientes en CRM",
+        "Coordinar con el equipo de ventas para asegurar disponibilidad y tiempos de entrega",
+        "Controlar stock"
+      ],
+      "v11": "5223.4",
+      "v11_label": "vendedor/vendedora",
+      "v125": "3322.1",
+      "v125_label": "representante comercial",
+      "hub": "5223.4",
+      "regla": "D01",
+      "terminos": [
+        "control de stock"
+      ]
+    },
+    {
+      "id": "1118244908",
+      "titulo": "Ejecutivo comercial de cuentas (calle) - insumos gráficos con exp",
+      "tareas": [
+        "Identificar y visitar potenciales clientes (empresas gráficas) para presentar el portfolio",
+        "Recomendar los insumos adecuados según la maquinaria y los proyectos del cliente",
+        "Visitar clientes activos para detectar nuevas necesidades y asegurar la recompra",
+        "Seguimiento de cobranzas en calle"
+      ],
+      "v11": "2433.6",
+      "v11_label": "representante técnico de ventas/representante técnica de ventas",
+      "v125": "3322.1",
+      "v125_label": "representante comercial",
+      "hub": "3322.1",
+      "regla": "D01",
+      "terminos": [
+        "venta tecnica"
+      ]
+    },
+    {
+      "id": "6103690761",
+      "titulo": "Ejecutivo de ventas en calle",
+      "tareas": [
+        "desarrollar y potenciar la cartera de clientes en la zona de General Pico",
+        "captar nuevos clientes en campo o terreno",
+        "reactivar clientes existentes",
+        "trabajar bajo esquema de comisiones"
+      ],
+      "v11": "4110.1",
+      "v11_label": "empleado de oficina/empleada de oficina",
+      "v125": "3322.1",
+      "v125_label": "representante comercial",
+      "hub": "3322.1",
+      "regla": "D01",
+      "terminos": [
+        "calculos"
+      ]
+    },
+    {
+      "id": "5331638471",
+      "titulo": "Ejecutivo de ventas en calle",
+      "tareas": [
+        "desarrollar y potenciar la cartera de clientes en Cañuelas",
+        "captar nuevos clientes en campo",
+        "reactivar clientes existentes",
+        "trabajar bajo esquema de comisiones",
+        "lograr objetivos comerciales",
+        "trabajar de manera autónoma y en equipo"
+      ],
+      "v11": "4110.1",
+      "v11_label": "empleado de oficina/empleada de oficina",
+      "v125": "3322.1",
+      "v125_label": "representante comercial",
+      "hub": "3322.1",
+      "regla": "D01",
+      "terminos": [
+        "calculos"
+      ]
+    },
+    {
+      "id": "5208349148",
+      "titulo": "Vendedor de Salón",
+      "tareas": [
+        "Atender al público",
+        "manejar los procesos del sector de depósito",
+        "preparar pedidos para despacho",
+        "vender productos de blanco, lencería o textil",
+        "visitar clientes actuales y potenciales",
+        "identificar oportunidades de negocio",
+        "generar nuevas cuentas"
+      ],
+      "v11": "9333.8.1",
+      "v11_label": "responsable de pedidos de almacén",
+      "v125": "3322.1",
+      "v125_label": "representante comercial",
+      "hub": "5223.4",
+      "regla": "D02",
+      "terminos": [
+        "conservacion"
+      ]
+    },
+    {
+      "id": "7919264927",
+      "titulo": "Ejecutivo de ventas en calle",
+      "tareas": [
+        "desarrollar la cartera de clientes en Caseros",
+        "potenciar la cartera de clientes en Caseros",
+        "captar nuevos clientes en campo",
+        "reactivar clientes existentes"
+      ],
+      "v11": "4110.1",
+      "v11_label": "empleado de oficina/empleada de oficina",
+      "v125": "3322.1",
+      "v125_label": "representante comercial",
+      "hub": "3322.1",
+      "regla": "D01",
+      "terminos": [
+        "calculos"
+      ]
+    },
+    {
+      "id": "6351250510",
+      "titulo": "Vendedor especializado hogar y equipamiento comercial",
+      "tareas": [
+        "Realizar transacciones de venta utilizando el sistema de caja",
+        "Manejar efectivo, cheques y tarjetas de crédito según políticas de la empresa",
+        "Asegurar la correcta colocación de precios y cartelería en el piso de ventas",
+        "Participar en el proceso de inventario y auditorías periódicas",
+        "Monitorear niveles de inventario y notificar al gerente sobre reabastecimiento necesario",
+        "Realizar controles de stock diarios solicitados por el Auditor de Stock",
+        "Manejar reclamaciones y devoluciones profesionalmente"
+      ],
+      "v11": "5223.6",
+      "v11_label": "asistente de tienda",
+      "v125": "4225.1",
+      "v125_label": "agente de servicio de atención al cliente",
+      "hub": "5223.4",
+      "regla": "D01",
+      "terminos": [
+        "colocacion de precios",
+        "control de stock",
+        "etiquetado"
+      ]
+    },
+    {
+      "id": "1118245196",
+      "titulo": "Vendedor/a plan de ahorro",
+      "tareas": [
+        "comercializar planes de ahorro",
+        "captar prospectos",
+        "seguir prospectos",
+        "gestionar cartera propia de clientes",
+        "cumplir objetivos mensuales",
+        "asesorar integralmente durante todo el proceso de venta"
+      ],
+      "v11": "5223.4",
+      "v11_label": "vendedor/vendedora",
+      "v125": "3322.1",
+      "v125_label": "representante comercial",
+      "hub": "5223.4",
+      "regla": "D11",
+      "terminos": [
+        "desarrollar cartera",
+        "desarrollo de cartera",
+        "prospectar"
+      ]
+    },
+    {
+      "id": "2174020",
+      "titulo": "Auxiliar de contador /contador JR. o perito contable",
+      "tareas": [
+        "presentar impuestos ARCA",
+        "presentar impuestos AGIP",
+        "presentar impuestos ARBA",
+        "presentar impuesto IIBB",
+        "presentar impuesto SICORE",
+        "realizar asientos contables",
+        "presentar Impuesto a las Ganancias y Bienes Personales"
+      ],
+      "v11": "3313.2",
+      "v11_label": "administrativo contable/administrativa contable",
+      "v125": "2411.1",
+      "v125_label": "contable",
+      "hub": "2411.1",
+      "regla": "D02",
+      "terminos": [
+        "asientos",
+        "asientos contables"
+      ]
+    },
+    {
+      "id": "7535370997",
+      "titulo": "Ejecutivo de cuentas",
+      "tareas": [
+        "Búsqueda y desarrollo de nuevos clientes",
+        "Relevar especificaciones técnicas en cada cliente conforme a la venta realizada",
+        "Gestionar y fidelizar la cartera de clientes asignada, generando nuevas oportunidades comerciales",
+        "Participar en la implementación y ejecución de estrategias comerciales",
+        "Controlar la correcta facturación de productos y servicios vendidos",
+        "Analizar reportes de gestión y KPIs del área para seguimiento de performance"
+      ],
+      "v11": "2433.6",
+      "v11_label": "representante técnico de ventas/representante técnica de ventas",
+      "v125": "3322.1",
+      "v125_label": "representante comercial",
+      "hub": "3322.1",
+      "regla": "D01",
+      "terminos": [
+        "especificaciones tecnicas"
+      ]
+    },
+    {
+      "id": "2187579",
+      "titulo": "Administrativo/a contable SR",
+      "tareas": [
+        "Analizar cuentas patrimoniales y de resultados, validando saldos y manteniendo depurados los registros contables",
+        "Analizar información de gestión y conciliar la contabilidad con reportes, presupuestos y proyecciones",
+        "Elaborar reportes ad hoc que permitan analizar las diferentes variables del negocio",
+        "Participar en el diseño y rediseño de procedimientos, contribuyendo a la formalización y optimización de los procesos del área",
+        "Analizar la normativa contable vigente y evaluar su impacto en las tareas del sector",
+        "Brindar respuesta y orientación a clientes internos y externos sobre temas vinculados con la gestión administrativa y contable",
+        "Colaborar con el equipo para alcanzar los objetivos y metas definidas por el área"
+      ],
+      "v11": "2411.1.1",
+      "v11_label": "analista contable",
+      "v125": "3313.2",
+      "v125_label": "administrativo contable/administrativa contable",
+      "hub": "2411.1.1",
+      "regla": "D09",
+      "terminos": [
+        "presupuestación"
+      ]
+    },
+    {
+      "id": "1118203057",
+      "titulo": "Ejecutivo comercial de cuentas (calle) - insumos gráficos con exp",
+      "tareas": [
+        "Identificar y visitar potenciales clientes (empresas gráficas) para presentar el portfolio",
+        "Recomendar los insumos adecuados según la maquinaria y los proyectos del cliente",
+        "Visitar clientes activos para detectar nuevas necesidades y asegurar la recompra",
+        "Seguimiento de cobranzas en calle"
+      ],
+      "v11": "2433.6",
+      "v11_label": "representante técnico de ventas/representante técnica de ventas",
+      "v125": "3322.1",
+      "v125_label": "representante comercial",
+      "hub": "3322.1",
+      "regla": "D01",
+      "terminos": [
+        "venta tecnica"
+      ]
+    },
+    {
+      "id": "8892802868",
+      "titulo": "Vendedora de local",
+      "tareas": [
+        "recibir a clientes con entusiasmo genuino",
+        "escuchar y asesorar a clientes",
+        "identificar necesidades de los clientes",
+        "recomendar productos con criterio",
+        "generar confianza y vínculos duraderos",
+        "transformar compras en experiencias memorables",
+        "procesar ventas de forma ágil y ordenada (efectivo, tarjetas y medios digitales)"
+      ],
+      "v11": "5223.4",
+      "v11_label": "vendedor/vendedora",
+      "v125": "4225.1",
+      "v125_label": "agente de servicio de atención al cliente",
+      "hub": "5223.4",
+      "regla": "D08",
+      "terminos": [
+        "reclamaciones",
+        "reclamos"
+      ]
+    },
+    {
+      "id": "1118377483",
+      "titulo": "Vendedor/a comercial- con o sin experiencia",
+      "tareas": [
+        "Asesorar integralmente a clientes interesados en la adquisición de vehículos 0KM",
+        "Gestionar consultas a través de canales digitales, telefónicos y atención presencial",
+        "Seguir oportunidades comerciales hasta el cierre de la operación",
+        "Cumplir con objetivos comerciales"
+      ],
+      "v11": "5223.4",
+      "v11_label": "vendedor/vendedora",
+      "v125": "3322.1",
+      "v125_label": "representante comercial",
+      "hub": "5223.4",
+      "regla": "D11",
+      "terminos": [
+        "cerrar operaciones",
+        "oportunidades comerciales"
+      ]
+    }
+  ]
+}

@@ -271,14 +271,18 @@ class TraductorContexto:
 
         textos = {c: _norm(contenidos.get(c, '') or '') for c in CAMPOS_CONTENIDOS}
 
+        via_capa = set()  # términos que matchearon SOLO vía capa de equivalencia (no exacto)
+
         def _matches_de(terms):
             out = []
             for t in terms:
                 for campo, txt in textos.items():
-                    if txt and (_term_en_texto(t, txt)
-                                or (self._equiv and _term_equiv_en_texto(t, txt))):
-                        out.append((t, campo))
-                        break  # primer campo que aporta (la traza registra ese campo)
+                    if not txt:
+                        continue
+                    if _term_en_texto(t, txt):
+                        out.append((t, campo)); break
+                    if self._equiv and _term_equiv_en_texto(t, txt):
+                        out.append((t, campo)); via_capa.add(t); break
             return out
 
         matches = _matches_de(terminos)
@@ -320,8 +324,8 @@ class TraductorContexto:
             campos_aportantes = {c for _, c in matches}
             if campos_aportantes and campos_aportantes <= CAMPOS_SOLO_TECNOLOGIA:
                 return {'satisfecha': False, 'matches': matches,
-                        'estado': 'guarda_tecnologia'}
-        return {'satisfecha': ok, 'matches': matches, 'estado': 'evaluada'}
+                        'estado': 'guarda_tecnologia', 'via_capa': via_capa}
+        return {'satisfecha': ok, 'matches': matches, 'estado': 'evaluada', 'via_capa': via_capa}
 
     def _conteo_matches(self, cond: dict, contenidos: Dict[str, str]) -> int:
         """Terminos DISTINTOS de la condicion presentes en los contenidos (para guards)."""
@@ -393,6 +397,20 @@ class TraductorContexto:
                     dst = {'codigo_esco': m.group(1)} if m else {}
                 cod_dst = dst.get('codigo_esco')
                 n_hits = len({t for t, _ in res['matches']})
+                # GUARD mini-frente (laudo harness): un redirect D cuyo soporte ENTERO es un
+                # solo CONCEPTO (una raíz; las variantes singular/plural cuentan como uno) que
+                # matcheó SOLO vía capa de equivalencia NO puede disparar el redirect — exige
+                # un 2º término de apoyo de OTRA raíz (directo o vía capa). Evita el falso
+                # cruza-dominio (showroom→seguros: "aseguradoras" matcheó "asegurar embalaje"
+                # por la raíz "asegur"). Solo con capa ON; OFF→via vacío (producción intacta).
+                via = res.get('via_capa') or set()
+                _mt = {t for t, _ in res['matches']}
+                _raices = {_eq_stem(next((w for w in _norm(t).split()
+                                          if w not in _EQ_STOP and len(w) > 2), _norm(t)))
+                           for t in _mt}
+                if self._equiv and cod_dst and _mt and _mt <= via and len(_raices) == 1:
+                    traza_reglas[-1]['estado'] = 'guard_capa_concepto_unico'
+                    continue
                 if sat_code:
                     # regla de interaccion P1xP2 (laudada): destino == satelite del
                     # titulo -> redirect confirmatorio con 1 hit; OTRO destino ->

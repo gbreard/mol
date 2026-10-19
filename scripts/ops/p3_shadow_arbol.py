@@ -89,6 +89,7 @@ def main():
     cnt = {'dd_igual': 0, 'dd_cambia': 0, 'd_a': 0, 'a_d': 0, 'a_a': 0}
     nuevos = []          # abstenía→decide (población ii, para lectura)
     cambios_destino = [] # decidía ambos pero destino distinto (no-explicadas)
+    todos_cambios = []   # TODOS los cambios de destino (para muestreo seed)
     perdidas = []        # decidía v11 → abstiene v12.5 (costo)
     for oid, tj, prim in stg_rows:
         d = nlp.get(oid, {})
@@ -112,6 +113,8 @@ def main():
                     cnt['dd_cambia_misma_fam'] += 1
                 else:
                     cnt['dd_cambia_cruza_fam'] += 1
+                todos_cambios.append({'id': oid, 'v11': c11, 'v125': c125,
+                                      'misma_fam': f11 == f125})
                 if len(cambios_destino) < 60:
                     cambios_destino.append({'id': oid, 'v11': c11, 'v125': c125,
                                             'misma_fam': f11 == f125})
@@ -136,6 +139,13 @@ def main():
         else:
             cnt['a_a'] += 1
 
+    import random
+    random.seed(42)  # semilla documentada (laudo: muestra aleatoria, no casos lindos)
+    _intra = [c for c in todos_cambios if c['misma_fam']]
+    _cruza = [c for c in todos_cambios if not c['misma_fam']]
+    muestra_intra_30 = random.sample(_intra, min(30, len(_intra)))
+    muestra_cruza_20 = random.sample(_cruza, min(20, len(_cruza)))
+
     n = len(stg_rows)
     decide_v11 = cnt['dd_igual'] + cnt['dd_cambia'] + cnt['d_a']
     decide_v125 = cnt['dd_igual'] + cnt['dd_cambia'] + cnt['a_d']
@@ -159,6 +169,8 @@ def main():
         },
         'muestra_nuevos': nuevos,
         'muestra_cambios_destino': cambios_destino,
+        'muestra_intra_30_seed42': muestra_intra_30,
+        'muestra_cruza_20_seed42': muestra_cruza_20,
         'muestra_perdidas': perdidas,
     }
     OUT.write_text(json.dumps(doc, ensure_ascii=False, indent=2))
