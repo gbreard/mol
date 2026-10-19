@@ -42,3 +42,18 @@ Y en consecuencia, ¿D07 debería:
 
 Es un cambio de **destino/umbral en tu prosa compilada (D07)** → requiere tu firma; no se toca solo.
 Nota: esto NO es un bug de la capa ni del evaluador — lo surfacea que v12.5 extrae la lista completa de tareas.
+---
+
+## Caso adicional de regla-D (mismo hub 5223.4): D10 → teleoperador
+
+**Regla D10** (hub 5223.4 «vendedor»), citada textual:
+- **destino**: 5244.1 (teleoperador/teleoperadora)
+- **modo**: comparativo ("si realiza…")
+- **prosa**: «Si realiza llamadas para promocionar productos y cerrar ventas telefónicas»
+
+### 8746914404 — «Cajero/a vendedor»
+- **5230.1 (cajero) → 5244.1 (teleoperador)**
+- tareas v12.5: ["atender al cliente presencialmente", "atender al cliente telefónicamente", "asesorar comercialmente sobre neumáticos y llantas", "asesorar sobre servicios de gomería", "cobrar productos y servicios", "facturar productos y servicios", "manejar valores (efectivo, tarjetas, medios digitales)"]
+- Disparó por **"por teléfono" (match EXACTO, genuino)**: la gomería **atiende** al cliente por teléfono, pero NO hace "ventas telefónicas" (es venta de mostrador con atención telefónica).
+
+**La pregunta para Cyn (D10):** ¿"atender al cliente por teléfono" (atención) debe disparar teleoperador, o D10 solo cuando hay **venta/promoción telefónica** como función principal? (destino/umbral de D10 — tu prosa, tu firma). Igual que D07: lo surfacea la redacción más completa de v12.5, no la capa.
