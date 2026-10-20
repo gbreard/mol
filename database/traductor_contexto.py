@@ -204,10 +204,38 @@ _SINONIMOS_COMERCIALES = {
 }
 
 
+# R1 (micro-fix, laudo C17): TELEVENTA DEMOSTRADA = venta/promoción LIGADA a la llamada
+# (verbo de venta cerca del marcador telefónico, en la misma tarea). Distingue "llamadas PARA
+# vender" (televenta → D10) de "atiende por teléfono + vende presencial" (vendedor, p.ej. gomería).
+# La lista negativa C63 (atención/consultas/responder/informar) NO trae verbo de venta ligado →
+# NO dispara. Equivalencia funcional dentro de C17, no reescritura de la condición.
+_TELEVENTA_TERMS = {'venta telefonica', 'ventas telefonicas', 'televentas', 'telemarketing',
+                    'cierre telefonico', 'venta remota'}
+# La venta debe estar LIGADA a la llamada (C17 "mediante llamadas"), no mera co-ocurrencia:
+# (a) "llamadas comerciales/de venta"; (b) "llamadas … PARA/mediante vender/ofrecer/…";
+# (c) frases exactas de televenta. NO dispara con "atiende por teléfono" + venta presencial
+# en tareas distintas (p.ej. gomería) — ésas no tienen el nexo.
+_TELEVENTA_RE = re.compile(
+    r'llamad\w*\s+(comercial\w*|de venta|para vender)'
+    r'|(llamad\w*|telefon\w*|por telefono)[^.;]{0,30}\b(para|mediante|a fin de)\b[^.;]{0,25}'
+    r'(vend\w*|venta|ofrec\w*|promocion\w*|captar|comercializ\w*|coloca\w*)'
+    r'|\bvent\w*\s+(telefonic\w*|remot\w*)|televent\w*|telemarketing|cierre telefonic\w*'
+    r'|(vender|venta|ventas|cerrar vent\w*)\s+(por telefono|telefonic\w*|remot\w*)',
+    re.IGNORECASE)
+
+
+def _televenta_demostrada(texto_norm: str) -> bool:
+    return bool(_TELEVENTA_RE.search(texto_norm))
+
+
 def _sinonimo_comercial_en_texto(termino: str, texto_norm: str) -> bool:
-    """LAUDO 3: el término de condición matchea si el texto trae una reformulación ACEPTADA
-    por Cyn (acción equivalente); las rechazadas/parciales no cuentan."""
-    fam = _SINONIMOS_COMERCIALES.get(_norm(termino))
+    """LAUDO 3 + R1: el término de condición matchea si el texto trae una reformulación ACEPTADA
+    por Cyn (acción equivalente). Para los términos de televenta (D10), acepta la televenta
+    DEMOSTRADA (venta ligada a la llamada). Las rechazadas/parciales y la atención no cuentan."""
+    tn = _norm(termino)
+    if tn in _TELEVENTA_TERMS:
+        return _televenta_demostrada(texto_norm)
+    fam = _SINONIMOS_COMERCIALES.get(tn)
     if not fam:
         return False
     return any(_norm(a) in texto_norm for a in fam['acepta'])
