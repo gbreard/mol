@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "linaje": "laudo_2026-10-19",
+  "fuente": "exports/cyn_backlog/residuales_respuestas_2026-10-19.xlsx + d10_respuesta_2026-10-19.xlsx",
+  "nota": "Gold set del árbol (traductor) de los laudos finales de Cyn. Casos sintéticos de enseñanza (D10) + casos reales (cajeros/gomería). El evaluador con los ajustes del mini-frente (equivalencia_funcional=True) debe reproducir estas decisiones.",
+  "casos_sinteticos_d10": [
+    {"id": "d10_ej1", "titulo": "Operador telefónico", "tareas": "atender consultas telefónicas; informar sobre productos y servicios; orientar a clientes", "espera": "NO teleoperador (5244) — atención, no televenta", "regla": "D10 no dispara"},
+    {"id": "d10_ej2", "titulo": "Vendedor telefónico", "tareas": "realizar llamadas a potenciales clientes; promocionar productos; ofrecer servicios; cerrar ventas por teléfono", "espera": "5244.1 teleoperador", "regla": "D10 dispara (televenta explícita)"},
+    {"id": "d10_ej3", "titulo": "Vendedor", "tareas": "asesorar comercialmente a clientes presenciales; gestionar ventas; responder consultas telefónicas; emitir facturas", "espera": "5223.4 vendedor", "regla": "D10 no dispara (teléfono complementario)"},
+    {"id": "d10_ej4", "titulo": "Cajero", "tareas": "cobrar productos y servicios; registrar pagos; manejar valores; realizar arqueos; cerrar caja; responder consultas telefónicas", "espera": "5230.1 cajero", "regla": "núcleo caja; atención telefónica no desplaza"},
+    {"id": "d10_ej5_real", "id_oferta": "8746914404", "titulo": "Cajero/a vendedor (gomería)", "espera": "5223.4 vendedor", "regla": "RECHAZAR teleoperador; predominio comercial con salvedad de caja"},
+    {"id": "d10_ej6_mixto", "titulo": "Cajero vendedor", "tareas": "asesorar clientes; gestionar ventas; cobrar; registrar pagos; controlar valores; realizar arqueos; cerrar caja", "espera": "REQUIERE REVISIÓN (vendedor vs cajero)", "regla": "dos núcleos sustantivos, sin predominio"}
+  ],
+  "casos_reales_cajeros_d07": [
+    {"id_oferta": "5664446798", "titulo": "Cajera/o multisucursal", "espera": "5230.1 cajero", "laudo": "núcleo caja; atención complementaria no cuenta"},
+    {"id_oferta": "5869484297", "titulo": "Cajero / auxiliar mixto", "espera": "5230.1 cajero"},
+    {"id_oferta": "8924031306", "titulo": "Cajero - beccar", "espera": "5230.1 cajero"},
+    {"id_oferta": "1118066091", "titulo": "Cajero/a adicionista gastronomía", "espera": "5230.1 cajero"}
+  ]
+}

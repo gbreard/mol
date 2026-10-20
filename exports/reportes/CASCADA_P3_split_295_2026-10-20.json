@@ -1,0 +1,159 @@
+{
+  "total": 295,
+  "reconecta": 67,
+  "abstiene_legitima": 228,
+  "muestra_reconecta": [
+    {
+      "id": "5807493369",
+      "decide": "3322.1",
+      "titulo": "Vendedor viajante consumo masivo"
+    },
+    {
+      "id": "6376348839",
+      "decide": "3313.2",
+      "titulo": "Analista administrativo contable JR"
+    },
+    {
+      "id": "1118392494",
+      "decide": "3322.1",
+      "titulo": "Vendedor mayorista institucional"
+    },
+    {
+      "id": "7029220231",
+      "decide": "3322.1",
+      "titulo": "Vendedor corporativo"
+    },
+    {
+      "id": "1118384706",
+      "decide": "3322.1",
+      "titulo": "Vendedor mayorista / distribuidor"
+    },
+    {
+      "id": "1118381841",
+      "decide": "3322.1",
+      "titulo": "Vendedor técnico / ejecutivo de ventas de obra"
+    },
+    {
+      "id": "5607362836",
+      "decide": "3322.1",
+      "titulo": "Ejecutivo de ventas en calle"
+    },
+    {
+      "id": "6395648715",
+      "decide": "3322.1",
+      "titulo": "Ejecutivo de ventas en calle"
+    },
+    {
+      "id": "8072607354",
+      "decide": "3322.1",
+      "titulo": "Vendedor viajante"
+    },
+    {
+      "id": "6679665339",
+      "decide": "3322.1",
+      "titulo": "Vendedor/a viajante"
+    },
+    {
+      "id": "5431752418",
+      "decide": "3313.2",
+      "titulo": "Empleada administrativa"
+    },
+    {
+      "id": "2184558",
+      "decide": "3322.1",
+      "titulo": "Vendedor viajante"
+    },
+    {
+      "id": "1118343674",
+      "decide": "3343.1",
+      "titulo": "Empleado administrativo"
+    },
+    {
+      "id": "1118304236",
+      "decide": "5244.1",
+      "titulo": "Teleoperador comercial"
+    },
+    {
+      "id": "1118319513",
+      "decide": "3313.2",
+      "titulo": "Analista administrativa contable"
+    }
+  ],
+  "muestra_abstiene": [
+    {
+      "id": "2188331",
+      "decide": null,
+      "titulo": "Analista contable administrativo"
+    },
+    {
+      "id": "2188094",
+      "decide": null,
+      "titulo": "Analista contable"
+    },
+    {
+      "id": "1118402933",
+      "decide": null,
+      "titulo": "Vendedor viajante rubro ferretero y maquinaria agrícola zona norte de buenos aires hasta"
+    },
+    {
+      "id": "1118402994",
+      "decide": null,
+      "titulo": "Administrativo/a contable junior"
+    },
+    {
+      "id": "5879371691",
+      "decide": null,
+      "titulo": "Vendedor viajante / apf / canal farma / región litoral"
+    },
+    {
+      "id": "5165150055",
+      "decide": null,
+      "titulo": "Vendedor viajante / apf / canal farma / región litoral"
+    },
+    {
+      "id": "2187663",
+      "decide": null,
+      "titulo": "Analista financiero/ contable"
+    },
+    {
+      "id": "1118394436",
+      "decide": null,
+      "titulo": "Administrativo contable SR. para farmacia"
+    },
+    {
+      "id": "8258819707",
+      "decide": null,
+      "titulo": "Administrativa contable"
+    },
+    {
+      "id": "2187295",
+      "decide": null,
+      "titulo": "Empleado/a administrativo/a"
+    },
+    {
+      "id": "1118389393",
+      "decide": null,
+      "titulo": "Administrativo contable"
+    },
+    {
+      "id": "1118385034",
+      "decide": null,
+      "titulo": "Responsable de administracion y finanzas"
+    },
+    {
+      "id": "7273276108",
+      "decide": null,
+      "titulo": "Recepcionista asistente administrativo"
+    },
+    {
+      "id": "1118386162",
+      "decide": null,
+      "titulo": "Administrativa contable"
+    },
+    {
+      "id": "6621370587",
+      "decide": null,
+      "titulo": "Analista contable SSR"
+    }
+  ]
+}

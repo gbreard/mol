@@ -146,6 +146,73 @@ def _term_equiv_en_texto(termino: str, texto_norm: str) -> bool:
     return False
 
 
+# ── LAUDO CYN 2026-10-19 — términos que NO acreditan núcleo funcional ──────────
+# LAUDO 1 (hoja 1 «1-cajeros», D4/A20): el predominio se mide por el NÚCLEO FUNCIONAL,
+# no por la cantidad de tareas. "Atención al cliente es tarea complementaria y no demuestra
+# actividad de venta." Las complementarias (atención/soporte/identificar-necesidades/
+# delivery/asistencia) NO cuentan para NINGÚN lado del comparativo ni para min_matches.
+# LAUDO 2 (Excel D10, C17/C63): la ATENCIÓN TELEFÓNICA no acredita televenta — D10 exige
+# promoción/venta por llamada. Estos términos tampoco cuentan para el núcleo.
+# Solo se excluyen con los ajustes del mini-frente ON (self._equiv); OFF → producción intacta.
+# Complementarias (atención/soporte). La exclusión se ACOTA al contexto caja/venta
+# (hubs en _NUCLEO_SCOPED) — global rompía costo en otros hubs donde la atención es core.
+_NO_NUCLEO = {
+    'atencion al cliente', 'atencion al publico', 'atender clientes', 'atiende clientes',
+    'atender compradores', 'atender al cliente', 'atender al publico', 'identificar necesidades',
+    'identifica necesidades', 'informar sobre productos', 'informa productos', 'informar a clientes',
+    'responder consultas', 'responde consultas', 'delivery', 'asistencia', 'brindar asistencia', 'asistir',
+}
+# hubs donde rige el deslinde núcleo-funcional de Cyn (caja vs venta). Fuera de acá, la
+# atención puede ser núcleo legítimo → no se excluye.
+_NUCLEO_SCOPED = {'5223.4', '5230.1'}
+# LAUDO 2 (D10): términos de ATENCIÓN telefónica que NO acreditan televenta (C63) vs los que SÍ.
+_D10_ATENCION_TEL = {'por telefono', 'llamadas telefonicas', 'llamadas entrantes', 'contacto telefonico',
+                     'atencion telefonica', 'atender telefonicamente', 'responder llamadas'}
+_D10_TELEVENTA = {'venta telefonica', 'ventas telefonicas', 'televentas', 'telemarketing',
+                  'cierre telefonico', 'venta remota', 'canales remotos', 'call center', 'llamadas salientes'}
+
+# ── LAUDO 3 (hoja 2 «2-lenguaje comercial», C12-E10) — equivalencias comerciales con MATIZ ──
+# Cyn: equivalencia solo si MISMA función (acción+objeto+finalidad+alcance+nivel). "La equivalencia
+# aceptada es EVIDENCIA para evaluar, nunca clasificación automática" (C28). Cada término de condición
+# acepta ciertas reformulaciones de v12.5 y RECHAZA otras (acotación textual). acepta → cuenta como
+# match; las frases rechazadas NO cuentan. Solo con el mini-frente ON (self._equiv).
+_SINONIMOS_COMERCIALES = {
+    'prospeccion': {'acepta': ['captar nuevos clientes', 'captar clientes', 'generar nuevos clientes',
+                               'captacion de nuevos clientes', 'captacion de clientes', 'detectar y abrir oportunidades',
+                               'abrir nuevas oportunidades', 'abrir oportunidades'],
+                    'rechaza': ['identificar oportunidades']},  # parcial — no acredita captación
+    'fidelizar': {'acepta': ['conservar relaciones', 'fortalecer relaciones', 'dar continuidad a',
+                             'fidelizar', 'fidelizacion', 'retener clientes', 'retencion de clientes'],
+                  'rechaza': ['gestionar cartera', 'desarrollar cartera', 'ampliar cartera']},
+    'desarrollar relaciones comerciales': {'acepta': ['construir relaciones', 'fortalecer relaciones',
+                             'expandir relaciones', 'establecer relaciones comerciales'],
+                  'rechaza': ['gestion de clientes', 'gestionar clientes']},
+    'comercializar': {'acepta': ['promocionar y vender', 'promocionar y comercializar', 'vender productos',
+                             'venta consultiva', 'comercializar'],
+                  'rechaza': ['posicionar portfolio', 'posicionar el portfolio']},
+    'negociacion': {'acepta': ['negociar contratos', 'negociar condiciones', 'negociacion y cierre',
+                             'proceso de negociacion', 'negociar y cerrar'],
+                  'rechaza': []},  # el cierre aislado NO acredita negociación (se maneja por ausencia en acepta)
+    'establecer objetivos': {'acepta': [],   # NO equivale (cumplir/alcanzar ≠ establecer)
+                  'rechaza': ['cumplir objetivos', 'alcanzar objetivos', 'cumplir con los objetivos']},
+    'cotizaciones': {'acepta': ['emitir presupuestos', 'elaborar presupuestos', 'propuestas de precios',
+                             'cotizar', 'realizar cotizaciones', 'presupuestar'],
+                  'rechaza': ['facturacion', 'notas de credito', 'notas de debito']},
+    'rutas': {'acepta': ['visitas segun itinerario', 'recorridos segun itinerario', 'ejecutar visitas',
+                             'visitas presenciales segun', 'recorrer la zona'],
+                  'rechaza': ['disenar rutas', 'planificar rutas']},
+}
+
+
+def _sinonimo_comercial_en_texto(termino: str, texto_norm: str) -> bool:
+    """LAUDO 3: el término de condición matchea si el texto trae una reformulación ACEPTADA
+    por Cyn (acción equivalente); las rechazadas/parciales no cuentan."""
+    fam = _SINONIMOS_COMERCIALES.get(_norm(termino))
+    if not fam:
+        return False
+    return any(_norm(a) in texto_norm for a in fam['acepta'])
+
+
 class TraductorContexto:
     """Evaluador de reglas de contexto. Fuentes inyectables para test y shadow."""
 
@@ -260,7 +327,8 @@ class TraductorContexto:
     # ── evaluación de una condición operacional ──
     def _eval_condicion(self, cond: dict, contenidos: Dict[str, str],
                         hermanas: List[dict], tecnologia_definitoria: bool,
-                        inclusion_comparativa: Optional[dict] = None) -> dict:
+                        inclusion_comparativa: Optional[dict] = None,
+                        hub_cod: Optional[str] = None) -> dict:
         """Devuelve {'satisfecha': bool, 'matches': [(termino, campo)], 'estado': ...}."""
         modo = cond.get('modo')
         if not modo or modo not in MODOS_EJECUTABLES:
@@ -283,6 +351,8 @@ class TraductorContexto:
                         out.append((t, campo)); break
                     if self._equiv and _term_equiv_en_texto(t, txt):
                         out.append((t, campo)); via_capa.add(t); break
+                    if self._equiv and _sinonimo_comercial_en_texto(t, txt):  # LAUDO 3
+                        out.append((t, campo)); via_capa.add(t); break
             return out
 
         matches = _matches_de(terminos)
@@ -293,7 +363,15 @@ class TraductorContexto:
             estado = cond.get('excluye_tag') or 'excluida'
             return {'satisfecha': False, 'matches': matches, 'estado': estado}
 
-        n = len({t for t, _ in matches})
+        # LAUDO 1/2 (núcleo funcional): las complementarias y la atención telefónica NO cuentan
+        # para el predominio ni para min_matches (solo con los ajustes del mini-frente ON).
+        def _ncore(ms):
+            terms = {t for t, _ in ms}
+            if self._equiv and hub_cod in _NUCLEO_SCOPED:   # LAUDO 1 acotado al contexto caja/venta
+                terms = terms - _NO_NUCLEO
+            return len(terms)
+
+        n = _ncore(matches)
         if modo == 'alguna':
             ok = n >= 1
         elif modo == 'min_matches':
@@ -313,7 +391,7 @@ class TraductorContexto:
             if inclusion_comparativa:
                 comparadas.append(inclusion_comparativa)
             for h in comparadas:
-                nh = len({t for t, _ in _matches_de(h.get('terminos') or [])})
+                nh = _ncore(_matches_de(h.get('terminos') or []))  # LAUDO 1: núcleo, sin complementarias
                 max_hermana = max(max_hermana, nh)
             ok = propios >= 1 and propios > max_hermana
         else:
@@ -386,7 +464,8 @@ class TraductorContexto:
         for r in orden_d:
             cond = r.get('condicion_operacional') or {}
             res = self._eval_condicion(cond, contenidos, hermanas_de(r.get('regla_id')), _tec_def(r),
-                                       inclusion_comparativa=(cond_inclusion or None) if not sat_code else None)
+                                       inclusion_comparativa=(cond_inclusion or None) if not sat_code else None,
+                                       hub_cod=codigo)
             traza_reglas.append({'regla_id': r.get('regla_id'), 'estado': res['estado'],
                                  'satisfecha': res['satisfecha'],
                                  'matches': [{'termino': t, 'campo': c} for t, c in res['matches']]})
@@ -410,6 +489,14 @@ class TraductorContexto:
                            for t in _mt}
                 if self._equiv and cod_dst and _mt and _mt <= via and len(_raices) == 1:
                     traza_reglas[-1]['estado'] = 'guard_capa_concepto_unico'
+                    continue
+                # GUARD D10 (laudo 2, C17/C63): teleoperador (5244.1) NO dispara por mera
+                # atención telefónica — exige un término de TELEVENTA (promoción/venta por
+                # llamada). Si los matches son solo atención-telefónica → no cruza.
+                if (self._equiv and cod_dst == '5244.1'
+                        and not (_mt & _D10_TELEVENTA)
+                        and (_mt & _D10_ATENCION_TEL)):
+                    traza_reglas[-1]['estado'] = 'guard_d10_atencion_no_televenta'
                     continue
                 if sat_code:
                     # regla de interaccion P1xP2 (laudada): destino == satelite del
@@ -437,7 +524,7 @@ class TraductorContexto:
             return {'propone': None, 'regla_id': None, 'camino': None, 'traza': traza_reglas}
         ri = hub.get('regla_inclusion') or {}
         cond = ri.get('condicion_operacional') or {}
-        res = self._eval_condicion(cond, contenidos, hermanas_de(None), False)
+        res = self._eval_condicion(cond, contenidos, hermanas_de(None), False, hub_cod=codigo)
         traza_reglas.append({'regla_id': 'inclusion', 'estado': res['estado'],
                              'satisfecha': res['satisfecha'],
                              'matches': [{'termino': t, 'campo': c} for t, c in res['matches']]})
