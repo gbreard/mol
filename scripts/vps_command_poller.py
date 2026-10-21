@@ -29,6 +29,28 @@ MOL_DIR = Path('/opt/mol')
 SCRIPTS_DIR = MOL_DIR / 'scripts'
 LOG_DIR = MOL_DIR / 'logs'
 
+# Portales conocidos (mismos que portal_scripts / el cron)
+POLLER_PORTALS = ['bumeran', 'zonajobs', 'computrabajo', 'indeed', 'portalempleo', 'caba']
+
+# ─────────────────────────────────────────────────────────────────────────────
+# WATERMARK — por qué los export de este poller usan SIEMPRE --portal
+# ─────────────────────────────────────────────────────────────────────────────
+# El cursor de sync incremental vive en data/sync_log.json → last_export y lo
+# COMPARTEN todos los que corren export_nuevas.py. Si un export en el VPS avanza
+# ese cursor pero su dump NO se importa a local, "roba" el incremento: marca las
+# filas como exportadas sin que lleguen a local. bumeran, el scraper más temprano
+# (07:05), quedaba crónicamente varado por esto (diagnóstico 2026-10-21).
+#
+# REGLA: el ÚNICO que avanza last_export es el sync local (sync_from_vps.py), que
+# es el que realmente importa. Todo export del VPS que no sea ese debe ir con
+# --portal, porque export_nuevas.py NO toca el watermark cuando hay portal_list
+# (guard: "if portal_list: watermark NO modificado").
+#
+# Dos cierres del mismo bug "watermark robado":
+#   1) 2026-06-30 — Paso 7 (export) de scripts/scraping/run_scraping_vps.sh: DESACTIVADO.
+#   2) 2026-10-21 — este poller (run_scraping_portal post-scrape + run_export): --portal.
+# ─────────────────────────────────────────────────────────────────────────────
+
 # Supabase config — leer de archivo o env
 def get_supabase_client():
     try:
@@ -160,10 +182,12 @@ def run_scraping_portal(portal):
     cmd = f'{script} 2>&1 | tee {log_file}'
     code, output = run_shell(cmd, timeout=7200)  # 2h max
 
-    # Post-scraping: export incremental para que sync lo traiga
+    # Post-scraping: export SOLO del portal scrapeado, con --portal para NO mover
+    # el watermark global (ver bloque WATERMARK arriba). El sync local es el único
+    # dueño de last_export; este dump es un parche quirúrgico que no toca el cursor.
     if code == 0:
-        export_code, export_output = run_shell('python3 scripts/export_nuevas.py', timeout=300)
-        output += f'\n--- Export post-scraping ---\n{export_output}'
+        export_code, export_output = run_shell(f'python3 scripts/export_nuevas.py --portal {portal}', timeout=300)
+        output += f'\n--- Export post-scraping ({portal}, backfill, no toca watermark) ---\n{export_output}'
 
     # Contar ofertas del output
     ofertas = 0
@@ -188,8 +212,14 @@ def run_scraping_todos():
 
 
 def run_export():
-    """Exporta ofertas nuevas para que local las baje"""
-    cmd = 'python3 scripts/export_nuevas.py'
+    """Export manual (comando sync_vps_local del dashboard).
+
+    Usa --portal con TODOS los portales para que export_nuevas.py NO avance el
+    watermark (ver bloque WATERMARK arriba): el único dueño de last_export es el
+    sync local (sync_from_vps.py). Produce un dump completo sin robar el cursor.
+    """
+    portales = ','.join(POLLER_PORTALS)
+    cmd = f'python3 scripts/export_nuevas.py --portal {portales}'
     code, output = run_shell(cmd, timeout=300)
     return code, output[-2000:], {}
 
