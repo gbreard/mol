@@ -54,6 +54,8 @@ class VerificadorBajas:
         self.portales = cfg["portales"]
         self.gap = timedelta(hours=cfg.get("verificacion_gap_horas", 72))
         self.n_confirmar = cfg.get("verificaciones_para_confirmar", 2)
+        # cooldown anti-regiro: una count=0 ambigua no se re-verifica por N días (ver cola/_aplicar)
+        self.cooldown_ambigua = timedelta(days=cfg.get("cooldown_ambigua_dias", 30))
         self.regimen = regimen
         self.db_path = str(db_path)
         self.conn = None
@@ -85,16 +87,23 @@ class VerificadorBajas:
     def cola(self, portal, limit):
         ahora = datetime.now()
         gap_lim = (ahora - self.gap).isoformat()
+        # Cooldown anti-regiro (2026-10-21): una count=0 ya verificada (quedó ambigua,
+        # que es lo único que la deja en count=0 con timestamp) NO se re-elige hasta
+        # pasar cooldown_ambigua. Las frescas (fecha_ultima_verificacion IS NULL) siguen
+        # siempre elegibles. Sin esto la cuota diaria giraba sobre ~20k indecidibles
+        # (ambigua 88-99%, solo ~653 distintas/sem avanzaban). count=1 mantiene su gap 72h.
+        cooldown_lim = (ahora - self.cooldown_ambigua).isoformat()
         rows = self.conn.execute("""
             SELECT id_oferta, portal, titulo, url_oferta, verificaciones_caida_count,
                    fecha_ultimo_visto, fecha_primera_verificacion_caida
             FROM ofertas
             WHERE estado_ciclo='presunta_baja' AND portal=?
-              AND (verificaciones_caida_count = 0
+              AND ((verificaciones_caida_count = 0
+                       AND (fecha_ultima_verificacion IS NULL OR fecha_ultima_verificacion <= ?))
                    OR (verificaciones_caida_count = 1
                        AND (fecha_ultima_verificacion IS NULL OR fecha_ultima_verificacion <= ?)))
             ORDER BY fecha_ultimo_visto ASC
-            LIMIT ?""", (portal, gap_lim, limit)).fetchall()
+            LIMIT ?""", (portal, cooldown_lim, gap_lim, limit)).fetchall()
         return rows
 
     # ---------- vías ----------
@@ -375,7 +384,16 @@ class VerificadorBajas:
                         fecha_ultima_verificacion=?,
                         fecha_primera_verificacion_caida=COALESCE(fecha_primera_verificacion_caida,?)
                         WHERE id_oferta=?""", (nuevo, ts, ts, ido))
-        # ambigua: no cambia contadores
+        else:  # resultado == "ambigua"
+            # No cambia contadores (no decide), pero SÍ registra el intento en
+            # fecha_ultima_verificacion para activar el cooldown anti-regiro de cola():
+            # sin esto, una count=0 ambigua se re-elegía cada día (cola no filtra count=0
+            # por timestamp) y gastaba la cuota girando en falso. El histórico completo
+            # de cada intento queda en verificaciones_baja (insert de arriba), así que la
+            # medición de flips no se pierde. Medido 2026-10-21: flip tras ambigua = 2.1%.
+            if not dry:
+                self.conn.execute(
+                    "UPDATE ofertas SET fecha_ultima_verificacion=? WHERE id_oferta=?", (ts, ido))
 
     def _transicion(self, ido, portal, desde, hacia, motivo, ts):
         self.conn.execute(

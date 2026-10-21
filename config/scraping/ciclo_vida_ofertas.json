@@ -3,6 +3,8 @@
   "_actualizado": "2026-09-02",
   "verificacion_gap_horas": 72,
   "verificaciones_para_confirmar": 2,
+  "_cooldown_ambigua_doc": "Días que una oferta count=0 clasificada 'ambigua' NO se re-verifica (anti-regiro). Sin esto, el count=0 ambiguo se re-elige cada día y gasta la cuota girando sobre ofertas indecidibles por búsqueda. Medido 2026-10-21 (CT, 1 semana régimen): flip tras ambigua = 2.1% → cooldown (re-chequeo mensual), NO skip permanente. Ver exports/reportes/chequeo_drenaje_ct_regimen_2026-10-21.md.",
+  "cooldown_ambigua_dias": 30,
   "ventana_verificable_factor": 2,
   "_modo_sombra_doc": "Fase 3 corre en sombra: el legacy detectar_bajas sigue escribiendo estado_oferta (lo que ve producción). El flag legacy_detectar_bajas_enabled APAGA el legacy — se implementa pero NO se activa hasta Fase 5, coordinado con la nota metodológica (§11.5).",
   "legacy_detectar_bajas_enabled": true,
