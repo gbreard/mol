@@ -1,8 +1,8 @@
 {
-  "version": "1.0",
-  "fuente": "validacion_tareas_respuestas_2026-08-26.xlsx (28 casos, Cyn)",
-  "nota": "gold_tareas a granularidad de unidad funcional (método Cyn). [] = vacío válido.",
-  "n_casos": 28,
+  "version": "1.1-v12.3",
+  "fuente": "validacion_tareas_respuestas_2026-08-26.xlsx (28) + N_criterios_respuestas_2026-08-26.xlsx (hoja 3: 4 nuevos)",
+  "nota": "gold re-adjudicado con los 3 criterios de Cyn (v12.3). granularidad = autonomía funcional. [] = vacío válido.",
+  "n_casos": 32,
   "n_ok": 6,
   "casos": [
     {
@@ -109,7 +109,10 @@
         "planificar, ejecutar y optimizar la estrategia de performance digital",
         "impulsar la adquisición de usuarios",
         "monitorear y analizar indicadores clave como CPA, ROAS, conversión, retención y calidad de tráfico",
-        "identificar oportunidades de mejora a partir del análisis de datos y comportamiento de usuarios"
+        "identificar oportunidades de mejora a partir del análisis de datos y comportamiento de usuarios",
+        "implementar y validar herramientas de medición, tracking y atribución digital",
+        "gestionar acciones de CRM, segmentación y automatización para potenciar la retención",
+        "utilizar herramientas de IA para optimizar procesos, generar insights y mejorar el rendimiento de las campañas"
       ],
       "sobras_tipificadas": []
     },
@@ -201,7 +204,8 @@
         "realizar prospección activa presencial y/o digital de nuevos clientes individuales y corporativos, gestionando el proceso completo de venta: presupuestación por segmento, cierre y documentación para el alta",
         "recibir y gestionar leads provenientes de distintos canales",
         "registrar y realizar seguimiento de la gestión comercial en CRM",
-        "analizar la competencia y reportar acciones del mercado"
+        "analizar la competencia",
+        "reportar acciones del mercado"
       ],
       "sobras_tipificadas": []
     },
@@ -432,7 +436,70 @@
         "diseñar arquitecturas de visualización SCADA integradas, asegurando consistencia entre sistemas Fast Tools y DeltaV",
         "implementar estándares de HMI según ISA-101 y guías de alto rendimiento (High Performance HMI)",
         "coordinar con Operaciones para definir requerimientos de visualización y optimizar interfaces de operador",
-        "elaborar documentación técnica de pantallas SCADA (especificaciones funcionales, narrativas de operación, manuales de usuario)"
+        "elaborar documentación técnica de pantallas SCADA (especificaciones funcionales, narrativas de operación, manuales de usuario)",
+        "supervisar contratistas de servicios de automatización en desarrollos SCADA"
+      ],
+      "sobras_tipificadas": []
+    },
+    {
+      "n": 29,
+      "id_oferta": "1117212619",
+      "portal": "bumeran",
+      "titulo": null,
+      "cuerpo": "Choferes con Experiencia ComprobableResumen del Puesto:Nos encontramos en la búsqueda de Choferes con Experiencia Comprobable para sumarse a nuestro equipo de transporte y distribución. Buscamos personas responsables, con excelente predisposición y ganas de crecer profesionalmente.Requisitos Excluyentes: Experiencia Verificable en el manejo de:Chasis de 8 pallets. Chasis de 12 pallets. Balancines y/o Semis. Amplia Disponibilidad Horaria (para turnos rotativos o variables según la operación). Manejo de Remitos y estricto control de la mercadería despachada y recibida. Licencia de conducir profesional vigente y al día (Cargas Generales/Larga Distancia según corresponda).Deseable Contar con conocimientos y experiencia en el uso de aplicaciones de colecta ML (Mercado Libre u otras plataformas logísticas).Ofrecemos Salario competitivo, acorde a convenio. Incorporación inmediata.Para mantener la prolijidad y eficiencia de nuestro proceso de selección: Solo tomamos la primera postulacion recibida en este u otro aviso.",
+      "sistema_v11_extrajo": null,
+      "veredicto_cyn": "TAREAS (hoja 3)",
+      "gold_tareas": [
+        "conducir chasis (de 8 y 12 pallets)",
+        "conducir balancines y/o semis",
+        "controlar la mercadería despachada y recibida",
+        "manejar remitos"
+      ],
+      "sobras_tipificadas": []
+    },
+    {
+      "n": 30,
+      "id_oferta": "2184455",
+      "portal": "zonajobs",
+      "titulo": null,
+      "cuerpo": "Estamos en la búsqueda de operarios para trabajar en nuestra planta industrial ubicada en Vicente López, Provincia de Buenos Aires.Puestos a cubrir: Electricista: Electricidad del automóvil y domiciliaria. Instalación de tendidos eléctricos en automotores, luces, equipamiento, medición y controles. Plástico PRFV: Manejo de equipo de trabajo. Laminación y pulido de PRFV (plástico reforzado con fibra de vidrio, GFRP, GRP). Fabricación y reparación de piezas en fibra de vidrio (moldes, matrices, etc.). Manejo de herramientas y materiales específicos (resinas, catalizadores, cortadores, etc.). Precisión en trabajos manuales y detalles de terminación. Herrería: Herrero/Soldador MIG/MAG. Armado de estructuras metálicas. Manejo de herramientas manuales y maquinaria de taller. Montaje: · Conocimientos en transformaciones y adaptaciones vehiculares. Manejo de herramientas eléctricas y neumáticas (taladros, pulidoras, atornilladoras, remachadoras, caladoras, cementadoras de pegamento en frío, entre otras)Se valorará contar con experiencia en empresas metalúrgicas, industrias automotriz o carrocera.Disponibilidad para incorporación inmediata y detallar las presentaciones salariales netas.",
+      "sistema_v11_extrajo": null,
+      "veredicto_cyn": "TAREAS (hoja 3)",
+      "gold_tareas": [
+        "instalar tendidos eléctricos en automotores",
+        "laminar y pulir PRFV",
+        "fabricar y reparar piezas en fibra de vidrio",
+        "armar estructuras metálicas"
+      ],
+      "sobras_tipificadas": []
+    },
+    {
+      "n": 31,
+      "id_oferta": "7853619060",
+      "portal": "portalempleo",
+      "titulo": null,
+      "cuerpo": ": Atención al cliente, reposición de mercadería, limpieza y orden del lugar de trabajo.\n\nTareas principales: tareas de deposito, embalaje, carga y descarga de mercadería. Reposición de mercadería, atención al publico, limpieza y mantenimiento del lugar de trabajo\n\n---\nEstudios requeridos: Secundarios Idiomas Inglés, conocimientos mínimos: Básico\nExperiencia requerida: No\nDias laborables: Lunes, Martes, Miércoles, Jueves, Viernes, Sábado\nHorario: 08:30 a 12:30",
+      "sistema_v11_extrajo": null,
+      "veredicto_cyn": "TAREAS (hoja 3)",
+      "gold_tareas": [
+        "reponer mercadería",
+        "atender al público",
+        "realizar tareas de depósito",
+        "embalar",
+        "cargar y descargar mercadería"
+      ],
+      "sobras_tipificadas": []
+    },
+    {
+      "n": 32,
+      "id_oferta": "8802322877",
+      "portal": "computrabajo",
+      "titulo": null,
+      "cuerpo": "En Würth Argentina seguimos creciendo y buscamos incorporar un/a Ejecutivo de ventas en calle para desarrollar y potenciar nuestra cartera de clientes en la zona de Río Cuarto. Si te apasionan las ventas, el trabajo en campo y los desafíos comerciales, esta oportunidad es para vos. ¿Qué ofrecemos para potenciar tu éxito? Contratación directa y efectiva con una multinacional (relación de dependencia). Sueldo básico + comisiones. Plan de carrera y desarrollo personalizado. Cartera propia de clientes activa. Combustible. Reconocimiento por desgaste de vehículo. Capacitación constante y acompañamiento comercial. ¿Qué necesitás para postularte? Contar con 3 años de experiencia en ventas, reactivación y captación de nuevos clientes en campo, terreno o calle. Orientación al logro de objetivos y resultados, con experiencia trabajando bajo esquema de comisiones. Capacidad para trabajar de manera autónoma y en equipo. Disponibilidad full time y exclusiva para la empresa. Movilidad propia (auto modelo 2015 en adelante) - Excluyente. Analítico del secundario en mano - Excluyente. Referencias laborales comprobables (deseable). Conocimientos en los rubros técnico, industrial, construcción o automotor (deseable). Zona de trabajo: Río Cuarto y alrededores. Si buscás desarrollarte profesionalmente en una empresa líder y afrontar nuevos desafíos comerciales, te invitamos a aplicar a la oferta laboral.-Requerimientos- Educación mínima: Secundaria 2 años de experiencia Edad: entre 25 y 45 años Disponibilidad de viajar: Si Palabras clave: directivo, mando, gobierno, regencia, executive, managing, ejecutivo, cambaceo, sales",
+      "sistema_v11_extrajo": null,
+      "veredicto_cyn": "TAREAS (hoja 3, 1 sola)",
+      "gold_tareas": [
+        "desarrollar y potenciar la cartera de clientes"
       ],
       "sobras_tipificadas": []
     }
