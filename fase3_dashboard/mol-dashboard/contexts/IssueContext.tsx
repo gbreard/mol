@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { Issue } from '@/lib/types';
 import { getIssuesPendientes } from '@/lib/supabase';
+import { usePathname } from 'next/navigation';
 
 interface OfertaInfo {
   id_oferta: string;
@@ -37,11 +38,17 @@ export function IssueProvider({ children }: { children: React.ReactNode }) {
   const [selectedOferta, setSelectedOferta] = useState<OfertaInfo | null>(null);
   const [pendingIssues, setPendingIssues] = useState<Issue[]>([]);
   const [isCreating, setIsCreating] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  // DEMO: en VIP y Oficina de Empleo los issues no se usan y la consulta da timeout
+  // (57014): se cargan solo al abrir el panel de feedback.
+  const pathname = usePathname() || '';
+  const autoLoad = !pathname.startsWith('/vip') && !pathname.startsWith('/oficina-empleo');
 
   const refreshIssues = useCallback(async () => {
     try {
       const issues = await getIssuesPendientes();
       setPendingIssues(issues);
+      setLoaded(true);
     } catch (error) {
       console.error('Error loading issues:', error);
     }
@@ -49,16 +56,17 @@ export function IssueProvider({ children }: { children: React.ReactNode }) {
 
   // Load issues on mount
   useEffect(() => {
-    refreshIssues();
-  }, [refreshIssues]);
+    if (autoLoad) refreshIssues();
+  }, [refreshIssues, autoLoad]);
 
   const openDrawer = useCallback((oferta?: OfertaInfo) => {
+    if (!loaded) refreshIssues();
     if (oferta) {
       setSelectedOferta(oferta);
       setIsCreating(true);
     }
     setIsOpen(true);
-  }, []);
+  }, [loaded, refreshIssues]);
 
   const closeDrawer = useCallback(() => {
     setIsOpen(false);
