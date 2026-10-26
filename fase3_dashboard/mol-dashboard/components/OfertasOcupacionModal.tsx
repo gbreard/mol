@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { X, Briefcase, ExternalLink, Loader2, Calendar, RefreshCw } from 'lucide-react';
-import { getOfertasByIsco } from '@/lib/supabase';
+import { getOfertasByIsco, getFechaMaxOfertas } from '@/lib/supabase';
+import { estadoOfertaBadge, antiguedadOferta, formatFecha, periodoDesde } from '@/lib/ofertas-estado';
 import { ChartDownloadButton } from './ExportButton';
 
 type TimePeriod = '7d' | '30d' | '90d' | 'all';
@@ -14,12 +15,7 @@ const TIME_OPTIONS: { id: TimePeriod; label: string }[] = [
   { id: 'all', label: 'Histórico' },
 ];
 
-function getSinceDate(period: TimePeriod): string | null {
-  if (period === 'all') return null;
-  const d = new Date();
-  d.setDate(d.getDate() - (period === '7d' ? 7 : period === '30d' ? 30 : 90));
-  return d.toISOString().split('T')[0];
-}
+const PERIOD_DAYS: Record<TimePeriod, number | null> = { '7d': 7, '30d': 30, '90d': 90, all: null };
 
 interface OfertasOcupacionModalProps {
   isOpen: boolean;
@@ -39,15 +35,23 @@ export default function OfertasOcupacionModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('30d');
+  const [fechaMax, setFechaMax] = useState<string | null>(null);
+  const [activas, setActivas] = useState(0);
+  const [sinFiltroFecha, setSinFiltroFecha] = useState(false);
 
   const fetchOfertas = useCallback(async (period: TimePeriod) => {
     setLoading(true);
     setError(false);
     try {
-      const since = getSinceDate(period);
-      const { ofertas: data, total: count } = await getOfertasByIsco(iscoCode, 100, 0, null, since);
-      setOfertas(data);
-      setTotal(count);
+      // Período anclado a la última fecha con datos, no a hoy
+      const max = await getFechaMaxOfertas();
+      setFechaMax(max);
+      const since = periodoDesde(PERIOD_DAYS[period], max);
+      const res = await getOfertasByIsco(iscoCode, 100, 0, null, since);
+      setOfertas(res.ofertas);
+      setTotal(res.total);
+      setActivas(res.activas);
+      setSinFiltroFecha(res.sinFiltroFecha);
     } catch {
       setError(true);
     } finally {
@@ -73,7 +77,7 @@ export default function OfertasOcupacionModal({
       titulo: o.titulo_limpio || o.titulo || '',
       empresa: o.empresa || '',
       fecha: o.fecha_publicacion || '',
-      estado: o.estado || '',
+      estado: estadoOfertaBadge(o.estado_ciclo).label,
       competencias: o.skills_tecnicas || '',
       link: o.url || ''
     })),
@@ -157,8 +161,14 @@ export default function OfertasOcupacionModal({
             </div>
           ) : (
             <>
+              {sinFiltroFecha && (
+                <p className="text-xs text-amber-700 bg-amber-50 rounded px-2 py-1 mb-2">
+                  Sin avisos en el período elegido. Mostrando los más recientes.
+                </p>
+              )}
               <p className="text-xs text-gray-400 mb-3">
-                {total} oferta{total !== 1 ? 's' : ''}
+                {total} oferta{total !== 1 ? 's' : ''} · {activas} activa{activas !== 1 ? 's' : ''}
+                {fechaMax ? ` · datos hasta el ${formatFecha(fechaMax)}` : ''}
               </p>
               <div className="space-y-2">
                 {ofertas.map((oferta: any, index: number) => (
@@ -167,13 +177,13 @@ export default function OfertasOcupacionModal({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <p className="text-sm font-medium text-gray-900 truncate">{oferta.titulo_limpio || oferta.titulo}</p>
-                          <span className={`text-[9px] px-1.5 py-0.5 rounded font-medium shrink-0 ${oferta.estado === 'activa' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
-                            {oferta.estado === 'activa' ? 'Activa' : 'Cerrada'}
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded font-medium shrink-0 ${estadoOfertaBadge(oferta.estado_ciclo).className}`}>
+                            {estadoOfertaBadge(oferta.estado_ciclo).label}
                           </span>
                         </div>
                         <div className="flex items-center gap-3 mt-0.5 text-xs text-gray-500">
                           {oferta.empresa && <span>{oferta.empresa}</span>}
-                          {oferta.fecha_publicacion && <span>{new Date(oferta.fecha_publicacion).toLocaleDateString('es-AR')}</span>}
+                          <span>{oferta.fecha_publicacion ? `${antiguedadOferta(oferta.fecha_publicacion)} (${formatFecha(oferta.fecha_publicacion)})` : 'Sin fecha'}</span>
                         </div>
                         {oferta.skills_tecnicas && (
                           <div className="mt-1.5 flex flex-wrap gap-1">

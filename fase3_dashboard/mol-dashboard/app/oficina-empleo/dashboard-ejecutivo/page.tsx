@@ -5,6 +5,8 @@ import { BarChart3, Loader2, FlaskConical, Zap, PieChart, GraduationCap, Cpu, Sh
 import Link from 'next/link'
 import { createBrowserClient } from '@supabase/ssr'
 import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
+import { getFechaMaxOfertas } from '@/lib/supabase'
+import { formatFecha, periodoDesde } from '@/lib/ofertas-estado'
 
 // Single Supabase client instance — avoid multiple GoTrueClient instances
 let _supabase: ReturnType<typeof createBrowserClient> | null = null
@@ -33,12 +35,12 @@ const PERIODOS: { id: string; label: string; days: number }[] = [
   { id: '365d', label: 'Último año', days: 365 },
 ]
 
-function getDateRange(periodoId: string): { desde: string | null; hasta: string | null } {
+/** Período contado hacia atrás desde la última fecha con datos (no desde hoy). */
+function getDateRange(periodoId: string, fechaMax: string | null): { desde: string | null; hasta: string | null } {
   const p = PERIODOS.find(x => x.id === periodoId)
   if (!p) return { desde: null, hasta: null }
-  const hasta = new Date()
-  const desde = new Date(hasta.getTime() - p.days * 24 * 60 * 60 * 1000)
-  return { desde: desde.toISOString().split('T')[0], hasta: hasta.toISOString().split('T')[0] }
+  const hasta = fechaMax || new Date().toISOString().split('T')[0]
+  return { desde: periodoDesde(p.days, hasta), hasta }
 }
 
 function barWidth(value: number, max: number) {
@@ -48,6 +50,7 @@ function barWidth(value: number, max: number) {
 export default function DashboardEjecutivoPage() {
   const [provincia, setProvincia] = useState('')
   const [periodo, setPeriodo] = useState('90d')
+  const [fechaMax, setFechaMax] = useState<string | null | undefined>(undefined)
 
   // Data per block
   const [panorama, setPanorama] = useState<any>(null)
@@ -65,9 +68,9 @@ export default function DashboardEjecutivoPage() {
   const [loadingReqs, setLoadingReqs] = useState(true)
   const [loadingSkills, setLoadingSkills] = useState(true)
 
-  const fetchAll = useCallback(async (prov: string, per: string) => {
+  const fetchAll = useCallback(async (prov: string, per: string, max: string | null) => {
     const supabase = getSupabase()
-    const { desde, hasta } = getDateRange(per)
+    const { desde, hasta } = getDateRange(per, max)
 
     // Base filters for RPCs that use p_filters jsonb
     const filters: Record<string, any> = {}
@@ -79,12 +82,8 @@ export default function DashboardEjecutivoPage() {
     // Evolucion filters: bar size depends on period
     const evolFilters: Record<string, any> = {}
     if (prov) evolFilters.provincia = prov
-    evolFilters.fecha_desde = per === '7d'
-      ? new Date(Date.now() - 1 * 86400000).toISOString().split('T')[0]
-      : per === '365d'
-        ? new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0]
-        : new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0]
-    evolFilters.fecha_hasta = new Date().toISOString().split('T')[0]
+    evolFilters.fecha_desde = periodoDesde(per === '7d' ? 1 : per === '365d' ? 30 : 7, hasta)
+    evolFilters.fecha_hasta = hasta
 
     // All 5 RPCs in parallel — each handles its own result independently
     supabase.rpc('get_panorama', { p_filters: filters }).then(({ data }) => {
@@ -132,8 +131,13 @@ export default function DashboardEjecutivoPage() {
   }, [])
 
   useEffect(() => {
-    fetchAll(provincia, periodo)
-  }, [provincia, periodo, fetchAll])
+    getFechaMaxOfertas().then(setFechaMax)
+  }, [])
+
+  useEffect(() => {
+    if (fechaMax === undefined) return
+    fetchAll(provincia, periodo, fechaMax)
+  }, [provincia, periodo, fechaMax, fetchAll])
 
   const kpis = panorama?.kpis || {}
   const maxSector = sectores.length > 0 ? Math.max(...sectores.map((s: any) => s.count)) : 1
@@ -151,7 +155,9 @@ export default function DashboardEjecutivoPage() {
             <BarChart3 className="w-5 h-5 text-amber-600" />
             <h1 className="text-xl font-bold text-gray-900">Panorama del Mercado Laboral</h1>
           </div>
-          <p className="text-sm text-gray-500">Demanda de empleo en Argentina · datos MOL</p>
+          <p className="text-sm text-gray-500">
+            Demanda de empleo en Argentina · datos MOL{fechaMax ? ` · Datos hasta el ${formatFecha(fechaMax)}` : ''}
+          </p>
         </div>
 
         <div className="flex items-center gap-4 mb-6">

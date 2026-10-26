@@ -15,6 +15,8 @@ import { PersonaSelector, type PerfilResumen } from '@/components/oficina-empleo
 import { OcupacionObjetivoSelector } from '@/components/oficina-empleo/OcupacionObjetivoSelector'
 import { OfertasModal } from '@/components/oficina-empleo/OfertasModal'
 import { normalizeProvinciaToRegice } from '@/components/oficina-empleo/normalizeProvinciaToRegice'
+import { getFechaMaxOfertas } from '@/lib/supabase'
+import { formatFecha, provinciaOfertas } from '@/lib/ofertas-estado'
 
 import type { OccupationMatch } from '@/app/oficina-empleo/perfiles/matching/page'
 import { calculateOccupationMatch, type ProfileSkill } from '@/lib/matching'
@@ -81,6 +83,8 @@ export default function FuturoLaboralPage() {
 
   // Provincia (MOL format, for filtering ofertas)
   const [perfilProvincia, setPerfilProvincia] = useState<string | null>(null)
+  const [fechaMax, setFechaMax] = useState<string | null>(null)
+  useEffect(() => { getFechaMaxOfertas().then(setFechaMax) }, [])
 
   // Modal
   const [modalOpen, setModalOpen] = useState(false)
@@ -242,10 +246,7 @@ export default function FuturoLaboralPage() {
       })))
       // Pre-select provincia for cursos panel + ofertas filter
       const ubi = data.personas?.ubicacion
-      if (ubi) {
-        const parts = ubi.split(',')
-        setPerfilProvincia(parts.length > 1 ? parts[parts.length - 1].trim() : ubi.trim())
-      }
+      setPerfilProvincia(provinciaOfertas(ubi))
       const prov = normalizeProvinciaToRegice(ubi)
       if (prov) setProvinciaCursos(prov)
     } catch {} finally {
@@ -673,11 +674,12 @@ export default function FuturoLaboralPage() {
                 <div>
                   <p className="text-xs text-gray-500 mb-1">Demanda</p>
                   <p className="text-sm font-bold text-gray-800">
-                    {ofertasBadge(molOfertasCount)} {molOfertasCount} oferta{molOfertasCount !== 1 ? 's' : ''} activa{molOfertasCount !== 1 ? 's' : ''}
+                    {ofertasBadge(molOfertasCount)} {molOfertasCount} aviso{molOfertasCount !== 1 ? 's' : ''} publicado{molOfertasCount !== 1 ? 's' : ''}
                   </p>
+                  {fechaMax && <p className="text-[10px] text-gray-400">Datos al {formatFecha(fechaMax)}</p>}
                   {molOfertasCount > 0 && (
                     <button onClick={() => setModalOpen(true)} className="text-xs text-teal-600 hover:text-teal-700 font-medium mt-1">
-                      Ver {molOfertasCount === 1 ? 'la oferta' : `las ${molOfertasCount} ofertas`} →
+                      Ver los últimos avisos →
                     </button>
                   )}
                 </div>

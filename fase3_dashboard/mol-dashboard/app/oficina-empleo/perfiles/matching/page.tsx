@@ -8,6 +8,8 @@ import { PersonaSelector, type PerfilResumen } from '@/components/oficina-empleo
 import { OccupationMatchCard } from '@/components/oficina-empleo/OccupationMatchCard'
 import { calculateOccupationMatch, type ProfileSkill } from '@/lib/matching'
 import { createBrowserClient } from '@supabase/ssr'
+import { getFechaMaxOfertas } from '@/lib/supabase'
+import { formatFecha, periodoDesde, provinciaOfertas } from '@/lib/ofertas-estado'
 
 let _supabase: ReturnType<typeof createBrowserClient> | null = null
 function getSupabase() {
@@ -43,11 +45,14 @@ const TIME_OPTIONS: { id: TimePeriod; label: string }[] = [
   { id: 'all', label: 'Histórico' },
 ]
 
-function getSinceDate(period: TimePeriod): string | null {
-  if (period === 'all') return null
-  const d = new Date()
-  d.setDate(d.getDate() - (period === '7d' ? 7 : 30))
-  return d.toISOString().split('T')[0]
+const PERIOD_DAYS: Record<TimePeriod, number | null> = { '7d': 7, '30d': 30, all: null }
+
+type CountRow = { isco_code: string; total: number }
+
+function toCountMap(rows: CountRow[] | null): Record<string, number> {
+  const map: Record<string, number> = {}
+  for (const r of rows || []) map[r.isco_code] = Number(r.total)
+  return map
 }
 
 export default function MatchingPage() {
@@ -68,7 +73,11 @@ export default function MatchingPage() {
 
   // Ofertas count map
   const [ofertasCountMap, setOfertasCountMap] = useState<Record<string, number>>({})
-  const [countLoading, setCountLoading] = useState(false)
+  const [ofertasCountPaisMap, setOfertasCountPaisMap] = useState<Record<string, number>>({})
+  const [countLoading, setCountLoading] = useState(true)
+  // Última fecha con datos: los períodos se cuentan desde acá, no desde hoy
+  const [fechaMax, setFechaMax] = useState<string | null | undefined>(undefined)
+  const since = fechaMax === undefined ? null : periodoDesde(PERIOD_DAYS[timePeriod], fechaMax)
 
   // Modal
   const [modalIsco, setModalIsco] = useState('')
@@ -86,30 +95,25 @@ export default function MatchingPage() {
       .catch(() => setDataError('No se pudieron cargar las ocupaciones. Recargá la página.'))
   }, [])
 
-  // Load ofertas count (re-runs when time period or provincia changes)
   useEffect(() => {
-    setCountLoading(true)
-    setOfertasCountMap({}) // Clear old counts immediately
-    const since = getSinceDate(timePeriod)
+    getFechaMaxOfertas().then(setFechaMax)
+  }, [])
 
-    // Direct query with optional date + provincia filter
-    let query = getSupabase()
-      .from('ofertas_dashboard')
-      .select('isco_code')
-      .not('isco_code', 'is', null)
-    if (since) query = query.gte('fecha_publicacion', since)
-    if (perfilProvincia) query = query.eq('provincia', perfilProvincia)
-    query.then(({ data, error }) => {
-      const map: Record<string, number> = {}
-      if (!error && data) {
-        for (const row of data as any[]) {
-          if (row.isco_code) map[row.isco_code] = (map[row.isco_code] || 0) + 1
-        }
-      }
-      setOfertasCountMap(map)
+  // Conteo de avisos por ISCO (provincia + país), vía RPC: un select directo se cortaba en 1.000 filas
+  useEffect(() => {
+    if (fechaMax === undefined) return
+    setCountLoading(true)
+    setOfertasCountMap({})
+    setOfertasCountPaisMap({})
+    const rpc = (provincia: string | null) =>
+      getSupabase().rpc('get_ofertas_count_by_isco_filtrado', { p_provincia: provincia, p_since: since })
+    Promise.all([rpc(null), perfilProvincia ? rpc(perfilProvincia) : null]).then(([pais, prov]) => {
+      const paisMap = toCountMap(pais.error ? null : pais.data)
+      setOfertasCountPaisMap(paisMap)
+      setOfertasCountMap(prov ? toCountMap(prov.error ? null : prov.data) : paisMap)
       setCountLoading(false)
     })
-  }, [timePeriod, perfilProvincia])
+  }, [fechaMax, since, perfilProvincia])
 
   // Load profile skills when perfil is selected
   const loadPerfilSkills = useCallback(async (perfilId: string) => {
@@ -129,22 +133,8 @@ export default function MatchingPage() {
         skill_uri: s.skill_uri,
         nivel: s.nivel ?? null,
       })))
-      // Extract provincia for filtering ofertas
-      const ubi = data.personas?.ubicacion
-      if (ubi) {
-        // Try "ciudad, provincia" format; fallback to full string
-        const parts = ubi.split(',').map((p: string) => p.trim()).filter(Boolean)
-        const candidate = parts.length > 1 ? parts[parts.length - 1] : parts[0] || null
-        // Normalize common variants
-        const NORM: Record<string, string> = {
-          'caba': 'Capital Federal', 'ciudad autónoma de buenos aires': 'Capital Federal',
-          'ciudad autonoma de buenos aires': 'Capital Federal', 'cap. fed.': 'Capital Federal',
-          'capital federal': 'Capital Federal', 'gba': 'Buenos Aires',
-        }
-        setPerfilProvincia(candidate ? (NORM[candidate.toLowerCase()] || candidate) : null)
-      } else {
-        setPerfilProvincia(null)
-      }
+      // Provincia en el formato de ofertas_dashboard (CABA figura como 'CABA', no 'Capital Federal')
+      setPerfilProvincia(provinciaOfertas(data.personas?.ubicacion))
     } catch (e) {
       console.error('Error loading perfil:', e)
       setMensaje('error')
@@ -232,8 +222,8 @@ export default function MatchingPage() {
     })
   }, [matches, sortBy, ofertasCountMap])
 
-  // Filter: by default only show occupations with offers in the selected period
-  const withOffers = useMemo(() => sorted.filter(o => (ofertasCountMap[o.isco_code] || 0) > 0), [sorted, ofertasCountMap])
+  // Filter: by default only show occupations with offers in the selected period (provincia o, si no, país)
+  const withOffers = useMemo(() => sorted.filter(o => (ofertasCountPaisMap[o.isco_code] || 0) > 0), [sorted, ofertasCountPaisMap])
   const displayed = showAll ? sorted : withOffers
   const hiddenCount = sorted.length - withOffers.length
 
@@ -253,6 +243,7 @@ export default function MatchingPage() {
           </div>
           <p className="text-sm text-gray-500">
             Seleccioná un perfil para ver ocupaciones compatibles con sus competencias
+            {fechaMax ? ` · Datos hasta el ${formatFecha(fechaMax)}` : ''}
           </p>
         </div>
 
@@ -320,8 +311,8 @@ export default function MatchingPage() {
             <div className="flex items-center justify-between flex-wrap gap-2">
               <p className="text-xs text-gray-400">
                 {withOffers.length > 0
-                  ? `${withOffers.length} ocupaciones con ofertas${perfilProvincia ? ` en ${perfilProvincia}` : ''}`
-                  : `Sin ofertas${perfilProvincia ? ` en ${perfilProvincia}` : ''} para este período`
+                  ? `${withOffers.length} ocupaciones con avisos en el período`
+                  : 'Sin avisos para este período'
                 }
                 {!showAll && hiddenCount > 0 && ` · ${hiddenCount} sin ofertas ocultas`}
                 {showAll && ` · ${matches.length} total`}
@@ -388,8 +379,10 @@ export default function MatchingPage() {
                 occupation={o}
                 rank={i + 1}
                 ofertasCount={ofertasCountMap[o.isco_code] || 0}
+                ofertasCountPais={ofertasCountPaisMap[o.isco_code] || 0}
                 provincia={perfilProvincia}
-                since={getSinceDate(timePeriod)}
+                since={since}
+                fechaMax={fechaMax}
                 onOpenModal={handleOpenModal}
               />
             ))}
@@ -416,7 +409,7 @@ export default function MatchingPage() {
         iscoCode={modalIsco}
         label={modalLabel}
         provincia={perfilProvincia}
-        since={getSinceDate(timePeriod)}
+        since={since}
       />
     </div>
   )

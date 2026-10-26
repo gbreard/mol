@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { ChevronDown, ChevronUp, Loader2, Briefcase, ExternalLink } from 'lucide-react'
 import { getOfertasByIsco } from '@/lib/supabase'
+import { estadoOfertaBadge, antiguedadOferta, formatFecha } from '@/lib/ofertas-estado'
 
 interface OccupationMatch {
   uri: string
@@ -20,15 +21,19 @@ interface OfertaPreview {
   empresa: string
   fecha_publicacion: string
   url: string
-  estado: string
+  estado_ciclo: string | null
 }
 
 interface Props {
   occupation: OccupationMatch
   rank: number
   ofertasCount: number
+  /** Avisos de la ocupación en todo el país (mismo período), para cuando la provincia no tiene */
+  ofertasCountPais?: number
   provincia?: string | null
   since?: string | null
+  /** Última fecha con datos en la base */
+  fechaMax?: string | null
   onOpenModal: (iscoCode: string, label: string) => void
 }
 
@@ -45,13 +50,16 @@ function ofertasBadge(count: number) {
 }
 
 export function OccupationMatchCard({
-  occupation, rank, ofertasCount, provincia, since,
+  occupation, rank, ofertasCount, ofertasCountPais, provincia, since, fechaMax,
   onOpenModal,
 }: Props) {
   const [expanded, setExpanded] = useState(false)
   const [loading, setLoading] = useState(false)
   const [ofertas, setOfertas] = useState<OfertaPreview[]>([])
   const [loaded, setLoaded] = useState(false)
+  const [totalAvisos, setTotalAvisos] = useState(0)
+  const [alcancePais, setAlcancePais] = useState(false)
+  const [sinFiltroFecha, setSinFiltroFecha] = useState(false)
   const prevSinceRef = useRef(since)
 
   // Invalidate cached ofertas when time period changes
@@ -72,15 +80,16 @@ export function OccupationMatchCard({
     try {
       const ofertasData = await getOfertasByIsco(occupation.isco_code, 3, 0, provincia, since)
 
-      if (ofertasData?.ofertas) {
-        setOfertas(ofertasData.ofertas.slice(0, 3).map((o: any) => ({
-          titulo: o.titulo_limpio || o.titulo,
-          empresa: o.empresa || '',
-          fecha_publicacion: o.fecha_publicacion || '',
-          url: o.url || '',
-          estado: o.estado || 'baja',
-        })))
-      }
+      setOfertas(ofertasData.ofertas.slice(0, 3).map(o => ({
+        titulo: o.titulo_limpio || o.titulo,
+        empresa: o.empresa || '',
+        fecha_publicacion: o.fecha_publicacion || '',
+        url: o.url || '',
+        estado_ciclo: o.estado_ciclo ?? null,
+      })))
+      setTotalAvisos(ofertasData.total)
+      setAlcancePais(!!provincia && ofertasData.alcance === 'pais')
+      setSinFiltroFecha(ofertasData.sinFiltroFecha)
 
       setLoaded(true)
     } catch (e) {
@@ -91,7 +100,10 @@ export function OccupationMatchCard({
     }
   }
 
-  const badge = ofertasBadge(ofertasCount)
+  const enPais = ofertasCount === 0 && (ofertasCountPais || 0) > 0
+  const badge = enPais
+    ? { icon: '🔵', text: `${ofertasCountPais} en el país` }
+    : ofertasBadge(ofertasCount)
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -138,35 +150,47 @@ export function OccupationMatchCard({
 
           {!loading && loaded && (
             <div className="space-y-4">
-              {/* Ofertas preview */}
-              {(ofertas.length > 0 || ofertasCount > 0) && (
-                <div className="border rounded-lg overflow-hidden">
-                  <div className="bg-gray-50 px-3 py-2 border-b flex items-center justify-between">
-                    <span className="text-xs font-medium text-gray-600">
-                      {ofertasCount} oferta{ofertasCount !== 1 ? 's' : ''}
-                    </span>
-                    {ofertasCount > 0 && (
-                      <button
-                        onClick={() => onOpenModal(occupation.isco_code, occupation.label)}
-                        className="text-xs text-teal-600 hover:text-teal-700 font-medium"
-                      >
-                        Ver {ofertasCount === 1 ? 'la oferta' : `las ${ofertasCount} ofertas`} →
-                      </button>
-                    )}
+              {/* Avisos: siempre los más recientes; nunca un bloque vacío si la ocupación tiene avisos */}
+              <div className="border rounded-lg overflow-hidden">
+                <div className="bg-gray-50 px-3 py-2 border-b flex items-center justify-between gap-2">
+                  <span className="text-xs font-medium text-gray-600">
+                    Últimos avisos publicados{fechaMax ? ` · datos al ${formatFecha(fechaMax)}` : ''}
+                  </span>
+                  {totalAvisos > 0 && (
+                    <button
+                      onClick={() => onOpenModal(occupation.isco_code, occupation.label)}
+                      className="text-xs text-teal-600 hover:text-teal-700 font-medium shrink-0"
+                    >
+                      Ver {totalAvisos === 1 ? 'el aviso' : `los ${totalAvisos} avisos`} →
+                    </button>
+                  )}
+                </div>
+                {alcancePais && (
+                  <div className="px-3 py-1.5 text-[10px] text-amber-700 bg-amber-50 border-b">
+                    Sin avisos en {provincia}. Mostrando los más recientes del país.
                   </div>
-                  {ofertas.length > 0 ? (
-                    <div className="divide-y">
-                      {ofertas.map((o, i) => (
+                )}
+                {sinFiltroFecha && (
+                  <div className="px-3 py-1.5 text-[10px] text-amber-700 bg-amber-50 border-b">
+                    Sin avisos en el período elegido. Mostrando los más recientes.
+                  </div>
+                )}
+                {ofertas.length > 0 ? (
+                  <div className="divide-y">
+                    {ofertas.map((o, i) => {
+                      const estado = estadoOfertaBadge(o.estado_ciclo)
+                      return (
                         <div key={i} className="px-3 py-2 flex items-center gap-2">
                           <Briefcase className="w-3 h-3 text-gray-300 shrink-0" />
                           <div className="flex-1 min-w-0">
                             <span className="text-xs text-gray-800 truncate block">{o.titulo}</span>
                             <span className="text-[10px] text-gray-400">
-                              {o.empresa}{o.fecha_publicacion ? ` · ${new Date(o.fecha_publicacion).toLocaleDateString('es-AR')}` : ''}
+                              {o.empresa ? `${o.empresa} · ` : ''}
+                              {o.fecha_publicacion ? `${antiguedadOferta(o.fecha_publicacion)} (${formatFecha(o.fecha_publicacion)})` : 'Sin fecha'}
                             </span>
                           </div>
-                          <span className={`text-[9px] px-1.5 py-0.5 rounded font-medium shrink-0 ${o.estado === 'activa' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
-                            {o.estado === 'activa' ? 'Activa' : 'Cerrada'}
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded font-medium shrink-0 ${estado.className}`}>
+                            {estado.label}
                           </span>
                           {o.url && (
                             <a href={o.url} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-teal-600 shrink-0">
@@ -174,13 +198,13 @@ export function OccupationMatchCard({
                             </a>
                           )}
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="px-3 py-3 text-xs text-gray-400 text-center">Sin ofertas activas</div>
-                  )}
-                </div>
-              )}
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <div className="px-3 py-3 text-xs text-gray-400 text-center">Todavía no hay avisos publicados para esta ocupación</div>
+                )}
+              </div>
             </div>
           )}
         </div>

@@ -42,9 +42,11 @@ interface SidebarProps {
     sector: string[];
   };
   onFilterChange: (filterType: string, value: any) => void;
+  /** Si se pasa, los atajos de período se cuentan desde esta fecha (última con datos) y no desde hoy */
+  fechaAncla?: Date | null;
 }
 
-export function Sidebar({ filters, onFilterChange }: SidebarProps) {
+export function Sidebar({ filters, onFilterChange, fechaAncla }: SidebarProps) {
   const [expandedNodes, setExpandedNodes] = useState<string[]>([]);
   const [expandedDepts, setExpandedDepts] = useState<string[]>([]);
 
@@ -448,7 +450,7 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
                     size="sm"
                     className="text-xs hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
                     onClick={() => {
-                      const hoy = new Date();
+                      const hoy = fechaAncla ? new Date(fechaAncla) : new Date();
                       const semanaAtras = new Date(hoy);
                       semanaAtras.setDate(hoy.getDate() - 7);
                       onFilterChange('fechaDesde', semanaAtras);
@@ -462,7 +464,7 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
                     size="sm"
                     className="text-xs hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
                     onClick={() => {
-                      const hoy = new Date();
+                      const hoy = fechaAncla ? new Date(fechaAncla) : new Date();
                       const mesAtras = new Date(hoy);
                       mesAtras.setMonth(hoy.getMonth() - 1);
                       onFilterChange('fechaDesde', mesAtras);
@@ -476,7 +478,7 @@ export function Sidebar({ filters, onFilterChange }: SidebarProps) {
                     size="sm"
                     className="text-xs hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
                     onClick={() => {
-                      const hoy = new Date();
+                      const hoy = fechaAncla ? new Date(fechaAncla) : new Date();
                       const añoAtras = new Date(hoy);
                       añoAtras.setFullYear(hoy.getFullYear() - 1);
                       onFilterChange('fechaDesde', añoAtras);

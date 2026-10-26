@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
+import { sortOfertasRecientes } from './ofertas-estado'
 import { DashboardFilters, Issue, IssueStats, ConsolidatedProfile, ConsolidatedProfilesIndex, OfertaValidacion, OfertaSkillValidacion, ValidationFiltersState, ValidationStats, ValidacionHumana } from './types'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
@@ -1549,6 +1550,7 @@ export interface OfertaPorOcupacion {
   fecha_publicacion: string | null;
   url: string | null;
   skills_tecnicas: string | null;
+  estado_ciclo?: string | null;
 }
 
 export interface OfertasCountByIsco {
@@ -1585,8 +1587,45 @@ export async function getOfertasCountByIsco(): Promise<Record<string, number>> {
   }
 }
 
+let _fechaMaxPromise: Promise<string | null> | null = null
+
 /**
- * Obtiene ofertas activas para un código ISCO específico
+ * Fecha de publicación más reciente en ofertas_dashboard. Los datos pueden estar
+ * atrasados meses respecto de hoy: los períodos ("último mes") se anclan a esta fecha.
+ * Se calcula una vez por carga de página.
+ */
+export function getFechaMaxOfertas(): Promise<string | null> {
+  if (!_fechaMaxPromise) {
+    const client = getSupabaseClient()
+    if (!client) return Promise.resolve(null)
+    _fechaMaxPromise = Promise.resolve(
+      client
+        .from(TABLA_OFERTAS)
+        .select('fecha_publicacion')
+        .not('fecha_publicacion', 'is', null)
+        .order('fecha_publicacion', { ascending: false })
+        .limit(1)
+    ).then(({ data }) => data?.[0]?.fecha_publicacion ?? null)
+      .catch(() => { _fechaMaxPromise = null; return null })
+  }
+  return _fechaMaxPromise
+}
+
+export interface OfertasByIscoResult {
+  ofertas: OfertaPorOcupacion[]
+  total: number
+  /** Ofertas con estado_ciclo = 'activa' bajo los mismos filtros finales */
+  activas: number
+  /** 'pais' si no había avisos en la provincia y se muestran los del país */
+  alcance: 'provincia' | 'pais'
+  /** true si no había avisos en el período y se muestran los más recientes sin filtro de fecha */
+  sinFiltroFecha: boolean
+}
+
+/**
+ * Avisos publicados para un código ISCO, del más reciente al más viejo (las activas
+ * desempatan dentro de la misma fecha). Nunca devuelve vacío si existe algún aviso:
+ * sin avisos en la provincia → país; sin avisos en el período → sin filtro de fecha.
  */
 export async function getOfertasByIsco(
   iscoCode: string,
@@ -1594,39 +1633,55 @@ export async function getOfertasByIsco(
   offset: number = 0,
   provincia?: string | null,
   since?: string | null
-): Promise<{ ofertas: OfertaPorOcupacion[], total: number }> {
+): Promise<OfertasByIscoResult> {
+  const empty: OfertasByIscoResult = { ofertas: [], total: 0, activas: 0, alcance: 'provincia', sinFiltroFecha: false }
   const client = getSupabaseClient()
-  if (!client) return { ofertas: [], total: 0 }
+  if (!client) return empty
+
+  const attempts: { prov: string | null; desde: string | null }[] = [{ prov: provincia || null, desde: since || null }]
+  if (provincia) attempts.push({ prov: null, desde: since || null })
+  if (since) attempts.push({ prov: null, desde: null })
 
   try {
-    let query = client
-      .from(TABLA_OFERTAS)
-      .select(`
-        id_oferta,
-        titulo,
-        titulo_limpio,
-        empresa,
-        fecha_publicacion,
-        url,
-        skills_tecnicas,
-        estado
-      `, { count: 'exact' })
-      .eq('isco_code', iscoCode)
-    if (provincia) query = query.eq('provincia', provincia)
-    if (since) query = query.gte('fecha_publicacion', since)
-    const { data, error, count } = await query
-      .order('fecha_publicacion', { ascending: false })
-      .range(offset, offset + limit - 1)
+    for (const { prov, desde } of attempts) {
+      let query = client
+        .from(TABLA_OFERTAS)
+        .select('id_oferta, titulo, titulo_limpio, empresa, fecha_publicacion, url, skills_tecnicas, estado_ciclo', { count: 'exact' })
+        .eq('isco_code', iscoCode)
+      let activasQuery = client
+        .from(TABLA_OFERTAS)
+        .select('id_oferta', { count: 'exact', head: true })
+        .eq('isco_code', iscoCode)
+        .eq('estado_ciclo', 'activa')
+      if (prov) {
+        query = query.eq('provincia', prov)
+        activasQuery = activasQuery.eq('provincia', prov)
+      }
+      if (desde) {
+        query = query.gte('fecha_publicacion', desde)
+        activasQuery = activasQuery.gte('fecha_publicacion', desde)
+      }
 
-    if (error) throw error
+      const { data, error, count } = await query
+        .order('fecha_publicacion', { ascending: false, nullsFirst: false })
+        .range(offset, offset + limit - 1)
+      if (error) throw error
+      if (!count) continue
 
-    return {
-      ofertas: data || [],
-      total: count || 0
+      const { count: activas } = await activasQuery
+
+      return {
+        ofertas: sortOfertasRecientes((data || []) as OfertaPorOcupacion[]),
+        total: count,
+        activas: activas || 0,
+        alcance: provincia && !prov ? 'pais' : 'provincia',
+        sinFiltroFecha: !!since && !desde,
+      }
     }
+    return empty
   } catch (error) {
     console.error('Error getting ofertas by ISCO:', error)
-    return { ofertas: [], total: 0 }
+    return empty
   }
 }
 

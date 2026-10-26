@@ -50,13 +50,17 @@ export async function GET(request: NextRequest) {
     let resumen = { total_skills: 0, brechas: 0, cubiertas: 0, pct_brecha: 0 }
     const table = provincia ? 'brecha_formacion_provincial' : 'brecha_formacion_skills'
 
-    let query = client.from(table).select('estado')
-    if (provincia) query = query.eq('provincia', provincia)
-    const { data: allRows } = await query
+    // Conteos exactos: un select('estado') se cortaba en 1.000 filas
+    const countEstado = (estadoFila: string) => {
+      let q = client.from(table).select('estado', { count: 'exact', head: true }).eq('estado', estadoFila)
+      if (provincia) q = q.eq('provincia', provincia)
+      return q
+    }
+    const [resBrechas, resCubiertas] = await Promise.all([countEstado('brecha'), countEstado('cubierta')])
 
-    if (allRows) {
-      const brechas = allRows.filter((r: any) => r.estado === 'brecha').length
-      const cubiertas = allRows.filter((r: any) => r.estado === 'cubierta').length
+    if (!resBrechas.error && !resCubiertas.error) {
+      const brechas = resBrechas.count || 0
+      const cubiertas = resCubiertas.count || 0
       const total = brechas + cubiertas
       resumen = {
         total_skills: total,
