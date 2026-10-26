@@ -4,6 +4,9 @@ import path from 'path'
 
 const PROJECT_ROOT = path.resolve(__dirname, '../..')
 
+// Recorrer todos los fuentes sobre /mnt/d (WSL) roza los 5 s por defecto bajo la suite completa
+const SCAN_TIMEOUT_MS = 30_000
+
 // Patterns that indicate hardcoded secrets
 const SECRET_PATTERNS = [
   /eyJhbGciOi/, // JWT token prefix (base64 of {"alg":)
@@ -71,7 +74,7 @@ describe('S-01: No hardcoded tokens in source code', () => {
     }
 
     expect(violations).toEqual([])
-  })
+  }, SCAN_TIMEOUT_MS)
 
   it('should not have hardcoded Supabase keys in source files', () => {
     const violations: { file: string; line: number }[] = []
@@ -98,7 +101,7 @@ describe('S-01: No hardcoded tokens in source code', () => {
     }
 
     expect(violations).toEqual([])
-  })
+  }, SCAN_TIMEOUT_MS)
 
   it('should use process.env for Supabase credentials', () => {
     // Check that lib/supabase.ts uses env vars, not hardcoded values

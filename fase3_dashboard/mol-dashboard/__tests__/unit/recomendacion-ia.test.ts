@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseTrayectoria, parseAnalisis, buscarCurso, demandaLabel, etiquetaOcupacion, pulirTexto, limitarPasosGenericos } from '@/lib/recomendacion-ia'
+import { parseTrayectoria, parseAnalisis, buscarCurso, demandaLabel, etiquetaOcupacion, pulirTexto, limitarPasosGenericos, imperativoVoseante } from '@/lib/recomendacion-ia'
 import { lineaUbicacionCurso, provinciaDisplay, esVirtual, formatoTitulo, formatearCurso } from '@/lib/cursos'
 
 const CURSOS = [{ titulo: 'albanileria' }, { titulo: 'soldadura nivel inicial' }]
@@ -100,5 +100,44 @@ describe('controles deterministas de la trayectoria', () => {
     expect(r.diagnostico).toBe('Tenés base.')
     expect(r.recomendacion).toBe('Podés cerrar brechas.')
     expect(r.pasos).toHaveLength(1)
+  })
+})
+
+describe('imperativo, absolutos y certificación (casos reales de Jorge y Ramón)', () => {
+  it('pasa el primer verbo de infinitivo a imperativo voseante', () => {
+    expect(imperativoVoseante('Armar tu CV con el orientador.')).toBe('Armá tu CV con el orientador.')
+    expect(imperativoVoseante('Reforzar la lectura de planos.')).toBe('Reforzá la lectura de planos.')
+    expect(imperativoVoseante('Anotarse en la bolsa de empleo.')).toBe('Anotate en la bolsa de empleo.')
+    expect(imperativoVoseante('Pedir una entrevista de orientación.')).toBe('Pedí una entrevista de orientación.')
+    expect(imperativoVoseante('Anotate al curso.')).toBe('Anotate al curso.')
+    expect(imperativoVoseante('Armá tu CV.')).toBe('Armá tu CV.')
+  })
+
+  const reco = (pasos: { accion: string; por_que: string }[], extra: Record<string, string> = {}) =>
+    parseTrayectoria(JSON.stringify({ ocupacion: 'Soldador', diagnostico: 'Jorge, tenés base.', recomendacion: 'Tiene sentido.', pasos, ...extra }))!
+
+  it('saca la oración absoluta del por qué (Jorge, paso 1)', () => {
+    const r = reco([{ accion: 'Anotate al curso Soldador y Herreria para cubrir unir metales.', por_que: 'Ese curso cubre exactamente las competencias que te faltan para completar el perfil de soldador.' }])
+    expect(r.pasos[0].accion).toBe('Anotate al curso Soldador y Herreria para cubrir unir metales.')
+    expect(r.pasos[0].por_que).toBe('')
+  })
+
+  it('saca la promesa de cubrir todo (Ramón, paso 2) y la certificación (Ramón, paso 1)', () => {
+    const r = reco([
+      { accion: 'Anotate al curso "Albanileria" para examinar materiales.', por_que: 'Ese curso cubre la competencia que te falta y te brinda certificación práctica.' },
+      { accion: 'Reforzá la competencia de interpretar planos en 2D.', por_que: 'Mejorar esa habilidad te permitirá cubrir todas las competencias esenciales del puesto.' },
+    ])
+    expect(r.pasos[0].por_que).toBe('')
+    expect(JSON.stringify(r)).not.toMatch(/certific|todas las competencias/i)
+  })
+
+  it('acción: corta el fragmento absoluto y conserva lo concreto', () => {
+    const r = reco([{ accion: 'Armar tu CV con el orientador para completar el perfil de soldador.', por_que: 'Te ayuda.' }])
+    expect(r.pasos[0].accion).toBe('Armá tu CV con el orientador.')
+  })
+
+  it('en el diagnóstico "todas las competencias" se mantiene (es correcto con 100% de cobertura)', () => {
+    const r = reco([], { diagnostico: 'Armando, cubrís todas las competencias esenciales. Tenés base fuerte.' })
+    expect(r.diagnostico).toBe('Armando, cubrís todas las competencias esenciales. Tenés base fuerte.')
   })
 })

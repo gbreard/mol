@@ -491,6 +491,9 @@ export default function FuturoLaboralPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           perfil: { nombre_pila: perfil.nombre.split(' ')[0], provincia: perfilProvincia },
+          // Para servir la recomendación fijada de los perfiles DEMO
+          perfil_id: perfil.id,
+          ocupacion_uri: selectedOcc?.uri || null,
           fecha_max: fechaMax,
           ocupacion_elegida: selectedOcc ? { label: etiquetaOcupacion(selectedOcc.label) } : null,
           // Al modelo, la forma corta ("Soldador"); la UI cruza por etiqueta para los chips

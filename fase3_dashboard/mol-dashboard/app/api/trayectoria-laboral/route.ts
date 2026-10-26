@@ -3,6 +3,7 @@ import { getGroq, GROQ_MODEL_LARGE } from '@/lib/groq'
 import { parseTrayectoria } from '@/lib/recomendacion-ia'
 import { formatFecha } from '@/lib/ofertas-estado'
 import { provinciaDisplay } from '@/lib/cursos'
+import { recomendacionFijada } from '@/lib/demo/recomendaciones'
 
 const SYSTEM_PROMPT = `Sos un orientador laboral de la Oficina de Empleo conversando con la persona en una entrevista. Hablale de vos, por su nombre de pila al empezar el diagnóstico, con calidez y sin vueltas. Sé honesto con las dificultades: si un camino es difícil, decilo y explicá por qué. No uses lenguaje de informe ni frases genéricas que le servirían a cualquiera.
 
@@ -22,6 +23,8 @@ REGLAS:
   * Si no hay cursos y ya cubre todas las competencias esenciales, un paso destaca 1 o 2 de sus competencias fuertes por su nombre.
   * Nunca "postulá" a secas.
 - Cuando digas qué cubre un curso, usá solo las competencias que te paso para ese curso.
+- Un curso o una competencia nunca "completa" el perfil: decí cuáles cubre y nada más. No uses "exactamente" ni "todas las competencias" al hablar de un curso o un paso.
+- No menciones certificados ni certificaciones: no tenemos ese dato.
 - Los avisos son de todo el país, no de la provincia de la persona.
 - No prometas resultados (empleo seguro, continuidad, que va a conseguir trabajo) ni velocidad ("rápidamente", "pronto", "en poco tiempo").
 - No supongas su situación actual (no digas "hoy estás trabajando", ni dónde ni hace cuánto): hablá de lo que sabe hacer según su perfil.
@@ -100,13 +103,15 @@ function buildUserPrompt(data: {
 }
 
 export async function POST(request: NextRequest) {
-  const groq = getGroq()
-  if (!groq) {
-    return NextResponse.json({ recomendacion: null, disponible: false })
-  }
-
   try {
     const data = await request.json()
+
+    // DEMO: si hay una recomendación fijada para este perfil, se sirve sin llamar al modelo
+    const fijada = recomendacionFijada(data.perfil_id, data.ocupacion_uri)
+    if (fijada) return NextResponse.json({ recomendacion: fijada, disponible: true, cacheado: true })
+
+    const groq = getGroq()
+    if (!groq) return NextResponse.json({ recomendacion: null, disponible: false })
 
     if (!Array.isArray(data.top_ocupaciones) || data.top_ocupaciones.length === 0) {
       return NextResponse.json({ error: 'Faltan ocupaciones' }, { status: 400 })

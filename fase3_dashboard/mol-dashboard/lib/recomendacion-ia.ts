@@ -89,6 +89,48 @@ export function pulirTexto(t: string): string {
   return out.replace(/\s+([.,;])/g, '$1').trim()
 }
 
+// Infinitivo → imperativo voseante en el primer verbo ("Armar" → "Armá", "Anotarse" → "Anotate")
+const IRREGULARES: Record<string, string> = { ir: 'andá', ser: 'sé', irse: 'andate' }
+const TILDE: Record<string, string> = { a: 'á', e: 'é', i: 'í' }
+
+export function imperativoVoseante(accion: string): string {
+  const m = accion.match(/^([a-záéíóúüñA-ZÁÉÍÓÚÜÑ]+)([\s\S]*)$/)
+  if (!m) return accion
+  const [, palabra, resto] = m
+  const p = palabra.toLowerCase()
+  let imp: string | null = IRREGULARES[p] ?? null
+  if (!imp) {
+    const reflexivo = p.match(/^([a-záéíóúüñ]{2,})([aei])rse$/)
+    const simple = p.match(/^([a-záéíóúüñ]{2,})([aei])r$/)
+    if (reflexivo) imp = `${reflexivo[1]}${reflexivo[2]}te`   // anotarse → anotate
+    else if (simple) imp = `${simple[1]}${TILDE[simple[2]]}`   // armar → armá
+  }
+  if (!imp) return accion
+  return imp.charAt(0).toUpperCase() + imp.slice(1) + resto
+}
+
+// Frases absolutas: un curso o una competencia nunca "completa" el perfil
+const ABSOLUTO_PASOS = /\b(exactamente|todas las competencias|completar (el|tu) perfil|cubrir todas|cubrís todas)\b/i
+const ABSOLUTO_TEXTO = /\b(exactamente|completar (el|tu) perfil|cubrir todas)\b/i
+// REGICE no informa certificación: nunca se menciona
+const CERTIFICACION = /certific/i
+
+const oraciones = (t: string) => t.match(/[^.!?]+[.!?]*/g)?.map(o => o.trim()).filter(Boolean) ?? []
+
+/** Saca las oraciones que matchean (para textos explicativos: por_que, diagnóstico…). */
+function sinOraciones(t: string, re: RegExp): string {
+  return oraciones(t).filter(o => !re.test(o) && !CERTIFICACION.test(o)).join(' ')
+}
+
+/** En la acción se conserva lo concreto y se corta el fragmento absoluto o de certificación. */
+function accionSinAbsolutos(accion: string): string {
+  let out = accion
+    .replace(/\s*(,\s*|\s+y\s+)?(te\s+)?(brinda|da|otorga|ofrece|obtené|obtener)[^.]*certific[^.]*/gi, '')
+    .replace(/\s*(,\s*|\s+y\s+|\s+para\s+|\s+que\s+)[^.]*\b(exactamente|todas las competencias|completar (el|tu) perfil|cubrir todas)\b[^.]*/gi, '')
+  if (CERTIFICACION.test(out) || ABSOLUTO_PASOS.test(out)) out = oraciones(out)[0] || out
+  return out.trim()
+}
+
 const PASO_GENERICO = /\b(CV|curr[ií]culum|bolsa de empleo|entrevista de orientaci[oó]n|entrevistas laborales)\b/i
 
 /** Como máximo un paso genérico de la Oficina; los específicos de la persona van primero. */
@@ -109,18 +151,22 @@ export function parseTrayectoria(raw: string): RecomendacionTrayectoria | null {
   const pasos: { accion: string; por_que: string }[] = (Array.isArray(d.pasos) ? d.pasos : [])
     .map((p: any) => (typeof p === 'string' ? { accion: texto(p), por_que: '' } : { accion: texto(p?.accion), por_que: texto(p?.por_que) }))
     .filter((p: { accion: string }) => p.accion)
+  const explicar = (t: string) => pulirTexto(sinOraciones(t, ABSOLUTO_TEXTO))
   return {
     ocupacion,
-    diagnostico: pulirTexto(diagnostico),
-    recomendacion: pulirTexto(recomendacion),
+    diagnostico: explicar(diagnostico) || pulirTexto(diagnostico),
+    recomendacion: explicar(recomendacion) || pulirTexto(recomendacion),
     alternativas: (Array.isArray(d.alternativas) ? d.alternativas : [])
-      .map((a: any) => ({ ocupacion: texto(a?.ocupacion), comentario: pulirTexto(texto(a?.comentario)) }))
+      .map((a: any) => ({ ocupacion: texto(a?.ocupacion), comentario: explicar(texto(a?.comentario)) }))
       .filter((a: { ocupacion: string; comentario: string }) => a.ocupacion && a.comentario)
       .slice(0, 2),
     pasos: limitarPasosGenericos(pasos)
       .slice(0, 3)
-      .map(p => ({ accion: pulirTexto(p.accion), por_que: pulirTexto(p.por_que) })),
-    cierre: pulirTexto(texto(d.cierre)),
+      .map(p => ({
+        accion: pulirTexto(imperativoVoseante(accionSinAbsolutos(p.accion))),
+        por_que: pulirTexto(sinOraciones(p.por_que, ABSOLUTO_PASOS)),
+      })),
+    cierre: explicar(texto(d.cierre)),
   }
 }
 
