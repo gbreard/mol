@@ -110,8 +110,12 @@ export default function MatchingPage() {
     setCountLoading(true)
     setOfertasCountMap({})
     setOfertasCountPaisMap({})
-    const rpc = (provincia: string | null) =>
-      getSupabase().rpc('get_ofertas_count_by_isco_filtrado', { p_provincia: provincia, p_since: since })
+    // Un reintento: con la caché fría el RPC puede dar timeout y dejaría todo "sin avisos"
+    const rpc = async (provincia: string | null) => {
+      const args = { p_provincia: provincia, p_since: since }
+      const first = await getSupabase().rpc('get_ofertas_count_by_isco_filtrado', args)
+      return first.error ? getSupabase().rpc('get_ofertas_count_by_isco_filtrado', args) : first
+    }
     Promise.all([rpc(null), perfilProvincia ? rpc(perfilProvincia) : null]).then(([pais, prov]) => {
       const paisMap = toCountMap(pais.error ? null : pais.data)
       setOfertasCountPaisMap(paisMap)

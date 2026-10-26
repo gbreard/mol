@@ -15,7 +15,7 @@
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { calculateOccupationMatch, type ProfileSkill } from '../../lib/matching'
+import { calculateOccupationMatch, isEligibleMatch, compareMatches, capPerIsco, type ProfileSkill } from '../../lib/matching'
 import { normalizeProvinciaToRegice } from '../../components/oficina-empleo/normalizeProvinciaToRegice'
 import { periodoDesde, provinciaOfertas } from '../../lib/ofertas-estado'
 
@@ -52,13 +52,16 @@ async function api(path: string, init?: RequestInit) {
   return res.json()
 }
 
-async function rpc(fn: string, body: Record<string, unknown>) {
+async function rpc(fn: string, body: Record<string, unknown>, intento = 1): Promise<any> {
   const res = await fetch(`${CONFIG.url}/rest/v1/rpc/${fn}`, {
     method: 'POST',
     headers: { apikey: CONFIG.anon_key, Authorization: `Bearer ${CONFIG.anon_key}`, 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })
-  if (!res.ok) throw new Error(`rpc ${fn} → HTTP ${res.status}`)
+  if (!res.ok) {
+    if (intento < 3) return rpc(fn, body, intento + 1)
+    throw new Error(`rpc ${fn} → HTTP ${res.status}`)
+  }
   return res.json()
 }
 
@@ -98,14 +101,18 @@ async function main() {
     const prov = provincia ? await conteos(provincia, since) : pais
     const esp = ESPERADAS[dni]
 
-    // === M2: mismo cálculo y orden que perfiles/matching (sort 'match', solo con avisos) ===
+    // === M2: mismo cálculo, barandas y orden que perfiles/matching (sort 'match') ===
+    const activasPais = Object.fromEntries(Object.entries(pais).map(([k, v]) => [k, v.activas]))
     const matches = Object.entries(OCC_JSON as Record<string, any>).flatMap(([id, occ]) => {
       const r = calculateOccupationMatch(skills, occ.skills?.essential ?? [], occ.skills?.optional ?? [])
       if (r.sharedEssential.length === 0) return []
-      const isco = String(occ.isco || '').replace(/^C/, '')
-      return [{ id, label: occ.label as string, isco, matchScore: r.matchScore, cubiertas: r.sharedEssential.length, total: r.essentialTotal, gapCount: r.gapCount }]
-    }).sort((a, b) => (b.matchScore - a.matchScore) || (a.gapCount - b.gapCount))
-    const conAvisos = matches.filter(m => (pais[m.isco]?.total || 0) > 0)
+      const isco_code = String(occ.isco || '').replace(/^C/, '')
+      const m = { id, label: occ.label as string, isco_code, isco: isco_code, matchScore: r.matchScore, weightedScore: r.weightedScore,
+        essentialTotal: r.essentialTotal, essentialCovered: r.sharedEssential.length, cubiertas: r.sharedEssential.length, total: r.essentialTotal }
+      return isEligibleMatch(m) ? [m] : []
+    }).sort((a, b) => compareMatches(a, b, activasPais))
+    const conAvisos = capPerIsco(matches.filter(m => (pais[m.isco]?.total || 0) >= 3))
+    const otras = matches.filter(m => (pais[m.isco]?.total || 0) < 3)
     const top10 = conAvisos.slice(0, 10).map((m, i) => ({
       rank: i + 1, ...m,
       avisos_prov: prov[m.isco]?.total || 0, activas_prov: prov[m.isco]?.activas || 0,
@@ -131,9 +138,9 @@ async function main() {
 
     perfiles.push({
       dni, nombre: det.personas?.nombre, ubicacion, provincia, skills: skills.length,
-      m2: { since, fecha_max: fechaMax, compatibles: matches.length, con_avisos: conAvisos.length, rank_principal: rankPrincipal || null, top10 },
+      m2: { since, fecha_max: fechaMax, compatibles: matches.length, con_avisos: conAvisos.length, otras_sin_avisos: otras.length, rank_principal: rankPrincipal || null, top10 },
       m3: {
-        ocupacion: esp.principal, occ_id: occId, compatibilidad: gap.matchScore,
+        ocupacion: esp.principal, occ_id: occId, compatibilidad: gap.matchScore, ponderado: gap.weightedScore,
         cubiertas: gap.sharedEssential.length, total: gap.essentialTotal,
         faltantes: gap.gapEssential.map(s => s.label),
         cursos_alcance: cursosAlcance,

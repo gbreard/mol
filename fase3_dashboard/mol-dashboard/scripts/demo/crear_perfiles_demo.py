@@ -7,12 +7,14 @@ Replica /oficina-empleo/perfiles/nuevo:
   - Vía texto libre: /api/skills-extract-from-text → "Confirmar todas".
   - POST /api/personas → POST /api/perfiles → POST /api/perfiles/{id}/skills.
 No corrige lo que devuelve el texto libre: lo deja anotado en la salida.
+  --rehacer borra los perfiles DEMO existentes (DELETE /api/perfiles/{id}) antes de crear.
 
 Uso:
   python3 crear_perfiles_demo.py --base https://mol-nextjs.vercel.app --out salida.json
 """
 import argparse
 import json
+import random
 import sys
 import urllib.error
 import urllib.parse
@@ -21,26 +23,34 @@ from pathlib import Path
 
 ESCO_SKILL = 'http://data.europa.eu/esco/skill/'
 ESCO_OCC = 'http://data.europa.eu/esco/occupation/'
-# Niveles variados, en rotación. 'experto' existe en la UI pero perfil_skills_nivel_check lo rechaza
-NIVELES = ['intermedio', 'avanzado', 'basico']
+# Niveles variados (sorteo con semilla por DNI); 'experto' habilitado por el SQL 075
+NIVELES = ['basico', 'intermedio', 'avanzado', 'experto']
+PESOS_NIVEL = [2, 4, 3, 1]
+# Perfil realista: la persona destilda ~35% de las esenciales pre-tildadas
+PCT_DESTILDADAS = 0.35
 OCC_JSON = Path(__file__).resolve().parents[2] / 'public' / 'data' / 'occupation_full_detail.json'
 
 PERFILES = [
     {'dni': 'DEMO-001', 'nombre': 'Demo Soldador', 'ubicacion': 'La Matanza, Buenos Aires',
      'ocupaciones': [('soldador', 'soldador/soldadora')],
-     'texto': 'trabajé 6 años como soldador en un taller metalúrgico, leo planos, sueldo con MIG y MAG y armo estructuras metálicas'},
+     'textos': ['trabajé 6 años como soldador en un taller metalúrgico, leo planos, sueldo con MIG y MAG y armo estructuras metálicas',
+                'también hago mantenimiento de las máquinas y uso amoladora y soldadora eléctrica']},
     {'dni': 'DEMO-002', 'nombre': 'Demo Repositora', 'ubicacion': 'Palermo, CABA',
      'ocupaciones': [('reponedor', 'reponedor/reponedora'), ('cajero', 'cajero/cajera')],
-     'texto': 'trabajé en un supermercado reponiendo góndolas, controlando vencimientos, atendiendo la caja y cobrando a los clientes'},
+     'textos': ['trabajé en un supermercado reponiendo góndolas, controlando vencimientos, atendiendo la caja y cobrando a los clientes',
+                'además armaba pedidos y hacía el inventario del depósito']},
     {'dni': 'DEMO-003', 'nombre': 'Demo Albañil', 'ubicacion': 'Córdoba Capital, Córdoba',
      'ocupaciones': [('albañil', 'albañil')],
-     'texto': 'soy albañil, levanto paredes de ladrillo, hago revoques y coloco pisos y cerámicos'},
+     'textos': ['soy albañil, levanto paredes de ladrillo, hago revoques y coloco pisos y cerámicos',
+                'también preparo la mezcla de cemento y hago contrapisos']},
     {'dni': 'DEMO-004', 'nombre': 'Demo Administrativa', 'ubicacion': 'Rosario, Santa Fe',
      'ocupaciones': [('empleado administrativo', 'empleado administrativo/empleada administrativa')],
-     'texto': 'trabajé como auxiliar administrativa, manejo Excel, hago facturación, cargo datos y atiendo clientes por teléfono'},
+     'textos': ['trabajé como auxiliar administrativa, manejo Excel, hago facturación, cargo datos y atiendo clientes por teléfono',
+                'también llevaba la agenda, archivaba documentación y hacía pagos a proveedores']},
     {'dni': 'DEMO-005', 'nombre': 'Demo Desarrolladora', 'ubicacion': 'Belgrano, CABA',
      'ocupaciones': [('desarrollador de software', 'desarrollador de software/desarrolladora de software')],
-     'texto': 'soy desarrolladora, programo en Python y JavaScript, armo APIs y trabajo con bases de datos SQL'},
+     'textos': ['soy desarrolladora, programo en Python y JavaScript, armo APIs y trabajo con bases de datos SQL',
+                'uso Git, escribo tests y trabajo con metodologías ágiles']},
 ]
 
 
@@ -56,17 +66,23 @@ def http(base, method, path, body=None, params=None):
 
 
 _occ_json = None
+REHACER = False
 
 
 def skills_de_ocupacion(base, occ_uri):
     """Igual que getSkillsForOccupation: esco_argentino y, si no, occupation_full_detail.json."""
     status, data = http(base, 'GET', '/api/esco-argentino', params={'occupation': occ_uri})
     if status == 200 and data.get('skills_consolidadas'):
-        # Réplica exacta de la UI: lee s.uri / s.label, pero la API devuelve esco_uri /
-        # label_normalized → filas sin nombre; y solo pre-tilda source == 'esco_common'.
-        return [{'uri': s.get('uri'), 'label': s.get('label'), 'essential': s.get('source') == 'esco_common',
-                 'esco_uri_real': s.get('esco_uri'), 'label_real': s.get('label_normalized')}
-                for s in data['skills_consolidadas']], 'argentino'
+        # Igual que getSkillsForOccupation (corregido): esco_uri/label_normalized y
+        # pre-tilda las comunes con ESCO y las aprobadas para Argentina
+        out = []
+        for s in data['skills_consolidadas']:
+            uri = s.get('uri') or s.get('esco_uri')
+            label = s.get('label') or s.get('label_normalized') or s.get('label_original')
+            if uri and label:
+                out.append({'uri': uri, 'label': label,
+                            'essential': s.get('source') in ('esco_common', 'mol_approved', 'argentina_approved')})
+        return out, 'argentino'
     global _occ_json
     if _occ_json is None:
         _occ_json = json.loads(OCC_JSON.read_text())
@@ -77,8 +93,9 @@ def skills_de_ocupacion(base, occ_uri):
 
 
 def crear(base, p):
-    out = {'dni': p['dni'], 'nombre': p['nombre'], 'ubicacion': p['ubicacion'], 'ocupaciones': [], 'texto_libre': None}
+    out = {'dni': p['dni'], 'nombre': p['nombre'], 'ubicacion': p['ubicacion'], 'ocupaciones': [], 'texto_libre': []}
     skills, vistas = [], set()
+    rnd = random.Random(p['dni'])
 
     def agregar(uri, label, source):
         if uri in vistas:
@@ -93,31 +110,37 @@ def crear(base, p):
         if not occ:
             raise SystemExit(f"{p['dni']}: no encontré la ocupación '{label_esperado}' buscando '{query}'")
         occ_skills, fuente = skills_de_ocupacion(base, occ['uri'])
-        esenciales = [s for s in occ_skills if s['essential']]
+        pre_tildadas = [s for s in occ_skills if s['essential']]
+        destildadas = set(rnd.sample(range(len(pre_tildadas)), round(len(pre_tildadas) * PCT_DESTILDADAS)))
+        esenciales = [s for i, s in enumerate(pre_tildadas) if i not in destildadas]
         for s in esenciales:
             agregar(s['uri'], s['label'], 'ocupacion')
         ocupaciones.append({'id': occ['id'], 'label': occ['label'], 'isco_code': occ['isco_code']})
-        info = {'label': occ['label'], 'isco': occ['isco_code'], 'fuente_skills': fuente,
-                'skills_ofrecidas': len(occ_skills), 'esenciales_agregadas': len(esenciales)}
-        if fuente == 'argentino':
-            info['anomalia_ui'] = (f"{len(occ_skills)} skills sin label en el picker (la UI lee uri/label; "
-                                   f"la API trae esco_uri/label_normalized) y ninguna pre-tildada")
-            info['skills_reales'] = [s['label_real'] for s in occ_skills]
-        out['ocupaciones'].append(info)
+        out['ocupaciones'].append({'label': occ['label'], 'isco': occ['isco_code'], 'fuente_skills': fuente,
+                                   'skills_ofrecidas': len(occ_skills), 'pre_tildadas': len(pre_tildadas),
+                                   'agregadas': len(esenciales)})
 
-    status, ext = http(base, 'POST', '/api/skills-extract-from-text', body={'text': p['texto']})
-    nuevas = [r for r in ext.get('results', []) if r['uri'] not in vistas]
-    for r in nuevas:
-        agregar(r['uri'], r['label'], 'texto')
-    out['texto_libre'] = {'texto': p['texto'], 'method': ext.get('method'), 'keywords': ext.get('keywords'),
-                          'competencias': [r['label'] for r in ext.get('results', [])],
-                          'agregadas': [r['label'] for r in nuevas]}
+    for texto in p['textos']:
+        status, ext = http(base, 'POST', '/api/skills-extract-from-text', body={'text': texto})
+        nuevas = [r for r in ext.get('results', []) if r['uri'] not in vistas]
+        for r in nuevas:
+            agregar(r['uri'], r['label'], 'texto')
+        out['texto_libre'].append({'texto': texto, 'method': ext.get('method'), 'keywords': ext.get('keywords'),
+                                   'competencias': [r['label'] for r in ext.get('results', [])],
+                                   'agregadas': [r['label'] for r in nuevas]})
 
     status, persona = http(base, 'POST', '/api/personas',
                            body={'nombre': p['nombre'], 'dni': p['dni'], 'ubicacion': p['ubicacion']})
     if status not in (200, 201):
         raise SystemExit(f"{p['dni']}: error creando persona {status} {persona}")
     _, existentes = http(base, 'GET', '/api/perfiles', params={'persona_id': persona['id']})
+    if REHACER and isinstance(existentes, list):
+        for viejo in existentes:
+            status, res = http(base, 'DELETE', f"/api/perfiles/{viejo['id']}")
+            if status != 200:
+                raise SystemExit(f"{p['dni']}: error borrando perfil {viejo['id']} {status} {res}")
+        out['borrados'] = len(existentes)
+        existentes = []
     if isinstance(existentes, list) and existentes:
         perfil = existentes[0]
         _, detalle = http(base, 'GET', '/api/perfiles', params={'id': perfil['id']})
@@ -133,8 +156,8 @@ def crear(base, p):
 
     via = {'ocupacion': 'ocupacion', 'texto': 'texto'}
     rows = [{'skill_uri': s['uri'], 'skill_label': s['label'], 'via_captura': via[s['source']],
-             'estado': 'confirmada', 'confianza': 0.8, 'nivel': NIVELES[i % len(NIVELES)], 'certificado': False}
-            for i, s in enumerate(skills)]
+             'estado': 'confirmada', 'confianza': 0.8, 'nivel': rnd.choices(NIVELES, PESOS_NIVEL)[0], 'certificado': False}
+            for s in skills]
     status, res = http(base, 'POST', f"/api/perfiles/{perfil['id']}/skills", body={'skills': rows})
     if status not in (200, 201):
         raise SystemExit(f"{p['dni']}: error guardando skills {status} {res}")
@@ -149,7 +172,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--base', default='https://mol-nextjs.vercel.app')
     ap.add_argument('--out', required=True)
+    ap.add_argument('--rehacer', action='store_true', help='borra (por la API) los perfiles DEMO existentes y los vuelve a crear')
     args = ap.parse_args()
+    global REHACER
+    REHACER = args.rehacer
     resultados = []
     for p in PERFILES:
         r = crear(args.base.rstrip('/'), p)
