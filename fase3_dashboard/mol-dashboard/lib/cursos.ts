@@ -65,6 +65,9 @@ export function lineaUbicacionCurso(c: Pick<CursoPersona, 'institucion' | 'munic
   return `${c.institucion} · ${lugar} · Presencial`
 }
 
+// Siglas frecuentes en REGICE que se conservan en mayúsculas (CFP = Centro de Formación Profesional)
+const SIGLAS = /^(S\.?R\.?L|S\.?A|SA|SRL|SAS|CFP|CFL|CENS|EET|EEST|EETP|IPEM|UNC|UBA|UTN|UNLP|UNR|UNSAM|INTA|INTI|INET|UOCRA|SMATA|UTHGRA|CGT|ONG)\.?$/i
+
 const MINUSCULAS = new Set(['de', 'del', 'la', 'las', 'el', 'los', 'y', 'e', 'en', 'a', 'al', 'para', 'por', 'con', 'o', 'u'])
 
 /**
@@ -79,7 +82,7 @@ export function formatoTitulo(texto: string | null | undefined): string {
     .map((p, i) => {
       if (/^\s+$/.test(p)) return p
       const limpio = p.replace(/[.,]/g, '')
-      if (/^(S\.?R\.?L|S\.?A|SA|SRL|SAS|UTN|INTA|INET|UOCRA|CGT)\.?$/i.test(limpio)) return p.toUpperCase()
+      if (SIGLAS.test(limpio) || /\d/.test(p)) return p.toUpperCase()
       const minus = p.toLowerCase()
       if (i > 0 && MINUSCULAS.has(minus)) return minus
       return minus.charAt(0).toUpperCase() + minus.slice(1)

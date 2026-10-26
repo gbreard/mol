@@ -73,7 +73,9 @@ describe('POST /api/perfiles/cursos-gap', () => {
 
     const data = await res.json()
     expect(data.total).toBe(1)
-    expect(data.cursos[0].titulo).toBe('Instalaciones eléctricas')
+    // Formato título de REGICE (DEMO-MIERCOLES): solo cambia mayúsculas
+    expect(data.cursos[0].titulo).toBe('Instalaciones Eléctricas')
+    expect(data.cursos[0].institucion).toBe('CFP 123')
     expect(data.cursos[0].skills_cubiertas).toBe(5)
     expect(data.cursos[0].pct_gap_cubierto).toBe(63) // 5/8 * 100
 

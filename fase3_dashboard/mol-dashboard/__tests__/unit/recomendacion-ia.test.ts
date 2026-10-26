@@ -65,6 +65,7 @@ describe('formatoTitulo (REGICE)', () => {
     expect(formatoTitulo('soldadura de estructura inicial')).toBe('Soldadura de Estructura Inicial')
     expect(formatoTitulo('BINDERPLUS SRL')).toBe('Binderplus SRL')
     expect(formatoTitulo('INDUSTRIAS MONTECOR S.R.L')).toBe('Industrias Montecor S.R.L')
+    expect(formatoTitulo('CFP N° 401 SAN MARTIN')).toBe('CFP N° 401 San Martin')
   })
   it('formatearCurso aplica a título, institución y localidad', () => {
     expect(formatearCurso({ titulo: 'pintura de obra', institucion: 'SERVICIO HABITACIONAL Y D', municipio: 'CORDOBA' }))
