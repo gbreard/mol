@@ -295,12 +295,15 @@ export async function POST(request: NextRequest) {
 
         // Candidatos (máx. 20) → Groq elige los que el texto respalda; si falla o vence,
         // quedan los candidatos con el filtro por umbral
-        const candidatos = await searchSkills(keywords, 5, 0.4)
+        // Consultas: keywords del LLM + frases del propio relato (más candidatos concretos,
+        // p.ej. "hago revoques"); la selección descarta los que no corresponden
+        const consultas = [...new Set([...keywords, ...splitPhrases(text)])]
+        const candidatos = await searchSkills(consultas, 5, 0.4)
         const seleccion = await selectSupportedWithLLM(text, hardFilter(candidatos, text))
         const hits = seleccion ? seleccion.slice(0, MAX_RESULTS) : filterNoise(candidatos, text, MIN_SCORE_LLM)
         return NextResponse.json({
           results: toResults(hits),
-          keywords,
+          keywords: consultas,
           method: seleccion ? 'llm+bge-m3+seleccion' : 'llm+bge-m3',
           text_length: text.length,
         })

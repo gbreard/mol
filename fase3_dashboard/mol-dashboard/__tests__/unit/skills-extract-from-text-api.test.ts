@@ -53,7 +53,8 @@ describe('POST /api/skills-extract-from-text', () => {
     const data = await (await POST(makeReq('levanto paredes y hago revoques'))).json()
 
     expect(data.method).toBe('llm+bge-m3')
-    expect(data.keywords).toEqual(['albañilería', 'aplicar revoque'])
+    // consultas = keywords del LLM + frases del relato
+    expect(data.keywords).toEqual(['albañilería', 'aplicar revoque', 'levanto paredes', 'hago revoques'])
     expect(data.results[0].label).toBe('construir muros de mampostería')
     expect(mockGroqCreate.mock.calls[0][0]).toMatchObject({
       model: 'test-fast',
