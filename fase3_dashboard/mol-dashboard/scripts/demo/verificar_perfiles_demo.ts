@@ -15,7 +15,7 @@
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { calculateOccupationMatch, isEligibleMatch, compareMatches, capPerIsco, type ProfileSkill } from '../../lib/matching'
+import { calculateOccupationMatch, isEligibleMatch, compareMatches, capPerIsco, cursosQueCubrenVarias, type ProfileSkill } from '../../lib/matching'
 import { normalizeProvinciaToRegice } from '../../components/oficina-empleo/normalizeProvinciaToRegice'
 import { periodoDesde, provinciaOfertas } from '../../lib/ofertas-estado'
 
@@ -41,6 +41,7 @@ const FRASES: Record<string, string> = {
   albañil: 'trabajé 5 años de albañil, levanto paredes y hago revoques',
   programador: 'soy programador, hago páginas web con JavaScript y Python y manejo bases de datos',
   cajera: 'fui cajera en un supermercado, cobraba, hacía el cierre de caja y atendía clientes',
+  'albañil (paso 6 de la demo)': 'trabajé de albañil, levanto paredes y hago revoques',
 }
 
 async function api(path: string, init?: RequestInit) {
@@ -111,8 +112,10 @@ async function main() {
         essentialTotal: r.essentialTotal, essentialCovered: r.sharedEssential.length, cubiertas: r.sharedEssential.length, total: r.essentialTotal }
       return isEligibleMatch(m) ? [m] : []
     }).sort((a, b) => compareMatches(a, b, activasPais))
-    const conAvisos = capPerIsco(matches.filter(m => (pais[m.isco]?.total || 0) >= 3))
-    const otras = matches.filter(m => (pais[m.isco]?.total || 0) < 3)
+    // Lista principal de M2: ≥ 3 avisos en el país y ≥ 20% de cobertura
+    const esPrincipal = (m: { isco: string; matchScore: number }) => (pais[m.isco]?.total || 0) >= 3 && m.matchScore >= 20
+    const conAvisos = capPerIsco(matches.filter(esPrincipal))
+    const otras = matches.filter(m => !esPrincipal(m))
     const top10 = conAvisos.slice(0, 10).map((m, i) => ({
       rank: i + 1, ...m,
       avisos_prov: prov[m.isco]?.total || 0, activas_prov: prov[m.isco]?.activas || 0,
@@ -129,9 +132,11 @@ async function main() {
     let cursos: any[] = []
     let cursosAlcance = 'provincia'
     if (gapUris.length > 0) {
-      cursos = (await api('/api/perfiles/cursos-gap', { method: 'POST', body: JSON.stringify({ gap_skill_uris: gapUris, provincia: provRegice || null }) })).cursos || []
+      // Igual que M3: solo cursos que cubren ≥ 2 del gap (o el único); provincia → país
+      const utiles = (c: any[]) => cursosQueCubrenVarias(c || [], gapUris.length)
+      cursos = utiles((await api('/api/perfiles/cursos-gap', { method: 'POST', body: JSON.stringify({ gap_skill_uris: gapUris, provincia: provRegice || null }) })).cursos)
       if (cursos.length === 0 && provRegice) {
-        cursos = (await api('/api/perfiles/cursos-gap', { method: 'POST', body: JSON.stringify({ gap_skill_uris: gapUris }) })).cursos || []
+        cursos = utiles((await api('/api/perfiles/cursos-gap', { method: 'POST', body: JSON.stringify({ gap_skill_uris: gapUris }) })).cursos)
         cursosAlcance = 'país'
       }
     }

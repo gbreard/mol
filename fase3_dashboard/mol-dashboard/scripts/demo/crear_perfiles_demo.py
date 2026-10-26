@@ -70,26 +70,27 @@ REHACER = False
 
 
 def skills_de_ocupacion(base, occ_uri):
-    """Igual que getSkillsForOccupation: esco_argentino y, si no, occupation_full_detail.json."""
-    status, data = http(base, 'GET', '/api/esco-argentino', params={'occupation': occ_uri})
-    if status == 200 and data.get('skills_consolidadas'):
-        # Igual que getSkillsForOccupation (corregido): esco_uri/label_normalized y
-        # pre-tilda las comunes con ESCO y las aprobadas para Argentina
-        out = []
-        for s in data['skills_consolidadas']:
-            uri = s.get('uri') or s.get('esco_uri')
-            label = s.get('label') or s.get('label_normalized') or s.get('label_original')
-            if uri and label:
-                out.append({'uri': uri, 'label': label,
-                            'essential': s.get('source') in ('esco_common', 'mol_approved', 'argentina_approved')})
-        return out, 'argentino'
+    """Igual que getSkillsForOccupation: esenciales ESCO (pre-tildadas) + opcionales, más las
+    aprobadas para Argentina (pre-tildadas) que no estén ya en ESCO."""
     global _occ_json
     if _occ_json is None:
         _occ_json = json.loads(OCC_JSON.read_text())
     occ = _occ_json.get(occ_uri.rsplit('/', 1)[-1], {})
     sk = occ.get('skills', {})
-    return ([{'uri': ESCO_SKILL + s['id'], 'label': s['label'], 'essential': True} for s in sk.get('essential', [])]
-            + [{'uri': ESCO_SKILL + s['id'], 'label': s['label'], 'essential': False} for s in sk.get('optional', [])]), 'esco'
+    esco = ([{'uri': ESCO_SKILL + s['id'], 'label': s['label'], 'essential': True} for s in sk.get('essential', [])]
+            + [{'uri': ESCO_SKILL + s['id'], 'label': s['label'], 'essential': False} for s in sk.get('optional', [])])
+    status, data = http(base, 'GET', '/api/esco-argentino', params={'occupation': occ_uri})
+    if status != 200 or not data.get('skills_consolidadas'):
+        return esco, 'esco'
+    vistos = {s['uri'] for s in esco}
+    argentinas = []
+    for s in data['skills_consolidadas']:
+        uri = s.get('uri') or s.get('esco_uri')
+        label = s.get('label') or s.get('label_normalized') or s.get('label_original')
+        if uri and label and uri not in vistos:
+            argentinas.append({'uri': uri, 'label': label,
+                               'essential': s.get('source') in ('esco_common', 'mol_approved', 'argentina_approved')})
+    return esco + argentinas, 'esco+argentino'
 
 
 def crear(base, p):
@@ -173,11 +174,15 @@ def main():
     ap.add_argument('--base', default='https://mol-nextjs.vercel.app')
     ap.add_argument('--out', required=True)
     ap.add_argument('--rehacer', action='store_true', help='borra (por la API) los perfiles DEMO existentes y los vuelve a crear')
+    ap.add_argument('--solo', help='DNIs a procesar, separados por coma (default: los 5)')
     args = ap.parse_args()
     global REHACER
     REHACER = args.rehacer
     resultados = []
+    solo = set(args.solo.split(',')) if args.solo else None
     for p in PERFILES:
+        if solo and p['dni'] not in solo:
+            continue
         r = crear(args.base.rstrip('/'), p)
         resultados.append(r)
         print(f"{r['dni']}: perfil {r.get('perfil_id')} · {r.get('skills_total', '-')} skills {r.get('skills_por_via', '')} {r.get('nota', '')}",

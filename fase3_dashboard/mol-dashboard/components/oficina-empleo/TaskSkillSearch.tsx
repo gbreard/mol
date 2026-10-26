@@ -199,8 +199,15 @@ export function TaskSkillSearch({ skillUris, onAddSkill, onAddSkills }: Props) {
             className="bg-teal-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-teal-700 disabled:opacity-50 flex items-center gap-1.5"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-            Extraer habilidades
+            {loading ? 'Analizando el relato…' : 'Extraer habilidades'}
           </button>
+
+          {loading && (
+            <div className="flex items-center gap-2 text-sm text-gray-500 py-2" role="status" aria-live="polite">
+              <Loader2 className="w-4 h-4 animate-spin text-teal-600" />
+              Analizando el relato…
+            </div>
+          )}
 
           {extractMessage && extractedPending.length === 0 && (
             <p className="text-xs text-gray-500 text-center py-2">{extractMessage}</p>

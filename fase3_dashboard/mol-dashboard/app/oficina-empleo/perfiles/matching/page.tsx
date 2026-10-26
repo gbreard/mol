@@ -56,8 +56,9 @@ function toCountMap(rows: CountRow[] | null, campo: 'total' | 'activas' = 'total
   return map
 }
 
-// Lista principal: ocupaciones con al menos 3 avisos en el país en el período
+// Lista principal: ocupaciones con al menos 3 avisos en el país en el período y 20% de cobertura
 const MIN_AVISOS_PAIS = 3
+const MIN_COBERTURA = 20
 
 export default function MatchingPage() {
   const searchParams = useSearchParams()
@@ -235,16 +236,17 @@ export default function MatchingPage() {
     })
   }, [matches, sortBy, ofertasCountMap, activasPaisMap])
 
-  // Lista principal: ≥ 3 avisos en el país en el período, con máximo 2 por CIUO en el top 10.
-  // El resto va a la sección plegada "Otras ocupaciones compatibles".
-  const principales = useMemo(() => {
-    const conAvisos = sorted.filter(o => (ofertasCountPaisMap[o.isco_code] || 0) >= MIN_AVISOS_PAIS)
-    return sortBy === 'match' ? capPerIsco(conAvisos) : conAvisos
-  }, [sorted, sortBy, ofertasCountPaisMap])
-  const otras = useMemo(
-    () => sorted.filter(o => (ofertasCountPaisMap[o.isco_code] || 0) < MIN_AVISOS_PAIS),
-    [sorted, ofertasCountPaisMap]
+  // Lista principal: ≥ 3 avisos en el país en el período y ≥ 20% de cobertura, con máximo
+  // 2 por CIUO en el top 10. El resto va a la sección plegada "Otras ocupaciones compatibles".
+  const esPrincipal = useCallback(
+    (o: OccupationMatch) => (ofertasCountPaisMap[o.isco_code] || 0) >= MIN_AVISOS_PAIS && o.matchScore >= MIN_COBERTURA,
+    [ofertasCountPaisMap]
   )
+  const principales = useMemo(() => {
+    const lista = sorted.filter(esPrincipal)
+    return sortBy === 'match' ? capPerIsco(lista) : lista
+  }, [sorted, sortBy, esPrincipal])
+  const otras = useMemo(() => sorted.filter(o => !esPrincipal(o)), [sorted, esPrincipal])
 
   const loadingAll = loading || (perfil && profileSkills.length > 0 && !occupationsData)
   const countsReady = !countLoading
@@ -398,7 +400,7 @@ export default function MatchingPage() {
                   onClick={() => setShowOtras(v => !v)}
                   className="w-full flex items-center justify-between px-4 py-2.5 bg-white rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50"
                 >
-                  <span>Otras ocupaciones compatibles (sin avisos recientes) · {otras.length}</span>
+                  <span>Otras ocupaciones compatibles (sin avisos recientes o con baja cobertura) · {otras.length}</span>
                   {showOtras ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </button>
                 {showOtras && (

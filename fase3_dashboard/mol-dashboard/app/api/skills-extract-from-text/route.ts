@@ -24,6 +24,8 @@ const MIN_RESULTS = 3
 const MIN_SCORE_LLM = 0.60
 const MIN_SCORE_FALLBACK = 0.62
 const MIN_SCORE_FLOOR = 0.55
+// Si la selección del LLM deja menos de 3, se completa con candidatos muy similares
+const MIN_SCORE_COMPLETAR = 0.65
 
 // DEMO: revisar después — competencias absurdas que siguen apareciendo
 const EXCLUDED_LABELS = new Set([
@@ -60,6 +62,17 @@ function hardFilter(hits: SkillHit[], text: string): SkillHit[] {
     if (!allowLanguages && LANG_SKILL_RE.test(label)) return false
     return h.score >= MIN_SCORE_FLOOR
   })
+}
+
+/** Selección del LLM con tope de 8; si quedó con menos de 3, completa con candidatos ≥ 0.65. */
+function completarSeleccion(seleccion: SkillHit[], candidatos: SkillHit[]): SkillHit[] {
+  const result = seleccion.slice(0, MAX_RESULTS)
+  const elegidos = new Set(result.map(h => h.uri))
+  for (const c of candidatos) {  // ordenados por score
+    if (result.length >= MIN_RESULTS) break
+    if (c.score >= MIN_SCORE_COMPLETAR && !elegidos.has(c.uri)) result.push(c)
+  }
+  return result
 }
 
 /** Aplica exclusiones, filtro de idiomas, umbral por modo y tope de 8. */
@@ -300,8 +313,9 @@ export async function POST(request: NextRequest) {
         // p.ej. "hago revoques"); la selección descarta los que no corresponden
         const consultas = [...new Set([...keywords, ...splitPhrases(text)])]
         const candidatos = await searchSkills(consultas, 5, 0.4)
-        const seleccion = await selectSupportedWithLLM(text, hardFilter(candidatos, text))
-        const hits = seleccion ? seleccion.slice(0, MAX_RESULTS) : filterNoise(candidatos, text, MIN_SCORE_LLM)
+        const filtrados = hardFilter(candidatos, text)
+        const seleccion = await selectSupportedWithLLM(text, filtrados)
+        const hits = seleccion ? completarSeleccion(seleccion, filtrados) : filterNoise(candidatos, text, MIN_SCORE_LLM)
         return NextResponse.json({
           results: toResults(hits),
           keywords: consultas,

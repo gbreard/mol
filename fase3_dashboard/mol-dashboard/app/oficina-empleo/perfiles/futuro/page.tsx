@@ -19,7 +19,7 @@ import { getFechaMaxOfertas } from '@/lib/supabase'
 import { formatFecha, provinciaOfertas } from '@/lib/ofertas-estado'
 
 import type { OccupationMatch } from '@/app/oficina-empleo/perfiles/matching/page'
-import { calculateOccupationMatch, isEligibleMatch, compareMatches, type ProfileSkill } from '@/lib/matching'
+import { calculateOccupationMatch, isEligibleMatch, compareMatches, cursosQueCubrenVarias, type ProfileSkill } from '@/lib/matching'
 
 interface PerfilSkill {
   skill_uri: string
@@ -331,10 +331,12 @@ export default function FuturoLaboralPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ gap_skill_uris: gapUris, provincia: prov || null }),
       })
+      // Solo cursos que cubren ≥ 2 competencias del gap (o la única, si el gap es de 1)
+      const utiles = (cursos: any[] | undefined) => cursosQueCubrenVarias(cursos || [], gapEssential.length)
       if (res.ok) {
         const data = await res.json()
-        if (data.cursos && data.cursos.length > 0) {
-          setCursosGap(data.cursos)
+        if (utiles(data.cursos).length > 0) {
+          setCursosGap(utiles(data.cursos))
         } else if (prov) {
           // No results with provincia — retry without filter (national)
           res = await fetch('/api/perfiles/cursos-gap', {
@@ -344,7 +346,7 @@ export default function FuturoLaboralPage() {
           })
           if (res.ok) {
             const data2 = await res.json()
-            setCursosGap(data2.cursos || [])
+            setCursosGap(utiles(data2.cursos))
           } else {
             setCursosError(true)
           }
@@ -815,6 +817,7 @@ export default function FuturoLaboralPage() {
                 onShowAll={() => setShowAllCursos(true)}
                 sharedCount={gapAnalysis.sharedEssential.length}
                 essentialTotal={gapAnalysis.essentialTotal}
+                provincia={perfilProvincia}
               />
             )}
 
@@ -1048,7 +1051,7 @@ function TransferableSkillsPanel({ skills }: { skills: ProfileSkill[] }) {
   )
 }
 
-function CursosGapPanel({ cursos, loading, error, showAll, onShowAll, sharedCount, essentialTotal }: {
+function CursosGapPanel({ cursos, loading, error, showAll, onShowAll, sharedCount, essentialTotal, provincia }: {
   cursos: any[]
   loading: boolean
   error?: boolean
@@ -1056,6 +1059,7 @@ function CursosGapPanel({ cursos, loading, error, showAll, onShowAll, sharedCoun
   onShowAll: () => void
   sharedCount: number
   essentialTotal: number
+  provincia?: string | null
 }) {
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
 
@@ -1094,7 +1098,7 @@ function CursosGapPanel({ cursos, loading, error, showAll, onShowAll, sharedCoun
 
       {!loading && !error && sorted.length === 0 && (
         <p className="text-xs text-gray-400 text-center py-3">
-          No encontramos cursos registrados para las skills que le faltan.
+          No encontramos cursos que cubran varias de las competencias faltantes{provincia ? ` en ${provincia}` : ''}.
         </p>
       )}
 

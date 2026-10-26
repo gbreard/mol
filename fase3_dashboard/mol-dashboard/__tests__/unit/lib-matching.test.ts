@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { calculateOccupationMatch, isEligibleMatch, compareMatches, capPerIsco, type RankableMatch } from '@/lib/matching'
+import { calculateOccupationMatch, isEligibleMatch, compareMatches, capPerIsco, cursosQueCubrenVarias, type RankableMatch } from '@/lib/matching'
 
 const essential = [
   { id: 'a', label: 'Skill A' },
@@ -127,5 +127,19 @@ describe('barandas del ranking', () => {
     expect(r.map(x => x.label)).toContain('c')
     expect(r.findIndex(x => x.label === 'c')).toBeGreaterThanOrEqual(10)
     expect(r).toHaveLength(lista.length)
+  })
+})
+
+describe('exclusiones DEMO y cursos útiles', () => {
+  it('excluye las ocupaciones de la lista DEMO', () => {
+    expect(isEligibleMatch(m({ label: 'funcionario del sector de la Defensa/funcionaria del sector de la Defensa', isco_code: '1219' }))).toBe(false)
+    expect(isEligibleMatch(m({ label: 'operario de señalización vial/operaria de señalización vial', isco_code: '9312' }))).toBe(false)
+  })
+
+  it('cursos: ≥ 2 competencias del gap, o la única si el gap es de 1', () => {
+    const cursos = [{ id: 'a', skills_cubiertas: 1 }, { id: 'b', skills_cubiertas: 2 }, { id: 'c', skills_cubiertas: 5 }]
+    expect(cursosQueCubrenVarias(cursos, 7).map(c => c.id)).toEqual(['b', 'c'])
+    expect(cursosQueCubrenVarias(cursos, 1).map(c => c.id)).toEqual(['a', 'b', 'c'])
+    expect(cursosQueCubrenVarias([{ skills_cubiertas: 1 }], 3)).toEqual([])
   })
 })

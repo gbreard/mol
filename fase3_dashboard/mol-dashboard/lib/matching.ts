@@ -118,7 +118,10 @@ export const MAX_PER_ISCO_IN_TOP = 2
 export const TOP_N = 10
 
 // DEMO: revisar después — ocupaciones absurdas que sobreviven a las barandas
-export const DEMO_EXCLUDED_OCCUPATIONS: string[] = []
+export const DEMO_EXCLUDED_OCCUPATIONS: string[] = [
+  'funcionario del sector de la Defensa/funcionaria del sector de la Defensa',
+  'operario de señalización vial/operaria de señalización vial',
+]
 
 /**
  * Una ocupación entra al ranking si cubre al menos 2 esenciales de un total de 5 o más
@@ -158,4 +161,13 @@ export function capPerIsco<T extends { isco_code: string }>(sorted: T[], max = M
     }
   }
   return [...top, ...deferred, ...sorted.slice(i)]
+}
+
+/**
+ * Cursos útiles para cerrar una brecha: los que cubren al menos 2 competencias del gap
+ * (o la única, si el gap es de 1).
+ */
+export function cursosQueCubrenVarias<T extends { skills_cubiertas: number }>(cursos: T[], gapSize: number): T[] {
+  const minimo = gapSize <= 1 ? 1 : 2
+  return cursos.filter(c => (c.skills_cubiertas || 0) >= minimo)
 }

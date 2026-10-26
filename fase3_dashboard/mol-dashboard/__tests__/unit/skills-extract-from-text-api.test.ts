@@ -170,11 +170,12 @@ describe('POST /api/skills-extract-from-text', () => {
   it('selección: Groq elige entre los candidatos los que el texto respalda', async () => {
     mockGroqCreate
       .mockResolvedValueOnce({ choices: [{ message: { content: '{"terminos": ["enfermería", "signos vitales"]}' } }] })
-      .mockResolvedValueOnce({ choices: [{ message: { content: '{"indices": [2]}' } }] })
+      .mockResolvedValueOnce({ choices: [{ message: { content: '{"indices": [1]}' } }] })
     fetchMock.mockResolvedValue(embedOk(2))
     mockRpc.mockResolvedValue({
       data: [
-        { skill_uri: 'u1', skill_label: 'presión del agua', similarity: 0.8 },
+        // < 0.65: no entra al completar hasta 3
+        { skill_uri: 'u1', skill_label: 'presión del agua', similarity: 0.62 },
         { skill_uri: 'u2', skill_label: 'medir la presión sanguínea', similarity: 0.7 },
       ],
       error: null,
@@ -184,7 +185,7 @@ describe('POST /api/skills-extract-from-text', () => {
 
     expect(data.method).toBe('llm+bge-m3+seleccion')
     expect(data.results.map((r: { label: string }) => r.label)).toEqual(['medir la presión sanguínea'])
-    expect(mockGroqCreate.mock.calls[1][0].messages[1].content).toContain('1. presión del agua')
+    expect(mockGroqCreate.mock.calls[1][0].messages[1].content).toContain('2. presión del agua')
   })
 
   it('si la selección falla, devuelve los candidatos con el filtro por umbral', async () => {
@@ -217,5 +218,25 @@ describe('POST /api/skills-extract-from-text', () => {
     const labels = data.results.map((r: { label: string }) => r.label.toLowerCase())
 
     expect(labels.filter((l: string) => l === 'gestionar el inventario de vehículos')).toHaveLength(1)
+  })
+
+  it('si la selección deja menos de 3, completa con candidatos ≥ 0.65 que no estén', async () => {
+    mockGroqCreate
+      .mockResolvedValueOnce({ choices: [{ message: { content: '{"terminos": ["albañilería"]}' } }] })
+      .mockResolvedValueOnce({ choices: [{ message: { content: '{"indices": [2]}' } }] })
+    fetchMock.mockResolvedValue(embedOk(3))
+    mockRpc.mockResolvedValue({
+      data: [
+        { skill_uri: 'u1', skill_label: 'mezclar morteros', similarity: 0.8 },
+        { skill_uri: 'u2', skill_label: 'colocar ladrillos', similarity: 0.7 },
+        { skill_uri: 'u3', skill_label: 'cortar ladrillos', similarity: 0.66 },
+        { skill_uri: 'u4', skill_label: 'pintar paredes', similarity: 0.6 },
+      ],
+      error: null,
+    })
+
+    const data = await (await POST(makeReq('levanto paredes y hago revoques'))).json()
+
+    expect(data.results.map((r: { label: string }) => r.label)).toEqual(['colocar ladrillos', 'mezclar morteros', 'cortar ladrillos'])
   })
 })
