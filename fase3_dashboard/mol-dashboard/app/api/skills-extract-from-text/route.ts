@@ -89,7 +89,7 @@ async function extractKeywordsWithLLM(text: string): Promise<string[]> {
       {
         role: 'system',
         content: `Dado un texto con experiencia laboral, generá 5-8 términos técnicos para buscar skills en la taxonomía ESCO.
-Usá vocabulario técnico formal, no coloquial.
+Usá vocabulario técnico formal, no coloquial: preferí verbos de tarea concretos ("colocar ladrillos") antes que nombres de área ("albañilería").
 
 Ejemplos:
 - Input: 'pongo inyecciones y tomo la presión'
@@ -99,7 +99,7 @@ Ejemplos:
   Output: {"terminos": ["desarrollo web", "programación Python", "bases de datos", "aplicaciones informáticas"]}
 
 - Input: 'levanto paredes y hago revoques'
-  Output: {"terminos": ["albañilería", "construcción de mampostería", "aplicar revoque", "trabajo en construcción"]}
+  Output: {"terminos": ["colocar ladrillos", "construir muros de mampostería", "aplicar revoque en paredes", "mezclar morteros para construcción"]}
 
 Retorná SOLO un objeto JSON con la clave "terminos" (array de strings). Sin explicación.`
       },
