@@ -1568,17 +1568,14 @@ export async function getOfertasCountByIsco(): Promise<Record<string, number>> {
   if (!client) return {}
 
   try {
-    const data = await fetchAllPaginated<{ isco_code: string }>(
-      client,
-      TABLA_OFERTAS,
-      'isco_code',
-      (query) => query.not('isco_code', 'is', null)
-    )
+    // Agrupado en el servidor: paginar las ~97K filas de a 1.000 tardaba varios segundos
+    const { data, error } = await client.rpc('get_ofertas_count_by_isco')
+    if (error) throw error
 
     const counts: Record<string, number> = {}
-    data.forEach(o => {
-      counts[o.isco_code] = (counts[o.isco_code] || 0) + 1
-    })
+    for (const row of (data || []) as { isco_code: string; count: number }[]) {
+      counts[row.isco_code] = Number(row.count)
+    }
 
     return counts
   } catch (error) {

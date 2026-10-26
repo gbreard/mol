@@ -114,7 +114,7 @@ export default function OccupationDetail({
 
   // AI policy recommendation
   const [recoPolicy, setRecoPolicy] = useState<AnalisisOcupacional | null>(null);
-  const [recoContexto, setRecoContexto] = useState<OcupacionContexto[]>([]);
+  const [recoContexto, setRecoContexto] = useState<(OcupacionContexto & { isco?: string })[]>([]);
   const [fechaMax, setFechaMax] = useState<string | null>(null);
   useEffect(() => { getFechaMaxOfertas().then(setFechaMax); }, []);
   const [loadingReco, setLoadingReco] = useState(false);
@@ -208,8 +208,8 @@ export default function OccupationDetail({
         const data = await res.json();
         // Chips y cursos los pone la UI (sin persona: total de esenciales, no cubiertas)
         setRecoContexto([
-          { label: selectedInfo.label, cubiertas: null, esenciales_total: essential.length, avisos: ofertas, demanda, cursos: cursosOcupacion },
-          ...similares.map(s => ({ label: s.label, cubiertas: null, esenciales_total: s.esenciales_total, avisos: s.avisos, demanda: s.demanda, cursos: s.cursos })),
+          { label: selectedInfo.label, isco, cubiertas: null, esenciales_total: essential.length, avisos: ofertas, demanda, cursos: cursosOcupacion },
+          ...similares.map(s => ({ label: s.label, isco: s.isco_code, cubiertas: null, esenciales_total: s.esenciales_total, avisos: s.avisos, demanda: s.demanda, cursos: s.cursos })),
         ]);
         setRecoPolicy(data.recomendacion || null);
         if (!data.recomendacion) setRecoError(true);
@@ -371,7 +371,8 @@ export default function OccupationDetail({
                 pasos: recoPolicy.recomendaciones,
                 formacion: recoPolicy.formacion,
               }}
-              contexto={recoContexto}
+              // Avisos del mapa vigente: si el análisis se pidió antes de que cargaran los conteos
+              contexto={recoContexto.map(c => ({ ...c, avisos: (c.isco && ofertasCountMap[c.isco]) || c.avisos }))}
               fechaMax={fechaMax}
             />
           )}
