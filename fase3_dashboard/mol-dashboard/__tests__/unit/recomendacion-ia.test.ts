@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseTrayectoria, parseAnalisis, buscarCurso, demandaLabel, etiquetaOcupacion } from '@/lib/recomendacion-ia'
+import { parseTrayectoria, parseAnalisis, buscarCurso, demandaLabel, etiquetaOcupacion, pulirTexto, limitarPasosGenericos } from '@/lib/recomendacion-ia'
 import { lineaUbicacionCurso, provinciaDisplay, esVirtual, formatoTitulo, formatearCurso } from '@/lib/cursos'
 
 const CURSOS = [{ titulo: 'albanileria' }, { titulo: 'soldadura nivel inicial' }]
@@ -69,5 +69,35 @@ describe('formatoTitulo (REGICE)', () => {
   it('formatearCurso aplica a título, institución y localidad', () => {
     expect(formatearCurso({ titulo: 'pintura de obra', institucion: 'SERVICIO HABITACIONAL Y D', municipio: 'CORDOBA' }))
       .toEqual({ titulo: 'Pintura de Obra', institucion: 'Servicio Habitacional y D', municipio: 'Cordoba' })
+  })
+})
+
+describe('controles deterministas de la trayectoria', () => {
+  it('voseo y sin promesas de velocidad', () => {
+    expect(pulirTexto('Cubres menos competencias, pero puedes cerrar esas brechas rápidamente.'))
+      .toBe('Cubrís menos competencias, pero podés cerrar esas brechas.')
+    expect(pulirTexto('Hoy estás trabajando en obra y pronto vas a avanzar.')).toBe('Hoy trabajás en obra y vas a avanzar.')
+  })
+
+  it('máximo un paso genérico de la Oficina, los específicos primero', () => {
+    const pasos = [
+      { accion: 'Armá tu CV con el orientador.' },
+      { accion: 'Anotate en la bolsa de empleo de la Oficina.' },
+      { accion: 'Anotate al curso "Soldador y Herreria".' },
+    ]
+    expect(limitarPasosGenericos(pasos).map(p => p.accion)).toEqual([
+      'Anotate al curso "Soldador y Herreria".',
+      'Armá tu CV con el orientador.',
+    ])
+  })
+
+  it('parseTrayectoria aplica los controles', () => {
+    const r = parseTrayectoria(JSON.stringify({
+      ocupacion: 'x', diagnostico: 'Tienes base.', recomendacion: 'Podés cerrar brechas rápidamente.',
+      pasos: [{ accion: 'Armá tu CV.', por_que: 'a' }, { accion: 'Anotate en la bolsa de empleo.', por_que: 'b' }],
+    }))!
+    expect(r.diagnostico).toBe('Tenés base.')
+    expect(r.recomendacion).toBe('Podés cerrar brechas.')
+    expect(r.pasos).toHaveLength(1)
   })
 })

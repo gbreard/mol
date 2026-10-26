@@ -71,6 +71,33 @@ function formacionPermitida(v: unknown, cursosPermitidos: { titulo: string }[]):
     .filter(f => f.curso)
 }
 
+// Controles deterministas sobre lo que devuelve el modelo (el prompt solo no alcanza)
+
+const TU_A_VOS: [RegExp, string][] = [
+  [/\bcubres\b/gi, 'cubrís'], [/\btienes\b/gi, 'tenés'], [/\bpuedes\b/gi, 'podés'], [/\bsabes\b/gi, 'sabés'],
+  [/\bmanejas\b/gi, 'manejás'], [/\bnecesitas\b/gi, 'necesitás'], [/\brequieres\b/gi, 'requerís'],
+  [/\bdebes\b/gi, 'debés'], [/\bquieres\b/gi, 'querés'], [/\bdominas\b/gi, 'dominás'], [/\bestás trabajando\b/gi, 'trabajás'],
+]
+const PROMESAS_DE_VELOCIDAD = /,?\s+(rápidamente|en poco tiempo|pronto|enseguida)\b/gi
+
+/** Voseo y sin promesas de velocidad. Respeta la mayúscula inicial del reemplazo. */
+export function pulirTexto(t: string): string {
+  let out = t.replace(PROMESAS_DE_VELOCIDAD, '')
+  for (const [re, vos] of TU_A_VOS) {
+    out = out.replace(re, m => (m[0] === m[0].toUpperCase() ? vos.charAt(0).toUpperCase() + vos.slice(1) : vos))
+  }
+  return out.replace(/\s+([.,;])/g, '$1').trim()
+}
+
+const PASO_GENERICO = /\b(CV|curr[ií]culum|bolsa de empleo|entrevista de orientaci[oó]n|entrevistas laborales)\b/i
+
+/** Como máximo un paso genérico de la Oficina; los específicos de la persona van primero. */
+export function limitarPasosGenericos<T extends { accion: string }>(pasos: T[]): T[] {
+  const especificos = pasos.filter(p => !PASO_GENERICO.test(p.accion))
+  const genericos = pasos.filter(p => PASO_GENERICO.test(p.accion))
+  return [...especificos, ...genericos.slice(0, 1)]
+}
+
 /** null si el JSON no parsea o no trae lo mínimo (ocupación, diagnóstico y recomendación). */
 export function parseTrayectoria(raw: string): RecomendacionTrayectoria | null {
   const d = parseJson(raw)
@@ -79,19 +106,21 @@ export function parseTrayectoria(raw: string): RecomendacionTrayectoria | null {
   const diagnostico = texto(d.diagnostico)
   const recomendacion = texto(d.recomendacion)
   if (!ocupacion || !diagnostico || !recomendacion) return null
+  const pasos: { accion: string; por_que: string }[] = (Array.isArray(d.pasos) ? d.pasos : [])
+    .map((p: any) => (typeof p === 'string' ? { accion: texto(p), por_que: '' } : { accion: texto(p?.accion), por_que: texto(p?.por_que) }))
+    .filter((p: { accion: string }) => p.accion)
   return {
     ocupacion,
-    diagnostico,
-    recomendacion,
+    diagnostico: pulirTexto(diagnostico),
+    recomendacion: pulirTexto(recomendacion),
     alternativas: (Array.isArray(d.alternativas) ? d.alternativas : [])
-      .map((a: any) => ({ ocupacion: texto(a?.ocupacion), comentario: texto(a?.comentario) }))
+      .map((a: any) => ({ ocupacion: texto(a?.ocupacion), comentario: pulirTexto(texto(a?.comentario)) }))
       .filter((a: { ocupacion: string; comentario: string }) => a.ocupacion && a.comentario)
       .slice(0, 2),
-    pasos: (Array.isArray(d.pasos) ? d.pasos : [])
-      .map((p: any) => (typeof p === 'string' ? { accion: texto(p), por_que: '' } : { accion: texto(p?.accion), por_que: texto(p?.por_que) }))
-      .filter((p: { accion: string }) => p.accion)
-      .slice(0, 3),
-    cierre: texto(d.cierre),
+    pasos: limitarPasosGenericos(pasos)
+      .slice(0, 3)
+      .map(p => ({ accion: pulirTexto(p.accion), por_que: pulirTexto(p.por_que) })),
+    cierre: pulirTexto(texto(d.cierre)),
   }
 }
 
