@@ -10,6 +10,9 @@ import OfertasOcupacionModal from './OfertasOcupacionModal';
 import { OccupationDetail as OccupationDetailType, OccupationFullDetailIndex } from '@/lib/types';
 import { getOfertasCountByIsco } from '@/lib/supabase';
 import { capitalize } from '@/lib/utils';
+import { getFechaMaxOfertas } from '@/lib/supabase';
+import { demandaLabel, type AnalisisOcupacional } from '@/lib/recomendacion-ia';
+import { RecomendacionCard, type OcupacionContexto } from '@/components/oficina-empleo/RecomendacionCard';
 
 function normalizeIsco(isco: string): string {
   return isco.startsWith('C') ? isco.substring(1) : isco;
@@ -110,7 +113,10 @@ export default function OccupationDetail({
   };
 
   // AI policy recommendation
-  const [recoPolicy, setRecoPolicy] = useState<string | null>(null);
+  const [recoPolicy, setRecoPolicy] = useState<AnalisisOcupacional | null>(null);
+  const [recoContexto, setRecoContexto] = useState<OcupacionContexto[]>([]);
+  const [fechaMax, setFechaMax] = useState<string | null>(null);
+  useEffect(() => { getFechaMaxOfertas().then(setFechaMax); }, []);
   const [loadingReco, setLoadingReco] = useState(false);
   const [recoError, setRecoError] = useState(false);
 
@@ -161,44 +167,50 @@ export default function OccupationDetail({
           } catch {}
         }
         const trend = trendLookup[simIsco];
+        const similarity = s.similarity || s.jaccard || 0;
         return {
           label: s.label,
           isco_code: simIsco,
-          similarity: s.similarity || s.jaccard || 0,
-          ofertas: ofertasCountMap[simIsco] || 0,
-          tendencia: trend?.suficiente ? trend.trend_label : 'insuficiente',
-          volatilidad: trend?.volatility_label || 'desconocida',
-          cursos: simCursos.map((c: any) => ({ titulo: c.titulo, institucion: c.institucion, provincia: c.provincia })),
+          // Sin cifras para el modelo: afinidad y demanda cualitativas (un solo indicador)
+          afinidad: similarity >= 0.5 ? 'alta' : similarity >= 0.3 ? 'media' : 'baja',
+          demanda: demandaLabel(trend?.suficiente ? trend.trend_label : null),
+          avisos: ofertasCountMap[simIsco] || 0,
+          esenciales_total: simOcc?.skills?.essential?.length || 0,
+          cursos: simCursos.map((c: any) => ({ titulo: c.titulo, institucion: c.institucion, provincia: c.provincia, municipio: c.municipio, modalidad: c.modalidad })),
         };
       }));
 
       const occTrend = trendLookup[isco];
+      const demanda = demandaLabel(occTrend?.suficiente ? occTrend.trend_label : null);
+      const cursosOcupacion = cursos.slice(0, 5).map((c: any) => ({
+        titulo: c.titulo,
+        institucion: c.institucion,
+        provincia: c.provincia,
+        municipio: c.municipio,
+        modalidad: c.modalidad,
+      }));
 
       const res = await fetch('/api/analisis-ocupacional', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          fecha_max: fechaMax,
           ocupacion: {
             label: selectedInfo.label,
-            isco_code: isco,
-            ofertas_total: ofertas,
-            tendencia: occTrend?.suficiente ? occTrend.trend_label : 'insuficiente',
-            volatilidad: occTrend?.volatility_label || 'desconocida',
+            demanda,
             skills_esenciales: essential.slice(0, 8).map((s: any) => s.label),
-            skills_opcionales_count: optional.length,
-            knowledge_esenciales: knowledge.slice(0, 5).map((k: any) => k.label),
           },
           similares,
-          cursos_ocupacion: cursos.slice(0, 5).map((c: any) => ({
-            titulo: c.titulo,
-            institucion: c.institucion,
-            provincia: c.provincia,
-            skills_cubiertas: c.skills_cubiertas,
-          })),
+          cursos_ocupacion: cursosOcupacion,
         }),
       });
       if (res.ok) {
         const data = await res.json();
+        // Chips y cursos los pone la UI (sin persona: total de esenciales, no cubiertas)
+        setRecoContexto([
+          { label: selectedInfo.label, cubiertas: null, esenciales_total: essential.length, avisos: ofertas, demanda, cursos: cursosOcupacion },
+          ...similares.map(s => ({ label: s.label, cubiertas: null, esenciales_total: s.esenciales_total, avisos: s.avisos, demanda: s.demanda, cursos: s.cursos })),
+        ]);
         setRecoPolicy(data.recomendacion || null);
         if (!data.recomendacion) setRecoError(true);
       } else {
@@ -309,10 +321,12 @@ export default function OccupationDetail({
       {/* AI Policy Analysis */}
       {selectedOccupation && selectedInfo && (
         <div className="bg-blue-50 rounded-xl border border-blue-200 p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <MessageSquare className="w-4 h-4 text-blue-600" />
-            <h3 className="text-sm font-semibold text-blue-700">Análisis de reconversión ocupacional</h3>
-          </div>
+          {!recoPolicy && (
+            <div className="flex items-center gap-2 mb-2">
+              <MessageSquare className="w-4 h-4 text-blue-600" />
+              <h3 className="text-sm font-semibold text-blue-700">Análisis de reconversión ocupacional</h3>
+            </div>
+          )}
 
           {!recoPolicy && !loadingReco && !recoError && (
             <div className="flex items-center gap-3">
@@ -343,13 +357,23 @@ export default function OccupationDetail({
             </div>
           )}
 
-          {recoPolicy && (
-            <div>
-              <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{recoPolicy}</p>
-              <p className="text-[9px] text-gray-400 mt-3 leading-snug">
-                Generado con IA a partir de datos del mercado laboral argentino. Orientativo para fundamentar política — no constituye dictamen técnico.
-              </p>
-            </div>
+          {recoPolicy && selectedInfo && (
+            <RecomendacionCard
+              titulo="Análisis de reconversión ocupacional"
+              tema="blue"
+              secciones={{
+                ocupacion: selectedInfo.label,
+                tituloPrincipal: 'Diagnóstico',
+                textoPrincipal: recoPolicy.resumen,
+                tituloOpciones: 'Destinos de reconversión',
+                opciones: recoPolicy.destinos,
+                tituloPasos: 'Recomendaciones',
+                pasos: recoPolicy.recomendaciones,
+                formacion: recoPolicy.formacion,
+              }}
+              contexto={recoContexto}
+              fechaMax={fechaMax}
+            />
           )}
         </div>
       )}

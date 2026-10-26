@@ -1,81 +1,58 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getGroq, GROQ_MODEL_LARGE } from '@/lib/groq'
+import { parseTrayectoria } from '@/lib/recomendacion-ia'
+import { formatFecha } from '@/lib/ofertas-estado'
 
 const SYSTEM_PROMPT = `Sos un asesor laboral de una oficina de empleo pública argentina.
-Tu rol es interpretar datos del mercado laboral y sugerir trayectorias de formación concretas.
+Recibís las ocupaciones más compatibles con el perfil de una persona y tenés que recomendarle cuál le conviene más y qué hacer.
 
 REGLAS ESTRICTAS:
-- Usá SOLO los datos proporcionados. No inventes cursos, instituciones, porcentajes ni ocupaciones.
-- No inventes cifras, duraciones, lugares ni nombres de cursos que no estén en los datos que te paso. Si no tenés el dato, no lo menciones.
-- Se te dan las TOP ocupaciones compatibles con el perfil, cada una con su compatibilidad, gap, tendencia de demanda y cursos. Analizá todas y recomendá cuál conviene más, explicando por qué.
-- Priorizá ocupaciones con: alto match + demanda creciente o estable + gap cubierto por cursos disponibles.
-- Si una ocupación tiene demanda cayendo o volátil, mencionalo como riesgo.
-- Si la tendencia es "insuficiente", decí que no hay datos suficientes de mercado para esa ocupación.
-- Si hay cursos que cubren el gap, nombralos por nombre e institución exactos. No inventes cursos.
-- Si no hay cursos para una ocupación, decilo.
-- Usá lenguaje claro, sin tecnicismos. El usuario puede no tener formación universitaria.
-- Tuteá al usuario (vos, tu, te). No uses usted.
-- Máximo 350 palabras.
-- Formato: 3-4 párrafos cortos, texto natural. Sin bullets, sin títulos, sin markdown, sin emojis, como si le hablaras a la persona cara a cara en la oficina de empleo.
-- No digas "basado en los datos" ni "según el análisis". Hablá directo.
-- Empezá con el nombre de la persona.`
+- Usá SOLO los datos que te paso. No inventes cifras, duraciones, lugares, instituciones ni cursos.
+- No menciones porcentajes ni cantidades: las cifras las muestra la pantalla.
+- Cursos: mencioná solo cursos de la lista que te paso, con el nombre exacto. Si ninguna ocupación tiene cursos, "formacion" va vacío.
+- Los datos de mercado son avisos publicados hasta la fecha indicada. No digas "vacantes disponibles".
+- Para la demanda usá solo el indicador que te paso ("Demanda en alza", "estable", "en baja" o "sin datos de tendencia"). No hables de estabilidad ni volatilidad.
+- Priorizá ocupaciones que cubren más competencias esenciales, con demanda en alza o estable, y con cursos para las que faltan.
+- Tuteo rioplatense (vos, tenés, podés). No uses el nombre de la persona.
+- Lenguaje claro, sin tecnicismos.
 
-function buildUserPrompt(data: any): string {
-  const { perfil, ocupacion_elegida, top_ocupaciones } = data
+Respondé SOLO un objeto JSON con esta forma:
+{
+  "ocupacion": "nombre de la ocupación recomendada, tal como figura en la lista",
+  "por_que": "máximo 2 oraciones",
+  "alternativas": [{ "ocupacion": "nombre", "motivo": "1 oración" }],
+  "pasos": ["1 oración", "1 oración", "1 oración"],
+  "formacion": [{ "curso": "nombre exacto del curso", "motivo": "1 oración" }]
+}
+Máximo 3 alternativas, 3 pasos y 2 cursos.`
 
-  let prompt = `PERFIL: ${perfil.nombre}`
-  if (perfil.edad) prompt += `, ${perfil.edad} años`
-  if (perfil.ubicacion) prompt += `, ${perfil.ubicacion}`
-  if (perfil.nivel_educativo) prompt += `, ${perfil.nivel_educativo}`
-  prompt += `. Tiene ${perfil.skills_count} competencias confirmadas.\n\n`
+interface CursoInput { titulo: string; institucion?: string; modalidad?: string; provincia?: string; municipio?: string | null }
+interface OcupacionInput {
+  label: string
+  cubiertas: number
+  esenciales_total: number
+  demanda: string
+  gap_skills?: { label: string }[]
+  cursos?: CursoInput[]
+}
 
-  if (ocupacion_elegida) {
-    prompt += `OCUPACIÓN ELEGIDA POR EL USUARIO: ${ocupacion_elegida.label} (ISCO ${ocupacion_elegida.isco_code})\n`
-    prompt += `Compatibilidad: ${ocupacion_elegida.compatibilidad}% (${ocupacion_elegida.cubiertas} de ${ocupacion_elegida.esenciales_total} esenciales)\n\n`
+function buildUserPrompt(data: { fecha_max?: string; ocupacion_elegida?: { label: string } | null; top_ocupaciones: OcupacionInput[] }): string {
+  let prompt = data.fecha_max ? `Datos de mercado: avisos publicados hasta el ${formatFecha(data.fecha_max)}.\n\n` : ''
+  if (data.ocupacion_elegida) {
+    prompt += `OCUPACIÓN QUE LA PERSONA ESTÁ MIRANDO: ${data.ocupacion_elegida.label}\n\n`
   }
-
-  if (top_ocupaciones && top_ocupaciones.length > 0) {
-    prompt += `TOP ${top_ocupaciones.length} OCUPACIONES COMPATIBLES CON ESTE PERFIL:\n\n`
-    for (let i = 0; i < top_ocupaciones.length; i++) {
-      const occ = top_ocupaciones[i]
-      prompt += `${i + 1}. ${occ.label} (ISCO ${occ.isco_code})\n`
-      prompt += `   Match: ${occ.compatibilidad}% (${occ.cubiertas}/${occ.esenciales_total} esenciales)\n`
-
-      // Tendencia
-      if (occ.tendencia) {
-        if (occ.tendencia.trend_label === 'insuficiente') {
-          prompt += `   Mercado: ${occ.tendencia.ofertas_total} ofertas. Sin datos suficientes de tendencia.\n`
-        } else {
-          prompt += `   Mercado: ${occ.tendencia.ofertas_total} ofertas. Tendencia: ${occ.tendencia.trend_label}. Estabilidad: ${occ.tendencia.volatilidad}.\n`
-        }
-      }
-
-      // Gap
-      if (occ.gap_skills && occ.gap_skills.length > 0) {
-        const gapList = occ.gap_skills.slice(0, 5).map((s: any) => {
-          let txt = s.label
-          if (s.frecuencia_mercado) txt += ` (${s.frecuencia_mercado}% ofertas la piden)`
-          return txt
-        }).join(', ')
-        prompt += `   Le faltan ${occ.gap_skills.length} skills: ${gapList}\n`
-      } else {
-        prompt += `   No le falta ninguna skill esencial.\n`
-      }
-
-      // Cursos
-      if (occ.cursos && occ.cursos.length > 0) {
-        for (const c of occ.cursos.slice(0, 3)) {
-          prompt += `   Curso: "${c.titulo}" en ${c.institucion} (${c.provincia || 'sin sede'}) — cubre ${c.skills_cubiertas} skill${c.skills_cubiertas !== 1 ? 's' : ''} del gap\n`
-        }
-      } else {
-        prompt += `   Sin cursos disponibles para cubrir el gap.\n`
-      }
-      prompt += '\n'
+  prompt += 'OCUPACIONES COMPATIBLES:\n\n'
+  data.top_ocupaciones.forEach((occ, i) => {
+    prompt += `${i + 1}. ${occ.label}\n`
+    prompt += `   Cubre ${occ.cubiertas} de ${occ.esenciales_total} competencias esenciales. ${occ.demanda}.\n`
+    if (occ.gap_skills?.length) prompt += `   Le faltan: ${occ.gap_skills.slice(0, 5).map(s => s.label).join(', ')}\n`
+    if (occ.cursos?.length) {
+      for (const c of occ.cursos) prompt += `   Curso: "${c.titulo}"\n`
+    } else {
+      prompt += '   Sin cursos para lo que le falta.\n'
     }
-  }
-
-  const nombre = perfil.nombre.split(' ')[0]
-  prompt += `Analizá las opciones y dále a ${nombre} una recomendación concreta: cuál ocupación le conviene más y qué pasos seguir. Si la elegida no es la mejor opción, decíselo con tacto y explicá por qué otra puede ser mejor.`
+    prompt += '\n'
+  })
   return prompt
 }
 
@@ -88,30 +65,33 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.json()
 
-    if (!data.perfil?.nombre) {
-      return NextResponse.json({ error: 'Faltan datos del perfil' }, { status: 400 })
+    if (!Array.isArray(data.top_ocupaciones) || data.top_ocupaciones.length === 0) {
+      return NextResponse.json({ error: 'Faltan ocupaciones' }, { status: 400 })
     }
-
-    const userPrompt = buildUserPrompt(data)
 
     const completion = await groq.chat.completions.create({
       model: GROQ_MODEL_LARGE,
       max_completion_tokens: 2048,
       temperature: 0.3,
       reasoning_effort: 'low',
+      response_format: { type: 'json_object' },
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: userPrompt },
+        { role: 'user', content: buildUserPrompt(data) },
       ],
     })
 
-    const text = completion.choices[0]?.message?.content?.trim() || ''
-    const tokens = completion.usage?.total_tokens || 0
+    // Solo content: el reasoning del modelo no se lee. Los cursos se validan contra la lista enviada.
+    const raw = completion.choices[0]?.message?.content?.trim() || ''
+    const cursosPermitidos = (data.top_ocupaciones as OcupacionInput[]).flatMap(o => o.cursos || [])
+    const recomendacion = parseTrayectoria(raw, cursosPermitidos)
+    if (!recomendacion) console.error('trayectoria-laboral: JSON inválido', raw.slice(0, 200))
 
     return NextResponse.json({
-      recomendacion: text,
+      recomendacion,
+      disponible: !!recomendacion,
       model: GROQ_MODEL_LARGE,
-      tokens_used: tokens,
+      tokens_used: completion.usage?.total_tokens || 0,
     })
   } catch (error: any) {
     console.error('Error en trayectoria-laboral:', error?.message || error)

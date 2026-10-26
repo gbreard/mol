@@ -19,7 +19,10 @@ import { getFechaMaxOfertas } from '@/lib/supabase'
 import { formatFecha, provinciaOfertas } from '@/lib/ofertas-estado'
 
 import type { OccupationMatch } from '@/app/oficina-empleo/perfiles/matching/page'
-import { calculateOccupationMatch, isEligibleMatch, compareMatches, cursosQueCubrenVarias, type ProfileSkill } from '@/lib/matching'
+import { calculateOccupationMatch, isEligibleMatch, compareMatches, type ProfileSkill } from '@/lib/matching'
+import { fetchCursosParaPersona, lineaUbicacionCurso, esVirtual, type CursoPersona } from '@/lib/cursos'
+import { demandaLabel, type RecomendacionTrayectoria } from '@/lib/recomendacion-ia'
+import { RecomendacionCard, type OcupacionContexto } from '@/components/oficina-empleo/RecomendacionCard'
 
 interface PerfilSkill {
   skill_uri: string
@@ -109,7 +112,8 @@ export default function FuturoLaboralPage() {
   } | null>(null)
 
   // AI recommendation
-  const [recomendacion, setRecomendacion] = useState<string | null>(null)
+  const [recomendacion, setRecomendacion] = useState<RecomendacionTrayectoria | null>(null)
+  const [recoContexto, setRecoContexto] = useState<OcupacionContexto[]>([])
   const [loadingReco, setLoadingReco] = useState(false)
   const [recoError, setRecoError] = useState(false)
 
@@ -118,6 +122,7 @@ export default function FuturoLaboralPage() {
   const [loadingMol, setLoadingMol] = useState(false)
   const [dataError, setDataError] = useState<string | null>(null)
   const [cursosError, setCursosError] = useState(false)
+  const [cursosSinProvincia, setCursosSinProvincia] = useState(false)
 
   // Load static data on mount
   useEffect(() => {
@@ -256,7 +261,7 @@ export default function FuturoLaboralPage() {
       const ubi = data.personas?.ubicacion
       setPerfilProvincia(provinciaOfertas(ubi))
       const prov = normalizeProvinciaToRegice(ubi)
-      if (prov) setProvinciaCursos(prov)
+      setProvinciaCursos(prov || '')
     } catch {} finally {
       setLoadingPerfil(false)
     }
@@ -318,6 +323,8 @@ export default function FuturoLaboralPage() {
   }, [ofertasCountMap])
 
   // Fetch cursos when gap changes
+  // Cursos de la localidad de la persona: presenciales de su provincia + virtuales de
+  // cualquiera (ya filtrados por cobertura en el RPC). Sin provincia → solo virtuales.
   const fetchCursosGap = useCallback(async (gapEssential: any[], prov: string) => {
     if (gapEssential.length === 0) { setCursosGap([]); return }
     setLoadingCursos(true)
@@ -325,37 +332,9 @@ export default function FuturoLaboralPage() {
     setCursosError(false)
     try {
       const gapUris = gapEssential.map((s: any) => `http://data.europa.eu/esco/skill/${s.id}`)
-      // First try with provincia filter
-      let res = await fetch('/api/perfiles/cursos-gap', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ gap_skill_uris: gapUris, provincia: prov || null }),
-      })
-      // Solo cursos que cubren ≥ 2 competencias del gap (o la única, si el gap es de 1)
-      const utiles = (cursos: any[] | undefined) => cursosQueCubrenVarias(cursos || [], gapEssential.length)
-      if (res.ok) {
-        const data = await res.json()
-        if (utiles(data.cursos).length > 0) {
-          setCursosGap(utiles(data.cursos))
-        } else if (prov) {
-          // No results with provincia — retry without filter (national)
-          res = await fetch('/api/perfiles/cursos-gap', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ gap_skill_uris: gapUris }),
-          })
-          if (res.ok) {
-            const data2 = await res.json()
-            setCursosGap(utiles(data2.cursos))
-          } else {
-            setCursosError(true)
-          }
-        } else {
-          setCursosGap([])
-        }
-      } else {
-        setCursosError(true)
-      }
+      const { cursos, sinProvincia } = await fetchCursosParaPersona(gapUris, prov || null)
+      setCursosGap(cursos)
+      setCursosSinProvincia(sinProvincia)
     } catch {
       setCursosError(true)
     } finally {
@@ -462,19 +441,11 @@ export default function FuturoLaboralPage() {
         const result = calculateOccupationMatch(perfilSkills, occData.skills.essential || [], occData.skills.optional || [])
         const gapUris = result.gapEssential.map((s: any) => `http://data.europa.eu/esco/skill/${s.id}`)
 
-        // Fetch cursos for this gap
-        let cursos: any[] = []
+        // Cursos para este gap con la misma regla de localidad que el panel (regla A)
+        let cursos: CursoPersona[] = []
         if (gapUris.length > 0) {
           try {
-            const cursosRes = await fetch('/api/perfiles/cursos-gap', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ gap_skill_uris: gapUris }),
-            })
-            if (cursosRes.ok) {
-              const cursosData = await cursosRes.json()
-              cursos = (cursosData.cursos || []).slice(0, 3)
-            }
+            cursos = (await fetchCursosParaPersona(gapUris, provinciaCursos || null)).cursos.slice(0, 3)
           } catch {}
         }
 
@@ -482,48 +453,36 @@ export default function FuturoLaboralPage() {
         return {
           label: occ.label,
           isco_code: occ.isco_code,
-          compatibilidad: result.matchScore,
           esenciales_total: result.essentialTotal,
           cubiertas: result.sharedEssential.length,
-          tendencia: trend ? {
-            trend_label: !trend.suficiente ? 'insuficiente' : trend.trend_label,
-            ofertas_total: trend.ofertas_total || 0,
-            volatilidad: trend.volatility_label === 'volatil' ? 'volátil' : trend.volatility_label || 'desconocida',
-          } : { trend_label: 'insuficiente', ofertas_total: ofertasCountMap[occ.isco_code] || 0, volatilidad: 'desconocida' },
-          gap_skills: result.gapEssential.slice(0, 6).map((s: any) => ({
-            label: s.label,
-            frecuencia_mercado: molFreqs[`http://data.europa.eu/esco/skill/${s.id}`] || null,
-          })),
-          cursos: cursos.map((c: any) => ({
+          // Un solo indicador de demanda (el mismo que muestran los chips)
+          demanda: demandaLabel(trend?.suficiente ? trend.trend_label : null),
+          avisos: trend?.ofertas_total || ofertasCountMap[occ.isco_code] || 0,
+          gap_skills: result.gapEssential.slice(0, 6).map((s: any) => ({ label: s.label })),
+          cursos: cursos.map(c => ({
             titulo: c.titulo,
             institucion: c.institucion,
             skills_cubiertas: c.skills_cubiertas,
             provincia: c.provincia,
+            municipio: c.municipio,
+            modalidad: c.modalidad,
           })),
         }
       }))
 
+      const contexto = topOcupaciones.filter(Boolean) as (OcupacionContexto & { isco_code: string })[]
       const res = await fetch('/api/trayectoria-laboral', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          perfil: {
-            nombre: perfil.nombre,
-            skills_count: perfilSkills.length,
-            ubicacion: perfilProvincia,
-          },
-          ocupacion_elegida: selectedOcc && gapAnalysis ? {
-            label: selectedOcc.label,
-            isco_code: selectedOcc.isco_code,
-            compatibilidad: gapAnalysis.compatibility,
-            esenciales_total: gapAnalysis.essentialTotal,
-            cubiertas: gapAnalysis.sharedEssential.length,
-          } : null,
-          top_ocupaciones: topOcupaciones.filter(Boolean),
+          fecha_max: fechaMax,
+          ocupacion_elegida: selectedOcc ? { label: selectedOcc.label } : null,
+          top_ocupaciones: contexto,
         }),
       })
       if (res.ok) {
         const data = await res.json()
+        setRecoContexto(contexto)
         setRecomendacion(data.recomendacion || null)
         if (!data.recomendacion) setRecoError(true)
       } else {
@@ -574,15 +533,17 @@ export default function FuturoLaboralPage() {
         {/* Recomendación IA — a nivel perfil, independiente de ocupación */}
         {perfil && !loadingPerfil && perfilSkills.length > 0 && (
           <div className="bg-purple-50 rounded-xl border border-purple-200 p-4 mb-4">
-            <div className="flex items-center gap-2 mb-2">
-              <MessageSquare className="w-4 h-4 text-purple-600" />
-              <h3 className="text-sm font-semibold text-purple-700">Recomendación personalizada</h3>
-            </div>
+            {!recomendacion && (
+              <div className="flex items-center gap-2 mb-2">
+                <MessageSquare className="w-4 h-4 text-purple-600" />
+                <h3 className="text-sm font-semibold text-purple-700">Recomendación personalizada</h3>
+              </div>
+            )}
 
             {!recomendacion && !loadingReco && !recoError && (
               <div className="flex items-center gap-3">
                 <p className="text-xs text-gray-500 flex-1">
-                  Analizamos las mejores ocupaciones para {perfil.nombre.split(' ')[0]} según sus competencias, la demanda del mercado y los cursos disponibles.
+                  Analizamos las mejores ocupaciones para {perfil.nombre.split(' ')[0]} según sus competencias, los avisos publicados y los cursos disponibles.
                 </p>
                 <button
                   onClick={handlePedirRecomendacion}
@@ -614,13 +575,21 @@ export default function FuturoLaboralPage() {
             )}
 
             {recomendacion && (
-              <div>
-                <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{recomendacion}</p>
-                <p className="text-[9px] text-gray-400 mt-3 leading-snug">
-                  Generado con IA a partir de datos del mercado laboral argentino.
-                  Esta recomendación es orientativa y no constituye asesoramiento profesional.
-                </p>
-              </div>
+              <RecomendacionCard
+                titulo="Recomendación personalizada"
+                secciones={{
+                  ocupacion: recomendacion.ocupacion,
+                  tituloPrincipal: 'Por qué esta opción',
+                  textoPrincipal: recomendacion.por_que,
+                  tituloOpciones: 'Otras opciones',
+                  opciones: recomendacion.alternativas,
+                  tituloPasos: 'Próximos pasos',
+                  pasos: recomendacion.pasos,
+                  formacion: recomendacion.formacion,
+                }}
+                contexto={recoContexto}
+                fechaMax={fechaMax}
+              />
             )}
           </div>
         )}
@@ -818,6 +787,7 @@ export default function FuturoLaboralPage() {
                 sharedCount={gapAnalysis.sharedEssential.length}
                 essentialTotal={gapAnalysis.essentialTotal}
                 provincia={perfilProvincia}
+                sinProvincia={cursosSinProvincia}
               />
             )}
 
@@ -1051,8 +1021,8 @@ function TransferableSkillsPanel({ skills }: { skills: ProfileSkill[] }) {
   )
 }
 
-function CursosGapPanel({ cursos, loading, error, showAll, onShowAll, sharedCount, essentialTotal, provincia }: {
-  cursos: any[]
+function CursosGapPanel({ cursos, loading, error, showAll, onShowAll, sharedCount, essentialTotal, provincia, sinProvincia }: {
+  cursos: CursoPersona[]
   loading: boolean
   error?: boolean
   showAll: boolean
@@ -1060,19 +1030,20 @@ function CursosGapPanel({ cursos, loading, error, showAll, onShowAll, sharedCoun
   sharedCount: number
   essentialTotal: number
   provincia?: string | null
+  sinProvincia?: boolean
 }) {
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
 
   const compatActual = essentialTotal > 0 ? Math.round((sharedCount / essentialTotal) * 100) : 0
 
-  // Sort by mejora DESC (client-side, no refetch)
+  // Primero presenciales locales, después virtuales; dentro de cada grupo, por mejora
   const sorted = useMemo(() => {
     return [...cursos].map(c => {
       const proyectada = essentialTotal > 0
         ? Math.round(((sharedCount + c.skills_cubiertas) / essentialTotal) * 100)
         : 0
       return { ...c, compatProyectada: Math.min(proyectada, 100), mejora: Math.min(proyectada, 100) - compatActual }
-    }).sort((a, b) => b.mejora - a.mejora)
+    }).sort((a, b) => (Number(esVirtual(a)) - Number(esVirtual(b))) || (b.mejora - a.mejora))
   }, [cursos, sharedCount, essentialTotal, compatActual])
 
   return (
@@ -1096,9 +1067,17 @@ function CursosGapPanel({ cursos, loading, error, showAll, onShowAll, sharedCoun
         </p>
       )}
 
+      {!loading && !error && sinProvincia && (
+        <p className="text-xs text-amber-700 bg-amber-50 rounded px-2 py-1.5 mb-2">
+          Cargá la provincia en el perfil para ver cursos presenciales cerca.
+        </p>
+      )}
+
       {!loading && !error && sorted.length === 0 && (
         <p className="text-xs text-gray-400 text-center py-3">
-          No encontramos cursos que cubran varias de las competencias faltantes{provincia ? ` en ${provincia}` : ''}.
+          {provincia && !sinProvincia
+            ? `No encontramos cursos en ${provincia} ni virtuales que cubran varias de las competencias faltantes.`
+            : 'No encontramos cursos virtuales que cubran varias de las competencias faltantes.'}
         </p>
       )}
 
@@ -1108,9 +1087,9 @@ function CursosGapPanel({ cursos, loading, error, showAll, onShowAll, sharedCoun
             const isExpanded = expandedIdx === i
             const skills = c.skills_detalle || []
             const skillLabels = skills.map((s: any) => s.label)
-            const modalColor = (c.modalidad || '').toLowerCase().includes('virtual') ? 'bg-green-100 text-green-700'
-              : (c.modalidad || '').toLowerCase().includes('semi') ? 'bg-blue-100 text-blue-700'
-              : 'bg-gray-100 text-gray-600'
+            const virtual = esVirtual(c)
+            const modalColor = virtual ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
+            const ubicacion = lineaUbicacionCurso(c, sinProvincia ? null : provincia ?? null)
 
             return (
               <div key={`${c.curso_id}-${c.provincia}-${i}`} className="border rounded-lg overflow-hidden">
@@ -1122,12 +1101,10 @@ function CursosGapPanel({ cursos, loading, error, showAll, onShowAll, sharedCoun
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-900">{c.titulo}</p>
-                      <p className="text-xs text-gray-500 mt-0.5">
-                        {c.institucion} · {c.municipio}, {c.provincia}
-                      </p>
+                      <p className="text-xs text-gray-500 mt-0.5">{ubicacion}</p>
                       <div className="flex items-center gap-2 mt-1.5">
                         <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${modalColor}`}>
-                          {c.modalidad || 'Presencial'}
+                          {virtual ? 'Virtual' : 'Presencial'}
                         </span>
                         {c.carga_horaria > 0 && (
                           <span className="text-[10px] text-gray-400">{c.carga_horaria}hs</span>
@@ -1178,7 +1155,7 @@ function CursosGapPanel({ cursos, loading, error, showAll, onShowAll, sharedCoun
                     <div>
                       <p className="text-xs font-medium text-gray-600 mb-1">Institución</p>
                       <p className="text-xs text-gray-800">{c.institucion}</p>
-                      <p className="text-xs text-gray-500">{c.municipio}, {c.provincia}</p>
+                      <p className="text-xs text-gray-500">{ubicacion}</p>
                     </div>
 
                     {/* Course details */}
@@ -1186,7 +1163,7 @@ function CursosGapPanel({ cursos, loading, error, showAll, onShowAll, sharedCoun
                       <div>
                         <p className="text-xs font-medium text-gray-600">Modalidad</p>
                         <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${modalColor}`}>
-                          {c.modalidad || 'Presencial'}
+                          {virtual ? 'Virtual' : 'Presencial'}
                         </span>
                       </div>
                       {c.carga_horaria > 0 && (

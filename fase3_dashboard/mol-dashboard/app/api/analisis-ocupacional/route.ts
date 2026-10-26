@@ -1,72 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getGroq, GROQ_MODEL_LARGE } from '@/lib/groq'
+import { parseAnalisis } from '@/lib/recomendacion-ia'
+import { formatFecha } from '@/lib/ofertas-estado'
 
 const SYSTEM_PROMPT = `Sos un analista de política laboral del Observatorio de Empleo y Dinámica Empresarial (OEDE) de Argentina.
-Tu rol es analizar una ocupación y sus posibilidades de reconversión ante escenarios de crisis laboral (cierre de empresa, caída de demanda sectorial, apertura de importaciones, automatización).
+Analizás una ocupación y sus opciones de reconversión ante un escenario de crisis (cierre de empresa, caída de demanda sectorial, apertura de importaciones, automatización).
 
-REGLAS:
-- Usá SOLO los datos proporcionados. No inventes ocupaciones, cursos ni porcentajes.
-- No inventes cifras, duraciones, lugares ni nombres de cursos que no estén en los datos que te paso. Si no tenés el dato, no lo menciones.
-- Analizá las ocupaciones similares como destinos de reconversión: cuáles tienen demanda activa, qué skills son transferibles, qué formación existe.
-- Priorizá destinos con: muchas ofertas activas + alta similaridad de skills + cursos disponibles.
-- Si hay ocupaciones similares sin ofertas, mencionalo como limitación.
-- Mencioná explícitamente qué skills son transferibles (las que comparten) y cuáles requieren formación adicional.
-- Si hay cursos del sistema de formación continua, nombralos como recurso concreto.
-- Escribí para un técnico de política laboral que necesita fundamentar decisiones con datos.
-- Usá lenguaje técnico pero claro. Podés usar porcentajes y cifras.
-- Máximo 400 palabras.
-- Formato: 3-4 párrafos. Sin bullets, sin markdown, sin títulos, sin emojis. Texto técnico fluido.
-- Empezá directo con el análisis, no con "Ante un escenario..." genérico.`
+REGLAS ESTRICTAS:
+- Usá SOLO los datos que te paso. No inventes ocupaciones, cifras, duraciones, lugares, instituciones ni cursos.
+- No menciones porcentajes ni cantidades: las cifras las muestra la pantalla.
+- Cursos: mencioná solo cursos de la lista que te paso, con el nombre exacto. Si no hay cursos, "formacion" va vacío.
+- Los datos de mercado son avisos publicados hasta la fecha indicada. No digas "vacantes disponibles".
+- Para la demanda usá solo el indicador que te paso ("Demanda en alza", "estable", "en baja" o "sin datos de tendencia"). No hables de estabilidad ni volatilidad.
+- Priorizá destinos con más competencias compartidas, demanda en alza o estable y cursos disponibles.
+- Escribí para un técnico de política laboral: claro, técnico, sin muletillas.
+
+Respondé SOLO un objeto JSON con esta forma:
+{
+  "resumen": "diagnóstico de la ocupación, máximo 2 oraciones",
+  "destinos": [{ "ocupacion": "nombre tal como figura en la lista", "motivo": "1 oración" }],
+  "recomendaciones": ["1 oración", "1 oración", "1 oración"],
+  "formacion": [{ "curso": "nombre exacto del curso", "motivo": "1 oración" }]
+}
+Máximo 3 destinos, 3 recomendaciones y 2 cursos.`
+
+interface CursoInput { titulo: string }
+interface SimilarInput { label: string; afinidad: string; demanda: string; cursos?: CursoInput[] }
 
 function buildPrompt(data: any): string {
-  const { ocupacion, similares, cursos_ocupacion } = data
-
-  let prompt = `OCUPACIÓN ANALIZADA: ${ocupacion.label} (ISCO ${ocupacion.isco_code})\n`
-  prompt += `Ofertas activas: ${ocupacion.ofertas_total}\n`
-  if (ocupacion.tendencia && ocupacion.tendencia !== 'insuficiente') {
-    prompt += `Tendencia de demanda: ${ocupacion.tendencia}. Volatilidad: ${ocupacion.volatilidad}.\n`
-  } else {
-    prompt += `Tendencia: datos insuficientes.\n`
+  const { ocupacion, similares, cursos_ocupacion, fecha_max } = data
+  let prompt = fecha_max ? `Datos de mercado: avisos publicados hasta el ${formatFecha(fecha_max)}.\n\n` : ''
+  prompt += `OCUPACIÓN ANALIZADA: ${ocupacion.label}. ${ocupacion.demanda}.\n`
+  if (ocupacion.skills_esenciales?.length) prompt += `Competencias esenciales: ${ocupacion.skills_esenciales.join(', ')}\n`
+  if (cursos_ocupacion?.length) {
+    prompt += 'Cursos para esta ocupación:\n'
+    for (const c of cursos_ocupacion as CursoInput[]) prompt += `- "${c.titulo}"\n`
   }
-  prompt += `Skills esenciales (${ocupacion.skills_esenciales.length}): ${ocupacion.skills_esenciales.join(', ')}\n`
-  if (ocupacion.skills_opcionales_count > 0) {
-    prompt += `Skills opcionales: ${ocupacion.skills_opcionales_count}\n`
-  }
-  if (ocupacion.knowledge_esenciales?.length > 0) {
-    prompt += `Conocimientos clave: ${ocupacion.knowledge_esenciales.join(', ')}\n`
-  }
-  prompt += '\n'
-
-  if (cursos_ocupacion && cursos_ocupacion.length > 0) {
-    prompt += `CURSOS DE FORMACIÓN PARA ESTA OCUPACIÓN:\n`
-    for (const c of cursos_ocupacion) {
-      prompt += `- "${c.titulo}" en ${c.institucion} (${c.provincia}): cubre ${c.skills_cubiertas} skills\n`
-    }
-    prompt += '\n'
-  }
-
-  if (similares && similares.length > 0) {
-    prompt += `OCUPACIONES DESTINO DE RECONVERSIÓN (por skills compartidas):\n\n`
-    for (const s of similares) {
-      prompt += `• ${s.label} (ISCO ${s.isco_code})\n`
-      prompt += `  Similaridad: ${Math.round(s.similarity * 100)}% · Ofertas: ${s.ofertas}\n`
-      if (s.tendencia && s.tendencia !== 'insuficiente') {
-        prompt += `  Tendencia: ${s.tendencia}. Volatilidad: ${s.volatilidad}.\n`
-      } else {
-        prompt += `  Tendencia: datos insuficientes.\n`
-      }
-      if (s.cursos && s.cursos.length > 0) {
-        for (const c of s.cursos) {
-          prompt += `  Curso: "${c.titulo}" en ${c.institucion} (${c.provincia})\n`
-        }
-      } else {
-        prompt += `  Sin cursos de formación disponibles.\n`
-      }
-      prompt += '\n'
+  if (similares?.length) {
+    prompt += '\nOCUPACIONES DESTINO DE RECONVERSIÓN (por competencias compartidas):\n'
+    for (const s of similares as SimilarInput[]) {
+      prompt += `• ${s.label}: afinidad ${s.afinidad}. ${s.demanda}.\n`
+      if (s.cursos?.length) for (const c of s.cursos) prompt += `  Curso: "${c.titulo}"\n`
+      else prompt += '  Sin cursos de formación disponibles.\n'
     }
   }
-
-  prompt += `Analizá las opciones de reconversión para trabajadores de "${ocupacion.label}" en un escenario de crisis. Identificá las mejores trayectorias considerando transferibilidad de skills, tendencia de demanda, y formación disponible para cubrir el gap.`
   return prompt
 }
 
@@ -82,22 +59,30 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Falta la ocupación' }, { status: 400 })
     }
 
-    const userPrompt = buildPrompt(data)
-
     const completion = await groq.chat.completions.create({
       model: GROQ_MODEL_LARGE,
       max_completion_tokens: 2048,
       temperature: 0.3,
       reasoning_effort: 'low',
+      response_format: { type: 'json_object' },
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: userPrompt },
+        { role: 'user', content: buildPrompt(data) },
       ],
     })
 
-    const text = completion.choices[0]?.message?.content?.trim() || ''
+    // Solo content; los cursos se validan contra la lista enviada
+    const raw = completion.choices[0]?.message?.content?.trim() || ''
+    const cursosPermitidos = [
+      ...(data.cursos_ocupacion || []),
+      ...((data.similares || []) as SimilarInput[]).flatMap(s => s.cursos || []),
+    ]
+    const recomendacion = parseAnalisis(raw, cursosPermitidos)
+    if (!recomendacion) console.error('analisis-ocupacional: JSON inválido', raw.slice(0, 200))
+
     return NextResponse.json({
-      recomendacion: text,
+      recomendacion,
+      disponible: !!recomendacion,
       model: GROQ_MODEL_LARGE,
       tokens_used: completion.usage?.total_tokens || 0,
     })
