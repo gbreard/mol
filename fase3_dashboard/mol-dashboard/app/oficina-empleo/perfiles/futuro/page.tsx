@@ -19,7 +19,7 @@ import { getFechaMaxOfertas } from '@/lib/supabase'
 import { formatFecha, provinciaOfertas } from '@/lib/ofertas-estado'
 
 import type { OccupationMatch } from '@/app/oficina-empleo/perfiles/matching/page'
-import { calculateOccupationMatch, type ProfileSkill } from '@/lib/matching'
+import { calculateOccupationMatch, isEligibleMatch, compareMatches, type ProfileSkill } from '@/lib/matching'
 
 interface PerfilSkill {
   skill_uri: string
@@ -161,20 +161,24 @@ export default function FuturoLaboralPage() {
         occ.skills?.optional ?? []
       )
       if (result.sharedEssential.length === 0) continue
-      results.push({
+      const match: OccupationMatch = {
         uri: `http://data.europa.eu/esco/occupation/${id}`,
         label: occ.label || id,
         isco_code: (occ.isco || '').replace(/^C/, ''),
         matchScore: result.matchScore,
+        weightedScore: result.weightedScore,
         essentialTotal: result.essentialTotal,
         essentialCovered: result.sharedEssential.length,
         optionalCovered: result.sharedOptional.length,
         gapCount: result.gapCount,
-      })
+      }
+      // Mismas barandas que M2
+      if (isEligibleMatch(match)) results.push(match)
     }
-    results.sort((a, b) => b.matchScore - a.matchScore || a.gapCount - b.gapCount)
+    // cobertura → nivel ponderado → avisos (acá solo hay totales históricos por ISCO)
+    results.sort((a, b) => compareMatches(a, b, ofertasCountMap))
     return results
-  }, [perfilSkills, occupationsData])
+  }, [perfilSkills, occupationsData, ofertasCountMap])
 
   // Gap analysis — uses calculateOccupationMatch + separate knowledge calc
   const gapAnalysis = useMemo(() => {
@@ -216,15 +220,19 @@ export default function FuturoLaboralPage() {
         const result = calculateOccupationMatch(perfilSkills, altOcc.skills.essential, [])
         if (result.sharedEssential.length === 0) return null
         const isco = (altOcc.isco || '').replace(/^C/, '')
-        return {
+        const alt = {
           uri: `http://data.europa.eu/esco/occupation/${s.id}`,
           id: s.id,
           label: altOcc.label || s.label,
           isco_code: isco,
           matchScore: result.matchScore,
+          weightedScore: result.weightedScore,
+          essentialTotal: result.essentialTotal,
+          essentialCovered: result.sharedEssential.length,
           gapCount: result.gapCount,
           ofertasCount: ofertasCountMap[isco] || 0,
         }
+        return isEligibleMatch(alt) ? alt : null
       })
       .filter(Boolean)
       .sort((a: any, b: any) => a.gapCount - b.gapCount || b.matchScore - a.matchScore)

@@ -35,16 +35,25 @@ export async function getSkillsForOccupation(uri: string): Promise<OccSkillResul
     if (res.ok) {
       const data = await res.json()
       if (data.skills_consolidadas?.length > 0) {
-        const skills: OccSkillDetail[] = data.skills_consolidadas.map((s: any) => ({
-          id: s.uri?.split('/').pop() || s.label,
-          label: s.label,
-          type: s.L1?.startsWith('K') ? 'knowledge' : 'skill',
-          L1: s.L1,
-          L2: s.L2,
-          total: s.percentage_when_approved || s.freq_cuando_aprobada || 0,
-          essential: s.source === 'esco_common',
-          source: s.source,
-        }))
+        // La API devuelve esco_uri / label_normalized (no uri / label): sin normalizar,
+        // el picker mostraba filas sin nombre y guardaba URIs '…/skill/undefined'.
+        const skills: OccSkillDetail[] = data.skills_consolidadas
+          .map((s: any) => {
+            const uri: string | undefined = s.uri || s.esco_uri
+            const label: string | undefined = s.label || s.label_normalized || s.label_original
+            return {
+              id: uri?.split('/').pop() || '',
+              label: label || '',
+              type: s.L1?.startsWith('K') ? 'knowledge' : 'skill',
+              L1: s.L1,
+              L2: s.L2,
+              total: s.percentage ?? s.percentage_when_approved ?? s.freq_cuando_aprobada ?? 0,
+              // Pre-tildadas: las comunes con ESCO y las aprobadas para Argentina
+              essential: s.source === 'esco_common' || s.source === 'mol_approved' || s.source === 'argentina_approved',
+              source: s.source,
+            }
+          })
+          .filter((s: OccSkillDetail) => s.id && s.label)
         cache[uri] = skills
         return { skills, source: 'argentino' }
       }

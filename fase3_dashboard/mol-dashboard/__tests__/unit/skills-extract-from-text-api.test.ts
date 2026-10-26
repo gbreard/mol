@@ -157,12 +157,64 @@ describe('POST /api/skills-extract-from-text', () => {
     expect(mockGroqCreate).not.toHaveBeenCalled()
   })
 
-  it('Groq se llama con timeout de 2,5 s y sin reintentos', async () => {
+  it('Groq se llama con timeout de 4 s y sin reintentos', async () => {
     mockGroqCreate.mockResolvedValue({ choices: [{ message: { content: '{"terminos": ["a"]}' } }] })
     fetchMock.mockResolvedValue(embedOk(1))
 
     await POST(makeReq('levanto paredes y hago revoques'))
 
-    expect(mockGroqCreate.mock.calls[0][1]).toEqual({ timeout: 2500, maxRetries: 0 })
+    expect(mockGroqCreate.mock.calls[0][1]).toEqual({ timeout: 4000, maxRetries: 0 })
+  })
+
+  it('selección: Groq elige entre los candidatos los que el texto respalda', async () => {
+    mockGroqCreate
+      .mockResolvedValueOnce({ choices: [{ message: { content: '{"terminos": ["enfermería", "signos vitales"]}' } }] })
+      .mockResolvedValueOnce({ choices: [{ message: { content: '{"indices": [2]}' } }] })
+    fetchMock.mockResolvedValue(embedOk(2))
+    mockRpc.mockResolvedValue({
+      data: [
+        { skill_uri: 'u1', skill_label: 'presión del agua', similarity: 0.8 },
+        { skill_uri: 'u2', skill_label: 'medir la presión sanguínea', similarity: 0.7 },
+      ],
+      error: null,
+    })
+
+    const data = await (await POST(makeReq('tomo la presión y pongo inyecciones'))).json()
+
+    expect(data.method).toBe('llm+bge-m3+seleccion')
+    expect(data.results.map((r: { label: string }) => r.label)).toEqual(['medir la presión sanguínea'])
+    expect(mockGroqCreate.mock.calls[1][0].messages[1].content).toContain('1. presión del agua')
+  })
+
+  it('si la selección falla, devuelve los candidatos con el filtro por umbral', async () => {
+    mockGroqCreate
+      .mockResolvedValueOnce({ choices: [{ message: { content: '{"terminos": ["albañilería"]}' } }] })
+      .mockRejectedValueOnce(new Error('Request timed out.'))
+    fetchMock.mockResolvedValue(embedOk(1))
+    mockRpc.mockResolvedValue({ data: [{ skill_uri: 'u1', skill_label: 'construir muros', similarity: 0.8 }], error: null })
+
+    const data = await (await POST(makeReq('levanto paredes de ladrillo'))).json()
+
+    expect(data.method).toBe('llm+bge-m3')
+    expect(data.results.map((r: { label: string }) => r.label)).toEqual(['construir muros'])
+  })
+
+  it('deduplica por label además de por URI', async () => {
+    mockGroqCreate.mockResolvedValue({ choices: [{ message: { content: '{"terminos": ["albañilería"]}' } }] })
+    fetchMock.mockResolvedValue(embedOk(1))
+    mockRpc.mockResolvedValue({
+      data: [
+        { skill_uri: 'v1', skill_label: 'gestionar el inventario de vehículos', similarity: 0.7 },
+        { skill_uri: 'v2', skill_label: 'Gestionar el inventario de vehículos', similarity: 0.75 },
+        { skill_uri: 'x', skill_label: 'servicio al cliente', similarity: 0.8 },
+        { skill_uri: 'y', skill_label: 'tramitar pagos', similarity: 0.65 },
+      ],
+      error: null,
+    })
+
+    const data = await (await POST(makeReq('trabajé en un supermercado'))).json()
+    const labels = data.results.map((r: { label: string }) => r.label.toLowerCase())
+
+    expect(labels.filter((l: string) => l === 'gestionar el inventario de vehículos')).toHaveLength(1)
   })
 })

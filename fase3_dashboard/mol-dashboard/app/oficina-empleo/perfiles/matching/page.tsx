@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { Loader2, Target, ArrowUpDown, Calendar, Eye, EyeOff } from 'lucide-react'
+import { Loader2, Target, ArrowUpDown, Calendar, ChevronDown, ChevronUp } from 'lucide-react'
 import { OEBreadcrumb } from '@/components/oficina-empleo/OEBreadcrumb'
 import { PersonaSelector, type PerfilResumen } from '@/components/oficina-empleo/PersonaSelector'
 import { OccupationMatchCard } from '@/components/oficina-empleo/OccupationMatchCard'
-import { calculateOccupationMatch, type ProfileSkill } from '@/lib/matching'
+import { calculateOccupationMatch, isEligibleMatch, compareMatches, capPerIsco, type ProfileSkill } from '@/lib/matching'
 import { createBrowserClient } from '@supabase/ssr'
 import { getFechaMaxOfertas } from '@/lib/supabase'
 import { formatFecha, periodoDesde, provinciaOfertas } from '@/lib/ofertas-estado'
@@ -23,6 +23,7 @@ export interface OccupationMatch {
   label: string
   isco_code: string
   matchScore: number
+  weightedScore: number
   essentialTotal: number
   essentialCovered: number
   optionalCovered: number
@@ -47,13 +48,16 @@ const TIME_OPTIONS: { id: TimePeriod; label: string }[] = [
 
 const PERIOD_DAYS: Record<TimePeriod, number | null> = { '7d': 7, '30d': 30, all: null }
 
-type CountRow = { isco_code: string; total: number }
+type CountRow = { isco_code: string; total: number; activas: number }
 
-function toCountMap(rows: CountRow[] | null): Record<string, number> {
+function toCountMap(rows: CountRow[] | null, campo: 'total' | 'activas' = 'total'): Record<string, number> {
   const map: Record<string, number> = {}
-  for (const r of rows || []) map[r.isco_code] = Number(r.total)
+  for (const r of rows || []) map[r.isco_code] = Number(r[campo])
   return map
 }
+
+// Lista principal: ocupaciones con al menos 3 avisos en el país en el período
+const MIN_AVISOS_PAIS = 3
 
 export default function MatchingPage() {
   const searchParams = useSearchParams()
@@ -68,12 +72,13 @@ export default function MatchingPage() {
   const [mensaje, setMensaje] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<SortBy>('match')
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('30d')
-  const [showAll, setShowAll] = useState(false)
+  const [showOtras, setShowOtras] = useState(false)
   const [dataError, setDataError] = useState<string | null>(null)
 
   // Ofertas count map
   const [ofertasCountMap, setOfertasCountMap] = useState<Record<string, number>>({})
   const [ofertasCountPaisMap, setOfertasCountPaisMap] = useState<Record<string, number>>({})
+  const [activasPaisMap, setActivasPaisMap] = useState<Record<string, number>>({})
   const [countLoading, setCountLoading] = useState(true)
   // Última fecha con datos: los períodos se cuentan desde acá, no desde hoy
   const [fechaMax, setFechaMax] = useState<string | null | undefined>(undefined)
@@ -110,6 +115,7 @@ export default function MatchingPage() {
     Promise.all([rpc(null), perfilProvincia ? rpc(perfilProvincia) : null]).then(([pais, prov]) => {
       const paisMap = toCountMap(pais.error ? null : pais.data)
       setOfertasCountPaisMap(paisMap)
+      setActivasPaisMap(toCountMap(pais.error ? null : pais.data, 'activas'))
       setOfertasCountMap(prov ? toCountMap(prov.error ? null : prov.data) : paisMap)
       setCountLoading(false)
     })
@@ -161,16 +167,19 @@ export default function MatchingPage() {
       const rawIsco = occ.isco || occ.isco_code || ''
       const iscoCode = rawIsco.replace(/^C/, '')
 
-      results.push({
+      const match: OccupationMatch = {
         uri: `http://data.europa.eu/esco/occupation/${id}`,
         label: occ.label || id,
         isco_code: iscoCode,
         matchScore: result.matchScore,
+        weightedScore: result.weightedScore,
         essentialTotal: result.essentialTotal,
         essentialCovered: result.sharedEssential.length,
         optionalCovered: result.sharedOptional.length,
         gapCount: result.gapCount,
-      })
+      }
+      // Barandas: ≥ 2 esenciales cubiertas de ≥ 5, sin CIUO 0, sin exclusiones DEMO
+      if (isEligibleMatch(match)) results.push(match)
     }
 
     return results
@@ -216,16 +225,22 @@ export default function MatchingPage() {
         case 'alpha':
           return a.label.localeCompare(b.label)
         default:
-          if (b.matchScore !== a.matchScore) return b.matchScore - a.matchScore
-          return a.gapCount - b.gapCount
+          // cobertura → nivel ponderado → avisos activos
+          return compareMatches(a, b, activasPaisMap)
       }
     })
-  }, [matches, sortBy, ofertasCountMap])
+  }, [matches, sortBy, ofertasCountMap, activasPaisMap])
 
-  // Filter: by default only show occupations with offers in the selected period (provincia o, si no, país)
-  const withOffers = useMemo(() => sorted.filter(o => (ofertasCountPaisMap[o.isco_code] || 0) > 0), [sorted, ofertasCountPaisMap])
-  const displayed = showAll ? sorted : withOffers
-  const hiddenCount = sorted.length - withOffers.length
+  // Lista principal: ≥ 3 avisos en el país en el período, con máximo 2 por CIUO en el top 10.
+  // El resto va a la sección plegada "Otras ocupaciones compatibles".
+  const principales = useMemo(() => {
+    const conAvisos = sorted.filter(o => (ofertasCountPaisMap[o.isco_code] || 0) >= MIN_AVISOS_PAIS)
+    return sortBy === 'match' ? capPerIsco(conAvisos) : conAvisos
+  }, [sorted, sortBy, ofertasCountPaisMap])
+  const otras = useMemo(
+    () => sorted.filter(o => (ofertasCountPaisMap[o.isco_code] || 0) < MIN_AVISOS_PAIS),
+    [sorted, ofertasCountPaisMap]
+  )
 
   const loadingAll = loading || (perfil && profileSkills.length > 0 && !occupationsData)
   const countsReady = !countLoading
@@ -310,12 +325,11 @@ export default function MatchingPage() {
             {/* Controls bar */}
             <div className="flex items-center justify-between flex-wrap gap-2">
               <p className="text-xs text-gray-400">
-                {withOffers.length > 0
-                  ? `${withOffers.length} ocupaciones con avisos en el período`
+                {principales.length > 0
+                  ? `${principales.length} ocupaciones con avisos recientes`
                   : 'Sin avisos para este período'
                 }
-                {!showAll && hiddenCount > 0 && ` · ${hiddenCount} sin ofertas ocultas`}
-                {showAll && ` · ${matches.length} total`}
+                {otras.length > 0 && ` · ${otras.length} compatibles sin avisos recientes`}
               </p>
               <div className="flex items-center gap-3">
                 {/* Time period filter */}
@@ -344,36 +358,23 @@ export default function MatchingPage() {
                     ))}
                   </select>
                 </div>
-                {/* Toggle show all */}
-                {hiddenCount > 0 && (
-                  <button
-                    onClick={() => setShowAll(v => !v)}
-                    className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700"
-                  >
-                    {showAll ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-                    {showAll ? 'Solo con ofertas' : 'Ver todas'}
-                  </button>
-                )}
               </div>
             </div>
 
             {/* Empty state when all filtered out */}
-            {displayed.length === 0 && (
+            {principales.length === 0 && (
               <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
                 <Target className="w-8 h-8 text-gray-300 mx-auto mb-2" />
                 <p className="text-sm text-gray-600">
                   No hay ofertas publicadas{perfilProvincia ? ` en ${perfilProvincia}` : ''} en {TIME_OPTIONS.find(t => t.id === timePeriod)?.label.toLowerCase()} para las ocupaciones compatibles.
                 </p>
                 <p className="text-xs text-gray-400 mt-1">
-                  Probá con otro período o
-                  <button onClick={() => setShowAll(true)} className="text-teal-600 hover:text-teal-700 font-medium ml-1">
-                    ver todas las {matches.length} ocupaciones compatibles
-                  </button>
+                  Probá con otro período o revisá las otras ocupaciones compatibles más abajo.
                 </p>
               </div>
             )}
 
-            {displayed.map((o, i) => (
+            {principales.map((o, i) => (
               <OccupationMatchCard
                 key={o.uri}
                 occupation={o}
@@ -386,6 +387,35 @@ export default function MatchingPage() {
                 onOpenModal={handleOpenModal}
               />
             ))}
+
+            {otras.length > 0 && (
+              <div className="pt-2">
+                <button
+                  onClick={() => setShowOtras(v => !v)}
+                  className="w-full flex items-center justify-between px-4 py-2.5 bg-white rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50"
+                >
+                  <span>Otras ocupaciones compatibles (sin avisos recientes) · {otras.length}</span>
+                  {showOtras ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </button>
+                {showOtras && (
+                  <div className="space-y-3 mt-3">
+                    {otras.map((o, i) => (
+                      <OccupationMatchCard
+                        key={o.uri}
+                        occupation={o}
+                        rank={principales.length + i + 1}
+                        ofertasCount={ofertasCountMap[o.isco_code] || 0}
+                        ofertasCountPais={ofertasCountPaisMap[o.isco_code] || 0}
+                        provincia={perfilProvincia}
+                        since={since}
+                        fechaMax={fechaMax}
+                        onOpenModal={handleOpenModal}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 

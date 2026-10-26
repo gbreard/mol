@@ -24,7 +24,9 @@ export interface OccupationSkill {
 const ESCO_PREFIX = 'http://data.europa.eu/esco/skill/'
 
 /**
- * Calcula matchScore ponderado por nivel de maestría.
+ * Calcula la compatibilidad de un perfil con una ocupación.
+ * - matchScore: cobertura de esenciales (cubiertas / total), el % visible.
+ * - weightedScore: cobertura ponderada por nivel de maestría, solo para desempatar.
  * Reemplaza los cálculos duplicados de M2 y M3.
  */
 export function calculateOccupationMatch(
@@ -75,13 +77,17 @@ export function calculateOccupationMatch(
   // Transferable
   const transferable = profileSkills.filter(s => !allOccUris.has(s.skill_uri))
 
-  // matchScore: 0-100
+  // 0-100
   const matchScore = essentialSkills.length > 0
+    ? Math.round((sharedEssential.length / essentialSkills.length) * 100)
+    : 0
+  const weightedScore = essentialSkills.length > 0
     ? Math.round((weightedCovered / essentialSkills.length) * 100)
     : 0
 
   return {
     matchScore,
+    weightedScore,
     weightedCovered,
     essentialTotal: essentialSkills.length,
     sharedEssential,
@@ -91,4 +97,65 @@ export function calculateOccupationMatch(
     gapCount: gapEssential.length,
     transferable,
   }
+}
+
+// ============================================================
+// Barandas del ranking de ocupaciones (M2 y M3)
+// ============================================================
+
+export interface RankableMatch {
+  label: string
+  isco_code: string
+  matchScore: number
+  weightedScore: number
+  essentialTotal: number
+  essentialCovered: number
+}
+
+export const MIN_ESSENTIAL_COVERED = 2
+export const MIN_ESSENTIAL_TOTAL = 5
+export const MAX_PER_ISCO_IN_TOP = 2
+export const TOP_N = 10
+
+// DEMO: revisar después — ocupaciones absurdas que sobreviven a las barandas
+export const DEMO_EXCLUDED_OCCUPATIONS: string[] = []
+
+/**
+ * Una ocupación entra al ranking si cubre al menos 2 esenciales de un total de 5 o más
+ * (con pocas esenciales, 1 de 2 = 50% subía artificialmente), no es del gran grupo
+ * CIUO 0 (fuerzas armadas) y no está en la lista de exclusión.
+ */
+export function isEligibleMatch(m: RankableMatch): boolean {
+  return m.essentialCovered >= MIN_ESSENTIAL_COVERED
+    && m.essentialTotal >= MIN_ESSENTIAL_TOTAL
+    && !m.isco_code.startsWith('0')
+    && !DEMO_EXCLUDED_OCCUPATIONS.includes(m.label)
+}
+
+/** Orden: cobertura → nivel ponderado → avisos activos. */
+export function compareMatches(a: RankableMatch, b: RankableMatch, activas: Record<string, number> = {}): number {
+  return (b.matchScore - a.matchScore)
+    || (b.weightedScore - a.weightedScore)
+    || ((activas[b.isco_code] || 0) - (activas[a.isco_code] || 0))
+}
+
+/**
+ * Como máximo 2 ocupaciones por CIUO de 4 dígitos en el top 10; las que sobran
+ * pasan a continuación del top, en su orden.
+ */
+export function capPerIsco<T extends { isco_code: string }>(sorted: T[], max = MAX_PER_ISCO_IN_TOP, topN = TOP_N): T[] {
+  const top: T[] = []
+  const deferred: T[] = []
+  const porIsco: Record<string, number> = {}
+  let i = 0
+  for (; i < sorted.length && top.length < topN; i++) {
+    const m = sorted[i]
+    if ((porIsco[m.isco_code] || 0) < max) {
+      top.push(m)
+      porIsco[m.isco_code] = (porIsco[m.isco_code] || 0) + 1
+    } else {
+      deferred.push(m)
+    }
+  }
+  return [...top, ...deferred, ...sorted.slice(i)]
 }

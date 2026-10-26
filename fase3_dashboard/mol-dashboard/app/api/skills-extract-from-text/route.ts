@@ -15,7 +15,7 @@ const VPS_EMBED_SECRET = process.env.VPS_EMBED_SECRET || ''
 
 const NO_INTERPRETADO = 'No pudimos interpretar el texto, probá con la búsqueda por tarea.'
 
-const GROQ_TIMEOUT_MS = 2500
+const GROQ_TIMEOUT_MS = 4000
 const EMBED_TIMEOUT_MS = 4000
 
 // Filtro de ruido: máximo 8, umbral por modo; si quedan menos de 3, se completa hasta 3 con >= 0.55
@@ -51,15 +51,20 @@ function normalize(s: string): string {
   return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim()
 }
 
-/** Aplica exclusiones, filtro de idiomas, umbral por modo y tope de 8. */
-function filterNoise(hits: SkillHit[], text: string, minScore: number): SkillHit[] {
+/** Descarta exclusiones DEMO, idiomas no mencionados y lo que no llega al piso de 0.55. */
+function hardFilter(hits: SkillHit[], text: string): SkillHit[] {
   const allowLanguages = TEXT_MENTIONS_LANG_RE.test(normalize(text))
-  const candidates = hits.filter(h => {
+  return hits.filter(h => {
     const label = normalize(h.label)
     if (EXCLUDED_LABELS.has(label)) return false
     if (!allowLanguages && LANG_SKILL_RE.test(label)) return false
     return h.score >= MIN_SCORE_FLOOR
   })
+}
+
+/** Aplica exclusiones, filtro de idiomas, umbral por modo y tope de 8. */
+function filterNoise(hits: SkillHit[], text: string, minScore: number): SkillHit[] {
+  const candidates = hardFilter(hits, text)
   const strong = candidates.filter(h => h.score >= minScore)
   if (strong.length >= MIN_RESULTS) return strong.slice(0, MAX_RESULTS)
   // candidates está ordenado por score: completar hasta 3 con los de >= 0.55
@@ -119,6 +124,49 @@ Retorná SOLO un objeto JSON con la clave "terminos" (array de strings). Sin exp
 }
 
 // ============================================================
+// Step 1b: Groq selecciona, entre los candidatos, los que el texto respalda
+// ============================================================
+
+/**
+ * Devuelve los candidatos que el relato respalda explícitamente (en el orden recibido),
+ * o null si Groq falla, vence o no devuelve una selección válida.
+ */
+async function selectSupportedWithLLM(text: string, candidates: SkillHit[]): Promise<SkillHit[] | null> {
+  const groq = getGroq()
+  if (!groq || candidates.length === 0) return null
+  try {
+    const lista = candidates.map((c, i) => `${i + 1}. ${c.label}`).join('\n')
+    const completion = await groq.chat.completions.create({
+      model: GROQ_MODEL_FAST,
+      max_completion_tokens: 1024,
+      temperature: 0,
+      reasoning_effort: 'low',
+      response_format: { type: 'json_object' },
+      messages: [
+        {
+          role: 'system',
+          content: `Te paso el relato de experiencia laboral de una persona y una lista numerada de competencias candidatas.
+Elegí SOLO las competencias que el relato respalda explícitamente: tareas o conocimientos que la persona dice que hace o hizo.
+Descartá las que solo comparten una palabra con el relato pero hablan de otra cosa (por ejemplo "presión del agua" para "tomo la presión"), las de otro oficio y las de un nivel de responsabilidad que el relato no menciona (por ejemplo "supervisar obras" si solo dice que levanta paredes).
+Retorná SOLO un objeto JSON {"indices": [números de la lista]}. Sin explicación.`,
+        },
+        { role: 'user', content: `RELATO:\n${text}\n\nCANDIDATAS:\n${lista}` },
+      ],
+    }, { timeout: GROQ_TIMEOUT_MS, maxRetries: 0 })
+
+    const raw = completion.choices[0]?.message?.content?.trim() ?? '{}'
+    const indices = JSON.parse(raw.replace(/```json|```/g, '').trim())?.indices
+    if (!Array.isArray(indices)) return null
+    const elegidos = new Set(indices.filter((n: unknown): n is number => Number.isInteger(n)).map((n: number) => n - 1))
+    const seleccion = candidates.filter((_, i) => elegidos.has(i))
+    return seleccion.length > 0 ? seleccion : null
+  } catch (err: any) {
+    console.error('LLM selection fallback:', err?.message || err)
+    return null
+  }
+}
+
+// ============================================================
 // Step 2: VPS BGE-M3 generates embeddings (batch)
 // ============================================================
 
@@ -158,12 +206,15 @@ async function searchSkills(texts: string[], limit: number, threshold: number): 
     embeddings.map(emb => searchByVector(emb, limit, threshold))
   )
 
+  // Dedup por label normalizado (que también deduplica por URI): ESCO tiene URIs
+  // distintas con la misma etiqueta ("gestionar el inventario de vehículos" ×2)
   const skillMap = new Map<string, SkillHit>()
   for (let i = 0; i < searchResults.length; i++) {
     for (const skill of searchResults[i]) {
-      const existing = skillMap.get(skill.skill_uri)
+      const key = normalize(skill.skill_label)
+      const existing = skillMap.get(key)
       if (!existing || skill.similarity > existing.score) {
-        skillMap.set(skill.skill_uri, {
+        skillMap.set(key, {
           uri: skill.skill_uri,
           label: skill.skill_label,
           score: skill.similarity,
@@ -242,11 +293,15 @@ export async function POST(request: NextRequest) {
         const keywords = await extractKeywordsWithLLM(text)
         if (keywords.length === 0) throw new Error('LLM returned empty keywords')
 
-        const hits = filterNoise(await searchSkills(keywords, 5, 0.4), text, MIN_SCORE_LLM)
+        // Candidatos (máx. 20) → Groq elige los que el texto respalda; si falla o vence,
+        // quedan los candidatos con el filtro por umbral
+        const candidatos = await searchSkills(keywords, 5, 0.4)
+        const seleccion = await selectSupportedWithLLM(text, hardFilter(candidatos, text))
+        const hits = seleccion ? seleccion.slice(0, MAX_RESULTS) : filterNoise(candidatos, text, MIN_SCORE_LLM)
         return NextResponse.json({
           results: toResults(hits),
           keywords,
-          method: 'llm+bge-m3',
+          method: seleccion ? 'llm+bge-m3+seleccion' : 'llm+bge-m3',
           text_length: text.length,
         })
       } catch (err: any) {
