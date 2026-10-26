@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
+import { formatearCurso } from '@/lib/cursos'
 
 let supabaseAdmin: SupabaseClient | null = null
 function getSupabaseAdmin(): SupabaseClient | null {
@@ -45,7 +46,7 @@ export async function POST(request: NextRequest) {
     if (error) throw error
 
     const cursos = (data || []).map((c: any) => ({
-      ...c,
+      ...formatearCurso(c),
       pct_gap_cubierto: c.total_gap_skills > 0
         ? Math.round((c.skills_cubiertas / c.total_gap_skills) * 100)
         : 0,

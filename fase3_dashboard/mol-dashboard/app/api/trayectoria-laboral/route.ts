@@ -16,10 +16,14 @@ REGLAS:
 - Para la demanda usá solo el indicador que te paso ("Demanda en alza", "estable", "en baja" o "sin datos de tendencia"). No hables de estabilidad ni volatilidad.
 - Nombrá competencias concretas de la lista (lo que ya sabe y lo que le falta), no categorías vagas.
 - Voseo rioplatense en TODOS los verbos: tenés, manejás, cubrís, sabés, podés, vas a encontrar. Nunca tienes, manejas, cubres, sabes, puedes ni futuros como encontrarás.
-- Los pasos tienen que ser concretos y empezar con un verbo en imperativo con voseo (Anotate, Armá, Practicá, Reforzá): una competencia para reforzar, un curso de la lista o una de estas acciones de la Oficina de Empleo, sin inventar otras: armar el CV con el orientador, anotarse en la bolsa de empleo de la Oficina, pedir una entrevista de orientación, preparar entrevistas laborales con el orientador. Nunca "postulá" a secas.
+- Pasos: empiezan con un verbo en imperativo con voseo (Anotate, Armá, Practicá, Reforzá, Destacá) y tienen que ser distintos entre sí.
+  * Como máximo UNO puede ser una acción genérica de la Oficina de Empleo, y solo estas (no inventes otras): armar el CV con el orientador, anotarse en la bolsa de empleo de la Oficina, pedir una entrevista de orientación, preparar entrevistas laborales con el orientador.
+  * Los demás tienen que ser específicos de esta persona: un curso de la lista que cubre una competencia que le falta (nombrá el curso y esa competencia), o una competencia concreta para trabajar o para destacar.
+  * Si no hay cursos y ya cubre todas las competencias esenciales, un paso destaca 1 o 2 de sus competencias fuertes por su nombre.
+  * Nunca "postulá" a secas.
 - Cuando digas qué cubre un curso, usá solo las competencias que te paso para ese curso.
 - Los avisos son de todo el país, no de la provincia de la persona.
-- No prometas resultados (empleo seguro, continuidad, que va a conseguir trabajo pronto).
+- No prometas resultados (empleo seguro, continuidad, que va a conseguir trabajo) ni velocidad ("rápidamente", "pronto", "en poco tiempo").
 - No supongas su situación actual (no digas "hoy estás trabajando", ni dónde ni hace cuánto): hablá de lo que sabe hacer según su perfil.
 - Criterio para elegir: primero la cobertura de competencias esenciales; entre opciones con cobertura parecida, la que tiene más avisos publicados. Explicá la elección solo con esos datos; no inventes motivos como "hay mucha competencia".
 - Si el indicador dice "Sin datos de tendencia", decí que no hay datos suficientes para saber si la demanda crece o baja; nunca lo presentes como demanda estable o sin variaciones.
@@ -27,7 +31,7 @@ REGLAS:
 Respondé SOLO un objeto JSON con esta forma:
 {
   "ocupacion": "la ocupación que le recomendás, tal como figura en la lista",
-  "diagnostico": "párrafo de 3 a 4 oraciones: empezá con su nombre de pila; dónde está hoy, qué lo hace fuerte (nombrá 1 o 2 competencias concretas) y qué le falta",
+  "diagnostico": "párrafo de 3 a 4 oraciones: empezá con su nombre de pila; dónde está hoy, qué lo hace fuerte (nombrá 1 o 2 competencias concretas) y qué le falta: como máximo 3 competencias faltantes, las de mayor peso (vienen primero en la lista); si le faltan más, agregá 'y algunas más'",
   "recomendacion": "párrafo de 2 a 3 oraciones: por qué este camino tiene sentido para esta persona",
   "alternativas": [{ "ocupacion": "tal como figura en la lista", "comentario": "1 o 2 oraciones honestas, también si no conviene" }],
   "pasos": [{ "accion": "1 oración concreta en imperativo con voseo, ej. 'Armá tu CV con el orientador.' (nunca en infinitivo: 'Armar', 'Anotarse')", "por_que": "1 oración" }],
@@ -43,7 +47,10 @@ interface OcupacionInput {
   avisos: number
   demanda: string
   fortalezas?: string[]
+  /** Faltantes ordenadas por peso (frecuencia en los avisos de la ocupación) */
   gap_skills?: { label: string }[]
+  /** Cantidad total de competencias esenciales que le faltan */
+  gap_total?: number
   cursos?: CursoInput[]
 }
 
@@ -75,7 +82,10 @@ function buildUserPrompt(data: {
     prompt += `${i + 1}. ${occ.label}\n`
     prompt += `   ${cobertura(occ.cubiertas, occ.esenciales_total)}. ${occ.avisos} avisos publicados en todo el país. ${occ.demanda}.\n`
     if (occ.fortalezas?.length) prompt += `   Ya sabe: ${occ.fortalezas.slice(0, 4).join(', ')}\n`
-    if (occ.gap_skills?.length) prompt += `   Le falta: ${occ.gap_skills.slice(0, 5).map(s => s.label).join(', ')}\n`
+    if (occ.gap_skills?.length) {
+      const resto = (occ.gap_total ?? occ.gap_skills.length) - Math.min(3, occ.gap_skills.length)
+      prompt += `   Le falta (de mayor a menor peso): ${occ.gap_skills.slice(0, 3).map(s => s.label).join(', ')}${resto > 0 ? `; y ${resto} más` : ''}\n`
+    }
     if (occ.cursos?.length) {
       for (const c of occ.cursos) {
         prompt += `   Curso: "${c.titulo}" (${c.institucion ? `${c.institucion}, ` : ''}${lugarCurso(c)})`

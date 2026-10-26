@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth, isAuthError } from '@/lib/api-auth'
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
+import { formatearCurso } from '@/lib/cursos'
 
 let supabaseAdmin: SupabaseClient | null = null
 function getSupabaseAdmin(): SupabaseClient | null {
@@ -50,5 +51,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Error buscando cursos' }, { status: 500 })
   }
 
-  return NextResponse.json({ cursos: data || [], provincia, sin_provincia: !provincia })
+  // Formato título (REGICE viene en mayúsculas o minúsculas); no se completan truncados
+  return NextResponse.json({ cursos: (data || []).map(formatearCurso), provincia, sin_provincia: !provincia })
 }

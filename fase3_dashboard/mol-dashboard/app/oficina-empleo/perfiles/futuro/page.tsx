@@ -441,6 +441,13 @@ export default function FuturoLaboralPage() {
         const result = calculateOccupationMatch(perfilSkills, occData.skills.essential || [], occData.skills.optional || [])
         const gapUris = result.gapEssential.map((s: any) => `http://data.europa.eu/esco/skill/${s.id}`)
 
+        // Peso de cada competencia: en cuántos avisos de la ocupación aparece
+        const freqs: Record<string, number> = {}
+        try {
+          const { data: freqRows } = await getSupabase().rpc('get_skill_freq_by_isco', { p_isco: occ.isco_code })
+          for (const r of (freqRows || []) as { skill_uri: string; ofertas: number }[]) freqs[r.skill_uri] = Number(r.ofertas)
+        } catch {}
+
         // Cursos para este gap con la misma regla de localidad que el panel (regla A)
         let cursos: CursoPersona[] = []
         if (gapUris.length > 0) {
@@ -459,7 +466,12 @@ export default function FuturoLaboralPage() {
           demanda: demandaLabel(trend?.suficiente ? trend.trend_label : null),
           avisos: trend?.ofertas_total || ofertasCountMap[occ.isco_code] || 0,
           fortalezas: result.sharedEssential.slice(0, 4).map((s: any) => s.label),
-          gap_skills: result.gapEssential.slice(0, 6).map((s: any) => ({ label: s.label })),
+          // Faltantes por peso: frecuencia con que la piden los avisos de esa ocupación
+          gap_skills: [...result.gapEssential]
+            .sort((x: any, y: any) => (freqs[`http://data.europa.eu/esco/skill/${y.id}`] || 0) - (freqs[`http://data.europa.eu/esco/skill/${x.id}`] || 0))
+            .slice(0, 3)
+            .map((s: any) => ({ label: s.label })),
+          gap_total: result.gapEssential.length,
           cursos: cursos.map(c => ({
             titulo: c.titulo,
             institucion: c.institucion,

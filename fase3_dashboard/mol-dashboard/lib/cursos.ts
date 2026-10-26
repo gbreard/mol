@@ -64,3 +64,35 @@ export function lineaUbicacionCurso(c: Pick<CursoPersona, 'institucion' | 'munic
   const lugar = [c.municipio, provinciaDisplay(c.provincia)].filter(Boolean).join(', ')
   return `${c.institucion} · ${lugar} · Presencial`
 }
+
+const MINUSCULAS = new Set(['de', 'del', 'la', 'las', 'el', 'los', 'y', 'e', 'en', 'a', 'al', 'para', 'por', 'con', 'o', 'u'])
+
+/**
+ * Formato título para textos de REGICE que vienen en mayúsculas o minúsculas:
+ * "ESCUELA MUNICIPAL DE OFIC" → "Escuela Municipal de Ofic", "albanileria" → "Albanileria".
+ * Solo cambia mayúsculas: no completa truncados ni agrega tildes. Siglas cortas (SRL, SA) quedan.
+ */
+export function formatoTitulo(texto: string | null | undefined): string {
+  if (!texto) return ''
+  return texto
+    .split(/(\s+)/)
+    .map((p, i) => {
+      if (/^\s+$/.test(p)) return p
+      const limpio = p.replace(/[.,]/g, '')
+      if (/^(S\.?R\.?L|S\.?A|SA|SRL|SAS|UTN|INTA|INET|UOCRA|CGT)\.?$/i.test(limpio)) return p.toUpperCase()
+      const minus = p.toLowerCase()
+      if (i > 0 && MINUSCULAS.has(minus)) return minus
+      return minus.charAt(0).toUpperCase() + minus.slice(1)
+    })
+    .join('')
+}
+
+/** Normaliza para mostrar (y para el prompt) los campos de texto de un curso. */
+export function formatearCurso<T extends { titulo?: string; institucion?: string; municipio?: string | null }>(c: T): T {
+  return {
+    ...c,
+    titulo: formatoTitulo(c.titulo),
+    institucion: formatoTitulo(c.institucion),
+    municipio: c.municipio ? formatoTitulo(c.municipio) : c.municipio,
+  }
+}

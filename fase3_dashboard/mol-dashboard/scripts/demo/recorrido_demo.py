@@ -99,7 +99,7 @@ with sync_playwright() as p:
     demos = {p['personas']['dni']: p['id'] for p in perfiles if (p.get('personas') or {}).get('dni', '').startswith('DEMO-')}
 
     page.goto(f'{BASE}/oficina-empleo/perfiles', wait_until='networkidle')
-    page.get_by_role('link', name='Demo Soldador').first.click()
+    page.get_by_role('link', name='Jorge Benítez').first.click()
     page.wait_for_load_state('networkidle')
     page.get_by_role('link', name=re.compile('Oportunidades')).first.click()
     page.wait_for_url(re.compile('perfiles/matching'), timeout=30000)

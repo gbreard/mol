@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { parseTrayectoria, parseAnalisis, buscarCurso, demandaLabel, etiquetaOcupacion } from '@/lib/recomendacion-ia'
-import { lineaUbicacionCurso, provinciaDisplay, esVirtual } from '@/lib/cursos'
+import { lineaUbicacionCurso, provinciaDisplay, esVirtual, formatoTitulo, formatearCurso } from '@/lib/cursos'
 
 const CURSOS = [{ titulo: 'albanileria' }, { titulo: 'soldadura nivel inicial' }]
 
@@ -55,5 +55,19 @@ describe('helpers', () => {
       .toBe('UTN · Virtual · se puede cursar desde Santa Fe')
     expect(provinciaDisplay('Capital federal')).toBe('CABA')
     expect(esVirtual({ modalidad: 'DISTANCIA' })).toBe(true)
+  })
+})
+
+describe('formatoTitulo (REGICE)', () => {
+  it('solo cambia mayúsculas: no completa truncados ni agrega tildes', () => {
+    expect(formatoTitulo('ESCUELA MUNICIPAL DE OFIC')).toBe('Escuela Municipal de Ofic')
+    expect(formatoTitulo('albanileria')).toBe('Albanileria')
+    expect(formatoTitulo('soldadura de estructura inicial')).toBe('Soldadura de Estructura Inicial')
+    expect(formatoTitulo('BINDERPLUS SRL')).toBe('Binderplus SRL')
+    expect(formatoTitulo('INDUSTRIAS MONTECOR S.R.L')).toBe('Industrias Montecor S.R.L')
+  })
+  it('formatearCurso aplica a título, institución y localidad', () => {
+    expect(formatearCurso({ titulo: 'pintura de obra', institucion: 'SERVICIO HABITACIONAL Y D', municipio: 'CORDOBA' }))
+      .toEqual({ titulo: 'Pintura de Obra', institucion: 'Servicio Habitacional y D', municipio: 'Cordoba' })
   })
 })
