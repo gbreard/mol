@@ -1,14 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Groq from 'groq-sdk'
-
-let _groq: Groq | null = null
-function getGroq(): Groq | null {
-  if (_groq) return _groq
-  const key = process.env.GROQ_API_KEY
-  if (!key) return null
-  _groq = new Groq({ apiKey: key })
-  return _groq
-}
+import { getGroq, GROQ_MODEL_LARGE } from '@/lib/groq'
 
 const SYSTEM_PROMPT = `Sos un asesor laboral de una oficina de empleo pública argentina.
 Tu rol es interpretar datos del mercado laboral y sugerir trayectorias de formación concretas.
@@ -90,7 +81,7 @@ function buildUserPrompt(data: any): string {
 export async function POST(request: NextRequest) {
   const groq = getGroq()
   if (!groq) {
-    return NextResponse.json({ error: 'Servicio de IA no configurado' }, { status: 500 })
+    return NextResponse.json({ recomendacion: null, disponible: false })
   }
 
   try {
@@ -103,9 +94,10 @@ export async function POST(request: NextRequest) {
     const userPrompt = buildUserPrompt(data)
 
     const completion = await groq.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
-      max_tokens: 700,
+      model: GROQ_MODEL_LARGE,
+      max_completion_tokens: 2048,
       temperature: 0.3,
+      reasoning_effort: 'low',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: userPrompt },
@@ -117,14 +109,11 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       recomendacion: text,
-      model: 'llama-3.3-70b-versatile',
+      model: GROQ_MODEL_LARGE,
       tokens_used: tokens,
     })
   } catch (error: any) {
     console.error('Error en trayectoria-laboral:', error?.message || error)
-    return NextResponse.json(
-      { error: 'Error generando recomendación. Intentá de nuevo.' },
-      { status: 500 }
-    )
+    return NextResponse.json({ recomendacion: null, disponible: false })
   }
 }

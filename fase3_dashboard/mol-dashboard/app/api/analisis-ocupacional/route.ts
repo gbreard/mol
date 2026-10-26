@@ -1,14 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Groq from 'groq-sdk'
-
-let _groq: Groq | null = null
-function getGroq(): Groq | null {
-  if (_groq) return _groq
-  const key = process.env.GROQ_API_KEY
-  if (!key) return null
-  _groq = new Groq({ apiKey: key })
-  return _groq
-}
+import { getGroq, GROQ_MODEL_LARGE } from '@/lib/groq'
 
 const SYSTEM_PROMPT = `Sos un analista de política laboral del Observatorio de Empleo y Dinámica Empresarial (OEDE) de Argentina.
 Tu rol es analizar una ocupación y sus posibilidades de reconversión ante escenarios de crisis laboral (cierre de empresa, caída de demanda sectorial, apertura de importaciones, automatización).
@@ -81,7 +72,7 @@ function buildPrompt(data: any): string {
 export async function POST(request: NextRequest) {
   const groq = getGroq()
   if (!groq) {
-    return NextResponse.json({ error: 'Servicio de IA no configurado' }, { status: 500 })
+    return NextResponse.json({ recomendacion: null, disponible: false })
   }
 
   try {
@@ -93,9 +84,10 @@ export async function POST(request: NextRequest) {
     const userPrompt = buildPrompt(data)
 
     const completion = await groq.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
-      max_tokens: 800,
+      model: GROQ_MODEL_LARGE,
+      max_completion_tokens: 2048,
       temperature: 0.3,
+      reasoning_effort: 'low',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: userPrompt },
@@ -105,11 +97,11 @@ export async function POST(request: NextRequest) {
     const text = completion.choices[0]?.message?.content?.trim() || ''
     return NextResponse.json({
       recomendacion: text,
-      model: 'llama-3.3-70b-versatile',
+      model: GROQ_MODEL_LARGE,
       tokens_used: completion.usage?.total_tokens || 0,
     })
   } catch (error: any) {
     console.error('Error en analisis-ocupacional:', error?.message || error)
-    return NextResponse.json({ error: 'Error generando análisis' }, { status: 500 })
+    return NextResponse.json({ recomendacion: null, disponible: false })
   }
 }

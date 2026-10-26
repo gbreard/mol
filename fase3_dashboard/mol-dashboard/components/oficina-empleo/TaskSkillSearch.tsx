@@ -18,6 +18,7 @@ export function TaskSkillSearch({ skillUris, onAddSkill, onAddSkills }: Props) {
   const [results, setResults] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [extractedPending, setExtractedPending] = useState<any[]>([])
+  const [extractMessage, setExtractMessage] = useState<string | null>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Cleanup debounce on unmount
@@ -50,6 +51,7 @@ export function TaskSkillSearch({ skillUris, onAddSkill, onAddSkills }: Props) {
     if (!query.trim()) return
     setLoading(true)
     setExtractedPending([])
+    setExtractMessage(null)
     try {
       const res = await fetch('/api/skills-extract-from-text', {
         method: 'POST',
@@ -58,9 +60,13 @@ export function TaskSkillSearch({ skillUris, onAddSkill, onAddSkills }: Props) {
       })
       if (res.ok) {
         const data = await res.json()
-        setExtractedPending(data.results || data.skills || [])
+        const found = data.results || data.skills || []
+        setExtractedPending(found)
+        if (found.length === 0) setExtractMessage(data.message || 'No pudimos interpretar el texto, probá con la búsqueda por tarea.')
       }
-    } catch {} finally {
+    } catch {
+      setExtractMessage('No pudimos interpretar el texto, probá con la búsqueda por tarea.')
+    } finally {
       setLoading(false)
     }
   }
@@ -195,6 +201,10 @@ export function TaskSkillSearch({ skillUris, onAddSkill, onAddSkills }: Props) {
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
             Extraer habilidades
           </button>
+
+          {extractMessage && extractedPending.length === 0 && (
+            <p className="text-xs text-gray-500 text-center py-2">{extractMessage}</p>
+          )}
 
           {extractedPending.length > 0 && (
             <div className="border rounded-lg overflow-hidden">

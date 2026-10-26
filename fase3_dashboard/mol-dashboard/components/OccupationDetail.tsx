@@ -200,6 +200,7 @@ export default function OccupationDetail({
       if (res.ok) {
         const data = await res.json();
         setRecoPolicy(data.recomendacion || null);
+        if (!data.recomendacion) setRecoError(true);
       } else {
         setRecoError(true);
       }
@@ -337,7 +338,7 @@ export default function OccupationDetail({
 
           {recoError && (
             <div className="flex items-center gap-3">
-              <p className="text-xs text-red-500 flex-1">No se pudo generar el análisis.</p>
+              <p className="text-xs text-gray-500 flex-1">Análisis no disponible en este momento.</p>
               <button onClick={handlePedirAnalisis} className="text-xs text-blue-600 hover:text-blue-700 font-medium shrink-0">Reintentar</button>
             </div>
           )}

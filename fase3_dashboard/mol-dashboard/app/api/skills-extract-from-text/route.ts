@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireRateLimit } from '@/lib/api-auth'
 import { createClient } from '@supabase/supabase-js'
-import Groq from 'groq-sdk'
+import { getGroq, GROQ_MODEL_FAST } from '@/lib/groq'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
@@ -10,17 +10,12 @@ const supabase = supabaseUrl && supabaseKey
   ? createClient(supabaseUrl, supabaseKey)
   : null
 
-let _groq: Groq | null = null
-function getGroq(): Groq | null {
-  if (_groq) return _groq
-  const key = process.env.GROQ_API_KEY
-  if (!key) return null
-  _groq = new Groq({ apiKey: key })
-  return _groq
-}
-
 const VPS_EMBED_URL = process.env.VPS_EMBED_URL || 'http://187.124.150.28:8082'
 const VPS_EMBED_SECRET = process.env.VPS_EMBED_SECRET || ''
+
+const NO_INTERPRETADO = 'No pudimos interpretar el texto, probá con la búsqueda por tarea.'
+
+type SkillHit = { uri: string; label: string; score: number; keyword: string }
 
 // ============================================================
 // Step 1: Groq generates technical keywords
@@ -31,9 +26,11 @@ async function extractKeywordsWithLLM(text: string): Promise<string[]> {
   if (!groq) throw new Error('Groq not configured')
 
   const completion = await groq.chat.completions.create({
-    model: 'llama-3.1-8b-instant',
-    max_tokens: 150,
+    model: GROQ_MODEL_FAST,
+    max_completion_tokens: 1024,
     temperature: 0.1,
+    reasoning_effort: 'low',
+    response_format: { type: 'json_object' },
     messages: [
       {
         role: 'system',
@@ -42,26 +39,28 @@ Usá vocabulario técnico formal, no coloquial.
 
 Ejemplos:
 - Input: 'pongo inyecciones y tomo la presión'
-  Output: ["administrar medicación", "medir signos vitales", "técnicas de enfermería", "cuidados de salud"]
+  Output: {"terminos": ["administrar medicación", "medir signos vitales", "técnicas de enfermería", "cuidados de salud"]}
 
 - Input: 'hago páginas web con Python'
-  Output: ["desarrollo web", "programación Python", "bases de datos", "aplicaciones informáticas"]
+  Output: {"terminos": ["desarrollo web", "programación Python", "bases de datos", "aplicaciones informáticas"]}
 
 - Input: 'levanto paredes y hago revoques'
-  Output: ["albañilería", "construcción de mampostería", "aplicar revoque", "trabajo en construcción"]
+  Output: {"terminos": ["albañilería", "construcción de mampostería", "aplicar revoque", "trabajo en construcción"]}
 
-Retorná SOLO un JSON array de strings. Sin explicación.`
+Retorná SOLO un objeto JSON con la clave "terminos" (array de strings). Sin explicación.`
       },
       { role: 'user', content: text }
     ]
   })
 
-  const raw = completion.choices[0]?.message?.content?.trim() ?? '[]'
+  // Solo content: el reasoning del modelo no se lee
+  const raw = completion.choices[0]?.message?.content?.trim() ?? '{}'
   try {
     const cleaned = raw.replace(/```json|```/g, '').trim()
     const parsed = JSON.parse(cleaned)
-    if (Array.isArray(parsed)) {
-      return parsed.filter(s => typeof s === 'string' && s.length > 2).slice(0, 8)
+    const terms = Array.isArray(parsed) ? parsed : parsed?.terminos
+    if (Array.isArray(terms)) {
+      return terms.filter((s: unknown): s is string => typeof s === 'string' && s.length > 2).slice(0, 8)
     }
   } catch {
     const matches = raw.match(/"([^"]+)"/g)
@@ -93,41 +92,64 @@ async function embedTexts(texts: string[]): Promise<number[][]> {
 // Step 3: pgvector search per embedding
 // ============================================================
 
-async function searchByVector(embedding: number[], limit: number = 5) {
+async function searchByVector(embedding: number[], limit: number, threshold: number) {
   if (!supabase) return []
   const { data } = await supabase.rpc('match_skills_by_embedding', {
     query_embedding: embedding,
-    match_threshold: 0.4,
+    match_threshold: threshold,
     match_count: limit,
   })
   return data ?? []
 }
 
+/** Embebe los textos, busca por vector y deduplica por URI (gana el mejor score). */
+async function searchSkills(texts: string[], limit: number, threshold: number): Promise<SkillHit[]> {
+  const embeddings = await embedTexts(texts)
+  const searchResults = await Promise.all(
+    embeddings.map(emb => searchByVector(emb, limit, threshold))
+  )
+
+  const skillMap = new Map<string, SkillHit>()
+  for (let i = 0; i < searchResults.length; i++) {
+    for (const skill of searchResults[i]) {
+      const existing = skillMap.get(skill.skill_uri)
+      if (!existing || skill.similarity > existing.score) {
+        skillMap.set(skill.skill_uri, {
+          uri: skill.skill_uri,
+          label: skill.skill_label,
+          score: skill.similarity,
+          keyword: texts[i],
+        })
+      }
+    }
+  }
+
+  return Array.from(skillMap.values())
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 20)
+}
+
+function toResults(hits: SkillHit[]) {
+  return hits.map(s => ({
+    id: s.uri, uri: s.uri, label: s.label,
+    type: 'skill', description: '', source: 'esco',
+    L1: '', L2: '',
+    confidence: (s.score >= 0.7 ? 'high' : s.score >= 0.5 ? 'medium' : 'low') as 'high' | 'medium' | 'low',
+    matchedKeyword: s.keyword,
+  }))
+}
+
 // ============================================================
-// Fallback: keyword extraction (original method)
+// Fallback sin LLM: frases del propio texto → BGE-M3
 // ============================================================
 
-function extractKeywords(text: string): string[] {
-  const stopwords = new Set([
-    'que', 'como', 'para', 'por', 'con', 'sin', 'una', 'uno', 'los', 'las',
-    'del', 'den', 'des', 'fue', 'ser', 'son', 'era', 'hay', 'mas', 'pero',
-    'este', 'esta', 'esto', 'esos', 'esas', 'todo', 'toda', 'muy', 'bien',
-    'hace', 'hice', 'desde', 'hasta', 'entre', 'sobre', 'donde', 'cuando',
-    'trabaje', 'trabajo', 'trabajar', 'trabajando', 'anos', 'anios', 'tiempo',
-    'empresa', 'empresas', 'lugar', 'area', 'zona', 'puesto', 'cargo',
-    'tambien', 'siempre', 'nunca', 'algo', 'mucho', 'poco', 'otro', 'otra',
-    'tengo', 'tiene', 'hacer', 'hago', 'hacia', 'haciendo', 'saber', 'sabia',
-    'conozco', 'conocimiento', 'experiencia', 'encargaba', 'responsable',
-    'sabe', 'sabes', 'pueden', 'puede', 'cosas', 'cosa',
-  ])
-
-  const normalized = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-  const words = normalized
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .split(/\s+/)
-    .filter(w => w.length >= 4 && !stopwords.has(w))
-
-  return [...new Set(words)]
+/** Parte el relato en frases (comas, " y ", punto, punto y coma, saltos de línea). */
+function splitPhrases(text: string): string[] {
+  const phrases = text
+    .split(/[,.;\n]+|\s+y\s+/i)
+    .map(p => p.trim())
+    .filter(p => p.length >= 4)
+  return [...new Set(phrases)].slice(0, 10)
 }
 
 // ============================================================
@@ -145,6 +167,8 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { text } = body
+    // DEMO: ?llm=0 fuerza el fallback sin LLM (para verificar 0.2 aunque Groq ande)
+    const skipLLM = request.nextUrl.searchParams.get('llm') === '0'
 
     if (!text || typeof text !== 'string' || text.trim().length < 5) {
       return NextResponse.json({
@@ -155,91 +179,48 @@ export async function POST(request: NextRequest) {
     }
 
     // === PRIMARY: Groq → VPS embed → pgvector ===
-    try {
-      // Step 1: Groq keywords
-      const keywords = await extractKeywordsWithLLM(text)
-      if (keywords.length === 0) throw new Error('LLM returned empty keywords')
+    let llmError: string | undefined
+    if (!skipLLM) {
+      try {
+        const keywords = await extractKeywordsWithLLM(text)
+        if (keywords.length === 0) throw new Error('LLM returned empty keywords')
 
-      // Step 2: VPS batch embedding
-      const embeddings = await embedTexts(keywords)
-
-      // Step 3: pgvector search in parallel
-      const searchResults = await Promise.all(
-        embeddings.map(emb => searchByVector(emb, 5))
-      )
-
-      // Step 4: Deduplicate by URI, keep best score
-      const skillMap = new Map<string, { uri: string; label: string; score: number; keyword: string }>()
-      for (let i = 0; i < searchResults.length; i++) {
-        for (const skill of searchResults[i]) {
-          const existing = skillMap.get(skill.skill_uri)
-          if (!existing || skill.similarity > existing.score) {
-            skillMap.set(skill.skill_uri, {
-              uri: skill.skill_uri,
-              label: skill.skill_label,
-              score: skill.similarity,
-              keyword: keywords[i],
-            })
-          }
-        }
+        const hits = await searchSkills(keywords, 5, 0.4)
+        return NextResponse.json({
+          results: toResults(hits),
+          keywords,
+          method: 'llm+bge-m3',
+          text_length: text.length,
+        })
+      } catch (err: any) {
+        llmError = err?.message || String(err)
+        console.error('LLM pipeline fallback:', llmError)
       }
+    }
 
-      const sorted = Array.from(skillMap.values())
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 20)
-
+    // === FALLBACK 1: frases del texto → VPS embed → pgvector (sin LLM) ===
+    const phrases = splitPhrases(text)
+    if (phrases.length === 0) {
+      return NextResponse.json({ results: [], keywords: [], method: 'bge-m3', message: NO_INTERPRETADO })
+    }
+    try {
+      const hits = await searchSkills(phrases, 4, 0.55)
       return NextResponse.json({
-        results: sorted.map(s => ({
-          id: s.uri, uri: s.uri, label: s.label,
-          type: 'skill', description: '', source: 'esco',
-          L1: '', L2: '',
-          confidence: (s.score >= 0.7 ? 'high' : s.score >= 0.5 ? 'medium' : 'low') as 'high' | 'medium' | 'low',
-          matchedKeyword: s.keyword,
-        })),
-        keywords,
-        method: 'llm+bge-m3',
+        results: toResults(hits),
+        keywords: phrases,
+        method: 'bge-m3',
         text_length: text.length,
+        ...(hits.length === 0 && { message: NO_INTERPRETADO }),
+        ...(llmError && { _fallbackReason: llmError }),
       })
     } catch (err: any) {
-      console.error('BGE-M3 pipeline fallback:', err?.message || err)
-
-      // === FALLBACK: keyword extraction + trigram ===
-      const keywords = extractKeywords(text)
-      if (keywords.length === 0) {
-        return NextResponse.json({
-          results: [], keywords: [], method: 'fallback',
-          message: 'No se identificaron competencias en el texto.',
-        })
-      }
-
-      const skillMap = new Map<string, { uri: string; label: string; score: number; keyword: string }>()
-      for (const keyword of keywords) {
-        const { data } = await supabase.rpc('search_skills_by_text', {
-          query_text: keyword, similarity_min: 0.2, max_results: 5,
-        })
-        for (const r of (data || [])) {
-          const existing = skillMap.get(r.skill_uri)
-          const newScore = r.text_similarity + (existing?.score || 0)
-          if (!existing || newScore > existing.score) {
-            skillMap.set(r.skill_uri, { uri: r.skill_uri, label: r.skill_label, score: newScore, keyword })
-          }
-        }
-      }
-
+      // === FALLBACK 2: VPS caído → sin resultados (el trigram devolvía basura) ===
+      console.error('BGE-M3 fallback failed:', err?.message || err)
       return NextResponse.json({
-        results: Array.from(skillMap.values())
-          .sort((a, b) => b.score - a.score)
-          .slice(0, 20)
-          .map(s => ({
-            id: s.uri, uri: s.uri, label: s.label,
-            type: 'skill', description: '', source: 'esco',
-            L1: '', L2: '',
-            confidence: (s.score >= 0.5 ? 'high' : s.score >= 0.3 ? 'medium' : 'low') as 'high' | 'medium' | 'low',
-            matchedKeyword: s.keyword,
-          })),
-        keywords,
+        results: [],
+        keywords: [],
         method: 'fallback',
-        text_length: text.length,
+        message: NO_INTERPRETADO,
         _fallbackReason: err?.message,
       })
     }
