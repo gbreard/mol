@@ -467,6 +467,8 @@ export default function FuturoLaboralPage() {
             provincia: c.provincia,
             municipio: c.municipio,
             modalidad: c.modalidad,
+            // Para que la IA diga qué cubre cada curso solo con datos reales
+            cubre: (c.skills_detalle || []).map(sk => sk.label),
           })),
         }
       }))

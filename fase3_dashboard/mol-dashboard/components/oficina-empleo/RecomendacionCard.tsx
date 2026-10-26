@@ -68,6 +68,9 @@ function PieIA({ fechaMax }: { fechaMax: string | null }) {
   )
 }
 
+/** Cierra la oración si el modelo no puso punto (si no, acción y por qué quedan pegados). */
+const conPunto = (t: string) => (/[.!?…]$/.test(t.trim()) ? t.trim() : `${t.trim()}.`)
+
 /** Recomendación de trayectoria (M3): voz de orientador, en párrafos. */
 export function TrayectoriaCard({ reco, contexto, fechaMax }: {
   reco: RecomendacionTrayectoria
@@ -113,7 +116,7 @@ export function TrayectoriaCard({ reco, contexto, fechaMax }: {
           <ol className="space-y-1.5">
             {reco.pasos.map((p, i) => (
               <li key={i} className="text-sm text-gray-700 leading-relaxed">
-                {i + 1}. <span className="font-semibold">{p.accion}</span>{p.por_que ? ` ${p.por_que}` : ''}
+                {i + 1}. <span className="font-semibold">{conPunto(p.accion)}</span>{p.por_que ? ` ${conPunto(p.por_que)}` : ''}
               </li>
             ))}
           </ol>
