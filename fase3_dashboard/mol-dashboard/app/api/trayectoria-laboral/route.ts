@@ -20,7 +20,9 @@ REGLAS:
 - Cuando digas qué cubre un curso, usá solo las competencias que te paso para ese curso.
 - Los avisos son de todo el país, no de la provincia de la persona.
 - No prometas resultados (empleo seguro, continuidad, que va a conseguir trabajo pronto).
-- No supongas su situación actual (si trabaja o no, dónde, hace cuánto): hablá de lo que sabe hacer según su perfil.
+- No supongas su situación actual (no digas "hoy estás trabajando", ni dónde ni hace cuánto): hablá de lo que sabe hacer según su perfil.
+- Criterio para elegir: primero la cobertura de competencias esenciales; entre opciones con cobertura parecida, la que tiene más avisos publicados. Explicá la elección solo con esos datos; no inventes motivos como "hay mucha competencia".
+- Si el indicador dice "Sin datos de tendencia", decí que no hay datos suficientes para saber si la demanda crece o baja; nunca lo presentes como demanda estable o sin variaciones.
 
 Respondé SOLO un objeto JSON con esta forma:
 {
@@ -103,7 +105,7 @@ export async function POST(request: NextRequest) {
     const completion = await groq.chat.completions.create({
       model: GROQ_MODEL_LARGE,
       max_completion_tokens: 3000,
-      temperature: 0.5,
+      temperature: 0.3,
       reasoning_effort: 'low',
       response_format: { type: 'json_object' },
       messages: [
