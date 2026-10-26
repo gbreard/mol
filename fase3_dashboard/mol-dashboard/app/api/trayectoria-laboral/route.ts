@@ -8,9 +8,9 @@ Recibís las ocupaciones más compatibles con el perfil de una persona y tenés 
 
 REGLAS ESTRICTAS:
 - Usá SOLO los datos que te paso. No inventes cifras, duraciones, lugares, instituciones ni cursos.
-- No menciones porcentajes ni cantidades: las cifras las muestra la pantalla.
+- No menciones porcentajes ni cantidades y no escribas números: las cifras las muestra la pantalla.
 - Cursos: mencioná solo cursos de la lista que te paso, con el nombre exacto. Si ninguna ocupación tiene cursos, "formacion" va vacío.
-- Los datos de mercado son avisos publicados hasta la fecha indicada. No digas "vacantes disponibles".
+- Los datos de mercado son avisos publicados hasta la fecha indicada. No uses la palabra "vacante": hablá de avisos publicados.
 - Para la demanda usá solo el indicador que te paso ("Demanda en alza", "estable", "en baja" o "sin datos de tendencia"). No hables de estabilidad ni volatilidad.
 - Priorizá ocupaciones que cubren más competencias esenciales, con demanda en alza o estable, y con cursos para las que faltan.
 - Tuteo rioplatense (vos, tenés, podés). No uses el nombre de la persona.
@@ -36,15 +36,24 @@ interface OcupacionInput {
   cursos?: CursoInput[]
 }
 
+/** Cobertura sin números (el modelo no debe escribir cifras; las muestra la UI). */
+function cobertura(cubiertas: number, total: number): string {
+  const r = total > 0 ? cubiertas / total : 0
+  if (r >= 0.75) return 'Cubre casi todas las competencias esenciales'
+  if (r >= 0.5) return 'Cubre más de la mitad de las competencias esenciales'
+  if (r >= 0.25) return 'Cubre algunas de las competencias esenciales'
+  return 'Cubre pocas de las competencias esenciales'
+}
+
 function buildUserPrompt(data: { fecha_max?: string; ocupacion_elegida?: { label: string } | null; top_ocupaciones: OcupacionInput[] }): string {
   let prompt = data.fecha_max ? `Datos de mercado: avisos publicados hasta el ${formatFecha(data.fecha_max)}.\n\n` : ''
   if (data.ocupacion_elegida) {
     prompt += `OCUPACIÓN QUE LA PERSONA ESTÁ MIRANDO: ${data.ocupacion_elegida.label}\n\n`
   }
-  prompt += 'OCUPACIONES COMPATIBLES:\n\n'
+  prompt += 'OCUPACIONES COMPATIBLES (de mayor a menor cobertura):\n\n'
   data.top_ocupaciones.forEach((occ, i) => {
     prompt += `${i + 1}. ${occ.label}\n`
-    prompt += `   Cubre ${occ.cubiertas} de ${occ.esenciales_total} competencias esenciales. ${occ.demanda}.\n`
+    prompt += `   ${cobertura(occ.cubiertas, occ.esenciales_total)}. ${occ.demanda}.\n`
     if (occ.gap_skills?.length) prompt += `   Le faltan: ${occ.gap_skills.slice(0, 5).map(s => s.label).join(', ')}\n`
     if (occ.cursos?.length) {
       for (const c of occ.cursos) prompt += `   Curso: "${c.titulo}"\n`
