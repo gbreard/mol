@@ -1,0 +1,58 @@
+[
+ {
+  "paso": 1,
+  "nombre": "Login VIP → /vip",
+  "ok": true,
+  "screenshot": "/tmp/claude-1000/-mnt-d-OEDE-Webscrapping/b927b188-3954-47d6-b6cb-5be5f049ea7e/scratchpad/shots/f4_1_vip.png",
+  "detalle": "/vip",
+  "errores_consola": []
+ },
+ {
+  "paso": 2,
+  "nombre": "/vip/dashboard KPIs + brecha recalculada",
+  "ok": true,
+  "screenshot": "/tmp/claude-1000/-mnt-d-OEDE-Webscrapping/b927b188-3954-47d6-b6cb-5be5f049ea7e/scratchpad/shots/f4_2_vip_dashboard.png + /tmp/claude-1000/-mnt-d-OEDE-Webscrapping/b927b188-3954-47d6-b6cb-5be5f049ea7e/scratchpad/shots/f4_2b_vip_brecha.png",
+  "detalle": "'Datos hasta el': True, textos 'Cargando' tras 6 s: 0, brecha 13.976/77%: True",
+  "errores_consola": []
+ },
+ {
+  "paso": 3,
+  "nombre": "/vip/politicas Ocupaciones (cursos) + Comparar (cursos del gap)",
+  "ok": true,
+  "screenshot": "/tmp/claude-1000/-mnt-d-OEDE-Webscrapping/b927b188-3954-47d6-b6cb-5be5f049ea7e/scratchpad/shots/f4_3a_politicas_ocupaciones.png + /tmp/claude-1000/-mnt-d-OEDE-Webscrapping/b927b188-3954-47d6-b6cb-5be5f049ea7e/scratchpad/shots/f4_3b_politicas_comparar.png",
+  "detalle": "carga de la página: 6.2 s, cursos en Ocupaciones: True, cursos en Comparar: True",
+  "errores_consola": []
+ },
+ {
+  "paso": 4,
+  "nombre": "Perfiles → DEMO-001 → Oportunidades → expandir → badges → modal; top 10 de los 5 DEMO sin avisos vacíos",
+  "ok": true,
+  "screenshot": "/tmp/claude-1000/-mnt-d-OEDE-Webscrapping/b927b188-3954-47d6-b6cb-5be5f049ea7e/scratchpad/shots/f4_4a_m2_expandida.png + /tmp/claude-1000/-mnt-d-OEDE-Webscrapping/b927b188-3954-47d6-b6cb-5be5f049ea7e/scratchpad/shots/f4_4b_modal_avisos.png",
+  "detalle": "badges vistos: ['Cerrada'], antigüedad: True, encabezado modal \"N ofertas · X activas\": True, ocupaciones revisadas: 50, perfiles con bloque vacío: ninguno",
+  "errores_consola": []
+ },
+ {
+  "paso": 5,
+  "nombre": "Futuro laboral DEMO-001: 5 paneles + cursos con compatibilidad proyectada",
+  "ok": true,
+  "screenshot": "/tmp/claude-1000/-mnt-d-OEDE-Webscrapping/b927b188-3954-47d6-b6cb-5be5f049ea7e/scratchpad/shots/f4_5_futuro.png",
+  "detalle": "paneles: {'Lo que ya tiene': True, 'Lo que necesita aprender': True, 'Dónde aprender lo que falta': True, 'Skills transferibles': True, 'Caminos alternativos': True}, compatibilidad proyectada: True",
+  "errores_consola": []
+ },
+ {
+  "paso": 6,
+  "nombre": "perfiles/nuevo: texto libre albañil",
+  "ok": true,
+  "screenshot": "/tmp/claude-1000/-mnt-d-OEDE-Webscrapping/b927b188-3954-47d6-b6cb-5be5f049ea7e/scratchpad/shots/f4_6_texto_libre.png",
+  "detalle": "spinner 'Analizando el relato…': True | 3 skills identificadas · Confirmar todas · colocar ladrilloshigh · levantar objetos pesadosmedium · mezclar morteros para construcciónhigh",
+  "errores_consola": []
+ },
+ {
+  "paso": 7,
+  "nombre": "Login OE → /oficina-empleo (redirect por rol)",
+  "ok": true,
+  "screenshot": "/tmp/claude-1000/-mnt-d-OEDE-Webscrapping/b927b188-3954-47d6-b6cb-5be5f049ea7e/scratchpad/shots/f4_7_oe_login.png",
+  "detalle": "/oficina-empleo",
+  "errores_consola": []
+ }
+]
