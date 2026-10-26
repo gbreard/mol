@@ -291,28 +291,18 @@ export default function FuturoLaboralPage() {
         }
       }
 
-      // 2. Load skill frequencies (for "pedida en X% de ofertas")
-      const { data: ofertas } = await getSupabase()
-        .from('ofertas_dashboard')
-        .select('id_oferta')
-        .eq('isco_code', iscoCode)
-      if (ofertas && ofertas.length > 0) {
-        if (!trendRow) setMolOfertasCount(ofertas.length)
-        const ids = ofertas.map((o: any) => o.id_oferta)
-        const { data: skills } = await getSupabase()
-          .from('ofertas_skills')
-          .select('skill_uri')
-          .in('id_oferta', ids.slice(0, 500))
-        if (skills) {
-          const counts: Record<string, number> = {}
-          for (const s of skills) { if (s.skill_uri) counts[s.skill_uri] = (counts[s.skill_uri] || 0) + 1 }
-          const freqs: Record<string, number> = {}
-          const total = ofertas.length
-          for (const [uri, count] of Object.entries(counts)) {
-            freqs[uri] = Math.round((count / total) * 100)
-          }
-          setMolFreqs(freqs)
+      // 2. Load skill frequencies (for "pedida en X% de ofertas"), vía RPC: los selects
+      //    directos de ids + skills se cortaban en 1.000 filas
+      const { data: freqRows } = await getSupabase()
+        .rpc('get_skill_freq_by_isco', { p_isco: iscoCode })
+      if (freqRows && freqRows.length > 0) {
+        const total = Number(freqRows[0].total_ofertas)
+        if (!trendRow) setMolOfertasCount(total)
+        const freqs: Record<string, number> = {}
+        for (const r of freqRows as { skill_uri: string; ofertas: number }[]) {
+          freqs[r.skill_uri] = Math.round((Number(r.ofertas) / total) * 100)
         }
+        setMolFreqs(freqs)
       }
     } catch {} finally {
       setLoadingMol(false)
