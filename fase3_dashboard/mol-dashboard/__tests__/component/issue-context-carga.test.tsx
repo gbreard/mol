@@ -30,7 +30,7 @@ describe('IssueProvider — carga de issues', () => {
     expect(getIssuesPendientes).toHaveBeenCalledTimes(1)
   })
 
-  it.each(['/vip/dashboard', '/oficina-empleo/perfiles'])('no carga al montar en %s, sí al abrir el panel', async (ruta) => {
+  it.each(['/login', '/vip/dashboard', '/oficina-empleo/perfiles'])('no carga al montar en %s, sí al abrir el panel', async (ruta) => {
     pathname.value = ruta
     await act(async () => { render(<IssueProvider><Probe /></IssueProvider>) })
     expect(getIssuesPendientes).not.toHaveBeenCalled()

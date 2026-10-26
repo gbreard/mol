@@ -39,10 +39,10 @@ export function IssueProvider({ children }: { children: React.ReactNode }) {
   const [pendingIssues, setPendingIssues] = useState<Issue[]>([]);
   const [isCreating, setIsCreating] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  // DEMO: en VIP y Oficina de Empleo los issues no se usan y la consulta da timeout
-  // (57014): se cargan solo al abrir el panel de feedback.
+  // DEMO: en login, VIP y Oficina de Empleo los issues no se usan y la consulta da
+  // timeout (57014): se cargan solo al abrir el panel de feedback.
   const pathname = usePathname() || '';
-  const autoLoad = !pathname.startsWith('/vip') && !pathname.startsWith('/oficina-empleo');
+  const autoLoad = !['/login', '/vip', '/oficina-empleo'].some(p => pathname.startsWith(p));
 
   const refreshIssues = useCallback(async () => {
     try {
