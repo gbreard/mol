@@ -38,6 +38,11 @@ export default function NuevoPerfilPage() {
   const [error, setError] = useState('')
   const [loadingEdit, setLoadingEdit] = useState(!!editId)
 
+  // Precalentar el VPS de embeddings para que el primer "relato libre" no pague el arranque en frío
+  useEffect(() => {
+    fetch('/api/skills-extract-from-text?warmup=1', { method: 'POST' }).catch(() => {})
+  }, [])
+
   // Edit mode: load existing perfil
   useEffect(() => {
     if (!editId) return

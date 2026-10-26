@@ -95,4 +95,74 @@ describe('POST /api/skills-extract-from-text', () => {
     expect(data.results).toEqual([])
     expect(data.message).toMatch(/No pudimos interpretar el texto/)
   })
+
+  it('filtra ruido: exclusiones, idiomas, umbral 0.60 y máximo 8', async () => {
+    mockGroqCreate.mockResolvedValue({ choices: [{ message: { content: '{"terminos": ["a", "b"]}' } }] })
+    fetchMock.mockResolvedValue(embedOk(2))
+    const hits = [
+      { skill_uri: 'u-alb', skill_label: 'albanés', similarity: 0.9 },
+      { skill_uri: 'u-esc', skill_label: 'escribir en hebreo', similarity: 0.88 },
+      { skill_uri: 'u-cab', skill_label: 'criar cabras', similarity: 0.85 },
+      ...Array.from({ length: 10 }, (_, i) => ({ skill_uri: `u${i}`, skill_label: `skill ${i}`, similarity: 0.8 - i * 0.01 })),
+      { skill_uri: 'u-low', skill_label: 'skill floja', similarity: 0.58 },
+    ]
+    mockRpc.mockResolvedValue({ data: hits, error: null })
+
+    const data = await (await POST(makeReq('trabajé de albañil y levanto paredes'))).json()
+    const labels = data.results.map((r: { label: string }) => r.label)
+
+    expect(labels).toHaveLength(8)
+    expect(labels).not.toContain('albanés')
+    expect(labels).not.toContain('escribir en hebreo')
+    expect(labels).not.toContain('criar cabras')
+    expect(labels).not.toContain('skill floja')
+  })
+
+  it('conserva idiomas si el texto los menciona', async () => {
+    mockGroqCreate.mockResolvedValue({ choices: [{ message: { content: '{"terminos": ["a"]}' } }] })
+    fetchMock.mockResolvedValue(embedOk(1))
+    mockRpc.mockResolvedValue({ data: [{ skill_uri: 'u-en', skill_label: 'inglés', similarity: 0.9 }], error: null })
+
+    const data = await (await POST(makeReq('atiendo turistas en inglés'))).json()
+
+    expect(data.results.map((r: { label: string }) => r.label)).toContain('inglés')
+  })
+
+  it('si quedan menos de 3 sobre el umbral, completa hasta 3 con >= 0.55', async () => {
+    mockGroqCreate.mockResolvedValue({ choices: [{ message: { content: '{"terminos": ["a"]}' } }] })
+    fetchMock.mockResolvedValue(embedOk(1))
+    mockRpc.mockResolvedValue({
+      data: [
+        { skill_uri: 'a', skill_label: 'a', similarity: 0.7 },
+        { skill_uri: 'b', skill_label: 'b', similarity: 0.57 },
+        { skill_uri: 'c', skill_label: 'c', similarity: 0.56 },
+        { skill_uri: 'd', skill_label: 'd', similarity: 0.555 },
+        { skill_uri: 'e', skill_label: 'e', similarity: 0.5 },
+      ],
+      error: null,
+    })
+
+    const data = await (await POST(makeReq('cualquier relato de trabajo'))).json()
+
+    expect(data.results.map((r: { label: string }) => r.label)).toEqual(['a', 'b', 'c'])
+  })
+
+  it('warmup llama al /health del VPS y no procesa texto', async () => {
+    fetchMock.mockResolvedValue({ ok: true })
+
+    const data = await (await POST(makeReq('', '?warmup=1'))).json()
+
+    expect(data).toEqual({ warmup: true, vps: true })
+    expect(fetchMock.mock.calls[0][0]).toMatch(/\/health$/)
+    expect(mockGroqCreate).not.toHaveBeenCalled()
+  })
+
+  it('Groq se llama con timeout de 2,5 s y sin reintentos', async () => {
+    mockGroqCreate.mockResolvedValue({ choices: [{ message: { content: '{"terminos": ["a"]}' } }] })
+    fetchMock.mockResolvedValue(embedOk(1))
+
+    await POST(makeReq('levanto paredes y hago revoques'))
+
+    expect(mockGroqCreate.mock.calls[0][1]).toEqual({ timeout: 2500, maxRetries: 0 })
+  })
 })

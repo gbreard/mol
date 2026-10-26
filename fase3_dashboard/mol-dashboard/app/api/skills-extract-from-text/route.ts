@@ -15,7 +15,56 @@ const VPS_EMBED_SECRET = process.env.VPS_EMBED_SECRET || ''
 
 const NO_INTERPRETADO = 'No pudimos interpretar el texto, probá con la búsqueda por tarea.'
 
+const GROQ_TIMEOUT_MS = 2500
+const EMBED_TIMEOUT_MS = 4000
+
+// Filtro de ruido: máximo 8, umbral por modo; si quedan menos de 3, se completa hasta 3 con >= 0.55
+const MAX_RESULTS = 8
+const MIN_RESULTS = 3
+const MIN_SCORE_LLM = 0.60
+const MIN_SCORE_FALLBACK = 0.62
+const MIN_SCORE_FLOOR = 0.55
+
+// DEMO: revisar después — competencias absurdas que siguen apareciendo
+const EXCLUDED_LABELS = new Set([
+  'criar cabras', 'caza', 'reaseguro', 'hacer piercings', 'colocar pendulos',
+])
+
+const LANGUAGES = [
+  'ingles', 'frances', 'aleman', 'italiano', 'portugues', 'chino', 'mandarin', 'japones',
+  'ruso', 'arabe', 'hebreo', 'albanes', 'griego', 'latin', 'neerlandes', 'holandes',
+  'sueco', 'noruego', 'danes', 'finlandes', 'fines', 'polaco', 'checo', 'eslovaco',
+  'hungaro', 'rumano', 'bulgaro', 'turco', 'coreano', 'hindi', 'catalan', 'gallego',
+  'euskera', 'vasco', 'javanes', 'croata', 'serbio', 'esloveno', 'ucraniano', 'persa',
+  'estonio', 'leton', 'lituano', 'islandes', 'irlandes', 'gales', 'maltes', 'guarani',
+  'quechua', 'tailandes', 'vietnamita', 'indonesio', 'malayo', 'swahili', 'urdu', 'bengali',
+]
+const LANG_RE = LANGUAGES.join('|')
+const LANG_SKILL_RE = new RegExp(
+  `^((escribir|hablar|comprender|leer|entender|traducir|interactuar verbalmente)( en)?( el| la)? )?(lengua )?(${LANG_RE})( \\(.*\\))?$`
+)
+const TEXT_MENTIONS_LANG_RE = new RegExp(`\\b(idioma|idiomas|lengua|lenguas|bilingue|${LANG_RE})\\b`)
+
 type SkillHit = { uri: string; label: string; score: number; keyword: string }
+
+function normalize(s: string): string {
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim()
+}
+
+/** Aplica exclusiones, filtro de idiomas, umbral por modo y tope de 8. */
+function filterNoise(hits: SkillHit[], text: string, minScore: number): SkillHit[] {
+  const allowLanguages = TEXT_MENTIONS_LANG_RE.test(normalize(text))
+  const candidates = hits.filter(h => {
+    const label = normalize(h.label)
+    if (EXCLUDED_LABELS.has(label)) return false
+    if (!allowLanguages && LANG_SKILL_RE.test(label)) return false
+    return h.score >= MIN_SCORE_FLOOR
+  })
+  const strong = candidates.filter(h => h.score >= minScore)
+  if (strong.length >= MIN_RESULTS) return strong.slice(0, MAX_RESULTS)
+  // candidates está ordenado por score: completar hasta 3 con los de >= 0.55
+  return candidates.slice(0, MIN_RESULTS)
+}
 
 // ============================================================
 // Step 1: Groq generates technical keywords
@@ -51,7 +100,7 @@ Retorná SOLO un objeto JSON con la clave "terminos" (array de strings). Sin exp
       },
       { role: 'user', content: text }
     ]
-  })
+  }, { timeout: GROQ_TIMEOUT_MS, maxRetries: 0 })
 
   // Solo content: el reasoning del modelo no se lee
   const raw = completion.choices[0]?.message?.content?.trim() ?? '{}'
@@ -81,7 +130,7 @@ async function embedTexts(texts: string[]): Promise<number[][]> {
       'x-embed-secret': VPS_EMBED_SECRET,
     },
     body: JSON.stringify({ texts }),
-    signal: AbortSignal.timeout(10000),
+    signal: AbortSignal.timeout(EMBED_TIMEOUT_MS),
   })
   if (!res.ok) throw new Error(`Embed server error: ${res.status}`)
   const data = await res.json()
@@ -165,6 +214,14 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    // Precalentamiento: despierta el VPS de embeddings sin procesar nada
+    if (request.nextUrl.searchParams.get('warmup') === '1') {
+      const ok = await fetch(`${VPS_EMBED_URL}/health`, { signal: AbortSignal.timeout(EMBED_TIMEOUT_MS) })
+        .then(r => r.ok)
+        .catch(() => false)
+      return NextResponse.json({ warmup: true, vps: ok })
+    }
+
     const body = await request.json()
     const { text } = body
     // DEMO: ?llm=0 fuerza el fallback sin LLM (para verificar 0.2 aunque Groq ande)
@@ -185,7 +242,7 @@ export async function POST(request: NextRequest) {
         const keywords = await extractKeywordsWithLLM(text)
         if (keywords.length === 0) throw new Error('LLM returned empty keywords')
 
-        const hits = await searchSkills(keywords, 5, 0.4)
+        const hits = filterNoise(await searchSkills(keywords, 5, 0.4), text, MIN_SCORE_LLM)
         return NextResponse.json({
           results: toResults(hits),
           keywords,
@@ -204,7 +261,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ results: [], keywords: [], method: 'bge-m3', message: NO_INTERPRETADO })
     }
     try {
-      const hits = await searchSkills(phrases, 4, 0.55)
+      const hits = filterNoise(await searchSkills(phrases, 4, 0.55), text, MIN_SCORE_FALLBACK)
       return NextResponse.json({
         results: toResults(hits),
         keywords: phrases,
