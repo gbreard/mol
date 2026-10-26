@@ -14,9 +14,9 @@ function getSupabaseAdmin(): SupabaseClient | null {
 
 // A4 — POST /api/perfiles/:id/skills — agregar skills al perfil
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  // TODO OE-11: restore requireAuth
-  // const auth = await requireAuth(request);
-  // if (isAuthError(auth)) return auth;
+  // OE-11 (parcial, DEMO-MIERCOLES Fase 3): exige sesión, sin chequeo de rol
+  const auth = await requireAuth(request);
+  if (isAuthError(auth)) return auth;
 
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
@@ -74,9 +74,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
 // A5 — PATCH /api/perfiles/:id/skills — update skill estado
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  // TODO OE-11: restore requireAuth
-  // const auth = await requireAuth(request);
-  // if (isAuthError(auth)) return auth;
+  // OE-11 (parcial, DEMO-MIERCOLES Fase 3): exige sesión, sin chequeo de rol
+  const auth = await requireAuth(request);
+  if (isAuthError(auth)) return auth;
 
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });

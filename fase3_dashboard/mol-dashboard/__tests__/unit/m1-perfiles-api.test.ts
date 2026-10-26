@@ -3,6 +3,18 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 // Mock Supabase
 const mockFrom = vi.fn()
 
+// Fase 3 (OE-11 parcial): las rutas exigen sesión; acá se simula un usuario logueado
+const { authState } = vi.hoisted(() => ({ authState: { logueado: true } }))
+vi.mock('@/lib/api-auth', async () => {
+  const { NextResponse } = await import('next/server')
+  return {
+    requireAuth: vi.fn(async () => authState.logueado
+      ? { user: { id: 'u1', email: 'oe.test@mol.demo' }, role: 'oficina_empleo' }
+      : NextResponse.json({ error: 'No autorizado' }, { status: 401 })),
+    isAuthError: (r: unknown) => r instanceof Response,
+  }
+})
+
 vi.mock('@supabase/supabase-js', () => ({
   createClient: () => ({
     from: mockFrom,
@@ -13,6 +25,7 @@ import { GET, POST } from '@/app/api/perfiles/route'
 import { NextRequest } from 'next/server'
 
 beforeEach(() => {
+  authState.logueado = true
   vi.stubEnv('NEXT_PUBLIC_SUPABASE_URL', 'https://test.supabase.co')
   vi.stubEnv('SUPABASE_SERVICE_ROLE_KEY', 'test-key')
   vi.clearAllMocks()

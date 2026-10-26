@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth, isAuthError } from '@/lib/api-auth';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 let supabaseAdmin: SupabaseClient | null = null;
@@ -16,6 +17,9 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // OE-11 (parcial, DEMO-MIERCOLES Fase 3): exige sesión, sin chequeo de rol
+  const auth = await requireAuth(request);
+  if (isAuthError(auth)) return auth;
   const { id } = await params;
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
@@ -50,6 +54,9 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // OE-11 (parcial, DEMO-MIERCOLES Fase 3): exige sesión, sin chequeo de rol
+  const auth = await requireAuth(request);
+  if (isAuthError(auth)) return auth;
   const { id } = await params;
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
@@ -72,6 +79,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // OE-11 (parcial, DEMO-MIERCOLES Fase 3): exige sesión, sin chequeo de rol
+  const auth = await requireAuth(request);
+  if (isAuthError(auth)) return auth;
   const { id } = await params;
   const client = getSupabaseAdmin();
   if (!client) return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
