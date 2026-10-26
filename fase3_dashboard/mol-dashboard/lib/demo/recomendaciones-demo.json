@@ -1,1 +1,144 @@
-{}
+{
+ "6e90e92b-c739-4e4c-9409-ce7b97dcb6f6|": {
+  "ocupacion": "Soldador",
+  "diagnostico": "Jorge, hoy tenés experiencia alineando componentes, alisando superficies con rebabas y aplicando normas de seguridad en el ámbito laboral. Te hacen fuerte esas competencias de precisión y seguridad. Te faltan modelar piezas hechas con planchas de metal, detectar imperfecciones en el metal y unir metales, y algunas más.",
+  "recomendacion": "Este camino tiene sentido porque es donde cubrís más competencias esenciales y hay una cantidad importante de avisos publicados. Además, la demanda se mantiene estable a nivel nacional.",
+  "alternativas": [
+   {
+    "ocupacion": "Calderero",
+    "comentario": "Podés trabajar con técnicas de soldadura y manejo de equipos, pero cubrís menos competencias y hay pocos avisos publicados."
+   },
+   {
+    "ocupacion": "Montador de motores náuticos",
+    "comentario": "Hay más avisos, pero solo cubrís cuatro competencias esenciales, por lo que el ajuste es bajo."
+   }
+  ],
+  "pasos": [
+   {
+    "accion": "Anotate al curso 'Soldador y Herrería' para trabajar unir metales y detectar imperfecciones en el metal, dos de las competencias que te faltan.",
+    "por_que": ""
+   },
+   {
+    "accion": "Destacá tu experiencia en alinear componentes y aplicar normas de seguridad.",
+    "por_que": "Son tus puntos fuertes y aumentan tu atractivo ante los empleadores."
+   },
+   {
+    "accion": "Anotate en la bolsa de empleo de la Oficina.",
+    "por_que": "Así vas a ver los avisos de soldador que publiquen las empresas."
+   }
+  ],
+  "cierre": "Seguí adelante, cada paso te acerca a la oportunidad que buscás."
+ },
+ "3ba27ee7-469a-4fe9-b933-6edaa846a61a|": {
+  "ocupacion": "Reponedor",
+  "diagnostico": "Marcela, hoy tenés experiencia cambiando etiquetas y colocando mercancías en estanterías, y sabés estimar la vida útil de los alimentos, lo que te hace fuerte en el manejo del stock. Te falta confirmar el precio indicado en las etiquetas de los productos en la tienda y examinar la mercancía.",
+  "recomendacion": "Este camino tiene sentido porque ya cubrís la mayoría de las competencias esenciales y la demanda está en alza, lo que aumenta las oportunidades de encontrar empleo. Además, hay un curso a distancia que cubre las dos que te faltan.",
+  "alternativas": [
+   {
+    "ocupacion": "Cajero",
+    "comentario": "Podés aprovechar las competencias de caja que ya manejás, pero te faltan varias competencias clave y la demanda está estable."
+   },
+   {
+    "ocupacion": "Coordinador de inventario",
+    "comentario": "Aunque ya sabés gestionar inventarios, te faltan competencias técnicas importantes y no hay cursos disponibles para cubrirlas."
+   }
+  ],
+  "pasos": [
+   {
+    "accion": "Anotate al curso \"Repositor\" (Municipalidad de la Ciuda, a distancia).",
+    "por_que": "El curso cubre examinar la mercancía y confirmar el precio indicado en las etiquetas, competencias que te faltan."
+   },
+   {
+    "accion": "Destacá tu experiencia colocando mercancías en estanterías y estimando la vida útil de los alimentos.",
+    "por_que": ""
+   },
+   {
+    "accion": "Armá tu CV con el orientador.",
+    "por_que": "Te ayudará a presentar tus competencias actuales de forma clara y atractiva."
+   }
+  ],
+  "cierre": "Seguí adelante, que cada paso suma en tu búsqueda laboral."
+ },
+ "f063d2f5-0a6b-4712-a088-2b76ffd0f948|": {
+  "ocupacion": "Albañil",
+  "diagnostico": "Ramón, hoy tenés experiencia colocando ladrillos, comprobando nivelación y cortando ladrillos, además instalás perfiles de construcción. Esas competencias te dan una base firme en el trabajo de mampostería. Te falta examinar materiales de construcción, interpretar planos en 2D y transportar materiales de construcción, y algunas más.",
+  "recomendacion": "Este camino tiene sentido porque ya cubrís la mayor parte de las competencias esenciales y hay una buena cantidad de avisos publicados. Además, los cursos disponibles pueden reforzar las competencias que te faltan sin requerir un cambio radical de perfil.",
+  "alternativas": [
+   {
+    "ocupacion": "Operador de grúa torre",
+    "comentario": "Podés aprovechar tu conocimiento de planos en 3D y la seguridad en altura, pero te faltan varias competencias clave y hay menos avisos publicados."
+   },
+   {
+    "ocupacion": "Fontanero instalador de cuartos de baño",
+    "comentario": "Tenés bastantes avisos, sin embargo, requerís desarrollar muchas competencias nuevas y el trabajo difiere bastante del que ya hacés."
+   }
+  ],
+  "pasos": [
+   {
+    "accion": "Anotate al curso 'Albañilería' en la Biblioteca Popular Juvent para examinar materiales de construcción, una de las competencias que te faltan.",
+    "por_que": ""
+   },
+   {
+    "accion": "Reforzá tu habilidad de trabajar de forma ergonómica.",
+    "por_que": "Mejorar la ergonomía te ayuda a cumplir con los requisitos del trabajo y a prevenir lesiones."
+   },
+   {
+    "accion": "Armá tu CV con el orientador.",
+    "por_que": "Así resaltás tus competencias actuales y aumentás la visibilidad ante los empleadores."
+   }
+  ],
+  "cierre": "Seguí adelante, que cada paso suma a tu trayectoria profesional."
+ },
+ "e6154233-c97c-412c-90ef-b56ccd89b83b|": {
+  "ocupacion": "Asistente ejecutivo para la cadena de suministro",
+  "diagnostico": "Laura, hoy podés organizar documentos de la empresa, realizar actividades corrientes de oficina y usar sistemas administrativos, lo que te da una base sólida. Te falta apoyar a los gestores y directivos y presupuestar en función de las necesidades financieras.",
+  "recomendacion": "Este puesto aprovecha tus competencias fuertes en gestión documental y administrativa, y aunque te faltan dos competencias clave, son aprendibles y la demanda es estable con muchos avisos publicados.",
+  "alternativas": [
+   {
+    "ocupacion": "Administrativo de la Administración pública",
+    "comentario": "Tiene un curso disponible que cubre la transparencia de la información, pero te faltan competencias de enlace político y respuesta a consultas, y la demanda no muestra tendencia clara."
+   },
+   {
+    "ocupacion": "Empleado administrativo",
+    "comentario": "Cubrís más competencias en cantidad (12 de 19), pero en proporción es menos que el puesto recomendado. Los avisos y la demanda son los mismos, porque los dos puestos se cuentan juntos en el mismo grupo ocupacional."
+   }
+  ],
+  "pasos": [
+   {
+    "accion": "Practicá la elaboración de presupuestos en función de las necesidades financieras.",
+    "por_que": "Te permitirá cubrir una de las competencias que te faltan para el puesto."
+   },
+   {
+    "accion": "Armá tu CV con el orientador.",
+    "por_que": "Así resaltás tus habilidades actuales y preparás una presentación profesional."
+   }
+  ],
+  "cierre": "Seguí trabajando en esas áreas y vas a avanzar en tu búsqueda."
+ },
+ "68094192-0bac-418c-b492-cfc739e09a3e|": {
+  "ocupacion": "Desarrollador de software",
+  "diagnostico": "Sofía, tenés experiencia definiendo requisitos técnicos y gestionando proyectos de ingeniería, lo que te da una base sólida. Te falta depurar software y analizar especificaciones de software, y algunas más.",
+  "recomendacion": "Este camino tiene sentido porque cubrís ya 9 de 15 competencias esenciales y hay 941 avisos publicados, lo que indica buena disponibilidad de puestos. Además, podés reforzar las competencias faltantes con cursos locales.",
+  "alternativas": [
+   {
+    "ocupacion": "Ingeniero de aplicaciones",
+    "comentario": "Cubrís 4 de 6 competencias y tiene 164 avisos, pero no hay cursos disponibles para las competencias que te faltan."
+   },
+   {
+    "ocupacion": "Desarrollador de aplicaciones de TIC",
+    "comentario": "Cubrís 7 de 13 competencias y tiene 23 avisos; podés tomar el curso 'Programación' para cubrir varias de las competencias faltantes."
+   }
+  ],
+  "pasos": [
+   {
+    "accion": "Anotate al curso 'Programación' en la Fundación Puerta 18 para trabajar depurar software y analizar especificaciones de software, dos de las competencias que te faltan.",
+    "por_que": ""
+   },
+   {
+    "accion": "Anotate en la bolsa de empleo de la Oficina.",
+    "por_que": "Así vas a ver los avisos de desarrollador de software que publiquen las empresas."
+   }
+  ],
+  "cierre": "Seguí adelante, cada paso te acerca más a la posición que buscás."
+ }
+}
