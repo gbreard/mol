@@ -147,7 +147,8 @@ async function selectSupportedWithLLM(text: string, candidates: SkillHit[]): Pro
           role: 'system',
           content: `Te paso el relato de experiencia laboral de una persona y una lista numerada de competencias candidatas.
 Elegí SOLO las competencias que el relato respalda explícitamente: tareas o conocimientos que la persona dice que hace o hizo.
-Descartá las que solo comparten una palabra con el relato pero hablan de otra cosa (por ejemplo "presión del agua" para "tomo la presión"), las de otro oficio y las de un nivel de responsabilidad que el relato no menciona (por ejemplo "supervisar obras" si solo dice que levanta paredes).
+Cuenta como respaldada la forma técnica de una tarea que el relato menciona ("levanto paredes" respalda "colocar ladrillos"; "tomo la presión" respalda "medir la presión sanguínea"; "cobraba" respalda "tramitar pagos").
+Descartá las que agregan tareas, materiales u oficios que el relato no menciona, las que solo comparten una palabra con el relato pero hablan de otra cosa (por ejemplo "presión del agua" para "tomo la presión") y las de un nivel de responsabilidad que el relato no menciona (por ejemplo "supervisar obras" si solo dice que levanta paredes).
 Retorná SOLO un objeto JSON {"indices": [números de la lista]}. Sin explicación.`,
         },
         { role: 'user', content: `RELATO:\n${text}\n\nCANDIDATAS:\n${lista}` },
