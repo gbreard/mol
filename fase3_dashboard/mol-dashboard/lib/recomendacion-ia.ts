@@ -14,13 +14,14 @@ export interface FormacionIA {
   motivo: string
 }
 
-/** trayectoria-laboral (persona) */
+/** trayectoria-laboral (persona): voz de orientador, en párrafos */
 export interface RecomendacionTrayectoria {
   ocupacion: string
-  por_que: string
-  alternativas: OpcionIA[]
-  pasos: string[]
-  formacion: FormacionIA[]
+  diagnostico: string
+  recomendacion: string
+  alternativas: { ocupacion: string; comentario: string }[]
+  pasos: { accion: string; por_que: string }[]
+  cierre: string
 }
 
 /** analisis-ocupacional (VIP, sin persona) */
@@ -70,19 +71,27 @@ function formacionPermitida(v: unknown, cursosPermitidos: { titulo: string }[]):
     .filter(f => f.curso)
 }
 
-/** null si el JSON no parsea o no trae lo mínimo (ocupación + por qué). */
-export function parseTrayectoria(raw: string, cursosPermitidos: { titulo: string }[]): RecomendacionTrayectoria | null {
+/** null si el JSON no parsea o no trae lo mínimo (ocupación, diagnóstico y recomendación). */
+export function parseTrayectoria(raw: string): RecomendacionTrayectoria | null {
   const d = parseJson(raw)
   if (!d || typeof d !== 'object') return null
   const ocupacion = texto(d.ocupacion)
-  const por_que = texto(d.por_que)
-  if (!ocupacion || !por_que) return null
+  const diagnostico = texto(d.diagnostico)
+  const recomendacion = texto(d.recomendacion)
+  if (!ocupacion || !diagnostico || !recomendacion) return null
   return {
     ocupacion,
-    por_que,
-    alternativas: opciones(d.alternativas, 3, 'ocupacion').map(o => ({ ocupacion: o.nombre, motivo: o.motivo })),
-    pasos: (Array.isArray(d.pasos) ? d.pasos : []).map(texto).filter(Boolean).slice(0, 3),
-    formacion: formacionPermitida(d.formacion, cursosPermitidos),
+    diagnostico,
+    recomendacion,
+    alternativas: (Array.isArray(d.alternativas) ? d.alternativas : [])
+      .map((a: any) => ({ ocupacion: texto(a?.ocupacion), comentario: texto(a?.comentario) }))
+      .filter((a: { ocupacion: string; comentario: string }) => a.ocupacion && a.comentario)
+      .slice(0, 2),
+    pasos: (Array.isArray(d.pasos) ? d.pasos : [])
+      .map((p: any) => (typeof p === 'string' ? { accion: texto(p), por_que: '' } : { accion: texto(p?.accion), por_que: texto(p?.por_que) }))
+      .filter((p: { accion: string }) => p.accion)
+      .slice(0, 3),
+    cierre: texto(d.cierre),
   }
 }
 
@@ -111,4 +120,10 @@ export function demandaLabel(trendLabel: string | null | undefined): string {
     case 'cayendo': return 'Demanda en baja'
     default: return 'Sin datos de tendencia'
   }
+}
+
+/** "soldador/soldadora" → "Soldador": la forma antes de "/", con mayúscula inicial. */
+export function etiquetaOcupacion(label: string): string {
+  const corta = (label || '').split('/')[0].trim()
+  return corta.charAt(0).toUpperCase() + corta.slice(1)
 }

@@ -21,8 +21,8 @@ import { formatFecha, provinciaOfertas } from '@/lib/ofertas-estado'
 import type { OccupationMatch } from '@/app/oficina-empleo/perfiles/matching/page'
 import { calculateOccupationMatch, isEligibleMatch, compareMatches, type ProfileSkill } from '@/lib/matching'
 import { fetchCursosParaPersona, lineaUbicacionCurso, esVirtual, type CursoPersona } from '@/lib/cursos'
-import { demandaLabel, type RecomendacionTrayectoria } from '@/lib/recomendacion-ia'
-import { RecomendacionCard, type OcupacionContexto } from '@/components/oficina-empleo/RecomendacionCard'
+import { demandaLabel, etiquetaOcupacion, type RecomendacionTrayectoria } from '@/lib/recomendacion-ia'
+import { TrayectoriaCard, type OcupacionContexto } from '@/components/oficina-empleo/RecomendacionCard'
 
 interface PerfilSkill {
   skill_uri: string
@@ -458,6 +458,7 @@ export default function FuturoLaboralPage() {
           // Un solo indicador de demanda (el mismo que muestran los chips)
           demanda: demandaLabel(trend?.suficiente ? trend.trend_label : null),
           avisos: trend?.ofertas_total || ofertasCountMap[occ.isco_code] || 0,
+          fortalezas: result.sharedEssential.slice(0, 4).map((s: any) => s.label),
           gap_skills: result.gapEssential.slice(0, 6).map((s: any) => ({ label: s.label })),
           cursos: cursos.map(c => ({
             titulo: c.titulo,
@@ -475,9 +476,11 @@ export default function FuturoLaboralPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          perfil: { nombre_pila: perfil.nombre.split(' ')[0], provincia: perfilProvincia },
           fecha_max: fechaMax,
-          ocupacion_elegida: selectedOcc ? { label: selectedOcc.label } : null,
-          top_ocupaciones: contexto,
+          ocupacion_elegida: selectedOcc ? { label: etiquetaOcupacion(selectedOcc.label) } : null,
+          // Al modelo, la forma corta ("Soldador"); la UI cruza por etiqueta para los chips
+          top_ocupaciones: contexto.map(o => ({ ...o, label: etiquetaOcupacion(o.label) })),
         }),
       })
       if (res.ok) {
@@ -575,21 +578,7 @@ export default function FuturoLaboralPage() {
             )}
 
             {recomendacion && (
-              <RecomendacionCard
-                titulo="Recomendación personalizada"
-                secciones={{
-                  ocupacion: recomendacion.ocupacion,
-                  tituloPrincipal: 'Por qué esta opción',
-                  textoPrincipal: recomendacion.por_que,
-                  tituloOpciones: 'Otras opciones',
-                  opciones: recomendacion.alternativas,
-                  tituloPasos: 'Próximos pasos',
-                  pasos: recomendacion.pasos,
-                  formacion: recomendacion.formacion,
-                }}
-                contexto={recoContexto}
-                fechaMax={fechaMax}
-              />
+              <TrayectoriaCard reco={recomendacion} contexto={recoContexto} fechaMax={fechaMax} />
             )}
           </div>
         )}

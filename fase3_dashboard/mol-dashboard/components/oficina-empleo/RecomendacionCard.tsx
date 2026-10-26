@@ -1,7 +1,7 @@
 'use client'
 
 import { Sparkles, Info } from 'lucide-react'
-import { buscarCurso, normalizarTexto, type FormacionIA, type OpcionIA } from '@/lib/recomendacion-ia'
+import { buscarCurso, normalizarTexto, etiquetaOcupacion, type FormacionIA, type OpcionIA, type RecomendacionTrayectoria } from '@/lib/recomendacion-ia'
 import { esVirtual, provinciaDisplay } from '@/lib/cursos'
 import { formatFecha } from '@/lib/ofertas-estado'
 
@@ -38,9 +38,93 @@ interface Props {
 
 function buscarOcupacion(nombre: string, contexto: OcupacionContexto[]) {
   const n = normalizarTexto(nombre)
+  const corta = normalizarTexto(etiquetaOcupacion(nombre))
   return contexto.find(o => normalizarTexto(o.label) === n)
+    ?? contexto.find(o => normalizarTexto(etiquetaOcupacion(o.label)) === corta)
     ?? contexto.find(o => normalizarTexto(o.label).includes(n) || n.includes(normalizarTexto(o.label)))
     ?? null
+}
+
+function Chips({ occ, clase }: { occ: OcupacionContexto; clase: string }) {
+  return (
+    <div className="flex flex-wrap gap-1.5 mt-1.5">
+      <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${clase}`}>
+        {occ.cubiertas === null ? `${occ.esenciales_total} esenciales` : `${occ.cubiertas}/${occ.esenciales_total} esenciales`}
+      </span>
+      <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${clase}`}>
+        {occ.avisos.toLocaleString('es-AR')} avisos
+      </span>
+      <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${clase}`}>{occ.demanda}</span>
+    </div>
+  )
+}
+
+function PieIA({ fechaMax }: { fechaMax: string | null }) {
+  return (
+    <p className="flex items-start gap-1.5 text-[10px] text-gray-400 leading-snug pt-1">
+      <Info className="w-3 h-3 shrink-0 mt-px" />
+      Generado con IA a partir de avisos publicados{fechaMax ? ` hasta el ${formatFecha(fechaMax)}` : ''}. Orientativo.
+    </p>
+  )
+}
+
+/** Recomendación de trayectoria (M3): voz de orientador, en párrafos. */
+export function TrayectoriaCard({ reco, contexto, fechaMax }: {
+  reco: RecomendacionTrayectoria
+  contexto: OcupacionContexto[]
+  fechaMax: string | null
+}) {
+  const occ = buscarOcupacion(reco.ocupacion, contexto)
+  const chip = 'bg-purple-100 text-purple-700'
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <Sparkles className="w-4 h-4 text-purple-600" />
+        <h3 className="text-sm font-semibold text-purple-700">Recomendación personalizada</h3>
+      </div>
+
+      <div>
+        <p className="text-base font-semibold text-gray-900">{etiquetaOcupacion(occ?.label || reco.ocupacion)}</p>
+        {occ && <Chips occ={occ} clase={chip} />}
+      </div>
+
+      <Seccion titulo="Tu situación" color="text-purple-600">
+        <p className="text-sm text-gray-700 leading-relaxed">{reco.diagnostico}</p>
+      </Seccion>
+
+      <Seccion titulo="El camino que te recomendamos" color="text-purple-600">
+        <p className="text-sm text-gray-700 leading-relaxed">{reco.recomendacion}</p>
+      </Seccion>
+
+      {reco.alternativas.length > 0 && (
+        <Seccion titulo="Otras posibilidades" color="text-purple-600">
+          <ul className="space-y-1.5">
+            {reco.alternativas.map((a, i) => (
+              <li key={i} className="text-sm text-gray-700 leading-relaxed">
+                <span className="font-medium">{etiquetaOcupacion(buscarOcupacion(a.ocupacion, contexto)?.label || a.ocupacion)}</span>: {a.comentario}
+              </li>
+            ))}
+          </ul>
+        </Seccion>
+      )}
+
+      {reco.pasos.length > 0 && (
+        <Seccion titulo="Cómo seguir" color="text-purple-600">
+          <ol className="space-y-1.5">
+            {reco.pasos.map((p, i) => (
+              <li key={i} className="text-sm text-gray-700 leading-relaxed">
+                {i + 1}. <span className="font-semibold">{p.accion}</span>{p.por_que ? ` ${p.por_que}` : ''}
+              </li>
+            ))}
+          </ol>
+        </Seccion>
+      )}
+
+      {reco.cierre && <p className="text-sm text-gray-600 italic">{reco.cierre}</p>}
+
+      <PieIA fechaMax={fechaMax} />
+    </div>
+  )
 }
 
 function lineaCurso(c: OcupacionContexto['cursos'][number]): string {
@@ -69,17 +153,7 @@ export function RecomendacionCard({ titulo, secciones, contexto, fechaMax, tema 
 
       <div>
         <p className="text-base font-semibold text-gray-900">{occ?.label || secciones.ocupacion}</p>
-        {occ && (
-          <div className="flex flex-wrap gap-1.5 mt-1.5">
-            <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${color.chip}`}>
-              {occ.cubiertas === null ? `${occ.esenciales_total} esenciales` : `${occ.cubiertas}/${occ.esenciales_total} esenciales`}
-            </span>
-            <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${color.chip}`}>
-              {occ.avisos.toLocaleString('es-AR')} avisos
-            </span>
-            <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${color.chip}`}>{occ.demanda}</span>
-          </div>
-        )}
+        {occ && <Chips occ={occ} clase={color.chip} />}
       </div>
 
       <Seccion titulo={secciones.tituloPrincipal} color={color.seccion}>
@@ -121,10 +195,7 @@ export function RecomendacionCard({ titulo, secciones, contexto, fechaMax, tema 
         </Seccion>
       )}
 
-      <p className="flex items-start gap-1.5 text-[10px] text-gray-400 leading-snug pt-1">
-        <Info className="w-3 h-3 shrink-0 mt-px" />
-        Generado con IA a partir de avisos publicados{fechaMax ? ` hasta el ${formatFecha(fechaMax)}` : ''}. Orientativo.
-      </p>
+      <PieIA fechaMax={fechaMax} />
     </div>
   )
 }

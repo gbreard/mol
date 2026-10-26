@@ -1,33 +1,29 @@
 import { describe, it, expect } from 'vitest'
-import { parseTrayectoria, parseAnalisis, buscarCurso, demandaLabel } from '@/lib/recomendacion-ia'
+import { parseTrayectoria, parseAnalisis, buscarCurso, demandaLabel, etiquetaOcupacion } from '@/lib/recomendacion-ia'
 import { lineaUbicacionCurso, provinciaDisplay, esVirtual } from '@/lib/cursos'
 
 const CURSOS = [{ titulo: 'albanileria' }, { titulo: 'soldadura nivel inicial' }]
 
 describe('parseTrayectoria', () => {
-  it('devuelve las secciones con los topes (3 alternativas, 3 pasos, 2 cursos)', () => {
+  it('devuelve los párrafos y respeta los topes (2 alternativas, 3 pasos)', () => {
     const raw = JSON.stringify({
-      ocupacion: 'albañil',
-      por_que: 'Cubrís la mayoría de lo que se pide.',
-      alternativas: [1, 2, 3, 4].map(i => ({ ocupacion: `o${i}`, motivo: 'm' })),
-      pasos: ['a', 'b', 'c', 'd'],
-      formacion: [{ curso: 'albanileria', motivo: 'cubre lo que falta' }, { curso: 'Soldadura nivel inicial', motivo: 'x' }, { curso: 'albanileria', motivo: 'y' }],
+      ocupacion: 'Albañil',
+      diagnostico: 'Demo, hoy ya colocás ladrillos. Te falta interpretar planos.',
+      recomendacion: 'Es el camino más corto.',
+      alternativas: [1, 2, 3].map(i => ({ ocupacion: `o${i}`, comentario: 'c' })),
+      pasos: [1, 2, 3, 4].map(i => ({ accion: `a${i}`, por_que: 'p' })),
+      cierre: 'Vas bien.',
     })
-    const r = parseTrayectoria(raw, CURSOS)!
-    expect(r.ocupacion).toBe('albañil')
-    expect(r.alternativas).toHaveLength(3)
-    expect(r.pasos).toEqual(['a', 'b', 'c'])
-    expect(r.formacion.map(f => f.curso)).toEqual(['albanileria', 'soldadura nivel inicial'])
+    const r = parseTrayectoria(raw)!
+    expect(r.ocupacion).toBe('Albañil')
+    expect(r.alternativas).toHaveLength(2)
+    expect(r.pasos.map(p => p.accion)).toEqual(['a1', 'a2', 'a3'])
+    expect(r.cierre).toBe('Vas bien.')
   })
 
-  it('descarta cursos que no están en la lista filtrada (inventados)', () => {
-    const raw = JSON.stringify({ ocupacion: 'x', por_que: 'y', formacion: [{ curso: 'Curso de liderazgo en Harvard', motivo: 'z' }] })
-    expect(parseTrayectoria(raw, CURSOS)!.formacion).toEqual([])
-  })
-
-  it('null si el JSON no parsea o falta lo mínimo', () => {
-    expect(parseTrayectoria('Te recomiendo soldador porque…', CURSOS)).toBeNull()
-    expect(parseTrayectoria(JSON.stringify({ ocupacion: 'x' }), CURSOS)).toBeNull()
+  it('null si el JSON no parsea o falta diagnóstico o recomendación', () => {
+    expect(parseTrayectoria('Te recomiendo soldador porque…')).toBeNull()
+    expect(parseTrayectoria(JSON.stringify({ ocupacion: 'x', diagnostico: 'y' }))).toBeNull()
   })
 })
 
@@ -43,6 +39,10 @@ describe('parseAnalisis', () => {
 describe('helpers', () => {
   it('buscarCurso tolera mayúsculas, tildes y comillas', () => {
     expect(buscarCurso('"Albañilería"', [{ titulo: 'albañileria' }])?.titulo).toBe('albañileria')
+  })
+  it('etiquetaOcupacion: forma antes de "/" con mayúscula', () => {
+    expect(etiquetaOcupacion('soldador/soldadora')).toBe('Soldador')
+    expect(etiquetaOcupacion('albañil')).toBe('Albañil')
   })
   it('demandaLabel: un solo indicador', () => {
     expect(demandaLabel('creciendo')).toBe('Demanda en alza')

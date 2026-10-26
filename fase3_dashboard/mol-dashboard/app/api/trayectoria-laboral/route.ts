@@ -3,62 +3,73 @@ import { getGroq, GROQ_MODEL_LARGE } from '@/lib/groq'
 import { parseTrayectoria } from '@/lib/recomendacion-ia'
 import { formatFecha } from '@/lib/ofertas-estado'
 
-const SYSTEM_PROMPT = `Sos un asesor laboral de una oficina de empleo pública argentina.
-Recibís las ocupaciones más compatibles con el perfil de una persona y tenés que recomendarle cuál le conviene más y qué hacer.
+const SYSTEM_PROMPT = `Sos un orientador laboral de la Oficina de Empleo conversando con la persona en una entrevista. Hablale de vos, por su nombre de pila al empezar el diagnóstico, con calidez y sin vueltas. Sé honesto con las dificultades: si un camino es difícil, decilo y explicá por qué. No uses lenguaje de informe ni frases genéricas que le servirían a cualquiera.
 
-REGLAS ESTRICTAS:
-- Usá SOLO los datos que te paso. No inventes cifras, duraciones, lugares, instituciones ni cursos.
-- No menciones porcentajes ni cantidades y no escribas números: las cifras las muestra la pantalla.
-- Cursos: mencioná solo cursos de la lista que te paso, con el nombre exacto. Si ninguna ocupación tiene cursos, "formacion" va vacío.
-- Los datos de mercado son avisos publicados hasta la fecha indicada. No uses la palabra "vacante": hablá de avisos publicados.
+Recibís las ocupaciones más compatibles con su perfil, con lo que ya sabe hacer, lo que le falta, los avisos publicados y los cursos disponibles cerca o a distancia.
+
+REGLAS:
+- Cifras: podés usar SOLO los números que te paso (competencias cubiertas sobre el total, cantidad de avisos) y la provincia. No agregues ningún otro número, porcentaje, duración ni plazo.
+- Si cubre todas las competencias esenciales, decí "todas"; no lo presentes como si le faltara algo.
+- Cursos: nombrá solo cursos de la lista que te paso, con su nombre exacto. No inventes cursos, instituciones ni lugares.
+- Los datos de mercado son avisos publicados hasta la fecha indicada. No hables de "vacantes disponibles".
 - Para la demanda usá solo el indicador que te paso ("Demanda en alza", "estable", "en baja" o "sin datos de tendencia"). No hables de estabilidad ni volatilidad.
-- Priorizá ocupaciones que cubren más competencias esenciales, con demanda en alza o estable, y con cursos para las que faltan.
-- Tuteo rioplatense (vos, tenés, podés). No uses el nombre de la persona.
-- Lenguaje claro, sin tecnicismos.
+- Nombrá competencias concretas de la lista (lo que ya sabe y lo que le falta), no categorías vagas.
+- Los pasos tienen que ser concretos: una competencia para reforzar, un curso de la lista o una acción en la Oficina de Empleo (por ejemplo, armar el CV con el orientador o anotarse en un taller). Nunca "postulá" a secas.
 
 Respondé SOLO un objeto JSON con esta forma:
 {
-  "ocupacion": "nombre de la ocupación recomendada, tal como figura en la lista",
-  "por_que": "máximo 2 oraciones",
-  "alternativas": [{ "ocupacion": "nombre", "motivo": "1 oración" }],
-  "pasos": ["1 oración", "1 oración", "1 oración"],
-  "formacion": [{ "curso": "nombre exacto del curso", "motivo": "1 oración" }]
+  "ocupacion": "la ocupación que le recomendás, tal como figura en la lista",
+  "diagnostico": "párrafo de 3 a 4 oraciones: empezá con su nombre de pila; dónde está hoy, qué lo hace fuerte (nombrá 1 o 2 competencias concretas) y qué le falta",
+  "recomendacion": "párrafo de 2 a 3 oraciones: por qué este camino tiene sentido para esta persona",
+  "alternativas": [{ "ocupacion": "tal como figura en la lista", "comentario": "1 o 2 oraciones honestas, también si no conviene" }],
+  "pasos": [{ "accion": "1 oración concreta", "por_que": "1 oración" }],
+  "cierre": "1 oración de aliento, sin exagerar"
 }
-Máximo 3 alternativas, 3 pasos y 2 cursos.`
+Máximo 2 alternativas y 3 pasos.`
 
 interface CursoInput { titulo: string; institucion?: string; modalidad?: string; provincia?: string; municipio?: string | null }
 interface OcupacionInput {
   label: string
   cubiertas: number
   esenciales_total: number
+  avisos: number
   demanda: string
+  fortalezas?: string[]
   gap_skills?: { label: string }[]
   cursos?: CursoInput[]
 }
 
-/** Cobertura sin números (el modelo no debe escribir cifras; las muestra la UI). */
+/** "Cubre 19 de 28" (con la calibración 100% = "todas"). */
 function cobertura(cubiertas: number, total: number): string {
-  const r = total > 0 ? cubiertas / total : 0
-  if (r >= 0.75) return 'Cubre casi todas las competencias esenciales'
-  if (r >= 0.5) return 'Cubre más de la mitad de las competencias esenciales'
-  if (r >= 0.25) return 'Cubre algunas de las competencias esenciales'
-  return 'Cubre pocas de las competencias esenciales'
+  if (total > 0 && cubiertas >= total) return `Cubre todas las competencias esenciales (${total} de ${total})`
+  return `Cubre ${cubiertas} de ${total} competencias esenciales`
 }
 
-function buildUserPrompt(data: { fecha_max?: string; ocupacion_elegida?: { label: string } | null; top_ocupaciones: OcupacionInput[] }): string {
-  let prompt = data.fecha_max ? `Datos de mercado: avisos publicados hasta el ${formatFecha(data.fecha_max)}.\n\n` : ''
-  if (data.ocupacion_elegida) {
-    prompt += `OCUPACIÓN QUE LA PERSONA ESTÁ MIRANDO: ${data.ocupacion_elegida.label}\n\n`
-  }
-  prompt += 'OCUPACIONES COMPATIBLES (de mayor a menor cobertura):\n\n'
+function lugarCurso(c: CursoInput): string {
+  if ((c.modalidad || '').toUpperCase() !== 'PRESENCIAL') return 'a distancia'
+  return `presencial en ${[c.municipio, c.provincia].filter(Boolean).join(', ')}`
+}
+
+function buildUserPrompt(data: {
+  perfil?: { nombre_pila?: string; provincia?: string | null }
+  fecha_max?: string
+  ocupacion_elegida?: { label: string } | null
+  top_ocupaciones: OcupacionInput[]
+}): string {
+  let prompt = `PERSONA: ${data.perfil?.nombre_pila || 'la persona'}`
+  prompt += data.perfil?.provincia ? `, vive en ${data.perfil.provincia}.\n` : '.\n'
+  if (data.fecha_max) prompt += `Datos de mercado: avisos publicados hasta el ${formatFecha(data.fecha_max)}.\n`
+  if (data.ocupacion_elegida) prompt += `Está mirando la ocupación: ${data.ocupacion_elegida.label}.\n`
+  prompt += '\nOCUPACIONES COMPATIBLES (de mayor a menor cobertura):\n\n'
   data.top_ocupaciones.forEach((occ, i) => {
     prompt += `${i + 1}. ${occ.label}\n`
-    prompt += `   ${cobertura(occ.cubiertas, occ.esenciales_total)}. ${occ.demanda}.\n`
-    if (occ.gap_skills?.length) prompt += `   Le faltan: ${occ.gap_skills.slice(0, 5).map(s => s.label).join(', ')}\n`
+    prompt += `   ${cobertura(occ.cubiertas, occ.esenciales_total)}. ${occ.avisos} avisos publicados. ${occ.demanda}.\n`
+    if (occ.fortalezas?.length) prompt += `   Ya sabe: ${occ.fortalezas.slice(0, 4).join(', ')}\n`
+    if (occ.gap_skills?.length) prompt += `   Le falta: ${occ.gap_skills.slice(0, 5).map(s => s.label).join(', ')}\n`
     if (occ.cursos?.length) {
-      for (const c of occ.cursos) prompt += `   Curso: "${c.titulo}"\n`
-    } else {
-      prompt += '   Sin cursos para lo que le falta.\n'
+      for (const c of occ.cursos) prompt += `   Curso: "${c.titulo}" (${c.institucion ? `${c.institucion}, ` : ''}${lugarCurso(c)})\n`
+    } else if (occ.gap_skills?.length) {
+      prompt += '   No hay cursos en su provincia ni a distancia para lo que le falta.\n'
     }
     prompt += '\n'
   })
@@ -80,8 +91,8 @@ export async function POST(request: NextRequest) {
 
     const completion = await groq.chat.completions.create({
       model: GROQ_MODEL_LARGE,
-      max_completion_tokens: 2048,
-      temperature: 0.3,
+      max_completion_tokens: 3000,
+      temperature: 0.5,
       reasoning_effort: 'low',
       response_format: { type: 'json_object' },
       messages: [
@@ -90,10 +101,9 @@ export async function POST(request: NextRequest) {
       ],
     })
 
-    // Solo content: el reasoning del modelo no se lee. Los cursos se validan contra la lista enviada.
+    // Solo content: el reasoning del modelo no se lee
     const raw = completion.choices[0]?.message?.content?.trim() || ''
-    const cursosPermitidos = (data.top_ocupaciones as OcupacionInput[]).flatMap(o => o.cursos || [])
-    const recomendacion = parseTrayectoria(raw, cursosPermitidos)
+    const recomendacion = parseTrayectoria(raw)
     if (!recomendacion) console.error('trayectoria-laboral: JSON inválido', raw.slice(0, 200))
 
     return NextResponse.json({
